@@ -1,0 +1,8 @@
+<options>
+	<dep>consulo-java</dep>
+	<dep>consulo-maven</dep>
+	<dep>consulo-properties</dep>
+	<dep>consulo-spellchecker</dep>
+	<dep>consulo-xml</dep>
+	<dep>consulo-intelliLang</dep>
+</options>
