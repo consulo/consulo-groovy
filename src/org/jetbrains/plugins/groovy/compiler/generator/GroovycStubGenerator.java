@@ -16,9 +16,28 @@
 
 package org.jetbrains.plugins.groovy.compiler.generator;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.plugins.groovy.GroovyFileType;
+import org.jetbrains.plugins.groovy.compiler.GroovyCompilerBase;
+import org.jetbrains.plugins.groovy.compiler.GroovyCompilerConfiguration;
+import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
+import org.jetbrains.plugins.groovy.refactoring.GroovyNamesUtil;
+import org.jetbrains.plugins.groovy.refactoring.convertToJava.GroovyToJavaGenerator;
+import org.mustbe.consulo.roots.impl.ProductionContentFolderTypeProvider;
+import org.mustbe.consulo.roots.impl.TestContentFolderTypeProvider;
 import com.intellij.compiler.impl.CompilerUtil;
 import com.intellij.compiler.impl.FileSetCompileScope;
-import com.intellij.compiler.impl.TranslatingCompilerFilesMonitor;
+import com.intellij.compiler.impl.TranslatingCompilerFilesMonitorImpl;
 import com.intellij.ide.highlighter.JavaFileType;
 import com.intellij.openapi.application.AccessToken;
 import com.intellij.openapi.application.ApplicationManager;
@@ -36,7 +55,12 @@ import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.roots.*;
+import com.intellij.openapi.roots.ContentEntry;
+import com.intellij.openapi.roots.ContentFolder;
+import com.intellij.openapi.roots.ContentIterator;
+import com.intellij.openapi.roots.ModuleRootManager;
+import com.intellij.openapi.roots.ProjectFileIndex;
+import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.util.text.StringUtil;
@@ -51,18 +75,6 @@ import com.intellij.util.Chunk;
 import com.intellij.util.Processor;
 import com.intellij.util.containers.ContainerUtil;
 import com.intellij.util.containers.FactoryMap;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.jetbrains.plugins.groovy.GroovyFileType;
-import org.jetbrains.plugins.groovy.compiler.GroovyCompilerBase;
-import org.jetbrains.plugins.groovy.compiler.GroovyCompilerConfiguration;
-import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
-import org.jetbrains.plugins.groovy.refactoring.GroovyNamesUtil;
-import org.jetbrains.plugins.groovy.refactoring.convertToJava.GroovyToJavaGenerator;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.*;
 
 /**
  * @author peter
@@ -126,7 +138,7 @@ public class GroovycStubGenerator extends GroovyCompilerBase {
     for (ContentEntry entry : rootManager.getContentEntries()) {
       for (ContentFolder folder : entry.getFolders()) {
         VirtualFile dir = folder.getFile();
-        if ((!inTests && folder.getType() == ContentFolderType.PRODUCTION || folder.getType() == ContentFolderType.TEST && inTests) && dir != null) {
+        if ((!inTests && folder.getType() == ProductionContentFolderTypeProvider.getInstance() || folder.getType() == TestContentFolderTypeProvider.getInstance() && inTests) && dir != null) {
           if (!rootManager.getFileIndex().iterateContentUnderDirectory(dir, new ContentIterator() {
             @Override
             public boolean processFile(VirtualFile fileOrDir) {
@@ -206,7 +218,7 @@ public class GroovycStubGenerator extends GroovyCompilerBase {
             @Override
             public boolean process(VirtualFile virtualFile) {
               if (!virtualFile.isDirectory()) {
-                TranslatingCompilerFilesMonitor.removeSourceInfo(virtualFile);
+                TranslatingCompilerFilesMonitorImpl.removeSourceInfo(virtualFile);
                 try {
                   virtualFile.delete(this);
                 }

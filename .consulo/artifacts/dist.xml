@@ -1,6 +1,6 @@
 <component name="ArtifactManager">
-  <artifact name="unnamed">
-    <output-path>$PROJECT_DIR$/out/artifacts/unnamed</output-path>
+  <artifact build-on-make="true" name="dist">
+    <output-path>$PROJECT_DIR$/out/artifacts/dist</output-path>
     <root id="root">
       <element id="directory" name="groovy">
         <element id="directory" name="lib">

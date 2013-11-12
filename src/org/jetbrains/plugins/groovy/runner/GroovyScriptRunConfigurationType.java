@@ -16,58 +16,76 @@
 
 package org.jetbrains.plugins.groovy.runner;
 
+import javax.swing.Icon;
+
+import org.jetbrains.annotations.NonNls;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.plugins.groovy.module.extension.GroovyModuleExtension;
+import org.mustbe.consulo.module.extension.ModuleExtensionHelper;
 import com.intellij.execution.configurations.ConfigurationFactory;
 import com.intellij.execution.configurations.ConfigurationType;
 import com.intellij.execution.configurations.ConfigurationTypeUtil;
 import com.intellij.execution.configurations.RunConfiguration;
 import com.intellij.openapi.project.Project;
 import icons.JetgroovyIcons;
-import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
 
-import javax.swing.*;
+public class GroovyScriptRunConfigurationType implements ConfigurationType
+{
+	private final GroovyFactory myConfigurationFactory;
 
-public class GroovyScriptRunConfigurationType implements ConfigurationType {
-  private final GroovyFactory myConfigurationFactory;
+	public GroovyScriptRunConfigurationType()
+	{
+		myConfigurationFactory = new GroovyFactory(this);
+	}
 
-  public GroovyScriptRunConfigurationType() {
-    myConfigurationFactory = new GroovyFactory(this);
-  }
+	public String getDisplayName()
+	{
+		return "Groovy";
+	}
 
-  public String getDisplayName() {
-    return "Groovy";
-  }
+	public String getConfigurationTypeDescription()
+	{
+		return "Groovy Class or Script";
+	}
 
-  public String getConfigurationTypeDescription() {
-    return "Groovy Class or Script";
-  }
+	public Icon getIcon()
+	{
+		return JetgroovyIcons.Groovy.Groovy_16x16;
+	}
 
-  public Icon getIcon() {
-    return JetgroovyIcons.Groovy.Groovy_16x16;
-  }
+	@NonNls
+	@NotNull
+	public String getId()
+	{
+		return "GroovyScriptRunConfiguration";
+	}
 
-  @NonNls
-  @NotNull
-  public String getId() {
-    return "GroovyScriptRunConfiguration";
-  }
+	public ConfigurationFactory[] getConfigurationFactories()
+	{
+		return new ConfigurationFactory[]{myConfigurationFactory};
+	}
 
-  public ConfigurationFactory[] getConfigurationFactories() {
-    return new ConfigurationFactory[]{myConfigurationFactory};
-  }
+	public static GroovyScriptRunConfigurationType getInstance()
+	{
+		return ConfigurationTypeUtil.findConfigurationType(GroovyScriptRunConfigurationType.class);
+	}
 
-  public static GroovyScriptRunConfigurationType getInstance() {
-    return ConfigurationTypeUtil.findConfigurationType(GroovyScriptRunConfigurationType.class);
-  }
+	private static class GroovyFactory extends ConfigurationFactory
+	{
+		public GroovyFactory(ConfigurationType type)
+		{
+			super(type);
+		}
 
-  private static class GroovyFactory extends ConfigurationFactory {
-    public GroovyFactory(ConfigurationType type) {
-      super(type);
-    }
+		@Override
+		public boolean isApplicable(@NotNull Project project)
+		{
+			return ModuleExtensionHelper.getInstance(project).hasModuleExtension(GroovyModuleExtension.class);
+		}
 
-    public RunConfiguration createTemplateConfiguration(Project project) {
-      return new GroovyScriptRunConfiguration("Groovy Script", project, this);
-    }
-
-  }
+		public RunConfiguration createTemplateConfiguration(Project project)
+		{
+			return new GroovyScriptRunConfiguration("Groovy Script", project, this);
+		}
+	}
 }

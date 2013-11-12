@@ -16,6 +16,12 @@
 
 package org.jetbrains.plugins.groovy.griffon;
 
+import javax.swing.Icon;
+
+import org.jetbrains.annotations.NonNls;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.plugins.groovy.griffon.module.extension.GriffonModuleExtension;
+import org.mustbe.consulo.module.extension.ModuleExtensionHelper;
 import com.intellij.compiler.options.CompileStepBeforeRun;
 import com.intellij.compiler.options.CompileStepBeforeRunNoErrorCheck;
 import com.intellij.execution.BeforeRunTask;
@@ -26,55 +32,70 @@ import com.intellij.execution.configurations.RunConfiguration;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Key;
 import icons.JetgroovyIcons;
-import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
 
-import javax.swing.*;
+public class GriffonRunConfigurationType implements ConfigurationType
+{
+	private final ConfigurationFactory myConfigurationFactory;
+	@NonNls
+	private static final String GRIFFON_APPLICATION = "Griffon";
 
-public class GriffonRunConfigurationType implements ConfigurationType {
-  private final ConfigurationFactory myConfigurationFactory;
-  @NonNls private static final String GRIFFON_APPLICATION = "Griffon";
+	public GriffonRunConfigurationType()
+	{
+		myConfigurationFactory = new ConfigurationFactory(this)
+		{
+			@Override
+			public RunConfiguration createTemplateConfiguration(Project project)
+			{
+				return new GriffonRunConfiguration(this, project, GRIFFON_APPLICATION, "run-app");
+			}
 
-  public GriffonRunConfigurationType() {
-    myConfigurationFactory = new ConfigurationFactory(this) {
-      @Override
-      public RunConfiguration createTemplateConfiguration(Project project) {
-        return new GriffonRunConfiguration(this, project, GRIFFON_APPLICATION, "run-app");
-      }
+			@Override
+			public boolean isApplicable(@NotNull Project project)
+			{
+				return ModuleExtensionHelper.getInstance(project).hasModuleExtension(GriffonModuleExtension.class);
+			}
 
-      @Override
-      public void configureBeforeRunTaskDefaults(Key<? extends BeforeRunTask> providerID, BeforeRunTask task) {
-        if (providerID == CompileStepBeforeRun.ID || providerID == CompileStepBeforeRunNoErrorCheck.ID) {
-          task.setEnabled(false);
-        }
-      }
-    };
-  }
+			@Override
+			public void configureBeforeRunTaskDefaults(Key<? extends BeforeRunTask> providerID, BeforeRunTask task)
+			{
+				if(providerID == CompileStepBeforeRun.ID || providerID == CompileStepBeforeRunNoErrorCheck.ID)
+				{
+					task.setEnabled(false);
+				}
+			}
+		};
+	}
 
-  public String getDisplayName() {
-    return GRIFFON_APPLICATION;
-  }
+	public String getDisplayName()
+	{
+		return GRIFFON_APPLICATION;
+	}
 
-  public String getConfigurationTypeDescription() {
-    return GRIFFON_APPLICATION;
-  }
+	public String getConfigurationTypeDescription()
+	{
+		return GRIFFON_APPLICATION;
+	}
 
-  public Icon getIcon() {
-    return JetgroovyIcons.Griffon.Griffon;
-  }
+	public Icon getIcon()
+	{
+		return JetgroovyIcons.Griffon.Griffon;
+	}
 
-  @NonNls
-  @NotNull
-  public String getId() {
-    return "GriffonRunConfigurationType";
-  }
+	@NonNls
+	@NotNull
+	public String getId()
+	{
+		return "GriffonRunConfigurationType";
+	}
 
-  public ConfigurationFactory[] getConfigurationFactories() {
-    return new ConfigurationFactory[]{myConfigurationFactory};
-  }
+	public ConfigurationFactory[] getConfigurationFactories()
+	{
+		return new ConfigurationFactory[]{myConfigurationFactory};
+	}
 
-  public static GriffonRunConfigurationType getInstance() {
-    return ConfigurationTypeUtil.findConfigurationType(GriffonRunConfigurationType.class);
-  }
+	public static GriffonRunConfigurationType getInstance()
+	{
+		return ConfigurationTypeUtil.findConfigurationType(GriffonRunConfigurationType.class);
+	}
 
 }

@@ -16,6 +16,25 @@
 
 package org.jetbrains.plugins.groovy.mvc;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.consulo.java.platform.module.extension.JavaModuleExtensionImpl;
+import org.consulo.java.platform.module.extension.JavaMutableModuleExtensionImpl;
+import org.jetbrains.annotations.NonNls;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.roots.ContentFolderScopes;
+import org.mustbe.consulo.roots.impl.ExcludedContentFolderTypeProvider;
+import org.mustbe.consulo.roots.impl.ProductionContentFolderTypeProvider;
+import org.mustbe.consulo.roots.impl.TestContentFolderTypeProvider;
 import com.intellij.lang.properties.psi.PropertiesFile;
 import com.intellij.openapi.application.AccessToken;
 import com.intellij.openapi.application.ApplicationManager;
@@ -46,14 +65,6 @@ import com.intellij.util.Consumer;
 import com.intellij.util.SmartList;
 import com.intellij.util.containers.ContainerUtil;
 import com.intellij.util.containers.MultiMap;
-import org.consulo.java.platform.module.extension.JavaModuleExtensionImpl;
-import org.consulo.java.platform.module.extension.JavaMutableModuleExtensionImpl;
-import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.io.File;
-import java.util.*;
 
 /**
  * @author peter
@@ -85,8 +96,8 @@ public class MvcModuleStructureUtil {
 
     Map<VirtualFile, Boolean> sourceRoots = new HashMap<VirtualFile, Boolean>();
     for (ContentEntry entry : moduleRootManager.getContentEntries()) {
-      for (ContentFolder folder : entry.getFolders(ContentFolderType.PRODUCTION, ContentFolderType.TEST)) {
-        sourceRoots.put(folder.getFile(), folder.getType() == ContentFolderType.TEST);
+      for (ContentFolder folder : entry.getFolders(ContentFolderScopes.productionAndTest())) {
+        sourceRoots.put(folder.getFile(), folder.getType() == TestContentFolderTypeProvider.getInstance());
       }
     }
 
@@ -110,7 +121,7 @@ public class MvcModuleStructureUtil {
       if (src != null && moduleRootManager.getFileIndex().isInContent(src)) {
         actions.add(new Consumer<ContentEntry>() {
           public void consume(ContentEntry contentEntry) {
-            contentEntry.addFolder(src, ContentFolderType.EXCLUDED);
+            contentEntry.addFolder(src, ExcludedContentFolderTypeProvider.getInstance());
           }
         });
       }
@@ -220,7 +231,7 @@ public class MvcModuleStructureUtil {
             for (ContentFolder folder : entry.getFolders()) {
               if (Comparing.equal(folder.getFile(), src)) {
                 entry.removeFolder(folder);
-                entry.addFolder(src, ContentFolderType.TEST);
+                entry.addFolder(src, TestContentFolderTypeProvider.getInstance());
                 break;
               }
             }
@@ -232,7 +243,7 @@ public class MvcModuleStructureUtil {
 
     actions.add(new Consumer<ContentEntry>() {
       public void consume(ContentEntry contentEntry) {
-        contentEntry.addFolder(src, isTest ? ContentFolderType.TEST : ContentFolderType.PRODUCTION);
+        contentEntry.addFolder(src, isTest ? TestContentFolderTypeProvider.getInstance() : ProductionContentFolderTypeProvider.getInstance());
       }
     });
   }

@@ -43,6 +43,7 @@ import org.jetbrains.plugins.groovy.extensions.GroovyScriptTypeDetector;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.module.extension.GroovyModuleExtension;
 import org.jetbrains.plugins.groovy.runner.GroovycOSProcessHandler;
+import org.mustbe.consulo.compiler.roots.CompilerPathsImpl;
 import com.intellij.compiler.cache.JavaDependencyCache;
 import com.intellij.compiler.impl.CompilerUtil;
 import com.intellij.compiler.impl.FileSetCompileScope;
@@ -57,7 +58,6 @@ import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.application.PathManager;
 import com.intellij.openapi.compiler.CompileContext;
 import com.intellij.openapi.compiler.CompilerMessageCategory;
-import com.intellij.openapi.compiler.CompilerPaths;
 import com.intellij.openapi.compiler.TranslatingCompiler;
 import com.intellij.openapi.compiler.ex.CompileContextEx;
 import com.intellij.openapi.diagnostic.Logger;
@@ -354,7 +354,7 @@ public abstract class GroovyCompilerBase implements TranslatingCompiler {
   }
 
   private static void appendOutputPath(Module module, PathsList compileClasspath, final boolean forTestClasses) {
-    String output = CompilerPaths.getModuleOutputPath(module, forTestClasses);
+    String output = CompilerPathsImpl.getModuleOutputPath(module, forTestClasses);
     if (output != null) {
       compileClasspath.add(FileUtil.toSystemDependentName(output));
     }
