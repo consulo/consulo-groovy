@@ -16,17 +16,17 @@
 
 package org.jetbrains.plugins.groovy.refactoring.introduce.variable;
 
-import com.intellij.psi.PsiElement;
-import com.intellij.util.containers.MultiMap;
+import static com.intellij.refactoring.util.CommonRefactoringUtil.htmlEmphasize;
+
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameter;
+import org.jetbrains.plugins.groovy.refactoring.GroovyRefactoringBundle;
 import org.jetbrains.plugins.groovy.refactoring.introduce.ConflictReporter;
 import org.jetbrains.plugins.groovy.refactoring.introduce.GrIntroduceContext;
 import org.jetbrains.plugins.groovy.refactoring.introduce.GrIntroduceValidatorEngine;
-
-import static com.intellij.refactoring.util.CommonRefactoringUtil.htmlEmphasize;
-import static org.jetbrains.plugins.groovy.refactoring.GroovyRefactoringBundle.message;
+import com.intellij.psi.PsiElement;
+import com.intellij.util.containers.MultiMap;
 
 /**
  * @author ilyas
@@ -42,10 +42,10 @@ public class GroovyVariableValidator extends GrIntroduceValidatorEngine implemen
         if (var instanceof GrField) return;
 
         if (var instanceof GrParameter && varName.equals(var.getName())) {
-          conflicts.putValue(var, message("introduced.variable.conflicts.with.parameter.0", htmlEmphasize(varName)));
+          conflicts.putValue(var, GroovyRefactoringBundle.message("introduced.variable.conflicts.with.parameter.0", htmlEmphasize(varName)));
         }
         else if (varName.equals(var.getName())) {
-          conflicts.putValue(var, message("introduced.variable.conflicts.with.variable.0", htmlEmphasize(varName)));
+          conflicts.putValue(var, GroovyRefactoringBundle.message("introduced.variable.conflicts.with.variable.0", htmlEmphasize(varName)));
         }
       }
     });
