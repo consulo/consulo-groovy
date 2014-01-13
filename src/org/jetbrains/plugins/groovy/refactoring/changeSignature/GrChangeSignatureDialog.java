@@ -144,7 +144,7 @@ public class GrChangeSignatureDialog extends ChangeSignatureDialogBase<GrParamet
     //.addExtraAction(myPropExceptionsButton).createPanel();
     panel.setBorder(IdeBorderFactory.createEmptyBorder());
 
-    myExceptionsModel.addTableModelListener(mySignatureUpdater);
+    myExceptionsModel.addTableModelListener(getSignatureUpdater());
 
     final ArrayList<Pair<String, JPanel>> result = new ArrayList<Pair<String, JPanel>>();
     final String message = RefactoringBundle.message("changeSignature.exceptions.panel.border.title");

@@ -1,12 +1,12 @@
 package org.jetbrains.plugins.groovy.module.extension;
 
-import com.intellij.openapi.module.Module;
-import icons.JetgroovyIcons;
+import javax.swing.Icon;
+
 import org.consulo.module.extension.ModuleExtensionProvider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import javax.swing.*;
+import com.intellij.openapi.module.Module;
+import icons.JetgroovyIcons;
 
 /**
  * @author VISTALL
@@ -23,12 +23,6 @@ public class GroovyModuleExtensionProvider implements ModuleExtensionProvider<Gr
   @Override
   public String getName() {
     return "Groovy";
-  }
-
-  @NotNull
-  @Override
-  public Class<GroovyModuleExtension> getImmutableClass() {
-    return GroovyModuleExtension.class;
   }
 
   @NotNull

@@ -15,13 +15,13 @@
  */
 package org.jetbrains.plugins.groovy.griffon.module.extension;
 
-import com.intellij.openapi.module.Module;
-import icons.JetgroovyIcons;
+import javax.swing.Icon;
+
 import org.consulo.module.extension.ModuleExtensionProvider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import javax.swing.*;
+import com.intellij.openapi.module.Module;
+import icons.JetgroovyIcons;
 
 /**
  * @author VISTALL
@@ -38,12 +38,6 @@ public class GriffonModuleExtensionProvider implements ModuleExtensionProvider<G
   @Override
   public String getName() {
     return "Griffon";
-  }
-
-  @NotNull
-  @Override
-  public Class<GriffonModuleExtension> getImmutableClass() {
-    return GriffonModuleExtension.class;
   }
 
   @NotNull
