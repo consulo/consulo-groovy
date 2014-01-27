@@ -15,6 +15,16 @@
  */
 package org.jetbrains.plugins.groovy.console;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.consulo.java.module.extension.JavaModuleExtension;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyFileImpl;
+import org.jetbrains.plugins.groovy.util.GroovyUtils;
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.configurations.JavaParameters;
 import com.intellij.execution.console.ConsoleHistoryController;
@@ -48,12 +58,6 @@ import com.intellij.openapi.ui.popup.util.BaseListPopupStep;
 import com.intellij.openapi.util.Key;
 import com.intellij.util.PlatformIcons;
 import icons.JetgroovyIcons;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyFileImpl;
-import org.jetbrains.plugins.groovy.module.extension.GroovyModuleExtension;
-import org.jetbrains.plugins.groovy.util.GroovyUtils;
-
-import java.util.*;
 
 /**
  * Created by Max Medvedev on 9/20/13
@@ -68,8 +72,8 @@ public abstract class GroovyShellActionBase extends DumbAwareAction {
     ArrayList<Module> result = new ArrayList<Module>();
     for (Module module : ModuleManager.getInstance(project).getModules()) {
       if (GroovyUtils.isSuitableModule(module)) {
-        Sdk sdk = ModuleUtilCore.getSdk(module, GroovyModuleExtension.class);
-        if (sdk != null && sdk.getSdkType() instanceof JavaSdkType) {
+        Sdk sdk = ModuleUtilCore.getSdk(module, JavaModuleExtension.class);
+        if (sdk != null) {
           result.add(module);
         }
       }
@@ -215,10 +219,9 @@ public abstract class GroovyShellActionBase extends DumbAwareAction {
     protected Process createProcess() throws ExecutionException {
       JavaParameters javaParameters = myShellRunner.createJavaParameters(myModule);
 
-      final Sdk sdk = ModuleUtilCore.getSdk(myModule, GroovyModuleExtension.class);
+      final Sdk sdk = ModuleUtilCore.getSdk(myModule, JavaModuleExtension.class);
       assert sdk != null;
       SdkTypeId sdkType = sdk.getSdkType();
-      assert sdkType instanceof JavaSdkType;
       final String exePath = ((JavaSdkType)sdkType).getVMExecutablePath(sdk);
 
       return JdkUtil.setupJVMCommandLine(exePath, javaParameters, true).createProcess();

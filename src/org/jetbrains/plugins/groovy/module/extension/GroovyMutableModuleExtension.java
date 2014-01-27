@@ -1,53 +1,40 @@
 package org.jetbrains.plugins.groovy.module.extension;
 
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.projectRoots.Sdk;
-import com.intellij.openapi.roots.ModifiableRootModel;
-import lombok.NonNull;
-import org.consulo.module.extension.MutableModuleExtensionWithSdk;
-import org.consulo.module.extension.MutableModuleInheritableNamedPointer;
+import javax.swing.JComponent;
+
+import org.consulo.module.extension.MutableModuleExtension;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import javax.swing.*;
+import com.intellij.openapi.module.Module;
+import com.intellij.openapi.roots.ModifiableRootModel;
 
 /**
  * @author VISTALL
  * @since 14:47/28.05.13
  */
-public class GroovyMutableModuleExtension extends GroovyModuleExtension implements MutableModuleExtensionWithSdk<GroovyModuleExtension> {
-  @NotNull
-  private final GroovyModuleExtension myModuleExtension;
+public class GroovyMutableModuleExtension extends GroovyModuleExtension implements MutableModuleExtension<GroovyModuleExtension>
+{
+	public GroovyMutableModuleExtension(@NotNull String id, @NotNull Module module)
+	{
+		super(id, module);
+	}
 
-  public GroovyMutableModuleExtension(@NotNull String id, @NotNull Module module, @NotNull GroovyModuleExtension moduleExtension) {
-    super(id, module);
-    myModuleExtension = moduleExtension;
-  }
+	@Nullable
+	@Override
+	public JComponent createConfigurablePanel(@NotNull ModifiableRootModel rootModel, @Nullable Runnable updateOnCheck)
+	{
+		return null;
+	}
 
-  @NotNull
-  @Override
-  public MutableModuleInheritableNamedPointer<Sdk> getInheritableSdk() {
-    return (MutableModuleInheritableNamedPointer<Sdk>)super.getInheritableSdk();
-  }
+	@Override
+	public void setEnabled(boolean val)
+	{
+		myIsEnabled = val;
+	}
 
-  @Nullable
-  @Override
-  public JComponent createConfigurablePanel(@NonNull ModifiableRootModel rootModel, @Nullable Runnable updateOnCheck) {
-    return null;
-  }
-
-  @Override
-  public void setEnabled(boolean val) {
-    myIsEnabled = val;
-  }
-
-  @Override
-  public boolean isModified() {
-    return isModifiedImpl(myModuleExtension);
-  }
-
-  @Override
-  public void commit() {
-    myModuleExtension.commit(this);
-  }
+	@Override
+	public boolean isModified(@NotNull GroovyModuleExtension extension)
+	{
+		return myIsEnabled != extension.isEnabled();
+	}
 }

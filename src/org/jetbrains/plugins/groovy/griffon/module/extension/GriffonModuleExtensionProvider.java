@@ -27,30 +27,33 @@ import icons.JetgroovyIcons;
  * @author VISTALL
  * @since 14:35/30.06.13
  */
-public class GriffonModuleExtensionProvider implements ModuleExtensionProvider<GriffonModuleExtension,GriffonMutableModuleExtension> {
-  @Nullable
-  @Override
-  public Icon getIcon() {
-    return JetgroovyIcons.Griffon.Griffon;
-  }
+public class GriffonModuleExtensionProvider implements ModuleExtensionProvider<GriffonModuleExtension, GriffonMutableModuleExtension>
+{
+	@Nullable
+	@Override
+	public Icon getIcon()
+	{
+		return JetgroovyIcons.Griffon.Griffon;
+	}
 
-  @NotNull
-  @Override
-  public String getName() {
-    return "Griffon";
-  }
+	@NotNull
+	@Override
+	public String getName()
+	{
+		return "Griffon";
+	}
 
-  @NotNull
-  @Override
-  public GriffonModuleExtension createImmutable(@NotNull String id, @NotNull Module module) {
-    return new GriffonModuleExtension(id, module);
-  }
+	@NotNull
+	@Override
+	public GriffonModuleExtension createImmutable(@NotNull String id, @NotNull Module module)
+	{
+		return new GriffonModuleExtension(id, module);
+	}
 
-  @NotNull
-  @Override
-  public GriffonMutableModuleExtension createMutable(@NotNull String id,
-                                                     @NotNull Module module,
-                                                     @NotNull GriffonModuleExtension griffonModuleExtension) {
-    return new GriffonMutableModuleExtension(id, module, griffonModuleExtension);
-  }
+	@NotNull
+	@Override
+	public GriffonMutableModuleExtension createMutable(@NotNull String id, @NotNull Module module)
+	{
+		return new GriffonMutableModuleExtension(id, module);
+	}
 }

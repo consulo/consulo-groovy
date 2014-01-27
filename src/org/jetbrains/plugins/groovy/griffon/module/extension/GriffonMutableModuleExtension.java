@@ -15,45 +15,41 @@
  */
 package org.jetbrains.plugins.groovy.griffon.module.extension;
 
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.roots.ModifiableRootModel;
+import javax.swing.JComponent;
+
 import org.consulo.module.extension.MutableModuleExtension;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import javax.swing.*;
+import com.intellij.openapi.module.Module;
+import com.intellij.openapi.roots.ModifiableRootModel;
 
 /**
  * @author VISTALL
  * @since 14:33/30.06.13
  */
-public class GriffonMutableModuleExtension extends GriffonModuleExtension implements MutableModuleExtension<GriffonModuleExtension> {
-  @NotNull
-  private final GriffonModuleExtension myOriginalModuleExtension;
+public class GriffonMutableModuleExtension extends GriffonModuleExtension implements MutableModuleExtension<GriffonModuleExtension>
+{
+	public GriffonMutableModuleExtension(@NotNull String id, @NotNull Module module)
+	{
+		super(id, module);
+	}
 
-  public GriffonMutableModuleExtension(@NotNull String id, @NotNull Module module, @NotNull GriffonModuleExtension originalModuleExtension) {
-    super(id, module);
-    myOriginalModuleExtension = originalModuleExtension;
-  }
+	@Nullable
+	@Override
+	public JComponent createConfigurablePanel(@NotNull ModifiableRootModel rootModel, @Nullable Runnable updateOnCheck)
+	{
+		return null;
+	}
 
-  @Nullable
-  @Override
-  public JComponent createConfigurablePanel(@NotNull ModifiableRootModel rootModel, @Nullable Runnable updateOnCheck) {
-    return null;
-  }
+	@Override
+	public void setEnabled(boolean val)
+	{
+		myIsEnabled = val;
+	}
 
-  @Override
-  public void setEnabled(boolean val) {
-    myIsEnabled = val;
-  }
-
-  @Override
-  public boolean isModified() {
-    return myIsEnabled != myOriginalModuleExtension.isEnabled();
-  }
-
-  @Override
-  public void commit() {
-    myOriginalModuleExtension.commit(this);
-  }
+	@Override
+	public boolean isModified(@NotNull GriffonModuleExtension extension)
+	{
+		return myIsEnabled != extension.isEnabled();
+	}
 }
