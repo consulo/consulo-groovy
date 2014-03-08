@@ -244,8 +244,18 @@
     <compiler implementation="org.jetbrains.plugins.groovy.compiler.generator.GroovycStubGenerator" id="groovy-stub-generator" />
     <compiler implementation="org.jetbrains.plugins.groovy.compiler.GroovyCompiler" id="groovy-compiler" order="after groovy-stub-generator"/>
 
-    <moduleExtensionProvider key="groovy" parent-key="java" implementationClass="org.jetbrains.plugins.groovy.module.extension.GroovyModuleExtensionProvider" />
-    <moduleExtensionProvider key="griffon" parent-key="groovy" implementationClass="org.jetbrains.plugins.groovy.griffon.module.extension.GriffonModuleExtensionProvider" />
+    <moduleExtensionProvider key="groovy"
+							 parentKey="java"
+							 icon="/icons/groovy/groovy_16x16.png"
+							 name="Groovy"
+							 immutableClass="org.jetbrains.plugins.groovy.module.extension.GroovyModuleExtension"
+							 mutableClass="org.jetbrains.plugins.groovy.module.extension.GroovyMutableModuleExtension" />
+    <moduleExtensionProvider key="griffon"
+							 parentKey="groovy"
+							 name="Griffon"
+							 icon="/icons/griffon/griffon.png"
+							 immutableClass="org.jetbrains.plugins.groovy.griffon.module.extension.GriffonModuleExtension"
+							 mutableClass="org.jetbrains.plugins.groovy.griffon.module.extension.GriffonMutableModuleExtension" />
 
     <pom.declarationSearcher implementation="org.jetbrains.plugins.groovy.geb.GebContentDeclarationSearcher"/>
 

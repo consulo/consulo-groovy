@@ -20,7 +20,6 @@ import javax.swing.JComponent;
 import org.consulo.module.extension.MutableModuleExtension;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import com.intellij.openapi.module.Module;
 import com.intellij.openapi.roots.ModifiableRootModel;
 
 /**
@@ -29,14 +28,14 @@ import com.intellij.openapi.roots.ModifiableRootModel;
  */
 public class GriffonMutableModuleExtension extends GriffonModuleExtension implements MutableModuleExtension<GriffonModuleExtension>
 {
-	public GriffonMutableModuleExtension(@NotNull String id, @NotNull Module module)
+	public GriffonMutableModuleExtension(@NotNull String id, @NotNull ModifiableRootModel module)
 	{
 		super(id, module);
 	}
 
 	@Nullable
 	@Override
-	public JComponent createConfigurablePanel(@NotNull ModifiableRootModel rootModel, @Nullable Runnable updateOnCheck)
+	public JComponent createConfigurablePanel(@Nullable Runnable updateOnCheck)
 	{
 		return null;
 	}
