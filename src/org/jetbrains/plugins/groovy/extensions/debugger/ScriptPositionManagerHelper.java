@@ -15,15 +15,15 @@
  */
 package org.jetbrains.plugins.groovy.extensions.debugger;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import com.intellij.openapi.extensions.ExtensionPointName;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.search.GlobalSearchScope;
-import com.sun.jdi.ReferenceType;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
+import consulo.internal.com.sun.jdi.ReferenceType;
 
 /**
  * Class to extend debugger functionality to handle various Groovy scripts

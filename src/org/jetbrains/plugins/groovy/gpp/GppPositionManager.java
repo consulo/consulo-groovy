@@ -1,16 +1,16 @@
 package org.jetbrains.plugins.groovy.gpp;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.plugins.groovy.extensions.debugger.ScriptPositionManagerHelper;
+import org.jetbrains.plugins.groovy.lang.psi.GrClassSubstitutor;
+import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.JavaPsiFacade;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.search.GlobalSearchScope;
-import com.sun.jdi.ReferenceType;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.plugins.groovy.extensions.debugger.ScriptPositionManagerHelper;
-import org.jetbrains.plugins.groovy.lang.psi.GrClassSubstitutor;
-import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
+import consulo.internal.com.sun.jdi.ReferenceType;
 
 /**
  * @author peter
