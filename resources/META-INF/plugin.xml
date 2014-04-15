@@ -184,6 +184,7 @@
 
 	<extensions defaultExtensionNs="org.consulo.java">
 		<attachSourcesProvider implementation="org.jetbrains.plugins.groovy.ivy.IvyAttachSourceProvider"/>
+		<debugger.jvmDebugProvider implementation="org.jetbrains.plugins.groovy.GroovyJvmDebugProvider" />
 		<codeStyle.referenceAdjuster language="Groovy" implementationClass="org.jetbrains.plugins.groovy.codeStyle.GrReferenceAdjuster"/>
 		<programPatcher implementation="org.jetbrains.plugins.groovy.debugger.GroovyHotSwapper"/>
 		<psi.clsCustomNavigationPolicy implementation="org.jetbrains.plugins.groovy.codeInsight.GroovyClsCustomNavigationPolicy"/>

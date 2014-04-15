@@ -53,6 +53,7 @@ import com.intellij.compiler.impl.javaCompiler.OutputItemImpl;
 import com.intellij.compiler.make.CacheCorruptedException;
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.configurations.JavaParameters;
+import com.intellij.ide.highlighter.JavaFileType;
 import com.intellij.openapi.application.AccessToken;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.application.PathManager;
@@ -62,7 +63,6 @@ import com.intellij.openapi.compiler.TranslatingCompiler;
 import com.intellij.openapi.compiler.ex.CompileContextEx;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.fileTypes.FileType;
-import com.intellij.openapi.fileTypes.StdFileTypes;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.progress.ProgressIndicator;
@@ -428,7 +428,7 @@ public abstract class GroovyCompilerBase implements TranslatingCompiler {
       }
     }
 
-    return fileType == StdFileTypes.JAVA;
+    return fileType == JavaFileType.INSTANCE;
   }
 
   protected abstract void compileFiles(CompileContext compileContext, Module module,

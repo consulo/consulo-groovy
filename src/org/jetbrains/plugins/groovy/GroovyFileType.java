@@ -16,7 +16,12 @@
 
 package org.jetbrains.plugins.groovy;
 
-import com.intellij.debugger.engine.FileTypeWithJvmDebugging;
+import javax.swing.Icon;
+
+import org.jetbrains.annotations.NonNls;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.plugins.groovy.highlighter.GroovyEditorHighlighter;
 import com.intellij.lang.Language;
 import com.intellij.openapi.editor.colors.EditorColorsScheme;
 import com.intellij.openapi.editor.highlighter.EditorHighlighter;
@@ -27,19 +32,13 @@ import com.intellij.openapi.fileTypes.LanguageFileType;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import icons.JetgroovyIcons;
-import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.jetbrains.plugins.groovy.highlighter.GroovyEditorHighlighter;
-
-import javax.swing.*;
 
 /**
  * Represents Groovy file properites, such as extension etc.
  *
  * @author ilyas
  */
-public class GroovyFileType extends LanguageFileType implements FileTypeWithJvmDebugging {
+public class GroovyFileType extends LanguageFileType {
 
   public static final GroovyFileType GROOVY_FILE_TYPE = new GroovyFileType();
   public static final Language GROOVY_LANGUAGE = GROOVY_FILE_TYPE.getLanguage();
