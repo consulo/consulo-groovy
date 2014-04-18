@@ -15,20 +15,12 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.synthetic;
 
-import com.intellij.codeInsight.completion.originInfo.OriginInfoAwareElement;
-import com.intellij.navigation.ItemPresentation;
-import com.intellij.psi.*;
-import com.intellij.psi.impl.PsiClassImplUtil;
-import com.intellij.psi.impl.PsiImplUtil;
-import com.intellij.psi.impl.PsiSuperMethodImplUtil;
-import com.intellij.psi.impl.light.LightElement;
-import com.intellij.psi.impl.light.LightIdentifier;
-import com.intellij.psi.impl.light.LightReferenceListBuilder;
-import com.intellij.psi.presentation.java.JavaPresentationUtil;
-import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.psi.search.SearchScope;
-import com.intellij.psi.util.*;
-import com.intellij.util.IncorrectOperationException;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
+import javax.swing.Icon;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.GroovyFileType;
@@ -43,11 +35,24 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMe
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrReflectedMethod;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeElement;
-
-import javax.swing.*;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import com.intellij.codeInsight.completion.originInfo.OriginInfoAwareElement;
+import com.intellij.navigation.ItemPresentation;
+import com.intellij.psi.*;
+import com.intellij.psi.impl.PsiClassImplUtil;
+import com.intellij.psi.impl.PsiImplUtil;
+import com.intellij.psi.impl.PsiSuperMethodImplUtil;
+import com.intellij.psi.impl.light.LightElement;
+import com.intellij.psi.impl.light.LightIdentifier;
+import com.intellij.psi.impl.light.LightReferenceListBuilder;
+import com.intellij.psi.presentation.java.JavaPresentationUtil;
+import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.psi.search.SearchScope;
+import com.intellij.psi.util.CachedValueProvider;
+import com.intellij.psi.util.CachedValuesManager;
+import com.intellij.psi.util.MethodSignature;
+import com.intellij.psi.util.MethodSignatureBackedByPsiMethod;
+import com.intellij.psi.util.PsiModificationTracker;
+import com.intellij.util.IncorrectOperationException;
 
 /**
  * @author Sergey Evdokimov
@@ -416,11 +421,6 @@ public class GrLightMethodBuilder  extends LightElement implements GrMethod, Ori
     }
 
     return getContainingFile();
-  }
-
-  @Override
-  public PsiType getReturnTypeNoResolve() {
-    return getReturnType();
   }
 
   protected void copyData(GrLightMethodBuilder dst) {
