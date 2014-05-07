@@ -15,6 +15,26 @@
  */
 package org.jetbrains.plugins.groovy.grape;
 
+import gnu.trove.THashSet;
+
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.consulo.java.platform.module.extension.JavaModuleExtensionImpl;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotation;
+import org.jetbrains.plugins.groovy.runner.DefaultGroovyScriptRunner;
+import org.jetbrains.plugins.groovy.runner.GroovyScriptRunConfiguration;
+import org.jetbrains.plugins.groovy.runner.GroovyScriptRunner;
 import com.intellij.codeInsight.intention.IntentionAction;
 import com.intellij.execution.CantRunException;
 import com.intellij.execution.ExecutionException;
@@ -57,21 +77,12 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiRecursiveElementWalkingVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.*;
+import com.intellij.util.ExceptionUtil;
+import com.intellij.util.Function;
+import com.intellij.util.IncorrectOperationException;
+import com.intellij.util.PathUtil;
+import com.intellij.util.PathsList;
 import com.intellij.util.containers.ContainerUtil;
-import gnu.trove.THashSet;
-import org.consulo.java.platform.module.extension.JavaModuleExtensionImpl;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotation;
-import org.jetbrains.plugins.groovy.runner.DefaultGroovyScriptRunner;
-import org.jetbrains.plugins.groovy.runner.GroovyScriptRunConfiguration;
-import org.jetbrains.plugins.groovy.runner.GroovyScriptRunner;
-
-import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.*;
 
 /**
  * @author peter
@@ -138,7 +149,6 @@ public class GrabDependencies implements IntentionAction {
     assert sdk != null;
     SdkTypeId sdkType = sdk.getSdkType();
     assert sdkType instanceof JavaSdkType;
-    final String exePath = ((JavaSdkType)sdkType).getVMExecutablePath(sdk);
 
     final Map<String, GeneralCommandLine> lines = new HashMap<String, GeneralCommandLine>();
     for (String grabText : queries.keySet()) {
@@ -165,7 +175,7 @@ public class GrabDependencies implements IntentionAction {
       javaParameters.getProgramParametersList().add(list.getPathsString());
       javaParameters.getProgramParametersList().add(queries.get(grabText));
 
-      lines.put(grabText, JdkUtil.setupJVMCommandLine(exePath, javaParameters, true));
+      lines.put(grabText, JdkUtil.setupJVMCommandLine(sdk, javaParameters, true));
     }
 
     ProgressManager.getInstance().run(new Task.Backgroundable(project, "Processing @Grab annotations") {

@@ -69,10 +69,8 @@ import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.projectRoots.JavaSdk;
-import com.intellij.openapi.projectRoots.JavaSdkType;
 import com.intellij.openapi.projectRoots.JdkUtil;
 import com.intellij.openapi.projectRoots.Sdk;
-import com.intellij.openapi.projectRoots.SdkTypeId;
 import com.intellij.openapi.roots.ContentIterator;
 import com.intellij.openapi.roots.ModuleFileIndex;
 import com.intellij.openapi.roots.ModuleRootManager;
@@ -116,9 +114,6 @@ public abstract class GroovyCompilerBase implements TranslatingCompiler {
     //assert !ApplicationManager.getApplication().isDispatchThread();
     final Sdk sdk = ModuleUtilCore.getSdk(module, JavaModuleExtensionImpl.class);
     assert sdk != null; //verified before
-    SdkTypeId sdkType = sdk.getSdkType();
-    assert sdkType instanceof JavaSdkType;
-    final String exePath = ((JavaSdkType)sdkType).getVMExecutablePath(sdk);
 
     final JavaParameters parameters = new JavaParameters();
     final PathsList classPathBuilder = parameters.getClassPath();
@@ -223,7 +218,7 @@ public abstract class GroovyCompilerBase implements TranslatingCompiler {
     }
 
     try {
-      Process process = JdkUtil.setupJVMCommandLine(exePath, parameters, true).createProcess();
+      Process process = JdkUtil.setupJVMCommandLine(sdk, parameters, true).createProcess();
       GroovycOSProcessHandler processHandler = GroovycOSProcessHandler.runGroovyc(process, new Consumer<String>() {
         @Override
         public void consume(String s) {

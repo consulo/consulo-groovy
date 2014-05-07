@@ -46,10 +46,8 @@ import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.project.DumbAwareAction;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.projectRoots.JavaSdkType;
 import com.intellij.openapi.projectRoots.JdkUtil;
 import com.intellij.openapi.projectRoots.Sdk;
-import com.intellij.openapi.projectRoots.SdkTypeId;
 import com.intellij.openapi.roots.ui.configuration.ModulesAlphaComparator;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
@@ -221,10 +219,8 @@ public abstract class GroovyShellActionBase extends DumbAwareAction {
 
       final Sdk sdk = ModuleUtilCore.getSdk(myModule, JavaModuleExtension.class);
       assert sdk != null;
-      SdkTypeId sdkType = sdk.getSdkType();
-      final String exePath = ((JavaSdkType)sdkType).getVMExecutablePath(sdk);
 
-      return JdkUtil.setupJVMCommandLine(exePath, javaParameters, true).createProcess();
+      return JdkUtil.setupJVMCommandLine(sdk, javaParameters, true).createProcess();
     }
 
     @Override
