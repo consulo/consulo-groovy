@@ -183,6 +183,7 @@
 	</extensions>
 
 	<extensions defaultExtensionNs="org.consulo.java">
+		<cantBeStatic implementation="org.jetbrains.plugins.groovy.codeInspection.declaration.GrCategoryMethodsCantBeStaticExtension"/>
 		<attachSourcesProvider implementation="org.jetbrains.plugins.groovy.ivy.IvyAttachSourceProvider"/>
 		<debugger.jvmDebugProvider implementation="org.jetbrains.plugins.groovy.GroovyJvmDebugProvider" />
 		<codeStyle.referenceAdjuster language="Groovy" implementationClass="org.jetbrains.plugins.groovy.codeStyle.GrReferenceAdjuster"/>
@@ -357,7 +358,7 @@
 		<liveTemplateContext implementation="org.jetbrains.plugins.groovy.template.GroovyTemplateContextType$Statement"/>
 		<liveTemplateContext implementation="org.jetbrains.plugins.groovy.template.GroovyTemplateContextType$Declaration"/>
 
-		<defaultLiveTemplatesProvider implementation="org.jetbrains.plugins.groovy.template.GroovyTemplatesProvider"/>
+		<bundleLiveTemplateSet path="liveTemplates/Groovy" />
 
 		<liveTemplateOptionalProcessor implementation="org.jetbrains.plugins.groovy.template.GroovyShortenFQNamesProcessor"/>
 
@@ -420,8 +421,6 @@
 		<completion.confidence language="Groovy" implementationClass="com.intellij.codeInsight.completion.AlwaysFocusLookup" id="groovyTrue"
 							   order="last"/>
 		<completion.contributor language="Groovy" implementationClass="org.jetbrains.plugins.groovy.geb.GebPageFieldNameCompletionContributor"/>
-
-		<cantBeStatic implementation="org.jetbrains.plugins.groovy.codeInspection.declaration.GrCategoryMethodsCantBeStaticExtension"/>
 
 		<psi.referenceContributor language="Properties" implementation="org.jetbrains.plugins.groovy.dgm.DGMReferenceContributor"/>
 
