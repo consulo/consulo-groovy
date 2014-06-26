@@ -15,36 +15,12 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.changeSignature;
 
-import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.Condition;
-import com.intellij.openapi.util.Ref;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.*;
-import com.intellij.psi.codeStyle.CodeStyleManager;
-import com.intellij.psi.codeStyle.JavaCodeStyleManager;
-import com.intellij.psi.impl.source.tree.Factory;
-import com.intellij.psi.impl.source.tree.SharedImplUtil;
-import com.intellij.psi.scope.processor.VariablesProcessor;
-import com.intellij.psi.util.*;
-import com.intellij.refactoring.changeSignature.*;
-import com.intellij.refactoring.rename.ResolveSnapshotProvider;
-import com.intellij.refactoring.util.CanonicalTypes;
-import com.intellij.refactoring.util.RefactoringUtil;
-import com.intellij.refactoring.util.usageInfo.DefaultConstructorImplicitUsageInfo;
-import com.intellij.refactoring.util.usageInfo.NoConstructorClassUsageInfo;
-import com.intellij.usageView.UsageInfo;
-import com.intellij.util.ArrayUtil;
-import com.intellij.util.Function;
-import com.intellij.util.IncorrectOperationException;
-import com.intellij.util.containers.ContainerUtil;
-import com.intellij.util.containers.HashSet;
-import com.intellij.util.containers.MultiMap;
+import java.util.List;
+import java.util.Set;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.GroovyFileType;
-import org.jetbrains.plugins.groovy.codeStyle.GrReferenceAdjuster;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocComment;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocParameterReference;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocTag;
@@ -56,7 +32,11 @@ import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.GrListOrMap;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.GrModifier;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.GrModifierList;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.*;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrCatchClause;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrConstructorInvocation;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrTryCatchStatement;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrArgumentList;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrNamedArgument;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlock;
@@ -79,14 +59,42 @@ import org.jetbrains.plugins.groovy.lang.resolve.ResolveUtil;
 import org.jetbrains.plugins.groovy.refactoring.DefaultGroovyVariableNameValidator;
 import org.jetbrains.plugins.groovy.refactoring.GroovyNameSuggestionUtil;
 import org.jetbrains.plugins.groovy.refactoring.GroovyRefactoringUtil;
-
-import java.util.List;
-import java.util.Set;
+import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.Condition;
+import com.intellij.openapi.util.Ref;
+import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.psi.*;
+import com.intellij.psi.codeStyle.CodeStyleManager;
+import com.intellij.psi.codeStyle.JavaCodeStyleManager;
+import com.intellij.psi.impl.source.tree.Factory;
+import com.intellij.psi.impl.source.tree.SharedImplUtil;
+import com.intellij.psi.scope.processor.VariablesProcessor;
+import com.intellij.psi.util.InheritanceUtil;
+import com.intellij.psi.util.MethodSignature;
+import com.intellij.psi.util.MethodSignatureUtil;
+import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.psi.util.PsiTypesUtil;
+import com.intellij.psi.util.TypeConversionUtil;
+import com.intellij.refactoring.changeSignature.*;
+import com.intellij.refactoring.rename.ResolveSnapshotProvider;
+import com.intellij.refactoring.util.CanonicalTypes;
+import com.intellij.refactoring.util.RefactoringUtil;
+import com.intellij.refactoring.util.usageInfo.DefaultConstructorImplicitUsageInfo;
+import com.intellij.refactoring.util.usageInfo.NoConstructorClassUsageInfo;
+import com.intellij.usageView.UsageInfo;
+import com.intellij.util.ArrayUtil;
+import com.intellij.util.Function;
+import com.intellij.util.IncorrectOperationException;
+import com.intellij.util.containers.ContainerUtil;
+import com.intellij.util.containers.HashSet;
+import com.intellij.util.containers.MultiMap;
 
 /**
  * @author Maxim.Medvedev
  */
-public class GrChangeSignatureUsageProcessor implements ChangeSignatureUsageProcessor
+public class GrChangeSignatureUsageProcessor implements ChangeSignatureUsageProcessorEx
 {
 	private static final Logger LOG = Logger.getInstance("#org.jetbrains.plugins.groovy.refactoring.changeSignature" +
 			".GrChangeSignatureUsageProcessor");
