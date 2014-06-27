@@ -166,7 +166,7 @@ public class GrChangeSignatureUsageProcessor implements ChangeSignatureUsageProc
 	{
 		if(!(changeInfo instanceof JavaChangeInfo))
 		{
-			return true;
+			return false;
 		}
 		for(UsageInfo usageInfo : refUsages.get())
 		{
@@ -212,7 +212,7 @@ public class GrChangeSignatureUsageProcessor implements ChangeSignatureUsageProc
 									}
 									else
 									{
-										return false;
+										return true;
 									}
 								}
 							}
@@ -221,7 +221,7 @@ public class GrChangeSignatureUsageProcessor implements ChangeSignatureUsageProc
 				}
 			}
 		}
-		return true;
+		return false;
 	}
 
 	@Override
