@@ -16,23 +16,21 @@
 package org.jetbrains.plugins.groovy.codeInspection.spellchecker;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.plugins.groovy.codeInspection.GroovySuppressableInspectionTool;
 import org.jetbrains.plugins.groovy.lang.lexer.TokenSets;
 import org.jetbrains.plugins.groovy.lang.psi.GrNamedElement;
 import org.jetbrains.plugins.groovy.lang.psi.util.GrStringUtil;
-import com.intellij.codeInspection.SuppressQuickFix;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.javadoc.PsiDocComment;
 import com.intellij.spellchecker.inspections.PlainTextSplitter;
 import com.intellij.spellchecker.tokenizer.EscapeSequenceTokenizer;
-import com.intellij.spellchecker.tokenizer.SuppressibleSpellcheckingStrategy;
+import com.intellij.spellchecker.tokenizer.SpellcheckingStrategy;
 import com.intellij.spellchecker.tokenizer.TokenConsumer;
 import com.intellij.spellchecker.tokenizer.Tokenizer;
 
 /**
  * @author peter
  */
-public class GroovySpellcheckingStrategy extends SuppressibleSpellcheckingStrategy
+public class GroovySpellcheckingStrategy extends SpellcheckingStrategy
 {
 	private final GrDocCommentTokenizer myDocCommentTokenizer = new GrDocCommentTokenizer();
 	private final Tokenizer<PsiElement> myStringTokenizer = new Tokenizer<PsiElement>()
@@ -78,17 +76,5 @@ public class GroovySpellcheckingStrategy extends SuppressibleSpellcheckingStrate
 		}
 		//if (element instanceof GrLiteralImpl && ((GrLiteralImpl)element).isStringLiteral()) return myStringTokenizer;
 		return super.getTokenizer(element);
-	}
-
-	@Override
-	public boolean isSuppressedFor(@NotNull PsiElement element, @NotNull String name)
-	{
-		return GroovySuppressableInspectionTool.getElementToolSuppressedIn(element, name) != null;
-	}
-
-	@Override
-	public SuppressQuickFix[] getSuppressActions(@NotNull PsiElement element, @NotNull String name)
-	{
-		return GroovySuppressableInspectionTool.getSuppressActions(name);
 	}
 }
