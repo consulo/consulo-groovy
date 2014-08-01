@@ -435,7 +435,7 @@
 
 		<useScopeEnlarger implementation="org.jetbrains.plugins.groovy.lang.psi.impl.search.GrPrivateFieldScopeEnlarger"/>
 
-		<xdebugger.settings implementation="org.jetbrains.plugins.groovy.debugger.filters.GroovyDebuggerSettings"/>
+		<xdebugger.settings implementation="org.jetbrains.plugins.groovy.debugger.GroovyDebuggerSettings"/>
 		<langCodeStyleSettingsProvider implementation="org.jetbrains.plugins.groovy.codeStyle.GroovyLanguageCodeStyleSettingsProvider"/>
 		<codeStyleSettingsProvider implementation="org.jetbrains.plugins.groovy.codeStyle.GroovyCodeStyleSettingsProvider"/>
 

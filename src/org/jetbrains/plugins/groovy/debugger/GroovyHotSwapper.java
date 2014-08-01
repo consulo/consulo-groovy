@@ -20,7 +20,6 @@ import com.intellij.util.PathUtil;
 import org.consulo.java.platform.module.extension.JavaModuleExtensionImpl;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.GroovyFileTypeLoader;
-import org.jetbrains.plugins.groovy.debugger.filters.GroovyDebuggerSettings;
 import org.jetbrains.plugins.groovy.module.extension.GroovyModuleExtension;
 
 import java.io.File;
