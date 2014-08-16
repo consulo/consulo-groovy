@@ -15,16 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.declaration;
 
-import com.intellij.codeInspection.LocalQuickFix;
-import com.intellij.codeInspection.ProblemHighlightType;
-import com.intellij.codeInspection.ui.MultipleCheckboxOptionsPanel;
-import com.intellij.openapi.extensions.ExtensionPoint;
-import com.intellij.openapi.extensions.Extensions;
-import com.intellij.openapi.extensions.ExtensionsArea;
-import com.intellij.openapi.util.Condition;
-import com.intellij.psi.*;
-import com.intellij.psi.search.searches.OverridingMethodsSearch;
-import com.intellij.psi.search.searches.SuperMethodsSearch;
+import javax.swing.JComponent;
+
 import org.jetbrains.plugins.groovy.annotator.intentions.GrModifierFix;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspectionVisitor;
@@ -41,8 +33,19 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMe
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
 import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GroovyScriptClass;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
-
-import javax.swing.*;
+import com.intellij.codeInspection.JavaExtensionPoints;
+import com.intellij.codeInspection.LocalQuickFix;
+import com.intellij.codeInspection.ProblemHighlightType;
+import com.intellij.codeInspection.ui.MultipleCheckboxOptionsPanel;
+import com.intellij.openapi.util.Condition;
+import com.intellij.psi.PsiAnonymousClass;
+import com.intellij.psi.PsiClass;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiMember;
+import com.intellij.psi.PsiMethod;
+import com.intellij.psi.PsiModifier;
+import com.intellij.psi.search.searches.OverridingMethodsSearch;
+import com.intellij.psi.search.searches.SuperMethodsSearch;
 
 @SuppressWarnings("JavaStylePropertiesInvocation")
 public class GrMethodMayBeStaticInspection extends BaseInspection {
@@ -93,9 +96,7 @@ public class GrMethodMayBeStaticInspection extends BaseInspection {
       return false;
     }
 
-    final ExtensionsArea rootArea = Extensions.getRootArea();
-    final ExtensionPoint<Condition<PsiElement>> extensionPoint = rootArea.getExtensionPoint("com.intellij.cantBeStatic");
-    final Condition<PsiElement>[] addins = extensionPoint.getExtensions();
+    final Condition<PsiElement>[] addins = JavaExtensionPoints.CANT_BE_STATIC_EP_NAME.getExtensions();
     for (Condition<PsiElement> addin : addins) {
       if (addin.value(method)) {
         return false;
