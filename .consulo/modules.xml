@@ -17,65 +17,53 @@
           <orderEntry type="sourceFolder" forTests="false" />
           <orderEntry type="module-library">
             <library name="consulo:Properties Support">
-              <CLASSES>
+              <binaries>
                 <root url="jar://$MODULE_DIR$/dep/properties/lib/properties.jar!/" />
-              </CLASSES>
-              <DOCUMENTATION />
-              <SOURCES />
+              </binaries>
             </library>
           </orderEntry>
           <orderEntry type="module-library">
             <library name="consulo:Spellchecker">
-              <CLASSES>
+              <binaries>
                 <root url="jar://$MODULE_DIR$/dep/spellchecker/lib/spellchecker.jar!/" />
-              </CLASSES>
-              <DOCUMENTATION />
-              <SOURCES />
+              </binaries>
             </library>
           </orderEntry>
           <orderEntry type="module-library">
             <library name="consulo:IntelliLang">
-              <CLASSES>
+              <binaries>
                 <root url="jar://$MODULE_DIR$/dep/intelliLang/lib/intelliLang.jar!/" />
-              </CLASSES>
-              <DOCUMENTATION />
-              <SOURCES />
+              </binaries>
             </library>
           </orderEntry>
           <orderEntry type="module-library">
             <library>
-              <CLASSES>
+              <binaries>
                 <root url="jar://$MODULE_DIR$/lib/groovy-all-2.0.6.jar!/" />
-              </CLASSES>
-              <DOCUMENTATION />
-              <SOURCES />
+              </binaries>
             </library>
           </orderEntry>
           <orderEntry type="module" module-name="groovy-rt" />
           <orderEntry type="module-library">
             <library name="consulo:Java">
-              <CLASSES>
+              <binaries>
                 <root url="jar://$MODULE_DIR$/dep/java/lib/java-manifest.jar!/" />
                 <root url="jar://$MODULE_DIR$/dep/java/lib/java-rt.jar!/" />
                 <root url="jar://$MODULE_DIR$/dep/java/lib/java.jar!/" />
                 <root url="jar://$MODULE_DIR$/dep/java/lib/jdi.jar!/" />
                 <root url="jar://$MODULE_DIR$/dep/java/lib/jdk-annotations.jar!/" />
-              </CLASSES>
-              <DOCUMENTATION />
-              <SOURCES />
+              </binaries>
             </library>
           </orderEntry>
           <orderEntry type="module-library">
             <library name="consulo:XML">
-              <CLASSES>
+              <binaries>
                 <root url="jar://$MODULE_DIR$/dep/xml/lib/jaxen-1.1.3.jar!/" />
                 <root url="jar://$MODULE_DIR$/dep/xml/lib/jsr173_1.0_api.jar!/" />
                 <root url="jar://$MODULE_DIR$/dep/xml/lib/resolver.jar!/" />
                 <root url="jar://$MODULE_DIR$/dep/xml/lib/xerces.jar!/" />
                 <root url="jar://$MODULE_DIR$/dep/xml/lib/xml.jar!/" />
-              </CLASSES>
-              <DOCUMENTATION />
-              <SOURCES />
+              </binaries>
             </library>
           </orderEntry>
         </module-layer>
@@ -93,7 +81,7 @@
           <orderEntry type="sourceFolder" forTests="false" />
           <orderEntry type="module-library">
             <library name="consulo:Maven Integration">
-              <CLASSES>
+              <binaries>
                 <root url="jar://$MODULE_DIR$/../dep/maven/lib/lucene-core-2.4.1.jar!/" />
                 <root url="jar://$MODULE_DIR$/../dep/maven/lib/maven-server-api.jar!/" />
                 <root url="jar://$MODULE_DIR$/../dep/maven/lib/maven.jar!/" />
@@ -101,36 +89,30 @@
                 <root url="jar://$MODULE_DIR$/../dep/maven/lib/maven3-server-impl.jar!/" />
                 <root url="jar://$MODULE_DIR$/../dep/maven/lib/plexus-utils-2.0.6.jar!/" />
                 <root url="jar://$MODULE_DIR$/../dep/maven/lib/wadl-core.jar!/" />
-              </CLASSES>
-              <DOCUMENTATION />
-              <SOURCES />
+              </binaries>
             </library>
           </orderEntry>
           <orderEntry type="module" module-name="consulo-groovy" />
           <orderEntry type="module-library">
             <library name="consulo:Java">
-              <CLASSES>
+              <binaries>
                 <root url="jar://$MODULE_DIR$/../dep/java/lib/java-manifest.jar!/" />
                 <root url="jar://$MODULE_DIR$/../dep/java/lib/java-rt.jar!/" />
                 <root url="jar://$MODULE_DIR$/../dep/java/lib/java.jar!/" />
                 <root url="jar://$MODULE_DIR$/../dep/java/lib/jdi.jar!/" />
                 <root url="jar://$MODULE_DIR$/../dep/java/lib/jdk-annotations.jar!/" />
-              </CLASSES>
-              <DOCUMENTATION />
-              <SOURCES />
+              </binaries>
             </library>
           </orderEntry>
           <orderEntry type="module-library">
             <library name="consulo:XML">
-              <CLASSES>
+              <binaries>
                 <root url="jar://$MODULE_DIR$/../dep/xml/lib/jaxen-1.1.3.jar!/" />
                 <root url="jar://$MODULE_DIR$/../dep/xml/lib/jsr173_1.0_api.jar!/" />
                 <root url="jar://$MODULE_DIR$/../dep/xml/lib/resolver.jar!/" />
                 <root url="jar://$MODULE_DIR$/../dep/xml/lib/xerces.jar!/" />
                 <root url="jar://$MODULE_DIR$/../dep/xml/lib/xml.jar!/" />
-              </CLASSES>
-              <DOCUMENTATION />
-              <SOURCES />
+              </binaries>
             </library>
           </orderEntry>
         </module-layer>
@@ -145,11 +127,9 @@
           <orderEntry type="sourceFolder" forTests="false" />
           <orderEntry type="module-library">
             <library>
-              <CLASSES>
+              <binaries>
                 <root url="jar://$MODULE_DIR$/../lib/groovy-all-2.0.6.jar!/" />
-              </CLASSES>
-              <DOCUMENTATION />
-              <SOURCES />
+              </binaries>
             </library>
           </orderEntry>
         </module-layer>
@@ -168,24 +148,20 @@
           <orderEntry type="module" module-name="consulo-groovy" />
           <orderEntry type="module-library">
             <library name="consulo:Spellchecker">
-              <CLASSES>
+              <binaries>
                 <root url="jar://$MODULE_DIR$/../dep/spellchecker/lib/spellchecker.jar!/" />
-              </CLASSES>
-              <DOCUMENTATION />
-              <SOURCES />
+              </binaries>
             </library>
           </orderEntry>
           <orderEntry type="module-library">
             <library name="consulo:Java">
-              <CLASSES>
+              <binaries>
                 <root url="jar://$MODULE_DIR$/../dep/java/lib/java-manifest.jar!/" />
                 <root url="jar://$MODULE_DIR$/../dep/java/lib/java-rt.jar!/" />
                 <root url="jar://$MODULE_DIR$/../dep/java/lib/java.jar!/" />
                 <root url="jar://$MODULE_DIR$/../dep/java/lib/jdi.jar!/" />
                 <root url="jar://$MODULE_DIR$/../dep/java/lib/jdk-annotations.jar!/" />
-              </CLASSES>
-              <DOCUMENTATION />
-              <SOURCES />
+              </binaries>
             </library>
           </orderEntry>
         </module-layer>
@@ -203,38 +179,32 @@
           <orderEntry type="sourceFolder" forTests="false" />
           <orderEntry type="module-library">
             <library name="consulo:IntelliLang">
-              <CLASSES>
+              <binaries>
                 <root url="jar://$MODULE_DIR$/../dep/intelliLang/lib/intelliLang.jar!/" />
-              </CLASSES>
-              <DOCUMENTATION />
-              <SOURCES />
+              </binaries>
             </library>
           </orderEntry>
           <orderEntry type="module-library">
             <library name="consulo:Java">
-              <CLASSES>
+              <binaries>
                 <root url="jar://$MODULE_DIR$/../dep/java/lib/java-manifest.jar!/" />
                 <root url="jar://$MODULE_DIR$/../dep/java/lib/java-rt.jar!/" />
                 <root url="jar://$MODULE_DIR$/../dep/java/lib/java.jar!/" />
                 <root url="jar://$MODULE_DIR$/../dep/java/lib/jdi.jar!/" />
                 <root url="jar://$MODULE_DIR$/../dep/java/lib/jdk-annotations.jar!/" />
-              </CLASSES>
-              <DOCUMENTATION />
-              <SOURCES />
+              </binaries>
             </library>
           </orderEntry>
           <orderEntry type="module" module-name="consulo-groovy" />
           <orderEntry type="module-library">
             <library name="consulo:XML">
-              <CLASSES>
+              <binaries>
                 <root url="jar://$MODULE_DIR$/../dep/xml/lib/jaxen-1.1.3.jar!/" />
                 <root url="jar://$MODULE_DIR$/../dep/xml/lib/jsr173_1.0_api.jar!/" />
                 <root url="jar://$MODULE_DIR$/../dep/xml/lib/resolver.jar!/" />
                 <root url="jar://$MODULE_DIR$/../dep/xml/lib/xerces.jar!/" />
                 <root url="jar://$MODULE_DIR$/../dep/xml/lib/xml.jar!/" />
-              </CLASSES>
-              <DOCUMENTATION />
-              <SOURCES />
+              </binaries>
             </library>
           </orderEntry>
         </module-layer>
