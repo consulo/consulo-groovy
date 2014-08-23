@@ -15,6 +15,17 @@
  */
 package org.jetbrains.plugins.groovy.griffon;
 
+import java.io.File;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.swing.Icon;
+
+import org.jetbrains.annotations.Nls;
+import org.jetbrains.annotations.NonNls;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.plugins.groovy.config.GroovyLibraryPresentationProviderBase;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.roots.LibraryOrderEntry;
 import com.intellij.openapi.roots.ModuleRootManager;
@@ -26,16 +37,6 @@ import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import icons.JetgroovyIcons;
-import org.jetbrains.annotations.Nls;
-import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.jetbrains.plugins.groovy.config.GroovyLibraryPresentationProviderBase;
-
-import javax.swing.*;
-import java.io.File;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * @author nik
@@ -121,7 +122,7 @@ public class GriffonLibraryPresentationProvider extends GroovyLibraryPresentatio
   public static String getGriffonVersion(@NotNull Module module) {
     for (final OrderEntry orderEntry : ModuleRootManager.getInstance(module).getOrderEntries()) {
       if (orderEntry instanceof LibraryOrderEntry) {
-        final VirtualFile[] files = ((LibraryOrderEntry)orderEntry).getRootFiles(OrderRootType.CLASSES);
+        final VirtualFile[] files = orderEntry.getFiles(OrderRootType.CLASSES);
         if (isGriffonSdk(files)) {
           return getGriffonVersion(files);
         }
