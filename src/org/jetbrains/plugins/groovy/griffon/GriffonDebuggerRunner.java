@@ -19,17 +19,18 @@ import com.intellij.execution.ui.RunContentDescriptor;
  */
 public class GriffonDebuggerRunner extends GenericDebuggerRunner
 {
+	@Override
 	public boolean canRun(@NotNull final String executorId, @NotNull final RunProfile profile)
 	{
 		return executorId.equals(DefaultDebugExecutor.EXECUTOR_ID) && profile instanceof GriffonRunConfiguration;
 	}
 
+	@Override
 	@NotNull
 	public String getRunnerId()
 	{
 		return "GriffonDebugger";
 	}
-
 
 	@Nullable
 	@Override
