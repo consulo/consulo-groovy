@@ -19,6 +19,7 @@
 	<name>Groovy</name>
 	<description>Plugin for Groovy language support, including Groovy++, Grape, Gant and Griffon</description>
 	<version>SNAPSHOT</version>
+	<category>Custom Languages</category>
 	<vendor>JetBrains</vendor>
 	<depends optional="true" config-file="com.intellij.spellchecker.xml">com.intellij.spellchecker</depends>
 	<depends optional="true" config-file="org.intellij.intelliLang.xml">org.intellij.intelliLang</depends>
