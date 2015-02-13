@@ -20,55 +20,95 @@
  */
 package org.jetbrains.plugins.groovy.copyright;
 
-import com.intellij.openapi.fileTypes.FileType;
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiComment;
-import com.intellij.psi.PsiElement;
-import com.maddyhome.idea.copyright.CopyrightProfile;
-import com.maddyhome.idea.copyright.options.JavaOptions;
-import com.maddyhome.idea.copyright.psi.UpdateCopyright;
-import com.maddyhome.idea.copyright.psi.UpdateCopyrightsProvider;
-import com.maddyhome.idea.copyright.psi.UpdateJavaFileCopyright;
+import java.util.List;
+
+import javax.swing.JPanel;
+
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
 import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GroovyScriptClass;
+import org.mustbe.consulo.copyright.config.CopyrightFileConfig;
+import com.intellij.openapi.fileTypes.FileType;
+import com.intellij.openapi.project.Project;
+import com.intellij.psi.PsiClass;
+import com.intellij.psi.PsiComment;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
+import com.maddyhome.idea.copyright.CopyrightProfile;
+import com.maddyhome.idea.copyright.psi.UpdateCopyrightsProvider;
+import com.maddyhome.idea.copyright.psi.UpdateJavaFileCopyright;
+import com.maddyhome.idea.copyright.psi.UpdatePsiFileCopyright;
+import com.maddyhome.idea.copyright.ui.TemplateCommentPanel;
 
-import java.util.List;
+public class UpdateGroovyCopyrightsProvider extends UpdateCopyrightsProvider<CopyrightFileConfig>
+{
+	@NotNull
+	@Override
+	public UpdatePsiFileCopyright<CopyrightFileConfig> createInstance(@NotNull PsiFile file, @NotNull CopyrightProfile copyrightProfile)
+	{
+		return new UpdateJavaFileCopyright(file, copyrightProfile)
+		{
+			@Override
+			protected boolean accept()
+			{
+				return getFile() instanceof GroovyFile;
+			}
 
-public class UpdateGroovyCopyrightsProvider extends UpdateCopyrightsProvider {
-  public UpdateCopyright createInstance(Project project, Module module, VirtualFile file, FileType base, CopyrightProfile options) {
-    return new UpdateJavaFileCopyright(project, module, file, options) {
-      protected boolean accept() {
-        return getFile() instanceof GroovyFile;
-      }
+			@Override
+			protected PsiElement[] getImportsList()
+			{
+				return ((GroovyFile) getFile()).getImportStatements();
+			}
 
-      @Override
-      protected PsiElement[] getImportsList() {
-        return ((GroovyFile)getFile()).getImportStatements();
-      }
+			@Override
+			protected PsiElement getPackageStatement()
+			{
+				return ((GroovyFile) getFile()).getPackageDefinition();
+			}
 
-      @Override
-      protected PsiElement getPackageStatement() {
-        return ((GroovyFile)getFile()).getPackageDefinition();
-      }
+			@Override
+			protected void checkCommentsForTopClass(PsiClass topclass, int location, List<PsiComment> comments)
+			{
+				if(!(topclass instanceof GroovyScriptClass))
+				{
+					super.checkCommentsForTopClass(topclass, location, comments);
+					return;
+				}
+				final GroovyFile containingFile = (GroovyFile) topclass.getContainingFile();
 
-      @Override
-      protected void checkCommentsForTopClass(PsiClass topclass, int location, List<PsiComment> comments) {
-        if (!(topclass instanceof GroovyScriptClass)) {
-          super.checkCommentsForTopClass(topclass, location, comments);
-          return;
-        }
-        final GroovyFile containingFile = (GroovyFile)topclass.getContainingFile();
+				PsiElement last = containingFile.getFirstChild();
+				while(last != null && !(last instanceof GrStatement))
+				{
+					last = last.getNextSibling();
+				}
+				checkComments(last, location == LOCATION_BEFORE_CLASS, comments);
+			}
+		};
+	}
 
-        PsiElement last = containingFile.getFirstChild();
-        while (last != null && !(last instanceof GrStatement)) {
-          last = last.getNextSibling();
-        }
-        checkComments(last, location == JavaOptions.LOCATION_BEFORE_CLASS, comments);
-      }
-    };
-  }
+	@NotNull
+	@Override
+	public CopyrightFileConfig createDefaultOptions()
+	{
+		return new CopyrightFileConfig();
+	}
+
+	@NotNull
+	@Override
+	public TemplateCommentPanel createConfigurable(@NotNull Project project, @NotNull TemplateCommentPanel parentPane, @NotNull FileType fileType)
+	{
+		return new TemplateCommentPanel(fileType, parentPane, project)
+		{
+			@Override
+			public void addAdditionalComponents(@NotNull JPanel additionalPanel)
+			{
+				addLocationInFile(new String[]{
+						"Before Package",
+						"Before Imports",
+						"Before Class"
+				});
+			}
+		};
+	}
 }
