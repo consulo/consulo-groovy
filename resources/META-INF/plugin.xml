@@ -542,8 +542,6 @@
 		<stacktrace.fold substring="at org.codehaus.groovy.vmplugin.v5.PluginDefaultGroovyMethods." negate="true"/>
 		<stacktrace.fold substring="at org.codehaus.groovy.runtime.DefaultGroovyMethodsSupport." negate="true"/>
 
-		<projectStructureDetector implementation="org.jetbrains.plugins.groovy.GroovySourceRootDetector" id="groovyDetector"/>
-
 		<postStartupActivity implementation="org.jetbrains.plugins.groovy.mvc.MvcProjectWithoutLibraryNotificator"/>
 
 		<treeCopyHandler implementation="org.jetbrains.plugins.groovy.lang.GroovyChangeUtilSupport"/>
@@ -1414,8 +1412,6 @@
 
 		<library.presentationProvider implementation="org.jetbrains.plugins.groovy.griffon.GriffonLibraryPresentationProvider"/>
 
-		<projectStructureDetector implementation="org.jetbrains.plugins.groovy.griffon.GriffonProjectStructureDetector"
-								  order="before groovyDetector"/>
 		<programRunner implementation="org.jetbrains.plugins.groovy.griffon.GriffonDebuggerRunner"/>
 		<configurationType implementation="org.jetbrains.plugins.groovy.griffon.GriffonRunConfigurationType"/>
 		<toolWindow id="Griffon View" anchor="left" secondary="false" icon="JetgroovyIcons.Griffon.GriffonToolWindow"
