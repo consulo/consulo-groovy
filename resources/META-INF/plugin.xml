@@ -505,8 +505,6 @@
 
 		<antCustomCompiler implementation="org.jetbrains.plugins.groovy.ant.GroovyAntCustomCompilerProvider"/>
 
-		<project.converterProvider implementation="org.jetbrains.plugins.groovy.config.GroovyRunConfigurationConverterProvider"/>
-
 		<iconDescriptorUpdater implementation="org.jetbrains.plugins.groovy.GroovyIconDescriptorUpdater" order="after java" id="groovy"/>
 
 		<projectService serviceInterface="org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory"
