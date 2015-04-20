@@ -15,7 +15,23 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.inline;
 
-import com.intellij.codeInsight.TargetElementUtilBase;
+import java.util.ArrayList;
+import java.util.BitSet;
+
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.plugins.groovy.GroovyFileType;
+import org.jetbrains.plugins.groovy.codeInspection.utils.ControlFlowUtils;
+import org.jetbrains.plugins.groovy.lang.psi.GrControlFlowOwner;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlock;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMember;
+import org.jetbrains.plugins.groovy.lang.psi.controlFlow.Instruction;
+import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
+import org.jetbrains.plugins.groovy.refactoring.GroovyRefactoringBundle;
+import org.jetbrains.plugins.groovy.refactoring.GroovyRefactoringUtil;
+import com.intellij.codeInsight.TargetElementUtil;
 import com.intellij.lang.Language;
 import com.intellij.lang.refactoring.InlineActionHandler;
 import com.intellij.openapi.application.ApplicationManager;
@@ -30,22 +46,6 @@ import com.intellij.refactoring.RefactoringBundle;
 import com.intellij.refactoring.util.CommonRefactoringUtil;
 import com.intellij.refactoring.util.RefactoringMessageDialog;
 import com.intellij.util.containers.ContainerUtil;
-import org.jetbrains.annotations.Nullable;
-import org.jetbrains.plugins.groovy.GroovyFileType;
-import org.jetbrains.plugins.groovy.codeInspection.utils.ControlFlowUtils;
-import org.jetbrains.plugins.groovy.lang.psi.GrControlFlowOwner;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlock;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMember;
-import org.jetbrains.plugins.groovy.lang.psi.controlFlow.Instruction;
-import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
-import org.jetbrains.plugins.groovy.refactoring.GroovyRefactoringBundle;
-import org.jetbrains.plugins.groovy.refactoring.GroovyRefactoringUtil;
-
-import java.util.ArrayList;
-import java.util.BitSet;
 
 /**
  * @author Max Medvedev
@@ -70,7 +70,7 @@ public class GroovyInlineLocalHandler extends InlineActionHandler {
   }
 
   public static void invoke(final Project project, Editor editor, final GrVariable local) {
-    final PsiReference invocationReference = editor != null ? TargetElementUtilBase.findReference(editor) : null;
+    final PsiReference invocationReference = editor != null ? TargetElementUtil.findReference(editor) : null;
 
     final InlineLocalVarSettings localVarSettings = createSettings(local, editor, invocationReference != null);
     if (localVarSettings == null) return;
@@ -103,7 +103,7 @@ public class GroovyInlineLocalHandler extends InlineActionHandler {
     //search for initializer to inline
     if (invokedOnReference) {
       LOG.assertTrue(editor != null, "null editor but invokedOnReference==true");
-      final PsiReference ref = TargetElementUtilBase.findReference(editor);
+      final PsiReference ref = TargetElementUtil.findReference(editor);
       LOG.assertTrue(ref != null);
 
       PsiElement cur = ref.getElement();
