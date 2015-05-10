@@ -16,40 +16,13 @@
 
 package org.jetbrains.plugins.groovy.mvc;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import javax.swing.Icon;
-
-import org.consulo.compiler.CompilerPathsManager;
-import org.consulo.java.platform.module.extension.JavaModuleExtensionImpl;
-import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.jetbrains.plugins.groovy.GroovyFileType;
-import org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames;
-import org.jetbrains.plugins.groovy.refactoring.GroovyNamesUtil;
-import org.mustbe.consulo.roots.ContentFolderScopes;
-import org.mustbe.consulo.roots.ContentFolderTypeProvider;
 import com.intellij.compiler.options.CompileStepBeforeRun;
 import com.intellij.compiler.options.CompileStepBeforeRunNoErrorCheck;
 import com.intellij.execution.CantRunException;
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.RunManagerEx;
 import com.intellij.execution.RunnerAndConfigurationSettings;
-import com.intellij.execution.configurations.CommandLineBuilder;
-import com.intellij.execution.configurations.ConfigurationFactory;
-import com.intellij.execution.configurations.ConfigurationType;
-import com.intellij.execution.configurations.GeneralCommandLine;
-import com.intellij.execution.configurations.JavaParameters;
-import com.intellij.execution.configurations.RunConfiguration;
+import com.intellij.execution.configurations.*;
 import com.intellij.ide.DataManager;
 import com.intellij.ide.IdeView;
 import com.intellij.openapi.actionSystem.LangDataKeys;
@@ -59,13 +32,8 @@ import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.projectRoots.JavaSdkType;
 import com.intellij.openapi.projectRoots.Sdk;
-import com.intellij.openapi.roots.ModuleRootManager;
-import com.intellij.openapi.roots.OrderEnumerator;
-import com.intellij.openapi.roots.OrderRootType;
-import com.intellij.openapi.roots.ProjectFileIndex;
-import com.intellij.openapi.roots.ProjectRootManager;
+import com.intellij.openapi.roots.*;
 import com.intellij.openapi.roots.libraries.Library;
 import com.intellij.openapi.roots.libraries.LibraryKind;
 import com.intellij.openapi.roots.ui.configuration.ClasspathEditor;
@@ -80,12 +48,7 @@ import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VfsUtilCore;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.util.ArchiveVfsUtil;
-import com.intellij.psi.JavaPsiFacade;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiDirectory;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiManager;
+import com.intellij.psi.*;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.CachedValueProvider;
 import com.intellij.psi.util.CachedValuesManager;
@@ -95,6 +58,22 @@ import com.intellij.psi.xml.XmlTag;
 import com.intellij.util.PathUtil;
 import com.intellij.util.PathsList;
 import com.intellij.util.containers.ContainerUtil;
+import org.consulo.compiler.CompilerPathsManager;
+import org.jetbrains.annotations.NonNls;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.plugins.groovy.GroovyFileType;
+import org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames;
+import org.jetbrains.plugins.groovy.refactoring.GroovyNamesUtil;
+import org.mustbe.consulo.java.module.extension.JavaModuleExtension;
+import org.mustbe.consulo.roots.ContentFolderScopes;
+import org.mustbe.consulo.roots.ContentFolderTypeProvider;
+
+import javax.swing.*;
+import java.io.File;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author peter
@@ -150,7 +129,7 @@ public abstract class MvcFramework {
 
   public void createApplicationIfNeeded(@NotNull final Module module) {
     if (findAppRoot(module) == null && module.getUserData(CREATE_APP_STRUCTURE) == Boolean.TRUE) {
-      while (ModuleUtilCore.getSdk(module, JavaModuleExtensionImpl.class) == null) {
+      while (ModuleUtilCore.getSdk(module, JavaModuleExtension.class) == null) {
         if (Messages.showYesNoDialog(module.getProject(), "Cannot generate " + getDisplayName() + " project structure because JDK is not specified for module \"" +
                                                           module.getName() + "\".\n" +
                                                           getDisplayName() + " project will not be created if you don't specify JDK.\nDo you want to specify JDK?",
@@ -424,8 +403,8 @@ public abstract class MvcFramework {
   }
 
   public static void addJavaHome(@NotNull JavaParameters params, @NotNull Module module) {
-    final Sdk sdk = ModuleUtilCore.getSdk(module, JavaModuleExtensionImpl.class);
-    if (sdk != null && sdk.getSdkType() instanceof JavaSdkType) {
+    final Sdk sdk = ModuleUtilCore.getSdk(module, JavaModuleExtension.class);
+    if (sdk != null) {
       String path = StringUtil.trimEnd(sdk.getHomePath(), File.separator);
       if (StringUtil.isNotEmpty(path)) {
         Map<String, String> env = params.getEnv();

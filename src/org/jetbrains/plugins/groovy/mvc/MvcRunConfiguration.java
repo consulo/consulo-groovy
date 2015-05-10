@@ -27,17 +27,16 @@ import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.options.SettingsEditor;
-import com.intellij.openapi.projectRoots.JavaSdkType;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.util.InvalidDataException;
 import com.intellij.openapi.util.JDOMExternalizer;
 import com.intellij.openapi.util.WriteExternalException;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.util.containers.HashMap;
-import org.consulo.java.platform.module.extension.JavaModuleExtensionImpl;
 import org.jdom.Element;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.java.module.extension.JavaModuleExtension;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -213,8 +212,8 @@ public abstract class MvcRunConfiguration extends ModuleBasedConfiguration<RunCo
       throw new ExecutionException(getNoSdkMessage());
     }
 
-    final Sdk sdk = ModuleUtilCore.getSdk(module, JavaModuleExtensionImpl.class);
-    if (sdk == null || !(sdk.getSdkType() instanceof JavaSdkType)) {
+    final Sdk sdk = ModuleUtilCore.getSdk(module, JavaModuleExtension.class);
+    if (sdk == null) {
       throw CantRunException.noJdkForModule(module);
     }
 

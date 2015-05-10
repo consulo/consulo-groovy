@@ -15,16 +15,6 @@
  */
 package org.jetbrains.plugins.groovy.console;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.consulo.java.module.extension.JavaModuleExtension;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyFileImpl;
-import org.jetbrains.plugins.groovy.util.GroovyUtils;
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.configurations.JavaParameters;
 import com.intellij.execution.console.ConsoleHistoryController;
@@ -56,6 +46,12 @@ import com.intellij.openapi.ui.popup.util.BaseListPopupStep;
 import com.intellij.openapi.util.Key;
 import com.intellij.util.PlatformIcons;
 import icons.JetgroovyIcons;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyFileImpl;
+import org.jetbrains.plugins.groovy.util.GroovyUtils;
+import org.mustbe.consulo.java.module.extension.JavaModuleExtension;
+
+import java.util.*;
 
 /**
  * Created by Max Medvedev on 9/20/13

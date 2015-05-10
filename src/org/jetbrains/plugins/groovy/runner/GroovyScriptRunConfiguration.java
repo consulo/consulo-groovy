@@ -31,7 +31,6 @@ import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.options.SettingsEditor;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.projectRoots.JavaSdkType;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.projectRoots.SimpleJavaSdkType;
 import com.intellij.openapi.roots.ProjectRootManager;
@@ -51,7 +50,6 @@ import com.intellij.refactoring.listeners.RefactoringElementListener;
 import com.intellij.util.PathUtil;
 import com.intellij.util.SystemProperties;
 import com.intellij.util.containers.hash.LinkedHashMap;
-import org.consulo.java.platform.module.extension.JavaModuleExtensionImpl;
 import org.jdom.Element;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -60,6 +58,7 @@ import org.jetbrains.plugins.groovy.extensions.GroovyScriptTypeDetector;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
 import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GroovyScriptClass;
+import org.mustbe.consulo.java.module.extension.JavaModuleExtension;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -281,8 +280,8 @@ public class GroovyScriptRunConfiguration extends ModuleBasedConfiguration<RunCo
     params.setCharset(null);
 
     if (module != null) {
-      final Sdk sdk = ModuleUtilCore.getSdk(module, JavaModuleExtensionImpl.class);
-      if (sdk != null && sdk.getSdkType() instanceof JavaSdkType) {
+      final Sdk sdk = ModuleUtilCore.getSdk(module, JavaModuleExtension.class);
+      if (sdk != null) {
         params.setJdk(sdk);
       }
     }

@@ -16,25 +16,6 @@
 
 package org.jetbrains.plugins.groovy.mvc;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.consulo.java.platform.module.extension.JavaModuleExtensionImpl;
-import org.consulo.java.platform.module.extension.JavaMutableModuleExtensionImpl;
-import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.roots.ContentFolderScopes;
-import org.mustbe.consulo.roots.impl.ExcludedContentFolderTypeProvider;
-import org.mustbe.consulo.roots.impl.ProductionContentFolderTypeProvider;
-import org.mustbe.consulo.roots.impl.TestContentFolderTypeProvider;
 import com.intellij.lang.properties.psi.PropertiesFile;
 import com.intellij.openapi.application.AccessToken;
 import com.intellij.openapi.application.ApplicationManager;
@@ -66,6 +47,19 @@ import com.intellij.util.Consumer;
 import com.intellij.util.SmartList;
 import com.intellij.util.containers.ContainerUtil;
 import com.intellij.util.containers.MultiMap;
+import org.jetbrains.annotations.NonNls;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.java.module.extension.JavaModuleExtension;
+import org.mustbe.consulo.java.module.extension.JavaModuleExtensionImpl;
+import org.mustbe.consulo.java.module.extension.JavaMutableModuleExtension;
+import org.mustbe.consulo.roots.ContentFolderScopes;
+import org.mustbe.consulo.roots.impl.ExcludedContentFolderTypeProvider;
+import org.mustbe.consulo.roots.impl.ProductionContentFolderTypeProvider;
+import org.mustbe.consulo.roots.impl.TestContentFolderTypeProvider;
+
+import java.io.File;
+import java.util.*;
 
 /**
  * @author peter
@@ -791,8 +785,8 @@ public class MvcModuleStructureUtil
 
 	public static void copySdk(ModuleRootModel from, ModifiableRootModel to)
 	{
-		final JavaModuleExtensionImpl fromExtension = from.getExtension(JavaModuleExtensionImpl.class);
-		final JavaMutableModuleExtensionImpl toExtension = (JavaMutableModuleExtensionImpl) to.getExtension(JavaModuleExtensionImpl.class);
+		final JavaModuleExtension fromExtension = from.getExtension(JavaModuleExtension.class);
+		final JavaMutableModuleExtension toExtension = (JavaMutableModuleExtension) to.getExtension(JavaModuleExtension.class);
 
 		assert fromExtension != null;
 		assert toExtension != null;

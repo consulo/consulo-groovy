@@ -1,7 +1,10 @@
 package org.jetbrains.plugins.groovy.debugger;
 
 import com.intellij.execution.Executor;
-import com.intellij.execution.configurations.*;
+import com.intellij.execution.configurations.JavaParameters;
+import com.intellij.execution.configurations.ModuleRunProfile;
+import com.intellij.execution.configurations.RunConfiguration;
+import com.intellij.execution.configurations.RunProfile;
 import com.intellij.execution.executors.DefaultDebugExecutor;
 import com.intellij.execution.runners.JavaProgramPatcher;
 import com.intellij.openapi.application.PathManager;
@@ -17,10 +20,10 @@ import com.intellij.pom.java.LanguageLevel;
 import com.intellij.psi.search.FilenameIndex;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.util.PathUtil;
-import org.consulo.java.platform.module.extension.JavaModuleExtensionImpl;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.GroovyFileTypeLoader;
 import org.jetbrains.plugins.groovy.module.extension.GroovyModuleExtension;
+import org.mustbe.consulo.java.module.extension.JavaModuleExtension;
 
 import java.io.File;
 import java.io.IOException;
@@ -100,7 +103,7 @@ public class GroovyHotSwapper extends JavaProgramPatcher {
       Module[] modulesInConfiguration = ((ModuleRunProfile)configuration).getModules();
       final Module module = modulesInConfiguration.length == 0 ? null : modulesInConfiguration[0];
       if (module != null) {
-        final JavaModuleExtensionImpl extension = ModuleUtilCore.getExtension(module, JavaModuleExtensionImpl.class);
+        final JavaModuleExtension extension = ModuleUtilCore.getExtension(module, JavaModuleExtension.class);
         final LanguageLevel level = extension == null ? null : extension.getLanguageLevel();
         if (level != null && !level.isAtLeast(LanguageLevel.JDK_1_5)) {
           return;

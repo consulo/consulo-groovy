@@ -25,7 +25,6 @@ import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.projectRoots.JavaSdkType;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.roots.ProjectFileIndex;
 import com.intellij.openapi.roots.ProjectRootManager;
@@ -37,7 +36,6 @@ import com.intellij.psi.search.FilenameIndex;
 import com.intellij.psi.search.GlobalSearchScope;
 import icons.JetgroovyIcons;
 import org.consulo.compiler.impl.resourceCompiler.ResourceCompilerConfiguration;
-import org.consulo.java.platform.module.extension.JavaModuleExtensionImpl;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.GroovyFileType;
@@ -45,6 +43,7 @@ import org.jetbrains.plugins.groovy.GroovyFileTypeLoader;
 import org.jetbrains.plugins.groovy.config.GroovyConfigUtils;
 import org.jetbrains.plugins.groovy.module.extension.GroovyModuleExtension;
 import org.jetbrains.plugins.groovy.util.LibrariesUtil;
+import org.mustbe.consulo.java.module.extension.JavaModuleExtension;
 
 import java.util.HashSet;
 import java.util.List;
@@ -99,8 +98,8 @@ public class GroovyCompiler extends GroovyCompilerBase {
 
     Set<Module> nojdkModules = new HashSet<Module>();
     for (Module module : modules) {
-      final Sdk sdk = ModuleUtilCore.getSdk(module, JavaModuleExtensionImpl.class);
-      if (sdk == null || !(sdk.getSdkType() instanceof JavaSdkType)) {
+      final Sdk sdk = ModuleUtilCore.getSdk(module, JavaModuleExtension.class);
+      if (sdk == null) {
         nojdkModules.add(module);
         continue;
       }

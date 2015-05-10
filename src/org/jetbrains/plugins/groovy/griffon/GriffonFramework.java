@@ -45,12 +45,12 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import gnu.trove.TIntArrayList;
 import icons.JetgroovyIcons;
-import org.consulo.java.platform.module.extension.JavaModuleExtensionImpl;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.mvc.*;
+import org.mustbe.consulo.java.module.extension.JavaModuleExtension;
 
 import javax.swing.*;
 import java.io.File;
@@ -233,7 +233,7 @@ public class GriffonFramework extends MvcFramework {
                                              @NotNull MvcCommand command) throws ExecutionException {
     JavaParameters params = new JavaParameters();
 
-    Sdk sdk = ModuleUtilCore.getSdk(module, JavaModuleExtensionImpl.class);
+    Sdk sdk = ModuleUtilCore.getSdk(module, JavaModuleExtension.class);
     if(sdk == null) {
       return params;
     }

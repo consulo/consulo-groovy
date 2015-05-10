@@ -15,26 +15,6 @@
  */
 package org.jetbrains.plugins.groovy.grape;
 
-import gnu.trove.THashSet;
-
-import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.consulo.java.platform.module.extension.JavaModuleExtensionImpl;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotation;
-import org.jetbrains.plugins.groovy.runner.DefaultGroovyScriptRunner;
-import org.jetbrains.plugins.groovy.runner.GroovyScriptRunConfiguration;
-import org.jetbrains.plugins.groovy.runner.GroovyScriptRunner;
 import com.intellij.codeInsight.intention.IntentionAction;
 import com.intellij.execution.CantRunException;
 import com.intellij.execution.ExecutionException;
@@ -56,10 +36,8 @@ import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.projectRoots.JavaSdkType;
 import com.intellij.openapi.projectRoots.JdkUtil;
 import com.intellij.openapi.projectRoots.Sdk;
-import com.intellij.openapi.projectRoots.SdkTypeId;
 import com.intellij.openapi.roots.ModifiableRootModel;
 import com.intellij.openapi.roots.ModuleRootManager;
 import com.intellij.openapi.roots.OrderRootType;
@@ -77,12 +55,21 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiRecursiveElementWalkingVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.ExceptionUtil;
-import com.intellij.util.Function;
-import com.intellij.util.IncorrectOperationException;
-import com.intellij.util.PathUtil;
-import com.intellij.util.PathsList;
+import com.intellij.util.*;
 import com.intellij.util.containers.ContainerUtil;
+import gnu.trove.THashSet;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotation;
+import org.jetbrains.plugins.groovy.runner.DefaultGroovyScriptRunner;
+import org.jetbrains.plugins.groovy.runner.GroovyScriptRunConfiguration;
+import org.jetbrains.plugins.groovy.runner.GroovyScriptRunner;
+import org.mustbe.consulo.java.module.extension.JavaModuleExtension;
+
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.*;
 
 /**
  * @author peter
@@ -122,12 +109,12 @@ public class GrabDependencies implements IntentionAction {
       return false;
     }
 
-    final Sdk sdk = ModuleUtilCore.getSdk(module, JavaModuleExtensionImpl.class);
+    final Sdk sdk = ModuleUtilCore.getSdk(module, JavaModuleExtension.class);
     if (sdk == null) {
       return false;
     }
 
-    return file.getOriginalFile().getVirtualFile() != null && sdk.getSdkType() instanceof JavaSdkType;
+    return file.getOriginalFile().getVirtualFile() != null;
   }
 
   public void invoke(@NotNull final Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
@@ -145,10 +132,8 @@ public class GrabDependencies implements IntentionAction {
 
     Map<String, String> queries = prepareQueries(file);
 
-    final Sdk sdk = ModuleUtilCore.getSdk(module, JavaModuleExtensionImpl.class);
+    final Sdk sdk = ModuleUtilCore.getSdk(module, JavaModuleExtension.class);
     assert sdk != null;
-    SdkTypeId sdkType = sdk.getSdkType();
-    assert sdkType instanceof JavaSdkType;
 
     final Map<String, GeneralCommandLine> lines = new HashMap<String, GeneralCommandLine>();
     for (String grabText : queries.keySet()) {
