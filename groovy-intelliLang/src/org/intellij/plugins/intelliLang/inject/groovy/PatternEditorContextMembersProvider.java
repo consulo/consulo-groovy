@@ -15,29 +15,13 @@
  */
 package org.intellij.plugins.intelliLang.inject.groovy;
 
-import java.util.Collections;
-import java.util.List;
-
-import org.intellij.plugins.intelliLang.inject.InjectorUtils;
-import org.intellij.plugins.intelliLang.inject.config.BaseInjection;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.jetbrains.plugins.groovy.GroovyFileType;
-import org.jetbrains.plugins.groovy.lang.resolve.NonCodeMembersContributor;
 import com.intellij.ide.highlighter.XmlFileType;
 import com.intellij.openapi.progress.EmptyProgressIndicator;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Key;
 import com.intellij.patterns.compiler.PatternClassBean;
 import com.intellij.patterns.compiler.PatternCompilerFactory;
-import com.intellij.psi.JavaPsiFacade;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiFileFactory;
-import com.intellij.psi.PsiType;
-import com.intellij.psi.ResolveState;
-import com.intellij.psi.SmartPsiElementPointer;
+import com.intellij.psi.*;
 import com.intellij.psi.impl.cache.CacheManager;
 import com.intellij.psi.impl.search.LowLevelSearchUtil;
 import com.intellij.psi.impl.source.resolve.FileContextUtil;
@@ -55,6 +39,15 @@ import com.intellij.util.ArrayUtil;
 import com.intellij.util.Processor;
 import com.intellij.util.containers.ContainerUtil;
 import com.intellij.util.text.StringSearcher;
+import org.intellij.plugins.intelliLang.inject.InjectorUtils;
+import org.intellij.plugins.intelliLang.inject.config.BaseInjection;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.plugins.groovy.GroovyFileType;
+import org.jetbrains.plugins.groovy.lang.resolve.NonCodeMembersContributor;
+
+import java.util.Collections;
+import java.util.List;
 
 /**
  * @author Gregory.Shrago
@@ -197,7 +190,7 @@ public class PatternEditorContextMembersProvider extends NonCodeMembersContribut
 				}
 			};
 			final StringSearcher searcher = new StringSearcher("patternClass", true, true);
-			CacheManager.SERVICE.getInstance(beanClass.getProject()).processFilesWithWord(new Processor<PsiFile>()
+			CacheManager.getInstance(beanClass.getProject()).processFilesWithWord(new Processor<PsiFile>()
 			{
 				@Override
 				public boolean process(PsiFile psiFile)
