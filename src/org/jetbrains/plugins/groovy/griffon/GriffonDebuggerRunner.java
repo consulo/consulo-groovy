@@ -4,6 +4,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import com.intellij.debugger.engine.DebuggerUtils;
 import com.intellij.debugger.impl.GenericDebuggerRunner;
+import com.intellij.debugger.settings.DebuggerSettings;
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.configurations.JavaCommandLine;
 import com.intellij.execution.configurations.JavaParameters;
@@ -53,7 +54,7 @@ public class GriffonDebuggerRunner extends GenericDebuggerRunner
 				if(s.startsWith("run-"))
 				{
 					// Application will be run in forked VM
-					address = DebuggerUtils.getInstance().findAvailableDebugAddress(true);
+					address = DebuggerUtils.getInstance().findAvailableDebugAddress(DebuggerSettings.SOCKET_TRANSPORT).address();
 					params.getProgramParametersList().replaceOrAppend(s, s + " --debug --debugPort=" + address);
 					break;
 				}
