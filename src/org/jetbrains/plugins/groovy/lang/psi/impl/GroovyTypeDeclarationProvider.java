@@ -15,31 +15,46 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl;
 
-import com.intellij.codeInsight.navigation.actions.TypeDeclarationProvider;
-import com.intellij.psi.*;
-import com.intellij.psi.util.PsiUtil;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
+import org.mustbe.consulo.RequiredReadAction;
+import com.intellij.codeInsight.navigation.actions.TypeDeclarationProvider;
+import com.intellij.openapi.editor.Editor;
+import com.intellij.psi.PsiClass;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiType;
+import com.intellij.psi.util.PsiUtil;
 
 /**
  * @author Sergey Evdokimov
  */
-public class GroovyTypeDeclarationProvider implements TypeDeclarationProvider {
-  @Nullable
-  public PsiElement[] getSymbolTypeDeclarations(final PsiElement targetElement) {
-    PsiType type;
-    if (targetElement instanceof GrVariable){
-      type = ((GrVariable)targetElement).getTypeGroovy();
-    }
-    else if (targetElement instanceof GrMethod){
-      type = ((GrMethod)targetElement).getInferredReturnType();
-    }
-    else {
-      return null;
-    }
-    if (type == null) return null;
-    PsiClass psiClass = PsiUtil.resolveClassInType(type);
-    return psiClass == null ? null : new PsiElement[] {psiClass};
-  }
+public class GroovyTypeDeclarationProvider extends TypeDeclarationProvider
+{
+	@RequiredReadAction
+	@Nullable
+	@Override
+	public PsiElement[] getSymbolTypeDeclarations(@NotNull PsiElement targetElement, @Nullable Editor editor, int offset)
+	{
+		PsiType type;
+		if(targetElement instanceof GrVariable)
+		{
+			type = ((GrVariable) targetElement).getTypeGroovy();
+		}
+		else if(targetElement instanceof GrMethod)
+		{
+			type = ((GrMethod) targetElement).getInferredReturnType();
+		}
+		else
+		{
+			return null;
+		}
+		if(type == null)
+		{
+			return null;
+		}
+		PsiClass psiClass = PsiUtil.resolveClassInType(type);
+		return psiClass == null ? null : new PsiElement[]{psiClass};
+	}
 }
