@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2013 JetBrains s.r.o.
+ * Copyright 2000-2014 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,12 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi;
 
-import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.*;
-import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.GrLabel;
+import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocComment;
+import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocFieldReference;
+import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocMethodParameter;
+import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocMethodParams;
+import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocMethodReference;
+import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocTag;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.GrListOrMap;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.GrThrowsClause;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.GrModifierList;
@@ -28,10 +32,20 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.*;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrArgumentLabel;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrArgumentList;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrNamedArgument;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrSpreadArgument;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlock;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrOpenBlock;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.branch.*;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.clauses.*;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.branch.GrAssertStatement;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.branch.GrBreakStatement;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.branch.GrContinueStatement;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.branch.GrFlowInterruptingStatement;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.branch.GrReturnStatement;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.branch.GrThrowStatement;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.clauses.GrCaseLabel;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.clauses.GrCaseSection;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.clauses.GrForClause;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.clauses.GrForInClause;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.clauses.GrTraditionalForClause;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.*;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.arithmetic.GrRangeExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.literals.GrLiteral;
@@ -56,395 +70,519 @@ import org.jetbrains.plugins.groovy.lang.psi.api.types.*;
 /**
  * @author ven
  */
-public abstract class GroovyElementVisitor {
-  public void visitElement(GroovyPsiElement element) {
-  }
-
-  public void visitFile(GroovyFileBase file) {
-    visitElement(file);
-  }
-
-  public void visitPackageDefinition(GrPackageDefinition packageDefinition) {
-    visitElement(packageDefinition);
-  }
-
-  public void visitStatement(GrStatement statement) {
-    visitElement(statement);
-  }
-
-  public void visitClosure(GrClosableBlock closure) {
-    visitStatement(closure);
-  }
-
-  public void visitOpenBlock(GrOpenBlock block) {
-    visitElement(block);
-  }
-
-  public void visitEnumConstants(GrEnumConstantList enumConstantsSection) {
-    visitElement(enumConstantsSection);
-  }
-
-  public void visitEnumConstant(GrEnumConstant enumConstant) {
-    visitField(enumConstant);
-  }
-
-  public void visitImportStatement(GrImportStatement importStatement) {
-    visitElement(importStatement);
-  }
-
-  public void visitBreakStatement(GrBreakStatement breakStatement) {
-    visitFlowInterruptStatement(breakStatement);
-  }
-
-  public void visitContinueStatement(GrContinueStatement continueStatement) {
-    visitFlowInterruptStatement(continueStatement);
-  }
-
-  public void visitFlowInterruptStatement(GrFlowInterruptingStatement statement) {
-    visitStatement(statement);
-  }
-
-  public void visitReturnStatement(GrReturnStatement returnStatement) {
-    visitStatement(returnStatement);
-  }
-
-  public void visitAssertStatement(GrAssertStatement assertStatement) {
-    visitStatement(assertStatement);
-  }
-
-  public void visitThrowStatement(GrThrowStatement throwStatement) {
-    visitStatement(throwStatement);
-  }
-
-  public void visitLabeledStatement(GrLabeledStatement labeledStatement) {
-    visitStatement(labeledStatement);
-  }
-
-  public void visitExpression(GrExpression expression) {
-    visitElement(expression);
-  }
-
-  public void visitCallExpression(GrCallExpression callExpression) {
-    visitExpression(callExpression);
-  }
-
-  public void visitMethodCallExpression(GrMethodCallExpression methodCallExpression) {
-    visitCallExpression(methodCallExpression);
-  }
-
-  public void visitNewExpression(GrNewExpression newExpression) {
-    visitCallExpression(newExpression);
-  }
-
-  public void visitApplicationStatement(GrApplicationStatement applicationStatement) {
-    visitStatement(applicationStatement);
-  }
-
-  public void visitArrayDeclaration(GrArrayDeclaration arrayDeclaration) {
-    visitElement(arrayDeclaration);
-  }
-
-  public void visitCommandArguments(GrCommandArgumentList argumentList) {
-    visitArgumentList(argumentList);
-  }
-
-  public void visitElvisExpression(GrElvisExpression expression) {
-    visitConditionalExpression(expression);
-  }
-
-  public void visitConditionalExpression(GrConditionalExpression expression) {
-    visitExpression(expression);
-  }
-
-  public void visitAssignmentExpression(GrAssignmentExpression expression) {
-    visitExpression(expression);
-  }
-
-  public void visitBinaryExpression(GrBinaryExpression expression) {
-    visitExpression(expression);
-  }
-
-  public void visitUnaryExpression(GrUnaryExpression expression) {
-    visitExpression(expression);
-  }
-
-  public void visitRegexExpression(GrRegex expression) {
-    visitGStringExpression(expression);
-  }
-
-  public void visitLiteralExpression(GrLiteral literal) {
-    visitExpression(literal);
-  }
-
-  public void visitGStringExpression(GrString gstring) {
-    visitLiteralExpression(gstring);
-  }
-
-  public void visitReferenceExpression(GrReferenceExpression referenceExpression) {
-    visitExpression(referenceExpression);
-  }
-
-  public void visitCastExpression(GrTypeCastExpression typeCastExpression) {
-    visitExpression(typeCastExpression);
-  }
-
-  public void visitSafeCastExpression(GrSafeCastExpression typeCastExpression) {
-    visitExpression(typeCastExpression);
-  }
-
-  public void visitInstanceofExpression(GrInstanceOfExpression expression) {
-    visitExpression(expression);
-  }
-
-  public void visitBuiltinTypeClassExpression(GrBuiltinTypeClassExpression expression) {
-    visitExpression(expression);
-  }
-
-  public void visitParenthesizedExpression(GrParenthesizedExpression expression) {
-    visitExpression(expression);
-  }
-
-  public void visitPropertySelection(GrPropertySelection expression) {
-    visitExpression(expression);
-  }
-
-  public void visitIndexProperty(GrIndexProperty expression) {
-    visitExpression(expression);
-  }
-
-  public void visitLabel(GrLabel label) {
-    visitElement(label);
-  }
-
-  public void visitArgumentList(GrArgumentList list) {
-    visitElement(list);
-  }
-
-  public void visitNamedArgument(GrNamedArgument argument) {
-    visitElement(argument);
-  }
-
-  public void visitArgumentLabel(GrArgumentLabel argumentLabel) {
-    visitElement(argumentLabel);
-  }
-
-  public void visitListOrMap(GrListOrMap listOrMap) {
-    visitExpression(listOrMap);
-  }
-
-  public void visitTypeElement(GrTypeElement typeElement) {
-    visitElement(typeElement);
-  }
-
-  public void visitArrayTypeElement(GrArrayTypeElement typeElement) {
-    visitTypeElement(typeElement);
-  }
-
-  public void visitBuiltinTypeElement(GrBuiltInTypeElement typeElement) {
-    visitTypeElement(typeElement);
-  }
-
-  public void visitClassTypeElement(GrClassTypeElement typeElement) {
-    visitTypeElement(typeElement);
-  }
-
-  public void visitDisjunctionTypeElement(GrDisjunctionTypeElement disjunctionTypeElement) {
-    visitTypeElement(disjunctionTypeElement);
-  }
-
-  public void visitCodeReferenceElement(GrCodeReferenceElement refElement) {
-    visitElement(refElement);
-  }
-
-  public void visitTypeDefinition(GrTypeDefinition typeDefinition) {
-    visitElement(typeDefinition);
-  }
-
-  public void visitExtendsClause(GrExtendsClause extendsClause) {
-    visitElement(extendsClause);
-  }
-
-  public void visitImplementsClause(GrImplementsClause implementsClause) {
-    visitElement(implementsClause);
-  }
-
-  public void visitTypeArgumentList(GrTypeArgumentList typeArgumentList) {
-    visitElement(typeArgumentList);
-  }
-
-  public void visitWildcardTypeArgument(GrWildcardTypeArgument wildcardTypeArgument) {
-    visitElement(wildcardTypeArgument);
-  }
-
-  public void visitAnnotationMethod(GrAnnotationMethod annotationMethod) {
-    visitMethod(annotationMethod);
-  }
-
-  public void visitDefaultAnnotationValue(GrDefaultAnnotationValue defaultAnnotationValue) {
-    visitElement(defaultAnnotationValue);
-  }
-
-  public void visitMethod(GrMethod method) {
-    visitElement(method);
-  }
-
-  public void visitDocMethodReference(GrDocMethodReference reference){
-    visitElement(reference);
-  }
-
-  public void visitDocFieldReference(GrDocFieldReference reference){
-    visitElement(reference);
-  }
-
-  public void visitDocMethodParameterList(GrDocMethodParams params){
-    visitElement(params);
-  }
-
-  public void visitDocMethodParameter(GrDocMethodParameter parameter){
-    visitElement(parameter);
-  }
-
-  public void visitConstructorInvocation(GrConstructorInvocation invocation) {
-    visitStatement(invocation);
-  }
-
-  public void visitThrowsClause(GrThrowsClause throwsClause) {
-    visitElement(throwsClause);
-  }
-
-  public void visitAnnotationArgumentList(GrAnnotationArgumentList annotationArgumentList) {
-    visitElement(annotationArgumentList);
-  }
-
-  public void visitAnnotationArrayInitializer(GrAnnotationArrayInitializer arrayInitializer) {
-    visitElement(arrayInitializer);
-  }
-
-  public void visitAnnotationNameValuePair(GrAnnotationNameValuePair nameValuePair) {
-    visitElement(nameValuePair);
-  }
-
-  public void visitAnnotation(GrAnnotation annotation) {
-    visitElement(annotation);
-  }
-
-  public void visitParameterList(GrParameterList parameterList) {
-    visitElement(parameterList);
-  }
-
-  public void visitParameter(GrParameter parameter) {
-    visitVariable(parameter);
-  }
-
-  public void visitField(GrField field) {
-    visitVariable(field);
-  }
-
-  public void visitTypeDefinitionBody(GrTypeDefinitionBody typeDefinitionBody) {
-    visitElement(typeDefinitionBody);
-  }
-
-  public void visitEnumDefinitionBody(GrEnumDefinitionBody enumDefinitionBody) {
-    visitTypeDefinitionBody(enumDefinitionBody);
-  }
-
-  public void visitIfStatement(GrIfStatement ifStatement) {
-    visitStatement(ifStatement);
-  }
-
-  public void visitForStatement(GrForStatement forStatement) {
-    visitStatement(forStatement);
-  }
-
-  public void visitWhileStatement(GrWhileStatement whileStatement) {
-    visitStatement(whileStatement);
-  }
-
-  public void visitSwitchStatement(GrSwitchStatement switchStatement) {
-    visitStatement(switchStatement);
-  }
-
-  public void visitCaseSection(GrCaseSection caseSection) {
-    visitElement(caseSection);
-  }
-
-  public void visitCaseLabel(GrCaseLabel caseLabel) {
-    visitElement(caseLabel);
-  }
-
-  public void visitForInClause(GrForInClause forInClause) {
-    visitForClause(forInClause);
-  }
-
-  public void visitForClause(GrForClause forClause) {
-    visitElement(forClause);
-  }
-
-  public void visitTraditionalForClause(GrTraditionalForClause forClause) {
-    visitForClause(forClause);
-  }
-
-  public void visitTryStatement(GrTryCatchStatement tryCatchStatement) {
-    visitStatement(tryCatchStatement);
-  }
-
-  public void visitBlockStatement(GrBlockStatement blockStatement) {
-    visitStatement(blockStatement);
-  }
-
-  public void visitCatchClause(GrCatchClause catchClause) {
-    visitElement(catchClause);
-  }
-
-  public void visitDocComment(GrDocComment comment) {
-    visitElement(comment);
-  }
-
-  public void visitDocTag(GrDocTag docTag) {
-    visitElement(docTag);
-  }
-
-  public void visitFinallyClause(GrFinallyClause catchClause) {
-    visitElement(catchClause);
-  }
-
-  public void visitSynchronizedStatement(GrSynchronizedStatement synchronizedStatement) {
-    visitStatement(synchronizedStatement);
-  }
-
-  public void visitVariableDeclaration(GrVariableDeclaration variableDeclaration) {
-    visitStatement(variableDeclaration);
-  }
-
-  public void visitVariable(GrVariable variable) {
-    visitElement(variable);
-  }
-
-  public void visitModifierList(GrModifierList modifierList) {
-    visitElement(modifierList);
-  }
-
-  public void visitRangeExpression(GrRangeExpression range) {
-    visitBinaryExpression(range);
-  }
-
-  public void visitGStringInjection(GrStringInjection injection) {
-    visitElement(injection);
-  }
-
-  public void visitTypeParameterList(GrTypeParameterList list) {
-    visitElement(list);
-  }
-
-  public  void visitClassInitializer(GrClassInitializer initializer) {
-    visitElement(initializer);
-  }
-
-  public void visitTypeParameter(GrTypeParameter typeParameter) {
-    visitTypeDefinition(typeParameter);
-  }
-
-  public void visitTupleExpression(GrTupleExpression tupleExpression) {
-    visitExpression(tupleExpression);
-  }
+public abstract class GroovyElementVisitor
+{
+	public void visitElement(GroovyPsiElement element)
+	{
+	}
+
+	public void visitFile(GroovyFileBase file)
+	{
+		visitElement(file);
+	}
+
+	public void visitPackageDefinition(GrPackageDefinition packageDefinition)
+	{
+		visitElement(packageDefinition);
+	}
+
+	public void visitStatement(GrStatement statement)
+	{
+		visitElement(statement);
+	}
+
+	public void visitClosure(GrClosableBlock closure)
+	{
+		visitStatement(closure);
+	}
+
+	public void visitOpenBlock(GrOpenBlock block)
+	{
+		visitElement(block);
+	}
+
+	public void visitEnumConstants(GrEnumConstantList enumConstantsSection)
+	{
+		visitElement(enumConstantsSection);
+	}
+
+	public void visitEnumConstant(GrEnumConstant enumConstant)
+	{
+		visitField(enumConstant);
+	}
+
+	public void visitImportStatement(GrImportStatement importStatement)
+	{
+		visitElement(importStatement);
+	}
+
+	public void visitBreakStatement(GrBreakStatement breakStatement)
+	{
+		visitFlowInterruptStatement(breakStatement);
+	}
+
+	public void visitContinueStatement(GrContinueStatement continueStatement)
+	{
+		visitFlowInterruptStatement(continueStatement);
+	}
+
+	public void visitFlowInterruptStatement(GrFlowInterruptingStatement statement)
+	{
+		visitStatement(statement);
+	}
+
+	public void visitReturnStatement(GrReturnStatement returnStatement)
+	{
+		visitStatement(returnStatement);
+	}
+
+	public void visitAssertStatement(GrAssertStatement assertStatement)
+	{
+		visitStatement(assertStatement);
+	}
+
+	public void visitThrowStatement(GrThrowStatement throwStatement)
+	{
+		visitStatement(throwStatement);
+	}
+
+	public void visitLabeledStatement(GrLabeledStatement labeledStatement)
+	{
+		visitStatement(labeledStatement);
+	}
+
+	public void visitExpression(GrExpression expression)
+	{
+		visitElement(expression);
+	}
+
+	public void visitCallExpression(GrCallExpression callExpression)
+	{
+		visitExpression(callExpression);
+	}
+
+	public void visitMethodCallExpression(GrMethodCallExpression methodCallExpression)
+	{
+		visitCallExpression(methodCallExpression);
+	}
+
+	public void visitNewExpression(GrNewExpression newExpression)
+	{
+		visitCallExpression(newExpression);
+	}
+
+	public void visitApplicationStatement(GrApplicationStatement applicationStatement)
+	{
+		visitStatement(applicationStatement);
+	}
+
+	public void visitArrayDeclaration(GrArrayDeclaration arrayDeclaration)
+	{
+		visitElement(arrayDeclaration);
+	}
+
+	public void visitCommandArguments(GrCommandArgumentList argumentList)
+	{
+		visitArgumentList(argumentList);
+	}
+
+	public void visitElvisExpression(GrElvisExpression expression)
+	{
+		visitConditionalExpression(expression);
+	}
+
+	public void visitConditionalExpression(GrConditionalExpression expression)
+	{
+		visitExpression(expression);
+	}
+
+	public void visitAssignmentExpression(GrAssignmentExpression expression)
+	{
+		visitExpression(expression);
+	}
+
+	public void visitBinaryExpression(GrBinaryExpression expression)
+	{
+		visitExpression(expression);
+	}
+
+	public void visitUnaryExpression(GrUnaryExpression expression)
+	{
+		visitExpression(expression);
+	}
+
+	public void visitRegexExpression(GrRegex expression)
+	{
+		visitGStringExpression(expression);
+	}
+
+	public void visitLiteralExpression(GrLiteral literal)
+	{
+		visitExpression(literal);
+	}
+
+	public void visitGStringExpression(GrString gstring)
+	{
+		visitLiteralExpression(gstring);
+	}
+
+	public void visitReferenceExpression(GrReferenceExpression referenceExpression)
+	{
+		visitExpression(referenceExpression);
+	}
+
+	public void visitCastExpression(GrTypeCastExpression typeCastExpression)
+	{
+		visitExpression(typeCastExpression);
+	}
+
+	public void visitSafeCastExpression(GrSafeCastExpression typeCastExpression)
+	{
+		visitExpression(typeCastExpression);
+	}
+
+	public void visitInstanceofExpression(GrInstanceOfExpression expression)
+	{
+		visitExpression(expression);
+	}
+
+	public void visitBuiltinTypeClassExpression(GrBuiltinTypeClassExpression expression)
+	{
+		visitExpression(expression);
+	}
+
+	public void visitParenthesizedExpression(GrParenthesizedExpression expression)
+	{
+		visitExpression(expression);
+	}
+
+	public void visitPropertySelection(GrPropertySelection expression)
+	{
+		visitExpression(expression);
+	}
+
+	public void visitIndexProperty(GrIndexProperty expression)
+	{
+		visitExpression(expression);
+	}
+
+	public void visitArgumentList(GrArgumentList list)
+	{
+		visitElement(list);
+	}
+
+	public void visitNamedArgument(GrNamedArgument argument)
+	{
+		visitElement(argument);
+	}
+
+	public void visitArgumentLabel(GrArgumentLabel argumentLabel)
+	{
+		visitElement(argumentLabel);
+	}
+
+	public void visitListOrMap(GrListOrMap listOrMap)
+	{
+		visitExpression(listOrMap);
+	}
+
+	public void visitTypeElement(GrTypeElement typeElement)
+	{
+		visitElement(typeElement);
+	}
+
+	public void visitArrayTypeElement(GrArrayTypeElement typeElement)
+	{
+		visitTypeElement(typeElement);
+	}
+
+	public void visitBuiltinTypeElement(GrBuiltInTypeElement typeElement)
+	{
+		visitTypeElement(typeElement);
+	}
+
+	public void visitClassTypeElement(GrClassTypeElement typeElement)
+	{
+		visitTypeElement(typeElement);
+	}
+
+	public void visitDisjunctionTypeElement(GrDisjunctionTypeElement disjunctionTypeElement)
+	{
+		visitTypeElement(disjunctionTypeElement);
+	}
+
+	public void visitCodeReferenceElement(GrCodeReferenceElement refElement)
+	{
+		visitElement(refElement);
+	}
+
+	public void visitTypeDefinition(GrTypeDefinition typeDefinition)
+	{
+		visitElement(typeDefinition);
+	}
+
+	public void visitClassDefinition(GrClassDefinition classDefinition)
+	{
+		visitTypeDefinition(classDefinition);
+	}
+
+	public void visitEnumDefinition(GrEnumTypeDefinition enumDefinition)
+	{
+		visitTypeDefinition(enumDefinition);
+	}
+
+	public void visitInterfaceDefinition(GrInterfaceDefinition interfaceDefinition)
+	{
+		visitTypeDefinition(interfaceDefinition);
+	}
+
+	public void visitAnonymousClassDefinition(GrAnonymousClassDefinition anonymousClassDefinition)
+	{
+		visitTypeDefinition(anonymousClassDefinition);
+	}
+
+	public void visitAnnotationTypeDefinition(GrAnnotationTypeDefinition annotationTypeDefinition)
+	{
+		visitTypeDefinition(annotationTypeDefinition);
+	}
+
+	public void visitTraitDefinition(GrTraitTypeDefinition traitTypeDefinition)
+	{
+		visitTypeDefinition(traitTypeDefinition);
+	}
+
+	public void visitExtendsClause(GrExtendsClause extendsClause)
+	{
+		visitElement(extendsClause);
+	}
+
+	public void visitImplementsClause(GrImplementsClause implementsClause)
+	{
+		visitElement(implementsClause);
+	}
+
+	public void visitTypeArgumentList(GrTypeArgumentList typeArgumentList)
+	{
+		visitElement(typeArgumentList);
+	}
+
+	public void visitWildcardTypeArgument(GrWildcardTypeArgument wildcardTypeArgument)
+	{
+		visitElement(wildcardTypeArgument);
+	}
+
+	public void visitAnnotationMethod(GrAnnotationMethod annotationMethod)
+	{
+		visitMethod(annotationMethod);
+	}
+
+	public void visitMethod(GrMethod method)
+	{
+		visitElement(method);
+	}
+
+	public void visitDocMethodReference(GrDocMethodReference reference)
+	{
+		visitElement(reference);
+	}
+
+	public void visitDocFieldReference(GrDocFieldReference reference)
+	{
+		visitElement(reference);
+	}
+
+	public void visitDocMethodParameterList(GrDocMethodParams params)
+	{
+		visitElement(params);
+	}
+
+	public void visitDocMethodParameter(GrDocMethodParameter parameter)
+	{
+		visitElement(parameter);
+	}
+
+	public void visitConstructorInvocation(GrConstructorInvocation invocation)
+	{
+		visitStatement(invocation);
+	}
+
+	public void visitThrowsClause(GrThrowsClause throwsClause)
+	{
+		visitElement(throwsClause);
+	}
+
+	public void visitAnnotationArgumentList(GrAnnotationArgumentList annotationArgumentList)
+	{
+		visitElement(annotationArgumentList);
+	}
+
+	public void visitAnnotationArrayInitializer(GrAnnotationArrayInitializer arrayInitializer)
+	{
+		visitElement(arrayInitializer);
+	}
+
+	public void visitAnnotationNameValuePair(GrAnnotationNameValuePair nameValuePair)
+	{
+		visitElement(nameValuePair);
+	}
+
+	public void visitAnnotation(GrAnnotation annotation)
+	{
+		visitElement(annotation);
+	}
+
+	public void visitParameterList(GrParameterList parameterList)
+	{
+		visitElement(parameterList);
+	}
+
+	public void visitParameter(GrParameter parameter)
+	{
+		visitVariable(parameter);
+	}
+
+	public void visitField(GrField field)
+	{
+		visitVariable(field);
+	}
+
+	public void visitTypeDefinitionBody(GrTypeDefinitionBody typeDefinitionBody)
+	{
+		visitElement(typeDefinitionBody);
+	}
+
+	public void visitEnumDefinitionBody(GrEnumDefinitionBody enumDefinitionBody)
+	{
+		visitTypeDefinitionBody(enumDefinitionBody);
+	}
+
+	public void visitIfStatement(GrIfStatement ifStatement)
+	{
+		visitStatement(ifStatement);
+	}
+
+	public void visitForStatement(GrForStatement forStatement)
+	{
+		visitStatement(forStatement);
+	}
+
+	public void visitWhileStatement(GrWhileStatement whileStatement)
+	{
+		visitStatement(whileStatement);
+	}
+
+	public void visitSwitchStatement(GrSwitchStatement switchStatement)
+	{
+		visitStatement(switchStatement);
+	}
+
+	public void visitCaseSection(GrCaseSection caseSection)
+	{
+		visitElement(caseSection);
+	}
+
+	public void visitCaseLabel(GrCaseLabel caseLabel)
+	{
+		visitElement(caseLabel);
+	}
+
+	public void visitForInClause(GrForInClause forInClause)
+	{
+		visitForClause(forInClause);
+	}
+
+	public void visitForClause(GrForClause forClause)
+	{
+		visitElement(forClause);
+	}
+
+	public void visitTraditionalForClause(GrTraditionalForClause forClause)
+	{
+		visitForClause(forClause);
+	}
+
+	public void visitTryStatement(GrTryCatchStatement tryCatchStatement)
+	{
+		visitStatement(tryCatchStatement);
+	}
+
+	public void visitBlockStatement(GrBlockStatement blockStatement)
+	{
+		visitStatement(blockStatement);
+	}
+
+	public void visitCatchClause(GrCatchClause catchClause)
+	{
+		visitElement(catchClause);
+	}
+
+	public void visitDocComment(GrDocComment comment)
+	{
+		visitElement(comment);
+	}
+
+	public void visitDocTag(GrDocTag docTag)
+	{
+		visitElement(docTag);
+	}
+
+	public void visitFinallyClause(GrFinallyClause catchClause)
+	{
+		visitElement(catchClause);
+	}
+
+	public void visitSynchronizedStatement(GrSynchronizedStatement synchronizedStatement)
+	{
+		visitStatement(synchronizedStatement);
+	}
+
+	public void visitVariableDeclaration(GrVariableDeclaration variableDeclaration)
+	{
+		visitStatement(variableDeclaration);
+	}
+
+	public void visitVariable(GrVariable variable)
+	{
+		visitElement(variable);
+	}
+
+	public void visitModifierList(GrModifierList modifierList)
+	{
+		visitElement(modifierList);
+	}
+
+	public void visitRangeExpression(GrRangeExpression range)
+	{
+		visitBinaryExpression(range);
+	}
+
+	public void visitGStringInjection(GrStringInjection injection)
+	{
+		visitElement(injection);
+	}
+
+	public void visitTypeParameterList(GrTypeParameterList list)
+	{
+		visitElement(list);
+	}
+
+	public void visitClassInitializer(GrClassInitializer initializer)
+	{
+		visitElement(initializer);
+	}
+
+	public void visitTypeParameter(GrTypeParameter typeParameter)
+	{
+		visitTypeDefinition(typeParameter);
+	}
+
+	public void visitTupleExpression(GrTupleExpression tupleExpression)
+	{
+		visitExpression(tupleExpression);
+	}
+
+	public void visitSpreadArgument(GrSpreadArgument spreadArgument)
+	{
+		visitExpression(spreadArgument);
+	}
 }

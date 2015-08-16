@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2012 JetBrains s.r.o.
+ * Copyright 2000-2014 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,59 +24,83 @@ import org.jetbrains.annotations.Nullable;
 /**
  * @author ven
  */
-public interface GroovyResolveResult extends ResolveResult {
-  GroovyResolveResult[] EMPTY_ARRAY = new GroovyResolveResult[0];
+public interface GroovyResolveResult extends ResolveResult
+{
+	GroovyResolveResult[] EMPTY_ARRAY = new GroovyResolveResult[0];
 
-  boolean isAccessible();
+	boolean isAccessible();
 
-  boolean isStaticsOK();
+	boolean isStaticsOK();
 
-  @Nullable
-  PsiElement getCurrentFileResolveContext();
+	boolean isApplicable();
 
-  @NotNull
-  PsiSubstitutor getSubstitutor();
+	@Nullable
+	PsiElement getCurrentFileResolveContext();
 
-  boolean isInvokedOnProperty();
+	@NotNull
+	PsiSubstitutor getSubstitutor();
 
-  @Nullable
-  SpreadState getSpreadState();
+	boolean isInvokedOnProperty();
 
-  GroovyResolveResult EMPTY_RESULT = new GroovyResolveResult() {
-    public boolean isAccessible() {
-      return false;
-    }
+	@Nullable
+	SpreadState getSpreadState();
 
-    public PsiElement getCurrentFileResolveContext() {
-      return null;
-    }
+	GroovyResolveResult EMPTY_RESULT = new GroovyResolveResult()
+	{
+		@Override
+		public boolean isAccessible()
+		{
+			return false;
+		}
 
-    public boolean isStaticsOK() {
-      return true;
-    }
+		@Override
+		public PsiElement getCurrentFileResolveContext()
+		{
+			return null;
+		}
 
-    @NotNull
-    public PsiSubstitutor getSubstitutor() {
-      return PsiSubstitutor.EMPTY;
-    }
+		@Override
+		public boolean isStaticsOK()
+		{
+			return true;
+		}
 
-    @Nullable
-    public PsiElement getElement() {
-      return null;
-    }
+		@Override
+		public boolean isApplicable()
+		{
+			return false;
+		}
 
-    public boolean isValidResult() {
-      return false;
-    }
+		@Override
+		@NotNull
+		public PsiSubstitutor getSubstitutor()
+		{
+			return PsiSubstitutor.EMPTY;
+		}
 
-    @Override
-    public boolean isInvokedOnProperty() {
-      return false;
-    }
+		@Override
+		@Nullable
+		public PsiElement getElement()
+		{
+			return null;
+		}
 
-    @Override
-    public SpreadState getSpreadState() {
-      return null;
-    }
-  };
+		@Override
+		public boolean isValidResult()
+		{
+			return false;
+		}
+
+		@Override
+		public boolean isInvokedOnProperty()
+		{
+			return false;
+		}
+
+		@Override
+		public SpreadState getSpreadState()
+		{
+			return null;
+		}
+	};
 }

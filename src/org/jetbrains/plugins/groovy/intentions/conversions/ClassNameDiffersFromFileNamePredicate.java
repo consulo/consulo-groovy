@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2010 JetBrains s.r.o.
+ * Copyright 2000-2014 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,41 +18,60 @@ package org.jetbrains.plugins.groovy.intentions.conversions;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
+import com.intellij.util.Consumer;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.intentions.base.PsiElementPredicate;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
 
 /**
-* @author Maxim.Medvedev
-*/
-class ClassNameDiffersFromFileNamePredicate implements PsiElementPredicate {
-  private final boolean mySearchForClassInMultiClassFile;
+ * @author Maxim.Medvedev
+ */
+class ClassNameDiffersFromFileNamePredicate implements PsiElementPredicate
+{
+	private final Consumer<GrTypeDefinition> myClassConsumer;
+	private final boolean mySearchForClassInMultiClassFile;
 
-  ClassNameDiffersFromFileNamePredicate(boolean searchForClassInMultiClassFile) {
-    mySearchForClassInMultiClassFile = searchForClassInMultiClassFile;
-  }
+	ClassNameDiffersFromFileNamePredicate(@Nullable Consumer<GrTypeDefinition> classConsumer,
+			boolean searchForClassInMultiClassFile)
+	{
+		myClassConsumer = classConsumer;
+		mySearchForClassInMultiClassFile = searchForClassInMultiClassFile;
+	}
 
-  ClassNameDiffersFromFileNamePredicate() {
-    this(false);
-  }
+	ClassNameDiffersFromFileNamePredicate(@Nullable Consumer<GrTypeDefinition> classConsumer)
+	{
+		this(classConsumer, false);
+	}
 
-  @Override
-  public boolean satisfiedBy(PsiElement element) {
-    final PsiElement parent = element.getParent();
-    if (!(parent instanceof GrTypeDefinition)) return false;
-    if (((GrTypeDefinition)parent).getNameIdentifierGroovy() != element) return false;
+	@Override
+	public boolean satisfiedBy(PsiElement element)
+	{
+		final PsiElement parent = element.getParent();
+		if(!(parent instanceof GrTypeDefinition))
+			return false;
+		if(((GrTypeDefinition) parent).getNameIdentifierGroovy() != element)
+			return false;
 
-    final String name = ((GrTypeDefinition)parent).getName();
-    if (name == null || name.length() == 0) return false;
-    final PsiFile file = element.getContainingFile();
-    if (!(file instanceof GroovyFile)) return false;
-    if (!file.isPhysical()) return false;
-    if (name.equals(FileUtil.getNameWithoutExtension(file.getName()))) return false;
-    if (mySearchForClassInMultiClassFile) {
-      return ((GroovyFile)file).getClasses().length > 1;
-    }
-    else {
-      return !((GroovyFile)file).isScript();
-    }
-  }
+		final String name = ((GrTypeDefinition) parent).getName();
+		if(name == null || name.isEmpty())
+			return false;
+		if(myClassConsumer != null)
+			myClassConsumer.consume(((GrTypeDefinition) parent));
+		final PsiFile file = element.getContainingFile();
+		if(!(file instanceof GroovyFile))
+			return false;
+		if(!file.isPhysical())
+			return false;
+		if(name.equals(FileUtil.getNameWithoutExtension(file.getName())))
+			return false;
+		if(mySearchForClassInMultiClassFile)
+		{
+			return ((GroovyFile) file).getClasses().length > 1;
+		}
+		else
+		{
+			return !((GroovyFile) file).isScript();
+		}
+	}
 }

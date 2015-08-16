@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2012 JetBrains s.r.o.
+ * Copyright 2000-2014 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,37 +19,33 @@ package org.jetbrains.plugins.groovy.lang.parser.parsing.toplevel.packaging;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.lang.PsiBuilder.Marker;
 import org.jetbrains.plugins.groovy.GroovyBundle;
-import org.jetbrains.plugins.groovy.lang.lexer.TokenSets;
+import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyParser;
 import org.jetbrains.plugins.groovy.lang.parser.parsing.auxiliary.modifiers.Modifiers;
 import org.jetbrains.plugins.groovy.lang.parser.parsing.statements.typeDefinitions.ReferenceElement;
 import org.jetbrains.plugins.groovy.lang.parser.parsing.util.ParserUtils;
 
-
 /**
  * @author ilyas
  */
-public class PackageDefinition implements GroovyElementTypes {
+public class PackageDefinition {
 
   public static boolean parse(PsiBuilder builder, GroovyParser parser) {
     Marker pMarker = builder.mark();
 
     Modifiers.parse(builder, parser);
 
-    if (!ParserUtils.getToken(builder, kPACKAGE)) {
+    if (!ParserUtils.getToken(builder, GroovyTokenTypes.kPACKAGE)) {
       pMarker.rollbackTo();
       return false;
     }
 
-    if (TokenSets.CODE_REFERENCE_ELEMENT_NAME_TOKENS.contains(builder.getTokenType())) {
-      ReferenceElement.parseForPackage(builder);
-    }
-    else {
+    if (ReferenceElement.parseForPackage(builder) == ReferenceElement.ReferenceElementResult.FAIL) {
       builder.error(GroovyBundle.message("identifier.expected"));
     }
 
-    pMarker.done(PACKAGE_DEFINITION);
+    pMarker.done(GroovyElementTypes.PACKAGE_DEFINITION);
     return true;
   }
 }

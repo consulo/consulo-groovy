@@ -15,6 +15,28 @@
  */
 package org.jetbrains.plugins.groovy.intentions.style.parameterToEntry;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.awt.event.KeyEvent;
+import java.util.EventListener;
+
+import javax.swing.JCheckBox;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.KeyStroke;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.EventListenerList;
+
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.plugins.groovy.GroovyFileType;
+import org.jetbrains.plugins.groovy.intentions.GroovyIntentionsBundle;
+import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyNamesUtil;
+import org.jetbrains.plugins.groovy.settings.GroovyApplicationSettings;
 import com.intellij.openapi.editor.event.DocumentEvent;
 import com.intellij.openapi.editor.event.DocumentListener;
 import com.intellij.openapi.project.Project;
@@ -24,18 +46,6 @@ import com.intellij.ui.EditorComboBoxEditor;
 import com.intellij.ui.EditorComboBoxRenderer;
 import com.intellij.ui.EditorTextField;
 import com.intellij.ui.StringComboboxEditor;
-import org.jetbrains.annotations.Nullable;
-import org.jetbrains.plugins.groovy.GroovyFileType;
-import org.jetbrains.plugins.groovy.intentions.GroovyIntentionsBundle;
-import org.jetbrains.plugins.groovy.refactoring.GroovyNamesUtil;
-import org.jetbrains.plugins.groovy.settings.GroovyApplicationSettings;
-
-import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import javax.swing.event.EventListenerList;
-import java.awt.event.*;
-import java.util.EventListener;
 
 public class GroovyMapParameterDialog extends DialogWrapper {
   private JPanel contentPane;

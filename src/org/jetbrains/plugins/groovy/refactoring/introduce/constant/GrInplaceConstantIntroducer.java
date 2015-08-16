@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2013 JetBrains s.r.o.
+ * Copyright 2000-2014 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,165 +15,268 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.introduce.constant;
 
-import com.intellij.openapi.editor.RangeMarker;
-import com.intellij.psi.*;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.psi.util.PsiUtilCore;
-import com.intellij.util.containers.ContainerUtil;
+import java.util.ArrayList;
+
+import javax.swing.JComponent;
+import javax.swing.JPanel;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.plugins.groovy.lang.psi.GroovyFileBase;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariableDeclaration;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrBinaryExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
-import org.jetbrains.plugins.groovy.refactoring.introduce.GrInplaceIntroducer;
+import org.jetbrains.plugins.groovy.refactoring.GroovyNameSuggestionUtil;
+import org.jetbrains.plugins.groovy.refactoring.introduce.GrAbstractInplaceIntroducer;
 import org.jetbrains.plugins.groovy.refactoring.introduce.GrIntroduceContext;
-import org.jetbrains.plugins.groovy.refactoring.introduce.GrIntroduceContextImpl;
-import org.jetbrains.plugins.groovy.refactoring.introduce.field.GrFieldNameSuggester;
+import org.jetbrains.plugins.groovy.refactoring.introduce.GrIntroduceHandlerBase;
+import org.jetbrains.plugins.groovy.refactoring.introduce.StringPartInfo;
 import org.jetbrains.plugins.groovy.refactoring.introduce.field.GroovyInplaceFieldValidator;
-
-import javax.swing.*;
-import java.util.LinkedHashSet;
-import java.util.List;
+import com.intellij.psi.PsiClass;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiField;
+import com.intellij.psi.PsiLocalVariable;
+import com.intellij.psi.PsiModifier;
+import com.intellij.psi.PsiType;
+import com.intellij.refactoring.JavaRefactoringSettings;
+import com.intellij.refactoring.introduce.inplace.OccurrencesChooser;
+import com.intellij.refactoring.introduceField.IntroduceConstantHandler;
+import com.intellij.ui.components.JBCheckBox;
+import com.intellij.util.ArrayUtil;
+import com.intellij.util.containers.ContainerUtil;
 
 /**
  * Created by Max Medvedev on 8/29/13
  */
-public class GrInplaceConstantIntroducer extends GrInplaceIntroducer {
-  private final GrInplaceIntroduceConstantPanel myPanel;
-  private final GrIntroduceContext myContext;
-  private final RangeMarker myExpressionRangeMarker;
-  private final RangeMarker myStringPartRangeMarker;
-  private final boolean myReplaceAll;
+public class GrInplaceConstantIntroducer extends GrAbstractInplaceIntroducer<GrIntroduceConstantSettings>
+{
+	private final GrInplaceIntroduceConstantPanel myPanel;
+	private final GrIntroduceContext myContext;
+	private final String[] mySuggestedNames;
 
-  public GrInplaceConstantIntroducer(GrVariable var,
-                                     GrIntroduceContext context,
-                                     List<RangeMarker> occurrences,
-                                     boolean replaceAllOccurrences,
-                                     RangeMarker expressionRangeMarker,
-                                     RangeMarker stringPartRangeMarker) {
-    super(var, context.getEditor(), context.getProject(), GrIntroduceConstantHandler.REFACTORING_NAME, occurrences, context.getPlace());
+	public GrInplaceConstantIntroducer(GrIntroduceContext context, OccurrencesChooser.ReplaceChoice choice)
+	{
+		super(IntroduceConstantHandler.REFACTORING_NAME, choice, context);
 
-    myContext = context;
-    myReplaceAll = replaceAllOccurrences;
-    myExpressionRangeMarker = expressionRangeMarker;
-    myStringPartRangeMarker = stringPartRangeMarker;
+		myContext = context;
 
-    myPanel = new GrInplaceIntroduceConstantPanel();
-  }
+		myPanel = new GrInplaceIntroduceConstantPanel();
 
-  @Override
-  public LinkedHashSet<String> suggestNames(GrIntroduceContext context) {
-    return new GrFieldNameSuggester(context , new GroovyInplaceFieldValidator(context), false).suggestNames();
-  }
+		GrVariable localVar = GrIntroduceHandlerBase.resolveLocalVar(context);
+		if(localVar != null)
+		{
+			ArrayList<String> result = ContainerUtil.newArrayList(localVar.getName());
 
-  @Override
-  protected void moveOffsetAfter(boolean success) {
-    if (success) {
-      final GrVariable field = getVariable();
-      assert field != null;
-      GrIntroduceConstantProcessor processor = new GrIntroduceConstantProcessor(generateContext(), generateSettings()) {
-        @Override
-        protected GrVariableDeclaration addDeclaration(PsiClass targetClass, GrVariableDeclaration declaration) {
-          return (GrVariableDeclaration)field.getParent();
-        }
+			GrExpression initializer = localVar.getInitializerGroovy();
+			if(initializer != null)
+			{
+				ContainerUtil.addAll(result, GroovyNameSuggestionUtil.suggestVariableNames(initializer,
+						new GroovyInplaceFieldValidator(context), true));
+			}
+			mySuggestedNames = ArrayUtil.toStringArray(result);
+		}
+		else
+		{
+			GrExpression expression = context.getExpression();
+			assert expression != null;
+			mySuggestedNames = GroovyNameSuggestionUtil.suggestVariableNames(expression,
+					new GroovyInplaceFieldValidator(context), true);
+		}
+	}
 
-        @Override
-        protected boolean checkErrors(@NotNull PsiClass targetClass) {
-          return false;
-        }
-      };
-      processor.run();
-    }
-    super.moveOffsetAfter(success);
-  }
+	@Override
+	protected String getActionName()
+	{
+		return GrIntroduceConstantHandler.REFACTORING_NAME;
+	}
 
-  private GrIntroduceContext generateContext() {
-    final List<RangeMarker> occurrenceMarkers = getOccurrenceMarkers();
+	@Override
+	protected String[] suggestNames(boolean replaceAll, @Nullable GrVariable variable)
+	{
+		return mySuggestedNames;
+	}
 
-    List<PsiElement> occurrences = ContainerUtil.newArrayList();
-    for (RangeMarker marker : occurrenceMarkers) {
-      ContainerUtil.addIfNotNull(occurrences, findExpression(marker));
-    }
+	@Nullable
+	@Override
+	protected JComponent getComponent()
+	{
+		return myPanel.getRootPane();
+	}
 
-    GrExpression expr = null;
-    if (myExpressionRangeMarker != null) expr = findExpression(myExpressionRangeMarker);
-    if (myStringPartRangeMarker != null) {
-      expr = findExpressionFromStringPartMarker(myStringPartRangeMarker);
-      occurrences.add(expr);
-    }
+	@Override
+	protected void saveSettings(@NotNull GrVariable variable)
+	{
 
-    return new GrIntroduceContextImpl(myContext.getProject(), myContext.getEditor(), expr, null, null, PsiUtilCore.toPsiElementArray(
-      occurrences), myContext.getScope());
-  }
+	}
 
-  @Nullable
-  private GrExpression findExpressionFromStringPartMarker(RangeMarker marker) {
-    PsiFile file = PsiDocumentManager.getInstance(myContext.getProject()).getPsiFile(marker.getDocument());
-    if (file == null) return null;
-    PsiElement leaf = file.findElementAt(marker.getStartOffset());
-    GrBinaryExpression binary = PsiTreeUtil.getParentOfType(leaf, GrBinaryExpression.class);
-    if (binary != null) {
-      return binary.getRightOperand();
-    }
-    return null;
-  }
+	@Override
+	protected GrVariable runRefactoring(GrIntroduceContext context,
+			GrIntroduceConstantSettings settings,
+			boolean processUsages)
+	{
+		if(processUsages)
+		{
+			return new GrIntroduceConstantProcessor(context, settings).run();
+		}
+		else
+		{
+			PsiElement scope = context.getScope();
+			return new GrIntroduceConstantProcessor(context, settings).addDeclaration(scope instanceof GroovyFileBase
+					? ((GroovyFileBase) scope).getScriptClass() : (PsiClass) scope).getVariables()[0];
+		}
+	}
 
-  @Nullable
-  private GrExpression findExpression(@NotNull RangeMarker marker) {
-    PsiFile file = PsiDocumentManager.getInstance(myContext.getProject()).getPsiFile(marker.getDocument());
-    if (file == null) return null;
-    PsiElement leaf = file.findElementAt(marker.getStartOffset());
-    if (leaf != null && leaf.getParent() instanceof GrReferenceExpression) {
-      return (GrExpression)leaf.getParent();
-    }
-    return null;
-  }
+	@Nullable
+	@Override
+	protected GrIntroduceConstantSettings getInitialSettingsForInplace(@NotNull final GrIntroduceContext context,
+			@NotNull final OccurrencesChooser.ReplaceChoice choice,
+			final String[] names)
+	{
+		return new GrIntroduceConstantSettings()
+		{
+			@Override
+			public String getVisibilityModifier()
+			{
+				return PsiModifier.PUBLIC;
+			}
 
-  private GrIntroduceConstantSettings generateSettings() {
-    return new GrIntroduceConstantSettings() {
-      @Override
-      public String getVisibilityModifier() {
-        return PsiModifier.PUBLIC;
-      }
+			@Nullable
+			@Override
+			public PsiClass getTargetClass()
+			{
+				return (PsiClass) context.getScope();
+			}
 
-      @Nullable
-      @Override
-      public String getName() {
-        return getVariable().getName();
-      }
+			@Nullable
+			@Override
+			public String getName()
+			{
+				return names[0];
+			}
 
-      @Override
-      public boolean replaceAllOccurrences() {
-        return myReplaceAll;
-      }
+			@Override
+			public boolean replaceAllOccurrences()
+			{
+				return isReplaceAllOccurrences();
+			}
 
-      @Nullable
-      @Override
-      public PsiType getSelectedType() {
-        return getVariable().getDeclaredType();
-      }
+			@Nullable
+			@Override
+			public PsiType getSelectedType()
+			{
+				GrExpression expression = context.getExpression();
+				GrVariable var = context.getVar();
+				StringPartInfo stringPart = context.getStringPart();
+				return var != null ? var.getDeclaredType() : expression != null ? expression.getType() : stringPart !=
+						null ? stringPart.getLiteral().getType() : null;
+			}
+		};
+	}
 
-      @Nullable
-      @Override
-      public PsiClass getTargetClass() {
-        return (PsiClass)myContext.getScope();
-      }
-    };
-  }
+	@Override
+	protected GrIntroduceConstantSettings getSettings()
+	{
+		return new GrIntroduceConstantSettings()
+		{
+			@Override
+			public String getVisibilityModifier()
+			{
+				return PsiModifier.PUBLIC;
+			}
 
-  @Nullable
-  @Override
-  protected JComponent getComponent() {
-    //return myPanel.getRootPane();
-    return null;
-  }
+			@Nullable
+			@Override
+			public String getName()
+			{
+				return getInputName();
+			}
 
-  @Nullable
-  @Override
-  protected PsiElement checkLocalScope() {
-    return getVariable().getContainingFile();
-  }
+			@Override
+			public boolean replaceAllOccurrences()
+			{
+				return isReplaceAllOccurrences();
+			}
 
+			@Nullable
+			@Override
+			public PsiType getSelectedType()
+			{
+				return GrInplaceConstantIntroducer.this.getSelectedType();
+			}
+
+			@Nullable
+			@Override
+			public PsiClass getTargetClass()
+			{
+				return (PsiClass) myContext.getScope();
+			}
+		};
+	}
+
+	@Nullable
+	@Override
+	protected PsiElement checkLocalScope()
+	{
+		return ((PsiField) getVariable()).getContainingClass();
+	}
+
+
+	@Override
+	protected boolean performRefactoring()
+	{
+		JavaRefactoringSettings.getInstance().INTRODUCE_CONSTANT_MOVE_TO_ANOTHER_CLASS = myPanel
+				.isMoveToAnotherClass();
+		if(myPanel.isMoveToAnotherClass())
+		{
+			try
+			{
+				myEditor.putUserData(INTRODUCE_RESTART, true);
+				myEditor.putUserData(ACTIVE_INTRODUCE, this);
+				final GrIntroduceConstantHandler constantHandler = new GrIntroduceConstantHandler();
+				final PsiLocalVariable localVariable = (PsiLocalVariable) getLocalVariable();
+				constantHandler.getContextAndInvoke(myProject, myEditor, ((GrExpression) myExpr),
+						(GrVariable) localVariable, null);
+			}
+			finally
+			{
+				myEditor.putUserData(INTRODUCE_RESTART, false);
+				myEditor.putUserData(ACTIVE_INTRODUCE, null);
+				releaseResources();
+				if(myLocalMarker != null)
+				{
+					myLocalMarker.dispose();
+				}
+				if(myExprMarker != null)
+				{
+					myExprMarker.dispose();
+				}
+			}
+			return false;
+		}
+		return super.performRefactoring();
+	}
+
+	/**
+	 * Created by Max Medvedev on 8/29/13
+	 */
+	public class GrInplaceIntroduceConstantPanel
+	{
+		private JBCheckBox myMoveToAnotherClassJBCheckBox;
+		private JPanel myRootPane;
+		private JComponent myPreview;
+
+		public boolean isMoveToAnotherClass()
+		{
+			return myMoveToAnotherClassJBCheckBox.isSelected();
+		}
+
+		public JComponent getRootPane()
+		{
+			return myRootPane;
+		}
+
+		private void createUIComponents()
+		{
+			myPreview = getPreviewComponent();
+		}
+	}
 }

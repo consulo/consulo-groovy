@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2009 JetBrains s.r.o.
+ * Copyright 2000-2014 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,12 +16,23 @@
 
 package org.jetbrains.plugins.groovy.actions;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.plugins.groovy.GroovyBundle;
+import org.jetbrains.plugins.groovy.GroovyFileType;
+import org.jetbrains.plugins.groovy.config.GroovyConfigUtils;
+import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
+import org.jetbrains.plugins.groovy.util.LibrariesUtil;
 import com.intellij.ide.IdeView;
 import com.intellij.ide.actions.CreateFileFromTemplateDialog;
 import com.intellij.ide.actions.JavaCreateTemplateInPackageAction;
 import com.intellij.ide.fileTemplates.FileTemplate;
 import com.intellij.ide.fileTemplates.FileTemplateManager;
-import com.intellij.openapi.actionSystem.*;
+import com.intellij.openapi.actionSystem.AnActionEvent;
+import com.intellij.openapi.actionSystem.CommonDataKeys;
+import com.intellij.openapi.actionSystem.DataContext;
+import com.intellij.openapi.actionSystem.LangDataKeys;
+import com.intellij.openapi.actionSystem.Presentation;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.fileTypes.ex.FileTypeManagerEx;
 import com.intellij.openapi.project.DumbAware;
@@ -35,89 +46,115 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.codeStyle.CodeStyleManager;
 import com.intellij.util.IncorrectOperationException;
 import icons.JetgroovyIcons;
-import org.consulo.module.extension.ModuleExtension;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.jetbrains.plugins.groovy.GroovyBundle;
-import org.jetbrains.plugins.groovy.GroovyFileType;
-import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
-import org.jetbrains.plugins.groovy.module.extension.GroovyModuleExtension;
 
-public class NewGroovyClassAction extends JavaCreateTemplateInPackageAction<GrTypeDefinition> implements DumbAware {
+public class NewGroovyClassAction extends JavaCreateTemplateInPackageAction<GrTypeDefinition> implements DumbAware
+{
 
-  public NewGroovyClassAction() {
-    super(GroovyBundle.message("newclass.menu.action.text"), GroovyBundle.message("newclass.menu.action.description"),
-          JetgroovyIcons.Groovy.Class, true);
-  }
+	public NewGroovyClassAction()
+	{
+		super(GroovyBundle.message("newclass.menu.action.text"), GroovyBundle.message("newclass.menu.action" +
+				".description"), JetgroovyIcons.Groovy.Class, true);
+	}
 
-  @Override
-  protected void buildDialog(Project project, PsiDirectory directory, CreateFileFromTemplateDialog.Builder builder) {
-    builder
-      .setTitle(GroovyBundle.message("newclass.dlg.title"))
-      .addKind("Class", JetgroovyIcons.Groovy.Class, GroovyTemplates.GROOVY_CLASS)
-      .addKind("Interface", JetgroovyIcons.Groovy.Interface, GroovyTemplates.GROOVY_INTERFACE)
-      .addKind("Enum", JetgroovyIcons.Groovy.Enum, GroovyTemplates.GROOVY_ENUM)
-      .addKind("Annotation", JetgroovyIcons.Groovy.AnnotationType, GroovyTemplates.GROOVY_ANNOTATION);
+	@Override
+	protected void buildDialog(Project project, PsiDirectory directory, CreateFileFromTemplateDialog.Builder builder)
+	{
+		builder.setTitle(GroovyBundle.message("newclass.dlg.title")).addKind("Class", JetgroovyIcons.Groovy.Class,
+				GroovyTemplates.GROOVY_CLASS).addKind("Interface", JetgroovyIcons.Groovy.Interface,
+				GroovyTemplates.GROOVY_INTERFACE);
 
-    for (FileTemplate template : FileTemplateManager.getInstance().getAllTemplates()) {
-      FileType fileType = FileTypeManagerEx.getInstanceEx().getFileTypeByExtension(template.getExtension());
-      if (fileType.equals(GroovyFileType.GROOVY_FILE_TYPE) && JavaDirectoryService.getInstance().getPackage(directory) != null) {
-        builder.addKind(template.getName(), JetgroovyIcons.Groovy.Class, template.getName());
-      }
-    }
-  }
+		if(GroovyConfigUtils.getInstance().isVersionAtLeast(directory, GroovyConfigUtils.GROOVY2_3, true))
+		{
+			builder.addKind("Trait", JetgroovyIcons.Groovy.Trait, GroovyTemplates.GROOVY_TRAIT);
+		}
 
-  @Override
-  protected String getActionName(PsiDirectory directory, String newName, String templateName) {
-    return GroovyBundle.message("newclass.menu.action.text");
-  }
+		builder.addKind("Enum", JetgroovyIcons.Groovy.Enum, GroovyTemplates.GROOVY_ENUM).addKind("Annotation",
+				JetgroovyIcons.Groovy.AnnotationType, GroovyTemplates.GROOVY_ANNOTATION);
 
-  @Override
-  protected PsiElement getNavigationElement(@NotNull GrTypeDefinition createdElement) {
-    return createdElement.getLBrace();
-  }
+		for(FileTemplate template : FileTemplateManager.getInstance().getAllTemplates())
+		{
+			FileType fileType = FileTypeManagerEx.getInstanceEx().getFileTypeByExtension(template.getExtension());
+			if(fileType.equals(GroovyFileType.GROOVY_FILE_TYPE) && JavaDirectoryService.getInstance().getPackage
+					(directory) != null)
+			{
+				builder.addKind(template.getName(), JetgroovyIcons.Groovy.Class, template.getName());
+			}
+		}
+	}
 
-  @Override
-  public void update(AnActionEvent e) {
-    super.update(e);
-    Presentation presentation = e.getPresentation();
-    if (!presentation.isVisible()) return;
+	@Override
+	protected boolean isAvailable(DataContext dataContext)
+	{
+		return super.isAvailable(dataContext) && LibrariesUtil.hasGroovySdk(LangDataKeys.MODULE.getData(dataContext));
+	}
 
-    IdeView view = LangDataKeys.IDE_VIEW.getData(e.getDataContext());
-    if (view == null) return;
-    Project project = CommonDataKeys.PROJECT.getData(e.getDataContext());
-    if (project == null) return;
+	@Override
+	protected String getActionName(PsiDirectory directory, String newName, String templateName)
+	{
+		return GroovyBundle.message("newclass.menu.action.text");
+	}
 
-    ProjectFileIndex projectFileIndex = ProjectRootManager.getInstance(project).getFileIndex();
-    for (PsiDirectory dir : view.getDirectories()) {
-      if (projectFileIndex.isInSourceContent(dir.getVirtualFile()) && checkPackageExists(dir)) {
-        for (GroovySourceFolderDetector detector : GroovySourceFolderDetector.EP_NAME.getExtensions()) {
-          if (detector.isGroovySourceFolder(dir)) {
-            presentation.setWeight(Presentation.HIGHER_WEIGHT);
-            break;
-          }
-        }
-        return;
-      }
-    }
-  }
+	@Override
+	protected PsiElement getNavigationElement(@NotNull GrTypeDefinition createdElement)
+	{
+		return createdElement.getLBrace();
+	}
 
-  @Override
-  protected final GrTypeDefinition doCreate(PsiDirectory dir, String className, String templateName) throws IncorrectOperationException {
-    final String fileName = className + NewGroovyActionBase.GROOVY_EXTENSION;
-    final PsiFile fromTemplate = GroovyTemplatesFactory.createFromTemplate(dir, className, fileName, templateName);
-    if (fromTemplate instanceof GroovyFile) {
-      CodeStyleManager.getInstance(fromTemplate.getManager()).reformat(fromTemplate);
-      return ((GroovyFile)fromTemplate).getTypeDefinitions()[0];
-    }
-    final String description = fromTemplate.getFileType().getDescription();
-    throw new IncorrectOperationException(GroovyBundle.message("groovy.file.extension.is.not.mapped.to.groovy.file.type", description));
-  }
+	@Override
+	public void update(AnActionEvent e)
+	{
+		super.update(e);
+		Presentation presentation = e.getPresentation();
+		if(!presentation.isVisible())
+		{
+			return;
+		}
 
-  @Nullable
-  @Override
-  protected Class<? extends ModuleExtension> getModuleExtensionClass() {
-    return GroovyModuleExtension.class;
-  }
+		IdeView view = LangDataKeys.IDE_VIEW.getData(e.getDataContext());
+		if(view == null)
+		{
+			return;
+		}
+		Project project = CommonDataKeys.PROJECT.getData(e.getDataContext());
+		if(project == null)
+		{
+			return;
+		}
+
+		ProjectFileIndex projectFileIndex = ProjectRootManager.getInstance(project).getFileIndex();
+		for(PsiDirectory dir : view.getDirectories())
+		{
+			if(projectFileIndex.isInSourceContent(dir.getVirtualFile()) && checkPackageExists(dir))
+			{
+				for(GroovySourceFolderDetector detector : GroovySourceFolderDetector.EP_NAME.getExtensions())
+				{
+					if(detector.isGroovySourceFolder(dir))
+					{
+						presentation.setWeight(Presentation.HIGHER_WEIGHT);
+						break;
+					}
+				}
+				return;
+			}
+		}
+	}
+
+	@Override
+	protected final GrTypeDefinition doCreate(PsiDirectory dir,
+			String className,
+			String templateName) throws IncorrectOperationException
+	{
+		final String fileName = className + NewGroovyActionBase.GROOVY_EXTENSION;
+		final PsiFile fromTemplate = GroovyTemplatesFactory.createFromTemplate(dir, className, fileName, templateName,
+				true);
+		if(fromTemplate instanceof GroovyFile)
+		{
+			CodeStyleManager.getInstance(fromTemplate.getManager()).reformat(fromTemplate);
+			return ((GroovyFile) fromTemplate).getTypeDefinitions()[0];
+		}
+		final String description = fromTemplate.getFileType().getDescription();
+		throw new IncorrectOperationException(GroovyBundle.message("groovy.file.extension.is.not.mapped.to.groovy.file" +
+				".type", description));
+	}
+
 }

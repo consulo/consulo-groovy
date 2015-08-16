@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2013 JetBrains s.r.o.
+ * Copyright 2000-2014 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,10 +41,12 @@ public class GrRegexImpl extends GrStringImpl implements GrRegex {
     return "Compound regular expression";
   }
 
+  @Override
   public boolean isPlainString() {
     return false;
   }
 
+  @Override
   public void accept(GroovyElementVisitor visitor) {
     visitor.visitRegexExpression(this);
   }
@@ -84,7 +86,7 @@ public class GrRegexImpl extends GrStringImpl implements GrRegex {
   @NotNull
   @Override
   public LiteralTextEscaper<? extends PsiLanguageInjectionHost> createLiteralTextEscaper() {
-    return null;
+    return new GrLiteralEscaper(this);
   }
 }
 

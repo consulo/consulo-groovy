@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2009 JetBrains s.r.o.
+ * Copyright 2000-2014 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,11 +16,7 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef;
 
-import com.intellij.psi.NavigatablePsiElement;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiField;
-import com.intellij.psi.PsiMethod;
-import com.intellij.util.ArrayFactory;
+import org.consulo.lombok.annotations.ArrayFactoryFields;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -33,69 +29,71 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMe
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
 import org.jetbrains.plugins.groovy.lang.psi.api.toplevel.GrTopStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeParameterList;
+import com.intellij.psi.NavigatablePsiElement;
+import com.intellij.psi.PsiClass;
+import com.intellij.psi.PsiField;
+import com.intellij.psi.PsiMethod;
 
 /**
  * @autor: Dmitry.Krasilschikov
  * @date: 18.03.2007
  */
+@ArrayFactoryFields
 public interface GrTypeDefinition
-  extends GrTopStatement, NavigatablePsiElement, PsiClass, GrTopLevelDefinition, GrDocCommentOwner, GrMember {
+		extends GrTopStatement, NavigatablePsiElement, PsiClass, GrTopLevelDefinition, GrDocCommentOwner, GrMember {
 
-  GrTypeDefinition[] EMPTY_ARRAY = new GrTypeDefinition[0];
-  ArrayFactory<GrTypeDefinition> ARRAY_FACTORY = new ArrayFactory<GrTypeDefinition>() {
-    @NotNull
-    @Override
-    public GrTypeDefinition[] create(int count) {
-      return new GrTypeDefinition[count];
-    }
-  };
+	boolean isTrait();
 
-  @Nullable
-  GrTypeDefinitionBody getBody();
+	@Nullable
+	GrTypeDefinitionBody getBody();
 
-  @NotNull
-  GrField[] getFields();
+	@Override
+	@NotNull
+	GrField[] getFields();
 
-  @NotNull
-  GrField[] getCodeFields();
+	@NotNull
+	GrField[] getCodeFields();
 
-  @NotNull
-  GrMethod[] getCodeConstructors();
+	@NotNull
+	GrMethod[] getCodeConstructors();
 
-  @Nullable
-  PsiField findCodeFieldByName(String name, boolean checkBases);
+	@Nullable
+	PsiField findCodeFieldByName(String name, boolean checkBases);
 
-  @NotNull
-  GrClassInitializer[] getInitializers();
+	@Override
+	@NotNull
+	GrClassInitializer[] getInitializers();
 
-  @NotNull
-  GrMembersDeclaration[] getMemberDeclarations();
+	@NotNull
+	GrMembersDeclaration[] getMemberDeclarations();
 
-  @Nullable
-  String getQualifiedName();
+	@Override
+	@Nullable
+	String getQualifiedName();
 
-  @Nullable
-  GrExtendsClause getExtendsClause();
+	@Nullable
+	GrExtendsClause getExtendsClause();
 
-  @Nullable
-  GrImplementsClause getImplementsClause();
+	@Nullable
+	GrImplementsClause getImplementsClause();
 
-  String[] getSuperClassNames();
+	String[] getSuperClassNames();
 
-  @NotNull
-  GrMethod[] getCodeMethods();
+	@NotNull
+	GrMethod[] getCodeMethods();
 
-  @NotNull
-  PsiMethod[] findCodeMethodsByName(@NonNls String name, boolean checkBases);
+	@NotNull
+	PsiMethod[] findCodeMethodsByName(@NonNls String name, boolean checkBases);
 
-  @NotNull
-  PsiMethod[] findCodeMethodsBySignature(PsiMethod patternMethod, boolean checkBases);
+	@NotNull
+	PsiMethod[] findCodeMethodsBySignature(PsiMethod patternMethod, boolean checkBases);
 
-  boolean isAnonymous();
+	boolean isAnonymous();
 
-  @Nullable
-  String getName();
+	@Override
+	@Nullable
+	String getName();
 
-  @Override
-  GrTypeParameterList getTypeParameterList();
+	@Override
+	GrTypeParameterList getTypeParameterList();
 }

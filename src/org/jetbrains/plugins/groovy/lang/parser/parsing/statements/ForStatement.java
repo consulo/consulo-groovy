@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2013 JetBrains s.r.o.
+ * Copyright 2000-2014 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,23 +18,24 @@ package org.jetbrains.plugins.groovy.lang.parser.parsing.statements;
 
 import com.intellij.lang.PsiBuilder;
 import org.jetbrains.plugins.groovy.GroovyBundle;
+import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.lexer.TokenSets;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyParser;
 import org.jetbrains.plugins.groovy.lang.parser.parsing.auxiliary.modifiers.Modifiers;
 import org.jetbrains.plugins.groovy.lang.parser.parsing.auxiliary.parameters.ParameterDeclaration;
-import org.jetbrains.plugins.groovy.lang.parser.parsing.statements.expressions.StrictContextExpression;
-import org.jetbrains.plugins.groovy.lang.parser.parsing.statements.expressions.arithmetic.ShiftExpression;
+import org.jetbrains.plugins.groovy.lang.parser.parsing.statements.expressions.ConditionalExpression;
+import org.jetbrains.plugins.groovy.lang.parser.parsing.statements.expressions.ExpressionStatement;
 import org.jetbrains.plugins.groovy.lang.parser.parsing.types.TypeSpec;
 import org.jetbrains.plugins.groovy.lang.parser.parsing.util.ParserUtils;
 
 /**
  * @autor: ilyas
  */
-public class ForStatement implements GroovyElementTypes {
+public class ForStatement {
 
   public static boolean forClauseParse(PsiBuilder builder, GroovyParser parser) {
-    ParserUtils.getToken(builder, mNLS);
+    ParserUtils.getToken(builder, GroovyTokenTypes.mNLS);
     return forInClauseParse(builder, parser) || tradForClauseParse(builder, parser);
   }
 
@@ -44,17 +45,17 @@ public class ForStatement implements GroovyElementTypes {
     if (!ParameterDeclaration.parseTraditionalForParameter(builder, parser)) {
       marker.rollbackTo();
       marker = builder.mark();
-      StrictContextExpression.parse(builder, parser);
+      ExpressionStatement.argParse(builder, parser);
     }
 
-    ParserUtils.getToken(builder, mSEMI, GroovyBundle.message("semi.expected"));
-    StrictContextExpression.parse(builder, parser);
-    ParserUtils.getToken(builder, mSEMI, GroovyBundle.message("semi.expected"));
-    ParserUtils.getToken(builder, mNLS);
-    if (!mRPAREN.equals(builder.getTokenType())) {
-      StrictContextExpression.parse(builder, parser);
+    ParserUtils.getToken(builder, GroovyTokenTypes.mSEMI, GroovyBundle.message("semi.expected"));
+    ExpressionStatement.argParse(builder, parser);
+    ParserUtils.getToken(builder, GroovyTokenTypes.mSEMI, GroovyBundle.message("semi.expected"));
+    ParserUtils.getToken(builder, GroovyTokenTypes.mNLS);
+    if (!GroovyTokenTypes.mRPAREN.equals(builder.getTokenType())) {
+      ExpressionStatement.argParse(builder, parser);
     }
-    marker.done(FOR_TRADITIONAL_CLAUSE);
+    marker.done(GroovyElementTypes.FOR_TRADITIONAL_CLAUSE);
     return true;
   }
 
@@ -73,7 +74,7 @@ public class ForStatement implements GroovyElementTypes {
     PsiBuilder.Marker typeSpec = builder.mark();
     TypeSpec.parseStrict(builder, false);
 
-    if (builder.getTokenType() == mIDENT || isBuiltInType) {
+    if (builder.getTokenType() == GroovyTokenTypes.mIDENT || isBuiltInType) {
       typeSpec.drop();
     }
     else {
@@ -84,9 +85,9 @@ public class ForStatement implements GroovyElementTypes {
       builder.error(GroovyBundle.message("identifier.expected"));
       paramMarker.drop();
     }
-    else if (builder.getTokenType() == mIDENT) {
-      ParserUtils.getToken(builder, mIDENT);
-      paramMarker.done(PARAMETER);
+    else if (builder.getTokenType() == GroovyTokenTypes.mIDENT) {
+      ParserUtils.getToken(builder, GroovyTokenTypes.mIDENT);
+      paramMarker.done(GroovyElementTypes.PARAMETER);
     }
     else {
       paramMarker.drop();
@@ -94,15 +95,15 @@ public class ForStatement implements GroovyElementTypes {
       return false;
     }
 
-    if (!ParserUtils.getToken(builder, kIN) && !ParserUtils.getToken(builder, mCOLON)) {
+    if (!ParserUtils.getToken(builder, GroovyTokenTypes.kIN) && !ParserUtils.getToken(builder, GroovyTokenTypes.mCOLON)) {
       marker.rollbackTo();
       return false;
     }
 
-    if (!ShiftExpression.parse(builder, parser)) {
+    if (!ConditionalExpression.parse(builder, parser)) {
       builder.error(GroovyBundle.message("expression.expected"));
     }
-    marker.done(FOR_IN_CLAUSE);
+    marker.done(GroovyElementTypes.FOR_IN_CLAUSE);
     return true;
   }
 }

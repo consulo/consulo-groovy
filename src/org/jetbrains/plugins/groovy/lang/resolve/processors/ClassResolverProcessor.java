@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2009 JetBrains s.r.o.
+ * Copyright 2000-2014 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,21 +15,21 @@
  */
 package org.jetbrains.plugins.groovy.lang.resolve.processors;
 
+import java.util.EnumSet;
+
+import org.jetbrains.plugins.groovy.lang.psi.GrReferenceElement;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiType;
-import org.jetbrains.plugins.groovy.lang.psi.GrReferenceElement;
-
-import java.util.EnumSet;
 
 /**
  * @author ven
  */
 public class ClassResolverProcessor extends ResolverProcessor {
-  public ClassResolverProcessor(String refName, GrReferenceElement ref, EnumSet<ResolveKind> kinds) {
-    super(refName, kinds, ref, ref.getTypeArguments());
-  }
+	public ClassResolverProcessor(String refName, GrReferenceElement ref, EnumSet<ResolveKind> kinds) {
+		super(refName, kinds, ref, ref.getTypeArguments());
+	}
 
-  public ClassResolverProcessor(String refName, PsiElement place) {
-    super(refName, RESOLVE_KINDS_CLASS, place, PsiType.EMPTY_ARRAY);
-  }
+	public ClassResolverProcessor(String refName, PsiElement place) {
+		super(refName, RESOLVE_KINDS_CLASS, place, PsiType.EMPTY_ARRAY);
+	}
 }

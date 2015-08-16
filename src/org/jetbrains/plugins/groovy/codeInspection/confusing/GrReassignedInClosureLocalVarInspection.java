@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2012 JetBrains s.r.o.
+ * Copyright 2000-2014 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@ package org.jetbrains.plugins.groovy.codeInspection.confusing;
 
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.plugins.groovy.codeInsight.GrReassignedLocalVarsChecker;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.codeInspection.GroovyInspectionBundle;
@@ -27,9 +26,9 @@ import org.jetbrains.plugins.groovy.lang.psi.GrNamedElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlock;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrAnonymousClassDefinition;
+import org.jetbrains.plugins.groovy.lang.psi.impl.GrReassignedLocalVarsChecker;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
-import org.jetbrains.plugins.groovy.refactoring.GroovyRefactoringUtil;
 import com.intellij.codeInspection.LocalQuickFix;
 import com.intellij.codeInspection.ProblemHighlightType;
 import com.intellij.psi.PsiElement;
@@ -38,70 +37,96 @@ import com.intellij.psi.PsiType;
 /**
  * @author Max Medvedev
  */
-public class GrReassignedInClosureLocalVarInspection extends BaseInspection {
+public class GrReassignedInClosureLocalVarInspection extends BaseInspection
+{
 
-  @Nls
-  @NotNull
-  public String getGroupDisplayName() {
-    return CONFUSING_CODE_CONSTRUCTS;
-  }
+	@Override
+	@Nls
+	@NotNull
+	public String getGroupDisplayName()
+	{
+		return CONFUSING_CODE_CONSTRUCTS;
+	}
 
-  @Nls
-  @NotNull
-  public String getDisplayName() {
-    return "Local variable is reassigned in closure or anonymous class";
-  }
+	@Override
+	@Nls
+	@NotNull
+	public String getDisplayName()
+	{
+		return "Local variable is reassigned in closure or anonymous class";
+	}
 
-  @Override
-  public boolean isEnabledByDefault() {
-    return true;
-  }
+	@Override
+	public boolean isEnabledByDefault()
+	{
+		return true;
+	}
 
+	@NotNull
+	@Override
+	protected BaseInspectionVisitor buildVisitor()
+	{
+		return new BaseInspectionVisitor()
+		{
+			@Override
+			public void visitReferenceExpression(GrReferenceExpression referenceExpression)
+			{
+				super.visitReferenceExpression(referenceExpression);
 
+				if(!PsiUtil.isLValue(referenceExpression))
+				{
+					return;
+				}
+				final PsiElement resolved = referenceExpression.resolve();
+				if(!PsiUtil.isLocalVariable(resolved))
+				{
+					return;
+				}
 
-  @Override
-  protected BaseInspectionVisitor buildVisitor() {
-    return new BaseInspectionVisitor() {
-      @Override
-      public void visitReferenceExpression(GrReferenceExpression referenceExpression) {
-        super.visitReferenceExpression(referenceExpression);
+				final PsiType checked = GrReassignedLocalVarsChecker.getReassignedVarType(referenceExpression, false);
+				if(checked == null)
+				{
+					return;
+				}
 
-        if (!PsiUtil.isLValue(referenceExpression)) return;
-        final PsiElement resolved = referenceExpression.resolve();
-        if (!GroovyRefactoringUtil.isLocalVariable(resolved)) return;
+				final GrControlFlowOwner varFlowOwner = ControlFlowUtils.findControlFlowOwner(resolved);
+				final GrControlFlowOwner refFlorOwner = ControlFlowUtils.findControlFlowOwner(referenceExpression);
+				if(isOtherScopeAndType(referenceExpression, checked, varFlowOwner, refFlorOwner))
+				{
+					String flowDescription = getFlowDescription(refFlorOwner);
+					final String message = GroovyInspectionBundle.message("local.var.0.is.reassigned",
+							((GrNamedElement) resolved).getName(), flowDescription);
+					registerError(referenceExpression, message, LocalQuickFix.EMPTY_ARRAY,
+							ProblemHighlightType.GENERIC_ERROR_OR_WARNING);
+				}
+			}
+		};
+	}
 
-        final PsiType checked = GrReassignedLocalVarsChecker.checkReassignedVar(referenceExpression, false);
-        if (checked == null) return;
+	private static boolean isOtherScopeAndType(GrReferenceExpression referenceExpression,
+			PsiType checked,
+			GrControlFlowOwner varFlowOwner,
+			GrControlFlowOwner refFlorOwner)
+	{
+		return varFlowOwner != refFlorOwner && !TypesUtil.isAssignable(referenceExpression.getType(), checked,
+				referenceExpression);
+	}
 
-        final GrControlFlowOwner varFlowOwner = ControlFlowUtils.findControlFlowOwner(resolved);
-        final GrControlFlowOwner refFlorOwner = ControlFlowUtils.findControlFlowOwner(referenceExpression);
-        if (isOtherScopeAndType(referenceExpression, checked, varFlowOwner, refFlorOwner)) {
-          String flowDescription = getFlowDescription(refFlorOwner);
-          final String message = GroovyInspectionBundle.message("local.var.0.is.reassigned.in.closure", ((GrNamedElement) resolved).getName(), flowDescription);
-          registerError(referenceExpression, message, LocalQuickFix.EMPTY_ARRAY, ProblemHighlightType.GENERIC_ERROR_OR_WARNING);
-        }
-      }
-    };
-  }
-
-  private static boolean isOtherScopeAndType(GrReferenceExpression referenceExpression,
-                                             PsiType checked,
-                                             GrControlFlowOwner varFlowOwner,
-                                             GrControlFlowOwner refFlorOwner) {
-    return varFlowOwner != refFlorOwner && !TypesUtil.isAssignable(referenceExpression.getType(), checked, referenceExpression);
-  }
-
-  private static String getFlowDescription(GrControlFlowOwner refFlorOwner) {
-    String flowDescription;
-    if (refFlorOwner instanceof GrClosableBlock) {
-      flowDescription = GroovyInspectionBundle.message("closure");
-    }
-    else if (refFlorOwner instanceof GrAnonymousClassDefinition) {
-      flowDescription = GroovyInspectionBundle.message("anonymous.class");
-    }
-    else {
-      flowDescription = GroovyInspectionBundle.message("other.scope");
-    }
-    return flowDescription;
-  }
+	private static String getFlowDescription(GrControlFlowOwner refFlorOwner)
+	{
+		String flowDescription;
+		if(refFlorOwner instanceof GrClosableBlock)
+		{
+			flowDescription = GroovyInspectionBundle.message("closure");
+		}
+		else if(refFlorOwner instanceof GrAnonymousClassDefinition)
+		{
+			flowDescription = GroovyInspectionBundle.message("anonymous.class");
+		}
+		else
+		{
+			flowDescription = GroovyInspectionBundle.message("other.scope");
+		}
+		return flowDescription;
+	}
 }

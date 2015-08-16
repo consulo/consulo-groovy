@@ -15,6 +15,17 @@
  */
 package org.jetbrains.plugins.groovy.testIntegration;
 
+import java.util.Collection;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.plugins.groovy.actions.GroovyTemplates;
+import org.jetbrains.plugins.groovy.annotator.intentions.CreateClassActionBase;
+import org.jetbrains.plugins.groovy.intentions.GroovyIntentionsBundle;
+import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrExtendsClause;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
+import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
 import com.intellij.codeInsight.CodeInsightBundle;
 import com.intellij.codeInsight.CodeInsightUtil;
 import com.intellij.openapi.application.AccessToken;
@@ -25,7 +36,13 @@ import com.intellij.openapi.fileEditor.ex.IdeDocumentHistory;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.util.Computable;
-import com.intellij.psi.*;
+import com.intellij.psi.JavaPsiFacade;
+import com.intellij.psi.PsiClass;
+import com.intellij.psi.PsiDocumentManager;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiManager;
+import com.intellij.psi.PsiMethod;
+import com.intellij.psi.PsiType;
 import com.intellij.psi.codeStyle.CodeStyleManager;
 import com.intellij.psi.codeStyle.JavaCodeStyleManager;
 import com.intellij.psi.impl.source.PostprocessReformattingAspect;
@@ -36,17 +53,6 @@ import com.intellij.testIntegration.TestIntegrationUtils;
 import com.intellij.testIntegration.createTest.CreateTestDialog;
 import com.intellij.testIntegration.createTest.TestGenerator;
 import com.intellij.util.IncorrectOperationException;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.jetbrains.plugins.groovy.actions.GroovyTemplates;
-import org.jetbrains.plugins.groovy.annotator.intentions.CreateClassActionBase;
-import org.jetbrains.plugins.groovy.intentions.GroovyIntentionsBundle;
-import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrExtendsClause;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
-import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
-
-import java.util.Collection;
 
 /**
  * @author Maxim.Medvedev
@@ -69,7 +75,7 @@ public class GroovyTestGenerator implements TestGenerator {
                 d.getClassName(),
                 PsiManager.getInstance(project),
                 null,
-                GroovyTemplates.GROOVY_CLASS);
+                GroovyTemplates.GROOVY_CLASS, true);
               if (targetClass == null) return null;
 
               addSuperClass(targetClass, project, d.getSuperClassName());

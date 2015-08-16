@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2013 JetBrains s.r.o.
+ * Copyright 2000-2014 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,216 +16,210 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl;
 
-import com.intellij.openapi.util.Pair;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.pom.java.LanguageLevel;
-import com.intellij.psi.*;
-import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.util.containers.HashMap;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Set;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrArgumentLabel;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrNamedArgument;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
-
-import java.util.*;
-
-import static com.intellij.psi.CommonClassNames.JAVA_UTIL_MAP;
-import static org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames.JAVA_UTIL_LINKED_HASH_MAP;
+import org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames;
+import com.intellij.openapi.util.Couple;
+import com.intellij.openapi.util.VolatileNotNullLazyValue;
+import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.pom.java.LanguageLevel;
+import com.intellij.psi.CommonClassNames;
+import com.intellij.psi.JavaPsiFacade;
+import com.intellij.psi.PsiClassType;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiType;
+import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.util.containers.ContainerUtil;
 
 /**
  * @author peter
  */
-public class GrMapType extends GrLiteralClassType {
-  private static final PsiType[] RAW_PARAMETERS = new PsiType[]{null, null};
-  
-  private final Map<String, PsiType> myStringEntries;
-  private final List<Pair<PsiType, PsiType>> myOtherEntries;
-  private final String myJavaClassName;
+public abstract class GrMapType extends GrLiteralClassType
+{
+	private final String myJavaClassName;
 
-  private GrMapType(JavaPsiFacade facade,
-                    GlobalSearchScope scope,
-                    Map<String, PsiType> stringEntries,
-                    List<Pair<PsiType, PsiType>> otherEntries,
-                    LanguageLevel languageLevel) {
-    super(languageLevel, scope, facade);
-    myStringEntries = stringEntries;
-    myOtherEntries = otherEntries;
+	private final VolatileNotNullLazyValue<PsiType[]> myParameters = new VolatileNotNullLazyValue<PsiType[]>()
+	{
+		@NotNull
+		@Override
+		protected PsiType[] compute()
+		{
+			final PsiType[] keyTypes = getAllKeyTypes();
+			final PsiType[] valueTypes = getAllValueTypes();
+			if(keyTypes.length == 0 && valueTypes.length == 0)
+			{
+				return EMPTY_ARRAY;
+			}
 
-    myJavaClassName = facade.findClass(JAVA_UTIL_LINKED_HASH_MAP, scope) != null ? JAVA_UTIL_LINKED_HASH_MAP : JAVA_UTIL_MAP;
-  }
+			return new PsiType[]{
+					getLeastUpperBound(keyTypes),
+					getLeastUpperBound(valueTypes)
+			};
+		}
+	};
 
-  public GrMapType(@NotNull PsiElement context, GrNamedArgument[] args) {
-    super(LanguageLevel.JDK_1_5, context.getResolveScope(), JavaPsiFacade.getInstance(context.getProject()));
+	protected GrMapType(JavaPsiFacade facade, GlobalSearchScope scope)
+	{
+		this(facade, scope, LanguageLevel.JDK_1_5);
+	}
 
-    myJavaClassName = myFacade.findClass(JAVA_UTIL_LINKED_HASH_MAP, myScope) != null ? JAVA_UTIL_LINKED_HASH_MAP : JAVA_UTIL_MAP;
+	protected GrMapType(JavaPsiFacade facade, GlobalSearchScope scope, LanguageLevel languageLevel)
+	{
+		super(languageLevel, scope, facade);
 
-    myStringEntries = new HashMap<String, PsiType>();
-    myOtherEntries = new ArrayList<Pair<PsiType, PsiType>>();
+		myJavaClassName = facade.findClass(GroovyCommonClassNames.JAVA_UTIL_LINKED_HASH_MAP,
+				scope) != null ? GroovyCommonClassNames.JAVA_UTIL_LINKED_HASH_MAP : CommonClassNames.JAVA_UTIL_MAP;
+	}
 
-    for (GrNamedArgument arg : args) {
-      GrArgumentLabel label = arg.getLabel();
-      if (label == null) continue;
+	@NotNull
+	@Override
+	protected String getJavaClassName()
+	{
+		return myJavaClassName;
+	}
 
-      GrExpression expression = arg.getExpression();
-      if (expression == null || expression.getType() == null) continue;
+	@Override
+	@NotNull
+	public String getClassName()
+	{
+		return StringUtil.getShortName(myJavaClassName);
+	}
 
-      String labelName = label.getName();
-      GrExpression labelExpression = label.getExpression();
+	@Nullable
+	public abstract PsiType getTypeByStringKey(String key);
 
-      if (labelName != null) {
-        myStringEntries.put(labelName, expression.getType());
-      }
-      else if (labelExpression != null) {
-        PsiType type = labelExpression.getType();
-        myOtherEntries.add(new Pair<PsiType, PsiType>(type, expression.getType()));
-      }
-    }
-  }
+	@NotNull
+	public abstract Set<String> getStringKeys();
 
-  @NotNull
-  @Override
-  public PsiClassType rawType() {
-    return new GrMapType(myFacade, getResolveScope(), Collections.<String, PsiType>emptyMap(), Collections.<Pair<PsiType,PsiType>>emptyList(), getLanguageLevel());
-  }
+	public abstract boolean isEmpty();
 
-  @NotNull
-  @Override
-  protected String getJavaClassName() {
-    return myJavaClassName;
-  }
+	@NotNull
+	protected abstract PsiType[] getAllKeyTypes();
 
-  @NotNull
-  public String getClassName() {
-    return StringUtil.getShortName(myJavaClassName);
-  }
+	@NotNull
+	protected abstract PsiType[] getAllValueTypes();
 
-  @Nullable
-  public PsiType getTypeByStringKey(String key) {
-    return myStringEntries.get(key);
-  }
+	@NotNull
+	protected abstract List<Couple<PsiType>> getOtherEntries();
 
-  public Set<String> getStringKeys() {
-    return myStringEntries.keySet();
-  }
+	@NotNull
+	protected abstract LinkedHashMap<String, PsiType> getStringEntries();
 
-  public PsiType[] getAllKeyTypes() {
-    Set<PsiType> result = new HashSet<PsiType>();
-    if (!myStringEntries.isEmpty()) {
-      result.add(GroovyPsiManager.getInstance(myFacade.getProject()).createTypeByFQClassName(CommonClassNames.JAVA_LANG_STRING, getResolveScope()));
-    }
-    for (Pair<PsiType, PsiType> entry : myOtherEntries) {
-      result.add(entry.first);
-    }
-    result.remove(null);
-    return result.toArray(new PsiType[result.size()]);
-  }
+	@Override
+	@NotNull
+	public PsiType[] getParameters()
+	{
+		return myParameters.getValue();
+	}
 
-  public PsiType[] getAllValueTypes() {
-    Set<PsiType> result = new HashSet<PsiType>();
-    result.addAll(myStringEntries.values());
-    for (Pair<PsiType, PsiType> entry : myOtherEntries) {
-      result.add(entry.second);
-    }
-    result.remove(null);
-    return result.toArray(new PsiType[result.size()]);
-  }
+	@Override
+	@NotNull
+	public String getInternalCanonicalText()
+	{
+		Set<String> stringKeys = getStringKeys();
+		List<Couple<PsiType>> otherEntries = getOtherEntries();
 
-  @NotNull
-  public PsiType[] getParameters() {
-    final PsiType[] keyTypes = getAllKeyTypes();
-    final PsiType[] valueTypes = getAllValueTypes();
-    if (keyTypes.length == 0 && valueTypes.length == 0) {
-      return RAW_PARAMETERS;
-    }
+		if(stringKeys.isEmpty())
+		{
+			if(otherEntries.isEmpty())
+			{
+				return "[:]";
+			}
+			String name = getJavaClassName();
+			final PsiType[] params = getParameters();
+			return name + "<" + getInternalText(params[0]) + ", " + getInternalText(params[1]) + ">";
+		}
 
-    return new PsiType[]{getLeastUpperBound(keyTypes), getLeastUpperBound(valueTypes)};
-  }
+		List<String> components = new ArrayList<String>();
+		for(String s : stringKeys)
+		{
+			components.add("'" + s + "':" + getInternalCanonicalText(getTypeByStringKey(s)));
+		}
+		for(Couple<PsiType> entry : otherEntries)
+		{
+			components.add(getInternalCanonicalText(entry.first) + ":" + getInternalCanonicalText(entry.second));
+		}
+		boolean tooMany = components.size() > 2;
+		final List<String> theFirst = components.subList(0, Math.min(2, components.size()));
+		return "[" + StringUtil.join(theFirst, ", ") + (tooMany ? ",..." : "") + "]";
+	}
 
-  public String getInternalCanonicalText() {
-    if (myStringEntries.size() == 0) {
-      if (myOtherEntries.size() == 0) return "[:]";
-      String name = getJavaClassName();
-      final PsiType[] params = getParameters();
-      return name + "<" + getInternalText(params[0]) + ", " + getInternalText(params[1]) + ">";
-    }
+	@NotNull
+	private static String getInternalText(@Nullable PsiType param)
+	{
+		return param == null ? "null" : param.getInternalCanonicalText();
+	}
 
-    List<String> components = new ArrayList<String>();
-    for (String s : myStringEntries.keySet()) {
-      components.add("'" + s + "':" + getInternalCanonicalText(myStringEntries.get(s)));
-    }
-    for (Pair<PsiType, PsiType> entry : myOtherEntries) {
-      components.add(getInternalCanonicalText(entry.first) + ":" + getInternalCanonicalText(entry.second));
-    }
-    boolean tooMany = components.size() > 2;
-    final List<String> theFirst = components.subList(0, Math.min(2, components.size()));
-    return "[" + StringUtil.join(theFirst, ", ") + (tooMany ? ",..." : "") + "]";
-  }
+	public boolean equals(Object obj)
+	{
+		if(obj instanceof GrMapType)
+		{
+			GrMapType other = (GrMapType) obj;
+			return getStringEntries().equals(other.getStringEntries()) && getOtherEntries().equals(other
+					.getOtherEntries());
+		}
+		return super.equals(obj);
+	}
 
-  @NotNull
-  private static String getInternalText(@Nullable PsiType param) {
-    return param == null ? "null" : param.getInternalCanonicalText();
-  }
+	@Override
+	public boolean isAssignableFrom(@NotNull PsiType type)
+	{
+		return type instanceof GrMapType || super.isAssignableFrom(type);
+	}
 
-  public boolean isValid() {
-    for (PsiType type : myStringEntries.values()) {
-      if (type != null && !type.isValid()) {
-        return false;
-      }
-    }
-    for (Pair<PsiType, PsiType> entry : myOtherEntries) {
-      if (entry.first != null && !entry.first.isValid()) {
-        return false;
-      }
-      if (entry.second != null && !entry.second.isValid()) {
-        return false;
-      }
-    }
+	public static GrMapType merge(GrMapType l, GrMapType r)
+	{
+		final GlobalSearchScope scope = l.getScope().intersectWith(r.getResolveScope());
 
-    return true;
-  }
+		final LinkedHashMap<String, PsiType> strings = ContainerUtil.newLinkedHashMap();
+		strings.putAll(l.getStringEntries());
+		strings.putAll(r.getStringEntries());
 
-  @NotNull
-  public PsiClassType setLanguageLevel(@NotNull final LanguageLevel languageLevel) {
-    return new GrMapType(myFacade, getResolveScope(), myStringEntries, myOtherEntries, languageLevel);
-  }
+		List<Couple<PsiType>> other = new ArrayList<Couple<PsiType>>();
+		other.addAll(l.getOtherEntries());
+		other.addAll(r.getOtherEntries());
 
-  public boolean equals(Object obj) {
-    if (obj instanceof GrMapType) {
-      return myStringEntries.equals(((GrMapType)obj).myStringEntries) && myOtherEntries.equals(((GrMapType)obj).myOtherEntries);
-    }
-    return super.equals(obj);
-  }
+		return create(l.myFacade, scope, strings, other);
+	}
 
-  public boolean isAssignableFrom(@NotNull PsiType type) {
-    return type instanceof GrMapType || myFacade.getElementFactory().createTypeFromText(getJavaClassName(), null).isAssignableFrom(type);
-  }
+	public static GrMapType create(JavaPsiFacade facade,
+			GlobalSearchScope scope,
+			LinkedHashMap<String, PsiType> stringEntries,
+			List<Couple<PsiType>> otherEntries)
+	{
+		return new GrMapTypeImpl(facade, scope, stringEntries, otherEntries, LanguageLevel.JDK_1_5);
+	}
 
-  public static GrMapType merge(GrMapType l, GrMapType r) {
-    final GlobalSearchScope scope = l.getScope().intersectWith(r.getResolveScope());
+	public static GrMapType create(GlobalSearchScope scope)
+	{
+		JavaPsiFacade facade = JavaPsiFacade.getInstance(scope.getProject());
+		List<Couple<PsiType>> otherEntries = Collections.emptyList();
+		LinkedHashMap<String, PsiType> stringEntries = ContainerUtil.newLinkedHashMap();
+		return new GrMapTypeImpl(facade, scope, stringEntries, otherEntries, LanguageLevel.JDK_1_5);
+	}
 
-    final Map<String, PsiType> strings = new HashMap<String, PsiType>();
-    strings.putAll(l.myStringEntries);
-    strings.putAll(r.myStringEntries);
+	@NotNull
+	@Override
+	public PsiClassType setLanguageLevel(@NotNull LanguageLevel languageLevel)
+	{
+		return new GrMapTypeImpl(myFacade, getResolveScope(), getStringEntries(), getOtherEntries(), languageLevel);
+	}
 
-    List<Pair<PsiType, PsiType>> other = new ArrayList<Pair<PsiType, PsiType>>();
-    other.addAll(l.myOtherEntries);
-    other.addAll(r.myOtherEntries);
+	public static GrMapType createFromNamedArgs(PsiElement context, GrNamedArgument[] args)
+	{
+		return new GrMapTypeFromNamedArgs(context, args);
+	}
 
-    return create(l.myFacade, scope, strings, other);
-  }
-
-  public static GrMapType create(JavaPsiFacade facade,
-                                 GlobalSearchScope scope,
-                                 Map<String, PsiType> stringEntries,
-                                 List<Pair<PsiType, PsiType>> otherEntries) {
-    return new GrMapType(facade, scope, stringEntries, otherEntries, LanguageLevel.JDK_1_5);
-  }
-
-  public static GrMapType create(GlobalSearchScope scope) {
-    JavaPsiFacade facade = JavaPsiFacade.getInstance(scope.getProject());
-    List<Pair<PsiType, PsiType>> otherEntries = Collections.emptyList();
-    Map<String, PsiType> stringEntries = Collections.emptyMap();
-    return new GrMapType(facade, scope, stringEntries, otherEntries, LanguageLevel.JDK_1_5);
-  }
+	@Override
+	public String toString()
+	{
+		return "map type";
+	}
 }

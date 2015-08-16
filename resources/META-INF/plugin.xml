@@ -38,6 +38,7 @@
 		<extensionPoint name="closureMissingMethodContributor"
 						interface="org.jetbrains.plugins.groovy.lang.resolve.ClosureMissingMethodContributor"/>
 		<extensionPoint name="variableEnhancer" interface="org.jetbrains.plugins.groovy.lang.psi.typeEnhancers.GrVariableEnhancer"/>
+		<extensionPoint name="signatureHintProcessor" interface="org.jetbrains.plugins.groovy.lang.psi.typeEnhancers.SignatureHintProcessor"/>
 		<extensionPoint name="referenceTypeEnhancer" interface="org.jetbrains.plugins.groovy.lang.psi.typeEnhancers.GrReferenceTypeEnhancer"/>
 		<extensionPoint name="typeConverter" interface="org.jetbrains.plugins.groovy.lang.psi.typeEnhancers.GrTypeConverter"/>
 		<extensionPoint name="expectedTypesContributor"
@@ -79,14 +80,13 @@
 		<extensionPoint name="methodMayBeStaticInspectionFilter"
 						interface="org.jetbrains.plugins.groovy.codeInspection.declaration.GrMethodMayBeStaticInspectionFilter"/>
 
-		<extensionPoint name="customAnnotationChecker" interface="org.jetbrains.plugins.groovy.annotator.CustomAnnotationChecker"/>
+		<extensionPoint name="customAnnotationChecker" interface="org.jetbrains.plugins.groovy.annotator.checkers.CustomAnnotationChecker"/>
 
 		<extensionPoint name="convertToJava.customMethodInvocator"
 						interface="org.jetbrains.plugins.groovy.refactoring.convertToJava.invocators.CustomMethodInvocator"/>
 	</extensionPoints>
 
 	<extensions defaultExtensionNs="org.intellij.groovy">
-
 		<groovyFrameworkConfigNotification order="last"
 										   implementation="org.jetbrains.plugins.groovy.annotator.DefaultGroovyFrameworkConfigNotification"/>
 
@@ -149,11 +149,21 @@
 
 		<variableEnhancer implementation="org.jetbrains.plugins.groovy.lang.psi.typeEnhancers.ClosureParameterEnhancer"/>
 		<variableEnhancer implementation="org.jetbrains.plugins.groovy.lang.psi.typeEnhancers.ClosureAsAnonymousParameterEnhancer"/>
+		<variableEnhancer implementation="org.jetbrains.plugins.groovy.lang.psi.typeEnhancers.ClosureParamsEnhancer"/>
 
-
-		<typeConverter implementation="org.jetbrains.plugins.groovy.lang.psi.typeEnhancers.GrContainerTypeConverter"/>
-		<typeConverter implementation="org.jetbrains.plugins.groovy.lang.psi.typeEnhancers.GrStringTypeConverter"/>
 		<typeConverter implementation="org.jetbrains.plugins.groovy.lang.psi.typeEnhancers.GrBooleanTypeConverter"/>
+		<typeConverter implementation="org.jetbrains.plugins.groovy.lang.psi.typeEnhancers.GrGenericTypeConverter"/>
+		<typeConverter implementation="org.jetbrains.plugins.groovy.lang.psi.typeEnhancers.GrClassConverter"/>
+		<typeConverter implementation="org.jetbrains.plugins.groovy.lang.psi.typeEnhancers.GrNullVoidConverter"/>
+
+		<typeConverter implementation="org.jetbrains.plugins.groovy.lang.psi.typeEnhancers.GrCharConverter"/>
+		<typeConverter implementation="org.jetbrains.plugins.groovy.lang.psi.typeEnhancers.GrNumberConverter"/>
+		<typeConverter implementation="org.jetbrains.plugins.groovy.lang.psi.typeEnhancers.GrStringConverter"/>
+
+		<typeConverter implementation="org.jetbrains.plugins.groovy.lang.psi.typeEnhancers.GrEnumConverter"/>
+		<typeConverter implementation="org.jetbrains.plugins.groovy.lang.psi.typeEnhancers.GrContainerTypeConverter"/>
+		<typeConverter implementation="org.jetbrains.plugins.groovy.lang.psi.typeEnhancers.ClosureToSamConverter"/>
+		<typeConverter implementation="org.jetbrains.plugins.groovy.lang.psi.typeEnhancers.GrContainerConverter"/>
 
 		<typeConverter implementation="org.jetbrains.plugins.groovy.gpp.GppTypeConverter"/>
 		<expectedTypesContributor implementation="org.jetbrains.plugins.groovy.gpp.GppExpectedTypesContributor"/>
@@ -170,17 +180,18 @@
 		<closureCompleter implementation="org.jetbrains.plugins.groovy.lang.completion.GdslClosureCompleter"/>
 		<closureCompleter implementation="org.jetbrains.plugins.groovy.lang.completion.EachWithIndexClosureCompleter"/>
 
-		<customAnnotationChecker implementation="org.jetbrains.plugins.groovy.annotator.FieldAnnotationChecker"/>
-		<customAnnotationChecker implementation="org.jetbrains.plugins.groovy.annotator.NewifyAnnotationChecker"/>
-		<customAnnotationChecker implementation="org.jetbrains.plugins.groovy.annotator.GrabAnnotationChecker"/>
-		<customAnnotationChecker implementation="org.jetbrains.plugins.groovy.annotator.GrAliasAnnotationChecker"/>
-		<customAnnotationChecker implementation="org.jetbrains.plugins.groovy.annotator.AnnotationCollectorChecker" order="first"/>
-		<customAnnotationChecker implementation="org.jetbrains.plugins.groovy.annotator.DelegatesToAnnotationChecker"/>
+		<customAnnotationChecker implementation="org.jetbrains.plugins.groovy.annotator.checkers.FieldAnnotationChecker"/>
+		<customAnnotationChecker implementation="org.jetbrains.plugins.groovy.annotator.checkers.NewifyAnnotationChecker"/>
+		<customAnnotationChecker implementation="org.jetbrains.plugins.groovy.annotator.checkers.GrabAnnotationChecker"/>
+		<customAnnotationChecker implementation="org.jetbrains.plugins.groovy.annotator.checkers.GrAliasAnnotationChecker"/>
+		<customAnnotationChecker implementation="org.jetbrains.plugins.groovy.annotator.checkers.AnnotationCollectorChecker" order="first"/>
+		<customAnnotationChecker implementation="org.jetbrains.plugins.groovy.annotator.checkers.DelegatesToAnnotationChecker"/>
 		<customAnnotationChecker implementation="org.jetbrains.plugins.groovy.griffon.GriffonPropertyListenerAnnotationChecker"/>
+		<customAnnotationChecker implementation="org.jetbrains.plugins.groovy.annotator.checkers.BaseScriptAnnotationChecker"/>
 
 		<convertToJava.customMethodInvocator
 				implementation="org.jetbrains.plugins.groovy.refactoring.convertToJava.invocators.MapGetterSetterInvocator"/>
-		<customAnnotationChecker implementation="org.jetbrains.plugins.groovy.annotator.TypeCheckedAnnotationChecker"/>
+		<customAnnotationChecker implementation="org.jetbrains.plugins.groovy.annotator.checkers.TypeCheckedAnnotationChecker"/>
 	</extensions>
 
 	<extensions defaultExtensionNs="org.consulo.java">
@@ -249,6 +260,9 @@
 	</extensions>
 
 	<extensions defaultExtensionNs="com.intellij">
+
+		<applicationService serviceInterface="org.jetbrains.plugins.groovy.codeInspection.GroovyQuickFixFactory"
+							serviceImplementation="org.jetbrains.plugins.groovy.codeInspection.GroovyQuickFixFactoryImpl"/>
 		<copyright.updater filetype="Groovy" implementationClass="org.jetbrains.plugins.groovy.copyright.UpdateGroovyCopyrightsProvider"/>
 		<pom.declarationSearcher implementation="org.jetbrains.plugins.groovy.lang.psi.GroovyDeclarationSearcher"/>
 		<compiler implementation="org.jetbrains.plugins.groovy.compiler.generator.GroovycStubGenerator" id="groovy-stub-generator"/>
@@ -521,7 +535,10 @@
 
 		<projectService serviceInterface="org.jetbrains.plugins.groovy.lang.psi.impl.GroovyPsiManager"
 						serviceImplementation="org.jetbrains.plugins.groovy.lang.psi.impl.GroovyPsiManager"/>
-
+		<projectService serviceInterface="org.jetbrains.plugins.groovy.lang.psi.impl.GroovyCodeStyleManager"
+						serviceImplementation="org.jetbrains.plugins.groovy.codeStyle.GroovyCodeStyleManagerImpl"/>
+		<projectService serviceInterface="org.jetbrains.plugins.groovy.lang.psi.impl.GroovyCodeStyleSettingsFacade"
+						serviceImplementation="org.jetbrains.plugins.groovy.codeStyle.GroovyCodeStyleSettingsFacadeImpl"/>
 		<projectService serviceInterface="org.jetbrains.plugins.groovy.dgm.GroovyExtensionProvider"
 						serviceImplementation="org.jetbrains.plugins.groovy.dgm.GroovyExtensionProvider"/>
 

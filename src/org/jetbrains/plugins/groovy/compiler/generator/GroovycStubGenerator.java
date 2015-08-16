@@ -31,7 +31,7 @@ import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.compiler.GroovyCompilerBase;
 import org.jetbrains.plugins.groovy.compiler.GroovyCompilerConfiguration;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
-import org.jetbrains.plugins.groovy.refactoring.GroovyNamesUtil;
+import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyNamesUtil;
 import org.jetbrains.plugins.groovy.refactoring.convertToJava.GroovyToJavaGenerator;
 import org.mustbe.consulo.roots.ContentFolderScopes;
 import org.mustbe.consulo.roots.impl.ProductionContentFolderTypeProvider;

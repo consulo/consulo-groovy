@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2012 JetBrains s.r.o.
+ * Copyright 2000-2014 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,35 +15,54 @@
  */
 package org.jetbrains.plugins.groovy.annotator.intentions.dynamic;
 
-import com.intellij.psi.*;
-import com.intellij.psi.scope.PsiScopeProcessor;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil;
+import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.ClassUtil;
 import org.jetbrains.plugins.groovy.lang.resolve.NonCodeMembersContributor;
 import org.jetbrains.plugins.groovy.lang.resolve.ResolveUtil;
+import com.intellij.psi.PsiClass;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiMethod;
+import com.intellij.psi.PsiType;
+import com.intellij.psi.PsiVariable;
+import com.intellij.psi.ResolveState;
+import com.intellij.psi.scope.PsiScopeProcessor;
 
 /**
  * @author peter
  */
-public class DynamicMembersContributor extends NonCodeMembersContributor {
-  @Override
-  public void processDynamicElements(@NotNull PsiType qualifierType,
-                                     PsiClass aClass,
-                                     PsiScopeProcessor processor,
-                                     PsiElement place,
-                                     ResolveState state) {
-    if (aClass == null) return;
+public class DynamicMembersContributor extends NonCodeMembersContributor
+{
+	@Override
+	public void processDynamicElements(@NotNull PsiType qualifierType,
+			PsiClass aClass,
+			@NotNull PsiScopeProcessor processor,
+			@NotNull PsiElement place,
+			@NotNull ResolveState state)
+	{
+		if(aClass == null)
+		{
+			return;
+		}
 
-    final DynamicManager manager = DynamicManager.getInstance(place.getProject());
+		final DynamicManager manager = DynamicManager.getInstance(place.getProject());
 
-    for (String qName : TypesUtil.getSuperClassesWithCache(aClass).keySet()) {
-      for (PsiMethod method : manager.getMethods(qName)) {
-        if (!ResolveUtil.processElement(processor, method, state)) return;
-      }
+		for(String qName : ClassUtil.getSuperClassesWithCache(aClass).keySet())
+		{
+			for(PsiMethod method : manager.getMethods(qName))
+			{
+				if(!ResolveUtil.processElement(processor, method, state))
+				{
+					return;
+				}
+			}
 
-      for (PsiVariable var : manager.getProperties(qName)) {
-        if (!ResolveUtil.processElement(processor, var, state)) return;
-      }
-    }
-  }
+			for(PsiVariable var : manager.getProperties(qName))
+			{
+				if(!ResolveUtil.processElement(processor, var, state))
+				{
+					return;
+				}
+			}
+		}
+	}
 }

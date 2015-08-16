@@ -41,11 +41,12 @@ import icons.JetgroovyIcons;
 public class GroovyFileType extends LanguageFileType {
 
   public static final GroovyFileType GROOVY_FILE_TYPE = new GroovyFileType();
-  public static final Language GROOVY_LANGUAGE = GROOVY_FILE_TYPE.getLanguage();
+  @Deprecated
+  public static final Language GROOVY_LANGUAGE = GroovyLanguage.INSTANCE;
   @NonNls public static final String DEFAULT_EXTENSION = "groovy";
 
   private GroovyFileType() {
-    super(new GroovyLanguage());
+    super(GroovyLanguage.INSTANCE);
     FileTypeEditorHighlighterProviders.INSTANCE.addExplicitExtension(this, new EditorHighlighterProvider() {
       @Override
       public EditorHighlighter getEditorHighlighter(@Nullable Project project,

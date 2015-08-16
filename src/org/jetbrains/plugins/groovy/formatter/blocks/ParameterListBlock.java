@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2013 JetBrains s.r.o.
+ * Copyright 2000-2014 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,16 @@
  */
 package org.jetbrains.plugins.groovy.formatter.blocks;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.plugins.groovy.formatter.AlignmentProvider;
+import org.jetbrains.plugins.groovy.formatter.FormattingContext;
+import org.jetbrains.plugins.groovy.formatter.processors.GroovyWrappingProcessor;
+import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
 import com.intellij.formatting.Block;
 import com.intellij.formatting.Indent;
 import com.intellij.formatting.Wrap;
@@ -22,87 +32,94 @@ import com.intellij.formatting.WrapType;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiErrorElement;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.jetbrains.plugins.groovy.formatter.AlignmentProvider;
-import org.jetbrains.plugins.groovy.formatter.FormattingContext;
-import org.jetbrains.plugins.groovy.formatter.processors.GroovyWrappingProcessor;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author Max Medvedev
  */
-public class ParameterListBlock extends GroovyBlock {
-  private final List<Block> mySubBlocks;
-  private final TextRange myTextRange;
+public class ParameterListBlock extends GroovyBlock
+{
+	private final List<Block> mySubBlocks;
+	private final TextRange myTextRange;
 
-  @NotNull
-  @Override
-  public TextRange getTextRange() {
-    return myTextRange;
-  }
+	@NotNull
+	@Override
+	public TextRange getTextRange()
+	{
+		return myTextRange;
+	}
 
-  public ParameterListBlock(@NotNull GrMethod method, @NotNull Indent indent, @Nullable Wrap wrap, @NotNull FormattingContext context) {
-    super(method.getParameterList().getNode(), indent, wrap, context);
-    final ASTNode methodNode = method.getNode();
-    final ASTNode leftParenth = methodNode.findChildByType(mLPAREN);
-    final ASTNode rightParenth = methodNode.findChildByType(mRPAREN);
+	public ParameterListBlock(@NotNull GrMethod method,
+			@NotNull Indent indent,
+			@Nullable Wrap wrap,
+			@NotNull FormattingContext context)
+	{
+		super(method.getParameterList().getNode(), indent, wrap, context);
+		final ASTNode methodNode = method.getNode();
+		final ASTNode leftParenth = methodNode.findChildByType(GroovyTokenTypes.mLPAREN);
+		final ASTNode rightParenth = methodNode.findChildByType(GroovyTokenTypes.mRPAREN);
 
-    final GroovyWrappingProcessor wrappingProcessor = new GroovyWrappingProcessor(this);
-    mySubBlocks = new ArrayList<Block>();
-    if (leftParenth != null) {
-      mySubBlocks.add(new GroovyBlock(leftParenth, Indent.getNoneIndent(), Wrap.createWrap(WrapType.NONE, false), myContext));
-    }
+		final GroovyWrappingProcessor wrappingProcessor = new GroovyWrappingProcessor(this);
+		mySubBlocks = new ArrayList<Block>();
+		if(leftParenth != null)
+		{
+			mySubBlocks.add(new GroovyBlock(leftParenth, Indent.getNoneIndent(), Wrap.createWrap(WrapType.NONE,
+					false), myContext));
+		}
 
-    List<ASTNode> astNodes = GroovyBlockGenerator.visibleChildren(myNode);
+		List<ASTNode> astNodes = GroovyBlockGenerator.visibleChildren(myNode);
 
-    final boolean unfinished = isParameterListUnfinished(myNode);
+		final boolean unfinished = isParameterListUnfinished(myNode);
 
-    if (myContext.getSettings().ALIGN_MULTILINE_PARAMETERS) {
-      final AlignmentProvider.Aligner aligner = myContext.getAlignmentProvider().createAligner(false);
-      for (ASTNode node : astNodes) {
-        aligner.append(node.getPsi());
-      }
+		if(myContext.getSettings().ALIGN_MULTILINE_PARAMETERS)
+		{
+			final AlignmentProvider.Aligner aligner = myContext.getAlignmentProvider().createAligner(false);
+			for(ASTNode node : astNodes)
+			{
+				aligner.append(node.getPsi());
+			}
 
-      if (rightParenth != null && unfinished) {
-        aligner.append(rightParenth.getPsi());
-      }
-    }
-
-
-    for (ASTNode childNode : astNodes) {
-      mySubBlocks.add(new GroovyBlock(childNode, Indent.getContinuationIndent(), wrappingProcessor.getChildWrap(childNode), myContext));
-    }
+			if(rightParenth != null && unfinished)
+			{
+				aligner.append(rightParenth.getPsi());
+			}
+		}
 
 
-    if (rightParenth != null) {
-      mySubBlocks.add(new GroovyBlock(rightParenth,
-                                      unfinished ? Indent.getContinuationIndent() : Indent.getNoneIndent(),
-                                      Wrap.createWrap(WrapType.NONE, false),
-                                      myContext));
+		for(ASTNode childNode : astNodes)
+		{
+			mySubBlocks.add(new GroovyBlock(childNode, Indent.getContinuationIndent(),
+					wrappingProcessor.getChildWrap(childNode), myContext));
+		}
 
-      if (!unfinished && myContext.getSettings().ALIGN_MULTILINE_METHOD_BRACKETS) {
-        if (leftParenth != null) {
-          myContext.getAlignmentProvider().addPair(leftParenth, rightParenth, false);
-        }
-      }
-    }
 
-    myTextRange = TextRange.create(mySubBlocks.get(0).getTextRange().getStartOffset(),
-                                   mySubBlocks.get(mySubBlocks.size() - 1).getTextRange().getEndOffset());
-  }
+		if(rightParenth != null)
+		{
+			mySubBlocks.add(new GroovyBlock(rightParenth, unfinished ? Indent.getContinuationIndent() : Indent
+					.getNoneIndent(), Wrap.createWrap(WrapType.NONE, false), myContext));
 
-  @NotNull
-  @Override
-  public List<Block> getSubBlocks() {
-    return mySubBlocks;
-  }
+			if(!unfinished && myContext.getSettings().ALIGN_MULTILINE_METHOD_BRACKETS)
+			{
+				if(leftParenth != null)
+				{
+					myContext.getAlignmentProvider().addPair(leftParenth, rightParenth, false);
+				}
+			}
+		}
 
-  private static boolean isParameterListUnfinished(ASTNode parameterList) {
-    final ASTNode last = parameterList.getLastChildNode();
-    return last instanceof PsiErrorElement;
-  }
+		myTextRange = TextRange.create(mySubBlocks.get(0).getTextRange().getStartOffset(),
+				mySubBlocks.get(mySubBlocks.size() - 1).getTextRange().getEndOffset());
+	}
+
+	@NotNull
+	@Override
+	public List<Block> getSubBlocks()
+	{
+		return mySubBlocks;
+	}
+
+	private static boolean isParameterListUnfinished(ASTNode parameterList)
+	{
+		final ASTNode last = parameterList.getLastChildNode();
+		return last instanceof PsiErrorElement;
+	}
 }

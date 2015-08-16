@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2013 JetBrains s.r.o.
+ * Copyright 2000-2014 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,16 +16,10 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.auxiliary.annotation;
 
-import com.intellij.codeInsight.completion.PrefixMatcher;
-import com.intellij.lang.ASTNode;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.*;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.util.IncorrectOperationException;
-import com.intellij.util.containers.ContainerUtilRt;
+import java.util.List;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.plugins.groovy.lang.completion.GroovyCompletionUtil;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.lexer.TokenSets;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
@@ -37,10 +31,23 @@ import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyPsiElementImpl;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyResolveResultImpl;
+import org.jetbrains.plugins.groovy.lang.psi.impl.PsiImplUtil;
 import org.jetbrains.plugins.groovy.lang.psi.impl.auxiliary.modifiers.GrAnnotationCollector;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames;
-
-import java.util.List;
+import com.intellij.lang.ASTNode;
+import com.intellij.openapi.util.TextRange;
+import com.intellij.psi.PsiAnnotation;
+import com.intellij.psi.PsiAnnotationMemberValue;
+import com.intellij.psi.PsiClass;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiIdentifier;
+import com.intellij.psi.PsiMethod;
+import com.intellij.psi.PsiPolyVariantReference;
+import com.intellij.psi.PsiReference;
+import com.intellij.psi.tree.IElementType;
+import com.intellij.util.ArrayUtilRt;
+import com.intellij.util.IncorrectOperationException;
+import com.intellij.util.containers.ContainerUtilRt;
 
 /**
  * @author: Dmitry.Krasilschikov
@@ -51,6 +58,7 @@ public class GrAnnotationNameValuePairImpl extends GroovyPsiElementImpl implemen
     super(node);
   }
 
+  @Override
   public void accept(GroovyElementVisitor visitor) {
     visitor.visitAnnotationNameValuePair(this);
   }
@@ -59,6 +67,7 @@ public class GrAnnotationNameValuePairImpl extends GroovyPsiElementImpl implemen
     return "Annotation member value pair";
   }
 
+  @Override
   @Nullable
   public String getName() {
     final PsiElement nameId = getNameIdentifierGroovy();
@@ -70,6 +79,7 @@ public class GrAnnotationNameValuePairImpl extends GroovyPsiElementImpl implemen
     return null;
   }
 
+  @Override
   @Nullable
   public PsiElement getNameIdentifierGroovy() {
     PsiElement child = getFirstChild();
@@ -81,14 +91,17 @@ public class GrAnnotationNameValuePairImpl extends GroovyPsiElementImpl implemen
     return null;
   }
 
+  @Override
   public PsiIdentifier getNameIdentifier() {
     return null;
   }
 
+  @Override
   public GrAnnotationMemberValue getValue() {
     return findChildByClass(GrAnnotationMemberValue.class);
   }
 
+  @Override
   @NotNull
   public PsiAnnotationMemberValue setValue(@NotNull PsiAnnotationMemberValue newValue) {
     GrAnnotationMemberValue value = getValue();
@@ -100,39 +113,37 @@ public class GrAnnotationNameValuePairImpl extends GroovyPsiElementImpl implemen
     }
   }
 
+  @Override
   public PsiReference getReference() {
     return getNameIdentifierGroovy() == null ? null : this;
   }
 
+  @Override
   public PsiElement getElement() {
     return this;
   }
 
+  @Override
   public TextRange getRangeInElement() {
     PsiElement nameId = getNameIdentifierGroovy();
     assert nameId != null;
     return nameId.getTextRange().shiftRight(-getTextRange().getStartOffset());
   }
 
+  @Override
   @Nullable
   public PsiElement resolve() {
     final GroovyResolveResult[] results = multiResolve(false);
     return results.length == 1 ? results[0].getElement() : null;
   }
 
-  @Nullable
-  private GrAnnotation getAnnotation() {
-    PsiElement pParent = getParent().getParent();
-    if (pParent instanceof GrAnnotation) return (GrAnnotation)pParent;
-    PsiElement ppParent = pParent.getParent();
-    return ppParent instanceof GrAnnotation ? (GrAnnotation)ppParent : null;
-  }
-
+  @Override
   @NotNull
   public String getCanonicalText() {
     return getRangeInElement().substring(getText());
   }
 
+  @Override
   public PsiElement handleElementRename(String newElementName) throws IncorrectOperationException {
     PsiElement nameElement = getNameIdentifierGroovy();
     ASTNode newNameNode = GroovyPsiElementFactory.getInstance(getProject()).createReferenceNameFromText(newElementName).getNode();
@@ -151,19 +162,23 @@ public class GrAnnotationNameValuePairImpl extends GroovyPsiElementImpl implemen
     return this;
   }
 
+  @Override
   public PsiElement bindToElement(@NotNull PsiElement element) throws IncorrectOperationException {
     throw new IncorrectOperationException("NYI");
   }
 
+  @Override
   public boolean isReferenceTo(PsiElement element) {
     return element instanceof PsiMethod && getManager().areElementsEquivalent(element, resolve());
   }
 
+  @Override
   @NotNull
   public Object[] getVariants() {
-    return GroovyCompletionUtil.getAnnotationCompletionResults(getAnnotation(), PrefixMatcher.ALWAYS_TRUE).toArray();
+    return ArrayUtilRt.EMPTY_OBJECT_ARRAY;
   }
 
+  @Override
   public boolean isSoft() {
     return false;
   }
@@ -171,7 +186,7 @@ public class GrAnnotationNameValuePairImpl extends GroovyPsiElementImpl implemen
   @NotNull
   @Override
   public GroovyResolveResult[] multiResolve(boolean incompleteCode) {
-    GrAnnotation annotation = getAnnotation();
+    GrAnnotation annotation = PsiImplUtil.getAnnotation(this);
     if (annotation != null) {
       GrCodeReferenceElement ref = annotation.getClassReference();
       PsiElement resolved = ref.resolve();

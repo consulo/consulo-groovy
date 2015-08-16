@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2012 JetBrains s.r.o.
+ * Copyright 2000-2014 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ import javax.swing.Icon;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.plugins.groovy.GroovyFileType;
+import org.jetbrains.plugins.groovy.GroovyLanguage;
 import org.jetbrains.plugins.groovy.extensions.NamedArgumentDescriptor;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocComment;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
@@ -37,6 +37,7 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrRe
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeElement;
 import com.intellij.codeInsight.completion.originInfo.OriginInfoAwareElement;
 import com.intellij.navigation.ItemPresentation;
+import com.intellij.openapi.util.Key;
 import com.intellij.psi.*;
 import com.intellij.psi.impl.PsiClassImplUtil;
 import com.intellij.psi.impl.PsiImplUtil;
@@ -44,6 +45,7 @@ import com.intellij.psi.impl.PsiSuperMethodImplUtil;
 import com.intellij.psi.impl.light.LightElement;
 import com.intellij.psi.impl.light.LightIdentifier;
 import com.intellij.psi.impl.light.LightReferenceListBuilder;
+import com.intellij.psi.impl.light.LightTypeParameterListBuilder;
 import com.intellij.psi.presentation.java.JavaPresentationUtil;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
@@ -57,32 +59,37 @@ import com.intellij.util.IncorrectOperationException;
 /**
  * @author Sergey Evdokimov
  */
-public class GrLightMethodBuilder  extends LightElement implements GrMethod, OriginInfoAwareElement {
+public class GrLightMethodBuilder extends LightElement implements GrMethod, OriginInfoAwareElement
+{
+
+  public static final Key<String> KIND_KEY = Key.create("GrLightMethodBuilder.Key");
+
   protected String myName;
   private PsiType myReturnType = PsiType.VOID;
   private final GrLightModifierList myModifierList;
   private final GrLightParameterListBuilder myParameterList;
-  private Icon myBaseIcon;
+  private final LightTypeParameterListBuilder myTypeParameterList;
+  private final LightReferenceListBuilder myThrowsList;
+  private boolean myConstructor = false;
   private PsiClass myContainingClass;
-  private Object myMethodKind;
   private Map<String, NamedArgumentDescriptor> myNamedParameters = Collections.emptyMap();
-  private final PsiReferenceList myThrowsList;
-
+  
+  private Icon myBaseIcon;
+  private Object myMethodKind;
   private Object myData;
-  private boolean myConstructor;
   private String myOriginInfo;
 
   public GrLightMethodBuilder(PsiManager manager, String name) {
-    super(manager, GroovyFileType.GROOVY_LANGUAGE);
+    super(manager, GroovyLanguage.INSTANCE);
     myName = name;
-    myParameterList = new GrLightParameterListBuilder(manager, GroovyFileType.GROOVY_LANGUAGE);
     myModifierList = new GrLightModifierList(this);
-    myConstructor = false;
-    myThrowsList = new LightReferenceListBuilder(manager, GroovyFileType.GROOVY_LANGUAGE, PsiReferenceList.Role.THROWS_LIST);
+    myParameterList = new GrLightParameterListBuilder(manager, GroovyLanguage.INSTANCE);
+    myTypeParameterList = new LightTypeParameterListBuilder(manager, GroovyLanguage.INSTANCE);
+    myThrowsList = new LightReferenceListBuilder(manager, GroovyLanguage.INSTANCE, PsiReferenceList.Role.THROWS_LIST);
   }
 
   public GrLightMethodBuilder setNamedParameters(@NotNull Map<String, NamedArgumentDescriptor> namedParameters) {
-    this.myNamedParameters = namedParameters;
+    myNamedParameters = namedParameters;
     return this;
   }
 
@@ -99,12 +106,13 @@ public class GrLightMethodBuilder  extends LightElement implements GrMethod, Ori
   @Override
   @NotNull
   public PsiTypeParameter[] getTypeParameters() {
-    return PsiTypeParameter.EMPTY_ARRAY;
+    return getTypeParameterList().getTypeParameters();
   }
 
   @Override
-  public PsiTypeParameterList getTypeParameterList() {
-    return null;
+  @NotNull
+  public LightTypeParameterListBuilder getTypeParameterList() {
+    return myTypeParameterList;
   }
 
   @Override
@@ -159,31 +167,32 @@ public class GrLightMethodBuilder  extends LightElement implements GrMethod, Ori
   @NotNull
   @Override
   public GrReflectedMethod[] getReflectedMethods() {
-    return CachedValuesManager.getManager(getProject()).getCachedValue(this, new CachedValueProvider<GrReflectedMethod[]>() {
+    return CachedValuesManager.getCachedValue(this, new CachedValueProvider<GrReflectedMethod[]>() {
       @Override
       public Result<GrReflectedMethod[]> compute() {
-        return Result.create(GrReflectedMethodImpl.createReflectedMethods(GrLightMethodBuilder.this), PsiModificationTracker.OUT_OF_CODE_BLOCK_MODIFICATION_COUNT);
+        return Result.create(GrReflectedMethodImpl.createReflectedMethods(GrLightMethodBuilder.this),
+                             PsiModificationTracker.OUT_OF_CODE_BLOCK_MODIFICATION_COUNT);
       }
     });
   }
 
   public GrLightMethodBuilder addModifier(String modifier) {
-    myModifierList.addModifier(modifier);
+    getModifierList().addModifier(modifier);
     return this;
   }
 
   public GrLightMethodBuilder addModifier(int modifier) {
-    myModifierList.addModifier(modifier);
+    getModifierList().addModifier(modifier);
     return this;
   }
 
   public GrLightMethodBuilder setModifiers(String[] modifiers) {
-    myModifierList.setModifiers(modifiers);
+    getModifierList().setModifiers(modifiers);
     return this;
   }
 
   public GrLightMethodBuilder setModifiers(int modifiers) {
-    myModifierList.setModifiers(modifiers);
+    getModifierList().setModifiers(modifiers);
     return this;
   }
 
@@ -199,7 +208,11 @@ public class GrLightMethodBuilder  extends LightElement implements GrMethod, Ori
 
   @Override
   public GrTypeElement getReturnTypeElementGroovy() {
-    return null;
+    PsiType returnType = getReturnType();
+    if (returnType == null) {
+      return null;
+    }
+    return new GrLightTypeElement(returnType, getManager());
   }
 
   @Override
@@ -231,7 +244,7 @@ public class GrLightMethodBuilder  extends LightElement implements GrMethod, Ori
 
   @Override
   public GrParameter[] getParameters() {
-    return myParameterList.getParameters();
+    return getParameterList().getParameters();
   }
 
   @Override
@@ -241,7 +254,7 @@ public class GrLightMethodBuilder  extends LightElement implements GrMethod, Ori
   }
 
   public GrLightMethodBuilder addParameter(@NotNull GrParameter parameter) {
-    myParameterList.addParameter(parameter);
+    getParameterList().addParameter(parameter);
     return this;
   }
 
@@ -256,7 +269,7 @@ public class GrLightMethodBuilder  extends LightElement implements GrMethod, Ori
 
   @Override
   @NotNull
-  public PsiReferenceList getThrowsList() {
+  public LightReferenceListBuilder getThrowsList() {
     return myThrowsList;
   }
 
@@ -277,7 +290,7 @@ public class GrLightMethodBuilder  extends LightElement implements GrMethod, Ori
 
   @Override
   public boolean isVarArgs() {
-    GrParameter[] parameters = myParameterList.getParameters();
+    GrParameter[] parameters = getParameterList().getParameters();
     if (parameters.length == 0) return false;
     return parameters[parameters.length - 1].isVarArgs();
   }
@@ -368,21 +381,28 @@ public class GrLightMethodBuilder  extends LightElement implements GrMethod, Ori
   public void acceptChildren(GroovyElementVisitor visitor) {
   }
 
+  public static Object getMethodKind(@Nullable PsiElement method) {
+    if (method == null) return null;
+
+    if (method instanceof GrLightMethodBuilder) {
+      return ((GrLightMethodBuilder)method).getMethodKind();
+    }
+
+    return method.getUserData(KIND_KEY);
+  }
+
   public static boolean checkKind(@Nullable PsiElement method, @NotNull Object kind) {
-    return method instanceof GrLightMethodBuilder && kind.equals(((GrLightMethodBuilder)method).myMethodKind);
+    return kind.equals(getMethodKind(method));
   }
 
   public static boolean checkKind(@Nullable PsiElement method, @NotNull Object kind1, @NotNull Object kind2) {
-    if (method instanceof GrLightMethodBuilder) {
-      Object kind = ((GrLightMethodBuilder)method).getMethodKind();
-      return kind1.equals(kind) || kind2.equals(kind);
-    }
-    return false;
+    Object kind = getMethodKind(method);
+    return kind1.equals(kind) || kind2.equals(kind);
   }
 
   @Override
   public String toString() {
-    return myMethodKind + ":" + getName();
+    return (myMethodKind == null ? "" : myMethodKind + ":") + getName();
   }
 
   public GrLightMethodBuilder setBaseIcon(Icon baseIcon) {
@@ -424,20 +444,20 @@ public class GrLightMethodBuilder  extends LightElement implements GrMethod, Ori
   }
 
   protected void copyData(GrLightMethodBuilder dst) {
-    dst.setMethodKind(myMethodKind);
-    dst.setData(myData);
-    dst.setNamedParameters(myNamedParameters);
+    dst.setMethodKind(getMethodKind());
+    dst.setData(getData());
+    dst.setNamedParameters(getNamedParameters());
     if (getNavigationElement() != this) {
       dst.setNavigationElement(getNavigationElement());
     }
     dst.setBaseIcon(myBaseIcon);
-    dst.setReturnType(myReturnType);
-    dst.setContainingClass(myContainingClass);
-    
+    dst.setReturnType(getReturnType());
+    dst.setContainingClass(getContainingClass());
+
     dst.getModifierList().copyModifiers(this);
 
     dst.getParameterList().clear();
-    for (GrParameter parameter : myParameterList.getParameters()) {
+    for (GrParameter parameter : getParameterList().getParameters()) {
       dst.addParameter(parameter);
     }
   }
@@ -457,7 +477,7 @@ public class GrLightMethodBuilder  extends LightElement implements GrMethod, Ori
   @Nullable
   public static <T> T getData(@Nullable PsiElement method, @NotNull Object kind) {
     if (method instanceof GrLightMethodBuilder) {
-      if (kind.equals(((GrLightMethodBuilder)method).myMethodKind)) {
+      if (kind.equals(((GrLightMethodBuilder)method).getMethodKind())) {
         return ((GrLightMethodBuilder)method).<T>getData();
       }
     }
@@ -470,7 +490,7 @@ public class GrLightMethodBuilder  extends LightElement implements GrMethod, Ori
   }
 
   public GrLightMethodBuilder addException(PsiClassType type) {
-    ((LightReferenceListBuilder)myThrowsList).addReference(type);
+    getThrowsList().addReference(type);
     return this;
   }
 

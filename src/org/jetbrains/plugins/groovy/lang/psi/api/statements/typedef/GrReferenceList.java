@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2009 JetBrains s.r.o.
+ * Copyright 2000-2014 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,26 +15,31 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef;
 
-import com.intellij.psi.PsiClassType;
-import com.intellij.util.ArrayFactory;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiReferenceList;
+import com.intellij.util.ArrayFactory;
 
 /**
  * @author ilyas
  */
-public interface GrReferenceList extends GroovyPsiElement {
-  ArrayFactory<GrReferenceList> ARRAY_FACTORY = new ArrayFactory<GrReferenceList>() {
-    @NotNull
-    @Override
-    public GrReferenceList[] create(int count) {
-      return new GrReferenceList[0];
-    }
-  };
+public interface GrReferenceList extends GroovyPsiElement, PsiReferenceList
+{
+	ArrayFactory<GrReferenceList> ARRAY_FACTORY = new ArrayFactory<GrReferenceList>()
+	{
+		@NotNull
+		@Override
+		public GrReferenceList[] create(int count)
+		{
+			return new GrReferenceList[0];
+		}
+	};
 
-  GrCodeReferenceElement[] getReferenceElements();
+	@Nullable
+	PsiElement getKeyword();
 
-  @NotNull
-  PsiClassType[] getReferenceTypes();
+	GrCodeReferenceElement[] getReferenceElementsGroovy();
 }

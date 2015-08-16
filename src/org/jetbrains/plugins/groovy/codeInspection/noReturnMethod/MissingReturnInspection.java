@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2013 JetBrains s.r.o.
+ * Copyright 2000-2014 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,10 +15,10 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.noReturnMethod;
 
-import com.intellij.codeInspection.ProblemsHolder;
-import com.intellij.openapi.util.Ref;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
@@ -29,147 +29,276 @@ import org.jetbrains.plugins.groovy.codeInspection.utils.ControlFlowUtils;
 import org.jetbrains.plugins.groovy.lang.psi.GrControlFlowOwner;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementVisitor;
+import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrArgumentList;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlock;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrCodeBlock;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrOpenBlock;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.branch.GrReturnStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrMethodCall;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
 import org.jetbrains.plugins.groovy.lang.psi.controlFlow.Instruction;
 import org.jetbrains.plugins.groovy.lang.psi.controlFlow.impl.MaybeReturnInstruction;
 import org.jetbrains.plugins.groovy.lang.psi.controlFlow.impl.ThrowingInstruction;
 import org.jetbrains.plugins.groovy.lang.psi.expectedTypes.GroovyExpectedTypesProvider;
+import org.jetbrains.plugins.groovy.lang.psi.impl.signatures.GrClosureSignatureUtil;
+import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil;
+import com.intellij.codeInspection.ProblemsHolder;
+import com.intellij.openapi.util.Pair;
+import com.intellij.openapi.util.Ref;
+import com.intellij.openapi.util.TextRange;
+import com.intellij.psi.PsiClass;
+import com.intellij.psi.PsiClassType;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiElementVisitor;
+import com.intellij.psi.PsiParameter;
+import com.intellij.psi.PsiType;
+import com.intellij.psi.PsiTypeParameter;
 
 /**
  * @author ven
  */
-public class MissingReturnInspection extends GroovySuppressableInspectionTool {
-  @Nls
-  @NotNull
-  public String getGroupDisplayName() {
-    return GroovyInspectionBundle.message("groovy.dfa.issues");
-  }
+public class MissingReturnInspection extends GroovySuppressableInspectionTool
+{
+	@Override
+	@Nls
+	@NotNull
+	public String getGroupDisplayName()
+	{
+		return GroovyInspectionBundle.message("groovy.dfa.issues");
+	}
 
-  @NotNull
-  @Override
-  public String[] getGroupPath() {
-    return new String[]{"Groovy", getGroupDisplayName()};
-  }
+	@NotNull
+	@Override
+	public String[] getGroupPath()
+	{
+		return new String[]{
+				"Groovy",
+				getGroupDisplayName()
+		};
+	}
 
-  @Nls
-  @NotNull
-  public String getDisplayName() {
-    return GroovyInspectionBundle.message("no.return.display.name");
-  }
+	@Override
+	@Nls
+	@NotNull
+	public String getDisplayName()
+	{
+		return GroovyInspectionBundle.message("no.return.display.name");
+	}
 
-  public enum ReturnStatus {
-    mustReturnValue, shouldReturnValue, shouldNotReturnValue;
+	public enum ReturnStatus
+	{
+		mustReturnValue, shouldReturnValue, shouldNotReturnValue;
 
-    public static ReturnStatus getReturnStatus(PsiElement subject) {
-      if (subject instanceof GrClosableBlock) {
-        final PsiType inferredReturnType = GroovyExpectedTypesProvider.getExpectedClosureReturnType((GrClosableBlock)subject);
-        if (inferredReturnType instanceof PsiClassType) {
-          PsiClass resolved = ((PsiClassType)inferredReturnType).resolve();
-          if (resolved != null && !(resolved instanceof PsiTypeParameter)) return mustReturnValue;
-        }
-        return inferredReturnType != null && inferredReturnType != PsiType.VOID ? shouldReturnValue : shouldNotReturnValue;
-      }
-      else if (subject instanceof GrMethod) {
-        return ((GrMethod)subject).getReturnTypeElementGroovy() != null && ((GrMethod)subject).getReturnType() != PsiType.VOID
-               ? mustReturnValue
-               : shouldNotReturnValue;
-      }
-      return shouldNotReturnValue;
-    }
-  }
+		public static ReturnStatus getReturnStatus(PsiElement subject)
+		{
+			if(subject instanceof GrClosableBlock)
+			{
+				final PsiType inferredReturnType = getExpectedClosureReturnType((GrClosableBlock) subject);
+				if(inferredReturnType instanceof PsiClassType)
+				{
+					PsiClass resolved = ((PsiClassType) inferredReturnType).resolve();
+					if(resolved != null && !(resolved instanceof PsiTypeParameter))
+					{
+						return mustReturnValue;
+					}
+				}
+				return inferredReturnType != null && inferredReturnType != PsiType.VOID ? shouldReturnValue :
+						shouldNotReturnValue;
+			}
+			else if(subject instanceof GrMethod)
+			{
+				return ((GrMethod) subject).getReturnTypeElementGroovy() != null && ((GrMethod) subject).getReturnType
+						() != PsiType.VOID ? mustReturnValue : shouldNotReturnValue;
+			}
+			return shouldNotReturnValue;
+		}
+	}
 
-  @NotNull
-  public PsiElementVisitor buildVisitor(@NotNull final ProblemsHolder problemsHolder, boolean onTheFly) {
-    return new GroovyPsiElementVisitor(new GroovyElementVisitor() {
-      public void visitClosure(GrClosableBlock closure) {
-        super.visitClosure(closure);
-        check(closure, problemsHolder, ReturnStatus.getReturnStatus(closure));
-      }
+	@Nullable
+	public static PsiType getExpectedClosureReturnType(GrClosableBlock closure)
+	{
+		List<PsiType> expectedReturnTypes = new ArrayList<PsiType>();
 
-      public void visitMethod(GrMethod method) {
-        super.visitMethod(method);
+		PsiElement parent = closure.getParent();
+		if(parent instanceof GrArgumentList && parent.getParent() instanceof GrMethodCall || parent instanceof
+				GrMethodCall)
+		{
+			GrMethodCall call = (GrMethodCall) (parent instanceof GrArgumentList ? parent.getParent() : parent);
 
-        final GrOpenBlock block = method.getBlock();
-        if (block != null) {
-          check(block, problemsHolder, ReturnStatus.getReturnStatus(method));
-        }
-      }
-    });
-  }
+			GroovyResolveResult[] variants = call.getCallVariants(null);
 
-  private static void check(GrCodeBlock block, ProblemsHolder holder, ReturnStatus returnStatus) {
-    if (methodMissesSomeReturns(block, returnStatus)) {
-      addNoReturnMessage(block, holder);
-    }
-  }
+			for(GroovyResolveResult variant : variants)
+			{
+				Map<GrExpression, Pair<PsiParameter, PsiType>> map = GrClosureSignatureUtil.mapArgumentsToParameters
+						(variant, closure, true, true, call.getNamedArguments(), call.getExpressionArguments(),
+								call.getClosureArguments());
 
-  public static boolean methodMissesSomeReturns(@NotNull GrControlFlowOwner block, @NotNull final ReturnStatus returnStatus) {
-    if (returnStatus == ReturnStatus.shouldNotReturnValue) {
-      return false;
-    }
+				if(map != null)
+				{
+					Pair<PsiParameter, PsiType> pair = map.get(closure);
+					if(pair == null)
+					{
+						continue;
+					}
 
-    final Ref<Boolean> alwaysHaveReturn = new Ref<Boolean>(true);
-    final Ref<Boolean> sometimesHaveReturn = new Ref<Boolean>(false);
-    final Ref<Boolean> hasExplicitReturn = new Ref<Boolean>(false);
-    ControlFlowUtils.visitAllExitPoints(block, new ControlFlowUtils.ExitPointVisitor() {
-      @Override
-      public boolean visitExitPoint(Instruction instruction, @Nullable GrExpression returnValue) {
-        //don't modify sometimesHaveReturn  in this case:
-        // def foo() {
-        //   if (cond) throw new RuntimeException()
-        // }
-        if (instruction instanceof ThrowingInstruction) {
-          if (returnStatus == ReturnStatus.mustReturnValue) {
-            sometimesHaveReturn.set(true);
-          }
-          return true;
-        }
+					PsiParameter parameter = pair.getFirst();
 
-        if (instruction instanceof MaybeReturnInstruction && ((MaybeReturnInstruction)instruction).mayReturnValue()) {
-          sometimesHaveReturn.set(true);
-          return true;
-        }
+					PsiType type = parameter.getType();
+					if(TypesUtil.isPsiClassTypeToClosure(type))
+					{
+						PsiType[] parameters = ((PsiClassType) type).getParameters();
+						if(parameters.length == 1)
+						{
+							expectedReturnTypes.add(parameters[0]);
+						}
+					}
+				}
+			}
+		}
+		else
+		{
+			for(PsiType expectedType : GroovyExpectedTypesProvider.getDefaultExpectedTypes(closure))
+			{
+				if(TypesUtil.isPsiClassTypeToClosure(expectedType))
+				{
+					PsiType[] parameters = ((PsiClassType) expectedType).getParameters();
+					if(parameters.length == 1)
+					{
+						expectedReturnTypes.add(parameters[0]);
+					}
+				}
+			}
+		}
 
-        if (instruction.getElement() instanceof GrReturnStatement && returnValue != null) {
-          sometimesHaveReturn.set(true);
-          hasExplicitReturn.set(true);
-          return true;
-        }
+		for(PsiType type : expectedReturnTypes)
+		{
+			if(PsiType.VOID.equals(type))
+			{
+				return PsiType.VOID;
+			}
+		}
+		return TypesUtil.getLeastUpperBoundNullable(expectedReturnTypes, closure.getManager());
+	}
 
-        alwaysHaveReturn.set(false);
-        return true;
-      }
-    });
+	@Override
+	@NotNull
+	public PsiElementVisitor buildVisitor(@NotNull final ProblemsHolder problemsHolder, boolean onTheFly)
+	{
+		return new GroovyPsiElementVisitor(new GroovyElementVisitor()
+		{
+			@Override
+			public void visitClosure(GrClosableBlock closure)
+			{
+				super.visitClosure(closure);
+				check(closure, problemsHolder, ReturnStatus.getReturnStatus(closure));
+			}
 
-    if (returnStatus == ReturnStatus.mustReturnValue && !sometimesHaveReturn.get()) {
-      return true;
-    }
+			@Override
+			public void visitMethod(GrMethod method)
+			{
+				super.visitMethod(method);
 
-    return sometimesHaveReturn.get() && !alwaysHaveReturn.get();
-  }
+				final GrOpenBlock block = method.getBlock();
+				if(block != null)
+				{
+					check(block, problemsHolder, ReturnStatus.getReturnStatus(method));
+				}
+			}
+		});
+	}
 
-  private static void addNoReturnMessage(GrCodeBlock block, ProblemsHolder holder) {
-    final PsiElement lastChild = block.getLastChild();
-    if (lastChild == null) return;
-    TextRange range = lastChild.getTextRange();
-    if (!lastChild.isValid() || !lastChild.isPhysical() || range.getStartOffset() >= range.getEndOffset()) {
-      return;
-    }
-    holder.registerProblem(lastChild, GroovyInspectionBundle.message("no.return.message"));
-  }
+	private static void check(GrCodeBlock block, ProblemsHolder holder, ReturnStatus returnStatus)
+	{
+		if(methodMissesSomeReturns(block, returnStatus))
+		{
+			addNoReturnMessage(block, holder);
+		}
+	}
 
-  @NonNls
-  @NotNull
-  public String getShortName() {
-    return "GroovyMissingReturnStatement";
-  }
+	public static boolean methodMissesSomeReturns(@NotNull GrControlFlowOwner block,
+			@NotNull final ReturnStatus returnStatus)
+	{
+		if(returnStatus == ReturnStatus.shouldNotReturnValue)
+		{
+			return false;
+		}
 
-  public boolean isEnabledByDefault() {
-    return true;
-  }
+		final Ref<Boolean> alwaysHaveReturn = new Ref<Boolean>(true);
+		final Ref<Boolean> sometimesHaveReturn = new Ref<Boolean>(false);
+		final Ref<Boolean> hasExplicitReturn = new Ref<Boolean>(false);
+		ControlFlowUtils.visitAllExitPoints(block, new ControlFlowUtils.ExitPointVisitor()
+		{
+			@Override
+			public boolean visitExitPoint(Instruction instruction, @Nullable GrExpression returnValue)
+			{
+				//don't modify sometimesHaveReturn  in this case:
+				// def foo() {
+				//   if (cond) throw new RuntimeException()
+				// }
+				if(instruction instanceof ThrowingInstruction)
+				{
+					if(returnStatus == ReturnStatus.mustReturnValue)
+					{
+						sometimesHaveReturn.set(true);
+					}
+					return true;
+				}
+
+				if(instruction instanceof MaybeReturnInstruction && ((MaybeReturnInstruction) instruction)
+						.mayReturnValue())
+				{
+					sometimesHaveReturn.set(true);
+					return true;
+				}
+
+				if(instruction.getElement() instanceof GrReturnStatement && returnValue != null)
+				{
+					sometimesHaveReturn.set(true);
+					hasExplicitReturn.set(true);
+					return true;
+				}
+
+				alwaysHaveReturn.set(false);
+				return true;
+			}
+		});
+
+		if(returnStatus == ReturnStatus.mustReturnValue && !sometimesHaveReturn.get())
+		{
+			return true;
+		}
+
+		return sometimesHaveReturn.get() && !alwaysHaveReturn.get();
+	}
+
+	private static void addNoReturnMessage(GrCodeBlock block, ProblemsHolder holder)
+	{
+		final PsiElement lastChild = block.getLastChild();
+		if(lastChild == null)
+		{
+			return;
+		}
+		TextRange range = lastChild.getTextRange();
+		if(!lastChild.isValid() || !lastChild.isPhysical() || range.getStartOffset() >= range.getEndOffset())
+		{
+			return;
+		}
+		holder.registerProblem(lastChild, GroovyInspectionBundle.message("no.return.message"));
+	}
+
+	@Override
+	@NonNls
+	@NotNull
+	public String getShortName()
+	{
+		return "GroovyMissingReturnStatement";
+	}
+
+	@Override
+	public boolean isEnabledByDefault()
+	{
+		return true;
+	}
 }

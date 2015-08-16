@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2013 JetBrains s.r.o.
+ * Copyright 2000-2014 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,26 +15,31 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.synthetic;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
+import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
+import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
+import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
+import org.jetbrains.plugins.groovy.lang.psi.GroovyRecursiveElementVisitor;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrAssignmentExpression;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrTupleExpression;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
+import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeElement;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.CommonClassNames;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiType;
 import com.intellij.util.IncorrectOperationException;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.jetbrains.plugins.groovy.lang.psi.*;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrAssignmentExpression;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
-import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeElement;
 
 /**
  * @author Max Medvedev
  */
 public class GrBindingVariable extends GrLightVariable implements GrVariable {
-  private GroovyFile myFile;
+  private final GroovyFile myFile;
   private Boolean myHasWriteAccess;
 
   public GrBindingVariable(final GroovyFile file, String name, Boolean isWriteAccess) {
@@ -91,8 +96,7 @@ public class GrBindingVariable extends GrLightVariable implements GrVariable {
 
   @Override
   public void accept(GroovyElementVisitor visitor) {
-    //todo
-    throw new UnsupportedOperationException();
+    visitor.visitVariable(this);
   }
 
   @Override
@@ -107,7 +111,16 @@ public class GrBindingVariable extends GrLightVariable implements GrVariable {
     myFile.accept(new GroovyRecursiveElementVisitor() {
       @Override
       public void visitAssignmentExpression(GrAssignmentExpression expression) {
-        if (isRefToMe(expression.getLValue())) {
+        final GrExpression lValue = expression.getLValue();
+        if (lValue instanceof GrTupleExpression) {
+          for (GrExpression grExpression : ((GrTupleExpression)lValue).getExpressions()) {
+            if (isRefToMe(grExpression)) {
+              myHasWriteAccess = true;
+              break;
+            }
+          }
+        }
+        else if (isRefToMe(lValue)) {
           myHasWriteAccess = true;
         }
         super.visitAssignmentExpression(expression);

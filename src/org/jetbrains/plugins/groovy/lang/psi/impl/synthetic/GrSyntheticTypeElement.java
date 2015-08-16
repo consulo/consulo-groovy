@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2012 JetBrains s.r.o.
+ * Copyright 2000-2014 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,21 +15,15 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.synthetic;
 
+import com.intellij.openapi.util.TextRange;
+import com.intellij.psi.*;
+import com.intellij.psi.impl.light.LightElement;
+import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeElement;
 import org.jetbrains.plugins.groovy.lang.psi.impl.PsiImplUtil;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.JavaElementVisitor;
-import com.intellij.psi.PsiAnnotation;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.PsiJavaCodeReferenceElement;
-import com.intellij.psi.PsiType;
-import com.intellij.psi.PsiTypeElement;
-import com.intellij.psi.impl.light.LightElement;
-import com.intellij.util.IncorrectOperationException;
 
 /**
  * @author Max Medvedev
@@ -50,9 +44,8 @@ public class GrSyntheticTypeElement extends LightElement implements PsiTypeEleme
   }
 
   @Override
-  public PsiJavaCodeReferenceElement getInnermostComponentReferenceElement()
-  {
-	  return null;
+  public PsiJavaCodeReferenceElement getInnermostComponentReferenceElement() {
+    return null;
   }
 
   @NotNull
@@ -86,7 +79,7 @@ public class GrSyntheticTypeElement extends LightElement implements PsiTypeEleme
   @Override
   public PsiElement replace(@NotNull PsiElement newElement) throws IncorrectOperationException {
     if (newElement instanceof PsiTypeElement) {
-      GrTypeElement groovyTypeElement = GroovyPsiElementFactory.getInstance(getProject()).createTypeElement(newElement.getText(), newElement);
+      GrTypeElement groovyTypeElement = GroovyPsiElementFactory.getInstance(getProject()).createTypeElement(((PsiTypeElement)newElement).getType());
       return myElement.replace(groovyTypeElement);
     }
     else {

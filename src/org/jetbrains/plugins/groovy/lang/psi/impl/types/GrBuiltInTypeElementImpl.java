@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2013 JetBrains s.r.o.
+ * Copyright 2000-2014 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,39 +16,40 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.types;
 
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrBuiltInTypeElement;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyPsiElementImpl;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil;
+import com.intellij.lang.ASTNode;
+import com.intellij.psi.PsiType;
 
 /**
  * @author ilyas
  */
-public class GrBuiltInTypeElementImpl extends GroovyPsiElementImpl implements GrBuiltInTypeElement {
+public class GrBuiltInTypeElementImpl extends GroovyPsiElementImpl implements GrBuiltInTypeElement
+{
 
-  public GrBuiltInTypeElementImpl(@NotNull ASTNode node) {
-    super(node);
-  }
+	public GrBuiltInTypeElementImpl(@NotNull ASTNode node)
+	{
+		super(node);
+	}
 
-  public void accept(GroovyElementVisitor visitor) {
-    visitor.visitBuiltinTypeElement(this);
-  }
+	@Override
+	public void accept(GroovyElementVisitor visitor)
+	{
+		visitor.visitBuiltinTypeElement(this);
+	}
 
-  public String toString() {
-    return "Built in type";
-  }
+	public String toString()
+	{
+		return "Built in type";
+	}
 
-  @NotNull
-  public PsiType getType() {
-    return TypesUtil.getPrimitiveTypeByText(getText());
-  }
-
-  @Override
-  public PsiType getTypeNoResolve(PsiElement context) {
-    return getType();
-  }
+	@Override
+	@NotNull
+	public PsiType getType()
+	{
+		return TypesUtil.getPrimitiveTypeByText(getText());
+	}
 }

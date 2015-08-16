@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2012 JetBrains s.r.o.
+ * Copyright 2000-2014 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,18 +15,9 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements;
 
-import com.intellij.lang.ASTNode;
-import com.intellij.navigation.ItemPresentation;
-import com.intellij.psi.*;
-import com.intellij.psi.impl.PsiImplUtil;
-import com.intellij.psi.impl.ResolveScopeManager;
-import com.intellij.psi.presentation.java.JavaPresentationUtil;
-import com.intellij.psi.search.SearchScope;
-import com.intellij.psi.stubs.IStubElementType;
-import com.intellij.ui.LayeredIcon;
-import com.intellij.util.IncorrectOperationException;
-import com.intellij.util.containers.ContainerUtil;
-import icons.JetgroovyIcons;
+import java.util.Collections;
+import java.util.Map;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.extensions.NamedArgumentDescriptor;
@@ -43,24 +34,37 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpres
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinitionBody;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrAccessorMethod;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeElement;
+import org.jetbrains.plugins.groovy.lang.psi.dataFlow.types.TypeInferenceHelper;
 import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GrAccessorMethodImpl;
 import org.jetbrains.plugins.groovy.lang.psi.stubs.GrFieldStub;
 import org.jetbrains.plugins.groovy.lang.psi.typeEnhancers.GrVariableEnhancer;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
-
-import javax.swing.*;
-import java.util.Collections;
-import java.util.Map;
+import com.intellij.lang.ASTNode;
+import com.intellij.navigation.ItemPresentation;
+import com.intellij.psi.PsiClass;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiExpression;
+import com.intellij.psi.PsiField;
+import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiType;
+import com.intellij.psi.StubBasedPsiElement;
+import com.intellij.psi.impl.PsiImplUtil;
+import com.intellij.psi.impl.ResolveScopeManager;
+import com.intellij.psi.presentation.java.JavaPresentationUtil;
+import com.intellij.psi.search.SearchScope;
+import com.intellij.psi.stubs.IStubElementType;
+import com.intellij.psi.util.CachedValueProvider;
+import com.intellij.psi.util.CachedValuesManager;
+import com.intellij.psi.util.PsiModificationTracker;
+import com.intellij.util.Function;
+import com.intellij.util.IncorrectOperationException;
+import com.intellij.util.containers.ContainerUtil;
 
 /**
  * User: Dmitry.Krasilschikov
  * Date: 25.05.2007
  */
 public class GrFieldImpl extends GrVariableBaseImpl<GrFieldStub> implements GrField, StubBasedPsiElement<GrFieldStub> {
-  private GrAccessorMethod mySetter;
-  private GrAccessorMethod[] myGetters;
-
-  private boolean mySetterInitialized = false;
 
   public GrFieldImpl(@NotNull ASTNode node) {
     super(node);
@@ -79,6 +83,7 @@ public class GrFieldImpl extends GrVariableBaseImpl<GrFieldStub> implements GrFi
     return getParentByStub();
   }
 
+  @Override
   public void accept(GroovyElementVisitor visitor) {
     visitor.visitField(this);
   }
@@ -107,6 +112,7 @@ public class GrFieldImpl extends GrVariableBaseImpl<GrFieldStub> implements GrFi
     return org.jetbrains.plugins.groovy.lang.psi.impl.PsiImplUtil.getOrCreatePisExpression(getInitializerGroovy());
   }
 
+  @Override
   public void setInitializer(@Nullable PsiExpression psiExpression) throws IncorrectOperationException {
     GrExpression oldInitializer = getInitializerGroovy();
     if (psiExpression == null) {
@@ -131,6 +137,7 @@ public class GrFieldImpl extends GrVariableBaseImpl<GrFieldStub> implements GrFi
     }
   }
 
+  @Override
   public boolean isDeprecated() {
     final GrFieldStub stub = getStub();
     if (stub != null) {
@@ -142,15 +149,27 @@ public class GrFieldImpl extends GrVariableBaseImpl<GrFieldStub> implements GrFi
 
   @Override
   public PsiType getTypeGroovy() {
-    if (getDeclaredType() == null && getInitializerGroovy() == null) {
-      final PsiType type = GrVariableEnhancer.getEnhancedType(this);
-      if (type != null) {
-        return type;
+    PsiType type = TypeInferenceHelper.getCurrentContext().getExpressionType(this, new Function<GrFieldImpl, PsiType>() {
+      @Override
+      public PsiType fun(GrFieldImpl field) {
+        if (getDeclaredType() == null && getInitializerGroovy() == null) {
+          final PsiType type = GrVariableEnhancer.getEnhancedType(field);
+          if (type != null) {
+            return type;
+          }
+        }
+        return null;
       }
+    });
+
+    if (type != null) {
+      return type;
     }
+
     return super.getTypeGroovy();
   }
 
+  @Override
   public PsiClass getContainingClass() {
     PsiElement parent = getParent().getParent();
     if (parent instanceof GrTypeDefinitionBody) {
@@ -168,6 +187,7 @@ public class GrFieldImpl extends GrVariableBaseImpl<GrFieldStub> implements GrFi
     return null;
   }
 
+  @Override
   public boolean isProperty() {
     final GrFieldStub stub = getStub();
     if (stub != null) {
@@ -176,30 +196,30 @@ public class GrFieldImpl extends GrVariableBaseImpl<GrFieldStub> implements GrFi
     return PsiUtil.isProperty(this);
   }
 
+  @Override
   public GrAccessorMethod getSetter() {
-    if (mySetterInitialized) return mySetter;
-
-    mySetter = GrAccessorMethodImpl.createSetterMethod(this);
-    mySetterInitialized = true;
-
-    return mySetter;
+    return CachedValuesManager.getCachedValue(this, new CachedValueProvider<GrAccessorMethod>() {
+      @Nullable
+      @Override
+      public Result<GrAccessorMethod> compute() {
+        return Result.create(GrAccessorMethodImpl.createSetterMethod(GrFieldImpl.this), PsiModificationTracker.OUT_OF_CODE_BLOCK_MODIFICATION_COUNT);
+      }
+    });
   }
 
-  public void clearCaches() {
-    mySetterInitialized = false;
-    mySetter = null;
-    myGetters = null;
-  }
-
+  @Override
   @NotNull
   public GrAccessorMethod[] getGetters() {
-    if (myGetters == null) {
-      myGetters = GrAccessorMethodImpl.createGetterMethods(this);
-    }
-
-    return myGetters;
+    return CachedValuesManager.getCachedValue(this, new CachedValueProvider<GrAccessorMethod[]>() {
+      @Nullable
+      @Override
+      public Result<GrAccessorMethod[]> compute() {
+        return Result.create(GrAccessorMethodImpl.createGetterMethods(GrFieldImpl.this), PsiModificationTracker.OUT_OF_CODE_BLOCK_MODIFICATION_COUNT);
+      }
+    });
   }
 
+  @Override
   @NotNull
   public SearchScope getUseScope() {
     if (isProperty()) {
@@ -223,6 +243,7 @@ public class GrFieldImpl extends GrVariableBaseImpl<GrFieldStub> implements GrFi
     return JavaPresentationUtil.getFieldPresentation(this);
   }
 
+  @Override
   public PsiElement getOriginalElement() {
     final PsiClass containingClass = getContainingClass();
     if (containingClass == null) return this;
@@ -231,16 +252,7 @@ public class GrFieldImpl extends GrVariableBaseImpl<GrFieldStub> implements GrFi
     return originalField != null ? originalField : this;
   }
 
-  @Nullable
-  public Icon getIcon(int flags) {
-    Icon superIcon = JetgroovyIcons.Groovy.Field;
-    if (!isProperty()) return superIcon;
-    LayeredIcon rowIcon = new LayeredIcon(2);
-    rowIcon.setIcon(superIcon, 0);
-    rowIcon.setIcon(JetgroovyIcons.Groovy.Def, 1);
-    return rowIcon;
-  }
-
+  @Override
   @NotNull
   public Map<String, NamedArgumentDescriptor> getNamedParameters() {
     final GrFieldStub stub = getStub();
@@ -258,6 +270,7 @@ public class GrFieldImpl extends GrVariableBaseImpl<GrFieldStub> implements GrFi
     return GrNamedArgumentSearchVisitor.find(this);
   }
 
+  @Override
   public GrDocComment getDocComment() {
     return GrDocCommentUtil.findDocComment(this);
   }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2012 JetBrains s.r.o.
+ * Copyright 2000-2014 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,35 +15,41 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.api.signatures;
 
-import com.intellij.psi.PsiType;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiType;
 
 /**
  * @author Max Medvedev
  */
-public interface GrMultiSignature extends GrSignature {
-  GrClosureSignature[] getAllSignatures();
+public interface GrMultiSignature extends GrSignature
+{
+	GrClosureSignature[] getAllSignatures();
 
-  GrMultiSignature EMPTY_SIGNATURE = new GrMultiSignature() {
-    @Override
-    public GrClosureSignature[] getAllSignatures() {
-      return GrClosureSignature.EMPTY_ARRAY;
-    }
+	GrMultiSignature EMPTY_SIGNATURE = new GrMultiSignature()
+	{
+		@Override
+		public GrClosureSignature[] getAllSignatures()
+		{
+			return GrClosureSignature.EMPTY_ARRAY;
+		}
 
-    @Override
-    public boolean isValid() {
-      return true;
-    }
+		@Override
+		public boolean isValid()
+		{
+			return true;
+		}
 
-    @Override
-    public GrSignature curry(@NotNull PsiType[] args, int position, @NotNull GroovyPsiElement context) {
-      return this;
-    }
+		@Override
+		public GrSignature curry(@NotNull PsiType[] args, int position, @NotNull PsiElement context)
+		{
+			return this;
+		}
 
-    @Override
-    public void accept(GrSignatureVisitor visitor) {
-      visitor.visitMultiSignature(this);
-    }
-  };
+		@Override
+		public void accept(@NotNull GrSignatureVisitor visitor)
+		{
+			visitor.visitMultiSignature(this);
+		}
+	};
 }

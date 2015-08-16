@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2009 JetBrains s.r.o.
+ * Copyright 2000-2014 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,68 +16,94 @@
 
 package org.jetbrains.plugins.groovy.highlighter;
 
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.plugins.groovy.lang.groovydoc.parser.GroovyDocElementTypes;
+import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import com.intellij.lang.CodeDocumentationAwareCommenter;
 import com.intellij.psi.PsiComment;
 import com.intellij.psi.tree.IElementType;
-import org.jetbrains.annotations.Nullable;
-import static org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes.*;
 
 /**
  * @author ilyas
  */
 
-public class GroovyCommenter implements CodeDocumentationAwareCommenter {
-  public String getLineCommentPrefix() {
-    return "//";
-  }
+public class GroovyCommenter implements CodeDocumentationAwareCommenter
+{
+	@Override
+	public String getLineCommentPrefix()
+	{
+		return "//";
+	}
 
-  public String getBlockCommentPrefix() {
-    return "/*";
-  }
+	@Override
+	public String getBlockCommentPrefix()
+	{
+		return "/*";
+	}
 
-  public String getBlockCommentSuffix() {
-    return "*/";
-  }
+	@Override
+	public String getBlockCommentSuffix()
+	{
+		return "*/";
+	}
 
-  public String getCommentedBlockCommentPrefix() {
-    return null;
-  }
+	@Override
+	public String getCommentedBlockCommentPrefix()
+	{
+		return null;
+	}
 
-  public String getCommentedBlockCommentSuffix() {
-    return null;
-  }
+	@Override
+	public String getCommentedBlockCommentSuffix()
+	{
+		return null;
+	}
 
-  @Nullable
-  public IElementType getLineCommentTokenType() {
-    return mSL_COMMENT;
-  }
+	@Override
+	@Nullable
+	public IElementType getLineCommentTokenType()
+	{
+		return GroovyTokenTypes.mSL_COMMENT;
+	}
 
-  @Nullable
-  public IElementType getBlockCommentTokenType() {
-    return mML_COMMENT;
-  }
+	@Override
+	@Nullable
+	public IElementType getBlockCommentTokenType()
+	{
+		return GroovyTokenTypes.mML_COMMENT;
+	}
 
-  @Nullable
-  public IElementType getDocumentationCommentTokenType() {
-    return GROOVY_DOC_COMMENT;
-  }
+	@Override
+	@Nullable
+	public IElementType getDocumentationCommentTokenType()
+	{
+		return GroovyDocElementTypes.GROOVY_DOC_COMMENT;
+	}
 
-  @Nullable
-  public String getDocumentationCommentPrefix() {
-    return "/**";
-  }
+	@Override
+	@Nullable
+	public String getDocumentationCommentPrefix()
+	{
+		return "/**";
+	}
 
-  @Nullable
-  public String getDocumentationCommentLinePrefix() {
-    return "*";
-  }
+	@Override
+	@Nullable
+	public String getDocumentationCommentLinePrefix()
+	{
+		return "*";
+	}
 
-  @Nullable
-  public String getDocumentationCommentSuffix() {
-    return "*/";
-  }
+	@Override
+	@Nullable
+	public String getDocumentationCommentSuffix()
+	{
+		return "*/";
+	}
 
-  public boolean isDocumentationComment(PsiComment element) {
-    return element.getText().startsWith(getDocumentationCommentPrefix());
-  }
+	@Override
+	public boolean isDocumentationComment(PsiComment element)
+	{
+		return element.getText().startsWith(getDocumentationCommentPrefix());
+	}
 }

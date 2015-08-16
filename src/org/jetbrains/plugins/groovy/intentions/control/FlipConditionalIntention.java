@@ -15,42 +15,44 @@
  */
 package org.jetbrains.plugins.groovy.intentions.control;
 
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiElement;
-import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.intentions.base.Intention;
-import org.jetbrains.plugins.groovy.intentions.base.IntentionUtils;
 import org.jetbrains.plugins.groovy.intentions.base.PsiElementPredicate;
 import org.jetbrains.plugins.groovy.intentions.utils.BoolUtils;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrConditionalExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
+import org.jetbrains.plugins.groovy.lang.psi.impl.PsiImplUtil;
+import com.intellij.openapi.editor.Editor;
+import com.intellij.openapi.project.Project;
+import com.intellij.psi.PsiElement;
+import com.intellij.util.IncorrectOperationException;
 
-public class FlipConditionalIntention extends Intention {
+public class FlipConditionalIntention extends Intention
+{
 
 
-  @NotNull
-  public PsiElementPredicate getElementPredicate() {
-    return new ConditionalPredicate();
-  }
+	@NotNull
+	public PsiElementPredicate getElementPredicate()
+	{
+		return new ConditionalPredicate();
+	}
 
-  public void processIntention(@NotNull PsiElement element, Project project, Editor editor)
-      throws IncorrectOperationException {
-    final GrConditionalExpression exp =
-        (GrConditionalExpression) element;
+	public void processIntention(@NotNull PsiElement element,
+			Project project,
+			Editor editor) throws IncorrectOperationException
+	{
+		final GrConditionalExpression exp = (GrConditionalExpression) element;
 
-    final GrExpression condition = exp.getCondition();
-    final GrExpression elseExpression = exp.getElseBranch();
-    final GrExpression thenExpression = exp.getThenBranch();
-    assert elseExpression != null;
-    assert thenExpression != null;
-    final String newExpression =
-        BoolUtils.getNegatedExpressionText(condition) + '?' +
-            elseExpression.getText() +
-            ':' +
-            thenExpression.getText();
-    IntentionUtils.replaceExpression(newExpression, exp);
-  }
+		final GrExpression condition = exp.getCondition();
+		final GrExpression elseExpression = exp.getElseBranch();
+		final GrExpression thenExpression = exp.getThenBranch();
+		assert elseExpression != null;
+		assert thenExpression != null;
+		final String newExpression = BoolUtils.getNegatedExpressionText(condition) + '?' +
+				elseExpression.getText() +
+				':' +
+				thenExpression.getText();
+		PsiImplUtil.replaceExpression(newExpression, exp);
+	}
 
 }

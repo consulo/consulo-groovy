@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2009 JetBrains s.r.o.
+ * Copyright 2000-2014 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,35 +16,54 @@
 
 package org.jetbrains.plugins.groovy.lang.lexer;
 
-import com.intellij.psi.tree.IElementType;
-import com.intellij.lang.ASTNode;
-import org.jetbrains.plugins.groovy.GroovyFileType;
-import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.plugins.groovy.GroovyLanguage;
+import com.intellij.lang.ASTNode;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.tree.IElementType;
 
 /**
  * Main classdef for Groovy element types, such as lexems or AST nodes
  *
  * @author ilyas
  */
-public class GroovyElementType extends IElementType {
+public class GroovyElementType extends IElementType
+{
 
-  private String debugName = null;
+	private final String myDebugName;
+	private final boolean myLeftBound;
 
-  public GroovyElementType(String debugName) {
-    super(debugName, GroovyFileType.GROOVY_LANGUAGE);
-    this.debugName = debugName;
-  }
+	public GroovyElementType(String debugName)
+	{
+		this(debugName, false);
+	}
 
-  public String toString() {
-    return debugName;
-  }
+	public GroovyElementType(String debugName, boolean boundToLeft)
+	{
+		super(debugName, GroovyLanguage.INSTANCE);
+		myDebugName = debugName;
+		myLeftBound = boundToLeft;
+	}
 
-  public static abstract class PsiCreator extends GroovyElementType {
-    protected PsiCreator(String debugName) {
-      super(debugName);
-    }
+	public String toString()
+	{
+		return myDebugName;
+	}
 
-    public abstract GroovyPsiElement createPsi(@NotNull ASTNode node);
-  }
+	@Override
+	public boolean isLeftBound()
+	{
+		return myLeftBound;
+	}
+
+	public static abstract class PsiCreator extends GroovyElementType
+	{
+		protected PsiCreator(String debugName)
+		{
+			super(debugName);
+		}
+
+		@NotNull
+		public abstract PsiElement createPsi(@NotNull ASTNode node);
+	}
 }

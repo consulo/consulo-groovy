@@ -15,51 +15,61 @@
  */
 package org.jetbrains.plugins.groovy.intentions.conversions;
 
+import java.math.BigInteger;
+
+import org.jetbrains.annotations.NonNls;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.plugins.groovy.intentions.base.Intention;
+import org.jetbrains.plugins.groovy.intentions.base.PsiElementPredicate;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.literals.GrLiteral;
+import org.jetbrains.plugins.groovy.lang.psi.impl.PsiImplUtil;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.IncorrectOperationException;
-import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.plugins.groovy.intentions.base.Intention;
-import org.jetbrains.plugins.groovy.intentions.base.IntentionUtils;
-import org.jetbrains.plugins.groovy.intentions.base.PsiElementPredicate;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.literals.GrLiteral;
 
-import java.math.BigInteger;
-
-public class ConvertIntegerToHexIntention extends Intention {
+public class ConvertIntegerToHexIntention extends Intention
+{
 
 
-  @NotNull
-  public PsiElementPredicate getElementPredicate() {
-    return new ConvertIntegerToHexPredicate();
-  }
+	@NotNull
+	public PsiElementPredicate getElementPredicate()
+	{
+		return new ConvertIntegerToHexPredicate();
+	}
 
-  public void processIntention(@NotNull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
-    final GrLiteral exp = (GrLiteral)element;
-    String textString = exp.getText().replaceAll("_", "");
-    final int textLength = textString.length();
-    final char lastChar = textString.charAt(textLength - 1);
-    final boolean isLong = lastChar == 'l' || lastChar == 'L';
-    if (isLong) {
-      textString = textString.substring(0, textLength - 1);
-    }
+	public void processIntention(@NotNull PsiElement element,
+			Project project,
+			Editor editor) throws IncorrectOperationException
+	{
+		final GrLiteral exp = (GrLiteral) element;
+		String textString = exp.getText().replaceAll("_", "");
+		final int textLength = textString.length();
+		final char lastChar = textString.charAt(textLength - 1);
+		final boolean isLong = lastChar == 'l' || lastChar == 'L';
+		if(isLong)
+		{
+			textString = textString.substring(0, textLength - 1);
+		}
 
-    final BigInteger val;
-    if (textString.startsWith("0b") || textString.startsWith("0B")) {
-      val = new BigInteger(textString.substring(2), 2);
-    }
-    else if (textString.charAt(0) == '0') {
-      val = new BigInteger(textString, 8);
-    }
-    else {
-      val = new BigInteger(textString, 10);
-    }
-    @NonNls String hexString = "0x" + val.toString(16);
-    if (isLong) {
-      hexString += 'L';
-    }
-    IntentionUtils.replaceExpression(hexString, exp);
-  }
+		final BigInteger val;
+		if(textString.startsWith("0b") || textString.startsWith("0B"))
+		{
+			val = new BigInteger(textString.substring(2), 2);
+		}
+		else if(textString.charAt(0) == '0')
+		{
+			val = new BigInteger(textString, 8);
+		}
+		else
+		{
+			val = new BigInteger(textString, 10);
+		}
+		@NonNls String hexString = "0x" + val.toString(16);
+		if(isLong)
+		{
+			hexString += 'L';
+		}
+		PsiImplUtil.replaceExpression(hexString, exp);
+	}
 }

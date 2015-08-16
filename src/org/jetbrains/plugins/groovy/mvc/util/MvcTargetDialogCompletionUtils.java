@@ -1,5 +1,16 @@
 package org.jetbrains.plugins.groovy.mvc.util;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyNamesUtil;
+import org.jetbrains.plugins.groovy.mvc.MvcFramework;
 import com.intellij.codeInsight.TailType;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
@@ -18,12 +29,6 @@ import com.intellij.psi.util.CachedValueProvider;
 import com.intellij.psi.util.CachedValuesManager;
 import com.intellij.psi.util.PsiModificationTracker;
 import com.intellij.util.SystemProperties;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.plugins.groovy.mvc.MvcFramework;
-import org.jetbrains.plugins.groovy.refactoring.GroovyNamesUtil;
-
-import java.io.File;
-import java.util.*;
 
 /**
  * @author Sergey Evdokimov

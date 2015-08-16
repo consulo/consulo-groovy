@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2013 JetBrains s.r.o.
+ * Copyright 2000-2014 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiType;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
@@ -37,6 +38,7 @@ public class GrTypeCastExpressionImpl extends GrExpressionImpl implements GrType
     super(node);
   }
 
+  @Override
   public void accept(GroovyElementVisitor visitor) {
     visitor.visitCastExpression(this);
   }
@@ -45,20 +47,24 @@ public class GrTypeCastExpressionImpl extends GrExpressionImpl implements GrType
     return "Typecast expression";
   }
 
+  @Override
   public PsiType getType() {
-    GrTypeElement typeElement = getCastTypeElement();
-    if (typeElement != null) return TypesUtil.boxPrimitiveType(typeElement.getType(), getManager(), getResolveScope());
-    return null;
+    final GrTypeElement typeElement = getCastTypeElement();
+    return typeElement != null ? TypesUtil.boxPrimitiveType(typeElement.getType(), getManager(), getResolveScope()) : null;
   }
 
+  @Override
   public GrTypeElement getCastTypeElement() {
     return findChildByClass(GrTypeElement.class);
   }
 
+  @Override
+  @Nullable
   public GrExpression getOperand() {
     return findExpressionChild(this);
   }
 
+  @Override
   @NotNull
   public PsiElement getLeftParen() {
     ASTNode paren = getNode().findChildByType(GroovyTokenTypes.mLPAREN);
@@ -66,6 +72,7 @@ public class GrTypeCastExpressionImpl extends GrExpressionImpl implements GrType
     return paren.getPsi();
   }
 
+  @Override
   @NotNull
   public PsiElement getRightParen() {
     ASTNode paren = getNode().findChildByType(GroovyTokenTypes.mRPAREN);

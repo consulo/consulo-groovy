@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2012 JetBrains s.r.o.
+ * Copyright 2000-2014 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,6 +39,8 @@ import org.jetbrains.plugins.groovy.lang.resolve.ResolveUtil;
 
 import java.util.Set;
 
+import static org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil.isCompileStatic;
+
 /**
  * @author sergey.evdokimov
  */
@@ -54,18 +56,22 @@ public class DefaultCallExpressionTypeCalculator extends GrCallExpressionTypeCal
       PsiType result = null;
       for (GroovyResolveResult resolveResult : resolveResults) {
         PsiType returnType = calculateReturnTypeInner(callExpression, refExpr, resolveResult);
-
         if (returnType == null) return null;
-        if (!(returnType instanceof GrLiteralClassType)) {
-          returnType = TypesUtil.substituteBoxAndNormalizeType(returnType, resolveResult.getSubstitutor(), resolveResult.getSpreadState(), callExpression);
-          LOG.assertTrue(returnType != null);
-        }
 
-        if (result == null || returnType.isAssignableFrom(result)) {
-          result = returnType;
+        PsiType nonVoid = PsiType.VOID.equals(returnType) && !isCompileStatic(callExpression) ? PsiType.NULL : returnType;
+
+        PsiType normalized = nonVoid instanceof GrLiteralClassType
+                             ? nonVoid
+                             : TypesUtil.substituteAndNormalizeType(nonVoid, resolveResult.getSubstitutor(), resolveResult.getSpreadState(),
+                                                                    callExpression);
+
+        LOG.assertTrue(normalized != null, "return type: " + returnType + "; substitutor: " + resolveResult.getSubstitutor());
+
+        if (result == null || normalized.isAssignableFrom(result)) {
+          result = normalized;
         }
-        else if (!result.isAssignableFrom(returnType)) {
-          result = TypesUtil.getLeastUpperBound(result, returnType, manager);
+        else if (!result.isAssignableFrom(normalized)) {
+          result = TypesUtil.getLeastUpperBound(result, normalized, manager);
         }
       }
 
@@ -81,26 +87,30 @@ public class DefaultCallExpressionTypeCalculator extends GrCallExpressionTypeCal
                                                   GrReferenceExpression refExpr,
                                                   GroovyResolveResult resolveResult) {
     PsiElement resolved = resolveResult.getElement();
-    PsiType returnType = null;
     if (resolved instanceof PsiMethod) {
       PsiMethod method = (PsiMethod)resolved;
       if (resolveResult.isInvokedOnProperty()) {
         final PsiType propertyType = PsiUtil.getSmartReturnType(method);
-        returnType = extractReturnTypeFromType(propertyType, true, callExpression);
+        return extractReturnTypeFromType(propertyType, true, callExpression);
       }
       else {
-        returnType = getClosureMethodsReturnType(callExpression, refExpr, method);
-        if (returnType == null) {
-          returnType = PsiUtil.getSmartReturnType(method);
+        PsiType closureReturnType = getClosureMethodsReturnType(callExpression, refExpr, method);
+        if (closureReturnType != null) {
+          return closureReturnType;
+        }
+        else {
+          final PsiType smartReturnType = PsiUtil.getSmartReturnType(method);
+          return smartReturnType;
         }
       }
     }
     else if (resolved instanceof GrVariable) {
       PsiType refType = refExpr.getType();
+      refType = TypesUtil.boxPrimitiveType(refType, callExpression.getManager(), callExpression.getResolveScope());
       final PsiType type = refType == null ? ((GrVariable)resolved).getTypeGroovy() : refType;
-      returnType = extractReturnTypeFromType(type, false, callExpression);
+      return extractReturnTypeFromType(type, false, callExpression);
     }
-    return returnType;
+    return null;
   }
 
   @Nullable
@@ -109,7 +119,7 @@ public class DefaultCallExpressionTypeCalculator extends GrCallExpressionTypeCal
     if (type instanceof GrClosureType) {
       returnType = GrClosureSignatureUtil.getReturnType(((GrClosureType)type).getSignature(), callExpression);
     }
-    else if (isPsiClassTypeToClosure(type)) {
+    else if (TypesUtil.isPsiClassTypeToClosure(type)) {
       assert type instanceof PsiClassType;
       final PsiType[] parameters = ((PsiClassType)type).getParameters();
       if (parameters.length == 1) {
@@ -130,15 +140,6 @@ public class DefaultCallExpressionTypeCalculator extends GrCallExpressionTypeCal
     return returnType;
   }
 
-
-  private static boolean isPsiClassTypeToClosure(PsiType type) {
-    if (!(type instanceof PsiClassType)) return false;
-
-    final PsiClass psiClass = ((PsiClassType)type).resolve();
-    if (psiClass == null) return false;
-
-    return GroovyCommonClassNames.GROOVY_LANG_CLOSURE.equals(psiClass.getQualifiedName());
-  }
 
   private static final Set<String> CLOSURE_METHODS = new HashSet<String>();
   static {

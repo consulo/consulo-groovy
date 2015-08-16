@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2009 JetBrains s.r.o.
+ * Copyright 2000-2014 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,45 +16,56 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.types;
 
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiClassType;
-import com.intellij.psi.PsiJavaCodeReferenceElement;
-import com.intellij.psi.PsiReferenceList;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GrClassReferenceType;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyPsiElementImpl;
+import com.intellij.lang.ASTNode;
+import com.intellij.psi.PsiClassType;
+import com.intellij.psi.PsiJavaCodeReferenceElement;
+import com.intellij.psi.PsiReferenceList;
 
 /**
  * @author ilyas
  */
-public class GrTypeParameterParameterExtendsListImpl extends GroovyPsiElementImpl implements GroovyPsiElement, PsiReferenceList {
+public class GrTypeParameterParameterExtendsListImpl extends GroovyPsiElementImpl implements GroovyPsiElement,
+		PsiReferenceList
+{
 
-  public GrTypeParameterParameterExtendsListImpl(@NotNull ASTNode node) {
-    super(node);
-  }
+	public GrTypeParameterParameterExtendsListImpl(@NotNull ASTNode node)
+	{
+		super(node);
+	}
 
-  public String toString() {
-    return "Type extends bounds list";
-  }
+	public String toString()
+	{
+		return "Type extends bounds list";
+	}
 
-  @NotNull
-  public PsiJavaCodeReferenceElement[] getReferenceElements() {
-    return PsiJavaCodeReferenceElement.EMPTY_ARRAY;
-  }
+	@Override
+	@NotNull
+	public PsiJavaCodeReferenceElement[] getReferenceElements()
+	{
+		return PsiJavaCodeReferenceElement.EMPTY_ARRAY;
+	}
 
-  @NotNull
-  public PsiClassType[] getReferencedTypes() {
-    final GrCodeReferenceElement[] refs = findChildrenByClass(GrCodeReferenceElement.class);
-    PsiClassType[] result = new PsiClassType[refs.length];
-    for (int i = 0; i < result.length; i++) {
-      result[i] = new GrClassReferenceType(refs[i]);
-    }
-    return result;
-  }
+	@Override
+	@NotNull
+	public PsiClassType[] getReferencedTypes()
+	{
+		final GrCodeReferenceElement[] refs = findChildrenByClass(GrCodeReferenceElement.class);
+		PsiClassType[] result = new PsiClassType[refs.length];
+		for(int i = 0; i < result.length; i++)
+		{
+			result[i] = new GrClassReferenceType(refs[i]);
+		}
+		return result;
+	}
 
-  public Role getRole() {
-    return Role.EXTENDS_BOUNDS_LIST;
-  }
+	@Override
+	public Role getRole()
+	{
+		return Role.EXTENDS_BOUNDS_LIST;
+	}
 }

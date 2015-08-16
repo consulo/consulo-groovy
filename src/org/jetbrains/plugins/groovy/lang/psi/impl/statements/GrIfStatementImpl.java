@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2013 JetBrains s.r.o.
+ * Copyright 2000-2014 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,6 @@ package org.jetbrains.plugins.groovy.lang.psi.impl.statements;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.IncorrectOperationException;
-import com.intellij.util.ReflectionCache;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
@@ -42,6 +41,7 @@ public class GrIfStatementImpl extends GroovyPsiElementImpl implements GrIfState
     super(node);
   }
 
+  @Override
   public void accept(GroovyElementVisitor visitor) {
     visitor.visitIfStatement(this);
   }
@@ -50,6 +50,7 @@ public class GrIfStatementImpl extends GroovyPsiElementImpl implements GrIfState
     return "IF statement";
   }
 
+  @Override
   @Nullable
   public GrExpression getCondition() {
     PsiElement lParenth = getLParenth();
@@ -62,18 +63,20 @@ public class GrIfStatementImpl extends GroovyPsiElementImpl implements GrIfState
     return null;
   }
 
+  @Override
   @Nullable
   public GrStatement getThenBranch() {
     List<GrStatement> statements = new ArrayList<GrStatement>();
     for (PsiElement cur = getFirstChild(); cur != null; cur = cur.getNextSibling()) {
-      if (ReflectionCache.isInstance(cur, GrStatement.class)) statements.add((GrStatement)cur);
+      if (GrStatement.class.isInstance(cur)) statements.add((GrStatement)cur);
     }
 
-    if (getCondition() == null && statements.size() > 0) return statements.get(0);
+    if (getCondition() == null && !statements.isEmpty()) return statements.get(0);
     if (statements.size() > 1) return statements.get(1);
     return null;
   }
 
+  @Override
   @Nullable
   public GrStatement getElseBranch() {
     List<GrStatement> statements = new ArrayList<GrStatement>();
@@ -101,22 +104,29 @@ public class GrIfStatementImpl extends GroovyPsiElementImpl implements GrIfState
     super.deleteChildInternal(child);
   }
 
-  public <T extends GrStatement> T replaceThenBranch(T newBranch) throws IncorrectOperationException {
+  @Override
+  @NotNull
+  public <T extends GrStatement> T replaceThenBranch(@NotNull T newBranch) throws IncorrectOperationException {
     return PsiImplUtil.replaceBody(newBranch, getThenBranch(), getNode(), getProject());
   }
 
-  public <T extends GrStatement> T replaceElseBranch(T newBranch) throws IncorrectOperationException {
+  @Override
+  @NotNull
+  public <T extends GrStatement> T replaceElseBranch(@NotNull T newBranch) throws IncorrectOperationException {
     return PsiImplUtil.replaceBody(newBranch, getElseBranch(), getNode(), getProject());
   }
 
+  @Override
   public PsiElement getElseKeyword() {
     return findChildByType(GroovyTokenTypes.kELSE);
   }
 
+  @Override
   public PsiElement getRParenth() {
     return findChildByType(GroovyTokenTypes.mRPAREN);
   }
 
+  @Override
   public PsiElement getLParenth() {
     return findChildByType(GroovyTokenTypes.mLPAREN);
   }

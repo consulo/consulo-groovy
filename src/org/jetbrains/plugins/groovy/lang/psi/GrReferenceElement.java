@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2009 JetBrains s.r.o.
+ * Copyright 2000-2014 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,13 +15,9 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi;
 
-import com.intellij.codeInsight.completion.CompletionParameters;
-import com.intellij.codeInsight.completion.PrefixMatcher;
-import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiPolyVariantReference;
 import com.intellij.psi.PsiType;
-import com.intellij.util.Consumer;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -32,13 +28,16 @@ import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeArgumentList;
  * @author ven
  */
 public interface GrReferenceElement<Q extends PsiElement> extends GroovyPsiElement, PsiPolyVariantReference, GrQualifiedReference<Q> {
+  @Override
   @Nullable
   String getReferenceName();
 
+  @Override
   PsiElement resolve();
 
   GroovyResolveResult advancedResolve();
 
+  @Override
   @NotNull
   GroovyResolveResult[] multiResolve(boolean incompleteCode);
 
@@ -48,9 +47,7 @@ public interface GrReferenceElement<Q extends PsiElement> extends GroovyPsiEleme
   @Nullable
   GrTypeArgumentList getTypeArgumentList();
 
-  void processVariants(PrefixMatcher matcher, CompletionParameters parameters, Consumer<LookupElement> consumer);
-
-  @Nullable
+  @NotNull
   String getClassNameText();
 
   PsiElement handleElementRenameSimple(String newElementName) throws IncorrectOperationException;

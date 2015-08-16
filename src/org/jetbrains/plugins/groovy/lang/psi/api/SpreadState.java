@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2012 JetBrains s.r.o.
+ * Copyright 2000-2014 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,43 +15,55 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.api;
 
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.CollectionUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Key;
 import com.intellij.psi.PsiType;
-import org.jetbrains.annotations.Nullable;
-import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil;
 
 /**
-* @author Max Medvedev
-*/
-public final class SpreadState {
-  public static final Key<SpreadState> SPREAD_STATE = Key.create("Spread state");
+ * @author Max Medvedev
+ */
+public final class SpreadState
+{
+	public static final Key<SpreadState> SPREAD_STATE = Key.create("Spread state");
 
-  @Nullable private final PsiType containerType;
-  @Nullable private final SpreadState innerState;
+	@Nullable
+	private final PsiType containerType;
+	@Nullable
+	private final SpreadState innerState;
 
-  public SpreadState(@Nullable PsiType type, @Nullable SpreadState state) {
-    containerType = type;
-    innerState = state;
-  }
+	public SpreadState(@Nullable PsiType type, @Nullable SpreadState state)
+	{
+		containerType = type;
+		innerState = state;
+	}
 
-  @Nullable
-  public PsiType getContainerType() {
-    return containerType;
-  }
+	@Nullable
+	public PsiType getContainerType()
+	{
+		return containerType;
+	}
 
-  @Nullable
-  public SpreadState getInnerState() {
-    return innerState;
-  }
+	@Nullable
+	public SpreadState getInnerState()
+	{
+		return innerState;
+	}
 
-  public static SpreadState create(PsiType type, @Nullable SpreadState state) {
-    return new SpreadState(type, state);
-  }
+	public static SpreadState create(PsiType type, @Nullable SpreadState state)
+	{
+		return new SpreadState(type, state);
+	}
 
-  @Nullable
-  public static PsiType apply(@Nullable PsiType item, @Nullable SpreadState state, Project project) {
-    if (state == null) return item;
-    return apply(TypesUtil.createSimilarCollection(state.getContainerType(), project, item), state.getInnerState(), project);
-  }
+	@Nullable
+	public static PsiType apply(@Nullable PsiType item, @Nullable SpreadState state, Project project)
+	{
+		if(state == null)
+		{
+			return item;
+		}
+		return apply(CollectionUtil.createSimilarCollection(state.getContainerType(), project, item),
+				state.getInnerState(), project);
+	}
 }

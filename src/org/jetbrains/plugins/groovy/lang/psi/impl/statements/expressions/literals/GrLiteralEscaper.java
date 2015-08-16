@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2013 JetBrains s.r.o.
+ * Copyright 2000-2014 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.literals;
 
-import com.intellij.openapi.util.ProperTextRange;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.LiteralTextEscaper;
 import com.intellij.psi.tree.IElementType;
@@ -34,7 +33,6 @@ public class GrLiteralEscaper extends LiteralTextEscaper<GrLiteralContainer> {
 
   @Override
   public boolean decode(@NotNull TextRange rangeInsideHost, @NotNull StringBuilder outChars) {
-    ProperTextRange.assertProperRange(rangeInsideHost);
     String subText = rangeInsideHost.substring(myHost.getText());
     outSourceOffsets = new int[subText.length() + 1];
 
@@ -58,6 +56,7 @@ public class GrLiteralEscaper extends LiteralTextEscaper<GrLiteralContainer> {
     return (result <= rangeInsideHost.getLength() ? result : rangeInsideHost.getLength()) + rangeInsideHost.getStartOffset();
   }
 
+  @Override
   public boolean isOneLine() {
     final Object value = myHost.getValue();
     return value instanceof String && ((String)value).indexOf('\n') < 0;

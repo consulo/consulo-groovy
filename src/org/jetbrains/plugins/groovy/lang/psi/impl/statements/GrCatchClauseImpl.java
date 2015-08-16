@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2009 JetBrains s.r.o.
+ * Copyright 2000-2014 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,6 +30,7 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameter;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameterList;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyPsiElementImpl;
 import org.jetbrains.plugins.groovy.lang.resolve.ResolveUtil;
+import org.jetbrains.plugins.groovy.lang.resolve.processors.ClassHint;
 
 /**
  * @author ilyas
@@ -39,6 +40,7 @@ public class GrCatchClauseImpl extends GroovyPsiElementImpl implements GrCatchCl
     super(node);
   }
 
+  @Override
   public void accept(GroovyElementVisitor visitor) {
     visitor.visitCatchClause(this);
   }
@@ -47,25 +49,32 @@ public class GrCatchClauseImpl extends GroovyPsiElementImpl implements GrCatchCl
     return "Catch clause";
   }
 
+  @Override
   @Nullable
   public GrParameter getParameter() {
     return findChildByClass(GrParameter.class);
   }
 
+  @Override
   public GrOpenBlock getBody() {
     return findChildByClass(GrOpenBlock.class);
   }
 
+  @Override
   public boolean processDeclarations(@NotNull PsiScopeProcessor processor, @NotNull ResolveState state, PsiElement lastParent, @NotNull PsiElement place) {
+    if (!ResolveUtil.shouldProcessProperties(processor.getHint(ClassHint.KEY))) return true;
+
     GrParameter parameter = getParameter();
     return parameter == null || ResolveUtil.processElement(processor, parameter, state);
   }
 
+  @Override
   public GrParameter[] getParameters() {
     final GrParameter parameter = getParameter();
     return parameter != null ? new GrParameter[]{parameter} : GrParameter.EMPTY_ARRAY;
   }
 
+  @Override
   public GrParameterList getParameterList() {
     return null;
   }

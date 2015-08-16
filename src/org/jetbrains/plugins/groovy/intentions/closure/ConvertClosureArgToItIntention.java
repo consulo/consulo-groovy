@@ -15,22 +15,22 @@
  */
 package org.jetbrains.plugins.groovy.intentions.closure;
 
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiElement;
-import com.intellij.util.IncorrectOperationException;
+import java.util.HashSet;
+import java.util.Set;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.intentions.base.Intention;
-import org.jetbrains.plugins.groovy.intentions.base.IntentionUtils;
 import org.jetbrains.plugins.groovy.intentions.base.PsiElementPredicate;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyRecursiveElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlock;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameter;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameterList;
-
-import java.util.HashSet;
-import java.util.Set;
+import org.jetbrains.plugins.groovy.lang.psi.impl.PsiImplUtil;
+import com.intellij.openapi.editor.Editor;
+import com.intellij.openapi.project.Project;
+import com.intellij.psi.PsiElement;
+import com.intellij.util.IncorrectOperationException;
 
 public class ConvertClosureArgToItIntention extends Intention {
 
@@ -63,7 +63,7 @@ public class ConvertClosureArgToItIntention extends Intention {
         closure.accept(visitor);
         parameter.delete();
         for (GrReferenceExpression referenceExpression : referencesToChange) {
-            IntentionUtils.replaceExpression("it", referenceExpression );
+			PsiImplUtil.replaceExpression("it", referenceExpression);
         }
     }
 

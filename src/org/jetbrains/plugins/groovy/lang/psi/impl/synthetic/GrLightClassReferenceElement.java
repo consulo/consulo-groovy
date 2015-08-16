@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2013 JetBrains s.r.o.
+ * Copyright 2000-2014 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,20 +15,16 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.synthetic;
 
-import com.intellij.codeInsight.completion.CompletionParameters;
-import com.intellij.codeInsight.completion.PrefixMatcher;
-import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiType;
 import com.intellij.psi.impl.light.LightElement;
 import com.intellij.util.ArrayUtil;
-import com.intellij.util.Consumer;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.plugins.groovy.GroovyFileType;
+import org.jetbrains.plugins.groovy.GroovyLanguage;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
@@ -46,7 +42,7 @@ public class GrLightClassReferenceElement extends LightElement implements GrCode
   private final PsiElement myContext;
 
   public GrLightClassReferenceElement(@NotNull String className, @NotNull String text, PsiElement context) {
-    super(context.getManager(), GroovyFileType.GROOVY_LANGUAGE);
+    super(context.getManager(), GroovyLanguage.INSTANCE);
     myClassName = className;
     myText = text;
     myContext = context;
@@ -95,10 +91,7 @@ public class GrLightClassReferenceElement extends LightElement implements GrCode
     return null;
   }
 
-  @Override
-  public void processVariants(PrefixMatcher matcher, CompletionParameters parameters, Consumer<LookupElement> consumer) {
-  }
-
+  @NotNull
   @Override
   public String getClassNameText() {
     return myClassName;

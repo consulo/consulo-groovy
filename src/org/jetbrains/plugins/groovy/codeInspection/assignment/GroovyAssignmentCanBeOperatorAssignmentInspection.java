@@ -40,7 +40,7 @@ import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 import javax.swing.*;
 
 public class GroovyAssignmentCanBeOperatorAssignmentInspection
-  extends BaseInspection {
+    extends BaseInspection {
 
   /**
    * @noinspection PublicField,WeakerAccess
@@ -52,38 +52,42 @@ public class GroovyAssignmentCanBeOperatorAssignmentInspection
    */
   public boolean ignoreObscureOperators = false;
 
+  @Override
   @Nls
   @NotNull
   public String getGroupDisplayName() {
     return ASSIGNMENT_ISSUES;
   }
 
+  @Override
   @NotNull
   public String getDisplayName() {
     return "Assignment replaceable with operator assignment";
   }
 
+  @Override
   @NotNull
   public String buildErrorString(Object... infos) {
     final GrAssignmentExpression assignmentExpression =
-      (GrAssignmentExpression) infos[0];
+        (GrAssignmentExpression) infos[0];
     return "<code>#ref</code> could be simplified to '" + calculateReplacementExpression(assignmentExpression) + "' #loc";
   }
 
+  @Override
   @Nullable
   public JComponent createOptionsPanel() {
     final MultipleCheckboxOptionsPanel optionsPanel =
-      new MultipleCheckboxOptionsPanel(this);
+        new MultipleCheckboxOptionsPanel(this);
     optionsPanel.addCheckbox("Ignore conditional operators", "ignoreLazyOperators");
     optionsPanel.addCheckbox("Ignore obscure operators", "ignoreObscureOperators");
     return optionsPanel;
   }
 
   static String calculateReplacementExpression(
-    GrAssignmentExpression expression) {
+      GrAssignmentExpression expression) {
     final GrExpression rhs = expression.getRValue();
     final GrBinaryExpression binaryExpression =
-      (GrBinaryExpression)PsiUtil.skipParentheses(rhs, false);
+        (GrBinaryExpression)PsiUtil.skipParentheses(rhs, false);
     final GrExpression lhs = expression.getLValue();
     assert binaryExpression != null;
     final IElementType sign = binaryExpression.getOperationTokenType();
@@ -98,26 +102,29 @@ public class GroovyAssignmentCanBeOperatorAssignmentInspection
     return lhs.getText() + ' ' + signText + "= " + rhsRhs.getText();
   }
 
+  @NotNull
+  @Override
   public BaseInspectionVisitor buildVisitor() {
     return new ReplaceAssignmentWithOperatorAssignmentVisitor();
   }
 
-  public GroovyFix buildFix(PsiElement location) {
+  @Override
+  public GroovyFix buildFix(@NotNull PsiElement location) {
     return new ReplaceAssignmentWithOperatorAssignmentFix(
-      (GrAssignmentExpression) location);
+        (GrAssignmentExpression) location);
   }
 
   private static class ReplaceAssignmentWithOperatorAssignmentFix
-    extends GroovyFix {
+      extends GroovyFix {
 
     private final String m_name;
 
     private ReplaceAssignmentWithOperatorAssignmentFix(
-      GrAssignmentExpression expression) {
+        GrAssignmentExpression expression) {
       super();
       final GrExpression rhs = expression.getRValue();
       final GrBinaryExpression binaryExpression =
-        (GrBinaryExpression)PsiUtil.skipParentheses(rhs, false);
+          (GrBinaryExpression)PsiUtil.skipParentheses(rhs, false);
       assert binaryExpression != null;
       final IElementType sign = binaryExpression.getOperationTokenType();
       String signText = getTextForOperator(sign);
@@ -129,29 +136,32 @@ public class GroovyAssignmentCanBeOperatorAssignmentInspection
       m_name = "Replace '=' with '" + signText + "='";
     }
 
+    @Override
     @NotNull
     public String getName() {
       return m_name;
     }
 
+    @Override
     public void doFix(@NotNull Project project,
                       ProblemDescriptor descriptor)
-      throws IncorrectOperationException {
+        throws IncorrectOperationException {
       final PsiElement element = descriptor.getPsiElement();
       if (!(element instanceof GrAssignmentExpression)) {
         return;
       }
       final GrAssignmentExpression expression =
-        (GrAssignmentExpression) element;
+          (GrAssignmentExpression) element;
       final String newExpression =
-        calculateReplacementExpression(expression);
+          calculateReplacementExpression(expression);
       replaceExpression(expression, newExpression);
     }
   }
 
   private class ReplaceAssignmentWithOperatorAssignmentVisitor
-    extends BaseInspectionVisitor {
+      extends BaseInspectionVisitor {
 
+    @Override
     public void visitAssignmentExpression(@NotNull GrAssignmentExpression assignment) {
       super.visitAssignmentExpression(assignment);
       final IElementType assignmentTokenType = assignment.getOperationTokenType();
@@ -168,7 +178,7 @@ public class GroovyAssignmentCanBeOperatorAssignmentInspection
         return;
       }
       final IElementType expressionTokenType =
-        binaryRhs.getOperationTokenType();
+          binaryRhs.getOperationTokenType();
       if (getTextForOperator(expressionTokenType) == null) {
         return;
       }

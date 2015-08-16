@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2012 JetBrains s.r.o.
+ * Copyright 2000-2014 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,11 +15,10 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.synthetic;
 
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.psi.*;
-import com.intellij.psi.impl.light.LightMethodBuilder;
-import com.intellij.psi.impl.light.LightReferenceListBuilder;
-import com.intellij.psi.impl.light.LightTypeParameterListBuilder;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -38,11 +37,19 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMe
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrReflectedMethod;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeElement;
 import org.jetbrains.plugins.groovy.lang.psi.util.GdkMethodUtil;
+import org.jetbrains.plugins.groovy.lang.psi.util.GrInnerClassConstructorUtil;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.psi.PsiClass;
+import com.intellij.psi.PsiClassType;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiIdentifier;
+import com.intellij.psi.PsiModifier;
+import com.intellij.psi.PsiType;
+import com.intellij.psi.PsiTypeParameter;
+import com.intellij.psi.impl.light.LightMethodBuilder;
+import com.intellij.psi.impl.light.LightReferenceListBuilder;
+import com.intellij.psi.impl.light.LightTypeParameterListBuilder;
 
 /**
  * @author Max Medvedev
@@ -54,14 +61,14 @@ public class GrReflectedMethodImpl extends LightMethodBuilder implements GrRefle
   private final GrMethod myBaseMethod;
   private GrParameter[] mySkippedParameters = null;
 
-  public GrReflectedMethodImpl(GrMethod baseMethod, int optionalParams, PsiClassType categoryType) {
+  public GrReflectedMethodImpl(GrMethod baseMethod, GrParameter[] parameters, int optionalParams, PsiClassType categoryType) {
     super(baseMethod.getManager(), baseMethod.getLanguage(), baseMethod.getName(),
           new GrLightParameterListBuilder(baseMethod.getManager(), baseMethod.getLanguage()),
           new GrLightModifierList(baseMethod), new LightReferenceListBuilder(baseMethod.getManager(), baseMethod.getLanguage(), null),
           new LightTypeParameterListBuilder(baseMethod.getManager(), baseMethod.getLanguage())
     );
 
-    initParameterList(baseMethod, optionalParams, categoryType);
+    initParameterList(parameters, optionalParams, categoryType);
     initTypeParameterList(baseMethod);
     initModifiers(baseMethod, categoryType != null);
     initThrowsList(baseMethod);
@@ -110,8 +117,7 @@ public class GrReflectedMethodImpl extends LightMethodBuilder implements GrRefle
     }
   }
 
-  private void initParameterList(GrMethod baseMethod, int optionalParams, PsiClassType categoryType) {
-    final GrParameter[] parameters = baseMethod.getParameters();
+  private void initParameterList(GrParameter[] parameters, int optionalParams, PsiClassType categoryType) {
     final GrLightParameterListBuilder parameterList = (GrLightParameterListBuilder)getParameterList();
 
     List<GrParameter> skipped = new ArrayList<GrParameter>();
@@ -128,12 +134,18 @@ public class GrReflectedMethodImpl extends LightMethodBuilder implements GrRefle
         }
         optionalParams--;
       }
-      parameterList.addParameter(new GrLightParameter(parameter.getName(), parameter.getDeclaredType(), this));
+      parameterList.addParameter(createLightParameter(parameter));
     }
 
-    LOG.assertTrue(optionalParams == 0, optionalParams + "methodText: " + baseMethod.getText());
+    LOG.assertTrue(optionalParams == 0);
 
     mySkippedParameters = skipped.toArray(new GrParameter[skipped.size()]);
+  }
+
+  private GrLightParameter createLightParameter(GrParameter parameter) {
+    GrLightParameter lightParameter = new GrLightParameter(parameter.getName(), parameter.getDeclaredType(), this);
+    lightParameter.setModifierList(parameter.getModifierList());
+    return lightParameter;
   }
 
   @NotNull
@@ -249,10 +261,18 @@ public class GrReflectedMethodImpl extends LightMethodBuilder implements GrRefle
     return myBaseMethod.isPhysical();
   }
 
+  @NotNull
   public static GrReflectedMethod[] createReflectedMethods(GrMethod method) {
     final PsiClassType categoryType = method.hasModifierProperty(PsiModifier.STATIC) ? null : getCategoryType(method);
 
     final GrParameter[] parameters = method.getParameters();
+    return doCreateReflectedMethods(method, categoryType, parameters);
+  }
+
+  @NotNull
+  private static GrReflectedMethod[] doCreateReflectedMethods(@NotNull GrMethod targetMethod,
+                                                              @Nullable PsiClassType categoryType,
+                                                              @NotNull GrParameter[] parameters) {
     int count = 0;
     for (GrParameter parameter : parameters) {
       if (parameter.isOptional()) count++;
@@ -262,10 +282,33 @@ public class GrReflectedMethodImpl extends LightMethodBuilder implements GrRefle
 
     final GrReflectedMethod[] methods = new GrReflectedMethod[count + 1];
     for (int i = 0; i <= count; i++) {
-      methods[i] = new GrReflectedMethodImpl(method, count - i, categoryType);
+      methods[i] = new GrReflectedMethodImpl(targetMethod, parameters, count - i, categoryType);
     }
 
     return methods;
+  }
+
+  public static GrReflectedMethod[] createReflectedConstructors(GrMethod method) {
+    assert method.isConstructor();
+
+    PsiClass aClass = method.getContainingClass();
+    if (aClass == null) return GrReflectedMethod.EMPTY_ARRAY;
+
+    PsiClass enclosingClass = aClass.getContainingClass();
+    if (enclosingClass != null && !aClass.hasModifierProperty(PsiModifier.STATIC)) {
+      GrParameter[] parameters = GrInnerClassConstructorUtil
+        .addEnclosingInstanceParam(method, enclosingClass, method.getParameterList().getParameters(), false);
+      GrReflectedMethod[] reflectedMethods = doCreateReflectedMethods(method, null, parameters);
+      if (reflectedMethods.length > 0) {
+        return reflectedMethods;
+      }
+      else {
+        return new GrReflectedMethod[]{new GrReflectedMethodImpl(method, parameters, 0, null)};
+      }
+    }
+    else {
+      return doCreateReflectedMethods(method, null, method.getParameters());
+    }
   }
 
   @Nullable

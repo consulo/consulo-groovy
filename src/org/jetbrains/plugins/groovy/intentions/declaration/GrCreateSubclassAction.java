@@ -15,6 +15,16 @@
  */
 package org.jetbrains.plugins.groovy.intentions.declaration;
 
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.plugins.groovy.GroovyFileType;
+import org.jetbrains.plugins.groovy.actions.GroovyTemplates;
+import org.jetbrains.plugins.groovy.annotator.intentions.CreateClassActionBase;
+import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrExtendsClause;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrImplementsClause;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
+import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
+import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeParameterList;
 import com.intellij.codeInsight.CodeInsightBundle;
 import com.intellij.codeInsight.CodeInsightUtil;
 import com.intellij.codeInsight.daemon.impl.quickfix.CreateFromUsageBaseFix;
@@ -34,20 +44,18 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.util.Ref;
 import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.*;
+import com.intellij.psi.JavaPsiFacade;
+import com.intellij.psi.PsiClass;
+import com.intellij.psi.PsiDirectory;
+import com.intellij.psi.PsiDocumentManager;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiElementFactory;
+import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiManager;
+import com.intellij.psi.PsiTypeParameter;
 import com.intellij.psi.codeStyle.JavaCodeStyleManager;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
-import org.jetbrains.annotations.Nullable;
-import org.jetbrains.plugins.groovy.GroovyFileType;
-import org.jetbrains.plugins.groovy.actions.GroovyTemplates;
-import org.jetbrains.plugins.groovy.annotator.intentions.CreateClassActionBase;
-import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrExtendsClause;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrImplementsClause;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
-import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
-import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeParameterList;
 
 /**
  * @author Max Medvedev
@@ -82,7 +90,7 @@ public class GrCreateSubclassAction extends CreateSubclassAction {
 
         try {
           targetClass.set(CreateClassActionBase.createClassByType(targetDirectory, className, PsiManager.getInstance(project), psiClass,
-                                                                  GroovyTemplates.GROOVY_CLASS));
+                                                                  GroovyTemplates.GROOVY_CLASS, true));
         }
         catch (final IncorrectOperationException e) {
           ApplicationManager.getApplication().invokeLater(new Runnable() {

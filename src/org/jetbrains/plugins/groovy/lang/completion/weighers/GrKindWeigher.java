@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2013 JetBrains s.r.o.
+ * Copyright 2000-2014 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,21 @@
  */
 package org.jetbrains.plugins.groovy.lang.completion.weighers;
 
+import java.util.Set;
+
+import org.consulo.psi.PsiPackage;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.plugins.groovy.extensions.NamedArgumentDescriptor;
+import org.jetbrains.plugins.groovy.lang.completion.GrMainCompletionProvider;
+import org.jetbrains.plugins.groovy.lang.completion.GrPropertyForCompletion;
+import org.jetbrains.plugins.groovy.lang.psi.GrReferenceElement;
+import org.jetbrains.plugins.groovy.lang.psi.GroovyFileBase;
+import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotation;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrAccessorMethod;
+import org.jetbrains.plugins.groovy.lang.psi.impl.auxiliary.annotation.GrAnnotationImpl;
+import org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames;
+import org.jetbrains.plugins.groovy.lang.psi.util.GroovyPropertyUtils;
 import com.intellij.codeInsight.completion.CompletionLocation;
 import com.intellij.codeInsight.completion.CompletionWeigher;
 import com.intellij.codeInsight.lookup.LookupElement;
@@ -26,20 +41,6 @@ import com.intellij.psi.util.InheritanceUtil;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.containers.ContainerUtil;
 import com.intellij.util.containers.hash.HashSet;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.plugins.groovy.extensions.NamedArgumentDescriptor;
-import org.jetbrains.plugins.groovy.lang.completion.GroovyCompletionContributor;
-import org.jetbrains.plugins.groovy.lang.psi.GrReferenceElement;
-import org.jetbrains.plugins.groovy.lang.psi.GroovyFileBase;
-import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotation;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrAccessorMethod;
-import org.jetbrains.plugins.groovy.lang.psi.impl.auxiliary.annotation.GrAnnotationImpl;
-import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.GrPropertyForCompletion;
-import org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames;
-import org.jetbrains.plugins.groovy.lang.psi.util.GroovyPropertyUtils;
-
-import java.util.Set;
 
 /**
  * @author Maxim.Medvedev
@@ -92,7 +93,7 @@ public class GrKindWeigher extends CompletionWeigher {
       if (isPriorityKeyword(o)) return NotQualifiedKind.local;
       if (isLightElement(o)) return NotQualifiedKind.unknown;
       if (o instanceof PsiClass) {
-        if (((PsiClass)o).isAnnotationType() && GroovyCompletionContributor.AFTER_AT.accepts(position)) {
+        if (((PsiClass)o).isAnnotationType() && GrMainCompletionProvider.AFTER_AT.accepts(position)) {
           final GrAnnotation annotation = PsiTreeUtil.getParentOfType(position, GrAnnotation.class);
           if (annotation != null) {
             PsiElement annoParent = annotation.getParent();
@@ -103,7 +104,7 @@ public class GrKindWeigher extends CompletionWeigher {
             }
           }
         }
-        if (GroovyCompletionContributor.IN_CATCH_TYPE.accepts(position) &&
+        if (GrMainCompletionProvider.IN_CATCH_TYPE.accepts(position) &&
             InheritanceUtil.isInheritor((PsiClass)o, CommonClassNames.JAVA_LANG_THROWABLE)) {
           return NotQualifiedKind.restrictedClass;
         }
@@ -111,7 +112,7 @@ public class GrKindWeigher extends CompletionWeigher {
       if (o instanceof PsiMember) {
         final PsiClass containingClass = ((PsiMember)o).getContainingClass();
         if (isAccessor((PsiMember)o)) return NotQualifiedKind.accessor;
-        if (o instanceof PsiClass && ((PsiClass)o).getContainingClass() == null || o instanceof PsiJavaPackage) return NotQualifiedKind.unknown;
+        if (o instanceof PsiClass && ((PsiClass)o).getContainingClass() == null || o instanceof PsiPackage) return NotQualifiedKind.unknown;
         if (o instanceof PsiClass) return NotQualifiedKind.innerClass;
         if (PsiTreeUtil.isContextAncestor(containingClass, position, false)) return NotQualifiedKind.currentClassMember;
         return NotQualifiedKind.member;
@@ -128,7 +129,7 @@ public class GrKindWeigher extends CompletionWeigher {
         if (isQualifierClassMember((PsiMember)o, qualifier)) {
           return QualifiedKind.currentClassMember;
         }
-        if (o instanceof PsiClass && ((PsiClass)o).getContainingClass() == null || o instanceof PsiJavaPackage) return QualifiedKind.unknown;
+        if (o instanceof PsiClass && ((PsiClass)o).getContainingClass() == null || o instanceof PsiPackage) return QualifiedKind.unknown;
         if (o instanceof PsiClass) return QualifiedKind.innerClass;
         return QualifiedKind.member;
       }

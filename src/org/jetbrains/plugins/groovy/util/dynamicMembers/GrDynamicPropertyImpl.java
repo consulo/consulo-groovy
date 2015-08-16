@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2009 JetBrains s.r.o.
+ * Copyright 2000-2014 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,9 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.util.dynamicMembers;
 
-import com.intellij.psi.*;
-import com.intellij.psi.impl.light.LightElement;
-import com.intellij.util.IncorrectOperationException;
+import java.util.Map;
+
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -29,188 +28,256 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrAccessorMethod;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeElement;
-
-import java.util.Map;
+import com.intellij.psi.PsiClass;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiElementVisitor;
+import com.intellij.psi.PsiExpression;
+import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiIdentifier;
+import com.intellij.psi.PsiType;
+import com.intellij.psi.PsiTypeElement;
+import com.intellij.psi.impl.light.LightElement;
+import com.intellij.util.IncorrectOperationException;
 
 /**
  * @author Maxim.Medvedev
  */
-public class GrDynamicPropertyImpl extends LightElement implements GrField {
-  private final GrField myField;
-  private final PsiClass myContainingClass;
-  private final PsiElement myNavigationalElement;
+public class GrDynamicPropertyImpl extends LightElement implements GrField
+{
+	private final GrField myField;
+	private final PsiClass myContainingClass;
+	private final PsiElement myNavigationalElement;
 
-  public GrDynamicPropertyImpl(PsiClass containingClass, GrField field, PsiElement navigationalElement) {
-    super(field.getManager(), field.getLanguage());
-    myContainingClass = containingClass;
-    if (navigationalElement != null) {
-      myNavigationalElement = navigationalElement;
-    }
-    else {
-      myNavigationalElement = field;
-    }
+	public GrDynamicPropertyImpl(PsiClass containingClass, GrField field, PsiElement navigationalElement)
+	{
+		super(field.getManager(), field.getLanguage());
+		myContainingClass = containingClass;
+		if(navigationalElement != null)
+		{
+			myNavigationalElement = navigationalElement;
+		}
+		else
+		{
+			myNavigationalElement = field;
+		}
 
-    myField = field;
-  }
+		myField = field;
+	}
 
-  public GrDocComment getDocComment() {
-    return null;
-  }
+	@Override
+	public GrDocComment getDocComment()
+	{
+		return null;
+	}
 
-  public PsiClass getContainingClass() {
-    return myContainingClass;
-  }
+	@Override
+	public PsiClass getContainingClass()
+	{
+		return myContainingClass;
+	}
 
-  public boolean isDeprecated() {
-    return false;
-  }
+	@Override
+	public boolean isDeprecated()
+	{
+		return false;
+	}
 
-  @NotNull
-  @Override
-  public PsiElement getNavigationElement() {
-    return myNavigationalElement;
-  }
+	@NotNull
+	@Override
+	public PsiElement getNavigationElement()
+	{
+		return myNavigationalElement;
+	}
+	@Override
+	public PsiFile getContainingFile()
+	{
+		return myContainingClass != null ? myContainingClass.getContainingFile() : null;
+	}
 
-  @Override
-  public PsiFile getContainingFile() {
-    return myContainingClass != null ? myContainingClass.getContainingFile() : null;
-  }
 
-  @Override
-  public String toString() {
-    return "Dynamic Property: " + getName();
-  }
+	@Override
+	public String toString()
+	{
+		return "Dynamic Property: " + getName();
+	}
 
-  @NotNull
-  public String getName() {
-    return myField.getName();
-  }
+	@Override
+	@NotNull
+	public String getName()
+	{
+		return myField.getName();
+	}
 
-  @NotNull
-  public PsiType getType() {
-    return myField.getType();
-  }
+	@Override
+	@NotNull
+	public PsiType getType()
+	{
+		return myField.getType();
+	}
 
-  public GrModifierList getModifierList() {
-    return myField.getModifierList();
-  }
+	@Override
+	public GrModifierList getModifierList()
+	{
+		return myField.getModifierList();
+	}
 
-  public PsiTypeElement getTypeElement() {
-    return myField.getTypeElement();
-  }
+	@Override
+	public PsiTypeElement getTypeElement()
+	{
+		return myField.getTypeElement();
+	}
 
-  public boolean hasModifierProperty(@NonNls @NotNull String name) {
-    return myField.hasModifierProperty(name);
-  }
+	@Override
+	public boolean hasModifierProperty(@NonNls @NotNull String name)
+	{
+		return myField.hasModifierProperty(name);
+	}
 
-  public PsiExpression getInitializer() {
-    return myField.getInitializer();
-  }
+	@Override
+	public PsiExpression getInitializer()
+	{
+		return myField.getInitializer();
+	}
 
-  public void setInitializer(@Nullable PsiExpression initializer) throws IncorrectOperationException {
-    throw new IncorrectOperationException("Cannot set initializer");
-  }
+	@Override
+	public void setInitializer(@Nullable PsiExpression initializer) throws IncorrectOperationException
+	{
+		throw new IncorrectOperationException("Cannot set initializer");
+	}
 
-  @NotNull
-  public PsiIdentifier getNameIdentifier() {
-    return myField.getNameIdentifier();
-  }
+	@Override
+	@NotNull
+	public PsiIdentifier getNameIdentifier()
+	{
+		return myField.getNameIdentifier();
+	}
 
-  public boolean hasInitializer() {
-    return myField.hasInitializer();
-  }
+	@Override
+	public boolean hasInitializer()
+	{
+		return myField.hasInitializer();
+	}
 
-  public void normalizeDeclaration() throws IncorrectOperationException {
-    throw new IncorrectOperationException("cannot normalize declaration");
-  }
+	@Override
+	public void normalizeDeclaration() throws IncorrectOperationException
+	{
+		throw new IncorrectOperationException("cannot normalize declaration");
+	}
 
-  public Object computeConstantValue() {
-    return null;
-  }
+	@Override
+	public Object computeConstantValue()
+	{
+		return null;
+	}
 
-  public PsiElement setName(@NonNls @NotNull String name) throws IncorrectOperationException {
-    return this;
-  }
+	@Override
+	public PsiElement setName(@NonNls @NotNull String name) throws IncorrectOperationException
+	{
+		return this;
+	}
 
-  public PsiType getTypeNoResolve() {
-    return null;
-  }
+	@Override
+	public String getText()
+	{
+		return null;
+	}
 
-  public String getText() {
-    return null;
-  }
+	@Override
+	public void accept(@NotNull PsiElementVisitor visitor)
+	{
 
-  public void accept(@NotNull PsiElementVisitor visitor) {
+	}
 
-  }
+	@Override
+	public PsiElement copy()
+	{
+		return null;
+	}
 
-  public PsiElement copy() {
-    return null;
-  }
+	@Override
+	@NotNull
+	public PsiElement getNameIdentifierGroovy()
+	{
+		return myField.getNameIdentifierGroovy();
+	}
 
-  @NotNull
-  public PsiElement getNameIdentifierGroovy() {
-    return myField.getNameIdentifierGroovy();
-  }
+	@Override
+	public void accept(GroovyElementVisitor visitor)
+	{
+	}
 
-  public void accept(GroovyElementVisitor visitor) {
-  }
+	@Override
+	public void acceptChildren(GroovyElementVisitor visitor)
+	{
+	}
 
-  public void acceptChildren(GroovyElementVisitor visitor) {
-  }
+	@Override
+	public PsiType getTypeGroovy()
+	{
+		return myField.getTypeGroovy();
+	}
 
-  public PsiType getTypeGroovy() {
-    return myField.getTypeGroovy();
-  }
+	@Override
+	public PsiType getDeclaredType()
+	{
+		return myField.getDeclaredType();
+	}
 
-  public PsiType getDeclaredType() {
-    return myField.getDeclaredType();
-  }
+	@Override
+	public boolean isProperty()
+	{
+		return myField.isProperty();
+	}
 
-  public boolean isProperty() {
-    return myField.isProperty();
-  }
+	@Override
+	public GrExpression getInitializerGroovy()
+	{
+		return myField.getInitializerGroovy();
+	}
 
-  public GrExpression getInitializerGroovy() {
-    return myField.getInitializerGroovy();
-  }
+	@Override
+	public void setType(@Nullable PsiType type) throws IncorrectOperationException
+	{
+		throw new IncorrectOperationException("cannot set type to dynamic property");
+	}
 
-  public void setType(@Nullable PsiType type) throws IncorrectOperationException {
-    throw new IncorrectOperationException("cannot set type to dynamic property");
-  }
+	@Override
+	public GrAccessorMethod getSetter()
+	{
+		return myField.getSetter();
+	}
 
-  public GrAccessorMethod getSetter() {
-    return myField.getSetter();
-  }
+	@Override
+	@NotNull
+	public GrAccessorMethod[] getGetters()
+	{
+		return myField.getGetters();
+	}
 
-  @NotNull
-  public GrAccessorMethod[] getGetters() {
-    return myField.getGetters();
-  }
+	@Override
+	public GrTypeElement getTypeElementGroovy()
+	{
+		return myField.getTypeElementGroovy();
+	}
 
-  public GrTypeElement getTypeElementGroovy() {
-    return myField.getTypeElementGroovy();
-  }
+	@Override
+	@NotNull
+	public Map<String, NamedArgumentDescriptor> getNamedParameters()
+	{
+		return myField.getNamedParameters();
+	}
 
-  @NotNull
-  public Map<String, NamedArgumentDescriptor> getNamedParameters() {
-    return myField.getNamedParameters();
-  }
+	@Override
+	public void setInitializerGroovy(GrExpression initializer)
+	{
+		throw new IncorrectOperationException("cannot set initializer to dynamic property!");
+	}
 
-  @Override
-  public void clearCaches() {
-    myField.clearCaches();
-  }
-
-  @Override
-  public void setInitializerGroovy(GrExpression initializer) {
-    throw new IncorrectOperationException("cannot set initializer to dynamic property!");
-  }
-
-  @Override
-  public boolean isEquivalentTo(PsiElement another) {
-    return another instanceof GrDynamicPropertyImpl &&
-           myManager.areElementsEquivalent(myField, ((GrDynamicPropertyImpl)another).myField) &&
-           myManager.areElementsEquivalent(myContainingClass, ((GrDynamicPropertyImpl)another).myContainingClass);
-  }
+	@Override
+	public boolean isEquivalentTo(PsiElement another)
+	{
+		return another instanceof GrDynamicPropertyImpl &&
+				myManager.areElementsEquivalent(myField, ((GrDynamicPropertyImpl) another).myField) &&
+				myManager.areElementsEquivalent(myContainingClass, ((GrDynamicPropertyImpl) another).myContainingClass);
+	}
 }

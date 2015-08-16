@@ -16,7 +16,20 @@
 
 package org.jetbrains.plugins.groovy.refactoring.extract;
 
-import com.intellij.ui.ListCellRendererWrapper;
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+
+import javax.swing.*;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableCellEditor;
+
+import org.jetbrains.annotations.NonNls;
+import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyNamesUtil;
+import org.jetbrains.plugins.groovy.refactoring.GroovyRefactoringBundle;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.PsiPrimitiveType;
@@ -25,22 +38,12 @@ import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.refactoring.ui.TypeSelector;
 import com.intellij.ui.BooleanTableCellRenderer;
 import com.intellij.ui.IdeBorderFactory;
+import com.intellij.ui.ListCellRendererWrapper;
 import com.intellij.ui.TableUtil;
 import com.intellij.ui.ToolbarDecorator;
 import com.intellij.ui.table.JBTable;
 import com.intellij.util.ui.AbstractTableCellEditor;
 import com.intellij.util.ui.EditableModel;
-import org.jetbrains.annotations.NonNls;
-import org.jetbrains.plugins.groovy.refactoring.GroovyNamesUtil;
-import org.jetbrains.plugins.groovy.refactoring.GroovyRefactoringBundle;
-
-import javax.swing.*;
-import javax.swing.table.AbstractTableModel;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.TableCellEditor;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
 
 /**
  * @author ilyas

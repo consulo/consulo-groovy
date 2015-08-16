@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2011 JetBrains s.r.o.
+ * Copyright 2000-2014 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -64,9 +64,9 @@ public class GrLightParameterListBuilder extends LightElement implements GrParam
     return myCachedParameters;
   }
 
-  public void copyParameters(@NotNull PsiMethod method) {
+  public void copyParameters(@NotNull PsiMethod method, PsiSubstitutor substitutor, PsiMethod scope) {
     for (PsiParameter parameter : method.getParameterList().getParameters()) {
-      GrLightParameter p = new GrLightParameter(StringUtil.notNullize(parameter.getName()), parameter.getType(), this);
+      GrLightParameter p = new GrLightParameter(StringUtil.notNullize(parameter.getName()), substitutor.substitute(parameter.getType()), scope);
 
       if (parameter instanceof GrParameter) {
         p.setOptional(((GrParameter)parameter).isOptional());

@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2012 JetBrains s.r.o.
+ * Copyright 2000-2014 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,53 +16,78 @@
 
 package org.jetbrains.plugins.groovy.lang.parser.parsing.statements.typeDefinitions;
 
-import com.intellij.codeInsight.completion.CompletionInitializationContext;
+import com.intellij.codeInsight.completion.CompletionUtilCore;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.psi.tree.IElementType;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.plugins.groovy.GroovyBundle;
+import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.lexer.TokenSets;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
 import org.jetbrains.plugins.groovy.lang.parser.parsing.types.TypeArguments;
 import org.jetbrains.plugins.groovy.lang.parser.parsing.util.ParserUtils;
 import org.jetbrains.plugins.groovy.lang.psi.stubs.elements.GrReferenceListElementType;
 
-import static org.jetbrains.plugins.groovy.lang.parser.parsing.statements.typeDefinitions.ReferenceElement.ReferenceElementResult.*;
-
 /**
  * @author: Dmitry.Krasilschikov
  * @date: 20.03.2007
  */
 
-public class ReferenceElement implements GroovyElementTypes {
-  public static final String DUMMY_IDENTIFIER = CompletionInitializationContext.DUMMY_IDENTIFIER_TRIMMED; //inserted by completion
+public class ReferenceElement {
+  public static final String DUMMY_IDENTIFIER = CompletionUtilCore.DUMMY_IDENTIFIER_TRIMMED; //inserted by completion
 
+  @NotNull
   public static IElementType parseReferenceList(@NotNull PsiBuilder builder,
                                                 @NotNull final IElementType startElement,
-                                                @NotNull final GrReferenceListElementType<?> clauseType) {
+                                                @NotNull final GrReferenceListElementType<?> clauseType,
+                                                @NotNull ClassType type) {
     PsiBuilder.Marker isMarker = builder.mark();
 
     if (!ParserUtils.getToken(builder, startElement)) {
-      isMarker.rollbackTo();
-      return NONE;
-    }
-
-    ParserUtils.getToken(builder, mNLS);
-
-    if (parseReferenceElement(builder)== FAIL) {
-      isMarker.rollbackTo();
-      return WRONGWAY;
-    }
-
-    while (ParserUtils.getToken(builder, mCOMMA)) {
-      ParserUtils.getToken(builder, mNLS);
-
-      if (parseReferenceElement(builder) == FAIL) {
+      if (clauseType == GroovyElementTypes.IMPLEMENTS_CLAUSE && (type == ClassType.INTERFACE || type == ClassType.ANNOTATION) ||
+          clauseType == GroovyElementTypes.EXTENDS_CLAUSE && type == ClassType.ENUM ||
+          type == ClassType.ANNOTATION) {
         isMarker.rollbackTo();
-        return WRONGWAY;
+        return GroovyElementTypes.NONE;
+      }
+
+      return finish(builder, clauseType, isMarker, null, null);
+    }
+
+    PsiBuilder.Marker space = builder.mark();
+    ParserUtils.getToken(builder, GroovyTokenTypes.mNLS);
+
+    if (parseReferenceElement(builder) == ReferenceElementResult.FAIL) {
+      return finish(builder, clauseType, isMarker, space, GroovyBundle.message("identifier.expected"));
+    }
+    else {
+      space.drop();
+    }
+
+    while (ParserUtils.getToken(builder, GroovyTokenTypes.mCOMMA)) {
+      space = builder.mark();
+      ParserUtils.getToken(builder, GroovyTokenTypes.mNLS);
+
+      if (parseReferenceElement(builder) == ReferenceElementResult.FAIL) {
+        return finish(builder, clauseType, isMarker, space, GroovyBundle.message("identifier.expected"));
+      }
+      else {
+        space.drop();
       }
     }
 
-    ParserUtils.getToken(builder, mNLS);
+    return finish(builder, clauseType, isMarker, null, null);
+  }
+
+  @NotNull
+  private static GrReferenceListElementType<?> finish(@NotNull PsiBuilder builder,
+                                                      @NotNull GrReferenceListElementType<?> clauseType,
+                                                      @NotNull PsiBuilder.Marker isMarker,
+                                                      @Nullable PsiBuilder.Marker space,
+                                                      @Nullable String error) {
+    if (space != null) space.rollbackTo();
+    if (error != null) builder.error(error);
     isMarker.done(clauseType);
     return clauseType;
   }
@@ -76,10 +101,9 @@ public class ReferenceElement implements GroovyElementTypes {
   }
 
   public static ReferenceElementResult parseForPackage(@NotNull PsiBuilder builder) {
-    return parse(builder, false, false, false, false, false);
+    return parse(builder, false, false, true, false, false);
   }
 
-  
   //it doesn't important first letter of identifier of ThrowClause, of Annotation, of new Expression, of implements, extends, superclass clauses
   public static ReferenceElementResult parseReferenceElement(@NotNull PsiBuilder builder) {
     return parseReferenceElement(builder, false, true);
@@ -92,7 +116,7 @@ public class ReferenceElement implements GroovyElementTypes {
   public static ReferenceElementResult parse(@NotNull PsiBuilder builder,
                                              boolean checkUpperCase,
                                              boolean parseTypeArgs,
-                                             boolean forImport,
+                                             boolean lineFeedAllowed,
                                              boolean allowDiamond,
                                              boolean expressionPossible) {
     PsiBuilder.Marker internalTypeMarker = builder.mark();
@@ -101,65 +125,73 @@ public class ReferenceElement implements GroovyElementTypes {
 
     if (!ParserUtils.getToken(builder, TokenSets.CODE_REFERENCE_ELEMENT_NAME_TOKENS)) {
       internalTypeMarker.rollbackTo();
-      return FAIL;
+      return ReferenceElementResult.FAIL;
     }
 
     boolean hasTypeArguments = false;
-    if (parseTypeArgs) {
-      hasTypeArguments = TypeArguments.parseTypeArguments(builder, expressionPossible, allowDiamond);
+    if (parseTypeArgs && TypeArguments.parseTypeArguments(builder, expressionPossible, allowDiamond)) {
+      hasTypeArguments = true;
     }
 
-    internalTypeMarker.done(REFERENCE_ELEMENT);
+    internalTypeMarker.done(GroovyElementTypes.REFERENCE_ELEMENT);
     internalTypeMarker = internalTypeMarker.precede();
 
-    boolean hasDots = builder.getTokenType() == mDOT;
+    boolean hasDots = builder.getTokenType() == GroovyTokenTypes.mDOT;
 
-    while (builder.getTokenType() == mDOT) {
+    while (builder.getTokenType() == GroovyTokenTypes.mDOT) {
 
-      if ((ParserUtils.lookAhead(builder, mDOT, mSTAR) || ParserUtils.lookAhead(builder, mDOT, mNLS, mSTAR)) && forImport) {
+      if ((ParserUtils.lookAhead(builder, GroovyTokenTypes.mDOT, GroovyTokenTypes.mSTAR) || ParserUtils.lookAhead(builder,
+                                                                                                                  GroovyTokenTypes.mDOT,
+                                                                                                                  GroovyTokenTypes.mNLS,
+                                                                                                                  GroovyTokenTypes.mSTAR)) && lineFeedAllowed) {
         internalTypeMarker.drop();
-        return PATH_REF;
+        return ReferenceElementResult.PATH_REF;
       }
 
-      ParserUtils.getToken(builder, mDOT);
+      ParserUtils.getToken(builder, GroovyTokenTypes.mDOT);
 
-      if (forImport) {
-        ParserUtils.getToken(builder, mNLS);
+      if (lineFeedAllowed) {
+        ParserUtils.getToken(builder, GroovyTokenTypes.mNLS);
       }
 
       lastIdentifier = builder.getTokenText();
 
       if (!ParserUtils.getToken(builder, TokenSets.CODE_REFERENCE_ELEMENT_NAME_TOKENS)) {
-        internalTypeMarker.rollbackTo();
-        return FAIL;
+        if (TokenSets.REFERENCE_NAME_PREFIXES.contains(builder.getTokenType())) {
+          internalTypeMarker.rollbackTo();
+          return ReferenceElementResult.FAIL;
+        }
+        builder.error(GroovyBundle.message("identifier.expected"));
+        internalTypeMarker.done(GroovyElementTypes.REFERENCE_ELEMENT);
+        return ReferenceElementResult.PATH_REF;
       }
 
-      if (parseTypeArgs) {
-        hasTypeArguments = TypeArguments.parseTypeArguments(builder, expressionPossible, allowDiamond) || hasTypeArguments;
+      if (parseTypeArgs && TypeArguments.parseTypeArguments(builder, expressionPossible, allowDiamond)) {
+        hasTypeArguments = true;
       }
 
-      internalTypeMarker.done(REFERENCE_ELEMENT);
+      internalTypeMarker.done(GroovyElementTypes.REFERENCE_ELEMENT);
       internalTypeMarker = internalTypeMarker.precede();
     }
 
     if (lastIdentifier == null) {
       //eof
-      return FAIL;
+      return ReferenceElementResult.FAIL;
     }
 
     char firstChar = lastIdentifier.charAt(0);
     if (checkUpperCase) {
       if (!Character.isUpperCase(firstChar) || DUMMY_IDENTIFIER.equals(lastIdentifier)) { //hack to make completion work
         internalTypeMarker.rollbackTo();
-        return FAIL;
+        return ReferenceElementResult.FAIL;
       }
     }
 
     internalTypeMarker.drop();
 
-    return hasTypeArguments ? REF_WITH_TYPE_PARAMS :
-           hasDots ? PATH_REF :
-           IDENTIFIER;
+    return hasTypeArguments ? ReferenceElementResult.REF_WITH_TYPE_PARAMS :
+           hasDots ? ReferenceElementResult.PATH_REF :
+           ReferenceElementResult.IDENTIFIER;
   }
 
 }

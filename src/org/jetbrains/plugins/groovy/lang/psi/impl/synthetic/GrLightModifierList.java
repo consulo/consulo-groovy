@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2013 JetBrains s.r.o.
+ * Copyright 2000-2014 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ import com.intellij.psi.*;
 import com.intellij.psi.impl.cache.ModifierFlags;
 import com.intellij.psi.impl.light.LightElement;
 import com.intellij.util.IncorrectOperationException;
+import org.intellij.lang.annotations.MagicConstant;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
@@ -54,11 +55,11 @@ public class GrLightModifierList extends LightElement implements GrModifierList 
     myModifiers |= code;
   }
 
-  public void addModifier(int modifier) {
+  public void addModifier(@MagicConstant(flagsFromClass = GrModifierFlags.class) int modifier) {
     myModifiers |= modifier;
   }
 
-  public void removeModifier(int modifier) {
+  public void removeModifier(@MagicConstant(flagsFromClass = GrModifierFlags.class) int modifier) {
     myModifiers &= ~modifier;
   }
 
@@ -78,14 +79,17 @@ public class GrLightModifierList extends LightElement implements GrModifierList 
     return myModifiers;
   }
   
+  @Override
   public boolean hasModifierProperty(@NotNull String name){
     return GrModifierListImpl.checkModifierProperty(this, name);
   }
 
+  @Override
   public boolean hasExplicitModifier(@NotNull String name) {
     return (myModifiers & GrModifierListImpl.NAME_TO_MODIFIER_FLAG_MAP.get(name)) != 0;
   }
 
+  @Override
   public void setModifierProperty(@NotNull String name, boolean value) throws IncorrectOperationException{
     throw new IncorrectOperationException();
   }
@@ -96,24 +100,29 @@ public class GrLightModifierList extends LightElement implements GrModifierList 
     return getAnnotations();
   }
 
+  @Override
   public void checkSetModifierProperty(@NotNull String name, boolean value) throws IncorrectOperationException{
     throw new IncorrectOperationException();
   }
 
+  @Override
   @NotNull
   public GrAnnotation[] getAnnotations() {
     return myAnnotations.toArray(new GrAnnotation[myAnnotations.size()]);
   }
 
+  @Override
   @NotNull
   public PsiAnnotation[] getApplicableAnnotations() {
     return getAnnotations();
   }
 
+  @Override
   public PsiAnnotation findAnnotation(@NotNull String qualifiedName) {
     return null;
   }
 
+  @Override
   @NotNull
   public PsiAnnotation addAnnotation(@NotNull @NonNls String qualifiedName) {
     final GrLightAnnotation annotation = new GrLightAnnotation(getManager(), getLanguage(), qualifiedName, this);
@@ -121,6 +130,7 @@ public class GrLightModifierList extends LightElement implements GrModifierList 
     return annotation;
   }
 
+  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof JavaElementVisitor) {
       ((JavaElementVisitor)visitor).visitModifierList(this);
@@ -155,6 +165,7 @@ public class GrLightModifierList extends LightElement implements GrModifierList 
     return buffer.toString();
   }
 
+  @Override
   @NotNull
   public PsiElement[] getModifiers() {
     return PsiElement.EMPTY_ARRAY;

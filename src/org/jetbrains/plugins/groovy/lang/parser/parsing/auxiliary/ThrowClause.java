@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2012 JetBrains s.r.o.
+ * Copyright 2000-2014 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,41 +18,40 @@ package org.jetbrains.plugins.groovy.lang.parser.parsing.auxiliary;
 
 import com.intellij.lang.PsiBuilder;
 import org.jetbrains.plugins.groovy.GroovyBundle;
+import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
 import org.jetbrains.plugins.groovy.lang.parser.parsing.statements.typeDefinitions.ReferenceElement;
 import org.jetbrains.plugins.groovy.lang.parser.parsing.util.ParserUtils;
-
-import static org.jetbrains.plugins.groovy.lang.parser.parsing.statements.typeDefinitions.ReferenceElement.ReferenceElementResult.FAIL;
 
 /**
  * @author Dmitry.Krasilschikov
  * @date 26.03.2007
  */
-public class ThrowClause implements GroovyElementTypes {
+public class ThrowClause {
   public static void parse(PsiBuilder builder) {
     PsiBuilder.Marker throwClauseMarker = builder.mark();
 
-    if (!ParserUtils.getToken(builder, kTHROWS)) {
-      throwClauseMarker.done(THROW_CLAUSE);
+    if (!ParserUtils.getToken(builder, GroovyTokenTypes.kTHROWS)) {
+      throwClauseMarker.done(GroovyElementTypes.THROW_CLAUSE);
       return;
     }
 
-    ParserUtils.getToken(builder, mNLS);
+    ParserUtils.getToken(builder, GroovyTokenTypes.mNLS);
 
-    if (ReferenceElement.parseReferenceElement(builder) == FAIL) {
-      throwClauseMarker.done(THROW_CLAUSE);
+    if (ReferenceElement.parse(builder, false, true, true, false, false) == ReferenceElement.ReferenceElementResult.FAIL) {
       builder.error(GroovyBundle.message("identifier.expected"));
+      throwClauseMarker.done(GroovyElementTypes.THROW_CLAUSE);
       return;
     }
 
-    while (ParserUtils.getToken(builder, mCOMMA)) {
-      ParserUtils.getToken(builder, mNLS);
+    while (ParserUtils.getToken(builder, GroovyTokenTypes.mCOMMA)) {
+      ParserUtils.getToken(builder, GroovyTokenTypes.mNLS);
 
-      if (ReferenceElement.parseReferenceElement(builder) == FAIL) {
+      if (ReferenceElement.parse(builder, false, true, true, false, false) == ReferenceElement.ReferenceElementResult.FAIL) {
         break;
       }
     }
 
-    throwClauseMarker.done(THROW_CLAUSE);
+    throwClauseMarker.done(GroovyElementTypes.THROW_CLAUSE);
   }
 }

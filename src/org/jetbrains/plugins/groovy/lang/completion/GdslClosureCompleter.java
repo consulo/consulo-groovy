@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2012 JetBrains s.r.o.
+ * Copyright 2000-2014 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,10 +15,9 @@
  */
 package org.jetbrains.plugins.groovy.lang.completion;
 
-import com.intellij.codeInsight.completion.InsertionContext;
-import com.intellij.openapi.editor.Document;
-import com.intellij.psi.*;
-import com.intellij.psi.scope.BaseScopeProcessor;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.dsl.GroovyDslFileIndex;
 import org.jetbrains.plugins.groovy.lang.completion.closureParameters.ClosureDescriptor;
@@ -27,12 +26,18 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlo
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
-import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.GrReferenceResolveUtil;
+import org.jetbrains.plugins.groovy.lang.psi.impl.PsiImplUtil;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.intellij.codeInsight.completion.InsertionContext;
+import com.intellij.psi.JavaPsiFacade;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiElementFactory;
+import com.intellij.psi.PsiMethod;
+import com.intellij.psi.PsiSubstitutor;
+import com.intellij.psi.PsiType;
+import com.intellij.psi.ResolveState;
+import com.intellij.psi.scope.BaseScopeProcessor;
 
 /**
  * @author Max Medvedev
@@ -42,12 +47,10 @@ public class GdslClosureCompleter extends ClosureCompleter {
   protected List<ClosureParameterInfo> getParameterInfos(InsertionContext context,
                                                          PsiMethod method,
                                                          PsiSubstitutor substitutor,
-                                                         Document document,
-                                                         int offset,
                                                          PsiElement place) {
     final ArrayList<ClosureDescriptor> descriptors = new ArrayList<ClosureDescriptor>();
     GrReferenceExpression ref = (GrReferenceExpression)place;
-    PsiType qtype = GrReferenceResolveUtil.getQualifierType(ref);
+    PsiType qtype = PsiImplUtil.getQualifierType(ref);
     if (qtype == null) return null;
 
     GrExpression qualifier = ref.getQualifier();
@@ -79,7 +82,7 @@ public class GdslClosureCompleter extends ClosureCompleter {
   private static void processExecutors(PsiType qtype, GrReferenceExpression ref, final ArrayList<ClosureDescriptor> descriptors) {
     GroovyDslFileIndex.processExecutors(qtype, ref, new BaseScopeProcessor() {
       @Override
-      public boolean execute(@NotNull PsiElement element, ResolveState state) {
+      public boolean execute(@NotNull PsiElement element, @NotNull ResolveState state) {
         if (element instanceof ClosureDescriptor) {
           descriptors.add((ClosureDescriptor)element);
         }

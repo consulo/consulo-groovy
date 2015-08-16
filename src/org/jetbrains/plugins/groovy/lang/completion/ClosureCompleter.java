@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2012 JetBrains s.r.o.
+ * Copyright 2000-2013 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,21 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.lang.completion;
 
-import com.intellij.codeInsight.CodeInsightUtilBase;
-import com.intellij.codeInsight.completion.InsertionContext;
-import com.intellij.codeInsight.template.*;
-import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.editor.CaretModel;
-import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.extensions.ExtensionPointName;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.*;
-import com.intellij.psi.codeStyle.CodeStyleManager;
-import com.intellij.psi.impl.compiled.ClsMethodImpl;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.containers.ContainerUtil;
+import java.util.List;
+
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.lang.completion.closureParameters.ClosureParameterInfo;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
@@ -40,22 +27,44 @@ import org.jetbrains.plugins.groovy.lang.psi.expectedTypes.SupertypeConstraint;
 import org.jetbrains.plugins.groovy.lang.psi.expectedTypes.TypeConstraint;
 import org.jetbrains.plugins.groovy.template.expressions.ChooseTypeExpression;
 import org.jetbrains.plugins.groovy.template.expressions.ParameterNameExpression;
-
-import java.util.List;
+import com.intellij.codeInsight.CodeInsightUtilCore;
+import com.intellij.codeInsight.completion.InsertionContext;
+import com.intellij.codeInsight.template.Template;
+import com.intellij.codeInsight.template.TemplateBuilderImpl;
+import com.intellij.codeInsight.template.TemplateEditingAdapter;
+import com.intellij.codeInsight.template.TemplateEditingListener;
+import com.intellij.codeInsight.template.TemplateManager;
+import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.editor.CaretModel;
+import com.intellij.openapi.editor.Document;
+import com.intellij.openapi.editor.Editor;
+import com.intellij.openapi.extensions.ExtensionPointName;
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.TextRange;
+import com.intellij.psi.JavaPsiFacade;
+import com.intellij.psi.PsiDocumentManager;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiManager;
+import com.intellij.psi.PsiMethod;
+import com.intellij.psi.PsiSubstitutor;
+import com.intellij.psi.PsiType;
+import com.intellij.psi.codeStyle.CodeStyleManager;
+import com.intellij.psi.impl.compiled.ClsMethodImpl;
+import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.util.containers.ContainerUtil;
 
 /**
  * @author Max Medvedev
  */
 public abstract class ClosureCompleter {
-  private static ExtensionPointName<ClosureCompleter> EP_NAME = ExtensionPointName.create("org.intellij.groovy.closureCompleter");
+  private static final ExtensionPointName<ClosureCompleter> EP_NAME = ExtensionPointName.create("org.intellij.groovy.closureCompleter");
 
   @Nullable
   protected abstract List<ClosureParameterInfo> getParameterInfos(InsertionContext context,
                                                                   PsiMethod method,
                                                                   PsiSubstitutor substitutor,
-                                                                  Document document,
-                                                                  int offset,
-                                                                  PsiElement parent);
+                                                                  PsiElement place);
 
   public static boolean runClosureCompletion(InsertionContext context,
                                              PsiMethod method,
@@ -64,7 +73,7 @@ public abstract class ClosureCompleter {
                                              int offset,
                                              PsiElement parent) {
     for (ClosureCompleter completer : EP_NAME.getExtensions()) {
-      final List<ClosureParameterInfo> parameterInfos = completer.getParameterInfos(context, method, substitutor, document, offset, parent);
+      final List<ClosureParameterInfo> parameterInfos = completer.getParameterInfos(context, method, substitutor, parent);
       if (parameterInfos != null) {
         runClosureTemplate(context, document, offset, substitutor, method, parameterInfos);
         return true;
@@ -149,7 +158,7 @@ public abstract class ClosureCompleter {
       builder.replaceElement(nameIdentifier, new ParameterNameExpression(nameIdentifier.getText()));
     }
 
-    final GrClosableBlock afterPostprocess = CodeInsightUtilBase.forcePsiPostprocessAndRestoreElement(templateClosure);
+    final GrClosableBlock afterPostprocess = CodeInsightUtilCore.forcePsiPostprocessAndRestoreElement(templateClosure);
     final Template template = builder.buildTemplate();
     TextRange range = afterPostprocess.getTextRange();
     document.deleteString(range.getStartOffset(), range.getEndOffset());

@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2009 JetBrains s.r.o.
+ * Copyright 2000-2014 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,16 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.stubs.elements;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrReferenceList;
+import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
+import org.jetbrains.plugins.groovy.lang.psi.stubs.GrReferenceListStub;
+import org.jetbrains.plugins.groovy.lang.psi.stubs.GrStubUtils;
+import org.jetbrains.plugins.groovy.lang.psi.stubs.index.GrDirectInheritorsIndex;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiNameHelper;
 import com.intellij.psi.stubs.IndexSink;
@@ -22,53 +32,65 @@ import com.intellij.psi.stubs.StubElement;
 import com.intellij.psi.stubs.StubInputStream;
 import com.intellij.psi.stubs.StubOutputStream;
 import com.intellij.util.ArrayUtil;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrReferenceList;
-import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
-import org.jetbrains.plugins.groovy.lang.psi.stubs.GrReferenceListStub;
-import org.jetbrains.plugins.groovy.lang.psi.stubs.GrStubUtils;
-import org.jetbrains.plugins.groovy.lang.psi.stubs.index.GrDirectInheritorsIndex;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author ilyas
  */
-public abstract class GrReferenceListElementType<T extends GrReferenceList> extends GrStubElementType<GrReferenceListStub, T> {
+public abstract class GrReferenceListElementType<T extends GrReferenceList> extends
+		GrStubElementType<GrReferenceListStub, T>
+{
 
-  public GrReferenceListElementType(final String debugName) {
-    super(debugName);
-  }
+	public GrReferenceListElementType(final String debugName)
+	{
+		super(debugName);
+	}
 
-  public GrReferenceListStub createStub(@NotNull T psi, StubElement parentStub) {
-    List<String> refNames = new ArrayList<String>();
-    for (GrCodeReferenceElement element : psi.getReferenceElements()) {
-      final String name = element.getText();
-      if (StringUtil.isNotEmpty(name)) {
-        refNames.add(name);
-      }
-    }
-    return new GrReferenceListStub(parentStub, this, ArrayUtil.toStringArray(refNames));
+	@Override
+	public GrReferenceListStub createStub(@NotNull T psi, StubElement parentStub)
+	{
+		List<String> refNames = new ArrayList<String>();
+		for(GrCodeReferenceElement element : psi.getReferenceElementsGroovy())
+		{
+			final String name = element.getText();
+			if(StringUtil.isNotEmpty(name))
+			{
+				refNames.add(name);
+			}
+		}
+		return new GrReferenceListStub(parentStub, this, ArrayUtil.toStringArray(refNames));
 
-  }
+	}
 
-  public void serialize(@NotNull GrReferenceListStub stub, @NotNull StubOutputStream dataStream) throws IOException {
-    GrStubUtils.writeStringArray(dataStream, stub.getBaseClasses());
-  }
+	@Override
+	public void serialize(@NotNull GrReferenceListStub stub, @NotNull StubOutputStream dataStream) throws IOException
+	{
+		GrStubUtils.writeStringArray(dataStream, stub.getBaseClasses());
+	}
 
-  @NotNull
-  public GrReferenceListStub deserialize(@NotNull StubInputStream dataStream, StubElement parentStub) throws IOException {
-    return new GrReferenceListStub(parentStub, this, GrStubUtils.readStringArray(dataStream));
-  }
+	@Override
+	@NotNull
+	public GrReferenceListStub deserialize(@NotNull StubInputStream dataStream,
+			StubElement parentStub) throws IOException
+	{
+		return new GrReferenceListStub(parentStub, this, GrStubUtils.readStringArray(dataStream));
+	}
 
-  public void indexStub(@NotNull GrReferenceListStub stub, @NotNull IndexSink sink) {
-    for (String name : stub.getBaseClasses()) {
-      if (name != null) {
-        sink.occurrence(GrDirectInheritorsIndex.KEY, PsiNameHelper.getShortClassName(name));
-      }
-    }
-  }
+	@Override
+	public void indexStub(@NotNull GrReferenceListStub stub, @NotNull IndexSink sink)
+	{
+		for(String name : stub.getBaseClasses())
+		{
+			if(name != null)
+			{
+				sink.occurrence(GrDirectInheritorsIndex.KEY, PsiNameHelper.getShortClassName(name));
+			}
+		}
+	}
+
+	@Override
+	public boolean isLeftBound()
+	{
+		return true;
+	}
 }
 

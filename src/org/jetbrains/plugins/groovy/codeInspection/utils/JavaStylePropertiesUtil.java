@@ -15,22 +15,29 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.utils;
 
+import static org.jetbrains.plugins.groovy.lang.psi.util.GroovyPropertyUtils.getPropertyNameByGetterName;
+import static org.jetbrains.plugins.groovy.lang.psi.util.GroovyPropertyUtils.getPropertyNameBySetterName;
+import static org.jetbrains.plugins.groovy.lang.psi.util.GroovyPropertyUtils.isSimplePropertyGetter;
+import static org.jetbrains.plugins.groovy.lang.psi.util.GroovyPropertyUtils.isSimplePropertySetter;
+
+import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrArgumentList;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrApplicationStatement;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrAssignmentExpression;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrMethodCall;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrAccessorMethod;
+import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyNamesUtil;
+import org.jetbrains.plugins.groovy.lang.psi.impl.PsiImplUtil;
+import org.jetbrains.plugins.groovy.lang.resolve.ResolveUtil;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.PsiMethod;
-import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrArgumentList;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.*;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrAccessorMethod;
-import org.jetbrains.plugins.groovy.lang.psi.impl.PsiImplUtil;
-import org.jetbrains.plugins.groovy.lang.resolve.ResolveUtil;
-import org.jetbrains.plugins.groovy.refactoring.GroovyNamesUtil;
-
-import static org.jetbrains.plugins.groovy.lang.psi.util.GroovyPropertyUtils.*;
 
 /**
  * @author Max Medvedev
@@ -102,9 +109,8 @@ public class JavaStylePropertiesUtil {
       LOG.assertTrue(method != null);
     }
 
-    if (!GroovyNamesUtil.isValidReference(getPropertyNameBySetterName(method.getName()),
-                                          ((GrReferenceExpression)expr).getQualifier() != null,
-                                          call.getProject())) {
+    if (!GroovyNamesUtil.isValidReference(getPropertyNameBySetterName(method.getName()), ((GrReferenceExpression)
+			expr).getQualifier() != null, call.getProject())) {
       return false;
     }
 

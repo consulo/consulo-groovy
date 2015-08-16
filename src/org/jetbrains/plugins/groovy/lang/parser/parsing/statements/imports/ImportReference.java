@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2012 JetBrains s.r.o.
+ * Copyright 2000-2014 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,8 +18,8 @@ package org.jetbrains.plugins.groovy.lang.parser.parsing.statements.imports;
 
 import com.intellij.lang.PsiBuilder;
 import org.jetbrains.plugins.groovy.GroovyBundle;
+import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.lexer.TokenSets;
-import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
 import org.jetbrains.plugins.groovy.lang.parser.parsing.statements.typeDefinitions.ReferenceElement;
 import org.jetbrains.plugins.groovy.lang.parser.parsing.util.ParserUtils;
 
@@ -28,7 +28,7 @@ import org.jetbrains.plugins.groovy.lang.parser.parsing.util.ParserUtils;
  *
  * @author ilyas
  */
-public class ImportReference implements GroovyElementTypes {
+public class ImportReference {
 
   public static boolean parse(PsiBuilder builder) {
 
@@ -36,18 +36,20 @@ public class ImportReference implements GroovyElementTypes {
       return false;
     }
 
-    ReferenceElement.parseForImport(builder);
+    if (ReferenceElement.parseForImport(builder) == ReferenceElement.ReferenceElementResult.FAIL) {
+      return false;
+    }
 
-    if (ParserUtils.getToken(builder, mDOT)) {
-      ParserUtils.getToken(builder, mNLS);
-      if (!ParserUtils.getToken(builder, mSTAR)) {
+    if (ParserUtils.getToken(builder, GroovyTokenTypes.mDOT)) {
+      ParserUtils.getToken(builder, GroovyTokenTypes.mNLS);
+      if (!ParserUtils.getToken(builder, GroovyTokenTypes.mSTAR)) {
         builder.error(GroovyBundle.message("identifier.expected"));
       }
     }
 
-    if (ParserUtils.getToken(builder, kAS)) {
-      ParserUtils.getToken(builder, mNLS);
-      if (!ParserUtils.getToken(builder, mIDENT)) {
+    if (ParserUtils.getToken(builder, GroovyTokenTypes.kAS)) {
+      ParserUtils.getToken(builder, GroovyTokenTypes.mNLS);
+      if (!ParserUtils.getToken(builder, GroovyTokenTypes.mIDENT)) {
         builder.error(GroovyBundle.message("identifier.expected"));
       }
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2013 JetBrains s.r.o.
+ * Copyright 2000-2014 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,12 +23,13 @@ import com.intellij.psi.impl.light.LightVariableBuilder;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.plugins.groovy.GroovyFileType;
+import org.jetbrains.plugins.groovy.GroovyLanguage;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.GrModifierList;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameter;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeElement;
+import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil;
 
 /**
  * @author ven
@@ -37,21 +38,26 @@ public class GrLightParameter extends LightVariableBuilder<GrLightParameter> imp
   public static final GrLightParameter[] EMPTY_ARRAY = new GrLightParameter[0];
   private volatile boolean myOptional;
   private volatile GrModifierList myModifierList;
+  private volatile GrExpression myInitializer = null;
   private final PsiElement myScope;
   private final GrTypeElement myTypeElement;
   private final PsiType myTypeGroovy;
 
   public GrLightParameter(@NotNull String name, @Nullable PsiType type, @NotNull PsiElement scope) {
-    super(scope.getManager(), name, getTypeNotNull(type, scope), GroovyFileType.GROOVY_LANGUAGE);
+    super(scope.getManager(), name, getTypeNotNull(type, scope), GroovyLanguage.INSTANCE);
     myScope = scope;
     myModifierList = new GrLightModifierList(this);
     myTypeGroovy = type;
     myTypeElement = type == null ? null : new GrLightTypeElement(type, scope.getManager());
   }
 
+  public void setModifierList(GrModifierList modifierList) {
+    myModifierList = modifierList;
+  }
+
   @NotNull
   private static PsiType getTypeNotNull(PsiType type, PsiElement scope) {
-    return type != null ? type : PsiType.getJavaLangObject(scope.getManager(), scope.getResolveScope());
+    return type != null ? type : TypesUtil.getJavaLangObject(scope);
   }
 
   @NotNull
@@ -72,7 +78,7 @@ public class GrLightParameter extends LightVariableBuilder<GrLightParameter> imp
 
   @Override
   public GrExpression getInitializerGroovy() {
-    return null;
+    return myInitializer;
   }
 
   @Override
@@ -144,8 +150,7 @@ public class GrLightParameter extends LightVariableBuilder<GrLightParameter> imp
 
   @Override
   public void setInitializerGroovy(GrExpression initializer) {
-    //todo?
-    throw new UnsupportedOperationException();
+    myInitializer = initializer;
   }
 
   @Override

@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2013 JetBrains s.r.o.
+ * Copyright 2000-2014 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@ import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.GrCondition;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrWhileStatement;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyPsiElementImpl;
 import org.jetbrains.plugins.groovy.lang.psi.impl.PsiImplUtil;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
@@ -41,6 +42,7 @@ public class GrWhileStatementImpl extends GroovyPsiElementImpl implements GrWhil
     super(node);
   }
 
+  @Override
   public void accept(GroovyElementVisitor visitor) {
     visitor.visitWhileStatement(this);
   }
@@ -49,18 +51,20 @@ public class GrWhileStatementImpl extends GroovyPsiElementImpl implements GrWhil
     return "WHILE statement";
   }
 
+  @Override
   @Nullable
-  public GrCondition getCondition() {
+  public GrExpression getCondition() {
     PsiElement lParenth = getLParenth();
 
     if (lParenth == null) return null;
     PsiElement afterLParenth = PsiUtil.skipWhitespacesAndComments(lParenth.getNextSibling(), true);
 
-    if (afterLParenth instanceof GrCondition) return ((GrCondition) afterLParenth);
+    if (afterLParenth instanceof GrExpression) return ((GrExpression) afterLParenth);
 
     return null;
   }
 
+  @Override
   @Nullable
   public GrStatement getBody() {
     List<GrStatement> statements = new ArrayList<GrStatement>();
@@ -68,19 +72,22 @@ public class GrWhileStatementImpl extends GroovyPsiElementImpl implements GrWhil
       if (cur instanceof GrStatement) statements.add((GrStatement)cur);
     }
 
-    if (getCondition() == null && statements.size() > 0) return statements.get(0);
+    if (getCondition() == null && !statements.isEmpty()) return statements.get(0);
     if (statements.size() > 1) return statements.get(1);
     return null;
   }
 
+  @Override
   public <T extends GrCondition> T replaceBody(T newBody) throws IncorrectOperationException {
     return PsiImplUtil.replaceBody(newBody, getBody(), getNode(), getProject());
   }
 
+  @Override
   public PsiElement getRParenth() {
     return findChildByType(GroovyTokenTypes.mRPAREN);
   }
 
+  @Override
   public PsiElement getLParenth() {
     return findChildByType(GroovyTokenTypes.mLPAREN);
   }

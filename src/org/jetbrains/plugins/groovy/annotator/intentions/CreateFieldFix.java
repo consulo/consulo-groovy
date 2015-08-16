@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2012 JetBrains s.r.o.
+ * Copyright 2000-2014 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,64 +15,81 @@
  */
 package org.jetbrains.plugins.groovy.annotator.intentions;
 
+import org.jetbrains.annotations.NonNls;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.plugins.groovy.intentions.base.IntentionUtils;
+import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.GrModifier;
+import org.jetbrains.plugins.groovy.lang.psi.expectedTypes.TypeConstraint;
+import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GroovyScriptClass;
+import org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames;
 import com.intellij.codeInsight.daemon.impl.quickfix.CreateFieldFromUsageHelper;
 import com.intellij.codeInsight.template.Template;
 import com.intellij.codeInsight.template.TemplateManager;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
-import com.intellij.psi.*;
+import com.intellij.psi.JVMElementFactories;
+import com.intellij.psi.JVMElementFactory;
+import com.intellij.psi.PsiClass;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiField;
+import com.intellij.psi.PsiType;
 import com.intellij.psi.codeStyle.JavaCodeStyleManager;
 import com.intellij.psi.util.PsiUtil;
 import com.intellij.util.IncorrectOperationException;
-import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.GrModifier;
-import org.jetbrains.plugins.groovy.lang.psi.expectedTypes.TypeConstraint;
-import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GroovyScriptClass;
-import org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames;
 
 /**
  * @author Maxim.Medvedev
  */
-public class CreateFieldFix {
-  private final PsiClass myTargetClass;
+public class CreateFieldFix
+{
+	private final PsiClass myTargetClass;
 
-  protected PsiClass getTargetClass() {
-    return myTargetClass;
-  }
+	protected PsiClass getTargetClass()
+	{
+		return myTargetClass;
+	}
 
-  protected CreateFieldFix(PsiClass targetClass) {
-    myTargetClass = targetClass;
-  }
+	protected CreateFieldFix(PsiClass targetClass)
+	{
+		myTargetClass = targetClass;
+	}
 
-  public boolean isAvailable() {
-    return myTargetClass.isValid();
-  }
+	public boolean isAvailable()
+	{
+		return myTargetClass.isValid();
+	}
 
-  protected void doFix(@NotNull Project project,
-                       @NotNull @GrModifier.ModifierConstant String[] modifiers,
-                       @NotNull @NonNls String fieldName,
-                       @NotNull TypeConstraint[] typeConstraints,
-                       @NotNull PsiElement context) throws IncorrectOperationException {
-    JVMElementFactory factory = JVMElementFactories.getFactory(myTargetClass.getLanguage(), project);
-    if (factory == null) return;
+	protected void doFix(@NotNull Project project,
+			@NotNull @GrModifier.ModifierConstant String[] modifiers,
+			@NotNull @NonNls String fieldName,
+			@NotNull TypeConstraint[] typeConstraints,
+			@NotNull PsiElement context) throws IncorrectOperationException
+	{
+		JVMElementFactory factory = JVMElementFactories.getFactory(myTargetClass.getLanguage(), project);
+		if(factory == null)
+		{
+			return;
+		}
 
-    PsiField field = factory.createField(fieldName, PsiType.INT);
-    if (myTargetClass instanceof GroovyScriptClass) {
-      field.getModifierList().addAnnotation(GroovyCommonClassNames.GROOVY_TRANSFORM_FIELD);
-    }
+		PsiField field = factory.createField(fieldName, PsiType.INT);
+		if(myTargetClass instanceof GroovyScriptClass)
+		{
+			field.getModifierList().addAnnotation(GroovyCommonClassNames.GROOVY_TRANSFORM_FIELD);
+		}
 
-    for (@GrModifier.ModifierConstant String modifier : modifiers) {
-      PsiUtil.setModifierProperty(field, modifier, true);
-    }
+		for(@GrModifier.ModifierConstant String modifier : modifiers)
+		{
+			PsiUtil.setModifierProperty(field, modifier, true);
+		}
 
-    field = CreateFieldFromUsageHelper.insertField(myTargetClass, field, context);
-    JavaCodeStyleManager.getInstance(project).shortenClassReferences(field.getParent());
+		field = CreateFieldFromUsageHelper.insertField(myTargetClass, field, context);
+		JavaCodeStyleManager.getInstance(project).shortenClassReferences(field.getParent());
 
-    Editor newEditor = QuickfixUtil.positionCursor(project, myTargetClass.getContainingFile(), field);
+		Editor newEditor = IntentionUtils.positionCursor(project, myTargetClass.getContainingFile(), field);
 
-    Template template = CreateFieldFromUsageHelper.setupTemplate(field, typeConstraints, myTargetClass, newEditor, context, false);
-    TemplateManager manager = TemplateManager.getInstance(project);
-    manager.startTemplate(newEditor, template);
-  }
+		Template template = CreateFieldFromUsageHelper.setupTemplate(field, typeConstraints, myTargetClass, newEditor,
+				context, false);
+		TemplateManager manager = TemplateManager.getInstance(project);
+		manager.startTemplate(newEditor, template);
+	}
 }

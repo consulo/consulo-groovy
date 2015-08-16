@@ -15,6 +15,56 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.introduce.parameter;
 
+import static com.intellij.refactoring.IntroduceParameterRefactoring.REPLACE_FIELDS_WITH_GETTERS_ALL;
+import static com.intellij.refactoring.IntroduceParameterRefactoring.REPLACE_FIELDS_WITH_GETTERS_INACCESSIBLE;
+import static com.intellij.refactoring.IntroduceParameterRefactoring.REPLACE_FIELDS_WITH_GETTERS_NONE;
+
+import gnu.trove.TIntArrayList;
+import gnu.trove.TObjectIntHashMap;
+import gnu.trove.TObjectIntProcedure;
+
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
+
+import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
+import javax.swing.JCheckBox;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.plugins.groovy.GroovyFileType;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrParametersOwner;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlock;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameter;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
+import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyNamesUtil;
+import org.jetbrains.plugins.groovy.refactoring.GrRefactoringError;
+import org.jetbrains.plugins.groovy.refactoring.GroovyRefactoringBundle;
+import org.jetbrains.plugins.groovy.refactoring.HelpID;
+import org.jetbrains.plugins.groovy.refactoring.extract.ExtractUtil;
+import org.jetbrains.plugins.groovy.refactoring.extract.ParameterInfo;
+import org.jetbrains.plugins.groovy.refactoring.extract.ParameterTablePanel;
+import org.jetbrains.plugins.groovy.refactoring.extract.closure.ExtractClosureFromClosureProcessor;
+import org.jetbrains.plugins.groovy.refactoring.extract.closure.ExtractClosureFromMethodProcessor;
+import org.jetbrains.plugins.groovy.refactoring.extract.closure.ExtractClosureHelperImpl;
+import org.jetbrains.plugins.groovy.refactoring.extract.closure.ExtractClosureProcessorBase;
+import org.jetbrains.plugins.groovy.refactoring.introduce.StringPartInfo;
+import org.jetbrains.plugins.groovy.refactoring.ui.GrMethodSignatureComponent;
+import org.jetbrains.plugins.groovy.refactoring.ui.GrTypeComboBox;
+import org.jetbrains.plugins.groovy.settings.GroovyApplicationSettings;
 import com.intellij.openapi.application.AccessToken;
 import com.intellij.openapi.application.WriteAction;
 import com.intellij.openapi.project.Project;
@@ -38,43 +88,6 @@ import com.intellij.util.ArrayUtil;
 import com.intellij.util.containers.ContainerUtil;
 import com.intellij.util.ui.GridBag;
 import com.intellij.util.ui.UIUtil;
-import gnu.trove.TIntArrayList;
-import gnu.trove.TObjectIntHashMap;
-import gnu.trove.TObjectIntProcedure;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.jetbrains.plugins.groovy.GroovyFileType;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrParametersOwner;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlock;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameter;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
-import org.jetbrains.plugins.groovy.refactoring.GrRefactoringError;
-import org.jetbrains.plugins.groovy.refactoring.GroovyNamesUtil;
-import org.jetbrains.plugins.groovy.refactoring.GroovyRefactoringBundle;
-import org.jetbrains.plugins.groovy.refactoring.HelpID;
-import org.jetbrains.plugins.groovy.refactoring.extract.ExtractUtil;
-import org.jetbrains.plugins.groovy.refactoring.extract.ParameterInfo;
-import org.jetbrains.plugins.groovy.refactoring.extract.ParameterTablePanel;
-import org.jetbrains.plugins.groovy.refactoring.extract.closure.ExtractClosureFromClosureProcessor;
-import org.jetbrains.plugins.groovy.refactoring.extract.closure.ExtractClosureFromMethodProcessor;
-import org.jetbrains.plugins.groovy.refactoring.extract.closure.ExtractClosureHelperImpl;
-import org.jetbrains.plugins.groovy.refactoring.extract.closure.ExtractClosureProcessorBase;
-import org.jetbrains.plugins.groovy.refactoring.introduce.StringPartInfo;
-import org.jetbrains.plugins.groovy.refactoring.ui.GrMethodSignatureComponent;
-import org.jetbrains.plugins.groovy.refactoring.ui.GrTypeComboBox;
-import org.jetbrains.plugins.groovy.settings.GroovyApplicationSettings;
-
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.List;
-
-import static com.intellij.refactoring.IntroduceParameterRefactoring.*;
 
 public class GrIntroduceParameterDialog extends DialogWrapper {
   private GrTypeComboBox myTypeComboBox;

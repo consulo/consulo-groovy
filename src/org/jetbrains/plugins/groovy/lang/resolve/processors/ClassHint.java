@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2009 JetBrains s.r.o.
+ * Copyright 2000-2014 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,18 +17,30 @@
 package org.jetbrains.plugins.groovy.lang.resolve.processors;
 
 import com.intellij.openapi.util.Key;
+import com.intellij.psi.PsiElement;
+
+import java.util.EnumSet;
 
 /**
  * @author ven
  */
-public interface ClassHint {
-  Key<ClassHint> KEY = Key.create("ClassHint");
-  enum ResolveKind {
-    CLASS,
-    PACKAGE,
-    METHOD,
-    PROPERTY
-  }
+public interface ClassHint
+{
+	Key<ClassHint> KEY = Key.create("ClassHint");
+	Key<PsiElement> RESOLVE_CONTEXT = Key.create("RESOLVE_CONTEXT");
+	EnumSet<ResolveKind> RESOLVE_KINDS_CLASS_PACKAGE = EnumSet.of(ResolveKind.CLASS, ResolveKind.PACKAGE);
+	EnumSet<ResolveKind> RESOLVE_KINDS_CLASS = EnumSet.of(ResolveKind.CLASS);
+	EnumSet<ResolveKind> RESOLVE_KINDS_METHOD = EnumSet.of(ResolveKind.METHOD);
+	EnumSet<ResolveKind> RESOLVE_KINDS_METHOD_PROPERTY = EnumSet.of(ResolveKind.METHOD, ResolveKind.PROPERTY);
+	EnumSet<ResolveKind> RESOLVE_KINDS_PROPERTY = EnumSet.of(ResolveKind.PROPERTY);
 
-  boolean shouldProcess(ResolveKind resolveKind);
+	enum ResolveKind
+	{
+		CLASS,
+		PACKAGE,
+		METHOD,
+		PROPERTY
+	}
+
+	boolean shouldProcess(ResolveKind resolveKind);
 }

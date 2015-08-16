@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2011 JetBrains s.r.o.
+ * Copyright 2000-2014 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,19 +15,15 @@
  */
 package org.jetbrains.plugins.groovy.lang.completion;
 
-import com.intellij.codeInsight.completion.*;
-import com.intellij.codeInsight.lookup.LookupElementBuilder;
-import com.intellij.patterns.ElementPattern;
-import com.intellij.patterns.StandardPatterns;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiRecursiveElementWalkingVisitor;
-import com.intellij.util.ProcessingContext;
-import icons.JetgroovyIcons;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.extensions.GroovyNamedArgumentProvider;
 import org.jetbrains.plugins.groovy.extensions.NamedArgumentDescriptor;
-import org.jetbrains.plugins.groovy.highlighter.GroovyHighlighterColors;
+import org.jetbrains.plugins.groovy.highlighter.GroovySyntaxHighlighter;
 import org.jetbrains.plugins.groovy.lang.completion.handlers.NamedArgumentInsertHandler;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.GrListOrMap;
@@ -36,25 +32,32 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrArgument
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrNamedArgument;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrCall;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
+import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyNamesUtil;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
-import org.jetbrains.plugins.groovy.refactoring.GroovyNamesUtil;
-
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-
-import static com.intellij.patterns.PlatformPatterns.psiElement;
-import static org.jetbrains.plugins.groovy.extensions.NamedArgumentDescriptor.Priority;
+import com.intellij.codeInsight.completion.CompletionContributor;
+import com.intellij.codeInsight.completion.CompletionParameters;
+import com.intellij.codeInsight.completion.CompletionProvider;
+import com.intellij.codeInsight.completion.CompletionResultSet;
+import com.intellij.codeInsight.completion.CompletionType;
+import com.intellij.codeInsight.lookup.LookupElementBuilder;
+import com.intellij.patterns.ElementPattern;
+import com.intellij.patterns.PlatformPatterns;
+import com.intellij.patterns.StandardPatterns;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiRecursiveElementWalkingVisitor;
+import com.intellij.util.ProcessingContext;
+import icons.JetgroovyIcons;
 
 /**
  * @author peter
  */
 class MapArgumentCompletionProvider extends CompletionProvider<CompletionParameters> {
 
-  public static final ElementPattern<PsiElement> IN_ARGUMENT_LIST_OF_CALL = psiElement().withParent(psiElement(GrReferenceExpression.class).withParent(
-    StandardPatterns.or(psiElement(GrArgumentList.class), psiElement(GrListOrMap.class)))
+  public static final ElementPattern<PsiElement> IN_ARGUMENT_LIST_OF_CALL = PlatformPatterns
+    .psiElement().withParent(PlatformPatterns.psiElement(GrReferenceExpression.class).withParent(
+    StandardPatterns.or(PlatformPatterns.psiElement(GrArgumentList.class), PlatformPatterns.psiElement(GrListOrMap.class)))
   );
-  public static final ElementPattern<PsiElement> IN_LABEL = psiElement(GroovyTokenTypes.mIDENT).withParent(GrArgumentLabel.class);
+  public static final ElementPattern<PsiElement> IN_LABEL = PlatformPatterns.psiElement(GroovyTokenTypes.mIDENT).withParent(GrArgumentLabel.class);
 
   private MapArgumentCompletionProvider() {
   }
@@ -97,8 +100,8 @@ class MapArgumentCompletionProvider extends CompletionProvider<CompletionParamet
         .withInsertHandler(NamedArgumentInsertHandler.INSTANCE)
         .withTailText(":");
 
-      if (entry.getValue().getPriority() == Priority.UNLIKELY) {
-        lookup.withItemTextForeground(GroovyHighlighterColors.MAP_KEY_COLOR);
+      if (entry.getValue().getPriority() == NamedArgumentDescriptor.Priority.UNLIKELY) {
+        lookup.withItemTextForeground(GroovySyntaxHighlighter.MAP_KEY.getDefaultAttributes().getForegroundColor());
       }
       else {
         lookup = lookup.withIcon(JetgroovyIcons.Groovy.DynamicProperty);

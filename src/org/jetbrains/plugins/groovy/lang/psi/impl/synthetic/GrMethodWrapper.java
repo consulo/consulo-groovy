@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2012 JetBrains s.r.o.
+ * Copyright 2000-2014 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,42 +15,41 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.synthetic;
 
-import com.intellij.codeInsight.completion.originInfo.OriginInfoAwareElement;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.*;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameter;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
+import org.jetbrains.plugins.groovy.lang.psi.impl.GrPsiTypeStub;
+import com.intellij.codeInsight.completion.originInfo.OriginInfoAwareElement;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiMethod;
+import com.intellij.psi.PsiMirrorElement;
+import com.intellij.psi.PsiSubstitutor;
+import com.intellij.psi.PsiType;
+import com.intellij.psi.PsiTypeParameter;
+import com.intellij.psi.impl.light.LightTypeParameter;
 
 /**
  * @author Sergey Evdokimov
  */
-public class GrMethodWrapper extends GrLightMethodBuilder {
-
-  private static PsiType TYPE_MARKER = new PsiPrimitiveType("xxx", PsiAnnotation.EMPTY_ARRAY);
-
-  private volatile boolean myNavigationElementInit;
+public class GrMethodWrapper extends GrLightMethodBuilder implements PsiMirrorElement {
+  private static final PsiType TYPE_MARKER = new GrPsiTypeStub() {
+    @Override
+    public boolean isValid() {
+      return false;
+    }
+  };
 
   private final PsiMethod myWrappedMethod;
+  private volatile boolean myNavigationElementInit;
 
-  private GrMethodWrapper(PsiMethod method) {
+  protected GrMethodWrapper(PsiMethod method, PsiSubstitutor substitutor) {
     super(method.getManager(), method.getName());
-
     myWrappedMethod = method;
-
     setContainingClass(method.getContainingClass());
-
     getModifierList().copyModifiers(method);
-
-    for (PsiParameter parameter : method.getParameterList().getParameters()) {
-      GrLightParameter p = new GrLightParameter(StringUtil.notNullize(parameter.getName()), parameter.getType(), this);
-
-      if (parameter instanceof GrParameter) {
-        p.setOptional(((GrParameter)parameter).isOptional());
-      }
-
-      addParameter(p);
+    getParameterList().copyParameters(method, substitutor, this);
+    for (PsiTypeParameter parameter : method.getTypeParameters()) {
+      getTypeParameterList().addParameter(new LightTypeParameter(parameter));
     }
-
     if (method instanceof OriginInfoAwareElement) {
       setOriginInfo(((OriginInfoAwareElement)method).getOriginInfo());
     }
@@ -94,6 +93,16 @@ public class GrMethodWrapper extends GrLightMethodBuilder {
   }
 
   public static GrMethodWrapper wrap(@NotNull PsiMethod method) {
-    return new GrMethodWrapper(method);
+    return new GrMethodWrapper(method, PsiSubstitutor.EMPTY);
+  }
+
+  public static GrLightMethodBuilder wrap(GrMethod method, PsiSubstitutor substitutor) {
+    return new GrMethodWrapper(method, substitutor);
+  }
+
+  @NotNull
+  @Override
+  public PsiMethod getPrototype() {
+    return myWrappedMethod;
   }
 }

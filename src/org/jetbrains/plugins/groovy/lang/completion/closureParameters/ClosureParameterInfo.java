@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2012 JetBrains s.r.o.
+ * Copyright 2000-2014 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,24 +20,28 @@ import org.jetbrains.annotations.Nullable;
 /**
  * @author Max Medvedev
  */
-public class ClosureParameterInfo {
-  private final String myName;
+public class ClosureParameterInfo
+{
+	private final String myName;
 
-  @Nullable
-  private final String myType;
+	@Nullable
+	private final String myType;
 
-  public ClosureParameterInfo(@Nullable String type, String name) {
-    myName = name;
-    myType = type;
-  }
+	public ClosureParameterInfo(@Nullable String type, String name)
+	{
+		myName = name;
+		myType = type;
+	}
 
-  public String getName() {
-    return myName;
-  }
+	public String getName()
+	{
+		return myName;
+	}
 
 
-  @Nullable
-  public String getType() {
-    return myType;
-  }
+	@Nullable
+	public String getType()
+	{
+		return myType;
+	}
 }

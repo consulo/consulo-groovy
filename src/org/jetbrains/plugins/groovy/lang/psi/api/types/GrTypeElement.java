@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2013 JetBrains s.r.o.
+ * Copyright 2000-2014 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.api.types;
 
-import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
@@ -24,10 +23,8 @@ import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
  * @author Dmitry.Krasilschikov
  * @date 28.03.2007
  */
-public interface GrTypeElement extends GroovyPsiElement {
-  @NotNull
-  PsiType getType();
-
-  /** @deprecated use {@link #getType()} (to remove in IDEA 13) */
-  PsiType getTypeNoResolve(PsiElement context);
+public interface GrTypeElement extends GroovyPsiElement
+{
+	@NotNull
+	PsiType getType();
 }

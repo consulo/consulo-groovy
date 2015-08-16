@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2009 JetBrains s.r.o.
+ * Copyright 2000-2014 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.extensions.NamedArgumentDescriptor;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrDefaultAnnotationValue;
+import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotationMemberValue;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrAnnotationMethod;
 import org.jetbrains.plugins.groovy.lang.psi.stubs.GrMethodStub;
 
@@ -40,6 +40,7 @@ public class GrAnnotationMethodImpl extends GrMethodBaseImpl implements GrAnnota
     super(stub, GroovyElementTypes.ANNOTATION_METHOD);
   }
 
+  @Override
   public void accept(GroovyElementVisitor visitor) {
     visitor.visitAnnotationMethod(this);
   }
@@ -48,13 +49,14 @@ public class GrAnnotationMethodImpl extends GrMethodBaseImpl implements GrAnnota
     return "Default annotation member";
   }
 
+  @Override
   @NotNull
   public Map<String, NamedArgumentDescriptor> getNamedParameters() {
     return Collections.emptyMap();
   }
 
   @Override
-  public GrDefaultAnnotationValue getDefaultValue() {
-    return findChildByClass(GrDefaultAnnotationValue.class);
+  public GrAnnotationMemberValue getDefaultValue() {
+    return findChildByClass(GrAnnotationMemberValue.class);
   }
 }

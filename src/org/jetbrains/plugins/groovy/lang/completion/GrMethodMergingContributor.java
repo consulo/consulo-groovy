@@ -15,107 +15,84 @@
  */
 package org.jetbrains.plugins.groovy.lang.completion;
 
-import java.util.ArrayList;
-
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil;
-import org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames;
-import com.intellij.codeInsight.completion.AutoCompletionContext;
-import com.intellij.codeInsight.completion.AutoCompletionDecision;
-import com.intellij.codeInsight.completion.CompletionContributor;
-import com.intellij.codeInsight.completion.CompletionParameters;
-import com.intellij.codeInsight.completion.CompletionType;
-import com.intellij.codeInsight.completion.JavaChainLookupElement;
-import com.intellij.codeInsight.completion.JavaCompletionUtil;
-import com.intellij.codeInsight.completion.JavaMethodMergingContributor;
+import com.intellij.codeInsight.completion.*;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupItem;
 import com.intellij.psi.PsiMethod;
 import com.intellij.psi.PsiParameter;
 import com.intellij.psi.PsiType;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil;
+import org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames;
+
+import java.util.ArrayList;
 
 /**
  * @author Maxim.Medvedev
  */
-public class GrMethodMergingContributor extends CompletionContributor
-{
-	@Override
-	public AutoCompletionDecision handleAutoCompletionPossibility(@NotNull AutoCompletionContext context)
-	{
-		final CompletionParameters parameters = context.getParameters();
+public class GrMethodMergingContributor extends CompletionContributor {
+  @Override
+  public AutoCompletionDecision handleAutoCompletionPossibility(@NotNull AutoCompletionContext context) {
+    final CompletionParameters parameters = context.getParameters();
 
-		if(parameters.getCompletionType() != CompletionType.SMART && parameters.getCompletionType() != CompletionType
-				.BASIC)
-		{
-			return null;
-		}
+    if (parameters.getCompletionType() != CompletionType.SMART && parameters.getCompletionType() != CompletionType.BASIC) {
+      return null;
+    }
 
-		boolean needInsertBrace = false;
-		boolean needInsertParenth = false;
+    boolean needInsertBrace = false;
+    boolean needInsertParenth = false;
 
-		final LookupElement[] items = context.getItems();
-		if(items.length > 1)
-		{
-			String commonName = null;
-			final ArrayList<PsiMethod> allMethods = new ArrayList<PsiMethod>();
-			for(LookupElement item : items)
-			{
-				Object o = item.getPsiElement();
-				if(item.getUserData(LookupItem.FORCE_SHOW_SIGNATURE_ATTR) != null || !(o instanceof PsiMethod))
-				{
-					return AutoCompletionDecision.SHOW_LOOKUP;
-				}
+    final LookupElement[] items = context.getItems();
+    if (items.length > 1) {
+      String commonName = null;
+      final ArrayList<PsiMethod> allMethods = new ArrayList<PsiMethod>();
+      for (LookupElement item : items) {
+        Object o = item.getPsiElement();
+        if (item.getUserData(LookupItem.FORCE_SHOW_SIGNATURE_ATTR) != null || !(o instanceof PsiMethod)) {
+          return AutoCompletionDecision.SHOW_LOOKUP;
+        }
 
-				final PsiMethod method = (PsiMethod) o;
-				final JavaChainLookupElement chain = item.as(JavaChainLookupElement.CLASS_CONDITION_KEY);
-				final String name = method.getName() + "#" + (chain == null ? "" : chain.getQualifier()
-						.getLookupString());
+        final PsiMethod method = (PsiMethod)o;
+        final JavaChainLookupElement chain = item.as(JavaChainLookupElement.CLASS_CONDITION_KEY);
+        final String name = method.getName() + "#" + (chain == null ? "" : chain.getQualifier().getLookupString());
 
-				if(commonName != null && !commonName.equals(name))
-				{
-					return AutoCompletionDecision.SHOW_LOOKUP;
-				}
+        if (commonName != null && !commonName.equals(name)) {
+          return AutoCompletionDecision.SHOW_LOOKUP;
+        }
 
-				if(hasOnlyClosureParams(method))
-				{
-					needInsertBrace = true;
-				}
-				else
-				{
-					needInsertParenth = true;
-				}
+        if (hasOnlyClosureParams(method)) {
+          needInsertBrace = true;
+        }
+        else {
+          needInsertParenth = true;
+        }
 
-				if(needInsertBrace && needInsertParenth)
-				{
-					return AutoCompletionDecision.SHOW_LOOKUP;
-				}
+        if (needInsertBrace && needInsertParenth) {
+          return AutoCompletionDecision.SHOW_LOOKUP;
+        }
 
-				commonName = name;
-				allMethods.add(method);
-			}
-			for(LookupElement item : items)
-			{
-				JavaCompletionUtil.putAllMethods(item, allMethods);
-			}
+        commonName = name;
+        allMethods.add(method);
+      }
+      for (LookupElement item : items) {
+        JavaCompletionUtil.putAllMethods(item, allMethods);
+      }
 
-			return AutoCompletionDecision.insertItem(JavaMethodMergingContributor.findBestOverload(items));
-		}
+      return AutoCompletionDecision.insertItem(JavaMethodMergingContributor.findBestOverload(items));
+    }
 
-		return super.handleAutoCompletionPossibility(context);
+    return super.handleAutoCompletionPossibility(context);
 
-	}
+  }
 
-	private static boolean hasOnlyClosureParams(PsiMethod method)
-	{
-		final PsiParameter[] params = method.getParameterList().getParameters();
-		for(PsiParameter param : params)
-		{
-			final PsiType type = param.getType();
-			if(!TypesUtil.isClassType(type, GroovyCommonClassNames.GROOVY_LANG_CLOSURE))
-			{
-				return false;
-			}
-		}
-		return params.length > 0;
-	}
+  private static boolean hasOnlyClosureParams(PsiMethod method) {
+    final PsiParameter[] params = method.getParameterList().getParameters();
+    for (PsiParameter param : params) {
+      final PsiType type = param.getType();
+      if (!TypesUtil.isClassType(type, GroovyCommonClassNames.GROOVY_LANG_CLOSURE)) {
+        return false;
+      }
+    }
+    return params.length > 0;
+  }
 }

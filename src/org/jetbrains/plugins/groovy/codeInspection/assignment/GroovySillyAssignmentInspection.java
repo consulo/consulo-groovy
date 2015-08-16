@@ -30,35 +30,41 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrRefere
 
 public class GroovySillyAssignmentInspection extends BaseInspection {
 
+  @Override
   @Nls
   @NotNull
   public String getGroupDisplayName() {
     return ASSIGNMENT_ISSUES;
   }
 
+  @Override
   @Nls
   @NotNull
   public String getDisplayName() {
     return "Silly assignment";
   }
 
+  @Override
   @Nullable
   protected String buildErrorString(Object... args) {
     return "Silly assignment #loc";
 
   }
 
+  @Override
   public boolean isEnabledByDefault() {
     return true;
   }
 
+  @Override
+  @NotNull
   public BaseInspectionVisitor buildVisitor() {
     return new Visitor();
   }
 
-  private static class Visitor
-    extends BaseInspectionVisitor {
+  private static class Visitor extends BaseInspectionVisitor {
 
+    @Override
     public void visitAssignmentExpression(@NotNull GrAssignmentExpression assignment) {
       super.visitAssignmentExpression(assignment);
 
@@ -71,8 +77,7 @@ public class GroovySillyAssignmentInspection extends BaseInspection {
       if (rhs == null) {
         return;
       }
-      if (!(rhs instanceof GrReferenceExpression) ||
-          !(lhs instanceof GrReferenceExpression)) {
+      if (!(rhs instanceof GrReferenceExpression) || !(lhs instanceof GrReferenceExpression)) {
         return;
       }
       final GrReferenceExpression rhsReference = (GrReferenceExpression) rhs;
@@ -94,8 +99,7 @@ public class GroovySillyAssignmentInspection extends BaseInspection {
       }
       final PsiElement rhsReferent = rhsReference.resolve();
       final PsiElement lhsReferent = lhsReference.resolve();
-      if (rhsReferent != null && lhsReferent != null &&
-          !rhsReferent.equals(lhsReferent)) {
+      if (rhsReferent == null || lhsReferent == null || !rhsReferent.equals(lhsReferent)) {
         return;
       }
       registerError(assignment);

@@ -16,6 +16,27 @@
 
 package org.jetbrains.plugins.groovy.refactoring.introduce.variable;
 
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.util.LinkedHashSet;
+
+import javax.swing.JCheckBox;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.plugins.groovy.GroovyFileType;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
+import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyNamesUtil;
+import org.jetbrains.plugins.groovy.refactoring.GroovyRefactoringBundle;
+import org.jetbrains.plugins.groovy.refactoring.introduce.GrIntroduceContext;
+import org.jetbrains.plugins.groovy.refactoring.introduce.GrIntroduceDialog;
+import org.jetbrains.plugins.groovy.refactoring.ui.GrTypeComboBox;
+import org.jetbrains.plugins.groovy.settings.GroovyApplicationSettings;
 import com.intellij.openapi.help.HelpManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
@@ -25,20 +46,6 @@ import com.intellij.refactoring.HelpID;
 import com.intellij.refactoring.ui.NameSuggestionsField;
 import com.intellij.util.ui.GridBag;
 import com.intellij.util.ui.UIUtil;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.jetbrains.plugins.groovy.GroovyFileType;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
-import org.jetbrains.plugins.groovy.refactoring.GroovyNamesUtil;
-import org.jetbrains.plugins.groovy.refactoring.GroovyRefactoringBundle;
-import org.jetbrains.plugins.groovy.refactoring.introduce.GrIntroduceContext;
-import org.jetbrains.plugins.groovy.refactoring.introduce.GrIntroduceDialog;
-import org.jetbrains.plugins.groovy.refactoring.ui.GrTypeComboBox;
-import org.jetbrains.plugins.groovy.settings.GroovyApplicationSettings;
-
-import javax.swing.*;
-import java.awt.*;
-import java.util.LinkedHashSet;
 
 public class GroovyIntroduceVariableDialog extends DialogWrapper implements GrIntroduceDialog<GroovyIntroduceVariableSettings> {
   private static final String REFACTORING_NAME = GroovyRefactoringBundle.message("introduce.variable.title");

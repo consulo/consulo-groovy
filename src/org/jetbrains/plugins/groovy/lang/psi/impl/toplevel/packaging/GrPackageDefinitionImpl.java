@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2012 JetBrains s.r.o.
+ * Copyright 2000-2014 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,10 +16,6 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.toplevel.packaging;
 
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiModifierList;
-import com.intellij.psi.StubBasedPsiElement;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
@@ -30,61 +26,85 @@ import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GrStubElementBase;
 import org.jetbrains.plugins.groovy.lang.psi.stubs.GrPackageDefinitionStub;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
+import com.intellij.lang.ASTNode;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiModifierList;
+import com.intellij.psi.StubBasedPsiElement;
 
 /**
  * @author ilyas
  */
-public class GrPackageDefinitionImpl extends GrStubElementBase<GrPackageDefinitionStub> implements GrPackageDefinition, StubBasedPsiElement<GrPackageDefinitionStub> {
+public class GrPackageDefinitionImpl extends GrStubElementBase<GrPackageDefinitionStub> implements
+		GrPackageDefinition, StubBasedPsiElement<GrPackageDefinitionStub>
+{
 
-  public GrPackageDefinitionImpl(@NotNull ASTNode node) {
-    super(node);
-  }
+	public GrPackageDefinitionImpl(@NotNull ASTNode node)
+	{
+		super(node);
+	}
 
-  @Override
-  public PsiElement getParent() {
-    return getParentByStub();
-  }
+	@Override
+	public PsiElement getParent()
+	{
+		return getParentByStub();
+	}
 
-  public GrPackageDefinitionImpl(@NotNull GrPackageDefinitionStub stub) {
-    super(stub, GroovyElementTypes.PACKAGE_DEFINITION);
-  }
+	public GrPackageDefinitionImpl(@NotNull GrPackageDefinitionStub stub)
+	{
+		super(stub, GroovyElementTypes.PACKAGE_DEFINITION);
+	}
 
-  public void accept(GroovyElementVisitor visitor) {
-    visitor.visitPackageDefinition(this);
-  }
+	@Override
+	public void accept(GroovyElementVisitor visitor)
+	{
+		visitor.visitPackageDefinition(this);
+	}
 
-  public String toString() {
-    return "Package definition";
-  }
+	public String toString()
+	{
+		return "Package definition";
+	}
 
-  public String getPackageName() {
-    final GrPackageDefinitionStub stub = getStub();
-    if (stub != null) {
-      return stub.getPackageName();
-    }
+	@Override
+	public String getPackageName()
+	{
+		final GrPackageDefinitionStub stub = getStub();
+		if(stub != null)
+		{
+			return stub.getPackageName();
+		}
 
-    GrCodeReferenceElement ref = getPackageReference();
-    if (ref == null) return "";
-    return PsiUtil.getQualifiedReferenceText(ref);
-  }
+		GrCodeReferenceElement ref = getPackageReference();
+		if(ref == null)
+		{
+			return "";
+		}
+		return PsiUtil.getQualifiedReferenceText(ref);
+	}
 
-  public GrCodeReferenceElement getPackageReference() {
-    return (GrCodeReferenceElement) findChildByType(GroovyElementTypes.REFERENCE_ELEMENT);
-  }
+	@Override
+	public GrCodeReferenceElement getPackageReference()
+	{
+		return (GrCodeReferenceElement) findChildByType(GroovyElementTypes.REFERENCE_ELEMENT);
+	}
 
-  @NotNull
-  public GrModifierList getAnnotationList() {
-    return getStubOrPsiChild(GroovyElementTypes.MODIFIERS);
-  }
+	@Override
+	@NotNull
+	public GrModifierList getAnnotationList()
+	{
+		return getStubOrPsiChild(GroovyElementTypes.MODIFIERS);
+	}
 
-  @Override
-  public PsiModifierList getModifierList() {
-    return getAnnotationList();
-  }
+	@Override
+	public PsiModifierList getModifierList()
+	{
+		return getAnnotationList();
+	}
 
-  @Override
-  public boolean hasModifierProperty(@NonNls @NotNull String name) {
-    final PsiModifierList list = getModifierList();
-    return list != null && list.hasExplicitModifier(name);
-  }
+	@Override
+	public boolean hasModifierProperty(@NonNls @NotNull String name)
+	{
+		final PsiModifierList list = getModifierList();
+		return list != null && list.hasExplicitModifier(name);
+	}
 }

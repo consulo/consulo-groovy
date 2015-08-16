@@ -15,6 +15,26 @@
  */
 package org.jetbrains.plugins.groovy.grape;
 
+import gnu.trove.THashSet;
+
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotation;
+import org.jetbrains.plugins.groovy.runner.DefaultGroovyScriptRunner;
+import org.jetbrains.plugins.groovy.runner.GroovyScriptRunConfiguration;
+import org.jetbrains.plugins.groovy.runner.GroovyScriptRunner;
+import org.mustbe.consulo.java.module.extension.JavaModuleExtension;
 import com.intellij.codeInsight.intention.IntentionAction;
 import com.intellij.execution.CantRunException;
 import com.intellij.execution.ExecutionException;
@@ -55,21 +75,12 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiRecursiveElementWalkingVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.*;
+import com.intellij.util.ExceptionUtil;
+import com.intellij.util.Function;
+import com.intellij.util.IncorrectOperationException;
+import com.intellij.util.PathUtil;
+import com.intellij.util.PathsList;
 import com.intellij.util.containers.ContainerUtil;
-import gnu.trove.THashSet;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotation;
-import org.jetbrains.plugins.groovy.runner.DefaultGroovyScriptRunner;
-import org.jetbrains.plugins.groovy.runner.GroovyScriptRunConfiguration;
-import org.jetbrains.plugins.groovy.runner.GroovyScriptRunner;
-import org.mustbe.consulo.java.module.extension.JavaModuleExtension;
-
-import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.*;
 
 /**
  * @author peter
@@ -77,10 +88,7 @@ import java.util.*;
 public class GrabDependencies implements IntentionAction {
   private static final Logger LOG = Logger.getInstance("#org.jetbrains.plugins.groovy.grape.GrabDependencies");
 
-  public static final String GRAB_ANNO = "groovy.lang.Grab";
-  public static final String GRAPES_ANNO = "groovy.lang.Grapes";
-  public static final String GRAB_EXCLUDE_ANNO = "groovy.lang.GrabExclude";
-  public static final String GRAB_RESOLVER_ANNO = "groovy.lang.GrabResolver";
+
   private static final NotificationGroup NOTIFICATION_GROUP = new NotificationGroup("Grape", NotificationDisplayType.BALLOON, true);
 
   @NotNull
@@ -100,7 +108,7 @@ public class GrabDependencies implements IntentionAction {
     }
 
     final String qname = anno.getQualifiedName();
-    if (qname == null || !(qname.startsWith(GRAB_ANNO) || GRAPES_ANNO.equals(qname))) {
+    if (qname == null || !(qname.startsWith(GrabAnnos.GRAB_ANNO) || GrabAnnos.GRAPES_ANNO.equals(qname))) {
       return false;
     }
 
@@ -203,9 +211,9 @@ public class GrabDependencies implements IntentionAction {
         if (element instanceof GrAnnotation) {
           GrAnnotation anno = (GrAnnotation)element;
           String qname = anno.getQualifiedName();
-          if (GRAB_ANNO.equals(qname)) grabs.add(anno);
-          else if (GRAB_EXCLUDE_ANNO.equals(qname)) excludes.add(anno);
-          else if (GRAB_RESOLVER_ANNO.equals(qname)) resolvers.add(anno);
+          if (GrabAnnos.GRAB_ANNO.equals(qname)) grabs.add(anno);
+          else if (GrabAnnos.GRAB_EXCLUDE_ANNO.equals(qname)) excludes.add(anno);
+          else if (GrabAnnos.GRAB_RESOLVER_ANNO.equals(qname)) resolvers.add(anno);
         }
         super.visitElement(element);
       }

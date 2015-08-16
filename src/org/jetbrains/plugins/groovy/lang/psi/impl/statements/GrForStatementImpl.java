@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2009 JetBrains s.r.o.
+ * Copyright 2000-2014 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,6 +35,7 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.clauses.GrForInClaus
 import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyPsiElementImpl;
 import org.jetbrains.plugins.groovy.lang.psi.impl.PsiImplUtil;
 import org.jetbrains.plugins.groovy.lang.resolve.ResolveUtil;
+import org.jetbrains.plugins.groovy.lang.resolve.processors.ClassHint;
 
 /**
  * @autor: ilyas
@@ -44,6 +45,7 @@ public class GrForStatementImpl extends GroovyPsiElementImpl implements GrForSta
     super(node);
   }
 
+  @Override
   public void accept(GroovyElementVisitor visitor) {
     visitor.visitForStatement(this);
   }
@@ -52,20 +54,25 @@ public class GrForStatementImpl extends GroovyPsiElementImpl implements GrForSta
     return "For statement";
   }
 
+  @Override
   @Nullable
   public GrForClause getClause() {
     return findChildByClass(GrForClause.class);
   }
 
+  @Override
   @Nullable
   public GrStatement getBody() {
     return findChildByClass(GrStatement.class);
   }
 
+  @Override
   public boolean processDeclarations(@NotNull PsiScopeProcessor processor,
                                      @NotNull ResolveState state,
-                                     PsiElement lastParent,
+                                     @Nullable PsiElement lastParent,
                                      @NotNull PsiElement place) {
+    if (!ResolveUtil.shouldProcessProperties(processor.getHint(ClassHint.KEY))) return true;
+
     GrForClause forClause = getClause();
     final GrVariable varScope = PsiTreeUtil.getParentOfType(place, GrVariable.class);
     if (forClause == null) return true;
@@ -78,14 +85,17 @@ public class GrForStatementImpl extends GroovyPsiElementImpl implements GrForSta
     return true;
   }
 
+  @Override
   public <T extends GrCondition> T replaceBody(T newBody) throws IncorrectOperationException {
     return PsiImplUtil.replaceBody(newBody, getBody(), getNode(), getProject());
   }
 
+  @Override
   public PsiElement getRParenth() {
     return findChildByType(GroovyTokenTypes.mRPAREN);
   }
 
+  @Override
   public PsiElement getLParenth() {
     return findChildByType(GroovyTokenTypes.mLPAREN);
   }
