@@ -294,6 +294,7 @@
 				order="before javaProcessor"/>
 
 		<errorHandler implementation="com.intellij.diagnostic.ITNReporter"/>
+		<codeInsight.typeInfo language="Groovy" implementationClass="org.jetbrains.plugins.groovy.codeInsight.hint.GroovyExpressionTypeProvider"/>
 		<fileTypeFactory implementation="org.jetbrains.plugins.groovy.GroovyFileTypeLoader"/>
 		<fileTypeFactory implementation="org.jetbrains.plugins.groovy.dgm.DGMFileTypeFactory"/>
 
@@ -1482,10 +1483,6 @@
 		</action>
 
 		<group id="Internal.Groovy" text="Groovy" popup="true" internal="true">
-			<action id="GetPsiTypeAction" class="org.jetbrains.plugins.groovy.actions.GrGetPsiTypeAction"
-					text="get PsiType" description=""
-					internal="true"/>
-
 			<action id="DumpGroovyControlFlowAction"
 					class="org.jetbrains.plugins.groovy.actions.DumpGroovyControlFlowAction"
 					text="dump groovy control flow"
