@@ -22,11 +22,11 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 
+import org.consulo.lombok.annotations.ApplicationService;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.RoamingType;
-import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
 import com.intellij.openapi.components.StoragePathMacros;
@@ -45,6 +45,7 @@ import com.intellij.util.xmlb.annotations.Attribute;
 				@Storage(file = StoragePathMacros.APP_CONFIG + "/dslActivationStatus.xml",
 						roamingType = RoamingType.DISABLED)
 		})
+@ApplicationService
 public class DslActivationStatus implements PersistentStateComponent<DslActivationStatus.State>
 {
 	enum Status
@@ -215,10 +216,5 @@ public class DslActivationStatus implements PersistentStateComponent<DslActivati
 				}
 			}
 		}
-	}
-
-	public static DslActivationStatus getInstance()
-	{
-		return ServiceManager.getService(DslActivationStatus.class);
 	}
 }

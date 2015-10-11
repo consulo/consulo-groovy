@@ -263,6 +263,7 @@
 
 		<applicationService serviceInterface="org.jetbrains.plugins.groovy.codeInspection.GroovyQuickFixFactory"
 							serviceImplementation="org.jetbrains.plugins.groovy.codeInspection.GroovyQuickFixFactoryImpl"/>
+		<applicationService serviceImplementation="org.jetbrains.plugins.groovy.dsl.DslActivationStatus" />
 		<copyright.updater filetype="Groovy" implementationClass="org.jetbrains.plugins.groovy.copyright.UpdateGroovyCopyrightsProvider"/>
 		<pom.declarationSearcher implementation="org.jetbrains.plugins.groovy.lang.psi.GroovyDeclarationSearcher"/>
 		<compiler implementation="org.jetbrains.plugins.groovy.compiler.generator.GroovycStubGenerator" id="groovy-stub-generator"/>
