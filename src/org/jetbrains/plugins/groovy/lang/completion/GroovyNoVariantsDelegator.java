@@ -49,13 +49,11 @@ public class GroovyNoVariantsDelegator extends CompletionContributor
 	private static boolean suggestMetaAnnotations(CompletionParameters parameters)
 	{
 		PsiElement position = parameters.getPosition();
-		return PsiJavaPatterns.psiElement().withParents(GrCodeReferenceElement.class, GrAnnotation.class,
-				GrModifierList.class, GrAnnotationTypeDefinition.class).accepts(position);
+		return PsiJavaPatterns.psiElement().withParents(GrCodeReferenceElement.class, GrAnnotation.class, GrModifierList.class, GrAnnotationTypeDefinition.class).accepts(position);
 	}
 
 	@Override
-	public void fillCompletionVariants(@NotNull final CompletionParameters parameters,
-			@NotNull CompletionResultSet result)
+	public void fillCompletionVariants(@NotNull final CompletionParameters parameters, @NotNull CompletionResultSet result)
 	{
 		JavaNoVariantsDelegator.ResultTracker tracker = new JavaNoVariantsDelegator.ResultTracker(result);
 		result.runRemainingContributors(parameters, tracker);
@@ -108,15 +106,14 @@ public class GroovyNoVariantsDelegator extends CompletionContributor
 			@Override
 			public void consume(LookupElement element)
 			{
-				JavaPsiClassReferenceElement classElement = element.as(JavaPsiClassReferenceElement
-						.CLASS_CONDITION_KEY);
+				JavaPsiClassReferenceElement classElement = element.as(JavaPsiClassReferenceElement.CLASS_CONDITION_KEY);
 				if(classElement != null)
 				{
 					classElement.setAutoCompletionPolicy(AutoCompletionPolicy.NEVER_AUTOCOMPLETE);
 				}
 				result.addElement(element);
 			}
-		}, new InheritorsHolder(parameters.getPosition(), result), result.getPrefixMatcher());
+		}, new InheritorsHolder(result), result.getPrefixMatcher());
 	}
 
 	private static void suggestChainedCalls(CompletionParameters parameters, CompletionResultSet result)
@@ -138,10 +135,9 @@ public class GroovyNoVariantsDelegator extends CompletionContributor
 			return;
 		}
 
-		String fullPrefix = position.getContainingFile().getText().substring(parent.getTextRange().getStartOffset(),
-				parameters.getOffset());
+		String fullPrefix = position.getContainingFile().getText().substring(parent.getTextRange().getStartOffset(), parameters.getOffset());
 		final CompletionResultSet qualifiedCollector = result.withPrefixMatcher(fullPrefix);
-		InheritorsHolder inheritors = new InheritorsHolder(position, result);
+		InheritorsHolder inheritors = new InheritorsHolder(result);
 		for(final LookupElement base : suggestQualifierItems(parameters, (GrReferenceElement) qualifier, inheritors))
 		{
 			final PsiType type = JavaCompletionUtil.getLookupElementType(base);
@@ -150,10 +146,8 @@ public class GroovyNoVariantsDelegator extends CompletionContributor
 				GrReferenceElement ref = createMockReference(position, type, base);
 				PsiElement refName = ref.getReferenceNameElement();
 				assert refName != null;
-				CompletionParameters newParams = parameters.withPosition(refName,
-						refName.getTextRange().getStartOffset());
-				GrMainCompletionProvider.completeReference(newParams, ref, inheritors, result.getPrefixMatcher(),
-						new Consumer<LookupElement>()
+				CompletionParameters newParams = parameters.withPosition(refName, refName.getTextRange().getStartOffset());
+				GrMainCompletionProvider.completeReference(newParams, ref, inheritors, result.getPrefixMatcher(), new Consumer<LookupElement>()
 				{
 					@Override
 					public void consume(LookupElement element)
@@ -172,28 +166,21 @@ public class GroovyNoVariantsDelegator extends CompletionContributor
 		}
 	}
 
-	private static GrReferenceElement createMockReference(final PsiElement place,
-			@NotNull PsiType qualifierType,
-			LookupElement qualifierItem)
+	private static GrReferenceElement createMockReference(final PsiElement place, @NotNull PsiType qualifierType, LookupElement qualifierItem)
 	{
 		GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(place.getProject());
 		if(qualifierItem.getObject() instanceof PsiClass)
 		{
-			return factory.createReferenceExpressionFromText(((PsiClass) qualifierItem.getObject()).getQualifiedName()
-					+ ".xxx", place);
+			return factory.createReferenceExpressionFromText(((PsiClass) qualifierItem.getObject()).getQualifiedName() + ".xxx", place);
 		}
 
-		return factory.createReferenceExpressionFromText("xxx.xxx", JavaCompletionUtil.createContextWithXxxVariable
-				(place, qualifierType));
+		return factory.createReferenceExpressionFromText("xxx.xxx", JavaCompletionUtil.createContextWithXxxVariable(place, qualifierType));
 	}
 
 
-	private static Set<LookupElement> suggestQualifierItems(CompletionParameters _parameters,
-			GrReferenceElement qualifier,
-			InheritorsHolder inheritors)
+	private static Set<LookupElement> suggestQualifierItems(CompletionParameters _parameters, GrReferenceElement qualifier, InheritorsHolder inheritors)
 	{
-		CompletionParameters parameters = _parameters.withPosition(qualifier.getReferenceNameElement(),
-				qualifier.getTextRange().getEndOffset());
+		CompletionParameters parameters = _parameters.withPosition(qualifier.getReferenceNameElement(), qualifier.getTextRange().getEndOffset());
 		String referenceName = qualifier.getReferenceName();
 		if(referenceName == null)
 		{
@@ -202,8 +189,7 @@ public class GroovyNoVariantsDelegator extends CompletionContributor
 
 		final PrefixMatcher qMatcher = new CamelHumpMatcher(referenceName);
 		final Set<LookupElement> variants = new LinkedHashSet<LookupElement>();
-		GrMainCompletionProvider.completeReference(parameters, qualifier, inheritors, qMatcher,
-				new Consumer<LookupElement>()
+		GrMainCompletionProvider.completeReference(parameters, qualifier, inheritors, qMatcher, new Consumer<LookupElement>()
 		{
 			@Override
 			public void consume(LookupElement element)
@@ -215,8 +201,7 @@ public class GroovyNoVariantsDelegator extends CompletionContributor
 			}
 		});
 
-		for(PsiClass aClass : PsiShortNamesCache.getInstance(qualifier.getProject()).getClassesByName(referenceName,
-				qualifier.getResolveScope()))
+		for(PsiClass aClass : PsiShortNamesCache.getInstance(qualifier.getProject()).getClassesByName(referenceName, qualifier.getResolveScope()))
 		{
 			variants.add(GroovyCompletionUtil.createClassLookupItem(aClass));
 		}
