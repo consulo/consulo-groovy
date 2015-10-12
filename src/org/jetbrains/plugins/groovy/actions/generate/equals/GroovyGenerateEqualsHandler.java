@@ -15,8 +15,19 @@
  */
 package org.jetbrains.plugins.groovy.actions.generate.equals;
 
-import com.intellij.codeInsight.CodeInsightSettings;
-import com.intellij.codeInsight.generation.*;
+import java.util.Collection;
+import java.util.List;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.plugins.groovy.actions.generate.GroovyCodeInsightBundle;
+import org.jetbrains.plugins.groovy.actions.generate.GroovyGenerationInfo;
+import org.mustbe.consulo.java.codeInsight.JavaCodeInsightSettings;
+import com.intellij.codeInsight.generation.ClassMember;
+import com.intellij.codeInsight.generation.GenerateMembersHandlerBase;
+import com.intellij.codeInsight.generation.GenerationInfo;
+import com.intellij.codeInsight.generation.PsiElementClassMember;
+import com.intellij.codeInsight.generation.PsiGenerationInfo;
 import com.intellij.codeInsight.generation.ui.GenerateEqualsWizard;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
@@ -32,13 +43,6 @@ import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.util.Function;
 import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.containers.ContainerUtil;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.jetbrains.plugins.groovy.actions.generate.GroovyCodeInsightBundle;
-import org.jetbrains.plugins.groovy.actions.generate.GroovyGenerationInfo;
-
-import java.util.Collection;
-import java.util.List;
 
 /**
  * User: Dmitry.Krasilschikov
@@ -112,7 +116,7 @@ public class GroovyGenerateEqualsHandler extends GenerateMembersHandlerBase {
   @NotNull
   protected List<? extends GenerationInfo> generateMemberPrototypes(PsiClass aClass, ClassMember[] originalMembers) throws IncorrectOperationException {
     Project project = aClass.getProject();
-    final boolean useInstanceofToCheckParameterType = CodeInsightSettings.getInstance().USE_INSTANCEOF_ON_EQUALS_PARAMETER;
+    final boolean useInstanceofToCheckParameterType = JavaCodeInsightSettings.getInstance().USE_INSTANCEOF_ON_EQUALS_PARAMETER;
 
     GroovyGenerateEqualsHelper helper = new GroovyGenerateEqualsHelper(project, aClass, myEqualsFields, myHashCodeFields, myNonNullFields, useInstanceofToCheckParameterType);
     Collection<PsiMethod> methods = helper.generateMembers();
