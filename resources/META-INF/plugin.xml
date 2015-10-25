@@ -1431,6 +1431,7 @@
 
 		<programRunner implementation="org.jetbrains.plugins.groovy.griffon.GriffonDebuggerRunner"/>
 		<configurationType implementation="org.jetbrains.plugins.groovy.griffon.GriffonRunConfigurationType"/>
+		<runLineMarkerContributor language="Groovy" implementationClass="org.jetbrains.plugins.groovy.testIntegration.GroovyAppLineMarkerContributor"/>
 		<toolWindow id="Griffon View" anchor="left" secondary="false" icon="JetgroovyIcons.Griffon.GriffonToolWindow"
 					factoryClass="org.jetbrains.plugins.groovy.griffon.GriffonToolWindowFactory"
 					conditionClass="org.jetbrains.plugins.groovy.griffon.GriffonToolWindowFactory"/>
