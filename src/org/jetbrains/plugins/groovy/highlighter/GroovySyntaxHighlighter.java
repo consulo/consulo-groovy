@@ -72,7 +72,7 @@ public class GroovySyntaxHighlighter extends SyntaxHighlighterBase
 	public static final TextAttributesKey STATIC_METHOD_ACCESS = createTextAttributesKey("Static method access",
 			STATIC_METHOD_ATTRIBUTES);
 	public static final TextAttributesKey BLOCK_COMMENT = createTextAttributesKey("Block comment",
-			JavaHighlightingColors.JAVA_BLOCK_COMMENT);
+			JavaHighlightingColors.BLOCK_COMMENT);
 	public static final TextAttributesKey DOC_COMMENT_CONTENT = createTextAttributesKey("Groovydoc comment",
 			JavaHighlightingColors.DOC_COMMENT);
 	public static final TextAttributesKey DOC_COMMENT_TAG = createTextAttributesKey("Groovydoc tag",

@@ -16,6 +16,10 @@
 
 package org.jetbrains.plugins.groovy.highlighter;
 
+import java.awt.Color;
+import java.awt.Font;
+
+import org.jetbrains.annotations.NonNls;
 import com.intellij.codeInsight.daemon.impl.HighlightInfoType;
 import com.intellij.ide.highlighter.JavaHighlightingColors;
 import com.intellij.openapi.editor.DefaultLanguageHighlighterColors;
@@ -26,9 +30,6 @@ import com.intellij.openapi.editor.markup.EffectType;
 import com.intellij.openapi.editor.markup.TextAttributes;
 import com.intellij.ui.JBColor;
 import com.intellij.util.ui.PlatformColors;
-import org.jetbrains.annotations.NonNls;
-
-import java.awt.*;
 
 /**
  * @author ilyas
@@ -130,7 +131,7 @@ public class GroovyHighlighterColors {
     TextAttributesKey.createTextAttributesKey(STATIC_METHOD_ACCESS_ID, HighlightInfoType.STATIC_METHOD.getAttributesKey());
 
   public static final TextAttributesKey BLOCK_COMMENT = 
-    TextAttributesKey.createTextAttributesKey(BLOCK_COMMENT_ID, JavaHighlightingColors.JAVA_BLOCK_COMMENT);
+    TextAttributesKey.createTextAttributesKey(BLOCK_COMMENT_ID, JavaHighlightingColors.BLOCK_COMMENT);
 
   public static final TextAttributesKey DOC_COMMENT_CONTENT = 
     TextAttributesKey.createTextAttributesKey(DOC_COMMENT_ID, JavaHighlightingColors.DOC_COMMENT);
