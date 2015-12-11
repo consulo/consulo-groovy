@@ -494,7 +494,7 @@
 		<extendWordSelectionHandler implementation="org.jetbrains.plugins.groovy.editor.selection.GroovyStatementSelectioner"/>
 
 
-		<definitionsSearch implementation="org.jetbrains.plugins.groovy.findUsages.GroovyImplementationSearch"/>
+		<definitionsScopedSearch implementation="org.jetbrains.plugins.groovy.findUsages.GroovyImplementationSearch"/>
 
 		<targetElementUtilEx implementation="org.jetbrains.plugins.groovy.codeInsight.GroovyTargetElementUtilEx"/>
 
