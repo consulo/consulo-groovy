@@ -253,6 +253,8 @@
 		<methodReferencesSearch implementation="org.jetbrains.plugins.groovy.findUsages.GrLiteralMethodSearcher"/>
 		<annotatedElementsSearch implementation="org.jetbrains.plugins.groovy.findUsages.AnnotatedMembersSearcher"/>
 		<superMethodsSearch implementation="org.jetbrains.plugins.groovy.findUsages.GDKSuperMethodSearcher"/>
+
+		<testFramework implementation="org.jetbrains.plugins.groovy.testIntegration.GroovyTestFramework" order="first"/>
 	</extensions>
 
 	<extensions defaultExtensionNs="com.intellij.properties">
@@ -287,7 +289,6 @@
 		<itemPresentationProvider forClass="org.jetbrains.plugins.groovy.lang.psi.impl.GroovyFileImpl"
 								  implementationClass="org.jetbrains.plugins.groovy.findUsages.GrFileItemPresentationProvider"/>
 
-		<testFramework implementation="org.jetbrains.plugins.groovy.testIntegration.GroovyTestFramework" order="first"/>
 		<testCreator language="Groovy" implementationClass="com.intellij.testIntegration.JavaTestCreator"/>
 		<editorNotificationProvider implementation="org.jetbrains.plugins.groovy.annotator.ConfigureGroovyLibraryNotificationProvider"/>
 		<refactoring.changeSignatureUsageProcessor
