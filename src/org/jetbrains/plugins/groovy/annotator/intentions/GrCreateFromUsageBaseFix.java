@@ -29,7 +29,7 @@ import org.jetbrains.plugins.groovy.intentions.base.PsiElementPredicate;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
 import org.jetbrains.plugins.groovy.lang.psi.util.GrStaticChecker;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
-import com.intellij.codeInsight.daemon.QuickFixBundle;
+import org.mustbe.consulo.java.JavaQuickFixBundle;
 import com.intellij.ide.util.PsiClassListCellRenderer;
 import com.intellij.ide.util.PsiElementListCellRenderer;
 import com.intellij.openapi.application.ApplicationManager;
@@ -161,7 +161,7 @@ public abstract class GrCreateFromUsageBaseFix extends Intention
 		};
 
 		builder.
-				setTitle(QuickFixBundle.message("target.class.chooser.title")).
+				setTitle(JavaQuickFixBundle.message("target.class.chooser.title")).
 				setItemChoosenCallback(runnable).
 				createPopup().
 				showInBestPositionFor(editor);
