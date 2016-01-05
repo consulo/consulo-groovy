@@ -22,7 +22,7 @@ import org.jetbrains.plugins.groovy.actions.GroovyTemplatesFactory;
 import org.jetbrains.plugins.groovy.actions.NewGroovyActionBase;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.path.GrMethodCallExpression;
 import com.intellij.openapi.actionSystem.DataContext;
-import com.intellij.openapi.actionSystem.DataKeys;
+import com.intellij.openapi.actionSystem.LangDataKeys;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
@@ -68,7 +68,7 @@ public class NewGantScriptAction extends NewGroovyActionBase
 	@Override
 	protected boolean isAvailable(DataContext dataContext)
 	{
-		return super.isAvailable(dataContext) && GantUtils.isSDKConfiguredToRun(ObjectUtils.assertNotNull(DataKeys
+		return super.isAvailable(dataContext) && GantUtils.isSDKConfiguredToRun(ObjectUtils.assertNotNull(LangDataKeys
 				.MODULE.getData(dataContext)));
 	}
 

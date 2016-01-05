@@ -16,9 +16,10 @@
 
 package org.jetbrains.plugins.groovy.compiler;
 
+import org.jetbrains.plugins.groovy.GroovyFileType;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.actionSystem.DataKeys;
+import com.intellij.openapi.actionSystem.LangDataKeys;
 import com.intellij.openapi.actionSystem.Presentation;
 import com.intellij.openapi.compiler.options.ExcludeEntryDescription;
 import com.intellij.openapi.options.ShowSettingsUtil;
@@ -26,14 +27,13 @@ import com.intellij.openapi.project.DumbAware;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
-import org.jetbrains.plugins.groovy.GroovyFileType;
 
 /**
  * @author peter
  */
 public class ExcludeFromStubGenerationAction extends AnAction implements DumbAware {
   public void actionPerformed(final AnActionEvent e) {
-    final PsiFile file = e.getData(DataKeys.PSI_FILE);
+    final PsiFile file = e.getData(LangDataKeys.PSI_FILE);
 
     assert file != null && file.getLanguage() == GroovyFileType.GROOVY_LANGUAGE;
 
@@ -62,7 +62,7 @@ public class ExcludeFromStubGenerationAction extends AnAction implements DumbAwa
   }
 
   private static boolean isEnabled(AnActionEvent e) {
-    PsiFile file = e.getData(DataKeys.PSI_FILE);
+    PsiFile file = e.getData(LangDataKeys.PSI_FILE);
     if (file == null || file.getLanguage() != GroovyFileType.GROOVY_LANGUAGE) {
       return false;
     }
