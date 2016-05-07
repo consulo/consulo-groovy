@@ -197,7 +197,6 @@
 	<extensions defaultExtensionNs="org.consulo.java">
 		<cantBeStatic implementation="org.jetbrains.plugins.groovy.codeInspection.declaration.GrCategoryMethodsCantBeStaticExtension"/>
 		<attachSourcesProvider implementation="org.jetbrains.plugins.groovy.ivy.IvyAttachSourceProvider"/>
-		<debugger.jvmDebugProvider implementation="org.jetbrains.plugins.groovy.GroovyJvmDebugProvider" />
 		<codeStyle.referenceAdjuster language="Groovy" implementationClass="org.jetbrains.plugins.groovy.codeStyle.GrReferenceAdjuster"/>
 		<programPatcher implementation="org.jetbrains.plugins.groovy.debugger.GroovyHotSwapper"/>
 		<psi.clsCustomNavigationPolicy implementation="org.jetbrains.plugins.groovy.codeInsight.GroovyClsCustomNavigationPolicy"/>
@@ -241,9 +240,6 @@
 		<debugger.codeFragmentFactory implementation="org.jetbrains.plugins.groovy.debugger.GroovyCodeFragmentFactory"/>
 		<variableTypeCalculator implementation="org.jetbrains.plugins.groovy.template.GroovyVariableTypeCalculator"/>
 
-	</extensions>
-
-	<extensions defaultExtensionNs="org.consulo.java">
 		<directClassInheritorsSearch implementation="org.jetbrains.plugins.groovy.lang.psi.impl.GroovyDirectInheritorsSearcher"/>
 
 		<methodReferencesSearch implementation="org.jetbrains.plugins.groovy.findUsages.AccessorMethodReferencesSearcher"/>
@@ -1443,6 +1439,8 @@
 							serviceInterface="org.jetbrains.plugins.groovy.mvc.MvcRunTargetHistoryService"/>
 		<lang.inspectionSuppressor language="Groovy"
 								   implementationClass="org.jetbrains.plugins.groovy.codeInspection.GroovyInspectionSuppressor"/>
+
+		<xdebugger.lineBreakpointTypeResolver filetype="Groovy" implementationClass="consulo.java.debugger.JavaLineBreakpointTypeResolver" />
 	</extensions>
 
 	<actions>
