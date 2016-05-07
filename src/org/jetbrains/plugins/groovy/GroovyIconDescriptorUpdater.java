@@ -19,6 +19,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.extensions.GroovyScriptTypeDetector;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
+import org.mustbe.consulo.RequiredReadAction;
 import com.intellij.ide.IconDescriptor;
 import com.intellij.ide.IconDescriptorUpdater;
 import com.intellij.ide.IconDescriptorUpdaters;
@@ -32,6 +33,7 @@ import icons.JetgroovyIcons;
  */
 public class GroovyIconDescriptorUpdater implements IconDescriptorUpdater
 {
+	@RequiredReadAction
 	@Override
 	public void updateIcon(@NotNull IconDescriptor iconDescriptor, @NotNull PsiElement element, int flags)
 	{
