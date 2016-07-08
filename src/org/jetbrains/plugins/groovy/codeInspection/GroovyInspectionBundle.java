@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection;
 
-import org.consulo.lombok.annotations.Bundle;
+import consulo.lombok.annotations.Bundle;
 
 /**
  * @author ilyas

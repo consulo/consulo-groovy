@@ -16,7 +16,7 @@
 
 package org.jetbrains.plugins.groovy;
 
-import org.consulo.lombok.annotations.Bundle;
+import consulo.lombok.annotations.Bundle;
 
 /**
  * @author ilyas

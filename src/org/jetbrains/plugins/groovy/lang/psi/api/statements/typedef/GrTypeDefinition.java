@@ -16,7 +16,6 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef;
 
-import org.consulo.lombok.annotations.ArrayFactoryFields;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -33,6 +32,7 @@ import com.intellij.psi.NavigatablePsiElement;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiField;
 import com.intellij.psi.PsiMethod;
+import consulo.lombok.annotations.ArrayFactoryFields;
 
 /**
  * @autor: Dmitry.Krasilschikov
