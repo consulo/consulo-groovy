@@ -137,7 +137,7 @@
       <module name="groovy-spellchecker" dirurl="file://$PROJECT_DIR$/groovy-spellchecker" current-layer="Default">
         <module-layer name="Default">
           <extension id="consulo-plugin" sdk-module-name="" sdk-name="Consulo 1.SNAPSHOT" custom-plugin-dir-url="file://$MODULE_DIR$/../dep" />
-          <extension id="java" sdk-module-name="consulo-groovy" sdk-name="1.6" language-level-module-name="consulo-groovy" language-level-name="JDK_1_6" special-dir-location="SOURCE_DIR" />
+          <extension id="java" sdk-module-name="consulo-groovy" sdk-name="" language-level-module-name="consulo-groovy" language-level-name="" special-dir-location="SOURCE_DIR" />
           <content url="file://$MODULE_DIR$">
             <content-folder type="PRODUCTION_RESOURCE" url="file://$MODULE_DIR$/resources" />
             <content-folder type="PRODUCTION" url="file://$MODULE_DIR$/src" />
