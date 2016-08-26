@@ -34,7 +34,7 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMe
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
 import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GroovyScriptClass;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
-import com.intellij.codeInspection.InspectionManager;
+import com.intellij.codeInspection.JavaExtensionPoints;
 import com.intellij.codeInspection.LocalQuickFix;
 import com.intellij.codeInspection.ProblemDescriptor;
 import com.intellij.codeInspection.ProblemHighlightType;
@@ -158,7 +158,7 @@ public class GrMethodMayBeStaticInspection extends BaseInspection
 			return false;
 		}
 
-		final Condition<PsiElement>[] addins = InspectionManager.CANT_BE_STATIC_EXTENSION.getExtensions();
+		final Condition<PsiElement>[] addins = JavaExtensionPoints.CANT_BE_STATIC_EP_NAME.getExtensions();
 		for(Condition<PsiElement> addin : addins)
 		{
 			if(addin.value(method))
