@@ -23,7 +23,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.consulo.psi.PsiPackage;
+import consulo.psi.PsiPackage;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.GroovyLanguage;

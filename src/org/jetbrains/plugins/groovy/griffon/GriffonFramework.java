@@ -16,6 +16,29 @@
 
 package org.jetbrains.plugins.groovy.griffon;
 
+import gnu.trove.TIntArrayList;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.swing.Icon;
+
+import org.jetbrains.annotations.NonNls;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.plugins.groovy.GroovyFileType;
+import org.jetbrains.plugins.groovy.mvc.MvcCommand;
+import org.jetbrains.plugins.groovy.mvc.MvcFramework;
+import org.jetbrains.plugins.groovy.mvc.MvcModuleStructureUtil;
+import org.jetbrains.plugins.groovy.mvc.MvcPathMacros;
+import org.jetbrains.plugins.groovy.mvc.MvcProjectStructure;
+import org.mustbe.consulo.java.module.extension.JavaModuleExtension;
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.configurations.GeneralCommandLine;
 import com.intellij.execution.configurations.JavaParameters;
@@ -40,27 +63,10 @@ import com.intellij.openapi.vcs.changes.IgnoredBeanFactory;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VfsUtilCore;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.openapi.vfs.util.ArchiveVfsUtil;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
-import gnu.trove.TIntArrayList;
+import consulo.vfs.util.ArchiveVfsUtil;
 import icons.JetgroovyIcons;
-import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.jetbrains.plugins.groovy.GroovyFileType;
-import org.jetbrains.plugins.groovy.mvc.*;
-import org.mustbe.consulo.java.module.extension.JavaModuleExtension;
-
-import javax.swing.*;
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * @author peter

@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.findUsages;
 
-import com.intellij.ide.IconDescriptorUpdaters;
+import consulo.ide.IconDescriptorUpdaters;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.navigation.ItemPresentationProvider;
 import com.intellij.navigation.ItemPresentationProviders;

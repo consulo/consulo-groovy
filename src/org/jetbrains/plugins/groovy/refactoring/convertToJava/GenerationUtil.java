@@ -26,7 +26,7 @@ import com.intellij.psi.scope.PsiScopeProcessor;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.util.containers.HashMap;
 import com.intellij.util.containers.hash.HashSet;
-import org.consulo.psi.PsiPackage;
+import consulo.psi.PsiPackage;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GrClassSubstitutor;

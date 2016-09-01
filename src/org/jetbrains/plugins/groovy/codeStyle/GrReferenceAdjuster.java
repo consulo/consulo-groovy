@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.codeStyle;
 
-import org.consulo.psi.PsiPackage;
+import consulo.psi.PsiPackage;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.debugger.fragments.GroovyCodeFragment;

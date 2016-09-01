@@ -16,6 +16,18 @@
 
 package org.jetbrains.plugins.groovy.compiler;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.plugins.groovy.GroovyBundle;
+import org.jetbrains.plugins.groovy.GroovyFileType;
+import org.jetbrains.plugins.groovy.GroovyFileTypeLoader;
+import org.jetbrains.plugins.groovy.config.GroovyConfigUtils;
+import org.jetbrains.plugins.groovy.module.extension.GroovyModuleExtension;
+import org.jetbrains.plugins.groovy.util.LibrariesUtil;
+import org.mustbe.consulo.java.module.extension.JavaModuleExtension;
 import com.intellij.ide.highlighter.JavaClassFileType;
 import com.intellij.openapi.compiler.CompileContext;
 import com.intellij.openapi.compiler.CompileScope;
@@ -34,20 +46,8 @@ import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.search.FilenameIndex;
 import com.intellij.psi.search.GlobalSearchScope;
+import consulo.compiler.impl.resourceCompiler.ResourceCompilerConfiguration;
 import icons.JetgroovyIcons;
-import org.consulo.compiler.impl.resourceCompiler.ResourceCompilerConfiguration;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.plugins.groovy.GroovyBundle;
-import org.jetbrains.plugins.groovy.GroovyFileType;
-import org.jetbrains.plugins.groovy.GroovyFileTypeLoader;
-import org.jetbrains.plugins.groovy.config.GroovyConfigUtils;
-import org.jetbrains.plugins.groovy.module.extension.GroovyModuleExtension;
-import org.jetbrains.plugins.groovy.util.LibrariesUtil;
-import org.mustbe.consulo.java.module.extension.JavaModuleExtension;
-
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 /**
  * @author Dmitry.Krasilschikov

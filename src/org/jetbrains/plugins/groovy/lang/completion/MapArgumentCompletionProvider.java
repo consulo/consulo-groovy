@@ -36,7 +36,7 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyNamesUtil;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 import com.intellij.codeInsight.completion.CompletionContributor;
 import com.intellij.codeInsight.completion.CompletionParameters;
-import com.intellij.codeInsight.completion.CompletionProvider;
+import consulo.codeInsight.completion.CompletionProvider;
 import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.completion.CompletionType;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
@@ -51,7 +51,8 @@ import icons.JetgroovyIcons;
 /**
  * @author peter
  */
-class MapArgumentCompletionProvider extends CompletionProvider<CompletionParameters> {
+class MapArgumentCompletionProvider implements CompletionProvider
+{
 
   public static final ElementPattern<PsiElement> IN_ARGUMENT_LIST_OF_CALL = PlatformPatterns
     .psiElement().withParent(PlatformPatterns.psiElement(GrReferenceExpression.class).withParent(
@@ -70,7 +71,7 @@ class MapArgumentCompletionProvider extends CompletionProvider<CompletionParamet
   }
 
   @Override
-  protected void addCompletions(@NotNull CompletionParameters parameters,
+  public void addCompletions(@NotNull CompletionParameters parameters,
                                 ProcessingContext context,
                                 @NotNull CompletionResultSet result) {
     PsiElement mapOrArgumentList = findMapOrArgumentList(parameters);

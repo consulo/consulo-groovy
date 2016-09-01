@@ -25,7 +25,7 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.literals
 import com.intellij.codeInsight.completion.CompletionContributor;
 import com.intellij.codeInsight.completion.CompletionInitializationContext;
 import com.intellij.codeInsight.completion.CompletionParameters;
-import com.intellij.codeInsight.completion.CompletionProvider;
+import consulo.codeInsight.completion.CompletionProvider;
 import com.intellij.codeInsight.completion.CompletionResult;
 import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.completion.CompletionType;
@@ -62,9 +62,9 @@ public class GroovyCompletionContributor extends CompletionContributor {
     GrMainCompletionProvider.register(this);
     GrAnnotationAttributeCompletionProvider.register(this);
 
-    extend(CompletionType.BASIC, PlatformPatterns.psiElement().withParent(GrLiteral.class), new CompletionProvider<CompletionParameters>() {
+    extend(CompletionType.BASIC, PlatformPatterns.psiElement().withParent(GrLiteral.class), new CompletionProvider() {
       @Override
-      protected void addCompletions(@NotNull CompletionParameters parameters,
+	  public void addCompletions(@NotNull CompletionParameters parameters,
                                     ProcessingContext context,
                                     @NotNull final CompletionResultSet result) {
         final Set<String> usedWords = new THashSet<String>();

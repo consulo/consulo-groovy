@@ -28,7 +28,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
 import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GroovyScriptClass;
-import org.mustbe.consulo.copyright.config.CopyrightFileConfig;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiClass;
@@ -37,9 +36,9 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.maddyhome.idea.copyright.CopyrightProfile;
 import com.maddyhome.idea.copyright.psi.UpdateCopyrightsProvider;
-import com.maddyhome.idea.copyright.psi.UpdateJavaFileCopyright;
-import com.maddyhome.idea.copyright.psi.UpdatePsiFileCopyright;
+import com.maddyhome.idea.copyright.psi.UpdateJavaFileCopyright;   import com.maddyhome.idea.copyright.psi.UpdatePsiFileCopyright;
 import com.maddyhome.idea.copyright.ui.TemplateCommentPanel;
+import consulo.copyright.config.CopyrightFileConfig;
 
 public class UpdateGroovyCopyrightsProvider extends UpdateCopyrightsProvider<CopyrightFileConfig>
 {

@@ -23,7 +23,7 @@ import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
 import org.jetbrains.plugins.groovy.lang.psi.impl.toplevel.imports.GrImportStatementImpl;
 import org.jetbrains.plugins.groovy.lang.psi.stubs.GrImportStatementStub;
 import org.jetbrains.plugins.groovy.lang.psi.stubs.GrStubUtils;
-import org.mustbe.consulo.RequiredReadAction;
+import consulo.annotations.RequiredReadAction;
 import com.intellij.psi.stubs.StubElement;
 import com.intellij.psi.stubs.StubInputStream;
 import com.intellij.psi.stubs.StubOutputStream;

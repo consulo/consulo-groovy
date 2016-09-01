@@ -31,7 +31,7 @@ import org.jetbrains.plugins.groovy.lang.psi.controlFlow.Instruction;
 import org.jetbrains.plugins.groovy.lang.psi.dataFlow.types.TypeInferenceHelper;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 import org.jetbrains.plugins.groovy.refactoring.GroovyRefactoringBundle;
-import com.intellij.codeInsight.TargetElementUtil;
+import consulo.codeInsight.TargetElementUtil;
 import com.intellij.lang.Language;
 import com.intellij.lang.refactoring.InlineActionHandler;
 import com.intellij.openapi.application.ApplicationManager;

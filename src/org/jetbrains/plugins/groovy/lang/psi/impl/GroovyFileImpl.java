@@ -18,7 +18,7 @@ package org.jetbrains.plugins.groovy.lang.psi.impl;
 
 import java.util.concurrent.ConcurrentMap;
 
-import org.consulo.psi.PsiPackage;
+import consulo.psi.PsiPackage;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.GroovyLanguage;

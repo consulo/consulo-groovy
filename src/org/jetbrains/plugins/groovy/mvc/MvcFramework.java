@@ -28,7 +28,6 @@ import java.util.regex.Pattern;
 
 import javax.swing.Icon;
 
-import org.consulo.compiler.CompilerPathsManager;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -36,8 +35,6 @@ import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyNamesUtil;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames;
 import org.mustbe.consulo.java.module.extension.JavaModuleExtension;
-import org.mustbe.consulo.roots.ContentFolderScopes;
-import org.mustbe.consulo.roots.ContentFolderTypeProvider;
 import com.intellij.compiler.options.CompileStepBeforeRun;
 import com.intellij.compiler.options.CompileStepBeforeRunNoErrorCheck;
 import com.intellij.execution.CantRunException;
@@ -74,11 +71,9 @@ import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.ModificationTracker;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.openapi.vfs.ArchiveFileSystem;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VfsUtilCore;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.openapi.vfs.util.ArchiveVfsUtil;
 import com.intellij.psi.JavaPsiFacade;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiDirectory;
@@ -94,6 +89,11 @@ import com.intellij.psi.xml.XmlTag;
 import com.intellij.util.PathUtil;
 import com.intellij.util.PathsList;
 import com.intellij.util.containers.ContainerUtil;
+import consulo.compiler.CompilerPathsManager;
+import consulo.roots.ContentFolderScopes;
+import consulo.roots.ContentFolderTypeProvider;
+import consulo.vfs.ArchiveFileSystem;
+import consulo.vfs.util.ArchiveVfsUtil;
 
 /**
  * @author peter

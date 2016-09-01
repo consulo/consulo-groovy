@@ -31,11 +31,9 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyFileImpl;
 import org.jetbrains.plugins.groovy.lang.psi.stubs.elements.GrStubFileElementType;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.LanguageUtil;
-import com.intellij.lang.LanguageVersion;
 import com.intellij.lang.ParserDefinition;
 import com.intellij.lang.PsiParser;
 import com.intellij.lexer.Lexer;
-import com.intellij.openapi.project.Project;
 import com.intellij.psi.FileViewProvider;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
@@ -46,6 +44,7 @@ import com.intellij.psi.tree.IFileElementType;
 import com.intellij.psi.tree.IStubFileElementType;
 import com.intellij.psi.tree.TokenSet;
 import com.intellij.util.ArrayUtil;
+import consulo.lang.LanguageVersion;
 
 /**
  * @author ilyas
@@ -63,13 +62,13 @@ public class GroovyParserDefinition implements ParserDefinition
 
 	@Override
 	@NotNull
-	public Lexer createLexer(Project project, LanguageVersion languageVersion)
+	public Lexer createLexer(LanguageVersion languageVersion)
 	{
 		return new GroovyLexer();
 	}
 
 	@Override
-	public PsiParser createParser(Project project, LanguageVersion languageVersion)
+	public PsiParser createParser(LanguageVersion languageVersion)
 	{
 		return new GroovyParser();
 	}

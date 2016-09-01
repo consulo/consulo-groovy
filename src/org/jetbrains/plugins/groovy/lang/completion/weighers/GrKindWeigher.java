@@ -17,7 +17,7 @@ package org.jetbrains.plugins.groovy.lang.completion.weighers;
 
 import java.util.Set;
 
-import org.consulo.psi.PsiPackage;
+import consulo.psi.PsiPackage;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.extensions.NamedArgumentDescriptor;
 import org.jetbrains.plugins.groovy.lang.completion.GrMainCompletionProvider;

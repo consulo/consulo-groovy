@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl;
 
-import org.consulo.psi.PsiPackage;
+import consulo.psi.PsiPackage;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;

@@ -38,7 +38,7 @@ import org.jetbrains.plugins.groovy.lang.parser.parsing.statements.typeDefinitio
 import org.jetbrains.plugins.groovy.lang.parser.parsing.toplevel.CompilationUnit;
 import org.jetbrains.plugins.groovy.lang.parser.parsing.util.ParserUtils;
 import com.intellij.lang.ASTNode;
-import com.intellij.lang.LanguageVersion;
+import consulo.lang.LanguageVersion;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.lang.PsiParser;
 import com.intellij.psi.tree.IElementType;

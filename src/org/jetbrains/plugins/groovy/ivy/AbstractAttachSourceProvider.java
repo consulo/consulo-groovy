@@ -1,5 +1,14 @@
 package org.jetbrains.plugins.groovy.ivy;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.util.Arrays;
+import java.util.List;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.codeInsight.AttachSourcesProvider;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
@@ -15,19 +24,10 @@ import com.intellij.openapi.roots.OrderRootType;
 import com.intellij.openapi.roots.libraries.Library;
 import com.intellij.openapi.util.ActionCallback;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.openapi.vfs.util.ArchiveVfsUtil;
 import com.intellij.psi.PsiFile;
 import com.intellij.util.net.HttpConfigurable;
 import com.intellij.util.net.NetUtils;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.util.Arrays;
-import java.util.List;
+import consulo.vfs.util.ArchiveVfsUtil;
 
 /**
  * @author Sergey Evdokimov

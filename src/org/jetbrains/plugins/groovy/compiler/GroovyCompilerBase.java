@@ -16,11 +16,36 @@
 
 package org.jetbrains.plugins.groovy.compiler;
 
+import gnu.trove.THashSet;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.groovy.compiler.rt.CompilerMessage;
+import org.jetbrains.groovy.compiler.rt.GroovyCompilerMessageCategories;
+import org.jetbrains.groovy.compiler.rt.GroovycRunner;
+import org.jetbrains.plugins.groovy.GroovyFileType;
+import org.jetbrains.plugins.groovy.config.GroovyConfigUtils;
+import org.jetbrains.plugins.groovy.extensions.GroovyScriptType;
+import org.jetbrains.plugins.groovy.extensions.GroovyScriptTypeDetector;
+import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
+import org.jetbrains.plugins.groovy.module.extension.GroovyModuleExtension;
+import org.jetbrains.plugins.groovy.runner.GroovycOSProcessHandler;
+import org.mustbe.consulo.java.module.extension.JavaModuleExtension;
 import com.intellij.compiler.cache.JavaDependencyCache;
 import com.intellij.compiler.impl.CompilerUtil;
 import com.intellij.compiler.impl.FileSetCompileScope;
 import com.intellij.compiler.impl.ModuleChunk;
-import com.intellij.compiler.impl.TranslatingCompilerFilesMonitor;
 import com.intellij.compiler.impl.javaCompiler.OutputItemImpl;
 import com.intellij.compiler.make.CacheCorruptedException;
 import com.intellij.execution.ExecutionException;
@@ -57,31 +82,18 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.encoding.EncodingProjectManager;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
-import com.intellij.util.*;
+import com.intellij.util.Chunk;
+import com.intellij.util.Consumer;
+import com.intellij.util.Function;
+import com.intellij.util.PathUtil;
+import com.intellij.util.PathsList;
+import com.intellij.util.SmartList;
 import com.intellij.util.cls.ClsFormatException;
 import com.intellij.util.containers.ContainerUtil;
 import com.intellij.util.net.HttpConfigurable;
-import gnu.trove.THashSet;
-import org.consulo.compiler.impl.resourceCompiler.ResourceCompilerConfiguration;
-import org.jetbrains.annotations.Nullable;
-import org.jetbrains.groovy.compiler.rt.CompilerMessage;
-import org.jetbrains.groovy.compiler.rt.GroovyCompilerMessageCategories;
-import org.jetbrains.groovy.compiler.rt.GroovycRunner;
-import org.jetbrains.plugins.groovy.GroovyFileType;
-import org.jetbrains.plugins.groovy.config.GroovyConfigUtils;
-import org.jetbrains.plugins.groovy.extensions.GroovyScriptType;
-import org.jetbrains.plugins.groovy.extensions.GroovyScriptTypeDetector;
-import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
-import org.jetbrains.plugins.groovy.module.extension.GroovyModuleExtension;
-import org.jetbrains.plugins.groovy.runner.GroovycOSProcessHandler;
-import org.mustbe.consulo.compiler.roots.CompilerPathsImpl;
-import org.mustbe.consulo.java.module.extension.JavaModuleExtension;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.util.*;
+import consulo.compiler.impl.TranslatingCompilerFilesMonitor;
+import consulo.compiler.impl.resourceCompiler.ResourceCompilerConfiguration;
+import consulo.compiler.roots.CompilerPathsImpl;
 
 /**
  * @author peter

@@ -13,8 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jetbrains.plugins.groovy.console;
+package org.jetbrains.plugins.groovy.shell;
 
+import java.util.Map;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.plugins.groovy.debugger.fragments.GroovyCodeFragment;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
+import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GrLightVariable;
+import org.jetbrains.plugins.groovy.lang.resolve.processors.ClassHint;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiType;
@@ -24,14 +32,6 @@ import com.intellij.psi.scope.NameHint;
 import com.intellij.psi.scope.PsiScopeProcessor;
 import com.intellij.testFramework.LightVirtualFile;
 import com.intellij.util.containers.ContainerUtil;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.plugins.groovy.debugger.fragments.GroovyCodeFragment;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
-import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GrLightVariable;
-import org.jetbrains.plugins.groovy.lang.resolve.processors.ClassHint;
-
-import java.util.Map;
 
 /**
  * Created by Max Medvedev on 9/8/13

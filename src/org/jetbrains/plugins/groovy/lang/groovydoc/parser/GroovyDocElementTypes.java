@@ -16,12 +16,6 @@
 
 package org.jetbrains.plugins.groovy.lang.groovydoc.parser;
 
-import com.intellij.lang.*;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.JavaPsiFacade;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.tree.ILazyParseableElementType;
-import com.intellij.util.LanguageVersionUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.lang.groovydoc.lexer.GroovyDocElementType;
@@ -29,6 +23,17 @@ import org.jetbrains.plugins.groovy.lang.groovydoc.lexer.GroovyDocElementTypeImp
 import org.jetbrains.plugins.groovy.lang.groovydoc.lexer.GroovyDocLexer;
 import org.jetbrains.plugins.groovy.lang.groovydoc.lexer.GroovyDocTokenTypes;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.impl.GrDocCommentImpl;
+import com.intellij.lang.ASTNode;
+import com.intellij.lang.Language;
+import com.intellij.lang.PsiBuilder;
+import com.intellij.lang.PsiBuilderFactory;
+import com.intellij.lang.PsiParser;
+import com.intellij.openapi.project.Project;
+import com.intellij.psi.JavaPsiFacade;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.tree.ILazyParseableElementType;
+import consulo.lang.LanguageVersion;
+import consulo.lang.util.LanguageVersionUtil;
 
 /**
  * @author ilyas

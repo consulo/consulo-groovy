@@ -15,14 +15,6 @@
  */
 package org.jetbrains.plugins.groovy.lang.completion;
 
-import com.intellij.codeInsight.completion.*;
-import com.intellij.codeInsight.lookup.LookupElement;
-import com.intellij.codeInsight.lookup.LookupElementBuilder;
-import com.intellij.patterns.PsiJavaPatterns;
-import com.intellij.psi.*;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.ArrayUtil;
-import com.intellij.util.ProcessingContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.lang.completion.handlers.GroovyMethodSignatureInsertHandler;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocMemberReference;
@@ -33,18 +25,35 @@ import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 import org.jetbrains.plugins.groovy.lang.resolve.ResolveUtil;
 import org.jetbrains.plugins.groovy.lang.resolve.processors.CompletionProcessor;
 import org.jetbrains.plugins.groovy.lang.resolve.processors.ResolverProcessor;
+import com.intellij.codeInsight.completion.CompletionContributor;
+import com.intellij.codeInsight.completion.CompletionParameters;
+import com.intellij.codeInsight.completion.CompletionResultSet;
+import com.intellij.codeInsight.completion.CompletionType;
+import com.intellij.codeInsight.lookup.LookupElement;
+import com.intellij.codeInsight.lookup.LookupElementBuilder;
+import com.intellij.patterns.PsiJavaPatterns;
+import com.intellij.psi.PsiClass;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiMethod;
+import com.intellij.psi.PsiNamedElement;
+import com.intellij.psi.ResolveState;
+import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.util.ArrayUtil;
+import com.intellij.util.ProcessingContext;
+import consulo.codeInsight.completion.CompletionProvider;
 
 /**
  * @author Max Medvedev
  */
-public class GroovyDocCompletionProvider extends CompletionProvider<CompletionParameters> {
+public class GroovyDocCompletionProvider implements CompletionProvider
+{
   public static void register(CompletionContributor contributor) {
     final GroovyDocCompletionProvider provider = new GroovyDocCompletionProvider();
     contributor.extend(CompletionType.BASIC, PsiJavaPatterns.psiElement().inside(GrDocTagValueToken.class), provider);
   }
 
   @Override
-  protected void addCompletions(@NotNull CompletionParameters parameters,
+  public void addCompletions(@NotNull CompletionParameters parameters,
                                 ProcessingContext context,
                                 @NotNull CompletionResultSet result) {
     final PsiElement position = parameters.getPosition();

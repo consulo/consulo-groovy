@@ -27,12 +27,12 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefini
 import org.jetbrains.plugins.groovy.overrideImplement.GroovyOverrideImplementExploreUtil;
 import com.intellij.codeInsight.completion.CompletionContributor;
 import com.intellij.codeInsight.completion.CompletionParameters;
-import com.intellij.codeInsight.completion.CompletionProvider;
+import consulo.codeInsight.completion.CompletionProvider;
 import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.completion.CompletionType;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.icons.AllIcons;
-import com.intellij.ide.IconDescriptorUpdaters;
+import consulo.ide.IconDescriptorUpdaters;
 import com.intellij.patterns.ElementPattern;
 import com.intellij.patterns.PatternCondition;
 import com.intellij.psi.PsiElement;
@@ -48,7 +48,8 @@ import com.intellij.ui.RowIcon;
 import com.intellij.util.ProcessingContext;
 import com.intellij.util.VisibilityUtil;
 
-class GrMethodOverrideCompletionProvider extends CompletionProvider<CompletionParameters> {
+class GrMethodOverrideCompletionProvider implements CompletionProvider
+{
 
   private static final ElementPattern<PsiElement> PLACE = psiElement().withParent(GrTypeDefinitionBody.class).with(
     new PatternCondition<PsiElement>("Not in extends/implements clause of inner class") {
@@ -60,7 +61,7 @@ class GrMethodOverrideCompletionProvider extends CompletionProvider<CompletionPa
     }).andNot(psiComment());
 
   @Override
-  protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result) {
+  public void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result) {
     final PsiElement position = parameters.getPosition();
     final GrTypeDefinition currentClass = PsiTreeUtil.getParentOfType(position, GrTypeDefinition.class);
 

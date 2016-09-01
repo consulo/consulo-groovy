@@ -16,6 +16,12 @@
 
 package org.jetbrains.plugins.groovy.runner;
 
+import java.nio.charset.Charset;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.plugins.groovy.util.GroovyUtils;
+import org.jetbrains.plugins.groovy.util.LibrariesUtil;
 import com.intellij.execution.CantRunException;
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.Executor;
@@ -33,12 +39,6 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.encoding.EncodingManager;
 import com.intellij.openapi.vfs.encoding.EncodingProjectManager;
 import com.intellij.util.net.HttpConfigurable;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.jetbrains.plugins.groovy.util.GroovyUtils;
-import org.jetbrains.plugins.groovy.util.LibrariesUtil;
-
-import java.nio.charset.Charset;
 
 public class DefaultGroovyScriptRunner extends GroovyScriptRunner {
 
@@ -65,7 +65,7 @@ public class DefaultGroovyScriptRunner extends GroovyScriptRunner {
 
   @Override
   public void configureCommandLine(JavaParameters params, @Nullable Module module, boolean tests, VirtualFile script, GroovyScriptRunConfiguration configuration) throws CantRunException {
-    configureGenericGroovyRunner(params, module, "groovy.ui.GroovyMain", false);
+    configureGenericGroovyRunner(params, module, "groovy.ui.GroovyMain", false, tests);
 
     addClasspathFromRootModel(module, tests, params, true);
 
@@ -81,7 +81,7 @@ public class DefaultGroovyScriptRunner extends GroovyScriptRunner {
     params.getProgramParametersList().addParametersString(configuration.getScriptParameters());
   }
 
-  public static void configureGenericGroovyRunner(@NotNull JavaParameters params, @NotNull Module module, @NotNull String mainClass, boolean useBundled) {
+  public static void configureGenericGroovyRunner(@NotNull JavaParameters params, @NotNull Module module, @NotNull String mainClass, boolean useBundled, boolean tests) {
     final VirtualFile groovyJar = findGroovyJar(module);
     if (useBundled) {
       params.getClassPath().add(GroovyUtils.getBundledGroovyJar());

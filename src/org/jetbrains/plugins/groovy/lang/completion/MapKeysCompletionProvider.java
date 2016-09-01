@@ -25,7 +25,6 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.GrMapType;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyPsiManager;
 import com.intellij.codeInsight.completion.CompletionContributor;
 import com.intellij.codeInsight.completion.CompletionParameters;
-import com.intellij.codeInsight.completion.CompletionProvider;
 import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.completion.CompletionType;
 import com.intellij.codeInsight.completion.PrioritizedLookupElement;
@@ -36,12 +35,13 @@ import com.intellij.psi.CommonClassNames;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiType;
 import com.intellij.util.ProcessingContext;
+import consulo.codeInsight.completion.CompletionProvider;
 
 /**
  * @author Sergey Evdokimov
  */
-class MapKeysCompletionProvider extends CompletionProvider<CompletionParameters> {
-
+class MapKeysCompletionProvider implements CompletionProvider
+{
   public static void register(CompletionContributor contributor) {
     MapKeysCompletionProvider provider = new MapKeysCompletionProvider();
 
@@ -49,7 +49,7 @@ class MapKeysCompletionProvider extends CompletionProvider<CompletionParameters>
   }
 
   @Override
-  protected void addCompletions(@NotNull CompletionParameters parameters,
+  public void addCompletions(@NotNull CompletionParameters parameters,
                                 ProcessingContext context,
                                 @NotNull CompletionResultSet result) {
     PsiElement element = parameters.getPosition();

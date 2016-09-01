@@ -19,12 +19,12 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.extensions.GroovyScriptTypeDetector;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
-import org.mustbe.consulo.RequiredReadAction;
-import com.intellij.ide.IconDescriptor;
-import com.intellij.ide.IconDescriptorUpdater;
-import com.intellij.ide.IconDescriptorUpdaters;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiModifier;
+import consulo.annotations.RequiredReadAction;
+import consulo.ide.IconDescriptor;
+import consulo.ide.IconDescriptorUpdater;
+import consulo.ide.IconDescriptorUpdaters;
 import icons.JetgroovyIcons;
 
 /**

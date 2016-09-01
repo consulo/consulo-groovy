@@ -54,7 +54,7 @@ import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeElement;
 import org.jetbrains.plugins.groovy.lang.psi.impl.signatures.GrClosureSignatureUtil;
 import org.jetbrains.plugins.groovy.refactoring.GroovyRefactoringBundle;
 import org.jetbrains.plugins.groovy.refactoring.GroovyRefactoringUtil;
-import com.intellij.codeInsight.TargetElementUtil;
+import consulo.codeInsight.TargetElementUtil;
 import com.intellij.lang.refactoring.InlineHandler;
 import com.intellij.openapi.application.Application;
 import com.intellij.openapi.application.ApplicationManager;

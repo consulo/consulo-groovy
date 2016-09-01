@@ -42,7 +42,7 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.statements.GrVariableDeclarati
 import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GrTraitMethod;
 import org.jetbrains.plugins.groovy.lang.psi.util.GrTraitUtil;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyPropertyUtils;
-import org.mustbe.consulo.RequiredReadAction;
+import consulo.annotations.RequiredReadAction;
 import org.mustbe.consulo.java.util.JavaClassNames;
 import com.intellij.codeHighlighting.Pass;
 import com.intellij.codeInsight.daemon.DaemonCodeAnalyzerSettings;

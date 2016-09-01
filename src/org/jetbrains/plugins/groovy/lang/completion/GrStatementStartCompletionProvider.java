@@ -25,6 +25,7 @@ import com.intellij.patterns.StandardPatterns;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiErrorElement;
 import com.intellij.util.ProcessingContext;
+import consulo.codeInsight.completion.CompletionProvider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.lexer.TokenSets;
@@ -36,7 +37,8 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefini
 /**
 * Created by Max Medvedev on 14/05/14
 */
-class GrStatementStartCompletionProvider extends CompletionProvider<CompletionParameters> {
+class GrStatementStartCompletionProvider implements CompletionProvider
+{
   private static final PsiElementPattern.Capture<PsiElement> STATEMENT_START =
     PlatformPatterns.psiElement(GroovyTokenTypes.mIDENT).andOr(
       PlatformPatterns.psiElement().afterLeaf(StandardPatterns.or(
@@ -58,7 +60,7 @@ class GrStatementStartCompletionProvider extends CompletionProvider<CompletionPa
   }
 
   @Override
-  protected void addCompletions(@NotNull CompletionParameters parameters,
+  public void addCompletions(@NotNull CompletionParameters parameters,
                                 ProcessingContext context,
                                 @NotNull CompletionResultSet result) {
     result.addElement(LookupElementBuilder.create("if").bold().withInsertHandler(new InsertHandler<LookupElement>() {

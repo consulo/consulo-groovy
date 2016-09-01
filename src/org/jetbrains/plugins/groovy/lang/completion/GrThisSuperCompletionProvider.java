@@ -15,7 +15,16 @@
  */
 package org.jetbrains.plugins.groovy.lang.completion;
 
-import com.intellij.codeInsight.completion.*;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
+import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
+import com.intellij.codeInsight.completion.CompletionContributor;
+import com.intellij.codeInsight.completion.CompletionParameters;
+import com.intellij.codeInsight.completion.CompletionResultSet;
+import com.intellij.codeInsight.completion.CompletionType;
+import com.intellij.codeInsight.completion.CompletionUtil;
+import com.intellij.codeInsight.completion.JavaCompletionFeatures;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.actionSystem.IdeActions;
@@ -26,15 +35,13 @@ import com.intellij.patterns.PlatformPatterns;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.ProcessingContext;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
-import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
+import consulo.codeInsight.completion.CompletionProvider;
 
 /**
 * Created by Max Medvedev on 14/05/14
 */
-class GrThisSuperCompletionProvider extends CompletionProvider<CompletionParameters> {
+class GrThisSuperCompletionProvider implements CompletionProvider
+{
   private static final ElementPattern<PsiElement> AFTER_DOT = PlatformPatterns.psiElement().afterLeaf(".").withParent(GrReferenceExpression.class);
   private static final String[] THIS_SUPER = {"this", "super"};
 
@@ -43,7 +50,7 @@ class GrThisSuperCompletionProvider extends CompletionProvider<CompletionParamet
   }
 
   @Override
-  protected void addCompletions(@NotNull CompletionParameters parameters,
+  public void addCompletions(@NotNull CompletionParameters parameters,
                                 ProcessingContext context,
                                 @NotNull CompletionResultSet result) {
     final PsiElement position = parameters.getPosition();

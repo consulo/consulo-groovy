@@ -69,6 +69,7 @@ import com.intellij.psi.util.TypeConversionUtil;
 import com.intellij.util.Consumer;
 import com.intellij.util.ProcessingContext;
 import com.intellij.util.SmartList;
+import consulo.codeInsight.completion.CompletionProvider;
 
 /**
  * @author Maxim.Medvedev
@@ -101,10 +102,10 @@ public class GroovySmartCompletionContributor extends CompletionContributor
 
 	public GroovySmartCompletionContributor()
 	{
-		extend(CompletionType.SMART, INSIDE_EXPRESSION, new CompletionProvider<CompletionParameters>()
+		extend(CompletionType.SMART, INSIDE_EXPRESSION, new CompletionProvider()
 		{
 			@Override
-			protected void addCompletions(@NotNull final CompletionParameters params, ProcessingContext context, @NotNull final CompletionResultSet result)
+			public void addCompletions(@NotNull final CompletionParameters params, ProcessingContext context, @NotNull final CompletionResultSet result)
 			{
 				final PsiElement position = params.getPosition();
 				if(position.getParent() instanceof GrLiteral)
@@ -174,10 +175,10 @@ public class GroovySmartCompletionContributor extends CompletionContributor
 			}
 		});
 
-		extend(CompletionType.SMART, IN_CAST_PARENTHESES, new CompletionProvider<CompletionParameters>()
+		extend(CompletionType.SMART, IN_CAST_PARENTHESES, new CompletionProvider()
 		{
 			@Override
-			protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
+			public void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
 			{
 				final PsiElement position = parameters.getPosition();
 				final GrTypeCastExpression parenthesizedExpression = ((GrTypeCastExpression) position.getParent().getParent().getParent());
@@ -227,10 +228,10 @@ public class GroovySmartCompletionContributor extends CompletionContributor
 			}
 		});
 
-		extend(CompletionType.SMART, AFTER_NEW, new CompletionProvider<CompletionParameters>()
+		extend(CompletionType.SMART, AFTER_NEW, new CompletionProvider()
 		{
 			@Override
-			protected void addCompletions(@NotNull final CompletionParameters parameters, final ProcessingContext matchingContext, @NotNull final CompletionResultSet result)
+			public void addCompletions(@NotNull final CompletionParameters parameters, final ProcessingContext matchingContext, @NotNull final CompletionResultSet result)
 			{
 				generateInheritorVariants(parameters, result.getPrefixMatcher(), new Consumer<LookupElement>()
 				{
@@ -243,10 +244,10 @@ public class GroovySmartCompletionContributor extends CompletionContributor
 			}
 		});
 
-		extend(CompletionType.SMART, IN_ANNOTATION, new CompletionProvider<CompletionParameters>()
+		extend(CompletionType.SMART, IN_ANNOTATION, new CompletionProvider()
 		{
 			@Override
-			protected void addCompletions(@NotNull CompletionParameters params, ProcessingContext context, @NotNull final CompletionResultSet result)
+			public void addCompletions(@NotNull CompletionParameters params, ProcessingContext context, @NotNull final CompletionResultSet result)
 			{
 				final PsiElement position = params.getPosition();
 

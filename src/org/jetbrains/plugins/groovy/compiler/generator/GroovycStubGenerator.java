@@ -33,9 +33,6 @@ import org.jetbrains.plugins.groovy.compiler.GroovyCompilerConfiguration;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyNamesUtil;
 import org.jetbrains.plugins.groovy.refactoring.convertToJava.GroovyToJavaGenerator;
-import org.mustbe.consulo.roots.ContentFolderScopes;
-import org.mustbe.consulo.roots.impl.ProductionContentFolderTypeProvider;
-import org.mustbe.consulo.roots.impl.TestContentFolderTypeProvider;
 import com.intellij.compiler.impl.CompilerUtil;
 import com.intellij.compiler.impl.FileSetCompileScope;
 import com.intellij.compiler.impl.TranslatingCompilerFilesMonitorImpl;
@@ -76,6 +73,9 @@ import com.intellij.util.Chunk;
 import com.intellij.util.Processor;
 import com.intellij.util.containers.ContainerUtil;
 import com.intellij.util.containers.FactoryMap;
+import consulo.roots.ContentFolderScopes;
+import consulo.roots.impl.ProductionContentFolderTypeProvider;
+import consulo.roots.impl.TestContentFolderTypeProvider;
 
 /**
  * @author peter

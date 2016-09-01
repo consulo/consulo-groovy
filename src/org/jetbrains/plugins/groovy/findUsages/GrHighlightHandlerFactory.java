@@ -18,7 +18,7 @@ package org.jetbrains.plugins.groovy.findUsages;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrReferenceList;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
-import com.intellij.codeInsight.TargetElementUtil;
+import consulo.codeInsight.TargetElementUtil;
 import com.intellij.codeInsight.highlighting.HighlightUsagesHandlerBase;
 import com.intellij.codeInsight.highlighting.HighlightUsagesHandlerFactory;
 import com.intellij.lang.ASTNode;

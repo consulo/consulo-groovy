@@ -63,11 +63,13 @@ import com.intellij.util.Consumer;
 import com.intellij.util.PairConsumer;
 import com.intellij.util.ProcessingContext;
 import com.intellij.util.containers.ContainerUtil;
+import consulo.codeInsight.completion.CompletionProvider;
 
 /**
 * Created by Max Medvedev on 14/05/14
 */
-public class GrMainCompletionProvider extends CompletionProvider<CompletionParameters> {
+public class GrMainCompletionProvider implements CompletionProvider
+{
   public static final ElementPattern<PsiElement> AFTER_AT = PlatformPatterns.psiElement().afterLeaf("@");
   public static final ElementPattern<PsiElement> IN_CATCH_TYPE = PlatformPatterns
     .psiElement().afterLeaf(PlatformPatterns.psiElement().withText("(").withParent(GrCatchClause.class));
@@ -450,7 +452,7 @@ public class GrMainCompletionProvider extends CompletionProvider<CompletionParam
   }
 
   @Override
-  protected void addCompletions(@NotNull CompletionParameters parameters,
+  public void addCompletions(@NotNull CompletionParameters parameters,
                                 ProcessingContext context,
                                 @NotNull final CompletionResultSet result) {
     GroovyCompletionData.addGroovyDocKeywords(parameters, result);

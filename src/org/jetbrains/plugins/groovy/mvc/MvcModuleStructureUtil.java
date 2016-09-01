@@ -16,6 +16,22 @@
 
 package org.jetbrains.plugins.groovy.mvc;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.jetbrains.annotations.NonNls;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.mustbe.consulo.java.module.extension.JavaModuleExtension;
+import org.mustbe.consulo.java.module.extension.JavaModuleExtensionImpl;
+import org.mustbe.consulo.java.module.extension.JavaMutableModuleExtension;
 import com.intellij.lang.properties.psi.PropertiesFile;
 import com.intellij.openapi.application.AccessToken;
 import com.intellij.openapi.application.ApplicationManager;
@@ -31,7 +47,6 @@ import com.intellij.openapi.roots.impl.ModifiableModelCommitter;
 import com.intellij.openapi.roots.libraries.Library;
 import com.intellij.openapi.roots.libraries.LibraryTable;
 import com.intellij.openapi.roots.libraries.LibraryUtil;
-import com.intellij.openapi.roots.types.BinariesOrderRootType;
 import com.intellij.openapi.roots.ui.configuration.actions.ModuleDeleteProvider;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.Key;
@@ -47,19 +62,11 @@ import com.intellij.util.Consumer;
 import com.intellij.util.SmartList;
 import com.intellij.util.containers.ContainerUtil;
 import com.intellij.util.containers.MultiMap;
-import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.mustbe.consulo.java.module.extension.JavaModuleExtension;
-import org.mustbe.consulo.java.module.extension.JavaModuleExtensionImpl;
-import org.mustbe.consulo.java.module.extension.JavaMutableModuleExtension;
-import org.mustbe.consulo.roots.ContentFolderScopes;
-import org.mustbe.consulo.roots.impl.ExcludedContentFolderTypeProvider;
-import org.mustbe.consulo.roots.impl.ProductionContentFolderTypeProvider;
-import org.mustbe.consulo.roots.impl.TestContentFolderTypeProvider;
-
-import java.io.File;
-import java.util.*;
+import consulo.roots.ContentFolderScopes;
+import consulo.roots.impl.ExcludedContentFolderTypeProvider;
+import consulo.roots.impl.ProductionContentFolderTypeProvider;
+import consulo.roots.impl.TestContentFolderTypeProvider;
+import consulo.roots.types.BinariesOrderRootType;
 
 /**
  * @author peter

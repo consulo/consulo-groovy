@@ -21,12 +21,12 @@ import javax.swing.Icon;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.module.extension.GroovyModuleExtension;
-import org.mustbe.consulo.module.extension.ModuleExtensionHelper;
 import com.intellij.execution.configurations.ConfigurationFactory;
 import com.intellij.execution.configurations.ConfigurationType;
 import com.intellij.execution.configurations.ConfigurationTypeUtil;
 import com.intellij.execution.configurations.RunConfiguration;
 import com.intellij.openapi.project.Project;
+import consulo.module.extension.ModuleExtensionHelper;
 import icons.JetgroovyIcons;
 
 public class GroovyScriptRunConfigurationType implements ConfigurationType

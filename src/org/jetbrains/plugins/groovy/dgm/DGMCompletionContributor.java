@@ -15,7 +15,15 @@
  */
 package org.jetbrains.plugins.groovy.dgm;
 
-import com.intellij.codeInsight.completion.*;
+import java.util.Map;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.plugins.groovy.lang.completion.GroovyCompletionUtil;
+import com.intellij.codeInsight.completion.AllClassesGetter;
+import com.intellij.codeInsight.completion.CompletionContributor;
+import com.intellij.codeInsight.completion.CompletionParameters;
+import com.intellij.codeInsight.completion.CompletionResultSet;
+import com.intellij.codeInsight.completion.CompletionType;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.lang.properties.parsing.PropertiesTokenTypes;
 import com.intellij.lang.properties.psi.PropertiesFile;
@@ -24,10 +32,7 @@ import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.Consumer;
 import com.intellij.util.ProcessingContext;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.plugins.groovy.lang.completion.GroovyCompletionUtil;
-
-import java.util.Map;
+import consulo.codeInsight.completion.CompletionProvider;
 
 /**
  * @author Max Medvedev
@@ -35,9 +40,9 @@ import java.util.Map;
 public class DGMCompletionContributor extends CompletionContributor {
   public DGMCompletionContributor() {
     extend(CompletionType.BASIC, PlatformPatterns.psiElement(PropertiesTokenTypes.KEY_CHARACTERS),
-           new CompletionProvider<CompletionParameters>() {
+           new CompletionProvider() {
              @Override
-             protected void addCompletions(@NotNull CompletionParameters parameters,
+             public void addCompletions(@NotNull CompletionParameters parameters,
                                            ProcessingContext context,
                                            @NotNull CompletionResultSet result) {
                PsiElement position = parameters.getPosition();
@@ -53,9 +58,9 @@ public class DGMCompletionContributor extends CompletionContributor {
            });
 
     extend(CompletionType.BASIC, PlatformPatterns.psiElement(PropertiesTokenTypes.VALUE_CHARACTERS),
-           new CompletionProvider<CompletionParameters>() {
+           new CompletionProvider() {
              @Override
-             protected void addCompletions(@NotNull CompletionParameters parameters,
+			 public void addCompletions(@NotNull CompletionParameters parameters,
                                            ProcessingContext context,
                                            @NotNull final CompletionResultSet result) {
                PsiElement position = parameters.getPosition();

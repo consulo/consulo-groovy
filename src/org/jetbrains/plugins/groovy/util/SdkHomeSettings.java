@@ -16,20 +16,20 @@
 
 package org.jetbrains.plugins.groovy.util;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import org.jetbrains.annotations.Nullable;
 import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.openapi.vfs.util.ArchiveVfsUtil;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.impl.PsiModificationTrackerImpl;
 import com.intellij.util.containers.ContainerUtil;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import consulo.vfs.util.ArchiveVfsUtil;
 
 /**
  * @author peter

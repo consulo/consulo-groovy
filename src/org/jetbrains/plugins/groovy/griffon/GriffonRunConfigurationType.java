@@ -21,7 +21,6 @@ import javax.swing.Icon;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.griffon.module.extension.GriffonModuleExtension;
-import org.mustbe.consulo.module.extension.ModuleExtensionHelper;
 import com.intellij.compiler.options.CompileStepBeforeRun;
 import com.intellij.compiler.options.CompileStepBeforeRunNoErrorCheck;
 import com.intellij.execution.BeforeRunTask;
@@ -31,6 +30,7 @@ import com.intellij.execution.configurations.ConfigurationTypeUtil;
 import com.intellij.execution.configurations.RunConfiguration;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Key;
+import consulo.module.extension.ModuleExtensionHelper;
 import icons.JetgroovyIcons;
 
 public class GriffonRunConfigurationType implements ConfigurationType

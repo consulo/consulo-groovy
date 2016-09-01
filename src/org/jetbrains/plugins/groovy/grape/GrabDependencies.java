@@ -69,7 +69,6 @@ import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.openapi.vfs.util.ArchiveVfsUtil;
 import com.intellij.psi.JavaPsiFacade;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
@@ -81,6 +80,7 @@ import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.PathUtil;
 import com.intellij.util.PathsList;
 import com.intellij.util.containers.ContainerUtil;
+import consulo.vfs.util.ArchiveVfsUtil;
 
 /**
  * @author peter
@@ -150,7 +150,7 @@ public class GrabDependencies implements IntentionAction {
       //javaParameters.getVMParametersList().add("-Xdebug"); javaParameters.getVMParametersList().add("-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5239");
 
       DefaultGroovyScriptRunner
-        .configureGenericGroovyRunner(javaParameters, module, "org.jetbrains.plugins.groovy.grape.GrapeRunner", false);
+        .configureGenericGroovyRunner(javaParameters, module, "org.jetbrains.plugins.groovy.grape.GrapeRunner", false, false);
       PathsList list;
       try {
         list = GroovyScriptRunner.getClassPathFromRootModel(module, ProjectRootManager.getInstance(project).getFileIndex().isInTestSourceContent(vfile), javaParameters, true);

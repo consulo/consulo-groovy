@@ -19,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
-import org.mustbe.consulo.RequiredReadAction;
+import consulo.annotations.RequiredReadAction;
 import com.intellij.codeInsight.navigation.actions.TypeDeclarationProvider;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.psi.PsiClass;

@@ -16,7 +16,7 @@
 
 package org.jetbrains.plugins.groovy.lang.completion;
 
-import org.consulo.psi.PsiPackage;
+import consulo.psi.PsiPackage;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.plugins.groovy.codeStyle.GroovyCodeStyleSettings;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;

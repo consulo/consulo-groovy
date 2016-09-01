@@ -28,12 +28,12 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrGd
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
 import org.jetbrains.plugins.groovy.lang.psi.impl.PsiImplUtil;
 import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GrRenameableLightElement;
-import com.intellij.codeInsight.TargetElementUtilEx;
 import com.intellij.openapi.util.Key;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiMethod;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.impl.compiled.ClsMethodImpl;
+import consulo.codeInsight.TargetElementUtilEx;
 
 /**
  * @author Maxim.Medvedev
