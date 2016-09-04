@@ -4,7 +4,7 @@
     <modules>
       <module name="consulo-groovy" dirurl="file://$PROJECT_DIR$" current-layer="Default">
         <module-layer name="Default">
-          <extension id="consulo-plugin" sdk-module-name="" sdk-name="Consulo SNAPSHOT" custom-plugin-dir-url="file://$MODULE_DIR$/dep" />
+          <extension id="consulo-plugin" sdk-module-name="" sdk-name="Consulo SNAPSHOT" />
           <extension id="groovy" />
           <extension id="java" sdk-module-name="" sdk-name="1.8" language-level-module-name="" language-level-name="JDK_1_8" special-dir-location="SOURCE_DIR" />
           <extension id="lombok" />
@@ -16,27 +16,6 @@
           <orderEntry type="module-extension-sdk" extension-id="consulo-plugin" />
           <orderEntry type="sourceFolder" />
           <orderEntry type="module-library">
-            <library name="consulo:Properties Support">
-              <binaries>
-                <root url="jar://$MODULE_DIR$/dep/properties/lib/properties.jar!/" />
-              </binaries>
-            </library>
-          </orderEntry>
-          <orderEntry type="module-library">
-            <library name="consulo:Spellchecker">
-              <binaries>
-                <root url="jar://$MODULE_DIR$/dep/spellchecker/lib/spellchecker.jar!/" />
-              </binaries>
-            </library>
-          </orderEntry>
-          <orderEntry type="module-library">
-            <library name="consulo:IntelliLang">
-              <binaries>
-                <root url="jar://$MODULE_DIR$/dep/intelliLang/lib/intelliLang.jar!/" />
-              </binaries>
-            </library>
-          </orderEntry>
-          <orderEntry type="module-library">
             <library>
               <binaries>
                 <root url="jar://$MODULE_DIR$/lib/groovy-all-2.0.6.jar!/" />
@@ -44,33 +23,14 @@
             </library>
           </orderEntry>
           <orderEntry type="module" module-name="groovy-rt" />
-          <orderEntry type="module-library">
-            <library name="consulo:Java">
-              <binaries>
-                <root url="jar://$MODULE_DIR$/dep/java/lib/java-manifest.jar!/" />
-                <root url="jar://$MODULE_DIR$/dep/java/lib/java-rt.jar!/" />
-                <root url="jar://$MODULE_DIR$/dep/java/lib/java.jar!/" />
-                <root url="jar://$MODULE_DIR$/dep/java/lib/jdi.jar!/" />
-                <root url="jar://$MODULE_DIR$/dep/java/lib/jdk-annotations.jar!/" />
-              </binaries>
-            </library>
-          </orderEntry>
-          <orderEntry type="module-library">
-            <library name="consulo:XML">
-              <binaries>
-                <root url="jar://$MODULE_DIR$/dep/xml/lib/jaxen-1.1.3.jar!/" />
-                <root url="jar://$MODULE_DIR$/dep/xml/lib/jsr173_1.0_api.jar!/" />
-                <root url="jar://$MODULE_DIR$/dep/xml/lib/resolver.jar!/" />
-                <root url="jar://$MODULE_DIR$/dep/xml/lib/xerces.jar!/" />
-                <root url="jar://$MODULE_DIR$/dep/xml/lib/xml.jar!/" />
-              </binaries>
-            </library>
-          </orderEntry>
+          <orderEntry type="library" exploded="" name="consulo-plugin: consulo.java" level="project" />
+          <orderEntry type="library" exploded="" name="consulo-plugin: com.intellij.properties" level="project" />
+          <orderEntry type="library" exploded="" name="consulo-plugin: com.intellij.xml" level="project" />
         </module-layer>
       </module>
       <module name="groovy-maven" dirurl="file://$PROJECT_DIR$/groovy-maven" current-layer="Default">
         <module-layer name="Default">
-          <extension id="consulo-plugin" sdk-module-name="consulo-groovy" sdk-name="" custom-plugin-dir-url="file://$MODULE_DIR$/../dep" />
+          <extension id="consulo-plugin" sdk-module-name="consulo-groovy" sdk-name="" />
           <extension id="java" sdk-module-name="consulo-groovy" sdk-name="" language-level-module-name="consulo-groovy" language-level-name="" special-dir-location="SOURCE_DIR" />
           <content url="file://$MODULE_DIR$">
             <content-folder type="PRODUCTION_RESOURCE" url="file://$MODULE_DIR$/resources" />
@@ -79,42 +39,8 @@
           <orderEntry type="module-extension-sdk" extension-id="java" />
           <orderEntry type="module-extension-sdk" extension-id="consulo-plugin" />
           <orderEntry type="sourceFolder" />
-          <orderEntry type="module-library">
-            <library name="consulo:Maven Integration">
-              <binaries>
-                <root url="jar://$MODULE_DIR$/../dep/maven/lib/lucene-core-2.4.1.jar!/" />
-                <root url="jar://$MODULE_DIR$/../dep/maven/lib/maven-server-api.jar!/" />
-                <root url="jar://$MODULE_DIR$/../dep/maven/lib/maven.jar!/" />
-                <root url="jar://$MODULE_DIR$/../dep/maven/lib/maven2-server-impl.jar!/" />
-                <root url="jar://$MODULE_DIR$/../dep/maven/lib/maven3-server-impl.jar!/" />
-                <root url="jar://$MODULE_DIR$/../dep/maven/lib/plexus-utils-2.0.6.jar!/" />
-                <root url="jar://$MODULE_DIR$/../dep/maven/lib/wadl-core.jar!/" />
-              </binaries>
-            </library>
-          </orderEntry>
           <orderEntry type="module" module-name="consulo-groovy" />
-          <orderEntry type="module-library">
-            <library name="consulo:Java">
-              <binaries>
-                <root url="jar://$MODULE_DIR$/../dep/java/lib/java-manifest.jar!/" />
-                <root url="jar://$MODULE_DIR$/../dep/java/lib/java-rt.jar!/" />
-                <root url="jar://$MODULE_DIR$/../dep/java/lib/java.jar!/" />
-                <root url="jar://$MODULE_DIR$/../dep/java/lib/jdi.jar!/" />
-                <root url="jar://$MODULE_DIR$/../dep/java/lib/jdk-annotations.jar!/" />
-              </binaries>
-            </library>
-          </orderEntry>
-          <orderEntry type="module-library">
-            <library name="consulo:XML">
-              <binaries>
-                <root url="jar://$MODULE_DIR$/../dep/xml/lib/jaxen-1.1.3.jar!/" />
-                <root url="jar://$MODULE_DIR$/../dep/xml/lib/jsr173_1.0_api.jar!/" />
-                <root url="jar://$MODULE_DIR$/../dep/xml/lib/resolver.jar!/" />
-                <root url="jar://$MODULE_DIR$/../dep/xml/lib/xerces.jar!/" />
-                <root url="jar://$MODULE_DIR$/../dep/xml/lib/xml.jar!/" />
-              </binaries>
-            </library>
-          </orderEntry>
+          <orderEntry type="library" name="consulo-plugin: org.jetbrains.idea.maven" level="project" />
         </module-layer>
       </module>
       <module name="groovy-rt" dirurl="file://$PROJECT_DIR$/groovy-rt" current-layer="Default">
@@ -136,7 +62,7 @@
       </module>
       <module name="groovy-spellchecker" dirurl="file://$PROJECT_DIR$/groovy-spellchecker" current-layer="Default">
         <module-layer name="Default">
-          <extension id="consulo-plugin" sdk-module-name="consulo-groovy" sdk-name="" custom-plugin-dir-url="file://$MODULE_DIR$/../dep" />
+          <extension id="consulo-plugin" sdk-module-name="consulo-groovy" sdk-name="" />
           <extension id="java" sdk-module-name="consulo-groovy" sdk-name="" language-level-module-name="consulo-groovy" language-level-name="" special-dir-location="SOURCE_DIR" />
           <content url="file://$MODULE_DIR$">
             <content-folder type="PRODUCTION_RESOURCE" url="file://$MODULE_DIR$/resources" />
@@ -146,29 +72,12 @@
           <orderEntry type="module-extension-sdk" extension-id="java" />
           <orderEntry type="sourceFolder" />
           <orderEntry type="module" module-name="consulo-groovy" />
-          <orderEntry type="module-library">
-            <library name="consulo:Spellchecker">
-              <binaries>
-                <root url="jar://$MODULE_DIR$/../dep/spellchecker/lib/spellchecker.jar!/" />
-              </binaries>
-            </library>
-          </orderEntry>
-          <orderEntry type="module-library">
-            <library name="consulo:Java">
-              <binaries>
-                <root url="jar://$MODULE_DIR$/../dep/java/lib/java-manifest.jar!/" />
-                <root url="jar://$MODULE_DIR$/../dep/java/lib/java-rt.jar!/" />
-                <root url="jar://$MODULE_DIR$/../dep/java/lib/java.jar!/" />
-                <root url="jar://$MODULE_DIR$/../dep/java/lib/jdi.jar!/" />
-                <root url="jar://$MODULE_DIR$/../dep/java/lib/jdk-annotations.jar!/" />
-              </binaries>
-            </library>
-          </orderEntry>
+          <orderEntry type="library" name="consulo-plugin: com.intellij.spellchecker" level="project" />
         </module-layer>
       </module>
       <module name="groovy-intelliLang" dirurl="file://$PROJECT_DIR$/groovy-intelliLang" current-layer="Default">
         <module-layer name="Default">
-          <extension id="consulo-plugin" sdk-module-name="consulo-groovy" sdk-name="" custom-plugin-dir-url="file://$MODULE_DIR$/../dep" />
+          <extension id="consulo-plugin" sdk-module-name="consulo-groovy" sdk-name="" />
           <extension id="java" sdk-module-name="consulo-groovy" sdk-name="" language-level-module-name="consulo-groovy" language-level-name="" special-dir-location="SOURCE_DIR" />
           <content url="file://$MODULE_DIR$">
             <content-folder type="PRODUCTION_RESOURCE" url="file://$MODULE_DIR$/resources" />
@@ -177,36 +86,8 @@
           <orderEntry type="module-extension-sdk" extension-id="consulo-plugin" />
           <orderEntry type="module-extension-sdk" extension-id="java" />
           <orderEntry type="sourceFolder" />
-          <orderEntry type="module-library">
-            <library name="consulo:IntelliLang">
-              <binaries>
-                <root url="jar://$MODULE_DIR$/../dep/intelliLang/lib/intelliLang.jar!/" />
-              </binaries>
-            </library>
-          </orderEntry>
-          <orderEntry type="module-library">
-            <library name="consulo:Java">
-              <binaries>
-                <root url="jar://$MODULE_DIR$/../dep/java/lib/java-manifest.jar!/" />
-                <root url="jar://$MODULE_DIR$/../dep/java/lib/java-rt.jar!/" />
-                <root url="jar://$MODULE_DIR$/../dep/java/lib/java.jar!/" />
-                <root url="jar://$MODULE_DIR$/../dep/java/lib/jdi.jar!/" />
-                <root url="jar://$MODULE_DIR$/../dep/java/lib/jdk-annotations.jar!/" />
-              </binaries>
-            </library>
-          </orderEntry>
           <orderEntry type="module" module-name="consulo-groovy" />
-          <orderEntry type="module-library">
-            <library name="consulo:XML">
-              <binaries>
-                <root url="jar://$MODULE_DIR$/../dep/xml/lib/jaxen-1.1.3.jar!/" />
-                <root url="jar://$MODULE_DIR$/../dep/xml/lib/jsr173_1.0_api.jar!/" />
-                <root url="jar://$MODULE_DIR$/../dep/xml/lib/resolver.jar!/" />
-                <root url="jar://$MODULE_DIR$/../dep/xml/lib/xerces.jar!/" />
-                <root url="jar://$MODULE_DIR$/../dep/xml/lib/xml.jar!/" />
-              </binaries>
-            </library>
-          </orderEntry>
+          <orderEntry type="library" name="consulo-plugin: org.intellij.intelliLang" level="project" />
         </module-layer>
       </module>
     </modules>

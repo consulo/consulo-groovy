@@ -42,8 +42,6 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.statements.GrVariableDeclarati
 import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GrTraitMethod;
 import org.jetbrains.plugins.groovy.lang.psi.util.GrTraitUtil;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyPropertyUtils;
-import consulo.annotations.RequiredReadAction;
-import org.mustbe.consulo.java.util.JavaClassNames;
 import com.intellij.codeHighlighting.Pass;
 import com.intellij.codeInsight.daemon.DaemonCodeAnalyzerSettings;
 import com.intellij.codeInsight.daemon.LineMarkerInfo;
@@ -70,6 +68,8 @@ import com.intellij.psi.util.MethodSignatureBackedByPsiMethod;
 import com.intellij.util.FunctionUtil;
 import com.intellij.util.Processor;
 import com.intellij.util.containers.HashSet;
+import consulo.annotations.RequiredReadAction;
+import consulo.java.module.util.JavaClassNames;
 
 /**
  * @author ilyas

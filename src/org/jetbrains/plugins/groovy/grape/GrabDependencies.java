@@ -34,7 +34,6 @@ import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.
 import org.jetbrains.plugins.groovy.runner.DefaultGroovyScriptRunner;
 import org.jetbrains.plugins.groovy.runner.GroovyScriptRunConfiguration;
 import org.jetbrains.plugins.groovy.runner.GroovyScriptRunner;
-import org.mustbe.consulo.java.module.extension.JavaModuleExtension;
 import com.intellij.codeInsight.intention.IntentionAction;
 import com.intellij.execution.CantRunException;
 import com.intellij.execution.ExecutionException;
@@ -80,6 +79,7 @@ import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.PathUtil;
 import com.intellij.util.PathsList;
 import com.intellij.util.containers.ContainerUtil;
+import consulo.java.module.extension.JavaModuleExtension;
 import consulo.vfs.util.ArchiveVfsUtil;
 
 /**

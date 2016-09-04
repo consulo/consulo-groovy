@@ -34,7 +34,6 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMe
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
 import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GroovyScriptClass;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
-import com.intellij.codeInspection.JavaExtensionPoints;
 import com.intellij.codeInspection.LocalQuickFix;
 import com.intellij.codeInspection.ProblemDescriptor;
 import com.intellij.codeInspection.ProblemHighlightType;
@@ -50,6 +49,7 @@ import com.intellij.psi.PsiModifierList;
 import com.intellij.psi.search.searches.OverridingMethodsSearch;
 import com.intellij.psi.search.searches.SuperMethodsSearch;
 import com.intellij.util.Function;
+import consulo.java.codeInspection.JavaExtensionPoints;
 
 @SuppressWarnings("JavaStylePropertiesInvocation")
 public class GrMethodMayBeStaticInspection extends BaseInspection

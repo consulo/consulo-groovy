@@ -1,5 +1,15 @@
 package org.jetbrains.plugins.groovy.debugger;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.jar.Attributes;
+import java.util.regex.Pattern;
+
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.plugins.groovy.GroovyFileTypeLoader;
+import org.jetbrains.plugins.groovy.module.extension.GroovyModuleExtension;
 import com.intellij.execution.Executor;
 import com.intellij.execution.configurations.JavaParameters;
 import com.intellij.execution.configurations.ModuleRunProfile;
@@ -20,17 +30,7 @@ import com.intellij.pom.java.LanguageLevel;
 import com.intellij.psi.search.FilenameIndex;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.util.PathUtil;
-import org.jetbrains.annotations.Nullable;
-import org.jetbrains.plugins.groovy.GroovyFileTypeLoader;
-import org.jetbrains.plugins.groovy.module.extension.GroovyModuleExtension;
-import org.mustbe.consulo.java.module.extension.JavaModuleExtension;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.jar.Attributes;
-import java.util.regex.Pattern;
+import consulo.java.module.extension.JavaModuleExtension;
 
 
 /**

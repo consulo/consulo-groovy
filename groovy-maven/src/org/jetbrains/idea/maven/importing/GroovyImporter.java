@@ -11,8 +11,10 @@ import org.jetbrains.idea.maven.project.MavenProjectsTree;
 import org.jetbrains.idea.maven.utils.MavenJDOMUtil;
 import org.jetbrains.plugins.groovy.module.extension.GroovyModuleExtension;
 import com.intellij.openapi.module.Module;
+import consulo.maven.importing.MavenImporterFromBuildPlugin;
 
-public abstract class GroovyImporter extends MavenImporterFromBuildPlugin {
+public abstract class GroovyImporter extends MavenImporterFromBuildPlugin
+{
   public GroovyImporter(String pluginGroupID, String pluginArtifactID) {
     super(pluginGroupID, pluginArtifactID);
   }

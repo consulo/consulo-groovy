@@ -41,7 +41,6 @@ import org.jetbrains.plugins.groovy.extensions.GroovyScriptTypeDetector;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.module.extension.GroovyModuleExtension;
 import org.jetbrains.plugins.groovy.runner.GroovycOSProcessHandler;
-import org.mustbe.consulo.java.module.extension.JavaModuleExtension;
 import com.intellij.compiler.cache.JavaDependencyCache;
 import com.intellij.compiler.impl.CompilerUtil;
 import com.intellij.compiler.impl.FileSetCompileScope;
@@ -94,6 +93,7 @@ import com.intellij.util.net.HttpConfigurable;
 import consulo.compiler.impl.TranslatingCompilerFilesMonitor;
 import consulo.compiler.impl.resourceCompiler.ResourceCompilerConfiguration;
 import consulo.compiler.roots.CompilerPathsImpl;
+import consulo.java.module.extension.JavaModuleExtension;
 
 /**
  * @author peter

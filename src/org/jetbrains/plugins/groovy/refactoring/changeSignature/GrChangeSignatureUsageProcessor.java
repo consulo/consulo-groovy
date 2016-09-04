@@ -77,7 +77,15 @@ import com.intellij.psi.util.MethodSignatureUtil;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.psi.util.PsiTypesUtil;
 import com.intellij.psi.util.TypeConversionUtil;
-import com.intellij.refactoring.changeSignature.*;
+import com.intellij.refactoring.changeSignature.ChangeInfo;
+import com.intellij.refactoring.changeSignature.ChangeSignatureParameterUsageInfo;
+import com.intellij.refactoring.changeSignature.DefaultValueChooser;
+import com.intellij.refactoring.changeSignature.JavaChangeInfo;
+import com.intellij.refactoring.changeSignature.JavaParameterInfo;
+import com.intellij.refactoring.changeSignature.OverriderUsageInfo;
+import com.intellij.refactoring.changeSignature.ParameterInfo;
+import com.intellij.refactoring.changeSignature.ParameterInfoImpl;
+import com.intellij.refactoring.changeSignature.ThrownExceptionInfo;
 import com.intellij.refactoring.rename.ResolveSnapshotProvider;
 import com.intellij.refactoring.util.CanonicalTypes;
 import com.intellij.refactoring.util.RefactoringUtil;
@@ -90,6 +98,7 @@ import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.containers.ContainerUtil;
 import com.intellij.util.containers.HashSet;
 import com.intellij.util.containers.MultiMap;
+import consulo.java.refactoring.changeSignature.ChangeSignatureUsageProcessorEx;
 
 /**
  * @author Maxim.Medvedev

@@ -23,10 +23,10 @@
 	<vendor>JetBrains</vendor>
 	<depends optional="true" config-file="com.intellij.spellchecker.xml">com.intellij.spellchecker</depends>
 	<depends optional="true" config-file="org.intellij.intelliLang.xml">org.intellij.intelliLang</depends>
-	<depends optional="true" config-file="groovy-support.xml">org.jetbrains.idea.maven</depends>
+	<depends optional="true" config-file="org.jetbrains.idea.maven.xml">org.jetbrains.idea.maven</depends>
 
 	<depends>com.intellij.properties</depends>
-	<depends>org.consulo.java</depends>
+	<depends>consulo.java</depends>
 
 	<!--<depends optional="true">AntSupport</depends>   -->
 
@@ -190,7 +190,7 @@
 		<customAnnotationChecker implementation="org.jetbrains.plugins.groovy.annotator.checkers.TypeCheckedAnnotationChecker"/>
 	</extensions>
 
-	<extensions defaultExtensionNs="org.consulo.java">
+	<extensions defaultExtensionNs="consulo.java">
 		<cantBeStatic implementation="org.jetbrains.plugins.groovy.codeInspection.declaration.GrCategoryMethodsCantBeStaticExtension"/>
 		<attachSourcesProvider implementation="org.jetbrains.plugins.groovy.ivy.IvyAttachSourceProvider"/>
 		<codeStyle.referenceAdjuster language="Groovy" implementationClass="org.jetbrains.plugins.groovy.codeStyle.GrReferenceAdjuster"/>

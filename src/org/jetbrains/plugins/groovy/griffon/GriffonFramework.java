@@ -38,7 +38,6 @@ import org.jetbrains.plugins.groovy.mvc.MvcFramework;
 import org.jetbrains.plugins.groovy.mvc.MvcModuleStructureUtil;
 import org.jetbrains.plugins.groovy.mvc.MvcPathMacros;
 import org.jetbrains.plugins.groovy.mvc.MvcProjectStructure;
-import org.mustbe.consulo.java.module.extension.JavaModuleExtension;
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.configurations.GeneralCommandLine;
 import com.intellij.execution.configurations.JavaParameters;
@@ -65,6 +64,7 @@ import com.intellij.openapi.vfs.VfsUtilCore;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
+import consulo.java.module.extension.JavaModuleExtension;
 import consulo.vfs.util.ArchiveVfsUtil;
 import icons.JetgroovyIcons;
 

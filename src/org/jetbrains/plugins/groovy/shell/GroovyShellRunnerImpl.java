@@ -20,7 +20,6 @@ import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.console.BuildAndRestartConsoleAction;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyFileImpl;
-import org.mustbe.consulo.java.module.extension.JavaModuleExtension;
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.Executor;
 import com.intellij.execution.configurations.GeneralCommandLine;
@@ -43,6 +42,7 @@ import com.intellij.openapi.projectRoots.SdkTypeId;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.util.Key;
 import com.intellij.util.Consumer;
+import consulo.java.module.extension.JavaModuleExtension;
 
 public class GroovyShellRunnerImpl extends AbstractConsoleRunnerWithHistory<LanguageConsoleView>
 {

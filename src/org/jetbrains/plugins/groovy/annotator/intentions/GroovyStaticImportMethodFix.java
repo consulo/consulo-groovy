@@ -28,7 +28,6 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpres
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrMethodCall;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
-import org.mustbe.consulo.java.JavaQuickFixBundle;
 import com.intellij.codeInsight.FileModificationService;
 import com.intellij.codeInsight.completion.JavaCompletionUtil;
 import com.intellij.codeInsight.intention.IntentionAction;
@@ -54,6 +53,7 @@ import com.intellij.psi.util.PsiFormatUtil;
 import com.intellij.psi.util.proximity.PsiProximityComparator;
 import com.intellij.ui.components.JBList;
 import com.intellij.util.IncorrectOperationException;
+import consulo.java.JavaQuickFixBundle;
 
 /**
  * @author Maxim.Medvedev
