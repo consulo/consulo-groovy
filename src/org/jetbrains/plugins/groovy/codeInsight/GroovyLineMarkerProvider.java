@@ -319,7 +319,7 @@ public class GroovyLineMarkerProvider implements LineMarkerProvider
 			}
 
 			final MarkerType type = element instanceof GrField ? GroovyMarkerTypes.OVERRIDEN_PROPERTY_TYPE : GroovyMarkerTypes.GR_OVERRIDEN_METHOD;
-			LineMarkerInfo info = new LineMarkerInfo<PsiElement>(range, range.getTextRange(), icon, Pass.UPDATE_OVERRIDEN_MARKERS, type.getTooltip(), type.getNavigationHandler(),
+			LineMarkerInfo info = new LineMarkerInfo<PsiElement>(range, range.getTextRange(), icon, Pass.LINE_MARKERS, type.getTooltip(), type.getNavigationHandler(),
 					GutterIconRenderer.Alignment.RIGHT);
 			result.add(info);
 		}

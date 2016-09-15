@@ -15,14 +15,11 @@
  */
 package org.jetbrains.plugins.groovy.dsl.holders;
 
-import com.intellij.openapi.util.Key;
-import com.intellij.psi.*;
-import com.intellij.psi.scope.PsiScopeProcessor;
-import com.intellij.psi.util.CachedValueProvider;
-import com.intellij.psi.util.CachedValuesManager;
-import com.intellij.psi.util.PsiModificationTracker;
-import com.intellij.util.containers.ConcurrentSoftHashMap;
-import com.intellij.util.containers.ContainerUtil;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.dsl.CustomMembersGenerator;
 import org.jetbrains.plugins.groovy.dsl.GroovyClassDescriptor;
@@ -30,11 +27,13 @@ import org.jetbrains.plugins.groovy.extensions.NamedArgumentDescriptor;
 import org.jetbrains.plugins.groovy.lang.completion.closureParameters.ClosureDescriptor;
 import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GrLightMethodBuilder;
 import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GrLightVariable;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import com.intellij.openapi.util.Key;
+import com.intellij.psi.*;
+import com.intellij.psi.scope.PsiScopeProcessor;
+import com.intellij.psi.util.CachedValueProvider;
+import com.intellij.psi.util.CachedValuesManager;
+import com.intellij.psi.util.PsiModificationTracker;
+import com.intellij.util.containers.ContainerUtil;
 
 /**
  * @author peter
@@ -48,7 +47,7 @@ public class NonCodeMembersHolder implements CustomMembersHolder {
     Map<List<Map>, NonCodeMembersHolder> map = CachedValuesManager.getManager(place.getProject()).getCachedValue(
       place, new CachedValueProvider<Map<List<Map>, NonCodeMembersHolder>>() {
       public Result<Map<List<Map>, NonCodeMembersHolder>> compute() {
-        final Map<List<Map>, NonCodeMembersHolder> map = new ConcurrentSoftHashMap<List<Map>, NonCodeMembersHolder>();
+        final Map<List<Map>, NonCodeMembersHolder> map = ContainerUtil.createConcurrentSoftMap();
         return Result.create(map, PsiModificationTracker.MODIFICATION_COUNT);
       }
     });
