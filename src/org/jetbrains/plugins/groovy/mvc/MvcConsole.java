@@ -16,10 +16,26 @@
 
 package org.jetbrains.plugins.groovy.mvc;
 
+import java.awt.BorderLayout;
+import java.io.OutputStreamWriter;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
+
+import javax.swing.JComponent;
+import javax.swing.JPanel;
+
+import org.jetbrains.annotations.NonNls;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.execution.configurations.GeneralCommandLine;
 import com.intellij.execution.filters.TextConsoleBuilderFactory;
 import com.intellij.execution.impl.ConsoleViewImpl;
-import com.intellij.execution.process.*;
+import com.intellij.execution.process.OSProcessHandler;
+import com.intellij.execution.process.ProcessAdapter;
+import com.intellij.execution.process.ProcessEvent;
+import com.intellij.execution.process.ProcessListener;
+import com.intellij.execution.process.ProcessOutputTypes;
 import com.intellij.execution.ui.ConsoleViewContentType;
 import com.intellij.execution.ui.RunnerLayoutUi;
 import com.intellij.execution.ui.layout.PlaceInGrid;
@@ -50,16 +66,6 @@ import com.intellij.ui.content.ContentFactory;
 import com.intellij.ui.content.ContentManager;
 import com.intellij.util.containers.ContainerUtil;
 import icons.JetgroovyIcons;
-import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import javax.swing.*;
-import java.awt.*;
-import java.io.OutputStreamWriter;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
 
 public class MvcConsole implements Disposable {
 
@@ -256,7 +262,7 @@ public class MvcConsole implements Disposable {
     final OSProcessHandler handler;
     try {
       Process process = commandLine.createProcess();
-      handler = new OSProcessHandler(process);
+      handler = new OSProcessHandler(process, commandLine.toString());
 
       @SuppressWarnings("IOResourceOpenedButNotSafelyClosed")
       OutputStreamWriter writer = new OutputStreamWriter(process.getOutputStream());
