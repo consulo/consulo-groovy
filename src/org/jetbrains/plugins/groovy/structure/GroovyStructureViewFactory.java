@@ -15,11 +15,6 @@
  */
 package org.jetbrains.plugins.groovy.structure;
 
-/**
- * User: Dmitry.Krasilschikov
- * Date: 19.06.2008
- */
-
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -36,20 +31,29 @@ import com.intellij.lang.PsiStructureViewFactory;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.psi.PsiFile;
 
-public class GroovyStructureViewFactory implements PsiStructureViewFactory {
-  public StructureViewBuilder getStructureViewBuilder(final PsiFile psiFile) {
-    return new TreeBasedStructureViewBuilder() {
-
-      @NotNull
-      public StructureViewModel createStructureViewModel(@Nullable Editor editor) {
-        return new JavaFileTreeModel((GroovyFileBase)psiFile) {
-          @NotNull
-          @Override
-          public Collection<NodeProvider> getNodeProviders() {
-            return Arrays.<NodeProvider>asList(new JavaInheritedMembersNodeProvider());
-          }
-        };
-      }
-    };
-  }
+/**
+ * User: Dmitry.Krasilschikov
+ * Date: 19.06.2008
+ */
+public class GroovyStructureViewFactory implements PsiStructureViewFactory
+{
+	public StructureViewBuilder getStructureViewBuilder(final PsiFile psiFile)
+	{
+		return new TreeBasedStructureViewBuilder()
+		{
+			@NotNull
+			public StructureViewModel createStructureViewModel(@Nullable Editor editor)
+			{
+				return new JavaFileTreeModel((GroovyFileBase) psiFile, editor)
+				{
+					@NotNull
+					@Override
+					public Collection<NodeProvider> getNodeProviders()
+					{
+						return Arrays.<NodeProvider>asList(new JavaInheritedMembersNodeProvider());
+					}
+				};
+			}
+		};
+	}
 }
