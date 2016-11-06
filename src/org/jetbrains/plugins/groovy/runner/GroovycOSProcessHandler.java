@@ -16,7 +16,26 @@
 
 package org.jetbrains.plugins.groovy.runner;
 
-import com.intellij.execution.process.BaseOSProcessHandler;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.groovy.compiler.rt.CompilerMessage;
+import org.jetbrains.groovy.compiler.rt.GroovyCompilerMessageCategories;
+import org.jetbrains.groovy.compiler.rt.GroovyRtConstants;
+import com.intellij.execution.ExecutionException;
+import com.intellij.execution.configurations.GeneralCommandLine;
+import com.intellij.execution.process.OSProcessHandler;
 import com.intellij.execution.process.ProcessOutputTypes;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.util.Key;
@@ -25,281 +44,327 @@ import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.util.Consumer;
 import com.intellij.util.Function;
 import com.intellij.util.containers.ContainerUtil;
-import org.jetbrains.annotations.Nullable;
-import org.jetbrains.groovy.compiler.rt.CompilerMessage;
-import org.jetbrains.groovy.compiler.rt.GroovyCompilerMessageCategories;
-import org.jetbrains.groovy.compiler.rt.GroovyRtConstants;
-
-import java.io.*;
-import java.util.*;
 
 /**
- * @author: Dmitry.Krasilschikov
- * @date: 16.04.2007
+ * @author Dmitry.Krasilschikov
+ * @since 16.04.2007
  */
-public class GroovycOSProcessHandler extends BaseOSProcessHandler {
-  public static final String GROOVY_COMPILER_IN_OPERATION = "Groovy compiler in operation...";
-  public static final String GRAPE_ROOT = "grape.root";
-  private final List<OutputItem> myCompiledItems = new ArrayList<OutputItem>();
-  private final Set<File> toRecompileFiles = new HashSet<File>();
-  private final List<CompilerMessage> compilerMessages = new ArrayList<CompilerMessage>();
-  private final StringBuffer stdErr = new StringBuffer();
+public class GroovycOSProcessHandler extends OSProcessHandler
+{
+	public static final String GROOVY_COMPILER_IN_OPERATION = "Groovy compiler in operation...";
+	public static final String GRAPE_ROOT = "grape.root";
+	private final List<OutputItem> myCompiledItems = new ArrayList<OutputItem>();
+	private final Set<File> toRecompileFiles = new HashSet<File>();
+	private final List<CompilerMessage> compilerMessages = new ArrayList<CompilerMessage>();
+	private final StringBuffer stdErr = new StringBuffer();
 
-  private static final Logger LOG = Logger.getInstance("#org.jetbrains.jps.incremental.groovy.GroovycOSProcessHandler");
-  private final Consumer<String> myStatusUpdater;
+	private static final Logger LOG = Logger.getInstance("#org.jetbrains.jps.incremental.groovy.GroovycOSProcessHandler");
+	private final Consumer<String> myStatusUpdater;
 
-  public GroovycOSProcessHandler(Process process, Consumer<String> statusUpdater) {
-    super(process, null, null);
-    myStatusUpdater = statusUpdater;
-  }
+	public GroovycOSProcessHandler(GeneralCommandLine commandLine, Consumer<String> statusUpdater) throws ExecutionException
+	{
+		super(commandLine);
+		myStatusUpdater = statusUpdater;
+	}
 
-  public void notifyTextAvailable(final String text, final Key outputType) {
-    super.notifyTextAvailable(text, outputType);
+	public void notifyTextAvailable(final String text, final Key outputType)
+	{
+		super.notifyTextAvailable(text, outputType);
 
-    if (LOG.isDebugEnabled()) {
-      LOG.debug("Received from groovyc: " + text);
-    }
+		if(LOG.isDebugEnabled())
+		{
+			LOG.debug("Received from groovyc: " + text);
+		}
 
-    if (outputType == ProcessOutputTypes.SYSTEM) {
-      return;
-    }
+		if(outputType == ProcessOutputTypes.SYSTEM)
+		{
+			return;
+		}
 
-    if (outputType == ProcessOutputTypes.STDERR) {
-      stdErr.append(StringUtil.convertLineSeparators(text));
-      return;
-    }
-
-
-    parseOutput(text);
-  }
-
-  private final StringBuffer outputBuffer = new StringBuffer();
-
-  protected void updateStatus(@Nullable String status) {
-    myStatusUpdater.consume(status == null ? GROOVY_COMPILER_IN_OPERATION : status);
-  }
-
-  private void parseOutput(String text) {
-    final String trimmed = text.trim();
-
-    if (trimmed.startsWith(GroovyRtConstants.PRESENTABLE_MESSAGE)) {
-      updateStatus(trimmed.substring(GroovyRtConstants.PRESENTABLE_MESSAGE.length()));
-      return;
-    }
-
-    if (GroovyRtConstants.CLEAR_PRESENTABLE.equals(trimmed)) {
-      updateStatus(null);
-      return;
-    }
+		if(outputType == ProcessOutputTypes.STDERR)
+		{
+			stdErr.append(StringUtil.convertLineSeparators(text));
+			return;
+		}
 
 
-    if (StringUtil.isNotEmpty(text)) {
-      outputBuffer.append(text);
+		parseOutput(text);
+	}
 
-      //compiled start marker have to be in the beginning on each string
-      if (outputBuffer.indexOf(GroovyRtConstants.COMPILED_START) != -1) {
-        if (outputBuffer.indexOf(GroovyRtConstants.COMPILED_END) == -1) {
-          return;
-        }
+	private final StringBuffer outputBuffer = new StringBuffer();
 
-        final String compiled = handleOutputBuffer(GroovyRtConstants.COMPILED_START, GroovyRtConstants.COMPILED_END);
-        final List<String> list = splitAndTrim(compiled);
-        String outputPath = list.get(0);
-        String sourceFile = list.get(1);
+	protected void updateStatus(@Nullable String status)
+	{
+		myStatusUpdater.consume(status == null ? GROOVY_COMPILER_IN_OPERATION : status);
+	}
 
-        OutputItem item = new OutputItem(outputPath, sourceFile);
-        if (LOG.isDebugEnabled()) {
-          LOG.debug("Output: " + item);
-        }
-        myCompiledItems.add(item);
+	private void parseOutput(String text)
+	{
+		final String trimmed = text.trim();
 
-      }
-      else if (outputBuffer.indexOf(GroovyRtConstants.TO_RECOMPILE_START) != -1) {
-        if (outputBuffer.indexOf(GroovyRtConstants.TO_RECOMPILE_END) != -1) {
-          String url = handleOutputBuffer(GroovyRtConstants.TO_RECOMPILE_START, GroovyRtConstants.TO_RECOMPILE_END);
-          toRecompileFiles.add(new File(url));
-        }
-      }
-      else if (outputBuffer.indexOf(GroovyRtConstants.MESSAGES_START) != -1) {
-        if (outputBuffer.indexOf(GroovyRtConstants.MESSAGES_END) == -1) {
-          return;
-        }
+		if(trimmed.startsWith(GroovyRtConstants.PRESENTABLE_MESSAGE))
+		{
+			updateStatus(trimmed.substring(GroovyRtConstants.PRESENTABLE_MESSAGE.length()));
+			return;
+		}
 
-        text = handleOutputBuffer(GroovyRtConstants.MESSAGES_START, GroovyRtConstants.MESSAGES_END);
+		if(GroovyRtConstants.CLEAR_PRESENTABLE.equals(trimmed))
+		{
+			updateStatus(null);
+			return;
+		}
 
-        List<String> tokens = splitAndTrim(text);
-        LOG.assertTrue(tokens.size() > 4, "Wrong number of output params");
 
-        String category = tokens.get(0);
-        String message = tokens.get(1);
-        String url = tokens.get(2);
-        String lineNum = tokens.get(3);
-        String columnNum = tokens.get(4);
+		if(StringUtil.isNotEmpty(text))
+		{
+			outputBuffer.append(text);
 
-        int lineInt;
-        int columnInt;
+			//compiled start marker have to be in the beginning on each string
+			if(outputBuffer.indexOf(GroovyRtConstants.COMPILED_START) != -1)
+			{
+				if(outputBuffer.indexOf(GroovyRtConstants.COMPILED_END) == -1)
+				{
+					return;
+				}
 
-        try {
-          lineInt = Integer.parseInt(lineNum);
-          columnInt = Integer.parseInt(columnNum);
-        }
-        catch (NumberFormatException e) {
-          LOG.error(e);
-          lineInt = 0;
-          columnInt = 0;
-        }
+				final String compiled = handleOutputBuffer(GroovyRtConstants.COMPILED_START, GroovyRtConstants.COMPILED_END);
+				final List<String> list = splitAndTrim(compiled);
+				String outputPath = list.get(0);
+				String sourceFile = list.get(1);
 
-        CompilerMessage compilerMessage = new CompilerMessage(category, message, url, lineInt, columnInt);
-        if (LOG.isDebugEnabled()) {
-          LOG.debug("Message: " + compilerMessage);
-        }
+				OutputItem item = new OutputItem(outputPath, sourceFile);
+				if(LOG.isDebugEnabled())
+				{
+					LOG.debug("Output: " + item);
+				}
+				myCompiledItems.add(item);
 
-        compilerMessages.add(compilerMessage);
-      }
-    }
-  }
+			}
+			else if(outputBuffer.indexOf(GroovyRtConstants.TO_RECOMPILE_START) != -1)
+			{
+				if(outputBuffer.indexOf(GroovyRtConstants.TO_RECOMPILE_END) != -1)
+				{
+					String url = handleOutputBuffer(GroovyRtConstants.TO_RECOMPILE_START, GroovyRtConstants.TO_RECOMPILE_END);
+					toRecompileFiles.add(new File(url));
+				}
+			}
+			else if(outputBuffer.indexOf(GroovyRtConstants.MESSAGES_START) != -1)
+			{
+				if(outputBuffer.indexOf(GroovyRtConstants.MESSAGES_END) == -1)
+				{
+					return;
+				}
 
-  private String handleOutputBuffer(String startMarker, String endMarker) {
-    final int start = outputBuffer.indexOf(startMarker);
-    final int end = outputBuffer.indexOf(endMarker);
-    if (start > end) {
-      throw new AssertionError("Malformed Groovyc output: " + outputBuffer.toString());
-    }
+				text = handleOutputBuffer(GroovyRtConstants.MESSAGES_START, GroovyRtConstants.MESSAGES_END);
 
-    String text = outputBuffer.substring(start + startMarker.length(), end);
+				List<String> tokens = splitAndTrim(text);
+				LOG.assertTrue(tokens.size() > 4, "Wrong number of output params");
 
-    outputBuffer.delete(start, end + endMarker.length());
+				String category = tokens.get(0);
+				String message = tokens.get(1);
+				String url = tokens.get(2);
+				String lineNum = tokens.get(3);
+				String columnNum = tokens.get(4);
 
-    return text.trim();
-  }
+				int lineInt;
+				int columnInt;
 
-  private static List<String> splitAndTrim(String compiled) {
-    return ContainerUtil.map(StringUtil.split(compiled, GroovyRtConstants.SEPARATOR), new Function<String, String>() {
-      public String fun(String s) {
-        return s.trim();
-      }
-    });
-  }
+				try
+				{
+					lineInt = Integer.parseInt(lineNum);
+					columnInt = Integer.parseInt(columnNum);
+				}
+				catch(NumberFormatException e)
+				{
+					LOG.error(e);
+					lineInt = 0;
+					columnInt = 0;
+				}
 
-  public List<OutputItem> getSuccessfullyCompiled() {
-    return myCompiledItems;
-  }
+				CompilerMessage compilerMessage = new CompilerMessage(category, message, url, lineInt, columnInt);
+				if(LOG.isDebugEnabled())
+				{
+					LOG.debug("Message: " + compilerMessage);
+				}
 
-  public Set<File> getToRecompileFiles() {
-    return toRecompileFiles;
-  }
+				compilerMessages.add(compilerMessage);
+			}
+		}
+	}
 
-  public boolean shouldRetry() {
-    if (getProcess().exitValue() != 0) {
-      return true;
-    }
-    for (CompilerMessage message : compilerMessages) {
-      if (message.getCategory().equals(GroovyCompilerMessageCategories.ERROR)) {
-        return true;
-      }
-    }
-    if (getStdErr().length() > 0) {
-      return true;
-    }
-    return false;
-  }
+	private String handleOutputBuffer(String startMarker, String endMarker)
+	{
+		final int start = outputBuffer.indexOf(startMarker);
+		final int end = outputBuffer.indexOf(endMarker);
+		if(start > end)
+		{
+			throw new AssertionError("Malformed Groovyc output: " + outputBuffer.toString());
+		}
 
-  public List<CompilerMessage> getCompilerMessages(String moduleName) {
-    ArrayList<CompilerMessage> messages = new ArrayList<CompilerMessage>(compilerMessages);
-    final StringBuffer unparsedBuffer = getStdErr();
-    if (unparsedBuffer.length() != 0) {
-      String msg = unparsedBuffer.toString();
-      if (msg.contains(GroovyRtConstants.NO_GROOVY)) {
-        msg = "Cannot compile Groovy files: no Groovy library is defined for module '" + moduleName + "'";
-      }
+		String text = outputBuffer.substring(start + startMarker.length(), end);
 
-      messages.add(new CompilerMessage(GroovyCompilerMessageCategories.INFORMATION, msg, null, -1, -1));
-    }
+		outputBuffer.delete(start, end + endMarker.length());
 
-    final int exitValue = getProcess().exitValue();
-    if (exitValue != 0) {
-      for (CompilerMessage message : messages) {
-        if (message.getCategory().equals(GroovyCompilerMessageCategories.ERROR)) {
-          return messages;
-        }
-      }
-      messages.add(new CompilerMessage(GroovyCompilerMessageCategories.ERROR, "Internal groovyc error: code " + exitValue, null, -1, -1));
-    }
+		return text.trim();
+	}
 
-    return messages;
-  }
+	private static List<String> splitAndTrim(String compiled)
+	{
+		return ContainerUtil.map(StringUtil.split(compiled, GroovyRtConstants.SEPARATOR), new Function<String, String>()
+		{
+			public String fun(String s)
+			{
+				return s.trim();
+			}
+		});
+	}
 
-  public StringBuffer getStdErr() {
-    return stdErr;
-  }
+	public List<OutputItem> getSuccessfullyCompiled()
+	{
+		return myCompiledItems;
+	}
 
-  public static File fillFileWithGroovycParameters(final String outputDir,
-                                                   final Collection<String> changedSources,
-                                                   String finalOutput,
-                                                   Map<String, String> class2Src, @Nullable final String encoding, List<String> patchers) throws IOException {
-    File tempFile = FileUtil.createTempFile("ideaGroovyToCompile", ".txt", true);
+	public Set<File> getToRecompileFiles()
+	{
+		return toRecompileFiles;
+	}
 
-    final Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(tempFile)));
-    try {
-      for (String file : changedSources) {
-        writer.write(GroovyRtConstants.SRC_FILE + "\n");
-        writer.write(file);
-        writer.write("\n");
-      }
+	public boolean shouldRetry()
+	{
+		if(getProcess().exitValue() != 0)
+		{
+			return true;
+		}
+		for(CompilerMessage message : compilerMessages)
+		{
+			if(message.getCategory().equals(GroovyCompilerMessageCategories.ERROR))
+			{
+				return true;
+			}
+		}
+		if(getStdErr().length() > 0)
+		{
+			return true;
+		}
+		return false;
+	}
 
-      writer.write("class2src\n");
-      for (Map.Entry<String, String> entry : class2Src.entrySet()) {
-        writer.write(entry.getKey() + "\n");
-        writer.write(entry.getValue() + "\n");
-      }
-      writer.write(GroovyRtConstants.END + "\n");
+	public List<CompilerMessage> getCompilerMessages(String moduleName)
+	{
+		ArrayList<CompilerMessage> messages = new ArrayList<CompilerMessage>(compilerMessages);
+		final StringBuffer unparsedBuffer = getStdErr();
+		if(unparsedBuffer.length() != 0)
+		{
+			String msg = unparsedBuffer.toString();
+			if(msg.contains(GroovyRtConstants.NO_GROOVY))
+			{
+				msg = "Cannot compile Groovy files: no Groovy library is defined for module '" + moduleName + "'";
+			}
 
-      writer.write(GroovyRtConstants.PATCHERS + "\n");
-      for (String patcher : patchers) {
-        writer.write(patcher + "\n");
-      }
-      writer.write(GroovyRtConstants.END + "\n");
-      if (encoding != null) {
-        writer.write(GroovyRtConstants.ENCODING + "\n");
-        writer.write(encoding + "\n");
-      }
-      writer.write(GroovyRtConstants.OUTPUTPATH + "\n");
-      writer.write(outputDir);
-      writer.write("\n");
-      writer.write(GroovyRtConstants.FINAL_OUTPUTPATH + "\n");
-      writer.write(finalOutput);
-      writer.write("\n");
-    }
-    finally {
-      writer.close();
-    }
-    return tempFile;
-  }
+			messages.add(new CompilerMessage(GroovyCompilerMessageCategories.INFORMATION, msg, null, -1, -1));
+		}
 
-  public static GroovycOSProcessHandler runGroovyc(Process process, Consumer<String> updater) {
-    GroovycOSProcessHandler processHandler = new GroovycOSProcessHandler(process, updater);
+		final int exitValue = getProcess().exitValue();
+		if(exitValue != 0)
+		{
+			for(CompilerMessage message : messages)
+			{
+				if(message.getCategory().equals(GroovyCompilerMessageCategories.ERROR))
+				{
+					return messages;
+				}
+			}
+			messages.add(new CompilerMessage(GroovyCompilerMessageCategories.ERROR, "Internal groovyc error: code " + exitValue, null, -1, -1));
+		}
 
-    processHandler.startNotify();
-    processHandler.waitFor();
-    return processHandler;
-  }
+		return messages;
+	}
 
-  public static class OutputItem {
-    public final String outputPath;
-    public final String sourcePath;
+	public StringBuffer getStdErr()
+	{
+		return stdErr;
+	}
 
-    public OutputItem(String outputPath, String sourceFileName) {
-      this.outputPath = outputPath;
-      sourcePath = sourceFileName;
-    }
+	public static File fillFileWithGroovycParameters(final String outputDir,
+			final Collection<String> changedSources,
+			String finalOutput,
+			Map<String, String> class2Src,
+			@Nullable final String encoding,
+			List<String> patchers) throws IOException
+	{
+		File tempFile = FileUtil.createTempFile("ideaGroovyToCompile", ".txt", true);
 
-    @Override
-    public String toString() {
-      return "OutputItem{" +
-             "outputPath='" + outputPath + '\'' +
-             ", sourcePath='" + sourcePath + '\'' +
-             '}';
-    }
-  }
+		final Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(tempFile)));
+		try
+		{
+			for(String file : changedSources)
+			{
+				writer.write(GroovyRtConstants.SRC_FILE + "\n");
+				writer.write(file);
+				writer.write("\n");
+			}
+
+			writer.write("class2src\n");
+			for(Map.Entry<String, String> entry : class2Src.entrySet())
+			{
+				writer.write(entry.getKey() + "\n");
+				writer.write(entry.getValue() + "\n");
+			}
+			writer.write(GroovyRtConstants.END + "\n");
+
+			writer.write(GroovyRtConstants.PATCHERS + "\n");
+			for(String patcher : patchers)
+			{
+				writer.write(patcher + "\n");
+			}
+			writer.write(GroovyRtConstants.END + "\n");
+			if(encoding != null)
+			{
+				writer.write(GroovyRtConstants.ENCODING + "\n");
+				writer.write(encoding + "\n");
+			}
+			writer.write(GroovyRtConstants.OUTPUTPATH + "\n");
+			writer.write(outputDir);
+			writer.write("\n");
+			writer.write(GroovyRtConstants.FINAL_OUTPUTPATH + "\n");
+			writer.write(finalOutput);
+			writer.write("\n");
+		}
+		finally
+		{
+			writer.close();
+		}
+		return tempFile;
+	}
+
+	public static GroovycOSProcessHandler runGroovyc(GeneralCommandLine commandLine, Consumer<String> updater) throws ExecutionException
+	{
+		GroovycOSProcessHandler processHandler = new GroovycOSProcessHandler(commandLine, updater);
+
+		processHandler.startNotify();
+		processHandler.waitFor();
+		return processHandler;
+	}
+
+	public static class OutputItem
+	{
+		public final String outputPath;
+		public final String sourcePath;
+
+		public OutputItem(String outputPath, String sourceFileName)
+		{
+			this.outputPath = outputPath;
+			sourcePath = sourceFileName;
+		}
+
+		@Override
+		public String toString()
+		{
+			return "OutputItem{" +
+					"outputPath='" + outputPath + '\'' +
+					", sourcePath='" + sourcePath + '\'' +
+					'}';
+		}
+	}
 
 }
