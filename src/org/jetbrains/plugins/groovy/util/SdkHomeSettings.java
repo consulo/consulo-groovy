@@ -34,62 +34,80 @@ import consulo.vfs.util.ArchiveVfsUtil;
 /**
  * @author peter
  */
-public abstract class SdkHomeSettings implements PersistentStateComponent<SdkHomeConfigurable.SdkHomeBean> {
-  private final PsiModificationTrackerImpl myTracker;
-  private SdkHomeConfigurable.SdkHomeBean mySdkPath;
+public abstract class SdkHomeSettings implements PersistentStateComponent<SdkHomeConfigurable.SdkHomeBean>
+{
+	private final PsiModificationTrackerImpl myTracker;
+	private SdkHomeConfigurable.SdkHomeBean mySdkPath;
 
-  protected SdkHomeSettings(Project project) {
-    myTracker = (PsiModificationTrackerImpl)PsiManager.getInstance(project).getModificationTracker();
-  }
+	protected SdkHomeSettings(Project project)
+	{
+		myTracker = (PsiModificationTrackerImpl) PsiManager.getInstance(project).getModificationTracker();
+	}
 
-  public SdkHomeConfigurable.SdkHomeBean getState() {
-    return mySdkPath;
-  }
+	public SdkHomeConfigurable.SdkHomeBean getState()
+	{
+		return mySdkPath;
+	}
 
-  public void loadState(SdkHomeConfigurable.SdkHomeBean state) {
-    mySdkPath = state;
-    myTracker.incCounter();
-  }
+	public void loadState(SdkHomeConfigurable.SdkHomeBean state)
+	{
+		SdkHomeConfigurable.SdkHomeBean oldState = mySdkPath;
+		mySdkPath = state;
+		if(oldState != null)
+		{
+			myTracker.incCounter();
+		}
+	}
 
-  @Nullable
-  private static VirtualFile calcHome(final SdkHomeConfigurable.SdkHomeBean state) {
-    if (state == null) {
-      return null;
-    }
+	@Nullable
+	private static VirtualFile calcHome(final SdkHomeConfigurable.SdkHomeBean state)
+	{
+		if(state == null)
+		{
+			return null;
+		}
 
-    @SuppressWarnings({"NonPrivateFieldAccessedInSynchronizedContext"}) final String sdk_home = state.SDK_HOME;
-    if (StringUtil.isEmpty(sdk_home)) {
-      return null;
-    }
+		@SuppressWarnings({"NonPrivateFieldAccessedInSynchronizedContext"}) final String sdk_home = state.SDK_HOME;
+		if(StringUtil.isEmpty(sdk_home))
+		{
+			return null;
+		}
 
-    return LocalFileSystem.getInstance().findFileByPath(sdk_home);
-  }
+		return LocalFileSystem.getInstance().findFileByPath(sdk_home);
+	}
 
-  @Nullable
-  public VirtualFile getSdkHome() {
-    return calcHome(mySdkPath);
-  }
+	@Nullable
+	public VirtualFile getSdkHome()
+	{
+		return calcHome(mySdkPath);
+	}
 
-  public List<VirtualFile> getClassRoots() {
-    return calcRoots(getSdkHome());
-  }
+	public List<VirtualFile> getClassRoots()
+	{
+		return calcRoots(getSdkHome());
+	}
 
-  private static List<VirtualFile> calcRoots(@Nullable VirtualFile home) {
-    if (home == null) {
-      return Collections.emptyList();
-    }
+	private static List<VirtualFile> calcRoots(@Nullable VirtualFile home)
+	{
+		if(home == null)
+		{
+			return Collections.emptyList();
+		}
 
-    final VirtualFile lib = home.findChild("lib");
-    if (lib == null) {
-      return Collections.emptyList();
-    }
+		final VirtualFile lib = home.findChild("lib");
+		if(lib == null)
+		{
+			return Collections.emptyList();
+		}
 
-    final ArrayList<VirtualFile> result = new ArrayList<VirtualFile>();
-    for (VirtualFile file : lib.getChildren()) {
-      if ("jar".equals(file.getExtension())) {
-        ContainerUtil.addIfNotNull(ArchiveVfsUtil.getJarRootForLocalFile(file), result);
-      }
-    }
-    return result;
-  }
+		final ArrayList<VirtualFile> result = new ArrayList<VirtualFile>();
+		for(VirtualFile file : lib.getChildren())
+		{
+			if("jar".equals(file.getExtension()))
+			{
+				ContainerUtil.addIfNotNull(ArchiveVfsUtil.getJarRootForLocalFile(file), result);
+			}
+		}
+		return result;
+	}
 }
