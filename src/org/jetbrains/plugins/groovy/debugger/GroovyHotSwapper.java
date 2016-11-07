@@ -17,8 +17,8 @@ import com.intellij.execution.configurations.RunConfiguration;
 import com.intellij.execution.configurations.RunProfile;
 import com.intellij.execution.executors.DefaultDebugExecutor;
 import com.intellij.execution.runners.JavaProgramPatcher;
+import com.intellij.ide.plugins.PluginManager;
 import com.intellij.openapi.application.PathManager;
-import com.intellij.openapi.application.PluginPathManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
@@ -29,144 +29,170 @@ import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.pom.java.LanguageLevel;
 import com.intellij.psi.search.FilenameIndex;
 import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.util.PathUtil;
 import consulo.java.module.extension.JavaModuleExtension;
 
 
 /**
  * @author peter
  */
-public class GroovyHotSwapper extends JavaProgramPatcher {
-  private static final Logger LOG = Logger.getInstance("#org.jetbrains.plugins.groovy.debugger.GroovyHotSwapper");
-  private static final String GROOVY_HOTSWAP_AGENT_PATH = "groovy.hotswap.agent.path";
+public class GroovyHotSwapper extends JavaProgramPatcher
+{
+	private static final Logger LOG = Logger.getInstance("#org.jetbrains.plugins.groovy.debugger.GroovyHotSwapper");
+	private static final String GROOVY_HOTSWAP_AGENT_PATH = "groovy.hotswap.agent.path";
 
-  private static final Pattern SPRING_LOADED_PATTERN = Pattern.compile("-javaagent:.+springloaded-core-[^/\\\\]+\\.jar");
-  
-  private static boolean endsWithAny(String s, List<String> endings) {
-    for (String extension : endings) {
-      if (s.endsWith(extension)) {
-        return true;
-      }
-    }
-    return false;
-  }
+	private static final Pattern SPRING_LOADED_PATTERN = Pattern.compile("-javaagent:.+springloaded-core-[^/\\\\]+\\.jar");
 
-  private static boolean containsGroovyClasses(Project project) {
-    final List<String> extensions = new ArrayList<String>();
-    for (String extension : GroovyFileTypeLoader.getAllGroovyExtensions()) {
-      extensions.add("." + extension);
-    }
-    final GlobalSearchScope scope = GlobalSearchScope.projectScope(project);
-    for (String fileName : FilenameIndex.getAllFilenames(project)) {
-      if (endsWithAny(fileName, extensions)) {
-        if (!FilenameIndex.getVirtualFilesByName(project, fileName, scope).isEmpty()) {
-          return true;
-        }
-      }
-    }
-    return false;
-  }
+	private static boolean endsWithAny(String s, List<String> endings)
+	{
+		for(String extension : endings)
+		{
+			if(s.endsWith(extension))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
 
-  private static boolean hasSpringLoadedReloader(JavaParameters javaParameters) {
-    for (String param : javaParameters.getVMParametersList().getParameters()) {
-      if (SPRING_LOADED_PATTERN.matcher(param).matches()) {
-        return true;
-      }
-    }
+	private static boolean containsGroovyClasses(Project project)
+	{
+		final List<String> extensions = new ArrayList<String>();
+		for(String extension : GroovyFileTypeLoader.getAllGroovyExtensions())
+		{
+			extensions.add("." + extension);
+		}
+		final GlobalSearchScope scope = GlobalSearchScope.projectScope(project);
+		for(String fileName : FilenameIndex.getAllFilenames(project))
+		{
+			if(endsWithAny(fileName, extensions))
+			{
+				if(!FilenameIndex.getVirtualFilesByName(project, fileName, scope).isEmpty())
+				{
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 
-    return false;
-  }
-  
-  public void patchJavaParameters(Executor executor, RunProfile configuration, JavaParameters javaParameters) {
-    if (!executor.getId().equals(DefaultDebugExecutor.EXECUTOR_ID)) {
-      return;
-    }
+	private static boolean hasSpringLoadedReloader(JavaParameters javaParameters)
+	{
+		for(String param : javaParameters.getVMParametersList().getParameters())
+		{
+			if(SPRING_LOADED_PATTERN.matcher(param).matches())
+			{
+				return true;
+			}
+		}
 
-    if (!GroovyDebuggerSettings.getInstance().ENABLE_GROOVY_HOTSWAP) {
-      return;
-    }
+		return false;
+	}
 
-    if (hasSpringLoadedReloader(javaParameters)) {
-      return;
-    }
+	public void patchJavaParameters(Executor executor, RunProfile configuration, JavaParameters javaParameters)
+	{
+		if(!executor.getId().equals(DefaultDebugExecutor.EXECUTOR_ID))
+		{
+			return;
+		}
 
-    if (!(configuration instanceof RunConfiguration)) {
-      return;
-    }
+		if(!GroovyDebuggerSettings.getInstance().ENABLE_GROOVY_HOTSWAP)
+		{
+			return;
+		}
 
-    final Project project = ((RunConfiguration)configuration).getProject();
-    if (project == null) {
-      return;
-    }
+		if(hasSpringLoadedReloader(javaParameters))
+		{
+			return;
+		}
 
-    if (configuration instanceof ModuleRunProfile) {
-      Module[] modulesInConfiguration = ((ModuleRunProfile)configuration).getModules();
-      final Module module = modulesInConfiguration.length == 0 ? null : modulesInConfiguration[0];
-      if (module != null) {
-        final JavaModuleExtension extension = ModuleUtilCore.getExtension(module, JavaModuleExtension.class);
-        final LanguageLevel level = extension == null ? null : extension.getLanguageLevel();
-        if (level != null && !level.isAtLeast(LanguageLevel.JDK_1_5)) {
-          return;
-        }
+		if(!(configuration instanceof RunConfiguration))
+		{
+			return;
+		}
 
-        if(ModuleUtilCore.getExtension(module, GroovyModuleExtension.class) == null) {
-          return;
-        }
-      }
-    }
+		final Project project = ((RunConfiguration) configuration).getProject();
+		if(project == null)
+		{
+			return;
+		}
 
-    Sdk jdk = javaParameters.getJdk();
-    if (jdk != null) {
-      String vendor = JdkUtil.getJdkMainAttribute(jdk, Attributes.Name.IMPLEMENTATION_VENDOR);
-      if (vendor != null && vendor.contains("IBM")) {
-        LOG.info("Due to IBM JDK pecularities (IDEA-59070) we don't add groovy agent when running applications under it");
-        return;
-      }
-    }
+		if(configuration instanceof ModuleRunProfile)
+		{
+			Module[] modulesInConfiguration = ((ModuleRunProfile) configuration).getModules();
+			final Module module = modulesInConfiguration.length == 0 ? null : modulesInConfiguration[0];
+			if(module != null)
+			{
+				final JavaModuleExtension extension = ModuleUtilCore.getExtension(module, JavaModuleExtension.class);
+				final LanguageLevel level = extension == null ? null : extension.getLanguageLevel();
+				if(level != null && !level.isAtLeast(LanguageLevel.JDK_1_5))
+				{
+					return;
+				}
 
-    if (!project.isDefault() && containsGroovyClasses(project)) {
-      final String agentPath = handleSpacesInPath(getAgentJarPath());
-      if (agentPath != null) {
-        javaParameters.getVMParametersList().add("-javaagent:" + agentPath);
-      }
-    }
-  }
+				if(ModuleUtilCore.getExtension(module, GroovyModuleExtension.class) == null)
+				{
+					return;
+				}
+			}
+		}
 
-  @Nullable
-  private static String handleSpacesInPath(String agentPath) {
-    if (agentPath.contains(" ")) {
-      final File dir = new File(PathManager.getSystemPath(), "groovyHotSwap");
-      if (dir.getAbsolutePath().contains(" ")) {
-        LOG.info("Groovy hot-swap not used since the agent path contains spaces: " + agentPath + "\n" +
-                 "One can move the agent to a directory with no spaces in path and specify its path in <IDEA dist>/bin/idea.properties as " + GROOVY_HOTSWAP_AGENT_PATH + "=<path>");
-        return null;
-      }
+		Sdk jdk = javaParameters.getJdk();
+		if(jdk != null)
+		{
+			String vendor = JdkUtil.getJdkMainAttribute(jdk, Attributes.Name.IMPLEMENTATION_VENDOR);
+			if(vendor != null && vendor.contains("IBM"))
+			{
+				LOG.info("Due to IBM JDK pecularities (IDEA-59070) we don't add groovy agent when running applications under it");
+				return;
+			}
+		}
 
-      final File toFile = new File(dir, "gragent.jar");
-      try {
-        FileUtil.copy(new File(agentPath), toFile);
-        return toFile.getPath();
-      }
-      catch (IOException e) {
-        LOG.info(e);
-      }
-    }
-    return agentPath;
-  }
+		if(!project.isDefault() && containsGroovyClasses(project))
+		{
+			final String agentPath = handleSpacesInPath(getAgentJarPath());
+			if(agentPath != null)
+			{
+				javaParameters.getVMParametersList().add("-javaagent:" + agentPath);
+			}
+		}
+	}
 
-  private static String getAgentJarPath() {
-    final String userDefined = System.getProperty(GROOVY_HOTSWAP_AGENT_PATH);
-    if (userDefined != null && new File(userDefined).exists()) {
-      return userDefined;
-    }
+	@Nullable
+	private static String handleSpacesInPath(String agentPath)
+	{
+		if(agentPath.contains(" "))
+		{
+			final File dir = new File(PathManager.getSystemPath(), "groovyHotSwap");
+			if(dir.getAbsolutePath().contains(" "))
+			{
+				LOG.info("Groovy hot-swap not used since the agent path contains spaces: " + agentPath + "\n" +
+						"One can move the agent to a directory with no spaces in path and specify its path in <IDEA dist>/bin/idea.properties as " + GROOVY_HOTSWAP_AGENT_PATH + "=<path>");
+				return null;
+			}
 
-    final File ourJar = new File(PathUtil.getJarPathForClass(GroovyHotSwapper.class));
-    if (ourJar.isDirectory()) { //development mode
-      return PluginPathManager.getPluginHomePath("groovy") + "/hotswap/gragent.jar";
-    }
+			final File toFile = new File(dir, "gragent.jar");
+			try
+			{
+				FileUtil.copy(new File(agentPath), toFile);
+				return toFile.getPath();
+			}
+			catch(IOException e)
+			{
+				LOG.info(e);
+			}
+		}
+		return agentPath;
+	}
 
-    final File pluginDir = ourJar.getParentFile();
-    return pluginDir.getPath() + File.separator + "agent" + File.separator + "gragent.jar";
-  }
+	private static String getAgentJarPath()
+	{
+		final String userDefined = System.getProperty(GROOVY_HOTSWAP_AGENT_PATH);
+		if(userDefined != null && new File(userDefined).exists())
+		{
+			return userDefined;
+		}
 
+		File pluginPath = PluginManager.getPluginPath(GroovyHotSwapper.class);
+		return FileUtil.toSystemDependentName(new File(pluginPath, "lib/agent/gragent.jar").getPath());
+	}
 }

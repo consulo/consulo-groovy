@@ -18,6 +18,9 @@
           <element id="zip-archive" name="groovy-rt.jar">
             <element id="module-output" name="groovy-rt" />
           </element>
+          <element id="directory" name="agent">
+            <element id="file-copy" path="$PROJECT_DIR$/hotswap/gragent.jar" />
+          </element>
         </element>
       </element>
     </root>
