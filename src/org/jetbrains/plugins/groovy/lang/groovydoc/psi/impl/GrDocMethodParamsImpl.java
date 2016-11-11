@@ -16,6 +16,17 @@
 
 package org.jetbrains.plugins.groovy.lang.groovydoc.psi.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.plugins.groovy.lang.groovydoc.lexer.GroovyDocTokenTypes;
+import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocMethodParameter;
+import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocMethodParams;
+import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocReferenceElement;
+import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
+import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.psi.JavaPsiFacade;
@@ -25,18 +36,6 @@ import com.intellij.psi.PsiType;
 import com.intellij.psi.impl.PsiManagerEx;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.util.IncorrectOperationException;
-import com.intellij.util.ReflectionCache;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.jetbrains.plugins.groovy.lang.groovydoc.lexer.GroovyDocTokenTypes;
-import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocMethodParameter;
-import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocMethodParams;
-import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocReferenceElement;
-import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
-import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author ilyas
@@ -79,7 +78,7 @@ public class GrDocMethodParamsImpl extends GroovyDocPsiElementImpl implements Gr
   public GrDocMethodParameter[] getParameters() {
     List<GrDocMethodParameter> result = new ArrayList<GrDocMethodParameter>();
     for (PsiElement cur = getFirstChild(); cur != null; cur = cur.getNextSibling()) {
-      if (ReflectionCache.isInstance(cur, GrDocMethodParameter.class)) result.add((GrDocMethodParameter)cur);
+      if (cur instanceof GrDocMethodParameter) result.add((GrDocMethodParameter)cur);
     }
     return result.toArray(new GrDocMethodParameter[result.size()]);
   }
