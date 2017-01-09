@@ -19,7 +19,6 @@ import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import consulo.psi.PsiPackage;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.lang.psi.GrReferenceElement;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
@@ -39,6 +38,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiType;
 import com.intellij.psi.search.PsiShortNamesCache;
 import com.intellij.util.Consumer;
+import consulo.psi.PsiPackage;
 
 /**
  * @author peter
@@ -70,12 +70,9 @@ public class GroovyNoVariantsDelegator extends CompletionContributor
 		}
 		else if(Registry.is("ide.completion.show.better.matching.classes"))
 		{
-			if(parameters.getCompletionType() == CompletionType.BASIC &&
-					parameters.getInvocationCount() <= 1 &&
-					JavaCompletionContributor.mayStartClassName(result) &&
-					GrMainCompletionProvider.isClassNamePossible(parameters.getPosition()) &&
-					!MapArgumentCompletionProvider.isMapKeyCompletion(parameters) &&
-					!GroovySmartCompletionContributor.AFTER_NEW.accepts(parameters.getPosition()))
+			if(parameters.getCompletionType() == CompletionType.BASIC && parameters.getInvocationCount() <= 1 && JavaCompletionContributor.mayStartClassName(result) && GrMainCompletionProvider
+					.isClassNamePossible(parameters.getPosition()) && !MapArgumentCompletionProvider.isMapKeyCompletion(parameters) && !GroovySmartCompletionContributor.AFTER_NEW.accepts(parameters
+					.getPosition()))
 			{
 				result = result.withPrefixMatcher(tracker.betterMatcher);
 				suggestNonImportedClasses(parameters, result);
@@ -87,10 +84,8 @@ public class GroovyNoVariantsDelegator extends CompletionContributor
 	{
 		if(parameters.getCompletionType() == CompletionType.BASIC)
 		{
-			if(parameters.getInvocationCount() <= 1 &&
-					(JavaCompletionContributor.mayStartClassName(result) || suggestMetaAnnotations(parameters)) &&
-					GrMainCompletionProvider.isClassNamePossible(parameters.getPosition()) &&
-					!MapArgumentCompletionProvider.isMapKeyCompletion(parameters))
+			if(parameters.getInvocationCount() <= 1 && (JavaCompletionContributor.mayStartClassName(result) || suggestMetaAnnotations(parameters)) && GrMainCompletionProvider.isClassNamePossible
+					(parameters.getPosition()) && !MapArgumentCompletionProvider.isMapKeyCompletion(parameters))
 			{
 				suggestNonImportedClasses(parameters, result);
 			}
@@ -113,7 +108,7 @@ public class GroovyNoVariantsDelegator extends CompletionContributor
 				}
 				result.addElement(element);
 			}
-		}, new InheritorsHolder(result), result.getPrefixMatcher());
+		}, new JavaCompletionSession(result), result.getPrefixMatcher());
 	}
 
 	private static void suggestChainedCalls(CompletionParameters parameters, CompletionResultSet result)
@@ -137,7 +132,7 @@ public class GroovyNoVariantsDelegator extends CompletionContributor
 
 		String fullPrefix = position.getContainingFile().getText().substring(parent.getTextRange().getStartOffset(), parameters.getOffset());
 		final CompletionResultSet qualifiedCollector = result.withPrefixMatcher(fullPrefix);
-		InheritorsHolder inheritors = new InheritorsHolder(result);
+		JavaCompletionSession inheritors = new JavaCompletionSession(result);
 		for(final LookupElement base : suggestQualifierItems(parameters, (GrReferenceElement) qualifier, inheritors))
 		{
 			final PsiType type = JavaCompletionUtil.getLookupElementType(base);
@@ -178,7 +173,7 @@ public class GroovyNoVariantsDelegator extends CompletionContributor
 	}
 
 
-	private static Set<LookupElement> suggestQualifierItems(CompletionParameters _parameters, GrReferenceElement qualifier, InheritorsHolder inheritors)
+	private static Set<LookupElement> suggestQualifierItems(CompletionParameters _parameters, GrReferenceElement qualifier, JavaCompletionSession inheritors)
 	{
 		CompletionParameters parameters = _parameters.withPosition(qualifier.getReferenceNameElement(), qualifier.getTextRange().getEndOffset());
 		String referenceName = qualifier.getReferenceName();

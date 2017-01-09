@@ -34,10 +34,8 @@ public class GrReferenceListWeigher extends ReferenceListWeigher {
     PlatformPatterns.psiElement().withParents(GrCodeReferenceElement.class, GrReferenceList.class);
 
   @Override
-  protected Preference getPreferredCondition(@NotNull ProximityLocation location) {
-    PsiElement position = location.getPosition();
+  protected Preference getPreferredCondition(@NotNull PsiElement  position) {
     if (INSIDE_REFERENCE_LIST.accepts(position)) {
-      assert position != null;
       GrReferenceList list = (GrReferenceList)position.getParent().getParent();
       PsiElement parent = list.getParent();
       if (parent instanceof GrTypeDefinition) {
