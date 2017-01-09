@@ -15,20 +15,11 @@
  */
 package org.jetbrains.plugins.groovy.annotator;
 
-import com.intellij.lang.ASTNode;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.editor.colors.TextAttributesKey;
-import com.intellij.openapi.project.DumbService;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.*;
-import com.intellij.psi.search.PsiElementProcessor;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.util.CachedValueProvider;
-import com.intellij.psi.util.CachedValuesManager;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.containers.ContainerUtil;
+import java.util.Set;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.plugins.groovy.highlighter.GroovySyntaxHighlighter;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.lexer.TokenSets;
 import org.jetbrains.plugins.groovy.lang.psi.GrReferenceElement;
@@ -51,10 +42,18 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GroovyScriptClass;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyPropertyUtils;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 import org.jetbrains.plugins.groovy.lang.resolve.ResolveUtil;
-
-import java.util.Set;
-
-import static org.jetbrains.plugins.groovy.highlighter.GroovyHighlighterColors.*;
+import com.intellij.lang.ASTNode;
+import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.editor.colors.TextAttributesKey;
+import com.intellij.openapi.project.DumbService;
+import com.intellij.openapi.util.TextRange;
+import com.intellij.psi.*;
+import com.intellij.psi.search.PsiElementProcessor;
+import com.intellij.psi.tree.IElementType;
+import com.intellij.psi.util.CachedValueProvider;
+import com.intellij.psi.util.CachedValuesManager;
+import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.util.containers.ContainerUtil;
 
 /**
  * @author Max Medvedev
@@ -123,11 +122,11 @@ public class GrHighlightUtil {
 
     if (resolved instanceof PsiField || resolved instanceof GrVariable && ResolveUtil.isScriptField((GrVariable)resolved)) {
       boolean isStatic = ((PsiVariable)resolved).hasModifierProperty(PsiModifier.STATIC);
-      return isStatic ? STATIC_FIELD : INSTANCE_FIELD;
+      return isStatic ? GroovySyntaxHighlighter.STATIC_FIELD : GroovySyntaxHighlighter.INSTANCE_FIELD;
     }
     else if (resolved instanceof GrAccessorMethod) {
       boolean isStatic = ((GrAccessorMethod)resolved).hasModifierProperty(PsiModifier.STATIC);
-      return isStatic ? STATIC_PROPERTY_REFERENCE : INSTANCE_PROPERTY_REFERENCE;
+      return isStatic ? GroovySyntaxHighlighter.STATIC_PROPERTY_REFERENCE : GroovySyntaxHighlighter.INSTANCE_PROPERTY_REFERENCE;
     }
     else if (resolved instanceof PsiMethod) {
 
@@ -140,46 +139,46 @@ public class GrHighlightUtil {
             return null;
           }
           else {
-            return CONSTRUCTOR_CALL;
+            return GroovySyntaxHighlighter.CONSTRUCTOR_CALL;
           }
         }
         else {
-          return CONSTRUCTOR_DECLARATION;
+          return GroovySyntaxHighlighter.CONSTRUCTOR_DECLARATION;
         }
       }
       else {
         boolean isStatic = ((PsiMethod)resolved).hasModifierProperty(PsiModifier.STATIC);
         if (GroovyPropertyUtils.isSimplePropertyAccessor((PsiMethod)resolved)) {
-          return isStatic ? STATIC_PROPERTY_REFERENCE : INSTANCE_PROPERTY_REFERENCE;
+          return isStatic ? GroovySyntaxHighlighter.STATIC_PROPERTY_REFERENCE : GroovySyntaxHighlighter.INSTANCE_PROPERTY_REFERENCE;
         }
         else {
           if (refElement != null) {
-            return isStatic ? STATIC_METHOD_ACCESS : METHOD_CALL;
+            return isStatic ? GroovySyntaxHighlighter.STATIC_METHOD_ACCESS : GroovySyntaxHighlighter.METHOD_CALL;
           }
           else {
-            return METHOD_DECLARATION;
+            return GroovySyntaxHighlighter.METHOD_DECLARATION;
           }
         }
       }
     }
     else if (resolved instanceof PsiTypeParameter) {
-      return TYPE_PARAMETER;
+      return GroovySyntaxHighlighter.TYPE_PARAMETER;
     }
     else if (resolved instanceof PsiClass) {
       if (((PsiClass)resolved).isAnnotationType()) {
-        return ANNOTATION;
+        return GroovySyntaxHighlighter.ANNOTATION;
       }
       else {
-        return CLASS_REFERENCE;
+        return GroovySyntaxHighlighter.CLASS_REFERENCE;
       }
     }
     else if (resolved instanceof GrParameter) {
       boolean reassigned = isReassigned((GrParameter)resolved);
-      return reassigned ? REASSIGNED_PARAMETER : PARAMETER;
+      return reassigned ? GroovySyntaxHighlighter.REASSIGNED_PARAMETER : GroovySyntaxHighlighter.PARAMETER;
     }
     else if (resolved instanceof GrVariable) {
       boolean reassigned = isReassigned((GrVariable)resolved);
-      return reassigned ? REASSIGNED_LOCAL_VARIABLE : LOCAL_VARIABLE;
+      return reassigned ? GroovySyntaxHighlighter.REASSIGNED_LOCAL_VARIABLE : GroovySyntaxHighlighter.LOCAL_VARIABLE;
     }
     return null;
   }

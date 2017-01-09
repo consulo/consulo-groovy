@@ -16,19 +16,19 @@
 
 package org.jetbrains.plugins.groovy.lang.groovydoc.highlighter;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.plugins.groovy.highlighter.GroovySyntaxHighlighter;
+import org.jetbrains.plugins.groovy.lang.groovydoc.lexer.GroovyDocElementTypeImpl;
+import org.jetbrains.plugins.groovy.lang.groovydoc.lexer.GroovyDocLexer;
+import org.jetbrains.plugins.groovy.lang.groovydoc.lexer.GroovyDocTokenTypes;
 import com.intellij.lexer.Lexer;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.fileTypes.SyntaxHighlighterBase;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.plugins.groovy.highlighter.GroovyHighlighterColors;
-import org.jetbrains.plugins.groovy.lang.groovydoc.lexer.GroovyDocElementTypeImpl;
-import org.jetbrains.plugins.groovy.lang.groovydoc.lexer.GroovyDocLexer;
-import org.jetbrains.plugins.groovy.lang.groovydoc.lexer.GroovyDocTokenTypes;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author ilyas
@@ -53,8 +53,8 @@ public class GroovyDocSyntaxHighlighter extends SyntaxHighlighterBase implements
 
 
   static {
-    fillMap(ATTRIBUTES, tGDOC_COMMENT_CONTENT, GroovyHighlighterColors.DOC_COMMENT_CONTENT);
-    fillMap(ATTRIBUTES, tGDOC_COMMENT_TAGS, GroovyHighlighterColors.DOC_COMMENT_TAG);
+    fillMap(ATTRIBUTES, tGDOC_COMMENT_CONTENT, GroovySyntaxHighlighter.DOC_COMMENT_CONTENT);
+    fillMap(ATTRIBUTES, tGDOC_COMMENT_TAGS, GroovySyntaxHighlighter.DOC_COMMENT_TAG);
   }
 
 

@@ -15,20 +15,14 @@
  */
 package org.jetbrains.plugins.groovy.annotator;
 
-import com.intellij.codeHighlighting.TextEditorHighlightingPass;
-import com.intellij.codeInsight.daemon.impl.HighlightInfo;
-import com.intellij.codeInsight.daemon.impl.UpdateHighlightersUtil;
-import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.editor.colors.TextAttributesKey;
-import com.intellij.openapi.progress.ProgressIndicator;
-import com.intellij.openapi.project.DumbAware;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiErrorElement;
-import com.intellij.psi.PsiRecursiveElementVisitor;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.util.PsiTreeUtil;
+import static com.intellij.codeInsight.daemon.impl.HighlightInfoType.INFORMATION;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.plugins.groovy.highlighter.GroovySyntaxHighlighter;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.lexer.TokenSets;
 import org.jetbrains.plugins.groovy.lang.psi.GrNamedElement;
@@ -42,12 +36,18 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrRefere
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameter;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
 import org.jetbrains.plugins.groovy.refactoring.GroovyRefactoringUtil;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static com.intellij.codeInsight.daemon.impl.HighlightInfoType.INFORMATION;
-import static org.jetbrains.plugins.groovy.highlighter.GroovyHighlighterColors.*;
+import com.intellij.codeHighlighting.TextEditorHighlightingPass;
+import com.intellij.codeInsight.daemon.impl.HighlightInfo;
+import com.intellij.codeInsight.daemon.impl.UpdateHighlightersUtil;
+import com.intellij.openapi.editor.Document;
+import com.intellij.openapi.editor.colors.TextAttributesKey;
+import com.intellij.openapi.progress.ProgressIndicator;
+import com.intellij.openapi.project.DumbAware;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiErrorElement;
+import com.intellij.psi.PsiRecursiveElementVisitor;
+import com.intellij.psi.tree.IElementType;
+import com.intellij.psi.util.PsiTreeUtil;
 
 /**
  * @author Max Medvedev
@@ -71,7 +71,7 @@ public class GrKeywordAndDeclarationHighlighter extends TextEditorHighlightingPa
         IElementType tokenType = element.getNode().getElementType();
         if (TokenSets.KEYWORDS.contains(tokenType)) {
           if (highlightKeyword(element, tokenType)) {
-            addInfo(element, KEYWORD);
+            addInfo(element, GroovySyntaxHighlighter.KEYWORD);
           }
         }
         else if (!(element instanceof GroovyPsiElement || element instanceof PsiErrorElement)) {
@@ -82,7 +82,7 @@ public class GrKeywordAndDeclarationHighlighter extends TextEditorHighlightingPa
         }
         else {
           if (element instanceof GrLabel) {
-            addInfo(element, LABEL);
+            addInfo(element, GroovySyntaxHighlighter.LABEL);
           }
           super.visitElement(element);
         }
@@ -129,7 +129,7 @@ public class GrKeywordAndDeclarationHighlighter extends TextEditorHighlightingPa
   @Nullable
   private static TextAttributesKey getDeclarationAttribute(PsiElement element) {
     if (element.getParent() instanceof GrAnnotation && element.getNode().getElementType() == GroovyTokenTypes.mAT) {
-      return ANNOTATION;
+      return GroovySyntaxHighlighter.ANNOTATION;
     }
 
     PsiElement parent = element.getParent();

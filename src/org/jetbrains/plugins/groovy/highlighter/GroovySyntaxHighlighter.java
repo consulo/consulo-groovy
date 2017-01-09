@@ -16,7 +16,6 @@
 
 package org.jetbrains.plugins.groovy.highlighter;
 
-import static com.intellij.openapi.editor.colors.CodeInsightColors.*;
 import static com.intellij.openapi.editor.colors.TextAttributesKey.createTextAttributesKey;
 
 import java.util.HashMap;
@@ -46,90 +45,57 @@ import com.intellij.psi.tree.TokenSet;
 public class GroovySyntaxHighlighter extends SyntaxHighlighterBase
 {
 
-	public static final TextAttributesKey LINE_COMMENT = createTextAttributesKey("Line comment",
-			DefaultLanguageHighlighterColors.LINE_COMMENT);
-	public static final TextAttributesKey ANNOTATION = createTextAttributesKey("Annotation",
-			JavaHighlightingColors.ANNOTATION_NAME);
-	public static final TextAttributesKey LOCAL_VARIABLE = createTextAttributesKey("Groovy var",
-			LOCAL_VARIABLE_ATTRIBUTES);
-	public static final TextAttributesKey REASSIGNED_LOCAL_VARIABLE = createTextAttributesKey("Groovy reassigned var",
-			REASSIGNED_LOCAL_VARIABLE_ATTRIBUTES);
-	public static final TextAttributesKey PARAMETER = createTextAttributesKey("Groovy parameter",
-			PARAMETER_ATTRIBUTES);
-	public static final TextAttributesKey REASSIGNED_PARAMETER = createTextAttributesKey("Groovy reassigned " +
-			"parameter", REASSIGNED_PARAMETER_ATTRIBUTES);
-	public static final TextAttributesKey METHOD_DECLARATION = createTextAttributesKey("Groovy method declaration",
-			METHOD_DECLARATION_ATTRIBUTES);
-	public static final TextAttributesKey CONSTRUCTOR_DECLARATION = createTextAttributesKey("Groovy constructor " +
-			"declaration", CONSTRUCTOR_DECLARATION_ATTRIBUTES);
-	public static final TextAttributesKey INSTANCE_FIELD = createTextAttributesKey("Instance field",
-			INSTANCE_FIELD_ATTRIBUTES);
-	public static final TextAttributesKey METHOD_CALL = createTextAttributesKey("Method call", METHOD_CALL_ATTRIBUTES);
-	public static final TextAttributesKey CONSTRUCTOR_CALL = createTextAttributesKey("Groovy constructor call",
-			CONSTRUCTOR_CALL_ATTRIBUTES);
-	public static final TextAttributesKey STATIC_FIELD = createTextAttributesKey("Static field",
-			STATIC_FINAL_FIELD_ATTRIBUTES);
-	public static final TextAttributesKey STATIC_METHOD_ACCESS = createTextAttributesKey("Static method access",
-			STATIC_METHOD_ATTRIBUTES);
-	public static final TextAttributesKey BLOCK_COMMENT = createTextAttributesKey("Block comment",
-			JavaHighlightingColors.BLOCK_COMMENT);
-	public static final TextAttributesKey DOC_COMMENT_CONTENT = createTextAttributesKey("Groovydoc comment",
-			JavaHighlightingColors.DOC_COMMENT);
-	public static final TextAttributesKey DOC_COMMENT_TAG = createTextAttributesKey("Groovydoc tag",
-			JavaHighlightingColors.DOC_COMMENT_TAG);
-	public static final TextAttributesKey CLASS_REFERENCE = createTextAttributesKey("Class",
-			DefaultLanguageHighlighterColors.CLASS_REFERENCE);
-	public static final TextAttributesKey TYPE_PARAMETER = createTextAttributesKey("Type parameter",
-			JavaHighlightingColors.TYPE_PARAMETER_NAME);
+	public static final TextAttributesKey LINE_COMMENT = createTextAttributesKey("Line comment", DefaultLanguageHighlighterColors.LINE_COMMENT);
+	public static final TextAttributesKey ANNOTATION = createTextAttributesKey("Annotation", JavaHighlightingColors.ANNOTATION_NAME_ATTRIBUTES);
+	public static final TextAttributesKey LOCAL_VARIABLE = createTextAttributesKey("Groovy var", JavaHighlightingColors.LOCAL_VARIABLE_ATTRIBUTES);
+	public static final TextAttributesKey REASSIGNED_LOCAL_VARIABLE = createTextAttributesKey("Groovy reassigned var", JavaHighlightingColors.REASSIGNED_LOCAL_VARIABLE_ATTRIBUTES);
+	public static final TextAttributesKey PARAMETER = createTextAttributesKey("Groovy parameter", JavaHighlightingColors.PARAMETER_ATTRIBUTES);
+	public static final TextAttributesKey REASSIGNED_PARAMETER = createTextAttributesKey("Groovy reassigned parameter", JavaHighlightingColors.REASSIGNED_PARAMETER_ATTRIBUTES);
+	public static final TextAttributesKey METHOD_DECLARATION = createTextAttributesKey("Groovy method declaration", JavaHighlightingColors.METHOD_DECLARATION_ATTRIBUTES);
+	public static final TextAttributesKey CONSTRUCTOR_DECLARATION = createTextAttributesKey("Groovy constructor declaration", JavaHighlightingColors.CONSTRUCTOR_DECLARATION_ATTRIBUTES);
+	public static final TextAttributesKey INSTANCE_FIELD = createTextAttributesKey("Instance field", JavaHighlightingColors.INSTANCE_FIELD_ATTRIBUTES);
+	public static final TextAttributesKey METHOD_CALL = createTextAttributesKey("Method call", JavaHighlightingColors.METHOD_CALL_ATTRIBUTES);
+	public static final TextAttributesKey CONSTRUCTOR_CALL = createTextAttributesKey("Groovy constructor call", JavaHighlightingColors.CONSTRUCTOR_CALL_ATTRIBUTES);
+	public static final TextAttributesKey STATIC_FIELD = createTextAttributesKey("Static field", JavaHighlightingColors.STATIC_FINAL_FIELD_ATTRIBUTES);
+	public static final TextAttributesKey STATIC_METHOD_ACCESS = createTextAttributesKey("Static method access", JavaHighlightingColors.STATIC_METHOD_ATTRIBUTES);
+	public static final TextAttributesKey BLOCK_COMMENT = createTextAttributesKey("Block comment", JavaHighlightingColors.JAVA_BLOCK_COMMENT);
+	public static final TextAttributesKey DOC_COMMENT_CONTENT = createTextAttributesKey("Groovydoc comment", JavaHighlightingColors.DOC_COMMENT);
+	public static final TextAttributesKey DOC_COMMENT_TAG = createTextAttributesKey("Groovydoc tag", JavaHighlightingColors.DOC_COMMENT_TAG);
+	public static final TextAttributesKey CLASS_REFERENCE = createTextAttributesKey("Class", DefaultLanguageHighlighterColors.CLASS_REFERENCE);
+	public static final TextAttributesKey TYPE_PARAMETER = createTextAttributesKey("Type parameter", JavaHighlightingColors.TYPE_PARAMETER_NAME_ATTRIBUTES);
 
-	public static final TextAttributesKey INSTANCE_PROPERTY_REFERENCE = createTextAttributesKey("Instance property " +
-			"reference ID", INSTANCE_FIELD_ATTRIBUTES);
-	public static final TextAttributesKey STATIC_PROPERTY_REFERENCE = createTextAttributesKey("Static property " +
-			"reference ID", STATIC_FINAL_FIELD_ATTRIBUTES);
+	public static final TextAttributesKey INSTANCE_PROPERTY_REFERENCE = createTextAttributesKey("Instance property reference ID", JavaHighlightingColors.INSTANCE_FIELD_ATTRIBUTES);
+	public static final TextAttributesKey STATIC_PROPERTY_REFERENCE = createTextAttributesKey("Static property reference ID", JavaHighlightingColors.STATIC_FINAL_FIELD_ATTRIBUTES);
 
-	public static final TextAttributesKey KEYWORD = createTextAttributesKey("GROOVY_KEYWORD",
-			JavaHighlightingColors.KEYWORD);
+	public static final TextAttributesKey KEYWORD = createTextAttributesKey("GROOVY_KEYWORD", JavaHighlightingColors.KEYWORD);
 	public static final TextAttributesKey NUMBER = createTextAttributesKey("Number", JavaHighlightingColors.NUMBER);
 	public static final TextAttributesKey GSTRING = createTextAttributesKey("GString", JavaHighlightingColors.STRING);
 	public static final TextAttributesKey STRING = createTextAttributesKey("String", JavaHighlightingColors.STRING);
 	public static final TextAttributesKey BRACES = createTextAttributesKey("Braces", JavaHighlightingColors.BRACES);
-	public static final TextAttributesKey BRACKETS = createTextAttributesKey("Brackets",
-			JavaHighlightingColors.BRACKETS);
-	public static final TextAttributesKey PARENTHESES = createTextAttributesKey("Parentheses",
-			JavaHighlightingColors.PARENTHS);
-	public static final TextAttributesKey OPERATION_SIGN = createTextAttributesKey("Operation sign",
-			JavaHighlightingColors.OPERATION_SIGN);
-	public static final TextAttributesKey BAD_CHARACTER = createTextAttributesKey("Bad character",
-			HighlighterColors.BAD_CHARACTER);
+	public static final TextAttributesKey BRACKETS = createTextAttributesKey("Brackets", JavaHighlightingColors.BRACKETS);
+	public static final TextAttributesKey PARENTHESES = createTextAttributesKey("Parentheses", JavaHighlightingColors.PARENTHESES);
+	public static final TextAttributesKey OPERATION_SIGN = createTextAttributesKey("Operation sign", JavaHighlightingColors.OPERATION_SIGN);
+	public static final TextAttributesKey BAD_CHARACTER = createTextAttributesKey("Bad character", HighlighterColors.BAD_CHARACTER);
 
-	public static final TextAttributesKey UNRESOLVED_ACCESS = createTextAttributesKey("Unresolved reference access",
-			DefaultLanguageHighlighterColors.IDENTIFIER);
-	public static final TextAttributesKey LITERAL_CONVERSION = createTextAttributesKey("List/map to object " +
-			"conversion", JavaHighlightingColors.NUMBER);
+	public static final TextAttributesKey UNRESOLVED_ACCESS = createTextAttributesKey("Unresolved reference access", DefaultLanguageHighlighterColors.IDENTIFIER);
+	public static final TextAttributesKey LITERAL_CONVERSION = createTextAttributesKey("List/map to object conversion", JavaHighlightingColors.NUMBER);
 
 	public static final TextAttributesKey MAP_KEY = createTextAttributesKey("Map key", JavaHighlightingColors.STRING);
-	public static final TextAttributesKey VALID_STRING_ESCAPE = createTextAttributesKey("Valid string escape",
-			JavaHighlightingColors.VALID_STRING_ESCAPE);
-	public static final TextAttributesKey INVALID_STRING_ESCAPE = createTextAttributesKey("Invalid string escape",
-			JavaHighlightingColors.INVALID_STRING_ESCAPE);
-	public static final TextAttributesKey LABEL = createTextAttributesKey("Label", DefaultLanguageHighlighterColors
-			.LABEL);
+	public static final TextAttributesKey VALID_STRING_ESCAPE = createTextAttributesKey("Valid string escape", JavaHighlightingColors.VALID_STRING_ESCAPE);
+	public static final TextAttributesKey INVALID_STRING_ESCAPE = createTextAttributesKey("Invalid string escape", JavaHighlightingColors.INVALID_STRING_ESCAPE);
+	public static final TextAttributesKey LABEL = createTextAttributesKey("Label", DefaultLanguageHighlighterColors.LABEL);
 
-	private static final Map<IElementType, TextAttributesKey> ATTRIBUTES = new HashMap<IElementType,
-			TextAttributesKey>();
-	private static final Map<IElementType, TextAttributesKey> POWER_SAVE_MODE_ATTRIBUTES = new HashMap<IElementType,
-			TextAttributesKey>();
+	private static final Map<IElementType, TextAttributesKey> ATTRIBUTES = new HashMap<>();
+	private static final Map<IElementType, TextAttributesKey> POWER_SAVE_MODE_ATTRIBUTES = new HashMap<>();
 
 
-	static final TokenSet tBLOCK_COMMENTS = TokenSet.create(GroovyTokenTypes.mML_COMMENT,
-			GroovyDocElementTypes.GROOVY_DOC_COMMENT);
+	static final TokenSet tBLOCK_COMMENTS = TokenSet.create(GroovyTokenTypes.mML_COMMENT, GroovyDocElementTypes.GROOVY_DOC_COMMENT);
 
 	static final TokenSet tLINE_COMMENTS = TokenSet.create(GroovyTokenTypes.mSL_COMMENT, GroovyTokenTypes.mSH_COMMENT);
 
 	static final TokenSet tBAD_CHARACTERS = TokenSet.create(GroovyTokenTypes.mWRONG);
 
-	static final TokenSet tGSTRINGS = TokenSet.create(GroovyTokenTypes.mGSTRING_BEGIN,
-			GroovyTokenTypes.mGSTRING_CONTENT, GroovyTokenTypes.mGSTRING_END, GroovyTokenTypes.mGSTRING_LITERAL);
+	static final TokenSet tGSTRINGS = TokenSet.create(GroovyTokenTypes.mGSTRING_BEGIN, GroovyTokenTypes.mGSTRING_CONTENT, GroovyTokenTypes.mGSTRING_END, GroovyTokenTypes.mGSTRING_LITERAL);
 
 	static final TokenSet tSTRINGS = TokenSet.create(GroovyTokenTypes.mSTRING_LITERAL);
 
@@ -137,8 +103,7 @@ public class GroovySyntaxHighlighter extends SyntaxHighlighterBase
 	static final TokenSet tPARENTHESES = TokenSet.create(GroovyTokenTypes.mLPAREN, GroovyTokenTypes.mRPAREN);
 	static final TokenSet tBRACKETS = TokenSet.create(GroovyTokenTypes.mLBRACK, GroovyTokenTypes.mRBRACK);
 
-	static final TokenSet tOperators = TokenSet.orSet(TokenSets.BINARY_OP_SET, TokenSets.UNARY_OP_SET,
-			TokenSets.ASSIGN_OP_SET);
+	static final TokenSet tOperators = TokenSet.orSet(TokenSets.BINARY_OP_SET, TokenSets.UNARY_OP_SET, TokenSets.ASSIGN_OP_SET);
 
 	static
 	{
@@ -148,9 +113,8 @@ public class GroovySyntaxHighlighter extends SyntaxHighlighterBase
 		fillMap(ATTRIBUTES, TokenSets.NUMBERS, NUMBER);
 		fillMap(ATTRIBUTES, tGSTRINGS, GSTRING);
 		fillMap(ATTRIBUTES, tSTRINGS, STRING);
-		fillMap(ATTRIBUTES, STRING, GroovyTokenTypes.mREGEX_BEGIN, GroovyTokenTypes.mREGEX_CONTENT,
-				GroovyTokenTypes.mREGEX_END, GroovyTokenTypes.mDOLLAR_SLASH_REGEX_BEGIN,
-				GroovyTokenTypes.mDOLLAR_SLASH_REGEX_CONTENT, GroovyTokenTypes.mDOLLAR_SLASH_REGEX_END);
+		fillMap(ATTRIBUTES, STRING, GroovyTokenTypes.mREGEX_BEGIN, GroovyTokenTypes.mREGEX_CONTENT, GroovyTokenTypes.mREGEX_END, GroovyTokenTypes.mDOLLAR_SLASH_REGEX_BEGIN, GroovyTokenTypes
+				.mDOLLAR_SLASH_REGEX_CONTENT, GroovyTokenTypes.mDOLLAR_SLASH_REGEX_END);
 		fillMap(ATTRIBUTES, tBRACES, BRACES);
 		fillMap(ATTRIBUTES, tBRACKETS, BRACKETS);
 		fillMap(ATTRIBUTES, tPARENTHESES, PARENTHESES);
@@ -168,17 +132,14 @@ public class GroovySyntaxHighlighter extends SyntaxHighlighterBase
 		fillMap(POWER_SAVE_MODE_ATTRIBUTES, TokenSets.NUMBERS, NUMBER);
 		fillMap(POWER_SAVE_MODE_ATTRIBUTES, tGSTRINGS, GSTRING);
 		fillMap(POWER_SAVE_MODE_ATTRIBUTES, tSTRINGS, STRING);
-		fillMap(POWER_SAVE_MODE_ATTRIBUTES, STRING, GroovyTokenTypes.mREGEX_BEGIN, GroovyTokenTypes.mREGEX_CONTENT,
-				GroovyTokenTypes.mREGEX_END, GroovyTokenTypes.mDOLLAR_SLASH_REGEX_BEGIN,
+		fillMap(POWER_SAVE_MODE_ATTRIBUTES, STRING, GroovyTokenTypes.mREGEX_BEGIN, GroovyTokenTypes.mREGEX_CONTENT, GroovyTokenTypes.mREGEX_END, GroovyTokenTypes.mDOLLAR_SLASH_REGEX_BEGIN,
 				GroovyTokenTypes.mDOLLAR_SLASH_REGEX_CONTENT, GroovyTokenTypes.mDOLLAR_SLASH_REGEX_END);
 		fillMap(POWER_SAVE_MODE_ATTRIBUTES, tBRACES, BRACES);
 		fillMap(POWER_SAVE_MODE_ATTRIBUTES, tBRACKETS, BRACKETS);
 		fillMap(POWER_SAVE_MODE_ATTRIBUTES, tPARENTHESES, PARENTHESES);
 		fillMap(POWER_SAVE_MODE_ATTRIBUTES, VALID_STRING_ESCAPE, StringEscapesTokenTypes.VALID_STRING_ESCAPE_TOKEN);
-		fillMap(POWER_SAVE_MODE_ATTRIBUTES, INVALID_STRING_ESCAPE,
-				StringEscapesTokenTypes.INVALID_CHARACTER_ESCAPE_TOKEN);
-		fillMap(POWER_SAVE_MODE_ATTRIBUTES, INVALID_STRING_ESCAPE,
-				StringEscapesTokenTypes.INVALID_UNICODE_ESCAPE_TOKEN);
+		fillMap(POWER_SAVE_MODE_ATTRIBUTES, INVALID_STRING_ESCAPE, StringEscapesTokenTypes.INVALID_CHARACTER_ESCAPE_TOKEN);
+		fillMap(POWER_SAVE_MODE_ATTRIBUTES, INVALID_STRING_ESCAPE, StringEscapesTokenTypes.INVALID_UNICODE_ESCAPE_TOKEN);
 		fillMap(POWER_SAVE_MODE_ATTRIBUTES, TokenSets.KEYWORDS, KEYWORD);
 	}
 
@@ -194,19 +155,14 @@ public class GroovySyntaxHighlighter extends SyntaxHighlighterBase
 		private GroovyHighlightingLexer()
 		{
 			super(new GroovyLexer());
-			registerSelfStoppingLayer(new StringLiteralLexer(StringLiteralLexer.NO_QUOTE_CHAR,
-					GroovyTokenTypes.mSTRING_LITERAL, true, "$"), new IElementType[]{GroovyTokenTypes
-					.mSTRING_LITERAL}, IElementType.EMPTY_ARRAY);
-			registerSelfStoppingLayer(new StringLiteralLexer(StringLiteralLexer.NO_QUOTE_CHAR,
-					GroovyTokenTypes.mGSTRING_LITERAL, true, "$"), new IElementType[]{GroovyTokenTypes
-					.mGSTRING_LITERAL}, IElementType.EMPTY_ARRAY);
-			registerSelfStoppingLayer(new StringLiteralLexer(StringLiteralLexer.NO_QUOTE_CHAR,
-					GroovyTokenTypes.mGSTRING_CONTENT, true, "$"), new IElementType[]{GroovyTokenTypes
-					.mGSTRING_CONTENT}, IElementType.EMPTY_ARRAY);
-			registerSelfStoppingLayer(new GroovySlashyStringLexer(), new IElementType[]{GroovyTokenTypes
-					.mREGEX_CONTENT}, IElementType.EMPTY_ARRAY);
-			registerSelfStoppingLayer(new GroovyDollarSlashyStringLexer(), new IElementType[]{GroovyTokenTypes
-					.mDOLLAR_SLASH_REGEX_CONTENT}, IElementType.EMPTY_ARRAY);
+			registerSelfStoppingLayer(new StringLiteralLexer(StringLiteralLexer.NO_QUOTE_CHAR, GroovyTokenTypes.mSTRING_LITERAL, true, "$"), new IElementType[]{GroovyTokenTypes.mSTRING_LITERAL},
+					IElementType.EMPTY_ARRAY);
+			registerSelfStoppingLayer(new StringLiteralLexer(StringLiteralLexer.NO_QUOTE_CHAR, GroovyTokenTypes.mGSTRING_LITERAL, true, "$"), new IElementType[]{GroovyTokenTypes.mGSTRING_LITERAL},
+					IElementType.EMPTY_ARRAY);
+			registerSelfStoppingLayer(new StringLiteralLexer(StringLiteralLexer.NO_QUOTE_CHAR, GroovyTokenTypes.mGSTRING_CONTENT, true, "$"), new IElementType[]{GroovyTokenTypes.mGSTRING_CONTENT},
+					IElementType.EMPTY_ARRAY);
+			registerSelfStoppingLayer(new GroovySlashyStringLexer(), new IElementType[]{GroovyTokenTypes.mREGEX_CONTENT}, IElementType.EMPTY_ARRAY);
+			registerSelfStoppingLayer(new GroovyDollarSlashyStringLexer(), new IElementType[]{GroovyTokenTypes.mDOLLAR_SLASH_REGEX_CONTENT}, IElementType.EMPTY_ARRAY);
 		}
 	}
 

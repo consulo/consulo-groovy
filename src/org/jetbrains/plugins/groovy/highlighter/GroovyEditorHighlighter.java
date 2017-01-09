@@ -16,12 +16,12 @@
 
 package org.jetbrains.plugins.groovy.highlighter;
 
+import org.jetbrains.plugins.groovy.lang.groovydoc.highlighter.GroovyDocSyntaxHighlighter;
+import org.jetbrains.plugins.groovy.lang.groovydoc.parser.GroovyDocElementTypes;
 import com.intellij.openapi.editor.colors.EditorColorsScheme;
 import com.intellij.openapi.editor.ex.util.LayerDescriptor;
 import com.intellij.openapi.editor.ex.util.LayeredLexerEditorHighlighter;
 import com.intellij.openapi.fileTypes.SyntaxHighlighter;
-import org.jetbrains.plugins.groovy.lang.groovydoc.highlighter.GroovyDocSyntaxHighlighter;
-import org.jetbrains.plugins.groovy.lang.groovydoc.parser.GroovyDocElementTypes;
 
 /**
  * @author ilyas
@@ -36,7 +36,7 @@ public class GroovyEditorHighlighter extends LayeredLexerEditorHighlighter {
   private void registerGroovydocHighlighter() {
     // Register GroovyDoc Highlighter
     SyntaxHighlighter groovyDocHighlighter = new GroovyDocSyntaxHighlighter();
-    final LayerDescriptor groovyDocLayer = new LayerDescriptor(groovyDocHighlighter, "\n", GroovyHighlighterColors.DOC_COMMENT_CONTENT);
+    final LayerDescriptor groovyDocLayer = new LayerDescriptor(groovyDocHighlighter, "\n", GroovySyntaxHighlighter.DOC_COMMENT_CONTENT);
     registerLayer(GroovyDocElementTypes.GROOVY_DOC_COMMENT, groovyDocLayer);
   }
 

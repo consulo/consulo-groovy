@@ -4,9 +4,9 @@
     <modules>
       <module name="consulo-groovy" dirurl="file://$PROJECT_DIR$" current-layer="Default">
         <module-layer name="Default">
-          <extension id="consulo-plugin" sdk-module-name="" sdk-name="Consulo SNAPSHOT" />
+          <extension id="consulo-plugin" sdk-name="Consulo SNAPSHOT" />
           <extension id="groovy" />
-          <extension id="java" sdk-module-name="" sdk-name="1.8" language-level-module-name="" language-level-name="JDK_1_8" special-dir-location="SOURCE_DIR" />
+          <extension id="java" sdk-name="1.8" language-level-name="JDK_1_8" />
           <extension id="lombok" />
           <content url="file://$MODULE_DIR$">
             <content-folder type="PRODUCTION_RESOURCE" url="file://$MODULE_DIR$/resources" />
@@ -30,8 +30,8 @@
       </module>
       <module name="groovy-maven" dirurl="file://$PROJECT_DIR$/groovy-maven" current-layer="Default">
         <module-layer name="Default">
-          <extension id="consulo-plugin" sdk-module-name="consulo-groovy" sdk-name="" />
-          <extension id="java" sdk-module-name="consulo-groovy" sdk-name="" language-level-module-name="consulo-groovy" language-level-name="" special-dir-location="SOURCE_DIR" />
+          <extension id="consulo-plugin" sdk-module-name="consulo-groovy" />
+          <extension id="java" sdk-module-name="consulo-groovy" language-level-module-name="consulo-groovy" />
           <content url="file://$MODULE_DIR$">
             <content-folder type="PRODUCTION_RESOURCE" url="file://$MODULE_DIR$/resources" />
             <content-folder type="PRODUCTION" url="file://$MODULE_DIR$/src" />
@@ -45,7 +45,7 @@
       </module>
       <module name="groovy-rt" dirurl="file://$PROJECT_DIR$/groovy-rt" current-layer="Default">
         <module-layer name="Default">
-          <extension id="java" sdk-module-name="consulo-groovy" sdk-name="" language-level-module-name="consulo-groovy" language-level-name="" special-dir-location="SOURCE_DIR" />
+          <extension id="java" sdk-module-name="consulo-groovy" language-level-module-name="consulo-groovy" />
           <content url="file://$MODULE_DIR$">
             <content-folder type="PRODUCTION" url="file://$MODULE_DIR$/src" />
           </content>
@@ -62,8 +62,8 @@
       </module>
       <module name="groovy-spellchecker" dirurl="file://$PROJECT_DIR$/groovy-spellchecker" current-layer="Default">
         <module-layer name="Default">
-          <extension id="consulo-plugin" sdk-module-name="consulo-groovy" sdk-name="" />
-          <extension id="java" sdk-module-name="consulo-groovy" sdk-name="" language-level-module-name="consulo-groovy" language-level-name="" special-dir-location="SOURCE_DIR" />
+          <extension id="consulo-plugin" sdk-module-name="consulo-groovy" />
+          <extension id="java" sdk-module-name="consulo-groovy" language-level-module-name="consulo-groovy" />
           <content url="file://$MODULE_DIR$">
             <content-folder type="PRODUCTION_RESOURCE" url="file://$MODULE_DIR$/resources" />
             <content-folder type="PRODUCTION" url="file://$MODULE_DIR$/src" />
@@ -77,8 +77,8 @@
       </module>
       <module name="groovy-intelliLang" dirurl="file://$PROJECT_DIR$/groovy-intelliLang" current-layer="Default">
         <module-layer name="Default">
-          <extension id="consulo-plugin" sdk-module-name="consulo-groovy" sdk-name="" />
-          <extension id="java" sdk-module-name="consulo-groovy" sdk-name="" language-level-module-name="consulo-groovy" language-level-name="" special-dir-location="SOURCE_DIR" />
+          <extension id="consulo-plugin" sdk-module-name="consulo-groovy" />
+          <extension id="java" sdk-module-name="consulo-groovy" language-level-module-name="consulo-groovy" />
           <content url="file://$MODULE_DIR$">
             <content-folder type="PRODUCTION_RESOURCE" url="file://$MODULE_DIR$/resources" />
             <content-folder type="PRODUCTION" url="file://$MODULE_DIR$/src" />
