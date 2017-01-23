@@ -16,11 +16,28 @@
 
 package org.jetbrains.plugins.groovy.refactoring;
 
-import consulo.lombok.annotations.Bundle;
+import org.jetbrains.annotations.PropertyKey;
+import com.intellij.AbstractBundle;
 
 /**
  * @author ilyas
  */
-@Bundle("messages.GroovyRefactoringBundle")
-public class GroovyRefactoringBundle {
+public class GroovyRefactoringBundle extends AbstractBundle
+{
+	private static final GroovyRefactoringBundle ourInstance = new GroovyRefactoringBundle();
+
+	private GroovyRefactoringBundle()
+	{
+		super("messages.GroovyRefactoringBundle");
+	}
+
+	public static String message(@PropertyKey(resourceBundle = "messages.GroovyRefactoringBundle") String key)
+	{
+		return ourInstance.getMessage(key);
+	}
+
+	public static String message(@PropertyKey(resourceBundle = "messages.GroovyRefactoringBundle") String key, Object... params)
+	{
+		return ourInstance.getMessage(key, params);
+	}
 }

@@ -32,15 +32,26 @@ import com.intellij.psi.NavigatablePsiElement;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiField;
 import com.intellij.psi.PsiMethod;
-import consulo.lombok.annotations.ArrayFactoryFields;
+import com.intellij.util.ArrayFactory;
 
 /**
  * @autor: Dmitry.Krasilschikov
  * @date: 18.03.2007
  */
-@ArrayFactoryFields
 public interface GrTypeDefinition
 		extends GrTopStatement, NavigatablePsiElement, PsiClass, GrTopLevelDefinition, GrDocCommentOwner, GrMember {
+
+	public static final GrTypeDefinition[] EMPTY_ARRAY = new GrTypeDefinition[0];
+
+	public static ArrayFactory<GrTypeDefinition> ARRAY_FACTORY = new ArrayFactory<GrTypeDefinition>()
+	{
+		@NotNull
+		@Override
+		public GrTypeDefinition[] create(int count)
+		{
+			return count == 0 ? EMPTY_ARRAY : new GrTypeDefinition[count];
+		}
+	};
 
 	boolean isTrait();
 

@@ -15,9 +15,25 @@
  */
 package org.jetbrains.plugins.groovy.actions.generate;
 
-import consulo.lombok.annotations.Bundle;
+import org.jetbrains.annotations.PropertyKey;
+import com.intellij.AbstractBundle;
 
-@Bundle
-public class GroovyCodeInsightBundle
+public class GroovyCodeInsightBundle  extends AbstractBundle
 {
+	private static final GroovyCodeInsightBundle ourInstance = new GroovyCodeInsightBundle();
+
+	private GroovyCodeInsightBundle()
+	{
+		super("messages.GroovyCodeInsightBundle");
+	}
+
+	public static String message(@PropertyKey(resourceBundle = "messages.GroovyCodeInsightBundle") String key)
+	{
+		return ourInstance.getMessage(key);
+	}
+
+	public static String message(@PropertyKey(resourceBundle = "messages.GroovyCodeInsightBundle") String key, Object... params)
+	{
+		return ourInstance.getMessage(key, params);
+	}
 }

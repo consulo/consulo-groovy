@@ -16,11 +16,28 @@
 
 package org.jetbrains.plugins.groovy.intentions;
 
-import consulo.lombok.annotations.Bundle;
+import org.jetbrains.annotations.PropertyKey;
+import com.intellij.AbstractBundle;
 
 /**
  * @author ilyas
  */
-@Bundle("messages.GroovyIntentionsBundle")
-public class GroovyIntentionsBundle {
+public class GroovyIntentionsBundle extends AbstractBundle
+{
+	private static final GroovyIntentionsBundle ourInstance = new GroovyIntentionsBundle();
+
+	private GroovyIntentionsBundle()
+	{
+		super("messages.GroovyIntentionsBundle");
+	}
+
+	public static String message(@PropertyKey(resourceBundle = "messages.GroovyIntentionsBundle") String key)
+	{
+		return ourInstance.getMessage(key);
+	}
+
+	public static String message(@PropertyKey(resourceBundle = "messages.GroovyIntentionsBundle") String key, Object... params)
+	{
+		return ourInstance.getMessage(key, params);
+	}
 }

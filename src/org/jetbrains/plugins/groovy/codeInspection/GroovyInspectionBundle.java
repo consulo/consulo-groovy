@@ -15,12 +15,28 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection;
 
-import consulo.lombok.annotations.Bundle;
+import org.jetbrains.annotations.PropertyKey;
+import com.intellij.AbstractBundle;
 
 /**
  * @author ilyas
  */
-@Bundle("messages.GroovyInspectionBundle")
-public class GroovyInspectionBundle
+public class GroovyInspectionBundle extends AbstractBundle
 {
+	private static final GroovyInspectionBundle ourInstance = new GroovyInspectionBundle();
+
+	private GroovyInspectionBundle()
+	{
+		super("messages.GroovyInspectionBundle");
+	}
+
+	public static String message(@PropertyKey(resourceBundle = "messages.GroovyInspectionBundle") String key)
+	{
+		return ourInstance.getMessage(key);
+	}
+
+	public static String message(@PropertyKey(resourceBundle = "messages.GroovyInspectionBundle") String key, Object... params)
+	{
+		return ourInstance.getMessage(key, params);
+	}
 }
