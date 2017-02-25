@@ -15,20 +15,17 @@
  */
 package org.jetbrains.plugins.groovy.gant;
 
-import com.intellij.openapi.components.*;
-import com.intellij.openapi.project.Project;
 import org.jetbrains.plugins.groovy.util.SdkHomeSettings;
+import com.intellij.openapi.components.ServiceManager;
+import com.intellij.openapi.components.State;
+import com.intellij.openapi.components.Storage;
+import com.intellij.openapi.components.StoragePathMacros;
+import com.intellij.openapi.project.Project;
 
 /**
  * @author peter
  */
-@State(
-    name = "GantSettings",
-    storages = {
-      @Storage( file = StoragePathMacros.PROJECT_FILE),
-      @Storage( file = StoragePathMacros.PROJECT_CONFIG_DIR + "/gant_config.xml", scheme = StorageScheme.DIRECTORY_BASED)
-    }
-)
+@State(name = "GantSettings", storages = @Storage(file = StoragePathMacros.PROJECT_CONFIG_DIR + "/gant_config.xml"))
 public class GantSettings extends SdkHomeSettings {
   public GantSettings(Project project) {
     super(project);

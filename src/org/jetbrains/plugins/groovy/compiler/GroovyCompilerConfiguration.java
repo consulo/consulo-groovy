@@ -25,13 +25,7 @@ import com.intellij.openapi.util.Disposer;
 /**
  * @author peter
  */
-@State(
-  name = "GroovyCompilerProjectConfiguration",
-  storages = {
-    @Storage( file = StoragePathMacros.PROJECT_FILE),
-    @Storage( file = StoragePathMacros.PROJECT_CONFIG_DIR + "/groovyc.xml", scheme = StorageScheme.DIRECTORY_BASED)
-  }
-)
+@State(name = "GroovyCompilerProjectConfiguration", storages = @Storage(file = StoragePathMacros.PROJECT_CONFIG_DIR + "/groovyc.xml"))
 public class GroovyCompilerConfiguration implements PersistentStateComponent<JpsGroovySettings>, Disposable {
   private String myHeapSize = JpsGroovySettings.DEFAULT_HEAP_SIZE;
   private boolean myInvokeDynamic = JpsGroovySettings.DEFAULT_INVOKE_DYNAMIC;
