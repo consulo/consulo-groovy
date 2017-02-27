@@ -18,7 +18,6 @@ package org.jetbrains.plugins.groovy.lang.psi.impl;
 
 import java.util.concurrent.ConcurrentMap;
 
-import consulo.psi.PsiPackage;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.GroovyLanguage;
@@ -62,6 +61,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ConcurrencyUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.containers.ContainerUtil;
+import consulo.psi.PsiPackage;
 
 /**
  * Implements all abstractions related to Groovy file
@@ -614,11 +614,7 @@ public class GroovyFileImpl extends GroovyFileBaseImpl implements GroovyFile
 	@Override
 	public PsiElement getContext()
 	{
-		if(myContext != null)
-		{
-			return myContext;
-		}
-		return super.getContext();
+		return myContext != null && myContext.isValid() ? myContext : super.getContext();
 	}
 
 	@Override

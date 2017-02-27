@@ -15,6 +15,17 @@
  */
 package org.jetbrains.plugins.groovy.debugger.fragments;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.plugins.groovy.GroovyFileType;
+import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrUnAmbiguousClosureContainer;
+import org.jetbrains.plugins.groovy.lang.psi.api.toplevel.imports.GrImportStatement;
+import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyFileImpl;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
 import com.intellij.psi.impl.PsiManagerEx;
@@ -26,17 +37,6 @@ import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.testFramework.LightVirtualFile;
 import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.containers.ContainerUtil;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.jetbrains.plugins.groovy.GroovyFileType;
-import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrUnAmbiguousClosureContainer;
-import org.jetbrains.plugins.groovy.lang.psi.api.toplevel.imports.GrImportStatement;
-import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyFileImpl;
-
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 /**
  * @author ven
@@ -81,13 +81,6 @@ public class GroovyCodeFragment extends GroovyFileImpl implements JavaCodeFragme
   public FileViewProvider getViewProvider() {
     if (myViewProvider != null) return myViewProvider;
     return super.getViewProvider();
-  }
-
-  @Override
-  public boolean isValid() {
-    if (!super.isValid()) return false;
-    PsiElement context = getContext();
-    return context == null || context.isValid();
   }
 
   /**
