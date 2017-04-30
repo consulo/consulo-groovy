@@ -578,7 +578,7 @@ public class GrMainCompletionProvider implements CompletionProvider
 		JavaCompletionSession inheritors = new JavaCompletionSession(result);
 		if(GroovySmartCompletionContributor.AFTER_NEW.accepts(position))
 		{
-			GroovySmartCompletionContributor.generateInheritorVariants(parameters, result.getPrefixMatcher(), inheritors);
+			GroovySmartCompletionContributor.generateInheritorVariants(parameters, result.getPrefixMatcher(), inheritors::addClassItem);
 		}
 
 		Runnable addSlowVariants = completeReference(parameters, reference, inheritors, result.getPrefixMatcher(), new Consumer<LookupElement>()
