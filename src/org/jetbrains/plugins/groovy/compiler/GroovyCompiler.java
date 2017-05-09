@@ -19,6 +19,7 @@ package org.jetbrains.plugins.groovy.compiler;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Consumer;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.GroovyBundle;
@@ -53,128 +54,154 @@ import icons.JetgroovyIcons;
  * @author Dmitry.Krasilschikov
  */
 
-public class GroovyCompiler extends GroovyCompilerBase {
-  private static final Logger LOG = Logger.getInstance("#org.jetbrains.plugins.groovy.compiler.GroovyCompiler");
-  private static final String AST_TRANSFORM_FILE_NAME = "org.codehaus.groovy.transform.ASTTransformation";
+public class GroovyCompiler extends GroovyCompilerBase
+{
+	private static final Logger LOG = Logger.getInstance("#org.jetbrains.plugins.groovy.compiler.GroovyCompiler");
+	private static final String AST_TRANSFORM_FILE_NAME = "org.codehaus.groovy.transform.ASTTransformation";
 
-  public GroovyCompiler(Project project) {
-    super(project);
-  }
+	public GroovyCompiler(Project project)
+	{
+		super(project);
+	}
 
-  @NotNull
-  public String getDescription() {
-    return "groovy compiler";
-  }
+	@NotNull
+	public String getDescription()
+	{
+		return "groovy compiler";
+	}
 
-  @Override
-  protected void compileFiles(final CompileContext context, final Module module, List<VirtualFile> toCompile, OutputSink sink, boolean tests) {
-    context.getProgressIndicator().checkCanceled();
-    context.getProgressIndicator().setText("Starting Groovy compiler...");
+	@Override
+	protected void compileFiles(final CompileContext context, final Module module, List<VirtualFile> toCompile, OutputSink sink, boolean tests)
+	{
+		context.getProgressIndicator().checkCanceled();
+		context.getProgressIndicator().setText("Starting Groovy compiler...");
 
-    runGroovycCompiler(context, module, toCompile, false, getMainOutput(context, module, tests), sink, tests);
-  }
+		runGroovycCompiler(context, module, toCompile, false, getMainOutput(context, module, tests), sink, tests);
+	}
 
-  public boolean validateConfiguration(CompileScope compileScope) {
-    VirtualFile[] files = compileScope.getFiles(GroovyFileType.GROOVY_FILE_TYPE, true);
-    if (files.length == 0) return true;
+	public boolean validateConfiguration(CompileScope compileScope)
+	{
+		VirtualFile[] files = compileScope.getFiles(GroovyFileType.GROOVY_FILE_TYPE, true);
+		if(files.length == 0)
+		{
+			return true;
+		}
 
-    final Set<String> scriptExtensions = GroovyFileTypeLoader.getCustomGroovyScriptExtensions();
+		final Set<String> scriptExtensions = GroovyFileTypeLoader.getCustomGroovyScriptExtensions();
 
-    final CompilerManager compilerManager = CompilerManager.getInstance(myProject);
-    Set<Module> modules = new HashSet<Module>();
-    for (VirtualFile file : files) {
-      if (scriptExtensions.contains(file.getExtension()) ||
-          compilerManager.isExcludedFromCompilation(file) ||
-          ResourceCompilerConfiguration.getInstance(myProject).isResourceFile(file)) {
-        continue;
-      }
+		final CompilerManager compilerManager = CompilerManager.getInstance(myProject);
+		Set<Module> modules = new HashSet<Module>();
+		for(VirtualFile file : files)
+		{
+			if(scriptExtensions.contains(file.getExtension()) || compilerManager.isExcludedFromCompilation(file) || ResourceCompilerConfiguration.getInstance(myProject).isResourceFile(file))
+			{
+				continue;
+			}
 
-      ProjectRootManager rootManager = ProjectRootManager.getInstance(myProject);
-      Module module = rootManager.getFileIndex().getModuleForFile(file);
-      if (module != null && ModuleUtilCore.getExtension(module, GroovyModuleExtension.class) != null) {
-        modules.add(module);
-      }
-    }
+			ProjectRootManager rootManager = ProjectRootManager.getInstance(myProject);
+			Module module = rootManager.getFileIndex().getModuleForFile(file);
+			if(module != null && ModuleUtilCore.getExtension(module, GroovyModuleExtension.class) != null)
+			{
+				modules.add(module);
+			}
+		}
 
-    Set<Module> nojdkModules = new HashSet<Module>();
-    for (Module module : modules) {
-      final Sdk sdk = ModuleUtilCore.getSdk(module, JavaModuleExtension.class);
-      if (sdk == null) {
-        nojdkModules.add(module);
-        continue;
-      }
+		Set<Module> nojdkModules = new HashSet<>();
+		for(Module module : modules)
+		{
+			final Sdk sdk = ModuleUtilCore.getSdk(module, JavaModuleExtension.class);
+			if(sdk == null)
+			{
+				nojdkModules.add(module);
+				continue;
+			}
 
-      if (!LibrariesUtil.hasGroovySdk(module)) {
-        if (!GroovyConfigUtils.getInstance().tryToSetUpGroovyFacetOnTheFly(module)) {
-          Messages.showErrorDialog(myProject, GroovyBundle.message("cannot.compile.groovy.files.no.facet", module.getName()),
-                                   GroovyBundle.message("cannot.compile"));
-          ModulesConfigurator.showDialog(module.getProject(), module.getName(), ClasspathEditor.NAME);
-          return false;
-        }
-      }
-    }
+			if(!LibrariesUtil.hasGroovySdk(module))
+			{
+				if(!GroovyConfigUtils.getInstance().tryToSetUpGroovyFacetOnTheFly(module))
+				{
+					Messages.showErrorDialog(myProject, GroovyBundle.message("cannot.compile.groovy.files.no.facet", module.getName()), GroovyBundle.message("cannot.compile"));
+					ModulesConfigurator.showDialog(module.getProject(), module.getName(), ClasspathEditor.NAME);
+					return false;
+				}
+			}
+		}
 
-    if (!nojdkModules.isEmpty()) {
-      final Module[] noJdkArray = nojdkModules.toArray(new Module[nojdkModules.size()]);
-      if (noJdkArray.length == 1) {
-        Messages.showErrorDialog(myProject, GroovyBundle.message("cannot.compile.groovy.files.no.sdk", noJdkArray[0].getName()),
-                                 GroovyBundle.message("cannot.compile"));
-      }
-      else {
-        StringBuilder modulesList = new StringBuilder();
-        for (int i = 0; i < noJdkArray.length; i++) {
-          if (i > 0) modulesList.append(", ");
-          modulesList.append(noJdkArray[i].getName());
-        }
-        Messages.showErrorDialog(myProject, GroovyBundle.message("cannot.compile.groovy.files.no.sdk.mult", modulesList.toString()),
-                                 GroovyBundle.message("cannot.compile"));
-      }
-      return false;
-    }
+		if(!nojdkModules.isEmpty())
+		{
+			final Module[] noJdkArray = nojdkModules.toArray(new Module[nojdkModules.size()]);
+			if(noJdkArray.length == 1)
+			{
+				Messages.showErrorDialog(myProject, GroovyBundle.message("cannot.compile.groovy.files.no.sdk", noJdkArray[0].getName()), GroovyBundle.message("cannot.compile"));
+			}
+			else
+			{
+				StringBuilder modulesList = new StringBuilder();
+				for(int i = 0; i < noJdkArray.length; i++)
+				{
+					if(i > 0)
+					{
+						modulesList.append(", ");
+					}
+					modulesList.append(noJdkArray[i].getName());
+				}
+				Messages.showErrorDialog(myProject, GroovyBundle.message("cannot.compile.groovy.files.no.sdk.mult", modulesList.toString()), GroovyBundle.message("cannot.compile"));
+			}
+			return false;
+		}
 
-    final GroovyCompilerConfiguration configuration = GroovyCompilerConfiguration.getInstance(myProject);
-    if (!configuration.transformsOk && needTransformCopying(compileScope)) {
-      final int result = Messages.showYesNoDialog(myProject,
-                                                  "You seem to have global Groovy AST transformations defined in your project,\n" +
-                                                  "but they won't be applied to your code because they are not marked as compiler resources.\n" +
-                                                  "Do you want to add them to compiler resource list?\n" +
-                                                  "(you can do it yourself later in Settings | Compiler | Resource patterns)",
-                                                  "AST Transformations Found",
-                                                  JetgroovyIcons.Groovy.Groovy_32x32);
-      if (result == 0) {
-        ResourceCompilerConfiguration.getInstance(myProject).addResourceFilePattern(AST_TRANSFORM_FILE_NAME);
-      } else {
-        configuration.transformsOk = true;
-      }
-    }
+		final GroovyCompilerConfiguration configuration = GroovyCompilerConfiguration.getInstance(myProject);
+		if(!configuration.transformsOk && needTransformCopying(compileScope))
+		{
+			final int result = Messages.showYesNoDialog(myProject, "You seem to have global Groovy AST transformations defined in your project,\n" + "but they won't be applied to your code because " +
+					"they are not marked as compiler resources.\n" + "Do you want to add them to compiler resource list?\n" + "(you can do it yourself later in Settings | Compiler | Resource " +
+					"patterns)", "AST Transformations Found", JetgroovyIcons.Groovy.Groovy_32x32);
+			if(result == 0)
+			{
+				ResourceCompilerConfiguration.getInstance(myProject).addResourceFilePattern(AST_TRANSFORM_FILE_NAME);
+			}
+			else
+			{
+				configuration.transformsOk = true;
+			}
+		}
 
-    return true;
-  }
+		return true;
+	}
 
-  @Override
-  public void init(@NotNull CompilerManager compilerManager) {
-    compilerManager.addCompilableFileType(GroovyFileType.GROOVY_FILE_TYPE);
-  }
+	@Override
+	public void registerCompilableFileTypes(@NotNull Consumer<FileType> fileTypeConsumer)
+	{
+		fileTypeConsumer.accept(GroovyFileType.GROOVY_FILE_TYPE);
+	}
 
-  private boolean needTransformCopying(CompileScope compileScope) {
-    final ProjectFileIndex index = ProjectRootManager.getInstance(myProject).getFileIndex();
-    for (VirtualFile file : FilenameIndex.getVirtualFilesByName(myProject, AST_TRANSFORM_FILE_NAME, GlobalSearchScope.projectScope(myProject))) {
-      if (compileScope.belongs(file.getUrl()) && index.isInSource(file) && !ResourceCompilerConfiguration.getInstance(myProject).isResourceFile(file)) {
-        return true;
-      }
-    }
-    return false;
-  }
+	private boolean needTransformCopying(CompileScope compileScope)
+	{
+		final ProjectFileIndex index = ProjectRootManager.getInstance(myProject).getFileIndex();
+		for(VirtualFile file : FilenameIndex.getVirtualFilesByName(myProject, AST_TRANSFORM_FILE_NAME, GlobalSearchScope.projectScope(myProject)))
+		{
+			if(compileScope.belongs(file.getUrl()) && index.isInSource(file) && !ResourceCompilerConfiguration.getInstance(myProject).isResourceFile(file))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
 
-  @NotNull
-  @Override
-  public FileType[] getInputFileTypes() {
-    return new FileType[] {GroovyFileType.GROOVY_FILE_TYPE, JavaClassFileType.INSTANCE};
-  }
+	@NotNull
+	@Override
+	public FileType[] getInputFileTypes()
+	{
+		return new FileType[]{
+				GroovyFileType.GROOVY_FILE_TYPE,
+				JavaClassFileType.INSTANCE
+		};
+	}
 
-  @NotNull
-  @Override
-  public FileType[] getOutputFileTypes() {
-    return new FileType[] {JavaClassFileType.INSTANCE};
-  }
+	@NotNull
+	@Override
+	public FileType[] getOutputFileTypes()
+	{
+		return new FileType[]{JavaClassFileType.INSTANCE};
+	}
 }

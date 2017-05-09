@@ -43,7 +43,6 @@ import com.intellij.openapi.application.ModalityState;
 import com.intellij.openapi.application.WriteAction;
 import com.intellij.openapi.compiler.CompileContext;
 import com.intellij.openapi.compiler.CompileScope;
-import com.intellij.openapi.compiler.CompilerManager;
 import com.intellij.openapi.compiler.CompilerPaths;
 import com.intellij.openapi.compiler.ex.CompileContextEx;
 import com.intellij.openapi.compiler.options.ExcludedEntriesConfiguration;
@@ -308,12 +307,6 @@ public class GroovycStubGenerator extends GroovyCompilerBase
 	public boolean validateConfiguration(CompileScope scope)
 	{
 		return true;
-	}
-
-	@Override
-	public void init(@NotNull CompilerManager compilerManager)
-	{
-
 	}
 
 	public static Collection<VirtualFile> generateItems(final GroovyToJavaGenerator generator, final VirtualFile item,
