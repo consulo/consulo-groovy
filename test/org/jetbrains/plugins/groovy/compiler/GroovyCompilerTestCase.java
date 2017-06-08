@@ -71,7 +71,6 @@ public abstract class GroovyCompilerTestCase extends JavaCodeInsightFixtureTestC
   @Override
   protected void setUp() throws Exception {
     super.setUp();
-    getProject().getComponent(GroovyCompilerLoader.class).projectOpened();
     myCompilerTester = new CompilerTester(useJps(), myModule);
   }
 
