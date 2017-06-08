@@ -15,7 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.compiler;
 
-import com.intellij.openapi.compiler.CompilerManager;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.plugins.groovy.compiler.generator.GroovycStubGenerator;
 import com.intellij.openapi.components.AbstractProjectComponent;
 import com.intellij.openapi.fileEditor.FileEditor;
 import com.intellij.openapi.fileEditor.FileEditorManager;
@@ -25,8 +26,6 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiClass;
 import com.intellij.ui.EditorNotificationPanel;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.plugins.groovy.compiler.generator.GroovycStubGenerator;
 
 /**
  * @author ilyas
@@ -38,17 +37,6 @@ public class GroovyCompilerLoader extends AbstractProjectComponent {
   }
 
   public void projectOpened() {
-    CompilerManager compilerManager = CompilerManager.getInstance(myProject);
-
-
-   /* compilerManager.addTranslatingCompiler(new GroovycStubGenerator(myProject),
-                                           new HashSet<FileType>(Arrays.asList(StdFileTypes.JAVA, GroovyFileType.GROOVY_FILE_TYPE)),
-                                           new HashSet<FileType>(Arrays.asList(StdFileTypes.JAVA)));
-
-    compilerManager.addTranslatingCompiler(new GroovyCompiler(myProject),
-                                           new HashSet<FileType>(Arrays.asList(GroovyFileType.GROOVY_FILE_TYPE, StdFileTypes.CLASS)),
-                                           new HashSet<FileType>(Arrays.asList(StdFileTypes.CLASS)));
-                                                                                                                   */
     myProject.getMessageBus().connect().subscribe(FileEditorManagerListener.FILE_EDITOR_MANAGER, new FileEditorManagerAdapter() {
       @Override
       public void fileOpened(@NotNull FileEditorManager source, @NotNull final VirtualFile file) {
