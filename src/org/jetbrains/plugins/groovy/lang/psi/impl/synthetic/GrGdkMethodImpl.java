@@ -16,18 +16,23 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.synthetic;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.plugins.groovy.GroovyLanguage;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrGdkMethod;
 import com.intellij.openapi.util.Key;
-import com.intellij.psi.*;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiMethod;
+import com.intellij.psi.PsiModifier;
+import com.intellij.psi.PsiParameter;
+import com.intellij.psi.PsiTypeParameter;
+import com.intellij.psi.PsiTypeParameterList;
 import com.intellij.psi.impl.light.LightMethodBuilder;
 import com.intellij.psi.util.CachedValue;
 import com.intellij.psi.util.CachedValueProvider;
 import com.intellij.psi.util.CachedValuesManager;
 import com.intellij.psi.util.PsiModificationTracker;
 import icons.JetgroovyIcons;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.jetbrains.plugins.groovy.GroovyLanguage;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrGdkMethod;
 
 /**
  * @author ven
@@ -113,7 +118,7 @@ public class GrGdkMethodImpl extends LightMethodBuilder implements GrGdkMethod {
           return Result.create(new GrGdkMethodImpl(original, isStatic, originInfo),
                                PsiModificationTracker.OUT_OF_CODE_BLOCK_MODIFICATION_COUNT);
         }
-      });
+      }, false);
       original.putUserData(cachedValueKey, cachedValue);
     }
 
