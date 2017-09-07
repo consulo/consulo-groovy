@@ -16,9 +16,8 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members;
 
-import com.intellij.psi.PsiMethod;
-import com.intellij.psi.PsiType;
-import com.intellij.util.ArrayFactory;
+import java.util.Map;
+
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -30,64 +29,65 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrParametersOwner;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrTopLevelDefinition;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrCodeBlock;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrOpenBlock;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameter;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameterList;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeParameterListOwner;
-
-import java.util.Map;
+import com.intellij.psi.PsiMethod;
+import com.intellij.psi.PsiType;
+import com.intellij.util.ArrayFactory;
 
 /**
  * @author: Dmitry.Krasilschikov
  * @date: 26.03.2007
  */
-public interface GrMethod extends GrMembersDeclaration, GrNamedElement, PsiMethod, GrMember,
-        GrParametersOwner, GrTopLevelDefinition, GrTypeParameterListOwner, GrDocCommentOwner {
-  GrMethod[] EMPTY_ARRAY = new GrMethod[0];
-  ArrayFactory<GrMethod> ARRAY_FACTORY = new ArrayFactory<GrMethod>() {
-    @NotNull
-    @Override
-    public GrMethod[] create(int count) {
-      return new GrMethod[count];
-    }
-  };
+public interface GrMethod extends GrMembersDeclaration, GrNamedElement, PsiMethod, GrMember, GrParametersOwner, GrTopLevelDefinition, GrTypeParameterListOwner, GrDocCommentOwner
+{
+	GrMethod[] EMPTY_ARRAY = new GrMethod[0];
 
-  @Nullable
-  GrOpenBlock getBlock();
+	ArrayFactory<GrMethod> ARRAY_FACTORY = count -> count == 0 ? EMPTY_ARRAY : new GrMethod[count];
 
-  void setBlock(GrCodeBlock newBlock);
+	@Nullable
+	GrOpenBlock getBlock();
 
-  @Nullable
-  GrTypeElement getReturnTypeElementGroovy();
+	void setBlock(GrCodeBlock newBlock);
 
-  /**
-   * @return The inferred return type, which may be much more precise then the getReturnType() result, but takes longer to calculate.
-   * To be used only in the Groovy code insight
-   */
-  @Nullable
-  PsiType getInferredReturnType();
+	@Nullable
+	GrTypeElement getReturnTypeElementGroovy();
 
-  /**
-   * @return the static return type, which will appear in the compiled Groovy class
-   */
-  @Nullable
-  PsiType getReturnType();
+	/**
+	 * @return The inferred return type, which may be much more precise then the getReturnType() result, but takes longer to calculate.
+	 * To be used only in the Groovy code insight
+	 */
+	@Nullable
+	PsiType getInferredReturnType();
 
-  @Nullable
-  GrTypeElement setReturnType(@Nullable PsiType newReturnType);
+	/**
+	 * @return the static return type, which will appear in the compiled Groovy class
+	 */
+	@Nullable
+	PsiType getReturnType();
 
-  @NotNull
-  @NonNls
-  String getName();
+	@Nullable
+	GrTypeElement setReturnType(@Nullable PsiType newReturnType);
 
-  @NotNull
-  GrParameterList getParameterList();
+	@NotNull
+	@NonNls
+	String getName();
 
-  @NotNull
-  GrModifierList getModifierList();
+	@NotNull
+	GrParameterList getParameterList();
 
-  @NotNull
-  Map<String, NamedArgumentDescriptor> getNamedParameters();
+	@NotNull
+	GrModifierList getModifierList();
 
-  @NotNull
-  GrReflectedMethod[] getReflectedMethods();
+	@NotNull
+	Map<String, NamedArgumentDescriptor> getNamedParameters();
+
+	@NotNull
+	GrReflectedMethod[] getReflectedMethods();
+
+	@NotNull
+	@Override
+	GrParameter[] getParameters();
 }
