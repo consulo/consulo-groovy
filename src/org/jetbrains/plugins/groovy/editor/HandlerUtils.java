@@ -34,59 +34,70 @@ import com.intellij.psi.util.PsiUtilBase;
 /**
  * @author ilyas
  */
-public class HandlerUtils {
-  private HandlerUtils() {
-  }
+public class HandlerUtils
+{
+	private HandlerUtils()
+	{
+	}
 
-  public static boolean isEnabled(@NotNull final Editor editor, @NotNull final DataContext dataContext,
-                                  @Nullable final EditorActionHandler originalHandler) {
-    final Project project = getProject(dataContext);
-    if (project != null) {
-      final Language language = PsiUtilBase.getLanguageInEditor(editor, project);
-      if (language == GroovyFileType.GROOVY_LANGUAGE) {
-        return true;
-      }
-    }
+	public static boolean isEnabled(@NotNull final Editor editor, @NotNull final DataContext dataContext, @Nullable final EditorActionHandler originalHandler)
+	{
+		final Project project = getProject(dataContext);
+		if(project != null)
+		{
+			final Language language = PsiUtilBase.getLanguageInEditor(editor, project);
+			if(language == GroovyFileType.GROOVY_LANGUAGE)
+			{
+				return true;
+			}
+		}
 
-    return originalHandler == null || originalHandler.isEnabled(editor, dataContext);
-  }
+		return originalHandler == null || originalHandler.isEnabled(editor, dataContext);
+	}
 
-  public static boolean isReadOnly(@NotNull final Editor editor) {
-    if (editor.isViewer()) {
-      return true;
-    }
-    Document document = editor.getDocument();
-    return !document.isWritable();
-  }
+	public static boolean isReadOnly(@NotNull final Editor editor)
+	{
+		if(editor.isViewer())
+		{
+			return true;
+		}
+		Document document = editor.getDocument();
+		return !document.isWritable();
+	}
 
-  public static boolean canBeInvoked(final Editor editor, final Project project) {
-    if (isReadOnly(editor)) {
-      return false;
-    }
-    if (getPsiFile(editor, project) == null) {
-      return false;
-    }
+	public static boolean canBeInvoked(final Editor editor, final Project project)
+	{
+		if(isReadOnly(editor))
+		{
+			return false;
+		}
+		if(getPsiFile(editor, project) == null)
+		{
+			return false;
+		}
 
-    return true;
-  }
+		return true;
+	}
 
-  public static PsiFile getPsiFile(@NotNull final Editor editor, @NotNull final DataContext dataContext) {
-    return getPsiFile(editor, getProject(dataContext));
-  }
+	public static PsiFile getPsiFile(@NotNull final Editor editor, @NotNull final DataContext dataContext)
+	{
+		return getPsiFile(editor, getProject(dataContext));
+	}
 
-  public static PsiFile getPsiFile(@NotNull final Editor editor, final Project project) {
-    return PsiDocumentManager.getInstance(project).getPsiFile(editor.getDocument());
-  }
+	public static PsiFile getPsiFile(@NotNull final Editor editor, final Project project)
+	{
+		return PsiDocumentManager.getInstance(project).getPsiFile(editor.getDocument());
+	}
 
-  @Nullable
-  public static Language getLanguage(@NotNull final DataContext dataContext) {
-    return LangDataKeys.LANGUAGE.getData(dataContext);
-  }
+	@Nullable
+	public static Language getLanguage(@NotNull final DataContext dataContext)
+	{
+		return dataContext.getData(LangDataKeys.LANGUAGE);
+	}
 
-  @Nullable
-  public static Project getProject(@NotNull final DataContext dataContext) {
-    return CommonDataKeys.PROJECT.getData(dataContext);
-  }
-
-
+	@Nullable
+	public static Project getProject(@NotNull final DataContext dataContext)
+	{
+		return dataContext.getData(CommonDataKeys.PROJECT);
+	}
 }

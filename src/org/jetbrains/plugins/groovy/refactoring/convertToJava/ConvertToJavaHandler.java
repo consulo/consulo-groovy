@@ -15,6 +15,11 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.convertToJava;
 
+import java.util.Set;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
+import org.jetbrains.plugins.groovy.refactoring.GroovyRefactoringBundle;
 import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.actionSystem.PlatformDataKeys;
 import com.intellij.openapi.application.ApplicationManager;
@@ -25,11 +30,6 @@ import com.intellij.psi.PsiFile;
 import com.intellij.refactoring.RefactoringActionHandler;
 import com.intellij.refactoring.util.CommonRefactoringUtil;
 import com.intellij.util.containers.ContainerUtil;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
-import org.jetbrains.plugins.groovy.refactoring.GroovyRefactoringBundle;
-
-import java.util.Set;
 
 /**
  * @author Maxim.Medvedev
@@ -46,7 +46,7 @@ public class ConvertToJavaHandler implements RefactoringActionHandler {
   public void invoke(@NotNull Project project, @NotNull PsiElement[] elements, DataContext dataContext) {
     Editor editor = null;
     if (dataContext != null) {
-      editor = PlatformDataKeys.EDITOR.getData(dataContext);
+      editor = dataContext.getData(PlatformDataKeys.EDITOR);
     }
     invokeInner(project, elements, editor);
   }

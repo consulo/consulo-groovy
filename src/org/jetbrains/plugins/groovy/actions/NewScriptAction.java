@@ -53,7 +53,7 @@ public class NewScriptAction extends JavaCreateTemplateInPackageAction<GroovyFil
 	@Override
 	protected boolean isAvailable(DataContext dataContext)
 	{
-		return super.isAvailable(dataContext) && LibrariesUtil.hasGroovySdk(LangDataKeys.MODULE.getData(dataContext));
+		return super.isAvailable(dataContext) && LibrariesUtil.hasGroovySdk(dataContext.getData(LangDataKeys.MODULE));
 	}
 
 	@Override

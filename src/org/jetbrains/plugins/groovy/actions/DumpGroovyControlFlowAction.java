@@ -15,6 +15,14 @@
  */
 package org.jetbrains.plugins.groovy.actions;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.plugins.groovy.codeInspection.utils.ControlFlowUtils;
+import org.jetbrains.plugins.groovy.editor.HandlerUtils;
+import org.jetbrains.plugins.groovy.lang.psi.GrControlFlowOwner;
+import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.PlatformDataKeys;
@@ -24,64 +32,71 @@ import com.intellij.openapi.util.Pass;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.refactoring.IntroduceTargetChooser;
-import com.intellij.util.Function;
-import org.jetbrains.plugins.groovy.codeInspection.utils.ControlFlowUtils;
-import org.jetbrains.plugins.groovy.editor.HandlerUtils;
-import org.jetbrains.plugins.groovy.lang.psi.GrControlFlowOwner;
-import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
-
-import java.util.ArrayList;
-import java.util.List;
+import consulo.annotations.RequiredDispatchThread;
+import consulo.annotations.RequiredReadAction;
 
 /**
  * @author Max Medvedev
  */
-public class DumpGroovyControlFlowAction extends AnAction implements DumbAware {
-  @Override
-  public void actionPerformed(AnActionEvent e) {
-    final Editor editor = PlatformDataKeys.EDITOR.getData(e.getDataContext());
-    if (editor == null) return;
+public class DumpGroovyControlFlowAction extends AnAction implements DumbAware
+{
+	@RequiredDispatchThread
+	@Override
+	public void actionPerformed(@NotNull AnActionEvent e)
+	{
+		final Editor editor = e.getData(PlatformDataKeys.EDITOR);
+		if(editor == null)
+		{
+			return;
+		}
 
-    final PsiFile psiFile = HandlerUtils.getPsiFile(editor, e.getDataContext());
-    if (!(psiFile instanceof GroovyFile)) return;
+		final PsiFile psiFile = HandlerUtils.getPsiFile(editor, e.getDataContext());
+		if(!(psiFile instanceof GroovyFile))
+		{
+			return;
+		}
 
-    int offset = editor.getCaretModel().getOffset();
+		int offset = editor.getCaretModel().getOffset();
 
-    final List<GrControlFlowOwner> controlFlowOwners = collectControlFlowOwners(psiFile, editor, offset);
-    if (controlFlowOwners.size() == 0) return;
-    if (controlFlowOwners.size() == 1) {
-      passInner(controlFlowOwners.get(0));
-    }
-    else {
-      IntroduceTargetChooser.showChooser(editor, controlFlowOwners, new Pass<GrControlFlowOwner>() {
-                                           @Override
-                                           public void pass(GrControlFlowOwner grExpression) {
-                                             passInner(grExpression);
-                                           }
-                                         }, new Function<GrControlFlowOwner, String>() {
-        @Override
-        public String fun(GrControlFlowOwner flowOwner) {
-          return flowOwner.getText();
-        }
-      }
-      );
-    }
-  }
+		final List<GrControlFlowOwner> controlFlowOwners = collectControlFlowOwners(psiFile, editor, offset);
+		if(controlFlowOwners.size() == 0)
+		{
+			return;
+		}
+		if(controlFlowOwners.size() == 1)
+		{
+			passInner(controlFlowOwners.get(0));
+		}
+		else
+		{
+			IntroduceTargetChooser.showChooser(editor, controlFlowOwners, new Pass<GrControlFlowOwner>()
+			{
+				@Override
+				public void pass(GrControlFlowOwner grExpression)
+				{
+					passInner(grExpression);
+				}
+			}, PsiElement::getText);
+		}
+	}
 
-  private static List<GrControlFlowOwner> collectControlFlowOwners(final PsiFile file, final Editor editor, final int offset) {
-    final PsiElement elementAtCaret = file.findElementAt(offset);
-    final List<GrControlFlowOwner> result = new ArrayList<GrControlFlowOwner>();
+	@RequiredReadAction
+	private static List<GrControlFlowOwner> collectControlFlowOwners(final PsiFile file, final Editor editor, final int offset)
+	{
+		final PsiElement elementAtCaret = file.findElementAt(offset);
+		final List<GrControlFlowOwner> result = new ArrayList<GrControlFlowOwner>();
 
-    for (GrControlFlowOwner owner = ControlFlowUtils.findControlFlowOwner(elementAtCaret);
-         owner != null;
-         owner = ControlFlowUtils.findControlFlowOwner(owner)) {
-      result.add(owner);
-    }
-    return result;
-  }
+		for(GrControlFlowOwner owner = ControlFlowUtils.findControlFlowOwner(elementAtCaret); owner != null; owner = ControlFlowUtils.findControlFlowOwner(owner))
+		{
+			result.add(owner);
+		}
+		return result;
+	}
 
-  private static void passInner(GrControlFlowOwner owner) {
-    System.out.println(owner.getText());
-    System.out.println(ControlFlowUtils.dumpControlFlow(owner.getControlFlow()));
-  }
+	@RequiredReadAction
+	private static void passInner(GrControlFlowOwner owner)
+	{
+		System.out.println(owner.getText());
+		System.out.println(ControlFlowUtils.dumpControlFlow(owner.getControlFlow()));
+	}
 }

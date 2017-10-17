@@ -1,13 +1,15 @@
 package org.jetbrains.plugins.groovy.mvc;
 
-import com.intellij.openapi.actionSystem.*;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import com.intellij.openapi.actionSystem.ActionPlaces;
+import com.intellij.openapi.actionSystem.AnActionEvent;
+import com.intellij.openapi.actionSystem.LangDataKeys;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.DumbAwareAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Pair;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public abstract class MvcActionBase extends DumbAwareAction {
 
@@ -50,7 +52,7 @@ public abstract class MvcActionBase extends DumbAwareAction {
       }
     }
 
-    final Project project = CommonDataKeys.PROJECT.getData(event.getDataContext());
+    final Project project = event.getProject();
     if (project == null) {
       return null;
     }

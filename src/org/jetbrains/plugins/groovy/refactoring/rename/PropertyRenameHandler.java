@@ -15,6 +15,17 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.rename;
 
+import static org.jetbrains.plugins.groovy.refactoring.rename.RenamePropertyUtil.askToRenameProperty;
+
+import java.util.List;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrAccessorMethod;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
+import org.jetbrains.plugins.groovy.lang.psi.util.GroovyPropertyUtils;
+import org.jetbrains.plugins.groovy.refactoring.GroovyRefactoringBundle;
 import com.intellij.ide.TitledHandler;
 import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.actionSystem.LangDataKeys;
@@ -28,17 +39,6 @@ import com.intellij.psi.PsiMember;
 import com.intellij.psi.PsiMethod;
 import com.intellij.refactoring.rename.PsiElementRenameHandler;
 import com.intellij.refactoring.rename.RenameHandler;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrAccessorMethod;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
-import org.jetbrains.plugins.groovy.lang.psi.util.GroovyPropertyUtils;
-import org.jetbrains.plugins.groovy.refactoring.GroovyRefactoringBundle;
-
-import java.util.List;
-
-import static org.jetbrains.plugins.groovy.refactoring.rename.RenamePropertyUtil.askToRenameProperty;
 
 /**
  * @author ven
@@ -54,7 +54,7 @@ public class PropertyRenameHandler implements RenameHandler, TitledHandler {
 
   @Nullable
   private static PsiElement getElement(DataContext dataContext) {
-    return LangDataKeys.PSI_ELEMENT.getData(dataContext);
+    return dataContext.getData(LangDataKeys.PSI_ELEMENT);
   }
 
   public boolean isRenaming(DataContext dataContext) {
@@ -69,7 +69,7 @@ public class PropertyRenameHandler implements RenameHandler, TitledHandler {
   public void invoke(@NotNull Project project, @NotNull PsiElement[] elements, @Nullable DataContext dataContext) {
     PsiElement element = elements.length == 1 ? elements[0] : null;
     if (element == null) element = getElement(dataContext);
-    Editor editor = dataContext == null ? null : PlatformDataKeys.EDITOR.getData(dataContext);
+    Editor editor = dataContext == null ? null : dataContext.getData(PlatformDataKeys.EDITOR);
     invokeInner(project, editor, element);
   }
 

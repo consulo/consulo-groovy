@@ -22,7 +22,6 @@ import org.jetbrains.plugins.groovy.util.LibrariesUtil;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
-import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.actionSystem.LangDataKeys;
 import com.intellij.openapi.actionSystem.Presentation;
 import com.intellij.openapi.module.Module;
@@ -31,50 +30,61 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ModuleRootManager;
 import com.intellij.openapi.vfs.VirtualFile;
 
-public final class GenerateGroovyDocAction extends AnAction implements DumbAware {
-  @NonNls private static final String INDEX_HTML = "index.html";
+public final class GenerateGroovyDocAction extends AnAction implements DumbAware
+{
+	@NonNls
+	private static final String INDEX_HTML = "index.html";
 
-  public void actionPerformed(AnActionEvent e) {
-    final DataContext dataContext = e.getDataContext();
-    final Project project = CommonDataKeys.PROJECT.getData(dataContext);
+	public void actionPerformed(AnActionEvent e)
+	{
+		final Project project = e.getData(CommonDataKeys.PROJECT);
 
-    final Module module = LangDataKeys.MODULE.getData(dataContext);
-    if (module == null) return;
+		final Module module = e.getData(LangDataKeys.MODULE);
+		if(module == null)
+		{
+			return;
+		}
 
-    GroovyDocConfiguration configuration = new GroovyDocConfiguration();
+		GroovyDocConfiguration configuration = new GroovyDocConfiguration();
 
-    final VirtualFile[] files = ModuleRootManager.getInstance(module).getContentRoots();
-    if (files.length == 1) {
-      configuration.INPUT_DIRECTORY = files[0].getPath();
-    }
+		final VirtualFile[] files = ModuleRootManager.getInstance(module).getContentRoots();
+		if(files.length == 1)
+		{
+			configuration.INPUT_DIRECTORY = files[0].getPath();
+		}
 
-    final GenerateGroovyDocDialog dialog = new GenerateGroovyDocDialog(project, configuration);
-    dialog.show();
-    if (!dialog.isOK()) {
-      return;
-    }
+		final GenerateGroovyDocDialog dialog = new GenerateGroovyDocDialog(project, configuration);
+		dialog.show();
+		if(!dialog.isOK())
+		{
+			return;
+		}
 
-    generateGroovydoc(configuration, project);
-  }
+		generateGroovydoc(configuration, project);
+	}
 
-  public void update(AnActionEvent event) {
-    super.update(event);
-    final Presentation presentation = event.getPresentation();
-    Module module = LangDataKeys.MODULE.getData(event.getDataContext());
+	public void update(AnActionEvent event)
+	{
+		super.update(event);
+		final Presentation presentation = event.getPresentation();
+		Module module = event.getData(LangDataKeys.MODULE);
 
-    if (module == null || !LibrariesUtil.hasGroovySdk(module)) {
-      presentation.setEnabled(false);
-      presentation.setVisible(false);
-    }
-    else {
-      presentation.setEnabled(true);
-      presentation.setVisible(true);
-    }
-  }
+		if(module == null || !LibrariesUtil.hasGroovySdk(module))
+		{
+			presentation.setEnabled(false);
+			presentation.setVisible(false);
+		}
+		else
+		{
+			presentation.setEnabled(true);
+			presentation.setVisible(true);
+		}
+	}
 
-  private static void generateGroovydoc(final GroovyDocConfiguration configuration, final Project project) {
+	private static void generateGroovydoc(final GroovyDocConfiguration configuration, final Project project)
+	{
   /* TODO[VISTALL] Runnable groovyDocRun = new Runnable() {
-      public void run() {
+	  public void run() {
         Groovydoc groovydoc = new Groovydoc();
         groovydoc.setProject(new org.apache.tools.ant.Project());
         groovydoc.setDestdir(new File(configuration.OUTPUT_DIRECTORY));
@@ -115,5 +125,5 @@ public final class GenerateGroovyDocAction extends AnAction implements DumbAware
         BrowserUtil.browse(url);
       }
     }   */
-  }
+	}
 }

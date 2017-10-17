@@ -29,7 +29,6 @@ import com.intellij.ide.actions.JavaCreateTemplateInPackageAction;
 import com.intellij.ide.fileTemplates.FileTemplate;
 import com.intellij.ide.fileTemplates.FileTemplateManager;
 import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.actionSystem.LangDataKeys;
 import com.intellij.openapi.actionSystem.Presentation;
@@ -85,7 +84,7 @@ public class NewGroovyClassAction extends JavaCreateTemplateInPackageAction<GrTy
 	@Override
 	protected boolean isAvailable(DataContext dataContext)
 	{
-		return super.isAvailable(dataContext) && LibrariesUtil.hasGroovySdk(LangDataKeys.MODULE.getData(dataContext));
+		return super.isAvailable(dataContext) && LibrariesUtil.hasGroovySdk(dataContext.getData(LangDataKeys.MODULE));
 	}
 
 	@Override
@@ -110,12 +109,12 @@ public class NewGroovyClassAction extends JavaCreateTemplateInPackageAction<GrTy
 			return;
 		}
 
-		IdeView view = LangDataKeys.IDE_VIEW.getData(e.getDataContext());
+		IdeView view = e.getData(LangDataKeys.IDE_VIEW);
 		if(view == null)
 		{
 			return;
 		}
-		Project project = CommonDataKeys.PROJECT.getData(e.getDataContext());
+		Project project = e.getProject();
 		if(project == null)
 		{
 			return;

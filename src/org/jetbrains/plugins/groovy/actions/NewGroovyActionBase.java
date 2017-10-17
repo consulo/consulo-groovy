@@ -16,6 +16,11 @@
 
 package org.jetbrains.plugins.groovy.actions;
 
+import javax.swing.Icon;
+
+import org.jetbrains.annotations.NonNls;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.plugins.groovy.module.extension.GroovyModuleExtension;
 import com.intellij.CommonBundle;
 import com.intellij.ide.actions.CreateElementActionBase;
 import com.intellij.openapi.actionSystem.DataContext;
@@ -26,53 +31,55 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiElement;
-import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.plugins.groovy.module.extension.GroovyModuleExtension;
 
-import javax.swing.*;
+public abstract class NewGroovyActionBase extends CreateElementActionBase
+{
 
-public abstract class NewGroovyActionBase extends CreateElementActionBase {
+	@NonNls
+	public static final String GROOVY_EXTENSION = ".groovy";
 
-  @NonNls
-  public static final String GROOVY_EXTENSION = ".groovy";
+	public NewGroovyActionBase(String text, String description, Icon icon)
+	{
+		super(text, description, icon);
+	}
 
-  public NewGroovyActionBase(String text, String description, Icon icon) {
-    super(text, description, icon);
-  }
+	@NotNull
+	protected final PsiElement[] invokeDialog(final Project project, final PsiDirectory directory)
+	{
+		MyInputValidator validator = new MyInputValidator(project, directory);
+		Messages.showInputDialog(project, getDialogPrompt(), getDialogTitle(), Messages.getQuestionIcon(), "", validator);
 
-  @NotNull
-  protected final PsiElement[] invokeDialog(final Project project, final PsiDirectory directory) {
-    MyInputValidator validator = new MyInputValidator(project, directory);
-    Messages.showInputDialog(project, getDialogPrompt(), getDialogTitle(), Messages.getQuestionIcon(), "", validator);
+		return validator.getCreatedElements();
+	}
 
-    return validator.getCreatedElements();
-  }
+	protected abstract String getDialogPrompt();
 
-  protected abstract String getDialogPrompt();
+	protected abstract String getDialogTitle();
 
-  protected abstract String getDialogTitle();
+	@Override
+	protected boolean isAvailable(DataContext dataContext)
+	{
+		if(!super.isAvailable(dataContext))
+		{
+			return false;
+		}
 
-  @Override
-  protected boolean isAvailable(DataContext dataContext) {
-    if (!super.isAvailable(dataContext)) {
-      return false;
-    }
+		Module module = dataContext.getData(LangDataKeys.MODULE);
+		return module != null && ModuleUtilCore.getExtension(module, GroovyModuleExtension.class) != null;
+	}
 
-    Module module = LangDataKeys.MODULE.getData(dataContext);
-    return module != null && ModuleUtilCore.getExtension(module, GroovyModuleExtension.class) != null;
-  }
+	@NotNull
+	protected PsiElement[] create(String newName, PsiDirectory directory) throws Exception
+	{
+		return doCreate(newName, directory);
+	}
 
-  @NotNull
-  protected PsiElement[] create(String newName, PsiDirectory directory) throws Exception {
-    return doCreate(newName, directory);
-  }
-
-  @NotNull
-  protected abstract PsiElement[] doCreate(String newName, PsiDirectory directory) throws Exception;
+	@NotNull
+	protected abstract PsiElement[] doCreate(String newName, PsiDirectory directory) throws Exception;
 
 
-  protected String getErrorTitle() {
-    return CommonBundle.getErrorTitle();
-  }
+	protected String getErrorTitle()
+	{
+		return CommonBundle.getErrorTitle();
+	}
 }

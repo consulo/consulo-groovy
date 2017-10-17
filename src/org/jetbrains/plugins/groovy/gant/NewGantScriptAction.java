@@ -27,7 +27,8 @@ import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
-import com.intellij.util.ObjectUtils;
+import com.intellij.util.ObjectUtil;
+import consulo.annotations.RequiredReadAction;
 import icons.JetgroovyIcons;
 
 /**
@@ -68,12 +69,12 @@ public class NewGantScriptAction extends NewGroovyActionBase
 	@Override
 	protected boolean isAvailable(DataContext dataContext)
 	{
-		return super.isAvailable(dataContext) && GantUtils.isSDKConfiguredToRun(ObjectUtils.assertNotNull(LangDataKeys
-				.MODULE.getData(dataContext)));
+		return super.isAvailable(dataContext) && GantUtils.isSDKConfiguredToRun(ObjectUtil.assertNotNull(dataContext.getData(LangDataKeys.MODULE)));
 	}
 
 	@Override
 	@NotNull
+	@RequiredReadAction
 	protected PsiElement[] doCreate(String newName, PsiDirectory directory) throws Exception
 	{
 		PsiFile file = createGantScriptFromTemplate(directory, newName, GroovyTemplates.GANT_SCRIPT);
@@ -93,13 +94,9 @@ public class NewGantScriptAction extends NewGroovyActionBase
 		} : new PsiElement[]{file};
 	}
 
-	private static PsiFile createGantScriptFromTemplate(final PsiDirectory directory,
-			String className,
-			String templateName,
-			@NonNls String... parameters) throws IncorrectOperationException
+	private static PsiFile createGantScriptFromTemplate(final PsiDirectory directory, String className, String templateName, @NonNls String... parameters) throws IncorrectOperationException
 	{
-		return GroovyTemplatesFactory.createFromTemplate(directory, className, className + "." + GantScriptType
-				.DEFAULT_EXTENSION, templateName, true, parameters);
+		return GroovyTemplatesFactory.createFromTemplate(directory, className, className + "." + GantScriptType.DEFAULT_EXTENSION, templateName, true, parameters);
 	}
 
 }

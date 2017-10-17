@@ -15,42 +15,57 @@
  */
 package org.jetbrains.plugins.groovy.actions;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.plugins.groovy.editor.HandlerUtils;
+import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
+import org.jetbrains.plugins.groovy.refactoring.convertToJava.GroovyToJavaGenerator;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.PlatformDataKeys;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.DumbAware;
 import com.intellij.psi.PsiFile;
-import org.jetbrains.plugins.groovy.editor.HandlerUtils;
-import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
-import org.jetbrains.plugins.groovy.refactoring.convertToJava.GroovyToJavaGenerator;
+import consulo.annotations.RequiredDispatchThread;
 
 /**
  * @author Max Medvedev
  */
-public class DumpGroovyStubsAction extends AnAction implements DumbAware {
-  @Override
-  public void update(AnActionEvent e) {
-    Editor editor = PlatformDataKeys.EDITOR.getData(e.getDataContext());
-    if (editor != null) {
-      PsiFile psiFile = HandlerUtils.getPsiFile(editor, e.getDataContext());
-      if (psiFile instanceof GroovyFile) {
-        e.getPresentation().setEnabled(true);
-        return;
-      }
-    }
-    e.getPresentation().setEnabled(false);
-  }
+public class DumpGroovyStubsAction extends AnAction implements DumbAware
+{
+	@RequiredDispatchThread
+	@Override
+	public void update(@NotNull AnActionEvent e)
+	{
+		Editor editor = e.getData(PlatformDataKeys.EDITOR);
+		if(editor != null)
+		{
+			PsiFile psiFile = HandlerUtils.getPsiFile(editor, e.getDataContext());
+			if(psiFile instanceof GroovyFile)
+			{
+				e.getPresentation().setEnabled(true);
+				return;
+			}
+		}
+		e.getPresentation().setEnabled(false);
+	}
 
-  @Override
-  public void actionPerformed(AnActionEvent e) {
-    final Editor editor = PlatformDataKeys.EDITOR.getData(e.getDataContext());
-    if (editor == null) return;
+	@RequiredDispatchThread
+	@Override
+	public void actionPerformed(@NotNull AnActionEvent e)
+	{
+		final Editor editor = e.getData(PlatformDataKeys.EDITOR);
+		if(editor == null)
+		{
+			return;
+		}
 
-    final PsiFile psiFile = HandlerUtils.getPsiFile(editor, e.getDataContext());
-    if (!(psiFile instanceof GroovyFile)) return;
+		final PsiFile psiFile = HandlerUtils.getPsiFile(editor, e.getDataContext());
+		if(!(psiFile instanceof GroovyFile))
+		{
+			return;
+		}
 
-    final StringBuilder builder = GroovyToJavaGenerator.generateStubs(psiFile);
-    System.out.println(builder.toString());
-  }
+		final StringBuilder builder = GroovyToJavaGenerator.generateStubs(psiFile);
+		System.out.println(builder.toString());
+	}
 }

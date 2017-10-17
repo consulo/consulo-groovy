@@ -168,7 +168,7 @@ public abstract class MvcFramework {
           if (root == null) return;
 
           PsiDirectory psiDir = PsiManager.getInstance(module.getProject()).findDirectory(root);
-          IdeView ide = LangDataKeys.IDE_VIEW.getData(DataManager.getInstance().getDataContext());
+          IdeView ide = DataManager.getInstance().getDataContext().getData(LangDataKeys.IDE_VIEW);
           if (ide != null) ide.selectElement(psiDir);
 
           //also here comes fileCreated(application.properties) which manages roots and run configuration
