@@ -241,7 +241,7 @@ public class MvcProjectViewPane extends AbstractProjectViewPSIPane implements Id
 
 	@NotNull
 	@Override
-	protected BaseProjectTreeBuilder createBuilder(final DefaultTreeModel treeModel)
+	public BaseProjectTreeBuilder createBuilder(final DefaultTreeModel treeModel)
 	{
 		return new ProjectTreeBuilder(myProject, myTree, treeModel, null, (ProjectAbstractTreeStructureBase) myTreeStructure)
 		{
@@ -252,7 +252,8 @@ public class MvcProjectViewPane extends AbstractProjectViewPSIPane implements Id
 		};
 	}
 
-	protected ProjectAbstractTreeStructureBase createStructure()
+	@Override
+	public ProjectAbstractTreeStructureBase createStructure()
 	{
 		final Project project = myProject;
 		final String id = getId();
