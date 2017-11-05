@@ -15,37 +15,90 @@
  */
 package org.jetbrains.plugins.groovy.debugger;
 
-import static java.util.Collections.singletonList;
-
 import java.util.Collection;
 import java.util.Collections;
 
+import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.GroovyBundle;
-import com.intellij.openapi.components.State;
-import com.intellij.openapi.components.Storage;
-import com.intellij.openapi.components.StoragePathMacros;
 import com.intellij.openapi.options.Configurable;
-import com.intellij.openapi.options.SimpleConfigurable;
-import com.intellij.openapi.util.Getter;
 import com.intellij.util.xmlb.XmlSerializerUtil;
 import com.intellij.xdebugger.settings.DebuggerSettingsCategory;
 import com.intellij.xdebugger.settings.XDebuggerSettings;
+import consulo.options.SimpleConfigurableByProperties;
+import consulo.ui.CheckBox;
+import consulo.ui.Component;
+import consulo.ui.Label;
+import consulo.ui.RequiredUIAccess;
+import consulo.ui.VerticalLayout;
 
 /**
  * @author ilyas
  */
-@State(
-		name = "GroovyDebuggerSettings",
-		storages = {
-				@Storage(
-						file = StoragePathMacros.APP_CONFIG + "/groovy_debug.xml"
-				)
-		}
-)
-public class GroovyDebuggerSettings extends XDebuggerSettings<GroovyDebuggerSettings> implements Getter<GroovyDebuggerSettings>
+public class GroovyDebuggerSettings extends XDebuggerSettings<GroovyDebuggerSettings>
 {
-	public Boolean DEBUG_DISABLE_SPECIFIC_GROOVY_METHODS = true;
+	private static class GroovySteppingConfigurable extends SimpleConfigurableByProperties implements Configurable
+	{
+		@Override
+		public String getHelpTopic()
+		{
+			return "reference.idesettings.debugger.groovy";
+		}
+
+		@Nls
+		@Override
+		public String getDisplayName()
+		{
+			return GroovyBundle.message("groovy.debug.caption");
+		}
+
+		@RequiredUIAccess
+		@NotNull
+		@Override
+		protected Component createLayout(PropertyBuilder propertyBuilder)
+		{
+			GroovyDebuggerSettings settings = GroovyDebuggerSettings.getInstance();
+
+			VerticalLayout verticalLayout = VerticalLayout.create();
+			CheckBox disableSpecificCheckBox = CheckBox.create(GroovyBundle.message("groovy.debug.disable.specific.methods"));
+			verticalLayout.add(disableSpecificCheckBox);
+			propertyBuilder.add(disableSpecificCheckBox, settings::getDebugDisableSpecificMethods, settings::setDebugDisableSpecificMethods);
+			return verticalLayout;
+		}
+	}
+
+	private static final class GroovyHotSwapConfigurable extends SimpleConfigurableByProperties implements Configurable
+	{
+		@Override
+		public String getHelpTopic()
+		{
+			return "reference.idesettings.debugger.groovy";
+		}
+
+		@Nls
+		@Override
+		public String getDisplayName()
+		{
+			return GroovyBundle.message("groovy.debug.caption");
+		}
+
+		@RequiredUIAccess
+		@NotNull
+		@Override
+		protected Component createLayout(PropertyBuilder propertyBuilder)
+		{
+			GroovyDebuggerSettings settings = GroovyDebuggerSettings.getInstance();
+
+			VerticalLayout verticalLayout = VerticalLayout.create();
+			CheckBox hotSwapCheckBox = CheckBox.create("Enable hot-swap agent for Groovy code");
+			verticalLayout.add(hotSwapCheckBox);
+			propertyBuilder.add(hotSwapCheckBox, settings::isEnableHotSwap, settings::setEnableHotSwap);
+			verticalLayout.add(Label.create("May cause serialization issues in the debugged application"));
+			return verticalLayout;
+		}
+	}
+
+	public boolean DEBUG_DISABLE_SPECIFIC_GROOVY_METHODS = true;
 	public boolean ENABLE_GROOVY_HOTSWAP = true;
 
 	public GroovyDebuggerSettings()
@@ -54,18 +107,15 @@ public class GroovyDebuggerSettings extends XDebuggerSettings<GroovyDebuggerSett
 	}
 
 	@NotNull
-	@SuppressWarnings("EnumSwitchStatementWhichMissesCases")
 	@Override
 	public Collection<? extends Configurable> createConfigurables(@NotNull DebuggerSettingsCategory category)
 	{
 		switch(category)
 		{
 			case STEPPING:
-				return singletonList(SimpleConfigurable.create("reference.idesettings.debugger.groovy", GroovyBundle.message("groovy.debug.caption")
-						, "reference.idesettings.debugger.groovy", GroovySteppingConfigurableUi.class, this));
+				return Collections.singletonList(new GroovySteppingConfigurable());
 			case HOTSWAP:
-				return singletonList(SimpleConfigurable.create("reference.idesettings.debugger.groovy", GroovyBundle.message("groovy.debug.caption")
-						, "reference.idesettings.debugger.groovy", GroovyHotSwapConfigurableUi.class, this));
+				return Collections.singletonList(new GroovyHotSwapConfigurable());
 		}
 		return Collections.emptyList();
 	}
@@ -82,14 +132,29 @@ public class GroovyDebuggerSettings extends XDebuggerSettings<GroovyDebuggerSett
 		XmlSerializerUtil.copyBean(state, this);
 	}
 
+	public void setDebugDisableSpecificMethods(boolean debugDisableSpecificMethods)
+	{
+		DEBUG_DISABLE_SPECIFIC_GROOVY_METHODS = debugDisableSpecificMethods;
+	}
+
+	public boolean getDebugDisableSpecificMethods()
+	{
+		return DEBUG_DISABLE_SPECIFIC_GROOVY_METHODS;
+	}
+
+	public boolean isEnableHotSwap()
+	{
+		return ENABLE_GROOVY_HOTSWAP;
+	}
+
+	public void setEnableHotSwap(boolean enableHotSwap)
+	{
+		ENABLE_GROOVY_HOTSWAP = enableHotSwap;
+	}
+
+	@NotNull
 	public static GroovyDebuggerSettings getInstance()
 	{
 		return getInstance(GroovyDebuggerSettings.class);
-	}
-
-	@Override
-	public GroovyDebuggerSettings get()
-	{
-		return this;
 	}
 }
