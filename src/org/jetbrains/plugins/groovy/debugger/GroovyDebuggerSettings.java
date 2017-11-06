@@ -31,6 +31,7 @@ import consulo.ui.Component;
 import consulo.ui.Label;
 import consulo.ui.RequiredUIAccess;
 import consulo.ui.VerticalLayout;
+import consulo.ui.style.StandardColors;
 
 /**
  * @author ilyas
@@ -93,7 +94,7 @@ public class GroovyDebuggerSettings extends XDebuggerSettings<GroovyDebuggerSett
 			CheckBox hotSwapCheckBox = CheckBox.create("Enable hot-swap agent for Groovy code");
 			verticalLayout.add(hotSwapCheckBox);
 			propertyBuilder.add(hotSwapCheckBox, settings::isEnableHotSwap, settings::setEnableHotSwap);
-			verticalLayout.add(Label.create("May cause serialization issues in the debugged application"));
+			verticalLayout.add(Label.create("May cause serialization issues in the debugged application").setForeground(StandardColors.GRAY));
 			return verticalLayout;
 		}
 	}
