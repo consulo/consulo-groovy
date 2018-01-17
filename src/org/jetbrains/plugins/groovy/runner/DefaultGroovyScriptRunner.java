@@ -39,98 +39,116 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.encoding.EncodingManager;
 import com.intellij.openapi.vfs.encoding.EncodingProjectManager;
 import com.intellij.util.net.HttpConfigurable;
+import consulo.java.execution.configurations.OwnJavaParameters;
 
-public class DefaultGroovyScriptRunner extends GroovyScriptRunner {
+public class DefaultGroovyScriptRunner extends GroovyScriptRunner
+{
 
-  @Override
-  public boolean isValidModule(@NotNull Module module) {
-    return LibrariesUtil.hasGroovySdk(module);
-  }
+	@Override
+	public boolean isValidModule(@NotNull Module module)
+	{
+		return LibrariesUtil.hasGroovySdk(module);
+	}
 
-  @Override
-  public boolean ensureRunnerConfigured(@Nullable Module module, RunProfile profile, Executor executor, final Project project) throws ExecutionException {
-    if (module == null) {
-      throw new ExecutionException("Module is not specified");
-    }
+	@Override
+	public boolean ensureRunnerConfigured(@Nullable Module module, RunProfile profile, Executor executor, final Project project) throws ExecutionException
+	{
+		if(module == null)
+		{
+			throw new ExecutionException("Module is not specified");
+		}
 
-    if (LibrariesUtil.getGroovyHomePath(module) == null) {
-      ExecutionUtil.handleExecutionError(project, executor.getToolWindowId(), profile, new ExecutionException("Groovy is not configured"));
-      ModulesConfigurator.showDialog(module.getProject(), module.getName(), ClasspathEditor.NAME);
-      return false;
-    }
+		if(LibrariesUtil.getGroovyHomePath(module) == null)
+		{
+			ExecutionUtil.handleExecutionError(project, executor.getToolWindowId(), profile, new ExecutionException("Groovy is not configured"));
+			ModulesConfigurator.showDialog(module.getProject(), module.getName(), ClasspathEditor.NAME);
+			return false;
+		}
 
+		return true;
+	}
 
-    return true;
-  }
+	@Override
+	public void configureCommandLine(OwnJavaParameters params, @Nullable Module module, boolean tests, VirtualFile script, GroovyScriptRunConfiguration configuration) throws CantRunException
+	{
+		configureGenericGroovyRunner(params, module, "groovy.ui.GroovyMain", false, tests);
 
-  @Override
-  public void configureCommandLine(JavaParameters params, @Nullable Module module, boolean tests, VirtualFile script, GroovyScriptRunConfiguration configuration) throws CantRunException {
-    configureGenericGroovyRunner(params, module, "groovy.ui.GroovyMain", false, tests);
+		addClasspathFromRootModel(module, tests, params, true);
 
-    addClasspathFromRootModel(module, tests, params, true);
+		params.getVMParametersList().addParametersString(configuration.getVMParameters());
 
-    params.getVMParametersList().addParametersString(configuration.getVMParameters());
+		addScriptEncodingSettings(params, script, module);
 
-    addScriptEncodingSettings(params, script, module);
+		if(configuration.isDebugEnabled())
+		{
+			params.getProgramParametersList().add("--debug");
+		}
 
-    if (configuration.isDebugEnabled()) {
-      params.getProgramParametersList().add("--debug");
-    }
+		params.getProgramParametersList().add(FileUtil.toSystemDependentName(configuration.getScriptPath()));
+		params.getProgramParametersList().addParametersString(configuration.getScriptParameters());
+	}
 
-    params.getProgramParametersList().add(FileUtil.toSystemDependentName(configuration.getScriptPath()));
-    params.getProgramParametersList().addParametersString(configuration.getScriptParameters());
-  }
+	public static void configureGenericGroovyRunner(@NotNull OwnJavaParameters params, @NotNull Module module, @NotNull String mainClass, boolean useBundled, boolean tests)
+	{
+		final VirtualFile groovyJar = findGroovyJar(module);
+		if(useBundled)
+		{
+			params.getClassPath().add(GroovyUtils.getBundledGroovyJar());
+		}
+		else if(groovyJar != null)
+		{
+			params.getClassPath().add(groovyJar);
+		}
 
-  public static void configureGenericGroovyRunner(@NotNull JavaParameters params, @NotNull Module module, @NotNull String mainClass, boolean useBundled, boolean tests) {
-    final VirtualFile groovyJar = findGroovyJar(module);
-    if (useBundled) {
-      params.getClassPath().add(GroovyUtils.getBundledGroovyJar());
-    }
-    else if (groovyJar != null) {
-      params.getClassPath().add(groovyJar);
-    }
+		setToolsJar(params);
 
-    setToolsJar(params);
+		String groovyHome = useBundled ? FileUtil.toCanonicalPath(GroovyUtils.getBundledGroovyJar().getParentFile().getParent()) : LibrariesUtil.getGroovyHomePath(module);
+		if(groovyHome != null)
+		{
+			groovyHome = FileUtil.toSystemDependentName(groovyHome);
+		}
+		if(groovyHome != null)
+		{
+			setGroovyHome(params, groovyHome);
+		}
 
-    String groovyHome = useBundled ? FileUtil.toCanonicalPath(GroovyUtils.getBundledGroovyJar().getParentFile().getParent()) : LibrariesUtil.getGroovyHomePath(module);
-    if (groovyHome != null) {
-      groovyHome = FileUtil.toSystemDependentName(groovyHome);
-    }
-    if (groovyHome != null) {
-      setGroovyHome(params, groovyHome);
-    }
+		final String confPath = getConfPath(groovyHome);
+		params.getVMParametersList().add("-Dgroovy.starter.conf=" + confPath);
+		params.getVMParametersList().addAll(HttpConfigurable.convertArguments(HttpConfigurable.getJvmPropertiesList(false, null)));
 
-    final String confPath = getConfPath(groovyHome);
-    params.getVMParametersList().add("-Dgroovy.starter.conf=" + confPath);
-    params.getVMParametersList().addAll(HttpConfigurable.convertArguments(HttpConfigurable.getJvmPropertiesList(false, null)));
+		params.setMainClass("org.codehaus.groovy.tools.GroovyStarter");
 
-    params.setMainClass("org.codehaus.groovy.tools.GroovyStarter");
+		params.getProgramParametersList().add("--conf");
+		params.getProgramParametersList().add(confPath);
 
-    params.getProgramParametersList().add("--conf");
-    params.getProgramParametersList().add(confPath);
+		params.getProgramParametersList().add("--main");
+		params.getProgramParametersList().add(mainClass);
 
-    params.getProgramParametersList().add("--main");
-    params.getProgramParametersList().add(mainClass);
+		if(params.getVMParametersList().getPropertyValue(GroovycOSProcessHandler.GRAPE_ROOT) == null)
+		{
+			String sysRoot = System.getProperty(GroovycOSProcessHandler.GRAPE_ROOT);
+			if(sysRoot != null)
+			{
+				params.getVMParametersList().defineProperty(GroovycOSProcessHandler.GRAPE_ROOT, sysRoot);
+			}
+		}
+	}
 
-    if (params.getVMParametersList().getPropertyValue(GroovycOSProcessHandler.GRAPE_ROOT) == null) {
-      String sysRoot = System.getProperty(GroovycOSProcessHandler.GRAPE_ROOT);
-      if (sysRoot != null) {
-        params.getVMParametersList().defineProperty(GroovycOSProcessHandler.GRAPE_ROOT, sysRoot);
-      }
-    }
-  }
-
-  private static void addScriptEncodingSettings(final JavaParameters params, final VirtualFile scriptFile, Module module) {
-    Charset charset = EncodingProjectManager.getInstance(module.getProject()).getEncoding(scriptFile, true);
-    if (charset == null) {
-      charset = EncodingManager.getInstance().getDefaultCharset();
-      if (!Comparing.equal(CharsetToolkit.getDefaultSystemCharset(), charset)) {
-        params.getProgramParametersList().add("--encoding=" + charset.displayName());
-      }
-    }
-    else {
-      params.getProgramParametersList().add("--encoding=" + charset.displayName());
-    }
-  }
+	private static void addScriptEncodingSettings(final OwnJavaParameters params, final VirtualFile scriptFile, Module module)
+	{
+		Charset charset = EncodingProjectManager.getInstance(module.getProject()).getEncoding(scriptFile, true);
+		if(charset == null)
+		{
+			charset = EncodingManager.getInstance().getDefaultCharset();
+			if(!Comparing.equal(CharsetToolkit.getDefaultSystemCharset(), charset))
+			{
+				params.getProgramParametersList().add("--encoding=" + charset.displayName());
+			}
+		}
+		else
+		{
+			params.getProgramParametersList().add("--encoding=" + charset.displayName());
+		}
+	}
 
 }

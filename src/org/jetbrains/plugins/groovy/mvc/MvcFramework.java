@@ -44,7 +44,6 @@ import com.intellij.execution.configurations.CommandLineBuilder;
 import com.intellij.execution.configurations.ConfigurationFactory;
 import com.intellij.execution.configurations.ConfigurationType;
 import com.intellij.execution.configurations.GeneralCommandLine;
-import com.intellij.execution.configurations.JavaParameters;
 import com.intellij.execution.configurations.RunConfiguration;
 import com.intellij.ide.DataManager;
 import com.intellij.ide.IdeView;
@@ -89,6 +88,7 @@ import com.intellij.util.PathUtil;
 import com.intellij.util.PathsList;
 import com.intellij.util.containers.ContainerUtil;
 import consulo.compiler.CompilerPathsManager;
+import consulo.java.execution.configurations.OwnJavaParameters;
 import consulo.java.module.extension.JavaModuleExtension;
 import consulo.roots.ContentFolderScopes;
 import consulo.roots.ContentFolderTypeProvider;
@@ -338,7 +338,7 @@ public abstract class MvcFramework {
     }
   }
 
-  public abstract JavaParameters createJavaParameters(@NotNull Module module,
+  public abstract OwnJavaParameters createJavaParameters(@NotNull Module module,
                                                       boolean forCreation,
                                                       boolean forTests,
                                                       boolean classpathFromDependencies,
@@ -405,7 +405,7 @@ public abstract class MvcFramework {
                                           @Nullable String jvmParams,
                                           boolean forCreation,
                                           @NotNull MvcCommand command) throws ExecutionException {
-    final JavaParameters params = createJavaParameters(module, forCreation, false, true, jvmParams, command);
+    final OwnJavaParameters params = createJavaParameters(module, forCreation, false, true, jvmParams, command);
     addJavaHome(params, module);
 
     final GeneralCommandLine commandLine = createCommandLine(params);
@@ -422,7 +422,7 @@ public abstract class MvcFramework {
     return commandLine;
   }
 
-  public static void addJavaHome(@NotNull JavaParameters params, @NotNull Module module) {
+  public static void addJavaHome(@NotNull OwnJavaParameters params, @NotNull Module module) {
     final Sdk sdk = ModuleUtilCore.getSdk(module, JavaModuleExtension.class);
     if (sdk != null) {
       String path = StringUtil.trimEnd(sdk.getHomePath(), File.separator);
@@ -438,7 +438,7 @@ public abstract class MvcFramework {
     }
   }
 
-  public static GeneralCommandLine createCommandLine(@NotNull JavaParameters params) throws CantRunException {
+  public static GeneralCommandLine createCommandLine(@NotNull OwnJavaParameters params) throws CantRunException {
     return CommandLineBuilder.createFromJavaParameters(params);
   }
 

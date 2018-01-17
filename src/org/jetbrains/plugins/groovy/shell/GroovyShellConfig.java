@@ -20,11 +20,11 @@ import java.util.Collection;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import com.intellij.execution.ExecutionException;
-import com.intellij.execution.configurations.JavaParameters;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
+import consulo.java.execution.configurations.OwnJavaParameters;
 import consulo.java.module.extension.JavaModuleExtension;
 
 public abstract class GroovyShellConfig
@@ -34,7 +34,7 @@ public abstract class GroovyShellConfig
 	public abstract String getWorkingDirectory(@NotNull Module module);
 
 	@NotNull
-	public abstract JavaParameters createJavaParameters(@NotNull Module module) throws ExecutionException;
+	public abstract OwnJavaParameters createJavaParameters(@NotNull Module module) throws ExecutionException;
 
 
 	public abstract boolean canRun(@NotNull Module module);

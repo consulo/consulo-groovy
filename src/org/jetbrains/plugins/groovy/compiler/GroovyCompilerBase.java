@@ -49,7 +49,6 @@ import com.intellij.compiler.impl.javaCompiler.OutputItemImpl;
 import com.intellij.compiler.make.CacheCorruptedException;
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.configurations.GeneralCommandLine;
-import com.intellij.execution.configurations.JavaParameters;
 import com.intellij.ide.highlighter.JavaFileType;
 import com.intellij.openapi.application.AccessToken;
 import com.intellij.openapi.application.ApplicationManager;
@@ -66,7 +65,6 @@ import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.projectRoots.JavaSdk;
-import com.intellij.openapi.projectRoots.JdkUtil;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.roots.ContentIterator;
 import com.intellij.openapi.roots.ModuleFileIndex;
@@ -94,7 +92,9 @@ import com.intellij.util.net.HttpConfigurable;
 import consulo.compiler.impl.TranslatingCompilerFilesMonitor;
 import consulo.compiler.impl.resourceCompiler.ResourceCompilerConfiguration;
 import consulo.compiler.roots.CompilerPathsImpl;
+import consulo.java.execution.configurations.OwnJavaParameters;
 import consulo.java.module.extension.JavaModuleExtension;
+import consulo.java.projectRoots.OwnJdkUtil;
 
 /**
  * @author peter
@@ -121,7 +121,7 @@ public abstract class GroovyCompilerBase implements TranslatingCompiler
 		final Sdk sdk = ModuleUtilCore.getSdk(module, JavaModuleExtension.class);
 		assert sdk != null; //verified before
 
-		final JavaParameters parameters = new JavaParameters();
+		final OwnJavaParameters parameters = new OwnJavaParameters();
 		final PathsList classPathBuilder = parameters.getClassPath();
 
 		// IMPORTANT: must be the first entry to avoid collisions
@@ -241,15 +241,10 @@ public abstract class GroovyCompilerBase implements TranslatingCompiler
 
 		try
 		{
-			GeneralCommandLine generalCommandLine = JdkUtil.setupJVMCommandLine(sdk, parameters, true);
-			GroovycOSProcessHandler processHandler = GroovycOSProcessHandler.runGroovyc(generalCommandLine, new Consumer<String>()
-			{
-				@Override
-				public void consume(String s)
-				{
-					compileContext.getProgressIndicator().setText(s);
-				}
-			});
+			parameters.setJdk(sdk);
+
+			GeneralCommandLine generalCommandLine = OwnJdkUtil.setupJVMCommandLine(parameters);
+			GroovycOSProcessHandler processHandler = GroovycOSProcessHandler.runGroovyc(generalCommandLine, s -> compileContext.getProgressIndicator().setText(s));
 
 			final List<VirtualFile> toRecompile = new ArrayList<VirtualFile>();
 			for(File toRecompileFile : processHandler.getToRecompileFiles())

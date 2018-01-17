@@ -15,6 +15,17 @@
  */
 package org.jetbrains.plugins.groovy.gant;
 
+import static com.intellij.util.containers.ContainerUtil.ar;
+
+import java.io.File;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.plugins.groovy.config.GroovyConfigUtils;
+import org.jetbrains.plugins.groovy.runner.GroovyScriptRunConfiguration;
+import org.jetbrains.plugins.groovy.runner.GroovyScriptRunner;
+import org.jetbrains.plugins.groovy.util.GroovyUtils;
+import org.jetbrains.plugins.groovy.util.LibrariesUtil;
 import com.intellij.execution.CantRunException;
 import com.intellij.execution.Executor;
 import com.intellij.execution.configurations.JavaParameters;
@@ -26,18 +37,8 @@ import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.openapi.vfs.VirtualFile;
+import consulo.java.execution.configurations.OwnJavaParameters;
 import icons.JetgroovyIcons;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.jetbrains.plugins.groovy.config.GroovyConfigUtils;
-import org.jetbrains.plugins.groovy.runner.GroovyScriptRunConfiguration;
-import org.jetbrains.plugins.groovy.runner.GroovyScriptRunner;
-import org.jetbrains.plugins.groovy.util.GroovyUtils;
-import org.jetbrains.plugins.groovy.util.LibrariesUtil;
-
-import java.io.File;
-
-import static com.intellij.util.containers.ContainerUtil.ar;
 
 /**
  * @author ilyas
@@ -80,7 +81,7 @@ public class GantRunner extends GroovyScriptRunner {
   }
 
   @Override
-  public void configureCommandLine(JavaParameters params, @Nullable Module module, boolean tests, VirtualFile script, GroovyScriptRunConfiguration configuration) throws CantRunException {
+  public void configureCommandLine(OwnJavaParameters params, @Nullable Module module, boolean tests, VirtualFile script, GroovyScriptRunConfiguration configuration) throws CantRunException {
     String gantHome = GantUtils.getSDKInstallPath(module, configuration.getProject());
 
     addGroovyAndAntJars(params, module, gantHome);
@@ -125,7 +126,7 @@ public class GantRunner extends GroovyScriptRunner {
     params.getProgramParametersList().addParametersString(configuration.getScriptParameters());
   }
 
-  private static void addGroovyAndAntJars(JavaParameters params, Module module, String gantHome) {
+  private static void addGroovyAndAntJars(OwnJavaParameters params, Module module, String gantHome) {
     final File[] groovyJars = GroovyConfigUtils.getGroovyAllJars(gantHome + "/lib/");
     if (groovyJars.length > 0) {
       params.getClassPath().add(groovyJars[0].getAbsolutePath());

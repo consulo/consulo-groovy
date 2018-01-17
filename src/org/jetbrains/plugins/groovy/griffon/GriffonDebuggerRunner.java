@@ -7,13 +7,13 @@ import com.intellij.debugger.impl.GenericDebuggerRunner;
 import com.intellij.debugger.settings.DebuggerSettings;
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.configurations.JavaCommandLine;
-import com.intellij.execution.configurations.JavaParameters;
 import com.intellij.execution.configurations.RemoteConnection;
 import com.intellij.execution.configurations.RunProfile;
 import com.intellij.execution.configurations.RunProfileState;
 import com.intellij.execution.executors.DefaultDebugExecutor;
 import com.intellij.execution.runners.ExecutionEnvironment;
 import com.intellij.execution.ui.RunContentDescriptor;
+import consulo.java.execution.configurations.OwnJavaParameters;
 
 /**
  * @author peter
@@ -39,7 +39,7 @@ public class GriffonDebuggerRunner extends GenericDebuggerRunner
 			ExecutionException
 	{
 		final JavaCommandLine javaCommandLine = (JavaCommandLine) state;
-		final JavaParameters params = javaCommandLine.getJavaParameters();
+		final OwnJavaParameters params = javaCommandLine.getJavaParameters();
 
 		if(!params.getVMParametersList().hasProperty("griffon.full.stacktrace"))
 		{

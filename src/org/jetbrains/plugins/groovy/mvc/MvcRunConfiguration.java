@@ -31,7 +31,6 @@ import com.intellij.execution.JavaRunConfigurationExtensionManager;
 import com.intellij.execution.RunConfigurationExtension;
 import com.intellij.execution.configurations.ConfigurationFactory;
 import com.intellij.execution.configurations.JavaCommandLineState;
-import com.intellij.execution.configurations.JavaParameters;
 import com.intellij.execution.configurations.ModuleBasedConfiguration;
 import com.intellij.execution.configurations.RunConfigurationModule;
 import com.intellij.execution.configurations.RunProfileState;
@@ -52,261 +51,307 @@ import com.intellij.openapi.util.JDOMExternalizer;
 import com.intellij.openapi.util.WriteExternalException;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.util.containers.HashMap;
+import consulo.java.execution.configurations.OwnJavaParameters;
 import consulo.java.module.extension.JavaModuleExtension;
 
 /**
  * @author peter
  */
-public abstract class MvcRunConfiguration extends ModuleBasedConfiguration<RunConfigurationModule> implements
-                                                                                                   CommonJavaRunConfigurationParameters {
-  public String vmParams;
-  public String cmdLine;
-  public boolean depsClasspath = true;
-  protected final MvcFramework myFramework;
-  public final Map<String, String> envs = new HashMap<String, String>();
-  public boolean passParentEnv = true;
+public abstract class MvcRunConfiguration extends ModuleBasedConfiguration<RunConfigurationModule> implements CommonJavaRunConfigurationParameters
+{
+	public String vmParams;
+	public String cmdLine;
+	public boolean depsClasspath = true;
+	protected final MvcFramework myFramework;
+	public final Map<String, String> envs = new HashMap<String, String>();
+	public boolean passParentEnv = true;
 
-  public MvcRunConfiguration(final String name, final RunConfigurationModule configurationModule, final ConfigurationFactory factory, MvcFramework framework) {
-    super(name, configurationModule, factory);
-    myFramework = framework;
-  }
+	public MvcRunConfiguration(final String name, final RunConfigurationModule configurationModule, final ConfigurationFactory factory, MvcFramework framework)
+	{
+		super(name, configurationModule, factory);
+		myFramework = framework;
+	}
 
-  public MvcFramework getFramework() {
-    return myFramework;
-  }
+	public MvcFramework getFramework()
+	{
+		return myFramework;
+	}
 
-  public String getVMParameters() {
-    return vmParams;
-  }
+	public String getVMParameters()
+	{
+		return vmParams;
+	}
 
-  public void setVMParameters(String vmParams) {
-    this.vmParams = vmParams;
-  }
+	public void setVMParameters(String vmParams)
+	{
+		this.vmParams = vmParams;
+	}
 
-  public void setProgramParameters(@Nullable String value) {
-    cmdLine = value;
-  }
+	public void setProgramParameters(@Nullable String value)
+	{
+		cmdLine = value;
+	}
 
-  @Nullable
-  public String getProgramParameters() {
-    return cmdLine;
-  }
+	@Nullable
+	public String getProgramParameters()
+	{
+		return cmdLine;
+	}
 
-  public void setWorkingDirectory(@Nullable String value) {
-    throw new UnsupportedOperationException();
-  }
+	public void setWorkingDirectory(@Nullable String value)
+	{
+		throw new UnsupportedOperationException();
+	}
 
-  @Nullable
-  public String getWorkingDirectory() {
-    return null;
-  }
+	@Nullable
+	public String getWorkingDirectory()
+	{
+		return null;
+	}
 
-  public void setEnvs(@NotNull Map<String, String> envs) {
-    this.envs.clear();
-    this.envs.putAll(envs);
-  }
+	public void setEnvs(@NotNull Map<String, String> envs)
+	{
+		this.envs.clear();
+		this.envs.putAll(envs);
+	}
 
-  @NotNull
-  public Map<String, String> getEnvs() {
-    return envs;
-  }
+	@NotNull
+	public Map<String, String> getEnvs()
+	{
+		return envs;
+	}
 
-  public void setPassParentEnvs(boolean passParentEnv) {
-    this.passParentEnv = passParentEnv;
-  }
+	public void setPassParentEnvs(boolean passParentEnv)
+	{
+		this.passParentEnv = passParentEnv;
+	}
 
-  public boolean isPassParentEnvs() {
-    return passParentEnv;
-  }
+	public boolean isPassParentEnvs()
+	{
+		return passParentEnv;
+	}
 
-  public boolean isAlternativeJrePathEnabled() {
-    return false;
-  }
+	public boolean isAlternativeJrePathEnabled()
+	{
+		return false;
+	}
 
-  public void setAlternativeJrePathEnabled(boolean enabled) {
-    throw new UnsupportedOperationException();
-  }
+	public void setAlternativeJrePathEnabled(boolean enabled)
+	{
+		throw new UnsupportedOperationException();
+	}
 
-  public String getAlternativeJrePath() {
-    return null;
-  }
+	public String getAlternativeJrePath()
+	{
+		return null;
+	}
 
-  public void setAlternativeJrePath(String path) {
-    throw new UnsupportedOperationException();
-  }
+	public void setAlternativeJrePath(String path)
+	{
+		throw new UnsupportedOperationException();
+	}
 
-  @Nullable
-  public String getRunClass() {
-    return null;
-  }
+	@Nullable
+	public String getRunClass()
+	{
+		return null;
+	}
 
-  @Nullable
-  public String getPackage() {
-    return null;
-  }
+	@Nullable
+	public String getPackage()
+	{
+		return null;
+	}
 
 
-  public Collection<Module> getValidModules() {
-    Module[] modules = ModuleManager.getInstance(getProject()).getModules();
-    ArrayList<Module> res = new ArrayList<Module>();
-    for (Module module : modules) {
-      if (isSupport(module)) {
-        res.add(module);
-      }
-    }
-    return res;
-  }
+	public Collection<Module> getValidModules()
+	{
+		Module[] modules = ModuleManager.getInstance(getProject()).getModules();
+		ArrayList<Module> res = new ArrayList<Module>();
+		for(Module module : modules)
+		{
+			if(isSupport(module))
+			{
+				res.add(module);
+			}
+		}
+		return res;
+	}
 
-  public void readExternal(Element element) throws InvalidDataException {
-    PathMacroManager.getInstance(getProject()).expandPaths(element);
-    super.readExternal(element);
-    readModule(element);
-    vmParams = JDOMExternalizer.readString(element, "vmparams");
-    cmdLine = JDOMExternalizer.readString(element, "cmdLine");
+	public void readExternal(Element element) throws InvalidDataException
+	{
+		PathMacroManager.getInstance(getProject()).expandPaths(element);
+		super.readExternal(element);
+		readModule(element);
+		vmParams = JDOMExternalizer.readString(element, "vmparams");
+		cmdLine = JDOMExternalizer.readString(element, "cmdLine");
 
-    String sPassParentEnviroment = JDOMExternalizer.readString(element, "passParentEnv");
-    passParentEnv = StringUtil.isEmpty(sPassParentEnviroment) ? true : Boolean.parseBoolean(sPassParentEnviroment);
+		String sPassParentEnviroment = JDOMExternalizer.readString(element, "passParentEnv");
+		passParentEnv = StringUtil.isEmpty(sPassParentEnviroment) ? true : Boolean.parseBoolean(sPassParentEnviroment);
 
-    envs.clear();
-    JDOMExternalizer.readMap(element, envs, null, "env");
+		envs.clear();
+		JDOMExternalizer.readMap(element, envs, null, "env");
 
-    JavaRunConfigurationExtensionManager.getInstance().readExternal(this, element);
+		JavaRunConfigurationExtensionManager.getInstance().readExternal(this, element);
 
-    depsClasspath = !"false".equals(JDOMExternalizer.readString(element, "depsClasspath"));
-  }
+		depsClasspath = !"false".equals(JDOMExternalizer.readString(element, "depsClasspath"));
+	}
 
-  public void writeExternal(Element element) throws WriteExternalException {
-    super.writeExternal(element);
-    writeModule(element);
-    JDOMExternalizer.write(element, "vmparams", vmParams);
-    JDOMExternalizer.write(element, "cmdLine", cmdLine);
-    JDOMExternalizer.write(element, "depsClasspath", depsClasspath);
-    JDOMExternalizer.writeMap(element, envs, null, "env");
-    JDOMExternalizer.write(element, "passParentEnv", passParentEnv);
+	public void writeExternal(Element element) throws WriteExternalException
+	{
+		super.writeExternal(element);
+		writeModule(element);
+		JDOMExternalizer.write(element, "vmparams", vmParams);
+		JDOMExternalizer.write(element, "cmdLine", cmdLine);
+		JDOMExternalizer.write(element, "depsClasspath", depsClasspath);
+		JDOMExternalizer.writeMap(element, envs, null, "env");
+		JDOMExternalizer.write(element, "passParentEnv", passParentEnv);
 
-    JavaRunConfigurationExtensionManager.getInstance().writeExternal(this, element);
+		JavaRunConfigurationExtensionManager.getInstance().writeExternal(this, element);
 
-    PathMacroManager.getInstance(getProject()).collapsePathsRecursively(element);
-  }
+		PathMacroManager.getInstance(getProject()).collapsePathsRecursively(element);
+	}
 
-  protected abstract String getNoSdkMessage();
+	protected abstract String getNoSdkMessage();
 
-  protected boolean isSupport(@NotNull Module module) {
-    return myFramework.getSdkRoot(module) != null && !myFramework.isAuxModule(module);
-  }
+	protected boolean isSupport(@NotNull Module module)
+	{
+		return myFramework.getSdkRoot(module) != null && !myFramework.isAuxModule(module);
+	}
 
-  public void checkConfiguration() throws RuntimeConfigurationException {
-    final Module module = getModule();
-    if (module == null) {
-      throw new RuntimeConfigurationException("Module not specified");
-    }
-    if (module.isDisposed()) {
-      throw new RuntimeConfigurationException("Module is disposed");
-    }
-    if (!isSupport(module)) {
-      throw new RuntimeConfigurationException(getNoSdkMessage());
-    }
-    super.checkConfiguration();
-  }
+	public void checkConfiguration() throws RuntimeConfigurationException
+	{
+		final Module module = getModule();
+		if(module == null)
+		{
+			throw new RuntimeConfigurationException("Module not specified");
+		}
+		if(module.isDisposed())
+		{
+			throw new RuntimeConfigurationException("Module is disposed");
+		}
+		if(!isSupport(module))
+		{
+			throw new RuntimeConfigurationException(getNoSdkMessage());
+		}
+		super.checkConfiguration();
+	}
 
-  @Nullable
-  public Module getModule() {
-    return getConfigurationModule().getModule();
-  }
+	@Nullable
+	public Module getModule()
+	{
+		return getConfigurationModule().getModule();
+	}
 
-  public RunProfileState getState(@NotNull Executor executor, @NotNull ExecutionEnvironment environment) throws ExecutionException {
-    final Module module = getModule();
-    if (module == null) {
-      throw new ExecutionException("Module is not specified");
-    }
+	public RunProfileState getState(@NotNull Executor executor, @NotNull ExecutionEnvironment environment) throws ExecutionException
+	{
+		final Module module = getModule();
+		if(module == null)
+		{
+			throw new ExecutionException("Module is not specified");
+		}
 
-    if (!isSupport(module)) {
-      throw new ExecutionException(getNoSdkMessage());
-    }
+		if(!isSupport(module))
+		{
+			throw new ExecutionException(getNoSdkMessage());
+		}
 
-    final Sdk sdk = ModuleUtilCore.getSdk(module, JavaModuleExtension.class);
-    if (sdk == null) {
-      throw CantRunException.noJdkForModule(module);
-    }
+		final Sdk sdk = ModuleUtilCore.getSdk(module, JavaModuleExtension.class);
+		if(sdk == null)
+		{
+			throw CantRunException.noJdkForModule(module);
+		}
 
-    final JavaCommandLineState state = createCommandLineState(environment, module);
-    state.setConsoleBuilder(TextConsoleBuilderFactory.getInstance().createBuilder(getProject()));
-    return state;
+		final JavaCommandLineState state = createCommandLineState(environment, module);
+		state.setConsoleBuilder(TextConsoleBuilderFactory.getInstance().createBuilder(getProject()));
+		return state;
 
-  }
+	}
 
-  protected MvcCommandLineState createCommandLineState(@NotNull ExecutionEnvironment environment, Module module) {
-    return new MvcCommandLineState(environment, cmdLine, module, false);
-  }
+	protected MvcCommandLineState createCommandLineState(@NotNull ExecutionEnvironment environment, Module module)
+	{
+		return new MvcCommandLineState(environment, cmdLine, module, false);
+	}
 
-  public SettingsEditor<? extends MvcRunConfiguration> getConfigurationEditor() {
-    return new MvcRunConfigurationEditor<MvcRunConfiguration>();
-  }
+	public SettingsEditor<? extends MvcRunConfiguration> getConfigurationEditor()
+	{
+		return new MvcRunConfigurationEditor<MvcRunConfiguration>();
+	}
 
-  public class MvcCommandLineState extends JavaCommandLineState {
-    protected final boolean myForTests;
+	public class MvcCommandLineState extends JavaCommandLineState
+	{
+		protected final boolean myForTests;
 
-    protected String myCmdLine;
+		protected String myCmdLine;
 
-    protected final Module myModule;
+		protected final Module myModule;
 
-    public MvcCommandLineState(@NotNull ExecutionEnvironment environment, String cmdLine, Module module, boolean forTests) {
-      super(environment);
-      myModule = module;
-      myForTests = forTests;
-      myCmdLine = cmdLine;
-    }
+		public MvcCommandLineState(@NotNull ExecutionEnvironment environment, String cmdLine, Module module, boolean forTests)
+		{
+			super(environment);
+			myModule = module;
+			myForTests = forTests;
+			myCmdLine = cmdLine;
+		}
 
-    public String getCmdLine() {
-      return myCmdLine;
-    }
+		public String getCmdLine()
+		{
+			return myCmdLine;
+		}
 
-    public void setCmdLine(String cmdLine) {
-      myCmdLine = cmdLine;
-    }
+		public void setCmdLine(String cmdLine)
+		{
+			myCmdLine = cmdLine;
+		}
 
-    protected void addEnvVars(final JavaParameters params) {
-      Map<String, String> envVars = new HashMap<String, String>(envs);
+		protected void addEnvVars(final OwnJavaParameters params)
+		{
+			Map<String, String> envVars = new HashMap<String, String>(envs);
 
-      Map<String, String> oldEnv = params.getEnv();
-      if (oldEnv != null) {
-        envVars.putAll(oldEnv);
-      }
+			Map<String, String> oldEnv = params.getEnv();
+			if(oldEnv != null)
+			{
+				envVars.putAll(oldEnv);
+			}
 
-      params.setupEnvs(envVars, passParentEnv);
-      
-      MvcFramework.addJavaHome(params, myModule);
-    }
+			params.setupEnvs(envVars, passParentEnv);
 
-    @NotNull
-    @Override
-    protected OSProcessHandler startProcess() throws ExecutionException {
-      OSProcessHandler handler = super.startProcess();
-      handler.setShouldDestroyProcessRecursively(true);
-      final RunnerSettings runnerSettings = getRunnerSettings();
-      JavaRunConfigurationExtensionManager.getInstance().attachExtensionsToProcess(MvcRunConfiguration.this, handler, runnerSettings);
-      return handler;
-    }
+			MvcFramework.addJavaHome(params, myModule);
+		}
 
-    protected final JavaParameters createJavaParameters() throws ExecutionException {
-      JavaParameters javaParameters = createJavaParametersMVC();
-      for(RunConfigurationExtension ext: Extensions.getExtensions(RunConfigurationExtension.EP_NAME)) {
-        ext.updateJavaParameters(MvcRunConfiguration.this, javaParameters, getRunnerSettings());
-      }
+		@NotNull
+		@Override
+		protected OSProcessHandler startProcess() throws ExecutionException
+		{
+			OSProcessHandler handler = super.startProcess();
+			handler.setShouldDestroyProcessRecursively(true);
+			final RunnerSettings runnerSettings = getRunnerSettings();
+			JavaRunConfigurationExtensionManager.getInstance().attachExtensionsToProcess(MvcRunConfiguration.this, handler, runnerSettings);
+			return handler;
+		}
 
-      return javaParameters;
-    }
+		protected final OwnJavaParameters createJavaParameters() throws ExecutionException
+		{
+			OwnJavaParameters javaParameters = createJavaParametersMVC();
+			for(RunConfigurationExtension ext : Extensions.getExtensions(RunConfigurationExtension.EP_NAME))
+			{
+				ext.updateJavaParameters(MvcRunConfiguration.this, javaParameters, getRunnerSettings());
+			}
 
-    protected JavaParameters createJavaParametersMVC() throws ExecutionException {
-      MvcCommand cmd = MvcCommand.parse(myCmdLine);
+			return javaParameters;
+		}
 
-      final JavaParameters params = myFramework.createJavaParameters(myModule, false, myForTests, depsClasspath, vmParams, cmd);
+		protected OwnJavaParameters createJavaParametersMVC() throws ExecutionException
+		{
+			MvcCommand cmd = MvcCommand.parse(myCmdLine);
 
-      addEnvVars(params);
+			final OwnJavaParameters params = myFramework.createJavaParameters(myModule, false, myForTests, depsClasspath, vmParams, cmd);
 
-      return params;
-    }
+			addEnvVars(params);
 
-  }
+			return params;
+		}
+
+	}
 
 }

@@ -23,7 +23,6 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyFileImpl;
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.Executor;
 import com.intellij.execution.configurations.GeneralCommandLine;
-import com.intellij.execution.configurations.JavaParameters;
 import com.intellij.execution.console.ConsoleHistoryController;
 import com.intellij.execution.console.LanguageConsoleView;
 import com.intellij.execution.console.ProcessBackedConsoleExecuteActionHandler;
@@ -36,13 +35,14 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.projectRoots.JavaSdkType;
-import com.intellij.openapi.projectRoots.JdkUtil;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.projectRoots.SdkTypeId;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.util.Key;
 import com.intellij.util.Consumer;
+import consulo.java.execution.configurations.OwnJavaParameters;
 import consulo.java.module.extension.JavaModuleExtension;
+import consulo.java.projectRoots.OwnJdkUtil;
 
 public class GroovyShellRunnerImpl extends AbstractConsoleRunnerWithHistory<LanguageConsoleView>
 {
@@ -94,13 +94,14 @@ public class GroovyShellRunnerImpl extends AbstractConsoleRunnerWithHistory<Lang
 	@Override
 	protected Process createProcess() throws ExecutionException
 	{
-		JavaParameters javaParameters = myShellRunner.createJavaParameters(myModule);
+		OwnJavaParameters javaParameters = myShellRunner.createJavaParameters(myModule);
 
 		final Sdk sdk = ModuleUtilCore.getSdk(myModule, JavaModuleExtension.class);
 		assert sdk != null;
 		SdkTypeId sdkType = sdk.getSdkType();
 		assert sdkType instanceof JavaSdkType;
-		myCommandLine = JdkUtil.setupJVMCommandLine(sdk, javaParameters, true);
+		javaParameters.setJdk(sdk);
+		myCommandLine = OwnJdkUtil.setupJVMCommandLine(javaParameters);
 		return myCommandLine.createProcess();
 	}
 

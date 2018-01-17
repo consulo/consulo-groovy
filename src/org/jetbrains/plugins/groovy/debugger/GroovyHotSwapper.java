@@ -29,6 +29,7 @@ import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.pom.java.LanguageLevel;
 import com.intellij.psi.search.FilenameIndex;
 import com.intellij.psi.search.GlobalSearchScope;
+import consulo.java.execution.configurations.OwnJavaParameters;
 import consulo.java.module.extension.JavaModuleExtension;
 
 
@@ -75,7 +76,7 @@ public class GroovyHotSwapper extends JavaProgramPatcher
 		return false;
 	}
 
-	private static boolean hasSpringLoadedReloader(JavaParameters javaParameters)
+	private static boolean hasSpringLoadedReloader(OwnJavaParameters javaParameters)
 	{
 		for(String param : javaParameters.getVMParametersList().getParameters())
 		{
@@ -88,7 +89,7 @@ public class GroovyHotSwapper extends JavaProgramPatcher
 		return false;
 	}
 
-	public void patchJavaParameters(Executor executor, RunProfile configuration, JavaParameters javaParameters)
+	public void patchJavaParameters(Executor executor, RunProfile configuration, OwnJavaParameters javaParameters)
 	{
 		if(!executor.getId().equals(DefaultDebugExecutor.EXECUTOR_ID))
 		{

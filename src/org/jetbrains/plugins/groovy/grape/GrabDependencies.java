@@ -38,8 +38,7 @@ import com.intellij.codeInsight.intention.IntentionAction;
 import com.intellij.execution.CantRunException;
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.configurations.GeneralCommandLine;
-import com.intellij.execution.configurations.JavaParameters;
-import com.intellij.execution.process.DefaultJavaProcessHandler;
+import com.intellij.execution.process.OSProcessHandler;
 import com.intellij.execution.process.ProcessOutputTypes;
 import com.intellij.notification.NotificationDisplayType;
 import com.intellij.notification.NotificationGroup;
@@ -55,7 +54,6 @@ import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.projectRoots.JdkUtil;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.roots.ModifiableRootModel;
 import com.intellij.openapi.roots.ModuleRootManager;
@@ -79,264 +77,335 @@ import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.PathUtil;
 import com.intellij.util.PathsList;
 import com.intellij.util.containers.ContainerUtil;
+import consulo.java.execution.configurations.OwnJavaParameters;
 import consulo.java.module.extension.JavaModuleExtension;
+import consulo.java.projectRoots.OwnJdkUtil;
 import consulo.vfs.util.ArchiveVfsUtil;
 
 /**
  * @author peter
  */
-public class GrabDependencies implements IntentionAction {
-  private static final Logger LOG = Logger.getInstance("#org.jetbrains.plugins.groovy.grape.GrabDependencies");
+public class GrabDependencies implements IntentionAction
+{
+	private static final Logger LOG = Logger.getInstance("#org.jetbrains.plugins.groovy.grape.GrabDependencies");
 
 
-  private static final NotificationGroup NOTIFICATION_GROUP = new NotificationGroup("Grape", NotificationDisplayType.BALLOON, true);
+	private static final NotificationGroup NOTIFICATION_GROUP = new NotificationGroup("Grape", NotificationDisplayType.BALLOON, true);
 
-  @NotNull
-  public String getText() {
-    return "Grab the artifacts";
-  }
+	@NotNull
+	public String getText()
+	{
+		return "Grab the artifacts";
+	}
 
-  @NotNull
-  public String getFamilyName() {
-    return "Grab";
-  }
+	@NotNull
+	public String getFamilyName()
+	{
+		return "Grab";
+	}
 
-  public boolean isAvailable(@NotNull Project project, Editor editor, PsiFile file) {
-    final GrAnnotation anno = PsiTreeUtil.findElementOfClassAtOffset(file, editor.getCaretModel().getOffset(), GrAnnotation.class, false);
-    if (anno == null) {
-      return false;
-    }
+	public boolean isAvailable(@NotNull Project project, Editor editor, PsiFile file)
+	{
+		final GrAnnotation anno = PsiTreeUtil.findElementOfClassAtOffset(file, editor.getCaretModel().getOffset(), GrAnnotation.class, false);
+		if(anno == null)
+		{
+			return false;
+		}
 
-    final String qname = anno.getQualifiedName();
-    if (qname == null || !(qname.startsWith(GrabAnnos.GRAB_ANNO) || GrabAnnos.GRAPES_ANNO.equals(qname))) {
-      return false;
-    }
+		final String qname = anno.getQualifiedName();
+		if(qname == null || !(qname.startsWith(GrabAnnos.GRAB_ANNO) || GrabAnnos.GRAPES_ANNO.equals(qname)))
+		{
+			return false;
+		}
 
-    final Module module = ModuleUtilCore.findModuleForPsiElement(file);
-    if (module == null) {
-      return false;
-    }
+		final Module module = ModuleUtilCore.findModuleForPsiElement(file);
+		if(module == null)
+		{
+			return false;
+		}
 
-    final Sdk sdk = ModuleUtilCore.getSdk(module, JavaModuleExtension.class);
-    if (sdk == null) {
-      return false;
-    }
+		final Sdk sdk = ModuleUtilCore.getSdk(module, JavaModuleExtension.class);
+		if(sdk == null)
+		{
+			return false;
+		}
 
-    return file.getOriginalFile().getVirtualFile() != null;
-  }
+		return file.getOriginalFile().getVirtualFile() != null;
+	}
 
-  public void invoke(@NotNull final Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
-    final Module module = ModuleUtil.findModuleForPsiElement(file);
-    assert module != null;
+	public void invoke(@NotNull final Project project, Editor editor, PsiFile file) throws IncorrectOperationException
+	{
+		final Module module = ModuleUtil.findModuleForPsiElement(file);
+		assert module != null;
 
-    final VirtualFile vfile = file.getOriginalFile().getVirtualFile();
-    assert vfile != null;
+		final VirtualFile vfile = file.getOriginalFile().getVirtualFile();
+		assert vfile != null;
 
-    if (JavaPsiFacade.getInstance(project).findClass("org.apache.ivy.core.report.ResolveReport", file.getResolveScope()) == null) {
-      Messages.showErrorDialog("Sorry, but IDEA cannot @Grab the dependencies without Ivy. Please add Ivy to your module dependencies and re-run the action.",
-                               "Ivy Missing");
-      return;
-    }
+		if(JavaPsiFacade.getInstance(project).findClass("org.apache.ivy.core.report.ResolveReport", file.getResolveScope()) == null)
+		{
+			Messages.showErrorDialog("Sorry, but IDEA cannot @Grab the dependencies without Ivy. Please add Ivy to your module dependencies and re-run the action.", "Ivy Missing");
+			return;
+		}
 
-    Map<String, String> queries = prepareQueries(file);
+		Map<String, String> queries = prepareQueries(file);
 
-    final Sdk sdk = ModuleUtilCore.getSdk(module, JavaModuleExtension.class);
-    assert sdk != null;
+		final Sdk sdk = ModuleUtilCore.getSdk(module, JavaModuleExtension.class);
+		assert sdk != null;
 
-    final Map<String, GeneralCommandLine> lines = new HashMap<String, GeneralCommandLine>();
-    for (String grabText : queries.keySet()) {
-      final JavaParameters javaParameters = GroovyScriptRunConfiguration.createJavaParametersWithSdk(module);
-      //debug
-      //javaParameters.getVMParametersList().add("-Xdebug"); javaParameters.getVMParametersList().add("-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5239");
+		final Map<String, GeneralCommandLine> lines = new HashMap<String, GeneralCommandLine>();
+		for(String grabText : queries.keySet())
+		{
+			final OwnJavaParameters javaParameters = GroovyScriptRunConfiguration.createJavaParametersWithSdk(module);
+			//debug
+			//javaParameters.getVMParametersList().add("-Xdebug"); javaParameters.getVMParametersList().add("-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5239");
 
-      DefaultGroovyScriptRunner
-        .configureGenericGroovyRunner(javaParameters, module, "org.jetbrains.plugins.groovy.grape.GrapeRunner", false, false);
-      PathsList list;
-      try {
-        list = GroovyScriptRunner.getClassPathFromRootModel(module, ProjectRootManager.getInstance(project).getFileIndex().isInTestSourceContent(vfile), javaParameters, true);
-      }
-      catch (CantRunException e) {
-        NOTIFICATION_GROUP.createNotification("Can't run @Grab: " + ExceptionUtil.getMessage(e), ExceptionUtil.getThrowableText(e), NotificationType.ERROR, null).notify(project);
-        return;
-      }
-      if (list == null) {
-        list = new PathsList();
-      }
-      list.add(PathUtil.getJarPathForClass(GrapeRunner.class));
+			DefaultGroovyScriptRunner.configureGenericGroovyRunner(javaParameters, module, "org.jetbrains.plugins.groovy.grape.GrapeRunner", false, false);
+			PathsList list;
+			try
+			{
+				list = GroovyScriptRunner.getClassPathFromRootModel(module, ProjectRootManager.getInstance(project).getFileIndex().isInTestSourceContent(vfile), javaParameters, true);
+			}
+			catch(CantRunException e)
+			{
+				NOTIFICATION_GROUP.createNotification("Can't run @Grab: " + ExceptionUtil.getMessage(e), ExceptionUtil.getThrowableText(e), NotificationType.ERROR, null).notify(project);
+				return;
+			}
+			if(list == null)
+			{
+				list = new PathsList();
+			}
+			list.add(PathUtil.getJarPathForClass(GrapeRunner.class));
 
-      javaParameters.getProgramParametersList().add("--classpath");
-      javaParameters.getProgramParametersList().add(list.getPathsString());
-      javaParameters.getProgramParametersList().add(queries.get(grabText));
+			javaParameters.getProgramParametersList().add("--classpath");
+			javaParameters.getProgramParametersList().add(list.getPathsString());
+			javaParameters.getProgramParametersList().add(queries.get(grabText));
 
-      lines.put(grabText, JdkUtil.setupJVMCommandLine(sdk, javaParameters, true));
-    }
+			javaParameters.setJdk(sdk);
+			try
+			{
+				lines.put(grabText, OwnJdkUtil.setupJVMCommandLine(javaParameters));
+			}
+			catch(CantRunException e)
+			{
+				throw new IncorrectOperationException(e);
+			}
+		}
 
-    ProgressManager.getInstance().run(new Task.Backgroundable(project, "Processing @Grab annotations") {
+		ProgressManager.getInstance().run(new Task.Backgroundable(project, "Processing @Grab annotations")
+		{
 
-      public void run(@NotNull ProgressIndicator indicator) {
-        int jarCount = 0;
-        String messages = "";
+			public void run(@NotNull ProgressIndicator indicator)
+			{
+				int jarCount = 0;
+				String messages = "";
 
-        for (Map.Entry<String, GeneralCommandLine> entry : lines.entrySet()) {
-          String grabText = entry.getKey();
-          indicator.setText2(grabText);
-          try {
-            final GrapeProcessHandler handler = new GrapeProcessHandler(entry.getValue(), module);
-            handler.startNotify();
-            handler.waitFor();
-            jarCount += handler.jarCount;
-            messages += "<b>" + grabText + "</b>: " + handler.messages + "<p>";
-          }
-          catch (ExecutionException e) {
-            LOG.error(e);
-          }
-        }
+				for(Map.Entry<String, GeneralCommandLine> entry : lines.entrySet())
+				{
+					String grabText = entry.getKey();
+					indicator.setText2(grabText);
+					try
+					{
+						final GrapeProcessHandler handler = new GrapeProcessHandler(entry.getValue(), module);
+						handler.startNotify();
+						handler.waitFor();
+						jarCount += handler.jarCount;
+						messages += "<b>" + grabText + "</b>: " + handler.messages + "<p>";
+					}
+					catch(ExecutionException e)
+					{
+						LOG.error(e);
+					}
+				}
 
-        final String finalMessages = messages;
-        final String title = jarCount + " Grape dependency jar" + (jarCount == 1 ? "" : "s") + " added";
-        NOTIFICATION_GROUP.createNotification(title, finalMessages, NotificationType.INFORMATION, null).notify(project);
-      }
-    });
+				final String finalMessages = messages;
+				final String title = jarCount + " Grape dependency jar" + (jarCount == 1 ? "" : "s") + " added";
+				NOTIFICATION_GROUP.createNotification(title, finalMessages, NotificationType.INFORMATION, null).notify(project);
+			}
+		});
 
 
-  }
+	}
 
-  static Map<String, String> prepareQueries(PsiFile file) {
-    final Set<GrAnnotation> grabs = new LinkedHashSet<GrAnnotation>();
-    final Set<GrAnnotation> excludes = new THashSet<GrAnnotation>();
-    final Set<GrAnnotation> resolvers = new THashSet<GrAnnotation>();
-    file.acceptChildren(new PsiRecursiveElementWalkingVisitor() {
-      @Override
-      public void visitElement(PsiElement element) {
-        if (element instanceof GrAnnotation) {
-          GrAnnotation anno = (GrAnnotation)element;
-          String qname = anno.getQualifiedName();
-          if (GrabAnnos.GRAB_ANNO.equals(qname)) grabs.add(anno);
-          else if (GrabAnnos.GRAB_EXCLUDE_ANNO.equals(qname)) excludes.add(anno);
-          else if (GrabAnnos.GRAB_RESOLVER_ANNO.equals(qname)) resolvers.add(anno);
-        }
-        super.visitElement(element);
-      }
-    });
+	static Map<String, String> prepareQueries(PsiFile file)
+	{
+		final Set<GrAnnotation> grabs = new LinkedHashSet<GrAnnotation>();
+		final Set<GrAnnotation> excludes = new THashSet<GrAnnotation>();
+		final Set<GrAnnotation> resolvers = new THashSet<GrAnnotation>();
+		file.acceptChildren(new PsiRecursiveElementWalkingVisitor()
+		{
+			@Override
+			public void visitElement(PsiElement element)
+			{
+				if(element instanceof GrAnnotation)
+				{
+					GrAnnotation anno = (GrAnnotation) element;
+					String qname = anno.getQualifiedName();
+					if(GrabAnnos.GRAB_ANNO.equals(qname))
+					{
+						grabs.add(anno);
+					}
+					else if(GrabAnnos.GRAB_EXCLUDE_ANNO.equals(qname))
+					{
+						excludes.add(anno);
+					}
+					else if(GrabAnnos.GRAB_RESOLVER_ANNO.equals(qname))
+					{
+						resolvers.add(anno);
+					}
+				}
+				super.visitElement(element);
+			}
+		});
 
-    Function<GrAnnotation, String> mapper = new Function<GrAnnotation, String>() {
-      @Override
-      public String fun(GrAnnotation grAnnotation) {
-        return grAnnotation.getText();
-      }
-    };
-    String common = StringUtil.join(excludes, mapper, " ") + " " + StringUtil.join(resolvers, mapper, " ");
-    LinkedHashMap<String, String> result = new LinkedHashMap<String, String>();
-    for (GrAnnotation grab : grabs) {
-      String grabText = grab.getText();
-      result.put(grabText, (grabText + " " + common).trim());
-    }
-    return result;
-  }
+		Function<GrAnnotation, String> mapper = new Function<GrAnnotation, String>()
+		{
+			@Override
+			public String fun(GrAnnotation grAnnotation)
+			{
+				return grAnnotation.getText();
+			}
+		};
+		String common = StringUtil.join(excludes, mapper, " ") + " " + StringUtil.join(resolvers, mapper, " ");
+		LinkedHashMap<String, String> result = new LinkedHashMap<String, String>();
+		for(GrAnnotation grab : grabs)
+		{
+			String grabText = grab.getText();
+			result.put(grabText, (grabText + " " + common).trim());
+		}
+		return result;
+	}
 
-  public boolean startInWriteAction() {
-    return false;
-  }
+	public boolean startInWriteAction()
+	{
+		return false;
+	}
 
-  private static class GrapeProcessHandler extends DefaultJavaProcessHandler {
-    private final StringBuilder myStdOut = new StringBuilder();
-    private final StringBuilder myStdErr = new StringBuilder();
-    private final Module myModule;
+	private static class GrapeProcessHandler extends OSProcessHandler
+	{
+		private final StringBuilder myStdOut = new StringBuilder();
+		private final StringBuilder myStdErr = new StringBuilder();
+		private final Module myModule;
 
-    public GrapeProcessHandler(GeneralCommandLine commandLine, Module module) throws ExecutionException {
-      super(commandLine);
-      myModule = module;
-    }
+		public GrapeProcessHandler(GeneralCommandLine commandLine, Module module) throws ExecutionException
+		{
+			super(commandLine);
+			myModule = module;
+		}
 
-    @Override
-    public void notifyTextAvailable(String text, Key outputType) {
-      text = StringUtil.convertLineSeparators(text);
-      if (LOG.isDebugEnabled()) {
-        LOG.debug(outputType + text);
-      }
-      if (outputType == ProcessOutputTypes.STDOUT) {
-        myStdOut.append(text);
-      }
-      else if (outputType == ProcessOutputTypes.STDERR) {
-        myStdErr.append(text);
-      }
-    }
+		@Override
+		public void notifyTextAvailable(String text, Key outputType)
+		{
+			text = StringUtil.convertLineSeparators(text);
+			if(LOG.isDebugEnabled())
+			{
+				LOG.debug(outputType + text);
+			}
+			if(outputType == ProcessOutputTypes.STDOUT)
+			{
+				myStdOut.append(text);
+			}
+			else if(outputType == ProcessOutputTypes.STDERR)
+			{
+				myStdErr.append(text);
+			}
+		}
 
-    private void addGrapeDependencies(List<VirtualFile> jars) {
-      final ModifiableRootModel model = ModuleRootManager.getInstance(myModule).getModifiableModel();
-      final LibraryTable.ModifiableModel tableModel = model.getModuleLibraryTable().getModifiableModel();
-      for (VirtualFile jar : jars) {
-        final VirtualFile jarRoot = ArchiveVfsUtil.getJarRootForLocalFile(jar);
-        if (jarRoot != null) {
-          OrderRootType rootType = OrderRootType.CLASSES;
-          String libName = "Grab:" + jar.getName();
-          for (String classifier : ContainerUtil.ar("sources", "source", "src")) {
-            if (libName.endsWith("-" + classifier + ".jar")) {
-              rootType = OrderRootType.SOURCES;
-              libName = StringUtil.trimEnd(libName, "-" + classifier + ".jar") + ".jar";
-            }
-          }
+		private void addGrapeDependencies(List<VirtualFile> jars)
+		{
+			final ModifiableRootModel model = ModuleRootManager.getInstance(myModule).getModifiableModel();
+			final LibraryTable.ModifiableModel tableModel = model.getModuleLibraryTable().getModifiableModel();
+			for(VirtualFile jar : jars)
+			{
+				final VirtualFile jarRoot = ArchiveVfsUtil.getJarRootForLocalFile(jar);
+				if(jarRoot != null)
+				{
+					OrderRootType rootType = OrderRootType.CLASSES;
+					String libName = "Grab:" + jar.getName();
+					for(String classifier : ContainerUtil.ar("sources", "source", "src"))
+					{
+						if(libName.endsWith("-" + classifier + ".jar"))
+						{
+							rootType = OrderRootType.SOURCES;
+							libName = StringUtil.trimEnd(libName, "-" + classifier + ".jar") + ".jar";
+						}
+					}
 
-          Library library = tableModel.getLibraryByName(libName);
-          if (library == null) {
-            library = tableModel.createLibrary(libName);
-          }
+					Library library = tableModel.getLibraryByName(libName);
+					if(library == null)
+					{
+						library = tableModel.createLibrary(libName);
+					}
 
-          final Library.ModifiableModel libModel = library.getModifiableModel();
-          for (String url : libModel.getUrls(rootType)) {
-            libModel.removeRoot(url, rootType);
-          }
-          libModel.addRoot(jarRoot, rootType);
-          libModel.commit();
-        }
-      }
-      tableModel.commit();
-      model.commit();
-    }
+					final Library.ModifiableModel libModel = library.getModifiableModel();
+					for(String url : libModel.getUrls(rootType))
+					{
+						libModel.removeRoot(url, rootType);
+					}
+					libModel.addRoot(jarRoot, rootType);
+					libModel.commit();
+				}
+			}
+			tableModel.commit();
+			model.commit();
+		}
 
-    int jarCount;
-    String messages = "";
+		int jarCount;
+		String messages = "";
 
-    @Override
-    protected void notifyProcessTerminated(int exitCode) {
-      try {
-        final List<VirtualFile> jars = new ArrayList<VirtualFile>();
-        for (String line : myStdOut.toString().split("\n")) {
-          if (line.startsWith(GrapeRunner.URL_PREFIX)) {
-            try {
-              final URL url = new URL(line.substring(GrapeRunner.URL_PREFIX.length()));
-              final File libFile = new File(url.toURI());
-              if (libFile.exists() && libFile.getName().endsWith(".jar")) {
-                ContainerUtil.addIfNotNull(jars, LocalFileSystem.getInstance().refreshAndFindFileByIoFile(libFile));
-              }
-            }
-            catch (MalformedURLException e) {
-              LOG.error(e);
-            }
-            catch (URISyntaxException e) {
-              LOG.error(e);
-            }
-          }
-        }
-        new WriteAction() {
-          protected void run(Result result) throws Throwable {
-            jarCount = jars.size();
-            messages = jarCount + " jar";
-            if (jarCount != 1) {
-              messages += "s";
-            }
-            if (jarCount == 0) {
-              messages += "<br>" + myStdOut.toString().replaceAll("\n", "<br>") + "<p>" + myStdErr.toString().replaceAll("\n", "<br>");
-            }
-            if (!jars.isEmpty()) {
-              addGrapeDependencies(jars);
-            }
-          }
-        }.execute();
-      }
-      finally {
-        super.notifyProcessTerminated(exitCode);
-      }
-    }
-  }
+		@Override
+		protected void notifyProcessTerminated(int exitCode)
+		{
+			try
+			{
+				final List<VirtualFile> jars = new ArrayList<VirtualFile>();
+				for(String line : myStdOut.toString().split("\n"))
+				{
+					if(line.startsWith(GrapeRunner.URL_PREFIX))
+					{
+						try
+						{
+							final URL url = new URL(line.substring(GrapeRunner.URL_PREFIX.length()));
+							final File libFile = new File(url.toURI());
+							if(libFile.exists() && libFile.getName().endsWith(".jar"))
+							{
+								ContainerUtil.addIfNotNull(jars, LocalFileSystem.getInstance().refreshAndFindFileByIoFile(libFile));
+							}
+						}
+						catch(MalformedURLException e)
+						{
+							LOG.error(e);
+						}
+						catch(URISyntaxException e)
+						{
+							LOG.error(e);
+						}
+					}
+				}
+				new WriteAction()
+				{
+					protected void run(Result result) throws Throwable
+					{
+						jarCount = jars.size();
+						messages = jarCount + " jar";
+						if(jarCount != 1)
+						{
+							messages += "s";
+						}
+						if(jarCount == 0)
+						{
+							messages += "<br>" + myStdOut.toString().replaceAll("\n", "<br>") + "<p>" + myStdErr.toString().replaceAll("\n", "<br>");
+						}
+						if(!jars.isEmpty())
+						{
+							addGrapeDependencies(jars);
+						}
+					}
+				}.execute();
+			}
+			finally
+			{
+				super.notifyProcessTerminated(exitCode);
+			}
+		}
+	}
 }

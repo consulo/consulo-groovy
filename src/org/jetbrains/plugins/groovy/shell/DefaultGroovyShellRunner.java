@@ -25,7 +25,6 @@ import org.jetbrains.plugins.groovy.runner.DefaultGroovyScriptRunner;
 import org.jetbrains.plugins.groovy.runner.GroovyScriptRunConfiguration;
 import org.jetbrains.plugins.groovy.util.LibrariesUtil;
 import com.intellij.execution.ExecutionException;
-import com.intellij.execution.configurations.JavaParameters;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ModuleRootManager;
@@ -34,6 +33,7 @@ import com.intellij.psi.JavaPsiFacade;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.FindClassUtil;
 import com.intellij.util.containers.ContainerUtil;
+import consulo.java.execution.configurations.OwnJavaParameters;
 
 /**
  * @author Sergey Evdokimov
@@ -51,9 +51,9 @@ public class DefaultGroovyShellRunner extends GroovyShellConfig
 
 	@NotNull
 	@Override
-	public JavaParameters createJavaParameters(@NotNull Module module) throws ExecutionException
+	public OwnJavaParameters createJavaParameters(@NotNull Module module) throws ExecutionException
 	{
-		JavaParameters res = GroovyScriptRunConfiguration.createJavaParametersWithSdk(module);
+		OwnJavaParameters res = GroovyScriptRunConfiguration.createJavaParametersWithSdk(module);
 		DefaultGroovyScriptRunner.configureGenericGroovyRunner(res, module, "org.codehaus.groovy.tools.shell.Main", false, true);
 		res.setWorkingDirectory(getWorkingDirectory(module));
 		return res;
