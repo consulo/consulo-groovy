@@ -15,25 +15,38 @@ package org.jetbrains.groovy.compiler.rt;
  * limitations under the License.
  */
 
-import groovy.lang.GroovyRuntimeException;
-import org.codehaus.groovy.GroovyBugError;
-import org.codehaus.groovy.ast.ASTNode;
-import org.codehaus.groovy.ast.AnnotatedNode;
-import org.codehaus.groovy.ast.ClassNode;
-import org.codehaus.groovy.ast.ModuleNode;
-import org.codehaus.groovy.classgen.GeneratorContext;
-import org.codehaus.groovy.control.*;
-import org.codehaus.groovy.control.messages.*;
-import org.codehaus.groovy.syntax.SyntaxException;
-import org.codehaus.groovy.tools.GroovyClass;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
+
+import org.codehaus.groovy.GroovyBugError;
+import org.codehaus.groovy.ast.ASTNode;
+import org.codehaus.groovy.ast.AnnotatedNode;
+import org.codehaus.groovy.ast.ClassNode;
+import org.codehaus.groovy.ast.ModuleNode;
+import org.codehaus.groovy.classgen.GeneratorContext;
+import org.codehaus.groovy.control.CompilationFailedException;
+import org.codehaus.groovy.control.CompilationUnit;
+import org.codehaus.groovy.control.ErrorCollector;
+import org.codehaus.groovy.control.MultipleCompilationErrorsException;
+import org.codehaus.groovy.control.Phases;
+import org.codehaus.groovy.control.SourceUnit;
+import org.codehaus.groovy.control.messages.ExceptionMessage;
+import org.codehaus.groovy.control.messages.Message;
+import org.codehaus.groovy.control.messages.SimpleMessage;
+import org.codehaus.groovy.control.messages.SyntaxErrorMessage;
+import org.codehaus.groovy.control.messages.WarningMessage;
+import org.codehaus.groovy.syntax.SyntaxException;
+import org.codehaus.groovy.tools.GroovyClass;
+import groovy.lang.GroovyRuntimeException;
 
 
 public class GroovyCompilerWrapper {

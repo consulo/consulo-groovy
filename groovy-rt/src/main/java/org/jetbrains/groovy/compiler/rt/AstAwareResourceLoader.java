@@ -16,13 +16,13 @@
 
 package org.jetbrains.groovy.compiler.rt;
 
-import groovy.lang.GroovyResourceLoader;
-
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collections;
 import java.util.Map;
+
+import groovy.lang.GroovyResourceLoader;
 
 public class AstAwareResourceLoader implements GroovyResourceLoader {
   final Map<String, File> myClass2File;

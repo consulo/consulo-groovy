@@ -42,6 +42,7 @@
 	<packaging>pom</packaging>
 
 	<modules>
-	
+		<module>groovy-impl</module>
+		<module>groovy-rt</module>
 	</modules>
 </project>
