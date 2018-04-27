@@ -25,7 +25,6 @@ import com.intellij.execution.junit.JUnitUtil;
 import com.intellij.ide.fileTemplates.FileTemplateDescriptor;
 import com.intellij.lang.Language;
 import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.projectRoots.ex.JavaSdkUtil;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiMethod;
@@ -137,13 +136,6 @@ public class GroovyTestFramework extends JavaTestFramework
 	public Icon getIcon()
 	{
 		return JetgroovyIcons.Groovy.Groovy_16x16;
-	}
-
-	@NotNull
-	@Override
-	public String getLibraryPath()
-	{
-		return JavaSdkUtil.getJunit3JarPath();
 	}
 
 	@Override

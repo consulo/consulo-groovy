@@ -1554,8 +1554,8 @@
 					text="Run Target" description="Run arbitrary Grails/Griffon target">
 				<keyboard-shortcut keymap="$default" first-keystroke="ctrl alt G"/>
 			</action>
-			<add-to-group group-id="ProjectViewPopupMenu" anchor="after" relative-to-action="AddFrameworkSupport"/>
-			<add-to-group group-id="NavbarPopupMenu" anchor="after" relative-to-action="AddFrameworkSupport"/>
+			<add-to-group group-id="ProjectViewPopupMenu" anchor="after"/>
+			<add-to-group group-id="NavbarPopupMenu" anchor="after"/>
 			<add-to-group group-id="ToolsMenu" anchor="last"/>
 		</group>
 
