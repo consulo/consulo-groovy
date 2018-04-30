@@ -74,7 +74,7 @@ public class GroovyPositionManager implements PositionManager
 	}
 
 	@Nonnull
-	public List<Location> locationsOfLine(ReferenceType type, SourcePosition position) throws NoDataException
+	public List<Location> locationsOfLine(@Nonnull ReferenceType type, @Nonnull SourcePosition position) throws NoDataException
 	{
 		try
 		{
@@ -127,7 +127,7 @@ public class GroovyPositionManager implements PositionManager
 		}
 	}
 
-	public ClassPrepareRequest createPrepareRequest(final ClassPrepareRequestor requestor, final SourcePosition position) throws NoDataException
+	public ClassPrepareRequest createPrepareRequest(@Nonnull final ClassPrepareRequestor requestor, @Nonnull final SourcePosition position) throws NoDataException
 	{
 		String qName = getOuterClassName(position);
 		if(qName != null)
@@ -337,20 +337,25 @@ public class GroovyPositionManager implements PositionManager
 		return scope;
 	}
 
-	private static String getOriginalQualifiedName(ReferenceType refType, String runtimeName)
+	@Nonnull
+	private static String getOriginalQualifiedName(@Nonnull ReferenceType refType, @Nonnull String runtimeName)
 	{
 		for(ScriptPositionManagerHelper helper : ScriptPositionManagerHelper.EP_NAME.getExtensions())
 		{
 			if(helper.isAppropriateRuntimeName(runtimeName))
 			{
-				return helper.getOriginalScriptName(refType, runtimeName);
+				String originalScriptName = helper.getOriginalScriptName(refType, runtimeName);
+				if(originalScriptName != null)
+				{
+					return originalScriptName;
+				}
 			}
 		}
 		return runtimeName;
 	}
 
 	@Nonnull
-	public List<ReferenceType> getAllClasses(final SourcePosition position) throws NoDataException
+	public List<ReferenceType> getAllClasses(@Nonnull final SourcePosition position) throws NoDataException
 	{
 		List<ReferenceType> result = ApplicationManager.getApplication().runReadAction(new Computable<List<ReferenceType>>()
 		{
