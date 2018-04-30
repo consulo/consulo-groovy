@@ -1,1 +1,1 @@
-![Build Status](http://must-be.org/vulcan/statusImage?name=consulo-groovy)
+[![Build Status](https://ci.consulo.io/job/consulo-groovy/badge/icon)](https://ci.consulo.io/job/consulo-groovy/)
