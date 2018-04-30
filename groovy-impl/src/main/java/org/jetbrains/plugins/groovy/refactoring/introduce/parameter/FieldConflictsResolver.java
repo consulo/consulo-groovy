@@ -23,7 +23,6 @@ import com.intellij.psi.search.searches.ReferencesSearch;
 import com.intellij.psi.util.InheritanceUtil;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyRecursiveElementVisitor;
@@ -115,7 +114,7 @@ public class FieldConflictsResolver {
 
   public static GrReferenceExpression qualifyReference(GrReferenceExpression referenceExpression,
                                                        final PsiMember member,
-                                                       @Nullable final PsiClass qualifyingClass) throws IncorrectOperationException {
+                                                       @javax.annotation.Nullable final PsiClass qualifyingClass) throws IncorrectOperationException {
     PsiManager manager = referenceExpression.getManager();
     GrReferenceExpression expressionFromText;
     final GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(referenceExpression.getProject());

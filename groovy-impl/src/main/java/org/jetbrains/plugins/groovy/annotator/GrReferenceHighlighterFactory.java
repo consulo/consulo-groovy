@@ -15,6 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.annotator;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.codeHighlighting.TextEditorHighlightingPass;
 import com.intellij.codeHighlighting.TextEditorHighlightingPassFactory;
 import com.intellij.codeHighlighting.TextEditorHighlightingPassRegistrar;
@@ -22,7 +24,6 @@ import com.intellij.openapi.components.AbstractProjectComponent;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiFile;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFileBase;
 
 /**
@@ -35,7 +36,7 @@ public class GrReferenceHighlighterFactory extends AbstractProjectComponent impl
   }
 
   @Override
-  public TextEditorHighlightingPass createHighlightingPass(@NotNull PsiFile file, @NotNull Editor editor) {
+  public TextEditorHighlightingPass createHighlightingPass(@Nonnull PsiFile file, @Nonnull Editor editor) {
     if (!(file instanceof GroovyFileBase)) return null;
     return new GrReferenceHighlighter(editor.getDocument(), (GroovyFileBase)file);
   }

@@ -16,14 +16,14 @@
 
 package org.jetbrains.plugins.groovy.refactoring.extract.method;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 /**
  * @author ilyas
  */
 public interface ExtractMethodSettings {
 
-  @NotNull
+  @Nonnull
   ExtractMethodInfoHelper getHelper();
 
   String getEnteredName();

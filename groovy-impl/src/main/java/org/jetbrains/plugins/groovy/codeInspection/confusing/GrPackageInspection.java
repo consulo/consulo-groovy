@@ -25,8 +25,8 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.SyntheticElement;
 import org.jetbrains.annotations.Nls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.annotator.intentions.GrMoveToDirFix;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspection;
@@ -49,13 +49,13 @@ public class GrPackageInspection extends BaseInspection {
   public boolean myCheckScripts = true;
 
   @Nls
-  @NotNull
+  @Nonnull
   public String getGroupDisplayName() {
     return CONFUSING_CODE_CONSTRUCTS;
   }
 
   @Nls
-  @NotNull
+  @Nonnull
   public String getDisplayName() {
     return "Package name mismatch";
   }
@@ -134,19 +134,19 @@ public class GrPackageInspection extends BaseInspection {
       myNewPackageName = newPackageName;
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public String getName() {
       return GroovyBundle.message("fix.package.name");
     }
 
-    @NotNull
+    @Nonnull
     public String getFamilyName() {
       return GroovyBundle.message("fix.package.name");
     }
 
     @Override
-    public void applyFix(@NotNull Project project, @NotNull ProblemDescriptor descriptor) {
+    public void applyFix(@Nonnull Project project, @Nonnull ProblemDescriptor descriptor) {
       PsiFile file = descriptor.getPsiElement().getContainingFile();
       ((GroovyFile)file).setPackageName(myNewPackageName);
     }

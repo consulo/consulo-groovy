@@ -17,7 +17,8 @@ package org.jetbrains.plugins.groovy.dgm;
 
 import java.util.Map;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.completion.GroovyCompletionUtil;
 import com.intellij.codeInsight.completion.AllClassesGetter;
 import com.intellij.codeInsight.completion.CompletionContributor;
@@ -42,9 +43,9 @@ public class DGMCompletionContributor extends CompletionContributor {
     extend(CompletionType.BASIC, PlatformPatterns.psiElement(PropertiesTokenTypes.KEY_CHARACTERS),
            new CompletionProvider() {
              @Override
-             public void addCompletions(@NotNull CompletionParameters parameters,
+             public void addCompletions(@Nonnull CompletionParameters parameters,
                                            ProcessingContext context,
-                                           @NotNull CompletionResultSet result) {
+                                           @Nonnull CompletionResultSet result) {
                PsiElement position = parameters.getPosition();
                if (!DGMUtil.isInDGMFile(position)) return;
 
@@ -60,9 +61,9 @@ public class DGMCompletionContributor extends CompletionContributor {
     extend(CompletionType.BASIC, PlatformPatterns.psiElement(PropertiesTokenTypes.VALUE_CHARACTERS),
            new CompletionProvider() {
              @Override
-			 public void addCompletions(@NotNull CompletionParameters parameters,
+			 public void addCompletions(@Nonnull CompletionParameters parameters,
                                            ProcessingContext context,
-                                           @NotNull final CompletionResultSet result) {
+                                           @Nonnull final CompletionResultSet result) {
                PsiElement position = parameters.getPosition();
                if (!DGMUtil.isInDGMFile(position)) return;
 

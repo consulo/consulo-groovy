@@ -15,11 +15,11 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.bugs;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.psi.tree.IElementType;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
@@ -30,18 +30,18 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpres
 public class GroovyDivideByZeroInspection extends BaseInspection {
 
   @Nls
-  @NotNull
+  @Nonnull
   public String getGroupDisplayName() {
     return PROBABLE_BUGS;
   }
 
   @Nls
-  @NotNull
+  @Nonnull
   public String getDisplayName() {
     return "Divide by zero";
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   protected String buildErrorString(Object... args) {
     return "Division by zero #loc";
 
@@ -58,7 +58,7 @@ public class GroovyDivideByZeroInspection extends BaseInspection {
   private static class Visitor extends BaseInspectionVisitor {
 
     public void visitBinaryExpression(
-      @NotNull GrBinaryExpression expression) {
+      @Nonnull GrBinaryExpression expression) {
       super.visitBinaryExpression(expression);
       final GrExpression rhs = expression.getRightOperand();
       if (rhs == null) {

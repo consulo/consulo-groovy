@@ -15,11 +15,13 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.typeEnhancers;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.psi.CommonClassNames;
 import com.intellij.psi.PsiPrimitiveType;
 import com.intellij.psi.PsiType;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.GrListOrMap;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
@@ -32,16 +34,16 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUt
 public class GrCharConverter extends GrTypeConverter {
 
   @Override
-  public boolean isApplicableTo(@NotNull ApplicableTo position) {
+  public boolean isApplicableTo(@Nonnull ApplicableTo position) {
     return position == ApplicableTo.EXPLICIT_CAST || position == ApplicableTo.ASSIGNMENT || position == ApplicableTo.RETURN_VALUE;
   }
 
   @Nullable
   @Override
-  public ConversionResult isConvertibleEx(@NotNull PsiType lType,
-                                          @NotNull PsiType rType,
-                                          @NotNull GroovyPsiElement context,
-                                          @NotNull ApplicableTo currentPosition) {
+  public ConversionResult isConvertibleEx(@Nonnull PsiType lType,
+                                          @Nonnull PsiType rType,
+                                          @Nonnull GroovyPsiElement context,
+                                          @Nonnull ApplicableTo currentPosition) {
     if (PsiType.CHAR != TypesUtil.unboxPrimitiveTypeWrapper(lType)) return null;
     if (PsiType.CHAR == TypesUtil.unboxPrimitiveTypeWrapper(rType)) return ConversionResult.OK;
 

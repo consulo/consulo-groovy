@@ -15,11 +15,12 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.pom.java.LanguageLevel;
 import com.intellij.psi.*;
 import com.intellij.psi.search.GlobalSearchScope;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrAnonymousClassDefinition;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
 
@@ -29,15 +30,15 @@ import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
 public class GrAnonymousClassType extends GrLiteralClassType {
   private final GrAnonymousClassDefinition myAnonymous;
 
-  public GrAnonymousClassType(@NotNull LanguageLevel languageLevel,
-                              @NotNull GlobalSearchScope scope,
-                              @NotNull JavaPsiFacade facade,
-                              @NotNull GrAnonymousClassDefinition anonymous) {
+  public GrAnonymousClassType(@Nonnull LanguageLevel languageLevel,
+                              @Nonnull GlobalSearchScope scope,
+                              @Nonnull JavaPsiFacade facade,
+                              @Nonnull GrAnonymousClassDefinition anonymous) {
     super(languageLevel, scope, facade);
     myAnonymous = anonymous;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   protected String getJavaClassName() {
     final GrCodeReferenceElement ref = myAnonymous.getBaseClassReferenceGroovy();
@@ -50,7 +51,7 @@ public class GrAnonymousClassType extends GrLiteralClassType {
     }
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public String getClassName() {
     return StringUtil.getShortName(getJavaClassName());
@@ -61,15 +62,15 @@ public class GrAnonymousClassType extends GrLiteralClassType {
     return myAnonymous;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public PsiType[] getParameters() {
     return myAnonymous.getBaseClassReferenceGroovy().getTypeArguments();
   }
 
-  @NotNull
+  @Nonnull
   @Override
-  public PsiClassType setLanguageLevel(@NotNull LanguageLevel languageLevel) {
+  public PsiClassType setLanguageLevel(@Nonnull LanguageLevel languageLevel) {
     return new GrAnonymousClassType(languageLevel, myScope, myFacade, myAnonymous);
   }
 
@@ -88,7 +89,7 @@ public class GrAnonymousClassType extends GrLiteralClassType {
     return "AnonymousType:" + getPresentableText();
   }
 
-  @NotNull
+  @Nonnull
   public PsiClassType getSimpleClassType() {
     return new GrClassReferenceType(myAnonymous.getBaseClassReferenceGroovy(), myLanguageLevel);
   }

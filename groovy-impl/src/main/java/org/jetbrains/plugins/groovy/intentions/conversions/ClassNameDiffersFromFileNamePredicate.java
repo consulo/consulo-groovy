@@ -19,7 +19,7 @@ import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.util.Consumer;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.intentions.base.PsiElementPredicate;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
@@ -32,7 +32,7 @@ class ClassNameDiffersFromFileNamePredicate implements PsiElementPredicate
 	private final Consumer<GrTypeDefinition> myClassConsumer;
 	private final boolean mySearchForClassInMultiClassFile;
 
-	ClassNameDiffersFromFileNamePredicate(@Nullable Consumer<GrTypeDefinition> classConsumer,
+	ClassNameDiffersFromFileNamePredicate(@javax.annotation.Nullable Consumer<GrTypeDefinition> classConsumer,
 			boolean searchForClassInMultiClassFile)
 	{
 		myClassConsumer = classConsumer;

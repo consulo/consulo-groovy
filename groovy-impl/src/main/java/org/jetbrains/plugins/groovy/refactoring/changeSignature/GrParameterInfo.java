@@ -15,13 +15,15 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.changeSignature;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.*;
 import com.intellij.refactoring.changeSignature.JavaParameterInfo;
 import com.intellij.refactoring.util.CanonicalTypes;
 import com.intellij.util.IncorrectOperationException;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameter;
 
@@ -29,9 +31,12 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameter;
  * @author Maxim.Medvedev
  */
 public class GrParameterInfo implements JavaParameterInfo {
-  @NotNull private String myName;
-  @NotNull private String myDefaultValue;
-  @NotNull private String myDefaultInitializer;
+  @Nonnull
+  private String myName;
+  @Nonnull
+  private String myDefaultValue;
+  @Nonnull
+  private String myDefaultInitializer;
   private final int myPosition;
   @Nullable private CanonicalTypes.Type myTypeWrapper;
   private boolean myUseAnySingleVariable;
@@ -57,10 +62,10 @@ public class GrParameterInfo implements JavaParameterInfo {
     myUseAnySingleVariable = false;
   }
 
-  public GrParameterInfo(@NotNull String name,
+  public GrParameterInfo(@Nonnull String name,
                          @Nullable String defaultValue,
                          @Nullable String defaultInitializer,
-                         @Nullable PsiType type,
+                         @javax.annotation.Nullable PsiType type,
                          int position,
                          boolean useAnySingleVariable) {
     myName = name;
@@ -71,7 +76,7 @@ public class GrParameterInfo implements JavaParameterInfo {
     setInitializer(defaultInitializer);
   }
 
-  @NotNull
+  @Nonnull
   public String getName() {
     return myName;
   }
@@ -80,7 +85,7 @@ public class GrParameterInfo implements JavaParameterInfo {
     return myPosition;
   }
 
-  @NotNull
+  @Nonnull
   public String getDefaultValue() {
     return forceOptional() ? getDefaultInitializer() : myDefaultValue;
   }
@@ -90,7 +95,7 @@ public class GrParameterInfo implements JavaParameterInfo {
     return myTypeWrapper != null ? myTypeWrapper.getType(context, manager) : null;
   }
 
-  @NotNull
+  @Nonnull
   public String getTypeText() {
     return myTypeWrapper != null ? myTypeWrapper.getTypeText() : "";
   }
@@ -121,7 +126,7 @@ public class GrParameterInfo implements JavaParameterInfo {
     return getDefaultInitializer().length() > 0;
   }
 
-  @NotNull
+  @Nonnull
   public String getDefaultInitializer() {
     return myDefaultInitializer;
   }
@@ -137,7 +142,7 @@ public class GrParameterInfo implements JavaParameterInfo {
   /**
    * for testing only
    */
-  public void setName(@NotNull String newName) {
+  public void setName(@Nonnull String newName) {
     myName = newName;
   }
 

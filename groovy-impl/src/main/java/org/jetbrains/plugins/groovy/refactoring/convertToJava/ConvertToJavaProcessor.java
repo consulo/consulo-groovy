@@ -32,7 +32,7 @@ import com.intellij.usageView.UsageInfo;
 import com.intellij.usageView.UsageViewDescriptor;
 import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.containers.hash.HashSet;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.refactoring.GroovyRefactoringBundle;
 
@@ -51,11 +51,11 @@ public class ConvertToJavaProcessor extends BaseRefactoringProcessor {
     myFiles = files;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   protected UsageViewDescriptor createUsageViewDescriptor(UsageInfo[] usages) {
     return new UsageViewDescriptorAdapter() {
-      @NotNull
+      @Nonnull
       @Override
       public PsiElement[] getElements() {
         return myFiles;
@@ -68,7 +68,7 @@ public class ConvertToJavaProcessor extends BaseRefactoringProcessor {
     };
   }
 
-  @NotNull
+  @Nonnull
   @Override
   protected UsageInfo[] findUsages() {
     return UsageInfo.EMPTY_ARRAY;

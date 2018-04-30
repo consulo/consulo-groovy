@@ -15,6 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.patterns;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.patterns.*;
 import com.intellij.psi.CommonClassNames;
 import com.intellij.psi.PsiClass;
@@ -24,8 +26,8 @@ import com.intellij.psi.impl.source.tree.LeafPsiElement;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.InheritanceUtil;
 import com.intellij.util.ProcessingContext;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFileBase;
@@ -55,18 +57,18 @@ public class GroovyPatterns extends PsiJavaPatterns {
     return groovyLiteralExpression(null);
   }
 
-  public static GroovyElementPattern.Capture<GrLiteral> groovyLiteralExpression(@Nullable final ElementPattern value) {
+  public static GroovyElementPattern.Capture<GrLiteral> groovyLiteralExpression(@javax.annotation.Nullable final ElementPattern value) {
     return new GroovyElementPattern.Capture<GrLiteral>(new InitialPatternCondition<GrLiteral>(GrLiteral.class) {
-      public boolean accepts(@Nullable final Object o, final ProcessingContext context) {
+      public boolean accepts(@javax.annotation.Nullable final Object o, final ProcessingContext context) {
         return o instanceof GrLiteral && (value == null || value.accepts(((GrLiteral)o).getValue(), context));
       }
     });
   }
 
-  public static PsiMethodPattern grLightMethod(@NotNull final Object key) {
+  public static PsiMethodPattern grLightMethod(@Nonnull final Object key) {
     return PsiJavaPatterns.psiMethod().with(new PatternCondition<PsiMethod>("GrLightMethodBuilder") {
       @Override
-      public boolean accepts(@NotNull PsiMethod method, ProcessingContext context) {
+      public boolean accepts(@Nonnull PsiMethod method, ProcessingContext context) {
         return method instanceof GrLightMethodBuilder && key.equals(((GrLightMethodBuilder)method).getMethodKind());
       }
     });
@@ -76,7 +78,7 @@ public class GroovyPatterns extends PsiJavaPatterns {
                                                                                  final GroovyAssignmentExpressionPattern assignment) {
     return new GroovyElementPattern.Capture<GroovyPsiElement>(new InitialPatternCondition<GroovyPsiElement>(GroovyPsiElement.class) {
       @Override
-      public boolean accepts(@Nullable Object o, ProcessingContext context) {
+      public boolean accepts(@javax.annotation.Nullable Object o, ProcessingContext context) {
         if (!(o instanceof GroovyPsiElement)) return false;
 
         PsiElement parent = ((GroovyPsiElement)o).getParent();
@@ -91,7 +93,7 @@ public class GroovyPatterns extends PsiJavaPatterns {
 
   public static GroovyElementPattern.Capture<GrLiteralImpl> stringLiteral() {
     return new GroovyElementPattern.Capture<GrLiteralImpl>(new InitialPatternCondition<GrLiteralImpl>(GrLiteralImpl.class) {
-      public boolean accepts(@Nullable final Object o, final ProcessingContext context) {
+      public boolean accepts(@javax.annotation.Nullable final Object o, final ProcessingContext context) {
         if (!(o instanceof GrLiteralImpl)) return false;
         return ((GrLiteralImpl)o).isStringLiteral();
       }
@@ -106,7 +108,7 @@ public class GroovyPatterns extends PsiJavaPatterns {
     return new GroovyNamedArgumentPattern();
   }
 
-  public static GroovyElementPattern.Capture<GrArgumentLabel> namedArgumentLabel(@Nullable final ElementPattern<? extends String> namePattern) {
+  public static GroovyElementPattern.Capture<GrArgumentLabel> namedArgumentLabel(@javax.annotation.Nullable final ElementPattern<? extends String> namePattern) {
     return new GroovyElementPattern.Capture<GrArgumentLabel>(new InitialPatternCondition<GrArgumentLabel>(GrArgumentLabel.class) {
       public boolean accepts(@Nullable final Object o, final ProcessingContext context) {
         if (o instanceof GrArgumentLabel) {
@@ -129,7 +131,7 @@ public class GroovyPatterns extends PsiJavaPatterns {
     return new GroovyMethodCallPattern().withMethodName(names)
       .withMethod(psiMethod().with(new PatternCondition<PsiMethod>("psiMethodClassNameCondition") {
         @Override
-        public boolean accepts(@NotNull PsiMethod psiMethod, ProcessingContext context) {
+        public boolean accepts(@Nonnull PsiMethod psiMethod, ProcessingContext context) {
           PsiClass containingClass = psiMethod.getContainingClass();
           if (containingClass != null) {
             if (InheritanceUtil.isInheritor(containingClass, className)) {
@@ -148,7 +150,7 @@ public class GroovyPatterns extends PsiJavaPatterns {
   public static PsiFilePattern.Capture<GroovyFile> groovyScript() {
     return new PsiFilePattern.Capture<GroovyFile>(new InitialPatternCondition<GroovyFile>(GroovyFile.class) {
       @Override
-      public boolean accepts(@Nullable Object o, ProcessingContext context) {
+      public boolean accepts(@javax.annotation.Nullable Object o, ProcessingContext context) {
         return o instanceof GroovyFileBase && ((GroovyFileBase)o).isScript();
       }
     });

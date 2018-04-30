@@ -13,17 +13,16 @@
 package org.jetbrains.plugins.groovy.refactoring.introduce;
 
 import com.intellij.psi.PsiType;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * @author Maxim.Medvedev
  */
 public interface GrIntroduceSettings {
-  @Nullable
+  @javax.annotation.Nullable
   String getName();
 
   boolean replaceAllOccurrences();
 
-  @Nullable
+  @javax.annotation.Nullable
   PsiType getSelectedType();
 }

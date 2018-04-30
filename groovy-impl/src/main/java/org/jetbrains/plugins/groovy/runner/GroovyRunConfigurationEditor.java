@@ -27,7 +27,7 @@ import com.intellij.openapi.roots.ui.configuration.ModulesAlphaComparator;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.ui.*;
 import com.intellij.ui.components.JBLabel;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 
 import javax.swing.*;
@@ -112,7 +112,7 @@ public class GroovyRunConfigurationEditor extends SettingsEditor<GroovyScriptRun
     configuration.setEnvs(myEnvVariables.getEnvs());
   }
 
-  @NotNull
+  @Nonnull
   public JComponent createEditor() {
     myModulesModel = new DefaultComboBoxModel();
     myModulesBox.setModel(myModulesModel);

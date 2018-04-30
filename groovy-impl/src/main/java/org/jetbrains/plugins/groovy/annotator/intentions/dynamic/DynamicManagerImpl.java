@@ -20,10 +20,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import javax.annotation.Nonnull;
 import javax.swing.tree.DefaultMutableTreeNode;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.annotator.intentions.QuickfixUtil;
 import org.jetbrains.plugins.groovy.annotator.intentions.dynamic.elements.DClassElement;
 import org.jetbrains.plugins.groovy.annotator.intentions.dynamic.elements.DItemElement;
@@ -212,7 +212,7 @@ public class DynamicManagerImpl extends DynamicManager {
     classElement.removeProperty(propertyElement);
   }
 
-  @NotNull
+  @Nonnull
   public Collection<DPropertyElement> findDynamicPropertiesOfClass(String className) {
     final DClassElement classElement = findClassElement(getRootElement(), className);
 
@@ -230,7 +230,7 @@ public class DynamicManagerImpl extends DynamicManager {
     return dynamicProperty.getType();
   }
 
-  @NotNull
+  @Nonnull
   public Collection<DClassElement> getAllContainingClasses() {
     //TODO: use iterator
     final DRootElement root = getRootElement();
@@ -318,7 +318,7 @@ public class DynamicManagerImpl extends DynamicManager {
     fireChange();
   }
 
-  @NotNull
+  @Nonnull
   public DClassElement getOrCreateClassElement(Project project, String className) {
     DClassElement classElement = DynamicManager.getInstance(myProject).getRootElement().getClassElement(className);
     if (classElement == null) {
@@ -414,7 +414,7 @@ public class DynamicManagerImpl extends DynamicManager {
   public void disposeComponent() {
   }
 
-  @NotNull
+  @Nonnull
   public String getComponentName() {
     return "DynamicManagerImpl";
   }

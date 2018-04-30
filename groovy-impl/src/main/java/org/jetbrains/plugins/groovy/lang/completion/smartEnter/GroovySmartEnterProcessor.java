@@ -26,8 +26,8 @@ import com.intellij.psi.util.PsiUtilCore;
 import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.containers.OrderedSet;
 import com.intellij.util.text.CharArrayUtil;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.completion.smartEnter.fixers.*;
 import org.jetbrains.plugins.groovy.lang.completion.smartEnter.processors.GroovyPlainEnterProcessor;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocComment;
@@ -59,7 +59,7 @@ public class GroovySmartEnterProcessor extends SmartEnterProcessorWithFixers {
     final List<SmartEnterProcessorWithFixers.Fixer<GroovySmartEnterProcessor>> ourFixers = Arrays.asList(
         new SmartEnterProcessorWithFixers.Fixer<GroovySmartEnterProcessor>() {
           @Override
-          public void apply(@NotNull Editor editor, @NotNull GroovySmartEnterProcessor processor, @NotNull PsiElement psiElement) {
+          public void apply(@Nonnull Editor editor, @Nonnull GroovySmartEnterProcessor processor, @Nonnull PsiElement psiElement) {
             GrCatchClause catchClause = PsiTreeUtil.getParentOfType(psiElement, GrCatchClause.class);
             if (catchClause == null || catchClause.getBody() != null) return;
             if (!PsiTreeUtil.isAncestor(catchClause.getParameter(), psiElement, false)) return;
@@ -115,7 +115,7 @@ public class GroovySmartEnterProcessor extends SmartEnterProcessorWithFixers {
   }
 
   @Override
-  protected void collectAllElements(@NotNull PsiElement atCaret, @NotNull OrderedSet<PsiElement> res, boolean recurse) {
+  protected void collectAllElements(@Nonnull PsiElement atCaret, @Nonnull OrderedSet<PsiElement> res, boolean recurse) {
     res.add(0, atCaret);
     if (doNotStepInto(atCaret)) {
       if (!recurse) return;
@@ -152,7 +152,7 @@ public class GroovySmartEnterProcessor extends SmartEnterProcessorWithFixers {
   }
 
   @Override
-  @Nullable
+  @javax.annotation.Nullable
   protected PsiElement getStatementAtCaret(Editor editor, PsiFile psiFile) {
     PsiElement atCaret = super.getStatementAtCaret(editor, psiFile);
 
@@ -167,7 +167,7 @@ public class GroovySmartEnterProcessor extends SmartEnterProcessorWithFixers {
   }
 
   @Override
-  protected void moveCaretInsideBracesIfAny(@NotNull final Editor editor, @NotNull final PsiFile file) throws IncorrectOperationException {
+  protected void moveCaretInsideBracesIfAny(@Nonnull final Editor editor, @Nonnull final PsiFile file) throws IncorrectOperationException {
     int caretOffset = editor.getCaretModel().getOffset();
     final CharSequence chars = editor.getDocument().getCharsSequence();
 

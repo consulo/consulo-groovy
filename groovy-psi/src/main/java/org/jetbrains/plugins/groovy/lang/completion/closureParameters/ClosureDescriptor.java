@@ -20,8 +20,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.GroovyLanguage;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.signatures.GrClosureSignature;
@@ -130,7 +130,7 @@ public class ClosureDescriptor extends LightElement implements PsiElement
 		return GrClosureSignatureUtil.isSignatureApplicable(closureSignature, typeArray, place);
 	}
 
-	private static PsiType convertToPsiType(String type, @NotNull PsiElement place)
+	private static PsiType convertToPsiType(String type, @Nonnull PsiElement place)
 	{
 		return JavaPsiFacade.getElementFactory(place.getProject()).createTypeFromText(type, place);
 	}

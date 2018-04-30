@@ -17,12 +17,12 @@
 package org.jetbrains.plugins.groovy.lang.groovydoc.psi.api;
 
 import com.intellij.psi.PsiPolyVariantReference;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 /**
  * @author ilyas
  */
 public interface GrDocParameterReference extends GroovyDocPsiElement, PsiPolyVariantReference, GrDocTagValueToken {
-  @NotNull
+  @Nonnull
   GrDocTagValueToken getReferenceNameElement();
 }

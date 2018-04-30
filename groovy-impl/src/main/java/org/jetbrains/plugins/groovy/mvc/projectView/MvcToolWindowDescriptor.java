@@ -28,8 +28,8 @@ import com.intellij.openapi.wm.ToolWindowFactory;
 import com.intellij.openapi.wm.ex.ToolWindowEx;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiManager;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.mvc.MvcFramework;
 import org.jetbrains.plugins.groovy.mvc.MvcModuleStructureUtil;
 
@@ -75,11 +75,11 @@ public abstract class MvcToolWindowDescriptor implements ToolWindowFactory, Cond
 
   public abstract Icon getModuleNodeIcon();
 
-  @NotNull
+  @Nonnull
   public abstract MvcProjectViewState getProjectViewState(Project project);
 
-  @Nullable
-  protected static PsiDirectory findDirectory(Project project, VirtualFile root, @NotNull String relativePath) {
+  @javax.annotation.Nullable
+  protected static PsiDirectory findDirectory(Project project, VirtualFile root, @Nonnull String relativePath) {
     final VirtualFile file = root.findFileByRelativePath(relativePath);
     return file == null ? null : PsiManager.getInstance(project).findDirectory(file);
   }

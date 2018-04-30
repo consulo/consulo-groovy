@@ -15,11 +15,13 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.api;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiSubstitutor;
 import com.intellij.psi.ResolveResult;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 
 /**
  * @author ven
@@ -37,7 +39,7 @@ public interface GroovyResolveResult extends ResolveResult
 	@Nullable
 	PsiElement getCurrentFileResolveContext();
 
-	@NotNull
+	@Nonnull
 	PsiSubstitutor getSubstitutor();
 
 	boolean isInvokedOnProperty();
@@ -72,7 +74,7 @@ public interface GroovyResolveResult extends ResolveResult
 		}
 
 		@Override
-		@NotNull
+		@Nonnull
 		public PsiSubstitutor getSubstitutor()
 		{
 			return PsiSubstitutor.EMPTY;

@@ -24,8 +24,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.codeInspection.utils.ControlFlowUtils;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
@@ -183,7 +183,7 @@ public class GroovyInlineMethodUtil {
   /**
    * Shows dialog with question to inline
    */
-  @Nullable
+  @javax.annotation.Nullable
   private static InlineHandler.Settings inlineMethodDialogResult(GrMethod method, Project project, boolean invokedOnReference) {
     Application application = ApplicationManager.getApplication();
     if (!application.isUnitTestMode()) {
@@ -258,7 +258,7 @@ public class GroovyInlineMethodUtil {
     CommonRefactoringUtil.showErrorHint(project, editor, message, REFACTORING_NAME, HelpID.INLINE_METHOD);
   }
 
-  static boolean isStaticMethod(@NotNull GrMethod method) {
+  static boolean isStaticMethod(@Nonnull GrMethod method) {
     return method.hasModifierProperty(PsiModifier.STATIC);
   }
 
@@ -315,7 +315,7 @@ public class GroovyInlineMethodUtil {
     public final int offsetInMethod;
     public final PsiClass containingClass;
 
-    @Nullable
+    @javax.annotation.Nullable
     public String getPresentation() {
       return declaration.getName();
     }
@@ -333,7 +333,7 @@ public class GroovyInlineMethodUtil {
   }
 
 
-  static void addQualifiersToInnerReferences(GrMethod method, Collection<ReferenceExpressionInfo> infos, @NotNull GrExpression qualifier)
+  static void addQualifiersToInnerReferences(GrMethod method, Collection<ReferenceExpressionInfo> infos, @Nonnull GrExpression qualifier)
       throws IncorrectOperationException {
     Set<GrReferenceExpression> exprs = new HashSet<GrReferenceExpression>();
     for (ReferenceExpressionInfo info : infos) {
@@ -478,7 +478,7 @@ public class GroovyInlineMethodUtil {
     }
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   private static GrExpression inferArg(GrClosureSignature signature,
                                        GrParameter[] parameters,
                                        GrParameter parameter,

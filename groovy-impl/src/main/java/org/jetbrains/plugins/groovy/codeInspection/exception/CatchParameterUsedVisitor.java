@@ -16,7 +16,7 @@
 package org.jetbrains.plugins.groovy.codeInspection.exception;
 
 import com.intellij.psi.PsiElement;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyRecursiveElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
@@ -32,7 +32,7 @@ class CatchParameterUsedVisitor extends GroovyRecursiveElementVisitor {
     parameter = variable;
   }
 
-  public void visitElement(@NotNull GroovyPsiElement element) {
+  public void visitElement(@Nonnull GroovyPsiElement element) {
     if (!used) {
       super.visitElement(element);
     }
@@ -49,7 +49,7 @@ class CatchParameterUsedVisitor extends GroovyRecursiveElementVisitor {
     }
   }
 
-  public void visitJSReferenceExpression(@NotNull GrReferenceExpression reference) {
+  public void visitJSReferenceExpression(@Nonnull GrReferenceExpression reference) {
     if (used) {
       return;
     }

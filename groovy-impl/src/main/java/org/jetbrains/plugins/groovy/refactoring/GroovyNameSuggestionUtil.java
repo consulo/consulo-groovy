@@ -21,8 +21,8 @@ import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.literals.GrLiteral;
@@ -63,7 +63,7 @@ public class GroovyNameSuggestionUtil
 		return suggestVariableNames(expr, validator, false);
 	}
 
-	public static String[] suggestVariableNames(@NotNull GrExpression expr,
+	public static String[] suggestVariableNames(@Nonnull GrExpression expr,
 			NameValidator validator,
 			boolean forStaticVariable)
 	{
@@ -313,8 +313,8 @@ public class GroovyNameSuggestionUtil
 		possibleNames.add(validator.validateName(candidateName, true));
 	}
 
-	@NotNull
-	private static String cleanTypeName(@NotNull String typeName)
+	@Nonnull
+	private static String cleanTypeName(@Nonnull String typeName)
 	{
 		if(typeName.contains("."))
 		{
@@ -369,7 +369,7 @@ public class GroovyNameSuggestionUtil
 		return str.substring(0, 1).toUpperCase() + str.substring(1);
 	}
 
-	@Nullable
+	@javax.annotation.Nullable
 	private static PsiType getCollectionComponentType(PsiType type, Project project)
 	{
 		if(!(type instanceof PsiClassType))

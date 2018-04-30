@@ -18,8 +18,8 @@ package org.jetbrains.plugins.groovy.actions.generate.equals;
 import java.util.Collection;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.actions.generate.GroovyCodeInsightBundle;
 import org.jetbrains.plugins.groovy.actions.generate.GroovyGenerationInfo;
 import com.intellij.codeInsight.generation.ClassMember;
@@ -61,7 +61,7 @@ public class GroovyGenerateEqualsHandler extends GenerateMembersHandlerBase {
   }
 
 
-  @Nullable
+  @javax.annotation.Nullable
   protected ClassMember[] chooseOriginalMembers(PsiClass aClass, Project project) {
     myEqualsFields = null;
     myHashCodeFields = null;
@@ -113,7 +113,7 @@ public class GroovyGenerateEqualsHandler extends GenerateMembersHandlerBase {
     return DUMMY_RESULT;
   }
 
-  @NotNull
+  @Nonnull
   protected List<? extends GenerationInfo> generateMemberPrototypes(PsiClass aClass, ClassMember[] originalMembers) throws IncorrectOperationException {
     Project project = aClass.getProject();
     final boolean useInstanceofToCheckParameterType = JavaCodeInsightSettings.getInstance().USE_INSTANCEOF_ON_EQUALS_PARAMETER;

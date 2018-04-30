@@ -20,9 +20,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 
+import javax.annotation.Nonnull;
+
 import org.jdom.Element;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import com.intellij.execution.CantRunException;
 import com.intellij.execution.CommonJavaRunConfigurationParameters;
 import com.intellij.execution.ExecutionException;
@@ -109,13 +111,13 @@ public abstract class MvcRunConfiguration extends ModuleBasedConfiguration<RunCo
 		return null;
 	}
 
-	public void setEnvs(@NotNull Map<String, String> envs)
+	public void setEnvs(@Nonnull Map<String, String> envs)
 	{
 		this.envs.clear();
 		this.envs.putAll(envs);
 	}
 
-	@NotNull
+	@Nonnull
 	public Map<String, String> getEnvs()
 	{
 		return envs;
@@ -214,7 +216,7 @@ public abstract class MvcRunConfiguration extends ModuleBasedConfiguration<RunCo
 
 	protected abstract String getNoSdkMessage();
 
-	protected boolean isSupport(@NotNull Module module)
+	protected boolean isSupport(@Nonnull Module module)
 	{
 		return myFramework.getSdkRoot(module) != null && !myFramework.isAuxModule(module);
 	}
@@ -237,13 +239,13 @@ public abstract class MvcRunConfiguration extends ModuleBasedConfiguration<RunCo
 		super.checkConfiguration();
 	}
 
-	@Nullable
+	@javax.annotation.Nullable
 	public Module getModule()
 	{
 		return getConfigurationModule().getModule();
 	}
 
-	public RunProfileState getState(@NotNull Executor executor, @NotNull ExecutionEnvironment environment) throws ExecutionException
+	public RunProfileState getState(@Nonnull Executor executor, @Nonnull ExecutionEnvironment environment) throws ExecutionException
 	{
 		final Module module = getModule();
 		if(module == null)
@@ -268,7 +270,7 @@ public abstract class MvcRunConfiguration extends ModuleBasedConfiguration<RunCo
 
 	}
 
-	protected MvcCommandLineState createCommandLineState(@NotNull ExecutionEnvironment environment, Module module)
+	protected MvcCommandLineState createCommandLineState(@Nonnull ExecutionEnvironment environment, Module module)
 	{
 		return new MvcCommandLineState(environment, cmdLine, module, false);
 	}
@@ -286,7 +288,7 @@ public abstract class MvcRunConfiguration extends ModuleBasedConfiguration<RunCo
 
 		protected final Module myModule;
 
-		public MvcCommandLineState(@NotNull ExecutionEnvironment environment, String cmdLine, Module module, boolean forTests)
+		public MvcCommandLineState(@Nonnull ExecutionEnvironment environment, String cmdLine, Module module, boolean forTests)
 		{
 			super(environment);
 			myModule = module;
@@ -319,7 +321,7 @@ public abstract class MvcRunConfiguration extends ModuleBasedConfiguration<RunCo
 			MvcFramework.addJavaHome(params, myModule);
 		}
 
-		@NotNull
+		@Nonnull
 		@Override
 		protected OSProcessHandler startProcess() throws ExecutionException
 		{

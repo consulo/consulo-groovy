@@ -20,8 +20,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+
 import com.intellij.openapi.util.Couple;
 import com.intellij.pom.java.LanguageLevel;
 import com.intellij.psi.CommonClassNames;
@@ -49,21 +49,21 @@ public class GrMapTypeImpl extends GrMapType
 	}
 
 	@Override
-	@Nullable
+	@javax.annotation.Nullable
 	public PsiType getTypeByStringKey(String key)
 	{
 		return myStringEntries.get(key);
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public Set<String> getStringKeys()
 	{
 		return myStringEntries.keySet();
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	protected PsiType[] getAllKeyTypes()
 	{
 		Set<PsiType> result = new HashSet<PsiType>();
@@ -81,7 +81,7 @@ public class GrMapTypeImpl extends GrMapType
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	protected PsiType[] getAllValueTypes()
 	{
 		Set<PsiType> result = new HashSet<PsiType>();
@@ -94,14 +94,14 @@ public class GrMapTypeImpl extends GrMapType
 		return result.toArray(createArray(result.size()));
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	protected List<Couple<PsiType>> getOtherEntries()
 	{
 		return myOtherEntries;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	protected LinkedHashMap<String, PsiType> getStringEntries()
 	{

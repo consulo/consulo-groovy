@@ -21,8 +21,8 @@ import com.intellij.psi.*;
 import com.intellij.psi.codeStyle.JavaCodeStyleManager;
 import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.containers.ContainerUtil;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.intentions.base.PsiElementPredicate;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
@@ -41,7 +41,7 @@ import java.util.List;
  */
 public class GrCreateMissingSwitchBranchesIntention extends Intention {
   @Override
-  protected void processIntention(@NotNull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
+  protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
     if (!(element instanceof GrSwitchStatement)) return;
 
     final List<PsiEnumConstant> constants = findUnusedConstants((GrSwitchStatement)element);
@@ -71,7 +71,7 @@ public class GrCreateMissingSwitchBranchesIntention extends Intention {
     return null;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   protected PsiElementPredicate getElementPredicate() {
     return new PsiElementPredicate() {

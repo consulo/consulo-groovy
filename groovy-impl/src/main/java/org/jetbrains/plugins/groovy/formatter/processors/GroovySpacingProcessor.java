@@ -16,8 +16,8 @@
 
 package org.jetbrains.plugins.groovy.formatter.processors;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.GroovyLanguage;
 import org.jetbrains.plugins.groovy.codeStyle.GroovyCodeStyleSettings;
 import org.jetbrains.plugins.groovy.formatter.FormattingContext;
@@ -142,7 +142,7 @@ public class GroovySpacingProcessor extends GroovyElementVisitor
 		return false;
 	}
 
-	private void _init(@Nullable final ASTNode child)
+	private void _init(@javax.annotation.Nullable final ASTNode child)
 	{
 		if(child == null)
 		{
@@ -270,7 +270,7 @@ public class GroovySpacingProcessor extends GroovyElementVisitor
 
 	private void createDependentLFSpacing(final boolean isLineFeed,
 			final boolean isSpace,
-			@NotNull final TextRange range)
+			@Nonnull final TextRange range)
 	{
 		if(isLineFeed)
 		{
@@ -480,18 +480,18 @@ public class GroovySpacingProcessor extends GroovyElementVisitor
 		return myType1 == elementType && myType2 != GroovyTokenTypes.mSEMI || isSemiAfter(elementType);
 	}
 
-	private boolean isSemiAfter(@NotNull IElementType statement)
+	private boolean isSemiAfter(@Nonnull IElementType statement)
 	{
 		return myType1 == GroovyTokenTypes.mSEMI && getStatementTypeBySemi(myChild1) == statement;
 	}
 
-	private boolean isSemiAfter(@NotNull TokenSet set)
+	private boolean isSemiAfter(@Nonnull TokenSet set)
 	{
 		return myType1 == GroovyTokenTypes.mSEMI && set.contains(getStatementTypeBySemi(myChild1));
 	}
 
-	@Nullable
-	private static IElementType getStatementTypeBySemi(@NotNull ASTNode semi)
+	@javax.annotation.Nullable
+	private static IElementType getStatementTypeBySemi(@Nonnull ASTNode semi)
 	{
 		final GrTopStatement statement = getStatementBySemicolon(semi.getPsi());
 		if(statement == null)
@@ -501,8 +501,8 @@ public class GroovySpacingProcessor extends GroovyElementVisitor
 		return statement.getNode().getElementType();
 	}
 
-	@Nullable
-	private static GrTopStatement getStatementBySemicolon(@NotNull PsiElement semi)
+	@javax.annotation.Nullable
+	private static GrTopStatement getStatementBySemicolon(@Nonnull PsiElement semi)
 	{
 		PsiElement prev = semi.getPrevSibling();
 		while(prev != null &&
@@ -659,7 +659,7 @@ public class GroovySpacingProcessor extends GroovyElementVisitor
 		}
 	}
 
-	private void processClassMembers(@Nullable GrTypeDefinitionBody typeDefinitionBody)
+	private void processClassMembers(@javax.annotation.Nullable GrTypeDefinitionBody typeDefinitionBody)
 	{
 		final boolean isInterface = typeDefinitionBody != null && ((GrTypeDefinition) typeDefinitionBody.getParent())
 				.isInterface();
@@ -810,12 +810,12 @@ public class GroovySpacingProcessor extends GroovyElementVisitor
 		}
 	}
 
-	private boolean processParentheses(@NotNull IElementType left,
-			@NotNull IElementType right,
-			@NotNull Boolean spaceWithin,
-			@Nullable Boolean spaceWithinEmpty,
-			@Nullable Boolean leftLF,
-			@Nullable Boolean rightLF)
+	private boolean processParentheses(@Nonnull IElementType left,
+			@Nonnull IElementType right,
+			@Nonnull Boolean spaceWithin,
+			@javax.annotation.Nullable Boolean spaceWithinEmpty,
+			@javax.annotation.Nullable Boolean leftLF,
+			@javax.annotation.Nullable Boolean rightLF)
 	{
 		if(myType1 == left && myType2 == right && spaceWithinEmpty != null)
 		{
@@ -1259,7 +1259,7 @@ public class GroovySpacingProcessor extends GroovyElementVisitor
 		return type == GroovyElementTypes.OPEN_BLOCK || type == GroovyElementTypes.CONSTRUCTOR_BODY;
 	}
 
-	@Nullable
+	@javax.annotation.Nullable
 	private static ASTNode findFrom(ASTNode current, final IElementType expected, boolean forward)
 	{
 		while(current != null)
@@ -1324,7 +1324,7 @@ public class GroovySpacingProcessor extends GroovyElementVisitor
 
 	private void createSpaceBeforeLBrace(final boolean spaceBeforeLbrace,
 			int braceStyle,
-			@Nullable TextRange dependantRange,
+			@javax.annotation.Nullable TextRange dependantRange,
 			boolean keepOneLine)
 	{
 		if(dependantRange != null && braceStyle == CommonCodeStyleSettings.NEXT_LINE_IF_WRAPPED)
@@ -1355,7 +1355,7 @@ public class GroovySpacingProcessor extends GroovyElementVisitor
 		myResult = Spacing.createSpacing(0, 0, lf ? 1 : 0, mySettings.KEEP_LINE_BREAKS, keepBlankLines());
 	}
 
-	private Spacing createNonLFSpace(int spaces, @Nullable final TextRange dependantRange,
+	private Spacing createNonLFSpace(int spaces, @javax.annotation.Nullable final TextRange dependantRange,
 			final boolean keepLineBreaks)
 	{
 		final ASTNode prev = FormatterUtil.getPreviousNonWhitespaceLeaf(myChild2);

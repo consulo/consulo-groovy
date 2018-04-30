@@ -29,6 +29,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.annotation.Nonnull;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -37,8 +38,6 @@ import javax.swing.KeyStroke;
 
 import consulo.psi.PsiPackage;
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.actions.GroovyTemplates;
 import org.jetbrains.plugins.groovy.actions.GroovyTemplatesFactory;
@@ -114,14 +113,14 @@ public class GrIntroduceConstantDialog extends DialogWrapper implements GrIntrod
 	private JavaVisibilityPanel myJavaVisibilityPanel;
 	private JPanel myTargetClassPanel;
 	private JLabel myTargetClassLabel;
-	@Nullable
+	@javax.annotation.Nullable
 	private PsiClass myTargetClass;
-	@Nullable
+	@javax.annotation.Nullable
 	private PsiClass myDefaultTargetClass;
 
 	private TargetClassInfo myTargetClassInfo;
 
-	public GrIntroduceConstantDialog(GrIntroduceContext context, @Nullable PsiClass defaultTargetClass)
+	public GrIntroduceConstantDialog(GrIntroduceContext context, @javax.annotation.Nullable PsiClass defaultTargetClass)
 	{
 		super(context.getProject());
 		myContext = context;
@@ -137,7 +136,7 @@ public class GrIntroduceConstantDialog extends DialogWrapper implements GrIntrod
 		init();
 	}
 
-	@Nullable
+	@javax.annotation.Nullable
 	public static PsiClass getParentClass(PsiElement occurrence)
 	{
 		PsiElement cur = occurrence;
@@ -275,14 +274,14 @@ public class GrIntroduceConstantDialog extends DialogWrapper implements GrIntrod
 		return myJavaVisibilityPanel.getVisibility();
 	}
 
-	@Nullable
+	@javax.annotation.Nullable
 	@Override
 	public PsiClass getTargetClass()
 	{
 		return myTargetClassInfo.getTargetClass();
 	}
 
-	@NotNull
+	@Nonnull
 	public String getTargetClassName()
 	{
 		return myTargetClassEditor.getText();
@@ -294,14 +293,14 @@ public class GrIntroduceConstantDialog extends DialogWrapper implements GrIntrod
 		return this;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public LinkedHashSet<String> suggestNames()
 	{
 		return new GrFieldNameSuggester(myContext, new GroovyVariableValidator(myContext), true).suggestNames();
 	}
 
-	@Nullable
+	@javax.annotation.Nullable
 	@Override
 	public String getName()
 	{
@@ -517,7 +516,7 @@ public class GrIntroduceConstantDialog extends DialogWrapper implements GrIntrod
 			myProject = project;
 		}
 
-		@Nullable
+		@javax.annotation.Nullable
 		public PsiClass getTargetClass()
 		{
 			if(myTargetClass == null)
@@ -527,7 +526,7 @@ public class GrIntroduceConstantDialog extends DialogWrapper implements GrIntrod
 			return myTargetClass;
 		}
 
-		@Nullable
+		@javax.annotation.Nullable
 		private static PsiClass getTargetClass(String qualifiedName,
 				PsiDirectory baseDirectory,
 				Project project,

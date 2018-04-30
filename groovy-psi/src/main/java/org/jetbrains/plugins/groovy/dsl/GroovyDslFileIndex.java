@@ -29,9 +29,11 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
+import javax.annotation.Nonnull;
+
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.annotator.GroovyFrameworkConfigNotification;
 import org.jetbrains.plugins.groovy.dsl.DslActivationStatus.Status;
@@ -128,7 +130,7 @@ public class GroovyDslFileIndex extends ScalarIndexExtension<String>
 		VirtualFileManager.getInstance().addVirtualFileListener(new VirtualFileAdapter()
 		{
 			@Override
-			public void contentsChanged(@NotNull VirtualFileEvent event)
+			public void contentsChanged(@Nonnull VirtualFileEvent event)
 			{
 				final VirtualFile file = event.getFile();
 				if(event.isFromRefresh() || !GdslUtil.GDSL_FILTER.value(file) || getStatus(file) != Status.ACTIVE)
@@ -141,27 +143,27 @@ public class GroovyDslFileIndex extends ScalarIndexExtension<String>
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public ID<String, Void> getName()
 	{
 		return NAME;
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public DataIndexer<String, Void, FileContent> getIndexer()
 	{
 		return myDataIndexer;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public KeyDescriptor<String> getKeyDescriptor()
 	{
 		return myKeyDescriptor;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public FileBasedIndex.InputFilter getInputFilter()
 	{
@@ -180,14 +182,14 @@ public class GroovyDslFileIndex extends ScalarIndexExtension<String>
 		return 0;
 	}
 
-	@Nullable
+	@javax.annotation.Nullable
 	public static String getError(VirtualFile file)
 	{
 		DslActivationStatus.Entry info = DslActivationStatus.getInstance().getGdslFileInfo(file);
 		return info == null ? null : info.error;
 	}
 
-	public static boolean isActivated(@NotNull VirtualFile file)
+	public static boolean isActivated(@Nonnull VirtualFile file)
 	{
 		return getStatus(file) == Status.ACTIVE;
 	}
@@ -198,7 +200,7 @@ public class GroovyDslFileIndex extends ScalarIndexExtension<String>
 		clearScriptCache();
 	}
 
-	public static Status getStatus(@NotNull VirtualFile file)
+	public static Status getStatus(@Nonnull VirtualFile file)
 	{
 		DslActivationStatus.Entry info = DslActivationStatus.getInstance().getGdslFileInfo(file);
 		return info == null ? Status.ACTIVE : info.status;
@@ -222,7 +224,7 @@ public class GroovyDslFileIndex extends ScalarIndexExtension<String>
 		}, app.getDisposed());
 	}
 
-	static void disableFile(@NotNull VirtualFile vfile, @NotNull Status status, @Nullable String error)
+	static void disableFile(@Nonnull VirtualFile vfile, @Nonnull Status status, @javax.annotation.Nullable String error)
 	{
 		assert status != Status.ACTIVE;
 		setStatusAndError(vfile, status, error);
@@ -230,15 +232,15 @@ public class GroovyDslFileIndex extends ScalarIndexExtension<String>
 		clearScriptCache();
 	}
 
-	private static void setStatusAndError(@NotNull VirtualFile vfile, @NotNull Status status, @Nullable String error)
+	private static void setStatusAndError(@Nonnull VirtualFile vfile, @Nonnull Status status, @Nullable String error)
 	{
 		DslActivationStatus.Entry entry = DslActivationStatus.getInstance().getGdslFileInfoOrCreate(vfile);
 		entry.status = status;
 		entry.error = error;
 	}
 
-	@Nullable
-	private static org.jetbrains.plugins.groovy.dsl.GroovyDslExecutor getCachedExecutor(@NotNull final VirtualFile file, final long stamp)
+	@javax.annotation.Nullable
+	private static org.jetbrains.plugins.groovy.dsl.GroovyDslExecutor getCachedExecutor(@Nonnull final VirtualFile file, final long stamp)
 	{
 		final Pair<org.jetbrains.plugins.groovy.dsl.GroovyDslExecutor, Long> pair = file.getUserData(CACHED_EXECUTOR);
 		if(pair == null || pair.second.longValue() != stamp)
@@ -248,8 +250,8 @@ public class GroovyDslFileIndex extends ScalarIndexExtension<String>
 		return pair.first;
 	}
 
-	@Nullable
-	public static PsiClassType processScriptSuperClasses(@NotNull GroovyFile scriptFile)
+	@javax.annotation.Nullable
+	public static PsiClassType processScriptSuperClasses(@Nonnull GroovyFile scriptFile)
 	{
 		if(!scriptFile.isScript())
 		{
@@ -354,7 +356,7 @@ public class GroovyDslFileIndex extends ScalarIndexExtension<String>
 		final DelegatingScopeProcessor nameChecker = new DelegatingScopeProcessor(processor)
 		{
 			@Override
-			public boolean execute(@NotNull PsiElement element, @NotNull ResolveState state)
+			public boolean execute(@Nonnull PsiElement element, @Nonnull ResolveState state)
 			{
 				if(element instanceof PsiMethod && ((PsiMethod) element).isConstructor())
 				{
@@ -382,7 +384,7 @@ public class GroovyDslFileIndex extends ScalarIndexExtension<String>
 		return true;
 	}
 
-	private static boolean insideAnnotation(@Nullable PsiElement place)
+	private static boolean insideAnnotation(@javax.annotation.Nullable PsiElement place)
 	{
 		while(place != null)
 		{
@@ -471,7 +473,7 @@ public class GroovyDslFileIndex extends ScalarIndexExtension<String>
 	}
 
 
-	@NotNull
+	@Nonnull
 	private static Set<File> getBundledScriptFolders()
 	{
 		final GroovyFrameworkConfigNotification[] extensions = GroovyFrameworkConfigNotification.EP_NAME
@@ -575,8 +577,8 @@ public class GroovyDslFileIndex extends ScalarIndexExtension<String>
 	{
 
 		@Override
-		@NotNull
-		public Map<String, Void> map(@NotNull final FileContent inputData)
+		@Nonnull
+		public Map<String, Void> map(@Nonnull final FileContent inputData)
 		{
 			return Collections.singletonMap(OUR_KEY, null);
 		}
@@ -590,7 +592,7 @@ public class GroovyDslFileIndex extends ScalarIndexExtension<String>
 		}
 
 		@Override
-		public boolean acceptInput(@Nullable Project project, @NotNull final VirtualFile file)
+		public boolean acceptInput(@javax.annotation.Nullable Project project, @Nonnull final VirtualFile file)
 		{
 			return GdslUtil.GDSL_FILTER.value(file);
 		}
@@ -653,7 +655,7 @@ public class GroovyDslFileIndex extends ScalarIndexExtension<String>
 		}
 	}
 
-	@Nullable
+	@javax.annotation.Nullable
 	private static org.jetbrains.plugins.groovy.dsl.GroovyDslExecutor createExecutor(String text, VirtualFile vfile, final Project project)
 	{
 		if(GdslUtil.ourGdslStopped)

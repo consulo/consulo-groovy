@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.intentions.conversions;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.intentions.GroovyIntentionsBundle;
 import org.jetbrains.plugins.groovy.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.intentions.base.PsiElementPredicate;
@@ -38,7 +38,7 @@ public class RenameFileWithClassIntention extends Intention implements Consumer<
 	private String myNewFileName = null;
 
 	@Override
-	protected void processIntention(@NotNull PsiElement element,
+	protected void processIntention(@Nonnull PsiElement element,
 			Project project,
 			Editor editor) throws IncorrectOperationException
 	{
@@ -46,14 +46,14 @@ public class RenameFileWithClassIntention extends Intention implements Consumer<
 		new RenameRefactoringImpl(project, file, myNewFileName, true, true).run();
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public String getText()
 	{
 		return GroovyIntentionsBundle.message("rename.file.to.0", myNewFileName);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	protected PsiElementPredicate getElementPredicate()
 	{

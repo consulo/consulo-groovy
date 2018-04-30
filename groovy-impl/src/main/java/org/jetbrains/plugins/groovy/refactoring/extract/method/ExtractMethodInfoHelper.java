@@ -20,7 +20,7 @@ import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiModifier;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
 import org.jetbrains.plugins.groovy.refactoring.extract.ExtractInfoHelperBase;
@@ -77,7 +77,7 @@ public class ExtractMethodInfoHelper extends ExtractInfoHelperBase {
     myName = name;
   }
 
-  @NotNull
+  @Nonnull
   public PsiClass getOwner() {
     return myOwner;
   }

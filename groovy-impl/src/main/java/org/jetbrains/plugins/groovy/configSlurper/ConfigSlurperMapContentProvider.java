@@ -21,8 +21,8 @@ import com.intellij.psi.JavaPsiFacade;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiType;
 import com.intellij.util.PairConsumer;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.extensions.GroovyMapContentProvider;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrMethodCall;
@@ -38,7 +38,7 @@ import java.util.*;
 public class ConfigSlurperMapContentProvider extends GroovyMapContentProvider {
 
   @Nullable
-  private static Pair<ConfigSlurperSupport.PropertiesProvider, List<String>> getInfo(@NotNull GrExpression qualifier,
+  private static Pair<ConfigSlurperSupport.PropertiesProvider, List<String>> getInfo(@Nonnull GrExpression qualifier,
                                                                                      @Nullable PsiElement resolve) {
     if (!GroovyPsiManager.isInheritorCached(qualifier.getType(), GroovyCommonClassNames.GROOVY_UTIL_CONFIG_OBJECT)) {
       return null;
@@ -81,7 +81,7 @@ public class ConfigSlurperMapContentProvider extends GroovyMapContentProvider {
   }
 
   @Override
-  protected Collection<String> getKeyVariants(@NotNull GrExpression qualifier, @Nullable PsiElement resolve) {
+  protected Collection<String> getKeyVariants(@Nonnull GrExpression qualifier, @javax.annotation.Nullable PsiElement resolve) {
     Pair<ConfigSlurperSupport.PropertiesProvider, List<String>> info = getInfo(qualifier, resolve);
     if (info == null) return Collections.emptyList();
 
@@ -98,7 +98,7 @@ public class ConfigSlurperMapContentProvider extends GroovyMapContentProvider {
   }
 
   @Override
-  public PsiType getValueType(@NotNull GrExpression qualifier, @Nullable PsiElement resolve, @NotNull final String key) {
+  public PsiType getValueType(@Nonnull GrExpression qualifier, @javax.annotation.Nullable PsiElement resolve, @Nonnull final String key) {
     Pair<ConfigSlurperSupport.PropertiesProvider, List<String>> info = getInfo(qualifier, resolve);
     if (info == null) return null;
 

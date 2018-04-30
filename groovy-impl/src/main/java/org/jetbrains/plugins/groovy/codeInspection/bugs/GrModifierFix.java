@@ -15,7 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.bugs;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.codeInspection.GroovyFix;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.GrModifier;
@@ -65,10 +66,10 @@ public class GrModifierFix extends GroovyFix
 	private final boolean myDoSet;
 	private final Function<ProblemDescriptor, PsiModifierList> myModifierListProvider;
 
-	public GrModifierFix(@NotNull PsiVariable member,
+	public GrModifierFix(@Nonnull PsiVariable member,
 			@GrModifier.GrModifierConstant String modifier,
 			boolean doSet,
-			@NotNull Function<ProblemDescriptor, PsiModifierList> modifierListProvider)
+			@Nonnull Function<ProblemDescriptor, PsiModifierList> modifierListProvider)
 	{
 		myModifier = modifier;
 		myDoSet = doSet;
@@ -76,11 +77,11 @@ public class GrModifierFix extends GroovyFix
 		myText = initText(doSet, member.getName(), modifier);
 	}
 
-	public GrModifierFix(@NotNull PsiMember member,
+	public GrModifierFix(@Nonnull PsiMember member,
 			@GrModifier.GrModifierConstant String modifier,
 			boolean showContainingClass,
 			boolean doSet,
-			@NotNull Function<ProblemDescriptor, PsiModifierList> modifierListProvider)
+			@Nonnull Function<ProblemDescriptor, PsiModifierList> modifierListProvider)
 	{
 		myModifier = modifier;
 		myDoSet = doSet;
@@ -88,7 +89,7 @@ public class GrModifierFix extends GroovyFix
 		myText = initText(doSet, getMemberName(member, showContainingClass), modifier);
 	}
 
-	public static String initText(boolean doSet, @NotNull String name, @NotNull String modifier)
+	public static String initText(boolean doSet, @Nonnull String name, @Nonnull String modifier)
 	{
 		return GroovyBundle.message(doSet ? "change.modifier" : "change.modifier.not", name,
 				toPresentableText(modifier));
@@ -113,7 +114,7 @@ public class GrModifierFix extends GroovyFix
 		return GroovyBundle.message(modifier + ".visibility.presentation");
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public String getName()
 	{
@@ -121,7 +122,7 @@ public class GrModifierFix extends GroovyFix
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public String getFamilyName()
 	{
 		return GroovyBundle.message("change.modifier.family.name");

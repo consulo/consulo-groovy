@@ -15,12 +15,13 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.control;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.codeInspection.ProblemDescriptor;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrConditionalExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspectionVisitor;
@@ -29,12 +30,12 @@ import org.jetbrains.plugins.groovy.codeInspection.GroovyFix;
 
 public class GroovyConstantConditionalInspection extends BaseInspection {
 
-    @NotNull
+    @Nonnull
     public String getGroupDisplayName() {
         return CONTROL_FLOW;
     }
 
-    @NotNull
+    @Nonnull
     public String getDisplayName() {
         return "Constant conditional expression";
     }
@@ -47,7 +48,7 @@ public class GroovyConstantConditionalInspection extends BaseInspection {
         return new ConstantConditionalExpressionVisitor();
     }
 
-    @NotNull
+    @Nonnull
     public String buildErrorString(Object... args) {
         return "'#ref' can be simplified #loc";
     }
@@ -72,7 +73,7 @@ public class GroovyConstantConditionalInspection extends BaseInspection {
 
     private static class ConstantConditionalFix extends GroovyFix {
 
-        @NotNull
+        @Nonnull
         public String getName() {
             return "Simplify";
         }

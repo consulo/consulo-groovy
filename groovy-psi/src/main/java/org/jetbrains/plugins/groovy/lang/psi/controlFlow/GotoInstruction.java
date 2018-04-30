@@ -15,9 +15,11 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.controlFlow;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.psi.PsiElement;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.controlFlow.impl.ConditionInstruction;
 import org.jetbrains.plugins.groovy.lang.psi.controlFlow.impl.InstructionImpl;
 
@@ -25,14 +27,15 @@ import org.jetbrains.plugins.groovy.lang.psi.controlFlow.impl.InstructionImpl;
  * @author Max Medvedev
  */
 public abstract class GotoInstruction extends InstructionImpl {
-  @NotNull private final ConditionInstruction myCondition;
+  @Nonnull
+  private final ConditionInstruction myCondition;
 
-  public GotoInstruction(@Nullable PsiElement element, @NotNull ConditionInstruction condition) {
+  public GotoInstruction(@Nullable PsiElement element, @Nonnull ConditionInstruction condition) {
     super(element);
     myCondition = condition;
   }
 
-  @NotNull
+  @Nonnull
   public ConditionInstruction getCondition() {
     return myCondition;
   }

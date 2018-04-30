@@ -22,8 +22,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrNamedArgument;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames;
 import com.intellij.openapi.util.Couple;
@@ -47,7 +47,7 @@ public abstract class GrMapType extends GrLiteralClassType
 
 	private final VolatileNotNullLazyValue<PsiType[]> myParameters = new VolatileNotNullLazyValue<PsiType[]>()
 	{
-		@NotNull
+		@Nonnull
 		@Override
 		protected PsiType[] compute()
 		{
@@ -78,7 +78,7 @@ public abstract class GrMapType extends GrLiteralClassType
 				scope) != null ? GroovyCommonClassNames.JAVA_UTIL_LINKED_HASH_MAP : CommonClassNames.JAVA_UTIL_MAP;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	protected String getJavaClassName()
 	{
@@ -86,7 +86,7 @@ public abstract class GrMapType extends GrLiteralClassType
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public String getClassName()
 	{
 		return StringUtil.getShortName(myJavaClassName);
@@ -95,32 +95,32 @@ public abstract class GrMapType extends GrLiteralClassType
 	@Nullable
 	public abstract PsiType getTypeByStringKey(String key);
 
-	@NotNull
+	@Nonnull
 	public abstract Set<String> getStringKeys();
 
 	public abstract boolean isEmpty();
 
-	@NotNull
+	@Nonnull
 	protected abstract PsiType[] getAllKeyTypes();
 
-	@NotNull
+	@Nonnull
 	protected abstract PsiType[] getAllValueTypes();
 
-	@NotNull
+	@Nonnull
 	protected abstract List<Couple<PsiType>> getOtherEntries();
 
-	@NotNull
+	@Nonnull
 	protected abstract LinkedHashMap<String, PsiType> getStringEntries();
 
 	@Override
-	@NotNull
+	@Nonnull
 	public PsiType[] getParameters()
 	{
 		return myParameters.getValue();
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public String getInternalCanonicalText()
 	{
 		Set<String> stringKeys = getStringKeys();
@@ -151,7 +151,7 @@ public abstract class GrMapType extends GrLiteralClassType
 		return "[" + StringUtil.join(theFirst, ", ") + (tooMany ? ",..." : "") + "]";
 	}
 
-	@NotNull
+	@Nonnull
 	private static String getInternalText(@Nullable PsiType param)
 	{
 		return param == null ? "null" : param.getInternalCanonicalText();
@@ -169,7 +169,7 @@ public abstract class GrMapType extends GrLiteralClassType
 	}
 
 	@Override
-	public boolean isAssignableFrom(@NotNull PsiType type)
+	public boolean isAssignableFrom(@Nonnull PsiType type)
 	{
 		return type instanceof GrMapType || super.isAssignableFrom(type);
 	}
@@ -205,9 +205,9 @@ public abstract class GrMapType extends GrLiteralClassType
 		return new GrMapTypeImpl(facade, scope, stringEntries, otherEntries, LanguageLevel.JDK_1_5);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
-	public PsiClassType setLanguageLevel(@NotNull LanguageLevel languageLevel)
+	public PsiClassType setLanguageLevel(@Nonnull LanguageLevel languageLevel)
 	{
 		return new GrMapTypeImpl(myFacade, getResolveScope(), getStringEntries(), getOtherEntries(), languageLevel);
 	}

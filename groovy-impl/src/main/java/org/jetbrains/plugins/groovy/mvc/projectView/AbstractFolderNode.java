@@ -14,8 +14,8 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
 
@@ -32,10 +32,10 @@ public class AbstractFolderNode extends AbstractMvcPsiNodeDescriptor {
 
   private final String myPresentableText;
 
-  protected AbstractFolderNode(@NotNull final Module module,
-                               @NotNull final PsiDirectory directory,
-                               @NotNull String presentableText,
-                               @Nullable final String locationMark,
+  protected AbstractFolderNode(@Nonnull final Module module,
+                               @Nonnull final PsiDirectory directory,
+                               @Nonnull String presentableText,
+                               @javax.annotation.Nullable final String locationMark,
                                final ViewSettings viewSettings, int weight) {
     super(module, viewSettings, new NodeId(directory, locationMark), weight);
     myLocationMark = locationMark;
@@ -43,19 +43,19 @@ public class AbstractFolderNode extends AbstractMvcPsiNodeDescriptor {
   }
 
   @Override
-  protected String getTestPresentationImpl(@NotNull final NodeId nodeId, @NotNull final PsiElement psiElement) {
+  protected String getTestPresentationImpl(@Nonnull final NodeId nodeId, @Nonnull final PsiElement psiElement) {
     final VirtualFile virtualFile = getVirtualFile();
     assert virtualFile != null;
 
     return "Folder: " + virtualFile.getPresentableName();
   }
 
-  @NotNull
+  @Nonnull
   protected PsiDirectory getPsiDirectory() {
     return (PsiDirectory)extractPsiFromValue();
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   protected Collection<AbstractTreeNode> getChildrenImpl() {
     final PsiDirectory directory = getPsiDirectory();
     if (!directory.isValid()) {
@@ -123,7 +123,7 @@ public class AbstractFolderNode extends AbstractMvcPsiNodeDescriptor {
   }
 
   @Override
-  protected boolean containsImpl(@NotNull final VirtualFile file) {
+  protected boolean containsImpl(@Nonnull final VirtualFile file) {
     final PsiElement psiElement = extractPsiFromValue();
     if (psiElement == null || !psiElement.isValid()) {
       return false;

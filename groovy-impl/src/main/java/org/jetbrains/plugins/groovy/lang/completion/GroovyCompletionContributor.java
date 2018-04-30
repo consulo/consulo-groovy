@@ -19,7 +19,7 @@ import gnu.trove.THashSet;
 
 import java.util.Set;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.literals.GrLiteral;
 import com.intellij.codeInsight.completion.CompletionContributor;
@@ -64,9 +64,9 @@ public class GroovyCompletionContributor extends CompletionContributor {
 
     extend(CompletionType.BASIC, PlatformPatterns.psiElement().withParent(GrLiteral.class), new CompletionProvider() {
       @Override
-	  public void addCompletions(@NotNull CompletionParameters parameters,
+	  public void addCompletions(@Nonnull CompletionParameters parameters,
                                     ProcessingContext context,
-                                    @NotNull final CompletionResultSet result) {
+                                    @Nonnull final CompletionResultSet result) {
         final Set<String> usedWords = new THashSet<String>();
         for (CompletionResult element : result.runRemainingContributors(parameters, true)) {
           usedWords.add(element.getLookupElement().getLookupString());
@@ -82,7 +82,7 @@ public class GroovyCompletionContributor extends CompletionContributor {
   }
 
   @Override
-  public void fillCompletionVariants(@NotNull CompletionParameters parameters, @NotNull CompletionResultSet result) {
+  public void fillCompletionVariants(@Nonnull CompletionParameters parameters, @Nonnull CompletionResultSet result) {
     if (!AFTER_NUMBER_LITERAL.accepts(parameters.getPosition())) {
       super.fillCompletionVariants(parameters, result);
     }
@@ -90,7 +90,7 @@ public class GroovyCompletionContributor extends CompletionContributor {
 
 
   @Override
-  public void beforeCompletion(@NotNull final CompletionInitializationContext context) {
+  public void beforeCompletion(@Nonnull final CompletionInitializationContext context) {
     final String identifier = new GrDummyIdentifierProvider(context).getIdentifier();
     if (identifier != null) {
       context.setDummyIdentifier(identifier);

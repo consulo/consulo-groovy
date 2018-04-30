@@ -17,8 +17,8 @@
 package org.jetbrains.plugins.groovy.dsl.psi;
 
 import com.intellij.psi.*;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -66,7 +66,7 @@ public class PsiClassCategory implements PsiEnhancerCategory {
     return null;
   }
 
-  @NotNull
+  @Nonnull
   public static Collection<PsiAnnotation> getAnnotations(PsiMember clazz, String annotName) {
    final ArrayList<PsiAnnotation> list = new ArrayList<PsiAnnotation>();
     if (annotName == null) return list;

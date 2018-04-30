@@ -18,8 +18,8 @@ package org.jetbrains.plugins.groovy.lang.psi.impl.auxiliary.annotation;
 
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.lexer.TokenSets;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
@@ -54,7 +54,7 @@ import com.intellij.util.containers.ContainerUtilRt;
  * @date: 04.04.2007
  */
 public class GrAnnotationNameValuePairImpl extends GroovyPsiElementImpl implements GrAnnotationNameValuePair, PsiPolyVariantReference {
-  public GrAnnotationNameValuePairImpl(@NotNull ASTNode node) {
+  public GrAnnotationNameValuePairImpl(@Nonnull ASTNode node) {
     super(node);
   }
 
@@ -68,7 +68,7 @@ public class GrAnnotationNameValuePairImpl extends GroovyPsiElementImpl implemen
   }
 
   @Override
-  @Nullable
+  @javax.annotation.Nullable
   public String getName() {
     final PsiElement nameId = getNameIdentifierGroovy();
     return nameId != null ? nameId.getText() : null;
@@ -80,7 +80,7 @@ public class GrAnnotationNameValuePairImpl extends GroovyPsiElementImpl implemen
   }
 
   @Override
-  @Nullable
+  @javax.annotation.Nullable
   public PsiElement getNameIdentifierGroovy() {
     PsiElement child = getFirstChild();
     if (child == null) return null;
@@ -102,8 +102,8 @@ public class GrAnnotationNameValuePairImpl extends GroovyPsiElementImpl implemen
   }
 
   @Override
-  @NotNull
-  public PsiAnnotationMemberValue setValue(@NotNull PsiAnnotationMemberValue newValue) {
+  @Nonnull
+  public PsiAnnotationMemberValue setValue(@Nonnull PsiAnnotationMemberValue newValue) {
     GrAnnotationMemberValue value = getValue();
     if (value == null) {
       return (PsiAnnotationMemberValue)add(newValue);
@@ -131,14 +131,14 @@ public class GrAnnotationNameValuePairImpl extends GroovyPsiElementImpl implemen
   }
 
   @Override
-  @Nullable
+  @javax.annotation.Nullable
   public PsiElement resolve() {
     final GroovyResolveResult[] results = multiResolve(false);
     return results.length == 1 ? results[0].getElement() : null;
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public String getCanonicalText() {
     return getRangeInElement().substring(getText());
   }
@@ -163,7 +163,7 @@ public class GrAnnotationNameValuePairImpl extends GroovyPsiElementImpl implemen
   }
 
   @Override
-  public PsiElement bindToElement(@NotNull PsiElement element) throws IncorrectOperationException {
+  public PsiElement bindToElement(@Nonnull PsiElement element) throws IncorrectOperationException {
     throw new IncorrectOperationException("NYI");
   }
 
@@ -173,7 +173,7 @@ public class GrAnnotationNameValuePairImpl extends GroovyPsiElementImpl implemen
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public Object[] getVariants() {
     return ArrayUtilRt.EMPTY_OBJECT_ARRAY;
   }
@@ -183,7 +183,7 @@ public class GrAnnotationNameValuePairImpl extends GroovyPsiElementImpl implemen
     return false;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public GroovyResolveResult[] multiResolve(boolean incompleteCode) {
     GrAnnotation annotation = PsiImplUtil.getAnnotation(this);
@@ -208,7 +208,7 @@ public class GrAnnotationNameValuePairImpl extends GroovyPsiElementImpl implemen
     return GroovyResolveResult.EMPTY_ARRAY;
   }
 
-  private static GroovyResolveResult[] multiResolveFromAnnotationType(@NotNull PsiClass resolved, @NotNull String name) {
+  private static GroovyResolveResult[] multiResolveFromAnnotationType(@Nonnull PsiClass resolved, @Nonnull String name) {
     PsiMethod[] methods = resolved.findMethodsByName(name, false);
     if (methods.length == 0) return GroovyResolveResult.EMPTY_ARRAY;
 
@@ -220,7 +220,7 @@ public class GrAnnotationNameValuePairImpl extends GroovyPsiElementImpl implemen
     return results;
   }
 
-  private static GroovyResolveResult[] multiResolveFromAlias(@NotNull GrAnnotation alias, @NotNull String name, @NotNull PsiAnnotation annotationCollector) {
+  private static GroovyResolveResult[] multiResolveFromAlias(@Nonnull GrAnnotation alias, @Nonnull String name, @Nonnull PsiAnnotation annotationCollector) {
     List<GroovyResolveResult> result = ContainerUtilRt.newArrayList();
 
     List<GrAnnotation> annotations = ContainerUtilRt.newArrayList();

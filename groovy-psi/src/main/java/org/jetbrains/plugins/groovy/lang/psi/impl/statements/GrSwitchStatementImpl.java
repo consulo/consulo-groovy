@@ -19,7 +19,8 @@ package org.jetbrains.plugins.groovy.lang.psi.impl.statements;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrSwitchStatement;
@@ -34,7 +35,7 @@ import com.intellij.psi.PsiElement;
  */
 public class GrSwitchStatementImpl extends GroovyPsiElementImpl implements GrSwitchStatement {
 
-  public GrSwitchStatementImpl(@NotNull ASTNode node) {
+  public GrSwitchStatementImpl(@Nonnull ASTNode node) {
     super(node);
   }
 
@@ -53,7 +54,7 @@ public class GrSwitchStatementImpl extends GroovyPsiElementImpl implements GrSwi
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public GrCaseSection[] getCaseSections() {
     List<GrCaseSection> result = new ArrayList<GrCaseSection>();
     for (PsiElement cur = getFirstChild(); cur != null; cur = cur.getNextSibling()) {

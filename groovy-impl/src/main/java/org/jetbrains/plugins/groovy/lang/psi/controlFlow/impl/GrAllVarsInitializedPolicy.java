@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.controlFlow.impl;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
 
@@ -30,12 +30,12 @@ public class GrAllVarsInitializedPolicy implements GrControlFlowPolicy {
   }
 
   @Override
-  public boolean isReferenceAccepted(@NotNull GrReferenceExpression ref) {
+  public boolean isReferenceAccepted(@Nonnull GrReferenceExpression ref) {
     return !ref.isQualified();
   }
 
   @Override
-  public boolean isVariableInitialized(@NotNull GrVariable variable) {
+  public boolean isVariableInitialized(@Nonnull GrVariable variable) {
     return true;
   }
 }

@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 import org.jetbrains.groovy.compiler.rt.CompilerMessage;
 import org.jetbrains.groovy.compiler.rt.GroovyCompilerMessageCategories;
 import org.jetbrains.groovy.compiler.rt.GroovyRtConstants;
@@ -93,7 +93,7 @@ public class GroovycOSProcessHandler extends OSProcessHandler
 
 	private final StringBuffer outputBuffer = new StringBuffer();
 
-	protected void updateStatus(@Nullable String status)
+	protected void updateStatus(@javax.annotation.Nullable String status)
 	{
 		myStatusUpdater.consume(status == null ? GROOVY_COMPILER_IN_OPERATION : status);
 	}

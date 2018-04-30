@@ -18,8 +18,8 @@ package org.jetbrains.plugins.groovy.lang.psi.typeEnhancers;
 import com.intellij.psi.CommonClassNames;
 import com.intellij.psi.PsiType;
 import com.intellij.psi.util.InheritanceUtil;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.config.GroovyConfigUtils;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.ConversionResult;
@@ -30,16 +30,16 @@ import static org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.
 public class GrEnumConverter extends GrTypeConverter {
 
   @Override
-  public boolean isApplicableTo(@NotNull ApplicableTo position) {
+  public boolean isApplicableTo(@Nonnull ApplicableTo position) {
     return position == ApplicableTo.ASSIGNMENT || position == ApplicableTo.RETURN_VALUE;
   }
 
   @Nullable
   @Override
-  public ConversionResult isConvertibleEx(@NotNull PsiType targetType,
-                                          @NotNull PsiType actualType,
-                                          @NotNull GroovyPsiElement context,
-                                          @NotNull ApplicableTo currentPosition) {
+  public ConversionResult isConvertibleEx(@Nonnull PsiType targetType,
+                                          @Nonnull PsiType actualType,
+                                          @Nonnull GroovyPsiElement context,
+                                          @Nonnull ApplicableTo currentPosition) {
     if (!isEnum(targetType)) return null;
     if (InheritanceUtil.isInheritor(actualType, GroovyCommonClassNames.GROOVY_LANG_GSTRING) ||
         InheritanceUtil.isInheritor(actualType, CommonClassNames.JAVA_LANG_STRING)) {

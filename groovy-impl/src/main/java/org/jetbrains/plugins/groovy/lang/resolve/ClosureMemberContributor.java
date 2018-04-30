@@ -19,7 +19,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiType;
 import com.intellij.psi.ResolveState;
 import com.intellij.psi.scope.PsiScopeProcessor;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlock;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GrClosureType;
 import org.jetbrains.plugins.groovy.lang.resolve.processors.ResolverProcessor;
@@ -29,7 +29,7 @@ import org.jetbrains.plugins.groovy.lang.resolve.processors.ResolverProcessor;
  */
 public abstract class ClosureMemberContributor extends NonCodeMembersContributor {
   @Override
-  public final void processDynamicElements(@NotNull PsiType qualifierType,
+  public final void processDynamicElements(@Nonnull PsiType qualifierType,
                                      PsiScopeProcessor processor,
                                      PsiElement place,
                                      ResolveState state) {
@@ -41,7 +41,7 @@ public abstract class ClosureMemberContributor extends NonCodeMembersContributor
     processMembers((GrClosableBlock)context, processor, place, state);
   }
 
-  protected abstract void processMembers(@NotNull GrClosableBlock closure,
+  protected abstract void processMembers(@Nonnull GrClosableBlock closure,
                                          PsiScopeProcessor processor,
                                          PsiElement place,
                                          ResolveState state);

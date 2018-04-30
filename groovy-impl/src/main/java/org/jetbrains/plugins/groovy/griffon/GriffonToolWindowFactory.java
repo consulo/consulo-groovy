@@ -29,7 +29,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.util.containers.hash.LinkedHashMap;
 import icons.JetgroovyIcons;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.mvc.projectView.*;
 
 import javax.swing.*;
@@ -127,7 +127,7 @@ public class GriffonToolWindowFactory extends MvcToolWindowDescriptor {
     return JetgroovyIcons.Griffon.Griffon;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public MvcProjectViewState getProjectViewState(Project project) {
     return ServiceManager.getService(project, GriffonProjectViewState.class);

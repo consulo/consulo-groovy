@@ -15,8 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.convertToJava;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.codeInspection.utils.ControlFlowUtils;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
@@ -46,9 +46,9 @@ public class SwitchStatementGenerator
 	{
 	}
 
-	public static void generate(@NotNull StringBuilder builder,
-			@NotNull ExpressionContext context,
-			@NotNull GrSwitchStatement switchStatement)
+	public static void generate(@Nonnull StringBuilder builder,
+			@Nonnull ExpressionContext context,
+			@Nonnull GrSwitchStatement switchStatement)
 	{
 		final GrExpression condition = switchStatement.getCondition();
 		final GrCaseSection[] caseSections = switchStatement.getCaseSections();
@@ -64,7 +64,7 @@ public class SwitchStatementGenerator
 		}
 	}
 
-	private static boolean isValidTypeForSwitchSelector(@NotNull PsiType type)
+	private static boolean isValidTypeForSwitchSelector(@Nonnull PsiType type)
 	{
 		if(TypeConversionUtil.getTypeRank(type) <= TypeConversionUtil.INT_RANK)
 		{
@@ -80,10 +80,10 @@ public class SwitchStatementGenerator
 		return false;
 	}
 
-	private static void generateIfs(@NotNull StringBuilder builder,
-			@NotNull ExpressionContext context,
-			@NotNull GrExpression condition,
-			@NotNull GrCaseSection[] caseSections)
+	private static void generateIfs(@Nonnull StringBuilder builder,
+			@Nonnull ExpressionContext context,
+			@Nonnull GrExpression condition,
+			@Nonnull GrCaseSection[] caseSections)
 	{
 		final GrExpression ref;
 		if(condition instanceof GrReferenceExpression)
@@ -99,11 +99,11 @@ public class SwitchStatementGenerator
 		generateIfFromCaseSection(builder, context, caseSections, 0, args);
 	}
 
-	private static void generateIfFromCaseSection(@NotNull StringBuilder builder,
-			@NotNull ExpressionContext context,
-			@NotNull final GrCaseSection[] caseSections,
+	private static void generateIfFromCaseSection(@Nonnull StringBuilder builder,
+			@Nonnull ExpressionContext context,
+			@Nonnull final GrCaseSection[] caseSections,
 			final int i,
-			@NotNull final GrExpression[] args)
+			@Nonnull final GrExpression[] args)
 	{
 
 		GenerationUtil.writeStatement(builder, context, null, new StatementWriter()
@@ -148,10 +148,10 @@ public class SwitchStatementGenerator
 		});
 	}
 
-	private static void writeCaseBody(@NotNull StringBuilder builder,
-			@NotNull ExpressionContext context,
+	private static void writeCaseBody(@Nonnull StringBuilder builder,
+			@Nonnull ExpressionContext context,
 			int i,
-			@NotNull GrCaseSection[] caseSections)
+			@Nonnull GrCaseSection[] caseSections)
 	{
 		builder.append("{\n");
 
@@ -213,9 +213,9 @@ public class SwitchStatementGenerator
 		builder.append(") ");
 	}
 
-	private static String generateConditionVar(@NotNull StringBuilder builder,
-			@NotNull ExpressionContext context,
-			@NotNull GrExpression condition)
+	private static String generateConditionVar(@Nonnull StringBuilder builder,
+			@Nonnull ExpressionContext context,
+			@Nonnull GrExpression condition)
 	{
 		StringBuilder conditionBuilder = new StringBuilder();
 		final PsiType type = condition.getType();
@@ -230,10 +230,10 @@ public class SwitchStatementGenerator
 		return varName;
 	}
 
-	private static void generateSwitch(@NotNull StringBuilder builder,
-			@NotNull ExpressionContext context,
-			@Nullable GrExpression condition,
-			@NotNull GrCaseSection[] caseSections)
+	private static void generateSwitch(@Nonnull StringBuilder builder,
+			@Nonnull ExpressionContext context,
+			@javax.annotation.Nullable GrExpression condition,
+			@Nonnull GrCaseSection[] caseSections)
 	{
 		builder.append("switch (");
 		if(condition != null)
@@ -251,10 +251,10 @@ public class SwitchStatementGenerator
 		builder.append('}');
 	}
 
-	private static void generateCaseSection(@NotNull StringBuilder builder,
-			@NotNull ExpressionContext context,
-			@NotNull ExpressionContext innerContext,
-			@NotNull GrCaseSection section)
+	private static void generateCaseSection(@Nonnull StringBuilder builder,
+			@Nonnull ExpressionContext context,
+			@Nonnull ExpressionContext innerContext,
+			@Nonnull GrCaseSection section)
 	{
 		for(GrCaseLabel label : section.getCaseLabels())
 		{
@@ -270,9 +270,9 @@ public class SwitchStatementGenerator
 		}
 	}
 
-	private static void writeLabel(@NotNull StringBuilder builder,
-			@NotNull ExpressionContext context,
-			@NotNull GrCaseLabel label)
+	private static void writeLabel(@Nonnull StringBuilder builder,
+			@Nonnull ExpressionContext context,
+			@Nonnull GrCaseLabel label)
 	{
 		if(label.isDefault())
 		{

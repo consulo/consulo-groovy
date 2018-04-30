@@ -15,8 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.annotator;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+
 import com.intellij.openapi.extensions.ExtensionPointName;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.module.Module;
@@ -29,12 +29,12 @@ public abstract class GroovyFrameworkConfigNotification {
   public static final ExtensionPointName<GroovyFrameworkConfigNotification> EP_NAME =
     ExtensionPointName.create("org.intellij.groovy.groovyFrameworkConfigNotification");
 
-  public abstract boolean hasFrameworkStructure(@NotNull Module module);
+  public abstract boolean hasFrameworkStructure(@Nonnull Module module);
 
-  public abstract boolean hasFrameworkLibrary(@NotNull Module module);
+  public abstract boolean hasFrameworkLibrary(@Nonnull Module module);
 
-  @Nullable
-  public abstract EditorNotificationPanel createConfigureNotificationPanel(@NotNull Module module);
+  @javax.annotation.Nullable
+  public abstract EditorNotificationPanel createConfigureNotificationPanel(@Nonnull Module module);
 
   public FileType[] getFrameworkFileTypes() {
     return FileType.EMPTY_ARRAY;

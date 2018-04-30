@@ -15,6 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.lang.completion;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.codeInsight.completion.CompletionInitializationContext;
 import com.intellij.codeInsight.completion.CompletionType;
 import com.intellij.codeInsight.completion.CompletionUtil;
@@ -22,8 +24,6 @@ import com.intellij.openapi.editor.ex.EditorEx;
 import com.intellij.openapi.editor.highlighter.HighlighterIterator;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.lexer.TokenSets;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
@@ -38,11 +38,11 @@ public class GrDummyIdentifierProvider {
 
   private final CompletionInitializationContext myContext;
 
-  public GrDummyIdentifierProvider(@NotNull CompletionInitializationContext context) {
+  public GrDummyIdentifierProvider(@Nonnull CompletionInitializationContext context) {
     myContext = context;
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   public String getIdentifier() {
     if (myContext.getCompletionType() == CompletionType.BASIC && myContext.getFile() instanceof GroovyFile) {
       PsiElement position = myContext.getFile().findElementAt(myContext.getStartOffset());
@@ -88,7 +88,7 @@ public class GrDummyIdentifierProvider {
     return !iterator.atEnd() && iterator.getTokenType() == GroovyTokenTypes.mASSIGN;
   }
 
-  @NotNull
+  @Nonnull
   private String setCorrectCase() {
     final PsiElement element = myContext.getFile().findElementAt(myContext.getStartOffset());
     if (element == null) return DUMMY_IDENTIFIER_DECAPITALIZED;

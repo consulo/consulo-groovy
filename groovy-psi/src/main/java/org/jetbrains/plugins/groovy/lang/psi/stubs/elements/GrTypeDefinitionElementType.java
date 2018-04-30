@@ -22,7 +22,7 @@ import com.intellij.psi.stubs.StubElement;
 import com.intellij.psi.stubs.StubInputStream;
 import com.intellij.psi.stubs.StubOutputStream;
 import com.intellij.util.io.StringRef;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
 import org.jetbrains.plugins.groovy.lang.psi.stubs.GrStubUtils;
 import org.jetbrains.plugins.groovy.lang.psi.stubs.GrTypeDefinitionStub;
@@ -38,11 +38,11 @@ import java.io.IOException;
 public abstract class GrTypeDefinitionElementType<TypeDef extends GrTypeDefinition>
   extends GrStubElementType<GrTypeDefinitionStub, TypeDef> {
 
-  public GrTypeDefinitionElementType(@NotNull String debugName) {
+  public GrTypeDefinitionElementType(@Nonnull String debugName) {
     super(debugName);
   }
 
-  public GrTypeDefinitionStub createStub(@NotNull TypeDef psi, StubElement parentStub) {
+  public GrTypeDefinitionStub createStub(@Nonnull TypeDef psi, StubElement parentStub) {
     String[] superClassNames = psi.getSuperClassNames();
     final byte flags = GrTypeDefinitionStub.buildFlags(psi);
     return new GrTypeDefinitionStub(parentStub, psi.getName(), superClassNames, this, psi.getQualifiedName(), GrStubUtils
@@ -50,7 +50,7 @@ public abstract class GrTypeDefinitionElementType<TypeDef extends GrTypeDefiniti
                                         flags);
   }
 
-  public void serialize(@NotNull GrTypeDefinitionStub stub, @NotNull StubOutputStream dataStream) throws IOException {
+  public void serialize(@Nonnull GrTypeDefinitionStub stub, @Nonnull StubOutputStream dataStream) throws IOException {
     dataStream.writeName(stub.getName());
     dataStream.writeName(stub.getQualifiedName());
     dataStream.writeByte(stub.getFlags());
@@ -65,8 +65,8 @@ public abstract class GrTypeDefinitionElementType<TypeDef extends GrTypeDefiniti
     }
   }
 
-  @NotNull
-  public GrTypeDefinitionStub deserialize(@NotNull StubInputStream dataStream, StubElement parentStub) throws IOException {
+  @Nonnull
+  public GrTypeDefinitionStub deserialize(@Nonnull StubInputStream dataStream, StubElement parentStub) throws IOException {
     String name = StringRef.toString(dataStream.readName());
     String qname = StringRef.toString(dataStream.readName());
     byte flags = dataStream.readByte();
@@ -84,7 +84,7 @@ public abstract class GrTypeDefinitionElementType<TypeDef extends GrTypeDefiniti
     return superClasses;
   }
 
-  public void indexStub(@NotNull GrTypeDefinitionStub stub, @NotNull IndexSink sink) {
+  public void indexStub(@Nonnull GrTypeDefinitionStub stub, @Nonnull IndexSink sink) {
     if (stub.isAnonymous()) {
       final String[] classNames = stub.getSuperClassNames();
       if (classNames.length != 1) return;

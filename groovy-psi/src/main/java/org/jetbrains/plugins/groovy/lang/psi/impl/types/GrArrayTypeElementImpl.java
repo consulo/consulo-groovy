@@ -16,7 +16,8 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.types;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrArrayTypeElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeElement;
@@ -30,7 +31,7 @@ import com.intellij.psi.PsiType;
 public class GrArrayTypeElementImpl extends GroovyPsiElementImpl implements GrArrayTypeElement
 {
 
-	public GrArrayTypeElementImpl(@NotNull ASTNode node)
+	public GrArrayTypeElementImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
@@ -47,14 +48,14 @@ public class GrArrayTypeElementImpl extends GroovyPsiElementImpl implements GrAr
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public GrTypeElement getComponentTypeElement()
 	{
 		return findNotNullChildByClass(GrTypeElement.class);
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public PsiType getType()
 	{
 		return getComponentTypeElement().getType().createArrayType();

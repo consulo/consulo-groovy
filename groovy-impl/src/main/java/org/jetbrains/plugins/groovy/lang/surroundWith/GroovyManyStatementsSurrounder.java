@@ -15,6 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.lang.surroundWith;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.surroundWith.Surrounder;
 import com.intellij.openapi.editor.Editor;
@@ -24,8 +26,6 @@ import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiComment;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.IncorrectOperationException;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrBlockStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrCodeBlock;
@@ -37,7 +37,7 @@ import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
  */
 public abstract class GroovyManyStatementsSurrounder implements Surrounder {
 
-  public boolean isApplicable(@NotNull PsiElement[] elements) {
+  public boolean isApplicable(@Nonnull PsiElement[] elements) {
     if (elements.length == 0) return false;
 
     for (PsiElement element : elements) {
@@ -51,12 +51,12 @@ public abstract class GroovyManyStatementsSurrounder implements Surrounder {
     return true;
   }
 
-  public static boolean isStatement(@NotNull PsiElement element) {
+  public static boolean isStatement(@Nonnull PsiElement element) {
     return ";".equals(element.getText()) || element instanceof PsiComment || StringUtil.isEmptyOrSpaces(element.getText()) || PsiUtil.isExpressionStatement(element);
   }
 
-  @Nullable
-  public TextRange surroundElements(@NotNull Project project, @NotNull Editor editor, @NotNull PsiElement[] elements) throws IncorrectOperationException {
+  @javax.annotation.Nullable
+  public TextRange surroundElements(@Nonnull Project project, @Nonnull Editor editor, @Nonnull PsiElement[] elements) throws IncorrectOperationException {
     if (elements.length == 0) return null;
 
     PsiElement element1 = elements[0];

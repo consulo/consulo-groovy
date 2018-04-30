@@ -4,7 +4,7 @@ import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.*;
 import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.ProcessingContext;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.GrModifierList;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotation;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotationArgumentList;
@@ -24,9 +24,9 @@ public class SpockUnrollReferenceProvider extends PsiReferenceProvider {
 
   private static final Pattern PATTERN = Pattern.compile("\\#([\\w_]+)");
 
-  @NotNull
+  @Nonnull
   @Override
-  public PsiReference[] getReferencesByElement(@NotNull PsiElement element, @NotNull ProcessingContext context) {
+  public PsiReference[] getReferencesByElement(@Nonnull PsiElement element, @Nonnull ProcessingContext context) {
     GrAnnotationNameValuePair nvp = (GrAnnotationNameValuePair)element.getParent();
 
     String name = nvp.getName();
@@ -90,7 +90,7 @@ public class SpockUnrollReferenceProvider extends PsiReferenceProvider {
       return descriptor.getVariable();
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public Object[] getVariants() {
       Map<String, SpockVariableDescriptor> variableMap = SpockUtils.getVariableMap(myMethod);

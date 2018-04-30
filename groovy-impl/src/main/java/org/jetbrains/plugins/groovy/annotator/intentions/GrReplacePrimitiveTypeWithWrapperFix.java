@@ -15,6 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.annotator.intentions;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.codeInspection.ProblemDescriptor;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
@@ -24,7 +26,6 @@ import com.intellij.psi.PsiPrimitiveType;
 import com.intellij.psi.PsiType;
 import com.intellij.psi.codeStyle.JavaCodeStyleManager;
 import com.intellij.util.IncorrectOperationException;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.codeInspection.GroovyFix;
 import org.jetbrains.plugins.groovy.intentions.GroovyIntentionsBundle;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
@@ -49,14 +50,14 @@ public class GrReplacePrimitiveTypeWithWrapperFix extends GroovyFix
 		myBoxedName = ((PsiPrimitiveType) type).getBoxedType(typeElement).getClassName();
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public String getName()
 	{
 		return GroovyIntentionsBundle.message("replace.with.wrapper", myBoxedName);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public String getFamilyName()
 	{

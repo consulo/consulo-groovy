@@ -16,6 +16,8 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.path;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.*;
@@ -23,8 +25,8 @@ import com.intellij.psi.impl.source.resolve.ResolveCache;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.InheritanceUtil;
 import com.intellij.util.*;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrArgumentList;
@@ -57,9 +59,9 @@ public class GrIndexPropertyImpl extends GrExpressionImpl implements GrIndexProp
     }
   };
   private static final ResolveCache.PolyVariantResolver<MyReference> RESOLVER = new ResolveCache.PolyVariantResolver<MyReference>() {
-    @NotNull
+    @Nonnull
     @Override
-    public GroovyResolveResult[] resolve(@NotNull MyReference reference, boolean incompleteCode) {
+    public GroovyResolveResult[] resolve(@Nonnull MyReference reference, boolean incompleteCode) {
       final GrIndexPropertyImpl index = reference.getElement();
       return index.resolveImpl(incompleteCode, null, null);
     }
@@ -67,7 +69,7 @@ public class GrIndexPropertyImpl extends GrExpressionImpl implements GrIndexProp
 
   private final MyReference myReference = new MyReference();
 
-  private PsiType inferType(@Nullable Boolean isSetter) {
+  private PsiType inferType(@javax.annotation.Nullable Boolean isSetter) {
     GrExpression selected = getInvokedExpression();
     PsiType thisType = selected.getType();
 
@@ -141,7 +143,7 @@ public class GrIndexPropertyImpl extends GrExpressionImpl implements GrIndexProp
     return componentType;
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   private static PsiType extractMapValueType(PsiType thisType, PsiType[] argTypes, PsiManager manager, GlobalSearchScope resolveScope) {
     if (argTypes.length != 1 || !InheritanceUtil.isInheritor(thisType, CommonClassNames.JAVA_UTIL_MAP)) return null;
     final PsiType substituted = com.intellij.psi.util.PsiUtil.substituteTypeParameter(thisType, CommonClassNames.JAVA_UTIL_MAP, 1, true);
@@ -149,7 +151,7 @@ public class GrIndexPropertyImpl extends GrExpressionImpl implements GrIndexProp
   }
 
 
-  private GroovyResolveResult[] resolveImpl(boolean incompleteCode, @Nullable GrExpression upToArgument, @Nullable Boolean isSetter) {
+  private GroovyResolveResult[] resolveImpl(boolean incompleteCode, @javax.annotation.Nullable GrExpression upToArgument, @Nullable Boolean isSetter) {
     if (isSetter == null) isSetter = PsiUtil.isLValue(this);
 
     GrExpression invoked = getInvokedExpression();
@@ -220,7 +222,7 @@ public class GrIndexPropertyImpl extends GrExpressionImpl implements GrIndexProp
       final GroovyResolveResult[] tupleCandidates = ResolveUtil.getMethodCandidates(thisType, name, invoked, tupleType);
       if (incompleteCode) {
         candidates = ArrayUtil.mergeArrays(candidates, tupleCandidates, new ArrayFactory<GroovyResolveResult>() {
-          @NotNull
+          @Nonnull
           @Override
           public GroovyResolveResult[] create(int count) {
             return new GroovyResolveResult[count];
@@ -235,7 +237,7 @@ public class GrIndexPropertyImpl extends GrExpressionImpl implements GrIndexProp
     return candidates;
   }
 
-  public GrIndexPropertyImpl(@NotNull ASTNode node) {
+  public GrIndexPropertyImpl(@Nonnull ASTNode node) {
     super(node);
   }
 
@@ -249,42 +251,42 @@ public class GrIndexPropertyImpl extends GrExpressionImpl implements GrIndexProp
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public GrExpression getInvokedExpression() {
     return findNotNullChildByClass(GrExpression.class);
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public GrArgumentList getArgumentList() {
     return findNotNullChildByClass(GrArgumentList.class);
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   @Override
   public PsiType getGetterType() {
     return inferType(false);
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   @Override
   public PsiType getSetterType() {
     return inferType(true);
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public GroovyResolveResult[] multiResolveGetter(boolean incomplete) {
     return resolveImpl(incomplete, null, false);
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public GroovyResolveResult[] multiResolveSetter(boolean incomplete) {
     return resolveImpl(incomplete, null, true);
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public GroovyResolveResult[] multiResolve(boolean incompleteCode) {
     return TypeInferenceHelper.getCurrentContext().multiResolve(myReference, incompleteCode, RESOLVER);
@@ -306,7 +308,7 @@ public class GrIndexPropertyImpl extends GrExpressionImpl implements GrIndexProp
     return null;
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   private PsiType extractLastParameterType(GroovyResolveResult candidate) {
     PsiElement element = candidate.getElement();
     if (element instanceof PsiMethod) {
@@ -319,14 +321,14 @@ public class GrIndexPropertyImpl extends GrExpressionImpl implements GrIndexProp
     return null;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public GrNamedArgument[] getNamedArguments() {
     GrArgumentList list = getArgumentList();
     return list.getNamedArguments();
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public GrExpression[] getExpressionArguments() {
     GrArgumentList list = getArgumentList();
@@ -339,16 +341,16 @@ public class GrIndexPropertyImpl extends GrExpressionImpl implements GrIndexProp
     return list.addNamedArgument(namedArgument);
   }
 
-  @NotNull
+  @Nonnull
   @Override
-  public GroovyResolveResult[] getCallVariants(@Nullable GrExpression upToArgument) {
+  public GroovyResolveResult[] getCallVariants(@javax.annotation.Nullable GrExpression upToArgument) {
     if (upToArgument == null) {
       return multiResolve(true);
     }
     return resolveImpl(true, upToArgument, null);
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public GrClosableBlock[] getClosureArguments() {
     return GrClosableBlock.EMPTY_ARRAY;
@@ -359,7 +361,7 @@ public class GrIndexPropertyImpl extends GrExpressionImpl implements GrIndexProp
     return PsiImplUtil.extractUniqueElement(multiResolve(false));
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public GroovyResolveResult advancedResolve() {
     GroovyResolveResult[] results = multiResolve(false);
@@ -388,7 +390,7 @@ public class GrIndexPropertyImpl extends GrExpressionImpl implements GrIndexProp
       return resolveMethod();
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public String getCanonicalText() {
       return "Array-style access";
@@ -400,7 +402,7 @@ public class GrIndexPropertyImpl extends GrExpressionImpl implements GrIndexProp
     }
 
     @Override
-    public PsiElement bindToElement(@NotNull PsiElement element) throws IncorrectOperationException {
+    public PsiElement bindToElement(@Nonnull PsiElement element) throws IncorrectOperationException {
       return GrIndexPropertyImpl.this;
     }
 
@@ -409,7 +411,7 @@ public class GrIndexPropertyImpl extends GrExpressionImpl implements GrIndexProp
       return getManager().areElementsEquivalent(resolve(), element);
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public Object[] getVariants() {
       return ArrayUtil.EMPTY_OBJECT_ARRAY;
@@ -420,7 +422,7 @@ public class GrIndexPropertyImpl extends GrExpressionImpl implements GrIndexProp
       return false;
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public ResolveResult[] multiResolve(boolean incompleteCode) {
       return GrIndexPropertyImpl.this.multiResolve(incompleteCode);

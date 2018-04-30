@@ -20,8 +20,8 @@ import com.intellij.openapi.components.ProjectComponent;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiMethod;
 import com.intellij.psi.PsiVariable;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.annotator.intentions.dynamic.elements.*;
 import org.jetbrains.plugins.groovy.annotator.intentions.dynamic.ui.DynamicElementSettings;
 
@@ -34,8 +34,8 @@ import java.util.List;
  */
 public abstract class DynamicManager implements ProjectComponent, PersistentStateComponent<DRootElement> {
 
-  @NotNull
-  public static DynamicManager getInstance(@NotNull Project project) {
+  @Nonnull
+  public static DynamicManager getInstance(@Nonnull Project project) {
     return project.getComponent(DynamicManager.class);
   }
 
@@ -58,7 +58,7 @@ public abstract class DynamicManager implements ProjectComponent, PersistentStat
   * Returns all containing classes
   */
 
-  @NotNull
+  @Nonnull
   public abstract Collection<DClassElement> getAllContainingClasses();
 
   public abstract void replaceClassName(@Nullable final DClassElement oldClassElement, String newClassName);
@@ -72,7 +72,7 @@ public abstract class DynamicManager implements ProjectComponent, PersistentStat
   @Nullable
   public abstract DPropertyElement findConcreteDynamicProperty(final String containingClassName, final String propertyName);
 
-  @NotNull
+  @Nonnull
   public abstract Collection<DPropertyElement> findDynamicPropertiesOfClass(final String containingClassName);
 
   @Nullable
@@ -81,17 +81,17 @@ public abstract class DynamicManager implements ProjectComponent, PersistentStat
   @Nullable
   public abstract String replaceDynamicPropertyName(String className, String oldPropertyName, String newPropertyName);
 
-  @Nullable
+  @javax.annotation.Nullable
   public abstract String replaceDynamicPropertyType(String className, String propertyName, String oldPropertyType, String newPropertyType);
 
-  @Nullable
+  @javax.annotation.Nullable
   public abstract DMethodElement findConcreteDynamicMethod(final String containingClassName, final String name, final String[] types);
 
   public abstract void removeItemElement(DItemElement element);
 
   public abstract void replaceDynamicMethodType(String className, String name, List<ParamInfo> myPairList, String oldType, String newType);
 
-  @NotNull
+  @Nonnull
   public abstract DClassElement getOrCreateClassElement(Project project, String className);
 
   public abstract DClassElement getClassElementByItem(DItemElement itemElement);

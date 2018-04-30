@@ -18,9 +18,11 @@ package org.jetbrains.plugins.groovy.lang.groovydoc.psi.impl;
 
 import java.util.ArrayList;
 
+import javax.annotation.Nonnull;
+
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.groovydoc.parser.GroovyDocElementTypes;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocComment;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocCommentOwner;
@@ -69,7 +71,7 @@ public class GrDocCommentImpl extends LazyParseablePsiElement implements GroovyD
     return GrDocCommentUtil.findDocOwner(this);
   }
 
-  @NotNull
+  @Nonnull
   public GrDocTag[] getTags() {
     final GrDocTag[] tags = PsiTreeUtil.getChildrenOfType(this, GrDocTag.class);
     return tags == null ? GrDocTag.EMPTY_ARRAY : tags;
@@ -86,7 +88,7 @@ public class GrDocCommentImpl extends LazyParseablePsiElement implements GroovyD
     return null;
   }
 
-  @NotNull
+  @Nonnull
   public GrDocTag[] findTagsByName(@NonNls String name) {
     if (!getText().contains(name)) return GrDocTag.EMPTY_ARRAY;
     ArrayList<GrDocTag> list = new ArrayList<GrDocTag>();
@@ -98,7 +100,7 @@ public class GrDocCommentImpl extends LazyParseablePsiElement implements GroovyD
     return list.toArray(new GrDocTag[list.size()]);
   }
 
-  @NotNull
+  @Nonnull
   public PsiElement[] getDescriptionElements() {
     ArrayList<PsiElement> array = new ArrayList<PsiElement>();
     for (PsiElement child = getFirstChild(); child != null; child = child.getNextSibling()) {

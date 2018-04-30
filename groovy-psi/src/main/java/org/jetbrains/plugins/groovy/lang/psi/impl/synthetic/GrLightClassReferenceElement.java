@@ -15,8 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.synthetic;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.GroovyLanguage;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
@@ -36,12 +36,12 @@ import com.intellij.util.IncorrectOperationException;
  * @author Maxim.Medvedev
  */
 public class GrLightClassReferenceElement extends LightElement implements GrCodeReferenceElement {
-  @NotNull
+  @Nonnull
   private final String myClassName;
   private final String myText;
   private final PsiElement myContext;
 
-  public GrLightClassReferenceElement(@NotNull String className, @NotNull String text, PsiElement context) {
+  public GrLightClassReferenceElement(@Nonnull String className, @Nonnull String text, PsiElement context) {
     super(context.getManager(), GroovyLanguage.INSTANCE);
     myClassName = className;
     myText = text;
@@ -68,7 +68,7 @@ public class GrLightClassReferenceElement extends LightElement implements GrCode
     return new GroovyResolveResultImpl(resolve(), true);
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public GroovyResolveResult[] multiResolve(boolean incompleteCode) {
     final GroovyResolveResult resolveResult = advancedResolve();
@@ -80,7 +80,7 @@ public class GrLightClassReferenceElement extends LightElement implements GrCode
     }
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public PsiType[] getTypeArguments() {
     return PsiType.EMPTY_ARRAY;
@@ -91,7 +91,7 @@ public class GrLightClassReferenceElement extends LightElement implements GrCode
     return null;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public String getClassNameText() {
     return myClassName;
@@ -146,7 +146,7 @@ public class GrLightClassReferenceElement extends LightElement implements GrCode
     return new TextRange(0, getTextLength());
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public String getCanonicalText() {
     final PsiElement resolved = resolve();
@@ -160,7 +160,7 @@ public class GrLightClassReferenceElement extends LightElement implements GrCode
   }
 
   @Override
-  public PsiElement bindToElement(@NotNull PsiElement element) throws IncorrectOperationException {
+  public PsiElement bindToElement(@Nonnull PsiElement element) throws IncorrectOperationException {
     throw new UnsupportedOperationException();
   }
 
@@ -169,7 +169,7 @@ public class GrLightClassReferenceElement extends LightElement implements GrCode
     return myManager.areElementsEquivalent(element, resolve());
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public Object[] getVariants() {
     return ArrayUtil.EMPTY_OBJECT_ARRAY;

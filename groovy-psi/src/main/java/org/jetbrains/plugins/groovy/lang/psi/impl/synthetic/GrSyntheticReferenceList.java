@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.synthetic;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrReferenceList;
 import com.intellij.psi.PsiClassType;
 import com.intellij.psi.PsiJavaCodeReferenceElement;
@@ -40,13 +40,13 @@ public class GrSyntheticReferenceList extends LightElement implements PsiReferen
     return "Synthetic reference list";
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public PsiJavaCodeReferenceElement[] getReferenceElements() {
     return PsiJavaCodeReferenceElement.EMPTY_ARRAY;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public PsiClassType[] getReferencedTypes() {
     return myList.getReferencedTypes();

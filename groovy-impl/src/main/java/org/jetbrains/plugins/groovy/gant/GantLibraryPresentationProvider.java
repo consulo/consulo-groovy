@@ -22,7 +22,7 @@ import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import icons.JetgroovyIcons;
 import org.jetbrains.annotations.Nls;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.config.GroovyLibraryPresentationProviderBase;
 
 import javax.swing.*;
@@ -47,24 +47,24 @@ public class GantLibraryPresentationProvider extends GroovyLibraryPresentationPr
     return GantUtils.getGantVersion(GantUtils.getGantLibraryHome(libraryFiles));
   }
 
-  @NotNull
+  @Nonnull
   public Icon getIcon() {
     return JetgroovyIcons.Groovy.Gant_sdk;
   }
 
   @Override
-  public boolean isSDKHome(@NotNull VirtualFile file) {
+  public boolean isSDKHome(@Nonnull VirtualFile file) {
     return GantUtils.isGantSdkHome(file);
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public String getSDKVersion(String path) {
     return GantUtils.getGantVersion(path);
   }
 
   @Nls
-  @NotNull
+  @Nonnull
   @Override
   public String getLibraryCategoryName() {
     return "Gant";

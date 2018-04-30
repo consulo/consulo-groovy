@@ -34,8 +34,8 @@ import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiMethod;
 import com.intellij.psi.PsiParameter;
 import com.intellij.util.IncorrectOperationException;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.actions.generate.GroovyCodeInsightBundle;
 import org.jetbrains.plugins.groovy.actions.generate.GroovyGenerationInfo;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
@@ -61,7 +61,7 @@ public class GroovyGenerateMethodMissingHandler extends GenerateMembersHandlerBa
     return ClassMember.EMPTY_ARRAY;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   protected List<? extends GenerationInfo> generateMemberPrototypes(PsiClass aClass, ClassMember[] members)
     throws IncorrectOperationException {
@@ -163,7 +163,7 @@ public class GroovyGenerateMethodMissingHandler extends GenerateMembersHandlerBa
                                         boolean allowEmptySelection,
                                         boolean copyJavadocCheckbox,
                                         Project project,
-                                        @Nullable Editor editor) {
+                                        @javax.annotation.Nullable Editor editor) {
     return ClassMember.EMPTY_ARRAY;
   }
 }

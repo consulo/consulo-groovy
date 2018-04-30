@@ -22,7 +22,7 @@ import com.intellij.psi.util.PropertyUtil;
 import com.intellij.util.ArrayUtil;
 import com.intellij.util.ProcessingContext;
 import com.intellij.util.containers.ContainerUtil;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.findUsages.LiteralConstructorReference;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.GrListOrMap;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrArgumentLabel;
@@ -42,9 +42,9 @@ public class GppReferenceContributor extends PsiReferenceContributor {
   @Override
   public void registerReferenceProviders(PsiReferenceRegistrar registrar) {
     registrar.registerReferenceProvider(PlatformPatterns.psiElement(GrArgumentLabel.class), new PsiReferenceProvider() {
-      @NotNull
+      @Nonnull
       @Override
-      public PsiReference[] getReferencesByElement(@NotNull PsiElement element, @NotNull ProcessingContext context) {
+      public PsiReference[] getReferencesByElement(@Nonnull PsiElement element, @Nonnull ProcessingContext context) {
         final PsiElement parent = element.getParent();
         if (parent instanceof GrNamedArgument && parent.getParent() instanceof GrListOrMap) {
           return new PsiReference[]{new GppMapMemberReference(element)};
@@ -65,7 +65,7 @@ public class GppReferenceContributor extends PsiReferenceContributor {
       return element instanceof PsiMethod && super.isReferenceTo(element);
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public ResolveResult[] multiResolve(boolean incompleteCode) {
       final GrArgumentLabel context = getElement();
@@ -134,7 +134,7 @@ public class GppReferenceContributor extends PsiReferenceContributor {
       return applicable;
     }
 
-    @NotNull
+    @Nonnull
     public Object[] getVariants() {
       return ArrayUtil.EMPTY_OBJECT_ARRAY; //todo
     }

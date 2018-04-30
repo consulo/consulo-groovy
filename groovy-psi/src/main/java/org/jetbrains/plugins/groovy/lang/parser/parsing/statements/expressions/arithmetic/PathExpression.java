@@ -16,10 +16,11 @@
 
 package org.jetbrains.plugins.groovy.lang.parser.parsing.statements.expressions.arithmetic;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.lang.PsiBuilder;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyElementType;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
@@ -47,15 +48,15 @@ public class PathExpression {
                                                                      GroovyTokenTypes.mLPAREN, GroovyTokenTypes.mLCURLY,
                                                                      GroovyTokenTypes.mDOT);
 
-  public static boolean parse(@NotNull PsiBuilder builder, @NotNull GroovyParser parser) {
+  public static boolean parse(@Nonnull PsiBuilder builder, @Nonnull GroovyParser parser) {
     return parsePathExprQualifierForExprStatement(builder, parser) != Result.WRONG_WAY;
   }
 
   /**
    * parses method calls with parentheses, property index access, etc
    */
-  @NotNull
-  public static Result parsePathExprQualifierForExprStatement(@NotNull PsiBuilder builder, @NotNull GroovyParser parser) {
+  @Nonnull
+  public static Result parsePathExprQualifierForExprStatement(@Nonnull PsiBuilder builder, @Nonnull GroovyParser parser) {
     PsiBuilder.Marker marker = builder.mark();
     IElementType qualifierType = PrimaryExpression.parsePrimaryExpression(builder, parser);
     if (qualifierType != GroovyElementTypes.WRONGWAY) {
@@ -67,11 +68,11 @@ public class PathExpression {
     }
   }
 
-  @NotNull
-  private static Result parseAfterQualifier(@NotNull PsiBuilder builder,
-                                            @NotNull GroovyParser parser,
-                                            @NotNull PsiBuilder.Marker marker,
-                                            @NotNull IElementType qualifierType) {
+  @Nonnull
+  private static Result parseAfterQualifier(@Nonnull PsiBuilder builder,
+                                            @Nonnull GroovyParser parser,
+                                            @Nonnull PsiBuilder.Marker marker,
+                                            @Nonnull IElementType qualifierType) {
     if (isPathElementStart(builder)) {
       if (isLParenthOrLCurlyAfterLiteral(builder, qualifierType)) {
         marker.rollbackTo();
@@ -91,15 +92,15 @@ public class PathExpression {
     }
   }
 
-  private static boolean isLParenthOrLCurlyAfterLiteral(@NotNull PsiBuilder builder, @NotNull IElementType qualifierType) {
+  private static boolean isLParenthOrLCurlyAfterLiteral(@Nonnull PsiBuilder builder, @Nonnull IElementType qualifierType) {
     return qualifierType == GroovyElementTypes.LITERAL && (checkForLParenth(builder) || checkForLCurly(builder));
   }
 
-  @NotNull
-  private static Result pathElementParse(@NotNull PsiBuilder builder,
-                                         @NotNull PsiBuilder.Marker marker,
-                                         @NotNull GroovyParser parser,
-                                         @NotNull Result result) {
+  @Nonnull
+  private static Result pathElementParse(@Nonnull PsiBuilder builder,
+                                         @Nonnull PsiBuilder.Marker marker,
+                                         @Nonnull GroovyParser parser,
+                                         @Nonnull Result result) {
 
 
     // Property reference
@@ -143,8 +144,8 @@ public class PathExpression {
     }
   }
 
-  @NotNull
-  private static Result parseAfterReference(@NotNull PsiBuilder builder, @NotNull GroovyParser parser, @NotNull PsiBuilder.Marker newMarker) {
+  @Nonnull
+  private static Result parseAfterReference(@Nonnull PsiBuilder builder, @Nonnull GroovyParser parser, @Nonnull PsiBuilder.Marker newMarker) {
     if (checkForLCurly(builder)) {
       PsiBuilder.Marker argsMarker = builder.mark();
       argsMarker.done(GroovyElementTypes.ARGUMENTS);
@@ -156,8 +157,8 @@ public class PathExpression {
     }
   }
 
-  @NotNull
-  private static Result parseAfterArguments(@NotNull PsiBuilder builder, @NotNull PsiBuilder.Marker marker, @NotNull GroovyParser parser) {
+  @Nonnull
+  private static Result parseAfterArguments(@Nonnull PsiBuilder builder, @Nonnull PsiBuilder.Marker marker, @Nonnull GroovyParser parser) {
     if (checkForLCurly(builder)) {
       ParserUtils.getToken(builder, GroovyTokenTypes.mNLS);
       return pathElementParse(builder, marker, parser, Result.METHOD_CALL);
@@ -169,16 +170,16 @@ public class PathExpression {
     }
   }
 
-  private static boolean checkForLCurly(@NotNull PsiBuilder builder) {
+  private static boolean checkForLCurly(@Nonnull PsiBuilder builder) {
     return ParserUtils.lookAhead(builder, GroovyTokenTypes.mLCURLY) || ParserUtils.lookAhead(builder, GroovyTokenTypes.mNLS,
                                                                                              GroovyTokenTypes.mLCURLY);
   }
 
-  private static boolean checkForLParenth(@NotNull PsiBuilder builder) {
+  private static boolean checkForLParenth(@Nonnull PsiBuilder builder) {
     return builder.getTokenType() == GroovyTokenTypes.mLPAREN;
   }
 
-  public static boolean checkForArrayAccess(@NotNull PsiBuilder builder) {
+  public static boolean checkForArrayAccess(@Nonnull PsiBuilder builder) {
     return builder.getTokenType() == GroovyTokenTypes.mLBRACK &&
            !ParserUtils.lookAhead(builder, GroovyTokenTypes.mLBRACK, GroovyTokenTypes.mCOLON) &&
            !ParserUtils.lookAhead(builder, GroovyTokenTypes.mLBRACK, GroovyTokenTypes.mNLS, GroovyTokenTypes.mCOLON);
@@ -190,8 +191,8 @@ public class PathExpression {
    * @param builder
    * @return
    */
-  @NotNull
-  public static GroovyElementType namePartParse(@NotNull PsiBuilder builder, @NotNull GroovyParser parser) {
+  @Nonnull
+  public static GroovyElementType namePartParse(@Nonnull PsiBuilder builder, @Nonnull GroovyParser parser) {
     ParserUtils.getToken(builder, GroovyTokenTypes.mAT);
     if (ParserUtils.getToken(builder, GroovyTokenTypes.mIDENT) ||
         ParserUtils.getToken(builder, GroovyTokenTypes.mSTRING_LITERAL) ||
@@ -243,8 +244,8 @@ public class PathExpression {
    * @param builder
    * @return
    */
-  @NotNull
-  public static GroovyElementType indexPropertyArgsParse(@NotNull PsiBuilder builder, @NotNull GroovyParser parser) {
+  @Nonnull
+  public static GroovyElementType indexPropertyArgsParse(@Nonnull PsiBuilder builder, @Nonnull GroovyParser parser) {
     assert builder.getTokenType() == GroovyTokenTypes.mLBRACK;
 
     PsiBuilder.Marker marker = builder.mark();
@@ -263,8 +264,8 @@ public class PathExpression {
    * @param builder
    * @return
    */
-  @NotNull
-  private static IElementType appendedBlockParse(@NotNull PsiBuilder builder, @NotNull GroovyParser parser) {
+  @Nonnull
+  private static IElementType appendedBlockParse(@Nonnull PsiBuilder builder, @Nonnull GroovyParser parser) {
     return OpenOrClosableBlock.parseClosableBlock(builder, parser);
   }
 
@@ -275,7 +276,7 @@ public class PathExpression {
    * @param builder
    * @return
    */
-  private static boolean isPathElementStart(@NotNull PsiBuilder builder) {
+  private static boolean isPathElementStart(@Nonnull PsiBuilder builder) {
     return (PATH_ELEMENT_START.contains(builder.getTokenType()) ||
             ParserUtils.lookAhead(builder, GroovyTokenTypes.mNLS, GroovyTokenTypes.mDOT) ||
             ParserUtils.lookAhead(builder, GroovyTokenTypes.mNLS, GroovyTokenTypes.mLCURLY));

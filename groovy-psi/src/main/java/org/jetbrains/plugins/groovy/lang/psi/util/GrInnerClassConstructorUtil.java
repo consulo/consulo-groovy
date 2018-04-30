@@ -15,7 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.util;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameter;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
@@ -36,10 +37,10 @@ import com.intellij.psi.PsiType;
  */
 public class GrInnerClassConstructorUtil {
 
-  @NotNull
-  public static GrParameter[] addEnclosingInstanceParam(@NotNull GrMethod method,
-                                                        @NotNull PsiClass enclosingClass,
-                                                        @NotNull GrParameter[] originalParams,
+  @Nonnull
+  public static GrParameter[] addEnclosingInstanceParam(@Nonnull GrMethod method,
+                                                        @Nonnull PsiClass enclosingClass,
+                                                        @Nonnull GrParameter[] originalParams,
                                                         boolean isOptional) {
     final GrParameter[] parameters = new GrParameter[originalParams.length + 1];
     final PsiClassType enclosingClassType = JavaPsiFacade.getElementFactory(method.getProject()).createType(enclosingClass, PsiSubstitutor.EMPTY);
@@ -53,7 +54,7 @@ public class GrInnerClassConstructorUtil {
     return parameters;
   }
 
-  public static boolean isInnerClassConstructorUsedOutsideOfItParent(@NotNull PsiMethod method, PsiElement place) {
+  public static boolean isInnerClassConstructorUsedOutsideOfItParent(@Nonnull PsiMethod method, PsiElement place) {
     if (method instanceof GrMethod && method.isConstructor()) {
       PsiClass aClass = method.getContainingClass();
       if (aClass != null && !aClass.hasModifierProperty(PsiModifier.STATIC)) {
@@ -68,8 +69,8 @@ public class GrInnerClassConstructorUtil {
     return false;
   }
 
-  @NotNull
-  public static PsiType[] addEnclosingArgIfNeeded(@NotNull PsiType[] types, @NotNull PsiElement place, @NotNull PsiClass aClass) {
+  @Nonnull
+  public static PsiType[] addEnclosingArgIfNeeded(@Nonnull PsiType[] types, @Nonnull PsiElement place, @Nonnull PsiClass aClass) {
     if (!aClass.hasModifierProperty(PsiModifier.STATIC)) {
       PsiClass containingClass = aClass.getContainingClass();
       if (containingClass != null) {

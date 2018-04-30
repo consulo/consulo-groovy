@@ -19,9 +19,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Nonnull;
+
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrSafeCastExpression;
@@ -73,7 +75,7 @@ public class GrTraitType extends PsiClassType
 
 	private final VolatileNotNullLazyValue<PsiType[]> myParameters = new VolatileNotNullLazyValue<PsiType[]>()
 	{
-		@NotNull
+		@Nonnull
 		@Override
 		protected PsiType[] compute()
 		{
@@ -88,10 +90,10 @@ public class GrTraitType extends PsiClassType
 	};
 
 
-	public GrTraitType(@NotNull GrExpression original,
-			@NotNull PsiClassType exprType,
-			@NotNull List<PsiClassType> traitTypes,
-			@NotNull GlobalSearchScope resolveScope,
+	public GrTraitType(@Nonnull GrExpression original,
+			@Nonnull PsiClassType exprType,
+			@Nonnull List<PsiClassType> traitTypes,
+			@Nonnull GlobalSearchScope resolveScope,
 			LanguageLevel languageLevel)
 	{
 		super(languageLevel);
@@ -101,7 +103,7 @@ public class GrTraitType extends PsiClassType
 		myTraitTypes = ContainerUtil.newArrayList(traitTypes);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public String getPresentableText()
 	{
@@ -116,14 +118,14 @@ public class GrTraitType extends PsiClassType
 		}), ", ");
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public String getCanonicalText()
 	{
 		return myExprType.getCanonicalText();
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public String getInternalCanonicalText()
 	{
@@ -152,21 +154,21 @@ public class GrTraitType extends PsiClassType
 	}
 
 	@Override
-	public boolean equalsToText(@NotNull @NonNls String text)
+	public boolean equalsToText(@Nonnull @NonNls String text)
 	{
 		return false;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public LanguageLevel getLanguageLevel()
 	{
 		return myLanguageLevel;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
-	public PsiClassType setLanguageLevel(@NotNull LanguageLevel languageLevel)
+	public PsiClassType setLanguageLevel(@Nonnull LanguageLevel languageLevel)
 	{
 		return new GrTraitType(myOriginal, myExprType, myTraitTypes, myResolveScope, languageLevel);
 	}
@@ -184,14 +186,14 @@ public class GrTraitType extends PsiClassType
 		return null;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public PsiType[] getParameters()
 	{
 		return myParameters.getValue();
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public PsiType[] getSuperTypes()
 	{
@@ -201,13 +203,13 @@ public class GrTraitType extends PsiClassType
 		return result;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public ClassResolveResult resolveGenerics()
 	{
 		return CachedValuesManager.getCachedValue(myOriginal, new CachedValueProvider<ClassResolveResult>()
 		{
-			@Nullable
+			@javax.annotation.Nullable
 			@Override
 			public Result<ClassResolveResult> compute()
 			{
@@ -220,7 +222,7 @@ public class GrTraitType extends PsiClassType
 		});
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public PsiClassType rawType()
 	{
@@ -235,19 +237,19 @@ public class GrTraitType extends PsiClassType
 		}), myResolveScope, myLanguageLevel);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public GlobalSearchScope getResolveScope()
 	{
 		return myResolveScope;
 	}
 
-	@Nullable
+	@javax.annotation.Nullable
 	public GrTypeDefinition getMockTypeDefinition()
 	{
 		return CachedValuesManager.getCachedValue(myOriginal, new CachedValueProvider<GrTypeDefinition>()
 		{
-			@Nullable
+			@javax.annotation.Nullable
 			@Override
 			public Result<GrTypeDefinition> compute()
 			{
@@ -281,8 +283,8 @@ public class GrTraitType extends PsiClassType
 		return new GrTraitType(myOriginal, exprType, traitTypes, myResolveScope, LanguageLevel.JDK_1_5);
 	}
 
-	@Nullable
-	public static GrTraitType createTraitClassType(@NotNull GrSafeCastExpression safeCastExpression)
+	@javax.annotation.Nullable
+	public static GrTraitType createTraitClassType(@Nonnull GrSafeCastExpression safeCastExpression)
 	{
 		GrExpression operand = safeCastExpression.getOperand();
 		PsiType exprType = operand.getType();
@@ -307,11 +309,11 @@ public class GrTraitType extends PsiClassType
 	}
 
 
-	@NotNull
-	public static GrTraitType createTraitClassType(@NotNull GrExpression context,
-			@NotNull PsiClassType exprType,
-			@NotNull List<PsiClassType> traitTypes,
-			@NotNull GlobalSearchScope resolveScope)
+	@Nonnull
+	public static GrTraitType createTraitClassType(@Nonnull GrExpression context,
+			@Nonnull PsiClassType exprType,
+			@Nonnull List<PsiClassType> traitTypes,
+			@Nonnull GlobalSearchScope resolveScope)
 	{
 		return new GrTraitType(context, exprType, traitTypes, resolveScope, LanguageLevel.JDK_1_5);
 	}
@@ -334,7 +336,7 @@ public class GrTraitType extends PsiClassType
 			return myDefinition;
 		}
 
-		@NotNull
+		@Nonnull
 		@Override
 		public PsiSubstitutor getSubstitutor()
 		{
@@ -417,7 +419,7 @@ public class GrTraitType extends PsiClassType
 		}
 
 		private void addReferencesWith(@Nullable GrImplementsClause clause,
-				@NotNull List<PsiClassType> traitTypes,
+				@Nonnull List<PsiClassType> traitTypes,
 				int parameterOffset)
 		{
 			LOG.assertTrue(clause != null);
@@ -429,14 +431,14 @@ public class GrTraitType extends PsiClassType
 			}
 		}
 
-		private void replaceReferenceWith(@Nullable GrReferenceList clause, @NotNull PsiClassType type)
+		private void replaceReferenceWith(@javax.annotation.Nullable GrReferenceList clause, @Nonnull PsiClassType type)
 		{
 			LOG.assertTrue(clause != null);
 			clause.getReferenceElementsGroovy()[0].delete();
 			processType(clause, type, 0);
 		}
 
-		private void processType(@NotNull GrReferenceList clause, @NotNull PsiClassType type, int parameterOffset)
+		private void processType(@Nonnull GrReferenceList clause, @Nonnull PsiClassType type, int parameterOffset)
 		{
 			PsiClass resolved = type.resolve();
 			if(resolved != null)
@@ -467,14 +469,14 @@ public class GrTraitType extends PsiClassType
 		private final GrTypeParameter[] myParameters;
 		private int myOffset = 0;
 
-		public SubstitutorBuilder(@NotNull GrTypeDefinition definition)
+		public SubstitutorBuilder(@Nonnull GrTypeDefinition definition)
 		{
 			GrTypeParameterList typeParameterList = definition.getTypeParameterList();
 			myParameters = typeParameterList != null ? typeParameterList.getTypeParameters() : GrTypeParameter
 					.EMPTY_ARRAY;
 		}
 
-		@NotNull
+		@Nonnull
 		public PsiSubstitutor buildSubstitutor()
 		{
 			if(myParameters.length == 0)
@@ -492,7 +494,7 @@ public class GrTraitType extends PsiClassType
 			return JavaPsiFacade.getElementFactory(myOriginal.getProject()).createSubstitutor(map);
 		}
 
-		private void putMappingAndReturnOffset(@NotNull Map<PsiTypeParameter, PsiType> map, @NotNull PsiClassType type)
+		private void putMappingAndReturnOffset(@Nonnull Map<PsiTypeParameter, PsiType> map, @Nonnull PsiClassType type)
 		{
 			PsiType[] args = type.getParameters();
 			for(int i = 0; i < args.length; i++)

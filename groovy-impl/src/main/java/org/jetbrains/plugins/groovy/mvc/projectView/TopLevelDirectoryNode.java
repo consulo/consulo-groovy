@@ -20,7 +20,7 @@ import com.intellij.ide.projectView.ViewSettings;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.psi.PsiDirectory;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 import javax.swing.*;
 
@@ -31,8 +31,8 @@ public class TopLevelDirectoryNode extends AbstractFolderNode {
   private final String myTitle;
   private final Icon myIcon;
 
-  public TopLevelDirectoryNode(@NotNull Module module,
-                               @NotNull PsiDirectory directory,
+  public TopLevelDirectoryNode(@Nonnull Module module,
+                               @Nonnull PsiDirectory directory,
                                ViewSettings viewSettings,
                                String title,
                                Icon icon,

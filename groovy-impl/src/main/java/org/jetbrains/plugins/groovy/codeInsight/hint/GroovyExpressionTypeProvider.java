@@ -17,7 +17,8 @@ package org.jetbrains.plugins.groovy.codeInsight.hint;
 
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.refactoring.introduce.GrIntroduceHandlerBase;
 import com.intellij.lang.ExpressionTypeProvider;
@@ -28,24 +29,24 @@ import com.intellij.psi.PsiType;
 public class GroovyExpressionTypeProvider extends ExpressionTypeProvider<GrExpression>
 {
 
-	@NotNull
+	@Nonnull
 	@Override
-	public String getInformationHint(@NotNull GrExpression element)
+	public String getInformationHint(@Nonnull GrExpression element)
 	{
 		final PsiType type = element.getType();
 		return type == null ? "<unknown>" : StringUtil.escapeXml(type.getCanonicalText());
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public String getErrorHint()
 	{
 		return "No expression found";
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
-	public List<GrExpression> getExpressionsAt(@NotNull PsiElement elementAt)
+	public List<GrExpression> getExpressionsAt(@Nonnull PsiElement elementAt)
 	{
 		return GrIntroduceHandlerBase.collectExpressions(elementAt, true);
 	}

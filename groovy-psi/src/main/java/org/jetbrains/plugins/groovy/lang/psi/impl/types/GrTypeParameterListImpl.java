@@ -16,7 +16,7 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.types;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
@@ -41,7 +41,7 @@ public class GrTypeParameterListImpl extends GrStubElementBase<EmptyStub> implem
 {
 	private static final ArrayFactory<GrTypeParameter> ARRAY_FACTORY = new ArrayFactory<GrTypeParameter>()
 	{
-		@NotNull
+		@Nonnull
 		@Override
 		public GrTypeParameter[] create(int count)
 		{
@@ -54,7 +54,7 @@ public class GrTypeParameterListImpl extends GrStubElementBase<EmptyStub> implem
 		super(stub, GroovyElementTypes.TYPE_PARAMETER_LIST);
 	}
 
-	public GrTypeParameterListImpl(@NotNull ASTNode node)
+	public GrTypeParameterListImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}

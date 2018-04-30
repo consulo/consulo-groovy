@@ -15,11 +15,12 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.bugs;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.psi.*;
 import com.intellij.psi.util.InheritanceUtil;
 import com.intellij.psi.util.PsiUtil;
 import org.jetbrains.annotations.Nls;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.codeInspection.GroovyInspectionBundle;
@@ -32,7 +33,7 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUt
  * @author Max Medvedev
  */
 public class GroovyInArgumentCheckInspection extends BaseInspection {
-  @NotNull
+  @Nonnull
   @Override
   protected BaseInspectionVisitor buildVisitor() {
     return new MyVisitor();
@@ -47,14 +48,14 @@ public class GroovyInArgumentCheckInspection extends BaseInspection {
   }
 
   @Nls
-  @NotNull
+  @Nonnull
   @Override
   public String getGroupDisplayName() {
     return BaseInspection.PROBABLE_BUGS;
   }
 
   @Nls
-  @NotNull
+  @Nonnull
   @Override
   public String getDisplayName() {
     return "Incompatible 'in' argument types";

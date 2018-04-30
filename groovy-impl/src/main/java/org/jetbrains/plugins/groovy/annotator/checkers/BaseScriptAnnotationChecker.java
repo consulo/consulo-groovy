@@ -15,7 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.annotator.checkers;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotation;
@@ -35,7 +36,7 @@ import com.intellij.psi.util.InheritanceUtil;
 public class BaseScriptAnnotationChecker extends CustomAnnotationChecker
 {
 	@Override
-	public boolean checkApplicability(@NotNull AnnotationHolder holder, @NotNull GrAnnotation annotation)
+	public boolean checkApplicability(@Nonnull AnnotationHolder holder, @Nonnull GrAnnotation annotation)
 	{
 		if(GroovyCommonClassNames.GROOVY_TRANSFORM_BASE_SCRIPT.equals(annotation.getQualifiedName()))
 		{

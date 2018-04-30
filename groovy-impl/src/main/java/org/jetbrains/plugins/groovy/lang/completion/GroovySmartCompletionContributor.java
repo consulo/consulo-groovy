@@ -22,8 +22,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.config.GroovyConfigUtils;
 import org.jetbrains.plugins.groovy.lang.completion.handlers.AfterNewClassInsertHandler;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
@@ -105,7 +105,7 @@ public class GroovySmartCompletionContributor extends CompletionContributor
 		extend(CompletionType.SMART, INSIDE_EXPRESSION, new CompletionProvider()
 		{
 			@Override
-			public void addCompletions(@NotNull final CompletionParameters params, ProcessingContext context, @NotNull final CompletionResultSet result)
+			public void addCompletions(@Nonnull final CompletionParameters params, ProcessingContext context, @Nonnull final CompletionResultSet result)
 			{
 				final PsiElement position = params.getPosition();
 				if(position.getParent() instanceof GrLiteral)
@@ -178,7 +178,7 @@ public class GroovySmartCompletionContributor extends CompletionContributor
 		extend(CompletionType.SMART, IN_CAST_PARENTHESES, new CompletionProvider()
 		{
 			@Override
-			public void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result)
+			public void addCompletions(@Nonnull CompletionParameters parameters, ProcessingContext context, @Nonnull CompletionResultSet result)
 			{
 				final PsiElement position = parameters.getPosition();
 				final GrTypeCastExpression parenthesizedExpression = ((GrTypeCastExpression) position.getParent().getParent().getParent());
@@ -231,7 +231,7 @@ public class GroovySmartCompletionContributor extends CompletionContributor
 		extend(CompletionType.SMART, AFTER_NEW, new CompletionProvider()
 		{
 			@Override
-			public void addCompletions(@NotNull final CompletionParameters parameters, final ProcessingContext matchingContext, @NotNull final CompletionResultSet result)
+			public void addCompletions(@Nonnull final CompletionParameters parameters, final ProcessingContext matchingContext, @Nonnull final CompletionResultSet result)
 			{
 				generateInheritorVariants(parameters, result.getPrefixMatcher(), new Consumer<LookupElement>()
 				{
@@ -247,7 +247,7 @@ public class GroovySmartCompletionContributor extends CompletionContributor
 		extend(CompletionType.SMART, IN_ANNOTATION, new CompletionProvider()
 		{
 			@Override
-			public void addCompletions(@NotNull CompletionParameters params, ProcessingContext context, @NotNull final CompletionResultSet result)
+			public void addCompletions(@Nonnull CompletionParameters params, ProcessingContext context, @Nonnull final CompletionResultSet result)
 			{
 				final PsiElement position = params.getPosition();
 
@@ -265,7 +265,7 @@ public class GroovySmartCompletionContributor extends CompletionContributor
 				CompleteReferenceExpression.processRefInAnnotation(reference, result.getPrefixMatcher(), new Consumer<LookupElement>()
 				{
 					@Override
-					public void consume(@Nullable LookupElement element)
+					public void consume(@javax.annotation.Nullable LookupElement element)
 					{
 						if(element != null)
 						{
@@ -458,12 +458,12 @@ public class GroovySmartCompletionContributor extends CompletionContributor
 	}
 
 	@Override
-	public void fillCompletionVariants(@NotNull CompletionParameters parameters, @NotNull CompletionResultSet result)
+	public void fillCompletionVariants(@Nonnull CompletionParameters parameters, @Nonnull CompletionResultSet result)
 	{
 		super.fillCompletionVariants(parameters, result);
 	}
 
-	@Nullable
+	@javax.annotation.Nullable
 	private static LookupElement addExpectedType(PsiType type, final PsiElement place, CompletionParameters parameters, @Nullable PsiType diamond)
 	{
 		if(!JavaCompletionUtil.hasAccessibleConstructor(type))
@@ -525,7 +525,7 @@ public class GroovySmartCompletionContributor extends CompletionContributor
 
 
 	@Override
-	public void beforeCompletion(@NotNull CompletionInitializationContext context)
+	public void beforeCompletion(@Nonnull CompletionInitializationContext context)
 	{
 		if(context.getCompletionType() != CompletionType.SMART)
 		{
@@ -552,7 +552,7 @@ public class GroovySmartCompletionContributor extends CompletionContributor
 		return new THashSet<TypeConstraint>(Arrays.asList(getExpectedTypes(params)), EXPECTED_TYPE_INFO_STRATEGY);
 	}
 
-	@NotNull
+	@Nonnull
 	public static TypeConstraint[] getExpectedTypes(CompletionParameters params)
 	{
 		final PsiElement position = params.getPosition();
@@ -564,7 +564,7 @@ public class GroovySmartCompletionContributor extends CompletionContributor
 		return TypeConstraint.EMPTY_ARRAY;
 	}
 
-	@Nullable
+	@javax.annotation.Nullable
 	public static PsiType getTypeByElement(PsiElement element, PsiElement context)
 	{
 		//if(!element.isValid()) return null;

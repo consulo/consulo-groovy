@@ -15,8 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.findUsages;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.codeInspection.utils.ControlFlowUtils;
 import org.jetbrains.plugins.groovy.lang.psi.GrControlFlowOwner;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
@@ -56,7 +56,7 @@ import com.intellij.util.containers.ContainerUtil;
 public class LiteralConstructorReference extends PsiReferenceBase.Poly<GrListOrMap>
 {
 
-	public LiteralConstructorReference(@NotNull GrListOrMap element)
+	public LiteralConstructorReference(@Nonnull GrListOrMap element)
 	{
 		super(element, TextRange.from(0, 0), false);
 	}
@@ -68,17 +68,17 @@ public class LiteralConstructorReference extends PsiReferenceBase.Poly<GrListOrM
 	}
 
 	@Override
-	public PsiElement bindToElement(@NotNull PsiElement element) throws IncorrectOperationException
+	public PsiElement bindToElement(@Nonnull PsiElement element) throws IncorrectOperationException
 	{
 		return getElement();
 	}
 
-	@Nullable
+	@javax.annotation.Nullable
 	public PsiClassType getConstructedClassType()
 	{
 		return CachedValuesManager.getCachedValue(getElement(), new CachedValueProvider<PsiClassType>()
 		{
-			@Nullable
+			@javax.annotation.Nullable
 			@Override
 			public Result<PsiClassType> compute()
 			{
@@ -128,8 +128,8 @@ public class LiteralConstructorReference extends PsiReferenceBase.Poly<GrListOrM
 	}
 
 
-	@Nullable
-	public static PsiClassType getTargetConversionType(@NotNull final GrExpression expression)
+	@javax.annotation.Nullable
+	public static PsiClassType getTargetConversionType(@Nonnull final GrExpression expression)
 	{
 		//todo hack
 		final PsiElement parent = PsiUtil.skipParentheses(expression.getParent(), true);
@@ -189,7 +189,7 @@ public class LiteralConstructorReference extends PsiReferenceBase.Poly<GrListOrM
 		return filterOutTrashTypes(type);
 	}
 
-	@Nullable
+	@javax.annotation.Nullable
 	private static PsiClassType filterOutTrashTypes(PsiType type)
 	{
 		if(!(type instanceof PsiClassType))
@@ -220,7 +220,7 @@ public class LiteralConstructorReference extends PsiReferenceBase.Poly<GrListOrM
 		return (PsiClassType) type;
 	}
 
-	@NotNull
+	@Nonnull
 	public GrExpression[] getCallArguments()
 	{
 		final GrListOrMap literal = getElement();
@@ -249,7 +249,7 @@ public class LiteralConstructorReference extends PsiReferenceBase.Poly<GrListOrM
 		return literal.getInitializers();
 	}
 
-	@NotNull
+	@Nonnull
 	private PsiType[] getCallArgumentTypes()
 	{
 		final GrExpression[] arguments = getCallArguments();
@@ -263,7 +263,7 @@ public class LiteralConstructorReference extends PsiReferenceBase.Poly<GrListOrM
 		});
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public GroovyResolveResult[] multiResolve(boolean incompleteCode)
 	{
@@ -289,7 +289,7 @@ public class LiteralConstructorReference extends PsiReferenceBase.Poly<GrListOrM
 		return constructorCandidates;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public Object[] getVariants()
 	{

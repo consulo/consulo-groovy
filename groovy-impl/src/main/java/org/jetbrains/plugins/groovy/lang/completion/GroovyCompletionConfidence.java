@@ -17,7 +17,7 @@ package org.jetbrains.plugins.groovy.lang.completion;
 
 import static org.jetbrains.plugins.groovy.shell.GroovyShellRunnerImpl.GROOVY_SHELL_FILE;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.lexer.TokenSets;
 import com.intellij.codeInsight.CodeInsightSettings;
 import com.intellij.codeInsight.completion.CompletionConfidence;
@@ -35,16 +35,16 @@ import com.intellij.util.ThreeState;
 public class GroovyCompletionConfidence extends CompletionConfidence
 {
 
-	@NotNull
+	@Nonnull
 	@Override
-	public ThreeState shouldFocusLookup(@NotNull CompletionParameters completionParameters)
+	public ThreeState shouldFocusLookup(@Nonnull CompletionParameters completionParameters)
 	{
 		return ThreeState.UNSURE;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
-	public ThreeState shouldSkipAutopopup(@NotNull PsiElement contextElement, @NotNull PsiFile psiFile, int offset)
+	public ThreeState shouldSkipAutopopup(@Nonnull PsiElement contextElement, @Nonnull PsiFile psiFile, int offset)
 	{
 		if(CodeInsightSettings.getInstance().SELECT_AUTOPOPUP_SUGGESTIONS_BY_CHARS && psiFile.getUserData(GROOVY_SHELL_FILE) == Boolean.TRUE)
 		{

@@ -19,7 +19,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.intentions.base.PsiElementPredicate;
@@ -63,14 +64,14 @@ public class CreateParameterFromUsageFix extends Intention implements MethodOrCl
 		myName = ref.getReferenceName();
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public String getText()
 	{
 		return GroovyBundle.message("create.parameter.from.usage", myName);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public String getFamilyName()
 	{
@@ -84,7 +85,7 @@ public class CreateParameterFromUsageFix extends Intention implements MethodOrCl
 	}
 
 	@Override
-	protected void processIntention(@NotNull PsiElement element,
+	protected void processIntention(@Nonnull PsiElement element,
 			Project project,
 			Editor editor) throws IncorrectOperationException
 	{
@@ -100,7 +101,7 @@ public class CreateParameterFromUsageFix extends Intention implements MethodOrCl
 		return element instanceof GrExpression;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	protected PsiElementPredicate getElementPredicate()
 	{
@@ -114,8 +115,8 @@ public class CreateParameterFromUsageFix extends Intention implements MethodOrCl
 		};
 	}
 
-	private void findScope(@NotNull final GrReferenceExpression ref,
-			@NotNull final Editor editor,
+	private void findScope(@Nonnull final GrReferenceExpression ref,
+			@Nonnull final Editor editor,
 			final Project project)
 	{
 		PsiElement place = ref;
@@ -174,7 +175,7 @@ public class CreateParameterFromUsageFix extends Intention implements MethodOrCl
 				final List<PsiType> types = GroovyExpectedTypesProvider.getDefaultExpectedTypes(ref);
 
 				PsiType unboxed = types.isEmpty() ? null : TypesUtil.unboxPrimitiveTypeWrapper(types.get(0));
-				@NotNull final PsiType type = unboxed != null ? unboxed : PsiType.getJavaLangObject(ref.getManager(),
+				@Nonnull final PsiType type = unboxed != null ? unboxed : PsiType.getJavaLangObject(ref.getManager(),
 						ref.getResolveScope());
 
 				if(method instanceof GrMethod)

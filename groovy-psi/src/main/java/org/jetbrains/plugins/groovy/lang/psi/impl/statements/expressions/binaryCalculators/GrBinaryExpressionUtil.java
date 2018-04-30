@@ -17,7 +17,6 @@ package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.binary
 
 import com.intellij.psi.CommonClassNames;
 import com.intellij.psi.PsiType;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames;
@@ -26,13 +25,13 @@ import org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames;
  * Created by Max Medvedev on 12/20/13
  */
 public class GrBinaryExpressionUtil {
-  @Nullable
+  @javax.annotation.Nullable
   public static PsiType getRightType(GrBinaryFacade e) {
     final GrExpression rightOperand = e.getRightOperand();
     return rightOperand == null ? null : rightOperand.getType();
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   public static PsiType getLeftType(GrBinaryFacade e) {
     return e.getLeftOperand().getType();
   }

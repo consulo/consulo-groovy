@@ -23,7 +23,7 @@ import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiCompiledElement;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiFile;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 
 /**
@@ -35,7 +35,7 @@ public abstract class GrBaseGenerateAction extends BaseGenerateAction {
     super(handler);
   }
 
-  protected boolean isValidForFile(@NotNull Project project, @NotNull Editor editor, @NotNull PsiFile file) {
+  protected boolean isValidForFile(@Nonnull Project project, @Nonnull Editor editor, @Nonnull PsiFile file) {
     if (file instanceof PsiCompiledElement) return false;
     if (!GroovyFileType.GROOVY_FILE_TYPE.equals(file.getFileType())) return false;
     

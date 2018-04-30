@@ -15,9 +15,10 @@
  */
 package org.jetbrains.plugins.groovy.annotator.intentions;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiType;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
 import org.jetbrains.plugins.groovy.lang.psi.expectedTypes.GroovyExpectedTypesProvider;
 import org.jetbrains.plugins.groovy.lang.psi.expectedTypes.TypeConstraint;
@@ -27,11 +28,11 @@ import org.jetbrains.plugins.groovy.lang.psi.util.GroovyPropertyUtils;
  * @author Max Medvedev
  */
 public class CreateGetterFromUsageFix extends CreateMethodFromUsageFix {
-  public CreateGetterFromUsageFix(@NotNull GrReferenceExpression refExpression, @NotNull PsiClass targetClass) {
+  public CreateGetterFromUsageFix(@Nonnull GrReferenceExpression refExpression, @Nonnull PsiClass targetClass) {
     super(refExpression);
   }
 
-  @NotNull
+  @Nonnull
   @Override
   protected TypeConstraint[] getReturnTypeConstraints() {
     return GroovyExpectedTypesProvider.calculateTypeConstraints(getRefExpr());
@@ -42,7 +43,7 @@ public class CreateGetterFromUsageFix extends CreateMethodFromUsageFix {
     return PsiType.EMPTY_ARRAY;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   protected String getMethodName() {
     return GroovyPropertyUtils.getGetterNameNonBoolean(getRefExpr().getReferenceName());

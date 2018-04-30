@@ -15,8 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.binaryCalculators;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import com.intellij.psi.PsiElement;
@@ -27,21 +27,21 @@ import com.intellij.psi.tree.IElementType;
  */
 public interface GrBinaryFacade {
 
-  @NotNull
+  @Nonnull
   GrExpression getLeftOperand();
 
   @Nullable
   GrExpression getRightOperand();
 
-  @NotNull
+  @Nonnull
   IElementType getOperationTokenType();
 
-  @NotNull
+  @Nonnull
   PsiElement getOperationToken();
 
-  @NotNull
+  @Nonnull
   GroovyResolveResult[] multiResolve(final boolean incompleteCode);
 
-  @NotNull
+  @Nonnull
   GrExpression getPsiElement();
 }

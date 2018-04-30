@@ -18,7 +18,7 @@ package org.jetbrains.plugins.groovy.refactoring.rename;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
 import com.intellij.refactoring.rename.RenameJavaClassProcessor;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 
 import java.util.Collection;
@@ -28,11 +28,11 @@ import java.util.Collection;
  */
 public class RenameAliasImportedClassProcessor extends RenameJavaClassProcessor {
   @Override
-  public boolean canProcessElement(@NotNull PsiElement element) {
+  public boolean canProcessElement(@Nonnull PsiElement element) {
     return element instanceof GroovyPsiElement && super.canProcessElement(element);
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public Collection<PsiReference> findReferences(PsiElement element) {
     return RenameAliasedUsagesUtil.filterAliasedRefs(super.findReferences(element), element);

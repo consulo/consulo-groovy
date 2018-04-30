@@ -22,8 +22,8 @@ import java.util.BitSet;
 import java.util.Collection;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.GroovyLanguage;
 import org.jetbrains.plugins.groovy.codeInspection.utils.ControlFlowUtils;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
@@ -105,7 +105,7 @@ public class GrIntroduceClosureParameterProcessor extends BaseRefactoringProcess
 	private final GrExpressionWrapper myParameterInitializer;
 	private final GroovyPsiElementFactory myFactory = GroovyPsiElementFactory.getInstance(myProject);
 
-	public GrIntroduceClosureParameterProcessor(@NotNull GrIntroduceParameterSettings settings)
+	public GrIntroduceClosureParameterProcessor(@Nonnull GrIntroduceParameterSettings settings)
 	{
 		super(settings.getProject(), null);
 		mySettings = settings;
@@ -119,12 +119,12 @@ public class GrIntroduceClosureParameterProcessor extends BaseRefactoringProcess
 	}
 
 	@Override
-	@NotNull
-	protected UsageViewDescriptor createUsageViewDescriptor(@NotNull final UsageInfo[] usages)
+	@Nonnull
+	protected UsageViewDescriptor createUsageViewDescriptor(@Nonnull final UsageInfo[] usages)
 	{
 		return new UsageViewDescriptorAdapter()
 		{
-			@NotNull
+			@Nonnull
 			@Override
 			public PsiElement[] getElements()
 			{
@@ -140,7 +140,7 @@ public class GrIntroduceClosureParameterProcessor extends BaseRefactoringProcess
 	}
 
 	@Override
-	protected boolean preprocessUsages(@NotNull Ref<UsageInfo[]> refUsages)
+	protected boolean preprocessUsages(@Nonnull Ref<UsageInfo[]> refUsages)
 	{
 		UsageInfo[] usagesIn = refUsages.get();
 		MultiMap<PsiElement, String> conflicts = new MultiMap<PsiElement, String>();
@@ -198,7 +198,7 @@ public class GrIntroduceClosureParameterProcessor extends BaseRefactoringProcess
 						.REPLACE_FIELDS_WITH_GETTERS_NONE, myProject);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	protected UsageInfo[] findUsages()
 	{
@@ -345,7 +345,7 @@ public class GrIntroduceClosureParameterProcessor extends BaseRefactoringProcess
 	}
 
 	@Override
-	protected void performRefactoring(@NotNull UsageInfo[] usages)
+	protected void performRefactoring(@Nonnull UsageInfo[] usages)
 	{
 		processExternalUsages(usages, mySettings, myParameterInitializer.getExpression());
 		processClosure(usages, mySettings);
@@ -584,7 +584,7 @@ public class GrIntroduceClosureParameterProcessor extends BaseRefactoringProcess
 
 	}
 
-	@Nullable
+	@javax.annotation.Nullable
 	private static GrExpression getAnchorForArgument(GrExpression[] oldArgs,
 			boolean isVarArg,
 			PsiParameterList parameterList)

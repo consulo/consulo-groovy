@@ -17,8 +17,8 @@ package org.jetbrains.plugins.groovy.codeInspection.validity;
 
 import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.Nls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.codeInspection.utils.EquivalenceChecker;
@@ -37,18 +37,18 @@ public class GroovyDuplicateSwitchBranchInspection extends BaseInspection {
   }
 
   @Nls
-  @NotNull
+  @Nonnull
   public String getGroupDisplayName() {
     return VALIDITY_ISSUES;
   }
 
   @Nls
-  @NotNull
+  @Nonnull
   public String getDisplayName() {
     return "Duplicate switch case";
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   protected String buildErrorString(Object... args) {
     return "Duplicate switch case '#ref' #loc";
   }
@@ -98,7 +98,7 @@ public class GroovyDuplicateSwitchBranchInspection extends BaseInspection {
     return labels.toArray(new GrCaseLabel[labels.size()]);
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   private static GrExpression getExpressionForCaseLabel(GrCaseLabel label) {
     for (PsiElement child : label.getChildren()) {
       if (child instanceof GrExpression) {

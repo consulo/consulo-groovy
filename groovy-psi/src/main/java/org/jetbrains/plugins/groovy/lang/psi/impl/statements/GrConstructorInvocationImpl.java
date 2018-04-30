@@ -19,8 +19,8 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.*;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.TypeConversionUtil;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
@@ -39,7 +39,7 @@ import org.jetbrains.plugins.groovy.lang.resolve.processors.MethodResolverProces
  * Date: 29.05.2007
  */
 public class GrConstructorInvocationImpl extends GrCallImpl implements GrConstructorInvocation {
-  public GrConstructorInvocationImpl(@NotNull ASTNode node) {
+  public GrConstructorInvocationImpl(@Nonnull ASTNode node) {
     super(node);
   }
 
@@ -73,13 +73,13 @@ public class GrConstructorInvocationImpl extends GrCallImpl implements GrConstru
 
 
   @Override
-  @NotNull
+  @Nonnull
   public GrReferenceExpression getInvokedExpression() {
     return findNotNullChildByClass(GrReferenceExpression.class);
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public GroovyResolveResult[] multiResolve(boolean incompleteCode) {
     PsiClass clazz = getDelegatedClass();
     if (clazz != null) {
@@ -119,7 +119,7 @@ public class GrConstructorInvocationImpl extends GrCallImpl implements GrConstru
     return PsiImplUtil.extractUniqueElement(multiResolve(false));
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public GroovyResolveResult advancedResolve() {
     return PsiImplUtil.extractUniqueResult(multiResolve(false));
@@ -135,7 +135,7 @@ public class GrConstructorInvocationImpl extends GrCallImpl implements GrConstru
     return null;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public GroovyResolveResult[] getCallVariants(@Nullable GrExpression upToArgument) {
     return multiResolve(true);

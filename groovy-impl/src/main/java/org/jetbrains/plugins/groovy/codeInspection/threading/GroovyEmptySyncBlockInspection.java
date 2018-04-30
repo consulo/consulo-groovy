@@ -16,8 +16,8 @@
 package org.jetbrains.plugins.groovy.codeInspection.threading;
 
 import org.jetbrains.annotations.Nls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
@@ -27,13 +27,13 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrOpenBlock;
 public class GroovyEmptySyncBlockInspection extends BaseInspection {
 
   @Nls
-  @NotNull
+  @Nonnull
   public String getGroupDisplayName() {
     return THREADING_ISSUES;
   }
 
   @Nls
-  @NotNull
+  @Nonnull
   public String getDisplayName() {
     return "Empty 'synchronized' block";
   }

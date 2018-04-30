@@ -15,8 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.path;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.path.GrCallExpression;
 import org.jetbrains.plugins.groovy.lang.psi.impl.PsiImplUtil;
@@ -28,7 +28,7 @@ import com.intellij.psi.PsiType;
  * @author Maxim.Medvedev
  */
 public abstract class GrCallExpressionImpl extends GrCallImpl implements GrCallExpression{
-  public GrCallExpressionImpl(@NotNull ASTNode node) {
+  public GrCallExpressionImpl(@Nonnull ASTNode node) {
     super(node);
   }
 
@@ -39,7 +39,7 @@ public abstract class GrCallExpressionImpl extends GrCallImpl implements GrCallE
   }
 
   @Override
-  public GrExpression replaceWithExpression(@NotNull GrExpression newExpr, boolean removeUnnecessaryParentheses) {
+  public GrExpression replaceWithExpression(@Nonnull GrExpression newExpr, boolean removeUnnecessaryParentheses) {
     return PsiImplUtil.replaceExpression(this, newExpr, removeUnnecessaryParentheses);
   }
 }

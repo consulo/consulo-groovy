@@ -18,8 +18,8 @@ package org.jetbrains.plugins.groovy.intentions.conversions;
 import java.util.List;
 import java.util.Map;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.actions.GroovyTemplates;
 import org.jetbrains.plugins.groovy.annotator.intentions.CreateClassActionBase;
@@ -82,7 +82,7 @@ public class ConvertMapToClassIntention extends Intention
 			".ConvertMapToClassIntention");
 
 	@Override
-	protected void processIntention(@NotNull PsiElement element,
+	protected void processIntention(@Nonnull PsiElement element,
 			final Project project,
 			Editor editor) throws IncorrectOperationException
 	{
@@ -310,7 +310,7 @@ public class ConvertMapToClassIntention extends Intention
 		return GroovyPsiElementFactory.getInstance(project).createTypeDefinition(classText.toString());
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	protected PsiElementPredicate getElementPredicate()
 	{

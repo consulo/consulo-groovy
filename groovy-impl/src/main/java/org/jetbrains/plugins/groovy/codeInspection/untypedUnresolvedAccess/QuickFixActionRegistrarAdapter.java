@@ -15,8 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.untypedUnresolvedAccess;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+
 import com.intellij.codeInsight.daemon.HighlightDisplayKey;
 import com.intellij.codeInsight.daemon.QuickFixActionRegistrar;
 import com.intellij.codeInsight.daemon.impl.HighlightInfo;
@@ -33,27 +33,27 @@ class QuickFixActionRegistrarAdapter implements QuickFixActionRegistrar
 	private final HighlightInfo myInfo;
 	private HighlightDisplayKey myKey;
 
-	public QuickFixActionRegistrarAdapter(@Nullable HighlightInfo info, HighlightDisplayKey displayKey)
+	public QuickFixActionRegistrarAdapter(@javax.annotation.Nullable HighlightInfo info, HighlightDisplayKey displayKey)
 	{
 		myInfo = info;
 		myKey = displayKey;
 	}
 
 	@Override
-	public void register(@NotNull IntentionAction action)
+	public void register(@Nonnull IntentionAction action)
 	{
 		myKey = GrUnresolvedAccessInspection.findDisplayKey();
 		QuickFixAction.registerQuickFixAction(myInfo, action, myKey);
 	}
 
 	@Override
-	public void register(@NotNull TextRange fixRange, @NotNull IntentionAction action, HighlightDisplayKey key)
+	public void register(@Nonnull TextRange fixRange, @Nonnull IntentionAction action, HighlightDisplayKey key)
 	{
 		QuickFixAction.registerQuickFixAction(myInfo, fixRange, action, key);
 	}
 
 	@Override
-	public void unregister(@NotNull Condition<IntentionAction> condition)
+	public void unregister(@Nonnull Condition<IntentionAction> condition)
 	{
 		if(myInfo != null)
 		{

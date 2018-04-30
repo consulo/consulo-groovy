@@ -28,7 +28,7 @@ import com.intellij.usageView.BaseUsageViewDescriptor;
 import com.intellij.usageView.UsageInfo;
 import com.intellij.usageView.UsageViewDescriptor;
 import com.intellij.util.containers.MultiMap;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.codeInspection.utils.ControlFlowUtils;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyRecursiveElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrClassInitializer;
@@ -68,7 +68,7 @@ public class GroovyInlineLocalProcessor extends BaseRefactoringProcessor {
     this.myLocal = local;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   protected UsageViewDescriptor createUsageViewDescriptor(UsageInfo[] usages) {
     return new BaseUsageViewDescriptor(myLocal);
@@ -102,7 +102,7 @@ public class GroovyInlineLocalProcessor extends BaseRefactoringProcessor {
   }
 
 
-  @NotNull
+  @Nonnull
   @Override
   protected UsageInfo[] findUsages() {
     final Instruction[] controlFlow = mySettings.getFlow();
@@ -118,7 +118,7 @@ public class GroovyInlineLocalProcessor extends BaseRefactoringProcessor {
    * ClosureUsage represents usage of local var inside closure
    */
   private static class ClosureUsage extends UsageInfo {
-    private ClosureUsage(@NotNull PsiReference reference) {
+    private ClosureUsage(@Nonnull PsiReference reference) {
       super(reference);
     }
   }

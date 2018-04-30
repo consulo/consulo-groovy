@@ -25,8 +25,8 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.*;
 import com.intellij.util.IncorrectOperationException;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.intentions.base.PsiElementPredicate;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.GrModifier;
@@ -54,7 +54,7 @@ import java.util.ArrayList;
 public class GrSetStrongTypeIntention extends Intention {
 
   @Override
-  protected void processIntention(@NotNull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
+  protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
     PsiElement parent = element.getParent();
 
     PsiElement elementToBuildTemplate;
@@ -129,7 +129,7 @@ public class GrSetStrongTypeIntention extends Intention {
   }
 
   @Nullable
-  private static PsiType getClosureParameterType(@NotNull PsiParameter parameter) {
+  private static PsiType getClosureParameterType(@Nonnull PsiParameter parameter) {
     final PsiElement scope = parameter.getDeclarationScope();
     final PsiType type;
     if (scope instanceof GrClosableBlock) {
@@ -161,7 +161,7 @@ public class GrSetStrongTypeIntention extends Intention {
     }
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   private static GrTypeElement getTypeElement(PsiElement parent) {
     if (parent instanceof GrVariable) {
       return ((GrVariable)parent).getTypeElementGroovy();
@@ -171,7 +171,7 @@ public class GrSetStrongTypeIntention extends Intention {
     }
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   private static GrModifierList getModifierList(PsiElement parent) {
     GrModifierList modifierList;
 
@@ -184,7 +184,7 @@ public class GrSetStrongTypeIntention extends Intention {
     return modifierList;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   protected PsiElementPredicate getElementPredicate() {
     return new PsiElementPredicate() {

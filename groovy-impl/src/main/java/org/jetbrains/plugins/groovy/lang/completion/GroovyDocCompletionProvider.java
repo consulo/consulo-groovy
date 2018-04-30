@@ -15,7 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.lang.completion;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.completion.handlers.GroovyMethodSignatureInsertHandler;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocMemberReference;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocReferenceElement;
@@ -53,9 +54,9 @@ public class GroovyDocCompletionProvider implements CompletionProvider
   }
 
   @Override
-  public void addCompletions(@NotNull CompletionParameters parameters,
+  public void addCompletions(@Nonnull CompletionParameters parameters,
                                 ProcessingContext context,
-                                @NotNull CompletionResultSet result) {
+                                @Nonnull CompletionResultSet result) {
     final PsiElement position = parameters.getPosition();
     GrDocMemberReference reference = PsiTreeUtil.getParentOfType(position, GrDocMemberReference.class);
     if (reference == null) return;

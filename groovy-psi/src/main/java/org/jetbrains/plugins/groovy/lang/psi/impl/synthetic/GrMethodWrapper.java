@@ -15,7 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.synthetic;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GrPsiTypeStub;
 import com.intellij.codeInsight.completion.originInfo.OriginInfoAwareElement;
@@ -58,12 +59,12 @@ public class GrMethodWrapper extends GrLightMethodBuilder implements PsiMirrorEl
   }
 
   @Override
-  public void setNavigationElement(@NotNull PsiElement navigationElement) {
+  public void setNavigationElement(@Nonnull PsiElement navigationElement) {
     myNavigationElementInit = true;
     super.setNavigationElement(navigationElement);
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public PsiElement getNavigationElement() {
     if (!myNavigationElementInit) {
@@ -92,7 +93,7 @@ public class GrMethodWrapper extends GrLightMethodBuilder implements PsiMirrorEl
     return myWrappedMethod.isValid();
   }
 
-  public static GrMethodWrapper wrap(@NotNull PsiMethod method) {
+  public static GrMethodWrapper wrap(@Nonnull PsiMethod method) {
     return new GrMethodWrapper(method, PsiSubstitutor.EMPTY);
   }
 
@@ -100,7 +101,7 @@ public class GrMethodWrapper extends GrLightMethodBuilder implements PsiMirrorEl
     return new GrMethodWrapper(method, substitutor);
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public PsiMethod getPrototype() {
     return myWrappedMethod;

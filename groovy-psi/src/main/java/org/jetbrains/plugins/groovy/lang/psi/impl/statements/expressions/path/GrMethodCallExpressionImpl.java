@@ -20,7 +20,7 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.ArrayUtil;
 import com.intellij.util.IncorrectOperationException;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
@@ -38,7 +38,7 @@ import java.util.List;
  */
 public class GrMethodCallExpressionImpl extends GrMethodCallImpl implements GrMethodCallExpression, GrCallExpression {
 
-  public GrMethodCallExpressionImpl(@NotNull ASTNode node) {
+  public GrMethodCallExpressionImpl(@Nonnull ASTNode node) {
     super(node);
   }
 
@@ -52,7 +52,7 @@ public class GrMethodCallExpressionImpl extends GrMethodCallImpl implements GrMe
   }
 
   @Override
-  public GrExpression replaceClosureArgument(@NotNull GrClosableBlock closure, @NotNull GrExpression newExpr)
+  public GrExpression replaceClosureArgument(@Nonnull GrClosableBlock closure, @Nonnull GrExpression newExpr)
     throws IncorrectOperationException {
     if (newExpr instanceof GrClosableBlock) {
       return closure.replaceWithExpression(newExpr, true);
@@ -77,7 +77,7 @@ public class GrMethodCallExpressionImpl extends GrMethodCallImpl implements GrMe
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public GrClosableBlock[] getClosureArguments() {
     final List<PsiElement> children = findChildrenByType(GroovyElementTypes.CLOSABLE_BLOCK);
     return children.toArray(new GrClosableBlock[children.size()]);

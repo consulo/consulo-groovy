@@ -16,7 +16,7 @@
 package org.jetbrains.plugins.groovy.refactoring.introduce.parameter;
 
 import gnu.trove.TIntArrayList;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.refactoring.introduce.GrIntroduceSettings;
@@ -39,12 +39,12 @@ public interface GrIntroduceParameterSettings extends GrIntroduceSettings, Intro
 
   boolean removeLocalVariable();
 
-  @Nullable
+  @javax.annotation.Nullable
   GrVariable getVar();
 
   @Nullable
   GrExpression getExpression();
 
-  @Nullable
+  @javax.annotation.Nullable
   StringPartInfo getStringPartInfo();
 }

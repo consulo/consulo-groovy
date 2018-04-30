@@ -19,7 +19,7 @@ import com.intellij.psi.CommonClassNames;
 import com.intellij.psi.PsiMethod;
 import com.intellij.psi.impl.light.LightMethodBuilder;
 import com.intellij.psi.util.InheritanceUtil;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.gpp.GppTypeConverter;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
 import org.jetbrains.plugins.groovy.lang.psi.impl.PsiImplUtil;
@@ -36,7 +36,7 @@ import java.util.Collection;
 public class AutoExternalizeContributor extends AstTransformContributor {
 
   @Override
-  public void collectMethods(@NotNull GrTypeDefinition clazz, @NotNull Collection<PsiMethod> collector) {
+  public void collectMethods(@Nonnull GrTypeDefinition clazz, @Nonnull Collection<PsiMethod> collector) {
     if (!hasGeneratedImplementations(clazz)) return;
 
     final LightMethodBuilder write = new LightMethodBuilder(clazz.getManager(), "writeExternal");

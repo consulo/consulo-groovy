@@ -16,14 +16,16 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveState;
 import com.intellij.psi.scope.PsiScopeProcessor;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.GrCondition;
@@ -41,7 +43,7 @@ import org.jetbrains.plugins.groovy.lang.resolve.processors.ClassHint;
  * @autor: ilyas
  */
 public class GrForStatementImpl extends GroovyPsiElementImpl implements GrForStatement {
-  public GrForStatementImpl(@NotNull ASTNode node) {
+  public GrForStatementImpl(@Nonnull ASTNode node) {
     super(node);
   }
 
@@ -67,10 +69,10 @@ public class GrForStatementImpl extends GroovyPsiElementImpl implements GrForSta
   }
 
   @Override
-  public boolean processDeclarations(@NotNull PsiScopeProcessor processor,
-                                     @NotNull ResolveState state,
+  public boolean processDeclarations(@Nonnull PsiScopeProcessor processor,
+                                     @Nonnull ResolveState state,
                                      @Nullable PsiElement lastParent,
-                                     @NotNull PsiElement place) {
+                                     @Nonnull PsiElement place) {
     if (!ResolveUtil.shouldProcessProperties(processor.getHint(ClassHint.KEY))) return true;
 
     GrForClause forClause = getClause();

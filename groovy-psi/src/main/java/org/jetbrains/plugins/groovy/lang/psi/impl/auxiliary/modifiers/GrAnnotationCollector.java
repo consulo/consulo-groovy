@@ -19,8 +19,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.GrModifierList;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotation;
@@ -43,8 +43,8 @@ import com.intellij.util.containers.ContainerUtil;
 
 public class GrAnnotationCollector {
 
-  @NotNull
-  public static GrAnnotation[] getResolvedAnnotations(@NotNull GrModifierList modifierList) {
+  @Nonnull
+  public static GrAnnotation[] getResolvedAnnotations(@Nonnull GrModifierList modifierList) {
     final GrAnnotation[] rawAnnotations = modifierList.getRawAnnotations();
 
     if (!hasAliases(rawAnnotations)) return rawAnnotations;
@@ -64,7 +64,7 @@ public class GrAnnotationCollector {
     return result.toArray(new GrAnnotation[result.size()]);
   }
 
-  private static boolean hasAliases(@NotNull GrAnnotation[] rawAnnotations) {
+  private static boolean hasAliases(@Nonnull GrAnnotation[] rawAnnotations) {
     for (GrAnnotation annotation : rawAnnotations) {
       final PsiAnnotation annotationCollector = findAnnotationCollector(annotation);
       if (annotationCollector != null) {
@@ -82,10 +82,10 @@ public class GrAnnotationCollector {
    * @param annotationCollector @AnnotationCollector annotation used in alias declaration
    * @return set of used arguments of alias annotation
    */
-  @NotNull
-  public static Set<String> collectAnnotations(@NotNull List<GrAnnotation> list,
-                                               @NotNull GrAnnotation alias,
-                                               @NotNull PsiAnnotation annotationCollector) {
+  @Nonnull
+  public static Set<String> collectAnnotations(@Nonnull List<GrAnnotation> list,
+                                               @Nonnull GrAnnotation alias,
+                                               @Nonnull PsiAnnotation annotationCollector) {
 
     final PsiModifierList modifierList = (PsiModifierList)annotationCollector.getParent();
 
@@ -129,8 +129,8 @@ public class GrAnnotationCollector {
     return allUsedAttrs;
   }
 
-  private static void collectAliasedAnnotationsFromAnnotationCollectorAnnotations(@NotNull PsiModifierList modifierList,
-                                                                                  @NotNull Map<String, Map<String, PsiNameValuePair>> annotations) {
+  private static void collectAliasedAnnotationsFromAnnotationCollectorAnnotations(@Nonnull PsiModifierList modifierList,
+                                                                                  @Nonnull Map<String, Map<String, PsiNameValuePair>> annotations) {
     PsiElement parent = modifierList.getParent();
     if (parent instanceof PsiClass &&
         GroovyCommonClassNames.GROOVY_TRANSFORM_COMPILE_DYNAMIC.equals(((PsiClass)parent).getQualifiedName())) {
@@ -166,8 +166,8 @@ public class GrAnnotationCollector {
 
   }
 
-  private static void collectAliasedAnnotationsFromAnnotationCollectorValueAttribute(@NotNull PsiAnnotation annotationCollector,
-                                                                                     @NotNull Map<String, Map<String, PsiNameValuePair>> annotations) {
+  private static void collectAliasedAnnotationsFromAnnotationCollectorValueAttribute(@Nonnull PsiAnnotation annotationCollector,
+                                                                                     @Nonnull Map<String, Map<String, PsiNameValuePair>> annotations) {
     final PsiAnnotationMemberValue annotationsFromValue = annotationCollector.findAttributeValue("value");
 
     if (annotationsFromValue instanceof GrAnnotationArrayInitializer) {
@@ -182,7 +182,7 @@ public class GrAnnotationCollector {
     }
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   public static PsiAnnotation findAnnotationCollector(@Nullable PsiClass clazz) {
     if (clazz != null) {
       final PsiModifierList modifierList = clazz.getModifierList();
@@ -200,8 +200,8 @@ public class GrAnnotationCollector {
   }
 
 
-  @Nullable
-  public static PsiAnnotation findAnnotationCollector(@NotNull GrAnnotation annotation) {
+  @javax.annotation.Nullable
+  public static PsiAnnotation findAnnotationCollector(@Nonnull GrAnnotation annotation) {
     final GrCodeReferenceElement ref = annotation.getClassReference();
 
     final PsiElement resolved = ref.resolve();

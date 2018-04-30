@@ -1,7 +1,7 @@
 package org.jetbrains.plugins.groovy.dsl.toplevel;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.dsl.GroovyClassDescriptor;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariableDeclaration;
@@ -28,7 +28,7 @@ public class AnnotatedContextFilter implements ContextFilter {
     return findContextAnnotation(descriptor.getPlace(), myAnnoQName) != null;
   }
 
-  @Nullable public static PsiAnnotation findContextAnnotation(@NotNull PsiElement context, String annoQName) {
+  @Nullable public static PsiAnnotation findContextAnnotation(@Nonnull PsiElement context, String annoQName) {
     PsiElement current = context;
     while (current != null) {
       if (current instanceof PsiModifierListOwner) {

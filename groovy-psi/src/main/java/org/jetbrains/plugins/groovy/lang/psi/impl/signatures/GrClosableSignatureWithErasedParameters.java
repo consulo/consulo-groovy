@@ -15,7 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.signatures;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlock;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameter;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrClosureParameter;
@@ -28,9 +29,9 @@ public class GrClosableSignatureWithErasedParameters extends GrClosableSignature
     super(block);
   }
 
-  @NotNull
+  @Nonnull
   @Override
-  protected GrClosureParameter createClosureParameter(@NotNull GrParameter parameter) {
+  protected GrClosureParameter createClosureParameter(@Nonnull GrParameter parameter) {
     return super.createClosureParameter(parameter);
   }
 }

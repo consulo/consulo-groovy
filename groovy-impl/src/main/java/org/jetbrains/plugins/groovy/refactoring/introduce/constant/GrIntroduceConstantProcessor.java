@@ -17,8 +17,8 @@ package org.jetbrains.plugins.groovy.refactoring.introduce.constant;
 
 import java.util.ArrayList;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.GroovyLanguage;
 import org.jetbrains.plugins.groovy.codeStyle.GrReferenceAdjuster;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
@@ -65,7 +65,7 @@ public class GrIntroduceConstantProcessor
 		this.settings = settings;
 	}
 
-	@Nullable
+	@javax.annotation.Nullable
 	public GrField run()
 	{
 		final PsiClass targetClass = settings.getTargetClass();
@@ -151,7 +151,7 @@ public class GrIntroduceConstantProcessor
 		return added;
 	}
 
-	protected boolean checkErrors(@NotNull PsiClass targetClass)
+	protected boolean checkErrors(@Nonnull PsiClass targetClass)
 	{
 		String fieldName = settings.getName();
 		String errorString = check(targetClass, fieldName);
@@ -179,8 +179,8 @@ public class GrIntroduceConstantProcessor
 		return false;
 	}
 
-	@Nullable
-	private String check(@NotNull PsiClass targetClass, @Nullable final String fieldName)
+	@javax.annotation.Nullable
+	private String check(@Nonnull PsiClass targetClass, @javax.annotation.Nullable final String fieldName)
 	{
 		if(!GroovyLanguage.INSTANCE.equals(targetClass.getLanguage()))
 		{
@@ -206,8 +206,8 @@ public class GrIntroduceConstantProcessor
 	}
 
 
-	private PsiElement replaceOccurrence(@NotNull GrField field,
-			@NotNull PsiElement occurrence,
+	private PsiElement replaceOccurrence(@Nonnull GrField field,
+			@Nonnull PsiElement occurrence,
 			boolean escalateVisibility)
 	{
 		boolean isOriginal = occurrence == context.getExpression();
@@ -229,8 +229,8 @@ public class GrIntroduceConstantProcessor
 		return replaced;
 	}
 
-	@NotNull
-	private static GrReferenceExpression createRefExpression(@NotNull GrField field, @NotNull PsiElement place)
+	@Nonnull
+	private static GrReferenceExpression createRefExpression(@Nonnull GrField field, @Nonnull PsiElement place)
 	{
 		final PsiClass containingClass = field.getContainingClass();
 		assert containingClass != null;
@@ -241,7 +241,7 @@ public class GrIntroduceConstantProcessor
 				place);
 	}
 
-	@NotNull
+	@Nonnull
 	private GrVariableDeclaration createField(PsiClass targetClass)
 	{
 		final String name = settings.getName();
@@ -253,7 +253,7 @@ public class GrIntroduceConstantProcessor
 		return factory.createFieldDeclaration(modifiers, name, getInitializer(), type);
 	}
 
-	@NotNull
+	@Nonnull
 	protected GrExpression getInitializer()
 	{
 		GrVariable var = GrIntroduceHandlerBase.resolveLocalVar(context);
@@ -273,7 +273,7 @@ public class GrIntroduceConstantProcessor
 		}
 	}
 
-	@NotNull
+	@Nonnull
 	private String[] collectModifiers(PsiClass targetClass)
 	{
 		String modifier = isEscalateVisibility() ? PsiModifier.PRIVATE : settings.getVisibilityModifier();

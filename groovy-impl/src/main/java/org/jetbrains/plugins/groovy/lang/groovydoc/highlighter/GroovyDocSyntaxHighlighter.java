@@ -19,7 +19,8 @@ package org.jetbrains.plugins.groovy.lang.groovydoc.highlighter;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.highlighter.GroovySyntaxHighlighter;
 import org.jetbrains.plugins.groovy.lang.groovydoc.lexer.GroovyDocElementTypeImpl;
 import org.jetbrains.plugins.groovy.lang.groovydoc.lexer.GroovyDocLexer;
@@ -38,7 +39,7 @@ public class GroovyDocSyntaxHighlighter extends SyntaxHighlighterBase implements
   private static final Map<IElementType, TextAttributesKey> ATTRIBUTES = new HashMap<IElementType, TextAttributesKey>();
   private static final IElementType mGDOC_COMMENT_CONTENT = new GroovyDocElementTypeImpl("GDOC_COMMENT_CONTENT");
 
-  @NotNull
+  @Nonnull
   public Lexer getHighlightingLexer() {
     return new GroovyDocHighlightingLexer();
   }
@@ -58,7 +59,7 @@ public class GroovyDocSyntaxHighlighter extends SyntaxHighlighterBase implements
   }
 
 
-  @NotNull
+  @Nonnull
   public TextAttributesKey[] getTokenHighlights(IElementType type) {
     return pack(ATTRIBUTES.get(type));
   }

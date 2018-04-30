@@ -21,8 +21,8 @@ import static org.jetbrains.plugins.groovy.codeInspection.type.GroovyTypeCheckVi
 import java.util.List;
 import java.util.Map;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.annotator.GrHighlightUtil;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspectionVisitor;
@@ -86,7 +86,7 @@ public class GroovyTypeCheckVisitor extends BaseInspectionVisitor {
 
   private static final Logger LOG = Logger.getInstance(GroovyAssignabilityCheckInspection.class);
 
-  private boolean checkCallApplicability(@Nullable PsiType type, boolean checkUnknownArgs, @NotNull CallInfo info) {
+  private boolean checkCallApplicability(@Nullable PsiType type, boolean checkUnknownArgs, @Nonnull CallInfo info) {
 
     PsiType[] argumentTypes = info.getArgumentTypes();
     GrExpression invoked = info.getInvokedExpression();
@@ -129,7 +129,7 @@ public class GroovyTypeCheckVisitor extends BaseInspectionVisitor {
     return true;
   }
 
-  private boolean checkCannotInferArgumentTypes(@NotNull CallInfo info) {
+  private boolean checkCannotInferArgumentTypes(@Nonnull CallInfo info) {
     if (info.getArgumentTypes() != null) {
       return true;
     }
@@ -139,8 +139,8 @@ public class GroovyTypeCheckVisitor extends BaseInspectionVisitor {
     }
   }
 
-  private <T extends GroovyPsiElement> boolean checkConstructorApplicability(@NotNull GroovyResolveResult constructorResolveResult,
-                                                                             @NotNull CallInfo<T> info,
+  private <T extends GroovyPsiElement> boolean checkConstructorApplicability(@Nonnull GroovyResolveResult constructorResolveResult,
+                                                                             @Nonnull CallInfo<T> info,
                                                                              boolean checkUnknownArgs) {
     final PsiElement element = constructorResolveResult.getElement();
     LOG.assertTrue(element instanceof PsiMethod && ((PsiMethod)element).isConstructor(), element);
@@ -170,7 +170,7 @@ public class GroovyTypeCheckVisitor extends BaseInspectionVisitor {
     return checkMethodApplicability(constructorResolveResult, checkUnknownArgs, info);
   }
 
-  private void processConstructorCall(@NotNull ConstructorCallInfo<?> info) {
+  private void processConstructorCall(@Nonnull ConstructorCallInfo<?> info) {
     if (hasErrorElements(info.getArgumentList())) return;
 
     if (!checkCannotInferArgumentTypes(info)) return;
@@ -224,8 +224,8 @@ public class GroovyTypeCheckVisitor extends BaseInspectionVisitor {
   }
 
   private boolean checkForImplicitEnumAssigning(@Nullable PsiType expectedType,
-                                                @NotNull GrExpression expression,
-                                                @NotNull GroovyPsiElement elementToHighlight) {
+                                                @Nonnull GrExpression expression,
+                                                @Nonnull GroovyPsiElement elementToHighlight) {
     if (!(expectedType instanceof PsiClassType)) return false;
 
     if (!GroovyConfigUtils.getInstance().isVersionAtLeast(elementToHighlight, GroovyConfigUtils.GROOVY1_8)) return false;
@@ -262,7 +262,7 @@ public class GroovyTypeCheckVisitor extends BaseInspectionVisitor {
     return true;
   }
 
-  private void checkIndexProperty(@NotNull CallInfo<? extends GrIndexProperty> info) {
+  private void checkIndexProperty(@Nonnull CallInfo<? extends GrIndexProperty> info) {
     if (hasErrorElements(info.getArgumentList())) return;
 
     if (!checkCannotInferArgumentTypes(info)) return;
@@ -318,9 +318,9 @@ public class GroovyTypeCheckVisitor extends BaseInspectionVisitor {
     }
   }
 
-  private <T extends GroovyPsiElement> boolean checkMethodApplicability(@NotNull final GroovyResolveResult methodResolveResult,
+  private <T extends GroovyPsiElement> boolean checkMethodApplicability(@Nonnull final GroovyResolveResult methodResolveResult,
                                                                         boolean checkUnknownArgs,
-                                                                        @NotNull final CallInfo<T> info) {
+                                                                        @Nonnull final CallInfo<T> info) {
     final PsiElement element = methodResolveResult.getElement();
     if (!(element instanceof PsiMethod)) return true;
     if (element instanceof GrBuilderMethod) return true;
@@ -357,25 +357,25 @@ public class GroovyTypeCheckVisitor extends BaseInspectionVisitor {
         final GrReferenceExpression callRef = factory.createReferenceExpressionFromText("qualifier.call", invoked);
         callRef.setQualifier(invoked);
         return checkMethodApplicability(methodResolveResult, checkUnknownArgs, new DelegatingCallInfo<T>(info) {
-          @Nullable
+          @javax.annotation.Nullable
           @Override
           public GrExpression getInvokedExpression() {
             return callRef;
           }
 
-          @NotNull
+          @Nonnull
           @Override
           public GroovyResolveResult advancedResolve() {
             return methodResolveResult;
           }
 
-          @NotNull
+          @Nonnull
           @Override
           public GroovyResolveResult[] multiResolve() {
             return new GroovyResolveResult[]{methodResolveResult};
           }
 
-          @Nullable
+          @javax.annotation.Nullable
           @Override
           public PsiType getQualifierInstanceType() {
             return info.getInvokedExpression().getType();
@@ -420,7 +420,7 @@ public class GroovyTypeCheckVisitor extends BaseInspectionVisitor {
     }
   }
 
-  private void checkMethodCall(@NotNull CallInfo<? extends GrMethodCall> info) {
+  private void checkMethodCall(@Nonnull CallInfo<? extends GrMethodCall> info) {
     if (hasErrorElements(info.getArgumentList())) return;
 
     if (info.getInvokedExpression() instanceof GrReferenceExpression) {
@@ -466,7 +466,7 @@ public class GroovyTypeCheckVisitor extends BaseInspectionVisitor {
     checkNamedArgumentsType(info);
   }
 
-  private void checkNamedArgumentsType(@NotNull CallInfo<?> info) {
+  private void checkNamedArgumentsType(@Nonnull CallInfo<?> info) {
     GroovyPsiElement rawCall = info.getCall();
     if (!(rawCall instanceof GrCall)) return;
     GrCall call = (GrCall)rawCall;
@@ -505,7 +505,7 @@ public class GroovyTypeCheckVisitor extends BaseInspectionVisitor {
     }
   }
 
-  private void checkOperator(@NotNull CallInfo<? extends GrBinaryExpression> info) {
+  private void checkOperator(@Nonnull CallInfo<? extends GrBinaryExpression> info) {
     if (hasErrorElements(info.getCall())) return;
 
     if (isSpockTimesOperator(info.getCall())) return;
@@ -533,9 +533,9 @@ public class GroovyTypeCheckVisitor extends BaseInspectionVisitor {
     }
   }
 
-  private void highlightInapplicableMethodUsage(@NotNull GroovyResolveResult methodResolveResult,
-                                                @NotNull CallInfo info,
-                                                @NotNull PsiMethod method) {
+  private void highlightInapplicableMethodUsage(@Nonnull GroovyResolveResult methodResolveResult,
+                                                @Nonnull CallInfo info,
+                                                @Nonnull PsiMethod method) {
     final PsiClass containingClass =
       method instanceof GrGdkMethod ? ((GrGdkMethod)method).getStaticMethod().getContainingClass() : method.getContainingClass();
 
@@ -560,7 +560,7 @@ public class GroovyTypeCheckVisitor extends BaseInspectionVisitor {
     );
   }
 
-  private void highlightUnknownArgs(@NotNull CallInfo info) {
+  private void highlightUnknownArgs(@Nonnull CallInfo info) {
     registerError(
       info.getElementToHighlight(),
       GroovyBundle.message("cannot.infer.argument.types"),
@@ -569,16 +569,16 @@ public class GroovyTypeCheckVisitor extends BaseInspectionVisitor {
     );
   }
 
-  private void processAssignment(@NotNull PsiType expectedType, @NotNull GrExpression expression, @NotNull PsiElement toHighlight) {
+  private void processAssignment(@Nonnull PsiType expectedType, @Nonnull GrExpression expression, @Nonnull PsiElement toHighlight) {
     processAssignment(expectedType, expression, toHighlight, "cannot.assign", toHighlight, ApplicableTo.ASSIGNMENT);
   }
 
-  private void processAssignment(@NotNull PsiType expectedType,
-                                 @NotNull GrExpression expression,
-                                 @NotNull PsiElement toHighlight,
-                                 @NotNull String messageKey,
-                                 @NotNull PsiElement context,
-                                 @NotNull ApplicableTo position) {
+  private void processAssignment(@Nonnull PsiType expectedType,
+                                 @Nonnull GrExpression expression,
+                                 @Nonnull PsiElement toHighlight,
+                                 @Nonnull String messageKey,
+                                 @Nonnull PsiElement context,
+                                 @Nonnull ApplicableTo position) {
     { // check if  current assignment is constructor call
       final GrListOrMap initializer = getTupleInitializer(expression);
       if (initializer != null) {
@@ -615,18 +615,18 @@ public class GroovyTypeCheckVisitor extends BaseInspectionVisitor {
   }
 
 
-  private void processAssignment(@NotNull PsiType lType,
-                                 @Nullable PsiType rType,
-                                 @NotNull GroovyPsiElement context,
-                                 @NotNull PsiElement elementToHighlight) {
+  private void processAssignment(@Nonnull PsiType lType,
+                                 @javax.annotation.Nullable PsiType rType,
+                                 @Nonnull GroovyPsiElement context,
+                                 @Nonnull PsiElement elementToHighlight) {
     if (rType == null) return;
     final ConversionResult result = TypesUtil.canAssign(lType, rType, context, ApplicableTo.ASSIGNMENT);
     processResult(result, elementToHighlight, "cannot.assign", lType, rType);
   }
 
-  protected void processAssignmentWithinMultipleAssignment(@NotNull GrExpression lhs,
-                                                           @NotNull GrExpression rhs,
-                                                           @NotNull GrExpression context) {
+  protected void processAssignmentWithinMultipleAssignment(@Nonnull GrExpression lhs,
+                                                           @Nonnull GrExpression rhs,
+                                                           @Nonnull GrExpression context) {
     final PsiType targetType = lhs.getType();
     final PsiType actualType = rhs.getType();
     if (targetType == null || actualType == null) return;
@@ -641,8 +641,8 @@ public class GroovyTypeCheckVisitor extends BaseInspectionVisitor {
     );
   }
 
-  protected void processTupleAssignment(@NotNull GrTupleExpression tupleExpression,
-                                        @NotNull GrExpression initializer) {
+  protected void processTupleAssignment(@Nonnull GrTupleExpression tupleExpression,
+                                        @Nonnull GrExpression initializer) {
     GrExpression[] lValues = tupleExpression.getExpressions();
     if (initializer instanceof GrListOrMap) {
       GrExpression[] initializers = ((GrListOrMap)initializer).getInitializers();
@@ -679,11 +679,11 @@ public class GroovyTypeCheckVisitor extends BaseInspectionVisitor {
     }
   }
 
-  private void processResult(@NotNull ConversionResult result,
-                             @NotNull PsiElement elementToHighlight,
-                             @NotNull String messageKey,
-                             @NotNull PsiType lType,
-                             @NotNull PsiType rType) {
+  private void processResult(@Nonnull ConversionResult result,
+                             @Nonnull PsiElement elementToHighlight,
+                             @Nonnull String messageKey,
+                             @Nonnull PsiType lType,
+                             @Nonnull PsiType rType) {
     if (result == ConversionResult.OK) return;
     registerError(
       elementToHighlight,
@@ -693,16 +693,16 @@ public class GroovyTypeCheckVisitor extends BaseInspectionVisitor {
     );
   }
 
-  protected void processReturnValue(@NotNull GrExpression expression,
-                                    @NotNull PsiElement context,
-                                    @NotNull PsiElement elementToHighlight) {
+  protected void processReturnValue(@Nonnull GrExpression expression,
+                                    @Nonnull PsiElement context,
+                                    @Nonnull PsiElement elementToHighlight) {
     if (getTupleInitializer(expression) != null) return;
     final PsiType returnType = PsiImplUtil.inferReturnType(expression);
     if (returnType == null || returnType == PsiType.VOID) return;
     processAssignment(returnType, expression, elementToHighlight, "cannot.return.type", context, ApplicableTo.RETURN_VALUE);
   }
 
-  private void registerCannotApplyError(@NotNull String invokedText, @NotNull CallInfo info) {
+  private void registerCannotApplyError(@Nonnull String invokedText, @Nonnull CallInfo info) {
     if (info.getArgumentTypes() == null) return;
     final String typesString = buildArgTypesList(info.getArgumentTypes());
     registerError(
@@ -713,9 +713,9 @@ public class GroovyTypeCheckVisitor extends BaseInspectionVisitor {
   }
 
   @Override
-  protected void registerError(@NotNull PsiElement location,
-                               @NotNull String description,
-                               @Nullable LocalQuickFix[] fixes,
+  protected void registerError(@Nonnull PsiElement location,
+                               @Nonnull String description,
+                               @javax.annotation.Nullable LocalQuickFix[] fixes,
                                ProblemHighlightType highlightType) {
     if (PsiUtil.isCompileStatic(location)) {
       // filter all errors here, error will be highlighted by annotator
@@ -1016,7 +1016,7 @@ public class GroovyTypeCheckVisitor extends BaseInspectionVisitor {
   }
 
   @Override
-  protected void registerError(@NotNull PsiElement location,
+  protected void registerError(@Nonnull PsiElement location,
                                ProblemHighlightType highlightType,
                                Object... args) {
     registerError(location, (String)args[0], LocalQuickFix.EMPTY_ARRAY, highlightType);

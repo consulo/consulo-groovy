@@ -15,13 +15,14 @@
  */
 package org.jetbrains.plugins.groovy.refactoring;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.refactoring.util.CommonRefactoringUtil;
 import com.intellij.util.containers.MultiMap;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.*;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.clauses.GrForClause;
@@ -37,7 +38,7 @@ public class GroovyValidationUtil {
   private GroovyValidationUtil() {
   }
 
-  public static boolean validateNewParameterName(GrParameter variable, MultiMap<PsiElement,String> conflicts, @NotNull String varName) {
+  public static boolean validateNewParameterName(GrParameter variable, MultiMap<PsiElement,String> conflicts, @Nonnull String varName) {
     GrParameterList list = PsiTreeUtil.getParentOfType(variable, GrParameterList.class);
     GrParametersOwner owner = PsiTreeUtil.getParentOfType(variable, GrParametersOwner.class);
     assert owner != null;
@@ -55,7 +56,7 @@ public class GroovyValidationUtil {
   private static void validateVariableOccurrencesUp(PsiElement parent,
                                                     PsiElement lastParent,
                                                     MultiMap<PsiElement, String> conflicts,
-                                                    @NotNull String varName,
+                                                    @Nonnull String varName,
                                                     final boolean containerIsFile) {
     if (!containerIsFile && (parent instanceof PsiFile) || parent == null) return;
 
@@ -95,7 +96,7 @@ public class GroovyValidationUtil {
   private static void validateVariableOccurrencesDown(PsiElement parent,
                                                       PsiElement startChild,
                                                       MultiMap<PsiElement, String> conflicts,
-                                                      @NotNull String varName) {
+                                                      @Nonnull String varName) {
     PsiElement child = parent.getLastChild();
     while (child != null && child != startChild && !(child instanceof GrTypeDefinition)) {
       validateVariableOccurrencesDownImpl(child, conflicts, varName);

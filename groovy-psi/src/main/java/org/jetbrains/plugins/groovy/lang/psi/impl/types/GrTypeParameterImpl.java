@@ -21,9 +21,11 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import javax.annotation.Nonnull;
+
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocComment;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
@@ -58,7 +60,7 @@ public class GrTypeParameterImpl extends GrStubElementBase<GrTypeParameterStub> 
 		StubBasedPsiElement<GrTypeParameterStub>
 {
 
-	public GrTypeParameterImpl(@NotNull ASTNode node)
+	public GrTypeParameterImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
@@ -82,7 +84,7 @@ public class GrTypeParameterImpl extends GrStubElementBase<GrTypeParameterStub> 
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public GrMembersDeclaration[] getMemberDeclarations()
 	{
 		return GrMembersDeclaration.EMPTY_ARRAY;
@@ -113,21 +115,21 @@ public class GrTypeParameterImpl extends GrStubElementBase<GrTypeParameterStub> 
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public GrMethod[] getCodeMethods()
 	{
 		return GrMethod.EMPTY_ARRAY;
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public PsiMethod[] findCodeMethodsByName(@NonNls String name, boolean checkBases)
 	{
 		return GrClassImplUtil.findCodeMethodsByName(this, name, checkBases);
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public PsiMethod[] findCodeMethodsBySignature(PsiMethod patternMethod, boolean checkBases)
 	{
 		return GrClassImplUtil.findCodeMethodsBySignature(this, patternMethod, checkBases);
@@ -177,7 +179,7 @@ public class GrTypeParameterImpl extends GrStubElementBase<GrTypeParameterStub> 
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public PsiReferenceList getExtendsList()
 	{
 		final GrTypeParameterParameterExtendsListImpl list = findChildByClass(GrTypeParameterParameterExtendsListImpl
@@ -187,21 +189,21 @@ public class GrTypeParameterImpl extends GrStubElementBase<GrTypeParameterStub> 
 	}
 
 	@Override
-	@Nullable
+	@javax.annotation.Nullable
 	public PsiReferenceList getImplementsList()
 	{
 		return null;
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public PsiClassType[] getExtendsListTypes()
 	{
 		return getExtendsList().getReferencedTypes();
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public PsiClassType[] getImplementsListTypes()
 	{
 		return new PsiClassType[0];
@@ -221,34 +223,34 @@ public class GrTypeParameterImpl extends GrStubElementBase<GrTypeParameterStub> 
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public PsiClass[] getSupers()
 	{
 		return GrClassImplUtil.getSupers(this);
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public PsiClassType[] getSuperTypes()
 	{
 		return GrClassImplUtil.getSuperTypes(this);
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public GrField[] getFields()
 	{
 		return GrField.EMPTY_ARRAY;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public GrField[] getCodeFields()
 	{
 		return GrField.EMPTY_ARRAY;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public GrMethod[] getCodeConstructors()
 	{
@@ -262,49 +264,49 @@ public class GrTypeParameterImpl extends GrStubElementBase<GrTypeParameterStub> 
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public PsiMethod[] getMethods()
 	{
 		return PsiMethod.EMPTY_ARRAY;
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public PsiMethod[] getConstructors()
 	{
 		return PsiMethod.EMPTY_ARRAY;
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public PsiClass[] getInnerClasses()
 	{
 		return PsiClass.EMPTY_ARRAY;
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public GrClassInitializer[] getInitializers()
 	{
 		return GrClassInitializer.EMPTY_ARRAY;
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public PsiField[] getAllFields()
 	{
 		return GrClassImplUtil.getAllFields(this);
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public PsiMethod[] getAllMethods()
 	{
 		return GrClassImplUtil.getAllMethods(this);
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public PsiClass[] getAllInnerClasses()
 	{
 		return PsiClass.EMPTY_ARRAY;
@@ -325,21 +327,21 @@ public class GrTypeParameterImpl extends GrStubElementBase<GrTypeParameterStub> 
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public PsiMethod[] findMethodsBySignature(PsiMethod patternMethod, boolean checkBases)
 	{
 		return GrClassImplUtil.findCodeMethodsBySignature(this, patternMethod, checkBases);
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public PsiMethod[] findMethodsByName(@NonNls String name, boolean checkBases)
 	{
 		return GrClassImplUtil.findCodeMethodsByName(this, name, checkBases);
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public List<Pair<PsiMethod, PsiSubstitutor>> findMethodsAndTheirSubstitutorsByName(@NonNls String name,
 			boolean checkBases)
 	{
@@ -347,7 +349,7 @@ public class GrTypeParameterImpl extends GrStubElementBase<GrTypeParameterStub> 
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public List<Pair<PsiMethod, PsiSubstitutor>> getAllMethodsAndTheirSubstitutors()
 	{
 		return GrClassImplUtil.getAllMethodsAndTheirSubstitutors(this);
@@ -389,7 +391,7 @@ public class GrTypeParameterImpl extends GrStubElementBase<GrTypeParameterStub> 
 	}
 
 	@Override
-	public boolean isInheritor(@NotNull PsiClass baseClass, boolean checkDeep)
+	public boolean isInheritor(@Nonnull PsiClass baseClass, boolean checkDeep)
 	{
 		return InheritanceImplUtil.isInheritor(this, baseClass, checkDeep);
 	}
@@ -408,7 +410,7 @@ public class GrTypeParameterImpl extends GrStubElementBase<GrTypeParameterStub> 
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public Collection<HierarchicalMethodSignature> getVisibleSignatures()
 	{
 		return Collections.emptyList(); //todo
@@ -438,14 +440,14 @@ public class GrTypeParameterImpl extends GrStubElementBase<GrTypeParameterStub> 
 	}
 
 	@Override
-	public PsiElement setName(@NonNls @NotNull String name) throws IncorrectOperationException
+	public PsiElement setName(@NonNls @Nonnull String name) throws IncorrectOperationException
 	{
 		PsiImplUtil.setName(name, getNameIdentifierGroovy());
 		return this;
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public PsiElement getNameIdentifierGroovy()
 	{
 		PsiElement result = findChildByType(GroovyTokenTypes.mIDENT);
@@ -461,7 +463,7 @@ public class GrTypeParameterImpl extends GrStubElementBase<GrTypeParameterStub> 
 	}
 
 	@Override
-	public boolean hasModifierProperty(@NonNls @NotNull String name)
+	public boolean hasModifierProperty(@NonNls @Nonnull String name)
 	{
 		return false;
 	}
@@ -493,7 +495,7 @@ public class GrTypeParameterImpl extends GrStubElementBase<GrTypeParameterStub> 
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public PsiTypeParameter[] getTypeParameters()
 	{
 		return PsiTypeParameter.EMPTY_ARRAY;
@@ -511,36 +513,36 @@ public class GrTypeParameterImpl extends GrStubElementBase<GrTypeParameterStub> 
 	}
 
 	@Override
-	public boolean processDeclarations(@NotNull PsiScopeProcessor processor,
-			@NotNull ResolveState state,
+	public boolean processDeclarations(@Nonnull PsiScopeProcessor processor,
+			@Nonnull ResolveState state,
 			PsiElement lastParent,
-			@NotNull PsiElement place)
+			@Nonnull PsiElement place)
 	{
 		return GrClassImplUtil.processDeclarations(this, processor, state, lastParent, place);
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public PsiAnnotation[] getAnnotations()
 	{
 		return PsiAnnotation.EMPTY_ARRAY;
 	}
 
 	@Override
-	public PsiAnnotation findAnnotation(@NotNull @NonNls String qualifiedName)
+	public PsiAnnotation findAnnotation(@Nonnull @NonNls String qualifiedName)
 	{
 		return null;
 	}
 
 	@Override
-	@NotNull
-	public PsiAnnotation addAnnotation(@NotNull @NonNls String qualifiedName)
+	@Nonnull
+	public PsiAnnotation addAnnotation(@Nonnull @NonNls String qualifiedName)
 	{
 		throw new IncorrectOperationException();
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public PsiAnnotation[] getApplicableAnnotations()
 	{
 		return PsiAnnotation.EMPTY_ARRAY;

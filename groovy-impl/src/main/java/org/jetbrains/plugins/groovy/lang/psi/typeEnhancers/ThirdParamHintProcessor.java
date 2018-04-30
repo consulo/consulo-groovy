@@ -19,7 +19,7 @@ import com.intellij.psi.PsiArrayType;
 import com.intellij.psi.PsiMethod;
 import com.intellij.psi.PsiSubstitutor;
 import com.intellij.psi.PsiType;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 import java.util.Collections;
 import java.util.List;
@@ -56,11 +56,11 @@ public class ThirdParamHintProcessor extends ParamHintProcessor {
       return "groovy.transform.stc.ThirdParam.Component";
     }
 
-    @NotNull
+    @Nonnull
     @Override
-    public List<PsiType[]> inferExpectedSignatures(@NotNull PsiMethod method,
-                                                   @NotNull PsiSubstitutor substitutor,
-                                                   @NotNull String[] options) {
+    public List<PsiType[]> inferExpectedSignatures(@Nonnull PsiMethod method,
+                                                   @Nonnull PsiSubstitutor substitutor,
+                                                   @Nonnull String[] options) {
       List<PsiType[]> signatures = new ThirdParamHintProcessor().inferExpectedSignatures(method, substitutor, options);
       if (signatures.size() == 1) {
         PsiType[] signature = signatures.get(0);

@@ -19,7 +19,7 @@ package org.jetbrains.plugins.groovy.actions;
 import javax.swing.Icon;
 
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.module.extension.GroovyModuleExtension;
 import com.intellij.CommonBundle;
 import com.intellij.ide.actions.CreateElementActionBase;
@@ -43,7 +43,7 @@ public abstract class NewGroovyActionBase extends CreateElementActionBase
 		super(text, description, icon);
 	}
 
-	@NotNull
+	@Nonnull
 	protected final PsiElement[] invokeDialog(final Project project, final PsiDirectory directory)
 	{
 		MyInputValidator validator = new MyInputValidator(project, directory);
@@ -68,13 +68,13 @@ public abstract class NewGroovyActionBase extends CreateElementActionBase
 		return module != null && ModuleUtilCore.getExtension(module, GroovyModuleExtension.class) != null;
 	}
 
-	@NotNull
+	@Nonnull
 	protected PsiElement[] create(String newName, PsiDirectory directory) throws Exception
 	{
 		return doCreate(newName, directory);
 	}
 
-	@NotNull
+	@Nonnull
 	protected abstract PsiElement[] doCreate(String newName, PsiDirectory directory) throws Exception;
 
 

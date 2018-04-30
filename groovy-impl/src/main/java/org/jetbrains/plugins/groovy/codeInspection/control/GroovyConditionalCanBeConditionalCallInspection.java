@@ -19,7 +19,7 @@ import com.intellij.codeInspection.ProblemDescriptor;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.IncorrectOperationException;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.codeInspection.GroovyFix;
@@ -38,12 +38,12 @@ import static org.jetbrains.plugins.groovy.codeInspection.GrInspectionUtil.*;
 
 public class GroovyConditionalCanBeConditionalCallInspection extends BaseInspection {
 
-  @NotNull
+  @Nonnull
   public String getDisplayName() {
     return "Conditional expression can be conditional call";
   }
 
-  @NotNull
+  @Nonnull
   public String getGroupDisplayName() {
     return CONTROL_FLOW;
   }
@@ -57,7 +57,7 @@ public class GroovyConditionalCanBeConditionalCallInspection extends BaseInspect
   }
 
   private static class CollapseConditionalFix extends GroovyFix {
-    @NotNull
+    @Nonnull
     public String getName() {
       return "Replace with conditional call";
     }

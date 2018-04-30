@@ -16,7 +16,8 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.VolatileNotNullLazyValue;
@@ -35,7 +36,7 @@ public abstract class GrTupleType extends GrLiteralClassType
 {
 	private final VolatileNotNullLazyValue<PsiType[]> myParameters = new VolatileNotNullLazyValue<PsiType[]>()
 	{
-		@NotNull
+		@Nonnull
 		@Override
 		protected PsiType[] compute()
 		{
@@ -55,7 +56,7 @@ public abstract class GrTupleType extends GrLiteralClassType
 
 	private final VolatileNotNullLazyValue<PsiType[]> myComponents = new VolatileNotNullLazyValue<PsiType[]>()
 	{
-		@NotNull
+		@Nonnull
 		@Override
 		protected PsiType[] compute()
 		{
@@ -63,17 +64,17 @@ public abstract class GrTupleType extends GrLiteralClassType
 		}
 	};
 
-	public GrTupleType(@NotNull GlobalSearchScope scope, @NotNull JavaPsiFacade facade)
+	public GrTupleType(@Nonnull GlobalSearchScope scope, @Nonnull JavaPsiFacade facade)
 	{
 		this(scope, facade, LanguageLevel.JDK_1_5);
 	}
 
-	public GrTupleType(@NotNull GlobalSearchScope scope, @NotNull JavaPsiFacade facade, @NotNull LanguageLevel level)
+	public GrTupleType(@Nonnull GlobalSearchScope scope, @Nonnull JavaPsiFacade facade, @Nonnull LanguageLevel level)
 	{
 		super(level, scope, facade);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	protected String getJavaClassName()
 	{
@@ -81,21 +82,21 @@ public abstract class GrTupleType extends GrLiteralClassType
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public String getClassName()
 	{
 		return StringUtil.getShortName(getJavaClassName());
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public PsiType[] getParameters()
 	{
 		return myParameters.getValue();
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public String getInternalCanonicalText()
 	{
 		PsiType[] types = getComponentTypes();
@@ -139,7 +140,7 @@ public abstract class GrTupleType extends GrLiteralClassType
 	}
 
 	@Override
-	public boolean isAssignableFrom(@NotNull PsiType type)
+	public boolean isAssignableFrom(@Nonnull PsiType type)
 	{
 		if(type instanceof GrTupleType)
 		{
@@ -167,18 +168,18 @@ public abstract class GrTupleType extends GrLiteralClassType
 		return super.isAssignableFrom(type);
 	}
 
-	@NotNull
+	@Nonnull
 	public PsiType[] getComponentTypes()
 	{
 		return myComponents.getValue();
 	}
 
-	@NotNull
+	@Nonnull
 	protected abstract PsiType[] inferComponents();
 
-	@NotNull
+	@Nonnull
 	@Override
-	public PsiClassType setLanguageLevel(@NotNull LanguageLevel languageLevel)
+	public PsiClassType setLanguageLevel(@Nonnull LanguageLevel languageLevel)
 	{
 		return new GrImmediateTupleType(getComponentTypes(), myFacade, getResolveScope());
 	}

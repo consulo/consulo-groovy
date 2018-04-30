@@ -15,6 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.control;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.codeInspection.ProblemDescriptor;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
@@ -24,7 +26,6 @@ import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.codeInspection.GroovyFix;
@@ -39,12 +40,12 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpres
 
 public class GroovyTrivialIfInspection extends BaseInspection {
 
-  @NotNull
+  @Nonnull
   public String getDisplayName() {
     return "Redundant 'if' statement";
   }
 
-  @NotNull
+  @Nonnull
   public String getGroupDisplayName() {
     return CONTROL_FLOW;
   }
@@ -66,7 +67,7 @@ public class GroovyTrivialIfInspection extends BaseInspection {
   }
 
   private static class TrivialIfFix extends GroovyFix {
-    @NotNull
+    @Nonnull
     public String getName() {
       return "Simplify";
     }
@@ -237,7 +238,7 @@ public class GroovyTrivialIfInspection extends BaseInspection {
 
   private static class TrivialIfVisitor extends BaseInspectionVisitor {
 
-    public void visitIfStatement(@NotNull GrIfStatement ifStatement) {
+    public void visitIfStatement(@Nonnull GrIfStatement ifStatement) {
       super.visitIfStatement(ifStatement);
       final GrCondition condition = ifStatement.getCondition();
       if (!(condition instanceof GrExpression)) {

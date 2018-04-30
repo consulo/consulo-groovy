@@ -16,8 +16,6 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.api.types;
 
-import org.jetbrains.annotations.Nullable;
-
 /**
  * @author: Dmitry.Krasilschikov
  * @date: 28.03.2007
@@ -25,7 +23,7 @@ import org.jetbrains.annotations.Nullable;
 public interface GrWildcardTypeArgument extends GrTypeElement {
   GrWildcardTypeArgument[] EMPTY_ARRAY = new GrWildcardTypeArgument[0];
 
-  @Nullable
+  @javax.annotation.Nullable
   GrTypeElement getBoundTypeElement();
 
   boolean isExtends();

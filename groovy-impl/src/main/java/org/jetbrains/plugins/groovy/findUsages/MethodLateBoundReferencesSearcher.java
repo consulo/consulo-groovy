@@ -16,6 +16,8 @@
 
 package org.jetbrains.plugins.groovy.findUsages;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.openapi.application.QueryExecutorBase;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ProjectRootManager;
@@ -29,7 +31,6 @@ import com.intellij.psi.search.*;
 import com.intellij.psi.search.searches.MethodReferencesSearch;
 import com.intellij.psi.util.PropertyUtil;
 import com.intellij.util.Processor;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrMethodCall;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
 import org.jetbrains.plugins.groovy.lang.psi.impl.PsiImplUtil;
@@ -47,7 +48,7 @@ public class MethodLateBoundReferencesSearcher extends QueryExecutorBase<PsiRefe
   }
 
   @Override
-  public void processQuery(@NotNull MethodReferencesSearch.SearchParameters queryParameters, @NotNull Processor<PsiReference> consumer) {
+  public void processQuery(@Nonnull MethodReferencesSearch.SearchParameters queryParameters, @Nonnull Processor<PsiReference> consumer) {
     final PsiMethod method = queryParameters.getMethod();
     SearchScope searchScope = GroovyScopeUtil.restrictScopeToGroovyFiles(queryParameters.getScope()).intersectWith(getUseScope(method));
 
@@ -73,11 +74,11 @@ public class MethodLateBoundReferencesSearcher extends QueryExecutorBase<PsiRefe
   }
 
 
-  private static void orderSearching(SearchScope searchScope, final String name, @NotNull SearchRequestCollector collector, final int paramCount) {
+  private static void orderSearching(SearchScope searchScope, final String name, @Nonnull SearchRequestCollector collector, final int paramCount) {
     if (StringUtil.isEmpty(name)) return;
     collector.searchWord(name, searchScope, UsageSearchContext.IN_CODE, true, new RequestResultProcessor("groovy.lateBound") {
       @Override
-      public boolean processTextOccurrence(@NotNull PsiElement element, int offsetInElement, @NotNull Processor<PsiReference> consumer) {
+      public boolean processTextOccurrence(@Nonnull PsiElement element, int offsetInElement, @Nonnull Processor<PsiReference> consumer) {
         if (!(element instanceof GrReferenceExpression)) {
           return true;
         }

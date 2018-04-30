@@ -20,8 +20,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrArgumentLabel;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrNamedArgument;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
@@ -49,7 +49,7 @@ public class GrMapTypeFromNamedArgs extends GrMapType
 	private final VolatileNotNullLazyValue<List<Couple<PsiType>>> myTypesOfOtherEntries = new
 			VolatileNotNullLazyValue<List<Couple<PsiType>>>()
 	{
-		@NotNull
+		@Nonnull
 		@Override
 		protected List<Couple<PsiType>> compute()
 		{
@@ -68,7 +68,7 @@ public class GrMapTypeFromNamedArgs extends GrMapType
 	private final VolatileNotNullLazyValue<LinkedHashMap<String, PsiType>> myTypesOfStringEntries = new
 			VolatileNotNullLazyValue<LinkedHashMap<String, PsiType>>()
 	{
-		@NotNull
+		@Nonnull
 		@Override
 		protected LinkedHashMap<String, PsiType> compute()
 		{
@@ -82,14 +82,14 @@ public class GrMapTypeFromNamedArgs extends GrMapType
 
 	};
 
-	public GrMapTypeFromNamedArgs(@NotNull PsiElement context, @NotNull GrNamedArgument[] namedArgs)
+	public GrMapTypeFromNamedArgs(@Nonnull PsiElement context, @Nonnull GrNamedArgument[] namedArgs)
 	{
 		this(JavaPsiFacade.getInstance(context.getProject()), context.getResolveScope(), namedArgs);
 	}
 
-	public GrMapTypeFromNamedArgs(@NotNull JavaPsiFacade facade,
-			@NotNull GlobalSearchScope scope,
-			@NotNull GrNamedArgument[] namedArgs)
+	public GrMapTypeFromNamedArgs(@Nonnull JavaPsiFacade facade,
+			@Nonnull GlobalSearchScope scope,
+			@Nonnull GrNamedArgument[] namedArgs)
 	{
 		super(facade, scope);
 
@@ -124,7 +124,7 @@ public class GrMapTypeFromNamedArgs extends GrMapType
 		return expression != null ? inferTypePreventingRecursion(expression) : null;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public Set<String> getStringKeys()
 	{
@@ -137,7 +137,7 @@ public class GrMapTypeFromNamedArgs extends GrMapType
 		return myStringEntries.isEmpty() && myOtherEntries.isEmpty();
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	protected PsiType[] getAllKeyTypes()
 	{
@@ -155,7 +155,7 @@ public class GrMapTypeFromNamedArgs extends GrMapType
 		return result.toArray(createArray(result.size()));
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	protected PsiType[] getAllValueTypes()
 	{
@@ -172,7 +172,7 @@ public class GrMapTypeFromNamedArgs extends GrMapType
 		return result.toArray(createArray(result.size()));
 	}
 
-	@Nullable
+	@javax.annotation.Nullable
 	private static PsiType inferTypePreventingRecursion(final GrExpression expression)
 	{
 		return RecursionManager.doPreventingRecursion(expression, false, new Computable<PsiType>()
@@ -185,14 +185,14 @@ public class GrMapTypeFromNamedArgs extends GrMapType
 		});
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	protected List<Couple<PsiType>> getOtherEntries()
 	{
 		return myTypesOfOtherEntries.getValue();
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	protected LinkedHashMap<String, PsiType> getStringEntries()
 	{

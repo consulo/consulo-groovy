@@ -16,10 +16,10 @@
 
 package org.jetbrains.plugins.groovy.runner;
 
+import javax.annotation.Nonnull;
 import javax.swing.Icon;
 
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.module.extension.GroovyModuleExtension;
 import com.intellij.execution.configurations.ConfigurationFactory;
 import com.intellij.execution.configurations.ConfigurationType;
@@ -54,7 +54,7 @@ public class GroovyScriptRunConfigurationType implements ConfigurationType
 	}
 
 	@NonNls
-	@NotNull
+	@Nonnull
 	public String getId()
 	{
 		return "GroovyScriptRunConfiguration";
@@ -78,7 +78,7 @@ public class GroovyScriptRunConfigurationType implements ConfigurationType
 		}
 
 		@Override
-		public boolean isApplicable(@NotNull Project project)
+		public boolean isApplicable(@Nonnull Project project)
 		{
 			return ModuleExtensionHelper.getInstance(project).hasModuleExtension(GroovyModuleExtension.class);
 		}

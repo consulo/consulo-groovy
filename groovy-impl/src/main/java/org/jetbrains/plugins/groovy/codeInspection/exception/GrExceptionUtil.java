@@ -16,11 +16,11 @@
 package org.jetbrains.plugins.groovy.codeInspection.exception;
 
 import com.intellij.openapi.util.text.StringUtil;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameter;
 
 public class GrExceptionUtil {
-  public static boolean ignore(@NotNull GrParameter parameter) {
+  public static boolean ignore(@Nonnull GrParameter parameter) {
     final String name = StringUtil.toLowerCase(parameter.getName());
     return "ignore".equals(name) || "ignored".equals(name);
   }

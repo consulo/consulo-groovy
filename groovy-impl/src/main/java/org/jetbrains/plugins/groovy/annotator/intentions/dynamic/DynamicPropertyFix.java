@@ -23,8 +23,8 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.annotator.intentions.QuickfixUtil;
 import org.jetbrains.plugins.groovy.annotator.intentions.dynamic.ui.DynamicDialog;
@@ -54,13 +54,13 @@ public class DynamicPropertyFix extends GroovyFix implements IntentionAction, Lo
     myTargetClass = targetClass;
   }
 
-  @NotNull
+  @Nonnull
   public String getText() {
     return GroovyBundle.message("add.dynamic.property", getRefName());
   }
 
 
-  @NotNull
+  @Nonnull
   @Override
   public String getName() {
     return getText();
@@ -76,16 +76,16 @@ public class DynamicPropertyFix extends GroovyFix implements IntentionAction, Lo
     }
   }
 
-  @NotNull
+  @Nonnull
   public String getFamilyName() {
     return GroovyBundle.message("add.dynamic.element");
   }
 
-  public boolean isAvailable(@NotNull Project project, Editor editor, PsiFile psiFile) {
+  public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile psiFile) {
     return (myReferenceExpression == null || myReferenceExpression.isValid()) && (myArgumentLabel == null || myArgumentLabel.isValid());
   }
 
-  public void invoke(@NotNull Project project, Editor editor, PsiFile psiFile) throws IncorrectOperationException {
+  public void invoke(@Nonnull Project project, Editor editor, PsiFile psiFile) throws IncorrectOperationException {
     invokeInner();
   }
 

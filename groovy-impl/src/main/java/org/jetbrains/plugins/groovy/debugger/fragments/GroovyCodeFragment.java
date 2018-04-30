@@ -19,8 +19,8 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrUnAmbiguousClosureContainer;
@@ -77,7 +77,7 @@ public class GroovyCodeFragment extends GroovyFileImpl implements JavaCodeFragme
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public FileViewProvider getViewProvider() {
     if (myViewProvider != null) return myViewProvider;
     return super.getViewProvider();
@@ -249,8 +249,8 @@ public class GroovyCodeFragment extends GroovyFileImpl implements JavaCodeFragme
     return true;
   }
 
-  @Nullable
-  private GrImportStatement createImportOnDemand(@NotNull String qname) {
+  @javax.annotation.Nullable
+  private GrImportStatement createImportOnDemand(@Nonnull String qname) {
     final PsiClass aClass = JavaPsiFacade.getInstance(getProject()).findClass(qname, getResolveScope());
     final boolean isStatic = aClass != null;
 
@@ -264,7 +264,7 @@ public class GroovyCodeFragment extends GroovyFileImpl implements JavaCodeFragme
   }
 
   @Nullable
-  private GrImportStatement createSingleImport(@NotNull String qname, @Nullable String importedName) {
+  private GrImportStatement createSingleImport(@Nonnull String qname, @javax.annotation.Nullable String importedName) {
     final PsiClass aClass = JavaPsiFacade.getInstance(getProject()).findClass(qname, getResolveScope());
     final boolean isStatic = aClass == null;
 

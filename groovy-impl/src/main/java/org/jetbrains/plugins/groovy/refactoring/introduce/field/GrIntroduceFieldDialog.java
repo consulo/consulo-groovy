@@ -29,8 +29,8 @@ import com.intellij.ui.components.JBRadioButton;
 import com.intellij.util.ArrayUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.containers.ContainerUtil;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyRecursiveElementVisitor;
@@ -222,7 +222,7 @@ public class GrIntroduceFieldDialog extends DialogWrapper implements GrIntroduce
     }
   }
 
-  private static boolean hasLhsUsages(@NotNull GrIntroduceContext context) {
+  private static boolean hasLhsUsages(@Nonnull GrIntroduceContext context) {
     if (context.getVar() == null && !(context.getExpression() instanceof GrReferenceExpression)) return false;
     if (GrIntroduceHandlerBase.hasLhs(context.getOccurrences())) return true;
     return false;
@@ -248,7 +248,7 @@ public class GrIntroduceFieldDialog extends DialogWrapper implements GrIntroduce
     new RadioUpDownListener(myPrivateRadioButton, myProtectedRadioButton, myPublicRadioButton, myPropertyRadioButton);
   }
 
-  private static boolean isAlwaysInvokedConstructor(@Nullable PsiMethod method, @NotNull PsiClass clazz) {
+  private static boolean isAlwaysInvokedConstructor(@Nullable PsiMethod method, @Nonnull PsiClass clazz) {
     if (method == null) return false;
     if (!method.isConstructor()) return false;
     final PsiMethod[] constructors = clazz.getConstructors();
@@ -264,7 +264,7 @@ public class GrIntroduceFieldDialog extends DialogWrapper implements GrIntroduce
     return true;
   }
 
-  private static boolean allOccurrencesInOneMethod(@NotNull PsiElement[] occurrences, PsiElement scope) {
+  private static boolean allOccurrencesInOneMethod(@Nonnull PsiElement[] occurrences, PsiElement scope) {
     if (occurrences.length == 0) return true;
     GrMember container = GrIntroduceFieldHandler.getContainer(occurrences[0], scope);
     if (container == null) return false;
@@ -287,7 +287,7 @@ public class GrIntroduceFieldDialog extends DialogWrapper implements GrIntroduce
     return this;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public LinkedHashSet<String> suggestNames() {
     return new GrFieldNameSuggester(myContext, new GroovyFieldValidator(myContext), false).suggestNames();
@@ -324,7 +324,7 @@ public class GrIntroduceFieldDialog extends DialogWrapper implements GrIntroduce
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public Init initializeIn() {
     if (myCurrentMethodRadioButton.isSelected()) return Init.CUR_METHOD;
     if (myFieldDeclarationRadioButton.isSelected()) return Init.FIELD_DECLARATION;
@@ -334,7 +334,7 @@ public class GrIntroduceFieldDialog extends DialogWrapper implements GrIntroduce
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public String getVisibilityModifier() {
     if (myPrivateRadioButton.isSelected()) return PsiModifier.PRIVATE;
     if (myProtectedRadioButton.isSelected()) return PsiModifier.PROTECTED;
@@ -354,7 +354,7 @@ public class GrIntroduceFieldDialog extends DialogWrapper implements GrIntroduce
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public String getName() {
     return myNameField.getEnteredName();
   }
@@ -380,7 +380,7 @@ public class GrIntroduceFieldDialog extends DialogWrapper implements GrIntroduce
     return null;
   }
 
-  private static boolean canBeInitializedOutsideBlock(@NotNull GrIntroduceContext context, @NotNull PsiClass clazz) {
+  private static boolean canBeInitializedOutsideBlock(@Nonnull GrIntroduceContext context, @Nonnull PsiClass clazz) {
     final StringPartInfo part = context.getStringPart();
     GrExpression expression = context.getExpression();
 
@@ -425,7 +425,7 @@ public class GrIntroduceFieldDialog extends DialogWrapper implements GrIntroduce
 
     private boolean result = true;
 
-    private ExpressionChecker(@NotNull PsiClass aClass, @NotNull PsiElement scope) {
+    private ExpressionChecker(@Nonnull PsiClass aClass, @Nonnull PsiElement scope) {
       myClass = aClass;
       myScope = scope;
     }

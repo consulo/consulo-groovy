@@ -17,7 +17,7 @@ package org.jetbrains.plugins.groovy.lang.psi.stubs.elements;
 
 import java.io.IOException;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotation;
 import org.jetbrains.plugins.groovy.lang.psi.impl.auxiliary.annotation.GrAnnotationImpl;
 import org.jetbrains.plugins.groovy.lang.psi.stubs.GrAnnotationStub;
@@ -30,32 +30,32 @@ import com.intellij.psi.stubs.StubOutputStream;
  */
 public class GrAnnotationElementType extends GrStubElementType<GrAnnotationStub, GrAnnotation>
 {
-	public GrAnnotationElementType(@NotNull String name)
+	public GrAnnotationElementType(@Nonnull String name)
 	{
 		super(name);
 	}
 
 	@Override
-	public GrAnnotation createPsi(@NotNull GrAnnotationStub stub)
+	public GrAnnotation createPsi(@Nonnull GrAnnotationStub stub)
 	{
 		return new GrAnnotationImpl(stub);
 	}
 
 	@Override
-	public GrAnnotationStub createStub(@NotNull GrAnnotation psi, StubElement parentStub)
+	public GrAnnotationStub createStub(@Nonnull GrAnnotation psi, StubElement parentStub)
 	{
 		return new GrAnnotationStub(parentStub, psi);
 	}
 
 	@Override
-	public void serialize(@NotNull GrAnnotationStub stub, @NotNull StubOutputStream dataStream) throws IOException
+	public void serialize(@Nonnull GrAnnotationStub stub, @Nonnull StubOutputStream dataStream) throws IOException
 	{
 		dataStream.writeUTFFast(stub.getText());
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
-	public GrAnnotationStub deserialize(@NotNull StubInputStream dataStream, StubElement parentStub) throws IOException
+	public GrAnnotationStub deserialize(@Nonnull StubInputStream dataStream, StubElement parentStub) throws IOException
 	{
 		return new GrAnnotationStub(parentStub, dataStream.readUTFFast());
 	}

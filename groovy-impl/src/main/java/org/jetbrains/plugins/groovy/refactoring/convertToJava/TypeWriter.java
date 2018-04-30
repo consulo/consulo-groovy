@@ -15,10 +15,10 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.convertToJava;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.psi.*;
 import com.intellij.psi.util.TypeConversionUtil;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GrAnonymousClassType;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil;
 
@@ -32,7 +32,7 @@ public class TypeWriter extends PsiTypeVisitor<Object> {
   private final ClassNameProvider classNameProvider;
   private final PsiElement context;
 
-  public static void writeTypeForNew(@NotNull StringBuilder builder, @Nullable PsiType type, @NotNull PsiElement context) {
+  public static void writeTypeForNew(@Nonnull StringBuilder builder, @javax.annotation.Nullable PsiType type, @Nonnull PsiElement context) {
 
     //new Array[] cannot contain generics
     if (type instanceof PsiArrayType) {
@@ -45,14 +45,14 @@ public class TypeWriter extends PsiTypeVisitor<Object> {
     writeType(builder, type, context, new GeneratorClassNameProvider());
   }
 
-  public static void writeType(@NotNull StringBuilder builder, @Nullable PsiType type, @NotNull PsiElement context) {
+  public static void writeType(@Nonnull StringBuilder builder, @javax.annotation.Nullable PsiType type, @Nonnull PsiElement context) {
     writeType(builder, type, context, new GeneratorClassNameProvider());
   }
 
-  public static void writeType(@NotNull final StringBuilder builder,
-                               @Nullable PsiType type,
-                               @NotNull final PsiElement context,
-                               @NotNull final ClassNameProvider classNameProvider) {
+  public static void writeType(@Nonnull final StringBuilder builder,
+                               @javax.annotation.Nullable PsiType type,
+                               @Nonnull final PsiElement context,
+                               @Nonnull final ClassNameProvider classNameProvider) {
     if (type instanceof PsiPrimitiveType) {
       builder.append(type.getCanonicalText());
       return;
@@ -72,10 +72,10 @@ public class TypeWriter extends PsiTypeVisitor<Object> {
     type.accept(new TypeWriter(builder, classNameProvider, acceptEllipsis, context));
   }
 
-  private TypeWriter(@NotNull StringBuilder builder,
-                     @NotNull ClassNameProvider classNameProvider,
+  private TypeWriter(@Nonnull StringBuilder builder,
+                     @Nonnull ClassNameProvider classNameProvider,
                      boolean acceptEllipsis,
-                     @NotNull PsiElement context) {
+                     @Nonnull PsiElement context) {
     this.acceptEllipsis = acceptEllipsis;
     this.builder = builder;
     this.classNameProvider = classNameProvider;
@@ -83,7 +83,7 @@ public class TypeWriter extends PsiTypeVisitor<Object> {
   }
 
   @Override
-  public Object visitEllipsisType(@NotNull PsiEllipsisType ellipsisType) {
+  public Object visitEllipsisType(@Nonnull PsiEllipsisType ellipsisType) {
     final PsiType componentType = ellipsisType.getComponentType();
     componentType.accept(this);
     if (acceptEllipsis) {
@@ -96,7 +96,7 @@ public class TypeWriter extends PsiTypeVisitor<Object> {
   }
 
   @Override
-  public Object visitPrimitiveType(@NotNull PsiPrimitiveType primitiveType) {
+  public Object visitPrimitiveType(@Nonnull PsiPrimitiveType primitiveType) {
     if (classNameProvider.forStubs()) {
       builder.append(primitiveType.getCanonicalText());
       return this;
@@ -107,14 +107,14 @@ public class TypeWriter extends PsiTypeVisitor<Object> {
   }
 
   @Override
-  public Object visitArrayType(@NotNull PsiArrayType arrayType) {
+  public Object visitArrayType(@Nonnull PsiArrayType arrayType) {
     arrayType.getComponentType().accept(this);
     builder.append("[]");
     return this;
   }
 
   @Override
-  public Object visitClassType(@NotNull PsiClassType classType) {
+  public Object visitClassType(@Nonnull PsiClassType classType) {
     final PsiType[] parameters = classType.getParameters();
     final PsiClass psiClass = classType.resolve();
     if (psiClass == null) {
@@ -129,13 +129,13 @@ public class TypeWriter extends PsiTypeVisitor<Object> {
   }
 
   @Override
-  public Object visitCapturedWildcardType(@NotNull PsiCapturedWildcardType capturedWildcardType) {
+  public Object visitCapturedWildcardType(@Nonnull PsiCapturedWildcardType capturedWildcardType) {
     capturedWildcardType.getWildcard().accept(this);
     return this;
   }
 
   @Override
-  public Object visitWildcardType(@NotNull PsiWildcardType wildcardType) {
+  public Object visitWildcardType(@Nonnull PsiWildcardType wildcardType) {
     builder.append('?');
     PsiType bound = wildcardType.getBound();
     if (bound == null) return this;
@@ -150,17 +150,17 @@ public class TypeWriter extends PsiTypeVisitor<Object> {
   }
 
   @Override
-  public Object visitDisjunctionType(@NotNull PsiDisjunctionType disjunctionType) {
+  public Object visitDisjunctionType(@Nonnull PsiDisjunctionType disjunctionType) {
     //it is not available in groovy source code
     throw new UnsupportedOperationException();
   }
 
   @Override
-  public Object visitType(@NotNull PsiType type) {
+  public Object visitType(@Nonnull PsiType type) {
     throw new UnsupportedOperationException();
   }
 
-  private static boolean isLastParameter(@NotNull PsiElement context) {
+  private static boolean isLastParameter(@Nonnull PsiElement context) {
     if (context instanceof PsiParameter) {
       final PsiElement scope = ((PsiParameter)context).getDeclarationScope();
       if (scope instanceof PsiMethod) {

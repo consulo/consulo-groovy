@@ -17,7 +17,7 @@
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions;
 
 import com.intellij.lang.ASTNode;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrOperationSign;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyPsiElementImpl;
 
@@ -28,7 +28,7 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyPsiElementImpl;
  */
 public class GrOperationSignImpl extends GroovyPsiElementImpl implements GrOperationSign {
 
-  public GrOperationSignImpl(@NotNull ASTNode node) {
+  public GrOperationSignImpl(@Nonnull ASTNode node) {
     super(node);
   }
 

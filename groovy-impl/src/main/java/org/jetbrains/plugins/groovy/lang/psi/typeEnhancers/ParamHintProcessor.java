@@ -18,8 +18,7 @@ package org.jetbrains.plugins.groovy.lang.psi.typeEnhancers;
 import com.intellij.psi.*;
 import com.intellij.util.containers.ContainerUtil;
 import com.intellij.util.containers.ContainerUtilRt;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,11 +42,11 @@ public abstract class ParamHintProcessor extends SignatureHintProcessor {
     return myHint;
   }
 
-  @NotNull
+  @Nonnull
   @Override
-  public List<PsiType[]> inferExpectedSignatures(@NotNull PsiMethod method,
-                                                 @NotNull PsiSubstitutor substitutor,
-                                                 @NotNull String[] options) {
+  public List<PsiType[]> inferExpectedSignatures(@Nonnull PsiMethod method,
+                                                 @Nonnull PsiSubstitutor substitutor,
+                                                 @Nonnull String[] options) {
     PsiParameter[] parameters = method.getParameterList().getParameters();
     if (myParam < parameters.length) {
       PsiParameter parameter = parameters[myParam];
@@ -73,8 +72,8 @@ public abstract class ParamHintProcessor extends SignatureHintProcessor {
     return ContainerUtilRt.emptyList();
   }
 
-  @NotNull
-  protected static ArrayList<PsiType[]> produceResult(@Nullable PsiType type) {
+  @Nonnull
+  protected static ArrayList<PsiType[]> produceResult(@javax.annotation.Nullable PsiType type) {
     PsiType notNull = type != null ? type : PsiType.NULL;
     PsiType[] signature = {notNull};
     ArrayList<PsiType[]> result = ContainerUtil.newArrayList();

@@ -18,8 +18,8 @@ package org.jetbrains.plugins.groovy.codeInspection.assignment;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
 import org.jetbrains.annotations.Nls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.codeInspection.utils.EquivalenceChecker;
@@ -32,14 +32,14 @@ public class GroovySillyAssignmentInspection extends BaseInspection {
 
   @Override
   @Nls
-  @NotNull
+  @Nonnull
   public String getGroupDisplayName() {
     return ASSIGNMENT_ISSUES;
   }
 
   @Override
   @Nls
-  @NotNull
+  @Nonnull
   public String getDisplayName() {
     return "Silly assignment";
   }
@@ -57,7 +57,7 @@ public class GroovySillyAssignmentInspection extends BaseInspection {
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public BaseInspectionVisitor buildVisitor() {
     return new Visitor();
   }
@@ -65,7 +65,7 @@ public class GroovySillyAssignmentInspection extends BaseInspection {
   private static class Visitor extends BaseInspectionVisitor {
 
     @Override
-    public void visitAssignmentExpression(@NotNull GrAssignmentExpression assignment) {
+    public void visitAssignmentExpression(@Nonnull GrAssignmentExpression assignment) {
       super.visitAssignmentExpression(assignment);
 
       final IElementType sign = assignment.getOperationTokenType();

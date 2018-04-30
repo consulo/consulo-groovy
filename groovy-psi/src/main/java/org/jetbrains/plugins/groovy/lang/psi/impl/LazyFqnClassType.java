@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.pom.java.LanguageLevel;
 import com.intellij.psi.JavaPsiFacade;
@@ -31,44 +31,44 @@ public class LazyFqnClassType extends GrLiteralClassType
 {
 	private final String myFqn;
 
-	private LazyFqnClassType(@NotNull String fqn,
+	private LazyFqnClassType(@Nonnull String fqn,
 			LanguageLevel languageLevel,
-			@NotNull GlobalSearchScope scope,
-			@NotNull JavaPsiFacade facade)
+			@Nonnull GlobalSearchScope scope,
+			@Nonnull JavaPsiFacade facade)
 	{
 		super(languageLevel, scope, facade);
 		myFqn = fqn;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	protected String getJavaClassName()
 	{
 		return myFqn;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public String getClassName()
 	{
 		return StringUtil.getShortName(myFqn);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public PsiType[] getParameters()
 	{
 		return PsiType.EMPTY_ARRAY;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
-	public PsiClassType setLanguageLevel(@NotNull LanguageLevel languageLevel)
+	public PsiClassType setLanguageLevel(@Nonnull LanguageLevel languageLevel)
 	{
 		return new LazyFqnClassType(myFqn, languageLevel, getResolveScope(), myFacade);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public String getInternalCanonicalText()
 	{
@@ -81,23 +81,23 @@ public class LazyFqnClassType extends GrLiteralClassType
 		return !myFacade.getProject().isDisposed();
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public PsiClassType rawType()
 	{
 		return this;
 	}
 
-	@NotNull
-	public static PsiClassType getLazyType(@NotNull String fqn,
+	@Nonnull
+	public static PsiClassType getLazyType(@Nonnull String fqn,
 			LanguageLevel languageLevel,
-			@NotNull GlobalSearchScope scope,
-			@NotNull JavaPsiFacade facade)
+			@Nonnull GlobalSearchScope scope,
+			@Nonnull JavaPsiFacade facade)
 	{
 		return new LazyFqnClassType(fqn, languageLevel, scope, facade);
 	}
 
-	public static PsiClassType getLazyType(@NotNull String fqn, @NotNull PsiElement context)
+	public static PsiClassType getLazyType(@Nonnull String fqn, @Nonnull PsiElement context)
 	{
 		return new LazyFqnClassType(fqn, LanguageLevel.JDK_1_5, context.getResolveScope(),
 				JavaPsiFacade.getInstance(context.getProject()));

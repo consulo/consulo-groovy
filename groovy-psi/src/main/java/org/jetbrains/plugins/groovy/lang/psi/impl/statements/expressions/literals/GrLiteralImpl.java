@@ -19,8 +19,8 @@ package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.litera
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.lexer.TokenSets;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
@@ -48,7 +48,7 @@ import com.intellij.psi.tree.IElementType;
 public class GrLiteralImpl extends GrAbstractLiteral implements GrLiteral, PsiLanguageInjectionHost {
   private static final Logger LOG = Logger.getInstance(GrLiteralImpl.class);
 
-  public GrLiteralImpl(@NotNull ASTNode node) {
+  public GrLiteralImpl(@Nonnull ASTNode node) {
     super(node);
   }
 
@@ -161,12 +161,12 @@ public class GrLiteralImpl extends GrAbstractLiteral implements GrLiteral, PsiLa
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public PsiReference[] getReferences() {
     return ReferenceProvidersRegistry.getReferencesFromProviders(this, PsiReferenceService.Hints.NO_HINTS);
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   @Override
   public PsiReference getReference() {
     final PsiReference[] references = getReferences();
@@ -185,7 +185,7 @@ public class GrLiteralImpl extends GrAbstractLiteral implements GrLiteral, PsiLa
   }
 
   @Override
-  public GrLiteralImpl updateText(@NotNull final String text) {
+  public GrLiteralImpl updateText(@Nonnull final String text) {
     final GrExpression newExpr = GroovyPsiElementFactory.getInstance(getProject()).createExpressionFromText(text);
     LOG.assertTrue(newExpr instanceof GrLiteral, text);
     LOG.assertTrue(newExpr.getFirstChild() != null, text);
@@ -195,7 +195,7 @@ public class GrLiteralImpl extends GrAbstractLiteral implements GrLiteral, PsiLa
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public LiteralTextEscaper<GrLiteralContainer> createLiteralTextEscaper() {
     return new GrLiteralEscaper(this);
   }

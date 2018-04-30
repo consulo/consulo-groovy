@@ -30,7 +30,7 @@ import com.intellij.psi.util.PsiTypesUtil;
 import com.intellij.util.ArrayUtil;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.Nls;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.codeInspection.GroovyFix;
@@ -58,28 +58,28 @@ import java.util.Properties;
 public class GroovyRangeTypeCheckInspection extends BaseInspection {
   private static final Logger LOG = Logger.getInstance("#org.jetbrains.plugins.groovy.codeInspection.bugs.GroovyRangeTypeCheckInspection");
 
-  @NotNull
+  @Nonnull
   @Override
   protected BaseInspectionVisitor buildVisitor() {
     return new MyVisitor();
   }
 
   @Nls
-  @NotNull
+  @Nonnull
   @Override
   public String getGroupDisplayName() {
     return PROBABLE_BUGS;
   }
 
   @Nls
-  @NotNull
+  @Nonnull
   @Override
   public String getDisplayName() {
     return GroovyInspectionBundle.message("incorrect.range.argument");
   }
 
   @Override
-  protected GroovyFix buildFix(@NotNull PsiElement location) {
+  protected GroovyFix buildFix(@Nonnull PsiElement location) {
     final GrRangeExpression range = (GrRangeExpression)location;
     final PsiType type = range.getType();
     final List<GroovyFix> fixes = new ArrayList<GroovyFix>(3);
@@ -114,7 +114,7 @@ public class GroovyRangeTypeCheckInspection extends BaseInspection {
           }
         }
 
-        @NotNull
+        @Nonnull
         @Override
         public String getName() {
           return GroovyInspectionBundle.message("fix.class", psiClass.getName());
@@ -219,7 +219,7 @@ public class GroovyRangeTypeCheckInspection extends BaseInspection {
     }
 
 
-    @NotNull
+    @Nonnull
     @Override
     public String getName() {
       return GroovyInspectionBundle.message("add.method", myMethodName, myClass.getName());
@@ -312,7 +312,7 @@ public class GroovyRangeTypeCheckInspection extends BaseInspection {
       }
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public String getName() {
       return GroovyInspectionBundle.message("implement.class", myInterfaceName);

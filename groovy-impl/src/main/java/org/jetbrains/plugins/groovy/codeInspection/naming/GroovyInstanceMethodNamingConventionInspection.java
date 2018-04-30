@@ -17,7 +17,7 @@ package org.jetbrains.plugins.groovy.codeInspection.naming;
 
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiModifier;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.codeInspection.GroovyFix;
 import org.jetbrains.plugins.groovy.codeInspection.utils.LibraryUtil;
@@ -28,7 +28,7 @@ public class GroovyInstanceMethodNamingConventionInspection extends ConventionIn
   private static final int DEFAULT_MIN_LENGTH = 4;
   private static final int DEFAULT_MAX_LENGTH = 32;
 
-  @NotNull
+  @Nonnull
   public String getDisplayName() {
     return "Instance method naming convention";
   }
@@ -41,7 +41,7 @@ public class GroovyInstanceMethodNamingConventionInspection extends ConventionIn
     return true;
   }
 
-  @NotNull
+  @Nonnull
   public String buildErrorString(Object... args) {
     final String className = (String) args[0];
     if (className.length() < getMinLength()) {

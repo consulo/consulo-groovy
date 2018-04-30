@@ -16,7 +16,8 @@
 
 package org.jetbrains.plugins.groovy.lang.lexer;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.GroovyLanguage;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
@@ -63,7 +64,7 @@ public class GroovyElementType extends IElementType
 			super(debugName);
 		}
 
-		@NotNull
-		public abstract PsiElement createPsi(@NotNull ASTNode node);
+		@Nonnull
+		public abstract PsiElement createPsi(@Nonnull ASTNode node);
 	}
 }

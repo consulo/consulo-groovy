@@ -16,13 +16,14 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.psi.PsiPrimitiveType;
 
 /**
  * @author ven
  */
 public interface GrBuiltinTypeClassExpression extends GrExpression {
-  @NotNull
+  @Nonnull
   PsiPrimitiveType getPrimitiveType();
 }

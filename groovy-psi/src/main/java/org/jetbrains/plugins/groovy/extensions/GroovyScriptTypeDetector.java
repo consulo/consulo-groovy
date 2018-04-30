@@ -15,9 +15,9 @@
  */
 package org.jetbrains.plugins.groovy.extensions;
 
+import javax.annotation.Nonnull;
 import javax.swing.Icon;
 
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import com.intellij.openapi.extensions.ExtensionPointName;
 import com.intellij.psi.search.GlobalSearchScope;
@@ -40,22 +40,22 @@ public abstract class GroovyScriptTypeDetector
 		myExtensions = extensions;
 	}
 
-	@NotNull
+	@Nonnull
 	public final String[] getExtensions()
 	{
 		return myExtensions;
 	}
 
-	@NotNull
+	@Nonnull
 	public final GroovyScriptType getScriptType()
 	{
 		return myScriptType;
 	}
 
-	public abstract boolean isSpecificScriptFile(@NotNull GroovyFile script);
+	public abstract boolean isSpecificScriptFile(@Nonnull GroovyFile script);
 
-	@NotNull
-	public static Icon getIcon(@NotNull GroovyFile script)
+	@Nonnull
+	public static Icon getIcon(@Nonnull GroovyFile script)
 	{
 		for(GroovyScriptTypeDetector detector : EP_NAME.getExtensions())
 		{
@@ -68,7 +68,7 @@ public abstract class GroovyScriptTypeDetector
 		return JetgroovyIcons.Groovy.Groovy_16x16;
 	}
 
-	public static GlobalSearchScope patchResolveScope(@NotNull GroovyFile script, GlobalSearchScope scope)
+	public static GlobalSearchScope patchResolveScope(@Nonnull GroovyFile script, GlobalSearchScope scope)
 	{
 		for(GroovyScriptTypeDetector detector : EP_NAME.getExtensions())
 		{

@@ -16,8 +16,8 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.clauses;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrParametersOwner;
@@ -36,7 +36,7 @@ import com.intellij.util.ObjectUtils;
  */
 public class GrForInClauseImpl extends GroovyPsiElementImpl implements GrForInClause, GrParametersOwner {
 
-  public GrForInClauseImpl(@NotNull ASTNode node) {
+  public GrForInClauseImpl(@Nonnull ASTNode node) {
     super(node);
   }
 
@@ -71,12 +71,12 @@ public class GrForInClauseImpl extends GroovyPsiElementImpl implements GrForInCl
   }
 
   @Override
-  @Nullable
+  @javax.annotation.Nullable
   public GrExpression getIteratedExpression() {
     return findExpressionChild(this);
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public PsiElement getDelimiter() {
     PsiElement in = findChildByType(GroovyTokenTypes.kIN);

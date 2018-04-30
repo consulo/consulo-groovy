@@ -15,20 +15,21 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiPolyVariantReference;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.lang.psi.GrQualifiedReference;
 
 /**
  * @author Maxim.Medvedev
  */
 public interface GrThisSuperReferenceExpression extends GrExpression, PsiPolyVariantReference, GrQualifiedReference<GrReferenceExpression> {
-  @NotNull
+  @Nonnull
   @Override
   PsiElement getReferenceNameElement();
 
-  @NotNull
+  @Nonnull
   @Override
   String getReferenceName();
 }

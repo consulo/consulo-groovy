@@ -15,19 +15,19 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.metrics;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrOpenBlock;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
 
 public class GroovyOverlyComplexMethodInspection extends GroovyMethodMetricInspection {
 
-  @NotNull
+  @Nonnull
   public String getDisplayName() {
     return "Overly complex method";
   }
 
-  @NotNull
+  @Nonnull
   public String getGroupDisplayName() {
     return METHOD_METRICS;
   }

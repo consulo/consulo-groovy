@@ -19,8 +19,8 @@ package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
@@ -90,16 +90,16 @@ public class GrNewExpressionImpl extends GrCallExpressionImpl implements GrNewEx
   };
 
   private static final ResolveCache.PolyVariantResolver<MyFakeReference> RESOLVER = new ResolveCache.PolyVariantResolver<MyFakeReference>() {
-    @NotNull
+    @Nonnull
     @Override
-    public GroovyResolveResult[] resolve(@NotNull MyFakeReference reference, boolean incompleteCode) {
+    public GroovyResolveResult[] resolve(@Nonnull MyFakeReference reference, boolean incompleteCode) {
       return reference.getElement().resolveImpl(incompleteCode);
     }
   };
 
   private final MyFakeReference myFakeReference = new MyFakeReference();
 
-  public GrNewExpressionImpl(@NotNull ASTNode node) {
+  public GrNewExpressionImpl(@Nonnull ASTNode node) {
     super(node);
   }
 
@@ -182,13 +182,13 @@ public class GrNewExpressionImpl extends GrCallExpressionImpl implements GrNewEx
     return findChildByClass(GrAnonymousClassDefinition.class);
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   @Override
   public GrArrayDeclaration getArrayDeclaration() {
     return findChildByClass(GrArrayDeclaration.class);
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   @Override
   public GrTypeArgumentList getConstructorTypeArguments() {
     return findChildByClass(GrTypeArgumentList.class);
@@ -200,14 +200,14 @@ public class GrNewExpressionImpl extends GrCallExpressionImpl implements GrNewEx
     return PsiImplUtil.extractUniqueElement(multiResolve(false));
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public GroovyResolveResult advancedResolve() {
     return PsiImplUtil.extractUniqueResult(multiResolve(false));
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public GroovyResolveResult[] getCallVariants(@Nullable GrExpression upToArgument) {
     final GrCodeReferenceElement referenceElement = getReferenceElement();
     if (referenceElement == null) return GroovyResolveResult.EMPTY_ARRAY;
@@ -228,7 +228,7 @@ public class GrNewExpressionImpl extends GrCallExpressionImpl implements GrNewEx
     return findChildByClass(GrTypeElement.class);
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public GroovyResolveResult[] multiResolve(boolean incompleteCode) {
     if (getArrayCount() > 0 || getReferenceElement() == null) {
@@ -281,7 +281,7 @@ public class GrNewExpressionImpl extends GrCallExpressionImpl implements GrNewEx
   }
 
   @Nullable
-  private static GroovyResolveResult inferClassCandidate(@NotNull GrCodeReferenceElement ref) {
+  private static GroovyResolveResult inferClassCandidate(@Nonnull GrCodeReferenceElement ref) {
     final GroovyResolveResult[] classResults = ref.multiResolve(false);
     for (GroovyResolveResult result : classResults) {
       if (result.getElement() instanceof PsiClass) {
@@ -292,7 +292,7 @@ public class GrNewExpressionImpl extends GrCallExpressionImpl implements GrNewEx
   }
 
   private class MyFakeReference implements PsiPolyVariantReference {
-    @NotNull
+    @Nonnull
     @Override
     public ResolveResult[] multiResolve(boolean incompleteCode) {
       return GrNewExpressionImpl.this.multiResolve(incompleteCode);
@@ -308,13 +308,13 @@ public class GrNewExpressionImpl extends GrCallExpressionImpl implements GrNewEx
       return TextRange.EMPTY_RANGE;
     }
 
-    @Nullable
+    @javax.annotation.Nullable
     @Override
     public PsiElement resolve() {
       return resolveMethod();
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public String getCanonicalText() {
       return "new expression";
@@ -326,7 +326,7 @@ public class GrNewExpressionImpl extends GrCallExpressionImpl implements GrNewEx
     }
 
     @Override
-    public PsiElement bindToElement(@NotNull PsiElement element) throws IncorrectOperationException {
+    public PsiElement bindToElement(@Nonnull PsiElement element) throws IncorrectOperationException {
       throw new UnsupportedOperationException("unsupported!");
     }
 
@@ -335,7 +335,7 @@ public class GrNewExpressionImpl extends GrCallExpressionImpl implements GrNewEx
       return getManager().areElementsEquivalent(element, resolve());
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public Object[] getVariants() {
       return ArrayUtil.EMPTY_OBJECT_ARRAY;

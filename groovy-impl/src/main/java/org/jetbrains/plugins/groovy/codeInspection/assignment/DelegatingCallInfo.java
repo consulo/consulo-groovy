@@ -15,10 +15,12 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.assignment;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiType;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrArgumentList;
@@ -36,19 +38,19 @@ public class DelegatingCallInfo<T extends GroovyPsiElement> implements CallInfo<
     myDelegate = delegate;
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   @Override
   public GrArgumentList getArgumentList() {
     return myDelegate.getArgumentList();
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   @Override
   public PsiType[] getArgumentTypes() {
     return myDelegate.getArgumentTypes();
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   @Override
   public GrExpression getInvokedExpression() {
     return myDelegate.getInvokedExpression();
@@ -60,49 +62,49 @@ public class DelegatingCallInfo<T extends GroovyPsiElement> implements CallInfo<
     return myDelegate.getQualifierInstanceType();
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public PsiElement getHighlightElementForCategoryQualifier() throws UnsupportedOperationException {
     return myDelegate.getHighlightElementForCategoryQualifier();
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public PsiElement getElementToHighlight() {
     return myDelegate.getElementToHighlight();
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public GroovyResolveResult advancedResolve() {
     return myDelegate.advancedResolve();
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public GroovyResolveResult[] multiResolve() {
     return myDelegate.multiResolve();
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public T getCall() {
     return myDelegate.getCall();
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public GrExpression[] getExpressionArguments() {
     return myDelegate.getExpressionArguments();
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public GrClosableBlock[] getClosureArguments() {
     return myDelegate.getClosureArguments();
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public GrNamedArgument[] getNamedArguments() {
     return myDelegate.getNamedArguments();

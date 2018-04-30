@@ -15,14 +15,14 @@
  */
 package org.jetbrains.plugins.groovy.intentions.control;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ArrayUtilRt;
 import com.intellij.util.IncorrectOperationException;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.codeInspection.utils.ControlFlowUtils;
 import org.jetbrains.plugins.groovy.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.intentions.base.PsiElementPredicate;
@@ -48,7 +48,7 @@ import org.jetbrains.plugins.groovy.lang.psi.controlFlow.impl.IfEndInstruction;
 public class InvertIfIntention extends Intention {
 
   @Override
-  protected void processIntention(@NotNull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
+  protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
     PsiElement parent = element.getParent();
 
     if (!"if".equals(element.getText()) || !(parent instanceof GrIfStatement)) {
@@ -105,12 +105,12 @@ public class InvertIfIntention extends Intention {
     parentIf.replace(newIf);
   }
 
-  private static boolean isNotEmpty(@Nullable GrStatement thenBranch) {
+  private static boolean isNotEmpty(@javax.annotation.Nullable GrStatement thenBranch) {
     return thenBranch != null &&
            !(thenBranch instanceof GrBlockStatement && ((GrBlockStatement)thenBranch).getBlock().getStatements().length == 0);
   }
 
-  private static void generateElseBranchTextAndRemoveTailStatements(@NotNull GrIfStatement ifStatement, @NotNull GrIfStatement newIf) {
+  private static void generateElseBranchTextAndRemoveTailStatements(@Nonnull GrIfStatement ifStatement, @Nonnull GrIfStatement newIf) {
     final GrStatement thenBranch = newIf.getThenBranch();
     assert thenBranch != null;
 
@@ -133,7 +133,7 @@ public class InvertIfIntention extends Intention {
     parent.deleteChildRange(start, end);
   }
 
-  private static boolean isTailAfterIf(@NotNull GrIfStatement ifStatement, @NotNull GrStatementOwner owner) {
+  private static boolean isTailAfterIf(@Nonnull GrIfStatement ifStatement, @Nonnull GrStatementOwner owner) {
     final GrControlFlowOwner flowOwner = ControlFlowUtils.findControlFlowOwner(ifStatement);
     if (flowOwner == null) return false;
 
@@ -159,7 +159,7 @@ public class InvertIfIntention extends Intention {
     return true;
   }
 
-  @NotNull
+  @Nonnull
   private static GrExpression stripParenthesis(GrExpression operand) {
     while (operand instanceof GrParenthesizedExpression) {
       GrExpression innerExpression = ((GrParenthesizedExpression)operand).getOperand();
@@ -171,7 +171,7 @@ public class InvertIfIntention extends Intention {
     return operand;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   protected PsiElementPredicate getElementPredicate() {
     return new PsiElementPredicate() {

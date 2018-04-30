@@ -19,11 +19,11 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.InheritanceUtil;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 
 public class CollectionUtil {
   @Nullable
-  public static PsiClassType createSimilarCollection(@Nullable PsiType collection, Project project, PsiType... itemType) {
+  public static PsiClassType createSimilarCollection(@javax.annotation.Nullable PsiType collection, Project project, PsiType... itemType) {
     if (InheritanceUtil.isInheritor(collection, "java.util.SortedSet")) {
       return createCollection(project, "java.util.SortedSet", itemType);
     }

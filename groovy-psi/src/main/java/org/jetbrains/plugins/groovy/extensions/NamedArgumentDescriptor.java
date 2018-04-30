@@ -15,8 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.extensions;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrArgumentLabel;
@@ -72,36 +72,36 @@ public class NamedArgumentDescriptor
 		this(null);
 	}
 
-	public NamedArgumentDescriptor(@Nullable PsiElement navigationElement)
+	public NamedArgumentDescriptor(@javax.annotation.Nullable PsiElement navigationElement)
 	{
 		this(navigationElement, PsiSubstitutor.EMPTY);
 	}
 
-	public NamedArgumentDescriptor(@Nullable PsiElement navigationElement, PsiSubstitutor substitutor)
+	public NamedArgumentDescriptor(@javax.annotation.Nullable PsiElement navigationElement, PsiSubstitutor substitutor)
 	{
 		myNavigationElement = navigationElement;
 		mySubstitutor = substitutor;
 	}
 
-	@NotNull
+	@Nonnull
 	public Priority getPriority()
 	{
 		return myPriority;
 	}
 
-	public NamedArgumentDescriptor setPriority(@NotNull Priority priority)
+	public NamedArgumentDescriptor setPriority(@Nonnull Priority priority)
 	{
 		myPriority = priority;
 		return this;
 	}
 
-	public boolean checkType(@NotNull PsiType type, @NotNull GroovyPsiElement context)
+	public boolean checkType(@Nonnull PsiType type, @Nonnull GroovyPsiElement context)
 	{
 		return true;
 	}
 
-	@Nullable
-	public PsiPolyVariantReference createReference(@NotNull GrArgumentLabel element)
+	@javax.annotation.Nullable
+	public PsiPolyVariantReference createReference(@Nonnull GrArgumentLabel element)
 	{
 		final PsiElement navigationElement = getNavigationElement();
 		if(navigationElement == null)
@@ -112,7 +112,7 @@ public class NamedArgumentDescriptor
 		return new NamedArgumentReference(element, navigationElement, mySubstitutor);
 	}
 
-	@Nullable
+	@javax.annotation.Nullable
 	public PsiElement getNavigationElement()
 	{
 		return myNavigationElement;
@@ -124,7 +124,7 @@ public class NamedArgumentDescriptor
 		private final PsiSubstitutor mySubstitutor;
 
 		public NamedArgumentReference(GrArgumentLabel element,
-				@NotNull PsiElement navigationElement,
+				@Nonnull PsiElement navigationElement,
 				PsiSubstitutor substitutor)
 		{
 			super(element);
@@ -139,7 +139,7 @@ public class NamedArgumentDescriptor
 		}
 
 		@Override
-		public PsiElement bindToElement(@NotNull PsiElement element) throws IncorrectOperationException
+		public PsiElement bindToElement(@Nonnull PsiElement element) throws IncorrectOperationException
 		{
 			if(element == myNavigationElement)
 			{
@@ -173,14 +173,14 @@ public class NamedArgumentDescriptor
 			return super.handleElementRename(newElementName);
 		}
 
-		@NotNull
+		@Nonnull
 		@Override
 		public Object[] getVariants()
 		{
 			return ArrayUtil.EMPTY_OBJECT_ARRAY;
 		}
 
-		@NotNull
+		@Nonnull
 		@Override
 		public GroovyResolveResult[] multiResolve(boolean incompleteCode)
 		{
@@ -229,7 +229,7 @@ public class NamedArgumentDescriptor
 		}
 
 		@Override
-		public NamedArgumentDescriptor setPriority(@NotNull Priority priority)
+		public NamedArgumentDescriptor setPriority(@Nonnull Priority priority)
 		{
 			throw new UnsupportedOperationException("Use withPriority(priority)");
 		}
@@ -244,14 +244,14 @@ public class NamedArgumentDescriptor
 			this(typeName, null);
 		}
 
-		public StringTypeCondition(String typeName, @Nullable PsiElement navigationElement)
+		public StringTypeCondition(String typeName, @javax.annotation.Nullable PsiElement navigationElement)
 		{
 			super(navigationElement);
 			myTypeName = typeName;
 		}
 
 		@Override
-		public boolean checkType(@NotNull PsiType type, @NotNull GroovyPsiElement context)
+		public boolean checkType(@Nonnull PsiType type, @Nonnull GroovyPsiElement context)
 		{
 			return GroovyPsiManager.isInheritorCached(type, myTypeName);
 		}
@@ -266,14 +266,14 @@ public class NamedArgumentDescriptor
 			this(null, typeNames);
 		}
 
-		public StringArrayTypeCondition(@Nullable PsiElement navigationElement, String... typeNames)
+		public StringArrayTypeCondition(@javax.annotation.Nullable PsiElement navigationElement, String... typeNames)
 		{
 			super(navigationElement);
 			this.myTypeNames = typeNames;
 		}
 
 		@Override
-		public boolean checkType(@NotNull PsiType type, @NotNull GroovyPsiElement context)
+		public boolean checkType(@Nonnull PsiType type, @Nonnull GroovyPsiElement context)
 		{
 			for(String typeName : myTypeNames)
 			{
@@ -290,12 +290,12 @@ public class NamedArgumentDescriptor
 	{
 		private final PsiType myType;
 
-		public TypeCondition(@NotNull PsiType type)
+		public TypeCondition(@Nonnull PsiType type)
 		{
 			this(type, null, PsiSubstitutor.EMPTY);
 		}
 
-		public TypeCondition(@NotNull PsiType type, @Nullable PsiElement navigationElement)
+		public TypeCondition(@Nonnull PsiType type, @Nullable PsiElement navigationElement)
 		{
 			this(type, navigationElement, PsiSubstitutor.EMPTY);
 		}
@@ -307,7 +307,7 @@ public class NamedArgumentDescriptor
 		}
 
 		@Override
-		public boolean checkType(@NotNull PsiType type, @NotNull GroovyPsiElement context)
+		public boolean checkType(@Nonnull PsiType type, @Nonnull GroovyPsiElement context)
 		{
 			return TypesUtil.isAssignable(myType, type, context);
 		}
@@ -321,7 +321,7 @@ public class NamedArgumentDescriptor
 		}
 
 		@Override
-		public NamedArgumentDescriptor setPriority(@NotNull Priority priority)
+		public NamedArgumentDescriptor setPriority(@Nonnull Priority priority)
 		{
 			throw new UnsupportedOperationException();
 		}

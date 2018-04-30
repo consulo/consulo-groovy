@@ -30,7 +30,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.groovy.compiler.rt.CompilerMessage;
 import org.jetbrains.groovy.compiler.rt.GroovyCompilerMessageCategories;
 import org.jetbrains.groovy.compiler.rt.GroovycRunner;
@@ -372,7 +371,7 @@ public abstract class GroovyCompilerBase implements TranslatingCompiler
 		((CompileContextEx) compileContext).addScope(new FileSetCompileScope(stubFiles, new Module[]{module}));
 	}
 
-	@Nullable
+	@javax.annotation.Nullable
 	protected static VirtualFile getMainOutput(CompileContext compileContext, Module module, boolean tests)
 	{
 		return tests ? compileContext.getModuleOutputDirectoryForTests(module) : compileContext.getModuleOutputDirectory(module);

@@ -15,6 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.synthetic;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.*;
@@ -22,8 +24,8 @@ import com.intellij.psi.impl.light.LightMethodBuilder;
 import com.intellij.psi.impl.light.LightModifierList;
 import com.intellij.psi.impl.light.LightParameterListBuilder;
 import icons.JetgroovyIcons;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.GroovyLanguage;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
@@ -39,11 +41,12 @@ import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
  */
 public class GrAccessorMethodImpl extends LightMethodBuilder implements GrAccessorMethod {
   public static final Logger LOG = Logger.getInstance("org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GrAccessorMethodImpl");
-  @NotNull private final GrField myProperty;
+  @Nonnull
+  private final GrField myProperty;
 
   private final boolean myIsSetter;
 
-  public GrAccessorMethodImpl(@NotNull GrField property, boolean isSetter, String name) {
+  public GrAccessorMethodImpl(@Nonnull GrField property, boolean isSetter, String name) {
     super(property.getManager(), GroovyLanguage.INSTANCE, name,
           new LightParameterListBuilder(property.getManager(), GroovyLanguage.INSTANCE),
           new LightModifierList(property.getManager()) {
@@ -118,7 +121,7 @@ public class GrAccessorMethodImpl extends LightMethodBuilder implements GrAccess
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public GrField getProperty() {
     return myProperty;
   }
@@ -198,7 +201,7 @@ public class GrAccessorMethodImpl extends LightMethodBuilder implements GrAccess
     return false;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public PsiElement getPrototype() {
     return getProperty();

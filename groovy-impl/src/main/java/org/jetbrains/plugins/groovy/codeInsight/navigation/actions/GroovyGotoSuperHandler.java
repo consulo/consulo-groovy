@@ -27,8 +27,8 @@ import com.intellij.psi.util.PsiSuperMethodUtil;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.containers.ContainerUtil;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
@@ -80,7 +80,7 @@ public class GroovyGotoSuperHandler extends GotoTargetHandler implements Languag
     }
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   private static PsiMember findSource(Editor editor, PsiFile file) {
     PsiElement element = file.findElementAt(editor.getCaretModel().getOffset());
     if (element == null) return null;
@@ -114,7 +114,7 @@ public class GroovyGotoSuperHandler extends GotoTargetHandler implements Languag
     return false;
   }
 
-  @NotNull
+  @Nonnull
   private static PsiMethod[] getSupers(PsiMethod method) {
     if (method.isConstructor()) {
       PsiMethod constructorInSuper = PsiSuperMethodUtil.findConstructorInSuper(method);

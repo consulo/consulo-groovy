@@ -19,8 +19,8 @@ package org.jetbrains.plugins.groovy.lang.folding;
 import java.util.List;
 import java.util.Set;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.groovydoc.parser.GroovyDocElementTypes;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.lexer.TokenSets;
@@ -61,9 +61,9 @@ public class GroovyFoldingBuilder extends CustomFoldingBuilder implements DumbAw
 {
 
 	@Override
-	protected void buildLanguageFoldRegions(@NotNull List<FoldingDescriptor> descriptors,
-			@NotNull PsiElement root,
-			@NotNull Document document,
+	protected void buildLanguageFoldRegions(@Nonnull List<FoldingDescriptor> descriptors,
+			@Nonnull PsiElement root,
+			@Nonnull Document document,
 			boolean quick)
 	{
 		appendDescriptors(root, descriptors, new HashSet<PsiElement>());
@@ -306,7 +306,7 @@ public class GroovyFoldingBuilder extends CustomFoldingBuilder implements DumbAw
 
 	@Nullable
 	@Override
-	protected String getLanguagePlaceholderText(@NotNull ASTNode node, @NotNull TextRange range)
+	protected String getLanguagePlaceholderText(@Nonnull ASTNode node, @Nonnull TextRange range)
 	{
 		final IElementType elemType = node.getElementType();
 		if(TokenSets.BLOCK_SET.contains(elemType) || elemType == GroovyElementTypes.CLOSABLE_BLOCK)
@@ -335,7 +335,7 @@ public class GroovyFoldingBuilder extends CustomFoldingBuilder implements DumbAw
 	}
 
 	@Override
-	protected boolean isRegionCollapsedByDefault(@NotNull ASTNode node)
+	protected boolean isRegionCollapsedByDefault(@Nonnull ASTNode node)
 	{
 		final JavaCodeFoldingSettings settings = JavaCodeFoldingSettings.getInstance();
 		if(node.getElementType() == GroovyElementTypes.IMPORT_STATEMENT)

@@ -16,8 +16,8 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.psi.GrReferenceElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
 import com.intellij.psi.PsiElement;
@@ -29,13 +29,13 @@ import com.intellij.psi.tree.IElementType;
  */
 public interface GrReferenceExpression extends GrExpression, GrReferenceElement<GrExpression> {
 
-  @Nullable
+  @javax.annotation.Nullable
   GrExpression getQualifierExpression();
 
-  @Nullable
+  @javax.annotation.Nullable
   IElementType getDotTokenType();
 
-  @Nullable
+  @javax.annotation.Nullable
   PsiElement getDotToken();
 
   boolean hasAt();
@@ -45,10 +45,10 @@ public interface GrReferenceExpression extends GrExpression, GrReferenceElement<
   void replaceDotToken(PsiElement newDotToken);
 
   //not caching!
-  @NotNull
+  @Nonnull
   GroovyResolveResult[] getSameNameVariants();
 
-  GrReferenceExpression bindToElementViaStaticImport(@NotNull PsiMember member);
+  GrReferenceExpression bindToElementViaStaticImport(@Nonnull PsiMember member);
 
   GroovyResolveResult[] resolveByShape();
 }

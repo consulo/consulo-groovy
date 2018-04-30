@@ -22,8 +22,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.module.Module;
@@ -48,12 +48,12 @@ public class ModuleChooserUtil
 
 	private static final String GROOVY_LAST_MODULE = "Groovy.Last.Module.Chosen";
 
-	public static void selectModule(@NotNull Project project, final Collection<Module> suitableModules, final Function<Module, String> versionProvider, final Consumer<Module> callback)
+	public static void selectModule(@Nonnull Project project, final Collection<Module> suitableModules, final Function<Module, String> versionProvider, final Consumer<Module> callback)
 	{
 		selectModule(project, suitableModules, versionProvider, callback, null);
 	}
 
-	public static void selectModule(@NotNull Project project,
+	public static void selectModule(@Nonnull Project project,
 			final Collection<Module> suitableModules,
 			final Function<Module, String> versionProvider,
 			final Consumer<Module> callback,
@@ -78,7 +78,7 @@ public class ModuleChooserUtil
 
 		BaseListPopupStep<Module> step = new BaseListPopupStep<Module>("Which module to use classpath of?", modules, PlatformIcons.CONTENT_ROOT_ICON_CLOSED)
 		{
-			@NotNull
+			@Nonnull
 			@Override
 			public String getTextFor(Module value)
 			{
@@ -133,7 +133,7 @@ public class ModuleChooserUtil
 		}
 	}
 
-	@NotNull
+	@Nonnull
 	private static Condition<Module> isGroovyCompatibleModule(final Condition<Module> condition)
 	{
 		return module -> {

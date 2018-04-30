@@ -15,8 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
 import com.intellij.psi.PsiElement;
@@ -30,7 +30,7 @@ public interface GrReferenceList extends GroovyPsiElement, PsiReferenceList
 {
 	ArrayFactory<GrReferenceList> ARRAY_FACTORY = new ArrayFactory<GrReferenceList>()
 	{
-		@NotNull
+		@Nonnull
 		@Override
 		public GrReferenceList[] create(int count)
 		{

@@ -18,11 +18,12 @@ package org.jetbrains.plugins.groovy.gant;
 import java.util.Collections;
 import java.util.List;
 
+import javax.annotation.Nonnull;
 import javax.swing.Icon;
 
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.extensions.GroovyRunnableScriptType;
 import org.jetbrains.plugins.groovy.extensions.GroovyScriptType;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
@@ -60,7 +61,7 @@ public class GantScriptType extends GroovyRunnableScriptType
 		super("gant");
 	}
 
-	@NotNull
+	@Nonnull
 	public Icon getScriptIcon()
 	{
 		return JetgroovyIcons.Groovy.Gant_16x16;
@@ -73,7 +74,7 @@ public class GantScriptType extends GroovyRunnableScriptType
 	}
 
 	@Override
-	public boolean isConfigurationByLocation(@NotNull GroovyScriptRunConfiguration existing, @NotNull Location place)
+	public boolean isConfigurationByLocation(@Nonnull GroovyScriptRunConfiguration existing, @Nonnull Location place)
 	{
 		final String params = existing.getScriptParameters();
 		final String s = getTargetName(place);
@@ -105,7 +106,7 @@ public class GantScriptType extends GroovyRunnableScriptType
 	}
 
 	@Override
-	public void tuneConfiguration(@NotNull GroovyFile file, @NotNull GroovyScriptRunConfiguration configuration, Location location)
+	public void tuneConfiguration(@Nonnull GroovyFile file, @Nonnull GroovyScriptRunConfiguration configuration, Location location)
 	{
 		String target = getTargetName(location);
 		if(target != null)
@@ -116,7 +117,7 @@ public class GantScriptType extends GroovyRunnableScriptType
 		RunManagerEx.disableTasks(file.getProject(), configuration, CompileStepBeforeRun.ID, CompileStepBeforeRunNoErrorCheck.ID);
 	}
 
-	public static List<VirtualFile> additionalScopeFiles(@NotNull GroovyFile file)
+	public static List<VirtualFile> additionalScopeFiles(@Nonnull GroovyFile file)
 	{
 		final Module module = ModuleUtil.findModuleForPsiElement(file);
 		if(module != null)
@@ -139,7 +140,7 @@ public class GantScriptType extends GroovyRunnableScriptType
 	}
 
 	@Override
-	public GlobalSearchScope patchResolveScope(@NotNull GroovyFile file, @NotNull GlobalSearchScope baseScope)
+	public GlobalSearchScope patchResolveScope(@Nonnull GroovyFile file, @Nonnull GlobalSearchScope baseScope)
 	{
 		return baseScope.uniteWith(new NonClasspathDirectoriesScope(additionalScopeFiles(file)));
 	}

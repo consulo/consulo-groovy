@@ -15,8 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.highlighter;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+
 import com.intellij.lexer.LexerBase;
 import com.intellij.openapi.diagnostic.Attachment;
 import com.intellij.openapi.diagnostic.Logger;
@@ -45,7 +45,7 @@ public abstract class GroovyStringLexerBase extends LexerBase
 	}
 
 	@Override
-	public void start(@NotNull CharSequence buffer, int startOffset, int endOffset, int initialState)
+	public void start(@Nonnull CharSequence buffer, int startOffset, int endOffset, int initialState)
 	{
 		if(buffer.length() < endOffset)
 		{
@@ -59,7 +59,7 @@ public abstract class GroovyStringLexerBase extends LexerBase
 		myTokenType = locateToken();
 	}
 
-	@Nullable
+	@javax.annotation.Nullable
 	private IElementType locateToken()
 	{
 		if(myEnd >= myBufferEnd)
@@ -134,7 +134,7 @@ public abstract class GroovyStringLexerBase extends LexerBase
 		myTokenType = locateToken();
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public CharSequence getBufferSequence()
 	{

@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.metrics;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyRecursiveElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlock;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.branch.GrReturnStatement;
@@ -28,7 +28,7 @@ class ReturnPointCountVisitor extends GroovyRecursiveElementVisitor {
     //so as not to drill down
   }
 
-  public void visitReturnStatement(@NotNull GrReturnStatement statement) {
+  public void visitReturnStatement(@Nonnull GrReturnStatement statement) {
     super.visitReturnStatement(statement);
     m_count++;
   }

@@ -18,8 +18,8 @@ package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.path;
 import com.intellij.psi.*;
 import com.intellij.psi.util.PsiUtil;
 import com.intellij.util.containers.ContainerUtil;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrMethodCall;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
@@ -49,7 +49,7 @@ public class GrDGMTypeCalculator extends GrCallExpressionTypeCalculator {
   }
 
   @Override
-  protected PsiType calculateReturnType(@NotNull GrMethodCall callExpression, @NotNull PsiMethod resolved) {
+  protected PsiType calculateReturnType(@Nonnull GrMethodCall callExpression, @Nonnull PsiMethod resolved) {
     if (resolved instanceof GrGdkMethod) {
       resolved = ((GrGdkMethod)resolved).getStaticMethod();
     }
@@ -108,7 +108,7 @@ public class GrDGMTypeCalculator extends GrCallExpressionTypeCalculator {
     return type instanceof PsiArrayType || GroovyPsiManager.isInheritorCached(type, CommonClassNames.JAVA_UTIL_COLLECTION);
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   private static GrExpression getQualifier(GrMethodCall callExpression) {
     GrExpression invoked = callExpression.getInvokedExpression();
     if (invoked instanceof GrReferenceExpression) {

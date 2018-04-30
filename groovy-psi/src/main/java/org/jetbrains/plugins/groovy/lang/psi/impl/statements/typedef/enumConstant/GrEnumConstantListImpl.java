@@ -16,7 +16,8 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.typedef.enumConstant;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrEnumConstant;
@@ -33,7 +34,7 @@ import com.intellij.psi.stubs.EmptyStub;
  */
 public class GrEnumConstantListImpl extends GrStubElementBase<EmptyStub> implements GrEnumConstantList, StubBasedPsiElement<EmptyStub> {
 
-  public GrEnumConstantListImpl(@NotNull ASTNode node) {
+  public GrEnumConstantListImpl(@Nonnull ASTNode node) {
     super(node);
   }
 

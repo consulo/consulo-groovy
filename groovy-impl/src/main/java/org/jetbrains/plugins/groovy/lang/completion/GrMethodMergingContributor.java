@@ -17,7 +17,7 @@ package org.jetbrains.plugins.groovy.lang.completion;
 
 import java.util.ArrayList;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames;
 import com.intellij.codeInsight.completion.AutoCompletionContext;
@@ -39,7 +39,7 @@ import com.intellij.psi.PsiType;
 public class GrMethodMergingContributor extends CompletionContributor
 {
 	@Override
-	public AutoCompletionDecision handleAutoCompletionPossibility(@NotNull AutoCompletionContext context)
+	public AutoCompletionDecision handleAutoCompletionPossibility(@Nonnull AutoCompletionContext context)
 	{
 		final CompletionParameters parameters = context.getParameters();
 

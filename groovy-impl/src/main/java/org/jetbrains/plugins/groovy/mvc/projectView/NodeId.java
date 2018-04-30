@@ -1,8 +1,8 @@
 package org.jetbrains.plugins.groovy.mvc.projectView;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.psi.PsiElement;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.NonNls;
 
 /**
@@ -30,11 +30,11 @@ public class NodeId {
   @NonNls public static final String TESTS_TREE = "TESTS";
   @NonNls public static final String TEST_CLASS_IN_TESTS_SUBTREE = "TEST_IN" + TESTS_TREE;
 
-  public NodeId(@NotNull final String fileUrl, @Nullable final String locationRootMark) {
+  public NodeId(@Nonnull final String fileUrl, @javax.annotation.Nullable final String locationRootMark) {
     this(fileUrl, null, locationRootMark);
   }
 
-  public NodeId(@NotNull final PsiElement element, @Nullable final String locationRootMark) {
+  public NodeId(@Nonnull final PsiElement element, @javax.annotation.Nullable final String locationRootMark) {
     this(null, element, locationRootMark);
   }
 
@@ -49,25 +49,25 @@ public class NodeId {
    * @param element
    * @param locationRootMark
    */
-  private NodeId(@Nullable final String fileUrl,
-                 @Nullable final PsiElement element,
-                 @Nullable final String locationRootMark) {
+  private NodeId(@javax.annotation.Nullable final String fileUrl,
+                 @javax.annotation.Nullable final PsiElement element,
+                 @javax.annotation.Nullable final String locationRootMark) {
     myFileUrl = fileUrl;
     myElement = element;
     myLocationRootMark = locationRootMark;
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   public String getFileUrl() {
     return myFileUrl;
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   public String getLocationRootMark() {
     return myLocationRootMark;
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   public PsiElement getPsiElement() {
     return myElement;
   }

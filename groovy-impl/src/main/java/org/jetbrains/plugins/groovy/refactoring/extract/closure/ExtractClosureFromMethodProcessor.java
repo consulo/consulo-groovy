@@ -37,7 +37,7 @@ import com.intellij.usageView.UsageInfo;
 import com.intellij.usageView.UsageViewUtil;
 import com.intellij.util.containers.MultiMap;
 import gnu.trove.TIntArrayList;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlock;
@@ -68,7 +68,7 @@ public class ExtractClosureFromMethodProcessor extends ExtractClosureProcessorBa
   private final GrMethod myMethod;
   private final GrStatementOwner myDeclarationOwner;
 
-  public ExtractClosureFromMethodProcessor(@NotNull GrIntroduceParameterSettings helper) {
+  public ExtractClosureFromMethodProcessor(@Nonnull GrIntroduceParameterSettings helper) {
     super(helper);
     myDeclarationOwner = GroovyRefactoringUtil.getDeclarationOwner(helper.getStatements()[0]);
     myMethod = (GrMethod)myHelper.getToReplaceIn();
@@ -127,7 +127,7 @@ public class ExtractClosureFromMethodProcessor extends ExtractClosureProcessorBa
     return true;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   protected UsageInfo[] findUsages() {
     List<UsageInfo> result = new ArrayList<UsageInfo>();
@@ -228,7 +228,7 @@ public class ExtractClosureFromMethodProcessor extends ExtractClosureProcessorBa
       myWrapper = new GrExpressionWrapper(myClosure);
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public Project getProject() {
       return myProject;
@@ -239,7 +239,7 @@ public class ExtractClosureFromMethodProcessor extends ExtractClosureProcessorBa
       return myMethod;
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public PsiMethod getMethodToSearchFor() {
       return (PsiMethod)myHelper.getToSearchFor();
@@ -250,7 +250,7 @@ public class ExtractClosureFromMethodProcessor extends ExtractClosureProcessorBa
       return myWrapper;
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public String getParameterName() {
       return myHelper.getName();
@@ -271,14 +271,14 @@ public class ExtractClosureFromMethodProcessor extends ExtractClosureProcessorBa
       return false; //todo
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public PsiType getForcedType() {
       PsiType type = myHelper.getSelectedType();
       return type != null ? type : PsiType.getJavaLangObject(PsiManager.getInstance(myProject), GlobalSearchScope.allScope(myProject));
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public TIntArrayList getParametersToRemove() {
       return myHelper.parametersToRemove();

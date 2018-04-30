@@ -18,8 +18,8 @@ package org.jetbrains.plugins.groovy.formatter.blocks;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.formatter.AlignmentProvider;
 import org.jetbrains.plugins.groovy.formatter.FormattingContext;
 import org.jetbrains.plugins.groovy.formatter.processors.GroovyWrappingProcessor;
@@ -41,17 +41,17 @@ public class ParameterListBlock extends GroovyBlock
 	private final List<Block> mySubBlocks;
 	private final TextRange myTextRange;
 
-	@NotNull
+	@Nonnull
 	@Override
 	public TextRange getTextRange()
 	{
 		return myTextRange;
 	}
 
-	public ParameterListBlock(@NotNull GrMethod method,
-			@NotNull Indent indent,
+	public ParameterListBlock(@Nonnull GrMethod method,
+			@Nonnull Indent indent,
 			@Nullable Wrap wrap,
-			@NotNull FormattingContext context)
+			@Nonnull FormattingContext context)
 	{
 		super(method.getParameterList().getNode(), indent, wrap, context);
 		final ASTNode methodNode = method.getNode();
@@ -110,7 +110,7 @@ public class ParameterListBlock extends GroovyBlock
 				mySubBlocks.get(mySubBlocks.size() - 1).getTextRange().getEndOffset());
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public List<Block> getSubBlocks()
 	{

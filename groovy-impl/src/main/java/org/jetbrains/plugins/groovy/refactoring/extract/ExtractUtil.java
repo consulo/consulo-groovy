@@ -23,8 +23,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyRecursiveElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
@@ -73,8 +73,8 @@ public class ExtractUtil
 	{
 	}
 
-	public static GrStatement replaceStatement(@Nullable GrStatementOwner declarationOwner,
-			@NotNull ExtractInfoHelper helper)
+	public static GrStatement replaceStatement(@javax.annotation.Nullable GrStatementOwner declarationOwner,
+			@Nonnull ExtractInfoHelper helper)
 	{
 		GrStatement realStatement;
 		if(declarationOwner != null && !isSingleExpression(helper.getStatements()) && helper.getStringPartInfo() ==
@@ -116,7 +116,7 @@ public class ExtractUtil
 		return realStatement;
 	}
 
-	@NotNull
+	@Nonnull
 	private static GrStatement[] createResultStatement(ExtractInfoHelper helper)
 	{
 		VariableInfo[] outputVars = helper.getOutputVariableInfos();
@@ -215,7 +215,7 @@ public class ExtractUtil
 
 	private static List<GrStatement> generateVarDeclarations(List<VariableInfo> varInfos,
 			Project project,
-			@Nullable GrExpression initializer)
+			@javax.annotation.Nullable GrExpression initializer)
 	{
 		List<GrStatement> result = new ArrayList<GrStatement>();
 		if(varInfos.isEmpty())
@@ -296,8 +296,8 @@ public class ExtractUtil
 	/*
 	  To declare or not a variable to which method call result will be assigned.
 	   */
-	private static List<VariableInfo> mustAddVariableDeclaration(@NotNull GrStatement[] statements,
-			@NotNull VariableInfo[] vars)
+	private static List<VariableInfo> mustAddVariableDeclaration(@Nonnull GrStatement[] statements,
+			@Nonnull VariableInfo[] vars)
 	{
 		Map<String, VariableInfo> names = new HashMap<String, VariableInfo>();
 		for(VariableInfo var : vars)
@@ -417,7 +417,7 @@ public class ExtractUtil
 		return factory.createMethodFromText(methodText, helper.getContext());
 	}
 
-	public static void appendName(@NotNull final StringBuilder buffer, @NotNull final String name)
+	public static void appendName(@Nonnull final StringBuilder buffer, @Nonnull final String name)
 	{
 		if(GroovyNamesUtil.isIdentifier(name))
 		{
@@ -458,7 +458,7 @@ public class ExtractUtil
 			{
 				genDecl.add(new VariableInfo()
 				{
-					@NotNull
+					@Nonnull
 					@Override
 					public String getName()
 					{
@@ -569,10 +569,10 @@ public class ExtractUtil
 		return ArrayUtil.toStringArray(params);
 	}
 
-	@NotNull
-	public static String getTypeString(@NotNull ExtractMethodInfoHelper helper,
+	@Nonnull
+	public static String getTypeString(@Nonnull ExtractMethodInfoHelper helper,
 			boolean forPresentation,
-			@NotNull String modifier)
+			@Nonnull String modifier)
 	{
 		if(!helper.specifyType())
 		{
@@ -642,7 +642,7 @@ public class ExtractUtil
 		return ((GrMethodCallExpression) expr);
 	}
 
-	public static int getCaretOffset(@NotNull GrStatement statement)
+	public static int getCaretOffset(@Nonnull GrStatement statement)
 	{
 		if(statement instanceof GrVariableDeclaration)
 		{

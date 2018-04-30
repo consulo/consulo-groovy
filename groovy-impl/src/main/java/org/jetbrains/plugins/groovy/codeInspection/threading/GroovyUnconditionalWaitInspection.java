@@ -15,12 +15,13 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.threading;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.psi.CommonClassNames;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiMethod;
 import com.intellij.psi.PsiModifier;
 import org.jetbrains.annotations.Nls;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrIfStatement;
@@ -35,17 +36,17 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMe
 public class GroovyUnconditionalWaitInspection extends BaseInspection {
 
   @Nls
-  @NotNull
+  @Nonnull
   public String getGroupDisplayName() {
     return THREADING_ISSUES;
   }
 
-  @NotNull
+  @Nonnull
   public String getDisplayName() {
     return "Unconditional 'wait' call";
   }
 
-  @NotNull
+  @Nonnull
   protected String buildErrorString(Object... infos) {
     return "Unconditional call to <code>#ref()</code> #loc";
   }
@@ -57,7 +58,7 @@ public class GroovyUnconditionalWaitInspection extends BaseInspection {
   private static class UnconditionalWaitVisitor
       extends BaseInspectionVisitor {
 
-    public void visitMethod(@NotNull GrMethod method) {
+    public void visitMethod(@Nonnull GrMethod method) {
       super.visitMethod(method);
       if (!method.hasModifierProperty(PsiModifier.SYNCHRONIZED)) {
         return;
@@ -69,7 +70,7 @@ public class GroovyUnconditionalWaitInspection extends BaseInspection {
     }
 
     public void visitSynchronizedStatement(
-        @NotNull GrSynchronizedStatement statement) {
+        @Nonnull GrSynchronizedStatement statement) {
       super.visitSynchronizedStatement(statement);
       final GrCodeBlock body = statement.getBody();
       if (body != null) {

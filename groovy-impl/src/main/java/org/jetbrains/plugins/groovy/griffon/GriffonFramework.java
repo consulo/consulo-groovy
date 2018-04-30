@@ -27,11 +27,12 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.annotation.Nonnull;
 import javax.swing.Icon;
 
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.mvc.MvcCommand;
 import org.jetbrains.plugins.groovy.mvc.MvcFramework;
@@ -86,7 +87,7 @@ public class GriffonFramework extends MvcFramework
 	{
 	}
 
-	public boolean hasSupport(@NotNull Module module)
+	public boolean hasSupport(@Nonnull Module module)
 	{
 		return getSdkRoot(module) != null && findAppRoot(module) != null && !isAuxModule(module);
 	}
@@ -104,11 +105,11 @@ public class GriffonFramework extends MvcFramework
 	}
 
 	@Override
-	public void upgradeFramework(@NotNull Module module)
+	public void upgradeFramework(@Nonnull Module module)
 	{
 	}
 
-	@Nullable
+	@javax.annotation.Nullable
 	@Override
 	protected GeneralCommandLine getCreationCommandLine(Module module)
 	{
@@ -129,7 +130,7 @@ public class GriffonFramework extends MvcFramework
 	}
 
 	@Override
-	public void updateProjectStructure(final @NotNull Module module)
+	public void updateProjectStructure(final @Nonnull Module module)
 	{
 		if(!MvcModuleStructureUtil.isEnabledStructureUpdate())
 		{
@@ -163,7 +164,7 @@ public class GriffonFramework extends MvcFramework
 	}
 
 	@Override
-	public void ensureRunConfigurationExists(@NotNull Module module)
+	public void ensureRunConfigurationExists(@Nonnull Module module)
 	{
 		final VirtualFile root = findAppRoot(module);
 		if(root != null)
@@ -173,7 +174,7 @@ public class GriffonFramework extends MvcFramework
 	}
 
 	@Override
-	public String getInstalledPluginNameByPath(Project project, @NotNull VirtualFile pluginPath)
+	public String getInstalledPluginNameByPath(Project project, @Nonnull VirtualFile pluginPath)
 	{
 		String nameFromPluginXml = super.getInstalledPluginNameByPath(project, pluginPath);
 		if(nameFromPluginXml != null)
@@ -247,7 +248,7 @@ public class GriffonFramework extends MvcFramework
 	}
 
 	@Override
-	public VirtualFile getSdkRoot(@Nullable Module module)
+	public VirtualFile getSdkRoot(@javax.annotation.Nullable Module module)
 	{
 		if(module == null)
 		{
@@ -280,12 +281,12 @@ public class GriffonFramework extends MvcFramework
 	}
 
 	@Override
-	public OwnJavaParameters createJavaParameters(@NotNull Module module,
+	public OwnJavaParameters createJavaParameters(@Nonnull Module module,
 			boolean forCreation,
 			boolean forTests,
 			boolean classpathFromDependencies,
-			@Nullable String jvmParams,
-			@NotNull MvcCommand command) throws ExecutionException
+			@javax.annotation.Nullable String jvmParams,
+			@Nonnull MvcCommand command) throws ExecutionException
 	{
 		OwnJavaParameters params = new OwnJavaParameters();
 
@@ -452,7 +453,7 @@ public class GriffonFramework extends MvcFramework
 	}
 
 	@Nullable
-	public File getDefaultSdkWorkDir(@NotNull Module module)
+	public File getDefaultSdkWorkDir(@Nonnull Module module)
 	{
 		final String version = GriffonLibraryPresentationProvider.getGriffonVersion(module);
 		if(version == null)
@@ -470,7 +471,7 @@ public class GriffonFramework extends MvcFramework
 	}
 
 	@Override
-	public MvcProjectStructure createProjectStructure(@NotNull Module module, boolean auxModule)
+	public MvcProjectStructure createProjectStructure(@Nonnull Module module, boolean auxModule)
 	{
 		return new GriffonProjectStructure(module, auxModule);
 	}
@@ -526,7 +527,7 @@ public class GriffonFramework extends MvcFramework
 			super(module, auxModule, getUserHomeGriffon(), GriffonFramework.getInstance().getSdkWorkDir(module));
 		}
 
-		@NotNull
+		@Nonnull
 		public String getUserLibraryName()
 		{
 			return GRIFFON_USER_LIBRARY;

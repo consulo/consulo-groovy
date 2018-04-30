@@ -19,8 +19,8 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.psi.*;
 import com.intellij.util.ArrayUtil;
 import com.intellij.util.containers.hash.HashSet;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrArgumentList;
@@ -48,7 +48,7 @@ public class DefaultCallExpressionTypeCalculator extends GrCallExpressionTypeCal
   private static final Logger LOG = Logger.getInstance(DefaultCallExpressionTypeCalculator.class);
 
   @Override
-  public PsiType calculateReturnType(@NotNull GrMethodCall callExpression, GroovyResolveResult[] resolveResults) {
+  public PsiType calculateReturnType(@Nonnull GrMethodCall callExpression, GroovyResolveResult[] resolveResults) {
     GrExpression invoked = callExpression.getInvokedExpression();
     if (invoked instanceof GrReferenceExpression) {
       GrReferenceExpression refExpr = (GrReferenceExpression) invoked;
@@ -82,7 +82,7 @@ public class DefaultCallExpressionTypeCalculator extends GrCallExpressionTypeCal
     }
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   private static PsiType calculateReturnTypeInner(GrMethodCall callExpression,
                                                   GrReferenceExpression refExpr,
                                                   GroovyResolveResult resolveResult) {
@@ -150,7 +150,7 @@ public class DefaultCallExpressionTypeCalculator extends GrCallExpressionTypeCal
     CLOSURE_METHODS.add("memoize");
     CLOSURE_METHODS.add("trampoline");
   }
-  @Nullable
+  @javax.annotation.Nullable
   private static PsiType getClosureMethodsReturnType(GrMethodCall callExpression, GrReferenceExpression refExpr, PsiMethod resolved) {
     PsiClass clazz = resolved.getContainingClass();
     if (clazz == null || !GroovyCommonClassNames.GROOVY_LANG_CLOSURE.equals(clazz.getQualifiedName())) return null;

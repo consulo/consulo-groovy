@@ -19,7 +19,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import com.intellij.ProjectTopics;
 import com.intellij.openapi.compiler.CompilerManager;
@@ -132,7 +133,7 @@ public class ConfigureGroovyLibraryNotificationProvider extends EditorNotificati
 		return null;
 	}
 
-	private static boolean isMavenModule(@NotNull Module module)
+	private static boolean isMavenModule(@Nonnull Module module)
 	{
 		for(VirtualFile root : ModuleRootManager.getInstance(module).getContentRoots())
 		{

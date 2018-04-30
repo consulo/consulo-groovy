@@ -18,8 +18,8 @@ package org.jetbrains.plugins.groovy.refactoring.changeSignature;
 import java.util.List;
 import java.util.Set;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocComment;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocParameterReference;
@@ -236,7 +236,7 @@ public class GrChangeSignatureUsageProcessor implements ChangeSignatureUsageProc
 
 	@Override
 	public void registerConflictResolvers(List<ResolveSnapshotProvider.ResolveSnapshot> snapshots,
-			@NotNull ResolveSnapshotProvider resolveSnapshotProvider, UsageInfo[] usages, ChangeInfo changeInfo)
+			@Nonnull ResolveSnapshotProvider resolveSnapshotProvider, UsageInfo[] usages, ChangeInfo changeInfo)
 	{
 	}
 
@@ -296,7 +296,7 @@ public class GrChangeSignatureUsageProcessor implements ChangeSignatureUsageProc
 		buffer.append(");");
 	}
 
-	private static boolean processPrimaryMethodInner(JavaChangeInfo changeInfo, GrMethod method, @Nullable PsiMethod baseMethod)
+	private static boolean processPrimaryMethodInner(JavaChangeInfo changeInfo, GrMethod method, @javax.annotation.Nullable PsiMethod baseMethod)
 	{
 		if(changeInfo.isNameChanged())
 		{
@@ -479,7 +479,7 @@ public class GrChangeSignatureUsageProcessor implements ChangeSignatureUsageProc
 		return current != null ? PsiTreeUtil.getNextSiblingOfType(current, type) : PsiTreeUtil.getChildOfType(parameterList, type);
 	}
 
-	@Nullable
+	@javax.annotation.Nullable
 	private static String getInitializer(JavaParameterInfo newParameter)
 	{
 		if(newParameter instanceof GrParameterInfo)
@@ -778,7 +778,7 @@ public class GrChangeSignatureUsageProcessor implements ChangeSignatureUsageProc
 		}
 	}
 
-	@Nullable
+	@javax.annotation.Nullable
 	private static GrExpression createDefaultValue(GroovyPsiElementFactory factory, JavaChangeInfo changeInfo, JavaParameterInfo info,
 			final GrArgumentList list)
 	{
@@ -811,7 +811,7 @@ public class GrChangeSignatureUsageProcessor implements ChangeSignatureUsageProc
 				}
 
 				@Override
-				public boolean execute(@NotNull PsiElement pe, ResolveState state)
+				public boolean execute(@Nonnull PsiElement pe, ResolveState state)
 				{
 					super.execute(pe, state);
 					return size() < 2;
@@ -885,7 +885,7 @@ public class GrChangeSignatureUsageProcessor implements ChangeSignatureUsageProc
 			List<PsiClassType> referencedTypes = ContainerUtil.map(catchClauses, new Function<GrCatchClause, PsiClassType>()
 			{
 				@Override
-				@Nullable
+				@javax.annotation.Nullable
 				public PsiClassType fun(GrCatchClause grCatchClause)
 				{
 					final GrParameter grParameter = grCatchClause.getParameter();
@@ -993,7 +993,7 @@ public class GrChangeSignatureUsageProcessor implements ChangeSignatureUsageProc
 		return ContainerUtil.map(infos, new Function<ThrownExceptionInfo, PsiClassType>()
 		{
 			@Override
-			@Nullable
+			@javax.annotation.Nullable
 			public PsiClassType fun(ThrownExceptionInfo thrownExceptionInfo)
 			{
 				return (PsiClassType) thrownExceptionInfo.createType(context, manager);

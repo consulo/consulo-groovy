@@ -16,8 +16,8 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiPolyVariantReference;
@@ -28,15 +28,15 @@ import com.intellij.psi.tree.IElementType;
  */
 public interface GrAssignmentExpression extends GrExpression, PsiPolyVariantReference {
 
-  @NotNull
+  @Nonnull
   GrExpression getLValue();
 
-  @Nullable
+  @javax.annotation.Nullable
   GrExpression getRValue();
 
   IElementType getOperationTokenType();
 
-  @NotNull
+  @Nonnull
   GroovyResolveResult[] multiResolve(boolean incompleteCode);
 
   PsiElement getOperationToken();

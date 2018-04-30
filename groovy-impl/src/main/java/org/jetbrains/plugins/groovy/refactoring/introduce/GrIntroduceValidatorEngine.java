@@ -21,7 +21,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.refactoring.ui.ConflictsDialog;
 import com.intellij.util.ArrayUtil;
 import com.intellij.util.containers.MultiMap;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFileBase;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
@@ -119,7 +119,7 @@ public class GrIntroduceValidatorEngine implements GrIntroduceHandlerBase.Valida
    */
   private void validateOccurrencesDown(PsiElement startElement,
                                        MultiMap<PsiElement, String> conflicts,
-                                       @NotNull String varName,
+                                       @Nonnull String varName,
                                        double startOffset) {
     PsiElement child = startElement.getFirstChild();
     while (child != null) {
@@ -145,7 +145,7 @@ public class GrIntroduceValidatorEngine implements GrIntroduceHandlerBase.Valida
 
   private void validateVariableOccurrencesUp(PsiElement startElement,
                                              MultiMap<PsiElement, String> conflicts,
-                                             @NotNull String varName,
+                                             @Nonnull String varName,
                                              double startOffset) {
     PsiElement prevSibling = startElement.getPrevSibling();
     while (prevSibling != null) {

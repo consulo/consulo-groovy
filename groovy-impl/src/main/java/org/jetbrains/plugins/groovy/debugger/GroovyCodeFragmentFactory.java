@@ -24,8 +24,8 @@ import java.util.Map;
 import java.util.Random;
 import java.util.regex.Pattern;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.GroovyLanguage;
 import org.jetbrains.plugins.groovy.debugger.fragments.GroovyCodeFragment;
@@ -186,7 +186,7 @@ public class GroovyCodeFragmentFactory extends CodeFragmentFactory
 		return result;
 	}
 
-	public static Pair<Map<String, String>, GroovyFile> externalParameters(String text, @NotNull final PsiElement context)
+	public static Pair<Map<String, String>, GroovyFile> externalParameters(String text, @Nonnull final PsiElement context)
 	{
 		final GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(context.getProject());
 		final GroovyFile toEval = factory.createGroovyFile(text, false, context);
@@ -197,7 +197,7 @@ public class GroovyCodeFragmentFactory extends CodeFragmentFactory
 		toEval.accept(new GroovyRecursiveElementVisitor()
 		{
 			@Override
-			public void visitReferenceExpression(@NotNull GrReferenceExpression referenceExpression)
+			public void visitReferenceExpression(@Nonnull GrReferenceExpression referenceExpression)
 			{
 				super.visitReferenceExpression(referenceExpression);
 
@@ -289,7 +289,7 @@ public class GroovyCodeFragmentFactory extends CodeFragmentFactory
 			}
 
 			@Override
-			public void visitCodeReferenceElement(@NotNull GrCodeReferenceElement refElement)
+			public void visitCodeReferenceElement(@Nonnull GrCodeReferenceElement refElement)
 			{
 				super.visitCodeReferenceElement(refElement);
 				if(refElement.getQualifier() == null)
@@ -383,7 +383,7 @@ public class GroovyCodeFragmentFactory extends CodeFragmentFactory
 		return JavaPsiFacade.getInstance(project).findClass("org.codehaus.groovy.control.CompilationUnit", context.getResolveScope()) != null;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public LanguageFileType getFileType()
 	{

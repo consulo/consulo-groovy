@@ -27,8 +27,8 @@ import com.intellij.util.containers.ContainerUtil;
 import com.intellij.util.text.CharArrayUtil;
 import org.codehaus.groovy.runtime.DefaultGroovyMethods;
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
@@ -47,37 +47,37 @@ public class GroovyAnnotationAttributeInfoHandler implements ParameterInfoHandle
   private static final Set<Class> ALLOWED_CLASSES = ContainerUtil.<Class>newHashSet(GrAnnotation.class);
   private static final Set<Class<GroovyFile>> STOP_SEARCHING_CLASSES = Collections.singleton(GroovyFile.class);
 
-  @NotNull
+  @Nonnull
   @Override
-  public GrAnnotationNameValuePair[] getActualParameters(@NotNull GrAnnotationArgumentList o) {
+  public GrAnnotationNameValuePair[] getActualParameters(@Nonnull GrAnnotationArgumentList o) {
     return o.getAttributes();
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public IElementType getActualParameterDelimiterType() {
     return GroovyTokenTypes.mCOMMA;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public IElementType getActualParametersRBraceType() {
     return GroovyTokenTypes.mRPAREN;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public Set<Class> getArgumentListAllowedParentClasses() {
     return ALLOWED_CLASSES;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public Set<? extends Class> getArgListStopSearchClasses() {
     return STOP_SEARCHING_CLASSES;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public Class<GrAnnotationArgumentList> getArgumentListClass() {
     return GrAnnotationArgumentList.class;
@@ -89,7 +89,7 @@ public class GroovyAnnotationAttributeInfoHandler implements ParameterInfoHandle
   }
 
   @Override
-  public Object[] getParametersForLookup(@NotNull LookupElement item, @NotNull ParameterInfoContext context) {
+  public Object[] getParametersForLookup(@Nonnull LookupElement item, @Nonnull ParameterInfoContext context) {
     Object o = item.getObject();
 
     if (o instanceof GroovyResolveResult) {
@@ -106,17 +106,17 @@ public class GroovyAnnotationAttributeInfoHandler implements ParameterInfoHandle
   }
 
   @Override
-  public Object[] getParametersForDocumentation(@NotNull PsiAnnotationMethod method, @NotNull ParameterInfoContext context) {
+  public Object[] getParametersForDocumentation(@Nonnull PsiAnnotationMethod method, @Nonnull ParameterInfoContext context) {
     return new PsiAnnotationMethod[]{method};
   }
 
   @Override
-  public GrAnnotationArgumentList findElementForParameterInfo(@NotNull CreateParameterInfoContext context) {
+  public GrAnnotationArgumentList findElementForParameterInfo(@Nonnull CreateParameterInfoContext context) {
     return findAnchor(context.getEditor(), context.getFile());
   }
 
   @Nullable
-  private static GrAnnotationArgumentList findAnchor(@NotNull final Editor editor, @NotNull final PsiFile file) {
+  private static GrAnnotationArgumentList findAnchor(@Nonnull final Editor editor, @Nonnull final PsiFile file) {
     PsiElement element = file.findElementAt(editor.getCaretModel().getOffset());
     if (element == null) return null;
 
@@ -124,7 +124,7 @@ public class GroovyAnnotationAttributeInfoHandler implements ParameterInfoHandle
   }
 
   @Override
-  public void showParameterInfo(@NotNull GrAnnotationArgumentList argumentList, @NotNull CreateParameterInfoContext context) {
+  public void showParameterInfo(@Nonnull GrAnnotationArgumentList argumentList, @Nonnull CreateParameterInfoContext context) {
     final GrAnnotation parent = DefaultGroovyMethods.asType(argumentList.getParent(), GrAnnotation.class);
 
     final PsiElement resolved = parent.getClassReference().resolve();
@@ -140,7 +140,7 @@ public class GroovyAnnotationAttributeInfoHandler implements ParameterInfoHandle
   }
 
   @Nullable
-  private static PsiAnnotationMethod findAnnotationMethod(@NotNull PsiFile file, @NotNull Editor editor) {
+  private static PsiAnnotationMethod findAnnotationMethod(@Nonnull PsiFile file, @Nonnull Editor editor) {
     PsiNameValuePair pair = ParameterInfoUtils.findParentOfType(file, inferOffset(editor), PsiNameValuePair.class);
     if (pair == null) return null;
     final PsiReference reference = pair.getReference();
@@ -149,16 +149,16 @@ public class GroovyAnnotationAttributeInfoHandler implements ParameterInfoHandle
   }
 
   @Override
-  public GrAnnotationArgumentList findElementForUpdatingParameterInfo(@NotNull UpdateParameterInfoContext context) {
+  public GrAnnotationArgumentList findElementForUpdatingParameterInfo(@Nonnull UpdateParameterInfoContext context) {
     return findAnchor(context.getEditor(), context.getFile());
   }
 
   @Override
-  public void updateParameterInfo(@NotNull GrAnnotationArgumentList o, @NotNull UpdateParameterInfoContext context) {
+  public void updateParameterInfo(@Nonnull GrAnnotationArgumentList o, @Nonnull UpdateParameterInfoContext context) {
     context.setHighlightedParameter(findAnnotationMethod(context.getFile(), context.getEditor()));
   }
 
-  private static int inferOffset(@NotNull final Editor editor) {
+  private static int inferOffset(@Nonnull final Editor editor) {
     CharSequence chars = editor.getDocument().getCharsSequence();
     int offset1 = CharArrayUtil.shiftForward(chars, editor.getCaretModel().getOffset(), " \t");
     final char character = chars.charAt(offset1);
@@ -179,7 +179,7 @@ public class GroovyAnnotationAttributeInfoHandler implements ParameterInfoHandle
   }
 
   @Override
-  public void updateUI(@NotNull PsiAnnotationMethod p, @NotNull ParameterInfoUIContext context) {
+  public void updateUI(@Nonnull PsiAnnotationMethod p, @Nonnull ParameterInfoUIContext context) {
     @NonNls StringBuilder buffer = new StringBuilder();
     final PsiType returnType = p.getReturnType();
     assert returnType != null;

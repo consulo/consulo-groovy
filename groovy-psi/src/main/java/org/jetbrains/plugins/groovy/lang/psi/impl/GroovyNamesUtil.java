@@ -24,8 +24,8 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyLexer;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.lexer.TokenSets;
@@ -52,7 +52,7 @@ public class GroovyNamesUtil
 	{
 	}
 
-	public static boolean isIdentifier(@Nullable String text)
+	public static boolean isIdentifier(@javax.annotation.Nullable String text)
 	{
 		if(text == null)
 		{
@@ -69,7 +69,7 @@ public class GroovyNamesUtil
 		return lexer.getTokenType() == null;
 	}
 
-	public static boolean isValidReference(@Nullable String text, boolean afterDot, Project project)
+	public static boolean isValidReference(@javax.annotation.Nullable String text, boolean afterDot, Project project)
 	{
 		if(text == null)
 		{
@@ -142,7 +142,7 @@ public class GroovyNamesUtil
 		}, "-");
 	}
 
-	public static boolean isKeyword(@NotNull String name)
+	public static boolean isKeyword(@Nonnull String name)
 	{
 		final GroovyLexer lexer = new GroovyLexer();
 		lexer.start(name);

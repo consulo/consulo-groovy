@@ -16,7 +16,7 @@
 
 package org.jetbrains.plugins.groovy.lang.groovydoc.psi.impl;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocComment;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocMethodParams;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocMethodReference;
@@ -49,7 +49,7 @@ import com.intellij.util.IncorrectOperationException;
  */
 public class GrDocMethodReferenceImpl extends GrDocMemberReferenceImpl implements GrDocMethodReference {
 
-  public GrDocMethodReferenceImpl(@NotNull ASTNode node) {
+  public GrDocMethodReferenceImpl(@Nonnull ASTNode node) {
     super(node);
   }
 
@@ -61,7 +61,7 @@ public class GrDocMethodReferenceImpl extends GrDocMemberReferenceImpl implement
     visitor.visitDocMethodReference(this);
   }
 
-  @NotNull
+  @Nonnull
   public GrDocMethodParams getParameterList() {
     GrDocMethodParams child = findChildByClass(GrDocMethodParams.class);
     assert child != null;

@@ -26,8 +26,8 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.PathUtil;
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.config.AbstractConfigUtils;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
@@ -111,7 +111,7 @@ public class GantUtils {
     return name.matches(GANT_JAR_FILE_PATTERN);
   }
 
-  public static String getSDKVersion(@NotNull Library library) {
+  public static String getSDKVersion(@Nonnull Library library) {
     return getGantVersion(getGantLibraryHome(library));
   }
 
@@ -134,8 +134,8 @@ public class GantUtils {
     return "";
   }
 
-  @NotNull
-  public static String getSDKInstallPath(@Nullable Module module, @NotNull Project project) {
+  @Nonnull
+  public static String getSDKInstallPath(@Nullable Module module, @Nonnull Project project) {
     if (module != null) {
       final String fromClasspath = getSdkHomeFromClasspath(module);
       if (fromClasspath != null) {
@@ -148,7 +148,7 @@ public class GantUtils {
   }
 
   @Nullable
-  public static String getSdkHomeFromClasspath(@NotNull Module module) {
+  public static String getSdkHomeFromClasspath(@Nonnull Module module) {
     Library[] libraries = LibrariesUtil.getLibrariesByCondition(module, new Condition<Library>() {
       public boolean value(Library library1) {
         return isSDKLibrary(library1);
@@ -163,7 +163,7 @@ public class GantUtils {
     return null;
   }
 
-  public static boolean isSDKConfiguredToRun(@NotNull Module module) {
+  public static boolean isSDKConfiguredToRun(@Nonnull Module module) {
     return getSDKInstallPath(module, module.getProject()).length() > 0;
   }
 }

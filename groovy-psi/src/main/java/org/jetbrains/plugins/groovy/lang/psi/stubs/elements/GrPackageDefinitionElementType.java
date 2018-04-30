@@ -17,8 +17,9 @@ package org.jetbrains.plugins.groovy.lang.psi.stubs.elements;
 
 import java.io.IOException;
 
+import javax.annotation.Nonnull;
+
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
 import org.jetbrains.plugins.groovy.lang.psi.api.toplevel.packaging.GrPackageDefinition;
 import org.jetbrains.plugins.groovy.lang.psi.impl.toplevel.packaging.GrPackageDefinitionImpl;
@@ -29,28 +30,28 @@ import com.intellij.psi.stubs.StubOutputStream;
 import com.intellij.util.io.StringRef;
 
 public class GrPackageDefinitionElementType extends GrStubElementType<GrPackageDefinitionStub, GrPackageDefinition> {
-  public GrPackageDefinitionElementType(@NonNls @NotNull String debugName) {
+  public GrPackageDefinitionElementType(@NonNls @Nonnull String debugName) {
     super(debugName);
   }
 
   @Override
-  public GrPackageDefinition createPsi(@NotNull GrPackageDefinitionStub stub) {
+  public GrPackageDefinition createPsi(@Nonnull GrPackageDefinitionStub stub) {
     return new GrPackageDefinitionImpl(stub);
   }
 
   @Override
-  public GrPackageDefinitionStub createStub(@NotNull GrPackageDefinition psi, StubElement parentStub) {
+  public GrPackageDefinitionStub createStub(@Nonnull GrPackageDefinition psi, StubElement parentStub) {
     return new GrPackageDefinitionStub(parentStub, GroovyElementTypes.PACKAGE_DEFINITION, StringRef.fromString(psi.getPackageName()));
   }
 
   @Override
-  public void serialize(@NotNull GrPackageDefinitionStub stub, @NotNull StubOutputStream dataStream) throws IOException {
+  public void serialize(@Nonnull GrPackageDefinitionStub stub, @Nonnull StubOutputStream dataStream) throws IOException {
     dataStream.writeName(stub.getPackageName());
   }
 
-  @NotNull
+  @Nonnull
   @Override
-  public GrPackageDefinitionStub deserialize(@NotNull StubInputStream dataStream, StubElement parentStub) throws IOException {
+  public GrPackageDefinitionStub deserialize(@Nonnull StubInputStream dataStream, StubElement parentStub) throws IOException {
     return new GrPackageDefinitionStub(parentStub, GroovyElementTypes.PACKAGE_DEFINITION, dataStream.readName());
   }
 }

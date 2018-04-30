@@ -18,7 +18,7 @@ package org.jetbrains.plugins.groovy.codeInspection.bugs;
 import java.io.IOException;
 import java.util.Properties;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.codeInspection.GroovyFix;
 import org.jetbrains.plugins.groovy.codeInspection.GroovyInspectionBundle;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
@@ -96,7 +96,7 @@ public class AddMethodFix extends GroovyFix
 	}
 
 
-	@NotNull
+	@Nonnull
 	@Override
 	public String getName()
 	{

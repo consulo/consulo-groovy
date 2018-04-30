@@ -19,7 +19,7 @@ import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.*;
 import com.intellij.psi.util.TypeConversionUtil;
 import com.intellij.util.VisibilityUtil;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
 import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GrLightMethodBuilder;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames;
@@ -32,7 +32,7 @@ import java.util.Collection;
 public class GrInheritConstructorContributor extends AstTransformContributor {
 
   @Override
-  public void collectMethods(@NotNull GrTypeDefinition psiClass, @NotNull Collection<PsiMethod> collector) {
+  public void collectMethods(@Nonnull GrTypeDefinition psiClass, @Nonnull Collection<PsiMethod> collector) {
     if (psiClass.isAnonymous() || psiClass.isInterface() || psiClass.isEnum()) {
       return;
     }

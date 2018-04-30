@@ -15,9 +15,10 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.patterns;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.patterns.PatternCondition;
 import com.intellij.util.ProcessingContext;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotation;
 
 public class GrAnnotationPattern extends GroovyElementPattern<GrAnnotation, GrAnnotationPattern> {
@@ -25,16 +26,16 @@ public class GrAnnotationPattern extends GroovyElementPattern<GrAnnotation, GrAn
     super(GrAnnotation.class);
   }
 
-  @NotNull
+  @Nonnull
   public static GrAnnotationPattern annotation() {
     return new GrAnnotationPattern();
   }
 
-  @NotNull
-  public GrAnnotationPattern withQualifiedName(@NotNull final String qname) {
+  @Nonnull
+  public GrAnnotationPattern withQualifiedName(@Nonnull final String qname) {
     return with(new PatternCondition<GrAnnotation>("withQualifiedName") {
       @Override
-      public boolean accepts(@NotNull GrAnnotation annotation, ProcessingContext context) {
+      public boolean accepts(@Nonnull GrAnnotation annotation, ProcessingContext context) {
         return qname.equals(annotation.getQualifiedName());
       }
     });

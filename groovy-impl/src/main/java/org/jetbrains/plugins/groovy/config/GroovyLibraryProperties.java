@@ -17,7 +17,6 @@ package org.jetbrains.plugins.groovy.config;
 
 import com.intellij.openapi.roots.libraries.LibraryProperties;
 import com.intellij.openapi.util.Comparing;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * @author nik
@@ -29,7 +28,7 @@ public class GroovyLibraryProperties extends LibraryProperties<GroovyLibraryProp
     myVersion = version;
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   public String getVersion() {
     return myVersion;
   }

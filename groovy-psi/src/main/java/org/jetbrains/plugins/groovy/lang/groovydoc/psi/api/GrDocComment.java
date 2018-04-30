@@ -18,23 +18,22 @@ package org.jetbrains.plugins.groovy.lang.groovydoc.psi.api;
 
 import com.intellij.psi.javadoc.PsiDocComment;
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
 
 /**
  * @author ilyas
  */
 public interface GrDocComment extends PsiDocComment, GroovyDocPsiElement {
 
-  @Nullable
+  @javax.annotation.Nullable
   GrDocCommentOwner getOwner();
 
-  @NotNull
+  @Nonnull
   GrDocTag[] getTags();
 
-  @Nullable
+  @javax.annotation.Nullable
   GrDocTag findTagByName(@NonNls String name);
 
-  @NotNull
+  @Nonnull
   GrDocTag[] findTagsByName(@NonNls String name);
 }

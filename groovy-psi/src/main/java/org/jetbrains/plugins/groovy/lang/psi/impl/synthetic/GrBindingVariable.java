@@ -15,8 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.synthetic;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
@@ -53,14 +53,14 @@ public class GrBindingVariable extends GrLightVariable implements GrVariable {
     return myFile;
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   @Override
   public GrExpression getInitializerGroovy() {
     return null;
   }
 
   @Override
-  public void setType(@Nullable PsiType type) throws IncorrectOperationException {
+  public void setType(@javax.annotation.Nullable PsiType type) throws IncorrectOperationException {
     throw new UnsupportedOperationException();
   }
 
@@ -76,7 +76,7 @@ public class GrBindingVariable extends GrLightVariable implements GrVariable {
     return null;
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   @Override
   public PsiType getDeclaredType() {
     return null;
@@ -88,7 +88,7 @@ public class GrBindingVariable extends GrLightVariable implements GrVariable {
     throw new UnsupportedOperationException();
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public PsiElement getNameIdentifierGroovy() {
     return GroovyPsiElementFactory.getInstance(getProject()).createReferenceNameFromText(getName());
@@ -143,7 +143,7 @@ public class GrBindingVariable extends GrLightVariable implements GrVariable {
     return myHasWriteAccess.booleanValue();
   }
 
-  private boolean isRefToMe(@Nullable PsiElement element) {
+  private boolean isRefToMe(@javax.annotation.Nullable PsiElement element) {
     if (maybeRefToMe(element)) {
       final PsiElement resolved = ((GrReferenceExpression)element).resolve();
       if (resolved == null || resolved == this) {

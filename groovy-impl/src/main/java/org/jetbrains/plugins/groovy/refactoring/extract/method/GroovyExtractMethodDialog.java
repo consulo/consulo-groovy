@@ -34,8 +34,8 @@ import com.intellij.ui.IdeBorderFactory;
 import com.intellij.util.ArrayUtil;
 import gnu.trove.TObjectHashingStrategy;
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.intentions.utils.DuplicatesUtil;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
@@ -165,7 +165,7 @@ public class GroovyExtractMethodDialog extends DialogWrapper {
     myListenerList.add(DataChangedListener.class, new DataChangedListener());
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   protected JComponent createCenterPanel() {
     return contentPane;
   }
@@ -174,7 +174,7 @@ public class GroovyExtractMethodDialog extends DialogWrapper {
     return contentPane;
   }
 
-  @NotNull
+  @Nonnull
   protected ExtractMethodInfoHelper getHelper() {
     return myHelper;
   }
@@ -190,7 +190,7 @@ public class GroovyExtractMethodDialog extends DialogWrapper {
     return null;
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   protected String getEnteredName() {
     String text = myNameField.getText();
     if (text != null && text.trim().length() > 0) {
@@ -209,7 +209,7 @@ public class GroovyExtractMethodDialog extends DialogWrapper {
     HelpManager.getInstance().invokeHelp(HelpID.EXTRACT_METHOD);
   }
 
-  @NotNull
+  @Nonnull
   protected Action[] createActions() {
     return new Action[]{getOKAction(), getCancelAction(), getHelpAction()};
   }
@@ -346,7 +346,7 @@ public class GroovyExtractMethodDialog extends DialogWrapper {
       myEnteredName = dialog.getEnteredName();
     }
 
-    @NotNull
+    @Nonnull
     public ExtractMethodInfoHelper getHelper() {
       return myHelper;
     }

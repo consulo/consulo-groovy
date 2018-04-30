@@ -30,7 +30,7 @@ import com.intellij.refactoring.ui.ConflictsDialog;
 import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.containers.HashSet;
 import com.intellij.util.containers.MultiMap;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.intentions.GroovyIntentionsBundle;
 import org.jetbrains.plugins.groovy.intentions.base.Intention;
@@ -62,14 +62,14 @@ public class ConvertClosureToMethodIntention extends Intention {
   private static final Logger LOG =
     Logger.getInstance("#org.jetbrains.plugins.groovy.intentions.conversions.ConvertClosureToMethodIntention");
 
-  @NotNull
+  @Nonnull
   @Override
   protected PsiElementPredicate getElementPredicate() {
     return new MyPredicate();
   }
 
   @Override
-  protected void processIntention(@NotNull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
+  protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
     final GrField field;
     if (element.getParent() instanceof GrField) {
       field = (GrField)element.getParent();

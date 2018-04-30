@@ -22,8 +22,8 @@ import com.intellij.psi.PsiElement;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.codeInspection.GroovyFix;
@@ -38,13 +38,13 @@ public class GroovySetterCallCanBePropertyAccessInspection extends BaseInspectio
   private final ReplaceWithPropertyAccessFix fix = new ReplaceWithPropertyAccessFix();
 
   @Nls
-  @NotNull
+  @Nonnull
   public String getGroupDisplayName() {
     return GPATH;
   }
 
   @Nls
-  @NotNull
+  @Nonnull
   public String getDisplayName() {
     return "Setter call can be property access";
   }
@@ -64,7 +64,7 @@ public class GroovySetterCallCanBePropertyAccessInspection extends BaseInspectio
 
   private static class
       ReplaceWithPropertyAccessFix extends GroovyFix {
-    @NotNull
+    @Nonnull
     public String getName() {
       return "Replace with property access";
     }

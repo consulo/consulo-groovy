@@ -23,7 +23,7 @@ import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.util.IncorrectOperationException;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.intentions.base.PsiElementPredicate;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
@@ -40,14 +40,14 @@ public class RemoveUnnecessaryEscapeCharactersIntention extends Intention {
   public static final String HINT = "Remove unnecessary escape characters";
 
   @Override
-  protected void processIntention(@NotNull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
+  protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
     final Document document = editor.getDocument();
     final TextRange range = element.getTextRange();
 
     document.replaceString(range.getStartOffset(), range.getEndOffset(), removeUnnecessaryEscapeSymbols((GrLiteral)element));
   }
 
-  @NotNull
+  @Nonnull
   @Override
   protected PsiElementPredicate getElementPredicate() {
     return new PsiElementPredicate() {

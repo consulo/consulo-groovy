@@ -16,8 +16,8 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.arithmetic;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.lexer.TokenSets;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
@@ -98,9 +98,9 @@ public class GrUnaryExpressionImpl extends GrExpressionImpl implements GrUnaryEx
   };
 
   private static final ResolveCache.PolyVariantResolver<GrUnaryExpressionImpl> OUR_RESOLVER = new ResolveCache.PolyVariantResolver<GrUnaryExpressionImpl>() {
-    @NotNull
+    @Nonnull
     @Override
-    public GroovyResolveResult[] resolve(@NotNull GrUnaryExpressionImpl unary, boolean incompleteCode) {
+    public GroovyResolveResult[] resolve(@Nonnull GrUnaryExpressionImpl unary, boolean incompleteCode) {
       final GrExpression operand = unary.getOperand();
       if (operand == null) return GroovyResolveResult.EMPTY_ARRAY;
 
@@ -111,7 +111,7 @@ public class GrUnaryExpressionImpl extends GrExpressionImpl implements GrUnaryEx
     }
   };
 
-  public GrUnaryExpressionImpl(@NotNull ASTNode node) {
+  public GrUnaryExpressionImpl(@Nonnull ASTNode node) {
     super(node);
   }
 
@@ -125,7 +125,7 @@ public class GrUnaryExpressionImpl extends GrExpressionImpl implements GrUnaryEx
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public IElementType getOperationTokenType() {
     PsiElement opElement = getOperationToken();
     ASTNode node = opElement.getNode();
@@ -134,7 +134,7 @@ public class GrUnaryExpressionImpl extends GrExpressionImpl implements GrUnaryEx
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public PsiElement getOperationToken() {
     PsiElement opElement = findChildByType(TokenSets.UNARY_OP_SET);
     assert opElement != null;
@@ -151,7 +151,7 @@ public class GrUnaryExpressionImpl extends GrExpressionImpl implements GrUnaryEx
     visitor.visitUnaryExpression(this);
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public GroovyResolveResult[] multiResolve(boolean incompleteCode) {
     return TypeInferenceHelper.getCurrentContext().multiResolve(this, incompleteCode, OUR_RESOLVER);
@@ -179,7 +179,7 @@ public class GrUnaryExpressionImpl extends GrExpressionImpl implements GrUnaryEx
     return PsiImplUtil.extractUniqueElement(multiResolve(false));
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public String getCanonicalText() {
     return getText();
@@ -191,7 +191,7 @@ public class GrUnaryExpressionImpl extends GrExpressionImpl implements GrUnaryEx
   }
 
   @Override
-  public PsiElement bindToElement(@NotNull PsiElement element) throws IncorrectOperationException {
+  public PsiElement bindToElement(@Nonnull PsiElement element) throws IncorrectOperationException {
     throw new IncorrectOperationException("unary expression cannot be bounded to anything");
   }
 
@@ -200,7 +200,7 @@ public class GrUnaryExpressionImpl extends GrExpressionImpl implements GrUnaryEx
     return getManager().areElementsEquivalent(resolve(), element);
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public Object[] getVariants() {
     return ArrayUtil.EMPTY_OBJECT_ARRAY;

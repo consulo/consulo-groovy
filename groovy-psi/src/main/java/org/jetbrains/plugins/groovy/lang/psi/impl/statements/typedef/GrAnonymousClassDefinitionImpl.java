@@ -16,6 +16,8 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.typedef;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
@@ -23,8 +25,8 @@ import com.intellij.psi.scope.PsiScopeProcessor;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.reference.SoftReference;
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrArgumentList;
@@ -47,7 +49,7 @@ import org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames;
 public class GrAnonymousClassDefinitionImpl extends GrTypeDefinitionImpl implements GrAnonymousClassDefinition {
   private SoftReference<PsiClassType> myCachedBaseType = null;
 
-  public GrAnonymousClassDefinitionImpl(@NotNull ASTNode node) {
+  public GrAnonymousClassDefinitionImpl(@Nonnull ASTNode node) {
     super(node);
   }
 
@@ -60,14 +62,14 @@ public class GrAnonymousClassDefinitionImpl extends GrTypeDefinitionImpl impleme
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public GrCodeReferenceElement getBaseClassReferenceGroovy() {
     //noinspection ConstantConditions
     return findNotNullChildByClass(GrCodeReferenceElement.class); //not null because of definition =)
   }
 
   @Override
-  public boolean hasModifierProperty(@NonNls @NotNull String name) {
+  public boolean hasModifierProperty(@NonNls @Nonnull String name) {
     return PsiModifier.FINAL.equals(name);
   }
 
@@ -90,7 +92,7 @@ public class GrAnonymousClassDefinitionImpl extends GrTypeDefinitionImpl impleme
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public PsiJavaCodeReferenceElement getBaseClassReference() {
     final GrCodeReferenceElement ref = getBaseClassReferenceGroovy();
     final PsiElement element = ref.resolve();
@@ -105,7 +107,7 @@ public class GrAnonymousClassDefinitionImpl extends GrTypeDefinitionImpl impleme
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public PsiClassType getBaseClassType() {
     if (isInQualifiedNew()) {
       return createClassType();
@@ -125,7 +127,7 @@ public class GrAnonymousClassDefinitionImpl extends GrTypeDefinitionImpl impleme
     return null;
   }
 
-  @NotNull
+  @Nonnull
   private PsiClassType createClassType() {
     return JavaPsiFacade.getInstance(getProject()).getElementFactory().createType(getBaseClassReference());
   }
@@ -137,7 +139,7 @@ public class GrAnonymousClassDefinitionImpl extends GrTypeDefinitionImpl impleme
     return null;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public PsiElement getNameIdentifierGroovy() {
     //noinspection ConstantConditions
@@ -145,10 +147,10 @@ public class GrAnonymousClassDefinitionImpl extends GrTypeDefinitionImpl impleme
   }
 
   @Override
-  public boolean processDeclarations(@NotNull PsiScopeProcessor processor,
-                                     @NotNull ResolveState state,
-                                     @Nullable PsiElement lastParent,
-                                     @NotNull PsiElement place) {
+  public boolean processDeclarations(@Nonnull PsiScopeProcessor processor,
+                                     @Nonnull ResolveState state,
+                                     @javax.annotation.Nullable PsiElement lastParent,
+                                     @Nonnull PsiElement place) {
     if (lastParent instanceof GrArgumentList) return true;
 
     GrCodeReferenceElement refElement = getBaseClassReferenceGroovy();
@@ -183,7 +185,7 @@ public class GrAnonymousClassDefinitionImpl extends GrTypeDefinitionImpl impleme
     return null;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public PsiClassType[] getExtendsListTypes() {
     final PsiClass baseClass = getBaseClass();
@@ -214,7 +216,7 @@ public class GrAnonymousClassDefinitionImpl extends GrTypeDefinitionImpl impleme
     return null;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public PsiClassType[] getImplementsListTypes() {
     final PsiClass baseClass = getBaseClass();

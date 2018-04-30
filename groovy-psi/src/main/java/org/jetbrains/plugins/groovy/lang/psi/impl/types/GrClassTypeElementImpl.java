@@ -15,7 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.types;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrClassTypeElement;
@@ -31,7 +32,7 @@ import com.intellij.psi.PsiType;
  */
 public class GrClassTypeElementImpl extends GroovyPsiElementImpl implements GrClassTypeElement
 {
-	public GrClassTypeElementImpl(@NotNull ASTNode node)
+	public GrClassTypeElementImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
@@ -48,14 +49,14 @@ public class GrClassTypeElementImpl extends GroovyPsiElementImpl implements GrCl
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public GrCodeReferenceElement getReferenceElement()
 	{
 		return (GrCodeReferenceElement) findNotNullChildByType(GroovyElementTypes.REFERENCE_ELEMENT);
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public PsiType getType()
 	{
 		return new GrClassReferenceType(getReferenceElement());

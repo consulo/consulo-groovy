@@ -15,15 +15,17 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.dataFlow.reachingDefs;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.psi.PsiType;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * @author ven
  */
 public interface VariableInfo {
-  @NotNull String getName();
+  @Nonnull
+  String getName();
 
-  @Nullable PsiType getType();
+  @javax.annotation.Nullable
+  PsiType getType();
 }

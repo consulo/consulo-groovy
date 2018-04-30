@@ -18,8 +18,8 @@ package org.jetbrains.plugins.groovy.lang.resolve;
 
 import java.util.Collection;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.dsl.GroovyDslFileIndex;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.ClassUtil;
 import com.intellij.openapi.extensions.ExtensionPointName;
@@ -43,24 +43,24 @@ public abstract class NonCodeMembersContributor
 	private static volatile MultiMap<String, NonCodeMembersContributor> ourClassSpecifiedContributors;
 	private static NonCodeMembersContributor[] ourAllTypeContributors;
 
-	public void processDynamicElements(@NotNull PsiType qualifierType,
-			@NotNull PsiScopeProcessor processor,
-			@NotNull PsiElement place,
-			@NotNull ResolveState state)
+	public void processDynamicElements(@Nonnull PsiType qualifierType,
+			@Nonnull PsiScopeProcessor processor,
+			@Nonnull PsiElement place,
+			@Nonnull ResolveState state)
 	{
 		throw new RuntimeException("One of two 'processDynamicElements()' methods must be implemented");
 	}
 
-	public void processDynamicElements(@NotNull PsiType qualifierType,
+	public void processDynamicElements(@Nonnull PsiType qualifierType,
 			PsiClass aClass,
-			@NotNull PsiScopeProcessor processor,
-			@NotNull PsiElement place,
-			@NotNull ResolveState state)
+			@Nonnull PsiScopeProcessor processor,
+			@Nonnull PsiElement place,
+			@Nonnull ResolveState state)
 	{
 		processDynamicElements(qualifierType, processor, place, state);
 	}
 
-	@Nullable
+	@javax.annotation.Nullable
 	protected String getParentClassName()
 	{
 		return null;
@@ -86,10 +86,10 @@ public abstract class NonCodeMembersContributor
 		ourClassSpecifiedContributors = contributorMap;
 	}
 
-	public static boolean runContributors(@NotNull PsiType qualifierType,
-			@NotNull PsiScopeProcessor processor,
-			@NotNull PsiElement place,
-			@NotNull ResolveState state)
+	public static boolean runContributors(@Nonnull PsiType qualifierType,
+			@Nonnull PsiScopeProcessor processor,
+			@Nonnull PsiElement place,
+			@Nonnull ResolveState state)
 	{
 
 		MyDelegatingScopeProcessor delegatingProcessor = new MyDelegatingScopeProcessor(processor);
@@ -137,7 +137,7 @@ public abstract class NonCodeMembersContributor
 		}
 
 		@Override
-		public boolean execute(@NotNull PsiElement element, @NotNull ResolveState state)
+		public boolean execute(@Nonnull PsiElement element, @Nonnull ResolveState state)
 		{
 			if(!wantMore)
 			{

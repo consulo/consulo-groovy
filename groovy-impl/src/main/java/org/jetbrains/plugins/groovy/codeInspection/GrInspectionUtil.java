@@ -15,7 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.highlighter.GroovySyntaxHighlighter;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GrReferenceElement;
@@ -33,26 +34,26 @@ import com.intellij.psi.tree.IElementType;
  */
 public class GrInspectionUtil
 {
-	public static boolean isNull(@NotNull GrExpression expression)
+	public static boolean isNull(@Nonnull GrExpression expression)
 	{
 		return "null".equals(expression.getText());
 	}
 
-	public static boolean isEquality(@NotNull GrBinaryExpression binaryCondition)
+	public static boolean isEquality(@Nonnull GrBinaryExpression binaryCondition)
 	{
 		final IElementType tokenType = binaryCondition.getOperationTokenType();
 		return GroovyTokenTypes.mEQUAL == tokenType;
 	}
 
-	public static boolean isInequality(@NotNull GrBinaryExpression binaryCondition)
+	public static boolean isInequality(@Nonnull GrBinaryExpression binaryCondition)
 	{
 		final IElementType tokenType = binaryCondition.getOperationTokenType();
 		return GroovyTokenTypes.mNOT_EQUAL == tokenType;
 	}
 
-	public static HighlightInfo createAnnotationForRef(@NotNull GrReferenceElement ref,
-			@NotNull HighlightDisplayLevel displayLevel,
-			@NotNull String message)
+	public static HighlightInfo createAnnotationForRef(@Nonnull GrReferenceElement ref,
+			@Nonnull HighlightDisplayLevel displayLevel,
+			@Nonnull String message)
 	{
 		PsiElement refNameElement = ref.getReferenceNameElement();
 		assert refNameElement != null;

@@ -18,8 +18,8 @@ package org.jetbrains.plugins.groovy.griffon;
 import com.intellij.execution.configurations.ParametersList;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.ui.DialogWrapper;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.mvc.MvcCommand;
 
 import javax.swing.*;
@@ -36,14 +36,14 @@ public class GriffonCreateProjectDialog extends DialogWrapper {
   private JRadioButton myCreateArchetype;
   private JLabel myCreateLabel;
 
-  public GriffonCreateProjectDialog(@NotNull Module module) {
+  public GriffonCreateProjectDialog(@Nonnull Module module) {
     super(module.getProject());
     setTitle("Create Griffon Structure");
     myCreateLabel.setText("Create Griffon structure in module '" + module.getName() + "':");
     init();
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   @Override
   protected JComponent createCenterPanel() {
     return myComponent;

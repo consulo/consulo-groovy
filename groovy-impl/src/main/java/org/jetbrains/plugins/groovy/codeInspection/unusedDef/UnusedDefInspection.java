@@ -33,8 +33,8 @@ import gnu.trove.TIntProcedure;
 import gnu.trove.TObjectProcedure;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.codeInspection.GroovyInspectionBundle;
 import org.jetbrains.plugins.groovy.codeInspection.GroovyLocalInspectionBase;
 import org.jetbrains.plugins.groovy.codeInspection.utils.ControlFlowUtils;
@@ -65,19 +65,19 @@ public class UnusedDefInspection extends GroovyLocalInspectionBase {
   private static final Logger LOG = Logger.getInstance("#org.jetbrains.plugins.groovy.codeInspection.unusedDef.UnusedDefInspection");
 
   @Nls
-  @NotNull
+  @Nonnull
   public String getGroupDisplayName() {
     return GroovyInspectionBundle.message("groovy.dfa.issues");
   }
 
   @Nls
-  @NotNull
+  @Nonnull
   public String getDisplayName() {
     return GroovyInspectionBundle.message("unused.assignment");
   }
 
   @NonNls
-  @NotNull
+  @Nonnull
   public String getShortName() {
     return "GroovyUnusedAssignment";
   }

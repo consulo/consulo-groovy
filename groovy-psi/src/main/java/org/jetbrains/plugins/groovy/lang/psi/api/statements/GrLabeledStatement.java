@@ -18,8 +18,8 @@ package org.jetbrains.plugins.groovy.lang.psi.api.statements;
 
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNameIdentifierOwner;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GrNamedElement;
 
 /**
@@ -29,10 +29,10 @@ public interface GrLabeledStatement extends GrStatement, GrNamedElement, PsiName
   @Nullable
   GrStatement getStatement();
 
-  @NotNull
+  @Nonnull
   PsiElement getLabel();
 
-  @NotNull
+  @Nonnull
   @Override
   String getName();
 }

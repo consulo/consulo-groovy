@@ -1,6 +1,7 @@
 package org.jetbrains.plugins.groovy.griffon.module.extension;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.extension.impl.ModuleExtensionImpl;
 import consulo.roots.ModuleRootLayer;
 
@@ -10,7 +11,7 @@ import consulo.roots.ModuleRootLayer;
  */
 public class GriffonModuleExtension extends ModuleExtensionImpl<GriffonModuleExtension>
 {
-	public GriffonModuleExtension(@NotNull String id, @NotNull ModuleRootLayer module)
+	public GriffonModuleExtension(@Nonnull String id, @Nonnull ModuleRootLayer module)
 	{
 		super(id, module);
 	}

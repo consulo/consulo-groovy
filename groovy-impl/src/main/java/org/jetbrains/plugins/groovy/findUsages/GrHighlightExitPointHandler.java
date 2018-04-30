@@ -23,7 +23,6 @@ import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.util.Consumer;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.codeInspection.utils.ControlFlowUtils;
 import org.jetbrains.plugins.groovy.lang.psi.GrControlFlowOwner;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.branch.GrReturnStatement;
@@ -65,7 +64,7 @@ public class GrHighlightExitPointHandler extends HighlightUsagesHandlerBase<PsiE
     final GrControlFlowOwner flowOwner = ControlFlowUtils.findControlFlowOwner(parent);
     ControlFlowUtils.visitAllExitPoints(flowOwner, new ControlFlowUtils.ExitPointVisitor() {
       @Override
-      public boolean visitExitPoint(Instruction instruction, @Nullable GrExpression returnValue) {
+      public boolean visitExitPoint(Instruction instruction, @javax.annotation.Nullable GrExpression returnValue) {
         final PsiElement returnElement = instruction.getElement();
         if (returnElement != null && isCorrectReturn(returnElement)) {
           final TextRange range = returnElement.getTextRange();
@@ -76,7 +75,7 @@ public class GrHighlightExitPointHandler extends HighlightUsagesHandlerBase<PsiE
     });
   }
 
-  private static boolean isCorrectReturn(@Nullable PsiElement e) {
+  private static boolean isCorrectReturn(@javax.annotation.Nullable PsiElement e) {
     return e instanceof GrReturnStatement || e instanceof GrThrowStatement || e instanceof GrExpression;
   }
 }

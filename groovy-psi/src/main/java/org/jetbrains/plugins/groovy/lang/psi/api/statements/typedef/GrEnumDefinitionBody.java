@@ -15,13 +15,12 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef;
 
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrEnumConstantList;
 
 /**
  * @author ven
  */
 public interface GrEnumDefinitionBody extends GrTypeDefinitionBody {
-  @Nullable
+  @javax.annotation.Nullable
   GrEnumConstantList getEnumConstantList();
 }

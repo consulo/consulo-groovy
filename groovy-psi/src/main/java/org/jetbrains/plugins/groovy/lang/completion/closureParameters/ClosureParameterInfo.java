@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.lang.completion.closureParameters;
 
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 
 /**
  * @author Max Medvedev
@@ -24,7 +24,7 @@ public class ClosureParameterInfo
 {
 	private final String myName;
 
-	@Nullable
+	@javax.annotation.Nullable
 	private final String myType;
 
 	public ClosureParameterInfo(@Nullable String type, String name)

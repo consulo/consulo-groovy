@@ -19,8 +19,8 @@ package org.jetbrains.plugins.groovy.lang.groovydoc.psi.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.groovydoc.lexer.GroovyDocTokenTypes;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocMethodParameter;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocMethodParams;
@@ -44,7 +44,7 @@ public class GrDocMethodParamsImpl extends GroovyDocPsiElementImpl implements Gr
 
   private static final Logger LOG = Logger.getInstance("#org.jetbrains.plugins.groovy.lang.groovydoc.psi.impl.GrDocMethodParamsImpl");
 
-  public GrDocMethodParamsImpl(@NotNull ASTNode node) {
+  public GrDocMethodParamsImpl(@Nonnull ASTNode node) {
     super(node);
   }
 
@@ -83,14 +83,14 @@ public class GrDocMethodParamsImpl extends GroovyDocPsiElementImpl implements Gr
     return result.toArray(new GrDocMethodParameter[result.size()]);
   }
 
-  @NotNull
+  @Nonnull
   public PsiElement getLeftParen() {
     ASTNode paren = getNode().findChildByType(GroovyDocTokenTypes.mGDOC_TAG_VALUE_LPAREN);
     assert paren != null;
     return paren.getPsi();
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   public PsiElement getRightParen() {
     ASTNode paren = getNode().findChildByType(GroovyDocTokenTypes.mGDOC_TAG_VALUE_RPAREN);
     return paren != null ? paren.getPsi() : null;

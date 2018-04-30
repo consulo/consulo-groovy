@@ -25,8 +25,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.codeInspection.noReturnMethod.MissingReturnInspection;
 import org.jetbrains.plugins.groovy.codeInspection.utils.ControlFlowUtils;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
@@ -73,7 +73,7 @@ public class ClassItemGeneratorImpl implements ClassItemGenerator
 	private final ClassNameProvider classNameProvider;
 	private final ExpressionContext context;
 
-	public ClassItemGeneratorImpl(@NotNull ExpressionContext context)
+	public ClassItemGeneratorImpl(@Nonnull ExpressionContext context)
 	{
 		classNameProvider = new GeneratorClassNameProvider();
 		this.context = context;
@@ -536,7 +536,7 @@ public class ClassItemGeneratorImpl implements ClassItemGenerator
 		}
 	}
 
-	private static boolean isInList(@NotNull PsiClassType type, @Nullable GrReferenceList list)
+	private static boolean isInList(@Nonnull PsiClassType type, @Nullable GrReferenceList list)
 	{
 		if(list == null)
 		{
@@ -561,7 +561,7 @@ public class ClassItemGeneratorImpl implements ClassItemGenerator
 		return false;
 	}
 
-	private static boolean containsMethodsOf(@NotNull GrTypeDefinition aClass, @NotNull final String fqn)
+	private static boolean containsMethodsOf(@Nonnull GrTypeDefinition aClass, @Nonnull final String fqn)
 	{
 		PsiClass classToSearch = JavaPsiFacade.getInstance(aClass.getProject()).findClass(fqn,
 				aClass.getResolveScope());

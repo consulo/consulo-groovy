@@ -19,8 +19,8 @@ import com.intellij.openapi.util.Pair;
 import com.intellij.psi.*;
 import com.intellij.psi.util.InheritanceUtil;
 import com.intellij.psi.util.PsiTypesUtil;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.extensions.GroovyNamedArgumentProvider;
 import org.jetbrains.plugins.groovy.extensions.NamedArgumentDescriptor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrCall;
@@ -37,9 +37,9 @@ import java.util.Map;
 public class SwingBuilderNamedArgumentProvider extends GroovyNamedArgumentProvider {
 
   @Override
-  public void getNamedArguments(@NotNull GrCall call,
-                                @Nullable PsiElement resolve,
-                                @Nullable String argumentName,
+  public void getNamedArguments(@Nonnull GrCall call,
+                                @javax.annotation.Nullable PsiElement resolve,
+                                @javax.annotation.Nullable String argumentName,
                                 boolean forCompletion,
                                 Map<String, NamedArgumentDescriptor> result) {
     PsiType returnType = ((PsiMethod)resolve).getReturnType();

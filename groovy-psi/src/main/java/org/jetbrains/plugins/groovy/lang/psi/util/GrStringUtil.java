@@ -21,8 +21,8 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.impl.source.codeStyle.CodeEditUtil;
 import com.intellij.psi.tree.IElementType;
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.lexer.TokenSets;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
@@ -283,13 +283,13 @@ public class GrStringUtil {
     }
   }
 
-  @NotNull
+  @Nonnull
   public static StringBuilder escapeStringCharacters(int length,
-                                                     @NotNull CharSequence str,
+                                                     @Nonnull CharSequence str,
                                                      @Nullable String additionalChars,
                                                      boolean escapeLineFeeds,
                                                      boolean escapeBackSlash,
-                                                     @NotNull @NonNls StringBuilder buffer) {
+                                                     @Nonnull @NonNls StringBuilder buffer) {
     for (int idx = 0; idx < length; idx++) {
       char ch = str.charAt(idx);
       switch (ch) {
@@ -412,7 +412,7 @@ public class GrStringUtil {
     return builder.toString();
   }
 
-  public static String removeQuotes(@NotNull String s) {
+  public static String removeQuotes(@Nonnull String s) {
     String quote = getStartQuote(s);
     int sL = s.length();
     int qL = quote.length();
@@ -608,8 +608,8 @@ public class GrStringUtil {
   }
 
 
-  public static boolean parseRegexCharacters(@NotNull String chars,
-                                             @NotNull StringBuilder outChars,
+  public static boolean parseRegexCharacters(@Nonnull String chars,
+                                             @Nonnull StringBuilder outChars,
                                              @Nullable int[] sourceOffsets,
                                              boolean escapeSlash) {
     assert sourceOffsets == null || sourceOffsets.length == chars.length() + 1;
@@ -698,7 +698,7 @@ public class GrStringUtil {
   /**
    * @see com.intellij.psi.impl.source.tree.java.PsiLiteralExpressionImpl#parseStringCharacters(String, StringBuilder, int[])
    */
-  public static boolean parseStringCharacters(@NotNull String chars, @NotNull StringBuilder outChars, @Nullable int[] sourceOffsets) {
+  public static boolean parseStringCharacters(@Nonnull String chars, @Nonnull StringBuilder outChars, @Nullable int[] sourceOffsets) {
     assert sourceOffsets == null || sourceOffsets.length == chars.length()+1;
     if (chars.indexOf('\\') < 0) {
       outChars.append(chars);
@@ -821,7 +821,7 @@ public class GrStringUtil {
     return true;
   }
 
-  public static GrLiteral createStringFromRegex(@NotNull GrLiteral regex) {
+  public static GrLiteral createStringFromRegex(@Nonnull GrLiteral regex) {
     final GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(regex.getProject());
 
 

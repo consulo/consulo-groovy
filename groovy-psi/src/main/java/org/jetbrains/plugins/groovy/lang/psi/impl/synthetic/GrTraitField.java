@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.synthetic;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
 import org.jetbrains.plugins.groovy.lang.psi.util.GrTraitUtil;
 import com.intellij.openapi.diagnostic.Logger;
@@ -33,7 +33,7 @@ public class GrTraitField extends GrLightField implements PsiMirrorElement {
 
   private final PsiField myField;
 
-  public GrTraitField(@NotNull PsiField field, GrTypeDefinition clazz, PsiSubstitutor substitutor) {
+  public GrTraitField(@Nonnull PsiField field, GrTypeDefinition clazz, PsiSubstitutor substitutor) {
     super(clazz, getNewNameForField(field), substitutor.substitute(field.getType()), field);
     GrLightModifierList modifierList = getModifierList();
     for (String modifier : PsiModifier.MODIFIERS) {
@@ -44,14 +44,14 @@ public class GrTraitField extends GrLightField implements PsiMirrorElement {
     myField = field;
   }
 
-  @NotNull
-  private static String getNewNameForField(@NotNull PsiField field) {
+  @Nonnull
+  private static String getNewNameForField(@Nonnull PsiField field) {
     PsiClass containingClass = field.getContainingClass();
     LOG.assertTrue(containingClass != null);
     return GrTraitUtil.getTraitFieldPrefix(containingClass) + field.getName();
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public PsiField getPrototype() {
     return myField;

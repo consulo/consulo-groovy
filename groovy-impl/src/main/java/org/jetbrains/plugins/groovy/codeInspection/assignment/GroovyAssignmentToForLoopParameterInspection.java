@@ -15,12 +15,12 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.assignment;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.util.PsiTreeUtil;
 import org.jetbrains.annotations.Nls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.clauses.GrForClause;
@@ -34,26 +34,26 @@ public class GroovyAssignmentToForLoopParameterInspection extends BaseInspection
 
   @Override
   @Nls
-  @NotNull
+  @Nonnull
   public String getGroupDisplayName() {
     return ASSIGNMENT_ISSUES;
   }
 
   @Override
   @Nls
-  @NotNull
+  @Nonnull
   public String getDisplayName() {
     return "Assignment to for-loop parameter";
   }
 
   @Override
-  @Nullable
+  @javax.annotation.Nullable
   protected String buildErrorString(Object... args) {
     return "Assignment to for-loop parameter '#ref' #loc";
 
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public BaseInspectionVisitor buildVisitor() {
     return new Visitor();

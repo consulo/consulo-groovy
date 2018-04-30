@@ -15,11 +15,12 @@
  */
 package org.jetbrains.plugins.groovy.lang.surroundWith;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.lang.surroundWith.SurroundDescriptor;
 import com.intellij.lang.surroundWith.Surrounder;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.refactoring.GroovyRefactoringUtil;
 
 /**
@@ -56,7 +57,7 @@ public class GroovySurroundDescriptor implements SurroundDescriptor {
     new WithExprSurrounder(),
   };
 
-  @NotNull
+  @Nonnull
   public Surrounder[] getSurrounders() {
     return ourSurrounders;
   }
@@ -66,7 +67,7 @@ public class GroovySurroundDescriptor implements SurroundDescriptor {
     return false;
   }
 
-  @NotNull
+  @Nonnull
   public PsiElement[] getElementsToSurround(PsiFile file, int startOffset, int endOffset) {
     return GroovyRefactoringUtil.findStatementsInRange(file, startOffset, endOffset, true);
   }

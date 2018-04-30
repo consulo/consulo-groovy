@@ -15,6 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.intentions.style;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.codeInsight.intention.IntentionAction;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
@@ -24,8 +26,8 @@ import com.intellij.psi.PsiManager;
 import com.intellij.psi.PsiType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.annotator.GrHighlightUtil;
 import org.jetbrains.plugins.groovy.intentions.GroovyIntentionsBundle;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
@@ -40,20 +42,20 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUt
  * @author Max Medvedev
  */
 public class AddReturnTypeFix implements IntentionAction {
-  @NotNull
+  @Nonnull
   @Override
   public String getText() {
     return GroovyIntentionsBundle.message("add.return.type");
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public String getFamilyName() {
     return GroovyIntentionsBundle.message("add.return.type.to.method.declaration");
   }
 
   @Override
-  public boolean isAvailable(@NotNull Project project, Editor editor, PsiFile file) {
+  public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file) {
     if (editor == null) return false;
     int offset = editor.getCaretModel().getOffset();
     GrMethod method = findMethod(file, offset);
@@ -94,7 +96,7 @@ public class AddReturnTypeFix implements IntentionAction {
   }
 
   @Override
-  public void invoke(@NotNull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
+  public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
     final GrMethod method = findMethod(file, editor.getCaretModel().getOffset());
     if (method == null) return;
 

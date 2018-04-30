@@ -23,8 +23,8 @@ import com.intellij.psi.scope.PsiScopeProcessor;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.util.containers.ContainerUtil;
 import com.intellij.util.containers.MultiMap;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.extensions.NamedArgumentDescriptor;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.GrModifierFlags;
 import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GrLightMethodBuilder;
@@ -74,7 +74,7 @@ public class SwingBuilderNonCodeMemberContributor extends NonCodeMembersContribu
         setOriginInfo("SwingBuilder method");
       }
 
-      @NotNull
+      @Nonnull
       @Override
       public PsiElement getNavigationElement() {
         PsiElement res = super.getNavigationElement();
@@ -105,8 +105,8 @@ public class SwingBuilderNonCodeMemberContributor extends NonCodeMembersContribu
       }
     }
 
-    @NotNull
-    private PsiType type(@NotNull String typeName) {
+    @Nonnull
+    private PsiType type(@Nonnull String typeName) {
       PsiType res = myTypeMap.get(typeName);
       if (res == null) {
         res = myFactory.createTypeByFQClassName(typeName, myResolveScope);
@@ -115,11 +115,11 @@ public class SwingBuilderNonCodeMemberContributor extends NonCodeMembersContribu
       return res;
     }
 
-    private void add(@NotNull PsiMethod method) {
+    private void add(@Nonnull PsiMethod method) {
       myResult.putValue(method.getName(), method);
     }
 
-    private MyMethodBuilder method(String name, String returnType, @Nullable String navigationClass) {
+    private MyMethodBuilder method(String name, String returnType, @javax.annotation.Nullable String navigationClass) {
       MyMethodBuilder res = new MyMethodBuilder(myManager, name);
       res.setModifiers(GrModifierFlags.PUBLIC_MASK);
       res.setReturnType(type(returnType));
@@ -131,11 +131,11 @@ public class SwingBuilderNonCodeMemberContributor extends NonCodeMembersContribu
       return res;
     }
 
-    private void methodObject(String name, String returnType, @Nullable String navigationClass) {
+    private void methodObject(String name, String returnType, @javax.annotation.Nullable String navigationClass) {
       methodObject(name, returnType, navigationClass, null);
     }
 
-    private void methodObject(String name, String returnType, @Nullable String navigationClass,
+    private void methodObject(String name, String returnType, @javax.annotation.Nullable String navigationClass,
                               @Nullable Map<String, NamedArgumentDescriptor> namedArg) {
       MyMethodBuilder method = method(name, returnType, navigationClass);
       method.addParameter("map", type(CommonClassNames.JAVA_UTIL_MAP), true);
@@ -829,7 +829,7 @@ public class SwingBuilderNonCodeMemberContributor extends NonCodeMembersContribu
   }
 
   @Override
-  public void processDynamicElements(@NotNull PsiType qualifierType,
+  public void processDynamicElements(@Nonnull PsiType qualifierType,
                                      PsiClass aClass,
                                      PsiScopeProcessor processor,
                                      PsiElement place,

@@ -21,13 +21,12 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.annotation.Nonnull;
 import javax.swing.Box;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.GrModifier;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
@@ -70,7 +69,7 @@ public abstract class GrInplaceVariableIntroducer extends GrAbstractInplaceIntro
 		setAdvertisementText(getAdvertisementText());
 	}
 
-	@Nullable
+	@javax.annotation.Nullable
 	private static String getAdvertisementText()
 	{
 		final Keymap keymap = KeymapManager.getInstance().getActiveKeymap();
@@ -89,7 +88,7 @@ public abstract class GrInplaceVariableIntroducer extends GrAbstractInplaceIntro
 	}
 
 	@Override
-	protected String[] suggestNames(boolean replaceAll, @Nullable GrVariable variable)
+	protected String[] suggestNames(boolean replaceAll, @javax.annotation.Nullable GrVariable variable)
 	{
 		return GroovyNameSuggestionUtil.suggestVariableNames(getContext().getExpression(),
 				new GroovyVariableValidator(getContext()));
@@ -110,7 +109,7 @@ public abstract class GrInplaceVariableIntroducer extends GrAbstractInplaceIntro
 				new WriteCommandAction(myProject, getCommandName(), getCommandName())
 				{
 					@Override
-					protected void run(@NotNull Result result) throws Throwable
+					protected void run(@Nonnull Result result) throws Throwable
 					{
 						PsiDocumentManager.getInstance(myProject).commitDocument(myEditor.getDocument());
 						final GrVariable variable = getVariable();
@@ -137,10 +136,10 @@ public abstract class GrInplaceVariableIntroducer extends GrAbstractInplaceIntro
 		return panel;
 	}
 
-	@Nullable
+	@javax.annotation.Nullable
 	@Override
-	protected GroovyIntroduceVariableSettings getInitialSettingsForInplace(@NotNull final GrIntroduceContext context,
-			@NotNull final OccurrencesChooser.ReplaceChoice choice,
+	protected GroovyIntroduceVariableSettings getInitialSettingsForInplace(@Nonnull final GrIntroduceContext context,
+			@Nonnull final OccurrencesChooser.ReplaceChoice choice,
 			final String[] names)
 	{
 		return new GroovyIntroduceVariableSettings()
@@ -163,7 +162,7 @@ public abstract class GrInplaceVariableIntroducer extends GrAbstractInplaceIntro
 				return myCanBeFinalCb != null ? myCanBeFinalCb.isSelected() : false;
 			}
 
-			@Nullable
+			@javax.annotation.Nullable
 			@Override
 			public String getName()
 			{
@@ -176,7 +175,7 @@ public abstract class GrInplaceVariableIntroducer extends GrAbstractInplaceIntro
 				return choice == OccurrencesChooser.ReplaceChoice.ALL;
 			}
 
-			@Nullable
+			@javax.annotation.Nullable
 			@Override
 			public PsiType getSelectedType()
 			{
@@ -211,7 +210,7 @@ public abstract class GrInplaceVariableIntroducer extends GrAbstractInplaceIntro
 				return myCanBeFinalCb.isSelected();
 			}
 
-			@Nullable
+			@javax.annotation.Nullable
 			@Override
 			public String getName()
 			{
@@ -224,7 +223,7 @@ public abstract class GrInplaceVariableIntroducer extends GrAbstractInplaceIntro
 				return isReplaceAllOccurrences();
 			}
 
-			@Nullable
+			@javax.annotation.Nullable
 			@Override
 			public PsiType getSelectedType()
 			{
@@ -234,7 +233,7 @@ public abstract class GrInplaceVariableIntroducer extends GrAbstractInplaceIntro
 	}
 
 	@Override
-	protected void saveSettings(@NotNull GrVariable variable)
+	protected void saveSettings(@Nonnull GrVariable variable)
 	{
 		GroovyApplicationSettings.getInstance().INTRODUCE_LOCAL_SELECT_DEF = variable.getDeclaredType() == null;
 	}

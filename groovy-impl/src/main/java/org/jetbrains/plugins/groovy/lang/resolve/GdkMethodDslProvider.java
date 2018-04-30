@@ -15,12 +15,13 @@
  */
 package org.jetbrains.plugins.groovy.lang.resolve;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.openapi.util.VolatileNotNullLazyValue;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.ResolveState;
 import com.intellij.psi.scope.PsiScopeProcessor;
 import com.intellij.psi.search.GlobalSearchScope;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.dgm.GdkMethodHolder;
 import org.jetbrains.plugins.groovy.dsl.GdslMembersHolderConsumer;
 import org.jetbrains.plugins.groovy.dsl.GroovyClassDescriptor;
@@ -50,7 +51,7 @@ public class GdkMethodDslProvider implements GdslMembersProvider {
     }
 
     final VolatileNotNullLazyValue<GdkMethodHolder> methodsMap = new VolatileNotNullLazyValue<GdkMethodHolder>() {
-      @NotNull
+      @Nonnull
       @Override
       protected GdkMethodHolder compute() {
         return GdkMethodHolder.getHolderForClass(categoryClass, isStatic, scope);

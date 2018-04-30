@@ -15,9 +15,11 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.api.util;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.psi.PsiElement;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrNamedArgument;
 
 /**
@@ -25,10 +27,10 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrNamedArg
  */
 public interface GrNamedArgumentsOwner extends PsiElement {
 
-  @NotNull
+  @Nonnull
   GrNamedArgument[] getNamedArguments();
 
   @Nullable
-  GrNamedArgument findNamedArgument(@NotNull String label);
+  GrNamedArgument findNamedArgument(@Nonnull String label);
 
 }

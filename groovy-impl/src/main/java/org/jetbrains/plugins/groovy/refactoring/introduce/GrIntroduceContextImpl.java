@@ -15,12 +15,14 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.introduce;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 
@@ -36,15 +38,16 @@ public class GrIntroduceContextImpl implements GrIntroduceContext {
   private final PsiElement[] myOccurrences;
   private final PsiElement myScope;
   @Nullable private final GrVariable myVar;
-  @NotNull private final PsiElement myPlace;
+  @Nonnull
+  private final PsiElement myPlace;
   private final StringPartInfo myStringPart;
 
-  public GrIntroduceContextImpl(@NotNull Project project,
+  public GrIntroduceContextImpl(@Nonnull Project project,
                                 Editor editor,
-                                @Nullable GrExpression expression,
+                                @javax.annotation.Nullable GrExpression expression,
                                 @Nullable GrVariable var,
                                 @Nullable StringPartInfo stringPart,
-                                @NotNull PsiElement[] occurrences,
+                                @Nonnull PsiElement[] occurrences,
                                 PsiElement scope) {
     myStringPart = stringPart;
     LOG.assertTrue(expression != null || var != null || stringPart != null);
@@ -58,7 +61,7 @@ public class GrIntroduceContextImpl implements GrIntroduceContext {
     myPlace = GrIntroduceHandlerBase.getCurrentPlace(expression, var, stringPart);
   }
 
-  @NotNull
+  @Nonnull
   public Project getProject() {
     return myProject;
   }
@@ -67,12 +70,12 @@ public class GrIntroduceContextImpl implements GrIntroduceContext {
     return myEditor;
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   public GrExpression getExpression() {
     return myExpression;
   }
 
-  @NotNull
+  @Nonnull
   public PsiElement[] getOccurrences() {
     return myOccurrences;
   }
@@ -81,7 +84,7 @@ public class GrIntroduceContextImpl implements GrIntroduceContext {
     return myScope;
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   public GrVariable getVar() {
     return myVar;
   }
@@ -92,7 +95,7 @@ public class GrIntroduceContextImpl implements GrIntroduceContext {
     return myStringPart;
   }
 
-  @NotNull
+  @Nonnull
   public PsiElement getPlace() {
     return myPlace;
   }

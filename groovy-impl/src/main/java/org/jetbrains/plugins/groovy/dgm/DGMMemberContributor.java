@@ -20,7 +20,7 @@ import com.intellij.openapi.util.Pair;
 import com.intellij.psi.*;
 import com.intellij.psi.scope.PsiScopeProcessor;
 import com.intellij.psi.search.GlobalSearchScope;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.resolve.NonCodeMembersContributor;
 
 import java.util.List;
@@ -30,7 +30,7 @@ import java.util.List;
  */
 public class DGMMemberContributor extends NonCodeMembersContributor {
   @Override
-  public void processDynamicElements(@NotNull PsiType qualifierType,
+  public void processDynamicElements(@Nonnull PsiType qualifierType,
                                      PsiClass aClass,
                                      PsiScopeProcessor processor,
                                      PsiElement place,

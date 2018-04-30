@@ -16,8 +16,8 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.synthetic;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.GroovyLanguage;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrGdkMethod;
 import com.intellij.openapi.util.Key;
@@ -66,7 +66,7 @@ public class GrGdkMethodImpl extends LightMethodBuilder implements GrGdkMethod {
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public PsiMethod getStaticMethod() {
     return myMethod;
   }
@@ -77,7 +77,7 @@ public class GrGdkMethodImpl extends LightMethodBuilder implements GrGdkMethod {
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public PsiTypeParameter[] getTypeParameters() {
     return myMethod.getTypeParameters();
   }
@@ -105,8 +105,8 @@ public class GrGdkMethodImpl extends LightMethodBuilder implements GrGdkMethod {
     return myMethod.hashCode();
   }
 
-  @NotNull
-  public static GrGdkMethod createGdkMethod(@NotNull final PsiMethod original,
+  @Nonnull
+  public static GrGdkMethod createGdkMethod(@Nonnull final PsiMethod original,
                                             final boolean isStatic,
                                             @Nullable final String originInfo) {
     final Key<CachedValue<GrGdkMethodImpl>> cachedValueKey = isStatic ? CACHED_STATIC : CACHED_NON_STATIC;
@@ -133,7 +133,7 @@ public class GrGdkMethodImpl extends LightMethodBuilder implements GrGdkMethod {
     return myMethod.isValid();
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public PsiElement getNavigationElement() {
     PsiElement navigationElement = myMethod.getNavigationElement();
@@ -141,11 +141,11 @@ public class GrGdkMethodImpl extends LightMethodBuilder implements GrGdkMethod {
   }
 
   @Override
-  public void setNavigationElement(@NotNull PsiElement navigationElement) {
+  public void setNavigationElement(@Nonnull PsiElement navigationElement) {
     throw new UnsupportedOperationException();
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public PsiElement getPrototype() {
     return getStaticMethod();

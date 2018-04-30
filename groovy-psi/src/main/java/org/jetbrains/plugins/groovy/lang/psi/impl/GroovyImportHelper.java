@@ -17,9 +17,11 @@ package org.jetbrains.plugins.groovy.lang.psi.impl;
 
 import java.util.LinkedHashSet;
 
+import javax.annotation.Nonnull;
+
 import consulo.psi.PsiPackage;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFileBase;
 import org.jetbrains.plugins.groovy.lang.psi.api.toplevel.imports.GrImportStatement;
@@ -75,7 +77,7 @@ public class GroovyImportHelper
 		return false;
 	}
 
-	public static LinkedHashSet<String> getImplicitlyImportedPackages(@NotNull GroovyFile file)
+	public static LinkedHashSet<String> getImplicitlyImportedPackages(@Nonnull GroovyFile file)
 	{
 		final LinkedHashSet<String> result = new LinkedHashSet<String>();
 		ContainerUtil.addAll(result, GroovyFileBase.IMPLICITLY_IMPORTED_PACKAGES);
@@ -88,11 +90,11 @@ public class GroovyImportHelper
 		return result;
 	}
 
-	public static boolean processImports(@NotNull ResolveState state,
+	public static boolean processImports(@Nonnull ResolveState state,
 			@Nullable PsiElement lastParent,
-			@NotNull PsiElement place,
-			@NotNull PsiScopeProcessor importProcessor,
-			@NotNull GrImportStatement[] importStatements,
+			@Nonnull PsiElement place,
+			@Nonnull PsiScopeProcessor importProcessor,
+			@Nonnull GrImportStatement[] importStatements,
 			boolean shouldProcessOnDemand)
 	{
 		for(int i = importStatements.length - 1; i >= 0; i--)
@@ -110,11 +112,11 @@ public class GroovyImportHelper
 		return true;
 	}
 
-	public static boolean processImplicitImports(@NotNull PsiScopeProcessor processor,
-			@NotNull ResolveState state,
+	public static boolean processImplicitImports(@Nonnull PsiScopeProcessor processor,
+			@Nonnull ResolveState state,
 			@Nullable PsiElement lastParent,
-			@NotNull PsiElement place,
-			@NotNull GroovyFile file)
+			@Nonnull PsiElement place,
+			@Nonnull GroovyFile file)
 	{
 		if(!ResolveUtil.shouldProcessClasses(processor.getHint(ClassHint.KEY)))
 		{

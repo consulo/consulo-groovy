@@ -17,7 +17,8 @@ package org.jetbrains.plugins.groovy.shell;
 
 import java.util.Map;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.debugger.fragments.GroovyCodeFragment;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
@@ -62,10 +63,10 @@ public class GroovyShellCodeFragment extends GroovyCodeFragment {
   }
 
   @Override
-  public boolean processDeclarations(@NotNull PsiScopeProcessor processor,
-                                     @NotNull ResolveState state,
+  public boolean processDeclarations(@Nonnull PsiScopeProcessor processor,
+                                     @Nonnull ResolveState state,
                                      PsiElement lastParent,
-                                     @NotNull PsiElement place) {
+                                     @Nonnull PsiElement place) {
     if (!super.processDeclarations(processor, state, lastParent, place)) {
       return false;
     }
@@ -81,7 +82,7 @@ public class GroovyShellCodeFragment extends GroovyCodeFragment {
     return true;
   }
 
-  private boolean processVariables(@NotNull PsiScopeProcessor processor, @NotNull ResolveState state) {
+  private boolean processVariables(@Nonnull PsiScopeProcessor processor, @Nonnull ResolveState state) {
     ClassHint classHint = processor.getHint(ClassHint.KEY);
     if (classHint != null &&
         !classHint.shouldProcess(ClassHint.ResolveKind.METHOD) &&
@@ -111,7 +112,7 @@ public class GroovyShellCodeFragment extends GroovyCodeFragment {
     return true;
   }
 
-  private boolean processTypeDefinitions(@NotNull PsiScopeProcessor processor, @NotNull ResolveState state) {
+  private boolean processTypeDefinitions(@Nonnull PsiScopeProcessor processor, @Nonnull ResolveState state) {
     ClassHint classHint = processor.getHint(ClassHint.KEY);
     if (classHint != null && !classHint.shouldProcess(ClassHint.ResolveKind.CLASS)) {
       return true;

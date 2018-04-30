@@ -16,9 +16,9 @@
 
 package org.jetbrains.plugins.groovy.lang.groovydoc.psi.impl;
 
+import javax.annotation.Nonnull;
+
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocMemberReference;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocReferenceElement;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocTagValueToken;
@@ -32,11 +32,11 @@ import com.intellij.util.IncorrectOperationException;
  * @author ilyas
  */
 public abstract class GrDocMemberReferenceImpl extends GroovyDocPsiElementImpl implements GrDocMemberReference {
-  public GrDocMemberReferenceImpl(@NotNull ASTNode node) {
+  public GrDocMemberReferenceImpl(@Nonnull ASTNode node) {
     super(node);
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   public GrDocReferenceElement getReferenceHolder() {
     return findChildByClass(GrDocReferenceElement.class);
   }
@@ -45,8 +45,8 @@ public abstract class GrDocMemberReferenceImpl extends GroovyDocPsiElementImpl i
     return getManager().areElementsEquivalent(element, resolve());
   }
 
-  @Nullable
-  public PsiElement bindToElement(@NotNull PsiElement element) throws IncorrectOperationException {
+  @javax.annotation.Nullable
+  public PsiElement bindToElement(@Nonnull PsiElement element) throws IncorrectOperationException {
     if (isReferenceTo(element)) return this;
 
     if (element instanceof PsiClass) {
@@ -98,7 +98,7 @@ public abstract class GrDocMemberReferenceImpl extends GroovyDocPsiElementImpl i
     return this;
   }
 
-  @NotNull
+  @Nonnull
   public GrDocTagValueToken getReferenceNameElement() {
     GrDocTagValueToken token = findChildByClass(GrDocTagValueToken.class);
     assert token != null;
@@ -119,7 +119,7 @@ public abstract class GrDocMemberReferenceImpl extends GroovyDocPsiElementImpl i
     return new TextRange(offsetInParent, offsetInParent + refNameElement.getTextLength());
   }
 
-  @NotNull
+  @Nonnull
   public String getCanonicalText() {
     return getRangeInElement().substring(getElement().getText());
   }
@@ -128,18 +128,18 @@ public abstract class GrDocMemberReferenceImpl extends GroovyDocPsiElementImpl i
     return false;
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   public PsiElement getQualifier() {
     return getReferenceHolder();
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   @NonNls
   public String getReferenceName() {
     return getReferenceNameElement().getText();
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   public PsiElement resolve() {
     ResolveResult[] results = multiResolve(false);
     if (results.length == 1) {
@@ -148,12 +148,12 @@ public abstract class GrDocMemberReferenceImpl extends GroovyDocPsiElementImpl i
     return null;
   }
 
-  @NotNull
+  @Nonnull
   public ResolveResult[] multiResolve(boolean incompleteCode) {
     return multiResolveImpl();
   }
 
-  @NotNull
+  @Nonnull
   public Object[] getVariants() {
     return PsiElement.EMPTY_ARRAY;
   }

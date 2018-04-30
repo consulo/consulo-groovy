@@ -16,8 +16,8 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.lexer.TokenSets;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
@@ -38,7 +38,7 @@ import com.intellij.util.IncorrectOperationException;
 public abstract class GroovyPsiElementImpl extends ASTWrapperPsiElement implements GroovyPsiElement
 {
 
-	public GroovyPsiElementImpl(@NotNull ASTNode node)
+	public GroovyPsiElementImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
@@ -69,7 +69,7 @@ public abstract class GroovyPsiElementImpl extends ASTWrapperPsiElement implemen
 		acceptGroovyChildren(this, visitor);
 	}
 
-	@Nullable
+	@javax.annotation.Nullable
 	public static GrExpression findExpressionChild(final PsiElement element)
 	{
 		for(PsiElement cur = element.getFirstChild(); cur != null; cur = cur.getNextSibling())
@@ -147,12 +147,12 @@ public abstract class GroovyPsiElementImpl extends ASTWrapperPsiElement implemen
 		}
 	}
 
-	public <T extends GrStatement> T replaceWithStatement(@NotNull T newStmt)
+	public <T extends GrStatement> T replaceWithStatement(@Nonnull T newStmt)
 	{
 		return replaceWithStatement(this, newStmt);
 	}
 
-	public static <T extends GrStatement> T replaceWithStatement(GroovyPsiElement element, @NotNull T newStmt)
+	public static <T extends GrStatement> T replaceWithStatement(GroovyPsiElement element, @Nonnull T newStmt)
 	{
 		PsiElement parent = element.getParent();
 		if(parent == null)

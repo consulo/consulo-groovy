@@ -29,8 +29,8 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.tree.IElementType;
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.lexer.TokenSets;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
 import org.jetbrains.plugins.groovy.lang.psi.util.GrStringUtil;
@@ -43,17 +43,17 @@ import static org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes.*;
 public class GroovyLiteralCopyPasteProcessor extends StringLiteralCopyPasteProcessor {
 
   @Override
-  protected boolean isCharLiteral(@NotNull PsiElement token) {
+  protected boolean isCharLiteral(@Nonnull PsiElement token) {
     return false;
   }
 
   @Override
-  protected boolean isStringLiteral(@NotNull PsiElement token) {
+  protected boolean isStringLiteral(@Nonnull PsiElement token) {
     ASTNode node = token.getNode();
     return node != null && (TokenSets.STRING_LITERALS.contains(node.getElementType()) || node.getElementType() == GroovyElementTypes.GSTRING_INJECTION);
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   protected PsiElement findLiteralTokenType(PsiFile file, int selectionStart, int selectionEnd) {
     PsiElement elementAtSelectionStart = file.findElementAt(selectionStart);
     if (elementAtSelectionStart == null) {
@@ -108,7 +108,7 @@ public class GroovyLiteralCopyPasteProcessor extends StringLiteralCopyPasteProce
 
 
   @Override
-  protected String getLineBreaker(@NotNull PsiElement token) {
+  protected String getLineBreaker(@Nonnull PsiElement token) {
     final String text = token.getParent().getText();
     if (text.contains("'''") || text.contains("\"\"\"")) {
       return "\n";
@@ -155,9 +155,9 @@ public class GroovyLiteralCopyPasteProcessor extends StringLiteralCopyPasteProce
     return text;
   }
 
-  @NotNull
+  @Nonnull
   @Override
-  protected String escapeCharCharacters(@NotNull String s, @NotNull PsiElement token) {
+  protected String escapeCharCharacters(@Nonnull String s, @Nonnull PsiElement token) {
     IElementType tokenType = token.getNode().getElementType();
 
     if (tokenType == mREGEX_CONTENT || tokenType == mREGEX_LITERAL) {
@@ -194,7 +194,7 @@ public class GroovyLiteralCopyPasteProcessor extends StringLiteralCopyPasteProce
     return super.escapeCharCharacters(s, token);
   }
 
-  @NotNull
+  @Nonnull
   @Override
   protected String unescape(String s, PsiElement token) {
     final IElementType tokenType = token.getNode().getElementType();

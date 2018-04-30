@@ -16,8 +16,8 @@
 
 package org.jetbrains.plugins.groovy.lang.parser.parsing.statements.typeDefinitions;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.lexer.TokenSets;
@@ -37,11 +37,11 @@ import com.intellij.psi.tree.IElementType;
 public class ReferenceElement {
   public static final String DUMMY_IDENTIFIER = CompletionUtilCore.DUMMY_IDENTIFIER_TRIMMED; //inserted by completion
 
-  @NotNull
-  public static IElementType parseReferenceList(@NotNull PsiBuilder builder,
-                                                @NotNull final IElementType startElement,
-                                                @NotNull final GrReferenceListElementType<?> clauseType,
-                                                @NotNull ClassType type) {
+  @Nonnull
+  public static IElementType parseReferenceList(@Nonnull PsiBuilder builder,
+                                                @Nonnull final IElementType startElement,
+                                                @Nonnull final GrReferenceListElementType<?> clauseType,
+                                                @Nonnull ClassType type) {
     PsiBuilder.Marker isMarker = builder.mark();
 
     if (!ParserUtils.getToken(builder, startElement)) {
@@ -80,12 +80,12 @@ public class ReferenceElement {
     return finish(builder, clauseType, isMarker, null, null);
   }
 
-  @NotNull
-  private static GrReferenceListElementType<?> finish(@NotNull PsiBuilder builder,
-                                                      @NotNull GrReferenceListElementType<?> clauseType,
-                                                      @NotNull PsiBuilder.Marker isMarker,
+  @Nonnull
+  private static GrReferenceListElementType<?> finish(@Nonnull PsiBuilder builder,
+                                                      @Nonnull GrReferenceListElementType<?> clauseType,
+                                                      @Nonnull PsiBuilder.Marker isMarker,
                                                       @Nullable PsiBuilder.Marker space,
-                                                      @Nullable String error) {
+                                                      @javax.annotation.Nullable String error) {
     if (space != null) space.rollbackTo();
     if (error != null) builder.error(error);
     isMarker.done(clauseType);
@@ -96,24 +96,24 @@ public class ReferenceElement {
     IDENTIFIER, PATH_REF, REF_WITH_TYPE_PARAMS, FAIL
   }
 
-  public static ReferenceElementResult parseForImport(@NotNull PsiBuilder builder) {
+  public static ReferenceElementResult parseForImport(@Nonnull PsiBuilder builder) {
     return parse(builder, false, false, true, false, false);
   }
 
-  public static ReferenceElementResult parseForPackage(@NotNull PsiBuilder builder) {
+  public static ReferenceElementResult parseForPackage(@Nonnull PsiBuilder builder) {
     return parse(builder, false, false, true, false, false);
   }
 
   //it doesn't important first letter of identifier of ThrowClause, of Annotation, of new Expression, of implements, extends, superclass clauses
-  public static ReferenceElementResult parseReferenceElement(@NotNull PsiBuilder builder) {
+  public static ReferenceElementResult parseReferenceElement(@Nonnull PsiBuilder builder) {
     return parseReferenceElement(builder, false, true);
   }
 
-  public static ReferenceElementResult parseReferenceElement(@NotNull PsiBuilder builder, boolean isUpperCase, final boolean expressionPossible) {
+  public static ReferenceElementResult parseReferenceElement(@Nonnull PsiBuilder builder, boolean isUpperCase, final boolean expressionPossible) {
     return parse(builder, isUpperCase, true, false, false, expressionPossible);
   }
 
-  public static ReferenceElementResult parse(@NotNull PsiBuilder builder,
+  public static ReferenceElementResult parse(@Nonnull PsiBuilder builder,
                                              boolean checkUpperCase,
                                              boolean parseTypeArgs,
                                              boolean lineFeedAllowed,

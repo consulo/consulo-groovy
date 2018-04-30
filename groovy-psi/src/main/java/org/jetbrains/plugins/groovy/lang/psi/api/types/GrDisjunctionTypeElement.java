@@ -15,12 +15,12 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.api.types;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 /**
  * @author Max Medvedev
  */
 public interface GrDisjunctionTypeElement extends GrTypeElement {
-  @NotNull
+  @Nonnull
   GrTypeElement[] getTypeElements();
 }

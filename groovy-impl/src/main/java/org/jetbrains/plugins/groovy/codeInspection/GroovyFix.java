@@ -25,7 +25,7 @@ import com.intellij.psi.JavaPsiFacade;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.formatter.GrControlStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrBlockStatement;
@@ -39,13 +39,13 @@ public abstract class GroovyFix implements LocalQuickFix {
   public static final GroovyFix[] EMPTY_ARRAY = new GroovyFix[0];
 
   //to appear in "Apply Fix" statement when multiple Quick Fixes exist
-  @NotNull
+  @Nonnull
   public String getFamilyName() {
     return "";
   }
 
-  public void applyFix(@NotNull Project project,
-                       @NotNull ProblemDescriptor descriptor) {
+  public void applyFix(@Nonnull Project project,
+                       @Nonnull ProblemDescriptor descriptor) {
     final PsiElement problemElement = descriptor.getPsiElement();
     if (problemElement == null || !problemElement.isValid()) {
       return;

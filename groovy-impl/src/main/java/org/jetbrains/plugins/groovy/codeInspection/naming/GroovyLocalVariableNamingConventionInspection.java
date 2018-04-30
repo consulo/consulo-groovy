@@ -16,7 +16,7 @@
 package org.jetbrains.plugins.groovy.codeInspection.naming;
 
 import com.intellij.psi.PsiElement;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.codeInspection.GroovyFix;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrCatchClause;
@@ -30,7 +30,7 @@ public class GroovyLocalVariableNamingConventionInspection extends ConventionIns
   private static final int DEFAULT_MIN_LENGTH = 4;
   private static final int DEFAULT_MAX_LENGTH = 32;
 
-  @NotNull
+  @Nonnull
   public String getDisplayName() {
     return "Local variable naming convention";
   }
@@ -43,7 +43,7 @@ public class GroovyLocalVariableNamingConventionInspection extends ConventionIns
     return true;
   }
 
-  @NotNull
+  @Nonnull
   public String buildErrorString(Object... args) {
     final String className = (String) args[0];
     if (className.length() < getMinLength()) {

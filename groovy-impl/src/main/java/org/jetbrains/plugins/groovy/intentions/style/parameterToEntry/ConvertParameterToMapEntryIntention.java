@@ -39,8 +39,8 @@ import com.intellij.util.containers.ContainerUtil;
 import com.intellij.util.containers.HashSet;
 import com.intellij.util.containers.MultiMap;
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.intentions.GroovyIntentionsBundle;
 import org.jetbrains.plugins.groovy.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.intentions.base.PsiElementPredicate;
@@ -89,7 +89,7 @@ public class ConvertParameterToMapEntryIntention extends Intention {
   @NonNls private static final String MAP_TYPE_TEXT = "Map";
   @NonNls private static final String[] MY_POSSIBLE_NAMES = new String[]{"attrs", "args", "params", "map"};
 
-  protected void processIntention(@NotNull final PsiElement element, final Project project, Editor editor) throws IncorrectOperationException {
+  protected void processIntention(@Nonnull final PsiElement element, final Project project, Editor editor) throws IncorrectOperationException {
     // Method or closure to be refactored
     final GrParametersOwner owner = PsiTreeUtil.getParentOfType(element, GrParametersOwner.class);
     final Collection<PsiElement> occurrences = new ArrayList<PsiElement>();
@@ -397,7 +397,7 @@ public class ConvertParameterToMapEntryIntention extends Intention {
     return type == null || type.isConvertibleFrom(mapType);
   }
 
-  @NotNull
+  @Nonnull
   private static GrParameter getFirstParameter(final GrParametersOwner owner) {
     final GrParameter[] params = owner.getParameters();
     LOG.assertTrue(params.length > 0);
@@ -444,7 +444,7 @@ public class ConvertParameterToMapEntryIntention extends Intention {
     final Ref<Boolean> result = new Ref<Boolean>(true);
     final Task task = new Task.Modal(project, GroovyIntentionsBundle
       .message("find.method.ro.closure.usages.0", owner instanceof GrClosableBlock ? CLOSURE_CAPTION : METHOD_CAPTION), true) {
-      public void run(@NotNull final ProgressIndicator indicator) {
+      public void run(@Nonnull final ProgressIndicator indicator) {
         final GlobalSearchScope projectScope = GlobalSearchScope.projectScope(getProject());
         final Collection<PsiReference> references = Collections.synchronizedSet(new HashSet<PsiReference>());
         final Processor<PsiReference> consumer = new Processor<PsiReference>() {
@@ -483,7 +483,7 @@ public class ConvertParameterToMapEntryIntention extends Intention {
     return result.get().booleanValue();
   }
 
-  @NotNull
+  @Nonnull
   protected PsiElementPredicate getElementPredicate() {
     return new MyPsiElementPredicate();
   }

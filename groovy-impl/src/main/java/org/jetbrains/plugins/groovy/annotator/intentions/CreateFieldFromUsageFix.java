@@ -15,11 +15,12 @@
  */
 package org.jetbrains.plugins.groovy.annotator.intentions;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiModifier;
 import com.intellij.util.ArrayUtil;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
 import org.jetbrains.plugins.groovy.lang.psi.expectedTypes.GroovyExpectedTypesProvider;
@@ -32,16 +33,16 @@ import org.jetbrains.plugins.groovy.lang.psi.util.GrStaticChecker;
 public class CreateFieldFromUsageFix extends GrCreateFromUsageBaseFix
 {
 	private final
-	@NotNull
+	@Nonnull
 	String myReferenceName;
 
-	public CreateFieldFromUsageFix(GrReferenceExpression refExpression, @NotNull String referenceName)
+	public CreateFieldFromUsageFix(GrReferenceExpression refExpression, @Nonnull String referenceName)
 	{
 		super(refExpression);
 		myReferenceName = referenceName;
 	}
 
-	private String[] generateModifiers(@NotNull PsiClass targetClass)
+	private String[] generateModifiers(@Nonnull PsiClass targetClass)
 	{
 		final GrReferenceExpression myRefExpression = getRefExpr();
 		if(myRefExpression != null && GrStaticChecker.isInStaticContext(myRefExpression, targetClass))
@@ -57,14 +58,14 @@ public class CreateFieldFromUsageFix extends GrCreateFromUsageBaseFix
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public String getText()
 	{
 		return GroovyBundle.message("create.field.from.usage", myReferenceName);
 	}
 
 	@Override
-	protected void invokeImpl(Project project, @NotNull PsiClass targetClass)
+	protected void invokeImpl(Project project, @Nonnull PsiClass targetClass)
 	{
 		final CreateFieldFix fix = new CreateFieldFix(targetClass);
 		fix.doFix(targetClass.getProject(), generateModifiers(targetClass), myReferenceName, calculateTypeConstrains(), getRefExpr());

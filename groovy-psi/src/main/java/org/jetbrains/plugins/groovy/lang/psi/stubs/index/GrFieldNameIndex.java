@@ -15,7 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.stubs.index;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
 import com.intellij.psi.stubs.StringStubIndexExtension;
 import com.intellij.psi.stubs.StubIndexKey;
@@ -26,7 +27,7 @@ import com.intellij.psi.stubs.StubIndexKey;
 public class GrFieldNameIndex extends StringStubIndexExtension<GrField> {
   public static final StubIndexKey<String, GrField> KEY = StubIndexKey.createIndexKey("gr.field.name");
 
-  @NotNull
+  @Nonnull
   public StubIndexKey<String, GrField> getKey() {
     return KEY;
   }

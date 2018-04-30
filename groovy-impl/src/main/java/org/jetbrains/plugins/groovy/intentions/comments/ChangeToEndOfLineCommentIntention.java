@@ -15,6 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.intentions.comments;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.JavaPsiFacade;
@@ -22,18 +24,17 @@ import com.intellij.psi.PsiComment;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementFactory;
 import com.intellij.util.IncorrectOperationException;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.intentions.base.PsiElementPredicate;
 
 public class ChangeToEndOfLineCommentIntention extends Intention {
 
-  @NotNull
+  @Nonnull
   protected PsiElementPredicate getElementPredicate() {
     return new CStyleCommentPredicate();
   }
 
-  public void processIntention(@NotNull PsiElement element, Project project, Editor editor)
+  public void processIntention(@Nonnull PsiElement element, Project project, Editor editor)
       throws IncorrectOperationException {
     final PsiComment comment = (PsiComment) element;
     final JavaPsiFacade manager = JavaPsiFacade.getInstance(comment.getProject());

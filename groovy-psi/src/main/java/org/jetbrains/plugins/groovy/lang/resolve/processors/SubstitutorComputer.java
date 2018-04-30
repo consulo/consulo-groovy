@@ -17,8 +17,8 @@ package org.jetbrains.plugins.groovy.lang.resolve.processors;
 
 import java.util.Set;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.codeInspection.utils.ControlFlowUtils;
 import org.jetbrains.plugins.groovy.lang.psi.GrControlFlowOwner;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
@@ -179,10 +179,10 @@ public class SubstitutorComputer
 		return substitutor;
 	}
 
-	private PsiSubstitutor inferMethodTypeParameters(@NotNull PsiMethod method,
-			@NotNull PsiSubstitutor partialSubstitutor,
-			@NotNull PsiTypeParameter[] typeParameters,
-			@NotNull PsiType[] argTypes)
+	private PsiSubstitutor inferMethodTypeParameters(@Nonnull PsiMethod method,
+			@Nonnull PsiSubstitutor partialSubstitutor,
+			@Nonnull PsiTypeParameter[] typeParameters,
+			@Nonnull PsiType[] argTypes)
 	{
 		if(typeParameters.length == 0 || myArgumentTypes == null)
 		{
@@ -277,7 +277,7 @@ public class SubstitutorComputer
 	}
 
 	@Nullable
-	private PsiType handleConversionOfSAMType(@Nullable PsiType samType, @NotNull PsiClassType closure)
+	private PsiType handleConversionOfSAMType(@Nullable PsiType samType, @Nonnull PsiClassType closure)
 	{
 		if(samType instanceof PsiClassType)
 		{
@@ -315,9 +315,9 @@ public class SubstitutorComputer
 	}
 
 
-	private PsiSubstitutor inferFromContext(@NotNull PsiTypeParameter typeParameter,
+	private PsiSubstitutor inferFromContext(@Nonnull PsiTypeParameter typeParameter,
 			@Nullable PsiType lType,
-			@NotNull PsiSubstitutor substitutor)
+			@Nonnull PsiSubstitutor substitutor)
 	{
 		if(myPlace == null)
 		{

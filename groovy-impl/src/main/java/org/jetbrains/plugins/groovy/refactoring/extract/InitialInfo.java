@@ -22,8 +22,8 @@ import com.intellij.psi.JavaPsiFacade;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiType;
 import com.intellij.util.containers.ContainerUtil;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.branch.GrReturnStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
@@ -125,19 +125,19 @@ public class InitialInfo implements ExtractInfoHelper {
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public Project getProject() {
     return myProject;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public ParameterInfo[] getParameterInfos() {
     return myParameterInfos;
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public VariableInfo[] getOutputVariableInfos() {
     return myOutputNames;
   }
@@ -147,26 +147,26 @@ public class InitialInfo implements ExtractInfoHelper {
    *
    * @return array of argument names
    */
-  @NotNull
+  @Nonnull
   @Override
   public String[] getArgumentNames() {
     return myArgumentNames;
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public PsiType getOutputType() {
     return myOutputType;
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public PsiElement[] getInnerElements() {
     return myInnerElements;
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public GrStatement[] getStatements() {
     return myStatements;
   }

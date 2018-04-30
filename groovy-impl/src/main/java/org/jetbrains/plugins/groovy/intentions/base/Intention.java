@@ -23,8 +23,8 @@ import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.annotator.intentions.QuickfixUtil;
 import org.jetbrains.plugins.groovy.intentions.GroovyIntentionsBundle;
 import org.jetbrains.plugins.groovy.intentions.utils.BoolUtils;
@@ -45,7 +45,7 @@ public abstract class Intention implements IntentionAction {
     predicate = getElementPredicate();
   }
 
-  public void invoke(@NotNull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
+  public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
     if (!QuickfixUtil.ensureFileWritable(project, file)) {
       return;
     }
@@ -57,13 +57,13 @@ public abstract class Intention implements IntentionAction {
     processIntention(element, project, editor);
   }
 
-  protected abstract void processIntention(@NotNull PsiElement element, Project project, Editor editor) throws IncorrectOperationException;
+  protected abstract void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException;
 
-  @NotNull
+  @Nonnull
   protected abstract PsiElementPredicate getElementPredicate();
 
 
-  protected static void replaceExpressionWithNegatedExpressionString(@NotNull String newExpression, @NotNull GrExpression expression) throws IncorrectOperationException {
+  protected static void replaceExpressionWithNegatedExpressionString(@Nonnull String newExpression, @Nonnull GrExpression expression) throws IncorrectOperationException {
     final GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(expression.getProject());
 
     GrExpression expressionToReplace = expression;
@@ -82,7 +82,7 @@ public abstract class Intention implements IntentionAction {
   }
 
 
-  @Nullable
+  @javax.annotation.Nullable
   PsiElement findMatchingElement(PsiFile file, Editor editor) {
     if (!(file instanceof GroovyFileBase)) {
       return null;
@@ -121,7 +121,7 @@ public abstract class Intention implements IntentionAction {
     return element instanceof PsiFile;
   }
 
-  public boolean isAvailable(@NotNull Project project, Editor editor, PsiFile file) {
+  public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file) {
     return findMatchingElement(file, editor) != null;
   }
 
@@ -147,12 +147,12 @@ public abstract class Intention implements IntentionAction {
     return buffer.toString();
   }
 
-  @NotNull
+  @Nonnull
   public String getText() {
     return GroovyIntentionsBundle.message(getPrefix() + ".name");
   }
 
-  @NotNull
+  @Nonnull
   public String getFamilyName() {
     return GroovyIntentionsBundle.message(getPrefix() + ".family.name");
   }

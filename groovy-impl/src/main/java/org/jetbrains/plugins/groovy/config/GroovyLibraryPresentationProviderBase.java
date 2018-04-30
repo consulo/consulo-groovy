@@ -22,8 +22,8 @@ import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.openapi.vfs.VfsUtilCore;
 import com.intellij.openapi.vfs.VirtualFile;
 import org.jetbrains.annotations.Nls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import javax.swing.*;
 import java.util.List;
@@ -37,13 +37,13 @@ public abstract class GroovyLibraryPresentationProviderBase extends LibraryPrese
   }
 
   @Override
-  public String getDescription(@NotNull GroovyLibraryProperties properties) {
+  public String getDescription(@Nonnull GroovyLibraryProperties properties) {
     final String version = properties.getVersion();
     return getLibraryCategoryName() + " library" + (version != null ? " of version " + version : ":");
   }
 
   @Override
-  public GroovyLibraryProperties detect(@NotNull List<VirtualFile> classesRoots) {
+  public GroovyLibraryProperties detect(@Nonnull List<VirtualFile> classesRoots) {
     final VirtualFile[] libraryFiles = VfsUtilCore.toVirtualFileArray(classesRoots);
     if (managesLibrary(libraryFiles)) {
       final String version = getLibraryVersion(libraryFiles);
@@ -60,22 +60,24 @@ public abstract class GroovyLibraryPresentationProviderBase extends LibraryPrese
   @Nls
   public abstract String getLibraryVersion(final VirtualFile[] libraryFiles);
 
-  @NotNull
+  @Nonnull
   public abstract Icon getIcon();
 
-  public abstract boolean isSDKHome(@NotNull VirtualFile file);
+  public abstract boolean isSDKHome(@Nonnull VirtualFile file);
 
-  public abstract @NotNull String getSDKVersion(String path);
+  public abstract @Nonnull
+  String getSDKVersion(String path);
 
-  @NotNull @Nls public abstract String getLibraryCategoryName();
+  @Nonnull
+  @Nls public abstract String getLibraryCategoryName();
 
-  @NotNull
+  @Nonnull
   @Nls
   public String getLibraryPrefix() {
     return StringUtil.toLowerCase(getLibraryCategoryName());
   }
 
-  public boolean managesName(@NotNull String name) {
+  public boolean managesName(@Nonnull String name) {
     return StringUtil.startsWithIgnoreCase(name, getLibraryPrefix());
   }
 }

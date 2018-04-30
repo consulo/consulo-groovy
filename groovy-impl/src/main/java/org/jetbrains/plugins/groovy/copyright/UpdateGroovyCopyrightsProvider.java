@@ -24,7 +24,7 @@ import java.util.List;
 
 import javax.swing.JPanel;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
 import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GroovyScriptClass;
@@ -42,9 +42,9 @@ import consulo.copyright.config.CopyrightFileConfig;
 
 public class UpdateGroovyCopyrightsProvider extends UpdateCopyrightsProvider<CopyrightFileConfig>
 {
-	@NotNull
+	@Nonnull
 	@Override
-	public UpdatePsiFileCopyright<CopyrightFileConfig> createInstance(@NotNull PsiFile file, @NotNull CopyrightProfile copyrightProfile)
+	public UpdatePsiFileCopyright<CopyrightFileConfig> createInstance(@Nonnull PsiFile file, @Nonnull CopyrightProfile copyrightProfile)
 	{
 		return new UpdateJavaFileCopyright(file, copyrightProfile)
 		{
@@ -86,21 +86,21 @@ public class UpdateGroovyCopyrightsProvider extends UpdateCopyrightsProvider<Cop
 		};
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public CopyrightFileConfig createDefaultOptions()
 	{
 		return new CopyrightFileConfig();
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
-	public TemplateCommentPanel createConfigurable(@NotNull Project project, @NotNull TemplateCommentPanel parentPane, @NotNull FileType fileType)
+	public TemplateCommentPanel createConfigurable(@Nonnull Project project, @Nonnull TemplateCommentPanel parentPane, @Nonnull FileType fileType)
 	{
 		return new TemplateCommentPanel(fileType, parentPane, project)
 		{
 			@Override
-			public void addAdditionalComponents(@NotNull JPanel additionalPanel)
+			public void addAdditionalComponents(@Nonnull JPanel additionalPanel)
 			{
 				addLocationInFile(new String[]{
 						"Before Package",

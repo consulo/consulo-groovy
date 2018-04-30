@@ -15,10 +15,11 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.path;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.psi.JavaPsiFacade;
 import com.intellij.psi.PsiMethod;
 import com.intellij.psi.PsiType;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.extensions.GroovyMethodInfo;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrMethodCall;
 import org.jetbrains.plugins.groovy.lang.psi.typeEnhancers.GrCallExpressionTypeCalculator;
@@ -29,7 +30,7 @@ import org.jetbrains.plugins.groovy.lang.psi.typeEnhancers.GrCallExpressionTypeC
 public class GrDescriptorReturnTypeCalculator extends GrCallExpressionTypeCalculator {
 
   @Override
-  public PsiType calculateReturnType(@NotNull GrMethodCall callExpression, @NotNull PsiMethod method) {
+  public PsiType calculateReturnType(@Nonnull GrMethodCall callExpression, @Nonnull PsiMethod method) {
     for (GroovyMethodInfo methodInfo : GroovyMethodInfo.getInfos(method)) {
       String returnType = methodInfo.getReturnType();
       if (returnType != null) {

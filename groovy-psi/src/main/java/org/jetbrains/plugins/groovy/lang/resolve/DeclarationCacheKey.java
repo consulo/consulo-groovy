@@ -20,8 +20,8 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.concurrent.ConcurrentMap;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlock;
 import org.jetbrains.plugins.groovy.lang.resolve.processors.ClassHint;
 import org.jetbrains.plugins.groovy.lang.resolve.processors.ResolverProcessor;
@@ -51,11 +51,13 @@ class DeclarationCacheKey {
       }
     };
   @Nullable private final String name;
-  @NotNull private final EnumSet<ClassHint.ResolveKind> kinds;
+  @Nonnull
+  private final EnumSet<ClassHint.ResolveKind> kinds;
   private final boolean nonCode;
-  @NotNull private final PsiElement place;
+  @Nonnull
+  private final PsiElement place;
 
-  DeclarationCacheKey(@Nullable String name, ClassHint hint, boolean nonCode, @NotNull PsiElement place) {
+  DeclarationCacheKey(@Nullable String name, ClassHint hint, boolean nonCode, @Nonnull PsiElement place) {
     this.name = name;
     this.kinds = getResolveKinds(hint);
     this.nonCode = nonCode;
@@ -202,7 +204,7 @@ class DeclarationCacheKey {
     }
 
     @Override
-    public boolean execute(@NotNull PsiElement element, ResolveState state) {
+    public boolean execute(@Nonnull PsiElement element, ResolveState state) {
       declarations.add(Pair.create(element, state));
       return true;
     }

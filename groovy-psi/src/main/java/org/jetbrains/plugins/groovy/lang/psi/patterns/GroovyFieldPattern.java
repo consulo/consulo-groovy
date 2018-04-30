@@ -15,7 +15,6 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.patterns;
 
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
 import com.intellij.patterns.InitialPatternCondition;
 import com.intellij.patterns.PsiMemberPattern;
@@ -28,7 +27,7 @@ public class GroovyFieldPattern extends PsiMemberPattern<GrField, GroovyFieldPat
 
   public GroovyFieldPattern() {
     super(new InitialPatternCondition<GrField>(GrField.class) {
-      public boolean accepts(@Nullable final Object o, final ProcessingContext context) {
+      public boolean accepts(@javax.annotation.Nullable final Object o, final ProcessingContext context) {
         return o instanceof GrField;
       }
     });

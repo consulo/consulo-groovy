@@ -15,7 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.stubs.index;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.stubs.StringStubIndexExtension;
 import com.intellij.psi.stubs.StubIndexKey;
@@ -26,7 +27,7 @@ import com.intellij.psi.stubs.StubIndexKey;
 public class GrAnnotatedMemberIndex extends StringStubIndexExtension<PsiElement> {
   public static final StubIndexKey<String, PsiElement> KEY = StubIndexKey.createIndexKey("gr.annot.members");
 
-  @NotNull
+  @Nonnull
   public StubIndexKey<String, PsiElement> getKey() {
     return KEY;
   }

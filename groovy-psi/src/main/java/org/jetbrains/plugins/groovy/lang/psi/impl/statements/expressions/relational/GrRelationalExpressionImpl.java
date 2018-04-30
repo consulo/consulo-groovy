@@ -16,7 +16,7 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.relational;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.GrBinaryExpressionImpl;
 import com.intellij.lang.ASTNode;
 
@@ -25,7 +25,7 @@ import com.intellij.lang.ASTNode;
  */
 public class GrRelationalExpressionImpl extends GrBinaryExpressionImpl {
 
-  public GrRelationalExpressionImpl(@NotNull ASTNode node) {
+  public GrRelationalExpressionImpl(@Nonnull ASTNode node) {
     super(node);
   }
 

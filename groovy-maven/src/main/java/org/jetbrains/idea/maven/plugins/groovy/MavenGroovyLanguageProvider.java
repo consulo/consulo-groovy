@@ -15,8 +15,8 @@
  */
 package org.jetbrains.idea.maven.plugins.groovy;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.idea.maven.dom.model.MavenDomConfiguration;
 import org.jetbrains.idea.maven.plugins.api.MavenParamLanguageProvider;
 import org.jetbrains.plugins.groovy.GroovyFileType;
@@ -30,7 +30,7 @@ public class MavenGroovyLanguageProvider extends MavenParamLanguageProvider {
 
   @Nullable
   @Override
-  public Language getLanguage(@NotNull XmlText xmlText, @NotNull MavenDomConfiguration configuration) {
+  public Language getLanguage(@Nonnull XmlText xmlText, @Nonnull MavenDomConfiguration configuration) {
     // Parameter 'source' of gmaven-plugin can be a peace of groovy code or file path or URL.
 
     String text = xmlText.getText();

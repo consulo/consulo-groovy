@@ -21,7 +21,6 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.containers.ContainerUtil;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFileBase;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrCatchClause;
@@ -36,8 +35,8 @@ import org.jetbrains.plugins.groovy.lang.psi.expectedTypes.GroovyExpectedTypesPr
  * @author Maxim.Medvedev
  */
 public class GroovyClassNameInsertHandler implements InsertHandler<JavaPsiClassReferenceElement> {
-  @Nullable
-  private static GrNewExpression findNewExpression(@Nullable PsiElement position) {
+  @javax.annotation.Nullable
+  private static GrNewExpression findNewExpression(@javax.annotation.Nullable PsiElement position) {
     if (position == null) return null;
     final PsiElement reference = position.getParent();
     if (!(reference instanceof GrCodeReferenceElement)) return null;
@@ -103,7 +102,7 @@ public class GroovyClassNameInsertHandler implements InsertHandler<JavaPsiClassR
                                                                PsiArrayType.class) == null;
   }
 
-  private static boolean isInVariable(@Nullable PsiElement position) {
+  private static boolean isInVariable(@javax.annotation.Nullable PsiElement position) {
     if (position == null) {
       return false;
     }

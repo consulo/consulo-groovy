@@ -15,8 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.stubs;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.toplevel.imports.GrImportStatement;
 import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.stubs.StubBase;
@@ -35,7 +35,7 @@ public class GrImportStatementStub extends StubBase<GrImportStatement> implement
 	private final String myAliasName;
 
 	public GrImportStatementStub(StubElement parent,
-			@NotNull IStubElementType elementType,
+			@Nonnull IStubElementType elementType,
 			@Nullable String referenceText,
 			@Nullable String aliasName,
 			byte flags)

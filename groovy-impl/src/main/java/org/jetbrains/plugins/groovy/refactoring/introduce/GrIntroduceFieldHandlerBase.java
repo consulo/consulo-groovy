@@ -24,7 +24,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.search.PsiElementProcessor;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.containers.ContainerUtil;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GroovyScriptClass;
@@ -36,7 +36,7 @@ import java.util.List;
  * Created by Max Medvedev on 8/29/13
  */
 public abstract class GrIntroduceFieldHandlerBase<Settings extends GrIntroduceSettings> extends GrIntroduceHandlerBase<Settings, PsiClass> {
-  @NotNull
+  @Nonnull
   @Override
   protected PsiClass[] findPossibleScopes(GrExpression expression,
                                           GrVariable variable,
@@ -61,7 +61,7 @@ public abstract class GrIntroduceFieldHandlerBase<Settings extends GrIntroduceSe
   protected void showScopeChooser(PsiClass[] scopes, final Pass<PsiClass> callback, Editor editor) {
     PsiElementProcessor<PsiClass> processor = new PsiElementProcessor<PsiClass>() {
       @Override
-      public boolean execute(@NotNull PsiClass element) {
+      public boolean execute(@Nonnull PsiClass element) {
         callback.pass(element);
         return false;
       }
@@ -70,9 +70,9 @@ public abstract class GrIntroduceFieldHandlerBase<Settings extends GrIntroduceSe
     NavigationUtil.getPsiElementPopup(scopes, new PsiClassListCellRenderer(), "Choose class to introduce field", processor).showInBestPositionFor(editor);
   }
 
-  @NotNull
+  @Nonnull
   @Override
-  protected PsiElement[] findOccurrences(@NotNull GrExpression expression, @NotNull PsiElement scope) {
+  protected PsiElement[] findOccurrences(@Nonnull GrExpression expression, @Nonnull PsiElement scope) {
     if (scope instanceof GroovyScriptClass) {
       scope = scope.getContainingFile();
     }

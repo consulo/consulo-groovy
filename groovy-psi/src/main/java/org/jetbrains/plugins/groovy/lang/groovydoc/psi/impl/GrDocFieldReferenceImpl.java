@@ -22,7 +22,7 @@ import com.intellij.psi.*;
 import com.intellij.psi.util.PropertyUtil;
 import com.intellij.util.ArrayUtil;
 import com.intellij.util.IncorrectOperationException;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocFieldReference;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocReferenceElement;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
@@ -38,7 +38,7 @@ import org.jetbrains.plugins.groovy.lang.resolve.processors.PropertyResolverProc
  */
 public class GrDocFieldReferenceImpl extends GrDocMemberReferenceImpl implements GrDocFieldReference {
 
-  public GrDocFieldReferenceImpl(@NotNull ASTNode node) {
+  public GrDocFieldReferenceImpl(@Nonnull ASTNode node) {
     super(node);
   }
 

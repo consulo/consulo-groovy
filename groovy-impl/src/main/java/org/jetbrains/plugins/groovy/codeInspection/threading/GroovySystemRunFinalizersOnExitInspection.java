@@ -18,8 +18,8 @@ package org.jetbrains.plugins.groovy.codeInspection.threading;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiMethod;
 import org.jetbrains.annotations.Nls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
@@ -28,18 +28,18 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.path.GrM
 
 public class GroovySystemRunFinalizersOnExitInspection extends BaseInspection {
   @Nls
-  @NotNull
+  @Nonnull
   public String getGroupDisplayName() {
     return THREADING_ISSUES;
   }
 
   @Nls
-  @NotNull
+  @Nonnull
   public String getDisplayName() {
     return "Call to System.runFinalizersOnExit()";
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   protected String buildErrorString(Object... args) {
     return "Call to System.'#ref' #loc";
 

@@ -16,7 +16,7 @@
 package org.jetbrains.plugins.groovy.codeInspection.naming;
 
 import com.intellij.psi.PsiElement;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.codeInspection.GroovyFix;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrEnumTypeDefinition;
@@ -27,7 +27,7 @@ public class GroovyEnumerationNamingConventionInspection extends ConventionInspe
     private static final int DEFAULT_MIN_LENGTH = 8;
     private static final int DEFAULT_MAX_LENGTH = 64;
 
-    @NotNull
+    @Nonnull
     public String getDisplayName() {
         return "Enumeration naming convention";
     }
@@ -40,7 +40,7 @@ public class GroovyEnumerationNamingConventionInspection extends ConventionInspe
         return true;
     }
 
-    @NotNull
+    @Nonnull
     public String buildErrorString(Object... args) {
         final String className = (String) args[0];
         if (className.length() < getMinLength()) {

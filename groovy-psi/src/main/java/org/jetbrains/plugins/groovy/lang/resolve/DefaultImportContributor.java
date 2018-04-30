@@ -18,7 +18,8 @@ package org.jetbrains.plugins.groovy.lang.resolve;
 import java.util.Collections;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import com.intellij.openapi.extensions.ExtensionPointName;
 
@@ -28,7 +29,7 @@ import com.intellij.openapi.extensions.ExtensionPointName;
 public abstract class DefaultImportContributor {
   public static final ExtensionPointName<DefaultImportContributor> EP_NAME = ExtensionPointName.create("org.intellij.groovy.defaultImportContributor");
   
-  public List<String> appendImplicitlyImportedPackages(@NotNull GroovyFile file) {
+  public List<String> appendImplicitlyImportedPackages(@Nonnull GroovyFile file) {
     return Collections.emptyList();
   }
   

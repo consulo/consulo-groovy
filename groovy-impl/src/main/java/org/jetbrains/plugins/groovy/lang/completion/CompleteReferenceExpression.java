@@ -22,9 +22,11 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.annotation.Nonnull;
+
 import consulo.psi.PsiPackage;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.GroovyLanguage;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
@@ -84,10 +86,10 @@ public class CompleteReferenceExpression {
   private final CompletionParameters myParameters;
   private final CompleteReferenceProcessor myProcessor;
 
-  private CompleteReferenceExpression(@NotNull PrefixMatcher matcher,
-                                      @NotNull Consumer<LookupElement> consumer,
-                                      @NotNull GrReferenceExpressionImpl refExpr,
-                                      @NotNull CompletionParameters parameters) {
+  private CompleteReferenceExpression(@Nonnull PrefixMatcher matcher,
+                                      @Nonnull Consumer<LookupElement> consumer,
+                                      @Nonnull GrReferenceExpressionImpl refExpr,
+                                      @Nonnull CompletionParameters parameters) {
     myMatcher = matcher;
     myConsumer = consumer;
     myParameters = parameters;
@@ -97,10 +99,10 @@ public class CompleteReferenceExpression {
 
   }
 
-  public static void processVariants(@NotNull PrefixMatcher matcher,
-                                     @NotNull Consumer<LookupElement> consumer,
-                                     @NotNull GrReferenceExpressionImpl refExpr,
-                                     @NotNull CompletionParameters parameters) {
+  public static void processVariants(@Nonnull PrefixMatcher matcher,
+                                     @Nonnull Consumer<LookupElement> consumer,
+                                     @Nonnull GrReferenceExpressionImpl refExpr,
+                                     @Nonnull CompletionParameters parameters) {
     new CompleteReferenceExpression(matcher, consumer, refExpr, parameters).processVariantsImpl();
   }
 
@@ -123,10 +125,10 @@ public class CompleteReferenceExpression {
     }
   }
 
-  public static void processRefInAnnotation(@NotNull GrReferenceExpression refExpr,
-                                            @NotNull PrefixMatcher matcher,
-                                            @NotNull Consumer<LookupElement> consumer,
-                                            @NotNull CompletionParameters parameters) {
+  public static void processRefInAnnotation(@Nonnull GrReferenceExpression refExpr,
+                                            @Nonnull PrefixMatcher matcher,
+                                            @Nonnull Consumer<LookupElement> consumer,
+                                            @Nonnull CompletionParameters parameters) {
     new CompleteReferenceExpression(matcher, consumer, (GrReferenceExpressionImpl)refExpr, parameters).processRefInAnnotationImpl();
   }
 
@@ -217,15 +219,15 @@ public class CompleteReferenceExpression {
     }
   }
 
-  private void getVariantsFromQualifierForSpreadOperator(@NotNull GrExpression qualifier) {
+  private void getVariantsFromQualifierForSpreadOperator(@Nonnull GrExpression qualifier) {
     final PsiType spreadType = ClosureParameterEnhancer.findTypeForIteration(qualifier, myRefExpr);
     if (spreadType != null) {
       getVariantsFromQualifierType(spreadType, myRefExpr.getProject());
     }
   }
 
-  @NotNull
-  public static LookupElementBuilder createPropertyLookupElement(@NotNull String name, @Nullable PsiType type) {
+  @Nonnull
+  public static LookupElementBuilder createPropertyLookupElement(@Nonnull String name, @Nullable PsiType type) {
     LookupElementBuilder res = LookupElementBuilder.create(name).withIcon(JetgroovyIcons.Groovy.Property);
     if (type != null) {
       res = res.withTypeText(type.getPresentableText());
@@ -233,8 +235,8 @@ public class CompleteReferenceExpression {
     return res;
   }
 
-  @Nullable
-  public static LookupElementBuilder createPropertyLookupElement(@NotNull PsiMethod accessor,
+  @javax.annotation.Nullable
+  public static LookupElementBuilder createPropertyLookupElement(@Nonnull PsiMethod accessor,
                                                                  @Nullable GroovyResolveResult resolveResult,
                                                                  @Nullable PrefixMatcher matcher) {
     String propName;
@@ -275,11 +277,11 @@ public class CompleteReferenceExpression {
     return builder;
   }
 
-  @NotNull
-  private static GroovyResolveResult generatePropertyResolveResult(@NotNull String name,
-                                                                   @NotNull PsiMethod method,
+  @Nonnull
+  private static GroovyResolveResult generatePropertyResolveResult(@Nonnull String name,
+                                                                   @Nonnull PsiMethod method,
                                                                    @Nullable PsiType type,
-                                                                   @Nullable GroovyResolveResult resolveResult) {
+                                                                   @javax.annotation.Nullable GroovyResolveResult resolveResult) {
     PsiType nonNullType = type != null ? type : TypesUtil.getJavaLangObject(method);
 
     final GrPropertyForCompletion field = new GrPropertyForCompletion(method, name, nonNullType);
@@ -292,7 +294,7 @@ public class CompleteReferenceExpression {
     }
   }
 
-  private void getVariantsFromQualifier(@NotNull GrExpression qualifier) {
+  private void getVariantsFromQualifier(@Nonnull GrExpression qualifier) {
     Project project = qualifier.getProject();
     final PsiType qualifierType = TypesUtil.boxPrimitiveType(qualifier.getType(), qualifier.getManager(), qualifier.getResolveScope());
     final ResolveState state = ResolveState.initial();
@@ -346,8 +348,8 @@ public class CompleteReferenceExpression {
   }
 
 
-  private void getVariantsFromQualifierType(@NotNull PsiType qualifierType,
-                                            @NotNull Project project) {
+  private void getVariantsFromQualifierType(@Nonnull PsiType qualifierType,
+                                            @Nonnull Project project) {
     final ResolveState state = ResolveState.initial();
     if (qualifierType instanceof PsiClassType) {
       PsiClassType.ClassResolveResult result = ((PsiClassType)qualifierType).resolveGenerics();
@@ -372,7 +374,7 @@ public class CompleteReferenceExpression {
     ResolveUtil.processNonCodeMembers(qualifierType, myProcessor, myRefExpr, state);
   }
 
-  @NotNull
+  @Nonnull
   private Set<String> addAllRestrictedProperties() {
     if (myRefExpr.getQualifier() != null) {
       return Collections.emptySet();
@@ -450,7 +452,7 @@ public class CompleteReferenceExpression {
     }
 
     @Override
-    public boolean execute(@NotNull PsiElement element, @NotNull ResolveState state) {
+    public boolean execute(@Nonnull PsiElement element, @Nonnull ResolveState state) {
       if (element instanceof PsiMethod && ((PsiMethod)element).isConstructor()) return true;
       if (element instanceof PsiNamedElement) {
 
@@ -525,7 +527,7 @@ public class CompleteReferenceExpression {
       }
     }
 
-    private void processPropertyFromField(@NotNull GrField field, @NotNull GroovyResolveResult resolveResult) {
+    private void processPropertyFromField(@Nonnull GrField field, @Nonnull GroovyResolveResult resolveResult) {
       if (field.getGetters().length != 0 || field.getSetter() != null || !myPropertyNames.add(field.getName()) || myIsMap) return;
 
       for (LookupElement element : GroovyCompletionUtil.createLookupElements(resolveResult, false, myMatcher, null)) {
@@ -534,7 +536,7 @@ public class CompleteReferenceExpression {
 
     }
 
-    private void processProperty(@NotNull PsiMethod method, @NotNull GroovyResolveResult resolveResult) {
+    private void processProperty(@Nonnull PsiMethod method, @Nonnull GroovyResolveResult resolveResult) {
       if (myIsMap) return;
       final LookupElementBuilder lookup = createPropertyLookupElement(method, resolveResult, myMatcher);
       if (lookup != null) {
@@ -547,7 +549,7 @@ public class CompleteReferenceExpression {
       }
     }
 
-    private void processListenerProperties(@NotNull PsiMethod method) {
+    private void processListenerProperties(@Nonnull PsiMethod method) {
       if (!method.getName().startsWith("add") || method.getParameterList().getParametersCount() != 1) return;
 
       final PsiParameter parameter = method.getParameterList().getParameters()[0];
@@ -572,7 +574,7 @@ public class CompleteReferenceExpression {
       }
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public GroovyResolveResult[] getCandidates() {
       if (!hasCandidates()) return GroovyResolveResult.EMPTY_ARRAY;
@@ -600,7 +602,7 @@ public class CompleteReferenceExpression {
       return list.toArray(new GroovyResolveResult[list.size()]);
     }
 
-    @NotNull
+    @Nonnull
     private List<GroovyResolveResult> getInapplicableResults() {
       if (myInapplicable == null) return Collections.emptyList();
       return myInapplicable;

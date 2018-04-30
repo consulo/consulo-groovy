@@ -23,8 +23,8 @@ import com.intellij.psi.scope.NameHint;
 import com.intellij.psi.scope.PsiScopeProcessor;
 import com.intellij.psi.util.InheritanceUtil;
 import com.intellij.util.containers.ContainerUtil;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.extensions.GroovyNamedArgumentProvider;
 import org.jetbrains.plugins.groovy.extensions.NamedArgumentDescriptor;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
@@ -55,7 +55,7 @@ public class GroovyConstructorNamedArgumentProvider extends GroovyNamedArgumentP
   private static final String METACLASS = "metaClass";
 
   @Override
-  public void getNamedArguments(@NotNull GrCall call,
+  public void getNamedArguments(@Nonnull GrCall call,
                                 @Nullable PsiElement resolve,
                                 @Nullable String argumentName,
                                 boolean forCompletion,
@@ -92,7 +92,7 @@ public class GroovyConstructorNamedArgumentProvider extends GroovyNamedArgumentP
     }
   }
 
-  public static void processClass(@NotNull GrCall call,
+  public static void processClass(@Nonnull GrCall call,
                                   PsiClassType type,
                                   @Nullable String argumentName,
                                   final Map<String, NamedArgumentDescriptor> result) {
@@ -174,7 +174,7 @@ public class GroovyConstructorNamedArgumentProvider extends GroovyNamedArgumentP
     private EnumSet<ResolveKind> myResolveTargetKinds;
 
     @Override
-    public boolean execute(@NotNull PsiElement element, ResolveState state) {
+    public boolean execute(@Nonnull PsiElement element, ResolveState state) {
       if (element instanceof PsiMethod || element instanceof PsiField) {
         String propertyName;
         PsiType type;
@@ -215,7 +215,7 @@ public class GroovyConstructorNamedArgumentProvider extends GroovyNamedArgumentP
     protected abstract void addNamedArgument(String propertyName, PsiType type, PsiElement element, PsiSubstitutor substitutor);
 
     @Override
-    public <T> T getHint(@NotNull Key<T> hintKey) {
+    public <T> T getHint(@Nonnull Key<T> hintKey) {
       if ((NameHint.KEY == hintKey && myNameHint != null) || ClassHint.KEY == hintKey || ElementClassHint.KEY == hintKey) {
         //noinspection unchecked
         return (T) this;

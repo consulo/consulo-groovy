@@ -18,8 +18,8 @@ package org.jetbrains.plugins.groovy.configSlurper;
 import com.intellij.openapi.extensions.ExtensionPointName;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.PairConsumer;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 
@@ -33,16 +33,16 @@ public abstract class ConfigSlurperSupport {
   public static final ExtensionPointName<ConfigSlurperSupport> EP_NAME =
     ExtensionPointName.create("org.intellij.groovy.configSlurperSupport");
 
-  @Nullable
-  public abstract PropertiesProvider getProvider(@NotNull GroovyFile file);
+  @javax.annotation.Nullable
+  public abstract PropertiesProvider getProvider(@Nonnull GroovyFile file);
 
   @Nullable
-  public PropertiesProvider getConfigSlurperInfo(@NotNull GrExpression qualifier, @NotNull PsiElement qualifierResolve) {
+  public PropertiesProvider getConfigSlurperInfo(@Nonnull GrExpression qualifier, @Nonnull PsiElement qualifierResolve) {
     return null;
   }
 
   public interface PropertiesProvider {
-    void collectVariants(@NotNull List<String> prefix, @NotNull PairConsumer<String, Boolean> consumer);
+    void collectVariants(@Nonnull List<String> prefix, @Nonnull PairConsumer<String, Boolean> consumer);
   }
 
 }

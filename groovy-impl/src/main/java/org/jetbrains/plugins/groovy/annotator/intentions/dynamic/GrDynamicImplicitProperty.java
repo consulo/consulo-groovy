@@ -16,13 +16,14 @@
 
 package org.jetbrains.plugins.groovy.annotator.intentions.dynamic;
 
+import javax.annotation.Nonnull;
 import javax.swing.Icon;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.annotator.intentions.dynamic.elements.DClassElement;
 import org.jetbrains.plugins.groovy.annotator.intentions.dynamic.elements.DPropertyElement;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil;
@@ -60,7 +61,7 @@ public class GrDynamicImplicitProperty extends GrImplicitVariableImpl implements
 
 	public GrDynamicImplicitProperty(PsiManager manager,
 			@NonNls String name,
-			@NonNls @NotNull String type,
+			@NonNls @Nonnull String type,
 			String containingClassName)
 	{
 		super(manager, name, type, null);
@@ -98,7 +99,7 @@ public class GrDynamicImplicitProperty extends GrImplicitVariableImpl implements
 	}
 
 	@Override
-	public PsiElement setName(@NotNull String name) throws IncorrectOperationException
+	public PsiElement setName(@Nonnull String name) throws IncorrectOperationException
 	{
 		DynamicManager.getInstance(getProject()).replaceDynamicPropertyName(myContainingClassName, getName(), name);
 		return super.setName(name);
@@ -111,14 +112,14 @@ public class GrDynamicImplicitProperty extends GrImplicitVariableImpl implements
 	}
 
 	@Override
-	@Nullable
+	@javax.annotation.Nullable
 	public String getLocationString()
 	{
 		return null;
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public SearchScope getUseScope()
 	{
 		return GlobalSearchScope.projectScope(myProject);
@@ -257,7 +258,7 @@ public class GrDynamicImplicitProperty extends GrImplicitVariableImpl implements
 		throw new IncorrectOperationException();
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public PsiType getType()
 	{

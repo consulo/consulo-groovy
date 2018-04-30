@@ -4,7 +4,7 @@ import static com.intellij.patterns.PlatformPatterns.psiElement;
 import static com.intellij.patterns.PsiJavaPatterns.psiClass;
 import static com.intellij.patterns.PsiJavaPatterns.psiField;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.util.FieldInitializerTailTypes;
 import com.intellij.codeInsight.TailType;
@@ -42,9 +42,9 @@ public class GebPageFieldNameCompletionContributor extends CompletionContributor
     };
 
     @Override
-    public void addCompletions(@NotNull CompletionParameters parameters,
+    public void addCompletions(@Nonnull CompletionParameters parameters,
                                   ProcessingContext context,
-                                  @NotNull CompletionResultSet result) {
+                                  @Nonnull CompletionResultSet result) {
       final PsiClass psiClass = PsiTreeUtil.getParentOfType(parameters.getPosition(), PsiClass.class);
       assert psiClass != null;
 

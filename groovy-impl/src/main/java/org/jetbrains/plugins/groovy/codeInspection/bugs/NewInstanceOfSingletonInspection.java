@@ -15,6 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.bugs;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.codeInspection.ProblemDescriptor;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
@@ -22,7 +24,6 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.codeStyle.JavaCodeStyleManager;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.Nls;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.codeInspection.GroovyFix;
@@ -83,7 +84,7 @@ public class NewInstanceOfSingletonInspection extends BaseInspection {
         JavaCodeStyleManager.getInstance(project).shortenClassReferences(replaced);
       }
 
-      @NotNull
+      @Nonnull
       @Override
       public String getName() {
         return GroovyInspectionBundle.message("replace.new.expression.with.0.instance", singleton.getName());
@@ -92,7 +93,7 @@ public class NewInstanceOfSingletonInspection extends BaseInspection {
   }
 
   @Nls
-  @NotNull
+  @Nonnull
   @Override
   public String getGroupDisplayName() {
     return CONFUSING_CODE_CONSTRUCTS;
@@ -104,7 +105,7 @@ public class NewInstanceOfSingletonInspection extends BaseInspection {
   }
 
   @Nls
-  @NotNull
+  @Nonnull
   @Override
   public String getDisplayName() {
     return "New instance of class annotated with @groovy.lang.Singleton";

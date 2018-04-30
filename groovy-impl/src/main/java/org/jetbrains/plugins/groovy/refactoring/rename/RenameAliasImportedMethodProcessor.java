@@ -30,8 +30,8 @@ import com.intellij.refactoring.rename.UnresolvableCollisionUsageInfo;
 import com.intellij.usageView.UsageInfo;
 import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.Processor;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GrReferenceElement;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
@@ -50,11 +50,11 @@ import static org.jetbrains.plugins.groovy.lang.psi.util.GroovyPropertyUtils.*;
  */
 public class RenameAliasImportedMethodProcessor extends RenameJavaMethodProcessor {
   @Override
-  public boolean canProcessElement(@NotNull PsiElement element) {
+  public boolean canProcessElement(@Nonnull PsiElement element) {
     return element instanceof GroovyPsiElement && super.canProcessElement(element);
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public Collection<PsiReference> findReferences(PsiElement element) {
     return RenameAliasedUsagesUtil.filterAliasedRefs(super.findReferences(element), element);

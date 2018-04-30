@@ -22,13 +22,13 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.util.LinkedHashSet;
 
+import javax.annotation.Nonnull;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyNamesUtil;
@@ -200,7 +200,7 @@ public class GroovyIntroduceVariableDialog extends DialogWrapper implements GrIn
     return new MyGroovyIntroduceVariableSettings(this);
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public LinkedHashSet<String> suggestNames() {
     return new GrVariableNameSuggester(myContext, myValidator);

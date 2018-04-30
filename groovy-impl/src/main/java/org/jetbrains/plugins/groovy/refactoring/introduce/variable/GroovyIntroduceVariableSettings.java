@@ -16,8 +16,6 @@
 
 package org.jetbrains.plugins.groovy.refactoring.introduce.variable;
 
-import com.intellij.psi.PsiType;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.refactoring.introduce.GrIntroduceSettings;
 
 /**

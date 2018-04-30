@@ -26,11 +26,12 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.annotation.Nonnull;
 import javax.swing.Icon;
 
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyNamesUtil;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames;
@@ -108,19 +109,19 @@ public abstract class MvcFramework {
   @NonNls public static final String GROOVY_STARTER_CONF = "/conf/groovy-starter.conf";
   @NonNls public static final String XMX_JVM_PARAMETER = "-Xmx";
 
-  public abstract boolean hasSupport(@NotNull Module module);
+  public abstract boolean hasSupport(@Nonnull Module module);
 
-  public boolean isAuxModule(@NotNull Module module) {
+  public boolean isAuxModule(@Nonnull Module module) {
     return isCommonPluginsModule(module) || isGlobalPluginModule(module);
   }
 
 
-  public boolean hasFrameworkJar(@NotNull Module module) {
+  public boolean hasFrameworkJar(@Nonnull Module module) {
     GlobalSearchScope scope = GlobalSearchScope.moduleWithDependenciesAndLibrariesScope(module, false);
     return JavaPsiFacade.getInstance(module.getProject()).findClass(getSomeFrameworkClass(), scope) != null;
   }
 
-  public boolean isCommonPluginsModule(@NotNull Module module) {
+  public boolean isCommonPluginsModule(@Nonnull Module module) {
     return module.getName().endsWith(getCommonPluginSuffix());
   }
 
@@ -130,24 +131,24 @@ public abstract class MvcFramework {
 
   public abstract String getApplicationDirectoryName();
 
-  public void syncSdkAndLibrariesInPluginsModule(@NotNull Module module) {
+  public void syncSdkAndLibrariesInPluginsModule(@Nonnull Module module) {
     final Module pluginsModule = findCommonPluginsModule(module);
     if (pluginsModule != null) {
       MvcModuleStructureUtil.syncAuxModuleSdk(module, pluginsModule, this);
     }
   }
 
-  public boolean isInteractiveConsoleSupported(@NotNull Module module) {
+  public boolean isInteractiveConsoleSupported(@Nonnull Module module) {
     return false;
   }
 
-  public void runInteractiveConsole(@NotNull Module module) {
+  public void runInteractiveConsole(@Nonnull Module module) {
     throw new UnsupportedOperationException();
   }
 
-  public abstract void upgradeFramework(@NotNull Module module);
+  public abstract void upgradeFramework(@Nonnull Module module);
 
-  public void createApplicationIfNeeded(@NotNull final Module module) {
+  public void createApplicationIfNeeded(@Nonnull final Module module) {
     if (findAppRoot(module) == null && module.getUserData(CREATE_APP_STRUCTURE) == Boolean.TRUE) {
       while (ModuleUtilCore.getSdk(module, JavaModuleExtension.class) == null) {
         if (Messages.showYesNoDialog(module.getProject(), "Cannot generate " + getDisplayName() + " project structure because JDK is not specified for module \"" +
@@ -178,7 +179,7 @@ public abstract class MvcFramework {
 
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   protected GeneralCommandLine getCreationCommandLine(Module module) {
     String message = "Create default " + getDisplayName() + " directory structure in module '" + module.getName() + "'?";
     final int result = Messages.showDialog(module.getProject(), message, "Create " + getDisplayName() + " application",
@@ -190,12 +191,12 @@ public abstract class MvcFramework {
     return createCommandAndShowErrors(null, module, true, new MvcCommand(result == 0 ? "create-app" : "create-plugin"));
   }
 
-  public abstract void updateProjectStructure(@NotNull final Module module);
+  public abstract void updateProjectStructure(@Nonnull final Module module);
 
-  public abstract void ensureRunConfigurationExists(@NotNull Module module);
+  public abstract void ensureRunConfigurationExists(@Nonnull Module module);
 
-  @Nullable
-  public VirtualFile findAppRoot(@Nullable Module module) {
+  @javax.annotation.Nullable
+  public VirtualFile findAppRoot(@javax.annotation.Nullable Module module) {
     if (module == null) return null;
 
     String appDirName = getApplicationDirectoryName();
@@ -227,7 +228,7 @@ public abstract class MvcFramework {
     return null;
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   public VirtualFile findAppDirectory(@Nullable PsiElement element) {
     if (element == null) return null;
 
@@ -248,7 +249,7 @@ public abstract class MvcFramework {
 
   public abstract String getUserLibraryName();
 
-  protected List<File> getImplicitClasspathRoots(@NotNull Module module) {
+  protected List<File> getImplicitClasspathRoots(@Nonnull Module module) {
     final List<File> toExclude = new ArrayList<File>();
 
     VirtualFile sdkRoot = getSdkRoot(module);
@@ -338,12 +339,12 @@ public abstract class MvcFramework {
     }
   }
 
-  public abstract OwnJavaParameters createJavaParameters(@NotNull Module module,
+  public abstract OwnJavaParameters createJavaParameters(@Nonnull Module module,
                                                       boolean forCreation,
                                                       boolean forTests,
                                                       boolean classpathFromDependencies,
-                                                      @Nullable String jvmParams,
-                                                      @NotNull MvcCommand command) throws ExecutionException;
+                                                      @javax.annotation.Nullable String jvmParams,
+                                                      @Nonnull MvcCommand command) throws ExecutionException;
 
   protected static void ensureRunConfigurationExists(Module module, ConfigurationType configurationType, String name) {
     final RunManagerEx runManager = RunManagerEx.getInstanceEx(module.getProject());
@@ -375,22 +376,22 @@ public abstract class MvcFramework {
   public abstract String getSdkHomePropertyName();
 
   @Nullable
-  public GeneralCommandLine createCommandAndShowErrors(@NotNull Module module, @NotNull String command, String... args) {
+  public GeneralCommandLine createCommandAndShowErrors(@Nonnull Module module, @Nonnull String command, String... args) {
     return createCommandAndShowErrors(null, module, new MvcCommand(command, args));
   }
 
   @Nullable
-  public GeneralCommandLine createCommandAndShowErrors(@NotNull Module module, @NotNull MvcCommand command) {
+  public GeneralCommandLine createCommandAndShowErrors(@Nonnull Module module, @Nonnull MvcCommand command) {
     return createCommandAndShowErrors(null, module, command);
   }
 
   @Nullable
-  public GeneralCommandLine createCommandAndShowErrors(@Nullable String vmOptions, @NotNull Module module, @NotNull MvcCommand command) {
+  public GeneralCommandLine createCommandAndShowErrors(@Nullable String vmOptions, @Nonnull Module module, @Nonnull MvcCommand command) {
     return createCommandAndShowErrors(vmOptions, module, false, command);
   }
 
   @Nullable
-  public GeneralCommandLine createCommandAndShowErrors(@Nullable String vmOptions, @NotNull Module module, final boolean forCreation, @NotNull MvcCommand command) {
+  public GeneralCommandLine createCommandAndShowErrors(@javax.annotation.Nullable String vmOptions, @Nonnull Module module, final boolean forCreation, @Nonnull MvcCommand command) {
     try {
       return createCommand(module, vmOptions, forCreation, command);
     }
@@ -400,11 +401,11 @@ public abstract class MvcFramework {
     }
   }
 
-  @NotNull
-  public GeneralCommandLine createCommand(@NotNull Module module,
+  @Nonnull
+  public GeneralCommandLine createCommand(@Nonnull Module module,
                                           @Nullable String jvmParams,
                                           boolean forCreation,
-                                          @NotNull MvcCommand command) throws ExecutionException {
+                                          @Nonnull MvcCommand command) throws ExecutionException {
     final OwnJavaParameters params = createJavaParameters(module, forCreation, false, true, jvmParams, command);
     addJavaHome(params, module);
 
@@ -422,7 +423,7 @@ public abstract class MvcFramework {
     return commandLine;
   }
 
-  public static void addJavaHome(@NotNull OwnJavaParameters params, @NotNull Module module) {
+  public static void addJavaHome(@Nonnull OwnJavaParameters params, @Nonnull Module module) {
     final Sdk sdk = ModuleUtilCore.getSdk(module, JavaModuleExtension.class);
     if (sdk != null) {
       String path = StringUtil.trimEnd(sdk.getHomePath(), File.separator);
@@ -438,7 +439,7 @@ public abstract class MvcFramework {
     }
   }
 
-  public static GeneralCommandLine createCommandLine(@NotNull OwnJavaParameters params) throws CantRunException {
+  public static GeneralCommandLine createCommandLine(@Nonnull OwnJavaParameters params) throws CantRunException {
     return CommandLineBuilder.createFromJavaParameters(params);
   }
 
@@ -456,11 +457,11 @@ public abstract class MvcFramework {
     }
   }
 
-  public Collection<VirtualFile> getAllPluginRoots(@NotNull Module module, boolean refresh) {
+  public Collection<VirtualFile> getAllPluginRoots(@Nonnull Module module, boolean refresh) {
     return getCommonPluginRoots(module, refresh);
   }
 
-  public void collectCommonPluginRoots(Map<String, VirtualFile> result, @NotNull Module module, boolean refresh) {
+  public void collectCommonPluginRoots(Map<String, VirtualFile> result, @Nonnull Module module, boolean refresh) {
     if (isCommonPluginsModule(module)) {
       for (VirtualFile root : ModuleRootManager.getInstance(module).getContentRoots()) {
         String pluginName = getInstalledPluginNameByPath(module.getProject(), root);
@@ -479,37 +480,37 @@ public abstract class MvcFramework {
     }
   }
 
-  public Collection<VirtualFile> getCommonPluginRoots(@NotNull Module module, boolean refresh) {
+  public Collection<VirtualFile> getCommonPluginRoots(@Nonnull Module module, boolean refresh) {
     Map<String, VirtualFile> result = new HashMap<String, VirtualFile>();
     collectCommonPluginRoots(result, module, refresh);
     return result.values();
   }
 
-  @Nullable
-  public Module findCommonPluginsModule(@NotNull Module module) {
+  @javax.annotation.Nullable
+  public Module findCommonPluginsModule(@Nonnull Module module) {
     return ModuleManager.getInstance(module.getProject()).findModuleByName(getCommonPluginsModuleName(module));
   }
 
-  public boolean isGlobalPluginModule(@NotNull Module module) {
+  public boolean isGlobalPluginModule(@Nonnull Module module) {
     return module.getName().startsWith(getGlobalPluginsModuleName());
   }
 
   @Nullable
-  public File getSdkWorkDir(@NotNull Module module) {
+  public File getSdkWorkDir(@Nonnull Module module) {
     return getDefaultSdkWorkDir(module);
   }
 
   @Nullable
-  public abstract File getDefaultSdkWorkDir(@NotNull Module module);
+  public abstract File getDefaultSdkWorkDir(@Nonnull Module module);
 
   @Nullable
-  public File getGlobalPluginsDir(@NotNull Module module) {
+  public File getGlobalPluginsDir(@Nonnull Module module) {
     final File sdkWorkDir = getSdkWorkDir(module);
     return sdkWorkDir == null ? null : new File(sdkWorkDir, "global-plugins");
   }
 
-  @Nullable
-  public File getCommonPluginsDir(@NotNull Module module) {
+  @javax.annotation.Nullable
+  public File getCommonPluginsDir(@Nonnull Module module) {
     final File grailsWorkDir = getSdkWorkDir(module);
     if (grailsWorkDir == null) return null;
 
@@ -535,13 +536,13 @@ public abstract class MvcFramework {
 
   public abstract boolean isSDKLibrary(Library library);
 
-  public abstract MvcProjectStructure createProjectStructure(@NotNull Module module, boolean auxModule);
+  public abstract MvcProjectStructure createProjectStructure(@Nonnull Module module, boolean auxModule);
 
   public abstract LibraryKind getLibraryKind();
 
   public abstract String getSomeFrameworkClass();
 
-  public static void addAvailableSystemScripts(final Collection<String> result, @NotNull Module module) {
+  public static void addAvailableSystemScripts(final Collection<String> result, @Nonnull Module module) {
     VirtualFile scriptRoot = null;
 
     GlobalSearchScope searchScope = GlobalSearchScope.moduleWithDependenciesAndLibrariesScope(module, false);
@@ -578,7 +579,7 @@ public abstract class MvcFramework {
 
   public abstract boolean isToReformatOnCreation(VirtualFile file);
 
-  public static void addAvailableScripts(final Collection<String> result, @Nullable final VirtualFile root) {
+  public static void addAvailableScripts(final Collection<String> result, @javax.annotation.Nullable final VirtualFile root) {
     if (root == null || !root.isDirectory()) {
       return;
     }
@@ -596,7 +597,7 @@ public abstract class MvcFramework {
     }
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   public static MvcFramework findCommonPluginModuleFramework(Module module) {
     for (MvcFramework framework : EP_NAME.getExtensions()) {
       if (framework.isCommonPluginsModule(module)) {
@@ -614,8 +615,8 @@ public abstract class MvcFramework {
     return !virtualFile.isDirectory() && isScriptFileName(virtualFile.getName());
   }
 
-  @Nullable
-  public String getInstalledPluginNameByPath(Project project, @NotNull VirtualFile pluginPath) {
+  @javax.annotation.Nullable
+  public String getInstalledPluginNameByPath(Project project, @Nonnull VirtualFile pluginPath) {
     VirtualFile pluginXml = pluginPath.findChild("plugin.xml");
     if (pluginXml == null) return null;
 
@@ -637,8 +638,8 @@ public abstract class MvcFramework {
     return res;
   }
 
-  @Nullable
-  public static MvcFramework getInstance(@Nullable final Module module) {
+  @javax.annotation.Nullable
+  public static MvcFramework getInstance(@javax.annotation.Nullable final Module module) {
     if (module == null) {
       return null;
     }
@@ -661,7 +662,7 @@ public abstract class MvcFramework {
   }
 
   @Nullable
-  public static MvcFramework getInstanceBySdk(@NotNull Module module) {
+  public static MvcFramework getInstanceBySdk(@Nonnull Module module) {
     for (final MvcFramework framework : EP_NAME.getExtensions()) {
       if (framework.getSdkRoot(module) != null) {
         return framework;

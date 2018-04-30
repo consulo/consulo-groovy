@@ -22,7 +22,7 @@ import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import icons.JetgroovyIcons;
 import org.jetbrains.annotations.Nls;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.util.LibrariesUtil;
 
 import javax.swing.*;
@@ -50,13 +50,13 @@ public class GroovyLibraryPresentationProvider extends GroovyLibraryPresentation
     return GroovyConfigUtils.getInstance().getSDKVersion(home);
   }
 
-  @NotNull
+  @Nonnull
   public Icon getIcon() {
     return JetgroovyIcons.Groovy.Groovy_16x16;
   }
 
   @Override
-  public boolean isSDKHome(@NotNull VirtualFile file) {
+  public boolean isSDKHome(@Nonnull VirtualFile file) {
     return GroovyConfigUtils.getInstance().isSDKHome(file);
   }
 
@@ -83,14 +83,14 @@ public class GroovyLibraryPresentationProvider extends GroovyLibraryPresentation
       }
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public String getSDKVersion(String path) {
     return GroovyConfigUtils.getInstance().getSDKVersion(path);
   }
 
   @Nls
-  @NotNull
+  @Nonnull
   @Override
   public String getLibraryCategoryName() {
     return "Groovy";

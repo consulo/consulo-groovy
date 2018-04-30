@@ -15,8 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.typeEnhancers;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.branch.GrReturnStatement;
@@ -41,7 +41,7 @@ public abstract class GrTypeConverter {
   }
 
   @Nullable
-  protected static GrLiteral getLiteral(@NotNull GroovyPsiElement context) {
+  protected static GrLiteral getLiteral(@Nonnull GroovyPsiElement context) {
     final GrExpression expression;
     if (context instanceof GrTypeCastExpression) {
       expression = ((GrTypeCastExpression)context).getOperand();
@@ -70,7 +70,7 @@ public abstract class GrTypeConverter {
   }
 
   @SuppressWarnings("deprecation")
-  public boolean isApplicableTo(@NotNull ApplicableTo position) {
+  public boolean isApplicableTo(@Nonnull ApplicableTo position) {
     switch (position) {
       case EXPLICIT_CAST:
         return false;
@@ -90,7 +90,7 @@ public abstract class GrTypeConverter {
    */
   @Deprecated
   @Nullable
-  public Boolean isConvertible(@NotNull PsiType lType, @NotNull PsiType rType, @NotNull GroovyPsiElement context) {
+  public Boolean isConvertible(@Nonnull PsiType lType, @Nonnull PsiType rType, @Nonnull GroovyPsiElement context) {
     return null;
   }
 
@@ -104,10 +104,10 @@ public abstract class GrTypeConverter {
    */
   @SuppressWarnings("deprecation")
   @Nullable
-  public ConversionResult isConvertibleEx(@NotNull PsiType targetType,
-                                          @NotNull PsiType actualType,
-                                          @NotNull GroovyPsiElement context,
-                                          @NotNull ApplicableTo currentPosition) {
+  public ConversionResult isConvertibleEx(@Nonnull PsiType targetType,
+                                          @Nonnull PsiType actualType,
+                                          @Nonnull GroovyPsiElement context,
+                                          @Nonnull ApplicableTo currentPosition) {
     final Boolean result = isConvertible(targetType, actualType, context);
     return result == null ? null
                           : result ? ConversionResult.OK

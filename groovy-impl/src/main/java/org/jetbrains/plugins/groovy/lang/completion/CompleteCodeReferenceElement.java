@@ -17,9 +17,11 @@ package org.jetbrains.plugins.groovy.lang.completion;
 
 import java.util.List;
 
+import javax.annotation.Nonnull;
+
 import consulo.psi.PsiPackage;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariableDeclaration;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinitionBody;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
@@ -52,21 +54,21 @@ public class CompleteCodeReferenceElement {
   private final Consumer<LookupElement> myConsumer;
   private final PrefixMatcher myMatcher;
 
-  private CompleteCodeReferenceElement(@NotNull GrCodeReferenceElementImpl ref,
-                                       @NotNull Consumer<LookupElement> consumer,
-                                       @NotNull PrefixMatcher matcher) {
+  private CompleteCodeReferenceElement(@Nonnull GrCodeReferenceElementImpl ref,
+                                       @Nonnull Consumer<LookupElement> consumer,
+                                       @Nonnull PrefixMatcher matcher) {
     myRef = ref;
     myConsumer = consumer;
     myMatcher = matcher;
   }
 
-  public static void processVariants(@NotNull GrCodeReferenceElementImpl ref,
-                                     @NotNull Consumer<LookupElement> consumer,
-                                     @NotNull PrefixMatcher matcher) {
+  public static void processVariants(@Nonnull GrCodeReferenceElementImpl ref,
+                                     @Nonnull Consumer<LookupElement> consumer,
+                                     @Nonnull PrefixMatcher matcher) {
     new CompleteCodeReferenceElement(ref, consumer, matcher).processVariantsImpl();
   }
 
-  private void feedLookupElements(@NotNull PsiNamedElement psi, boolean afterNew) {
+  private void feedLookupElements(@Nonnull PsiNamedElement psi, boolean afterNew) {
     GroovyResolveResultImpl candidate = new GroovyResolveResultImpl(psi, true);
     List<? extends LookupElement> elements = GroovyCompletionUtil.createLookupElements(candidate, afterNew, myMatcher, null);
     for (LookupElement element : elements) {
@@ -179,7 +181,7 @@ public class CompleteCodeReferenceElement {
     }
   }
 
-  private void processTypeParametersFromUnfinishedMethodOrField(@NotNull ResolverProcessor processor) {
+  private void processTypeParametersFromUnfinishedMethodOrField(@Nonnull ResolverProcessor processor) {
 
     final PsiElement candidate = findTypeParameterListCandidate();
 

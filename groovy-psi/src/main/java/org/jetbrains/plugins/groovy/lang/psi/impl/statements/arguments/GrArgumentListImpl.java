@@ -19,8 +19,8 @@ package org.jetbrains.plugins.groovy.lang.psi.impl.statements.arguments;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.lexer.TokenSets;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
@@ -45,7 +45,7 @@ import com.intellij.util.containers.ContainerUtil;
  */
 public class GrArgumentListImpl extends GroovyPsiElementImpl implements GrArgumentList {
 
-  public GrArgumentListImpl(@NotNull ASTNode node) {
+  public GrArgumentListImpl(@Nonnull ASTNode node) {
     super(node);
   }
 
@@ -59,7 +59,7 @@ public class GrArgumentListImpl extends GroovyPsiElementImpl implements GrArgume
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public GrNamedArgument[] getNamedArguments() {
     List<GrNamedArgument> result = new ArrayList<GrNamedArgument>();
     for (PsiElement cur = this.getFirstChild(); cur != null; cur = cur.getNextSibling()) {
@@ -69,12 +69,12 @@ public class GrArgumentListImpl extends GroovyPsiElementImpl implements GrArgume
   }
 
   @Override
-  public GrNamedArgument findNamedArgument(@NotNull String label) {
+  public GrNamedArgument findNamedArgument(@Nonnull String label) {
     return PsiImplUtil.findNamedArgument(this, label);
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public GrExpression[] getExpressionArguments() {
     List<GrExpression> result = new ArrayList<GrExpression>();
     for (PsiElement cur = this.getFirstChild(); cur != null; cur = cur.getNextSibling()) {
@@ -83,7 +83,7 @@ public class GrArgumentListImpl extends GroovyPsiElementImpl implements GrArgume
     return result.toArray(new GrExpression[result.size()]);
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public GroovyPsiElement[] getAllArguments() {
     List<GroovyPsiElement> args = new ArrayList<GroovyPsiElement>();
@@ -109,7 +109,7 @@ public class GrArgumentListImpl extends GroovyPsiElementImpl implements GrArgume
   }
 
   @Override
-  @Nullable
+  @javax.annotation.Nullable
   public PsiElement getLeftParen() {
     ASTNode paren = getNode().findChildByType(GroovyTokenTypes.mLPAREN);
     return paren != null ? paren.getPsi() : null;
@@ -162,12 +162,12 @@ public class GrArgumentListImpl extends GroovyPsiElementImpl implements GrArgume
   }
 
   @Override
-  public PsiElement add(@NotNull PsiElement element) throws IncorrectOperationException {
+  public PsiElement add(@Nonnull PsiElement element) throws IncorrectOperationException {
     return addBefore(element, null);
   }
 
   @Override
-  public PsiElement addBefore(@NotNull PsiElement element, PsiElement anchor) throws IncorrectOperationException {
+  public PsiElement addBefore(@Nonnull PsiElement element, PsiElement anchor) throws IncorrectOperationException {
     if (element instanceof GrNamedArgument || element instanceof GrExpression) {
       if (anchor == null) anchor = getLastChild();
       if (anchor == null) {
@@ -185,7 +185,7 @@ public class GrArgumentListImpl extends GroovyPsiElementImpl implements GrArgume
   }
 
   @Override
-  public PsiElement addAfter(@NotNull PsiElement element, @Nullable PsiElement anchor) throws IncorrectOperationException {
+  public PsiElement addAfter(@Nonnull PsiElement element, @javax.annotation.Nullable PsiElement anchor) throws IncorrectOperationException {
     if (element instanceof GrExpression || element instanceof GrNamedArgument) {
       final boolean insertComma = getAllArguments().length != 0;
 
@@ -210,7 +210,7 @@ public class GrArgumentListImpl extends GroovyPsiElementImpl implements GrArgume
   }
 
   @Override
-  public void deleteChildInternal(@NotNull ASTNode child) {
+  public void deleteChildInternal(@Nonnull ASTNode child) {
     PsiElement element = child.getPsi();
     if (element instanceof GrExpression || element instanceof GrNamedArgument) {
       ASTNode prev = TreeUtil.skipElementsBack(child.getTreePrev(), TokenSets.WHITE_SPACES_OR_COMMENTS);
@@ -235,13 +235,13 @@ public class GrArgumentListImpl extends GroovyPsiElementImpl implements GrArgume
     super.deleteChildInternal(child);
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public PsiExpression[] getExpressions() {
     return PsiExpression.EMPTY_ARRAY;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public PsiType[] getExpressionTypes() {
     return PsiType.EMPTY_ARRAY;

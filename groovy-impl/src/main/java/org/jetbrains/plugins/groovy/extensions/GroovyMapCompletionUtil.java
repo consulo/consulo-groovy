@@ -15,8 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.extensions;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.completion.PrioritizedLookupElement;
@@ -26,10 +26,10 @@ import com.intellij.psi.PsiElement;
 
 public class GroovyMapCompletionUtil
 {
-	public static void addKeyVariants(@NotNull GroovyMapContentProvider contentProvider,
-			@NotNull GrExpression qualifier,
-			@Nullable PsiElement resolve,
-			@NotNull CompletionResultSet result)
+	public static void addKeyVariants(@Nonnull GroovyMapContentProvider contentProvider,
+			@Nonnull GrExpression qualifier,
+			@javax.annotation.Nullable PsiElement resolve,
+			@Nonnull CompletionResultSet result)
 	{
 		for(String key : contentProvider.getKeyVariants(qualifier, resolve))
 		{

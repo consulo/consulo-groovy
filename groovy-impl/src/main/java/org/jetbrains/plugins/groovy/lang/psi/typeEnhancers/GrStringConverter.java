@@ -15,10 +15,12 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.typeEnhancers;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.psi.CommonClassNames;
 import com.intellij.psi.PsiType;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.ConversionResult;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil;
@@ -30,16 +32,16 @@ import org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames;
 public class GrStringConverter extends GrTypeConverter {
 
   @Override
-  public boolean isApplicableTo(@NotNull ApplicableTo position) {
+  public boolean isApplicableTo(@Nonnull ApplicableTo position) {
     return position == ApplicableTo.ASSIGNMENT || position == ApplicableTo.RETURN_VALUE || position == ApplicableTo.EXPLICIT_CAST;
   }
 
   @Nullable
   @Override
-  public ConversionResult isConvertibleEx(@NotNull PsiType lType,
-                                          @NotNull PsiType rType,
-                                          @NotNull GroovyPsiElement context,
-                                          @NotNull ApplicableTo currentPosition) {
+  public ConversionResult isConvertibleEx(@Nonnull PsiType lType,
+                                          @Nonnull PsiType rType,
+                                          @Nonnull GroovyPsiElement context,
+                                          @Nonnull ApplicableTo currentPosition) {
     if (!TypesUtil.isClassType(lType, CommonClassNames.JAVA_LANG_STRING)) return null;
     if (currentPosition == ApplicableTo.EXPLICIT_CAST) {
       return TypesUtil.isClassType(rType, GroovyCommonClassNames.GROOVY_LANG_GSTRING)

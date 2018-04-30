@@ -19,7 +19,8 @@ import gnu.trove.TObjectIntHashMap;
 
 import java.util.Arrays;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.psi.controlFlow.Instruction;
 import org.jetbrains.plugins.groovy.lang.psi.controlFlow.ReadWriteVariableInstruction;
 import org.jetbrains.plugins.groovy.lang.psi.dataFlow.DfaInstance;
@@ -61,7 +62,7 @@ public class ReachingDefinitionsDfaInstance implements DfaInstance<DefinitionMap
     }
   }
 
-  @NotNull
+  @Nonnull
   public DefinitionMap initial() {
     return new DefinitionMap();
   }

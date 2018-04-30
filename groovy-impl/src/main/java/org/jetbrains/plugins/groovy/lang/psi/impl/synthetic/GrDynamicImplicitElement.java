@@ -21,8 +21,8 @@ import com.intellij.navigation.NavigationItem;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.search.SearchScope;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author ilyas
@@ -31,7 +31,7 @@ public interface GrDynamicImplicitElement extends ItemPresentation, NavigationIt
   @Nullable
   public PsiClass getContainingClassElement();
 
-  @NotNull
+  @Nonnull
   public SearchScope getUseScope();
 
   public PsiFile getContainingFile();

@@ -20,7 +20,7 @@ import com.intellij.openapi.fileTypes.ExactFileNameMatcher;
 import com.intellij.openapi.fileTypes.FileTypeConsumer;
 import com.intellij.openapi.fileTypes.FileTypeFactory;
 import com.intellij.openapi.util.SystemInfo;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 /**
  * @author Max Medvedev
@@ -28,7 +28,7 @@ import org.jetbrains.annotations.NotNull;
 public class DGMFileTypeFactory extends FileTypeFactory {
 
   @Override
-  public void createFileTypes(@NotNull FileTypeConsumer consumer) {
+  public void createFileTypes(@Nonnull FileTypeConsumer consumer) {
     ExactFileNameMatcher matcher = new ExactFileNameMatcher(GroovyExtensionProvider.ORG_CODEHAUS_GROOVY_RUNTIME_EXTENSION_MODULE,
                                                             !SystemInfo.isFileSystemCaseSensitive);
     consumer.consume(PropertiesFileType.INSTANCE, matcher);

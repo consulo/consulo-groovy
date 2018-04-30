@@ -20,9 +20,11 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 
+import javax.annotation.Nonnull;
+
 import org.jdom.Element;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
@@ -87,9 +89,9 @@ public class GroovyScriptRunConfiguration extends ModuleBasedConfiguration<RunCo
 	private String vmParams;
 	private String workDir;
 	private boolean isDebugEnabled;
-	@Nullable
+	@javax.annotation.Nullable
 	private String scriptParams;
-	@Nullable
+	@javax.annotation.Nullable
 	private String scriptPath;
 	private final Map<String, String> envs = new LinkedHashMap<String, String>();
 	public boolean passParentEnv = true;
@@ -143,7 +145,7 @@ public class GroovyScriptRunConfiguration extends ModuleBasedConfiguration<RunCo
 		return res;
 	}
 
-	@Nullable
+	@javax.annotation.Nullable
 	private GroovyScriptRunner findConfiguration()
 	{
 		final VirtualFile scriptFile = getScriptFile();
@@ -200,7 +202,7 @@ public class GroovyScriptRunConfiguration extends ModuleBasedConfiguration<RunCo
 		PathMacroManager.getInstance(getProject()).collapsePathsRecursively(element);
 	}
 
-	public RunProfileState getState(@NotNull Executor executor, @NotNull ExecutionEnvironment environment) throws ExecutionException
+	public RunProfileState getState(@Nonnull Executor executor, @Nonnull ExecutionEnvironment environment) throws ExecutionException
 	{
 		final VirtualFile script = getScriptFile();
 		if(script == null)
@@ -224,7 +226,7 @@ public class GroovyScriptRunConfiguration extends ModuleBasedConfiguration<RunCo
 
 		final JavaCommandLineState state = new JavaCommandLineState(environment)
 		{
-			@NotNull
+			@Nonnull
 			@Override
 			protected OSProcessHandler startProcess() throws ExecutionException
 			{
@@ -282,7 +284,7 @@ public class GroovyScriptRunConfiguration extends ModuleBasedConfiguration<RunCo
 			return new RefactoringElementAdapter()
 			{
 				@Override
-				protected void elementRenamedOrMoved(@NotNull PsiElement newElement)
+				protected void elementRenamedOrMoved(@Nonnull PsiElement newElement)
 				{
 					if(newElement instanceof GroovyFile)
 					{
@@ -298,7 +300,7 @@ public class GroovyScriptRunConfiguration extends ModuleBasedConfiguration<RunCo
 				}
 
 				@Override
-				public void undoElementMovedOrRenamed(@NotNull PsiElement newElement, @NotNull String oldQualifiedName)
+				public void undoElementMovedOrRenamed(@Nonnull PsiElement newElement, @Nonnull String oldQualifiedName)
 				{
 					elementRenamedOrMoved(newElement);
 				}
@@ -309,13 +311,13 @@ public class GroovyScriptRunConfiguration extends ModuleBasedConfiguration<RunCo
 			return new RefactoringElementAdapter()
 			{
 				@Override
-				protected void elementRenamedOrMoved(@NotNull PsiElement newElement)
+				protected void elementRenamedOrMoved(@Nonnull PsiElement newElement)
 				{
 					setName(((PsiClass) newElement).getName());
 				}
 
 				@Override
-				public void undoElementMovedOrRenamed(@NotNull PsiElement newElement, @NotNull String oldQualifiedName)
+				public void undoElementMovedOrRenamed(@Nonnull PsiElement newElement, @Nonnull String oldQualifiedName)
 				{
 					elementRenamedOrMoved(newElement);
 				}
@@ -325,7 +327,7 @@ public class GroovyScriptRunConfiguration extends ModuleBasedConfiguration<RunCo
 	}
 
 	@Nullable
-	private static String getPathByElement(@NotNull PsiElement element)
+	private static String getPathByElement(@Nonnull PsiElement element)
 	{
 		PsiFile file = element.getContainingFile();
 		if(file == null)
@@ -360,7 +362,7 @@ public class GroovyScriptRunConfiguration extends ModuleBasedConfiguration<RunCo
 		return params;
 	}
 
-	@Nullable
+	@javax.annotation.Nullable
 	private VirtualFile getScriptFile()
 	{
 		if(scriptPath == null)
@@ -458,7 +460,7 @@ public class GroovyScriptRunConfiguration extends ModuleBasedConfiguration<RunCo
 	}
 
 	@Override
-	public void setProgramParameters(@Nullable String value)
+	public void setProgramParameters(@javax.annotation.Nullable String value)
 	{
 		LOG.error("Don't add program parameters to Groovy script run configuration. Use Script parameters instead");
 	}
@@ -476,7 +478,7 @@ public class GroovyScriptRunConfiguration extends ModuleBasedConfiguration<RunCo
 	}
 
 	@Override
-	public void setWorkingDirectory(@Nullable String value)
+	public void setWorkingDirectory(@javax.annotation.Nullable String value)
 	{
 		workDir = value;
 	}
@@ -488,13 +490,13 @@ public class GroovyScriptRunConfiguration extends ModuleBasedConfiguration<RunCo
 	}
 
 	@Override
-	public void setEnvs(@NotNull Map<String, String> envs)
+	public void setEnvs(@Nonnull Map<String, String> envs)
 	{
 		this.envs.clear();
 		this.envs.putAll(envs);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public Map<String, String> getEnvs()
 	{

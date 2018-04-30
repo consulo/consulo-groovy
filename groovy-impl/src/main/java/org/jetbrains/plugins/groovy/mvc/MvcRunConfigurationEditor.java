@@ -26,7 +26,7 @@ import com.intellij.ui.DocumentAdapter;
 import com.intellij.ui.PanelWithAnchor;
 import com.intellij.ui.RawCommandLineEditor;
 import com.intellij.ui.components.JBLabel;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -86,7 +86,7 @@ public class MvcRunConfigurationEditor<T extends MvcRunConfiguration> extends Se
     return true;
   }
 
-  protected void commandLineChanged(@NotNull String newText) {
+  protected void commandLineChanged(@Nonnull String newText) {
     final Module module = getSelectedModule();
     final String depsClasspath = MvcFramework.getInstance(module) == null ? "" : myFramework.getApplicationClassPath(module).getPathsString();
     final boolean hasClasspath = StringUtil.isNotEmpty(depsClasspath);
@@ -147,7 +147,7 @@ public class MvcRunConfigurationEditor<T extends MvcRunConfiguration> extends Se
     myExtensionPanel.add(component, BorderLayout.PAGE_START);
   }
 
-  @NotNull
+  @Nonnull
   protected JComponent createEditor() {
     myModulesModel = new DefaultComboBoxModel();
     myModulesBox.setModel(myModulesModel);

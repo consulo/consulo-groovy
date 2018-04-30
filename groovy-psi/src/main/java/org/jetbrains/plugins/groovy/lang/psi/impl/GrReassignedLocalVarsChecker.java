@@ -18,8 +18,8 @@ package org.jetbrains.plugins.groovy.lang.psi.impl;
 import java.util.Collection;
 import java.util.Set;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GrControlFlowOwner;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
@@ -54,8 +54,8 @@ import com.intellij.util.containers.ContainerUtil;
 public class GrReassignedLocalVarsChecker
 {
 
-	@Nullable
-	public static Boolean isReassignedVar(@NotNull final GrReferenceExpression refExpr)
+	@javax.annotation.Nullable
+	public static Boolean isReassignedVar(@Nonnull final GrReferenceExpression refExpr)
 	{
 		if(!PsiUtil.isCompileStatic(refExpr))
 		{
@@ -76,7 +76,7 @@ public class GrReassignedLocalVarsChecker
 		assert resolved instanceof GrVariable;
 		return CachedValuesManager.getCachedValue(resolved, new CachedValueProvider<Boolean>()
 		{
-			@Nullable
+			@javax.annotation.Nullable
 			@Override
 			public Result<Boolean> compute()
 			{
@@ -86,7 +86,7 @@ public class GrReassignedLocalVarsChecker
 		});
 	}
 
-	private static boolean isReassignedVarImpl(@NotNull final GrVariable resolved)
+	private static boolean isReassignedVarImpl(@Nonnull final GrVariable resolved)
 	{
 		final GrControlFlowOwner variableScope = PsiTreeUtil.getParentOfType(resolved, GrCodeBlock.class,
 				GroovyFile.class);
@@ -161,8 +161,8 @@ public class GrReassignedLocalVarsChecker
 		});
 	}
 
-	@Nullable
-	private static PsiType getLeastUpperBoundByVar(@NotNull final GrVariable var)
+	@javax.annotation.Nullable
+	private static PsiType getLeastUpperBoundByVar(@Nonnull final GrVariable var)
 	{
 		return RecursionManager.doPreventingRecursion(var, false, new NullableComputable<PsiType>()
 		{
@@ -195,12 +195,12 @@ public class GrReassignedLocalVarsChecker
 		});
 	}
 
-	@NotNull
-	private static Set<String> getUsedVarsInsideBlock(@NotNull final GrCodeBlock block)
+	@Nonnull
+	private static Set<String> getUsedVarsInsideBlock(@Nonnull final GrCodeBlock block)
 	{
 		return CachedValuesManager.getCachedValue(block, new CachedValueProvider<Set<String>>()
 		{
-			@Nullable
+			@javax.annotation.Nullable
 			@Override
 			public Result<Set<String>> compute()
 			{

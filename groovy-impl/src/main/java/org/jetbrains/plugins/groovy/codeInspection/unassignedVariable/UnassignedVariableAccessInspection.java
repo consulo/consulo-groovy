@@ -24,8 +24,8 @@ import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.codeInspection.GrInspectionUtil;
 import org.jetbrains.plugins.groovy.codeInspection.GroovyInspectionBundle;
 import org.jetbrains.plugins.groovy.codeInspection.GroovyLocalInspectionBase;
@@ -61,19 +61,19 @@ public class UnassignedVariableAccessInspection extends GroovyLocalInspectionBas
   }
 
   @Nls
-  @NotNull
+  @Nonnull
   public String getGroupDisplayName() {
     return GroovyInspectionBundle.message("groovy.dfa.issues");
   }
 
   @Nls
-  @NotNull
+  @Nonnull
   public String getDisplayName() {
     return GroovyInspectionBundle.message("unassigned.access");
   }
 
   @NonNls
-  @NotNull
+  @Nonnull
   public String getShortName() {
     return "GroovyVariableNotAssigned";
   }

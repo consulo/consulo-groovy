@@ -15,10 +15,10 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.convertToJava.invocators;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.psi.*;
 import com.intellij.psi.util.InheritanceUtil;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrNamedArgument;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlock;
@@ -33,14 +33,14 @@ import org.jetbrains.plugins.groovy.refactoring.convertToJava.GenerationUtil;
 
 public class MapGetterSetterInvocator extends CustomMethodInvocator {
   @Override
-  protected boolean invoke(@NotNull ExpressionGenerator generator,
-                           @NotNull PsiMethod method,
-                           @Nullable GrExpression caller,
-                           @NotNull GrExpression[] exprs,
-                           @NotNull GrNamedArgument[] namedArgs,
-                           @NotNull GrClosableBlock[] closures,
-                           @NotNull PsiSubstitutor substitutor,
-                           @NotNull GroovyPsiElement context) {
+  protected boolean invoke(@Nonnull ExpressionGenerator generator,
+                           @Nonnull PsiMethod method,
+                           @javax.annotation.Nullable GrExpression caller,
+                           @Nonnull GrExpression[] exprs,
+                           @Nonnull GrNamedArgument[] namedArgs,
+                           @Nonnull GrClosableBlock[] closures,
+                           @Nonnull PsiSubstitutor substitutor,
+                           @Nonnull GroovyPsiElement context) {
     if (!method.getName().equals("putAt") && !method.getName().equals("getAt")) return false;
 
     final PsiClass clazz = method.getContainingClass();

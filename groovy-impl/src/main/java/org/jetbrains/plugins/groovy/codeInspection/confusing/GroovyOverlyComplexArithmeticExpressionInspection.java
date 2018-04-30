@@ -18,7 +18,7 @@ package org.jetbrains.plugins.groovy.codeInspection.confusing;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiType;
 import com.intellij.psi.tree.IElementType;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.codeInspection.utils.SingleIntegerFieldOptionsPanel;
@@ -41,12 +41,12 @@ public class GroovyOverlyComplexArithmeticExpressionInspection extends BaseInspe
    */
   public int m_limit = TERM_LIMIT;
 
-  @NotNull
+  @Nonnull
   public String getDisplayName() {
     return "Overly complex arithmetic expression";
   }
 
-  @NotNull
+  @Nonnull
   public String getGroupDisplayName() {
     return CONFUSING_CODE_CONSTRUCTS;
   }
@@ -79,12 +79,12 @@ public class GroovyOverlyComplexArithmeticExpressionInspection extends BaseInspe
       arithmeticTokens.add(GroovyTokenTypes.mMOD);
     }
 
-    public void visitBinaryExpression(@NotNull GrBinaryExpression expression) {
+    public void visitBinaryExpression(@Nonnull GrBinaryExpression expression) {
       super.visitBinaryExpression(expression);
       checkExpression(expression);
     }
 
-    public void visitUnaryExpression(@NotNull GrUnaryExpression expression) {
+    public void visitUnaryExpression(@Nonnull GrUnaryExpression expression) {
       super.visitUnaryExpression(expression);
       checkExpression(expression);
     }

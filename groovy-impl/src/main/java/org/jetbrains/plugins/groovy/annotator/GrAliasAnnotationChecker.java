@@ -18,8 +18,8 @@ package org.jetbrains.plugins.groovy.annotator.checkers;
 import java.util.ArrayList;
 import java.util.Set;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotation;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotationNameValuePair;
@@ -36,7 +36,7 @@ public class GrAliasAnnotationChecker extends CustomAnnotationChecker
 {
 
 	@Override
-	public boolean checkApplicability(@NotNull AnnotationHolder holder, @NotNull GrAnnotation annotation)
+	public boolean checkApplicability(@Nonnull AnnotationHolder holder, @Nonnull GrAnnotation annotation)
 	{
 		final ArrayList<GrAnnotation> aliasedAnnotations = getAliasedAnnotations(annotation);
 		if(aliasedAnnotations == null)
@@ -69,7 +69,7 @@ public class GrAliasAnnotationChecker extends CustomAnnotationChecker
 	}
 
 	@Override
-	public boolean checkArgumentList(@NotNull AnnotationHolder holder, @NotNull GrAnnotation annotation)
+	public boolean checkArgumentList(@Nonnull AnnotationHolder holder, @Nonnull GrAnnotation annotation)
 	{
 		final PsiAnnotation annotationCollector = GrAnnotationCollector.findAnnotationCollector(annotation);
 		if(annotationCollector == null)

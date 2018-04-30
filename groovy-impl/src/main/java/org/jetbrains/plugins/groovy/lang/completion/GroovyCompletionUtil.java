@@ -20,10 +20,12 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import javax.annotation.Nonnull;
+
 import consulo.psi.PsiPackage;
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.lexer.TokenSets;
 import org.jetbrains.plugins.groovy.lang.psi.GrControlFlowOwner;
@@ -135,7 +137,7 @@ public class GroovyCompletionUtil {
     return elem;
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   public static PsiElement nearestLeftLeaf(PsiElement elem) {
     elem = PsiTreeUtil.prevLeaf(elem);
     while (elem != null &&
@@ -168,7 +170,7 @@ public class GroovyCompletionUtil {
     return (previousLeaf == null || SEPARATORS.contains(previousLeaf.getNode().getElementType()));
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   public static PsiElement getLeafByOffset(int offset, PsiElement element) {
     if (offset < 0) {
       return null;
@@ -274,10 +276,10 @@ public class GroovyCompletionUtil {
   }
 
 
-  public static List<? extends LookupElement> createLookupElements(@NotNull GroovyResolveResult candidate,
+  public static List<? extends LookupElement> createLookupElements(@Nonnull GroovyResolveResult candidate,
                                                                    boolean afterNew,
-                                                                   @NotNull PrefixMatcher matcher,
-                                                                   @Nullable PsiElement position) {
+                                                                   @Nonnull PrefixMatcher matcher,
+                                                                   @javax.annotation.Nullable PsiElement position) {
     final PsiElement element = candidate.getElement();
     final PsiElement context = candidate.getCurrentFileResolveContext();
     if (context instanceof GrImportStatement && element != null) {
@@ -412,7 +414,7 @@ public class GroovyCompletionUtil {
   private static LookupElementBuilder setTypeText(PsiElement element,
                                                   LookupElementBuilder builder,
                                                   PsiSubstitutor substitutor,
-                                                  @Nullable PsiElement position) {
+                                                  @javax.annotation.Nullable PsiElement position) {
     PsiType type = null;
     if (element instanceof GrVariable) {
       if (position != null && org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil.isLocalVariable(element)) {
@@ -431,7 +433,7 @@ public class GroovyCompletionUtil {
     return type != null ? builder.withTypeText(type.getPresentableText()) : builder;
   }
 
-  public static boolean hasConstructorParameters(@NotNull PsiClass clazz, @NotNull PsiElement place) {
+  public static boolean hasConstructorParameters(@Nonnull PsiClass clazz, @Nonnull PsiElement place) {
     final GroovyResolveResult[] constructors = ResolveUtil.getAllClassConstructors(clazz, PsiSubstitutor.EMPTY, null, place);
 
 
@@ -565,7 +567,7 @@ public class GroovyCompletionUtil {
     return TailType.insertChar(editor, offset, ')');
   }
 
-  public static boolean skipDefGroovyMethod(GrGdkMethod gdkMethod, PsiSubstitutor substitutor, @Nullable PsiType type) {
+  public static boolean skipDefGroovyMethod(GrGdkMethod gdkMethod, PsiSubstitutor substitutor, @javax.annotation.Nullable PsiType type) {
     if (type == null) return false;
     String name = gdkMethod.getStaticMethod().getName();
 

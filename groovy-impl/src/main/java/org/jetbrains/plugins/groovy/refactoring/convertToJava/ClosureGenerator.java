@@ -19,7 +19,7 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.psi.*;
 import com.intellij.psi.util.PsiTreeUtil;
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.codeInspection.noReturnMethod.MissingReturnInspection;
 import org.jetbrains.plugins.groovy.codeInspection.utils.ControlFlowUtils;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
@@ -49,12 +49,12 @@ public class ClosureGenerator {
   private final StringBuilder builder;
   private final ExpressionContext context;
 
-  public ClosureGenerator(@NotNull StringBuilder builder, @NotNull ExpressionContext context) {
+  public ClosureGenerator(@Nonnull StringBuilder builder, @Nonnull ExpressionContext context) {
     this.builder = builder;
     this.context = context;
   }
 
-  public void generate(@NotNull GrClosableBlock closure) {
+  public void generate(@Nonnull GrClosableBlock closure) {
     builder.append("new ");
     writeTypeForNew(builder, closure.getType(), closure);
     builder.append('(');
@@ -83,7 +83,7 @@ public class ClosureGenerator {
     builder.append('}');
   }
 
-  private void generateClosureMainMethod(@NotNull GrClosableBlock block) {
+  private void generateClosureMainMethod(@Nonnull GrClosableBlock block) {
     builder.append("public ");
     final PsiType returnType = block.getReturnType();
     writeType(builder, returnType, block);
@@ -99,8 +99,8 @@ public class ClosureGenerator {
     builder.append('\n');
   }
 
-  @NotNull
-  private GrMethod generateClosureMethod(@NotNull GrClosableBlock block) {
+  @Nonnull
+  private GrMethod generateClosureMethod(@Nonnull GrClosableBlock block) {
     final GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(context.project);
     final GrMethod method = factory.createMethodFromText("def doCall(){}", block);
 
@@ -120,8 +120,8 @@ public class ClosureGenerator {
   }
 
   @NonNls
-  @NotNull
-  private CharSequence getOwner(@NotNull GrClosableBlock closure) {
+  @Nonnull
+  private CharSequence getOwner(@Nonnull GrClosableBlock closure) {
     final GroovyPsiElement context = PsiTreeUtil.getParentOfType(closure, GrMember.class, GroovyFile.class);
     LOG.assertTrue(context != null);
 

@@ -18,7 +18,7 @@ package org.jetbrains.plugins.groovy.mvc;
 
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.vfs.VirtualFile;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 import java.io.File;
 import java.util.Collection;
@@ -40,7 +40,7 @@ public abstract class MvcProjectStructure {
     mySdkWorkDirPath = sdkWorkDirVFile == null ? "" : sdkWorkDirVFile.getPath() + "/";
   }
 
-  public boolean isValidContentRoot(@NotNull VirtualFile file) {
+  public boolean isValidContentRoot(@Nonnull VirtualFile file) {
     if (file.getPath().startsWith(myUserHomeSdkRoot)) {
       if (!myAuxModule) {
         return false;
@@ -52,7 +52,7 @@ public abstract class MvcProjectStructure {
     return true;
   }
 
-  @NotNull
+  @Nonnull
   public abstract String getUserLibraryName();
 
   public abstract String[] getSourceFolders();

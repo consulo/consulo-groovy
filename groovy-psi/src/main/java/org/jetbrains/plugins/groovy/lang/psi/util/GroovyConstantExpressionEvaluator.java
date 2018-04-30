@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.util;
 
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrParenthesizedExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.literals.GrLiteral;
@@ -28,8 +28,8 @@ import com.intellij.psi.impl.ConstantExpressionEvaluator;
  */
 public class GroovyConstantExpressionEvaluator implements ConstantExpressionEvaluator {
 
-  @Nullable
-  public static Object evaluate(@Nullable GrExpression expression) {
+  @javax.annotation.Nullable
+  public static Object evaluate(@javax.annotation.Nullable GrExpression expression) {
     if (expression instanceof GrParenthesizedExpression) {
       return evaluate(((GrParenthesizedExpression)expression).getOperand());
     }
@@ -39,13 +39,13 @@ public class GroovyConstantExpressionEvaluator implements ConstantExpressionEval
     return null;
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   public Object computeConstantExpression(PsiElement expression, boolean throwExceptionOnOverflow) {
     if (!(expression instanceof GrExpression)) return null;
     return evaluate((GrExpression)expression);
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   public Object computeExpression(PsiElement expression,
                                   boolean throwExceptionOnOverflow,
                                   @Nullable PsiConstantEvaluationHelper.AuxEvaluator auxEvaluator) {

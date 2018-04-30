@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.signatures.GrClosureSignature;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrNamedArgument;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlock;
@@ -37,9 +37,9 @@ public class GroovyInlayParameterHintsProvider implements InlayParameterHintsPro
 {
 	private static Set<String> ourDefaultBlackList = ContainerUtil.newHashSet("org.codehaus.groovy.runtime.DefaultGroovyMethods.*");
 
-	@NotNull
+	@Nonnull
 	@Override
-	public List<InlayInfo> getParameterHints(@NotNull PsiElement element)
+	public List<InlayInfo> getParameterHints(@Nonnull PsiElement element)
 	{
 		if(!(element instanceof GrCall))
 		{
@@ -120,7 +120,7 @@ public class GroovyInlayParameterHintsProvider implements InlayParameterHintsPro
 
 	@Nullable
 	@Override
-	public MethodInfo getMethodInfo(@NotNull PsiElement element)
+	public MethodInfo getMethodInfo(@Nonnull PsiElement element)
 	{
 		if(!(element instanceof GrCall))
 		{
@@ -161,7 +161,7 @@ public class GroovyInlayParameterHintsProvider implements InlayParameterHintsPro
 		return new MethodInfo(fullMethodName, paramNames);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public Set<String> getDefaultBlackList()
 	{

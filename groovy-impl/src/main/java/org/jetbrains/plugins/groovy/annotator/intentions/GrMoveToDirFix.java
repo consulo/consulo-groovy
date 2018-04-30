@@ -15,6 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.annotator.intentions;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.CommonBundle;
 import com.intellij.codeInspection.LocalQuickFix;
 import com.intellij.codeInspection.ProblemDescriptor;
@@ -30,7 +32,6 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.refactoring.move.moveFilesOrDirectories.MoveFilesOrDirectoriesProcessor;
 import com.intellij.refactoring.util.RefactoringMessageUtil;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.intentions.GroovyIntentionsBundle;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 
@@ -44,21 +45,21 @@ public class GrMoveToDirFix implements LocalQuickFix {
     myPackageName = packageName;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public String getName() {
     String packName = StringUtil.isEmptyOrSpaces(myPackageName) ? "default package" : myPackageName;
     return GroovyIntentionsBundle.message("move.to.correct.dir", packName);
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public String getFamilyName() {
     return GroovyIntentionsBundle.message("move.to.correct.dir.family.name");
   }
 
   @Override
-  public void applyFix(@NotNull Project project, @NotNull ProblemDescriptor descriptor) {
+  public void applyFix(@Nonnull Project project, @Nonnull ProblemDescriptor descriptor) {
     PsiFile file = descriptor.getPsiElement().getContainingFile();
 
     if (!(file instanceof GroovyFile)) return;

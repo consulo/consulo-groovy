@@ -17,7 +17,7 @@ package org.jetbrains.plugins.groovy.codeInspection.bugs;
 
 import com.intellij.psi.util.PsiTreeUtil;
 import org.jetbrains.annotations.Nls;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspectionVisitor;
@@ -35,7 +35,7 @@ public class GroovyLabeledStatementInspection extends BaseInspection {
   }
 
   @Nls
-  @NotNull
+  @Nonnull
   @Override
   public String getGroupDisplayName() {
     return PROBABLE_BUGS;
@@ -52,7 +52,7 @@ public class GroovyLabeledStatementInspection extends BaseInspection {
   }
 
   @Nls
-  @NotNull
+  @Nonnull
   @Override
   public String getDisplayName() {
     return GroovyInspectionBundle.message("check.labeled.statement");

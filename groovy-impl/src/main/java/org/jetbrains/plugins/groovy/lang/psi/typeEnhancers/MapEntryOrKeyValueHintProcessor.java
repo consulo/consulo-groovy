@@ -21,8 +21,7 @@ import com.intellij.psi.*;
 import com.intellij.psi.util.InheritanceUtil;
 import com.intellij.psi.util.PsiUtil;
 import com.intellij.util.containers.ContainerUtil;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
 
 import java.util.List;
 
@@ -35,11 +34,11 @@ public class MapEntryOrKeyValueHintProcessor extends SignatureHintProcessor {
     return "groovy.transform.stc.MapEntryOrKeyValue";
   }
 
-  @NotNull
+  @Nonnull
   @Override
-  public List<PsiType[]> inferExpectedSignatures(@NotNull PsiMethod method,
-                                                 @NotNull PsiSubstitutor substitutor,
-                                                 @NotNull String[] options) {
+  public List<PsiType[]> inferExpectedSignatures(@Nonnull PsiMethod method,
+                                                 @Nonnull PsiSubstitutor substitutor,
+                                                 @Nonnull String[] options) {
     int argNum = extractArgNum(options);
     boolean index = extractIndex(options);
 
@@ -123,7 +122,7 @@ public class MapEntryOrKeyValueHintProcessor extends SignatureHintProcessor {
     return null;
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   private static Couple<String> parseValue(String value) {
     String[] splitted = value.split("=");
 

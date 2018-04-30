@@ -23,7 +23,7 @@ import com.intellij.util.ui.UIUtil;
 import org.jdom.Element;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspection;
 
 import javax.swing.*;
@@ -40,7 +40,7 @@ import java.util.regex.Pattern;
 public abstract class ConventionInspection extends BaseInspection {
 
   @Nls
-  @NotNull
+  @Nonnull
   public String getGroupDisplayName() {
     return "Naming Conventions";
   }
@@ -96,7 +96,7 @@ public abstract class ConventionInspection extends BaseInspection {
     return matcher.matches();
   }
 
-  public void readSettings(@NotNull Element element) throws InvalidDataException {
+  public void readSettings(@Nonnull Element element) throws InvalidDataException {
     super.readSettings(element);
     m_regexPattern = Pattern.compile(m_regex);
   }

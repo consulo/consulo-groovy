@@ -15,8 +15,9 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.api.types;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.psi.PsiType;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 
 /**
@@ -25,6 +26,6 @@ import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
  */
 public interface GrTypeElement extends GroovyPsiElement
 {
-	@NotNull
+	@Nonnull
 	PsiType getType();
 }

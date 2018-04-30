@@ -23,7 +23,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.codeStyle.GroovyCodeStyleSettings;
 import org.jetbrains.plugins.groovy.lang.psi.GrReferenceElement;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
@@ -60,7 +61,7 @@ public class GroovyMoveClassToInnerHandler implements MoveClassToInnerHandler
 	private static final Logger LOG = Logger.getInstance(GroovyMoveClassToInnerHandler.class);
 
 	@Override
-	public PsiClass moveClass(@NotNull PsiClass aClass, @NotNull PsiClass targetClass)
+	public PsiClass moveClass(@Nonnull PsiClass aClass, @Nonnull PsiClass targetClass)
 	{
 		if(!(aClass instanceof GrTypeDefinition))
 		{
@@ -107,7 +108,7 @@ public class GroovyMoveClassToInnerHandler implements MoveClassToInnerHandler
 
 
 	@Override
-	public List<PsiElement> filterImports(@NotNull List<UsageInfo> usageInfos, @NotNull Project project)
+	public List<PsiElement> filterImports(@Nonnull List<UsageInfo> usageInfos, @Nonnull Project project)
 	{
 		final List<PsiElement> importStatements = new ArrayList<PsiElement>();
 		if(!CodeStyleSettingsManager.getSettings(project).getCustomSettings(GroovyCodeStyleSettings.class)
@@ -151,7 +152,7 @@ public class GroovyMoveClassToInnerHandler implements MoveClassToInnerHandler
 	}
 
 	@Override
-	public void retargetClassRefsInMoved(@NotNull final Map<PsiElement, PsiElement> oldToNewElementsMapping)
+	public void retargetClassRefsInMoved(@Nonnull final Map<PsiElement, PsiElement> oldToNewElementsMapping)
 	{
 		for(final PsiElement newClass : oldToNewElementsMapping.values())
 		{
@@ -223,8 +224,8 @@ public class GroovyMoveClassToInnerHandler implements MoveClassToInnerHandler
 	}
 
 	@Override
-	public void retargetNonCodeUsages(@NotNull final Map<PsiElement, PsiElement> oldToNewElementMap,
-			@NotNull final NonCodeUsageInfo[] nonCodeUsages)
+	public void retargetNonCodeUsages(@Nonnull final Map<PsiElement, PsiElement> oldToNewElementMap,
+			@Nonnull final NonCodeUsageInfo[] nonCodeUsages)
 	{
 		for(PsiElement newClass : oldToNewElementMap.values())
 		{

@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.stubs.index;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrAnnotationMethod;
 import com.intellij.psi.stubs.StringStubIndexExtension;
 import com.intellij.psi.stubs.StubIndexKey;
@@ -26,7 +26,7 @@ import com.intellij.psi.stubs.StubIndexKey;
 public class GrAnnotationMethodNameIndex extends StringStubIndexExtension<GrAnnotationMethod> {
   public static final StubIndexKey<String, GrAnnotationMethod> KEY = StubIndexKey.createIndexKey("gr.annot.method.name");
 
-  @NotNull
+  @Nonnull
   public StubIndexKey<String, GrAnnotationMethod> getKey() {
     return KEY;
   }

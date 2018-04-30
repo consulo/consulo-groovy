@@ -15,12 +15,12 @@
  */
 package org.jetbrains.plugins.groovy.findUsages;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.lang.cacheBuilder.WordsScanner;
 import com.intellij.lang.findUsages.FindUsagesProvider;
 import com.intellij.psi.*;
 import com.intellij.psi.util.PsiFormatUtil;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrLabeledStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlock;
@@ -37,24 +37,24 @@ public class GroovyFindUsagesProvider implements FindUsagesProvider {
   public GroovyFindUsagesProvider() {
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   public WordsScanner getWordsScanner() {
     return new GroovyWordsScanner();
   }
 
-  public boolean canFindUsagesFor(@NotNull PsiElement psiElement) {
+  public boolean canFindUsagesFor(@Nonnull PsiElement psiElement) {
     return psiElement instanceof PsiClass ||
            psiElement instanceof PsiMethod ||
            psiElement instanceof GrVariable;
   }
 
-  @Nullable
-  public String getHelpId(@NotNull PsiElement psiElement) {
+  @javax.annotation.Nullable
+  public String getHelpId(@Nonnull PsiElement psiElement) {
     return null;
   }
 
-  @NotNull
-  public String getType(@NotNull PsiElement element) {
+  @Nonnull
+  public String getType(@Nonnull PsiElement element) {
     if (element instanceof PsiClass) return "class";
     if (element instanceof PsiMethod) return "method";
     if (element instanceof PsiField) return "field";
@@ -67,8 +67,8 @@ public class GroovyFindUsagesProvider implements FindUsagesProvider {
     return "";
   }
 
-  @NotNull
-  public String getDescriptiveName(@NotNull PsiElement element) {
+  @Nonnull
+  public String getDescriptiveName(@Nonnull PsiElement element) {
     if (element instanceof PsiClass) {
       final PsiClass aClass = (PsiClass) element;
       String qName = aClass.getQualifiedName();
@@ -100,8 +100,8 @@ public class GroovyFindUsagesProvider implements FindUsagesProvider {
     return "";
   }
 
-  @NotNull
-  public String getNodeText(@NotNull PsiElement element, boolean useFullName) {
+  @Nonnull
+  public String getNodeText(@Nonnull PsiElement element, boolean useFullName) {
     if (element instanceof PsiClass) {
       String name = ((PsiClass) element).getQualifiedName();
       if (name == null || !useFullName) {

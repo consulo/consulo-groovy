@@ -17,7 +17,7 @@ package org.jetbrains.plugins.groovy.lang.resolve.ast;
 
 import com.google.common.collect.ImmutableMap;
 import com.intellij.psi.PsiModifier;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.GrModifierList;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotation;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
@@ -39,7 +39,7 @@ public class LoggingContributor extends AstTransformContributor {
     build();
 
   @Override
-  public void collectFields(@NotNull GrTypeDefinition psiClass, @NotNull Collection<GrField> collector) {
+  public void collectFields(@Nonnull GrTypeDefinition psiClass, @Nonnull Collection<GrField> collector) {
     GrModifierList modifierList = psiClass.getModifierList();
     if (modifierList == null) return;
 

@@ -19,8 +19,8 @@ package org.jetbrains.plugins.groovy.lang.psi.impl.statements;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.IncorrectOperationException;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrIfStatement;
@@ -37,7 +37,7 @@ import java.util.List;
  * @autor: ilyas
  */
 public class GrIfStatementImpl extends GroovyPsiElementImpl implements GrIfStatement {
-  public GrIfStatementImpl(@NotNull ASTNode node) {
+  public GrIfStatementImpl(@Nonnull ASTNode node) {
     super(node);
   }
 
@@ -51,7 +51,7 @@ public class GrIfStatementImpl extends GroovyPsiElementImpl implements GrIfState
   }
 
   @Override
-  @Nullable
+  @javax.annotation.Nullable
   public GrExpression getCondition() {
     PsiElement lParenth = getLParenth();
 
@@ -64,7 +64,7 @@ public class GrIfStatementImpl extends GroovyPsiElementImpl implements GrIfState
   }
 
   @Override
-  @Nullable
+  @javax.annotation.Nullable
   public GrStatement getThenBranch() {
     List<GrStatement> statements = new ArrayList<GrStatement>();
     for (PsiElement cur = getFirstChild(); cur != null; cur = cur.getNextSibling()) {
@@ -77,7 +77,7 @@ public class GrIfStatementImpl extends GroovyPsiElementImpl implements GrIfState
   }
 
   @Override
-  @Nullable
+  @javax.annotation.Nullable
   public GrStatement getElseBranch() {
     List<GrStatement> statements = new ArrayList<GrStatement>();
     for (PsiElement cur = getFirstChild(); cur != null; cur = cur.getNextSibling()) {
@@ -91,7 +91,7 @@ public class GrIfStatementImpl extends GroovyPsiElementImpl implements GrIfState
   }
 
   @Override
-  public void deleteChildInternal(@NotNull ASTNode child) {
+  public void deleteChildInternal(@Nonnull ASTNode child) {
     GrStatement elseBranch = getElseBranch();
 
     if (elseBranch != null && child == elseBranch.getNode()) {
@@ -105,14 +105,14 @@ public class GrIfStatementImpl extends GroovyPsiElementImpl implements GrIfState
   }
 
   @Override
-  @NotNull
-  public <T extends GrStatement> T replaceThenBranch(@NotNull T newBranch) throws IncorrectOperationException {
+  @Nonnull
+  public <T extends GrStatement> T replaceThenBranch(@Nonnull T newBranch) throws IncorrectOperationException {
     return PsiImplUtil.replaceBody(newBranch, getThenBranch(), getNode(), getProject());
   }
 
   @Override
-  @NotNull
-  public <T extends GrStatement> T replaceElseBranch(@NotNull T newBranch) throws IncorrectOperationException {
+  @Nonnull
+  public <T extends GrStatement> T replaceElseBranch(@Nonnull T newBranch) throws IncorrectOperationException {
     return PsiImplUtil.replaceBody(newBranch, getElseBranch(), getNode(), getProject());
   }
 

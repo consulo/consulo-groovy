@@ -18,8 +18,8 @@ package org.jetbrains.plugins.groovy.refactoring.introduce.field;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMember;
@@ -46,14 +46,14 @@ import com.intellij.util.containers.ContainerUtil;
 public class GrIntroduceFieldHandler extends GrIntroduceFieldHandlerBase<GrIntroduceFieldSettings>
 {
 
-	@NotNull
+	@Nonnull
 	@Override
 	protected String getRefactoringName()
 	{
 		return IntroduceFieldHandler.REFACTORING_NAME;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	protected String getHelpID()
 	{
@@ -61,7 +61,7 @@ public class GrIntroduceFieldHandler extends GrIntroduceFieldHandlerBase<GrIntro
 	}
 
 	@Override
-	protected void checkExpression(@NotNull GrExpression selectedExpr)
+	protected void checkExpression(@Nonnull GrExpression selectedExpr)
 	{
 		checkContainingClass(selectedExpr);
 	}
@@ -84,39 +84,39 @@ public class GrIntroduceFieldHandler extends GrIntroduceFieldHandlerBase<GrIntro
 	}
 
 	@Override
-	protected void checkVariable(@NotNull GrVariable variable) throws GrRefactoringError
+	protected void checkVariable(@Nonnull GrVariable variable) throws GrRefactoringError
 	{
 		checkContainingClass(variable);
 	}
 
 	@Override
-	protected void checkStringLiteral(@NotNull StringPartInfo info) throws GrRefactoringError
+	protected void checkStringLiteral(@Nonnull StringPartInfo info) throws GrRefactoringError
 	{
 		checkContainingClass(info.getLiteral());
 	}
 
 	@Override
-	protected void checkOccurrences(@NotNull PsiElement[] occurrences)
+	protected void checkOccurrences(@Nonnull PsiElement[] occurrences)
 	{
 		//nothing to do
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
-	protected GrIntroduceDialog<GrIntroduceFieldSettings> getDialog(@NotNull GrIntroduceContext context)
+	protected GrIntroduceDialog<GrIntroduceFieldSettings> getDialog(@Nonnull GrIntroduceContext context)
 	{
 		return new GrIntroduceFieldDialog(context);
 	}
 
 	@Override
-	public GrVariable runRefactoring(@NotNull GrIntroduceContext context, @NotNull GrIntroduceFieldSettings settings)
+	public GrVariable runRefactoring(@Nonnull GrIntroduceContext context, @Nonnull GrIntroduceFieldSettings settings)
 	{
 		return new GrIntroduceFieldProcessor(context, settings).run();
 	}
 
 
 	@Override
-	protected GrAbstractInplaceIntroducer<GrIntroduceFieldSettings> getIntroducer(@NotNull GrIntroduceContext context,
+	protected GrAbstractInplaceIntroducer<GrIntroduceFieldSettings> getIntroducer(@Nonnull GrIntroduceContext context,
 			OccurrencesChooser.ReplaceChoice choice)
 	{
 
@@ -130,9 +130,9 @@ public class GrIntroduceFieldHandler extends GrIntroduceFieldHandlerBase<GrIntro
 		return new GrInplaceFieldIntroducer(contextRef.get(), choice);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
-	protected PsiElement[] findOccurrences(@NotNull GrExpression expression, @NotNull PsiElement scope)
+	protected PsiElement[] findOccurrences(@Nonnull GrExpression expression, @Nonnull PsiElement scope)
 	{
 		final PsiElement[] occurrences = super.findOccurrences(expression, scope);
 		if(shouldBeStatic(expression, scope))
@@ -151,8 +151,8 @@ public class GrIntroduceFieldHandler extends GrIntroduceFieldHandlerBase<GrIntro
 		return ContainerUtil.toArray(filtered, new PsiElement[filtered.size()]);
 	}
 
-	@Nullable
-	static GrMember getContainer(@Nullable PsiElement place, @Nullable PsiElement scope)
+	@javax.annotation.Nullable
+	static GrMember getContainer(@javax.annotation.Nullable PsiElement place, @javax.annotation.Nullable PsiElement scope)
 	{
 		while(place != null && place != scope)
 		{

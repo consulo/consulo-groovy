@@ -15,8 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.api.signatures;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrClosureParameter;
 import com.intellij.psi.PsiSubstitutor;
 import com.intellij.psi.PsiType;
@@ -27,16 +27,17 @@ import com.intellij.psi.PsiType;
 public interface GrClosureSignature extends GrSignature {
 	GrClosureSignature[] EMPTY_ARRAY = new GrClosureSignature[0];
 
-	@NotNull PsiSubstitutor getSubstitutor();
+	@Nonnull
+	PsiSubstitutor getSubstitutor();
 
-	@NotNull
+	@Nonnull
 	GrClosureParameter[] getParameters();
 
 	int getParameterCount();
 
 	boolean isVarargs();
 
-	@Nullable
+	@javax.annotation.Nullable
 	PsiType getReturnType();
 
 	boolean isCurried();

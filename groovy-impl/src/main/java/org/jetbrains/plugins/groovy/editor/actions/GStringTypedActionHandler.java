@@ -16,6 +16,8 @@
 
 package org.jetbrains.plugins.groovy.editor.actions;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.codeInsight.editorActions.TypedHandlerDelegate;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.ex.EditorEx;
@@ -23,7 +25,6 @@ import com.intellij.openapi.editor.highlighter.EditorHighlighter;
 import com.intellij.openapi.editor.highlighter.HighlighterIterator;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiFile;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.editor.HandlerUtils;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
@@ -33,7 +34,7 @@ import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
  */
 public class GStringTypedActionHandler extends TypedHandlerDelegate {
   @Override
-  public Result charTyped(char c, Project project, Editor editor, @NotNull PsiFile file) {
+  public Result charTyped(char c, Project project, Editor editor, @Nonnull PsiFile file) {
     if (c != '{' || project == null || !HandlerUtils.canBeInvoked(editor, project)) {
       return Result.CONTINUE;
     }

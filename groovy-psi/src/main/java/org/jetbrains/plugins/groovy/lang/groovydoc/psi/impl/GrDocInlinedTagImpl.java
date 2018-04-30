@@ -22,7 +22,7 @@ import com.intellij.psi.tree.TokenSet;
 import com.intellij.psi.util.PsiUtilBase;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocComment;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocInlinedTag;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocParameterReference;
@@ -44,7 +44,7 @@ public class GrDocInlinedTagImpl extends GroovyDocPsiElementImpl implements GrDo
     .create(mGDOC_TAG_VALUE_TOKEN, GDOC_METHOD_REF, GDOC_FIELD_REF, GDOC_PARAM_REF, GDOC_REFERENCE_ELEMENT, mGDOC_COMMENT_DATA,
             GDOC_INLINED_TAG);
 
-  public GrDocInlinedTagImpl(@NotNull ASTNode node) {
+  public GrDocInlinedTagImpl(@Nonnull ASTNode node) {
     super(node);
   }
 
@@ -56,12 +56,12 @@ public class GrDocInlinedTagImpl extends GroovyDocPsiElementImpl implements GrDo
     return "GrDocInlinedTag";
   }
 
-  @NotNull
+  @Nonnull
   public String getName() {
     return getNameElement().getText().substring(1);
   }
 
-  @NotNull
+  @Nonnull
   public PsiElement getNameElement() {
     PsiElement element = findChildByType(mGDOC_TAG_NAME);
     assert element != null;
@@ -86,7 +86,7 @@ public class GrDocInlinedTagImpl extends GroovyDocPsiElementImpl implements GrDo
     return PsiUtilBase.toPsiElementArray(list);
   }
 
-  public PsiElement setName(@NonNls @NotNull String name) throws IncorrectOperationException {
+  public PsiElement setName(@NonNls @Nonnull String name) throws IncorrectOperationException {
     final PsiElement nameElement = getNameElement();
     final GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(getProject());
     final GrDocComment comment = factory.createDocCommentFromText("/** {@" + name + "}*/");

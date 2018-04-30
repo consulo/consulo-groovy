@@ -16,7 +16,8 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrCommandArgumentList;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.arguments.GrArgumentListImpl;
@@ -27,7 +28,7 @@ import com.intellij.lang.ASTNode;
  */
 public class GrCommandArgumentListImpl extends GrArgumentListImpl implements GrCommandArgumentList {
 
-  public GrCommandArgumentListImpl(@NotNull ASTNode node) {
+  public GrCommandArgumentListImpl(@Nonnull ASTNode node) {
     super(node);
   }
 

@@ -1,6 +1,6 @@
 package org.jetbrains.plugins.groovy.module.extension;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import consulo.module.extension.MutableModuleExtension;
 import consulo.roots.ModuleRootLayer;
 
@@ -10,7 +10,7 @@ import consulo.roots.ModuleRootLayer;
  */
 public class GroovyMutableModuleExtension extends GroovyModuleExtension implements MutableModuleExtension<GroovyModuleExtension>
 {
-	public GroovyMutableModuleExtension(@NotNull String id, @NotNull ModuleRootLayer module)
+	public GroovyMutableModuleExtension(@Nonnull String id, @Nonnull ModuleRootLayer module)
 	{
 		super(id, module);
 	}
@@ -22,7 +22,7 @@ public class GroovyMutableModuleExtension extends GroovyModuleExtension implemen
 	}
 
 	@Override
-	public boolean isModified(@NotNull GroovyModuleExtension extension)
+	public boolean isModified(@Nonnull GroovyModuleExtension extension)
 	{
 		return myIsEnabled != extension.isEnabled();
 	}

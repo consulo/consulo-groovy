@@ -18,11 +18,12 @@ package org.jetbrains.plugins.groovy.highlighter;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.annotation.Nonnull;
 import javax.swing.Icon;
 
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.fileTypes.SyntaxHighlighter;
 import com.intellij.openapi.options.colors.AttributesDescriptor;
@@ -36,7 +37,7 @@ import icons.JetgroovyIcons;
 public class GroovyColorsAndFontsPage implements ColorSettingsPage
 {
 	@Override
-	@NotNull
+	@Nonnull
 	public String getDisplayName()
 	{
 		return "Groovy";
@@ -50,7 +51,7 @@ public class GroovyColorsAndFontsPage implements ColorSettingsPage
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public AttributesDescriptor[] getAttributeDescriptors()
 	{
 		return ATTRS;
@@ -96,14 +97,14 @@ public class GroovyColorsAndFontsPage implements ColorSettingsPage
 	};
 
 	@Override
-	@NotNull
+	@Nonnull
 	public ColorDescriptor[] getColorDescriptors()
 	{
 		return ColorDescriptor.EMPTY_ARRAY;
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public SyntaxHighlighter getHighlighter()
 	{
 		return new GroovySyntaxHighlighter();
@@ -111,7 +112,7 @@ public class GroovyColorsAndFontsPage implements ColorSettingsPage
 
 	@Override
 	@NonNls
-	@NotNull
+	@Nonnull
 	public String getDemoText()
 	{
 		return "<keyword>import</keyword> <classref>javax.swing.JPanel</classref>\n" +

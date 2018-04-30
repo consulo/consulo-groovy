@@ -16,12 +16,13 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.types;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.psi.*;
 import com.intellij.util.Function;
 import com.intellij.util.IncorrectOperationException;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrBuiltinTypeClassExpression;
 import org.jetbrains.plugins.groovy.lang.psi.dataFlow.types.TypeInferenceHelper;
@@ -36,7 +37,7 @@ public class GrBuiltinTypeClassExpressionImpl extends GrExpressionImpl implement
 
   private static final Function<GrBuiltinTypeClassExpressionImpl, PsiType> TYPES_CALCULATOR = new MyTypesCalculator();
 
-  public GrBuiltinTypeClassExpressionImpl(@NotNull ASTNode node) {
+  public GrBuiltinTypeClassExpressionImpl(@Nonnull ASTNode node) {
     super(node);
   }
 
@@ -54,7 +55,7 @@ public class GrBuiltinTypeClassExpressionImpl extends GrExpressionImpl implement
     return TypeInferenceHelper.getCurrentContext().getExpressionType(this, TYPES_CALCULATOR);
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public PsiPrimitiveType getPrimitiveType() {
     return TypesUtil.getPrimitiveTypeByText(getText());

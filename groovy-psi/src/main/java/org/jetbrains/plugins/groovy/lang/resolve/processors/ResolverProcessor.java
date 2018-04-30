@@ -28,8 +28,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
 import org.jetbrains.plugins.groovy.lang.psi.api.SpreadState;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
@@ -63,21 +63,22 @@ public class ResolverProcessor implements PsiScopeProcessor, NameHint, ClassHint
   private Set<String> myProcessedClasses;
   protected PsiElement myPlace;
   private
-  @NotNull final PsiType[] myTypeArguments;
+  @Nonnull
+  final PsiType[] myTypeArguments;
 
   private List<GroovyResolveResult> myCandidates;
 
   protected ResolverProcessor(@Nullable String name,
-                              @NotNull EnumSet<ResolveKind> resolveTargets,
-                              @NotNull PsiElement place,
-                              @NotNull PsiType[] typeArguments) {
+                              @Nonnull EnumSet<ResolveKind> resolveTargets,
+                              @Nonnull PsiElement place,
+                              @Nonnull PsiType[] typeArguments) {
     myName = name;
     myResolveTargetKinds = resolveTargets;
     myPlace = place;
     myTypeArguments = typeArguments;
   }
 
-  public boolean execute(@NotNull PsiElement element, @NotNull ResolveState state) {
+  public boolean execute(@Nonnull PsiElement element, @Nonnull ResolveState state) {
     if (element instanceof PsiLocalVariableImpl) { //todo a better hack
       return true; // the debugger creates a Java code block context and our expressions to evaluate resolve there
     }
@@ -116,7 +117,7 @@ public class ResolverProcessor implements PsiScopeProcessor, NameHint, ClassHint
     return true;
   }
 
-  protected final void addCandidate(@NotNull GroovyResolveResult candidate) {
+  protected final void addCandidate(@Nonnull GroovyResolveResult candidate) {
     PsiElement element = candidate.getElement();
     assert element == null || element.isValid() : getElementInfo(element);
 
@@ -124,8 +125,8 @@ public class ResolverProcessor implements PsiScopeProcessor, NameHint, ClassHint
     myCandidates.add(candidate);
   }
 
-  @NotNull
-  private static String getElementInfo(@NotNull PsiElement element) {
+  @Nonnull
+  private static String getElementInfo(@Nonnull PsiElement element) {
     String text;
     if (element instanceof LightElement) {
       final PsiElement context = element.getContext();
@@ -137,12 +138,12 @@ public class ResolverProcessor implements PsiScopeProcessor, NameHint, ClassHint
     return "invalid resolve candidate: " + element.getClass() + ", text: " + text;
   }
 
-  @NotNull
+  @Nonnull
   protected List<GroovyResolveResult> getCandidatesInternal() {
     return myCandidates == null ? Collections.<GroovyResolveResult>emptyList() : myCandidates;
   }
 
-  protected boolean isAccessible(@NotNull PsiNamedElement namedElement) {
+  protected boolean isAccessible(@Nonnull PsiNamedElement namedElement) {
     if (namedElement instanceof GrField) {
       final GrField field = (GrField)namedElement;
       if (PsiUtil.isAccessible(myPlace, field)) {
@@ -166,7 +167,7 @@ public class ResolverProcessor implements PsiScopeProcessor, NameHint, ClassHint
            PsiUtil.isAccessible(myPlace, ((PsiMember)namedElement));
   }
 
-  protected boolean isStaticsOK(@NotNull PsiNamedElement element, @Nullable PsiElement resolveContext, boolean filterStaticAfterInstanceQualifier) {
+  protected boolean isStaticsOK(@Nonnull PsiNamedElement element, @Nullable PsiElement resolveContext, boolean filterStaticAfterInstanceQualifier) {
     if (resolveContext instanceof GrImportStatement) return true;
 
     if (element instanceof PsiModifierListOwner) {
@@ -175,14 +176,14 @@ public class ResolverProcessor implements PsiScopeProcessor, NameHint, ClassHint
     return true;
   }
 
-  @NotNull
+  @Nonnull
   public GroovyResolveResult[] getCandidates() {
     if (myCandidates == null) return GroovyResolveResult.EMPTY_ARRAY;
     return myCandidates.toArray(new GroovyResolveResult[myCandidates.size()]);
   }
 
   @SuppressWarnings({"unchecked"})
-  public <T> T getHint(@NotNull Key<T> hintKey) {
+  public <T> T getHint(@Nonnull Key<T> hintKey) {
     if ((NameHint.KEY == hintKey && myName != null) || ClassHint.KEY == hintKey || ElementClassHint.KEY == hintKey) {
       return (T)this;
     }
@@ -225,7 +226,7 @@ public class ResolverProcessor implements PsiScopeProcessor, NameHint, ClassHint
     return myCandidates != null;
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   private static ResolveKind getResolveKind(PsiElement element) {
     if (element instanceof PsiVariable) return PROPERTY;
     if (element instanceof PsiMethod) return METHOD;

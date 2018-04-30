@@ -15,8 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.typedef;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrArgumentList;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrEnumConstantInitializer;
@@ -36,7 +36,7 @@ import com.intellij.psi.PsiElement;
 public class GrEnumConstantInitializerImpl extends GrAnonymousClassDefinitionImpl implements GrEnumConstantInitializer {
   private static final Logger LOG = Logger.getInstance(GrEnumConstantInitializerImpl.class);
 
-  public GrEnumConstantInitializerImpl(@NotNull ASTNode node) {
+  public GrEnumConstantInitializerImpl(@Nonnull ASTNode node) {
     super(node);
   }
 
@@ -44,7 +44,7 @@ public class GrEnumConstantInitializerImpl extends GrAnonymousClassDefinitionImp
     super(stub, GroovyElementTypes.ENUM_CONSTANT_INITIALIZER);
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public GrEnumConstant getEnumConstant() {
     return (GrEnumConstant)getParent();
@@ -55,7 +55,7 @@ public class GrEnumConstantInitializerImpl extends GrAnonymousClassDefinitionImp
     return false;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public GrCodeReferenceElement getBaseClassReferenceGroovy() {
     return new GrLightClassReferenceElement(getBaseClass(), this);
@@ -69,13 +69,13 @@ public class GrEnumConstantInitializerImpl extends GrAnonymousClassDefinitionImp
     return containingClass;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public PsiElement getNameIdentifierGroovy() {
     return getEnumConstant().getNameIdentifierGroovy();
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   @Override
   public GrArgumentList getArgumentListGroovy() {
     return getEnumConstant().getArgumentList();

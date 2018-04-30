@@ -22,8 +22,8 @@ import com.intellij.openapi.util.UserDataHolderEx;
 import com.intellij.psi.*;
 import com.intellij.psi.scope.PsiScopeProcessor;
 import com.intellij.util.containers.MultiMap;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.extensions.NamedArgumentDescriptor;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocComment;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocTag;
@@ -39,7 +39,6 @@ import org.jetbrains.plugins.groovy.lang.psi.util.StaticChecker;
 import org.jetbrains.plugins.groovy.lang.resolve.ResolveUtil;
 import org.jetbrains.plugins.groovy.lang.resolve.processors.ClassHint;
 
-import javax.swing.*;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -53,7 +52,7 @@ public class DynamicMemberUtils {
 
   }
 
-  public static ClassMemberHolder getMembers(@NotNull Project project, @NotNull String source) {
+  public static ClassMemberHolder getMembers(@Nonnull Project project, @Nonnull String source) {
     ConcurrentHashMap<String, ClassMemberHolder> map = project.getUserData(KEY);
 
     if (map == null) {
@@ -216,7 +215,7 @@ public class DynamicMemberUtils {
       myNonStaticMethodMap = convertMap(nonStaticMultiMap);
     }
 
-    private static Map<String, String> parseComment(@Nullable GrDocComment comment) {
+    private static Map<String, String> parseComment(@javax.annotation.Nullable GrDocComment comment) {
       if (comment == null) return Collections.emptyMap();
 
       GrDocTag[] docTags = comment.getTags();
@@ -268,7 +267,7 @@ public class DynamicMemberUtils {
       return getMethods(null);
     }
 
-    public PsiMethod[] getDynamicMethods(@Nullable String nameHint) {
+    public PsiMethod[] getDynamicMethods(@javax.annotation.Nullable String nameHint) {
       PsiMethod[] res = myNonStaticMethodMap.get(nameHint);
       if (res == null) {
         res = PsiMethod.EMPTY_ARRAY;
@@ -277,7 +276,7 @@ public class DynamicMemberUtils {
       return res;
     }
 
-    public PsiMethod[] getStaticMethods(@Nullable String nameHint) {
+    public PsiMethod[] getStaticMethods(@javax.annotation.Nullable String nameHint) {
       PsiMethod[] res = myStaticMethodMap.get(nameHint);
       if (res == null) {
         res = PsiMethod.EMPTY_ARRAY;
@@ -286,7 +285,7 @@ public class DynamicMemberUtils {
       return res;
     }
 
-    public PsiMethod[] getMethods(@Nullable String nameHint) {
+    public PsiMethod[] getMethods(@javax.annotation.Nullable String nameHint) {
       PsiMethod[] res = myMethodMap.get(nameHint);
       if (res == null) {
         res = PsiMethod.EMPTY_ARRAY;
@@ -308,7 +307,7 @@ public class DynamicMemberUtils {
       return res;
     }
 
-    public PsiField[] getStaticFields(@Nullable String nameHint) {
+    public PsiField[] getStaticFields(@javax.annotation.Nullable String nameHint) {
       PsiField[] res = myStaticFieldMap.get(nameHint);
       if (res == null) {
         res = PsiField.EMPTY_ARRAY;
@@ -318,11 +317,11 @@ public class DynamicMemberUtils {
     }
   }
 
-  public static boolean isDynamicElement(@Nullable PsiElement element) {
+  public static boolean isDynamicElement(@javax.annotation.Nullable PsiElement element) {
     return element instanceof DynamicElement;
   }
 
-  public static boolean isDynamicElement(@Nullable PsiElement element, @NotNull String classSource) {
+  public static boolean isDynamicElement(@javax.annotation.Nullable PsiElement element, @Nonnull String classSource) {
     return element instanceof DynamicElement && classSource.equals(((DynamicElement)element).getSource());
   }
 
@@ -353,19 +352,19 @@ public class DynamicMemberUtils {
       return myMethod.getText();
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public PsiTypeParameter[] getTypeParameters() {
       return myTypeParameters;
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public GrParameterList getParameterList() {
       return myParameterList;
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public Map<String, NamedArgumentDescriptor> getNamedParameters() {
       return namedParameters;
@@ -414,7 +413,7 @@ public class DynamicMemberUtils {
       return myClass;
     }
 
-    @Nullable
+    @javax.annotation.Nullable
     @Override
     public String getOriginInfo() {
       return myOriginalInfo;

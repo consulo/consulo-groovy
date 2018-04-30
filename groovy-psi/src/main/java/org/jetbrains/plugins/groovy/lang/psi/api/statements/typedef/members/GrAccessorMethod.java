@@ -15,11 +15,11 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.psi.PsiMethod;
 import com.intellij.psi.PsiMirrorElement;
 import com.intellij.psi.PsiType;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
 
 /**
@@ -29,10 +29,10 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
 public interface GrAccessorMethod extends PsiMethod, PsiMirrorElement {
   GrAccessorMethod[] EMPTY_ARRAY = new GrAccessorMethod[0];
   
-  @NotNull
+  @Nonnull
   GrField getProperty();
 
-  @Nullable
+  @javax.annotation.Nullable
   PsiType getInferredReturnType();
 
   boolean isSetter();

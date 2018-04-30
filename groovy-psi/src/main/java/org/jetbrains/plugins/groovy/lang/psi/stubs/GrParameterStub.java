@@ -15,7 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.stubs;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameter;
 import com.intellij.psi.stubs.NamedStub;
@@ -41,7 +42,7 @@ public class GrParameterStub extends StubBase<GrParameter> implements NamedStub<
     myTypeText = typeText;
   }
 
-  @NotNull
+  @Nonnull
   public String getName() {
     return StringRef.toString(myName);
   }

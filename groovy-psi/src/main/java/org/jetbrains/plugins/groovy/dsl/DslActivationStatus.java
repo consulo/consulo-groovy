@@ -22,8 +22,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+
 import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.RoamingType;
 import com.intellij.openapi.components.ServiceManager;
@@ -47,7 +47,7 @@ import com.intellij.util.xmlb.annotations.Attribute;
 		})
 public class DslActivationStatus implements PersistentStateComponent<DslActivationStatus.State>
 {
-	@NotNull
+	@Nonnull
 	public static DslActivationStatus getInstance()
 	{
 		return ServiceManager.getService(DslActivationStatus.class);
@@ -131,7 +131,7 @@ public class DslActivationStatus implements PersistentStateComponent<DslActivati
 		@AbstractCollection(surroundWithTag = false)
 		public Collection<Entry> entries;
 
-		public State(@NotNull Collection<Entry> entries)
+		public State(@Nonnull Collection<Entry> entries)
 		{
 			this.entries = entries;
 		}
@@ -144,8 +144,8 @@ public class DslActivationStatus implements PersistentStateComponent<DslActivati
 
 	private final THashMap<VirtualFile, Entry> myStatus = new THashMap<VirtualFile, Entry>();
 
-	@Nullable
-	public Entry getGdslFileInfo(@NotNull VirtualFile file)
+	@javax.annotation.Nullable
+	public Entry getGdslFileInfo(@Nonnull VirtualFile file)
 	{
 		synchronized(myStatus)
 		{
@@ -153,8 +153,8 @@ public class DslActivationStatus implements PersistentStateComponent<DslActivati
 		}
 	}
 
-	@NotNull
-	public Entry getGdslFileInfoOrCreate(@NotNull VirtualFile file)
+	@Nonnull
+	public Entry getGdslFileInfoOrCreate(@Nonnull VirtualFile file)
 	{
 		Entry entry;
 		synchronized(myStatus)
@@ -169,7 +169,7 @@ public class DslActivationStatus implements PersistentStateComponent<DslActivati
 		return entry;
 	}
 
-	@Nullable
+	@javax.annotation.Nullable
 	@Override
 	public State getState()
 	{

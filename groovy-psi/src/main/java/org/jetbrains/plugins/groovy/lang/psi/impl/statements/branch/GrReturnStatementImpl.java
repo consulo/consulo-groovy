@@ -16,8 +16,8 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.branch;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.branch.GrReturnStatement;
@@ -30,7 +30,7 @@ import com.intellij.psi.PsiElement;
  * @author ilyas
  */
 public class GrReturnStatementImpl extends GroovyPsiElementImpl implements GrReturnStatement {
-  public GrReturnStatementImpl(@NotNull ASTNode node) {
+  public GrReturnStatementImpl(@Nonnull ASTNode node) {
     super(node);
   }
 
@@ -49,7 +49,7 @@ public class GrReturnStatementImpl extends GroovyPsiElementImpl implements GrRet
     return findExpressionChild(this);
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public PsiElement getReturnWord() {
     return findNotNullChildByType(GroovyTokenTypes.kRETURN);

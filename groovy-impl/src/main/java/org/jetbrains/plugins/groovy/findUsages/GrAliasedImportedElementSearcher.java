@@ -15,14 +15,16 @@
  */
 package org.jetbrains.plugins.groovy.findUsages;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.openapi.application.QueryExecutorBase;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.*;
 import com.intellij.psi.search.*;
 import com.intellij.psi.search.searches.ReferencesSearch;
 import com.intellij.util.Processor;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrAccessorMethod;
 import org.jetbrains.plugins.groovy.lang.psi.api.toplevel.imports.GrImportStatement;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyPropertyUtils;
@@ -37,7 +39,7 @@ public class GrAliasedImportedElementSearcher extends QueryExecutorBase<PsiRefer
   }
 
   @Override
-  public void processQuery(@NotNull ReferencesSearch.SearchParameters parameters, @NotNull Processor<PsiReference> consumer) {
+  public void processQuery(@Nonnull ReferencesSearch.SearchParameters parameters, @Nonnull Processor<PsiReference> consumer) {
     final PsiElement target = parameters.getElementToSearch();
     if (!(target instanceof PsiMember) || !(target instanceof PsiNamedElement)) return;
 
@@ -71,7 +73,7 @@ public class GrAliasedImportedElementSearcher extends QueryExecutorBase<PsiRefer
     private final String prefix;
     private final SearchSession mySession;
 
-    MyProcessor(PsiElement target, @Nullable String prefix, SearchSession session) {
+    MyProcessor(PsiElement target, @javax.annotation.Nullable String prefix, SearchSession session) {
       super(target, prefix);
       myTarget = target;
       this.prefix = prefix;
@@ -79,7 +81,7 @@ public class GrAliasedImportedElementSearcher extends QueryExecutorBase<PsiRefer
     }
 
     @Override
-    public boolean processTextOccurrence(@NotNull final PsiElement element, int offsetInElement, @NotNull Processor<PsiReference> consumer) {
+    public boolean processTextOccurrence(@Nonnull final PsiElement element, int offsetInElement, @Nonnull Processor<PsiReference> consumer) {
       String alias = getAlias(element);
       if (alias == null) return true;
 

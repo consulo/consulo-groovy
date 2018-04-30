@@ -18,8 +18,9 @@ package org.jetbrains.plugins.groovy.debugger;
 import java.util.Collection;
 import java.util.Collections;
 
+import javax.annotation.Nonnull;
+
 import org.jetbrains.annotations.Nls;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.GroovyBundle;
 import com.intellij.openapi.options.Configurable;
 import com.intellij.util.xmlb.XmlSerializerUtil;
@@ -54,7 +55,7 @@ public class GroovyDebuggerSettings extends XDebuggerSettings<GroovyDebuggerSett
 		}
 
 		@RequiredUIAccess
-		@NotNull
+		@Nonnull
 		@Override
 		protected Component createLayout(PropertyBuilder propertyBuilder)
 		{
@@ -84,7 +85,7 @@ public class GroovyDebuggerSettings extends XDebuggerSettings<GroovyDebuggerSett
 		}
 
 		@RequiredUIAccess
-		@NotNull
+		@Nonnull
 		@Override
 		protected Component createLayout(PropertyBuilder propertyBuilder)
 		{
@@ -107,9 +108,9 @@ public class GroovyDebuggerSettings extends XDebuggerSettings<GroovyDebuggerSett
 		super("groovy_debugger");
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
-	public Collection<? extends Configurable> createConfigurables(@NotNull DebuggerSettingsCategory category)
+	public Collection<? extends Configurable> createConfigurables(@Nonnull DebuggerSettingsCategory category)
 	{
 		switch(category)
 		{
@@ -153,7 +154,7 @@ public class GroovyDebuggerSettings extends XDebuggerSettings<GroovyDebuggerSett
 		ENABLE_GROOVY_HOTSWAP = enableHotSwap;
 	}
 
-	@NotNull
+	@Nonnull
 	public static GroovyDebuggerSettings getInstance()
 	{
 		return getInstance(GroovyDebuggerSettings.class);

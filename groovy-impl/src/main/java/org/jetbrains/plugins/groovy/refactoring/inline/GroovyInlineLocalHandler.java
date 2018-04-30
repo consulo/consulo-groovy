@@ -18,7 +18,7 @@ package org.jetbrains.plugins.groovy.refactoring.inline;
 import java.util.ArrayList;
 import java.util.BitSet;
 
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.GroovyLanguage;
 import org.jetbrains.plugins.groovy.codeInspection.utils.ControlFlowUtils;
 import org.jetbrains.plugins.groovy.lang.psi.GrControlFlowOwner;

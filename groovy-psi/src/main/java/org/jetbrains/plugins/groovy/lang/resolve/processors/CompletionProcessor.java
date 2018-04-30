@@ -18,7 +18,8 @@ package org.jetbrains.plugins.groovy.lang.resolve.processors;
 
 import java.util.EnumSet;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
 import org.jetbrains.plugins.groovy.lang.resolve.ResolveUtil;
 import com.intellij.psi.PsiElement;
@@ -34,7 +35,7 @@ public class CompletionProcessor extends ResolverProcessor {
     super(name, resolveTargets, place, PsiType.EMPTY_ARRAY);
   }
 
-  public boolean execute(@NotNull PsiElement element, ResolveState substitutor) {
+  public boolean execute(@Nonnull PsiElement element, ResolveState substitutor) {
     if (element instanceof PsiMethod && ((PsiMethod)element).isConstructor()) {
       return true;
     }
@@ -54,7 +55,7 @@ public class CompletionProcessor extends ResolverProcessor {
     return new CompletionProcessor(place, RESOLVE_KINDS_CLASS_PACKAGE, null);
   }
 
-  @NotNull
+  @Nonnull
   public GroovyResolveResult[] getCandidates() {
     if (!super.hasCandidates()) return GroovyResolveResult.EMPTY_ARRAY;
     return ResolveUtil.filterSameSignatureCandidates(getCandidatesInternal());

@@ -22,10 +22,12 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Nonnull;
+
 import org.codehaus.groovy.runtime.DefaultGroovyMethods;
 import org.codehaus.groovy.runtime.InvokerHelper;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.dsl.dsltop.GdslMembersProvider;
 import org.jetbrains.plugins.groovy.dsl.holders.CompoundMembersHolder;
 import org.jetbrains.plugins.groovy.dsl.holders.CustomMembersHolder;
@@ -70,7 +72,7 @@ public class CustomMembersGenerator extends GroovyObjectSupport implements GdslM
   @Nullable private final Map<String, List> myBindings;
   private final PsiClass myPsiClass;
 
-  public CustomMembersGenerator(@NotNull GroovyClassDescriptor descriptor, @Nullable PsiType type, @Nullable Map<String, List> bindings) {
+  public CustomMembersGenerator(@Nonnull GroovyClassDescriptor descriptor, @Nullable PsiType type, @javax.annotation.Nullable Map<String, List> bindings) {
     myDescriptor = descriptor;
     myBindings = bindings;
     myProject = descriptor.getProject();
@@ -105,7 +107,7 @@ public class CustomMembersGenerator extends GroovyObjectSupport implements GdslM
     return myProject;
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   public CustomMembersHolder getMembersHolder() {
     if (!myDeclarations.isEmpty()) {
       addMemberHolder(new CustomMembersHolder() {
@@ -312,7 +314,7 @@ public class CustomMembersGenerator extends GroovyObjectSupport implements GdslM
   }
 
   @SuppressWarnings("UnusedDeclaration")
-  @Nullable
+  @javax.annotation.Nullable
   public Object propertyMissing(String name) {
     if (myBindings != null) {
       final List list = myBindings.get(name);
@@ -334,7 +336,7 @@ public class CustomMembersGenerator extends GroovyObjectSupport implements GdslM
       Object doc = args.get("doc");
       descriptor = new NamedArgumentDescriptor(new GdslNamedParameter(name, doc instanceof String ? (String)doc : null, context, typeText)) {
         @Override
-        public boolean checkType(@NotNull PsiType type, @NotNull GroovyPsiElement context) {
+        public boolean checkType(@Nonnull PsiType type, @Nonnull GroovyPsiElement context) {
           return typeText == null || ClassContextFilter.isSubtype(type, context.getContainingFile(), typeText);
         }
       };
@@ -347,9 +349,10 @@ public class CustomMembersGenerator extends GroovyObjectSupport implements GdslM
     private final String myName;
     public final String docString;
     private final PsiElement myParent;
-    @Nullable public final String myParameterTypeText;
+    @javax.annotation.Nullable
+	public final String myParameterTypeText;
 
-    public GdslNamedParameter(String name, String doc, @NotNull PsiElement parent, @Nullable String type) {
+    public GdslNamedParameter(String name, String doc, @Nonnull PsiElement parent, @Nullable String type) {
       myName = name;
       this.docString = doc;
       myParent = parent;

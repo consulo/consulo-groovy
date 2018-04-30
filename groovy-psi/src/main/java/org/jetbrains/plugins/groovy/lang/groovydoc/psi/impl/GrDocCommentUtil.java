@@ -16,8 +16,8 @@
 
 package org.jetbrains.plugins.groovy.lang.groovydoc.psi.impl;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.groovydoc.parser.GroovyDocElementTypes;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocComment;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocCommentOwner;
@@ -106,7 +106,7 @@ public abstract class GrDocCommentUtil
 		return element;
 	}
 
-	public static GrDocComment setDocComment(@NotNull GrDocCommentOwner owner, @Nullable GrDocComment comment)
+	public static GrDocComment setDocComment(@Nonnull GrDocCommentOwner owner, @Nullable GrDocComment comment)
 	{
 		GrDocComment docComment = owner.getDocComment();
 

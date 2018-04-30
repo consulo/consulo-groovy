@@ -16,9 +16,9 @@
 
 package org.jetbrains.plugins.groovy.annotator.intentions;
 
+import javax.annotation.Nonnull;
+
 import consulo.psi.PsiPackage;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.actions.GroovyTemplates;
 import org.jetbrains.plugins.groovy.intentions.GroovyIntentionsBundle;
 import org.jetbrains.plugins.groovy.intentions.base.IntentionUtils;
@@ -66,7 +66,7 @@ public abstract class CreateClassFix
 		{
 
 			@Override
-			protected void processIntention(@NotNull PsiElement element,
+			protected void processIntention(@Nonnull PsiElement element,
 					Project project,
 					Editor editor) throws IncorrectOperationException
 			{
@@ -122,7 +122,7 @@ public abstract class CreateClassFix
 		};
 	}
 
-	@Nullable
+	@javax.annotation.Nullable
 	private static PsiType[] getArgTypes(GrReferenceElement refElement)
 	{
 		final AccessToken accessToken = ReadAction.start();
@@ -136,11 +136,11 @@ public abstract class CreateClassFix
 		}
 	}
 
-	private static void generateConstructor(@NotNull PsiElement refElement,
-			@NotNull String name,
-			@NotNull PsiType[] argTypes,
-			@NotNull GrTypeDefinition targetClass,
-			@NotNull Project project)
+	private static void generateConstructor(@Nonnull PsiElement refElement,
+			@Nonnull String name,
+			@Nonnull PsiType[] argTypes,
+			@Nonnull GrTypeDefinition targetClass,
+			@Nonnull Project project)
 	{
 		final AccessToken writeLock = WriteAction.start();
 		try
@@ -183,7 +183,7 @@ public abstract class CreateClassFix
 		return new CreateClassActionBase(type, refElement)
 		{
 			@Override
-			protected void processIntention(@NotNull PsiElement element,
+			protected void processIntention(@Nonnull PsiElement element,
 					Project project,
 					Editor editor) throws IncorrectOperationException
 			{
@@ -261,8 +261,8 @@ public abstract class CreateClassFix
 				}
 			}
 
-			@Nullable
-			private PsiElement resolveQualifier(@NotNull PsiElement qualifier)
+			@javax.annotation.Nullable
+			private PsiElement resolveQualifier(@Nonnull PsiElement qualifier)
 			{
 				if(qualifier instanceof GrCodeReferenceElement)
 				{
@@ -288,7 +288,7 @@ public abstract class CreateClassFix
 				return null;
 			}
 
-			@Nullable
+			@javax.annotation.Nullable
 			private PsiClass createTemplate(JVMElementFactory factory, String name)
 			{
 				switch(getType())
@@ -315,7 +315,7 @@ public abstract class CreateClassFix
 				}
 			}
 
-			private void createTopLevelClass(@NotNull Project project, @NotNull GroovyFileBase file)
+			private void createTopLevelClass(@Nonnull Project project, @Nonnull GroovyFileBase file)
 			{
 				final String pack = getPackage(file);
 				final PsiManager manager = PsiManager.getInstance(project);
@@ -340,8 +340,8 @@ public abstract class CreateClassFix
 				IntentionUtils.positionCursor(project, targetClass.getContainingFile(), targetClass);
 			}
 
-			@NotNull
-			private String getPackage(@NotNull PsiClassOwner file)
+			@Nonnull
+			private String getPackage(@Nonnull PsiClassOwner file)
 			{
 				final PsiElement qualifier = myRefElement.getQualifier();
 				if(qualifier instanceof GrReferenceElement)
@@ -356,7 +356,7 @@ public abstract class CreateClassFix
 			}
 
 			@Override
-			public boolean isAvailable(@NotNull Project project, Editor editor, PsiFile file)
+			public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file)
 			{
 				if(!super.isAvailable(project, editor, file))
 				{
@@ -374,7 +374,7 @@ public abstract class CreateClassFix
 		};
 	}
 
-	private static void bindRef(@NotNull final PsiClass targetClass, @NotNull final GrReferenceElement ref)
+	private static void bindRef(@Nonnull final PsiClass targetClass, @Nonnull final GrReferenceElement ref)
 	{
 		ApplicationManager.getApplication().runWriteAction(new Runnable()
 		{

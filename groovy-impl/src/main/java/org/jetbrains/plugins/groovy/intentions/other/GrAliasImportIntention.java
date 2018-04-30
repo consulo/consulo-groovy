@@ -20,8 +20,8 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.intentions.base.IntentionUtils;
 import org.jetbrains.plugins.groovy.intentions.base.PsiElementPredicate;
@@ -73,7 +73,7 @@ import com.intellij.util.containers.ContainerUtil;
 public class GrAliasImportIntention extends Intention
 {
 	@Override
-	protected void processIntention(@NotNull PsiElement element,
+	protected void processIntention(@Nonnull PsiElement element,
 			Project project,
 			Editor editor) throws IncorrectOperationException
 	{
@@ -102,9 +102,9 @@ public class GrAliasImportIntention extends Intention
 		doRefactoring(project, context, resolved);
 	}
 
-	private static void doRefactoring(@NotNull Project project,
-			@NotNull GrImportStatement importStatement,
-			@NotNull PsiMember member)
+	private static void doRefactoring(@Nonnull Project project,
+			@Nonnull GrImportStatement importStatement,
+			@Nonnull PsiMember member)
 	{
 		if(member instanceof GrAccessorMethod &&
 				!importStatement.isOnDemand() &&
@@ -184,7 +184,7 @@ public class GrAliasImportIntention extends Intention
 				final GrImportStatement importStatement = ApplicationManager.getApplication().runReadAction(new
 																													Computable<GrImportStatement>()
 				{
-					@Nullable
+					@javax.annotation.Nullable
 					@Override
 					public GrImportStatement compute()
 					{
@@ -241,7 +241,7 @@ public class GrAliasImportIntention extends Intention
 
 		final String name = ApplicationManager.getApplication().runReadAction(new Computable<String>()
 		{
-			@Nullable
+			@javax.annotation.Nullable
 			@Override
 			public String compute()
 			{
@@ -387,7 +387,7 @@ public class GrAliasImportIntention extends Intention
 	}
 
 
-	@NotNull
+	@Nonnull
 	@Override
 	protected PsiElementPredicate getElementPredicate()
 	{

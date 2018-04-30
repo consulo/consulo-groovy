@@ -34,7 +34,7 @@ import com.intellij.ui.components.JBCheckBox;
 import com.intellij.util.Function;
 import com.intellij.util.containers.ContainerUtil;
 import org.jetbrains.annotations.Nls;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 import javax.swing.*;
 import java.util.Arrays;
@@ -80,7 +80,7 @@ public class GroovyCompilerConfigurable implements SearchableConfigurable, Confi
   }
 
 
-  @NotNull
+  @Nonnull
   public String getId() {
     return "Groovy compiler";
   }

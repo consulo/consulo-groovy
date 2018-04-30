@@ -21,8 +21,8 @@ import gnu.trove.TIntHashSet;
 import gnu.trove.TIntObjectHashMap;
 import gnu.trove.TIntObjectProcedure;
 import gnu.trove.TIntProcedure;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GrControlFlowOwner;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyRecursiveElementVisitor;
@@ -50,11 +50,11 @@ public class ReachingDefinitionsCollector {
   private ReachingDefinitionsCollector() {
   }
 
-  @NotNull
-  public static FragmentVariableInfos obtainVariableFlowInformation(@NotNull final GrStatement first,
-                                                                    @NotNull final GrStatement last,
-                                                                    @NotNull final GrControlFlowOwner flowOwner,
-                                                                    @NotNull final Instruction[] flow) {
+  @Nonnull
+  public static FragmentVariableInfos obtainVariableFlowInformation(@Nonnull final GrStatement first,
+                                                                    @Nonnull final GrStatement last,
+                                                                    @Nonnull final GrControlFlowOwner flowOwner,
+                                                                    @Nonnull final Instruction[] flow) {
 
     final DefinitionMap dfaResult = inferDfaResult(flow);
 
@@ -217,7 +217,7 @@ public class ReachingDefinitionsCollector {
     return false;
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   private static PsiType getType(PsiElement element) {
     if (element instanceof GrVariable) {
       return ((GrVariable)element).getTypeGroovy();
@@ -320,7 +320,7 @@ public class ReachingDefinitionsCollector {
   /**
    * return true if path is outside of fragment, null if there is no pathand false if path is inside fragment
    */
-  @Nullable
+  @javax.annotation.Nullable
   private static Boolean findPath(Instruction cur,
                                   int destination,
                                   LinkedHashSet<Integer> fragmentInsns,
@@ -391,24 +391,25 @@ public class ReachingDefinitionsCollector {
 
   private static class VariableInfoImpl implements VariableInfo {
     private
-    @NotNull final String myName;
+    @Nonnull
+	final String myName;
     private final PsiManager myManager;
 
     private
     @Nullable
     PsiType myType;
 
-    VariableInfoImpl(@NotNull String name, PsiManager manager) {
+    VariableInfoImpl(@Nonnull String name, PsiManager manager) {
       myName = name;
       myManager = manager;
     }
 
-    @NotNull
+    @Nonnull
     public String getName() {
       return myName;
     }
 
-    @Nullable
+    @javax.annotation.Nullable
     public PsiType getType() {
       if (myType instanceof PsiIntersectionType) return ((PsiIntersectionType)myType).getConjuncts()[0];
       return myType;
@@ -433,10 +434,10 @@ public class ReachingDefinitionsCollector {
     }
   }
 
-  @NotNull
-  private static DefinitionMap postprocess(@NotNull final ArrayList<DefinitionMap> dfaResult,
-                                           @NotNull Instruction[] flow,
-                                           @NotNull ReachingDefinitionsDfaInstance dfaInstance) {
+  @Nonnull
+  private static DefinitionMap postprocess(@Nonnull final ArrayList<DefinitionMap> dfaResult,
+                                           @Nonnull Instruction[] flow,
+                                           @Nonnull ReachingDefinitionsDfaInstance dfaInstance) {
     DefinitionMap result = new DefinitionMap();
     for (int i = 0; i < flow.length; i++) {
       Instruction insn = flow[i];

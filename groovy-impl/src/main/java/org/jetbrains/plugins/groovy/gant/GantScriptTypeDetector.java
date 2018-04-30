@@ -15,7 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.gant;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.extensions.GroovyScriptTypeDetector;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 
@@ -28,7 +29,7 @@ public class GantScriptTypeDetector extends GroovyScriptTypeDetector {
   }
 
   @Override
-  public boolean isSpecificScriptFile(@NotNull GroovyFile script) {
+  public boolean isSpecificScriptFile(@Nonnull GroovyFile script) {
     String name = script.getName();
     return name.endsWith(GantScriptType.DEFAULT_EXTENSION);
   }

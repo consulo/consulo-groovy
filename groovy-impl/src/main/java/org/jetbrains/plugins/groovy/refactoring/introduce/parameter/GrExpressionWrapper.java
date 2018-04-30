@@ -18,7 +18,7 @@ package org.jetbrains.plugins.groovy.refactoring.introduce.parameter;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiType;
 import com.intellij.refactoring.introduceParameter.IntroduceParameterData;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 
 /**
@@ -31,7 +31,7 @@ public class GrExpressionWrapper implements IntroduceParameterData.ExpressionWra
     myExpression = expression;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public String getText() {
     return myExpression.getText();
@@ -42,7 +42,7 @@ public class GrExpressionWrapper implements IntroduceParameterData.ExpressionWra
     return myExpression.getType();
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public PsiElement getExpression() {
     return myExpression;

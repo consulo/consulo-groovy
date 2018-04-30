@@ -15,8 +15,9 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.confusing;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.psi.PsiElement;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
@@ -26,12 +27,12 @@ import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 
 public class GroovyEmptyStatementBodyInspection extends BaseInspection {
 
-  @NotNull
+  @Nonnull
   public String getDisplayName() {
     return "Statement with empty body";
   }
 
-  @NotNull
+  @Nonnull
   public String getGroupDisplayName() {
     return CONFUSING_CODE_CONSTRUCTS;
   }
@@ -55,7 +56,7 @@ public class GroovyEmptyStatementBodyInspection extends BaseInspection {
 
   private static class Visitor extends BaseInspectionVisitor {
 
-    public void visitWhileStatement(@NotNull GrWhileStatement statement) {
+    public void visitWhileStatement(@Nonnull GrWhileStatement statement) {
       super.visitWhileStatement(statement);
       final GrStatement body = statement.getBody();
       if (body == null) {
@@ -67,7 +68,7 @@ public class GroovyEmptyStatementBodyInspection extends BaseInspection {
       registerStatementError(statement, statement);
     }
 
-    public void visitForStatement(@NotNull GrForStatement statement) {
+    public void visitForStatement(@Nonnull GrForStatement statement) {
       super.visitForStatement(statement);
       final GrStatement body = statement.getBody();
       if (body == null) {
@@ -80,7 +81,7 @@ public class GroovyEmptyStatementBodyInspection extends BaseInspection {
     }
 
 
-    public void visitIfStatement(@NotNull GrIfStatement statement) {
+    public void visitIfStatement(@Nonnull GrIfStatement statement) {
       super.visitIfStatement(statement);
       final GrStatement thenBranch = statement.getThenBranch();
       if (thenBranch != null) {

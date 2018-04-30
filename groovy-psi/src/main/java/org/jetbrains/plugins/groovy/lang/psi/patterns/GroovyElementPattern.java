@@ -15,7 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.patterns;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.psi.GrReferenceElement;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
@@ -38,13 +39,13 @@ public class GroovyElementPattern<T extends GroovyPsiElement,Self extends Groovy
     super(aClass);
   }
 
-  public GroovyElementPattern(@NotNull final InitialPatternCondition<T> condition) {
+  public GroovyElementPattern(@Nonnull final InitialPatternCondition<T> condition) {
     super(condition);
   }
 
   public Self methodCallParameter(final int index, final ElementPattern<? extends PsiMethod> methodPattern) {
     return with(new PatternCondition<T>("methodCallParameter") {
-      public boolean accepts(@NotNull final T literal, final ProcessingContext context) {
+      public boolean accepts(@Nonnull final T literal, final ProcessingContext context) {
         final PsiElement parent = literal.getParent();
         if (parent instanceof GrArgumentList) {
           if (!(literal instanceof GrExpression)) return false;
@@ -99,7 +100,7 @@ public class GroovyElementPattern<T extends GroovyPsiElement,Self extends Groovy
       super(aClass);
     }
 
-    public Capture(@NotNull final InitialPatternCondition<T> condition) {
+    public Capture(@Nonnull final InitialPatternCondition<T> condition) {
       super(condition);
     }
   }

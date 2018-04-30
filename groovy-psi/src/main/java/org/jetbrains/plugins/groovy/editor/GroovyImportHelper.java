@@ -19,7 +19,7 @@ import com.intellij.psi.*;
 import com.intellij.psi.scope.DelegatingScopeProcessor;
 import com.intellij.psi.scope.PsiScopeProcessor;
 import com.intellij.util.containers.ContainerUtil;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFileBase;
 import org.jetbrains.plugins.groovy.lang.psi.api.toplevel.imports.GrImportStatement;
@@ -81,16 +81,16 @@ public class GroovyImportHelper {
     return true;
   }
 
-  public static boolean processImplicitImports(@NotNull PsiScopeProcessor processor,
+  public static boolean processImplicitImports(@Nonnull PsiScopeProcessor processor,
                                                ResolveState state,
                                                PsiElement lastParent,
                                                PsiElement place,
-                                               @NotNull GroovyFile file) {
+                                               @Nonnull GroovyFile file) {
     JavaPsiFacade facade = JavaPsiFacade.getInstance(file.getProject());
 
     final DelegatingScopeProcessor packageSkipper = new DelegatingScopeProcessor(processor) {
       @Override
-      public boolean execute(@NotNull PsiElement element, ResolveState state) {
+      public boolean execute(@Nonnull PsiElement element, ResolveState state) {
         if (element instanceof PsiJavaPackage) return true;
         return super.execute(element, state);
       }

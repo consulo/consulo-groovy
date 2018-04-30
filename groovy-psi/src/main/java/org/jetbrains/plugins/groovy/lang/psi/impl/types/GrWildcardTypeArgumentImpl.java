@@ -16,7 +16,8 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.types;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeElement;
@@ -36,7 +37,7 @@ public class GrWildcardTypeArgumentImpl extends GroovyPsiElementImpl implements 
 	private static final Logger LOG = Logger.getInstance("org.jetbrains.plugins.groovy.lang.psi.impl.types" +
 			".GrWildcardTypeArgumentImpl");
 
-	public GrWildcardTypeArgumentImpl(@NotNull ASTNode node)
+	public GrWildcardTypeArgumentImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
@@ -53,7 +54,7 @@ public class GrWildcardTypeArgumentImpl extends GroovyPsiElementImpl implements 
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public PsiType getType()
 	{
 		final GrTypeElement boundTypeElement = getBoundTypeElement();

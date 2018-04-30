@@ -20,8 +20,8 @@ import com.intellij.ide.projectView.PresentationData;
 import com.intellij.ide.projectView.ViewSettings;
 import com.intellij.openapi.module.Module;
 import com.intellij.psi.PsiElement;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
 
@@ -34,9 +34,9 @@ import javax.swing.*;
 public class TestMethodNode extends MethodNode {
   private final Icon myIcon;
 
-  public TestMethodNode(@NotNull final Module module,
-                        @NotNull final GrMethod method,
-                        @Nullable final String locationMark,
+  public TestMethodNode(@Nonnull final Module module,
+                        @Nonnull final GrMethod method,
+                        @javax.annotation.Nullable final String locationMark,
                         @Nullable final ViewSettings viewSettings, final Icon icon) {
     super(module, method, locationMark, viewSettings);
     myIcon = icon;
@@ -48,7 +48,7 @@ public class TestMethodNode extends MethodNode {
   }
 
   @Override
-  protected String getTestPresentationImpl(@NotNull final NodeId nodeId, @NotNull final PsiElement psiElement) {
+  protected String getTestPresentationImpl(@Nonnull final NodeId nodeId, @Nonnull final PsiElement psiElement) {
     return "Test method: " + ((GrField)psiElement).getName();
   }
 

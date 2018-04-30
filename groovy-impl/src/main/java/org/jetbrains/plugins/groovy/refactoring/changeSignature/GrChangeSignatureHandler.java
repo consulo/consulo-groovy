@@ -15,8 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.changeSignature;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrCall;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameterList;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
@@ -46,7 +46,7 @@ import com.intellij.refactoring.util.CommonRefactoringUtil;
 public class GrChangeSignatureHandler implements ChangeSignatureHandler
 {
 
-	public void invoke(@NotNull Project project, Editor editor, PsiFile file, DataContext dataContext)
+	public void invoke(@Nonnull Project project, Editor editor, PsiFile file, DataContext dataContext)
 	{
 		editor.getScrollingModel().scrollToCaret(ScrollType.MAKE_VISIBLE);
 		PsiElement element = findTargetMember(file, editor);
@@ -70,7 +70,7 @@ public class GrChangeSignatureHandler implements ChangeSignatureHandler
 		}
 	}
 
-	public void invoke(@NotNull final Project project, @NotNull final PsiElement[] elements, final DataContext dataContext)
+	public void invoke(@Nonnull final Project project, @Nonnull final PsiElement[] elements, final DataContext dataContext)
 	{
 		if(elements.length != 1)
 		{
@@ -123,7 +123,7 @@ public class GrChangeSignatureHandler implements ChangeSignatureHandler
 		dialog.show();
 	}
 
-	@Nullable
+	@javax.annotation.Nullable
 	public PsiElement findTargetMember(PsiFile file, Editor editor)
 	{
 		final PsiElement element = file.findElementAt(editor.getCaretModel().getOffset());
@@ -141,7 +141,7 @@ public class GrChangeSignatureHandler implements ChangeSignatureHandler
 		return null;
 	}
 
-	@Nullable
+	@javax.annotation.Nullable
 	public PsiElement findTargetMember(PsiElement element)
 	{
 		final GrParameterList parameterList = PsiTreeUtil.getParentOfType(element, GrParameterList.class);

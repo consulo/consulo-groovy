@@ -16,12 +16,13 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.CommonClassNames;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiType;
 import com.intellij.util.ArrayUtilRt;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrTupleExpression;
@@ -36,7 +37,7 @@ public class GrTupleExpressionImpl extends GrExpressionImpl implements GrTupleEx
     return "Tuple Assignment Expression";
   }
 
-  public GrTupleExpressionImpl(@NotNull ASTNode node) {
+  public GrTupleExpressionImpl(@Nonnull ASTNode node) {
     super(node);
   }
 
@@ -46,13 +47,13 @@ public class GrTupleExpressionImpl extends GrExpressionImpl implements GrTupleEx
   }
 
   @Override
-  public int indexOf(@NotNull PsiElement element) {
+  public int indexOf(@Nonnull PsiElement element) {
     GrExpression[] children = getExpressions();
     return ArrayUtilRt.find(children, element);
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public GrExpression[] getExpressions() {
     return findChildrenByClass(GrExpression.class);
   }

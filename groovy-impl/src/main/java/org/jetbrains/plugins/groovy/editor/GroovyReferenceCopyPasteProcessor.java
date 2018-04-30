@@ -17,7 +17,6 @@ package org.jetbrains.plugins.groovy.editor;
 
 import java.util.ArrayList;
 
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GrReferenceElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
@@ -171,7 +170,7 @@ public class GroovyReferenceCopyPasteProcessor extends CopyPasteReferenceProcess
 	}
 
 
-	@Nullable
+	@javax.annotation.Nullable
 	private static PsiMember findMember(ReferenceData refData, PsiClass refClass)
 	{
 		PsiField field = refClass.findFieldByName(refData.staticMemberName, true);

@@ -15,8 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.introduce;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import java.util.LinkedHashSet;
 
@@ -30,6 +30,6 @@ public interface GrIntroduceDialog<Settings extends GrIntroduceSettings> {
   void show();
   boolean isOK();
 
-  @NotNull
+  @Nonnull
   LinkedHashSet<String> suggestNames();
 }

@@ -15,8 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.lang.resolve;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import com.intellij.openapi.extensions.ExtensionPointName;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiMethod;
@@ -30,31 +30,31 @@ public abstract class GrMethodComparator {
   private static final ExtensionPointName<GrMethodComparator> EP_NAME = ExtensionPointName.create("org.intellij.groovy.methodComparator");
 
   public interface Context {
-    @Nullable
+    @javax.annotation.Nullable
     PsiType[] getArgumentTypes();
 
-    @Nullable
+    @javax.annotation.Nullable
     PsiType[] getTypeArguments();
 
     @Nullable
     PsiType getThisType();
 
-    @NotNull
+    @Nonnull
     PsiElement getPlace();
   }
 
-  public abstract Boolean dominated(@NotNull PsiMethod method1,
-                                    @NotNull PsiSubstitutor substitutor1,
-                                    @NotNull PsiMethod method2,
-                                    @NotNull PsiSubstitutor substitutor2,
-                                    @NotNull Context context);
+  public abstract Boolean dominated(@Nonnull PsiMethod method1,
+                                    @Nonnull PsiSubstitutor substitutor1,
+                                    @Nonnull PsiMethod method2,
+                                    @Nonnull PsiSubstitutor substitutor2,
+                                    @Nonnull Context context);
 
   @Nullable
-  public static Boolean checkDominated(@NotNull PsiMethod method1,
-                                       @NotNull PsiSubstitutor substitutor1,
-                                       @NotNull PsiMethod method2,
-                                       @NotNull PsiSubstitutor substitutor2,
-                                       @NotNull Context context) {
+  public static Boolean checkDominated(@Nonnull PsiMethod method1,
+                                       @Nonnull PsiSubstitutor substitutor1,
+                                       @Nonnull PsiMethod method2,
+                                       @Nonnull PsiSubstitutor substitutor2,
+                                       @Nonnull Context context) {
     for (GrMethodComparator comparator : EP_NAME.getExtensions()) {
       Boolean result = comparator.dominated(method1, substitutor1, method2, substitutor2, context);
       if (result != null) {

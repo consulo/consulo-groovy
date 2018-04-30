@@ -18,8 +18,8 @@ package org.jetbrains.plugins.groovy.lang.psi.typeEnhancers;
 import com.intellij.psi.PsiClassType;
 import com.intellij.psi.PsiPrimitiveType;
 import com.intellij.psi.PsiType;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.ConversionResult;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil;
@@ -29,7 +29,7 @@ import static org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.
 public class GrNullVoidConverter extends GrTypeConverter {
 
   @Override
-  public boolean isApplicableTo(@NotNull ApplicableTo position) {
+  public boolean isApplicableTo(@Nonnull ApplicableTo position) {
     switch (position) {
       case EXPLICIT_CAST:
       case RETURN_VALUE:
@@ -43,10 +43,10 @@ public class GrNullVoidConverter extends GrTypeConverter {
 
   @Nullable
   @Override
-  public ConversionResult isConvertibleEx(@NotNull PsiType targetType,
-                                          @NotNull PsiType actualType,
-                                          @NotNull GroovyPsiElement context,
-                                          @NotNull ApplicableTo currentPosition) {
+  public ConversionResult isConvertibleEx(@Nonnull PsiType targetType,
+                                          @Nonnull PsiType actualType,
+                                          @Nonnull GroovyPsiElement context,
+                                          @Nonnull ApplicableTo currentPosition) {
 
     final PsiClassType objectType = TypesUtil.getJavaLangObject(context);
 

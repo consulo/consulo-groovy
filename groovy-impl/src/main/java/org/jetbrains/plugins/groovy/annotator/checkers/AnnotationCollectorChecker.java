@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.annotator.checkers;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.GrModifierList;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotation;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotationNameValuePair;
@@ -33,13 +33,13 @@ import com.intellij.util.containers.ContainerUtil;
 public class AnnotationCollectorChecker extends CustomAnnotationChecker
 {
 	@Override
-	public boolean checkApplicability(@NotNull AnnotationHolder holder, @NotNull GrAnnotation annotation)
+	public boolean checkApplicability(@Nonnull AnnotationHolder holder, @Nonnull GrAnnotation annotation)
 	{
 		return isInAliasDeclaration(annotation);
 	}
 
 	@Override
-	public boolean checkArgumentList(@NotNull AnnotationHolder holder, @NotNull GrAnnotation annotation)
+	public boolean checkArgumentList(@Nonnull AnnotationHolder holder, @Nonnull GrAnnotation annotation)
 	{
 		if(!isInAliasDeclaration(annotation))
 		{

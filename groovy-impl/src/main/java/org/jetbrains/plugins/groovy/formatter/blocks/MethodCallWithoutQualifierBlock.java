@@ -22,7 +22,7 @@ import com.intellij.formatting.WrapType;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.formatter.FormattingContext;
 
 import java.util.ArrayList;
@@ -49,7 +49,7 @@ public class MethodCallWithoutQualifierBlock extends GroovyBlock {
     myElem = elem;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public List<Block> getSubBlocks() {
     if (mySubBlocks == null) {
@@ -61,7 +61,7 @@ public class MethodCallWithoutQualifierBlock extends GroovyBlock {
     return mySubBlocks;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public TextRange getTextRange() {
     return new TextRange(myNameElement.getTextRange().getStartOffset(), myElem.getTextRange().getEndOffset());

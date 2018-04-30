@@ -20,9 +20,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.annotation.Nonnull;
+
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.codeInspection.utils.ControlFlowUtils;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.lexer.TokenSets;
@@ -326,7 +328,7 @@ public class PsiImplUtil
 	}
 
 	@Nullable
-	public static GrExpression getRuntimeQualifier(@NotNull GrReferenceExpression refExpr)
+	public static GrExpression getRuntimeQualifier(@Nonnull GrReferenceExpression refExpr)
 	{
 		GrExpression qualifier = refExpr.getQualifierExpression();
 		if(qualifier != null)
@@ -541,7 +543,7 @@ public class PsiImplUtil
 	}
 
 	@Nullable
-	public static PsiMethod extractUniqueElement(@NotNull GroovyResolveResult[] results)
+	public static PsiMethod extractUniqueElement(@Nonnull GroovyResolveResult[] results)
 	{
 		if(results.length != 1)
 		{
@@ -551,8 +553,8 @@ public class PsiImplUtil
 		return element instanceof PsiMethod ? (PsiMethod) element : null;
 	}
 
-	@NotNull
-	public static GroovyResolveResult extractUniqueResult(@NotNull GroovyResolveResult[] results)
+	@Nonnull
+	public static GroovyResolveResult extractUniqueResult(@Nonnull GroovyResolveResult[] results)
 	{
 		if(results.length != 1)
 		{
@@ -576,8 +578,8 @@ public class PsiImplUtil
 		return result;
 	}
 
-	@NotNull
-	public static String getName(@NotNull GrNamedElement namedElement)
+	@Nonnull
+	public static String getName(@Nonnull GrNamedElement namedElement)
 	{
 		PsiElement nameElement = namedElement.getNameIdentifierGroovy();
 		ASTNode node = nameElement.getNode();
@@ -606,7 +608,7 @@ public class PsiImplUtil
 				"named element: " + namedElement);
 	}
 
-	public static void removeNewLineAfter(@NotNull GrStatement statement)
+	public static void removeNewLineAfter(@Nonnull GrStatement statement)
 	{
 		ASTNode parentNode = statement.getParent().getNode();
 		ASTNode next = statement.getNode().getTreeNext();
@@ -658,7 +660,7 @@ public class PsiImplUtil
 		return optional_count == parameters.length - 1 && args_count == 1;
 	}
 
-	public static void deleteStatementTail(PsiElement container, @NotNull PsiElement statement)
+	public static void deleteStatementTail(PsiElement container, @Nonnull PsiElement statement)
 	{
 		PsiElement next = statement.getNextSibling();
 		while(next != null)
@@ -693,7 +695,7 @@ public class PsiImplUtil
 		}
 	}
 
-	public static <T extends PsiElement> void setQualifier(@NotNull GrQualifiedReference<T> ref,
+	public static <T extends PsiElement> void setQualifier(@Nonnull GrQualifiedReference<T> ref,
 			@Nullable T newQualifier)
 	{
 		final T oldQualifier = ref.getQualifier();
@@ -834,7 +836,7 @@ public class PsiImplUtil
 	}
 
 	@Nullable
-	public static PsiAnnotation getAnnotation(@NotNull PsiModifierListOwner field, @NotNull String annotationName)
+	public static PsiAnnotation getAnnotation(@Nonnull PsiModifierListOwner field, @Nonnull String annotationName)
 	{
 		final PsiModifierList modifierList = field.getModifierList();
 		if(modifierList == null)
@@ -921,7 +923,7 @@ public class PsiImplUtil
 	}
 
 	@Nullable
-	public static PsiType normalizeWildcardTypeByPosition(@NotNull PsiType type, @NotNull GrExpression expression)
+	public static PsiType normalizeWildcardTypeByPosition(@Nonnull PsiType type, @Nonnull GrExpression expression)
 	{
 		GrExpression toplevel = expression;
 		while(toplevel.getParent() instanceof GrIndexProperty && ((GrIndexProperty) toplevel.getParent())
@@ -985,7 +987,7 @@ public class PsiImplUtil
 		return type;
 	}
 
-	public static boolean hasElementType(@Nullable PsiElement next, @NotNull final IElementType type)
+	public static boolean hasElementType(@Nullable PsiElement next, @Nonnull final IElementType type)
 	{
 		if(next == null)
 		{
@@ -995,7 +997,7 @@ public class PsiImplUtil
 		return astNode != null && astNode.getElementType() == type;
 	}
 
-	public static boolean hasElementType(@Nullable PsiElement next, final TokenSet set)
+	public static boolean hasElementType(@javax.annotation.Nullable PsiElement next, final TokenSet set)
 	{
 		if(next == null)
 		{
@@ -1005,7 +1007,7 @@ public class PsiImplUtil
 		return astNode != null && set.contains(astNode.getElementType());
 	}
 
-	public static boolean hasNamedArguments(@Nullable GrNamedArgumentsOwner list)
+	public static boolean hasNamedArguments(@javax.annotation.Nullable GrNamedArgumentsOwner list)
 	{
 		if(list == null)
 		{
@@ -1055,7 +1057,7 @@ public class PsiImplUtil
 		return false;
 	}
 
-	public static PsiElement findTailingSemicolon(@NotNull GrStatement statement)
+	public static PsiElement findTailingSemicolon(@Nonnull GrStatement statement)
 	{
 		final PsiElement nextNonSpace = PsiUtil.skipWhitespaces(statement.getNextSibling(), true);
 		if(nextNonSpace != null && nextNonSpace.getNode().getElementType() == GroovyTokenTypes.mSEMI)
@@ -1129,7 +1131,7 @@ public class PsiImplUtil
 		return sibling != null && isWhiteSpaceOrNls(sibling.getNode());
 	}
 
-	public static boolean isWhiteSpaceOrNls(@Nullable ASTNode node)
+	public static boolean isWhiteSpaceOrNls(@javax.annotation.Nullable ASTNode node)
 	{
 		return node != null && TokenSets.WHITE_SPACES_SET.contains(node.getElementType());
 	}
@@ -1178,8 +1180,8 @@ public class PsiImplUtil
 		return null;
 	}
 
-	@Nullable
-	public static GrAnnotation getAnnotation(@NotNull GrAnnotationNameValuePair pair)
+	@javax.annotation.Nullable
+	public static GrAnnotation getAnnotation(@Nonnull GrAnnotationNameValuePair pair)
 	{
 		PsiElement pParent = pair.getParent().getParent();
 		if(pParent instanceof GrAnnotation)
@@ -1235,7 +1237,7 @@ public class PsiImplUtil
 		return element;
 	}
 
-	private static boolean checkRanges(@NotNull PsiElement element, int startOffset, int endOffset)
+	private static boolean checkRanges(@Nonnull PsiElement element, int startOffset, int endOffset)
 	{
 		if(element instanceof GrLiteral && StringPartInfo.isWholeLiteralContentSelected((GrLiteral) element,
 				startOffset, endOffset))
@@ -1251,7 +1253,7 @@ public class PsiImplUtil
 		return false;
 	}
 
-	public static boolean isSpreadAssignment(@Nullable GrExpression lValue)
+	public static boolean isSpreadAssignment(@javax.annotation.Nullable GrExpression lValue)
 	{
 		if(lValue instanceof GrReferenceExpression)
 		{
@@ -1274,16 +1276,16 @@ public class PsiImplUtil
 		return false;
 	}
 
-	public static void replaceExpression(@NotNull String newExpression,
-			@NotNull GrExpression expression) throws IncorrectOperationException
+	public static void replaceExpression(@Nonnull String newExpression,
+			@Nonnull GrExpression expression) throws IncorrectOperationException
 	{
 		final GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(expression.getProject());
 		final GrExpression newCall = factory.createExpressionFromText(newExpression);
 		expression.replaceWithExpression(newCall, true);
 	}
 
-	public static GrStatement replaceStatement(@NonNls @NotNull String newStatement,
-			@NonNls @NotNull GrStatement statement) throws IncorrectOperationException
+	public static GrStatement replaceStatement(@NonNls @Nonnull String newStatement,
+			@NonNls @Nonnull GrStatement statement) throws IncorrectOperationException
 	{
 		final GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(statement.getProject());
 		final GrStatement newCall = (GrStatement) factory.createTopElementFromText(newStatement);
@@ -1318,7 +1320,7 @@ public class PsiImplUtil
 	}
 
 	@Nullable
-	public static PsiType getQualifierType(@NotNull GrReferenceExpression ref)
+	public static PsiType getQualifierType(@Nonnull GrReferenceExpression ref)
 	{
 		final GrExpression rtQualifier = getRuntimeQualifier(ref);
 		if(rtQualifier != null)
@@ -1360,7 +1362,7 @@ public class PsiImplUtil
 		return null;
 	}
 
-	@NotNull
+	@Nonnull
 	public static GroovyResolveResult reflectedToBase(GroovyResolveResult result,
 			GrMethod baseMethod,
 			GrReflectedMethod reflectedMethod)

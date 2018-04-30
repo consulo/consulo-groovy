@@ -15,8 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.controlFlow;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.psi.controlFlow.impl.ConditionInstruction;
 import com.intellij.psi.PsiElement;
 
@@ -24,7 +24,7 @@ import com.intellij.psi.PsiElement;
  * @author Max Medvedev
  */
 public class PositiveGotoInstruction extends GotoInstruction {
-  public PositiveGotoInstruction(@Nullable PsiElement element, @NotNull ConditionInstruction condition) {
+  public PositiveGotoInstruction(@javax.annotation.Nullable PsiElement element, @Nonnull ConditionInstruction condition) {
     super(element, condition);
   }
 }

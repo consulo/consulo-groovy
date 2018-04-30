@@ -17,8 +17,8 @@ package org.jetbrains.plugins.groovy.lang.resolve.processors;
 
 import java.util.EnumSet;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import com.intellij.openapi.util.Key;
 import com.intellij.psi.ResolveState;
 import com.intellij.psi.scope.ElementClassHint;
@@ -33,7 +33,7 @@ public abstract class GrScopeProcessorWithHints implements PsiScopeProcessor, Na
 	protected final EnumSet<ResolveKind> myResolveTargetKinds;
 	protected final String myName;
 
-	public GrScopeProcessorWithHints(@Nullable String name, @Nullable EnumSet<ResolveKind> resolveTargets)
+	public GrScopeProcessorWithHints(@javax.annotation.Nullable String name, @javax.annotation.Nullable EnumSet<ResolveKind> resolveTargets)
 	{
 		myName = name;
 		myResolveTargetKinds = resolveTargets;
@@ -41,7 +41,7 @@ public abstract class GrScopeProcessorWithHints implements PsiScopeProcessor, Na
 
 	@Override
 	@SuppressWarnings({"unchecked"})
-	public <T> T getHint(@NotNull Key<T> hintKey)
+	public <T> T getHint(@Nonnull Key<T> hintKey)
 	{
 		if(NameHint.KEY == hintKey && myName != null)
 		{
@@ -87,7 +87,7 @@ public abstract class GrScopeProcessorWithHints implements PsiScopeProcessor, Na
 	}
 
 	@Override
-	public String getName(@NotNull ResolveState state)
+	public String getName(@Nonnull ResolveState state)
 	{
 		return myName;
 	}
@@ -98,7 +98,7 @@ public abstract class GrScopeProcessorWithHints implements PsiScopeProcessor, Na
 	}
 
 	@Override
-	public void handleEvent(@NotNull Event event, @Nullable Object associated)
+	public void handleEvent(@Nonnull Event event, @Nullable Object associated)
 	{
 	}
 

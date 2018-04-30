@@ -15,8 +15,9 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.naming;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.psi.PsiElement;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.codeInspection.GroovyFix;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrAnnotationTypeDefinition;
@@ -27,7 +28,7 @@ public class GroovyAnnotationNamingConventionInspection extends ConventionInspec
   private static final int DEFAULT_MIN_LENGTH = 8;
   private static final int DEFAULT_MAX_LENGTH = 64;
 
-  @NotNull
+  @Nonnull
   public String getDisplayName() {
     return "Annotation naming convention";
   }
@@ -40,7 +41,7 @@ public class GroovyAnnotationNamingConventionInspection extends ConventionInspec
     return true;
   }
 
-  @NotNull
+  @Nonnull
   public String buildErrorString(Object... args) {
     final String className = (String) args[0];
     if (className.length() < getMinLength()) {

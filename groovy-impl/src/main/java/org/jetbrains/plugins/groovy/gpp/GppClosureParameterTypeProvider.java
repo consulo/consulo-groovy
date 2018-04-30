@@ -7,8 +7,8 @@ import com.intellij.psi.*;
 import com.intellij.psi.infos.CandidateInfo;
 import com.intellij.util.Function;
 import com.intellij.util.containers.ContainerUtil;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.GrListOrMap;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrArgumentLabel;
@@ -83,7 +83,7 @@ public class GppClosureParameterTypeProvider extends AbstractClosureParameterEnh
     return ContainerUtil.getFirstItem(getOverriddenMethodVariants(namedArgument), null);
   }
 
-  @NotNull
+  @Nonnull
   public static List<Pair<PsiMethod, PsiSubstitutor>> getOverriddenMethodVariants(GrNamedArgument namedArgument) {
 
     final GrArgumentLabel label = namedArgument.getLabel();
@@ -113,7 +113,7 @@ public class GppClosureParameterTypeProvider extends AbstractClosureParameterEnh
     return Collections.emptyList();
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   public static PsiType getSingleMethodParameterType(@Nullable PsiType type, int index, GrClosableBlock closure) {
     final PsiType[] signature = findSingleAbstractMethodSignature(type);
     if (signature != null && GrClosureSignatureUtil.isSignatureApplicable(GrClosureSignatureUtil.createSignature(closure), signature, closure)) {
@@ -123,7 +123,7 @@ public class GppClosureParameterTypeProvider extends AbstractClosureParameterEnh
   }
 
   @Nullable
-  public static PsiType[] findSingleAbstractMethodSignature(@Nullable PsiType type) {
+  public static PsiType[] findSingleAbstractMethodSignature(@javax.annotation.Nullable PsiType type) {
     if (type instanceof PsiClassType) {
       List<Pair<PsiMethod, PsiSubstitutor>> result = getMethodsToOverrideImplementInInheritor((PsiClassType)type, true);
       if (result.size() == 1) {
@@ -141,7 +141,7 @@ public class GppClosureParameterTypeProvider extends AbstractClosureParameterEnh
     });
   }
 
-  @NotNull
+  @Nonnull
   public static List<Pair<PsiMethod, PsiSubstitutor>> getMethodsToOverrideImplementInInheritor(PsiClassType classType, boolean toImplement) {
     final PsiClassType.ClassResolveResult resolveResult = classType.resolveGenerics();
     final PsiClass psiClass = resolveResult.getElement();

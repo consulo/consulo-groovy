@@ -15,7 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.expectedTypes;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiType;
 
@@ -27,16 +28,16 @@ public abstract class TypeConstraint {
 
   protected final PsiType myType;
 
-  public abstract boolean satisfied(PsiType type, @NotNull PsiElement context);
+  public abstract boolean satisfied(PsiType type, @Nonnull PsiElement context);
 
-  @NotNull
+  @Nonnull
   public abstract PsiType getDefaultType();
 
-  protected TypeConstraint(@NotNull PsiType type) {
+  protected TypeConstraint(@Nonnull PsiType type) {
     myType = type;
   }
 
-  @NotNull
+  @Nonnull
   public PsiType getType() {
     return myType;
   }

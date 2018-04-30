@@ -19,7 +19,7 @@ package org.jetbrains.plugins.groovy.editor.actions.joinLines;
 import com.intellij.openapi.editor.Document;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiElement;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
 import org.jetbrains.plugins.groovy.lang.psi.impl.PsiImplUtil;
 
@@ -28,7 +28,7 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.PsiImplUtil;
  */
 public class GrJoinStatementsHandler extends GrJoinLinesHandlerBase {
   @Override
-  public int tryJoinStatements(@NotNull GrStatement first, @NotNull GrStatement second) {
+  public int tryJoinStatements(@Nonnull GrStatement first, @Nonnull GrStatement second) {
     final PsiElement semi = PsiImplUtil.findTailingSemicolon(first);
 
     final Document document = PsiDocumentManager.getInstance(first.getProject()).getDocument(first.getContainingFile());

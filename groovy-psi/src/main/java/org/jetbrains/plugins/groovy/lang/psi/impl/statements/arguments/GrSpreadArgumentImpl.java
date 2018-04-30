@@ -15,7 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.arguments;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrSpreadArgument;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
@@ -28,11 +29,11 @@ import com.intellij.psi.PsiType;
  * @author Max Medvedev
  */
 public class GrSpreadArgumentImpl extends GroovyPsiElementImpl implements GrSpreadArgument {
-  public GrSpreadArgumentImpl(@NotNull ASTNode node) {
+  public GrSpreadArgumentImpl(@Nonnull ASTNode node) {
     super(node);
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public GrExpression getArgument() {
     return findNotNullChildByClass(GrExpression.class);

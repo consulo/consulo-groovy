@@ -18,8 +18,8 @@ package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.types;
 
 import java.util.HashMap;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
@@ -91,9 +91,9 @@ public class GrSafeCastExpressionImpl extends GrExpressionImpl implements GrSafe
 
 
   private static final class OurResolver implements ResolveCache.PolyVariantResolver<GrSafeCastExpressionImpl> {
-    @NotNull
+    @Nonnull
     @Override
-    public ResolveResult[] resolve(@NotNull GrSafeCastExpressionImpl cast, boolean incompleteCode) {
+    public ResolveResult[] resolve(@Nonnull GrSafeCastExpressionImpl cast, boolean incompleteCode) {
       final GrExpression operand = cast.getOperand();
       PsiType type = operand.getType();
       if (type == null) {
@@ -109,7 +109,7 @@ public class GrSafeCastExpressionImpl extends GrExpressionImpl implements GrSafe
 
   private static final OurResolver OUR_RESOLVER = new OurResolver();
 
-  public GrSafeCastExpressionImpl(@NotNull ASTNode node) {
+  public GrSafeCastExpressionImpl(@Nonnull ASTNode node) {
     super(node);
   }
 
@@ -134,7 +134,7 @@ public class GrSafeCastExpressionImpl extends GrExpressionImpl implements GrSafe
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public GrExpression getOperand() {
     return findNotNullChildByClass(GrExpression.class);
   }
@@ -161,7 +161,7 @@ public class GrSafeCastExpressionImpl extends GrExpressionImpl implements GrSafe
     return PsiImplUtil.extractUniqueResult(multiResolve(false)).getElement();
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public String getCanonicalText() {
     return getText();
@@ -173,7 +173,7 @@ public class GrSafeCastExpressionImpl extends GrExpressionImpl implements GrSafe
   }
 
   @Override
-  public PsiElement bindToElement(@NotNull PsiElement element) throws IncorrectOperationException {
+  public PsiElement bindToElement(@Nonnull PsiElement element) throws IncorrectOperationException {
     throw new UnsupportedOperationException("safe cast can be bounded to nothing");
   }
 
@@ -182,7 +182,7 @@ public class GrSafeCastExpressionImpl extends GrExpressionImpl implements GrSafe
     return getManager().areElementsEquivalent(resolve(), element);
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public Object[] getVariants() {
     return ArrayUtil.EMPTY_OBJECT_ARRAY;
@@ -193,7 +193,7 @@ public class GrSafeCastExpressionImpl extends GrExpressionImpl implements GrSafe
     return false;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public GroovyResolveResult[] multiResolve(boolean incompleteCode) {
     return TypeInferenceHelper.getCurrentContext().multiResolve(this, incompleteCode, OUR_RESOLVER);

@@ -17,8 +17,8 @@ package org.jetbrains.plugins.groovy.griffon.module.extension;
 
 import javax.swing.JComponent;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import consulo.module.extension.MutableModuleExtension;
 import consulo.roots.ModuleRootLayer;
 
@@ -28,12 +28,12 @@ import consulo.roots.ModuleRootLayer;
  */
 public class GriffonMutableModuleExtension extends GriffonModuleExtension implements MutableModuleExtension<GriffonModuleExtension>
 {
-	public GriffonMutableModuleExtension(@NotNull String id, @NotNull ModuleRootLayer module)
+	public GriffonMutableModuleExtension(@Nonnull String id, @Nonnull ModuleRootLayer module)
 	{
 		super(id, module);
 	}
 
-	@Nullable
+	@javax.annotation.Nullable
 	@Override
 	public JComponent createConfigurablePanel(@Nullable Runnable updateOnCheck)
 	{
@@ -47,7 +47,7 @@ public class GriffonMutableModuleExtension extends GriffonModuleExtension implem
 	}
 
 	@Override
-	public boolean isModified(@NotNull GriffonModuleExtension extension)
+	public boolean isModified(@Nonnull GriffonModuleExtension extension)
 	{
 		return myIsEnabled != extension.isEnabled();
 	}

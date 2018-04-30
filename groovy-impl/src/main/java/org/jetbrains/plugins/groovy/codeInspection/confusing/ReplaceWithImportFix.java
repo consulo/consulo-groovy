@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.confusing;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.codeInspection.GroovyFix;
 import org.jetbrains.plugins.groovy.codeInspection.GroovyInspectionBundle;
 import org.jetbrains.plugins.groovy.codeStyle.GrReferenceAdjuster;
@@ -39,7 +39,7 @@ public class ReplaceWithImportFix extends GroovyFix
 		GrReferenceAdjuster.shortenReference((GrQualifiedReference<?>) startElement);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public String getName()
 	{

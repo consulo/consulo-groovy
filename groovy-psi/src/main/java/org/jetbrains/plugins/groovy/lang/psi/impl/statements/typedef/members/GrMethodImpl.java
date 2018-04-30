@@ -17,7 +17,7 @@
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.typedef.members;
 
 import com.intellij.lang.ASTNode;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.GrModifier;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
@@ -30,7 +30,7 @@ import org.jetbrains.plugins.groovy.lang.psi.stubs.GrMethodStub;
  */
 
 public class GrMethodImpl extends GrMethodBaseImpl implements GrMethod {
-  public GrMethodImpl(@NotNull ASTNode node) {
+  public GrMethodImpl(@Nonnull ASTNode node) {
     super(node);
   }
 

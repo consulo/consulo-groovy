@@ -16,8 +16,8 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.branch;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrLabeledStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
@@ -29,7 +29,7 @@ import com.intellij.lang.ASTNode;
  * @author ilyas
  */
 public class GrContinueStatementImpl extends GrFlowInterruptingStatementImpl implements GrContinueStatement {
-  public GrContinueStatementImpl(@NotNull ASTNode node) {
+  public GrContinueStatementImpl(@Nonnull ASTNode node) {
     super(node);
   }
 
@@ -43,7 +43,7 @@ public class GrContinueStatementImpl extends GrFlowInterruptingStatementImpl imp
   }
 
   @Override
-  @Nullable
+  @javax.annotation.Nullable
   public GrStatement findTargetStatement() {
     return  ResolveUtil.resolveLabelTargetStatement(getLabelName(), this, false);
   }

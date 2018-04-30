@@ -17,7 +17,8 @@ package org.jetbrains.plugins.groovy.lang.psi.util;
 
 import java.util.Collection;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.psi.GrReferenceElement;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.api.toplevel.imports.GrImportStatement;
@@ -64,8 +65,8 @@ public class GrImportUtil
 		return false;
 	}
 
-	@NotNull
-	private static MultiMap<String, String> collectAliases(@NotNull GroovyFile file)
+	@Nonnull
+	private static MultiMap<String, String> collectAliases(@Nonnull GroovyFile file)
 	{
 		MultiMap<String, String> aliases = MultiMap.createSet();
 

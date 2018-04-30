@@ -20,7 +20,7 @@ import com.intellij.psi.*;
 import com.intellij.psi.util.MethodSignature;
 import com.intellij.util.Function;
 import com.intellij.util.containers.ContainerUtil;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -35,11 +35,11 @@ public class FromAbstractTypeMethodsHintProcessor extends SignatureHintProcessor
     return "groovy.transform.stc.FromAbstractTypeMethods";
   }
 
-  @NotNull
+  @Nonnull
   @Override
-  public List<PsiType[]> inferExpectedSignatures(@NotNull PsiMethod method,
-                                                 @NotNull PsiSubstitutor substitutor,
-                                                 @NotNull String[] options) {
+  public List<PsiType[]> inferExpectedSignatures(@Nonnull PsiMethod method,
+                                                 @Nonnull PsiSubstitutor substitutor,
+                                                 @Nonnull String[] options) {
     if (options.length != 1) return Collections.emptyList();
 
     String qname = options[0];

@@ -23,8 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.config.GroovyConfigUtils;
 import com.intellij.openapi.application.AccessToken;
 import com.intellij.openapi.application.ApplicationManager;
@@ -75,7 +75,7 @@ public class LibrariesUtil {
     return libraries.toArray(new Library[libraries.size()]);
   }
 
-  private static void populateOrderEntries(@NotNull Module module, Condition<Library> condition, ArrayList<Library> libraries, boolean exportedOnly, Set<Module> visited) {
+  private static void populateOrderEntries(@Nonnull Module module, Condition<Library> condition, ArrayList<Library> libraries, boolean exportedOnly, Set<Module> visited) {
     if (!visited.add(module)) {
       return;
     }
@@ -107,7 +107,7 @@ public class LibrariesUtil {
     return libs.toArray(new Library[libs.size()]);
   }
 
-  @NotNull
+  @Nonnull
   public static String getGroovyLibraryHome(Library library) {
     final VirtualFile[] classRoots = library.getFiles(OrderRootType.CLASSES);
     final String home = getGroovyLibraryHome(classRoots);
@@ -119,7 +119,7 @@ public class LibrariesUtil {
   }
 
   @Nullable
-  public static VirtualFile findJarWithClass(@NotNull Module module, final String classQName) {
+  public static VirtualFile findJarWithClass(@Nonnull Module module, final String classQName) {
     GlobalSearchScope scope = GlobalSearchScope.moduleWithDependenciesAndLibrariesScope(module);
     for (PsiClass psiClass : JavaPsiFacade.getInstance(module.getProject()).findClasses(classQName, scope)) {
       final VirtualFile local = ArchiveVfsUtil.getVirtualFileForJar(psiClass.getContainingFile().getVirtualFile());
@@ -132,7 +132,7 @@ public class LibrariesUtil {
 
 
   @Nullable
-  public static String getGroovyHomePath(@NotNull Module module) {
+  public static String getGroovyHomePath(@Nonnull Module module) {
     final VirtualFile local = findJarWithClass(module, SOME_GROOVY_CLASS);
     if (local != null) {
       final VirtualFile parent = local.getParent();
@@ -205,8 +205,8 @@ public class LibrariesUtil {
     return null;
   }
 
-  @NotNull
-  public static VirtualFile getLocalFile(@NotNull VirtualFile libFile) {
+  @Nonnull
+  public static VirtualFile getLocalFile(@Nonnull VirtualFile libFile) {
     final VirtualFileSystem system = libFile.getFileSystem();
     if (system instanceof ArchiveFileSystem) {
       final VirtualFile local = ArchiveVfsUtil.getVirtualFileForJar(libFile);

@@ -15,8 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.formatter.blocks;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.formatter.FormattingContext;
 import com.intellij.formatting.Indent;
 import com.intellij.formatting.Wrap;
@@ -29,21 +29,21 @@ import com.intellij.openapi.util.TextRange;
 public class GroovyBlockWithRange extends GroovyBlock
 {
 
-	@NotNull
+	@Nonnull
 	private final TextRange myTextRange;
 
-	public GroovyBlockWithRange(@NotNull ASTNode node,
-			@NotNull Indent indent,
-			@NotNull TextRange range,
+	public GroovyBlockWithRange(@Nonnull ASTNode node,
+			@Nonnull Indent indent,
+			@Nonnull TextRange range,
 			@Nullable Wrap wrap,
-			@NotNull FormattingContext context)
+			@Nonnull FormattingContext context)
 	{
 		super(node, indent, wrap, context);
 
 		myTextRange = range;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public TextRange getTextRange()
 	{

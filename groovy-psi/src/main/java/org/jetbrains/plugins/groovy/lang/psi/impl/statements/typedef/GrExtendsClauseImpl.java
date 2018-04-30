@@ -16,7 +16,8 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.typedef;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
@@ -32,7 +33,7 @@ import com.intellij.psi.tree.IElementType;
  */
 public class GrExtendsClauseImpl extends GrReferenceListImpl implements GrExtendsClause {
 
-  public GrExtendsClauseImpl(@NotNull ASTNode node) {
+  public GrExtendsClauseImpl(@Nonnull ASTNode node) {
     super(node);
   }
 
@@ -54,7 +55,7 @@ public class GrExtendsClauseImpl extends GrReferenceListImpl implements GrExtend
     return "Extends clause";
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public PsiJavaCodeReferenceElement[] getReferenceElements() {
     return PsiJavaCodeReferenceElement.EMPTY_ARRAY;

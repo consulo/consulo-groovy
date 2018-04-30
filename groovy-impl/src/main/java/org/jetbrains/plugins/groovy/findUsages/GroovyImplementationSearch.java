@@ -15,7 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.findUsages;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrAccessorMethod;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
@@ -36,8 +37,8 @@ import com.intellij.util.QueryExecutor;
 public class GroovyImplementationSearch implements QueryExecutor<PsiElement, DefinitionsScopedSearch.SearchParameters>
 {
 	@Override
-	public boolean execute(@NotNull final DefinitionsScopedSearch.SearchParameters queryParameters,
-			@NotNull final Processor<PsiElement> consumer)
+	public boolean execute(@Nonnull final DefinitionsScopedSearch.SearchParameters queryParameters,
+			@Nonnull final Processor<PsiElement> consumer)
 	{
 		return ApplicationManager.getApplication().runReadAction(new Computable<Boolean>()
 		{

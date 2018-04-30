@@ -19,7 +19,7 @@ package org.jetbrains.plugins.groovy.lang.psi.impl.auxiliary.annotation;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotationArrayInitializer;
@@ -33,7 +33,7 @@ import com.intellij.psi.PsiElement;
  * @date: 04.04.2007
  */
 public class GrAnnotationArrayInitializerImpl extends GroovyPsiElementImpl implements GrAnnotationArrayInitializer {
-  public GrAnnotationArrayInitializerImpl(@NotNull ASTNode node) {
+  public GrAnnotationArrayInitializerImpl(@Nonnull ASTNode node) {
     super(node);
   }
 
@@ -47,7 +47,7 @@ public class GrAnnotationArrayInitializerImpl extends GroovyPsiElementImpl imple
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public GrAnnotationMemberValue[] getInitializers() {
     List<GrAnnotationMemberValue> result = new ArrayList<GrAnnotationMemberValue>();
     for (PsiElement cur = getFirstChild(); cur != null; cur = cur.getNextSibling()) {

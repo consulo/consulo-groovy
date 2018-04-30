@@ -20,8 +20,8 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.GroovyLanguage;
 import org.jetbrains.plugins.groovy.formatter.AlignmentProvider;
 import org.jetbrains.plugins.groovy.formatter.FormattingContext;
@@ -415,7 +415,7 @@ public class GroovyBlockGenerator
 		return myWrappingProcessor.getChildWrap(childNode);
 	}
 
-	@NotNull
+	@Nonnull
 	public List<Block> generateSubBlockForCodeBlocks(boolean classLevel,
 			final List<ASTNode> children,
 			boolean indentLabelBlocks)
@@ -566,7 +566,7 @@ public class GroovyBlockGenerator
 		return false;
 	}
 
-	private void alignGroup(@Nullable List<GrStatement> group, boolean spock, boolean classLevel)
+	private void alignGroup(@javax.annotation.Nullable List<GrStatement> group, boolean spock, boolean classLevel)
 	{
 		if(group == null)
 		{
@@ -828,7 +828,7 @@ public class GroovyBlockGenerator
 	private void addBinaryChildrenRecursively(PsiElement elem,
 			List<Block> list,
 			Indent indent,
-			@Nullable AlignmentProvider.Aligner aligner)
+			@javax.annotation.Nullable AlignmentProvider.Aligner aligner)
 	{
 		if(elem == null)
 		{

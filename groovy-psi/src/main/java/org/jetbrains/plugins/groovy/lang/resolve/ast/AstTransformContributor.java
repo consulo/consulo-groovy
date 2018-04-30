@@ -20,7 +20,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
 import com.intellij.openapi.extensions.ExtensionPointName;
@@ -38,23 +39,23 @@ public abstract class AstTransformContributor
 	public static final ExtensionPointName<AstTransformContributor> EP_NAME = ExtensionPointName.create("org.intellij" +
 			".groovy.astTransformContributor");
 
-	public void collectMethods(@NotNull final GrTypeDefinition clazz, Collection<PsiMethod> collector)
+	public void collectMethods(@Nonnull final GrTypeDefinition clazz, Collection<PsiMethod> collector)
 	{
 
 	}
 
-	public void collectFields(@NotNull final GrTypeDefinition clazz, Collection<GrField> collector)
+	public void collectFields(@Nonnull final GrTypeDefinition clazz, Collection<GrField> collector)
 	{
 
 	}
 
-	public void collectClasses(@NotNull final GrTypeDefinition clazz, Collection<PsiClass> collector)
+	public void collectClasses(@Nonnull final GrTypeDefinition clazz, Collection<PsiClass> collector)
 	{
 
 	}
 
-	@NotNull
-	public static Collection<PsiMethod> runContributorsForMethods(@NotNull final GrTypeDefinition clazz)
+	@Nonnull
+	public static Collection<PsiMethod> runContributorsForMethods(@Nonnull final GrTypeDefinition clazz)
 	{
 		Collection<PsiMethod> result = RecursionManager.doPreventingRecursion(clazz, true,
 				new Computable<Collection<PsiMethod>>()
@@ -73,8 +74,8 @@ public abstract class AstTransformContributor
 		return result == null ? Collections.<PsiMethod>emptyList() : result;
 	}
 
-	@NotNull
-	public static List<GrField> runContributorsForFields(@NotNull final GrTypeDefinition clazz)
+	@Nonnull
+	public static List<GrField> runContributorsForFields(@Nonnull final GrTypeDefinition clazz)
 	{
 		List<GrField> fields = RecursionManager.doPreventingRecursion(clazz, true, new Computable<List<GrField>>()
 		{
@@ -92,8 +93,8 @@ public abstract class AstTransformContributor
 		return fields != null ? fields : Collections.<GrField>emptyList();
 	}
 
-	@NotNull
-	public static List<PsiClass> runContributorsForClasses(@NotNull final GrTypeDefinition clazz)
+	@Nonnull
+	public static List<PsiClass> runContributorsForClasses(@Nonnull final GrTypeDefinition clazz)
 	{
 		List<PsiClass> fields = RecursionManager.doPreventingRecursion(clazz, true, new Computable<List<PsiClass>>()
 		{

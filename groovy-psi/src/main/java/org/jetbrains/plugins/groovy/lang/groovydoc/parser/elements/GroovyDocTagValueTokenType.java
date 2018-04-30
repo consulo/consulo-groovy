@@ -24,7 +24,8 @@ import static org.jetbrains.plugins.groovy.lang.groovydoc.parser.elements.Groovy
 import java.util.Arrays;
 import java.util.Set;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.groovydoc.lexer.GroovyDocTokenTypes;
 import org.jetbrains.plugins.groovy.lang.groovydoc.lexer.IGroovyDocElementType;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocInlinedTag;
@@ -64,7 +65,7 @@ public class GroovyDocTagValueTokenType extends GroovyDocChameleonElementType im
     super("GDOC_TAG_VALUE_TOKEN");
   }
 
-  public static TagValueTokenType getValueType(@NotNull ASTNode node) {
+  public static TagValueTokenType getValueType(@Nonnull ASTNode node) {
     return isReferenceElement(node.getTreeParent(), node) ? REFERENCE_ELEMENT : VALUE_TOKEN;
   }
 

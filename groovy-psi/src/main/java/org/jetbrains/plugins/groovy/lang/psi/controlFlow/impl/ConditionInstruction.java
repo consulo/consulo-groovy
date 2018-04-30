@@ -17,7 +17,7 @@ package org.jetbrains.plugins.groovy.lang.psi.controlFlow.impl;
 
 import com.intellij.psi.PsiElement;
 import com.intellij.util.containers.HashSet;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.controlFlow.Instruction;
 
 import java.util.Set;
@@ -28,7 +28,7 @@ import java.util.Set;
 public class ConditionInstruction extends InstructionImpl implements Instruction {
   private final Set<ConditionInstruction> myDependent = new HashSet<ConditionInstruction>();
 
-  public ConditionInstruction(@NotNull PsiElement element) {
+  public ConditionInstruction(@Nonnull PsiElement element) {
     super(element);
     myDependent.add(this);
   }

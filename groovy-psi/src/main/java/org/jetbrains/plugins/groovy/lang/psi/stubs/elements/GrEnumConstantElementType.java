@@ -21,7 +21,7 @@ import com.intellij.psi.stubs.StubInputStream;
 import com.intellij.psi.stubs.StubOutputStream;
 import com.intellij.util.ArrayUtil;
 import com.intellij.util.io.StringRef;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrEnumConstant;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.typedef.enumConstant.GrEnumConstantImpl;
@@ -39,22 +39,22 @@ public class GrEnumConstantElementType extends GrStubElementType<GrFieldStub, Gr
     super("Enumeration constant");
   }
 
-  public GrEnumConstant createPsi(@NotNull GrFieldStub stub) {
+  public GrEnumConstant createPsi(@Nonnull GrFieldStub stub) {
     return new GrEnumConstantImpl(stub);
   }
 
   @Override
-  public GrFieldStub createStub(@NotNull GrEnumConstant psi, StubElement parentStub) {
+  public GrFieldStub createStub(@Nonnull GrEnumConstant psi, StubElement parentStub) {
     String[] annNames = GrStubUtils.getAnnotationNames(psi);
     return new GrFieldStub(parentStub, StringRef.fromString(psi.getName()), annNames, ArrayUtil.EMPTY_STRING_ARRAY, GroovyElementTypes.ENUM_CONSTANT, GrFieldStub.buildFlags(psi), null);
   }
 
-  public void serialize(@NotNull GrFieldStub stub, @NotNull StubOutputStream dataStream) throws IOException {
+  public void serialize(@Nonnull GrFieldStub stub, @Nonnull StubOutputStream dataStream) throws IOException {
     serializeFieldStub(stub, dataStream);
   }
 
-  @NotNull
-  public GrFieldStub deserialize(@NotNull StubInputStream dataStream, StubElement parentStub) throws IOException {
+  @Nonnull
+  public GrFieldStub deserialize(@Nonnull StubInputStream dataStream, StubElement parentStub) throws IOException {
     return GrFieldElementType.deserializeFieldStub(dataStream, parentStub);
   }
 
@@ -62,7 +62,7 @@ public class GrEnumConstantElementType extends GrStubElementType<GrFieldStub, Gr
     GrFieldElementType.serializeFieldStub(stub, dataStream);
   }
 
-  public void indexStub(@NotNull GrFieldStub stub, @NotNull IndexSink sink) {
+  public void indexStub(@Nonnull GrFieldStub stub, @Nonnull IndexSink sink) {
     GrFieldElementType.indexFieldStub(stub, sink);
   }
 }

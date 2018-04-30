@@ -16,8 +16,8 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.branch;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.branch.GrThrowStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
@@ -28,7 +28,7 @@ import com.intellij.lang.ASTNode;
  * @author ilyas
  */
 public class GrThrowStatementImpl extends GroovyPsiElementImpl implements GrThrowStatement {
-  public GrThrowStatementImpl(@NotNull ASTNode node) {
+  public GrThrowStatementImpl(@Nonnull ASTNode node) {
     super(node);
   }
 

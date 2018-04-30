@@ -16,7 +16,7 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.api.statements.clauses;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.util.GrDeclarationHolder;
 import org.jetbrains.plugins.groovy.lang.psi.api.util.GrStatementOwner;
@@ -26,7 +26,7 @@ import org.jetbrains.plugins.groovy.lang.psi.api.util.GrVariableDeclarationOwner
  * @author ilyas
  */
 public interface GrCaseSection extends GroovyPsiElement, GrVariableDeclarationOwner, GrStatementOwner, GrDeclarationHolder {
-  @NotNull
+  @Nonnull
   GrCaseLabel[] getCaseLabels();
 
   boolean isDefault();

@@ -19,7 +19,7 @@ import com.intellij.psi.PsiType;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.util.Function;
 import com.intellij.util.containers.ContainerUtil;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
 
@@ -83,7 +83,7 @@ public class GrBinaryExpressionTypeCalculators {
     MAP.put(GroovyTokenTypes.mASSIGN, GrAssignTypeCalculator.INSTANCE);
   }
 
-  @NotNull
+  @Nonnull
   public static Function<GrBinaryFacade, PsiType> getTypeCalculator(GrBinaryFacade e) {
     final Function<GrBinaryFacade, PsiType> function = MAP.get(e.getOperationTokenType());
     assert function != null : e.getOperationTokenType();

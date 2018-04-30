@@ -16,15 +16,16 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.bitwise;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.lang.ASTNode;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.GrBinaryExpressionImpl;
 
 /**
  * @author ilyas
  */
 public class GrBitwiseExpressionImpl extends GrBinaryExpressionImpl {
-  public GrBitwiseExpressionImpl(@NotNull ASTNode node) {
+  public GrBitwiseExpressionImpl(@Nonnull ASTNode node) {
     super(node);
   }
 

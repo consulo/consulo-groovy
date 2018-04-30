@@ -21,8 +21,8 @@ import com.intellij.formatting.Indent;
 import com.intellij.formatting.Wrap;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.TextRange;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.formatter.FormattingContext;
 
 import java.util.List;
@@ -33,14 +33,14 @@ import java.util.List;
 public class ClosureBodyBlock extends GroovyBlock {
   private TextRange myTextRange;
 
-  public ClosureBodyBlock(@NotNull ASTNode node,
-                          @NotNull Indent indent,
-                          @Nullable Wrap wrap,
+  public ClosureBodyBlock(@Nonnull ASTNode node,
+                          @Nonnull Indent indent,
+                          @javax.annotation.Nullable Wrap wrap,
                           FormattingContext context) {
     super(node, indent, wrap, context);
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public TextRange getTextRange() {
     init();
@@ -62,14 +62,14 @@ public class ClosureBodyBlock extends GroovyBlock {
     }
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public List<Block> getSubBlocks() {
     init();
     return mySubBlocks;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public ChildAttributes getChildAttributes(int newChildIndex) {
     return new ChildAttributes(Indent.getNormalIndent(), null);

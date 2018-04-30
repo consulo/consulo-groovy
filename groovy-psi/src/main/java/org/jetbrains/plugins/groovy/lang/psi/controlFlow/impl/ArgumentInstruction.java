@@ -17,8 +17,8 @@ package org.jetbrains.plugins.groovy.lang.psi.controlFlow.impl;
 
 import static org.jetbrains.plugins.groovy.lang.psi.impl.signatures.GrClosureSignatureUtil.createSignature;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.codeInspection.utils.ControlFlowUtils;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
 import org.jetbrains.plugins.groovy.lang.psi.api.signatures.GrClosureSignature;
@@ -43,7 +43,7 @@ import com.intellij.util.ArrayUtil;
 public class ArgumentInstruction extends InstructionImpl implements MixinTypeInstruction {
   private static final Logger LOG = Logger.getInstance(ArgumentInstruction.class);
 
-  public ArgumentInstruction(@NotNull GrReferenceExpression ref) {
+  public ArgumentInstruction(@Nonnull GrReferenceExpression ref) {
     super(ref);
   }
 

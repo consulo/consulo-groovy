@@ -17,7 +17,8 @@ package org.jetbrains.plugins.groovy.lang.psi.stubs.index;
 
 import java.util.Collection;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.psi.impl.search.GrSourceFilterScope;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiClass;
@@ -36,7 +37,7 @@ public class GrFullClassNameIndex extends IntStubIndexExtension<PsiClass> {
     return ourInstance;
   }
 
-  @NotNull
+  @Nonnull
   public StubIndexKey<Integer, PsiClass> getKey() {
     return KEY;
   }

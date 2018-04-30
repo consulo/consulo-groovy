@@ -15,6 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.rename;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.lang.Language;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.psi.PsiElement;
@@ -22,8 +24,6 @@ import com.intellij.psi.impl.light.LightElement;
 import com.intellij.refactoring.RefactoringBundle;
 import com.intellij.refactoring.rename.RenamePsiElementProcessor;
 import com.intellij.refactoring.util.CommonRefactoringUtil;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GrRenameableLightElement;
 import org.jetbrains.plugins.groovy.refactoring.GroovyRefactoringBundle;
@@ -34,7 +34,7 @@ import org.jetbrains.plugins.groovy.refactoring.GroovyRefactoringBundle;
 public class GrLightElementRenamer extends RenamePsiElementProcessor {
 
   @Override
-  public PsiElement substituteElementToRename(PsiElement element, @Nullable Editor editor) {
+  public PsiElement substituteElementToRename(PsiElement element, @javax.annotation.Nullable Editor editor) {
     String message =
       RefactoringBundle.getCannotRefactorMessage(GroovyRefactoringBundle.message("rename.is.not.applicable.to.implicit.elements"));
     CommonRefactoringUtil.showErrorHint(element.getProject(), editor, message, RefactoringBundle.message("rename.title"), null);
@@ -42,7 +42,7 @@ public class GrLightElementRenamer extends RenamePsiElementProcessor {
   }
 
   @Override
-  public boolean canProcessElement(@NotNull PsiElement element) {
+  public boolean canProcessElement(@Nonnull PsiElement element) {
     if (!(element instanceof LightElement)) return false;
     if (element instanceof GrRenameableLightElement) return false;
     final Language language = element.getLanguage();

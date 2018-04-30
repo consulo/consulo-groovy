@@ -18,7 +18,7 @@ package org.jetbrains.plugins.groovy.lang.completion.weighers;
 import java.util.Set;
 
 import consulo.psi.PsiPackage;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.extensions.NamedArgumentDescriptor;
 import org.jetbrains.plugins.groovy.lang.completion.GrMainCompletionProvider;
 import org.jetbrains.plugins.groovy.lang.completion.GrPropertyForCompletion;
@@ -59,7 +59,7 @@ public class GrKindWeigher extends CompletionWeigher {
   }
 
   @Override
-  public Comparable weigh(@NotNull LookupElement element, @NotNull CompletionLocation location) {
+  public Comparable weigh(@Nonnull LookupElement element, @Nonnull CompletionLocation location) {
     final PsiElement position = location.getCompletionParameters().getPosition();
     if (!(position.getContainingFile() instanceof GroovyFileBase)) return null;
 

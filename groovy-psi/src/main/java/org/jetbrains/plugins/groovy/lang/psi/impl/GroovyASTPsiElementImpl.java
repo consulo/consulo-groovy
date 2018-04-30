@@ -15,14 +15,15 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.lang.ASTNode;
 
 /**
  * @author Max Medvedev
  */
 public class GroovyASTPsiElementImpl extends GroovyPsiElementImpl {
-  public GroovyASTPsiElementImpl(@NotNull ASTNode node) {
+  public GroovyASTPsiElementImpl(@Nonnull ASTNode node) {
     super(node);
   }
 }

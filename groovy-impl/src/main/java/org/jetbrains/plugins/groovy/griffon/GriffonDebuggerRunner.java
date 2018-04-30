@@ -1,7 +1,7 @@
 package org.jetbrains.plugins.groovy.griffon;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import com.intellij.debugger.engine.DebuggerUtils;
 import com.intellij.debugger.impl.GenericDebuggerRunner;
 import com.intellij.debugger.settings.DebuggerSettings;
@@ -21,13 +21,13 @@ import consulo.java.execution.configurations.OwnJavaParameters;
 public class GriffonDebuggerRunner extends GenericDebuggerRunner
 {
 	@Override
-	public boolean canRun(@NotNull final String executorId, @NotNull final RunProfile profile)
+	public boolean canRun(@Nonnull final String executorId, @Nonnull final RunProfile profile)
 	{
 		return executorId.equals(DefaultDebugExecutor.EXECUTOR_ID) && profile instanceof GriffonRunConfiguration;
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public String getRunnerId()
 	{
 		return "GriffonDebugger";
@@ -35,7 +35,7 @@ public class GriffonDebuggerRunner extends GenericDebuggerRunner
 
 	@Nullable
 	@Override
-	protected RunContentDescriptor createContentDescriptor(@NotNull RunProfileState state, @NotNull ExecutionEnvironment environment) throws
+	protected RunContentDescriptor createContentDescriptor(@Nonnull RunProfileState state, @Nonnull ExecutionEnvironment environment) throws
 			ExecutionException
 	{
 		final JavaCommandLine javaCommandLine = (JavaCommandLine) state;

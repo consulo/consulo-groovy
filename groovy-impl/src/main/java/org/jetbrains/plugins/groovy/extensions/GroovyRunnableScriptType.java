@@ -15,8 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.extensions;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.runner.GroovyScriptRunConfiguration;
 import org.jetbrains.plugins.groovy.runner.GroovyScriptRunner;
@@ -29,8 +29,8 @@ public abstract class GroovyRunnableScriptType extends GroovyScriptType
 		super(id);
 	}
 
-	public void tuneConfiguration(@NotNull GroovyFile file,
-			@NotNull GroovyScriptRunConfiguration configuration,
+	public void tuneConfiguration(@Nonnull GroovyFile file,
+			@Nonnull GroovyScriptRunConfiguration configuration,
 			Location location)
 	{
 	}
@@ -41,8 +41,8 @@ public abstract class GroovyRunnableScriptType extends GroovyScriptType
 		return null;
 	}
 
-	public boolean isConfigurationByLocation(@NotNull GroovyScriptRunConfiguration existing,
-			@NotNull Location location)
+	public boolean isConfigurationByLocation(@Nonnull GroovyScriptRunConfiguration existing,
+			@Nonnull Location location)
 	{
 		return true;
 	}

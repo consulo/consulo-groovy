@@ -16,11 +16,13 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.api.toplevel.imports;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.ArrayFactory;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.GrModifierList;
 import org.jetbrains.plugins.groovy.lang.psi.api.toplevel.GrTopStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
@@ -32,7 +34,7 @@ public interface GrImportStatement extends GrTopStatement {
   GrImportStatement[] EMPTY_ARRAY = new GrImportStatement[0];
 
   ArrayFactory<GrImportStatement> ARRAY_FACTORY = new ArrayFactory<GrImportStatement>() {
-    @NotNull
+    @Nonnull
     @Override
     public GrImportStatement[] create(int count) {
       return new GrImportStatement[count];
@@ -51,7 +53,7 @@ public interface GrImportStatement extends GrTopStatement {
 
   boolean isAliasedImport();
 
-  @NotNull
+  @Nonnull
   GrModifierList getAnnotationList();
 
   @Nullable

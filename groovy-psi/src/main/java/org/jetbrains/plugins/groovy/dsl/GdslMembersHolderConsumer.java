@@ -16,7 +16,6 @@
 
 package org.jetbrains.plugins.groovy.dsl;
 
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.dsl.holders.CustomMembersHolder;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiClass;
@@ -33,7 +32,7 @@ public interface GdslMembersHolderConsumer {
   PsiElement getPlace();
   PsiClass getClassType();
   PsiType getPsiType();
-  @Nullable
+  @javax.annotation.Nullable
   PsiClass getPsiClass();
 
   GlobalSearchScope getResolveScope();

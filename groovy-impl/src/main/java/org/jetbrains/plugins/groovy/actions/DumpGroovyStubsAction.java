@@ -15,7 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.actions;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.editor.HandlerUtils;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.refactoring.convertToJava.GroovyToJavaGenerator;
@@ -34,7 +35,7 @@ public class DumpGroovyStubsAction extends AnAction implements DumbAware
 {
 	@RequiredDispatchThread
 	@Override
-	public void update(@NotNull AnActionEvent e)
+	public void update(@Nonnull AnActionEvent e)
 	{
 		Editor editor = e.getData(PlatformDataKeys.EDITOR);
 		if(editor != null)
@@ -51,7 +52,7 @@ public class DumpGroovyStubsAction extends AnAction implements DumbAware
 
 	@RequiredDispatchThread
 	@Override
-	public void actionPerformed(@NotNull AnActionEvent e)
+	public void actionPerformed(@Nonnull AnActionEvent e)
 	{
 		final Editor editor = e.getData(PlatformDataKeys.EDITOR);
 		if(editor == null)

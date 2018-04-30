@@ -15,8 +15,9 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.arithmetic;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.lang.ASTNode;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.arithmetic.GrRangeExpression;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.GrBinaryExpressionImpl;
@@ -27,7 +28,7 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.GrBinar
  */
 public class GrRangeExpressionImpl extends GrBinaryExpressionImpl implements GrRangeExpression {
 
-  public GrRangeExpressionImpl(@NotNull ASTNode node) {
+  public GrRangeExpressionImpl(@Nonnull ASTNode node) {
     super(node);
   }
 

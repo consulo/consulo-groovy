@@ -22,8 +22,8 @@ import java.util.Set;
 import javax.swing.JPanel;
 import javax.swing.ListSelectionModel;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.GrModifier;
@@ -92,7 +92,7 @@ public class GrChangeSignatureDialog extends ChangeSignatureDialogBase<GrParamet
     return new GrChangeSignatureProcessor(myProject, info);
   }
 
-  @NotNull
+  @Nonnull
   @Override
   protected List<Pair<String, JPanel>> createAdditionalPanels() {
     // this method is invoked before constructor body

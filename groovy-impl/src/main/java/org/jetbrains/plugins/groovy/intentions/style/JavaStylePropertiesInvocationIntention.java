@@ -20,7 +20,7 @@ import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.IncorrectOperationException;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.intentions.base.ErrorUtil;
 import org.jetbrains.plugins.groovy.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.intentions.base.PsiElementPredicate;
@@ -39,13 +39,13 @@ public class JavaStylePropertiesInvocationIntention extends Intention {
     return element instanceof GrClosableBlock || super.isStopElement(element);
   }
 
-  protected void processIntention(@NotNull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
+  protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
     if (element instanceof GrMethodCall) {
       fixJavaStyleProperty(((GrMethodCall)element));
     }
   }
 
-  @NotNull
+  @Nonnull
   protected PsiElementPredicate getElementPredicate() {
     return new PsiElementPredicate() {
       public boolean satisfiedBy(PsiElement element) {

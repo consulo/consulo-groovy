@@ -23,7 +23,7 @@ import com.intellij.psi.xml.XmlAttributeValue;
 import com.intellij.psi.xml.XmlToken;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrArgumentLabel;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyPropertyUtils;
@@ -42,31 +42,31 @@ public class GrLightVariable extends GrImplicitVariableImpl implements Navigatab
 
   public GrLightVariable(PsiManager manager,
                          @NonNls String name,
-                         @NonNls @NotNull String type,
-                         @NotNull PsiElement navigationElement) {
+                         @NonNls @Nonnull String type,
+                         @Nonnull PsiElement navigationElement) {
     this(manager, name, type, Collections.singletonList(navigationElement), getDeclarationScope(navigationElement));
   }
 
   public GrLightVariable(PsiManager manager,
                          @NonNls String name,
-                         @NonNls @NotNull String type,
-                         @NotNull List<PsiElement> declarations,
-                         @NotNull PsiElement scope) {
+                         @NonNls @Nonnull String type,
+                         @Nonnull List<PsiElement> declarations,
+                         @Nonnull PsiElement scope) {
     this(manager, name, JavaPsiFacade.getElementFactory(manager.getProject()).createTypeFromText(type, scope), declarations, scope);
   }
 
   public GrLightVariable(PsiManager manager,
                          @NonNls String name,
-                         @NotNull PsiType type,
-                         @NotNull PsiElement navigationElement) {
+                         @Nonnull PsiType type,
+                         @Nonnull PsiElement navigationElement) {
     this(manager, name, type, Collections.singletonList(navigationElement), getDeclarationScope(navigationElement));
   }
 
   public GrLightVariable(PsiManager manager,
                          @NonNls String name,
-                         @NotNull PsiType type,
-                         @NotNull List<PsiElement> declarations,
-                         @NotNull PsiElement scope) {
+                         @Nonnull PsiType type,
+                         @Nonnull List<PsiElement> declarations,
+                         @Nonnull PsiElement scope) {
     super(manager, new GrLightIdentifier(manager, name), type, false, scope);
 
     myDeclarations = declarations;
@@ -103,7 +103,7 @@ public class GrLightVariable extends GrImplicitVariableImpl implements Navigatab
     return true;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public SearchScope getUseScope() {
     return new LocalSearchScope(getDeclarationScope());
@@ -115,7 +115,7 @@ public class GrLightVariable extends GrImplicitVariableImpl implements Navigatab
   }
 
   @Override
-  public PsiElement setName(@NotNull String name) throws IncorrectOperationException {
+  public PsiElement setName(@Nonnull String name) throws IncorrectOperationException {
     for (PsiElement declaration : myDeclarations) {
       if (declaration instanceof PsiNamedElement) {
         if (declaration instanceof PsiMethod) {

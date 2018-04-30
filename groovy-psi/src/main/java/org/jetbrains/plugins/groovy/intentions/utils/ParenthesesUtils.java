@@ -18,7 +18,8 @@ package org.jetbrains.plugins.groovy.intentions.utils;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.*;
@@ -147,7 +148,7 @@ public class ParenthesesUtils {
     return -1;
   }
 
-  private static int precedenceForBinaryOperator(@NotNull IElementType sign) {
+  private static int precedenceForBinaryOperator(@Nonnull IElementType sign) {
     return s_binaryOperatorPrecedence.get(sign);
   }
 }

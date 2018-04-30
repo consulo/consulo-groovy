@@ -17,8 +17,8 @@ package org.jetbrains.plugins.groovy.lang.psi.typeEnhancers;
 
 import java.util.Collection;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.config.GroovyConfigUtils;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.signatures.GrSignature;
@@ -52,7 +52,7 @@ public class ClosureToSamConverter extends GrTypeConverter {
   }
 
   @Override
-  public Boolean isConvertible(@NotNull PsiType ltype, @NotNull PsiType rtype, @NotNull final GroovyPsiElement context) {
+  public Boolean isConvertible(@Nonnull PsiType ltype, @Nonnull PsiType rtype, @Nonnull final GroovyPsiElement context) {
     if (rtype instanceof GrClosureType &&
         ltype instanceof PsiClassType &&
         isSamConversionAllowed(context) &&
@@ -79,8 +79,8 @@ public class ClosureToSamConverter extends GrTypeConverter {
     return GroovyConfigUtils.getInstance().isVersionAtLeast(context, GroovyConfigUtils.GROOVY2_2);
   }
 
-  @Nullable
-  public static MethodSignature findSingleAbstractMethod(@NotNull PsiClass aClass, @NotNull PsiSubstitutor substitutor) {
+  @javax.annotation.Nullable
+  public static MethodSignature findSingleAbstractMethod(@Nonnull PsiClass aClass, @Nonnull PsiSubstitutor substitutor) {
     MethodSignature signature;
     Ref<MethodSignature> cached = SAM_SIGNATURE_LIGHT_CACHE_KEY.getCachedValue(aClass);
     if (cached != null) {
@@ -94,8 +94,8 @@ public class ClosureToSamConverter extends GrTypeConverter {
     return signature != null ? substitute(signature, substitutor): null;
   }
 
-  @Nullable
-  private static MethodSignature doFindSingleAbstractMethodClass(@NotNull PsiClass aClass) {
+  @javax.annotation.Nullable
+  private static MethodSignature doFindSingleAbstractMethodClass(@Nonnull PsiClass aClass) {
     Collection<MethodSignature> toImplement = OverrideImplementExploreUtil.getMethodSignaturesToImplement(aClass);
     if (toImplement.size() > 1) return null;
 
@@ -110,13 +110,13 @@ public class ClosureToSamConverter extends GrTypeConverter {
     return abstractSignature;
   }
 
-  @NotNull
-  private static MethodSignature substitute(@NotNull MethodSignature signature, @NotNull PsiSubstitutor substitutor) {
+  @Nonnull
+  private static MethodSignature substitute(@Nonnull MethodSignature signature, @Nonnull PsiSubstitutor substitutor) {
     return MethodSignatureUtil.createMethodSignature(signature.getName(), signature.getParameterTypes(), PsiTypeParameter.EMPTY_ARRAY, substitutor, false);
   }
 
   @Nullable
-  public static MethodSignature findSAMSignature(@Nullable PsiType type) {
+  public static MethodSignature findSAMSignature(@javax.annotation.Nullable PsiType type) {
     if (type instanceof PsiClassType) {
       if (TypesUtil.isClassType(type, GroovyCommonClassNames.GROOVY_LANG_CLOSURE)) return null;
 

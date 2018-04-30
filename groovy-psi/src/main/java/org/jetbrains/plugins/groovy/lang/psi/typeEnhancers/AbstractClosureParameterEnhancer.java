@@ -18,7 +18,6 @@ package org.jetbrains.plugins.groovy.lang.psi.typeEnhancers;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiPrimitiveType;
 import com.intellij.psi.PsiType;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlock;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameter;
@@ -64,6 +63,6 @@ public abstract class AbstractClosureParameterEnhancer extends GrVariableEnhance
     return res;
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   protected abstract PsiType getClosureParameterType(GrClosableBlock closure, int index);
 }

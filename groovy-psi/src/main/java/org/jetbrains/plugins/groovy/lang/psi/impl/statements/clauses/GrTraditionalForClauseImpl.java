@@ -16,7 +16,8 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.clauses;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.GrCondition;
@@ -32,7 +33,7 @@ import com.intellij.util.IncorrectOperationException;
  * @author ilyas
  */
 public class GrTraditionalForClauseImpl extends GroovyPsiElementImpl implements GrTraditionalForClause {
-  public GrTraditionalForClauseImpl(@NotNull ASTNode node) {
+  public GrTraditionalForClauseImpl(@Nonnull ASTNode node) {
     super(node);
   }
 

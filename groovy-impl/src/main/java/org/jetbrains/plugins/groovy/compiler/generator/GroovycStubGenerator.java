@@ -25,8 +25,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.compiler.GroovyCompilerBase;
 import org.jetbrains.plugins.groovy.compiler.GroovyCompilerConfiguration;
@@ -130,7 +130,7 @@ public class GroovycStubGenerator extends GroovyCompilerBase
 		//System.out.println("Stub generation took " + (System.currentTimeMillis() - l));
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public FileType[] getInputFileTypes()
 	{
@@ -140,7 +140,7 @@ public class GroovycStubGenerator extends GroovyCompilerBase
 		};
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public FileType[] getOutputFileTypes()
 	{
@@ -226,7 +226,7 @@ public class GroovycStubGenerator extends GroovyCompilerBase
 		return new File(rootPath + module.getName() + "/" + (tests ? "tests" : "production") + "/");
 	}
 
-	@Nullable
+	@javax.annotation.Nullable
 	public static PsiClass findClassByStub(Project project, VirtualFile stubFile)
 	{
 		final String[] components = StringUtil.trimEnd(stubFile.getPath(), ".java").split("[\\\\/]");
@@ -298,7 +298,7 @@ public class GroovycStubGenerator extends GroovyCompilerBase
 		}
 	}
 
-	@NotNull
+	@Nonnull
 	public String getDescription()
 	{
 		return "Groovy to java source code generator";

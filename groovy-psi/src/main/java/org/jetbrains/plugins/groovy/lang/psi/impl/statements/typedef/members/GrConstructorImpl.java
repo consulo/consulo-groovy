@@ -16,7 +16,7 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.typedef.members;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrReflectedMethod;
@@ -31,7 +31,7 @@ import com.intellij.psi.util.PsiModificationTracker;
  * @author Dmitry.Krasilschikov
  */
 public class GrConstructorImpl extends GrMethodBaseImpl implements GrMethod {
-  public GrConstructorImpl(@NotNull ASTNode node) {
+  public GrConstructorImpl(@Nonnull ASTNode node) {
     super(node);
   }
 
@@ -48,7 +48,7 @@ public class GrConstructorImpl extends GrMethodBaseImpl implements GrMethod {
     return true;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public GrReflectedMethod[] getReflectedMethods() {
     return CachedValuesManager.getCachedValue(this, new CachedValueProvider<GrReflectedMethod[]>() {

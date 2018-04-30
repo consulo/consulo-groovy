@@ -21,7 +21,7 @@ import com.intellij.psi.PsiType;
 import com.intellij.psi.impl.light.LightFieldBuilder;
 import com.intellij.util.ArrayUtil;
 import icons.JetgroovyIcons;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.GrModifier;
 
 import java.util.ArrayList;
@@ -32,9 +32,10 @@ import java.util.List;
  */
 
 public class GrPropertyForCompletion extends LightFieldBuilder {
-  @NotNull private final PsiMethod myOriginalAccessor;
+  @Nonnull
+  private final PsiMethod myOriginalAccessor;
 
-  public GrPropertyForCompletion(@NotNull PsiMethod method, @NotNull String name, @NotNull PsiType type) {
+  public GrPropertyForCompletion(@Nonnull PsiMethod method, @Nonnull String name, @Nonnull PsiType type) {
     super(method.getManager(), name, type);
     myOriginalAccessor = method;
 
@@ -49,7 +50,7 @@ public class GrPropertyForCompletion extends LightFieldBuilder {
     setBaseIcon(JetgroovyIcons.Groovy.Property);
   }
 
-  @NotNull
+  @Nonnull
   public PsiMethod getOriginalAccessor() {
     return myOriginalAccessor;
   }
@@ -80,7 +81,7 @@ public class GrPropertyForCompletion extends LightFieldBuilder {
     return visibilityModifier;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public String getName() {
     return super.getName();

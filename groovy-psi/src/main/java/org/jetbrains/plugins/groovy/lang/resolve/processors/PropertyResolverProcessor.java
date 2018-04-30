@@ -18,7 +18,8 @@ package org.jetbrains.plugins.groovy.lang.resolve.processors;
 
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
 import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GrBindingVariable;
 import com.intellij.psi.PsiElement;
@@ -36,11 +37,11 @@ public class PropertyResolverProcessor extends ResolverProcessor {
   }
 
   @Override
-  public boolean execute(@NotNull PsiElement element, ResolveState state) {
+  public boolean execute(@Nonnull PsiElement element, ResolveState state) {
     return super.execute(element, state) || element instanceof PsiField;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public GroovyResolveResult[] getCandidates() {
     //do not have more than one correct result. And if it exists it is the last

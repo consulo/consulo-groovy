@@ -24,8 +24,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.GroovyLanguage;
 import org.jetbrains.plugins.groovy.findUsages.LiteralConstructorReference;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
@@ -123,8 +123,8 @@ public class ResolveUtil
 	 * @param processNonCodeMethods - this parameter tells us if we need non code members
 	 * @return
 	 */
-	public static boolean treeWalkUp(@NotNull final PsiElement place,
-			@NotNull final PsiScopeProcessor processor,
+	public static boolean treeWalkUp(@Nonnull final PsiElement place,
+			@Nonnull final PsiScopeProcessor processor,
 			boolean processNonCodeMethods)
 	{
 		return treeWalkUp(place, place, processor, processNonCodeMethods, ResolveState.initial());
@@ -137,11 +137,11 @@ public class ResolveUtil
 	 * @param state
 	 * @return
 	 */
-	public static boolean treeWalkUp(@NotNull final PsiElement place,
-			@NotNull final PsiElement originalPlace,
-			@NotNull final PsiScopeProcessor processor,
+	public static boolean treeWalkUp(@Nonnull final PsiElement place,
+			@Nonnull final PsiElement originalPlace,
+			@Nonnull final PsiScopeProcessor processor,
 			boolean processNonCodeMethods,
-			@NotNull final ResolveState state)
+			@Nonnull final ResolveState state)
 	{
 		try
 		{
@@ -162,11 +162,11 @@ public class ResolveUtil
 		}
 	}
 
-	public static boolean doTreeWalkUp(@NotNull final PsiElement place,
-			@NotNull final PsiElement originalPlace,
-			@NotNull final PsiScopeProcessor processor,
+	public static boolean doTreeWalkUp(@Nonnull final PsiElement place,
+			@Nonnull final PsiElement originalPlace,
+			@Nonnull final PsiScopeProcessor processor,
 			@Nullable final PsiScopeProcessor nonCodeProcessor,
-			@NotNull final ResolveState state)
+			@Nonnull final ResolveState state)
 	{
 		final GrClosableBlock maxScope = nonCodeProcessor != null ? PsiTreeUtil.getParentOfType(place,
 				GrClosableBlock.class, true, PsiFile.class) : null;
@@ -188,12 +188,12 @@ public class ResolveUtil
 		});
 	}
 
-	static boolean doProcessDeclarations(@NotNull PsiElement place,
-			@Nullable PsiElement lastParent,
-			@NotNull PsiElement scope,
-			@NotNull PsiScopeProcessor plainProcessor,
-			@Nullable PsiScopeProcessor nonCodeProcessor,
-			@NotNull ResolveState state)
+	static boolean doProcessDeclarations(@Nonnull PsiElement place,
+			@javax.annotation.Nullable PsiElement lastParent,
+			@Nonnull PsiElement scope,
+			@Nonnull PsiScopeProcessor plainProcessor,
+			@javax.annotation.Nullable PsiScopeProcessor nonCodeProcessor,
+			@Nonnull ResolveState state)
 	{
 		if(scope instanceof GrClosableBlock && nonCodeProcessor != null)
 		{
@@ -250,11 +250,11 @@ public class ResolveUtil
 		return processor;
 	}
 
-	private static boolean processScopeNonCodeMembers(@NotNull PsiElement place,
-			@Nullable PsiElement lastParent,
-			@NotNull PsiScopeProcessor processor,
-			@NotNull PsiElement scope,
-			@NotNull ResolveState state)
+	private static boolean processScopeNonCodeMembers(@Nonnull PsiElement place,
+			@javax.annotation.Nullable PsiElement lastParent,
+			@Nonnull PsiScopeProcessor processor,
+			@Nonnull PsiElement scope,
+			@Nonnull ResolveState state)
 	{
 		//state = ResolveState.initial();
 		if(scope instanceof GrTypeDefinition)
@@ -321,18 +321,18 @@ public class ResolveUtil
 		return true;
 	}
 
-	@NotNull
-	private static PsiClassType createPsiType(@NotNull PsiClass psiClass)
+	@Nonnull
+	private static PsiClassType createPsiType(@Nonnull PsiClass psiClass)
 	{
 		PsiElementFactory factory = JavaPsiFacade.getElementFactory(psiClass.getProject());
 		return factory.createType(psiClass);
 	}
 
-	public static boolean processChildren(@NotNull PsiElement element,
-			@NotNull PsiScopeProcessor processor,
-			@NotNull ResolveState state,
-			@Nullable PsiElement lastParent,
-			@NotNull PsiElement place)
+	public static boolean processChildren(@Nonnull PsiElement element,
+			@Nonnull PsiScopeProcessor processor,
+			@Nonnull ResolveState state,
+			@javax.annotation.Nullable PsiElement lastParent,
+			@Nonnull PsiElement place)
 	{
 		if(!shouldProcessProperties(processor.getHint(ClassHint.KEY)))
 		{
@@ -364,9 +364,9 @@ public class ResolveUtil
 		return nameHint.getName(ResolveState.initial());
 	}
 
-	public static boolean processElement(@NotNull PsiScopeProcessor processor,
-			@NotNull PsiNamedElement namedElement,
-			@NotNull ResolveState state)
+	public static boolean processElement(@Nonnull PsiScopeProcessor processor,
+			@Nonnull PsiNamedElement namedElement,
+			@Nonnull ResolveState state)
 	{
 		NameHint nameHint = processor.getHint(NameHint.KEY);
 		String name = nameHint == null ? null : nameHint.getName(state);
@@ -378,19 +378,19 @@ public class ResolveUtil
 		return true;
 	}
 
-	public static boolean processAllDeclarations(@NotNull PsiType type,
-			@NotNull PsiScopeProcessor processor,
-			@NotNull ResolveState state,
-			@NotNull PsiElement place)
+	public static boolean processAllDeclarations(@Nonnull PsiType type,
+			@Nonnull PsiScopeProcessor processor,
+			@Nonnull ResolveState state,
+			@Nonnull PsiElement place)
 	{
 		return processAllDeclarationsSeparately(type, processor, processor, state, place);
 	}
 
-	public static boolean processAllDeclarationsSeparately(@NotNull PsiType type,
-			@NotNull PsiScopeProcessor processor,
-			@NotNull PsiScopeProcessor nonCodeProcessor,
-			@NotNull ResolveState state,
-			@NotNull PsiElement place)
+	public static boolean processAllDeclarationsSeparately(@Nonnull PsiType type,
+			@Nonnull PsiScopeProcessor processor,
+			@Nonnull PsiScopeProcessor nonCodeProcessor,
+			@Nonnull ResolveState state,
+			@Nonnull PsiElement place)
 	{
 		type = TypesUtil.boxPrimitiveType(type, place.getManager(), place.getResolveScope());
 		if(type instanceof PsiClassType)
@@ -418,10 +418,10 @@ public class ResolveUtil
 		return true;
 	}
 
-	public static boolean processNonCodeMembers(@NotNull PsiType type,
-			@NotNull PsiScopeProcessor processor,
-			@NotNull PsiElement place,
-			@NotNull ResolveState state)
+	public static boolean processNonCodeMembers(@Nonnull PsiType type,
+			@Nonnull PsiScopeProcessor processor,
+			@Nonnull PsiElement place,
+			@Nonnull ResolveState state)
 	{
 		if(type instanceof PsiEllipsisType)
 		{
@@ -482,7 +482,7 @@ public class ResolveUtil
 		return type;
 	}
 
-	public static Map<String, PsiType> getAllSuperTypes(@NotNull PsiType base, final Project project)
+	public static Map<String, PsiType> getAllSuperTypes(@Nonnull PsiType base, final Project project)
 	{
 		final Map<String, Map<String, PsiType>> cache = CachedValuesManager.getManager(project).getCachedValue
 				(project, new CachedValueProvider<Map<String, Map<String, PsiType>>>()
@@ -528,8 +528,8 @@ public class ResolveUtil
 		return result;
 	}
 
-	@NotNull
-	private static String rawCanonicalText(@NotNull PsiType type)
+	@Nonnull
+	private static String rawCanonicalText(@Nonnull PsiType type)
 	{
 		if(type instanceof PsiClassType)
 		{
@@ -581,7 +581,7 @@ public class ResolveUtil
 		return null;
 	}
 
-	@NotNull
+	@Nonnull
 	public static Pair<GrStatement, GrLabeledStatement> resolveLabelTargets(@Nullable String labelName,
 			@Nullable PsiElement element,
 			boolean isBreak)
@@ -643,7 +643,7 @@ public class ResolveUtil
 		return ((element instanceof GrLabeledStatement && labelName.equals(((GrLabeledStatement) element).getName())));
 	}
 
-	@Nullable
+	@javax.annotation.Nullable
 	private static GrLabeledStatement findLabelStatementIn(PsiElement element, PsiElement lastChild, String labelName)
 	{
 		if(isApplicableLabelStatement(element, labelName))
@@ -670,17 +670,17 @@ public class ResolveUtil
 		return resolveLabelTargets(labelName, element, isBreak).second;
 	}
 
-	@Nullable
-	public static GrStatement resolveLabelTargetStatement(@Nullable String labelName,
-			@Nullable PsiElement element,
+	@javax.annotation.Nullable
+	public static GrStatement resolveLabelTargetStatement(@javax.annotation.Nullable String labelName,
+			@javax.annotation.Nullable PsiElement element,
 			boolean isBreak)
 	{
 		return resolveLabelTargets(labelName, element, isBreak).first;
 	}
 
-	public static boolean processCategoryMembers(@NotNull PsiElement place,
-			@NotNull PsiScopeProcessor processor,
-			@NotNull ResolveState state)
+	public static boolean processCategoryMembers(@Nonnull PsiElement place,
+			@Nonnull PsiScopeProcessor processor,
+			@Nonnull ResolveState state)
 	{
 		boolean inCodeBlock = true;
 		PsiElement run = place;
@@ -725,7 +725,7 @@ public class ResolveUtil
 		return true;
 	}
 
-	@Nullable
+	@javax.annotation.Nullable
 	private static PsiClass getLiteralSuperClass(GrClosableBlock closure)
 	{
 		PsiClassType type;
@@ -898,10 +898,10 @@ public class ResolveUtil
 		return variants;
 	}
 
-	public static GroovyResolveResult[] getAllClassConstructors(@NotNull PsiClass psiClass,
-			@NotNull PsiSubstitutor substitutor,
+	public static GroovyResolveResult[] getAllClassConstructors(@Nonnull PsiClass psiClass,
+			@Nonnull PsiSubstitutor substitutor,
 			@Nullable PsiType[] argTypes,
-			@NotNull PsiElement place)
+			@Nonnull PsiElement place)
 	{
 		final MethodResolverProcessor processor = new MethodResolverProcessor(psiClass.getName(), place, true, null,
 				argTypes, PsiType.EMPTY_ARRAY);
@@ -944,7 +944,7 @@ public class ResolveUtil
 	}
 
 
-	@Nullable
+	@javax.annotation.Nullable
 	public static GrExpression getSelfOrWithQualifier(GrReferenceExpression ref)
 	{
 		final GrExpression qualifier = ref.getQualifierExpression();
@@ -988,19 +988,19 @@ public class ResolveUtil
 	}
 
 
-	@NotNull
-	public static GroovyResolveResult[] getMethodCandidates(@NotNull PsiType thisType,
-			@Nullable String methodName,
-			@NotNull PsiElement place,
-			@Nullable PsiType... argumentTypes)
+	@Nonnull
+	public static GroovyResolveResult[] getMethodCandidates(@Nonnull PsiType thisType,
+			@javax.annotation.Nullable String methodName,
+			@Nonnull PsiElement place,
+			@javax.annotation.Nullable PsiType... argumentTypes)
 	{
 		return getMethodCandidates(thisType, methodName, place, true, false, false, argumentTypes);
 	}
 
-	@NotNull
-	public static GroovyResolveResult[] getMethodCandidates(@NotNull PsiType thisType,
+	@Nonnull
+	public static GroovyResolveResult[] getMethodCandidates(@Nonnull PsiType thisType,
 			@Nullable String methodName,
-			@NotNull PsiElement place,
+			@Nonnull PsiElement place,
 			boolean resolveClosures,
 			boolean allVariants,
 			boolean byShape,
@@ -1106,9 +1106,9 @@ public class ResolveUtil
 		return GroovyResolveResult.EMPTY_ARRAY;
 	}
 
-	private static boolean isApplicableClosureType(@Nullable PsiType type,
-			@Nullable PsiType[] argTypes,
-			@NotNull PsiElement place)
+	private static boolean isApplicableClosureType(@javax.annotation.Nullable PsiType type,
+			@javax.annotation.Nullable PsiType[] argTypes,
+			@Nonnull PsiElement place)
 	{
 		if(!(type instanceof GrClosureType))
 		{
@@ -1207,7 +1207,7 @@ public class ResolveUtil
 		return null;
 	}
 
-	@NotNull
+	@Nonnull
 	public static String inferExpectedPackageName(PsiElement place)
 	{
 		PsiFile file = place.getContainingFile();
@@ -1223,7 +1223,7 @@ public class ResolveUtil
 		return "";
 	}
 
-	public static PsiNamedElement findDuplicate(@NotNull GrVariable variable)
+	public static PsiNamedElement findDuplicate(@Nonnull GrVariable variable)
 	{
 		if(isScriptField(variable))
 		{
@@ -1284,13 +1284,13 @@ public class ResolveUtil
 		}
 	}
 
-	@NotNull
-	public static List<Pair<PsiParameter, PsiType>> collectExpectedParamsByArg(@NotNull PsiElement place,
-			@NotNull GroovyResolveResult[] variants,
-			@NotNull GrNamedArgument[] namedArguments,
-			@NotNull GrExpression[] expressionArguments,
-			@NotNull GrClosableBlock[] closureArguments,
-			@NotNull GrExpression arg)
+	@Nonnull
+	public static List<Pair<PsiParameter, PsiType>> collectExpectedParamsByArg(@Nonnull PsiElement place,
+			@Nonnull GroovyResolveResult[] variants,
+			@Nonnull GrNamedArgument[] namedArguments,
+			@Nonnull GrExpression[] expressionArguments,
+			@Nonnull GrClosableBlock[] closureArguments,
+			@Nonnull GrExpression arg)
 	{
 		List<Pair<PsiParameter, PsiType>> expectedParams = ContainerUtil.newArrayList();
 
@@ -1328,10 +1328,10 @@ public class ResolveUtil
 		return classHint == null || classHint.shouldProcess(ClassHint.ResolveKind.PACKAGE);
 	}
 
-	public static boolean processStaticImports(@NotNull PsiScopeProcessor resolver,
-			@NotNull PsiFile file,
-			@NotNull ResolveState state,
-			@NotNull PsiElement place)
+	public static boolean processStaticImports(@Nonnull PsiScopeProcessor resolver,
+			@Nonnull PsiFile file,
+			@Nonnull ResolveState state,
+			@Nonnull PsiElement place)
 	{
 		if(!shouldProcessMethods(resolver.getHint(ClassHint.KEY)))
 		{
@@ -1342,7 +1342,7 @@ public class ResolveUtil
 				ClassHint.RESOLVE_KINDS_METHOD)
 		{
 			@Override
-			public boolean execute(@NotNull PsiElement element, @NotNull ResolveState _state)
+			public boolean execute(@Nonnull PsiElement element, @Nonnull ResolveState _state)
 			{
 				if(_state.get(ClassHint.RESOLVE_CONTEXT) instanceof GrImportStatement)
 				{
@@ -1353,7 +1353,7 @@ public class ResolveUtil
 		}, state, null, place);
 	}
 
-	public static boolean isClassReference(@NotNull GrReferenceExpression ref)
+	public static boolean isClassReference(@Nonnull GrReferenceExpression ref)
 	{
 		GrExpression qualifier = ref.getQualifier();
 		return "class".equals(ref.getReferenceName()) &&
@@ -1381,7 +1381,7 @@ public class ResolveUtil
 		}
 
 		@Override
-		public boolean execute(@NotNull PsiElement element, @NotNull ResolveState state)
+		public boolean execute(@Nonnull PsiElement element, @Nonnull ResolveState state)
 		{
 			if(myBorderPassed)
 			{
@@ -1397,7 +1397,7 @@ public class ResolveUtil
 		}
 
 		@Override
-		public void handleEvent(@NotNull PsiScopeProcessor.Event event, Object associated)
+		public void handleEvent(@Nonnull PsiScopeProcessor.Event event, Object associated)
 		{
 			if(event == DECLARATION_SCOPE_PASSED)
 			{

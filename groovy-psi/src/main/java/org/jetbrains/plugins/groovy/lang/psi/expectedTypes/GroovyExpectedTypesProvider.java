@@ -19,8 +19,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.codeInspection.utils.ControlFlowUtils;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
@@ -83,7 +83,7 @@ import com.intellij.util.containers.ContainerUtil;
 public class GroovyExpectedTypesProvider
 {
 
-	public static TypeConstraint[] calculateTypeConstraints(@NotNull final GrExpression expression)
+	public static TypeConstraint[] calculateTypeConstraints(@Nonnull final GrExpression expression)
 	{
 		return TypeInferenceHelper.getCurrentContext().getCachedValue(expression, new Computable<TypeConstraint[]>()
 		{
@@ -120,7 +120,7 @@ public class GroovyExpectedTypesProvider
 		});
 	}
 
-	public static List<PsiType> getDefaultExpectedTypes(@NotNull GrExpression element)
+	public static List<PsiType> getDefaultExpectedTypes(@Nonnull GrExpression element)
 	{
 		TypeConstraint[] constraints = calculateTypeConstraints(element);
 		return ContainerUtil.map(constraints, new Function<TypeConstraint, PsiType>()
@@ -394,8 +394,8 @@ public class GroovyExpectedTypesProvider
 							.resolve().isEnum();
 		}
 
-		@NotNull
-		private static TypeConstraint[] createSimpleSubTypeResult(@NotNull PsiType type)
+		@Nonnull
+		private static TypeConstraint[] createSimpleSubTypeResult(@Nonnull PsiType type)
 		{
 			return new TypeConstraint[]{new SubtypeConstraint(type, type)};
 		}
@@ -454,11 +454,11 @@ public class GroovyExpectedTypesProvider
 					list.getExpressionArguments(), GrClosableBlock.EMPTY_ARRAY);
 		}
 
-		private void processCallVariants(@NotNull PsiElement place,
-				@NotNull GroovyResolveResult[] variants,
-				@NotNull GrNamedArgument[] namedArguments,
-				@NotNull GrExpression[] expressionArguments,
-				@NotNull GrClosableBlock[] closureArguments)
+		private void processCallVariants(@Nonnull PsiElement place,
+				@Nonnull GroovyResolveResult[] variants,
+				@Nonnull GrNamedArgument[] namedArguments,
+				@Nonnull GrExpression[] expressionArguments,
+				@Nonnull GrClosableBlock[] closureArguments)
 		{
 
 			List<Pair<PsiParameter, PsiType>> expectedParams = ResolveUtil.collectExpectedParamsByArg(place, variants,
@@ -602,7 +602,7 @@ public class GroovyExpectedTypesProvider
 			TypeConstraint constraint = new TypeConstraint(PsiType.INT)
 			{
 				@Override
-				public boolean satisfied(PsiType type, @NotNull PsiElement context)
+				public boolean satisfied(PsiType type, @Nonnull PsiElement context)
 				{
 					final PsiType boxed = TypesUtil.boxPrimitiveType(type, context.getManager(),
 							context.getResolveScope());
@@ -613,7 +613,7 @@ public class GroovyExpectedTypesProvider
 					return candidates.length > 0;
 				}
 
-				@NotNull
+				@Nonnull
 				@Override
 				public PsiType getDefaultType()
 				{

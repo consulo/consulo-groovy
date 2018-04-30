@@ -15,6 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.lang.completion;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.codeInsight.TailTypes;
 import com.intellij.codeInsight.completion.*;
 import com.intellij.codeInsight.lookup.LookupElement;
@@ -26,7 +28,6 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiErrorElement;
 import com.intellij.util.ProcessingContext;
 import consulo.codeInsight.completion.CompletionProvider;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.lexer.TokenSets;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrForStatement;
@@ -60,9 +61,9 @@ class GrStatementStartCompletionProvider implements CompletionProvider
   }
 
   @Override
-  public void addCompletions(@NotNull CompletionParameters parameters,
+  public void addCompletions(@Nonnull CompletionParameters parameters,
                                 ProcessingContext context,
-                                @NotNull CompletionResultSet result) {
+                                @Nonnull CompletionResultSet result) {
     result.addElement(LookupElementBuilder.create("if").bold().withInsertHandler(new InsertHandler<LookupElement>() {
       @Override
       public void handleInsert(InsertionContext context, LookupElement item) {

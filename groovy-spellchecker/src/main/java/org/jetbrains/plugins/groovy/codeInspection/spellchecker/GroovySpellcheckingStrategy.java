@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.spellchecker;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.lexer.TokenSets;
 import org.jetbrains.plugins.groovy.lang.psi.GrNamedElement;
 import org.jetbrains.plugins.groovy.lang.psi.util.GrStringUtil;
@@ -36,7 +36,7 @@ public class GroovySpellcheckingStrategy extends SpellcheckingStrategy
 	private final Tokenizer<PsiElement> myStringTokenizer = new Tokenizer<PsiElement>()
 	{
 		@Override
-		public void tokenize(@NotNull PsiElement literal, TokenConsumer consumer)
+		public void tokenize(@Nonnull PsiElement literal, TokenConsumer consumer)
 		{
 			String text = GrStringUtil.removeQuotes(literal.getText());
 			if(!text.contains("\\"))
@@ -54,7 +54,7 @@ public class GroovySpellcheckingStrategy extends SpellcheckingStrategy
 		}
 	};
 
-	@NotNull
+	@Nonnull
 	@Override
 	public Tokenizer getTokenizer(PsiElement element)
 	{

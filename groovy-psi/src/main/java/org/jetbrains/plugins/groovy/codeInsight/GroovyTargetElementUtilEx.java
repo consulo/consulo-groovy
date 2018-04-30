@@ -18,8 +18,8 @@ package org.jetbrains.plugins.groovy.codeInsight;
 
 import java.util.Set;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrArgumentList;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrNewExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
@@ -43,7 +43,7 @@ public class GroovyTargetElementUtilEx extends TargetElementUtilEx.Adapter
 	public static final Key<Object> NAVIGATION_ELEMENT_IS_NOT_TARGET = Key.create("GroovyTargetElementEvaluator.DONT_FOLLOW_NAVIGATION_ELEMENT");
 
 	@Override
-	public PsiElement getReferenceOrReferencedElement(@NotNull PsiReference ref, @NotNull Set<String> flags)
+	public PsiElement getReferenceOrReferencedElement(@Nonnull PsiReference ref, @Nonnull Set<String> flags)
 	{
 		PsiElement sourceElement = ref.getElement();
 
@@ -93,8 +93,8 @@ public class GroovyTargetElementUtilEx extends TargetElementUtilEx.Adapter
 		return null;
 	}
 
-	@Nullable
-	public static PsiElement correctSearchTargets(@Nullable PsiElement target)
+	@javax.annotation.Nullable
+	public static PsiElement correctSearchTargets(@javax.annotation.Nullable PsiElement target)
 	{
 		if(target instanceof ClsMethodImpl)
 		{

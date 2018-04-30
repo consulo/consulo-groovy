@@ -1,7 +1,7 @@
 package org.jetbrains.plugins.groovy.mvc;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+
 import com.intellij.openapi.actionSystem.ActionPlaces;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.LangDataKeys;
@@ -13,7 +13,7 @@ import com.intellij.openapi.util.Pair;
 
 public abstract class MvcActionBase extends DumbAwareAction {
 
-  protected abstract void actionPerformed(@NotNull AnActionEvent e, @NotNull Module module, @NotNull MvcFramework framework);
+  protected abstract void actionPerformed(@Nonnull AnActionEvent e, @Nonnull Module module, @Nonnull MvcFramework framework);
   
   @Override
   public final void actionPerformed(AnActionEvent e) {
@@ -23,11 +23,11 @@ public abstract class MvcActionBase extends DumbAwareAction {
     }
   }
 
-  protected boolean isFrameworkSupported(@NotNull MvcFramework framework) {
+  protected boolean isFrameworkSupported(@Nonnull MvcFramework framework) {
     return true;
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   public static Pair<MvcFramework, Module> guessFramework(AnActionEvent event) {
     final Module module = event.getData(event.getPlace().equals(ActionPlaces.MAIN_MENU) ? LangDataKeys.MODULE : LangDataKeys.MODULE_CONTEXT);
 
@@ -82,7 +82,7 @@ public abstract class MvcActionBase extends DumbAwareAction {
     }
   }
 
-  protected void updateView(AnActionEvent event, @NotNull MvcFramework framework, @NotNull Module module) {
+  protected void updateView(AnActionEvent event, @Nonnull MvcFramework framework, @Nonnull Module module) {
 
   }
 }

@@ -15,7 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.lang.completion;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotation;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotationNameValuePair;
 import org.jetbrains.plugins.groovy.lang.psi.impl.PsiImplUtil;
@@ -35,9 +36,9 @@ import consulo.codeInsight.completion.CompletionProvider;
 public class GrAnnotationAttributeCompletionProvider implements CompletionProvider
 {
   @Override
-  public void addCompletions(@NotNull CompletionParameters parameters,
+  public void addCompletions(@Nonnull CompletionParameters parameters,
                                 ProcessingContext context,
-                                @NotNull CompletionResultSet result) {
+                                @Nonnull CompletionResultSet result) {
     PsiElement position = parameters.getPosition();
     PsiElement parent = position.getParent();
     if (parent instanceof GrAnnotationNameValuePair && position == ((GrAnnotationNameValuePair)parent).getNameIdentifierGroovy()) {

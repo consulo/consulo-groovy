@@ -16,9 +16,11 @@
 
 package org.jetbrains.plugins.groovy.lang.psi;
 
+import javax.annotation.Nonnull;
+
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocComment;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocMemberReference;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocReferenceElement;
@@ -97,7 +99,7 @@ public abstract class GroovyPsiElementFactory implements JVMElementFactory
 	 * @throws IncorrectOperationException in case of an internal error.
 	 */
 	@Override
-	@NotNull
+	@Nonnull
 	public abstract GrClassInitializer createClassInitializer() throws IncorrectOperationException;
 
 	/**
@@ -107,25 +109,25 @@ public abstract class GroovyPsiElementFactory implements JVMElementFactory
 	 * @param alias
 	 * @return import statement for given class
 	 */
-	public abstract GrImportStatement createImportStatementFromText(@NotNull String qName,
+	public abstract GrImportStatement createImportStatementFromText(@Nonnull String qName,
 			boolean isStatic,
 			boolean isOnDemand,
-			@Nullable String alias);
+			@javax.annotation.Nullable String alias);
 
-	public abstract GrImportStatement createImportStatementFromText(@NotNull String text);
+	public abstract GrImportStatement createImportStatementFromText(@Nonnull String text);
 
-	public abstract GrImportStatement createImportStatement(@NotNull String qname,
+	public abstract GrImportStatement createImportStatement(@Nonnull String qname,
 			boolean isStatic,
 			boolean isOnDemand,
-			@Nullable String alias,
+			@javax.annotation.Nullable String alias,
 			@Nullable PsiElement context);
 
 	public abstract PsiElement createWhiteSpace();
 
-	@NotNull
+	@Nonnull
 	public abstract PsiElement createLineTerminator(int length);
 
-	@NotNull
+	@Nonnull
 	public abstract PsiElement createLineTerminator(String text);
 
 	public abstract GrArgumentList createExpressionArgumentList(GrExpression... expressions);
@@ -160,8 +162,8 @@ public abstract class GroovyPsiElementFactory implements JVMElementFactory
 	}
 
 	@Override
-	@NotNull
-	public abstract GrExpression createExpressionFromText(@NotNull String exprText, @Nullable PsiElement context);
+	@Nonnull
+	public abstract GrExpression createExpressionFromText(@Nonnull String exprText, @Nullable PsiElement context);
 
 	public abstract GrVariableDeclaration createFieldDeclaration(String[] modifiers,
 			String identifier,
@@ -182,7 +184,7 @@ public abstract class GroovyPsiElementFactory implements JVMElementFactory
 
 	public abstract GrEnumConstant createEnumConstantFromText(String text);
 
-	@NotNull
+	@Nonnull
 	public abstract PsiElement createReferenceNameFromText(String idText);
 
 	public abstract PsiElement createDocMemberReferenceNameFromText(String idText);
@@ -209,7 +211,7 @@ public abstract class GroovyPsiElementFactory implements JVMElementFactory
 
 	public abstract GrParameter createParameter(String name,
 			@Nullable String typeText,
-			@Nullable String initializer,
+			@javax.annotation.Nullable String initializer,
 			@Nullable GroovyPsiElement context,
 			String... modifiers) throws IncorrectOperationException;
 
@@ -219,7 +221,7 @@ public abstract class GroovyPsiElementFactory implements JVMElementFactory
 
 	public abstract GrTypeElement createTypeElement(PsiType type) throws IncorrectOperationException;
 
-	@NotNull
+	@Nonnull
 	public GrTypeElement createTypeElement(String typeText) throws IncorrectOperationException
 	{
 		return createTypeElement(typeText, null);
@@ -242,12 +244,12 @@ public abstract class GroovyPsiElementFactory implements JVMElementFactory
 	public abstract PsiElement createDotToken(String newDot);
 
 	@Override
-	@NotNull
-	public abstract GrMethod createMethodFromText(String methodText, @Nullable PsiElement context);
+	@Nonnull
+	public abstract GrMethod createMethodFromText(String methodText, @javax.annotation.Nullable PsiElement context);
 
-	@NotNull
+	@Nonnull
 	@Override
-	public abstract GrAnnotation createAnnotationFromText(@NotNull @NonNls String annotationText,
+	public abstract GrAnnotation createAnnotationFromText(@Nonnull @NonNls String annotationText,
 			@Nullable PsiElement context) throws IncorrectOperationException;
 
 	public abstract GrMethod createMethodFromSignature(String name, GrClosureSignature signature);
@@ -267,13 +269,13 @@ public abstract class GroovyPsiElementFactory implements JVMElementFactory
 			String[] paramTypes,
 			@Nullable PsiElement context);
 
-	public abstract GrMethod createConstructorFromText(@NotNull String constructorName,
+	public abstract GrMethod createConstructorFromText(@Nonnull String constructorName,
 			String[] paramTypes,
 			String[] paramNames,
 			String body,
 			@Nullable PsiElement context);
 
-	public GrMethod createConstructorFromText(@NotNull String constructorName,
+	public GrMethod createConstructorFromText(@Nonnull String constructorName,
 			String[] paramTypes,
 			String[] paramNames,
 			String body)
@@ -286,8 +288,8 @@ public abstract class GroovyPsiElementFactory implements JVMElementFactory
 			@Nullable PsiElement context);
 
 	@Override
-	@NotNull
-	public abstract GrDocComment createDocCommentFromText(@NotNull String text);
+	@Nonnull
+	public abstract GrDocComment createDocCommentFromText(@Nonnull String text);
 
 	public abstract GrDocTag createDocTagFromText(String text);
 
@@ -307,32 +309,32 @@ public abstract class GroovyPsiElementFactory implements JVMElementFactory
 
 	public abstract GrImplementsClause createImplementsClause();
 
-	public abstract GrLiteral createLiteralFromValue(@Nullable Object value);
+	public abstract GrLiteral createLiteralFromValue(@javax.annotation.Nullable Object value);
 
 	@Override
-	@NotNull
-	public abstract GrMethod createMethod(@NotNull @NonNls String name,
+	@Nonnull
+	public abstract GrMethod createMethod(@Nonnull @NonNls String name,
 			@Nullable PsiType returnType) throws IncorrectOperationException;
 
 	@Override
-	@NotNull
-	public abstract GrMethod createMethod(@NotNull @NonNls String name,
+	@Nonnull
+	public abstract GrMethod createMethod(@Nonnull @NonNls String name,
 			@Nullable PsiType returnType,
 			@Nullable PsiElement context) throws IncorrectOperationException;
 
-	@NotNull
+	@Nonnull
 	@Override
 	public abstract GrMethod createConstructor();
 
-	@NotNull
+	@Nonnull
 	@Override
-	public abstract GrParameter createParameter(@NotNull @NonNls String name,
+	public abstract GrParameter createParameter(@Nonnull @NonNls String name,
 			@Nullable PsiType type) throws IncorrectOperationException;
 
-	@NotNull
+	@Nonnull
 	@Override
-	public abstract GrField createField(@NotNull @NonNls String name,
-			@NotNull PsiType type) throws IncorrectOperationException;
+	public abstract GrField createField(@Nonnull @NonNls String name,
+			@Nonnull PsiType type) throws IncorrectOperationException;
 
 	public abstract GrTraitTypeDefinition createTrait(String name);
 }

@@ -15,7 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.controlFlow;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.psi.controlFlow.impl.InstructionImpl;
 import com.intellij.psi.PsiElement;
 
@@ -31,13 +32,14 @@ public class ReadWriteVariableInstruction extends InstructionImpl {
   private final boolean myIsWrite;
   private final String myName;
 
-  public ReadWriteVariableInstruction(@NotNull String varName, PsiElement element, int accessType) {
+  public ReadWriteVariableInstruction(@Nonnull String varName, PsiElement element, int accessType) {
     super(element);
     myName = varName;
     myIsWrite = accessType == WRITE;
   }
 
-  @NotNull public String getVariableName() {
+  @Nonnull
+  public String getVariableName() {
     return myName;
   }
 

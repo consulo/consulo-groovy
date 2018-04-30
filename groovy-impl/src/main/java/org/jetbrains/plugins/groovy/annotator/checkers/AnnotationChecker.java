@@ -15,8 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.annotator.checkers;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.annotator.GrRemoveAnnotationIntention;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotation;
@@ -35,12 +35,12 @@ public class AnnotationChecker
 {
 	private final AnnotationHolder myHolder;
 
-	public AnnotationChecker(@NotNull AnnotationHolder holder)
+	public AnnotationChecker(@Nonnull AnnotationHolder holder)
 	{
 		myHolder = holder;
 	}
 
-	public void checkApplicability(@NotNull GrAnnotation annotation, @Nullable PsiAnnotationOwner owner)
+	public void checkApplicability(@Nonnull GrAnnotation annotation, @javax.annotation.Nullable PsiAnnotationOwner owner)
 	{
 		final GrCodeReferenceElement ref = annotation.getClassReference();
 		final PsiElement resolved = ref.resolve();
@@ -77,7 +77,7 @@ public class AnnotationChecker
 		}
 	}
 
-	public void checkAnnotationArgumentList(@NotNull GrAnnotation annotation)
+	public void checkAnnotationArgumentList(@Nonnull GrAnnotation annotation)
 	{
 		final PsiClass anno = ResolveUtil.resolveAnnotation(annotation);
 		if(anno == null)

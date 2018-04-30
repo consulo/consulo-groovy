@@ -27,8 +27,8 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ArrayUtil;
 import com.intellij.util.containers.hash.HashSet;
 import com.intellij.util.text.CharArrayUtil;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.documentation.GroovyPresentationUtil;
 import org.jetbrains.plugins.groovy.lang.documentation.TypePresentation;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
@@ -67,7 +67,7 @@ public class GroovyParameterInfoHandler implements ParameterInfoHandlerWithTabAc
 
   private static final Set<? extends Class> ourStopSearch = Collections.singleton(GrMethod.class);
 
-  @NotNull
+  @Nonnull
   @Override
   public Set<? extends Class> getArgListStopSearchClasses() {
     return ourStopSearch;
@@ -109,7 +109,7 @@ public class GroovyParameterInfoHandler implements ParameterInfoHandlerWithTabAc
     return findAnchorElement(context.getEditor().getCaretModel().getOffset(), context.getFile());
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   private static GroovyPsiElement findAnchorElement(int offset, PsiFile file) {
     PsiElement element = file.findElementAt(offset);
     if (element == null) return null;
@@ -131,7 +131,7 @@ public class GroovyParameterInfoHandler implements ParameterInfoHandlerWithTabAc
   }
 
   @SuppressWarnings("unchecked")
-  public void showParameterInfo(@NotNull GroovyPsiElement place, @NotNull CreateParameterInfoContext context) {
+  public void showParameterInfo(@Nonnull GroovyPsiElement place, @Nonnull CreateParameterInfoContext context) {
     GroovyResolveResult[] variants = ResolveUtil.getCallVariants(place);
 
     final List elementToShow = new ArrayList();
@@ -161,7 +161,7 @@ public class GroovyParameterInfoHandler implements ParameterInfoHandlerWithTabAc
     context.showHint(place, place.getTextRange().getStartOffset(), this);
   }
 
-  private static void addMethodAndClosureVariants(@NotNull List<Object> elementToShow, @NotNull GroovyResolveResult[] variants) {
+  private static void addMethodAndClosureVariants(@Nonnull List<Object> elementToShow, @Nonnull GroovyResolveResult[] variants) {
     for (GroovyResolveResult variant : variants) {
       final PsiElement element = variant.getElement();
       if (element instanceof PsiMethod) {
@@ -176,7 +176,7 @@ public class GroovyParameterInfoHandler implements ParameterInfoHandlerWithTabAc
     }
   }
 
-  private static void addSignatureVariant(@NotNull final List<Object> elementToShow, @NotNull GrClosureType type) {
+  private static void addSignatureVariant(@Nonnull final List<Object> elementToShow, @Nonnull GrClosureType type) {
     type.getSignature().accept(new GrRecursiveSignatureVisitor() {
       @Override
       public void visitClosureSignature(GrClosureSignature signature) {
@@ -209,7 +209,7 @@ public class GroovyParameterInfoHandler implements ParameterInfoHandlerWithTabAc
     return resolveResult.isInvokedOnProperty() || resolveResult.getElement() instanceof PsiVariable;
   }
 
-  public void updateParameterInfo(@NotNull GroovyPsiElement place, UpdateParameterInfoContext context) {
+  public void updateParameterInfo(@Nonnull GroovyPsiElement place, UpdateParameterInfoContext context) {
     final PsiElement parameterOwner = context.getParameterOwner();
     if (parameterOwner != place) {
       context.removeHint();
@@ -470,20 +470,20 @@ public class GroovyParameterInfoHandler implements ParameterInfoHandlerWithTabAc
     }
   }
 
-  @NotNull
+  @Nonnull
   @Override
-  public GroovyPsiElement[] getActualParameters(@NotNull GroovyPsiElement o) {
+  public GroovyPsiElement[] getActualParameters(@Nonnull GroovyPsiElement o) {
     if (o instanceof GrArgumentList) return ((GrArgumentList)o).getAllArguments();
     return GroovyPsiElement.EMPTY_ARRAY;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public IElementType getActualParameterDelimiterType() {
     return GroovyTokenTypes.mCOMMA;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public IElementType getActualParametersRBraceType() {
     return GroovyTokenTypes.mRPAREN;
@@ -491,13 +491,13 @@ public class GroovyParameterInfoHandler implements ParameterInfoHandlerWithTabAc
 
   private static final Set<Class> ALLOWED_PARAM_CLASSES = Collections.<Class>singleton(GroovyPsiElement.class);
 
-  @NotNull
+  @Nonnull
   @Override
   public Set<Class> getArgumentListAllowedParentClasses() {
     return ALLOWED_PARAM_CLASSES;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public Class<GroovyPsiElement> getArgumentListClass() {
     return GroovyPsiElement.class;

@@ -20,7 +20,8 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
 import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GrTraitMethod;
@@ -40,8 +41,8 @@ import com.intellij.util.containers.ContainerUtil;
 public class GroovyOverrideImplementExploreUtil
 {
 
-	@NotNull
-	public static Collection<MethodSignature> getMethodSignaturesToOverride(@NotNull GrTypeDefinition aClass)
+	@Nonnull
+	public static Collection<MethodSignature> getMethodSignaturesToOverride(@Nonnull GrTypeDefinition aClass)
 	{
 		if(aClass.isAnnotationType())
 		{
@@ -50,19 +51,19 @@ public class GroovyOverrideImplementExploreUtil
 		return getMapToOverrideImplement(aClass, false, true).keySet();
 	}
 
-	@NotNull
-	public static Collection<MethodSignature> getMethodSignaturesToImplement(@NotNull GrTypeDefinition aClass)
+	@Nonnull
+	public static Collection<MethodSignature> getMethodSignaturesToImplement(@Nonnull GrTypeDefinition aClass)
 	{
 		return getMapToOverrideImplement(aClass, true, true).keySet();
 	}
 
-	@NotNull
+	@Nonnull
 	public static Collection<CandidateInfo> getMethodsToOverrideImplement(GrTypeDefinition aClass, boolean toImplement)
 	{
 		return getMapToOverrideImplement(aClass, toImplement, true).values();
 	}
 
-	@NotNull
+	@Nonnull
 	public static Map<MethodSignature, CandidateInfo> getMapToOverrideImplement(GrTypeDefinition aClass,
 			boolean toImplement,
 			boolean skipImplemented)

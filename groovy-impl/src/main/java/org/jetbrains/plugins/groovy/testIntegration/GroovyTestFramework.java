@@ -15,9 +15,9 @@
  */
 package org.jetbrains.plugins.groovy.testIntegration;
 
+import javax.annotation.Nonnull;
 import javax.swing.Icon;
 
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames;
@@ -57,7 +57,7 @@ public class GroovyTestFramework extends JavaTestFramework
 	}
 
 	@Override
-	protected PsiMethod findSetUpMethod(@NotNull PsiClass clazz)
+	protected PsiMethod findSetUpMethod(@Nonnull PsiClass clazz)
 	{
 		for(PsiMethod method : clazz.getMethods())
 		{
@@ -70,7 +70,7 @@ public class GroovyTestFramework extends JavaTestFramework
 	}
 
 	@Override
-	protected PsiMethod findTearDownMethod(@NotNull PsiClass clazz)
+	protected PsiMethod findTearDownMethod(@Nonnull PsiClass clazz)
 	{
 		for(PsiMethod method : clazz.getMethods())
 		{
@@ -124,14 +124,14 @@ public class GroovyTestFramework extends JavaTestFramework
 		return 'G';
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public String getName()
 	{
 		return "Groovy JUnit";
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public Icon getIcon()
 	{
@@ -167,7 +167,7 @@ public class GroovyTestFramework extends JavaTestFramework
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public Language getLanguage()
 	{
 		return GroovyFileType.GROOVY_LANGUAGE;

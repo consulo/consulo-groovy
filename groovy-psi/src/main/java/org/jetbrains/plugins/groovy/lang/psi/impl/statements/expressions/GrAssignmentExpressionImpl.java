@@ -16,6 +16,8 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
@@ -26,8 +28,8 @@ import com.intellij.psi.tree.IElementType;
 import com.intellij.util.ArrayUtil;
 import com.intellij.util.Function;
 import com.intellij.util.IncorrectOperationException;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.lexer.TokenSets;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
@@ -50,7 +52,7 @@ public class GrAssignmentExpressionImpl extends GrExpressionImpl implements GrAs
     return myFacade;
   }
 
-  public GrAssignmentExpressionImpl(@NotNull ASTNode node) {
+  public GrAssignmentExpressionImpl(@Nonnull ASTNode node) {
     super(node);
   }
 
@@ -59,7 +61,7 @@ public class GrAssignmentExpressionImpl extends GrExpressionImpl implements GrAs
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public GrExpression getLValue() {
     return findExpressionChild(this);
   }
@@ -75,13 +77,13 @@ public class GrAssignmentExpressionImpl extends GrExpressionImpl implements GrAs
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public IElementType getOperationTokenType() {
     return getOperationToken().getNode().getElementType();
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public PsiElement getOperationToken() {
     return findNotNullChildByType(TokenSets.ASSIGN_OP_SET);
   }
@@ -96,7 +98,7 @@ public class GrAssignmentExpressionImpl extends GrExpressionImpl implements GrAs
     visitor.visitAssignmentExpression(this);
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public GroovyResolveResult[] multiResolve(boolean incompleteCode) {
     return TypeInferenceHelper.getCurrentContext().multiResolve(this, incompleteCode, RESOLVER);
@@ -119,7 +121,7 @@ public class GrAssignmentExpressionImpl extends GrExpressionImpl implements GrAs
     return PsiImplUtil.extractUniqueElement(multiResolve(false));
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public String getCanonicalText() {
     return getText();
@@ -131,7 +133,7 @@ public class GrAssignmentExpressionImpl extends GrExpressionImpl implements GrAs
   }
 
   @Override
-  public PsiElement bindToElement(@NotNull PsiElement element) throws IncorrectOperationException {
+  public PsiElement bindToElement(@Nonnull PsiElement element) throws IncorrectOperationException {
     throw new IncorrectOperationException("assignment expression cannot be bound to anything");
   }
 
@@ -140,7 +142,7 @@ public class GrAssignmentExpressionImpl extends GrExpressionImpl implements GrAs
     return getManager().areElementsEquivalent(resolve(), element);
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public Object[] getVariants() {
     return ArrayUtil.EMPTY_OBJECT_ARRAY;
@@ -160,7 +162,7 @@ public class GrAssignmentExpressionImpl extends GrExpressionImpl implements GrAs
   }
 
   private final GrBinaryFacade myFacade = new GrBinaryFacade() {
-    @NotNull
+    @Nonnull
     @Override
     public GrExpression getLeftOperand() {
       return getLValue();
@@ -172,25 +174,25 @@ public class GrAssignmentExpressionImpl extends GrExpressionImpl implements GrAs
       return getRValue();
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public IElementType getOperationTokenType() {
       return GrAssignmentExpressionImpl.this.getOperationTokenType();
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public PsiElement getOperationToken() {
       return GrAssignmentExpressionImpl.this.getOperationToken();
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public GroovyResolveResult[] multiResolve(boolean incompleteCode) {
       return GrAssignmentExpressionImpl.this.multiResolve(false);
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public GrExpression getPsiElement() {
       return GrAssignmentExpressionImpl.this;
@@ -199,9 +201,9 @@ public class GrAssignmentExpressionImpl extends GrExpressionImpl implements GrAs
 
 
   private static final ResolveCache.PolyVariantResolver<GrAssignmentExpressionImpl> RESOLVER = new ResolveCache.PolyVariantResolver<GrAssignmentExpressionImpl>() {
-    @NotNull
+    @Nonnull
     @Override
-    public GroovyResolveResult[] resolve(@NotNull GrAssignmentExpressionImpl assignmentExpression, boolean incompleteCode) {
+    public GroovyResolveResult[] resolve(@Nonnull GrAssignmentExpressionImpl assignmentExpression, boolean incompleteCode) {
       final IElementType opType = assignmentExpression.getOperationTokenType();
       if (opType == GroovyTokenTypes.mASSIGN) return GroovyResolveResult.EMPTY_ARRAY;
 

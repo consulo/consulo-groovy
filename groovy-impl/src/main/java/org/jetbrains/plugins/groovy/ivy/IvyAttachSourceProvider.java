@@ -5,8 +5,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import com.intellij.lang.properties.IProperty;
 import com.intellij.lang.properties.psi.PropertiesFile;
 import com.intellij.notification.Notification;
@@ -42,7 +42,7 @@ public class IvyAttachSourceProvider extends AbstractAttachSourceProvider {
     return null;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public Collection<AttachSourcesAction> getActions(List<LibraryOrderEntry> orderEntries, final PsiFile psiFile) {
     VirtualFile jar = getJarByPsiFile(psiFile);

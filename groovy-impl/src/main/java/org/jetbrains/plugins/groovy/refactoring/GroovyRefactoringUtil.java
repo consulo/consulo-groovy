@@ -32,8 +32,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.lexer.TokenSets;
@@ -152,7 +152,7 @@ public abstract class GroovyRefactoringUtil {
     return element;
   }
 
-  public static PsiElement[] getExpressionOccurrences(@NotNull PsiElement expr, @NotNull PsiElement scope) {
+  public static PsiElement[] getExpressionOccurrences(@Nonnull PsiElement expr, @Nonnull PsiElement scope) {
     ArrayList<PsiElement> occurrences = new ArrayList<PsiElement>();
     Comparator<PsiElement> comparator = new Comparator<PsiElement>() {
       public int compare(PsiElement element1, PsiElement element2) {
@@ -182,7 +182,7 @@ public abstract class GroovyRefactoringUtil {
   }
 
 
-  private static void collectOccurrences(@NotNull PsiElement expr, @NotNull PsiElement scope, @NotNull ArrayList<PsiElement> acc, Comparator<PsiElement> comparator, boolean goIntoInner) {
+  private static void collectOccurrences(@Nonnull PsiElement expr, @Nonnull PsiElement scope, @Nonnull ArrayList<PsiElement> acc, Comparator<PsiElement> comparator, boolean goIntoInner) {
     if (scope.equals(expr)) {
       acc.add(expr);
       return;
@@ -218,7 +218,7 @@ public abstract class GroovyRefactoringUtil {
     });
   }
 
-  public static boolean isLocalVariable(@Nullable PsiElement variable) {
+  public static boolean isLocalVariable(@javax.annotation.Nullable PsiElement variable) {
     return variable instanceof GrVariable && !(variable instanceof GrField || variable instanceof GrParameter);
   }
 
@@ -265,7 +265,8 @@ public abstract class GroovyRefactoringUtil {
     editor.getSelectionModel().setSelection(start, end);
   }
 
-  @NotNull public static PsiElement[] findStatementsInRange(PsiFile file, int startOffset, int endOffset, boolean strict) {
+  @Nonnull
+  public static PsiElement[] findStatementsInRange(PsiFile file, int startOffset, int endOffset, boolean strict) {
     if (!(file instanceof GroovyFileBase)) return PsiElement.EMPTY_ARRAY;
     Language language = GroovyFileType.GROOVY_LANGUAGE;
     PsiElement element1 = file.getViewProvider().findElementAt(startOffset, language);
@@ -415,8 +416,8 @@ public abstract class GroovyRefactoringUtil {
 
   }
 
-  @Nullable
-  public static GrCall getCallExpressionByMethodReference(@Nullable PsiElement ref) {
+  @javax.annotation.Nullable
+  public static GrCall getCallExpressionByMethodReference(@javax.annotation.Nullable PsiElement ref) {
     if (ref == null) return null;
     if (ref instanceof GrEnumConstant) return (GrEnumConstant)ref;
     if (ref instanceof GrConstructorInvocation) return (GrCall)ref;
@@ -548,7 +549,7 @@ public abstract class GroovyRefactoringUtil {
 
   public static GrExpression generateArgFromMultiArg(PsiSubstitutor substitutor,
                                                      List<? extends PsiElement> arguments,
-                                                     @Nullable PsiType type,
+                                                     @javax.annotation.Nullable PsiType type,
                                                      final Project project) {
     StringBuilder argText = new StringBuilder();
     argText.append("[");
@@ -570,7 +571,7 @@ public abstract class GroovyRefactoringUtil {
     return GroovyPsiElementFactory.getInstance(project).createExpressionFromText(argText.toString());
   }
 
-  public static boolean hasSideEffect(@NotNull GroovyPsiElement statement) {
+  public static boolean hasSideEffect(@Nonnull GroovyPsiElement statement) {
     final Ref<Boolean> hasSideEffect = new Ref<Boolean>(false);
     statement.accept(new GroovyRecursiveElementVisitor() {
       @Override
@@ -618,8 +619,8 @@ public abstract class GroovyRefactoringUtil {
    * @throws com.intellij.util.IncorrectOperationException
    */
 
-  @NotNull
-  public static <Type extends PsiElement> Type addBlockIntoParent(@NotNull Type statement) throws IncorrectOperationException {
+  @Nonnull
+  public static <Type extends PsiElement> Type addBlockIntoParent(@Nonnull Type statement) throws IncorrectOperationException {
 
     PsiElement parent = statement.getParent();
     PsiElement child = statement;
@@ -698,14 +699,14 @@ public abstract class GroovyRefactoringUtil {
     return true;
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   public static GrStatementOwner getDeclarationOwner(GrStatement statement) {
     PsiElement parent = statement.getParent();
     return parent instanceof GrStatementOwner ? ((GrStatementOwner) parent) : null;
   }
 
   @Nullable
-  public static PsiType getType(@Nullable PsiParameter myParameter) {
+  public static PsiType getType(@javax.annotation.Nullable PsiParameter myParameter) {
     if (myParameter == null) return null;
     PsiType type = myParameter.getType();
     return type instanceof PsiEllipsisType ? ((PsiEllipsisType)type).toArrayType() : type;
@@ -746,7 +747,7 @@ public abstract class GroovyRefactoringUtil {
     return psiClass instanceof PsiTypeParameter ? subst.substitute((PsiTypeParameter)psiClass) : elementFactory.createType(psiClass, substitutor);
   }
 
-  public static void collectTypeParameters(final Set<PsiTypeParameter> used, @NotNull final GroovyPsiElement element) {
+  public static void collectTypeParameters(final Set<PsiTypeParameter> used, @Nonnull final GroovyPsiElement element) {
     element.accept(new GroovyRecursiveElementVisitor() {
       @Override
       public void visitCodeReferenceElement(GrCodeReferenceElement reference) {

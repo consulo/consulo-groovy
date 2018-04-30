@@ -15,9 +15,10 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.stubs.index;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.psi.stubs.StringStubIndexExtension;
 import com.intellij.psi.stubs.StubIndexKey;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
 
 /**
@@ -26,7 +27,7 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMe
 public class GrMethodNameIndex extends StringStubIndexExtension<GrMethod> {
   public static final StubIndexKey<String, GrMethod> KEY = StubIndexKey.createIndexKey("gr.method.name");
 
-  @NotNull
+  @Nonnull
   public StubIndexKey<String, GrMethod> getKey() {
     return KEY;
   }

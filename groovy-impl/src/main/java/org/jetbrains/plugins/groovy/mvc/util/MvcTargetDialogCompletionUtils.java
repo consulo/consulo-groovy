@@ -8,7 +8,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyNamesUtil;
 import org.jetbrains.plugins.groovy.mvc.MvcFramework;
 import com.intellij.codeInsight.TailType;
@@ -75,7 +76,7 @@ public class MvcTargetDialogCompletionUtils {
     return SYSTEM_PROPERTIES_VARIANTS;
   }
   
-  public static Collection<LookupElement> collectVariants(@NotNull Module module, @NotNull String text, int offset, @NotNull String prefix) {
+  public static Collection<LookupElement> collectVariants(@Nonnull Module module, @Nonnull String text, int offset, @Nonnull String prefix) {
     if (prefix.startsWith("-D")) {
       return getSystemPropertiesVariants();
     }
@@ -116,7 +117,7 @@ public class MvcTargetDialogCompletionUtils {
     return res;
   }
 
-  private static void collectClassesAndPackageNames(Collection<LookupElement> res, @NotNull PsiJavaPackage aPackage, GlobalSearchScope scope) {
+  private static void collectClassesAndPackageNames(Collection<LookupElement> res, @Nonnull PsiJavaPackage aPackage, GlobalSearchScope scope) {
     PsiJavaPackage[] subPackages = aPackage.getSubPackages(scope);
 
     String qualifiedName = aPackage.getQualifiedName();
@@ -131,7 +132,7 @@ public class MvcTargetDialogCompletionUtils {
     }
   }
 
-  public static Set<String> getAllTargetNamesInternal(@NotNull Module module) {
+  public static Set<String> getAllTargetNamesInternal(@Nonnull Module module) {
     final Set<String> result = new HashSet<String>();
 
     MvcFramework.addAvailableSystemScripts(result, module);
@@ -180,7 +181,7 @@ public class MvcTargetDialogCompletionUtils {
     return file.isFile() && MvcFramework.isScriptFileName(file.getName());
   }
 
-  public static Set<String> getAllTargetNames(@NotNull final Module module) {
+  public static Set<String> getAllTargetNames(@Nonnull final Module module) {
     CachedValue<Set<String>> cachedTargets = module.getUserData(ALL_TARGET_KEY);
     if (cachedTargets == null) {
       cachedTargets = CachedValuesManager.getManager(module.getProject()).createCachedValue(new CachedValueProvider<Set<String>>() {

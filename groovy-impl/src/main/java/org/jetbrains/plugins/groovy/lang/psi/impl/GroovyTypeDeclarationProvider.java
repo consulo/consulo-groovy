@@ -15,8 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
 import consulo.annotations.RequiredReadAction;
@@ -35,7 +35,7 @@ public class GroovyTypeDeclarationProvider extends TypeDeclarationProvider
 	@RequiredReadAction
 	@Nullable
 	@Override
-	public PsiElement[] getSymbolTypeDeclarations(@NotNull PsiElement targetElement, @Nullable Editor editor, int offset)
+	public PsiElement[] getSymbolTypeDeclarations(@Nonnull PsiElement targetElement, @javax.annotation.Nullable Editor editor, int offset)
 	{
 		PsiType type;
 		if(targetElement instanceof GrVariable)

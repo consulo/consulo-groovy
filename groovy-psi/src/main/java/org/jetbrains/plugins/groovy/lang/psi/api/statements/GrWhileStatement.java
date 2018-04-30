@@ -17,7 +17,6 @@
 package org.jetbrains.plugins.groovy.lang.psi.api.statements;
 
 import com.intellij.psi.PsiElement;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.GrCondition;
 import org.jetbrains.plugins.groovy.lang.psi.api.formatter.GrControlStatement;
 
@@ -27,16 +26,16 @@ import org.jetbrains.plugins.groovy.lang.psi.api.formatter.GrControlStatement;
  */
 public interface GrWhileStatement extends GrStatement, GrControlStatement, GrLoopStatement {
 
-  @Nullable
+  @javax.annotation.Nullable
   GrCondition getCondition();
 
-  @Nullable
+  @javax.annotation.Nullable
   GrStatement getBody();
 
-  @Nullable
+  @javax.annotation.Nullable
   PsiElement getRParenth();
 
-  @Nullable
+  @javax.annotation.Nullable
   PsiElement getLParenth();
 
 }

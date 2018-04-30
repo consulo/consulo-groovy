@@ -17,7 +17,7 @@
 package org.jetbrains.plugins.groovy.lang.psi.api.statements.branch;
 
 import com.intellij.psi.PsiElement;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrLabeledStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
 
@@ -28,13 +28,13 @@ public interface GrFlowInterruptingStatement extends GrStatement {
   @Nullable
   PsiElement getLabelIdentifier();
 
-  @Nullable
+  @javax.annotation.Nullable
   String getLabelName();
 
-  @Nullable
+  @javax.annotation.Nullable
   GrStatement findTargetStatement();
 
-  @Nullable
+  @javax.annotation.Nullable
   GrLabeledStatement resolveLabel();
 
   String getStatementText();

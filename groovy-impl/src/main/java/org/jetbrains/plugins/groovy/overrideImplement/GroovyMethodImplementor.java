@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.overrideImplement;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.actions.generate.GroovyGenerationInfo;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocComment;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.impl.GrDocCommentUtil;
@@ -43,14 +43,14 @@ import com.intellij.util.IncorrectOperationException;
  */
 public class GroovyMethodImplementor implements MethodImplementor
 {
-	@NotNull
+	@Nonnull
 	@Override
 	public PsiMethod[] getMethodsToImplement(PsiClass aClass)
 	{
 		return PsiMethod.EMPTY_ARRAY;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public PsiMethod[] createImplementationPrototypes(PsiClass inClass, PsiMethod method) throws IncorrectOperationException
 	{
@@ -78,7 +78,7 @@ public class GroovyMethodImplementor implements MethodImplementor
 		return null;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public Consumer<PsiMethod> createDecorator(final PsiClass targetClass, final PsiMethod baseMethod, final boolean toCopyJavaDoc, final boolean insertOverrideIfPossible)
 	{

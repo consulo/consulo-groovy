@@ -16,6 +16,8 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.typedef;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.*;
 import com.intellij.psi.impl.PsiManagerEx;
@@ -26,8 +28,8 @@ import com.intellij.psi.util.CachedValueProvider;
 import com.intellij.psi.util.CachedValuesManager;
 import com.intellij.util.ArrayUtil;
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.GroovyLanguage;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
@@ -51,7 +53,7 @@ public class GrEnumTypeDefinitionImpl extends GrTypeDefinitionImpl implements Gr
   private static final String JAVA_LANG_ENUM = "java.lang.Enum";
   private static final String ENUM_SIMPLE_NAME = "Enum";
 
-  public GrEnumTypeDefinitionImpl(@NotNull ASTNode node) {
+  public GrEnumTypeDefinitionImpl(@Nonnull ASTNode node) {
     super(node);
   }
 
@@ -74,7 +76,7 @@ public class GrEnumTypeDefinitionImpl extends GrTypeDefinitionImpl implements Gr
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public PsiClassType[] getExtendsListTypes() {
     return new PsiClassType[]{createEnumType(), createGroovyObjectSupportType()};
   }
@@ -105,7 +107,7 @@ public class GrEnumTypeDefinitionImpl extends GrTypeDefinitionImpl implements Gr
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public GrField[] getFields() {
     GrField[] bodyFields = super.getFields();
     GrEnumConstant[] enumConstants = getEnumConstants();
@@ -115,10 +117,10 @@ public class GrEnumTypeDefinitionImpl extends GrTypeDefinitionImpl implements Gr
   }
 
   @Override
-  public boolean processDeclarations(@NotNull PsiScopeProcessor processor,
-                                     @NotNull ResolveState state,
+  public boolean processDeclarations(@Nonnull PsiScopeProcessor processor,
+                                     @Nonnull ResolveState state,
                                      @Nullable PsiElement lastParent,
-                                     @NotNull PsiElement place) {
+                                     @Nonnull PsiElement place) {
     if (ResolveUtil.shouldProcessMethods(processor.getHint(ClassHint.KEY))) {
       final NameHint nameHint = processor.getHint(NameHint.KEY);
       final String name = nameHint == null ? null : nameHint.getName(state);

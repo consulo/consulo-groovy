@@ -15,6 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.gpath;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.codeInspection.ProblemDescriptor;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.CommonClassNames;
@@ -23,8 +25,8 @@ import com.intellij.psi.PsiType;
 import com.intellij.psi.util.InheritanceUtil;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.Nls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.codeInspection.GroovyFix;
@@ -40,13 +42,13 @@ public class GroovyMapPutCanBeKeyedAccessInspection extends BaseInspection {
   private final ReplaceWithPropertyAccessFix fix = new ReplaceWithPropertyAccessFix();
 
   @Nls
-  @NotNull
+  @Nonnull
   public String getGroupDisplayName() {
     return GPATH;
   }
 
   @Nls
-  @NotNull
+  @Nonnull
   public String getDisplayName() {
     return "Call to Map.put can be keyed access";
   }
@@ -66,7 +68,7 @@ public class GroovyMapPutCanBeKeyedAccessInspection extends BaseInspection {
 
   private static class ReplaceWithPropertyAccessFix extends GroovyFix {
 
-    @NotNull
+    @Nonnull
     public String getName() {
       return "Replace with keyed access";
     }

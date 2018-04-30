@@ -21,8 +21,8 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiType;
 import com.intellij.util.Function;
 import com.intellij.util.NullableFunction;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrConditionalExpression;
@@ -52,7 +52,7 @@ public class GrConditionalExprImpl extends GrExpressionImpl implements GrConditi
     }
   };
 
-  public GrConditionalExprImpl(@NotNull ASTNode node) {
+  public GrConditionalExprImpl(@Nonnull ASTNode node) {
     super(node);
   }
 
@@ -61,13 +61,13 @@ public class GrConditionalExprImpl extends GrExpressionImpl implements GrConditi
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public GrExpression getCondition() {
     return findNotNullChildByClass(GrExpression.class);
   }
 
   @Override
-  @Nullable
+  @javax.annotation.Nullable
   public GrExpression getThenBranch() {
     final PsiElement question = findChildByType(GroovyTokenTypes.mQUESTION);
     for (PsiElement nextSibling = question;

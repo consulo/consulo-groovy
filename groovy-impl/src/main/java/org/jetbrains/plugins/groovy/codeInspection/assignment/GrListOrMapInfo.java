@@ -15,12 +15,12 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.assignment;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiClassType;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiType;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.findUsages.LiteralConstructorReference;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.GrListOrMap;
@@ -46,13 +46,13 @@ public class GrListOrMapInfo implements ConstructorCallInfo<GrListOrMap> {
     myReference = ((LiteralConstructorReference)listOrMap.getReference());
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   @Override
   public GrArgumentList getArgumentList() {
     return null;
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   @Override
   public PsiType[] getArgumentTypes() {
     if (myListOrMap.isMap()) {
@@ -67,37 +67,37 @@ public class GrListOrMapInfo implements ConstructorCallInfo<GrListOrMap> {
     }
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   @Override
   public GrExpression getInvokedExpression() {
     return null;
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   @Override
   public PsiType getQualifierInstanceType() {
     return null;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public PsiElement getHighlightElementForCategoryQualifier() throws UnsupportedOperationException {
     throw new UnsupportedOperationException("not applicable");
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public PsiElement getElementToHighlight() {
     return myListOrMap;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public GroovyResolveResult advancedResolve() {
     return PsiImplUtil.extractUniqueResult(multiResolve());
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public GroovyResolveResult[] multiResolve() {
     GroovyResolveResult[] results = myReference.multiResolve(false);
@@ -107,7 +107,7 @@ public class GrListOrMapInfo implements ConstructorCallInfo<GrListOrMap> {
     return results;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public GrListOrMap getCall() {
     return myListOrMap;
@@ -123,19 +123,19 @@ public class GrListOrMapInfo implements ConstructorCallInfo<GrListOrMap> {
     return new GroovyResolveResult[]{result};
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public GrExpression[] getExpressionArguments() {
     return myListOrMap.isMap() ? GrExpression.EMPTY_ARRAY : myListOrMap.getInitializers();
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public GrClosableBlock[] getClosureArguments() {
     return GrClosableBlock.EMPTY_ARRAY;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public GrNamedArgument[] getNamedArguments() {
     return myListOrMap.isMap() ? myListOrMap.getNamedArguments() : GrNamedArgument.EMPTY_ARRAY;

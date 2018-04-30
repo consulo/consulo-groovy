@@ -15,8 +15,9 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.typedef;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.lang.ASTNode;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTraitTypeDefinition;
@@ -31,7 +32,7 @@ public class GrTraitTypeDefinitionImpl extends GrTypeDefinitionImpl implements G
     super(stub, GroovyElementTypes.TRAIT_DEFINITION);
   }
 
-  public GrTraitTypeDefinitionImpl(@NotNull ASTNode node) {
+  public GrTraitTypeDefinitionImpl(@Nonnull ASTNode node) {
     super(node);
   }
 

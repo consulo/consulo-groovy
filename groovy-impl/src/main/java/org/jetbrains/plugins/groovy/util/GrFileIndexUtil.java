@@ -15,8 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.util;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFileBase;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.FileIndexFacade;
@@ -27,17 +27,17 @@ import com.intellij.testFramework.LightVirtualFile;
 public class GrFileIndexUtil
 {
 
-	public static boolean isGroovySourceFile(@NotNull PsiFile file)
+	public static boolean isGroovySourceFile(@Nonnull PsiFile file)
 	{
 		return file instanceof GroovyFileBase && isGroovySourceFile((GroovyFileBase) file);
 	}
 
-	public static boolean isGroovySourceFile(@NotNull GroovyFileBase file)
+	public static boolean isGroovySourceFile(@Nonnull GroovyFileBase file)
 	{
 		return isInSourceFiles(file.getVirtualFile(), file.getProject());
 	}
 
-	private static boolean isInSourceFiles(@Nullable VirtualFile file, @NotNull Project project)
+	private static boolean isInSourceFiles(@Nullable VirtualFile file, @Nonnull Project project)
 	{
 		if(file != null && !(file instanceof LightVirtualFile))
 		{

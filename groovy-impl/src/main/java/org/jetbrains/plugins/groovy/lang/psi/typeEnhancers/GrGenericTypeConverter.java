@@ -19,8 +19,8 @@ import com.intellij.psi.*;
 import com.intellij.psi.util.InheritanceUtil;
 import com.intellij.psi.util.PsiUtil;
 import com.intellij.psi.util.TypeConversionUtil;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.ConversionResult;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil;
@@ -33,7 +33,7 @@ import java.util.Iterator;
 public class GrGenericTypeConverter extends GrTypeConverter {
 
   @Override
-  public boolean isApplicableTo(@NotNull ApplicableTo position) {
+  public boolean isApplicableTo(@Nonnull ApplicableTo position) {
     switch (position) {
       case METHOD_PARAMETER:
       case ASSIGNMENT:
@@ -45,11 +45,11 @@ public class GrGenericTypeConverter extends GrTypeConverter {
   }
 
   @Override
-  @Nullable
-  public ConversionResult isConvertibleEx(@NotNull PsiType ltype,
-                                          @NotNull PsiType rtype,
-                                          @NotNull GroovyPsiElement context,
-                                          @NotNull ApplicableTo position) {
+  @javax.annotation.Nullable
+  public ConversionResult isConvertibleEx(@Nonnull PsiType ltype,
+                                          @Nonnull PsiType rtype,
+                                          @Nonnull GroovyPsiElement context,
+                                          @Nonnull ApplicableTo position) {
     if (!(ltype instanceof PsiClassType && rtype instanceof PsiClassType)) {
       return null;
     }
@@ -71,11 +71,11 @@ public class GrGenericTypeConverter extends GrTypeConverter {
     return null;
   }
 
-  private static boolean typeParametersAgree(@NotNull PsiClass leftClass,
-                                             @NotNull PsiClass rightClass,
-                                             @NotNull PsiSubstitutor leftSubstitutor,
-                                             @NotNull PsiSubstitutor rightSubstitutor,
-                                             @NotNull PsiElement context) {
+  private static boolean typeParametersAgree(@Nonnull PsiClass leftClass,
+                                             @Nonnull PsiClass rightClass,
+                                             @Nonnull PsiSubstitutor leftSubstitutor,
+                                             @Nonnull PsiSubstitutor rightSubstitutor,
+                                             @Nonnull PsiElement context) {
 
     if (!leftClass.hasTypeParameters()) return true;
 

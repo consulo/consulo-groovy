@@ -21,7 +21,8 @@ import static org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes.GSTRIN
 import static org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes.MODIFIERS;
 import static org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes.REGEX;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.GroovyLanguage;
 import org.jetbrains.plugins.groovy.lang.groovydoc.lexer.GroovyDocTokenTypes;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyLexer;
@@ -61,7 +62,7 @@ public class GroovyParserDefinition implements ParserDefinition
 	};
 
 	@Override
-	@NotNull
+	@Nonnull
 	public Lexer createLexer(LanguageVersion languageVersion)
 	{
 		return new GroovyLexer();
@@ -80,28 +81,28 @@ public class GroovyParserDefinition implements ParserDefinition
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public TokenSet getWhitespaceTokens(LanguageVersion languageVersion)
 	{
 		return TokenSets.WHITE_SPACE_TOKEN_SET;
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public TokenSet getCommentTokens(LanguageVersion languageVersion)
 	{
 		return TokenSets.COMMENTS_TOKEN_SET;
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public TokenSet getStringLiteralElements(LanguageVersion languageVersion)
 	{
 		return TokenSets.STRING_LITERALS;
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public PsiElement createElement(ASTNode node)
 	{
 		return GroovyPsiCreator.createElement(node);

@@ -15,7 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.lang.resolve;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.runner.GroovyScriptUtil;
@@ -34,7 +35,7 @@ import com.intellij.psi.search.GlobalSearchScope;
  */
 public class GroovyResolveScopeProvider extends ResolveScopeProvider {
   @Override
-  public GlobalSearchScope getResolveScope(@NotNull VirtualFile file, Project project) {
+  public GlobalSearchScope getResolveScope(@Nonnull VirtualFile file, Project project) {
     if (file.getFileType() != GroovyFileType.GROOVY_FILE_TYPE) return null;
 
     ProjectFileIndex projectFileIndex = ProjectRootManager.getInstance(project).getFileIndex();

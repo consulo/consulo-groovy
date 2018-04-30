@@ -17,7 +17,8 @@ package org.jetbrains.plugins.groovy.lang.psi.stubs.elements;
 
 import java.io.IOException;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.psi.api.toplevel.imports.GrImportStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
 import org.jetbrains.plugins.groovy.lang.psi.impl.toplevel.imports.GrImportStatementImpl;
@@ -40,14 +41,14 @@ public class GrImportStatementElementType extends GrStubElementType<GrImportStat
 	}
 
 	@Override
-	public GrImportStatement createPsi(@NotNull GrImportStatementStub stub)
+	public GrImportStatement createPsi(@Nonnull GrImportStatementStub stub)
 	{
 		return new GrImportStatementImpl(stub, this);
 	}
 
 	@RequiredReadAction
 	@Override
-	public GrImportStatementStub createStub(@NotNull GrImportStatement psi, StubElement parentStub)
+	public GrImportStatementStub createStub(@Nonnull GrImportStatement psi, StubElement parentStub)
 	{
 		GrCodeReferenceElement ref = psi.getImportReference();
 		return new GrImportStatementStub(parentStub, this, ref != null ? ref.getText() : null,
@@ -56,16 +57,16 @@ public class GrImportStatementElementType extends GrStubElementType<GrImportStat
 	}
 
 	@Override
-	public void serialize(@NotNull GrImportStatementStub stub, @NotNull StubOutputStream dataStream) throws IOException
+	public void serialize(@Nonnull GrImportStatementStub stub, @Nonnull StubOutputStream dataStream) throws IOException
 	{
 		GrStubUtils.writeNullableString(dataStream, stub.getReferenceText());
 		GrStubUtils.writeNullableString(dataStream, stub.getAliasName());
 		dataStream.writeByte(stub.getFlags());
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
-	public GrImportStatementStub deserialize(@NotNull StubInputStream dataStream,
+	public GrImportStatementStub deserialize(@Nonnull StubInputStream dataStream,
 			StubElement parentStub) throws IOException
 	{
 		String referenceText = GrStubUtils.readNullableString(dataStream);

@@ -33,8 +33,8 @@ import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.containers.MultiMap;
 import com.intellij.util.containers.hash.HashMap;
 import com.intellij.util.containers.hash.LinkedHashMap;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
@@ -60,7 +60,7 @@ import static org.jetbrains.plugins.groovy.lang.psi.util.GroovyPropertyUtils.fin
  */
 public class RenameGrFieldProcessor extends RenameJavaVariableProcessor {
 
-  @NotNull
+  @Nonnull
   @Override
   public Collection<PsiReference> findReferences(PsiElement element) {
     assert element instanceof GrField;
@@ -85,7 +85,7 @@ public class RenameGrFieldProcessor extends RenameJavaVariableProcessor {
   public void renameElement(final PsiElement psiElement,
                             String newName,
                             final UsageInfo[] usages,
-                            @Nullable RefactoringElementListener listener) throws IncorrectOperationException {
+                            @javax.annotation.Nullable RefactoringElementListener listener) throws IncorrectOperationException {
     final GrField field = (GrField)psiElement;
     String fieldName = field.getName();
     Map<PsiElement, String> renames = new HashMap<PsiElement, String>();
@@ -254,7 +254,7 @@ public class RenameGrFieldProcessor extends RenameJavaVariableProcessor {
   }
 
   @Override
-  public boolean canProcessElement(@NotNull final PsiElement element) {
+  public boolean canProcessElement(@Nonnull final PsiElement element) {
     return element instanceof GrField && ((GrField)element).isProperty() || element instanceof GrAccessorMethod;
   }
 

@@ -1,5 +1,7 @@
 package org.jetbrains.plugins.groovy.mvc.projectView;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.ide.projectView.PresentationData;
 import com.intellij.ide.projectView.ViewSettings;
 import com.intellij.ide.projectView.impl.nodes.AbstractPsiBasedNode;
@@ -12,8 +14,8 @@ import com.intellij.problems.WolfTheProblemSolver;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFileSystemItem;
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 
 /**
  * @author Dmitry Krasilschikov
@@ -38,24 +40,24 @@ public abstract class AbstractMvcPsiNodeDescriptor extends AbstractPsiBasedNode<
   private final Module myModule;
   private final int myWeight;
 
-  protected AbstractMvcPsiNodeDescriptor(@NotNull final Module module,
+  protected AbstractMvcPsiNodeDescriptor(@Nonnull final Module module,
                                          @Nullable final ViewSettings viewSettings,
-                                         @NotNull final NodeId nodeId, int weight) {
+                                         @Nonnull final NodeId nodeId, int weight) {
     super(module.getProject(), nodeId, viewSettings);
     myModule = module;
     myWeight = weight;
   }
 
   @NonNls
-  protected abstract String getTestPresentationImpl(@NotNull final NodeId nodeId,
-                                                    @NotNull final PsiElement psiElement);
+  protected abstract String getTestPresentationImpl(@Nonnull final NodeId nodeId,
+                                                    @Nonnull final PsiElement psiElement);
 
   @Override
-  public final boolean contains(@NotNull final VirtualFile file) {
+  public final boolean contains(@Nonnull final VirtualFile file) {
     return isValid() && containsImpl(file);
   }
 
-  protected boolean containsImpl(@NotNull final VirtualFile file) {
+  protected boolean containsImpl(@Nonnull final VirtualFile file) {
     return super.contains(file);
   }
 
@@ -75,7 +77,7 @@ public abstract class AbstractMvcPsiNodeDescriptor extends AbstractPsiBasedNode<
     return getTestPresentationImpl(getValue(), psi);
   }
 
-  @NotNull
+  @Nonnull
   public Module getModule() {
     return myModule;
   }

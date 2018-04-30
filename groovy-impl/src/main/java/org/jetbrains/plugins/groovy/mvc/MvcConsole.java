@@ -22,12 +22,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
+import javax.annotation.Nonnull;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import com.intellij.execution.configurations.GeneralCommandLine;
 import com.intellij.execution.filters.TextConsoleBuilderFactory;
 import com.intellij.execution.impl.ConsoleViewImpl;
@@ -97,11 +98,11 @@ public class MvcConsole implements Disposable {
     myContent = setUpToolWindow();
   }
 
-  public static MvcConsole getInstance(@NotNull Project project) {
+  public static MvcConsole getInstance(@Nonnull Project project) {
     return ServiceManager.getService(project, MvcConsole.class);
   }
 
-  public static boolean isUpdatingVfsByConsoleProcess(@NotNull Module module) {
+  public static boolean isUpdatingVfsByConsoleProcess(@Nonnull Module module) {
     Boolean flag = module.getUserData(UPDATING_BY_CONSOLE_PROCESS);
     return flag != null && flag;
   }
@@ -131,7 +132,7 @@ public class MvcConsole implements Disposable {
     return content;
   }
 
-  public void show(@Nullable final Runnable runnable, boolean focus) {
+  public void show(@javax.annotation.Nullable final Runnable runnable, boolean focus) {
     Runnable r = null;
     if (runnable != null) {
       r = new Runnable() {
@@ -149,7 +150,8 @@ public class MvcConsole implements Disposable {
   private static class MyProcessInConsole implements ConsoleProcessDescriptor {
     final Module module;
     final GeneralCommandLine commandLine;
-    final @Nullable Runnable onDone;
+    final @javax.annotation.Nullable
+	Runnable onDone;
     final boolean closeOnDone;
     final boolean showConsole;
     final String[] input;
@@ -171,7 +173,7 @@ public class MvcConsole implements Disposable {
       this.showConsole = showConsole;
     }
 
-    public ConsoleProcessDescriptor addProcessListener(@NotNull ProcessListener listener) {
+    public ConsoleProcessDescriptor addProcessListener(@Nonnull ProcessListener listener) {
       if (myHandler != null) {
         myHandler.addProcessListener(listener);
       }
@@ -361,7 +363,7 @@ public class MvcConsole implements Disposable {
       super("Kill process", "Kill process", AllIcons.Debugger.KillProcess);
     }
 
-    public void setHandler(@Nullable OSProcessHandler handler) {
+    public void setHandler(@javax.annotation.Nullable OSProcessHandler handler) {
       myHandler = handler;
     }
 

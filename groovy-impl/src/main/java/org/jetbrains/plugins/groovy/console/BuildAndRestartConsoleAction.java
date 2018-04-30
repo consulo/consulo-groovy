@@ -15,7 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.console;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.execution.ExecutionManager;
 import com.intellij.execution.Executor;
 import com.intellij.execution.process.ProcessHandler;
@@ -42,11 +43,11 @@ public class BuildAndRestartConsoleAction extends AnAction
 	private RunContentDescriptor myContentDescriptor;
 	private Consumer<Module> myRestarter;
 
-	public BuildAndRestartConsoleAction(@NotNull Module module,
-			@NotNull Project project,
-			@NotNull Executor executor,
-			@NotNull RunContentDescriptor contentDescriptor,
-			@NotNull Consumer<Module> restarter)
+	public BuildAndRestartConsoleAction(@Nonnull Module module,
+			@Nonnull Project project,
+			@Nonnull Executor executor,
+			@Nonnull RunContentDescriptor contentDescriptor,
+			@Nonnull Consumer<Module> restarter)
 	{
 		super("Build and restart", "Build module '" + module.getName() + "' and restart", AllIcons.Actions.Restart);
 		myModule = module;

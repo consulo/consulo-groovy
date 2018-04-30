@@ -17,7 +17,7 @@ package org.jetbrains.plugins.groovy.refactoring.convertToJava;
 
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.*;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
 
 import java.util.Set;
@@ -33,7 +33,7 @@ public class StubClassNameProvider implements ClassNameProvider {
   }
 
   @Override
-  public String getQualifiedClassName(@Nullable PsiClass psiClass, @Nullable PsiElement context) {
+  public String getQualifiedClassName(@javax.annotation.Nullable PsiClass psiClass, @Nullable PsiElement context) {
     if (context != null && psiClass != null) {
       psiClass = GenerationUtil.findAccessibleSuperClass(context, psiClass);
     }

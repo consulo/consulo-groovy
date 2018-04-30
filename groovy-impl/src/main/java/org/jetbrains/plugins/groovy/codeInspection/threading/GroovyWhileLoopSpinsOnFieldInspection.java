@@ -21,8 +21,8 @@ import com.intellij.psi.PsiField;
 import com.intellij.psi.PsiLiteralExpression;
 import com.intellij.psi.PsiModifier;
 import org.jetbrains.annotations.Nls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.GrCondition;
@@ -44,22 +44,22 @@ public class GroovyWhileLoopSpinsOnFieldInspection extends BaseInspection {
   public boolean ignoreNonEmtpyLoops = false;
 
   @Nls
-  @NotNull
+  @Nonnull
   public String getGroupDisplayName() {
     return THREADING_ISSUES;
   }
 
-  @NotNull
+  @Nonnull
   public String getDisplayName() {
     return "While loop spins on field";
   }
 
-  @NotNull
+  @Nonnull
   protected String buildErrorString(Object... infos) {
     return "<code>#ref</code> loop spins on field #loc";
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   public JComponent createOptionsPanel() {
     return new SingleCheckboxOptionsPanel("Only warn if loop is empty",
         this, "ignoreNonEmtpyLoops");
@@ -72,7 +72,7 @@ public class GroovyWhileLoopSpinsOnFieldInspection extends BaseInspection {
   private class WhileLoopSpinsOnFieldVisitor
       extends BaseInspectionVisitor {
 
-    public void visitWhileStatement(@NotNull GrWhileStatement statement) {
+    public void visitWhileStatement(@Nonnull GrWhileStatement statement) {
       super.visitWhileStatement(statement);
       final GrStatement body = statement.getBody();
       if (ignoreNonEmtpyLoops && !statementIsEmpty(body)) {

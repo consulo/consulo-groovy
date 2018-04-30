@@ -15,7 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.intentions.closure;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.intentions.base.PsiElementPredicate;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrArgumentList;
@@ -31,12 +32,12 @@ import com.intellij.util.IncorrectOperationException;
 public class MakeClosureCallExplicitIntention extends Intention {
 
 
-    @NotNull
+    @Nonnull
     public PsiElementPredicate getElementPredicate() {
         return new ImplicitClosureCallPredicate();
     }
 
-    public void processIntention(@NotNull PsiElement element, Project project, Editor editor)
+    public void processIntention(@Nonnull PsiElement element, Project project, Editor editor)
             throws IncorrectOperationException {
         final GrMethodCallExpression expression =
                 (GrMethodCallExpression) element;

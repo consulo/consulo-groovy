@@ -18,7 +18,7 @@ package org.jetbrains.plugins.groovy.lang.psi.util;
 import java.util.Map;
 import java.util.Set;
 
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GrReferenceElement;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
@@ -42,11 +42,11 @@ import com.intellij.util.containers.HashSet;
 
 public class GroovyImportUtil
 {
-	public static void processFile(@Nullable final PsiFile file,
+	public static void processFile(@javax.annotation.Nullable final PsiFile file,
 			@Nullable final Set<String> importedClasses,
 			@Nullable final Set<String> staticallyImportedMembers,
-			@Nullable final Set<GrImportStatement> usedImports,
-			@Nullable final Set<GrImportStatement> unresolvedOnDemandImports,
+			@javax.annotation.Nullable final Set<GrImportStatement> usedImports,
+			@javax.annotation.Nullable final Set<GrImportStatement> unresolvedOnDemandImports,
 			@Nullable final Set<String> implicitlyImported,
 			@Nullable final Set<String> innerClasses,
 			@Nullable final Map<String, String> aliased,
@@ -316,7 +316,7 @@ public class GroovyImportUtil
 		}
 	}
 
-	@Nullable
+	@javax.annotation.Nullable
 	private static String getTargetQualifiedName(PsiElement element)
 	{
 		if(element instanceof PsiClass)

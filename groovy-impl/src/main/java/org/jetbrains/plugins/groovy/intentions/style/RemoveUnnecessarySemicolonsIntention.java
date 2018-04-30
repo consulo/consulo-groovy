@@ -17,8 +17,8 @@ package org.jetbrains.plugins.groovy.intentions.style;
 
 import java.util.ArrayList;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.intentions.GroovyIntentionsBundle;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
@@ -58,14 +58,14 @@ import com.intellij.util.IncorrectOperationException;
  */
 public class RemoveUnnecessarySemicolonsIntention implements IntentionAction
 {
-	@NotNull
+	@Nonnull
 	@Override
 	public String getText()
 	{
 		return GroovyIntentionsBundle.message("remove.unnecessary.semicolons.name");
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public String getFamilyName()
 	{
@@ -73,7 +73,7 @@ public class RemoveUnnecessarySemicolonsIntention implements IntentionAction
 	}
 
 	@Override
-	public boolean isAvailable(@NotNull Project project, Editor editor, PsiFile file)
+	public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file)
 	{
 		final SelectionModel selectionModel = editor.getSelectionModel();
 		if(!(file instanceof GroovyFileBase))
@@ -132,7 +132,7 @@ public class RemoveUnnecessarySemicolonsIntention implements IntentionAction
 	}
 
 	@Override
-	public void invoke(@NotNull Project project, Editor editor, PsiFile file) throws IncorrectOperationException
+	public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException
 	{
 		final SelectionModel selectionModel = editor.getSelectionModel();
 

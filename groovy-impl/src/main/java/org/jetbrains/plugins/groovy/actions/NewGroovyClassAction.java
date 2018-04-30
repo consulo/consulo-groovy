@@ -16,7 +16,8 @@
 
 package org.jetbrains.plugins.groovy.actions;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.config.GroovyConfigUtils;
@@ -94,7 +95,7 @@ public class NewGroovyClassAction extends JavaCreateTemplateInPackageAction<GrTy
 	}
 
 	@Override
-	protected PsiElement getNavigationElement(@NotNull GrTypeDefinition createdElement)
+	protected PsiElement getNavigationElement(@Nonnull GrTypeDefinition createdElement)
 	{
 		return createdElement.getLBrace();
 	}

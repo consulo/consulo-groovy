@@ -15,10 +15,11 @@
  */
 package org.jetbrains.plugins.groovy.annotator;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.roots.libraries.Library;
 import com.intellij.ui.EditorNotificationPanel;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.config.GroovyConfigUtils;
 
@@ -28,18 +29,18 @@ import org.jetbrains.plugins.groovy.config.GroovyConfigUtils;
 public class DefaultGroovyFrameworkConfigNotification extends GroovyFrameworkConfigNotification {
 
   @Override
-  public boolean hasFrameworkStructure(@NotNull Module module) {
+  public boolean hasFrameworkStructure(@Nonnull Module module) {
     return true;
   }
 
   @Override
-  public boolean hasFrameworkLibrary(@NotNull Module module) {
+  public boolean hasFrameworkLibrary(@Nonnull Module module) {
     final Library[] libraries = GroovyConfigUtils.getInstance().getSDKLibrariesByModule(module);
     return libraries.length > 0;
   }
 
   @Override
-  public EditorNotificationPanel createConfigureNotificationPanel(final @NotNull Module module) {
+  public EditorNotificationPanel createConfigureNotificationPanel(final @Nonnull Module module) {
     final EditorNotificationPanel panel = new EditorNotificationPanel();
     panel.setText(GroovyBundle.message("groovy.library.is.not.configured.for.module", module.getName()));
     panel.createActionLabel(GroovyBundle.message("configure.groovy.library"), new Runnable() {

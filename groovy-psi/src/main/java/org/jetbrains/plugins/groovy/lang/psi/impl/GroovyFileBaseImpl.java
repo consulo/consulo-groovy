@@ -20,8 +20,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.lexer.TokenSets;
@@ -67,7 +67,7 @@ public abstract class GroovyFileBaseImpl extends PsiFileBase implements GroovyFi
 		myMethods = null;
 	}
 
-	protected GroovyFileBaseImpl(FileViewProvider viewProvider, @NotNull Language language)
+	protected GroovyFileBaseImpl(FileViewProvider viewProvider, @Nonnull Language language)
 	{
 		super(viewProvider, language);
 	}
@@ -79,7 +79,7 @@ public abstract class GroovyFileBaseImpl extends PsiFileBase implements GroovyFi
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public FileType getFileType()
 	{
 		return GroovyFileType.GROOVY_FILE_TYPE;
@@ -91,7 +91,7 @@ public abstract class GroovyFileBaseImpl extends PsiFileBase implements GroovyFi
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public GrTypeDefinition[] getTypeDefinitions()
 	{
 		final StubElement<?> stub = getStub();
@@ -104,14 +104,14 @@ public abstract class GroovyFileBaseImpl extends PsiFileBase implements GroovyFi
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public GrTopLevelDefinition[] getTopLevelDefinitions()
 	{
 		return findChildrenByClass(GrTopLevelDefinition.class);
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public GrMethod[] getCodeMethods()
 	{
 		final StubElement<?> stub = getStub();
@@ -124,7 +124,7 @@ public abstract class GroovyFileBaseImpl extends PsiFileBase implements GroovyFi
 				GrMethod.ARRAY_FACTORY);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public GrMethod[] getMethods()
 	{
@@ -152,7 +152,7 @@ public abstract class GroovyFileBaseImpl extends PsiFileBase implements GroovyFi
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public GrTopStatement[] getTopStatements()
 	{
 		return findChildrenByClass(GrTopStatement.class);
@@ -165,7 +165,7 @@ public abstract class GroovyFileBaseImpl extends PsiFileBase implements GroovyFi
 	}
 
 	@Override
-	public void removeImport(@NotNull GrImportStatement importStatement) throws IncorrectOperationException
+	public void removeImport(@Nonnull GrImportStatement importStatement) throws IncorrectOperationException
 	{
 		GroovyCodeStyleManager.getInstance(getProject()).removeImport(this, importStatement);
 	}
@@ -186,7 +186,7 @@ public abstract class GroovyFileBaseImpl extends PsiFileBase implements GroovyFi
 		}
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public GrStatement[] getStatements()
 	{
@@ -194,8 +194,8 @@ public abstract class GroovyFileBaseImpl extends PsiFileBase implements GroovyFi
 	}
 
 	@Override
-	@NotNull
-	public GrStatement addStatementBefore(@NotNull GrStatement statement,
+	@Nonnull
+	public GrStatement addStatementBefore(@Nonnull GrStatement statement,
 			@Nullable GrStatement anchor) throws IncorrectOperationException
 	{
 		final PsiElement result = addBefore(statement, anchor);
@@ -247,7 +247,7 @@ public abstract class GroovyFileBaseImpl extends PsiFileBase implements GroovyFi
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public PsiClass[] getClasses()
 	{
 		return getTypeDefinitions();

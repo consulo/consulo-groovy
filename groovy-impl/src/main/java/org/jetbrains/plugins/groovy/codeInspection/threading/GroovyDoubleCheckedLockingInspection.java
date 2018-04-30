@@ -20,8 +20,8 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiField;
 import com.intellij.psi.PsiModifier;
 import org.jetbrains.annotations.Nls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.codeInspection.utils.ControlFlowUtils;
@@ -45,17 +45,17 @@ public class GroovyDoubleCheckedLockingInspection extends BaseInspection {
   public boolean ignoreOnVolatileVariables = false;
 
   @Nls
-  @NotNull
+  @Nonnull
   public String getGroupDisplayName() {
     return THREADING_ISSUES;
   }
 
-  @NotNull
+  @Nonnull
   public String getDisplayName() {
     return "Double-checked locking";
   }
 
-  @NotNull
+  @Nonnull
   protected String buildErrorString(Object... infos) {
     return "Double-checked locking #loc";
   }
@@ -74,7 +74,7 @@ public class GroovyDoubleCheckedLockingInspection extends BaseInspection {
   private class DoubleCheckedLockingVisitor
       extends BaseInspectionVisitor {
 
-    public void visitIfStatement(@NotNull GrIfStatement statement) {
+    public void visitIfStatement(@Nonnull GrIfStatement statement) {
       super.visitIfStatement(statement);
       final GrExpression outerCondition = statement.getCondition();
       if (outerCondition == null) {

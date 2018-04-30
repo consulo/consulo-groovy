@@ -15,14 +15,16 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.blocks;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.psi.*;
 import com.intellij.psi.util.InheritanceUtil;
 import com.intellij.psi.util.PsiUtil;
 import com.intellij.psi.util.TypeConversionUtil;
 import com.intellij.util.ArrayUtil;
 import groovy.lang.Closure;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
 import org.jetbrains.plugins.groovy.lang.psi.api.signatures.GrClosureSignature;
 import org.jetbrains.plugins.groovy.lang.psi.api.signatures.GrSignature;
@@ -44,8 +46,8 @@ import org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames;
  * @author Max Medvedev
  */
 public class GrDelegatesToUtil {
-  @Nullable
-  static DelegatesToInfo getDelegatesToInfo(@NotNull PsiElement place, @NotNull final GrClosableBlock closableBlock) {
+  @javax.annotation.Nullable
+  static DelegatesToInfo getDelegatesToInfo(@Nonnull PsiElement place, @Nonnull final GrClosableBlock closableBlock) {
     GrCall call = getContainingCall(closableBlock);
     if (call == null) return null;
 
@@ -87,7 +89,7 @@ public class GrDelegatesToUtil {
     );
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   private static GrClosureSignature inferSignature(@Nullable PsiElement element) {
     if (element instanceof PsiMethod) {
       return GrClosureSignatureUtil.createSignature((PsiMethod)element, PsiSubstitutor.EMPTY);
@@ -105,9 +107,9 @@ public class GrDelegatesToUtil {
   }
 
   @Nullable
-  private static PsiParameter findParameter(@NotNull GrClosableBlock closableBlock,
-                                            @NotNull GrClosureSignatureUtil.ArgInfo<PsiElement>[] map,
-                                            @NotNull GroovyResolveResult result) {
+  private static PsiParameter findParameter(@Nonnull GrClosableBlock closableBlock,
+                                            @Nonnull GrClosureSignatureUtil.ArgInfo<PsiElement>[] map,
+                                            @Nonnull GroovyResolveResult result) {
     final PsiElement element = result.getElement();
     if (element instanceof PsiMethod) {
       final PsiParameter[] parameters = ((PsiMethod)element).getParameterList().getParameters();
@@ -120,10 +122,10 @@ public class GrDelegatesToUtil {
     return null;
   }
 
-  @Nullable
-  private static PsiType inferDelegateType(@NotNull PsiAnnotation delegatesTo,
-                                           @NotNull GrClosureSignature signature,
-                                           @NotNull GrClosureSignatureUtil.ArgInfo<PsiElement>[] map) {
+  @javax.annotation.Nullable
+  private static PsiType inferDelegateType(@Nonnull PsiAnnotation delegatesTo,
+                                           @Nonnull GrClosureSignature signature,
+                                           @Nonnull GrClosureSignatureUtil.ArgInfo<PsiElement>[] map) {
     final PsiAnnotationMemberValue value = delegatesTo.findDeclaredAttributeValue("value");
     if (value instanceof GrReferenceExpression) {
       return extractTypeFromClassType(((GrReferenceExpression)value).getType());
@@ -156,8 +158,8 @@ public class GrDelegatesToUtil {
   }
 
   @Nullable
-  private static PsiType inferGenericArgType(@NotNull GrClosureSignature signature,
-                                             @NotNull PsiType targetType,
+  private static PsiType inferGenericArgType(@Nonnull GrClosureSignature signature,
+                                             @Nonnull PsiType targetType,
                                              int genericIndex,
                                              int param) {
     if (targetType instanceof PsiClassType) {
@@ -181,7 +183,7 @@ public class GrDelegatesToUtil {
     return null;
   }
 
-  private static int findTargetParameter(@NotNull PsiAnnotation delegatesTo, @NotNull String target) {
+  private static int findTargetParameter(@Nonnull PsiAnnotation delegatesTo, @Nonnull String target) {
     //                                                 ann      mod.list    parameter   param.list
     final PsiParameterList list = (PsiParameterList)delegatesTo.getParent().getParent().getParent();
 
@@ -203,14 +205,14 @@ public class GrDelegatesToUtil {
   }
 
   @Nullable
-  private static GrExpression inferCallQualifier(@NotNull GrMethodCall call) {
+  private static GrExpression inferCallQualifier(@Nonnull GrMethodCall call) {
     final GrExpression expression = call.getInvokedExpression();
     if (!(expression instanceof GrReferenceExpression)) return null;
     return ((GrReferenceExpression)expression).getQualifier();
   }
 
-  @NotNull
-  private static GroovyResolveResult resolveCall(@NotNull GrCall call) {
+  @Nonnull
+  private static GroovyResolveResult resolveCall(@Nonnull GrCall call) {
     GroovyResolveResult result = GroovyResolveResult.EMPTY_RESULT;
 
     if (call instanceof GrMethodCall) {
@@ -261,8 +263,8 @@ public class GrDelegatesToUtil {
     return -1;
   }
 
-  @Nullable
-  static GrCall getContainingCall(@NotNull GrClosableBlock closableBlock) {
+  @javax.annotation.Nullable
+  static GrCall getContainingCall(@Nonnull GrClosableBlock closableBlock) {
     final PsiElement parent = closableBlock.getParent();
     if (parent instanceof GrCall && ArrayUtil.contains(closableBlock, ((GrCall)parent).getClosureArguments())) {
       return (GrCall)parent;

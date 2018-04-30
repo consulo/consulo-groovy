@@ -15,10 +15,12 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.confusing;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.psi.util.PsiTreeUtil;
 import org.jetbrains.annotations.Nls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrSwitchStatement;
@@ -26,13 +28,13 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrSwitchStatement;
 public class GroovyNestedSwitchInspection extends BaseInspection {
 
   @Nls
-  @NotNull
+  @Nonnull
   public String getGroupDisplayName() {
     return CONFUSING_CODE_CONSTRUCTS;
   }
 
   @Nls
-  @NotNull
+  @Nonnull
   public String getDisplayName() {
     return "Nested switch statement";
   }

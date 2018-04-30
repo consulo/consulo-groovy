@@ -37,7 +37,7 @@ import com.intellij.util.containers.MultiMap;
 import gnu.trove.TIntArrayList;
 import gnu.trove.TIntProcedure;
 import gnu.trove.TObjectIntHashMap;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyRecursiveElementVisitor;
@@ -358,7 +358,7 @@ public class GroovyIntroduceParameterUtil {
     }
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   public static GrExpression addClosureToCall(PsiElement initializer, GrArgumentList list) {
     if (!(initializer instanceof GrClosableBlock)) return null;
 
@@ -377,14 +377,14 @@ public class GroovyIntroduceParameterUtil {
     return (GrExpression)parent.addAfter(initializer, anchor);
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   static GrVariable findVar(IntroduceParameterInfo info) {
     final GrStatement[] statements = info.getStatements();
     if (statements.length != 1) return null;
     return GrIntroduceHandlerBase.findVariable(statements[0]);
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   static GrExpression findExpr(IntroduceParameterInfo info) {
     final GrStatement[] statements = info.getStatements();
     if (statements.length != 1) return null;

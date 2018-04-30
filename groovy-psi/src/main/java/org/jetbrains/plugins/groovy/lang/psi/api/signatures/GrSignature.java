@@ -15,8 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.api.signatures;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiType;
 
@@ -28,7 +28,7 @@ public interface GrSignature
 	boolean isValid();
 
 	@Nullable
-	GrSignature curry(@NotNull PsiType[] args, int position, @NotNull PsiElement context);
+	GrSignature curry(@Nonnull PsiType[] args, int position, @Nonnull PsiElement context);
 
-	void accept(@NotNull GrSignatureVisitor visitor);
+	void accept(@Nonnull GrSignatureVisitor visitor);
 }

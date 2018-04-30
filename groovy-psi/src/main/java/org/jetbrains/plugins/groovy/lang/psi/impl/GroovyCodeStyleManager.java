@@ -15,7 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFileBase;
 import org.jetbrains.plugins.groovy.lang.psi.api.toplevel.imports.GrImportStatement;
@@ -30,10 +31,10 @@ public abstract class GroovyCodeStyleManager
 		return ServiceManager.getService(project, GroovyCodeStyleManager.class);
 	}
 
-	@NotNull
-	public abstract GrImportStatement addImport(@NotNull GroovyFile psiFile,
-			@NotNull GrImportStatement statement) throws IncorrectOperationException;
+	@Nonnull
+	public abstract GrImportStatement addImport(@Nonnull GroovyFile psiFile,
+			@Nonnull GrImportStatement statement) throws IncorrectOperationException;
 
-	public abstract void removeImport(@NotNull GroovyFileBase psiFile,
-			@NotNull GrImportStatement importStatement) throws IncorrectOperationException;
+	public abstract void removeImport(@Nonnull GroovyFileBase psiFile,
+			@Nonnull GrImportStatement importStatement) throws IncorrectOperationException;
 }

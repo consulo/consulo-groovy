@@ -16,7 +16,7 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.api.types;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import com.intellij.navigation.NavigationItem;
 import com.intellij.openapi.util.UserDataHolderEx;
 import com.intellij.psi.PsiElement;
@@ -25,6 +25,6 @@ import com.intellij.psi.PsiElement;
  * @author ilyas
  */
 public interface GrArrayTypeElement extends UserDataHolderEx, Cloneable, PsiElement, NavigationItem, GrTypeElement {
-  @NotNull
+  @Nonnull
   GrTypeElement getComponentTypeElement();
 }

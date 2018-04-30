@@ -20,8 +20,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.extensions.debugger.ScriptPositionManagerHelper;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFileBase;
@@ -69,7 +69,7 @@ public class GroovyPositionManager implements PositionManager {
     return myDebugProcess;
   }
 
-  @NotNull
+  @Nonnull
   public List<Location> locationsOfLine(ReferenceType type, SourcePosition position) throws NoDataException {
     try {
       int line = position.getLine() + 1;
@@ -268,7 +268,7 @@ public class GroovyPositionManager implements PositionManager {
     return runtimeName;
   }
 
-  @NotNull
+  @Nonnull
   public List<ReferenceType> getAllClasses(final SourcePosition position) throws NoDataException {
     List<ReferenceType> result = ApplicationManager.getApplication().runReadAction(new Computable<List<ReferenceType>>() {
       public List<ReferenceType> compute() {

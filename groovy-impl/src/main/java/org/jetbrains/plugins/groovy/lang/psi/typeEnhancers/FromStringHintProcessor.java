@@ -19,7 +19,7 @@ import com.intellij.psi.*;
 import com.intellij.util.Function;
 import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.containers.ContainerUtil;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 import java.util.List;
 
@@ -33,11 +33,11 @@ public class FromStringHintProcessor extends SignatureHintProcessor {
     return "groovy.transform.stc.FromString";
   }
 
-  @NotNull
+  @Nonnull
   @Override
-  public List<PsiType[]> inferExpectedSignatures(@NotNull final PsiMethod method,
-                                                 @NotNull final PsiSubstitutor substitutor,
-                                                 @NotNull String[] options) {
+  public List<PsiType[]> inferExpectedSignatures(@Nonnull final PsiMethod method,
+                                                 @Nonnull final PsiSubstitutor substitutor,
+                                                 @Nonnull String[] options) {
     return ContainerUtil.map(options, new Function<String, PsiType[]>() {
       @Override
       public PsiType[] fun(String value) {

@@ -16,8 +16,8 @@
 
 package org.jetbrains.plugins.groovy.lang.parser.parsing.statements.typeDefinitions;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
@@ -119,9 +119,9 @@ public class TypeDefinition {
     return true;
   }
 
-  public static IElementType parseBody(@NotNull PsiBuilder builder,
+  public static IElementType parseBody(@Nonnull PsiBuilder builder,
                                        @Nullable String className,
-                                       @NotNull GroovyParser parser,
+                                       @Nonnull GroovyParser parser,
                                        final boolean isInAnnotation) {
     //allow errors
     PsiBuilder.Marker cbMarker = builder.mark();
@@ -140,9 +140,9 @@ public class TypeDefinition {
     return GroovyElementTypes.CLASS_BODY;
   }
 
-  private static void parseMembers(@NotNull PsiBuilder builder,
+  private static void parseMembers(@Nonnull PsiBuilder builder,
                                    @Nullable String className,
-                                   @NotNull GroovyParser parser,
+                                   @Nonnull GroovyParser parser,
                                    final boolean isInAnnotation) {
     Separators.parse(builder);
 
@@ -160,9 +160,9 @@ public class TypeDefinition {
     }
   }
 
-  private static IElementType parseEnumBody(@NotNull PsiBuilder builder,
-                                            @NotNull String enumName,
-                                            @NotNull GroovyParser parser) {
+  private static IElementType parseEnumBody(@Nonnull PsiBuilder builder,
+                                            @Nonnull String enumName,
+                                            @Nonnull GroovyParser parser) {
     PsiBuilder.Marker ebMarker = builder.mark();
 
     if (!ParserUtils.getToken(builder, GroovyTokenTypes.mLCURLY)) {

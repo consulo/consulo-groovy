@@ -15,7 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.api.signatures;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiType;
 
@@ -41,13 +42,13 @@ public interface GrMultiSignature extends GrSignature
 		}
 
 		@Override
-		public GrSignature curry(@NotNull PsiType[] args, int position, @NotNull PsiElement context)
+		public GrSignature curry(@Nonnull PsiType[] args, int position, @Nonnull PsiElement context)
 		{
 			return this;
 		}
 
 		@Override
-		public void accept(@NotNull GrSignatureVisitor visitor)
+		public void accept(@Nonnull GrSignatureVisitor visitor)
 		{
 			visitor.visitMultiSignature(this);
 		}

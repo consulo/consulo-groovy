@@ -18,7 +18,7 @@ package org.jetbrains.plugins.groovy.codeInspection.bugs;
 import com.intellij.psi.PsiMethod;
 import com.intellij.psi.PsiModifier;
 import com.intellij.psi.PsiThisExpression;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyRecursiveElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
@@ -32,20 +32,20 @@ class RecursionVisitor extends GroovyRecursiveElementVisitor {
   private final GrMethod method;
   private final String methodName;
 
-  public RecursionVisitor(@NotNull GrMethod method) {
+  public RecursionVisitor(@Nonnull GrMethod method) {
     super();
     this.method = method;
     methodName = method.getName();
   }
 
-  public void visitElement(@NotNull GroovyPsiElement element) {
+  public void visitElement(@Nonnull GroovyPsiElement element) {
     if (!recursive) {
       super.visitElement(element);
     }
   }
 
   public void visitMethodCallExpression(
-      @NotNull GrMethodCallExpression call) {
+      @Nonnull GrMethodCallExpression call) {
     if (recursive) {
       return;
     }

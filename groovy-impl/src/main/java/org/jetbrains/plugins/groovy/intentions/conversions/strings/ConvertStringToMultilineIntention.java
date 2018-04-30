@@ -31,8 +31,8 @@ import com.intellij.refactoring.IntroduceTargetChooser;
 import com.intellij.util.Function;
 import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.containers.ContainerUtil;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.intentions.GroovyIntentionsBundle;
 import org.jetbrains.plugins.groovy.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.intentions.base.PsiElementPredicate;
@@ -59,7 +59,7 @@ public class ConvertStringToMultilineIntention extends Intention {
   public static final String hint = GroovyIntentionsBundle.message("convert.string.to.multiline.intention.name");
 
   @Override
-  protected void processIntention(@NotNull PsiElement element, final Project project, final Editor editor) throws IncorrectOperationException {
+  protected void processIntention(@Nonnull PsiElement element, final Project project, final Editor editor) throws IncorrectOperationException {
     final List<GrExpression> expressions;
     if (editor.getSelectionModel().hasSelection()) {
       expressions = Collections.singletonList(((GrExpression)element));
@@ -82,13 +82,13 @@ public class ConvertStringToMultilineIntention extends Intention {
     }
     else {
       final Pass<GrExpression> callback = new Pass<GrExpression>() {
-        public void pass(@NotNull final GrExpression selectedValue) {
+        public void pass(@Nonnull final GrExpression selectedValue) {
           invokeImpl(selectedValue, project, editor);
         }
       };
       final Function<GrExpression, String> renderer = new Function<GrExpression, String>() {
         @Override
-        public String fun(@NotNull GrExpression grExpression) {
+        public String fun(@Nonnull GrExpression grExpression) {
           return grExpression.getText();
         }
       };
@@ -96,8 +96,8 @@ public class ConvertStringToMultilineIntention extends Intention {
     }
   }
 
-  @NotNull
-  private static List<GrExpression> collectExpressions(@NotNull PsiElement element) {
+  @Nonnull
+  private static List<GrExpression> collectExpressions(@Nonnull PsiElement element) {
     assert element instanceof GrExpression;
     List<GrExpression> result = ContainerUtil.newArrayList();
     result.add((GrExpression)element);
@@ -111,7 +111,7 @@ public class ConvertStringToMultilineIntention extends Intention {
     return result;
   }
 
-  private static boolean isAppropriateBinary(@NotNull GrBinaryExpression binary, @Nullable PsiElement prevChecked) {
+  private static boolean isAppropriateBinary(@Nonnull GrBinaryExpression binary, @Nullable PsiElement prevChecked) {
     if (binary.getOperationTokenType() == GroovyTokenTypes.mPLUS) {
       final GrExpression left = binary.getLeftOperand();
       final GrExpression right = binary.getRightOperand();
@@ -143,8 +143,8 @@ public class ConvertStringToMultilineIntention extends Intention {
     return false;
   }
 
-  @NotNull
-  private static List<GrLiteral> collectOperands(@Nullable PsiElement element, @NotNull List<GrLiteral> initial) {
+  @Nonnull
+  private static List<GrLiteral> collectOperands(@Nullable PsiElement element, @Nonnull List<GrLiteral> initial) {
     if (element instanceof GrLiteral) {
       initial.add((GrLiteral)element);
     }
@@ -155,7 +155,7 @@ public class ConvertStringToMultilineIntention extends Intention {
     return initial;
   }
 
-  private void invokeImpl(@NotNull final GrExpression element, @NotNull final Project project, @NotNull final Editor editor) {
+  private void invokeImpl(@Nonnull final GrExpression element, @Nonnull final Project project, @Nonnull final Editor editor) {
     final List<GrLiteral> literals = collectOperands(element, ContainerUtil.<GrLiteral>newArrayList());
     if (literals.size() == 0) return;
 
@@ -228,7 +228,7 @@ public class ConvertStringToMultilineIntention extends Intention {
     return buffer;
   }
 
-  private static boolean containsInjections(@NotNull List<GrLiteral> literals) {
+  private static boolean containsInjections(@Nonnull List<GrLiteral> literals) {
     for (GrLiteral literal : literals) {
       if (literal instanceof GrString && ((GrString)literal).getInjections().length > 0) {
         return true;
@@ -251,7 +251,7 @@ public class ConvertStringToMultilineIntention extends Intention {
     }
   }
 
-  @NotNull
+  @Nonnull
   @Override
   protected PsiElementPredicate getElementPredicate() {
     return new PsiElementPredicate() {

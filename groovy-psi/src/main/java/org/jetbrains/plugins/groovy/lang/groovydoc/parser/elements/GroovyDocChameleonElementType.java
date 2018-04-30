@@ -17,7 +17,7 @@
 package org.jetbrains.plugins.groovy.lang.groovydoc.parser.elements;
 
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import com.intellij.lang.Language;
 import com.intellij.psi.tree.ILazyParseableElementType;
@@ -30,7 +30,7 @@ public abstract class GroovyDocChameleonElementType extends ILazyParseableElemen
     super(debugName);
   }
 
-  @NotNull
+  @Nonnull
   public Language getLanguage() {
     return GroovyFileType.GROOVY_LANGUAGE;
   }

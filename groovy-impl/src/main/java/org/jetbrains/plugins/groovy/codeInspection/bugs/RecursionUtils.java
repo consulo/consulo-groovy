@@ -15,11 +15,13 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.bugs;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.psi.PsiMethod;
 import com.intellij.psi.PsiModifier;
 import com.intellij.psi.tree.IElementType;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.codeInspection.utils.BoolUtils;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.GrCondition;
@@ -201,7 +203,7 @@ class RecursionUtils {
     return endsInImplicitReturn;
   }
 
-  public static boolean methodMayRecurse(@NotNull GrMethod method) {
+  public static boolean methodMayRecurse(@Nonnull GrMethod method) {
     final RecursionVisitor recursionVisitor = new RecursionVisitor(method);
     method.accept(recursionVisitor);
     return recursionVisitor.isRecursive();
@@ -551,7 +553,7 @@ class RecursionUtils {
   }
 
   public static boolean methodDefinitelyRecurses(
-      @NotNull GrMethod method) {
+      @Nonnull GrMethod method) {
     final GrCodeBlock body = method.getBlock();
     if (body == null) {
       return false;

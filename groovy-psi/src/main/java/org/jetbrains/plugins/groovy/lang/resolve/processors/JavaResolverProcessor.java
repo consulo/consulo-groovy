@@ -15,7 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.lang.resolve.processors;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.ResolveState;
@@ -37,7 +38,7 @@ public class JavaResolverProcessor extends DelegatingScopeProcessor {
   }
 
   @Override
-  public boolean execute(@NotNull PsiElement element, ResolveState state) {
+  public boolean execute(@Nonnull PsiElement element, ResolveState state) {
     if (myHint != null && element instanceof PsiNamedElement) {
       final String expectedName = myHint.getName(state);
       final String elementName = ((PsiNamedElement)element).getName();

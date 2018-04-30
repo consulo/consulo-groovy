@@ -18,8 +18,8 @@ package org.jetbrains.plugins.groovy.refactoring.changeSignature;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
 import com.intellij.refactoring.changeSignature.ParameterTableModelItemBase;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.debugger.fragments.GroovyCodeFragment;
 
 /**
@@ -37,8 +37,8 @@ public class GrParameterTableModelItem extends ParameterTableModelItemBase<GrPar
   }
 
   public static GrParameterTableModelItem create(@Nullable GrParameterInfo parameterInfo,
-                                                 @NotNull final Project project,
-                                                 @Nullable final PsiElement context) {
+                                                 @Nonnull final Project project,
+                                                 @javax.annotation.Nullable final PsiElement context) {
     if (parameterInfo == null) {
       parameterInfo = new GrParameterInfo("", "", "", null, -1, false);
     }

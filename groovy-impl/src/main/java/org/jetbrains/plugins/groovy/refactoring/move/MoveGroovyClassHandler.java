@@ -19,9 +19,11 @@ package org.jetbrains.plugins.groovy.refactoring.move;
 import java.util.Collection;
 import java.util.Iterator;
 
+import javax.annotation.Nonnull;
+
 import consulo.psi.PsiPackage;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.GroovyLanguage;
 import org.jetbrains.plugins.groovy.actions.GroovyTemplates;
@@ -72,8 +74,8 @@ public class MoveGroovyClassHandler implements MoveClassHandler
 	Logger LOG = Logger.getInstance(MoveGroovyClassHandler.class);
 
 	@Override
-	public PsiClass doMoveClass(@NotNull PsiClass aClass,
-			@NotNull PsiDirectory moveDestination) throws IncorrectOperationException
+	public PsiClass doMoveClass(@Nonnull PsiClass aClass,
+			@Nonnull PsiDirectory moveDestination) throws IncorrectOperationException
 	{
 		if(!aClass.getLanguage().equals(GroovyLanguage.INSTANCE))
 		{
@@ -334,7 +336,7 @@ public class MoveGroovyClassHandler implements MoveClassHandler
 	}
 
 	@Override
-	public void prepareMove(@NotNull PsiClass aClass)
+	public void prepareMove(@Nonnull PsiClass aClass)
 	{
 		if(aClass.getContainingFile() instanceof GroovyFileBase)
 		{
@@ -343,7 +345,7 @@ public class MoveGroovyClassHandler implements MoveClassHandler
 	}
 
 	@Override
-	public void finishMoveClass(@NotNull PsiClass aClass)
+	public void finishMoveClass(@Nonnull PsiClass aClass)
 	{
 		if(aClass.getContainingFile() instanceof GroovyFileBase)
 		{

@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.introduce.field;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.GrModifier;
 import org.jetbrains.plugins.groovy.refactoring.introduce.GrIntroduceSettings;
 
@@ -39,7 +39,7 @@ public interface GrIntroduceFieldSettings extends GrIntroduceSettings {
 
     private final String myName;
 
-    Init(@NotNull String name) {
+    Init(@Nonnull String name) {
       myName = name;
     }
 

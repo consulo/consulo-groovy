@@ -25,8 +25,8 @@ import com.intellij.psi.PsiAnnotation;
 import com.intellij.psi.PsiComment;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocComment;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocCommentOwner;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.GrModifierList;
@@ -45,7 +45,7 @@ import java.util.regex.Matcher;
  * @author peter
  */
 public abstract class GroovySuppressableInspectionTool extends LocalInspectionTool implements BatchSuppressableTool {
-  @NotNull
+  @Nonnull
   @Override
   public SuppressQuickFix[] getBatchSuppressActions(@Nullable PsiElement element) {
     return getSuppressActions(getShortName());
@@ -62,7 +62,7 @@ public abstract class GroovySuppressableInspectionTool extends LocalInspectionTo
   }
 
   @Override
-  public boolean isSuppressedFor(@NotNull final PsiElement element) {
+  public boolean isSuppressedFor(@Nonnull final PsiElement element) {
     return isElementToolSuppressedIn(element, getID());
   }
 
@@ -70,7 +70,7 @@ public abstract class GroovySuppressableInspectionTool extends LocalInspectionTo
     return getElementToolSuppressedIn(place, toolId) != null;
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   public static PsiElement getElementToolSuppressedIn(final PsiElement place, final String toolId) {
     if (place == null) return null;
     AccessToken accessToken = ApplicationManager.getApplication().acquireReadActionLock();
@@ -121,7 +121,7 @@ public abstract class GroovySuppressableInspectionTool extends LocalInspectionTo
     }
   }
 
-  @NotNull
+  @Nonnull
   private static Collection<String> getInspectionIdsSuppressedInAnnotation(final GrModifierList modifierList) {
     if (modifierList == null) {
       return Collections.emptyList();

@@ -18,8 +18,8 @@ package org.jetbrains.plugins.groovy.lang.psi.impl;
 import static org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil.boxPrimitiveType;
 import static org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil.getLeastUpperBoundNullable;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames;
 import com.intellij.openapi.util.text.StringUtil;
@@ -55,31 +55,31 @@ public class GrRangeType extends GrLiteralClassType {
     }
   }
 
-  public GrRangeType(GlobalSearchScope scope, JavaPsiFacade facade, @Nullable PsiType left, @Nullable PsiType right) {
+  public GrRangeType(GlobalSearchScope scope, JavaPsiFacade facade, @javax.annotation.Nullable PsiType left, @Nullable PsiType right) {
     this(LanguageLevel.JDK_1_5, scope, facade, left, right);
   }
 
-  @NotNull
+  @Nonnull
   @Override
   protected String getJavaClassName() {
     return myQualifiedName;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public String getClassName() {
     return StringUtil.getShortName(myQualifiedName);
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public PsiType[] getParameters() {
     return PsiType.EMPTY_ARRAY;
   }
 
-  @NotNull
+  @Nonnull
   @Override
-  public PsiClassType setLanguageLevel(@NotNull LanguageLevel languageLevel) {
+  public PsiClassType setLanguageLevel(@Nonnull LanguageLevel languageLevel) {
     return new GrRangeType(languageLevel, myScope, myFacade, myLeft, myRight);
   }
 

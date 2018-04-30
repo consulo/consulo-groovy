@@ -17,7 +17,7 @@
 package org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments;
 
 import com.intellij.psi.PsiElement;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 
@@ -27,7 +27,7 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpres
 public interface GrNamedArgument extends GroovyPsiElement {
   GrNamedArgument[] EMPTY_ARRAY = new GrNamedArgument[0];
 
-  @Nullable
+  @javax.annotation.Nullable
   GrArgumentLabel getLabel();
 
   @Nullable
@@ -36,6 +36,6 @@ public interface GrNamedArgument extends GroovyPsiElement {
   @Nullable
   String getLabelName();
 
-  @Nullable
+  @javax.annotation.Nullable
   PsiElement getColon();
 }

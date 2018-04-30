@@ -19,7 +19,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.psi.api.signatures.GrClosureSignature;
 import org.jetbrains.plugins.groovy.lang.psi.api.signatures.GrMultiSignature;
 import org.jetbrains.plugins.groovy.lang.psi.api.signatures.GrSignature;
@@ -51,7 +52,7 @@ public class GrMultiSignatureImpl implements GrMultiSignature {
   }
 
   @Override
-  public GrSignature curry(@NotNull PsiType[] args, int position, @NotNull PsiElement context) {
+  public GrSignature curry(@Nonnull PsiType[] args, int position, @Nonnull PsiElement context) {
     List<GrClosureSignature> newClosures = new ArrayList<GrClosureSignature>();
 
     for (GrClosureSignature old : mySignatures) {
@@ -67,7 +68,7 @@ public class GrMultiSignatureImpl implements GrMultiSignature {
   }
 
   @Override
-  public void accept(@NotNull GrSignatureVisitor visitor) {
+  public void accept(@Nonnull GrSignatureVisitor visitor) {
     visitor.visitMultiSignature(this);
   }
 }

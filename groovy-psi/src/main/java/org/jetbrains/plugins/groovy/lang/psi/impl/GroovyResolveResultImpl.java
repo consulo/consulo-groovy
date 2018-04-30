@@ -15,8 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
 import org.jetbrains.plugins.groovy.lang.psi.api.SpreadState;
 import com.intellij.psi.PsiClassType;
@@ -40,25 +40,25 @@ public class GroovyResolveResultImpl implements GroovyResolveResult
 	private final PsiElement myCurrentFileResolveContext;
 	private final SpreadState mySpreadState;
 
-	public GroovyResolveResultImpl(@NotNull PsiElement element, boolean isAccessible)
+	public GroovyResolveResultImpl(@Nonnull PsiElement element, boolean isAccessible)
 	{
 		this(element, null, null, PsiSubstitutor.EMPTY, isAccessible, true, false, true);
 	}
 
-	public GroovyResolveResultImpl(@NotNull PsiElement element,
-			@Nullable PsiElement resolveContext,
+	public GroovyResolveResultImpl(@Nonnull PsiElement element,
+			@javax.annotation.Nullable PsiElement resolveContext,
 			@Nullable SpreadState spreadState,
-			@NotNull PsiSubstitutor substitutor,
+			@Nonnull PsiSubstitutor substitutor,
 			boolean isAccessible,
 			boolean staticsOK)
 	{
 		this(element, resolveContext, spreadState, substitutor, isAccessible, staticsOK, false, true);
 	}
 
-	public GroovyResolveResultImpl(@NotNull PsiElement element,
+	public GroovyResolveResultImpl(@Nonnull PsiElement element,
 			@Nullable PsiElement resolveContext,
-			@Nullable SpreadState spreadState,
-			@NotNull PsiSubstitutor substitutor,
+			@javax.annotation.Nullable SpreadState spreadState,
+			@Nonnull PsiSubstitutor substitutor,
 			boolean isAccessible,
 			boolean staticsOK,
 			boolean isInvokedOnProperty,
@@ -75,7 +75,7 @@ public class GroovyResolveResultImpl implements GroovyResolveResult
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public PsiSubstitutor getSubstitutor()
 	{
 		return mySubstitutor;
@@ -100,7 +100,7 @@ public class GroovyResolveResultImpl implements GroovyResolveResult
 	}
 
 	@Override
-	@Nullable
+	@javax.annotation.Nullable
 	public PsiElement getElement()
 	{
 		return myElement;
@@ -140,7 +140,7 @@ public class GroovyResolveResultImpl implements GroovyResolveResult
 	}
 
 	@Override
-	@Nullable
+	@javax.annotation.Nullable
 	public PsiElement getCurrentFileResolveContext()
 	{
 		return myCurrentFileResolveContext;
@@ -167,8 +167,8 @@ public class GroovyResolveResultImpl implements GroovyResolveResult
 				'}';
 	}
 
-	@NotNull
-	public static GroovyResolveResult from(@NotNull PsiClassType.ClassResolveResult classResolveResult)
+	@Nonnull
+	public static GroovyResolveResult from(@Nonnull PsiClassType.ClassResolveResult classResolveResult)
 	{
 		if(classResolveResult.getElement() == null)
 			return GroovyResolveResult.EMPTY_RESULT;

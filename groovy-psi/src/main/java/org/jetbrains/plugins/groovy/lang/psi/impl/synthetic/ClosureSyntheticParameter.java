@@ -23,8 +23,8 @@ import com.intellij.psi.search.LocalSearchScope;
 import com.intellij.psi.search.SearchScope;
 import com.intellij.util.Function;
 import com.intellij.util.IncorrectOperationException;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlock;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
@@ -57,7 +57,7 @@ public class ClosureSyntheticParameter extends GrLightParameter implements Navig
   }
 
   @Override
-  public PsiElement setName(@NotNull String newName) throws IncorrectOperationException {
+  public PsiElement setName(@Nonnull String newName) throws IncorrectOperationException {
     if (!newName.equals(getName())) {
       GrParameter parameter = GroovyPsiElementFactory.getInstance(getProject()).createParameter(newName, (String)null, null);
       myClosure.addParameter(parameter);
@@ -85,7 +85,7 @@ public class ClosureSyntheticParameter extends GrLightParameter implements Navig
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public SearchScope getUseScope() {
     return new LocalSearchScope(myClosure);
   }

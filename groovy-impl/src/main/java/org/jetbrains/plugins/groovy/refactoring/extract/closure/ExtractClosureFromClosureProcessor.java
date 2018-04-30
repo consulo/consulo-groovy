@@ -24,7 +24,7 @@ import com.intellij.refactoring.IntroduceParameterRefactoring;
 import com.intellij.refactoring.introduceParameter.ExternalUsageInfo;
 import com.intellij.usageView.UsageInfo;
 import com.intellij.util.containers.MultiMap;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
@@ -43,7 +43,7 @@ import java.util.List;
  * @author Max Medvedev
  */
 public class ExtractClosureFromClosureProcessor extends ExtractClosureProcessorBase {
-  public ExtractClosureFromClosureProcessor(@NotNull GrIntroduceParameterSettings helper) {
+  public ExtractClosureFromClosureProcessor(@Nonnull GrIntroduceParameterSettings helper) {
     super(helper);
   }
 
@@ -73,7 +73,7 @@ public class ExtractClosureFromClosureProcessor extends ExtractClosureProcessorB
     ExtractUtil.replaceStatement(declarationOwner, myHelper);
   }
 
-  @NotNull
+  @Nonnull
   @Override
   protected UsageInfo[] findUsages() {
     final GrVariable var = (GrVariable)myHelper.getToSearchFor();

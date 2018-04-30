@@ -16,11 +16,11 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiExpressionList;
 import com.intellij.util.IncorrectOperationException;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.util.GrNamedArgumentsOwner;
@@ -30,16 +30,18 @@ import org.jetbrains.plugins.groovy.lang.psi.api.util.GrNamedArgumentsOwner;
  * Plain Argumanet list with parentheses. Cannot contain closure arguments, they are placed outside.
  */
 public interface GrArgumentList extends GroovyPsiElement, GrNamedArgumentsOwner, PsiExpressionList {
-  @NotNull GrExpression[] getExpressionArguments();
+  @Nonnull
+  GrExpression[] getExpressionArguments();
 
-  @NotNull GroovyPsiElement[] getAllArguments();
+  @Nonnull
+  GroovyPsiElement[] getAllArguments();
 
   GrArgumentList replaceWithArgumentList(GrArgumentList newArgList) throws IncorrectOperationException;
 
-  @Nullable
+  @javax.annotation.Nullable
   PsiElement getLeftParen();
 
-  @Nullable
+  @javax.annotation.Nullable
   PsiElement getRightParen();
 
   int getExpressionArgumentIndex(GrExpression arg);

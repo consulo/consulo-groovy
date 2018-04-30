@@ -18,8 +18,8 @@ package org.jetbrains.plugins.groovy.refactoring.introduce;
 import java.util.Collections;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.lexer.TokenSets;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrBinaryExpression;
@@ -52,7 +52,7 @@ public class StringPartInfo
 	private final String myEndQuote;
 
 	@Nullable
-	public static StringPartInfo findStringPart(@NotNull PsiFile file, int startOffset, int endOffset)
+	public static StringPartInfo findStringPart(@Nonnull PsiFile file, int startOffset, int endOffset)
 	{
 		final PsiElement start = file.findElementAt(startOffset);
 		final PsiElement fin = file.findElementAt(endOffset - 1);
@@ -76,7 +76,7 @@ public class StringPartInfo
 		return null;
 	}
 
-	public StringPartInfo(@NotNull GrLiteral literal, @NotNull final TextRange range)
+	public StringPartInfo(@Nonnull GrLiteral literal, @Nonnull final TextRange range)
 	{
 		myLiteral = literal;
 
@@ -186,7 +186,7 @@ public class StringPartInfo
 	}
 
 	@Nullable
-	private static GrLiteral findLiteral(@NotNull PsiElement psi)
+	private static GrLiteral findLiteral(@Nonnull PsiElement psi)
 	{
 		if(isStringLiteral(psi.getParent()))
 		{
@@ -212,7 +212,7 @@ public class StringPartInfo
 				(GrLiteral) psi)) || psi instanceof GrString;
 	}
 
-	@NotNull
+	@Nonnull
 	public GrExpression replaceLiteralWithConcatenation(@Nullable String varName)
 	{
 
@@ -308,8 +308,8 @@ public class StringPartInfo
 		return myStartQuote + content + myEndQuote;
 	}
 
-	@NotNull
-	private static String prepareGString(@NotNull String content)
+	@Nonnull
+	private static String prepareGString(@Nonnull String content)
 	{
 		StringBuilder buffer = new StringBuilder();
 		boolean multiline = content.contains("\n");
@@ -320,25 +320,25 @@ public class StringPartInfo
 		return buffer.toString();
 	}
 
-	@NotNull
+	@Nonnull
 	public GrLiteral getLiteral()
 	{
 		return myLiteral;
 	}
 
-	@NotNull
+	@Nonnull
 	public TextRange getRange()
 	{
 		return myRange;
 	}
 
-	@NotNull
+	@Nonnull
 	public List<GrStringInjection> getInjections()
 	{
 		return myInjections;
 	}
 
-	@NotNull
+	@Nonnull
 	public GrLiteral createLiteralFromSelected()
 	{
 		return (GrLiteral) GroovyPsiElementFactory.getInstance(myLiteral.getProject()).createExpressionFromText(prepareSelected());

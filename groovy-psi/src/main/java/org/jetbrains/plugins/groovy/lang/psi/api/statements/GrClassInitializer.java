@@ -16,8 +16,9 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.api.statements;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.psi.PsiClassInitializer;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.GrModifierList;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrOpenBlock;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMember;
@@ -30,11 +31,11 @@ public interface GrClassInitializer extends GrMember, PsiClassInitializer, GrMem
 
   GrClassInitializer[] EMPTY_ARRAY = new GrClassInitializer[0];
 
-  @NotNull
+  @Nonnull
   GrOpenBlock getBlock();
 
   @Override
-  @NotNull
+  @Nonnull
   GrModifierList getModifierList();
 
   boolean isStatic();

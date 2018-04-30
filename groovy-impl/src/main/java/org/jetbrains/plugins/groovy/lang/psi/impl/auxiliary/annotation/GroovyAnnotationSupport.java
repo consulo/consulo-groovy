@@ -15,17 +15,18 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.auxiliary.annotation;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiAnnotationSupport;
 import com.intellij.psi.PsiElement;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.literals.GrLiteral;
 
 public class GroovyAnnotationSupport implements PsiAnnotationSupport {
   @Override
-  @NotNull
-  public GrLiteral createLiteralValue(@NotNull String value, @NotNull PsiElement context) {
+  @Nonnull
+  public GrLiteral createLiteralValue(@Nonnull String value, @Nonnull PsiElement context) {
     return (GrLiteral)GroovyPsiElementFactory.getInstance(context.getProject())
       .createExpressionFromText("\"" + StringUtil.escapeStringCharacters(value) + "\"");
   }

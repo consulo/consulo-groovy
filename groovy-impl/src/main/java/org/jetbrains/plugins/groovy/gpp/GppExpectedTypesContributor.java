@@ -4,7 +4,7 @@ import com.intellij.openapi.util.Pair;
 import com.intellij.psi.*;
 import com.intellij.util.NullableFunction;
 import com.intellij.util.containers.ContainerUtil;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.GrListOrMap;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrNamedArgument;
@@ -28,7 +28,7 @@ import java.util.Map;
  */
 public class GppExpectedTypesContributor extends GroovyExpectedTypesContributor {
   @Override
-  public List<TypeConstraint> calculateTypeConstraints(@NotNull GrExpression expression) {
+  public List<TypeConstraint> calculateTypeConstraints(@Nonnull GrExpression expression) {
     final PsiElement parent = expression.getParent();
     if (parent instanceof GrListOrMap) {
       final GrListOrMap list = (GrListOrMap)parent;

@@ -16,9 +16,11 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl;
 
+import javax.annotation.Nonnull;
+
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GrReferenceElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
 import com.intellij.pom.java.LanguageLevel;
@@ -40,7 +42,7 @@ public class GrClassReferenceType extends PsiClassType {
     myReferenceElement = referenceElement;
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   public PsiClass resolve() {
     ResolveResult[] results = multiResolve();
     if (results.length == 1) {
@@ -63,12 +65,12 @@ public class GrClassReferenceType extends PsiClassType {
     return myReferenceElement.getReferenceName();
   }
 
-  @NotNull
+  @Nonnull
   public PsiType[] getParameters() {
     return myReferenceElement.getTypeArguments();
   }
 
-  @NotNull
+  @Nonnull
   public ClassResolveResult resolveGenerics() {
     final GroovyResolveResult resolveResult = myReferenceElement.advancedResolve();
     return new ClassResolveResult() {
@@ -104,7 +106,7 @@ public class GrClassReferenceType extends PsiClassType {
     };
   }
 
-  @NotNull
+  @Nonnull
   public PsiClassType rawType() {
     final PsiClass clazz = resolve();
     if (clazz != null) {
@@ -119,7 +121,7 @@ public class GrClassReferenceType extends PsiClassType {
     return PsiNameHelper.getPresentableText(myReferenceElement.getReferenceName(), PsiAnnotation.EMPTY_ARRAY, myReferenceElement.getTypeArguments());
   }
 
-  @NotNull
+  @Nonnull
   public String getCanonicalText() {
     return myReferenceElement.getCanonicalText();
   }
@@ -137,18 +139,18 @@ public class GrClassReferenceType extends PsiClassType {
         text.equals(getCanonicalText());
   }
 
-  @NotNull
+  @Nonnull
   public GlobalSearchScope getResolveScope() {
     return myReferenceElement.getResolveScope();
   }
 
-  @NotNull
+  @Nonnull
   public LanguageLevel getLanguageLevel() {
     return myLanguageLevel;
   }
 
-  @NotNull
-  public PsiClassType setLanguageLevel(@NotNull final LanguageLevel languageLevel) {
+  @Nonnull
+  public PsiClassType setLanguageLevel(@Nonnull final LanguageLevel languageLevel) {
     return new GrClassReferenceType(myReferenceElement,languageLevel);
   }
 

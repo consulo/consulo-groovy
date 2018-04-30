@@ -16,7 +16,7 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.api.auxiliary;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.util.GrNamedArgumentsOwner;
 import com.intellij.navigation.NavigationItem;
@@ -33,7 +33,7 @@ public interface GrListOrMap extends UserDataHolderEx, Cloneable, PsiElement, Na
    * Use for list
    */
   @Override
-  @NotNull
+  @Nonnull
   GrExpression[] getInitializers();
 
   boolean isMap();

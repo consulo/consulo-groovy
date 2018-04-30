@@ -20,8 +20,8 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.config.GroovyConfigUtils;
 import com.intellij.execution.CantRunException;
 import com.intellij.execution.ExecutionException;
@@ -44,9 +44,9 @@ import consulo.java.execution.configurations.OwnJavaParameters;
  */
 public abstract class GroovyScriptRunner
 {
-	public abstract boolean isValidModule(@NotNull Module module);
+	public abstract boolean isValidModule(@Nonnull Module module);
 
-	public abstract boolean ensureRunnerConfigured(@Nullable Module module, RunProfile profile, Executor executor, final Project project) throws ExecutionException;
+	public abstract boolean ensureRunnerConfigured(@javax.annotation.Nullable Module module, RunProfile profile, Executor executor, final Project project) throws ExecutionException;
 
 	public abstract void configureCommandLine(OwnJavaParameters params, @Nullable Module module, boolean tests, VirtualFile script, GroovyScriptRunConfiguration configuration) throws
 			CantRunException;
@@ -86,7 +86,7 @@ public abstract class GroovyScriptRunner
 		}
 	}
 
-	protected static void setGroovyHome(OwnJavaParameters params, @NotNull String groovyHome)
+	protected static void setGroovyHome(OwnJavaParameters params, @Nonnull String groovyHome)
 	{
 		params.getVMParametersList().add("-Dgroovy.home=" + groovyHome);
 		if(groovyHome.contains("grails"))
@@ -112,8 +112,8 @@ public abstract class GroovyScriptRunner
 		}
 	}
 
-	@Nullable
-	protected static VirtualFile findGroovyJar(@NotNull Module module)
+	@javax.annotation.Nullable
+	protected static VirtualFile findGroovyJar(@Nonnull Module module)
 	{
 		final VirtualFile[] files = OrderEnumerator.orderEntries(module).getAllLibrariesAndSdkClassesRoots();
 		for(VirtualFile root : files)
@@ -133,7 +133,7 @@ public abstract class GroovyScriptRunner
 		return null;
 	}
 
-	protected static void addClasspathFromRootModel(@Nullable Module module, boolean isTests, OwnJavaParameters params, boolean allowDuplication) throws CantRunException
+	protected static void addClasspathFromRootModel(@javax.annotation.Nullable Module module, boolean isTests, OwnJavaParameters params, boolean allowDuplication) throws CantRunException
 	{
 		PathsList nonCore = getClassPathFromRootModel(module, isTests, params, allowDuplication);
 		if(nonCore == null)
@@ -149,7 +149,7 @@ public abstract class GroovyScriptRunner
 		}
 	}
 
-	@Nullable
+	@javax.annotation.Nullable
 	public static PathsList getClassPathFromRootModel(Module module, boolean isTests, OwnJavaParameters params, boolean allowDuplication) throws CantRunException
 	{
 		if(module == null)

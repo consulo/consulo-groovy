@@ -20,7 +20,9 @@ import com.intellij.psi.PsiClassType;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiType;
 import gnu.trove.TIntArrayList;
-import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrParametersOwner;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlock;
@@ -65,7 +67,7 @@ public class ExtractClosureHelperImpl extends ExtractInfoHelperBase implements G
     myReplaceFieldsWithGetters = replaceFieldsWithGetters;
   }
 
-  @NotNull
+  @Nonnull
   public GrParametersOwner getToReplaceIn() {
     return myOwner;
   }

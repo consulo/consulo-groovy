@@ -15,11 +15,12 @@
  */
 package org.jetbrains.plugins.groovy.intentions.style;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.IncorrectOperationException;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.intentions.base.PsiElementPredicate;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
@@ -32,7 +33,7 @@ import org.jetbrains.plugins.groovy.lang.psi.controlFlow.ControlFlowBuilderUtil;
  */
 public class RemoveUnnecessaryReturnIntention extends Intention {
   @Override
-  protected void processIntention(@NotNull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
+  protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
     if (element instanceof GrReturnStatement && ((GrReturnStatement)element).getReturnValue() != null) {
       GrExpression value = ((GrReturnStatement)element).getReturnValue();
 
@@ -40,7 +41,7 @@ public class RemoveUnnecessaryReturnIntention extends Intention {
     }
   }
 
-  @NotNull
+  @Nonnull
   @Override
   protected PsiElementPredicate getElementPredicate() {
     return new PsiElementPredicate() {

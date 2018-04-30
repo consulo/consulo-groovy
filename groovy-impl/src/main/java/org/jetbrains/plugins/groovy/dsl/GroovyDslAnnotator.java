@@ -19,7 +19,8 @@ import static org.jetbrains.plugins.groovy.dsl.DslActivationStatus.Status.ACTIVE
 import static org.jetbrains.plugins.groovy.dsl.DslActivationStatus.Status.ERROR;
 import static org.jetbrains.plugins.groovy.dsl.DslActivationStatus.Status.MODIFIED;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.codeInspection.GroovyQuickFixFactory;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.util.GrFileIndexUtil;
@@ -44,7 +45,7 @@ public class GroovyDslAnnotator implements Annotator, DumbAware
 {
 
 	@Override
-	public void annotate(@NotNull PsiElement psiElement, @NotNull AnnotationHolder holder)
+	public void annotate(@Nonnull PsiElement psiElement, @Nonnull AnnotationHolder holder)
 	{
 		if(!(psiElement instanceof GroovyFile))
 		{
@@ -95,14 +96,14 @@ public class GroovyDslAnnotator implements Annotator, DumbAware
 		}
 
 		@Override
-		@NotNull
+		@Nonnull
 		public String getText()
 		{
 			return "Activate back";
 		}
 
 		@Override
-		@NotNull
+		@Nonnull
 		public String getFamilyName()
 		{
 			//noinspection DialogTitleCapitalization
@@ -110,13 +111,13 @@ public class GroovyDslAnnotator implements Annotator, DumbAware
 		}
 
 		@Override
-		public boolean isAvailable(@NotNull Project project, Editor editor, PsiFile file)
+		public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file)
 		{
 			return true;
 		}
 
 		@Override
-		public void invoke(@NotNull Project project, Editor editor, PsiFile file) throws IncorrectOperationException
+		public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException
 		{
 			FileDocumentManager.getInstance().saveAllDocuments();
 			GroovyDslFileIndex.activate(myVfile);

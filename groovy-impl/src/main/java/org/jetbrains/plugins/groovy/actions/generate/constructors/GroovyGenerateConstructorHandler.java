@@ -23,8 +23,8 @@ import com.intellij.psi.*;
 import com.intellij.psi.codeStyle.JavaCodeStyleManager;
 import com.intellij.util.ArrayUtil;
 import com.intellij.util.IncorrectOperationException;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.actions.generate.GroovyGenerationInfo;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
@@ -85,7 +85,7 @@ public class GroovyGenerateConstructorHandler extends GenerateConstructorHandler
     return super.chooseOriginalMembers(aClass, project);
   }
 
-  @NotNull
+  @Nonnull
   protected List<? extends GenerationInfo> generateMemberPrototypes(PsiClass aClass, ClassMember[] members)
     throws IncorrectOperationException {
     final List<? extends GenerationInfo> list = super.generateMemberPrototypes(aClass, members);

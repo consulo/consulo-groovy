@@ -19,8 +19,8 @@ import com.intellij.codeInsight.CodeInsightSettings;
 import com.intellij.psi.*;
 import com.intellij.psi.util.InheritanceUtil;
 import com.intellij.psi.util.PsiTreeUtil;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GrQualifiedReference;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
@@ -35,8 +35,8 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMe
  * @author Max Medvedev
  */
 public class StaticChecker {
-  public static boolean isStaticsOK(@NotNull PsiModifierListOwner member,
-                                    @NotNull PsiElement place,
+  public static boolean isStaticsOK(@Nonnull PsiModifierListOwner member,
+                                    @Nonnull PsiElement place,
                                     @Nullable PsiElement resolveContext,
                                     boolean filterStaticAfterInstanceQualifier) {
     if (!(member instanceof PsiMember)) return true;
@@ -199,7 +199,7 @@ public class StaticChecker {
     return isInStaticContext(refExpression, targetClass);
   }
 
-  public static boolean isInStaticContext(GrQualifiedReference refExpression, @Nullable PsiClass targetClass) {
+  public static boolean isInStaticContext(GrQualifiedReference refExpression, @javax.annotation.Nullable PsiClass targetClass) {
     PsiElement qualifier = refExpression.getQualifier();
     if (qualifier != null && !PsiUtil.isThisOrSuperRef(refExpression)) {
       if (PsiUtil.isInstanceThisRef(qualifier) || PsiUtil.isSuperReference(qualifier)) {

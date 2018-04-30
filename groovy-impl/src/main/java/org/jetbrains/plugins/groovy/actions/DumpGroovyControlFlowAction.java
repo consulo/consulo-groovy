@@ -18,7 +18,7 @@ package org.jetbrains.plugins.groovy.actions;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.codeInspection.utils.ControlFlowUtils;
 import org.jetbrains.plugins.groovy.editor.HandlerUtils;
 import org.jetbrains.plugins.groovy.lang.psi.GrControlFlowOwner;
@@ -42,7 +42,7 @@ public class DumpGroovyControlFlowAction extends AnAction implements DumbAware
 {
 	@RequiredDispatchThread
 	@Override
-	public void actionPerformed(@NotNull AnActionEvent e)
+	public void actionPerformed(@Nonnull AnActionEvent e)
 	{
 		final Editor editor = e.getData(PlatformDataKeys.EDITOR);
 		if(editor == null)

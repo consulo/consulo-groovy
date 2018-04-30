@@ -19,8 +19,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.codeStyle.GrReferenceAdjuster;
 import org.jetbrains.plugins.groovy.lang.psi.GrQualifiedReference;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
@@ -77,12 +77,12 @@ public class GrIntroduceFieldProcessor
 	private final GrIntroduceContext myContext;
 	private final GrIntroduceFieldSettings mySettings;
 
-	@Nullable
+	@javax.annotation.Nullable
 	private GrExpression myInitializer;
 	@Nullable
 	private GrVariable myLocalVariable;
 
-	public GrIntroduceFieldProcessor(@NotNull GrIntroduceContext context, @NotNull GrIntroduceFieldSettings settings)
+	public GrIntroduceFieldProcessor(@Nonnull GrIntroduceContext context, @Nonnull GrIntroduceFieldSettings settings)
 	{
 		this.myContext = context;
 		this.mySettings = settings;
@@ -138,8 +138,8 @@ public class GrIntroduceFieldProcessor
 		return field;
 	}
 
-	@NotNull
-	private List<PsiElement> processOccurrences(@NotNull PsiClass targetClass, @NotNull GrVariable field)
+	@Nonnull
+	private List<PsiElement> processOccurrences(@Nonnull PsiClass targetClass, @Nonnull GrVariable field)
 	{
 		if(myContext.getStringPart() != null)
 		{
@@ -186,14 +186,14 @@ public class GrIntroduceFieldProcessor
 		}
 	}
 
-	private void updateCaretPosition(@NotNull PsiElement occurrence)
+	private void updateCaretPosition(@Nonnull PsiElement occurrence)
 	{
 		myContext.getEditor().getCaretModel().moveToOffset(occurrence.getTextRange().getEndOffset());
 		myContext.getEditor().getSelectionModel().removeSelection();
 	}
 
-	@NotNull
-	protected GrVariableDeclaration insertField(@NotNull PsiClass targetClass)
+	@Nonnull
+	protected GrVariableDeclaration insertField(@Nonnull PsiClass targetClass)
 	{
 		GrVariableDeclaration declaration = createField(targetClass);
 		if(targetClass instanceof GrEnumTypeDefinition)
@@ -223,7 +223,7 @@ public class GrIntroduceFieldProcessor
 	}
 
 	@Nullable
-	private static PsiElement getAnchorForDeclaration(@NotNull GrTypeDefinition targetClass)
+	private static PsiElement getAnchorForDeclaration(@Nonnull GrTypeDefinition targetClass)
 	{
 		PsiElement anchor = targetClass.getBody().getLBrace();
 
@@ -243,7 +243,7 @@ public class GrIntroduceFieldProcessor
 		return anchor;
 	}
 
-	void initializeInSetup(@NotNull GrVariable field)
+	void initializeInSetup(@Nonnull GrVariable field)
 	{
 		final PsiMethod setUpMethod = TestFrameworks.getInstance().findOrCreateSetUpMethod(((PsiClass) myContext
 				.getScope()));
@@ -254,7 +254,7 @@ public class GrIntroduceFieldProcessor
 		generateAssignment(field, (GrStatement) anchor, body, null);
 	}
 
-	void initializeInMethod(@NotNull GrVariable field, @NotNull List<PsiElement> replaced)
+	void initializeInMethod(@Nonnull GrVariable field, @Nonnull List<PsiElement> replaced)
 	{
 		final PsiElement _scope = myContext.getScope();
 		final PsiElement scope = _scope instanceof GroovyScriptClass ? ((GroovyScriptClass) _scope).getContainingFile
@@ -292,13 +292,13 @@ public class GrIntroduceFieldProcessor
 		}
 	}
 
-	private static boolean isRefToField(@NotNull PsiElement occurrence, @NotNull PsiElement field)
+	private static boolean isRefToField(@Nonnull PsiElement occurrence, @Nonnull PsiElement field)
 	{
 		return occurrence instanceof GrReferenceExpression && ((GrReferenceExpression) occurrence).resolve() == field;
 	}
 
 
-	void initializeInConstructor(@NotNull GrVariable field)
+	void initializeInConstructor(@Nonnull GrVariable field)
 	{
 		final PsiClass scope = (PsiClass) myContext.getScope();
 
@@ -312,7 +312,7 @@ public class GrIntroduceFieldProcessor
 		}
 	}
 
-	private void initializeInConstructor(@NotNull GrVariable field, @NotNull PsiClass scope)
+	private void initializeInConstructor(@Nonnull GrVariable field, @Nonnull PsiClass scope)
 	{
 		PsiMethod[] constructors = scope.getConstructors();
 		if(constructors.length == 0)
@@ -334,8 +334,8 @@ public class GrIntroduceFieldProcessor
 		}
 	}
 
-	@NotNull
-	private PsiMethod generateConstructor(@NotNull PsiClass scope)
+	@Nonnull
+	private PsiMethod generateConstructor(@Nonnull PsiClass scope)
 	{
 		final String name = scope.getName();
 		LOG.assertTrue(name != null, scope.getText());
@@ -349,8 +349,8 @@ public class GrIntroduceFieldProcessor
 		return (PsiMethod) scope.add(constructor);
 	}
 
-	private void initializeInAnonymousClassInitializer(@NotNull GrVariable field,
-			@NotNull GrAnonymousClassDefinition scope)
+	private void initializeInAnonymousClassInitializer(@Nonnull GrVariable field,
+			@Nonnull GrAnonymousClassDefinition scope)
 	{
 		final GrClassInitializer[] initializers = scope.getInitializers();
 		GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(myContext.getProject());
@@ -361,10 +361,10 @@ public class GrIntroduceFieldProcessor
 		generateAssignment(field, (GrStatement) anchor, initializer.getBlock(), null);
 	}
 
-	private void generateAssignment(@NotNull GrVariable field,
+	private void generateAssignment(@Nonnull GrVariable field,
 			@Nullable GrStatement anchor,
-			@NotNull GrStatementOwner defaultContainer,
-			@Nullable PsiElement occurrenceToDelete)
+			@Nonnull GrStatementOwner defaultContainer,
+			@javax.annotation.Nullable PsiElement occurrenceToDelete)
 	{
 		if(myInitializer == null)
 		{
@@ -421,10 +421,10 @@ public class GrIntroduceFieldProcessor
 				block);
 	}
 
-	@NotNull
-	private PsiElement replaceOccurrence(@NotNull GrVariable field,
-			@NotNull PsiElement occurrence,
-			@NotNull PsiClass containingClass)
+	@Nonnull
+	private PsiElement replaceOccurrence(@Nonnull GrVariable field,
+			@Nonnull PsiElement occurrence,
+			@Nonnull PsiClass containingClass)
 	{
 		boolean isOriginal = occurrence == myContext.getExpression();
 		final GrReferenceExpression newExpr = createRefExpression(field, occurrence, containingClass);
@@ -449,10 +449,10 @@ public class GrIntroduceFieldProcessor
 		return replaced;
 	}
 
-	@NotNull
-	private static GrReferenceExpression createRefExpression(@NotNull GrVariable field,
-			@NotNull PsiElement place,
-			@NotNull PsiClass containingClass)
+	@Nonnull
+	private static GrReferenceExpression createRefExpression(@Nonnull GrVariable field,
+			@Nonnull PsiElement place,
+			@Nonnull PsiClass containingClass)
 	{
 		final String qname = containingClass.getQualifiedName();
 		final String prefix = qname != null ? qname + "." : "";
@@ -470,8 +470,8 @@ public class GrIntroduceFieldProcessor
 				place);
 	}
 
-	@NotNull
-	private GrVariableDeclaration createField(@NotNull PsiClass targetClass)
+	@Nonnull
+	private GrVariableDeclaration createField(@Nonnull PsiClass targetClass)
 	{
 		final String name = mySettings.getName();
 		final PsiType type = mySettings.getSelectedType();
@@ -507,7 +507,7 @@ public class GrIntroduceFieldProcessor
 		}
 	}
 
-	@Nullable
+	@javax.annotation.Nullable
 	protected GrExpression getInitializer()
 	{
 		if(mySettings.removeLocalVar())

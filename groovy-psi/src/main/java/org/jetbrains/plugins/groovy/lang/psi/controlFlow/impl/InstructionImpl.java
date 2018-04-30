@@ -16,8 +16,8 @@
 package org.jetbrains.plugins.groovy.lang.psi.controlFlow.impl;
 
 import com.intellij.psi.PsiElement;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.controlFlow.CallEnvironment;
 import org.jetbrains.plugins.groovy.lang.psi.controlFlow.CallInstruction;
 import org.jetbrains.plugins.groovy.lang.psi.controlFlow.Instruction;
@@ -43,7 +43,7 @@ public class InstructionImpl implements Instruction {
     return myPsiElement;
   }
 
-  public InstructionImpl(@Nullable PsiElement element) {
+  public InstructionImpl(@javax.annotation.Nullable PsiElement element) {
     myPsiElement = element;
   }
 
@@ -96,7 +96,7 @@ public class InstructionImpl implements Instruction {
     return myNumber;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public Iterable<? extends NegatingGotoInstruction> getNegatingGotoInstruction() {
     if (myNegations == null) {

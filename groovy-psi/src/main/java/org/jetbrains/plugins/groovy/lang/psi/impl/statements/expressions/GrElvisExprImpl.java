@@ -16,8 +16,9 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.lang.ASTNode;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrElvisExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
@@ -27,7 +28,7 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpres
  */
 public class GrElvisExprImpl extends GrConditionalExprImpl implements GrElvisExpression {
 
-  public GrElvisExprImpl(@NotNull ASTNode node) {
+  public GrElvisExprImpl(@Nonnull ASTNode node) {
     super(node);
   }
 

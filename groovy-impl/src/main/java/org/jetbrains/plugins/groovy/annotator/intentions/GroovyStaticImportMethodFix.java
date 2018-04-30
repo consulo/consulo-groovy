@@ -19,10 +19,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.annotation.Nonnull;
 import javax.swing.JList;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrArgumentList;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrMethodCall;
@@ -63,11 +62,11 @@ public class GroovyStaticImportMethodFix implements IntentionAction {
   private final SmartPsiElementPointer<GrMethodCall> myMethodCall;
   private List<PsiMethod> myCandidates = null;
 
-  public GroovyStaticImportMethodFix(@NotNull GrMethodCall methodCallExpression) {
+  public GroovyStaticImportMethodFix(@Nonnull GrMethodCall methodCallExpression) {
     myMethodCall = SmartPointerManager.getInstance(methodCallExpression.getProject()).createSmartPsiElementPointer(methodCallExpression);
   }
 
-  @NotNull
+  @Nonnull
   public String getText() {
     String text = "Static Import Method";
     if (getCandidates().size() == 1) {
@@ -80,18 +79,18 @@ public class GroovyStaticImportMethodFix implements IntentionAction {
     return text;
   }
 
-  @NotNull
+  @Nonnull
   public String getFamilyName() {
     return getText();
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   private static GrReferenceExpression getMethodExpression(GrMethodCall call) {
     GrExpression result = call.getInvokedExpression();
     return result instanceof GrReferenceExpression ? (GrReferenceExpression)result : null;
   }
 
-  public boolean isAvailable(@NotNull Project project, Editor editor, PsiFile file) {
+  public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file) {
     myCandidates = null;
     return myMethodCall != null &&
            myMethodCall.getElement() != null &&
@@ -102,7 +101,7 @@ public class GroovyStaticImportMethodFix implements IntentionAction {
            !getCandidates().isEmpty();
   }
 
-  @NotNull
+  @Nonnull
   private List<PsiMethod> getMethodsToImport() {
     PsiShortNamesCache cache = PsiShortNamesCache.getInstance(myMethodCall.getProject());
 
@@ -137,7 +136,7 @@ public class GroovyStaticImportMethodFix implements IntentionAction {
     return result;
   }
 
-  public void invoke(@NotNull final Project project, final Editor editor, PsiFile file) {
+  public void invoke(@Nonnull final Project project, final Editor editor, PsiFile file) {
     if (!FileModificationService.getInstance().prepareFileForWrite(file)) return;
     if (getCandidates().size() == 1) {
       final PsiMethod toImport = getCandidates().get(0);

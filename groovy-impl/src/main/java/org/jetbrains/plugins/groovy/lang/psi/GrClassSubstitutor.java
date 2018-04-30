@@ -1,5 +1,7 @@
 package org.jetbrains.plugins.groovy.lang.psi;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.openapi.extensions.ExtensionPointName;
 import com.intellij.openapi.extensions.Extensions;
 import com.intellij.openapi.util.Key;
@@ -8,8 +10,8 @@ import com.intellij.psi.util.CachedValue;
 import com.intellij.psi.util.CachedValueProvider;
 import com.intellij.psi.util.CachedValuesManager;
 import com.intellij.psi.util.PsiModificationTracker;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 
 /**
  * @author peter
@@ -19,10 +21,10 @@ public abstract class GrClassSubstitutor {
   private static final Key<CachedValue<PsiClass>> SUBSTITUTED_CLASS_KEY = Key.create("GroovySubstitutedType");
 
   @Nullable
-  public abstract GrClassSubstitution substituteClass(@NotNull PsiClass base);
+  public abstract GrClassSubstitution substituteClass(@Nonnull PsiClass base);
 
-  @NotNull
-  public static PsiClass getSubstitutedClass(@NotNull final PsiClass base) {
+  @Nonnull
+  public static PsiClass getSubstitutedClass(@Nonnull final PsiClass base) {
     if (!Extensions.getRootArea().getExtensionPoint(EP_NAME).hasAnyExtensions()) {
       return base;
     }

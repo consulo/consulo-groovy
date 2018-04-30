@@ -24,8 +24,8 @@ import com.intellij.psi.tree.IElementType;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.codeInspection.GroovyFix;
@@ -54,19 +54,19 @@ public class GroovyAssignmentCanBeOperatorAssignmentInspection
 
   @Override
   @Nls
-  @NotNull
+  @Nonnull
   public String getGroupDisplayName() {
     return ASSIGNMENT_ISSUES;
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public String getDisplayName() {
     return "Assignment replaceable with operator assignment";
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public String buildErrorString(Object... infos) {
     final GrAssignmentExpression assignmentExpression =
         (GrAssignmentExpression) infos[0];
@@ -102,14 +102,14 @@ public class GroovyAssignmentCanBeOperatorAssignmentInspection
     return lhs.getText() + ' ' + signText + "= " + rhsRhs.getText();
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public BaseInspectionVisitor buildVisitor() {
     return new ReplaceAssignmentWithOperatorAssignmentVisitor();
   }
 
   @Override
-  public GroovyFix buildFix(@NotNull PsiElement location) {
+  public GroovyFix buildFix(@Nonnull PsiElement location) {
     return new ReplaceAssignmentWithOperatorAssignmentFix(
         (GrAssignmentExpression) location);
   }
@@ -137,13 +137,13 @@ public class GroovyAssignmentCanBeOperatorAssignmentInspection
     }
 
     @Override
-    @NotNull
+    @Nonnull
     public String getName() {
       return m_name;
     }
 
     @Override
-    public void doFix(@NotNull Project project,
+    public void doFix(@Nonnull Project project,
                       ProblemDescriptor descriptor)
         throws IncorrectOperationException {
       final PsiElement element = descriptor.getPsiElement();
@@ -162,7 +162,7 @@ public class GroovyAssignmentCanBeOperatorAssignmentInspection
       extends BaseInspectionVisitor {
 
     @Override
-    public void visitAssignmentExpression(@NotNull GrAssignmentExpression assignment) {
+    public void visitAssignmentExpression(@Nonnull GrAssignmentExpression assignment) {
       super.visitAssignmentExpression(assignment);
       final IElementType assignmentTokenType = assignment.getOperationTokenType();
       if (!assignmentTokenType.equals(GroovyTokenTypes.mASSIGN)) {

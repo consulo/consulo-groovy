@@ -29,7 +29,6 @@ import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
 import com.intellij.psi.util.PsiTreeUtil;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.lang.completion.GroovyCompletionUtil;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 
@@ -99,7 +98,7 @@ public class AfterNewClassInsertHandler implements InsertHandler<LookupItem<PsiC
     }
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   private static Runnable generateAnonymousBody(final Editor editor, final PsiFile file) {
     final Project project = file.getProject();
     PsiDocumentManager.getInstance(project).commitAllDocuments();

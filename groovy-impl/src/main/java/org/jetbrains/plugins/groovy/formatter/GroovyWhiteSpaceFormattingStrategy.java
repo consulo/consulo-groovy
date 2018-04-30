@@ -17,7 +17,7 @@ package org.jetbrains.plugins.groovy.formatter;
 
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.formatter.WhiteSpaceFormattingStrategyAdapter;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 
 /**
@@ -25,7 +25,7 @@ import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
  */
 public class GroovyWhiteSpaceFormattingStrategy extends WhiteSpaceFormattingStrategyAdapter {
   @Override
-  public boolean containsWhitespacesOnly(@NotNull ASTNode node) {
+  public boolean containsWhitespacesOnly(@Nonnull ASTNode node) {
     return node.getElementType() == GroovyTokenTypes.mNLS;
   }
 }

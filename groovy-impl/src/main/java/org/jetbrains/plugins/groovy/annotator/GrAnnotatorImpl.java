@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.annotator;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.codeInspection.type.GroovyStaticTypeCheckVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
@@ -47,7 +47,7 @@ public class GrAnnotatorImpl implements Annotator
 	};
 
 	@Override
-	public void annotate(@NotNull PsiElement element, @NotNull AnnotationHolder holder)
+	public void annotate(@Nonnull PsiElement element, @Nonnull AnnotationHolder holder)
 	{
 		if(FileIndexFacade.getInstance(element.getProject()).isInLibrarySource(element.getContainingFile().getVirtualFile()))
 

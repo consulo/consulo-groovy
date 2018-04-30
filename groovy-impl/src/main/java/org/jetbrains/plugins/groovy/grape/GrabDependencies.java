@@ -29,7 +29,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotation;
 import org.jetbrains.plugins.groovy.runner.DefaultGroovyScriptRunner;
 import org.jetbrains.plugins.groovy.runner.GroovyScriptRunConfiguration;
@@ -92,19 +93,19 @@ public class GrabDependencies implements IntentionAction
 
 	private static final NotificationGroup NOTIFICATION_GROUP = new NotificationGroup("Grape", NotificationDisplayType.BALLOON, true);
 
-	@NotNull
+	@Nonnull
 	public String getText()
 	{
 		return "Grab the artifacts";
 	}
 
-	@NotNull
+	@Nonnull
 	public String getFamilyName()
 	{
 		return "Grab";
 	}
 
-	public boolean isAvailable(@NotNull Project project, Editor editor, PsiFile file)
+	public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file)
 	{
 		final GrAnnotation anno = PsiTreeUtil.findElementOfClassAtOffset(file, editor.getCaretModel().getOffset(), GrAnnotation.class, false);
 		if(anno == null)
@@ -133,7 +134,7 @@ public class GrabDependencies implements IntentionAction
 		return file.getOriginalFile().getVirtualFile() != null;
 	}
 
-	public void invoke(@NotNull final Project project, Editor editor, PsiFile file) throws IncorrectOperationException
+	public void invoke(@Nonnull final Project project, Editor editor, PsiFile file) throws IncorrectOperationException
 	{
 		final Module module = ModuleUtil.findModuleForPsiElement(file);
 		assert module != null;
@@ -194,7 +195,7 @@ public class GrabDependencies implements IntentionAction
 		ProgressManager.getInstance().run(new Task.Backgroundable(project, "Processing @Grab annotations")
 		{
 
-			public void run(@NotNull ProgressIndicator indicator)
+			public void run(@Nonnull ProgressIndicator indicator)
 			{
 				int jarCount = 0;
 				String messages = "";

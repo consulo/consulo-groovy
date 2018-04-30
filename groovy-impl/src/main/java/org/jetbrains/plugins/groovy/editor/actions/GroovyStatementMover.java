@@ -29,8 +29,8 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiRecursiveElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.text.CharArrayUtil;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.editor.HandlerUtils;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocComment;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocCommentOwner;
@@ -58,7 +58,7 @@ import java.util.List;
 public class GroovyStatementMover extends StatementUpDownMover {
 
   @Override
-  public boolean checkAvailable(@NotNull Editor editor, @NotNull PsiFile file, @NotNull MoveInfo info, boolean down) {
+  public boolean checkAvailable(@Nonnull Editor editor, @Nonnull PsiFile file, @Nonnull MoveInfo info, boolean down) {
     final Project project = file.getProject();
     if (!HandlerUtils.canBeInvoked(editor, project) || !(file instanceof GroovyFileBase)) return false;
 
@@ -209,7 +209,7 @@ public class GroovyStatementMover extends StatementUpDownMover {
     return result;
   }
 
-  private static boolean nlsAfter(@Nullable PsiElement element) {
+  private static boolean nlsAfter(@javax.annotation.Nullable PsiElement element) {
     if (element == null) return false;
 
     PsiElement sibling = element;

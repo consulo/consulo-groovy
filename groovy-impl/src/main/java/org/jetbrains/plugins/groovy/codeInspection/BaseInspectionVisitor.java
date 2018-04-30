@@ -15,13 +15,15 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.codeInspection.LocalQuickFix;
 import com.intellij.codeInspection.ProblemHighlightType;
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyRecursiveElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
@@ -101,18 +103,18 @@ public abstract class BaseInspectionVisitor extends GroovyRecursiveElementVisito
     registerError(nameElement, description, fixes, ProblemHighlightType.GENERIC_ERROR_OR_WARNING);
   }
 
-  protected void registerError(@NotNull PsiElement location,
-                               @NotNull String description,
+  protected void registerError(@Nonnull PsiElement location,
+                               @Nonnull String description,
                                @Nullable LocalQuickFix[] fixes,
                                ProblemHighlightType highlightType) {
     problemsHolder.registerProblem(location, description, highlightType, fixes);
   }
 
-  protected void registerError(@NotNull PsiElement location, Object... args) {
+  protected void registerError(@Nonnull PsiElement location, Object... args) {
     registerError(location, ProblemHighlightType.GENERIC_ERROR_OR_WARNING, args);
   }
 
-  protected void registerError(@NotNull PsiElement location,
+  protected void registerError(@Nonnull PsiElement location,
                                ProblemHighlightType highlightType,
                                Object... args) {
     final LocalQuickFix[] fix = createFixes(location);
@@ -121,7 +123,7 @@ public abstract class BaseInspectionVisitor extends GroovyRecursiveElementVisito
   }
 
   @Nullable
-  private LocalQuickFix[] createFixes(@NotNull PsiElement location) {
+  private LocalQuickFix[] createFixes(@Nonnull PsiElement location) {
     if (!onTheFly &&
         inspection.buildQuickFixesOnlyForOnTheFlyErrors()) {
       return null;

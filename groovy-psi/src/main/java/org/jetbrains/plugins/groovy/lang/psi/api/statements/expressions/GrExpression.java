@@ -17,7 +17,7 @@
 package org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions;
 
 import com.intellij.psi.PsiType;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotationMemberValue;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
 
@@ -30,7 +30,7 @@ public interface GrExpression extends GrStatement, GrAnnotationMemberValue {
   @Nullable
   PsiType getType();
 
-  @Nullable
+  @javax.annotation.Nullable
   PsiType getNominalType();
 
   GrExpression replaceWithExpression(GrExpression expression, boolean removeUnnecessaryParentheses);

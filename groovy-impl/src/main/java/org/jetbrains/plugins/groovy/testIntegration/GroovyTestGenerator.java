@@ -17,8 +17,8 @@ package org.jetbrains.plugins.groovy.testIntegration;
 
 import java.util.Collection;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.actions.GroovyTemplates;
 import org.jetbrains.plugins.groovy.annotator.intentions.CreateClassActionBase;
 import org.jetbrains.plugins.groovy.intentions.GroovyIntentionsBundle;
@@ -110,7 +110,7 @@ public class GroovyTestGenerator implements TestGenerator {
     return GroovyIntentionsBundle.message("intention.crete.test.groovy");
   }
 
-  private static void addSuperClass(@NotNull GrTypeDefinition targetClass, @NotNull Project project, @Nullable String superClassName)
+  private static void addSuperClass(@Nonnull GrTypeDefinition targetClass, @Nonnull Project project, @javax.annotation.Nullable String superClassName)
     throws IncorrectOperationException {
     if (superClassName == null) return;
 
@@ -132,7 +132,7 @@ public class GroovyTestGenerator implements TestGenerator {
     extendsClause.add(superClassRef);
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   private static PsiClass findClass(Project project, String fqName) {
     GlobalSearchScope scope = GlobalSearchScope.allScope(project);
     return JavaPsiFacade.getInstance(project).findClass(fqName, scope);
@@ -169,7 +169,7 @@ public class GroovyTestGenerator implements TestGenerator {
                                      TestFramework descriptor,
                                      PsiClass targetClass,
                                      Editor editor,
-                                     @Nullable String name) {
+                                     @javax.annotation.Nullable String name) {
     GroovyPsiElementFactory f = GroovyPsiElementFactory.getInstance(targetClass.getProject());
     PsiMethod method = (PsiMethod)targetClass.add(f.createMethod("dummy", PsiType.VOID));
     PsiDocumentManager.getInstance(targetClass.getProject()).doPostponedOperationsAndUnblockDocument(editor.getDocument());

@@ -15,7 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.codeInspection.InspectionSuppressor;
 import com.intellij.codeInspection.SuppressQuickFix;
 import com.intellij.psi.PsiElement;
@@ -23,13 +24,13 @@ import com.intellij.psi.PsiElement;
 public class GroovyInspectionSuppressor implements InspectionSuppressor
 {
 	@Override
-	public boolean isSuppressedFor(@NotNull PsiElement element, @NotNull String name)
+	public boolean isSuppressedFor(@Nonnull PsiElement element, @Nonnull String name)
 	{
 		return GroovySuppressableInspectionTool.getElementToolSuppressedIn(element, name) != null;
 	}
 
 	@Override
-	public SuppressQuickFix[] getSuppressActions(@NotNull PsiElement element, String toolShortName)
+	public SuppressQuickFix[] getSuppressActions(@Nonnull PsiElement element, String toolShortName)
 	{
 		return GroovySuppressableInspectionTool.getSuppressActions(toolShortName);
 	}

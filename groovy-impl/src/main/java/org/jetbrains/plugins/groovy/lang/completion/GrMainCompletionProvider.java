@@ -19,8 +19,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.lang.psi.GrReferenceElement;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
@@ -73,7 +73,7 @@ public class GrMainCompletionProvider implements CompletionProvider
 	public static final ElementPattern<PsiElement> AFTER_AT = PlatformPatterns.psiElement().afterLeaf("@");
 	public static final ElementPattern<PsiElement> IN_CATCH_TYPE = PlatformPatterns.psiElement().afterLeaf(PlatformPatterns.psiElement().withText("(").withParent(GrCatchClause.class));
 
-	private static void addUnfinishedMethodTypeParameters(@NotNull PsiElement position, @NotNull CompletionResultSet result)
+	private static void addUnfinishedMethodTypeParameters(@Nonnull PsiElement position, @Nonnull CompletionResultSet result)
 	{
 		final GrTypeParameterList candidate = findTypeParameterListCandidate(position);
 
@@ -133,8 +133,8 @@ public class GrMainCompletionProvider implements CompletionProvider
 		}
 	}
 
-	@Nullable
-	private static GrReferenceElement findGroovyReference(@NotNull PsiElement position)
+	@javax.annotation.Nullable
+	private static GrReferenceElement findGroovyReference(@Nonnull PsiElement position)
 	{
 		final PsiElement parent = position.getParent();
 		if(parent instanceof GrReferenceElement)
@@ -154,8 +154,8 @@ public class GrMainCompletionProvider implements CompletionProvider
 				.isTupleVarNameWithoutTypeDeclared(position);
 	}
 
-	@Nullable
-	private static GrTypeParameterList findTypeParameterListCandidate(@NotNull PsiElement position)
+	@javax.annotation.Nullable
+	private static GrTypeParameterList findTypeParameterListCandidate(@Nonnull PsiElement position)
 	{
 		final PsiElement parent = position.getParent();
 		if(parent instanceof GrVariable)
@@ -223,7 +223,7 @@ public class GrMainCompletionProvider implements CompletionProvider
 		});
 	}
 
-	@NotNull
+	@Nonnull
 	static Runnable completeReference(final CompletionParameters parameters,
 			final GrReferenceElement reference,
 			final JavaCompletionSession inheritorsHolder,
@@ -474,16 +474,16 @@ public class GrMainCompletionProvider implements CompletionProvider
 		final PsiElement originalPosition = parameters.getOriginalPosition();
 		final StaticMemberProcessor processor = new StaticMemberProcessor(position)
 		{
-			@NotNull
+			@Nonnull
 			@Override
-			protected LookupElement createLookupElement(@NotNull PsiMember member, @NotNull PsiClass containingClass, boolean shouldImport)
+			protected LookupElement createLookupElement(@Nonnull PsiMember member, @Nonnull PsiClass containingClass, boolean shouldImport)
 			{
 				shouldImport |= originalPosition != null && PsiTreeUtil.isAncestor(containingClass, originalPosition, false);
 				return createGlobalMemberElement(member, containingClass, shouldImport);
 			}
 
 			@Override
-			protected LookupElement createLookupElement(@NotNull List<PsiMethod> overloads, @NotNull PsiClass containingClass, boolean shouldImport)
+			protected LookupElement createLookupElement(@Nonnull List<PsiMethod> overloads, @Nonnull PsiClass containingClass, boolean shouldImport)
 			{
 				shouldImport |= originalPosition != null && PsiTreeUtil.isAncestor(containingClass, originalPosition, false);
 				return new JavaGlobalMemberLookupElement(overloads, containingClass, QualifiedMethodInsertHandler.INSTANCE, StaticImportInsertHandler.INSTANCE, shouldImport);
@@ -543,7 +543,7 @@ public class GrMainCompletionProvider implements CompletionProvider
 	}
 
 	@Override
-	public void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull final CompletionResultSet result)
+	public void addCompletions(@Nonnull CompletionParameters parameters, ProcessingContext context, @Nonnull final CompletionResultSet result)
 	{
 		GroovyCompletionData.addGroovyDocKeywords(parameters, result);
 

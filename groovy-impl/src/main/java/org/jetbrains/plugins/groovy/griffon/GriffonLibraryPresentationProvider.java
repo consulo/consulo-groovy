@@ -19,12 +19,13 @@ import java.io.File;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.annotation.Nonnull;
 import javax.swing.Icon;
 
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.config.GroovyLibraryPresentationProviderBase;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.roots.LibraryOrderEntry;
@@ -72,7 +73,7 @@ public class GriffonLibraryPresentationProvider extends GroovyLibraryPresentatio
   }
 
   @Override
-  public boolean isSDKHome(@NotNull VirtualFile file) {
+  public boolean isSDKHome(@Nonnull VirtualFile file) {
     final VirtualFile dist = file.findChild("dist");
     if (dist == null) {
       return false;
@@ -81,7 +82,7 @@ public class GriffonLibraryPresentationProvider extends GroovyLibraryPresentatio
     return isGriffonSdk(dist.getChildren());
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public String getSDKVersion(String path) {
     final VirtualFile file = LocalFileSystem.getInstance().findFileByPath(path);
@@ -118,8 +119,8 @@ public class GriffonLibraryPresentationProvider extends GroovyLibraryPresentatio
     return false;
   }
 
-  @Nullable
-  public static String getGriffonVersion(@NotNull Module module) {
+  @javax.annotation.Nullable
+  public static String getGriffonVersion(@Nonnull Module module) {
     for (final OrderEntry orderEntry : ModuleRootManager.getInstance(module).getOrderEntries()) {
       if (orderEntry instanceof LibraryOrderEntry) {
         final VirtualFile[] files = orderEntry.getFiles(OrderRootType.CLASSES);
@@ -151,14 +152,14 @@ public class GriffonLibraryPresentationProvider extends GroovyLibraryPresentatio
     return null;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public Icon getIcon() {
     return JetgroovyIcons.Griffon.Griffon;
   }
 
   @Nls
-  @NotNull
+  @Nonnull
   @Override
   public String getLibraryCategoryName() {
     return "Griffon";

@@ -16,11 +16,13 @@
 
 package org.jetbrains.plugins.groovy.lang.parser.parsing.statements.declaration;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.lang.PsiBuilder;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.tree.IElementType;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.lexer.TokenSets;
@@ -44,11 +46,11 @@ import org.jetbrains.plugins.groovy.lang.parser.parsing.util.ParserUtils;
 
 public class Declaration {
 
-  public static boolean parse(@NotNull PsiBuilder builder,
+  public static boolean parse(@Nonnull PsiBuilder builder,
                               boolean isInClass,
                               boolean isInAnnotation,
                               @Nullable String typeDefinitionName,
-                              @NotNull GroovyParser parser) {
+                              @Nonnull GroovyParser parser) {
     PsiBuilder.Marker declMarker = builder.mark();
     //allows error messages
     boolean modifiersParsed = Modifiers.parse(builder, parser);
@@ -78,11 +80,11 @@ public class Declaration {
   }
 
   @Nullable
-  public static IElementType parseAfterModifiers(@NotNull PsiBuilder builder,
+  public static IElementType parseAfterModifiers(@Nonnull PsiBuilder builder,
                                                  boolean isInClass,
                                                  boolean isInAnnotation,
                                                  @Nullable String typeDefinitionName,
-                                                 @NotNull GroovyParser parser,
+                                                 @Nonnull GroovyParser parser,
                                                  boolean modifiersParsed) {
     boolean expressionPossible = !isInAnnotation && !isInClass;
     if (modifiersParsed && builder.getTokenType() == GroovyTokenTypes.mLT) {
@@ -100,11 +102,11 @@ public class Declaration {
     }
   }
 
-  private static IElementType parsePossibleCallExpression(@NotNull PsiBuilder builder,
+  private static IElementType parsePossibleCallExpression(@Nonnull PsiBuilder builder,
                                                           boolean isInClass,
                                                           boolean isInAnnotation,
                                                           @Nullable String typeDefinitionName,
-                                                          @NotNull GroovyParser parser,
+                                                          @Nonnull GroovyParser parser,
                                                           boolean expressionPossible) {
     if (isCall(builder)) {
       return GroovyElementTypes.WRONGWAY;
@@ -130,7 +132,7 @@ public class Declaration {
     return GroovyElementTypes.WRONGWAY;
   }
 
-  private static boolean isCall(@NotNull PsiBuilder builder) {
+  private static boolean isCall(@Nonnull PsiBuilder builder) {
     if (builder.eof()) return false;
     if (TokenSets.BUILT_IN_TYPES.contains(builder.getTokenType())) return false;
 
@@ -145,11 +147,11 @@ public class Declaration {
                                                                                                                       GroovyTokenTypes.mLPAREN));
   }
 
-  private static IElementType parseDeclarationWithoutGenerics(@NotNull PsiBuilder builder,
+  private static IElementType parseDeclarationWithoutGenerics(@Nonnull PsiBuilder builder,
                                                               boolean isInClass,
                                                               boolean isInAnnotation,
-                                                              @Nullable String typeDefinitionName,
-                                                              @NotNull GroovyParser parser,
+                                                              @javax.annotation.Nullable String typeDefinitionName,
+                                                              @Nonnull GroovyParser parser,
                                                               boolean modifiersParsed,
                                                               boolean expressionPossible) {
     PsiBuilder.Marker checkMarker = builder.mark(); //point to begin of type or variable
@@ -192,11 +194,11 @@ public class Declaration {
     }
   }
 
-  private static IElementType parseDeclarationWithGenerics(@NotNull PsiBuilder builder,
+  private static IElementType parseDeclarationWithGenerics(@Nonnull PsiBuilder builder,
                                                            boolean isInClass,
                                                            boolean isInAnnotation,
                                                            @Nullable String typeDefinitionName,
-                                                           @NotNull GroovyParser parser,
+                                                           @Nonnull GroovyParser parser,
                                                            boolean modifiersParsed,
                                                            boolean expressionPossible) {
     final PsiBuilder.Marker start = builder.mark();
@@ -215,11 +217,11 @@ public class Declaration {
     return tryParseWithGenerics(builder, isInClass, isInAnnotation, typeDefinitionName, parser, modifiersParsed, expressionPossible, false);
   }
 
-  private static IElementType tryParseWithGenerics(@NotNull PsiBuilder builder,
+  private static IElementType tryParseWithGenerics(@Nonnull PsiBuilder builder,
                                                    boolean isInClass,
                                                    boolean isInAnnotation,
                                                    @Nullable String typeDefinitionName,
-                                                   @NotNull GroovyParser parser,
+                                                   @Nonnull GroovyParser parser,
                                                    boolean modifiersParsed,
                                                    boolean expressionPossible,
                                                    boolean acceptTypeParameters) {

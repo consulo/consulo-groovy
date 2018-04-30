@@ -15,7 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.metrics;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyRecursiveElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.*;
@@ -38,13 +39,13 @@ class CyclomaticComplexityVisitor extends GroovyRecursiveElementVisitor {
     }
   }
 
-  public void visitForStatement(@NotNull GrForStatement statement) {
+  public void visitForStatement(@Nonnull GrForStatement statement) {
     super.visitForStatement(statement);
     complexity++;
   }
 
 
-  public void visitIfStatement(@NotNull GrIfStatement statement) {
+  public void visitIfStatement(@Nonnull GrIfStatement statement) {
     super.visitIfStatement(statement);
     complexity++;
   }
@@ -54,7 +55,7 @@ class CyclomaticComplexityVisitor extends GroovyRecursiveElementVisitor {
     complexity++;
   }
 
-  public void visitSwitchStatement(@NotNull GrSwitchStatement statement) {
+  public void visitSwitchStatement(@Nonnull GrSwitchStatement statement) {
     super.visitSwitchStatement(statement);
     final GrCaseSection[] caseClauses = statement.getCaseSections();
     for (GrCaseSection clause : caseClauses) {
@@ -65,7 +66,7 @@ class CyclomaticComplexityVisitor extends GroovyRecursiveElementVisitor {
     }
   }
 
-  public void visitWhileStatement(@NotNull GrWhileStatement statement) {
+  public void visitWhileStatement(@Nonnull GrWhileStatement statement) {
     super.visitWhileStatement(statement);
     complexity++;
   }

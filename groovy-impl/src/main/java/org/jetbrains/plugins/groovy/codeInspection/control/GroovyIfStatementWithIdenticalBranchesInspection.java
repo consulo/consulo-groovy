@@ -19,7 +19,7 @@ import com.intellij.codeInspection.ProblemDescriptor;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.IncorrectOperationException;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.codeInspection.GroovyFix;
@@ -33,12 +33,12 @@ public class GroovyIfStatementWithIdenticalBranchesInspection extends BaseInspec
     return true;
   }
 
-  @NotNull
+  @Nonnull
   public String getDisplayName() {
     return "If statement with identical branches";
   }
 
-  @NotNull
+  @Nonnull
   public String getGroupDisplayName() {
     return CONTROL_FLOW;
   }
@@ -53,7 +53,7 @@ public class GroovyIfStatementWithIdenticalBranchesInspection extends BaseInspec
 
   private static class CollapseIfFix extends GroovyFix {
 
-    @NotNull
+    @Nonnull
     public String getName() {
       return "Collapse 'if' statement'";
     }
@@ -73,7 +73,7 @@ public class GroovyIfStatementWithIdenticalBranchesInspection extends BaseInspec
 
   private static class IfStatementWithIdenticalBranchesVisitor extends BaseInspectionVisitor {
 
-    public void visitIfStatement(@NotNull GrIfStatement statement) {
+    public void visitIfStatement(@Nonnull GrIfStatement statement) {
       super.visitIfStatement(statement);
       final GrStatement thenBranch = statement.getThenBranch();
       final GrStatement elseBranch = statement.getElseBranch();

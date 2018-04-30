@@ -16,7 +16,7 @@
 
 package org.jetbrains.plugins.groovy.highlighter;
 
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.groovydoc.parser.GroovyDocElementTypes;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import com.intellij.lang.CodeDocumentationAwareCommenter;
@@ -67,7 +67,7 @@ public class GroovyCommenter implements CodeDocumentationAwareCommenter
 	}
 
 	@Override
-	@Nullable
+	@javax.annotation.Nullable
 	public IElementType getBlockCommentTokenType()
 	{
 		return GroovyTokenTypes.mML_COMMENT;
@@ -81,7 +81,7 @@ public class GroovyCommenter implements CodeDocumentationAwareCommenter
 	}
 
 	@Override
-	@Nullable
+	@javax.annotation.Nullable
 	public String getDocumentationCommentPrefix()
 	{
 		return "/**";

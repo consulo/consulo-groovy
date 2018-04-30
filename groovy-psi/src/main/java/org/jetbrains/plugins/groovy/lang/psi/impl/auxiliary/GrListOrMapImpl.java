@@ -16,8 +16,8 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.auxiliary;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.findUsages.LiteralConstructorReference;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
@@ -67,7 +67,7 @@ public class GrListOrMapImpl extends GrExpressionImpl implements GrListOrMap
 	private volatile GrExpression[] myInitializers = null;
 	private volatile GrNamedArgument[] myNamedArguments = null;
 
-	public GrListOrMapImpl(@NotNull ASTNode node)
+	public GrListOrMapImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
@@ -96,7 +96,7 @@ public class GrListOrMapImpl extends GrExpressionImpl implements GrListOrMap
 	}
 
 	@Override
-	public void deleteChildInternal(@NotNull ASTNode child)
+	public void deleteChildInternal(@Nonnull ASTNode child)
 	{
 		final PsiElement psi = child.getPsi();
 		if(psi instanceof GrExpression || psi instanceof GrNamedArgument)
@@ -147,7 +147,7 @@ public class GrListOrMapImpl extends GrExpressionImpl implements GrListOrMap
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public GrExpression[] getInitializers()
 	{
 		GrExpression[] initializers = myInitializers;
@@ -161,7 +161,7 @@ public class GrListOrMapImpl extends GrExpressionImpl implements GrListOrMap
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public GrNamedArgument[] getNamedArguments()
 	{
 		GrNamedArgument[] namedArguments = myNamedArguments;
@@ -175,7 +175,7 @@ public class GrListOrMapImpl extends GrExpressionImpl implements GrListOrMap
 	}
 
 	@Override
-	public GrNamedArgument findNamedArgument(@NotNull String label)
+	public GrNamedArgument findNamedArgument(@Nonnull String label)
 	{
 		return PsiImplUtil.findNamedArgument(this, label);
 	}
@@ -196,7 +196,7 @@ public class GrListOrMapImpl extends GrExpressionImpl implements GrListOrMap
 	private static class MyTypesCalculator implements Function<GrListOrMapImpl, PsiType>
 	{
 		@Override
-		@Nullable
+		@javax.annotation.Nullable
 		public PsiType fun(GrListOrMapImpl listOrMap)
 		{
 			if(listOrMap.isMap())
@@ -284,7 +284,7 @@ public class GrListOrMapImpl extends GrExpressionImpl implements GrListOrMap
 
 			return new GrTupleType(scope, facade)
 			{
-				@NotNull
+				@Nonnull
 				@Override
 				protected PsiType[] inferComponents()
 				{

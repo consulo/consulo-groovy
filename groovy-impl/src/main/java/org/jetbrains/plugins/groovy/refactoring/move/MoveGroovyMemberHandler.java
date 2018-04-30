@@ -34,8 +34,8 @@ import com.intellij.util.ArrayUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.VisibilityUtil;
 import com.intellij.util.containers.MultiMap;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
@@ -61,7 +61,7 @@ import java.util.*;
  * @author Maxim.Medvedev
  */
 public class MoveGroovyMemberHandler implements MoveMemberHandler {
-  public boolean changeExternalUsage(@NotNull MoveMembersOptions options, @NotNull MoveMembersProcessor.MoveMembersUsageInfo usage) {
+  public boolean changeExternalUsage(@Nonnull MoveMembersOptions options, @Nonnull MoveMembersProcessor.MoveMembersUsageInfo usage) {
     final PsiElement element = usage.getElement();
     if (element == null || !element.isValid()) return true;
 
@@ -87,8 +87,8 @@ public class MoveGroovyMemberHandler implements MoveMemberHandler {
   }
 
   @Override
-  @NotNull
-  public PsiMember doMove(@NotNull MoveMembersOptions options, @NotNull PsiMember member, PsiElement anchor, @NotNull PsiClass targetClass) {
+  @Nonnull
+  public PsiMember doMove(@Nonnull MoveMembersOptions options, @Nonnull PsiMember member, PsiElement anchor, @Nonnull PsiClass targetClass) {
     GroovyChangeContextUtil.encodeContextInfo(member);
 
     final PsiDocComment docComment;
@@ -181,7 +181,7 @@ public class MoveGroovyMemberHandler implements MoveMemberHandler {
     }
   }
 
-  public void decodeContextInfo(@NotNull PsiElement scope) {
+  public void decodeContextInfo(@Nonnull PsiElement scope) {
     GroovyChangeContextUtil.decodeContextInfo(scope, null, null);
   }
 
@@ -224,8 +224,8 @@ public class MoveGroovyMemberHandler implements MoveMemberHandler {
   }
 
   @Override
-  @Nullable
-  public PsiElement getAnchor(@NotNull final PsiMember member, @NotNull final PsiClass targetClass, Set<PsiMember> membersToMove) {
+  @javax.annotation.Nullable
+  public PsiElement getAnchor(@Nonnull final PsiMember member, @Nonnull final PsiClass targetClass, Set<PsiMember> membersToMove) {
     if (member instanceof GrField && member.hasModifierProperty(PsiModifier.STATIC)) {
       final List<PsiField> referencedFields = new ArrayList<PsiField>();
       final GrExpression psiExpression = ((GrField)member).getInitializerGroovy();
@@ -263,7 +263,7 @@ public class MoveGroovyMemberHandler implements MoveMemberHandler {
     return elementFactory.createEnumConstantFromText(enumConstantText);
   }
 
-  private static PsiElement addEnumConstant(PsiClass targetClass, GrEnumConstant constant, @Nullable PsiElement anchor) {
+  private static PsiElement addEnumConstant(PsiClass targetClass, GrEnumConstant constant, @javax.annotation.Nullable PsiElement anchor) {
     if (targetClass instanceof GrEnumTypeDefinition) {
       final GrEnumTypeDefinition enumeration = (GrEnumTypeDefinition)targetClass;
       final GrEnumConstantList constantList = enumeration.getEnumConstantList();
@@ -283,10 +283,10 @@ public class MoveGroovyMemberHandler implements MoveMemberHandler {
   }
 
   @Override
-  public MoveMembersProcessor.MoveMembersUsageInfo getUsage(@NotNull PsiMember member,
-                                                            @NotNull PsiReference psiReference,
-                                                            @NotNull Set<PsiMember> membersToMove,
-                                                            @NotNull PsiClass targetClass) {
+  public MoveMembersProcessor.MoveMembersUsageInfo getUsage(@Nonnull PsiMember member,
+                                                            @Nonnull PsiReference psiReference,
+                                                            @Nonnull Set<PsiMember> membersToMove,
+                                                            @Nonnull PsiClass targetClass) {
     PsiElement ref = psiReference.getElement();
     if (ref instanceof GrReferenceExpression) {
       GrReferenceExpression refExpr = (GrReferenceExpression)ref;
@@ -316,12 +316,12 @@ public class MoveGroovyMemberHandler implements MoveMemberHandler {
   }
 
   @Override
-  public void checkConflictsOnUsage(@NotNull MoveMembersProcessor.MoveMembersUsageInfo usageInfo,
+  public void checkConflictsOnUsage(@Nonnull MoveMembersProcessor.MoveMembersUsageInfo usageInfo,
                                     @Nullable String newVisibility,
-                                    @Nullable PsiModifierList modifierListCopy,
-                                    @NotNull PsiClass targetClass,
-                                    @NotNull Set<PsiMember> membersToMove,
-                                    @NotNull MultiMap<PsiElement, String> conflicts) {
+                                    @javax.annotation.Nullable PsiModifierList modifierListCopy,
+                                    @Nonnull PsiClass targetClass,
+                                    @Nonnull Set<PsiMember> membersToMove,
+                                    @Nonnull MultiMap<PsiElement, String> conflicts) {
     final PsiElement element = usageInfo.getElement();
     if (element == null) return;
 
@@ -345,11 +345,11 @@ public class MoveGroovyMemberHandler implements MoveMemberHandler {
   }
 
   @Override
-  public void checkConflictsOnMember(@NotNull PsiMember member,
-                                     @Nullable String newVisibility,
-                                     @Nullable PsiModifierList modifierListCopy,
-                                     @NotNull PsiClass targetClass,
-                                     @NotNull Set<PsiMember> membersToMove,
-                                     @NotNull MultiMap<PsiElement, String> conflicts) {
+  public void checkConflictsOnMember(@Nonnull PsiMember member,
+                                     @javax.annotation.Nullable String newVisibility,
+                                     @javax.annotation.Nullable PsiModifierList modifierListCopy,
+                                     @Nonnull PsiClass targetClass,
+                                     @Nonnull Set<PsiMember> membersToMove,
+                                     @Nonnull MultiMap<PsiElement, String> conflicts) {
   }
 }

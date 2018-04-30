@@ -17,8 +17,8 @@ package org.jetbrains.plugins.groovy.lang.psi.impl.statements.typedef;
 
 import java.util.ArrayList;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrReferenceList;
@@ -46,12 +46,12 @@ public abstract class GrReferenceListImpl extends GrStubElementBase<GrReferenceL
   
   private PsiClassType[] myCachedTypes = null;
 
-  public GrReferenceListImpl(@NotNull ASTNode node) {
+  public GrReferenceListImpl(@Nonnull ASTNode node) {
     super(node);
   }
 
   @Override
-  public void deleteChildInternal(@NotNull ASTNode child) {
+  public void deleteChildInternal(@Nonnull ASTNode child) {
     PsiElement psi = child.getPsi();
 
     if (psi instanceof GrCodeReferenceElement) {
@@ -80,7 +80,7 @@ public abstract class GrReferenceListImpl extends GrStubElementBase<GrReferenceL
   }
 
   @Override
-  @Nullable
+  @javax.annotation.Nullable
   public PsiElement getKeyword() {
     PsiElement firstChild = getFirstChild();
     if (firstChild != null && firstChild.getNode().getElementType() == getKeywordType()) {
@@ -99,7 +99,7 @@ public abstract class GrReferenceListImpl extends GrStubElementBase<GrReferenceL
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public GrCodeReferenceElement[] getReferenceElementsGroovy() {
     final GrReferenceListStub stub = getStub();
     if (stub != null) {
@@ -114,7 +114,7 @@ public abstract class GrReferenceListImpl extends GrStubElementBase<GrReferenceL
     return findChildrenByClass(GrCodeReferenceElement.class);
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public PsiClassType[] getReferencedTypes() {
     if (myCachedTypes == null || !isValid()) {
@@ -133,7 +133,7 @@ public abstract class GrReferenceListImpl extends GrStubElementBase<GrReferenceL
   }
 
   @Override
-  public PsiElement add(@NotNull PsiElement element) throws IncorrectOperationException {
+  public PsiElement add(@Nonnull PsiElement element) throws IncorrectOperationException {
     //hack for inserting references from java code
     if (element instanceof GrCodeReferenceElement || element instanceof PsiJavaCodeReferenceElement) {
       if (findChildByType(getKeywordType()) == null) {

@@ -15,8 +15,9 @@
  */
 package org.jetbrains.plugins.groovy.intentions.control;
 
+import javax.annotation.Nonnull;
+
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.intentions.base.PsiElementPredicate;
 import org.jetbrains.plugins.groovy.intentions.utils.ConditionalUtils;
@@ -34,13 +35,13 @@ public class MergeIfAndIntention extends Intention
 {
 
 
-	@NotNull
+	@Nonnull
 	public PsiElementPredicate getElementPredicate()
 	{
 		return new MergeIfAndPredicate();
 	}
 
-	public void processIntention(@NotNull PsiElement element,
+	public void processIntention(@Nonnull PsiElement element,
 			Project project,
 			Editor editor) throws IncorrectOperationException
 	{

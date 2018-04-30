@@ -23,8 +23,8 @@ import com.intellij.openapi.actionSystem.KeyboardShortcut;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.ui.ComboBox;
 import com.intellij.psi.*;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrNewExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
@@ -46,15 +46,15 @@ public class GrTypeComboBox extends ComboBox {
   private static final Logger LOG = Logger.getInstance(GrTypeComboBox.class);
 
 
-  public static GrTypeComboBox createTypeComboBoxWithDefType(@Nullable PsiType type, @NotNull PsiElement context) {
+  public static GrTypeComboBox createTypeComboBoxWithDefType(@Nullable PsiType type, @Nonnull PsiElement context) {
     return new GrTypeComboBox(type, null, true, context, false);
   }
 
-  public static GrTypeComboBox createTypeComboBoxFromExpression(@NotNull GrExpression expression) {
+  public static GrTypeComboBox createTypeComboBoxFromExpression(@Nonnull GrExpression expression) {
     return createTypeComboBoxFromExpression(expression, false);
   }
 
-  public static GrTypeComboBox createTypeComboBoxFromExpression(@NotNull GrExpression expression, boolean selectDef) {
+  public static GrTypeComboBox createTypeComboBoxFromExpression(@Nonnull GrExpression expression, boolean selectDef) {
     PsiType type = expression.getType();
     if (expression instanceof GrReferenceExpression) {
       PsiElement resolved = ((GrReferenceExpression)expression).resolve();
@@ -79,10 +79,10 @@ public class GrTypeComboBox extends ComboBox {
     return new GrTypeComboBox(null, null, false, null, false);
   }
 
-  private GrTypeComboBox(@Nullable PsiType type,
+  private GrTypeComboBox(@javax.annotation.Nullable PsiType type,
                          @Nullable PsiType min,
                          boolean createDef,
-                         @Nullable PsiElement context,
+                         @javax.annotation.Nullable PsiElement context,
                          boolean selectDef) {
     LOG.assertTrue(min == null || context != null);
     LOG.assertTrue(type == null || context != null);
@@ -123,7 +123,7 @@ public class GrTypeComboBox extends ComboBox {
     addItem(new PsiTypeItem(cl, true));
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   public PsiType getSelectedType() {
     final Object selected = getSelectedItem();
     assert selected instanceof PsiTypeItem;
@@ -135,9 +135,9 @@ public class GrTypeComboBox extends ComboBox {
   }
 
 
-  private static Map<String, PsiType> getCompatibleTypeNames(@NotNull PsiType type,
-                                                             @Nullable PsiType min,
-                                                             @NotNull PsiElement context) {
+  private static Map<String, PsiType> getCompatibleTypeNames(@Nonnull PsiType type,
+                                                             @javax.annotation.Nullable PsiType min,
+                                                             @Nonnull PsiElement context) {
     if (type instanceof PsiDisjunctionType) type = ((PsiDisjunctionType)type).getLeastUpperBound();
 
 
@@ -227,7 +227,7 @@ public class GrTypeComboBox extends ComboBox {
       isClosure = closure;
     }
 
-    @Nullable
+    @javax.annotation.Nullable
     public PsiType getType() {
       return myType;
     }

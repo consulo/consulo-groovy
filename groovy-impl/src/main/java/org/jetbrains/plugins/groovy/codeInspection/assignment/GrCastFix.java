@@ -15,6 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.assignment;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.codeInspection.LocalQuickFix;
 import com.intellij.codeInspection.ProblemDescriptor;
 import com.intellij.openapi.diagnostic.Attachment;
@@ -26,7 +28,6 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiType;
 import com.intellij.psi.codeStyle.JavaCodeStyleManager;
 import com.intellij.util.IncorrectOperationException;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.codeInspection.GroovyFix;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
@@ -81,7 +82,7 @@ public class GrCastFix extends GroovyFix implements LocalQuickFix {
     return null;
   }
 
-  static void doCast(@NotNull Project project, @NotNull PsiType type, @NotNull GrExpression expr) {
+  static void doCast(@Nonnull Project project, @Nonnull PsiType type, @Nonnull GrExpression expr) {
     if (!type.isValid()) return;
 
     final GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(project);
@@ -94,7 +95,7 @@ public class GrCastFix extends GroovyFix implements LocalQuickFix {
     JavaCodeStyleManager.getInstance(project).shortenClassReferences(replaced);
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public String getName() {
     return "Cast to " + myExpectedType.getPresentableText();

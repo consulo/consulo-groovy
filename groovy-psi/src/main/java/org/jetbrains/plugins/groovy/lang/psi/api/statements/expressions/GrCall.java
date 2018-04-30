@@ -15,10 +15,12 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.psi.PsiMethod;
 import com.intellij.util.IncorrectOperationException;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrArgumentList;
@@ -29,30 +31,30 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlo
  * @author ven
  */
 public interface GrCall extends GroovyPsiElement {
-  @Nullable
+  @javax.annotation.Nullable
   GrArgumentList getArgumentList();
 
-  @NotNull
+  @Nonnull
   GrNamedArgument[] getNamedArguments();
 
-  @NotNull
+  @Nonnull
   GrExpression[] getExpressionArguments();
 
-  @NotNull
+  @Nonnull
   GrClosableBlock[] getClosureArguments();
 
   @Nullable
   GrNamedArgument addNamedArgument(GrNamedArgument namedArgument) throws IncorrectOperationException;
 
-  @NotNull
-  GroovyResolveResult[] getCallVariants(@Nullable GrExpression upToArgument);
+  @Nonnull
+  GroovyResolveResult[] getCallVariants(@javax.annotation.Nullable GrExpression upToArgument);
 
-  @Nullable
+  @javax.annotation.Nullable
   PsiMethod resolveMethod();
 
-  @NotNull
+  @Nonnull
   GroovyResolveResult advancedResolve();
 
-  @NotNull
+  @Nonnull
   GroovyResolveResult[] multiResolve(boolean incompleteCode);
 }

@@ -15,7 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.api.statements;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrOpenBlock;
 
 /**
@@ -23,6 +24,6 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrOpenBlock;
  */
 public interface GrBlockStatement extends GrStatement {
 
-  @NotNull
+  @Nonnull
   GrOpenBlock getBlock();
 }

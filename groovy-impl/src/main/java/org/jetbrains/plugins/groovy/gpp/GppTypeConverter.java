@@ -15,11 +15,11 @@
  */
 package org.jetbrains.plugins.groovy.gpp;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.*;
 import com.intellij.psi.util.PsiUtil;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.dsl.toplevel.AnnotatedContextFilter;
 import org.jetbrains.plugins.groovy.findUsages.LiteralConstructorReference;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
@@ -39,7 +39,7 @@ public class GppTypeConverter extends GrTypeConverter {
 
   public static final String GROOVY_LANG_TYPED = "groovy.lang.Typed";
 
-  public static boolean hasTypedContext(@Nullable PsiElement context) {
+  public static boolean hasTypedContext(@javax.annotation.Nullable PsiElement context) {
     if (context == null) {
       return false;
     }
@@ -65,7 +65,7 @@ public class GppTypeConverter extends GrTypeConverter {
   }
 
   @Override
-  public Boolean isConvertible(@NotNull PsiType lType, @NotNull PsiType rType, @NotNull GroovyPsiElement context) {
+  public Boolean isConvertible(@Nonnull PsiType lType, @Nonnull PsiType rType, @Nonnull GroovyPsiElement context) {
     if (context instanceof GrListOrMap && context.getReference() instanceof LiteralConstructorReference) return null;
 
     if (rType instanceof GrTupleType) {

@@ -16,8 +16,9 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.typedef;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.lang.ASTNode;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrInterfaceDefinition;
@@ -33,7 +34,7 @@ public class GrInterfaceDefinitionImpl extends GrTypeDefinitionImpl implements G
     super(stub, GroovyElementTypes.INTERFACE_DEFINITION);
   }
 
-  public GrInterfaceDefinitionImpl(@NotNull ASTNode node) {
+  public GrInterfaceDefinitionImpl(@Nonnull ASTNode node) {
     super(node);
   }
 

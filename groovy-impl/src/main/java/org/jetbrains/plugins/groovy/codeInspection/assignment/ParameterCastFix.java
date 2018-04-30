@@ -15,12 +15,13 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.assignment;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.codeInspection.ProblemDescriptor;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiType;
 import com.intellij.util.IncorrectOperationException;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.codeInspection.GroovyFix;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrArgumentList;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
@@ -35,7 +36,7 @@ public class ParameterCastFix extends GroovyFix {
   private final PsiType myType;
   private final String myName;
 
-  public ParameterCastFix(int param, @NotNull PsiType type, @NotNull GrExpression argument) {
+  public ParameterCastFix(int param, @Nonnull PsiType type, @Nonnull GrExpression argument) {
     myArgument = argument;
     myType = PsiImplUtil.normalizeWildcardTypeByPosition(type, argument);
 
@@ -72,7 +73,7 @@ public class ParameterCastFix extends GroovyFix {
     GrCastFix.doCast(project, myType, myArgument);
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public String getName() {
     return myName;

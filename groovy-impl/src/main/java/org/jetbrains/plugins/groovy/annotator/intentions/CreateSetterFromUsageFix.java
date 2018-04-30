@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.annotator.intentions;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
 import org.jetbrains.plugins.groovy.lang.psi.dataFlow.types.TypeInferenceHelper;
 import org.jetbrains.plugins.groovy.lang.psi.expectedTypes.SubtypeConstraint;
@@ -31,12 +31,12 @@ import com.intellij.psi.PsiType;
  */
 public class CreateSetterFromUsageFix extends CreateMethodFromUsageFix implements LowPriorityAction
 {
-	public CreateSetterFromUsageFix(@NotNull GrReferenceExpression refExpression)
+	public CreateSetterFromUsageFix(@Nonnull GrReferenceExpression refExpression)
 	{
 		super(refExpression);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	protected TypeConstraint[] getReturnTypeConstraints()
 	{
@@ -56,7 +56,7 @@ public class CreateSetterFromUsageFix extends CreateMethodFromUsageFix implement
 		return new PsiType[]{initializer};
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	protected String getMethodName()
 	{

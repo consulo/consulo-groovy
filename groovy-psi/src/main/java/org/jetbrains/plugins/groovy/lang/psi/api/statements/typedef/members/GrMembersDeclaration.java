@@ -15,8 +15,9 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.psi.PsiModifierListOwner;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.GrModifierList;
 import org.jetbrains.plugins.groovy.lang.psi.api.toplevel.GrTopStatement;
@@ -29,6 +30,6 @@ public interface GrMembersDeclaration extends GroovyPsiElement, PsiModifierListO
 
   GrMember[] getMembers();
 
-  @NotNull
+  @Nonnull
   GrModifierList getModifierList();
 }

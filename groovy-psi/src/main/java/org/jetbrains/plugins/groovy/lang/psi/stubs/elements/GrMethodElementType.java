@@ -22,7 +22,7 @@ import com.intellij.psi.stubs.StubInputStream;
 import com.intellij.psi.stubs.StubOutputStream;
 import com.intellij.util.ArrayUtil;
 import com.intellij.util.io.StringRef;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
 import org.jetbrains.plugins.groovy.lang.psi.stubs.GrMethodStub;
 import org.jetbrains.plugins.groovy.lang.psi.stubs.GrStubUtils;
@@ -41,7 +41,7 @@ public abstract class GrMethodElementType extends GrStubElementType<GrMethodStub
     super(debugName);
   }
 
-  public GrMethodStub createStub(@NotNull GrMethod psi, StubElement parentStub) {
+  public GrMethodStub createStub(@Nonnull GrMethod psi, StubElement parentStub) {
 
     Set<String> namedParameters = psi.getNamedParameters().keySet();
     return new GrMethodStub(parentStub, StringRef.fromString(psi.getName()), GrStubUtils.getAnnotationNames(psi),
@@ -50,7 +50,7 @@ public abstract class GrMethodElementType extends GrStubElementType<GrMethodStub
                             GrMethodStub.buildFlags(psi));
   }
 
-  public void serialize(@NotNull GrMethodStub stub, @NotNull StubOutputStream dataStream) throws IOException {
+  public void serialize(@Nonnull GrMethodStub stub, @Nonnull StubOutputStream dataStream) throws IOException {
     dataStream.writeName(stub.getName());
     GrStubUtils.writeStringArray(dataStream, stub.getAnnotations());
     GrStubUtils.writeStringArray(dataStream, stub.getNamedParameters());
@@ -58,8 +58,8 @@ public abstract class GrMethodElementType extends GrStubElementType<GrMethodStub
     dataStream.writeByte(stub.getFlags());
   }
 
-  @NotNull
-  public GrMethodStub deserialize(@NotNull StubInputStream dataStream, StubElement parentStub) throws IOException {
+  @Nonnull
+  public GrMethodStub deserialize(@Nonnull StubInputStream dataStream, StubElement parentStub) throws IOException {
     StringRef ref = dataStream.readName();
     final String[] annNames = GrStubUtils.readStringArray(dataStream);
     String[] namedParameters = GrStubUtils.readStringArray(dataStream);
@@ -68,7 +68,7 @@ public abstract class GrMethodElementType extends GrStubElementType<GrMethodStub
     return new GrMethodStub(parentStub, ref, annNames, namedParameters, this, typeText, flags);
   }
 
-  public void indexStub(@NotNull GrMethodStub stub, @NotNull IndexSink sink) {
+  public void indexStub(@Nonnull GrMethodStub stub, @Nonnull IndexSink sink) {
     String name = stub.getName();
     sink.occurrence(GrMethodNameIndex.KEY, name);
     if (GrStubUtils.isGroovyStaticMemberStub(stub)) {

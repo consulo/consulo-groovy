@@ -15,14 +15,14 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.confusing;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.codeInspection.ProblemDescriptor;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.Nls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.codeInspection.GroovyFix;
@@ -36,22 +36,22 @@ import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 public class GroovyDoubleNegationInspection extends BaseInspection {
 
   @Nls
-  @NotNull
+  @Nonnull
   public String getGroupDisplayName() {
     return CONFUSING_CODE_CONSTRUCTS;
   }
 
-  @NotNull
+  @Nonnull
   public String getDisplayName() {
     return "Double negation";
   }
 
-  @NotNull
+  @Nonnull
   protected String buildErrorString(Object... infos) {
     return "Double negation #ref #loc";
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   protected GroovyFix buildFix(PsiElement location) {
     return new DoubleNegationFix();
   }
@@ -62,7 +62,7 @@ public class GroovyDoubleNegationInspection extends BaseInspection {
 
   private static class DoubleNegationFix extends GroovyFix {
 
-    @NotNull
+    @Nonnull
     public String getName() {
       return "Remove double negation";
     }

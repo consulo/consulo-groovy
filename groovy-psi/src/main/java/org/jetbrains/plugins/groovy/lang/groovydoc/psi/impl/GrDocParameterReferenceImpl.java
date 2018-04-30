@@ -18,8 +18,8 @@ package org.jetbrains.plugins.groovy.lang.groovydoc.psi.impl;
 
 import java.util.ArrayList;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.groovydoc.lexer.GroovyDocTokenTypes;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocParameterReference;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocTagValueToken;
@@ -46,7 +46,7 @@ import com.intellij.util.IncorrectOperationException;
  */
 public class GrDocParameterReferenceImpl extends GroovyDocPsiElementImpl implements GrDocParameterReference {
 
-  public GrDocParameterReferenceImpl(@NotNull ASTNode node) {
+  public GrDocParameterReferenceImpl(@Nonnull ASTNode node) {
     super(node);
   }
 
@@ -58,7 +58,7 @@ public class GrDocParameterReferenceImpl extends GroovyDocPsiElementImpl impleme
     return this;
   }
 
-  @NotNull
+  @Nonnull
   public ResolveResult[] multiResolve(boolean incompleteCode) {
     final String name = getName();
     if (name == null) return ResolveResult.EMPTY_ARRAY;
@@ -106,14 +106,14 @@ public class GrDocParameterReferenceImpl extends GroovyDocPsiElementImpl impleme
     return getText();
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   public PsiElement resolve() {
     final ResolveResult[] results = multiResolve(false);
     if (results.length != 1) return null;
     return results[0].getElement();
   }
 
-  @NotNull
+  @Nonnull
   public String getCanonicalText() {
     return getName();
   }
@@ -126,7 +126,7 @@ public class GrDocParameterReferenceImpl extends GroovyDocPsiElementImpl impleme
     return this;
   }
 
-  public PsiElement bindToElement(@NotNull PsiElement element) throws IncorrectOperationException {
+  public PsiElement bindToElement(@Nonnull PsiElement element) throws IncorrectOperationException {
     if (isReferenceTo(element)) return this;
     return null;
   }
@@ -136,7 +136,7 @@ public class GrDocParameterReferenceImpl extends GroovyDocPsiElementImpl impleme
     return getManager().areElementsEquivalent(element, resolve());
   }
 
-  @NotNull
+  @Nonnull
   public Object[] getVariants() {
     final PsiElement owner = GrDocCommentUtil.findDocOwner(this);
     final PsiElement firstChild = getFirstChild();
@@ -156,7 +156,7 @@ public class GrDocParameterReferenceImpl extends GroovyDocPsiElementImpl impleme
     return false;
   }
 
-  @NotNull
+  @Nonnull
   public GrDocTagValueToken getReferenceNameElement() {
     GrDocTagValueToken token = findChildByClass(GrDocTagValueToken.class);
     assert token != null;

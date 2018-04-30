@@ -26,7 +26,7 @@ import com.intellij.psi.search.searches.DirectClassInheritorsSearch;
 import com.intellij.psi.stubs.StubIndex;
 import com.intellij.util.Processor;
 import com.intellij.util.QueryExecutor;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.GrClassSubstitutor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrAnonymousClassDefinition;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrReferenceList;
@@ -45,7 +45,7 @@ class GroovyDirectInheritorsSearcher implements QueryExecutor<PsiClass, DirectCl
   public GroovyDirectInheritorsSearcher() {
   }
 
-  @NotNull
+  @Nonnull
   private static PsiClass[] getDeriverCandidates(PsiClass clazz, GlobalSearchScope scope) {
     final String name = clazz.getName();
     if (name == null) return GrTypeDefinition.EMPTY_ARRAY;
@@ -65,7 +65,7 @@ class GroovyDirectInheritorsSearcher implements QueryExecutor<PsiClass, DirectCl
     return inheritors.toArray(new PsiClass[inheritors.size()]);
   }
 
-  public boolean execute(@NotNull DirectClassInheritorsSearch.SearchParameters queryParameters, @NotNull final Processor<PsiClass> consumer) {
+  public boolean execute(@Nonnull DirectClassInheritorsSearch.SearchParameters queryParameters, @Nonnull final Processor<PsiClass> consumer) {
     final PsiClass clazz = queryParameters.getClassToProcess();
     final SearchScope scope = queryParameters.getScope();
     if (scope instanceof GlobalSearchScope) {

@@ -17,7 +17,8 @@ package org.jetbrains.plugins.groovy.lang.psi.stubs.elements;
 
 import java.io.IOException;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.GrModifierList;
 import org.jetbrains.plugins.groovy.lang.psi.impl.auxiliary.modifiers.GrModifierListImpl;
@@ -35,21 +36,21 @@ public class GrModifierListElementType extends GrStubElementType<GrModifierListS
   }
 
   @Override
-  public GrModifierList createPsi(@NotNull GrModifierListStub stub) {
+  public GrModifierList createPsi(@Nonnull GrModifierListStub stub) {
     return new GrModifierListImpl(stub);
   }
 
   @Override
-  public GrModifierListStub createStub(@NotNull GrModifierList psi, StubElement parentStub) {
+  public GrModifierListStub createStub(@Nonnull GrModifierList psi, StubElement parentStub) {
     return new GrModifierListStub(parentStub, GroovyElementTypes.MODIFIERS, GrModifierListStub.buildFlags(psi));
   }
 
-  public void serialize(@NotNull GrModifierListStub stub, @NotNull StubOutputStream dataStream) throws IOException {
+  public void serialize(@Nonnull GrModifierListStub stub, @Nonnull StubOutputStream dataStream) throws IOException {
     dataStream.writeVarInt(stub.getModifiersFlags());
   }
 
-  @NotNull
-  public GrModifierListStub deserialize(@NotNull StubInputStream dataStream, StubElement parentStub) throws IOException {
+  @Nonnull
+  public GrModifierListStub deserialize(@Nonnull StubInputStream dataStream, StubElement parentStub) throws IOException {
     return new GrModifierListStub(parentStub, GroovyElementTypes.MODIFIERS, dataStream.readVarInt());
   }
 

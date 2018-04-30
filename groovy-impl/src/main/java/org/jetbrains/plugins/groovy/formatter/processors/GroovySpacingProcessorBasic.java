@@ -16,7 +16,7 @@
 
 package org.jetbrains.plugins.groovy.formatter.processors;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.codeStyle.GroovyCodeStyleSettings;
 import org.jetbrains.plugins.groovy.formatter.FormattingContext;
 import org.jetbrains.plugins.groovy.formatter.blocks.ClosureBodyBlock;
@@ -225,10 +225,10 @@ public abstract class GroovySpacingProcessorBasic
 		return COMMON_SPACING;
 	}
 
-	@NotNull
-	static Spacing createDependentSpacingForClosure(@NotNull CommonCodeStyleSettings settings,
-			@NotNull GroovyCodeStyleSettings groovySettings,
-			@NotNull GrClosableBlock closure,
+	@Nonnull
+	static Spacing createDependentSpacingForClosure(@Nonnull CommonCodeStyleSettings settings,
+			@Nonnull GroovyCodeStyleSettings groovySettings,
+			@Nonnull GrClosableBlock closure,
 			final boolean forArrow)
 	{
 		boolean spaceWithinBraces = closure.getParent() instanceof GrStringInjection ? groovySettings

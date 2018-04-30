@@ -20,8 +20,8 @@ import com.intellij.openapi.util.Pair;
 import com.intellij.psi.*;
 import com.intellij.util.ArrayUtil;
 import com.intellij.util.containers.ContainerUtil;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.config.GroovyConfigUtils;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrArgumentList;
@@ -40,7 +40,7 @@ import java.util.List;
  */
 public class ClosureParamsEnhancer extends AbstractClosureParameterEnhancer {
 
-  @Nullable
+  @javax.annotation.Nullable
   @Override
   protected PsiType getClosureParameterType(GrClosableBlock closure, int index) {
     if (!GroovyConfigUtils.getInstance().isVersionAtLeast(closure, GroovyConfigUtils.GROOVY2_3)) return null;
@@ -60,7 +60,7 @@ public class ClosureParamsEnhancer extends AbstractClosureParameterEnhancer {
     return null;
   }
 
-  @NotNull
+  @Nonnull
   public static List<PsiType[]> findFittingSignatures(GrClosableBlock closure) {
     GrCall call = findCall(closure);
     if (call == null) return Collections.emptyList();
@@ -81,7 +81,7 @@ public class ClosureParamsEnhancer extends AbstractClosureParameterEnhancer {
     });
   }
 
-  private static List<PsiType[]> inferExpectedSignatures(@NotNull GroovyResolveResult variant, @NotNull GrCall call, @NotNull GrClosableBlock closure) {
+  private static List<PsiType[]> inferExpectedSignatures(@Nonnull GroovyResolveResult variant, @Nonnull GrCall call, @Nonnull GrClosableBlock closure) {
     PsiElement element = variant.getElement();
 
     while (element instanceof PsiMirrorElement) element = ((PsiMirrorElement)element).getPrototype();
@@ -127,7 +127,7 @@ public class ClosureParamsEnhancer extends AbstractClosureParameterEnhancer {
   }
 
   @Nullable
-  private static GrCall findCall(@NotNull GrClosableBlock closure) {
+  private static GrCall findCall(@Nonnull GrClosableBlock closure) {
     PsiElement parent = closure.getParent();
     if (parent instanceof GrCall && ArrayUtil.contains(closure, ((GrCall)parent).getClosureArguments())) {
       return (GrCall)parent;

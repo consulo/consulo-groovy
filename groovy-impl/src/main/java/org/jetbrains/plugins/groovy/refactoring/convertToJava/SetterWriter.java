@@ -17,7 +17,7 @@ package org.jetbrains.plugins.groovy.refactoring.convertToJava;
 
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.psi.*;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrNamedArgument;
@@ -42,12 +42,12 @@ public class SetterWriter {
   private final ClassNameProvider myClassNameProvider;
   private final ExpressionContext myContext;
 
-  public SetterWriter(@NotNull StringBuilder builder,
-                      @NotNull PsiClass psiClass,
-                      @NotNull PsiMethod setter,
-                      @NotNull String name,
-                      @NotNull ClassNameProvider classNameProvider,
-                      @NotNull ExpressionContext context) {
+  public SetterWriter(@Nonnull StringBuilder builder,
+                      @Nonnull PsiClass psiClass,
+                      @Nonnull PsiMethod setter,
+                      @Nonnull String name,
+                      @Nonnull ClassNameProvider classNameProvider,
+                      @Nonnull ExpressionContext context) {
     myBuffer = builder;
     myClass = psiClass;
     myClassNameProvider = classNameProvider;
@@ -85,8 +85,8 @@ public class SetterWriter {
   }
 
   private void writeBody(boolean aStatic,
-                         @NotNull PsiParameter[] parameters,
-                         @NotNull PsiParameter parameter, final GroovyPsiElement place) {
+                         @Nonnull PsiParameter[] parameters,
+                         @Nonnull PsiParameter parameter, final GroovyPsiElement place) {
     //method body
     myBuffer.append("{\n");
 
@@ -108,8 +108,8 @@ public class SetterWriter {
     myBuffer.append("}\n");
   }
 
-  @NotNull
-  private GrExpression[] generateArguments(@NotNull PsiParameter[] parameters, @NotNull GroovyPsiElement place) {
+  @Nonnull
+  private GrExpression[] generateArguments(@Nonnull PsiParameter[] parameters, @Nonnull GroovyPsiElement place) {
     final GrExpression[] args = new GrExpression[parameters.length];
     for (int i = 0; i < parameters.length; i++) {
       args[i] = GroovyPsiElementFactory.getInstance(myContext.project).createExpressionFromText(parameters[i].getName(), place);
@@ -118,7 +118,7 @@ public class SetterWriter {
     return args;
   }
 
-  private GroovyPsiElement createStubMethod(@NotNull PsiParameter[] parameters) {
+  private GroovyPsiElement createStubMethod(@Nonnull PsiParameter[] parameters) {
     StringBuilder methodText = new StringBuilder("def ").append(myName).append('(');
     for (PsiParameter parameter : parameters) {
       methodText.append(parameter.getType().getCanonicalText()).append(' ').append(parameter.getName()).append(',');
@@ -128,10 +128,10 @@ public class SetterWriter {
     return GroovyPsiElementFactory.getInstance(myContext.project).createMethodFromText(methodText.toString(), mySetter);
   }
 
-  @NotNull
+  @Nonnull
   private PsiParameter[] inferActualParameters(boolean aStatic,
-                                               @NotNull PsiParameter[] parameters,
-                                               @NotNull PsiParameter parameter) {
+                                               @Nonnull PsiParameter[] parameters,
+                                               @Nonnull PsiParameter parameter) {
     //parameters
     parameters[parameters.length - 1] = parameter;
     PsiParameter[] actual;

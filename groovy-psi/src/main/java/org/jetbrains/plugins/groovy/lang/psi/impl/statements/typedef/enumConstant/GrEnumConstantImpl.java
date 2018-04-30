@@ -16,14 +16,14 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.typedef.enumConstant;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.*;
 import com.intellij.util.ArrayUtil;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
@@ -50,7 +50,7 @@ import org.jetbrains.plugins.groovy.lang.resolve.ResolveUtil;
 public class GrEnumConstantImpl extends GrFieldImpl implements GrEnumConstant {
   private final MyReference myReference = new MyReference();
 
-  public GrEnumConstantImpl(@NotNull ASTNode node) {
+  public GrEnumConstantImpl(@Nonnull ASTNode node) {
     super(node);
   }
 
@@ -63,7 +63,7 @@ public class GrEnumConstantImpl extends GrFieldImpl implements GrEnumConstant {
   }
 
   @Override
-  public boolean hasModifierProperty(@NonNls @NotNull String property) {
+  public boolean hasModifierProperty(@NonNls @Nonnull String property) {
     if (property.equals(PsiModifier.STATIC)) return true;
     if (property.equals(PsiModifier.PUBLIC)) return true;
     if (property.equals(PsiModifier.FINAL)) return true;
@@ -76,30 +76,30 @@ public class GrEnumConstantImpl extends GrFieldImpl implements GrEnumConstant {
   }
 
   @Override
-  @Nullable
+  @javax.annotation.Nullable
   public GrTypeElement getTypeElementGroovy() {
     return null;
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public PsiType getType() {
     return JavaPsiFacade.getInstance(getProject()).getElementFactory().createType(getContainingClass(), PsiSubstitutor.EMPTY);
   }
 
   @Override
-  @Nullable
+  @javax.annotation.Nullable
   public PsiType getTypeGroovy() {
     return getType();
   }
 
   @Override
-  public void setType(@Nullable PsiType type) {
+  public void setType(@javax.annotation.Nullable PsiType type) {
     throw new RuntimeException("Cannot set type for enum constant");
   }
 
   @Override
-  @Nullable
+  @javax.annotation.Nullable
   public GrExpression getInitializerGroovy() {
     return null;
   }
@@ -116,7 +116,7 @@ public class GrEnumConstantImpl extends GrFieldImpl implements GrEnumConstant {
   }
 
   @Override
-  @Nullable
+  @javax.annotation.Nullable
   public GrArgumentList getArgumentList() {
     return findChildByClass(GrArgumentList.class);
   }
@@ -133,27 +133,27 @@ public class GrEnumConstantImpl extends GrFieldImpl implements GrEnumConstant {
     return list.addNamedArgument(namedArgument);
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public GrNamedArgument[] getNamedArguments() {
     final GrArgumentList argumentList = getArgumentList();
     return argumentList == null ? GrNamedArgument.EMPTY_ARRAY : argumentList.getNamedArguments();
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public GrExpression[] getExpressionArguments() {
     final GrArgumentList argumentList = getArgumentList();
     return argumentList == null ? GrExpression.EMPTY_ARRAY : argumentList.getExpressionArguments();
   }
 
-  @NotNull
+  @Nonnull
   @Override
-  public GroovyResolveResult[] getCallVariants(@Nullable GrExpression upToArgument) {
+  public GroovyResolveResult[] getCallVariants(@javax.annotation.Nullable GrExpression upToArgument) {
     return multiResolve(true);
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public GrClosableBlock[] getClosureArguments() {
     return GrClosableBlock.EMPTY_ARRAY;
@@ -164,19 +164,19 @@ public class GrEnumConstantImpl extends GrFieldImpl implements GrEnumConstant {
     return PsiImplUtil.extractUniqueElement(multiResolve(false));
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public JavaResolveResult resolveMethodGenerics() {
     return JavaResolveResult.EMPTY;
   }
 
   @Override
-  @Nullable
+  @javax.annotation.Nullable
   public GrEnumConstantInitializer getInitializingClass() {
     return findChildByClass(GrEnumConstantInitializer.class);
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public PsiEnumConstantInitializer getOrCreateInitializingClass() {
     final GrEnumConstantInitializer initializingClass = getInitializingClass();
@@ -199,7 +199,7 @@ public class GrEnumConstantImpl extends GrFieldImpl implements GrEnumConstant {
     return myReference;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public GroovyResolveResult advancedResolve() {
     return PsiImplUtil.extractUniqueResult(multiResolve(false));
@@ -210,7 +210,7 @@ public class GrEnumConstantImpl extends GrFieldImpl implements GrEnumConstant {
     return resolveMethod();
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public GroovyResolveResult[] multiResolve(boolean incompleteCode) {
     PsiType[] argTypes = PsiUtil.getArgumentTypes(getFirstChild(), false);
@@ -218,7 +218,7 @@ public class GrEnumConstantImpl extends GrFieldImpl implements GrEnumConstant {
     return ResolveUtil.getAllClassConstructors(clazz, PsiSubstitutor.EMPTY, argTypes, this);
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public PsiClass getContainingClass() {
     PsiClass aClass = super.getContainingClass();
@@ -228,7 +228,7 @@ public class GrEnumConstantImpl extends GrFieldImpl implements GrEnumConstant {
 
   private class MyReference implements PsiPolyVariantReference {
     @Override
-    @NotNull
+    @Nonnull
     public ResolveResult[] multiResolve(boolean incompleteCode) {
       return GrEnumConstantImpl.this.multiResolve(false);
     }
@@ -248,13 +248,13 @@ public class GrEnumConstantImpl extends GrFieldImpl implements GrEnumConstant {
       return resolveMethod();
     }
 
-    @NotNull
+    @Nonnull
     public GroovyResolveResult advancedResolve() {
       return GrEnumConstantImpl.this.advancedResolve();
     }
 
     @Override
-    @NotNull
+    @Nonnull
     public String getCanonicalText() {
       return getContainingClass().getName();
     }
@@ -265,7 +265,7 @@ public class GrEnumConstantImpl extends GrFieldImpl implements GrEnumConstant {
     }
 
     @Override
-    public PsiElement bindToElement(@NotNull PsiElement element) throws IncorrectOperationException {
+    public PsiElement bindToElement(@Nonnull PsiElement element) throws IncorrectOperationException {
       throw new IncorrectOperationException("invalid operation");
     }
 
@@ -275,7 +275,7 @@ public class GrEnumConstantImpl extends GrFieldImpl implements GrEnumConstant {
     }
 
     @Override
-    @NotNull
+    @Nonnull
     public Object[] getVariants() {
       return ArrayUtil.EMPTY_OBJECT_ARRAY;
     }

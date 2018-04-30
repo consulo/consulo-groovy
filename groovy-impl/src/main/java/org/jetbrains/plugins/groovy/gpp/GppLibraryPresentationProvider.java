@@ -24,8 +24,8 @@ import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import icons.JetgroovyIcons;
 import org.jetbrains.annotations.Nls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.config.GroovyLibraryPresentationProviderBase;
 
 import javax.swing.*;
@@ -100,13 +100,13 @@ public class GppLibraryPresentationProvider extends GroovyLibraryPresentationPro
     return null;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public Icon getIcon() {
     return JetgroovyIcons.Groovy.Groovy_16x16;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public String getSDKVersion(String path) {
     final VirtualFile file = LocalFileSystem.getInstance().findFileByPath(path);
@@ -122,18 +122,18 @@ public class GppLibraryPresentationProvider extends GroovyLibraryPresentationPro
 
 
   @Nls
-  @NotNull
+  @Nonnull
   @Override
   public String getLibraryCategoryName() {
     return "Groovy++";
   }
 
-  public boolean managesName(@NotNull String name) {
+  public boolean managesName(@Nonnull String name) {
     return super.managesName(name) || StringUtil.startsWithIgnoreCase(name, "groovypp");
   }
 
   @Override
-  public boolean isSDKHome(@NotNull VirtualFile file) {
+  public boolean isSDKHome(@Nonnull VirtualFile file) {
     final VirtualFile libDir = file.findChild("lib");
     return libDir != null && getGppVersion(libDir.getChildren()) != null;
   }

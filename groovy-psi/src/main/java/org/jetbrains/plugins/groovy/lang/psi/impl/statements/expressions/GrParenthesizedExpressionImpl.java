@@ -15,8 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrParenthesizedExpression;
@@ -28,7 +28,7 @@ import com.intellij.psi.PsiType;
  */
 public class GrParenthesizedExpressionImpl extends GrExpressionImpl implements GrParenthesizedExpression {
 
-  public GrParenthesizedExpressionImpl(@NotNull ASTNode node) {
+  public GrParenthesizedExpressionImpl(@Nonnull ASTNode node) {
     super(node);
   }
 
@@ -49,7 +49,7 @@ public class GrParenthesizedExpressionImpl extends GrExpressionImpl implements G
   }
 
   @Override
-  @Nullable
+  @javax.annotation.Nullable
   public GrExpression getOperand() {
     return findExpressionChild(this);
   }

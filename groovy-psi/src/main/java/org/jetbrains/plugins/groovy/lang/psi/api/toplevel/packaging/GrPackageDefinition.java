@@ -16,9 +16,11 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.api.toplevel.packaging;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.psi.PsiModifierListOwner;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.GrModifierList;
 import org.jetbrains.plugins.groovy.lang.psi.api.toplevel.GrTopStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
@@ -33,6 +35,6 @@ public interface GrPackageDefinition extends GrTopStatement, PsiModifierListOwne
   @Nullable
   GrCodeReferenceElement getPackageReference();
 
-  @NotNull
+  @Nonnull
   GrModifierList getAnnotationList();
 }

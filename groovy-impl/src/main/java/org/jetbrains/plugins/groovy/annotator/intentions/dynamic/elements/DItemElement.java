@@ -15,10 +15,12 @@
  */
 package org.jetbrains.plugins.groovy.annotator.intentions.dynamic.elements;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.PsiNamedElement;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 
 /**
  * User: Dmitry.Krasilschikov
@@ -37,7 +39,7 @@ public abstract class DItemElement implements DNamedElement, DTypedElement, Comp
 //  @NotNull
   public String myHighlightedText = null;
 
-  public DItemElement(@Nullable Boolean isStatic, @Nullable String name, @Nullable String type) {
+  public DItemElement(@Nullable Boolean isStatic, @javax.annotation.Nullable String name, @javax.annotation.Nullable String type) {
     myStatic = isStatic;
     myName = name;
     myType = type;
@@ -108,6 +110,6 @@ public abstract class DItemElement implements DNamedElement, DTypedElement, Comp
   }
 
 
-  @NotNull
+  @Nonnull
   public abstract PsiNamedElement getPsi(PsiManager manager, String containingClassName);
 }

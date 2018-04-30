@@ -16,9 +16,10 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.lang.ASTNode;
 import com.intellij.util.IncorrectOperationException;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrNamedArgument;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrApplicationStatement;
@@ -28,7 +29,7 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrComman
  * @author ilyas
  */
 public class GrApplicationStatementImpl extends GrMethodCallImpl implements GrApplicationStatement {
-  public GrApplicationStatementImpl(@NotNull ASTNode node) {
+  public GrApplicationStatementImpl(@Nonnull ASTNode node) {
     super(node);
   }
 

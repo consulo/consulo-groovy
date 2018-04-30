@@ -15,8 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.signatures;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.psi.api.signatures.GrClosureSignature;
 import org.jetbrains.plugins.groovy.lang.psi.api.signatures.GrSignature;
 import org.jetbrains.plugins.groovy.lang.psi.api.signatures.GrSignatureVisitor;
@@ -32,18 +32,18 @@ public class GrClosureSignatureWithNewParameters implements GrClosureSignature {
   private final GrClosureSignature myDelegate;
   private final GrClosureParameter[] myParams;
 
-  public GrClosureSignatureWithNewParameters(@NotNull GrClosureSignature delegate, @NotNull GrClosureParameter[] newParams) {
+  public GrClosureSignatureWithNewParameters(@Nonnull GrClosureSignature delegate, @Nonnull GrClosureParameter[] newParams) {
     myDelegate = delegate;
     myParams = newParams;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public PsiSubstitutor getSubstitutor() {
     return myDelegate.getSubstitutor();
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public GrClosureParameter[] getParameters() {
     return myParams;
@@ -59,7 +59,7 @@ public class GrClosureSignatureWithNewParameters implements GrClosureSignature {
     return GrClosureSignatureUtil.isVarArgsImpl(myParams);
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   @Override
   public PsiType getReturnType() {
     return myDelegate.getReturnType();
@@ -75,14 +75,14 @@ public class GrClosureSignatureWithNewParameters implements GrClosureSignature {
     return myDelegate.isValid();
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   @Override
-  public GrSignature curry(@NotNull PsiType[] args, int position, @NotNull PsiElement context) {
+  public GrSignature curry(@Nonnull PsiType[] args, int position, @Nonnull PsiElement context) {
     return GrClosureSignatureUtil.curryImpl(this, args, position, context);
   }
 
   @Override
-  public void accept(@NotNull GrSignatureVisitor visitor) {
+  public void accept(@Nonnull GrSignatureVisitor visitor) {
     visitor.visitClosureSignature(this);
   }
 }

@@ -16,8 +16,9 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.psi.PsiAnnotation;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.GrCondition;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
 
@@ -29,12 +30,12 @@ public interface GrAnnotation extends GrCondition, PsiAnnotation, GrAnnotationMe
 
   GrAnnotation[] EMPTY_ARRAY = new GrAnnotation[0];
 
-  @NotNull
+  @Nonnull
   GrCodeReferenceElement getClassReference();
 
-  @NotNull
+  @Nonnull
   String getShortName();
 
-  @NotNull
+  @Nonnull
   GrAnnotationArgumentList getParameterList();
 }

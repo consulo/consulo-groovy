@@ -22,7 +22,7 @@ import com.intellij.psi.*;
 import com.intellij.psi.search.LocalSearchScope;
 import com.intellij.psi.search.searches.ReferencesSearch;
 import com.intellij.util.IncorrectOperationException;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.codeStyle.GrReferenceAdjuster;
 import org.jetbrains.plugins.groovy.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.intentions.base.PsiElementPredicate;
@@ -42,7 +42,7 @@ public class ImportStaticIntention extends Intention {
   private static final Key<PsiElement> TEMP_REFERENT_USER_DATA = new Key<PsiElement>("TEMP_REFERENT_USER_DATA");
 
   @Override
-  protected void processIntention(@NotNull PsiElement element, final Project project, final Editor editor)
+  protected void processIntention(@Nonnull PsiElement element, final Project project, final Editor editor)
     throws IncorrectOperationException {
     final PsiElement resolved;
     final String name;
@@ -134,7 +134,7 @@ public class ImportStaticIntention extends Intention {
     return super.isStopElement(element) || element instanceof GrReferenceExpression;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   protected PsiElementPredicate getElementPredicate() {
     return new PsiElementPredicate() {

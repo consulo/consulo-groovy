@@ -16,8 +16,8 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.blocks;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GrControlFlowOwner;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
@@ -56,7 +56,7 @@ import com.intellij.util.IncorrectOperationException;
 public abstract class GrBlockImpl extends LazyParseablePsiElement implements GrCodeBlock, GrControlFlowOwner {
   private static final Key<CachedValue<Instruction[]>> CONTROL_FLOW = Key.create("Control flow");
 
-  protected GrBlockImpl(@NotNull IElementType type, CharSequence buffer) {
+  protected GrBlockImpl(@Nonnull IElementType type, CharSequence buffer) {
     super(type, buffer);
   }
 
@@ -92,7 +92,7 @@ public abstract class GrBlockImpl extends LazyParseablePsiElement implements GrC
   }
 
   @Override
-  public void deleteChildInternal(@NotNull ASTNode child) {
+  public void deleteChildInternal(@Nonnull ASTNode child) {
     final PsiElement element = child.getPsi();
     if (element instanceof GrStatement) {
       PsiImplUtil.deleteStatementTail(this, element);
@@ -157,14 +157,14 @@ public abstract class GrBlockImpl extends LazyParseablePsiElement implements GrC
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public GrStatement[] getStatements() {
     return  PsiImplUtil.getStatements(this);
   }
 
   @Override
-  @NotNull
-  public GrStatement addStatementBefore(@NotNull GrStatement element, @Nullable GrStatement anchor) throws IncorrectOperationException {
+  @Nonnull
+  public GrStatement addStatementBefore(@Nonnull GrStatement element, @Nullable GrStatement anchor) throws IncorrectOperationException {
     if (anchor == null && getRBrace() == null) {
       throw new IncorrectOperationException();
     }
@@ -207,7 +207,7 @@ public abstract class GrBlockImpl extends LazyParseablePsiElement implements GrC
   }
 
   @Override
-  public boolean processDeclarations(@NotNull PsiScopeProcessor processor, @NotNull ResolveState state, PsiElement lastParent, @NotNull PsiElement place) {
+  public boolean processDeclarations(@Nonnull PsiScopeProcessor processor, @Nonnull ResolveState state, PsiElement lastParent, @Nonnull PsiElement place) {
     return ResolveUtil.processChildren(this, processor, state, lastParent, place);
   }
 }

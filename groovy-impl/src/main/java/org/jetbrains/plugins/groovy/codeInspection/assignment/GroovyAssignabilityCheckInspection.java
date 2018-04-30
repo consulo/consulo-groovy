@@ -16,7 +16,8 @@
 
 package org.jetbrains.plugins.groovy.codeInspection.assignment;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.codeInspection.type.GroovyTypeCheckVisitor;
@@ -26,7 +27,7 @@ import org.jetbrains.plugins.groovy.codeInspection.type.GroovyTypeCheckVisitor;
  */
 public class GroovyAssignabilityCheckInspection extends BaseInspection {
 
-  @NotNull
+  @Nonnull
   @Override
   protected BaseInspectionVisitor buildVisitor() {
     return new GroovyTypeCheckVisitor();

@@ -23,8 +23,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.configSlurper.ConfigSlurperSupport;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrBlockStatement;
@@ -76,9 +76,9 @@ class GroovyConfigSlurperCompletionProvider implements CompletionProvider
   }
 
   @Override
-  public void addCompletions(@NotNull CompletionParameters parameters,
+  public void addCompletions(@Nonnull CompletionParameters parameters,
                                 ProcessingContext context,
-                                @NotNull CompletionResultSet result) {
+                                @Nonnull CompletionResultSet result) {
     PsiFile file = parameters.getOriginalFile();
     if (!(file instanceof GroovyFile)) return;
 
@@ -160,7 +160,7 @@ class GroovyConfigSlurperCompletionProvider implements CompletionProvider
     }
   }
 
-  private static void collectVariants(@NotNull PairConsumer<String, Boolean> consumer, @NotNull GrReferenceExpression ref, @NotNull GroovyFile originalFile) {
+  private static void collectVariants(@Nonnull PairConsumer<String, Boolean> consumer, @Nonnull GrReferenceExpression ref, @Nonnull GroovyFile originalFile) {
     List<String> prefix = getPrefix(ref);
     if (prefix == null) return;
 
@@ -199,7 +199,7 @@ class GroovyConfigSlurperCompletionProvider implements CompletionProvider
     return sb.toString();
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   public static List<String> getPrefix(GrReferenceExpression ref) {
     List<String> res = new ArrayList<String>();
 

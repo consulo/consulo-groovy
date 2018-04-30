@@ -16,7 +16,7 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.regex;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.GrBinaryExpressionImpl;
 import com.intellij.lang.ASTNode;
 
@@ -25,7 +25,7 @@ import com.intellij.lang.ASTNode;
  */
 public class GrRegexFindExpressionImpl extends GrBinaryExpressionImpl {
 
-  public GrRegexFindExpressionImpl(@NotNull ASTNode node) {
+  public GrRegexFindExpressionImpl(@Nonnull ASTNode node) {
     super(node);
   }
 

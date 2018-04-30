@@ -15,9 +15,10 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.confusing;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.Nls;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspectionVisitor;
@@ -29,7 +30,7 @@ import org.jetbrains.plugins.groovy.lang.resolve.ResolveUtil;
  * @author Maxim.Medvedev
  */
 public class GrFieldAlreadyDefinedInspection extends BaseInspection {
-  @NotNull
+  @Nonnull
   @Override
   protected BaseInspectionVisitor buildVisitor() {
     return new MyVisitor();
@@ -37,7 +38,7 @@ public class GrFieldAlreadyDefinedInspection extends BaseInspection {
 
 
   @Nls
-  @NotNull
+  @Nonnull
   @Override
   public String getGroupDisplayName() {
     return CONFUSING_CODE_CONSTRUCTS;
@@ -50,7 +51,7 @@ public class GrFieldAlreadyDefinedInspection extends BaseInspection {
   }
 
   @Nls
-  @NotNull
+  @Nonnull
   @Override
   public String getDisplayName() {
     return GroovyInspectionBundle.message("field.already.defined");

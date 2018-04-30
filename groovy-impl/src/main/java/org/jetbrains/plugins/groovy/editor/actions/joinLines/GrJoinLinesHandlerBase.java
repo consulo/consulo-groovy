@@ -16,6 +16,8 @@
 package org.jetbrains.plugins.groovy.editor.actions.joinLines;
 
 
+import javax.annotation.Nonnull;
+
 import com.intellij.codeInsight.editorActions.JoinRawLinesHandlerDelegate;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.util.TextRange;
@@ -24,8 +26,6 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFileBase;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
@@ -63,7 +63,7 @@ public abstract class GrJoinLinesHandlerBase implements JoinRawLinesHandlerDeleg
     return CANNOT_JOIN;
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   private static GrStatement skipSemicolonsAndWhitespaces(PsiElement child, boolean forward) {
     while (child != null && !(child instanceof GrStatement)) {
       final IElementType type = child.getNode().getElementType();
@@ -73,5 +73,5 @@ public abstract class GrJoinLinesHandlerBase implements JoinRawLinesHandlerDeleg
     return (GrStatement)child;
   }
 
-  public abstract int tryJoinStatements(@NotNull GrStatement first, @NotNull GrStatement second);
+  public abstract int tryJoinStatements(@Nonnull GrStatement first, @Nonnull GrStatement second);
 }

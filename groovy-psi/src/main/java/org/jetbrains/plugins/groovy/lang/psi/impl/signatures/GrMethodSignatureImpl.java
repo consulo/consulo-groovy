@@ -15,8 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.signatures;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.psi.api.signatures.GrClosureSignature;
 import org.jetbrains.plugins.groovy.lang.psi.api.signatures.GrSignature;
 import org.jetbrains.plugins.groovy.lang.psi.api.signatures.GrSignatureVisitor;
@@ -37,12 +37,12 @@ class GrMethodSignatureImpl implements GrClosureSignature {
   private final PsiMethod myMethod;
   private final PsiSubstitutor mySubstitutor;
 
-  public GrMethodSignatureImpl(@NotNull PsiMethod method, @NotNull PsiSubstitutor substitutor) {
+  public GrMethodSignatureImpl(@Nonnull PsiMethod method, @Nonnull PsiSubstitutor substitutor) {
     myMethod = method;
     mySubstitutor = substitutor;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public PsiSubstitutor getSubstitutor() {
     return mySubstitutor;
@@ -52,7 +52,7 @@ class GrMethodSignatureImpl implements GrClosureSignature {
     return myMethod;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public GrClosureParameter[] getParameters() {
     PsiParameter[] parameters = myMethod.getParameterList().getParameters();
@@ -64,8 +64,8 @@ class GrMethodSignatureImpl implements GrClosureSignature {
     }, new GrClosureParameter[parameters.length]);
   }
 
-  @NotNull
-  protected GrClosureParameter createClosureParameter(@NotNull PsiParameter parameter) {
+  @Nonnull
+  protected GrClosureParameter createClosureParameter(@Nonnull PsiParameter parameter) {
     return new GrClosureParameterImpl(parameter, getSubstitutor());
   }
 
@@ -94,14 +94,14 @@ class GrMethodSignatureImpl implements GrClosureSignature {
     return myMethod.isValid() && getSubstitutor().isValid();
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   @Override
-  public GrSignature curry(@NotNull PsiType[] args, int position, @NotNull PsiElement context) {
+  public GrSignature curry(@Nonnull PsiType[] args, int position, @Nonnull PsiElement context) {
     return GrClosureSignatureUtil.curryImpl(this, args, position, context);
   }
 
   @Override
-  public void accept(@NotNull GrSignatureVisitor visitor) {
+  public void accept(@Nonnull GrSignatureVisitor visitor) {
     visitor.visitClosureSignature(this);
   }
 }

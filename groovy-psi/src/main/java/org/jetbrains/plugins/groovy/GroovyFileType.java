@@ -16,10 +16,10 @@
 
 package org.jetbrains.plugins.groovy;
 
+import javax.annotation.Nonnull;
 import javax.swing.Icon;
 
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
 import com.intellij.lang.Language;
 import com.intellij.openapi.fileTypes.LanguageFileType;
 import icons.JetgroovyIcons;
@@ -40,19 +40,19 @@ public class GroovyFileType extends LanguageFileType {
     super(GroovyLanguage.INSTANCE);
   }
 
-  @NotNull
+  @Nonnull
   @NonNls
   public String getName() {
     return "Groovy";
   }
 
   @NonNls
-  @NotNull
+  @Nonnull
   public String getDescription() {
     return "Groovy Files";
   }
 
-  @NotNull
+  @Nonnull
   @NonNls
   public String getDefaultExtension() {
     return DEFAULT_EXTENSION;

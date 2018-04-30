@@ -16,13 +16,14 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiCodeBlock;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiModifier;
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.GrModifier;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.GrModifierList;
@@ -38,7 +39,7 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.PsiImplUtil;
  */
 public class GrClassInitializerImpl extends GroovyPsiElementImpl implements GrClassInitializer {
 
-  public GrClassInitializerImpl(@NotNull ASTNode node) {
+  public GrClassInitializerImpl(@Nonnull ASTNode node) {
     super(node);
   }
 
@@ -52,7 +53,7 @@ public class GrClassInitializerImpl extends GroovyPsiElementImpl implements GrCl
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public GrOpenBlock getBlock() {
     return findNotNullChildByClass(GrOpenBlock.class);
   }
@@ -81,17 +82,17 @@ public class GrClassInitializerImpl extends GroovyPsiElementImpl implements GrCl
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public GrModifierList getModifierList() {
     return findNotNullChildByClass(GrModifierList.class);
   }
 
   @Override
-  public boolean hasModifierProperty(@GrModifier.GrModifierConstant @NonNls @NotNull String name) {
+  public boolean hasModifierProperty(@GrModifier.GrModifierConstant @NonNls @Nonnull String name) {
     return getModifierList().hasModifierProperty(name);
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public PsiCodeBlock getBody() {
     return PsiImplUtil.getOrCreatePsiCodeBlock(getBlock());

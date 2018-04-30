@@ -16,14 +16,13 @@
 package org.jetbrains.plugins.groovy.lang.psi.controlFlow.impl;
 
 import com.intellij.psi.PsiElement;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.controlFlow.Instruction;
 
 /**
  * @author Max Medvedev
  */
 public class ThrowingInstruction extends InstructionImpl {
-  public ThrowingInstruction(@Nullable PsiElement element) {
+  public ThrowingInstruction(@javax.annotation.Nullable PsiElement element) {
     super(element);
   }
 

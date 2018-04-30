@@ -25,8 +25,8 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.codeInspection.GroovyInspectionBundle;
@@ -62,19 +62,19 @@ public class GrUnusedIncDecInspection extends BaseInspection {
   }
 
   @Nls
-  @NotNull
+  @Nonnull
   public String getGroupDisplayName() {
     return GroovyInspectionBundle.message("groovy.dfa.issues");
   }
 
   @Nls
-  @NotNull
+  @Nonnull
   public String getDisplayName() {
     return GroovyInspectionBundle.message("unused.inc.dec");
   }
 
   @NonNls
-  @NotNull
+  @Nonnull
   public String getShortName() {
     return "GroovyUnusedIncOrDec";
   }
@@ -144,20 +144,20 @@ public class GrUnusedIncDecInspection extends BaseInspection {
         myMessage = GroovyInspectionBundle.message("remove.0", expression.getOperationToken().getText());
       }
 
-      @NotNull
+      @Nonnull
       @Override
       public String getName() {
         return myMessage;
       }
 
-      @NotNull
+      @Nonnull
       @Override
       public String getFamilyName() {
         return myMessage;
       }
 
       @Override
-      public void applyFix(@NotNull Project project, @NotNull ProblemDescriptor descriptor) {
+      public void applyFix(@Nonnull Project project, @Nonnull ProblemDescriptor descriptor) {
         GrUnaryExpression expr = findUnaryExpression(descriptor);
         if (expr == null) return;
 
@@ -172,20 +172,20 @@ public class GrUnusedIncDecInspection extends BaseInspection {
         myMessage = GroovyInspectionBundle.message("replace.postfix.0.with.prefix.0", expression.getOperationToken().getText());
       }
 
-      @NotNull
+      @Nonnull
       @Override
       public String getName() {
         return myMessage;
       }
 
-      @NotNull
+      @Nonnull
       @Override
       public String getFamilyName() {
         return myMessage;
       }
 
       @Override
-      public void applyFix(@NotNull Project project, @NotNull ProblemDescriptor descriptor) {
+      public void applyFix(@Nonnull Project project, @Nonnull ProblemDescriptor descriptor) {
         GrUnaryExpression expr = findUnaryExpression(descriptor);
         if (expr == null) return;
 
@@ -204,20 +204,20 @@ public class GrUnusedIncDecInspection extends BaseInspection {
         myMessage = GroovyInspectionBundle.message("replace.0.with.1", opToken, opToken.substring(0, 1));
       }
 
-      @NotNull
+      @Nonnull
       @Override
       public String getName() {
         return myMessage;
       }
 
-      @NotNull
+      @Nonnull
       @Override
       public String getFamilyName() {
         return myMessage;
       }
 
       @Override
-      public void applyFix(@NotNull Project project, @NotNull ProblemDescriptor descriptor) {
+      public void applyFix(@Nonnull Project project, @Nonnull ProblemDescriptor descriptor) {
         GrUnaryExpression expr = findUnaryExpression(descriptor);
         GrExpression newExpr = GroovyPsiElementFactory.getInstance(project)
           .createExpressionFromText(expr.getOperand().getText() + expr.getOperationToken().getText().substring(0, 1) + "1");

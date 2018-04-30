@@ -16,8 +16,8 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.branch;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.branch.GrAssertStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
@@ -28,7 +28,7 @@ import com.intellij.lang.ASTNode;
  * @author ilyas
  */
 public class GrAssertStatementImpl extends GroovyPsiElementImpl implements GrAssertStatement {
-  public GrAssertStatementImpl(@NotNull ASTNode node) {
+  public GrAssertStatementImpl(@Nonnull ASTNode node) {
     super(node);
   }
 
@@ -42,7 +42,7 @@ public class GrAssertStatementImpl extends GroovyPsiElementImpl implements GrAss
   }
 
   @Override
-  @Nullable
+  @javax.annotation.Nullable
   public GrExpression getAssertion() {
     return findExpressionChild(this);
   }

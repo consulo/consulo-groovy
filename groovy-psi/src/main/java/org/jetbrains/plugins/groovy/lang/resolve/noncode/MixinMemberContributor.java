@@ -22,8 +22,8 @@ import com.intellij.psi.scope.DelegatingScopeProcessor;
 import com.intellij.psi.scope.PsiScopeProcessor;
 import com.intellij.psi.util.PsiUtil;
 import com.intellij.util.ObjectUtils;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotation;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotationArrayInitializer;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotationMemberValue;
@@ -42,10 +42,10 @@ import java.util.List;
  */
 public class MixinMemberContributor extends NonCodeMembersContributor {
   @Override
-  public void processDynamicElements(@NotNull final PsiType qualifierType,
-                                     @NotNull PsiScopeProcessor processor,
-                                     @NotNull final PsiElement place,
-                                     @NotNull ResolveState state) {
+  public void processDynamicElements(@Nonnull final PsiType qualifierType,
+                                     @Nonnull PsiScopeProcessor processor,
+                                     @Nonnull final PsiElement place,
+                                     @Nonnull ResolveState state) {
     if (isInAnnotation(place)) return;
 
     final PsiClass aClass = PsiUtil.resolveClassInClassTypeOnly(qualifierType);
@@ -85,7 +85,7 @@ public class MixinMemberContributor extends NonCodeMembersContributor {
     return "mixed in";
   }
 
-  public static String getOriginInfoForMixin(@NotNull PsiType subjectType) {
+  public static String getOriginInfoForMixin(@Nonnull PsiType subjectType) {
     return "mixed in " + subjectType.getPresentableText();
   }
 
@@ -116,19 +116,19 @@ public class MixinMemberContributor extends NonCodeMembersContributor {
     private final String myOriginInfo;
     private final PsiMethod myPrototype;
 
-    public MixinedMethod(@NotNull PsiMethod method, String originInfo) {
+    public MixinedMethod(@Nonnull PsiMethod method, String originInfo) {
       super(method.getManager(), method, ObjectUtils.assertNotNull(method.getContainingClass()));
       myOriginInfo = originInfo;
       myPrototype = method;
     }
 
-    @Nullable
+    @javax.annotation.Nullable
     @Override
     public String getOriginInfo() {
       return myOriginInfo;
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public PsiElement getPrototype() {
       return myPrototype;
@@ -139,14 +139,14 @@ public class MixinMemberContributor extends NonCodeMembersContributor {
     private final PsiType myType;
     private final PsiElement myPlace;
 
-    public MixinProcessor(PsiScopeProcessor delegate, @NotNull PsiType qualifierType, @Nullable PsiElement place) {
+    public MixinProcessor(PsiScopeProcessor delegate, @Nonnull PsiType qualifierType, @javax.annotation.Nullable PsiElement place) {
       super(delegate);
       myType = qualifierType;
       myPlace = place;
     }
 
     @Override
-    public boolean execute(@NotNull PsiElement element, ResolveState state) {
+    public boolean execute(@Nonnull PsiElement element, ResolveState state) {
       if (element instanceof PsiMethod && GdkMethodUtil.isCategoryMethod((PsiMethod)element, myType, myPlace, state.get(PsiSubstitutor.KEY))) {
         PsiMethod method = (PsiMethod)element;
         String originInfo = getOriginInfoForCategory(method);

@@ -15,8 +15,9 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.metrics;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.psi.PsiElement;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyRecursiveElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.*;
 
@@ -41,13 +42,13 @@ class NestingDepthVisitor extends GroovyRecursiveElementVisitor {
   }
 
 
-  public void visitForStatement(@NotNull GrForStatement statement) {
+  public void visitForStatement(@Nonnull GrForStatement statement) {
     enterScope();
     super.visitForStatement(statement);
     exitScope();
   }
 
-  public void visitIfStatement(@NotNull GrIfStatement statement) {
+  public void visitIfStatement(@Nonnull GrIfStatement statement) {
     boolean isAlreadyCounted = false;
     if (statement.getParent() instanceof GrIfStatement) {
       final GrIfStatement parent = (GrIfStatement) statement.getParent();
@@ -66,19 +67,19 @@ class NestingDepthVisitor extends GroovyRecursiveElementVisitor {
     }
   }
 
-  public void visitTryStatement(@NotNull GrTryCatchStatement statement) {
+  public void visitTryStatement(@Nonnull GrTryCatchStatement statement) {
     enterScope();
     super.visitTryStatement(statement);
     exitScope();
   }
 
-  public void visitSwitchStatement(@NotNull GrSwitchStatement statement) {
+  public void visitSwitchStatement(@Nonnull GrSwitchStatement statement) {
     enterScope();
     super.visitSwitchStatement(statement);
     exitScope();
   }
 
-  public void visitWhileStatement(@NotNull GrWhileStatement statement) {
+  public void visitWhileStatement(@Nonnull GrWhileStatement statement) {
     enterScope();
     super.visitWhileStatement(statement);
     exitScope();

@@ -16,8 +16,8 @@
 package org.jetbrains.plugins.groovy.lang.psi.api.statements;
 
 import com.intellij.psi.PsiField;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.extensions.NamedArgumentDescriptor;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocCommentOwner;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrAccessorMethod;
@@ -33,13 +33,13 @@ public interface GrField extends GrVariable, GrMember, PsiField, GrTopLevelDefin
 
   boolean isProperty();
 
-  @Nullable
+  @javax.annotation.Nullable
   GrAccessorMethod getSetter();
 
-  @NotNull
+  @Nonnull
   GrAccessorMethod[] getGetters();
 
-  @NotNull
+  @Nonnull
   Map<String, NamedArgumentDescriptor> getNamedParameters();
 }
 

@@ -21,7 +21,6 @@ import com.intellij.psi.*;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiMethodUtil;
 import com.intellij.psi.util.PsiTreeUtil;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
 import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GroovyScriptClass;
@@ -30,8 +29,8 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GroovyScriptClass;
  * @author Max Medvedev
  */
 public class GroovyRunnerUtil {
-  @Nullable
-  public static PsiClass getRunningClass(@Nullable PsiElement element) {
+  @javax.annotation.Nullable
+  public static PsiClass getRunningClass(@javax.annotation.Nullable PsiElement element) {
     if (element == null) return null;
 
     final PsiFile file = element.getContainingFile();
@@ -53,7 +52,7 @@ public class GroovyRunnerUtil {
     return null;
   }
 
-  public static boolean isRunnable(@Nullable final PsiClass psiClass) {
+  public static boolean isRunnable(@javax.annotation.Nullable final PsiClass psiClass) {
     if (psiClass == null) return false;
     final PsiClass runnable =
       JavaPsiFacade.getInstance(psiClass.getProject()).findClass(CommonClassNames.JAVA_LANG_RUNNABLE, psiClass.getResolveScope());

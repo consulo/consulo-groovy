@@ -23,7 +23,7 @@ import com.intellij.psi.impl.source.resolve.reference.impl.providers.JavaClassRe
 import com.intellij.psi.impl.source.resolve.reference.impl.providers.JavaClassReferenceSet;
 import com.intellij.util.ProcessingContext;
 import com.intellij.util.containers.ContainerUtil;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 import java.util.ArrayList;
 
@@ -37,9 +37,9 @@ public class DGMReferenceContributor extends PsiReferenceContributor {
   @Override
   public void registerReferenceProviders(PsiReferenceRegistrar registrar) {
     registrar.registerReferenceProvider(PlatformPatterns.psiElement(PropertiesTokenTypes.VALUE_CHARACTERS), new PsiReferenceProvider() {
-      @NotNull
+      @Nonnull
       @Override
-      public PsiReference[] getReferencesByElement(@NotNull PsiElement element, @NotNull ProcessingContext context) {
+      public PsiReference[] getReferencesByElement(@Nonnull PsiElement element, @Nonnull ProcessingContext context) {
         if (!DGMUtil.isInDGMFile(element)) return PsiReference.EMPTY_ARRAY;
 
         IProperty parent = (IProperty)element.getParent();

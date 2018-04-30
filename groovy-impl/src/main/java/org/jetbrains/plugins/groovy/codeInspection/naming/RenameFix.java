@@ -26,7 +26,7 @@ import com.intellij.refactoring.RefactoringActionHandlerFactory;
 import com.intellij.refactoring.RefactoringFactory;
 import com.intellij.refactoring.RenameRefactoring;
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.codeInspection.GroovyFix;
 
 public class RenameFix extends GroovyFix {
@@ -44,7 +44,7 @@ public class RenameFix extends GroovyFix {
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public String getName() {
     if (targetName == null) {
       return "Rename";

@@ -21,8 +21,8 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.containers.ContainerUtil;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
@@ -40,17 +40,17 @@ public class CompleteReferencesWithSameQualifier {
   private final PrefixMatcher myMatcher;
   private final GrExpression myQualifier;
 
-  private CompleteReferencesWithSameQualifier(@NotNull GrReferenceExpression refExpr,
-                                              @NotNull PrefixMatcher matcher,
+  private CompleteReferencesWithSameQualifier(@Nonnull GrReferenceExpression refExpr,
+                                              @Nonnull PrefixMatcher matcher,
                                               @Nullable GrExpression qualifier) {
     myRefExpr = refExpr;
     myMatcher = matcher;
     myQualifier = qualifier;
   }
 
-  @NotNull
-  public static Set<String> getVariantsWithSameQualifier(@NotNull GrReferenceExpression refExpr,
-                                                         @NotNull PrefixMatcher matcher,
+  @Nonnull
+  public static Set<String> getVariantsWithSameQualifier(@Nonnull GrReferenceExpression refExpr,
+                                                         @Nonnull PrefixMatcher matcher,
                                                          @Nullable GrExpression qualifier) {
     return new CompleteReferencesWithSameQualifier(refExpr, matcher, qualifier).getVariantsWithSameQualifierImpl();
   }
@@ -66,7 +66,7 @@ public class CompleteReferencesWithSameQualifier {
     return result;
   }
 
-  private void addVariantsWithSameQualifier(@NotNull PsiElement element, @NotNull Set<String> result) {
+  private void addVariantsWithSameQualifier(@Nonnull PsiElement element, @Nonnull Set<String> result) {
     if (element instanceof GrReferenceExpression && element != myRefExpr && !PsiUtil.isLValue((GroovyPsiElement)element)) {
       final GrReferenceExpression refExpr = (GrReferenceExpression)element;
       final String refName = refExpr.getReferenceName();

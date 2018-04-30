@@ -23,7 +23,7 @@ import com.intellij.psi.codeStyle.CodeStyleSettings;
 import com.intellij.psi.codeStyle.CodeStyleSettingsCustomizable;
 import com.intellij.psi.codeStyle.CommonCodeStyleSettings;
 import com.intellij.psi.codeStyle.LanguageCodeStyleSettingsProvider;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 
 import javax.swing.*;
@@ -32,15 +32,15 @@ import javax.swing.*;
  * @author Rustam Vishnyakov
  */
 public class GroovyLanguageCodeStyleSettingsProvider extends LanguageCodeStyleSettingsProvider {
-  @NotNull
+  @Nonnull
   @Override
   public Language getLanguage() {
     return GroovyFileType.GROOVY_LANGUAGE;
   }
 
   @Override
-  public void customizeSettings(@NotNull CodeStyleSettingsCustomizable consumer,
-                                @NotNull SettingsType settingsType) {
+  public void customizeSettings(@Nonnull CodeStyleSettingsCustomizable consumer,
+                                @Nonnull SettingsType settingsType) {
     if (settingsType == SettingsType.WRAPPING_AND_BRACES_SETTINGS) {
       consumer.showStandardOptions(
         "KEEP_LINE_BREAKS",
@@ -262,7 +262,7 @@ public class GroovyLanguageCodeStyleSettingsProvider extends LanguageCodeStyleSe
   }
 
   @Override
-  public String getCodeSample(@NotNull SettingsType settingsType) {
+  public String getCodeSample(@Nonnull SettingsType settingsType) {
     switch (settingsType) {
       case INDENT_SETTINGS: return INDENT_OPTIONS_SAMPLE;
       case SPACING_SETTINGS: return SPACING_SAMPLE;
@@ -306,7 +306,7 @@ public class GroovyLanguageCodeStyleSettingsProvider extends LanguageCodeStyleSe
         options.LABEL_INDENT_ABSOLUTE = myLabelIndentAbsolute.isSelected();
       }
 
-      public void reset(@NotNull final CodeStyleSettings settings, @NotNull final CommonCodeStyleSettings.IndentOptions options) {
+      public void reset(@Nonnull final CodeStyleSettings settings, @Nonnull final CommonCodeStyleSettings.IndentOptions options) {
         super.reset(settings, options);
         myLabelIndent.setText(Integer.toString(options.LABEL_INDENT_SIZE));
         myLabelIndentAbsolute.setSelected(options.LABEL_INDENT_ABSOLUTE);

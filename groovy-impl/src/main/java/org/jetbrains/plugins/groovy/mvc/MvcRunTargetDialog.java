@@ -29,7 +29,7 @@ import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.ui.*;
 import com.intellij.util.TextFieldCompletionProvider;
 import com.intellij.util.TextFieldCompletionProviderDumbAware;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.mvc.util.MvcTargetDialogCompletionUtils;
 
 import javax.swing.*;
@@ -57,7 +57,7 @@ public class MvcRunTargetDialog extends DialogWrapper {
 
   private Action myInteractiveRunAction;
 
-  public MvcRunTargetDialog(@NotNull Module module, @NotNull MvcFramework framework) {
+  public MvcRunTargetDialog(@Nonnull Module module, @Nonnull MvcFramework framework) {
     super(module.getProject(), true);
     myModule = module;
     myFramework = framework;
@@ -67,7 +67,7 @@ public class MvcRunTargetDialog extends DialogWrapper {
     init();
   }
 
-  @NotNull
+  @Nonnull
   @Override
   protected Action[] createLeftSideActions() {
     boolean hasOneSupportedModule = false;
@@ -128,7 +128,7 @@ public class MvcRunTargetDialog extends DialogWrapper {
     myModuleBox.setRenderer(new ModuleListCellRenderer());
   }
 
-  @NotNull
+  @Nonnull
   public Module getSelectedModule() {
     return myModule;
   }
@@ -147,7 +147,7 @@ public class MvcRunTargetDialog extends DialogWrapper {
     return (String)myTargetField.getEditor().getItem();
   }
 
-  @NotNull
+  @Nonnull
   public String getTargetArguments() {
     String text = getSelectedText();
 
@@ -183,14 +183,14 @@ public class MvcRunTargetDialog extends DialogWrapper {
     myFakePanel.add(myTargetField, BorderLayout.CENTER);
 
     TextFieldCompletionProvider vmOptionCompletionProvider = new TextFieldCompletionProviderDumbAware() {
-      @NotNull
+      @Nonnull
       @Override
-      protected String getPrefix(@NotNull String currentTextPrefix) {
+      protected String getPrefix(@Nonnull String currentTextPrefix) {
         return MvcRunTargetDialog.getPrefix(currentTextPrefix);
       }
 
       @Override
-      protected void addCompletionVariants(@NotNull String text, int offset, @NotNull String prefix, @NotNull CompletionResultSet result) {
+      protected void addCompletionVariants(@Nonnull String text, int offset, @Nonnull String prefix, @Nonnull CompletionResultSet result) {
         if (prefix.endsWith("-D")) {
           result.addAllElements(MvcTargetDialogCompletionUtils.getSystemPropertiesVariants());
         }
@@ -200,14 +200,14 @@ public class MvcRunTargetDialog extends DialogWrapper {
 
     new TextFieldCompletionProviderDumbAware() {
 
-      @NotNull
+      @Nonnull
       @Override
-      protected String getPrefix(@NotNull String currentTextPrefix) {
+      protected String getPrefix(@Nonnull String currentTextPrefix) {
         return MvcRunTargetDialog.getPrefix(currentTextPrefix);
       }
 
       @Override
-      protected void addCompletionVariants(@NotNull String text, int offset, @NotNull String prefix, @NotNull CompletionResultSet result) {
+      protected void addCompletionVariants(@Nonnull String text, int offset, @Nonnull String prefix, @Nonnull CompletionResultSet result) {
         for (LookupElement variant : MvcTargetDialogCompletionUtils.collectVariants(myModule, text, offset, prefix)) {
           result.addElement(variant);
         }

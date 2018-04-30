@@ -15,13 +15,13 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.api.statements.params;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeElement;
 
 /**
  * @author Max Medvedev
  */
 public interface GrMultiTypeParameter extends GrParameter {
-  @NotNull
+  @Nonnull
   GrTypeElement[] getTypeElements();
 }

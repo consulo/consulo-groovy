@@ -15,12 +15,13 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.extract.closure;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.psi.PsiElement;
 import com.intellij.refactoring.BaseRefactoringProcessor;
 import com.intellij.refactoring.ui.UsageViewDescriptorAdapter;
 import com.intellij.usageView.UsageInfo;
 import com.intellij.usageView.UsageViewDescriptor;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlock;
 import org.jetbrains.plugins.groovy.refactoring.extract.ExtractUtil;
@@ -33,16 +34,16 @@ public abstract class ExtractClosureProcessorBase extends BaseRefactoringProcess
   protected final GrIntroduceParameterSettings myHelper;
   private static final String EXTRACT_CLOSURE = "Extract closure";
 
-  public ExtractClosureProcessorBase(@NotNull GrIntroduceParameterSettings helper) {
+  public ExtractClosureProcessorBase(@Nonnull GrIntroduceParameterSettings helper) {
     super(helper.getProject());
     myHelper = helper;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   protected UsageViewDescriptor createUsageViewDescriptor(UsageInfo[] usages) {
     return new UsageViewDescriptorAdapter() {
-      @NotNull
+      @Nonnull
       @Override
       public PsiElement[] getElements() {
         return new PsiElement[]{myHelper.getToSearchFor()};

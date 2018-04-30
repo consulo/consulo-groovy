@@ -19,7 +19,8 @@ package org.jetbrains.plugins.groovy.lang.psi.impl.auxiliary;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrLabeledStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.branch.GrBreakStatement;
@@ -42,7 +43,7 @@ public class GrLabelReference implements PsiReference {
   }
 
   @Override
-  public PsiElement bindToElement(@NotNull PsiElement element) throws IncorrectOperationException {
+  public PsiElement bindToElement(@Nonnull PsiElement element) throws IncorrectOperationException {
     if (element instanceof GrLabeledStatement) {
       myStatement = handleElementRename(((GrLabeledStatement)element).getName());
     }
@@ -65,7 +66,7 @@ public class GrLabelReference implements PsiReference {
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public String getCanonicalText() {
     final String name = myStatement.getLabelName();
     if (name == null) return "";
@@ -86,7 +87,7 @@ public class GrLabelReference implements PsiReference {
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public Object[] getVariants() {
     final List<PsiElement> result = new ArrayList<PsiElement>();
     PsiElement context = myStatement;

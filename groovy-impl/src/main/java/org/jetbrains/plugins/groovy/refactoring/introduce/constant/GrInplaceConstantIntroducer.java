@@ -17,11 +17,11 @@ package org.jetbrains.plugins.groovy.refactoring.introduce.constant;
 
 import java.util.ArrayList;
 
+import javax.annotation.Nonnull;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFileBase;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
@@ -90,12 +90,12 @@ public class GrInplaceConstantIntroducer extends GrAbstractInplaceIntroducer<GrI
 	}
 
 	@Override
-	protected String[] suggestNames(boolean replaceAll, @Nullable GrVariable variable)
+	protected String[] suggestNames(boolean replaceAll, @javax.annotation.Nullable GrVariable variable)
 	{
 		return mySuggestedNames;
 	}
 
-	@Nullable
+	@javax.annotation.Nullable
 	@Override
 	protected JComponent getComponent()
 	{
@@ -103,7 +103,7 @@ public class GrInplaceConstantIntroducer extends GrAbstractInplaceIntroducer<GrI
 	}
 
 	@Override
-	protected void saveSettings(@NotNull GrVariable variable)
+	protected void saveSettings(@Nonnull GrVariable variable)
 	{
 
 	}
@@ -127,8 +127,8 @@ public class GrInplaceConstantIntroducer extends GrAbstractInplaceIntroducer<GrI
 
 	@Nullable
 	@Override
-	protected GrIntroduceConstantSettings getInitialSettingsForInplace(@NotNull final GrIntroduceContext context,
-			@NotNull final OccurrencesChooser.ReplaceChoice choice,
+	protected GrIntroduceConstantSettings getInitialSettingsForInplace(@Nonnull final GrIntroduceContext context,
+			@Nonnull final OccurrencesChooser.ReplaceChoice choice,
 			final String[] names)
 	{
 		return new GrIntroduceConstantSettings()
@@ -139,7 +139,7 @@ public class GrInplaceConstantIntroducer extends GrAbstractInplaceIntroducer<GrI
 				return PsiModifier.PUBLIC;
 			}
 
-			@Nullable
+			@javax.annotation.Nullable
 			@Override
 			public PsiClass getTargetClass()
 			{
@@ -159,7 +159,7 @@ public class GrInplaceConstantIntroducer extends GrAbstractInplaceIntroducer<GrI
 				return isReplaceAllOccurrences();
 			}
 
-			@Nullable
+			@javax.annotation.Nullable
 			@Override
 			public PsiType getSelectedType()
 			{
@@ -183,7 +183,7 @@ public class GrInplaceConstantIntroducer extends GrAbstractInplaceIntroducer<GrI
 				return PsiModifier.PUBLIC;
 			}
 
-			@Nullable
+			@javax.annotation.Nullable
 			@Override
 			public String getName()
 			{
@@ -196,14 +196,14 @@ public class GrInplaceConstantIntroducer extends GrAbstractInplaceIntroducer<GrI
 				return isReplaceAllOccurrences();
 			}
 
-			@Nullable
+			@javax.annotation.Nullable
 			@Override
 			public PsiType getSelectedType()
 			{
 				return GrInplaceConstantIntroducer.this.getSelectedType();
 			}
 
-			@Nullable
+			@javax.annotation.Nullable
 			@Override
 			public PsiClass getTargetClass()
 			{

@@ -17,9 +17,11 @@ package org.jetbrains.plugins.groovy.dsl;
 
 import java.util.List;
 
+import javax.annotation.Nonnull;
+
 import org.codehaus.groovy.runtime.InvokerInvocationException;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.dsl.holders.CustomMembersHolder;
 import org.jetbrains.plugins.groovy.dsl.toplevel.ContextFilter;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.ClassUtil;
@@ -52,8 +54,8 @@ public class GroovyDslScript
 	private final FactorTree myFactorTree;
 
 	public GroovyDslScript(final Project project,
-			@Nullable VirtualFile file,
-			@NotNull org.jetbrains.plugins.groovy.dsl.GroovyDslExecutor executor,
+			@javax.annotation.Nullable VirtualFile file,
+			@Nonnull org.jetbrains.plugins.groovy.dsl.GroovyDslExecutor executor,
 			String path)
 	{
 		this.project = project;
@@ -136,7 +138,7 @@ public class GroovyDslScript
 		return CustomMembersHolder.EMPTY;
 	}
 
-	private static boolean isApplicable(@NotNull GroovyDslExecutor executor,
+	private static boolean isApplicable(@Nonnull GroovyDslExecutor executor,
 			GroovyClassDescriptor descriptor,
 			final ProcessingContext ctx)
 	{

@@ -19,7 +19,8 @@ package org.jetbrains.plugins.groovy.lang.psi.impl.auxiliary;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
@@ -43,7 +44,7 @@ import com.intellij.util.containers.ContainerUtil;
  * @date: 03.04.2007
  */
 public class GrThrowsClauseImpl extends GroovyPsiElementImpl implements GrThrowsClause {
-  public GrThrowsClauseImpl(@NotNull ASTNode node) {
+  public GrThrowsClauseImpl(@Nonnull ASTNode node) {
     super(node);
   }
 
@@ -57,7 +58,7 @@ public class GrThrowsClauseImpl extends GroovyPsiElementImpl implements GrThrows
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public PsiJavaCodeReferenceElement[] getReferenceElements() {
     PsiClassType[] types = getReferencedTypes();
     if (types.length == 0) return PsiJavaCodeReferenceElement.EMPTY_ARRAY;
@@ -76,7 +77,7 @@ public class GrThrowsClauseImpl extends GroovyPsiElementImpl implements GrThrows
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public PsiClassType[] getReferencedTypes() {
     List<GrCodeReferenceElement> refs = new ArrayList<GrCodeReferenceElement>();
     for (PsiElement cur = getFirstChild(); cur != null; cur = cur.getNextSibling()) {
@@ -98,7 +99,7 @@ public class GrThrowsClauseImpl extends GroovyPsiElementImpl implements GrThrows
   }
 
   @Override
-  public PsiElement add(@NotNull PsiElement element) throws IncorrectOperationException {
+  public PsiElement add(@Nonnull PsiElement element) throws IncorrectOperationException {
     if (element instanceof GrCodeReferenceElement || element instanceof PsiJavaCodeReferenceElement) {
       if (findChildByClass(GrCodeReferenceElement.class) == null) {
         getNode().addLeaf(GroovyTokenTypes.kTHROWS, "throws", null);

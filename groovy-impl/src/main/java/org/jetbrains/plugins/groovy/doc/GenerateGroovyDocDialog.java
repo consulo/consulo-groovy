@@ -19,7 +19,6 @@ import com.intellij.CommonBundle;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.Messages;
-import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.io.File;
@@ -60,7 +59,7 @@ public final class GenerateGroovyDocDialog extends DialogWrapper {
     //Disposer.dispose(myPanel);
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   @Override
   protected String getHelpId() {
     return "editing.groovydocGeneration";

@@ -19,8 +19,8 @@ import static com.intellij.util.containers.ContainerUtil.ar;
 
 import java.io.File;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.config.GroovyConfigUtils;
 import org.jetbrains.plugins.groovy.runner.GroovyScriptRunConfiguration;
 import org.jetbrains.plugins.groovy.runner.GroovyScriptRunner;
@@ -28,7 +28,6 @@ import org.jetbrains.plugins.groovy.util.GroovyUtils;
 import org.jetbrains.plugins.groovy.util.LibrariesUtil;
 import com.intellij.execution.CantRunException;
 import com.intellij.execution.Executor;
-import com.intellij.execution.configurations.JavaParameters;
 import com.intellij.execution.configurations.RunProfile;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.options.ShowSettingsUtil;
@@ -50,12 +49,12 @@ public class GantRunner extends GroovyScriptRunner {
   }
 
   @Override
-  public boolean isValidModule(@NotNull Module module) {
+  public boolean isValidModule(@Nonnull Module module) {
     return GantUtils.isSDKConfiguredToRun(module);
   }
 
   @Override
-  public boolean ensureRunnerConfigured(@Nullable Module module, RunProfile profile, Executor executor, final Project project) {
+  public boolean ensureRunnerConfigured(@javax.annotation.Nullable Module module, RunProfile profile, Executor executor, final Project project) {
     if (!(GantUtils.getSDKInstallPath(module, project).length() > 0)) {
       int result = Messages
         .showOkCancelDialog("Gant is not configured. Do you want to configure it?", "Configure Gant SDK",
@@ -81,7 +80,7 @@ public class GantRunner extends GroovyScriptRunner {
   }
 
   @Override
-  public void configureCommandLine(OwnJavaParameters params, @Nullable Module module, boolean tests, VirtualFile script, GroovyScriptRunConfiguration configuration) throws CantRunException {
+  public void configureCommandLine(OwnJavaParameters params, @javax.annotation.Nullable Module module, boolean tests, VirtualFile script, GroovyScriptRunConfiguration configuration) throws CantRunException {
     String gantHome = GantUtils.getSDKInstallPath(module, configuration.getProject());
 
     addGroovyAndAntJars(params, module, gantHome);

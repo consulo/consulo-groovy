@@ -19,8 +19,8 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.NullUtils;
 import com.intellij.psi.*;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.GrListOrMap;
 import org.jetbrains.plugins.groovy.lang.psi.api.signatures.GrClosureSignature;
@@ -50,10 +50,10 @@ class ArgumentListGenerator {
   }
 
   public void generate(@Nullable GrClosureSignature signature,
-                       @NotNull GrExpression[] exprs,
-                       @NotNull GrNamedArgument[] namedArgs,
-                       @NotNull GrClosableBlock[] clArgs,
-                       @NotNull GroovyPsiElement context) {
+                       @Nonnull GrExpression[] exprs,
+                       @Nonnull GrNamedArgument[] namedArgs,
+                       @Nonnull GrClosableBlock[] clArgs,
+                       @Nonnull GroovyPsiElement context) {
     GrClosureSignatureUtil.ArgInfo<PsiElement>[] argInfos =
       signature == null ? null : GrClosureSignatureUtil.mapParametersToArguments(signature, namedArgs, exprs, clArgs, context, false, false);
 

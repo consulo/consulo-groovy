@@ -15,14 +15,14 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.codeInspection.InspectionManager;
 import com.intellij.codeInspection.ProblemDescriptor;
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFileBase;
 
 public abstract class BaseInspection extends GroovySuppressableInspectionTool {
@@ -40,19 +40,19 @@ public abstract class BaseInspection extends GroovySuppressableInspectionTool {
   public static final String VALIDITY_ISSUES = "Validity issues";
   public static final String ANNOTATIONS_ISSUES = "Annotations verifying";
 
-  @NotNull
+  @Nonnull
   @Override
   public String[] getGroupPath() {
     return new String[]{"Groovy", getGroupDisplayName()};
   }
 
-  @NotNull
+  @Nonnull
   public String getShortName() {
     return m_shortName;
   }
 
-  @NotNull
-  protected BaseInspectionVisitor buildGroovyVisitor(@NotNull ProblemsHolder problemsHolder, boolean onTheFly) {
+  @Nonnull
+  protected BaseInspectionVisitor buildGroovyVisitor(@Nonnull ProblemsHolder problemsHolder, boolean onTheFly) {
     final BaseInspectionVisitor visitor = buildVisitor();
     visitor.setProblemsHolder(problemsHolder);
     visitor.setOnTheFly(onTheFly);
@@ -61,7 +61,7 @@ public abstract class BaseInspection extends GroovySuppressableInspectionTool {
   }
 
 
-  @Nullable
+  @javax.annotation.Nullable
   protected String buildErrorString(Object... args) {
     return null;
   }
@@ -70,18 +70,18 @@ public abstract class BaseInspection extends GroovySuppressableInspectionTool {
     return false;
   }
 
-  @Nullable
-  protected GroovyFix buildFix(@NotNull PsiElement location) {
+  @javax.annotation.Nullable
+  protected GroovyFix buildFix(@Nonnull PsiElement location) {
     return null;
   }
 
-  @Nullable
-  protected GroovyFix[] buildFixes(@NotNull PsiElement location) {
+  @javax.annotation.Nullable
+  protected GroovyFix[] buildFixes(@Nonnull PsiElement location) {
     return null;
   }
 
-  @Nullable
-  public ProblemDescriptor[] checkFile(@NotNull PsiFile psiFile, @NotNull InspectionManager inspectionManager, boolean isOnTheFly) {
+  @javax.annotation.Nullable
+  public ProblemDescriptor[] checkFile(@Nonnull PsiFile psiFile, @Nonnull InspectionManager inspectionManager, boolean isOnTheFly) {
     if (!(psiFile instanceof GroovyFileBase)) {
       return super.checkFile(psiFile, inspectionManager, isOnTheFly);
     }
@@ -94,6 +94,6 @@ public abstract class BaseInspection extends GroovySuppressableInspectionTool {
 
   }
 
-  @NotNull
+  @Nonnull
   protected abstract BaseInspectionVisitor buildVisitor();
 }

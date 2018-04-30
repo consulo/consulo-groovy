@@ -15,6 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.lang.ASTNode;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.navigation.ItemPresentationProviders;
@@ -23,8 +25,8 @@ import com.intellij.psi.PsiMethod;
 import com.intellij.psi.PsiType;
 import com.intellij.util.Function;
 import com.intellij.util.IncorrectOperationException;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrMethodCall;
@@ -62,12 +64,12 @@ public abstract class GrMethodCallImpl extends GrCallExpressionImpl implements G
     }
   };
 
-  public GrMethodCallImpl(@NotNull ASTNode node) {
+  public GrMethodCallImpl(@Nonnull ASTNode node) {
     super(node);
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public GroovyResolveResult[] getCallVariants(@Nullable GrExpression upToArgument) {
     final GrExpression invoked = getInvokedExpression();
     if (!(invoked instanceof GrReferenceExpressionImpl)) return GroovyResolveResult.EMPTY_ARRAY;
@@ -76,7 +78,7 @@ public abstract class GrMethodCallImpl extends GrCallExpressionImpl implements G
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public GrExpression getInvokedExpression() {
     for (PsiElement cur = this.getFirstChild(); cur != null; cur = cur.getNextSibling()) {
       if (cur instanceof GrExpression) return (GrExpression)cur;
@@ -95,7 +97,7 @@ public abstract class GrMethodCallImpl extends GrCallExpressionImpl implements G
     return null;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public GroovyResolveResult advancedResolve() {
     final GrExpression methodExpr = getInvokedExpression();
@@ -119,7 +121,7 @@ public abstract class GrMethodCallImpl extends GrCallExpressionImpl implements G
     return ((GrReferenceExpression)expression).getDotToken() == null;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public GroovyResolveResult[] multiResolve(boolean incompleteCode) {
     GrExpression expression = getInvokedExpression();

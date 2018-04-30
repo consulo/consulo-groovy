@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.patterns;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrAssignmentExpression;
 import com.intellij.patterns.ElementPattern;
 import com.intellij.patterns.PatternCondition;
@@ -27,17 +27,17 @@ public class GroovyAssignmentExpressionPattern extends GroovyExpressionPattern<G
     super(GrAssignmentExpression.class);
   }
 
-  public GroovyAssignmentExpressionPattern left(@NotNull final ElementPattern pattern) {
+  public GroovyAssignmentExpressionPattern left(@Nonnull final ElementPattern pattern) {
     return with(new PatternCondition<GrAssignmentExpression>("left") {
-      public boolean accepts(@NotNull final GrAssignmentExpression psiBinaryExpression, final ProcessingContext context) {
+      public boolean accepts(@Nonnull final GrAssignmentExpression psiBinaryExpression, final ProcessingContext context) {
         return pattern.getCondition().accepts(psiBinaryExpression.getLValue(), context);
       }
     });
   }
 
-  public GroovyAssignmentExpressionPattern right(@NotNull final ElementPattern pattern) {
+  public GroovyAssignmentExpressionPattern right(@Nonnull final ElementPattern pattern) {
     return with(new PatternCondition<GrAssignmentExpression>("right") {
-      public boolean accepts(@NotNull final GrAssignmentExpression psiBinaryExpression, final ProcessingContext context) {
+      public boolean accepts(@Nonnull final GrAssignmentExpression psiBinaryExpression, final ProcessingContext context) {
         return pattern.getCondition().accepts(psiBinaryExpression.getRValue(), context);
       }
     });
@@ -45,7 +45,7 @@ public class GroovyAssignmentExpressionPattern extends GroovyExpressionPattern<G
 
   public GroovyAssignmentExpressionPattern operation(final IElementType pattern) {
     return with(new PatternCondition<GrAssignmentExpression>("operation") {
-      public boolean accepts(@NotNull final GrAssignmentExpression psiBinaryExpression, final ProcessingContext context) {
+      public boolean accepts(@Nonnull final GrAssignmentExpression psiBinaryExpression, final ProcessingContext context) {
         return pattern == psiBinaryExpression.getOperationToken();
       }
     });

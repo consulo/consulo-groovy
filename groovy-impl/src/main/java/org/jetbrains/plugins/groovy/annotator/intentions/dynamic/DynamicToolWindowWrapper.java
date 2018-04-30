@@ -26,6 +26,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
+import javax.annotation.Nonnull;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -42,8 +43,7 @@ import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.annotator.intentions.QuickfixUtil;
@@ -366,11 +366,11 @@ public class DynamicToolWindowWrapper {
           final String qualifiedName = ((PsiClass)element).getQualifiedName();
 
           return new RefactoringElementListener() {
-            public void elementMoved(@NotNull PsiElement newElement) {
+            public void elementMoved(@Nonnull PsiElement newElement) {
               renameElement(qualifiedName, newElement);
             }
 
-            public void elementRenamed(@NotNull PsiElement newElement) {
+            public void elementRenamed(@Nonnull PsiElement newElement) {
               renameElement(qualifiedName, newElement);
             }
 
@@ -687,7 +687,7 @@ public class DynamicToolWindowWrapper {
     }
 
     @Nullable
-    public Object getData(@NotNull Key dataId) {
+    public Object getData(@Nonnull Key dataId) {
       if (LangDataKeys.PSI_ELEMENT == dataId) {
         return getSelectedElement();
       }
@@ -700,12 +700,12 @@ public class DynamicToolWindowWrapper {
       else if (PlatformDataKeys.DELETE_ELEMENT_PROVIDER == dataId) {
         return new DeleteProvider() {
           @Override
-          public void deleteElement(@NotNull DataContext dataContext) {
+          public void deleteElement(@Nonnull DataContext dataContext) {
             deleteRow();
           }
 
           @Override
-          public boolean canDeleteElement(@NotNull DataContext dataContext) {
+          public boolean canDeleteElement(@Nonnull DataContext dataContext) {
             return myTreeTable.getTree().getSelectionPaths() != null;
           }
         };

@@ -16,6 +16,8 @@
 
 package org.jetbrains.plugins.groovy.formatter;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.formatting.Block;
 import com.intellij.formatting.FormattingModel;
 import com.intellij.formatting.FormattingModelBuilder;
@@ -33,8 +35,6 @@ import com.intellij.psi.formatter.FormattingDocumentModelImpl;
 import com.intellij.psi.formatter.PsiBasedFormattingModel;
 import com.intellij.psi.impl.source.tree.TreeUtil;
 import com.intellij.psi.tree.IElementType;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.codeStyle.GroovyCodeStyleSettings;
 import org.jetbrains.plugins.groovy.formatter.blocks.GroovyBlock;
@@ -46,7 +46,7 @@ import org.jetbrains.plugins.groovy.lang.lexer.TokenSets;
  * @author ilyas
  */
 public class GroovyFormattingModelBuilder implements FormattingModelBuilder {
-  @NotNull
+  @Nonnull
   public FormattingModel createModel(final PsiElement element, final CodeStyleSettings settings) {
     ASTNode node = element.getNode();
     assert node != null;
@@ -75,7 +75,7 @@ public class GroovyFormattingModelBuilder implements FormattingModelBuilder {
     return new GroovyFormattingModel(containingFile, block, FormattingDocumentModelImpl.createOn(containingFile));
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   public TextRange getRangeAffectingIndent(PsiFile file, int offset, ASTNode elementAtOffset) {
     return null;
   }
@@ -87,7 +87,7 @@ public class GroovyFormattingModelBuilder implements FormattingModelBuilder {
    */
   private static class GroovyFormattingModel extends PsiBasedFormattingModel {
 
-    GroovyFormattingModel(PsiFile file, @NotNull Block rootBlock, FormattingDocumentModelImpl documentModel) {
+    GroovyFormattingModel(PsiFile file, @Nonnull Block rootBlock, FormattingDocumentModelImpl documentModel) {
       super(file, rootBlock, documentModel);
     }
 

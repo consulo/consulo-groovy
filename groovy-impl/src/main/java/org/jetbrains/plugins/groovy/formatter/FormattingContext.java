@@ -15,8 +15,9 @@
  */
 package org.jetbrains.plugins.groovy.formatter;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.psi.codeStyle.CommonCodeStyleSettings;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.codeStyle.GroovyCodeStyleSettings;
 
 /**
@@ -29,9 +30,9 @@ public class FormattingContext {
 
   private final boolean myInsidePlainGString;
 
-  public FormattingContext(@NotNull CommonCodeStyleSettings settings,
-                           @NotNull AlignmentProvider provider,
-                           @NotNull GroovyCodeStyleSettings groovySettings, boolean insidePlainGString) {
+  public FormattingContext(@Nonnull CommonCodeStyleSettings settings,
+                           @Nonnull AlignmentProvider provider,
+                           @Nonnull GroovyCodeStyleSettings groovySettings, boolean insidePlainGString) {
     mySettings = settings;
     myAlignmentProvider = provider;
     myGroovySettings = groovySettings;

@@ -17,7 +17,8 @@ package org.jetbrains.plugins.groovy.annotator;
 
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.codeInspection.untypedUnresolvedAccess.GrUnresolvedAccessChecker;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFileBase;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyRecursiveElementVisitor;
@@ -35,9 +36,9 @@ class ResolveHighlightingVisitor extends GroovyRecursiveElementVisitor
 	private final GrUnresolvedAccessChecker myReferenceChecker;
 	private final List<HighlightInfo> myInfos;
 
-	public ResolveHighlightingVisitor(@NotNull GroovyFileBase file,
-			@NotNull Project project,
-			@NotNull List<HighlightInfo> collector)
+	public ResolveHighlightingVisitor(@Nonnull GroovyFileBase file,
+			@Nonnull Project project,
+			@Nonnull List<HighlightInfo> collector)
 	{
 		myReferenceChecker = new GrUnresolvedAccessChecker(file, project);
 		myInfos = collector;

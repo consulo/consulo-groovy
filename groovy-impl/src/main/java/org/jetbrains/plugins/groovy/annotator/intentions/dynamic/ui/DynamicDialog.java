@@ -33,7 +33,6 @@ import com.intellij.ui.EditorComboBoxEditor;
 import com.intellij.ui.IdeBorderFactory;
 import com.intellij.ui.table.JBTable;
 import com.intellij.util.IncorrectOperationException;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.annotator.intentions.QuickfixUtil;
@@ -136,7 +135,7 @@ public abstract class DynamicDialog extends DialogWrapper {
     }
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   private Document createDocument(final String text) {
     GroovyCodeFragment fragment = new GroovyCodeFragment(myProject, text);
     fragment.setContext(myContext);
@@ -159,7 +158,7 @@ public abstract class DynamicDialog extends DialogWrapper {
     myTypeComboBox.getEditor().setItem(createDocument(type.getCanonicalText()));
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   public GrTypeElement getEnteredTypeName() {
     final Document typeEditorDocument = getTypeEditorDocument();
 
@@ -172,14 +171,14 @@ public abstract class DynamicDialog extends DialogWrapper {
     }
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   public Document getTypeEditorDocument() {
     final Object item = myTypeComboBox.getEditor().getItem();
 
     return item instanceof Document ? (Document)item : null;
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   protected JComponent createCenterPanel() {
     return myPanel;
   }

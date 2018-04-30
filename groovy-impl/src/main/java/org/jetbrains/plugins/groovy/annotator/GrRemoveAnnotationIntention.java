@@ -15,7 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.annotator;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.intentions.base.PsiElementPredicate;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotation;
@@ -30,14 +31,14 @@ import com.intellij.util.IncorrectOperationException;
 public class GrRemoveAnnotationIntention extends Intention
 {
 	@Override
-	protected void processIntention(@NotNull PsiElement element,
+	protected void processIntention(@Nonnull PsiElement element,
 			Project project,
 			Editor editor) throws IncorrectOperationException
 	{
 		element.delete();
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	protected PsiElementPredicate getElementPredicate()
 	{

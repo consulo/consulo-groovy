@@ -18,8 +18,8 @@ package org.jetbrains.plugins.groovy.lang.psi.dataFlow.types;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.psi.controlFlow.Instruction;
 import org.jetbrains.plugins.groovy.lang.psi.dataFlow.DFAType;
 import com.intellij.psi.PsiManager;
@@ -66,7 +66,7 @@ class TypeDfaState {
     return myVarTypes.equals(another.myVarTypes);
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   DFAType getVariableType(String variableName) {
     return myVarTypes.get(variableName);
   }
@@ -80,7 +80,7 @@ class TypeDfaState {
     return map;
   }
 
-  void putType(String variableName, @Nullable DFAType type) {
+  void putType(String variableName, @javax.annotation.Nullable DFAType type) {
     myVarTypes.put(variableName, type);
   }
 
@@ -89,7 +89,7 @@ class TypeDfaState {
     return "TypeDfaState{" + myVarTypes + '}';
   }
 
-  public boolean containsVariable(@NotNull String variableName) {
+  public boolean containsVariable(@Nonnull String variableName) {
     return myVarTypes.containsKey(variableName);
   }
 

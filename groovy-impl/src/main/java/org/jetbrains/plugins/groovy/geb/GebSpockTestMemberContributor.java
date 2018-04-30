@@ -15,12 +15,13 @@
  */
 package org.jetbrains.plugins.groovy.geb;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiType;
 import com.intellij.psi.ResolveState;
 import com.intellij.psi.scope.PsiScopeProcessor;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.lang.resolve.NonCodeMembersContributor;
 
 /**
@@ -34,7 +35,7 @@ public class GebSpockTestMemberContributor extends NonCodeMembersContributor {
   }
 
   @Override
-  public void processDynamicElements(@NotNull PsiType qualifierType,
+  public void processDynamicElements(@Nonnull PsiType qualifierType,
                                      PsiClass aClass,
                                      PsiScopeProcessor processor,
                                      PsiElement place,

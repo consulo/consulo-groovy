@@ -19,7 +19,6 @@ import com.intellij.psi.PsiSubstitutor;
 import com.intellij.psi.PsiType;
 import com.intellij.psi.PsiWildcardType;
 import com.intellij.util.containers.ContainerUtil;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.config.GroovyConfigUtils;
 import org.jetbrains.plugins.groovy.gpp.GppClosureParameterTypeProvider;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlock;
@@ -35,7 +34,7 @@ import java.util.List;
  * @author Max Medvedev
  */
 public class ClosureAsAnonymousParameterEnhancer extends AbstractClosureParameterEnhancer {
-  @Nullable
+  @javax.annotation.Nullable
   @Override
   protected PsiType getClosureParameterType(GrClosableBlock closure, int index) {
 

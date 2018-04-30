@@ -16,8 +16,7 @@
 package org.jetbrains.plugins.groovy.lang.psi.controlFlow;
 
 import com.intellij.psi.PsiElement;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
 
 /**
  * @author ven
@@ -31,10 +30,10 @@ public interface Instruction {
 
   int num();
 
-  @NotNull
+  @Nonnull
   Iterable<? extends NegatingGotoInstruction> getNegatingGotoInstruction();
 
-  @Nullable
+  @javax.annotation.Nullable
   PsiElement getElement();
 
 }

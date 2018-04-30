@@ -22,7 +22,7 @@ import com.intellij.psi.JavaPsiFacade;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiType;
 import com.intellij.util.IncorrectOperationException;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.codeInspection.GroovyFix;
 import org.jetbrains.plugins.groovy.codeInspection.GroovyInspectionBundle;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
@@ -68,7 +68,7 @@ public class GrChangeVariableType extends GroovyFix {
     }
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public String getName() {
     return GroovyInspectionBundle.message("change.lvalue.type", myName, myType);

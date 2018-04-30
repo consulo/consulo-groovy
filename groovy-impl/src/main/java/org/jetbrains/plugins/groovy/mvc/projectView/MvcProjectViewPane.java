@@ -27,8 +27,8 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.mvc.MvcFramework;
 import com.intellij.icons.AllIcons;
 import com.intellij.ide.CommonActionsManager;
@@ -164,7 +164,7 @@ public class MvcProjectViewPane extends AbstractProjectViewPSIPane implements Id
 
 		myCopyPasteDelegator = new CopyPasteDelegator(project, myComponent)
 		{
-			@NotNull
+			@Nonnull
 			@Override
 			protected PsiElement[] getSelectedElements()
 			{
@@ -217,7 +217,7 @@ public class MvcProjectViewPane extends AbstractProjectViewPSIPane implements Id
 		return myDescriptor.getFramework().getIcon();
 	}
 
-	@NotNull
+	@Nonnull
 	public String getId()
 	{
 		return myId;
@@ -239,7 +239,7 @@ public class MvcProjectViewPane extends AbstractProjectViewPSIPane implements Id
 		throw new UnsupportedOperationException();
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public BaseProjectTreeBuilder createBuilder(final DefaultTreeModel treeModel)
 	{
@@ -295,7 +295,7 @@ public class MvcProjectViewPane extends AbstractProjectViewPSIPane implements Id
 	}
 
 	@Nullable
-	protected PsiElement getPSIElement(@Nullable final Object element)
+	protected PsiElement getPSIElement(@javax.annotation.Nullable final Object element)
 	{
 		// E.g is used by Project View's DataProvider
 		if(element instanceof NodeId)
@@ -373,7 +373,7 @@ public class MvcProjectViewPane extends AbstractProjectViewPSIPane implements Id
 		return super.getData(dataId);
 	}
 
-	@Nullable
+	@javax.annotation.Nullable
 	public static MvcProjectViewPane getView(final Project project, MvcFramework framework)
 	{
 		final ToolWindow window = ToolWindowManager.getInstance(project).getToolWindow(MvcToolWindowDescriptor.getToolWindowId(framework));
@@ -435,7 +435,7 @@ public class MvcProjectViewPane extends AbstractProjectViewPSIPane implements Id
 		return DirectoryChooserUtil.getOrChooseDirectory(this);
 	}
 
-	public static boolean canSelectFile(@NotNull Project project, @NotNull MvcFramework framework, VirtualFile file)
+	public static boolean canSelectFile(@Nonnull Project project, @Nonnull MvcFramework framework, VirtualFile file)
 	{
 		return getSelectPath(project, framework, file) != null;
 	}
@@ -446,8 +446,8 @@ public class MvcProjectViewPane extends AbstractProjectViewPSIPane implements Id
 		return getSelectPath(myProject, myDescriptor.getFramework(), file);
 	}
 
-	@Nullable
-	private static List<Object> getSelectPath(@NotNull Project project, @NotNull MvcFramework framework, VirtualFile file)
+	@javax.annotation.Nullable
+	private static List<Object> getSelectPath(@Nonnull Project project, @Nonnull MvcFramework framework, VirtualFile file)
 	{
 		if(file == null)
 		{
@@ -597,7 +597,7 @@ public class MvcProjectViewPane extends AbstractProjectViewPSIPane implements Id
 		}
 
 		@Override
-		protected void selectElementFromEditor(@NotNull FileEditor editor)
+		protected void selectElementFromEditor(@Nonnull FileEditor editor)
 		{
 			selectElementAtCaretNotLosingFocus();
 		}

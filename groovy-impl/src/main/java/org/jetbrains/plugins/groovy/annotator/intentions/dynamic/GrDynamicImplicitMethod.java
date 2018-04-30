@@ -18,12 +18,11 @@ package org.jetbrains.plugins.groovy.annotator.intentions.dynamic;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.Nonnull;
 import javax.swing.Icon;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.annotator.intentions.QuickfixUtil;
 import org.jetbrains.plugins.groovy.annotator.intentions.dynamic.elements.DClassElement;
 import org.jetbrains.plugins.groovy.annotator.intentions.dynamic.elements.DMethodElement;
@@ -100,7 +99,7 @@ public class GrDynamicImplicitMethod extends GrLightMethodBuilder implements GrD
 	}
 
 	@Override
-	@Nullable
+	@javax.annotation.Nullable
 	public PsiClass getContainingClassElement()
 	{
 		return JavaPsiFacade.getInstance(getProject()).findClass(myContainingClassName,
@@ -108,7 +107,7 @@ public class GrDynamicImplicitMethod extends GrLightMethodBuilder implements GrD
 	}
 
 	@Override
-	public PsiElement setName(@NotNull String name) throws IncorrectOperationException
+	public PsiElement setName(@Nonnull String name) throws IncorrectOperationException
 	{
 		String[] argumentsTypes = QuickfixUtil.getArgumentsTypes(myParamInfos);
 		DynamicManager.getInstance(getProject()).replaceDynamicMethodName(getContainingClassName(), getName(), name,
@@ -143,7 +142,7 @@ public class GrDynamicImplicitMethod extends GrLightMethodBuilder implements GrD
 	}
 
 	@Override
-	@Nullable
+	@javax.annotation.Nullable
 	public PsiClass getContainingClass()
 	{
 		return ApplicationManager.getApplication().runReadAction(new Computable<PsiClass>()
@@ -183,7 +182,7 @@ public class GrDynamicImplicitMethod extends GrLightMethodBuilder implements GrD
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public SearchScope getUseScope()
 	{
 		return GlobalSearchScope.projectScope(getProject());
@@ -300,14 +299,14 @@ public class GrDynamicImplicitMethod extends GrLightMethodBuilder implements GrD
 	}
 
 	@Override
-	@Nullable
+	@javax.annotation.Nullable
 	public String getLocationString()
 	{
 		return null;
 	}
 
 	@Override
-	@Nullable
+	@javax.annotation.Nullable
 	public Icon getIcon(boolean open)
 	{
 		return JetgroovyIcons.Groovy.Method;

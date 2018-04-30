@@ -22,7 +22,7 @@ import com.intellij.util.Processor;
 import com.intellij.util.containers.HashMap;
 import gnu.trove.TIntArrayList;
 import gnu.trove.TIntProcedure;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.api.signatures.GrClosureSignature;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrCall;
@@ -48,8 +48,8 @@ public class TypeProvider {
   }
 
   @SuppressWarnings({"MethodMayBeStatic"})
-  @NotNull
-  public PsiType getReturnType(@NotNull PsiMethod method) {
+  @Nonnull
+  public PsiType getReturnType(@Nonnull PsiMethod method) {
     if (method instanceof GrMethod) {
       GrTypeElement typeElement = ((GrMethod)method).getReturnTypeElementGroovy();
       if (typeElement != null) return typeElement.getType();
@@ -62,14 +62,14 @@ public class TypeProvider {
   }
 
   @SuppressWarnings({"MethodMayBeStatic"})
-  @NotNull
-  public PsiType getVarType(@NotNull PsiVariable variable) {
+  @Nonnull
+  public PsiType getVarType(@Nonnull PsiVariable variable) {
     if (variable instanceof PsiParameter) return getParameterType((PsiParameter)variable);
     return getVariableTypeInner(variable);
   }
 
-  @NotNull
-  private static PsiType getVariableTypeInner(@NotNull PsiVariable variable) {
+  @Nonnull
+  private static PsiType getVariableTypeInner(@Nonnull PsiVariable variable) {
     PsiType type = null;
     if (variable instanceof GrVariable) {
       type = ((GrVariable)variable).getDeclaredType();
@@ -83,8 +83,8 @@ public class TypeProvider {
     return type;
   }
 
-  @NotNull
-  public PsiType getParameterType(@NotNull PsiParameter parameter) {
+  @Nonnull
+  public PsiType getParameterType(@Nonnull PsiParameter parameter) {
     if (!(parameter instanceof GrParameter)) {
       PsiElement scope = parameter.getDeclarationScope();
       if (scope instanceof GrAccessorMethod) {
@@ -105,8 +105,8 @@ public class TypeProvider {
     return types[((GrParameterList)parent).getParameterNumber((GrParameter)parameter)];
   }
 
-  @NotNull
-  private PsiType[] inferMethodParameters(@NotNull GrMethod method) {
+  @Nonnull
+  private PsiType[] inferMethodParameters(@Nonnull GrMethod method) {
     PsiType[] psiTypes = inferredTypes.get(method);
     if (psiTypes != null) return psiTypes;
 

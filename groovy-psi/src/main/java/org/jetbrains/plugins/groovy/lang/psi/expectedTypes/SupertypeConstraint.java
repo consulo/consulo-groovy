@@ -15,7 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.expectedTypes;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiType;
@@ -26,25 +27,25 @@ import com.intellij.psi.PsiType;
 public  class SupertypeConstraint extends TypeConstraint {
   private final PsiType myDefaultType;
 
-  protected SupertypeConstraint(@NotNull PsiType type, @NotNull PsiType defaultType) {
+  protected SupertypeConstraint(@Nonnull PsiType type, @Nonnull PsiType defaultType) {
     super(type);
     myDefaultType = defaultType;
   }
 
-  public boolean satisfied(PsiType type, @NotNull PsiElement context){
+  public boolean satisfied(PsiType type, @Nonnull PsiElement context){
     return TypesUtil.isAssignableByMethodCallConversion(type, getType(), context);
   }
 
-  @NotNull
+  @Nonnull
   public PsiType getDefaultType() {
     return myDefaultType;
   }
 
-  public static SupertypeConstraint create(@NotNull PsiType type, @NotNull PsiType defaultType) {
+  public static SupertypeConstraint create(@Nonnull PsiType type, @Nonnull PsiType defaultType) {
     return new SupertypeConstraint(type, defaultType);
   }
 
-  public static SupertypeConstraint create(@NotNull PsiType type) {
+  public static SupertypeConstraint create(@Nonnull PsiType type) {
     return new SupertypeConstraint(type, type);
   }
 

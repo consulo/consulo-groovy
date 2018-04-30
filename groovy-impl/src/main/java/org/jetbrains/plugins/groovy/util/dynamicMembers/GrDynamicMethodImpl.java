@@ -21,7 +21,7 @@ import com.intellij.psi.util.MethodSignature;
 import com.intellij.psi.util.MethodSignatureBackedByPsiMethod;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.extensions.NamedArgumentDescriptor;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocComment;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
@@ -76,22 +76,22 @@ public class GrDynamicMethodImpl extends LightElement implements GrMethod {
     return myMethod.getNameIdentifier();
   }
 
-  @NotNull
+  @Nonnull
   public PsiMethod[] findSuperMethods() {
     return PsiMethod.EMPTY_ARRAY;
   }
 
-  @NotNull
+  @Nonnull
   public PsiMethod[] findSuperMethods(boolean checkAccess) {
     return PsiMethod.EMPTY_ARRAY;
   }
 
-  @NotNull
+  @Nonnull
   public PsiMethod[] findSuperMethods(PsiClass parentClass) {
     return PsiMethod.EMPTY_ARRAY;
   }
 
-  @NotNull
+  @Nonnull
   public List<MethodSignatureBackedByPsiMethod> findSuperMethodSignaturesIncludingStatic(boolean checkAccess) {
     return Collections.emptyList();
   }
@@ -100,7 +100,7 @@ public class GrDynamicMethodImpl extends LightElement implements GrMethod {
     return null;
   }
 
-  @NotNull
+  @Nonnull
   public PsiMethod[] findDeepestSuperMethods() {
     return new PsiMethod[0];
   }
@@ -113,21 +113,21 @@ public class GrDynamicMethodImpl extends LightElement implements GrMethod {
     return new GrMember[0];
   }
 
-  @NotNull
+  @Nonnull
   public GrModifierList getModifierList() {
     return myMethod.getModifierList();
   }
 
-  public boolean hasModifierProperty(@NonNls @NotNull String name) {
+  public boolean hasModifierProperty(@NonNls @Nonnull String name) {
     return myMethod.hasModifierProperty(name);
   }
 
-  @NotNull
+  @Nonnull
   public Map<String, NamedArgumentDescriptor> getNamedParameters() {
     return myMethod.getNamedParameters();
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public GrReflectedMethod[] getReflectedMethods() {
     return GrReflectedMethod.EMPTY_ARRAY;
@@ -149,17 +149,17 @@ public class GrDynamicMethodImpl extends LightElement implements GrMethod {
     return myMethod.getInferredReturnType();
   }
 
-  @NotNull
+  @Nonnull
   public String getName() {
     return myMethod.getName();
   }
 
-  @NotNull
+  @Nonnull
   public GrParameterList getParameterList() {
     return myMethod.getParameterList();
   }
 
-  @NotNull
+  @Nonnull
   public PsiReferenceList getThrowsList() {
     return myMethod.getThrowsList();
   }
@@ -176,12 +176,12 @@ public class GrDynamicMethodImpl extends LightElement implements GrMethod {
     return myMethod.isVarArgs();
   }
 
-  @NotNull
-  public MethodSignature getSignature(@NotNull PsiSubstitutor substitutor) {
+  @Nonnull
+  public MethodSignature getSignature(@Nonnull PsiSubstitutor substitutor) {
     return myMethod.getSignature(substitutor);
   }
 
-  @NotNull
+  @Nonnull
   public PsiElement getNameIdentifierGroovy() {
     return myMethod.getNameIdentifierGroovy();
   }
@@ -208,16 +208,16 @@ public class GrDynamicMethodImpl extends LightElement implements GrMethod {
     return myMethod.getTypeParameterList();
   }
 
-  @NotNull
+  @Nonnull
   public PsiTypeParameter[] getTypeParameters() {
     return myMethod.getTypeParameters();
   }
 
-  public PsiElement setName(@NonNls @NotNull String name) throws IncorrectOperationException {
+  public PsiElement setName(@NonNls @Nonnull String name) throws IncorrectOperationException {
     return this;
   }
 
-  @NotNull
+  @Nonnull
   public HierarchicalMethodSignature getHierarchicalMethodSignature() {
     return myMethod.getHierarchicalMethodSignature();
   }

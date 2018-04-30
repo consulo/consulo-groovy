@@ -16,8 +16,9 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.arithmetic;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.lang.ASTNode;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.GrBinaryExpressionImpl;
 
 /**
@@ -25,7 +26,7 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.GrBinar
  */
 public class GrShiftExpressionImpl extends GrBinaryExpressionImpl {
 
-  public GrShiftExpressionImpl(@NotNull ASTNode node) {
+  public GrShiftExpressionImpl(@Nonnull ASTNode node) {
     super(node);
   }
 

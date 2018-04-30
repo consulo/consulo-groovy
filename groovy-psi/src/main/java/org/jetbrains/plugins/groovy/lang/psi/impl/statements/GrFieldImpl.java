@@ -18,8 +18,8 @@ package org.jetbrains.plugins.groovy.lang.psi.impl.statements;
 import java.util.Collections;
 import java.util.Map;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.extensions.NamedArgumentDescriptor;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocComment;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.impl.GrDocCommentUtil;
@@ -66,7 +66,7 @@ import com.intellij.util.containers.ContainerUtil;
  */
 public class GrFieldImpl extends GrVariableBaseImpl<GrFieldStub> implements GrField, StubBasedPsiElement<GrFieldStub> {
 
-  public GrFieldImpl(@NotNull ASTNode node) {
+  public GrFieldImpl(@Nonnull ASTNode node) {
     super(node);
   }
 
@@ -208,7 +208,7 @@ public class GrFieldImpl extends GrVariableBaseImpl<GrFieldStub> implements GrFi
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public GrAccessorMethod[] getGetters() {
     return CachedValuesManager.getCachedValue(this, new CachedValueProvider<GrAccessorMethod[]>() {
       @Nullable
@@ -220,7 +220,7 @@ public class GrFieldImpl extends GrVariableBaseImpl<GrFieldStub> implements GrFi
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public SearchScope getUseScope() {
     if (isProperty()) {
       return ResolveScopeManager.getElementUseScope(this); //maximal scope
@@ -228,7 +228,7 @@ public class GrFieldImpl extends GrVariableBaseImpl<GrFieldStub> implements GrFi
     return PsiImplUtil.getMemberUseScope(this);
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public String getName() {
     final GrFieldStub stub = getStub();
@@ -253,7 +253,7 @@ public class GrFieldImpl extends GrVariableBaseImpl<GrFieldStub> implements GrFi
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public Map<String, NamedArgumentDescriptor> getNamedParameters() {
     final GrFieldStub stub = getStub();
     if (stub != null) {

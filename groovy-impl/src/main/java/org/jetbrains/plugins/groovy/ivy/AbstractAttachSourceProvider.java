@@ -7,8 +7,8 @@ import java.net.HttpURLConnection;
 import java.util.Arrays;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import com.intellij.codeInsight.AttachSourcesProvider;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
@@ -48,7 +48,7 @@ public abstract class AbstractAttachSourceProvider implements AttachSourcesProvi
     return jar;
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   protected static Library getLibraryFromOrderEntriesList(List<LibraryOrderEntry> orderEntries) {
     if (orderEntries.isEmpty()) return null;
 
@@ -64,7 +64,7 @@ public abstract class AbstractAttachSourceProvider implements AttachSourcesProvi
     return library;
   }
 
-  protected void addSourceFile(@Nullable VirtualFile jarRoot, @NotNull Library library) {
+  protected void addSourceFile(@Nullable VirtualFile jarRoot, @Nonnull Library library) {
     if (jarRoot != null) {
       if (!Arrays.asList(library.getFiles(OrderRootType.SOURCES)).contains(jarRoot)) {
         Library.ModifiableModel model = library.getModifiableModel();
@@ -148,7 +148,7 @@ public abstract class AbstractAttachSourceProvider implements AttachSourcesProvi
 
       Task task = new Task.Backgroundable(myProject, "Downloading sources...", true) {
         @Override
-        public void run(@NotNull ProgressIndicator indicator) {
+        public void run(@Nonnull ProgressIndicator indicator) {
           final ByteArrayOutputStream out;
 
           try {

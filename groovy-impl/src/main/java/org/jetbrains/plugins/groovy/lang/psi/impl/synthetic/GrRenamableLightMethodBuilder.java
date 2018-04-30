@@ -15,9 +15,10 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.synthetic;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.psi.*;
 import com.intellij.util.IncorrectOperationException;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Sergey Evdokimov
@@ -29,13 +30,13 @@ public class GrRenamableLightMethodBuilder extends GrLightMethodBuilder implemen
   }
 
   @Override
-  public PsiElement setName(@NotNull String name) throws IncorrectOperationException {
+  public PsiElement setName(@Nonnull String name) throws IncorrectOperationException {
     myName = name;
     onRename(name);
     return this;
   }
 
-  protected void onRename(@NotNull String newName) {
+  protected void onRename(@Nonnull String newName) {
     
   }
   

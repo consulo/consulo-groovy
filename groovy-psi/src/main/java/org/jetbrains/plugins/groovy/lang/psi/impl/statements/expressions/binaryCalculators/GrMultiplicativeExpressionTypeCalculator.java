@@ -16,8 +16,8 @@
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.binaryCalculators;
 
 import com.intellij.psi.PsiType;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * Created by Max Medvedev on 12/20/13
@@ -27,7 +27,7 @@ public class GrMultiplicativeExpressionTypeCalculator extends GrNumericBinaryExp
 
   @Nullable
   @Override
-  protected PsiType inferNumericType(@NotNull PsiType ltype, @NotNull PsiType rtype, GrBinaryFacade e) {
+  protected PsiType inferNumericType(@Nonnull PsiType ltype, @Nonnull PsiType rtype, GrBinaryFacade e) {
     return GrBinaryExpressionUtil.getDefaultNumericResultType(ltype, rtype, e);
   }
 }

@@ -17,8 +17,8 @@ package org.jetbrains.plugins.groovy.lang.resolve.processors;
 
 import java.util.EnumSet;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import com.intellij.openapi.util.Key;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveState;
@@ -31,28 +31,28 @@ public class GrDelegatingScopeProcessorWithHints extends GrScopeProcessorWithHin
 {
 	private final PsiScopeProcessor myDelegate;
 
-	public GrDelegatingScopeProcessorWithHints(@NotNull PsiScopeProcessor delegate,
+	public GrDelegatingScopeProcessorWithHints(@Nonnull PsiScopeProcessor delegate,
 			@Nullable String name,
-			@Nullable EnumSet<ClassHint.ResolveKind> resolveTargets)
+			@javax.annotation.Nullable EnumSet<ClassHint.ResolveKind> resolveTargets)
 	{
 		super(name, resolveTargets);
 		myDelegate = delegate;
 	}
 
 	@Override
-	public boolean execute(@NotNull PsiElement element, @NotNull ResolveState state)
+	public boolean execute(@Nonnull PsiElement element, @Nonnull ResolveState state)
 	{
 		return myDelegate.execute(element, state);
 	}
 
 	@Override
-	public void handleEvent(@NotNull PsiScopeProcessor.Event event, @Nullable Object associated)
+	public void handleEvent(@Nonnull PsiScopeProcessor.Event event, @Nullable Object associated)
 	{
 		myDelegate.handleEvent(event, associated);
 	}
 
 	@Override
-	public <T> T getHint(@NotNull Key<T> hintKey)
+	public <T> T getHint(@Nonnull Key<T> hintKey)
 	{
 		T hint = super.getHint(hintKey);
 		if(hint != null)

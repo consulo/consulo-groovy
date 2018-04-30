@@ -19,7 +19,7 @@ package org.jetbrains.plugins.groovy.lang.psi.impl.auxiliary.annotation;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
@@ -42,7 +42,7 @@ public class GrAnnotationArgumentListImpl extends GroovyPsiElementImpl implement
   private static final Logger LOG =
     Logger.getInstance("#org.jetbrains.plugins.groovy.lang.psi.impl.auxiliary.annotation.GrAnnotationArgumentListImpl");
 
-  public GrAnnotationArgumentListImpl(@NotNull ASTNode node) {
+  public GrAnnotationArgumentListImpl(@Nonnull ASTNode node) {
     super(node);
   }
 
@@ -56,7 +56,7 @@ public class GrAnnotationArgumentListImpl extends GroovyPsiElementImpl implement
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public GrAnnotationNameValuePair[] getAttributes() {
     List<GrAnnotationNameValuePair> result = new ArrayList<GrAnnotationNameValuePair>();
     for (PsiElement cur = getFirstChild(); cur != null; cur = cur.getNextSibling()) {

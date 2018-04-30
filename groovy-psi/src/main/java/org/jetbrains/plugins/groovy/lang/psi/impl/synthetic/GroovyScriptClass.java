@@ -18,10 +18,10 @@ package org.jetbrains.plugins.groovy.lang.psi.impl.synthetic;
 import java.util.Collection;
 import java.util.List;
 
+import javax.annotation.Nonnull;
 import javax.swing.Icon;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.GroovyLanguage;
 import org.jetbrains.plugins.groovy.dsl.GroovyDslFileIndex;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
@@ -90,7 +90,7 @@ public class GroovyScriptClass extends LightElement implements PsiClass, Synthet
   }
 
   @Override
-  public void accept(@NotNull PsiElementVisitor visitor) {
+  public void accept(@Nonnull PsiElementVisitor visitor) {
     if (visitor instanceof JavaElementVisitor) {
       ((JavaElementVisitor)visitor).visitClass(this);
     }
@@ -157,17 +157,17 @@ public class GroovyScriptClass extends LightElement implements PsiClass, Synthet
   }
 
   @Override
-  public PsiElement add(@NotNull PsiElement element) throws IncorrectOperationException {
+  public PsiElement add(@Nonnull PsiElement element) throws IncorrectOperationException {
     return myFile.add(element);
   }
 
   @Override
-  public PsiElement addAfter(@NotNull PsiElement element, PsiElement anchor) throws IncorrectOperationException {
+  public PsiElement addAfter(@Nonnull PsiElement element, PsiElement anchor) throws IncorrectOperationException {
     return myFile.addAfter(element, anchor);
   }
 
   @Override
-  public PsiElement addBefore(@NotNull PsiElement element, PsiElement anchor) throws IncorrectOperationException {
+  public PsiElement addBefore(@Nonnull PsiElement element, PsiElement anchor) throws IncorrectOperationException {
     return myFile.addBefore(element, anchor);
   }
 
@@ -183,7 +183,7 @@ public class GroovyScriptClass extends LightElement implements PsiClass, Synthet
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public PsiClassType[] getExtendsListTypes() {
     PsiClassType type = getSuperClassTypeFromBaseScriptAnnotatedVariable();
     if (type != null) {
@@ -253,7 +253,7 @@ public class GroovyScriptClass extends LightElement implements PsiClass, Synthet
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public PsiClassType[] getImplementsListTypes() {
     return PsiClassType.EMPTY_ARRAY;
   }
@@ -269,13 +269,13 @@ public class GroovyScriptClass extends LightElement implements PsiClass, Synthet
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public PsiClass[] getSupers() {
     return PsiClassImplUtil.getSupers(this);
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public PsiClassType[] getSuperTypes() {
     return PsiClassImplUtil.getSuperTypes(this);
   }
@@ -286,19 +286,19 @@ public class GroovyScriptClass extends LightElement implements PsiClass, Synthet
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public Collection<HierarchicalMethodSignature> getVisibleSignatures() {
     return PsiSuperMethodImplUtil.getVisibleSignatures(this);
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public PsiField[] getFields() {
     return GrScriptField.getScriptFields(this);
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public PsiMethod[] getMethods() {
     return CachedValuesManager.getCachedValue(this, new CachedValueProvider<PsiMethod[]>() {
       @Nullable
@@ -331,7 +331,7 @@ public class GroovyScriptClass extends LightElement implements PsiClass, Synthet
     return result;
   }
 
-  private boolean hasMain(@NotNull PsiMethod[] methods) {
+  private boolean hasMain(@Nonnull PsiMethod[] methods) {
     assert myMainMethod != null;
     return ContainerUtil.find(methods, new Condition<PsiMethod>() {
       @Override
@@ -341,7 +341,7 @@ public class GroovyScriptClass extends LightElement implements PsiClass, Synthet
     }) != null;
   }
 
-  private boolean hasRun(@NotNull PsiMethod[] methods) {
+  private boolean hasRun(@Nonnull PsiMethod[] methods) {
     assert myRunMethod != null;
     return ContainerUtil.find(methods, new Condition<PsiMethod>() {
       @Override
@@ -367,43 +367,43 @@ public class GroovyScriptClass extends LightElement implements PsiClass, Synthet
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public PsiMethod[] getConstructors() {
     return PsiMethod.EMPTY_ARRAY;
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public PsiClass[] getInnerClasses() {
     return PsiClass.EMPTY_ARRAY;
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public PsiClassInitializer[] getInitializers() {
     return PsiClassInitializer.EMPTY_ARRAY;
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public PsiTypeParameter[] getTypeParameters() {
     return PsiTypeParameter.EMPTY_ARRAY;
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public PsiField[] getAllFields() {
     return PsiClassImplUtil.getAllFields(this);
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public PsiMethod[] getAllMethods() {
     return PsiClassImplUtil.getAllMethods(this);
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public PsiClass[] getAllInnerClasses() {
     return PsiClassImplUtil.getAllInnerClasses(this);
   }
@@ -419,25 +419,25 @@ public class GroovyScriptClass extends LightElement implements PsiClass, Synthet
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public PsiMethod[] findMethodsBySignature(PsiMethod patternMethod, boolean checkBases) {
     return PsiClassImplUtil.findMethodsBySignature(this, patternMethod, checkBases);
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public PsiMethod[] findMethodsByName(String name, boolean checkBases) {
     return PsiClassImplUtil.findMethodsByName(this, name, checkBases);
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public List<Pair<PsiMethod, PsiSubstitutor>> findMethodsAndTheirSubstitutorsByName(String name, boolean checkBases) {
     return PsiClassImplUtil.findMethodsAndTheirSubstitutorsByName(this, name, checkBases);
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public List<Pair<PsiMethod, PsiSubstitutor>> getAllMethodsAndTheirSubstitutors() {
     return PsiClassImplUtil.getAllWithSubstitutorsByMap(this, PsiClassImplUtil.MemberType.METHOD);
   }
@@ -484,7 +484,7 @@ public class GroovyScriptClass extends LightElement implements PsiClass, Synthet
   }
 
   @Override
-  public boolean isInheritor(@NotNull PsiClass baseClass, boolean checkDeep) {
+  public boolean isInheritor(@Nonnull PsiClass baseClass, boolean checkDeep) {
     return InheritanceImplUtil.isInheritor(this, baseClass, checkDeep);
   }
 
@@ -502,7 +502,7 @@ public class GroovyScriptClass extends LightElement implements PsiClass, Synthet
   }
 
   @Override
-  public PsiElement setName(@NotNull String name) throws IncorrectOperationException {
+  public PsiElement setName(@Nonnull String name) throws IncorrectOperationException {
     myFile.setName(PathUtil.makeFileName(name, myFile.getViewProvider().getVirtualFile().getExtension()));
     return this;
   }
@@ -513,7 +513,7 @@ public class GroovyScriptClass extends LightElement implements PsiClass, Synthet
   }
 
   @Override
-  public boolean hasModifierProperty(@NotNull String name) {
+  public boolean hasModifierProperty(@Nonnull String name) {
     return myModifierList.hasModifierProperty(name);
   }
 
@@ -528,10 +528,10 @@ public class GroovyScriptClass extends LightElement implements PsiClass, Synthet
   }
 
   @Override
-  public boolean processDeclarations(@NotNull final PsiScopeProcessor processor,
-                                     @NotNull final ResolveState state,
+  public boolean processDeclarations(@Nonnull final PsiScopeProcessor processor,
+                                     @Nonnull final ResolveState state,
                                      @Nullable PsiElement lastParent,
-                                     @NotNull PsiElement place) {
+                                     @Nonnull PsiElement place) {
     return PsiClassImplUtil.processDeclarationsInClass(this, processor, state, ContainerUtil.<PsiClass>newHashSet(), lastParent, place,
                                                        PsiUtil.getLanguageLevel(place), false);
   }

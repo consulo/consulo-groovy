@@ -11,7 +11,7 @@ import com.intellij.openapi.roots.ui.configuration.libraries.LibraryPresentation
 import com.intellij.openapi.roots.ui.configuration.projectRoot.LibrariesContainer;
 import com.intellij.openapi.roots.ui.configuration.projectRoot.LibrariesContainerFactory;
 import com.intellij.openapi.vfs.VirtualFile;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 import java.util.Arrays;
 
@@ -20,7 +20,7 @@ import java.util.Arrays;
  */
 public class MvcUpgradeAction extends MvcActionBase {
   @Override
-  protected void actionPerformed(@NotNull AnActionEvent e, @NotNull final Module module, @NotNull final MvcFramework framework) {
+  protected void actionPerformed(@Nonnull AnActionEvent e, @Nonnull final Module module, @Nonnull final MvcFramework framework) {
    /*final GroovyLibraryDescription description = framework.createLibraryDescription();
     final AddCustomLibraryDialog dialog = AddCustomLibraryDialog.createDialog(description, module, new ParameterizedRunnable<ModifiableRootModel>() {
         @Override
@@ -54,7 +54,7 @@ public class MvcUpgradeAction extends MvcActionBase {
   }
 
   @Override
-  protected void updateView(AnActionEvent event, @NotNull MvcFramework framework, @NotNull Module module) {
+  protected void updateView(AnActionEvent event, @Nonnull MvcFramework framework, @Nonnull Module module) {
     event.getPresentation().setIcon(framework.getIcon());
   }
 }

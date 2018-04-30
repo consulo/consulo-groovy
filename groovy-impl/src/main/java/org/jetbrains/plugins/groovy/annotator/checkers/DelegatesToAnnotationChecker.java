@@ -15,7 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.annotator.checkers;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.GrModifierList;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotation;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameter;
@@ -37,7 +38,7 @@ import com.intellij.psi.PsiElement;
 public class DelegatesToAnnotationChecker extends CustomAnnotationChecker
 {
 	@Override
-	public boolean checkArgumentList(@NotNull AnnotationHolder holder, @NotNull GrAnnotation annotation)
+	public boolean checkArgumentList(@Nonnull AnnotationHolder holder, @Nonnull GrAnnotation annotation)
 	{
 		if(!GroovyCommonClassNames.GROOVY_LANG_DELEGATES_TO.equals(annotation.getQualifiedName()))
 		{

@@ -17,7 +17,7 @@
 package org.jetbrains.plugins.groovy.refactoring.extract;
 
 import com.intellij.psi.PsiType;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 /**
  * @author ilyas
@@ -29,7 +29,7 @@ public class ParameterInfo {
   private boolean myPassAsParameter = true;
   private PsiType myType;
 
-  public ParameterInfo(@NotNull String oldName, int position, PsiType psiType){
+  public ParameterInfo(@Nonnull String oldName, int position, PsiType psiType){
     myOldName = oldName;
     setType(psiType);
     myNewName = myOldName;

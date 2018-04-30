@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFileBase;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlock;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
@@ -49,7 +49,7 @@ public class SpringLoadedPositionManager implements PositionManager {
     throw new NoDataException();
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public List<ReferenceType> getAllClasses(final SourcePosition classPosition) throws NoDataException {
     AccessToken accessToken = ReadAction.start();
@@ -78,7 +78,7 @@ public class SpringLoadedPositionManager implements PositionManager {
     }
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public List<Location> locationsOfLine(ReferenceType type, SourcePosition position) throws NoDataException {
     throw new NoDataException();

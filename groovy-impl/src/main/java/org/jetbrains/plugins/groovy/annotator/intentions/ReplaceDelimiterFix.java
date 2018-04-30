@@ -15,6 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.annotator.intentions;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.codeInsight.intention.IntentionAction;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
@@ -22,7 +24,6 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrForStatement;
@@ -33,25 +34,25 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.clauses.GrForInClaus
  * @author Max Medvedev
  */
 public class ReplaceDelimiterFix implements IntentionAction {
-  @NotNull
+  @Nonnull
   @Override
   public String getText() {
     return "Replace ':' with 'in'";
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public String getFamilyName() {
     return "Replace for-each operator";
   }
 
   @Override
-  public boolean isAvailable(@NotNull Project project, Editor editor, PsiFile file) {
+  public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file) {
     return true;
   }
 
   @Override
-  public void invoke(@NotNull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
+  public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
     PsiElement at = file.findElementAt(editor.getCaretModel().getOffset());
     GrForStatement forStatement = PsiTreeUtil.getParentOfType(at, GrForStatement.class);
     if (forStatement == null) return;

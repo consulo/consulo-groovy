@@ -18,7 +18,6 @@ package org.jetbrains.plugins.groovy.dsl.psi;
 
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiType;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrArgumentList;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrCall;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
@@ -33,7 +32,7 @@ import java.util.Collections;
 @SuppressWarnings({"UnusedDeclaration"})
 public class PsiExpressionCategory implements PsiEnhancerCategory{
 
-  @Nullable
+  @javax.annotation.Nullable
   public static PsiClass getClassType(GrExpression expr) {
     final PsiType type = expr.getType();
     return PsiCategoryUtil.getClassType(type, expr);

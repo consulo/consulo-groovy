@@ -17,13 +17,13 @@ package org.jetbrains.plugins.groovy.refactoring.extract.closure;
 
 import com.intellij.psi.PsiReference;
 import com.intellij.usageView.UsageInfo;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 /**
  * @author Max Medvedev
  */
 public class OtherLanguageUsageInfo extends UsageInfo {
-  public OtherLanguageUsageInfo(@NotNull PsiReference reference) {
+  public OtherLanguageUsageInfo(@Nonnull PsiReference reference) {
     super(reference);
   }
 }

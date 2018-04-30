@@ -19,9 +19,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Nonnull;
+
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.extensions.NamedArgumentDescriptor;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocComment;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
@@ -148,19 +150,19 @@ public class GrReflectedMethodImpl extends LightMethodBuilder implements GrRefle
     return lightParameter;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public GrMethod getBaseMethod() {
     return myBaseMethod;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public GrParameter[] getSkippedParameters() {
     return mySkippedParameters;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public PsiElement getNavigationElement() {
     return myBaseMethod.getNavigationElement();
@@ -187,17 +189,17 @@ public class GrReflectedMethodImpl extends LightMethodBuilder implements GrRefle
   }
 
   @Override
-  public GrTypeElement setReturnType(@Nullable PsiType newReturnType) {
+  public GrTypeElement setReturnType(@javax.annotation.Nullable PsiType newReturnType) {
     throw new UnsupportedOperationException("synthetic method!");
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public Map<String, NamedArgumentDescriptor> getNamedParameters() {
     return myBaseMethod.getNamedParameters();
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public GrReflectedMethod[] getReflectedMethods() {
     return GrReflectedMethod.EMPTY_ARRAY;
@@ -208,7 +210,7 @@ public class GrReflectedMethodImpl extends LightMethodBuilder implements GrRefle
     return myBaseMethod.getMembers();
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public PsiElement getNameIdentifierGroovy() {
     return myBaseMethod.getNameIdentifierGroovy();
@@ -219,7 +221,7 @@ public class GrReflectedMethodImpl extends LightMethodBuilder implements GrRefle
     return getParameterList().getParameters();
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public GrParameterList getParameterList() {
     return (GrParameterList)super.getParameterList();
@@ -245,7 +247,7 @@ public class GrReflectedMethodImpl extends LightMethodBuilder implements GrRefle
     return "reflected method";
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public GrModifierList getModifierList() {
     return (GrModifierList)super.getModifierList();
@@ -261,7 +263,7 @@ public class GrReflectedMethodImpl extends LightMethodBuilder implements GrRefle
     return myBaseMethod.isPhysical();
   }
 
-  @NotNull
+  @Nonnull
   public static GrReflectedMethod[] createReflectedMethods(GrMethod method) {
     final PsiClassType categoryType = method.hasModifierProperty(PsiModifier.STATIC) ? null : getCategoryType(method);
 
@@ -269,10 +271,10 @@ public class GrReflectedMethodImpl extends LightMethodBuilder implements GrRefle
     return doCreateReflectedMethods(method, categoryType, parameters);
   }
 
-  @NotNull
-  private static GrReflectedMethod[] doCreateReflectedMethods(@NotNull GrMethod targetMethod,
+  @Nonnull
+  private static GrReflectedMethod[] doCreateReflectedMethods(@Nonnull GrMethod targetMethod,
                                                               @Nullable PsiClassType categoryType,
-                                                              @NotNull GrParameter[] parameters) {
+                                                              @Nonnull GrParameter[] parameters) {
     int count = 0;
     for (GrParameter parameter : parameters) {
       if (parameter.isOptional()) count++;
@@ -318,7 +320,7 @@ public class GrReflectedMethodImpl extends LightMethodBuilder implements GrRefle
     return GdkMethodUtil.getCategoryType(containingClass);
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public PsiElement getPrototype() {
     return getBaseMethod();

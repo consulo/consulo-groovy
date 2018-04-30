@@ -33,8 +33,8 @@ import com.intellij.psi.util.TypeConversionUtil;
 import com.intellij.refactoring.IntroduceTargetChooser;
 import com.intellij.util.Function;
 import com.intellij.util.IncorrectOperationException;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.intentions.base.ErrorUtil;
 import org.jetbrains.plugins.groovy.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.intentions.base.PsiElementPredicate;
@@ -66,7 +66,7 @@ public class ConvertConcatenationToGstringIntention extends Intention {
   private static final String END_BRACE = "}";
   private static final String START_BRACE = "${";
 
-  @NotNull
+  @Nonnull
   @Override
   protected PsiElementPredicate getElementPredicate() {
     return new MyPredicate();
@@ -97,7 +97,7 @@ public class ConvertConcatenationToGstringIntention extends Intention {
   }
 
   @Override
-  protected void processIntention(@NotNull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
+  protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
     final PsiFile file = element.getContainingFile();
     final int offset = editor.getCaretModel().getOffset();
     final AccessToken accessToken = ReadAction.start();
@@ -196,7 +196,7 @@ public class ConvertConcatenationToGstringIntention extends Intention {
     getOperandText(right, builder, multiline);
   }
 
-  private static void getOperandText(@Nullable GrExpression operand, StringBuilder builder, boolean multiline) {
+  private static void getOperandText(@javax.annotation.Nullable GrExpression operand, StringBuilder builder, boolean multiline) {
     if (operand instanceof GrRegex) {
       StringBuilder b = new StringBuilder();
       GrStringUtil.parseRegexCharacters(GrStringUtil.removeQuotes(operand.getText()), b, null, operand.getText().startsWith("/"));

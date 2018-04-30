@@ -15,8 +15,9 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.utils;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.psi.*;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.path.GrMethodCallExpression;
 
 public class LibraryUtil {
@@ -25,12 +26,12 @@ public class LibraryUtil {
     super();
   }
 
-  public static boolean classIsInLibrary(@NotNull PsiClass aClass) {
+  public static boolean classIsInLibrary(@Nonnull PsiClass aClass) {
     return aClass instanceof PsiCompiledElement;
   }
 
   public static boolean callOnLibraryMethod(
-      @NotNull GrMethodCallExpression expression) {
+      @Nonnull GrMethodCallExpression expression) {
     final PsiMethod method = expression.resolveMethod();
     return method != null && method instanceof PsiCompiledElement;
   }

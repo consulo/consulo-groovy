@@ -15,14 +15,15 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.psi.PsiEnumConstantInitializer;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrEnumConstant;
 
 /**
  * @author Maxim.Medvedev
  */
 public interface GrEnumConstantInitializer extends GrAnonymousClassDefinition, PsiEnumConstantInitializer {
-  @NotNull
+  @Nonnull
   GrEnumConstant getEnumConstant();
 }

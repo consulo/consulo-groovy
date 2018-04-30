@@ -17,7 +17,6 @@ package org.jetbrains.plugins.groovy.lang.resolve;
 
 import java.util.List;
 
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.codeInspection.utils.ControlFlowUtils;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.branch.GrReturnStatement;
@@ -38,7 +37,7 @@ public class MethodTypeInferencer implements Computable<PsiType> {
     myBlock = block;
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   public PsiType compute() {
     List<GrStatement> returns = ControlFlowUtils.collectReturns(myBlock);
     if (returns.size() == 0) return PsiType.VOID;

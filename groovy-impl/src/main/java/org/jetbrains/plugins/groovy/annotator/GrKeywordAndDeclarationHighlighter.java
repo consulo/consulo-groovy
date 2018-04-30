@@ -20,8 +20,8 @@ import static com.intellij.codeInsight.daemon.impl.HighlightInfoType.INFORMATION
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.highlighter.GroovySyntaxHighlighter;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.lexer.TokenSets;
@@ -63,7 +63,7 @@ public class GrKeywordAndDeclarationHighlighter extends TextEditorHighlightingPa
   }
 
   @Override
-  public void doCollectInformation(@NotNull ProgressIndicator progress) {
+  public void doCollectInformation(@Nonnull ProgressIndicator progress) {
     final List<HighlightInfo> result = new ArrayList<HighlightInfo>();
     myFile.accept(new PsiRecursiveElementVisitor() {
       @Override
@@ -88,7 +88,7 @@ public class GrKeywordAndDeclarationHighlighter extends TextEditorHighlightingPa
         }
       }
 
-      private void addInfo(@NotNull PsiElement element, @NotNull TextAttributesKey attribute) {
+      private void addInfo(@Nonnull PsiElement element, @Nonnull TextAttributesKey attribute) {
         HighlightInfo.Builder builder = HighlightInfo.newHighlightInfo(INFORMATION).range(element);
         HighlightInfo info = builder.needsUpdateOnTyping(false).textAttributes(attribute).create();
         if (info != null) {
@@ -126,7 +126,7 @@ public class GrKeywordAndDeclarationHighlighter extends TextEditorHighlightingPa
       .setHighlightersToEditor(myProject, myDocument, 0, myFile.getTextLength(), toHighlight, getColorsScheme(), getId());
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   private static TextAttributesKey getDeclarationAttribute(PsiElement element) {
     if (element.getParent() instanceof GrAnnotation && element.getNode().getElementType() == GroovyTokenTypes.mAT) {
       return GroovySyntaxHighlighter.ANNOTATION;

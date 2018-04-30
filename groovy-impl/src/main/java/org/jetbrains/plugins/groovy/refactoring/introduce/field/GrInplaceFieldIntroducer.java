@@ -20,12 +20,12 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.EnumSet;
 
+import javax.annotation.Nonnull;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFileBase;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
@@ -132,8 +132,8 @@ public class GrInplaceFieldIntroducer extends GrAbstractInplaceIntroducer<GrIntr
 
 	@Nullable
 	@Override
-	protected GrIntroduceFieldSettings getInitialSettingsForInplace(@NotNull final GrIntroduceContext context,
-			@NotNull final OccurrencesChooser.ReplaceChoice choice,
+	protected GrIntroduceFieldSettings getInitialSettingsForInplace(@Nonnull final GrIntroduceContext context,
+			@Nonnull final OccurrencesChooser.ReplaceChoice choice,
 			final String[] names)
 	{
 		return new GrIntroduceFieldSettings()
@@ -287,13 +287,13 @@ public class GrInplaceFieldIntroducer extends GrAbstractInplaceIntroducer<GrIntr
 	}
 
 	@Override
-	protected void saveSettings(@NotNull GrVariable variable)
+	protected void saveSettings(@Nonnull GrVariable variable)
 	{
 
 	}
 
 	@Override
-	protected void restoreState(@NotNull GrVariable psiField)
+	protected void restoreState(@Nonnull GrVariable psiField)
 	{
 		myIsStatic = psiField.hasModifierProperty(PsiModifier.STATIC);
 
@@ -375,7 +375,7 @@ public class GrInplaceFieldIntroducer extends GrAbstractInplaceIntroducer<GrIntr
 					new WriteCommandAction(myProject, getCommandName(), getCommandName())
 					{
 						@Override
-						protected void run(@NotNull Result result) throws Throwable
+						protected void run(@Nonnull Result result) throws Throwable
 						{
 							PsiDocumentManager.getInstance(myProject).commitDocument(myEditor.getDocument());
 							final GrVariable variable = getVariable();

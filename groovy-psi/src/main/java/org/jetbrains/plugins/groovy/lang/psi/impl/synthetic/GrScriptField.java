@@ -22,8 +22,8 @@ import com.intellij.psi.PsiModifier;
 import com.intellij.psi.util.CachedValueProvider;
 import com.intellij.psi.util.CachedValuesManager;
 import com.intellij.util.containers.ContainerUtil;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyRecursiveElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotation;
@@ -43,7 +43,7 @@ import java.util.List;
 public class GrScriptField extends GrLightField {
   public static final GrScriptField[] EMPTY_ARRAY = new GrScriptField[0];
 
-  private GrScriptField(@NotNull GrVariable original, @NotNull GroovyScriptClass scriptClass) {
+  private GrScriptField(@Nonnull GrVariable original, @Nonnull GroovyScriptClass scriptClass) {
     super(scriptClass, original.getName(), original.getType(), original);
 
     final GrLightModifierList modifierList = getModifierList();
@@ -68,14 +68,14 @@ public class GrScriptField extends GrLightField {
     return null;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public GrAccessorMethod[] getGetters() {
     return GrAccessorMethod.EMPTY_ARRAY;
   }
 
-  @NotNull
-  public static GrScriptField getScriptField(@NotNull final GrVariable original) {
+  @Nonnull
+  public static GrScriptField getScriptField(@Nonnull final GrVariable original) {
     final GroovyScriptClass script = (GroovyScriptClass)((GroovyFile)original.getContainingFile()).getScriptClass();
     assert script != null;
 
@@ -90,8 +90,8 @@ public class GrScriptField extends GrLightField {
     return result;
   }
 
-  @NotNull
-  public static GrScriptField[] getScriptFields(@NotNull final GroovyScriptClass script) {
+  @Nonnull
+  public static GrScriptField[] getScriptFields(@Nonnull final GroovyScriptClass script) {
     return CachedValuesManager.getCachedValue(script, new CachedValueProvider<GrScriptField[]>() {
       @Override
       public Result<GrScriptField[]> compute() {
@@ -136,7 +136,7 @@ public class GrScriptField extends GrLightField {
     });
   }
 
-  @NotNull
+  @Nonnull
   public GrVariable getOriginalVariable() {
     return (GrVariable)getNavigationElement();
   }

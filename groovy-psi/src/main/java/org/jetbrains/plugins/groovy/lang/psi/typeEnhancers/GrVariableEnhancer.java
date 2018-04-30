@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.typeEnhancers;
 
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
 import com.intellij.openapi.extensions.ExtensionPointName;
 import com.intellij.psi.PsiType;

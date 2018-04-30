@@ -24,8 +24,8 @@ import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiMethod;
 import gnu.trove.THashSet;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.psi.GrClassSubstitutor;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
@@ -102,7 +102,7 @@ public class GroovyToJavaGenerator {
     return getPackageDirectory(packageDefinition) + clazz.getName() + ".java";
   }
 
-  private static String getPackageDirectory(@Nullable GrPackageDefinition packageDefinition) {
+  private static String getPackageDirectory(@javax.annotation.Nullable GrPackageDefinition packageDefinition) {
     if (packageDefinition == null) return "";
 
     String prefix = packageDefinition.getPackageName();
@@ -111,7 +111,7 @@ public class GroovyToJavaGenerator {
     return prefix.replace('.', '/') + '/';
   }
 
-  public CharSequence generateClass(@NotNull PsiClass typeDefinition) {
+  public CharSequence generateClass(@Nonnull PsiClass typeDefinition) {
     try {
       StringBuilder text = new StringBuilder();
       final ClassNameProvider classNameProvider = new StubClassNameProvider(myAllToCompile);
@@ -134,7 +134,7 @@ public class GroovyToJavaGenerator {
     return result;
   }
 
-  public static String generateMethodStub(@NotNull PsiMethod method) {
+  public static String generateMethodStub(@Nonnull PsiMethod method) {
     if (!(method instanceof GroovyPsiElement)) {
       return method.getText();
     }

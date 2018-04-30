@@ -21,8 +21,8 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.Nls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.codeInspection.GroovyFix;
@@ -35,18 +35,18 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMe
 public class GroovyReturnFromClosureCanBeImplicitInspection extends BaseInspection {
 
   @Nls
-    @NotNull
+    @Nonnull
     public String getGroupDisplayName() {
         return CONTROL_FLOW;
     }
 
     @Nls
-    @NotNull
+    @Nonnull
     public String getDisplayName() {
         return "'return' statement can be implicit";
     }
 
-    @Nullable
+    @javax.annotation.Nullable
     protected String buildErrorString(Object... args) {
         return "#ref statement at end of a closure can be made implicit #loc";
 
@@ -56,13 +56,13 @@ public class GroovyReturnFromClosureCanBeImplicitInspection extends BaseInspecti
         return new Visitor();
     }
 
-    @Nullable
+    @javax.annotation.Nullable
     protected GroovyFix buildFix(PsiElement location) {
         return new MakeReturnImplicitFix();
     }
 
     private static class MakeReturnImplicitFix extends GroovyFix {
-        @NotNull
+        @Nonnull
         public String getName() {
             return "Make return implicit";
         }

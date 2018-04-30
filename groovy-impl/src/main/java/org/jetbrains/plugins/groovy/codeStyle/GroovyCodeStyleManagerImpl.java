@@ -17,8 +17,8 @@ package org.jetbrains.plugins.groovy.codeStyle;
 
 import java.util.Comparator;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.editor.GroovyImportOptimizer;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
@@ -39,10 +39,10 @@ import com.intellij.util.IncorrectOperationException;
 
 public class GroovyCodeStyleManagerImpl extends GroovyCodeStyleManager
 {
-	@NotNull
+	@Nonnull
 	@Override
-	public GrImportStatement addImport(@NotNull GroovyFile psiFile,
-			@NotNull GrImportStatement statement) throws IncorrectOperationException
+	public GrImportStatement addImport(@Nonnull GroovyFile psiFile,
+			@Nonnull GrImportStatement statement) throws IncorrectOperationException
 	{
 		PsiElement anchor = getAnchorToInsertImportAfter(psiFile, statement);
 		final PsiElement result = psiFile.addAfter(statement, anchor);
@@ -54,14 +54,14 @@ public class GroovyCodeStyleManagerImpl extends GroovyCodeStyleManager
 	}
 
 	@Nullable
-	private PsiElement getShellComment(@NotNull PsiElement psiFile)
+	private PsiElement getShellComment(@Nonnull PsiElement psiFile)
 	{
 		final ASTNode node = psiFile.getNode().findChildByType(GroovyTokenTypes.mSH_COMMENT);
 		return node == null ? null : node.getPsi();
 	}
 
 	@Nullable
-	private PsiElement getAnchorToInsertImportAfter(@NotNull GroovyFile psiFile, @NotNull GrImportStatement statement)
+	private PsiElement getAnchorToInsertImportAfter(@Nonnull GroovyFile psiFile, @Nonnull GrImportStatement statement)
 	{
 		final GroovyCodeStyleSettings settings = CodeStyleSettingsManager.getInstance(psiFile.getProject())
 				.getCurrentSettings().getCustomSettings(GroovyCodeStyleSettings.class);
@@ -122,7 +122,7 @@ public class GroovyCodeStyleManagerImpl extends GroovyCodeStyleManager
 		return anchor;
 	}
 
-	protected static int getPackageEntryIdx(@NotNull PackageEntry[] entries, @NotNull GrImportStatement statement)
+	protected static int getPackageEntryIdx(@Nonnull PackageEntry[] entries, @Nonnull GrImportStatement statement)
 	{
 		final GrCodeReferenceElement reference = statement.getImportReference();
 		if(reference == null)
@@ -165,7 +165,7 @@ public class GroovyCodeStyleManagerImpl extends GroovyCodeStyleManager
 		return allOther;
 	}
 
-	protected void addLineFeedBefore(@NotNull PsiElement psiFile, @NotNull GrImportStatement result)
+	protected void addLineFeedBefore(@Nonnull PsiElement psiFile, @Nonnull GrImportStatement result)
 	{
 		final GroovyCodeStyleSettings settings = CodeStyleSettingsManager.getInstance(psiFile.getProject())
 				.getCurrentSettings().getCustomSettings(GroovyCodeStyleSettings.class);
@@ -207,7 +207,7 @@ public class GroovyCodeStyleManagerImpl extends GroovyCodeStyleManager
 		}
 	}
 
-	protected void addLineFeedAfter(@NotNull PsiElement psiFile, GrImportStatement result)
+	protected void addLineFeedAfter(@Nonnull PsiElement psiFile, GrImportStatement result)
 	{
 		final GroovyCodeStyleSettings settings = CodeStyleSettingsManager.getInstance(psiFile.getProject())
 				.getCurrentSettings().getCustomSettings(GroovyCodeStyleSettings.class);
@@ -273,8 +273,8 @@ public class GroovyCodeStyleManagerImpl extends GroovyCodeStyleManager
 	}
 
 	@Override
-	public void removeImport(@NotNull GroovyFileBase psiFile,
-			@NotNull GrImportStatement importStatement) throws IncorrectOperationException
+	public void removeImport(@Nonnull GroovyFileBase psiFile,
+			@Nonnull GrImportStatement importStatement) throws IncorrectOperationException
 	{
 		PsiElement psiElement = psiFile;
 		PsiElement before = importStatement;

@@ -26,8 +26,8 @@ import com.intellij.psi.tree.IElementType;
 import com.intellij.util.Function;
 import com.intellij.util.containers.ContainerUtil;
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
@@ -45,37 +45,37 @@ public class GroovyTypeParameterInfoHandler implements ParameterInfoHandlerWithT
   private static final Set<Class> ALLOWED_PARENT_CLASSES = ContainerUtil.<Class>newHashSet(GrCodeReferenceElement.class);
   private static final Set<Class> STOP_SEARCHING_CLASSES = ContainerUtil.<Class>newHashSet(GroovyFile.class);
 
-  @NotNull
+  @Nonnull
   @Override
-  public GrTypeElement[] getActualParameters(@NotNull GrTypeArgumentList o) {
+  public GrTypeElement[] getActualParameters(@Nonnull GrTypeArgumentList o) {
     return o.getTypeArgumentElements();
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public IElementType getActualParameterDelimiterType() {
     return GroovyTokenTypes.mCOMMA;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public IElementType getActualParametersRBraceType() {
     return GroovyTokenTypes.mGT;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public Set<Class> getArgumentListAllowedParentClasses() {
     return ALLOWED_PARENT_CLASSES;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public Set<? extends Class> getArgListStopSearchClasses() {
     return STOP_SEARCHING_CLASSES;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public Class<GrTypeArgumentList> getArgumentListClass() {
     return GrTypeArgumentList.class;
@@ -86,7 +86,7 @@ public class GroovyTypeParameterInfoHandler implements ParameterInfoHandlerWithT
     return false;
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   @Override
   public Object[] getParametersForLookup(LookupElement item, ParameterInfoContext context) {
     return null;
@@ -121,25 +121,25 @@ public class GroovyTypeParameterInfoHandler implements ParameterInfoHandlerWithT
   }
 
   @Override
-  public void showParameterInfo(@NotNull GrTypeArgumentList element, CreateParameterInfoContext context) {
+  public void showParameterInfo(@Nonnull GrTypeArgumentList element, CreateParameterInfoContext context) {
     context.showHint(element, element.getTextRange().getStartOffset() + 1, this);
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   @Override
   public GrTypeArgumentList findElementForUpdatingParameterInfo(UpdateParameterInfoContext context) {
     return ParameterInfoUtils.findParentOfType(context.getFile(), context.getOffset(), GrTypeArgumentList.class);
   }
 
   @Override
-  public void updateParameterInfo(@NotNull GrTypeArgumentList o, UpdateParameterInfoContext context) {
+  public void updateParameterInfo(@Nonnull GrTypeArgumentList o, UpdateParameterInfoContext context) {
     int index = ParameterInfoUtils.getCurrentParameterIndex(o.getNode(), context.getOffset(), getActualParameterDelimiterType());
     context.setCurrentParameter(index);
     final Object[] objectsToView = context.getObjectsToView();
     context.setHighlightedParameter(index < objectsToView.length && index >= 0 ? (PsiElement)objectsToView[index] : null);
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   @Override
   public String getParameterCloseChars() {
     return ",>";

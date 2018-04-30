@@ -16,7 +16,7 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.clauses;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.clauses.GrCaseLabel;
@@ -30,7 +30,7 @@ import com.intellij.psi.PsiElement;
  */
 public class GrCaseLabelImpl extends GroovyPsiElementImpl implements GrCaseLabel {
 
-  public GrCaseLabelImpl(@NotNull ASTNode node) {
+  public GrCaseLabelImpl(@Nonnull ASTNode node) {
     super(node);
   }
 

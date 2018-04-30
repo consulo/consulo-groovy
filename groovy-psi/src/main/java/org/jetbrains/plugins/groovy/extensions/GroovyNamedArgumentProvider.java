@@ -18,8 +18,8 @@ package org.jetbrains.plugins.groovy.extensions;
 import com.intellij.openapi.extensions.ExtensionPointName;
 import com.intellij.psi.*;
 import com.intellij.psi.util.InheritanceUtil;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrCall;
@@ -40,26 +40,26 @@ public abstract class GroovyNamedArgumentProvider {
   public static final ExtensionPointName<GroovyNamedArgumentProvider> EP_NAME =
     ExtensionPointName.create("org.intellij.groovy.namedArgumentProvider");
 
-  public void getNamedArguments(@NotNull GrCall call,
-                                @Nullable PsiElement resolve,
+  public void getNamedArguments(@Nonnull GrCall call,
+                                @javax.annotation.Nullable PsiElement resolve,
                                 @Nullable String argumentName,
                                 boolean forCompletion,
                                 Map<String, NamedArgumentDescriptor> result) {
     throw new UnsupportedOperationException();
   }
 
-  public void getNamedArguments(@NotNull GrCall call,
+  public void getNamedArguments(@Nonnull GrCall call,
                                 @Nullable PsiElement resolve,
                                 @Nullable GroovyResolveResult resolveResult,
-                                @Nullable String argumentName,
+                                @javax.annotation.Nullable String argumentName,
                                 boolean forCompletion,
                                 Map<String, NamedArgumentDescriptor> result) {
     getNamedArguments(call, resolve, argumentName, forCompletion, result);
   }
 
   @Nullable
-  public static Map<String, NamedArgumentDescriptor> getNamedArgumentsFromAllProviders(@NotNull GrCall call,
-                                                                                  @Nullable String argumentName,
+  public static Map<String, NamedArgumentDescriptor> getNamedArgumentsFromAllProviders(@Nonnull GrCall call,
+                                                                                  @javax.annotation.Nullable String argumentName,
                                                                                   boolean forCompletion) {
     Map<String, NamedArgumentDescriptor> namedArguments = new HashMap<String, NamedArgumentDescriptor>() {
       @Override

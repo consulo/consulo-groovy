@@ -15,8 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.lang.resolve.processors;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
 import org.jetbrains.plugins.groovy.lang.psi.api.SpreadState;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrGdkMethod;
@@ -40,20 +40,20 @@ public class AccessorResolverProcessor extends MethodResolverProcessor
 
 
 	public AccessorResolverProcessor(@Nullable String accessorName,
-			@NotNull String propertyName,
-			@NotNull PsiElement place,
+			@Nonnull String propertyName,
+			@Nonnull PsiElement place,
 			boolean searchForGetter)
 	{
 		this(accessorName, propertyName, place, searchForGetter, false, null, PsiType.EMPTY_ARRAY);
 	}
 
-	public AccessorResolverProcessor(@Nullable String accessorName,
-			@NotNull String propertyName,
-			@NotNull PsiElement place,
+	public AccessorResolverProcessor(@javax.annotation.Nullable String accessorName,
+			@Nonnull String propertyName,
+			@Nonnull PsiElement place,
 			boolean searchForGetter,
 			boolean byShape,
-			@Nullable PsiType thisType,
-			@NotNull PsiType[] typeArguments)
+			@javax.annotation.Nullable PsiType thisType,
+			@Nonnull PsiType[] typeArguments)
 	{
 		super(accessorName, place, false, thisType, null, typeArguments, false, byShape);
 		myPropertyName = propertyName;
@@ -64,7 +64,7 @@ public class AccessorResolverProcessor extends MethodResolverProcessor
 	}
 
 	@Override
-	public boolean execute(@NotNull PsiElement element, @NotNull ResolveState state)
+	public boolean execute(@Nonnull PsiElement element, @Nonnull ResolveState state)
 	{
 		final PsiElement resolveContext = state.get(ResolverProcessor.RESOLVE_CONTEXT);
 		String importedName = resolveContext instanceof GrImportStatement ? ((GrImportStatement) resolveContext)
@@ -97,8 +97,8 @@ public class AccessorResolverProcessor extends MethodResolverProcessor
 	/**
 	 * use only for imported properties
 	 */
-	private static boolean isAppropriatePropertyNameForSetter(@NotNull String importedName,
-			@NotNull String propertyName)
+	private static boolean isAppropriatePropertyNameForSetter(@Nonnull String importedName,
+			@Nonnull String propertyName)
 	{
 		propertyName = GroovyPropertyUtils.decapitalize(propertyName);
 		return propertyName.equals(GroovyPropertyUtils.getPropertyNameBySetterName(importedName));
@@ -107,9 +107,9 @@ public class AccessorResolverProcessor extends MethodResolverProcessor
 	/**
 	 * use only for imported properties
 	 */
-	private static boolean isAppropriatePropertyNameForGetter(@NotNull PsiMethod getter,
-			@NotNull String importedNameForGetter,
-			@NotNull String propertyName)
+	private static boolean isAppropriatePropertyNameForGetter(@Nonnull PsiMethod getter,
+			@Nonnull String importedNameForGetter,
+			@Nonnull String propertyName)
 	{
 		propertyName = GroovyPropertyUtils.decapitalize(propertyName);
 		return propertyName.equals(getPropertyNameByGetter(getter, importedNameForGetter));
@@ -156,7 +156,7 @@ public class AccessorResolverProcessor extends MethodResolverProcessor
 		}
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public GroovyResolveResult[] getCandidates()
 	{

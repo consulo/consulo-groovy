@@ -16,8 +16,8 @@
 package org.jetbrains.plugins.groovy.codeInspection.control.finalVar;
 
 import com.intellij.util.containers.ContainerUtil;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
 import org.jetbrains.plugins.groovy.lang.psi.controlFlow.Instruction;
 import org.jetbrains.plugins.groovy.lang.psi.controlFlow.ReadWriteVariableInstruction;
@@ -35,9 +35,9 @@ import java.util.Set;
  */
 public class InvalidWriteAccessSearcher {
   @Nullable
-  public static List<ReadWriteVariableInstruction> findInvalidWriteAccess(@NotNull Instruction[] flow,
-                                                                          @NotNull Map<String, GrVariable> variables,
-                                                                          @NotNull Set<GrVariable> alreadyInitialized) {
+  public static List<ReadWriteVariableInstruction> findInvalidWriteAccess(@Nonnull Instruction[] flow,
+                                                                          @Nonnull Map<String, GrVariable> variables,
+                                                                          @Nonnull Set<GrVariable> alreadyInitialized) {
     DFAEngine<MyData> engine = new DFAEngine<MyData>(flow, new MyDFAInstance(), new MySemilattice());
     final ArrayList<MyData> dfaResult = engine.performDFAWithTimeout();
     if (dfaResult == null) return null;
@@ -74,7 +74,7 @@ public class InvalidWriteAccessSearcher {
       }
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public MyData initial() {
       return new MyData();

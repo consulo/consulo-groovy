@@ -15,11 +15,11 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.assignment;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiType;
 import com.intellij.util.IncorrectOperationException;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrArgumentList;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrNewExpression;
@@ -35,31 +35,31 @@ public class GrNewExpressionInfo extends ConstructorCallInfoBase<GrNewExpression
     super(expr);
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   @Override
   protected PsiType[] inferArgTypes() {
     return PsiUtil.getArgumentTypes(getCall().getReferenceElement(), true);
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   @Override
   public GrExpression getInvokedExpression() {
     return null;
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   @Override
   public PsiType getQualifierInstanceType() {
     return null;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public PsiElement getHighlightElementForCategoryQualifier() {
     throw new UnsupportedOperationException("no categories are applicable to new expression");
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public PsiElement getElementToHighlight() {
     GrNewExpression call = getCall();

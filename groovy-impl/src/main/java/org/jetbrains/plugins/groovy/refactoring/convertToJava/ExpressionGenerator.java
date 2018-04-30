@@ -15,8 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.convertToJava;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.codeInspection.GrInspectionUtil;
 import org.jetbrains.plugins.groovy.codeInspection.utils.ControlFlowUtils;
 import org.jetbrains.plugins.groovy.intentions.conversions.strings.ConvertGStringToStringIntention;
@@ -664,12 +664,12 @@ public class ExpressionGenerator extends Generator
 	}
 
 	private void writeAssignmentWithSetter(@Nullable GrExpression qualifier,
-			@NotNull PsiMethod method,
-			@NotNull GrExpression[] exprs,
-			@NotNull GrNamedArgument[] namedArgs,
-			@NotNull GrClosableBlock[] closures,
-			@NotNull PsiSubstitutor substitutor,
-			@NotNull GrAssignmentExpression assignment)
+			@Nonnull PsiMethod method,
+			@Nonnull GrExpression[] exprs,
+			@Nonnull GrNamedArgument[] namedArgs,
+			@Nonnull GrClosableBlock[] closures,
+			@Nonnull PsiSubstitutor substitutor,
+			@Nonnull GrAssignmentExpression assignment)
 	{
 		if(PsiUtil.isExpressionUsed(assignment))
 		{
@@ -822,7 +822,7 @@ public class ExpressionGenerator extends Generator
 	}
 
 	private static boolean shouldNotReplaceOperatorWithMethod(@Nullable PsiType ltype,
-			@Nullable GrExpression right,
+			@javax.annotation.Nullable GrExpression right,
 			IElementType op)
 	{
 		if(!GenerationSettings.replaceOperatorsWithMethodsForNumbers)
@@ -1313,7 +1313,7 @@ public class ExpressionGenerator extends Generator
 		}
 	}
 
-	private String createVarByInitializer(@NotNull GrExpression initializer)
+	private String createVarByInitializer(@Nonnull GrExpression initializer)
 	{
 		GrExpression inner = initializer;
 		while(inner instanceof GrParenthesizedExpression)
@@ -1459,7 +1459,7 @@ public class ExpressionGenerator extends Generator
 		writeInstanceof(operand, typeElement != null ? typeElement.getType() : null, expression);
 	}
 
-	private void writeInstanceof(@NotNull GrExpression operand, @Nullable PsiType type, @NotNull PsiElement context)
+	private void writeInstanceof(@Nonnull GrExpression operand, @Nullable PsiType type, @Nonnull PsiElement context)
 	{
 		operand.accept(this);
 		builder.append(" instanceof ");
@@ -1583,13 +1583,13 @@ public class ExpressionGenerator extends Generator
 		builder.append(']');
 	}
 
-	public void invokeMethodOn(@NotNull PsiMethod method,
+	public void invokeMethodOn(@Nonnull PsiMethod method,
 			@Nullable GrExpression caller,
-			@NotNull GrExpression[] exprs,
-			@NotNull GrNamedArgument[] namedArgs,
-			@NotNull GrClosableBlock[] closures,
-			@NotNull PsiSubstitutor substitutor,
-			@NotNull GroovyPsiElement context)
+			@Nonnull GrExpression[] exprs,
+			@Nonnull GrNamedArgument[] namedArgs,
+			@Nonnull GrClosableBlock[] closures,
+			@Nonnull PsiSubstitutor substitutor,
+			@Nonnull GroovyPsiElement context)
 	{
 		if(method instanceof GrGdkMethod)
 		{
@@ -1651,9 +1651,9 @@ public class ExpressionGenerator extends Generator
 		new ArgumentListGenerator(builder, this.context).generate(signature, exprs, namedArgs, closures, context);
 	}
 
-	private void writeCastForMethod(@NotNull GrExpression caller,
-			@NotNull PsiMethod method,
-			@NotNull GroovyPsiElement context)
+	private void writeCastForMethod(@Nonnull GrExpression caller,
+			@Nonnull PsiMethod method,
+			@Nonnull GroovyPsiElement context)
 	{
 		final PsiType type = inferCastType(caller, method, context);
 		if(type == null)
@@ -1668,9 +1668,9 @@ public class ExpressionGenerator extends Generator
 	}
 
 	@Nullable
-	private static PsiType inferCastType(@NotNull GrExpression caller,
-			@NotNull PsiMethod method,
-			@NotNull GroovyPsiElement context)
+	private static PsiType inferCastType(@Nonnull GrExpression caller,
+			@Nonnull PsiMethod method,
+			@Nonnull GroovyPsiElement context)
 	{
 		final PsiType type = caller.getType();
 		if(type instanceof PsiIntersectionType)
@@ -1682,7 +1682,7 @@ public class ExpressionGenerator extends Generator
 				ResolveUtil.processAllDeclarationsSeparately(conjunct, processor, new BaseScopeProcessor()
 				{
 					@Override
-					public boolean execute(@NotNull PsiElement element, @NotNull ResolveState state)
+					public boolean execute(@Nonnull PsiElement element, @Nonnull ResolveState state)
 					{
 						return false;
 					}

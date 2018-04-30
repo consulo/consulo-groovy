@@ -18,8 +18,8 @@ package org.jetbrains.plugins.groovy.annotator;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFileBase;
 import com.intellij.codeHighlighting.TextEditorHighlightingPass;
 import com.intellij.codeInsight.daemon.impl.HighlightInfo;
@@ -35,14 +35,14 @@ public class GrReferenceHighlighter extends TextEditorHighlightingPass
 	private final GroovyFileBase myFile;
 	private List<HighlightInfo> myInfos = null;
 
-	public GrReferenceHighlighter(@Nullable Document document, @NotNull GroovyFileBase file)
+	public GrReferenceHighlighter(@Nullable Document document, @Nonnull GroovyFileBase file)
 	{
 		super(file.getProject(), document);
 		myFile = file;
 	}
 
 	@Override
-	public void doCollectInformation(@NotNull ProgressIndicator progress)
+	public void doCollectInformation(@Nonnull ProgressIndicator progress)
 	{
 		myInfos = new ArrayList<HighlightInfo>();
 

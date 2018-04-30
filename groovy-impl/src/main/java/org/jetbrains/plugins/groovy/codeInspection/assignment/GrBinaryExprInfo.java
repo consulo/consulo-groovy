@@ -15,10 +15,12 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.assignment;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiType;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrArgumentList;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrNamedArgument;
@@ -37,7 +39,7 @@ public class GrBinaryExprInfo implements CallInfo<GrBinaryExpression> {
     myExpr = expr;
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   @Override
   public GrArgumentList getArgumentList() {
     return null;
@@ -51,49 +53,49 @@ public class GrBinaryExprInfo implements CallInfo<GrBinaryExpression> {
     return new PsiType[]{operand != null ? operand.getType() : null};
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   @Override
   public GrExpression getInvokedExpression() {
     return myExpr.getLeftOperand();
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   @Override
   public PsiType getQualifierInstanceType() {
     return myExpr.getLeftOperand().getType();
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public PsiElement getHighlightElementForCategoryQualifier() {
     return myExpr.getOperationToken();
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public PsiElement getElementToHighlight() {
     return myExpr.getOperationToken();
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public GroovyResolveResult advancedResolve() {
     return PsiImplUtil.extractUniqueResult(multiResolve());
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public GroovyResolveResult[] multiResolve() {
     return myExpr.multiResolve(false);
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public GrBinaryExpression getCall() {
     return myExpr;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public GrExpression[] getExpressionArguments() {
     GrExpression right = myExpr.getRightOperand();
@@ -105,13 +107,13 @@ public class GrBinaryExprInfo implements CallInfo<GrBinaryExpression> {
     }
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public GrClosableBlock[] getClosureArguments() {
     return GrClosableBlock.EMPTY_ARRAY;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public GrNamedArgument[] getNamedArguments() {
     return GrNamedArgument.EMPTY_ARRAY;

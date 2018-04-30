@@ -15,7 +15,6 @@
  */
 package org.jetbrains.plugins.groovy.lang.completion;
 
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.GroovyLanguage;
 import org.jetbrains.plugins.groovy.extensions.NamedArgumentDescriptor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.clauses.GrCaseLabel;
@@ -37,7 +36,7 @@ import com.intellij.psi.PsiKeyword;
  */
 public class GroovyReferenceCharFilter extends CharFilter {
   @Override
-  @Nullable
+  @javax.annotation.Nullable
   public Result acceptChar(char c, int prefixLength, Lookup lookup) {
     final PsiFile psiFile = lookup.getPsiFile();
     if (psiFile != null && !psiFile.getViewProvider().getLanguages().contains(GroovyLanguage.INSTANCE)) return null;

@@ -17,8 +17,9 @@ package org.jetbrains.plugins.groovy.intentions.conversions;
 
 import java.math.BigInteger;
 
+import javax.annotation.Nonnull;
+
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.intentions.base.PsiElementPredicate;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.literals.GrLiteral;
@@ -33,13 +34,13 @@ import com.intellij.util.IncorrectOperationException;
  */
 public class ConvertIntegerToBinaryIntention extends Intention
 {
-	@NotNull
+	@Nonnull
 	public PsiElementPredicate getElementPredicate()
 	{
 		return new ConvertIntegerToBinaryPredicate();
 	}
 
-	public void processIntention(@NotNull PsiElement element,
+	public void processIntention(@Nonnull PsiElement element,
 			Project project,
 			Editor editor) throws IncorrectOperationException
 	{

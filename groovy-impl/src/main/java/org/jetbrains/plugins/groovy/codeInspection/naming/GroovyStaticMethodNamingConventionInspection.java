@@ -15,9 +15,10 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.naming;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiModifier;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.codeInspection.GroovyFix;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
@@ -27,7 +28,7 @@ public class GroovyStaticMethodNamingConventionInspection extends ConventionInsp
   private static final int DEFAULT_MIN_LENGTH = 4;
   private static final int DEFAULT_MAX_LENGTH = 32;
 
-  @NotNull
+  @Nonnull
   public String getDisplayName() {
     return "Static method naming convention";
   }
@@ -40,7 +41,7 @@ public class GroovyStaticMethodNamingConventionInspection extends ConventionInsp
     return true;
   }
 
-  @NotNull
+  @Nonnull
   public String buildErrorString(Object... args) {
     final String className = (String) args[0];
     if (className.length() < getMinLength()) {

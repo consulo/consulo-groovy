@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.jar.Attributes;
 import java.util.regex.Pattern;
 
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.GroovyFileTypeLoader;
 import org.jetbrains.plugins.groovy.module.extension.GroovyModuleExtension;
 import com.intellij.execution.Executor;
@@ -158,7 +157,7 @@ public class GroovyHotSwapper extends JavaProgramPatcher
 		}
 	}
 
-	@Nullable
+	@javax.annotation.Nullable
 	private static String handleSpacesInPath(String agentPath)
 	{
 		if(agentPath.contains(" "))

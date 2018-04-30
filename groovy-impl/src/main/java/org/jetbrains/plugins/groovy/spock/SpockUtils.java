@@ -20,8 +20,8 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.impl.PsiImplUtil;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.lexer.TokenSets;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
@@ -52,7 +52,7 @@ public class SpockUtils {
 
   }
 
-  public static Map<String, SpockVariableDescriptor> getVariableMap(@NotNull GrMethod method) {
+  public static Map<String, SpockVariableDescriptor> getVariableMap(@Nonnull GrMethod method) {
     GrMethod originalMethod;
 
     PsiFile containingFile = method.getContainingFile();
@@ -223,8 +223,8 @@ public class SpockUtils {
     return false;
   }
 
-  @Nullable
-  private static PsiElement getNext(@NotNull PsiElement current, PsiElement elementUnderLabel, PsiElement elementAfterLabel) {
+  @javax.annotation.Nullable
+  private static PsiElement getNext(@Nonnull PsiElement current, PsiElement elementUnderLabel, PsiElement elementAfterLabel) {
     PsiElement e = current;
 
     do {
@@ -241,8 +241,8 @@ public class SpockUtils {
     return e;
   }
 
-  @Nullable
-  public static String getNameByReference(@Nullable PsiElement expression) {
+  @javax.annotation.Nullable
+  public static String getNameByReference(@javax.annotation.Nullable PsiElement expression) {
     if (!(expression instanceof GrReferenceExpression)) return null;
 
     PsiElement firstChild = expression.getFirstChild();

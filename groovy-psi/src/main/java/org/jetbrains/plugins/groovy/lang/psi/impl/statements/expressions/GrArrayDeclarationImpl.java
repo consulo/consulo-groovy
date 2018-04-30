@@ -16,7 +16,8 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrArrayDeclaration;
@@ -28,7 +29,7 @@ import com.intellij.lang.ASTNode;
  * @author ilyas
  */
 public class GrArrayDeclarationImpl extends GroovyPsiElementImpl implements GrArrayDeclaration {
-  public GrArrayDeclarationImpl(@NotNull ASTNode node) {
+  public GrArrayDeclarationImpl(@Nonnull ASTNode node) {
     super(node);
   }
 

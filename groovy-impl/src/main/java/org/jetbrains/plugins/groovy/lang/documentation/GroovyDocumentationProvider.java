@@ -18,9 +18,11 @@ package org.jetbrains.plugins.groovy.lang.documentation;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.Nonnull;
+
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.dsl.CustomMembersGenerator;
 import org.jetbrains.plugins.groovy.dsl.holders.NonCodeMembersHolder;
 import org.jetbrains.plugins.groovy.extensions.NamedArgumentDescriptor;
@@ -90,7 +92,7 @@ public class GroovyDocumentationProvider implements CodeDocumentationProvider, E
 
 
 	@Override
-	@Nullable
+	@javax.annotation.Nullable
 	public String getQuickNavigateInfo(PsiElement element, PsiElement originalElement)
 	{
 		if(element instanceof GrVariable || element instanceof GrImplicitVariable)
@@ -312,7 +314,7 @@ public class GroovyDocumentationProvider implements CodeDocumentationProvider, E
 		return buffer.toString();
 	}
 
-	public static void appendTypeString(@NotNull StringBuilder buffer, @Nullable PsiType type, PsiElement context)
+	public static void appendTypeString(@Nonnull StringBuilder buffer, @javax.annotation.Nullable PsiType type, PsiElement context)
 	{
 		if(type instanceof GrTraitType)
 		{
@@ -328,7 +330,7 @@ public class GroovyDocumentationProvider implements CodeDocumentationProvider, E
 		}
 	}
 
-	private static void generateTraitType(@NotNull StringBuilder buffer, @NotNull GrTraitType type, PsiElement context)
+	private static void generateTraitType(@Nonnull StringBuilder buffer, @Nonnull GrTraitType type, PsiElement context)
 	{
 		PsiClassType exprType = type.getExprType();
 		List<PsiClassType> traitTypes = type.getTraitTypes();
@@ -343,7 +345,7 @@ public class GroovyDocumentationProvider implements CodeDocumentationProvider, E
 	}
 
 	@Override
-	@Nullable
+	@javax.annotation.Nullable
 	public List<String> getUrlFor(PsiElement element, PsiElement originalElement)
 	{
 		List<String> result = new ArrayList<String>();
@@ -361,7 +363,7 @@ public class GroovyDocumentationProvider implements CodeDocumentationProvider, E
 	}
 
 	@Override
-	@Nullable
+	@javax.annotation.Nullable
 	public String generateDoc(PsiElement element, PsiElement originalElement)
 	{
 		if(element instanceof CustomMembersGenerator.GdslNamedParameter)
@@ -540,7 +542,7 @@ public class GroovyDocumentationProvider implements CodeDocumentationProvider, E
 	}
 
 	@Override
-	@Nullable
+	@javax.annotation.Nullable
 	public PsiElement getDocumentationElementForLookupItem(PsiManager psiManager, Object object, PsiElement element)
 	{
 		if(object instanceof GroovyResolveResult)
@@ -575,9 +577,9 @@ public class GroovyDocumentationProvider implements CodeDocumentationProvider, E
 		return null;
 	}
 
-	@Nullable
+	@javax.annotation.Nullable
 	@Override
-	public Pair<PsiElement, PsiComment> parseContext(@NotNull PsiElement startPoint)
+	public Pair<PsiElement, PsiComment> parseContext(@Nonnull PsiElement startPoint)
 	{
 		for(PsiElement e = startPoint; e != null; e = e.getParent())
 		{

@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 
+import javax.annotation.Nonnull;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JCheckBox;
@@ -41,8 +42,7 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrParametersOwner;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
@@ -345,7 +345,7 @@ public class GrIntroduceParameterDialog extends DialogWrapper {
     return box;
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   private PsiType inferClosureReturnType() {
     final ExtractClosureHelperImpl mockHelper =
       new ExtractClosureHelperImpl(myInfo, "__test___n_", false, new TIntArrayList(), false, 0, false, false);
@@ -433,7 +433,7 @@ public class GrIntroduceParameterDialog extends DialogWrapper {
     return null;
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   private ParameterInfo findParamByOldName(String name) {
     for (ParameterInfo info : myInfo.getParameterInfos()) {
       if (name.equals(info.getOldName())) return info;
@@ -532,7 +532,7 @@ public class GrIntroduceParameterDialog extends DialogWrapper {
     processor.run();
   }
 
-  @NotNull
+  @Nonnull
   public LinkedHashSet<String> suggestNames() {
     GrVariable var = GroovyIntroduceParameterUtil.findVar(myInfo);
     GrExpression expr = GroovyIntroduceParameterUtil.findExpr(myInfo);

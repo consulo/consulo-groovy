@@ -15,14 +15,14 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.control;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.codeInspection.ProblemDescriptor;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.templateLanguages.TemplateLanguageFileViewProvider;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.Nls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.codeInspection.GroovyFix;
@@ -36,18 +36,18 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.branch.GrContinueSta
 public class GroovyUnnecessaryContinueInspection extends BaseInspection {
 
   @Nls
-  @NotNull
+  @Nonnull
   public String getGroupDisplayName() {
     return CONTROL_FLOW;
   }
 
   @Nls
-  @NotNull
+  @Nonnull
   public String getDisplayName() {
     return "Unnecessary 'continue' statement";
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   protected String buildErrorString(Object... args) {
     return "#ref is unnecessary as the last statement in a loop #loc";
 
@@ -61,14 +61,14 @@ public class GroovyUnnecessaryContinueInspection extends BaseInspection {
     return new Visitor();
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   protected GroovyFix buildFix(PsiElement location) {
     return new UnnecessaryContinueFix();
   }
 
   private static class UnnecessaryContinueFix extends GroovyFix {
 
-    @NotNull
+    @Nonnull
     public String getName() {
       return "Remove unnecessary continue";
     }

@@ -23,7 +23,7 @@ import com.intellij.psi.infos.CandidateInfo;
 import com.intellij.psi.util.*;
 import com.intellij.util.containers.HashMap;
 import com.intellij.util.containers.HashSet;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.GrModifierList;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
@@ -50,7 +50,7 @@ public class CollectClassMembersUtil {
     return getCachedMembers(aClass, includeSynthetic).getSecond();
   }
 
-  @NotNull
+  @Nonnull
   private static Trinity<Map<String, CandidateInfo>, Map<String, List<CandidateInfo>>, Map<String, CandidateInfo>> getCachedMembers(
     PsiClass aClass,
     boolean includeSynthetic) {

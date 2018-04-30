@@ -21,7 +21,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.GroovyFileTypeLoader;
@@ -64,7 +65,7 @@ public class GroovyCompiler extends GroovyCompilerBase
 		super(project);
 	}
 
-	@NotNull
+	@Nonnull
 	public String getDescription()
 	{
 		return "groovy compiler";
@@ -170,7 +171,7 @@ public class GroovyCompiler extends GroovyCompilerBase
 	}
 
 	@Override
-	public void registerCompilableFileTypes(@NotNull Consumer<FileType> fileTypeConsumer)
+	public void registerCompilableFileTypes(@Nonnull Consumer<FileType> fileTypeConsumer)
 	{
 		fileTypeConsumer.accept(GroovyFileType.GROOVY_FILE_TYPE);
 	}
@@ -188,7 +189,7 @@ public class GroovyCompiler extends GroovyCompilerBase
 		return false;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public FileType[] getInputFileTypes()
 	{
@@ -198,7 +199,7 @@ public class GroovyCompiler extends GroovyCompilerBase
 		};
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public FileType[] getOutputFileTypes()
 	{

@@ -19,8 +19,8 @@ import com.intellij.psi.*;
 import com.intellij.psi.util.PsiTypesUtil;
 import com.intellij.psi.util.PsiUtil;
 import com.intellij.util.containers.ContainerUtil;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrMethodCall;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
@@ -38,7 +38,7 @@ import java.util.List;
 public class GrWithTraitTypeCalculator extends GrCallExpressionTypeCalculator {
   @Nullable
   @Override
-  protected PsiType calculateReturnType(@NotNull GrMethodCall callExpression, @NotNull PsiMethod resolvedMethod) {
+  protected PsiType calculateReturnType(@Nonnull GrMethodCall callExpression, @Nonnull PsiMethod resolvedMethod) {
     if (!"withTraits".equals(resolvedMethod.getName())) return null;
 
     if (resolvedMethod instanceof GrGdkMethod) {

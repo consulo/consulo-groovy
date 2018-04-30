@@ -17,7 +17,7 @@ package org.jetbrains.plugins.groovy.extensions;
 
 import com.intellij.openapi.util.Key;
 import com.intellij.psi.PsiFile;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
 
 /**
@@ -28,7 +28,7 @@ public final class GroovyUnresolvedReferenceFilterByFile extends GroovyUnresolve
   private static final Key<Boolean> KEY = Key.create("GroovyUnresolvedHighlightFileFilter");
 
   @Override
-  public boolean isReject(@NotNull GrReferenceExpression expression) {
+  public boolean isReject(@Nonnull GrReferenceExpression expression) {
     PsiFile file = expression.getContainingFile();
 
     Boolean cachedValue = file.getUserData(KEY);

@@ -18,8 +18,8 @@ package org.jetbrains.plugins.groovy.refactoring.extract;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiType;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
 import org.jetbrains.plugins.groovy.lang.psi.dataFlow.reachingDefs.VariableInfo;
 import org.jetbrains.plugins.groovy.refactoring.introduce.StringPartInfo;
@@ -46,12 +46,12 @@ public abstract class ExtractInfoHelperBase implements ExtractInfoHelper {
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public Project getProject() {
     return myInitialInfo.getProject();
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public ParameterInfo[] getParameterInfos() {
     Collection<ParameterInfo> collection = myInputNamesMap.values();
@@ -65,7 +65,7 @@ public abstract class ExtractInfoHelperBase implements ExtractInfoHelper {
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public VariableInfo[] getOutputVariableInfos() {
     return myInitialInfo.getOutputVariableInfos();
   }
@@ -75,7 +75,7 @@ public abstract class ExtractInfoHelperBase implements ExtractInfoHelper {
    *
    * @return array of argument names
    */
-  @NotNull
+  @Nonnull
   @Override
   public String[] getArgumentNames() {
     Collection<ParameterInfo> infos = myInputNamesMap.values();
@@ -90,24 +90,24 @@ public abstract class ExtractInfoHelperBase implements ExtractInfoHelper {
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public PsiType getOutputType() {
     return myInitialInfo.getOutputType();
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public PsiElement[] getInnerElements() {
     return myInitialInfo.getInnerElements();
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public GrStatement[] getStatements() {
     return myInitialInfo.getStatements();
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   @Override
   public StringPartInfo getStringPartInfo() {
     return myInitialInfo.getStringPartInfo();

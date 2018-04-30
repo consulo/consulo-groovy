@@ -23,8 +23,8 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.*;
 import com.intellij.psi.tree.ILazyParseableElementType;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.formatter.FormattingContext;
 import org.jetbrains.plugins.groovy.formatter.processors.GroovyIndentProcessor;
 import org.jetbrains.plugins.groovy.formatter.processors.GroovySpacingProcessor;
@@ -70,10 +70,10 @@ public class GroovyBlock implements Block, GroovyElementTypes, ASTBlock {
 
   protected List<Block> mySubBlocks = null;
 
-  public GroovyBlock(@NotNull final ASTNode node,
-                     @NotNull final Indent indent,
-                     @Nullable final Wrap wrap,
-                     @NotNull FormattingContext context) {
+  public GroovyBlock(@Nonnull final ASTNode node,
+                     @Nonnull final Indent indent,
+                     @javax.annotation.Nullable final Wrap wrap,
+                     @Nonnull FormattingContext context) {
     myNode = node;
 
     myIndent = indent;
@@ -81,17 +81,17 @@ public class GroovyBlock implements Block, GroovyElementTypes, ASTBlock {
     myContext = context;
   }
 
-  @NotNull
+  @Nonnull
   public ASTNode getNode() {
     return myNode;
   }
 
-  @NotNull
+  @Nonnull
   public TextRange getTextRange() {
     return myNode.getTextRange();
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public List<Block> getSubBlocks() {
     if (mySubBlocks == null) {
@@ -138,8 +138,8 @@ public class GroovyBlock implements Block, GroovyElementTypes, ASTBlock {
    * @param child2 right element
    * @return
    */
-  @Nullable
-  public Spacing getSpacing(Block child1, @NotNull Block child2) {
+  @javax.annotation.Nullable
+  public Spacing getSpacing(Block child1, @Nonnull Block child2) {
     if (child1 instanceof GroovyBlock && child2 instanceof GroovyBlock) {
       if (((GroovyBlock)child1).getNode() == ((GroovyBlock)child2).getNode()) {
         return Spacing.getReadOnlySpacing();
@@ -154,7 +154,7 @@ public class GroovyBlock implements Block, GroovyElementTypes, ASTBlock {
     return null;
   }
 
-  @NotNull
+  @Nonnull
   public ChildAttributes getChildAttributes(final int newChildIndex) {
     ASTNode astNode = getNode();
     final PsiElement psiParent = astNode.getPsi();
@@ -252,7 +252,7 @@ public class GroovyBlock implements Block, GroovyElementTypes, ASTBlock {
    * @param node Tree node
    * @return true if node is incomplete
    */
-  public static boolean isIncomplete(@NotNull final ASTNode node) {
+  public static boolean isIncomplete(@Nonnull final ASTNode node) {
     if (node.getElementType() instanceof ILazyParseableElementType) return false;
     ASTNode lastChild = node.getLastChildNode();
     while (lastChild != null &&

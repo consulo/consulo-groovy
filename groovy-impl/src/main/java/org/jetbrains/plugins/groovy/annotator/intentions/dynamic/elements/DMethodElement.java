@@ -18,7 +18,8 @@ package org.jetbrains.plugins.groovy.annotator.intentions.dynamic.elements;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.annotator.intentions.dynamic.GrDynamicImplicitMethod;
 import org.jetbrains.plugins.groovy.annotator.intentions.dynamic.ParamInfo;
 import com.intellij.psi.PsiManager;
@@ -58,7 +59,7 @@ public class DMethodElement extends DItemElement
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public PsiMethod getPsi(PsiManager manager, final String containingClassName)
 	{
 		if(myImplicitMethod != null)

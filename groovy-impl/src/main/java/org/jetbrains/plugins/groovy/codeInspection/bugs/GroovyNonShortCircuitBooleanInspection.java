@@ -15,6 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.bugs;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.codeInspection.ProblemDescriptor;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
@@ -22,8 +24,6 @@ import com.intellij.psi.PsiType;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.Nls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.codeInspection.GroovyFix;
@@ -34,18 +34,18 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpres
 public class GroovyNonShortCircuitBooleanInspection extends BaseInspection {
 
   @Nls
-  @NotNull
+  @Nonnull
   public String getGroupDisplayName() {
     return PROBABLE_BUGS;
   }
 
   @Nls
-  @NotNull
+  @Nonnull
   public String getDisplayName() {
     return "Non short-circuit boolean";
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   protected String buildErrorString(Object... args) {
     return "Non short-circuit boolean expression #loc";
 
@@ -62,7 +62,7 @@ public class GroovyNonShortCircuitBooleanInspection extends BaseInspection {
   private static class NonShortCircuitBooleanFix
       extends GroovyFix {
 
-    @NotNull
+    @Nonnull
     public String getName() {
       return "Replace with short-circuit expression";
     }
@@ -95,7 +95,7 @@ public class GroovyNonShortCircuitBooleanInspection extends BaseInspection {
 
   private static class Visitor extends BaseInspectionVisitor {
 
-    public void visitBinaryExpression(@NotNull GrBinaryExpression expression) {
+    public void visitBinaryExpression(@Nonnull GrBinaryExpression expression) {
       super.visitBinaryExpression(expression);
       final GrExpression rhs = expression.getRightOperand();
       if (rhs == null) {

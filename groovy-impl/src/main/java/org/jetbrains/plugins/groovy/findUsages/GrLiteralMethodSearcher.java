@@ -25,7 +25,7 @@ import com.intellij.psi.search.SearchScope;
 import com.intellij.psi.search.UsageSearchContext;
 import com.intellij.psi.search.searches.MethodReferencesSearch;
 import com.intellij.util.Processor;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 import java.util.List;
 
@@ -34,7 +34,7 @@ import java.util.List;
  */
 public class GrLiteralMethodSearcher extends QueryExecutorBase<PsiReference, MethodReferencesSearch.SearchParameters> {
   @Override
-  public void processQuery(@NotNull MethodReferencesSearch.SearchParameters p, @NotNull Processor<PsiReference> consumer) {
+  public void processQuery(@Nonnull MethodReferencesSearch.SearchParameters p, @Nonnull Processor<PsiReference> consumer) {
     final PsiMethod method = p.getMethod();
     final PsiClass aClass = method.getContainingClass();
     if (aClass == null) return;
@@ -59,8 +59,8 @@ public class GrLiteralMethodSearcher extends QueryExecutorBase<PsiReference, Met
                                 new MethodTextOccurrenceProcessor(aClass, strictSignatureSearch, methods));
   }
 
-  @NotNull
-  private static String findLongestWord(@NotNull String sequence) {
+  @Nonnull
+  private static String findLongestWord(@Nonnull String sequence) {
     final List<String> words = StringUtil.getWordsIn(sequence);
     if (words.isEmpty()) return sequence;
 

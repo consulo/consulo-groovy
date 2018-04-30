@@ -15,7 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.search;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import com.intellij.openapi.roots.ProjectFileIndex;
 import com.intellij.openapi.roots.ProjectRootManager;
@@ -30,13 +31,13 @@ public class GrSourceFilterScope extends DelegatingGlobalSearchScope
 {
 	private final ProjectFileIndex myIndex;
 
-	public GrSourceFilterScope(@NotNull final GlobalSearchScope delegate)
+	public GrSourceFilterScope(@Nonnull final GlobalSearchScope delegate)
 	{
 		super(delegate, "groovy.sourceFilter");
 		myIndex = getProject() == null ? null : ProjectRootManager.getInstance(getProject()).getFileIndex();
 	}
 
-	public boolean contains(@NotNull final VirtualFile file)
+	public boolean contains(@Nonnull final VirtualFile file)
 	{
 		return super.contains(file) && (myIndex == null || myIndex.isInSourceContent(file)) && GroovyFileType.GROOVY_FILE_TYPE == file.getFileType();
 	}

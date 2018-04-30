@@ -21,8 +21,8 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveState;
 import com.intellij.psi.scope.PsiScopeProcessor;
 import com.intellij.util.IncorrectOperationException;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
@@ -42,7 +42,7 @@ import java.util.List;
  * @author ven
  */
 public class GrCaseSectionImpl extends GroovyPsiElementImpl implements GrCaseSection {
-  public GrCaseSectionImpl(@NotNull ASTNode node) {
+  public GrCaseSectionImpl(@Nonnull ASTNode node) {
     super(node);
   }
 
@@ -56,7 +56,7 @@ public class GrCaseSectionImpl extends GroovyPsiElementImpl implements GrCaseSec
   }
 
   @Override
-  public boolean processDeclarations(@NotNull PsiScopeProcessor processor, @NotNull ResolveState state, PsiElement lastParent, @NotNull PsiElement place) {
+  public boolean processDeclarations(@Nonnull PsiScopeProcessor processor, @Nonnull ResolveState state, PsiElement lastParent, @Nonnull PsiElement place) {
     return ResolveUtil.processChildren(this, processor, state, lastParent, place);
   }
 
@@ -72,7 +72,7 @@ public class GrCaseSectionImpl extends GroovyPsiElementImpl implements GrCaseSec
     return ((GrVariableDeclaration) statement);
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public GrCaseLabel[] getCaseLabels() {
     final List<GrCaseLabel> labels = findChildrenByType(GroovyElementTypes.CASE_LABEL);
@@ -89,14 +89,14 @@ public class GrCaseSectionImpl extends GroovyPsiElementImpl implements GrCaseSec
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public GrStatement[] getStatements() {
     return PsiImplUtil.getStatements(this);
   }
 
   @Override
-  @NotNull
-  public GrStatement addStatementBefore(@NotNull GrStatement element, @Nullable GrStatement anchor) throws IncorrectOperationException {
+  @Nonnull
+  public GrStatement addStatementBefore(@Nonnull GrStatement element, @Nullable GrStatement anchor) throws IncorrectOperationException {
     ASTNode elemNode = element.copy().getNode();
     assert elemNode != null;
     final ASTNode anchorNode = anchor != null ? anchor.getNode() : null;

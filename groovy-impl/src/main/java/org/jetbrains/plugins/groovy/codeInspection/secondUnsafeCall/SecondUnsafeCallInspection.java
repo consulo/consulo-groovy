@@ -15,13 +15,13 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.secondUnsafeCall;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.annotator.inspections.SecondUnsafeCallQuickFix;
 import org.jetbrains.plugins.groovy.codeInspection.GroovyInspectionBundle;
 import org.jetbrains.plugins.groovy.codeInspection.GroovySuppressableInspectionTool;
@@ -37,8 +37,8 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.path.GrM
  * Date: 13.11.2007
  */
 public class SecondUnsafeCallInspection extends GroovySuppressableInspectionTool {
-  @NotNull
-  public PsiElementVisitor buildVisitor(@NotNull final ProblemsHolder holder, boolean isOnTheFly) {
+  @Nonnull
+  public PsiElementVisitor buildVisitor(@Nonnull final ProblemsHolder holder, boolean isOnTheFly) {
     return new GroovyPsiElementVisitor(new GroovyElementVisitor() {
       public void visitReferenceExpression(GrReferenceExpression refExpression) {
         checkForSecondUnsafeCall(refExpression, holder);
@@ -50,7 +50,7 @@ public class SecondUnsafeCallInspection extends GroovySuppressableInspectionTool
     checkForSecondUnsafeCall(expression, holder, null);
   }
 
-  private static void checkForSecondUnsafeCall(GrExpression expression, ProblemsHolder holder, @Nullable PsiElement highlightElement) {
+  private static void checkForSecondUnsafeCall(GrExpression expression, ProblemsHolder holder, @javax.annotation.Nullable PsiElement highlightElement) {
     if (highlightElement == null) highlightElement = expression;
 
     final GrReferenceExpression referenceExpression = (GrReferenceExpression)expression;
@@ -79,25 +79,25 @@ public class SecondUnsafeCallInspection extends GroovySuppressableInspectionTool
   }
 
   @Nls
-  @NotNull
+  @Nonnull
   public String getGroupDisplayName() {
     return "Probable bugs";
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public String[] getGroupPath() {
     return new String[]{"Groovy", getGroupDisplayName()};
   }
 
   @Nls
-  @NotNull
+  @Nonnull
   public String getDisplayName() {
     return GroovyInspectionBundle.message("second.unsafe.call");
   }
 
   @NonNls
-  @NotNull
+  @Nonnull
   public String getShortName() {
     return "SecondUnsafeCall";
   }

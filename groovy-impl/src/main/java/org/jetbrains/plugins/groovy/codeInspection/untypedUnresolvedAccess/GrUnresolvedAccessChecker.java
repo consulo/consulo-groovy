@@ -20,9 +20,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Nonnull;
+
 import consulo.psi.PsiPackage;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.annotator.GrHighlightUtil;
 import org.jetbrains.plugins.groovy.annotator.intentions.QuickfixUtil;
@@ -107,7 +109,7 @@ public class GrUnresolvedAccessChecker
 	private final boolean myInspectionEnabled;
 	private final GrUnresolvedAccessInspection myInspection;
 
-	public GrUnresolvedAccessChecker(@NotNull GroovyFileBase file, @NotNull Project project)
+	public GrUnresolvedAccessChecker(@Nonnull GroovyFileBase file, @Nonnull Project project)
 	{
 		myInspectionEnabled = GrUnresolvedAccessInspection.isInspectionEnabled(file, project);
 		myInspection = myInspectionEnabled ? GrUnresolvedAccessInspection.getInstance(file, project) : null;
@@ -122,7 +124,7 @@ public class GrUnresolvedAccessChecker
 		return info;
 	}
 
-	@Nullable
+	@javax.annotation.Nullable
 	public List<HighlightInfo> checkReferenceExpression(GrReferenceExpression ref)
 	{
 		List<HighlightInfo> info = checkRefInner(ref);
@@ -217,8 +219,8 @@ public class GrUnresolvedAccessChecker
 		return null;
 	}
 
-	private static boolean hasEnclosingInstanceInArgList(@NotNull GrArgumentList list,
-			@NotNull PsiClass enclosingClass)
+	private static boolean hasEnclosingInstanceInArgList(@Nonnull GrArgumentList list,
+			@Nonnull PsiClass enclosingClass)
 	{
 		if(PsiImplUtil.hasNamedArguments(list))
 		{
@@ -391,7 +393,7 @@ public class GrUnresolvedAccessChecker
 		return checkContainer(patternMethod, container);
 	}
 
-	private static boolean checkContainer(@NotNull final PsiMethod patternMethod, @NotNull PsiElement container)
+	private static boolean checkContainer(@Nonnull final PsiMethod patternMethod, @Nonnull PsiElement container)
 	{
 		final String name = patternMethod.getName();
 
@@ -419,7 +421,7 @@ public class GrUnresolvedAccessChecker
 		PsiScopeProcessor processor = new GrScopeProcessorWithHints(name, ClassHint.RESOLVE_KINDS_METHOD)
 		{
 			@Override
-			public boolean execute(@NotNull PsiElement element, @NotNull ResolveState state)
+			public boolean execute(@Nonnull PsiElement element, @Nonnull ResolveState state)
 			{
 				if(element instanceof PsiMethod &&
 						name.equals(((PsiMethod) element).getName()) &&
@@ -460,7 +462,7 @@ public class GrUnresolvedAccessChecker
 		return isNotFromGroovyObject(found);
 	}
 
-	private static boolean isNotFromGroovyObject(@NotNull PsiMethod found)
+	private static boolean isNotFromGroovyObject(@Nonnull PsiMethod found)
 	{
 		PsiClass aClass = found.getContainingClass();
 		if(aClass == null)
@@ -480,7 +482,7 @@ public class GrUnresolvedAccessChecker
 	}
 
 	@Nullable
-	private static PsiMethod findPatternMethod(@NotNull GrReferenceExpression ref)
+	private static PsiMethod findPatternMethod(@Nonnull GrReferenceExpression ref)
 	{
 		PsiClass groovyObject = GroovyPsiManager.getInstance(ref.getProject()).findClassWithCache
 				(GroovyCommonClassNames.GROOVY_OBJECT, ref.getResolveScope());
@@ -538,7 +540,7 @@ public class GrUnresolvedAccessChecker
 		return ((PsiModifierListOwner) resolved).hasModifierProperty(PsiModifier.STATIC);
 	}
 
-	@NotNull
+	@Nonnull
 	private static GroovyResolveResult getBestResolveResult(GrReferenceExpression ref)
 	{
 		GroovyResolveResult[] results = ref.multiResolve(false);
@@ -570,10 +572,10 @@ public class GrUnresolvedAccessChecker
 		return results[0];
 	}
 
-	@Nullable
-	private static HighlightInfo createAnnotationForRef(@NotNull GrReferenceElement ref,
+	@javax.annotation.Nullable
+	private static HighlightInfo createAnnotationForRef(@Nonnull GrReferenceElement ref,
 			boolean strongError,
-			@NotNull String message)
+			@Nonnull String message)
 	{
 		HighlightDisplayLevel displayLevel = strongError ? HighlightDisplayLevel.ERROR : GrUnresolvedAccessInspection
 				.getHighlightDisplayLevel(ref.getProject(), ref);
@@ -581,7 +583,7 @@ public class GrUnresolvedAccessChecker
 	}
 
 	@Nullable
-	private static HighlightInfo registerStaticImportFix(@NotNull GrReferenceExpression referenceExpression,
+	private static HighlightInfo registerStaticImportFix(@Nonnull GrReferenceExpression referenceExpression,
 			@Nullable final HighlightDisplayKey key)
 	{
 		final String referenceName = referenceExpression.getReferenceName();
@@ -715,7 +717,7 @@ public class GrUnresolvedAccessChecker
 				(refElement), key);
 	}
 
-	private static void registerCreateClassByTypeFix(@NotNull GrReferenceElement refElement,
+	private static void registerCreateClassByTypeFix(@Nonnull GrReferenceElement refElement,
 			@Nullable HighlightInfo info,
 			final HighlightDisplayKey key)
 	{
@@ -792,7 +794,7 @@ public class GrUnresolvedAccessChecker
 		return false;
 	}
 
-	private static boolean canBeClassOrPackage(@NotNull GrReferenceElement refElement)
+	private static boolean canBeClassOrPackage(@Nonnull GrReferenceElement refElement)
 	{
 		return !(refElement instanceof GrReferenceExpression) || ResolveUtil.canBeClassOrPackage(
 				(GrReferenceExpression) refElement);
@@ -816,7 +818,7 @@ public class GrUnresolvedAccessChecker
 		return parent instanceof GrExtendsClause && !(parent.getParent() instanceof GrInterfaceDefinition);
 	}
 
-	private static boolean shouldHighlightAsUnresolved(@NotNull GrReferenceExpression referenceExpression)
+	private static boolean shouldHighlightAsUnresolved(@Nonnull GrReferenceExpression referenceExpression)
 	{
 		if(GrHighlightUtil.isDeclarationAssignment(referenceExpression))
 		{

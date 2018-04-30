@@ -20,7 +20,7 @@ import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.fileTypes.FileTypeConsumer;
 import com.intellij.openapi.fileTypes.FileTypeFactory;
 import com.intellij.openapi.util.text.StringUtil;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.extensions.GroovyScriptTypeDetector;
 
 import java.util.*;
@@ -53,7 +53,7 @@ public class GroovyFileTypeLoader extends FileTypeFactory{
     return strings;
   }
 
-  public void createFileTypes(@NotNull FileTypeConsumer consumer) {
+  public void createFileTypes(@Nonnull FileTypeConsumer consumer) {
     consumer.consume(GroovyFileType.GROOVY_FILE_TYPE, StringUtil.join(getAllGroovyExtensions(), ";"));
     GROOVY_FILE_TYPES.add(GroovyFileType.GROOVY_FILE_TYPE);
   }

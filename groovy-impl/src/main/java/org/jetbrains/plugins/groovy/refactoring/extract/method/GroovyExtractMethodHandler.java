@@ -38,8 +38,8 @@ import com.intellij.refactoring.ui.ConflictsDialog;
 import com.intellij.refactoring.util.CommonRefactoringUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.containers.MultiMap;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
@@ -75,7 +75,7 @@ public class GroovyExtractMethodHandler implements RefactoringActionHandler {
   protected static String REFACTORING_NAME = GroovyRefactoringBundle.message("extract.method.title");
   private static final Logger LOG = Logger.getInstance(GroovyExtractMethodHandler.class);
 
-  public void invoke(@NotNull final Project project, final Editor editor, final PsiFile file, @Nullable DataContext dataContext) {
+  public void invoke(@Nonnull final Project project, final Editor editor, final PsiFile file, @Nullable DataContext dataContext) {
     editor.getScrollingModel().scrollToCaret(ScrollType.MAKE_VISIBLE);
     final SelectionModel model = editor.getSelectionModel();
     if (model.hasSelection()) {
@@ -109,7 +109,7 @@ public class GroovyExtractMethodHandler implements RefactoringActionHandler {
       this.file = file;
     }
 
-    public void pass(@NotNull final GrExpression selectedValue) {
+    public void pass(@Nonnull final GrExpression selectedValue) {
       final TextRange range = selectedValue.getTextRange();
       invokeImpl(project, editor, file, range.getStartOffset(), range.getEndOffset());
     }
@@ -184,7 +184,7 @@ public class GroovyExtractMethodHandler implements RefactoringActionHandler {
     return !dialog.isOK();
   }
 
-  private void performRefactoring(@NotNull final InitialInfo initialInfo, @Nullable final Editor editor) {
+  private void performRefactoring(@Nonnull final InitialInfo initialInfo, @Nullable final Editor editor) {
     final PsiClass owner = PsiUtil.getContextClass(initialInfo.getStatements()[0]);
     LOG.assertTrue(owner!=null);
 
@@ -226,7 +226,7 @@ public class GroovyExtractMethodHandler implements RefactoringActionHandler {
   }
 
   @Nullable
-  protected ExtractMethodInfoHelper getSettings(@NotNull InitialInfo initialInfo, PsiClass owner) {
+  protected ExtractMethodInfoHelper getSettings(@Nonnull InitialInfo initialInfo, PsiClass owner) {
     GroovyExtractMethodDialog dialog = new GroovyExtractMethodDialog(initialInfo, owner);
     dialog.show();
     if (!dialog.isOK()) return null;
@@ -235,11 +235,11 @@ public class GroovyExtractMethodHandler implements RefactoringActionHandler {
   }
 
 
-  public void invoke(@NotNull Project project, @NotNull PsiElement[] elements, DataContext dataContext) {
+  public void invoke(@Nonnull Project project, @Nonnull PsiElement[] elements, DataContext dataContext) {
     // does nothing
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   private static PsiElement calculateAnchorToInsertBefore(PsiClass owner, PsiElement startElement) {
     while (startElement != null && !isEnclosingDefinition(owner, startElement)) {
       if (startElement.getParent() instanceof GroovyFile) {

@@ -15,8 +15,9 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.synthetic;
 
+import javax.annotation.Nonnull;
+
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeElement;
 import org.jetbrains.plugins.groovy.lang.psi.impl.PsiImplUtil;
@@ -35,15 +36,16 @@ import com.intellij.util.IncorrectOperationException;
  * @author Max Medvedev
  */
 public class GrSyntheticTypeElement extends LightElement implements PsiTypeElement {
-  @NotNull private final GrTypeElement myElement;
+  @Nonnull
+  private final GrTypeElement myElement;
 
-  public GrSyntheticTypeElement(@NotNull GrTypeElement element) {
+  public GrSyntheticTypeElement(@Nonnull GrTypeElement element) {
     super(element.getManager(), element.getLanguage());
 
     myElement = element;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public PsiType getType() {
     return myElement.getType();
@@ -54,26 +56,26 @@ public class GrSyntheticTypeElement extends LightElement implements PsiTypeEleme
     return null;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public PsiAnnotation[] getAnnotations() {
     return PsiAnnotation.EMPTY_ARRAY;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public PsiAnnotation[] getApplicableAnnotations() {
     return PsiAnnotation.EMPTY_ARRAY;
   }
 
   @Override
-  public PsiAnnotation findAnnotation(@NotNull @NonNls String qualifiedName) {
+  public PsiAnnotation findAnnotation(@Nonnull @NonNls String qualifiedName) {
     return null;
   }
 
-  @NotNull
+  @Nonnull
   @Override
-  public PsiAnnotation addAnnotation(@NotNull @NonNls String qualifiedName) {
+  public PsiAnnotation addAnnotation(@Nonnull @NonNls String qualifiedName) {
     throw new UnsupportedOperationException();
   }
 
@@ -83,7 +85,7 @@ public class GrSyntheticTypeElement extends LightElement implements PsiTypeEleme
   }
 
   @Override
-  public PsiElement replace(@NotNull PsiElement newElement) throws IncorrectOperationException {
+  public PsiElement replace(@Nonnull PsiElement newElement) throws IncorrectOperationException {
     if (newElement instanceof PsiTypeElement) {
       GrTypeElement groovyTypeElement = GroovyPsiElementFactory.getInstance(getProject()).createTypeElement(((PsiTypeElement)newElement).getType());
       return myElement.replace(groovyTypeElement);
@@ -114,14 +116,14 @@ public class GrSyntheticTypeElement extends LightElement implements PsiTypeEleme
   }
 
   @Override
-  public void accept(@NotNull PsiElementVisitor visitor) {
+  public void accept(@Nonnull PsiElementVisitor visitor) {
     if (visitor instanceof JavaElementVisitor) {
       ((JavaElementVisitor)visitor).visitTypeElement(this);
     }
   }
 
   @Override
-  public void acceptChildren(@NotNull PsiElementVisitor visitor) {
+  public void acceptChildren(@Nonnull PsiElementVisitor visitor) {
     final PsiElement[] children = myElement.getChildren();
     for (PsiElement child : children) {
       if (child instanceof GrTypeElement) {

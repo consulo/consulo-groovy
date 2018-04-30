@@ -20,7 +20,8 @@ import static com.intellij.patterns.PlatformPatterns.psiElement;
 
 import java.util.Collection;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.completion.handlers.GroovyMethodOverrideHandler;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinitionBody;
@@ -54,14 +55,14 @@ class GrMethodOverrideCompletionProvider implements CompletionProvider
   private static final ElementPattern<PsiElement> PLACE = psiElement().withParent(GrTypeDefinitionBody.class).with(
     new PatternCondition<PsiElement>("Not in extends/implements clause of inner class") {
       @Override
-      public boolean accepts(@NotNull PsiElement element, ProcessingContext context) {
+      public boolean accepts(@Nonnull PsiElement element, ProcessingContext context) {
         final GrTypeDefinition innerDefinition = PsiTreeUtil.getPrevSiblingOfType(element, GrTypeDefinition.class);
         return innerDefinition == null || innerDefinition.getContainingClass() == null || innerDefinition.getBody() != null;
       }
     }).andNot(psiComment());
 
   @Override
-  public void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result) {
+  public void addCompletions(@Nonnull CompletionParameters parameters, ProcessingContext context, @Nonnull CompletionResultSet result) {
     final PsiElement position = parameters.getPosition();
     final GrTypeDefinition currentClass = PsiTreeUtil.getParentOfType(position, GrTypeDefinition.class);
 

@@ -18,7 +18,6 @@ package org.jetbrains.plugins.groovy.refactoring.convertToJava;
 import com.intellij.psi.PsiModifier;
 import com.intellij.psi.PsiModifierList;
 import com.intellij.util.ArrayUtil;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.GrModifierList;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotation;
@@ -106,7 +105,7 @@ public class ModifierListGenerator {
   }
 
   public static void writeClassModifiers(StringBuilder text,
-                                         @Nullable PsiModifierList modifierList,
+                                         @javax.annotation.Nullable PsiModifierList modifierList,
                                          boolean isInterface,
                                          boolean isEnum,
                                          boolean toplevel,

@@ -17,9 +17,11 @@ package org.jetbrains.plugins.groovy.lang.psi.impl.synthetic;
 
 import java.util.List;
 
+import javax.annotation.Nonnull;
+
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
@@ -54,10 +56,10 @@ public class GrLightAnnotation extends LightElement implements GrAnnotation {
   private final PsiAnnotationOwner myOwner;
   private final GrLightClassReferenceElement myRef;
 
-  public GrLightAnnotation(@NotNull PsiManager manager,
-                           @NotNull Language language,
-                           @NotNull String qualifiedName,
-                           @NotNull PsiAnnotationOwner owner) {
+  public GrLightAnnotation(@Nonnull PsiManager manager,
+                           @Nonnull Language language,
+                           @Nonnull String qualifiedName,
+                           @Nonnull PsiAnnotationOwner owner) {
     super(manager, language);
     myQualifiedName = qualifiedName;
     myOwner = owner;
@@ -66,19 +68,19 @@ public class GrLightAnnotation extends LightElement implements GrAnnotation {
     myRef = new GrLightClassReferenceElement(qualifiedName, qualifiedName, this);
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public GrCodeReferenceElement getClassReference() {
     return myRef;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public String getShortName() {
     return StringUtil.getShortName(myQualifiedName);
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public GrAnnotationArgumentList getParameterList() {
     return myAnnotationArgList;
@@ -176,11 +178,11 @@ public class GrLightAnnotation extends LightElement implements GrAnnotation {
       return GrLightAnnotation.this;
     }
 
-    private GrLightAnnotationArgumentList(@NotNull PsiManager manager, @NotNull Language language) {
+    private GrLightAnnotationArgumentList(@Nonnull PsiManager manager, @Nonnull Language language) {
       super(manager, language);
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public GrAnnotationNameValuePair[] getAttributes() {
       if (myCachedAttributes == null) {
@@ -190,7 +192,7 @@ public class GrLightAnnotation extends LightElement implements GrAnnotation {
       return myCachedAttributes;
     }
 
-    public void addAttribute(@NotNull GrAnnotationNameValuePair attribute) {
+    public void addAttribute(@Nonnull GrAnnotationNameValuePair attribute) {
       if (myAttributes == null) myAttributes = ContainerUtilRt.newArrayList();
       myAttributes.add(attribute);
       myCachedAttributes = null;

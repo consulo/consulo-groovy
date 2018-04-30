@@ -23,7 +23,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.codeInspection.GroovyInspectionBundle;
 import org.jetbrains.plugins.groovy.codeInspection.GroovyQuickFixFactory;
 import org.jetbrains.plugins.groovy.codeInspection.GroovySuppressableInspectionTool;
@@ -99,7 +100,7 @@ public class GroovyPostHighlightingPass extends TextEditorHighlightingPass
 	}
 
 	@Override
-	public void doCollectInformation(@NotNull final ProgressIndicator progress)
+	public void doCollectInformation(@Nonnull final ProgressIndicator progress)
 	{
 		ProjectFileIndex fileIndex = ProjectRootManager.getInstance(myProject).getFileIndex();
 		VirtualFile virtualFile = myFile.getViewProvider().getVirtualFile();
@@ -124,13 +125,13 @@ public class GroovyPostHighlightingPass extends TextEditorHighlightingPass
 			}
 
 			@Override
-			public boolean isLocallyUsed(@NotNull PsiNamedElement member)
+			public boolean isLocallyUsed(@Nonnull PsiNamedElement member)
 			{
 				return false;
 			}
 
 			@Override
-			public boolean shouldCheckUsages(@NotNull PsiMember member)
+			public boolean shouldCheckUsages(@Nonnull PsiMember member)
 			{
 				return deadCodeInspection == null || !deadCodeInspection.isEntryPoint(member);
 			}

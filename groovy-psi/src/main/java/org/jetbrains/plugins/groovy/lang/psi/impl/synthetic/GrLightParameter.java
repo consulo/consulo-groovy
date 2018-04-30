@@ -15,14 +15,14 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.synthetic;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiEllipsisType;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiType;
 import com.intellij.psi.impl.light.LightVariableBuilder;
 import com.intellij.util.IncorrectOperationException;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.GroovyLanguage;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.GrModifierList;
@@ -43,7 +43,7 @@ public class GrLightParameter extends LightVariableBuilder<GrLightParameter> imp
   private final GrTypeElement myTypeElement;
   private final PsiType myTypeGroovy;
 
-  public GrLightParameter(@NotNull String name, @Nullable PsiType type, @NotNull PsiElement scope) {
+  public GrLightParameter(@Nonnull String name, @javax.annotation.Nullable PsiType type, @Nonnull PsiElement scope) {
     super(scope.getManager(), name, getTypeNotNull(type, scope), GroovyLanguage.INSTANCE);
     myScope = scope;
     myModifierList = new GrLightModifierList(this);
@@ -55,12 +55,12 @@ public class GrLightParameter extends LightVariableBuilder<GrLightParameter> imp
     myModifierList = modifierList;
   }
 
-  @NotNull
+  @Nonnull
   private static PsiType getTypeNotNull(PsiType type, PsiElement scope) {
     return type != null ? type : TypesUtil.getJavaLangObject(scope);
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public PsiElement getDeclarationScope() {
     return myScope;
@@ -101,19 +101,19 @@ public class GrLightParameter extends LightVariableBuilder<GrLightParameter> imp
     return myOptional;
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   @Override
   public PsiElement getEllipsisDots() {
     return null;
   }
 
   @Override
-  public void setType(@Nullable PsiType type) throws IncorrectOperationException {
+  public void setType(@javax.annotation.Nullable PsiType type) throws IncorrectOperationException {
     throw new IncorrectOperationException();
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public PsiElement getNameIdentifierGroovy() {
     return null;
   }
@@ -142,7 +142,7 @@ public class GrLightParameter extends LightVariableBuilder<GrLightParameter> imp
     return getDeclarationScope().isValid();
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public GrModifierList getModifierList() {
     return myModifierList;

@@ -17,7 +17,8 @@ package org.jetbrains.plugins.groovy.lang.psi.expectedTypes;
 
 import static org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil.createType;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil;
 import com.intellij.psi.PsiClassType;
 import com.intellij.psi.PsiElement;
@@ -29,21 +30,21 @@ import com.intellij.psi.PsiType;
 public  class SubtypeConstraint extends TypeConstraint {
   private final PsiType myDefaultType;
 
-  protected SubtypeConstraint(@NotNull PsiType type, @NotNull PsiType defaultType) {
+  protected SubtypeConstraint(@Nonnull PsiType type, @Nonnull PsiType defaultType) {
     super(type);
     myDefaultType = defaultType;
   }
 
-  public boolean satisfied(PsiType type, @NotNull PsiElement context){
+  public boolean satisfied(PsiType type, @Nonnull PsiElement context){
     return TypesUtil.isAssignableByMethodCallConversion(getType(), type, context);
   }
 
-  @NotNull
+  @Nonnull
   public PsiType getDefaultType() {
     return myDefaultType;
   }
 
-  public static SubtypeConstraint create(@NotNull PsiType type) {
+  public static SubtypeConstraint create(@Nonnull PsiType type) {
     return new SubtypeConstraint(type, type);
   }
 

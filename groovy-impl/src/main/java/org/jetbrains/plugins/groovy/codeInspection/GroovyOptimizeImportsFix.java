@@ -15,7 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.editor.GroovyImportOptimizer;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.api.toplevel.imports.GrImportStatement;
@@ -57,21 +58,21 @@ public class GroovyOptimizeImportsFix implements IntentionAction
 	}
 
 	@Override
-	public void invoke(@NotNull Project project, Editor editor, PsiFile file) throws IncorrectOperationException
+	public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException
 	{
 		final Runnable optimize = new GroovyImportOptimizer().processFile(file);
 		GroovyOptimizeImportsFix.invokeOnTheFlyImportOptimizer(optimize, file, editor);
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public String getText()
 	{
 		return GroovyInspectionBundle.message("optimize.all.imports");
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public String getFamilyName()
 	{
 		return GroovyInspectionBundle.message("optimize.imports");
@@ -84,7 +85,7 @@ public class GroovyOptimizeImportsFix implements IntentionAction
 	}
 
 	@Override
-	public boolean isAvailable(@NotNull Project project, Editor editor, PsiFile file)
+	public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file)
 	{
 		return file instanceof GroovyFile && (!onTheFly || timeToOptimizeImports((GroovyFile) file, editor));
 	}
@@ -161,9 +162,9 @@ public class GroovyOptimizeImportsFix implements IntentionAction
 		});
 	}
 
-	public static void invokeOnTheFlyImportOptimizer(@NotNull final Runnable runnable,
-			@NotNull final PsiFile file,
-			@NotNull final Editor editor)
+	public static void invokeOnTheFlyImportOptimizer(@Nonnull final Runnable runnable,
+			@Nonnull final PsiFile file,
+			@Nonnull final Editor editor)
 	{
 		final long stamp = editor.getDocument().getModificationStamp();
 		ApplicationManager.getApplication().invokeLater(new Runnable()

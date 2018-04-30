@@ -18,9 +18,11 @@ package org.jetbrains.plugins.groovy.lang.groovydoc.psi.impl;
 
 import java.util.List;
 
+import javax.annotation.Nonnull;
+
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.groovydoc.lexer.GroovyDocTokenTypes;
 import org.jetbrains.plugins.groovy.lang.groovydoc.parser.GroovyDocElementTypes;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocComment;
@@ -45,7 +47,7 @@ public class GrDocTagImpl extends GroovyDocPsiElementImpl implements GrDocTag
 			GroovyDocElementTypes.GDOC_PARAM_REF, GroovyDocElementTypes.GDOC_REFERENCE_ELEMENT,
 			GroovyDocTokenTypes.mGDOC_COMMENT_DATA, GroovyDocElementTypes.GDOC_INLINED_TAG);
 
-	public GrDocTagImpl(@NotNull ASTNode node)
+	public GrDocTagImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
@@ -62,14 +64,14 @@ public class GrDocTagImpl extends GroovyDocPsiElementImpl implements GrDocTag
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public String getName()
 	{
 		return getNameElement().getText().substring(1);
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public PsiElement getNameElement()
 	{
 		PsiElement element = findChildByType(GroovyDocTokenTypes.mGDOC_TAG_NAME);
@@ -85,7 +87,7 @@ public class GrDocTagImpl extends GroovyDocPsiElementImpl implements GrDocTag
 	}
 
 	@Override
-	@Nullable
+	@javax.annotation.Nullable
 	public GrDocTagValueToken getValueElement()
 	{
 		return findChildByClass(GrDocTagValueToken.class);
@@ -106,7 +108,7 @@ public class GrDocTagImpl extends GroovyDocPsiElementImpl implements GrDocTag
 	}
 
 	@Override
-	public PsiElement setName(@NonNls @NotNull String name) throws IncorrectOperationException
+	public PsiElement setName(@NonNls @Nonnull String name) throws IncorrectOperationException
 	{
 		final PsiElement nameElement = getNameElement();
 		final GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(getProject());

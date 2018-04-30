@@ -17,8 +17,8 @@ package org.jetbrains.plugins.groovy.codeInspection.resources;
 
 import java.util.HashSet;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.codeInspection.GroovyInspectionBundle;
@@ -44,7 +44,7 @@ import consulo.compiler.impl.resourceCompiler.ResourceCompilerConfiguration;
  * @author Max Medvedev
  */
 public class TypeCustomizerInspection extends BaseInspection {
-  @NotNull
+  @Nonnull
   @Override
   protected BaseInspectionVisitor buildVisitor() {
     return new BaseInspectionVisitor() {
@@ -68,7 +68,7 @@ public class TypeCustomizerInspection extends BaseInspection {
                 "incompatibleAssignment");
 
 
-  public static boolean fileSeemsToBeTypeCustomizer(@NotNull final PsiFile file) {
+  public static boolean fileSeemsToBeTypeCustomizer(@Nonnull final PsiFile file) {
     if (file instanceof GroovyFile && ((GroovyFile)file).isScript()) {
       for (GrStatement statement : ((GroovyFile)file).getStatements()) {
         if (statement instanceof GrMethodCall) {
@@ -84,7 +84,7 @@ public class TypeCustomizerInspection extends BaseInspection {
 
     return false;
   }
-  private static boolean isCustomizerEvent(@Nullable String name) {
+  private static boolean isCustomizerEvent(@javax.annotation.Nullable String name) {
     return CUSTOMIZER_EVENT_NAMES.contains(name);
   }
 
@@ -95,20 +95,20 @@ public class TypeCustomizerInspection extends BaseInspection {
       myFile = file;
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public String getName() {
       return GroovyInspectionBundle.message("add.to.resources");
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public String getFamilyName() {
       return GroovyInspectionBundle.message("add.type.customizer.to.resources");
     }
 
     @Override
-    public void applyFix(@NotNull Project project, @NotNull ProblemDescriptor descriptor) {
+    public void applyFix(@Nonnull Project project, @Nonnull ProblemDescriptor descriptor) {
       final VirtualFile virtualFile = myFile.getVirtualFile();
       if (virtualFile == null) return;
 

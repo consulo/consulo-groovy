@@ -15,6 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.annotator.intentions;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.codeInsight.CodeInsightUtilBase;
 import com.intellij.codeInsight.intention.IntentionAction;
 import com.intellij.codeInsight.template.Template;
@@ -30,8 +32,8 @@ import com.intellij.psi.*;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.util.ArrayUtil;
 import com.intellij.util.IncorrectOperationException;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
@@ -55,17 +57,17 @@ public class CreateLocalVariableFromUsageFix implements IntentionAction {
     myOwner = owner;
   }
 
-  @NotNull
+  @Nonnull
   public String getText() {
     return GroovyBundle.message("create.variable.from.usage", myRefExpression.getReferenceName());
   }
 
-  @NotNull
+  @Nonnull
   public String getFamilyName() {
     return GroovyBundle.message("create.from.usage.family.name");
   }
 
-  public boolean isAvailable(@NotNull Project project, Editor editor, PsiFile file) {
+  public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file) {
     return myOwner.isValid() && myRefExpression.isValid();
   }
 
@@ -80,7 +82,7 @@ public class CreateLocalVariableFromUsageFix implements IntentionAction {
     return FileEditorManager.getInstance(project).openTextEditor(descriptor, true);
   }
 
-  public void invoke(@NotNull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
+  public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
     PsiClassType type = JavaPsiFacade.getInstance(project).getElementFactory().createTypeByFQClassName("Object", GlobalSearchScope.allScope(project));
     GrVariableDeclaration decl = GroovyPsiElementFactory.getInstance(project).createVariableDeclaration(ArrayUtil.EMPTY_STRING_ARRAY, "", type, myRefExpression.getReferenceName());
     int offset = myRefExpression.getTextRange().getStartOffset();
@@ -109,7 +111,7 @@ public class CreateLocalVariableFromUsageFix implements IntentionAction {
     manager.startTemplate(newEditor, template);
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   private GrStatement findAnchor(PsiFile file, int offset) {
     PsiElement element = file.findElementAt(offset);
     if (element == null && offset > 0) element = file.findElementAt(offset - 1);

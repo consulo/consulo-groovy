@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.literals;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import com.intellij.psi.PsiLanguageInjectionHost;
 import com.intellij.psi.PsiLiteral;
@@ -24,5 +24,5 @@ import com.intellij.psi.PsiLiteral;
  * @author Max Medvedev
  */
 public interface GrLiteralContainer extends GroovyPsiElement, PsiLiteral, PsiLanguageInjectionHost {
-  GrLiteralContainer updateText(@NotNull String text);
+  GrLiteralContainer updateText(@Nonnull String text);
 }

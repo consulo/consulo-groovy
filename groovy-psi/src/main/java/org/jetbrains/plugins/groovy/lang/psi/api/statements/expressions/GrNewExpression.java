@@ -16,7 +16,7 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions;
 
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.path.GrCallExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrAnonymousClassDefinition;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
@@ -33,17 +33,17 @@ public interface GrNewExpression extends GrCallExpression, GrConstructorCall {
   @Nullable
   GrCodeReferenceElement getReferenceElement();
 
-  @Nullable
+  @javax.annotation.Nullable
   GrTypeElement getTypeElement();
 
   int getArrayCount();
 
-  @Nullable
+  @javax.annotation.Nullable
   GrAnonymousClassDefinition getAnonymousClassDefinition();
 
-  @Nullable
+  @javax.annotation.Nullable
   GrArrayDeclaration getArrayDeclaration();
 
-  @Nullable
+  @javax.annotation.Nullable
   GrTypeArgumentList getConstructorTypeArguments();
 }

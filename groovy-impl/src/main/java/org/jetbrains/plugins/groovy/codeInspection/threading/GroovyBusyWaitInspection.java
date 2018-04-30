@@ -18,7 +18,7 @@ package org.jetbrains.plugins.groovy.codeInspection.threading;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiMethod;
 import org.jetbrains.annotations.Nls;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.codeInspection.utils.ControlFlowUtils;
@@ -29,17 +29,17 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.path.GrM
 public class GroovyBusyWaitInspection extends BaseInspection {
 
   @Nls
-  @NotNull
+  @Nonnull
   public String getGroupDisplayName() {
     return THREADING_ISSUES;
   }
 
-  @NotNull
+  @Nonnull
   public String getDisplayName() {
     return "Busy wait";
   }
 
-  @NotNull
+  @Nonnull
   protected String buildErrorString(Object... infos) {
     return "Call to <code>Thread.#ref()</code> in a loop, probably busy-waiting #loc";
   }
@@ -51,7 +51,7 @@ public class GroovyBusyWaitInspection extends BaseInspection {
   private static class BusyWaitVisitor extends BaseInspectionVisitor {
 
     public void visitMethodCallExpression(
-        @NotNull GrMethodCallExpression grMethodCallExpression) {
+        @Nonnull GrMethodCallExpression grMethodCallExpression) {
       super.visitMethodCallExpression(grMethodCallExpression);
 
       final GrExpression methodExpression = grMethodCallExpression.getInvokedExpression();

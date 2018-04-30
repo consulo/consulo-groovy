@@ -16,7 +16,8 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrArgumentList;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrNamedArgument;
@@ -32,7 +33,7 @@ import com.intellij.util.IncorrectOperationException;
  * @author ven
  */
 public abstract class GrCallImpl extends GroovyPsiElementImpl implements GrCall {
-  public GrCallImpl(@NotNull ASTNode node) {
+  public GrCallImpl(@Nonnull ASTNode node) {
     super(node);
   }
 
@@ -45,14 +46,14 @@ public abstract class GrCallImpl extends GroovyPsiElementImpl implements GrCall 
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public GrNamedArgument[] getNamedArguments() {
     GrArgumentList argList = getArgumentList();
     return argList != null ? argList.getNamedArguments() : GrNamedArgument.EMPTY_ARRAY;
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public GrExpression[] getExpressionArguments() {
     GrArgumentList argList = getArgumentList();
     return argList != null ? argList.getExpressionArguments() : GrExpression.EMPTY_ARRAY;
@@ -70,7 +71,7 @@ public abstract class GrCallImpl extends GroovyPsiElementImpl implements GrCall 
     return list.addNamedArgument(namedArgument);
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public GrClosableBlock[] getClosureArguments() {
     return GrClosableBlock.EMPTY_ARRAY;

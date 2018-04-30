@@ -20,7 +20,7 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.LiteralTextEscaper;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiLanguageInjectionHost;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.literals.GrRegex;
@@ -33,7 +33,7 @@ import java.util.List;
  */
 public class GrRegexImpl extends GrStringImpl implements GrRegex {
 
-  public GrRegexImpl(@NotNull ASTNode node) {
+  public GrRegexImpl(@Nonnull ASTNode node) {
     super(node);
   }
 
@@ -83,7 +83,7 @@ public class GrRegexImpl extends GrStringImpl implements GrRegex {
     return result;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public LiteralTextEscaper<? extends PsiLanguageInjectionHost> createLiteralTextEscaper() {
     return new GrLiteralEscaper(this);

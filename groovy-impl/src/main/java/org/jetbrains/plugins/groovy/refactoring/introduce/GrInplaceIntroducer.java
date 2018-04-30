@@ -20,8 +20,8 @@ import com.intellij.openapi.editor.RangeMarker;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.refactoring.introduce.inplace.InplaceVariableIntroducer;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
 
 import java.util.LinkedHashSet;
@@ -31,17 +31,17 @@ import java.util.List;
  * @author Max Medvedev
  */
 public abstract class GrInplaceIntroducer extends InplaceVariableIntroducer<PsiElement> {
-  public GrInplaceIntroducer(@NotNull GrVariable elementToRename,
-                             @NotNull Editor editor,
-                             @NotNull Project project,
-                             @NotNull String title,
-                             @NotNull List<RangeMarker> occurrences,
+  public GrInplaceIntroducer(@Nonnull GrVariable elementToRename,
+                             @Nonnull Editor editor,
+                             @Nonnull Project project,
+                             @Nonnull String title,
+                             @Nonnull List<RangeMarker> occurrences,
                              @Nullable PsiElement elementToIntroduce) {
     super(elementToRename, editor, project, title, PsiElement.EMPTY_ARRAY, elementToIntroduce);
     setOccurrenceMarkers(occurrences);
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   @Override
   protected PsiElement getNameIdentifier() {
     return getVariable().getNameIdentifierGroovy();

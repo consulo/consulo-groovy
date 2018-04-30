@@ -15,8 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.annotator.checkers;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotation;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
 import com.intellij.lang.ASTNode;
@@ -37,15 +37,15 @@ class AliasedAnnotationHolder implements AnnotationHolder
 	private final GrAnnotation myAlias;
 	private final GrCodeReferenceElement myReference;
 
-	public AliasedAnnotationHolder(@NotNull AnnotationHolder holder, @NotNull GrAnnotation alias)
+	public AliasedAnnotationHolder(@Nonnull AnnotationHolder holder, @Nonnull GrAnnotation alias)
 	{
 		myHolder = holder;
 		myAlias = alias;
 		myReference = myAlias.getClassReference();
 	}
 
-	@NotNull
-	private PsiElement findCodeElement(@NotNull PsiElement elt)
+	@Nonnull
+	private PsiElement findCodeElement(@Nonnull PsiElement elt)
 	{
 		if(PsiTreeUtil.isAncestor(myAlias, elt, true))
 		{
@@ -58,81 +58,81 @@ class AliasedAnnotationHolder implements AnnotationHolder
 	}
 
 	@Override
-	public Annotation createErrorAnnotation(@NotNull PsiElement elt, @Nullable String message)
+	public Annotation createErrorAnnotation(@Nonnull PsiElement elt, @Nullable String message)
 	{
 		PsiElement codeElement = findCodeElement(elt);
 		return myHolder.createErrorAnnotation(codeElement, message);
 	}
 
 	@Override
-	public Annotation createErrorAnnotation(@NotNull ASTNode node, @Nullable String message)
+	public Annotation createErrorAnnotation(@Nonnull ASTNode node, @Nullable String message)
 	{
 		return createErrorAnnotation(node.getPsi(), message);
 	}
 
 	@Override
-	public Annotation createErrorAnnotation(@NotNull TextRange range, @Nullable String message)
+	public Annotation createErrorAnnotation(@Nonnull TextRange range, @javax.annotation.Nullable String message)
 	{
 		throw new UnsupportedOperationException("unsupported");
 	}
 
 	@Override
-	public Annotation createWarningAnnotation(@NotNull PsiElement elt, @Nullable String message)
+	public Annotation createWarningAnnotation(@Nonnull PsiElement elt, @Nullable String message)
 	{
 		return myHolder.createWarningAnnotation(findCodeElement(elt), message);
 	}
 
 	@Override
-	public Annotation createWarningAnnotation(@NotNull ASTNode node, @Nullable String message)
+	public Annotation createWarningAnnotation(@Nonnull ASTNode node, @javax.annotation.Nullable String message)
 	{
 		return myHolder.createWarningAnnotation(node.getPsi(), message);
 	}
 
 	@Override
-	public Annotation createWarningAnnotation(@NotNull TextRange range, @Nullable String message)
+	public Annotation createWarningAnnotation(@Nonnull TextRange range, @Nullable String message)
 	{
 		throw new UnsupportedOperationException("unsupported");
 	}
 
 	@Override
-	public Annotation createWeakWarningAnnotation(@NotNull PsiElement elt, @Nullable String message)
+	public Annotation createWeakWarningAnnotation(@Nonnull PsiElement elt, @javax.annotation.Nullable String message)
 	{
 		return myHolder.createWeakWarningAnnotation(findCodeElement(elt), message);
 	}
 
 	@Override
-	public Annotation createWeakWarningAnnotation(@NotNull ASTNode node, @Nullable String message)
+	public Annotation createWeakWarningAnnotation(@Nonnull ASTNode node, @Nullable String message)
 	{
 		return myHolder.createWarningAnnotation(node.getPsi(), message);
 	}
 
 	@Override
-	public Annotation createWeakWarningAnnotation(@NotNull TextRange range, @Nullable String message)
+	public Annotation createWeakWarningAnnotation(@Nonnull TextRange range, @Nullable String message)
 	{
 		throw new UnsupportedOperationException("unsupported");
 	}
 
 	@Override
-	public Annotation createInfoAnnotation(@NotNull PsiElement elt, @Nullable String message)
+	public Annotation createInfoAnnotation(@Nonnull PsiElement elt, @Nullable String message)
 	{
 		return myHolder.createInfoAnnotation(findCodeElement(elt), message);
 	}
 
 	@Override
-	public Annotation createInfoAnnotation(@NotNull ASTNode node, @Nullable String message)
+	public Annotation createInfoAnnotation(@Nonnull ASTNode node, @Nullable String message)
 	{
 		return myHolder.createInfoAnnotation(node.getPsi(), message);
 	}
 
 	@Override
-	public Annotation createInfoAnnotation(@NotNull TextRange range, @Nullable String message)
+	public Annotation createInfoAnnotation(@Nonnull TextRange range, @javax.annotation.Nullable String message)
 	{
 		throw new UnsupportedOperationException("unsupported");
 	}
 
 	@Override
-	public Annotation createAnnotation(@NotNull HighlightSeverity severity,
-			@NotNull TextRange range,
+	public Annotation createAnnotation(@Nonnull HighlightSeverity severity,
+			@Nonnull TextRange range,
 			@Nullable String message)
 	{
 		throw new UnsupportedOperationException("unsupported");
@@ -147,7 +147,7 @@ class AliasedAnnotationHolder implements AnnotationHolder
 		throw new UnsupportedOperationException("unsupported");
 	}  */
 
-	@NotNull
+	@Nonnull
 	@Override
 	public AnnotationSession getCurrentAnnotationSession()
 	{

@@ -15,9 +15,9 @@
  */
 package org.jetbrains.plugins.groovy.runner;
 
+import javax.annotation.Nonnull;
 import javax.swing.Icon;
 
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.extensions.GroovyRunnableScriptType;
 import org.jetbrains.plugins.groovy.extensions.GroovyScriptType;
 import org.jetbrains.plugins.groovy.extensions.GroovyScriptTypeDetector;
@@ -35,7 +35,7 @@ public class GroovyScriptUtil
 			return true;
 		}
 
-		@NotNull
+		@Nonnull
 		@Override
 		public Icon getScriptIcon()
 		{
@@ -49,7 +49,7 @@ public class GroovyScriptUtil
 		}
 	};
 
-	public static boolean isSpecificScriptFile(@NotNull PsiFile file, GroovyScriptType scriptType)
+	public static boolean isSpecificScriptFile(@Nonnull PsiFile file, GroovyScriptType scriptType)
 	{
 		if(!(file instanceof GroovyFile))
 		{
@@ -62,7 +62,7 @@ public class GroovyScriptUtil
 		return isSpecificScriptFile((GroovyFile) file, scriptType);
 	}
 
-	public static boolean isSpecificScriptFile(@NotNull GroovyFile script, GroovyScriptType scriptType)
+	public static boolean isSpecificScriptFile(@Nonnull GroovyFile script, GroovyScriptType scriptType)
 	{
 		assert script.isScript();
 		if(scriptType == DEFAULT_TYPE)
@@ -84,8 +84,8 @@ public class GroovyScriptUtil
 		return false;
 	}
 
-	@NotNull
-	public static GroovyRunnableScriptType getScriptType(@NotNull GroovyFile script)
+	@Nonnull
+	public static GroovyRunnableScriptType getScriptType(@Nonnull GroovyFile script)
 	{
 		for(GroovyScriptTypeDetector detector : GroovyScriptTypeDetector.EP_NAME.getExtensions())
 		{

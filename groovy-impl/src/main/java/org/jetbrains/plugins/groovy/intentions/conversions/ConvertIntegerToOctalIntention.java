@@ -18,7 +18,7 @@ package org.jetbrains.plugins.groovy.intentions.conversions;
 import java.math.BigInteger;
 
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.intentions.base.PsiElementPredicate;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.literals.GrLiteral;
@@ -32,13 +32,13 @@ public class ConvertIntegerToOctalIntention extends Intention
 {
 
 
-	@NotNull
+	@Nonnull
 	public PsiElementPredicate getElementPredicate()
 	{
 		return new ConvertIntegerToOctalPredicate();
 	}
 
-	public void processIntention(@NotNull PsiElement element,
+	public void processIntention(@Nonnull PsiElement element,
 			Project project,
 			Editor editor) throws IncorrectOperationException
 	{

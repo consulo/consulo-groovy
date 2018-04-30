@@ -24,8 +24,8 @@ import com.intellij.psi.PsiMember;
 import com.intellij.refactoring.HelpID;
 import com.intellij.refactoring.util.CommonRefactoringUtil;
 import com.intellij.usageView.UsageViewUtil;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GrClassSubstitution;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
@@ -40,7 +40,7 @@ import org.jetbrains.plugins.groovy.refactoring.GroovyRefactoringBundle;
 public class GroovyInlineHandler implements InlineHandler {
 
   @Nullable
-  public Settings prepareInlineElement(@NotNull final PsiElement element, @Nullable Editor editor, boolean invokedOnReference) {
+  public Settings prepareInlineElement(@Nonnull final PsiElement element, @Nullable Editor editor, boolean invokedOnReference) {
     if (element instanceof GrField) {
       return GrInlineFieldUtil.inlineFieldSettings((GrField)element, editor, invokedOnReference);
     }

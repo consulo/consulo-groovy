@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.intentions.conversions;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.actions.GroovyTemplates;
 import org.jetbrains.plugins.groovy.actions.GroovyTemplatesFactory;
 import org.jetbrains.plugins.groovy.intentions.GroovyIntentionsBundle;
@@ -42,7 +42,7 @@ import com.intellij.util.IncorrectOperationException;
 public class MoveClassToNewFileIntention extends Intention
 {
 	@Override
-	protected void processIntention(@NotNull PsiElement element,
+	protected void processIntention(@Nonnull PsiElement element,
 			Project project,
 			Editor editor) throws IncorrectOperationException
 	{
@@ -91,7 +91,7 @@ public class MoveClassToNewFileIntention extends Intention
 	}
 
 
-	@NotNull
+	@Nonnull
 	@Override
 	protected PsiElementPredicate getElementPredicate()
 	{

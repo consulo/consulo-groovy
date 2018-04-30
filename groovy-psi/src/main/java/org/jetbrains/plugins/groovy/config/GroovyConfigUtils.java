@@ -20,9 +20,11 @@ import java.io.File;
 import java.util.Collection;
 import java.util.regex.Pattern;
 
+import javax.annotation.Nonnull;
+
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.util.GroovyUtils;
 import org.jetbrains.plugins.groovy.util.LibrariesUtil;
@@ -86,19 +88,19 @@ public abstract class GroovyConfigUtils extends AbstractConfigUtils
 		return myGroovyConfigUtils;
 	}
 
-	@NotNull
-	public static File[] getGroovyAllJars(@NotNull String path)
+	@Nonnull
+	public static File[] getGroovyAllJars(@Nonnull String path)
 	{
 		return GroovyUtils.getFilesInDirectoryByPattern(path, GROOVY_ALL_JAR_PATTERN);
 	}
 
-	public static boolean matchesGroovyAll(@NotNull String name)
+	public static boolean matchesGroovyAll(@Nonnull String name)
 	{
 		return GROOVY_ALL_JAR_PATTERN.matcher(name).matches() && !name.contains("src") && !name.contains("doc");
 	}
 
-	@NotNull
-	public String getSDKVersion(@NotNull final String path)
+	@Nonnull
+	public String getSDKVersion(@Nonnull final String path)
 	{
 		String groovyJarVersion = getSDKJarVersion(path + "/lib", GROOVY_JAR_PATTERN, MANIFEST_PATH);
 		if(groovyJarVersion == null)
@@ -130,7 +132,7 @@ public abstract class GroovyConfigUtils extends AbstractConfigUtils
 	}
 
 	@Nullable
-	public String getSDKVersion(@NotNull final Module module)
+	public String getSDKVersion(@Nonnull final Module module)
 	{
 		return CachedValuesManager.getManager(module.getProject()).getCachedValue(module,
 				new CachedValueProvider<String>()
@@ -168,7 +170,7 @@ public abstract class GroovyConfigUtils extends AbstractConfigUtils
 		return sdkVersion.compareTo(version) >= 0;
 	}
 
-	@NotNull
+	@Nonnull
 	public String getSDKVersion(PsiElement psiElement)
 	{
 		final Module module = ModuleUtilCore.findModuleForPsiElement(psiElement);
@@ -230,7 +232,7 @@ public abstract class GroovyConfigUtils extends AbstractConfigUtils
 		return false;
 	}
 
-	@NotNull
+	@Nonnull
 	public String getSDKLibVersion(Library library)
 	{
 		return getSDKVersion(LibrariesUtil.getGroovyLibraryHome(library));

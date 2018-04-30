@@ -7,8 +7,8 @@ import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.openapi.extensions.ExtensionPointName;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiType;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 
 import java.util.Collection;
@@ -20,7 +20,7 @@ public abstract class GroovyMapContentProvider {
 
   public static final ExtensionPointName<GroovyMapContentProvider> EP_NAME = ExtensionPointName.create("org.intellij.groovy.mapContentProvider");
 
-  public void addKeyVariants(@NotNull GrExpression qualifier, @Nullable PsiElement resolve, @NotNull CompletionResultSet result) {
+  public void addKeyVariants(@Nonnull GrExpression qualifier, @javax.annotation.Nullable PsiElement resolve, @Nonnull CompletionResultSet result) {
     for (String key : getKeyVariants(qualifier, resolve)) {
       LookupElement lookup = LookupElementBuilder.create(key);
       lookup = PrioritizedLookupElement.withPriority(lookup, 1);
@@ -28,12 +28,12 @@ public abstract class GroovyMapContentProvider {
     }
   }
 
-  protected Collection<String> getKeyVariants(@NotNull GrExpression qualifier, @Nullable PsiElement resolve) {
+  protected Collection<String> getKeyVariants(@Nonnull GrExpression qualifier, @javax.annotation.Nullable PsiElement resolve) {
     throw new UnsupportedOperationException();
   }
 
-  @Nullable
-  public PsiType getValueType(@NotNull GrExpression qualifier, @Nullable PsiElement resolve, @NotNull String key) {
+  @javax.annotation.Nullable
+  public PsiType getValueType(@Nonnull GrExpression qualifier, @javax.annotation.Nullable PsiElement resolve, @Nonnull String key) {
     return null;
   }
 

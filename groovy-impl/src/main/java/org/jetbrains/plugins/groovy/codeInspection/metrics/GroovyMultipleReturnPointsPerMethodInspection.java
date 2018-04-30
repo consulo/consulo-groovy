@@ -17,7 +17,7 @@ package org.jetbrains.plugins.groovy.codeInspection.metrics;
 
 import com.intellij.psi.PsiType;
 import org.jetbrains.annotations.Nls;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.codeInspection.utils.ControlFlowUtils;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
@@ -27,12 +27,12 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMe
 public class GroovyMultipleReturnPointsPerMethodInspection
     extends GroovyMethodMetricInspection {
   @Nls
-  @NotNull
+  @Nonnull
   public String getGroupDisplayName() {
     return METHOD_METRICS;
   }
 
-  @NotNull
+  @Nonnull
   public String getDisplayName() {
     return "Method with multiple return points";
   }
@@ -45,7 +45,7 @@ public class GroovyMultipleReturnPointsPerMethodInspection
     return "Return point limit:";
   }
 
-  @NotNull
+  @Nonnull
   public String buildErrorString(Object... infos) {
     final Integer returnPointCount = (Integer) infos[0];
     return "<code>#ref</code> has " + returnPointCount + " return points #loc";
@@ -58,7 +58,7 @@ public class GroovyMultipleReturnPointsPerMethodInspection
 
   private class MultipleReturnPointsVisitor extends BaseInspectionVisitor {
 
-    public void visitMethod(@NotNull GrMethod method) {
+    public void visitMethod(@Nonnull GrMethod method) {
       // note: no call to super
       if (method.getNameIdentifier() == null) {
         return;

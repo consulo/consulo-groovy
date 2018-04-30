@@ -16,7 +16,8 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeElement;
 import com.intellij.psi.PsiElement;
 
@@ -28,9 +29,9 @@ public interface GrTypeCastExpression extends GrExpression {
 
   GrExpression getOperand();
 
-  @NotNull
+  @Nonnull
   PsiElement getLeftParen();
 
-  @NotNull
+  @Nonnull
   PsiElement getRightParen();
 }

@@ -16,10 +16,11 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.stubs.StubElement;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
 import org.jetbrains.plugins.groovy.lang.resolve.ResolveUtil;
@@ -30,7 +31,7 @@ import org.jetbrains.plugins.groovy.lang.resolve.ResolveUtil;
  */
 public class GrVariableImpl extends GrVariableBaseImpl<StubElement> implements GrVariable {
 
-  public GrVariableImpl(@NotNull ASTNode node) {
+  public GrVariableImpl(@Nonnull ASTNode node) {
     super(node);
   }
 

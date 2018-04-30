@@ -17,8 +17,8 @@ package org.jetbrains.plugins.groovy.refactoring.introduce;
 
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
@@ -195,7 +195,7 @@ public abstract class GrAbstractInplaceIntroducer<Settings extends GrIntroduceSe
 		revalidate();
 	}
 
-	@Nullable
+	@javax.annotation.Nullable
 	@Override
 	protected PsiElement getNameIdentifier()
 	{
@@ -229,7 +229,7 @@ public abstract class GrAbstractInplaceIntroducer<Settings extends GrIntroduceSe
 		runRefactoring(new IntroduceContextAdapter(), getSettings(), true);
 	}
 
-	@NotNull
+	@Nonnull
 	protected PsiElement[] restoreOccurrences()
 	{
 		List<PsiElement> result = ContainerUtil.map(getOccurrenceMarkers(), new Function<RangeMarker, PsiElement>()
@@ -285,8 +285,8 @@ public abstract class GrAbstractInplaceIntroducer<Settings extends GrIntroduceSe
 	protected abstract GrVariable runRefactoring(GrIntroduceContext context, Settings settings, boolean processUsages);
 
 	@Nullable
-	protected abstract Settings getInitialSettingsForInplace(@NotNull GrIntroduceContext context,
-			@NotNull OccurrencesChooser.ReplaceChoice choice,
+	protected abstract Settings getInitialSettingsForInplace(@Nonnull GrIntroduceContext context,
+			@Nonnull OccurrencesChooser.ReplaceChoice choice,
 			String[] names);
 
 	@Override
@@ -298,7 +298,7 @@ public abstract class GrAbstractInplaceIntroducer<Settings extends GrIntroduceSe
 	protected abstract Settings getSettings();
 
 	@Override
-	protected void restoreState(@NotNull GrVariable psiField)
+	protected void restoreState(@Nonnull GrVariable psiField)
 	{
 		PsiType declaredType = psiField.getDeclaredType();
 		myTypePointer = declaredType != null ? SmartTypePointerManager.getInstance(myProject).createSmartTypePointer
@@ -314,7 +314,7 @@ public abstract class GrAbstractInplaceIntroducer<Settings extends GrIntroduceSe
 
 	private class IntroduceContextAdapter implements GrIntroduceContext
 	{
-		@NotNull
+		@Nonnull
 		@Override
 		public Project getProject()
 		{
@@ -327,7 +327,7 @@ public abstract class GrAbstractInplaceIntroducer<Settings extends GrIntroduceSe
 			return myEditor;
 		}
 
-		@Nullable
+		@javax.annotation.Nullable
 		@Override
 		public GrExpression getExpression()
 		{
@@ -348,7 +348,7 @@ public abstract class GrAbstractInplaceIntroducer<Settings extends GrIntroduceSe
 			return null;
 		}
 
-		@NotNull
+		@Nonnull
 		@Override
 		public PsiElement[] getOccurrences()
 		{
@@ -361,7 +361,7 @@ public abstract class GrAbstractInplaceIntroducer<Settings extends GrIntroduceSe
 			return myScope;
 		}
 
-		@NotNull
+		@Nonnull
 		@Override
 		public PsiElement getPlace()
 		{

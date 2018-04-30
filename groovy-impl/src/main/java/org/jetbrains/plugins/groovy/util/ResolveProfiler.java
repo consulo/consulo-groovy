@@ -16,7 +16,7 @@
 package org.jetbrains.plugins.groovy.util;
 
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -39,11 +39,11 @@ public class ResolveProfiler {
 
     private String myPrefix = "";
 
-    private ThreadInfo(@NotNull String name) {
+    private ThreadInfo(@Nonnull String name) {
       myFileName = name;
     }
 
-    @NotNull
+    @Nonnull
     public String getName() {
       return myFileName;
     }
@@ -75,7 +75,7 @@ public class ResolveProfiler {
     return getThreadInfo().finish();
   }
 
-  public static void write(@NotNull String s) {
+  public static void write(@Nonnull String s) {
     if (DISABLED) return;
 
     final ThreadInfo threadInfo = getThreadInfo();
@@ -99,7 +99,7 @@ public class ResolveProfiler {
     }
   }
 
-  @NotNull
+  @Nonnull
   private static ThreadInfo getThreadInfo() {
     ThreadInfo info = threadMap.get();
     if (info == null) {

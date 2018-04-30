@@ -15,8 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyPsiElementImpl;
@@ -28,7 +28,7 @@ import com.intellij.psi.PsiType;
  * @author ilyas
  */
 public abstract class GrExpressionImpl extends GroovyPsiElementImpl implements GrExpression {
-  public GrExpressionImpl(@NotNull ASTNode node) {
+  public GrExpressionImpl(@Nonnull ASTNode node) {
     super(node);
   }
 
@@ -44,11 +44,11 @@ public abstract class GrExpressionImpl extends GroovyPsiElementImpl implements G
   }
 
   @Override
-  public GrExpression replaceWithExpression(@NotNull GrExpression newExpr, boolean removeUnnecessaryParentheses) {
+  public GrExpression replaceWithExpression(@Nonnull GrExpression newExpr, boolean removeUnnecessaryParentheses) {
     return PsiImplUtil.replaceExpression(this, newExpr, removeUnnecessaryParentheses);
   }
 
-  public PsiType getTypeByFQName(@NotNull String fqName) {
+  public PsiType getTypeByFQName(@Nonnull String fqName) {
     return TypesUtil.createTypeByFQClassName(fqName, this);
   }
 }

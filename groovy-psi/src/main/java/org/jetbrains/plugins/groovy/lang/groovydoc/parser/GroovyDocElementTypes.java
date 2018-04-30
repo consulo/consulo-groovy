@@ -16,7 +16,8 @@
 
 package org.jetbrains.plugins.groovy.lang.groovydoc.parser;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.lang.groovydoc.lexer.GroovyDocElementType;
 import org.jetbrains.plugins.groovy.lang.groovydoc.lexer.GroovyDocElementTypeImpl;
@@ -44,7 +45,7 @@ public interface GroovyDocElementTypes extends GroovyDocTokenTypes {
    * GroovyDoc comment
    */
   ILazyParseableElementType GROOVY_DOC_COMMENT = new ILazyParseableElementType("GrDocComment") {
-    @NotNull
+    @Nonnull
     public Language getLanguage() {
       return GroovyFileType.GROOVY_LANGUAGE;
     }

@@ -15,19 +15,20 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.signatures;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.psi.PsiMethod;
 import com.intellij.psi.PsiParameter;
 import com.intellij.psi.PsiSubstitutor;
 import com.intellij.psi.PsiType;
 import com.intellij.psi.util.TypeConversionUtil;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrClosureParameter;
 
 /**
  * Created by Max Medvedev on 14/03/14
  */
 public class GrMethodSignatureWithErasedTypes extends GrMethodSignatureImpl {
-  public GrMethodSignatureWithErasedTypes(@NotNull PsiMethod method) {
+  public GrMethodSignatureWithErasedTypes(@Nonnull PsiMethod method) {
     super(method, PsiSubstitutor.EMPTY);
   }
 
@@ -36,9 +37,9 @@ public class GrMethodSignatureWithErasedTypes extends GrMethodSignatureImpl {
     return TypeConversionUtil.erasure(super.getReturnType());
   }
 
-  @NotNull
+  @Nonnull
   @Override
-  protected GrClosureParameter createClosureParameter(@NotNull PsiParameter parameter) {
+  protected GrClosureParameter createClosureParameter(@Nonnull PsiParameter parameter) {
     return new GrClosureParameterWithErasedType(parameter);
   }
 }

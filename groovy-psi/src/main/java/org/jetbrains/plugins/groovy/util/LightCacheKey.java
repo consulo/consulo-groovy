@@ -1,7 +1,7 @@
 package org.jetbrains.plugins.groovy.util;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.util.UserDataHolderEx;
@@ -32,7 +32,7 @@ public class LightCacheKey<T> {
     return holder.getManager().getModificationTracker().getModificationCount();
   }
 
-  public T putCachedValue(PsiElement holder, @NotNull T value) {
+  public T putCachedValue(PsiElement holder, @Nonnull T value) {
     long modificationCount = getModificationCount(holder);
 
     Pair<Long, T> pair = Pair.create(modificationCount, value);

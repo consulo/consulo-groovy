@@ -16,8 +16,8 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.toplevel.imports;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
@@ -61,7 +61,7 @@ public class GrImportStatementImpl extends GrStubElementBase<GrImportStatementSt
 		StubBasedPsiElement<GrImportStatementStub>
 {
 
-	public GrImportStatementImpl(@NotNull ASTNode node)
+	public GrImportStatementImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
@@ -90,10 +90,10 @@ public class GrImportStatementImpl extends GrStubElementBase<GrImportStatementSt
 	}
 
 	@Override
-	public boolean processDeclarations(@NotNull PsiScopeProcessor processor,
-			@NotNull ResolveState state,
+	public boolean processDeclarations(@Nonnull PsiScopeProcessor processor,
+			@Nonnull ResolveState state,
 			@Nullable PsiElement lastParent,
-			@NotNull PsiElement place)
+			@Nonnull PsiElement place)
 	{
 		if(isAncestor(place))
 		{
@@ -136,10 +136,10 @@ public class GrImportStatementImpl extends GrStubElementBase<GrImportStatementSt
 		return false;
 	}
 
-	private boolean processDeclarationsForSingleElement(@NotNull PsiScopeProcessor processor,
+	private boolean processDeclarationsForSingleElement(@Nonnull PsiScopeProcessor processor,
 			@Nullable PsiElement lastParent,
-			@NotNull PsiElement place,
-			@NotNull ResolveState state)
+			@Nonnull PsiElement place,
+			@Nonnull ResolveState state)
 	{
 		String name = getImportedName();
 		if(name == null)
@@ -160,12 +160,12 @@ public class GrImportStatementImpl extends GrStubElementBase<GrImportStatementSt
 		return true;
 	}
 
-	@Nullable
+	@javax.annotation.Nullable
 	private PsiClass resolveQualifier()
 	{
 		return CachedValuesManager.getCachedValue(this, new CachedValueProvider<PsiClass>()
 		{
-			@Nullable
+			@javax.annotation.Nullable
 			@Override
 			public Result<PsiClass> compute()
 			{
@@ -179,11 +179,11 @@ public class GrImportStatementImpl extends GrStubElementBase<GrImportStatementSt
 		});
 	}
 
-	private boolean processSingleStaticImport(@NotNull final PsiScopeProcessor processor,
-			@NotNull ResolveState state,
-			@NotNull String importedName,
+	private boolean processSingleStaticImport(@Nonnull final PsiScopeProcessor processor,
+			@Nonnull ResolveState state,
+			@Nonnull String importedName,
 			@Nullable PsiElement lastParent,
-			@NotNull PsiElement place)
+			@Nonnull PsiElement place)
 	{
 		final GrCodeReferenceElement ref = getImportReference();
 		if(ref == null)
@@ -236,7 +236,7 @@ public class GrImportStatementImpl extends GrStubElementBase<GrImportStatementSt
 		return true;
 	}
 
-	private boolean processSingleClassImport(@NotNull PsiScopeProcessor processor, @NotNull ResolveState state)
+	private boolean processSingleClassImport(@Nonnull PsiScopeProcessor processor, @Nonnull ResolveState state)
 	{
 		if(!ResolveUtil.shouldProcessClasses(processor.getHint(ClassHint.KEY)))
 		{
@@ -264,7 +264,7 @@ public class GrImportStatementImpl extends GrStubElementBase<GrImportStatementSt
 		return processor.execute(resolved, state.put(ClassHint.RESOLVE_CONTEXT, this));
 	}
 
-	private boolean isFromSamePackage(@NotNull PsiClass resolved)
+	private boolean isFromSamePackage(@Nonnull PsiClass resolved)
 	{
 		final String qualifiedName = resolved.getQualifiedName();
 		final String packageName = ((GroovyFile) getContainingFile()).getPackageName();
@@ -272,10 +272,10 @@ public class GrImportStatementImpl extends GrStubElementBase<GrImportStatementSt
 		return !packageName.isEmpty() && assumed.equals(qualifiedName);
 	}
 
-	private boolean processDeclarationsForMultipleElements(@NotNull final PsiScopeProcessor processor,
-			@Nullable PsiElement lastParent,
-			@NotNull PsiElement place,
-			@NotNull ResolveState state)
+	private boolean processDeclarationsForMultipleElements(@Nonnull final PsiScopeProcessor processor,
+			@javax.annotation.Nullable PsiElement lastParent,
+			@Nonnull PsiElement place,
+			@Nonnull ResolveState state)
 	{
 		GrCodeReferenceElement ref = getImportReference();
 		if(ref == null)
@@ -293,7 +293,7 @@ public class GrImportStatementImpl extends GrStubElementBase<GrImportStatementSt
 				if(!clazz.processDeclarations(new DelegatingScopeProcessor(processor)
 				{
 					@Override
-					public boolean execute(@NotNull PsiElement element, @NotNull ResolveState state)
+					public boolean execute(@Nonnull PsiElement element, @Nonnull ResolveState state)
 					{
 						if(element instanceof PsiMember && ((PsiMember) element).hasModifierProperty(PsiModifier.STATIC))
 						{
@@ -349,7 +349,7 @@ public class GrImportStatementImpl extends GrStubElementBase<GrImportStatementSt
 	}
 
 	@Override
-	@Nullable
+	@javax.annotation.Nullable
 	public String getImportedName()
 	{
 		if(isOnDemand())
@@ -421,7 +421,7 @@ public class GrImportStatementImpl extends GrStubElementBase<GrImportStatementSt
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public GrModifierList getAnnotationList()
 	{
 		GrImportStatementStub stub = getStub();
@@ -432,7 +432,7 @@ public class GrImportStatementImpl extends GrStubElementBase<GrImportStatementSt
 		return findNotNullChildByClass(GrModifierList.class);
 	}
 
-	@Nullable
+	@javax.annotation.Nullable
 	@Override
 	public PsiClass resolveTargetClass()
 	{
@@ -455,7 +455,7 @@ public class GrImportStatementImpl extends GrStubElementBase<GrImportStatementSt
 		return resolved instanceof PsiClass ? (PsiClass) resolved : null;
 	}
 
-	@Nullable
+	@javax.annotation.Nullable
 	@Override
 	public PsiElement getAliasNameElement()
 	{
@@ -485,7 +485,7 @@ public class GrImportStatementImpl extends GrStubElementBase<GrImportStatementSt
 		}
 
 		@Override
-		protected boolean isAccessor(@NotNull PsiMethod method)
+		protected boolean isAccessor(@Nonnull PsiMethod method)
 		{
 			return GroovyPropertyUtils.isSimplePropertySetter(method, getPropertyName());
 		}
@@ -500,7 +500,7 @@ public class GrImportStatementImpl extends GrStubElementBase<GrImportStatementSt
 		}
 
 		@Override
-		protected boolean isAccessor(@NotNull PsiMethod method)
+		protected boolean isAccessor(@Nonnull PsiMethod method)
 		{
 			return GroovyPropertyUtils.isSimplePropertyGetter(method, getPropertyName());
 		}
@@ -513,14 +513,14 @@ public class GrImportStatementImpl extends GrStubElementBase<GrImportStatementSt
 	{
 		private final String myPropertyName;
 
-		public StaticAccessorProcessor(@NotNull String propertyName, @NotNull PsiScopeProcessor processor)
+		public StaticAccessorProcessor(@Nonnull String propertyName, @Nonnull PsiScopeProcessor processor)
 		{
 			super(processor, null, RESOLVE_KINDS_METHOD);
 			myPropertyName = propertyName;
 		}
 
 		@Override
-		public boolean execute(@NotNull PsiElement element, @NotNull ResolveState state)
+		public boolean execute(@Nonnull PsiElement element, @Nonnull ResolveState state)
 		{
 			if(element instanceof PsiMethod)
 			{
@@ -534,7 +534,7 @@ public class GrImportStatementImpl extends GrStubElementBase<GrImportStatementSt
 			return true;
 		}
 
-		protected abstract boolean isAccessor(@NotNull PsiMethod method);
+		protected abstract boolean isAccessor(@Nonnull PsiMethod method);
 
 		public String getPropertyName()
 		{
@@ -542,7 +542,7 @@ public class GrImportStatementImpl extends GrStubElementBase<GrImportStatementSt
 		}
 
 		@Override
-		public <T> T getHint(@NotNull Key<T> hintKey)
+		public <T> T getHint(@Nonnull Key<T> hintKey)
 		{
 			if(hintKey == NameHint.KEY)
 			{

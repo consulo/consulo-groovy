@@ -18,7 +18,6 @@ package org.jetbrains.plugins.groovy.lang.psi.api.statements;
 
 import com.intellij.psi.PsiElement;
 import com.intellij.util.IncorrectOperationException;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.formatter.GrControlStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 
@@ -27,25 +26,25 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpres
  */
 public interface GrIfStatement extends GrStatement, GrControlStatement {
 
-    @Nullable
+    @javax.annotation.Nullable
     GrExpression getCondition();
 
-    @Nullable
+    @javax.annotation.Nullable
     GrStatement getThenBranch();
 
-    @Nullable
+    @javax.annotation.Nullable
     GrStatement getElseBranch();
 
     <T extends GrStatement> T replaceThenBranch(T newBranch) throws IncorrectOperationException;
 
     <T extends GrStatement> T replaceElseBranch(T newBranch) throws IncorrectOperationException;
 
-    @Nullable
+    @javax.annotation.Nullable
     PsiElement getElseKeyword();
 
-    @Nullable
+    @javax.annotation.Nullable
     PsiElement getRParenth();
 
-    @Nullable
+    @javax.annotation.Nullable
     PsiElement getLParenth();
 }

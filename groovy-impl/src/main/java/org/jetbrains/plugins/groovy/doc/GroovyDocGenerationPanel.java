@@ -26,7 +26,6 @@ import com.intellij.ui.NonFocusableCheckBox;
 import com.intellij.ui.ScrollPaneFactory;
 import com.intellij.ui.components.JBList;
 import com.intellij.util.ArrayUtil;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.doc.actions.GroovyDocAddPackageAction;
 import org.jetbrains.plugins.groovy.doc.actions.GroovyDocReducePackageAction;
 
@@ -130,7 +129,7 @@ public final class GroovyDocGenerationPanel extends JPanel/* implements Disposab
     myIsPrivate.setSelected(configuration.OPTION_IS_PRIVATE);
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   private static String toSystemIndependentFormat(String directory) {
     if (directory.length() == 0) {
       return null;

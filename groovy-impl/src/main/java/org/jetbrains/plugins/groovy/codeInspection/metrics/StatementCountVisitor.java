@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.metrics;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyRecursiveElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrBlockStatement;
@@ -37,7 +37,7 @@ class StatementCountVisitor extends GroovyRecursiveElementVisitor {
     }
   }
 
-  public void visitStatement(@NotNull GrStatement statement) {
+  public void visitStatement(@Nonnull GrStatement statement) {
     super.visitStatement(statement);
     if (statement instanceof GrBlockStatement) {
       return;

@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.api.statements.clauses;
 
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.GrCondition;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 

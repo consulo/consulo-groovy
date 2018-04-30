@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.lang.completion;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.extensions.GroovyMapCompletionUtil;
 import org.jetbrains.plugins.groovy.extensions.GroovyMapContentProvider;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
@@ -49,9 +49,9 @@ class MapKeysCompletionProvider implements CompletionProvider
   }
 
   @Override
-  public void addCompletions(@NotNull CompletionParameters parameters,
+  public void addCompletions(@Nonnull CompletionParameters parameters,
                                 ProcessingContext context,
-                                @NotNull CompletionResultSet result) {
+                                @Nonnull CompletionResultSet result) {
     PsiElement element = parameters.getPosition();
     GrReferenceExpression expression = (GrReferenceExpression)element.getParent();
 

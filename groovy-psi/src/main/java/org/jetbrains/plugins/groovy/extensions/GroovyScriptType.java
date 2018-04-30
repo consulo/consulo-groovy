@@ -18,9 +18,9 @@ package org.jetbrains.plugins.groovy.extensions;
 import java.util.Collections;
 import java.util.List;
 
+import javax.annotation.Nonnull;
 import javax.swing.Icon;
 
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import com.intellij.psi.search.GlobalSearchScope;
 
@@ -35,19 +35,19 @@ public abstract class GroovyScriptType {
     this.id = id;
   }
 
-  @NotNull
+  @Nonnull
   public String getId() {
     return id;
   }
 
-  @NotNull
+  @Nonnull
   public abstract Icon getScriptIcon();
 
-  public GlobalSearchScope patchResolveScope(@NotNull GroovyFile file, @NotNull GlobalSearchScope baseScope) {
+  public GlobalSearchScope patchResolveScope(@Nonnull GroovyFile file, @Nonnull GlobalSearchScope baseScope) {
     return baseScope;
   }
 
-  public List<String> appendImplicitImports(@NotNull GroovyFile file) {
+  public List<String> appendImplicitImports(@Nonnull GroovyFile file) {
     return Collections.emptyList();
   }
 

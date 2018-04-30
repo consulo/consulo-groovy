@@ -21,8 +21,8 @@ import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.*;
 import com.intellij.psi.util.PsiUtil;
 import com.intellij.util.containers.hash.HashSet;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.codeInspection.noReturnMethod.MissingReturnInspection;
 import org.jetbrains.plugins.groovy.codeInspection.utils.ControlFlowUtils;
 import org.jetbrains.plugins.groovy.lang.lexer.TokenSets;
@@ -79,7 +79,7 @@ public class CodeBlockGenerator extends Generator {
     this(builder, context, null);
   }
 
-  public CodeBlockGenerator(StringBuilder builder, ExpressionContext context, @Nullable Collection<GrStatement> exitPoints) {
+  public CodeBlockGenerator(StringBuilder builder, ExpressionContext context, @javax.annotation.Nullable Collection<GrStatement> exitPoints) {
     this.builder = builder;
     this.context = context;
     myExitPoints = new HashSet<GrStatement>();
@@ -617,7 +617,7 @@ public class CodeBlockGenerator extends Generator {
   private static String genIteratorVar(GrVariableDeclaration variableDeclaration,
                                        StringBuilder builder,
                                        ExpressionContext expressionContext,
-                                       @NotNull GrExpression tupleInitializer,
+                                       @Nonnull GrExpression tupleInitializer,
                                        PsiType iteratorType,
                                        GroovyResolveResult iteratorMethodResult) {
 

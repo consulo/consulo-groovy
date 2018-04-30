@@ -15,10 +15,11 @@
  */
 package org.jetbrains.plugins.groovy.mvc;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.execution.configurations.GeneralCommandLine;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.module.Module;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * @author ilyas
@@ -26,7 +27,7 @@ import org.jetbrains.annotations.NotNull;
 public class MvcRunTarget extends MvcActionBase {
 
   @Override
-  protected void actionPerformed(@NotNull AnActionEvent e, @NotNull Module module, @NotNull MvcFramework framework) {
+  protected void actionPerformed(@Nonnull AnActionEvent e, @Nonnull Module module, @Nonnull MvcFramework framework) {
     MvcRunTargetDialog dialog = new MvcRunTargetDialog(module, framework);
     dialog.show();
     if (!dialog.isOK()) {

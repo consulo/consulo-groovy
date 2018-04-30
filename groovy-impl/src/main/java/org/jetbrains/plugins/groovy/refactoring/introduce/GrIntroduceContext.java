@@ -18,8 +18,8 @@ package org.jetbrains.plugins.groovy.refactoring.introduce;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 
@@ -27,25 +27,25 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpres
  * @author Max Medvedev
  */
 public interface GrIntroduceContext {
-  @NotNull
+  @Nonnull
   Project getProject();
 
   Editor getEditor();
 
-  @Nullable
+  @javax.annotation.Nullable
   GrExpression getExpression();
 
-  @Nullable
+  @javax.annotation.Nullable
   GrVariable getVar();
 
-  @Nullable
+  @javax.annotation.Nullable
   StringPartInfo getStringPart();
 
-  @NotNull
+  @Nonnull
   PsiElement[] getOccurrences();
 
   PsiElement getScope();
 
-  @NotNull
+  @Nonnull
   PsiElement getPlace();
 }

@@ -16,11 +16,13 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.api.statements.params;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiParameter;
 import com.intellij.util.ArrayFactory;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.GrCondition;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.GrModifierList;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
@@ -34,20 +36,20 @@ import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeElement;
 public interface GrParameter extends PsiParameter, GrVariable, GrCondition {
   GrParameter[] EMPTY_ARRAY = new GrParameter[0];
   ArrayFactory<GrParameter> ARRAY_FACTORY = new ArrayFactory<GrParameter>() {
-    @NotNull
+    @Nonnull
     @Override
     public GrParameter[] create(int count) {
       return new GrParameter[count];
     }
   };
 
-  @Nullable
+  @javax.annotation.Nullable
   GrTypeElement getTypeElementGroovy();
 
   @Nullable
   GrExpression getInitializerGroovy();
 
-  @NotNull
+  @Nonnull
   GrModifierList getModifierList();
 
   boolean isOptional();
@@ -55,6 +57,6 @@ public interface GrParameter extends PsiParameter, GrVariable, GrCondition {
   /**
    * parameter can be vararg while getEllipsisDots() return null
    */
-  @Nullable
+  @javax.annotation.Nullable
   PsiElement getEllipsisDots();
 }

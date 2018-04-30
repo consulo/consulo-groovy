@@ -16,6 +16,8 @@
 
 package org.jetbrains.plugins.groovy.intentions.closure;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
@@ -25,7 +27,6 @@ import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.refactoring.rename.inplace.VariableInplaceRenamer;
 import com.intellij.util.IncorrectOperationException;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.intentions.base.PsiElementPredicate;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
@@ -47,14 +48,14 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.PsiImplUtil;
  * @author Maxim.Medvedev
  */
 public class EachToForIntention extends Intention {
-  @NotNull
+  @Nonnull
   @Override
   protected PsiElementPredicate getElementPredicate() {
     return new EachToForPredicate();
   }
 
   @Override
-  protected void processIntention(@NotNull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
+  protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
     final GrMethodCallExpression expression = (GrMethodCallExpression)element;
     final GrClosableBlock block = expression.getClosureArguments()[0];
     final GrParameterList parameterList = block.getParameterList();

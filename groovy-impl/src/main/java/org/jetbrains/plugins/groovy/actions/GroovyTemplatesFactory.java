@@ -20,8 +20,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Properties;
 
+import javax.annotation.Nonnull;
+
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import com.intellij.codeInsight.actions.ReformatCodeProcessor;
@@ -91,10 +92,10 @@ public class GroovyTemplatesFactory implements FileTemplateGroupDescriptorFactor
 	}
 
 
-	public static PsiFile createFromTemplate(@NotNull final PsiDirectory directory,
-			@NotNull final String name,
-			@NotNull String fileName,
-			@NotNull String templateName,
+	public static PsiFile createFromTemplate(@Nonnull final PsiDirectory directory,
+			@Nonnull final String name,
+			@Nonnull String fileName,
+			@Nonnull String templateName,
 			boolean allowReformatting,
 			@NonNls String... parameters) throws IncorrectOperationException
 	{

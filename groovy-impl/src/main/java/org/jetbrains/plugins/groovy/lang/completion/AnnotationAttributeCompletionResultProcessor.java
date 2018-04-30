@@ -23,7 +23,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiMethod;
 import com.intellij.util.Consumer;
 import com.intellij.util.containers.ContainerUtil;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotation;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyResolveResultImpl;
@@ -38,11 +38,11 @@ import java.util.Set;
 public class AnnotationAttributeCompletionResultProcessor {
   private final GrAnnotation myAnnotation;
 
-  public AnnotationAttributeCompletionResultProcessor(@NotNull GrAnnotation annotation) {
+  public AnnotationAttributeCompletionResultProcessor(@Nonnull GrAnnotation annotation) {
     myAnnotation = annotation;
   }
 
-  public void process(@NotNull Consumer<LookupElement> consumer, @NotNull PrefixMatcher matcher) {
+  public void process(@Nonnull Consumer<LookupElement> consumer, @Nonnull PrefixMatcher matcher) {
     GrCodeReferenceElement ref = myAnnotation.getClassReference();
     PsiElement resolved = ref.resolve();
 

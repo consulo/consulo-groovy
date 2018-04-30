@@ -16,6 +16,8 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveState;
@@ -24,8 +26,8 @@ import com.intellij.psi.search.LocalSearchScope;
 import com.intellij.psi.search.SearchScope;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
@@ -37,7 +39,7 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyPsiElementImpl;
  * @author ilyas
  */
 public class GrLabeledStatementImpl extends GroovyPsiElementImpl implements GrLabeledStatement {
-  public GrLabeledStatementImpl(@NotNull ASTNode node) {
+  public GrLabeledStatementImpl(@Nonnull ASTNode node) {
     super(node);
   }
 
@@ -50,13 +52,13 @@ public class GrLabeledStatementImpl extends GroovyPsiElementImpl implements GrLa
     return "Labeled statement";
   }
 
-  @NotNull
+  @Nonnull
   public String getLabelName() {
     return getName();
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public PsiElement getLabel() {
     final PsiElement label = findChildByType(GroovyTokenTypes.mIDENT);
     assert label != null;
@@ -70,36 +72,36 @@ public class GrLabeledStatementImpl extends GroovyPsiElementImpl implements GrLa
   }
 
   @Override
-  public boolean processDeclarations(@NotNull PsiScopeProcessor processor,
-                                     @NotNull ResolveState state,
+  public boolean processDeclarations(@Nonnull PsiScopeProcessor processor,
+                                     @Nonnull ResolveState state,
                                      @Nullable PsiElement lastParent,
-                                     @NotNull PsiElement place) {
+                                     @Nonnull PsiElement place) {
     GrStatement statement = getStatement();
     return statement == null || statement == lastParent || statement.processDeclarations(processor, state, lastParent, place);
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public SearchScope getUseScope() {
     return new LocalSearchScope(this);
   }
 
   @Override
-  public PsiElement setName(@NonNls @NotNull String name) throws IncorrectOperationException {
+  public PsiElement setName(@NonNls @Nonnull String name) throws IncorrectOperationException {
     final PsiElement labelElement = getLabel();
     final PsiElement newLabel = GroovyPsiElementFactory.getInstance(getProject()).createReferenceNameFromText(name);
     labelElement.replace(newLabel);
     return this;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public String getName() {
     final PsiElement label = getLabel();
     return label.getText();
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public PsiElement getNameIdentifierGroovy() {
     return getLabel();
@@ -112,7 +114,7 @@ public class GrLabeledStatementImpl extends GroovyPsiElementImpl implements GrLa
   }
 
   @Override
-  public void deleteChildInternal(@NotNull ASTNode child) {
+  public void deleteChildInternal(@Nonnull ASTNode child) {
     GrStatement statement = getStatement();
     if (statement != null && child == statement.getNode()) {
       delete();

@@ -23,7 +23,6 @@ import com.intellij.refactoring.RefactoringBundle;
 import com.intellij.refactoring.util.RadioUpDownListener;
 import com.intellij.usageView.UsageViewUtil;
 import com.intellij.util.containers.ContainerUtil;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrAccessorMethod;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
@@ -130,7 +129,7 @@ public class RenamePropertyUtil {
       return new JLabel(RefactoringBundle.message("what.would.you.like.to.do"));
     }
 
-    @Nullable
+    @javax.annotation.Nullable
     private String getPropertyName() {
       if (myMember instanceof GrMethod) {
         return GroovyPropertyUtils.getPropertyNameByAccessorName(myMember.getName());

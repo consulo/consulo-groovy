@@ -15,7 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.introduce.variable;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.codeInspection.utils.ControlFlowUtils;
 import org.jetbrains.plugins.groovy.lang.psi.GrControlFlowOwner;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFileBase;
@@ -55,7 +56,7 @@ public class GrIntroduceVariableHandler extends GrIntroduceHandlerBase<GroovyInt
 	protected static final String REFACTORING_NAME = GroovyRefactoringBundle.message("introduce.variable.title");
 	private RangeMarker myPosition = null;
 
-	@NotNull
+	@Nonnull
 	@Override
 	protected GrControlFlowOwner[] findPossibleScopes(GrExpression selectedExpr,
 			GrVariable variable,
@@ -79,7 +80,7 @@ public class GrIntroduceVariableHandler extends GrIntroduceHandlerBase<GroovyInt
 	}
 
 	@Override
-	protected void checkExpression(@NotNull GrExpression selectedExpr)
+	protected void checkExpression(@Nonnull GrExpression selectedExpr)
 	{
 		// Cannot perform refactoring in parameter default values
 
@@ -103,24 +104,24 @@ public class GrIntroduceVariableHandler extends GrIntroduceHandlerBase<GroovyInt
 	}
 
 	@Override
-	protected void checkVariable(@NotNull GrVariable variable) throws GrRefactoringError
+	protected void checkVariable(@Nonnull GrVariable variable) throws GrRefactoringError
 	{
 		throw new GrRefactoringError(null);
 	}
 
 	@Override
-	protected void checkStringLiteral(@NotNull StringPartInfo info) throws GrRefactoringError
+	protected void checkStringLiteral(@Nonnull StringPartInfo info) throws GrRefactoringError
 	{
 		//todo
 	}
 
 	@Override
-	protected void checkOccurrences(@NotNull PsiElement[] occurrences)
+	protected void checkOccurrences(@Nonnull PsiElement[] occurrences)
 	{
 		//nothing to do
 	}
 
-	private static boolean checkInFieldInitializer(@NotNull GrExpression expr)
+	private static boolean checkInFieldInitializer(@Nonnull GrExpression expr)
 	{
 		PsiElement parent = expr.getParent();
 		if(parent instanceof GrClosableBlock)
@@ -142,8 +143,8 @@ public class GrIntroduceVariableHandler extends GrIntroduceHandlerBase<GroovyInt
 	 * Inserts new variable declarations and replaces occurrences
 	 */
 	@Override
-	public GrVariable runRefactoring(@NotNull final GrIntroduceContext context,
-			@NotNull final GroovyIntroduceVariableSettings settings)
+	public GrVariable runRefactoring(@Nonnull final GrIntroduceContext context,
+			@Nonnull final GroovyIntroduceVariableSettings settings)
 	{
 		// Generating variable declaration
 
@@ -162,7 +163,7 @@ public class GrIntroduceVariableHandler extends GrIntroduceHandlerBase<GroovyInt
 	}
 
 	@Override
-	protected GrInplaceVariableIntroducer getIntroducer(@NotNull GrIntroduceContext context,
+	protected GrInplaceVariableIntroducer getIntroducer(@Nonnull GrIntroduceContext context,
 			OccurrencesChooser.ReplaceChoice choice)
 	{
 
@@ -208,8 +209,8 @@ public class GrIntroduceVariableHandler extends GrIntroduceHandlerBase<GroovyInt
 		};
 	}
 
-	private static GrVariable addVariable(@NotNull GrIntroduceContext context,
-			@NotNull GroovyIntroduceVariableSettings settings)
+	private static GrVariable addVariable(@Nonnull GrIntroduceContext context,
+			@Nonnull GroovyIntroduceVariableSettings settings)
 	{
 		GrStatement anchor = findAnchor(context, settings.replaceAllOccurrences());
 		PsiElement parent = anchor.getParent();
@@ -228,9 +229,9 @@ public class GrIntroduceVariableHandler extends GrIntroduceHandlerBase<GroovyInt
 		//todo do nothing right now
 	}
 
-	@NotNull
-	private static GrVariableDeclaration generateDeclaration(@NotNull GrIntroduceContext context,
-			@NotNull GroovyIntroduceVariableSettings settings)
+	@Nonnull
+	private static GrVariableDeclaration generateDeclaration(@Nonnull GrIntroduceContext context,
+			@Nonnull GroovyIntroduceVariableSettings settings)
 	{
 		final GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(context.getProject());
 		final String[] modifiers = settings.isDeclareFinal() ? new String[]{PsiModifier.FINAL} : null;
@@ -242,9 +243,9 @@ public class GrIntroduceVariableHandler extends GrIntroduceHandlerBase<GroovyInt
 		return declaration;
 	}
 
-	@NotNull
-	private GrVariable processExpression(@NotNull GrIntroduceContext context,
-			@NotNull GroovyIntroduceVariableSettings settings)
+	@Nonnull
+	private GrVariable processExpression(@Nonnull GrIntroduceContext context,
+			@Nonnull GroovyIntroduceVariableSettings settings)
 	{
 		GrVariableDeclaration varDecl = generateDeclaration(context, settings);
 
@@ -261,11 +262,11 @@ public class GrIntroduceVariableHandler extends GrIntroduceHandlerBase<GroovyInt
 		}
 	}
 
-	private GrVariable doProcessExpression(@NotNull final GrIntroduceContext context,
-			@NotNull GroovyIntroduceVariableSettings settings,
-			@NotNull GrVariableDeclaration varDecl,
-			@NotNull PsiElement[] elements,
-			@NotNull GrExpression expression,
+	private GrVariable doProcessExpression(@Nonnull final GrIntroduceContext context,
+			@Nonnull GroovyIntroduceVariableSettings settings,
+			@Nonnull GrVariableDeclaration varDecl,
+			@Nonnull PsiElement[] elements,
+			@Nonnull GrExpression expression,
 			boolean processUsages)
 	{
 		return new GrIntroduceLocalVariableProcessor(context, settings, elements, expression, processUsages)
@@ -279,8 +280,8 @@ public class GrIntroduceVariableHandler extends GrIntroduceHandlerBase<GroovyInt
 		}.processExpression(varDecl);
 	}
 
-	@NotNull
-	private static GrExpression generateInitializer(@NotNull GrIntroduceContext context, @NotNull GrVariable variable)
+	@Nonnull
+	private static GrExpression generateInitializer(@Nonnull GrIntroduceContext context, @Nonnull GrVariable variable)
 	{
 		final GrExpression initializer = context.getStringPart() != null ? context.getStringPart()
 				.createLiteralFromSelected() : context.getExpression();
@@ -299,14 +300,14 @@ public class GrIntroduceVariableHandler extends GrIntroduceHandlerBase<GroovyInt
 		return myPosition;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	protected String getRefactoringName()
 	{
 		return REFACTORING_NAME;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	protected String getHelpID()
 	{
@@ -314,8 +315,8 @@ public class GrIntroduceVariableHandler extends GrIntroduceHandlerBase<GroovyInt
 	}
 
 	@Override
-	@NotNull
-	protected GroovyIntroduceVariableDialog getDialog(@NotNull GrIntroduceContext context)
+	@Nonnull
+	protected GroovyIntroduceVariableDialog getDialog(@Nonnull GrIntroduceContext context)
 	{
 		final GroovyVariableValidator validator = new GroovyVariableValidator(context);
 		return new GroovyIntroduceVariableDialog(context, validator);

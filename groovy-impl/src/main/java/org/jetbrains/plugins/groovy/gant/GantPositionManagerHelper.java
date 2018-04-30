@@ -15,7 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.gant;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.extensions.debugger.ScriptPositionManagerHelper;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.runner.GroovyScriptUtil;
@@ -34,19 +35,19 @@ import consulo.internal.com.sun.jdi.ReferenceType;
 public class GantPositionManagerHelper extends ScriptPositionManagerHelper
 {
 	@Override
-	public boolean isAppropriateRuntimeName(@NotNull final String runtimeName)
+	public boolean isAppropriateRuntimeName(@Nonnull final String runtimeName)
 	{
 		return true;
 	}
 
 	@Override
-	public boolean isAppropriateScriptFile(@NotNull final GroovyFile scriptFile)
+	public boolean isAppropriateScriptFile(@Nonnull final GroovyFile scriptFile)
 	{
 		return GroovyScriptUtil.isSpecificScriptFile(scriptFile, GantScriptType.INSTANCE);
 	}
 
 	@Override
-	public PsiFile getExtraScriptIfNotFound(@NotNull ReferenceType refType, @NotNull final String runtimeName, @NotNull final Project project, @NotNull GlobalSearchScope scope)
+	public PsiFile getExtraScriptIfNotFound(@Nonnull ReferenceType refType, @Nonnull final String runtimeName, @Nonnull final Project project, @Nonnull GlobalSearchScope scope)
 	{
 		try
 		{

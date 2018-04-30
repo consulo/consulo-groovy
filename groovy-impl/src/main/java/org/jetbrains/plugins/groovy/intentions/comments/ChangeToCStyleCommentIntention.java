@@ -23,8 +23,8 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementFactory;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.util.IncorrectOperationException;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.intentions.base.PsiElementPredicate;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
@@ -35,12 +35,12 @@ import java.util.List;
 public class ChangeToCStyleCommentIntention extends Intention {
 
 
-  @NotNull
+  @Nonnull
   protected PsiElementPredicate getElementPredicate() {
     return new EndOfLineCommentPredicate();
   }
 
-  public void processIntention(@NotNull PsiElement element, Project project, Editor editor)
+  public void processIntention(@Nonnull PsiElement element, Project project, Editor editor)
       throws IncorrectOperationException {
     final PsiComment selectedComment = (PsiComment) element;
     PsiComment firstComment = selectedComment;

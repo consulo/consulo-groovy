@@ -23,8 +23,8 @@ import com.intellij.psi.codeStyle.JavaCodeStyleManager;
 import com.intellij.psi.scope.PsiScopeProcessor;
 import com.intellij.psi.stubs.EmptyStub;
 import com.intellij.util.IncorrectOperationException;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.lexer.TokenSets;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
@@ -58,7 +58,7 @@ import java.util.List;
 public class GrVariableDeclarationImpl extends GrStubElementBase<EmptyStub> implements GrVariableDeclaration, StubBasedPsiElement<EmptyStub> {
   private static final Logger LOG = Logger.getInstance(GrVariableDeclarationImpl.class);
 
-  public GrVariableDeclarationImpl(@NotNull ASTNode node) {
+  public GrVariableDeclarationImpl(@Nonnull ASTNode node) {
     super(node);
   }
 
@@ -82,13 +82,13 @@ public class GrVariableDeclarationImpl extends GrStubElementBase<EmptyStub> impl
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public GrModifierList getModifierList() {
     return getRequiredStubOrPsiChild(GroovyElementTypes.MODIFIERS);
   }
 
   @Override
-  public boolean hasModifierProperty(@NotNull String name) {
+  public boolean hasModifierProperty(@Nonnull String name) {
     return getModifierList().hasModifierProperty(name);
   }
 
@@ -132,14 +132,14 @@ public class GrVariableDeclarationImpl extends GrStubElementBase<EmptyStub> impl
     return findChildByType(GroovyTokenTypes.mLPAREN) != null;
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   @Override
   public GrExpression getTupleInitializer() {
     return GroovyPsiElementImpl.findExpressionChild(this);
   }
 
   @Override
-  public void deleteChildInternal(@NotNull ASTNode child) {
+  public void deleteChildInternal(@Nonnull ASTNode child) {
     final PsiElement psi = child.getPsi();
     if (psi == getTupleInitializer()) {
       deleteChildInternal(findNotNullChildByType(GroovyTokenTypes.mASSIGN).getNode());
@@ -162,7 +162,7 @@ public class GrVariableDeclarationImpl extends GrStubElementBase<EmptyStub> impl
   }
 
   @Override
-  @Nullable
+  @javax.annotation.Nullable
   public GrTypeElement getTypeElementGroovy() {
     if (isTuple()) return null;
     return findChildByClass(GrTypeElement.class);
@@ -187,16 +187,16 @@ public class GrVariableDeclarationImpl extends GrStubElementBase<EmptyStub> impl
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public GrVariable[] getVariables() {
     return getStubOrPsiChildren(TokenSets.VARIABLES, GrVariable.ARRAY_FACTORY);
   }
 
   @Override
-  public boolean processDeclarations(@NotNull PsiScopeProcessor processor,
-                                     @NotNull ResolveState state,
-                                     @Nullable PsiElement lastParent,
-                                     @NotNull PsiElement place) {
+  public boolean processDeclarations(@Nonnull PsiScopeProcessor processor,
+                                     @Nonnull ResolveState state,
+                                     @javax.annotation.Nullable PsiElement lastParent,
+                                     @Nonnull PsiElement place) {
     if (!ResolveUtil.shouldProcessProperties(processor.getHint(ClassHint.KEY))) return true;
 
     if (lastParent != null && !(getParent() instanceof GrTypeDefinitionBody) && lastParent == getTupleInitializer()) {
@@ -251,7 +251,7 @@ public class GrVariableDeclarationImpl extends GrStubElementBase<EmptyStub> impl
       super(GrVariableDeclarationImpl.this, range, true);
     }
 
-    @Nullable
+    @javax.annotation.Nullable
     @Override
     public PsiElement resolve() {
       GrVariable[] variables = getVariables();
@@ -267,14 +267,14 @@ public class GrVariableDeclarationImpl extends GrStubElementBase<EmptyStub> impl
       }
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public Object[] getVariants() {
       return EMPTY_ARRAY;
     }
 
     @Override
-    public PsiElement bindToElement(@NotNull PsiElement element) throws IncorrectOperationException {
+    public PsiElement bindToElement(@Nonnull PsiElement element) throws IncorrectOperationException {
       return getElement();
     }
   }

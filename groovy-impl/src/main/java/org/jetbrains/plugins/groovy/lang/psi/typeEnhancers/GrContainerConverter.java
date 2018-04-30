@@ -15,10 +15,10 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.typeEnhancers;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.psi.PsiArrayType;
 import com.intellij.psi.PsiType;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil;
 
@@ -31,9 +31,9 @@ public class GrContainerConverter extends GrTypeConverter {
     return false;
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   @Override
-  public Boolean isConvertible(@NotNull PsiType lType, @NotNull PsiType rType, @NotNull GroovyPsiElement context) {
+  public Boolean isConvertible(@Nonnull PsiType lType, @Nonnull PsiType rType, @Nonnull GroovyPsiElement context) {
     if (lType instanceof PsiArrayType) {
       PsiType lComponentType = ((PsiArrayType)lType).getComponentType();
       PsiType rComponentType = ClosureParameterEnhancer.findTypeForIteration(rType, context);

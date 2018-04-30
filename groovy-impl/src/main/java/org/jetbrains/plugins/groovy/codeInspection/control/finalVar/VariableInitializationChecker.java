@@ -18,7 +18,7 @@ package org.jetbrains.plugins.groovy.codeInspection.control.finalVar;
 import com.intellij.openapi.util.Ref;
 import com.intellij.psi.PsiVariable;
 import com.intellij.util.containers.ContainerUtil;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.controlFlow.Instruction;
 import org.jetbrains.plugins.groovy.lang.psi.controlFlow.ReadWriteVariableInstruction;
@@ -36,7 +36,7 @@ import java.util.Map;
 public class VariableInitializationChecker {
   private static final LightCacheKey<Map<GroovyPsiElement, Boolean>> KEY = LightCacheKey.createByFileModificationCount();
 
-  public static boolean isVariableDefinitelyInitialized(@NotNull String varName, @NotNull Instruction[] controlFlow) {
+  public static boolean isVariableDefinitelyInitialized(@Nonnull String varName, @Nonnull Instruction[] controlFlow) {
     DFAEngine<Data> engine = new DFAEngine<Data>(controlFlow, new MyDfaInstance(varName), new MySemilattice());
     final ArrayList<Data> result = engine.performDFAWithTimeout();
     if (result == null) return false;
@@ -44,9 +44,9 @@ public class VariableInitializationChecker {
     return result.get(controlFlow.length - 1).get();
   }
 
-  public static boolean isVariableDefinitelyInitializedCached(@NotNull PsiVariable var,
-                                                              @NotNull GroovyPsiElement context,
-                                                              @NotNull Instruction[] controlFlow) {
+  public static boolean isVariableDefinitelyInitializedCached(@Nonnull PsiVariable var,
+                                                              @Nonnull GroovyPsiElement context,
+                                                              @Nonnull Instruction[] controlFlow) {
     Map<GroovyPsiElement, Boolean> map = KEY.getCachedValue(var);
     if (map == null) {
       map = ContainerUtil.newHashMap();
@@ -75,7 +75,7 @@ public class VariableInitializationChecker {
       }
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public Data initial() {
       return new Data(false);

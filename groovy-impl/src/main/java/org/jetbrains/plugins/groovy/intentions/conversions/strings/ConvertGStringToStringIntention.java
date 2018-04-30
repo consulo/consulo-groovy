@@ -17,8 +17,8 @@ package org.jetbrains.plugins.groovy.intentions.conversions.strings;
 
 import java.util.ArrayList;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.intentions.base.PsiElementPredicate;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
@@ -45,14 +45,14 @@ public class ConvertGStringToStringIntention extends Intention
 	public static final String INTENTION_NAME = "Convert to String";
 
 	@Override
-	@NotNull
+	@Nonnull
 	public PsiElementPredicate getElementPredicate()
 	{
 		return new ConvertibleGStringLiteralPredicate();
 	}
 
 	@Override
-	public void processIntention(@NotNull PsiElement element,
+	public void processIntention(@Nonnull PsiElement element,
 			Project project,
 			Editor editor) throws IncorrectOperationException
 	{

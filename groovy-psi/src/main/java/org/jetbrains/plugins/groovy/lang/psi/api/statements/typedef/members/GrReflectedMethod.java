@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameter;
 import com.intellij.psi.PsiMirrorElement;
 
@@ -25,9 +25,9 @@ import com.intellij.psi.PsiMirrorElement;
 public interface GrReflectedMethod extends GrMethod, PsiMirrorElement {
   GrReflectedMethod[] EMPTY_ARRAY = new GrReflectedMethod[0];
 
-  @NotNull
+  @Nonnull
   GrMethod getBaseMethod();
 
-  @NotNull
+  @Nonnull
   GrParameter[] getSkippedParameters();
 }

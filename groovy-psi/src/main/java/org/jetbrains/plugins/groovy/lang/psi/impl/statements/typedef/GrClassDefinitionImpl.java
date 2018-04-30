@@ -16,7 +16,7 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.typedef;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrClassDefinition;
@@ -29,7 +29,7 @@ import com.intellij.lang.ASTNode;
  */
 public class GrClassDefinitionImpl extends GrTypeDefinitionImpl implements GrClassDefinition {
 
-  public GrClassDefinitionImpl(@NotNull ASTNode node) {
+  public GrClassDefinitionImpl(@Nonnull ASTNode node) {
     super(node);
   }
 

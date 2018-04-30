@@ -16,12 +16,14 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.path;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiType;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.lexer.TokenSets;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
@@ -34,7 +36,7 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.GrExpre
 public class GrPropertySelectionImpl extends GrExpressionImpl implements GrPropertySelection {
   private static final Logger LOG = Logger.getInstance(GrPropertySelectionImpl.class);
 
-  public GrPropertySelectionImpl(@NotNull ASTNode node) {
+  public GrPropertySelectionImpl(@Nonnull ASTNode node) {
     super(node);
   }
 
@@ -47,19 +49,19 @@ public class GrPropertySelectionImpl extends GrExpressionImpl implements GrPrope
     return "Property selection";
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public PsiElement getDotToken() {
     return findNotNullChildByType(TokenSets.DOTS);
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public GrExpression getQualifier() {
     return findNotNullChildByClass(GrExpression.class);
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public PsiElement getReferenceNameElement() {
     final PsiElement last = getLastChild();

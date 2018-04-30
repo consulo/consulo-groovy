@@ -15,12 +15,13 @@
  */
 package org.jetbrains.plugins.groovy.intentions.control;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.util.IncorrectOperationException;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.intentions.GroovyIntentionsBundle;
 import org.jetbrains.plugins.groovy.intentions.base.MutablyNamedIntention;
 import org.jetbrains.plugins.groovy.intentions.base.PsiElementPredicate;
@@ -39,12 +40,12 @@ public class NegateComparisonIntention extends MutablyNamedIntention {
     return GroovyIntentionsBundle.message("negate.comparison.intention.name", comparison, negatedComparison);
   }
 
-  @NotNull
+  @Nonnull
   public PsiElementPredicate getElementPredicate() {
     return new ComparisonPredicate();
   }
 
-  public void processIntention(@NotNull PsiElement element, Project project, Editor editor)
+  public void processIntention(@Nonnull PsiElement element, Project project, Editor editor)
       throws IncorrectOperationException {
     final GrBinaryExpression exp =
         (GrBinaryExpression) element;

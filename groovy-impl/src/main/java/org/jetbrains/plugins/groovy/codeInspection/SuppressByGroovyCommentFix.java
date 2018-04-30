@@ -19,7 +19,6 @@ package org.jetbrains.plugins.groovy.codeInspection;
 import com.intellij.codeInsight.daemon.HighlightDisplayKey;
 import com.intellij.codeInsight.daemon.impl.actions.SuppressByCommentFix;
 import com.intellij.psi.PsiElement;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
 
@@ -32,7 +31,7 @@ public class SuppressByGroovyCommentFix extends SuppressByCommentFix {
   }
 
   @Override
-  @Nullable
+  @javax.annotation.Nullable
   public PsiElement getContainer(PsiElement context) {
     return PsiUtil.findEnclosingStatement(context);
   }

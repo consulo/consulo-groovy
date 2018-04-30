@@ -17,7 +17,7 @@ package org.jetbrains.plugins.groovy.codeInspection.declaration;
 
 import javax.swing.JComponent;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.codeInspection.GroovyInspectionBundle;
@@ -68,7 +68,7 @@ public class GrMethodMayBeStaticInspection extends BaseInspection
 		return optionsPanel;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	protected BaseInspectionVisitor buildVisitor()
 	{

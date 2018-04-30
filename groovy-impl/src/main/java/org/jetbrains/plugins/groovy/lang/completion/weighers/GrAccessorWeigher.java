@@ -20,7 +20,7 @@ import com.intellij.codeInsight.completion.CompletionWeigher;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.psi.PsiMethod;
 import com.intellij.psi.ResolveResult;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFileBase;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyPropertyUtils;
 
@@ -29,7 +29,7 @@ import org.jetbrains.plugins.groovy.lang.psi.util.GroovyPropertyUtils;
  */
 public class GrAccessorWeigher extends CompletionWeigher {
   @Override
-  public Integer weigh(@NotNull LookupElement element, @NotNull CompletionLocation location) {
+  public Integer weigh(@Nonnull LookupElement element, @Nonnull CompletionLocation location) {
     if (!(location.getCompletionParameters().getPosition().getContainingFile() instanceof GroovyFileBase)) {
       return null;
     }

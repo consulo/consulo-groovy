@@ -19,7 +19,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrReferenceList;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
 import org.jetbrains.plugins.groovy.lang.psi.stubs.GrReferenceListStub;
@@ -46,7 +47,7 @@ public abstract class GrReferenceListElementType<T extends GrReferenceList> exte
 	}
 
 	@Override
-	public GrReferenceListStub createStub(@NotNull T psi, StubElement parentStub)
+	public GrReferenceListStub createStub(@Nonnull T psi, StubElement parentStub)
 	{
 		List<String> refNames = new ArrayList<String>();
 		for(GrCodeReferenceElement element : psi.getReferenceElementsGroovy())
@@ -62,21 +63,21 @@ public abstract class GrReferenceListElementType<T extends GrReferenceList> exte
 	}
 
 	@Override
-	public void serialize(@NotNull GrReferenceListStub stub, @NotNull StubOutputStream dataStream) throws IOException
+	public void serialize(@Nonnull GrReferenceListStub stub, @Nonnull StubOutputStream dataStream) throws IOException
 	{
 		GrStubUtils.writeStringArray(dataStream, stub.getBaseClasses());
 	}
 
 	@Override
-	@NotNull
-	public GrReferenceListStub deserialize(@NotNull StubInputStream dataStream,
+	@Nonnull
+	public GrReferenceListStub deserialize(@Nonnull StubInputStream dataStream,
 			StubElement parentStub) throws IOException
 	{
 		return new GrReferenceListStub(parentStub, this, GrStubUtils.readStringArray(dataStream));
 	}
 
 	@Override
-	public void indexStub(@NotNull GrReferenceListStub stub, @NotNull IndexSink sink)
+	public void indexStub(@Nonnull GrReferenceListStub stub, @Nonnull IndexSink sink)
 	{
 		for(String name : stub.getBaseClasses())
 		{

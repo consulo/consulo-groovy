@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.introduce.variable;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.refactoring.GroovyNameSuggestionUtil;
 import org.jetbrains.plugins.groovy.refactoring.NameValidator;
@@ -36,7 +36,7 @@ public class GrVariableNameSuggester extends LinkedHashSet<String> {
     myValidator = validator;
   }
 
-  @NotNull
+  @Nonnull
   public LinkedHashSet<String> suggestNames() {
     GrExpression expression = myContext.getExpression() != null ? myContext.getExpression() : myContext.getStringPart().getLiteral();
     return new LinkedHashSet<String>(Arrays.asList(GroovyNameSuggestionUtil.suggestVariableNames(expression, myValidator)));

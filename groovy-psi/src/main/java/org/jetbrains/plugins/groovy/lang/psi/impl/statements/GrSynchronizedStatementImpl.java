@@ -16,8 +16,8 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrSynchronizedStatement;
@@ -32,7 +32,7 @@ import com.intellij.psi.PsiElement;
  */
 public class GrSynchronizedStatementImpl extends GroovyPsiElementImpl implements GrSynchronizedStatement {
 
-  public GrSynchronizedStatementImpl(@NotNull ASTNode node) {
+  public GrSynchronizedStatementImpl(@Nonnull ASTNode node) {
     super(node);
   }
 
@@ -57,13 +57,13 @@ public class GrSynchronizedStatementImpl extends GroovyPsiElementImpl implements
     return findChildByClass(GrOpenBlock.class);
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   @Override
   public PsiElement getLParenth() {
     return findChildByType(GroovyTokenTypes.mLPAREN);
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   @Override
   public PsiElement getRParenth() {
     return findChildByType(GroovyTokenTypes.mRPAREN);

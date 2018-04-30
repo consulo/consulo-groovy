@@ -15,10 +15,10 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.assignment;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiType;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrArgumentList;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrMethodCall;
@@ -34,7 +34,7 @@ public class GrMethodCallInfo extends CallInfoBase<GrMethodCall> implements Call
     super(call);
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   @Override
   protected PsiType[] inferArgTypes() {
     return PsiUtil.getArgumentTypes(getCall().getInvokedExpression(), true);
@@ -51,7 +51,7 @@ public class GrMethodCallInfo extends CallInfoBase<GrMethodCall> implements Call
     return invoked instanceof GrReferenceExpression ? PsiImplUtil.getQualifierType((GrReferenceExpression)invoked) : null;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public PsiElement getHighlightElementForCategoryQualifier() {
     GrExpression invoked = getCall().getInvokedExpression();
@@ -64,7 +64,7 @@ public class GrMethodCallInfo extends CallInfoBase<GrMethodCall> implements Call
     return invoked;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public PsiElement getElementToHighlight() {
     GrArgumentList argList = getCall().getArgumentList();

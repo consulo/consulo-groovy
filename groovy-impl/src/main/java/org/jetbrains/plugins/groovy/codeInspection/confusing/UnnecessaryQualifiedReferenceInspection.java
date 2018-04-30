@@ -15,8 +15,9 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.confusing;
 
+import javax.annotation.Nonnull;
+
 import org.jetbrains.annotations.Nls;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.codeInspection.GroovyFix;
@@ -46,7 +47,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 public class UnnecessaryQualifiedReferenceInspection extends BaseInspection
 {
 
-	@NotNull
+	@Nonnull
 	@Override
 	protected BaseInspectionVisitor buildVisitor()
 	{
@@ -116,7 +117,7 @@ public class UnnecessaryQualifiedReferenceInspection extends BaseInspection
 	}
 
 	@Nls
-	@NotNull
+	@Nonnull
 	@Override
 	public String getGroupDisplayName()
 	{
@@ -124,7 +125,7 @@ public class UnnecessaryQualifiedReferenceInspection extends BaseInspection
 	}
 
 	@Nls
-	@NotNull
+	@Nonnull
 	@Override
 	public String getDisplayName()
 	{
@@ -138,7 +139,7 @@ public class UnnecessaryQualifiedReferenceInspection extends BaseInspection
 	}
 
 	@Override
-	protected GroovyFix buildFix(@NotNull PsiElement location)
+	protected GroovyFix buildFix(@Nonnull PsiElement location)
 	{
 		return GroovyQuickFixFactory.getInstance().createReplaceWithImportFix();
 	}

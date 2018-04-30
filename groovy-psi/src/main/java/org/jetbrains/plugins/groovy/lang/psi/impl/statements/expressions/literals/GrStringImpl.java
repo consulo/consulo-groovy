@@ -18,7 +18,7 @@ package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.litera
 
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.*;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.lexer.TokenSets;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
@@ -36,7 +36,7 @@ import java.util.List;
  */
 public class GrStringImpl extends GrAbstractLiteral implements GrString {
 
-  public GrStringImpl(@NotNull ASTNode node) {
+  public GrStringImpl(@Nonnull ASTNode node) {
     super(node);
   }
 
@@ -111,11 +111,11 @@ public class GrStringImpl extends GrAbstractLiteral implements GrString {
   }
 
   @Override
-  public GrStringImpl updateText(@NotNull String text) {
+  public GrStringImpl updateText(@Nonnull String text) {
     return this;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public LiteralTextEscaper<? extends PsiLanguageInjectionHost> createLiteralTextEscaper() {
     return new GrLiteralEscaper(this);

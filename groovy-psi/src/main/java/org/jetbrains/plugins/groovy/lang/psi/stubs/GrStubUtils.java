@@ -27,8 +27,8 @@ import com.intellij.psi.stubs.StubInputStream;
 import com.intellij.psi.stubs.StubOutputStream;
 import com.intellij.util.ArrayUtil;
 import com.intellij.util.containers.ContainerUtil;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.GrModifierList;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotation;
@@ -72,20 +72,20 @@ public class GrStubUtils {
     return annNames;
   }
 
-  public static void writeNullableString(StubOutputStream dataStream, @Nullable String typeText) throws IOException {
+  public static void writeNullableString(StubOutputStream dataStream, @javax.annotation.Nullable String typeText) throws IOException {
     dataStream.writeBoolean(typeText != null);
     if (typeText != null) {
       dataStream.writeUTFFast(typeText);
     }
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   public static String readNullableString(StubInputStream dataStream) throws IOException {
     final boolean hasTypeText = dataStream.readBoolean();
     return hasTypeText ? dataStream.readUTFFast() : null;
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   public static String getTypeText(@Nullable GrTypeElement typeElement) {
     return typeElement == null ? null : typeElement.getText();
   }
@@ -127,8 +127,8 @@ public class GrStubUtils {
     return false;
   }
 
-  @NotNull
-  public static String getShortTypeText(@Nullable String text) {
+  @Nonnull
+  public static String getShortTypeText(@javax.annotation.Nullable String text) {
     if (text == null) {
       return "";
     }
@@ -139,7 +139,7 @@ public class GrStubUtils {
     return PsiNameHelper.getShortClassName(text.substring(0, i)) + text.substring(i);
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   public static String getPackageName(final GrFileStub stub) {
     for (StubElement child : stub.getChildrenStubs()) {
       if (child instanceof GrPackageDefinitionStub) {

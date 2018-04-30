@@ -16,7 +16,8 @@
 
 package org.jetbrains.plugins.groovy.formatter.processors;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.formatter.blocks.ClosureBodyBlock;
 import org.jetbrains.plugins.groovy.formatter.blocks.GrLabelBlock;
 import org.jetbrains.plugins.groovy.formatter.blocks.GroovyBlock;
@@ -100,8 +101,8 @@ public class GroovyIndentProcessor extends GroovyElementVisitor
 	 * @param child       child node
 	 * @return indent
 	 */
-	@NotNull
-	public Indent getChildIndent(@NotNull final GroovyBlock parentBlock, @NotNull final ASTNode child)
+	@Nonnull
+	public Indent getChildIndent(@Nonnull final GroovyBlock parentBlock, @Nonnull final ASTNode child)
 	{
 		myChildType = child.getElementType();
 		if(parentBlock instanceof ClosureBodyBlock)

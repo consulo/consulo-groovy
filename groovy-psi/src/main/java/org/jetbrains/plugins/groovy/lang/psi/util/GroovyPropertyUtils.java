@@ -26,8 +26,8 @@ import com.intellij.psi.util.PsiUtil;
 import com.intellij.util.ArrayUtil;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
@@ -65,12 +65,12 @@ public class GroovyPropertyUtils {
     return getAllSetters(field.getContainingClass(), field.getName(), field.hasModifierProperty(PsiModifier.STATIC), false);
   }
 
-  @NotNull
+  @Nonnull
   public static PsiMethod[] getAllGettersByField(PsiField field) {
     return getAllGetters(field.getContainingClass(), field.getName(), field.hasModifierProperty(PsiModifier.STATIC), false);
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   public static PsiMethod findSetterForField(PsiField field) {
     final PsiClass containingClass = field.getContainingClass();
     final String propertyName = field.getName();
@@ -86,8 +86,8 @@ public class GroovyPropertyUtils {
     return findPropertyGetter(containingClass, propertyName, isStatic, true);
   }
 
-  @Nullable
-  public static PsiMethod findPropertySetter(@Nullable PsiType type, String propertyName, @NotNull GroovyPsiElement context) {
+  @javax.annotation.Nullable
+  public static PsiMethod findPropertySetter(@Nullable PsiType type, String propertyName, @Nonnull GroovyPsiElement context) {
     final String setterName = getSetterName(propertyName);
     if (type == null) {
       final GrExpression fromText = GroovyPsiElementFactory.getInstance(context.getProject()).createExpressionFromText("this", context);
@@ -100,7 +100,7 @@ public class GroovyPropertyUtils {
     return PsiImplUtil.extractUniqueElement(setterCandidates);
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   public static PsiMethod findPropertySetter(PsiClass aClass, String propertyName, boolean isStatic, boolean checkSuperClasses) {
     if (aClass == null) return null;
     PsiMethod[] methods;
@@ -124,8 +124,8 @@ public class GroovyPropertyUtils {
     return null;
   }
 
-  @NotNull
-  public static PsiMethod[] getAllGetters(PsiClass aClass, @NotNull String propertyName, boolean isStatic, boolean checkSuperClasses) {
+  @Nonnull
+  public static PsiMethod[] getAllGetters(PsiClass aClass, @Nonnull String propertyName, boolean isStatic, boolean checkSuperClasses) {
     if (aClass == null) return PsiMethod.EMPTY_ARRAY;
     PsiMethod[] methods;
     if (checkSuperClasses) {
@@ -149,8 +149,8 @@ public class GroovyPropertyUtils {
     return result.toArray(new PsiMethod[result.size()]);
   }
 
-  @NotNull
-  public static PsiMethod[] getAllSetters(PsiClass aClass, @NotNull String propertyName, boolean isStatic, boolean checkSuperClasses) {
+  @Nonnull
+  public static PsiMethod[] getAllSetters(PsiClass aClass, @Nonnull String propertyName, boolean isStatic, boolean checkSuperClasses) {
     if (aClass == null) return PsiMethod.EMPTY_ARRAY;
     PsiMethod[] methods;
     if (checkSuperClasses) {
@@ -239,7 +239,7 @@ public class GroovyPropertyUtils {
     return propertyName.equals(bySetter) || (!isPropertyName(bySetter) && propertyName.equals(getPropertyNameBySetterName(method.getName())));
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   public static String getPropertyNameByGetter(PsiMethod getterMethod) {
     if (getterMethod instanceof GrAccessorMethod) {
       return ((GrAccessorMethod)getterMethod).getProperty().getName();
@@ -261,7 +261,7 @@ public class GroovyPropertyUtils {
     return null;
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   public static String getPropertyNameBySetter(PsiMethod setterMethod) {
     if (setterMethod instanceof GrAccessorMethod) {
       return ((GrAccessorMethod)setterMethod).getProperty().getName();
@@ -292,14 +292,14 @@ public class GroovyPropertyUtils {
     return null;
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   public static String getPropertyName(PsiMethod accessor) {
     if (isSimplePropertyGetter(accessor)) return getPropertyNameByGetter(accessor);
     if (isSimplePropertySetter(accessor)) return getPropertyNameBySetter(accessor);
     return null;
   }
 
-  public static boolean isGetterName(@NotNull String name) {
+  public static boolean isGetterName(@Nonnull String name) {
     int prefixLength;
     if (name.startsWith(GET_PREFIX)) {
       prefixLength = 3;
@@ -318,15 +318,15 @@ public class GroovyPropertyUtils {
     return name.length() > prefixLength + 1 && isUpperCase(name.charAt(prefixLength + 1));
   }
 
-  public static String getGetterNameNonBoolean(@NotNull String name) {
+  public static String getGetterNameNonBoolean(@Nonnull String name) {
     return getAccessorName(GET_PREFIX, name);
   }
 
-  public static String getGetterNameBoolean(@NotNull String name) {
+  public static String getGetterNameBoolean(@Nonnull String name) {
     return getAccessorName(IS_PREFIX, name);
   }
 
-  public static String getSetterName(@NotNull String name) {
+  public static String getSetterName(@Nonnull String name) {
     return getAccessorName("set", name);
   }
 
@@ -351,7 +351,7 @@ public class GroovyPropertyUtils {
    * @param name property name
    * @return getter names
    */
-  public static String[] suggestGettersName(@NotNull String name) {
+  public static String[] suggestGettersName(@Nonnull String name) {
     return new String[]{getGetterNameBoolean(name), getGetterNameNonBoolean(name)};
   }
 
@@ -361,7 +361,7 @@ public class GroovyPropertyUtils {
     return true;
   }
 
-  public static String[] suggestSettersName(@NotNull String name) {
+  public static String[] suggestSettersName(@Nonnull String name) {
     return new String[]{getSetterName(name)};
   }
 
@@ -445,7 +445,7 @@ public class GroovyPropertyUtils {
     return null;
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   public static String getSetterPrefix(PsiMethod setter) {
     if (setter.getName().startsWith(SET_PREFIX)) return SET_PREFIX;
     return null;

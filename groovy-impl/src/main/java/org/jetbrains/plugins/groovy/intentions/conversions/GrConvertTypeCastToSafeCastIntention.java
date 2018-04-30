@@ -15,11 +15,12 @@
  */
 package org.jetbrains.plugins.groovy.intentions.conversions;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.IncorrectOperationException;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.intentions.base.PsiElementPredicate;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
@@ -32,7 +33,7 @@ import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeElement;
  */
 public class GrConvertTypeCastToSafeCastIntention extends Intention {
   @Override
-  protected void processIntention(@NotNull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
+  protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
     if (!(element instanceof GrTypeCastExpression)) return;
 
     GrExpression operand = ((GrTypeCastExpression)element).getOperand();
@@ -47,7 +48,7 @@ public class GrConvertTypeCastToSafeCastIntention extends Intention {
     ((GrTypeCastExpression)element).replaceWithExpression(safeCast, true);
   }
 
-  @NotNull
+  @Nonnull
   @Override
   protected PsiElementPredicate getElementPredicate() {
     return new PsiElementPredicate() {

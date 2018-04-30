@@ -22,8 +22,7 @@ import com.intellij.psi.PsiType;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.InheritanceUtil;
 import org.codehaus.groovy.runtime.GroovyCategorySupport;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -50,7 +49,7 @@ public class GroovyClassDescriptor {
   @SuppressWarnings({"SetReplaceableByEnumSet"}) //order is important
   final Set<Factor> affectingFactors = new LinkedHashSet<Factor>();
 
-  public GroovyClassDescriptor(@NotNull PsiType psiType, PsiElement place, final PsiFile placeFile) {
+  public GroovyClassDescriptor(@Nonnull PsiType psiType, PsiElement place, final PsiFile placeFile) {
     myPsiType = psiType;
     myPlace = place;
     myFile = placeFile;
@@ -66,7 +65,7 @@ public class GroovyClassDescriptor {
     return myPlace.getResolveScope();
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   public String getTypeText() {
     affectingFactors.add(Factor.qualifierType);
     return myTypeText;
@@ -81,7 +80,7 @@ public class GroovyClassDescriptor {
     return myPlace;
   }
 
-  @NotNull
+  @Nonnull
   public PsiType getPsiType() {
     affectingFactors.add(Factor.qualifierType);
     return myPsiType;

@@ -15,7 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrBlockStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrOpenBlock;
@@ -27,7 +28,7 @@ import com.intellij.lang.ASTNode;
  */
 public class GrBlockStatementImpl extends GroovyPsiElementImpl implements GrBlockStatement {
 
-  public GrBlockStatementImpl(@NotNull ASTNode node) {
+  public GrBlockStatementImpl(@Nonnull ASTNode node) {
     super(node);
   }
 
@@ -41,7 +42,7 @@ public class GrBlockStatementImpl extends GroovyPsiElementImpl implements GrBloc
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public GrOpenBlock getBlock() {
     return findNotNullChildByClass(GrOpenBlock.class);
   }

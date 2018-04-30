@@ -22,9 +22,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
+import javax.annotation.Nonnull;
 import javax.swing.Icon;
 
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocComment;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocCommentOwner;
 import org.jetbrains.plugins.groovy.lang.psi.GrNamedElement;
@@ -77,7 +77,7 @@ public class GroovyLineMarkerProvider extends JavaLineMarkerProvider
 	}
 
 	@Override
-	public LineMarkerInfo getLineMarkerInfo(@NotNull final PsiElement element)
+	public LineMarkerInfo getLineMarkerInfo(@Nonnull final PsiElement element)
 	{
 		final PsiElement parent = element.getParent();
 		if(parent instanceof PsiNameIdentifierOwner)
@@ -163,7 +163,7 @@ public class GroovyLineMarkerProvider extends JavaLineMarkerProvider
 		return null;
 	}
 
-	private static boolean hasSuperMethods(@NotNull GrMethod method)
+	private static boolean hasSuperMethods(@Nonnull GrMethod method)
 	{
 		final GrReflectedMethod[] reflectedMethods = method.getReflectedMethods();
 		if(reflectedMethods.length > 0)
@@ -184,7 +184,7 @@ public class GroovyLineMarkerProvider extends JavaLineMarkerProvider
 		}
 	}
 
-	private static int getGroovyCategory(@NotNull PsiElement element, @NotNull CharSequence documentChars)
+	private static int getGroovyCategory(@Nonnull PsiElement element, @Nonnull CharSequence documentChars)
 	{
 		if(element instanceof GrVariableDeclarationImpl)
 		{
@@ -219,7 +219,7 @@ public class GroovyLineMarkerProvider extends JavaLineMarkerProvider
 	}
 
 	@Override
-	public void collectSlowLineMarkers(@NotNull final List<PsiElement> elements, @NotNull final Collection<LineMarkerInfo> result)
+	public void collectSlowLineMarkers(@Nonnull final List<PsiElement> elements, @Nonnull final Collection<LineMarkerInfo> result)
 	{
 		Set<PsiMethod> methods = new HashSet<>();
 		for(PsiElement element : elements)
@@ -249,7 +249,7 @@ public class GroovyLineMarkerProvider extends JavaLineMarkerProvider
 		collectOverridingMethods(methods, result);
 	}
 
-	private static void collectOverridingMethods(@NotNull final Set<PsiMethod> methods, @NotNull Collection<LineMarkerInfo> result)
+	private static void collectOverridingMethods(@Nonnull final Set<PsiMethod> methods, @Nonnull Collection<LineMarkerInfo> result)
 	{
 		final Set<PsiElement> overridden = new HashSet<>();
 
@@ -295,7 +295,7 @@ public class GroovyLineMarkerProvider extends JavaLineMarkerProvider
 		}
 	}
 
-	private static boolean isCorrectTarget(@NotNull PsiMethod method)
+	private static boolean isCorrectTarget(@Nonnull PsiMethod method)
 	{
 		if(method instanceof GrTraitMethod)
 		{

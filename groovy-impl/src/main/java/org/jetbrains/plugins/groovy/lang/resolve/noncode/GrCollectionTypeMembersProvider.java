@@ -23,7 +23,7 @@ import com.intellij.psi.scope.ElementClassHint;
 import com.intellij.psi.scope.NameHint;
 import com.intellij.psi.scope.PsiScopeProcessor;
 import com.intellij.psi.util.PsiUtil;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.resolve.NonCodeMembersContributor;
 import org.jetbrains.plugins.groovy.lang.resolve.ResolveUtil;
 import org.jetbrains.plugins.groovy.lang.resolve.processors.ClassHint;
@@ -41,7 +41,7 @@ public class GrCollectionTypeMembersProvider extends NonCodeMembersContributor {
   }
 
   @Override
-  public void processDynamicElements(final @NotNull PsiType qualifierType,
+  public void processDynamicElements(final @Nonnull PsiType qualifierType,
                                      PsiClass aClass,
                                      final PsiScopeProcessor processor,
                                      final PsiElement place,
@@ -63,7 +63,7 @@ public class GrCollectionTypeMembersProvider extends NonCodeMembersContributor {
     }
 
     @Override
-    public boolean execute(@NotNull PsiElement element, ResolveState state) {
+    public boolean execute(@Nonnull PsiElement element, ResolveState state) {
       if (element instanceof PsiField) {
         final PsiType type = ((PsiField)element).getType();
         final String typeText =
@@ -77,7 +77,7 @@ public class GrCollectionTypeMembersProvider extends NonCodeMembersContributor {
     }
 
     @Override
-    public <T> T getHint(@NotNull Key<T> hintKey) {
+    public <T> T getHint(@Nonnull Key<T> hintKey) {
       if (hintKey == NameHint.KEY) return super.getHint(hintKey);
       if (hintKey == ClassHint.KEY || hintKey == ElementClassHint.KEY) return (T)this;
       return null;

@@ -15,18 +15,18 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.api.statements.clauses;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.psi.PsiElement;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 
 /**
  * @author ven
  */
 public interface GrForInClause extends GrForClause {
-  @Nullable
+  @javax.annotation.Nullable
   GrExpression getIteratedExpression();
 
-  @NotNull
+  @Nonnull
   PsiElement getDelimiter();
 }

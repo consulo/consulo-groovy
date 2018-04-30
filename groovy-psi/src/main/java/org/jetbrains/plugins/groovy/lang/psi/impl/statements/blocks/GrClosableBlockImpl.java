@@ -16,6 +16,8 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.blocks;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.*;
 import com.intellij.psi.scope.PsiScopeProcessor;
@@ -28,8 +30,8 @@ import com.intellij.util.Function;
 import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.NullableFunction;
 import groovy.lang.Closure;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
@@ -62,7 +64,7 @@ public class GrClosableBlockImpl extends GrBlockImpl implements GrClosableBlock 
 
   private volatile GrParameter[] mySyntheticItParameter;
 
-  public GrClosableBlockImpl(@NotNull IElementType type, CharSequence buffer) {
+  public GrClosableBlockImpl(@Nonnull IElementType type, CharSequence buffer) {
     super(type, buffer);
   }
 
@@ -78,11 +80,11 @@ public class GrClosableBlockImpl extends GrBlockImpl implements GrClosableBlock 
   }
 
   @Override
-  public boolean processClosureDeclarations(@NotNull final PsiScopeProcessor plainProcessor,
-                                            @NotNull final PsiScopeProcessor nonCodeProcessor,
-                                            @NotNull final ResolveState state,
+  public boolean processClosureDeclarations(@Nonnull final PsiScopeProcessor plainProcessor,
+                                            @Nonnull final PsiScopeProcessor nonCodeProcessor,
+                                            @Nonnull final ResolveState state,
                                             @Nullable final PsiElement lastParent,
-                                            @NotNull final PsiElement place) {
+                                            @Nonnull final PsiElement place) {
     if (!processDeclarations(plainProcessor, state, lastParent, place)) return false;
     if (!processOwnerAndDelegate(plainProcessor, nonCodeProcessor, state, place)) return false;
 
@@ -90,10 +92,10 @@ public class GrClosableBlockImpl extends GrBlockImpl implements GrClosableBlock 
   }
 
   @Override
-  public boolean processDeclarations(@NotNull final PsiScopeProcessor processor,
-                                     @NotNull final ResolveState state,
+  public boolean processDeclarations(@Nonnull final PsiScopeProcessor processor,
+                                     @Nonnull final ResolveState state,
                                      @Nullable final PsiElement lastParent,
-                                     @NotNull final PsiElement place) {
+                                     @Nonnull final PsiElement place) {
     if (lastParent == null) return true;
 
     if (!super.processDeclarations(processor, state, lastParent, place)) return false;
@@ -104,10 +106,10 @@ public class GrClosableBlockImpl extends GrBlockImpl implements GrClosableBlock 
     return true;
   }
 
-  private boolean processOwnerAndDelegate(@NotNull PsiScopeProcessor processor,
-                                          @NotNull PsiScopeProcessor nonCodeProcessor,
-                                          @NotNull ResolveState state,
-                                          @NotNull PsiElement place) {
+  private boolean processOwnerAndDelegate(@Nonnull PsiScopeProcessor processor,
+                                          @Nonnull PsiScopeProcessor nonCodeProcessor,
+                                          @Nonnull ResolveState state,
+                                          @Nonnull PsiElement place) {
     Boolean result = processDelegatesTo(processor, nonCodeProcessor, state, place);
     if (result != null) return result.booleanValue();
 
@@ -115,11 +117,11 @@ public class GrClosableBlockImpl extends GrBlockImpl implements GrClosableBlock 
     return true;
   }
 
-  @Nullable
-  private Boolean processDelegatesTo(@NotNull PsiScopeProcessor processor,
-                                     @NotNull PsiScopeProcessor nonCodeProcessor,
-                                     @NotNull ResolveState state,
-                                     @NotNull PsiElement place) {
+  @javax.annotation.Nullable
+  private Boolean processDelegatesTo(@Nonnull PsiScopeProcessor processor,
+                                     @Nonnull PsiScopeProcessor nonCodeProcessor,
+                                     @Nonnull ResolveState state,
+                                     @Nonnull PsiElement place) {
     GrDelegatesToUtil.DelegatesToInfo info = GrDelegatesToUtil.getDelegatesToInfo(place, this);
     if (info == null) {
       return null;
@@ -147,10 +149,10 @@ public class GrClosableBlockImpl extends GrBlockImpl implements GrClosableBlock 
     }
   }
 
-  private boolean processDelegate(@NotNull PsiScopeProcessor processor,
-                                  @NotNull PsiScopeProcessor nonCodeProcessor,
-                                  @NotNull ResolveState state,
-                                  @NotNull PsiElement place,
+  private boolean processDelegate(@Nonnull PsiScopeProcessor processor,
+                                  @Nonnull PsiScopeProcessor nonCodeProcessor,
+                                  @Nonnull ResolveState state,
+                                  @Nonnull PsiElement place,
                                   @Nullable final PsiType classToDelegate) {
     if (classToDelegate == null) return true;
 
@@ -158,19 +160,19 @@ public class GrClosableBlockImpl extends GrBlockImpl implements GrClosableBlock 
                                             state.put(ClassHint.RESOLVE_CONTEXT, this), place);
   }
 
-  private boolean processClosureClassMembers(@NotNull PsiScopeProcessor processor,
-                                             @NotNull ResolveState state,
+  private boolean processClosureClassMembers(@Nonnull PsiScopeProcessor processor,
+                                             @Nonnull ResolveState state,
                                              @Nullable PsiElement lastParent,
-                                             @NotNull PsiElement place) {
+                                             @Nonnull PsiElement place) {
     final PsiClass closureClass = GroovyPsiManager.getInstance(getProject()).findClassWithCache(GroovyCommonClassNames.GROOVY_LANG_CLOSURE, getResolveScope());
     if (closureClass == null) return true;
 
     return closureClass.processDeclarations(processor, state.put(ClassHint.RESOLVE_CONTEXT, this), lastParent, place);
   }
 
-  private boolean processParameters(@NotNull PsiScopeProcessor processor,
-                                    @NotNull ResolveState state,
-                                    @NotNull PsiElement place) {
+  private boolean processParameters(@Nonnull PsiScopeProcessor processor,
+                                    @Nonnull ResolveState state,
+                                    @Nonnull PsiElement place) {
     if (!ResolveUtil.shouldProcessProperties(processor.getHint(ClassHint.KEY))) return true;
 
     if (hasParametersSection()) {
@@ -187,10 +189,10 @@ public class GrClosableBlockImpl extends GrBlockImpl implements GrClosableBlock 
     return true;
   }
 
-  private boolean processOwner(@NotNull PsiScopeProcessor processor,
-                               @NotNull PsiScopeProcessor nonCodeProcessor,
-                               @NotNull ResolveState state,
-                               @NotNull PsiElement place) {
+  private boolean processOwner(@Nonnull PsiScopeProcessor processor,
+                               @Nonnull PsiScopeProcessor nonCodeProcessor,
+                               @Nonnull ResolveState state,
+                               @Nonnull PsiElement place) {
     final PsiElement parent = getParent();
     if (parent == null) return true;
 
@@ -245,7 +247,7 @@ public class GrClosableBlockImpl extends GrBlockImpl implements GrClosableBlock 
 
 
   @Override
-  @NotNull
+  @Nonnull
   public GrParameterListImpl getParameterList() {
     final GrParameterListImpl childByClass = findChildByClass(GrParameterListImpl.class);
     assert childByClass != null;
@@ -328,7 +330,7 @@ public class GrClosableBlockImpl extends GrBlockImpl implements GrClosableBlock 
   }
 
   @Override
-  public GrExpression replaceWithExpression(@NotNull GrExpression newExpr, boolean removeUnnecessaryParentheses) {
+  public GrExpression replaceWithExpression(@Nonnull GrExpression newExpr, boolean removeUnnecessaryParentheses) {
     return PsiImplUtil.replaceExpression(this, newExpr, removeUnnecessaryParentheses);
   }
 

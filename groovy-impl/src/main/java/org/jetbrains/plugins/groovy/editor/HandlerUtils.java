@@ -16,8 +16,8 @@
 
 package org.jetbrains.plugins.groovy.editor;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import com.intellij.lang.Language;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
@@ -40,7 +40,7 @@ public class HandlerUtils
 	{
 	}
 
-	public static boolean isEnabled(@NotNull final Editor editor, @NotNull final DataContext dataContext, @Nullable final EditorActionHandler originalHandler)
+	public static boolean isEnabled(@Nonnull final Editor editor, @Nonnull final DataContext dataContext, @javax.annotation.Nullable final EditorActionHandler originalHandler)
 	{
 		final Project project = getProject(dataContext);
 		if(project != null)
@@ -55,7 +55,7 @@ public class HandlerUtils
 		return originalHandler == null || originalHandler.isEnabled(editor, dataContext);
 	}
 
-	public static boolean isReadOnly(@NotNull final Editor editor)
+	public static boolean isReadOnly(@Nonnull final Editor editor)
 	{
 		if(editor.isViewer())
 		{
@@ -79,24 +79,24 @@ public class HandlerUtils
 		return true;
 	}
 
-	public static PsiFile getPsiFile(@NotNull final Editor editor, @NotNull final DataContext dataContext)
+	public static PsiFile getPsiFile(@Nonnull final Editor editor, @Nonnull final DataContext dataContext)
 	{
 		return getPsiFile(editor, getProject(dataContext));
 	}
 
-	public static PsiFile getPsiFile(@NotNull final Editor editor, final Project project)
+	public static PsiFile getPsiFile(@Nonnull final Editor editor, final Project project)
 	{
 		return PsiDocumentManager.getInstance(project).getPsiFile(editor.getDocument());
 	}
 
-	@Nullable
-	public static Language getLanguage(@NotNull final DataContext dataContext)
+	@javax.annotation.Nullable
+	public static Language getLanguage(@Nonnull final DataContext dataContext)
 	{
 		return dataContext.getData(LangDataKeys.LANGUAGE);
 	}
 
-	@Nullable
-	public static Project getProject(@NotNull final DataContext dataContext)
+	@javax.annotation.Nullable
+	public static Project getProject(@Nonnull final DataContext dataContext)
 	{
 		return dataContext.getData(CommonDataKeys.PROJECT);
 	}

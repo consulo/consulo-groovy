@@ -15,8 +15,9 @@
  */
 package org.jetbrains.plugins.groovy.annotator.intentions;
 
+import javax.annotation.Nonnull;
+
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.intentions.base.IntentionUtils;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.GrModifier;
 import org.jetbrains.plugins.groovy.lang.psi.expectedTypes.TypeConstraint;
@@ -59,11 +60,11 @@ public class CreateFieldFix
 		return myTargetClass.isValid();
 	}
 
-	protected void doFix(@NotNull Project project,
-			@NotNull @GrModifier.ModifierConstant String[] modifiers,
-			@NotNull @NonNls String fieldName,
-			@NotNull TypeConstraint[] typeConstraints,
-			@NotNull PsiElement context) throws IncorrectOperationException
+	protected void doFix(@Nonnull Project project,
+			@Nonnull @GrModifier.ModifierConstant String[] modifiers,
+			@Nonnull @NonNls String fieldName,
+			@Nonnull TypeConstraint[] typeConstraints,
+			@Nonnull PsiElement context) throws IncorrectOperationException
 	{
 		JVMElementFactory factory = JVMElementFactories.getFactory(myTargetClass.getLanguage(), project);
 		if(factory == null)

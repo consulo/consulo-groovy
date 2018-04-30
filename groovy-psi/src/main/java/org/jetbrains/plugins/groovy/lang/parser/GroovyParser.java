@@ -16,8 +16,8 @@
 
 package org.jetbrains.plugins.groovy.lang.parser;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.parser.parsing.auxiliary.Separators;
@@ -67,7 +67,7 @@ public class GroovyParser implements PsiParser
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public ASTNode parse(IElementType root, PsiBuilder builder, LanguageVersion languageVersion)
 	{
 		//builder.setDebugMode(true);
@@ -200,7 +200,7 @@ public class GroovyParser implements PsiParser
 	}
 
 	//gsp directives, scriptlets and such
-	protected boolean isExtendedSeparator(@Nullable final IElementType tokenType)
+	protected boolean isExtendedSeparator(@javax.annotation.Nullable final IElementType tokenType)
 	{
 		return false;
 	}
@@ -242,7 +242,7 @@ public class GroovyParser implements PsiParser
 		return true;
 	}
 
-	private boolean parseBranch(@NotNull PsiBuilder builder)
+	private boolean parseBranch(@Nonnull PsiBuilder builder)
 	{
 		PsiBuilder.Marker warn = builder.mark();
 		ParserUtils.getToken(builder, GroovyTokenTypes.mNLS);
@@ -477,7 +477,7 @@ public class GroovyParser implements PsiParser
 	 * <p/>
 	 * If non of preceding elements was found rolls back and return false
 	 */
-	public boolean parseDeclaration(@NotNull PsiBuilder builder,
+	public boolean parseDeclaration(@Nonnull PsiBuilder builder,
 			boolean isInClass,
 			boolean isInAnnotation,
 			@Nullable String typeDefinitionName)

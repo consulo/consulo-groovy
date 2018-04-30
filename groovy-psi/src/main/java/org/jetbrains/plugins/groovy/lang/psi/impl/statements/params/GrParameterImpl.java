@@ -23,8 +23,8 @@ import com.intellij.psi.search.LocalSearchScope;
 import com.intellij.psi.search.SearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocComment;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocCommentOwner;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
@@ -53,7 +53,7 @@ import org.jetbrains.plugins.groovy.lang.psi.typeEnhancers.GrVariableEnhancer;
  * @author: Dmitry.Krasilschikov
  */
 public class GrParameterImpl extends GrVariableBaseImpl<GrParameterStub> implements GrParameter, StubBasedPsiElement<GrParameterStub> {
-  public GrParameterImpl(@NotNull ASTNode node) {
+  public GrParameterImpl(@Nonnull ASTNode node) {
     super(node);
   }
 
@@ -117,7 +117,7 @@ public class GrParameterImpl extends GrVariableBaseImpl<GrParameterStub> impleme
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public PsiType getType() {
     PsiType type = super.getType();
     if (isMainMethodFirstUntypedParameter()) {
@@ -194,7 +194,7 @@ public class GrParameterImpl extends GrVariableBaseImpl<GrParameterStub> impleme
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public SearchScope getUseScope() {
     if (!isPhysical()) {
       final PsiFile file = getContainingFile();
@@ -215,7 +215,7 @@ public class GrParameterImpl extends GrVariableBaseImpl<GrParameterStub> impleme
     return new LocalSearchScope(scope);
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public String getName() {
     final GrParameterStub stub = getStub();
@@ -226,13 +226,13 @@ public class GrParameterImpl extends GrVariableBaseImpl<GrParameterStub> impleme
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public GrModifierList getModifierList() {
     return getStubOrPsiChild(GroovyElementTypes.MODIFIERS);
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public PsiElement getDeclarationScope() {
     final GrParametersOwner owner = PsiTreeUtil.getParentOfType(this, GrParametersOwner.class);
     assert owner != null;

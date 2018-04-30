@@ -19,7 +19,7 @@ package org.jetbrains.plugins.groovy.dsl.dsltop;
 import com.intellij.psi.*;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.dsl.GdslMembersHolderConsumer;
 import org.jetbrains.plugins.groovy.dsl.holders.DelegatedMembersHolder;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
@@ -60,7 +60,7 @@ public class GroovyDslDefaultMembers implements GdslMembersProvider {
    * **********************************************************************************
    */
 
-  public void delegatesTo(@Nullable PsiElement elem, GdslMembersHolderConsumer consumer) {
+  public void delegatesTo(@javax.annotation.Nullable PsiElement elem, GdslMembersHolderConsumer consumer) {
     if (elem instanceof PsiClass) {
       final PsiClass clazz = (PsiClass)elem;
       final DelegatedMembersHolder holder = new DelegatedMembersHolder();
@@ -142,7 +142,7 @@ public class GroovyDslDefaultMembers implements GdslMembersProvider {
     return null;
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   public PsiMethod enclosingMethod(GdslMembersHolderConsumer consumer) {
     final PsiElement place = consumer.getPlace();
     if (place == null) return null;
@@ -158,7 +158,7 @@ public class GroovyDslDefaultMembers implements GdslMembersProvider {
     return member;
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   public PsiClass enclosingClass(GdslMembersHolderConsumer consumer) {
     final PsiElement place = consumer.getPlace();
     if (place == null) return null;

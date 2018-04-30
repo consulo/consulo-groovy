@@ -15,11 +15,12 @@
  */
 package org.jetbrains.plugins.groovy.annotator.inspections;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.codeInspection.LocalQuickFix;
 import com.intellij.codeInspection.ProblemDescriptor;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.codeInspection.GroovyInspectionBundle;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
@@ -31,17 +32,17 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrRefere
  */
 public class SecondUnsafeCallQuickFix implements LocalQuickFix {
 
-  @NotNull
+  @Nonnull
   public String getName() {
     return GroovyInspectionBundle.message("second.unsafe.call");
   }
 
-  @NotNull
+  @Nonnull
   public String getFamilyName() {
     return GroovyInspectionBundle.message("second.unsafe.call");
   }
 
-  public void applyFix(@NotNull Project project, @NotNull ProblemDescriptor descriptor) {
+  public void applyFix(@Nonnull Project project, @Nonnull ProblemDescriptor descriptor) {
     final PsiElement element = descriptor.getPsiElement();
     if (!(element instanceof GrReferenceExpression)) return;
 

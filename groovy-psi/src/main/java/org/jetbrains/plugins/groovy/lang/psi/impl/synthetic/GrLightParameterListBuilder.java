@@ -19,7 +19,7 @@ import com.intellij.lang.Language;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.*;
 import com.intellij.psi.impl.light.LightElement;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameter;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameterList;
@@ -38,7 +38,7 @@ public class GrLightParameterListBuilder extends LightElement implements GrParam
     super(manager, language);
   }
 
-  public GrParameter addParameter(@NotNull GrParameter parameter) {
+  public GrParameter addParameter(@Nonnull GrParameter parameter) {
     myParameters.add(parameter);
     myCachedParameters = null;
     return parameter;
@@ -49,7 +49,7 @@ public class GrLightParameterListBuilder extends LightElement implements GrParam
     return "GrLightParameterListBuilder";
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public GrParameter[] getParameters() {
     if (myCachedParameters == null) {
@@ -64,7 +64,7 @@ public class GrLightParameterListBuilder extends LightElement implements GrParam
     return myCachedParameters;
   }
 
-  public void copyParameters(@NotNull PsiMethod method, PsiSubstitutor substitutor, PsiMethod scope) {
+  public void copyParameters(@Nonnull PsiMethod method, PsiSubstitutor substitutor, PsiMethod scope) {
     for (PsiParameter parameter : method.getParameterList().getParameters()) {
       GrLightParameter p = new GrLightParameter(StringUtil.notNullize(parameter.getName()), substitutor.substitute(parameter.getType()), scope);
 
@@ -93,7 +93,7 @@ public class GrLightParameterListBuilder extends LightElement implements GrParam
   }
 
   @Override
-  public void accept(@NotNull PsiElementVisitor visitor) {
+  public void accept(@Nonnull PsiElementVisitor visitor) {
     if (visitor instanceof JavaElementVisitor) {
       ((JavaElementVisitor) visitor).visitParameterList(this);
     }
@@ -109,7 +109,7 @@ public class GrLightParameterListBuilder extends LightElement implements GrParam
 
   }
 
-  @NotNull
+  @Nonnull
   public GrParameter removeParameter(int index) {
     GrParameter removed = myParameters.remove(index);
     myCachedParameters = null;

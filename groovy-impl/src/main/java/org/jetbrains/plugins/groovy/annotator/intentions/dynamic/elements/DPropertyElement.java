@@ -15,7 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.annotator.intentions.dynamic.elements;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.annotator.intentions.dynamic.GrDynamicImplicitProperty;
 import com.intellij.psi.CommonClassNames;
 import com.intellij.psi.PsiManager;
@@ -49,7 +50,7 @@ public class DPropertyElement extends DItemElement
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public PsiVariable getPsi(PsiManager manager, final String containingClassName)
 	{
 		if(myPsi != null)

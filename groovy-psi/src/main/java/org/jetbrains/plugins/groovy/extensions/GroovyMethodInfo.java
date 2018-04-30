@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrMethodCall;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyNamesUtil;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil;
@@ -84,7 +84,7 @@ public class GroovyMethodInfo {
     }
  }
 
-  @Nullable
+  @javax.annotation.Nullable
   private static List<GroovyMethodInfo> getInfos(Map<String, Map<String, List<GroovyMethodInfo>>> map, String key, PsiMethod method) {
     Map<String, List<GroovyMethodInfo>> methodMap = map.get(key);
     if (methodMap == null) return null;
@@ -131,7 +131,7 @@ public class GroovyMethodInfo {
     }
   }
 
-  public GroovyMethodInfo(GroovyMethodDescriptor method, @NotNull ClassLoader classLoader) {
+  public GroovyMethodInfo(GroovyMethodDescriptor method, @Nonnull ClassLoader classLoader) {
     myClassLoader = classLoader;
     myParams = method.getParams();
     myReturnType = method.returnType;
@@ -145,8 +145,8 @@ public class GroovyMethodInfo {
 
   private static void addMethodDescriptor(Map<String, Map<String, List<GroovyMethodInfo>>> res,
                                           GroovyMethodDescriptor method,
-                                          @NotNull ClassLoader classLoader,
-                                          @NotNull String key) {
+                                          @Nonnull ClassLoader classLoader,
+                                          @Nonnull String key) {
     if (method.methodName == null) {
       addMethodDescriptor(res, method, classLoader, null, key);
     }
@@ -161,9 +161,9 @@ public class GroovyMethodInfo {
   
   private static void addMethodDescriptor(Map<String, Map<String, List<GroovyMethodInfo>>> res,
                                           GroovyMethodDescriptor method,
-                                          @NotNull ClassLoader classLoader,
-                                          @Nullable String methodName,
-                                          @NotNull String key) {
+                                          @Nonnull ClassLoader classLoader,
+                                          @javax.annotation.Nullable String methodName,
+                                          @Nonnull String key) {
     Map<String, List<GroovyMethodInfo>> methodMap = res.get(key);
     if (methodMap == null) {
       methodMap = new HashMap<String, List<GroovyMethodInfo>>();
@@ -188,7 +188,7 @@ public class GroovyMethodInfo {
     return myReturnTypeCalculatorClassName != null;
   }
 
-  @NotNull
+  @Nonnull
   public PairFunction<GrMethodCall, PsiMethod, PsiType> getReturnTypeCalculator() {
     if (myReturnTypeCalculatorInstance == null) {
       myReturnTypeCalculatorInstance = ClassInstanceCache.getInstance(myReturnTypeCalculatorClassName, myClassLoader);
@@ -212,7 +212,7 @@ public class GroovyMethodInfo {
     return myNamedArgProviderInstance;
   }
 
-  public boolean isApplicable(@NotNull PsiMethod method) {
+  public boolean isApplicable(@Nonnull PsiMethod method) {
     if (myParams == null) {
       return true;
     }

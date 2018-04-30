@@ -15,11 +15,12 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.control;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.codeInspection.ProblemDescriptor;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.IncorrectOperationException;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.codeInspection.GroovyFix;
@@ -33,12 +34,12 @@ public class GroovyConditionalWithIdenticalBranchesInspection extends BaseInspec
     return true;
   }
 
-  @NotNull
+  @Nonnull
   public String getDisplayName() {
     return "Conditional expression with identical branches";
   }
 
-  @NotNull
+  @Nonnull
   public String getGroupDisplayName() {
     return CONTROL_FLOW;
   }
@@ -52,7 +53,7 @@ public class GroovyConditionalWithIdenticalBranchesInspection extends BaseInspec
   }
 
   private static class CollapseConditionalFix extends GroovyFix {
-    @NotNull
+    @Nonnull
     public String getName() {
       return "Collapse conditional expression";
     }

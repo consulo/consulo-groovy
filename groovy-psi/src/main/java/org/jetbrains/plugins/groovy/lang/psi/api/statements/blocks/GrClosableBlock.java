@@ -16,12 +16,14 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiType;
 import com.intellij.psi.ResolveState;
 import com.intellij.psi.scope.PsiScopeProcessor;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrParametersOwner;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameter;
@@ -36,26 +38,26 @@ public interface GrClosableBlock extends GrExpression, GrCodeBlock, GrParameters
   String OWNER_NAME = "owner";
   String IT_PARAMETER_NAME = "it";
 
-  @NotNull
+  @Nonnull
   GrParameterList getParameterList();
 
   GrParameter addParameter(GrParameter parameter);
 
   boolean hasParametersSection();
 
-  @Nullable
+  @javax.annotation.Nullable
   PsiType getReturnType();
 
   GrParameter[] getAllParameters();
 
-  @Nullable
+  @javax.annotation.Nullable
   PsiElement getArrow();
 
   boolean isVarArgs();
 
-  boolean processClosureDeclarations(final @NotNull PsiScopeProcessor placeProcessor,
-                                     final @NotNull PsiScopeProcessor nonCodeProcessor,
-                                     final @NotNull ResolveState _state,
+  boolean processClosureDeclarations(final @Nonnull PsiScopeProcessor placeProcessor,
+                                     final @Nonnull PsiScopeProcessor nonCodeProcessor,
+                                     final @Nonnull ResolveState _state,
                                      final @Nullable PsiElement lastParent,
-                                     final @NotNull PsiElement place);
+                                     final @Nonnull PsiElement place);
 }

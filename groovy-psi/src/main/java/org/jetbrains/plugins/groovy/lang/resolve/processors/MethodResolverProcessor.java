@@ -21,8 +21,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
 import org.jetbrains.plugins.groovy.lang.psi.api.SpreadState;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrGdkMethod;
@@ -70,7 +70,7 @@ public class MethodResolverProcessor extends ResolverProcessor implements GrMeth
 	private final SubstitutorComputer mySubstitutorComputer;
 
 	public MethodResolverProcessor(@Nullable String name,
-			@NotNull PsiElement place,
+			@Nonnull PsiElement place,
 			boolean isConstructor,
 			@Nullable PsiType thisType,
 			@Nullable PsiType[] argumentTypes,
@@ -80,7 +80,7 @@ public class MethodResolverProcessor extends ResolverProcessor implements GrMeth
 	}
 
 	public MethodResolverProcessor(@Nullable String name,
-			@NotNull PsiElement place,
+			@Nonnull PsiElement place,
 			boolean isConstructor,
 			@Nullable PsiType thisType,
 			@Nullable PsiType[] argumentTypes,
@@ -101,7 +101,7 @@ public class MethodResolverProcessor extends ResolverProcessor implements GrMeth
 
 
 	@Override
-	public boolean execute(@NotNull PsiElement element, @NotNull ResolveState state)
+	public boolean execute(@Nonnull PsiElement element, @Nonnull ResolveState state)
 	{
 		if(myStopExecuting)
 		{
@@ -142,7 +142,7 @@ public class MethodResolverProcessor extends ResolverProcessor implements GrMeth
 		return true;
 	}
 
-	protected boolean addInapplicableCandidate(@NotNull GroovyResolveResult candidate)
+	protected boolean addInapplicableCandidate(@Nonnull GroovyResolveResult candidate)
 	{
 		if(myInapplicableCandidates == null)
 		{
@@ -151,8 +151,8 @@ public class MethodResolverProcessor extends ResolverProcessor implements GrMeth
 		return myInapplicableCandidates.add(candidate);
 	}
 
-	@NotNull
-	private PsiSubstitutor inferSubstitutor(@NotNull PsiMethod method, @NotNull ResolveState state)
+	@Nonnull
+	private PsiSubstitutor inferSubstitutor(@Nonnull PsiMethod method, @Nonnull ResolveState state)
 	{
 		PsiSubstitutor substitutor = state.get(PsiSubstitutor.KEY);
 		if(substitutor == null)
@@ -164,7 +164,7 @@ public class MethodResolverProcessor extends ResolverProcessor implements GrMeth
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public GroovyResolveResult[] getCandidates()
 	{
 		if(!myAllVariants && hasApplicableCandidates())
@@ -259,11 +259,11 @@ public class MethodResolverProcessor extends ResolverProcessor implements GrMeth
 	 * 0 if methods are equal
 	 * -1 if first is more preferable
 	 */
-	private int compareMethods(@NotNull PsiMethod method1,
-			@NotNull PsiSubstitutor substitutor1,
+	private int compareMethods(@Nonnull PsiMethod method1,
+			@Nonnull PsiSubstitutor substitutor1,
 			@Nullable PsiElement resolveContext1,
-			@NotNull PsiMethod method2,
-			@NotNull PsiSubstitutor substitutor2,
+			@Nonnull PsiMethod method2,
+			@Nonnull PsiSubstitutor substitutor2,
 			@Nullable PsiElement resolveContext2)
 	{
 		if(!method1.getName().equals(method2.getName()))
@@ -292,11 +292,11 @@ public class MethodResolverProcessor extends ResolverProcessor implements GrMeth
 	}
 
 	//method1 has more general parameter types thn method2
-	private boolean secondMethodIsPreferable(@NotNull PsiMethod method1,
-			@NotNull PsiSubstitutor substitutor1,
+	private boolean secondMethodIsPreferable(@Nonnull PsiMethod method1,
+			@Nonnull PsiSubstitutor substitutor1,
 			@Nullable PsiElement resolveContext1,
-			@NotNull PsiMethod method2,
-			@NotNull PsiSubstitutor substitutor2,
+			@Nonnull PsiMethod method2,
+			@Nonnull PsiSubstitutor substitutor2,
 			@Nullable PsiElement resolveContext2)
 	{
 		if(!method1.getName().equals(method2.getName()))
@@ -426,7 +426,7 @@ public class MethodResolverProcessor extends ResolverProcessor implements GrMeth
 		return true;
 	}
 
-	private boolean typesAgree(@NotNull PsiType type1, @NotNull PsiType type2)
+	private boolean typesAgree(@Nonnull PsiType type1, @Nonnull PsiType type2)
 	{
 		if(argumentsSupplied() && type1 instanceof PsiArrayType && !(type2 instanceof PsiArrayType))
 		{
@@ -460,7 +460,7 @@ public class MethodResolverProcessor extends ResolverProcessor implements GrMeth
 		return myArgumentTypes;
 	}
 
-	@Nullable
+	@javax.annotation.Nullable
 	@Override
 	public PsiType[] getTypeArguments()
 	{
@@ -468,7 +468,7 @@ public class MethodResolverProcessor extends ResolverProcessor implements GrMeth
 	}
 
 	@Override
-	public void handleEvent(@NotNull Event event, Object associated)
+	public void handleEvent(@Nonnull Event event, Object associated)
 	{
 		super.handleEvent(event, associated);
 		if(JavaScopeProcessorEvent.CHANGE_LEVEL == event && hasApplicableCandidates())
@@ -484,7 +484,7 @@ public class MethodResolverProcessor extends ResolverProcessor implements GrMeth
 		return myThisType;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public PsiElement getPlace()
 	{

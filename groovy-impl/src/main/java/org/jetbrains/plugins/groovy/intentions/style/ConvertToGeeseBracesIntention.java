@@ -30,8 +30,8 @@ import com.intellij.psi.codeStyle.CodeStyleSettingsManager;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.codeStyle.GroovyCodeStyleSettings;
 import org.jetbrains.plugins.groovy.intentions.base.Intention;
@@ -86,7 +86,7 @@ public class ConvertToGeeseBracesIntention extends Intention {
   }
 
   @Override
-  protected void processIntention(@NotNull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
+  protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
     IElementType elementType = element.getNode().getElementType();
     if (TokenSets.WHITE_SPACES_SET.contains(elementType)) {
       element = PsiTreeUtil.prevLeaf(element);
@@ -131,7 +131,7 @@ public class ConvertToGeeseBracesIntention extends Intention {
   }
 
 
-  @NotNull
+  @Nonnull
   @Override
   protected PsiElementPredicate getElementPredicate() {
     return MY_PREDICATE;

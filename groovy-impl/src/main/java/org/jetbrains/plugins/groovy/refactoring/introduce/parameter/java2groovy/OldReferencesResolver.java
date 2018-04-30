@@ -27,8 +27,8 @@ import com.intellij.util.ArrayUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.containers.HashMap;
 import com.intellij.util.containers.hash.HashSet;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
@@ -327,7 +327,7 @@ public class OldReferencesResolver {
     return myManager.areElementsEquivalent(resolved, contextClass);
   }
 
-  @NotNull
+  @Nonnull
   private GrExpression getActualArg(int index) {
     if (myActualArgs == null || myActualArgs[index] == null) {
       final GrExpression[] arguments = myContext.getArgumentList().getExpressionArguments();

@@ -24,8 +24,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.codeInspection.utils.ControlFlowUtils;
 import org.jetbrains.plugins.groovy.lang.lexer.TokenSets;
 import org.jetbrains.plugins.groovy.lang.psi.GrControlFlowOwner;
@@ -75,7 +75,7 @@ public class TypeInferenceHelper
 	private static final Logger LOG = Logger.getInstance(TypeInferenceHelper.class);
 	private static final ThreadLocal<InferenceContext> ourInferenceContext = new ThreadLocal<InferenceContext>();
 
-	private static <T> T doInference(@NotNull Map<String, PsiType> bindings, @NotNull Computable<T> computation)
+	private static <T> T doInference(@Nonnull Map<String, PsiType> bindings, @Nonnull Computable<T> computation)
 	{
 		InferenceContext old = ourInferenceContext.get();
 		ourInferenceContext.set(new InferenceContext.PartialContext(bindings));
@@ -96,7 +96,7 @@ public class TypeInferenceHelper
 	}
 
 	@Nullable
-	public static PsiType getInferredType(@NotNull final GrReferenceExpression refExpr)
+	public static PsiType getInferredType(@Nonnull final GrReferenceExpression refExpr)
 	{
 		final GrControlFlowOwner scope = ControlFlowUtils.findControlFlowOwner(refExpr);
 		if(scope == null)
@@ -121,7 +121,7 @@ public class TypeInferenceHelper
 	}
 
 	@Nullable
-	public static PsiType getInferredType(@NotNull PsiElement place, @NotNull String variableName)
+	public static PsiType getInferredType(@Nonnull PsiElement place, @Nonnull String variableName)
 	{
 		final GrControlFlowOwner scope = ControlFlowUtils.findControlFlowOwner(place);
 		if(scope == null)
@@ -137,8 +137,8 @@ public class TypeInferenceHelper
 		return getInferenceCache(scope).getInferredType(variableName, nearest);
 	}
 
-	@NotNull
-	private static InferenceCache getInferenceCache(@NotNull final GrControlFlowOwner scope)
+	@Nonnull
+	private static InferenceCache getInferenceCache(@Nonnull final GrControlFlowOwner scope)
 	{
 		return CachedValuesManager.getCachedValue(scope, new CachedValueProvider<InferenceCache>()
 		{
@@ -151,16 +151,16 @@ public class TypeInferenceHelper
 		});
 	}
 
-	public static boolean isTooComplexTooAnalyze(@NotNull GrControlFlowOwner scope)
+	public static boolean isTooComplexTooAnalyze(@Nonnull GrControlFlowOwner scope)
 	{
 		return getDefUseMaps(scope) == null;
 	}
 
 	@Nullable
-	private static DFAType getInferredType(@NotNull String varName,
-			@NotNull Instruction instruction,
-			@NotNull Instruction[] flow,
-			@NotNull GrControlFlowOwner scope,
+	private static DFAType getInferredType(@Nonnull String varName,
+			@Nonnull Instruction instruction,
+			@Nonnull Instruction[] flow,
+			@Nonnull GrControlFlowOwner scope,
 			Set<MixinTypeInstruction> trace)
 	{
 		final Pair<ReachingDefinitionsDfaInstance, List<DefinitionMap>> pair = getDefUseMaps(scope);
@@ -196,7 +196,7 @@ public class TypeInferenceHelper
 	}
 
 	@Nullable
-	private static Pair<ReachingDefinitionsDfaInstance, List<DefinitionMap>> getDefUseMaps(@NotNull final
+	private static Pair<ReachingDefinitionsDfaInstance, List<DefinitionMap>> getDefUseMaps(@Nonnull final
 	GrControlFlowOwner scope)
 	{
 		return CachedValuesManager.getCachedValue(scope, new CachedValueProvider<Pair<ReachingDefinitionsDfaInstance,
@@ -409,10 +409,10 @@ public class TypeInferenceHelper
 		private final Set<Instruction> myInteresting;
 		private final InferenceCache myCache;
 
-		TypeDfaInstance(@NotNull GrControlFlowOwner scope,
-				@NotNull Instruction[] flow,
-				@NotNull Set<Instruction> interesting,
-				@NotNull InferenceCache cache)
+		TypeDfaInstance(@Nonnull GrControlFlowOwner scope,
+				@Nonnull Instruction[] flow,
+				@Nonnull Set<Instruction> interesting,
+				@Nonnull InferenceCache cache)
 		{
 			myScope = scope;
 			myFlow = flow;
@@ -433,7 +433,7 @@ public class TypeInferenceHelper
 			}
 		}
 
-		private void handleMixin(@NotNull final TypeDfaState state, @NotNull final MixinTypeInstruction instruction)
+		private void handleMixin(@Nonnull final TypeDfaState state, @Nonnull final MixinTypeInstruction instruction)
 		{
 			final String varName = instruction.getVariableName();
 			if(varName == null)
@@ -478,10 +478,10 @@ public class TypeInferenceHelper
 			}
 		}
 
-		private void updateVariableType(@NotNull TypeDfaState state,
-				@NotNull Instruction instruction,
-				@NotNull String variableName,
-				@NotNull Computable<DFAType> computation)
+		private void updateVariableType(@Nonnull TypeDfaState state,
+				@Nonnull Instruction instruction,
+				@Nonnull String variableName,
+				@Nonnull Computable<DFAType> computation)
 		{
 			if(!myInteresting.contains(instruction))
 			{
@@ -498,7 +498,7 @@ public class TypeInferenceHelper
 		}
 
 		@Override
-		@NotNull
+		@Nonnull
 		public TypeDfaState initial()
 		{
 			return new TypeDfaState();
@@ -533,7 +533,7 @@ public class TypeInferenceHelper
 		}
 
 		@Nullable
-		private PsiType getInferredType(@NotNull String variableName, @NotNull Instruction instruction)
+		private PsiType getInferredType(@Nonnull String variableName, @Nonnull Instruction instruction)
 		{
 			if(tooComplex.contains(instruction))
 			{
@@ -566,9 +566,9 @@ public class TypeInferenceHelper
 		}
 
 		@Nullable
-		private List<TypeDfaState> performTypeDfa(@NotNull GrControlFlowOwner owner,
-				@NotNull Instruction[] flow,
-				@NotNull Set<Instruction> interesting)
+		private List<TypeDfaState> performTypeDfa(@Nonnull GrControlFlowOwner owner,
+				@Nonnull Instruction[] flow,
+				@Nonnull Set<Instruction> interesting)
 		{
 			final TypeDfaInstance dfaInstance = new TypeDfaInstance(owner, flow, interesting, this);
 			final TypesSemilattice semilattice = new TypesSemilattice(owner.getManager());
@@ -576,15 +576,15 @@ public class TypeInferenceHelper
 		}
 
 		@Nullable
-		DFAType getCachedInferredType(@NotNull String variableName, @NotNull Instruction instruction)
+		DFAType getCachedInferredType(@Nonnull String variableName, @Nonnull Instruction instruction)
 		{
 			DFAType dfaType = varTypes.get().get(instruction.num()).getVariableType(variableName);
 			return dfaType == null ? null : dfaType.negate(instruction);
 		}
 
-		private Set<Instruction> collectRequiredInstructions(@NotNull Instruction instruction,
-				@NotNull String variableName,
-				@NotNull Pair<ReachingDefinitionsDfaInstance, List<DefinitionMap>> defUse)
+		private Set<Instruction> collectRequiredInstructions(@Nonnull Instruction instruction,
+				@Nonnull String variableName,
+				@Nonnull Pair<ReachingDefinitionsDfaInstance, List<DefinitionMap>> defUse)
 		{
 			Set<Instruction> interesting = ContainerUtil.newHashSet(instruction);
 			LinkedList<Pair<Instruction, String>> queue = ContainerUtil.newLinkedList();
@@ -604,11 +604,11 @@ public class TypeInferenceHelper
 			return interesting;
 		}
 
-		@NotNull
-		private Set<Pair<Instruction, String>> findDependencies(@NotNull Pair<ReachingDefinitionsDfaInstance,
+		@Nonnull
+		private Set<Pair<Instruction, String>> findDependencies(@Nonnull Pair<ReachingDefinitionsDfaInstance,
 				List<DefinitionMap>> defUse,
-				@NotNull Instruction insn,
-				@NotNull String varName)
+				@Nonnull Instruction insn,
+				@Nonnull String varName)
 		{
 			DefinitionMap definitionMap = defUse.second.get(insn.num());
 			int varIndex = defUse.first.getVarIndex(varName);
@@ -632,8 +632,8 @@ public class TypeInferenceHelper
 			return pairs;
 		}
 
-		@NotNull
-		private List<Pair<Instruction, String>> findAllInstructionsInside(@NotNull PsiElement scope)
+		@Nonnull
+		private List<Pair<Instruction, String>> findAllInstructionsInside(@Nonnull PsiElement scope)
 		{
 			final List<Pair<Instruction, String>> result = ContainerUtil.newArrayList();
 			scope.accept(new PsiRecursiveElementWalkingVisitor()
@@ -672,7 +672,7 @@ public class TypeInferenceHelper
 			});
 		}
 
-		private void cacheDfaResult(@NotNull List<TypeDfaState> dfaResult)
+		private void cacheDfaResult(@Nonnull List<TypeDfaState> dfaResult)
 		{
 			while(true)
 			{
@@ -684,9 +684,9 @@ public class TypeInferenceHelper
 			}
 		}
 
-		@NotNull
-		private static List<TypeDfaState> addDfaResult(@NotNull List<TypeDfaState> dfaResult,
-				@NotNull List<TypeDfaState> oldTypes)
+		@Nonnull
+		private static List<TypeDfaState> addDfaResult(@Nonnull List<TypeDfaState> dfaResult,
+				@Nonnull List<TypeDfaState> oldTypes)
 		{
 			List<TypeDfaState> newTypes = new ArrayList<TypeDfaState>(oldTypes);
 			for(int i = 0; i < dfaResult.size(); i++)

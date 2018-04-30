@@ -29,7 +29,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.tree.TokenSet;
 import com.intellij.psi.util.PsiTreeUtil;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 
@@ -89,7 +89,7 @@ public class GroovyTypedHandler extends TypedHandlerDelegate {
   }
 
 
-  public Result charTyped(final char c, final Project project, final Editor editor, @NotNull final PsiFile file) {
+  public Result charTyped(final char c, final Project project, final Editor editor, @Nonnull final PsiFile file) {
     if (myJavaLTTyped) {
       myJavaLTTyped = false;
       JavaTypedHandler.handleAfterJavaLT(editor, GroovyTokenTypes.mLT, GroovyTokenTypes.mGT, INVALID_INSIDE_REFERENCE);

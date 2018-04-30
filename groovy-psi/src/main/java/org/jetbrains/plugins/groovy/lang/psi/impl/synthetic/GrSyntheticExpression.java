@@ -15,7 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.synthetic;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
@@ -52,7 +53,7 @@ public class GrSyntheticExpression extends LightElement implements PsiExpression
   }
 
   @Override
-  public PsiElement replace(@NotNull PsiElement newElement) throws IncorrectOperationException {
+  public PsiElement replace(@Nonnull PsiElement newElement) throws IncorrectOperationException {
     return myExpression.replace(newElement);
   }
 
@@ -76,7 +77,7 @@ public class GrSyntheticExpression extends LightElement implements PsiExpression
     return myExpression.getText();
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public PsiElement getNavigationElement() {
     return myExpression.getNavigationElement();

@@ -15,8 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotation;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
@@ -27,8 +27,8 @@ import com.intellij.psi.*;
  */
 public class GrAnnotationUtil
 {
-	@Nullable
-	public static String inferStringAttribute(@NotNull PsiAnnotation annotation, @NotNull String attributeName)
+	@javax.annotation.Nullable
+	public static String inferStringAttribute(@Nonnull PsiAnnotation annotation, @Nonnull String attributeName)
 	{
 		final PsiAnnotationMemberValue targetValue = annotation.findAttributeValue(attributeName);
 		if(targetValue instanceof PsiLiteral)
@@ -43,7 +43,7 @@ public class GrAnnotationUtil
 	}
 
 	@Nullable
-	public static Integer inferIntegerAttribute(@NotNull PsiAnnotation annotation, @NotNull String attributeName)
+	public static Integer inferIntegerAttribute(@Nonnull PsiAnnotation annotation, @Nonnull String attributeName)
 	{
 		final PsiAnnotationMemberValue targetValue = annotation.findAttributeValue(attributeName);
 		if(targetValue instanceof PsiLiteral)
@@ -58,7 +58,7 @@ public class GrAnnotationUtil
 	}
 
 	@Nullable
-	public static Boolean inferBooleanAttribute(@NotNull PsiAnnotation annotation, @NotNull String attributeName)
+	public static Boolean inferBooleanAttribute(@Nonnull PsiAnnotation annotation, @Nonnull String attributeName)
 	{
 		final PsiAnnotationMemberValue targetValue = annotation.findAttributeValue(attributeName);
 		if(targetValue instanceof PsiLiteral)
@@ -72,8 +72,8 @@ public class GrAnnotationUtil
 		return null;
 	}
 
-	@Nullable
-	public static PsiClass inferClassAttribute(@NotNull PsiAnnotation annotation, @NotNull String attributeName)
+	@javax.annotation.Nullable
+	public static PsiClass inferClassAttribute(@Nonnull PsiAnnotation annotation, @Nonnull String attributeName)
 	{
 		final PsiAnnotationMemberValue targetValue = annotation.findAttributeValue(attributeName);
 		if(targetValue instanceof PsiClassObjectAccessExpression)

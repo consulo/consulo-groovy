@@ -32,7 +32,6 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.EventListenerList;
 
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.intentions.GroovyIntentionsBundle;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyNamesUtil;
@@ -132,7 +131,7 @@ public class GroovyMapParameterDialog extends DialogWrapper {
     return contentPane;
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   protected String getEnteredName() {
     if (myNameComboBox.getEditor().getItem() instanceof String && ((String)myNameComboBox.getEditor().getItem()).length() > 0) {
       return (String)myNameComboBox.getEditor().getItem();

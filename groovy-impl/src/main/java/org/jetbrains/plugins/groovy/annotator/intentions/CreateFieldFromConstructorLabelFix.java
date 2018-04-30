@@ -15,13 +15,13 @@
  */
 package org.jetbrains.plugins.groovy.annotator.intentions;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.codeInspection.ProblemDescriptor;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiType;
 import com.intellij.util.ArrayUtil;
 import com.intellij.util.IncorrectOperationException;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.codeInspection.GroovyFix;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrArgumentLabel;
@@ -43,7 +43,7 @@ public class CreateFieldFromConstructorLabelFix extends GroovyFix {
     myNamedArgument = namedArgument;
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   private String getFieldName() {
     final GrArgumentLabel label = myNamedArgument.getLabel();
     assert label != null;
@@ -64,7 +64,7 @@ public class CreateFieldFromConstructorLabelFix extends GroovyFix {
     }
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public String getName() {
     return GroovyBundle.message("create.field.from.usage", getFieldName());

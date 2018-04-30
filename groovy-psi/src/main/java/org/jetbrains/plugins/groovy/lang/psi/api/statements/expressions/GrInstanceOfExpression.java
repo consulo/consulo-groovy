@@ -16,17 +16,17 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeElement;
 
 /**
  * @author ven
  */
 public interface GrInstanceOfExpression extends GrExpression {
-  @Nullable
+  @javax.annotation.Nullable
   GrTypeElement getTypeElement();
 
-  @NotNull
+  @Nonnull
   GrExpression getOperand();
 }

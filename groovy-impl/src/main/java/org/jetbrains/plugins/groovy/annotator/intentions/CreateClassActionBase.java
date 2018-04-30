@@ -16,8 +16,8 @@
 
 package org.jetbrains.plugins.groovy.annotator.intentions;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.actions.GroovyTemplatesFactory;
 import org.jetbrains.plugins.groovy.intentions.base.Intention;
@@ -63,7 +63,7 @@ public abstract class CreateClassActionBase extends Intention
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public String getText()
 	{
 		String referenceName = myRefElement.getReferenceName();
@@ -85,14 +85,14 @@ public abstract class CreateClassActionBase extends Intention
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public String getFamilyName()
 	{
 		return GroovyBundle.message("create.class.family.name");
 	}
 
 	@Override
-	public boolean isAvailable(@NotNull Project project, Editor editor, PsiFile file)
+	public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file)
 	{
 		return myRefElement.isValid() && ModuleUtilCore.findModuleForPsiElement(myRefElement) != null;
 	}
@@ -109,12 +109,12 @@ public abstract class CreateClassActionBase extends Intention
 		return myType;
 	}
 
-	@Nullable
-	public static GrTypeDefinition createClassByType(@NotNull final PsiDirectory directory,
-			@NotNull final String name,
-			@NotNull final PsiManager manager,
-			@Nullable final PsiElement contextElement,
-			@NotNull final String templateName,
+	@javax.annotation.Nullable
+	public static GrTypeDefinition createClassByType(@Nonnull final PsiDirectory directory,
+			@Nonnull final String name,
+			@Nonnull final PsiManager manager,
+			@javax.annotation.Nullable final PsiElement contextElement,
+			@Nonnull final String templateName,
 			boolean allowReformatting)
 	{
 		AccessToken accessToken = WriteAction.start();
@@ -173,12 +173,12 @@ public abstract class CreateClassActionBase extends Intention
 		}
 	}
 
-	@Nullable
-	protected PsiDirectory getTargetDirectory(@NotNull Project project,
-			@NotNull String qualifier,
-			@NotNull String name,
-			@Nullable Module module,
-			@NotNull String title)
+	@javax.annotation.Nullable
+	protected PsiDirectory getTargetDirectory(@Nonnull Project project,
+			@Nonnull String qualifier,
+			@Nonnull String name,
+			@javax.annotation.Nullable Module module,
+			@Nonnull String title)
 	{
 		CreateClassDialog dialog = new CreateClassDialog(project, title, name, qualifier, getType(), false, module)
 		{
@@ -197,7 +197,7 @@ public abstract class CreateClassActionBase extends Intention
 		return dialog.getTargetDirectory();
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	protected PsiElementPredicate getElementPredicate()
 	{

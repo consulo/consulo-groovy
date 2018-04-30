@@ -18,8 +18,8 @@ package org.jetbrains.plugins.groovy.lang.psi.impl;
 
 import java.util.concurrent.ConcurrentMap;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.GroovyLanguage;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
@@ -77,7 +77,7 @@ public class GroovyFileImpl extends GroovyFileBaseImpl implements GroovyFile
 	private static final CachedValueProvider<ConcurrentMap<String, GrBindingVariable>> BINDING_PROVIDER = new
 			CachedValueProvider<ConcurrentMap<String, GrBindingVariable>>()
 	{
-		@Nullable
+		@javax.annotation.Nullable
 		@Override
 		public Result<ConcurrentMap<String, GrBindingVariable>> compute()
 		{
@@ -97,7 +97,7 @@ public class GroovyFileImpl extends GroovyFileBaseImpl implements GroovyFile
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public String getPackageName()
 	{
 		GrPackageDefinition packageDef = getPackageDefinition();
@@ -146,10 +146,10 @@ public class GroovyFileImpl extends GroovyFileBaseImpl implements GroovyFile
 	}
 
 	@Override
-	public boolean processDeclarations(@NotNull final PsiScopeProcessor processor,
-			@NotNull ResolveState state,
+	public boolean processDeclarations(@Nonnull final PsiScopeProcessor processor,
+			@Nonnull ResolveState state,
 			@Nullable PsiElement lastParent,
-			@NotNull PsiElement place)
+			@Nonnull PsiElement place)
 	{
 		ClassHint classHint = processor.getHint(ClassHint.KEY);
 
@@ -286,17 +286,17 @@ public class GroovyFileImpl extends GroovyFileBaseImpl implements GroovyFile
 	}
 
 	protected boolean processImports(PsiScopeProcessor processor,
-			@NotNull ResolveState state,
-			@Nullable PsiElement lastParent,
-			@NotNull PsiElement place,
-			@NotNull GrImportStatement[] importStatements,
+			@Nonnull ResolveState state,
+			@javax.annotation.Nullable PsiElement lastParent,
+			@Nonnull PsiElement place,
+			@Nonnull GrImportStatement[] importStatements,
 			boolean onDemand)
 	{
 		return GroovyImportHelper.processImports(state, lastParent, place, processor, importStatements, onDemand);
 	}
 
-	private boolean processBindings(@NotNull final PsiScopeProcessor processor,
-			@NotNull ResolveState state,
+	private boolean processBindings(@Nonnull final PsiScopeProcessor processor,
+			@Nonnull ResolveState state,
 			PsiElement place)
 	{
 		if(!isPhysical())
@@ -340,7 +340,7 @@ public class GroovyFileImpl extends GroovyFileBaseImpl implements GroovyFile
 		return processor.execute(variable, state);
 	}
 
-	@NotNull
+	@Nonnull
 	private ConcurrentMap<String, GrBindingVariable> getBindings()
 	{
 		return CachedValuesManager.getCachedValue(this, BINDING_PROVIDER);
@@ -353,10 +353,10 @@ public class GroovyFileImpl extends GroovyFileBaseImpl implements GroovyFile
 		return true;
 	}
 
-	private boolean processDeclarationsInPackage(@NotNull PsiScopeProcessor processor,
-			@NotNull ResolveState state,
-			@Nullable PsiElement lastParent,
-			@NotNull PsiElement place)
+	private boolean processDeclarationsInPackage(@Nonnull PsiScopeProcessor processor,
+			@Nonnull ResolveState state,
+			@javax.annotation.Nullable PsiElement lastParent,
+			@Nonnull PsiElement place)
 	{
 		if(ResolveUtil.shouldProcessClasses(processor.getHint(ClassHint.KEY)))
 		{
@@ -369,10 +369,10 @@ public class GroovyFileImpl extends GroovyFileBaseImpl implements GroovyFile
 		return true;
 	}
 
-	private boolean processChildrenScopes(@NotNull PsiScopeProcessor processor,
-			@NotNull ResolveState state,
+	private boolean processChildrenScopes(@Nonnull PsiScopeProcessor processor,
+			@Nonnull ResolveState state,
 			@Nullable PsiElement lastParent,
-			@NotNull PsiElement place)
+			@Nonnull PsiElement place)
 	{
 		final StubElement<?> stub = getStub();
 		if(stub != null)
@@ -394,7 +394,7 @@ public class GroovyFileImpl extends GroovyFileBaseImpl implements GroovyFile
 		return true;
 	}
 
-	private static boolean shouldProcess(@Nullable PsiElement lastParent, @NotNull PsiElement run)
+	private static boolean shouldProcess(@Nullable PsiElement lastParent, @Nonnull PsiElement run)
 	{
 		return !(run instanceof GrTopLevelDefinition || run instanceof GrImportStatement || lastParent instanceof
 				GrMember);
@@ -414,7 +414,7 @@ public class GroovyFileImpl extends GroovyFileBaseImpl implements GroovyFile
 	}
 
 	@Override
-	public GrImportStatement addImportForClass(@NotNull PsiClass aClass)
+	public GrImportStatement addImportForClass(@Nonnull PsiClass aClass)
 	{
 		try
 		{
@@ -436,9 +436,9 @@ public class GroovyFileImpl extends GroovyFileBaseImpl implements GroovyFile
 	}
 
 
-	@NotNull
+	@Nonnull
 	@Override
-	public GrImportStatement addImport(@NotNull GrImportStatement statement) throws IncorrectOperationException
+	public GrImportStatement addImport(@Nonnull GrImportStatement statement) throws IncorrectOperationException
 	{
 		return GroovyCodeStyleManager.getInstance(getProject()).addImport(this, statement);
 	}
@@ -640,7 +640,7 @@ public class GroovyFileImpl extends GroovyFileBaseImpl implements GroovyFile
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public PsiClass[] getClasses()
 	{
 		final PsiClass[] declaredDefs = super.getClasses();

@@ -15,6 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.formatter;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.util.TextRange;
@@ -26,8 +28,6 @@ import com.intellij.psi.impl.source.SourceTreeToPsiMap;
 import com.intellij.psi.impl.source.codeStyle.CodeEditUtil;
 import com.intellij.psi.impl.source.codeStyle.PostFormatProcessorHelper;
 import com.intellij.util.IncorrectOperationException;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
@@ -61,7 +61,7 @@ public class GroovyBraceEnforcer extends GroovyRecursiveElementVisitor {
     return formatted;
   }
 
-  private void replaceWithBlock(@NotNull GrStatement statement, GrStatement blockCandidate) {
+  private void replaceWithBlock(@Nonnull GrStatement statement, GrStatement blockCandidate) {
     if (!statement.isValid()) {
       LOG.assertTrue(false);
     }
@@ -122,7 +122,7 @@ public class GroovyBraceEnforcer extends GroovyRecursiveElementVisitor {
     return myPostProcessor.isElementFullyInRange(element);
   }
 
-  private void processStatement(GrStatement statement, @Nullable GrStatement blockCandidate, int options) {
+  private void processStatement(GrStatement statement, @javax.annotation.Nullable GrStatement blockCandidate, int options) {
     if (blockCandidate instanceof GrCodeBlock || blockCandidate instanceof GrBlockStatement || blockCandidate == null) return;
     if (options == CommonCodeStyleSettings.FORCE_BRACES_ALWAYS ||
         options == CommonCodeStyleSettings.FORCE_BRACES_IF_MULTILINE && PostFormatProcessorHelper.isMultiline(statement)) {

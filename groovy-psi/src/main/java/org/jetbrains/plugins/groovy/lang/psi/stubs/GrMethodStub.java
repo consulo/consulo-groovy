@@ -15,8 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.stubs;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
 import org.jetbrains.plugins.groovy.lang.psi.stubs.elements.GrMethodElementType;
 import com.intellij.psi.impl.PsiImplUtil;
@@ -40,9 +40,9 @@ public class GrMethodStub extends StubBase<GrMethod> implements NamedStub<GrMeth
   public GrMethodStub(StubElement parent,
                       StringRef name,
                       final String[] annotations,
-                      final @NotNull String[] namedParameters,
+                      final @Nonnull String[] namedParameters,
                       final GrMethodElementType elementType,
-                      @Nullable String typeText,
+                      @javax.annotation.Nullable String typeText,
                       byte flags) {
     super(parent, elementType);
     myName = name;
@@ -52,7 +52,8 @@ public class GrMethodStub extends StubBase<GrMethod> implements NamedStub<GrMeth
     myFlags = flags;
   }
 
-  @NotNull public String getName() {
+  @Nonnull
+  public String getName() {
     return StringRef.toString(myName);
   }
 
@@ -60,7 +61,7 @@ public class GrMethodStub extends StubBase<GrMethod> implements NamedStub<GrMeth
     return myAnnotations;
   }
 
-  @NotNull
+  @Nonnull
   public String[] getNamedParameters() {
     return myNamedParameters;
   }

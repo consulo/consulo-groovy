@@ -15,6 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.local;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.codeHighlighting.Pass;
 import com.intellij.codeHighlighting.TextEditorHighlightingPass;
 import com.intellij.codeHighlighting.TextEditorHighlightingPassFactory;
@@ -24,8 +26,6 @@ import com.intellij.openapi.components.AbstractProjectComponent;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiFile;
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 
 /**
@@ -39,14 +39,14 @@ public class GroovyUnusedImportsPassFactory extends AbstractProjectComponent imp
                                                                                                  null, true, -1);
   }
 
-  @Nullable
-  public TextEditorHighlightingPass createHighlightingPass(@NotNull PsiFile file, @NotNull Editor editor) {
+  @javax.annotation.Nullable
+  public TextEditorHighlightingPass createHighlightingPass(@Nonnull PsiFile file, @Nonnull Editor editor) {
     if (!(file instanceof GroovyFile)) return null;
     return new GroovyPostHighlightingPass((GroovyFile)file, editor);
   }
 
   @NonNls
-  @NotNull
+  @Nonnull
   public String getComponentName() {
     return "Groovy unused imports pass factory";
   }

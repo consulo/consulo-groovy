@@ -15,6 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.lang.completion;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.codeInsight.completion.InsertHandler;
 import com.intellij.codeInsight.completion.InsertionContext;
 import com.intellij.codeInsight.completion.JavaGlobalMemberLookupElement;
@@ -22,7 +24,6 @@ import com.intellij.openapi.util.Key;
 import com.intellij.psi.*;
 import com.intellij.psi.scope.PsiScopeProcessor;
 import com.intellij.psi.util.PsiTreeUtil;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.toplevel.imports.GrImportStatement;
@@ -40,17 +41,17 @@ class StaticImportInsertHandler implements InsertHandler<JavaGlobalMemberLookupE
     final PsiManager manager = file.getManager();
     PsiScopeProcessor processor = new PsiScopeProcessor() {
       @Override
-      public boolean execute(@NotNull PsiElement element, @NotNull ResolveState state) {
+      public boolean execute(@Nonnull PsiElement element, @Nonnull ResolveState state) {
         return !manager.areElementsEquivalent(element, member);
       }
 
       @Override
-      public <T> T getHint(@NotNull Key<T> hintKey) {
+      public <T> T getHint(@Nonnull Key<T> hintKey) {
         return null;
       }
 
       @Override
-      public void handleEvent(@NotNull Event event, Object associated) {
+      public void handleEvent(@Nonnull Event event, Object associated) {
       }
     };
 

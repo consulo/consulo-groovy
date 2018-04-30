@@ -15,9 +15,9 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.util;
 
+import javax.annotation.Nonnull;
+
 import consulo.psi.PsiPackage;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GrQualifiedReference;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
@@ -37,9 +37,9 @@ import com.intellij.psi.util.PsiTreeUtil;
  */
 public class GrStaticChecker
 {
-	public static boolean isStaticsOK(@NotNull PsiModifierListOwner member,
-			@NotNull PsiElement place,
-			@Nullable PsiElement resolveContext,
+	public static boolean isStaticsOK(@Nonnull PsiModifierListOwner member,
+			@Nonnull PsiElement place,
+			@javax.annotation.Nullable PsiElement resolveContext,
 			boolean filterStaticAfterInstanceQualifier)
 	{
 		if(!(member instanceof PsiMember))
@@ -140,7 +140,7 @@ public class GrStaticChecker
 		}
 	}
 
-	private static boolean checkQualified(@NotNull PsiModifierListOwner member,
+	private static boolean checkQualified(@Nonnull PsiModifierListOwner member,
 			PsiElement place,
 			boolean filterStaticAfterInstanceQualifier,
 			GrExpression qualifier,
@@ -244,7 +244,7 @@ public class GrStaticChecker
 		return false;
 	}
 
-	@Nullable
+	@javax.annotation.Nullable
 	private static PsiClass getContainingClass(PsiMember member)
 	{
 		PsiClass aClass = member.getContainingClass();
@@ -270,7 +270,7 @@ public class GrStaticChecker
 		return null;
 	}
 
-	public static boolean isInStaticContext(@NotNull PsiElement place)
+	public static boolean isInStaticContext(@Nonnull PsiElement place)
 	{
 		PsiClass targetClass = null;
 		if(place instanceof GrReferenceExpression)
@@ -284,7 +284,7 @@ public class GrStaticChecker
 		return isInStaticContext(place, targetClass);
 	}
 
-	public static boolean isInStaticContext(@NotNull PsiElement place, @Nullable PsiClass targetClass)
+	public static boolean isInStaticContext(@Nonnull PsiElement place, @javax.annotation.Nullable PsiClass targetClass)
 	{
 		if(place instanceof GrReferenceExpression)
 		{
@@ -332,7 +332,7 @@ public class GrStaticChecker
 		return false;
 	}
 
-	public static boolean isPropertyAccessInStaticMethod(@NotNull GrReferenceExpression referenceExpression)
+	public static boolean isPropertyAccessInStaticMethod(@Nonnull GrReferenceExpression referenceExpression)
 	{
 		return isInStaticContext(referenceExpression) &&
 				!(referenceExpression.getParent() instanceof GrMethodCall) &&

@@ -23,7 +23,7 @@ import com.intellij.util.Function;
 import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.containers.ContainerUtil;
 import org.codehaus.groovy.runtime.DefaultGroovyMethods;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 import java.util.Collections;
 import java.util.List;
@@ -37,11 +37,11 @@ public class SimpleTypeHintProcessor extends SignatureHintProcessor {
     return "groovy.transform.stc.SimpleType";
   }
 
-  @NotNull
+  @Nonnull
   @Override
-  public List<PsiType[]> inferExpectedSignatures(@NotNull final PsiMethod method,
-                                                 @NotNull PsiSubstitutor substitutor,
-                                                 @NotNull String[] options) {
+  public List<PsiType[]> inferExpectedSignatures(@Nonnull final PsiMethod method,
+                                                 @Nonnull PsiSubstitutor substitutor,
+                                                 @Nonnull String[] options) {
     return Collections.singletonList(ContainerUtil.map(options, new Function<String, PsiType>() {
       @Override
       public PsiType fun(String value) {

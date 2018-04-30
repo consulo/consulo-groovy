@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.gant;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrArgumentLabel;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlock;
@@ -46,11 +46,11 @@ import icons.JetgroovyIcons;
 public class GantMemberContributor extends NonCodeMembersContributor
 {
 	@Override
-	public void processDynamicElements(@NotNull PsiType qualifierType,
+	public void processDynamicElements(@Nonnull PsiType qualifierType,
 			PsiClass aClass,
-			@NotNull PsiScopeProcessor processor,
-			@NotNull PsiElement place,
-			@NotNull ResolveState state)
+			@Nonnull PsiScopeProcessor processor,
+			@Nonnull PsiElement place,
+			@Nonnull ResolveState state)
 	{
 		if(aClass != null && ClassUtil.getSuperClassesWithCache(aClass).containsKey("groovy.util.AntBuilder"))
 		{

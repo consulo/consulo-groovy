@@ -15,7 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.intentions.base;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.GroovyLanguage;
 import org.jetbrains.plugins.groovy.actions.GroovyTemplates;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
@@ -60,7 +61,7 @@ public class IntentionUtils
 			PsiClass owner,
 			TypeConstraint[] constraints,
 			boolean isConstructor,
-			@NotNull final PsiElement context)
+			@Nonnull final PsiElement context)
 	{
 
 		final Project project = owner.getProject();
@@ -184,9 +185,9 @@ public class IntentionUtils
 		manager.startTemplate(newEditor, template, templateListener);
 	}
 
-	public static Editor positionCursor(@NotNull Project project,
-			@NotNull PsiFile targetFile,
-			@NotNull PsiElement element)
+	public static Editor positionCursor(@Nonnull Project project,
+			@Nonnull PsiFile targetFile,
+			@Nonnull PsiElement element)
 	{
 		int textOffset = element.getTextOffset();
 		VirtualFile virtualFile = targetFile.getVirtualFile();

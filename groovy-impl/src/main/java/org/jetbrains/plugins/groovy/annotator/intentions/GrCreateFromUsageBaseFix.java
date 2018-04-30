@@ -19,10 +19,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.annotation.Nonnull;
 import javax.swing.JList;
 import javax.swing.ListSelectionModel;
 
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.intentions.base.PsiElementPredicate;
@@ -52,14 +52,14 @@ public abstract class GrCreateFromUsageBaseFix extends Intention
 {
 	protected final SmartPsiElementPointer<GrReferenceExpression> myRefExpression;
 
-	public GrCreateFromUsageBaseFix(@NotNull GrReferenceExpression refExpression)
+	public GrCreateFromUsageBaseFix(@Nonnull GrReferenceExpression refExpression)
 	{
 		myRefExpression = SmartPointerManager.getInstance(refExpression.getProject()).createSmartPsiElementPointer
 				(refExpression);
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public String getFamilyName()
 	{
 		return GroovyBundle.message("create.from.usage.family.name");
@@ -71,7 +71,7 @@ public abstract class GrCreateFromUsageBaseFix extends Intention
 	}
 
 	@Override
-	public boolean isAvailable(@NotNull Project project, Editor editor, PsiFile file)
+	public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file)
 	{
 		final GrReferenceExpression element = myRefExpression.getElement();
 		if(element == null || !element.isValid())
@@ -91,7 +91,7 @@ public abstract class GrCreateFromUsageBaseFix extends Intention
 
 
 	@Override
-	protected void processIntention(@NotNull PsiElement element,
+	protected void processIntention(@Nonnull PsiElement element,
 			Project project,
 			Editor editor) throws IncorrectOperationException
 	{
@@ -106,7 +106,7 @@ public abstract class GrCreateFromUsageBaseFix extends Intention
 		}
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	protected PsiElementPredicate getElementPredicate()
 	{
@@ -167,7 +167,7 @@ public abstract class GrCreateFromUsageBaseFix extends Intention
 				showInBestPositionFor(editor);
 	}
 
-	protected abstract void invokeImpl(Project project, @NotNull PsiClass targetClass);
+	protected abstract void invokeImpl(Project project, @Nonnull PsiClass targetClass);
 
 	private List<PsiClass> getTargetClasses()
 	{

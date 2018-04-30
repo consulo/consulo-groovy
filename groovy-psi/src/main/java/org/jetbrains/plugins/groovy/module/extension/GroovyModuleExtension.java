@@ -1,6 +1,7 @@
 package org.jetbrains.plugins.groovy.module.extension;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import consulo.module.extension.ModuleExtension;
 import consulo.module.extension.impl.ModuleExtensionImpl;
 import consulo.roots.ModuleRootLayer;
@@ -11,7 +12,7 @@ import consulo.roots.ModuleRootLayer;
  */
 public class GroovyModuleExtension extends ModuleExtensionImpl<GroovyModuleExtension> implements ModuleExtension<GroovyModuleExtension>
 {
-	public GroovyModuleExtension(@NotNull String id, @NotNull ModuleRootLayer module)
+	public GroovyModuleExtension(@Nonnull String id, @Nonnull ModuleRootLayer module)
 	{
 		super(id, module);
 	}

@@ -16,7 +16,7 @@
 package org.jetbrains.plugins.groovy.codeInspection.control;
 
 import com.intellij.psi.PsiElement;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.codeInspection.utils.SingleIntegerFieldOptionsPanel;
@@ -34,12 +34,12 @@ public class GroovyIfStatementWithTooManyBranchesInspection extends BaseInspecti
    */
   public int m_limit = DEFAULT_BRANCH_LIMIT;  //this is public for the DefaultJDOMExternalizer thingy
 
-  @NotNull
+  @Nonnull
   public String getDisplayName() {
     return "If statement with too many branches";
   }
 
-  @NotNull
+  @Nonnull
   public String getGroupDisplayName() {
     return CONTROL_FLOW;
   }
@@ -75,7 +75,7 @@ public class GroovyIfStatementWithTooManyBranchesInspection extends BaseInspecti
 
   private class Visitor extends BaseInspectionVisitor {
 
-    public void visitIfStatement(@NotNull GrIfStatement statement) {
+    public void visitIfStatement(@Nonnull GrIfStatement statement) {
       super.visitIfStatement(statement);
       final PsiElement parent = statement.getParent();
       if (parent instanceof GrIfStatement) {

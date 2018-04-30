@@ -15,9 +15,9 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.utils;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.psi.tree.IElementType;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.intentions.utils.ComparisonUtils;
 import org.jetbrains.plugins.groovy.intentions.utils.ParenthesesUtils;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
@@ -30,7 +30,7 @@ import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 
 public class BoolUtils {
 
-  public static boolean isNegation(@NotNull GrExpression exp) {
+  public static boolean isNegation(@Nonnull GrExpression exp) {
     if (!(exp instanceof GrUnaryExpression)) {
       return false;
     }
@@ -39,7 +39,7 @@ public class BoolUtils {
     return GroovyTokenTypes.mBNOT.equals(sign);
   }
 
-  public static boolean isTrue(@Nullable GrCondition condition) {
+  public static boolean isTrue(@javax.annotation.Nullable GrCondition condition) {
     if (condition == null) {
       return false;
     }
@@ -53,7 +53,7 @@ public class BoolUtils {
     return "false".equals(condition.getText());
   }
 
-  public static String getNegatedExpressionText(@NotNull GrExpression condition) {
+  public static String getNegatedExpressionText(@Nonnull GrExpression condition) {
     if (condition instanceof GrParenthesizedExpression) {
       final GrExpression contentExpression = ((GrParenthesizedExpression) condition).getOperand();
       if (contentExpression == null) return "()";
@@ -77,7 +77,7 @@ public class BoolUtils {
     }
   }
 
-  private static GrExpression getNegated(@NotNull GrExpression exp) {
+  private static GrExpression getNegated(@Nonnull GrExpression exp) {
     final GrUnaryExpression prefixExp = (GrUnaryExpression) exp;
     final GrExpression operand = prefixExp.getOperand();
     return (GrExpression)PsiUtil.skipParentheses(operand, false);

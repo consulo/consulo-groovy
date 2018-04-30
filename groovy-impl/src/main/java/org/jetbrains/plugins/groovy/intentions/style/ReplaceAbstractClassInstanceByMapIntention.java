@@ -24,8 +24,8 @@ import com.intellij.psi.*;
 import com.intellij.psi.codeStyle.JavaCodeStyleManager;
 import com.intellij.psi.infos.CandidateInfo;
 import com.intellij.util.IncorrectOperationException;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.intentions.base.PsiElementPredicate;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
@@ -46,14 +46,14 @@ import java.util.*;
  * @author Maxim.Medvedev
  */
 public class ReplaceAbstractClassInstanceByMapIntention extends Intention {
-  @NotNull
+  @Nonnull
   @Override
   protected PsiElementPredicate getElementPredicate() {
     return new MyPredicate();
   }
 
   @Override
-  protected void processIntention(@NotNull PsiElement psiElement, Project project, Editor editor) throws IncorrectOperationException {
+  protected void processIntention(@Nonnull PsiElement psiElement, Project project, Editor editor) throws IncorrectOperationException {
     PsiDocumentManager.getInstance(project).commitAllDocuments();
 
     GrCodeReferenceElement ref = (GrCodeReferenceElement)psiElement;

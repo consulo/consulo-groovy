@@ -22,7 +22,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.tree.ICompositeElementType;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.IErrorCounterReparseableElementType;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyLexer;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
@@ -37,14 +37,14 @@ public abstract class GrCodeBlockElementType extends IErrorCounterReparseableEle
     super(debugName, GroovyFileType.GROOVY_LANGUAGE);
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public ASTNode createCompositeNode() {
     return createNode(null);
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public abstract GrBlockImpl createNode(final CharSequence text);
 
   @Override

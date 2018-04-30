@@ -20,8 +20,8 @@ import com.intellij.formatting.Indent;
 import com.intellij.formatting.Wrap;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.TextRange;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.formatter.FormattingContext;
 
 import java.util.List;
@@ -33,12 +33,12 @@ public class GrLabelBlock extends GroovyBlock {
   private List<Block> myBlocks;
   private TextRange myRange;
 
-  public GrLabelBlock(@NotNull ASTNode node,
+  public GrLabelBlock(@Nonnull ASTNode node,
                       List<ASTNode> subStatements,
                       boolean classLevel,
-                      @NotNull Indent indent,
+                      @Nonnull Indent indent,
                       @Nullable Wrap wrap,
-                      @NotNull FormattingContext context) {
+                      @Nonnull FormattingContext context) {
     super(node, indent, wrap, context);
 
     final org.jetbrains.plugins.groovy.formatter.blocks.GroovyBlockGenerator
@@ -48,13 +48,13 @@ public class GrLabelBlock extends GroovyBlock {
                             subStatements.get(subStatements.size() - 1).getTextRange().getEndOffset());
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public TextRange getTextRange() {
     return myRange;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public List<Block> getSubBlocks() {
     return myBlocks;

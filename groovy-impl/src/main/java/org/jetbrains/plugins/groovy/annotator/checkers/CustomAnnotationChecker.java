@@ -20,8 +20,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotation;
@@ -49,18 +49,18 @@ public abstract class CustomAnnotationChecker
 	public static final ExtensionPointName<CustomAnnotationChecker> EP_NAME = ExtensionPointName.create("org.intellij" +
 			".groovy.customAnnotationChecker");
 
-	public boolean checkArgumentList(@NotNull AnnotationHolder holder, @NotNull GrAnnotation annotation)
+	public boolean checkArgumentList(@Nonnull AnnotationHolder holder, @Nonnull GrAnnotation annotation)
 	{
 		return false;
 	}
 
-	public boolean checkApplicability(@NotNull AnnotationHolder holder, @NotNull GrAnnotation annotation)
+	public boolean checkApplicability(@Nonnull AnnotationHolder holder, @Nonnull GrAnnotation annotation)
 	{
 		return false;
 	}
 
-	@Nullable
-	public static String isAnnotationApplicable(@NotNull GrAnnotation annotation, @Nullable PsiAnnotationOwner owner)
+	@javax.annotation.Nullable
+	public static String isAnnotationApplicable(@Nonnull GrAnnotation annotation, @Nullable PsiAnnotationOwner owner)
 	{
 		if(!(owner instanceof PsiElement))
 		{
@@ -79,10 +79,10 @@ public abstract class CustomAnnotationChecker
 		return null;
 	}
 
-	public static void checkAnnotationArguments(@NotNull AnnotationHolder holder,
-			@NotNull PsiClass annotation,
-			@NotNull GrCodeReferenceElement refToHighlight,
-			@NotNull GrAnnotationNameValuePair[] attributes,
+	public static void checkAnnotationArguments(@Nonnull AnnotationHolder holder,
+			@Nonnull PsiClass annotation,
+			@Nonnull GrCodeReferenceElement refToHighlight,
+			@Nonnull GrAnnotationNameValuePair[] attributes,
 			boolean checkMissedAttributes)
 	{
 		Set<String> usedAttrs = new HashSet<String>();
@@ -129,12 +129,12 @@ public abstract class CustomAnnotationChecker
 		}
 	}
 
-	private static void checkAnnotationValue(@NotNull PsiClass annotation,
-			@NotNull PsiElement identifierToHighlight,
-			@NotNull String name,
-			@NotNull Set<String> usedAttrs,
+	private static void checkAnnotationValue(@Nonnull PsiClass annotation,
+			@Nonnull PsiElement identifierToHighlight,
+			@Nonnull String name,
+			@Nonnull Set<String> usedAttrs,
 			@Nullable GrAnnotationMemberValue value,
-			@NotNull AnnotationHolder holder)
+			@Nonnull AnnotationHolder holder)
 	{
 		if(usedAttrs.contains(name))
 		{
@@ -160,9 +160,9 @@ public abstract class CustomAnnotationChecker
 		}
 	}
 
-	public static void checkAnnotationValueByType(@NotNull AnnotationHolder holder,
-			@NotNull GrAnnotationMemberValue value,
-			@Nullable PsiType ltype,
+	public static void checkAnnotationValueByType(@Nonnull AnnotationHolder holder,
+			@Nonnull GrAnnotationMemberValue value,
+			@javax.annotation.Nullable PsiType ltype,
 			boolean skipArrays)
 	{
 		final GlobalSearchScope resolveScope = value.getResolveScope();
@@ -228,9 +228,9 @@ public abstract class CustomAnnotationChecker
 		}
 	}
 
-	private static boolean checkAnnoTypeAssignable(@Nullable PsiType type,
+	private static boolean checkAnnoTypeAssignable(@javax.annotation.Nullable PsiType type,
 			@Nullable PsiType rtype,
-			@NotNull GroovyPsiElement context,
+			@Nonnull GroovyPsiElement context,
 			boolean skipArrays)
 	{
 		rtype = TypesUtil.unboxPrimitiveTypeWrapper(rtype);

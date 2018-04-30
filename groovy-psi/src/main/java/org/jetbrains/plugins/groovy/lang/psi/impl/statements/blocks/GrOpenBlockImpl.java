@@ -16,9 +16,10 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.blocks;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrClassInitializer;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrOpenBlock;
@@ -28,7 +29,7 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMe
  * @author ilyas
  */
 public class GrOpenBlockImpl extends GrBlockImpl implements GrOpenBlock {
-  public GrOpenBlockImpl(@NotNull IElementType type, CharSequence buffer) {
+  public GrOpenBlockImpl(@Nonnull IElementType type, CharSequence buffer) {
     super(type, buffer);
   }
 

@@ -15,7 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.control;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.codeInspection.GroovyFix;
@@ -43,14 +44,14 @@ public class GroovyConditionalCanBeElvisInspection extends BaseInspection
 {
 
 	@Override
-	@NotNull
+	@Nonnull
 	public String getDisplayName()
 	{
 		return "Conditional expression can be elvis";
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public String getGroupDisplayName()
 	{
 		return CONTROL_FLOW;
@@ -63,12 +64,12 @@ public class GroovyConditionalCanBeElvisInspection extends BaseInspection
 	}
 
 	@Override
-	public GroovyFix buildFix(@NotNull PsiElement location)
+	public GroovyFix buildFix(@Nonnull PsiElement location)
 	{
 		return new GroovyFix()
 		{
 			@Override
-			@NotNull
+			@Nonnull
 			public String getName()
 			{
 				return "Convert Conditional to Elvis";
@@ -286,7 +287,7 @@ public class GroovyConditionalCanBeElvisInspection extends BaseInspection
 		return false;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public BaseInspectionVisitor buildVisitor()
 	{

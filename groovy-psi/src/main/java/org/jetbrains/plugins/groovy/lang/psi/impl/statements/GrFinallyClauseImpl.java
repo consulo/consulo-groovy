@@ -15,8 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrFinallyClause;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrOpenBlock;
@@ -27,7 +27,7 @@ import com.intellij.lang.ASTNode;
  * @author ilyas
  */
 public class GrFinallyClauseImpl extends GroovyPsiElementImpl implements GrFinallyClause {
-  public GrFinallyClauseImpl(@NotNull ASTNode node) {
+  public GrFinallyClauseImpl(@Nonnull ASTNode node) {
     super(node);
   }
 
@@ -41,7 +41,7 @@ public class GrFinallyClauseImpl extends GroovyPsiElementImpl implements GrFinal
   }
 
   @Override
-  @Nullable
+  @javax.annotation.Nullable
   public GrOpenBlock getBody() {
     return findChildByClass(GrOpenBlock.class);
   }

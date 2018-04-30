@@ -15,12 +15,14 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.assignment;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.tree.IElementType;
 import org.jetbrains.annotations.Nls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
@@ -35,14 +37,14 @@ public class GroovyAssignmentToMethodParameterInspection extends BaseInspection 
 
   @Override
   @Nls
-  @NotNull
+  @Nonnull
   public String getGroupDisplayName() {
     return ASSIGNMENT_ISSUES;
   }
 
   @Override
   @Nls
-  @NotNull
+  @Nonnull
   public String getDisplayName() {
     return "Assignment to method parameter";
   }
@@ -55,7 +57,7 @@ public class GroovyAssignmentToMethodParameterInspection extends BaseInspection 
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public BaseInspectionVisitor buildVisitor() {
     return new Visitor();
   }

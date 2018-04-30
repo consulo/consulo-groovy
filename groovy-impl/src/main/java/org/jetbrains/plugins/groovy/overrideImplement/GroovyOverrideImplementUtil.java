@@ -25,8 +25,8 @@ import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.*;
 import com.intellij.psi.util.PsiTypesUtil;
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.GrModifierList;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotation;
@@ -84,7 +84,7 @@ public class GroovyOverrideImplementUtil {
     return result;
   }
 
-  private static void setupAnnotations(@NotNull GrTypeDefinition aClass, @NotNull PsiMethod method, @NotNull GrMethod result) {
+  private static void setupAnnotations(@Nonnull GrTypeDefinition aClass, @Nonnull PsiMethod method, @Nonnull GrMethod result) {
     if (OverrideImplementUtil.isInsertOverride(method, aClass)) {
       result.getModifierList().addAnnotation(JAVA_LANG_OVERRIDE);
     }
@@ -117,11 +117,11 @@ public class GroovyOverrideImplementUtil {
   }
 
 
-  @NotNull
-  private static GrMethod createOverrideImplementMethodSignature(@NotNull Project project,
-                                                                 @NotNull PsiMethod superMethod,
-                                                                 @NotNull PsiSubstitutor substitutor,
-                                                                 @NotNull PsiClass aClass) {
+  @Nonnull
+  private static GrMethod createOverrideImplementMethodSignature(@Nonnull Project project,
+                                                                 @Nonnull PsiMethod superMethod,
+                                                                 @Nonnull PsiSubstitutor substitutor,
+                                                                 @Nonnull PsiClass aClass) {
     StringBuilder buffer = new StringBuilder();
     final boolean hasModifiers = ModifierListGenerator.writeModifiers(buffer, superMethod.getModifierList(), GROOVY_MODIFIERS, false);
 
@@ -210,7 +210,7 @@ public class GroovyOverrideImplementUtil {
   }
 
   @Nullable
-  private static PsiType getSuperReturnType(@NotNull PsiMethod superMethod) {
+  private static PsiType getSuperReturnType(@Nonnull PsiMethod superMethod) {
     if (superMethod instanceof GrMethod) {
       final GrTypeElement element = ((GrMethod)superMethod).getReturnTypeElementGroovy();
       return element != null ? element.getType() : null;
@@ -248,7 +248,7 @@ public class GroovyOverrideImplementUtil {
     }
   }
 
-  @NotNull
+  @Nonnull
   private static String callSuper(PsiMethod superMethod, PsiMethod overriding) {
     @NonNls StringBuilder buffer = new StringBuilder();
     if (!superMethod.isConstructor() && superMethod.getReturnType() != PsiType.VOID) {

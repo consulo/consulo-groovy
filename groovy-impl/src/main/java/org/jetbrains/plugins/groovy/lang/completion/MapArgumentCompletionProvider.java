@@ -19,8 +19,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.extensions.GroovyNamedArgumentProvider;
 import org.jetbrains.plugins.groovy.extensions.NamedArgumentDescriptor;
 import org.jetbrains.plugins.groovy.highlighter.GroovySyntaxHighlighter;
@@ -71,9 +71,9 @@ class MapArgumentCompletionProvider implements CompletionProvider
   }
 
   @Override
-  public void addCompletions(@NotNull CompletionParameters parameters,
+  public void addCompletions(@Nonnull CompletionParameters parameters,
                                 ProcessingContext context,
-                                @NotNull CompletionResultSet result) {
+                                @Nonnull CompletionResultSet result) {
     PsiElement mapOrArgumentList = findMapOrArgumentList(parameters);
     if (mapOrArgumentList == null) {
       return;
@@ -164,7 +164,7 @@ class MapArgumentCompletionProvider implements CompletionProvider
   }
 
   @Nullable
-  private static Map<String, NamedArgumentDescriptor> calcNamedArgumentsForCall(@NotNull PsiElement mapOrArgumentList) {
+  private static Map<String, NamedArgumentDescriptor> calcNamedArgumentsForCall(@Nonnull PsiElement mapOrArgumentList) {
     PsiElement argumentList = mapOrArgumentList instanceof GrArgumentList ? mapOrArgumentList : mapOrArgumentList.getParent();
     if (argumentList instanceof GrArgumentList) {
       if (mapOrArgumentList instanceof GrListOrMap) {

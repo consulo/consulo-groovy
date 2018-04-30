@@ -8,7 +8,7 @@ import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.WatchedRootsProvider;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 import java.io.File;
 import java.util.Collections;
@@ -25,12 +25,12 @@ public class MvcWatchedRootProvider implements WatchedRootsProvider {
     myProject = project;
   }
 
-  @NotNull
+  @Nonnull
   public Set<String> getRootsToWatch() {
     return getRootsToWatch(myProject);
   }
 
-  @NotNull
+  @Nonnull
   public static Set<String> getRootsToWatch(Project project) {
     if (!project.isInitialized()) return Collections.emptySet();
 

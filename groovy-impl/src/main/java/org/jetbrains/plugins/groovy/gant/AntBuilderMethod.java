@@ -1,7 +1,7 @@
 package org.jetbrains.plugins.groovy.gant;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrBuilderMethod;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GrMapType;
@@ -41,7 +41,7 @@ class AntBuilderMethod extends LightMethodBuilder implements GrBuilderMethod {
     });
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public PsiElement getNavigationElement() {
     if (myAntClass != null) {

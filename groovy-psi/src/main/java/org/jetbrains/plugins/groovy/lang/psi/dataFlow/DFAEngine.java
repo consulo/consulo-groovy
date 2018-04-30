@@ -22,8 +22,8 @@ import java.util.Deque;
 import java.util.LinkedList;
 import java.util.Queue;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.controlFlow.CallEnvironment;
 import org.jetbrains.plugins.groovy.lang.psi.controlFlow.CallInstruction;
 import org.jetbrains.plugins.groovy.lang.psi.controlFlow.ControlFlowBuilderUtil;
@@ -75,7 +75,7 @@ public class DFAEngine<E>
 		}
 	}
 
-	@NotNull
+	@Nonnull
 	public ArrayList<E> performForceDFA()
 	{
 		ArrayList<E> result = performDFA(false);
@@ -83,7 +83,7 @@ public class DFAEngine<E>
 		return result;
 	}
 
-	@Nullable
+	@javax.annotation.Nullable
 	public ArrayList<E> performDFAWithTimeout()
 	{
 		return performDFA(true);

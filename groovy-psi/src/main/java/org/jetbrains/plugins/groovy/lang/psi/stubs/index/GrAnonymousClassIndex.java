@@ -16,7 +16,7 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.stubs.index;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrAnonymousClassDefinition;
 import com.intellij.psi.stubs.StringStubIndexExtension;
 import com.intellij.psi.stubs.StubIndexKey;
@@ -27,7 +27,7 @@ import com.intellij.psi.stubs.StubIndexKey;
 public class GrAnonymousClassIndex extends StringStubIndexExtension<GrAnonymousClassDefinition> {
   public static final StubIndexKey<String, GrAnonymousClassDefinition> KEY = StubIndexKey.createIndexKey("gr.anonymous.class");
 
-  @NotNull
+  @Nonnull
   public StubIndexKey<String, GrAnonymousClassDefinition> getKey() {
     return KEY;
   }

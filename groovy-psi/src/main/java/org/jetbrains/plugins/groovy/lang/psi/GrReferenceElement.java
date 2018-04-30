@@ -15,12 +15,12 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiPolyVariantReference;
 import com.intellij.psi.PsiType;
 import com.intellij.util.IncorrectOperationException;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeArgumentList;
 
@@ -29,7 +29,7 @@ import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeArgumentList;
  */
 public interface GrReferenceElement<Q extends PsiElement> extends GroovyPsiElement, PsiPolyVariantReference, GrQualifiedReference<Q> {
   @Override
-  @Nullable
+  @javax.annotation.Nullable
   String getReferenceName();
 
   @Override
@@ -38,16 +38,16 @@ public interface GrReferenceElement<Q extends PsiElement> extends GroovyPsiEleme
   GroovyResolveResult advancedResolve();
 
   @Override
-  @NotNull
+  @Nonnull
   GroovyResolveResult[] multiResolve(boolean incompleteCode);
 
-  @NotNull
+  @Nonnull
   PsiType[] getTypeArguments();
 
-  @Nullable
+  @javax.annotation.Nullable
   GrTypeArgumentList getTypeArgumentList();
 
-  @NotNull
+  @Nonnull
   String getClassNameText();
 
   PsiElement handleElementRenameSimple(String newElementName) throws IncorrectOperationException;

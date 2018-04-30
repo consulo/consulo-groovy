@@ -16,21 +16,20 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
 
 /**
  * @author ilyas
  */
 public interface GrConditionalExpression extends GrExpression {
 
-  @NotNull
+  @Nonnull
   GrExpression getCondition();
 
-  @Nullable
+  @javax.annotation.Nullable
   GrExpression getThenBranch();
 
-  @Nullable
+  @javax.annotation.Nullable
   GrExpression getElseBranch();
 
 }

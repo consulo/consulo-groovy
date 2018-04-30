@@ -15,12 +15,13 @@
  */
 package org.jetbrains.plugins.groovy.intentions.control;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.IncorrectOperationException;
 import org.codehaus.groovy.runtime.DefaultGroovyMethods;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.intentions.base.PsiElementPredicate;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
@@ -32,7 +33,7 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
  */
 public class FlipIfIntention extends Intention {
   @Override
-  protected void processIntention(@NotNull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
+  protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
     final GrIfStatement ifStatement = DefaultGroovyMethods.asType(element.getParent(), GrIfStatement.class);
     final GrIfStatement elseIf = getElseIf(ifStatement);
 
@@ -45,7 +46,7 @@ public class FlipIfIntention extends Intention {
     ifStatement.getThenBranch().replaceWithStatement(elseIfCopy.getThenBranch());
   }
 
-  @NotNull
+  @Nonnull
   @Override
   protected PsiElementPredicate getElementPredicate() {
     return new PsiElementPredicate() {

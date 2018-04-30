@@ -17,7 +17,8 @@ package org.jetbrains.plugins.groovy.lang.psi.stubs.elements;
 
 import java.io.IOException;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.stubs.GrFileStub;
 import org.jetbrains.plugins.groovy.lang.psi.stubs.GrStubUtils;
@@ -47,7 +48,7 @@ public class GrStubFileElementType extends IStubFileElementType<GrFileStub> {
 
   public StubBuilder getBuilder() {
     return new DefaultStubBuilder() {
-      protected StubElement createStubForFile(@NotNull final PsiFile file) {
+      protected StubElement createStubForFile(@Nonnull final PsiFile file) {
         if (file instanceof GroovyFile) {
           return new GrFileStub((GroovyFile)file);
         }
@@ -62,27 +63,27 @@ public class GrStubFileElementType extends IStubFileElementType<GrFileStub> {
     return super.getStubVersion() + 17;
   }
 
-  @NotNull
+  @Nonnull
   public String getExternalId() {
     return "groovy.FILE";
   }
 
   @Override
-  public void serialize(@NotNull final GrFileStub stub, @NotNull final StubOutputStream dataStream) throws IOException {
+  public void serialize(@Nonnull final GrFileStub stub, @Nonnull final StubOutputStream dataStream) throws IOException {
     dataStream.writeName(stub.getName().toString());
     dataStream.writeBoolean(stub.isScript());
     GrStubUtils.writeStringArray(dataStream, stub.getAnnotations());
   }
 
-  @NotNull
+  @Nonnull
   @Override
-  public GrFileStub deserialize(@NotNull final StubInputStream dataStream, final StubElement parentStub) throws IOException {
+  public GrFileStub deserialize(@Nonnull final StubInputStream dataStream, final StubElement parentStub) throws IOException {
     StringRef name = dataStream.readName();
     boolean isScript = dataStream.readBoolean();
     return new GrFileStub(name, isScript, GrStubUtils.readStringArray(dataStream));
   }
 
-  public void indexStub(@NotNull GrFileStub stub, @NotNull IndexSink sink) {
+  public void indexStub(@Nonnull GrFileStub stub, @Nonnull IndexSink sink) {
     String name = stub.getName().toString();
     if (stub.isScript() && name != null) {
       sink.occurrence(GrScriptClassNameIndex.KEY, name);

@@ -19,7 +19,7 @@ package org.jetbrains.plugins.groovy.annotator.intentions;
 import com.intellij.codeInsight.daemon.impl.quickfix.ImportClassFixBase;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.psi.*;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.GrReferenceElement;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
@@ -39,17 +39,17 @@ public class GroovyAddImportAction extends ImportClassFixBase<GrReferenceElement
   }
 
   @Override
-  protected String getReferenceName(@NotNull GrReferenceElement reference) {
+  protected String getReferenceName(@Nonnull GrReferenceElement reference) {
     return reference.getReferenceName();
   }
 
   @Override
-  protected PsiElement getReferenceNameElement(@NotNull GrReferenceElement reference) {
+  protected PsiElement getReferenceNameElement(@Nonnull GrReferenceElement reference) {
     return reference.getReferenceNameElement();
   }
 
   @Override
-  protected boolean hasTypeParameters(@NotNull GrReferenceElement reference) {
+  protected boolean hasTypeParameters(@Nonnull GrReferenceElement reference) {
     return reference.getTypeArguments().length > 0;
   }
 

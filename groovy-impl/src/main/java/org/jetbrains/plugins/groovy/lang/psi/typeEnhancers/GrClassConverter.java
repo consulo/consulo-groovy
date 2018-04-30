@@ -15,9 +15,11 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.typeEnhancers;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.psi.*;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.literals.GrLiteral;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.ConversionResult;
@@ -25,7 +27,7 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.Convers
 public class GrClassConverter extends GrTypeConverter {
 
   @Override
-  public boolean isApplicableTo(@NotNull ApplicableTo position) {
+  public boolean isApplicableTo(@Nonnull ApplicableTo position) {
     switch (position) {
       case ASSIGNMENT:
       case RETURN_VALUE:
@@ -37,10 +39,10 @@ public class GrClassConverter extends GrTypeConverter {
 
   @Nullable
   @Override
-  public ConversionResult isConvertibleEx(@NotNull PsiType targetType,
-                                          @NotNull PsiType actualType,
-                                          @NotNull GroovyPsiElement context,
-                                          @NotNull ApplicableTo currentPosition) {
+  public ConversionResult isConvertibleEx(@Nonnull PsiType targetType,
+                                          @Nonnull PsiType actualType,
+                                          @Nonnull GroovyPsiElement context,
+                                          @Nonnull ApplicableTo currentPosition) {
     if (!(targetType instanceof PsiClassType) ||
         !((PsiClassType)targetType).rawType().equalsToText(CommonClassNames.JAVA_LANG_CLASS)) {
       return null;

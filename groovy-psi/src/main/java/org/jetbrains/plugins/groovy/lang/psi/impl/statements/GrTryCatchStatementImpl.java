@@ -19,8 +19,8 @@ package org.jetbrains.plugins.groovy.lang.psi.impl.statements;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrCatchClause;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrFinallyClause;
@@ -34,7 +34,7 @@ import com.intellij.psi.PsiElement;
  * @author ilyas
  */
 public class GrTryCatchStatementImpl extends GroovyPsiElementImpl implements GrTryCatchStatement {
-  public GrTryCatchStatementImpl(@NotNull ASTNode node) {
+  public GrTryCatchStatementImpl(@Nonnull ASTNode node) {
     super(node);
   }
 
@@ -48,13 +48,13 @@ public class GrTryCatchStatementImpl extends GroovyPsiElementImpl implements GrT
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public GrOpenBlock getTryBlock() {
     return findNotNullChildByClass(GrOpenBlock.class);
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public GrCatchClause[] getCatchClauses() {
     List<GrCatchClause> result = new ArrayList<GrCatchClause>();
     for (PsiElement cur = getFirstChild(); cur != null; cur = cur.getNextSibling()) {
@@ -69,7 +69,7 @@ public class GrTryCatchStatementImpl extends GroovyPsiElementImpl implements GrT
   }
 
   @Override
-  public GrCatchClause addCatchClause(@NotNull GrCatchClause clause, @Nullable GrCatchClause anchorBefore) {
+  public GrCatchClause addCatchClause(@Nonnull GrCatchClause clause, @Nullable GrCatchClause anchorBefore) {
     PsiElement anchor = anchorBefore;
     if (anchor == null) {
       anchor = getTryBlock();

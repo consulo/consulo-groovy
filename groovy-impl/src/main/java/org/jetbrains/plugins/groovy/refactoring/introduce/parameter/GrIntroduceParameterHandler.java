@@ -34,8 +34,8 @@ import com.intellij.refactoring.RefactoringBundle;
 import com.intellij.refactoring.util.CommonRefactoringUtil;
 import com.intellij.util.Function;
 import com.intellij.util.PairFunction;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrParametersOwner;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
@@ -61,7 +61,7 @@ import static org.jetbrains.plugins.groovy.refactoring.HelpID.GROOVY_INTRODUCE_P
 public class GrIntroduceParameterHandler implements RefactoringActionHandler, MethodOrClosureScopeChooser.JBPopupOwner {
   private JBPopup myEnclosingMethodsPopup;
 
-  public void invoke(final @NotNull Project project, final Editor editor, final PsiFile file, final @Nullable DataContext dataContext) {
+  public void invoke(final @Nonnull Project project, final Editor editor, final PsiFile file, final @javax.annotation.Nullable DataContext dataContext) {
     final SelectionModel selectionModel = editor.getSelectionModel();
     if (!selectionModel.hasSelection()) {
       final int offset = editor.getCaretModel().getOffset();
@@ -110,7 +110,7 @@ public class GrIntroduceParameterHandler implements RefactoringActionHandler, Me
     }
   }
 
-  private void findScope(@NotNull final InitialInfo initialInfo, @NotNull final Editor editor) {
+  private void findScope(@Nonnull final InitialInfo initialInfo, @Nonnull final Editor editor) {
     PsiElement place = initialInfo.getContext();
     final List<GrParametersOwner> scopes = new ArrayList<GrParametersOwner>();
     while (true) {
@@ -160,7 +160,7 @@ public class GrIntroduceParameterHandler implements RefactoringActionHandler, Me
 
 
   @Override
-  public void invoke(@NotNull Project project, @NotNull PsiElement[] elements, DataContext dataContext) {
+  public void invoke(@Nonnull Project project, @Nonnull PsiElement[] elements, DataContext dataContext) {
     // Does nothing
   }
 }

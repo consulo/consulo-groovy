@@ -20,7 +20,6 @@ import com.intellij.psi.PsiAnonymousClass;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
 
@@ -28,7 +27,7 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefini
  * @author Max Medvedev
  */
 public class GroovyTopLevelParentClassProvider extends TopLevelParentClassProvider {
-  @Nullable
+  @javax.annotation.Nullable
   @Override
   protected PsiClass getCustomTopLevelParentClass(PsiClass psiClass) {
     if (!(psiClass instanceof GrTypeDefinition)) return null;

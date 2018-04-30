@@ -15,8 +15,9 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.bugs;
 
+import javax.annotation.Nonnull;
+
 import org.jetbrains.annotations.Nls;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.codeInspection.GroovyInspectionBundle;
 import org.jetbrains.plugins.groovy.codeInspection.GroovySuppressableInspectionTool;
@@ -37,7 +38,7 @@ public class GroovyAccessibilityInspection extends GroovySuppressableInspectionT
 	private static final String SHORT_NAME = "GroovyAccessibility";
 
 	@Nls
-	@NotNull
+	@Nonnull
 	@Override
 	public String getGroupDisplayName()
 	{
@@ -45,7 +46,7 @@ public class GroovyAccessibilityInspection extends GroovySuppressableInspectionT
 	}
 
 	@Nls
-	@NotNull
+	@Nonnull
 	@Override
 	public String getDisplayName()
 	{
@@ -78,8 +79,8 @@ public class GroovyAccessibilityInspection extends GroovySuppressableInspectionT
 		return getInspectionProfile(project).getErrorLevel(findDisplayKey(), ref);
 	}
 
-	@NotNull
-	private static InspectionProfile getInspectionProfile(@NotNull Project project)
+	@Nonnull
+	private static InspectionProfile getInspectionProfile(@Nonnull Project project)
 	{
 		return InspectionProjectProfileManager.getInstance(project).getInspectionProfile();
 	}

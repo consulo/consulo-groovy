@@ -18,7 +18,8 @@ package org.jetbrains.plugins.groovy.shell;
 import java.util.Collection;
 import java.util.Set;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.config.AbstractConfigUtils;
 import org.jetbrains.plugins.groovy.config.GroovyConfigUtils;
 import org.jetbrains.plugins.groovy.runner.DefaultGroovyScriptRunner;
@@ -41,17 +42,17 @@ import consulo.java.execution.configurations.OwnJavaParameters;
 public class DefaultGroovyShellRunner extends GroovyShellConfig
 {
 
-	@NotNull
+	@Nonnull
 	@Override
-	public String getWorkingDirectory(@NotNull Module module)
+	public String getWorkingDirectory(@Nonnull Module module)
 	{
 		VirtualFile[] contentRoots = ModuleRootManager.getInstance(module).getContentRoots();
 		return contentRoots[0].getPath();
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
-	public OwnJavaParameters createJavaParameters(@NotNull Module module) throws ExecutionException
+	public OwnJavaParameters createJavaParameters(@Nonnull Module module) throws ExecutionException
 	{
 		OwnJavaParameters res = GroovyScriptRunConfiguration.createJavaParametersWithSdk(module);
 		DefaultGroovyScriptRunner.configureGenericGroovyRunner(res, module, "org.codehaus.groovy.tools.shell.Main", false, true);
@@ -60,15 +61,15 @@ public class DefaultGroovyShellRunner extends GroovyShellConfig
 	}
 
 	@Override
-	public boolean canRun(@NotNull Module module)
+	public boolean canRun(@Nonnull Module module)
 	{
 		VirtualFile[] contentRoots = ModuleRootManager.getInstance(module).getContentRoots();
 		return contentRoots.length > 0 && hasGroovyWithNeededJars(module);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
-	public String getVersion(@NotNull Module module)
+	public String getVersion(@Nonnull Module module)
 	{
 		String homePath = LibrariesUtil.getGroovyHomePath(module);
 		assert homePath != null;

@@ -15,11 +15,12 @@
  */
 package org.jetbrains.plugins.groovy.lang.completion.smartEnter.fixers;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.lang.SmartEnterProcessorWithFixers;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.lang.completion.smartEnter.GroovySmartEnterProcessor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.literals.GrLiteral;
 
@@ -29,7 +30,7 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.literals
  */
 public class GrLiteralFixer extends SmartEnterProcessorWithFixers.Fixer<GroovySmartEnterProcessor> {
   @Override
-  public void apply(@NotNull Editor editor, @NotNull GroovySmartEnterProcessor processor, @NotNull PsiElement psiElement) {
+  public void apply(@Nonnull Editor editor, @Nonnull GroovySmartEnterProcessor processor, @Nonnull PsiElement psiElement) {
     if (psiElement instanceof GrLiteral) {
       String text = psiElement.getText();
       if (StringUtil.startsWith(text, "'''")) {

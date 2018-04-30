@@ -15,8 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.assignment;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrArgumentList;
@@ -30,39 +30,39 @@ import com.intellij.psi.PsiType;
  * Created by Max Medvedev on 05/02/14
  */
 public interface CallInfo<Call extends GroovyPsiElement> {
-  @Nullable
+  @javax.annotation.Nullable
   GrArgumentList getArgumentList();
 
   @Nullable
   PsiType[] getArgumentTypes();
 
-  @Nullable
+  @javax.annotation.Nullable
   GrExpression getInvokedExpression();
 
-  @Nullable
+  @javax.annotation.Nullable
   PsiType getQualifierInstanceType();
 
-  @NotNull
+  @Nonnull
   PsiElement getHighlightElementForCategoryQualifier() throws UnsupportedOperationException;
 
-  @NotNull
+  @Nonnull
   PsiElement getElementToHighlight();
 
-  @NotNull
+  @Nonnull
   GroovyResolveResult advancedResolve();
 
-  @NotNull
+  @Nonnull
   GroovyResolveResult[] multiResolve();
 
-  @NotNull
+  @Nonnull
   Call getCall();
 
-  @NotNull
+  @Nonnull
   GrExpression[] getExpressionArguments();
 
-  @NotNull
+  @Nonnull
   GrClosableBlock[] getClosureArguments();
 
-  @NotNull
+  @Nonnull
   GrNamedArgument[] getNamedArguments();
 }

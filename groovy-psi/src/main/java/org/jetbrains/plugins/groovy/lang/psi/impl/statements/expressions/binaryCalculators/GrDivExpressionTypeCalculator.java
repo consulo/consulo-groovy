@@ -15,9 +15,11 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.binaryCalculators;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.psi.PsiType;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 
 /**
  * Created by Max Medvedev on 12/20/13
@@ -27,7 +29,7 @@ public class GrDivExpressionTypeCalculator extends GrNumericBinaryExpressionType
 
   @Nullable
   @Override
-  protected PsiType inferNumericType(@NotNull PsiType ltype, @NotNull PsiType rtype, GrBinaryFacade e) {
+  protected PsiType inferNumericType(@Nonnull PsiType ltype, @Nonnull PsiType rtype, GrBinaryFacade e) {
     if (GrBinaryExpressionUtil.isFloatOrDouble(ltype, rtype)) {
       return GrBinaryExpressionUtil.createDouble(e);
     }

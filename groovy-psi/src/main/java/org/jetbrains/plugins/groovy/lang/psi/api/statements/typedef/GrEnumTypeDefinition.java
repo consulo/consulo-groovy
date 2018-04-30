@@ -16,11 +16,9 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef;
 
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrEnumConstant;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrEnumConstantList;
-import org.jetbrains.plugins.groovy.lang.psi.stubs.GrTypeDefinitionStub;
-import com.intellij.psi.StubBasedPsiElement;
 
 /**
  * @author Dmitry.Krasilschikov

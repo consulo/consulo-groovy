@@ -22,7 +22,7 @@ import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiEnumConstant;
 import com.intellij.psi.PsiField;
 import com.intellij.util.NotNullFunction;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.actions.generate.GrBaseGenerateAction;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
@@ -42,7 +42,7 @@ public class GroovyGenerateGetterSetterAction extends GrBaseGenerateAction {
 
   static {
     GenerateAccessorProviderRegistrar.registerProvider(new NotNullFunction<PsiClass, Collection<EncapsulatableClassMember>>() {
-      @NotNull
+      @Nonnull
       public Collection<EncapsulatableClassMember> fun(PsiClass s) {
         if (!(s instanceof GrTypeDefinition)) return Collections.emptyList();
         final List<EncapsulatableClassMember> result = new ArrayList<EncapsulatableClassMember>();

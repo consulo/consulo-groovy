@@ -15,10 +15,12 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.binaryCalculators;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.psi.PsiType;
 import com.intellij.util.NullableFunction;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
 import org.jetbrains.plugins.groovy.lang.psi.impl.PsiImplUtil;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil;
@@ -52,7 +54,7 @@ public class GrNumericBinaryExpressionTypeCalculator implements NullableFunction
   }
 
   @Nullable
-  protected PsiType inferNumericType(@NotNull PsiType ltype, @NotNull PsiType rtype, GrBinaryFacade e) {
+  protected PsiType inferNumericType(@Nonnull PsiType ltype, @Nonnull PsiType rtype, GrBinaryFacade e) {
     return GrBinaryExpressionUtil.getDefaultNumericResultType(ltype, rtype, e);
   }
 }

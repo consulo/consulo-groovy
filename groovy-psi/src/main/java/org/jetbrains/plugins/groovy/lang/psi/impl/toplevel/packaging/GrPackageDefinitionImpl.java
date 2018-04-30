@@ -16,8 +16,9 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.toplevel.packaging;
 
+import javax.annotation.Nonnull;
+
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.GrModifierList;
@@ -38,7 +39,7 @@ public class GrPackageDefinitionImpl extends GrStubElementBase<GrPackageDefiniti
 		GrPackageDefinition, StubBasedPsiElement<GrPackageDefinitionStub>
 {
 
-	public GrPackageDefinitionImpl(@NotNull ASTNode node)
+	public GrPackageDefinitionImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
@@ -49,7 +50,7 @@ public class GrPackageDefinitionImpl extends GrStubElementBase<GrPackageDefiniti
 		return getParentByStub();
 	}
 
-	public GrPackageDefinitionImpl(@NotNull GrPackageDefinitionStub stub)
+	public GrPackageDefinitionImpl(@Nonnull GrPackageDefinitionStub stub)
 	{
 		super(stub, GroovyElementTypes.PACKAGE_DEFINITION);
 	}
@@ -89,7 +90,7 @@ public class GrPackageDefinitionImpl extends GrStubElementBase<GrPackageDefiniti
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public GrModifierList getAnnotationList()
 	{
 		return getStubOrPsiChild(GroovyElementTypes.MODIFIERS);
@@ -102,7 +103,7 @@ public class GrPackageDefinitionImpl extends GrStubElementBase<GrPackageDefiniti
 	}
 
 	@Override
-	public boolean hasModifierProperty(@NonNls @NotNull String name)
+	public boolean hasModifierProperty(@NonNls @Nonnull String name)
 	{
 		final PsiModifierList list = getModifierList();
 		return list != null && list.hasExplicitModifier(name);

@@ -15,12 +15,13 @@
  */
 package org.jetbrains.plugins.groovy.intentions.closure;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.intentions.base.PsiElementPredicate;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
@@ -36,12 +37,12 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.path.GrM
 public class ForToEachIntention extends Intention {
 
 
-  @NotNull
+  @Nonnull
   public PsiElementPredicate getElementPredicate() {
     return new ForToEachPredicate();
   }
 
-  public void processIntention(@NotNull PsiElement element, Project project, Editor editor)
+  public void processIntention(@Nonnull PsiElement element, Project project, Editor editor)
       throws IncorrectOperationException {
     final GrForStatement parentStatement =
         (GrForStatement) element;

@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.dsl.toplevel.ClassContextFilter;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.ClassUtil;
 import com.intellij.openapi.util.Key;
@@ -60,7 +59,7 @@ public abstract class DslPointcut<T, V>
 	};
 	public static Key<Map<String, List>> BOUND = Key.create("gdsl.bound");
 
-	@Nullable
+	@javax.annotation.Nullable
 	abstract List<V> matches(T src, ProcessingContext context);
 
 	abstract boolean operatesOn(Class c);

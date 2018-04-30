@@ -17,8 +17,8 @@ package org.jetbrains.plugins.groovy.annotator;
 
 import java.util.Set;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.highlighter.GroovySyntaxHighlighter;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.lexer.TokenSets;
@@ -63,7 +63,7 @@ public class GrHighlightUtil {
 
   private static Set<String> getReassignedNames(final PsiElement scope) {
     return CachedValuesManager.getManager(scope.getProject()).getCachedValue(scope, new CachedValueProvider<Set<String>>() {
-      @Nullable
+      @javax.annotation.Nullable
       @Override
       public Result<Set<String>> compute() {
         return Result.create(collectReassignedNames(scope), scope);
@@ -75,7 +75,7 @@ public class GrHighlightUtil {
     final Set<String> result = ContainerUtil.newHashSet();
     PsiTreeUtil.processElements(scope, new PsiElementProcessor() {
       @Override
-      public boolean execute(@NotNull PsiElement element) {
+      public boolean execute(@Nonnull PsiElement element) {
         if (!(element instanceof GrReferenceExpression) || !((GrReferenceExpression)element).isQualified()) {
           return true;
         }
@@ -117,7 +117,7 @@ public class GrHighlightUtil {
    * @return
    */
   @Nullable
-  static TextAttributesKey getDeclarationHighlightingAttribute(PsiElement resolved, @Nullable PsiElement refElement) {
+  static TextAttributesKey getDeclarationHighlightingAttribute(PsiElement resolved, @javax.annotation.Nullable PsiElement refElement) {
     if (refElement != null && isReferenceWithLiteralName(refElement)) return null; //don't highlight literal references
 
     if (resolved instanceof PsiField || resolved instanceof GrVariable && ResolveUtil.isScriptField((GrVariable)resolved)) {
@@ -183,7 +183,7 @@ public class GrHighlightUtil {
     return null;
   }
 
-  private static boolean isMethodWithLiteralName(@Nullable PsiMethod method) {
+  private static boolean isMethodWithLiteralName(@javax.annotation.Nullable PsiMethod method) {
     if (method instanceof GrMethod) {
       final PsiElement nameIdentifier = ((GrMethod)method).getNameIdentifierGroovy();
       if (isStringNameElement(nameIdentifier)) {
@@ -203,7 +203,7 @@ public class GrHighlightUtil {
     return false;
   }
 
-  private static boolean isStringNameElement(@NotNull PsiElement nameIdentifier) {
+  private static boolean isStringNameElement(@Nonnull PsiElement nameIdentifier) {
     final ASTNode node = nameIdentifier.getNode();
     if (node == null) return false;
 
@@ -254,8 +254,8 @@ public class GrHighlightUtil {
     return new TextRange(startOffset, endOffset);
   }
 
-  @NotNull
-  public static PsiElement getElementToHighlight(@NotNull GrReferenceElement refElement) {
+  @Nonnull
+  public static PsiElement getElementToHighlight(@Nonnull GrReferenceElement refElement) {
     final PsiElement refNameElement = refElement.getReferenceNameElement();
     return refNameElement != null ? refNameElement : refElement;
   }
@@ -295,7 +295,7 @@ public class GrHighlightUtil {
   }
 
   @Nullable
-  public static GrMember findClassMemberContainer(@NotNull GrReferenceExpression ref, @NotNull PsiClass aClass) {
+  public static GrMember findClassMemberContainer(@Nonnull GrReferenceExpression ref, @Nonnull PsiClass aClass) {
     for (PsiElement parent = ref.getParent(); parent != null && parent != aClass; parent = parent.getParent()) {
       if (parent instanceof GrMember && ((GrMember)parent).getContainingClass() == aClass) {
         return (GrMember)parent;

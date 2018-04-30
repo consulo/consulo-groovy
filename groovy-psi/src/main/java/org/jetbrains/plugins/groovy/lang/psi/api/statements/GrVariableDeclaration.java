@@ -1,10 +1,12 @@
 package org.jetbrains.plugins.groovy.lang.psi.api.statements;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.psi.PsiType;
 import com.intellij.util.ArrayFactory;
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.GrModifier;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMembersDeclaration;
@@ -16,7 +18,7 @@ import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeElement;
  */
 public interface GrVariableDeclaration extends GrStatement, GrMembersDeclaration {
   ArrayFactory<GrVariableDeclaration> ARRAY_FACTORY = new ArrayFactory<GrVariableDeclaration>() {
-    @NotNull
+    @Nonnull
     @Override
     public GrVariableDeclaration[] create(int count) {
       return new GrVariableDeclaration[count];
@@ -26,10 +28,10 @@ public interface GrVariableDeclaration extends GrStatement, GrMembersDeclaration
   @Nullable
   GrTypeElement getTypeElementGroovy();
 
-  @NotNull
+  @Nonnull
   GrVariable[] getVariables();
 
-  void setType(@Nullable PsiType type);
+  void setType(@javax.annotation.Nullable PsiType type);
 
   boolean isTuple();
 
@@ -40,5 +42,5 @@ public interface GrVariableDeclaration extends GrStatement, GrMembersDeclaration
   GrExpression getTupleInitializer();
 
   @Override
-  boolean hasModifierProperty(@GrModifier.GrModifierConstant @NonNls @NotNull String name);
+  boolean hasModifierProperty(@GrModifier.GrModifierConstant @NonNls @Nonnull String name);
 }

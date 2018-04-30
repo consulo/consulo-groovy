@@ -15,7 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.synthetic;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.GroovyLanguage;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeElement;
@@ -27,14 +28,15 @@ import com.intellij.psi.impl.light.LightElement;
  * @author Max Medvedev
  */
 public class GrLightTypeElement extends LightElement implements GrTypeElement {
-  @NotNull private final PsiType myType;
+  @Nonnull
+  private final PsiType myType;
 
-  public GrLightTypeElement(@NotNull PsiType type, PsiManager manager) {
+  public GrLightTypeElement(@Nonnull PsiType type, PsiManager manager) {
     super(manager, GroovyLanguage.INSTANCE);
     myType = type;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public PsiType getType() {
     return myType;

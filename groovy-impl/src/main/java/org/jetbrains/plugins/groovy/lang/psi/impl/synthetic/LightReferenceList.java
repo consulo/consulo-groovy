@@ -15,9 +15,10 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.synthetic;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.psi.*;
 import com.intellij.psi.impl.light.LightElement;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.GroovyLanguage;
 
 /**
@@ -29,20 +30,20 @@ public class LightReferenceList extends LightElement implements PsiReferenceList
   }
 
   @Override
-  public void accept(@NotNull PsiElementVisitor visitor) {
+  public void accept(@Nonnull PsiElementVisitor visitor) {
     if (visitor instanceof JavaElementVisitor) {
       ((JavaElementVisitor) visitor).visitReferenceList(this);
     }
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public PsiJavaCodeReferenceElement[] getReferenceElements() {
     return PsiJavaCodeReferenceElement.EMPTY_ARRAY;
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public PsiClassType[] getReferencedTypes() {
     return PsiClassType.EMPTY_ARRAY;
   }

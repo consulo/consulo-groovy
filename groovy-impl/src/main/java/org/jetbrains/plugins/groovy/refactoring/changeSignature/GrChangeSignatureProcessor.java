@@ -30,7 +30,7 @@ import com.intellij.usageView.UsageInfo;
 import com.intellij.usageView.UsageViewDescriptor;
 import com.intellij.util.containers.HashSet;
 import com.intellij.util.containers.MultiMap;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -52,7 +52,7 @@ public class GrChangeSignatureProcessor extends ChangeSignatureProcessorBase {
     return (GrChangeInfoImpl)super.getChangeInfo();
   }
 
-  @NotNull
+  @Nonnull
   @Override
   protected UsageViewDescriptor createUsageViewDescriptor(UsageInfo[] usages) {
     return new ChangeSignatureViewDescriptor(getChangeInfo().getMethod());

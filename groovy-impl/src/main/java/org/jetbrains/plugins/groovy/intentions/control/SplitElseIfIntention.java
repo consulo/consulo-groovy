@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.intentions.control;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.intentions.base.PsiElementPredicate;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrIfStatement;
@@ -29,13 +29,13 @@ import com.intellij.util.IncorrectOperationException;
 public class SplitElseIfIntention extends Intention
 {
 
-	@NotNull
+	@Nonnull
 	public PsiElementPredicate getElementPredicate()
 	{
 		return new SplitElseIfPredicate();
 	}
 
-	public void processIntention(@NotNull PsiElement element,
+	public void processIntention(@Nonnull PsiElement element,
 			Project project,
 			Editor editor) throws IncorrectOperationException
 	{

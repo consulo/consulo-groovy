@@ -16,7 +16,8 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.typedef;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrAnnotationTypeDefinition;
@@ -30,7 +31,7 @@ import com.intellij.psi.PsiClassType;
  * @date 18.03.2007
  */
 public class GrAnnotationTypeDefinitionImpl extends GrTypeDefinitionImpl implements GrAnnotationTypeDefinition {
-  public GrAnnotationTypeDefinitionImpl(@NotNull ASTNode node) {
+  public GrAnnotationTypeDefinitionImpl(@Nonnull ASTNode node) {
     super(node);
   }
 
@@ -58,7 +59,7 @@ public class GrAnnotationTypeDefinitionImpl extends GrTypeDefinitionImpl impleme
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public PsiClassType[] getExtendsListTypes() {
     return new PsiClassType[]{createAnnotationType()};
   }

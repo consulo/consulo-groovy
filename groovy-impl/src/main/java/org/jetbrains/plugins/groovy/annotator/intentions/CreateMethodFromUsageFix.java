@@ -15,8 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.annotator.intentions;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.GroovyLanguage;
 import org.jetbrains.plugins.groovy.intentions.base.IntentionUtils;
@@ -44,20 +44,20 @@ import com.intellij.psi.util.PsiTreeUtil;
 public class CreateMethodFromUsageFix extends GrCreateFromUsageBaseFix implements IntentionAction
 {
 
-	public CreateMethodFromUsageFix(@NotNull GrReferenceExpression refExpression)
+	public CreateMethodFromUsageFix(@Nonnull GrReferenceExpression refExpression)
 	{
 		super(refExpression);
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public String getText()
 	{
 		return GroovyBundle.message("create.method.from.usage", getMethodName());
 	}
 
 	@Override
-	protected void invokeImpl(Project project, @NotNull PsiClass targetClass)
+	protected void invokeImpl(Project project, @Nonnull PsiClass targetClass)
 	{
 		final JVMElementFactory factory = JVMElementFactories.getFactory(targetClass.getLanguage(),
 				targetClass.getProject());
@@ -95,7 +95,7 @@ public class CreateMethodFromUsageFix extends GrCreateFromUsageBaseFix implement
 				false, context);
 	}
 
-	@NotNull
+	@Nonnull
 	protected TypeConstraint[] getReturnTypeConstraints()
 	{
 		return GroovyExpectedTypesProvider.calculateTypeConstraints((GrExpression) getRefExpr().getParent());
@@ -106,7 +106,7 @@ public class CreateMethodFromUsageFix extends GrCreateFromUsageBaseFix implement
 		return PsiUtil.getArgumentTypes(getRefExpr(), false);
 	}
 
-	@NotNull
+	@Nonnull
 	protected String getMethodName()
 	{
 		return getRefExpr().getReferenceName();
@@ -132,10 +132,10 @@ public class CreateMethodFromUsageFix extends GrCreateFromUsageBaseFix implement
 		}
 	}
 
-	@NotNull
-	private ChooseTypeExpression[] setupParams(@NotNull PsiMethod method,
-			@NotNull PsiType[] argTypes,
-			@NotNull JVMElementFactory factory)
+	@Nonnull
+	private ChooseTypeExpression[] setupParams(@Nonnull PsiMethod method,
+			@Nonnull PsiType[] argTypes,
+			@Nonnull JVMElementFactory factory)
 	{
 		final PsiParameterList parameterList = method.getParameterList();
 

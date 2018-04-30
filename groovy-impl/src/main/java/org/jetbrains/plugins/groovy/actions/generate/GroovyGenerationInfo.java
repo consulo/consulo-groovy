@@ -15,8 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.actions.generate;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocComment;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
@@ -50,19 +50,19 @@ public class GroovyGenerationInfo<T extends PsiMember> extends PsiGenerationInfo
 {
 	private static final Logger LOG = Logger.getInstance(GroovyGenerationInfo.class);
 
-	public GroovyGenerationInfo(@NotNull T member, boolean mergeIfExists)
+	public GroovyGenerationInfo(@Nonnull T member, boolean mergeIfExists)
 	{
 		super(member, mergeIfExists);
 	}
 
-	public GroovyGenerationInfo(@NotNull T member)
+	public GroovyGenerationInfo(@Nonnull T member)
 	{
 		super(member);
 	}
 
 	@Override
-	public void insert(@NotNull PsiClass aClass,
-			@Nullable PsiElement anchor,
+	public void insert(@Nonnull PsiClass aClass,
+			@javax.annotation.Nullable PsiElement anchor,
 			boolean before) throws IncorrectOperationException
 	{
 
@@ -129,7 +129,7 @@ public class GroovyGenerationInfo<T extends PsiMember> extends PsiGenerationInfo
 	}
 
 	@Override
-	public PsiElement findInsertionAnchor(@NotNull PsiClass aClass, @NotNull PsiElement leaf)
+	public PsiElement findInsertionAnchor(@Nonnull PsiClass aClass, @Nonnull PsiElement leaf)
 	{
 		PsiElement parent = aClass instanceof GroovyScriptClass ? aClass.getContainingFile() : ((GrTypeDefinition)
 				aClass).getBody();

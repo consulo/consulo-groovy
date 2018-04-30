@@ -22,7 +22,7 @@ import com.intellij.ide.projectView.impl.nodes.AbstractProjectNode;
 import com.intellij.ide.util.treeView.AbstractTreeNode;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.mvc.MvcModuleStructureUtil;
 
 import java.lang.reflect.InvocationTargetException;
@@ -41,7 +41,7 @@ public class MvcProjectNode extends AbstractProjectNode {
     myDescriptor = descriptor;
   }
 
-  @NotNull
+  @Nonnull
   public Collection<? extends AbstractTreeNode> getChildren() {
     List<Module> modules = MvcModuleStructureUtil.getAllModulesWithSupport(myProject, myDescriptor.getFramework());
 

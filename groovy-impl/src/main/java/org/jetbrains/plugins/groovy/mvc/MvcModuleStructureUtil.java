@@ -26,9 +26,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.Nonnull;
+
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import com.intellij.lang.properties.psi.PropertiesFile;
 import com.intellij.openapi.application.AccessToken;
 import com.intellij.openapi.application.ApplicationManager;
@@ -99,7 +101,7 @@ public class MvcModuleStructureUtil
 	}
 
 	@Nullable
-	private static Consumer<ModifiableRootModel> addSourceRootsAndLibDirectory(@NotNull final VirtualFile root, final MvcProjectStructure structure)
+	private static Consumer<ModifiableRootModel> addSourceRootsAndLibDirectory(@Nonnull final VirtualFile root, final MvcProjectStructure structure)
 	{
 		ModuleRootManager moduleRootManager = ModuleRootManager.getInstance(structure.myModule);
 
@@ -256,8 +258,8 @@ public class MvcModuleStructureUtil
 		return library.getModifiableModel();
 	}
 
-	public static void addSourceFolder(@NotNull VirtualFile root,
-			@NotNull String relativePath,
+	public static void addSourceFolder(@Nonnull VirtualFile root,
+			@Nonnull String relativePath,
 			final boolean isTest,
 			List<Consumer<ContentEntry>> actions,
 			Map<VirtualFile, Boolean> sourceRoots)
@@ -305,7 +307,7 @@ public class MvcModuleStructureUtil
 		});
 	}
 
-	public static void updateModuleStructure(Module module, MvcProjectStructure structure, @NotNull VirtualFile root)
+	public static void updateModuleStructure(Module module, MvcProjectStructure structure, @Nonnull VirtualFile root)
 	{
 		List<Consumer<ModifiableRootModel>> actions = getUpdateProjectStructureActions(Collections.singletonList(root), structure);
 
@@ -624,7 +626,7 @@ public class MvcModuleStructureUtil
 		return res;
 	}
 
-	public static void syncAuxModuleSdk(@NotNull Module appModule, @NotNull Module pluginsModule, @NotNull final MvcFramework framework)
+	public static void syncAuxModuleSdk(@Nonnull Module appModule, @Nonnull Module pluginsModule, @Nonnull final MvcFramework framework)
 	{
 		final ModuleRootManager auxRootManager = ModuleRootManager.getInstance(pluginsModule);
 		final ModuleRootManager appRootManager = ModuleRootManager.getInstance(appModule);
@@ -667,7 +669,7 @@ public class MvcModuleStructureUtil
 	}
 
 	@Nullable
-	public static PropertiesFile findApplicationProperties(@NotNull Module module, MvcFramework framework)
+	public static PropertiesFile findApplicationProperties(@Nonnull Module module, MvcFramework framework)
 	{
 		VirtualFile root = framework.findAppRoot(module);
 		if(root == null)
@@ -723,8 +725,8 @@ public class MvcModuleStructureUtil
 		ModifiableModelCommitter.multiCommit(rootModels, moduleModel);
 	}
 
-	@NotNull
-	public static Module createAuxiliaryModule(@NotNull Module appModule, final String moduleName, final MvcFramework framework)
+	@Nonnull
+	public static Module createAuxiliaryModule(@Nonnull Module appModule, final String moduleName, final MvcFramework framework)
 	{
 		ModuleManager moduleManager = ModuleManager.getInstance(appModule.getProject());
 		final ModifiableModuleModel moduleModel = moduleManager.getModifiableModel();
@@ -746,7 +748,7 @@ public class MvcModuleStructureUtil
 		return pluginsModule;
 	}
 
-	public static void ensureDependency(@NotNull Module from, @NotNull Module to, boolean exported)
+	public static void ensureDependency(@Nonnull Module from, @Nonnull Module to, boolean exported)
 	{
 		if(!from.equals(to) && !hasDependency(from, to))
 		{
@@ -754,7 +756,7 @@ public class MvcModuleStructureUtil
 		}
 	}
 
-	public static boolean hasDependency(@NotNull Module from, @NotNull Module to)
+	public static boolean hasDependency(@Nonnull Module from, @Nonnull Module to)
 	{
 		for(OrderEntry entry : ModuleRootManager.getInstance(from).getOrderEntries())
 		{
@@ -770,7 +772,7 @@ public class MvcModuleStructureUtil
 		return false;
 	}
 
-	public static void removeDependency(@NotNull Module from, @NotNull Module to)
+	public static void removeDependency(@Nonnull Module from, @Nonnull Module to)
 	{
 		if(!from.equals(to) && hasDependency(from, to))
 		{
@@ -801,13 +803,13 @@ public class MvcModuleStructureUtil
 		toExtension.getInheritableSdk().set(fromExtension.getInheritableSdk());
 	}
 
-	public static void copySdkAndLibraries(ModuleRootModel from, ModifiableRootModel to, @NotNull MvcFramework framework)
+	public static void copySdkAndLibraries(ModuleRootModel from, ModifiableRootModel to, @Nonnull MvcFramework framework)
 	{
 		copySdk(from, to);
 		copyUserLibraries(from, to, framework);
 	}
 
-	public static void copyUserLibraries(ModuleRootModel from, ModifiableRootModel to, @NotNull MvcFramework framework)
+	public static void copyUserLibraries(ModuleRootModel from, ModifiableRootModel to, @Nonnull MvcFramework framework)
 	{
 		Library userLibraryTo = null;
 
@@ -999,7 +1001,7 @@ public class MvcModuleStructureUtil
 		return false;
 	}
 
-	public static void updateGlobalPluginModule(@NotNull Project project, @NotNull MvcFramework framework)
+	public static void updateGlobalPluginModule(@Nonnull Project project, @Nonnull MvcFramework framework)
 	{
 		MultiMap<VirtualFile, Module> map = new MultiMap<VirtualFile, Module>();
 
@@ -1100,7 +1102,7 @@ public class MvcModuleStructureUtil
 		}
 	}
 
-	private static String generateUniqueModuleName(@NotNull Project project, String prefix)
+	private static String generateUniqueModuleName(@Nonnull Project project, String prefix)
 	{
 		ModuleManager manager = ModuleManager.getInstance(project);
 		int i = 0;
@@ -1157,7 +1159,7 @@ public class MvcModuleStructureUtil
 		return commonPluginsModule;
 	}
 
-	public static Library findUserLibrary(@NotNull Module module, @NotNull final String name)
+	public static Library findUserLibrary(@Nonnull Module module, @Nonnull final String name)
 	{
 		CommonProcessors.FindProcessor<Library> processor = new CommonProcessors.FindProcessor<Library>()
 		{
@@ -1180,7 +1182,7 @@ public class MvcModuleStructureUtil
 		return findFile(file, true);
 	}
 
-	@Nullable
+	@javax.annotation.Nullable
 	public static VirtualFile findFile(@Nullable File file, boolean refresh)
 	{
 		if(file == null)

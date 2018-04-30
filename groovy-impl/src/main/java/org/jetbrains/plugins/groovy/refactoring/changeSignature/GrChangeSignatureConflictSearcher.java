@@ -31,7 +31,6 @@ import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.VisibilityUtil;
 import com.intellij.util.containers.HashSet;
 import com.intellij.util.containers.MultiMap;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrConstructorInvocation;
@@ -112,7 +111,7 @@ class GrChangeSignatureConflictSearcher {
     }
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   private static PsiClass getAccessObjectClass(GrExpression expression) {
     if (expression instanceof GrConstructorInvocation) return null;
     PsiType type = expression.getType();

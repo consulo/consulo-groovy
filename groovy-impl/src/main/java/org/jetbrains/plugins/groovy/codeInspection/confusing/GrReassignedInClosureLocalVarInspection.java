@@ -16,7 +16,7 @@
 package org.jetbrains.plugins.groovy.codeInspection.confusing;
 
 import org.jetbrains.annotations.Nls;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.codeInspection.GroovyInspectionBundle;
@@ -42,7 +42,7 @@ public class GrReassignedInClosureLocalVarInspection extends BaseInspection
 
 	@Override
 	@Nls
-	@NotNull
+	@Nonnull
 	public String getGroupDisplayName()
 	{
 		return CONFUSING_CODE_CONSTRUCTS;
@@ -50,7 +50,7 @@ public class GrReassignedInClosureLocalVarInspection extends BaseInspection
 
 	@Override
 	@Nls
-	@NotNull
+	@Nonnull
 	public String getDisplayName()
 	{
 		return "Local variable is reassigned in closure or anonymous class";
@@ -62,7 +62,7 @@ public class GrReassignedInClosureLocalVarInspection extends BaseInspection
 		return true;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	protected BaseInspectionVisitor buildVisitor()
 	{

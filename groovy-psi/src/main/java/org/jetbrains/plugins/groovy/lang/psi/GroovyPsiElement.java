@@ -16,9 +16,10 @@
 
 package org.jetbrains.plugins.groovy.lang.psi;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Dmitry.Krasilschikov
@@ -26,7 +27,7 @@ import org.jetbrains.annotations.NotNull;
 public interface GroovyPsiElement extends PsiElement {
   GroovyPsiElement[] EMPTY_ARRAY = new GroovyPsiElement[0];
 
-  @NotNull
+  @Nonnull
   ASTNode getNode();
 
   void accept(GroovyElementVisitor visitor);

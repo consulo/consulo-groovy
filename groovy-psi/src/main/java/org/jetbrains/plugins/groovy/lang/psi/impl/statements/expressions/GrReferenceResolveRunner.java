@@ -18,7 +18,8 @@ package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions;
 import java.util.List;
 import java.util.ListIterator;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.api.SpreadState;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
@@ -45,11 +46,11 @@ public class GrReferenceResolveRunner {
   private final GrReferenceExpression place;
   private ResolverProcessor processor;
 
-  public GrReferenceResolveRunner(@NotNull GrReferenceExpression _place) {
+  public GrReferenceResolveRunner(@Nonnull GrReferenceExpression _place) {
     place = _place;
   }
 
-  public boolean resolveImpl(@NotNull ResolverProcessor _processor) {
+  public boolean resolveImpl(@Nonnull ResolverProcessor _processor) {
     processor = _processor;
     try {
       boolean result = doResolve();
@@ -92,7 +93,7 @@ public class GrReferenceResolveRunner {
     return true;
   }
 
-  private boolean processJavaLangClass(@NotNull GrExpression qualifier) {
+  private boolean processJavaLangClass(@Nonnull GrExpression qualifier) {
     if (!(qualifier instanceof GrReferenceExpression)) return true;
 
     //optimization: only 'class' or 'this' in static context can be an alias of java.lang.Class
@@ -116,7 +117,7 @@ public class GrReferenceResolveRunner {
     return true;
   }
 
-  private boolean processQualifier(@NotNull GrExpression qualifier) {
+  private boolean processQualifier(@Nonnull GrExpression qualifier) {
     PsiType qualifierType = qualifier.getType();
     ResolveState state = ResolveState.initial().put(ClassHint.RESOLVE_CONTEXT, qualifier);
     if (qualifierType == null || qualifierType == PsiType.VOID) {
@@ -146,8 +147,8 @@ public class GrReferenceResolveRunner {
     return true;
   }
 
-  private boolean processJavaLangClass(@NotNull PsiType qualifierType,
-                                       @NotNull ResolveState state) {
+  private boolean processJavaLangClass(@Nonnull PsiType qualifierType,
+                                       @Nonnull ResolveState state) {
     //omitted .class
     PsiClass javaLangClass = PsiUtil.getJavaLangClass(place, place.getResolveScope());
     if (javaLangClass == null) return true;
@@ -168,8 +169,8 @@ public class GrReferenceResolveRunner {
     return true;
   }
 
-  private boolean processQualifierType(@NotNull PsiType originalQualifierType,
-                                       @NotNull ResolveState state) {
+  private boolean processQualifierType(@Nonnull PsiType originalQualifierType,
+                                       @Nonnull ResolveState state) {
     PsiType qualifierType = originalQualifierType instanceof PsiDisjunctionType
                             ? ((PsiDisjunctionType)originalQualifierType).getLeastUpperBound()
                             : originalQualifierType;
@@ -216,7 +217,7 @@ public class GrReferenceResolveRunner {
     return true;
   }
 
-  private boolean processTraitType(@NotNull GrTraitType traitType, @NotNull ResolveState state) {
+  private boolean processTraitType(@Nonnull GrTraitType traitType, @Nonnull ResolveState state) {
     GrTypeDefinition mockDefinition = traitType.getMockTypeDefinition();
     if (mockDefinition != null) {
       if (!mockDefinition.processDeclarations(processor, state, null, place)) {

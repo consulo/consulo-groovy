@@ -17,8 +17,8 @@ package org.jetbrains.plugins.groovy.compiler;
 
 import java.util.Arrays;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import com.google.common.annotations.VisibleForTesting;
 import com.intellij.openapi.fileEditor.FileEditor;
 import com.intellij.openapi.module.Module;
@@ -95,7 +95,7 @@ public class GroovyStubNotificationProvider implements EditorNotificationProvide
 		return panel;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public Key<EditorNotificationPanel> getKey()
 	{
@@ -105,7 +105,7 @@ public class GroovyStubNotificationProvider implements EditorNotificationProvide
 	@RequiredReadAction
 	@Nullable
 	@Override
-	public EditorNotificationPanel createNotificationPanel(@NotNull VirtualFile file, @NotNull FileEditor fileEditor)
+	public EditorNotificationPanel createNotificationPanel(@Nonnull VirtualFile file, @Nonnull FileEditor fileEditor)
 	{
 		if(file.getName().endsWith(".java") && file.getPath().contains(GROOVY_STUBS))
 		{

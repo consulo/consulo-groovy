@@ -15,14 +15,16 @@
  */
 package org.jetbrains.plugins.groovy.lang.surroundWith;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.lang.surroundWith.Surrounder;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.IncorrectOperationException;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 
 /**
@@ -30,12 +32,12 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpres
  * Date: 22.05.2007
  */
 public abstract class GroovyExpressionSurrounder implements Surrounder {
-  protected boolean isApplicable(@NotNull PsiElement element) {
+  protected boolean isApplicable(@Nonnull PsiElement element) {
     return element instanceof GrExpression;
   }
 
   @Nullable
-  public TextRange surroundElements(@NotNull Project project, @NotNull Editor editor, @NotNull PsiElement[] elements) throws IncorrectOperationException {
+  public TextRange surroundElements(@Nonnull Project project, @Nonnull Editor editor, @Nonnull PsiElement[] elements) throws IncorrectOperationException {
     if (elements.length != 1) return null;
 
     PsiElement element = elements[0];
@@ -45,7 +47,7 @@ public abstract class GroovyExpressionSurrounder implements Surrounder {
 
   protected abstract TextRange surroundExpression(GrExpression expression, PsiElement context);
 
-  public boolean isApplicable(@NotNull PsiElement[] elements) {
+  public boolean isApplicable(@Nonnull PsiElement[] elements) {
     return elements.length == 1 &&  isApplicable(elements[0]);
   }
 

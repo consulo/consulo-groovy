@@ -19,10 +19,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Nonnull;
 import javax.swing.Icon;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.GroovyLanguage;
 import org.jetbrains.plugins.groovy.extensions.NamedArgumentDescriptor;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocComment;
@@ -88,7 +88,7 @@ public class GrLightMethodBuilder extends LightElement implements GrMethod, Orig
     myThrowsList = new LightReferenceListBuilder(manager, GroovyLanguage.INSTANCE, PsiReferenceList.Role.THROWS_LIST);
   }
 
-  public GrLightMethodBuilder setNamedParameters(@NotNull Map<String, NamedArgumentDescriptor> namedParameters) {
+  public GrLightMethodBuilder setNamedParameters(@Nonnull Map<String, NamedArgumentDescriptor> namedParameters) {
     myNamedParameters = namedParameters;
     return this;
   }
@@ -104,13 +104,13 @@ public class GrLightMethodBuilder extends LightElement implements GrMethod, Orig
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public PsiTypeParameter[] getTypeParameters() {
     return getTypeParameterList().getTypeParameters();
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public LightTypeParameterListBuilder getTypeParameterList() {
     return myTypeParameterList;
   }
@@ -126,24 +126,24 @@ public class GrLightMethodBuilder extends LightElement implements GrMethod, Orig
   }
 
   @Override
-  public PsiElement setName(@NotNull String name) throws IncorrectOperationException {
+  public PsiElement setName(@Nonnull String name) throws IncorrectOperationException {
     throw new IncorrectOperationException("Please don't rename light methods");
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public String getName() {
     return myName;
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public HierarchicalMethodSignature getHierarchicalMethodSignature() {
     return PsiSuperMethodImplUtil.getHierarchicalMethodSignature(this);
   }
 
   @Override
-  public boolean hasModifierProperty(@GrModifier.GrModifierConstant @NotNull String name) {
+  public boolean hasModifierProperty(@GrModifier.GrModifierConstant @Nonnull String name) {
     return getModifierList().hasModifierProperty(name);
   }
 
@@ -153,18 +153,18 @@ public class GrLightMethodBuilder extends LightElement implements GrMethod, Orig
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public GrLightModifierList getModifierList() {
     return myModifierList;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public Map<String, NamedArgumentDescriptor> getNamedParameters() {
     return myNamedParameters;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public GrReflectedMethod[] getReflectedMethods() {
     return CachedValuesManager.getCachedValue(this, new CachedValueProvider<GrReflectedMethod[]>() {
@@ -225,14 +225,14 @@ public class GrLightMethodBuilder extends LightElement implements GrMethod, Orig
     return myReturnType;
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   public GrTypeElement setReturnType(String returnType, GlobalSearchScope scope) {
     setReturnType(JavaPsiFacade.getInstance(myManager.getProject()).getElementFactory().createTypeByFQClassName(returnType, scope));
     return null;
   }
 
   @Override
-  public GrTypeElement setReturnType(@Nullable PsiType returnType) {
+  public GrTypeElement setReturnType(@javax.annotation.Nullable PsiType returnType) {
     myReturnType = returnType;
     return null;
   }
@@ -248,27 +248,27 @@ public class GrLightMethodBuilder extends LightElement implements GrMethod, Orig
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public GrLightParameterListBuilder getParameterList() {
     return myParameterList;
   }
 
-  public GrLightMethodBuilder addParameter(@NotNull GrParameter parameter) {
+  public GrLightMethodBuilder addParameter(@Nonnull GrParameter parameter) {
     getParameterList().addParameter(parameter);
     return this;
   }
 
-  public GrLightMethodBuilder addParameter(@NotNull String name, @NotNull String type, boolean isOptional) {
+  public GrLightMethodBuilder addParameter(@Nonnull String name, @Nonnull String type, boolean isOptional) {
     return addParameter(name, JavaPsiFacade.getElementFactory(getProject()).createTypeFromText(type, this), isOptional);
   }
 
-  public GrLightMethodBuilder addParameter(@NotNull String name, @NotNull PsiType type, boolean isOptional) {
+  public GrLightMethodBuilder addParameter(@Nonnull String name, @Nonnull PsiType type, boolean isOptional) {
     GrLightParameter param = new GrLightParameter(name, type, this).setOptional(isOptional);
     return addParameter(param);
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public LightReferenceListBuilder getThrowsList() {
     return myThrowsList;
   }
@@ -296,8 +296,8 @@ public class GrLightMethodBuilder extends LightElement implements GrMethod, Orig
   }
 
   @Override
-  @NotNull
-  public MethodSignature getSignature(@NotNull PsiSubstitutor substitutor) {
+  @Nonnull
+  public MethodSignature getSignature(@Nonnull PsiSubstitutor substitutor) {
     return MethodSignatureBackedByPsiMethod.create(this, substitutor);
   }
 
@@ -307,25 +307,25 @@ public class GrLightMethodBuilder extends LightElement implements GrMethod, Orig
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public PsiMethod[] findSuperMethods() {
     return PsiSuperMethodImplUtil.findSuperMethods(this);
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public PsiMethod[] findSuperMethods(boolean checkAccess) {
     return PsiSuperMethodImplUtil.findSuperMethods(this, checkAccess);
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public PsiMethod[] findSuperMethods(PsiClass parentClass) {
     return PsiSuperMethodImplUtil.findSuperMethods(this, parentClass);
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public List<MethodSignatureBackedByPsiMethod> findSuperMethodSignaturesIncludingStatic(boolean checkAccess) {
     return PsiSuperMethodImplUtil.findSuperMethodSignaturesIncludingStatic(this, checkAccess);
   }
@@ -336,13 +336,13 @@ public class GrLightMethodBuilder extends LightElement implements GrMethod, Orig
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public PsiMethod[] findDeepestSuperMethods() {
     return PsiSuperMethodImplUtil.findDeepestSuperMethods(this);
   }
 
   @Override
-  public void accept(@NotNull PsiElementVisitor visitor) {
+  public void accept(@Nonnull PsiElementVisitor visitor) {
     if (visitor instanceof JavaElementVisitor) {
       ((JavaElementVisitor)visitor).visitMethod(this);
     }
@@ -367,7 +367,7 @@ public class GrLightMethodBuilder extends LightElement implements GrMethod, Orig
     return this;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public PsiElement getNameIdentifierGroovy() {
     return new LightIdentifier(getManager(), getName());
@@ -391,11 +391,11 @@ public class GrLightMethodBuilder extends LightElement implements GrMethod, Orig
     return method.getUserData(KIND_KEY);
   }
 
-  public static boolean checkKind(@Nullable PsiElement method, @NotNull Object kind) {
+  public static boolean checkKind(@javax.annotation.Nullable PsiElement method, @Nonnull Object kind) {
     return kind.equals(getMethodKind(method));
   }
 
-  public static boolean checkKind(@Nullable PsiElement method, @NotNull Object kind1, @NotNull Object kind2) {
+  public static boolean checkKind(@Nullable PsiElement method, @Nonnull Object kind1, @Nonnull Object kind2) {
     Object kind = getMethodKind(method);
     return kind1.equals(kind) || kind2.equals(kind);
   }
@@ -416,13 +416,13 @@ public class GrLightMethodBuilder extends LightElement implements GrMethod, Orig
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public SearchScope getUseScope() {
     return PsiImplUtil.getMemberUseScope(this);
   }
 
   @Override
-  @Nullable
+  @javax.annotation.Nullable
   public PsiFile getContainingFile() {
     final PsiClass containingClass = getContainingClass();
     return containingClass == null ? null : containingClass.getContainingFile();
@@ -474,8 +474,8 @@ public class GrLightMethodBuilder extends LightElement implements GrMethod, Orig
     return (T)myData;
   }
 
-  @Nullable
-  public static <T> T getData(@Nullable PsiElement method, @NotNull Object kind) {
+  @javax.annotation.Nullable
+  public static <T> T getData(@javax.annotation.Nullable PsiElement method, @Nonnull Object kind) {
     if (method instanceof GrLightMethodBuilder) {
       if (kind.equals(((GrLightMethodBuilder)method).getMethodKind())) {
         return ((GrLightMethodBuilder)method).<T>getData();
@@ -484,7 +484,7 @@ public class GrLightMethodBuilder extends LightElement implements GrMethod, Orig
     return null;
   }
 
-  public GrLightMethodBuilder setData(@Nullable Object data) {
+  public GrLightMethodBuilder setData(@javax.annotation.Nullable Object data) {
     myData = data;
     return this;
   }

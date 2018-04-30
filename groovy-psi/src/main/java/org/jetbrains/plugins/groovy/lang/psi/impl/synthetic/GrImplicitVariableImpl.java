@@ -15,23 +15,24 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.synthetic;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.psi.*;
 import com.intellij.psi.impl.light.LightIdentifier;
 import com.intellij.psi.impl.light.LightVariableBase;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.GroovyLanguage;
 
 /**
  * @author ilyas
  */
 public class GrImplicitVariableImpl extends LightVariableBase implements GrImplicitVariable {
-  public GrImplicitVariableImpl(PsiManager manager, PsiIdentifier nameIdentifier, @NotNull PsiType type, boolean writable, PsiElement scope) {
+  public GrImplicitVariableImpl(PsiManager manager, PsiIdentifier nameIdentifier, @Nonnull PsiType type, boolean writable, PsiElement scope) {
     super(manager, nameIdentifier, GroovyLanguage.INSTANCE, type, writable, scope);
   }
 
-  public GrImplicitVariableImpl(PsiManager manager, @NonNls String name, @NonNls @NotNull String type, PsiElement scope) {
+  public GrImplicitVariableImpl(PsiManager manager, @NonNls String name, @NonNls @Nonnull String type, PsiElement scope) {
     this(manager, new GrLightIdentifier(manager, name), JavaPsiFacade.getElementFactory(manager.getProject()).
       createTypeFromText(type, scope), false, scope);
   }
@@ -46,7 +47,7 @@ public class GrImplicitVariableImpl extends LightVariableBase implements GrImpli
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public GrLightModifierList getModifierList() {
     return (GrLightModifierList)myModifierList;
   }
@@ -65,7 +66,7 @@ public class GrImplicitVariableImpl extends LightVariableBase implements GrImpli
     }
 
     @Override
-    public PsiElement replace(@NotNull PsiElement newElement) throws IncorrectOperationException {
+    public PsiElement replace(@Nonnull PsiElement newElement) throws IncorrectOperationException {
       myTextInternal = newElement.getText();
       return newElement;
     }

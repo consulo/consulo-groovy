@@ -1,8 +1,8 @@
 package org.jetbrains.plugins.groovy.mvc;
 
 import com.intellij.execution.configurations.ParametersList;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import java.util.*;
 
@@ -27,7 +27,7 @@ public class MvcCommand {
     Collections.addAll(myArgs, args);
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   public String getEnv() {
     return myEnv;
   }
@@ -41,7 +41,7 @@ public class MvcCommand {
     return myCommand;
   }
 
-  public void setCommand(@Nullable String command) {
+  public void setCommand(@javax.annotation.Nullable String command) {
     myCommand = command;
   }
 
@@ -73,7 +73,7 @@ public class MvcCommand {
     myProperties.addAll(properties);
   }
 
-  public void addToParametersList(@NotNull ParametersList list) {
+  public void addToParametersList(@Nonnull ParametersList list) {
     if (myEnv != null) {
       list.add(myEnv);
     }
@@ -87,8 +87,8 @@ public class MvcCommand {
     list.addAll(myArgs);
   }
 
-  @NotNull
-  public static MvcCommand parse(@NotNull String cmd) {
+  @Nonnull
+  public static MvcCommand parse(@Nonnull String cmd) {
     String[] args = ParametersList.parse(cmd);
 
     MvcCommand res = new MvcCommand();

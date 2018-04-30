@@ -17,7 +17,6 @@ package org.jetbrains.plugins.groovy.lang.completion;
 
 import java.util.List;
 
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.lang.completion.closureParameters.ClosureParameterInfo;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlock;
@@ -60,7 +59,7 @@ import com.intellij.util.containers.ContainerUtil;
 public abstract class ClosureCompleter {
   private static final ExtensionPointName<ClosureCompleter> EP_NAME = ExtensionPointName.create("org.intellij.groovy.closureCompleter");
 
-  @Nullable
+  @javax.annotation.Nullable
   protected abstract List<ClosureParameterInfo> getParameterInfos(InsertionContext context,
                                                                   PsiMethod method,
                                                                   PsiSubstitutor substitutor,

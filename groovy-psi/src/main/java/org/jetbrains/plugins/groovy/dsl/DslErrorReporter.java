@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.dsl;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -27,5 +27,5 @@ public abstract class DslErrorReporter
 		return ServiceManager.getService(DslErrorReporter.class);
 	}
 
-	public abstract void invokeDslErrorPopup(Throwable e, final Project project, @NotNull VirtualFile vfile);
+	public abstract void invokeDslErrorPopup(Throwable e, final Project project, @Nonnull VirtualFile vfile);
 }

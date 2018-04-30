@@ -15,7 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.annotator.intentions.dynamic;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.ClassUtil;
 import org.jetbrains.plugins.groovy.lang.resolve.NonCodeMembersContributor;
 import org.jetbrains.plugins.groovy.lang.resolve.ResolveUtil;
@@ -33,11 +34,11 @@ import com.intellij.psi.scope.PsiScopeProcessor;
 public class DynamicMembersContributor extends NonCodeMembersContributor
 {
 	@Override
-	public void processDynamicElements(@NotNull PsiType qualifierType,
+	public void processDynamicElements(@Nonnull PsiType qualifierType,
 			PsiClass aClass,
-			@NotNull PsiScopeProcessor processor,
-			@NotNull PsiElement place,
-			@NotNull ResolveState state)
+			@Nonnull PsiScopeProcessor processor,
+			@Nonnull PsiElement place,
+			@Nonnull ResolveState state)
 	{
 		if(aClass == null)
 		{

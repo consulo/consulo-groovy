@@ -17,7 +17,7 @@ package org.jetbrains.plugins.groovy.lang.psi.impl.types;
 
 import java.util.ArrayList;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrDisjunctionTypeElement;
@@ -36,12 +36,12 @@ public class GrDisjunctionTypeElementImpl extends GroovyPsiElementImpl implement
 {
 	private volatile PsiType myCachedType = null;
 
-	public GrDisjunctionTypeElementImpl(@NotNull ASTNode node)
+	public GrDisjunctionTypeElementImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public GrTypeElement[] getTypeElements()
 	{
@@ -54,7 +54,7 @@ public class GrDisjunctionTypeElementImpl extends GroovyPsiElementImpl implement
 		visitor.visitDisjunctionTypeElement(this);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public PsiType getType()
 	{
@@ -91,7 +91,7 @@ public class GrDisjunctionTypeElementImpl extends GroovyPsiElementImpl implement
 	}
 
 	@Override
-	public void deleteChildInternal(@NotNull ASTNode child)
+	public void deleteChildInternal(@Nonnull ASTNode child)
 	{
 		final PsiElement psi = child.getPsi();
 		if(psi instanceof GrTypeElement)

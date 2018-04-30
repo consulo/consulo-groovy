@@ -17,8 +17,8 @@ package org.jetbrains.plugins.groovy.shell;
 
 import java.util.Collection;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+
 import com.intellij.execution.ExecutionException;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
@@ -30,20 +30,20 @@ import consulo.java.module.extension.JavaModuleExtension;
 public abstract class GroovyShellConfig
 {
 
-	@NotNull
-	public abstract String getWorkingDirectory(@NotNull Module module);
+	@Nonnull
+	public abstract String getWorkingDirectory(@Nonnull Module module);
 
-	@NotNull
-	public abstract OwnJavaParameters createJavaParameters(@NotNull Module module) throws ExecutionException;
+	@Nonnull
+	public abstract OwnJavaParameters createJavaParameters(@Nonnull Module module) throws ExecutionException;
 
 
-	public abstract boolean canRun(@NotNull Module module);
+	public abstract boolean canRun(@Nonnull Module module);
 
-	@NotNull
-	public abstract String getVersion(@NotNull Module module);
+	@Nonnull
+	public abstract String getVersion(@Nonnull Module module);
 
-	@Nullable
-	public PsiElement getContext(@NotNull Module module)
+	@javax.annotation.Nullable
+	public PsiElement getContext(@Nonnull Module module)
 	{
 		return null;
 	}

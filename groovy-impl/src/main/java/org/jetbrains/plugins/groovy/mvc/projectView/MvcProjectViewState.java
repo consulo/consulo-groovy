@@ -17,7 +17,6 @@ package org.jetbrains.plugins.groovy.mvc.projectView;
 
 import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.util.xmlb.XmlSerializerUtil;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * @author Sergey Evdokimov
@@ -28,7 +27,7 @@ public class MvcProjectViewState implements PersistentStateComponent<MvcProjectV
   public boolean autoScrollToSource;
   public boolean hideEmptyMiddlePackages = true;
 
-  @Nullable
+  @javax.annotation.Nullable
   @Override
   public MvcProjectViewState getState() {
     return this;

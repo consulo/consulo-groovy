@@ -17,7 +17,7 @@ package org.jetbrains.plugins.groovy.mvc;
 
 import com.intellij.openapi.components.*;
 import com.intellij.util.ArrayUtil;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 import java.util.LinkedList;
 
@@ -52,7 +52,7 @@ public class MvcRunTargetHistoryService implements PersistentStateComponent<Stri
     }
   }
 
-  @NotNull
+  @Nonnull
   public String getVmOptions() {
     synchronized (myHistory) {
       return myVmOptions;
@@ -88,7 +88,7 @@ public class MvcRunTargetHistoryService implements PersistentStateComponent<Stri
     return ServiceManager.getService(MvcRunTargetHistoryService.class);
   }
 
-  public void addCommand(@NotNull String command, @NotNull String vmOptions) {
+  public void addCommand(@Nonnull String command, @Nonnull String vmOptions) {
     command = command.trim();
 
     synchronized (myHistory) {

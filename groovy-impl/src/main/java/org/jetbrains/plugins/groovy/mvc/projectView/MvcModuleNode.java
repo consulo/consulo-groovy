@@ -22,7 +22,7 @@ import com.intellij.ide.projectView.impl.nodes.AbstractModuleNode;
 import com.intellij.ide.util.treeView.AbstractTreeNode;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.vfs.VirtualFile;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -36,12 +36,12 @@ import java.util.List;
 public class MvcModuleNode extends AbstractModuleNode {
   private final MvcToolWindowDescriptor myDescriptor;
 
-  public MvcModuleNode(@NotNull final Module module, final ViewSettings viewSettings, MvcToolWindowDescriptor descriptor) {
+  public MvcModuleNode(@Nonnull final Module module, final ViewSettings viewSettings, MvcToolWindowDescriptor descriptor) {
     super(module.getProject(), module, viewSettings);
     myDescriptor = descriptor;
   }
 
-  @NotNull
+  @Nonnull
   public Collection<? extends AbstractTreeNode> getChildren() {
     final List<AbstractTreeNode> nodesList = new ArrayList<AbstractTreeNode>();
 

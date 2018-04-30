@@ -16,7 +16,6 @@
 
 package org.jetbrains.plugins.groovy.lang.groovydoc.psi.api;
 
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import com.intellij.psi.PsiDocCommentOwner;
 
@@ -26,7 +25,7 @@ import com.intellij.psi.PsiDocCommentOwner;
 public interface GrDocCommentOwner extends GroovyPsiElement, PsiDocCommentOwner
 {
 	@Override
-	@Nullable
+	@javax.annotation.Nullable
 	GrDocComment getDocComment();
 
 	@Override

@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.signatures;
 
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrClosureParameter;
 import com.intellij.psi.PsiType;
@@ -30,7 +30,7 @@ public class GrDelegatingClosureParameter implements GrClosureParameter {
     myDelegate = delegate;
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   @Override
   public PsiType getType() {
     return myDelegate.getType();
@@ -52,7 +52,7 @@ public class GrDelegatingClosureParameter implements GrClosureParameter {
     return myDelegate.isValid();
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   @Override
   public String getName() {
     return myDelegate.getName();

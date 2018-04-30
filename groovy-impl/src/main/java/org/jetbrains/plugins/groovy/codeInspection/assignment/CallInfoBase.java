@@ -15,9 +15,9 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.assignment;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.psi.PsiType;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrArgumentList;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrNamedArgument;
@@ -37,53 +37,53 @@ public abstract class CallInfoBase<T extends GrCall> implements CallInfo<T> {
     myArgTypes = inferArgTypes();
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   protected abstract PsiType[] inferArgTypes();
 
-  @Nullable
+  @javax.annotation.Nullable
   @Override
   public GrArgumentList getArgumentList() {
     return myCall.getArgumentList();
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   @Override
   public PsiType[] getArgumentTypes() {
     return myArgTypes;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public GroovyResolveResult advancedResolve() {
     return myCall.advancedResolve();
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public GroovyResolveResult[] multiResolve() {
     return myCall.multiResolve(false);
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public T getCall() {
     return myCall;
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public GrExpression[] getExpressionArguments() {
     return myCall.getExpressionArguments();
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public GrClosableBlock[] getClosureArguments() {
     return myCall.getClosureArguments();
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public GrNamedArgument[] getNamedArguments() {
     return myCall.getNamedArguments();
   }

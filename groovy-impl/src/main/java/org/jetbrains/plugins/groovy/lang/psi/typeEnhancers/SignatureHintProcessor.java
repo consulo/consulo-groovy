@@ -19,8 +19,7 @@ import com.intellij.openapi.extensions.ExtensionPointName;
 import com.intellij.psi.*;
 import com.intellij.util.ArrayUtil;
 import com.intellij.util.containers.ContainerUtil;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,13 +58,13 @@ public abstract class SignatureHintProcessor {
 
   public abstract String getHintName();
 
-  @NotNull
-  public abstract List<PsiType[]> inferExpectedSignatures(@NotNull PsiMethod method,
-                                                          @NotNull PsiSubstitutor substitutor,
-                                                          @NotNull String[] options);
+  @Nonnull
+  public abstract List<PsiType[]> inferExpectedSignatures(@Nonnull PsiMethod method,
+                                                          @Nonnull PsiSubstitutor substitutor,
+                                                          @Nonnull String[] options);
 
-  @Nullable
-  public static SignatureHintProcessor getHintProcessor(@NotNull String hint) {
+  @javax.annotation.Nullable
+  public static SignatureHintProcessor getHintProcessor(@Nonnull String hint) {
     for (SignatureHintProcessor processor : EP_NAME.getExtensions()) {
       if (hint.equals(processor.getHintName())) {
         return processor;

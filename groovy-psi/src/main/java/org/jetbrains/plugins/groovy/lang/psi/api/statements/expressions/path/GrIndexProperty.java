@@ -16,8 +16,8 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.path;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrArgumentList;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
@@ -27,11 +27,11 @@ import com.intellij.psi.PsiType;
  * @author ilyas
  */
 public interface GrIndexProperty extends GrExpression, GrCallExpression {
-  @NotNull
+  @Nonnull
   GrExpression getInvokedExpression();
 
   @Override
-  @NotNull
+  @Nonnull
   GrArgumentList getArgumentList();
 
   /**
@@ -46,9 +46,9 @@ public interface GrIndexProperty extends GrExpression, GrCallExpression {
   @Nullable
   PsiType getSetterType();
 
-  @NotNull
+  @Nonnull
   GroovyResolveResult[] multiResolveGetter(boolean incomplete);
 
-  @NotNull
+  @Nonnull
   GroovyResolveResult[] multiResolveSetter(boolean incomplete);
 }

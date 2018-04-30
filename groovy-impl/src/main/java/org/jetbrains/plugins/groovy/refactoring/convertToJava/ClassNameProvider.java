@@ -17,15 +17,14 @@ package org.jetbrains.plugins.groovy.refactoring.convertToJava;
 
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * @author Maxim.Medvedev
  */
 public interface ClassNameProvider {
 
-  @Nullable
-  String getQualifiedClassName(PsiClass clazz, @Nullable PsiElement context);
+  @javax.annotation.Nullable
+  String getQualifiedClassName(PsiClass clazz, @javax.annotation.Nullable PsiElement context);
 
   boolean forStubs();
 }

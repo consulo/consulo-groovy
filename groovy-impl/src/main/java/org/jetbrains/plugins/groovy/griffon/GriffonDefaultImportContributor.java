@@ -31,7 +31,7 @@ import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.CachedValueProvider;
 import com.intellij.psi.util.CachedValuesManager;
 import com.intellij.psi.util.PsiModificationTracker;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.resolve.DefaultImportContributor;
 import org.jetbrains.plugins.groovy.mvc.MvcFramework;
@@ -45,7 +45,7 @@ import java.util.List;
  */
 public class GriffonDefaultImportContributor extends DefaultImportContributor {
 
-  private static Pair<List<String>, List<String>> getDefaultImports(@NotNull final Module module) {
+  private static Pair<List<String>, List<String>> getDefaultImports(@Nonnull final Module module) {
     return CachedValuesManager.getManager(module.getProject()).getCachedValue(module, new CachedValueProvider<Pair<List<String>, List<String>>>() {
       @Override
       public Result<Pair<List<String>, List<String>>> compute() {
@@ -82,7 +82,7 @@ public class GriffonDefaultImportContributor extends DefaultImportContributor {
   }
 
   @Override
-  public List<String> appendImplicitlyImportedPackages(@NotNull GroovyFile file) {
+  public List<String> appendImplicitlyImportedPackages(@Nonnull GroovyFile file) {
     Module module = ModuleUtil.findModuleForPsiElement(file);
     MvcFramework framework = MvcFramework.getInstance(module);
     if (framework instanceof GriffonFramework) {

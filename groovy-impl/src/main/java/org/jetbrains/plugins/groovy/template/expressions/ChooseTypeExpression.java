@@ -17,7 +17,8 @@ package org.jetbrains.plugins.groovy.template.expressions;
 
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.completion.GroovyCompletionUtil;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.GrModifier;
 import org.jetbrains.plugins.groovy.lang.psi.expectedTypes.SubtypeConstraint;
@@ -65,7 +66,7 @@ public class ChooseTypeExpression extends Expression
 	private final boolean myForGroovy;
 	private final boolean mySelectDef;
 
-	public ChooseTypeExpression(@NotNull TypeConstraint[] constraints,
+	public ChooseTypeExpression(@Nonnull TypeConstraint[] constraints,
 			PsiManager manager,
 			GlobalSearchScope resolveScope)
 	{
@@ -95,9 +96,9 @@ public class ChooseTypeExpression extends Expression
 		mySelectDef = selectDef;
 	}
 
-	@NotNull
-	private static List<SmartTypePointer> createItems(@NotNull TypeConstraint[] constraints,
-			@NotNull SmartTypePointerManager typePointerManager)
+	@Nonnull
+	private static List<SmartTypePointer> createItems(@Nonnull TypeConstraint[] constraints,
+			@Nonnull SmartTypePointerManager typePointerManager)
 	{
 		List<SmartTypePointer> result = ContainerUtil.newArrayList();
 
@@ -117,9 +118,9 @@ public class ChooseTypeExpression extends Expression
 		return result;
 	}
 
-	private static void processSuperTypes(@NotNull PsiType type,
-			@NotNull List<SmartTypePointer> result,
-			@NotNull SmartTypePointerManager typePointerManager)
+	private static void processSuperTypes(@Nonnull PsiType type,
+			@Nonnull List<SmartTypePointer> result,
+			@Nonnull SmartTypePointerManager typePointerManager)
 	{
 		result.add(typePointerManager.createSmartTypePointer(type));
 		PsiType[] superTypes = type.getSuperTypes();
@@ -129,10 +130,10 @@ public class ChooseTypeExpression extends Expression
 		}
 	}
 
-	@NotNull
-	private static PsiType chooseType(@NotNull TypeConstraint[] constraints,
-			@NotNull GlobalSearchScope scope,
-			@NotNull PsiManager manager)
+	@Nonnull
+	private static PsiType chooseType(@Nonnull TypeConstraint[] constraints,
+			@Nonnull GlobalSearchScope scope,
+			@Nonnull PsiManager manager)
 	{
 		if(constraints.length > 0)
 		{

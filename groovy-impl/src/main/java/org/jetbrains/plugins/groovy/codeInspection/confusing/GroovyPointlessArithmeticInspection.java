@@ -22,7 +22,7 @@ import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.codeInspection.GroovyFix;
@@ -35,12 +35,12 @@ import static org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes.*;
 
 public class GroovyPointlessArithmeticInspection extends BaseInspection {
 
-  @NotNull
+  @Nonnull
   public String getDisplayName() {
     return "Pointless arithmetic expression";
   }
 
-  @NotNull
+  @Nonnull
   public String getGroupDisplayName() {
     return CONFUSING_CODE_CONSTRUCTS;
   }
@@ -100,7 +100,7 @@ public class GroovyPointlessArithmeticInspection extends BaseInspection {
   }
 
   private static class PointlessArithmeticFix extends GroovyFix {
-    @NotNull
+    @Nonnull
     public String getName() {
       return "Simplify";
     }
@@ -116,7 +116,7 @@ public class GroovyPointlessArithmeticInspection extends BaseInspection {
 
     private final TokenSet arithmeticTokens = TokenSet.create(mPLUS, mMINUS, mSTAR, mDIV);
 
-    public void visitBinaryExpression(@NotNull GrBinaryExpression expression) {
+    public void visitBinaryExpression(@Nonnull GrBinaryExpression expression) {
       super.visitBinaryExpression(expression);
       final GrExpression rhs = expression.getRightOperand();
       if (rhs == null) return;

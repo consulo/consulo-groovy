@@ -15,13 +15,15 @@
  */
 package org.jetbrains.plugins.groovy.codeInsight;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiMethod;
 import com.intellij.psi.impl.compiled.ClsCustomNavigationPolicyEx;
 import com.intellij.psi.impl.compiled.ClsMethodImpl;
 import com.intellij.psi.impl.light.LightElement;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 
 /**
@@ -30,7 +32,7 @@ import org.jetbrains.plugins.groovy.GroovyFileType;
 public class GroovyClsCustomNavigationPolicy extends ClsCustomNavigationPolicyEx {
   @Override
   @Nullable
-  public PsiElement getNavigationElement(@NotNull ClsMethodImpl clsMethod) {
+  public PsiElement getNavigationElement(@Nonnull ClsMethodImpl clsMethod) {
     PsiMethod source = clsMethod.getSourceMirrorMethod();
     if (source instanceof LightElement && source.getLanguage() == GroovyFileType.GROOVY_LANGUAGE) {
       return source.getNavigationElement();

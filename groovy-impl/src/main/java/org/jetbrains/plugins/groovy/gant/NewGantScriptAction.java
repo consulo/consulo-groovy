@@ -16,7 +16,7 @@
 package org.jetbrains.plugins.groovy.gant;
 
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.actions.GroovyTemplates;
 import org.jetbrains.plugins.groovy.actions.GroovyTemplatesFactory;
 import org.jetbrains.plugins.groovy.actions.NewGroovyActionBase;
@@ -73,7 +73,7 @@ public class NewGantScriptAction extends NewGroovyActionBase
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	@RequiredReadAction
 	protected PsiElement[] doCreate(String newName, PsiDirectory directory) throws Exception
 	{

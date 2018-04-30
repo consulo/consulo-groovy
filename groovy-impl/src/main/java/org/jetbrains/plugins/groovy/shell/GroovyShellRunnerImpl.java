@@ -17,7 +17,7 @@ package org.jetbrains.plugins.groovy.shell;
 
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.console.BuildAndRestartConsoleAction;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyFileImpl;
 import com.intellij.execution.ExecutionException;
@@ -63,7 +63,7 @@ public class GroovyShellRunnerImpl extends AbstractConsoleRunnerWithHistory<Lang
 	};
 	private GeneralCommandLine myCommandLine;
 
-	public GroovyShellRunnerImpl(@NotNull String consoleTitle, @NotNull GroovyShellConfig shellRunner, @NotNull Module module)
+	public GroovyShellRunnerImpl(@Nonnull String consoleTitle, @Nonnull GroovyShellConfig shellRunner, @Nonnull Module module)
 	{
 		super(module.getProject(), consoleTitle, shellRunner.getWorkingDirectory(module));
 		myShellRunner = shellRunner;
@@ -111,7 +111,7 @@ public class GroovyShellRunnerImpl extends AbstractConsoleRunnerWithHistory<Lang
 		return new OSProcessHandler(process, myCommandLine.getCommandLineString());
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	protected ProcessBackedConsoleExecuteActionHandler createExecuteActionHandler()
 	{

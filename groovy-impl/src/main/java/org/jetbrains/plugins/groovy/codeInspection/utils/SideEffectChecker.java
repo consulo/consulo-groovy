@@ -15,8 +15,9 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.utils;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.psi.tree.IElementType;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyRecursiveElementVisitor;
@@ -32,7 +33,7 @@ public class SideEffectChecker {
     super();
   }
 
-  public static boolean mayHaveSideEffects(@NotNull GrExpression exp) {
+  public static boolean mayHaveSideEffects(@Nonnull GrExpression exp) {
     final SideEffectsVisitor visitor = new SideEffectsVisitor();
     exp.accept(visitor);
     return visitor.mayHaveSideEffects();
@@ -42,14 +43,14 @@ public class SideEffectChecker {
 
     private boolean mayHaveSideEffects = false;
 
-    public void visitElement(@NotNull GroovyPsiElement element) {
+    public void visitElement(@Nonnull GroovyPsiElement element) {
       if (!mayHaveSideEffects) {
         super.visitElement(element);
       }
     }
 
     public void visitAssignmentExpression(
-        @NotNull GrAssignmentExpression expression) {
+        @Nonnull GrAssignmentExpression expression) {
       if (mayHaveSideEffects) {
         return;
       }
@@ -58,7 +59,7 @@ public class SideEffectChecker {
     }
 
     public void visitMethodCallExpression(
-        @NotNull GrMethodCallExpression expression) {
+        @Nonnull GrMethodCallExpression expression) {
       if (mayHaveSideEffects) {
         return;
       }
@@ -66,7 +67,7 @@ public class SideEffectChecker {
       mayHaveSideEffects = true;
     }
 
-    public void visitNewExpression(@NotNull GrNewExpression expression) {
+    public void visitNewExpression(@Nonnull GrNewExpression expression) {
       if (mayHaveSideEffects) {
         return;
       }
@@ -75,7 +76,7 @@ public class SideEffectChecker {
     }
 
     public void visitUnaryExpression(
-        @NotNull GrUnaryExpression expression) {
+        @Nonnull GrUnaryExpression expression) {
       if (mayHaveSideEffects) {
         return;
       }

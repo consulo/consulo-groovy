@@ -15,10 +15,12 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.assignment;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiType;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.path.GrIndexProperty;
@@ -38,7 +40,7 @@ public class GrIndexPropertyInfo extends CallInfoBase<GrIndexProperty> {
     return PsiUtil.getArgumentTypes(getCall().getInvokedExpression(), true);
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public GrExpression getInvokedExpression() {
     return getCall().getInvokedExpression();
@@ -50,7 +52,7 @@ public class GrIndexPropertyInfo extends CallInfoBase<GrIndexProperty> {
     return getInvokedExpression().getType();
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public PsiElement getHighlightElementForCategoryQualifier() {
     GrExpression invoked = getInvokedExpression();
@@ -64,7 +66,7 @@ public class GrIndexPropertyInfo extends CallInfoBase<GrIndexProperty> {
     return invoked;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public PsiElement getElementToHighlight() {
     return getCall().getArgumentList();

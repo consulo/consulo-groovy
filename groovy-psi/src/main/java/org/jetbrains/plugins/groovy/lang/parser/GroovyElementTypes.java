@@ -18,7 +18,8 @@ package org.jetbrains.plugins.groovy.lang.parser;
 
 import java.io.IOException;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.GroovyLanguage;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyElementType;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.GrModifierList;
@@ -80,7 +81,7 @@ public interface GroovyElementTypes
 			GrTypeDefinitionElementType<GrClassDefinition>("class definition")
 	{
 		@Override
-		public GrClassDefinition createPsi(@NotNull GrTypeDefinitionStub stub)
+		public GrClassDefinition createPsi(@Nonnull GrTypeDefinitionStub stub)
 		{
 			return new GrClassDefinitionImpl(stub);
 		}
@@ -89,7 +90,7 @@ public interface GroovyElementTypes
 			GrTypeDefinitionElementType<GrInterfaceDefinition>("interface definition")
 	{
 		@Override
-		public GrInterfaceDefinition createPsi(@NotNull GrTypeDefinitionStub stub)
+		public GrInterfaceDefinition createPsi(@Nonnull GrTypeDefinitionStub stub)
 		{
 			return new GrInterfaceDefinitionImpl(stub);
 		}
@@ -98,7 +99,7 @@ public interface GroovyElementTypes
 			GrTypeDefinitionElementType<GrEnumTypeDefinition>("enumeration definition")
 	{
 		@Override
-		public GrEnumTypeDefinition createPsi(@NotNull GrTypeDefinitionStub stub)
+		public GrEnumTypeDefinition createPsi(@Nonnull GrTypeDefinitionStub stub)
 		{
 			return new GrEnumTypeDefinitionImpl(stub);
 		}
@@ -107,7 +108,7 @@ public interface GroovyElementTypes
 			GrTypeDefinitionElementType<GrAnnotationTypeDefinition>("annotation definition")
 	{
 		@Override
-		public GrAnnotationTypeDefinition createPsi(@NotNull GrTypeDefinitionStub stub)
+		public GrAnnotationTypeDefinition createPsi(@Nonnull GrTypeDefinitionStub stub)
 		{
 			return new GrAnnotationTypeDefinitionImpl(stub);
 		}
@@ -116,7 +117,7 @@ public interface GroovyElementTypes
 			GrTypeDefinitionElementType<GrAnonymousClassDefinition>("Anonymous class")
 	{
 		@Override
-		public GrAnonymousClassDefinition createPsi(@NotNull GrTypeDefinitionStub stub)
+		public GrAnonymousClassDefinition createPsi(@Nonnull GrTypeDefinitionStub stub)
 		{
 			return new GrAnonymousClassDefinitionImpl(stub);
 		}
@@ -125,7 +126,7 @@ public interface GroovyElementTypes
 			GrTypeDefinitionElementType<GrTraitTypeDefinition>("Trait definition")
 	{
 		@Override
-		public GrTraitTypeDefinition createPsi(@NotNull GrTypeDefinitionStub stub)
+		public GrTraitTypeDefinition createPsi(@Nonnull GrTypeDefinitionStub stub)
 		{
 			return new GrTraitTypeDefinitionImpl(stub);
 		}
@@ -135,7 +136,7 @@ public interface GroovyElementTypes
 			GrTypeDefinitionElementType<GrEnumConstantInitializer>("Enum constant initializer")
 	{
 		@Override
-		public GrEnumConstantInitializer createPsi(@NotNull GrTypeDefinitionStub stub)
+		public GrEnumConstantInitializer createPsi(@Nonnull GrTypeDefinitionStub stub)
 		{
 			return new GrEnumConstantInitializerImpl(stub);
 		}
@@ -147,7 +148,7 @@ public interface GroovyElementTypes
 	{
 
 		@Override
-		public GrMethod createPsi(@NotNull GrMethodStub stub)
+		public GrMethod createPsi(@Nonnull GrMethodStub stub)
 		{
 			return new GrMethodImpl(stub);
 		}
@@ -155,13 +156,13 @@ public interface GroovyElementTypes
 	GrStubElementType<GrMethodStub, GrMethod> ANNOTATION_METHOD = new GrMethodElementType("annotation method")
 	{
 		@Override
-		public GrMethod createPsi(@NotNull GrMethodStub stub)
+		public GrMethod createPsi(@Nonnull GrMethodStub stub)
 		{
 			return new GrAnnotationMethodImpl(stub);
 		}
 
 		@Override
-		public void indexStub(@NotNull GrMethodStub stub, @NotNull IndexSink sink)
+		public void indexStub(@Nonnull GrMethodStub stub, @Nonnull IndexSink sink)
 		{
 			super.indexStub(stub, sink);
 			String name = stub.getName();
@@ -173,7 +174,7 @@ public interface GroovyElementTypes
 			GrReferenceListElementType<GrImplementsClause>("implements clause")
 	{
 		@Override
-		public GrImplementsClause createPsi(@NotNull GrReferenceListStub stub)
+		public GrImplementsClause createPsi(@Nonnull GrReferenceListStub stub)
 		{
 			return new GrImplementsClauseImpl(stub);
 		}
@@ -182,7 +183,7 @@ public interface GroovyElementTypes
 			("super class clause")
 	{
 		@Override
-		public GrExtendsClause createPsi(@NotNull GrReferenceListStub stub)
+		public GrExtendsClause createPsi(@Nonnull GrReferenceListStub stub)
 		{
 			return new GrExtendsClauseImpl(stub);
 		}
@@ -199,7 +200,7 @@ public interface GroovyElementTypes
 
 	GrCodeBlockElementType CLOSABLE_BLOCK = new GrCodeBlockElementType("Closable block")
 	{
-		@NotNull
+		@Nonnull
 		@Override
 		public GrBlockImpl createNode(CharSequence text)
 		{
@@ -208,7 +209,7 @@ public interface GroovyElementTypes
 	};
 	GrCodeBlockElementType OPEN_BLOCK = new GrCodeBlockElementType("Open block")
 	{
-		@NotNull
+		@Nonnull
 		@Override
 		public GrBlockImpl createNode(CharSequence text)
 		{
@@ -217,7 +218,7 @@ public interface GroovyElementTypes
 	};
 	GrCodeBlockElementType CONSTRUCTOR_BODY = new GrCodeBlockElementType("Constructor body")
 	{
-		@NotNull
+		@Nonnull
 		@Override
 		public GrBlockImpl createNode(CharSequence text)
 		{
@@ -231,7 +232,7 @@ public interface GroovyElementTypes
 			("Enumeration constants", GroovyLanguage.INSTANCE)
 	{
 		@Override
-		public GrEnumConstantList createPsi(@NotNull EmptyStub stub)
+		public GrEnumConstantList createPsi(@Nonnull EmptyStub stub)
 		{
 			return new GrEnumConstantListImpl(stub);
 		}
@@ -318,7 +319,7 @@ public interface GroovyElementTypes
 			("type parameter list", GroovyLanguage.INSTANCE)
 	{
 		@Override
-		public GrTypeParameterList createPsi(@NotNull EmptyStub stub)
+		public GrTypeParameterList createPsi(@Nonnull EmptyStub stub)
 		{
 			return new GrTypeParameterListImpl(stub);
 		}
@@ -328,27 +329,27 @@ public interface GroovyElementTypes
 			GrStubElementType<GrTypeParameterStub, GrTypeParameter>("type parameter")
 	{
 		@Override
-		public GrTypeParameter createPsi(@NotNull GrTypeParameterStub stub)
+		public GrTypeParameter createPsi(@Nonnull GrTypeParameterStub stub)
 		{
 			return new GrTypeParameterImpl(stub);
 		}
 
 		@Override
-		public GrTypeParameterStub createStub(@NotNull GrTypeParameter psi, StubElement parentStub)
+		public GrTypeParameterStub createStub(@Nonnull GrTypeParameter psi, StubElement parentStub)
 		{
 			return new GrTypeParameterStub(parentStub, StringRef.fromString(psi.getName()));
 		}
 
 		@Override
-		public void serialize(@NotNull GrTypeParameterStub stub,
-				@NotNull StubOutputStream dataStream) throws IOException
+		public void serialize(@Nonnull GrTypeParameterStub stub,
+				@Nonnull StubOutputStream dataStream) throws IOException
 		{
 			dataStream.writeName(stub.getName());
 		}
 
-		@NotNull
+		@Nonnull
 		@Override
-		public GrTypeParameterStub deserialize(@NotNull StubInputStream dataStream,
+		public GrTypeParameterStub deserialize(@Nonnull StubInputStream dataStream,
 				StubElement parentStub) throws IOException
 		{
 			return new GrTypeParameterStub(parentStub, dataStream.readName());
@@ -361,7 +362,7 @@ public interface GroovyElementTypes
 	GrMethodElementType CONSTRUCTOR_DEFINITION = new GrMethodElementType("constructor definition")
 	{
 		@Override
-		public GrMethod createPsi(@NotNull GrMethodStub stub)
+		public GrMethod createPsi(@Nonnull GrMethodStub stub)
 		{
 			return new GrConstructorImpl(stub);
 		}
@@ -382,7 +383,7 @@ public interface GroovyElementTypes
 			"list", GroovyLanguage.INSTANCE)
 	{
 		@Override
-		public GrParameterList createPsi(@NotNull EmptyStub stub)
+		public GrParameterList createPsi(@Nonnull EmptyStub stub)
 		{
 			return new GrParameterListImpl(stub);
 		}
@@ -392,29 +393,29 @@ public interface GroovyElementTypes
 			GrParameter>("parameter")
 	{
 		@Override
-		public GrParameter createPsi(@NotNull GrParameterStub stub)
+		public GrParameter createPsi(@Nonnull GrParameterStub stub)
 		{
 			return new GrParameterImpl(stub);
 		}
 
 		@Override
-		public GrParameterStub createStub(@NotNull GrParameter psi, StubElement parentStub)
+		public GrParameterStub createStub(@Nonnull GrParameter psi, StubElement parentStub)
 		{
 			return new GrParameterStub(parentStub, StringRef.fromString(psi.getName()),
 					GrStubUtils.getAnnotationNames(psi), GrStubUtils.getTypeText(psi.getTypeElementGroovy()));
 		}
 
 		@Override
-		public void serialize(@NotNull GrParameterStub stub, @NotNull StubOutputStream dataStream) throws IOException
+		public void serialize(@Nonnull GrParameterStub stub, @Nonnull StubOutputStream dataStream) throws IOException
 		{
 			dataStream.writeName(stub.getName());
 			GrStubUtils.writeStringArray(dataStream, stub.getAnnotations());
 			GrStubUtils.writeNullableString(dataStream, stub.getTypeText());
 		}
 
-		@NotNull
+		@Nonnull
 		@Override
-		public GrParameterStub deserialize(@NotNull StubInputStream dataStream,
+		public GrParameterStub deserialize(@Nonnull StubInputStream dataStream,
 				StubElement parentStub) throws IOException
 		{
 			final StringRef name = dataStream.readName();
@@ -428,7 +429,7 @@ public interface GroovyElementTypes
 			"block", GroovyLanguage.INSTANCE)
 	{
 		@Override
-		public GrTypeDefinitionBody createPsi(@NotNull EmptyStub stub)
+		public GrTypeDefinitionBody createPsi(@Nonnull EmptyStub stub)
 		{
 			return new GrTypeDefinitionBodyBase.GrClassBody(stub);
 		}
@@ -438,7 +439,7 @@ public interface GroovyElementTypes
 			"block", GroovyLanguage.INSTANCE)
 	{
 		@Override
-		public GrEnumDefinitionBody createPsi(@NotNull EmptyStub stub)
+		public GrEnumDefinitionBody createPsi(@Nonnull EmptyStub stub)
 		{
 			return new GrTypeDefinitionBodyBase.GrEnumBody(stub);
 		}
@@ -473,7 +474,7 @@ public interface GroovyElementTypes
 		}
 
 		@Override
-		public GrVariableDeclaration createPsi(@NotNull EmptyStub stub)
+		public GrVariableDeclaration createPsi(@Nonnull EmptyStub stub)
 		{
 			throw new UnsupportedOperationException("Not implemented");
 		}
@@ -482,7 +483,7 @@ public interface GroovyElementTypes
 			("variable definitions", GroovyLanguage.INSTANCE)
 	{
 		@Override
-		public GrVariableDeclaration createPsi(@NotNull EmptyStub stub)
+		public GrVariableDeclaration createPsi(@Nonnull EmptyStub stub)
 		{
 			return new GrVariableDeclarationImpl(stub);
 		}

@@ -15,6 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.confusing;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.codeInspection.LocalQuickFix;
 import com.intellij.codeInspection.ProblemHighlightType;
 import com.intellij.psi.PsiDocCommentOwner;
@@ -23,7 +25,6 @@ import com.intellij.psi.PsiModifierListOwner;
 import com.intellij.psi.impl.PsiImplUtil;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspectionVisitor;
@@ -42,19 +43,19 @@ public class GrDeprecatedAPIUsageInspection extends BaseInspection {
   }
 
   @Nls
-  @NotNull
+  @Nonnull
   public String getGroupDisplayName() {
     return CONFUSING_CODE_CONSTRUCTS;
   }
 
   @Nls
-  @NotNull
+  @Nonnull
   public String getDisplayName() {
     return GroovyInspectionBundle.message("gr.deprecated.api.usage");
   }
 
   @NonNls
-  @NotNull
+  @Nonnull
   public String getShortName() {
     return "GrDeprecatedAPIUsage";
   }
@@ -83,8 +84,8 @@ public class GrDeprecatedAPIUsageInspection extends BaseInspection {
         }
       }
 
-      @NotNull
-      public PsiElement getElementToHighlight(@NotNull GrReferenceElement refElement) {
+      @Nonnull
+      public PsiElement getElementToHighlight(@Nonnull GrReferenceElement refElement) {
         final PsiElement refNameElement = refElement.getReferenceNameElement();
         return refNameElement != null ? refNameElement : refElement;
       }

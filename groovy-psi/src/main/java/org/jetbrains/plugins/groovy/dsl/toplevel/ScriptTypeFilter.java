@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.dsl.toplevel;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.dsl.GroovyClassDescriptor;
 import org.jetbrains.plugins.groovy.extensions.GroovyScriptTypeDetector;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
@@ -46,7 +46,7 @@ public class ScriptTypeFilter implements ContextFilter
 	}
 
 
-	private static String getScriptTypeId(@NotNull GroovyFile script)
+	private static String getScriptTypeId(@Nonnull GroovyFile script)
 	{
 		for(GroovyScriptTypeDetector detector : GroovyScriptTypeDetector.EP_NAME.getExtensions())
 		{

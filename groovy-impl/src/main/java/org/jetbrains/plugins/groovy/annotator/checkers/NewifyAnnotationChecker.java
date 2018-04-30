@@ -15,7 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.annotator.checkers;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotation;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames;
 import com.intellij.lang.annotation.AnnotationHolder;
@@ -26,7 +27,7 @@ import com.intellij.lang.annotation.AnnotationHolder;
 public class NewifyAnnotationChecker extends CustomAnnotationChecker
 {
 	@Override
-	public boolean checkArgumentList(@NotNull AnnotationHolder holder, @NotNull GrAnnotation annotation)
+	public boolean checkArgumentList(@Nonnull AnnotationHolder holder, @Nonnull GrAnnotation annotation)
 	{
 		return GroovyCommonClassNames.GROOVY_LANG_NEWIFY.equals(annotation.getQualifiedName()) && annotation
 				.getParameterList().getAttributes().length == 0;

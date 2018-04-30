@@ -19,7 +19,7 @@ import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiMethod;
 import com.intellij.psi.PsiModifier;
 import com.intellij.psi.PsiType;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariableDeclaration;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrEnumTypeDefinition;
@@ -57,7 +57,7 @@ public class ClassGenerator {
     }
   }
 
-  public void writeTypeDefinition(StringBuilder text, @NotNull final PsiClass typeDefinition, boolean toplevel, boolean insertPackageSmst) {
+  public void writeTypeDefinition(StringBuilder text, @Nonnull final PsiClass typeDefinition, boolean toplevel, boolean insertPackageSmst) {
     final boolean isScript = typeDefinition instanceof GroovyScriptClass;
 
     final GroovyFile containingFile = (GroovyFile)typeDefinition.getContainingFile();

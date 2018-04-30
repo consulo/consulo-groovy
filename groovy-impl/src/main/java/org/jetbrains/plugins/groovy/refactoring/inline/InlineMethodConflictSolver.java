@@ -19,8 +19,8 @@ package org.jetbrains.plugins.groovy.refactoring.inline;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFileBase;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrOpenBlock;
@@ -40,8 +40,8 @@ import org.jetbrains.plugins.groovy.refactoring.GroovyRefactoringUtil;
 public class InlineMethodConflictSolver {
   private InlineMethodConflictSolver() {}
 
-  @NotNull
-  public static String suggestNewName(@NotNull String startName, @Nullable GrMethod method, @NotNull PsiElement call, String... otherNames) {
+  @Nonnull
+  public static String suggestNewName(@Nonnull String startName, @Nullable GrMethod method, @Nonnull PsiElement call, String... otherNames) {
     String newName;
     int i = 1;
     PsiElement parent = call.getParent();
@@ -68,7 +68,7 @@ public class InlineMethodConflictSolver {
     return true;
   }
 
-  private static boolean isValidNameInMethod(@NotNull String name, @NotNull GrMethod method) {
+  private static boolean isValidNameInMethod(@Nonnull String name, @Nonnull GrMethod method) {
     for (GrParameter parameter : method.getParameters()) {
       if (name.equals(parameter.getName())) return false;
     }
@@ -79,7 +79,7 @@ public class InlineMethodConflictSolver {
     return true;
   }
 
-  public static boolean isValidName(@NotNull String name, @NotNull PsiElement scopeElement, PsiElement call) {
+  public static boolean isValidName(@Nonnull String name, @Nonnull PsiElement scopeElement, PsiElement call) {
     if (isValidNameDown(name, scopeElement, call)) {
       if (!(scopeElement instanceof GroovyFileBase)) {
         return isValidNameUp(name, scopeElement, call);
@@ -91,7 +91,7 @@ public class InlineMethodConflictSolver {
     }
   }
 
-  private static boolean isValidNameDown(@NotNull String name, @NotNull PsiElement startElement, @Nullable PsiElement call) {
+  private static boolean isValidNameDown(@Nonnull String name, @Nonnull PsiElement startElement, @Nullable PsiElement call) {
 
     PsiElement child = startElement.getFirstChild();
     while (child != null) {
@@ -124,7 +124,7 @@ public class InlineMethodConflictSolver {
     return true;
   }
 
-  private static boolean isValidNameUp(@NotNull String name, @NotNull PsiElement startElement, @Nullable PsiElement call) {
+  private static boolean isValidNameUp(@Nonnull String name, @Nonnull PsiElement startElement, @Nullable PsiElement call) {
     if (startElement instanceof PsiFile) {
       return true;
     }

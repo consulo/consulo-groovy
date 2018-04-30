@@ -15,8 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.typeEnhancers;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrMethodCall;
 import com.intellij.openapi.extensions.ExtensionPointName;
@@ -32,12 +32,12 @@ public abstract class GrCallExpressionTypeCalculator {
   public static final ExtensionPointName<GrCallExpressionTypeCalculator> EP_NAME = ExtensionPointName.create("org.intellij.groovy.callExpressionTypeCalculator");
 
   @Nullable
-  protected PsiType calculateReturnType(@NotNull GrMethodCall callExpression, @NotNull PsiMethod resolvedMethod) {
+  protected PsiType calculateReturnType(@Nonnull GrMethodCall callExpression, @Nonnull PsiMethod resolvedMethod) {
     throw new UnsupportedOperationException();
   }
 
   @Nullable
-  protected PsiType calculateReturnType(@NotNull GrMethodCall callExpression, @Nullable PsiElement resolve) {
+  protected PsiType calculateReturnType(@Nonnull GrMethodCall callExpression, @javax.annotation.Nullable PsiElement resolve) {
     if (resolve instanceof PsiMethod) {
       return calculateReturnType(callExpression, (PsiMethod)resolve);
     }
@@ -45,7 +45,7 @@ public abstract class GrCallExpressionTypeCalculator {
   }
 
   @Nullable
-  public PsiType calculateReturnType(@NotNull GrMethodCall callExpression, GroovyResolveResult[] resolveResults) {
+  public PsiType calculateReturnType(@Nonnull GrMethodCall callExpression, GroovyResolveResult[] resolveResults) {
     return calculateReturnType(callExpression, resolveResults.length == 1 ? resolveResults[0].getElement() : null);
   }
 }

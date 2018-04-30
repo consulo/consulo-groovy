@@ -6,8 +6,8 @@ import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiMethod;
 import com.intellij.util.IncorrectOperationException;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.intentions.base.PsiElementPredicate;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
@@ -44,8 +44,8 @@ public class ConvertJunitAssertionToAssertStatementIntention extends Intention i
     ourStatementMap.put("assertNotSame", new String[]{null, null, "assert !arg0.is(arg1)", "assert !arg1.is(arg2) : arg0"});
   }
   
-  @Nullable
-  private static String getReplacementStatement(@NotNull PsiMethod method, @NotNull GrMethodCall methodCall) {
+  @javax.annotation.Nullable
+  private static String getReplacementStatement(@Nonnull PsiMethod method, @Nonnull GrMethodCall methodCall) {
     PsiClass containingClass = method.getContainingClass();
     if (containingClass == null) return null;
 
@@ -67,8 +67,8 @@ public class ConvertJunitAssertionToAssertStatementIntention extends Intention i
     return replacementStatements[arguments.length];
   }
   
-  @Nullable
-  private static GrStatement getReplacementElement(@NotNull PsiMethod method, @NotNull GrMethodCall methodCall) {
+  @javax.annotation.Nullable
+  private static GrStatement getReplacementElement(@Nonnull PsiMethod method, @Nonnull GrMethodCall methodCall) {
     String replacementStatement = getReplacementStatement(method, methodCall);
     if (replacementStatement == null) return null;
     
@@ -103,7 +103,7 @@ public class ConvertJunitAssertionToAssertStatementIntention extends Intention i
   }
 
   @Override
-  protected void processIntention(@NotNull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
+  protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
     GrMethodCall methodCall = (GrMethodCall)element;
 
     PsiMethod method = methodCall.resolveMethod();
@@ -115,7 +115,7 @@ public class ConvertJunitAssertionToAssertStatementIntention extends Intention i
     ((GrMethodCall)element).replaceWithStatement(replacementElement);
   }
 
-  @NotNull
+  @Nonnull
   @Override
   protected PsiElementPredicate getElementPredicate() {
     return this;

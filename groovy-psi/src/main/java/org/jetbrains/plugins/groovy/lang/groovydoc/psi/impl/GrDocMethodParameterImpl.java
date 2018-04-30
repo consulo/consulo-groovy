@@ -16,8 +16,8 @@
 
 package org.jetbrains.plugins.groovy.lang.groovydoc.psi.impl;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocMethodParameter;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocReferenceElement;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocTagValueToken;
@@ -29,7 +29,7 @@ import com.intellij.lang.ASTNode;
  */
 public class GrDocMethodParameterImpl extends GroovyDocPsiElementImpl implements GrDocMethodParameter {
 
-  public GrDocMethodParameterImpl(@NotNull ASTNode node) {
+  public GrDocMethodParameterImpl(@Nonnull ASTNode node) {
     super(node);
   }
 
@@ -41,7 +41,7 @@ public class GrDocMethodParameterImpl extends GroovyDocPsiElementImpl implements
     visitor.visitDocMethodParameter(this);
   }
 
-  @NotNull
+  @Nonnull
   public GrDocReferenceElement getTypeElement(){
     GrDocReferenceElement child = findChildByClass(GrDocReferenceElement.class);
     assert child != null;

@@ -16,10 +16,11 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.typedef;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiJavaCodeReferenceElement;
 import com.intellij.psi.tree.IElementType;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
@@ -32,7 +33,7 @@ import org.jetbrains.plugins.groovy.lang.psi.stubs.GrReferenceListStub;
  */
 public class GrImplementsClauseImpl extends GrReferenceListImpl implements GrImplementsClause {
 
-  public GrImplementsClauseImpl(@NotNull ASTNode node) {
+  public GrImplementsClauseImpl(@Nonnull ASTNode node) {
     super(node);
   }
 
@@ -54,7 +55,7 @@ public class GrImplementsClauseImpl extends GrReferenceListImpl implements GrImp
     return "Implements clause";
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public PsiJavaCodeReferenceElement[] getReferenceElements() {
     return PsiJavaCodeReferenceElement.EMPTY_ARRAY;

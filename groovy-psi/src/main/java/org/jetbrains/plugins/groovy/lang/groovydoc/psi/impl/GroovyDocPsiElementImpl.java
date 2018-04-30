@@ -16,7 +16,7 @@
 
 package org.jetbrains.plugins.groovy.lang.groovydoc.psi.impl;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GroovyDocPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyPsiElementImpl;
 import com.intellij.lang.ASTNode;
@@ -26,7 +26,7 @@ import com.intellij.lang.ASTNode;
  */
 public abstract class GroovyDocPsiElementImpl extends GroovyPsiElementImpl implements GroovyDocPsiElement {
 
-  public GroovyDocPsiElementImpl(@NotNull ASTNode node) {
+  public GroovyDocPsiElementImpl(@Nonnull ASTNode node) {
     super(node);
   }
 }

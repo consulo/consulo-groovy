@@ -16,7 +16,8 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.params;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
@@ -37,7 +38,7 @@ import com.intellij.psi.stubs.EmptyStub;
 public class GrParameterListImpl extends GrStubElementBase<EmptyStub> implements GrParameterList, StubBasedPsiElement<EmptyStub> {
   private static final Logger LOG = Logger.getInstance("#org.jetbrains.plugins.groovy.lang.psi.impl.statements.params.GrParameterListImpl");
 
-  public GrParameterListImpl(@NotNull ASTNode node) {
+  public GrParameterListImpl(@Nonnull ASTNode node) {
     super(node);
   }
 
@@ -60,7 +61,7 @@ public class GrParameterListImpl extends GrStubElementBase<EmptyStub> implements
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public GrParameter[] getParameters() {
     return getStubOrPsiChildren(GroovyElementTypes.PARAMETER, GrParameter.ARRAY_FACTORY);
   }

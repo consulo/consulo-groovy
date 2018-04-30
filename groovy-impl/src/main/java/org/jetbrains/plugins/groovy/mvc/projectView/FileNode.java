@@ -9,8 +9,8 @@ import com.intellij.openapi.module.Module;
 import com.intellij.openapi.util.Iconable;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import java.util.Collection;
 
@@ -18,16 +18,16 @@ import java.util.Collection;
  * @author peter
  */
 public class FileNode extends AbstractMvcPsiNodeDescriptor {
-  public FileNode(@NotNull final Module module,
-                  @NotNull final PsiFile file,
+  public FileNode(@Nonnull final Module module,
+                  @Nonnull final PsiFile file,
                   @Nullable final String locationMark,
                   final ViewSettings viewSettings) {
     super(module, viewSettings, new NodeId(file, locationMark), FILE);
   }
 
   @Override
-  protected String getTestPresentationImpl(@NotNull final NodeId nodeId,
-                                           @NotNull final PsiElement psiElement) {
+  protected String getTestPresentationImpl(@Nonnull final NodeId nodeId,
+                                           @Nonnull final PsiElement psiElement) {
     return "File: " + ((PsiFile)psiElement).getName();
   }
 

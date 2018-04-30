@@ -18,7 +18,8 @@ package org.jetbrains.plugins.groovy.lang.completion;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.dsl.GroovyDslFileIndex;
 import org.jetbrains.plugins.groovy.lang.completion.closureParameters.ClosureDescriptor;
 import org.jetbrains.plugins.groovy.lang.completion.closureParameters.ClosureParameterInfo;
@@ -82,7 +83,7 @@ public class GdslClosureCompleter extends ClosureCompleter {
   private static void processExecutors(PsiType qtype, GrReferenceExpression ref, final ArrayList<ClosureDescriptor> descriptors) {
     GroovyDslFileIndex.processExecutors(qtype, ref, new BaseScopeProcessor() {
       @Override
-      public boolean execute(@NotNull PsiElement element, @NotNull ResolveState state) {
+      public boolean execute(@Nonnull PsiElement element, @Nonnull ResolveState state) {
         if (element instanceof ClosureDescriptor) {
           descriptors.add((ClosureDescriptor)element);
         }

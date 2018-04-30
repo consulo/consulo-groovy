@@ -15,12 +15,14 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.utils;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiMethod;
 import com.intellij.psi.PsiType;
 import com.intellij.psi.tree.IElementType;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.GrListOrMap;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.*;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrArgumentLabel;
@@ -182,8 +184,8 @@ public class EquivalenceChecker {
            openBlocksAreEquivalent(statement1.getBody(), statement2.getBody());
   }
 
-  private static boolean varStatementsAreEquivalent(@NotNull GrVariableDeclaration statement1,
-                                                    @NotNull GrVariableDeclaration statement2) {
+  private static boolean varStatementsAreEquivalent(@Nonnull GrVariableDeclaration statement1,
+                                                    @Nonnull GrVariableDeclaration statement2) {
     final GrVariable[] variables1 = statement1.getVariables();
     final GrVariable[] variables2 = statement2.getVariables();
     if (variables1.length != variables2.length) {
@@ -197,8 +199,8 @@ public class EquivalenceChecker {
     return true;
   }
 
-  private static boolean variablesAreEquivalent(@NotNull GrVariable var1,
-                                                @NotNull GrVariable var2) {
+  private static boolean variablesAreEquivalent(@Nonnull GrVariable var1,
+                                                @Nonnull GrVariable var2) {
     final GrExpression initializer1 = (GrExpression) var1.getInitializer();
     final GrExpression initializer2 = (GrExpression) var2.getInitializer();
     if (!expressionsAreEquivalent(initializer1, initializer2)) {
@@ -214,8 +216,8 @@ public class EquivalenceChecker {
     return name1.equals(name2);
   }
 
-  private static boolean tryStatementsAreEquivalent(@NotNull GrTryCatchStatement statement1,
-                                                    @NotNull GrTryCatchStatement statement2) {
+  private static boolean tryStatementsAreEquivalent(@Nonnull GrTryCatchStatement statement1,
+                                                    @Nonnull GrTryCatchStatement statement2) {
     final GrOpenBlock tryBlock1 = statement1.getTryBlock();
     final GrOpenBlock tryBlock2 = statement2.getTryBlock();
     if (!openBlocksAreEquivalent(tryBlock1, tryBlock2)) {
@@ -273,8 +275,8 @@ public class EquivalenceChecker {
     return type1.equals(type2);
   }
 
-  private static boolean whileStatementsAreEquivalent(@NotNull GrWhileStatement statement1,
-                                                      @NotNull GrWhileStatement statement2) {
+  private static boolean whileStatementsAreEquivalent(@Nonnull GrWhileStatement statement1,
+                                                      @Nonnull GrWhileStatement statement2) {
     final GrExpression condition1 = (GrExpression) statement1.getCondition();
     final GrExpression condition2 = (GrExpression) statement2.getCondition();
     final GrStatement body1 = statement1.getBody();
@@ -283,8 +285,8 @@ public class EquivalenceChecker {
            statementsAreEquivalent(body1, body2);
   }
 
-  private static boolean forInStatementsAreEquivalent(@NotNull GrForStatement statement1,
-                                                      @NotNull GrForStatement statement2) {
+  private static boolean forInStatementsAreEquivalent(@Nonnull GrForStatement statement1,
+                                                      @Nonnull GrForStatement statement2) {
     final GrForClause clause1 = statement1.getClause();
     final GrForClause clause2 = statement2.getClause();
     if (!forClausesAreEquivalent(clause1, clause2)) {
@@ -306,8 +308,8 @@ public class EquivalenceChecker {
     return variablesAreEquivalent(var1, var2);
   }
 
-  private static boolean switchStatementsAreEquivalent(@NotNull GrSwitchStatement statement1,
-                                                       @NotNull GrSwitchStatement statement2) {
+  private static boolean switchStatementsAreEquivalent(@Nonnull GrSwitchStatement statement1,
+                                                       @Nonnull GrSwitchStatement statement2) {
     final GrExpression switchExpression1 = statement1.getCondition();
     final GrExpression switchExpression2 = statement2.getCondition();
     if (!expressionsAreEquivalent(switchExpression1, switchExpression2)) {
@@ -355,8 +357,8 @@ public class EquivalenceChecker {
     return false;
   }
 
-  private static boolean blockStatementsAreEquivalent(@NotNull GrBlockStatement statement1,
-                                                      @NotNull GrBlockStatement statement2) {
+  private static boolean blockStatementsAreEquivalent(@Nonnull GrBlockStatement statement1,
+                                                      @Nonnull GrBlockStatement statement2) {
     final GrOpenBlock block1 = statement1.getBlock();
     final GrOpenBlock block2 = statement2.getBlock();
     return openBlocksAreEquivalent(block1, block2);
@@ -378,8 +380,8 @@ public class EquivalenceChecker {
     return true;
   }
 
-  private static boolean ifStatementsAreEquivalent(@NotNull GrIfStatement statement1,
-                                                   @NotNull GrIfStatement statement2) {
+  private static boolean ifStatementsAreEquivalent(@Nonnull GrIfStatement statement1,
+                                                   @Nonnull GrIfStatement statement2) {
     final GrExpression condition1 = statement1.getCondition();
     final GrExpression condition2 = statement2.getCondition();
     final GrStatement thenBranch1 = statement1.getThenBranch();
@@ -391,20 +393,20 @@ public class EquivalenceChecker {
            statementsAreEquivalent(elseBranch1, elseBranch2);
   }
 
-  private static boolean expressionStatementsAreEquivalent(@NotNull GrExpression statement1,
-                                                           @NotNull GrExpression statement2) {
+  private static boolean expressionStatementsAreEquivalent(@Nonnull GrExpression statement1,
+                                                           @Nonnull GrExpression statement2) {
     return expressionsAreEquivalent(statement1, statement2);
   }
 
-  private static boolean returnStatementsAreEquivalent(@NotNull GrReturnStatement statement1,
-                                                       @NotNull GrReturnStatement statement2) {
+  private static boolean returnStatementsAreEquivalent(@Nonnull GrReturnStatement statement1,
+                                                       @Nonnull GrReturnStatement statement2) {
     final GrExpression returnValue1 = statement1.getReturnValue();
     final GrExpression returnValue2 = statement2.getReturnValue();
     return expressionsAreEquivalent(returnValue1, returnValue2);
   }
 
-  private static boolean throwStatementsAreEquivalent(@NotNull GrThrowStatement statement1,
-                                                      @NotNull GrThrowStatement statement2) {
+  private static boolean throwStatementsAreEquivalent(@Nonnull GrThrowStatement statement1,
+                                                      @Nonnull GrThrowStatement statement2) {
     final GrExpression exception1 = statement1.getException();
     final GrExpression exception2 = statement2.getException();
     return expressionsAreEquivalent(exception1, exception2);
@@ -585,8 +587,8 @@ public class EquivalenceChecker {
     return typesAreEquivalent(safe1, safe2);
   }
 
-  private static boolean methodCallExpressionsAreEquivalent(@NotNull GrMethodCall methodExp1,
-                                                            @NotNull GrMethodCall methodExp2) {
+  private static boolean methodCallExpressionsAreEquivalent(@Nonnull GrMethodCall methodExp1,
+                                                            @Nonnull GrMethodCall methodExp2) {
     final GrExpression methodExpression1 = methodExp1.getInvokedExpression();
     final GrExpression methodExpression2 = methodExp2.getInvokedExpression();
     if (!expressionsAreEquivalent(methodExpression1, methodExpression2)) {
@@ -660,8 +662,8 @@ public class EquivalenceChecker {
     return true;
   }
 
-  private static boolean newExpressionsAreEquivalent(@NotNull GrNewExpression newExp1,
-                                                     @NotNull GrNewExpression newExp2) {
+  private static boolean newExpressionsAreEquivalent(@Nonnull GrNewExpression newExp1,
+                                                     @Nonnull GrNewExpression newExp2) {
     final PsiMethod constructor1 = newExp1.resolveMethod();
     final PsiMethod constructor2 = newExp2.resolveMethod();
     if (constructor1 == null || constructor2 == null || constructor1.equals(constructor2)) {
@@ -670,8 +672,8 @@ public class EquivalenceChecker {
     return argumentListsAreEquivalent(newExp1.getArgumentList(), newExp2.getArgumentList());
   }
 
-  private static boolean prefixExpressionsAreEquivalent(@NotNull GrUnaryExpression prefixExp1,
-                                                        @NotNull GrUnaryExpression prefixExp2) {
+  private static boolean prefixExpressionsAreEquivalent(@Nonnull GrUnaryExpression prefixExp1,
+                                                        @Nonnull GrUnaryExpression prefixExp2) {
     final IElementType sign1 = prefixExp1.getOperationTokenType();
     final IElementType sign2 = prefixExp2.getOperationTokenType();
     if (sign1 != sign2) {
@@ -682,8 +684,8 @@ public class EquivalenceChecker {
     return expressionsAreEquivalent(operand1, operand2);
   }
 
-  private static boolean postfixExpressionsAreEquivalent(@NotNull GrUnaryExpression postfixExp1,
-                                                         @NotNull GrUnaryExpression postfixExp2) {
+  private static boolean postfixExpressionsAreEquivalent(@Nonnull GrUnaryExpression postfixExp1,
+                                                         @Nonnull GrUnaryExpression postfixExp2) {
     final IElementType sign1 = postfixExp1.getOperationTokenType();
     final IElementType sign2 = postfixExp2.getOperationTokenType();
     if (sign1 != sign2) {
@@ -694,8 +696,8 @@ public class EquivalenceChecker {
     return expressionsAreEquivalent(operand1, operand2);
   }
 
-  private static boolean binaryExpressionsAreEquivalent(@NotNull GrBinaryExpression binaryExp1,
-                                                        @NotNull GrBinaryExpression binaryExp2) {
+  private static boolean binaryExpressionsAreEquivalent(@Nonnull GrBinaryExpression binaryExp1,
+                                                        @Nonnull GrBinaryExpression binaryExp2) {
     final IElementType sign1 = binaryExp1.getOperationTokenType();
     final IElementType sign2 = binaryExp2.getOperationTokenType();
     if (sign1 != sign2) {
@@ -709,8 +711,8 @@ public class EquivalenceChecker {
            && expressionsAreEquivalent(rhs1, rhs2);
   }
 
-  private static boolean rangeExpressionsAreEquivalent(@NotNull GrRangeExpression rangeExp1,
-                                                       @NotNull GrRangeExpression rangeExp2) {
+  private static boolean rangeExpressionsAreEquivalent(@Nonnull GrRangeExpression rangeExp1,
+                                                       @Nonnull GrRangeExpression rangeExp2) {
     return expressionsAreEquivalent(rangeExp1.getLeftOperand(), rangeExp2.getLeftOperand()) &&
            expressionsAreEquivalent(rangeExp1.getRightOperand(), rangeExp2.getRightOperand()) &&
            isInclusive(rangeExp1) == isInclusive(rangeExp2);
@@ -725,8 +727,8 @@ public class EquivalenceChecker {
     return false;
   }
 
-  private static boolean assignmentExpressionsAreEquivalent(@NotNull GrAssignmentExpression assignExp1,
-                                                            @NotNull GrAssignmentExpression assignExp2) {
+  private static boolean assignmentExpressionsAreEquivalent(@Nonnull GrAssignmentExpression assignExp1,
+                                                            @Nonnull GrAssignmentExpression assignExp2) {
     final IElementType sign1 = assignExp1.getOperationTokenType();
     final IElementType sign2 = assignExp2.getOperationTokenType();
     if (sign1 != sign2) {
@@ -740,8 +742,8 @@ public class EquivalenceChecker {
            && expressionsAreEquivalent(rhs1, rhs2);
   }
 
-  private static boolean conditionalExpressionsAreEquivalent(@NotNull GrConditionalExpression condExp1,
-                                                             @NotNull GrConditionalExpression condExp2) {
+  private static boolean conditionalExpressionsAreEquivalent(@Nonnull GrConditionalExpression condExp1,
+                                                             @Nonnull GrConditionalExpression condExp2) {
     final GrExpression condition1 = condExp1.getCondition();
     final GrExpression condition2 = condExp2.getCondition();
     final GrExpression thenExpression1 = condExp1.getThenBranch();
@@ -753,8 +755,8 @@ public class EquivalenceChecker {
            expressionsAreEquivalent(elseExpression1, elseExpression2);
   }
 
-  private static boolean elvisExpressionsAreEquivalent(@NotNull GrElvisExpression condExp1,
-                                                       @NotNull GrElvisExpression condExp2) {
+  private static boolean elvisExpressionsAreEquivalent(@Nonnull GrElvisExpression condExp1,
+                                                       @Nonnull GrElvisExpression condExp2) {
     final GrExpression condition1 = condExp1.getCondition();
     final GrExpression condition2 = condExp2.getCondition();
     final GrExpression elseExpression1 = condExp1.getElseBranch();

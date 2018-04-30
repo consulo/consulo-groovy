@@ -19,8 +19,8 @@ package org.jetbrains.plugins.groovy.lang.resolve.ast;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.*;
 import com.intellij.psi.util.PropertyUtil;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
 import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GrLightMethodBuilder;
@@ -41,7 +41,7 @@ import static org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames.
 public class ConstructorAnnotationsProcessor extends AstTransformContributor {
 
   @Override
-  public void collectMethods(@NotNull GrTypeDefinition typeDefinition, @NotNull Collection<PsiMethod> collector) {
+  public void collectMethods(@Nonnull GrTypeDefinition typeDefinition, @Nonnull Collection<PsiMethod> collector) {
     if (typeDefinition.getName() == null) return;
 
     PsiModifierList modifierList = typeDefinition.getModifierList();
@@ -68,8 +68,8 @@ public class ConstructorAnnotationsProcessor extends AstTransformContributor {
     collector.add(mapConstructor);
   }
 
-  @NotNull
-  private static GrLightMethodBuilder generateMapConstructor(@NotNull GrTypeDefinition typeDefinition) {
+  @Nonnull
+  private static GrLightMethodBuilder generateMapConstructor(@Nonnull GrTypeDefinition typeDefinition) {
     final GrLightMethodBuilder mapConstructor = new GrLightMethodBuilder(typeDefinition.getManager(), typeDefinition.getName());
     mapConstructor.addParameter("args", CommonClassNames.JAVA_UTIL_HASH_MAP, false);
     mapConstructor.setConstructor(true);
@@ -77,9 +77,9 @@ public class ConstructorAnnotationsProcessor extends AstTransformContributor {
     return mapConstructor;
   }
 
-  @NotNull
-  private static GrLightMethodBuilder generateFieldConstructor(@NotNull GrTypeDefinition typeDefinition,
-                                                               @Nullable PsiAnnotation tupleConstructor,
+  @Nonnull
+  private static GrLightMethodBuilder generateFieldConstructor(@Nonnull GrTypeDefinition typeDefinition,
+                                                               @javax.annotation.Nullable PsiAnnotation tupleConstructor,
                                                                boolean immutable,
                                                                boolean canonical) {
     final GrLightMethodBuilder fieldsConstructor = new GrLightMethodBuilder(typeDefinition.getManager(), typeDefinition.getName());
@@ -123,7 +123,7 @@ public class ConstructorAnnotationsProcessor extends AstTransformContributor {
     return fieldsConstructor;
   }
 
-  private static void addParametersForSuper(@NotNull PsiClass typeDefinition,
+  private static void addParametersForSuper(@Nonnull PsiClass typeDefinition,
                                             GrLightMethodBuilder fieldsConstructor,
                                             boolean superFields,
                                             boolean superProperties, Set<PsiClass> visited, Set<String> excludes) {
@@ -134,12 +134,12 @@ public class ConstructorAnnotationsProcessor extends AstTransformContributor {
     }
   }
 
-  private static void addParameters(@NotNull PsiClass psiClass,
-                                    @NotNull GrLightMethodBuilder fieldsConstructor,
+  private static void addParameters(@Nonnull PsiClass psiClass,
+                                    @Nonnull GrLightMethodBuilder fieldsConstructor,
                                     boolean includeProperties,
                                     boolean includeFields,
                                     boolean optional,
-                                    @NotNull Set<String> excludes) {
+                                    @Nonnull Set<String> excludes) {
 
     PsiMethod[] methods = CollectClassMembersUtil.getMethods(psiClass, false);
     if (includeProperties) {

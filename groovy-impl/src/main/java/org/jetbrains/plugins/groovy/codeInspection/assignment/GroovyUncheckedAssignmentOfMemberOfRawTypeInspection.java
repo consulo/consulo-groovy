@@ -16,12 +16,13 @@
 
 package org.jetbrains.plugins.groovy.codeInspection.assignment;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.psi.*;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.psi.util.TypeConversionUtil;
 import org.jetbrains.annotations.Nls;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspectionVisitor;
@@ -47,7 +48,7 @@ import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 public class GroovyUncheckedAssignmentOfMemberOfRawTypeInspection extends BaseInspection {
   @Override
   @Nls
-  @NotNull
+  @Nonnull
   public String getGroupDisplayName() {
     return ASSIGNMENT_ISSUES;
   }
@@ -65,14 +66,14 @@ public class GroovyUncheckedAssignmentOfMemberOfRawTypeInspection extends BaseIn
   }
 
   @Override
-  @NotNull
+  @Nonnull
   protected BaseInspectionVisitor buildVisitor() {
     return new Visitor();
   }
 
   @Override
   @Nls
-  @NotNull
+  @Nonnull
   public String getDisplayName() {
     return "Unchecked assignment from members of raw type";
   }
@@ -139,7 +140,7 @@ public class GroovyUncheckedAssignmentOfMemberOfRawTypeInspection extends BaseIn
     }
 
     @Override
-    public void visitAssignmentExpression(@NotNull GrAssignmentExpression assignment) {
+    public void visitAssignmentExpression(@Nonnull GrAssignmentExpression assignment) {
       super.visitAssignmentExpression(assignment);
 
       GrExpression lValue = assignment.getLValue();

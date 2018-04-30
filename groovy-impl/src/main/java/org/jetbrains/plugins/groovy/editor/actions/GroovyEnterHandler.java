@@ -16,8 +16,8 @@
 
 package org.jetbrains.plugins.groovy.editor.actions;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.codeStyle.GroovyCodeStyleSettings;
 import org.jetbrains.plugins.groovy.editor.HandlerUtils;
@@ -107,11 +107,11 @@ public class GroovyEnterHandler extends EnterHandlerDelegateAdapter
 
 
 	@Override
-	public Result preprocessEnter(@NotNull PsiFile file,
-			@NotNull Editor editor,
-			@NotNull Ref<Integer> caretOffset,
-			@NotNull Ref<Integer> caretAdvance,
-			@NotNull DataContext dataContext,
+	public Result preprocessEnter(@Nonnull PsiFile file,
+			@Nonnull Editor editor,
+			@Nonnull Ref<Integer> caretOffset,
+			@Nonnull Ref<Integer> caretAdvance,
+			@Nonnull DataContext dataContext,
 			EditorActionHandler originalHandler)
 	{
 		Document document = editor.getDocument();
@@ -179,7 +179,7 @@ public class GroovyEnterHandler extends EnterHandlerDelegateAdapter
 		return Result.Continue;
 	}
 
-	protected static boolean handleEnter(Editor editor, DataContext dataContext, @NotNull Project project, EditorActionHandler originalHandler)
+	protected static boolean handleEnter(Editor editor, DataContext dataContext, @Nonnull Project project, EditorActionHandler originalHandler)
 	{
 		if(HandlerUtils.isReadOnly(editor))
 		{

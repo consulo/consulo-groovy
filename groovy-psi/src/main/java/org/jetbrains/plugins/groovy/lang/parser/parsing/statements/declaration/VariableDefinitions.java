@@ -16,8 +16,8 @@
 
 package org.jetbrains.plugins.groovy.lang.parser.parsing.statements.declaration;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
@@ -40,13 +40,13 @@ import com.intellij.psi.tree.IElementType;
 
 public class VariableDefinitions {
 
-  public static IElementType parseDefinitions(@NotNull PsiBuilder builder,
+  public static IElementType parseDefinitions(@Nonnull PsiBuilder builder,
                                               boolean isInClass,
                                               boolean isInAnnotation,
-                                              @Nullable String typeDefinitionName,
+                                              @javax.annotation.Nullable String typeDefinitionName,
                                               boolean hasModifiers,
                                               boolean canBeTuple,
-                                              @NotNull GroovyParser parser) {
+                                              @Nonnull GroovyParser parser) {
     boolean isLParenth = builder.getTokenType() == GroovyTokenTypes.mLPAREN;
 
     boolean isStringName = builder.getTokenType() == GroovyTokenTypes.mSTRING_LITERAL || builder.getTokenType() ==

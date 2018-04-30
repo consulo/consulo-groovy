@@ -24,7 +24,7 @@ import com.intellij.util.ArrayUtil;
 import com.intellij.util.ArrayUtilRt;
 import gnu.trove.TIntHashSet;
 import gnu.trove.TObjectIntHashMap;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFileBase;
@@ -289,8 +289,8 @@ public class ControlFlowBuilderUtil {
     return true;
   }
 
-  @NotNull
-  public static GroovyResolveResult[] resolveNonQualifiedRefWithoutFlow(@NotNull GrReferenceExpression ref) {
+  @Nonnull
+  public static GroovyResolveResult[] resolveNonQualifiedRefWithoutFlow(@Nonnull GrReferenceExpression ref) {
     LOG.assertTrue(!ref.isQualified());
 
     final String referenceName = ref.getReferenceName();

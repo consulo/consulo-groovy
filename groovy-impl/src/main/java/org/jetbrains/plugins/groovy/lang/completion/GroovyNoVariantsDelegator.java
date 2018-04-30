@@ -19,7 +19,8 @@ import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.psi.GrReferenceElement;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.GrModifierList;
@@ -53,7 +54,7 @@ public class GroovyNoVariantsDelegator extends CompletionContributor
 	}
 
 	@Override
-	public void fillCompletionVariants(@NotNull final CompletionParameters parameters, @NotNull CompletionResultSet result)
+	public void fillCompletionVariants(@Nonnull final CompletionParameters parameters, @Nonnull CompletionResultSet result)
 	{
 		JavaNoVariantsDelegator.ResultTracker tracker = new JavaNoVariantsDelegator.ResultTracker(result);
 		result.runRemainingContributors(parameters, tracker);
@@ -161,7 +162,7 @@ public class GroovyNoVariantsDelegator extends CompletionContributor
 		}
 	}
 
-	private static GrReferenceElement createMockReference(final PsiElement place, @NotNull PsiType qualifierType, LookupElement qualifierItem)
+	private static GrReferenceElement createMockReference(final PsiElement place, @Nonnull PsiType qualifierType, LookupElement qualifierItem)
 	{
 		GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(place.getProject());
 		if(qualifierItem.getObject() instanceof PsiClass)

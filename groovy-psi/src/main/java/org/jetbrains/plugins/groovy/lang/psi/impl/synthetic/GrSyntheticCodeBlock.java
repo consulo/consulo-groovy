@@ -15,8 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.synthetic;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrCodeBlock;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrOpenBlock;
 import org.jetbrains.plugins.groovy.lang.psi.impl.PsiImplUtil;
@@ -42,7 +42,7 @@ public class GrSyntheticCodeBlock extends LightElement implements PsiCodeBlock {
   private final GrCodeBlock myCodeBlock;
   private static final Key<SoftReference<PsiJavaToken>> PSI_JAVA_TOKEN = Key.create("psi_java_token");
 
-  public GrSyntheticCodeBlock(@NotNull GrCodeBlock codeBlock) {
+  public GrSyntheticCodeBlock(@Nonnull GrCodeBlock codeBlock) {
     super(codeBlock.getManager(), codeBlock.getLanguage());
     myCodeBlock = codeBlock;
   }
@@ -52,7 +52,7 @@ public class GrSyntheticCodeBlock extends LightElement implements PsiCodeBlock {
     return "code block wrapper to represent java codeBlock";
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public PsiStatement[] getStatements() {
     return PsiStatement.EMPTY_ARRAY; //todo return statements
@@ -84,8 +84,8 @@ public class GrSyntheticCodeBlock extends LightElement implements PsiCodeBlock {
     return getOrCreateJavaToken(myCodeBlock.getRBrace(), JavaTokenType.RBRACE);
   }
 
-  @Nullable
-  private static PsiJavaToken getOrCreateJavaToken(@Nullable PsiElement element, @NotNull IElementType type) {
+  @javax.annotation.Nullable
+  private static PsiJavaToken getOrCreateJavaToken(@javax.annotation.Nullable PsiElement element, @Nonnull IElementType type) {
     if (element == null) return null;
 
     final SoftReference<PsiJavaToken> ref = element.getUserData(PSI_JAVA_TOKEN);
@@ -97,7 +97,7 @@ public class GrSyntheticCodeBlock extends LightElement implements PsiCodeBlock {
   }
 
   @Override
-  public PsiElement replace(@NotNull PsiElement newElement) throws IncorrectOperationException {
+  public PsiElement replace(@Nonnull PsiElement newElement) throws IncorrectOperationException {
     if (newElement instanceof GrSyntheticCodeBlock) {
       GrSyntheticCodeBlock other = (GrSyntheticCodeBlock)newElement;
       PsiElement replaced = myCodeBlock.replace(other.myCodeBlock);
@@ -137,7 +137,7 @@ public class GrSyntheticCodeBlock extends LightElement implements PsiCodeBlock {
     return myCodeBlock.getText();
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public PsiElement getNavigationElement() {
     return myCodeBlock;

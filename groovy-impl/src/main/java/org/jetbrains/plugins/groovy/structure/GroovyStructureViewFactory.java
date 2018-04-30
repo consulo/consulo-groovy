@@ -18,8 +18,8 @@ package org.jetbrains.plugins.groovy.structure;
 import java.util.Arrays;
 import java.util.Collection;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFileBase;
 import com.intellij.ide.structureView.StructureViewBuilder;
 import com.intellij.ide.structureView.StructureViewModel;
@@ -41,12 +41,12 @@ public class GroovyStructureViewFactory implements PsiStructureViewFactory
 	{
 		return new TreeBasedStructureViewBuilder()
 		{
-			@NotNull
-			public StructureViewModel createStructureViewModel(@Nullable Editor editor)
+			@Nonnull
+			public StructureViewModel createStructureViewModel(@javax.annotation.Nullable Editor editor)
 			{
 				return new JavaFileTreeModel((GroovyFileBase) psiFile, editor)
 				{
-					@NotNull
+					@Nonnull
 					@Override
 					public Collection<NodeProvider> getNodeProviders()
 					{

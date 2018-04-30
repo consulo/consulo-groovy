@@ -20,8 +20,8 @@ import com.intellij.psi.PsiIntersectionType;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.PsiType;
 import com.intellij.psi.util.TypeConversionUtil;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.controlFlow.Instruction;
 import org.jetbrains.plugins.groovy.lang.psi.controlFlow.NegatingGotoInstruction;
 import org.jetbrains.plugins.groovy.lang.psi.controlFlow.impl.ConditionInstruction;
@@ -74,11 +74,11 @@ public class DFAType {
 
   private final List<Mixin> mixins = new ArrayList<Mixin>();
 
-  private DFAType(@Nullable PsiType primary) {
+  private DFAType(@javax.annotation.Nullable PsiType primary) {
     this.primary = primary;
   }
 
-  public void addMixin(@Nullable PsiType mixin, ConditionInstruction instruction) {
+  public void addMixin(@javax.annotation.Nullable PsiType mixin, ConditionInstruction instruction) {
     if (mixin == null) {
       return;
     }
@@ -110,7 +110,7 @@ public class DFAType {
     return true;
   }
 
-  public DFAType negate(@NotNull Instruction instruction) {
+  public DFAType negate(@Nonnull Instruction instruction) {
     final DFAType type = new DFAType(primary);
 
     for (Mixin mixin : mixins) {
@@ -147,7 +147,7 @@ public class DFAType {
     return PsiIntersectionType.createIntersection(types.toArray(new PsiType[types.size()]));
   }
 
-  public static DFAType create(@Nullable PsiType type) {
+  public static DFAType create(@javax.annotation.Nullable PsiType type) {
     return new DFAType(type);
   }
 
@@ -155,7 +155,7 @@ public class DFAType {
     return t1 == t2 || Comparing.equal(TypeConversionUtil.erasure(t1), TypeConversionUtil.erasure(t2));
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   public static DFAType create(DFAType t1, DFAType t2, PsiManager manager) {
     if (t1.equals(t2)) return t1;
 

@@ -15,13 +15,15 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveState;
 import com.intellij.psi.scope.PsiScopeProcessor;
 import com.intellij.util.IncorrectOperationException;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrCatchClause;
@@ -36,7 +38,7 @@ import org.jetbrains.plugins.groovy.lang.resolve.processors.ClassHint;
  * @author ilyas
  */
 public class GrCatchClauseImpl extends GroovyPsiElementImpl implements GrCatchClause {
-  public GrCatchClauseImpl(@NotNull ASTNode node) {
+  public GrCatchClauseImpl(@Nonnull ASTNode node) {
     super(node);
   }
 
@@ -61,7 +63,7 @@ public class GrCatchClauseImpl extends GroovyPsiElementImpl implements GrCatchCl
   }
 
   @Override
-  public boolean processDeclarations(@NotNull PsiScopeProcessor processor, @NotNull ResolveState state, PsiElement lastParent, @NotNull PsiElement place) {
+  public boolean processDeclarations(@Nonnull PsiScopeProcessor processor, @Nonnull ResolveState state, PsiElement lastParent, @Nonnull PsiElement place) {
     if (!ResolveUtil.shouldProcessProperties(processor.getHint(ClassHint.KEY))) return true;
 
     GrParameter parameter = getParameter();

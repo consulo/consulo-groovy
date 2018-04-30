@@ -22,8 +22,8 @@ import com.intellij.ide.projectView.ViewSettings;
 import com.intellij.openapi.module.Module;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiMethod;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
 
@@ -36,9 +36,9 @@ import javax.swing.*;
 public class TestClassNode extends ClassNode {
   private final Icon myMethodIcon;
 
-  public TestClassNode(@NotNull final Module module,
-                       @NotNull final GrTypeDefinition controllerClass,
-                       @Nullable final ViewSettings viewSettings, final Icon methodIcon) {
+  public TestClassNode(@Nonnull final Module module,
+                       @Nonnull final GrTypeDefinition controllerClass,
+                       @javax.annotation.Nullable final ViewSettings viewSettings, final Icon methodIcon) {
     super(module, controllerClass, NodeId.TEST_CLASS_IN_TESTS_SUBTREE, viewSettings);
     myMethodIcon = methodIcon;
   }
@@ -58,7 +58,7 @@ public class TestClassNode extends ClassNode {
   }
 
   @Override
-  protected String getTestPresentationImpl(@NotNull final NodeId nodeId, @NotNull final PsiElement psiElement) {
+  protected String getTestPresentationImpl(@Nonnull final NodeId nodeId, @Nonnull final PsiElement psiElement) {
     return "Test class: " + ((GrTypeDefinition)psiElement).getName();
   }                                                                                                                                                
 

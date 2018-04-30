@@ -19,10 +19,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Nonnull;
+
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.codeInspection.GroovyInspectionBundle;
 import org.jetbrains.plugins.groovy.codeInspection.GroovySuppressableInspectionTool;
 import org.jetbrains.plugins.groovy.codeInspection.utils.ControlFlowUtils;
@@ -63,13 +65,13 @@ public class MissingReturnInspection extends GroovySuppressableInspectionTool
 {
 	@Override
 	@Nls
-	@NotNull
+	@Nonnull
 	public String getGroupDisplayName()
 	{
 		return GroovyInspectionBundle.message("groovy.dfa.issues");
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public String[] getGroupPath()
 	{
@@ -81,7 +83,7 @@ public class MissingReturnInspection extends GroovySuppressableInspectionTool
 
 	@Override
 	@Nls
-	@NotNull
+	@Nonnull
 	public String getDisplayName()
 	{
 		return GroovyInspectionBundle.message("no.return.display.name");
@@ -183,8 +185,8 @@ public class MissingReturnInspection extends GroovySuppressableInspectionTool
 	}
 
 	@Override
-	@NotNull
-	public PsiElementVisitor buildVisitor(@NotNull final ProblemsHolder problemsHolder, boolean onTheFly)
+	@Nonnull
+	public PsiElementVisitor buildVisitor(@Nonnull final ProblemsHolder problemsHolder, boolean onTheFly)
 	{
 		return new GroovyPsiElementVisitor(new GroovyElementVisitor()
 		{
@@ -217,8 +219,8 @@ public class MissingReturnInspection extends GroovySuppressableInspectionTool
 		}
 	}
 
-	public static boolean methodMissesSomeReturns(@NotNull GrControlFlowOwner block,
-			@NotNull final ReturnStatus returnStatus)
+	public static boolean methodMissesSomeReturns(@Nonnull GrControlFlowOwner block,
+			@Nonnull final ReturnStatus returnStatus)
 	{
 		if(returnStatus == ReturnStatus.shouldNotReturnValue)
 		{
@@ -231,7 +233,7 @@ public class MissingReturnInspection extends GroovySuppressableInspectionTool
 		ControlFlowUtils.visitAllExitPoints(block, new ControlFlowUtils.ExitPointVisitor()
 		{
 			@Override
-			public boolean visitExitPoint(Instruction instruction, @Nullable GrExpression returnValue)
+			public boolean visitExitPoint(Instruction instruction, @javax.annotation.Nullable GrExpression returnValue)
 			{
 				//don't modify sometimesHaveReturn  in this case:
 				// def foo() {
@@ -290,7 +292,7 @@ public class MissingReturnInspection extends GroovySuppressableInspectionTool
 
 	@Override
 	@NonNls
-	@NotNull
+	@Nonnull
 	public String getShortName()
 	{
 		return "GroovyMissingReturnStatement";

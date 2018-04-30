@@ -15,7 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.literals;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.literals.GrStringContent;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyPsiElementImpl;
@@ -28,7 +29,7 @@ import com.intellij.psi.PsiLanguageInjectionHost;
  * @author Max Medvedev
  */
 public class GrStringContentImpl extends GroovyPsiElementImpl implements GrStringContent, PsiLanguageInjectionHost {
-  public GrStringContentImpl(@NotNull ASTNode node) {
+  public GrStringContentImpl(@Nonnull ASTNode node) {
     super(node);
   }
 
@@ -46,7 +47,7 @@ public class GrStringContentImpl extends GroovyPsiElementImpl implements GrStrin
   }
 
   @Override
-  public GrStringContentImpl updateText(@NotNull String text) {
+  public GrStringContentImpl updateText(@Nonnull String text) {
     if (getFirstChild() != null) {
       getFirstChild().delete();
     }
@@ -54,7 +55,7 @@ public class GrStringContentImpl extends GroovyPsiElementImpl implements GrStrin
     return this;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public LiteralTextEscaper<? extends PsiLanguageInjectionHost> createLiteralTextEscaper() {
     return new GrLiteralEscaper(this);

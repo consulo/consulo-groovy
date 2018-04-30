@@ -16,7 +16,8 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.patterns;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrParenthesizedExpression;
 import com.intellij.patterns.ElementPattern;
@@ -28,9 +29,9 @@ public class GroovyExpressionPattern<T extends GrExpression, Self extends Groovy
     super(aClass);
   }
 
-  public Self ofType(@NotNull final ElementPattern pattern) {
+  public Self ofType(@Nonnull final ElementPattern pattern) {
     return with(new PatternCondition<T>("ofType") {
-      public boolean accepts(@NotNull final T t, final ProcessingContext context) {
+      public boolean accepts(@Nonnull final T t, final ProcessingContext context) {
         return pattern.getCondition().accepts(t.getType(), context);
       }
     });
@@ -39,7 +40,7 @@ public class GroovyExpressionPattern<T extends GrExpression, Self extends Groovy
   public Self skipParentheses(final ElementPattern<? extends GrExpression> expressionPattern) {
     return with(new PatternCondition<T>("skipParentheses") {
       @Override
-      public boolean accepts(@NotNull T t, ProcessingContext context) {
+      public boolean accepts(@Nonnull T t, ProcessingContext context) {
         GrExpression expression = t;
         while (expression instanceof GrParenthesizedExpression) {
           expression = ((GrParenthesizedExpression)expression).getOperand();

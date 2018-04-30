@@ -15,9 +15,9 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl;
 
+import javax.annotation.Nonnull;
+
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import com.intellij.psi.PsiAnnotation;
 import com.intellij.psi.PsiType;
 import com.intellij.psi.PsiTypeVisitor;
@@ -30,21 +30,21 @@ public class GrPsiTypeStub extends PsiType
 		super(PsiAnnotation.EMPTY_ARRAY);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public String getPresentableText()
 	{
 		return "?";
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public String getCanonicalText()
 	{
 		return "?";
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public String getInternalCanonicalText()
 	{
@@ -58,25 +58,25 @@ public class GrPsiTypeStub extends PsiType
 	}
 
 	@Override
-	public boolean equalsToText(@NotNull @NonNls String text)
+	public boolean equalsToText(@Nonnull @NonNls String text)
 	{
 		return false;
 	}
 
 	@Override
-	public <A> A accept(@NotNull PsiTypeVisitor<A> visitor)
+	public <A> A accept(@Nonnull PsiTypeVisitor<A> visitor)
 	{
 		return null;
 	}
 
-	@Nullable
+	@javax.annotation.Nullable
 	@Override
 	public GlobalSearchScope getResolveScope()
 	{
 		return null;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public PsiType[] getSuperTypes()
 	{

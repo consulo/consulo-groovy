@@ -38,8 +38,8 @@ import com.intellij.ui.components.JBList;
 import com.intellij.usageView.UsageInfo;
 import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.containers.ContainerUtil;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.intentions.GroovyIntentionsBundle;
 import org.jetbrains.plugins.groovy.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.intentions.base.PsiElementPredicate;
@@ -70,14 +70,14 @@ public class CreateParameterForFieldIntention extends Intention {
   private static final Logger LOG = Logger.getInstance("org.jetbrains.plugins.groovy.intentions.control.CreateParameterForFieldIntention");
   private static final Key<CachedValue<List<GrField>>> FIELD_CANDIDATES = Key.create("Fields.candidates");
 
-  @NotNull
+  @Nonnull
   @Override
   public String getText() {
     return super.getText();
   }
 
   @Override
-  protected void processIntention(@NotNull PsiElement element, final Project project, final Editor editor)
+  protected void processIntention(@Nonnull PsiElement element, final Project project, final Editor editor)
     throws IncorrectOperationException {
     final List<GrField> candidates = findFieldCandidates(element);
     if (candidates != null) {
@@ -231,7 +231,7 @@ public class CreateParameterForFieldIntention extends Intention {
 
   }
 
-  @NotNull
+  @Nonnull
   @Override
   protected PsiElementPredicate getElementPredicate() {
     return new MyPredicate();
@@ -247,7 +247,7 @@ public class CreateParameterForFieldIntention extends Intention {
     }
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   private static List<GrField> findFieldCandidates(PsiElement element) {
     final GrMethod constructor = PsiTreeUtil.getParentOfType(element, GrMethod.class);
     if (constructor == null || !constructor.isConstructor()) return null;
@@ -321,7 +321,7 @@ public class CreateParameterForFieldIntention extends Intention {
   }
 
 
-  @Nullable
+  @javax.annotation.Nullable
   private static List<GrMethod> findConstructorCandidates(PsiElement element) {
     final GrField field = PsiTreeUtil.getParentOfType(element, GrField.class);
     if (field == null) return null;

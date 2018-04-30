@@ -15,8 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GrReferenceElement;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
@@ -44,7 +44,7 @@ public abstract class GrReferenceElementImpl<Q extends PsiElement> extends Groov
 	private volatile String myCachedQName = null;
 	private volatile String myCachedTextSkipWhiteSpaceAndComments;
 
-	public GrReferenceElementImpl(@NotNull ASTNode node)
+	public GrReferenceElementImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
@@ -123,7 +123,7 @@ public abstract class GrReferenceElementImpl<Q extends PsiElement> extends Groov
 	}
 
 	@Override
-	public PsiElement bindToElement(@NotNull PsiElement element) throws IncorrectOperationException
+	public PsiElement bindToElement(@Nonnull PsiElement element) throws IncorrectOperationException
 	{
 		if(isReferenceTo(element))
 		{
@@ -189,7 +189,7 @@ public abstract class GrReferenceElementImpl<Q extends PsiElement> extends Groov
 	}
 
 
-	protected abstract GrReferenceElement<Q> bindWithQualifiedRef(@NotNull String qName);
+	protected abstract GrReferenceElement<Q> bindWithQualifiedRef(@Nonnull String qName);
 
 	protected boolean bindsCorrectly(PsiElement element)
 	{
@@ -199,7 +199,7 @@ public abstract class GrReferenceElementImpl<Q extends PsiElement> extends Groov
 	public abstract boolean isFullyQualified();
 
 	@Override
-	@NotNull
+	@Nonnull
 	public PsiType[] getTypeArguments()
 	{
 		final GrTypeArgumentList typeArgsList = getTypeArgumentList();
@@ -235,7 +235,7 @@ public abstract class GrReferenceElementImpl<Q extends PsiElement> extends Groov
 		PsiImplUtil.setQualifier(this, newQualifier);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public String getClassNameText()
 	{

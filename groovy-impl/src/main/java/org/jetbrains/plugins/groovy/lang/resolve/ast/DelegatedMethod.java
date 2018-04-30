@@ -15,13 +15,13 @@
  */
 package org.jetbrains.plugins.groovy.lang.resolve.ast;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.codeInsight.completion.originInfo.OriginInfoAwareElement;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiMethod;
 import com.intellij.psi.PsiMirrorElement;
 import com.intellij.psi.impl.light.LightMethod;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * @author Max Medvedev
@@ -29,19 +29,19 @@ import org.jetbrains.annotations.Nullable;
 public class DelegatedMethod extends LightMethod implements PsiMethod, PsiMirrorElement, OriginInfoAwareElement {
   private final PsiMethod myPrototype;
 
-  public DelegatedMethod(@NotNull PsiMethod delegate, @NotNull PsiMethod prototype) {
+  public DelegatedMethod(@Nonnull PsiMethod delegate, @Nonnull PsiMethod prototype) {
     super(prototype.getManager(), delegate, delegate.getContainingClass(), delegate.getLanguage());
     myPrototype = prototype;
     setNavigationElement(myPrototype);
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public PsiMethod getPrototype() {
     return myPrototype;
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   @Override
   public String getOriginInfo() {
     PsiClass aClass = myPrototype.getContainingClass();

@@ -27,11 +27,12 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.annotation.Nonnull;
 import javax.swing.JComponent;
 
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrAccessorMethod;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
@@ -76,7 +77,7 @@ public class GroovyMarkerTypes
 {
 	static final MarkerType OVERRIDING_PROPERTY_TYPE = new MarkerType("OVERRIDING_PROPERTY_TYPE", new Function<PsiElement, String>()
 	{
-		@Nullable
+		@javax.annotation.Nullable
 		@Override
 		public String fun(PsiElement psiElement)
 		{
@@ -441,7 +442,7 @@ public class GroovyMarkerTypes
 		return superMethods;
 	}
 
-	private static StringBuilder composeText(@NotNull PsiElement[] elements, final String pattern, StringBuilder result)
+	private static StringBuilder composeText(@Nonnull PsiElement[] elements, final String pattern, StringBuilder result)
 	{
 		Set<String> names = new LinkedHashSet<String>();
 		for(PsiElement element : elements)
@@ -482,7 +483,7 @@ public class GroovyMarkerTypes
 		}
 
 		@Override
-		public void run(@NotNull final ProgressIndicator indicator)
+		public void run(@Nonnull final ProgressIndicator indicator)
 		{
 			super.run(indicator);
 			for(PsiMethod method : PsiImplUtil.getMethodOrReflectedMethods(myMethod))

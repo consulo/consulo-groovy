@@ -16,11 +16,10 @@
 
 package org.jetbrains.plugins.groovy.codeInspection.untypedUnresolvedAccess;
 
+import javax.annotation.Nonnull;
 import javax.swing.JComponent;
 
 import org.jetbrains.annotations.Nls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.codeInspection.GroovyInspectionBundle;
@@ -46,7 +45,7 @@ public class GrUnresolvedAccessInspection extends GroovySuppressableInspectionTo
 	public boolean myHighlightIfMissingMethodsDeclared = true;
 	public boolean myHighlightInnerClasses = true;
 
-	public static boolean isSuppressed(@NotNull PsiElement ref)
+	public static boolean isSuppressed(@Nonnull PsiElement ref)
 	{
 		return isElementToolSuppressedIn(ref, SHORT_NAME);
 	}
@@ -61,7 +60,7 @@ public class GrUnresolvedAccessInspection extends GroovySuppressableInspectionTo
 		return (GrUnresolvedAccessInspection) getInspectionProfile(project).getUnwrappedTool(SHORT_NAME, file);
 	}
 
-	@Nullable
+	@javax.annotation.Nullable
 	@Override
 	public JComponent createOptionsPanel()
 	{
@@ -85,15 +84,15 @@ public class GrUnresolvedAccessInspection extends GroovySuppressableInspectionTo
 		return getInspectionProfile(project).getErrorLevel(findDisplayKey(), ref);
 	}
 
-	@NotNull
-	private static InspectionProfile getInspectionProfile(@NotNull Project project)
+	@Nonnull
+	private static InspectionProfile getInspectionProfile(@Nonnull Project project)
 	{
 		return InspectionProjectProfileManager.getInstance(project).getInspectionProfile();
 	}
 
 	@Override
 	@Nls
-	@NotNull
+	@Nonnull
 	public String getGroupDisplayName()
 	{
 		return BaseInspection.PROBABLE_BUGS;
@@ -101,7 +100,7 @@ public class GrUnresolvedAccessInspection extends GroovySuppressableInspectionTo
 
 	@Override
 	@Nls
-	@NotNull
+	@Nonnull
 	public String getDisplayName()
 	{
 		return getDisplayText();

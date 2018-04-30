@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.introduce.field;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.refactoring.GroovyNameSuggestionUtil;
@@ -41,7 +41,7 @@ public class GrFieldNameSuggester {
     myForStatic = forStatic;
   }
 
-  @NotNull
+  @Nonnull
   public LinkedHashSet<String> suggestNames() {
     final GrExpression expression = myContext.getExpression();
     final GrVariable var = myContext.getVar();

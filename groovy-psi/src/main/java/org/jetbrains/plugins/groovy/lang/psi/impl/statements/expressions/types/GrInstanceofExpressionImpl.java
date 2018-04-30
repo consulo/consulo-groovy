@@ -16,8 +16,8 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.types;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrInstanceOfExpression;
@@ -32,7 +32,7 @@ import com.intellij.psi.PsiType;
  */
 public class GrInstanceofExpressionImpl extends GrExpressionImpl implements GrInstanceOfExpression {
 
-  public GrInstanceofExpressionImpl(@NotNull ASTNode node) {
+  public GrInstanceofExpressionImpl(@Nonnull ASTNode node) {
     super(node);
   }
 
@@ -57,7 +57,7 @@ public class GrInstanceofExpressionImpl extends GrExpressionImpl implements GrIn
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public GrExpression getOperand() {
     return findNotNullChildByClass(GrExpression.class);
   }

@@ -15,11 +15,11 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.convertToJava.invocators;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.openapi.extensions.ExtensionPointName;
 import com.intellij.psi.PsiMethod;
 import com.intellij.psi.PsiSubstitutor;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrNamedArgument;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlock;
@@ -34,23 +34,23 @@ public abstract class CustomMethodInvocator {
   private static final ExtensionPointName<CustomMethodInvocator> EP_NAME =
     ExtensionPointName.create("org.intellij.groovy.convertToJava.customMethodInvocator");
 
-  protected abstract boolean invoke(@NotNull ExpressionGenerator generator,
-                                    @NotNull PsiMethod method,
-                                    @Nullable GrExpression caller,
-                                    @NotNull GrExpression[] exprs,
-                                    @NotNull GrNamedArgument[] namedArgs,
-                                    @NotNull GrClosableBlock[] closures,
-                                    @NotNull PsiSubstitutor substitutor,
-                                    @NotNull GroovyPsiElement context);
+  protected abstract boolean invoke(@Nonnull ExpressionGenerator generator,
+                                    @Nonnull PsiMethod method,
+                                    @javax.annotation.Nullable GrExpression caller,
+                                    @Nonnull GrExpression[] exprs,
+                                    @Nonnull GrNamedArgument[] namedArgs,
+                                    @Nonnull GrClosableBlock[] closures,
+                                    @Nonnull PsiSubstitutor substitutor,
+                                    @Nonnull GroovyPsiElement context);
 
-  public static boolean invokeMethodOn(@NotNull ExpressionGenerator generator,
-                                       @NotNull GrGdkMethod method,
-                                       @Nullable GrExpression caller,
-                                       @NotNull GrExpression[] exprs,
-                                       @NotNull GrNamedArgument[] namedArgs,
-                                       @NotNull GrClosableBlock[] closures,
-                                       @NotNull PsiSubstitutor substitutor,
-                                       @NotNull GroovyPsiElement context) {
+  public static boolean invokeMethodOn(@Nonnull ExpressionGenerator generator,
+                                       @Nonnull GrGdkMethod method,
+                                       @javax.annotation.Nullable GrExpression caller,
+                                       @Nonnull GrExpression[] exprs,
+                                       @Nonnull GrNamedArgument[] namedArgs,
+                                       @Nonnull GrClosableBlock[] closures,
+                                       @Nonnull PsiSubstitutor substitutor,
+                                       @Nonnull GroovyPsiElement context) {
     final PsiMethod staticMethod = method.getStaticMethod();
     for (CustomMethodInvocator invocator : EP_NAME.getExtensions()) {
       if (invocator.invoke(generator, staticMethod, caller, exprs, namedArgs, closures, substitutor, context)) {

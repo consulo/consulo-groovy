@@ -16,7 +16,7 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import com.intellij.psi.JavaPsiFacade;
 import com.intellij.psi.PsiType;
 import com.intellij.psi.search.GlobalSearchScope;
@@ -28,9 +28,9 @@ public class GrImmediateTupleType extends GrTupleType
 {
 	private final PsiType[] myComponentTypes;
 
-	public GrImmediateTupleType(@NotNull PsiType[] componentTypes,
-			@NotNull JavaPsiFacade facade,
-			@NotNull GlobalSearchScope scope)
+	public GrImmediateTupleType(@Nonnull PsiType[] componentTypes,
+			@Nonnull JavaPsiFacade facade,
+			@Nonnull GlobalSearchScope scope)
 	{
 		super(scope, facade);
 		myComponentTypes = componentTypes;
@@ -49,14 +49,14 @@ public class GrImmediateTupleType extends GrTupleType
 		return true;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	protected PsiType[] inferComponents()
 	{
 		return myComponentTypes;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public PsiType[] getComponentTypes()
 	{

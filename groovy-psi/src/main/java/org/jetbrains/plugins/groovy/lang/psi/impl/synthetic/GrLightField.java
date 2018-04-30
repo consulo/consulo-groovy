@@ -26,8 +26,8 @@ import com.intellij.psi.util.CachedValuesManager;
 import com.intellij.psi.util.PsiModificationTracker;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.extensions.NamedArgumentDescriptor;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocComment;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
@@ -47,17 +47,17 @@ public class GrLightField extends GrLightVariable implements GrField {
 
   private final PsiClass myContainingClass;
 
-  public GrLightField(@NotNull PsiClass containingClass,
+  public GrLightField(@Nonnull PsiClass containingClass,
                       @NonNls String name,
-                      @NotNull PsiType type,
-                      @NotNull PsiElement navigationElement) {
+                      @Nonnull PsiType type,
+                      @Nonnull PsiElement navigationElement) {
     super(containingClass.getManager(), name, type, navigationElement);
     myContainingClass = containingClass;
   }
 
-  public GrLightField(@NotNull PsiClass containingClass,
+  public GrLightField(@Nonnull PsiClass containingClass,
                       @NonNls String name,
-                      @NotNull String type) {
+                      @Nonnull String type) {
     super(containingClass.getManager(), name, type, containingClass);
     myContainingClass = containingClass;
     setNavigationElement(this);
@@ -73,7 +73,7 @@ public class GrLightField extends GrLightVariable implements GrField {
     return false;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public SearchScope getUseScope() {
     return ResolveScopeManager.getElementUseScope(this);
@@ -85,7 +85,7 @@ public class GrLightField extends GrLightVariable implements GrField {
   }
 
   @Override
-  public void setInitializer(@Nullable PsiExpression initializer) throws IncorrectOperationException {
+  public void setInitializer(@javax.annotation.Nullable PsiExpression initializer) throws IncorrectOperationException {
     throw new IncorrectOperationException();
   }
 
@@ -98,18 +98,18 @@ public class GrLightField extends GrLightVariable implements GrField {
   @Override
   public GrAccessorMethod getSetter() {
     return CachedValuesManager.getCachedValue(this, new CachedValueProvider<GrAccessorMethod>() {
-      @Nullable
+      @javax.annotation.Nullable
       @Override
       public Result<GrAccessorMethod> compute() {
         return Result.create(GrAccessorMethodImpl.createSetterMethod(GrLightField.this), PsiModificationTracker.OUT_OF_CODE_BLOCK_MODIFICATION_COUNT);
       }
     });
   }
-  @NotNull
+  @Nonnull
   @Override
   public GrAccessorMethod[] getGetters() {
     return CachedValuesManager.getCachedValue(this, new CachedValueProvider<GrAccessorMethod[]>() {
-      @Nullable
+      @javax.annotation.Nullable
       @Override
       public Result<GrAccessorMethod[]> compute() {
         return Result.create(GrAccessorMethodImpl.createGetterMethods(GrLightField.this), PsiModificationTracker.OUT_OF_CODE_BLOCK_MODIFICATION_COUNT);
@@ -117,7 +117,7 @@ public class GrLightField extends GrLightVariable implements GrField {
     });
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public Map<String, NamedArgumentDescriptor> getNamedParameters() {
     return Collections.emptyMap();
@@ -134,7 +134,7 @@ public class GrLightField extends GrLightVariable implements GrField {
   }
 
   @Override
-  public void setType(@Nullable PsiType type) throws IncorrectOperationException {
+  public void setType(@javax.annotation.Nullable PsiType type) throws IncorrectOperationException {
     throw new IncorrectOperationException();
   }
 
@@ -153,7 +153,7 @@ public class GrLightField extends GrLightVariable implements GrField {
     return getType();
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public PsiElement getNameIdentifierGroovy() {
     return myNameIdentifier;
@@ -170,7 +170,7 @@ public class GrLightField extends GrLightVariable implements GrField {
   }
 
   @Override
-  public PsiElement setName(@NotNull String name) throws IncorrectOperationException {
+  public PsiElement setName(@Nonnull String name) throws IncorrectOperationException {
     PsiElement res = super.setName(name);
     return res;
   }

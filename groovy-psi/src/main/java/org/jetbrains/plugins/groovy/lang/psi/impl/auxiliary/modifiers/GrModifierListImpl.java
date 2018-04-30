@@ -21,9 +21,11 @@ import gnu.trove.TObjectIntHashMap;
 import java.util.ArrayList;
 import java.util.Map;
 
+import javax.annotation.Nonnull;
+
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.config.GroovyConfigUtils;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.lexer.TokenSets;
@@ -73,7 +75,7 @@ public class GrModifierListImpl extends GrStubElementBase<GrModifierListStub> im
   public static final TObjectIntHashMap<String> NAME_TO_MODIFIER_FLAG_MAP = new TObjectIntHashMap<String>();
   public static final Map<String, IElementType> NAME_TO_MODIFIER_ELEMENT_TYPE = ContainerUtil.newHashMap();
   private static final ArrayFactory<GrAnnotation> ARRAY_FACTORY = new ArrayFactory<GrAnnotation>() {
-    @NotNull
+    @Nonnull
     @Override
     public GrAnnotation[] create(int count) {
       return new GrAnnotation[count];
@@ -129,7 +131,7 @@ public class GrModifierListImpl extends GrStubElementBase<GrModifierListStub> im
 
   private static final String[] VISIBILITY_MODIFIERS = {GrModifier.PUBLIC, GrModifier.PROTECTED, GrModifier.PRIVATE};
 
-  public GrModifierListImpl(@NotNull ASTNode node) {
+  public GrModifierListImpl(@Nonnull ASTNode node) {
     super(node);
   }
 
@@ -156,7 +158,7 @@ public class GrModifierListImpl extends GrStubElementBase<GrModifierListStub> im
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public PsiElement[] getModifiers() {
     final ArrayList<PsiElement> result = new ArrayList<PsiElement>();
     for (PsiElement cur = getFirstChild(); cur != null; cur = cur.getNextSibling()) {
@@ -181,7 +183,7 @@ public class GrModifierListImpl extends GrStubElementBase<GrModifierListStub> im
     return false;
   }
 
-  public static boolean checkModifierProperty(@NotNull GrModifierList modifierList, @GrModifier.GrModifierConstant @NotNull String modifier) {
+  public static boolean checkModifierProperty(@Nonnull GrModifierList modifierList, @GrModifier.GrModifierConstant @Nonnull String modifier) {
     final PsiElement owner = modifierList.getParent();
     if (owner instanceof GrVariableDeclaration && owner.getParent() instanceof GrTypeDefinitionBody) {
       PsiElement pParent = owner.getParent().getParent();
@@ -263,12 +265,12 @@ public class GrModifierListImpl extends GrStubElementBase<GrModifierListStub> im
   }
 
   @Override
-  public boolean hasModifierProperty(@NotNull @NonNls String modifier) {
+  public boolean hasModifierProperty(@Nonnull @NonNls String modifier) {
     return checkModifierProperty(this, modifier);
   }
 
   @Override
-  public boolean hasExplicitModifier(@NotNull @NonNls String name) {
+  public boolean hasExplicitModifier(@Nonnull @NonNls String name) {
     final GrModifierListStub stub = getStub();
     if (stub != null) {
       return hasMaskExplicitModifier(name, stub.getModifiersFlags());
@@ -283,7 +285,7 @@ public class GrModifierListImpl extends GrStubElementBase<GrModifierListStub> im
   }
 
   @Override
-  public void setModifierProperty(@NotNull @NonNls String name, boolean doSet) throws IncorrectOperationException {
+  public void setModifierProperty(@Nonnull @NonNls String name, boolean doSet) throws IncorrectOperationException {
     if (hasModifierProperty(name) == doSet) return;
 
     if (doSet) {
@@ -306,7 +308,7 @@ public class GrModifierListImpl extends GrStubElementBase<GrModifierListStub> im
     }
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public GrAnnotation[] getRawAnnotations() {
     return getStubOrPsiChildren(GroovyElementTypes.ANNOTATION, ARRAY_FACTORY);
@@ -375,14 +377,14 @@ public class GrModifierListImpl extends GrStubElementBase<GrModifierListStub> im
   }
 
   @Override
-  public void checkSetModifierProperty(@NotNull @NonNls String name, boolean value) throws IncorrectOperationException {
+  public void checkSetModifierProperty(@Nonnull @NonNls String name, boolean value) throws IncorrectOperationException {
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public GrAnnotation[] getAnnotations() {
     return CachedValuesManager.getCachedValue(this, new CachedValueProvider<GrAnnotation[]>() {
-      @Nullable
+      @javax.annotation.Nullable
       @Override
       public Result<GrAnnotation[]> compute() {
         return Result.create(GrAnnotationCollector.getResolvedAnnotations(GrModifierListImpl.this), PsiModificationTracker.JAVA_STRUCTURE_MODIFICATION_COUNT);
@@ -391,15 +393,15 @@ public class GrModifierListImpl extends GrStubElementBase<GrModifierListStub> im
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public PsiAnnotation[] getApplicableAnnotations() {
     //todo[medvedev]
     return getAnnotations();
   }
 
   @Override
-  @Nullable
-  public PsiAnnotation findAnnotation(@NotNull @NonNls String qualifiedName) {
+  @javax.annotation.Nullable
+  public PsiAnnotation findAnnotation(@Nonnull @NonNls String qualifiedName) {
     for (GrAnnotation annotation : getAnnotations()) {
       if (qualifiedName.equals(annotation.getQualifiedName())) {
         return annotation;
@@ -409,8 +411,8 @@ public class GrModifierListImpl extends GrStubElementBase<GrModifierListStub> im
   }
 
   @Override
-  @NotNull
-  public GrAnnotation addAnnotation(@NotNull @NonNls String qualifiedName) {
+  @Nonnull
+  public GrAnnotation addAnnotation(@Nonnull @NonNls String qualifiedName) {
     final PsiClass psiClass = JavaPsiFacade.getInstance(getProject()).findClass(qualifiedName, getResolveScope());
     final GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(getProject());
     GrAnnotation annotation;

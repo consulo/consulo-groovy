@@ -15,14 +15,15 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.changeSignature;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.JavaPsiFacade;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.lang.psi.util.GrStringUtil;
 
 public class GrChangeSignatureUtil {
-  @NotNull
-  public static String getNameWithQuotesIfNeeded(@NotNull final String originalName, @NotNull final Project project) {
+  @Nonnull
+  public static String getNameWithQuotesIfNeeded(@Nonnull final String originalName, @Nonnull final Project project) {
     return JavaPsiFacade.getInstance(project).getNameHelper().isIdentifier(originalName)
            ? originalName
            : GrStringUtil.getLiteralTextByValue(originalName).toString();

@@ -16,7 +16,8 @@
 
 package org.jetbrains.plugins.groovy.actions;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
@@ -63,13 +64,13 @@ public class NewScriptAction extends JavaCreateTemplateInPackageAction<GroovyFil
 	}
 
 	@Override
-	protected PsiElement getNavigationElement(@NotNull GroovyFile createdFile)
+	protected PsiElement getNavigationElement(@Nonnull GroovyFile createdFile)
 	{
 		return createdFile.getLastChild();
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	protected GroovyFile doCreate(PsiDirectory directory,
 			String newName,
 			String templateName) throws IncorrectOperationException

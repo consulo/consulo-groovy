@@ -15,7 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.annotator.checkers;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.grape.GrabAnnos;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotation;
 import com.intellij.lang.annotation.AnnotationHolder;
@@ -26,7 +27,7 @@ import com.intellij.lang.annotation.AnnotationHolder;
 public class GrabAnnotationChecker extends CustomAnnotationChecker
 {
 	@Override
-	public boolean checkArgumentList(@NotNull AnnotationHolder holder, @NotNull GrAnnotation annotation)
+	public boolean checkArgumentList(@Nonnull AnnotationHolder holder, @Nonnull GrAnnotation annotation)
 	{
 		return GrabAnnos.GRAB_ANNO.equals(annotation.getQualifiedName()) ||
 				GrabAnnos.GRAPES_ANNO.equals(annotation.getQualifiedName()) ||

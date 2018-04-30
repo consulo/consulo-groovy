@@ -16,7 +16,6 @@
 
 package org.jetbrains.plugins.groovy.dsl.psi;
 
-import org.jetbrains.annotations.Nullable;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiClassType;
 import com.intellij.psi.PsiElement;
@@ -28,7 +27,7 @@ import com.intellij.psi.PsiType;
  */
 public class PsiCategoryUtil {
 
-  @Nullable
+  @javax.annotation.Nullable
   public static PsiClass getClassType(PsiType type, PsiElement place) {
     if (type instanceof PsiClassType) {
       PsiClassType classType = (PsiClassType)type;

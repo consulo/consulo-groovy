@@ -24,7 +24,6 @@ import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiEnumConstant;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrCall;
@@ -60,7 +59,7 @@ public class GroovyEditorTextProvider implements EditorTextProvider {
     return new TextWithImportsImpl(CodeFragmentKind.EXPRESSION, result);
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   private static PsiElement findExpressionInner(PsiElement element, boolean allowMethodCalls) {
     PsiElement parent = element.getParent();
     if (parent instanceof GrVariable && element == ((GrVariable)parent).getNameIdentifierGroovy()) {

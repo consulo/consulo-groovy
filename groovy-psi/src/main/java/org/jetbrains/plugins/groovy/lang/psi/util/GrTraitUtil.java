@@ -17,9 +17,11 @@ package org.jetbrains.plugins.groovy.lang.psi.util;
 
 import static com.intellij.psi.PsiModifier.ABSTRACT;
 
+import javax.annotation.Nonnull;
+
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.psi.PsiClass;
@@ -49,8 +51,8 @@ public class GrTraitUtil
 		return isInterface(aClass);
 	}
 
-	@NotNull
-	public static String getTraitFieldPrefix(@NotNull PsiClass aClass)
+	@Nonnull
+	public static String getTraitFieldPrefix(@Nonnull PsiClass aClass)
 	{
 		String qname = aClass.getQualifiedName();
 		LOG.assertTrue(qname != null, aClass.getClass());
@@ -68,7 +70,7 @@ public class GrTraitUtil
 	}
 
 	@Contract("null -> false")
-	public static boolean isTrait(@Nullable PsiClass containingClass)
+	public static boolean isTrait(@javax.annotation.Nullable PsiClass containingClass)
 	{
 		return containingClass instanceof GrTypeDefinition && ((GrTypeDefinition) containingClass).isTrait();
 	}

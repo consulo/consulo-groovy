@@ -15,11 +15,12 @@
  */
 package org.jetbrains.plugins.groovy.intentions.conversions;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.IncorrectOperationException;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.intentions.base.PsiElementPredicate;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
@@ -30,7 +31,7 @@ import org.jetbrains.plugins.groovy.lang.psi.api.util.GrStatementOwner;
 
 public class RemoveParenthesesFromMethodCallIntention extends Intention {
 
-  @NotNull
+  @Nonnull
   protected PsiElementPredicate getElementPredicate() {
     return new RemoveParenthesesFromMethodPredicate();
   }
@@ -40,7 +41,7 @@ public class RemoveParenthesesFromMethodCallIntention extends Intention {
     return super.isStopElement(element) || element instanceof GrStatementOwner;
   }
 
-  protected void processIntention(@NotNull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
+  protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
     final GrMethodCallExpression expression = (GrMethodCallExpression) element;
     final StringBuilder newStatementText = new StringBuilder();
     newStatementText.append(expression.getInvokedExpression().getText()).append(' ');

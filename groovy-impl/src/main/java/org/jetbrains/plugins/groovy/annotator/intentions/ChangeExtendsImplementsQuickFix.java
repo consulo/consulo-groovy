@@ -19,8 +19,8 @@ import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
@@ -47,10 +47,10 @@ public class ChangeExtendsImplementsQuickFix implements IntentionAction
 	private final GrExtendsClause myExtendsClause;
 	@Nullable
 	private final GrImplementsClause myImplementsClause;
-	@NotNull
+	@Nonnull
 	private final GrTypeDefinition myClass;
 
-	public ChangeExtendsImplementsQuickFix(@NotNull GrTypeDefinition aClass)
+	public ChangeExtendsImplementsQuickFix(@Nonnull GrTypeDefinition aClass)
 	{
 		myClass = aClass;
 		myExtendsClause = aClass.getExtendsClause();
@@ -58,27 +58,27 @@ public class ChangeExtendsImplementsQuickFix implements IntentionAction
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public String getText()
 	{
 		return GroovyBundle.message("change.implements.and.extends.classes");
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public String getFamilyName()
 	{
 		return getText();
 	}
 
 	@Override
-	public boolean isAvailable(@NotNull Project project, Editor editor, PsiFile file)
+	public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file)
 	{
 		return myClass.isValid() && myClass.getManager().isInProject(file);
 	}
 
 	@Override
-	public void invoke(@NotNull Project project, Editor editor, PsiFile file) throws IncorrectOperationException
+	public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException
 	{
 		Set<String> classes = new LinkedHashSet<String>();
 		Set<String> interfaces = new LinkedHashSet<String>();

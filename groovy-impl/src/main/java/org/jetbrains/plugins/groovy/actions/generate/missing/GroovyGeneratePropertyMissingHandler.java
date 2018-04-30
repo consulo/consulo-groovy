@@ -34,8 +34,8 @@ import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiMethod;
 import com.intellij.psi.PsiParameter;
 import com.intellij.util.IncorrectOperationException;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.actions.generate.GroovyCodeInsightBundle;
 import org.jetbrains.plugins.groovy.actions.generate.GroovyGenerationInfo;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
@@ -61,7 +61,7 @@ public class GroovyGeneratePropertyMissingHandler extends GenerateMembersHandler
     return ClassMember.EMPTY_ARRAY;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   protected List<? extends GenerationInfo> generateMemberPrototypes(PsiClass aClass, ClassMember[] members)
     throws IncorrectOperationException {
@@ -79,7 +79,7 @@ public class GroovyGeneratePropertyMissingHandler extends GenerateMembersHandler
     return result;
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   private static GrMethod genGetter(PsiClass aClass, FileTemplate template) {
     Properties properties = FileTemplateManager.getInstance().getDefaultProperties(aClass.getProject());
     properties.setProperty(FileTemplate.ATTRIBUTE_RETURN_TYPE, "java.lang.Object");

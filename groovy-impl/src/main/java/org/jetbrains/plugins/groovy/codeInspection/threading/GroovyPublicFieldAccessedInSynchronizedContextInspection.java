@@ -15,10 +15,11 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.threading;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.psi.*;
 import com.intellij.psi.util.PsiTreeUtil;
 import org.jetbrains.annotations.Nls;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrSynchronizedStatement;
@@ -29,17 +30,17 @@ public class GroovyPublicFieldAccessedInSynchronizedContextInspection
     extends BaseInspection {
 
   @Nls
-  @NotNull
+  @Nonnull
   public String getGroupDisplayName() {
     return THREADING_ISSUES;
   }
 
-  @NotNull
+  @Nonnull
   public String getDisplayName() {
     return "Non-private field accessed in synchronized context";
   }
 
-  @NotNull
+  @Nonnull
   protected String buildErrorString(Object... infos) {
     return "Non-private field <code>#ref</code> accessed in synchronized context  #loc";
   }
@@ -52,7 +53,7 @@ public class GroovyPublicFieldAccessedInSynchronizedContextInspection
       extends BaseInspectionVisitor {
 
     public void visitReferenceExpression(
-        @NotNull GrReferenceExpression expression) {
+        @Nonnull GrReferenceExpression expression) {
       final PsiElement element = expression.resolve();
       if (!(element instanceof PsiField)) {
         return;

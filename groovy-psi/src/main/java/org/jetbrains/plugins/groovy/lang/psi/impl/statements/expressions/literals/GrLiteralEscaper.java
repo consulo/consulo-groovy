@@ -16,7 +16,8 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.literals;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.literals.GrLiteralContainer;
 import org.jetbrains.plugins.groovy.lang.psi.util.GrStringUtil;
@@ -32,7 +33,7 @@ public class GrLiteralEscaper extends LiteralTextEscaper<GrLiteralContainer> {
   }
 
   @Override
-  public boolean decode(@NotNull TextRange rangeInsideHost, @NotNull StringBuilder outChars) {
+  public boolean decode(@Nonnull TextRange rangeInsideHost, @Nonnull StringBuilder outChars) {
     String subText = rangeInsideHost.substring(myHost.getText());
     outSourceOffsets = new int[subText.length() + 1];
 
@@ -50,7 +51,7 @@ public class GrLiteralEscaper extends LiteralTextEscaper<GrLiteralContainer> {
   }
 
   @Override
-  public int getOffsetInHost(int offsetInDecoded, @NotNull final TextRange rangeInsideHost) {
+  public int getOffsetInHost(int offsetInDecoded, @Nonnull final TextRange rangeInsideHost) {
     int result = offsetInDecoded < outSourceOffsets.length ? outSourceOffsets[offsetInDecoded] : -1;
     if (result == -1) return -1;
     return (result <= rangeInsideHost.getLength() ? result : rangeInsideHost.getLength()) + rangeInsideHost.getStartOffset();

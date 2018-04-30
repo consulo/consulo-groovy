@@ -16,7 +16,7 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.types;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrBuiltInTypeElement;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyPsiElementImpl;
@@ -30,7 +30,7 @@ import com.intellij.psi.PsiType;
 public class GrBuiltInTypeElementImpl extends GroovyPsiElementImpl implements GrBuiltInTypeElement
 {
 
-	public GrBuiltInTypeElementImpl(@NotNull ASTNode node)
+	public GrBuiltInTypeElementImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
@@ -47,7 +47,7 @@ public class GrBuiltInTypeElementImpl extends GroovyPsiElementImpl implements Gr
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public PsiType getType()
 	{
 		return TypesUtil.getPrimitiveTypeByText(getText());

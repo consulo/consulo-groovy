@@ -16,8 +16,8 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiPolyVariantReference;
@@ -32,7 +32,7 @@ public interface GrUnaryExpression extends GrExpression, PsiPolyVariantReference
 
   @Nullable GrExpression getOperand();
 
-  @NotNull
+  @Nonnull
   @Override
   GroovyResolveResult[] multiResolve(final boolean incompleteCode);
 

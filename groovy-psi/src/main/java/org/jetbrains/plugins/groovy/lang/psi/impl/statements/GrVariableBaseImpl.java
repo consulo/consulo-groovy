@@ -15,9 +15,11 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements;
 
+import javax.annotation.Nonnull;
+
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.lexer.TokenSets;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
@@ -80,13 +82,13 @@ public abstract class GrVariableBaseImpl<T extends StubElement> extends GrStubEl
   }
 
   @Override
-  @Nullable
+  @javax.annotation.Nullable
   public PsiTypeElement getTypeElement() {
     return PsiImplUtil.getOrCreateTypeElement(getTypeElementGroovy());
   }
 
   @Override
-  @Nullable
+  @javax.annotation.Nullable
   public PsiExpression getInitializer() {
     return null;
   }
@@ -101,7 +103,7 @@ public abstract class GrVariableBaseImpl<T extends StubElement> extends GrStubEl
   }
 
   @Override
-  @Nullable
+  @javax.annotation.Nullable
   public Object computeConstantValue() {
     return null;
   }
@@ -126,20 +128,20 @@ public abstract class GrVariableBaseImpl<T extends StubElement> extends GrStubEl
 
 
   @Override
-  public boolean hasModifierProperty(@NonNls @NotNull String property) {
+  public boolean hasModifierProperty(@NonNls @Nonnull String property) {
     PsiModifierList modifierList = getModifierList();
     return modifierList != null && modifierList.hasModifierProperty(property);
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public PsiType getType() {
     PsiType type = getDeclaredType();
     return type != null ? type : TypesUtil.getJavaLangObject(this);
   }
 
   @Override
-  @Nullable
+  @javax.annotation.Nullable
   public GrTypeElement getTypeElementGroovy() {
     PsiElement parent = getParent();
     if (parent instanceof GrVariableDeclaration) {
@@ -149,7 +151,7 @@ public abstract class GrVariableBaseImpl<T extends StubElement> extends GrStubEl
   }
 
   @Override
-  @Nullable
+  @javax.annotation.Nullable
   public PsiType getDeclaredType() {
     GrTypeElement typeElement = getTypeElementGroovy();
     if (typeElement != null) return typeElement.getType();
@@ -196,7 +198,7 @@ public abstract class GrVariableBaseImpl<T extends StubElement> extends GrStubEl
   }
 
   @Override
-  public void setType(@Nullable PsiType type) {
+  public void setType(@javax.annotation.Nullable PsiType type) {
     final GrVariableDeclaration variableDeclaration = getDeclaration();
     if (variableDeclaration == null) return;
     final GrTypeElement typeElement = variableDeclaration.getTypeElementGroovyForVariable(this);
@@ -231,7 +233,7 @@ public abstract class GrVariableBaseImpl<T extends StubElement> extends GrStubEl
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public PsiElement getNameIdentifierGroovy() {
     PsiElement ident = findChildByType(TokenSets.PROPERTY_NAMES);
     assert ident != null : getText();
@@ -239,7 +241,7 @@ public abstract class GrVariableBaseImpl<T extends StubElement> extends GrStubEl
   }
 
   @Override
-  @Nullable
+  @javax.annotation.Nullable
   public GrExpression getInitializerGroovy() {
     final PsiElement parent = getParent();
     if (parent instanceof GrVariableDeclaration && ((GrVariableDeclaration)parent).isTuple()){
@@ -265,13 +267,13 @@ public abstract class GrVariableBaseImpl<T extends StubElement> extends GrStubEl
   }
 
   @Override
-  public PsiElement setName(@NonNls @NotNull String name) throws IncorrectOperationException {
+  public PsiElement setName(@NonNls @Nonnull String name) throws IncorrectOperationException {
     PsiImplUtil.setName(name, getNameIdentifierGroovy());
     return this;
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public SearchScope getUseScope() {
     final GrVariableDeclarationOwner owner = PsiTreeUtil.getParentOfType(this, GrVariableDeclarationOwner.class);
     if (owner != null) return new LocalSearchScope(owner);
@@ -279,26 +281,26 @@ public abstract class GrVariableBaseImpl<T extends StubElement> extends GrStubEl
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public String getName() {
     return PsiImplUtil.getName(this);
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public PsiIdentifier getNameIdentifier() {
     return PsiUtil.getJavaNameIdentifier(this);
   }
 
   @Override
-  @Nullable
+  @javax.annotation.Nullable
   public GrModifierList getModifierList() {
     final GrVariableDeclaration variableDeclaration = getDeclaration();
     if (variableDeclaration!=null) return variableDeclaration.getModifierList();
     return null;
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   private GrVariableDeclaration getDeclaration() {
     PsiElement parent = getParent();
     if (parent instanceof GrVariableDeclaration) {
@@ -308,7 +310,7 @@ public abstract class GrVariableBaseImpl<T extends StubElement> extends GrStubEl
   }
 
   @Override
-  public void deleteChildInternal(@NotNull ASTNode child) {
+  public void deleteChildInternal(@Nonnull ASTNode child) {
     final PsiElement psi = child.getPsi();
     if (psi == getInitializerGroovy()) {
       deleteChildInternal(findNotNullChildByType(GroovyTokenTypes.mASSIGN).getNode());

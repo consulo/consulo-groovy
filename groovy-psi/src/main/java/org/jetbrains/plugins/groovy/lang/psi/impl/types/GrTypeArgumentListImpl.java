@@ -16,7 +16,8 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.types;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeArgumentList;
@@ -31,7 +32,7 @@ import com.intellij.psi.PsiType;
  */
 public class GrTypeArgumentListImpl extends GroovyPsiElementImpl implements GrTypeArgumentList
 {
-	public GrTypeArgumentListImpl(@NotNull ASTNode node)
+	public GrTypeArgumentListImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}

@@ -17,8 +17,8 @@ package org.jetbrains.plugins.groovy.lang.psi.impl.statements.typedef;
 
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.lexer.TokenSets;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
@@ -50,7 +50,7 @@ import com.intellij.util.containers.ContainerUtil;
  * @author: Dmitry.Krasilschikov, ilyas
  */
 public abstract class GrTypeDefinitionBodyBase extends GrStubElementBase<EmptyStub> implements GrTypeDefinitionBody {
-  public GrTypeDefinitionBodyBase(@NotNull ASTNode node) {
+  public GrTypeDefinitionBodyBase(@Nonnull ASTNode node) {
     super(node);
   }
 
@@ -109,7 +109,7 @@ public abstract class GrTypeDefinitionBodyBase extends GrStubElementBase<EmptySt
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public GrClassInitializer[] getInitializers() {
     return findChildrenByClass(GrClassInitializer.class);
   }
@@ -143,7 +143,7 @@ public abstract class GrTypeDefinitionBodyBase extends GrStubElementBase<EmptySt
   }
 
   @Override
-  public void deleteChildInternal(@NotNull ASTNode child) {
+  public void deleteChildInternal(@Nonnull ASTNode child) {
     final PsiElement element = child.getPsi();
     if (element instanceof GrTopStatement) {
       PsiImplUtil.deleteStatementTail(this, element);
@@ -161,7 +161,7 @@ public abstract class GrTypeDefinitionBodyBase extends GrStubElementBase<EmptySt
 
   public static class GrClassBody extends GrTypeDefinitionBodyBase implements StubBasedPsiElement<EmptyStub> {
 
-    public GrClassBody(@NotNull ASTNode node) {
+    public GrClassBody(@Nonnull ASTNode node) {
       super(node);
     }
 
@@ -177,7 +177,7 @@ public abstract class GrTypeDefinitionBodyBase extends GrStubElementBase<EmptySt
   }
 
   public static class GrEnumBody extends GrTypeDefinitionBodyBase implements GrEnumDefinitionBody, StubBasedPsiElement<EmptyStub> {
-    public GrEnumBody(@NotNull ASTNode node) {
+    public GrEnumBody(@Nonnull ASTNode node) {
       super(node);
     }
 

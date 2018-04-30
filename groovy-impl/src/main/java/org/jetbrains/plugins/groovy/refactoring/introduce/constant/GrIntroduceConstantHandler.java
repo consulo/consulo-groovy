@@ -21,8 +21,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyRecursiveElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
@@ -57,14 +57,14 @@ public class GrIntroduceConstantHandler extends GrIntroduceFieldHandlerBase<GrIn
 {
 	public static final String REFACTORING_NAME = "Introduce Constant";
 
-	@NotNull
+	@Nonnull
 	@Override
 	protected String getRefactoringName()
 	{
 		return REFACTORING_NAME;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	protected String getHelpID()
 	{
@@ -72,7 +72,7 @@ public class GrIntroduceConstantHandler extends GrIntroduceFieldHandlerBase<GrIn
 	}
 
 	@Override
-	protected void checkExpression(@NotNull GrExpression selectedExpr)
+	protected void checkExpression(@Nonnull GrExpression selectedExpr)
 	{
 		GrVariable variable = GrIntroduceHandlerBase.resolveLocalVar(selectedExpr);
 		if(variable != null)
@@ -86,7 +86,7 @@ public class GrIntroduceConstantHandler extends GrIntroduceFieldHandlerBase<GrIn
 	}
 
 	@Override
-	protected void checkVariable(@NotNull GrVariable variable) throws GrRefactoringError
+	protected void checkVariable(@Nonnull GrVariable variable) throws GrRefactoringError
 	{
 		final GrExpression initializer = variable.getInitializerGroovy();
 		if(initializer == null)
@@ -98,13 +98,13 @@ public class GrIntroduceConstantHandler extends GrIntroduceFieldHandlerBase<GrIn
 	}
 
 	@Override
-	protected void checkStringLiteral(@NotNull StringPartInfo info) throws GrRefactoringError
+	protected void checkStringLiteral(@Nonnull StringPartInfo info) throws GrRefactoringError
 	{
 		//todo
 	}
 
 	@Override
-	protected void checkOccurrences(@NotNull PsiElement[] occurrences)
+	protected void checkOccurrences(@Nonnull PsiElement[] occurrences)
 	{
 		if(hasLhs(occurrences))
 		{
@@ -118,23 +118,23 @@ public class GrIntroduceConstantHandler extends GrIntroduceFieldHandlerBase<GrIn
 		return (PsiClass) context.getScope();
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
-	protected GrIntroduceDialog<GrIntroduceConstantSettings> getDialog(@NotNull GrIntroduceContext context)
+	protected GrIntroduceDialog<GrIntroduceConstantSettings> getDialog(@Nonnull GrIntroduceContext context)
 	{
 		return new GrIntroduceConstantDialog(context, findContainingClass(context));
 	}
 
 	@Override
-	public GrField runRefactoring(@NotNull GrIntroduceContext context, @NotNull GrIntroduceConstantSettings settings)
+	public GrField runRefactoring(@Nonnull GrIntroduceContext context, @Nonnull GrIntroduceConstantSettings settings)
 	{
 		return new GrIntroduceConstantProcessor(context, settings).run();
 	}
 
 	@Override
-	protected GrAbstractInplaceIntroducer<GrIntroduceConstantSettings> getIntroducer(@NotNull GrIntroduceContext
+	protected GrAbstractInplaceIntroducer<GrIntroduceConstantSettings> getIntroducer(@Nonnull GrIntroduceContext
 			context,
-			@NotNull OccurrencesChooser.ReplaceChoice choice)
+			@Nonnull OccurrencesChooser.ReplaceChoice choice)
 	{
 		final Ref<GrIntroduceContext> contextRef = Ref.create(context);
 
@@ -146,9 +146,9 @@ public class GrIntroduceConstantHandler extends GrIntroduceFieldHandlerBase<GrIn
 		return new GrInplaceConstantIntroducer(contextRef.get(), choice);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
-	protected Map<OccurrencesChooser.ReplaceChoice, List<Object>> getOccurrenceOptions(@NotNull GrIntroduceContext
+	protected Map<OccurrencesChooser.ReplaceChoice, List<Object>> getOccurrenceOptions(@Nonnull GrIntroduceContext
 			context)
 	{
 		HashMap<OccurrencesChooser.ReplaceChoice, List<Object>> map = ContainerUtil.newLinkedHashMap();

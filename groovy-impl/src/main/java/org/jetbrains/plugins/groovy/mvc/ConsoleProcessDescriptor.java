@@ -16,15 +16,16 @@
 
 package org.jetbrains.plugins.groovy.mvc;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.execution.process.ProcessListener;
 import com.intellij.openapi.progress.ProgressIndicator;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * @author peter
  */
 public interface ConsoleProcessDescriptor {
-  ConsoleProcessDescriptor addProcessListener(@NotNull ProcessListener listener);
+  ConsoleProcessDescriptor addProcessListener(@Nonnull ProcessListener listener);
 
   ConsoleProcessDescriptor waitWith(ProgressIndicator progressIndicator);
 }

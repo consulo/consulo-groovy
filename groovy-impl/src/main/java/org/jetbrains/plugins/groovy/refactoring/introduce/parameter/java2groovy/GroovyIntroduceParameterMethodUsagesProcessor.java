@@ -36,7 +36,7 @@ import com.intellij.util.VisibilityUtil;
 import com.intellij.util.containers.MultiMap;
 import gnu.trove.TIntArrayList;
 import gnu.trove.TIntProcedure;
-import org.jetbrains.annotations.Nullable;
+
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.signatures.GrClosureSignature;
@@ -148,7 +148,7 @@ public class GroovyIntroduceParameterMethodUsagesProcessor implements IntroduceP
     return false;
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   private static GrExpression getLast(GrExpression[] oldArgs) {
     GrExpression anchor;
     if (oldArgs.length > 0) {
@@ -269,7 +269,7 @@ public class GroovyIntroduceParameterMethodUsagesProcessor implements IntroduceP
 
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   private static PsiParameter getAnchorParameter(PsiMethod methodToReplaceIn) {
     PsiParameterList parameterList = methodToReplaceIn.getParameterList();
     final PsiParameter anchorParameter;

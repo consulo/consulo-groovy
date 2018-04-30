@@ -30,7 +30,7 @@ import com.intellij.psi.PsiField;
 import com.intellij.psi.PsiMethod;
 import com.intellij.psi.util.PsiUtilCore;
 import com.intellij.util.containers.ContainerUtil;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrAccessorMethod;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyPropertyUtils;
@@ -48,14 +48,14 @@ public class GroovyFieldFindUsagesHandlerFactory extends JavaFindUsagesHandlerFa
   }
 
   @Override
-  public boolean canFindUsages(@NotNull PsiElement element) {
+  public boolean canFindUsages(@Nonnull PsiElement element) {
     return element instanceof GrField;
   }
 
   @Override
-  public FindUsagesHandler createFindUsagesHandler(@NotNull PsiElement element, boolean forHighlightUsages) {
+  public FindUsagesHandler createFindUsagesHandler(@Nonnull PsiElement element, boolean forHighlightUsages) {
     return new JavaFindUsagesHandler(element, this) {
-      @NotNull
+      @Nonnull
       @Override
       public PsiElement[] getSecondaryElements() {
         PsiElement element = getPsiElement();

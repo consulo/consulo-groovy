@@ -20,7 +20,8 @@ import gnu.trove.TIntArrayList;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrOpenBlock;
@@ -103,13 +104,13 @@ public class GrIntroduceParameterProcessor extends BaseRefactoringProcessor impl
 		return new GrExpressionWrapper(expression);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
-	protected UsageViewDescriptor createUsageViewDescriptor(@NotNull final UsageInfo[] usages)
+	protected UsageViewDescriptor createUsageViewDescriptor(@Nonnull final UsageInfo[] usages)
 	{
 		return new UsageViewDescriptorAdapter()
 		{
-			@NotNull
+			@Nonnull
 			@Override
 			public PsiElement[] getElements()
 			{
@@ -125,7 +126,7 @@ public class GrIntroduceParameterProcessor extends BaseRefactoringProcessor impl
 	}
 
 	@Override
-	protected boolean preprocessUsages(@NotNull Ref<UsageInfo[]> refUsages)
+	protected boolean preprocessUsages(@Nonnull Ref<UsageInfo[]> refUsages)
 	{
 		UsageInfo[] usagesIn = refUsages.get();
 		MultiMap<PsiElement, String> conflicts = new MultiMap<PsiElement, String>();
@@ -169,7 +170,7 @@ public class GrIntroduceParameterProcessor extends BaseRefactoringProcessor impl
 		return showConflicts(conflicts, usagesIn);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	protected UsageInfo[] findUsages()
 	{
@@ -257,7 +258,7 @@ public class GrIntroduceParameterProcessor extends BaseRefactoringProcessor impl
 	}
 
 	@Override
-	protected void performRefactoring(@NotNull UsageInfo[] usages)
+	protected void performRefactoring(@Nonnull UsageInfo[] usages)
 	{
 		GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(myProject);
 
@@ -385,7 +386,7 @@ public class GrIntroduceParameterProcessor extends BaseRefactoringProcessor impl
 				(mySettings.getToReplaceIn()));
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public Project getProject()
 	{
@@ -398,7 +399,7 @@ public class GrIntroduceParameterProcessor extends BaseRefactoringProcessor impl
 		return (PsiMethod) mySettings.getToReplaceIn();
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public PsiMethod getMethodToSearchFor()
 	{
@@ -411,7 +412,7 @@ public class GrIntroduceParameterProcessor extends BaseRefactoringProcessor impl
 		return myParameterInitializer;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public String getParameterName()
 	{
@@ -436,7 +437,7 @@ public class GrIntroduceParameterProcessor extends BaseRefactoringProcessor impl
 		return mySettings.generateDelegate();
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public PsiType getForcedType()
 	{
@@ -450,7 +451,7 @@ public class GrIntroduceParameterProcessor extends BaseRefactoringProcessor impl
 		return PsiType.getJavaLangObject(manager, resolveScope);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public TIntArrayList getParametersToRemove()
 	{

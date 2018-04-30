@@ -25,8 +25,8 @@ import com.intellij.psi.impl.source.tree.LeafPsiElement;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.util.ArrayUtil;
 import com.intellij.util.IncorrectOperationException;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.extensions.GroovyNamedArgumentProvider;
 import org.jetbrains.plugins.groovy.extensions.NamedArgumentDescriptor;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
@@ -53,7 +53,7 @@ import java.util.Map;
  */
 public class GrArgumentLabelImpl extends GroovyPsiElementImpl implements GrArgumentLabel {
 
-  public GrArgumentLabelImpl(@NotNull ASTNode node) {
+  public GrArgumentLabelImpl(@Nonnull ASTNode node) {
     super(node);
   }
 
@@ -98,7 +98,7 @@ public class GrArgumentLabelImpl extends GroovyPsiElementImpl implements GrArgum
     return null;
   }
 
-  @NotNull
+  @Nonnull
   private PsiPolyVariantReference getRealReference() {
     PsiReference[] otherReferences = ReferenceProvidersRegistry.getReferencesFromProviders(this, PsiReferenceService.Hints.NO_HINTS);
     PsiPolyVariantReference reference = getReferenceFromNamedArgumentProviders();
@@ -110,13 +110,13 @@ public class GrArgumentLabelImpl extends GroovyPsiElementImpl implements GrArgum
       else {
         return new PsiPolyVariantReferenceBase<PsiElement>(this) {
 
-          @NotNull
+          @Nonnull
           @Override
           public Object[] getVariants() {
             return ArrayUtil.EMPTY_OBJECT_ARRAY;
           }
 
-          @NotNull
+          @Nonnull
           @Override
           public ResolveResult[] multiResolve(boolean incompleteCode) {
             return ResolveResult.EMPTY_ARRAY;
@@ -195,7 +195,7 @@ public class GrArgumentLabelImpl extends GroovyPsiElementImpl implements GrArgum
     return advancedResolve().getElement();
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public GroovyResolveResult[] multiResolve(boolean incompleteCode) {
     final ResolveResult[] results = getRealReference().multiResolve(incompleteCode);
@@ -218,14 +218,14 @@ public class GrArgumentLabelImpl extends GroovyPsiElementImpl implements GrArgum
     }
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public GroovyResolveResult advancedResolve() {
     return PsiImplUtil.extractUniqueResult(multiResolve(false));
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public String getCanonicalText() {
     PsiElement resolved = resolve();
     if (resolved instanceof PsiMember && resolved instanceof PsiNamedElement) {
@@ -247,7 +247,7 @@ public class GrArgumentLabelImpl extends GroovyPsiElementImpl implements GrArgum
   }
 
   @Override
-  public PsiElement bindToElement(@NotNull PsiElement element) throws IncorrectOperationException {
+  public PsiElement bindToElement(@Nonnull PsiElement element) throws IncorrectOperationException {
     return getRealReference().bindToElement(element);
   }
 
@@ -257,7 +257,7 @@ public class GrArgumentLabelImpl extends GroovyPsiElementImpl implements GrArgum
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public Object[] getVariants() {
     return ArrayUtil.EMPTY_OBJECT_ARRAY;
   }
@@ -268,7 +268,7 @@ public class GrArgumentLabelImpl extends GroovyPsiElementImpl implements GrArgum
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public PsiElement getNameElement() {
     final PsiElement element = getFirstChild();
     assert element != null;
@@ -283,7 +283,7 @@ public class GrArgumentLabelImpl extends GroovyPsiElementImpl implements GrArgum
   }
 
   @Override
-  @Nullable
+  @javax.annotation.Nullable
   public PsiType getExpectedArgumentType() { // TODO use GroovyNamedArgumentProvider to determinate expected argument type.
     return null;
   }
@@ -315,7 +315,7 @@ public class GrArgumentLabelImpl extends GroovyPsiElementImpl implements GrArgum
   }
 
   @Override
-  public PsiElement setName(@NotNull String newName) {
+  public PsiElement setName(@Nonnull String newName) {
     PsiImplUtil.setName(newName, getNameElement());
     return this;
   }

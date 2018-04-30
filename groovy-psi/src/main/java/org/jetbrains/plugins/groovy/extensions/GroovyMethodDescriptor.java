@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.util.xmlb.annotations.AbstractCollection;
 import com.intellij.util.xmlb.annotations.Attribute;
@@ -143,7 +143,7 @@ public class GroovyMethodDescriptor {
   }
 
   private static NamedArgumentDescriptor getDescriptor(@Nullable Boolean methodFirstFlag,
-                                                       @Nullable Boolean attrFirstFlag,
+                                                       @javax.annotation.Nullable Boolean attrFirstFlag,
                                                        @Nullable String type) {
     Boolean objShowFirst = attrFirstFlag;
     if (objShowFirst == null) {

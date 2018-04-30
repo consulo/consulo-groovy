@@ -43,8 +43,8 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.util.containers.ContainerUtil;
 import com.intellij.util.messages.MessageBusConnection;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.annotations.TestOnly;
 import org.jetbrains.plugins.groovy.mvc.projectView.MvcToolWindowDescriptor;
 
@@ -226,7 +226,7 @@ public class MvcModuleStructureSynchronizer extends AbstractProjectComponent {
     return false;
   }
 
-  private static boolean isLibDirectory(@Nullable final VirtualFile file) {
+  private static boolean isLibDirectory(@javax.annotation.Nullable final VirtualFile file) {
     return file != null && "lib".equals(file.getName());
   }
 
@@ -259,7 +259,7 @@ public class MvcModuleStructureSynchronizer extends AbstractProjectComponent {
     myActions.add(new Pair<Object, SyncAction>(on, action));
   }
 
-  @NotNull
+  @Nonnull
   private List<Module> determineModuleBySyncActionObject(Object o) {
     if (o instanceof Module) {
       return Collections.singletonList((Module)o);

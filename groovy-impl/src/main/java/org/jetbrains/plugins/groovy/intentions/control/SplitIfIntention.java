@@ -19,7 +19,7 @@ import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.IncorrectOperationException;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.intentions.base.PsiElementPredicate;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
@@ -35,7 +35,7 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpres
 public class SplitIfIntention extends Intention {
 
   @Override
-  protected void processIntention(@NotNull PsiElement andElement, Project project, Editor editor) throws IncorrectOperationException {
+  protected void processIntention(@Nonnull PsiElement andElement, Project project, Editor editor) throws IncorrectOperationException {
     GrBinaryExpression binaryExpression = (GrBinaryExpression) andElement.getParent();
     GrIfStatement ifStatement = (GrIfStatement) binaryExpression.getParent();
 
@@ -58,7 +58,7 @@ public class SplitIfIntention extends Intention {
     ifStatement.replaceWithStatement(newSplittedIfs);
   }
 
-  @NotNull
+  @Nonnull
   @Override
   protected PsiElementPredicate getElementPredicate() {
     return new PsiElementPredicate() {

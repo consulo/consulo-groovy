@@ -38,8 +38,8 @@ import com.intellij.util.PairProcessor;
 import com.intellij.util.Processor;
 import com.intellij.util.containers.ConcurrentHashSet;
 import com.intellij.util.containers.ContainerUtil;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.codeInspection.utils.ControlFlowUtils;
 import org.jetbrains.plugins.groovy.gpp.GppTypeConverter;
@@ -75,7 +75,7 @@ public class GroovyConstructorUsagesSearcher extends QueryExecutorBase<PsiRefere
   }
 
   @Override
-  public void processQuery(@NotNull MethodReferencesSearch.SearchParameters p, @NotNull Processor<PsiReference> consumer) {
+  public void processQuery(@Nonnull MethodReferencesSearch.SearchParameters p, @Nonnull Processor<PsiReference> consumer) {
     processConstructorUsages(p.getMethod(), p.getScope(), consumer, p.getOptimizer(), true, !p.isStrictSignatureSearch());
   }
 
@@ -193,7 +193,7 @@ public class GroovyConstructorUsagesSearcher extends QueryExecutorBase<PsiRefere
 
   private static void processGppMethodCalls(final PsiClass targetClass,
                                             SearchScope scope,
-                                            SearchRequestCollector originalCollector, @NotNull PsiMethod currentTarget,
+                                            SearchRequestCollector originalCollector, @Nonnull PsiMethod currentTarget,
                                             final LiteralConstructorSearcher literalProcessor) {
     final SearchScope gppScope = getGppScope(targetClass.getProject()).intersectWith(scope);
 
@@ -208,7 +208,7 @@ public class GroovyConstructorUsagesSearcher extends QueryExecutorBase<PsiRefere
 
     final ReadActionProcessor<PsiReference> gppCallProcessor = new ReadActionProcessor<PsiReference>() {
 
-      @Nullable
+      @javax.annotation.Nullable
       private GrExpression[] getCallArguments(PsiReference psiReference) {
         if (psiReference instanceof GrReferenceElement) {
           final PsiElement parent = ((GrReferenceElement)psiReference).getParent();
@@ -302,7 +302,7 @@ public class GroovyConstructorUsagesSearcher extends QueryExecutorBase<PsiRefere
         if (typeElement == method.getReturnTypeElementGroovy()) {
           ControlFlowUtils.visitAllExitPoints(method.getBlock(), new ControlFlowUtils.ExitPointVisitor() {
             @Override
-            public boolean visitExitPoint(Instruction instruction, @Nullable GrExpression returnValue) {
+            public boolean visitExitPoint(Instruction instruction, @javax.annotation.Nullable GrExpression returnValue) {
               if (!checkLiteralInstantiation(returnValue, literalProcessor)) {
                 return false;
               }

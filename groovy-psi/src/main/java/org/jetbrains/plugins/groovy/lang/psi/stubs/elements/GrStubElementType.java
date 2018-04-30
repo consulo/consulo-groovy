@@ -15,8 +15,9 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.stubs.elements;
 
+import javax.annotation.Nonnull;
+
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import com.intellij.psi.stubs.IStubElementType;
@@ -28,14 +29,14 @@ import com.intellij.psi.stubs.StubElement;
  */
 public abstract class GrStubElementType<S extends StubElement, T extends GroovyPsiElement> extends IStubElementType<S, T> {
 
-  public GrStubElementType(@NonNls @NotNull String debugName) {
+  public GrStubElementType(@NonNls @Nonnull String debugName) {
     super(debugName, GroovyFileType.GROOVY_LANGUAGE);
   }
 
-  public void indexStub(@NotNull final S stub, @NotNull final IndexSink sink) {
+  public void indexStub(@Nonnull final S stub, @Nonnull final IndexSink sink) {
   }
 
-  @NotNull
+  @Nonnull
   public String getExternalId() {
     return "gr." + super.toString();
   }

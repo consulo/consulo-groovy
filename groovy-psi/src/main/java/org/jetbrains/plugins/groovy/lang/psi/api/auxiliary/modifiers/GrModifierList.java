@@ -20,7 +20,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiModifierList;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotation;
 
@@ -30,24 +30,24 @@ import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.
  */
 public interface GrModifierList extends GroovyPsiElement, PsiModifierList {
 
-  @NotNull
+  @Nonnull
   PsiElement[] getModifiers();
 
   boolean hasExplicitVisibilityModifiers();
 
-  @NotNull
+  @Nonnull
   GrAnnotation[] getAnnotations();
 
 
   @Override
-  boolean hasModifierProperty(@GrModifier.GrModifierConstant @NotNull @NonNls String name);
+  boolean hasModifierProperty(@GrModifier.GrModifierConstant @Nonnull @NonNls String name);
 
   @Override
-  boolean hasExplicitModifier(@GrModifier.GrModifierConstant @NotNull @NonNls String name);
+  boolean hasExplicitModifier(@GrModifier.GrModifierConstant @Nonnull @NonNls String name);
 
   @Override
-  void setModifierProperty(@GrModifier.GrModifierConstant @NotNull @NonNls String name, boolean value) throws IncorrectOperationException;
+  void setModifierProperty(@GrModifier.GrModifierConstant @Nonnull @NonNls String name, boolean value) throws IncorrectOperationException;
 
-  @NotNull
+  @Nonnull
   GrAnnotation[] getRawAnnotations();
 }

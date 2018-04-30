@@ -19,8 +19,8 @@ package org.jetbrains.plugins.groovy.lang.psi.impl.statements;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.GrCondition;
@@ -38,7 +38,7 @@ import com.intellij.util.IncorrectOperationException;
  * @autor: ilyas
  */
 public class GrWhileStatementImpl extends GroovyPsiElementImpl implements GrWhileStatement {
-  public GrWhileStatementImpl(@NotNull ASTNode node) {
+  public GrWhileStatementImpl(@Nonnull ASTNode node) {
     super(node);
   }
 
@@ -65,7 +65,7 @@ public class GrWhileStatementImpl extends GroovyPsiElementImpl implements GrWhil
   }
 
   @Override
-  @Nullable
+  @javax.annotation.Nullable
   public GrStatement getBody() {
     List<GrStatement> statements = new ArrayList<GrStatement>();
     for (PsiElement cur = getFirstChild(); cur != null; cur = cur.getNextSibling()) {

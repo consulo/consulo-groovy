@@ -23,8 +23,8 @@ import com.intellij.refactoring.changeSignature.JavaParameterInfo;
 import com.intellij.refactoring.changeSignature.ThrownExceptionInfo;
 import com.intellij.refactoring.util.CanonicalTypes;
 import com.intellij.util.IncorrectOperationException;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameter;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
@@ -205,7 +205,7 @@ public class GrChangeInfoImpl implements JavaChangeInfo {
     }
   }
 
-  @NotNull
+  @Nonnull
   public JavaParameterInfo[] getNewParameters() {
     return parameters.toArray(new GrParameterInfo[parameters.size()]);
   }
@@ -266,12 +266,12 @@ public class GrChangeInfoImpl implements JavaChangeInfo {
     return GroovyFileType.GROOVY_LANGUAGE;
   }
 
-  @NotNull
+  @Nonnull
   public String[] getOldParameterNames() {
     return myOldParameterNames;
   }
 
-  @NotNull
+  @Nonnull
   public String[] getOldParameterTypes() {
     return myOldParameterTypes;
   }

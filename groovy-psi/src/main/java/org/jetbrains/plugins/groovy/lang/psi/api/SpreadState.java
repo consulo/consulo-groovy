@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.api;
 
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.CollectionUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Key;
@@ -30,22 +30,22 @@ public final class SpreadState
 
 	@Nullable
 	private final PsiType containerType;
-	@Nullable
+	@javax.annotation.Nullable
 	private final SpreadState innerState;
 
-	public SpreadState(@Nullable PsiType type, @Nullable SpreadState state)
+	public SpreadState(@javax.annotation.Nullable PsiType type, @javax.annotation.Nullable SpreadState state)
 	{
 		containerType = type;
 		innerState = state;
 	}
 
-	@Nullable
+	@javax.annotation.Nullable
 	public PsiType getContainerType()
 	{
 		return containerType;
 	}
 
-	@Nullable
+	@javax.annotation.Nullable
 	public SpreadState getInnerState()
 	{
 		return innerState;
@@ -56,8 +56,8 @@ public final class SpreadState
 		return new SpreadState(type, state);
 	}
 
-	@Nullable
-	public static PsiType apply(@Nullable PsiType item, @Nullable SpreadState state, Project project)
+	@javax.annotation.Nullable
+	public static PsiType apply(@javax.annotation.Nullable PsiType item, @Nullable SpreadState state, Project project)
 	{
 		if(state == null)
 		{

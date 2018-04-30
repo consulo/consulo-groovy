@@ -20,8 +20,8 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocReferenceElement;
 import org.jetbrains.plugins.groovy.lang.lexer.TokenSets;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
@@ -67,7 +67,7 @@ public class GrCodeReferenceElementImpl extends GrReferenceElementImpl<GrCodeRef
 	private static final Logger LOG = Logger.getInstance("#org.jetbrains.plugins.groovy.lang.psi.impl.types" +
 			".GrCodeReferenceElementImpl");
 
-	public GrCodeReferenceElementImpl(@NotNull ASTNode node)
+	public GrCodeReferenceElementImpl(@Nonnull ASTNode node)
 	{
 		super(node);
 	}
@@ -86,7 +86,7 @@ public class GrCodeReferenceElementImpl extends GrReferenceElementImpl<GrCodeRef
 	}
 
 	@Override
-	protected GrCodeReferenceElement bindWithQualifiedRef(@NotNull String qName)
+	protected GrCodeReferenceElement bindWithQualifiedRef(@Nonnull String qName)
 	{
 		final GrCodeReferenceElement qualifiedRef = GroovyPsiElementFactory.getInstance(getProject())
 				.createTypeOrPackageReference(qName);
@@ -134,7 +134,7 @@ public class GrCodeReferenceElementImpl extends GrReferenceElementImpl<GrCodeRef
 	}
 
 	@Override
-	@Nullable
+	@javax.annotation.Nullable
 	public PsiElement resolve()
 	{
 		ResolveResult[] results = TypeInferenceHelper.getCurrentContext().multiResolve(this, false, RESOLVER);
@@ -201,7 +201,7 @@ public class GrCodeReferenceElementImpl extends GrReferenceElementImpl<GrCodeRef
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public String getCanonicalText()
 	{
 		final ReferenceKind kind = getKind(false);
@@ -324,7 +324,7 @@ public class GrCodeReferenceElementImpl extends GrReferenceElementImpl<GrCodeRef
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public Object[] getVariants()
 	{
 		return ArrayUtil.EMPTY_OBJECT_ARRAY;
@@ -350,8 +350,8 @@ public class GrCodeReferenceElementImpl extends GrReferenceElementImpl<GrCodeRef
 	{
 
 		@Override
-		@NotNull
-		public GroovyResolveResult[] resolve(@NotNull GrCodeReferenceElementImpl reference, boolean incompleteCode)
+		@Nonnull
+		public GroovyResolveResult[] resolve(@Nonnull GrCodeReferenceElementImpl reference, boolean incompleteCode)
 		{
 			if(reference.getReferenceName() == null)
 			{
@@ -392,10 +392,10 @@ public class GrCodeReferenceElementImpl extends GrReferenceElementImpl<GrCodeRef
 			return results;
 		}
 
-		@NotNull
-		private static GroovyResolveResult[] _resolve(@NotNull GrCodeReferenceElementImpl ref,
-				@NotNull PsiManager manager,
-				@NotNull ReferenceKind kind)
+		@Nonnull
+		private static GroovyResolveResult[] _resolve(@Nonnull GrCodeReferenceElementImpl ref,
+				@Nonnull PsiManager manager,
+				@Nonnull ReferenceKind kind)
 		{
 			final String refName = ref.getReferenceName();
 			if(refName == null)
@@ -662,7 +662,7 @@ public class GrCodeReferenceElementImpl extends GrReferenceElementImpl<GrCodeRef
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public GroovyResolveResult[] multiResolve(boolean incompleteCode)
 	{
 		final ResolveResult[] results = TypeInferenceHelper.getCurrentContext().multiResolve(this, incompleteCode,
@@ -675,7 +675,7 @@ public class GrCodeReferenceElementImpl extends GrReferenceElementImpl<GrCodeRef
 		return (GroovyResolveResult[]) results;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public PsiType[] getTypeArguments()
 	{

@@ -1,8 +1,9 @@
 package org.jetbrains.plugins.groovy.editor.actions.joinLines;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.psi.PsiElement;
 import com.intellij.util.ArrayUtil;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariableDeclaration;
@@ -12,7 +13,7 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrRefere
 
 public class GrVariableJoinLinesHandler extends GrJoinLinesHandlerBase {
   @Override
-  public int tryJoinStatements(@NotNull GrStatement first, @NotNull GrStatement second) {
+  public int tryJoinStatements(@Nonnull GrStatement first, @Nonnull GrStatement second) {
     if (first instanceof GrVariableDeclaration && !((GrVariableDeclaration)first).isTuple() && second instanceof GrAssignmentExpression) {
       final GrExpression lvalue = ((GrAssignmentExpression)second).getLValue();
       final GrExpression rValue = ((GrAssignmentExpression)second).getRValue();

@@ -22,8 +22,8 @@ import com.intellij.psi.PsiType;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.codeInspection.GroovyFix;
@@ -42,12 +42,12 @@ import java.util.Set;
 
 public class GroovyPointlessBooleanInspection extends BaseInspection {
 
-  @NotNull
+  @Nonnull
   public String getDisplayName() {
     return GroovyInspectionBundle.message("pointless.boolean.display.name");
   }
 
-  @NotNull
+  @Nonnull
   public String getGroupDisplayName() {
     return CONFUSING_CODE_CONSTRUCTS;
   }
@@ -72,7 +72,7 @@ public class GroovyPointlessBooleanInspection extends BaseInspection {
     }
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   private static String calculateSimplifiedBinaryExpression(GrBinaryExpression expression) {
     final IElementType sign = expression.getOperationTokenType();
     final GrExpression lhs = expression.getLeftOperand();
@@ -163,7 +163,7 @@ public class GroovyPointlessBooleanInspection extends BaseInspection {
   private static class BooleanLiteralComparisonFix
       extends GroovyFix {
 
-    @NotNull
+    @Nonnull
     public String getName() {
       return GroovyInspectionBundle.message("pointless.boolean.quickfix");
     }
@@ -201,7 +201,7 @@ public class GroovyPointlessBooleanInspection extends BaseInspection {
       booleanTokens.add(GroovyTokenTypes.mNOT_EQUAL);
     }
 
-    public void visitBinaryExpression(@NotNull GrBinaryExpression expression) {
+    public void visitBinaryExpression(@Nonnull GrBinaryExpression expression) {
       super.visitBinaryExpression(expression);
       final GrExpression rhs = expression.getRightOperand();
       if (rhs == null) {
@@ -235,7 +235,7 @@ public class GroovyPointlessBooleanInspection extends BaseInspection {
       registerError(expression);
     }
 
-    public void visitUnaryExpression(@NotNull GrUnaryExpression expression) {
+    public void visitUnaryExpression(@Nonnull GrUnaryExpression expression) {
       super.visitUnaryExpression(expression);
       final IElementType sign = expression.getOperationTokenType();
       if (sign == null) {

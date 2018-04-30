@@ -18,9 +18,9 @@ package org.jetbrains.plugins.groovy.lang.psi.util;
 import java.util.List;
 import java.util.Set;
 
+import javax.annotation.Nonnull;
+
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GrReferenceElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
 import org.jetbrains.plugins.groovy.lang.psi.api.signatures.GrClosureSignature;
@@ -145,10 +145,10 @@ public class GdkMethodUtil
 		return processTypesFomArgs(args, processor, state, place);
 	}
 
-	private static boolean processTypesFromTuple(@NotNull GrTupleType type,
-			@NotNull PsiScopeProcessor processor,
-			@NotNull ResolveState state,
-			@NotNull GrClosableBlock place)
+	private static boolean processTypesFromTuple(@Nonnull GrTupleType type,
+			@Nonnull PsiScopeProcessor processor,
+			@Nonnull ResolveState state,
+			@Nonnull GrClosableBlock place)
 	{
 		for(PsiType component : type.getComponentTypes())
 		{
@@ -165,10 +165,10 @@ public class GdkMethodUtil
 		return true;
 	}
 
-	private static boolean processTypesFomArgs(@NotNull GrExpression[] args,
-			@NotNull PsiScopeProcessor processor,
-			@NotNull ResolveState state,
-			@NotNull GrClosableBlock place)
+	private static boolean processTypesFomArgs(@Nonnull GrExpression[] args,
+			@Nonnull PsiScopeProcessor processor,
+			@Nonnull ResolveState state,
+			@Nonnull GrClosableBlock place)
 	{
 		for(GrExpression arg : args)
 		{
@@ -205,14 +205,14 @@ public class GdkMethodUtil
 	 */
 	public static boolean processCategoryMethods(final PsiElement place,
 			final PsiScopeProcessor processor,
-			@NotNull final ResolveState state,
-			@NotNull final PsiClass categoryClass)
+			@Nonnull final ResolveState state,
+			@Nonnull final PsiClass categoryClass)
 	{
 		final PsiScopeProcessor delegate = new GrDelegatingScopeProcessorWithHints(processor, null,
 				ClassHint.RESOLVE_KINDS_METHOD)
 		{
 			@Override
-			public boolean execute(@NotNull PsiElement element, @NotNull ResolveState delegateState)
+			public boolean execute(@Nonnull PsiElement element, @Nonnull ResolveState delegateState)
 			{
 				if(element instanceof PsiMethod && isCategoryMethod((PsiMethod) element, null, null, null))
 				{
@@ -226,7 +226,7 @@ public class GdkMethodUtil
 		return categoryClass.processDeclarations(delegate, state, null, place);
 	}
 
-	@Nullable
+	@javax.annotation.Nullable
 	private static GrMethodCall checkMethodCall(GrClosableBlock place, String methodName)
 	{
 		final PsiElement context = place.getContext();
@@ -286,7 +286,7 @@ public class GdkMethodUtil
 		return WITH.equals(name) || IDENTITY.equals(name);
 	}
 
-	@Nullable
+	@javax.annotation.Nullable
 	public static String generateOriginInfo(PsiMethod method)
 	{
 		PsiClass cc = method.getContainingClass();
@@ -347,11 +347,11 @@ public class GdkMethodUtil
 		return true;
 	}
 
-	@NotNull
-	private static GrMethod createMethod(@NotNull GrClosureSignature signature,
-			@NotNull String name,
-			@NotNull GrAssignmentExpression statement,
-			@NotNull PsiClass closure)
+	@Nonnull
+	private static GrMethod createMethod(@Nonnull GrClosureSignature signature,
+			@Nonnull String name,
+			@Nonnull GrAssignmentExpression statement,
+			@Nonnull PsiClass closure)
 	{
 		final GrLightMethodBuilder builder = new GrLightMethodBuilder(statement.getManager(), name);
 
@@ -383,7 +383,7 @@ public class GdkMethodUtil
 		return CachedValuesManager.getCachedValue(statement, new CachedValueProvider<Trinity<PsiClassType,
 				GrReferenceExpression, List<GrMethod>>>()
 		{
-			@Nullable
+			@javax.annotation.Nullable
 			@Override
 			public Result<Trinity<PsiClassType, GrReferenceExpression, List<GrMethod>>> compute()
 			{
@@ -427,7 +427,7 @@ public class GdkMethodUtil
 		});
 	}
 
-	@Nullable
+	@javax.annotation.Nullable
 	private static Pair<PsiClassType, GrReferenceExpression> getTypeToMixIn(GrAssignmentExpression assignment)
 	{
 		final GrExpression lvalue = assignment.getLValue();
@@ -448,7 +448,7 @@ public class GdkMethodUtil
 		return null;
 	}
 
-	@Nullable
+	@javax.annotation.Nullable
 	private static Pair<GrSignature, String> getTypeToMix(GrAssignmentExpression assignment)
 	{
 		GrExpression mixinRef = assignment.getRValue();
@@ -475,7 +475,7 @@ public class GdkMethodUtil
 	/**
 	 * @return (type[1] in which methods mixed, reference to type[1], type[2] to mixin)
 	 */
-	@Nullable
+	@javax.annotation.Nullable
 	private static Trinity<PsiClassType, GrReferenceExpression, PsiClass> getMixinTypes(final GrStatement statement)
 	{
 		if(!(statement instanceof GrMethodCall))
@@ -486,7 +486,7 @@ public class GdkMethodUtil
 		return CachedValuesManager.getCachedValue(statement, new CachedValueProvider<Trinity<PsiClassType,
 				GrReferenceExpression, PsiClass>>()
 		{
-			@Nullable
+			@javax.annotation.Nullable
 			@Override
 			public Result<Trinity<PsiClassType, GrReferenceExpression, PsiClass>> compute()
 			{
@@ -510,7 +510,7 @@ public class GdkMethodUtil
 		});
 	}
 
-	@Nullable
+	@javax.annotation.Nullable
 	private static PsiClass getTypeToMix(GrMethodCall call)
 	{
 		if(!isSingleExpressionArg(call))
@@ -543,7 +543,7 @@ public class GdkMethodUtil
 				!PsiImplUtil.hasClosureArguments(call);
 	}
 
-	@Nullable
+	@javax.annotation.Nullable
 	private static Pair<PsiClassType, GrReferenceExpression> getTypeToMixIn(GrMethodCall methodCall)
 	{
 		GrExpression invoked = methodCall.getInvokedExpression();
@@ -596,7 +596,7 @@ public class GdkMethodUtil
 		return null;
 	}
 
-	private static boolean isMixinMethod(@NotNull PsiMethod method)
+	private static boolean isMixinMethod(@Nonnull PsiMethod method)
 	{
 		if(method instanceof GrGdkMethod)
 		{
@@ -608,7 +608,7 @@ public class GdkMethodUtil
 				(containingClass.getQualifiedName());
 	}
 
-	private static boolean isMetaClassMethod(@NotNull PsiMethod method)
+	private static boolean isMetaClassMethod(@Nonnull PsiMethod method)
 	{
 		if(method instanceof GrGdkMethod)
 		{
@@ -633,7 +633,7 @@ public class GdkMethodUtil
 				.getReferenceName());
 	}
 
-	@Nullable
+	@javax.annotation.Nullable
 	private static Pair<PsiClassType, GrReferenceExpression> getPsiClassFromReference(GrExpression ref)
 	{
 		if(isClassRef(ref))
@@ -654,10 +654,10 @@ public class GdkMethodUtil
 		return null;
 	}
 
-	public static boolean isCategoryMethod(@NotNull PsiMethod method,
-			@Nullable PsiType qualifierType,
-			@Nullable PsiElement place,
-			@Nullable PsiSubstitutor substitutor)
+	public static boolean isCategoryMethod(@Nonnull PsiMethod method,
+			@javax.annotation.Nullable PsiType qualifierType,
+			@javax.annotation.Nullable PsiElement place,
+			@javax.annotation.Nullable PsiSubstitutor substitutor)
 	{
 		if(!method.hasModifierProperty(PsiModifier.STATIC))
 		{
@@ -703,8 +703,8 @@ public class GdkMethodUtil
 		return TypesUtil.isAssignableByMethodCallConversion(selfType, qualifierType, method);
 	}
 
-	@Nullable
-	public static PsiClassType getCategoryType(@NotNull final PsiClass categoryAnnotationOwner)
+	@javax.annotation.Nullable
+	public static PsiClassType getCategoryType(@Nonnull final PsiClass categoryAnnotationOwner)
 	{
 		return CachedValuesManager.getCachedValue(categoryAnnotationOwner, new CachedValueProvider<PsiClassType>()
 		{
@@ -715,12 +715,12 @@ public class GdkMethodUtil
 						PsiModificationTracker.OUT_OF_CODE_BLOCK_MODIFICATION_COUNT);
 			}
 
-			@Nullable
+			@javax.annotation.Nullable
 			private PsiClassType inferCategoryType(final PsiClass aClass)
 			{
 				return RecursionManager.doPreventingRecursion(aClass, true, new NullableComputable<PsiClassType>()
 				{
-					@Nullable
+					@javax.annotation.Nullable
 					@Override
 					public PsiClassType compute()
 					{
@@ -776,7 +776,7 @@ public class GdkMethodUtil
 		});
 	}
 
-	public static boolean isWithOrIdentity(@NotNull GroovyResolveResult result)
+	public static boolean isWithOrIdentity(@Nonnull GroovyResolveResult result)
 	{
 		PsiElement element = result.getElement();
 

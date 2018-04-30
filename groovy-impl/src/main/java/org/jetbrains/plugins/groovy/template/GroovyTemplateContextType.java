@@ -15,6 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.template;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.codeInsight.template.EverywhereContextType;
 import com.intellij.codeInsight.template.TemplateContextType;
 import com.intellij.openapi.util.Condition;
@@ -27,8 +29,8 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.psi.util.PsiUtilCore;
 import com.intellij.util.ProcessingContext;
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.lang.completion.GroovyCompletionData;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrCodeBlock;
@@ -43,13 +45,13 @@ import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
  */
 public abstract class GroovyTemplateContextType extends TemplateContextType {
 
-  protected GroovyTemplateContextType(@NotNull @NonNls String id,
-                                @NotNull String presentableName,
+  protected GroovyTemplateContextType(@Nonnull @NonNls String id,
+                                @Nonnull String presentableName,
                                 @Nullable Class<? extends TemplateContextType> baseContextType) {
     super(id, presentableName, baseContextType);
   }
 
-  public boolean isInContext(@NotNull final PsiFile file, final int offset) {
+  public boolean isInContext(@Nonnull final PsiFile file, final int offset) {
     if (PsiUtilCore.getLanguageAtOffset(file, offset).isKindOf(GroovyFileType.GROOVY_LANGUAGE)) {
       PsiElement element = file.findElementAt(offset);
       if (element instanceof PsiWhiteSpace) {
@@ -61,7 +63,7 @@ public abstract class GroovyTemplateContextType extends TemplateContextType {
     return false;
   }
 
-  protected abstract boolean isInContext(@NotNull PsiElement element);
+  protected abstract boolean isInContext(@Nonnull PsiElement element);
 
   public static class Generic extends GroovyTemplateContextType {
     public Generic() {
@@ -69,7 +71,7 @@ public abstract class GroovyTemplateContextType extends TemplateContextType {
     }
 
     @Override
-    protected boolean isInContext(@NotNull PsiElement element) {
+    protected boolean isInContext(@Nonnull PsiElement element) {
       return true;
     }
   }
@@ -80,7 +82,7 @@ public abstract class GroovyTemplateContextType extends TemplateContextType {
     }
 
     @Override
-    protected boolean isInContext(@NotNull PsiElement element) {
+    protected boolean isInContext(@Nonnull PsiElement element) {
       PsiElement stmt = PsiTreeUtil.findFirstParent(element, new Condition<PsiElement>() {
         @Override
         public boolean value(PsiElement element11) {
@@ -99,7 +101,7 @@ public abstract class GroovyTemplateContextType extends TemplateContextType {
     }
 
     @Override
-    protected boolean isInContext(@NotNull PsiElement element) {
+    protected boolean isInContext(@Nonnull PsiElement element) {
       return isExpressionContext(element);
     }
 
@@ -136,7 +138,7 @@ public abstract class GroovyTemplateContextType extends TemplateContextType {
     }
 
     @Override
-    protected boolean isInContext(@NotNull PsiElement element) {
+    protected boolean isInContext(@Nonnull PsiElement element) {
       if (PsiTreeUtil.getParentOfType(element, GrCodeBlock.class, false, GrTypeDefinition.class) != null) {
         return false;
       }

@@ -21,7 +21,7 @@ import com.intellij.psi.stubs.StubElement;
 import com.intellij.psi.stubs.StubInputStream;
 import com.intellij.psi.stubs.StubOutputStream;
 import com.intellij.util.io.StringRef;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.GrFieldImpl;
 import org.jetbrains.plugins.groovy.lang.psi.stubs.GrFieldStub;
@@ -45,11 +45,11 @@ public class GrFieldElementType extends GrStubElementType<GrFieldStub, GrField> 
     super("field");
   }
 
-  public GrField createPsi(@NotNull GrFieldStub stub) {
+  public GrField createPsi(@Nonnull GrFieldStub stub) {
     return new GrFieldImpl(stub);
   }
 
-  public GrFieldStub createStub(@NotNull GrField psi, StubElement parentStub) {
+  public GrFieldStub createStub(@Nonnull GrField psi, StubElement parentStub) {
     String[] annNames = GrStubUtils.getAnnotationNames(psi);
 
     Set<String> namedParameters = Collections.emptySet();
@@ -61,16 +61,16 @@ public class GrFieldElementType extends GrStubElementType<GrFieldStub, GrField> 
                            GrStubUtils.getTypeText(psi.getTypeElementGroovy()));
   }
 
-  public void serialize(@NotNull GrFieldStub stub, @NotNull StubOutputStream dataStream) throws IOException {
+  public void serialize(@Nonnull GrFieldStub stub, @Nonnull StubOutputStream dataStream) throws IOException {
     serializeFieldStub(stub, dataStream);
   }
 
-  @NotNull
-  public GrFieldStub deserialize(@NotNull StubInputStream dataStream, StubElement parentStub) throws IOException {
+  @Nonnull
+  public GrFieldStub deserialize(@Nonnull StubInputStream dataStream, StubElement parentStub) throws IOException {
     return deserializeFieldStub(dataStream, parentStub);
   }
 
-  public void indexStub(@NotNull GrFieldStub stub, @NotNull IndexSink sink) {
+  public void indexStub(@Nonnull GrFieldStub stub, @Nonnull IndexSink sink) {
     indexFieldStub(stub, sink);
   }
 

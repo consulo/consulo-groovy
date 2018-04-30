@@ -15,6 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.annotator.intentions.dynamic;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.codeInsight.intention.IntentionAction;
 import com.intellij.codeInsight.intention.LowPriorityAction;
 import com.intellij.openapi.editor.Editor;
@@ -22,7 +24,6 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiType;
 import com.intellij.util.IncorrectOperationException;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.annotator.intentions.QuickfixUtil;
 import org.jetbrains.plugins.groovy.annotator.intentions.dynamic.ui.DynamicDialog;
@@ -42,7 +43,7 @@ public class DynamicMethodFix implements IntentionAction, LowPriorityAction {
     mySignature = calcSignature(argumentTypes);
   }
 
-  @NotNull
+  @Nonnull
   public String getText() {
     return GroovyBundle.message("add.dynamic.method") + mySignature;
   }
@@ -64,16 +65,16 @@ public class DynamicMethodFix implements IntentionAction, LowPriorityAction {
     return builder.toString();
   }
 
-  @NotNull
+  @Nonnull
   public String getFamilyName() {
     return GroovyBundle.message("add.dynamic.element");
   }
 
-  public boolean isAvailable(@NotNull Project project, Editor editor, PsiFile psiFile) {
+  public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile psiFile) {
     return myReferenceExpression.isValid();
   }
 
-  public void invoke(@NotNull Project project, Editor editor, PsiFile psiFile) throws IncorrectOperationException {
+  public void invoke(@Nonnull Project project, Editor editor, PsiFile psiFile) throws IncorrectOperationException {
     DynamicDialog dialog = new DynamicMethodDialog(myReferenceExpression);
     dialog.show();
   }

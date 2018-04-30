@@ -20,8 +20,8 @@ import com.intellij.openapi.util.RecursionManager;
 import com.intellij.psi.*;
 import com.intellij.psi.util.PsiUtil;
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil;
 import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GrLightVariable;
@@ -54,7 +54,7 @@ public class SpockVariableDescriptor {
     return this;
   }
 
-  public SpockVariableDescriptor addExpressionOfCollection(@Nullable GrExpression expression) {
+  public SpockVariableDescriptor addExpressionOfCollection(@javax.annotation.Nullable GrExpression expression) {
     if (myExpressionsOfCollection == null) {
       myExpressionsOfCollection = new ArrayList<GrExpression>();
     }
@@ -122,8 +122,8 @@ public class SpockVariableDescriptor {
   private static class SpockVariable extends GrLightVariable {
     public SpockVariable(PsiManager manager,
                          @NonNls String name,
-                         @NotNull PsiType type,
-                         @NotNull PsiElement navigationElement) {
+                         @Nonnull PsiType type,
+                         @Nonnull PsiElement navigationElement) {
       super(manager, name, type, navigationElement);
     }
 

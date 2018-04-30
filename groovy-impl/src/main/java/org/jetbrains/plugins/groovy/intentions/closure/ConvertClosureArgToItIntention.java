@@ -18,7 +18,7 @@ package org.jetbrains.plugins.groovy.intentions.closure;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.intentions.base.PsiElementPredicate;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyRecursiveElementVisitor;
@@ -35,12 +35,12 @@ import com.intellij.util.IncorrectOperationException;
 public class ConvertClosureArgToItIntention extends Intention {
 
 
-    @NotNull
+    @Nonnull
     public PsiElementPredicate getElementPredicate() {
         return new SingleArgClosurePredicate();
     }
 
-    public void processIntention(@NotNull PsiElement element, Project project, Editor editor)
+    public void processIntention(@Nonnull PsiElement element, Project project, Editor editor)
             throws IncorrectOperationException {
         final GrClosableBlock closure =
                 (GrClosableBlock) element;

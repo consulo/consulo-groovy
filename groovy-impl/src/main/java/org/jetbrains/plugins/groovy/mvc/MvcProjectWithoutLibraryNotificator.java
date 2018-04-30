@@ -1,9 +1,9 @@
 package org.jetbrains.plugins.groovy.mvc;
 
+import javax.annotation.Nonnull;
 import javax.swing.event.HyperlinkEvent;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationListener;
 import com.intellij.notification.NotificationType;
@@ -35,7 +35,7 @@ public class MvcProjectWithoutLibraryNotificator implements StartupActivity, Dum
 		{
 			@RequiredReadAction
 			@Override
-			public void computeInReadAction(@NotNull ProgressIndicator indicator) throws ProcessCanceledException
+			public void computeInReadAction(@Nonnull ProgressIndicator indicator) throws ProcessCanceledException
 			{
 				if(JavaPsiFacade.getInstance(project).findClass(CommonClassNames.JAVA_LANG_OBJECT, GlobalSearchScope.allScope(project)) == null)
 				{
@@ -57,7 +57,7 @@ public class MvcProjectWithoutLibraryNotificator implements StartupActivity, Dum
 							" SDK. <a href='create'>Configure SDK</a></body></html>", NotificationType.INFORMATION, new NotificationListener()
 					{
 						@Override
-						public void hyperlinkUpdate(@NotNull Notification notification, @NotNull HyperlinkEvent event)
+						public void hyperlinkUpdate(@Nonnull Notification notification, @Nonnull HyperlinkEvent event)
 						{
 							//MvcConfigureNotification.configure(framework, module);
 						}
@@ -66,7 +66,7 @@ public class MvcProjectWithoutLibraryNotificator implements StartupActivity, Dum
 			}
 
 			@Override
-			public void onCanceled(@NotNull ProgressIndicator progressIndicator)
+			public void onCanceled(@Nonnull ProgressIndicator progressIndicator)
 			{
 				ProgressIndicatorUtils.scheduleWithWriteActionPriority(this);
 			}

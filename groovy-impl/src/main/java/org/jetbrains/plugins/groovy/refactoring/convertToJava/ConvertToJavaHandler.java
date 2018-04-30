@@ -17,7 +17,8 @@ package org.jetbrains.plugins.groovy.refactoring.convertToJava;
 
 import java.util.Set;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.refactoring.GroovyRefactoringBundle;
 import com.intellij.openapi.actionSystem.DataContext;
@@ -38,12 +39,12 @@ public class ConvertToJavaHandler implements RefactoringActionHandler {
   private static final String REFACTORING_NAME = GroovyRefactoringBundle.message("convert.to.java.refactoring.name");
 
   @Override
-  public void invoke(@NotNull Project project, Editor editor, PsiFile file, DataContext dataContext) {
+  public void invoke(@Nonnull Project project, Editor editor, PsiFile file, DataContext dataContext) {
     invokeInner(project, new PsiElement[]{file}, editor);
   }
 
   @Override
-  public void invoke(@NotNull Project project, @NotNull PsiElement[] elements, DataContext dataContext) {
+  public void invoke(@Nonnull Project project, @Nonnull PsiElement[] elements, DataContext dataContext) {
     Editor editor = null;
     if (dataContext != null) {
       editor = dataContext.getData(PlatformDataKeys.EDITOR);

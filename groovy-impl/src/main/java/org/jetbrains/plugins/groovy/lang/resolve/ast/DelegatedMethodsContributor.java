@@ -26,8 +26,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.GroovyLanguage;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrExtendsClause;
@@ -59,7 +59,7 @@ import icons.JetgroovyIcons;
 public class DelegatedMethodsContributor extends AstTransformContributor
 {
 	@Override
-	public void collectMethods(@NotNull final GrTypeDefinition clazz, @NotNull Collection<PsiMethod> collector)
+	public void collectMethods(@Nonnull final GrTypeDefinition clazz, @Nonnull Collection<PsiMethod> collector)
 	{
 		Set<PsiClass> processed = new HashSet<PsiClass>();
 

@@ -18,8 +18,8 @@ package org.jetbrains.plugins.groovy.codeInspection.bugs;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.codeInspection.GrInspectionUtil;
 import org.jetbrains.plugins.groovy.codeInspection.GroovyFix;
@@ -60,7 +60,7 @@ public class GrAccessibilityChecker
 	private final HighlightDisplayKey myDisplayKey;
 	private final boolean myInspectionEnabled;
 
-	public GrAccessibilityChecker(@NotNull GroovyFileBase file, @NotNull Project project)
+	public GrAccessibilityChecker(@Nonnull GroovyFileBase file, @Nonnull Project project)
 	{
 		myInspectionEnabled = GroovyAccessibilityInspection.isInspectionEnabled(file, project);
 		myDisplayKey = GroovyAccessibilityInspection.findDisplayKey();
@@ -134,7 +134,7 @@ public class GrAccessibilityChecker
 		return fixes.toArray(new GroovyFix[fixes.size()]);
 	}
 
-	@Nullable
+	@javax.annotation.Nullable
 	public HighlightInfo checkCodeReferenceElement(GrCodeReferenceElement ref)
 	{
 		return checkReferenceImpl(ref);
@@ -186,7 +186,7 @@ public class GrAccessibilityChecker
 		}
 	}
 
-	@Nullable
+	@javax.annotation.Nullable
 	public HighlightInfo checkReferenceExpression(GrReferenceExpression ref)
 	{
 		return checkReferenceImpl(ref);
@@ -254,10 +254,10 @@ public class GrAccessibilityChecker
 		return null;
 	}
 
-	@Nullable
-	private static HighlightInfo createAnnotationForRef(@NotNull GrReferenceElement ref,
+	@javax.annotation.Nullable
+	private static HighlightInfo createAnnotationForRef(@Nonnull GrReferenceElement ref,
 			boolean strongError,
-			@NotNull String message)
+			@Nonnull String message)
 	{
 		HighlightDisplayLevel displayLevel = strongError ? HighlightDisplayLevel.ERROR : GroovyAccessibilityInspection
 				.getHighlightDisplayLevel(ref.getProject(), ref);

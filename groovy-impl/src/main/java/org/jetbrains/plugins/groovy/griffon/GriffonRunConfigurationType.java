@@ -16,10 +16,10 @@
 
 package org.jetbrains.plugins.groovy.griffon;
 
+import javax.annotation.Nonnull;
 import javax.swing.Icon;
 
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.griffon.module.extension.GriffonModuleExtension;
 import com.intellij.compiler.options.CompileStepBeforeRun;
 import com.intellij.compiler.options.CompileStepBeforeRunNoErrorCheck;
@@ -50,7 +50,7 @@ public class GriffonRunConfigurationType implements ConfigurationType
 			}
 
 			@Override
-			public boolean isApplicable(@NotNull Project project)
+			public boolean isApplicable(@Nonnull Project project)
 			{
 				return ModuleExtensionHelper.getInstance(project).hasModuleExtension(GriffonModuleExtension.class);
 			}
@@ -82,7 +82,7 @@ public class GriffonRunConfigurationType implements ConfigurationType
 	}
 
 	@NonNls
-	@NotNull
+	@Nonnull
 	public String getId()
 	{
 		return "GriffonRunConfigurationType";

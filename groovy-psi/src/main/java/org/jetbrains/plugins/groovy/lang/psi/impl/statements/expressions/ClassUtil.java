@@ -21,7 +21,7 @@ import com.intellij.psi.PsiType;
 import com.intellij.psi.util.InheritanceUtil;
 import com.intellij.util.ProcessingContext;
 import gnu.trove.THashSet;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.dsl.GroovyClassDescriptor;
 import org.jetbrains.plugins.groovy.util.LightCacheKey;
 
@@ -32,7 +32,7 @@ import java.util.Set;
 public class ClassUtil {
   private static final LightCacheKey<Map<String, PsiClass>> PARENT_CACHE_KEY = LightCacheKey.create();
 
-  public static Map<String, PsiClass> getSuperClassesWithCache(@NotNull PsiClass aClass) {
+  public static Map<String, PsiClass> getSuperClassesWithCache(@Nonnull PsiClass aClass) {
     Map<String, PsiClass> superClassNames = PARENT_CACHE_KEY.getCachedValue(aClass);
     if (superClassNames == null) {
       Set<PsiClass> superClasses = new THashSet<PsiClass>();
@@ -50,7 +50,7 @@ public class ClassUtil {
     return superClassNames;
   }
 
-  @NotNull
+  @Nonnull
   public static PsiType findPsiType(GroovyClassDescriptor descriptor, ProcessingContext ctx) {
     String typeText = descriptor.getTypeText();
     final String key = getClassKey(typeText);

@@ -16,7 +16,6 @@
 
 package org.jetbrains.plugins.groovy.lang.groovydoc.psi.api;
 
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
 
 /**
@@ -24,6 +23,6 @@ import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
  */
 public interface GrDocReferenceElement extends GroovyDocPsiElement{
 
-  @Nullable
+  @javax.annotation.Nullable
   GrCodeReferenceElement getReferenceElement();
 }

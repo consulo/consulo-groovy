@@ -17,7 +17,7 @@ package org.jetbrains.plugins.groovy.geb;
 
 import com.intellij.psi.*;
 import com.intellij.psi.scope.PsiScopeProcessor;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlock;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrCall;
@@ -60,7 +60,7 @@ public class GebUtil {
     return true;
   }
 
-  public static Map<String, PsiField> getContentElements(@NotNull PsiClass pageOrModuleClass) {
+  public static Map<String, PsiField> getContentElements(@Nonnull PsiClass pageOrModuleClass) {
     Map<String, PsiField> res = KEY.getCachedValue(pageOrModuleClass);
     if (res == null) {
       res = calculateContentElements(pageOrModuleClass);
@@ -70,7 +70,7 @@ public class GebUtil {
     return res;
   }
 
-  private static Map<String, PsiField> calculateContentElements(@NotNull PsiClass pageOrModuleClass) {
+  private static Map<String, PsiField> calculateContentElements(@Nonnull PsiClass pageOrModuleClass) {
     PsiField contentField = pageOrModuleClass.findFieldByName("content", false);
 
     if (!(contentField instanceof GrField)) return Collections.emptyMap();

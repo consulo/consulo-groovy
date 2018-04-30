@@ -17,7 +17,8 @@ package org.jetbrains.plugins.groovy.geb;
 
 import java.util.Map;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlock;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrMethodCall;
@@ -46,11 +47,11 @@ public class GebPageMemberContributor extends NonCodeMembersContributor
 	}
 
 	@Override
-	public void processDynamicElements(@NotNull PsiType qualifierType,
+	public void processDynamicElements(@Nonnull PsiType qualifierType,
 			PsiClass aClass,
-			@NotNull PsiScopeProcessor processor,
-			@NotNull PsiElement place,
-			@NotNull ResolveState state)
+			@Nonnull PsiScopeProcessor processor,
+			@Nonnull PsiElement place,
+			@Nonnull ResolveState state)
 	{
 		ClassHint classHint = processor.getHint(ClassHint.KEY);
 		if(classHint != null && !classHint.shouldProcess(ClassHint.ResolveKind.PROPERTY))
@@ -88,7 +89,7 @@ public class GebPageMemberContributor extends NonCodeMembersContributor
 	}
 
 	public static boolean processPageFields(PsiScopeProcessor processor,
-			@NotNull PsiClass pageClass,
+			@Nonnull PsiClass pageClass,
 			ResolveState state)
 	{
 		Map<String, PsiClass> supers = ClassUtil.getSuperClassesWithCache(pageClass);

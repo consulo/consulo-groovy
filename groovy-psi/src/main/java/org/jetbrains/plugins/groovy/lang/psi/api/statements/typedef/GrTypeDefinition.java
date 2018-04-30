@@ -16,9 +16,11 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef;
 
+import javax.annotation.Nonnull;
+
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocCommentOwner;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrClassInitializer;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
@@ -45,7 +47,7 @@ public interface GrTypeDefinition
 
 	public static ArrayFactory<GrTypeDefinition> ARRAY_FACTORY = new ArrayFactory<GrTypeDefinition>()
 	{
-		@NotNull
+		@Nonnull
 		@Override
 		public GrTypeDefinition[] create(int count)
 		{
@@ -59,50 +61,50 @@ public interface GrTypeDefinition
 	GrTypeDefinitionBody getBody();
 
 	@Override
-	@NotNull
+	@Nonnull
 	GrField[] getFields();
 
-	@NotNull
+	@Nonnull
 	GrField[] getCodeFields();
 
-	@NotNull
+	@Nonnull
 	GrMethod[] getCodeConstructors();
 
-	@Nullable
+	@javax.annotation.Nullable
 	PsiField findCodeFieldByName(String name, boolean checkBases);
 
 	@Override
-	@NotNull
+	@Nonnull
 	GrClassInitializer[] getInitializers();
 
-	@NotNull
+	@Nonnull
 	GrMembersDeclaration[] getMemberDeclarations();
 
 	@Override
 	@Nullable
 	String getQualifiedName();
 
-	@Nullable
+	@javax.annotation.Nullable
 	GrExtendsClause getExtendsClause();
 
-	@Nullable
+	@javax.annotation.Nullable
 	GrImplementsClause getImplementsClause();
 
 	String[] getSuperClassNames();
 
-	@NotNull
+	@Nonnull
 	GrMethod[] getCodeMethods();
 
-	@NotNull
+	@Nonnull
 	PsiMethod[] findCodeMethodsByName(@NonNls String name, boolean checkBases);
 
-	@NotNull
+	@Nonnull
 	PsiMethod[] findCodeMethodsBySignature(PsiMethod patternMethod, boolean checkBases);
 
 	boolean isAnonymous();
 
 	@Override
-	@Nullable
+	@javax.annotation.Nullable
 	String getName();
 
 	@Override

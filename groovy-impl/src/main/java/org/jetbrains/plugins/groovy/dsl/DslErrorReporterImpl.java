@@ -15,9 +15,9 @@
  */
 package org.jetbrains.plugins.groovy.dsl;
 
+import javax.annotation.Nonnull;
 import javax.swing.event.HyperlinkEvent;
 
-import org.jetbrains.annotations.NotNull;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationDisplayType;
 import com.intellij.notification.NotificationGroup;
@@ -43,7 +43,7 @@ public class DslErrorReporterImpl extends DslErrorReporter
 	}
 
 	@Override
-	public void invokeDslErrorPopup(Throwable e, final Project project, @NotNull VirtualFile vfile)
+	public void invokeDslErrorPopup(Throwable e, final Project project, @Nonnull VirtualFile vfile)
 	{
 		if(!GroovyDslFileIndex.isActivated(vfile))
 		{
@@ -66,7 +66,7 @@ public class DslErrorReporterImpl extends DslErrorReporter
 				new NotificationListener()
 		{
 			@Override
-			public void hyperlinkUpdate(@NotNull Notification notification, @NotNull HyperlinkEvent event)
+			public void hyperlinkUpdate(@Nonnull Notification notification, @Nonnull HyperlinkEvent event)
 			{
 				InvestigateFix.analyzeStackTrace(project, exceptionText);
 				notification.expire();

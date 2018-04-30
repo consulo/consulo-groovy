@@ -26,8 +26,8 @@ import java.util.List;
 import java.util.Queue;
 import java.util.Set;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GrControlFlowOwner;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
@@ -115,16 +115,16 @@ public class ControlFlowUtils {
     }
   }
 
-  private static boolean whileStatementMayReturnNormally(@NotNull GrWhileStatement loopStatement) {
+  private static boolean whileStatementMayReturnNormally(@Nonnull GrWhileStatement loopStatement) {
     final GrCondition test = loopStatement.getCondition();
     return !BoolUtils.isTrue(test) || statementIsBreakTarget(loopStatement);
   }
 
-  private static boolean forStatementMayReturnNormally(@NotNull GrForStatement loopStatement) {
+  private static boolean forStatementMayReturnNormally(@Nonnull GrForStatement loopStatement) {
     return true;
   }
 
-  private static boolean switchStatementMayReturnNormally(@NotNull GrSwitchStatement switchStatement) {
+  private static boolean switchStatementMayReturnNormally(@Nonnull GrSwitchStatement switchStatement) {
     if (statementIsBreakTarget(switchStatement)) {
       return true;
     }
@@ -151,7 +151,7 @@ public class ControlFlowUtils {
     return statementMayCompleteNormally(statements[statements.length - 1]);
   }
 
-  private static boolean tryStatementMayReturnNormally(@NotNull GrTryCatchStatement tryStatement) {
+  private static boolean tryStatementMayReturnNormally(@Nonnull GrTryCatchStatement tryStatement) {
     final GrFinallyClause finallyBlock = tryStatement.getFinallyClause();
     if (finallyBlock != null) {
       if (!openBlockMayCompleteNormally(finallyBlock.getBody())) {
@@ -172,7 +172,7 @@ public class ControlFlowUtils {
     return false;
   }
 
-  private static boolean ifStatementMayReturnNormally(@NotNull GrIfStatement ifStatement) {
+  private static boolean ifStatementMayReturnNormally(@Nonnull GrIfStatement ifStatement) {
     final GrStatement thenBranch = ifStatement.getThenBranch();
     if (statementMayCompleteNormally(thenBranch)) {
       return true;
@@ -181,7 +181,7 @@ public class ControlFlowUtils {
     return elseBranch == null || statementMayCompleteNormally(elseBranch);
   }
 
-  private static boolean labeledStatementMayCompleteNormally(@NotNull GrLabeledStatement labeledStatement) {
+  private static boolean labeledStatementMayCompleteNormally(@Nonnull GrLabeledStatement labeledStatement) {
     final GrStatement statement = labeledStatement.getStatement();
     return statementMayCompleteNormally(statement) || statementIsBreakTarget(statement);
   }
@@ -212,30 +212,30 @@ public class ControlFlowUtils {
     return true;
   }
 
-  private static boolean statementIsBreakTarget(@NotNull GrStatement statement) {
+  private static boolean statementIsBreakTarget(@Nonnull GrStatement statement) {
     final BreakFinder breakFinder = new BreakFinder(statement);
     statement.accept(breakFinder);
     return breakFinder.breakFound();
   }
 
-  public static boolean statementContainsReturn(@NotNull GrStatement statement) {
+  public static boolean statementContainsReturn(@Nonnull GrStatement statement) {
     final ReturnFinder returnFinder = new ReturnFinder();
     statement.accept(returnFinder);
     return returnFinder.returnFound();
   }
 
-  public static boolean statementIsContinueTarget(@NotNull GrStatement statement) {
+  public static boolean statementIsContinueTarget(@Nonnull GrStatement statement) {
     final ContinueFinder continueFinder = new ContinueFinder(statement);
     statement.accept(continueFinder);
     return continueFinder.continueFound();
   }
 
-  public static boolean isInLoop(@NotNull GroovyPsiElement element) {
+  public static boolean isInLoop(@Nonnull GroovyPsiElement element) {
     return isInForStatementBody(element) ||
         isInWhileStatementBody(element);
   }
 
-  public static boolean isInFinallyBlock(@NotNull GroovyPsiElement element) {
+  public static boolean isInFinallyBlock(@Nonnull GroovyPsiElement element) {
     final GrFinallyClause containingClause = PsiTreeUtil.getParentOfType(element, GrFinallyClause.class);
     if (containingClause == null) {
       return false;
@@ -244,7 +244,7 @@ public class ControlFlowUtils {
     return PsiTreeUtil.isAncestor(body, element, true);
   }
 
-  private static boolean isInWhileStatementBody(@NotNull GroovyPsiElement element) {
+  private static boolean isInWhileStatementBody(@Nonnull GroovyPsiElement element) {
     final GrWhileStatement whileStatement = PsiTreeUtil.getParentOfType(element, GrWhileStatement.class);
     if (whileStatement == null) {
       return false;
@@ -253,7 +253,7 @@ public class ControlFlowUtils {
     return PsiTreeUtil.isAncestor(body, element, true);
   }
 
-  private static boolean isInForStatementBody(@NotNull GroovyPsiElement element) {
+  private static boolean isInForStatementBody(@Nonnull GroovyPsiElement element) {
     final GrForStatement forStatement = PsiTreeUtil.getParentOfType(element, GrForStatement.class);
     if (forStatement == null) {
       return false;
@@ -263,7 +263,7 @@ public class ControlFlowUtils {
   }
 
 
-  public static GrStatement stripBraces(@NotNull GrStatement branch) {
+  public static GrStatement stripBraces(@Nonnull GrStatement branch) {
     if (branch instanceof GrBlockStatement) {
       final GrBlockStatement block = (GrBlockStatement)branch;
       final GrStatement[] statements = block.getBlock().getStatements();
@@ -279,7 +279,7 @@ public class ControlFlowUtils {
     }
   }
 
-  public static boolean statementCompletesWithStatement(@NotNull GrStatement containingStatement,@NotNull GrStatement statement) {
+  public static boolean statementCompletesWithStatement(@Nonnull GrStatement containingStatement,@Nonnull GrStatement statement) {
     GroovyPsiElement statementToCheck = statement;
     while (true) {
       if (statementToCheck.equals(containingStatement)) {
@@ -301,7 +301,7 @@ public class ControlFlowUtils {
     }
   }
 
-  public static boolean blockCompletesWithStatement(@NotNull GrBlockStatement body, @NotNull GrStatement statement) {
+  public static boolean blockCompletesWithStatement(@Nonnull GrBlockStatement body, @Nonnull GrStatement statement) {
     GrStatement statementToCheck = statement;
     while (true) {
       if (statementToCheck == null) {
@@ -329,7 +329,7 @@ public class ControlFlowUtils {
     }
   }
 
-  public static boolean openBlockCompletesWithStatement(@NotNull GrCodeBlock body, @NotNull GrStatement statement) {
+  public static boolean openBlockCompletesWithStatement(@Nonnull GrCodeBlock body, @Nonnull GrStatement statement) {
     GroovyPsiElement elementToCheck = statement;
     while (true) {
       if (elementToCheck == null) return false;
@@ -369,7 +369,7 @@ public class ControlFlowUtils {
     }
   }
 
-  public static boolean closureCompletesWithStatement(@NotNull GrClosableBlock body,@NotNull GrStatement statement) {
+  public static boolean closureCompletesWithStatement(@Nonnull GrClosableBlock body,@Nonnull GrStatement statement) {
     GroovyPsiElement statementToCheck = statement;
     while (true) {
       if (!(statementToCheck instanceof GrExpression || statementToCheck instanceof GrReturnStatement)) {
@@ -397,21 +397,21 @@ public class ControlFlowUtils {
     }
   }
 
-  private static boolean isLoop(@NotNull GroovyPsiElement element) {
+  private static boolean isLoop(@Nonnull GroovyPsiElement element) {
     return element instanceof GrLoopStatement;
   }
 
   @Nullable
-  private static GrStatement getContainingStatement(@NotNull GroovyPsiElement statement) {
+  private static GrStatement getContainingStatement(@Nonnull GroovyPsiElement statement) {
     return PsiTreeUtil.getParentOfType(statement, GrStatement.class);
   }
 
-  @Nullable
-  private static GroovyPsiElement getContainingStatementOrBlock(@NotNull GroovyPsiElement statement) {
+  @javax.annotation.Nullable
+  private static GroovyPsiElement getContainingStatementOrBlock(@Nonnull GroovyPsiElement statement) {
     return PsiTreeUtil.getParentOfType(statement, GrStatement.class, GrCodeBlock.class);
   }
 
-  private static boolean statementIsLastInBlock(@NotNull GrBlockStatement block, @NotNull GrStatement statement) {
+  private static boolean statementIsLastInBlock(@Nonnull GrBlockStatement block, @Nonnull GrStatement statement) {
     final GrStatement[] statements = block.getBlock().getStatements();
     for (int i = statements.length - 1; i >= 0; i--) {
       final GrStatement childStatement = statements[i];
@@ -425,7 +425,7 @@ public class ControlFlowUtils {
     return false;
   }
 
-  private static boolean statementIsLastInCodeBlock(@NotNull GrCodeBlock block, @NotNull GrStatement statement) {
+  private static boolean statementIsLastInCodeBlock(@Nonnull GrCodeBlock block, @Nonnull GrStatement statement) {
     final GrStatement[] statements = block.getStatements();
     for (int i = statements.length - 1; i >= 0; i--) {
       final GrStatement childStatement = statements[i];
@@ -455,7 +455,7 @@ public class ControlFlowUtils {
     return collectReturns(flow, allExitPoints);
   }
 
-  public static List<GrStatement> collectReturns(@NotNull Instruction[] flow, final boolean allExitPoints) {
+  public static List<GrStatement> collectReturns(@Nonnull Instruction[] flow, final boolean allExitPoints) {
     boolean[] visited = new boolean[flow.length];
     final List<GrStatement> res = new ArrayList<GrStatement>();
     visitAllExitPointsInner(flow[flow.length - 1], flow[0], visited, new ExitPointVisitor() {
@@ -552,7 +552,7 @@ public class ControlFlowUtils {
     }
 
     public void visitReturnStatement(
-        @NotNull GrReturnStatement returnStatement) {
+        @Nonnull GrReturnStatement returnStatement) {
       if (m_found) {
         return;
       }
@@ -565,7 +565,7 @@ public class ControlFlowUtils {
     private boolean m_found = false;
     private final GrStatement m_target;
 
-    private BreakFinder(@NotNull GrStatement target) {
+    private BreakFinder(@Nonnull GrStatement target) {
       super();
       m_target = target;
     }
@@ -575,7 +575,7 @@ public class ControlFlowUtils {
     }
 
     public void visitBreakStatement(
-        @NotNull GrBreakStatement breakStatement) {
+        @Nonnull GrBreakStatement breakStatement) {
       if (m_found) {
         return;
       }
@@ -594,7 +594,7 @@ public class ControlFlowUtils {
     private boolean m_found = false;
     private final GrStatement m_target;
 
-    private ContinueFinder(@NotNull GrStatement target) {
+    private ContinueFinder(@Nonnull GrStatement target) {
       super();
       m_target = target;
     }
@@ -604,7 +604,7 @@ public class ControlFlowUtils {
     }
 
     public void visitContinueStatement(
-        @NotNull GrContinueStatement continueStatement) {
+        @Nonnull GrContinueStatement continueStatement) {
       if (m_found) {
         return;
       }
@@ -625,7 +625,7 @@ public class ControlFlowUtils {
     boolean visitExitPoint(Instruction instruction, @Nullable GrExpression returnValue);
   }
 
-  public static Set<GrExpression> getAllReturnValues(@NotNull final GrControlFlowOwner block) {
+  public static Set<GrExpression> getAllReturnValues(@Nonnull final GrControlFlowOwner block) {
     return CachedValuesManager.getManager(block.getProject()).getCachedValue(block, new CachedValueProvider<Set<GrExpression>>() {
       @Override
       public Result<Set<GrExpression>> compute() {
@@ -643,7 +643,7 @@ public class ControlFlowUtils {
   }
 
 
-  public static boolean isReturnValue(@NotNull GrExpression expression, @NotNull GrControlFlowOwner flowOwner) {
+  public static boolean isReturnValue(@Nonnull GrExpression expression, @Nonnull GrControlFlowOwner flowOwner) {
     return getAllReturnValues(flowOwner).contains(expression);
   }
 
@@ -786,7 +786,7 @@ public class ControlFlowUtils {
     return result;
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   public static Instruction findInstruction(final PsiElement place, Instruction[] controlFlow) {
     return ContainerUtil.find(controlFlow, new Condition<Instruction>() {
       @Override
@@ -805,7 +805,7 @@ public class ControlFlowUtils {
     });
   }
 
-  @NotNull
+  @Nonnull
   public static ArrayList<BitSet> inferWriteAccessMap(final Instruction[] flow, final GrVariable var) {
 
     final Semilattice<BitSet> sem = new Semilattice<BitSet>() {
@@ -846,7 +846,7 @@ public class ControlFlowUtils {
         bitSet.set(instruction.num());
       }
 
-      @NotNull
+      @Nonnull
       @Override
       public BitSet initial() {
         return new BitSet(flow.length);

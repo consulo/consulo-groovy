@@ -23,8 +23,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.config.GroovyConfigUtils;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
@@ -100,7 +100,7 @@ public abstract class GroovyUtils
 	}
 
 	@Nullable
-	public static GrTypeDefinition getClassDefinition(@NotNull GroovyFile groovyFile)
+	public static GrTypeDefinition getClassDefinition(@Nonnull GroovyFile groovyFile)
 	{
 		String fileName = groovyFile.getName();
 		int idx = fileName.lastIndexOf('.');
@@ -113,7 +113,7 @@ public abstract class GroovyUtils
 	}
 
 	@Nullable
-	public static GrTypeDefinition getClassDefinition(@NotNull GroovyFile groovyFile, @NotNull String classSimpleName)
+	public static GrTypeDefinition getClassDefinition(@Nonnull GroovyFile groovyFile, @Nonnull String classSimpleName)
 	{
 		for(GrTypeDefinition definition : (groovyFile).getTypeDefinitions())
 		{

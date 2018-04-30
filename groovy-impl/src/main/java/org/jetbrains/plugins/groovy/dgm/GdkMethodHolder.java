@@ -28,7 +28,7 @@ import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.*;
 import com.intellij.util.containers.ConcurrentFactoryMap;
 import com.intellij.util.containers.MultiMap;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrGdkMethod;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil;
 import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GrGdkMethodImpl;
@@ -61,7 +61,7 @@ public class GdkMethodHolder {
       byName.putValue(m.getName(), m);
     }
     this.myOriginalMethodByType = new VolatileNotNullLazyValue<MultiMap<String, PsiMethod>>() {
-      @NotNull
+      @Nonnull
       @Override
       protected MultiMap<String, PsiMethod> compute() {
         MultiMap<String, PsiMethod> map = new MultiMap<String, PsiMethod>();

@@ -15,7 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.griffon;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.annotator.checkers.CustomAnnotationChecker;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotation;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotationMemberValue;
@@ -35,7 +36,7 @@ import com.intellij.psi.PsiElement;
 public class GriffonPropertyListenerAnnotationChecker extends CustomAnnotationChecker
 {
 	@Override
-	public boolean checkArgumentList(@NotNull AnnotationHolder holder, @NotNull GrAnnotation annotation)
+	public boolean checkArgumentList(@Nonnull AnnotationHolder holder, @Nonnull GrAnnotation annotation)
 	{
 		if(!"griffon.transform.PropertyListener".equals(annotation.getQualifiedName()))
 		{

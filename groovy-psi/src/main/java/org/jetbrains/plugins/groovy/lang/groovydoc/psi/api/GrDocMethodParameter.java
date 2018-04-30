@@ -16,14 +16,14 @@
 
 package org.jetbrains.plugins.groovy.lang.groovydoc.psi.api;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author ilyas
  */
 public interface GrDocMethodParameter extends GroovyDocPsiElement {
-  @NotNull
+  @Nonnull
   GrDocReferenceElement getTypeElement();
 
   @Nullable

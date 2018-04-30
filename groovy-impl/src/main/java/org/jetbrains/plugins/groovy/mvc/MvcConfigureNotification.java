@@ -3,7 +3,7 @@ package org.jetbrains.plugins.groovy.mvc;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.ui.EditorNotificationPanel;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.annotator.GroovyFrameworkConfigNotification;
 
 /**
@@ -18,7 +18,7 @@ public class MvcConfigureNotification extends GroovyFrameworkConfigNotification 
   }
 
   @Override
-  public boolean hasFrameworkStructure(@NotNull Module module) {
+  public boolean hasFrameworkStructure(@Nonnull Module module) {
     VirtualFile appDir = framework.findAppDirectory(module);
     if (appDir == null) return false;
 
@@ -26,7 +26,7 @@ public class MvcConfigureNotification extends GroovyFrameworkConfigNotification 
   }
 
   @Override
-  public boolean hasFrameworkLibrary(@NotNull Module module) {
+  public boolean hasFrameworkLibrary(@Nonnull Module module) {
     return framework.hasFrameworkJar(module);
   }
 
@@ -42,7 +42,7 @@ public class MvcConfigureNotification extends GroovyFrameworkConfigNotification 
   }    */
 
   @Override
-  public EditorNotificationPanel createConfigureNotificationPanel(final @NotNull Module module) {
+  public EditorNotificationPanel createConfigureNotificationPanel(final @Nonnull Module module) {
     final EditorNotificationPanel panel = new EditorNotificationPanel();
     panel.setText(framework.getFrameworkName() + " SDK is not configured for module '"+ module.getName() + '\'');
     panel.createActionLabel("Configure " + framework.getFrameworkName() + " SDK", new Runnable() {

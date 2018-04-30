@@ -25,7 +25,6 @@ import com.intellij.psi.util.MethodSignatureUtil;
 import com.intellij.psi.util.TypeConversionUtil;
 import com.intellij.refactoring.changeSignature.PossiblyIncorrectUsage;
 import com.intellij.usageView.UsageInfo;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
 import org.jetbrains.plugins.groovy.lang.psi.api.signatures.GrClosureSignature;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.*;
@@ -86,7 +85,7 @@ public class GrMethodCallUsageInfo extends UsageInfo implements PossiblyIncorrec
     }
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   public PsiMethod getReferencedMethod() {
     final GroovyResolveResult result = resolveMethod(getElement());
     if (result == null) return null;
@@ -95,7 +94,7 @@ public class GrMethodCallUsageInfo extends UsageInfo implements PossiblyIncorrec
     return element instanceof PsiMethod ? (PsiMethod)element : null;
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   private static GroovyResolveResult resolveMethod(final PsiElement ref) {
     if (ref instanceof GrEnumConstant) return ((GrEnumConstant)ref).advancedResolve();
     PsiElement parent = ref.getParent();

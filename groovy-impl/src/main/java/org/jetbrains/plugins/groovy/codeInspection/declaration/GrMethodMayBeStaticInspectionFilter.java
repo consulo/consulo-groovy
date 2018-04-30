@@ -15,8 +15,9 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.declaration;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.openapi.extensions.ExtensionPointName;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
 
 /**
@@ -27,6 +28,6 @@ public abstract class GrMethodMayBeStaticInspectionFilter {
   public static final ExtensionPointName<GrMethodMayBeStaticInspectionFilter> EP_NAME =
     new ExtensionPointName<GrMethodMayBeStaticInspectionFilter>("org.intellij.groovy.methodMayBeStaticInspectionFilter");
 
-  public abstract boolean isIgnored(@NotNull GrMethod method);
+  public abstract boolean isIgnored(@Nonnull GrMethod method);
 
 }

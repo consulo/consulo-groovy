@@ -15,9 +15,10 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.psi.PsiElementVisitor;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.lang.psi.GrControlFlowOwner;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFileBase;
@@ -31,15 +32,15 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMe
  * @author ven
  */
 public abstract class GroovyLocalInspectionBase extends GroovySuppressableInspectionTool {
-  @NotNull
+  @Nonnull
    @Override
    public String[] getGroupPath() {
      return new String[]{"Groovy", getGroupDisplayName()};
    }
 
 
-  @NotNull
-  public PsiElementVisitor buildVisitor(@NotNull final ProblemsHolder problemsHolder, boolean isOnTheFly) {
+  @Nonnull
+  public PsiElementVisitor buildVisitor(@Nonnull final ProblemsHolder problemsHolder, boolean isOnTheFly) {
     return new GroovyPsiElementVisitor(new GroovyElementVisitor() {
       public void visitClosure(GrClosableBlock closure) {
         check(closure, problemsHolder);

@@ -19,7 +19,7 @@ import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.IncorrectOperationException;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.intentions.GroovyIntentionsBundle;
 import org.jetbrains.plugins.groovy.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.intentions.base.PsiElementPredicate;
@@ -40,7 +40,7 @@ public class GrSplitDeclarationIntention extends Intention {
 
 
   @Override
-  protected void processIntention(@NotNull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
+  protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
     if (!(element instanceof GrVariableDeclaration)) return;
 
     GrVariableDeclaration declaration = (GrVariableDeclaration)element;
@@ -133,13 +133,13 @@ public class GrSplitDeclarationIntention extends Intention {
 
   private String myText = "";
 
-  @NotNull
+  @Nonnull
   @Override
   public String getText() {
     return myText;
   }
 
-  @NotNull
+  @Nonnull
   @Override
   protected PsiElementPredicate getElementPredicate() {
     return new PsiElementPredicate() {

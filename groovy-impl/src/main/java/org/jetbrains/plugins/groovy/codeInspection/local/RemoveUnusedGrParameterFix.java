@@ -9,7 +9,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.refactoring.util.CanonicalTypes;
 import com.intellij.util.IncorrectOperationException;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.intentions.GroovyIntentionsBundle;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameter;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
@@ -31,20 +31,20 @@ public class RemoveUnusedGrParameterFix implements IntentionAction {
     myName = parameter.getName();
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public String getText() {
     return GroovyIntentionsBundle.message("remove.parameter.0", myName);
   }
 
-  @NotNull
+  @Nonnull
   @Override
   public String getFamilyName() {
     return GroovyIntentionsBundle.message("remove.unused.parameter");
   }
 
   @Override
-  public boolean isAvailable(@NotNull Project project, Editor editor, PsiFile file) {
+  public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file) {
     PsiElement at = file.findElementAt(editor.getCaretModel().getOffset());
     GrParameter parameter = PsiTreeUtil.getParentOfType(at, GrParameter.class);
 
@@ -52,7 +52,7 @@ public class RemoveUnusedGrParameterFix implements IntentionAction {
   }
 
   @Override
-  public void invoke(@NotNull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
+  public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
     PsiElement at = file.findElementAt(editor.getCaretModel().getOffset());
     GrParameter parameter = PsiTreeUtil.getParentOfType(at, GrParameter.class);
     if (parameter == null) return;

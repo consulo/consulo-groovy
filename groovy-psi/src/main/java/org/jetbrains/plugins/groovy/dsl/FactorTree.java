@@ -2,8 +2,8 @@ package org.jetbrains.plugins.groovy.dsl;
 
 import java.util.Map;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.dsl.holders.CustomMembersHolder;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ProjectRootManager;
@@ -31,7 +31,7 @@ public class FactorTree extends UserDataHolderBase
   public FactorTree(final Project project, GroovyDslExecutor executor) {
     myExecutor = executor;
     myProvider = new CachedValueProvider<Map>() {
-      @Nullable
+      @javax.annotation.Nullable
       @Override
       public Result<Map> compute() {
         return new Result<Map>(new ConcurrentHashMap(), PsiModificationTracker.MODIFICATION_COUNT, ProjectRootManager.getInstance(project));
@@ -79,7 +79,7 @@ public class FactorTree extends UserDataHolderBase
   }
 
   @Nullable
-  private CustomMembersHolder retrieveImpl(@NotNull PsiElement place, @NotNull PsiFile placeFile, @NotNull String qualifierType, @Nullable Map current, boolean topLevel) {
+  private CustomMembersHolder retrieveImpl(@Nonnull PsiElement place, @Nonnull PsiFile placeFile, @Nonnull String qualifierType, @Nullable Map current, boolean topLevel) {
     if (current == null) return null;
 
     CustomMembersHolder result;

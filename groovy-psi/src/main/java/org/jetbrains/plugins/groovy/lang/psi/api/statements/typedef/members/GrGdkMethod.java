@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiMethod;
 import com.intellij.psi.PsiMirrorElement;
@@ -24,6 +24,6 @@ import com.intellij.psi.PsiMirrorElement;
  * @author ven
  */
 public interface GrGdkMethod extends PsiElement, PsiMirrorElement {
-  @NotNull
+  @Nonnull
   PsiMethod getStaticMethod();
 }

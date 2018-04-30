@@ -18,7 +18,8 @@ package org.jetbrains.plugins.groovy.lang.psi.impl.statements.typedef.members;
 import java.util.Collections;
 import java.util.Map;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.extensions.NamedArgumentDescriptor;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
@@ -32,7 +33,7 @@ import com.intellij.lang.ASTNode;
  */
 public class GrAnnotationMethodImpl extends GrMethodBaseImpl implements GrAnnotationMethod {
 
-  public GrAnnotationMethodImpl(@NotNull ASTNode node) {
+  public GrAnnotationMethodImpl(@Nonnull ASTNode node) {
     super(node);
   }
 
@@ -50,7 +51,7 @@ public class GrAnnotationMethodImpl extends GrMethodBaseImpl implements GrAnnota
   }
 
   @Override
-  @NotNull
+  @Nonnull
   public Map<String, NamedArgumentDescriptor> getNamedParameters() {
     return Collections.emptyMap();
   }

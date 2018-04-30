@@ -15,13 +15,14 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.threading;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiField;
 import com.intellij.psi.PsiModifier;
 import com.intellij.psi.util.PsiTreeUtil;
 import org.jetbrains.annotations.Nls;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrSynchronizedStatement;
@@ -38,17 +39,17 @@ public class GroovyAccessToStaticFieldLockedOnInstanceInspection
   }
 
   @Nls
-  @NotNull
+  @Nonnull
   public String getGroupDisplayName() {
     return THREADING_ISSUES;
   }
 
-  @NotNull
+  @Nonnull
   public String getDisplayName() {
     return "Access to static field locked on instance data";
   }
 
-  @NotNull
+  @Nonnull
   protected String buildErrorString(Object... infos) {
     return "Access to static field <code>#ref</code> locked on instance data #loc";
   }
@@ -61,7 +62,7 @@ public class GroovyAccessToStaticFieldLockedOnInstanceInspection
       extends BaseInspectionVisitor {
 
     public void visitReferenceExpression(
-        @NotNull GrReferenceExpression expression) {
+        @Nonnull GrReferenceExpression expression) {
       super.visitReferenceExpression(expression);
       boolean isLockedOnInstance = false;
       boolean isLockedOnClass = false;

@@ -40,8 +40,8 @@ import com.intellij.util.containers.ConcurrentWeakHashMap;
 import com.intellij.util.containers.ContainerUtil;
 import com.intellij.util.containers.HashMap;
 import com.intellij.util.messages.MessageBusConnection;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
@@ -114,13 +114,13 @@ public class GroovyPsiManager {
     myCompileStatic.clear();
   }
 
-  public static boolean isInheritorCached(@Nullable PsiClass aClass, @NotNull String baseClassName) {
+  public static boolean isInheritorCached(@Nullable PsiClass aClass, @Nonnull String baseClassName) {
     if (aClass == null) return false;
 
     return InheritanceUtil.isInheritorOrSelf(aClass, getInstance(aClass.getProject()).findClassWithCache(baseClassName, aClass.getResolveScope()), true);
   }
 
-  public static boolean isInheritorCached(@Nullable PsiType type, @NotNull String baseClassName) {
+  public static boolean isInheritorCached(@Nullable PsiType type, @Nonnull String baseClassName) {
     if (type instanceof PsiClassType) {
       return isInheritorCached(((PsiClassType)type).resolve(), baseClassName);
     }
@@ -131,7 +131,7 @@ public class GroovyPsiManager {
     return ServiceManager.getService(project, GroovyPsiManager.class);
   }
 
-  public PsiClassType createTypeByFQClassName(@NotNull String fqName, @NotNull GlobalSearchScope resolveScope) {
+  public PsiClassType createTypeByFQClassName(@Nonnull String fqName, @Nonnull GlobalSearchScope resolveScope) {
     if (ourPopularClasses.contains(fqName)) {
       PsiClass result = findClassWithCache(fqName, resolveScope);
       if (result != null) {
@@ -142,7 +142,7 @@ public class GroovyPsiManager {
     return JavaPsiFacade.getElementFactory(myProject).createTypeByFQClassName(fqName, resolveScope);
   }
 
-  public boolean isCompileStatic(@NotNull PsiMember member) {
+  public boolean isCompileStatic(@Nonnull PsiMember member) {
     Boolean aBoolean = myCompileStatic.get(member);
     if (aBoolean == null) {
       aBoolean = ConcurrencyUtil.cacheOrGet(myCompileStatic, member, isCompileStaticInner(member));
@@ -150,7 +150,7 @@ public class GroovyPsiManager {
     return aBoolean;
   }
 
-  private boolean isCompileStaticInner(@NotNull PsiMember member) {
+  private boolean isCompileStaticInner(@Nonnull PsiMember member) {
     PsiModifierList list = member.getModifierList();
     if (list != null) {
       PsiAnnotation compileStatic = list.findAnnotation(GROOVY_TRANSFORM_COMPILE_STATIC);
@@ -163,15 +163,15 @@ public class GroovyPsiManager {
     return false;
   }
 
-  private static boolean checkForPass(@NotNull PsiAnnotation annotation) {
+  private static boolean checkForPass(@Nonnull PsiAnnotation annotation) {
     PsiAnnotationMemberValue value = annotation.findAttributeValue("value");
     return value == null ||
            value instanceof PsiReference &&
            ResolveUtil.isEnumConstant((PsiReference)value, "PASS", GROOVY_TRANSFORM_TYPE_CHECKING_MODE);
   }
 
-  @Nullable
-  public PsiClass findClassWithCache(@NotNull String fqName, @NotNull GlobalSearchScope resolveScope) {
+  @javax.annotation.Nullable
+  public PsiClass findClassWithCache(@Nonnull String fqName, @Nonnull GlobalSearchScope resolveScope) {
     SoftReference<Map<GlobalSearchScope, PsiClass>> reference = myClassCache.get(fqName);
     Map<GlobalSearchScope, PsiClass> map = reference == null ? null : reference.get();
     if (map == null) {
@@ -193,7 +193,7 @@ public class GroovyPsiManager {
 
   private static final PsiType UNKNOWN_TYPE = new PsiPrimitiveType("unknown type", PsiAnnotation.EMPTY_ARRAY);
   @Nullable
-  public <T extends GroovyPsiElement> PsiType getType(@NotNull T element, @NotNull Function<T, PsiType> calculator) {
+  public <T extends GroovyPsiElement> PsiType getType(@Nonnull T element, @Nonnull Function<T, PsiType> calculator) {
     PsiType type = myCalculatedTypes.get(element);
     if (type == null) {
       RecursionGuard.StackStamp stamp = ourGuard.markStack();
@@ -217,7 +217,7 @@ public class GroovyPsiManager {
   }
 
   @Nullable
-  public GrTypeDefinition getArrayClass(@NotNull PsiType type) {
+  public GrTypeDefinition getArrayClass(@Nonnull PsiType type) {
     final String typeText = type.getCanonicalText();
     GrTypeDefinition definition = myArrayClass.get(typeText);
     if (definition == null) {
@@ -235,7 +235,7 @@ public class GroovyPsiManager {
   }
 
   @Nullable
-  public static PsiType inferType(@NotNull PsiElement element, @NotNull Computable<PsiType> computable) {
+  public static PsiType inferType(@Nonnull PsiElement element, @Nonnull Computable<PsiType> computable) {
     List<Object> stack = ourGuard.currentStack();
     if (stack.size() > 7) { //don't end up walking the whole project PSI
       ourGuard.prohibitResultCaching(stack.get(0));

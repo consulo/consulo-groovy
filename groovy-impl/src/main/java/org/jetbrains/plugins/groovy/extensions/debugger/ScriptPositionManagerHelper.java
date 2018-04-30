@@ -15,8 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.extensions.debugger;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import com.intellij.openapi.extensions.ExtensionPointName;
 import com.intellij.openapi.project.Project;
@@ -41,13 +41,13 @@ public abstract class ScriptPositionManagerHelper
 	 * {@link ScriptPositionManagerHelper#getExtraScriptIfNotFound(ReferenceType, String, Project, GlobalSearchScope) corresponding}
 	 * to this runtime name
 	 */
-	public boolean isAppropriateRuntimeName(@NotNull String runtimeName)
+	public boolean isAppropriateRuntimeName(@Nonnull String runtimeName)
 	{
 		return false;
 	}
 
-	@Nullable
-	public String getOriginalScriptName(@NotNull ReferenceType refType, @NotNull final String runtimeName)
+	@javax.annotation.Nullable
+	public String getOriginalScriptName(@Nonnull ReferenceType refType, @Nonnull final String runtimeName)
 	{
 		return null;
 	}
@@ -55,7 +55,7 @@ public abstract class ScriptPositionManagerHelper
 	/**
 	 * @return true if extension may compute runtime script name given script file
 	 */
-	public boolean isAppropriateScriptFile(@NotNull GroovyFile scriptFile)
+	public boolean isAppropriateScriptFile(@Nonnull GroovyFile scriptFile)
 	{
 		return false;
 	}
@@ -63,8 +63,8 @@ public abstract class ScriptPositionManagerHelper
 	/**
 	 * @return Runtime script name
 	 */
-	@Nullable
-	public String getRuntimeScriptName(@NotNull GroovyFile groovyFile)
+	@javax.annotation.Nullable
+	public String getRuntimeScriptName(@Nonnull GroovyFile groovyFile)
 	{
 		return null;
 	}
@@ -72,8 +72,8 @@ public abstract class ScriptPositionManagerHelper
 	/**
 	 * @return Possible script to debug through in project scope if there wer not found other by standarrd methods
 	 */
-	@Nullable
-	public PsiFile getExtraScriptIfNotFound(@NotNull ReferenceType refType, @NotNull String runtimeName, @NotNull Project project, @NotNull GlobalSearchScope scope)
+	@javax.annotation.Nullable
+	public PsiFile getExtraScriptIfNotFound(@Nonnull ReferenceType refType, @Nonnull String runtimeName, @Nonnull Project project, @Nonnull GlobalSearchScope scope)
 	{
 		return null;
 	}
@@ -82,8 +82,8 @@ public abstract class ScriptPositionManagerHelper
 	 * @return fully qualified runtime class name
 	 * @see #getOriginalScriptName(ReferenceType, String)
 	 */
-	@Nullable
-	public String customizeClassName(@NotNull PsiClass psiClass)
+	@javax.annotation.Nullable
+	public String customizeClassName(@Nonnull PsiClass psiClass)
 	{
 		return null;
 	}

@@ -14,10 +14,11 @@
  */
 package org.jetbrains.plugins.groovy.griffon;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.module.Module;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.mvc.MvcActionBase;
 import org.jetbrains.plugins.groovy.mvc.MvcFramework;
 
@@ -27,17 +28,17 @@ import org.jetbrains.plugins.groovy.mvc.MvcFramework;
 public class UpdateGriffonSettingsAction extends MvcActionBase {
 
   @Override
-  protected boolean isFrameworkSupported(@NotNull MvcFramework framework) {
+  protected boolean isFrameworkSupported(@Nonnull MvcFramework framework) {
     return framework == GriffonFramework.getInstance();
   }
 
   @Override
-  protected void actionPerformed(@NotNull AnActionEvent e, @NotNull final Module module, @NotNull MvcFramework framework) {
+  protected void actionPerformed(@Nonnull AnActionEvent e, @Nonnull final Module module, @Nonnull MvcFramework framework) {
     GriffonFramework.getInstance().updateProjectStructure(module);
   }
 
   @Override
-  protected void updateView(AnActionEvent event, @NotNull MvcFramework framework, @NotNull Module module) {
+  protected void updateView(AnActionEvent event, @Nonnull MvcFramework framework, @Nonnull Module module) {
     event.getPresentation().setIcon(AllIcons.Actions.Refresh);
   }
 

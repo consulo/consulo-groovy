@@ -1,9 +1,10 @@
 package org.jetbrains.plugins.groovy.gpp;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiModifierList;
 import com.intellij.psi.impl.light.LightClass;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.lang.psi.GrClassSubstitution;
 import org.jetbrains.plugins.groovy.lang.psi.GrClassSubstitutor;
@@ -14,7 +15,7 @@ import org.jetbrains.plugins.groovy.lang.psi.GrClassSubstitutor;
 public class GppClassSubstitutor extends GrClassSubstitutor {
 
   @Override
-  public GrClassSubstitution substituteClass(@NotNull PsiClass base) {
+  public GrClassSubstitution substituteClass(@Nonnull PsiClass base) {
     final PsiModifierList modifierList = base.getModifierList();
     if (modifierList != null && modifierList.findAnnotation("groovy.lang.Trait") != null) {
       return new TraitClass(base);

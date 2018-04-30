@@ -19,8 +19,8 @@ import static org.jetbrains.plugins.groovy.refactoring.rename.RenamePropertyUtil
 
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrAccessorMethod;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
@@ -61,12 +61,12 @@ public class PropertyRenameHandler implements RenameHandler, TitledHandler {
     return isAvailableOnDataContext(dataContext);
   }
 
-  public void invoke(@NotNull Project project, Editor editor, PsiFile file, @Nullable DataContext dataContext) {
+  public void invoke(@Nonnull Project project, Editor editor, PsiFile file, @Nullable DataContext dataContext) {
     final PsiElement element = getElement(dataContext);
     invokeInner(project, editor, element);
   }
 
-  public void invoke(@NotNull Project project, @NotNull PsiElement[] elements, @Nullable DataContext dataContext) {
+  public void invoke(@Nonnull Project project, @Nonnull PsiElement[] elements, @Nullable DataContext dataContext) {
     PsiElement element = elements.length == 1 ? elements[0] : null;
     if (element == null) element = getElement(dataContext);
     Editor editor = dataContext == null ? null : dataContext.getData(PlatformDataKeys.EDITOR);

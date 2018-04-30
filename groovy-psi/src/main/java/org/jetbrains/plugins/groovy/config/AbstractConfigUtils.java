@@ -26,8 +26,8 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.util.ArrayUtil;
 import com.intellij.util.containers.ContainerUtil;
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.util.GroovyUtils;
 import org.jetbrains.plugins.groovy.util.LibrariesUtil;
 
@@ -70,8 +70,8 @@ public abstract class AbstractConfigUtils {
    */
   public abstract boolean isSDKHome(final VirtualFile file);
 
-  @NotNull
-  public abstract String getSDKVersion(@NotNull String path);
+  @Nonnull
+  public abstract String getSDKVersion(@Nonnull String path);
 
   /**
    * Return value of Implementation-Version attribute in jar manifest
@@ -82,7 +82,7 @@ public abstract class AbstractConfigUtils {
    * @param manifestPath path to manifest file in jar file
    * @return value of Implementation-Version attribute, null if not found
    */
-  @Nullable
+  @javax.annotation.Nullable
   public static String getSDKJarVersion(String jarPath, final String jarRegex, String manifestPath) {
     return getSDKJarVersion(jarPath, Pattern.compile(jarRegex), manifestPath);
   }
@@ -96,7 +96,7 @@ public abstract class AbstractConfigUtils {
    * @param manifestPath path to manifest file in jar file
    * @return value of Implementation-Version attribute, null if not found
    */
-  @Nullable
+  @javax.annotation.Nullable
   public static String getSDKJarVersion(String jarPath, final Pattern jarPattern, String manifestPath) {
     try {
       File[] jars = GroovyUtils.getFilesInDirectoryByPattern(jarPath, jarPattern);
@@ -144,7 +144,7 @@ public abstract class AbstractConfigUtils {
     return all.toArray(new Library[all.size()]);
   }
 
-  public Library[] getAllSDKLibraries(@Nullable Project project) {
+  public Library[] getAllSDKLibraries(@javax.annotation.Nullable Project project) {
     return ArrayUtil.mergeArrays(getGlobalSDKLibraries(), getProjectSDKLibraries(project));
   }
 

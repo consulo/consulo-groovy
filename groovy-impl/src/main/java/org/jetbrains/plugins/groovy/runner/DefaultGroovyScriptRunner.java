@@ -18,14 +18,13 @@ package org.jetbrains.plugins.groovy.runner;
 
 import java.nio.charset.Charset;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.util.GroovyUtils;
 import org.jetbrains.plugins.groovy.util.LibrariesUtil;
 import com.intellij.execution.CantRunException;
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.Executor;
-import com.intellij.execution.configurations.JavaParameters;
 import com.intellij.execution.configurations.RunProfile;
 import com.intellij.execution.runners.ExecutionUtil;
 import com.intellij.openapi.module.Module;
@@ -45,7 +44,7 @@ public class DefaultGroovyScriptRunner extends GroovyScriptRunner
 {
 
 	@Override
-	public boolean isValidModule(@NotNull Module module)
+	public boolean isValidModule(@Nonnull Module module)
 	{
 		return LibrariesUtil.hasGroovySdk(module);
 	}
@@ -88,7 +87,7 @@ public class DefaultGroovyScriptRunner extends GroovyScriptRunner
 		params.getProgramParametersList().addParametersString(configuration.getScriptParameters());
 	}
 
-	public static void configureGenericGroovyRunner(@NotNull OwnJavaParameters params, @NotNull Module module, @NotNull String mainClass, boolean useBundled, boolean tests)
+	public static void configureGenericGroovyRunner(@Nonnull OwnJavaParameters params, @Nonnull Module module, @Nonnull String mainClass, boolean useBundled, boolean tests)
 	{
 		final VirtualFile groovyJar = findGroovyJar(module);
 		if(useBundled)

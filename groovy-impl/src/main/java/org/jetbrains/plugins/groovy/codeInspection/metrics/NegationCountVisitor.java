@@ -15,8 +15,9 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.metrics;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.psi.tree.IElementType;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyRecursiveElementVisitor;
@@ -41,7 +42,7 @@ class NegationCountVisitor extends GroovyRecursiveElementVisitor {
     }
   }
 
-  public void visitBinaryExpression(@NotNull GrBinaryExpression expression) {
+  public void visitBinaryExpression(@Nonnull GrBinaryExpression expression) {
     super.visitBinaryExpression(expression);
     final IElementType tokenType = expression.getOperationTokenType();
     final GrExpression rhs = expression.getRightOperand();

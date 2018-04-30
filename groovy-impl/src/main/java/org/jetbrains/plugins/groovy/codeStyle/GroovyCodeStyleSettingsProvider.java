@@ -15,19 +15,20 @@
  */
 package org.jetbrains.plugins.groovy.codeStyle;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.application.options.CodeStyleAbstractConfigurable;
 import com.intellij.application.options.CodeStyleAbstractPanel;
 import com.intellij.openapi.options.Configurable;
 import com.intellij.psi.codeStyle.CodeStyleSettings;
 import com.intellij.psi.codeStyle.CodeStyleSettingsProvider;
 import com.intellij.psi.codeStyle.CustomCodeStyleSettings;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Rustam Vishnyakov
  */
 public class GroovyCodeStyleSettingsProvider extends CodeStyleSettingsProvider {
-  @NotNull
+  @Nonnull
   @Override
   public Configurable createSettingsPage(CodeStyleSettings settings, CodeStyleSettings originalSettings) {
     return new CodeStyleAbstractConfigurable(settings, originalSettings, "Groovy") {

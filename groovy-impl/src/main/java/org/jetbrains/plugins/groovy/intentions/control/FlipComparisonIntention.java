@@ -15,7 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.intentions.control;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.intentions.GroovyIntentionsBundle;
 import org.jetbrains.plugins.groovy.intentions.base.MutablyNamedIntention;
 import org.jetbrains.plugins.groovy.intentions.base.PsiElementPredicate;
@@ -46,13 +47,13 @@ public class FlipComparisonIntention extends MutablyNamedIntention
 		return GroovyIntentionsBundle.message("flip.comparison.intention.name", comparison, flippedComparison);
 	}
 
-	@NotNull
+	@Nonnull
 	public PsiElementPredicate getElementPredicate()
 	{
 		return new ComparisonPredicate();
 	}
 
-	public void processIntention(@NotNull PsiElement element,
+	public void processIntention(@Nonnull PsiElement element,
 			Project project,
 			Editor editor) throws IncorrectOperationException
 	{

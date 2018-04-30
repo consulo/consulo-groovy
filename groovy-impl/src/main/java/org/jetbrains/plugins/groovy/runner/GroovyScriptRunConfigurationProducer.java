@@ -17,8 +17,8 @@ package org.jetbrains.plugins.groovy.runner;
 
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GroovyScriptClass;
 import com.intellij.execution.JavaExecutionUtil;
@@ -100,7 +100,7 @@ public class GroovyScriptRunConfigurationProducer extends RuntimeConfigurationPr
 	}
 
 	@Override
-	protected RunnerAndConfigurationSettings findExistingByElement(Location location, @NotNull List<RunnerAndConfigurationSettings> existingConfigurations, ConfigurationContext context)
+	protected RunnerAndConfigurationSettings findExistingByElement(Location location, @Nonnull List<RunnerAndConfigurationSettings> existingConfigurations, ConfigurationContext context)
 	{
 		for(RunnerAndConfigurationSettings existingConfiguration : existingConfigurations)
 		{

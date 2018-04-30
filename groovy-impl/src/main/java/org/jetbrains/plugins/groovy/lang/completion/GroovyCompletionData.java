@@ -17,7 +17,8 @@
 package org.jetbrains.plugins.groovy.lang.completion;
 
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.codeInspection.utils.ControlFlowUtils;
 import org.jetbrains.plugins.groovy.lang.groovydoc.lexer.GroovyDocTokenTypes;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocInlinedTag;
@@ -250,7 +251,7 @@ public class GroovyCompletionData
 		}
 	}
 
-	private static boolean isAfterAnnotationMethodIdentifier(@NotNull PsiElement position)
+	private static boolean isAfterAnnotationMethodIdentifier(@Nonnull PsiElement position)
 	{
 		final PsiElement parent = position.getParent();
 
@@ -310,7 +311,7 @@ public class GroovyCompletionData
 		}
 	}
 
-	@NotNull
+	@Nonnull
 	private static String[] addExtendsImplements(PsiElement context)
 	{
 		if(context.getParent() == null)
@@ -373,7 +374,7 @@ public class GroovyCompletionData
 		}
 	}
 
-	private static LookupElement keyword(final String keyword, @NotNull TailType tail)
+	private static LookupElement keyword(final String keyword, @Nonnull TailType tail)
 	{
 		LookupElementBuilder element = LookupElementBuilder.create(keyword).bold();
 		return tail != TailType.NONE ? new JavaKeywordCompletion.OverrideableSpace(element, tail) : element;

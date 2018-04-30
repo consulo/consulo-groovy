@@ -26,7 +26,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.codeStyle.GroovyCodeStyleSettings;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
@@ -91,7 +92,7 @@ public class GroovyImportOptimizer implements ImportOptimizer
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public Runnable processFile(PsiFile file)
 	{
 		return new MyProcessor(file, false);

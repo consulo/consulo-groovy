@@ -15,8 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.shell;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.GroovyLanguage;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
@@ -45,7 +45,7 @@ public class GroovyShellLanguageConsoleView extends LanguageConsoleImpl
 	{
 		super(new Helper(project, new LightVirtualFile(name, GroovyLanguage.INSTANCE, ""))
 		{
-			@NotNull
+			@Nonnull
 			@Override
 			public PsiFile getFile()
 			{
@@ -89,22 +89,22 @@ public class GroovyShellLanguageConsoleView extends LanguageConsoleImpl
 		}
 	}
 
-	@NotNull
+	@Nonnull
 	public GroovyShellCodeFragment getGroovyFile()
 	{
 		return (GroovyShellCodeFragment) getFile();
 	}
 
-	@NotNull
-	private GrTypeDefinition prepareTypeDefinition(@NotNull GrTypeDefinition typeDefinition)
+	@Nonnull
+	private GrTypeDefinition prepareTypeDefinition(@Nonnull GrTypeDefinition typeDefinition)
 	{
 		GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(getProject());
 		GroovyFile file = factory.createGroovyFile("", false, getFile());
 		return (GrTypeDefinition) file.add(typeDefinition);
 	}
 
-	@NotNull
-	private GrClosableBlock generateClosure(@NotNull GrMethod method)
+	@Nonnull
+	private GrClosableBlock generateClosure(@Nonnull GrMethod method)
 	{
 		GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(getProject());
 		StringBuilder buffer = new StringBuilder();
@@ -126,7 +126,7 @@ public class GroovyShellLanguageConsoleView extends LanguageConsoleImpl
 	}
 
 	@Nullable
-	private static String importToString(@NotNull GrImportStatement anImport)
+	private static String importToString(@Nonnull GrImportStatement anImport)
 	{
 		StringBuilder buffer = new StringBuilder();
 
@@ -146,9 +146,9 @@ public class GroovyShellLanguageConsoleView extends LanguageConsoleImpl
 		return buffer.toString();
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
-	protected String addToHistoryInner(@NotNull TextRange textRange, @NotNull EditorEx editor, boolean erase, boolean preserveMarkup)
+	protected String addToHistoryInner(@Nonnull TextRange textRange, @Nonnull EditorEx editor, boolean erase, boolean preserveMarkup)
 	{
 		final String result = super.addToHistoryInner(textRange, editor, erase, preserveMarkup);
 

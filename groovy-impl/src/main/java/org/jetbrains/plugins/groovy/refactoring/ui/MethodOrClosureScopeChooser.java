@@ -39,8 +39,8 @@ import com.intellij.ui.components.JBList;
 import com.intellij.util.PairFunction;
 import icons.JetgroovyIcons;
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrParametersOwner;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
@@ -194,8 +194,8 @@ public class MethodOrClosureScopeChooser {
     }
   }
 
-  @Nullable
-  public static GrVariable findVariableToUse(@NotNull GrParametersOwner owner) {
+  @javax.annotation.Nullable
+  public static GrVariable findVariableToUse(@Nonnull GrParametersOwner owner) {
     final PsiElement parent = owner.getParent();
     if (parent instanceof GrVariable) return (GrVariable)parent;
     if (parent instanceof GrAssignmentExpression &&

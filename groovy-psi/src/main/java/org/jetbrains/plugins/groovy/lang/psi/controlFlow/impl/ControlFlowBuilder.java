@@ -25,8 +25,8 @@ import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.containers.ContainerUtil;
 import com.intellij.util.containers.hash.HashSet;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.codeInspection.utils.ControlFlowUtils;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFileBase;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
@@ -134,7 +134,7 @@ public class ControlFlowBuilder extends GroovyRecursiveElementVisitor {
   }
 
 
-  private void handlePossibleReturn(@NotNull GrStatement possibleReturn) {
+  private void handlePossibleReturn(@Nonnull GrStatement possibleReturn) {
     if (possibleReturn instanceof GrExpression && ControlFlowBuilderUtil.isCertainlyReturnStatement(possibleReturn)) {
       addNodeAndCheckPending(new MaybeReturnInstruction((GrExpression)possibleReturn));
     }
@@ -347,7 +347,7 @@ public class ControlFlowBuilder extends GroovyRecursiveElementVisitor {
   }
 
   @Nullable
-  private static PsiType getNominalTypeNoRecursion(@NotNull final GrExpression expression) {
+  private static PsiType getNominalTypeNoRecursion(@Nonnull final GrExpression expression) {
     if (expression instanceof GrNewExpression) {
       return expression.getType();
     }
@@ -358,7 +358,7 @@ public class ControlFlowBuilder extends GroovyRecursiveElementVisitor {
   }
 
   @Nullable
-  private static PsiType getTypeByRef(@NotNull GrReferenceExpression invoked) {
+  private static PsiType getTypeByRef(@Nonnull GrReferenceExpression invoked) {
 
     final GroovyResolveResult[] results = ControlFlowBuilderUtil.resolveNonQualifiedRefWithoutFlow(invoked);
     if (results.length == 1) {
@@ -454,7 +454,7 @@ public class ControlFlowBuilder extends GroovyRecursiveElementVisitor {
     }
   }
 
-  @Nullable
+  @javax.annotation.Nullable
   private InstructionImpl reduceAllNegationsIntoInstruction(GroovyPsiElement currentScope, List<? extends GotoInstruction> negations) {
     if (negations.size() > 1) {
       InstructionImpl instruction = addNode(new InstructionImpl(currentScope));
@@ -707,7 +707,7 @@ public class ControlFlowBuilder extends GroovyRecursiveElementVisitor {
     myConditions.push(conditionStart);
   }
 
-  private void acceptNullable(@Nullable GroovyPsiElement element) {
+  private void acceptNullable(@javax.annotation.Nullable GroovyPsiElement element) {
     if (element != null) {
       element.accept(this);
     }
@@ -741,13 +741,13 @@ public class ControlFlowBuilder extends GroovyRecursiveElementVisitor {
     finishNode(start);
   }
 
-  private void processForLoopInitializer(@Nullable GrForClause clause) {
+  private void processForLoopInitializer(@javax.annotation.Nullable GrForClause clause) {
     GroovyPsiElement initializer = clause instanceof GrTraditionalForClause ? ((GrTraditionalForClause)clause).getInitialization() :
                                    clause instanceof GrForInClause ? ((GrForInClause)clause).getIteratedExpression() : null;
     acceptNullable(initializer);
   }
 
-  private void addForLoopBreakingEdge(GrForStatement forStatement, @Nullable GrForClause clause) {
+  private void addForLoopBreakingEdge(GrForStatement forStatement, @javax.annotation.Nullable GrForClause clause) {
     if (clause instanceof GrTraditionalForClause) {
       final GrExpression condition = ((GrTraditionalForClause)clause).getCondition();
       if (condition != null) {
@@ -772,8 +772,8 @@ public class ControlFlowBuilder extends GroovyRecursiveElementVisitor {
   }
 
 
-  @NotNull
-  private List<Pair<InstructionImpl, GroovyPsiElement>> collectCorrespondingPendingEdges(@Nullable PsiElement currentScope) {
+  @Nonnull
+  private List<Pair<InstructionImpl, GroovyPsiElement>> collectCorrespondingPendingEdges(@javax.annotation.Nullable PsiElement currentScope) {
     if (currentScope == null) {
       List<Pair<InstructionImpl, GroovyPsiElement>> result = myPending;
       myPending = ContainerUtil.newArrayList();
@@ -798,7 +798,7 @@ public class ControlFlowBuilder extends GroovyRecursiveElementVisitor {
     }
   }
 
-  private void checkPending(@NotNull InstructionImpl instruction) {
+  private void checkPending(@Nonnull InstructionImpl instruction) {
     final PsiElement element = instruction.getElement();
     List<Pair<InstructionImpl, GroovyPsiElement>> target = collectCorrespondingPendingEdges(element);
     for (Pair<InstructionImpl, GroovyPsiElement> pair : target) {
@@ -1103,7 +1103,7 @@ public class ControlFlowBuilder extends GroovyRecursiveElementVisitor {
     return afterCall;
   }
 
-  private InstructionImpl startNode(@Nullable GroovyPsiElement element) {
+  private InstructionImpl startNode(@javax.annotation.Nullable GroovyPsiElement element) {
     return startNode(element, true);
   }
 

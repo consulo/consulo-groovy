@@ -1,12 +1,13 @@
 package org.jetbrains.plugins.groovy.intentions.declaration;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.groovy.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.intentions.base.PsiElementPredicate;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrAssignmentExpression;
@@ -21,7 +22,7 @@ import org.jetbrains.plugins.groovy.refactoring.introduce.variable.GrIntroduceVa
  */
 public class GrIntroduceLocalVariableIntention extends Intention {
 
-  protected PsiElement getTargetExpression(@NotNull PsiElement element) {
+  protected PsiElement getTargetExpression(@Nonnull PsiElement element) {
     if (isTargetVisible(element)) {
       return element;
     }
@@ -47,12 +48,12 @@ public class GrIntroduceLocalVariableIntention extends Intention {
   }
 
   @Override
-  protected void processIntention(@NotNull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
+  protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
     setSelection(editor, getTargetExpression(element));
     new GrIntroduceVariableHandler().invoke(project, editor, element.getContainingFile(), null);
   }
 
-  @NotNull
+  @Nonnull
   @Override
   protected PsiElementPredicate getElementPredicate() {
     return new PsiElementPredicate() {

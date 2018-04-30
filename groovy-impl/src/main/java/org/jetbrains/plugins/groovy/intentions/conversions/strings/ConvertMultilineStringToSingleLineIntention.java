@@ -15,7 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.intentions.conversions.strings;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.intentions.GroovyIntentionsBundle;
 import org.jetbrains.plugins.groovy.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.intentions.base.PsiElementPredicate;
@@ -46,7 +47,7 @@ public class ConvertMultilineStringToSingleLineIntention extends Intention
 			".intention.name");
 
 	@Override
-	protected void processIntention(@NotNull PsiElement element,
+	protected void processIntention(@Nonnull PsiElement element,
 			Project project,
 			Editor editor) throws IncorrectOperationException
 	{
@@ -135,7 +136,7 @@ public class ConvertMultilineStringToSingleLineIntention extends Intention
 		}
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	protected PsiElementPredicate getElementPredicate()
 	{

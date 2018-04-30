@@ -16,7 +16,8 @@
 
 package org.jetbrains.plugins.groovy.lang.groovydoc.parser;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.groovydoc.parser.parsing.GroovyDocParsing;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.PsiBuilder;
@@ -28,8 +29,8 @@ import consulo.lang.LanguageVersion;
  * @author ilyas
  */
 public class GroovyDocParser implements PsiParser {
-  @NotNull
-  public ASTNode parse(@NotNull IElementType root, @NotNull PsiBuilder builder, @NotNull LanguageVersion languageVersion) {
+  @Nonnull
+  public ASTNode parse(@Nonnull IElementType root, @Nonnull PsiBuilder builder, @Nonnull LanguageVersion languageVersion) {
     PsiBuilder.Marker rootMarker = builder.mark();
     new GroovyDocParsing().parse(builder);
     rootMarker.done(root);

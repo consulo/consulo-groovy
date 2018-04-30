@@ -18,7 +18,7 @@ package org.jetbrains.plugins.groovy.refactoring.convertToJava;
 import com.intellij.psi.CommonClassNames;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 
 /**
  * @author Maxim.Medvedev

@@ -17,9 +17,11 @@ package org.jetbrains.plugins.groovy.util.dynamicMembers;
 
 import java.util.Map;
 
+import javax.annotation.Nonnull;
+
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.extensions.NamedArgumentDescriptor;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocComment;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
@@ -82,7 +84,7 @@ public class GrDynamicPropertyImpl extends LightElement implements GrField
 		return false;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public PsiElement getNavigationElement()
 	{
@@ -102,14 +104,14 @@ public class GrDynamicPropertyImpl extends LightElement implements GrField
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public String getName()
 	{
 		return myField.getName();
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public PsiType getType()
 	{
 		return myField.getType();
@@ -128,7 +130,7 @@ public class GrDynamicPropertyImpl extends LightElement implements GrField
 	}
 
 	@Override
-	public boolean hasModifierProperty(@NonNls @NotNull String name)
+	public boolean hasModifierProperty(@NonNls @Nonnull String name)
 	{
 		return myField.hasModifierProperty(name);
 	}
@@ -146,7 +148,7 @@ public class GrDynamicPropertyImpl extends LightElement implements GrField
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public PsiIdentifier getNameIdentifier()
 	{
 		return myField.getNameIdentifier();
@@ -171,7 +173,7 @@ public class GrDynamicPropertyImpl extends LightElement implements GrField
 	}
 
 	@Override
-	public PsiElement setName(@NonNls @NotNull String name) throws IncorrectOperationException
+	public PsiElement setName(@NonNls @Nonnull String name) throws IncorrectOperationException
 	{
 		return this;
 	}
@@ -183,7 +185,7 @@ public class GrDynamicPropertyImpl extends LightElement implements GrField
 	}
 
 	@Override
-	public void accept(@NotNull PsiElementVisitor visitor)
+	public void accept(@Nonnull PsiElementVisitor visitor)
 	{
 
 	}
@@ -195,7 +197,7 @@ public class GrDynamicPropertyImpl extends LightElement implements GrField
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public PsiElement getNameIdentifierGroovy()
 	{
 		return myField.getNameIdentifierGroovy();
@@ -248,7 +250,7 @@ public class GrDynamicPropertyImpl extends LightElement implements GrField
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public GrAccessorMethod[] getGetters()
 	{
 		return myField.getGetters();
@@ -261,7 +263,7 @@ public class GrDynamicPropertyImpl extends LightElement implements GrField
 	}
 
 	@Override
-	@NotNull
+	@Nonnull
 	public Map<String, NamedArgumentDescriptor> getNamedParameters()
 	{
 		return myField.getNamedParameters();

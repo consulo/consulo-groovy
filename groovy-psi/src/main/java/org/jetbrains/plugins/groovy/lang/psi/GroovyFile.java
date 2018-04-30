@@ -15,8 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.toplevel.imports.GrImportStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.toplevel.packaging.GrPackageDefinition;
 import com.intellij.psi.PsiType;
@@ -29,7 +29,7 @@ public interface GroovyFile extends GroovyFileBase {
 
   GrImportStatement[] getImportStatements();
 
-  @NotNull
+  @Nonnull
   String getPackageName();
 
   @Nullable
