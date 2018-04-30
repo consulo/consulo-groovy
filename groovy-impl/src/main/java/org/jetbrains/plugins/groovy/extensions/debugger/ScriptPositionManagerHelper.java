@@ -16,6 +16,7 @@
 package org.jetbrains.plugins.groovy.extensions.debugger;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import com.intellij.openapi.extensions.ExtensionPointName;
@@ -46,7 +47,7 @@ public abstract class ScriptPositionManagerHelper
 		return false;
 	}
 
-	@javax.annotation.Nullable
+	@Nullable
 	public String getOriginalScriptName(@Nonnull ReferenceType refType, @Nonnull final String runtimeName)
 	{
 		return null;
@@ -63,7 +64,7 @@ public abstract class ScriptPositionManagerHelper
 	/**
 	 * @return Runtime script name
 	 */
-	@javax.annotation.Nullable
+	@Nullable
 	public String getRuntimeScriptName(@Nonnull GroovyFile groovyFile)
 	{
 		return null;
@@ -72,7 +73,7 @@ public abstract class ScriptPositionManagerHelper
 	/**
 	 * @return Possible script to debug through in project scope if there wer not found other by standarrd methods
 	 */
-	@javax.annotation.Nullable
+	@Nullable
 	public PsiFile getExtraScriptIfNotFound(@Nonnull ReferenceType refType, @Nonnull String runtimeName, @Nonnull Project project, @Nonnull GlobalSearchScope scope)
 	{
 		return null;
@@ -82,7 +83,7 @@ public abstract class ScriptPositionManagerHelper
 	 * @return fully qualified runtime class name
 	 * @see #getOriginalScriptName(ReferenceType, String)
 	 */
-	@javax.annotation.Nullable
+	@Nullable
 	public String customizeClassName(@Nonnull PsiClass psiClass)
 	{
 		return null;
