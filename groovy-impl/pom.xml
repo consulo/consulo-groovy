@@ -90,7 +90,12 @@
 			<artifactId>org.intellij.groovy-groovy.psi</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>org.intellij.groovy-groovy.intelliLang</artifactId>
+			<version>${project.version}</version>
+			<scope>runtime</scope>
+		</dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>org.intellij.groovy-groovy.spellchecker</artifactId>
