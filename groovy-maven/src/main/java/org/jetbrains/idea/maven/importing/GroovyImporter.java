@@ -9,7 +9,7 @@ import org.jetbrains.idea.maven.project.MavenProjectChanges;
 import org.jetbrains.idea.maven.project.MavenProjectsProcessorTask;
 import org.jetbrains.idea.maven.project.MavenProjectsTree;
 import org.jetbrains.idea.maven.utils.MavenJDOMUtil;
-import org.jetbrains.plugins.groovy.module.extension.GroovyModuleExtension;
+import consulo.groovy.module.extension.GroovyModuleExtension;
 import com.intellij.openapi.module.Module;
 import consulo.maven.importing.MavenImporterFromBuildPlugin;
 

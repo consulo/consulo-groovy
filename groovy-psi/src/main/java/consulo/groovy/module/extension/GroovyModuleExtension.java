@@ -1,4 +1,4 @@
-package org.jetbrains.plugins.groovy.module.extension;
+package consulo.groovy.module.extension;
 
 import javax.annotation.Nonnull;
 

@@ -8,7 +8,7 @@ import java.util.jar.Attributes;
 import java.util.regex.Pattern;
 
 import org.jetbrains.plugins.groovy.GroovyFileTypeLoader;
-import org.jetbrains.plugins.groovy.module.extension.GroovyModuleExtension;
+import consulo.groovy.module.extension.GroovyModuleExtension;
 import com.intellij.execution.Executor;
 import com.intellij.execution.configurations.ModuleRunProfile;
 import com.intellij.execution.configurations.RunConfiguration;

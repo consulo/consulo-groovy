@@ -13,12 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jetbrains.plugins.groovy.griffon.module.extension;
+package consulo.groovy.griffon.module.extension;
 
 import javax.swing.JComponent;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
+import consulo.groovy.griffon.module.extension.GriffonModuleExtension;
 import consulo.module.extension.MutableModuleExtension;
 import consulo.roots.ModuleRootLayer;
 

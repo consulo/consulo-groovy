@@ -1,8 +1,8 @@
-package org.jetbrains.plugins.groovy.griffon.module.extension;
+package consulo.groovy.griffon.module.extension;
 
 import javax.annotation.Nonnull;
 
-import consulo.extension.impl.ModuleExtensionImpl;
+import consulo.module.extension.impl.ModuleExtensionImpl;
 import consulo.roots.ModuleRootLayer;
 
 /**

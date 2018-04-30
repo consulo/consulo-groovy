@@ -266,14 +266,14 @@
 								 parentKey="java"
 								 icon="/icons/groovy/groovy_16x16.png"
 								 name="Groovy"
-								 immutableClass="org.jetbrains.plugins.groovy.module.extension.GroovyModuleExtension"
-								 mutableClass="org.jetbrains.plugins.groovy.module.extension.GroovyMutableModuleExtension"/>
+								 immutableClass="consulo.groovy.module.extension.GroovyModuleExtension"
+								 mutableClass="consulo.groovy.module.extension.GroovyMutableModuleExtension"/>
 		<moduleExtensionProvider key="griffon"
 								 parentKey="groovy"
 								 name="Griffon"
 								 icon="/icons/griffon/griffon.png"
-								 immutableClass="org.jetbrains.plugins.groovy.griffon.module.extension.GriffonModuleExtension"
-								 mutableClass="org.jetbrains.plugins.groovy.griffon.module.extension.GriffonMutableModuleExtension"/>
+								 immutableClass="consulo.groovy.griffon.module.extension.GriffonModuleExtension"
+								 mutableClass="consulo.groovy.griffon.module.extension.GriffonMutableModuleExtension"/>
 
 		<pom.declarationSearcher implementation="org.jetbrains.plugins.groovy.geb.GebContentDeclarationSearcher"/>
 
@@ -513,7 +513,7 @@
 		<referencesSearch implementation="org.jetbrains.plugins.groovy.findUsages.GrAliasedImportedElementSearcher"/>
 		<referencesSearch implementation="org.jetbrains.plugins.groovy.findUsages.AccessorReferencesSearcher"/>
 
-		<iconDescriptorUpdater implementation="org.jetbrains.plugins.groovy.GroovyIconDescriptorUpdater" order="after java" id="groovy"/>
+		<iconDescriptorUpdater implementation="consulo.groovy.GroovyIconDescriptorUpdater" order="after java" id="groovy"/>
 
 		<projectService serviceInterface="org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory"
 						serviceImplementation="org.jetbrains.plugins.groovy.lang.psi.impl.GroovyPsiElementFactoryImpl"/>

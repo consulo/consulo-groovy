@@ -37,7 +37,7 @@ import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.config.GroovyConfigUtils;
 import org.jetbrains.plugins.groovy.extensions.GroovyScriptType;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
-import org.jetbrains.plugins.groovy.module.extension.GroovyModuleExtension;
+import consulo.groovy.module.extension.GroovyModuleExtension;
 import org.jetbrains.plugins.groovy.runner.GroovyScriptUtil;
 import org.jetbrains.plugins.groovy.runner.GroovycOSProcessHandler;
 import com.intellij.compiler.cache.JavaDependencyCache;

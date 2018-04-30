@@ -1,6 +1,8 @@
-package org.jetbrains.plugins.groovy.module.extension;
+package consulo.groovy.module.extension;
 
 import javax.annotation.Nonnull;
+
+import consulo.groovy.module.extension.GroovyModuleExtension;
 import consulo.module.extension.MutableModuleExtension;
 import consulo.roots.ModuleRootLayer;
 

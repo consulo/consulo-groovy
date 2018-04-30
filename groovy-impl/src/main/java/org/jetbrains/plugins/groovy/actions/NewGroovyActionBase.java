@@ -20,7 +20,7 @@ import javax.swing.Icon;
 
 import org.jetbrains.annotations.NonNls;
 import javax.annotation.Nonnull;
-import org.jetbrains.plugins.groovy.module.extension.GroovyModuleExtension;
+import consulo.groovy.module.extension.GroovyModuleExtension;
 import com.intellij.CommonBundle;
 import com.intellij.ide.actions.CreateElementActionBase;
 import com.intellij.openapi.actionSystem.DataContext;

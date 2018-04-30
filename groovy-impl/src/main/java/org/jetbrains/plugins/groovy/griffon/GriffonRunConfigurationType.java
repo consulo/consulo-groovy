@@ -20,7 +20,7 @@ import javax.annotation.Nonnull;
 import javax.swing.Icon;
 
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.plugins.groovy.griffon.module.extension.GriffonModuleExtension;
+import consulo.groovy.griffon.module.extension.GriffonModuleExtension;
 import com.intellij.compiler.options.CompileStepBeforeRun;
 import com.intellij.compiler.options.CompileStepBeforeRunNoErrorCheck;
 import com.intellij.execution.BeforeRunTask;

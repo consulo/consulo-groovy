@@ -27,7 +27,7 @@ import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.GroovyFileTypeLoader;
 import org.jetbrains.plugins.groovy.config.GroovyConfigUtils;
-import org.jetbrains.plugins.groovy.module.extension.GroovyModuleExtension;
+import consulo.groovy.module.extension.GroovyModuleExtension;
 import org.jetbrains.plugins.groovy.util.LibrariesUtil;
 import com.intellij.ide.highlighter.JavaClassFileType;
 import com.intellij.openapi.compiler.CompileContext;
