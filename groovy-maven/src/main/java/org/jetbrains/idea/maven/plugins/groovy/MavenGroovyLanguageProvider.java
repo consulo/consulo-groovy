@@ -15,13 +15,13 @@
  */
 package org.jetbrains.idea.maven.plugins.groovy;
 
-import com.intellij.lang.Language;
-import com.intellij.psi.xml.XmlText;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.idea.maven.dom.model.MavenDomConfiguration;
 import org.jetbrains.idea.maven.plugins.api.MavenParamLanguageProvider;
 import org.jetbrains.plugins.groovy.GroovyFileType;
+import com.intellij.lang.Language;
+import com.intellij.psi.xml.XmlText;
 
 /**
  * @author Sergey Evdokimov

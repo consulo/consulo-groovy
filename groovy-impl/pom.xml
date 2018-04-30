@@ -56,6 +56,7 @@
 						<dependency>org.intellij.intelliLang</dependency>
 						<dependency>com.intellij.spellchecker</dependency>
 						<dependency>com.intellij.regexp</dependency>
+						<dependency>org.jetbrains.idea.maven</dependency>
 					</dependencies>
 					<packaging>
 						<skip>${dev.mode}</skip>
@@ -99,6 +100,12 @@
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>org.intellij.groovy-groovy.spellchecker</artifactId>
+			<version>${project.version}</version>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>org.intellij.groovy-groovy.maven</artifactId>
 			<version>${project.version}</version>
 			<scope>runtime</scope>
 		</dependency>
