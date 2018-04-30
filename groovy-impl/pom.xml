@@ -82,6 +82,14 @@
 	</build>
 
 	<dependencies>
+		<!--just for fix compiling-->
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>org.intellij.groovy-gragent</artifactId>
+			<version>${project.version}</version>
+			<scope>provided</scope>
+		</dependency>
+
 		<dependency>
 			<groupId>org.codehaus.groovy</groupId>
 			<artifactId>groovy-all</artifactId>
