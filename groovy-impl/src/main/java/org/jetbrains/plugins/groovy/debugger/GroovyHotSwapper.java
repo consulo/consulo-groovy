@@ -11,7 +11,6 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.GroovyFileTypeLoader;
 import org.jetbrains.plugins.groovy.module.extension.GroovyModuleExtension;
 import com.intellij.execution.Executor;
-import com.intellij.execution.configurations.JavaParameters;
 import com.intellij.execution.configurations.ModuleRunProfile;
 import com.intellij.execution.configurations.RunConfiguration;
 import com.intellij.execution.configurations.RunProfile;
@@ -31,6 +30,7 @@ import com.intellij.psi.search.FilenameIndex;
 import com.intellij.psi.search.GlobalSearchScope;
 import consulo.java.execution.configurations.OwnJavaParameters;
 import consulo.java.module.extension.JavaModuleExtension;
+import consulo.platform.Platform;
 
 
 /**
@@ -167,7 +167,7 @@ public class GroovyHotSwapper extends JavaProgramPatcher
 			if(dir.getAbsolutePath().contains(" "))
 			{
 				LOG.info("Groovy hot-swap not used since the agent path contains spaces: " + agentPath + "\n" +
-						"One can move the agent to a directory with no spaces in path and specify its path in <IDEA dist>/bin/idea.properties as " + GROOVY_HOTSWAP_AGENT_PATH + "=<path>");
+						"One can move the agent to a directory with no spaces in path and specify its path in <Consulo dist>/bin/idea.properties as " + GROOVY_HOTSWAP_AGENT_PATH + "=<path>");
 				return null;
 			}
 
@@ -187,13 +187,12 @@ public class GroovyHotSwapper extends JavaProgramPatcher
 
 	private static String getAgentJarPath()
 	{
-		final String userDefined = System.getProperty(GROOVY_HOTSWAP_AGENT_PATH);
+		final String userDefined = Platform.current().getRuntimeProperty(GROOVY_HOTSWAP_AGENT_PATH);
 		if(userDefined != null && new File(userDefined).exists())
 		{
 			return userDefined;
 		}
 
-		File pluginPath = PluginManager.getPluginPath(GroovyHotSwapper.class);
-		return FileUtil.toSystemDependentName(new File(pluginPath, "lib/agent/gragent.jar").getPath());
+		return FileUtil.toSystemDependentName(new File(PluginManager.getPluginPath(GroovyHotSwapper.class), "gragent.jar").getPath());
 	}
 }

@@ -48,5 +48,6 @@
 		<module>groovy-psi</module>
 		<module>groovy-intelliLang</module>
 		<module>groovy-maven</module>
+		<module>hotswap/gragent</module>
 	</modules>
 </project>

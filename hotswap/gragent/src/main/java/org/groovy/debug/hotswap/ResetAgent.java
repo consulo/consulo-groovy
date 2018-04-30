@@ -1,13 +1,18 @@
 package org.groovy.debug.hotswap;
 
-import com.tonicsystems.jarjar.asm.*;
-
-import java.lang.String;
 import java.lang.instrument.ClassFileTransformer;
 import java.lang.instrument.IllegalClassFormatException;
 import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Field;
 import java.security.ProtectionDomain;
+
+import org.jetbrains.org.objectweb.asm.ClassReader;
+import org.jetbrains.org.objectweb.asm.ClassVisitor;
+import org.jetbrains.org.objectweb.asm.ClassWriter;
+import org.jetbrains.org.objectweb.asm.FieldVisitor;
+import org.jetbrains.org.objectweb.asm.MethodVisitor;
+import org.jetbrains.org.objectweb.asm.Opcodes;
+import org.jetbrains.org.objectweb.asm.Type;
 
 /**
  * Inspired by GroovyEclipse hot-swap hack (http://jira.codehaus.org/browse/GRECLIPSE-588)
@@ -21,7 +26,7 @@ import java.security.ProtectionDomain;
 public class ResetAgent {
   private static final String timeStampFieldStart = "__timeStamp__239_neverHappen";
   private static final byte[] timeStampFieldStartBytes;
-  
+
   static {
     timeStampFieldStartBytes = new byte[timeStampFieldStart.length()];
     for (int i = 0; i < timeStampFieldStart.length(); i++) {
@@ -76,7 +81,6 @@ public class ResetAgent {
     if (!containsSubArray(newBytes, timeStampFieldStartBytes)) {
       return null;
     }
-    
 
     final boolean[] changed = new boolean[]{false};
     final ClassWriter writer = new ClassWriter(0);
@@ -87,11 +91,12 @@ public class ResetAgent {
     return null;
   }
 
-  private static class TimestampFieldRemover extends ClassAdapter {
+  private static class TimestampFieldRemover extends ClassVisitor
+  {
     private final boolean[] changed;
 
     public TimestampFieldRemover(ClassWriter writer, boolean[] changed) {
-      super(writer);
+      super(Opcodes.API_VERSION, writer);
       this.changed = changed;
     }
 
@@ -110,7 +115,7 @@ public class ResetAgent {
       final MethodVisitor mw = super.visitMethod(i, name, s1, s2, strings);
       if ("<clinit>".equals(name)) {
         //remove field's static initialization
-        return new MethodAdapter(mw) {
+        return new MethodVisitor(Opcodes.API_VERSION, mw) {
           @Override
           public void visitFieldInsn(int opCode, String s, String name, String desc) {
             if (name.startsWith(timeStampFieldStart) && opCode == Opcodes.PUTSTATIC) {

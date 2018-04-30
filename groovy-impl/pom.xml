@@ -61,6 +61,12 @@
 					<packaging>
 						<skip>${dev.mode}</skip>
 						<version>${build.number}</version>
+						<copies>
+							<copy>
+								<artifact>${project.groupId}:org.intellij.groovy-gragent:${project.version}</artifact>
+								<path>gragent.jar</path>
+							</copy>
+						</copies>
 					</packaging>
 				</configuration>
 				<executions>
