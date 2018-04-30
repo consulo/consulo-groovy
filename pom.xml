@@ -44,5 +44,7 @@
 	<modules>
 		<module>groovy-impl</module>
 		<module>groovy-rt</module>
+		<module>groovy-spellchecker</module>
+		<module>groovy-psi</module>
 	</modules>
 </project>

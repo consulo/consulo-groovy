@@ -53,6 +53,9 @@
 						<dependency>consulo.java</dependency>
 						<dependency>com.intellij.xml</dependency>
 						<dependency>com.intellij.properties</dependency>
+						<dependency>org.intellij.intelliLang</dependency>
+						<dependency>com.intellij.spellchecker</dependency>
+						<dependency>com.intellij.regexp</dependency>
 					</dependencies>
 					<packaging>
 						<skip>${dev.mode}</skip>
@@ -64,25 +67,6 @@
 						<phase>package</phase>
 						<goals>
 							<goal>workspace</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.codehaus.gmavenplus</groupId>
-				<artifactId>gmavenplus-plugin</artifactId>
-				<version>1.6</version>
-				<executions>
-					<execution>
-						<goals>
-							<goal>addSources</goal>
-							<goal>addTestSources</goal>
-							<goal>generateStubs</goal>
-							<goal>compile</goal>
-							<goal>generateTestStubs</goal>
-							<goal>compileTests</goal>
-							<goal>removeStubs</goal>
-							<goal>removeTestStubs</goal>
 						</goals>
 					</execution>
 				</executions>
@@ -99,6 +83,11 @@
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>org.intellij.groovy-groovy.rt</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>org.intellij.groovy-groovy.psi</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 

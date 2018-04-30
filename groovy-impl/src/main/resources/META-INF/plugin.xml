@@ -167,7 +167,6 @@
 		<expectedTypesContributor implementation="org.jetbrains.plugins.groovy.gpp.GppExpectedTypesContributor"/>
 		<variableEnhancer implementation="org.jetbrains.plugins.groovy.gpp.GppClosureParameterTypeProvider"/>
 		<classSubstitutor implementation="org.jetbrains.plugins.groovy.gpp.GppClassSubstitutor"/>
-		<positionManagerDelegate implementation="org.jetbrains.plugins.groovy.gpp.GppPositionManager"/>
 
 		<mvc.framework implementation="org.jetbrains.plugins.groovy.griffon.GriffonFramework"/>
 		<groovyFrameworkConfigNotification implementation="org.jetbrains.plugins.groovy.griffon.GriffonConfigureNotification"/>
@@ -1441,6 +1440,8 @@
 								   implementationClass="org.jetbrains.plugins.groovy.codeInspection.GroovyInspectionSuppressor"/>
 
 		<xdebugger.lineBreakpointTypeResolver filetype="Groovy" implementationClass="consulo.java.debugger.JavaLineBreakpointTypeResolver" />
+
+		<editorHighlighterProvider filetype="Groovy" implementationClass="consulo.groovy.highlight.GroovyEditorHighlighterProvider" />
 	</extensions>
 
 	<actions>
@@ -1547,7 +1548,7 @@
 
 			<action id="Griffon.UpdateDependencies" class="org.jetbrains.plugins.groovy.griffon.UpdateGriffonSettingsAction"
 					text="Synchronize Griffon settings"
-					description="Refresh IntelliJ IDEA project structure so that it matches Griffon build settings">
+					description="Refresh Consulo project structure so that it matches Griffon build settings">
 			</action>
 
 			<action id="Mvc.RunTarget" class="org.jetbrains.plugins.groovy.mvc.MvcRunTarget"

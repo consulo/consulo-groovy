@@ -37,9 +37,9 @@ import org.jetbrains.groovy.compiler.rt.GroovycRunner;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.config.GroovyConfigUtils;
 import org.jetbrains.plugins.groovy.extensions.GroovyScriptType;
-import org.jetbrains.plugins.groovy.extensions.GroovyScriptTypeDetector;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.module.extension.GroovyModuleExtension;
+import org.jetbrains.plugins.groovy.runner.GroovyScriptUtil;
 import org.jetbrains.plugins.groovy.runner.GroovycOSProcessHandler;
 import com.intellij.compiler.cache.JavaDependencyCache;
 import com.intellij.compiler.impl.CompilerUtil;
@@ -81,7 +81,6 @@ import com.intellij.openapi.vfs.encoding.EncodingProjectManager;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.util.Chunk;
-import com.intellij.util.Consumer;
 import com.intellij.util.Function;
 import com.intellij.util.PathUtil;
 import com.intellij.util.PathsList;
@@ -486,7 +485,7 @@ public abstract class GroovyCompilerBase implements TranslatingCompiler
 				PsiFile psiFile = manager.findFile(file);
 				if(psiFile instanceof GroovyFile && ((GroovyFile) psiFile).isScript())
 				{
-					final GroovyScriptType scriptType = GroovyScriptTypeDetector.getScriptType((GroovyFile) psiFile);
+					final GroovyScriptType scriptType = GroovyScriptUtil.getScriptType((GroovyFile) psiFile);
 					return scriptType.shouldBeCompiled((GroovyFile) psiFile);
 				}
 				return true;

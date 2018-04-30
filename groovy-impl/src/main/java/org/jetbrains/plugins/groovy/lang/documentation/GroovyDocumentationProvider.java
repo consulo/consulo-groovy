@@ -138,7 +138,7 @@ public class GroovyDocumentationProvider implements CodeDocumentationProvider, E
 			if(!method.isConstructor())
 			{
 				final PsiType substituted = substitutor.substitute(PsiUtil.getSmartReturnType(method));
-				PsiImplUtil.appendTypeString(buffer, substituted, originalElement);
+				appendTypeString0(buffer, substituted, originalElement);
 				buffer.append(" ");
 			}
 			buffer.append(method.getName()).append(" ");
@@ -159,7 +159,7 @@ public class GroovyDocumentationProvider implements CodeDocumentationProvider, E
 				else
 				{
 					PsiType type = parameter.getType();
-					PsiImplUtil.appendTypeString(buffer, substitutor.substitute(type), originalElement);
+					appendTypeString0(buffer, substitutor.substitute(type), originalElement);
 					buffer.append(" ");
 					buffer.append(parameter.getName());
 				}
@@ -171,7 +171,7 @@ public class GroovyDocumentationProvider implements CodeDocumentationProvider, E
 				buffer.append("\nthrows ");
 				for(PsiClassType referencedType : referencedTypes)
 				{
-					PsiImplUtil.appendTypeString(buffer, referencedType, originalElement);
+					appendTypeString0(buffer, referencedType, originalElement);
 					buffer.append(", ");
 				}
 				buffer.delete(buffer.length() - 2, buffer.length());
@@ -200,7 +200,7 @@ public class GroovyDocumentationProvider implements CodeDocumentationProvider, E
 		}
 		final PsiType type = variable instanceof GrVariable ? ((GrVariable) variable).getDeclaredType() : variable
 				.getType();
-		PsiImplUtil.appendTypeString(buffer, calcSubstitutor(originalElement).substitute(type), originalElement);
+		appendTypeString0(buffer, calcSubstitutor(originalElement).substitute(type), originalElement);
 		buffer.append(" ");
 		buffer.append(variable.getName());
 
@@ -253,11 +253,23 @@ public class GroovyDocumentationProvider implements CodeDocumentationProvider, E
 		if(inferredType != null)
 		{
 			buffer.append("[inferred type] ");
-			PsiImplUtil.appendTypeString(buffer, inferredType, originalElement);
+			appendTypeString0(buffer, inferredType, originalElement);
 		}
 		else
 		{
 			buffer.append("[cannot infer type]");
+		}
+	}
+
+	public static void appendTypeString0(StringBuilder buffer, final PsiType type, PsiElement context)
+	{
+		if(type != null)
+		{
+			JavaDocInfoGenerator.generateType(buffer, type, context);
+		}
+		else
+		{
+			buffer.append(GrModifier.DEF);
 		}
 	}
 

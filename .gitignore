@@ -2,4 +2,5 @@
 !/.consulo/codeStyleSettings.xml
 /out
 /target
+.consulo/
 target/

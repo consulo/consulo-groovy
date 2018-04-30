@@ -23,6 +23,7 @@ import javax.swing.Icon;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.plugins.groovy.extensions.GroovyRunnableScriptType;
 import org.jetbrains.plugins.groovy.extensions.GroovyScriptType;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrArgumentLabel;
@@ -47,7 +48,7 @@ import icons.JetgroovyIcons;
 /**
  * @author ilyas
  */
-public class GantScriptType extends GroovyScriptType
+public class GantScriptType extends GroovyRunnableScriptType
 {
 	@NonNls
 	public static final String DEFAULT_EXTENSION = "gant";

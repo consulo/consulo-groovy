@@ -15,6 +15,10 @@
  */
 package org.jetbrains.plugins.groovy.lang.resolve;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.plugins.groovy.GroovyFileType;
+import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
+import org.jetbrains.plugins.groovy.runner.GroovyScriptUtil;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ProjectFileIndex;
@@ -24,10 +28,6 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.ResolveScopeProvider;
 import com.intellij.psi.search.GlobalSearchScope;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.plugins.groovy.GroovyFileType;
-import org.jetbrains.plugins.groovy.extensions.GroovyScriptTypeDetector;
-import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 
 /**
  * @author Max Medvedev
@@ -47,7 +47,7 @@ public class GroovyResolveScopeProvider extends ResolveScopeProvider {
 
     final PsiFile psi = PsiManager.getInstance(project).findFile(file);
     if (psi instanceof GroovyFile && ((GroovyFile)psi).isScript()) {
-      return GroovyScriptTypeDetector.getScriptType((GroovyFile)psi).patchResolveScope((GroovyFile)psi, scope);
+      return GroovyScriptUtil.getScriptType((GroovyFile)psi).patchResolveScope((GroovyFile)psi, scope);
     }
     else {
       return scope;

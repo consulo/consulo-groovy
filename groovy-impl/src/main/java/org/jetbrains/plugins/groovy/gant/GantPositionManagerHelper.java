@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2009 JetBrains s.r.o.
+ * Copyright 2000-2016 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,9 @@
 package org.jetbrains.plugins.groovy.gant;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.plugins.groovy.extensions.GroovyScriptTypeDetector;
 import org.jetbrains.plugins.groovy.extensions.debugger.ScriptPositionManagerHelper;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
+import org.jetbrains.plugins.groovy.runner.GroovyScriptUtil;
 import com.intellij.openapi.progress.ProcessCanceledException;
 import com.intellij.openapi.project.IndexNotReadyException;
 import com.intellij.openapi.project.Project;
@@ -31,50 +31,63 @@ import consulo.internal.com.sun.jdi.ReferenceType;
 /**
  * @author ilyas
  */
-public class GantPositionManagerHelper extends ScriptPositionManagerHelper {
+public class GantPositionManagerHelper extends ScriptPositionManagerHelper
+{
+	@Override
+	public boolean isAppropriateRuntimeName(@NotNull final String runtimeName)
+	{
+		return true;
+	}
 
-  public boolean isAppropriateRuntimeName(@NotNull final String runtimeName) {
-    return true;
-  }
+	@Override
+	public boolean isAppropriateScriptFile(@NotNull final GroovyFile scriptFile)
+	{
+		return GroovyScriptUtil.isSpecificScriptFile(scriptFile, GantScriptType.INSTANCE);
+	}
 
-  public boolean isAppropriateScriptFile(@NotNull final PsiFile scriptFile) {
-    return GroovyScriptTypeDetector.isSpecificScriptFile(scriptFile, GantScriptType.INSTANCE);
-  }
+	@Override
+	public PsiFile getExtraScriptIfNotFound(@NotNull ReferenceType refType, @NotNull final String runtimeName, @NotNull final Project project, @NotNull GlobalSearchScope scope)
+	{
+		try
+		{
+			final String fileName = StringUtil.getShortName(runtimeName);
+			PsiFile[] files = FilenameIndex.getFilesByName(project, fileName + "." + GantScriptType.DEFAULT_EXTENSION, scope);
+			if(files.length == 0)
+			{
+				files = FilenameIndex.getFilesByName(project, fileName + "." + GantScriptType.DEFAULT_EXTENSION, GlobalSearchScope.allScope(project));
+			}
+			if(files.length == 1)
+			{
+				return files[0];
+			}
 
-  @NotNull
-  public String getRuntimeScriptName(@NotNull final String originalName, GroovyFile groovyFile) {
-    return originalName;
-  }
+			if(files.length == 0)
+			{
+				files = FilenameIndex.getFilesByName(project, fileName + ".groovy", scope);
+				if(files.length == 0)
+				{
+					files = FilenameIndex.getFilesByName(project, fileName + "." + GantScriptType.DEFAULT_EXTENSION, GlobalSearchScope.allScope(project));
+				}
 
-  public PsiFile getExtraScriptIfNotFound(ReferenceType refType,
-                                          @NotNull final String runtimeName,
-                                          final Project project,
-                                          GlobalSearchScope scope) {
-    try {
-      final String fileName = StringUtil.getShortName(runtimeName);
-      PsiFile[] files = FilenameIndex.getFilesByName(project, fileName + "." + GantScriptType.DEFAULT_EXTENSION, scope);
-      if (files.length == 0) files = FilenameIndex.getFilesByName(project, fileName + "." + GantScriptType.DEFAULT_EXTENSION, GlobalSearchScope.allScope(project));
-      if (files.length == 1) return files[0];
+				PsiFile candidate = null;
+				for(PsiFile file : files)
+				{
+					if(GroovyScriptUtil.isSpecificScriptFile(file, GantScriptType.INSTANCE))
+					{
+						if(candidate != null)
+						{
+							return null;
+						}
+						candidate = file;
+					}
+				}
 
-      if (files.length == 0) {
-        files = FilenameIndex.getFilesByName(project, fileName + ".groovy", scope);
-        if (files.length == 0) files = FilenameIndex.getFilesByName(project, fileName + "." + GantScriptType.DEFAULT_EXTENSION, GlobalSearchScope.allScope(project));
-
-        PsiFile candidate = null;
-        for (PsiFile file : files) {
-          if (GroovyScriptTypeDetector.isSpecificScriptFile(file, GantScriptType.INSTANCE)) {
-            if (candidate != null) return null;
-            candidate = file;
-          }
-        }
-
-        return candidate;
-      }
-    }
-    catch (ProcessCanceledException ignored) {
-    }
-    catch (IndexNotReadyException ignored) {
-    }
-    return null;
-  }
+				return candidate;
+			}
+		}
+		catch(ProcessCanceledException | IndexNotReadyException ignored)
+		{
+		}
+		return null;
+	}
 }

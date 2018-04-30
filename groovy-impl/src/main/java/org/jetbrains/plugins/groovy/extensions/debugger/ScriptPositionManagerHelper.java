@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2009 JetBrains s.r.o.
+ * Copyright 2000-2016 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,36 +30,61 @@ import consulo.internal.com.sun.jdi.ReferenceType;
  *
  * @author ilyas
  */
-public abstract class ScriptPositionManagerHelper {
-  public static final ExtensionPointName<ScriptPositionManagerHelper> EP_NAME = ExtensionPointName.create("org.intellij.groovy.positionManagerDelegate");
+public abstract class ScriptPositionManagerHelper
+{
+	public static final ExtensionPointName<ScriptPositionManagerHelper> EP_NAME = ExtensionPointName.create("org.intellij.groovy.positionManagerDelegate");
 
-  public abstract boolean isAppropriateRuntimeName(@NotNull String runtimeName);
+	/**
+	 * @param runtimeName runtime name of class
+	 * @return true if extension may provide {@link ScriptPositionManagerHelper#getOriginalScriptName(ReferenceType, String) original}
+	 * fully qualified script name or find {@link PsiFile}
+	 * {@link ScriptPositionManagerHelper#getExtraScriptIfNotFound(ReferenceType, String, Project, GlobalSearchScope) corresponding}
+	 * to this runtime name
+	 */
+	public boolean isAppropriateRuntimeName(@NotNull String runtimeName)
+	{
+		return false;
+	}
 
-  @NotNull
-  public String getOriginalScriptName(ReferenceType refType, @NotNull final String runtimeName) {
-    return runtimeName;
-  }
+	@Nullable
+	public String getOriginalScriptName(@NotNull ReferenceType refType, @NotNull final String runtimeName)
+	{
+		return null;
+	}
 
-  public abstract boolean isAppropriateScriptFile(@NotNull PsiFile scriptFile);
+	/**
+	 * @return true if extension may compute runtime script name given script file
+	 */
+	public boolean isAppropriateScriptFile(@NotNull GroovyFile scriptFile)
+	{
+		return false;
+	}
 
-  /**
-   * @return Runtime script name
-   */
-  @NotNull
-  public abstract String getRuntimeScriptName(@NotNull String originalName, GroovyFile groovyFile);
+	/**
+	 * @return Runtime script name
+	 */
+	@Nullable
+	public String getRuntimeScriptName(@NotNull GroovyFile groovyFile)
+	{
+		return null;
+	}
 
+	/**
+	 * @return Possible script to debug through in project scope if there wer not found other by standarrd methods
+	 */
+	@Nullable
+	public PsiFile getExtraScriptIfNotFound(@NotNull ReferenceType refType, @NotNull String runtimeName, @NotNull Project project, @NotNull GlobalSearchScope scope)
+	{
+		return null;
+	}
 
-  /**
-   * @return Posiible script to debug through in project scope if there wer not found other by standarrd methods
-   */
-  @Nullable
-  public abstract PsiFile getExtraScriptIfNotFound(ReferenceType refType,
-                                                   @NotNull String runtimeName,
-                                                   Project project,
-                                                   GlobalSearchScope scope);
-
-  @Nullable
-  public String customizeClassName(PsiClass psiClass) {
-    return null;
-  }
+	/**
+	 * @return fully qualified runtime class name
+	 * @see #getOriginalScriptName(ReferenceType, String)
+	 */
+	@Nullable
+	public String customizeClassName(@NotNull PsiClass psiClass)
+	{
+		return null;
+	}
 }

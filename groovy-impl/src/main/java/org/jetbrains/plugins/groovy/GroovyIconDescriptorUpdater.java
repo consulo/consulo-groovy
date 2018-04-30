@@ -47,7 +47,7 @@ public class GroovyIconDescriptorUpdater implements IconDescriptorUpdater
 			}
 			else
 			{
-				iconDescriptor.setMainIcon(GroovyScriptTypeDetector.getScriptType(file).getScriptIcon());
+				iconDescriptor.setMainIcon(GroovyScriptTypeDetector.getIcon(file));
 			}
 		}
 		else if(element instanceof GrTypeDefinition)
