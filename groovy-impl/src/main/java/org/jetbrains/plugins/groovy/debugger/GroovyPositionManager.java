@@ -38,7 +38,6 @@ import com.intellij.debugger.engine.DebugProcess;
 import com.intellij.debugger.engine.DebugProcessImpl;
 import com.intellij.debugger.engine.jdi.VirtualMachineProxy;
 import com.intellij.debugger.requests.ClassPrepareRequestor;
-import com.intellij.openapi.application.AccessToken;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.module.impl.scopes.ModuleWithDependenciesScope;
@@ -52,6 +51,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
+import consulo.application.AccessRule;
 import consulo.internal.com.sun.jdi.AbsentInformationException;
 import consulo.internal.com.sun.jdi.Location;
 import consulo.internal.com.sun.jdi.ReferenceType;
@@ -158,9 +158,7 @@ public class GroovyPositionManager implements PositionManager
 	@Nullable
 	private static String findEnclosingName(final SourcePosition position)
 	{
-		AccessToken accessToken = ApplicationManager.getApplication().acquireReadActionLock();
-
-		try
+		return AccessRule.read(() ->
 		{
 			GrTypeDefinition typeDefinition = findEnclosingTypeDefinition(position);
 			if(typeDefinition != null)
@@ -168,19 +166,13 @@ public class GroovyPositionManager implements PositionManager
 				return getClassNameForJvm(typeDefinition);
 			}
 			return getScriptQualifiedName(position);
-		}
-		finally
-		{
-			accessToken.finish();
-		}
+		});
 	}
 
 	@Nullable
 	private static String getOuterClassName(final SourcePosition position)
 	{
-		AccessToken accessToken = ApplicationManager.getApplication().acquireReadActionLock();
-
-		try
+		return AccessRule.read(() ->
 		{
 			GroovyPsiElement sourceImage = findReferenceTypeSourceImage(position);
 			if(sourceImage instanceof GrTypeDefinition)
@@ -192,11 +184,7 @@ public class GroovyPositionManager implements PositionManager
 				return getScriptQualifiedName(position);
 			}
 			return null;
-		}
-		finally
-		{
-			accessToken.finish();
-		}
+		});
 	}
 
 	@Nullable

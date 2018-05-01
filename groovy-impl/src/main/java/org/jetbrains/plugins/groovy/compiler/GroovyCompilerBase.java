@@ -37,7 +37,6 @@ import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.config.GroovyConfigUtils;
 import org.jetbrains.plugins.groovy.extensions.GroovyScriptType;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
-import consulo.groovy.module.extension.GroovyModuleExtension;
 import org.jetbrains.plugins.groovy.runner.GroovyScriptUtil;
 import org.jetbrains.plugins.groovy.runner.GroovycOSProcessHandler;
 import com.intellij.compiler.cache.JavaDependencyCache;
@@ -49,8 +48,6 @@ import com.intellij.compiler.make.CacheCorruptedException;
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.configurations.GeneralCommandLine;
 import com.intellij.ide.highlighter.JavaFileType;
-import com.intellij.openapi.application.AccessToken;
-import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.application.PathManager;
 import com.intellij.openapi.compiler.CompileContext;
 import com.intellij.openapi.compiler.CompilerMessageCategory;
@@ -87,9 +84,11 @@ import com.intellij.util.SmartList;
 import com.intellij.util.cls.ClsFormatException;
 import com.intellij.util.containers.ContainerUtil;
 import com.intellij.util.net.HttpConfigurable;
+import consulo.application.AccessRule;
 import consulo.compiler.impl.TranslatingCompilerFilesMonitor;
 import consulo.compiler.impl.resourceCompiler.ResourceCompilerConfiguration;
 import consulo.compiler.roots.CompilerPathsImpl;
+import consulo.groovy.module.extension.GroovyModuleExtension;
 import consulo.java.execution.configurations.OwnJavaParameters;
 import consulo.java.module.extension.JavaModuleExtension;
 import consulo.java.projectRoots.OwnJdkUtil;
@@ -107,13 +106,7 @@ public abstract class GroovyCompilerBase implements TranslatingCompiler
 		myProject = project;
 	}
 
-	protected void runGroovycCompiler(final CompileContext compileContext,
-			final Module module,
-			final List<VirtualFile> toCompile,
-			boolean forStubs,
-			VirtualFile outputDir,
-			OutputSink sink,
-			boolean tests)
+	protected void runGroovycCompiler(final CompileContext compileContext, final Module module, final List<VirtualFile> toCompile, boolean forStubs, VirtualFile outputDir, OutputSink sink, boolean tests)
 	{
 		//assert !ApplicationManager.getApplication().isDispatchThread();
 		final Sdk sdk = ModuleUtilCore.getSdk(module, JavaModuleExtension.class);
@@ -143,19 +136,14 @@ public abstract class GroovyCompilerBase implements TranslatingCompiler
 
 		final List<String> patchers = new SmartList<String>();
 
-		AccessToken accessToken = ApplicationManager.getApplication().acquireReadActionLock();
-		try
+		AccessRule.read(() ->
 		{
 			for(final GroovyCompilerExtension extension : GroovyCompilerExtension.EP_NAME.getExtensions())
 			{
 				extension.enhanceCompilationClassPath(chunk, classPathBuilder);
 				patchers.addAll(extension.getCompilationUnitPatchers(chunk));
 			}
-		}
-		finally
-		{
-			accessToken.finish();
-		}
+		});
 
 		final boolean profileGroovyc = "true".equals(System.getProperty("profile.groovy.compiler"));
 		if(profileGroovyc)
@@ -220,8 +208,7 @@ public abstract class GroovyCompilerBase implements TranslatingCompiler
 		final File fileWithParameters;
 		try
 		{
-			fileWithParameters = GroovycOSProcessHandler.fillFileWithGroovycParameters(outputDir.getPath(), paths2Compile, FileUtil.toSystemDependentName(finalOutputDir.getPath()), class2Src,
-					encoding, patchers);
+			fileWithParameters = GroovycOSProcessHandler.fillFileWithGroovycParameters(outputDir.getPath(), paths2Compile, FileUtil.toSystemDependentName(finalOutputDir.getPath()), class2Src, encoding, patchers);
 		}
 		catch(IOException e)
 		{
@@ -255,8 +242,7 @@ public abstract class GroovyCompilerBase implements TranslatingCompiler
 			for(CompilerMessage compilerMessage : processHandler.getCompilerMessages(module.getName()))
 			{
 				final String url = compilerMessage.getUrl();
-				compileContext.addMessage(getMessageCategory(compilerMessage), compilerMessage.getMessage(), url == null ? null : VfsUtil.pathToUrl(FileUtil.toSystemIndependentName(url)), (int)
-						compilerMessage.getLineNum(), (int) compilerMessage.getColumnNum());
+				compileContext.addMessage(getMessageCategory(compilerMessage), compilerMessage.getMessage(), url == null ? null : VfsUtil.pathToUrl(FileUtil.toSystemIndependentName(url)), (int) compilerMessage.getLineNum(), (int) compilerMessage.getColumnNum());
 			}
 
 			List<GroovycOSProcessHandler.OutputItem> outputItems = processHandler.getSuccessfullyCompiled();
@@ -337,20 +323,13 @@ public abstract class GroovyCompilerBase implements TranslatingCompiler
 			{
 				if(!vfile.isDirectory() && GroovyFileType.GROOVY_FILE_TYPE.equals(vfile.getFileType()))
 				{
-
-					AccessToken accessToken = ApplicationManager.getApplication().acquireReadActionLock();
-
-					try
+					AccessRule.read(() ->
 					{
 						if(PsiManager.getInstance(myProject).findFile(vfile) instanceof GroovyFile)
 						{
 							moduleClasses.add(vfile);
 						}
-					}
-					finally
-					{
-						accessToken.finish();
-					}
+					});
 				}
 				return true;
 			}
@@ -477,9 +456,7 @@ public abstract class GroovyCompilerBase implements TranslatingCompiler
 		final FileType fileType = file.getFileType();
 		if(fileType == GroovyFileType.GROOVY_FILE_TYPE)
 		{
-			AccessToken accessToken = ApplicationManager.getApplication().acquireReadActionLock();
-
-			try
+			return AccessRule.read(() ->
 			{
 				PsiFile psiFile = manager.findFile(file);
 				if(psiFile instanceof GroovyFile && ((GroovyFile) psiFile).isScript())
@@ -488,11 +465,7 @@ public abstract class GroovyCompilerBase implements TranslatingCompiler
 					return scriptType.shouldBeCompiled((GroovyFile) psiFile);
 				}
 				return true;
-			}
-			finally
-			{
-				accessToken.finish();
-			}
+			});
 		}
 
 		return fileType == JavaFileType.INSTANCE;

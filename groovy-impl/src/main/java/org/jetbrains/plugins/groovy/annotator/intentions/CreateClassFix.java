@@ -18,7 +18,6 @@ package org.jetbrains.plugins.groovy.annotator.intentions;
 
 import javax.annotation.Nonnull;
 
-import consulo.psi.PsiPackage;
 import org.jetbrains.plugins.groovy.actions.GroovyTemplates;
 import org.jetbrains.plugins.groovy.intentions.GroovyIntentionsBundle;
 import org.jetbrains.plugins.groovy.intentions.base.IntentionUtils;
@@ -53,6 +52,8 @@ import com.intellij.psi.*;
 import com.intellij.psi.codeStyle.JavaCodeStyleManager;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
+import consulo.application.AccessRule;
+import consulo.psi.PsiPackage;
 
 /**
  * @author ilyas
@@ -241,9 +242,7 @@ public abstract class CreateClassFix
 					return;
 				}
 
-
-				AccessToken lock = ApplicationManager.getApplication().acquireWriteActionLock(CreateClassFix.class);
-				try
+				AccessRule.write(() ->
 				{
 					FileModificationService.getInstance().preparePsiElementForWrite(resolved);
 
@@ -254,11 +253,7 @@ public abstract class CreateClassFix
 						modifierList.setModifierProperty(PsiModifier.STATIC, true);
 					}
 					IntentionUtils.positionCursor(project, added.getContainingFile(), added);
-				}
-				finally
-				{
-					lock.finish();
-				}
+				});
 			}
 
 			@javax.annotation.Nullable

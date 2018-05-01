@@ -72,6 +72,7 @@ import com.intellij.util.Chunk;
 import com.intellij.util.Processor;
 import com.intellij.util.containers.ContainerUtil;
 import com.intellij.util.containers.FactoryMap;
+import consulo.application.AccessRule;
 import consulo.roots.ContentFolderScopes;
 import consulo.roots.impl.ProductionContentFolderTypeProvider;
 import consulo.roots.impl.TestContentFolderTypeProvider;
@@ -322,16 +323,7 @@ public class GroovycStubGenerator extends GroovyCompilerBase
 
 		final Map<String, CharSequence> output;
 
-		AccessToken accessToken = ApplicationManager.getApplication().acquireReadActionLock();
-
-		try
-		{
-			output = generator.generateStubs((GroovyFile) PsiManager.getInstance(project).findFile(item));
-		}
-		finally
-		{
-			accessToken.finish();
-		}
+		output =  AccessRule.read(() -> generator.generateStubs((GroovyFile) PsiManager.getInstance(project).findFile(item)));
 
 		return writeStubs(outputRootDirectory, output, item);
 	}
