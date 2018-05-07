@@ -21,6 +21,7 @@ import javax.swing.Icon;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import com.intellij.openapi.extensions.ExtensionPointName;
 import com.intellij.psi.search.GlobalSearchScope;
+import consulo.awt.TargetAWT;
 import icons.JetgroovyIcons;
 
 /**
@@ -65,7 +66,7 @@ public abstract class GroovyScriptTypeDetector
 			}
 		}
 
-		return JetgroovyIcons.Groovy.Groovy_16x16;
+		return TargetAWT.to(JetgroovyIcons.Groovy.Groovy_16x16);
 	}
 
 	public static GlobalSearchScope patchResolveScope(@Nonnull GroovyFile script, GlobalSearchScope scope)

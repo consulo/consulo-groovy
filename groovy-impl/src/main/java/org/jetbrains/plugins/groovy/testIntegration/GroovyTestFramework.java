@@ -33,6 +33,7 @@ import com.intellij.psi.util.InheritanceUtil;
 import com.intellij.psi.util.PsiUtil;
 import com.intellij.testIntegration.JavaTestFramework;
 import com.intellij.util.IncorrectOperationException;
+import consulo.awt.TargetAWT;
 import icons.JetgroovyIcons;
 
 /**
@@ -135,7 +136,7 @@ public class GroovyTestFramework extends JavaTestFramework
 	@Override
 	public Icon getIcon()
 	{
-		return JetgroovyIcons.Groovy.Groovy_16x16;
+		return TargetAWT.to(JetgroovyIcons.Groovy.Groovy_16x16);
 	}
 
 	@Override

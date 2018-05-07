@@ -22,6 +22,7 @@ import javax.swing.Icon;
 import org.jetbrains.annotations.NonNls;
 import com.intellij.lang.Language;
 import com.intellij.openapi.fileTypes.LanguageFileType;
+import consulo.ui.image.Image;
 import icons.JetgroovyIcons;
 
 /**
@@ -42,7 +43,7 @@ public class GroovyFileType extends LanguageFileType {
 
   @Nonnull
   @NonNls
-  public String getName() {
+  public String getId() {
     return "Groovy";
   }
 
@@ -58,7 +59,7 @@ public class GroovyFileType extends LanguageFileType {
     return DEFAULT_EXTENSION;
   }
 
-  public Icon getIcon() {
+  public Image getIcon() {
     return JetgroovyIcons.Groovy.Groovy_16x16;
   }
 }

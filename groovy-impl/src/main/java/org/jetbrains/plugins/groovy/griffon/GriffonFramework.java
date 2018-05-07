@@ -28,11 +28,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.swing.Icon;
 
 import org.jetbrains.annotations.NonNls;
-
-import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.mvc.MvcCommand;
 import org.jetbrains.plugins.groovy.mvc.MvcFramework;
@@ -64,6 +63,7 @@ import com.intellij.openapi.vfs.VfsUtilCore;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
+import consulo.awt.TargetAWT;
 import consulo.java.execution.configurations.OwnJavaParameters;
 import consulo.java.module.extension.JavaModuleExtension;
 import consulo.vfs.util.ArchiveVfsUtil;
@@ -425,7 +425,7 @@ public class GriffonFramework extends MvcFramework
 	@Override
 	public Icon getIcon()
 	{
-		return JetgroovyIcons.Griffon.Griffon;
+		return TargetAWT.to(JetgroovyIcons.Griffon.Griffon);
 	}
 
 	@Override

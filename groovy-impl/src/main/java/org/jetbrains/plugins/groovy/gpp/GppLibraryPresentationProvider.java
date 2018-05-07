@@ -15,6 +15,16 @@
  */
 package org.jetbrains.plugins.groovy.gpp;
 
+import java.io.File;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.swing.Icon;
+
+import org.jetbrains.annotations.Nls;
+import org.jetbrains.plugins.groovy.config.GroovyLibraryPresentationProviderBase;
 import com.intellij.openapi.roots.OrderRootType;
 import com.intellij.openapi.roots.libraries.LibraryKind;
 import com.intellij.openapi.roots.ui.configuration.libraryEditor.LibraryEditor;
@@ -22,16 +32,8 @@ import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
+import consulo.awt.TargetAWT;
 import icons.JetgroovyIcons;
-import org.jetbrains.annotations.Nls;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import org.jetbrains.plugins.groovy.config.GroovyLibraryPresentationProviderBase;
-
-import javax.swing.*;
-import java.io.File;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * @author nik
@@ -103,7 +105,7 @@ public class GppLibraryPresentationProvider extends GroovyLibraryPresentationPro
   @Nonnull
   @Override
   public Icon getIcon() {
-    return JetgroovyIcons.Groovy.Groovy_16x16;
+    return TargetAWT.to(JetgroovyIcons.Groovy.Groovy_16x16);
   }
 
   @Nonnull

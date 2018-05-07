@@ -20,12 +20,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.swing.Icon;
 
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NonNls;
-
-import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.config.GroovyLibraryPresentationProviderBase;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.roots.LibraryOrderEntry;
@@ -37,6 +36,7 @@ import com.intellij.openapi.roots.ui.configuration.libraryEditor.LibraryEditor;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
+import consulo.awt.TargetAWT;
 import icons.JetgroovyIcons;
 
 /**
@@ -155,7 +155,7 @@ public class GriffonLibraryPresentationProvider extends GroovyLibraryPresentatio
   @Nonnull
   @Override
   public Icon getIcon() {
-    return JetgroovyIcons.Griffon.Griffon;
+    return TargetAWT.to(JetgroovyIcons.Griffon.Griffon);
   }
 
   @Nls

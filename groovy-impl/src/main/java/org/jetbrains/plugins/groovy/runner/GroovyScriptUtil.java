@@ -23,6 +23,7 @@ import org.jetbrains.plugins.groovy.extensions.GroovyScriptType;
 import org.jetbrains.plugins.groovy.extensions.GroovyScriptTypeDetector;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import com.intellij.psi.PsiFile;
+import consulo.awt.TargetAWT;
 import icons.JetgroovyIcons;
 
 public class GroovyScriptUtil
@@ -39,7 +40,7 @@ public class GroovyScriptUtil
 		@Override
 		public Icon getScriptIcon()
 		{
-			return JetgroovyIcons.Groovy.Groovy_16x16;
+			return TargetAWT.to(JetgroovyIcons.Groovy.Groovy_16x16);
 		}
 
 		@Override

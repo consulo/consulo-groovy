@@ -16,6 +16,18 @@
 
 package org.jetbrains.plugins.groovy.griffon;
 
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Nonnull;
+import javax.swing.Icon;
+
+import org.jetbrains.plugins.groovy.mvc.projectView.AbstractMvcPsiNodeDescriptor;
+import org.jetbrains.plugins.groovy.mvc.projectView.FileNode;
+import org.jetbrains.plugins.groovy.mvc.projectView.MvcProjectViewState;
+import org.jetbrains.plugins.groovy.mvc.projectView.MvcToolWindowDescriptor;
+import org.jetbrains.plugins.groovy.mvc.projectView.TestsTopLevelDirectoryNode;
+import org.jetbrains.plugins.groovy.mvc.projectView.TopLevelDirectoryNode;
 import com.intellij.icons.AllIcons;
 import com.intellij.ide.projectView.ViewSettings;
 import com.intellij.ide.util.treeView.AbstractTreeNode;
@@ -28,13 +40,8 @@ import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.util.containers.hash.LinkedHashMap;
+import consulo.awt.TargetAWT;
 import icons.JetgroovyIcons;
-import javax.annotation.Nonnull;
-import org.jetbrains.plugins.groovy.mvc.projectView.*;
-
-import javax.swing.*;
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author peter
@@ -63,12 +70,12 @@ public class GriffonToolWindowFactory extends MvcToolWindowDescriptor {
     // add standard source folder
     final PsiDirectory srcMain = findDirectory(project, root, "src/main");
     if (srcMain != null) {
-      result.add(new TopLevelDirectoryNode(module, srcMain, viewSettings, "Project Sources", JetgroovyIcons.Groovy.Groovy_16x16,
+      result.add(new TopLevelDirectoryNode(module, srcMain, viewSettings, "Project Sources", TargetAWT.to(JetgroovyIcons.Groovy.Groovy_16x16),
                                            AbstractMvcPsiNodeDescriptor.SRC_FOLDERS));
     }
     final PsiDirectory srcCli = findDirectory(project, root, "src/cli");
     if (srcCli != null) {
-      result.add(new TopLevelDirectoryNode(module, srcCli, viewSettings, "Build Sources", JetgroovyIcons.Groovy.Groovy_16x16,
+      result.add(new TopLevelDirectoryNode(module, srcCli, viewSettings, "Build Sources", TargetAWT.to(JetgroovyIcons.Groovy.Groovy_16x16),
                                            AbstractMvcPsiNodeDescriptor.SRC_FOLDERS));
     }
 
@@ -124,7 +131,7 @@ public class GriffonToolWindowFactory extends MvcToolWindowDescriptor {
 
   @Override
   public Icon getModuleNodeIcon() {
-    return JetgroovyIcons.Griffon.Griffon;
+    return TargetAWT.to(JetgroovyIcons.Griffon.Griffon);
   }
 
   @Nonnull
@@ -137,10 +144,10 @@ public class GriffonToolWindowFactory extends MvcToolWindowDescriptor {
 
   static {
     DIRECTORY_METADATA.put("models", new GriffonDirectoryMetadata("Models", JetgroovyIcons.Mvc.ModelsNode, 20));
-    DIRECTORY_METADATA.put("views", new GriffonDirectoryMetadata("Views", JetgroovyIcons.Groovy.Groovy_16x16, 30));
+    DIRECTORY_METADATA.put("views", new GriffonDirectoryMetadata("Views", TargetAWT.to(JetgroovyIcons.Groovy.Groovy_16x16), 30));
     DIRECTORY_METADATA.put("controllers", new GriffonDirectoryMetadata("Controllers", AllIcons.Nodes.KeymapTools, 40));
     DIRECTORY_METADATA.put("services", new GriffonDirectoryMetadata("Services", JetgroovyIcons.Mvc.Service, 50));
-    DIRECTORY_METADATA.put("lifecycle", new GriffonDirectoryMetadata("Lifecycle", JetgroovyIcons.Groovy.Groovy_16x16, 60));
+    DIRECTORY_METADATA.put("lifecycle", new GriffonDirectoryMetadata("Lifecycle", TargetAWT.to(JetgroovyIcons.Groovy.Groovy_16x16), 60));
     DIRECTORY_METADATA.put("conf", new GriffonDirectoryMetadata("Configuration", JetgroovyIcons.Mvc.Config_folder_closed, 65));
   }
 

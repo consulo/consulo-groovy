@@ -44,13 +44,6 @@ public class GroovyColorsAndFontsPage implements ColorSettingsPage
 	}
 
 	@Override
-	@Nullable
-	public Icon getIcon()
-	{
-		return JetgroovyIcons.Groovy.Groovy_16x16;
-	}
-
-	@Override
 	@Nonnull
 	public AttributesDescriptor[] getAttributeDescriptors()
 	{

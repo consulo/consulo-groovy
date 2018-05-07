@@ -31,6 +31,7 @@ import com.intellij.execution.configurations.RunConfiguration;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Key;
 import consulo.module.extension.ModuleExtensionHelper;
+import consulo.ui.image.Image;
 import icons.JetgroovyIcons;
 
 public class GriffonRunConfigurationType implements ConfigurationType
@@ -76,7 +77,7 @@ public class GriffonRunConfigurationType implements ConfigurationType
 		return GRIFFON_APPLICATION;
 	}
 
-	public Icon getIcon()
+	public Image getIcon()
 	{
 		return JetgroovyIcons.Griffon.Griffon;
 	}

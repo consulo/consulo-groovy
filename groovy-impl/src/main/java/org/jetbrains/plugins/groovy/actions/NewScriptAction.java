@@ -32,6 +32,7 @@ import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
+import consulo.awt.TargetAWT;
 import icons.JetgroovyIcons;
 
 public class NewScriptAction extends JavaCreateTemplateInPackageAction<GroovyFile> implements DumbAware
@@ -40,15 +41,15 @@ public class NewScriptAction extends JavaCreateTemplateInPackageAction<GroovyFil
 	public NewScriptAction()
 	{
 		super(GroovyBundle.message("newscript.menu.action.text"), GroovyBundle.message("newscript.menu.action" +
-				".description"), JetgroovyIcons.Groovy.Groovy_16x16, false);
+				".description"), TargetAWT.to(JetgroovyIcons.Groovy.Groovy_16x16), false);
 	}
 
 	@Override
 	protected void buildDialog(Project project, PsiDirectory directory, CreateFileFromTemplateDialog.Builder builder)
 	{
 		builder.setTitle(GroovyBundle.message("newscript.dlg.prompt")).addKind("Groovy script",
-				JetgroovyIcons.Groovy.Groovy_16x16, GroovyTemplates.GROOVY_SCRIPT).addKind("GroovyDSL script",
-				JetgroovyIcons.Groovy.Groovy_16x16, GroovyTemplates.GROOVY_DSL_SCRIPT);
+				TargetAWT.to(JetgroovyIcons.Groovy.Groovy_16x16), GroovyTemplates.GROOVY_SCRIPT).addKind("GroovyDSL script",
+				TargetAWT.to(JetgroovyIcons.Groovy.Groovy_16x16), GroovyTemplates.GROOVY_DSL_SCRIPT);
 	}
 
 	@Override

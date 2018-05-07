@@ -17,16 +17,16 @@
 package org.jetbrains.plugins.groovy.runner;
 
 import javax.annotation.Nonnull;
-import javax.swing.Icon;
 
 import org.jetbrains.annotations.NonNls;
-import consulo.groovy.module.extension.GroovyModuleExtension;
 import com.intellij.execution.configurations.ConfigurationFactory;
 import com.intellij.execution.configurations.ConfigurationType;
 import com.intellij.execution.configurations.ConfigurationTypeUtil;
 import com.intellij.execution.configurations.RunConfiguration;
 import com.intellij.openapi.project.Project;
+import consulo.groovy.module.extension.GroovyModuleExtension;
 import consulo.module.extension.ModuleExtensionHelper;
+import consulo.ui.image.Image;
 import icons.JetgroovyIcons;
 
 public class GroovyScriptRunConfigurationType implements ConfigurationType
@@ -48,7 +48,7 @@ public class GroovyScriptRunConfigurationType implements ConfigurationType
 		return "Groovy Class or Script";
 	}
 
-	public Icon getIcon()
+	public Image getIcon()
 	{
 		return JetgroovyIcons.Groovy.Groovy_16x16;
 	}
