@@ -27,7 +27,6 @@ import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.GroovyFileTypeLoader;
 import org.jetbrains.plugins.groovy.config.GroovyConfigUtils;
-import consulo.groovy.module.extension.GroovyModuleExtension;
 import org.jetbrains.plugins.groovy.util.LibrariesUtil;
 import com.intellij.ide.highlighter.JavaClassFileType;
 import com.intellij.openapi.compiler.CompileContext;
@@ -47,7 +46,9 @@ import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.search.FilenameIndex;
 import com.intellij.psi.search.GlobalSearchScope;
+import consulo.awt.TargetAWT;
 import consulo.compiler.impl.resourceCompiler.ResourceCompilerConfiguration;
+import consulo.groovy.module.extension.GroovyModuleExtension;
 import consulo.java.module.extension.JavaModuleExtension;
 import icons.JetgroovyIcons;
 
@@ -156,7 +157,7 @@ public class GroovyCompiler extends GroovyCompilerBase
 		{
 			final int result = Messages.showYesNoDialog(myProject, "You seem to have global Groovy AST transformations defined in your project,\n" + "but they won't be applied to your code because " +
 					"they are not marked as compiler resources.\n" + "Do you want to add them to compiler resource list?\n" + "(you can do it yourself later in Settings | Compiler | Resource " +
-					"patterns)", "AST Transformations Found", JetgroovyIcons.Groovy.Groovy_32x32);
+					"patterns)", "AST Transformations Found", TargetAWT.to(JetgroovyIcons.Groovy.Groovy_32x32));
 			if(result == 0)
 			{
 				ResourceCompilerConfiguration.getInstance(myProject).addResourceFilePattern(AST_TRANSFORM_FILE_NAME);

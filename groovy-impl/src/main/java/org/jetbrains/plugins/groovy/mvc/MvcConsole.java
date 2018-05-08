@@ -23,12 +23,11 @@ import java.util.List;
 import java.util.Queue;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
 import org.jetbrains.annotations.NonNls;
-
-import javax.annotation.Nullable;
 import com.intellij.execution.configurations.GeneralCommandLine;
 import com.intellij.execution.filters.TextConsoleBuilderFactory;
 import com.intellij.execution.impl.ConsoleViewImpl;
@@ -66,6 +65,7 @@ import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
 import com.intellij.ui.content.ContentManager;
 import com.intellij.util.containers.ContainerUtil;
+import consulo.awt.TargetAWT;
 import icons.JetgroovyIcons;
 
 public class MvcConsole implements Disposable {
@@ -93,7 +93,7 @@ public class MvcConsole implements Disposable {
     Disposer.register(this, myConsole);
 
     myToolWindow = ToolWindowManager.getInstance(myProject).registerToolWindow(TOOL_WINDOW_ID, false, ToolWindowAnchor.BOTTOM, this, true);
-    myToolWindow.setIcon(JetgroovyIcons.Groovy.Groovy_13x13);
+    myToolWindow.setIcon(TargetAWT.to(JetgroovyIcons.Groovy.Groovy_13x13));
 
     myContent = setUpToolWindow();
   }
@@ -313,7 +313,7 @@ public class MvcConsole implements Disposable {
     myKillAction.setHandler(handler);
 
     final MvcFramework framework = MvcFramework.getInstance(module);
-    myToolWindow.setIcon(framework == null ? JetgroovyIcons.Groovy.Groovy_13x13 : framework.getToolWindowIcon());
+    myToolWindow.setIcon(framework == null ? TargetAWT.to(JetgroovyIcons.Groovy.Groovy_13x13) : framework.getToolWindowIcon());
 
     myContent.setDisplayName((framework == null ? "" : framework.getDisplayName() + ":") + "Executing...");
     myConsole.scrollToEnd();

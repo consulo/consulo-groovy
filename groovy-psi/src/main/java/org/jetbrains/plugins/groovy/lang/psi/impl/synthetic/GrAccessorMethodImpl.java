@@ -16,16 +16,8 @@
 package org.jetbrains.plugins.groovy.lang.psi.impl.synthetic;
 
 import javax.annotation.Nonnull;
-
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.*;
-import com.intellij.psi.impl.light.LightMethodBuilder;
-import com.intellij.psi.impl.light.LightModifierList;
-import com.intellij.psi.impl.light.LightParameterListBuilder;
-import icons.JetgroovyIcons;
-
 import javax.annotation.Nullable;
+
 import org.jetbrains.plugins.groovy.GroovyLanguage;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
@@ -35,6 +27,19 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUt
 import org.jetbrains.plugins.groovy.lang.psi.util.GrTraitUtil;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyPropertyUtils;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
+import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.psi.PsiClass;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiField;
+import com.intellij.psi.PsiMethod;
+import com.intellij.psi.PsiModifier;
+import com.intellij.psi.PsiType;
+import com.intellij.psi.impl.light.LightMethodBuilder;
+import com.intellij.psi.impl.light.LightModifierList;
+import com.intellij.psi.impl.light.LightParameterListBuilder;
+import consulo.awt.TargetAWT;
+import icons.JetgroovyIcons;
 
 /**
  * @author ven
@@ -85,7 +90,7 @@ public class GrAccessorMethodImpl extends LightMethodBuilder implements GrAccess
     }
 
     setNavigationElement(property);
-    setBaseIcon(JetgroovyIcons.Groovy.Property);
+    setBaseIcon(TargetAWT.to(JetgroovyIcons.Groovy.Property));
 
     setContainingClass(myProperty.getContainingClass());
     setMethodKind("AccessorMethod");

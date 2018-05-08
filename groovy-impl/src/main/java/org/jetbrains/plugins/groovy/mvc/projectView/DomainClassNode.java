@@ -2,12 +2,13 @@ package org.jetbrains.plugins.groovy.mvc.projectView;
 
 import javax.annotation.Nonnull;
 
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
 import com.intellij.ide.projectView.PresentationData;
 import com.intellij.ide.projectView.ViewSettings;
 import com.intellij.openapi.module.Module;
 import com.intellij.psi.PsiElement;
+import consulo.awt.TargetAWT;
 import icons.JetgroovyIcons;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
 
 /**
  * @author Dmitry Krasilschikov
@@ -27,7 +28,7 @@ public class DomainClassNode extends ClassNode {
   @Override
   protected void updateImpl(final PresentationData data) {
     super.updateImpl(data);
-    data.setIcon(JetgroovyIcons.Mvc.Domain_class);
+    data.setIcon(TargetAWT.to(JetgroovyIcons.Mvc.Domain_class));
   }
 
   @Override

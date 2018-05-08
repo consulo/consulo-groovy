@@ -114,8 +114,7 @@ public class MethodOrClosureScopeChooser {
                                             PsiFormatUtilBase.SHOW_NAME |
                                             PsiFormatUtilBase.SHOW_PARAMETERS,
                                             PsiFormatUtilBase.SHOW_TYPE);
-          final Icon icon = IconDescriptorUpdaters.getIcon(method, Iconable.ICON_FLAG_VISIBILITY);
-          if (icon != null) setIcon(icon);
+          setIcon(TargetAWT.to(IconDescriptorUpdaters.getIcon(method, Iconable.ICON_FLAG_VISIBILITY)));
         }
         else {
           LOG.assertTrue(value instanceof GrClosableBlock);

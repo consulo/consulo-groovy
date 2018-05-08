@@ -32,6 +32,7 @@ import com.intellij.psi.util.CachedValue;
 import com.intellij.psi.util.CachedValueProvider;
 import com.intellij.psi.util.CachedValuesManager;
 import com.intellij.psi.util.PsiModificationTracker;
+import consulo.awt.TargetAWT;
 import icons.JetgroovyIcons;
 
 /**
@@ -57,7 +58,7 @@ public class GrGdkMethodImpl extends LightMethodBuilder implements GrGdkMethod {
     }
 
     setMethodReturnType(method.getReturnType());
-    setBaseIcon(JetgroovyIcons.Groovy.Method);
+    setBaseIcon(TargetAWT.to(JetgroovyIcons.Groovy.Method));
     setMethodKind("GrGdkMethod");
 
     if (originInfo != null) {

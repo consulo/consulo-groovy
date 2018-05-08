@@ -108,6 +108,7 @@ import com.intellij.util.ui.AbstractTableCellEditor;
 import com.intellij.util.ui.ColumnInfo;
 import com.intellij.util.ui.UIUtil;
 import com.intellij.util.ui.tree.TreeUtil;
+import consulo.awt.TargetAWT;
 import icons.JetgroovyIcons;
 
 /**
@@ -147,7 +148,7 @@ public class DynamicToolWindowWrapper {
   public ToolWindow getToolWindow() {
     if (myToolWindow == null) {
       myToolWindow = ToolWindowManager.getInstance(myProject).registerToolWindow(GroovyBundle.message("dynamic.tool.window.id"), true, ToolWindowAnchor.RIGHT);
-      myToolWindow.setIcon(JetgroovyIcons.Groovy.DynamicProperty_13);
+      myToolWindow.setIcon(TargetAWT.to(JetgroovyIcons.Groovy.DynamicProperty_13));
       myToolWindow.setTitle(GroovyBundle.message("dynamic.window"));
       myToolWindow.setToHideOnEmptyContent(true);
 

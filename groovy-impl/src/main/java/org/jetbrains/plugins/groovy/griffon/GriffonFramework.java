@@ -431,7 +431,7 @@ public class GriffonFramework extends MvcFramework
 	@Override
 	public Icon getToolWindowIcon()
 	{
-		return JetgroovyIcons.Griffon.GriffonToolWindow;
+		return TargetAWT.to(JetgroovyIcons.Griffon.GriffonToolWindow);
 	}
 
 	@Override

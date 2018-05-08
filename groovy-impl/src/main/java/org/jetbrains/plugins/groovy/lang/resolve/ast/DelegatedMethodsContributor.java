@@ -51,6 +51,7 @@ import com.intellij.psi.util.PsiUtil;
 import com.intellij.psi.util.TypeConversionUtil;
 import com.intellij.util.containers.ContainerUtil;
 import com.intellij.util.containers.hash.HashSet;
+import consulo.awt.TargetAWT;
 import icons.JetgroovyIcons;
 
 /**
@@ -480,7 +481,7 @@ public class DelegatedMethodsContributor extends AstTransformContributor
 			}
 			builder.addParameter(lightParameter);
 		}
-		builder.setBaseIcon(JetgroovyIcons.Groovy.Method);
+		builder.setBaseIcon(TargetAWT.to(JetgroovyIcons.Groovy.Method));
 
 		return new DelegatedMethod(builder, method);
 	}

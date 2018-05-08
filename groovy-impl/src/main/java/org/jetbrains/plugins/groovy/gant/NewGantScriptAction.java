@@ -15,8 +15,9 @@
  */
 package org.jetbrains.plugins.groovy.gant;
 
-import org.jetbrains.annotations.NonNls;
 import javax.annotation.Nonnull;
+
+import org.jetbrains.annotations.NonNls;
 import org.jetbrains.plugins.groovy.actions.GroovyTemplates;
 import org.jetbrains.plugins.groovy.actions.GroovyTemplatesFactory;
 import org.jetbrains.plugins.groovy.actions.NewGroovyActionBase;
@@ -29,6 +30,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.ObjectUtil;
 import consulo.annotations.RequiredReadAction;
+import consulo.awt.TargetAWT;
 import icons.JetgroovyIcons;
 
 /**
@@ -36,10 +38,9 @@ import icons.JetgroovyIcons;
  */
 public class NewGantScriptAction extends NewGroovyActionBase
 {
-
 	public NewGantScriptAction()
 	{
-		super("Gant Script", "Create new Gant Script", JetgroovyIcons.Groovy.Gant_16x16);
+		super("Gant Script", "Create new Gant Script", TargetAWT.to(JetgroovyIcons.Groovy.Gant_16x16));
 	}
 
 	@Override

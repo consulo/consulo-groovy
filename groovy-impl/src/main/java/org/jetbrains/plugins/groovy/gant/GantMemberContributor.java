@@ -16,6 +16,7 @@
 package org.jetbrains.plugins.groovy.gant;
 
 import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrArgumentLabel;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlock;
@@ -38,6 +39,7 @@ import com.intellij.psi.impl.light.LightMethodBuilder;
 import com.intellij.psi.impl.light.LightVariableBuilder;
 import com.intellij.psi.scope.PsiScopeProcessor;
 import com.intellij.psi.util.PsiTreeUtil;
+import consulo.awt.TargetAWT;
 import icons.JetgroovyIcons;
 
 /**
@@ -46,11 +48,7 @@ import icons.JetgroovyIcons;
 public class GantMemberContributor extends NonCodeMembersContributor
 {
 	@Override
-	public void processDynamicElements(@Nonnull PsiType qualifierType,
-			PsiClass aClass,
-			@Nonnull PsiScopeProcessor processor,
-			@Nonnull PsiElement place,
-			@Nonnull ResolveState state)
+	public void processDynamicElements(@Nonnull PsiType qualifierType, PsiClass aClass, @Nonnull PsiScopeProcessor processor, @Nonnull PsiElement place, @Nonnull ResolveState state)
 	{
 		if(aClass != null && ClassUtil.getSuperClassesWithCache(aClass).containsKey("groovy.util.AntBuilder"))
 		{
@@ -105,9 +103,8 @@ public class GantMemberContributor extends NonCodeMembersContributor
 				final String targetName = label.getName();
 				if(targetName != null)
 				{
-					final PsiNamedElement variable = new LightVariableBuilder(targetName,
-							GroovyCommonClassNames.GROOVY_LANG_CLOSURE, label).
-							setBaseIcon(JetgroovyIcons.Groovy.Gant_target);
+					final PsiNamedElement variable = new LightVariableBuilder(targetName, GroovyCommonClassNames.GROOVY_LANG_CLOSURE, label).
+							setBaseIcon(TargetAWT.to(JetgroovyIcons.Groovy.Gant_target));
 					if(!ResolveUtil.processElement(processor, variable, state))
 					{
 						return;

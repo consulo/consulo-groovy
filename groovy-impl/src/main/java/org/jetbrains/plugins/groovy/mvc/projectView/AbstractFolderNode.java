@@ -1,6 +1,15 @@
 package org.jetbrains.plugins.groovy.mvc.projectView;
 
-import consulo.ide.IconDescriptorUpdaters;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
 import com.intellij.ide.projectView.PresentationData;
 import com.intellij.ide.projectView.ViewSettings;
 import com.intellij.ide.util.treeView.AbstractTreeNode;
@@ -14,15 +23,8 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import consulo.awt.TargetAWT;
+import consulo.ide.IconDescriptorUpdaters;
 
 /**
  * @author Dmitry Krasilschikov
@@ -119,7 +121,7 @@ public class AbstractFolderNode extends AbstractMvcPsiNodeDescriptor {
     final PsiDirectory psiDirectory = getPsiDirectory();
 
     data.setPresentableText(myPresentableText);
-    data.setIcon(IconDescriptorUpdaters.getIcon(psiDirectory, 0));
+    data.setIcon(TargetAWT.to(IconDescriptorUpdaters.getIcon(psiDirectory, 0)));
   }
 
   @Override

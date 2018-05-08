@@ -28,6 +28,7 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefini
 import org.jetbrains.plugins.groovy.overrideImplement.GroovyOverrideImplementExploreUtil;
 import com.intellij.codeInsight.completion.CompletionContributor;
 import com.intellij.codeInsight.completion.CompletionParameters;
+import consulo.awt.TargetAWT;
 import consulo.codeInsight.completion.CompletionProvider;
 import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.completion.CompletionType;
@@ -83,7 +84,7 @@ class GrMethodOverrideCompletionProvider implements CompletionProvider
       if (method.isConstructor()) continue;
 
       RowIcon icon = new RowIcon(2);
-      icon.setIcon(IconDescriptorUpdaters.getIcon(method, 0), 0);
+      icon.setIcon(TargetAWT.to(IconDescriptorUpdaters.getIcon(method, 0)), 0);
       icon.setIcon(toImplement ? AllIcons.Gutter.ImplementingMethod : AllIcons.Gutter.OverridingMethod, 1);
 
       PsiSubstitutor substitutor = candidateInfo.getSubstitutor();

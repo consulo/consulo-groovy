@@ -19,11 +19,9 @@ import java.util.Collections;
 import java.util.List;
 
 import javax.annotation.Nonnull;
-import javax.swing.Icon;
+import javax.annotation.Nullable;
 
 import org.jetbrains.annotations.NonNls;
-
-import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.extensions.GroovyRunnableScriptType;
 import org.jetbrains.plugins.groovy.extensions.GroovyScriptType;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
@@ -44,6 +42,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.NonClasspathDirectoriesScope;
+import consulo.ui.image.Image;
 import icons.JetgroovyIcons;
 
 /**
@@ -62,7 +61,7 @@ public class GantScriptType extends GroovyRunnableScriptType
 	}
 
 	@Nonnull
-	public Icon getScriptIcon()
+	public Image getScriptIcon()
 	{
 		return JetgroovyIcons.Groovy.Gant_16x16;
 	}

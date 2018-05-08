@@ -1,6 +1,10 @@
 package org.jetbrains.plugins.groovy.mvc.projectView;
 
-import consulo.ide.IconDescriptorUpdaters;
+import java.util.Collection;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import com.intellij.ide.projectView.PresentationData;
 import com.intellij.ide.projectView.ViewSettings;
 import com.intellij.ide.projectView.impl.nodes.PsiFileNode;
@@ -9,10 +13,8 @@ import com.intellij.openapi.module.Module;
 import com.intellij.openapi.util.Iconable;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import java.util.Collection;
+import consulo.awt.TargetAWT;
+import consulo.ide.IconDescriptorUpdaters;
 
 /**
  * @author peter
@@ -50,6 +52,6 @@ public class FileNode extends AbstractMvcPsiNodeDescriptor {
     final PsiFile value = extractPsiFromValue();
     assert value != null;
     data.setPresentableText(value.getName());
-    data.setIcon(IconDescriptorUpdaters.getIcon(value, Iconable.ICON_FLAG_READ_STATUS));
+    data.setIcon(TargetAWT.to(IconDescriptorUpdaters.getIcon(value, Iconable.ICON_FLAG_READ_STATUS)));
   }
 }

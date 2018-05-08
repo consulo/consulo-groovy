@@ -16,14 +16,13 @@
 package org.jetbrains.plugins.groovy.runner;
 
 import javax.annotation.Nonnull;
-import javax.swing.Icon;
 
 import org.jetbrains.plugins.groovy.extensions.GroovyRunnableScriptType;
 import org.jetbrains.plugins.groovy.extensions.GroovyScriptType;
 import org.jetbrains.plugins.groovy.extensions.GroovyScriptTypeDetector;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import com.intellij.psi.PsiFile;
-import consulo.awt.TargetAWT;
+import consulo.ui.image.Image;
 import icons.JetgroovyIcons;
 
 public class GroovyScriptUtil
@@ -38,9 +37,9 @@ public class GroovyScriptUtil
 
 		@Nonnull
 		@Override
-		public Icon getScriptIcon()
+		public Image getScriptIcon()
 		{
-			return TargetAWT.to(JetgroovyIcons.Groovy.Groovy_16x16);
+			return JetgroovyIcons.Groovy.Groovy_16x16;
 		}
 
 		@Override

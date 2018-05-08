@@ -16,12 +16,11 @@
 package org.jetbrains.plugins.groovy.extensions;
 
 import javax.annotation.Nonnull;
-import javax.swing.Icon;
 
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import com.intellij.openapi.extensions.ExtensionPointName;
 import com.intellij.psi.search.GlobalSearchScope;
-import consulo.awt.TargetAWT;
+import consulo.ui.image.Image;
 import icons.JetgroovyIcons;
 
 /**
@@ -56,7 +55,7 @@ public abstract class GroovyScriptTypeDetector
 	public abstract boolean isSpecificScriptFile(@Nonnull GroovyFile script);
 
 	@Nonnull
-	public static Icon getIcon(@Nonnull GroovyFile script)
+	public static Image getIcon(@Nonnull GroovyFile script)
 	{
 		for(GroovyScriptTypeDetector detector : EP_NAME.getExtensions())
 		{
@@ -66,7 +65,7 @@ public abstract class GroovyScriptTypeDetector
 			}
 		}
 
-		return TargetAWT.to(JetgroovyIcons.Groovy.Groovy_16x16);
+		return JetgroovyIcons.Groovy.Groovy_16x16;
 	}
 
 	public static GlobalSearchScope patchResolveScope(@Nonnull GroovyFile script, GlobalSearchScope scope)

@@ -19,10 +19,10 @@ import java.util.Collections;
 import java.util.List;
 
 import javax.annotation.Nonnull;
-import javax.swing.Icon;
 
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import com.intellij.psi.search.GlobalSearchScope;
+import consulo.ui.image.Image;
 
 /**
  * @author ilyas
@@ -41,7 +41,7 @@ public abstract class GroovyScriptType {
   }
 
   @Nonnull
-  public abstract Icon getScriptIcon();
+  public abstract Image getScriptIcon();
 
   public GlobalSearchScope patchResolveScope(@Nonnull GroovyFile file, @Nonnull GlobalSearchScope baseScope) {
     return baseScope;

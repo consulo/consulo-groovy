@@ -32,6 +32,7 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariableDeclaratio
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeElement;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames;
+import consulo.awt.TargetAWT;
 import consulo.ide.IconDescriptorUpdaters;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.util.Computable;
@@ -559,8 +560,7 @@ public class GroovyScriptClass extends LightElement implements PsiClass, Synthet
 
       @Override
       public Icon getIcon(boolean open) {
-        return IconDescriptorUpdaters.getIcon(GroovyScriptClass.this, Iconable.ICON_FLAG_VISIBILITY |
-				Iconable.ICON_FLAG_READ_STATUS);
+        return TargetAWT.to(IconDescriptorUpdaters.getIcon(GroovyScriptClass.this, Iconable.ICON_FLAG_VISIBILITY | Iconable.ICON_FLAG_READ_STATUS));
       }
     };
   }

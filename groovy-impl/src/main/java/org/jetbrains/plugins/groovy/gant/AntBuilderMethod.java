@@ -15,6 +15,7 @@ import com.intellij.psi.PsiModifier;
 import com.intellij.psi.PsiType;
 import com.intellij.psi.impl.light.LightMethodBuilder;
 import com.intellij.psi.scope.PsiScopeProcessor;
+import consulo.awt.TargetAWT;
 import icons.JetgroovyIcons;
 
 /**
@@ -30,7 +31,7 @@ class AntBuilderMethod extends LightMethodBuilder implements GrBuilderMethod {
     myAntClass = antClass;
     setModifiers(PsiModifier.PUBLIC);
     addParameter("args", GrMapType.create(place.getResolveScope()));
-    setBaseIcon(JetgroovyIcons.Groovy.Ant_task);
+    setBaseIcon(TargetAWT.to(JetgroovyIcons.Groovy.Ant_task));
     addParameter(new GrLightParameter("singleArg", stringType, this).setOptional(true));
     addParameter(new GrLightParameter("body", closureType, this).setOptional(true));
     setMethodReturnType(new Computable<PsiType>() {
