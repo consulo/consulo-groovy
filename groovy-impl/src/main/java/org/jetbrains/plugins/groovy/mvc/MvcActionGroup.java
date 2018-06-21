@@ -6,6 +6,7 @@ import com.intellij.openapi.actionSystem.Presentation;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.DumbAware;
 import com.intellij.openapi.util.Pair;
+import consulo.awt.TargetAWT;
 
 public class MvcActionGroup extends DefaultActionGroup implements DumbAware {
 
@@ -18,7 +19,7 @@ public class MvcActionGroup extends DefaultActionGroup implements DumbAware {
     if (pair != null) {
       presentation.setVisible(true);
       presentation.setText(pair.getFirst().getDisplayName());
-      presentation.setIcon(pair.getFirst().getIcon());
+      presentation.setIcon(TargetAWT.to(pair.getFirst().getIcon()));
     }
     else {
       presentation.setVisible(false);

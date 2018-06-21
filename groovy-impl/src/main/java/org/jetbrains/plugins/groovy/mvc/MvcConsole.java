@@ -65,7 +65,6 @@ import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
 import com.intellij.ui.content.ContentManager;
 import com.intellij.util.containers.ContainerUtil;
-import consulo.awt.TargetAWT;
 import icons.JetgroovyIcons;
 
 public class MvcConsole implements Disposable {
@@ -93,7 +92,7 @@ public class MvcConsole implements Disposable {
     Disposer.register(this, myConsole);
 
     myToolWindow = ToolWindowManager.getInstance(myProject).registerToolWindow(TOOL_WINDOW_ID, false, ToolWindowAnchor.BOTTOM, this, true);
-    myToolWindow.setIcon(TargetAWT.to(JetgroovyIcons.Groovy.Groovy_13x13));
+    myToolWindow.setIcon(JetgroovyIcons.Groovy.Groovy_13x13);
 
     myContent = setUpToolWindow();
   }
@@ -313,7 +312,7 @@ public class MvcConsole implements Disposable {
     myKillAction.setHandler(handler);
 
     final MvcFramework framework = MvcFramework.getInstance(module);
-    myToolWindow.setIcon(framework == null ? TargetAWT.to(JetgroovyIcons.Groovy.Groovy_13x13) : framework.getToolWindowIcon());
+    myToolWindow.setIcon(framework == null ? JetgroovyIcons.Groovy.Groovy_13x13 : framework.getToolWindowIcon());
 
     myContent.setDisplayName((framework == null ? "" : framework.getDisplayName() + ":") + "Executing...");
     myConsole.scrollToEnd();

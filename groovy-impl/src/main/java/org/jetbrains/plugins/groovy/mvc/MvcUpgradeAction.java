@@ -1,5 +1,9 @@
 package org.jetbrains.plugins.groovy.mvc;
 
+import java.util.Arrays;
+
+import javax.annotation.Nonnull;
+
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.roots.LibraryOrderEntry;
@@ -11,9 +15,7 @@ import com.intellij.openapi.roots.ui.configuration.libraries.LibraryPresentation
 import com.intellij.openapi.roots.ui.configuration.projectRoot.LibrariesContainer;
 import com.intellij.openapi.roots.ui.configuration.projectRoot.LibrariesContainerFactory;
 import com.intellij.openapi.vfs.VirtualFile;
-import javax.annotation.Nonnull;
-
-import java.util.Arrays;
+import consulo.awt.TargetAWT;
 
 /**
  * @author peter
@@ -55,7 +57,7 @@ public class MvcUpgradeAction extends MvcActionBase {
 
   @Override
   protected void updateView(AnActionEvent event, @Nonnull MvcFramework framework, @Nonnull Module module) {
-    event.getPresentation().setIcon(framework.getIcon());
+    event.getPresentation().setIcon(TargetAWT.to(framework.getIcon()));
   }
 }
 

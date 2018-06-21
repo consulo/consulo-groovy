@@ -27,11 +27,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.annotation.Nonnull;
-import javax.swing.Icon;
+import javax.annotation.Nullable;
 
 import org.jetbrains.annotations.NonNls;
-
-import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyNamesUtil;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames;
@@ -88,11 +86,13 @@ import com.intellij.psi.xml.XmlTag;
 import com.intellij.util.PathUtil;
 import com.intellij.util.PathsList;
 import com.intellij.util.containers.ContainerUtil;
+import consulo.awt.TargetAWT;
 import consulo.compiler.CompilerPathsManager;
 import consulo.java.execution.configurations.OwnJavaParameters;
 import consulo.java.module.extension.JavaModuleExtension;
 import consulo.roots.ContentFolderScopes;
 import consulo.roots.ContentFolderTypeProvider;
+import consulo.ui.image.Image;
 import consulo.vfs.ArchiveFileSystem;
 import consulo.vfs.util.ArchiveVfsUtil;
 
@@ -179,11 +179,11 @@ public abstract class MvcFramework {
 
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   protected GeneralCommandLine getCreationCommandLine(Module module) {
     String message = "Create default " + getDisplayName() + " directory structure in module '" + module.getName() + "'?";
     final int result = Messages.showDialog(module.getProject(), message, "Create " + getDisplayName() + " application",
-                                           new String[]{"Run 'create-&app'", "Run 'create-&plugin'", "&Cancel"}, 0, getIcon());
+                                           new String[]{"Run 'create-&app'", "Run 'create-&plugin'", "&Cancel"}, 0, TargetAWT.to(getIcon()));
     if (result < 0 || result > 1) {
       return null;
     }
@@ -195,8 +195,8 @@ public abstract class MvcFramework {
 
   public abstract void ensureRunConfigurationExists(@Nonnull Module module);
 
-  @javax.annotation.Nullable
-  public VirtualFile findAppRoot(@javax.annotation.Nullable Module module) {
+  @Nullable
+  public VirtualFile findAppRoot(@Nullable Module module) {
     if (module == null) return null;
 
     String appDirName = getApplicationDirectoryName();
@@ -369,9 +369,9 @@ public abstract class MvcFramework {
   public String getDisplayName() {
     return getFrameworkName();
   }
-  public abstract Icon getIcon(); // 16*16
+  public abstract Image getIcon(); // 16*16
 
-  public abstract Icon getToolWindowIcon(); // 13*13
+  public abstract Image getToolWindowIcon(); // 13*13
 
   public abstract String getSdkHomePropertyName();
 
