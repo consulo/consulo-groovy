@@ -22,7 +22,6 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.swing.Icon;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -84,7 +83,7 @@ import com.intellij.ui.content.ContentManager;
 import com.intellij.util.IJSwingUtilities;
 import com.intellij.util.containers.ContainerUtil;
 import com.intellij.util.ui.tree.TreeUtil;
-import consulo.awt.TargetAWT;
+import consulo.ui.image.Image;
 
 /**
  * @author Dmitry Krasislchikov
@@ -213,9 +212,9 @@ public class MvcProjectViewPane extends AbstractProjectViewPSIPane implements Id
 		throw new UnsupportedOperationException();
 	}
 
-	public Icon getIcon()
+	public Image getIcon()
 	{
-		return TargetAWT.to(myDescriptor.getFramework().getIcon());
+		return myDescriptor.getFramework().getIcon();
 	}
 
 	@Nonnull
