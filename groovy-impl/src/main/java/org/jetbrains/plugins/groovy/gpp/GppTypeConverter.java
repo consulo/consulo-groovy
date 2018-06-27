@@ -17,9 +17,6 @@ package org.jetbrains.plugins.groovy.gpp;
 
 import javax.annotation.Nonnull;
 
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.*;
-import com.intellij.psi.util.PsiUtil;
 import org.jetbrains.plugins.groovy.dsl.toplevel.AnnotatedContextFilter;
 import org.jetbrains.plugins.groovy.findUsages.LiteralConstructorReference;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
@@ -31,6 +28,13 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.GrTupleType;
 import org.jetbrains.plugins.groovy.lang.psi.impl.signatures.GrClosureSignatureUtil;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil;
 import org.jetbrains.plugins.groovy.lang.psi.typeEnhancers.GrTypeConverter;
+import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.psi.CommonClassNames;
+import com.intellij.psi.PsiClass;
+import com.intellij.psi.PsiClassType;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiType;
+import com.intellij.psi.util.PsiUtil;
 
 /**
  * @author peter
@@ -73,7 +77,7 @@ public class GppTypeConverter extends GrTypeConverter {
 
       final PsiType expectedComponent = PsiUtil.extractIterableTypeParameter(lType, false);
       if (expectedComponent != null && isMethodCallConversion(context)) {
-        PsiType tupleComponent = tupleType.getParameters()[0];
+        PsiType tupleComponent = tupleType.getParameterCount() > 0 ? tupleType.getParameters()[0] : null;
         if (tupleComponent != null &&
             TypesUtil.isAssignable(expectedComponent, tupleComponent, context) && hasDefaultConstructor(lType)) {
           return true;
