@@ -18,7 +18,6 @@ package org.jetbrains.plugins.groovy.gant;
 import java.io.File;
 
 import javax.annotation.Nonnull;
-import javax.swing.Icon;
 
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.plugins.groovy.config.GroovyLibraryPresentationProviderBase;
@@ -27,7 +26,7 @@ import com.intellij.openapi.roots.libraries.LibraryKind;
 import com.intellij.openapi.roots.ui.configuration.libraryEditor.LibraryEditor;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
-import consulo.awt.TargetAWT;
+import consulo.ui.image.Image;
 import icons.JetgroovyIcons;
 
 /**
@@ -50,8 +49,8 @@ public class GantLibraryPresentationProvider extends GroovyLibraryPresentationPr
   }
 
   @Nonnull
-  public Icon getIcon() {
-    return TargetAWT.to(JetgroovyIcons.Groovy.Gant_sdk);
+  public Image getIcon() {
+    return JetgroovyIcons.Groovy.Gant_sdk;
   }
 
   @Override

@@ -15,18 +15,19 @@
  */
 package org.jetbrains.plugins.groovy.config;
 
+import java.util.List;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import org.jetbrains.annotations.Nls;
 import com.intellij.openapi.roots.libraries.LibraryKind;
 import com.intellij.openapi.roots.libraries.LibraryPresentationProvider;
 import com.intellij.openapi.roots.ui.configuration.libraryEditor.LibraryEditor;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.openapi.vfs.VfsUtilCore;
 import com.intellij.openapi.vfs.VirtualFile;
-import org.jetbrains.annotations.Nls;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import javax.swing.*;
-import java.util.List;
+import consulo.ui.image.Image;
 
 /**
  * @author nik
@@ -61,7 +62,7 @@ public abstract class GroovyLibraryPresentationProviderBase extends LibraryPrese
   public abstract String getLibraryVersion(final VirtualFile[] libraryFiles);
 
   @Nonnull
-  public abstract Icon getIcon();
+  public abstract Image getIcon();
 
   public abstract boolean isSDKHome(@Nonnull VirtualFile file);
 

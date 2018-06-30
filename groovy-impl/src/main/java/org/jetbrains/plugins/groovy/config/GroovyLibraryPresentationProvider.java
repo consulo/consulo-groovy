@@ -18,7 +18,6 @@ package org.jetbrains.plugins.groovy.config;
 import java.io.File;
 
 import javax.annotation.Nonnull;
-import javax.swing.Icon;
 
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.plugins.groovy.util.LibrariesUtil;
@@ -27,7 +26,7 @@ import com.intellij.openapi.roots.libraries.LibraryKind;
 import com.intellij.openapi.roots.ui.configuration.libraryEditor.LibraryEditor;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
-import consulo.awt.TargetAWT;
+import consulo.ui.image.Image;
 import icons.JetgroovyIcons;
 
 /**
@@ -53,8 +52,8 @@ public class GroovyLibraryPresentationProvider extends GroovyLibraryPresentation
   }
 
   @Nonnull
-  public Icon getIcon() {
-    return TargetAWT.to(JetgroovyIcons.Groovy.Groovy_16x16);
+  public Image getIcon() {
+    return JetgroovyIcons.Groovy.Groovy_16x16;
   }
 
   @Override
