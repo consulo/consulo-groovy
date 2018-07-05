@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
-import javax.swing.Icon;
 
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocComment;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocCommentOwner;
@@ -63,6 +62,7 @@ import com.intellij.psi.search.searches.SuperMethodsSearch;
 import com.intellij.psi.util.MethodSignatureBackedByPsiMethod;
 import com.intellij.util.FunctionUtil;
 import com.intellij.util.containers.HashSet;
+import consulo.ui.image.Image;
 
 /**
  * @author ilyas
@@ -92,7 +92,7 @@ public class GroovyLineMarkerProvider extends JavaLineMarkerProvider
 						PsiMethod superMethod = superSignature.getMethod();
 						boolean overrides = method.hasModifierProperty(PsiModifier.ABSTRACT) == superMethod.hasModifierProperty(PsiModifier.ABSTRACT) || superMethod.getBody() != null && GrTraitUtil
 								.isTrait(superMethod.getContainingClass());
-						final Icon icon = overrides ? AllIcons.Gutter.OverridingMethod : AllIcons.Gutter.ImplementingMethod;
+						final Image icon = overrides ? AllIcons.Gutter.OverridingMethod : AllIcons.Gutter.ImplementingMethod;
 						final MarkerType type = GroovyMarkerTypes.OVERRIDING_PROPERTY_TYPE;
 						return new LineMarkerInfo<>(element, element.getTextRange(), icon, Pass.LINE_MARKERS, type.getTooltip(), type.getNavigationHandler(), GutterIconRenderer.Alignment.LEFT);
 					}
@@ -102,7 +102,7 @@ public class GroovyLineMarkerProvider extends JavaLineMarkerProvider
 					element == ((GrMethod) parent).getNameIdentifierGroovy() &&
 					hasSuperMethods((GrMethod) element.getParent()))
 			{
-				final Icon icon = AllIcons.Gutter.OverridingMethod;
+				final Image icon = AllIcons.Gutter.OverridingMethod;
 				final MarkerType type = GroovyMarkerTypes.GR_OVERRIDING_METHOD;
 				return new LineMarkerInfo<>(element, element.getTextRange(), icon, Pass.LINE_MARKERS, type.getTooltip(), type.getNavigationHandler(), GutterIconRenderer.Alignment.LEFT);
 			}
@@ -283,7 +283,7 @@ public class GroovyLineMarkerProvider extends JavaLineMarkerProvider
 
 		for(PsiElement element : overridden)
 		{
-			final Icon icon = AllIcons.Gutter.OverridenMethod;
+			final Image icon = AllIcons.Gutter.OverridenMethod;
 
 			element = PsiImplUtil.handleMirror(element);
 
