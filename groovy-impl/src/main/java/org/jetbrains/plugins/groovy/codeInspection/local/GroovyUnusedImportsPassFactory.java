@@ -16,38 +16,33 @@
 package org.jetbrains.plugins.groovy.codeInspection.local;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
+import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import com.intellij.codeHighlighting.Pass;
 import com.intellij.codeHighlighting.TextEditorHighlightingPass;
 import com.intellij.codeHighlighting.TextEditorHighlightingPassFactory;
-import com.intellij.codeHighlighting.TextEditorHighlightingPassRegistrar;
 import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.components.AbstractProjectComponent;
-import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiFile;
-import org.jetbrains.annotations.NonNls;
-import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 
 /**
  * @author ilyas
  */
-public class GroovyUnusedImportsPassFactory extends AbstractProjectComponent implements TextEditorHighlightingPassFactory {
-  public GroovyUnusedImportsPassFactory(Project project) {
-    super(project);
+public class GroovyUnusedImportsPassFactory implements TextEditorHighlightingPassFactory
+{
+	@Override
+	public void register(@Nonnull Registrar registrar)
+	{
+		registrar.registerTextEditorHighlightingPass(this, new int[]{Pass.UPDATE_ALL}, null, true, -1);
+	}
 
-    TextEditorHighlightingPassRegistrar.getInstance(project).registerTextEditorHighlightingPass(this, new int[]{Pass.UPDATE_ALL},
-                                                                                                 null, true, -1);
-  }
-
-  @javax.annotation.Nullable
-  public TextEditorHighlightingPass createHighlightingPass(@Nonnull PsiFile file, @Nonnull Editor editor) {
-    if (!(file instanceof GroovyFile)) return null;
-    return new GroovyPostHighlightingPass((GroovyFile)file, editor);
-  }
-
-  @NonNls
-  @Nonnull
-  public String getComponentName() {
-    return "Groovy unused imports pass factory";
-  }
+	@Nullable
+	public TextEditorHighlightingPass createHighlightingPass(@Nonnull PsiFile file, @Nonnull Editor editor)
+	{
+		if(!(file instanceof GroovyFile))
+		{
+			return null;
+		}
+		return new GroovyPostHighlightingPass((GroovyFile) file, editor);
+	}
 }

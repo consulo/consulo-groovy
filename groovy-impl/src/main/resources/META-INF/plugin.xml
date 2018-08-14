@@ -1442,6 +1442,10 @@
 		<xdebugger.lineBreakpointTypeResolver filetype="Groovy" implementationClass="consulo.java.debugger.JavaLineBreakpointTypeResolver" />
 
 		<editorHighlighterProvider filetype="Groovy" implementationClass="consulo.groovy.highlight.GroovyEditorHighlighterProvider" />
+
+		<textEditorHighlightingPassFactory implementation="org.jetbrains.plugins.groovy.annotator.GrKeywordAndDeclarationHighlightFactory" />
+		<textEditorHighlightingPassFactory implementation="org.jetbrains.plugins.groovy.codeInspection.local.GroovyUnusedImportsPassFactory" />
+		<textEditorHighlightingPassFactory implementation="org.jetbrains.plugins.groovy.annotator.GrReferenceHighlighterFactory" />
 	</extensions>
 
 	<actions>
@@ -1573,15 +1577,6 @@
 
 	<project-components>
 		<component>
-			<implementation-class>org.jetbrains.plugins.groovy.codeInspection.local.GroovyUnusedImportsPassFactory</implementation-class>
-		</component>
-		<component>
-			<implementation-class>org.jetbrains.plugins.groovy.annotator.GrKeywordAndDeclarationHighlightFactory</implementation-class>
-		</component>
-		<component>
-			<implementation-class>org.jetbrains.plugins.groovy.annotator.GrReferenceHighlighterFactory</implementation-class>
-		</component>
-		<component>
 			<interface-class>org.jetbrains.plugins.groovy.annotator.intentions.dynamic.DynamicManager</interface-class>
 			<implementation-class>org.jetbrains.plugins.groovy.annotator.intentions.dynamic.DynamicManagerImpl</implementation-class>
 		</component>
@@ -1589,6 +1584,4 @@
 			<implementation-class>org.jetbrains.plugins.groovy.mvc.MvcModuleStructureSynchronizer</implementation-class>
 		</component>
 	</project-components>
-
-
 </idea-plugin>

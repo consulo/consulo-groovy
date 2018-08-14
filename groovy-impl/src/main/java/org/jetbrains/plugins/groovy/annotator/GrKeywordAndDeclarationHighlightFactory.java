@@ -17,29 +17,30 @@ package org.jetbrains.plugins.groovy.annotator;
 
 import javax.annotation.Nonnull;
 
+import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import com.intellij.codeHighlighting.TextEditorHighlightingPass;
 import com.intellij.codeHighlighting.TextEditorHighlightingPassFactory;
-import com.intellij.codeHighlighting.TextEditorHighlightingPassRegistrar;
-import com.intellij.openapi.components.AbstractProjectComponent;
 import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiFile;
-import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 
 /**
  * @author Max Medvedev
  */
-public class GrKeywordAndDeclarationHighlightFactory extends AbstractProjectComponent implements TextEditorHighlightingPassFactory {
-  protected GrKeywordAndDeclarationHighlightFactory(Project project) {
-    super(project);
+public class GrKeywordAndDeclarationHighlightFactory implements TextEditorHighlightingPassFactory
+{
+	@Override
+	public void register(@Nonnull Registrar registrar)
+	{
+		registrar.registerTextEditorHighlightingPass(this, null, null, false, -1);
+	}
 
-    TextEditorHighlightingPassRegistrar.getInstance(project).registerTextEditorHighlightingPass(this, null, null, false, -1);
-  }
-
-
-  @Override
-  public TextEditorHighlightingPass createHighlightingPass(@Nonnull PsiFile file, @Nonnull Editor editor) {
-    if (!(file instanceof GroovyFile)) return null;
-    return new GrKeywordAndDeclarationHighlighter((GroovyFile)file, editor.getDocument());
-  }
+	@Override
+	public TextEditorHighlightingPass createHighlightingPass(@Nonnull PsiFile file, @Nonnull Editor editor)
+	{
+		if(!(file instanceof GroovyFile))
+		{
+			return null;
+		}
+		return new GrKeywordAndDeclarationHighlighter((GroovyFile) file, editor.getDocument());
+	}
 }
