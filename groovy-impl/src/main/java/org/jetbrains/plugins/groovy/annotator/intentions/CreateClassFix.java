@@ -242,7 +242,7 @@ public abstract class CreateClassFix
 					return;
 				}
 
-				AccessRule.write(() ->
+				AccessRule.writeAsync(() ->
 				{
 					FileModificationService.getInstance().preparePsiElementForWrite(resolved);
 
