@@ -15,28 +15,21 @@
  */
 package org.jetbrains.plugins.groovy.gant;
 
-import javax.annotation.Nonnull;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
-import com.intellij.openapi.components.ApplicationComponent;
-import org.jetbrains.annotations.NonNls;
 import org.jetbrains.plugins.groovy.actions.GroovyTemplates;
 import org.jetbrains.plugins.groovy.actions.GroovyTemplatesFactory;
 
 /**
  * @author ilyas
  */
-public class GantLoader implements ApplicationComponent {
-
-  @NonNls
-  @Nonnull
-  public String getComponentName() {
-    return "Gant loader";
-  }
-
-  public void initComponent() {
-    GroovyTemplatesFactory.getInstance().registerCustromTemplates(GroovyTemplates.GANT_SCRIPT);
-  }
-
-  public void disposeComponent() {
-  }
+@Singleton
+public class GantLoader
+{
+	@Inject
+	public GantLoader(GroovyTemplatesFactory templatesFactory)
+	{
+		templatesFactory.registerCustromTemplates(GroovyTemplates.GANT_SCRIPT);
+	}
 }

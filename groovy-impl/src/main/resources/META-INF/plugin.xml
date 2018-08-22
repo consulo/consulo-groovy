@@ -1446,6 +1446,13 @@
 		<textEditorHighlightingPassFactory implementation="org.jetbrains.plugins.groovy.annotator.GrKeywordAndDeclarationHighlightFactory" />
 		<textEditorHighlightingPassFactory implementation="org.jetbrains.plugins.groovy.codeInspection.local.GroovyUnusedImportsPassFactory" />
 		<textEditorHighlightingPassFactory implementation="org.jetbrains.plugins.groovy.annotator.GrReferenceHighlighterFactory" />
+
+		<applicationService serviceImplementation="org.jetbrains.plugins.groovy.gant.GantLoader" lazy="false" />
+		<applicationService serviceImplementation="org.jetbrains.plugins.groovy.mvc.MvcPathMacros" lazy="false" />
+
+		<projectService serviceInterface="org.jetbrains.plugins.groovy.annotator.intentions.dynamic.DynamicManager"
+						serviceImplementation="org.jetbrains.plugins.groovy.annotator.intentions.dynamic.DynamicManagerImpl" lazy="false" />
+		<projectService serviceImplementation="org.jetbrains.plugins.groovy.mvc.MvcModuleStructureSynchronizer" lazy="false"/>
 	</extensions>
 
 	<actions>
@@ -1562,25 +1569,5 @@
 
 			<add-to-group group-id="ToolsMenu" anchor="last"/>
 		</group>
-
 	</actions>
-
-	<application-components>
-		<component>
-			<implementation-class>org.jetbrains.plugins.groovy.gant.GantLoader</implementation-class>
-		</component>
-		<component>
-			<implementation-class>org.jetbrains.plugins.groovy.mvc.MvcPathMacros</implementation-class>
-		</component>
-	</application-components>
-
-	<project-components>
-		<component>
-			<interface-class>org.jetbrains.plugins.groovy.annotator.intentions.dynamic.DynamicManager</interface-class>
-			<implementation-class>org.jetbrains.plugins.groovy.annotator.intentions.dynamic.DynamicManagerImpl</implementation-class>
-		</component>
-		<component>
-			<implementation-class>org.jetbrains.plugins.groovy.mvc.MvcModuleStructureSynchronizer</implementation-class>
-		</component>
-	</project-components>
 </idea-plugin>
