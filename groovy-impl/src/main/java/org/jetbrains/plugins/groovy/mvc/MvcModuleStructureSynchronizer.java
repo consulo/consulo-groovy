@@ -91,6 +91,11 @@ public class MvcModuleStructureSynchronizer
 	{
 		myProject = project;
 
+		if(project.isDefault())
+		{
+			return;
+		}
+
 		final MessageBusConnection connection = myProject.getMessageBus().connect();
 		connection.subscribe(ProjectTopics.PROJECT_ROOTS, new ModuleRootAdapter()
 		{
