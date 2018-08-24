@@ -16,55 +16,30 @@
 
 package org.jetbrains.plugins.groovy.actions;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Properties;
-
-import javax.annotation.Nonnull;
-
-import org.jetbrains.annotations.NonNls;
-import org.jetbrains.plugins.groovy.GroovyBundle;
-import org.jetbrains.plugins.groovy.GroovyFileType;
 import com.intellij.codeInsight.actions.ReformatCodeProcessor;
-import com.intellij.ide.fileTemplates.FileTemplate;
-import com.intellij.ide.fileTemplates.FileTemplateDescriptor;
-import com.intellij.ide.fileTemplates.FileTemplateGroupDescriptor;
-import com.intellij.ide.fileTemplates.FileTemplateGroupDescriptorFactory;
-import com.intellij.ide.fileTemplates.FileTemplateManager;
-import com.intellij.ide.fileTemplates.JavaTemplateUtil;
+import com.intellij.ide.fileTemplates.*;
 import com.intellij.openapi.fileTypes.FileTypeManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiFileFactory;
-import com.intellij.util.ArrayUtil;
 import com.intellij.util.IncorrectOperationException;
 import icons.JetgroovyIcons;
+import org.jetbrains.annotations.NonNls;
+import org.jetbrains.plugins.groovy.GroovyBundle;
+import org.jetbrains.plugins.groovy.GroovyFileType;
+
+import javax.annotation.Nonnull;
+import java.util.Properties;
 
 public class GroovyTemplatesFactory implements FileTemplateGroupDescriptorFactory
 {
 	@NonNls
 	public static final String[] TEMPLATES = {
 			GroovyTemplates.GROOVY_CLASS,
-			GroovyTemplates.GROOVY_SCRIPT
+			GroovyTemplates.GROOVY_SCRIPT,
+			GroovyTemplates.GANT_SCRIPT
 	};
-
-	public void registerCustromTemplates(String... templates)
-	{
-		Collections.addAll(myCustomTemplates, templates);
-	}
-
-	private static class GroovyTemplatesFactoryHolder
-	{
-		private static final GroovyTemplatesFactory myInstance = new GroovyTemplatesFactory();
-	}
-
-	public static GroovyTemplatesFactory getInstance()
-	{
-		return GroovyTemplatesFactoryHolder.myInstance;
-	}
-
-	private final ArrayList<String> myCustomTemplates = new ArrayList<String>();
 
 	@NonNls
 	static final String NAME_TEMPLATE_PROPERTY = "NAME";
@@ -73,21 +48,13 @@ public class GroovyTemplatesFactory implements FileTemplateGroupDescriptorFactor
 	@Override
 	public FileTemplateGroupDescriptor getFileTemplatesDescriptor()
 	{
-		final FileTemplateGroupDescriptor group = new FileTemplateGroupDescriptor(GroovyBundle.message("file.template" +
-				".group.title.groovy"), JetgroovyIcons.Groovy.Groovy_16x16);
+		final FileTemplateGroupDescriptor group = new FileTemplateGroupDescriptor(GroovyBundle.message("file.template.group.title.groovy"), JetgroovyIcons.Groovy.Groovy_16x16);
 		final FileTypeManager fileTypeManager = FileTypeManager.getInstance();
 		for(String template : TEMPLATES)
 		{
-			group.addTemplate(new FileTemplateDescriptor(template, fileTypeManager.getFileTypeByFileName(template)
-					.getIcon()));
+			group.addTemplate(new FileTemplateDescriptor(template, fileTypeManager.getFileTypeByFileName(template).getIcon()));
 		}
 
-		// register custom templates
-		for(String template : getInstance().getCustomTemplates())
-		{
-			group.addTemplate(new FileTemplateDescriptor(template, fileTypeManager.getFileTypeByFileName(template)
-					.getIcon()));
-		}
 		return group;
 	}
 
@@ -135,10 +102,5 @@ public class GroovyTemplatesFactory implements FileTemplateGroupDescriptorFactor
 		}
 
 		return file;
-	}
-
-	public String[] getCustomTemplates()
-	{
-		return ArrayUtil.toStringArray(myCustomTemplates);
 	}
 }

@@ -1447,7 +1447,6 @@
 		<textEditorHighlightingPassFactory implementation="org.jetbrains.plugins.groovy.codeInspection.local.GroovyUnusedImportsPassFactory" />
 		<textEditorHighlightingPassFactory implementation="org.jetbrains.plugins.groovy.annotator.GrReferenceHighlighterFactory" />
 
-		<applicationService serviceImplementation="org.jetbrains.plugins.groovy.gant.GantLoader" lazy="false" />
 		<applicationService serviceImplementation="org.jetbrains.plugins.groovy.mvc.MvcPathMacros" lazy="false" />
 
 		<projectService serviceInterface="org.jetbrains.plugins.groovy.annotator.intentions.dynamic.DynamicManager"
