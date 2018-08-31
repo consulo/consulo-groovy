@@ -69,6 +69,12 @@ public class DynamicManagerImpl extends DynamicManager
 	public DynamicManagerImpl(Project project, StartupManager startupManager)
 	{
 		myProject = project;
+
+		if(myProject.isDefault())
+		{
+			return;
+		}
+
 		startupManager.registerPostStartupActivity((ui) ->
 		{
 			if(myRootElement.getContainingClasses().size() > 0)
