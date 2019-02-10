@@ -15,27 +15,27 @@
  */
 package org.jetbrains.plugins.groovy.mvc.projectView;
 
+import javax.annotation.Nonnull;
+
 import com.intellij.ide.projectView.PresentationData;
 import com.intellij.ide.projectView.ViewSettings;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.psi.PsiDirectory;
-import javax.annotation.Nonnull;
-
-import javax.swing.*;
+import consulo.ui.image.Image;
 
 /**
  * @author peter
  */
 public class TopLevelDirectoryNode extends AbstractFolderNode {
   private final String myTitle;
-  private final Icon myIcon;
+  private final Image myIcon;
 
   public TopLevelDirectoryNode(@Nonnull Module module,
                                @Nonnull PsiDirectory directory,
                                ViewSettings viewSettings,
                                String title,
-                               Icon icon,
+                               Image icon,
                                int weight) {
     super(module, directory, directory.getName(), title, viewSettings, weight);
     myTitle = title;

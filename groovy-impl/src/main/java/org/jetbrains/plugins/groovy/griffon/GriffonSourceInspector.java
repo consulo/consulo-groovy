@@ -15,6 +15,11 @@
  */
 package org.jetbrains.plugins.groovy.griffon;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.util.IconLoader;
 import com.intellij.openapi.util.text.StringUtil;
@@ -28,10 +33,7 @@ import com.intellij.psi.xml.XmlAttribute;
 import com.intellij.psi.xml.XmlFile;
 import com.intellij.psi.xml.XmlTag;
 import com.intellij.util.containers.ContainerUtil;
-
-import javax.swing.*;
-import java.io.File;
-import java.util.*;
+import consulo.ui.image.Image;
 
 /**
  * @author aalmiray
@@ -153,7 +155,7 @@ public class GriffonSourceInspector {
         return description;
       }
 
-      public Icon getIcon() {
+      public Image getIcon() {
         String iconStr = icon.endsWith(".png") ? icon : icon + ".png";
         if (iconStr.startsWith("/")) {
           return IconLoader.getIcon(iconStr);

@@ -16,28 +16,28 @@
 
 package org.jetbrains.plugins.groovy.mvc.projectView;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
 import com.intellij.ide.projectView.PresentationData;
 import com.intellij.ide.projectView.ViewSettings;
 import com.intellij.openapi.module.Module;
 import com.intellij.psi.PsiElement;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
-
-import javax.swing.*;
+import consulo.ui.image.Image;
 
 /**
  * User: Dmitry.Krasilschikov
  * Date: 15.04.2009
  */
 public class TestMethodNode extends MethodNode {
-  private final Icon myIcon;
+  private final Image myIcon;
 
   public TestMethodNode(@Nonnull final Module module,
                         @Nonnull final GrMethod method,
                         @javax.annotation.Nullable final String locationMark,
-                        @Nullable final ViewSettings viewSettings, final Icon icon) {
+                        @Nullable final ViewSettings viewSettings, final Image icon) {
     super(module, method, locationMark, viewSettings);
     myIcon = icon;
   }

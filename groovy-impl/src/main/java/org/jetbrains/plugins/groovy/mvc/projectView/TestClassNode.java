@@ -16,29 +16,29 @@
 
 package org.jetbrains.plugins.groovy.mvc.projectView;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
 import com.intellij.execution.PsiLocation;
 import com.intellij.execution.junit.JUnitUtil;
 import com.intellij.ide.projectView.ViewSettings;
 import com.intellij.openapi.module.Module;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiMethod;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
-
-import javax.swing.*;
+import consulo.ui.image.Image;
 
 /**
  * User: Dmitry.Krasilschikov
  * Date: 15.04.2009
  */
 public class TestClassNode extends ClassNode {
-  private final Icon myMethodIcon;
+  private final Image myMethodIcon;
 
   public TestClassNode(@Nonnull final Module module,
                        @Nonnull final GrTypeDefinition controllerClass,
-                       @javax.annotation.Nullable final ViewSettings viewSettings, final Icon methodIcon) {
+                       @javax.annotation.Nullable final ViewSettings viewSettings, final Image methodIcon) {
     super(module, controllerClass, NodeId.TEST_CLASS_IN_TESTS_SUBTREE, viewSettings);
     myMethodIcon = methodIcon;
   }

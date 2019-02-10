@@ -16,6 +16,12 @@
 
 package org.jetbrains.plugins.groovy.mvc.projectView;
 
+import java.util.List;
+
+import javax.annotation.Nonnull;
+
+import org.jetbrains.plugins.groovy.mvc.MvcFramework;
+import org.jetbrains.plugins.groovy.mvc.MvcModuleStructureUtil;
 import com.intellij.ide.projectView.ViewSettings;
 import com.intellij.ide.util.treeView.AbstractTreeNode;
 import com.intellij.openapi.module.Module;
@@ -28,13 +34,7 @@ import com.intellij.openapi.wm.ToolWindowFactory;
 import com.intellij.openapi.wm.ex.ToolWindowEx;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiManager;
-import javax.annotation.Nonnull;
-
-import org.jetbrains.plugins.groovy.mvc.MvcFramework;
-import org.jetbrains.plugins.groovy.mvc.MvcModuleStructureUtil;
-
-import javax.swing.*;
-import java.util.List;
+import consulo.ui.image.Image;
 
 /**
  * @author peter
@@ -73,7 +73,7 @@ public abstract class MvcToolWindowDescriptor implements ToolWindowFactory, Cond
 
   public abstract void fillModuleChildren(List<AbstractTreeNode> result, final Module module, final ViewSettings viewSettings, VirtualFile root);
 
-  public abstract Icon getModuleNodeIcon();
+  public abstract Image getModuleNodeIcon();
 
   @Nonnull
   public abstract MvcProjectViewState getProjectViewState(Project project);

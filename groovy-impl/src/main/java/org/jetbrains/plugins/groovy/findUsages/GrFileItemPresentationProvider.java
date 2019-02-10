@@ -15,8 +15,6 @@
  */
 package org.jetbrains.plugins.groovy.findUsages;
 
-import javax.swing.Icon;
-
 import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import com.intellij.navigation.ItemPresentation;
@@ -24,8 +22,8 @@ import com.intellij.navigation.ItemPresentationProvider;
 import com.intellij.navigation.ItemPresentationProviders;
 import com.intellij.openapi.util.Iconable;
 import com.intellij.psi.PsiDirectory;
-import consulo.awt.TargetAWT;
 import consulo.ide.IconDescriptorUpdaters;
+import consulo.ui.image.Image;
 
 public class GrFileItemPresentationProvider implements ItemPresentationProvider<GroovyFile> {
   @Override
@@ -43,8 +41,8 @@ public class GrFileItemPresentationProvider implements ItemPresentationProvider<
       }
 
       @Override
-      public Icon getIcon(boolean unused) {
-        return TargetAWT.to(IconDescriptorUpdaters.getIcon(file, Iconable.ICON_FLAG_VISIBILITY | Iconable.ICON_FLAG_READ_STATUS));
+      public Image getIcon() {
+        return IconDescriptorUpdaters.getIcon(file, Iconable.ICON_FLAG_VISIBILITY | Iconable.ICON_FLAG_READ_STATUS);
       }
     };
   }

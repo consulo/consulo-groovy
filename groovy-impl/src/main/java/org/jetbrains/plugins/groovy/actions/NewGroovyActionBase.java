@@ -16,11 +16,9 @@
 
 package org.jetbrains.plugins.groovy.actions;
 
-import javax.swing.Icon;
+import javax.annotation.Nonnull;
 
 import org.jetbrains.annotations.NonNls;
-import javax.annotation.Nonnull;
-import consulo.groovy.module.extension.GroovyModuleExtension;
 import com.intellij.CommonBundle;
 import com.intellij.ide.actions.CreateElementActionBase;
 import com.intellij.openapi.actionSystem.DataContext;
@@ -31,14 +29,15 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiElement;
+import consulo.groovy.module.extension.GroovyModuleExtension;
+import consulo.ui.image.Image;
 
 public abstract class NewGroovyActionBase extends CreateElementActionBase
 {
-
 	@NonNls
 	public static final String GROOVY_EXTENSION = ".groovy";
 
-	public NewGroovyActionBase(String text, String description, Icon icon)
+	public NewGroovyActionBase(String text, String description, Image icon)
 	{
 		super(text, description, icon);
 	}

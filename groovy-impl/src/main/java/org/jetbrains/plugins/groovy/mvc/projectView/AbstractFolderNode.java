@@ -23,7 +23,6 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
-import consulo.awt.TargetAWT;
 import consulo.ide.IconDescriptorUpdaters;
 
 /**
@@ -121,7 +120,7 @@ public class AbstractFolderNode extends AbstractMvcPsiNodeDescriptor {
     final PsiDirectory psiDirectory = getPsiDirectory();
 
     data.setPresentableText(myPresentableText);
-    data.setIcon(TargetAWT.to(IconDescriptorUpdaters.getIcon(psiDirectory, 0)));
+    data.setIcon(IconDescriptorUpdaters.getIcon(psiDirectory, 0));
   }
 
   @Override

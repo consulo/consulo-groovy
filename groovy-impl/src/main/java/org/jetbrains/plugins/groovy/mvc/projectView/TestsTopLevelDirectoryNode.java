@@ -16,25 +16,24 @@
 
 package org.jetbrains.plugins.groovy.mvc.projectView;
 
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
 import com.intellij.ide.projectView.ViewSettings;
 import com.intellij.ide.util.treeView.AbstractTreeNode;
 import com.intellij.openapi.module.Module;
 import com.intellij.psi.PsiDirectory;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
-
-import javax.swing.*;
+import consulo.ui.image.Image;
 
 /**
 * @author peter
 */
 public class TestsTopLevelDirectoryNode extends TopLevelDirectoryNode {
-  private final Icon myMethodIcon;
+  private final Image myMethodIcon;
 
   public TestsTopLevelDirectoryNode(Module module,
                                     PsiDirectory testDir,
                                     ViewSettings viewSettings,
                                     final String title,
-                                    final Icon icon, final Icon methodIcon) {
+                                    final Image icon, final Image methodIcon) {
     super(module, testDir, viewSettings, title, icon, TESTS_FOLDER);
     myMethodIcon = methodIcon;
   }

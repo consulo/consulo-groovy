@@ -53,6 +53,7 @@ import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.containers.ContainerUtil;
 import com.intellij.util.ui.tree.TreeUtil;
 import consulo.awt.TargetAWT;
+import consulo.ui.image.Image;
 import icons.JetgroovyIcons;
 
 /**
@@ -308,8 +309,8 @@ public class GrDynamicImplicitMethod extends GrLightMethodBuilder implements GrD
 
 	@Override
 	@javax.annotation.Nullable
-	public Icon getIcon(boolean open)
+	public Image getIcon()
 	{
-		return TargetAWT.to(JetgroovyIcons.Groovy.Method);
+		return JetgroovyIcons.Groovy.Method;
 	}
 }

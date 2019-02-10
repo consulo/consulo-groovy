@@ -7,7 +7,6 @@ import com.intellij.ide.projectView.PresentationData;
 import com.intellij.ide.projectView.ViewSettings;
 import com.intellij.openapi.module.Module;
 import com.intellij.psi.PsiElement;
-import consulo.awt.TargetAWT;
 import icons.JetgroovyIcons;
 
 /**
@@ -28,7 +27,7 @@ public class DomainClassNode extends ClassNode {
   @Override
   protected void updateImpl(final PresentationData data) {
     super.updateImpl(data);
-    data.setIcon(TargetAWT.to(JetgroovyIcons.Mvc.Domain_class));
+    data.setIcon(JetgroovyIcons.Mvc.Domain_class);
   }
 
   @Override

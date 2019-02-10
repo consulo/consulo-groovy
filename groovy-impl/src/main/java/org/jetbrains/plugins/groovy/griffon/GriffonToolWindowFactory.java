@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Nonnull;
-import javax.swing.Icon;
 
 import org.jetbrains.plugins.groovy.mvc.projectView.AbstractMvcPsiNodeDescriptor;
 import org.jetbrains.plugins.groovy.mvc.projectView.FileNode;
@@ -40,7 +39,7 @@ import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.util.containers.hash.LinkedHashMap;
-import consulo.awt.TargetAWT;
+import consulo.ui.image.Image;
 import icons.JetgroovyIcons;
 
 /**
@@ -70,12 +69,12 @@ public class GriffonToolWindowFactory extends MvcToolWindowDescriptor {
     // add standard source folder
     final PsiDirectory srcMain = findDirectory(project, root, "src/main");
     if (srcMain != null) {
-      result.add(new TopLevelDirectoryNode(module, srcMain, viewSettings, "Project Sources", TargetAWT.to(JetgroovyIcons.Groovy.Groovy_16x16),
+      result.add(new TopLevelDirectoryNode(module, srcMain, viewSettings, "Project Sources", JetgroovyIcons.Groovy.Groovy_16x16,
                                            AbstractMvcPsiNodeDescriptor.SRC_FOLDERS));
     }
     final PsiDirectory srcCli = findDirectory(project, root, "src/cli");
     if (srcCli != null) {
-      result.add(new TopLevelDirectoryNode(module, srcCli, viewSettings, "Build Sources", TargetAWT.to(JetgroovyIcons.Groovy.Groovy_16x16),
+      result.add(new TopLevelDirectoryNode(module, srcCli, viewSettings, "Build Sources", JetgroovyIcons.Groovy.Groovy_16x16,
                                            AbstractMvcPsiNodeDescriptor.SRC_FOLDERS));
     }
 
@@ -130,8 +129,8 @@ public class GriffonToolWindowFactory extends MvcToolWindowDescriptor {
   }
 
   @Override
-  public Icon getModuleNodeIcon() {
-    return TargetAWT.to(JetgroovyIcons.Griffon.Griffon);
+  public Image getModuleNodeIcon() {
+    return JetgroovyIcons.Griffon.Griffon;
   }
 
   @Nonnull
@@ -143,20 +142,20 @@ public class GriffonToolWindowFactory extends MvcToolWindowDescriptor {
   private static final Map<String, GriffonDirectoryMetadata> DIRECTORY_METADATA = new LinkedHashMap<String, GriffonDirectoryMetadata>();
 
   static {
-    DIRECTORY_METADATA.put("models", new GriffonDirectoryMetadata("Models", TargetAWT.to(JetgroovyIcons.Mvc.ModelsNode), 20));
-    DIRECTORY_METADATA.put("views", new GriffonDirectoryMetadata("Views", TargetAWT.to(JetgroovyIcons.Groovy.Groovy_16x16), 30));
+    DIRECTORY_METADATA.put("models", new GriffonDirectoryMetadata("Models", JetgroovyIcons.Mvc.ModelsNode, 20));
+    DIRECTORY_METADATA.put("views", new GriffonDirectoryMetadata("Views", JetgroovyIcons.Groovy.Groovy_16x16, 30));
     DIRECTORY_METADATA.put("controllers", new GriffonDirectoryMetadata("Controllers", AllIcons.Nodes.KeymapTools, 40));
-    DIRECTORY_METADATA.put("services", new GriffonDirectoryMetadata("Services", TargetAWT.to(JetgroovyIcons.Mvc.Service), 50));
-    DIRECTORY_METADATA.put("lifecycle", new GriffonDirectoryMetadata("Lifecycle", TargetAWT.to(JetgroovyIcons.Groovy.Groovy_16x16), 60));
-    DIRECTORY_METADATA.put("conf", new GriffonDirectoryMetadata("Configuration", TargetAWT.to(JetgroovyIcons.Mvc.Config_folder_closed), 65));
+    DIRECTORY_METADATA.put("services", new GriffonDirectoryMetadata("Services", JetgroovyIcons.Mvc.Service, 50));
+    DIRECTORY_METADATA.put("lifecycle", new GriffonDirectoryMetadata("Lifecycle", JetgroovyIcons.Groovy.Groovy_16x16, 60));
+    DIRECTORY_METADATA.put("conf", new GriffonDirectoryMetadata("Configuration", JetgroovyIcons.Mvc.Config_folder_closed, 65));
   }
 
   private static class GriffonDirectoryMetadata {
     public final String description;
-    public final Icon icon;
+    public final Image icon;
     public final int weight;
 
-    public GriffonDirectoryMetadata(String description, Icon icon, int weight) {
+    public GriffonDirectoryMetadata(String description, Image icon, int weight) {
       this.description = description;
       this.icon = icon;
       this.weight = weight;

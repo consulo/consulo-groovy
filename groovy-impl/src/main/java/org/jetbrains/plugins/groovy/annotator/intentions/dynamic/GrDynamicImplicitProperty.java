@@ -18,7 +18,6 @@ package org.jetbrains.plugins.groovy.annotator.intentions.dynamic;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.swing.Icon;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 
@@ -48,7 +47,7 @@ import com.intellij.ui.treeStructure.treetable.ListTreeTableModelOnColumns;
 import com.intellij.ui.treeStructure.treetable.TreeTable;
 import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.ui.tree.TreeUtil;
-import consulo.awt.TargetAWT;
+import consulo.ui.image.Image;
 import icons.JetgroovyIcons;
 
 /**
@@ -223,9 +222,9 @@ public class GrDynamicImplicitProperty extends GrImplicitVariableImpl implements
 
 	@Override
 	@Nullable
-	public Icon getIcon(boolean open)
+	public Image getIcon()
 	{
-		return TargetAWT.to(JetgroovyIcons.Groovy.Property);
+		return JetgroovyIcons.Groovy.Property;
 	}
 
 	@Override

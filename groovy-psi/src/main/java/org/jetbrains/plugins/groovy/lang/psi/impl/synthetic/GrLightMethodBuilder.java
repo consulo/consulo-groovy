@@ -20,9 +20,8 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Nonnull;
-import javax.swing.Icon;
-
 import javax.annotation.Nullable;
+
 import org.jetbrains.plugins.groovy.GroovyLanguage;
 import org.jetbrains.plugins.groovy.extensions.NamedArgumentDescriptor;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocComment;
@@ -55,6 +54,7 @@ import com.intellij.psi.util.MethodSignature;
 import com.intellij.psi.util.MethodSignatureBackedByPsiMethod;
 import com.intellij.psi.util.PsiModificationTracker;
 import com.intellij.util.IncorrectOperationException;
+import consulo.ui.image.Image;
 
 /**
  * @author Sergey Evdokimov
@@ -74,7 +74,7 @@ public class GrLightMethodBuilder extends LightElement implements GrMethod, Orig
   private PsiClass myContainingClass;
   private Map<String, NamedArgumentDescriptor> myNamedParameters = Collections.emptyMap();
   
-  private Icon myBaseIcon;
+  private Image myBaseIcon;
   private Object myMethodKind;
   private Object myData;
   private String myOriginInfo;
@@ -405,7 +405,7 @@ public class GrLightMethodBuilder extends LightElement implements GrMethod, Orig
     return (myMethodKind == null ? "" : myMethodKind + ":") + getName();
   }
 
-  public GrLightMethodBuilder setBaseIcon(Icon baseIcon) {
+  public GrLightMethodBuilder setBaseIcon(Image baseIcon) {
     myBaseIcon = baseIcon;
     return this;
   }
