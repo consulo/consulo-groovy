@@ -31,7 +31,7 @@ import consulo.ui.CheckBox;
 import consulo.ui.Component;
 import consulo.ui.Label;
 import consulo.ui.RequiredUIAccess;
-import consulo.ui.VerticalLayout;
+import consulo.ui.layout.VerticalLayout;
 import consulo.ui.style.StandardColors;
 
 /**
