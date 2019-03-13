@@ -1,8 +1,8 @@
 package org.jetbrains.plugins.groovy.extensions;
 
+import com.intellij.ide.plugins.IdeaPluginDescriptor;
 import com.intellij.openapi.extensions.ExtensionPointName;
 import com.intellij.openapi.extensions.PluginAware;
-import com.intellij.openapi.extensions.PluginDescriptor;
 import com.intellij.util.xmlb.annotations.Attribute;
 
 /**
@@ -10,8 +10,7 @@ import com.intellij.util.xmlb.annotations.Attribute;
  */
 public class GroovyMethodDescriptorExtension extends GroovyMethodDescriptor implements PluginAware {
 
-  public static final ExtensionPointName<GroovyMethodDescriptorExtension> EP_NAME =
-    new ExtensionPointName<GroovyMethodDescriptorExtension>("org.intellij.groovy.methodDescriptor");
+  public static final ExtensionPointName<GroovyMethodDescriptorExtension> EP_NAME = ExtensionPointName.create("org.intellij.groovy.methodDescriptor");
 
   @Attribute("class")
   public String className;
@@ -19,10 +18,10 @@ public class GroovyMethodDescriptorExtension extends GroovyMethodDescriptor impl
   @Attribute("lightMethodKey")
   public String lightMethodKey;
 
-  private PluginDescriptor myPluginDescriptor;
+  private IdeaPluginDescriptor myPluginDescriptor;
 
   @Override
-  public final void setPluginDescriptor(PluginDescriptor pluginDescriptor) {
+  public final void setPluginDescriptor(IdeaPluginDescriptor pluginDescriptor) {
     myPluginDescriptor = pluginDescriptor;
   }
 
