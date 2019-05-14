@@ -16,11 +16,6 @@
 
 package org.jetbrains.plugins.groovy.mvc.projectView;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
 import com.intellij.execution.PsiLocation;
 import com.intellij.execution.junit.JUnitUtil;
 import com.intellij.ide.projectView.ViewSettings;
@@ -28,6 +23,11 @@ import com.intellij.openapi.module.Module;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiMethod;
 import consulo.ui.image.Image;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * User: Dmitry.Krasilschikov
@@ -39,27 +39,26 @@ public class TestClassNode extends ClassNode {
   public TestClassNode(@Nonnull final Module module,
                        @Nonnull final GrTypeDefinition controllerClass,
                        @javax.annotation.Nullable final ViewSettings viewSettings, final Image methodIcon) {
-    super(module, controllerClass, NodeId.TEST_CLASS_IN_TESTS_SUBTREE, viewSettings);
+    super(module, controllerClass, viewSettings);
     myMethodIcon = methodIcon;
   }
 
   @Nullable
   @Override
-  protected MethodNode createNodeForMethod(final Module module, final GrMethod method, final String parentLocationRootMark) {
+  protected MethodNode createNodeForMethod(final Module module, final GrMethod method) {
     if (method == null) return null;
 
     final boolean isTestMethod = JUnitUtil.isTestMethod(new PsiLocation<PsiMethod>(getProject(), method));
 
     if (isTestMethod) {
-      return new TestMethodNode(module, method, NodeId.TEST_CLASS_IN_TESTS_SUBTREE, getSettings(), myMethodIcon);
+      return new TestMethodNode(module, method, getSettings(), myMethodIcon);
     }
 
-    return new MethodNode(module, method, NodeId.TEST_CLASS_IN_TESTS_SUBTREE, getSettings());
+    return new MethodNode(module, method, getSettings());
   }
 
   @Override
-  protected String getTestPresentationImpl(@Nonnull final NodeId nodeId, @Nonnull final PsiElement psiElement) {
+  protected String getTestPresentationImpl(@Nonnull final PsiElement psiElement) {
     return "Test class: " + ((GrTypeDefinition)psiElement).getName();
-  }                                                                                                                                                
-
+  }
 }

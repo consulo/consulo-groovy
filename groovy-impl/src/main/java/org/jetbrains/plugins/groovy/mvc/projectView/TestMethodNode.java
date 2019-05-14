@@ -16,16 +16,16 @@
 
 package org.jetbrains.plugins.groovy.mvc.projectView;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
 import com.intellij.ide.projectView.PresentationData;
 import com.intellij.ide.projectView.ViewSettings;
 import com.intellij.openapi.module.Module;
 import com.intellij.psi.PsiElement;
 import consulo.ui.image.Image;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * User: Dmitry.Krasilschikov
@@ -36,9 +36,8 @@ public class TestMethodNode extends MethodNode {
 
   public TestMethodNode(@Nonnull final Module module,
                         @Nonnull final GrMethod method,
-                        @javax.annotation.Nullable final String locationMark,
                         @Nullable final ViewSettings viewSettings, final Image icon) {
-    super(module, method, locationMark, viewSettings);
+    super(module, method, viewSettings);
     myIcon = icon;
   }
 
@@ -48,7 +47,7 @@ public class TestMethodNode extends MethodNode {
   }
 
   @Override
-  protected String getTestPresentationImpl(@Nonnull final NodeId nodeId, @Nonnull final PsiElement psiElement) {
+  protected String getTestPresentationImpl( @Nonnull final PsiElement psiElement) {
     return "Test method: " + ((GrField)psiElement).getName();
   }
 

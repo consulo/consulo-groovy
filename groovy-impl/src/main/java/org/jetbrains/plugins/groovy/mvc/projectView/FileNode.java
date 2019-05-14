@@ -1,10 +1,5 @@
 package org.jetbrains.plugins.groovy.mvc.projectView;
 
-import java.util.Collection;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import com.intellij.ide.projectView.PresentationData;
 import com.intellij.ide.projectView.ViewSettings;
 import com.intellij.ide.projectView.impl.nodes.PsiFileNode;
@@ -15,6 +10,10 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import consulo.ide.IconDescriptorUpdaters;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Collection;
+
 /**
  * @author peter
  */
@@ -23,12 +22,11 @@ public class FileNode extends AbstractMvcPsiNodeDescriptor {
                   @Nonnull final PsiFile file,
                   @Nullable final String locationMark,
                   final ViewSettings viewSettings) {
-    super(module, viewSettings, new NodeId(file, locationMark), FILE);
+    super(module, viewSettings, file, FILE);
   }
 
   @Override
-  protected String getTestPresentationImpl(@Nonnull final NodeId nodeId,
-                                           @Nonnull final PsiElement psiElement) {
+  protected String getTestPresentationImpl(@Nonnull final PsiElement psiElement) {
     return "File: " + ((PsiFile)psiElement).getName();
   }
 

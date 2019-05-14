@@ -1,15 +1,5 @@
 package org.jetbrains.plugins.groovy.mvc.projectView;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
 import com.intellij.ide.projectView.PresentationData;
 import com.intellij.ide.projectView.ViewSettings;
 import com.intellij.ide.util.treeView.AbstractTreeNode;
@@ -24,6 +14,15 @@ import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import consulo.ide.IconDescriptorUpdaters;
+import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * @author Dmitry Krasilschikov
@@ -38,13 +37,13 @@ public class AbstractFolderNode extends AbstractMvcPsiNodeDescriptor {
                                @Nonnull String presentableText,
                                @javax.annotation.Nullable final String locationMark,
                                final ViewSettings viewSettings, int weight) {
-    super(module, viewSettings, new NodeId(directory, locationMark), weight);
+    super(module, viewSettings, directory, weight);
     myLocationMark = locationMark;
     myPresentableText = presentableText;
   }
 
   @Override
-  protected String getTestPresentationImpl(@Nonnull final NodeId nodeId, @Nonnull final PsiElement psiElement) {
+  protected String getTestPresentationImpl(@Nonnull final PsiElement psiElement) {
     final VirtualFile virtualFile = getVirtualFile();
     assert virtualFile != null;
 
@@ -159,10 +158,9 @@ public class AbstractFolderNode extends AbstractMvcPsiNodeDescriptor {
   }
 
   protected AbstractTreeNode createClassNode(final GrTypeDefinition typeDefinition) {
-    final NodeId nodeId = getValue();
-    assert nodeId != null;
+    assert getValue() != null;
 
-    return new ClassNode(getModule(), typeDefinition, nodeId.getLocationRootMark(), getSettings());
+    return new ClassNode(getModule(), typeDefinition, getSettings());
   }
 
 }

@@ -16,46 +16,18 @@
 
 package org.jetbrains.plugins.groovy.mvc.projectView;
 
-import java.awt.BorderLayout;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.swing.JComponent;
-import javax.swing.JPanel;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
-
-import org.jetbrains.annotations.NonNls;
-import org.jetbrains.plugins.groovy.mvc.MvcFramework;
 import com.intellij.icons.AllIcons;
-import com.intellij.ide.CommonActionsManager;
-import com.intellij.ide.CopyPasteDelegator;
-import com.intellij.ide.DataManager;
-import com.intellij.ide.DefaultTreeExpander;
-import com.intellij.ide.DeleteProvider;
-import com.intellij.ide.IdeView;
-import com.intellij.ide.SelectInTarget;
-import com.intellij.ide.TreeExpander;
+import com.intellij.ide.*;
 import com.intellij.ide.projectView.BaseProjectTreeBuilder;
 import com.intellij.ide.projectView.ViewSettings;
-import com.intellij.ide.projectView.impl.AbstractProjectViewPSIPane;
-import com.intellij.ide.projectView.impl.ProjectAbstractTreeStructureBase;
-import com.intellij.ide.projectView.impl.ProjectTreeBuilder;
-import com.intellij.ide.projectView.impl.ProjectTreeStructure;
-import com.intellij.ide.projectView.impl.ProjectViewTree;
+import com.intellij.ide.projectView.impl.*;
 import com.intellij.ide.util.DeleteHandler;
 import com.intellij.ide.util.DirectoryChooserUtil;
 import com.intellij.ide.util.EditorHelper;
 import com.intellij.ide.util.treeView.AbstractTreeBuilder;
 import com.intellij.ide.util.treeView.AbstractTreeNode;
 import com.intellij.ide.util.treeView.AbstractTreeUpdater;
-import com.intellij.openapi.actionSystem.AnAction;
-import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.actionSystem.DefaultActionGroup;
-import com.intellij.openapi.actionSystem.LangDataKeys;
-import com.intellij.openapi.actionSystem.ToggleAction;
+import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.fileEditor.FileEditor;
@@ -84,6 +56,17 @@ import com.intellij.util.IJSwingUtilities;
 import com.intellij.util.containers.ContainerUtil;
 import com.intellij.util.ui.tree.TreeUtil;
 import consulo.ui.image.Image;
+import org.jetbrains.annotations.NonNls;
+import org.jetbrains.plugins.groovy.mvc.MvcFramework;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.swing.*;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Dmitry Krasislchikov
@@ -292,21 +275,6 @@ public class MvcProjectViewPane extends AbstractProjectViewPSIPane implements Id
 	protected AbstractTreeUpdater createTreeUpdater(final AbstractTreeBuilder treeBuilder)
 	{
 		return new AbstractTreeUpdater(treeBuilder);
-	}
-
-	@Nullable
-	protected PsiElement getPSIElement(@javax.annotation.Nullable final Object element)
-	{
-		// E.g is used by Project View's DataProvider
-		if(element instanceof NodeId)
-		{
-			final PsiElement psiElement = ((NodeId) element).getPsiElement();
-			if(psiElement != null && psiElement.isValid())
-			{
-				return psiElement;
-			}
-		}
-		return super.getPSIElement(element);
 	}
 
 	@Override

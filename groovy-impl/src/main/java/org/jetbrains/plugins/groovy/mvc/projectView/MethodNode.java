@@ -20,10 +20,10 @@ import com.intellij.ide.projectView.ViewSettings;
 import com.intellij.ide.util.treeView.AbstractTreeNode;
 import com.intellij.openapi.module.Module;
 import com.intellij.psi.PsiElement;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Collection;
 
 /**
@@ -32,18 +32,16 @@ import java.util.Collection;
 public class MethodNode extends AbstractMvcPsiNodeDescriptor {
   public MethodNode(@Nonnull final Module module,
                    @Nonnull final GrMethod method,
-                   @Nullable final String locationMark,
                    @Nullable final ViewSettings viewSettings) {
-    super(module, viewSettings, new NodeId(method, locationMark), METHOD);
+    super(module, viewSettings, method, METHOD);
   }
 
   @Override
-  protected String getTestPresentationImpl(@Nonnull final NodeId nodeId, @Nonnull final PsiElement psiElement) {
+  protected String getTestPresentationImpl( @Nonnull final PsiElement psiElement) {
     return "GrMethod: " + ((GrMethod)psiElement).getName();
   }
 
   protected Collection<AbstractTreeNode> getChildrenImpl() {
     return null;
   }
-
 }
