@@ -15,26 +15,6 @@
  */
 package org.jetbrains.plugins.groovy.grape;
 
-import gnu.trove.THashSet;
-
-import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.annotation.Nonnull;
-
-import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotation;
-import org.jetbrains.plugins.groovy.runner.DefaultGroovyScriptRunner;
-import org.jetbrains.plugins.groovy.runner.GroovyScriptRunConfiguration;
-import org.jetbrains.plugins.groovy.runner.GroovyScriptRunner;
 import com.intellij.codeInsight.intention.IntentionAction;
 import com.intellij.execution.CantRunException;
 import com.intellij.execution.ExecutionException;
@@ -44,7 +24,6 @@ import com.intellij.execution.process.ProcessOutputTypes;
 import com.intellij.notification.NotificationDisplayType;
 import com.intellij.notification.NotificationGroup;
 import com.intellij.notification.NotificationType;
-import com.intellij.openapi.application.Result;
 import com.intellij.openapi.application.WriteAction;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.Editor;
@@ -72,16 +51,24 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiRecursiveElementWalkingVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.ExceptionUtil;
-import com.intellij.util.Function;
-import com.intellij.util.IncorrectOperationException;
-import com.intellij.util.PathUtil;
-import com.intellij.util.PathsList;
+import com.intellij.util.*;
 import com.intellij.util.containers.ContainerUtil;
 import consulo.java.execution.configurations.OwnJavaParameters;
 import consulo.java.module.extension.JavaModuleExtension;
 import consulo.java.projectRoots.OwnJdkUtil;
 import consulo.vfs.util.ArchiveVfsUtil;
+import gnu.trove.THashSet;
+import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotation;
+import org.jetbrains.plugins.groovy.runner.DefaultGroovyScriptRunner;
+import org.jetbrains.plugins.groovy.runner.GroovyScriptRunConfiguration;
+import org.jetbrains.plugins.groovy.runner.GroovyScriptRunner;
+
+import javax.annotation.Nonnull;
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.*;
 
 /**
  * @author peter
@@ -372,36 +359,29 @@ public class GrabDependencies implements IntentionAction
 								ContainerUtil.addIfNotNull(jars, LocalFileSystem.getInstance().refreshAndFindFileByIoFile(libFile));
 							}
 						}
-						catch(MalformedURLException e)
-						{
-							LOG.error(e);
-						}
-						catch(URISyntaxException e)
+						catch(MalformedURLException | URISyntaxException e)
 						{
 							LOG.error(e);
 						}
 					}
 				}
-				new WriteAction()
+				WriteAction.run(() ->
 				{
-					protected void run(Result result) throws Throwable
+					jarCount = jars.size();
+					messages = jarCount + " jar";
+					if(jarCount != 1)
 					{
-						jarCount = jars.size();
-						messages = jarCount + " jar";
-						if(jarCount != 1)
-						{
-							messages += "s";
-						}
-						if(jarCount == 0)
-						{
-							messages += "<br>" + myStdOut.toString().replaceAll("\n", "<br>") + "<p>" + myStdErr.toString().replaceAll("\n", "<br>");
-						}
-						if(!jars.isEmpty())
-						{
-							addGrapeDependencies(jars);
-						}
+						messages += "s";
 					}
-				}.execute();
+					if(jarCount == 0)
+					{
+						messages += "<br>" + myStdOut.toString().replaceAll("\n", "<br>") + "<p>" + myStdErr.toString().replaceAll("\n", "<br>");
+					}
+					if(!jars.isEmpty())
+					{
+						addGrapeDependencies(jars);
+					}
+				});
 			}
 			finally
 			{
