@@ -18,7 +18,6 @@ package org.jetbrains.plugins.groovy.codeInspection.unusedDef;
 import com.intellij.codeInspection.ProblemHighlightType;
 import com.intellij.codeInspection.ProblemsHolder;
 import com.intellij.diagnostic.LogMessageEx;
-import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
@@ -28,13 +27,12 @@ import com.intellij.psi.search.searches.ReferencesSearch;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.util.Processor;
 import com.intellij.util.containers.ContainerUtil;
+import consulo.logging.Logger;
 import gnu.trove.TIntHashSet;
 import gnu.trove.TIntProcedure;
 import gnu.trove.TObjectProcedure;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NonNls;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.codeInspection.GroovyInspectionBundle;
 import org.jetbrains.plugins.groovy.codeInspection.GroovyLocalInspectionBase;
 import org.jetbrains.plugins.groovy.codeInspection.utils.ControlFlowUtils;
@@ -55,6 +53,8 @@ import org.jetbrains.plugins.groovy.lang.psi.dataFlow.reachingDefs.DefinitionMap
 import org.jetbrains.plugins.groovy.lang.psi.dataFlow.reachingDefs.ReachingDefinitionsDfaInstance;
 import org.jetbrains.plugins.groovy.lang.psi.dataFlow.reachingDefs.ReachingDefinitionsSemilattice;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Set;
 
@@ -62,7 +62,7 @@ import java.util.Set;
  & @author ven
  */
 public class UnusedDefInspection extends GroovyLocalInspectionBase {
-  private static final Logger LOG = Logger.getInstance("#org.jetbrains.plugins.groovy.codeInspection.unusedDef.UnusedDefInspection");
+  private static final Logger LOG = Logger.getInstance(UnusedDefInspection.class);
 
   @Nls
   @Nonnull

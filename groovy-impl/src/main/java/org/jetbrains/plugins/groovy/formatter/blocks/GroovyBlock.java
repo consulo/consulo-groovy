@@ -19,12 +19,10 @@ package org.jetbrains.plugins.groovy.formatter.blocks;
 import com.intellij.diagnostic.LogMessageEx;
 import com.intellij.formatting.*;
 import com.intellij.lang.ASTNode;
-import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.*;
 import com.intellij.psi.tree.ILazyParseableElementType;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import consulo.logging.Logger;
 import org.jetbrains.plugins.groovy.formatter.FormattingContext;
 import org.jetbrains.plugins.groovy.formatter.processors.GroovyIndentProcessor;
 import org.jetbrains.plugins.groovy.formatter.processors.GroovySpacingProcessor;
@@ -50,6 +48,8 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrComman
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrConditionalExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameterList;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
