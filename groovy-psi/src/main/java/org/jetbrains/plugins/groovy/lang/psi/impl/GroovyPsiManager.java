@@ -20,7 +20,6 @@ import com.intellij.ProjectTopics;
 import com.intellij.application.options.editor.EditorOptionsPanel;
 import com.intellij.ide.PowerSaveMode;
 import com.intellij.openapi.components.ServiceManager;
-import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ModuleRootAdapter;
 import com.intellij.openapi.roots.ModuleRootEvent;
@@ -35,18 +34,17 @@ import com.intellij.reference.SoftReference;
 import com.intellij.util.ConcurrencyUtil;
 import com.intellij.util.Function;
 import com.intellij.util.IncorrectOperationException;
-import com.intellij.util.containers.ConcurrentHashMap;
-import com.intellij.util.containers.ConcurrentWeakHashMap;
 import com.intellij.util.containers.ContainerUtil;
 import com.intellij.util.containers.HashMap;
 import com.intellij.util.messages.MessageBusConnection;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import consulo.logging.Logger;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
 import org.jetbrains.plugins.groovy.lang.resolve.ResolveUtil;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -59,7 +57,7 @@ import static org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames.
  * @author ven
  */
 public class GroovyPsiManager {
-  private static final Logger LOG = Logger.getInstance("org.jetbrains.plugins.groovy.lang.psi.impl.GroovyPsiManager");
+  private static final Logger LOG = Logger.getInstance(GroovyPsiManager.class);
   private static final Set<String> ourPopularClasses = ContainerUtil.newHashSet(GROOVY_LANG_CLOSURE,
                                                                                 DEFAULT_BASE_CLASS_NAME,
                                                                                 GROOVY_OBJECT_SUPPORT,
@@ -71,11 +69,11 @@ public class GroovyPsiManager {
 
   private volatile Map<String, GrTypeDefinition> myArrayClass = new HashMap<String, GrTypeDefinition>();
 
-  private final ConcurrentMap<GroovyPsiElement, PsiType> myCalculatedTypes = new ConcurrentWeakHashMap<GroovyPsiElement, PsiType>();
-  private final ConcurrentMap<String, SoftReference<Map<GlobalSearchScope, PsiClass>>> myClassCache = new ConcurrentHashMap<String, SoftReference<Map<GlobalSearchScope, PsiClass>>>();
-  private final ConcurrentMap<PsiMember, Boolean> myCompileStatic = new ConcurrentHashMap<PsiMember, Boolean>();
+  private final ConcurrentMap<GroovyPsiElement, PsiType> myCalculatedTypes = ContainerUtil.createConcurrentWeakMap();
+  private final ConcurrentMap<String, SoftReference<Map<GlobalSearchScope, PsiClass>>> myClassCache = ContainerUtil.newConcurrentMap();
+  private final ConcurrentMap<PsiMember, Boolean> myCompileStatic = ContainerUtil.newConcurrentMap();
 
-  private static final RecursionGuard ourGuard = RecursionManager.createGuard("groovyPsiManager");
+  private static final RecursionGuard<PsiElement> ourGuard = RecursionManager.createGuard("groovyPsiManager");
 
   public GroovyPsiManager(Project project) {
     myProject = project;
@@ -175,7 +173,7 @@ public class GroovyPsiManager {
     SoftReference<Map<GlobalSearchScope, PsiClass>> reference = myClassCache.get(fqName);
     Map<GlobalSearchScope, PsiClass> map = reference == null ? null : reference.get();
     if (map == null) {
-      map = new ConcurrentHashMap<GlobalSearchScope, PsiClass>();
+      map = ContainerUtil.newConcurrentMap();
       myClassCache.put(fqName, new SoftReference<Map<GlobalSearchScope, PsiClass>>(map));
     }
     PsiClass cached = map.get(resolveScope);
@@ -196,7 +194,7 @@ public class GroovyPsiManager {
   public <T extends GroovyPsiElement> PsiType getType(@Nonnull T element, @Nonnull Function<T, PsiType> calculator) {
     PsiType type = myCalculatedTypes.get(element);
     if (type == null) {
-      RecursionGuard.StackStamp stamp = ourGuard.markStack();
+      RecursionGuard.StackStamp stamp = RecursionManager.markStack();
       type = calculator.fun(element);
       if (type == null) {
         type = UNKNOWN_TYPE;
@@ -236,7 +234,7 @@ public class GroovyPsiManager {
 
   @Nullable
   public static PsiType inferType(@Nonnull PsiElement element, @Nonnull Computable<PsiType> computable) {
-    List<Object> stack = ourGuard.currentStack();
+    List<? extends PsiElement> stack = ourGuard.currentStack();
     if (stack.size() > 7) { //don't end up walking the whole project PSI
       ourGuard.prohibitResultCaching(stack.get(0));
       return null;
