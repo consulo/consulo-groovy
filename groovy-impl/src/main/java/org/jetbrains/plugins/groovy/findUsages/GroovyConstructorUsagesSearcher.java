@@ -36,10 +36,7 @@ import com.intellij.psi.util.PsiModificationTracker;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.PairProcessor;
 import com.intellij.util.Processor;
-import com.intellij.util.containers.ConcurrentHashSet;
 import com.intellij.util.containers.ContainerUtil;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.codeInspection.utils.ControlFlowUtils;
 import org.jetbrains.plugins.groovy.gpp.GppTypeConverter;
@@ -62,6 +59,8 @@ import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeElement;
 import org.jetbrains.plugins.groovy.lang.psi.controlFlow.Instruction;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -89,7 +88,7 @@ public class GroovyConstructorUsagesSearcher extends QueryExecutorBase<PsiRefere
     SearchScope onlyGroovy = GroovyScopeUtil.restrictScopeToGroovyFiles(searchScope, GroovyScopeUtil.getEffectiveScope(constructor));
     Set<PsiClass> processed = collector.getSearchSession().getUserData(LITERALLY_CONSTRUCTED_CLASSES);
     if (processed == null) {
-      collector.getSearchSession().putUserData(LITERALLY_CONSTRUCTED_CLASSES, processed = new ConcurrentHashSet<PsiClass>());
+      collector.getSearchSession().putUserData(LITERALLY_CONSTRUCTED_CLASSES, processed = ContainerUtil.newConcurrentSet());
     }
     if (!processed.add(clazz)) return;
 
@@ -143,7 +142,7 @@ public class GroovyConstructorUsagesSearcher extends QueryExecutorBase<PsiRefere
                                               final boolean searchGppCalls,
                                               final Processor<GrNewExpression> newExpressionProcessor,
                                               final LiteralConstructorSearcher literalProcessor) {
-    final Set<PsiAnchor> processedMethods = new ConcurrentHashSet<PsiAnchor>();
+    final Set<PsiAnchor> processedMethods = ContainerUtil.newConcurrentSet();
 
     ReferencesSearch.searchOptimized(clazz, scope, true, collector, true, new PairProcessor<PsiReference, SearchRequestCollector>() {
       @Override
@@ -199,7 +198,7 @@ public class GroovyConstructorUsagesSearcher extends QueryExecutorBase<PsiRefere
 
     if (gppScope instanceof GlobalSearchScope) {
       String name = currentTarget.getName();
-      if (PsiSearchHelper.SERVICE.getInstance(currentTarget.getProject()).isCheapEnoughToSearch(name, (GlobalSearchScope)gppScope, null,
+      if (PsiSearchHelper.getInstance(currentTarget.getProject()).isCheapEnoughToSearch(name, (GlobalSearchScope)gppScope, null,
                                                                                                 null) ==
           PsiSearchHelper.SearchCostResult.ZERO_OCCURRENCES) {
         return;
@@ -344,7 +343,7 @@ public class GroovyConstructorUsagesSearcher extends QueryExecutorBase<PsiRefere
       AnnotatedElementsSearch.searchElements(typed, maximal, PsiModifierListOwner.class).forEach(new Processor<PsiModifierListOwner>() {
         @Override
         public boolean process(PsiModifierListOwner occurrence) {
-          ContainerUtil.addIfNotNull(occurrence.getContainingFile().getVirtualFile(), files);
+          ContainerUtil.addIfNotNull(files, occurrence.getContainingFile().getVirtualFile());
           return true;
         }
       });
