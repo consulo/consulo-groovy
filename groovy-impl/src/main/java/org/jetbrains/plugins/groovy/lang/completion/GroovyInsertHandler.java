@@ -16,6 +16,7 @@
 
 package org.jetbrains.plugins.groovy.lang.completion;
 
+import com.intellij.codeInsight.completion.util.CompletionStyleUtil;
 import consulo.psi.PsiPackage;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.plugins.groovy.codeStyle.GroovyCodeStyleSettings;
@@ -140,7 +141,7 @@ public class GroovyInsertHandler implements InsertHandler<LookupElement> {
       }
 
 
-      CommonCodeStyleSettings settings = context.getCodeStyleSettings();
+      CommonCodeStyleSettings settings = CompletionStyleUtil.getCodeStyleSettings(context);
       ParenthesesInsertHandler.getInstance(MethodParenthesesHandler.hasParams(item, context.getElements(), true, method),
                                            settings.SPACE_BEFORE_METHOD_CALL_PARENTHESES,
                                            settings.SPACE_WITHIN_METHOD_CALL_PARENTHESES,
