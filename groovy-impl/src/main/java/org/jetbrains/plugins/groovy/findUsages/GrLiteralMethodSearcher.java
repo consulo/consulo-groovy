@@ -34,7 +34,7 @@ import java.util.List;
  */
 public class GrLiteralMethodSearcher extends QueryExecutorBase<PsiReference, MethodReferencesSearch.SearchParameters> {
   @Override
-  public void processQuery(@Nonnull MethodReferencesSearch.SearchParameters p, @Nonnull Processor<PsiReference> consumer) {
+  public void processQuery(@Nonnull MethodReferencesSearch.SearchParameters p, @Nonnull Processor<? super PsiReference> consumer) {
     final PsiMethod method = p.getMethod();
     final PsiClass aClass = method.getContainingClass();
     if (aClass == null) return;

@@ -12,10 +12,10 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpres
 */
 public class LiteralConstructorSearcher {
   private final PsiMethod myConstructor;
-  private final Processor<PsiReference> myConsumer;
+  private final Processor<? super PsiReference> myConsumer;
   private final boolean myIncludeOverloads;
 
-  public LiteralConstructorSearcher(PsiMethod constructor, Processor<PsiReference> consumer, boolean includeOverloads) {
+  public LiteralConstructorSearcher(PsiMethod constructor, Processor<? super PsiReference> consumer, boolean includeOverloads) {
     myConstructor = constructor;
     myConsumer = consumer;
     myIncludeOverloads = includeOverloads;

@@ -28,7 +28,6 @@ import com.intellij.psi.search.searches.AnnotatedElementsSearch;
 import com.intellij.psi.stubs.StubIndex;
 import com.intellij.util.Processor;
 import com.intellij.util.QueryExecutor;
-import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyRecursiveElementVisitor;
@@ -36,6 +35,7 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
 import org.jetbrains.plugins.groovy.lang.psi.stubs.index.GrAnnotatedMemberIndex;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -72,7 +72,7 @@ public class AnnotatedMembersSearcher implements QueryExecutor<PsiModifierListOw
     return result;
   }
 
-  public boolean execute(@Nonnull final AnnotatedElementsSearch.Parameters p, @Nonnull final Processor<PsiModifierListOwner> consumer) {
+  public boolean execute(@Nonnull final AnnotatedElementsSearch.Parameters p, @Nonnull final Processor<? super PsiModifierListOwner> consumer) {
     final PsiClass annClass = p.getAnnotationClass();
     assert annClass.isAnnotationType() : "Annotation type should be passed to annotated members search";
 

@@ -74,12 +74,12 @@ public class GroovyConstructorUsagesSearcher extends QueryExecutorBase<PsiRefere
   }
 
   @Override
-  public void processQuery(@Nonnull MethodReferencesSearch.SearchParameters p, @Nonnull Processor<PsiReference> consumer) {
+  public void processQuery(@Nonnull MethodReferencesSearch.SearchParameters p, @Nonnull Processor<? super PsiReference> consumer) {
     processConstructorUsages(p.getMethod(), p.getScope(), consumer, p.getOptimizer(), true, !p.isStrictSignatureSearch());
   }
 
   public static final Key<Set<PsiClass>> LITERALLY_CONSTRUCTED_CLASSES = Key.create("LITERALLY_CONSTRUCTED_CLASSES");
-  static void processConstructorUsages(final PsiMethod constructor, final SearchScope searchScope, final Processor<PsiReference> consumer, final SearchRequestCollector collector, final boolean searchGppCalls, final boolean includeOverloads) {
+  static void processConstructorUsages(final PsiMethod constructor, final SearchScope searchScope, final Processor<? super PsiReference> consumer, final SearchRequestCollector collector, final boolean searchGppCalls, final boolean includeOverloads) {
     if (!constructor.isConstructor()) return;
 
     final PsiClass clazz = constructor.getContainingClass();
@@ -364,7 +364,7 @@ public class GroovyConstructorUsagesSearcher extends QueryExecutorBase<PsiRefere
     return true;
   }
 
-  private static boolean processConstructors(final PsiMethod searchedConstructor, final Processor<PsiReference> consumer, final PsiClass clazz,
+  private static boolean processConstructors(final PsiMethod searchedConstructor, final Processor<? super PsiReference> consumer, final PsiClass clazz,
                                              final boolean processThisRefs) {
     final PsiMethod[] constructors = clazz.getConstructors();
     if (constructors.length == 0) {
@@ -391,7 +391,7 @@ public class GroovyConstructorUsagesSearcher extends QueryExecutorBase<PsiRefere
   }
 
   private static void processImplicitConstructorCall(final PsiMember usage,
-                                                     final Processor<PsiReference> processor,
+                                                     final Processor<? super PsiReference> processor,
                                                      final PsiMethod constructor) {
     if (constructor instanceof GrMethod) {
       GrParameter[] grParameters = (GrParameter[])constructor.getParameterList().getParameters();

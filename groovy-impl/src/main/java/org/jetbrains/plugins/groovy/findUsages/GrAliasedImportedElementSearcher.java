@@ -15,19 +15,18 @@
  */
 package org.jetbrains.plugins.groovy.findUsages;
 
-import javax.annotation.Nonnull;
-
 import com.intellij.openapi.application.QueryExecutorBase;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.*;
 import com.intellij.psi.search.*;
 import com.intellij.psi.search.searches.ReferencesSearch;
 import com.intellij.util.Processor;
-
-import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrAccessorMethod;
 import org.jetbrains.plugins.groovy.lang.psi.api.toplevel.imports.GrImportStatement;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyPropertyUtils;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author Maxim.Medvedev
@@ -39,7 +38,7 @@ public class GrAliasedImportedElementSearcher extends QueryExecutorBase<PsiRefer
   }
 
   @Override
-  public void processQuery(@Nonnull ReferencesSearch.SearchParameters parameters, @Nonnull Processor<PsiReference> consumer) {
+  public void processQuery(@Nonnull ReferencesSearch.SearchParameters parameters, @Nonnull Processor<? super PsiReference> consumer) {
     final PsiElement target = parameters.getElementToSearch();
     if (!(target instanceof PsiMember) || !(target instanceof PsiNamedElement)) return;
 
@@ -81,7 +80,7 @@ public class GrAliasedImportedElementSearcher extends QueryExecutorBase<PsiRefer
     }
 
     @Override
-    public boolean processTextOccurrence(@Nonnull final PsiElement element, int offsetInElement, @Nonnull Processor<PsiReference> consumer) {
+    public boolean processTextOccurrence(@Nonnull final PsiElement element, int offsetInElement, @Nonnull Processor<? super PsiReference> consumer) {
       String alias = getAlias(element);
       if (alias == null) return true;
 

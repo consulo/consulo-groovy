@@ -24,10 +24,11 @@ import com.intellij.psi.search.UsageSearchContext;
 import com.intellij.psi.search.searches.MethodReferencesSearch;
 import com.intellij.psi.search.searches.ReferencesSearch;
 import com.intellij.util.Processor;
-import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrAccessorMethod;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyPropertyUtils;
+
+import javax.annotation.Nonnull;
 
 /**
  * author ven
@@ -39,7 +40,7 @@ public class AccessorReferencesSearcher extends QueryExecutorBase<PsiReference, 
   }
 
   @Override
-  public void processQuery(@Nonnull ReferencesSearch.SearchParameters queryParameters, @Nonnull Processor<PsiReference> consumer) {
+  public void processQuery(@Nonnull ReferencesSearch.SearchParameters queryParameters, @Nonnull Processor<? super PsiReference> consumer) {
     final PsiElement element = queryParameters.getElementToSearch();
     if (element instanceof PsiMethod) {
       final String propertyName = GroovyPropertyUtils.getPropertyName((PsiMethod)element);

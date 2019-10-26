@@ -15,13 +15,6 @@
  */
 package org.jetbrains.plugins.groovy.findUsages;
 
-import javax.annotation.Nonnull;
-
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrAccessorMethod;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrReflectedMethod;
-import org.jetbrains.plugins.groovy.lang.psi.util.GroovyPropertyUtils;
 import com.intellij.codeInsight.navigation.MethodImplementationsSearch;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.util.Computable;
@@ -30,6 +23,13 @@ import com.intellij.psi.search.SearchScope;
 import com.intellij.psi.search.searches.DefinitionsScopedSearch;
 import com.intellij.util.Processor;
 import com.intellij.util.QueryExecutor;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrAccessorMethod;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrReflectedMethod;
+import org.jetbrains.plugins.groovy.lang.psi.util.GroovyPropertyUtils;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author Maxim.Medvedev
@@ -38,7 +38,7 @@ public class GroovyImplementationSearch implements QueryExecutor<PsiElement, Def
 {
 	@Override
 	public boolean execute(@Nonnull final DefinitionsScopedSearch.SearchParameters queryParameters,
-			@Nonnull final Processor<PsiElement> consumer)
+			@Nonnull final Processor<? super PsiElement> consumer)
 	{
 		return ApplicationManager.getApplication().runReadAction(new Computable<Boolean>()
 		{

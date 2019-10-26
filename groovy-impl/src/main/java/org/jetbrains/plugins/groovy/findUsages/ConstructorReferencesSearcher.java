@@ -32,7 +32,7 @@ public class ConstructorReferencesSearcher extends QueryExecutorBase<PsiReferenc
   }
 
   @Override
-  public void processQuery(@Nonnull ReferencesSearch.SearchParameters queryParameters, @Nonnull Processor<PsiReference> consumer) {
+  public void processQuery(@Nonnull ReferencesSearch.SearchParameters queryParameters, @Nonnull Processor<? super PsiReference> consumer) {
     final PsiElement element = queryParameters.getElementToSearch();
     if (element instanceof PsiMethod) {
       final PsiMethod method = (PsiMethod)element;

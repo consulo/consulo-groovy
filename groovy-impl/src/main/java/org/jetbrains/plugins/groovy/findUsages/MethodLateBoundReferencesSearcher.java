@@ -16,8 +16,6 @@
 
 package org.jetbrains.plugins.groovy.findUsages;
 
-import javax.annotation.Nonnull;
-
 import com.intellij.openapi.application.QueryExecutorBase;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ProjectRootManager;
@@ -38,6 +36,8 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.search.GrSourceFilterScope;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 import org.jetbrains.plugins.groovy.lang.resolve.ResolveUtil;
 
+import javax.annotation.Nonnull;
+
 /**
  * @author ven
  */
@@ -48,7 +48,7 @@ public class MethodLateBoundReferencesSearcher extends QueryExecutorBase<PsiRefe
   }
 
   @Override
-  public void processQuery(@Nonnull MethodReferencesSearch.SearchParameters queryParameters, @Nonnull Processor<PsiReference> consumer) {
+  public void processQuery(@Nonnull MethodReferencesSearch.SearchParameters queryParameters, @Nonnull Processor<? super PsiReference> consumer) {
     final PsiMethod method = queryParameters.getMethod();
     SearchScope searchScope = GroovyScopeUtil.restrictScopeToGroovyFiles(queryParameters.getScope()).intersectWith(getUseScope(method));
 
@@ -78,7 +78,7 @@ public class MethodLateBoundReferencesSearcher extends QueryExecutorBase<PsiRefe
     if (StringUtil.isEmpty(name)) return;
     collector.searchWord(name, searchScope, UsageSearchContext.IN_CODE, true, new RequestResultProcessor("groovy.lateBound") {
       @Override
-      public boolean processTextOccurrence(@Nonnull PsiElement element, int offsetInElement, @Nonnull Processor<PsiReference> consumer) {
+      public boolean processTextOccurrence(@Nonnull PsiElement element, int offsetInElement, @Nonnull Processor<? super PsiReference> consumer) {
         if (!(element instanceof GrReferenceExpression)) {
           return true;
         }

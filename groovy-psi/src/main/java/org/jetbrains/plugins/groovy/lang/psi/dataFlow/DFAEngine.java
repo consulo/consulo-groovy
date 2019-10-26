@@ -15,21 +15,15 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.dataFlow;
 
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Deque;
-import java.util.LinkedList;
-import java.util.Queue;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.intellij.openapi.progress.ProgressManager;
 import org.jetbrains.plugins.groovy.lang.psi.controlFlow.CallEnvironment;
 import org.jetbrains.plugins.groovy.lang.psi.controlFlow.CallInstruction;
 import org.jetbrains.plugins.groovy.lang.psi.controlFlow.ControlFlowBuilderUtil;
 import org.jetbrains.plugins.groovy.lang.psi.controlFlow.Instruction;
-import com.intellij.codeInspection.dataFlow.WorkingTimeMeasurer;
-import com.intellij.openapi.progress.ProgressManager;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.*;
 
 /**
  * @author ven
@@ -92,8 +86,6 @@ public class DFAEngine<E>
 	@Nullable
 	private ArrayList<E> performDFA(boolean timeout)
 	{
-		WorkingTimeMeasurer measurer = null;
-
 		ArrayList<E> info = new ArrayList<E>(Collections.nCopies(myFlow.length, myDfa.initial()));
 		CallEnvironment env = new MyCallEnvironment(myFlow.length);
 
@@ -101,7 +93,6 @@ public class DFAEngine<E>
 
 		final boolean forward = myDfa.isForward();
 		int[] order = ControlFlowBuilderUtil.postorder(myFlow); //todo for backward?
-		int count = 0;
 		for(int i = forward ? 0 : myFlow.length - 1; forward ? i < myFlow.length : i >= 0; )
 		{
 			Instruction instr = myFlow[order[i]];
@@ -115,21 +106,6 @@ public class DFAEngine<E>
 
 				while(!workList.isEmpty())
 				{
-					count++;
-					if(timeout && count % 512 == 0)
-					{
-						if(measurer == null)
-						{
-							long msLimit = 1000;
-
-							measurer = new WorkingTimeMeasurer(msLimit * 1000 * 1000);
-						}
-						else if(measurer.isTimeOver())
-						{
-							return null;
-						}
-					}
-
 					ProgressManager.checkCanceled();
 					final Instruction curr = workList.remove();
 					final int num = curr.num();

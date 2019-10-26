@@ -24,8 +24,6 @@ import com.intellij.psi.util.MethodSignatureBackedByPsiMethod;
 import com.intellij.psi.util.TypeConversionUtil;
 import com.intellij.util.Processor;
 import com.intellij.util.QueryExecutor;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
 import org.jetbrains.plugins.groovy.lang.psi.impl.PsiImplUtil;
@@ -33,6 +31,8 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUt
 import org.jetbrains.plugins.groovy.lang.resolve.ResolveUtil;
 import org.jetbrains.plugins.groovy.lang.resolve.processors.MethodResolverProcessor;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -42,7 +42,7 @@ import java.util.List;
  * @author Maxim.Medvedev
  */
 public class GDKSuperMethodSearcher implements QueryExecutor<MethodSignatureBackedByPsiMethod, SuperMethodsSearch.SearchParameters> {
-  public boolean execute(@Nonnull SuperMethodsSearch.SearchParameters queryParameters, @Nonnull Processor<MethodSignatureBackedByPsiMethod> consumer) {
+  public boolean execute(@Nonnull SuperMethodsSearch.SearchParameters queryParameters, @Nonnull Processor<? super MethodSignatureBackedByPsiMethod> consumer) {
     final PsiMethod method = queryParameters.getMethod();
     if (!(method instanceof GrMethod)) {
       return true;

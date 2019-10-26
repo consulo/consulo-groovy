@@ -15,17 +15,6 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
-import javax.annotation.Nonnull;
-
-import org.jetbrains.plugins.groovy.lang.psi.GrClassSubstitutor;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrAnonymousClassDefinition;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrReferenceList;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
-import org.jetbrains.plugins.groovy.lang.psi.stubs.index.GrAnonymousClassIndex;
-import org.jetbrains.plugins.groovy.lang.psi.stubs.index.GrDirectInheritorsIndex;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.util.Computable;
 import com.intellij.psi.PsiClass;
@@ -37,6 +26,16 @@ import com.intellij.psi.stubs.StubIndex;
 import com.intellij.util.Processor;
 import com.intellij.util.QueryExecutor;
 import consulo.application.AccessRule;
+import org.jetbrains.plugins.groovy.lang.psi.GrClassSubstitutor;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrAnonymousClassDefinition;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrReferenceList;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
+import org.jetbrains.plugins.groovy.lang.psi.stubs.index.GrAnonymousClassIndex;
+import org.jetbrains.plugins.groovy.lang.psi.stubs.index.GrDirectInheritorsIndex;
+
+import javax.annotation.Nonnull;
+import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  * @author ven
@@ -73,7 +72,7 @@ class GroovyDirectInheritorsSearcher implements QueryExecutor<PsiClass, DirectCl
 		return inheritors.toArray(new PsiClass[inheritors.size()]);
 	}
 
-	public boolean execute(@Nonnull DirectClassInheritorsSearch.SearchParameters queryParameters, @Nonnull final Processor<PsiClass> consumer)
+	public boolean execute(@Nonnull DirectClassInheritorsSearch.SearchParameters queryParameters, @Nonnull final Processor<? super PsiClass> consumer)
 	{
 		final PsiClass clazz = queryParameters.getClassToProcess();
 		final SearchScope scope = queryParameters.getScope();

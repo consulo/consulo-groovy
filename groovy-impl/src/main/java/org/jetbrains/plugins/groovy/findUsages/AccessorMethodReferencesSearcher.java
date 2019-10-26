@@ -16,8 +16,6 @@
 
 package org.jetbrains.plugins.groovy.findUsages;
 
-import javax.annotation.Nonnull;
-
 import com.intellij.openapi.application.QueryExecutorBase;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiMethod;
@@ -32,6 +30,8 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GrGdkMethodImpl;
 import org.jetbrains.plugins.groovy.lang.psi.util.GdkMethodUtil;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyPropertyUtils;
 
+import javax.annotation.Nonnull;
+
 /**
  * author ven
  */
@@ -42,7 +42,7 @@ public class AccessorMethodReferencesSearcher extends QueryExecutorBase<PsiRefer
   }
 
   @Override
-  public void processQuery(@Nonnull MethodReferencesSearch.SearchParameters queryParameters, @Nonnull Processor<PsiReference> consumer) {
+  public void processQuery(@Nonnull MethodReferencesSearch.SearchParameters queryParameters, @Nonnull Processor<? super PsiReference> consumer) {
     final PsiMethod method = queryParameters.getMethod();
 
     final String propertyName;
