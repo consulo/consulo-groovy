@@ -16,9 +16,6 @@
 
 package org.jetbrains.plugins.groovy.actions;
 
-import javax.annotation.Nonnull;
-
-import org.jetbrains.annotations.NonNls;
 import com.intellij.CommonBundle;
 import com.intellij.ide.actions.CreateElementActionBase;
 import com.intellij.openapi.actionSystem.DataContext;
@@ -31,6 +28,10 @@ import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiElement;
 import consulo.groovy.module.extension.GroovyModuleExtension;
 import consulo.ui.image.Image;
+import org.jetbrains.annotations.NonNls;
+
+import javax.annotation.Nonnull;
+import java.util.function.Consumer;
 
 public abstract class NewGroovyActionBase extends CreateElementActionBase
 {
@@ -42,13 +43,12 @@ public abstract class NewGroovyActionBase extends CreateElementActionBase
 		super(text, description, icon);
 	}
 
-	@Nonnull
-	protected final PsiElement[] invokeDialog(final Project project, final PsiDirectory directory)
+	protected final void invokeDialog(final Project project, final PsiDirectory directory, Consumer<PsiElement[]> elementsConsumer)
 	{
 		MyInputValidator validator = new MyInputValidator(project, directory);
 		Messages.showInputDialog(project, getDialogPrompt(), getDialogTitle(), Messages.getQuestionIcon(), "", validator);
 
-		return validator.getCreatedElements();
+		elementsConsumer.accept(validator.getCreatedElements());
 	}
 
 	protected abstract String getDialogPrompt();
