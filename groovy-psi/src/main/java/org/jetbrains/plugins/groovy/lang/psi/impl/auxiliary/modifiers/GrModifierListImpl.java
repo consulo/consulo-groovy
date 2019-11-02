@@ -26,6 +26,7 @@ import com.intellij.psi.util.PsiModificationTracker;
 import com.intellij.util.ArrayFactory;
 import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.containers.ContainerUtil;
+import consulo.annotations.RequiredReadAction;
 import gnu.trove.TObjectIntHashMap;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.plugins.groovy.config.GroovyConfigUtils;
@@ -336,6 +337,7 @@ public class GrModifierListImpl extends GrStubElementBase<GrModifierListStub> im
 	}
 
 	@Override
+	@RequiredReadAction
 	public boolean hasExplicitModifier(@Nonnull @NonNls String name)
 	{
 		final GrModifierListStub stub = getStub();
@@ -344,7 +346,8 @@ public class GrModifierListImpl extends GrStubElementBase<GrModifierListStub> im
 			return hasMaskExplicitModifier(name, stub.getModifiersFlags());
 		}
 
-		return findChildByType(NAME_TO_MODIFIER_ELEMENT_TYPE.get(name)) != null;
+		IElementType type = NAME_TO_MODIFIER_ELEMENT_TYPE.get(name);
+		return type != null && findChildByType(type) != null;
 	}
 
 	public static boolean hasMaskExplicitModifier(String name, int mask)
