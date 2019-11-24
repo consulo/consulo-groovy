@@ -15,23 +15,6 @@
  */
 package org.jetbrains.plugins.groovy.gant;
 
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.Callable;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-
-import javax.annotation.Nonnull;
-import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
-import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil;
-import org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames;
-import org.jetbrains.plugins.groovy.runner.GroovyScriptUtil;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.module.Module;
@@ -44,11 +27,7 @@ import com.intellij.openapi.util.Key;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.CommonClassNames;
-import com.intellij.psi.PsiClassType;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiType;
+import com.intellij.psi.*;
 import com.intellij.psi.impl.light.LightMethodBuilder;
 import com.intellij.psi.util.CachedValue;
 import com.intellij.psi.util.CachedValueProvider;
@@ -57,7 +36,19 @@ import com.intellij.psi.util.PsiModificationTracker;
 import com.intellij.reference.SoftReference;
 import com.intellij.util.PathUtil;
 import com.intellij.util.containers.ContainerUtil;
-import com.intellij.util.lang.UrlClassLoader;
+import consulo.util.nodep.classloader.UrlClassLoader;
+import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
+import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil;
+import org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames;
+import org.jetbrains.plugins.groovy.runner.GroovyScriptUtil;
+
+import javax.annotation.Nonnull;
+import java.net.URL;
+import java.util.*;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 /**
  * @author ilyas, peter
@@ -148,7 +139,8 @@ public class AntTasksProvider {
     return loader.getAntObjects();
   }
 
-  private static class AntClassLoader extends UrlClassLoader {
+  private static class AntClassLoader extends UrlClassLoader
+  {
     private final Future<Map<String, Class>> myFuture;
 
     public AntClassLoader(ArrayList<URL> urls) {

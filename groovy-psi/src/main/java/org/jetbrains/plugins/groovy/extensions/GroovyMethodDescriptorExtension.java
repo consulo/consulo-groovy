@@ -1,9 +1,10 @@
 package org.jetbrains.plugins.groovy.extensions;
 
-import com.intellij.ide.plugins.IdeaPluginDescriptor;
 import com.intellij.openapi.extensions.ExtensionPointName;
 import com.intellij.openapi.extensions.PluginAware;
 import com.intellij.util.xmlb.annotations.Attribute;
+import consulo.container.plugin.IdeaPluginDescriptor;
+import consulo.container.plugin.PluginDescriptor;
 
 /**
  * @author Sergey Evdokimov
@@ -18,7 +19,7 @@ public class GroovyMethodDescriptorExtension extends GroovyMethodDescriptor impl
   @Attribute("lightMethodKey")
   public String lightMethodKey;
 
-  private IdeaPluginDescriptor myPluginDescriptor;
+  private PluginDescriptor myPluginDescriptor;
 
   @Override
   public final void setPluginDescriptor(IdeaPluginDescriptor pluginDescriptor) {
