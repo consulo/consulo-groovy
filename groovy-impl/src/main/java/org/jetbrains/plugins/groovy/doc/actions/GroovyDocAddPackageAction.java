@@ -15,11 +15,6 @@
  */
 package org.jetbrains.plugins.groovy.doc.actions;
 
-import java.util.List;
-
-import javax.swing.DefaultListModel;
-
-import org.jetbrains.plugins.groovy.doc.GroovyDocConfiguration;
 import com.intellij.ide.util.PackageChooserDialog;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
@@ -27,7 +22,11 @@ import com.intellij.openapi.project.DumbAware;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiJavaPackage;
 import com.intellij.util.IconUtil;
-import consulo.annotations.RequiredDispatchThread;
+import consulo.ui.annotation.RequiredUIAccess;
+import org.jetbrains.plugins.groovy.doc.GroovyDocConfiguration;
+
+import javax.swing.*;
+import java.util.List;
 
 /**
  * User: Dmitry.Krasilschikov
@@ -43,7 +42,7 @@ public class GroovyDocAddPackageAction extends AnAction implements DumbAware
 		myDataModel = dataModel;
 	}
 
-	@RequiredDispatchThread
+	@RequiredUIAccess
 	public void actionPerformed(final AnActionEvent e)
 	{
 		final Project project = e.getProject();

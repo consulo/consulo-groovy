@@ -1,10 +1,5 @@
 package org.jetbrains.plugins.groovy.dsl;
 
-import java.util.Map;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import org.jetbrains.plugins.groovy.dsl.holders.CustomMembersHolder;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.openapi.util.Key;
@@ -16,7 +11,12 @@ import com.intellij.psi.util.CachedValue;
 import com.intellij.psi.util.CachedValueProvider;
 import com.intellij.psi.util.CachedValuesManager;
 import com.intellij.psi.util.PsiModificationTracker;
-import com.intellij.util.containers.ConcurrentHashMap;
+import org.jetbrains.plugins.groovy.dsl.holders.CustomMembersHolder;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author peter
@@ -31,10 +31,10 @@ public class FactorTree extends UserDataHolderBase
   public FactorTree(final Project project, GroovyDslExecutor executor) {
     myExecutor = executor;
     myProvider = new CachedValueProvider<Map>() {
-      @javax.annotation.Nullable
-      @Override
+      @Nonnull
+	  @Override
       public Result<Map> compute() {
-        return new Result<Map>(new ConcurrentHashMap(), PsiModificationTracker.MODIFICATION_COUNT, ProjectRootManager.getInstance(project));
+        return new Result<Map>(new ConcurrentHashMap<>(), PsiModificationTracker.MODIFICATION_COUNT, ProjectRootManager.getInstance(project));
       }
     };
     myTopLevelCache = CachedValuesManager.getManager(project).createCachedValue(myProvider, false);

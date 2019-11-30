@@ -15,19 +15,18 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.stubs.elements;
 
-import java.io.IOException;
-
-import javax.annotation.Nonnull;
-
+import com.intellij.psi.stubs.StubElement;
+import com.intellij.psi.stubs.StubInputStream;
+import com.intellij.psi.stubs.StubOutputStream;
+import consulo.annotation.access.RequiredReadAction;
 import org.jetbrains.plugins.groovy.lang.psi.api.toplevel.imports.GrImportStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
 import org.jetbrains.plugins.groovy.lang.psi.impl.toplevel.imports.GrImportStatementImpl;
 import org.jetbrains.plugins.groovy.lang.psi.stubs.GrImportStatementStub;
 import org.jetbrains.plugins.groovy.lang.psi.stubs.GrStubUtils;
-import consulo.annotations.RequiredReadAction;
-import com.intellij.psi.stubs.StubElement;
-import com.intellij.psi.stubs.StubInputStream;
-import com.intellij.psi.stubs.StubOutputStream;
+
+import javax.annotation.Nonnull;
+import java.io.IOException;
 
 /**
  * Created by Max Medvedev on 11/29/13

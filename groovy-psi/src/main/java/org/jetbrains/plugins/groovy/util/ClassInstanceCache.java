@@ -1,8 +1,7 @@
 package org.jetbrains.plugins.groovy.util;
 
 import javax.annotation.Nonnull;
-
-import com.intellij.util.containers.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author Sergey Evdokimov

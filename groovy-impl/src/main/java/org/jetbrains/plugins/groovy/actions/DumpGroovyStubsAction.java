@@ -15,25 +15,25 @@
  */
 package org.jetbrains.plugins.groovy.actions;
 
-import javax.annotation.Nonnull;
-
-import org.jetbrains.plugins.groovy.editor.HandlerUtils;
-import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
-import org.jetbrains.plugins.groovy.refactoring.convertToJava.GroovyToJavaGenerator;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.PlatformDataKeys;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.DumbAware;
 import com.intellij.psi.PsiFile;
-import consulo.annotations.RequiredDispatchThread;
+import consulo.ui.annotation.RequiredUIAccess;
+import org.jetbrains.plugins.groovy.editor.HandlerUtils;
+import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
+import org.jetbrains.plugins.groovy.refactoring.convertToJava.GroovyToJavaGenerator;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author Max Medvedev
  */
 public class DumpGroovyStubsAction extends AnAction implements DumbAware
 {
-	@RequiredDispatchThread
+	@RequiredUIAccess
 	@Override
 	public void update(@Nonnull AnActionEvent e)
 	{
@@ -50,7 +50,7 @@ public class DumpGroovyStubsAction extends AnAction implements DumbAware
 		e.getPresentation().setEnabled(false);
 	}
 
-	@RequiredDispatchThread
+	@RequiredUIAccess
 	@Override
 	public void actionPerformed(@Nonnull AnActionEvent e)
 	{

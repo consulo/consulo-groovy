@@ -1,9 +1,5 @@
 package org.jetbrains.plugins.groovy.mvc;
 
-import javax.annotation.Nonnull;
-import javax.swing.event.HyperlinkEvent;
-
-import javax.annotation.Nullable;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationListener;
 import com.intellij.notification.NotificationType;
@@ -21,7 +17,11 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.CommonClassNames;
 import com.intellij.psi.JavaPsiFacade;
 import com.intellij.psi.search.GlobalSearchScope;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.swing.event.HyperlinkEvent;
 
 /**
  * @author Sergey Evdokimov

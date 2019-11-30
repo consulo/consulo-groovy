@@ -15,17 +15,18 @@
  */
 package consulo.groovy;
 
-import javax.annotation.Nonnull;
-import org.jetbrains.plugins.groovy.extensions.GroovyScriptTypeDetector;
-import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiModifier;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.ide.IconDescriptor;
 import consulo.ide.IconDescriptorUpdater;
 import consulo.ide.IconDescriptorUpdaters;
 import icons.JetgroovyIcons;
+import org.jetbrains.plugins.groovy.extensions.GroovyScriptTypeDetector;
+import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL

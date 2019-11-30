@@ -15,13 +15,6 @@
  */
 package org.jetbrains.plugins.groovy.debugger;
 
-import java.util.Collection;
-import java.util.Collections;
-
-import javax.annotation.Nonnull;
-
-import org.jetbrains.annotations.Nls;
-import org.jetbrains.plugins.groovy.GroovyBundle;
 import com.intellij.openapi.options.Configurable;
 import com.intellij.util.xmlb.XmlSerializerUtil;
 import com.intellij.xdebugger.settings.DebuggerSettingsCategory;
@@ -30,9 +23,15 @@ import consulo.options.SimpleConfigurableByProperties;
 import consulo.ui.CheckBox;
 import consulo.ui.Component;
 import consulo.ui.Label;
-import consulo.ui.RequiredUIAccess;
+import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.layout.VerticalLayout;
 import consulo.ui.style.StandardColors;
+import org.jetbrains.annotations.Nls;
+import org.jetbrains.plugins.groovy.GroovyBundle;
+
+import javax.annotation.Nonnull;
+import java.util.Collection;
+import java.util.Collections;
 
 /**
  * @author ilyas

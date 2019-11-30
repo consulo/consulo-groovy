@@ -26,7 +26,7 @@ import com.intellij.psi.util.PsiModificationTracker;
 import com.intellij.util.ArrayFactory;
 import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.containers.ContainerUtil;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
 import gnu.trove.TObjectIntHashMap;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.plugins.groovy.config.GroovyConfigUtils;

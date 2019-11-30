@@ -15,14 +15,6 @@
  */
 package org.jetbrains.plugins.groovy.actions;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.annotation.Nonnull;
-import org.jetbrains.plugins.groovy.codeInspection.utils.ControlFlowUtils;
-import org.jetbrains.plugins.groovy.editor.HandlerUtils;
-import org.jetbrains.plugins.groovy.lang.psi.GrControlFlowOwner;
-import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.PlatformDataKeys;
@@ -32,15 +24,23 @@ import com.intellij.openapi.util.Pass;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.refactoring.IntroduceTargetChooser;
-import consulo.annotations.RequiredDispatchThread;
-import consulo.annotations.RequiredReadAction;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.ui.annotation.RequiredUIAccess;
+import org.jetbrains.plugins.groovy.codeInspection.utils.ControlFlowUtils;
+import org.jetbrains.plugins.groovy.editor.HandlerUtils;
+import org.jetbrains.plugins.groovy.lang.psi.GrControlFlowOwner;
+import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
+
+import javax.annotation.Nonnull;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Max Medvedev
  */
 public class DumpGroovyControlFlowAction extends AnAction implements DumbAware
 {
-	@RequiredDispatchThread
+	@RequiredUIAccess
 	@Override
 	public void actionPerformed(@Nonnull AnActionEvent e)
 	{
