@@ -2,15 +2,15 @@ package org.jetbrains.plugins.groovy.dsl;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ProjectRootManager;
-import com.intellij.openapi.util.Key;
-import com.intellij.openapi.util.UserDataHolder;
-import com.intellij.openapi.util.UserDataHolderBase;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.CachedValue;
 import com.intellij.psi.util.CachedValueProvider;
 import com.intellij.psi.util.CachedValuesManager;
 import com.intellij.psi.util.PsiModificationTracker;
+import consulo.util.dataholder.Key;
+import consulo.util.dataholder.UserDataHolder;
+import consulo.util.dataholder.UserDataHolderBase;
 import org.jetbrains.plugins.groovy.dsl.holders.CustomMembersHolder;
 
 import javax.annotation.Nonnull;
@@ -21,8 +21,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * @author peter
  */
-public class FactorTree extends UserDataHolderBase
-{
+public class FactorTree extends UserDataHolderBase {
   private static final Key<CachedValue<Map>> GDSL_MEMBER_CACHE = Key.create("GDSL_MEMBER_CACHE");
   private final CachedValueProvider<Map> myProvider;
   private final CachedValue<Map> myTopLevelCache;

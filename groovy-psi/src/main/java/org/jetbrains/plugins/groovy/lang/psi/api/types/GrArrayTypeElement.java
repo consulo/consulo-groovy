@@ -16,10 +16,11 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.api.types;
 
-import javax.annotation.Nonnull;
 import com.intellij.navigation.NavigationItem;
-import com.intellij.openapi.util.UserDataHolderEx;
 import com.intellij.psi.PsiElement;
+import consulo.util.dataholder.UserDataHolderEx;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author ilyas

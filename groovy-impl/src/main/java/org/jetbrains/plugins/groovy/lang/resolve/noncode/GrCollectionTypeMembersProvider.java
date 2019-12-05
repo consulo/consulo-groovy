@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.lang.resolve.noncode;
 
-import com.intellij.openapi.util.Key;
+import consulo.util.dataholder.Key;
 import com.intellij.psi.*;
 import com.intellij.psi.impl.light.LightFieldBuilder;
 import com.intellij.psi.scope.DelegatingScopeProcessor;

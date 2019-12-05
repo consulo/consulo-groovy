@@ -16,13 +16,14 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.api.auxiliary;
 
-import javax.annotation.Nonnull;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
-import org.jetbrains.plugins.groovy.lang.psi.api.util.GrNamedArgumentsOwner;
 import com.intellij.navigation.NavigationItem;
-import com.intellij.openapi.util.UserDataHolderEx;
 import com.intellij.psi.PsiArrayInitializerMemberValue;
 import com.intellij.psi.PsiElement;
+import consulo.util.dataholder.UserDataHolderEx;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
+import org.jetbrains.plugins.groovy.lang.psi.api.util.GrNamedArgumentsOwner;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author ilyas

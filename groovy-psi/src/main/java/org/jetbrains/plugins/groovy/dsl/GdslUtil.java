@@ -17,7 +17,7 @@ package org.jetbrains.plugins.groovy.dsl;
 
 import org.jetbrains.annotations.Contract;
 import com.intellij.openapi.util.Condition;
-import com.intellij.openapi.util.Key;
+import consulo.util.dataholder.Key;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 

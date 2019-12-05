@@ -16,11 +16,11 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions;
 
+import com.intellij.navigation.NavigationItem;
+import com.intellij.psi.PsiElement;
+import consulo.util.dataholder.UserDataHolderEx;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrArgumentList;
-import com.intellij.navigation.NavigationItem;
-import com.intellij.openapi.util.UserDataHolderEx;
-import com.intellij.psi.PsiElement;
 
 /**
  * @author ilyas

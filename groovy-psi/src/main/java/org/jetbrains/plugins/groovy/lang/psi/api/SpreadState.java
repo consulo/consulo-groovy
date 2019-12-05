@@ -18,7 +18,7 @@ package org.jetbrains.plugins.groovy.lang.psi.api;
 import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.CollectionUtil;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.Key;
+import consulo.util.dataholder.Key;
 import com.intellij.psi.PsiType;
 
 /**

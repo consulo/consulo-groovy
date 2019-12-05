@@ -29,7 +29,7 @@ import org.jetbrains.plugins.groovy.lang.resolve.NonCodeMembersContributor;
 import com.intellij.ide.highlighter.XmlFileType;
 import com.intellij.openapi.progress.EmptyProgressIndicator;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.Key;
+import consulo.util.dataholder.Key;
 import com.intellij.patterns.compiler.PatternClassBean;
 import com.intellij.patterns.compiler.PatternCompilerFactory;
 import com.intellij.psi.JavaPsiFacade;
