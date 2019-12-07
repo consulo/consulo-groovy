@@ -1,14 +1,5 @@
 package org.jetbrains.plugins.groovy.debugger;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.jar.Attributes;
-import java.util.regex.Pattern;
-
-import org.jetbrains.plugins.groovy.GroovyFileTypeLoader;
-import consulo.groovy.module.extension.GroovyModuleExtension;
 import com.intellij.execution.Executor;
 import com.intellij.execution.configurations.ModuleRunProfile;
 import com.intellij.execution.configurations.RunConfiguration;
@@ -16,7 +7,6 @@ import com.intellij.execution.configurations.RunProfile;
 import com.intellij.execution.executors.DefaultDebugExecutor;
 import com.intellij.execution.runners.JavaProgramPatcher;
 import com.intellij.ide.plugins.PluginManager;
-import com.intellij.openapi.application.PathManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
@@ -27,9 +17,19 @@ import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.pom.java.LanguageLevel;
 import com.intellij.psi.search.FilenameIndex;
 import com.intellij.psi.search.GlobalSearchScope;
+import consulo.container.boot.ContainerPathManager;
+import consulo.groovy.module.extension.GroovyModuleExtension;
 import consulo.java.execution.configurations.OwnJavaParameters;
 import consulo.java.module.extension.JavaModuleExtension;
 import consulo.platform.Platform;
+import org.jetbrains.plugins.groovy.GroovyFileTypeLoader;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.jar.Attributes;
+import java.util.regex.Pattern;
 
 
 /**
@@ -162,7 +162,7 @@ public class GroovyHotSwapper extends JavaProgramPatcher
 	{
 		if(agentPath.contains(" "))
 		{
-			final File dir = new File(PathManager.getSystemPath(), "groovyHotSwap");
+			final File dir = new File(ContainerPathManager.get().getSystemPath(), "groovyHotSwap");
 			if(dir.getAbsolutePath().contains(" "))
 			{
 				LOG.info("Groovy hot-swap not used since the agent path contains spaces: " + agentPath + "\n" +

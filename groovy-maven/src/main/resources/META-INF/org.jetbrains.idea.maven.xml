@@ -1,4 +1,4 @@
-<idea-plugin>
+<consulo-plugin>
   <extensions defaultExtensionNs="org.jetbrains.idea.maven">
     <importer implementation="org.jetbrains.idea.maven.importing.Groovy_1_0_Importer"/>
     <importer implementation="org.jetbrains.idea.maven.importing.Groovy_1_1_plus_Importer"/>
@@ -14,4 +14,4 @@
       <param name="source" languageProvider="org.jetbrains.idea.maven.plugins.groovy.MavenGroovyLanguageProvider"/>
     </pluginDescriptor>
   </extensions>
-</idea-plugin>
+</consulo-plugin>

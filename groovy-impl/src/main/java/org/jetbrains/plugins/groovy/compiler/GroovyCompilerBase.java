@@ -16,6 +16,7 @@
 
 package org.jetbrains.plugins.groovy.compiler;
 
+import consulo.container.boot.ContainerPathManager;
 import gnu.trove.THashSet;
 
 import java.io.File;
@@ -148,10 +149,10 @@ public abstract class GroovyCompilerBase implements TranslatingCompiler
 		final boolean profileGroovyc = "true".equals(System.getProperty("profile.groovy.compiler"));
 		if(profileGroovyc)
 		{
-			parameters.getVMParametersList().defineProperty("java.library.path", PathManager.getBinPath());
+			parameters.getVMParametersList().defineProperty("java.library.path", ContainerPathManager.get().getBinPath());
 			parameters.getVMParametersList().defineProperty("profile.groovy.compiler", "true");
 			parameters.getVMParametersList().add("-agentlib:yjpagent=disablej2ee,disablealloc,sessionname=GroovyCompiler");
-			classPathBuilder.add(PathManager.findFileInLibDirectory("yjp-controller-api-redist.jar").getAbsolutePath());
+			classPathBuilder.add(ContainerPathManager.get().findFileInLibDirectory("yjp-controller-api-redist.jar").getAbsolutePath());
 		}
 
 		final GroovyCompilerConfiguration compilerConfiguration = GroovyCompilerConfiguration.getInstance(myProject);
