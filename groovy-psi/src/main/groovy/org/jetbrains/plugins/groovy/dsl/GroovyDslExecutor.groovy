@@ -42,7 +42,6 @@ import java.lang.reflect.Modifier
  */
 
 public class GroovyDslExecutor {
-  static final def cats = PsiEnhancerCategory.EP_NAME.extensions.collect { it.class }
   final List<Pair<ContextFilter, Closure>> enhancers = ObjectUtils.assertNotNull([])
 
   private MultiMap staticInfo = null
@@ -189,6 +188,7 @@ public class GroovyDslExecutor {
         f.delegate = generator
         f.resolveStrategy = Closure.DELEGATE_FIRST
 
+        def cats = PsiEnhancerCategory.EP_NAME.extensions.collect { it.class };
         use(cats) {
           f.call()
         }
