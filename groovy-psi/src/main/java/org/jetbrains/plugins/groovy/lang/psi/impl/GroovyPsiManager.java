@@ -96,15 +96,6 @@ public class GroovyPsiManager {
         myClassCache.clear();
       }
     });
-
-    // reinit syntax highlighter for Groovy. In power save mode keywords are highlighted by GroovySyntaxHighlighter insteadof
-    // GrKeywordAndDeclarationHighlighter. So we need to drop caches for token types attributes in LayeredLexerEditorHighlighter
-    connection.subscribe(PowerSaveMode.TOPIC, new PowerSaveMode.Listener() {
-      @Override
-      public void powerSaveStateChanged() {
-        EditorOptionsPanel.reinitAllEditors();
-      }
-    });
   }
 
   public void dropTypesCache() {
