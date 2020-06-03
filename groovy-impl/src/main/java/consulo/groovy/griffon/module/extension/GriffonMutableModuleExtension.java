@@ -15,14 +15,14 @@
  */
 package consulo.groovy.griffon.module.extension;
 
-import javax.swing.JComponent;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import consulo.groovy.griffon.module.extension.GriffonModuleExtension;
+import consulo.disposer.Disposable;
 import consulo.module.extension.MutableModuleExtension;
 import consulo.roots.ModuleRootLayer;
+import consulo.ui.Component;
+import consulo.ui.annotation.RequiredUIAccess;
 
 /**
  * @author VISTALL
@@ -35,9 +35,10 @@ public class GriffonMutableModuleExtension extends GriffonModuleExtension implem
 		super(id, module);
 	}
 
-	@javax.annotation.Nullable
+	@RequiredUIAccess
+	@Nullable
 	@Override
-	public JComponent createConfigurablePanel(@Nullable Runnable updateOnCheck)
+	public Component createConfigurationComponent(@Nonnull Disposable disposable, @Nonnull Runnable runnable)
 	{
 		return null;
 	}

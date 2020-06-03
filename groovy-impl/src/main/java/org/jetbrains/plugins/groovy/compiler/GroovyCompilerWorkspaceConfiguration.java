@@ -16,13 +16,13 @@
 
 package org.jetbrains.plugins.groovy.compiler;
 
-import com.intellij.openapi.Disposable;
+import consulo.disposer.Disposable;
 import com.intellij.openapi.compiler.options.ExcludedEntriesConfiguration;
 import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
 import com.intellij.openapi.components.StoragePathMacros;
-import com.intellij.openapi.util.Disposer;
+import consulo.disposer.Disposer;
 
 /**
  * @author peter
