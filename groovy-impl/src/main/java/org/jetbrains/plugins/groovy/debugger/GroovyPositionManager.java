@@ -320,7 +320,7 @@ public class GroovyPositionManager implements PositionManager
 	{
 		if(scope instanceof ModuleWithDependenciesScope)
 		{
-			return scope.uniteWith(((ModuleWithDependenciesScope) scope).getModule().getModuleContentWithDependenciesScope());
+			return scope.uniteWith(GlobalSearchScope.moduleContentWithDependenciesScope(((ModuleWithDependenciesScope) scope).getModule()));
 		}
 		return scope;
 	}

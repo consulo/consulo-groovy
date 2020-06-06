@@ -2963,7 +2963,7 @@ public class GroovyAnnotator extends GroovyElementVisitor
 			Module module = ModuleUtilCore.findModuleForPsiElement(file);
 			if(module != null)
 			{
-				return defaultScope.intersectWith(module.getModuleScope());
+				return defaultScope.intersectWith(GlobalSearchScope.moduleScope(module));
 			}
 		}
 		return defaultScope;
