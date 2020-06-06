@@ -16,22 +16,9 @@
 
 package org.jetbrains.plugins.groovy.mvc;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
-
-import javax.annotation.Nonnull;
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
-import org.jetbrains.annotations.TestOnly;
-import org.jetbrains.plugins.groovy.mvc.projectView.MvcToolWindowDescriptor;
 import com.intellij.ProjectTopics;
 import com.intellij.codeInsight.actions.ReformatCodeProcessor;
+import com.intellij.openapi.application.Application;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.application.ModalityState;
 import com.intellij.openapi.module.Module;
@@ -40,23 +27,12 @@ import com.intellij.openapi.module.ModuleUtil;
 import com.intellij.openapi.project.DumbAwareRunnable;
 import com.intellij.openapi.project.ModuleAdapter;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.roots.ContentIterator;
-import com.intellij.openapi.roots.ModuleRootAdapter;
-import com.intellij.openapi.roots.ModuleRootEvent;
-import com.intellij.openapi.roots.ModuleRootManager;
-import com.intellij.openapi.roots.ProjectRootManager;
+import com.intellij.openapi.roots.*;
 import com.intellij.openapi.startup.StartupManager;
-import consulo.disposer.Disposer;
 import com.intellij.openapi.util.ModificationTracker;
 import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.util.Trinity;
-import com.intellij.openapi.vfs.LocalFileSystem;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.openapi.vfs.VirtualFileAdapter;
-import com.intellij.openapi.vfs.VirtualFileEvent;
-import com.intellij.openapi.vfs.VirtualFileManager;
-import com.intellij.openapi.vfs.VirtualFileMoveEvent;
-import com.intellij.openapi.vfs.VirtualFilePropertyEvent;
+import com.intellij.openapi.vfs.*;
 import com.intellij.openapi.vfs.impl.BulkVirtualFileListenerAdapter;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowAnchor;
@@ -66,6 +42,16 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.util.containers.ContainerUtil;
 import com.intellij.util.messages.MessageBusConnection;
+import consulo.disposer.Disposer;
+import consulo.ui.UIAccess;
+import consulo.ui.annotation.RequiredUIAccess;
+import org.jetbrains.annotations.TestOnly;
+import org.jetbrains.plugins.groovy.mvc.projectView.MvcToolWindowDescriptor;
+
+import javax.annotation.Nonnull;
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import java.util.*;
 
 /**
  * @author peter
@@ -120,8 +106,20 @@ public class MvcModuleStructureSynchronizer
 			@Override
 			public void moduleAdded(Project project, Module module)
 			{
-				queue(SyncAction.UpdateProjectStructure, module);
-				queue(SyncAction.CreateAppStructureIfNeeded, module);
+				@RequiredUIAccess Runnable task = () ->
+				{
+					queue(SyncAction.UpdateProjectStructure, module);
+					queue(SyncAction.CreateAppStructureIfNeeded, module);
+				};
+
+				if(UIAccess.isUIThread())
+				{
+					task.run();
+				}
+				else
+				{
+					Application.get().invokeLater(task);
+				}
 			}
 		});
 
@@ -310,9 +308,10 @@ public class MvcModuleStructureSynchronizer
 		queue(SyncAction.CreateAppStructureIfNeeded, myProject);
 	}
 
+	@RequiredUIAccess
 	private void queue(SyncAction action, Object on)
 	{
-		ApplicationManager.getApplication().assertIsDispatchThread();
+		UIAccess.assertIsUIThread();
 
 		if(myActions.isEmpty())
 		{
