@@ -1,16 +1,14 @@
 package org.jetbrains.plugins.groovy.lang.psi;
 
-import javax.annotation.Nonnull;
-
 import com.intellij.openapi.extensions.ExtensionPointName;
-import com.intellij.openapi.extensions.Extensions;
-import consulo.util.dataholder.Key;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.util.CachedValue;
 import com.intellij.psi.util.CachedValueProvider;
 import com.intellij.psi.util.CachedValuesManager;
 import com.intellij.psi.util.PsiModificationTracker;
+import consulo.util.dataholder.Key;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
@@ -25,7 +23,7 @@ public abstract class GrClassSubstitutor {
 
   @Nonnull
   public static PsiClass getSubstitutedClass(@Nonnull final PsiClass base) {
-    if (!Extensions.getRootArea().getExtensionPoint(EP_NAME).hasAnyExtensions()) {
+    if (!EP_NAME.hasAnyExtensions()) {
       return base;
     }
 
