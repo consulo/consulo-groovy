@@ -22,10 +22,9 @@ import com.intellij.ide.projectView.impl.nodes.AbstractProjectNode;
 import com.intellij.ide.util.treeView.AbstractTreeNode;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
-import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.mvc.MvcModuleStructureUtil;
 
-import java.lang.reflect.InvocationTargetException;
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -59,14 +58,12 @@ public class MvcProjectNode extends AbstractProjectNode {
     return true;
   }
 
-  protected AbstractTreeNode createModuleGroup(final Module module)
-    throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
-    return createTreeNode(MvcProjectNode.class, getProject(), module, getSettings());
+  protected AbstractTreeNode createModuleGroup(final Module module) {
+    return new MvcProjectNode(getProject(), getSettings(), myDescriptor);
   }
 
-  protected AbstractTreeNode createModuleGroupNode(final ModuleGroup moduleGroup)
-    throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
-    return createTreeNode(MvcProjectNode.class, getProject(), moduleGroup, getSettings());
+  protected AbstractTreeNode createModuleGroupNode(final ModuleGroup moduleGroup) {
+    return new MvcProjectNode(getProject(), getSettings(), myDescriptor);
   }
 
 }
