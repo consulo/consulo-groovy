@@ -27,8 +27,6 @@ import com.intellij.util.containers.ContainerUtil;
 import com.intellij.util.text.CharArrayUtil;
 import org.codehaus.groovy.runtime.DefaultGroovyMethods;
 import org.jetbrains.annotations.NonNls;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
@@ -36,6 +34,8 @@ import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotationArgumentList;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotationNameValuePair;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.Set;
 
@@ -44,7 +44,7 @@ import java.util.Set;
  */
 public class GroovyAnnotationAttributeInfoHandler implements ParameterInfoHandlerWithTabActionSupport<GrAnnotationArgumentList, PsiAnnotationMethod, GrAnnotationNameValuePair> {
 
-  private static final Set<Class> ALLOWED_CLASSES = ContainerUtil.<Class>newHashSet(GrAnnotation.class);
+  private static final Set<Class<?>> ALLOWED_CLASSES = ContainerUtil.<Class<?>>newHashSet(GrAnnotation.class);
   private static final Set<Class<GroovyFile>> STOP_SEARCHING_CLASSES = Collections.singleton(GroovyFile.class);
 
   @Nonnull
@@ -67,7 +67,7 @@ public class GroovyAnnotationAttributeInfoHandler implements ParameterInfoHandle
 
   @Nonnull
   @Override
-  public Set<Class> getArgumentListAllowedParentClasses() {
+  public Set<Class<?>> getArgumentListAllowedParentClasses() {
     return ALLOWED_CLASSES;
   }
 
@@ -103,11 +103,6 @@ public class GroovyAnnotationAttributeInfoHandler implements ParameterInfoHandle
     else {
       return GrAnnotationNameValuePair.EMPTY_ARRAY;
     }
-  }
-
-  @Override
-  public Object[] getParametersForDocumentation(@Nonnull PsiAnnotationMethod method, @Nonnull ParameterInfoContext context) {
-    return new PsiAnnotationMethod[]{method};
   }
 
   @Override
@@ -166,16 +161,6 @@ public class GroovyAnnotationAttributeInfoHandler implements ParameterInfoHandle
       offset1 = CharArrayUtil.shiftBackward(chars, offset1 - 1, " \t");
     }
     return offset1;
-  }
-
-  @Override
-  public String getParameterCloseChars() {
-    return ParameterInfoUtils.DEFAULT_PARAMETER_CLOSE_CHARS;
-  }
-
-  @Override
-  public boolean tracksParameterIndex() {
-    return true;
   }
 
   @Override

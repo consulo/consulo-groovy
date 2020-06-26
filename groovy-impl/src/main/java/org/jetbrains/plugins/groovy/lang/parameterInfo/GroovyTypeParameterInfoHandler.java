@@ -26,14 +26,14 @@ import com.intellij.psi.tree.IElementType;
 import com.intellij.util.Function;
 import com.intellij.util.containers.ContainerUtil;
 import org.jetbrains.annotations.NonNls;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeArgumentList;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeElement;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Set;
 
@@ -42,7 +42,7 @@ import java.util.Set;
  */
 public class GroovyTypeParameterInfoHandler implements ParameterInfoHandlerWithTabActionSupport<GrTypeArgumentList, PsiTypeParameter, GrTypeElement> {
 
-  private static final Set<Class> ALLOWED_PARENT_CLASSES = ContainerUtil.<Class>newHashSet(GrCodeReferenceElement.class);
+  private static final Set<Class<?>> ALLOWED_PARENT_CLASSES = ContainerUtil.<Class<?>>newHashSet(GrCodeReferenceElement.class);
   private static final Set<Class> STOP_SEARCHING_CLASSES = ContainerUtil.<Class>newHashSet(GroovyFile.class);
 
   @Nonnull
@@ -65,7 +65,7 @@ public class GroovyTypeParameterInfoHandler implements ParameterInfoHandlerWithT
 
   @Nonnull
   @Override
-  public Set<Class> getArgumentListAllowedParentClasses() {
+  public Set<Class<?>> getArgumentListAllowedParentClasses() {
     return ALLOWED_PARENT_CLASSES;
   }
 
@@ -92,11 +92,6 @@ public class GroovyTypeParameterInfoHandler implements ParameterInfoHandlerWithT
     return null;
   }
 
-  @Nullable
-  @Override
-  public Object[] getParametersForDocumentation(PsiTypeParameter p, ParameterInfoContext context) {
-    return new Object[]{p};
-  }
 
   @Nullable
   @Override
@@ -137,17 +132,6 @@ public class GroovyTypeParameterInfoHandler implements ParameterInfoHandlerWithT
     context.setCurrentParameter(index);
     final Object[] objectsToView = context.getObjectsToView();
     context.setHighlightedParameter(index < objectsToView.length && index >= 0 ? (PsiElement)objectsToView[index] : null);
-  }
-
-  @javax.annotation.Nullable
-  @Override
-  public String getParameterCloseChars() {
-    return ",>";
-  }
-
-  @Override
-  public boolean tracksParameterIndex() {
-    return false;
   }
 
   @Override

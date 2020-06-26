@@ -27,8 +27,6 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ArrayUtil;
 import com.intellij.util.containers.hash.HashSet;
 import com.intellij.util.text.CharArrayUtil;
-import javax.annotation.Nonnull;
-
 import org.jetbrains.plugins.groovy.lang.documentation.GroovyPresentationUtil;
 import org.jetbrains.plugins.groovy.lang.documentation.TypePresentation;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
@@ -53,6 +51,7 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUt
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 import org.jetbrains.plugins.groovy.lang.resolve.ResolveUtil;
 
+import javax.annotation.Nonnull;
 import java.util.*;
 
 /**
@@ -73,7 +72,6 @@ public class GroovyParameterInfoHandler implements ParameterInfoHandlerWithTabAc
     return ourStopSearch;
   }
 
-
   public Object[] getParametersForLookup(LookupElement item, ParameterInfoContext context) {
     List<? extends PsiElement> elements = JavaCompletionUtil.getAllPsiElements(item);
 
@@ -88,17 +86,6 @@ public class GroovyParameterInfoHandler implements ParameterInfoHandlerWithTabAc
     }
 
     return null;
-  }
-
-  public Object[] getParametersForDocumentation(Object resolveResult, ParameterInfoContext context) {
-    if (resolveResult instanceof GroovyResolveResult) {
-      final PsiElement element = ((GroovyResolveResult)resolveResult).getElement();
-      if (element instanceof PsiMethod) {
-        return ((PsiMethod)element).getParameterList().getParameters();
-      }
-    }
-
-    return ArrayUtil.EMPTY_OBJECT_ARRAY;
   }
 
   public GroovyPsiElement findElementForParameterInfo(CreateParameterInfoContext context) {
@@ -308,14 +295,6 @@ public class GroovyParameterInfoHandler implements ParameterInfoHandlerWithTabAc
     return element != null && element.getNode().getElementType() == GroovyTokenTypes.mCOMMA;
   }
 
-  public String getParameterCloseChars() {
-    return ",){}";
-  }
-
-  public boolean tracksParameterIndex() {
-    return true;
-  }
-
   public void updateUI(Object o, ParameterInfoUIContext context) {
     CodeInsightSettings settings = CodeInsightSettings.getInstance();
 
@@ -489,11 +468,11 @@ public class GroovyParameterInfoHandler implements ParameterInfoHandlerWithTabAc
     return GroovyTokenTypes.mRPAREN;
   }
 
-  private static final Set<Class> ALLOWED_PARAM_CLASSES = Collections.<Class>singleton(GroovyPsiElement.class);
+  private static final Set<Class<?>> ALLOWED_PARAM_CLASSES = Collections.<Class<?>>singleton(GroovyPsiElement.class);
 
   @Nonnull
   @Override
-  public Set<Class> getArgumentListAllowedParentClasses() {
+  public Set<Class<?>> getArgumentListAllowedParentClasses() {
     return ALLOWED_PARAM_CLASSES;
   }
 
