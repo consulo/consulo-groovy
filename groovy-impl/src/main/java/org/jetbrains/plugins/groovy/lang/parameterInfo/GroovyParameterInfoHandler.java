@@ -64,11 +64,11 @@ public class GroovyParameterInfoHandler implements ParameterInfoHandlerWithTabAc
     return true;
   }
 
-  private static final Set<? extends Class> ourStopSearch = Collections.singleton(GrMethod.class);
+  private static final Set<? extends Class<?>> ourStopSearch = Collections.singleton(GrMethod.class);
 
   @Nonnull
   @Override
-  public Set<? extends Class> getArgListStopSearchClasses() {
+  public Set<? extends Class<?>> getArgListStopSearchClasses() {
     return ourStopSearch;
   }
 

@@ -43,7 +43,7 @@ import java.util.Set;
 public class GroovyTypeParameterInfoHandler implements ParameterInfoHandlerWithTabActionSupport<GrTypeArgumentList, PsiTypeParameter, GrTypeElement> {
 
   private static final Set<Class<?>> ALLOWED_PARENT_CLASSES = ContainerUtil.<Class<?>>newHashSet(GrCodeReferenceElement.class);
-  private static final Set<Class> STOP_SEARCHING_CLASSES = ContainerUtil.<Class>newHashSet(GroovyFile.class);
+  private static final Set<Class<?>> STOP_SEARCHING_CLASSES = ContainerUtil.<Class<?>>newHashSet(GroovyFile.class);
 
   @Nonnull
   @Override
@@ -71,7 +71,7 @@ public class GroovyTypeParameterInfoHandler implements ParameterInfoHandlerWithT
 
   @Nonnull
   @Override
-  public Set<? extends Class> getArgListStopSearchClasses() {
+  public Set<? extends Class<?>> getArgListStopSearchClasses() {
     return STOP_SEARCHING_CLASSES;
   }
 

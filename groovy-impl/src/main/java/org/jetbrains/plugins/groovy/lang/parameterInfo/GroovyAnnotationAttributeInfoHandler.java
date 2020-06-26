@@ -73,7 +73,7 @@ public class GroovyAnnotationAttributeInfoHandler implements ParameterInfoHandle
 
   @Nonnull
   @Override
-  public Set<? extends Class> getArgListStopSearchClasses() {
+  public Set<? extends Class<?>> getArgListStopSearchClasses() {
     return STOP_SEARCHING_CLASSES;
   }
 
