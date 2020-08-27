@@ -19,7 +19,7 @@ public class MvcActionGroup extends DefaultActionGroup implements DumbAware {
     if (pair != null) {
       presentation.setVisible(true);
       presentation.setText(pair.getFirst().getDisplayName());
-      presentation.setIcon(TargetAWT.to(pair.getFirst().getIcon()));
+      presentation.setIcon(pair.getFirst().getIcon());
     }
     else {
       presentation.setVisible(false);

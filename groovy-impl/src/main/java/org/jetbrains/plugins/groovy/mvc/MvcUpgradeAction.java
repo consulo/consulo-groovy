@@ -57,7 +57,7 @@ public class MvcUpgradeAction extends MvcActionBase {
 
   @Override
   protected void updateView(AnActionEvent event, @Nonnull MvcFramework framework, @Nonnull Module module) {
-    event.getPresentation().setIcon(TargetAWT.to(framework.getIcon()));
+    event.getPresentation().setIcon(framework.getIcon());
   }
 }
 
