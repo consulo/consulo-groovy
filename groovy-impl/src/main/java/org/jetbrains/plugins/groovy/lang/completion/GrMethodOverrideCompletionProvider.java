@@ -15,40 +15,34 @@
  */
 package org.jetbrains.plugins.groovy.lang.completion;
 
-import static com.intellij.patterns.PlatformPatterns.psiComment;
-import static com.intellij.patterns.PlatformPatterns.psiElement;
-
-import java.util.Collection;
-
-import javax.annotation.Nonnull;
-
-import org.jetbrains.plugins.groovy.lang.completion.handlers.GroovyMethodOverrideHandler;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinitionBody;
-import org.jetbrains.plugins.groovy.overrideImplement.GroovyOverrideImplementExploreUtil;
 import com.intellij.codeInsight.completion.CompletionContributor;
 import com.intellij.codeInsight.completion.CompletionParameters;
-import consulo.awt.TargetAWT;
-import consulo.codeInsight.completion.CompletionProvider;
 import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.completion.CompletionType;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.icons.AllIcons;
-import consulo.ide.IconDescriptorUpdaters;
 import com.intellij.patterns.ElementPattern;
 import com.intellij.patterns.PatternCondition;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiMethod;
-import com.intellij.psi.PsiModifier;
-import com.intellij.psi.PsiSubstitutor;
-import com.intellij.psi.PsiType;
+import com.intellij.psi.*;
 import com.intellij.psi.infos.CandidateInfo;
 import com.intellij.psi.util.PsiFormatUtil;
 import com.intellij.psi.util.PsiFormatUtilBase;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.ui.RowIcon;
 import com.intellij.util.ProcessingContext;
 import com.intellij.util.VisibilityUtil;
+import consulo.codeInsight.completion.CompletionProvider;
+import consulo.ide.IconDescriptorUpdaters;
+import consulo.ui.image.ImageEffects;
+import org.jetbrains.plugins.groovy.lang.completion.handlers.GroovyMethodOverrideHandler;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinitionBody;
+import org.jetbrains.plugins.groovy.overrideImplement.GroovyOverrideImplementExploreUtil;
+
+import javax.annotation.Nonnull;
+import java.util.Collection;
+
+import static com.intellij.patterns.PlatformPatterns.psiComment;
+import static com.intellij.patterns.PlatformPatterns.psiElement;
 
 class GrMethodOverrideCompletionProvider implements CompletionProvider
 {
@@ -83,10 +77,6 @@ class GrMethodOverrideCompletionProvider implements CompletionProvider
       final PsiMethod method = (PsiMethod)candidateInfo.getElement();
       if (method.isConstructor()) continue;
 
-      RowIcon icon = new RowIcon(2);
-      icon.setIcon(TargetAWT.to(IconDescriptorUpdaters.getIcon(method, 0)), 0);
-      icon.setIcon(toImplement ? AllIcons.Gutter.ImplementingMethod : AllIcons.Gutter.OverridingMethod, 1);
-
       PsiSubstitutor substitutor = candidateInfo.getSubstitutor();
       String parameters = PsiFormatUtil.formatMethod(method, substitutor, PsiFormatUtilBase.SHOW_PARAMETERS, PsiFormatUtilBase.SHOW_NAME);
       String visibility = VisibilityUtil.getVisibilityModifier(method.getModifierList());
@@ -99,7 +89,7 @@ class GrMethodOverrideCompletionProvider implements CompletionProvider
         .appendTailText(parameters, false)
         .appendTailText("{...}", true)
         .withTypeText(parentClassName)
-        .withIcon(icon)
+        .withIcon(ImageEffects.appendRight(IconDescriptorUpdaters.getIcon(method, 0), toImplement ? AllIcons.Gutter.ImplementingMethod : AllIcons.Gutter.OverridingMethod))
         .withInsertHandler(new GroovyMethodOverrideHandler(psiClass));
       completionResultSet.addElement(lookupElement);
     }

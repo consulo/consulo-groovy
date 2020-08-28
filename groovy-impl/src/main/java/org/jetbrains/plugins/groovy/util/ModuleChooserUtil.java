@@ -15,15 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.util;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.intellij.icons.AllIcons;
 import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.module.Module;
@@ -39,9 +31,12 @@ import com.intellij.openapi.ui.popup.util.BaseListPopupStep;
 import com.intellij.openapi.util.Condition;
 import com.intellij.util.Consumer;
 import com.intellij.util.Function;
-import com.intellij.util.PlatformIcons;
 import com.intellij.util.containers.ContainerUtil;
 import consulo.java.module.extension.JavaModuleExtension;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.*;
 
 public class ModuleChooserUtil
 {
@@ -76,7 +71,7 @@ public class ModuleChooserUtil
 
 		Collections.sort(modules, ModulesAlphaComparator.INSTANCE);
 
-		BaseListPopupStep<Module> step = new BaseListPopupStep<Module>("Which module to use classpath of?", modules, PlatformIcons.CONTENT_ROOT_ICON_CLOSED)
+		BaseListPopupStep<Module> step = new BaseListPopupStep<Module>("Which module to use classpath of?", modules, AllIcons.Nodes.Module)
 		{
 			@Nonnull
 			@Override
