@@ -54,31 +54,30 @@ public class NewGroovyClassAction extends JavaCreateTemplateInPackageAction<GrTy
 	public NewGroovyClassAction()
 	{
 		super(GroovyBundle.message("newclass.menu.action.text"), GroovyBundle.message("newclass.menu.action" +
-				".description"), TargetAWT.to(JetgroovyIcons.Groovy.Class), true);
+				".description"), JetgroovyIcons.Groovy.Class, true);
 	}
 
 	@Override
 	protected void buildDialog(Project project, PsiDirectory directory, CreateFileFromTemplateDialog.Builder builder)
 	{
-		builder.setTitle(GroovyBundle.message("newclass.dlg.title")).addKind("Class", TargetAWT.to(JetgroovyIcons.Groovy.Class),
-				GroovyTemplates.GROOVY_CLASS).addKind("Interface", TargetAWT.to(JetgroovyIcons.Groovy.Interface),
+		builder.setTitle(GroovyBundle.message("newclass.dlg.title")).addKind("Class", JetgroovyIcons.Groovy.Class,
+				GroovyTemplates.GROOVY_CLASS).addKind("Interface", JetgroovyIcons.Groovy.Interface,
 				GroovyTemplates.GROOVY_INTERFACE);
 
 		if(GroovyConfigUtils.getInstance().isVersionAtLeast(directory, GroovyConfigUtils.GROOVY2_3, true))
 		{
-			builder.addKind("Trait", TargetAWT.to(JetgroovyIcons.Groovy.Trait), GroovyTemplates.GROOVY_TRAIT);
+			builder.addKind("Trait", JetgroovyIcons.Groovy.Trait, GroovyTemplates.GROOVY_TRAIT);
 		}
 
-		builder.addKind("Enum", TargetAWT.to(JetgroovyIcons.Groovy.Enum), GroovyTemplates.GROOVY_ENUM).addKind("Annotation",
-				TargetAWT.to(JetgroovyIcons.Groovy.AnnotationType), GroovyTemplates.GROOVY_ANNOTATION);
+		builder.addKind("Enum", JetgroovyIcons.Groovy.Enum, GroovyTemplates.GROOVY_ENUM)
+				.addKind("Annotation", JetgroovyIcons.Groovy.AnnotationType, GroovyTemplates.GROOVY_ANNOTATION);
 
 		for(FileTemplate template : FileTemplateManager.getInstance(project).getAllTemplates())
 		{
 			FileType fileType = FileTypeManagerEx.getInstanceEx().getFileTypeByExtension(template.getExtension());
-			if(fileType.equals(GroovyFileType.GROOVY_FILE_TYPE) && JavaDirectoryService.getInstance().getPackage
-					(directory) != null)
+			if(fileType.equals(GroovyFileType.GROOVY_FILE_TYPE) && JavaDirectoryService.getInstance().getPackage(directory) != null)
 			{
-				builder.addKind(template.getName(), TargetAWT.to(JetgroovyIcons.Groovy.Class), template.getName());
+				builder.addKind(template.getName(), JetgroovyIcons.Groovy.Class, template.getName());
 			}
 		}
 	}

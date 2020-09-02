@@ -16,12 +16,6 @@
 
 package org.jetbrains.plugins.groovy.actions;
 
-import javax.annotation.Nonnull;
-
-import org.jetbrains.plugins.groovy.GroovyBundle;
-import org.jetbrains.plugins.groovy.GroovyFileType;
-import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
-import org.jetbrains.plugins.groovy.util.LibrariesUtil;
 import com.intellij.ide.actions.CreateFileFromTemplateDialog;
 import com.intellij.ide.actions.JavaCreateTemplateInPackageAction;
 import com.intellij.openapi.actionSystem.DataContext;
@@ -32,24 +26,28 @@ import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
-import consulo.awt.TargetAWT;
 import icons.JetgroovyIcons;
+import org.jetbrains.plugins.groovy.GroovyBundle;
+import org.jetbrains.plugins.groovy.GroovyFileType;
+import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
+import org.jetbrains.plugins.groovy.util.LibrariesUtil;
+
+import javax.annotation.Nonnull;
 
 public class NewScriptAction extends JavaCreateTemplateInPackageAction<GroovyFile> implements DumbAware
 {
 
 	public NewScriptAction()
 	{
-		super(GroovyBundle.message("newscript.menu.action.text"), GroovyBundle.message("newscript.menu.action" +
-				".description"), TargetAWT.to(JetgroovyIcons.Groovy.Groovy_16x16), false);
+		super(GroovyBundle.message("newscript.menu.action.text"), GroovyBundle.message("newscript.menu.action.description"), JetgroovyIcons.Groovy.Groovy_16x16, false);
 	}
 
 	@Override
 	protected void buildDialog(Project project, PsiDirectory directory, CreateFileFromTemplateDialog.Builder builder)
 	{
-		builder.setTitle(GroovyBundle.message("newscript.dlg.prompt")).addKind("Groovy script",
-				TargetAWT.to(JetgroovyIcons.Groovy.Groovy_16x16), GroovyTemplates.GROOVY_SCRIPT).addKind("GroovyDSL script",
-				TargetAWT.to(JetgroovyIcons.Groovy.Groovy_16x16), GroovyTemplates.GROOVY_DSL_SCRIPT);
+		builder.setTitle(GroovyBundle.message("newscript.dlg.prompt"))
+				.addKind("Groovy script", JetgroovyIcons.Groovy.Groovy_16x16, GroovyTemplates.GROOVY_SCRIPT)
+				.addKind("GroovyDSL script", JetgroovyIcons.Groovy.Groovy_16x16, GroovyTemplates.GROOVY_DSL_SCRIPT);
 	}
 
 	@Override
