@@ -27,129 +27,146 @@ import com.intellij.openapi.roots.ui.configuration.ModulesAlphaComparator;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.ui.*;
 import com.intellij.ui.components.JBLabel;
-import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 
+import javax.annotation.Nonnull;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class GroovyRunConfigurationEditor extends SettingsEditor<GroovyScriptRunConfiguration> implements PanelWithAnchor {
-  private DefaultComboBoxModel myModulesModel;
-  private JComboBox myModulesBox;
-  private JPanel myMainPanel;
-  private RawCommandLineEditor myVMParameters;
-  private RawCommandLineEditor myParameters;
-  private JPanel scriptPathPanel;
-  private JPanel workDirPanel;
-  private JCheckBox myDebugCB;
-  private EnvironmentVariablesComponent myEnvVariables;
-  private JBLabel myScriptParametersLabel;
-  private final JTextField scriptPathField;
-  private final JTextField workDirField;
-  private JComponent anchor;
+public class GroovyRunConfigurationEditor extends SettingsEditor<GroovyScriptRunConfiguration> implements PanelWithAnchor
+{
+	private DefaultComboBoxModel myModulesModel;
+	private JComboBox myModulesBox;
+	private JPanel myMainPanel;
+	private RawCommandLineEditor myVMParameters;
+	private RawCommandLineEditor myParameters;
+	private JPanel scriptPathPanel;
+	private JPanel workDirPanel;
+	private JCheckBox myDebugCB;
+	private EnvironmentVariablesComponent myEnvVariables;
+	private JBLabel myScriptParametersLabel;
+	private final JTextField scriptPathField;
+	private final JTextField workDirField;
+	private JComponent anchor;
 
-  public GroovyRunConfigurationEditor() {
+	public GroovyRunConfigurationEditor()
+	{
 
-    scriptPathField = new JTextField();
-    final BrowseFilesListener scriptBrowseListener = new BrowseFilesListener(scriptPathField,
-        "Script Path",
-        "Specify path to script",
-        new FileChooserDescriptor(true, false, false, false, false, false) {
-          public boolean isFileSelectable(VirtualFile file) {
-            return file.getFileType() == GroovyFileType.GROOVY_FILE_TYPE;
-          }
-        });
-    final FieldPanel scriptFieldPanel = new FieldPanel(scriptPathField, null, null, scriptBrowseListener, null);
-    scriptPathPanel.setLayout(new BorderLayout());
-    scriptPathPanel.add(scriptFieldPanel, BorderLayout.CENTER);
+		scriptPathField = new JTextField();
+		final BrowseFilesListener scriptBrowseListener = new BrowseFilesListener(scriptPathField,
+				"Script Path",
+				"Specify path to script",
+				new FileChooserDescriptor(true, false, false, false, false, false)
+				{
+					public boolean isFileSelectable(VirtualFile file)
+					{
+						return file.getFileType() == GroovyFileType.GROOVY_FILE_TYPE;
+					}
+				});
+		final FieldPanel scriptFieldPanel = new FieldPanel(scriptPathField, null, null, scriptBrowseListener, null);
+		scriptPathPanel.setLayout(new BorderLayout());
+		scriptPathPanel.add(scriptFieldPanel, BorderLayout.CENTER);
 
-    workDirField = new JTextField();
-    final BrowseFilesListener workDirBrowseFilesListener = new BrowseFilesListener(workDirField,
-        "Working directory",
-        "Specify working directory",
-        BrowseFilesListener.SINGLE_DIRECTORY_DESCRIPTOR);
-    final FieldPanel workDirFieldPanel = new FieldPanel(workDirField, null, null, workDirBrowseFilesListener, null);
-    workDirPanel.setLayout(new BorderLayout());
-    workDirPanel.add(workDirFieldPanel, BorderLayout.CENTER);
+		workDirField = new JTextField();
+		final BrowseFilesListener workDirBrowseFilesListener = new BrowseFilesListener(workDirField,
+				"Working directory",
+				"Specify working directory",
+				BrowseFilesListener.SINGLE_DIRECTORY_DESCRIPTOR);
+		final FieldPanel workDirFieldPanel = new FieldPanel(workDirField, null, null, workDirBrowseFilesListener, null);
+		workDirPanel.setLayout(new BorderLayout());
+		workDirPanel.add(workDirFieldPanel, BorderLayout.CENTER);
 
-    setAnchor(myEnvVariables.getLabel());
-  }
+		setAnchor(myEnvVariables.getLabel());
+	}
 
-  public void resetEditorFrom(GroovyScriptRunConfiguration configuration) {
-    myVMParameters.setDialogCaption("VM Options");
-    myVMParameters.setText(configuration.getVMParameters());
+	public void resetEditorFrom(GroovyScriptRunConfiguration configuration)
+	{
+		myVMParameters.setDialogCaption("VM Options");
+		myVMParameters.setText(configuration.getVMParameters());
 
-    myParameters.setDialogCaption("Script Parameters");
-    myParameters.setText(configuration.getScriptParameters());
+		myParameters.setDialogCaption("Script Parameters");
+		myParameters.setText(configuration.getScriptParameters());
 
-    scriptPathField.setText(configuration.getScriptPath());
-    workDirField.setText(configuration.getWorkDir());
+		scriptPathField.setText(configuration.getScriptPath());
+		workDirField.setText(configuration.getWorkDir());
 
-    myDebugCB.setEnabled(true);
-    myDebugCB.setSelected(configuration.isDebugEnabled());
+		myDebugCB.setEnabled(true);
+		myDebugCB.setSelected(configuration.isDebugEnabled());
 
-    myModulesModel.removeAllElements();
-    List<Module> modules = new ArrayList<Module>(configuration.getValidModules());
-    Collections.sort(modules, ModulesAlphaComparator.INSTANCE);
-    for (Module module : modules) {
-      myModulesModel.addElement(module);
-    }
-    myModulesModel.setSelectedItem(configuration.getModule());
+		myModulesModel.removeAllElements();
+		List<Module> modules = new ArrayList<Module>(configuration.getValidModules());
+		Collections.sort(modules, ModulesAlphaComparator.INSTANCE);
+		for(Module module : modules)
+		{
+			myModulesModel.addElement(module);
+		}
+		myModulesModel.setSelectedItem(configuration.getModule());
 
-    myEnvVariables.setEnvs(configuration.getEnvs());
-  }
+		myEnvVariables.setEnvs(configuration.getEnvs());
+	}
 
-  public void applyEditorTo(GroovyScriptRunConfiguration configuration) throws ConfigurationException {
-    configuration.setModule((Module) myModulesBox.getSelectedItem());
-    configuration.setVMParameters(myVMParameters.getText());
-    configuration.setDebugEnabled(myDebugCB.isSelected());
-    configuration.setScriptParameters(myParameters.getText());
-    configuration.setScriptPath(scriptPathField.getText().trim());
-    configuration.setWorkDir(workDirField.getText().trim());
-    configuration.setEnvs(myEnvVariables.getEnvs());
-  }
+	public void applyEditorTo(GroovyScriptRunConfiguration configuration) throws ConfigurationException
+	{
+		configuration.setModule((Module) myModulesBox.getSelectedItem());
+		configuration.setVMParameters(myVMParameters.getText());
+		configuration.setDebugEnabled(myDebugCB.isSelected());
+		configuration.setScriptParameters(myParameters.getText());
+		configuration.setScriptPath(scriptPathField.getText().trim());
+		configuration.setWorkDir(workDirField.getText().trim());
+		configuration.setEnvs(myEnvVariables.getEnvs());
+	}
 
-  @Nonnull
-  public JComponent createEditor() {
-    myModulesModel = new DefaultComboBoxModel();
-    myModulesBox.setModel(myModulesModel);
-    myDebugCB.setEnabled(true);
-    myDebugCB.setSelected(false);
+	@Nonnull
+	public JComponent createEditor()
+	{
+		myModulesModel = new DefaultComboBoxModel();
+		myModulesBox.setModel(myModulesModel);
+		myDebugCB.setEnabled(true);
+		myDebugCB.setSelected(false);
 
-    myModulesBox.setRenderer(new ListCellRendererWrapper<Module>() {
-      @Override
-      public void customize(JList list, Module module, int index, boolean selected, boolean hasFocus) {
-        if (module != null) {
-          setIcon(AllIcons.Nodes.Module);
-          setText(module.getName());
-        }
-      }
-    });
-    new ComboboxSpeedSearch(myModulesBox) {
-      @Override
-      protected String getElementText(Object element) {
-        return element instanceof Module ? ((Module)element).getName() : "";
-      }
-    };
+		myModulesBox.setRenderer(new ColoredListCellRenderer<Module>()
+		{
+			@Override
+			protected void customizeCellRenderer(@Nonnull JList<? extends Module> jList, Module module, int i, boolean b, boolean b1)
+			{
+				if(module != null)
+				{
+					setIcon(AllIcons.Nodes.Module);
+					append(module.getName());
+				}
 
-    return myMainPanel;
-  }
+			}
+		});
+		new ComboboxSpeedSearch(myModulesBox)
+		{
+			@Override
+			protected String getElementText(Object element)
+			{
+				return element instanceof Module ? ((Module) element).getName() : "";
+			}
+		};
 
-  public void disposeEditor() {
-  }
+		return myMainPanel;
+	}
 
-  @Override
-  public JComponent getAnchor() {
-    return anchor;
-  }
+	public void disposeEditor()
+	{
+	}
 
-  @Override
-  public void setAnchor(JComponent anchor) {
-    this.anchor = anchor;
-    myScriptParametersLabel.setAnchor(anchor);
-    myEnvVariables.setAnchor(anchor);
-  }
+	@Override
+	public JComponent getAnchor()
+	{
+		return anchor;
+	}
+
+	@Override
+	public void setAnchor(JComponent anchor)
+	{
+		this.anchor = anchor;
+		myScriptParametersLabel.setAnchor(anchor);
+		myEnvVariables.setAnchor(anchor);
+	}
 }

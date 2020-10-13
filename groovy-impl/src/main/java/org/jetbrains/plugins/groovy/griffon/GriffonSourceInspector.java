@@ -15,13 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.griffon;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import com.intellij.openapi.module.Module;
-import com.intellij.openapi.util.IconLoader;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -34,6 +28,11 @@ import com.intellij.psi.xml.XmlFile;
 import com.intellij.psi.xml.XmlTag;
 import com.intellij.util.containers.ContainerUtil;
 import consulo.ui.image.Image;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * @author aalmiray
@@ -156,13 +155,15 @@ public class GriffonSourceInspector {
       }
 
       public Image getIcon() {
-        String iconStr = icon.endsWith(".png") ? icon : icon + ".png";
-        if (iconStr.startsWith("/")) {
-          return IconLoader.getIcon(iconStr);
-        }
-        else {
-          return IconLoader.getIcon("/icons/griffon/" + iconStr);
-        }
+         // TODO [VISTALL] unsupported
+         return Image.empty(Image.DEFAULT_ICON_SIZE);
+//        String iconStr = icon.endsWith(".png") ? icon : icon + ".png";
+//        if (iconStr.startsWith("/")) {
+//          return IconLoader.getIcon(iconStr);
+//        }
+//        else {
+//          return IconLoader.getIcon("/icons/griffon/" + iconStr);
+//        }
       }
 
       public int getWeight() {

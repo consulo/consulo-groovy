@@ -183,7 +183,7 @@ public abstract class MvcFramework {
   protected GeneralCommandLine getCreationCommandLine(Module module) {
     String message = "Create default " + getDisplayName() + " directory structure in module '" + module.getName() + "'?";
     final int result = Messages.showDialog(module.getProject(), message, "Create " + getDisplayName() + " application",
-                                           new String[]{"Run 'create-&app'", "Run 'create-&plugin'", "&Cancel"}, 0, TargetAWT.to(getIcon()));
+                                           new String[]{"Run 'create-&app'", "Run 'create-&plugin'", "&Cancel"}, 0, getIcon());
     if (result < 0 || result > 1) {
       return null;
     }

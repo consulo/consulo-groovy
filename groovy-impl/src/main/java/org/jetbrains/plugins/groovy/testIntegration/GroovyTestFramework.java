@@ -18,6 +18,7 @@ package org.jetbrains.plugins.groovy.testIntegration;
 import javax.annotation.Nonnull;
 import javax.swing.Icon;
 
+import consulo.ui.image.Image;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames;
@@ -134,9 +135,9 @@ public class GroovyTestFramework extends JavaTestFramework
 
 	@Nonnull
 	@Override
-	public Icon getIcon()
+	public Image getIcon()
 	{
-		return TargetAWT.to(JetgroovyIcons.Groovy.Groovy_16x16);
+		return JetgroovyIcons.Groovy.Groovy_16x16;
 	}
 
 	@Override

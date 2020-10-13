@@ -16,27 +16,12 @@
 
 package org.jetbrains.plugins.groovy.config;
 
-import java.io.File;
-import java.util.Collection;
-import java.util.regex.Pattern;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import org.jetbrains.annotations.NonNls;
-import org.jetbrains.plugins.groovy.GroovyBundle;
-import org.jetbrains.plugins.groovy.util.GroovyUtils;
-import org.jetbrains.plugins.groovy.util.LibrariesUtil;
 import com.intellij.openapi.application.AccessToken;
 import com.intellij.openapi.application.WriteAction;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.roots.LibraryOrderEntry;
-import com.intellij.openapi.roots.ModifiableRootModel;
-import com.intellij.openapi.roots.ModuleRootManager;
-import com.intellij.openapi.roots.OrderRootType;
-import com.intellij.openapi.roots.ProjectRootManager;
+import com.intellij.openapi.roots.*;
 import com.intellij.openapi.roots.libraries.Library;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -45,8 +30,17 @@ import com.intellij.psi.util.CachedValueProvider;
 import com.intellij.psi.util.CachedValuesManager;
 import com.intellij.util.Function;
 import com.intellij.util.containers.ContainerUtil;
-import consulo.awt.TargetAWT;
 import icons.JetgroovyIcons;
+import org.jetbrains.annotations.NonNls;
+import org.jetbrains.plugins.groovy.GroovyBundle;
+import org.jetbrains.plugins.groovy.util.GroovyUtils;
+import org.jetbrains.plugins.groovy.util.LibrariesUtil;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.io.File;
+import java.util.Collection;
+import java.util.regex.Pattern;
 
 /**
  * @author ilyas
@@ -210,7 +204,7 @@ public abstract class GroovyConfigUtils extends AbstractConfigUtils
 			final Library library = libraries[0];
 			int result = Messages.showOkCancelDialog(GroovyBundle.message("groovy.like.library.found.text",
 					module.getName(), library.getName(), getSDKLibVersion(library)), GroovyBundle.message("groovy.like" +
-					".library.found"), TargetAWT.to(JetgroovyIcons.Groovy.Groovy_32x32));
+					".library.found"), JetgroovyIcons.Groovy.Groovy_32x32);
 			if(result == 0)
 			{
 				AccessToken accessToken = WriteAction.start();
