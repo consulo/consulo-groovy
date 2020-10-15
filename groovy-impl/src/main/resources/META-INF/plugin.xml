@@ -264,14 +264,14 @@
 
 		<moduleExtensionProvider key="groovy"
 								 parentKey="java"
-								 icon="/icons/groovy/groovy_16x16.png"
+								 icon="consulo.groovy.psi.GroovyPsiIconGroup@groovy.groovy_16x16"
 								 name="Groovy"
 								 immutableClass="consulo.groovy.module.extension.GroovyModuleExtension"
 								 mutableClass="consulo.groovy.module.extension.GroovyMutableModuleExtension"/>
 		<moduleExtensionProvider key="griffon"
 								 parentKey="groovy"
 								 name="Griffon"
-								 icon="/icons/griffon/griffon.png"
+								 icon="consulo.groovy.psi.GroovyPsiIconGroup@griffon.griffon"
 								 immutableClass="consulo.groovy.griffon.module.extension.GriffonModuleExtension"
 								 mutableClass="consulo.groovy.griffon.module.extension.GriffonMutableModuleExtension"/>
 
@@ -1426,7 +1426,7 @@
 		<programRunner implementation="org.jetbrains.plugins.groovy.griffon.GriffonDebuggerRunner"/>
 		<configurationType implementation="org.jetbrains.plugins.groovy.griffon.GriffonRunConfigurationType"/>
 		<runLineMarkerContributor language="Groovy" implementationClass="org.jetbrains.plugins.groovy.testIntegration.GroovyAppLineMarkerContributor"/>
-		<toolWindow id="Griffon View" anchor="left" secondary="false" icon="JetgroovyIcons.Griffon.GriffonToolWindow"
+		<toolWindow id="Griffon View" anchor="left" secondary="false" icon="consulo.groovy.psi.GroovyPsiIconGroup@griffon.griffontoolwindow"
 					factoryClass="org.jetbrains.plugins.groovy.griffon.GriffonToolWindowFactory"
 					conditionClass="org.jetbrains.plugins.groovy.griffon.GriffonToolWindowFactory"/>
 
@@ -1476,12 +1476,12 @@
 
 		<group id="Groovy.Dynamic.Toolbar">
 			<action id="Groovy.Dynamic.Remove" class="org.jetbrains.plugins.groovy.annotator.intentions.dynamic.RemoveDynamicAction"
-					icon="AllIcons.General.Remove" text="Remove" description="Remove dynamic element"/>
+					icon="consulo.platform.base.PlatformIconGroup@general.remove" text="Remove" description="Remove dynamic element"/>
 			<separator/>
 			<action id="Groovy.Dynamic.ExpandAll" class="org.jetbrains.plugins.groovy.annotator.intentions.dynamic.ExpandAllAction"
-					icon="AllIcons.Actions.Expandall" text="Expand all" description="Collapse all"/>
+					icon="consulo.platform.base.PlatformIconGroup@ide.notification.expand" text="Expand all" description="Collapse all"/>
 			<action id="Groovy.Dynamic.CollapseAll" class="org.jetbrains.plugins.groovy.annotator.intentions.dynamic.CollapseAllAction"
-					icon="AllIcons.Actions.Collapseall" text="Collapse all" description="Collapse all"/>
+					icon="consulo.platform.base.PlatformIconGroup@actions.collapseall" text="Collapse all" description="Collapse all"/>
 		</group>
 
 
@@ -1540,13 +1540,13 @@
 		<action id="Groovy.Doc.Generating"
 				class="org.jetbrains.plugins.groovy.doc.actions.GenerateGroovyDocAction"
 				text="Generate GroovyDoc..." description="Generating Groovy Documentation"
-				icon="JetgroovyIcons.Groovy.GroovyDoc">
+				icon="consulo.groovy.psi.GroovyPsiIconGroup@groovy.groovydoc">
 			<add-to-group group-id="ToolsMenu" anchor="last"/>
 		</action>
 		<action id="Groovy.Console"
 				class="org.jetbrains.plugins.groovy.shell.GroovyShellAction"
 				text="Groovy Shell..." description="Launch Groovy Shell"
-				icon="JetgroovyIcons.Groovy.Groovy_16x16">
+				icon="consulo.groovy.psi.GroovyPsiIconGroup@groovy.groovy_16x16">
 			<add-to-group group-id="ToolsMenu" anchor="last"/>
 		</action>
 
