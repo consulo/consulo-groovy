@@ -17,8 +17,8 @@ package org.jetbrains.plugins.groovy.mvc;
 
 import java.util.Set;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 
 import com.intellij.openapi.application.PathMacros;
 import com.intellij.openapi.util.io.FileUtil;
