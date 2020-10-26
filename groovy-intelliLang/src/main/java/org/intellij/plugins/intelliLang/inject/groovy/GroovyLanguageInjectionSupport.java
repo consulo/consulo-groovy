@@ -16,13 +16,13 @@
 
 package org.intellij.plugins.intelliLang.inject.groovy;
 
-import javax.annotation.Nonnull;
-
-import org.intellij.plugins.intelliLang.inject.AbstractLanguageInjectionSupport;
+import com.intellij.psi.PsiElement;
+import consulo.psi.injection.AbstractLanguageInjectionSupport;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.patterns.GroovyPatterns;
-import com.intellij.psi.PsiElement;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author Gregory.Shrago

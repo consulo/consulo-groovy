@@ -22,7 +22,6 @@
 	<category>Custom Languages</category>
 	<vendor>JetBrains</vendor>
 	<depends optional="true" config-file="com.intellij.spellchecker.xml">com.intellij.spellchecker</depends>
-	<depends optional="true" config-file="org.intellij.intelliLang.xml">org.intellij.intelliLang</depends>
 	<depends optional="true" config-file="org.jetbrains.idea.maven.xml">org.jetbrains.idea.maven</depends>
 
 	<depends>com.intellij.properties</depends>
@@ -83,6 +82,16 @@
 		<extensionPoint name="convertToJava.customMethodInvocator"
 						interface="org.jetbrains.plugins.groovy.refactoring.convertToJava.invocators.CustomMethodInvocator"/>
 	</extensionPoints>
+
+
+	<extensions defaultExtensionNs="com.intellij">
+		<injectionLanguageSupport implementation="org.intellij.plugins.intelliLang.inject.groovy.GroovyLanguageInjectionSupport"/>
+		<injectionConfig config="resources/groovyInjections.xml"/>
+	</extensions>
+
+	<extensions defaultExtensionNs="org.intellij.groovy">
+		<membersContributor implementation="org.intellij.plugins.intelliLang.inject.groovy.PatternEditorContextMembersProvider"/>
+	</extensions>
 
 	<extensions defaultExtensionNs="org.intellij.groovy">
 		<groovyFrameworkConfigNotification order="last"
