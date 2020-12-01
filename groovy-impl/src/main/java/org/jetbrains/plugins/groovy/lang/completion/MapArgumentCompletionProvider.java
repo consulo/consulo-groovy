@@ -15,12 +15,20 @@
  */
 package org.jetbrains.plugins.groovy.lang.completion;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.intellij.codeInsight.completion.CompletionContributor;
+import com.intellij.codeInsight.completion.CompletionParameters;
+import com.intellij.codeInsight.completion.CompletionResultSet;
+import com.intellij.codeInsight.completion.CompletionType;
+import com.intellij.codeInsight.lookup.LookupElementBuilder;
+import com.intellij.patterns.ElementPattern;
+import com.intellij.patterns.PlatformPatterns;
+import com.intellij.patterns.StandardPatterns;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiRecursiveElementWalkingVisitor;
+import com.intellij.util.ProcessingContext;
+import consulo.awt.TargetAWT;
+import consulo.codeInsight.completion.CompletionProvider;
+import icons.JetgroovyIcons;
 import org.jetbrains.plugins.groovy.extensions.GroovyNamedArgumentProvider;
 import org.jetbrains.plugins.groovy.extensions.NamedArgumentDescriptor;
 import org.jetbrains.plugins.groovy.highlighter.GroovySyntaxHighlighter;
@@ -34,19 +42,12 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrCall;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyNamesUtil;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
-import com.intellij.codeInsight.completion.CompletionContributor;
-import com.intellij.codeInsight.completion.CompletionParameters;
-import consulo.codeInsight.completion.CompletionProvider;
-import com.intellij.codeInsight.completion.CompletionResultSet;
-import com.intellij.codeInsight.completion.CompletionType;
-import com.intellij.codeInsight.lookup.LookupElementBuilder;
-import com.intellij.patterns.ElementPattern;
-import com.intellij.patterns.PlatformPatterns;
-import com.intellij.patterns.StandardPatterns;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiRecursiveElementWalkingVisitor;
-import com.intellij.util.ProcessingContext;
-import icons.JetgroovyIcons;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author peter
@@ -102,7 +103,7 @@ class MapArgumentCompletionProvider implements CompletionProvider
         .withTailText(":");
 
       if (entry.getValue().getPriority() == NamedArgumentDescriptor.Priority.UNLIKELY) {
-        lookup.withItemTextForeground(GroovySyntaxHighlighter.MAP_KEY.getDefaultAttributes().getForegroundColor());
+        lookup.withItemTextForeground(TargetAWT.to(GroovySyntaxHighlighter.MAP_KEY.getDefaultAttributes().getForegroundColor()));
       }
       else {
         lookup = lookup.withIcon(JetgroovyIcons.Groovy.DynamicProperty);

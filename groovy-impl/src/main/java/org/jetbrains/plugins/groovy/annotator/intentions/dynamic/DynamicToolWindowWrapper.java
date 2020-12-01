@@ -25,6 +25,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.ui.SimpleToolWindowPanel;
+import consulo.awt.TargetAWT;
 import consulo.util.dataholder.Key;
 import com.intellij.openapi.wm.IdeFocusManager;
 import com.intellij.openapi.wm.ToolWindow;
@@ -590,7 +591,7 @@ public class DynamicToolWindowWrapper {
       final String first = name.substring(0, begin);
       append(first, SimpleTextAttributes.SIMPLE_CELL_ATTRIBUTES);
       final TextAttributes textAttributes = new TextAttributes();
-      textAttributes.setBackgroundColor(UIUtil.getListSelectionBackground());
+      textAttributes.setBackgroundColor(TargetAWT.from(UIUtil.getListSelectionBackground()));
       append(substringToHighlight, SimpleTextAttributes.fromTextAttributes(textAttributes));
       append(name.substring(first.length() + substringToHighlight.length()), SimpleTextAttributes.SIMPLE_CELL_ATTRIBUTES);
     }
