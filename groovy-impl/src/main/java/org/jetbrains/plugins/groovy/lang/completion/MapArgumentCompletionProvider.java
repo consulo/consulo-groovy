@@ -26,7 +26,6 @@ import com.intellij.patterns.StandardPatterns;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiRecursiveElementWalkingVisitor;
 import com.intellij.util.ProcessingContext;
-import consulo.awt.TargetAWT;
 import consulo.codeInsight.completion.CompletionProvider;
 import icons.JetgroovyIcons;
 import org.jetbrains.plugins.groovy.extensions.GroovyNamedArgumentProvider;
@@ -103,7 +102,7 @@ class MapArgumentCompletionProvider implements CompletionProvider
         .withTailText(":");
 
       if (entry.getValue().getPriority() == NamedArgumentDescriptor.Priority.UNLIKELY) {
-        lookup.withItemTextForeground(TargetAWT.to(GroovySyntaxHighlighter.MAP_KEY.getDefaultAttributes().getForegroundColor()));
+        lookup.withItemTextForeground(GroovySyntaxHighlighter.MAP_KEY.getDefaultAttributes().getForegroundColor());
       }
       else {
         lookup = lookup.withIcon(JetgroovyIcons.Groovy.DynamicProperty);
