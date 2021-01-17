@@ -45,13 +45,14 @@ import com.intellij.util.messages.MessageBusConnection;
 import consulo.disposer.Disposer;
 import consulo.ui.UIAccess;
 import consulo.ui.annotation.RequiredUIAccess;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import org.jetbrains.annotations.TestOnly;
 import org.jetbrains.plugins.groovy.mvc.projectView.MvcToolWindowDescriptor;
 
 import javax.annotation.Nonnull;
-import jakarta.inject.Inject;
-import jakarta.inject.Singleton;
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 /**
  * @author peter
@@ -59,7 +60,7 @@ import java.util.*;
 @Singleton
 public class MvcModuleStructureSynchronizer
 {
-	private final Set<Pair<Object, SyncAction>> myActions = new LinkedHashSet<Pair<Object, SyncAction>>();
+	private final Set<Pair<Object, SyncAction>> myActions = new CopyOnWriteArraySet<>();
 	private final Project myProject;
 
 	private Set<VirtualFile> myPluginRoots = Collections.emptySet();
@@ -99,7 +100,7 @@ public class MvcModuleStructureSynchronizer
 			}
 		});
 
-		startupManager.registerPostStartupActivity(uiAccess -> projectOpened());
+		startupManager.registerPostStartupActivity(uiAccess -> uiAccess.give(this::projectOpened));
 
 		connection.subscribe(ProjectTopics.MODULES, new ModuleAdapter()
 		{
@@ -308,11 +309,8 @@ public class MvcModuleStructureSynchronizer
 		queue(SyncAction.CreateAppStructureIfNeeded, myProject);
 	}
 
-	@RequiredUIAccess
 	private void queue(SyncAction action, Object on)
 	{
-		UIAccess.assertIsUIThread();
-
 		if(myActions.isEmpty())
 		{
 			if(myProject.isDisposed())
@@ -324,19 +322,12 @@ public class MvcModuleStructureSynchronizer
 				@Override
 				public void run()
 				{
-					ApplicationManager.getApplication().invokeLater(new Runnable()
-					{
-						@Override
-						public void run()
-						{
-							runActions();
-						}
-					}, ModalityState.NON_MODAL);
+					ApplicationManager.getApplication().invokeLater(() -> runActions(), ModalityState.NON_MODAL);
 				}
 			});
 		}
 
-		myActions.add(new Pair<Object, SyncAction>(on, action));
+		myActions.add(Pair.create(on, action));
 	}
 
 	@Nonnull
