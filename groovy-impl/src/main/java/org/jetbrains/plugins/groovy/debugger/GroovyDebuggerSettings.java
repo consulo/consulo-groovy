@@ -19,6 +19,7 @@ import com.intellij.openapi.options.Configurable;
 import com.intellij.util.xmlb.XmlSerializerUtil;
 import com.intellij.xdebugger.settings.DebuggerSettingsCategory;
 import com.intellij.xdebugger.settings.XDebuggerSettings;
+import consulo.localize.LocalizeValue;
 import consulo.options.SimpleConfigurableByProperties;
 import consulo.ui.CheckBox;
 import consulo.ui.Component;
@@ -61,7 +62,7 @@ public class GroovyDebuggerSettings extends XDebuggerSettings<GroovyDebuggerSett
 			GroovyDebuggerSettings settings = GroovyDebuggerSettings.getInstance();
 
 			VerticalLayout verticalLayout = VerticalLayout.create();
-			CheckBox disableSpecificCheckBox = CheckBox.create(GroovyBundle.message("groovy.debug.disable.specific.methods"));
+			CheckBox disableSpecificCheckBox = CheckBox.create(LocalizeValue.localizeTODO(GroovyBundle.message("groovy.debug.disable.specific.methods")));
 			verticalLayout.add(disableSpecificCheckBox);
 			propertyBuilder.add(disableSpecificCheckBox, settings::getDebugDisableSpecificMethods, settings::setDebugDisableSpecificMethods);
 			return verticalLayout;
@@ -91,10 +92,10 @@ public class GroovyDebuggerSettings extends XDebuggerSettings<GroovyDebuggerSett
 			GroovyDebuggerSettings settings = GroovyDebuggerSettings.getInstance();
 
 			VerticalLayout verticalLayout = VerticalLayout.create();
-			CheckBox hotSwapCheckBox = CheckBox.create("Enable hot-swap agent for Groovy code");
+			CheckBox hotSwapCheckBox = CheckBox.create(LocalizeValue.localizeTODO("Enable hot-swap agent for Groovy code"));
 			verticalLayout.add(hotSwapCheckBox);
 			propertyBuilder.add(hotSwapCheckBox, settings::isEnableHotSwap, settings::setEnableHotSwap);
-			verticalLayout.add(Label.create("May cause serialization issues in the debugged application").setForeground(StandardColors.GRAY));
+			verticalLayout.add(Label.create(LocalizeValue.localizeTODO("May cause serialization issues in the debugged application")).withForegroundColor(StandardColors.GRAY));
 			return verticalLayout;
 		}
 	}
