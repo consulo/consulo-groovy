@@ -18,6 +18,7 @@ package org.jetbrains.plugins.groovy.actions;
 
 import com.intellij.codeInsight.actions.ReformatCodeProcessor;
 import com.intellij.ide.fileTemplates.*;
+import com.intellij.openapi.application.WriteAction;
 import com.intellij.openapi.fileTypes.FileTypeManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiDirectory;
@@ -34,14 +35,12 @@ import java.util.Properties;
 
 public class GroovyTemplatesFactory implements FileTemplateGroupDescriptorFactory
 {
-	@NonNls
 	public static final String[] TEMPLATES = {
 			GroovyTemplates.GROOVY_CLASS,
 			GroovyTemplates.GROOVY_SCRIPT,
 			GroovyTemplates.GANT_SCRIPT
 	};
 
-	@NonNls
 	static final String NAME_TEMPLATE_PROPERTY = "NAME";
 	static final String LOW_CASE_NAME_TEMPLATE_PROPERTY = "lowCaseName";
 
@@ -64,18 +63,17 @@ public class GroovyTemplatesFactory implements FileTemplateGroupDescriptorFactor
 			@Nonnull String fileName,
 			@Nonnull String templateName,
 			boolean allowReformatting,
-			@NonNls String... parameters) throws IncorrectOperationException
+			String... parameters) throws IncorrectOperationException
 	{
-		final FileTemplate template = FileTemplateManager.getInstance().getInternalTemplate
-				(templateName);
+		FileTemplateManager fileTemplateManager = FileTemplateManager.getInstance(directory.getProject());
+		final FileTemplate template = fileTemplateManager.getInternalTemplate(templateName);
 
 		Project project = directory.getProject();
 
-		Properties properties = new Properties(FileTemplateManager.getInstance().getDefaultProperties());
+		Properties properties = new Properties(fileTemplateManager.getDefaultProperties());
 		JavaTemplateUtil.setPackageNameAttribute(properties, directory);
 		properties.setProperty(NAME_TEMPLATE_PROPERTY, name);
-		properties.setProperty(LOW_CASE_NAME_TEMPLATE_PROPERTY, name.substring(0, 1).toLowerCase() + name.substring
-				(1));
+		properties.setProperty(LOW_CASE_NAME_TEMPLATE_PROPERTY, name.substring(0, 1).toLowerCase() + name.substring(1));
 		for(int i = 0; i < parameters.length; i += 2)
 		{
 			properties.setProperty(parameters[i], parameters[i + 1]);
@@ -87,20 +85,21 @@ public class GroovyTemplatesFactory implements FileTemplateGroupDescriptorFactor
 		}
 		catch(Exception e)
 		{
-			throw new RuntimeException("Unable to load template for " + FileTemplateManager.getInstance()
-					.internalTemplateToSubject(templateName), e);
+			throw new RuntimeException("Unable to load template for " + fileTemplateManager.internalTemplateToSubject(templateName), e);
 		}
 
-		final PsiFileFactory factory = PsiFileFactory.getInstance(project);
-		PsiFile file = factory.createFileFromText(fileName, GroovyFileType.GROOVY_FILE_TYPE, text);
+		return WriteAction.compute(() -> {
+			final PsiFileFactory factory = PsiFileFactory.getInstance(project);
+			PsiFile file = factory.createFileFromText(fileName, GroovyFileType.GROOVY_FILE_TYPE, text);
 
-		file = (PsiFile) directory.add(file);
+			file = (PsiFile) directory.add(file);
 
-		if(file != null && allowReformatting && template.isReformatCode())
-		{
-			new ReformatCodeProcessor(project, file, null, false).run();
-		}
+			if(file != null && allowReformatting && template.isReformatCode())
+			{
+				new ReformatCodeProcessor(project, file, null, false).run();
+			}
 
-		return file;
+			return file;
+		});
 	}
 }
