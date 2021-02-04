@@ -18,36 +18,25 @@ package org.jetbrains.plugins.groovy.findUsages;
 
 import com.intellij.openapi.application.QueryExecutorBase;
 import com.intellij.openapi.application.ReadActionProcessor;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.roots.ProjectRootManager;
 import consulo.util.dataholder.Key;
 import com.intellij.openapi.util.TextRange;
-import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.*;
 import com.intellij.psi.impl.light.LightMemberReference;
 import com.intellij.psi.search.*;
-import com.intellij.psi.search.searches.AnnotatedElementsSearch;
 import com.intellij.psi.search.searches.DirectClassInheritorsSearch;
 import com.intellij.psi.search.searches.MethodReferencesSearch;
 import com.intellij.psi.search.searches.ReferencesSearch;
-import com.intellij.psi.util.CachedValueProvider;
-import com.intellij.psi.util.CachedValuesManager;
-import com.intellij.psi.util.PsiModificationTracker;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.PairProcessor;
 import com.intellij.util.Processor;
 import com.intellij.util.containers.ContainerUtil;
-import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.codeInspection.utils.ControlFlowUtils;
-import org.jetbrains.plugins.groovy.gpp.GppTypeConverter;
-import org.jetbrains.plugins.groovy.lang.psi.GrReferenceElement;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.GrListOrMap;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrConstructorInvocation;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariableDeclaration;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrArgumentList;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrOpenBlock;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.*;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameter;
@@ -62,7 +51,6 @@ import org.jetbrains.plugins.groovy.lang.psi.controlFlow.Instruction;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -155,12 +143,6 @@ public class GroovyConstructorUsagesSearcher extends QueryExecutorBase<PsiRefere
           }
         }
 
-        if (searchGppCalls) {
-          final PsiMethod method = getMethodToSearchForCallsWithLiteralArguments(element, clazz);
-          if (method != null && processedMethods.add(PsiAnchor.create(method))) {
-            processGppMethodCalls(clazz, scope, collector, method, literalProcessor);
-          }
-        }
         return true;
       }
     });
@@ -188,82 +170,6 @@ public class GroovyConstructorUsagesSearcher extends QueryExecutorBase<PsiRefere
       }
     }
     return null;
-  }
-
-  private static void processGppMethodCalls(final PsiClass targetClass,
-                                            SearchScope scope,
-                                            SearchRequestCollector originalCollector, @Nonnull PsiMethod currentTarget,
-                                            final LiteralConstructorSearcher literalProcessor) {
-    final SearchScope gppScope = getGppScope(targetClass.getProject()).intersectWith(scope);
-
-    if (gppScope instanceof GlobalSearchScope) {
-      String name = currentTarget.getName();
-      if (PsiSearchHelper.getInstance(currentTarget.getProject()).isCheapEnoughToSearch(name, (GlobalSearchScope)gppScope, null,
-                                                                                                null) ==
-          PsiSearchHelper.SearchCostResult.ZERO_OCCURRENCES) {
-        return;
-      }
-    }
-
-    final ReadActionProcessor<PsiReference> gppCallProcessor = new ReadActionProcessor<PsiReference>() {
-
-      @javax.annotation.Nullable
-      private GrExpression[] getCallArguments(PsiReference psiReference) {
-        if (psiReference instanceof GrReferenceElement) {
-          final PsiElement parent = ((GrReferenceElement)psiReference).getParent();
-          if (parent instanceof GrCall) {
-            final GrArgumentList argList = ((GrCall)parent).getArgumentList();
-            if (argList != null) {
-              return argList.getExpressionArguments();
-            }
-          }
-        }
-        else if (psiReference instanceof LiteralConstructorReference) {
-          return ((LiteralConstructorReference)psiReference).getCallArguments();
-        }
-        return null;
-      }
-
-      @Override
-      public boolean processInReadAction(PsiReference psiReference) {
-        final GrExpression[] arguments = getCallArguments(psiReference);
-        if (arguments == null) {
-          return true;
-        }
-
-        boolean checkedTypedContext = false;
-        for (GrExpression argument : arguments) {
-          if (argument instanceof GrListOrMap) {
-            if (!checkedTypedContext) {
-              if (!GppTypeConverter.hasTypedContext(psiReference.getElement())) {
-                return true;
-              }
-              checkedTypedContext = true;
-            }
-
-            if (!literalProcessor.processLiteral((GrListOrMap)argument, true)) {
-              return false;
-            }
-          }
-        }
-        return true;
-      }
-    };
-    if (currentTarget.isConstructor()) {
-      processConstructorUsages(currentTarget, gppScope, gppCallProcessor, originalCollector, true, false);
-    }
-    else {
-      MethodReferencesSearch.searchOptimized(currentTarget, gppScope, true, originalCollector, gppCallProcessor);
-    }
-  }
-
-  private static GlobalSearchScope getGppScope(final Project project) {
-    return CachedValuesManager.getManager(project).getCachedValue(project, new CachedValueProvider<GlobalSearchScope>() {
-      @Override
-      public Result<GlobalSearchScope> compute() {
-        return Result.create(calcGppScope(project), PsiModificationTracker.JAVA_STRUCTURE_MODIFICATION_COUNT, ProjectRootManager.getInstance(project));
-      }
-    });
   }
 
   private static boolean processGroovyConstructorUsages(GrCodeReferenceElement element,
@@ -328,38 +234,13 @@ public class GroovyConstructorUsagesSearcher extends QueryExecutorBase<PsiRefere
     return true;
   }
 
-  private static GlobalSearchScope calcGppScope(Project project) {
-    final GlobalSearchScope allScope = GlobalSearchScope.allScope(project);
-    final GlobalSearchScope maximal = GlobalSearchScope.getScopeRestrictedByFileTypes(allScope, GroovyFileType.GROOVY_FILE_TYPE);
-    GlobalSearchScope gppExtensions = new DelegatingGlobalSearchScope(maximal, "groovy.gpp") {
-      @Override
-      public boolean contains(VirtualFile file) {
-        return super.contains(file) && GppTypeConverter.isGppExtension(file.getExtension());
-      }
-    };
-    final PsiClass typed = JavaPsiFacade.getInstance(project).findClass(GppTypeConverter.GROOVY_LANG_TYPED, allScope);
-    if (typed != null) {
-      final Set<VirtualFile> files = new HashSet<VirtualFile>();
-      AnnotatedElementsSearch.searchElements(typed, maximal, PsiModifierListOwner.class).forEach(new Processor<PsiModifierListOwner>() {
-        @Override
-        public boolean process(PsiModifierListOwner occurrence) {
-          ContainerUtil.addIfNotNull(files, occurrence.getContainingFile().getVirtualFile());
-          return true;
-        }
-      });
 
-      GlobalSearchScope withTypedAnno = GlobalSearchScope.filesScope(project, files);
-      return withTypedAnno.union(gppExtensions);
-    }
-
-    return gppExtensions;
-  }
 
   private static boolean checkLiteralInstantiation(GrExpression expression,
                                                    final LiteralConstructorSearcher literalProcessor) {
 
     if (expression instanceof GrListOrMap) {
-      return literalProcessor.processLiteral((GrListOrMap)expression, GppTypeConverter.hasTypedContext(expression));
+      return literalProcessor.processLiteral((GrListOrMap)expression);
     }
     return true;
   }

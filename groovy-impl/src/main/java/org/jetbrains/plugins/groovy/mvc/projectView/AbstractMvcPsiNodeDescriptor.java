@@ -28,8 +28,8 @@ import com.intellij.problems.WolfTheProblemSolver;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiUtilCore;
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author Dmitry Krasilschikov
@@ -55,9 +55,9 @@ public abstract class AbstractMvcPsiNodeDescriptor extends AbstractPsiBasedNode<
 	private final Module myModule;
 	private final int myWeight;
 
-	protected AbstractMvcPsiNodeDescriptor(@NotNull final Module module,
+	protected AbstractMvcPsiNodeDescriptor(@Nonnull final Module module,
 										   @Nullable final ViewSettings viewSettings,
-										   @NotNull final PsiElement nodeId, int weight)
+										   @Nonnull final PsiElement nodeId, int weight)
 	{
 		super(module.getProject(), nodeId, viewSettings);
 		myModule = module;
@@ -65,27 +65,27 @@ public abstract class AbstractMvcPsiNodeDescriptor extends AbstractPsiBasedNode<
 	}
 
 	@NonNls
-	protected abstract String getTestPresentationImpl(@NotNull final PsiElement psiElement);
+	protected abstract String getTestPresentationImpl(@Nonnull final PsiElement psiElement);
 
 	@Override
-	public final boolean contains(@NotNull final VirtualFile file)
+	public final boolean contains(@Nonnull final VirtualFile file)
 	{
 		return isValid() && containsImpl(file);
 	}
 
-	protected boolean containsImpl(@NotNull final VirtualFile file)
+	protected boolean containsImpl(@Nonnull final VirtualFile file)
 	{
 		return super.contains(file);
 	}
 
 	@Override
-	@Nullable
+	@javax.annotation.Nullable
 	protected PsiElement extractPsiFromValue()
 	{
 		return getValue();
 	}
 
-	@Nullable
+	@javax.annotation.Nullable
 	@Override
 	public String toTestString(@Nullable Queryable.PrintInfo printInfo)
 	{
@@ -98,13 +98,13 @@ public abstract class AbstractMvcPsiNodeDescriptor extends AbstractPsiBasedNode<
 		return getTestPresentationImpl(psi);
 	}
 
-	@NotNull
+	@Nonnull
 	public Module getModule()
 	{
 		return myModule;
 	}
 
-	@Nullable
+	@javax.annotation.Nullable
 	@Override
 	public VirtualFile getVirtualFile()
 	{

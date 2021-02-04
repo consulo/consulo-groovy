@@ -26,7 +26,6 @@ import com.intellij.psi.PsiMethod;
 import gnu.trove.THashSet;
 import javax.annotation.Nonnull;
 
-import org.jetbrains.plugins.groovy.lang.psi.GrClassSubstitutor;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
@@ -85,7 +84,7 @@ public class GroovyToJavaGenerator {
     }
 
     for (final GrTypeDefinition typeDefinition : file.getTypeDefinitions()) {
-      generateClassStub(GrClassSubstitutor.getSubstitutedClass(typeDefinition), output);
+		generateClassStub(typeDefinition, output);
     }
     return output;
   }

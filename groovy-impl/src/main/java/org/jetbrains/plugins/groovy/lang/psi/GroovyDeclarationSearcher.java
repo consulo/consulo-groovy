@@ -17,7 +17,7 @@ public class GroovyDeclarationSearcher extends PomDeclarationSearcher {
     if (element instanceof GrTypeDefinition) {
       final PsiElement name = ((GrTypeDefinition)element).getNameIdentifierGroovy();
       if (name.getTextRange().shiftRight(-element.getTextRange().getStartOffset()).contains(offsetInElement)) {
-        consumer.consume(GrClassSubstitutor.getSubstitutedClass((GrTypeDefinition)element));
+		  consumer.consume((GrTypeDefinition) element);
       }
     }
   }

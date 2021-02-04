@@ -26,7 +26,6 @@ import com.intellij.psi.stubs.StubIndex;
 import com.intellij.util.Processor;
 import com.intellij.util.QueryExecutor;
 import consulo.application.AccessRule;
-import org.jetbrains.plugins.groovy.lang.psi.GrClassSubstitutor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrAnonymousClassDefinition;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrReferenceList;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
@@ -61,7 +60,7 @@ class GroovyDirectInheritorsSearcher implements QueryExecutor<PsiClass, DirectCl
 			final PsiElement parent = list.getParent();
 			if(parent instanceof GrTypeDefinition)
 			{
-				inheritors.add(GrClassSubstitutor.getSubstitutedClass(((GrTypeDefinition) parent)));
+				inheritors.add(((GrTypeDefinition) parent));
 			}
 		}
 		final Collection<GrAnonymousClassDefinition> classes = StubIndex.getInstance().get(GrAnonymousClassIndex.KEY, name, clazz.getProject(), scope);

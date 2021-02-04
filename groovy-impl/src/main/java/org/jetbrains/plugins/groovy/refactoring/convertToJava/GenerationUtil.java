@@ -29,7 +29,6 @@ import com.intellij.util.containers.hash.HashSet;
 import consulo.psi.PsiPackage;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import org.jetbrains.plugins.groovy.lang.psi.GrClassSubstitutor;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
@@ -269,15 +268,6 @@ public class GenerationUtil {
       visitedClasses.add(curClass);
     }
     return curClass;
-  }
-
-  static boolean isAbstractInJava(PsiMethod method) {
-    if (method.hasModifierProperty(PsiModifier.ABSTRACT)) {
-      return true;
-    }
-
-    final PsiClass psiClass = method.getContainingClass();
-    return psiClass != null && GrClassSubstitutor.getSubstitutedClass(psiClass).isInterface();
   }
 
   static void writeTypeParameters(StringBuilder text,

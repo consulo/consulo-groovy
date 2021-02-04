@@ -229,7 +229,7 @@ public class StubGenerator implements ClassItemGenerator {
       return; //does not have a java image
     }
 
-    boolean isAbstract = GenerationUtil.isAbstractInJava(method);
+    boolean isAbstract = method.hasModifierProperty(PsiModifier.ABSTRACT);
 
     PsiModifierList modifierList = method.getModifierList();
 
@@ -341,8 +341,8 @@ public class StubGenerator implements ClassItemGenerator {
         final PsiClass baseClass = method.getContainingClass();
         if (baseClass == null) continue;
         final String qname = baseClass.getQualifiedName();
-        if (DEFAULT_BASE_CLASS_NAME.equals(qname) || GROOVY_OBJECT_SUPPORT.equals(qname) ||
-            GenerationUtil.isAbstractInJava(method) && typeDefinition.isInheritor(baseClass, true)) {
+		  if (DEFAULT_BASE_CLASS_NAME.equals(qname) || GROOVY_OBJECT_SUPPORT.equals(qname) ||
+            method.hasModifierProperty(PsiModifier.ABSTRACT) && typeDefinition.isInheritor(baseClass, true)) {
           if (method.isConstructor()) continue;
           methods.add(mirrorMethod(typeDefinition, method, baseClass, signature.getSubstitutor()));
         }
