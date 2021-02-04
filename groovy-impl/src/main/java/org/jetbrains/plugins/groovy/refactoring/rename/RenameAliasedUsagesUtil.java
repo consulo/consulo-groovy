@@ -25,7 +25,7 @@ import org.jetbrains.plugins.groovy.lang.psi.api.toplevel.imports.GrImportStatem
 import org.jetbrains.plugins.groovy.lang.resolve.processors.ClassResolverProcessor;
 import org.jetbrains.plugins.groovy.lang.resolve.processors.MethodResolverProcessor;
 import org.jetbrains.plugins.groovy.lang.resolve.processors.PropertyResolverProcessor;
-import org.jetbrains.plugins.groovy.lang.resolve.processors.ResolverProcessor;
+import org.jetbrains.plugins.groovy.lang.resolve.processors.ResolverProcessorImpl;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -71,7 +71,7 @@ public class RenameAliasedUsagesUtil {
     final PsiManager manager = elementToResolve.getManager();
     for (GrImportStatement anImport : imports) {
       if (anImport.isAliasedImport()) {
-        final ResolverProcessor processor = getProcessor(elementToResolve, containingFile);
+        final ResolverProcessorImpl processor = getProcessor(elementToResolve, containingFile);
         anImport.processDeclarations(processor, ResolveState.initial(), null, containingFile);
         final GroovyResolveResult[] results = processor.getCandidates();
         for (GroovyResolveResult result : results) {
@@ -89,7 +89,7 @@ public class RenameAliasedUsagesUtil {
     return EMPTY_ALIAS;
   }
 
-  public static ResolverProcessor getProcessor(PsiElement element, GroovyPsiElement place) {
+  public static ResolverProcessorImpl getProcessor(PsiElement element, GroovyPsiElement place) {
     if (element instanceof PsiMethod) {
       return new MethodResolverProcessor(null, place, false, null, null, PsiType.EMPTY_ARRAY);
     }

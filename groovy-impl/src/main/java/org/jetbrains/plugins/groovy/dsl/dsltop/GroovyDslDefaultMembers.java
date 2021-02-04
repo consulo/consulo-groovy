@@ -34,7 +34,7 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.path.GrM
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
 import org.jetbrains.plugins.groovy.lang.resolve.ResolveUtil;
 import org.jetbrains.plugins.groovy.lang.resolve.processors.CompletionProcessor;
-import org.jetbrains.plugins.groovy.lang.resolve.processors.ResolverProcessor;
+import org.jetbrains.plugins.groovy.lang.resolve.processors.ResolverProcessorImpl;
 
 /**
  * @author ilyas
@@ -67,7 +67,7 @@ public class GroovyDslDefaultMembers implements GdslMembersProvider {
 
       if (clazz instanceof GrTypeDefinition) {
         final PsiClassType type = JavaPsiFacade.getElementFactory(consumer.getProject()).createType(clazz);
-        final ResolverProcessor processor = CompletionProcessor.createPropertyCompletionProcessor(clazz);
+        final ResolverProcessorImpl processor = CompletionProcessor.createPropertyCompletionProcessor(clazz);
         final GroovyPsiElement context = (GroovyPsiElement)clazz;
         ResolveUtil.processAllDeclarations(type, processor, ResolveState.initial(), context);
         for (GroovyResolveResult result : processor.getCandidates()) {

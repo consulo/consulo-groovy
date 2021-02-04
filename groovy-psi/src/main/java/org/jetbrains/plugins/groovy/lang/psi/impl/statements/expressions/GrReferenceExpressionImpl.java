@@ -70,7 +70,7 @@ import org.jetbrains.plugins.groovy.lang.resolve.processors.ClassResolverProcess
 import org.jetbrains.plugins.groovy.lang.resolve.processors.CompletionProcessor;
 import org.jetbrains.plugins.groovy.lang.resolve.processors.MethodResolverProcessor;
 import org.jetbrains.plugins.groovy.lang.resolve.processors.PropertyResolverProcessor;
-import org.jetbrains.plugins.groovy.lang.resolve.processors.ResolverProcessor;
+import org.jetbrains.plugins.groovy.lang.resolve.processors.ResolverProcessorImpl;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.util.Computable;
@@ -201,7 +201,7 @@ public class GrReferenceExpressionImpl extends GrReferenceElementImpl<GrExpressi
 
     GrReferenceResolveRunner resolveRunner = new GrReferenceResolveRunner(this);
 
-    ResolverProcessor processor = new PropertyResolverProcessor(name, this);
+    ResolverProcessorImpl processor = new PropertyResolverProcessor(name, this);
     resolveRunner.resolveImpl(processor);
     final GroovyResolveResult[] fieldCandidates = processor.getCandidates();
 
@@ -213,7 +213,7 @@ public class GrReferenceExpressionImpl extends GrReferenceElementImpl<GrExpressi
     boolean canBeClassOrPackage = ResolveUtil.canBeClassOrPackage(this);
 
     if (canBeClassOrPackage && findClassOrPackageAtFirst()) {
-      ResolverProcessor classProcessor = new ClassResolverProcessor(name, this, kinds);
+      ResolverProcessorImpl classProcessor = new ClassResolverProcessor(name, this, kinds);
       resolveRunner.resolveImpl(classProcessor);
       classCandidates = classProcessor.getCandidates();
       if (classCandidates.length > 0 && containsPackage(classCandidates)) return classCandidates;
@@ -258,7 +258,7 @@ public class GrReferenceExpressionImpl extends GrReferenceElementImpl<GrExpressi
     }
 
     if (classCandidates == null && canBeClassOrPackage ) {
-      ResolverProcessor classProcessor = new ClassResolverProcessor(name, this, kinds);
+      ResolverProcessorImpl classProcessor = new ClassResolverProcessor(name, this, kinds);
       resolveRunner.resolveImpl(classProcessor);
       classCandidates = classProcessor.getCandidates();
     }
@@ -851,7 +851,7 @@ public class GrReferenceExpressionImpl extends GrReferenceElementImpl<GrExpressi
     if (name == null) return GroovyResolveResult.EMPTY_ARRAY;
 
     if (incompleteCode) {
-      ResolverProcessor processor = CompletionProcessor.createRefSameNameProcessor(this, name);
+      ResolverProcessorImpl processor = CompletionProcessor.createRefSameNameProcessor(this, name);
       new GrReferenceResolveRunner(this).resolveImpl(processor);
       GroovyResolveResult[] propertyCandidates = processor.getCandidates();
       if (propertyCandidates.length > 0 && !PsiUtil.isSingleBindingVariant(propertyCandidates)) return propertyCandidates;

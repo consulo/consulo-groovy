@@ -80,7 +80,7 @@ import org.jetbrains.plugins.groovy.lang.resolve.processors.GrDelegatingScopePro
 import org.jetbrains.plugins.groovy.lang.resolve.processors.JavaResolverProcessor;
 import org.jetbrains.plugins.groovy.lang.resolve.processors.MethodResolverProcessor;
 import org.jetbrains.plugins.groovy.lang.resolve.processors.PropertyResolverProcessor;
-import org.jetbrains.plugins.groovy.lang.resolve.processors.ResolverProcessor;
+import org.jetbrains.plugins.groovy.lang.resolve.processors.ResolverProcessorImpl;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.project.Project;
@@ -556,9 +556,7 @@ public class ResolveUtil
 	}
 
 	@Nullable
-	public static <T> T resolveExistingElement(PsiElement place,
-			ResolverProcessor processor,
-			Class<? extends T>... classes)
+	public static <T> T resolveExistingElement(PsiElement place, ResolverProcessorImpl processor, Class<? extends T>... classes)
 	{
 		treeWalkUp(place, processor, true);
 		final GroovyResolveResult[] candidates = processor.getCandidates();

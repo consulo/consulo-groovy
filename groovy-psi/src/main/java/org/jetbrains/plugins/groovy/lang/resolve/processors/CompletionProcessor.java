@@ -30,7 +30,8 @@ import com.intellij.psi.ResolveState;
 /**
  * @author ven
  */
-public class CompletionProcessor extends ResolverProcessor {
+public class CompletionProcessor extends ResolverProcessorImpl
+{
   private CompletionProcessor(PsiElement place, final EnumSet<ResolveKind> resolveTargets, final String name) {
     super(name, resolveTargets, place, PsiType.EMPTY_ARRAY);
   }
@@ -43,15 +44,15 @@ public class CompletionProcessor extends ResolverProcessor {
     return true;
   }
 
-  public static ResolverProcessor createPropertyCompletionProcessor(PsiElement place) {
+  public static ResolverProcessorImpl createPropertyCompletionProcessor(PsiElement place) {
     return new CompletionProcessor(place, RESOLVE_KINDS_METHOD_PROPERTY, null);
   }
 
-  public static ResolverProcessor createRefSameNameProcessor(PsiElement place, String name) {
+  public static ResolverProcessorImpl createRefSameNameProcessor(PsiElement place, String name) {
     return new CompletionProcessor(place, RESOLVE_KINDS_METHOD_PROPERTY, name);
   }
 
-  public static ResolverProcessor createClassCompletionProcessor(PsiElement place) {
+  public static ResolverProcessorImpl createClassCompletionProcessor(PsiElement place) {
     return new CompletionProcessor(place, RESOLVE_KINDS_CLASS_PACKAGE, null);
   }
 

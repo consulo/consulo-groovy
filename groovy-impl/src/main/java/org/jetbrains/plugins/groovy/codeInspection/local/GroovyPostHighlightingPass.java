@@ -25,6 +25,7 @@ import java.util.Set;
 
 import javax.annotation.Nonnull;
 
+import consulo.annotation.access.RequiredReadAction;
 import org.jetbrains.plugins.groovy.codeInspection.GroovyInspectionBundle;
 import org.jetbrains.plugins.groovy.codeInspection.GroovyQuickFixFactory;
 import org.jetbrains.plugins.groovy.codeInspection.GroovySuppressableInspectionTool;
@@ -109,8 +110,7 @@ public class GroovyPostHighlightingPass extends TextEditorHighlightingPass
 			return;
 		}
 
-		final InspectionProfile profile = InspectionProjectProfileManager.getInstance(myProject)
-				.getInspectionProfile();
+		final InspectionProfile profile = InspectionProjectProfileManager.getInstance(myProject).getInspectionProfile();
 		final HighlightDisplayKey unusedDefKey = HighlightDisplayKey.find(GroovyUnusedDeclarationInspection
 				.SHORT_NAME);
 		final boolean deadCodeEnabled = profile.isToolEnabled(unusedDefKey, myFile);
@@ -213,8 +213,7 @@ public class GroovyPostHighlightingPass extends TextEditorHighlightingPass
 				super.visitElement(element);
 			}
 		});
-		final Set<GrImportStatement> unusedImports = new HashSet<GrImportStatement>(PsiUtil.getValidImportStatements
-				(myFile));
+		final Set<GrImportStatement> unusedImports = new HashSet<GrImportStatement>(PsiUtil.getValidImportStatements(myFile));
 		unusedImports.removeAll(GroovyImportUtil.findUsedImports(myFile));
 		myUnusedImports = unusedImports;
 
@@ -308,8 +307,7 @@ public class GroovyPostHighlightingPass extends TextEditorHighlightingPass
 		List<HighlightInfo> infos = new ArrayList<HighlightInfo>(myUnusedDeclarations);
 		for(GrImportStatement unusedImport : myUnusedImports)
 		{
-			Annotation annotation = annotationHolder.createWarningAnnotation(calculateRangeToUse(unusedImport),
-					GroovyInspectionBundle.message("unused.import"));
+			Annotation annotation = annotationHolder.createWarningAnnotation(calculateRangeToUse(unusedImport), GroovyInspectionBundle.message("unused.import"));
 			annotation.setHighlightType(ProblemHighlightType.LIKE_UNUSED_SYMBOL);
 			annotation.registerFix(GroovyQuickFixFactory.getInstance().createOptimizeImportsFix(false));
 			infos.add(HighlightInfo.fromAnnotation(annotation));
@@ -328,7 +326,7 @@ public class GroovyPostHighlightingPass extends TextEditorHighlightingPass
 		}
 	}
 
-
+	@RequiredReadAction
 	private static TextRange calculateRangeToUse(GrImportStatement unusedImport)
 	{
 		final TextRange range = unusedImport.getTextRange();
@@ -348,6 +346,4 @@ public class GroovyPostHighlightingPass extends TextEditorHighlightingPass
 		}
 		return new TextRange(start, range.getEndOffset());
 	}
-
-
 }

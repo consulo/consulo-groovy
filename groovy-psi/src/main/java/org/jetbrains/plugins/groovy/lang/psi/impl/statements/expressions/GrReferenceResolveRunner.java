@@ -33,7 +33,7 @@ import org.jetbrains.plugins.groovy.lang.psi.typeEnhancers.ClosureParameterEnhan
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 import org.jetbrains.plugins.groovy.lang.resolve.ResolveUtil;
 import org.jetbrains.plugins.groovy.lang.resolve.processors.ClassHint;
-import org.jetbrains.plugins.groovy.lang.resolve.processors.ResolverProcessor;
+import org.jetbrains.plugins.groovy.lang.resolve.processors.ResolverProcessorImpl;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.psi.*;
 import com.intellij.psi.util.InheritanceUtil;
@@ -44,13 +44,13 @@ import com.intellij.psi.util.InheritanceUtil;
 public class GrReferenceResolveRunner {
 
   private final GrReferenceExpression place;
-  private ResolverProcessor processor;
+  private ResolverProcessorImpl processor;
 
   public GrReferenceResolveRunner(@Nonnull GrReferenceExpression _place) {
     place = _place;
   }
 
-  public boolean resolveImpl(@Nonnull ResolverProcessor _processor) {
+  public boolean resolveImpl(@Nonnull ResolverProcessorImpl _processor) {
     processor = _processor;
     try {
       boolean result = doResolve();

@@ -15,21 +15,24 @@
  */
 package org.jetbrains.plugins.groovy.lang.resolve.processors;
 
-import java.util.EnumSet;
-
-import org.jetbrains.plugins.groovy.lang.psi.GrReferenceElement;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiType;
+import org.jetbrains.plugins.groovy.lang.psi.GrReferenceElement;
+
+import java.util.EnumSet;
 
 /**
  * @author ven
  */
-public class ClassResolverProcessor extends ResolverProcessor {
-	public ClassResolverProcessor(String refName, GrReferenceElement ref, EnumSet<ResolveKind> kinds) {
+public class ClassResolverProcessor extends ResolverProcessorImpl
+{
+	public ClassResolverProcessor(String refName, GrReferenceElement ref, EnumSet<ResolveKind> kinds)
+	{
 		super(refName, kinds, ref, ref.getTypeArguments());
 	}
 
-	public ClassResolverProcessor(String refName, PsiElement place) {
+	public ClassResolverProcessor(String refName, PsiElement place)
+	{
 		super(refName, RESOLVE_KINDS_CLASS, place, PsiType.EMPTY_ARRAY);
 	}
 }

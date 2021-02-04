@@ -46,7 +46,7 @@ import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 import org.jetbrains.plugins.groovy.lang.resolve.ResolveUtil;
 import org.jetbrains.plugins.groovy.lang.resolve.processors.ClassHint;
 import org.jetbrains.plugins.groovy.lang.resolve.processors.ClassResolverProcessor;
-import org.jetbrains.plugins.groovy.lang.resolve.processors.ResolverProcessor;
+import org.jetbrains.plugins.groovy.lang.resolve.processors.ResolverProcessorImpl;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.util.text.StringUtil;
@@ -442,7 +442,7 @@ public class GrCodeReferenceElementImpl extends GrReferenceElementImpl<GrCodeRef
 				{
 					EnumSet<ClassHint.ResolveKind> kinds = kind == ReferenceKind.CLASS ? ClassHint.RESOLVE_KINDS_CLASS
 							: ClassHint.RESOLVE_KINDS_CLASS_PACKAGE;
-					ResolverProcessor processor = new ClassResolverProcessor(refName, ref, kinds);
+					ResolverProcessorImpl processor = new ClassResolverProcessor(refName, ref, kinds);
 					GrCodeReferenceElement qualifier = ref.getQualifier();
 					if(qualifier != null)
 					{

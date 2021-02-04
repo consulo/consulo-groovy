@@ -25,7 +25,7 @@ import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 import org.jetbrains.plugins.groovy.lang.resolve.ResolveUtil;
 import org.jetbrains.plugins.groovy.lang.resolve.processors.CompletionProcessor;
-import org.jetbrains.plugins.groovy.lang.resolve.processors.ResolverProcessor;
+import org.jetbrains.plugins.groovy.lang.resolve.processors.ResolverProcessorImpl;
 import com.intellij.codeInsight.completion.CompletionContributor;
 import com.intellij.codeInsight.completion.CompletionParameters;
 import com.intellij.codeInsight.completion.CompletionResultSet;
@@ -71,10 +71,10 @@ public class GroovyDocCompletionProvider implements CompletionProvider
       resolved = PsiUtil.getContextClass(reference);
     }
     if (resolved instanceof PsiClass) {
-      ResolverProcessor propertyProcessor = CompletionProcessor.createPropertyCompletionProcessor(reference);
+      ResolverProcessorImpl propertyProcessor = CompletionProcessor.createPropertyCompletionProcessor(reference);
       resolved.processDeclarations(propertyProcessor, ResolveState.initial(), null, reference);
       PsiElement[] propertyCandidates = ResolveUtil.mapToElements(propertyProcessor.getCandidates());
-      ResolverProcessor methodProcessor = CompletionProcessor.createPropertyCompletionProcessor(reference);
+      ResolverProcessorImpl methodProcessor = CompletionProcessor.createPropertyCompletionProcessor(reference);
 
       resolved.processDeclarations(methodProcessor, ResolveState.initial(), null, reference);
 

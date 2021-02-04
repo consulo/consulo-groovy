@@ -40,7 +40,7 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMe
 import org.jetbrains.plugins.groovy.lang.psi.api.toplevel.imports.GrImportStatement;
 import org.jetbrains.plugins.groovy.lang.resolve.ResolveUtil;
 import org.jetbrains.plugins.groovy.lang.resolve.processors.PropertyResolverProcessor;
-import org.jetbrains.plugins.groovy.lang.resolve.processors.ResolverProcessor;
+import org.jetbrains.plugins.groovy.lang.resolve.processors.ResolverProcessorImpl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -294,7 +294,7 @@ public class ControlFlowBuilderUtil {
     LOG.assertTrue(!ref.isQualified());
 
     final String referenceName = ref.getReferenceName();
-    final ResolverProcessor processor = new PropertyResolverProcessor(referenceName, ref);
+    final ResolverProcessorImpl processor = new PropertyResolverProcessor(referenceName, ref);
 
     ResolveUtil.treeWalkUp(ref, processor, false);
     final GroovyResolveResult[] candidates = processor.getCandidates();

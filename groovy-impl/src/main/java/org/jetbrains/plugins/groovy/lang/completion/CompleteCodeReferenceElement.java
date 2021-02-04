@@ -34,7 +34,7 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.types.GrCodeReferenceElementIm
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 import org.jetbrains.plugins.groovy.lang.resolve.ResolveUtil;
 import org.jetbrains.plugins.groovy.lang.resolve.processors.CompletionProcessor;
-import org.jetbrains.plugins.groovy.lang.resolve.processors.ResolverProcessor;
+import org.jetbrains.plugins.groovy.lang.resolve.processors.ResolverProcessorImpl;
 import com.intellij.codeInsight.completion.JavaClassNameCompletionContributor;
 import com.intellij.codeInsight.completion.PrefixMatcher;
 import com.intellij.codeInsight.lookup.LookupElement;
@@ -168,7 +168,7 @@ public class CompleteCodeReferenceElement {
           }
         }
         else {
-          ResolverProcessor classProcessor = CompletionProcessor.createClassCompletionProcessor(myRef);
+          ResolverProcessorImpl classProcessor = CompletionProcessor.createClassCompletionProcessor(myRef);
           processTypeParametersFromUnfinishedMethodOrField(classProcessor);
 
           ResolveUtil.treeWalkUp(myRef, classProcessor, false);
@@ -181,7 +181,7 @@ public class CompleteCodeReferenceElement {
     }
   }
 
-  private void processTypeParametersFromUnfinishedMethodOrField(@Nonnull ResolverProcessor processor) {
+  private void processTypeParametersFromUnfinishedMethodOrField(@Nonnull ResolverProcessorImpl processor) {
 
     final PsiElement candidate = findTypeParameterListCandidate();
 

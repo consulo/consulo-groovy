@@ -66,7 +66,7 @@ public class AccessorResolverProcessor extends MethodResolverProcessor
 	@Override
 	public boolean execute(@Nonnull PsiElement element, @Nonnull ResolveState state)
 	{
-		final PsiElement resolveContext = state.get(ResolverProcessor.RESOLVE_CONTEXT);
+		final PsiElement resolveContext = state.get(ResolverProcessorImpl.RESOLVE_CONTEXT);
 		String importedName = resolveContext instanceof GrImportStatement ? ((GrImportStatement) resolveContext)
 				.getImportedName() : null;
 		if(mySearchForGetter)
@@ -139,7 +139,7 @@ public class AccessorResolverProcessor extends MethodResolverProcessor
 			substitutor = mySubstitutorComputer.obtainSubstitutor(substitutor, method, state);
 		}
 		boolean isAccessible = isAccessible(method);
-		final PsiElement resolveContext = state.get(ResolverProcessor.RESOLVE_CONTEXT);
+		final PsiElement resolveContext = state.get(ResolverProcessorImpl.RESOLVE_CONTEXT);
 		final SpreadState spreadState = state.get(SpreadState.SPREAD_STATE);
 		boolean isStaticsOK = isStaticsOK(method, resolveContext, false);
 		final GroovyResolveResultImpl candidate = new GroovyResolveResultImpl(method, resolveContext, spreadState,

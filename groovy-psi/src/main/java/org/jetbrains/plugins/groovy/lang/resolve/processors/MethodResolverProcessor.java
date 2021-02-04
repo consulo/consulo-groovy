@@ -50,7 +50,7 @@ import com.intellij.util.containers.hash.HashSet;
 /**
  * @author ven
  */
-public class MethodResolverProcessor extends ResolverProcessor implements GrMethodComparator.Context
+public class MethodResolverProcessor extends ResolverProcessorImpl implements GrMethodComparator.Context
 {
 	private final PsiType myThisType;
 

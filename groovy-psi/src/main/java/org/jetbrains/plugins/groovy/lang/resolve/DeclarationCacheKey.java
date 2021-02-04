@@ -24,7 +24,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlock;
 import org.jetbrains.plugins.groovy.lang.resolve.processors.ClassHint;
-import org.jetbrains.plugins.groovy.lang.resolve.processors.ResolverProcessor;
+import org.jetbrains.plugins.groovy.lang.resolve.processors.ResolverProcessorImpl;
 import com.intellij.openapi.util.Pair;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiType;
@@ -196,7 +196,8 @@ class DeclarationCacheKey {
     }
   }
 
-  private class MyCollectProcessor extends ResolverProcessor {
+  private class MyCollectProcessor extends ResolverProcessorImpl
+  {
     final List<Pair<PsiElement, ResolveState>> declarations = ContainerUtil.newArrayList();
 
     public MyCollectProcessor(PsiElement scope) {

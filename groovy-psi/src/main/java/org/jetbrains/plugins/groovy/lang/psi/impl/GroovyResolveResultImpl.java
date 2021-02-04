@@ -46,7 +46,7 @@ public class GroovyResolveResultImpl implements GroovyResolveResult
 	}
 
 	public GroovyResolveResultImpl(@Nonnull PsiElement element,
-			@javax.annotation.Nullable PsiElement resolveContext,
+			@Nullable PsiElement resolveContext,
 			@Nullable SpreadState spreadState,
 			@Nonnull PsiSubstitutor substitutor,
 			boolean isAccessible,
@@ -57,7 +57,7 @@ public class GroovyResolveResultImpl implements GroovyResolveResult
 
 	public GroovyResolveResultImpl(@Nonnull PsiElement element,
 			@Nullable PsiElement resolveContext,
-			@javax.annotation.Nullable SpreadState spreadState,
+			@Nullable SpreadState spreadState,
 			@Nonnull PsiSubstitutor substitutor,
 			boolean isAccessible,
 			boolean staticsOK,
@@ -140,7 +140,7 @@ public class GroovyResolveResultImpl implements GroovyResolveResult
 	}
 
 	@Override
-	@javax.annotation.Nullable
+	@Nullable
 	public PsiElement getCurrentFileResolveContext()
 	{
 		return myCurrentFileResolveContext;
