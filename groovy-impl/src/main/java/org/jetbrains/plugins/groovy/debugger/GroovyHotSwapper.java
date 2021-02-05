@@ -6,8 +6,6 @@ import com.intellij.execution.configurations.RunConfiguration;
 import com.intellij.execution.configurations.RunProfile;
 import com.intellij.execution.executors.DefaultDebugExecutor;
 import com.intellij.execution.runners.JavaProgramPatcher;
-import com.intellij.ide.plugins.PluginManager;
-import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.project.Project;
@@ -18,9 +16,11 @@ import com.intellij.pom.java.LanguageLevel;
 import com.intellij.psi.search.FilenameIndex;
 import com.intellij.psi.search.GlobalSearchScope;
 import consulo.container.boot.ContainerPathManager;
+import consulo.container.plugin.PluginManager;
 import consulo.groovy.module.extension.GroovyModuleExtension;
 import consulo.java.execution.configurations.OwnJavaParameters;
 import consulo.java.module.extension.JavaModuleExtension;
+import consulo.logging.Logger;
 import consulo.platform.Platform;
 import org.jetbrains.plugins.groovy.GroovyFileTypeLoader;
 
@@ -37,7 +37,7 @@ import java.util.regex.Pattern;
  */
 public class GroovyHotSwapper extends JavaProgramPatcher
 {
-	private static final Logger LOG = Logger.getInstance("#org.jetbrains.plugins.groovy.debugger.GroovyHotSwapper");
+	private static final Logger LOG = Logger.getInstance(GroovyHotSwapper.class);
 	private static final String GROOVY_HOTSWAP_AGENT_PATH = "groovy.hotswap.agent.path";
 
 	private static final Pattern SPRING_LOADED_PATTERN = Pattern.compile("-javaagent:.+springloaded-core-[^/\\\\]+\\.jar");
@@ -186,7 +186,7 @@ public class GroovyHotSwapper extends JavaProgramPatcher
 
 	private static String getAgentJarPath()
 	{
-		final String userDefined = Platform.current().getRuntimeProperty(GROOVY_HOTSWAP_AGENT_PATH);
+		final String userDefined = Platform.current().jvm().getRuntimeProperty(GROOVY_HOTSWAP_AGENT_PATH);
 		if(userDefined != null && new File(userDefined).exists())
 		{
 			return userDefined;
