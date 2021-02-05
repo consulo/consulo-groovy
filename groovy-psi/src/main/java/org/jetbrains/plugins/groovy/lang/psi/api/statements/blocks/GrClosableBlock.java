@@ -16,48 +16,51 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks;
 
-import javax.annotation.Nonnull;
-
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiType;
 import com.intellij.psi.ResolveState;
 import com.intellij.psi.scope.PsiScopeProcessor;
-
-import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrParametersOwner;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameter;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameterList;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 /**
  * @author ilyas
  */
-public interface GrClosableBlock extends GrExpression, GrCodeBlock, GrParametersOwner {
-  GrClosableBlock[] EMPTY_ARRAY = new GrClosableBlock[0];
+public interface GrClosableBlock extends GrExpression, GrCodeBlock, GrParametersOwner
+{
+	GrClosableBlock[] EMPTY_ARRAY = new GrClosableBlock[0];
 
-  String OWNER_NAME = "owner";
-  String IT_PARAMETER_NAME = "it";
+	String OWNER_NAME = "owner";
+	String IT_PARAMETER_NAME = "it";
 
-  @Nonnull
-  GrParameterList getParameterList();
+	@Nonnull
+	GrParameterList getParameterList();
 
-  GrParameter addParameter(GrParameter parameter);
+	GrParameter addParameter(GrParameter parameter);
 
-  boolean hasParametersSection();
+	boolean hasParametersSection();
 
-  @javax.annotation.Nullable
-  PsiType getReturnType();
+	@Nullable
+	PsiType getReturnType();
 
-  GrParameter[] getAllParameters();
+	GrParameter[] getAllParameters();
 
-  @javax.annotation.Nullable
-  PsiElement getArrow();
+	@Nullable
+	PsiElement getArrow();
 
-  boolean isVarArgs();
+	boolean isVarArgs();
 
-  boolean processClosureDeclarations(final @Nonnull PsiScopeProcessor placeProcessor,
-                                     final @Nonnull PsiScopeProcessor nonCodeProcessor,
-                                     final @Nonnull ResolveState _state,
-                                     final @Nullable PsiElement lastParent,
-                                     final @Nonnull PsiElement place);
+	boolean processClosureDeclarations(final @Nonnull PsiScopeProcessor placeProcessor,
+									   final @Nonnull PsiScopeProcessor nonCodeProcessor,
+									   final @Nonnull ResolveState _state,
+									   final @Nullable PsiElement lastParent,
+									   final @Nonnull PsiElement place);
+
+	@Nonnull
+	PsiType getOwnerType();
 }
