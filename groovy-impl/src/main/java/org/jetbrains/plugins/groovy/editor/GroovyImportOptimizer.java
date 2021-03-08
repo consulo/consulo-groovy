@@ -47,7 +47,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiJavaPackage;
 import com.intellij.psi.codeStyle.CodeStyleSettingsManager;
 import com.intellij.util.containers.ContainerUtil;
-import com.intellij.util.containers.HashSet;
+import java.util.HashSet;
 
 /**
  * @author ven

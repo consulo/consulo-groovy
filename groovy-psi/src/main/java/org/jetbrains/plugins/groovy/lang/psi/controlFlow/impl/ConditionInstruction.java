@@ -16,7 +16,7 @@
 package org.jetbrains.plugins.groovy.lang.psi.controlFlow.impl;
 
 import com.intellij.psi.PsiElement;
-import com.intellij.util.containers.HashSet;
+import java.util.HashSet;
 import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.controlFlow.Instruction;
 

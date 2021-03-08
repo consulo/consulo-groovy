@@ -33,7 +33,7 @@ import com.intellij.util.ConcurrencyUtil;
 import com.intellij.util.Function;
 import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.containers.ContainerUtil;
-import com.intellij.util.containers.HashMap;
+import java.util.HashMap;
 import com.intellij.util.messages.MessageBusConnection;
 import consulo.logging.Logger;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
