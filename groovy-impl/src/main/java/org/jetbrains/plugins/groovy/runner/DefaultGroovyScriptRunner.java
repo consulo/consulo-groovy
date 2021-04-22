@@ -16,21 +16,14 @@
 
 package org.jetbrains.plugins.groovy.runner;
 
-import java.nio.charset.Charset;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import org.jetbrains.plugins.groovy.util.GroovyUtils;
-import org.jetbrains.plugins.groovy.util.LibrariesUtil;
 import com.intellij.execution.CantRunException;
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.Executor;
 import com.intellij.execution.configurations.RunProfile;
 import com.intellij.execution.runners.ExecutionUtil;
 import com.intellij.openapi.module.Module;
+import com.intellij.openapi.options.ShowSettingsUtil;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.roots.ui.configuration.ClasspathEditor;
-import com.intellij.openapi.roots.ui.configuration.ModulesConfigurator;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.vfs.CharsetToolkit;
@@ -39,6 +32,12 @@ import com.intellij.openapi.vfs.encoding.EncodingManager;
 import com.intellij.openapi.vfs.encoding.EncodingProjectManager;
 import com.intellij.util.net.HttpConfigurable;
 import consulo.java.execution.configurations.OwnJavaParameters;
+import org.jetbrains.plugins.groovy.util.GroovyUtils;
+import org.jetbrains.plugins.groovy.util.LibrariesUtil;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.nio.charset.Charset;
 
 public class DefaultGroovyScriptRunner extends GroovyScriptRunner
 {
@@ -60,7 +59,7 @@ public class DefaultGroovyScriptRunner extends GroovyScriptRunner
 		if(LibrariesUtil.getGroovyHomePath(module) == null)
 		{
 			ExecutionUtil.handleExecutionError(project, executor.getToolWindowId(), profile, new ExecutionException("Groovy is not configured"));
-			ModulesConfigurator.showDialog(module.getProject(), module.getName(), ClasspathEditor.NAME);
+			ShowSettingsUtil.getInstance().showProjectStructureDialog(module.getProject(), projectStructureSelector -> projectStructureSelector.selectOrderEntry(module, null));
 			return false;
 		}
 

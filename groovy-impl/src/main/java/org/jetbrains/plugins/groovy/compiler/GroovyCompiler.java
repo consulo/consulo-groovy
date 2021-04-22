@@ -16,18 +16,6 @@
 
 package org.jetbrains.plugins.groovy.compiler;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.function.Consumer;
-
-import javax.annotation.Nonnull;
-
-import org.jetbrains.plugins.groovy.GroovyBundle;
-import org.jetbrains.plugins.groovy.GroovyFileType;
-import org.jetbrains.plugins.groovy.GroovyFileTypeLoader;
-import org.jetbrains.plugins.groovy.config.GroovyConfigUtils;
-import org.jetbrains.plugins.groovy.util.LibrariesUtil;
 import com.intellij.ide.highlighter.JavaClassFileType;
 import com.intellij.openapi.compiler.CompileContext;
 import com.intellij.openapi.compiler.CompileScope;
@@ -36,21 +24,30 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
+import com.intellij.openapi.options.ShowSettingsUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.roots.ProjectFileIndex;
 import com.intellij.openapi.roots.ProjectRootManager;
-import com.intellij.openapi.roots.ui.configuration.ClasspathEditor;
-import com.intellij.openapi.roots.ui.configuration.ModulesConfigurator;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.search.FilenameIndex;
 import com.intellij.psi.search.GlobalSearchScope;
-import consulo.awt.TargetAWT;
 import consulo.compiler.impl.resourceCompiler.ResourceCompilerConfiguration;
 import consulo.groovy.module.extension.GroovyModuleExtension;
 import consulo.java.module.extension.JavaModuleExtension;
 import icons.JetgroovyIcons;
+import org.jetbrains.plugins.groovy.GroovyBundle;
+import org.jetbrains.plugins.groovy.GroovyFileType;
+import org.jetbrains.plugins.groovy.GroovyFileTypeLoader;
+import org.jetbrains.plugins.groovy.config.GroovyConfigUtils;
+import org.jetbrains.plugins.groovy.util.LibrariesUtil;
+
+import javax.annotation.Nonnull;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.function.Consumer;
 
 /**
  * @author Dmitry.Krasilschikov
@@ -123,7 +120,7 @@ public class GroovyCompiler extends GroovyCompilerBase
 				if(!GroovyConfigUtils.getInstance().tryToSetUpGroovyFacetOnTheFly(module))
 				{
 					Messages.showErrorDialog(myProject, GroovyBundle.message("cannot.compile.groovy.files.no.facet", module.getName()), GroovyBundle.message("cannot.compile"));
-					ModulesConfigurator.showDialog(module.getProject(), module.getName(), ClasspathEditor.NAME);
+					ShowSettingsUtil.getInstance().showProjectStructureDialog(module.getProject(), projectStructureSelector -> projectStructureSelector.selectOrderEntry(module, null));
 					return false;
 				}
 			}
