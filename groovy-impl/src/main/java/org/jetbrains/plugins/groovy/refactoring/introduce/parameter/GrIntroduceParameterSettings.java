@@ -15,12 +15,13 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.introduce.parameter;
 
-import gnu.trove.TIntArrayList;
-import javax.annotation.Nullable;
+import consulo.util.collection.primitive.ints.IntList;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.refactoring.introduce.GrIntroduceSettings;
 import org.jetbrains.plugins.groovy.refactoring.introduce.StringPartInfo;
+
+import javax.annotation.Nullable;
 
 /**
  * @author Maxim.Medvedev
@@ -28,7 +29,7 @@ import org.jetbrains.plugins.groovy.refactoring.introduce.StringPartInfo;
 public interface GrIntroduceParameterSettings extends GrIntroduceSettings, IntroduceParameterInfo {
   boolean generateDelegate();
 
-  TIntArrayList parametersToRemove();
+  IntList parametersToRemove();
 
   /**
    * @see com.intellij.refactoring.IntroduceParameterRefactoring

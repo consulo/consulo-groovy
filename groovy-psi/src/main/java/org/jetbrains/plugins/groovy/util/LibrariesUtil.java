@@ -16,26 +16,8 @@
 
 package org.jetbrains.plugins.groovy.util;
 
-import gnu.trove.THashSet;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import org.jetbrains.plugins.groovy.config.GroovyConfigUtils;
 import com.intellij.openapi.module.Module;
-import com.intellij.openapi.roots.LibraryOrderEntry;
-import com.intellij.openapi.roots.ModifiableRootModel;
-import com.intellij.openapi.roots.ModuleOrderEntry;
-import com.intellij.openapi.roots.ModuleRootManager;
-import com.intellij.openapi.roots.ModuleSourceOrderEntry;
-import com.intellij.openapi.roots.OrderEntry;
-import com.intellij.openapi.roots.OrderEnumerator;
-import com.intellij.openapi.roots.OrderRootType;
+import com.intellij.openapi.roots.*;
 import com.intellij.openapi.roots.libraries.Library;
 import com.intellij.openapi.roots.libraries.LibraryTable;
 import com.intellij.openapi.roots.libraries.LibraryTablesRegistrar;
@@ -50,6 +32,15 @@ import com.intellij.util.containers.ContainerUtil;
 import consulo.application.AccessRule;
 import consulo.vfs.ArchiveFileSystem;
 import consulo.vfs.util.ArchiveVfsUtil;
+import org.jetbrains.plugins.groovy.config.GroovyConfigUtils;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author ilyas
@@ -70,7 +61,7 @@ public class LibrariesUtil
 		}
 		final ArrayList<Library> libraries = new ArrayList<Library>();
 
-		AccessRule.read(() -> populateOrderEntries(module, condition, libraries, false, new THashSet<>()));
+		AccessRule.read(() -> populateOrderEntries(module, condition, libraries, false, new HashSet<>()));
 
 		return libraries.toArray(new Library[libraries.size()]);
 	}

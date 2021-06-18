@@ -18,8 +18,8 @@ package org.jetbrains.plugins.groovy.intentions.utils;
 
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiType;
-import gnu.trove.THashMap;
-import gnu.trove.TObjectHashingStrategy;
+import consulo.util.collection.HashingStrategy;
+import consulo.util.collection.Maps;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeElement;
 
@@ -62,10 +62,10 @@ public class DuplicatesUtil {
     }
   }
 
-  public static <D extends PsiElement> Map<D, List<D>> factorDuplicates(D[] elements, TObjectHashingStrategy<D> strategy) {
+  public static <D extends PsiElement> Map<D, List<D>> factorDuplicates(D[] elements, HashingStrategy<D> strategy) {
     if (elements == null || elements.length == 0) return Collections.emptyMap();
 
-    THashMap<D, List<D>> map = new THashMap<D, List<D>>(strategy);
+    Map<D, List<D>> map = Maps.newHashMap(strategy);
 
     for (D element : elements) {
       List<D> list = map.get(element);

@@ -19,9 +19,8 @@ import com.intellij.psi.PsiAnonymousClass;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiParameter;
 import com.intellij.psi.PsiVariable;
-import java.util.HashMap;
-import java.util.HashSet;
-import gnu.trove.TObjectIntHashMap;
+import consulo.util.collection.primitive.objects.ObjectIntMap;
+import consulo.util.collection.primitive.objects.ObjectMaps;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyRecursiveElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
@@ -31,6 +30,8 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrRefere
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -94,7 +95,7 @@ class LocalVarAnalyzer extends GroovyRecursiveElementVisitor {
 
   private final Set<PsiVariable> touched = new HashSet<PsiVariable>();
   private final Set<PsiVariable> rewritten = new HashSet<PsiVariable>();
-  private final TObjectIntHashMap<PsiVariable> allVars = new TObjectIntHashMap<PsiVariable>();
+  private final ObjectIntMap<PsiVariable> allVars = ObjectMaps.newObjectIntHashMap();
 
   private int grade = 0;
 
@@ -121,21 +122,21 @@ class LocalVarAnalyzer extends GroovyRecursiveElementVisitor {
   public void visitVariable(GrVariable variable) {
     super.visitVariable(variable);
     if (variable instanceof GrField) return;
-    allVars.put(variable, grade);
+    allVars.putInt(variable, grade);
   }
 
   @Override
   public void visitReferenceExpression(GrReferenceExpression ref) {
     super.visitReferenceExpression(ref);
     PsiElement resolved = ref.resolve();
-    if (!allVars.contains(resolved)) return;
+    if (!(resolved instanceof PsiVariable) || !allVars.containsKey((PsiVariable) resolved)) return;
     GrVariable var = (GrVariable)resolved;
 
     if (PsiUtil.isAccessedForWriting(ref)) {
       rewritten.add(var);
     }
 
-    if (allVars.get(var) < grade) {
+    if (allVars.getInt(var) < grade) {
       touched.add((PsiVariable)resolved);
     }
   }

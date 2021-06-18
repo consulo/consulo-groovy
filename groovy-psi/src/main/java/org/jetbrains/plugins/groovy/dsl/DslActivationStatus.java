@@ -15,28 +15,20 @@
  */
 package org.jetbrains.plugins.groovy.dsl;
 
-import gnu.trove.THashMap;
-import gnu.trove.TObjectObjectProcedure;
-
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-
-import javax.annotation.Nonnull;
-
-import com.intellij.openapi.components.PersistentStateComponent;
-import com.intellij.openapi.components.RoamingType;
-import com.intellij.openapi.components.ServiceManager;
-import com.intellij.openapi.components.State;
-import com.intellij.openapi.components.Storage;
-import com.intellij.openapi.components.StoragePathMacros;
+import com.intellij.openapi.components.*;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.VirtualFileManager;
 import com.intellij.util.SmartList;
 import com.intellij.util.containers.ContainerUtil;
 import com.intellij.util.xmlb.annotations.AbstractCollection;
 import com.intellij.util.xmlb.annotations.Attribute;
+import jakarta.inject.Singleton;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.*;
+
+@Singleton
 @State(
 		name = "DslActivationStatus",
 		storages = {
@@ -142,9 +134,9 @@ public class DslActivationStatus implements PersistentStateComponent<DslActivati
 		}
 	}
 
-	private final THashMap<VirtualFile, Entry> myStatus = new THashMap<VirtualFile, Entry>();
+	private final Map<VirtualFile, Entry> myStatus = new HashMap<VirtualFile, Entry>();
 
-	@javax.annotation.Nullable
+	@Nullable
 	public Entry getGdslFileInfo(@Nonnull VirtualFile file)
 	{
 		synchronized(myStatus)
@@ -169,21 +161,14 @@ public class DslActivationStatus implements PersistentStateComponent<DslActivati
 		return entry;
 	}
 
-	@javax.annotation.Nullable
+	@Nullable
 	@Override
 	public State getState()
 	{
 		synchronized(myStatus)
 		{
 			// remove default entries
-			myStatus.retainEntries(new TObjectObjectProcedure<VirtualFile, Entry>()
-			{
-				@Override
-				public boolean execute(VirtualFile file, Entry entry)
-				{
-					return !(entry.status == Status.ACTIVE && entry.error == null);
-				}
-			});
+			myStatus.entrySet().removeIf(entry -> entry.getValue().status == Status.ACTIVE && entry.getValue().error == null);
 
 			if(myStatus.isEmpty())
 			{

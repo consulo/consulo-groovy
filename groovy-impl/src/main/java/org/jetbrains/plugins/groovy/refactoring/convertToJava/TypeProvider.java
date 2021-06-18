@@ -19,10 +19,8 @@ import com.intellij.psi.*;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.searches.MethodReferencesSearch;
 import com.intellij.util.Processor;
-import java.util.HashMap;
-import gnu.trove.TIntArrayList;
-import gnu.trove.TIntProcedure;
-import javax.annotation.Nonnull;
+import consulo.util.collection.primitive.ints.IntList;
+import consulo.util.collection.primitive.ints.IntLists;
 import org.jetbrains.plugins.groovy.lang.psi.api.signatures.GrClosureSignature;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrCall;
@@ -36,7 +34,10 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.signatures.GrClosureSignatureU
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 
+import javax.annotation.Nonnull;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.function.IntConsumer;
 
 /**
  * @author Medvedev Max
@@ -112,7 +113,7 @@ public class TypeProvider {
 
     final GrParameter[] parameters = method.getParameters();
 
-    final TIntArrayList paramInds = new TIntArrayList(parameters.length);
+    final IntList paramInds = IntLists.newArrayList(parameters.length);
     final PsiType[] types = new PsiType[parameters.length];
     for (int i = 0; i < parameters.length; i++) {
       if (parameters[i].getTypeElementGroovy() == null) {
@@ -136,12 +137,11 @@ public class TypeProvider {
             final GrClosureSignatureUtil.ArgInfo<PsiElement>[] argInfos = GrClosureSignatureUtil.mapParametersToArguments(signature, call);
 
             if (argInfos == null) return true;
-            paramInds.forEach(new TIntProcedure() {
+            paramInds.forEach(new IntConsumer() {
               @Override
-              public boolean execute(int i) {
+              public void accept(int i) {
                 PsiType type = GrClosureSignatureUtil.getTypeByArg(argInfos[i], manager, resolveScope);
                 types[i] = TypesUtil.getLeastUpperBoundNullable(type, types[i], manager);
-                return true;
               }
             });
           }
@@ -149,13 +149,12 @@ public class TypeProvider {
         }
       });
     }
-    paramInds.forEach(new TIntProcedure() {
+    paramInds.forEach(new IntConsumer() {
       @Override
-      public boolean execute(int i) {
+      public void accept(int i) {
         if (types[i] == null || types[i] == PsiType.NULL) {
           types[i] = parameters[i].getType();
         }
-        return true;
       }
     });
     inferredTypes.put(method, types);

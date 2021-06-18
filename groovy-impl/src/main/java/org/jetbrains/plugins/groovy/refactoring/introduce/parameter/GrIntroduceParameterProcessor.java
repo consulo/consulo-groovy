@@ -15,13 +15,30 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.introduce.parameter;
 
-import gnu.trove.TIntArrayList;
-
-import java.util.ArrayList;
-import java.util.Collection;
-
-import javax.annotation.Nonnull;
-
+import com.intellij.lang.findUsages.DescriptiveNameUtil;
+import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.editor.Editor;
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.Ref;
+import com.intellij.psi.*;
+import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.psi.search.searches.MethodReferencesSearch;
+import com.intellij.psi.search.searches.OverridingMethodsSearch;
+import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.psi.util.PsiUtilBase;
+import com.intellij.refactoring.BaseRefactoringProcessor;
+import com.intellij.refactoring.IntroduceParameterRefactoring;
+import com.intellij.refactoring.RefactoringBundle;
+import com.intellij.refactoring.introduceParameter.*;
+import com.intellij.refactoring.ui.UsageViewDescriptorAdapter;
+import com.intellij.refactoring.util.CommonRefactoringUtil;
+import com.intellij.refactoring.util.usageInfo.DefaultConstructorImplicitUsageInfo;
+import com.intellij.refactoring.util.usageInfo.NoConstructorClassUsageInfo;
+import com.intellij.usageView.UsageInfo;
+import com.intellij.usageView.UsageViewDescriptor;
+import com.intellij.usageView.UsageViewUtil;
+import com.intellij.util.containers.MultiMap;
+import consulo.util.collection.primitive.ints.IntList;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrOpenBlock;
@@ -31,42 +48,10 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMe
 import org.jetbrains.plugins.groovy.refactoring.introduce.GrIntroduceHandlerBase;
 import org.jetbrains.plugins.groovy.refactoring.introduce.StringPartInfo;
 import org.jetbrains.plugins.groovy.refactoring.util.AnySupers;
-import com.intellij.lang.findUsages.DescriptiveNameUtil;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.Ref;
-import com.intellij.psi.PsiAnonymousClass;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiKeyword;
-import com.intellij.psi.PsiManager;
-import com.intellij.psi.PsiMethod;
-import com.intellij.psi.PsiModifier;
-import com.intellij.psi.PsiReference;
-import com.intellij.psi.PsiType;
-import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.psi.search.searches.MethodReferencesSearch;
-import com.intellij.psi.search.searches.OverridingMethodsSearch;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.psi.util.PsiUtilBase;
-import com.intellij.refactoring.BaseRefactoringProcessor;
-import com.intellij.refactoring.IntroduceParameterRefactoring;
-import com.intellij.refactoring.RefactoringBundle;
-import com.intellij.refactoring.introduceParameter.ChangedMethodCallInfo;
-import com.intellij.refactoring.introduceParameter.ExternalUsageInfo;
-import com.intellij.refactoring.introduceParameter.InternalUsageInfo;
-import com.intellij.refactoring.introduceParameter.IntroduceParameterData;
-import com.intellij.refactoring.introduceParameter.IntroduceParameterMethodUsagesProcessor;
-import com.intellij.refactoring.introduceParameter.IntroduceParameterUtil;
-import com.intellij.refactoring.ui.UsageViewDescriptorAdapter;
-import com.intellij.refactoring.util.CommonRefactoringUtil;
-import com.intellij.refactoring.util.usageInfo.DefaultConstructorImplicitUsageInfo;
-import com.intellij.refactoring.util.usageInfo.NoConstructorClassUsageInfo;
-import com.intellij.usageView.UsageInfo;
-import com.intellij.usageView.UsageViewDescriptor;
-import com.intellij.usageView.UsageViewUtil;
-import com.intellij.util.containers.MultiMap;
+
+import javax.annotation.Nonnull;
+import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  * @author Maxim.Medvedev
@@ -453,7 +438,7 @@ public class GrIntroduceParameterProcessor extends BaseRefactoringProcessor impl
 
 	@Nonnull
 	@Override
-	public TIntArrayList getParametersToRemove()
+	public IntList getParametersToRemove()
 	{
 		return mySettings.parametersToRemove();
 	}

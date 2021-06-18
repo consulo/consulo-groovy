@@ -15,19 +15,15 @@
  */
 package org.jetbrains.plugins.groovy.editor;
 
-import gnu.trove.TObjectIntHashMap;
-import gnu.trove.TObjectIntProcedure;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.annotation.Nonnull;
-
+import com.intellij.lang.ImportOptimizer;
+import com.intellij.openapi.editor.Document;
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.psi.*;
+import com.intellij.psi.codeStyle.CodeStyleSettingsManager;
+import com.intellij.util.containers.ContainerUtil;
+import consulo.util.collection.primitive.objects.ObjectIntMap;
+import consulo.util.collection.primitive.objects.ObjectMaps;
 import org.jetbrains.plugins.groovy.codeStyle.GroovyCodeStyleSettings;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
@@ -35,19 +31,10 @@ import org.jetbrains.plugins.groovy.lang.psi.api.toplevel.imports.GrImportStatem
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyImportUtil;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
-import com.intellij.lang.ImportOptimizer;
-import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.CommonClassNames;
-import com.intellij.psi.JavaPsiFacade;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiDocumentManager;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiJavaPackage;
-import com.intellij.psi.codeStyle.CodeStyleSettingsManager;
-import com.intellij.util.containers.ContainerUtil;
-import java.util.HashSet;
+
+import javax.annotation.Nonnull;
+import java.util.*;
+import java.util.function.ObjIntConsumer;
 
 /**
  * @author ven
@@ -209,8 +196,8 @@ public class GroovyImportOptimizer implements ImportOptimizer
 					(GroovyCodeStyleSettings.class);
 			final GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(project);
 
-			TObjectIntHashMap<String> packageCountMap = new TObjectIntHashMap<String>();
-			TObjectIntHashMap<String> classCountMap = new TObjectIntHashMap<String>();
+			ObjectIntMap<String> packageCountMap = ObjectMaps.newObjectIntHashMap();
+			ObjectIntMap<String> classCountMap = ObjectMaps.newObjectIntHashMap();
 
 			//init packageCountMap
 			for(String importedClass : importedClasses)
@@ -227,9 +214,12 @@ public class GroovyImportOptimizer implements ImportOptimizer
 
 				if(!packageCountMap.containsKey(packageName))
 				{
-					packageCountMap.put(packageName, 0);
+					packageCountMap.putInt(packageName, 1);
 				}
-				packageCountMap.increment(packageName);
+				else
+				{
+					packageCountMap.putInt(packageName, packageCountMap.getInt(packageName) + 1);
+				}
 			}
 
 			//init classCountMap
@@ -244,18 +234,21 @@ public class GroovyImportOptimizer implements ImportOptimizer
 
 				if(!classCountMap.containsKey(className))
 				{
-					classCountMap.put(className, 0);
+					classCountMap.putInt(className, 1);
 				}
-				classCountMap.increment(className);
+				else
+				{
+					classCountMap.putInt(className, classCountMap.getInt(className) + 1);
+				}
 			}
 
 			final Set<String> onDemandImportedSimpleClassNames = new HashSet<String>();
 			final List<GrImportStatement> result = new ArrayList<GrImportStatement>();
 
-			packageCountMap.forEachEntry(new TObjectIntProcedure<String>()
+			packageCountMap.forEach(new ObjIntConsumer<String>()
 			{
 				@Override
-				public boolean execute(String s, int i)
+				public void accept(String s, int i)
 				{
 					if(i >= settings.CLASS_COUNT_TO_USE_IMPORT_ON_DEMAND || settings.PACKAGES_TO_USE_IMPORT_ON_DEMAND
 							.contains(s))
@@ -276,14 +269,13 @@ public class GroovyImportOptimizer implements ImportOptimizer
 							}
 						}
 					}
-					return true;
 				}
 			});
 
-			classCountMap.forEachEntry(new TObjectIntProcedure<String>()
+			classCountMap.forEach(new ObjIntConsumer<String>()
 			{
 				@Override
-				public boolean execute(String s, int i)
+				public void accept(String s, int i)
 				{
 					if(i >= settings.NAMES_COUNT_TO_USE_IMPORT_ON_DEMAND)
 					{
@@ -295,7 +287,6 @@ public class GroovyImportOptimizer implements ImportOptimizer
 						}
 						result.add(imp);
 					}
-					return true;
 				}
 			});
 
@@ -305,7 +296,7 @@ public class GroovyImportOptimizer implements ImportOptimizer
 				final String parentName = StringUtil.getPackageName(importedClass);
 				if(!annotations.containsKey(importedClass) && !aliased.containsKey(importedClass))
 				{
-					if(packageCountMap.get(parentName) >= settings.CLASS_COUNT_TO_USE_IMPORT_ON_DEMAND || settings
+					if(packageCountMap.getInt(parentName) >= settings.CLASS_COUNT_TO_USE_IMPORT_ON_DEMAND || settings
 							.PACKAGES_TO_USE_IMPORT_ON_DEMAND.contains(parentName))
 					{
 						continue;
@@ -331,7 +322,7 @@ public class GroovyImportOptimizer implements ImportOptimizer
 				final String className = StringUtil.getPackageName(importedMember);
 				if(!annotations.containsKey(importedMember) && !aliased.containsKey(importedMember))
 				{
-					if(classCountMap.get(className) >= settings.NAMES_COUNT_TO_USE_IMPORT_ON_DEMAND)
+					if(classCountMap.getInt(className) >= settings.NAMES_COUNT_TO_USE_IMPORT_ON_DEMAND)
 					{
 						continue;
 					}

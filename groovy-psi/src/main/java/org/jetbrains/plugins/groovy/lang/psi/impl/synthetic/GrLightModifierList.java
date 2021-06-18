@@ -21,7 +21,6 @@ import com.intellij.psi.impl.light.LightElement;
 import com.intellij.util.IncorrectOperationException;
 import org.intellij.lang.annotations.MagicConstant;
 import org.jetbrains.annotations.NonNls;
-import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.GrModifier;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.GrModifierFlags;
@@ -29,6 +28,7 @@ import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.GrModifierL
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotation;
 import org.jetbrains.plugins.groovy.lang.psi.impl.auxiliary.modifiers.GrModifierListImpl;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,7 +50,7 @@ public class GrLightModifierList extends LightElement implements GrModifierList 
   }
 
   public void addModifier(String modifier) {
-    int code = GrModifierListImpl.NAME_TO_MODIFIER_FLAG_MAP.get(modifier);
+    int code = GrModifierListImpl.NAME_TO_MODIFIER_FLAG_MAP.getInt(modifier);
     assert code != 0;
     myModifiers |= code;
   }
@@ -86,7 +86,7 @@ public class GrLightModifierList extends LightElement implements GrModifierList 
 
   @Override
   public boolean hasExplicitModifier(@Nonnull String name) {
-    return (myModifiers & GrModifierListImpl.NAME_TO_MODIFIER_FLAG_MAP.get(name)) != 0;
+    return (myModifiers & GrModifierListImpl.NAME_TO_MODIFIER_FLAG_MAP.getInt(name)) != 0;
   }
 
   @Override
@@ -195,10 +195,10 @@ public class GrLightModifierList extends LightElement implements GrModifierList 
         mod = ((GrLightModifierList)modifierList).getModifiersAsInt();
       }
       else {
-        for (Object o : ModifierFlags.NAME_TO_MODIFIER_FLAG_MAP.keys()) {
+        for (Object o : ModifierFlags.NAME_TO_MODIFIER_FLAG_MAP.keySet()) {
           String modifier = (String)o;
           if (modifierList.hasExplicitModifier(modifier)) {
-            mod |= GrModifierListImpl.NAME_TO_MODIFIER_FLAG_MAP.get(modifier);
+            mod |= GrModifierListImpl.NAME_TO_MODIFIER_FLAG_MAP.getInt(modifier);
           }
         }
       }

@@ -23,14 +23,12 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiMethod;
-import gnu.trove.THashSet;
-import javax.annotation.Nonnull;
-
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
 import org.jetbrains.plugins.groovy.lang.psi.api.toplevel.packaging.GrPackageDefinition;
 
+import javax.annotation.Nonnull;
 import java.util.*;
 
 /**
@@ -63,7 +61,7 @@ public class GroovyToJavaGenerator {
   }
 
   public Map<String, CharSequence> generateStubs(GroovyFile file) {
-    Set<String> classNames = new THashSet<String>();
+    Set<String> classNames = new HashSet<String>();
     for (final GrTypeDefinition typeDefinition : file.getTypeDefinitions()) {
       classNames.add(typeDefinition.getName());
     }

@@ -28,9 +28,10 @@ import com.intellij.psi.util.TypeConversionUtil;
 import com.intellij.util.Function;
 import com.intellij.util.containers.ComparatorUtil;
 import com.intellij.util.containers.ContainerUtil;
-import gnu.trove.THashMap;
-import gnu.trove.TIntObjectHashMap;
-import gnu.trove.TObjectIntHashMap;
+import consulo.util.collection.primitive.ints.IntMaps;
+import consulo.util.collection.primitive.ints.IntObjectMap;
+import consulo.util.collection.primitive.objects.ObjectIntMap;
+import consulo.util.collection.primitive.objects.ObjectMaps;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
@@ -163,18 +164,18 @@ public class TypesUtil {
     ourUnaryOperationsToOperatorNames.put(GroovyTokenTypes.mBNOT, "bitwiseNegate");
   }
 
-  private static final TObjectIntHashMap<String> TYPE_TO_RANK = new TObjectIntHashMap<String>();
+  private static final ObjectIntMap<String> TYPE_TO_RANK = ObjectMaps.newObjectIntHashMap();
 
   static {
-    TYPE_TO_RANK.put(CommonClassNames.JAVA_LANG_BYTE, 1);
-    TYPE_TO_RANK.put(CommonClassNames.JAVA_LANG_SHORT, 2);
-    TYPE_TO_RANK.put(CommonClassNames.JAVA_LANG_INTEGER, 3);
-    TYPE_TO_RANK.put(CommonClassNames.JAVA_LANG_LONG, 4);
-    TYPE_TO_RANK.put(GroovyCommonClassNames.JAVA_MATH_BIG_INTEGER, 5);
-    TYPE_TO_RANK.put(GroovyCommonClassNames.JAVA_MATH_BIG_DECIMAL, 6);
-    TYPE_TO_RANK.put(CommonClassNames.JAVA_LANG_FLOAT, 7);
-    TYPE_TO_RANK.put(CommonClassNames.JAVA_LANG_DOUBLE, 8);
-    TYPE_TO_RANK.put(CommonClassNames.JAVA_LANG_NUMBER, 9);
+    TYPE_TO_RANK.putInt(CommonClassNames.JAVA_LANG_BYTE, 1);
+    TYPE_TO_RANK.putInt(CommonClassNames.JAVA_LANG_SHORT, 2);
+    TYPE_TO_RANK.putInt(CommonClassNames.JAVA_LANG_INTEGER, 3);
+    TYPE_TO_RANK.putInt(CommonClassNames.JAVA_LANG_LONG, 4);
+    TYPE_TO_RANK.putInt(GroovyCommonClassNames.JAVA_MATH_BIG_INTEGER, 5);
+    TYPE_TO_RANK.putInt(GroovyCommonClassNames.JAVA_MATH_BIG_DECIMAL, 6);
+    TYPE_TO_RANK.putInt(CommonClassNames.JAVA_LANG_FLOAT, 7);
+    TYPE_TO_RANK.putInt(CommonClassNames.JAVA_LANG_DOUBLE, 8);
+    TYPE_TO_RANK.putInt(CommonClassNames.JAVA_LANG_NUMBER, 9);
   }
 
   static {
@@ -190,7 +191,7 @@ public class TypesUtil {
   }
 
 
-  private static final TIntObjectHashMap<String> RANK_TO_TYPE = new TIntObjectHashMap<String>();
+  private static final IntObjectMap<String> RANK_TO_TYPE = IntMaps.newIntObjectHashMap();
 
   static {
     RANK_TO_TYPE.put(1, CommonClassNames.JAVA_LANG_INTEGER);
@@ -416,7 +417,7 @@ public class TypesUtil {
 
   public static boolean isNumericType(@Nullable PsiType type) {
     if (type instanceof PsiClassType) {
-      return TYPE_TO_RANK.contains(getQualifiedName(type));
+      return TYPE_TO_RANK.containsKey(getQualifiedName(type));
     }
 
     return type instanceof PsiPrimitiveType && TypeConversionUtil.isNumericType(type);
@@ -627,7 +628,7 @@ public class TypesUtil {
 
   public static PsiSubstitutor composeSubstitutors(PsiSubstitutor s1, PsiSubstitutor s2) {
     final Map<PsiTypeParameter, PsiType> map = s1.getSubstitutionMap();
-    Map<PsiTypeParameter, PsiType> result = new THashMap<PsiTypeParameter, PsiType>(map.size());
+    Map<PsiTypeParameter, PsiType> result = new HashMap<PsiTypeParameter, PsiType>(map.size());
     for (PsiTypeParameter parameter : map.keySet()) {
       result.put(parameter, s2.substitute(map.get(parameter)));
     }

@@ -16,17 +16,6 @@
 
 package org.jetbrains.plugins.groovy.griffon;
 
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.Nonnull;
-
-import org.jetbrains.plugins.groovy.mvc.projectView.AbstractMvcPsiNodeDescriptor;
-import org.jetbrains.plugins.groovy.mvc.projectView.FileNode;
-import org.jetbrains.plugins.groovy.mvc.projectView.MvcProjectViewState;
-import org.jetbrains.plugins.groovy.mvc.projectView.MvcToolWindowDescriptor;
-import org.jetbrains.plugins.groovy.mvc.projectView.TestsTopLevelDirectoryNode;
-import org.jetbrains.plugins.groovy.mvc.projectView.TopLevelDirectoryNode;
 import com.intellij.icons.AllIcons;
 import com.intellij.ide.projectView.ViewSettings;
 import com.intellij.ide.util.treeView.AbstractTreeNode;
@@ -38,9 +27,14 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
-import com.intellij.util.containers.hash.LinkedHashMap;
 import consulo.ui.image.Image;
 import icons.JetgroovyIcons;
+import org.jetbrains.plugins.groovy.mvc.projectView.*;
+
+import javax.annotation.Nonnull;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author peter

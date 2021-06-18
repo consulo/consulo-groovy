@@ -37,8 +37,8 @@ import com.intellij.util.Consumer;
 import com.intellij.util.ProcessingContext;
 import com.intellij.util.SmartList;
 import consulo.codeInsight.completion.CompletionProvider;
-import gnu.trove.THashSet;
-import gnu.trove.TObjectHashingStrategy;
+import consulo.util.collection.HashingStrategy;
+import consulo.util.collection.Sets;
 import org.jetbrains.plugins.groovy.config.GroovyConfigUtils;
 import org.jetbrains.plugins.groovy.lang.completion.handlers.AfterNewClassInsertHandler;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
@@ -78,10 +78,10 @@ public class GroovySmartCompletionContributor extends CompletionContributor
 	private static final ElementPattern<PsiElement> IN_ANNOTATION = PlatformPatterns.psiElement().withParent(PlatformPatterns.psiElement(GrReferenceExpression.class).withParent
 			(GrAnnotationNameValuePair.class));
 
-	private static final TObjectHashingStrategy<TypeConstraint> EXPECTED_TYPE_INFO_STRATEGY = new TObjectHashingStrategy<TypeConstraint>()
+	private static final HashingStrategy<TypeConstraint> EXPECTED_TYPE_INFO_STRATEGY = new HashingStrategy<TypeConstraint>()
 	{
 		@Override
-		public int computeHashCode(final TypeConstraint object)
+		public int hashCode(final TypeConstraint object)
 		{
 			return object.getType().hashCode();
 		}
@@ -542,7 +542,7 @@ public class GroovySmartCompletionContributor extends CompletionContributor
 
 	private static Set<TypeConstraint> getExpectedTypeInfos(final CompletionParameters params)
 	{
-		return new THashSet<TypeConstraint>(Arrays.asList(getExpectedTypes(params)), EXPECTED_TYPE_INFO_STRATEGY);
+		return Sets.newHashSet(Arrays.asList(getExpectedTypes(params)), EXPECTED_TYPE_INFO_STRATEGY);
 	}
 
 	@Nonnull

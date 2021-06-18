@@ -27,7 +27,8 @@ import com.intellij.util.ArrayFactory;
 import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.containers.ContainerUtil;
 import consulo.annotation.access.RequiredReadAction;
-import gnu.trove.TObjectIntHashMap;
+import consulo.util.collection.primitive.objects.ObjectIntMap;
+import consulo.util.collection.primitive.objects.ObjectMaps;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.plugins.groovy.config.GroovyConfigUtils;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
@@ -64,7 +65,7 @@ import java.util.Map;
 @SuppressWarnings({"StaticFieldReferencedViaSubclass"})
 public class GrModifierListImpl extends GrStubElementBase<GrModifierListStub> implements GrModifierList, StubBasedPsiElement<GrModifierListStub>
 {
-	public static final TObjectIntHashMap<String> NAME_TO_MODIFIER_FLAG_MAP = new TObjectIntHashMap<String>();
+	public static final ObjectIntMap<String> NAME_TO_MODIFIER_FLAG_MAP = ObjectMaps.newObjectIntHashMap();
 	public static final Map<String, IElementType> NAME_TO_MODIFIER_ELEMENT_TYPE = ContainerUtil.newHashMap();
 	private static final ArrayFactory<GrAnnotation> ARRAY_FACTORY = new ArrayFactory<GrAnnotation>()
 	{
@@ -76,38 +77,38 @@ public class GrModifierListImpl extends GrStubElementBase<GrModifierListStub> im
 		}
 	};
 
-	private static final TObjectIntHashMap<String> PRIORITY = new TObjectIntHashMap<String>(16);
+	private static final ObjectIntMap<String> PRIORITY = ObjectMaps.newObjectIntHashMap(16);
 
 	static
 	{
-		NAME_TO_MODIFIER_FLAG_MAP.put(GrModifier.PUBLIC, GrModifierFlags.PUBLIC_MASK);
-		NAME_TO_MODIFIER_FLAG_MAP.put(GrModifier.PROTECTED, GrModifierFlags.PROTECTED_MASK);
-		NAME_TO_MODIFIER_FLAG_MAP.put(GrModifier.PRIVATE, GrModifierFlags.PRIVATE_MASK);
-		NAME_TO_MODIFIER_FLAG_MAP.put(GrModifier.PACKAGE_LOCAL, GrModifierFlags.PACKAGE_LOCAL_MASK);
-		NAME_TO_MODIFIER_FLAG_MAP.put(GrModifier.STATIC, GrModifierFlags.STATIC_MASK);
-		NAME_TO_MODIFIER_FLAG_MAP.put(GrModifier.ABSTRACT, GrModifierFlags.ABSTRACT_MASK);
-		NAME_TO_MODIFIER_FLAG_MAP.put(GrModifier.FINAL, GrModifierFlags.FINAL_MASK);
-		NAME_TO_MODIFIER_FLAG_MAP.put(GrModifier.NATIVE, GrModifierFlags.NATIVE_MASK);
-		NAME_TO_MODIFIER_FLAG_MAP.put(GrModifier.SYNCHRONIZED, GrModifierFlags.SYNCHRONIZED_MASK);
-		NAME_TO_MODIFIER_FLAG_MAP.put(GrModifier.STRICTFP, GrModifierFlags.STRICTFP_MASK);
-		NAME_TO_MODIFIER_FLAG_MAP.put(GrModifier.TRANSIENT, GrModifierFlags.TRANSIENT_MASK);
-		NAME_TO_MODIFIER_FLAG_MAP.put(GrModifier.VOLATILE, GrModifierFlags.VOLATILE_MASK);
-		NAME_TO_MODIFIER_FLAG_MAP.put(GrModifier.DEF, GrModifierFlags.DEF_MASK);
+		NAME_TO_MODIFIER_FLAG_MAP.putInt(GrModifier.PUBLIC, GrModifierFlags.PUBLIC_MASK);
+		NAME_TO_MODIFIER_FLAG_MAP.putInt(GrModifier.PROTECTED, GrModifierFlags.PROTECTED_MASK);
+		NAME_TO_MODIFIER_FLAG_MAP.putInt(GrModifier.PRIVATE, GrModifierFlags.PRIVATE_MASK);
+		NAME_TO_MODIFIER_FLAG_MAP.putInt(GrModifier.PACKAGE_LOCAL, GrModifierFlags.PACKAGE_LOCAL_MASK);
+		NAME_TO_MODIFIER_FLAG_MAP.putInt(GrModifier.STATIC, GrModifierFlags.STATIC_MASK);
+		NAME_TO_MODIFIER_FLAG_MAP.putInt(GrModifier.ABSTRACT, GrModifierFlags.ABSTRACT_MASK);
+		NAME_TO_MODIFIER_FLAG_MAP.putInt(GrModifier.FINAL, GrModifierFlags.FINAL_MASK);
+		NAME_TO_MODIFIER_FLAG_MAP.putInt(GrModifier.NATIVE, GrModifierFlags.NATIVE_MASK);
+		NAME_TO_MODIFIER_FLAG_MAP.putInt(GrModifier.SYNCHRONIZED, GrModifierFlags.SYNCHRONIZED_MASK);
+		NAME_TO_MODIFIER_FLAG_MAP.putInt(GrModifier.STRICTFP, GrModifierFlags.STRICTFP_MASK);
+		NAME_TO_MODIFIER_FLAG_MAP.putInt(GrModifier.TRANSIENT, GrModifierFlags.TRANSIENT_MASK);
+		NAME_TO_MODIFIER_FLAG_MAP.putInt(GrModifier.VOLATILE, GrModifierFlags.VOLATILE_MASK);
+		NAME_TO_MODIFIER_FLAG_MAP.putInt(GrModifier.DEF, GrModifierFlags.DEF_MASK);
 
 
-		PRIORITY.put(GrModifier.PUBLIC, 0);
-		PRIORITY.put(GrModifier.PROTECTED, 0);
-		PRIORITY.put(GrModifier.PRIVATE, 0);
-		PRIORITY.put(GrModifier.PACKAGE_LOCAL, 0);
-		PRIORITY.put(GrModifier.STATIC, 1);
-		PRIORITY.put(GrModifier.ABSTRACT, 1);
-		PRIORITY.put(GrModifier.FINAL, 2);
-		PRIORITY.put(GrModifier.NATIVE, 3);
-		PRIORITY.put(GrModifier.SYNCHRONIZED, 3);
-		PRIORITY.put(GrModifier.STRICTFP, 3);
-		PRIORITY.put(GrModifier.TRANSIENT, 3);
-		PRIORITY.put(GrModifier.VOLATILE, 3);
-		PRIORITY.put(GrModifier.DEF, 4);
+		PRIORITY.putInt(GrModifier.PUBLIC, 0);
+		PRIORITY.putInt(GrModifier.PROTECTED, 0);
+		PRIORITY.putInt(GrModifier.PRIVATE, 0);
+		PRIORITY.putInt(GrModifier.PACKAGE_LOCAL, 0);
+		PRIORITY.putInt(GrModifier.STATIC, 1);
+		PRIORITY.putInt(GrModifier.ABSTRACT, 1);
+		PRIORITY.putInt(GrModifier.FINAL, 2);
+		PRIORITY.putInt(GrModifier.NATIVE, 3);
+		PRIORITY.putInt(GrModifier.SYNCHRONIZED, 3);
+		PRIORITY.putInt(GrModifier.STRICTFP, 3);
+		PRIORITY.putInt(GrModifier.TRANSIENT, 3);
+		PRIORITY.putInt(GrModifier.VOLATILE, 3);
+		PRIORITY.putInt(GrModifier.DEF, 4);
 
 		NAME_TO_MODIFIER_ELEMENT_TYPE.put(GrModifier.PUBLIC, GroovyTokenTypes.kPUBLIC);
 		NAME_TO_MODIFIER_ELEMENT_TYPE.put(GrModifier.ABSTRACT, GroovyTokenTypes.kABSTRACT);
@@ -352,7 +353,7 @@ public class GrModifierListImpl extends GrStubElementBase<GrModifierListStub> im
 
 	public static boolean hasMaskExplicitModifier(String name, int mask)
 	{
-		final int flag = NAME_TO_MODIFIER_FLAG_MAP.get(name);
+		final int flag = NAME_TO_MODIFIER_FLAG_MAP.getInt(name);
 		return (mask & flag) != 0;
 	}
 
@@ -454,14 +455,15 @@ public class GrModifierListImpl extends GrStubElementBase<GrModifierListStub> im
 	}
 
 	@Nullable
+	@RequiredReadAction
 	private PsiElement findAnchor(String name)
 	{
-		final int myPriority = PRIORITY.get(name);
+		final int myPriority = PRIORITY.getInt(name);
 		PsiElement anchor = null;
 
 		for(PsiElement modifier : getModifiers())
 		{
-			final int otherPriority = PRIORITY.get(modifier.getText());
+			final int otherPriority = PRIORITY.getInt(modifier.getText());
 			if(otherPriority <= myPriority)
 			{
 				anchor = modifier;

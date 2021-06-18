@@ -18,14 +18,10 @@ package org.jetbrains.plugins.groovy.formatter;
 import com.intellij.formatting.Alignment;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
-import com.intellij.util.containers.hash.HashSet;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author Max Medvedev
@@ -36,11 +32,11 @@ public class AlignmentProvider {
   private final Map<Set<PsiElement>, Boolean> myAllowBackwardShift = new HashMap<Set<PsiElement>, Boolean>();
   private final Map<Set<PsiElement>, Alignment.Anchor> myAnchor = new HashMap<Set<PsiElement>, Alignment.Anchor>();
 
-  public void addPair(@Nonnull PsiElement e1, @Nonnull PsiElement e2, @javax.annotation.Nullable Boolean allowBackwardShift) {
+  public void addPair(@Nonnull PsiElement e1, @Nonnull PsiElement e2, @Nullable Boolean allowBackwardShift) {
     addPair(e1, e2, allowBackwardShift, null);
   }
 
-  public void addPair(@Nonnull PsiElement e1, @Nonnull PsiElement e2, @javax.annotation.Nullable Boolean allowBackwardShift, @javax.annotation.Nullable Alignment.Anchor anchor) {
+  public void addPair(@Nonnull PsiElement e1, @Nonnull PsiElement e2, @Nullable Boolean allowBackwardShift, @Nullable Alignment.Anchor anchor) {
     assert e1 != e2;
 
     final Set<PsiElement> set1 = myTree.get(e1);

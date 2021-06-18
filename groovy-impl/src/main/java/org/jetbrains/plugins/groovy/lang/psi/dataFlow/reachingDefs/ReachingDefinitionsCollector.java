@@ -17,12 +17,9 @@ package org.jetbrains.plugins.groovy.lang.psi.dataFlow.reachingDefs;
 
 import com.intellij.psi.*;
 import com.intellij.psi.util.PsiTreeUtil;
-import gnu.trove.TIntHashSet;
-import gnu.trove.TIntObjectHashMap;
-import gnu.trove.TIntObjectProcedure;
-import gnu.trove.TIntProcedure;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import consulo.util.collection.primitive.ints.IntObjConsumer;
+import consulo.util.collection.primitive.ints.IntObjectMap;
+import consulo.util.collection.primitive.ints.IntSet;
 import org.jetbrains.plugins.groovy.lang.psi.GrControlFlowOwner;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyRecursiveElementVisitor;
@@ -41,7 +38,10 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.ClosureSyntheticPara
 import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GroovyScriptClass;
 import org.jetbrains.plugins.groovy.lang.resolve.ResolveUtil;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.*;
+import java.util.function.IntConsumer;
 
 /**
  * @author ven
@@ -366,21 +366,19 @@ public class ReachingDefinitionsCollector {
   }
 
   @SuppressWarnings({"UnusedDeclaration"})
-  private static String dumpDfaResult(ArrayList<TIntObjectHashMap<TIntHashSet>> dfaResult, ReachingDefinitionsDfaInstance dfa) {
+  private static String dumpDfaResult(ArrayList<IntObjectMap<IntSet>> dfaResult, ReachingDefinitionsDfaInstance dfa) {
     final StringBuffer buffer = new StringBuffer();
     for (int i = 0; i < dfaResult.size(); i++) {
-      TIntObjectHashMap<TIntHashSet> map = dfaResult.get(i);
+      IntObjectMap<IntSet> map = dfaResult.get(i);
       buffer.append("At ").append(i).append(":\n");
-      map.forEachEntry(new TIntObjectProcedure<TIntHashSet>() {
-        public boolean execute(int i, TIntHashSet defs) {
+      map.forEach(new IntObjConsumer<IntSet>() {
+        public void accept(int i, IntSet defs) {
           buffer.append(i).append(" -> ");
-          defs.forEach(new TIntProcedure() {
-            public boolean execute(int i) {
+          defs.forEach(new IntConsumer() {
+            public void accept(int i) {
               buffer.append(i).append(" ");
-              return true;
             }
           });
-          return true;
         }
       });
       buffer.append("\n");

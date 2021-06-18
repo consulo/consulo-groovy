@@ -16,7 +16,7 @@
 package org.jetbrains.plugins.groovy.refactoring.introduce.parameter;
 
 import com.intellij.psi.PsiType;
-import gnu.trove.TIntArrayList;
+import consulo.util.collection.primitive.ints.IntList;
 import org.intellij.lang.annotations.MagicConstant;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
@@ -35,7 +35,7 @@ public class GrIntroduceExpressionSettingsImpl extends ExtractClosureHelperImpl 
   public GrIntroduceExpressionSettingsImpl(IntroduceParameterInfo info,
                                            String name,
                                            boolean declareFinal,
-                                           TIntArrayList toRemove,
+                                           IntList toRemove,
                                            boolean generateDelegate,
                                            @MagicConstant(intValues = {REPLACE_FIELDS_WITH_GETTERS_ALL, REPLACE_FIELDS_WITH_GETTERS_INACCESSIBLE, REPLACE_FIELDS_WITH_GETTERS_NONE}) int replaceFieldsWithGetters,
                                            GrExpression expr,

@@ -28,9 +28,8 @@ import com.intellij.psi.tree.IElementType;
 import com.intellij.util.Processor;
 import com.intellij.util.containers.ContainerUtil;
 import consulo.logging.Logger;
-import gnu.trove.TIntHashSet;
-import gnu.trove.TIntProcedure;
-import gnu.trove.TObjectProcedure;
+import consulo.util.collection.primitive.ints.IntSet;
+import consulo.util.collection.primitive.ints.IntSets;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.plugins.groovy.codeInspection.GroovyInspectionBundle;
@@ -57,6 +56,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Consumer;
+import java.util.function.IntConsumer;
 
 /**
  & @author ven
@@ -93,7 +94,7 @@ public class UnusedDefInspection extends GroovyLocalInspectionBase {
       return;
     }
 
-    final TIntHashSet unusedDefs = new TIntHashSet();
+    final IntSet unusedDefs = IntSets.newHashSet();
     for (Instruction instruction : flow) {
       if (instruction instanceof ReadWriteVariableInstruction && ((ReadWriteVariableInstruction) instruction).isWrite()) {
         unusedDefs.add(instruction.num());
@@ -107,18 +108,16 @@ public class UnusedDefInspection extends GroovyLocalInspectionBase {
         if (!varInst.isWrite()) {
           final String varName = varInst.getVariableName();
           DefinitionMap e = dfaResult.get(i);
-          e.forEachValue(new TObjectProcedure<TIntHashSet>() {
-            public boolean execute(TIntHashSet reaching) {
-              reaching.forEach(new TIntProcedure() {
-                public boolean execute(int defNum) {
+          e.forEachValue(new Consumer<IntSet>() {
+            public void accept(IntSet reaching) {
+              reaching.forEach(new IntConsumer() {
+                public void accept(int defNum) {
                   final String defName = ((ReadWriteVariableInstruction) flow[defNum]).getVariableName();
                   if (varName.equals(defName)) {
                     unusedDefs.remove(defNum);
                   }
-                  return true;
                 }
               });
-              return true;
             }
           });
         }
@@ -127,12 +126,11 @@ public class UnusedDefInspection extends GroovyLocalInspectionBase {
 
     final Set<PsiElement> checked = ContainerUtil.newHashSet();
 
-    unusedDefs.forEach(new TIntProcedure() {
-      public boolean execute(int num) {
+    unusedDefs.forEach(new IntConsumer() {
+      public void accept(int num) {
         final ReadWriteVariableInstruction instruction = (ReadWriteVariableInstruction)flow[num];
         final PsiElement element = instruction.getElement();
         process(element, checked, problemsHolder, GroovyInspectionBundle.message("unused.assignment.tooltip"));
-        return true;
       }
     });
 

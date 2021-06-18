@@ -36,8 +36,7 @@ import com.intellij.refactoring.util.usageInfo.NoConstructorClassUsageInfo;
 import com.intellij.usageView.UsageInfo;
 import com.intellij.usageView.UsageViewUtil;
 import com.intellij.util.containers.MultiMap;
-import gnu.trove.TIntArrayList;
-import javax.annotation.Nonnull;
+import consulo.util.collection.primitive.ints.IntList;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlock;
@@ -52,6 +51,7 @@ import org.jetbrains.plugins.groovy.refactoring.introduce.parameter.GrExpression
 import org.jetbrains.plugins.groovy.refactoring.introduce.parameter.GrIntroduceParameterSettings;
 import org.jetbrains.plugins.groovy.refactoring.util.AnySupers;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -280,7 +280,7 @@ public class ExtractClosureFromMethodProcessor extends ExtractClosureProcessorBa
 
     @Nonnull
     @Override
-    public TIntArrayList getParametersToRemove() {
+    public IntList getParametersToRemove() {
       return myHelper.parametersToRemove();
     }
 

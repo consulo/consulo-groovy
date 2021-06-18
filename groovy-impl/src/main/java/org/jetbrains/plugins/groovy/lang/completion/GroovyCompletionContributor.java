@@ -15,21 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.lang.completion;
 
-import gnu.trove.THashSet;
-
-import java.util.Set;
-
-import javax.annotation.Nonnull;
-import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.literals.GrLiteral;
-import com.intellij.codeInsight.completion.CompletionContributor;
-import com.intellij.codeInsight.completion.CompletionInitializationContext;
-import com.intellij.codeInsight.completion.CompletionParameters;
-import consulo.codeInsight.completion.CompletionProvider;
-import com.intellij.codeInsight.completion.CompletionResult;
-import com.intellij.codeInsight.completion.CompletionResultSet;
-import com.intellij.codeInsight.completion.CompletionType;
-import com.intellij.codeInsight.completion.WordCompletionContributor;
+import com.intellij.codeInsight.completion.*;
 import com.intellij.patterns.ElementPattern;
 import com.intellij.patterns.PlatformPatterns;
 import com.intellij.patterns.PsiJavaPatterns;
@@ -37,6 +23,13 @@ import com.intellij.patterns.StandardPatterns;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
 import com.intellij.util.ProcessingContext;
+import consulo.codeInsight.completion.CompletionProvider;
+import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.literals.GrLiteral;
+
+import javax.annotation.Nonnull;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author ilyas
@@ -67,7 +60,7 @@ public class GroovyCompletionContributor extends CompletionContributor {
 	  public void addCompletions(@Nonnull CompletionParameters parameters,
                                     ProcessingContext context,
                                     @Nonnull final CompletionResultSet result) {
-        final Set<String> usedWords = new THashSet<String>();
+        final Set<String> usedWords = new HashSet<String>();
         for (CompletionResult element : result.runRemainingContributors(parameters, true)) {
           usedWords.add(element.getLookupElement().getLookupString());
         }

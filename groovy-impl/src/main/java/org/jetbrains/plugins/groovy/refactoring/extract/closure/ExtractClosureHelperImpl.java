@@ -19,10 +19,7 @@ package org.jetbrains.plugins.groovy.refactoring.extract.closure;
 import com.intellij.psi.PsiClassType;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiType;
-import gnu.trove.TIntArrayList;
-
-import javax.annotation.Nonnull;
-
+import consulo.util.collection.primitive.ints.IntList;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrParametersOwner;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlock;
@@ -30,6 +27,8 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpres
 import org.jetbrains.plugins.groovy.refactoring.extract.ExtractInfoHelperBase;
 import org.jetbrains.plugins.groovy.refactoring.introduce.parameter.GrIntroduceParameterSettings;
 import org.jetbrains.plugins.groovy.refactoring.introduce.parameter.IntroduceParameterInfo;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author Max Medvedev
@@ -40,7 +39,7 @@ public class ExtractClosureHelperImpl extends ExtractInfoHelperBase implements G
 
   private final String myName;
   private final boolean myFinal;
-  private final TIntArrayList myToRemove;
+  private final IntList myToRemove;
   private final boolean myGenerateDelegate;
   private final int myReplaceFieldsWithGetters;
   private final boolean myForceReturn;
@@ -51,7 +50,7 @@ public class ExtractClosureHelperImpl extends ExtractInfoHelperBase implements G
   public ExtractClosureHelperImpl(IntroduceParameterInfo info,
                                   String name,
                                   boolean declareFinal,
-                                  TIntArrayList toRemove,
+                                  IntList toRemove,
                                   boolean generateDelegate,
                                   int replaceFieldsWithGetters,
                                   boolean forceReturn, boolean forceDef) {
@@ -85,7 +84,7 @@ public class ExtractClosureHelperImpl extends ExtractInfoHelperBase implements G
   }
 
   @Override
-  public TIntArrayList parametersToRemove() {
+  public IntList parametersToRemove() {
     return myToRemove;
   }
 

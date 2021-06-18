@@ -16,30 +16,6 @@
 
 package org.jetbrains.plugins.groovy.compiler;
 
-import consulo.container.boot.ContainerPathManager;
-import gnu.trove.THashSet;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.jetbrains.groovy.compiler.rt.CompilerMessage;
-import org.jetbrains.groovy.compiler.rt.GroovyCompilerMessageCategories;
-import org.jetbrains.groovy.compiler.rt.GroovycRunner;
-import org.jetbrains.plugins.groovy.GroovyFileType;
-import org.jetbrains.plugins.groovy.config.GroovyConfigUtils;
-import org.jetbrains.plugins.groovy.extensions.GroovyScriptType;
-import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
-import org.jetbrains.plugins.groovy.runner.GroovyScriptUtil;
-import org.jetbrains.plugins.groovy.runner.GroovycOSProcessHandler;
 import com.intellij.compiler.cache.JavaDependencyCache;
 import com.intellij.compiler.impl.CompilerUtil;
 import com.intellij.compiler.impl.FileSetCompileScope;
@@ -49,7 +25,6 @@ import com.intellij.compiler.make.CacheCorruptedException;
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.configurations.GeneralCommandLine;
 import com.intellij.ide.highlighter.JavaFileType;
-import com.intellij.openapi.application.PathManager;
 import com.intellij.openapi.compiler.CompileContext;
 import com.intellij.openapi.compiler.CompilerMessageCategory;
 import com.intellij.openapi.compiler.TranslatingCompiler;
@@ -77,11 +52,7 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.encoding.EncodingProjectManager;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
-import com.intellij.util.Chunk;
-import com.intellij.util.Function;
-import com.intellij.util.PathUtil;
-import com.intellij.util.PathsList;
-import com.intellij.util.SmartList;
+import com.intellij.util.*;
 import com.intellij.util.cls.ClsFormatException;
 import com.intellij.util.containers.ContainerUtil;
 import com.intellij.util.net.HttpConfigurable;
@@ -89,10 +60,26 @@ import consulo.application.AccessRule;
 import consulo.compiler.impl.TranslatingCompilerFilesMonitor;
 import consulo.compiler.impl.resourceCompiler.ResourceCompilerConfiguration;
 import consulo.compiler.roots.CompilerPathsImpl;
+import consulo.container.boot.ContainerPathManager;
 import consulo.groovy.module.extension.GroovyModuleExtension;
 import consulo.java.execution.configurations.OwnJavaParameters;
 import consulo.java.module.extension.JavaModuleExtension;
 import consulo.java.projectRoots.OwnJdkUtil;
+import org.jetbrains.groovy.compiler.rt.CompilerMessage;
+import org.jetbrains.groovy.compiler.rt.GroovyCompilerMessageCategories;
+import org.jetbrains.groovy.compiler.rt.GroovycRunner;
+import org.jetbrains.plugins.groovy.GroovyFileType;
+import org.jetbrains.plugins.groovy.config.GroovyConfigUtils;
+import org.jetbrains.plugins.groovy.extensions.GroovyScriptType;
+import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
+import org.jetbrains.plugins.groovy.runner.GroovyScriptUtil;
+import org.jetbrains.plugins.groovy.runner.GroovycOSProcessHandler;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.util.*;
 
 /**
  * @author peter
@@ -316,7 +303,7 @@ public abstract class GroovyCompilerBase implements TranslatingCompiler
 
 	protected Set<VirtualFile> enumerateGroovyFiles(final Module module)
 	{
-		final Set<VirtualFile> moduleClasses = new THashSet<VirtualFile>();
+		final Set<VirtualFile> moduleClasses = new HashSet<VirtualFile>();
 		ModuleRootManager.getInstance(module).getFileIndex().iterateContent(new ContentIterator()
 		{
 			@Override

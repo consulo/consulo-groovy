@@ -15,39 +15,44 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.stubs;
 
-import gnu.trove.TObjectIntIterator;
-
-import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.GrModifierList;
-import org.jetbrains.plugins.groovy.lang.psi.impl.auxiliary.modifiers.GrModifierListImpl;
 import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.stubs.StubBase;
 import com.intellij.psi.stubs.StubElement;
+import consulo.util.collection.primitive.objects.ObjectIntMap;
+import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.GrModifierList;
+import org.jetbrains.plugins.groovy.lang.psi.impl.auxiliary.modifiers.GrModifierListImpl;
 
 /**
  * @author Maxim.Medvedev
  */
-public class GrModifierListStub extends StubBase<GrModifierList> implements StubElement<GrModifierList> {
-  private final int myFlags;
+public class GrModifierListStub extends StubBase<GrModifierList> implements StubElement<GrModifierList>
+{
+	private final int myFlags;
 
-  public GrModifierListStub(StubElement parent, IStubElementType elementType, int flags) {
-    super(parent, elementType);
-    this.myFlags = flags;
-  }
+	public GrModifierListStub(StubElement parent, IStubElementType elementType, int flags)
+	{
+		super(parent, elementType);
+		this.myFlags = flags;
+	}
 
-  public int getModifiersFlags() {
-    return myFlags;
-  }
+	public int getModifiersFlags()
+	{
+		return myFlags;
+	}
 
-  public static int buildFlags(GrModifierList modifierList) {
-    int flags = 0;
-    final TObjectIntIterator<String> iterator = GrModifierListImpl.NAME_TO_MODIFIER_FLAG_MAP.iterator();
-    while (iterator.hasNext()) {
-      iterator.advance();
-      if (modifierList.hasExplicitModifier(iterator.key())) {
-        flags |= iterator.value();
-      }
-    }
-    return flags;
-  }
+	public static int buildFlags(GrModifierList modifierList)
+	{
+		int flags = 0;
+		for(ObjectIntMap.Entry<String> entry : GrModifierListImpl.NAME_TO_MODIFIER_FLAG_MAP.entrySet())
+		{
+			String key = entry.getKey();
+			int value = entry.getValue();
 
+			if(modifierList.hasExplicitModifier(key))
+			{
+				flags |= value;
+			}
+		}
+		return flags;
+	}
 }

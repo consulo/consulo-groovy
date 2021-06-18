@@ -20,11 +20,11 @@ import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiType;
 import com.intellij.psi.util.InheritanceUtil;
 import com.intellij.util.ProcessingContext;
-import gnu.trove.THashSet;
-import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.dsl.GroovyClassDescriptor;
 import org.jetbrains.plugins.groovy.util.LightCacheKey;
 
+import javax.annotation.Nonnull;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
@@ -35,7 +35,7 @@ public class ClassUtil {
   public static Map<String, PsiClass> getSuperClassesWithCache(@Nonnull PsiClass aClass) {
     Map<String, PsiClass> superClassNames = PARENT_CACHE_KEY.getCachedValue(aClass);
     if (superClassNames == null) {
-      Set<PsiClass> superClasses = new THashSet<PsiClass>();
+      Set<PsiClass> superClasses = new HashSet<PsiClass>();
       superClasses.add(aClass);
       InheritanceUtil.getSuperClasses(aClass, superClasses, true);
 

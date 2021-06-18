@@ -15,25 +15,24 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.dataFlow.reachingDefs;
 
-import gnu.trove.TObjectIntHashMap;
-
-import java.util.Arrays;
-
-import javax.annotation.Nonnull;
-
+import consulo.util.collection.primitive.objects.ObjectIntMap;
+import consulo.util.collection.primitive.objects.ObjectMaps;
 import org.jetbrains.plugins.groovy.lang.psi.controlFlow.Instruction;
 import org.jetbrains.plugins.groovy.lang.psi.controlFlow.ReadWriteVariableInstruction;
 import org.jetbrains.plugins.groovy.lang.psi.dataFlow.DfaInstance;
+
+import javax.annotation.Nonnull;
+import java.util.Arrays;
 
 /**
  * @author ven
  */
 public class ReachingDefinitionsDfaInstance implements DfaInstance<DefinitionMap> {
-  private final TObjectIntHashMap<String> myVarToIndexMap = new TObjectIntHashMap<String>();
+  private final ObjectIntMap<String> myVarToIndexMap = ObjectMaps.newObjectIntHashMap();
   private final Instruction[] myFlow;
 
   public int getVarIndex(String varName) {
-    return myVarToIndexMap.get(varName);
+    return myVarToIndexMap.getInt(varName);
   }
 
   public ReachingDefinitionsDfaInstance(Instruction[] flow) {
@@ -43,7 +42,7 @@ public class ReachingDefinitionsDfaInstance implements DfaInstance<DefinitionMap
       if (instruction instanceof ReadWriteVariableInstruction) {
         final String name = ((ReadWriteVariableInstruction) instruction).getVariableName();
         if (!myVarToIndexMap.containsKey(name)) {
-          myVarToIndexMap.put(name, num++);
+          myVarToIndexMap.putInt(name, num++);
         }
       }
     }
@@ -55,7 +54,7 @@ public class ReachingDefinitionsDfaInstance implements DfaInstance<DefinitionMap
       final ReadWriteVariableInstruction varInsn = (ReadWriteVariableInstruction) instruction;
       final String name = varInsn.getVariableName();
       assert myVarToIndexMap.containsKey(name) : name + "; " + Arrays.asList(myFlow).contains(instruction);
-      final int num = myVarToIndexMap.get(name);
+      final int num = myVarToIndexMap.getInt(name);
       if (varInsn.isWrite()) {
         m.registerDef(varInsn, num);
       }

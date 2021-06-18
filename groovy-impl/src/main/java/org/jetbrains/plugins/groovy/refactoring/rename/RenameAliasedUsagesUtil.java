@@ -17,7 +17,6 @@ package org.jetbrains.plugins.groovy.refactoring.rename;
 
 import com.intellij.psi.*;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.containers.hash.HashMap;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
@@ -29,6 +28,7 @@ import org.jetbrains.plugins.groovy.lang.resolve.processors.ResolverProcessorImp
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 
 /**

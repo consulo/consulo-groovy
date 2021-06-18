@@ -42,7 +42,6 @@ import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.openapi.roots.libraries.Library;
 import com.intellij.openapi.roots.libraries.LibraryTable;
 import com.intellij.openapi.ui.Messages;
-import consulo.util.dataholder.Key;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -56,8 +55,8 @@ import com.intellij.util.containers.ContainerUtil;
 import consulo.java.execution.configurations.OwnJavaParameters;
 import consulo.java.module.extension.JavaModuleExtension;
 import consulo.java.projectRoots.OwnJdkUtil;
+import consulo.util.dataholder.Key;
 import consulo.vfs.util.ArchiveVfsUtil;
-import gnu.trove.THashSet;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotation;
 import org.jetbrains.plugins.groovy.runner.DefaultGroovyScriptRunner;
 import org.jetbrains.plugins.groovy.runner.GroovyScriptRunConfiguration;
@@ -217,8 +216,8 @@ public class GrabDependencies implements IntentionAction
 	static Map<String, String> prepareQueries(PsiFile file)
 	{
 		final Set<GrAnnotation> grabs = new LinkedHashSet<GrAnnotation>();
-		final Set<GrAnnotation> excludes = new THashSet<GrAnnotation>();
-		final Set<GrAnnotation> resolvers = new THashSet<GrAnnotation>();
+		final Set<GrAnnotation> excludes = new HashSet<GrAnnotation>();
+		final Set<GrAnnotation> resolvers = new HashSet<GrAnnotation>();
 		file.acceptChildren(new PsiRecursiveElementWalkingVisitor()
 		{
 			@Override

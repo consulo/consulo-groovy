@@ -16,27 +16,6 @@
 
 package org.jetbrains.plugins.groovy.griffon;
 
-import gnu.trove.TIntArrayList;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import org.jetbrains.annotations.NonNls;
-import org.jetbrains.plugins.groovy.GroovyFileType;
-import org.jetbrains.plugins.groovy.mvc.MvcCommand;
-import org.jetbrains.plugins.groovy.mvc.MvcFramework;
-import org.jetbrains.plugins.groovy.mvc.MvcModuleStructureUtil;
-import org.jetbrains.plugins.groovy.mvc.MvcPathMacros;
-import org.jetbrains.plugins.groovy.mvc.MvcProjectStructure;
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.configurations.GeneralCommandLine;
 import com.intellij.execution.configurations.ParametersList;
@@ -65,8 +44,24 @@ import com.intellij.psi.PsiManager;
 import consulo.java.execution.configurations.OwnJavaParameters;
 import consulo.java.module.extension.JavaModuleExtension;
 import consulo.ui.image.Image;
+import consulo.util.collection.primitive.ints.IntList;
+import consulo.util.collection.primitive.ints.IntLists;
 import consulo.vfs.util.ArchiveVfsUtil;
 import icons.JetgroovyIcons;
+import org.jetbrains.annotations.NonNls;
+import org.jetbrains.plugins.groovy.GroovyFileType;
+import org.jetbrains.plugins.groovy.mvc.*;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author peter
@@ -186,7 +181,7 @@ public class GriffonFramework extends MvcFramework
 		{
 			String pluginAndVersion = pluginPath.getName(); // pluginName-version
 
-			TIntArrayList separatorIndexes = new TIntArrayList();
+			IntList separatorIndexes = IntLists.newArrayList();
 			int start = -1;
 			while(true)
 			{

@@ -16,15 +16,6 @@
 
 package org.jetbrains.plugins.groovy.refactoring;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
-import org.jetbrains.plugins.groovy.lang.psi.api.toplevel.imports.GrImportStatement;
-import org.jetbrains.plugins.groovy.lang.psi.util.GroovyImportUtil;
-import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 import com.intellij.openapi.application.AccessToken;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.application.WriteAction;
@@ -37,7 +28,12 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
 import com.intellij.refactoring.RefactoringHelper;
 import com.intellij.usageView.UsageInfo;
-import com.intellij.util.containers.hash.HashSet;
+import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
+import org.jetbrains.plugins.groovy.lang.psi.api.toplevel.imports.GrImportStatement;
+import org.jetbrains.plugins.groovy.lang.psi.util.GroovyImportUtil;
+import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
+
+import java.util.*;
 
 /**
  * @author Maxim.Medvedev

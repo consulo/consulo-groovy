@@ -16,8 +16,6 @@
 
 package org.jetbrains.plugins.groovy.annotator;
 
-import gnu.trove.THashSet;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -2731,7 +2729,7 @@ public class GroovyAnnotator extends GroovyElementVisitor
 			PsiMember member)
 	{
 		final PsiElement[] modifiers = list.getModifiers();
-		Set<String> set = new THashSet<String>(modifiers.length);
+		Set<String> set = new HashSet<String>(modifiers.length);
 		for(PsiElement modifier : modifiers)
 		{
 			if(modifier instanceof GrAnnotation)
