@@ -19,6 +19,7 @@ import com.intellij.openapi.options.Configurable;
 import com.intellij.util.xmlb.XmlSerializerUtil;
 import com.intellij.xdebugger.settings.DebuggerSettingsCategory;
 import com.intellij.xdebugger.settings.XDebuggerSettings;
+import consulo.disposer.Disposable;
 import consulo.localize.LocalizeValue;
 import consulo.options.SimpleConfigurableByProperties;
 import consulo.ui.CheckBox;
@@ -57,7 +58,7 @@ public class GroovyDebuggerSettings extends XDebuggerSettings<GroovyDebuggerSett
 		@RequiredUIAccess
 		@Nonnull
 		@Override
-		protected Component createLayout(PropertyBuilder propertyBuilder)
+		protected Component createLayout(PropertyBuilder propertyBuilder, Disposable uiDisposable)
 		{
 			GroovyDebuggerSettings settings = GroovyDebuggerSettings.getInstance();
 
@@ -87,7 +88,7 @@ public class GroovyDebuggerSettings extends XDebuggerSettings<GroovyDebuggerSett
 		@RequiredUIAccess
 		@Nonnull
 		@Override
-		protected Component createLayout(PropertyBuilder propertyBuilder)
+		protected Component createLayout(PropertyBuilder propertyBuilder, Disposable uiDisposable)
 		{
 			GroovyDebuggerSettings settings = GroovyDebuggerSettings.getInstance();
 
