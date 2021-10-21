@@ -33,8 +33,6 @@ import com.intellij.psi.util.TypeConversionUtil;
 import com.intellij.refactoring.IntroduceTargetChooser;
 import com.intellij.util.Function;
 import com.intellij.util.IncorrectOperationException;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.intentions.base.ErrorUtil;
 import org.jetbrains.plugins.groovy.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.intentions.base.PsiElementPredicate;
@@ -56,6 +54,8 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.literal
 import org.jetbrains.plugins.groovy.lang.psi.util.GrStringUtil;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -100,14 +100,8 @@ public class ConvertConcatenationToGstringIntention extends Intention {
   protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
     final PsiFile file = element.getContainingFile();
     final int offset = editor.getCaretModel().getOffset();
-    final AccessToken accessToken = ReadAction.start();
-    final List<GrExpression> expressions;
-    try {
-      expressions = collectExpressions(file, offset);
-    }
-    finally {
-      accessToken.finish();
-    }
+    final List<GrExpression> expressions = ReadAction.compute(() -> collectExpressions(file, offset));
+
     final Document document = editor.getDocument();
     if (expressions.size() == 1) {
       invokeImpl(expressions.get(0), document);

@@ -16,7 +16,6 @@
 package org.jetbrains.plugins.groovy.intentions.conversions.strings;
 
 import com.intellij.lang.ASTNode;
-import com.intellij.openapi.application.AccessToken;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.application.ReadAction;
 import com.intellij.openapi.command.CommandProcessor;
@@ -31,8 +30,6 @@ import com.intellij.refactoring.IntroduceTargetChooser;
 import com.intellij.util.Function;
 import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.containers.ContainerUtil;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.intentions.GroovyIntentionsBundle;
 import org.jetbrains.plugins.groovy.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.intentions.base.PsiElementPredicate;
@@ -47,6 +44,8 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.literal
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.literals.GrStringImpl;
 import org.jetbrains.plugins.groovy.lang.psi.util.GrStringUtil;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
 
@@ -65,13 +64,7 @@ public class ConvertStringToMultilineIntention extends Intention {
       expressions = Collections.singletonList(((GrExpression)element));
     }
     else {
-      final AccessToken accessToken = ReadAction.start();
-      try {
-        expressions = collectExpressions(element);
-      }
-      finally {
-        accessToken.finish();
-      }
+        expressions = ReadAction.compute(() -> collectExpressions(element));
     }
 
     if (expressions.size() == 1) {

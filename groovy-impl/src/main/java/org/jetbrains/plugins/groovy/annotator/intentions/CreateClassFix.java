@@ -16,8 +16,23 @@
 
 package org.jetbrains.plugins.groovy.annotator.intentions;
 
-import javax.annotation.Nonnull;
-
+import com.intellij.codeInsight.FileModificationService;
+import com.intellij.codeInsight.hint.HintManager;
+import com.intellij.codeInsight.intention.IntentionAction;
+import com.intellij.openapi.application.AccessToken;
+import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.application.ReadAction;
+import com.intellij.openapi.application.WriteAction;
+import com.intellij.openapi.editor.Editor;
+import com.intellij.openapi.module.Module;
+import com.intellij.openapi.module.ModuleUtilCore;
+import com.intellij.openapi.project.Project;
+import com.intellij.psi.*;
+import com.intellij.psi.codeStyle.JavaCodeStyleManager;
+import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.util.IncorrectOperationException;
+import consulo.application.AccessRule;
+import consulo.psi.PsiPackage;
 import org.jetbrains.plugins.groovy.actions.GroovyTemplates;
 import org.jetbrains.plugins.groovy.intentions.GroovyIntentionsBundle;
 import org.jetbrains.plugins.groovy.intentions.base.IntentionUtils;
@@ -37,30 +52,15 @@ import org.jetbrains.plugins.groovy.lang.psi.expectedTypes.TypeConstraint;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 import org.jetbrains.plugins.groovy.template.expressions.ChooseTypeExpression;
-import com.intellij.codeInsight.FileModificationService;
-import com.intellij.codeInsight.hint.HintManager;
-import com.intellij.codeInsight.intention.IntentionAction;
-import com.intellij.openapi.application.AccessToken;
-import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.application.ReadAction;
-import com.intellij.openapi.application.WriteAction;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.module.ModuleUtilCore;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.*;
-import com.intellij.psi.codeStyle.JavaCodeStyleManager;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.IncorrectOperationException;
-import consulo.application.AccessRule;
-import consulo.psi.PsiPackage;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author ilyas
  */
 public abstract class CreateClassFix
 {
-
 	public static IntentionAction createClassFromNewAction(final GrNewExpression expression)
 	{
 		return new CreateClassActionBase(GrCreateClassKind.CLASS, expression.getReferenceElement())
@@ -79,21 +79,9 @@ public abstract class CreateClassFix
 				GroovyFileBase groovyFile = (GroovyFileBase) file;
 				final PsiManager manager = myRefElement.getManager();
 
-				final String qualifier;
-				final String name;
-				final Module module;
-				final AccessToken accessToken = ReadAction.start();
-				try
-				{
-					qualifier = groovyFile instanceof GroovyFile ? groovyFile.getPackageName() : "";
-					name = myRefElement.getReferenceName();
-					assert name != null;
-					module = ModuleUtilCore.findModuleForPsiElement(file);
-				}
-				finally
-				{
-					accessToken.finish();
-				}
+				final String qualifier = ReadAction.compute(() -> groovyFile instanceof GroovyFile ? groovyFile.getPackageName() : "");
+				final String name = ReadAction.compute(() -> myRefElement.getReferenceName());
+				final Module module = ReadAction.compute(() -> ModuleUtilCore.findModuleForPsiElement(file));
 
 				PsiDirectory targetDirectory = getTargetDirectory(project, qualifier, name, module, getText());
 				if(targetDirectory == null)
@@ -123,18 +111,10 @@ public abstract class CreateClassFix
 		};
 	}
 
-	@javax.annotation.Nullable
+	@Nullable
 	private static PsiType[] getArgTypes(GrReferenceElement refElement)
 	{
-		final AccessToken accessToken = ReadAction.start();
-		try
-		{
-			return PsiUtil.getArgumentTypes(refElement, false);
-		}
-		finally
-		{
-			accessToken.finish();
-		}
+		return ReadAction.compute(() -> PsiUtil.getArgumentTypes(refElement, false));
 	}
 
 	private static void generateConstructor(@Nonnull PsiElement refElement,
@@ -256,7 +236,7 @@ public abstract class CreateClassFix
 				});
 			}
 
-			@javax.annotation.Nullable
+			@Nullable
 			private PsiElement resolveQualifier(@Nonnull PsiElement qualifier)
 			{
 				if(qualifier instanceof GrCodeReferenceElement)
@@ -283,7 +263,7 @@ public abstract class CreateClassFix
 				return null;
 			}
 
-			@javax.annotation.Nullable
+			@Nullable
 			private PsiClass createTemplate(JVMElementFactory factory, String name)
 			{
 				switch(getType())

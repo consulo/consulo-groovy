@@ -1,35 +1,33 @@
 package org.jetbrains.plugins.groovy.springloaded;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.regex.Pattern;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import org.jetbrains.plugins.groovy.lang.psi.GroovyFileBase;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlock;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
 import com.intellij.debugger.NoDataException;
 import com.intellij.debugger.PositionManager;
 import com.intellij.debugger.SourcePosition;
 import com.intellij.debugger.engine.DebugProcess;
 import com.intellij.debugger.requests.ClassPrepareRequestor;
-import com.intellij.openapi.application.AccessToken;
-import com.intellij.openapi.application.ReadAction;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiJavaFile;
 import com.intellij.psi.impl.source.PsiClassImpl;
 import com.intellij.psi.util.PsiTreeUtil;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.application.AccessRule;
 import consulo.internal.com.sun.jdi.AbsentInformationException;
 import consulo.internal.com.sun.jdi.Location;
 import consulo.internal.com.sun.jdi.ReferenceType;
 import consulo.internal.com.sun.jdi.request.ClassPrepareRequest;
+import org.jetbrains.plugins.groovy.lang.psi.GroovyFileBase;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlock;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.regex.Pattern;
 
 /**
  * Position manager to debug classes reloaded by org.springsource.springloaded
@@ -51,54 +49,45 @@ public class SpringLoadedPositionManager implements PositionManager
 	@Override
 	public SourcePosition getSourcePosition(@Nullable Location location) throws NoDataException
 	{
-		throw new NoDataException();
+		throw NoDataException.INSTANCE;
 	}
 
 	@Nonnull
 	@Override
-	public List<ReferenceType> getAllClasses(final SourcePosition classPosition) throws NoDataException
+	public List<ReferenceType> getAllClasses(@Nonnull final SourcePosition classPosition) throws NoDataException
 	{
-		AccessToken accessToken = ReadAction.start();
-
-		try
+		String className = findEnclosingName(classPosition);
+		if(className == null)
 		{
-			String className = findEnclosingName(classPosition);
-			if(className == null)
-			{
-				throw new NoDataException();
-			}
-
-			List<ReferenceType> referenceTypes = myDebugProcess.getVirtualMachineProxy().classesByName(className);
-			if(referenceTypes.isEmpty())
-			{
-				throw new NoDataException();
-			}
-
-			Set<ReferenceType> res = new HashSet<ReferenceType>();
-
-			for(ReferenceType referenceType : referenceTypes)
-			{
-				findNested(res, referenceType, classPosition);
-			}
-
-			if(res.isEmpty())
-			{
-				throw new NoDataException();
-			}
-
-			return new ArrayList<ReferenceType>(res);
+			throw NoDataException.INSTANCE;
 		}
-		finally
+
+		List<ReferenceType> referenceTypes = myDebugProcess.getVirtualMachineProxy().classesByName(className);
+		if(referenceTypes.isEmpty())
 		{
-			accessToken.finish();
+			throw NoDataException.INSTANCE;
 		}
+
+		Set<ReferenceType> res = new HashSet<>();
+
+		for(ReferenceType referenceType : referenceTypes)
+		{
+			findNested(res, referenceType, classPosition);
+		}
+
+		if(res.isEmpty())
+		{
+			throw NoDataException.INSTANCE;
+		}
+
+		return new ArrayList<>(res);
 	}
 
 	@Nonnull
 	@Override
-	public List<Location> locationsOfLine(ReferenceType type, SourcePosition position) throws NoDataException
+	public List<Location> locationsOfLine(@Nonnull ReferenceType type, @Nonnull SourcePosition position) throws NoDataException
 	{
-		throw new NoDataException();
+		throw NoDataException.INSTANCE;
 	}
 
 	@Nullable
@@ -157,6 +146,7 @@ public class SpringLoadedPositionManager implements PositionManager
 	}
 
 	@Nullable
+	@RequiredReadAction
 	private static PsiElement findElementAt(SourcePosition position)
 	{
 		PsiFile file = position.getFile();
@@ -168,12 +158,12 @@ public class SpringLoadedPositionManager implements PositionManager
 	}
 
 	@Override
-	public ClassPrepareRequest createPrepareRequest(ClassPrepareRequestor requestor, SourcePosition position) throws NoDataException
+	public ClassPrepareRequest createPrepareRequest(@Nonnull ClassPrepareRequestor requestor, @Nonnull SourcePosition position) throws NoDataException
 	{
 		String className = getOuterClassName(position);
 		if(className == null)
 		{
-			throw new NoDataException();
+			throw NoDataException.INSTANCE;
 		}
 
 		return myDebugProcess.getRequestsManager().createClassPrepareRequest(requestor, className + "*");
