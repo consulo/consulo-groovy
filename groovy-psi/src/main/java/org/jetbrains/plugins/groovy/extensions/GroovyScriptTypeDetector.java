@@ -15,13 +15,13 @@
  */
 package org.jetbrains.plugins.groovy.extensions;
 
-import javax.annotation.Nonnull;
-
-import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import com.intellij.openapi.extensions.ExtensionPointName;
 import com.intellij.psi.search.GlobalSearchScope;
 import consulo.ui.image.Image;
 import icons.JetgroovyIcons;
+import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author sergey.evdokimov
@@ -32,18 +32,10 @@ public abstract class GroovyScriptTypeDetector
 
 	private final GroovyScriptType myScriptType;
 
-	private final String[] myExtensions;
 
-	protected GroovyScriptTypeDetector(GroovyScriptType scriptType, String... extensions)
+	protected GroovyScriptTypeDetector(GroovyScriptType scriptType)
 	{
 		myScriptType = scriptType;
-		myExtensions = extensions;
-	}
-
-	@Nonnull
-	public final String[] getExtensions()
-	{
-		return myExtensions;
 	}
 
 	@Nonnull
@@ -57,7 +49,7 @@ public abstract class GroovyScriptTypeDetector
 	@Nonnull
 	public static Image getIcon(@Nonnull GroovyFile script)
 	{
-		for(GroovyScriptTypeDetector detector : EP_NAME.getExtensions())
+		for(GroovyScriptTypeDetector detector : EP_NAME.getExtensionList())
 		{
 			if(detector.isSpecificScriptFile(script))
 			{
@@ -70,7 +62,7 @@ public abstract class GroovyScriptTypeDetector
 
 	public static GlobalSearchScope patchResolveScope(@Nonnull GroovyFile script, GlobalSearchScope scope)
 	{
-		for(GroovyScriptTypeDetector detector : EP_NAME.getExtensions())
+		for(GroovyScriptTypeDetector detector : EP_NAME.getExtensionList())
 		{
 			if(detector.isSpecificScriptFile(script))
 			{

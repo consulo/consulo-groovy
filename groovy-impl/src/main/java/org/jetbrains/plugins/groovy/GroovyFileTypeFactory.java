@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2010 JetBrains s.r.o.
+ * Copyright 2000-2009 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,24 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jetbrains.plugins.groovy.gant;
 
-import org.jetbrains.plugins.groovy.extensions.GroovyScriptTypeDetector;
-import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
+package org.jetbrains.plugins.groovy;
+
+import com.intellij.openapi.fileTypes.FileTypeConsumer;
+import com.intellij.openapi.fileTypes.FileTypeFactory;
 
 import javax.annotation.Nonnull;
 
 /**
- * @author sergey.evdokimov
+ * @author ilyas
  */
-public class GantScriptTypeDetector extends GroovyScriptTypeDetector {
-  public GantScriptTypeDetector() {
-    super(GantScriptType.INSTANCE);
-  }
-
-  @Override
-  public boolean isSpecificScriptFile(@Nonnull GroovyFile script) {
-    String name = script.getName();
-    return name.endsWith(GantScriptType.DEFAULT_EXTENSION);
-  }
+public class GroovyFileTypeFactory extends FileTypeFactory
+{
+	public void createFileTypes(@Nonnull FileTypeConsumer consumer)
+	{
+		consumer.consume(GroovyFileType.GROOVY_FILE_TYPE);
+		consumer.consume(GroovyFileType.GROOVY_FILE_TYPE, "gdsl");
+		consumer.consume(GroovyFileType.GROOVY_FILE_TYPE, "gpp");
+		consumer.consume(GroovyFileType.GROOVY_FILE_TYPE, "grunit");
+	}
 }

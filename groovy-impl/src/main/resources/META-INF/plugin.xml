@@ -261,7 +261,7 @@
 
 		<applicationService serviceInterface="org.jetbrains.plugins.groovy.codeInspection.GroovyQuickFixFactory"
 							serviceImplementation="org.jetbrains.plugins.groovy.codeInspection.GroovyQuickFixFactoryImpl"/>
-		<applicationService serviceImplementation="org.jetbrains.plugins.groovy.dsl.DslActivationStatus" />
+		<applicationService serviceImplementation="org.jetbrains.plugins.groovy.dsl.DslActivationStatus"/>
 		<copyright.updater filetype="Groovy" implementationClass="org.jetbrains.plugins.groovy.copyright.UpdateGroovyCopyrightsProvider"/>
 		<pom.declarationSearcher implementation="org.jetbrains.plugins.groovy.lang.psi.GroovyDeclarationSearcher"/>
 		<compiler implementation="org.jetbrains.plugins.groovy.compiler.generator.GroovycStubGenerator" id="groovy-stub-generator"/>
@@ -292,8 +292,9 @@
 				order="before javaProcessor"/>
 
 		<codeInsight.typeInfo language="Groovy" implementationClass="org.jetbrains.plugins.groovy.codeInsight.hint.GroovyExpressionTypeProvider"/>
-		<codeInsight.parameterNameHints language="Groovy" implementationClass="org.jetbrains.plugins.groovy.codeInsight.hint.GroovyInlayParameterHintsProvider" />
-		<fileTypeFactory implementation="org.jetbrains.plugins.groovy.GroovyFileTypeLoader"/>
+		<codeInsight.parameterNameHints language="Groovy" implementationClass="org.jetbrains.plugins.groovy.codeInsight.hint.GroovyInlayParameterHintsProvider"/>
+		<fileTypeFactory implementation="org.jetbrains.plugins.groovy.GroovyFileTypeFactory"/>
+		<fileTypeFactory implementation="consulo.groovy.gant.GantFileFileFactory"/>
 		<fileTypeFactory implementation="org.jetbrains.plugins.groovy.dgm.DGMFileTypeFactory"/>
 
 		<projectConfigurable instance="org.jetbrains.plugins.groovy.gant.GantConfigurable"
@@ -373,7 +374,7 @@
 		<liveTemplateContext implementation="org.jetbrains.plugins.groovy.template.GroovyTemplateContextType$Statement"/>
 		<liveTemplateContext implementation="org.jetbrains.plugins.groovy.template.GroovyTemplateContextType$Declaration"/>
 
-		<bundleLiveTemplateSet path="liveTemplates/Groovy" />
+		<bundleLiveTemplateSet path="liveTemplates/Groovy"/>
 
 		<liveTemplateOptionalProcessor implementation="org.jetbrains.plugins.groovy.template.GroovyShortenFQNamesProcessor"/>
 
@@ -1440,18 +1441,18 @@
 		<lang.inspectionSuppressor language="Groovy"
 								   implementationClass="org.jetbrains.plugins.groovy.codeInspection.GroovyInspectionSuppressor"/>
 
-		<xdebugger.lineBreakpointTypeResolver filetype="Groovy" implementationClass="consulo.java.debugger.JavaLineBreakpointTypeResolver" />
+		<xdebugger.lineBreakpointTypeResolver filetype="Groovy" implementationClass="consulo.java.debugger.JavaLineBreakpointTypeResolver"/>
 
-		<editorHighlighterProvider filetype="Groovy" implementationClass="consulo.groovy.highlight.GroovyEditorHighlighterProvider" />
+		<editorHighlighterProvider filetype="Groovy" implementationClass="consulo.groovy.highlight.GroovyEditorHighlighterProvider"/>
 
-		<textEditorHighlightingPassFactory implementation="org.jetbrains.plugins.groovy.annotator.GrKeywordAndDeclarationHighlightFactory" />
-		<textEditorHighlightingPassFactory implementation="org.jetbrains.plugins.groovy.codeInspection.local.GroovyUnusedImportsPassFactory" />
-		<textEditorHighlightingPassFactory implementation="org.jetbrains.plugins.groovy.annotator.GrReferenceHighlighterFactory" />
+		<textEditorHighlightingPassFactory implementation="org.jetbrains.plugins.groovy.annotator.GrKeywordAndDeclarationHighlightFactory"/>
+		<textEditorHighlightingPassFactory implementation="org.jetbrains.plugins.groovy.codeInspection.local.GroovyUnusedImportsPassFactory"/>
+		<textEditorHighlightingPassFactory implementation="org.jetbrains.plugins.groovy.annotator.GrReferenceHighlighterFactory"/>
 
-		<applicationService serviceImplementation="org.jetbrains.plugins.groovy.mvc.MvcPathMacros" lazy="false" />
+		<applicationService serviceImplementation="org.jetbrains.plugins.groovy.mvc.MvcPathMacros" lazy="false"/>
 
 		<projectService serviceInterface="org.jetbrains.plugins.groovy.annotator.intentions.dynamic.DynamicManager"
-						serviceImplementation="org.jetbrains.plugins.groovy.annotator.intentions.dynamic.DynamicManagerImpl" lazy="false" />
+						serviceImplementation="org.jetbrains.plugins.groovy.annotator.intentions.dynamic.DynamicManagerImpl" lazy="false"/>
 		<projectService serviceImplementation="org.jetbrains.plugins.groovy.mvc.MvcModuleStructureSynchronizer" lazy="false"/>
 	</extensions>
 

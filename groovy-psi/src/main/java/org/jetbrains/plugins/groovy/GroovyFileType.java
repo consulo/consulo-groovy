@@ -16,50 +16,73 @@
 
 package org.jetbrains.plugins.groovy;
 
-import javax.annotation.Nonnull;
-import javax.swing.Icon;
-
-import org.jetbrains.annotations.NonNls;
 import com.intellij.lang.Language;
+import com.intellij.openapi.fileTypes.FileType;
+import com.intellij.openapi.fileTypes.FileTypeManager;
 import com.intellij.openapi.fileTypes.LanguageFileType;
+import com.intellij.util.containers.ContainerUtil;
 import consulo.ui.image.Image;
 import icons.JetgroovyIcons;
+
+import javax.annotation.Nonnull;
+import java.util.Collection;
+import java.util.LinkedHashSet;
 
 /**
  * Represents Groovy file properites, such as extension etc.
  *
  * @author ilyas
  */
-public class GroovyFileType extends LanguageFileType {
+public class GroovyFileType extends LanguageFileType
+{
+	public static final GroovyFileType GROOVY_FILE_TYPE = new GroovyFileType();
+	@Deprecated
+	public static final Language GROOVY_LANGUAGE = GroovyLanguage.INSTANCE;
+	public static final String DEFAULT_EXTENSION = "groovy";
 
-  public static final GroovyFileType GROOVY_FILE_TYPE = new GroovyFileType();
-  @Deprecated
-  public static final Language GROOVY_LANGUAGE = GroovyLanguage.INSTANCE;
-  @NonNls public static final String DEFAULT_EXTENSION = "groovy";
+	private GroovyFileType()
+	{
+		super(GroovyLanguage.INSTANCE);
+	}
 
-  private GroovyFileType() {
-    super(GroovyLanguage.INSTANCE);
-  }
+	@Nonnull
+	public String getId()
+	{
+		return "Groovy";
+	}
 
-  @Nonnull
-  @NonNls
-  public String getId() {
-    return "Groovy";
-  }
+	@Nonnull
+	public String getDescription()
+	{
+		return "Groovy Files";
+	}
 
-  @NonNls
-  @Nonnull
-  public String getDescription() {
-    return "Groovy Files";
-  }
+	@Nonnull
+	public String getDefaultExtension()
+	{
+		return DEFAULT_EXTENSION;
+	}
 
-  @Nonnull
-  @NonNls
-  public String getDefaultExtension() {
-    return DEFAULT_EXTENSION;
-  }
+	@Nonnull
+	public Image getIcon()
+	{
+		return JetgroovyIcons.Groovy.Groovy_16x16;
+	}
 
-  public Image getIcon() {
-    return JetgroovyIcons.Groovy.Groovy_16x16;
-  }
+	@Nonnull
+	public static FileType[] getGroovyEnabledFileTypes()
+	{
+		Collection<FileType> result = new LinkedHashSet<>();
+		result.addAll(ContainerUtil.filter(
+				FileTypeManager.getInstance().getRegisteredFileTypes(),
+				GroovyFileType::isGroovyEnabledFileType
+		));
+		return result.toArray(FileType.EMPTY_ARRAY);
+	}
+
+	private static boolean isGroovyEnabledFileType(FileType ft)
+	{
+		return ft instanceof GroovyEnabledFileType ||
+				ft instanceof LanguageFileType && ((LanguageFileType) ft).getLanguage() == GroovyLanguage.INSTANCE;
+	}
 }

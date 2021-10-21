@@ -21,7 +21,10 @@ import com.intellij.openapi.compiler.CompileContext;
 import com.intellij.openapi.compiler.CompileScope;
 import com.intellij.openapi.compiler.CompilerManager;
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.fileTypes.ExtensionFileNameMatcher;
+import com.intellij.openapi.fileTypes.FileNameMatcher;
 import com.intellij.openapi.fileTypes.FileType;
+import com.intellij.openapi.fileTypes.FileTypeManager;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.options.ShowSettingsUtil;
@@ -36,15 +39,16 @@ import com.intellij.psi.search.GlobalSearchScope;
 import consulo.compiler.impl.resourceCompiler.ResourceCompilerConfiguration;
 import consulo.groovy.module.extension.GroovyModuleExtension;
 import consulo.java.module.extension.JavaModuleExtension;
+import consulo.util.lang.StringUtil;
 import icons.JetgroovyIcons;
 import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.GroovyFileType;
-import org.jetbrains.plugins.groovy.GroovyFileTypeLoader;
 import org.jetbrains.plugins.groovy.config.GroovyConfigUtils;
 import org.jetbrains.plugins.groovy.util.LibrariesUtil;
 
 import javax.annotation.Nonnull;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -86,13 +90,11 @@ public class GroovyCompiler extends GroovyCompilerBase
 			return true;
 		}
 
-		final Set<String> scriptExtensions = GroovyFileTypeLoader.getCustomGroovyScriptExtensions();
-
 		final CompilerManager compilerManager = CompilerManager.getInstance(myProject);
-		Set<Module> modules = new HashSet<Module>();
+		Set<Module> modules = new HashSet<>();
 		for(VirtualFile file : files)
 		{
-			if(scriptExtensions.contains(file.getExtension()) || compilerManager.isExcludedFromCompilation(file) || ResourceCompilerConfiguration.getInstance(myProject).isResourceFile(file))
+			if(!StringUtil.equal(file.getExtension(), GroovyFileType.DEFAULT_EXTENSION, false) || compilerManager.isExcludedFromCompilation(file) || ResourceCompilerConfiguration.getInstance(myProject).isResourceFile(file))
 			{
 				continue;
 			}

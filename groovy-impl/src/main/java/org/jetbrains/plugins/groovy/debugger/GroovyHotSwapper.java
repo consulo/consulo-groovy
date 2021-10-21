@@ -6,6 +6,10 @@ import com.intellij.execution.configurations.RunConfiguration;
 import com.intellij.execution.configurations.RunProfile;
 import com.intellij.execution.executors.DefaultDebugExecutor;
 import com.intellij.execution.runners.JavaProgramPatcher;
+import com.intellij.openapi.fileTypes.ExtensionFileNameMatcher;
+import com.intellij.openapi.fileTypes.FileNameMatcher;
+import com.intellij.openapi.fileTypes.FileType;
+import com.intellij.openapi.fileTypes.FileTypeManager;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.project.Project;
@@ -22,12 +26,13 @@ import consulo.java.execution.configurations.OwnJavaParameters;
 import consulo.java.module.extension.JavaModuleExtension;
 import consulo.logging.Logger;
 import consulo.platform.Platform;
-import org.jetbrains.plugins.groovy.GroovyFileTypeLoader;
+import org.jetbrains.plugins.groovy.GroovyFileType;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.jar.Attributes;
 import java.util.regex.Pattern;
 
@@ -42,7 +47,7 @@ public class GroovyHotSwapper extends JavaProgramPatcher
 
 	private static final Pattern SPRING_LOADED_PATTERN = Pattern.compile("-javaagent:.+springloaded-core-[^/\\\\]+\\.jar");
 
-	private static boolean endsWithAny(String s, List<String> endings)
+	private static boolean endsWithAny(String s, Set<String> endings)
 	{
 		for(String extension : endings)
 		{
@@ -56,11 +61,19 @@ public class GroovyHotSwapper extends JavaProgramPatcher
 
 	private static boolean containsGroovyClasses(Project project)
 	{
-		final List<String> extensions = new ArrayList<String>();
-		for(String extension : GroovyFileTypeLoader.getAllGroovyExtensions())
+		final Set<String> extensions = new LinkedHashSet<>();
+		for(FileType type : GroovyFileType.getGroovyEnabledFileTypes())
 		{
-			extensions.add("." + extension);
+			List<FileNameMatcher> associations = FileTypeManager.getInstance().getAssociations(type);
+			for(FileNameMatcher association : associations)
+			{
+				if(association instanceof ExtensionFileNameMatcher em)
+				{
+					extensions.add("." + em.getExtension());
+				}
+			}
 		}
+
 		final GlobalSearchScope scope = GlobalSearchScope.projectScope(project);
 		for(String fileName : FilenameIndex.getAllFilenames(project))
 		{
