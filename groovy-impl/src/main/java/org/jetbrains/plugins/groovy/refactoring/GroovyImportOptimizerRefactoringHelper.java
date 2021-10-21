@@ -16,7 +16,6 @@
 
 package org.jetbrains.plugins.groovy.refactoring;
 
-import com.intellij.openapi.application.AccessToken;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.application.WriteAction;
 import com.intellij.openapi.progress.ProgressIndicator;
@@ -109,9 +108,7 @@ public class GroovyImportOptimizerRefactoringHelper implements RefactoringHelper
 			return;
 		}
 
-		AccessToken accessToken = WriteAction.start();
-
-		try
+		WriteAction.run(() ->
 		{
 			for(GroovyFile groovyFile : redundants.keySet())
 			{
@@ -130,11 +127,7 @@ public class GroovyImportOptimizerRefactoringHelper implements RefactoringHelper
 					}
 				}
 			}
-		}
-		finally
-		{
-			accessToken.finish();
-		}
+		});
 	}
 
 }

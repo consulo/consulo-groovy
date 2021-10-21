@@ -16,23 +16,7 @@
 
 package org.jetbrains.plugins.groovy.mvc;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.annotation.Nonnull;
-
-import org.jetbrains.annotations.NonNls;
-
-import javax.annotation.Nullable;
 import com.intellij.lang.properties.psi.PropertiesFile;
-import com.intellij.openapi.application.AccessToken;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.application.WriteAction;
 import com.intellij.openapi.diagnostic.Logger;
@@ -48,7 +32,6 @@ import com.intellij.openapi.roots.libraries.LibraryTable;
 import com.intellij.openapi.roots.libraries.LibraryUtil;
 import com.intellij.openapi.roots.ui.configuration.actions.ModuleDeleteProvider;
 import com.intellij.openapi.util.Comparing;
-import consulo.util.dataholder.Key;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -69,6 +52,13 @@ import consulo.roots.impl.ExcludedContentFolderTypeProvider;
 import consulo.roots.impl.ProductionContentFolderTypeProvider;
 import consulo.roots.impl.TestContentFolderTypeProvider;
 import consulo.roots.types.BinariesOrderRootType;
+import consulo.util.dataholder.Key;
+import org.jetbrains.annotations.NonNls;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.io.File;
+import java.util.*;
 
 /**
  * @author peter
@@ -644,8 +634,7 @@ public class MvcModuleStructureUtil
 
 		if(!isSdkEquals || !isLibrariesEquals)
 		{
-			AccessToken token = WriteAction.start();
-			try
+			WriteAction.run(() ->
 			{
 				final ModifiableRootModel model = auxRootManager.getModifiableModel();
 
@@ -660,11 +649,7 @@ public class MvcModuleStructureUtil
 				}
 
 				model.commit();
-			}
-			finally
-			{
-				token.finish();
-			}
+			});
 		}
 	}
 

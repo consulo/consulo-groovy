@@ -16,7 +16,6 @@
 
 package org.jetbrains.plugins.groovy.config;
 
-import com.intellij.openapi.application.AccessToken;
 import com.intellij.openapi.application.WriteAction;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
@@ -207,20 +206,15 @@ public abstract class GroovyConfigUtils extends AbstractConfigUtils
 					".library.found"), JetgroovyIcons.Groovy.Groovy_32x32);
 			if(result == 0)
 			{
-				AccessToken accessToken = WriteAction.start();
-
-				try
+				WriteAction.run(() ->
 				{
 					ModifiableRootModel model = ModuleRootManager.getInstance(module).getModifiableModel();
 					LibraryOrderEntry entry = model.addLibraryEntry(libraries[0]);
 					LibrariesUtil.placeEntryToCorrectPlace(model, entry);
 					model.commit();
-					return true;
-				}
-				finally
-				{
-					accessToken.finish();
-				}
+				});
+
+				return true;
 			}
 		}
 		return false;
