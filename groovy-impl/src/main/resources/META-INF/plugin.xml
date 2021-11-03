@@ -27,6 +27,10 @@
 	<depends>com.intellij.properties</depends>
 	<depends>consulo.java</depends>
 
+	<tags>
+		<tag>custom.language</tag>
+	</tags>
+
 	<!--<depends optional="true">AntSupport</depends>   -->
 
 	<extensionPoints>
