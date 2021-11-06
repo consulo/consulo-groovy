@@ -15,16 +15,18 @@
  */
 package org.jetbrains.plugins.groovy.annotator.checkers;
 
-import javax.annotation.Nonnull;
-
+import com.intellij.lang.annotation.AnnotationHolder;
+import com.intellij.lang.annotation.HighlightSeverity;
+import com.intellij.psi.PsiClass;
+import com.intellij.psi.PsiElement;
+import consulo.util.lang.Pair;
 import org.jetbrains.plugins.groovy.config.GroovyConfigUtils;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotation;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotationNameValuePair;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames;
-import com.intellij.lang.annotation.AnnotationHolder;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiElement;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author Max Medvedev
@@ -49,7 +51,11 @@ public class TypeCheckedAnnotationChecker extends CustomAnnotationChecker
 		}
 
 		GrAnnotationNameValuePair[] attributes = annotation.getParameterList().getAttributes();
-		checkAnnotationArguments(holder, (PsiClass) resolved, classReference, attributes, false);
+		Pair<PsiElement, String> r = checkAnnotationArguments((PsiClass) resolved, attributes, false);
+		if(r != null && r.getFirst() != null)
+		{
+			holder.newAnnotation(HighlightSeverity.ERROR, r.getSecond()).range(r.getFirst()).create();
+		}
 		return true;
 	}
 }

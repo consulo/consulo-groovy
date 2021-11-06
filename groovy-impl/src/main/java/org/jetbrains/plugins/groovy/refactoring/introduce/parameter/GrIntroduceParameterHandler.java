@@ -37,7 +37,7 @@ import com.intellij.util.PairFunction;
 import javax.annotation.Nonnull;
 
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrParametersOwner;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrParameterListOwner;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlock;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
@@ -112,9 +112,9 @@ public class GrIntroduceParameterHandler implements RefactoringActionHandler, Me
 
   private void findScope(@Nonnull final InitialInfo initialInfo, @Nonnull final Editor editor) {
     PsiElement place = initialInfo.getContext();
-    final List<GrParametersOwner> scopes = new ArrayList<GrParametersOwner>();
+    final List<GrParameterListOwner> scopes = new ArrayList<GrParameterListOwner>();
     while (true) {
-      final GrParametersOwner parent = PsiTreeUtil.getParentOfType(place, GrMethod.class, GrClosableBlock.class);
+      final GrParameterListOwner parent = PsiTreeUtil.getParentOfType(place, GrMethod.class, GrClosableBlock.class);
       if (parent == null) break;
       scopes.add(parent);
       place = parent;
@@ -124,7 +124,7 @@ public class GrIntroduceParameterHandler implements RefactoringActionHandler, Me
       throw new GrRefactoringError(GroovyRefactoringBundle.message("there.is.no.method.or.closure"));
     }
     else if (scopes.size() == 1 || ApplicationManager.getApplication().isUnitTestMode()) {
-      final GrParametersOwner owner = scopes.get(0);
+      final GrParameterListOwner owner = scopes.get(0);
       final PsiElement toSearchFor;
       if (owner instanceof GrMethod) {
         toSearchFor = SuperMethodWarningUtil.checkSuperMethod((PsiMethod)owner, RefactoringBundle.message("to.refactor"));
@@ -136,9 +136,9 @@ public class GrIntroduceParameterHandler implements RefactoringActionHandler, Me
       showDialog(new IntroduceParameterInfoImpl(initialInfo, owner, toSearchFor));
     }
     else {
-      myEnclosingMethodsPopup = MethodOrClosureScopeChooser.create(scopes, editor, this, new PairFunction<GrParametersOwner, PsiElement, Object>() {
+      myEnclosingMethodsPopup = MethodOrClosureScopeChooser.create(scopes, editor, this, new PairFunction<GrParameterListOwner, PsiElement, Object>() {
         @Override
-        public Object fun(GrParametersOwner owner, PsiElement element) {
+        public Object fun(GrParameterListOwner owner, PsiElement element) {
           showDialog(new IntroduceParameterInfoImpl(initialInfo, owner, element));
           return null;
         }

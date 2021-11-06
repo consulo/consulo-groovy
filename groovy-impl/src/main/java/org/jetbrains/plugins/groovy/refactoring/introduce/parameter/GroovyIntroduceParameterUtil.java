@@ -42,7 +42,7 @@ import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyRecursiveElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
 import org.jetbrains.plugins.groovy.lang.psi.api.signatures.GrClosureSignature;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrParametersOwner;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrParameterListOwner;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrArgumentList;
@@ -398,7 +398,7 @@ public class GroovyIntroduceParameterUtil
 
 	static PsiElement[] getOccurrences(GrIntroduceParameterSettings settings)
 	{
-		final GrParametersOwner scope = settings.getToReplaceIn();
+		final GrParameterListOwner scope = settings.getToReplaceIn();
 
 		final GrExpression expression = settings.getExpression();
 		if(expression != null)
@@ -491,7 +491,7 @@ public class GroovyIntroduceParameterUtil
 	static LinkedHashSet<String> suggestNames(GrVariable var,
 											  GrExpression expr,
 											  StringPartInfo stringPart,
-											  GrParametersOwner scope,
+											  GrParameterListOwner scope,
 											  Project project)
 	{
 		if(expr != null)

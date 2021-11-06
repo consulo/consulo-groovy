@@ -31,7 +31,7 @@ import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.GrListOrMap;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotationArrayInitializer;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotationNameValuePair;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrIfStatement;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrParametersOwner;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrParameterListOwner;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrSwitchStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
@@ -147,7 +147,7 @@ public class GroovyExpectedTypesProvider
 		@Override
 		public void visitReturnStatement(GrReturnStatement returnStatement)
 		{
-			GrParametersOwner parent = PsiTreeUtil.getParentOfType(returnStatement, GrMethod.class,
+			GrParameterListOwner parent = PsiTreeUtil.getParentOfType(returnStatement, GrMethod.class,
 					GrClosableBlock.class);
 			if(parent instanceof GrMethod)
 			{

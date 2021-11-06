@@ -20,7 +20,7 @@ import com.intellij.psi.PsiClassType;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiType;
 import consulo.util.collection.primitive.ints.IntList;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrParametersOwner;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrParameterListOwner;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlock;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
@@ -34,7 +34,7 @@ import javax.annotation.Nonnull;
  * @author Max Medvedev
  */
 public class ExtractClosureHelperImpl extends ExtractInfoHelperBase implements GrIntroduceParameterSettings {
-  private final GrParametersOwner myOwner;
+  private final GrParameterListOwner myOwner;
   private final PsiElement myToSearchFor;
 
   private final String myName;
@@ -67,7 +67,7 @@ public class ExtractClosureHelperImpl extends ExtractInfoHelperBase implements G
   }
 
   @Nonnull
-  public GrParametersOwner getToReplaceIn() {
+  public GrParameterListOwner getToReplaceIn() {
     return myOwner;
   }
 

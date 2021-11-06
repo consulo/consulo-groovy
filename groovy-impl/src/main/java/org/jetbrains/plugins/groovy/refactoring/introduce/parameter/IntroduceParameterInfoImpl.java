@@ -16,7 +16,7 @@
 package org.jetbrains.plugins.groovy.refactoring.introduce.parameter;
 
 import com.intellij.psi.PsiElement;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrParametersOwner;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrParameterListOwner;
 import org.jetbrains.plugins.groovy.refactoring.extract.ExtractInfoHelper;
 import org.jetbrains.plugins.groovy.refactoring.extract.ExtractInfoHelperBase;
 import org.jetbrains.plugins.groovy.refactoring.extract.InitialInfo;
@@ -25,10 +25,10 @@ import org.jetbrains.plugins.groovy.refactoring.extract.InitialInfo;
  * @author Max Medvedev
  */
 public class IntroduceParameterInfoImpl extends ExtractInfoHelperBase implements IntroduceParameterInfo, ExtractInfoHelper {
-  private final GrParametersOwner myOwner;
+  private final GrParameterListOwner myOwner;
   private final PsiElement myToSearchFor;
 
-  public IntroduceParameterInfoImpl(InitialInfo info, GrParametersOwner owner, PsiElement toSearchFor) {
+  public IntroduceParameterInfoImpl(InitialInfo info, GrParameterListOwner owner, PsiElement toSearchFor) {
     super(info);
     myOwner = owner;
     myToSearchFor = toSearchFor;
@@ -45,7 +45,7 @@ public class IntroduceParameterInfoImpl extends ExtractInfoHelperBase implements
   }
 
   @Override
-  public GrParametersOwner getToReplaceIn() {
+  public GrParameterListOwner getToReplaceIn() {
     return myOwner;
   }
 }

@@ -20,8 +20,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiType;
 import com.intellij.psi.ResolveState;
 import com.intellij.psi.scope.PsiScopeProcessor;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrParametersOwner;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
+import org.jetbrains.plugins.groovy.lang.psi.api.GrFunctionalExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameter;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameterList;
 
@@ -31,7 +30,7 @@ import javax.annotation.Nullable;
 /**
  * @author ilyas
  */
-public interface GrClosableBlock extends GrExpression, GrCodeBlock, GrParametersOwner
+public interface GrClosableBlock extends GrCodeBlock, GrFunctionalExpression
 {
 	GrClosableBlock[] EMPTY_ARRAY = new GrClosableBlock[0];
 

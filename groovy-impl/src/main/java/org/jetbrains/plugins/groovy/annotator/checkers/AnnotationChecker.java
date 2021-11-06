@@ -15,32 +15,27 @@
  */
 package org.jetbrains.plugins.groovy.annotator.checkers;
 
+import com.intellij.lang.annotation.AnnotationHolder;
+import com.intellij.psi.PsiAnnotationOwner;
+import com.intellij.psi.PsiClass;
+import com.intellij.psi.PsiElement;
+import consulo.util.lang.Pair;
 import javax.annotation.Nonnull;
-
 import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.annotator.GrRemoveAnnotationIntention;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotation;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
 import org.jetbrains.plugins.groovy.lang.psi.impl.auxiliary.modifiers.GrAnnotationCollector;
 import org.jetbrains.plugins.groovy.lang.resolve.ResolveUtil;
-import com.intellij.lang.annotation.AnnotationHolder;
-import com.intellij.psi.PsiAnnotationOwner;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiElement;
+
+import javax.annotation.Nullable;
 
 /**
  * Created by Max Medvedev on 25/03/14
  */
 public class AnnotationChecker
 {
-	private final AnnotationHolder myHolder;
-
-	public AnnotationChecker(@Nonnull AnnotationHolder holder)
-	{
-		myHolder = holder;
-	}
-
-	public void checkApplicability(@Nonnull GrAnnotation annotation, @javax.annotation.Nullable PsiAnnotationOwner owner)
+	public static void checkApplicability(@Nonnull GrAnnotation annotation, @Nullable PsiAnnotationOwner owner, @Nonnull AnnotationHolder holder, @Nonnull PsiElement toHighlight)
 	{
 		final GrCodeReferenceElement ref = annotation.getClassReference();
 		final PsiElement resolved = ref.resolve();
@@ -57,14 +52,14 @@ public class AnnotationChecker
 		{
 			if(qname != null)
 			{
-				myHolder.createErrorAnnotation(ref, GroovyBundle.message("class.is.not.annotation", qname));
+				holder.createErrorAnnotation(ref, GroovyBundle.message("class.is.not.annotation", qname));
 			}
 			return;
 		}
 
-		for(CustomAnnotationChecker checker : CustomAnnotationChecker.EP_NAME.getExtensions())
+		for(CustomAnnotationChecker checker : CustomAnnotationChecker.EP_NAME.getExtensionList())
 		{
-			if(checker.checkApplicability(myHolder, annotation))
+			if(checker.checkApplicability(holder, annotation))
 			{
 				return;
 			}
@@ -73,27 +68,28 @@ public class AnnotationChecker
 		String description = CustomAnnotationChecker.isAnnotationApplicable(annotation, owner);
 		if(description != null)
 		{
-			myHolder.createErrorAnnotation(ref, description).registerFix(new GrRemoveAnnotationIntention());
+			holder.createErrorAnnotation(ref, description).registerFix(new GrRemoveAnnotationIntention());
 		}
 	}
 
-	public void checkAnnotationArgumentList(@Nonnull GrAnnotation annotation)
+	@Nullable
+	public static Pair<PsiElement, String> checkAnnotationArgumentList(@Nonnull GrAnnotation annotation,
+																	   @Nonnull AnnotationHolder holder)
 	{
 		final PsiClass anno = ResolveUtil.resolveAnnotation(annotation);
 		if(anno == null)
 		{
-			return;
+			return null;
 		}
 
-		for(CustomAnnotationChecker checker : CustomAnnotationChecker.EP_NAME.getExtensions())
+		for(CustomAnnotationChecker checker : CustomAnnotationChecker.EP_NAME.getExtensionList())
 		{
-			if(checker.checkArgumentList(myHolder, annotation))
+			if(checker.checkArgumentList(holder, annotation))
 			{
-				return;
+				return Pair.create(null, null);
 			}
 		}
 
-		CustomAnnotationChecker.checkAnnotationArguments(myHolder, anno, annotation.getClassReference(),
-				annotation.getParameterList().getAttributes(), true);
+		return CustomAnnotationChecker.checkAnnotationArguments(anno, annotation.getParameterList().getAttributes(), true);
 	}
 }

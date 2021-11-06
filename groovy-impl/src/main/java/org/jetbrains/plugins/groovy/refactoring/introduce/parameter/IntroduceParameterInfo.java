@@ -16,7 +16,7 @@
 package org.jetbrains.plugins.groovy.refactoring.introduce.parameter;
 
 import com.intellij.psi.PsiElement;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrParametersOwner;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrParameterListOwner;
 import org.jetbrains.plugins.groovy.refactoring.extract.ExtractInfoHelper;
 
 /**
@@ -25,5 +25,5 @@ import org.jetbrains.plugins.groovy.refactoring.extract.ExtractInfoHelper;
 public interface IntroduceParameterInfo extends ExtractInfoHelper {
   PsiElement getToSearchFor();
 
-  GrParametersOwner getToReplaceIn();
+  GrParameterListOwner getToReplaceIn();
 }

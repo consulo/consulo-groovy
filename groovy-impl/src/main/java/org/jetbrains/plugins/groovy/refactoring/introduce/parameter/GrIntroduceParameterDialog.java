@@ -43,7 +43,7 @@ import consulo.util.collection.primitive.ints.IntLists;
 import consulo.util.collection.primitive.objects.ObjectIntMap;
 import consulo.util.collection.primitive.objects.ObjectMaps;
 import org.jetbrains.plugins.groovy.GroovyFileType;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrParametersOwner;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrParameterListOwner;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlock;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
@@ -482,7 +482,7 @@ public class GrIntroduceParameterDialog extends DialogWrapper
 	@Nullable
 	private PsiClass getContainingClass()
 	{
-		final GrParametersOwner toReplaceIn = myInfo.getToReplaceIn();
+		final GrParameterListOwner toReplaceIn = myInfo.getToReplaceIn();
 		if(toReplaceIn instanceof GrMethod)
 		{
 			return ((GrMethod) toReplaceIn).getContainingClass();
@@ -506,7 +506,7 @@ public class GrIntroduceParameterDialog extends DialogWrapper
 
 		super.doOKAction();
 
-		final GrParametersOwner toReplaceIn = myInfo.getToReplaceIn();
+		final GrParameterListOwner toReplaceIn = myInfo.getToReplaceIn();
 
 		final GrExpression expr = GroovyIntroduceParameterUtil.findExpr(myInfo);
 		final GrVariable var = GroovyIntroduceParameterUtil.findVar(myInfo);

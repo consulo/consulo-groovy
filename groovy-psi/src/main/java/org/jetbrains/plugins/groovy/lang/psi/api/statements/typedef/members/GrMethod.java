@@ -27,7 +27,7 @@ import org.jetbrains.plugins.groovy.extensions.NamedArgumentDescriptor;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocCommentOwner;
 import org.jetbrains.plugins.groovy.lang.psi.GrNamedElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.GrModifierList;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrParametersOwner;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrParameterListOwner;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrTopLevelDefinition;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrCodeBlock;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrOpenBlock;
@@ -43,7 +43,7 @@ import com.intellij.util.ArrayFactory;
  * @author: Dmitry.Krasilschikov
  * @date: 26.03.2007
  */
-public interface GrMethod extends GrMembersDeclaration, GrNamedElement, PsiMethod, GrMember, GrParametersOwner, GrTopLevelDefinition, GrTypeParameterListOwner, GrDocCommentOwner
+public interface GrMethod extends GrMembersDeclaration, GrNamedElement, PsiMethod, GrMember, GrParameterListOwner, GrTopLevelDefinition, GrTypeParameterListOwner, GrDocCommentOwner
 {
 	GrMethod[] EMPTY_ARRAY = new GrMethod[0];
 

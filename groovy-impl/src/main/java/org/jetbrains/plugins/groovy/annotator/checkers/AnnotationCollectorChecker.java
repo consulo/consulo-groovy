@@ -15,16 +15,19 @@
  */
 package org.jetbrains.plugins.groovy.annotator.checkers;
 
-import javax.annotation.Nonnull;
-import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.GrModifierList;
-import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotation;
-import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotationNameValuePair;
-import org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames;
 import com.intellij.lang.annotation.AnnotationHolder;
+import com.intellij.lang.annotation.HighlightSeverity;
 import com.intellij.openapi.util.Condition;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.containers.ContainerUtil;
+import consulo.util.lang.Pair;
+import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.GrModifierList;
+import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotation;
+import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotationNameValuePair;
+import org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author Medvdedev Max
@@ -52,8 +55,11 @@ public class AnnotationCollectorChecker extends CustomAnnotationChecker
 			return true;
 		}
 		final GrAnnotationNameValuePair[] attributes = annotation.getParameterList().getAttributes();
-		CustomAnnotationChecker.checkAnnotationArguments(holder, clazz, annotation.getClassReference(), attributes,
-				false);
+		Pair<PsiElement, String> r = CustomAnnotationChecker.checkAnnotationArguments(clazz, attributes, false);
+		if(r != null && r.getFirst() != null)
+		{
+			holder.newAnnotation(HighlightSeverity.ERROR, r.getSecond()).range(r.getFirst()).create();
+		}
 
 		return true;
 	}

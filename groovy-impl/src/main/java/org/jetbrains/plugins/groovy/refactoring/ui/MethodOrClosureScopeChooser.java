@@ -26,7 +26,6 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 import javax.swing.DefaultListCellRenderer;
-import javax.swing.Icon;
 import javax.swing.JCheckBox;
 import javax.swing.JList;
 import javax.swing.JPanel;
@@ -38,7 +37,7 @@ import javax.swing.event.ListSelectionListener;
 
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrParametersOwner;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrParameterListOwner;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlock;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrAssignmentExpression;
@@ -91,10 +90,10 @@ public class MethodOrClosureScopeChooser {
    * @param callback is invoked if any scope was chosen. The first arg is this scope and the second arg is a psielement to search for (super method of chosen method or
    *                 variable if the scope is a closure)
    */
-  public static JBPopup create(List<? extends GrParametersOwner> scopes,
+  public static JBPopup create(List<? extends GrParameterListOwner> scopes,
                                final Editor editor,
                                final JBPopupOwner popupRef,
-                               final PairFunction<GrParametersOwner, PsiElement, Object> callback) {
+                               final PairFunction<GrParameterListOwner, PsiElement, Object> callback) {
     final JPanel panel = new JPanel(new BorderLayout());
     final JCheckBox superMethod = new JCheckBox(USE_SUPER_METHOD_OF, true);
     superMethod.setMnemonic('U');
@@ -132,7 +131,7 @@ public class MethodOrClosureScopeChooser {
       EditorColorsManager.getInstance().getGlobalScheme().getAttributes(EditorColors.SEARCH_RESULT_ATTRIBUTES);
     list.addListSelectionListener(new ListSelectionListener() {
       public void valueChanged(final ListSelectionEvent e) {
-        final GrParametersOwner selectedMethod = (GrParametersOwner)list.getSelectedValue();
+        final GrParameterListOwner selectedMethod = (GrParameterListOwner)list.getSelectedValue();
         if (selectedMethod == null) return;
         dropHighlighters(highlighters);
         updateView(selectedMethod, editor, attributes, highlighters, superMethod);
@@ -147,7 +146,7 @@ public class MethodOrClosureScopeChooser {
       Pair.<ActionListener, KeyStroke>create(new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-          final GrParametersOwner ToSearchIn = (GrParametersOwner)list.getSelectedValue();
+          final GrParameterListOwner ToSearchIn = (GrParameterListOwner)list.getSelectedValue();
           final JBPopup popup = popupRef.get();
           if (popup != null && popup.isVisible()) {
             popup.cancel();
@@ -185,7 +184,7 @@ public class MethodOrClosureScopeChooser {
   }
 
 
-  public static void updateView(GrParametersOwner selectedMethod,
+  public static void updateView(GrParameterListOwner selectedMethod,
                                 Editor editor,
                                 TextAttributes attributes,
                                 List<RangeHighlighter> highlighters,
@@ -207,7 +206,7 @@ public class MethodOrClosureScopeChooser {
   }
 
   @javax.annotation.Nullable
-  public static GrVariable findVariableToUse(@Nonnull GrParametersOwner owner) {
+  public static GrVariable findVariableToUse(@Nonnull GrParameterListOwner owner) {
     final PsiElement parent = owner.getParent();
     if (parent instanceof GrVariable) return (GrVariable)parent;
     if (parent instanceof GrAssignmentExpression &&

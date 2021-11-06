@@ -24,7 +24,7 @@ import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.intentions.base.PsiElementPredicate;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrParametersOwner;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrParameterListOwner;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
@@ -146,10 +146,10 @@ public class CreateParameterFromUsageFix extends Intention implements MethodOrCl
 		else if(scopes.size() > 1)
 		{
 			myEnclosingMethodsPopup = MethodOrClosureScopeChooser.create(scopes, editor, this,
-					new PairFunction<GrParametersOwner, PsiElement, Object>()
+					new PairFunction<GrParameterListOwner, PsiElement, Object>()
 			{
 				@Override
-				public Object fun(GrParametersOwner owner, PsiElement element)
+				public Object fun(GrParameterListOwner owner, PsiElement element)
 				{
 					showDialog((PsiMethod) owner, ref, project);
 					return null;

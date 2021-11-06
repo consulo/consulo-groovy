@@ -56,7 +56,6 @@ import javax.annotation.Nullable;
  */
 public class GrClosableBlockImpl extends GrBlockImpl implements GrClosableBlock
 {
-
 	private volatile GrParameter[] mySyntheticItParameter;
 
 	public GrClosableBlockImpl(@Nonnull IElementType type, CharSequence buffer)

@@ -20,13 +20,15 @@ import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameter;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameterList;
 
+import javax.annotation.Nullable;
+
 /**
  * @author ven
  */
-public interface GrParametersOwner extends GroovyPsiElement {
+public interface GrParameterListOwner extends GroovyPsiElement {
   GrParameter[] getParameters();
 
-  @javax.annotation.Nullable
+  @Nullable
   GrParameterList getParameterList();
 
   boolean isVarArgs();
