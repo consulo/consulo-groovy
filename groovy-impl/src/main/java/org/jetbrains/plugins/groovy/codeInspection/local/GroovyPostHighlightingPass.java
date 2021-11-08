@@ -16,15 +16,28 @@
 
 package org.jetbrains.plugins.groovy.codeInspection.local;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.annotation.Nonnull;
-
+import com.intellij.codeHighlighting.TextEditorHighlightingPass;
+import com.intellij.codeInsight.daemon.HighlightDisplayKey;
+import com.intellij.codeInsight.daemon.impl.*;
+import com.intellij.codeInsight.daemon.impl.analysis.JavaHighlightUtil;
+import com.intellij.codeInsight.daemon.impl.quickfix.QuickFixAction;
+import com.intellij.codeInsight.intention.IntentionAction;
+import com.intellij.codeInsight.intention.QuickFixFactory;
+import com.intellij.codeInspection.InspectionProfile;
+import com.intellij.codeInspection.deadCode.UnusedDeclarationInspectionBase;
+import com.intellij.openapi.editor.Editor;
+import com.intellij.openapi.progress.ProgressIndicator;
+import com.intellij.openapi.roots.ProjectFileIndex;
+import com.intellij.openapi.roots.ProjectRootManager;
+import com.intellij.openapi.util.TextRange;
+import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.profile.codeInspection.InspectionProjectProfileManager;
+import com.intellij.psi.*;
+import com.intellij.psi.impl.PsiClassImplUtil;
+import com.intellij.psi.search.searches.OverridingMethodsSearch;
+import com.intellij.psi.search.searches.SuperMethodsSearch;
+import com.intellij.util.containers.ContainerUtil;
 import consulo.annotation.access.RequiredReadAction;
 import org.jetbrains.plugins.groovy.codeInspection.GroovyInspectionBundle;
 import org.jetbrains.plugins.groovy.codeInspection.GroovyQuickFixFactory;
@@ -44,43 +57,9 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMe
 import org.jetbrains.plugins.groovy.lang.psi.api.toplevel.imports.GrImportStatement;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyImportUtil;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
-import com.intellij.codeHighlighting.TextEditorHighlightingPass;
-import com.intellij.codeInsight.daemon.HighlightDisplayKey;
-import com.intellij.codeInsight.daemon.impl.AnnotationHolderImpl;
-import com.intellij.codeInsight.daemon.impl.GlobalUsageHelper;
-import com.intellij.codeInsight.daemon.impl.HighlightInfo;
-import com.intellij.codeInsight.daemon.impl.HighlightInfoType;
-import com.intellij.codeInsight.daemon.impl.UnusedSymbolUtil;
-import com.intellij.codeInsight.daemon.impl.UpdateHighlightersUtil;
-import com.intellij.codeInsight.daemon.impl.analysis.JavaHighlightUtil;
-import com.intellij.codeInsight.daemon.impl.quickfix.QuickFixAction;
-import com.intellij.codeInsight.intention.IntentionAction;
-import com.intellij.codeInsight.intention.QuickFixFactory;
-import com.intellij.codeInspection.InspectionProfile;
-import com.intellij.codeInspection.ProblemHighlightType;
-import com.intellij.codeInspection.deadCode.UnusedDeclarationInspectionBase;
-import com.intellij.lang.annotation.Annotation;
-import com.intellij.lang.annotation.AnnotationHolder;
-import com.intellij.lang.annotation.AnnotationSession;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.progress.ProgressIndicator;
-import com.intellij.openapi.roots.ProjectFileIndex;
-import com.intellij.openapi.roots.ProjectRootManager;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.profile.codeInspection.InspectionProjectProfileManager;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiMember;
-import com.intellij.psi.PsiMethod;
-import com.intellij.psi.PsiModifier;
-import com.intellij.psi.PsiModifierListOwner;
-import com.intellij.psi.PsiNamedElement;
-import com.intellij.psi.PsiRecursiveElementWalkingVisitor;
-import com.intellij.psi.impl.PsiClassImplUtil;
-import com.intellij.psi.search.searches.OverridingMethodsSearch;
-import com.intellij.psi.search.searches.SuperMethodsSearch;
-import com.intellij.util.containers.ContainerUtil;
+
+import javax.annotation.Nonnull;
+import java.util.*;
 
 /**
  * @author ilyas
@@ -303,14 +282,12 @@ public class GroovyPostHighlightingPass extends TextEditorHighlightingPass
 			return;
 		}
 
-		AnnotationHolder annotationHolder = new AnnotationHolderImpl(new AnnotationSession(myFile));
-		List<HighlightInfo> infos = new ArrayList<HighlightInfo>(myUnusedDeclarations);
+		List<HighlightInfo> infos = new ArrayList<>(myUnusedDeclarations);
 		for(GrImportStatement unusedImport : myUnusedImports)
 		{
-			Annotation annotation = annotationHolder.createWarningAnnotation(calculateRangeToUse(unusedImport), GroovyInspectionBundle.message("unused.import"));
-			annotation.setHighlightType(ProblemHighlightType.LIKE_UNUSED_SYMBOL);
-			annotation.registerFix(GroovyQuickFixFactory.getInstance().createOptimizeImportsFix(false));
-			infos.add(HighlightInfo.fromAnnotation(annotation));
+			HighlightInfo info = HighlightInfo.newHighlightInfo(HighlightInfoType.UNUSED_SYMBOL).range(calculateRangeToUse(unusedImport)).descriptionAndTooltip(GroovyInspectionBundle.message("unused.import")).create();
+			QuickFixAction.registerQuickFixAction(info, GroovyQuickFixFactory.getInstance().createOptimizeImportsFix(false));
+			infos.add(info);
 		}
 
 		UpdateHighlightersUtil.setHighlightersToEditor(myProject, myDocument, 0, myFile.getTextLength(), infos,
