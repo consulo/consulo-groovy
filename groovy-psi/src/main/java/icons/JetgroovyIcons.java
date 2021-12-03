@@ -1,5 +1,6 @@
 package icons;
 
+import com.intellij.icons.AllIcons;
 import consulo.groovy.psi.icon.GroovyPsiIconGroup;
 import consulo.ui.image.Image;
 
@@ -18,8 +19,7 @@ public class JetgroovyIcons
 		public static final Image AnnotationType = GroovyPsiIconGroup.groovyAnnotationType();
 		public static final Image Ant_task = GroovyPsiIconGroup.groovyAnt_task();
 		public static final Image Class = GroovyPsiIconGroup.groovyClass();
-		public static final Image Def = GroovyPsiIconGroup.groovyDef();
-		public static final Image DynamicProperty = GroovyPsiIconGroup.groovyDynamicProperty();
+		public static final Image DynamicProperty = AllIcons.Nodes.Property;
 		public static final Image DynamicProperty_13 = GroovyPsiIconGroup.groovyDynamicProperty_13();
 		public static final Image Enum = GroovyPsiIconGroup.groovyEnum();
 		public static final Image Field = GroovyPsiIconGroup.groovyField();
@@ -28,7 +28,6 @@ public class JetgroovyIcons
 		public static final Image Gant_target = GroovyPsiIconGroup.groovyGant_target();
 		public static final Image Groovy_13x13 = GroovyPsiIconGroup.groovyGroovy_13x13();
 		public static final Image Groovy_16x16 = GroovyPsiIconGroup.groovyGroovy_16x16();
-		public static final Image Groovy_32x32 = GroovyPsiIconGroup.groovyGroovy_32x32();
 		public static final Image GroovyDoc = GroovyPsiIconGroup.groovyGroovyDoc();
 		public static final Image Interface = GroovyPsiIconGroup.groovyInterface();
 		public static final Image Method = GroovyPsiIconGroup.groovyMethod();

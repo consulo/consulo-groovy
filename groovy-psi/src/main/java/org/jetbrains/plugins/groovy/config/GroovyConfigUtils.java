@@ -203,7 +203,7 @@ public abstract class GroovyConfigUtils extends AbstractConfigUtils
 			final Library library = libraries[0];
 			int result = Messages.showOkCancelDialog(GroovyBundle.message("groovy.like.library.found.text",
 					module.getName(), library.getName(), getSDKLibVersion(library)), GroovyBundle.message("groovy.like" +
-					".library.found"), JetgroovyIcons.Groovy.Groovy_32x32);
+					".library.found"), Messages.getQuestionIcon());
 			if(result == 0)
 			{
 				WriteAction.run(() ->

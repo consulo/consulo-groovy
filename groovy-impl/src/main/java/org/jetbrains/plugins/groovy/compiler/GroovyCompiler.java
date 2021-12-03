@@ -21,10 +21,7 @@ import com.intellij.openapi.compiler.CompileContext;
 import com.intellij.openapi.compiler.CompileScope;
 import com.intellij.openapi.compiler.CompilerManager;
 import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.fileTypes.ExtensionFileNameMatcher;
-import com.intellij.openapi.fileTypes.FileNameMatcher;
 import com.intellij.openapi.fileTypes.FileType;
-import com.intellij.openapi.fileTypes.FileTypeManager;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.options.ShowSettingsUtil;
@@ -40,7 +37,6 @@ import consulo.compiler.impl.resourceCompiler.ResourceCompilerConfiguration;
 import consulo.groovy.module.extension.GroovyModuleExtension;
 import consulo.java.module.extension.JavaModuleExtension;
 import consulo.util.lang.StringUtil;
-import icons.JetgroovyIcons;
 import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.config.GroovyConfigUtils;
@@ -48,7 +44,6 @@ import org.jetbrains.plugins.groovy.util.LibrariesUtil;
 
 import javax.annotation.Nonnull;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -156,7 +151,7 @@ public class GroovyCompiler extends GroovyCompilerBase
 		{
 			final int result = Messages.showYesNoDialog(myProject, "You seem to have global Groovy AST transformations defined in your project,\n" + "but they won't be applied to your code because " +
 					"they are not marked as compiler resources.\n" + "Do you want to add them to compiler resource list?\n" + "(you can do it yourself later in Settings | Compiler | Resource " +
-					"patterns)", "AST Transformations Found", JetgroovyIcons.Groovy.Groovy_32x32);
+					"patterns)", "AST Transformations Found", Messages.getQuestionIcon());
 			if(result == 0)
 			{
 				ResourceCompilerConfiguration.getInstance(myProject).addResourceFilePattern(AST_TRANSFORM_FILE_NAME);
