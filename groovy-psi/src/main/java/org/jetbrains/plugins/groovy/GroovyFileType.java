@@ -21,6 +21,7 @@ import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.fileTypes.FileTypeManager;
 import com.intellij.openapi.fileTypes.LanguageFileType;
 import com.intellij.util.containers.ContainerUtil;
+import consulo.localize.LocalizeValue;
 import consulo.ui.image.Image;
 import icons.JetgroovyIcons;
 
@@ -52,9 +53,9 @@ public class GroovyFileType extends LanguageFileType
 	}
 
 	@Nonnull
-	public String getDescription()
+	public LocalizeValue getDescription()
 	{
-		return "Groovy Files";
+		return LocalizeValue.localizeTODO("Groovy Files");
 	}
 
 	@Nonnull

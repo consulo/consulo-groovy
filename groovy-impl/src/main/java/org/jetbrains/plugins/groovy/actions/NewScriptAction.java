@@ -26,6 +26,7 @@ import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
 import icons.JetgroovyIcons;
 import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.GroovyFileType;
@@ -80,7 +81,7 @@ public class NewScriptAction extends JavaCreateTemplateInPackageAction<GroovyFil
 		{
 			return (GroovyFile) file;
 		}
-		final String description = file.getFileType().getDescription();
+		final LocalizeValue description = file.getFileType().getDescription();
 		throw new IncorrectOperationException(GroovyBundle.message("groovy.file.extension.is.not.mapped.to.groovy.file" +
 				".type", description));
 	}

@@ -16,14 +16,6 @@
 
 package org.jetbrains.plugins.groovy.actions;
 
-import javax.annotation.Nonnull;
-
-import org.jetbrains.plugins.groovy.GroovyBundle;
-import org.jetbrains.plugins.groovy.GroovyFileType;
-import org.jetbrains.plugins.groovy.config.GroovyConfigUtils;
-import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
-import org.jetbrains.plugins.groovy.util.LibrariesUtil;
 import com.intellij.ide.IdeView;
 import com.intellij.ide.actions.CreateFileFromTemplateDialog;
 import com.intellij.ide.actions.JavaCreateTemplateInPackageAction;
@@ -45,8 +37,16 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.codeStyle.CodeStyleManager;
 import com.intellij.util.IncorrectOperationException;
-import consulo.awt.TargetAWT;
+import consulo.localize.LocalizeValue;
 import icons.JetgroovyIcons;
+import org.jetbrains.plugins.groovy.GroovyBundle;
+import org.jetbrains.plugins.groovy.GroovyFileType;
+import org.jetbrains.plugins.groovy.config.GroovyConfigUtils;
+import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
+import org.jetbrains.plugins.groovy.util.LibrariesUtil;
+
+import javax.annotation.Nonnull;
 
 public class NewGroovyClassAction extends JavaCreateTemplateInPackageAction<GrTypeDefinition> implements DumbAware
 {
@@ -152,7 +152,7 @@ public class NewGroovyClassAction extends JavaCreateTemplateInPackageAction<GrTy
 			CodeStyleManager.getInstance(fromTemplate.getManager()).reformat(fromTemplate);
 			return ((GroovyFile) fromTemplate).getTypeDefinitions()[0];
 		}
-		final String description = fromTemplate.getFileType().getDescription();
+		final LocalizeValue description = fromTemplate.getFileType().getDescription();
 		throw new IncorrectOperationException(GroovyBundle.message("groovy.file.extension.is.not.mapped.to.groovy.file" +
 				".type", description));
 	}
