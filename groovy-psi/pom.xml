@@ -63,6 +63,9 @@
 						</goals>
 					</execution>
 				</executions>
+				<configuration>
+					<targetBytecode>11</targetBytecode>
+				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>consulo.maven</groupId>
