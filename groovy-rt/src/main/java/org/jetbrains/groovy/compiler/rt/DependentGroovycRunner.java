@@ -329,16 +329,15 @@ public class DependentGroovycRunner {
       }
 
       @Override
-      public void addPhaseOperation(PrimaryClassNodeOperation op, int phase) {
+      public void addPhaseOperation(IPrimaryClassNodeOperation op, int phase) {
         if (!annoRemovedAdded && phase == Phases.CONVERSION && op.getClass().getName().startsWith("org.codehaus.groovy.tools.javac.JavaAwareCompilationUnit$")) {
           annoRemovedAdded = true;
-          super.addPhaseOperation(new PrimaryClassNodeOperation() {
-            @Override
-            public void call(final SourceUnit source, GeneratorContext context, ClassNode classNode) throws CompilationFailedException {
+          super.addPhaseOperation(new IPrimaryClassNodeOperation() {
+            public void call(final SourceUnit sourceUnit, GeneratorContext generatorContext, ClassNode classNode) throws CompilationFailedException {
               final ClassCodeVisitorSupport annoRemover = new ClassCodeVisitorSupport() {
                 @Override
                 protected SourceUnit getSourceUnit() {
-                  return source;
+                  return sourceUnit;
                 }
 
                 public void visitClass(ClassNode node) {
@@ -368,8 +367,7 @@ public class DependentGroovycRunner {
               };
               try {
                 annoRemover.visitClass(classNode);
-              }
-              catch (LinkageError ignored) {
+              } catch (LinkageError ignored) {
               }
             }
           }, phase);
