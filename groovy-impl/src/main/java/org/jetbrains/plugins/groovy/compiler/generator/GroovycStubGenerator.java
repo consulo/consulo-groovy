@@ -181,31 +181,23 @@ public class GroovycStubGenerator extends GroovyCompilerBase
 
 		((CompileContextEx) compileContext).assignModule(tempOutput, module, tests, this);
 
-		if(ApplicationManager.getApplication().isCompilerServerMode())
+		ProgressIndicator indicator = compileContext.getProgressIndicator();
+		indicator.pushState();
+
+		try
 		{
-			// we dont need use psi for stub building
-			runGroovycCompiler(compileContext, module, toCompile, true, tempOutput, sink, tests);
+			final GroovyToJavaGenerator generator = new GroovyToJavaGenerator(myProject, new HashSet<VirtualFile>(toCompile));
+			for(int i = 0; i < toCompile.size(); i++)
+			{
+				indicator.setFraction((double) i / toCompile.size());
+
+				final Collection<VirtualFile> stubFiles = generateItems(generator, toCompile.get(i), tempOutput, compileContext, myProject);
+				((CompileContextEx) compileContext).addScope(new FileSetCompileScope(stubFiles, new Module[]{module}));
+			}
 		}
-		else
+		finally
 		{
-			ProgressIndicator indicator = compileContext.getProgressIndicator();
-			indicator.pushState();
-
-			try
-			{
-				final GroovyToJavaGenerator generator = new GroovyToJavaGenerator(myProject, new HashSet<VirtualFile>(toCompile));
-				for(int i = 0; i < toCompile.size(); i++)
-				{
-					indicator.setFraction((double) i / toCompile.size());
-
-					final Collection<VirtualFile> stubFiles = generateItems(generator, toCompile.get(i), tempOutput, compileContext, myProject);
-					((CompileContextEx) compileContext).addScope(new FileSetCompileScope(stubFiles, new Module[]{module}));
-				}
-			}
-			finally
-			{
-				indicator.popState();
-			}
+			indicator.popState();
 		}
 	}
 
@@ -276,10 +268,8 @@ public class GroovycStubGenerator extends GroovyCompilerBase
 		};
 		if(ApplicationManager.getApplication().isDispatchThread())
 		{
-			if(!ApplicationManager.getApplication().isCompilerServerMode())
-			{
-				assert ApplicationManager.getApplication().isUnitTestMode();
-			}
+			assert ApplicationManager.getApplication().isUnitTestMode();
+
 			runnable.run();
 		}
 		else
