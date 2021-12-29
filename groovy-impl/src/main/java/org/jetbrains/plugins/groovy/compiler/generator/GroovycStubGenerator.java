@@ -71,7 +71,7 @@ import java.util.*;
  */
 public class GroovycStubGenerator extends GroovyCompilerBase
 {
-	private static Logger LOG = Logger.getInstance("#org.jetbrains.plugins.groovy.compiler.generator.GroovycStubGenerator");
+	private static Logger LOG = Logger.getInstance(GroovycStubGenerator.class);
 
 	public static final String GROOVY_STUBS = "groovyStubs";
 
@@ -85,19 +85,11 @@ public class GroovycStubGenerator extends GroovyCompilerBase
 	{
 		final ExcludedEntriesConfiguration excluded = GroovyCompilerConfiguration.getExcludeConfiguration(myProject);
 
-		@SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
-		FactoryMap<Pair<Module, Boolean>, Boolean> hasJava = new FactoryMap<Pair<Module, Boolean>, Boolean>()
-		{
-			@Override
-			protected Boolean create(Pair<Module, Boolean> key)
-			{
-				return containsJavaSources(key.first, key.second);
-			}
-		};
+		Map<Pair<Module, Boolean>, Boolean> hasJava = FactoryMap.create(key -> containsJavaSources(key.first, key.second));
 
 		ProjectFileIndex index = ProjectRootManager.getInstance(myProject).getFileIndex();
 
-		List<VirtualFile> total = new ArrayList<VirtualFile>();
+		List<VirtualFile> total = new ArrayList<>();
 		for(final VirtualFile virtualFile : virtualFiles)
 		{
 			if(!excluded.isExcluded(virtualFile) && GroovyNamesUtil.isIdentifier(virtualFile.getNameWithoutExtension()))
@@ -186,7 +178,7 @@ public class GroovycStubGenerator extends GroovyCompilerBase
 
 		try
 		{
-			final GroovyToJavaGenerator generator = new GroovyToJavaGenerator(myProject, new HashSet<VirtualFile>(toCompile));
+			final GroovyToJavaGenerator generator = new GroovyToJavaGenerator(myProject, new HashSet<>(toCompile));
 			for(int i = 0; i < toCompile.size(); i++)
 			{
 				indicator.setFraction((double) i / toCompile.size());
@@ -239,7 +231,7 @@ public class GroovycStubGenerator extends GroovyCompilerBase
 				AccessToken token = WriteAction.start();
 				try
 				{
-					VfsUtil.processFilesRecursively(dir, new Processor<VirtualFile>()
+					VfsUtil.processFilesRecursively(dir, new Processor<>()
 					{
 						@Override
 						public boolean process(VirtualFile virtualFile)
