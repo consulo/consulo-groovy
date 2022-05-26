@@ -15,14 +15,13 @@
  */
 package org.jetbrains.plugins.groovy.annotator.checkers;
 
-import com.intellij.codeInsight.daemon.JavaErrorMessages;
+import com.intellij.codeInsight.daemon.JavaErrorBundle;
 import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.openapi.extensions.ExtensionPointName;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.*;
 import com.intellij.psi.search.GlobalSearchScope;
 import consulo.util.lang.Pair;
-import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.GrFunctionalExpression;
@@ -35,6 +34,7 @@ import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
 import org.jetbrains.plugins.groovy.lang.psi.impl.auxiliary.annotation.GrAnnotationImpl;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -71,9 +71,9 @@ public abstract class CustomAnnotationChecker
 		PsiAnnotation.TargetType[] elementTypeFields = GrAnnotationImpl.getApplicableElementTypeFields(ownerToUse);
 		if(elementTypeFields.length != 0 && !GrAnnotationImpl.isAnnotationApplicableTo(annotation, elementTypeFields))
 		{
-			String annotationTargetText = JavaErrorMessages.message("annotation.target." + elementTypeFields[0]);
+			String annotationTargetText = JavaErrorBundle.message("annotation.target." + elementTypeFields[0]);
 			GrCodeReferenceElement ref = annotation.getClassReference();
-			return JavaErrorMessages.message("annotation.not.applicable", ref.getText(), annotationTargetText);
+			return JavaErrorBundle.message("annotation.not.applicable", ref.getText(), annotationTargetText);
 		}
 
 		return null;
