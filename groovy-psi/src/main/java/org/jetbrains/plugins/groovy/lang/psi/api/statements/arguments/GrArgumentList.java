@@ -16,14 +16,15 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments;
 
-import javax.annotation.Nonnull;
-
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiExpressionList;
-import com.intellij.util.IncorrectOperationException;
+import com.intellij.java.language.psi.PsiExpressionList;
+import consulo.language.psi.PsiElement;
+import consulo.language.util.IncorrectOperationException;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.util.GrNamedArgumentsOwner;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author ilyas
@@ -38,10 +39,10 @@ public interface GrArgumentList extends GroovyPsiElement, GrNamedArgumentsOwner,
 
   GrArgumentList replaceWithArgumentList(GrArgumentList newArgList) throws IncorrectOperationException;
 
-  @javax.annotation.Nullable
+  @Nullable
   PsiElement getLeftParen();
 
-  @javax.annotation.Nullable
+  @Nullable
   PsiElement getRightParen();
 
   int getExpressionArgumentIndex(GrExpression arg);

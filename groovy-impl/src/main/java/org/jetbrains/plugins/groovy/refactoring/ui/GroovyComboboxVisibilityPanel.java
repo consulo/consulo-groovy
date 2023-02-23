@@ -15,11 +15,11 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.ui;
 
-import com.intellij.refactoring.ui.ComboBoxVisibilityPanel;
+import consulo.ide.impl.idea.refactoring.ui.ComboBoxVisibilityPanel;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.GrModifier;
 
-import static com.intellij.psi.PsiModifier.*;
-import static com.intellij.util.VisibilityUtil.toPresentableText;
+import static com.intellij.java.language.psi.PsiModifier.*;
+import static com.intellij.java.language.util.VisibilityUtil.toPresentableText;
 
 /**
  * @author Max Medvedev

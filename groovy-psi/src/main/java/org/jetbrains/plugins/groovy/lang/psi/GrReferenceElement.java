@@ -15,21 +15,22 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi;
 
-import javax.annotation.Nonnull;
-
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiPolyVariantReference;
-import com.intellij.psi.PsiType;
-import com.intellij.util.IncorrectOperationException;
+import com.intellij.java.language.psi.PsiType;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiPolyVariantReference;
+import consulo.language.util.IncorrectOperationException;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeArgumentList;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author ven
  */
 public interface GrReferenceElement<Q extends PsiElement> extends GroovyPsiElement, PsiPolyVariantReference, GrQualifiedReference<Q> {
   @Override
-  @javax.annotation.Nullable
+  @Nullable
   String getReferenceName();
 
   @Override
@@ -44,7 +45,7 @@ public interface GrReferenceElement<Q extends PsiElement> extends GroovyPsiEleme
   @Nonnull
   PsiType[] getTypeArguments();
 
-  @javax.annotation.Nullable
+  @Nullable
   GrTypeArgumentList getTypeArgumentList();
 
   @Nonnull

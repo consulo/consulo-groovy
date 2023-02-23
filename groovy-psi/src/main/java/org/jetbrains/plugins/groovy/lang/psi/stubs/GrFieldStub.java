@@ -15,16 +15,17 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.stubs;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.intellij.java.language.impl.psi.impl.PsiImplUtil;
+import consulo.index.io.StringRef;
+import consulo.language.psi.stub.IStubElementType;
+import consulo.language.psi.stub.NamedStub;
+import consulo.language.psi.stub.StubBase;
+import consulo.language.psi.stub.StubElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrEnumConstant;
-import com.intellij.psi.impl.PsiImplUtil;
-import com.intellij.psi.stubs.IStubElementType;
-import com.intellij.psi.stubs.NamedStub;
-import com.intellij.psi.stubs.StubBase;
-import com.intellij.psi.stubs.StubElement;
-import com.intellij.util.io.StringRef;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author ilyas
@@ -45,7 +46,7 @@ public class GrFieldStub extends StubBase<GrField> implements NamedStub<GrField>
                          final String[] annotations,
                          String[] namedParameters,
                          final IStubElementType elemType,
-                         byte flags, @javax.annotation.Nullable String typeText) {
+                         byte flags, @Nullable String typeText) {
     super(parent, elemType);
     myName = name;
     myAnnotations = annotations;

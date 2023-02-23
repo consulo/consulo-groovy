@@ -15,21 +15,19 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.inline;
 
-import com.intellij.lang.refactoring.InlineHandler;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.fileEditor.FileEditorManager;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.wm.WindowManager;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiReference;
-import com.intellij.psi.PsiSubstitutor;
-import com.intellij.psi.util.PsiFormatUtil;
-import com.intellij.psi.util.PsiFormatUtilBase;
-import com.intellij.refactoring.util.CommonRefactoringUtil;
-import com.intellij.usageView.UsageInfo;
-import com.intellij.util.containers.MultiMap;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.intellij.java.language.psi.PsiSubstitutor;
+import com.intellij.java.language.psi.util.PsiFormatUtil;
+import com.intellij.java.language.psi.util.PsiFormatUtilBase;
+import consulo.codeEditor.Editor;
+import consulo.fileEditor.FileEditorManager;
+import consulo.language.editor.refactoring.inline.InlineHandler;
+import consulo.language.editor.refactoring.util.CommonRefactoringUtil;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiReference;
+import consulo.project.Project;
+import consulo.project.ui.wm.WindowManager;
+import consulo.usage.UsageInfo;
+import consulo.util.collection.MultiMap;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
@@ -40,6 +38,9 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrRefere
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrAccessorMethod;
 import org.jetbrains.plugins.groovy.refactoring.GroovyRefactoringBundle;
 import org.jetbrains.plugins.groovy.refactoring.GroovyRefactoringUtil;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import static org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil.LOG;
 import static org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil.skipParentheses;
@@ -78,8 +79,13 @@ public class GrVariableInliner implements InlineHandler.Inliner {
       if (resolveResult.getElement() instanceof GrAccessorMethod && !resolveResult.isInvokedOnProperty()) {
         final PsiElement parent = expr.getParent();
         if (!(parent instanceof GrCall && parent instanceof GrExpression)) {
-          conflicts.putValue(expr, GroovyRefactoringBundle.message("reference.to.accessor.0.is.used", CommonRefactoringUtil.htmlEmphasize(PsiFormatUtil.formatMethod(
-            (GrAccessorMethod)resolveResult.getElement(), PsiSubstitutor.EMPTY, PsiFormatUtilBase.SHOW_NAME | PsiFormatUtilBase.SHOW_PARAMETERS, PsiFormatUtilBase.SHOW_TYPE))));
+          conflicts.putValue(expr,
+                             GroovyRefactoringBundle.message("reference.to.accessor.0.is.used",
+                                                             CommonRefactoringUtil.htmlEmphasize(PsiFormatUtil.formatMethod(
+                                                               (GrAccessorMethod)resolveResult.getElement(),
+                                                               PsiSubstitutor.EMPTY,
+                                                               PsiFormatUtilBase.SHOW_NAME | PsiFormatUtilBase.SHOW_PARAMETERS,
+                                                               PsiFormatUtilBase.SHOW_TYPE))));
         }
       }
     }

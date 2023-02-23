@@ -15,13 +15,18 @@
  */
 package org.jetbrains.plugins.groovy.gotoclass;
 
-import com.intellij.navigation.ChooseByNameContributor;
-import com.intellij.navigation.NavigationItem;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.psi.stubs.StubIndex;
-import com.intellij.util.ArrayUtil;
+import consulo.ide.navigation.ChooseByNameContributor;
+import consulo.language.psi.scope.GlobalSearchScope;
+import consulo.language.psi.stub.StubIndex;
+import consulo.navigation.NavigationItem;
+import consulo.project.Project;
+import consulo.language.psi.scope.GlobalSearchScope;
+import consulo.language.psi.stub.StubIndex;
+import consulo.util.collection.ArrayUtil;
 import javax.annotation.Nonnull;
+
+import consulo.project.Project;
+import consulo.util.collection.ArrayUtil;
 import org.jetbrains.plugins.groovy.lang.psi.stubs.index.GrAnnotationMethodNameIndex;
 import org.jetbrains.plugins.groovy.lang.psi.stubs.index.GrFieldNameIndex;
 import org.jetbrains.plugins.groovy.lang.psi.stubs.index.GrMethodNameIndex;

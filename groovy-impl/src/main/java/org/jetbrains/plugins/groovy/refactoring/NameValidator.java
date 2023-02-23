@@ -16,7 +16,7 @@
 
 package org.jetbrains.plugins.groovy.refactoring;
 
-import com.intellij.openapi.project.Project;
+import consulo.project.Project;
 
 /**
  * @author ilyas

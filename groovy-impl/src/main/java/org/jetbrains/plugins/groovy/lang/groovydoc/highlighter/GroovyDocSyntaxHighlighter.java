@@ -21,15 +21,20 @@ import java.util.Map;
 
 import javax.annotation.Nonnull;
 
+import consulo.colorScheme.TextAttributesKey;
+import consulo.language.ast.IElementType;
+import consulo.language.ast.TokenSet;
+import consulo.language.editor.highlight.SyntaxHighlighterBase;
+import consulo.language.lexer.Lexer;
 import org.jetbrains.plugins.groovy.highlighter.GroovySyntaxHighlighter;
 import org.jetbrains.plugins.groovy.lang.groovydoc.lexer.GroovyDocElementTypeImpl;
 import org.jetbrains.plugins.groovy.lang.groovydoc.lexer.GroovyDocLexer;
 import org.jetbrains.plugins.groovy.lang.groovydoc.lexer.GroovyDocTokenTypes;
-import com.intellij.lexer.Lexer;
-import com.intellij.openapi.editor.colors.TextAttributesKey;
-import com.intellij.openapi.fileTypes.SyntaxHighlighterBase;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.tree.TokenSet;
+import consulo.language.lexer.Lexer;
+import consulo.colorScheme.TextAttributesKey;
+import consulo.language.editor.highlight.SyntaxHighlighterBase;
+import consulo.language.ast.IElementType;
+import consulo.language.ast.TokenSet;
 
 /**
  * @author ilyas

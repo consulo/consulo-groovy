@@ -15,14 +15,15 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.type;
 
-import static com.intellij.psi.util.PsiUtil.extractIterableTypeParameter;
-import static org.jetbrains.plugins.groovy.codeInspection.type.GroovyTypeCheckVisitorHelper.*;
-
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.intellij.java.language.impl.psi.impl.PsiSubstitutorImpl;
+import com.intellij.java.language.psi.*;
+import consulo.language.ast.IElementType;
+import consulo.language.editor.inspection.LocalQuickFix;
+import consulo.language.editor.inspection.ProblemHighlightType;
+import consulo.language.psi.PsiElement;
+import consulo.logging.Logger;
+import consulo.util.collection.ContainerUtil;
+import consulo.util.lang.function.Condition;
 import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.annotator.GrHighlightUtil;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspectionVisitor;
@@ -66,21 +67,18 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUt
 import org.jetbrains.plugins.groovy.lang.psi.typeEnhancers.ClosureParameterEnhancer;
 import org.jetbrains.plugins.groovy.lang.psi.typeEnhancers.ClosureParamsEnhancer;
 import org.jetbrains.plugins.groovy.lang.psi.typeEnhancers.GrTypeConverter.ApplicableTo;
-import org.jetbrains.plugins.groovy.lang.psi.util.GdkMethodUtil;
-import org.jetbrains.plugins.groovy.lang.psi.util.GrInnerClassConstructorUtil;
-import org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames;
-import org.jetbrains.plugins.groovy.lang.psi.util.GroovyConstantExpressionEvaluator;
-import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
+import org.jetbrains.plugins.groovy.lang.psi.util.*;
 import org.jetbrains.plugins.groovy.lang.resolve.ResolveUtil;
-import com.intellij.codeInspection.LocalQuickFix;
-import com.intellij.codeInspection.ProblemHighlightType;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.util.Condition;
-import com.intellij.psi.*;
-import com.intellij.psi.impl.PsiSubstitutorImpl;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.util.Function;
-import com.intellij.util.containers.ContainerUtil;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+
+import static com.intellij.java.language.psi.util.PsiUtil.extractIterableTypeParameter;
+import static org.jetbrains.plugins.groovy.codeInspection.type.GroovyTypeCheckVisitorHelper.*;
 
 public class GroovyTypeCheckVisitor extends BaseInspectionVisitor {
 
@@ -357,7 +355,7 @@ public class GroovyTypeCheckVisitor extends BaseInspectionVisitor {
         final GrReferenceExpression callRef = factory.createReferenceExpressionFromText("qualifier.call", invoked);
         callRef.setQualifier(invoked);
         return checkMethodApplicability(methodResolveResult, checkUnknownArgs, new DelegatingCallInfo<T>(info) {
-          @javax.annotation.Nullable
+          @Nullable
           @Override
           public GrExpression getInvokedExpression() {
             return callRef;
@@ -375,7 +373,7 @@ public class GroovyTypeCheckVisitor extends BaseInspectionVisitor {
             return new GroovyResolveResult[]{methodResolveResult};
           }
 
-          @javax.annotation.Nullable
+          @Nullable
           @Override
           public PsiType getQualifierInstanceType() {
             return info.getInvokedExpression().getType();
@@ -616,7 +614,7 @@ public class GroovyTypeCheckVisitor extends BaseInspectionVisitor {
 
 
   private void processAssignment(@Nonnull PsiType lType,
-                                 @javax.annotation.Nullable PsiType rType,
+                                 @Nullable PsiType rType,
                                  @Nonnull GroovyPsiElement context,
                                  @Nonnull PsiElement elementToHighlight) {
     if (rType == null) return;
@@ -715,7 +713,7 @@ public class GroovyTypeCheckVisitor extends BaseInspectionVisitor {
   @Override
   protected void registerError(@Nonnull PsiElement location,
                                @Nonnull String description,
-                               @javax.annotation.Nullable LocalQuickFix[] fixes,
+                               @Nullable LocalQuickFix[] fixes,
                                ProblemHighlightType highlightType) {
     if (PsiUtil.isCompileStatic(location)) {
       // filter all errors here, error will be highlighted by annotator
@@ -881,7 +879,7 @@ public class GroovyTypeCheckVisitor extends BaseInspectionVisitor {
     super.visitMethod(method);
 
     final PsiTypeParameter[] parameters = method.getTypeParameters();
-    final Map<PsiTypeParameter, PsiType> map = ContainerUtil.newHashMap();
+    final Map<PsiTypeParameter, PsiType> map = new HashMap<>();
     for (PsiTypeParameter parameter : parameters) {
       final PsiClassType[] types = parameter.getSuperTypes();
       final PsiType bound = PsiIntersectionType.createIntersection(types);
@@ -922,12 +920,7 @@ public class GroovyTypeCheckVisitor extends BaseInspectionVisitor {
     GrParameter[] parameters = parameterList.getParameters();
     if (parameters.length > 0) {
       List<PsiType[]> signatures = ClosureParamsEnhancer.findFittingSignatures((GrClosableBlock)parent);
-      final List<PsiType> paramTypes = ContainerUtil.map(parameters, new Function<GrParameter, PsiType>() {
-        @Override
-        public PsiType fun(GrParameter parameter) {
-          return parameter.getType();
-        }
-      });
+      final List<PsiType> paramTypes = ContainerUtil.map(parameters, parameter -> parameter.getType());
 
       if (signatures.size() > 1) {
         final PsiType[] fittingSignature = ContainerUtil.find(signatures, new Condition<PsiType[]>() {

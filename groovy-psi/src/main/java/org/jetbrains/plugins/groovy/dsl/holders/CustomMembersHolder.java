@@ -16,9 +16,9 @@
 
 package org.jetbrains.plugins.groovy.dsl.holders;
 
+import consulo.language.psi.resolve.PsiScopeProcessor;
+import consulo.language.psi.resolve.ResolveState;
 import org.jetbrains.plugins.groovy.dsl.GroovyClassDescriptor;
-import com.intellij.psi.ResolveState;
-import com.intellij.psi.scope.PsiScopeProcessor;
 
 /**
  * @author ilyas

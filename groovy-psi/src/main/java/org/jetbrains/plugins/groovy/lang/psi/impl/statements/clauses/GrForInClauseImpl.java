@@ -16,8 +16,10 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.clauses;
 
-import javax.annotation.Nonnull;
-
+import consulo.language.ast.ASTNode;
+import consulo.language.psi.PsiElement;
+import consulo.language.util.IncorrectOperationException;
+import consulo.util.lang.ObjectUtil;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrParameterListOwner;
@@ -26,17 +28,14 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpres
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameter;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameterList;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyPsiElementImpl;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
-import com.intellij.util.IncorrectOperationException;
-import com.intellij.util.ObjectUtils;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author ilyas
  */
-public class GrForInClauseImpl extends GroovyPsiElementImpl implements GrForInClause, GrParameterListOwner
-{
-
+public class GrForInClauseImpl extends GroovyPsiElementImpl implements GrForInClause, GrParameterListOwner {
   public GrForInClauseImpl(@Nonnull ASTNode node) {
     super(node);
   }
@@ -72,7 +71,7 @@ public class GrForInClauseImpl extends GroovyPsiElementImpl implements GrForInCl
   }
 
   @Override
-  @javax.annotation.Nullable
+  @Nullable
   public GrExpression getIteratedExpression() {
     return findExpressionChild(this);
   }
@@ -84,6 +83,6 @@ public class GrForInClauseImpl extends GroovyPsiElementImpl implements GrForInCl
     if (in != null) return in;
 
     PsiElement colon = findChildByType(GroovyTokenTypes.mCOLON);
-    return ObjectUtils.assertNotNull(colon);
+    return ObjectUtil.assertNotNull(colon);
   }
 }

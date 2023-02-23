@@ -15,51 +15,50 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.changeSignature;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
-import javax.swing.JPanel;
-import javax.swing.ListSelectionModel;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.intellij.java.impl.refactoring.changeSignature.ExceptionsTableModel;
+import com.intellij.java.impl.refactoring.changeSignature.ThrownExceptionInfo;
+import com.intellij.java.impl.refactoring.ui.JavaCodeFragmentTableCellEditor;
+import com.intellij.java.impl.refactoring.util.CanonicalTypes;
+import com.intellij.java.language.psi.*;
+import consulo.document.event.DocumentAdapter;
+import consulo.document.event.DocumentEvent;
+import consulo.ide.impl.idea.refactoring.changeSignature.CallerChooserBase;
+import consulo.ide.impl.idea.refactoring.changeSignature.ChangeSignatureDialogBase;
+import consulo.ide.impl.idea.refactoring.ui.CodeFragmentTableCellRenderer;
+import consulo.ide.impl.idea.refactoring.ui.VisibilityPanelBase;
+import consulo.language.editor.refactoring.BaseRefactoringProcessor;
+import consulo.language.editor.refactoring.RefactoringBundle;
+import consulo.language.file.LanguageFileType;
+import consulo.language.psi.PsiCodeFragment;
+import consulo.language.psi.PsiElement;
+import consulo.logging.Logger;
+import consulo.project.Project;
+import consulo.ui.ex.awt.IdeBorderFactory;
+import consulo.ui.ex.awt.ToolbarDecorator;
+import consulo.ui.ex.awt.table.JBTable;
+import consulo.ui.ex.awt.tree.Tree;
+import consulo.util.collection.ContainerUtil;
+import consulo.util.lang.Pair;
+import consulo.util.lang.StringUtil;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.GrModifier;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
 import org.jetbrains.plugins.groovy.refactoring.GroovyRefactoringBundle;
 import org.jetbrains.plugins.groovy.refactoring.ui.GroovyComboboxVisibilityPanel;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.editor.event.DocumentAdapter;
-import com.intellij.openapi.editor.event.DocumentEvent;
-import com.intellij.openapi.fileTypes.LanguageFileType;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.Pair;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.*;
-import com.intellij.refactoring.BaseRefactoringProcessor;
-import com.intellij.refactoring.RefactoringBundle;
-import com.intellij.refactoring.changeSignature.CallerChooserBase;
-import com.intellij.refactoring.changeSignature.ChangeSignatureDialogBase;
-import com.intellij.refactoring.changeSignature.ExceptionsTableModel;
-import com.intellij.refactoring.changeSignature.ThrownExceptionInfo;
-import com.intellij.refactoring.ui.CodeFragmentTableCellRenderer;
-import com.intellij.refactoring.ui.JavaCodeFragmentTableCellEditor;
-import com.intellij.refactoring.ui.VisibilityPanelBase;
-import com.intellij.refactoring.util.CanonicalTypes;
-import com.intellij.ui.IdeBorderFactory;
-import com.intellij.ui.ToolbarDecorator;
-import com.intellij.ui.table.JBTable;
-import com.intellij.ui.treeStructure.Tree;
-import com.intellij.util.Consumer;
-import com.intellij.util.Function;
-import com.intellij.util.containers.ContainerUtil;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.swing.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.function.Consumer;
 
 /**
  * @author Max Medvedev
  */
-public class GrChangeSignatureDialog extends ChangeSignatureDialogBase<GrParameterInfo, PsiMethod, String, GrMethodDescriptor, GrParameterTableModelItem, GrParameterTableModel > {
+public class GrChangeSignatureDialog extends ChangeSignatureDialogBase<GrParameterInfo, PsiMethod, String, GrMethodDescriptor, GrParameterTableModelItem, GrParameterTableModel> {
   private static final Logger LOG = Logger.getInstance(GrChangeSignatureDialog.class);
 
   private static final String INDENT = "    ";
@@ -88,7 +87,13 @@ public class GrChangeSignatureDialog extends ChangeSignatureDialogBase<GrParamet
   protected BaseRefactoringProcessor createRefactoringProcessor() {
     final CanonicalTypes.Type type = getReturnType();
     final ThrownExceptionInfo[] exceptionInfos = myExceptionsModel.getThrownExceptions();
-    final GrChangeInfoImpl info = new GrChangeInfoImpl(myMethod.getMethod(), getVisibility(), type, getMethodName(), getParameters(), exceptionInfos, isGenerateDelegate());
+    final GrChangeInfoImpl info = new GrChangeInfoImpl(myMethod.getMethod(),
+                                                       getVisibility(),
+                                                       type,
+                                                       getMethodName(),
+                                                       getParameters(),
+                                                       exceptionInfos,
+                                                       isGenerateDelegate());
     return new GrChangeSignatureProcessor(myProject, info);
   }
 
@@ -307,11 +312,7 @@ public class GrChangeSignatureDialog extends ChangeSignatureDialogBase<GrParamet
 
     final List<GrParameterInfo> infos = getParameters();
     if (infos.size() > 0) {
-      final List<String> paramsText = ContainerUtil.map(infos, new Function<GrParameterInfo, String>() {
-        public String fun(GrParameterInfo info) {
-          return generateParameterText(info);
-        }
-      });
+      final List<String> paramsText = ContainerUtil.map(infos, info -> generateParameterText(info));
       builder.append("\n").append(INDENT);
       builder.append(StringUtil.join(paramsText, ",\n" + INDENT));
       builder.append('\n');
@@ -321,11 +322,7 @@ public class GrChangeSignatureDialog extends ChangeSignatureDialogBase<GrParamet
     final PsiTypeCodeFragment[] exceptions = myExceptionsModel.getTypeCodeFragments();
     if (exceptions.length > 0) {
       builder.append("\nthrows\n");
-      final List<String> exceptionNames = ContainerUtil.map(exceptions, new Function<PsiTypeCodeFragment, String>() {
-        public String fun(PsiTypeCodeFragment fragment) {
-          return fragment.getText();
-        }
-      });
+      final List<String> exceptionNames = ContainerUtil.map(exceptions, fragment -> fragment.getText());
 
       builder.append(INDENT).append(StringUtil.join(exceptionNames, ",\n" + INDENT));
     }

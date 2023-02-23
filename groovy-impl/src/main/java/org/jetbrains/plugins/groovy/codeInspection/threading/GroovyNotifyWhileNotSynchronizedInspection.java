@@ -15,16 +15,12 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.threading;
 
-import javax.annotation.Nonnull;
-
-import com.intellij.psi.CommonClassNames;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiMethod;
-import com.intellij.psi.PsiModifier;
-import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.java.language.psi.CommonClassNames;
+import com.intellij.java.language.psi.PsiClass;
+import com.intellij.java.language.psi.PsiMethod;
+import com.intellij.java.language.psi.PsiModifier;
+import consulo.language.psi.util.PsiTreeUtil;
 import org.jetbrains.annotations.Nls;
-
-import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
@@ -34,6 +30,9 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpres
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.path.GrMethodCallExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class GroovyNotifyWhileNotSynchronizedInspection extends BaseInspection {
   @Nls

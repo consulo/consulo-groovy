@@ -15,9 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.control.finalVar;
 
-import com.intellij.util.containers.ContainerUtil;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import consulo.util.collection.ContainerUtil;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
 import org.jetbrains.plugins.groovy.lang.psi.controlFlow.Instruction;
 import org.jetbrains.plugins.groovy.lang.psi.controlFlow.ReadWriteVariableInstruction;
@@ -25,10 +23,9 @@ import org.jetbrains.plugins.groovy.lang.psi.dataFlow.DFAEngine;
 import org.jetbrains.plugins.groovy.lang.psi.dataFlow.DfaInstance;
 import org.jetbrains.plugins.groovy.lang.psi.dataFlow.Semilattice;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.*;
 
 /**
  * @author Max Medvedev
@@ -99,8 +96,8 @@ public class InvalidWriteAccessSearcher {
   }
 
   private static class MyData {
-    private final Set<String> myInitialized = ContainerUtil.newHashSet();
-    private final Set<String> myOverInitialized = ContainerUtil.newHashSet();
+    private final Set<String> myInitialized = new HashSet<>();
+    private final Set<String> myOverInitialized = new HashSet<>();
 
     public MyData(List<MyData> ins) {
       for (MyData data : ins) {

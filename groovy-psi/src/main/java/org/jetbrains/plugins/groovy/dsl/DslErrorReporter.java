@@ -15,10 +15,11 @@
  */
 package org.jetbrains.plugins.groovy.dsl;
 
+import consulo.ide.ServiceManager;
+import consulo.project.Project;
+import consulo.virtualFileSystem.VirtualFile;
+
 import javax.annotation.Nonnull;
-import com.intellij.openapi.components.ServiceManager;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vfs.VirtualFile;
 
 public abstract class DslErrorReporter
 {

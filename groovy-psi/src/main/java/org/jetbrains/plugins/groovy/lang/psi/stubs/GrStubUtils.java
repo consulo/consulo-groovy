@@ -16,25 +16,25 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.stubs;
 
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.PsiModifier;
-import com.intellij.psi.PsiModifierList;
-import com.intellij.psi.PsiModifierListOwner;
-import com.intellij.psi.PsiNameHelper;
-import com.intellij.psi.stubs.StubElement;
-import com.intellij.psi.stubs.StubInputStream;
-import com.intellij.psi.stubs.StubOutputStream;
-import com.intellij.util.ArrayUtil;
-import com.intellij.util.containers.ContainerUtil;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.intellij.java.language.psi.PsiModifier;
+import com.intellij.java.language.psi.PsiModifierList;
+import com.intellij.java.language.psi.PsiModifierListOwner;
+import com.intellij.java.language.psi.PsiNameHelper;
+import consulo.language.psi.stub.StubElement;
+import consulo.language.psi.stub.StubInputStream;
+import consulo.language.psi.stub.StubOutputStream;
+import consulo.logging.Logger;
+import consulo.util.collection.ArrayUtil;
+import consulo.util.collection.ContainerUtil;
+import consulo.util.lang.StringUtil;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.GrModifierList;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotation;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeElement;
 import org.jetbrains.plugins.groovy.lang.psi.impl.auxiliary.modifiers.GrModifierListImpl;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.List;
 
@@ -72,20 +72,20 @@ public class GrStubUtils {
     return annNames;
   }
 
-  public static void writeNullableString(StubOutputStream dataStream, @javax.annotation.Nullable String typeText) throws IOException {
+  public static void writeNullableString(StubOutputStream dataStream, @Nullable String typeText) throws IOException {
     dataStream.writeBoolean(typeText != null);
     if (typeText != null) {
       dataStream.writeUTFFast(typeText);
     }
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   public static String readNullableString(StubInputStream dataStream) throws IOException {
     final boolean hasTypeText = dataStream.readBoolean();
     return hasTypeText ? dataStream.readUTFFast() : null;
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   public static String getTypeText(@Nullable GrTypeElement typeElement) {
     return typeElement == null ? null : typeElement.getText();
   }
@@ -128,7 +128,7 @@ public class GrStubUtils {
   }
 
   @Nonnull
-  public static String getShortTypeText(@javax.annotation.Nullable String text) {
+  public static String getShortTypeText(@Nullable String text) {
     if (text == null) {
       return "";
     }
@@ -139,7 +139,7 @@ public class GrStubUtils {
     return PsiNameHelper.getShortClassName(text.substring(0, i)) + text.substring(i);
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   public static String getPackageName(final GrFileStub stub) {
     for (StubElement child : stub.getChildrenStubs()) {
       if (child instanceof GrPackageDefinitionStub) {

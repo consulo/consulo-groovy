@@ -15,20 +15,20 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.stubs.elements;
 
-import com.intellij.psi.impl.java.stubs.index.JavaStubIndexKeys;
-import com.intellij.psi.stubs.IndexSink;
-import com.intellij.psi.stubs.StubElement;
-import com.intellij.psi.stubs.StubInputStream;
-import com.intellij.psi.stubs.StubOutputStream;
-import com.intellij.util.ArrayUtil;
-import com.intellij.util.io.StringRef;
-import javax.annotation.Nonnull;
+import com.intellij.java.language.impl.psi.impl.java.stubs.index.JavaStubIndexKeys;
+import consulo.index.io.StringRef;
+import consulo.language.psi.stub.IndexSink;
+import consulo.language.psi.stub.StubElement;
+import consulo.language.psi.stub.StubInputStream;
+import consulo.language.psi.stub.StubOutputStream;
+import consulo.util.collection.ArrayUtil;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
 import org.jetbrains.plugins.groovy.lang.psi.stubs.GrMethodStub;
 import org.jetbrains.plugins.groovy.lang.psi.stubs.GrStubUtils;
 import org.jetbrains.plugins.groovy.lang.psi.stubs.index.GrAnnotatedMemberIndex;
 import org.jetbrains.plugins.groovy.lang.psi.stubs.index.GrMethodNameIndex;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.util.Set;
 

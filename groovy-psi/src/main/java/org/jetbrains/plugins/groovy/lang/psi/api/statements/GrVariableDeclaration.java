@@ -1,16 +1,15 @@
 package org.jetbrains.plugins.groovy.lang.psi.api.statements;
 
-import javax.annotation.Nonnull;
-
-import com.intellij.psi.PsiType;
-import com.intellij.util.ArrayFactory;
+import com.intellij.java.language.psi.PsiType;
+import consulo.util.collection.ArrayFactory;
 import org.jetbrains.annotations.NonNls;
-
-import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.GrModifier;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMembersDeclaration;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeElement;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author: Dmitry.Krasilschikov
@@ -31,7 +30,7 @@ public interface GrVariableDeclaration extends GrStatement, GrMembersDeclaration
   @Nonnull
   GrVariable[] getVariables();
 
-  void setType(@javax.annotation.Nullable PsiType type);
+  void setType(@Nullable PsiType type);
 
   boolean isTuple();
 

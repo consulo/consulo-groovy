@@ -16,11 +16,11 @@
 
 package org.jetbrains.plugins.groovy.lang.overriding;
 
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiMethod;
-import com.intellij.psi.search.searches.DirectClassInheritorsSearch;
-import com.intellij.psi.search.searches.OverridingMethodsSearch;
+import com.intellij.java.language.psi.PsiClass;
+import com.intellij.java.language.psi.PsiFile;
+import com.intellij.java.language.psi.PsiMethod;
+import com.intellij.java.language.psi.search.searches.DirectClassInheritorsSearch;
+import com.intellij.java.language.psi.search.searches.OverridingMethodsSearch;
 import com.intellij.testFramework.fixtures.LightCodeInsightFixtureTestCase;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.util.TestUtils;

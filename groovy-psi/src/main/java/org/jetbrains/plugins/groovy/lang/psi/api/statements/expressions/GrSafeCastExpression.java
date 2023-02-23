@@ -17,16 +17,17 @@
 package org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeElement;
-import com.intellij.psi.PsiPolyVariantReference;
+import consulo.language.psi.PsiPolyVariantReference;
 
 /**
  * @author ven
  */
 public interface GrSafeCastExpression extends GrExpression, PsiPolyVariantReference {
-  @javax.annotation.Nullable
+  @Nullable
   GrTypeElement getCastTypeElement();
 
   @Nonnull

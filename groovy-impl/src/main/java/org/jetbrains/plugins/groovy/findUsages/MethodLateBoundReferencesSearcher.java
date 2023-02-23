@@ -16,19 +16,23 @@
 
 package org.jetbrains.plugins.groovy.findUsages;
 
-import com.intellij.openapi.application.QueryExecutorBase;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.roots.ProjectRootManager;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiMethod;
-import com.intellij.psi.PsiReference;
-import com.intellij.psi.search.*;
-import com.intellij.psi.search.searches.MethodReferencesSearch;
-import com.intellij.psi.util.PropertyUtil;
-import com.intellij.util.Processor;
+import com.intellij.java.indexing.search.searches.MethodReferencesSearch;
+import com.intellij.java.language.psi.PsiMethod;
+import com.intellij.java.language.psi.util.PropertyUtil;
+import consulo.application.util.function.Processor;
+import consulo.content.scope.SearchScope;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.PsiReference;
+import consulo.language.psi.scope.GlobalSearchScope;
+import consulo.language.psi.search.RequestResultProcessor;
+import consulo.language.psi.search.SearchRequestCollector;
+import consulo.language.psi.search.UsageSearchContext;
+import consulo.module.content.ProjectRootManager;
+import consulo.project.Project;
+import consulo.project.util.query.QueryExecutorBase;
+import consulo.util.lang.StringUtil;
+import consulo.virtualFileSystem.VirtualFile;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrMethodCall;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
 import org.jetbrains.plugins.groovy.lang.psi.impl.PsiImplUtil;

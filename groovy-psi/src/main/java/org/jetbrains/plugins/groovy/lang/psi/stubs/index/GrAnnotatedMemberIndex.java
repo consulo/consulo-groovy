@@ -17,14 +17,15 @@ package org.jetbrains.plugins.groovy.lang.psi.stubs.index;
 
 import javax.annotation.Nonnull;
 
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.stubs.StringStubIndexExtension;
-import com.intellij.psi.stubs.StubIndexKey;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.stub.StringStubIndexExtension;
+import consulo.language.psi.stub.StubIndexKey;
 
 /**
  * @author ilyas
  */
-public class GrAnnotatedMemberIndex extends StringStubIndexExtension<PsiElement> {
+public class GrAnnotatedMemberIndex extends StringStubIndexExtension<PsiElement>
+{
   public static final StubIndexKey<String, PsiElement> KEY = StubIndexKey.createIndexKey("gr.annot.members");
 
   @Nonnull

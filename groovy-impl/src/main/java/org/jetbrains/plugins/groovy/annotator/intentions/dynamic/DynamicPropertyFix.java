@@ -15,16 +15,14 @@
  */
 package org.jetbrains.plugins.groovy.annotator.intentions.dynamic;
 
-import com.intellij.codeInsight.intention.IntentionAction;
-import com.intellij.codeInsight.intention.LowPriorityAction;
-import com.intellij.codeInspection.ProblemDescriptor;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiFile;
-import com.intellij.util.IncorrectOperationException;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.intellij.java.language.psi.PsiClass;
+import consulo.codeEditor.Editor;
+import consulo.language.editor.inspection.ProblemDescriptor;
+import consulo.language.editor.intention.IntentionAction;
+import consulo.language.editor.intention.LowPriorityAction;
+import consulo.language.psi.PsiFile;
+import consulo.language.util.IncorrectOperationException;
+import consulo.project.Project;
 import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.annotator.intentions.QuickfixUtil;
 import org.jetbrains.plugins.groovy.annotator.intentions.dynamic.ui.DynamicDialog;
@@ -33,6 +31,9 @@ import org.jetbrains.plugins.groovy.annotator.intentions.dynamic.ui.DynamicPrope
 import org.jetbrains.plugins.groovy.codeInspection.GroovyFix;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrArgumentLabel;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author Maxim.Medvedev
@@ -101,7 +102,8 @@ public class DynamicPropertyFix extends GroovyFix implements IntentionAction, Lo
   }
 
   @Override
-  protected void doFix(Project project, ProblemDescriptor descriptor) throws IncorrectOperationException {
+  protected void doFix(Project project, ProblemDescriptor descriptor) throws IncorrectOperationException
+  {
     invokeInner();
   }
 

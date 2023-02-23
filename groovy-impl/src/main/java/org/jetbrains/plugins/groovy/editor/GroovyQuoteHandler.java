@@ -16,29 +16,34 @@
 
 package org.jetbrains.plugins.groovy.editor;
 
-import com.intellij.codeInsight.editorActions.MultiCharQuoteHandler;
-import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.editor.highlighter.HighlighterIterator;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.tree.IElementType;
+import consulo.codeEditor.Editor;
+import consulo.codeEditor.HighlighterIterator;
+import consulo.document.Document;
+import consulo.document.util.TextRange;
+import consulo.language.ast.IElementType;
+import consulo.language.editor.action.FileQuoteHandler;
+import consulo.language.editor.action.MultiCharQuoteHandler;
+import consulo.virtualFileSystem.fileType.FileType;
+import org.jetbrains.plugins.groovy.GroovyFileType;
+
+import javax.annotation.Nonnull;
 
 import static org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes.*;
 
 /**
  * @author ven
  */
-public class GroovyQuoteHandler implements MultiCharQuoteHandler {
+public class GroovyQuoteHandler implements MultiCharQuoteHandler, FileQuoteHandler {
 
   public boolean isClosingQuote(HighlighterIterator iterator, int offset) {
-    final IElementType tokenType = iterator.getTokenType();
+    final IElementType tokenType = (IElementType)iterator.getTokenType();
 
     if (tokenType == mGSTRING_END) return true;
     if (tokenType == mSTRING_LITERAL || tokenType == mGSTRING_LITERAL) {
       int start = iterator.getStart();
       int end = iterator.getEnd();
       return end - start >= 1 && offset == end - 1 ||
-             end - start >= 5 && offset >= end - 3;
+        end - start >= 5 && offset >= end - 3;
     }
     if (tokenType == mREGEX_END) {
       int start = iterator.getStart();
@@ -49,7 +54,7 @@ public class GroovyQuoteHandler implements MultiCharQuoteHandler {
   }
 
   public boolean isOpeningQuote(HighlighterIterator iterator, int offset) {
-    final IElementType tokenType = iterator.getTokenType();
+    final IElementType tokenType = (IElementType)iterator.getTokenType();
 
     if (tokenType == mGSTRING_BEGIN || tokenType == mREGEX_BEGIN) return true;
     if (tokenType == mGSTRING_LITERAL || tokenType == mSTRING_LITERAL) {
@@ -60,7 +65,7 @@ public class GroovyQuoteHandler implements MultiCharQuoteHandler {
   }
 
   public boolean hasNonClosedLiteral(Editor editor, HighlighterIterator iterator, int offset) {
-    final IElementType tokenType = iterator.getTokenType();
+    final IElementType tokenType = (IElementType)iterator.getTokenType();
     if (tokenType == mSTRING_LITERAL || tokenType == mGSTRING_BEGIN || tokenType == mGSTRING_LITERAL || tokenType == mGSTRING_CONTENT) {
       final Document document = iterator.getDocument();
       if (document == null) return false;
@@ -74,7 +79,7 @@ public class GroovyQuoteHandler implements MultiCharQuoteHandler {
   }
 
   public boolean isInsideLiteral(HighlighterIterator iterator) {
-    final IElementType tokenType = iterator.getTokenType();
+    final IElementType tokenType = (IElementType)iterator.getTokenType();
     return tokenType == mSTRING_LITERAL || tokenType == mGSTRING_LITERAL;
   }
 
@@ -94,5 +99,11 @@ public class GroovyQuoteHandler implements MultiCharQuoteHandler {
       if ("$/".equals(quote)) return "/$";
     }
     return null;
+  }
+
+  @Nonnull
+  @Override
+  public FileType getFileType() {
+    return GroovyFileType.GROOVY_FILE_TYPE;
   }
 }

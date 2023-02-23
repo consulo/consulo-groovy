@@ -15,253 +15,215 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.intellij.java.language.psi.*;
+import com.intellij.java.language.psi.codeStyle.JavaCodeStyleManager;
+import consulo.document.util.TextRange;
+import consulo.language.ast.ASTNode;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiPackage;
+import consulo.language.psi.PsiReference;
+import consulo.language.util.IncorrectOperationException;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GrReferenceElement;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeArgumentList;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeElement;
-import com.intellij.lang.ASTNode;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.JavaPsiFacade;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiMember;
-import com.intellij.psi.PsiNameHelper;
-import com.intellij.psi.PsiReference;
-import com.intellij.psi.PsiType;
-import com.intellij.psi.codeStyle.JavaCodeStyleManager;
-import com.intellij.util.IncorrectOperationException;
-import consulo.psi.PsiPackage;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author ven
  */
 public abstract class GrReferenceElementImpl<Q extends PsiElement> extends GroovyPsiElementImpl implements
-		GrReferenceElement<Q>
-{
-	private volatile String myCachedQName = null;
-	private volatile String myCachedTextSkipWhiteSpaceAndComments;
+  GrReferenceElement<Q> {
+  private volatile String myCachedQName = null;
+  private volatile String myCachedTextSkipWhiteSpaceAndComments;
 
-	public GrReferenceElementImpl(@Nonnull ASTNode node)
-	{
-		super(node);
-	}
+  public GrReferenceElementImpl(@Nonnull ASTNode node) {
+    super(node);
+  }
 
-	@Override
-	public PsiReference getReference()
-	{
-		return this;
-	}
+  @Override
+  public PsiReference getReference() {
+    return this;
+  }
 
-	@Override
-	public void subtreeChanged()
-	{
-		myCachedQName = null;
-		myCachedTextSkipWhiteSpaceAndComments = null;
-		super.subtreeChanged();
-	}
+  @Override
+  public void subtreeChanged() {
+    myCachedQName = null;
+    myCachedTextSkipWhiteSpaceAndComments = null;
+    super.subtreeChanged();
+  }
 
-	@Override
-	public String getReferenceName()
-	{
-		PsiElement nameElement = getReferenceNameElement();
-		if(nameElement != null)
-		{
-			return nameElement.getText();
-		}
-		return null;
-	}
+  @Override
+  public String getReferenceName() {
+    PsiElement nameElement = getReferenceNameElement();
+    if (nameElement != null) {
+      return nameElement.getText();
+    }
+    return null;
+  }
 
-	@Override
-	public PsiElement getElement()
-	{
-		return this;
-	}
+  @Override
+  public PsiElement getElement() {
+    return this;
+  }
 
-	@Override
-	public TextRange getRangeInElement()
-	{
-		final PsiElement refNameElement = getReferenceNameElement();
-		if(refNameElement != null)
-		{
-			final int offsetInParent = refNameElement.getStartOffsetInParent();
-			return new TextRange(offsetInParent, offsetInParent + refNameElement.getTextLength());
-		}
-		return new TextRange(0, getTextLength());
-	}
+  @Override
+  public TextRange getRangeInElement() {
+    final PsiElement refNameElement = getReferenceNameElement();
+    if (refNameElement != null) {
+      final int offsetInParent = refNameElement.getStartOffsetInParent();
+      return new TextRange(offsetInParent, offsetInParent + refNameElement.getTextLength());
+    }
+    return new TextRange(0, getTextLength());
+  }
 
-	@Override
-	public PsiElement handleElementRenameSimple(String newElementName) throws IncorrectOperationException
-	{
-		PsiElement nameElement = getReferenceNameElement();
-		if(nameElement != null)
-		{
-			ASTNode node = nameElement.getNode();
-			GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(getProject());
-			ASTNode newNameNode;
-			try
-			{
-				newNameNode = factory.createReferenceNameFromText(newElementName).getNode();
-			}
-			catch(IncorrectOperationException e)
-			{
-				newNameNode = factory.createLiteralFromValue(newElementName).getFirstChild().getNode();
-			}
-			assert newNameNode != null && node != null;
-			getNode().replaceChild(node, newNameNode);
-		}
+  @Override
+  public PsiElement handleElementRenameSimple(String newElementName) throws IncorrectOperationException {
+    PsiElement nameElement = getReferenceNameElement();
+    if (nameElement != null) {
+      ASTNode node = nameElement.getNode();
+      GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(getProject());
+      ASTNode newNameNode;
+      try {
+        newNameNode = factory.createReferenceNameFromText(newElementName).getNode();
+      }
+      catch (IncorrectOperationException e) {
+        newNameNode = factory.createLiteralFromValue(newElementName).getFirstChild().getNode();
+      }
+      assert newNameNode != null && node != null;
+      getNode().replaceChild(node, newNameNode);
+    }
 
-		return this;
-	}
+    return this;
+  }
 
-	@Override
-	public PsiElement handleElementRename(String newElementName) throws IncorrectOperationException
-	{
-		return handleElementRenameSimple(newElementName);
-	}
+  @Override
+  public PsiElement handleElementRename(String newElementName) throws IncorrectOperationException {
+    return handleElementRenameSimple(newElementName);
+  }
 
-	@Override
-	public PsiElement bindToElement(@Nonnull PsiElement element) throws IncorrectOperationException
-	{
-		if(isReferenceTo(element))
-		{
-			return this;
-		}
-		final boolean fullyQualified = isFullyQualified();
-		final boolean preserveQualification = GroovyCodeStyleSettingsFacade.getInstance(getProject()).useFqClassNames
-				() && fullyQualified;
-		if(element instanceof PsiClass)
-		{
-			final String qualifiedName = ((PsiClass) element).getQualifiedName();
+  @Override
+  public PsiElement bindToElement(@Nonnull PsiElement element) throws IncorrectOperationException {
+    if (isReferenceTo(element)) {
+      return this;
+    }
+    final boolean fullyQualified = isFullyQualified();
+    final boolean preserveQualification = GroovyCodeStyleSettingsFacade.getInstance(getProject()).useFqClassNames
+      () && fullyQualified;
+    if (element instanceof PsiClass) {
+      final String qualifiedName = ((PsiClass)element).getQualifiedName();
 
-			if(!preserveQualification || qualifiedName == null)
-			{
-				final String newName = ((PsiClass) element).getName();
-				setQualifier(null);
-				final GrReferenceElementImpl newElement = ((GrReferenceElementImpl) handleElementRenameSimple
-						(newName));
+      if (!preserveQualification || qualifiedName == null) {
+        final String newName = ((PsiClass)element).getName();
+        setQualifier(null);
+        final GrReferenceElementImpl newElement = ((GrReferenceElementImpl)handleElementRenameSimple
+          (newName));
 
-				if(newElement.isReferenceTo(element) || qualifiedName == null || JavaPsiFacade.getInstance(getProject
-						()).findClass(qualifiedName, getResolveScope()) == null)
-				{
-					return newElement;
-				}
-			}
+        if (newElement.isReferenceTo(element) || qualifiedName == null || JavaPsiFacade.getInstance(getProject
+                                                                                                      ())
+                                                                                       .findClass(qualifiedName,
+                                                                                                  getResolveScope()) == null) {
+          return newElement;
+        }
+      }
 
-			final GrReferenceElement<Q> qualifiedRef = bindWithQualifiedRef(qualifiedName);
-			if(!preserveQualification)
-			{
-				JavaCodeStyleManager.getInstance(getProject()).shortenClassReferences(qualifiedRef);
-			}
-			return qualifiedRef;
-		}
-		else if(element instanceof PsiMember)
-		{
-			PsiMember member = (PsiMember) element;
-			if(!isPhysical())
-			{
-				// don't qualify reference: the isReferenceTo() check fails anyway, whether we have a static import
-				// for this member or not
-				return this;
-			}
-			final PsiClass psiClass = member.getContainingClass();
-			if(psiClass == null)
-			{
-				throw new IncorrectOperationException();
-			}
+      final GrReferenceElement<Q> qualifiedRef = bindWithQualifiedRef(qualifiedName);
+      if (!preserveQualification) {
+        JavaCodeStyleManager.getInstance(getProject()).shortenClassReferences(qualifiedRef);
+      }
+      return qualifiedRef;
+    }
+    else if (element instanceof PsiMember) {
+      PsiMember member = (PsiMember)element;
+      if (!isPhysical()) {
+        // don't qualify reference: the isReferenceTo() check fails anyway, whether we have a static import
+        // for this member or not
+        return this;
+      }
+      final PsiClass psiClass = member.getContainingClass();
+      if (psiClass == null) {
+        throw new IncorrectOperationException();
+      }
 
-			String qName = psiClass.getQualifiedName() + "." + member.getName();
-			final GrReferenceElement<Q> qualifiedRef = bindWithQualifiedRef(qName);
-			if(!preserveQualification)
-			{
-				JavaCodeStyleManager.getInstance(getProject()).shortenClassReferences(qualifiedRef);
-			}
-			return qualifiedRef;
-		}
-		else if(element instanceof PsiPackage)
-		{
-			return bindWithQualifiedRef(((PsiPackage) element).getQualifiedName());
-		}
+      String qName = psiClass.getQualifiedName() + "." + member.getName();
+      final GrReferenceElement<Q> qualifiedRef = bindWithQualifiedRef(qName);
+      if (!preserveQualification) {
+        JavaCodeStyleManager.getInstance(getProject()).shortenClassReferences(qualifiedRef);
+      }
+      return qualifiedRef;
+    }
+    else if (element instanceof PsiPackage) {
+      return bindWithQualifiedRef(((PsiPackage)element).getQualifiedName());
+    }
 
-		throw new IncorrectOperationException("Cannot bind to:" + element + " of class " + element.getClass());
-	}
+    throw new IncorrectOperationException("Cannot bind to:" + element + " of class " + element.getClass());
+  }
 
 
-	protected abstract GrReferenceElement<Q> bindWithQualifiedRef(@Nonnull String qName);
+  protected abstract GrReferenceElement<Q> bindWithQualifiedRef(@Nonnull String qName);
 
-	protected boolean bindsCorrectly(PsiElement element)
-	{
-		return isReferenceTo(element);
-	}
+  protected boolean bindsCorrectly(PsiElement element) {
+    return isReferenceTo(element);
+  }
 
-	public abstract boolean isFullyQualified();
+  public abstract boolean isFullyQualified();
 
-	@Override
-	@Nonnull
-	public PsiType[] getTypeArguments()
-	{
-		final GrTypeArgumentList typeArgsList = getTypeArgumentList();
-		if(typeArgsList == null)
-		{
-			return PsiType.EMPTY_ARRAY;
-		}
+  @Override
+  @Nonnull
+  public PsiType[] getTypeArguments() {
+    final GrTypeArgumentList typeArgsList = getTypeArgumentList();
+    if (typeArgsList == null) {
+      return PsiType.EMPTY_ARRAY;
+    }
 
-		final GrTypeElement[] args = typeArgsList.getTypeArgumentElements();
-		if(args.length == 0)
-		{
-			return PsiType.EMPTY_ARRAY;
-		}
-		PsiType[] result = PsiType.createArray(args.length);
-		for(int i = 0; i < result.length; i++)
-		{
-			result[i] = args[i].getType();
-		}
+    final GrTypeElement[] args = typeArgsList.getTypeArgumentElements();
+    if (args.length == 0) {
+      return PsiType.EMPTY_ARRAY;
+    }
+    PsiType[] result = PsiType.createArray(args.length);
+    for (int i = 0; i < result.length; i++) {
+      result[i] = args[i].getType();
+    }
 
-		return result;
-	}
+    return result;
+  }
 
-	@Override
-	@Nullable
-	public GrTypeArgumentList getTypeArgumentList()
-	{
-		return (GrTypeArgumentList) findChildByType(GroovyElementTypes.TYPE_ARGUMENTS);
-	}
+  @Override
+  @Nullable
+  public GrTypeArgumentList getTypeArgumentList() {
+    return (GrTypeArgumentList)findChildByType(GroovyElementTypes.TYPE_ARGUMENTS);
+  }
 
-	@Override
-	public void setQualifier(@Nullable Q newQualifier)
-	{
-		PsiImplUtil.setQualifier(this, newQualifier);
-	}
+  @Override
+  public void setQualifier(@Nullable Q newQualifier) {
+    PsiImplUtil.setQualifier(this, newQualifier);
+  }
 
-	@Nonnull
-	@Override
-	public String getClassNameText()
-	{
-		String cachedQName = myCachedQName;
-		if(cachedQName == null)
-		{
-			myCachedQName = cachedQName = PsiNameHelper.getQualifiedClassName(getTextSkipWhiteSpaceAndComments(),
-					false);
-		}
-		return cachedQName;
-	}
+  @Nonnull
+  @Override
+  public String getClassNameText() {
+    String cachedQName = myCachedQName;
+    if (cachedQName == null) {
+      myCachedQName = cachedQName = PsiNameHelper.getQualifiedClassName(getTextSkipWhiteSpaceAndComments(),
+                                                                        false);
+    }
+    return cachedQName;
+  }
 
-	protected String getTextSkipWhiteSpaceAndComments()
-	{
-		String whiteSpaceAndComments = myCachedTextSkipWhiteSpaceAndComments;
-		if(whiteSpaceAndComments == null)
-		{
-			myCachedTextSkipWhiteSpaceAndComments = whiteSpaceAndComments = PsiImplUtil
-					.getTextSkipWhiteSpaceAndComments(getNode());
-		}
-		return whiteSpaceAndComments;
-	}
+  protected String getTextSkipWhiteSpaceAndComments() {
+    String whiteSpaceAndComments = myCachedTextSkipWhiteSpaceAndComments;
+    if (whiteSpaceAndComments == null) {
+      myCachedTextSkipWhiteSpaceAndComments = whiteSpaceAndComments = PsiImplUtil
+        .getTextSkipWhiteSpaceAndComments(getNode());
+    }
+    return whiteSpaceAndComments;
+  }
 
-	@Override
-	public boolean isQualified()
-	{
-		return getQualifier() != null;
-	}
+  @Override
+  public boolean isQualified() {
+    return getQualifier() != null;
+  }
 }

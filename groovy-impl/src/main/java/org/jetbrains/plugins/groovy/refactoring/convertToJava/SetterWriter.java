@@ -15,9 +15,9 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.convertToJava;
 
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.psi.*;
-import javax.annotation.Nonnull;
+import com.intellij.java.language.psi.*;
+import consulo.language.psi.PsiCompiledElement;
+import consulo.logging.Logger;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrNamedArgument;
@@ -25,6 +25,8 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlo
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameter;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrGdkMethod;
+
+import javax.annotation.Nonnull;
 
 import static org.jetbrains.plugins.groovy.refactoring.convertToJava.GenerationUtil.writeTypeParameters;
 import static org.jetbrains.plugins.groovy.refactoring.convertToJava.TypeWriter.writeType;

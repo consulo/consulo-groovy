@@ -15,14 +15,19 @@
  */
 package org.jetbrains.plugins.groovy.editor.selection;
 
-import com.intellij.codeInsight.editorActions.ExtendWordSelectionHandler;
-import com.intellij.codeInsight.editorActions.ExtendWordSelectionHandlerBase;
-import com.intellij.codeInsight.editorActions.SelectWordUtil;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.impl.source.tree.LeafPsiElement;
+import consulo.codeEditor.Editor;
+import consulo.language.editor.action.*;
+import consulo.language.editor.action.SelectWordUtil;
+import consulo.language.impl.psi.LeafPsiElement;
+import consulo.language.psi.PsiElement;
+import consulo.logging.Logger;
+import consulo.codeEditor.Editor;
+import consulo.document.util.TextRange;
+import consulo.language.psi.PsiElement;
+import consulo.language.impl.psi.LeafPsiElement;
+import consulo.language.editor.action.ExtendWordSelectionHandler;
+import consulo.language.editor.action.ExtendWordSelectionHandlerBase;
+import consulo.logging.Logger;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
@@ -43,7 +48,8 @@ import java.util.List;
 /**
  * @author Max Medvedev
  */
-public class GroovyWordSelectionHandler implements ExtendWordSelectionHandler {
+public class GroovyWordSelectionHandler implements ExtendWordSelectionHandler
+{
   private static final Logger LOG = Logger.getInstance(GroovyWordSelectionHandler.class);
 
   @Override

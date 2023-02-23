@@ -15,14 +15,18 @@
  */
 package org.jetbrains.plugins.groovy.intentions.style;
 
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
+import com.intellij.java.language.psi.PsiClass;
+import com.intellij.java.language.psi.PsiMember;
+import com.intellij.java.language.psi.PsiModifier;
+import consulo.codeEditor.Editor;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.PsiReference;
+import consulo.language.psi.scope.LocalSearchScope;
+import consulo.language.psi.search.ReferencesSearch;
+import consulo.language.util.IncorrectOperationException;
+import consulo.project.Project;
 import consulo.util.dataholder.Key;
-import com.intellij.psi.*;
-import com.intellij.psi.search.LocalSearchScope;
-import com.intellij.psi.search.searches.ReferencesSearch;
-import com.intellij.util.IncorrectOperationException;
-import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.codeStyle.GrReferenceAdjuster;
 import org.jetbrains.plugins.groovy.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.intentions.base.PsiElementPredicate;
@@ -35,6 +39,8 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrRefere
 import org.jetbrains.plugins.groovy.lang.psi.api.toplevel.imports.GrImportStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeArgumentList;
 
+import javax.annotation.Nonnull;
+
 /**
  * @author Maxim.Medvedev
  */
@@ -43,7 +49,8 @@ public class ImportStaticIntention extends Intention {
 
   @Override
   protected void processIntention(@Nonnull PsiElement element, final Project project, final Editor editor)
-    throws IncorrectOperationException {
+    throws IncorrectOperationException
+  {
     final PsiElement resolved;
     final String name;
     final GroovyFile file;

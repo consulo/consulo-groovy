@@ -17,7 +17,7 @@ package org.jetbrains.plugins.groovy.codeInspection.confusing;
 
 import javax.annotation.Nonnull;
 
-import com.intellij.psi.util.PsiTreeUtil;
+import consulo.language.psi.util.PsiTreeUtil;
 import org.jetbrains.annotations.Nls;
 
 import javax.annotation.Nullable;

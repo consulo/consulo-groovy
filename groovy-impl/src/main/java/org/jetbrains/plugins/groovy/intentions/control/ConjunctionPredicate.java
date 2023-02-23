@@ -15,8 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.intentions.control;
 
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.tree.IElementType;
+import consulo.language.psi.PsiElement;
+import consulo.language.ast.IElementType;
 import org.jetbrains.plugins.groovy.intentions.base.ErrorUtil;
 import org.jetbrains.plugins.groovy.intentions.base.PsiElementPredicate;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;

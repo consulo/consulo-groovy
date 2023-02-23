@@ -15,12 +15,14 @@
  */
 package org.jetbrains.plugins.groovy.swingBuilder;
 
-import com.google.common.collect.ImmutableMap;
-import com.intellij.psi.*;
-import com.intellij.psi.scope.PsiScopeProcessor;
-import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.util.containers.ContainerUtil;
-import com.intellij.util.containers.MultiMap;
+import com.intellij.java.language.psi.*;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiManager;
+import consulo.language.psi.resolve.PsiScopeProcessor;
+import consulo.language.psi.resolve.ResolveState;
+import consulo.language.psi.scope.GlobalSearchScope;
+import consulo.util.collection.ImmutableMapBuilder;
+import consulo.util.collection.MultiMap;
 import consulo.util.dataholder.Key;
 import consulo.util.dataholder.UserDataHolderEx;
 import org.jetbrains.plugins.groovy.extensions.NamedArgumentDescriptor;
@@ -119,7 +121,7 @@ public class SwingBuilderNonCodeMemberContributor extends NonCodeMembersContribu
       myResult.putValue(method.getName(), method);
     }
 
-    private MyMethodBuilder method(String name, String returnType, @javax.annotation.Nullable String navigationClass) {
+    private MyMethodBuilder method(String name, String returnType, @Nullable String navigationClass) {
       MyMethodBuilder res = new MyMethodBuilder(myManager, name);
       res.setModifiers(GrModifierFlags.PUBLIC_MASK);
       res.setReturnType(type(returnType));
@@ -131,11 +133,11 @@ public class SwingBuilderNonCodeMemberContributor extends NonCodeMembersContribu
       return res;
     }
 
-    private void methodObject(String name, String returnType, @javax.annotation.Nullable String navigationClass) {
+    private void methodObject(String name, String returnType, @Nullable String navigationClass) {
       methodObject(name, returnType, navigationClass, null);
     }
 
-    private void methodObject(String name, String returnType, @javax.annotation.Nullable String navigationClass,
+    private void methodObject(String name, String returnType, @Nullable String navigationClass,
                               @Nullable Map<String, NamedArgumentDescriptor> namedArg) {
       MyMethodBuilder method = method(name, returnType, navigationClass);
       method.addParameter("map", type(CommonClassNames.JAVA_UTIL_MAP), true);
@@ -186,7 +188,7 @@ public class SwingBuilderNonCodeMemberContributor extends NonCodeMembersContribu
       methodObject("map", CommonClassNames.JAVA_UTIL_MAP, "groovy.swing.factory.MapFactory");
 
       methodObject("imageIcon", "javax.swing.ImageIcon", "groovy.swing.factory.ImageIconFactory",
-                   ContainerUtil.<String, NamedArgumentDescriptor>immutableMapBuilder()
+                   ImmutableMapBuilder.<String, NamedArgumentDescriptor>newBuilder()
                      .put("image", new NamedArgumentDescriptor.TypeCondition(type("java.awt.Image")))
                      .put("url", new NamedArgumentDescriptor.TypeCondition(type("java.net.URL")))
                      .put("file", NamedArgumentDescriptor.SIMPLE_ON_TOP)
@@ -204,7 +206,7 @@ public class SwingBuilderNonCodeMemberContributor extends NonCodeMembersContribu
 
       // registerBinding()
       methodObject("bind", "org.codehaus.groovy.binding.FullBinding", "groovy.swing.factory.BindFactory",
-                   ContainerUtil.<String, NamedArgumentDescriptor>immutableMapBuilder()
+                   ImmutableMapBuilder.<String, NamedArgumentDescriptor>newBuilder()
                      .put("source", NamedArgumentDescriptor.SIMPLE_ON_TOP)
                      .put("target", NamedArgumentDescriptor.SIMPLE_ON_TOP)
                      .put("update", NamedArgumentDescriptor.SIMPLE_ON_TOP)
@@ -219,25 +221,25 @@ public class SwingBuilderNonCodeMemberContributor extends NonCodeMembersContribu
                      .build());
 
       methodObject("bindProxy", "org.codehaus.groovy.binding.BindingProxy", "groovy.swing.factory.BindProxyFactory",
-                   ImmutableMap.<String, NamedArgumentDescriptor>of("bind", NamedArgumentDescriptor.SIMPLE_ON_TOP));
+                   Map.<String, NamedArgumentDescriptor>of("bind", NamedArgumentDescriptor.SIMPLE_ON_TOP));
 
       methodObject("bindGroup", "org.codehaus.groovy.binding.AggregateBinding", "groovy.swing.factory.BindGroupFactory",
-                   ImmutableMap.<String, NamedArgumentDescriptor>of("bind", NamedArgumentDescriptor.SIMPLE_ON_TOP));
+                   Map.<String, NamedArgumentDescriptor>of("bind", NamedArgumentDescriptor.SIMPLE_ON_TOP));
 
 
       // registerPassThruNodes()
-      methodObject("widget", "java.awt.Component", "groovy.swing.factory.WidgetFactory", ImmutableMap
+      methodObject("widget", "java.awt.Component", "groovy.swing.factory.WidgetFactory", Map
         .<String, NamedArgumentDescriptor>of("widget", new NamedArgumentDescriptor.TypeCondition(type("java.awt.Component"))));
 
-      methodObject("container", "java.awt.Component", "groovy.swing.factory.WidgetFactory", ImmutableMap
+      methodObject("container", "java.awt.Component", "groovy.swing.factory.WidgetFactory", Map
         .<String, NamedArgumentDescriptor>of("container", new NamedArgumentDescriptor.TypeCondition(type("java.awt.Component"))));
 
       methodObject("bean", CommonClassNames.JAVA_LANG_OBJECT, "groovy.swing.factory.WidgetFactory",
-                   ImmutableMap.<String, NamedArgumentDescriptor>of("bean", NamedArgumentDescriptor.SIMPLE_ON_TOP));
+                   Map.<String, NamedArgumentDescriptor>of("bean", NamedArgumentDescriptor.SIMPLE_ON_TOP));
 
       // registerWindows()
       methodObject("dialog", "javax.swing.JDialog", "groovy.swing.factory.DialogFactory",
-                   ContainerUtil.<String, NamedArgumentDescriptor>immutableMapBuilder()
+                   ImmutableMapBuilder.<String, NamedArgumentDescriptor>newBuilder()
                      .put("owner", NamedArgumentDescriptor.SIMPLE_ON_TOP)
                      .put("defaultButtonProperty", NamedArgumentDescriptor.SIMPLE_ON_TOP)
                      .put("pack", NamedArgumentDescriptor.SIMPLE_ON_TOP)
@@ -246,13 +248,13 @@ public class SwingBuilderNonCodeMemberContributor extends NonCodeMembersContribu
 
       methodObject("fileChooser", "javax.swing.JFileChooser", null);
 
-      methodObject("frame", "javax.swing.JFrame", "groovy.swing.factory.FrameFactory", ImmutableMap
+      methodObject("frame", "javax.swing.JFrame", "groovy.swing.factory.FrameFactory", Map
         .<String, NamedArgumentDescriptor>of("pack", NamedArgumentDescriptor.SIMPLE_ON_TOP, "show", NamedArgumentDescriptor.SIMPLE_ON_TOP));
 
       methodObject("optionPane", "javax.swing.JOptionPane", null);
 
       methodObject("window", "javax.swing.JWindow", "groovy.swing.factory.WindowFactory",
-                   ImmutableMap.<String, NamedArgumentDescriptor>of("pack", NamedArgumentDescriptor.SIMPLE_ON_TOP,
+                   Map.<String, NamedArgumentDescriptor>of("pack", NamedArgumentDescriptor.SIMPLE_ON_TOP,
                                                                     "show", NamedArgumentDescriptor.SIMPLE_ON_TOP,
                                                                     "owner", NamedArgumentDescriptor.SIMPLE_ON_TOP));
 
@@ -273,7 +275,7 @@ public class SwingBuilderNonCodeMemberContributor extends NonCodeMembersContribu
       methodObject("textField", "javax.swing.JTextField", "groovy.swing.factory.TextArgWidgetFactory");
       methodObject("textPane", "javax.swing.JTextPane", "groovy.swing.factory.TextArgWidgetFactory");
       methodObject("formattedTextField", "javax.swing.JFormattedTextField", "groovy.swing.factory.FormattedTextFactory",
-                   ImmutableMap.<String, NamedArgumentDescriptor>of(
+                   Map.<String, NamedArgumentDescriptor>of(
                      "format", new NamedArgumentDescriptor.TypeCondition(type("java.text.Format")),
                      "value", NamedArgumentDescriptor.SIMPLE_ON_TOP));
 
@@ -284,10 +286,10 @@ public class SwingBuilderNonCodeMemberContributor extends NonCodeMembersContribu
       // registerBasicWidgets()
       methodObject("colorChooser", "javax.swing.JColorChooser", null);
       methodObject("comboBox", "javax.swing.JComboBox", "groovy.swing.factory.ComboBoxFactory",
-                   ImmutableMap.<String, NamedArgumentDescriptor>of("items", NamedArgumentDescriptor.SIMPLE_ON_TOP));
+                   Map.<String, NamedArgumentDescriptor>of("items", NamedArgumentDescriptor.SIMPLE_ON_TOP));
 
       methodObject("list", "javax.swing.JList", "groovy.swing.factory.ListFactory",
-                   ImmutableMap.<String, NamedArgumentDescriptor>of("items", NamedArgumentDescriptor.SIMPLE_ON_TOP));
+                   Map.<String, NamedArgumentDescriptor>of("items", NamedArgumentDescriptor.SIMPLE_ON_TOP));
 
       methodObject("progressBar", "javax.swing.JProgressBar", null);
       methodObject("separator", "javax.swing.JSeparator", "groovy.swing.factory.SeparatorFactory");
@@ -321,14 +323,14 @@ public class SwingBuilderNonCodeMemberContributor extends NonCodeMembersContribu
       methodObject("table", "javax.swing.JTable", "groovy.swing.factory.TableFactory");
       methodObject("tableColumn", "javax.swing.table.TableColumn", null);
       methodObject("tableModel", "javax.swing.table.TableModel", "groovy.swing.factory.TableModelFactory",
-                   ImmutableMap.<String, NamedArgumentDescriptor>of(
+                   Map.<String, NamedArgumentDescriptor>of(
                      "tableModel", new NamedArgumentDescriptor.TypeCondition(type("javax.swing.table.TableModel")),
                      "model", new NamedArgumentDescriptor.TypeCondition(type("groovy.model.ValueModel")),
                      "list", NamedArgumentDescriptor.SIMPLE_ON_TOP
                    ));
 
       methodObject("propertyColumn", "javax.swing.table.TableColumn", "groovy.swing.factory.PropertyColumnFactory",
-                   ImmutableMap.<String, NamedArgumentDescriptor>of(
+                   Map.<String, NamedArgumentDescriptor>of(
                      "propertyName", NamedArgumentDescriptor.TYPE_STRING,
                      "header", NamedArgumentDescriptor.SIMPLE_ON_TOP,
                      "type", new NamedArgumentDescriptor.TypeCondition(type(CommonClassNames.JAVA_LANG_CLASS)),
@@ -336,7 +338,7 @@ public class SwingBuilderNonCodeMemberContributor extends NonCodeMembersContribu
                    ));
 
       methodObject("closureColumn", "javax.swing.table.TableColumn", "groovy.swing.factory.ClosureColumnFactory",
-                   ImmutableMap.<String, NamedArgumentDescriptor>of(
+                   Map.<String, NamedArgumentDescriptor>of(
                      "header", NamedArgumentDescriptor.SIMPLE_ON_TOP,
                      "read", new NamedArgumentDescriptor.TypeCondition(type(GroovyCommonClassNames.GROOVY_LANG_CLOSURE)),
                      "write", new NamedArgumentDescriptor.TypeCondition(type(GroovyCommonClassNames.GROOVY_LANG_CLOSURE)),
@@ -346,7 +348,7 @@ public class SwingBuilderNonCodeMemberContributor extends NonCodeMembersContribu
       methodObject("columnModel", "javax.swing.table.TableColumnModel", "groovy.swing.factory.ColumnModelFactory");
 
       methodObject("column", "javax.swing.table.TableColumn", "groovy.swing.factory.ColumnFactory",
-                   ImmutableMap.<String, NamedArgumentDescriptor>of("width", NamedArgumentDescriptor.SIMPLE_ON_TOP));
+                   Map.<String, NamedArgumentDescriptor>of("width", NamedArgumentDescriptor.SIMPLE_ON_TOP));
 
       // registerBasicLayouts()
       methodObject("borderLayout", "java.awt.BorderLayout", "groovy.swing.factory.LayoutFactory");
@@ -361,24 +363,24 @@ public class SwingBuilderNonCodeMemberContributor extends NonCodeMembersContribu
 
       // registerBoxLayout()
       methodObject("boxLayout", "javax.swing.BoxLayout", "groovy.swing.factory.BoxLayoutFactory",
-                   ImmutableMap.<String, NamedArgumentDescriptor>of("axis", NamedArgumentDescriptor.SIMPLE_ON_TOP));
+                   Map.<String, NamedArgumentDescriptor>of("axis", NamedArgumentDescriptor.SIMPLE_ON_TOP));
 
-      methodObject("box", "javax.swing.Box", "groovy.swing.factory.BoxFactory", ImmutableMap.<String, NamedArgumentDescriptor>of(
+      methodObject("box", "javax.swing.Box", "groovy.swing.factory.BoxFactory", Map.<String, NamedArgumentDescriptor>of(
         "axis", new NamedArgumentDescriptor.TypeCondition(type("java.lang.Number"))));
 
       methodObject("hbox", "javax.swing.Box", "groovy.swing.factory.HBoxFactory");
       methodObject("hglue", "java.awt.Component", "groovy.swing.factory.HGlueFactory");
-      methodObject("hstrut", "java.awt.Component", "groovy.swing.factory.HStrutFactory", ImmutableMap.<String, NamedArgumentDescriptor>of(
+      methodObject("hstrut", "java.awt.Component", "groovy.swing.factory.HStrutFactory", Map.<String, NamedArgumentDescriptor>of(
         "width", new NamedArgumentDescriptor.TypeCondition(type("java.lang.Number"))));
 
       methodObject("vbox", "javax.swing.Box", "groovy.swing.factory.VBoxFactory");
       methodObject("vglue", "java.awt.Component", "groovy.swing.factory.VGlueFactory");
-      methodObject("vstrut", "java.awt.Component", "groovy.swing.factory.VStrutFactory", ImmutableMap.<String, NamedArgumentDescriptor>of(
+      methodObject("vstrut", "java.awt.Component", "groovy.swing.factory.VStrutFactory", Map.<String, NamedArgumentDescriptor>of(
         "height", new NamedArgumentDescriptor.TypeCondition(type("java.lang.Number"))));
 
       methodObject("glue", "java.awt.Component", "groovy.swing.factory.GlueFactory");
       methodObject("rigidArea", "java.awt.Component", "groovy.swing.factory.RigidAreaFactory",
-                   ImmutableMap.<String, NamedArgumentDescriptor>of(
+                   Map.<String, NamedArgumentDescriptor>of(
                      "size", new NamedArgumentDescriptor.TypeCondition(type("java.awt.Dimension")),
                      "height", new NamedArgumentDescriptor.TypeCondition(type("java.lang.Number")),
                      "width", new NamedArgumentDescriptor.TypeCondition(type("java.lang.Number"))
@@ -391,7 +393,7 @@ public class SwingBuilderNonCodeMemberContributor extends NonCodeMembersContribu
 
       // registerBorders()
       methodObject("lineBorder", "javax.swing.border.LineBorder", "groovy.swing.factory.LineBorderFactory",
-                   ImmutableMap.<String, NamedArgumentDescriptor>of(
+                   Map.<String, NamedArgumentDescriptor>of(
                      "parent", NamedArgumentDescriptor.SIMPLE_ON_TOP,
                      "color", NamedArgumentDescriptor.SIMPLE_ON_TOP,
                      "thickness", NamedArgumentDescriptor.SIMPLE_ON_TOP,
@@ -400,7 +402,7 @@ public class SwingBuilderNonCodeMemberContributor extends NonCodeMembersContribu
 
       NamedArgumentDescriptor namedArgColor = new NamedArgumentDescriptor.TypeCondition(type("java.awt.Color"));
 
-      Map<String, NamedArgumentDescriptor> m = ContainerUtil.<String, NamedArgumentDescriptor>immutableMapBuilder()
+      Map<String, NamedArgumentDescriptor> m = ImmutableMapBuilder.<String, NamedArgumentDescriptor>newBuilder()
         .put("parent", NamedArgumentDescriptor.SIMPLE_ON_TOP)
         .put("highlight", namedArgColor)
         .put("shadow", namedArgColor)
@@ -413,7 +415,7 @@ public class SwingBuilderNonCodeMemberContributor extends NonCodeMembersContribu
       methodObject("loweredBevelBorder", "javax.swing.border.Border", "groovy.swing.factory.BevelBorderFactory", m);
       methodObject("raisedBevelBorder", "javax.swing.border.Border", "groovy.swing.factory.BevelBorderFactory", m);
 
-      m = ImmutableMap.of(
+      m = Map.of(
         "parent", NamedArgumentDescriptor.SIMPLE_ON_TOP,
         "highlight", namedArgColor,
         "shadow", namedArgColor
@@ -424,7 +426,7 @@ public class SwingBuilderNonCodeMemberContributor extends NonCodeMembersContribu
       methodObject("raisedEtchedBorder", "javax.swing.border.Border", "groovy.swing.factory.EtchedBorderFactory", m);
 
       methodObject("titledBorder", "javax.swing.border.TitledBorder", "groovy.swing.factory.TitledBorderFactory",
-                   ContainerUtil.<String, NamedArgumentDescriptor>immutableMapBuilder()
+                   ImmutableMapBuilder.<String, NamedArgumentDescriptor>newBuilder()
                      .put("parent", NamedArgumentDescriptor.SIMPLE_ON_TOP)
                      .put("title", NamedArgumentDescriptor.SIMPLE_ON_TOP)
                      .put("position", NamedArgumentDescriptor.SIMPLE_ON_TOP)
@@ -436,7 +438,7 @@ public class SwingBuilderNonCodeMemberContributor extends NonCodeMembersContribu
 
       methodObject("emptyBorder", "javax.swing.border.Border", "groovy.swing.factory.EmptyBorderFactory");
       methodObject("emptyBorder", "javax.swing.border.Border", "groovy.swing.factory.EmptyBorderFactory");
-      methodObject("emptyBorder", "javax.swing.border.Border", "groovy.swing.factory.EmptyBorderFactory", ImmutableMap.of(
+      methodObject("emptyBorder", "javax.swing.border.Border", "groovy.swing.factory.EmptyBorderFactory", Map.of(
         "parent", NamedArgumentDescriptor.SIMPLE_ON_TOP,
         "top", NamedArgumentDescriptor.TYPE_INTEGER,
         "left", NamedArgumentDescriptor.TYPE_INTEGER,
@@ -444,14 +446,14 @@ public class SwingBuilderNonCodeMemberContributor extends NonCodeMembersContribu
         "right", NamedArgumentDescriptor.TYPE_INTEGER
       ));
 
-      methodObject("compoundBorder", "javax.swing.border.CompoundBorder", "groovy.swing.factory.CompoundBorderFactory", ImmutableMap.of(
+      methodObject("compoundBorder", "javax.swing.border.CompoundBorder", "groovy.swing.factory.CompoundBorderFactory", Map.of(
         "parent", NamedArgumentDescriptor.SIMPLE_ON_TOP,
         "inner", new NamedArgumentDescriptor.TypeCondition(type("javax.swing.border.Border")),
         "outer", new NamedArgumentDescriptor.TypeCondition(type("javax.swing.border.Border"))
       ));
 
       methodObject("matteBorder", "javax.swing.border.Border", "groovy.swing.factory.MatteBorderFactory",
-                   ContainerUtil.<String, NamedArgumentDescriptor>immutableMapBuilder()
+                   ImmutableMapBuilder.<String, NamedArgumentDescriptor>newBuilder()
                      .put("parent", NamedArgumentDescriptor.SIMPLE_ON_TOP)
                      .put("icon", NamedArgumentDescriptor.SIMPLE_ON_TOP)
                      .put("color", NamedArgumentDescriptor.SIMPLE_ON_TOP)
@@ -484,7 +486,7 @@ public class SwingBuilderNonCodeMemberContributor extends NonCodeMembersContribu
     //  add(methodWithAttr("map", CommonClassNames.JAVA_UTIL_MAP, "groovy.swing.factory.MapFactory").addClosureParam());
     //
     //  add(acceptAllMethod("imageIcon", "javax.swing.ImageIcon", "groovy.swing.factory.ImageIconFactory")
-    //        .setNamedParameters(ImmutableMap.<String, NamedArgumentDescriptor>builder()
+    //        .setNamedParameters(Map.<String, NamedArgumentDescriptor>builder()
     //                              .put("image", new NamedArgumentDescriptor.TypeCondition(type("java.awt.Image")))
     //                              .put("url", new NamedArgumentDescriptor.TypeCondition(type("java.net.URL")))
     //                              .put("file", NamedArgumentDescriptor.SIMPLE_ON_TOP)
@@ -504,7 +506,7 @@ public class SwingBuilderNonCodeMemberContributor extends NonCodeMembersContribu
     //  // registerBinding()
     //  add(acceptAllMethod("bind", "org.codehaus.groovy.binding.FullBinding", "groovy.swing.factory.BindFactory")
     //        .setNamedParameters(
-    //          ImmutableMap.<String, NamedArgumentDescriptor>builder()
+    //          Map.<String, NamedArgumentDescriptor>builder()
     //            .put("source", NamedArgumentDescriptor.SIMPLE_ON_TOP)
     //            .put("target", NamedArgumentDescriptor.SIMPLE_ON_TOP)
     //            .put("update", NamedArgumentDescriptor.SIMPLE_ON_TOP)
@@ -521,14 +523,14 @@ public class SwingBuilderNonCodeMemberContributor extends NonCodeMembersContribu
     //
     //  add(acceptAllMethodLeaf("bindProxy", "org.codehaus.groovy.binding.BindingProxy", "groovy.swing.factory.BindProxyFactory")
     //        .setNamedParameters(
-    //          ImmutableMap.<String, NamedArgumentDescriptor>builder()
+    //          Map.<String, NamedArgumentDescriptor>builder()
     //            .put("bind", NamedArgumentDescriptor.SIMPLE_ON_TOP)
     //            .build()
     //        ));
     //
     //  add(acceptAllMethod("bindGroup", "org.codehaus.groovy.binding.AggregateBinding", "groovy.swing.factory.BindGroupFactory")
     //        .setNamedParameters(
-    //          ImmutableMap.<String, NamedArgumentDescriptor>builder()
+    //          Map.<String, NamedArgumentDescriptor>builder()
     //            .put("bind", NamedArgumentDescriptor.SIMPLE_ON_TOP)
     //            .build()
     //        ));
@@ -537,18 +539,18 @@ public class SwingBuilderNonCodeMemberContributor extends NonCodeMembersContribu
     //  add(methodWithAttr("widget", "java.awt.Component", "groovy.swing.factory.WidgetFactory")
     //        .addParameter("component", "java.awt.Component", true)
     //        .setNamedParameters(
-    //          ImmutableMap.<String, NamedArgumentDescriptor>of("widget", new NamedArgumentDescriptor.TypeCondition(type("java.awt.Component")))
+    //          Map.<String, NamedArgumentDescriptor>of("widget", new NamedArgumentDescriptor.TypeCondition(type("java.awt.Component")))
     //        ));
     //  add(methodWithAttr("container", "java.awt.Component", "groovy.swing.factory.WidgetFactory")
     //        .addParameter("component", "java.awt.Component", true)
     //        .addClosureParam()
     //        .setNamedParameters(
-    //          ImmutableMap.<String, NamedArgumentDescriptor>of("container", new NamedArgumentDescriptor.TypeCondition(type("java.awt.Component")))
+    //          Map.<String, NamedArgumentDescriptor>of("container", new NamedArgumentDescriptor.TypeCondition(type("java.awt.Component")))
     //        ));
     //  add(methodWithAttr("bean", CommonClassNames.JAVA_LANG_OBJECT, "groovy.swing.factory.WidgetFactory")
     //        .addParameter("bean", CommonClassNames.JAVA_LANG_OBJECT, true)
     //        .setNamedParameters(
-    //          ImmutableMap.<String, NamedArgumentDescriptor>builder()
+    //          Map.<String, NamedArgumentDescriptor>builder()
     //            .put("bean", NamedArgumentDescriptor.SIMPLE_ON_TOP)
     //            .build()
     //        ));
@@ -556,7 +558,7 @@ public class SwingBuilderNonCodeMemberContributor extends NonCodeMembersContribu
     //  // registerWindows()
     //  add(methodWithAttr("dialog", "javax.swing.JDialog", "groovy.swing.factory.DialogFactory").addParameter("dialog", "javax.swing.JDialog", true).addClosureParam()
     //        .setNamedParameters(
-    //          ImmutableMap.<String, NamedArgumentDescriptor>builder()
+    //          Map.<String, NamedArgumentDescriptor>builder()
     //            .put("owner", NamedArgumentDescriptor.SIMPLE_ON_TOP)
     //            .put("defaultButtonProperty", NamedArgumentDescriptor.SIMPLE_ON_TOP)
     //            .put("pack", NamedArgumentDescriptor.SIMPLE_ON_TOP)
@@ -568,7 +570,7 @@ public class SwingBuilderNonCodeMemberContributor extends NonCodeMembersContribu
     //
     //  add(method("frame", "javax.swing.JFrame", "groovy.swing.factory.FrameFactory", "value", "javax.swing.JFrame", true)
     //        .setNamedParameters(
-    //          ImmutableMap.<String, NamedArgumentDescriptor>of("pack", NamedArgumentDescriptor.SIMPLE_ON_TOP, "show", NamedArgumentDescriptor.SIMPLE_ON_TOP)
+    //          Map.<String, NamedArgumentDescriptor>of("pack", NamedArgumentDescriptor.SIMPLE_ON_TOP, "show", NamedArgumentDescriptor.SIMPLE_ON_TOP)
     //        )
     //  );
     //
@@ -576,7 +578,7 @@ public class SwingBuilderNonCodeMemberContributor extends NonCodeMembersContribu
     //
     //  add(method("window", "javax.swing.JWindow", "groovy.swing.factory.WindowFactory", "window", "javax.swing.JWindow", true)
     //        .setNamedParameters(
-    //          ImmutableMap.<String, NamedArgumentDescriptor>of("pack", NamedArgumentDescriptor.SIMPLE_ON_TOP,
+    //          Map.<String, NamedArgumentDescriptor>of("pack", NamedArgumentDescriptor.SIMPLE_ON_TOP,
     //                                                           "show", NamedArgumentDescriptor.SIMPLE_ON_TOP,
     //                                                           "owner", NamedArgumentDescriptor.SIMPLE_ON_TOP)
     //        )
@@ -600,7 +602,7 @@ public class SwingBuilderNonCodeMemberContributor extends NonCodeMembersContribu
     //  beanFactory("groovy.swing.factory.TextArgWidgetFactory", "textPane", "javax.swing.JTextPane", true);
     //  add(methodWithAttr("formattedTextField", "javax.swing.JFormattedTextField", "groovy.swing.factory.FormattedTextFactory")
     //      .addClosureParam()
-    //      .setNamedParameters(ImmutableMap.<String, NamedArgumentDescriptor>of(
+    //      .setNamedParameters(Map.<String, NamedArgumentDescriptor>of(
     //        "format", new NamedArgumentDescriptor.TypeCondition(type("java.text.Format")),
     //        "value", NamedArgumentDescriptor.SIMPLE_ON_TOP)
     //      )
@@ -614,10 +616,10 @@ public class SwingBuilderNonCodeMemberContributor extends NonCodeMembersContribu
     //  // registerBasicWidgets()
     //  beanFactory(null, "colorChooser", "javax.swing.JColorChooser", true);
     //  add(method("comboBox", "javax.swing.JComboBox", "groovy.swing.factory.ComboBoxFactory", "value", "javax.swing.JComboBox", true)
-    //        .setNamedParameters(ImmutableMap.<String, NamedArgumentDescriptor>of("items", NamedArgumentDescriptor.SIMPLE_ON_TOP))
+    //        .setNamedParameters(Map.<String, NamedArgumentDescriptor>of("items", NamedArgumentDescriptor.SIMPLE_ON_TOP))
     //  );
     //  add(acceptAllMethod("list", "javax.swing.JList", "groovy.swing.factory.ListFactory")
-    //        .setNamedParameters(ImmutableMap.<String, NamedArgumentDescriptor>of("items", NamedArgumentDescriptor.SIMPLE_ON_TOP))
+    //        .setNamedParameters(Map.<String, NamedArgumentDescriptor>of("items", NamedArgumentDescriptor.SIMPLE_ON_TOP))
     //  );
     //  beanFactory(null, "progressBar", "javax.swing.JProgressBar", true);
     //  add(methodWithAttr("separator", "javax.swing.JSeparator", "groovy.swing.factory.SeparatorFactory").addClosureParam());
@@ -652,7 +654,7 @@ public class SwingBuilderNonCodeMemberContributor extends NonCodeMembersContribu
     //  beanFactory(null, "tableColumn", "javax.swing.table.TableColumn", true);
     //  add(method("tableModel", "javax.swing.table.TableModel", "groovy.swing.factory.TableModelFactory", "model",
     //             "javax.swing.table.TableModel", true)
-    //        .setNamedParameters(ImmutableMap.<String, NamedArgumentDescriptor>of(
+    //        .setNamedParameters(Map.<String, NamedArgumentDescriptor>of(
     //          "tableModel", new NamedArgumentDescriptor.TypeCondition(type("javax.swing.table.TableModel")),
     //          "model", new NamedArgumentDescriptor.TypeCondition(type("groovy.model.ValueModel")),
     //          "list", NamedArgumentDescriptor.SIMPLE_ON_TOP
@@ -660,7 +662,7 @@ public class SwingBuilderNonCodeMemberContributor extends NonCodeMembersContribu
     //  );
     //  add(methodWithAttr("propertyColumn", "javax.swing.table.TableColumn", "groovy.swing.factory.PropertyColumnFactory")
     //        .addClosureParam()
-    //        .setNamedParameters(ImmutableMap.<String, NamedArgumentDescriptor>of(
+    //        .setNamedParameters(Map.<String, NamedArgumentDescriptor>of(
     //          "propertyName", NamedArgumentDescriptor.TYPE_STRING,
     //          "header", NamedArgumentDescriptor.SIMPLE_ON_TOP,
     //          "type", new NamedArgumentDescriptor.TypeCondition(type(CommonClassNames.JAVA_LANG_CLASS)),
@@ -669,7 +671,7 @@ public class SwingBuilderNonCodeMemberContributor extends NonCodeMembersContribu
     //  );
     //  add(methodWithAttr("closureColumn", "javax.swing.table.TableColumn", "groovy.swing.factory.ClosureColumnFactory")
     //        .addClosureParam()
-    //        .setNamedParameters(ImmutableMap.<String, NamedArgumentDescriptor>of(
+    //        .setNamedParameters(Map.<String, NamedArgumentDescriptor>of(
     //          "header", NamedArgumentDescriptor.SIMPLE_ON_TOP,
     //          "read", new NamedArgumentDescriptor.TypeCondition(type(GroovyCommonClassNames.GROOVY_LANG_CLOSURE)),
     //          "write", new NamedArgumentDescriptor.TypeCondition(type(GroovyCommonClassNames.GROOVY_LANG_CLOSURE)),
@@ -679,7 +681,7 @@ public class SwingBuilderNonCodeMemberContributor extends NonCodeMembersContribu
     //  add(method("columnModel", "javax.swing.table.TableColumnModel", "groovy.swing.factory.ColumnModelFactory", "model", "javax.swing.table.TableColumnModel", true));
     //
     //  add(acceptAllMethod("column", "javax.swing.table.TableColumn", "groovy.swing.factory.ColumnFactory")
-    //        .setNamedParameters(ImmutableMap.<String, NamedArgumentDescriptor>of("width", NamedArgumentDescriptor.SIMPLE_ON_TOP))
+    //        .setNamedParameters(Map.<String, NamedArgumentDescriptor>of("width", NamedArgumentDescriptor.SIMPLE_ON_TOP))
     //  );
     //
     //  // registerBasicLayouts()
@@ -695,27 +697,27 @@ public class SwingBuilderNonCodeMemberContributor extends NonCodeMembersContribu
     //
     //  // registerBoxLayout()
     //  add(methodWithAttr("boxLayout", "javax.swing.BoxLayout", "groovy.swing.factory.BoxLayoutFactory").addClosureParam()
-    //        .setNamedParameters(ImmutableMap.<String, NamedArgumentDescriptor>of("axis", NamedArgumentDescriptor.SIMPLE_ON_TOP))
+    //        .setNamedParameters(Map.<String, NamedArgumentDescriptor>of("axis", NamedArgumentDescriptor.SIMPLE_ON_TOP))
     //  );
     //  add(method("box", "javax.swing.Box", "groovy.swing.factory.BoxFactory", "box", null, true)
-    //        .setNamedParameters(ImmutableMap.<String, NamedArgumentDescriptor>of(
+    //        .setNamedParameters(Map.<String, NamedArgumentDescriptor>of(
     //          "axis", new NamedArgumentDescriptor.TypeCondition(type("java.lang.Number"))))
     //  );
     //  add(methodWithAttr("hbox", "javax.swing.Box", "groovy.swing.factory.HBoxFactory").addClosureParam());
     //  add(methodWithAttr("hglue", "java.awt.Component", "groovy.swing.factory.HGlueFactory").addClosureParam());
     //  add(method("hstrut", "java.awt.Component", "groovy.swing.factory.HStrutFactory", "width", "java.lang.Number", true)
-    //        .setNamedParameters(ImmutableMap.<String, NamedArgumentDescriptor>of(
+    //        .setNamedParameters(Map.<String, NamedArgumentDescriptor>of(
     //          "width", new NamedArgumentDescriptor.TypeCondition(type("java.lang.Number"))))
     //  );
     //  add(methodWithAttr("vbox", "javax.swing.Box", "groovy.swing.factory.VBoxFactory").addClosureParam());
     //  add(methodWithAttr("vglue", "java.awt.Component", "groovy.swing.factory.VGlueFactory").addClosureParam());
     //  add(method("vstrut", "java.awt.Component", "groovy.swing.factory.VStrutFactory", "height", "java.lang.Number", true)
-    //        .setNamedParameters(ImmutableMap.<String, NamedArgumentDescriptor>of(
+    //        .setNamedParameters(Map.<String, NamedArgumentDescriptor>of(
     //          "height", new NamedArgumentDescriptor.TypeCondition(type("java.lang.Number"))))
     //  );
     //  add(methodWithAttr("glue", "java.awt.Component", "groovy.swing.factory.GlueFactory").addClosureParam());
     //  add(methodWithAttr("rigidArea", "java.awt.Component", "groovy.swing.factory.RigidAreaFactory").addClosureParam()
-    //        .setNamedParameters(ImmutableMap.<String, NamedArgumentDescriptor>of(
+    //        .setNamedParameters(Map.<String, NamedArgumentDescriptor>of(
     //          "size", new NamedArgumentDescriptor.TypeCondition(type("java.awt.Dimension")),
     //          "height", new NamedArgumentDescriptor.TypeCondition(type("java.lang.Number")),
     //          "width", new NamedArgumentDescriptor.TypeCondition(type("java.lang.Number"))
@@ -729,7 +731,7 @@ public class SwingBuilderNonCodeMemberContributor extends NonCodeMembersContribu
     //
     //  // registerBorders()
     //  add(acceptAllMethod("lineBorder", "javax.swing.border.LineBorder", "groovy.swing.factory.LineBorderFactory")
-    //        .setNamedParameters(ImmutableMap.<String, NamedArgumentDescriptor>of(
+    //        .setNamedParameters(Map.<String, NamedArgumentDescriptor>of(
     //          "parent", NamedArgumentDescriptor.SIMPLE_ON_TOP,
     //          "color", NamedArgumentDescriptor.SIMPLE_ON_TOP,
     //          "thickness", NamedArgumentDescriptor.SIMPLE_ON_TOP,
@@ -739,7 +741,7 @@ public class SwingBuilderNonCodeMemberContributor extends NonCodeMembersContribu
     //
     //  NamedArgumentDescriptor namedArgColor = new NamedArgumentDescriptor.TypeCondition(type("java.awt.Color"));
     //
-    //  Map<String, NamedArgumentDescriptor> m = ImmutableMap.<String, NamedArgumentDescriptor>builder()
+    //  Map<String, NamedArgumentDescriptor> m = Map.<String, NamedArgumentDescriptor>builder()
     //                                    .put("parent", NamedArgumentDescriptor.SIMPLE_ON_TOP)
     //                                    .put("highlight", namedArgColor)
     //                                    .put("shadow", namedArgColor)
@@ -755,7 +757,7 @@ public class SwingBuilderNonCodeMemberContributor extends NonCodeMembersContribu
     //        .setNamedParameters(m).setMethodKind(null));
     //
     //
-    //  m = ImmutableMap.of(
+    //  m = Map.of(
     //    "parent", NamedArgumentDescriptor.SIMPLE_ON_TOP,
     //    "highlight", namedArgColor,
     //    "shadow", namedArgColor
@@ -769,7 +771,7 @@ public class SwingBuilderNonCodeMemberContributor extends NonCodeMembersContribu
     //        .setNamedParameters(m).setMethodKind(null));
     //
     //  add(acceptAllMethod("titledBorder", "javax.swing.border.TitledBorder", "groovy.swing.factory.TitledBorderFactory")
-    //        .setNamedParameters(ImmutableMap.<String, NamedArgumentDescriptor>builder()
+    //        .setNamedParameters(Map.<String, NamedArgumentDescriptor>builder()
     //                              .put("parent", NamedArgumentDescriptor.SIMPLE_ON_TOP)
     //                              .put("title", NamedArgumentDescriptor.SIMPLE_ON_TOP)
     //                              .put("position", NamedArgumentDescriptor.SIMPLE_ON_TOP)
@@ -786,7 +788,7 @@ public class SwingBuilderNonCodeMemberContributor extends NonCodeMembersContribu
     //             CommonClassNames.JAVA_UTIL_LIST, false)
     //        .setMethodKind(null));
     //  add(methodWithAttr("emptyBorder", "javax.swing.border.Border", "groovy.swing.factory.EmptyBorderFactory").addClosureParam()
-    //        .setNamedParameters(ImmutableMap.of(
+    //        .setNamedParameters(Map.of(
     //          "parent", NamedArgumentDescriptor.SIMPLE_ON_TOP,
     //          "top", NamedArgumentDescriptor.TYPE_INTEGER,
     //          "left", NamedArgumentDescriptor.TYPE_INTEGER,
@@ -795,14 +797,14 @@ public class SwingBuilderNonCodeMemberContributor extends NonCodeMembersContribu
     //        ))
     //  );
     //  add(method("compoundBorder", "javax.swing.border.CompoundBorder", "groovy.swing.factory.CompoundBorderFactory", "value",CommonClassNames.JAVA_UTIL_LIST, false)
-    //        .setNamedParameters(ImmutableMap.of(
+    //        .setNamedParameters(Map.of(
     //          "parent", NamedArgumentDescriptor.SIMPLE_ON_TOP,
     //          "inner", new NamedArgumentDescriptor.TypeCondition(type("javax.swing.border.Border")),
     //          "outer", new NamedArgumentDescriptor.TypeCondition(type("javax.swing.border.Border"))
     //        )));
     //
     //  add(acceptAllMethod("matteBorder", "javax.swing.border.Border", "groovy.swing.factory.MatteBorderFactory")
-    //        .setNamedParameters(ImmutableMap.<String, NamedArgumentDescriptor>builder()
+    //        .setNamedParameters(Map.<String, NamedArgumentDescriptor>builder()
     //                              .put("parent", NamedArgumentDescriptor.SIMPLE_ON_TOP)
     //                              .put("icon", NamedArgumentDescriptor.SIMPLE_ON_TOP)
     //                              .put("color", NamedArgumentDescriptor.SIMPLE_ON_TOP)

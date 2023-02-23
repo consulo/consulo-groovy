@@ -15,13 +15,13 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.stubs.elements;
 
-import com.intellij.psi.stubs.IndexSink;
-import com.intellij.psi.stubs.StubElement;
-import com.intellij.psi.stubs.StubInputStream;
-import com.intellij.psi.stubs.StubOutputStream;
-import com.intellij.util.ArrayUtil;
-import com.intellij.util.io.StringRef;
+import consulo.language.psi.stub.*;
+import consulo.language.psi.stub.StubOutputStream;
+import consulo.util.collection.ArrayUtil;
+import consulo.index.io.StringRef;
 import javax.annotation.Nonnull;
+
+import consulo.language.psi.stub.StubElement;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrEnumConstant;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.typedef.enumConstant.GrEnumConstantImpl;

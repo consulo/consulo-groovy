@@ -1,18 +1,21 @@
+import java.lang.Object;
+import java.lang.String;
+
 public class A {
-public static java.lang.Object getProp() {
+public static Object getProp() {
  return prop;
 }
-public static void setProp(java.lang.Object prop) {
+public static void setProp(Object prop) {
 A.prop = prop;
 }
-private static java.lang.Object prop;
+private static Object prop;
 }
 public class staticPropAssignment extends groovy.lang.Script {
-public static void main(java.lang.String[] args) {
+public static void main(String[] args) {
 new staticPropAssignment(new groovy.lang.Binding(args)).run();
 }
 
-public java.lang.Object run() {
+public Object run() {
 
 
 print(3 + (setProp(2 + 1)));

@@ -15,11 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.path;
 
-import com.intellij.psi.*;
-import com.intellij.psi.util.PsiUtil;
-import com.intellij.util.containers.ContainerUtil;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.intellij.java.language.psi.*;
+import com.intellij.java.language.psi.util.PsiUtil;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrMethodCall;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
@@ -29,13 +26,16 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.Collect
 import org.jetbrains.plugins.groovy.lang.psi.typeEnhancers.GrCallExpressionTypeCalculator;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
  * @author Max Medvedev
  */
 public class GrDGMTypeCalculator extends GrCallExpressionTypeCalculator {
-  private static final Set<String> mySet = ContainerUtil.newLinkedHashSet();
+  private static final Set<String> mySet = new LinkedHashSet<>();
 
   static {
     mySet.add("unique");
@@ -73,7 +73,7 @@ public class GrDGMTypeCalculator extends GrCallExpressionTypeCalculator {
         if (rr != null && CommonClassNames.JAVA_UTIL_COLLECTION.equals(rr.getQualifiedName())) {
           PsiType type = qualifier.getType();
           PsiType itemType = getItemType(type);
-          if ("flatten".equals(name) && itemType!=null) {
+          if ("flatten".equals(name) && itemType != null) {
             while (true) {
               PsiType iitype = getItemType(itemType);
               if (iitype == null) break;
@@ -108,7 +108,7 @@ public class GrDGMTypeCalculator extends GrCallExpressionTypeCalculator {
     return type instanceof PsiArrayType || GroovyPsiManager.isInheritorCached(type, CommonClassNames.JAVA_UTIL_COLLECTION);
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   private static GrExpression getQualifier(GrMethodCall callExpression) {
     GrExpression invoked = callExpression.getInvokedExpression();
     if (invoked instanceof GrReferenceExpression) {

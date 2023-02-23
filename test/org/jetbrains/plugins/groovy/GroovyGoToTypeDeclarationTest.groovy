@@ -17,7 +17,7 @@ package org.jetbrains.plugins.groovy
 
 import com.intellij.testFramework.fixtures.LightCodeInsightFixtureTestCase
 import com.intellij.codeInsight.navigation.actions.GotoTypeDeclarationAction
-import com.intellij.psi.PsiClass
+import com.intellij.java.language.psi.PsiClass
 
 /**
  * @author Sergey Evdokimov

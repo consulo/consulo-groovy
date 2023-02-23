@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.inline;
 
-import com.intellij.psi.PsiElement;
+import consulo.language.psi.PsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.controlFlow.Instruction;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;

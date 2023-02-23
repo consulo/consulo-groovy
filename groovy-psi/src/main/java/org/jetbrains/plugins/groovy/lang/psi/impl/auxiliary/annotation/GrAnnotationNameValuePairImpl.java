@@ -16,10 +16,14 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.auxiliary.annotation;
 
-import java.util.List;
-
-import javax.annotation.Nonnull;
-
+import com.intellij.java.language.psi.*;
+import consulo.document.util.TextRange;
+import consulo.language.ast.ASTNode;
+import consulo.language.ast.IElementType;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiPolyVariantReference;
+import consulo.language.psi.PsiReference;
+import consulo.language.util.IncorrectOperationException;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.lexer.TokenSets;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
@@ -34,20 +38,11 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyResolveResultImpl;
 import org.jetbrains.plugins.groovy.lang.psi.impl.PsiImplUtil;
 import org.jetbrains.plugins.groovy.lang.psi.impl.auxiliary.modifiers.GrAnnotationCollector;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames;
-import com.intellij.lang.ASTNode;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.PsiAnnotation;
-import com.intellij.psi.PsiAnnotationMemberValue;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiIdentifier;
-import com.intellij.psi.PsiMethod;
-import com.intellij.psi.PsiPolyVariantReference;
-import com.intellij.psi.PsiReference;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.util.ArrayUtilRt;
-import com.intellij.util.IncorrectOperationException;
-import com.intellij.util.containers.ContainerUtilRt;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author: Dmitry.Krasilschikov
@@ -68,7 +63,7 @@ public class GrAnnotationNameValuePairImpl extends GroovyPsiElementImpl implemen
   }
 
   @Override
-  @javax.annotation.Nullable
+  @Nullable
   public String getName() {
     final PsiElement nameId = getNameIdentifierGroovy();
     return nameId != null ? nameId.getText() : null;
@@ -80,7 +75,7 @@ public class GrAnnotationNameValuePairImpl extends GroovyPsiElementImpl implemen
   }
 
   @Override
-  @javax.annotation.Nullable
+  @Nullable
   public PsiElement getNameIdentifierGroovy() {
     PsiElement child = getFirstChild();
     if (child == null) return null;
@@ -131,7 +126,7 @@ public class GrAnnotationNameValuePairImpl extends GroovyPsiElementImpl implemen
   }
 
   @Override
-  @javax.annotation.Nullable
+  @Nullable
   public PsiElement resolve() {
     final GroovyResolveResult[] results = multiResolve(false);
     return results.length == 1 ? results[0].getElement() : null;
@@ -170,12 +165,6 @@ public class GrAnnotationNameValuePairImpl extends GroovyPsiElementImpl implemen
   @Override
   public boolean isReferenceTo(PsiElement element) {
     return element instanceof PsiMethod && getManager().areElementsEquivalent(element, resolve());
-  }
-
-  @Override
-  @Nonnull
-  public Object[] getVariants() {
-    return ArrayUtilRt.EMPTY_OBJECT_ARRAY;
   }
 
   @Override
@@ -221,9 +210,9 @@ public class GrAnnotationNameValuePairImpl extends GroovyPsiElementImpl implemen
   }
 
   private static GroovyResolveResult[] multiResolveFromAlias(@Nonnull GrAnnotation alias, @Nonnull String name, @Nonnull PsiAnnotation annotationCollector) {
-    List<GroovyResolveResult> result = ContainerUtilRt.newArrayList();
+    List<GroovyResolveResult> result = new ArrayList<>();
 
-    List<GrAnnotation> annotations = ContainerUtilRt.newArrayList();
+    List<GrAnnotation> annotations = new ArrayList<>();
     GrAnnotationCollector.collectAnnotations(annotations, alias, annotationCollector);
 
     for (GrAnnotation annotation : annotations) {

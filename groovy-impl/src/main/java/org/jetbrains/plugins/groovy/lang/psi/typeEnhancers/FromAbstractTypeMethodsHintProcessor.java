@@ -15,13 +15,12 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.typeEnhancers;
 
-import com.intellij.codeInsight.generation.OverrideImplementExploreUtil;
-import com.intellij.psi.*;
-import com.intellij.psi.util.MethodSignature;
-import com.intellij.util.Function;
-import com.intellij.util.containers.ContainerUtil;
-import javax.annotation.Nonnull;
+import com.intellij.java.language.impl.codeInsight.generation.OverrideImplementExploreUtil;
+import com.intellij.java.language.psi.*;
+import com.intellij.java.language.psi.util.MethodSignature;
+import consulo.util.collection.ContainerUtil;
 
+import javax.annotation.Nonnull;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -47,11 +46,6 @@ public class FromAbstractTypeMethodsHintProcessor extends SignatureHintProcessor
     if (aClass == null) return Collections.emptyList();
 
     Collection<MethodSignature> abstractSignatures = OverrideImplementExploreUtil.getMethodSignaturesToImplement(aClass);
-    return ContainerUtil.map(abstractSignatures, new Function<MethodSignature, PsiType[]>() {
-      @Override
-      public PsiType[] fun(MethodSignature signature) {
-        return signature.getParameterTypes();
-      }
-    });
+    return ContainerUtil.map(abstractSignatures, signature -> signature.getParameterTypes());
   }
 }

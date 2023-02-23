@@ -17,10 +17,10 @@ package org.jetbrains.plugins.groovy.codeInspection.threading;
 
 import javax.annotation.Nonnull;
 
-import com.intellij.psi.CommonClassNames;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiMethod;
-import com.intellij.psi.PsiModifier;
+import com.intellij.java.language.psi.CommonClassNames;
+import com.intellij.java.language.psi.PsiClass;
+import com.intellij.java.language.psi.PsiMethod;
+import com.intellij.java.language.psi.PsiModifier;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspectionVisitor;

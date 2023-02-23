@@ -16,19 +16,23 @@
 package org.jetbrains.plugins.groovy.extensions;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
+import consulo.language.editor.completion.CompletionResultSet;
+import consulo.language.editor.completion.lookup.LookupElementBuilder;
+import consulo.language.psi.PsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
-import com.intellij.codeInsight.completion.CompletionResultSet;
-import com.intellij.codeInsight.completion.PrioritizedLookupElement;
-import com.intellij.codeInsight.lookup.LookupElement;
-import com.intellij.codeInsight.lookup.LookupElementBuilder;
-import com.intellij.psi.PsiElement;
+import consulo.language.editor.completion.CompletionResultSet;
+import consulo.language.editor.completion.lookup.PrioritizedLookupElement;
+import consulo.language.editor.completion.lookup.LookupElement;
+import consulo.language.editor.completion.lookup.LookupElementBuilder;
+import consulo.language.psi.PsiElement;
 
 public class GroovyMapCompletionUtil
 {
 	public static void addKeyVariants(@Nonnull GroovyMapContentProvider contentProvider,
 			@Nonnull GrExpression qualifier,
-			@javax.annotation.Nullable PsiElement resolve,
+			@Nullable PsiElement resolve,
 			@Nonnull CompletionResultSet result)
 	{
 		for(String key : contentProvider.getKeyVariants(qualifier, resolve))

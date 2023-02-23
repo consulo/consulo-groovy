@@ -45,7 +45,7 @@ import com.intellij.openapi.util.Computable
 import com.intellij.openapi.util.io.FileUtil
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.psi.impl.DebugUtil
+import com.intellij.java.language.psi.impl.DebugUtil
 import com.intellij.testFramework.PsiTestUtil
 import com.intellij.testFramework.builders.JavaModuleFixtureBuilder
 import com.intellij.testFramework.fixtures.impl.TempDirTestFixtureImpl

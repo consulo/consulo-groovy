@@ -16,8 +16,8 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.controlFlow.impl;
 
+import com.intellij.java.language.psi.PsiType;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
-import com.intellij.psi.PsiType;
 
 /**
 * @author peter

@@ -15,8 +15,9 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi;
 
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiQualifiedReferenceElement;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiQualifiedReferenceElement;
+
 import javax.annotation.Nullable;
 
 /**
@@ -27,7 +28,7 @@ public interface GrQualifiedReference<Qualifier extends PsiElement> extends PsiQ
   @Override
   Qualifier getQualifier();
 
-  void setQualifier(@javax.annotation.Nullable Qualifier qualifier);
+  void setQualifier(@Nullable Qualifier qualifier);
 
   @Nullable
   PsiElement getReferenceNameElement();

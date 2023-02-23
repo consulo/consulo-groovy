@@ -16,9 +16,9 @@
 
 package org.jetbrains.plugins.groovy.lang.lexer;
 
-import com.intellij.psi.TokenType;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.tree.TokenSet;
+import consulo.language.ast.IElementType;
+import consulo.language.ast.TokenSet;
+import consulo.language.ast.TokenType;
 import org.jetbrains.plugins.groovy.lang.groovydoc.lexer.GroovyDocTokenTypes;
 import org.jetbrains.plugins.groovy.lang.groovydoc.parser.GroovyDocElementTypes;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;

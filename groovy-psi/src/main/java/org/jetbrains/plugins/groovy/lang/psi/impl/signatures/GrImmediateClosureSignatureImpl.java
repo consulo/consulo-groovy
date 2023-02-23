@@ -15,19 +15,23 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.signatures;
 
-import javax.annotation.Nonnull;
-
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.util.Comparing;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.*;
-
-import javax.annotation.Nullable;
+import com.intellij.java.language.psi.GenericsUtil;
+import com.intellij.java.language.psi.PsiParameter;
+import com.intellij.java.language.psi.PsiSubstitutor;
+import com.intellij.java.language.psi.PsiType;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiManager;
+import consulo.logging.Logger;
+import consulo.util.lang.Comparing;
+import consulo.util.lang.StringUtil;
 import org.jetbrains.plugins.groovy.lang.psi.api.signatures.GrClosureSignature;
 import org.jetbrains.plugins.groovy.lang.psi.api.signatures.GrSignature;
 import org.jetbrains.plugins.groovy.lang.psi.api.signatures.GrSignatureVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrClosureParameter;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author Maxim.Medvedev

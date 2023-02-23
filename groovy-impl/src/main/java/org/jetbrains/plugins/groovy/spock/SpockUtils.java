@@ -15,13 +15,11 @@
  */
 package org.jetbrains.plugins.groovy.spock;
 
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.impl.PsiImplUtil;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.util.PsiTreeUtil;
-import javax.annotation.Nonnull;
-
+import com.intellij.java.language.impl.psi.impl.PsiImplUtil;
+import consulo.language.ast.IElementType;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.util.PsiTreeUtil;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.lexer.TokenSets;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
@@ -37,6 +35,8 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMe
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.arithmetic.GrShiftExpressionImpl;
 import org.jetbrains.plugins.groovy.util.LightCacheKey;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.*;
 
 /**
@@ -223,7 +223,7 @@ public class SpockUtils {
     return false;
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   private static PsiElement getNext(@Nonnull PsiElement current, PsiElement elementUnderLabel, PsiElement elementAfterLabel) {
     PsiElement e = current;
 
@@ -241,8 +241,8 @@ public class SpockUtils {
     return e;
   }
 
-  @javax.annotation.Nullable
-  public static String getNameByReference(@javax.annotation.Nullable PsiElement expression) {
+  @Nullable
+  public static String getNameByReference(@Nullable PsiElement expression) {
     if (!(expression instanceof GrReferenceExpression)) return null;
 
     PsiElement firstChild = expression.getFirstChild();

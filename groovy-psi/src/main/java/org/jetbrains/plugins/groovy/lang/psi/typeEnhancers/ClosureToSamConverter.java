@@ -15,10 +15,12 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.typeEnhancers;
 
-import java.util.Collection;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.intellij.java.language.impl.codeInsight.generation.OverrideImplementExploreUtil;
+import com.intellij.java.language.psi.*;
+import com.intellij.java.language.psi.util.MethodSignature;
+import com.intellij.java.language.psi.util.MethodSignatureUtil;
+import consulo.language.psi.PsiElement;
+import consulo.util.lang.ref.Ref;
 import org.jetbrains.plugins.groovy.config.GroovyConfigUtils;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.signatures.GrSignature;
@@ -27,18 +29,10 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.signatures.GrClosureSignatureU
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames;
 import org.jetbrains.plugins.groovy.util.LightCacheKey;
-import com.intellij.codeInsight.generation.OverrideImplementExploreUtil;
-import com.intellij.openapi.util.Ref;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiClassType;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiMethod;
-import com.intellij.psi.PsiModifier;
-import com.intellij.psi.PsiSubstitutor;
-import com.intellij.psi.PsiType;
-import com.intellij.psi.PsiTypeParameter;
-import com.intellij.psi.util.MethodSignature;
-import com.intellij.psi.util.MethodSignatureUtil;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Collection;
 
 /**
  * @author Max Medvedev
@@ -79,7 +73,7 @@ public class ClosureToSamConverter extends GrTypeConverter {
     return GroovyConfigUtils.getInstance().isVersionAtLeast(context, GroovyConfigUtils.GROOVY2_2);
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   public static MethodSignature findSingleAbstractMethod(@Nonnull PsiClass aClass, @Nonnull PsiSubstitutor substitutor) {
     MethodSignature signature;
     Ref<MethodSignature> cached = SAM_SIGNATURE_LIGHT_CACHE_KEY.getCachedValue(aClass);
@@ -94,7 +88,7 @@ public class ClosureToSamConverter extends GrTypeConverter {
     return signature != null ? substitute(signature, substitutor): null;
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   private static MethodSignature doFindSingleAbstractMethodClass(@Nonnull PsiClass aClass) {
     Collection<MethodSignature> toImplement = OverrideImplementExploreUtil.getMethodSignaturesToImplement(aClass);
     if (toImplement.size() > 1) return null;
@@ -116,7 +110,7 @@ public class ClosureToSamConverter extends GrTypeConverter {
   }
 
   @Nullable
-  public static MethodSignature findSAMSignature(@javax.annotation.Nullable PsiType type) {
+  public static MethodSignature findSAMSignature(@Nullable PsiType type) {
     if (type instanceof PsiClassType) {
       if (TypesUtil.isClassType(type, GroovyCommonClassNames.GROOVY_LANG_CLOSURE)) return null;
 

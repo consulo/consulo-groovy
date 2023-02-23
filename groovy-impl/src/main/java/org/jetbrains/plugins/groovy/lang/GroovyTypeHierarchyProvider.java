@@ -15,10 +15,10 @@
  */
 package org.jetbrains.plugins.groovy.lang;
 
-import com.intellij.ide.hierarchy.type.JavaTypeHierarchyProvider;
+import com.intellij.java.impl.ide.hierarchy.type.JavaTypeHierarchyProvider;
 
 /**
  * @author peter
  */
-public class GroovyTypeHierarchyProvider extends JavaTypeHierarchyProvider{
+public class GroovyTypeHierarchyProvider extends JavaTypeHierarchyProvider {
 }

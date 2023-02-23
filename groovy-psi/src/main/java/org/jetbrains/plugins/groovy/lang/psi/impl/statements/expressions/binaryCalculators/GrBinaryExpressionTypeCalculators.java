@@ -15,21 +15,21 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.binaryCalculators;
 
-import com.intellij.psi.PsiType;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.util.Function;
-import com.intellij.util.containers.ContainerUtil;
-import javax.annotation.Nonnull;
+import com.intellij.java.language.psi.PsiType;
+import consulo.language.ast.IElementType;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
 
+import javax.annotation.Nonnull;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.function.Function;
 
 /**
  * Created by Max Medvedev on 12/20/13
  */
 public class GrBinaryExpressionTypeCalculators {
-  private static final Map<IElementType, Function<GrBinaryFacade, PsiType>> MAP = ContainerUtil.newLinkedHashMap();
+  private static final Map<IElementType, Function<GrBinaryFacade, PsiType>> MAP = new LinkedHashMap<>();
 
   static {
 

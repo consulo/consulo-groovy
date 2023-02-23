@@ -15,8 +15,10 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.naming;
 
-import com.intellij.psi.PsiElement;
+import consulo.language.psi.PsiElement;
 import javax.annotation.Nonnull;
+
+import consulo.language.psi.PsiElement;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.codeInspection.GroovyFix;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrCatchClause;

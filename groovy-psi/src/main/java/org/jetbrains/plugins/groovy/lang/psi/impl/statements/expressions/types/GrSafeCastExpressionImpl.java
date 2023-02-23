@@ -16,10 +16,18 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.types;
 
-import java.util.HashMap;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.intellij.java.language.psi.*;
+import com.intellij.java.language.psi.util.InheritanceUtil;
+import com.intellij.java.language.psi.util.PsiUtil;
+import consulo.document.util.TextRange;
+import consulo.language.ast.ASTNode;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiPolyVariantReference;
+import consulo.language.psi.PsiReference;
+import consulo.language.psi.ResolveResult;
+import consulo.language.psi.resolve.ResolveCache;
+import consulo.language.util.IncorrectOperationException;
+import consulo.util.collection.ArrayUtil;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
@@ -31,16 +39,11 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.GrTraitType;
 import org.jetbrains.plugins.groovy.lang.psi.impl.PsiImplUtil;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.GrExpressionImpl;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil;
-import com.intellij.lang.ASTNode;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.*;
-import com.intellij.psi.impl.source.resolve.ResolveCache;
-import com.intellij.psi.util.InheritanceUtil;
-import com.intellij.psi.util.PsiUtil;
-import com.intellij.util.ArrayUtil;
-import com.intellij.util.Function;
-import com.intellij.util.IncorrectOperationException;
-import com.intellij.util.NullableFunction;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.HashMap;
+import java.util.function.Function;
 
 /**
  * @author ven
@@ -48,9 +51,9 @@ import com.intellij.util.NullableFunction;
 public class GrSafeCastExpressionImpl extends GrExpressionImpl implements GrSafeCastExpression, PsiPolyVariantReference {
 
   private static final Function<GrSafeCastExpressionImpl, PsiType> TYPE_CALCULATOR =
-    new NullableFunction<GrSafeCastExpressionImpl, PsiType>() {
+    new Function<GrSafeCastExpressionImpl, PsiType>() {
       @Override
-      public PsiType fun(GrSafeCastExpressionImpl cast) {
+      public PsiType apply(GrSafeCastExpressionImpl cast) {
         GrTypeElement typeElement = cast.getCastTypeElement();
         if (typeElement == null) return null;
 
@@ -83,10 +86,10 @@ public class GrSafeCastExpressionImpl extends GrExpressionImpl implements GrSafe
   @SuppressWarnings("ConstantConditions")
   private static boolean isCastToRawCollectionFromArray(PsiType opType, PsiType castType) {
     return castType instanceof PsiClassType &&
-           InheritanceUtil.isInheritor(castType, CommonClassNames.JAVA_UTIL_COLLECTION) &&
-           PsiUtil.extractIterableTypeParameter(castType, false) == null &&
-           ((PsiClassType)castType).resolve().getTypeParameters().length == 1 &&
-           TypesUtil.getItemType(opType) != null;
+      InheritanceUtil.isInheritor(castType, CommonClassNames.JAVA_UTIL_COLLECTION) &&
+      PsiUtil.extractIterableTypeParameter(castType, false) == null &&
+      ((PsiClassType)castType).resolve().getTypeParameters().length == 1 &&
+      TypesUtil.getItemType(opType) != null;
   }
 
 

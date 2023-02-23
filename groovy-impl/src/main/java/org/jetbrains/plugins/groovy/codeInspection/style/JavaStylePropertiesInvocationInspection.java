@@ -1,8 +1,8 @@
 package org.jetbrains.plugins.groovy.codeInspection.style;
 
-import com.intellij.codeInspection.LocalQuickFix;
-import com.intellij.codeInspection.ProblemHighlightType;
-import com.intellij.psi.PsiElement;
+import consulo.language.editor.inspection.LocalQuickFix;
+import consulo.language.editor.inspection.ProblemHighlightType;
+import consulo.language.psi.PsiElement;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.codeInspection.GroovyInspectionBundle;
@@ -13,7 +13,15 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrMethod
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.path.GrMethodCallExpression;
 
+import javax.annotation.Nonnull;
+
 public class JavaStylePropertiesInvocationInspection extends BaseInspection {
+  @Nonnull
+  @Override
+  public String getDisplayName() {
+    return "Java-style property access";
+  }
+
   @Override
   protected BaseInspectionVisitor buildVisitor() {
     return new BaseInspectionVisitor() {

@@ -15,20 +15,24 @@
  */
 package org.jetbrains.plugins.groovy.config;
 
-import com.intellij.openapi.roots.libraries.LibraryProperties;
-import com.intellij.openapi.util.Comparing;
+import consulo.content.library.LibraryProperties;
+import consulo.util.lang.Comparing;
+import consulo.content.library.LibraryProperties;
+
+import javax.annotation.Nullable;
 
 /**
  * @author nik
  */
-public class GroovyLibraryProperties extends LibraryProperties<GroovyLibraryProperties> {
+public class GroovyLibraryProperties extends LibraryProperties<GroovyLibraryProperties>
+{
   private String myVersion;
 
   public GroovyLibraryProperties(String version) {
     myVersion = version;
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   public String getVersion() {
     return myVersion;
   }

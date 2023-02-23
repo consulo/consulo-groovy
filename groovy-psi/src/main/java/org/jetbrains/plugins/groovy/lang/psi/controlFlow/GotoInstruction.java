@@ -17,9 +17,10 @@ package org.jetbrains.plugins.groovy.lang.psi.controlFlow;
 
 import javax.annotation.Nonnull;
 
-import com.intellij.psi.PsiElement;
+import consulo.language.psi.PsiElement;
 
 import javax.annotation.Nullable;
+
 import org.jetbrains.plugins.groovy.lang.psi.controlFlow.impl.ConditionInstruction;
 import org.jetbrains.plugins.groovy.lang.psi.controlFlow.impl.InstructionImpl;
 

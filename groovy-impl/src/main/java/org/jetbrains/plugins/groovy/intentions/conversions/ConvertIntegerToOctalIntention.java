@@ -17,16 +17,16 @@ package org.jetbrains.plugins.groovy.intentions.conversions;
 
 import java.math.BigInteger;
 
+import consulo.codeEditor.Editor;
+import consulo.language.psi.PsiElement;
+import consulo.language.util.IncorrectOperationException;
+import consulo.project.Project;
 import org.jetbrains.annotations.NonNls;
 import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.intentions.base.PsiElementPredicate;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.literals.GrLiteral;
 import org.jetbrains.plugins.groovy.lang.psi.impl.PsiImplUtil;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiElement;
-import com.intellij.util.IncorrectOperationException;
 
 public class ConvertIntegerToOctalIntention extends Intention
 {

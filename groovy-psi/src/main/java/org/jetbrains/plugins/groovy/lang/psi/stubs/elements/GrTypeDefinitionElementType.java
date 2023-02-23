@@ -15,14 +15,13 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.stubs.elements;
 
-import com.intellij.psi.PsiNameHelper;
-import com.intellij.psi.impl.java.stubs.index.JavaStubIndexKeys;
-import com.intellij.psi.stubs.IndexSink;
-import com.intellij.psi.stubs.StubElement;
-import com.intellij.psi.stubs.StubInputStream;
-import com.intellij.psi.stubs.StubOutputStream;
-import com.intellij.util.io.StringRef;
-import javax.annotation.Nonnull;
+import com.intellij.java.language.impl.psi.impl.java.stubs.index.JavaStubIndexKeys;
+import com.intellij.java.language.psi.PsiNameHelper;
+import consulo.index.io.StringRef;
+import consulo.language.psi.stub.IndexSink;
+import consulo.language.psi.stub.StubElement;
+import consulo.language.psi.stub.StubInputStream;
+import consulo.language.psi.stub.StubOutputStream;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
 import org.jetbrains.plugins.groovy.lang.psi.stubs.GrStubUtils;
 import org.jetbrains.plugins.groovy.lang.psi.stubs.GrTypeDefinitionStub;
@@ -30,6 +29,7 @@ import org.jetbrains.plugins.groovy.lang.psi.stubs.index.GrAnnotatedMemberIndex;
 import org.jetbrains.plugins.groovy.lang.psi.stubs.index.GrAnonymousClassIndex;
 import org.jetbrains.plugins.groovy.lang.psi.stubs.index.GrFullClassNameIndex;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 
 /**

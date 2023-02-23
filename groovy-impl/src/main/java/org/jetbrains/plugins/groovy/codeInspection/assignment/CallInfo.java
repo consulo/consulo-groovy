@@ -15,31 +15,32 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.assignment;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.intellij.java.language.psi.PsiType;
+import consulo.language.psi.PsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrArgumentList;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrNamedArgument;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlock;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiType;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * Created by Max Medvedev on 05/02/14
  */
 public interface CallInfo<Call extends GroovyPsiElement> {
-  @javax.annotation.Nullable
+  @Nullable
   GrArgumentList getArgumentList();
 
   @Nullable
   PsiType[] getArgumentTypes();
 
-  @javax.annotation.Nullable
+  @Nullable
   GrExpression getInvokedExpression();
 
-  @javax.annotation.Nullable
+  @Nullable
   PsiType getQualifierInstanceType();
 
   @Nonnull

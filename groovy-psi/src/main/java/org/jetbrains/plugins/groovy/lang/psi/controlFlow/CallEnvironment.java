@@ -15,10 +15,13 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.controlFlow;
 
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrTryCatchStatement;
+import org.jetbrains.plugins.groovy.lang.psi.controlFlow.impl.ControlFlowBuilder;
+
 import java.util.Deque;
 
 /**
- * @see org.jetbrains.plugins.groovy.lang.psi.controlFlow.impl.ControlFlowBuilder#visitTryStatement(org.jetbrains.plugins.groovy.lang.psi.api.statements.GrTryCatchStatement)
+ * @see ControlFlowBuilder#visitTryStatement(GrTryCatchStatement)
  * @see ReturnInstruction#successors(CallEnvironment)
  * @see CallInstruction#successors(CallEnvironment)
  * @see AfterCallInstruction#predecessors(CallEnvironment)

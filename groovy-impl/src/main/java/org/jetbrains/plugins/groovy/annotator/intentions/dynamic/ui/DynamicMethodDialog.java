@@ -15,11 +15,11 @@
  */
 package org.jetbrains.plugins.groovy.annotator.intentions.dynamic.ui;
 
-import com.intellij.psi.PsiType;
-import com.intellij.util.IncorrectOperationException;
-import com.intellij.util.ui.AbstractTableCellEditor;
-import com.intellij.util.ui.ColumnInfo;
-import com.intellij.util.ui.ListTableModel;
+import com.intellij.java.language.psi.PsiType;
+import consulo.language.util.IncorrectOperationException;
+import consulo.ui.ex.awt.AbstractTableCellEditor;
+import consulo.ui.ex.awt.ColumnInfo;
+import consulo.ui.ex.awt.table.ListTableModel;
 import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.annotator.intentions.QuickfixUtil;
 import org.jetbrains.plugins.groovy.annotator.intentions.dynamic.ParamInfo;
@@ -128,7 +128,8 @@ public class DynamicMethodDialog extends DynamicDialog {
     }
   }
 
-  private static class NameColumnInfo extends ColumnInfo<ParamInfo, String> {
+  private static class NameColumnInfo extends ColumnInfo<ParamInfo, String>
+  {
     public NameColumnInfo() {
       super(GroovyBundle.message("dynamic.type"));
     }

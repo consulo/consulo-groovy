@@ -16,11 +16,12 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.literals;
 
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.LiteralTextEscaper;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiLanguageInjectionHost;
+import consulo.language.ast.ASTNode;
+import consulo.language.psi.PsiLanguageInjectionHost;
 import javax.annotation.Nonnull;
+
+import consulo.language.psi.LiteralTextEscaper;
+import consulo.language.psi.PsiElement;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.literals.GrRegex;

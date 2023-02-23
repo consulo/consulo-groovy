@@ -2,8 +2,10 @@ package org.jetbrains.plugins.groovy.editor.actions.joinLines;
 
 import javax.annotation.Nonnull;
 
-import com.intellij.psi.PsiElement;
-import com.intellij.util.ArrayUtil;
+import consulo.language.psi.PsiElement;
+import consulo.util.collection.ArrayUtil;
+import consulo.language.psi.PsiElement;
+import consulo.util.collection.ArrayUtil;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariableDeclaration;

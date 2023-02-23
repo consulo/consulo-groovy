@@ -15,163 +15,137 @@
  */
 package org.jetbrains.plugins.groovy.testIntegration;
 
-import javax.annotation.Nonnull;
-import javax.swing.Icon;
-
+import com.intellij.java.execution.impl.junit.JUnitUtil;
+import com.intellij.java.language.psi.PsiClass;
+import com.intellij.java.language.psi.PsiMethod;
+import com.intellij.java.language.psi.PsiModifier;
+import com.intellij.java.language.psi.util.InheritanceUtil;
+import com.intellij.java.language.psi.util.PsiUtil;
+import com.intellij.java.language.testIntegration.JavaTestFramework;
+import consulo.fileTemplate.FileTemplateDescriptor;
+import consulo.language.Language;
+import consulo.language.psi.PsiElement;
+import consulo.language.util.IncorrectOperationException;
+import consulo.logging.Logger;
 import consulo.ui.image.Image;
 import org.jetbrains.plugins.groovy.GroovyFileType;
+import org.jetbrains.plugins.groovy.JetgroovyIcons;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames;
-import com.intellij.execution.junit.JUnitUtil;
-import com.intellij.ide.fileTemplates.FileTemplateDescriptor;
-import com.intellij.lang.Language;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiMethod;
-import com.intellij.psi.PsiModifier;
-import com.intellij.psi.util.InheritanceUtil;
-import com.intellij.psi.util.PsiUtil;
-import com.intellij.testIntegration.JavaTestFramework;
-import com.intellij.util.IncorrectOperationException;
-import consulo.awt.TargetAWT;
-import icons.JetgroovyIcons;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author Max Medvedev
  */
-public class GroovyTestFramework extends JavaTestFramework
-{
-	private static final Logger LOG = Logger.getInstance(GroovyTestFramework.class);
+public class GroovyTestFramework extends JavaTestFramework {
+  private static final Logger LOG = Logger.getInstance(GroovyTestFramework.class);
 
-	@Override
-	protected String getMarkerClassFQName()
-	{
-		return GroovyCommonClassNames.GROOVY_UTIL_TEST_CASE;
-	}
+  @Override
+  protected String getMarkerClassFQName() {
+    return GroovyCommonClassNames.GROOVY_UTIL_TEST_CASE;
+  }
 
-	@Override
-	protected boolean isTestClass(PsiClass clazz, boolean canBePotential)
-	{
-		return clazz.getLanguage() == GroovyFileType.GROOVY_LANGUAGE &&
-				JUnitUtil.isTestClass(clazz) &&
-				InheritanceUtil.isInheritor(clazz, GroovyCommonClassNames.GROOVY_UTIL_TEST_CASE);
-	}
+  @Override
+  protected boolean isTestClass(PsiClass clazz, boolean canBePotential) {
+    return clazz.getLanguage() == GroovyFileType.GROOVY_LANGUAGE &&
+      JUnitUtil.isTestClass(clazz) &&
+      InheritanceUtil.isInheritor(clazz, GroovyCommonClassNames.GROOVY_UTIL_TEST_CASE);
+  }
 
-	@Override
-	protected PsiMethod findSetUpMethod(@Nonnull PsiClass clazz)
-	{
-		for(PsiMethod method : clazz.getMethods())
-		{
-			if(method.getName().equals("setUp"))
-			{
-				return method;
-			}
-		}
-		return null;
-	}
+  @Override
+  protected PsiMethod findSetUpMethod(@Nonnull PsiClass clazz) {
+    for (PsiMethod method : clazz.getMethods()) {
+      if (method.getName().equals("setUp")) {
+        return method;
+      }
+    }
+    return null;
+  }
 
-	@Override
-	protected PsiMethod findTearDownMethod(@Nonnull PsiClass clazz)
-	{
-		for(PsiMethod method : clazz.getMethods())
-		{
-			if(method.getName().equals("tearDown"))
-			{
-				return method;
-			}
-		}
-		return null;
-	}
+  @Override
+  protected PsiMethod findTearDownMethod(@Nonnull PsiClass clazz) {
+    for (PsiMethod method : clazz.getMethods()) {
+      if (method.getName().equals("tearDown")) {
+        return method;
+      }
+    }
+    return null;
+  }
 
-	@Override
-	protected PsiMethod findOrCreateSetUpMethod(PsiClass clazz) throws IncorrectOperationException
-	{
-		LOG.assertTrue(clazz.getLanguage() == GroovyFileType.GROOVY_LANGUAGE);
-		final GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(clazz.getProject());
+  @Override
+  protected PsiMethod findOrCreateSetUpMethod(PsiClass clazz) throws IncorrectOperationException {
+    LOG.assertTrue(clazz.getLanguage() == GroovyFileType.GROOVY_LANGUAGE);
+    final GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(clazz.getProject());
 
-		final PsiMethod patternMethod = createSetUpPatternMethod(factory);
+    final PsiMethod patternMethod = createSetUpPatternMethod(factory);
 
-		final PsiClass baseClass = clazz.getSuperClass();
-		if(baseClass != null)
-		{
-			final PsiMethod baseMethod = baseClass.findMethodBySignature(patternMethod, false);
-			if(baseMethod != null && baseMethod.hasModifierProperty(PsiModifier.PUBLIC))
-			{
-				PsiUtil.setModifierProperty(patternMethod, PsiModifier.PROTECTED, false);
-				PsiUtil.setModifierProperty(patternMethod, PsiModifier.PUBLIC, true);
-			}
-		}
+    final PsiClass baseClass = clazz.getSuperClass();
+    if (baseClass != null) {
+      final PsiMethod baseMethod = baseClass.findMethodBySignature(patternMethod, false);
+      if (baseMethod != null && baseMethod.hasModifierProperty(PsiModifier.PUBLIC)) {
+        PsiUtil.setModifierProperty(patternMethod, PsiModifier.PROTECTED, false);
+        PsiUtil.setModifierProperty(patternMethod, PsiModifier.PUBLIC, true);
+      }
+    }
 
-		PsiMethod inClass = clazz.findMethodBySignature(patternMethod, false);
-		if(inClass == null)
-		{
-			PsiMethod testMethod = JUnitUtil.findFirstTestMethod(clazz);
-			if(testMethod != null)
-			{
-				return (PsiMethod) clazz.addBefore(patternMethod, testMethod);
-			}
-			return (PsiMethod) clazz.add(patternMethod);
-		}
-		else if(inClass.getBody() == null)
-		{
-			return (PsiMethod) inClass.replace(patternMethod);
-		}
-		return inClass;
-	}
+    PsiMethod inClass = clazz.findMethodBySignature(patternMethod, false);
+    if (inClass == null) {
+      PsiMethod testMethod = JUnitUtil.findFirstTestMethod(clazz);
+      if (testMethod != null) {
+        return (PsiMethod)clazz.addBefore(patternMethod, testMethod);
+      }
+      return (PsiMethod)clazz.add(patternMethod);
+    }
+    else if (inClass.getBody() == null) {
+      return (PsiMethod)inClass.replace(patternMethod);
+    }
+    return inClass;
+  }
 
-	@Override
-	public char getMnemonic()
-	{
-		return 'G';
-	}
+  @Override
+  public char getMnemonic() {
+    return 'G';
+  }
 
-	@Nonnull
-	@Override
-	public String getName()
-	{
-		return "Groovy JUnit";
-	}
+  @Nonnull
+  @Override
+  public String getName() {
+    return "Groovy JUnit";
+  }
 
-	@Nonnull
-	@Override
-	public Image getIcon()
-	{
-		return JetgroovyIcons.Groovy.Groovy_16x16;
-	}
+  @Nonnull
+  @Override
+  public Image getIcon() {
+    return JetgroovyIcons.Groovy.Groovy_16x16;
+  }
 
-	@Override
-	public String getDefaultSuperClass()
-	{
-		return GroovyCommonClassNames.GROOVY_UTIL_TEST_CASE;
-	}
+  @Override
+  public String getDefaultSuperClass() {
+    return GroovyCommonClassNames.GROOVY_UTIL_TEST_CASE;
+  }
 
-	@Override
-	public FileTemplateDescriptor getSetUpMethodFileTemplateDescriptor()
-	{
-		return new FileTemplateDescriptor("Groovy JUnit SetUp Method.groovy");
-	}
+  @Override
+  public FileTemplateDescriptor getSetUpMethodFileTemplateDescriptor() {
+    return new FileTemplateDescriptor("Groovy JUnit SetUp Method.groovy");
+  }
 
-	public FileTemplateDescriptor getTearDownMethodFileTemplateDescriptor()
-	{
-		return new FileTemplateDescriptor("Groovy JUnit TearDown Method.groovy");
-	}
+  public FileTemplateDescriptor getTearDownMethodFileTemplateDescriptor() {
+    return new FileTemplateDescriptor("Groovy JUnit TearDown Method.groovy");
+  }
 
-	public FileTemplateDescriptor getTestMethodFileTemplateDescriptor()
-	{
-		return new FileTemplateDescriptor("Groovy JUnit Test Method.groovy");
-	}
+  public FileTemplateDescriptor getTestMethodFileTemplateDescriptor() {
+    return new FileTemplateDescriptor("Groovy JUnit Test Method.groovy");
+  }
 
-	@Override
-	public boolean isTestMethod(PsiElement element)
-	{
-		return element instanceof PsiMethod && JUnitUtil.getTestMethod(element) != null;
-	}
+  @Override
+  public boolean isTestMethod(PsiElement element) {
+    return element instanceof PsiMethod && JUnitUtil.getTestMethod(element) != null;
+  }
 
-	@Override
-	@Nonnull
-	public Language getLanguage()
-	{
-		return GroovyFileType.GROOVY_LANGUAGE;
-	}
+  @Override
+  @Nonnull
+  public Language getLanguage() {
+    return GroovyFileType.GROOVY_LANGUAGE;
+  }
 }

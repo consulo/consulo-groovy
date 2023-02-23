@@ -17,6 +17,7 @@
 package org.jetbrains.plugins.groovy.lang.psi.api.statements;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrOpenBlock;
@@ -32,8 +33,8 @@ public interface GrTryCatchStatement extends GroovyPsiElement, GrStatement {
   @Nonnull
   GrCatchClause[] getCatchClauses();
 
-  @javax.annotation.Nullable
+  @Nullable
   GrFinallyClause getFinallyClause();
 
-  GrCatchClause addCatchClause(@Nonnull GrCatchClause clause, @javax.annotation.Nullable GrCatchClause anchorBefore);
+  GrCatchClause addCatchClause(@Nonnull GrCatchClause clause, @Nullable GrCatchClause anchorBefore);
 }

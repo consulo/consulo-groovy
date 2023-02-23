@@ -15,16 +15,16 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.arguments;
 
-import javax.annotation.Nonnull;
-
-import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.AbstractElementManipulator;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.impl.source.tree.LeafPsiElement;
-import com.intellij.util.IncorrectOperationException;
+import consulo.document.util.TextRange;
+import consulo.language.impl.psi.LeafPsiElement;
+import consulo.language.psi.AbstractElementManipulator;
+import consulo.language.psi.PsiElement;
+import consulo.language.util.IncorrectOperationException;
 import org.jetbrains.plugins.groovy.lang.lexer.TokenSets;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrArgumentLabel;
 import org.jetbrains.plugins.groovy.lang.resolve.GroovyStringLiteralManipulator;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author peter
@@ -39,6 +39,12 @@ public class GrArgumentLabelManipulator extends AbstractElementManipulator<GrArg
     }
 
     return super.getRangeInElement(element);
+  }
+
+  @Nonnull
+  @Override
+  public Class<GrArgumentLabel> getElementClass() {
+    return GrArgumentLabel.class;
   }
 
   @Override

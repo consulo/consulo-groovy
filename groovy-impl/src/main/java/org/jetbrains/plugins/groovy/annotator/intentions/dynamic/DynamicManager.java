@@ -15,28 +15,24 @@
  */
 package org.jetbrains.plugins.groovy.annotator.intentions.dynamic;
 
-import java.util.Collection;
-import java.util.List;
+import com.intellij.java.language.psi.PsiMethod;
+import com.intellij.java.language.psi.PsiVariable;
+import consulo.component.persist.PersistentStateComponent;
+import consulo.project.Project;
+import org.jetbrains.plugins.groovy.annotator.intentions.dynamic.elements.*;
+import org.jetbrains.plugins.groovy.annotator.intentions.dynamic.ui.DynamicElementSettings;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
-import org.jetbrains.plugins.groovy.annotator.intentions.dynamic.elements.DClassElement;
-import org.jetbrains.plugins.groovy.annotator.intentions.dynamic.elements.DItemElement;
-import org.jetbrains.plugins.groovy.annotator.intentions.dynamic.elements.DMethodElement;
-import org.jetbrains.plugins.groovy.annotator.intentions.dynamic.elements.DPropertyElement;
-import org.jetbrains.plugins.groovy.annotator.intentions.dynamic.elements.DRootElement;
-import org.jetbrains.plugins.groovy.annotator.intentions.dynamic.ui.DynamicElementSettings;
-import com.intellij.openapi.components.PersistentStateComponent;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiMethod;
-import com.intellij.psi.PsiVariable;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * User: Dmitry.Krasilschikov
  * Date: 23.11.2007
  */
-public abstract class DynamicManager implements PersistentStateComponent<DRootElement> {
+public abstract class DynamicManager implements PersistentStateComponent<DRootElement>
+{
 
   @Nonnull
   public static DynamicManager getInstance(@Nonnull Project project) {
@@ -85,10 +81,10 @@ public abstract class DynamicManager implements PersistentStateComponent<DRootEl
   @Nullable
   public abstract String replaceDynamicPropertyName(String className, String oldPropertyName, String newPropertyName);
 
-  @javax.annotation.Nullable
+  @Nullable
   public abstract String replaceDynamicPropertyType(String className, String propertyName, String oldPropertyType, String newPropertyType);
 
-  @javax.annotation.Nullable
+  @Nullable
   public abstract DMethodElement findConcreteDynamicMethod(final String containingClassName, final String name, final String[] types);
 
   public abstract void removeItemElement(DItemElement element);

@@ -16,9 +16,9 @@
 
 package org.jetbrains.plugins.groovy.editor.actions.joinLines;
 
-import com.intellij.openapi.editor.Document;
-import com.intellij.psi.PsiDocumentManager;
-import com.intellij.psi.PsiElement;
+import consulo.document.Document;
+import consulo.language.psi.PsiDocumentManager;
+import consulo.language.psi.PsiElement;
 import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
 import org.jetbrains.plugins.groovy.lang.psi.impl.PsiImplUtil;

@@ -17,12 +17,16 @@ package org.jetbrains.plugins.groovy.codeStyle;
 
 import javax.annotation.Nonnull;
 
-import com.intellij.application.options.CodeStyleAbstractConfigurable;
-import com.intellij.application.options.CodeStyleAbstractPanel;
-import com.intellij.openapi.options.Configurable;
-import com.intellij.psi.codeStyle.CodeStyleSettings;
-import com.intellij.psi.codeStyle.CodeStyleSettingsProvider;
-import com.intellij.psi.codeStyle.CustomCodeStyleSettings;
+import consulo.language.codeStyle.CodeStyleSettings;
+import consulo.language.codeStyle.CustomCodeStyleSettings;
+import consulo.language.codeStyle.ui.setting.CodeStyleAbstractConfigurable;
+import consulo.language.codeStyle.ui.setting.CodeStyleAbstractPanel;
+import consulo.configurable.Configurable;
+import consulo.language.codeStyle.CodeStyleSettings;
+import consulo.language.codeStyle.setting.CodeStyleSettingsProvider;
+import consulo.language.codeStyle.CustomCodeStyleSettings;
+import consulo.language.codeStyle.ui.setting.CodeStyleAbstractConfigurable;
+import consulo.language.codeStyle.ui.setting.CodeStyleAbstractPanel;
 
 /**
  * @author Rustam Vishnyakov

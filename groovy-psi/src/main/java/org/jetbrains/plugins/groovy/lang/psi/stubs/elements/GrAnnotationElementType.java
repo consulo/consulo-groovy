@@ -18,12 +18,13 @@ package org.jetbrains.plugins.groovy.lang.psi.stubs.elements;
 import java.io.IOException;
 
 import javax.annotation.Nonnull;
+
+import consulo.language.psi.stub.StubElement;
+import consulo.language.psi.stub.StubInputStream;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotation;
 import org.jetbrains.plugins.groovy.lang.psi.impl.auxiliary.annotation.GrAnnotationImpl;
 import org.jetbrains.plugins.groovy.lang.psi.stubs.GrAnnotationStub;
-import com.intellij.psi.stubs.StubElement;
-import com.intellij.psi.stubs.StubInputStream;
-import com.intellij.psi.stubs.StubOutputStream;
+import consulo.language.psi.stub.StubOutputStream;
 
 /**
  * Created by Max Medvedev on 12/6/13

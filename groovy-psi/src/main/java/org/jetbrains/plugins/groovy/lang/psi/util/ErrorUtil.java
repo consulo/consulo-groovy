@@ -15,9 +15,9 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.util;
 
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiErrorElement;
-import com.intellij.psi.PsiRecursiveElementVisitor;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiErrorElement;
+import consulo.language.psi.PsiRecursiveElementVisitor;
 
 public class ErrorUtil
 {

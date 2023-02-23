@@ -15,18 +15,23 @@
  */
 package org.jetbrains.plugins.groovy.lang.completion;
 
-import javax.annotation.Nonnull;
-
-import com.intellij.codeInsight.completion.InsertHandler;
-import com.intellij.codeInsight.completion.InsertionContext;
-import com.intellij.codeInsight.completion.JavaGlobalMemberLookupElement;
+import com.intellij.java.impl.codeInsight.completion.JavaGlobalMemberLookupElement;
+import com.intellij.java.language.psi.PsiClass;
+import com.intellij.java.language.psi.PsiMember;
+import consulo.language.editor.completion.lookup.InsertHandler;
+import consulo.language.editor.completion.lookup.InsertionContext;
+import consulo.language.psi.PsiDocumentManager;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiManager;
+import consulo.language.psi.resolve.PsiScopeProcessor;
+import consulo.language.psi.resolve.ResolveState;
+import consulo.language.psi.util.PsiTreeUtil;
 import consulo.util.dataholder.Key;
-import com.intellij.psi.*;
-import com.intellij.psi.scope.PsiScopeProcessor;
-import com.intellij.psi.util.PsiTreeUtil;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.toplevel.imports.GrImportStatement;
+
+import javax.annotation.Nonnull;
 
 /**
 * Created by Max Medvedev on 14/05/14

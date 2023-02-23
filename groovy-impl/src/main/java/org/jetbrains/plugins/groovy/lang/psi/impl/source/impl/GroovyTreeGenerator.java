@@ -15,11 +15,13 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.source.impl;
 
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiManager;
-import com.intellij.psi.impl.source.tree.TreeElement;
-import com.intellij.psi.impl.source.tree.TreeGenerator;
-import com.intellij.util.CharTable;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiManager;
+import consulo.language.impl.ast.TreeElement;
+import consulo.language.ast.TreeGenerator;
+import consulo.language.util.CharTable;
+import consulo.language.psi.PsiManager;
+import consulo.language.util.CharTable;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.GrModifierList;
 

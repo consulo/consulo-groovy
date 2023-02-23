@@ -16,8 +16,8 @@
 
 package org.jetbrains.plugins.groovy.dsl.psi;
 
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiReference;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiReference;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.GrListOrMap;
@@ -36,7 +36,7 @@ import java.util.Collections;
  */
 public class PsiElementCategory implements PsiEnhancerCategory {
 
-  @javax.annotation.Nullable
+  @Nullable
   public static PsiElement bind(PsiElement element) {
     PsiElement elem = element instanceof GrMethodCall ? ((GrMethodCall)element).getInvokedExpression() : element;
     final PsiReference ref = elem.getReference();
@@ -52,7 +52,7 @@ public class PsiElementCategory implements PsiEnhancerCategory {
   }
 
   @Nonnull
-  public static Collection<? extends PsiElement> asList(@javax.annotation.Nullable PsiElement elem) {
+  public static Collection<? extends PsiElement> asList(@Nullable PsiElement elem) {
     if (elem == null) return new ArrayList<PsiElement>();
     if (elem instanceof GrListOrMap) {
       return Arrays.asList(((GrListOrMap)elem).getInitializers());

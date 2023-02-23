@@ -15,19 +15,24 @@
  */
 package org.jetbrains.plugins.groovy.mvc.projectView;
 
-import com.intellij.openapi.components.PersistentStateComponent;
-import com.intellij.util.xmlb.XmlSerializerUtil;
+import consulo.component.persist.PersistentStateComponent;
+import consulo.util.xml.serializer.XmlSerializerUtil;
+import consulo.component.persist.PersistentStateComponent;
+import consulo.util.xml.serializer.XmlSerializerUtil;
+
+import javax.annotation.Nullable;
 
 /**
  * @author Sergey Evdokimov
  */
-public class MvcProjectViewState implements PersistentStateComponent<MvcProjectViewState> {
+public class MvcProjectViewState implements PersistentStateComponent<MvcProjectViewState>
+{
 
   public boolean autoScrollFromSource;
   public boolean autoScrollToSource;
   public boolean hideEmptyMiddlePackages = true;
 
-  @javax.annotation.Nullable
+  @Nullable
   @Override
   public MvcProjectViewState getState() {
     return this;

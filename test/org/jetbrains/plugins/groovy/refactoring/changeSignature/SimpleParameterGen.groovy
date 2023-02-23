@@ -16,8 +16,8 @@
 package org.jetbrains.plugins.groovy.refactoring.changeSignature
 
 import com.intellij.openapi.project.Project
-import com.intellij.psi.JavaPsiFacade
-import com.intellij.psi.PsiType
+import com.intellij.java.language.psi.JavaPsiFacade
+import com.intellij.java.language.psi.PsiType
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameter
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod

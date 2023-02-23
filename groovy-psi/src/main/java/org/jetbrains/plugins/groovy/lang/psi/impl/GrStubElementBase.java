@@ -15,16 +15,16 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl;
 
+import consulo.language.ast.ASTNode;
+import consulo.language.impl.psi.stub.StubBasedPsiElementBase;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.stub.IStubElementType;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinitionBody;
-import com.intellij.extapi.psi.StubBasedPsiElementBase;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.stubs.IStubElementType;
-import com.intellij.psi.stubs.StubElement;
-import com.intellij.util.IncorrectOperationException;
+import consulo.language.psi.stub.StubElement;
+import consulo.language.util.IncorrectOperationException;
 
 /**
  * @author ilyas

@@ -15,22 +15,25 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.introduce;
 
-import com.intellij.codeInsight.navigation.NavigationUtil;
-import com.intellij.ide.util.PsiClassListCellRenderer;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.util.Pass;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.search.PsiElementProcessor;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.containers.ContainerUtil;
-import javax.annotation.Nonnull;
+import com.intellij.java.language.impl.codeInsight.PsiClassListCellRenderer;
+import com.intellij.java.language.psi.PsiClass;
+import consulo.codeEditor.Editor;
+import consulo.codeEditor.EditorPopupHelper;
+import consulo.language.editor.ui.PopupNavigationUtil;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.resolve.PsiElementProcessor;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.navigation.NavigationUtil;
+import consulo.ui.ex.popup.JBPopup;
+import consulo.util.collection.ContainerUtil;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GroovyScriptClass;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 
+import javax.annotation.Nonnull;
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * Created by Max Medvedev on 8/29/13
@@ -58,16 +61,19 @@ public abstract class GrIntroduceFieldHandlerBase<Settings extends GrIntroduceSe
   }
 
   @Override
-  protected void showScopeChooser(PsiClass[] scopes, final Pass<PsiClass> callback, Editor editor) {
+  protected void showScopeChooser(PsiClass[] scopes, final Consumer<PsiClass> callback, Editor editor) {
     PsiElementProcessor<PsiClass> processor = new PsiElementProcessor<PsiClass>() {
       @Override
       public boolean execute(@Nonnull PsiClass element) {
-        callback.pass(element);
+        callback.accept(element);
         return false;
       }
     };
 
-    NavigationUtil.getPsiElementPopup(scopes, new PsiClassListCellRenderer(), "Choose class to introduce field", processor).showInBestPositionFor(editor);
+    JBPopup popup =
+      PopupNavigationUtil.getPsiElementPopup(scopes, new PsiClassListCellRenderer(), "Choose class to introduce field", processor);
+
+    EditorPopupHelper.getInstance().showPopupInBestPositionFor(editor, popup);
   }
 
   @Nonnull

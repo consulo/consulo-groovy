@@ -16,12 +16,13 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.path;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.intellij.java.language.psi.PsiType;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrArgumentList;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
-import com.intellij.psi.PsiType;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author ilyas

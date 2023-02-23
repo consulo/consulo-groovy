@@ -15,17 +15,24 @@
  */
 package org.jetbrains.plugins.groovy.findUsages;
 
+import consulo.component.util.Iconable;
+import consulo.language.icon.IconDescriptorUpdaters;
+import consulo.language.psi.PsiDirectory;
+import consulo.navigation.ItemPresentation;
+import consulo.navigation.ItemPresentationProvider;
+import consulo.ui.image.Image;
 import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
-import com.intellij.navigation.ItemPresentation;
-import com.intellij.navigation.ItemPresentationProvider;
-import com.intellij.navigation.ItemPresentationProviders;
-import com.intellij.openapi.util.Iconable;
-import com.intellij.psi.PsiDirectory;
-import consulo.ide.IconDescriptorUpdaters;
-import consulo.ui.image.Image;
+
+import javax.annotation.Nonnull;
 
 public class GrFileItemPresentationProvider implements ItemPresentationProvider<GroovyFile> {
+  @Nonnull
+  @Override
+  public Class<GroovyFile> getItemClass() {
+    return GroovyFile.class;
+  }
+
   @Override
   public ItemPresentation getPresentation(final GroovyFile file) {
     return new ItemPresentation() {
@@ -37,7 +44,7 @@ public class GrFileItemPresentationProvider implements ItemPresentationProvider<
       @Override
       public String getLocationString() {
         PsiDirectory directory = file.getContainingDirectory();
-        return ItemPresentationProviders.getItemPresentation(directory).getPresentableText();
+        return ItemPresentationProvider.getItemPresentation(directory).getPresentableText();
       }
 
       @Override

@@ -15,11 +15,11 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.util;
 
-import com.intellij.lang.ASTNode;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.impl.source.codeStyle.CodeEditUtil;
-import com.intellij.psi.tree.IElementType;
+import consulo.language.ast.ASTNode;
+import consulo.language.ast.IElementType;
+import consulo.language.impl.psi.CodeEditUtil;
+import consulo.logging.Logger;
+import consulo.language.psi.PsiElement;
 import org.jetbrains.annotations.NonNls;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -696,7 +696,7 @@ public class GrStringUtil {
   }
 
   /**
-   * @see com.intellij.psi.impl.source.tree.java.PsiLiteralExpressionImpl#parseStringCharacters(String, StringBuilder, int[])
+   * @see com.intellij.java.language.psi.impl.source.tree.java.PsiLiteralExpressionImpl#parseStringCharacters(String, StringBuilder, int[])
    */
   public static boolean parseStringCharacters(@Nonnull String chars, @Nonnull StringBuilder outChars, @Nullable int[] sourceOffsets) {
     assert sourceOffsets == null || sourceOffsets.length == chars.length()+1;

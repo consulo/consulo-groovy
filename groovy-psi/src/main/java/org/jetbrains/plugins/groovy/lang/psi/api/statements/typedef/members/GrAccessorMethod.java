@@ -15,24 +15,26 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members;
 
-import javax.annotation.Nonnull;
-
-import com.intellij.psi.PsiMethod;
-import com.intellij.psi.PsiMirrorElement;
-import com.intellij.psi.PsiType;
+import com.intellij.java.language.psi.PsiMethod;
+import com.intellij.java.language.psi.PsiType;
+import consulo.language.psi.PsiMirrorElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * synthetic method (either getter or setter) generated for groovy property
  * @author ven
  */
-public interface GrAccessorMethod extends PsiMethod, PsiMirrorElement {
+public interface GrAccessorMethod extends PsiMethod, PsiMirrorElement
+{
   GrAccessorMethod[] EMPTY_ARRAY = new GrAccessorMethod[0];
   
   @Nonnull
   GrField getProperty();
 
-  @javax.annotation.Nullable
+  @Nullable
   PsiType getInferredReturnType();
 
   boolean isSetter();

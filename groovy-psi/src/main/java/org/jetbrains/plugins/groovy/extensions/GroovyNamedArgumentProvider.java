@@ -15,11 +15,15 @@
  */
 package org.jetbrains.plugins.groovy.extensions;
 
-import com.intellij.openapi.extensions.ExtensionPointName;
-import com.intellij.psi.*;
-import com.intellij.psi.util.InheritanceUtil;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.intellij.java.language.psi.CommonClassNames;
+import com.intellij.java.language.psi.PsiMethod;
+import com.intellij.java.language.psi.PsiParameter;
+import com.intellij.java.language.psi.PsiType;
+import com.intellij.java.language.psi.util.InheritanceUtil;
+import consulo.annotation.component.ComponentScope;
+import consulo.annotation.component.ExtensionAPI;
+import consulo.component.extension.ExtensionPointName;
+import consulo.language.psi.PsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrCall;
@@ -29,19 +33,22 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyPsiManager;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * @author Sergey Evdokimov
  */
+@ExtensionAPI(ComponentScope.APPLICATION)
 public abstract class GroovyNamedArgumentProvider {
 
   public static final ExtensionPointName<GroovyNamedArgumentProvider> EP_NAME =
-    ExtensionPointName.create("org.intellij.groovy.namedArgumentProvider");
+    ExtensionPointName.create(GroovyNamedArgumentProvider.class);
 
   public void getNamedArguments(@Nonnull GrCall call,
-                                @javax.annotation.Nullable PsiElement resolve,
+                                @Nullable PsiElement resolve,
                                 @Nullable String argumentName,
                                 boolean forCompletion,
                                 Map<String, NamedArgumentDescriptor> result) {
@@ -51,7 +58,7 @@ public abstract class GroovyNamedArgumentProvider {
   public void getNamedArguments(@Nonnull GrCall call,
                                 @Nullable PsiElement resolve,
                                 @Nullable GroovyResolveResult resolveResult,
-                                @javax.annotation.Nullable String argumentName,
+                                @Nullable String argumentName,
                                 boolean forCompletion,
                                 Map<String, NamedArgumentDescriptor> result) {
     getNamedArguments(call, resolve, argumentName, forCompletion, result);
@@ -59,7 +66,7 @@ public abstract class GroovyNamedArgumentProvider {
 
   @Nullable
   public static Map<String, NamedArgumentDescriptor> getNamedArgumentsFromAllProviders(@Nonnull GrCall call,
-                                                                                  @javax.annotation.Nullable String argumentName,
+                                                                                  @Nullable String argumentName,
                                                                                   boolean forCompletion) {
     Map<String, NamedArgumentDescriptor> namedArguments = new HashMap<String, NamedArgumentDescriptor>() {
       @Override

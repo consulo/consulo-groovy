@@ -15,9 +15,9 @@
  */
 package org.jetbrains.plugins.groovy.unwrap;
 
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.impl.PsiImplUtil;
-import com.intellij.util.IncorrectOperationException;
+import com.intellij.java.language.impl.psi.impl.PsiImplUtil;
+import consulo.language.psi.PsiElement;
+import consulo.language.util.IncorrectOperationException;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrIfStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;

@@ -15,18 +15,18 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.rename;
 
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiReference;
-import com.intellij.refactoring.rename.RenameJavaVariableProcessor;
-import javax.annotation.Nonnull;
+import com.intellij.java.impl.refactoring.rename.RenameJavaVariableProcessor;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiReference;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
 
+import javax.annotation.Nonnull;
 import java.util.Collection;
 
 /**
  * @author Maxim.Medvedev
  */
-public class RenameAliasImportedFieldProcessor extends RenameJavaVariableProcessor{
+public class RenameAliasImportedFieldProcessor extends RenameJavaVariableProcessor {
   @Override
   public boolean canProcessElement(@Nonnull PsiElement element) {
     return element instanceof GrField && !((GrField)element).isProperty();

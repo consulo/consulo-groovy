@@ -15,20 +15,22 @@
  */
 package org.jetbrains.plugins.groovy.debugger;
 
-import com.intellij.debugger.engine.evaluation.CodeFragmentFactory;
-import com.intellij.debugger.engine.evaluation.TextWithImports;
-import com.intellij.debugger.engine.evaluation.expression.EvaluatorBuilder;
-import com.intellij.debugger.engine.evaluation.expression.EvaluatorBuilderImpl;
-import com.intellij.openapi.fileTypes.LanguageFileType;
-import com.intellij.openapi.project.DumbService;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.Pair;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.*;
-import com.intellij.psi.util.ClassUtil;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.containers.ContainerUtil;
+import com.intellij.java.debugger.engine.evaluation.CodeFragmentFactory;
+import com.intellij.java.debugger.engine.evaluation.TextWithImports;
+import com.intellij.java.debugger.engine.evaluation.expression.EvaluatorBuilder;
+import com.intellij.java.debugger.impl.engine.evaluation.expression.EvaluatorBuilderImpl;
+import com.intellij.java.language.psi.*;
+import com.intellij.java.language.psi.util.ClassUtil;
+import consulo.document.util.TextRange;
+import consulo.language.file.LanguageFileType;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.project.DumbService;
+import consulo.project.Project;
+import consulo.util.collection.ContainerUtil;
+import consulo.util.lang.Pair;
+import consulo.util.lang.StringUtil;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.GroovyLanguage;
 import org.jetbrains.plugins.groovy.debugger.fragments.GroovyCodeFragment;
@@ -204,7 +206,7 @@ public class GroovyCodeFragmentFactory extends CodeFragmentFactory
 				PsiElement resolved = referenceExpression.resolve();
 				if(resolved instanceof PsiMember && (resolved instanceof PsiClass || ((PsiMember) resolved).hasModifierProperty(PsiModifier.STATIC)))
 				{
-					String qName = com.intellij.psi.util.PsiUtil.getMemberQualifiedName((PsiMember) resolved);
+					String qName = com.intellij.java.language.psi.util.PsiUtil.getMemberQualifiedName((PsiMember) resolved);
 					if(qName != null && qName.contains(".") && !referenceExpression.isQualified())
 					{
 						replaceWithReference(referenceExpression, qName);

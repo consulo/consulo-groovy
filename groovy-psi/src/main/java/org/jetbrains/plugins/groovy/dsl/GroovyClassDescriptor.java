@@ -15,15 +15,16 @@
  */
 package org.jetbrains.plugins.groovy.dsl;
 
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiType;
-import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.psi.util.InheritanceUtil;
+import com.intellij.java.language.psi.PsiType;
+import com.intellij.java.language.psi.util.InheritanceUtil;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.scope.GlobalSearchScope;
+import consulo.project.Project;
 import org.codehaus.groovy.runtime.GroovyCategorySupport;
-import javax.annotation.Nonnull;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -65,7 +66,7 @@ public class GroovyClassDescriptor {
     return myPlace.getResolveScope();
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   public String getTypeText() {
     affectingFactors.add(Factor.qualifierType);
     return myTypeText;

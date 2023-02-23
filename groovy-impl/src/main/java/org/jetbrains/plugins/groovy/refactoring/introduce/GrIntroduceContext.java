@@ -15,11 +15,14 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.introduce;
 
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiElement;
+import consulo.codeEditor.Editor;
+import consulo.language.psi.PsiElement;
+import consulo.project.Project;
+import consulo.language.psi.PsiElement;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
+import consulo.codeEditor.Editor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 
@@ -32,13 +35,13 @@ public interface GrIntroduceContext {
 
   Editor getEditor();
 
-  @javax.annotation.Nullable
+  @Nullable
   GrExpression getExpression();
 
-  @javax.annotation.Nullable
+  @Nullable
   GrVariable getVar();
 
-  @javax.annotation.Nullable
+  @Nullable
   StringPartInfo getStringPart();
 
   @Nonnull

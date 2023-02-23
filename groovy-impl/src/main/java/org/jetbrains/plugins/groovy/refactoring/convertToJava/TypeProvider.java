@@ -15,10 +15,13 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.convertToJava;
 
-import com.intellij.psi.*;
-import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.psi.search.searches.MethodReferencesSearch;
-import com.intellij.util.Processor;
+import com.intellij.java.indexing.search.searches.MethodReferencesSearch;
+import com.intellij.java.language.psi.*;
+import consulo.application.util.function.Processor;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiManager;
+import consulo.language.psi.PsiReference;
+import consulo.language.psi.scope.GlobalSearchScope;
 import consulo.util.collection.primitive.ints.IntList;
 import consulo.util.collection.primitive.ints.IntLists;
 import org.jetbrains.plugins.groovy.lang.psi.api.signatures.GrClosureSignature;

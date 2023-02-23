@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.completion
 
-import com.intellij.psi.codeStyle.CodeStyleSettingsManager
+import com.intellij.java.language.psi.codeStyle.CodeStyleSettingsManager
 import org.jetbrains.plugins.groovy.util.TestUtils
 import org.jetbrains.plugins.groovy.codeStyle.GroovyCodeStyleSettings
 

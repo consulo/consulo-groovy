@@ -20,9 +20,9 @@ import com.intellij.codeInsight.CodeInsightSettings
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.command.CommandProcessor
 import com.intellij.openapi.fileEditor.impl.TrailingSpacesStripper
-import com.intellij.psi.codeStyle.CodeStyleSettings
-import com.intellij.psi.codeStyle.CodeStyleSettingsManager
-import com.intellij.psi.impl.source.PostprocessReformattingAspect
+import com.intellij.java.language.psi.codeStyle.CodeStyleSettings
+import com.intellij.java.language.psi.codeStyle.CodeStyleSettingsManager
+import com.intellij.java.language.psi.impl.source.PostprocessReformattingAspect
 import com.intellij.testFramework.fixtures.impl.CodeInsightTestFixtureImpl
 import org.jetbrains.plugins.groovy.LightGroovyTestCase
 import org.jetbrains.plugins.groovy.codeInspection.bugs.GroovyAccessibilityInspection

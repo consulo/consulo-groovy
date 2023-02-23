@@ -18,7 +18,7 @@ package org.jetbrains.plugins.groovy.lang.psi.controlFlow;
 import javax.annotation.Nonnull;
 
 import org.jetbrains.plugins.groovy.lang.psi.controlFlow.impl.InstructionImpl;
-import com.intellij.psi.PsiElement;
+import consulo.language.psi.PsiElement;
 
 /**
  * @author ven

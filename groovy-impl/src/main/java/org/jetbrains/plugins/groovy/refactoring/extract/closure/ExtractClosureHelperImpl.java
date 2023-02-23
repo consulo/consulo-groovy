@@ -16,9 +16,10 @@
 package org.jetbrains.plugins.groovy.refactoring.extract.closure;
 
 
-import com.intellij.psi.PsiClassType;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiType;
+import com.intellij.java.language.psi.PsiClassType;
+import consulo.language.psi.PsiElement;
+import com.intellij.java.language.psi.PsiType;
+import consulo.language.psi.PsiElement;
 import consulo.util.collection.primitive.ints.IntList;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrParameterListOwner;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;

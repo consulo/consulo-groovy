@@ -17,7 +17,7 @@
 package org.jetbrains.plugins.groovy.lang;
 
 import com.intellij.codeInsight.daemon.LineMarkerInfo;
-import com.intellij.codeInsight.daemon.impl.DaemonCodeAnalyzerImpl;
+import consulo.ide.impl.idea.codeInsight.daemon.impl.DaemonCodeAnalyzerImpl;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.testFramework.fixtures.LightCodeInsightFixtureTestCase;

@@ -16,24 +16,21 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.synthetic;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.intellij.java.language.impl.psi.impl.light.LightMethodBuilder;
+import com.intellij.java.language.psi.*;
+import consulo.application.util.CachedValue;
+import consulo.application.util.CachedValueProvider;
+import consulo.application.util.CachedValuesManager;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiModificationTracker;
+import consulo.ui.ex.awtUnsafe.TargetAWT;
+import consulo.util.dataholder.Key;
+import org.jetbrains.plugins.groovy.JetgroovyIcons;
 import org.jetbrains.plugins.groovy.GroovyLanguage;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrGdkMethod;
-import consulo.util.dataholder.Key;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiMethod;
-import com.intellij.psi.PsiModifier;
-import com.intellij.psi.PsiParameter;
-import com.intellij.psi.PsiTypeParameter;
-import com.intellij.psi.PsiTypeParameterList;
-import com.intellij.psi.impl.light.LightMethodBuilder;
-import com.intellij.psi.util.CachedValue;
-import com.intellij.psi.util.CachedValueProvider;
-import com.intellij.psi.util.CachedValuesManager;
-import com.intellij.psi.util.PsiModificationTracker;
-import consulo.awt.TargetAWT;
-import icons.JetgroovyIcons;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author ven

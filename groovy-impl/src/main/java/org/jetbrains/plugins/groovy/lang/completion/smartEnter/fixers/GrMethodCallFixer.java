@@ -22,11 +22,13 @@ package org.jetbrains.plugins.groovy.lang.completion.smartEnter.fixers;
 
 import javax.annotation.Nonnull;
 
-import com.intellij.lang.SmartEnterProcessorWithFixers;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiErrorElement;
-import com.intellij.util.text.CharArrayUtil;
+import consulo.language.editor.action.SmartEnterProcessorWithFixers;
+import consulo.codeEditor.Editor;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiErrorElement;
+import consulo.util.lang.CharArrayUtil;
+import consulo.language.psi.PsiElement;
+import consulo.util.lang.CharArrayUtil;
 import org.jetbrains.plugins.groovy.lang.completion.smartEnter.GroovySmartEnterProcessor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrArgumentList;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrCall;

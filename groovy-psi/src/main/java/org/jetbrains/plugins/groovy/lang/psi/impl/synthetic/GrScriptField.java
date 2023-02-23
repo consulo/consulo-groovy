@@ -15,15 +15,13 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.synthetic;
 
-import com.intellij.openapi.util.Computable;
-import com.intellij.openapi.util.Condition;
-import com.intellij.openapi.util.RecursionManager;
-import com.intellij.psi.PsiModifier;
-import com.intellij.psi.util.CachedValueProvider;
-import com.intellij.psi.util.CachedValuesManager;
-import com.intellij.util.containers.ContainerUtil;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.intellij.java.language.psi.PsiModifier;
+import consulo.application.util.CachedValueProvider;
+import consulo.application.util.RecursionManager;
+import consulo.application.util.function.Computable;
+import consulo.language.psi.util.LanguageCachedValueUtil;
+import consulo.util.collection.ContainerUtil;
+import consulo.util.lang.function.Condition;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyRecursiveElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotation;
@@ -34,6 +32,8 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrAc
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -92,7 +92,7 @@ public class GrScriptField extends GrLightField {
 
   @Nonnull
   public static GrScriptField[] getScriptFields(@Nonnull final GroovyScriptClass script) {
-    return CachedValuesManager.getCachedValue(script, new CachedValueProvider<GrScriptField[]>() {
+    return LanguageCachedValueUtil.getCachedValue(script, new CachedValueProvider<GrScriptField[]>() {
       @Override
       public Result<GrScriptField[]> compute() {
         List<GrScriptField> result = RecursionManager.doPreventingRecursion(script, true, new Computable<List<GrScriptField>>() {

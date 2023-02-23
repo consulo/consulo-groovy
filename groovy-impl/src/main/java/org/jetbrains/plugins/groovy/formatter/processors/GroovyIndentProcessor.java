@@ -18,6 +18,10 @@ package org.jetbrains.plugins.groovy.formatter.processors;
 
 import javax.annotation.Nonnull;
 
+import consulo.language.ast.IElementType;
+import consulo.language.ast.TokenSet;
+import consulo.language.codeStyle.CommonCodeStyleSettings;
+import consulo.language.psi.PsiElement;
 import org.jetbrains.plugins.groovy.formatter.blocks.ClosureBodyBlock;
 import org.jetbrains.plugins.groovy.formatter.blocks.GrLabelBlock;
 import org.jetbrains.plugins.groovy.formatter.blocks.GroovyBlock;
@@ -71,12 +75,12 @@ import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeArgumentList;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeParameterList;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrWildcardTypeArgument;
-import com.intellij.formatting.Indent;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.codeStyle.CommonCodeStyleSettings;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.tree.TokenSet;
+import consulo.language.codeStyle.Indent;
+import consulo.language.ast.ASTNode;
+import consulo.language.psi.PsiElement;
+import consulo.language.codeStyle.CommonCodeStyleSettings;
+import consulo.language.ast.IElementType;
+import consulo.language.ast.TokenSet;
 
 /**
  * @author ilyas

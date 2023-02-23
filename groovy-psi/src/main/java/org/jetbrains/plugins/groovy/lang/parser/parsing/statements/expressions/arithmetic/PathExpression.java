@@ -18,9 +18,9 @@ package org.jetbrains.plugins.groovy.lang.parser.parsing.statements.expressions.
 
 import javax.annotation.Nonnull;
 
-import com.intellij.lang.PsiBuilder;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.tree.TokenSet;
+import consulo.language.ast.IElementType;
+import consulo.language.ast.TokenSet;
+import consulo.language.parser.PsiBuilder;
 import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyElementType;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;

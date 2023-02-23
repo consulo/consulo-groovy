@@ -16,10 +16,11 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation;
 
-import javax.annotation.Nullable;
+import com.intellij.java.language.psi.PsiNameValuePair;
+import consulo.language.psi.PsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiNameValuePair;
+
+import javax.annotation.Nullable;
 
 /**
  * @author: Dmitry.Krasilschikov
@@ -31,6 +32,6 @@ public interface GrAnnotationNameValuePair extends GroovyPsiElement, PsiNameValu
   @Nullable
   PsiElement getNameIdentifierGroovy();
 
-  @javax.annotation.Nullable
+  @Nullable
   GrAnnotationMemberValue getValue();
 }

@@ -15,14 +15,14 @@
  */
 package org.jetbrains.plugins.groovy.lang.parser;
 
-import com.intellij.lang.ASTNode;
-import com.intellij.lang.Language;
-import com.intellij.lexer.Lexer;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.tree.ICompositeElementType;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.tree.IErrorCounterReparseableElementType;
+import consulo.language.Language;
+import consulo.language.ast.*;
+import consulo.language.lexer.Lexer;
+import consulo.project.Project;
+import consulo.language.ast.ICompositeElementType;
+import consulo.language.ast.IErrorCounterReparseableElementType;
 import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyLexer;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
@@ -31,7 +31,8 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.statements.blocks.GrBlockImpl;
 /**
  * @author peter
  */
-public abstract class GrCodeBlockElementType extends IErrorCounterReparseableElementType implements ICompositeElementType {
+public abstract class GrCodeBlockElementType extends IErrorCounterReparseableElementType implements ICompositeElementType
+{
 
   protected GrCodeBlockElementType(String debugName) {
     super(debugName, GroovyFileType.GROOVY_LANGUAGE);

@@ -15,18 +15,22 @@
  */
 package org.jetbrains.plugins.groovy.findUsages;
 
-import com.intellij.openapi.application.QueryExecutorBase;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiMethod;
-import com.intellij.psi.PsiReference;
-import com.intellij.psi.search.searches.ReferencesSearch;
-import com.intellij.util.Processor;
+import consulo.language.psi.search.ReferencesSearch;
+import consulo.project.util.query.QueryExecutorBase;
+import consulo.language.psi.PsiElement;
+import com.intellij.java.language.psi.PsiMethod;
+import consulo.language.psi.PsiReference;
+import consulo.language.psi.search.ReferencesSearch;
+import consulo.application.util.function.Processor;
+import consulo.project.util.query.QueryExecutorBase;
+
 import javax.annotation.Nonnull;
 
 /**
  * @author ven
  */
-public class ConstructorReferencesSearcher extends QueryExecutorBase<PsiReference, ReferencesSearch.SearchParameters> {
+public class ConstructorReferencesSearcher extends QueryExecutorBase<PsiReference, ReferencesSearch.SearchParameters>
+{
   protected ConstructorReferencesSearcher() {
     super(true);
   }

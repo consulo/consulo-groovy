@@ -18,7 +18,7 @@ package org.jetbrains.plugins.groovy.lang.resolve
 import com.intellij.testFramework.fixtures.LightCodeInsightFixtureTestCase
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory
-import com.intellij.psi.PsiFile
+import com.intellij.java.language.psi.PsiFile
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression
 
 /**

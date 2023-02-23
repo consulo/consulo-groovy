@@ -15,8 +15,10 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members;
 
+import com.intellij.java.language.psi.PsiAnnotationMethod;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotationMemberValue;
-import com.intellij.psi.PsiAnnotationMethod;
+
+import javax.annotation.Nullable;
 
 /**
  * User: Dmitry.Krasilschikov
@@ -25,6 +27,6 @@ import com.intellij.psi.PsiAnnotationMethod;
 public interface GrAnnotationMethod extends GrMethod, PsiAnnotationMethod {
 
 	@Override
-	@javax.annotation.Nullable
+	@Nullable
 	GrAnnotationMemberValue getDefaultValue();
 }

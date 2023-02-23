@@ -15,21 +15,25 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.util;
 
-import javax.annotation.Nullable;
+import com.intellij.java.language.impl.psi.impl.ConstantExpressionEvaluator;
+import com.intellij.java.language.psi.PsiConstantEvaluationHelper;
+import consulo.language.Language;
+import consulo.language.psi.PsiElement;
+import org.jetbrains.plugins.groovy.GroovyLanguage;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrParenthesizedExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.literals.GrLiteral;
-import com.intellij.psi.PsiConstantEvaluationHelper;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.impl.ConstantExpressionEvaluator;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author peter
  */
 public class GroovyConstantExpressionEvaluator implements ConstantExpressionEvaluator {
 
-  @javax.annotation.Nullable
-  public static Object evaluate(@javax.annotation.Nullable GrExpression expression) {
+  @Nullable
+  public static Object evaluate(@Nullable GrExpression expression) {
     if (expression instanceof GrParenthesizedExpression) {
       return evaluate(((GrParenthesizedExpression)expression).getOperand());
     }
@@ -39,17 +43,23 @@ public class GroovyConstantExpressionEvaluator implements ConstantExpressionEval
     return null;
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   public Object computeConstantExpression(PsiElement expression, boolean throwExceptionOnOverflow) {
     if (!(expression instanceof GrExpression)) return null;
     return evaluate((GrExpression)expression);
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   public Object computeExpression(PsiElement expression,
                                   boolean throwExceptionOnOverflow,
                                   @Nullable PsiConstantEvaluationHelper.AuxEvaluator auxEvaluator) {
     if (!(expression instanceof GrExpression)) return null;
     return evaluate((GrExpression)expression);
+  }
+
+  @Nonnull
+  @Override
+  public Language getLanguage() {
+    return GroovyLanguage.INSTANCE;
   }
 }

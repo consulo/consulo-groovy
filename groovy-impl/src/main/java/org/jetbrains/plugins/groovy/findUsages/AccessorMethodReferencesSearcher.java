@@ -16,15 +16,15 @@
 
 package org.jetbrains.plugins.groovy.findUsages;
 
-import com.intellij.openapi.application.QueryExecutorBase;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.PsiMethod;
-import com.intellij.psi.PsiReference;
-import com.intellij.psi.PsiSubstitutor;
-import com.intellij.psi.search.SearchScope;
-import com.intellij.psi.search.UsageSearchContext;
-import com.intellij.psi.search.searches.MethodReferencesSearch;
-import com.intellij.util.Processor;
+import com.intellij.java.indexing.search.searches.MethodReferencesSearch;
+import com.intellij.java.language.psi.PsiMethod;
+import com.intellij.java.language.psi.PsiSubstitutor;
+import consulo.application.util.function.Processor;
+import consulo.content.scope.SearchScope;
+import consulo.language.psi.PsiReference;
+import consulo.language.psi.search.UsageSearchContext;
+import consulo.project.util.query.QueryExecutorBase;
+import consulo.util.lang.StringUtil;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrGdkMethod;
 import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GrGdkMethodImpl;
 import org.jetbrains.plugins.groovy.lang.psi.util.GdkMethodUtil;

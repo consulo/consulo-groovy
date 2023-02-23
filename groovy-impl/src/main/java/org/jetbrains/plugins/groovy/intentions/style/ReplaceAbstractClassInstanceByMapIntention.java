@@ -16,16 +16,16 @@
 
 package org.jetbrains.plugins.groovy.intentions.style;
 
-import com.intellij.codeInsight.generation.OverrideImplementExploreUtil;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.Pair;
-import com.intellij.psi.*;
-import com.intellij.psi.codeStyle.JavaCodeStyleManager;
-import com.intellij.psi.infos.CandidateInfo;
-import com.intellij.util.IncorrectOperationException;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.intellij.java.language.impl.codeInsight.generation.OverrideImplementExploreUtil;
+import com.intellij.java.language.psi.*;
+import com.intellij.java.language.psi.codeStyle.JavaCodeStyleManager;
+import com.intellij.java.language.psi.infos.CandidateInfo;
+import consulo.codeEditor.Editor;
+import consulo.language.psi.PsiDocumentManager;
+import consulo.language.psi.PsiElement;
+import consulo.language.util.IncorrectOperationException;
+import consulo.project.Project;
+import consulo.util.lang.Pair;
 import org.jetbrains.plugins.groovy.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.intentions.base.PsiElementPredicate;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
@@ -40,6 +40,8 @@ import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
 import org.jetbrains.plugins.groovy.refactoring.DefaultGroovyVariableNameValidator;
 import org.jetbrains.plugins.groovy.refactoring.GroovyNameSuggestionUtil;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.*;
 
 /**

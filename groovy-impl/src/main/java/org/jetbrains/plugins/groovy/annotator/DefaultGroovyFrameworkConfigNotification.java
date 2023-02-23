@@ -15,17 +15,20 @@
  */
 package org.jetbrains.plugins.groovy.annotator;
 
-import javax.annotation.Nonnull;
-
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.roots.libraries.Library;
-import com.intellij.ui.EditorNotificationPanel;
+import consulo.content.library.Library;
+import consulo.fileEditor.EditorNotificationBuilder;
+import consulo.localize.LocalizeValue;
+import consulo.module.Module;
 import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.config.GroovyConfigUtils;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.function.Supplier;
+
 /**
-* @author sergey.evdokimov
-*/
+ * @author sergey.evdokimov
+ */
 public class DefaultGroovyFrameworkConfigNotification extends GroovyFrameworkConfigNotification {
 
   @Override
@@ -39,19 +42,17 @@ public class DefaultGroovyFrameworkConfigNotification extends GroovyFrameworkCon
     return libraries.length > 0;
   }
 
+  @Nullable
   @Override
-  public EditorNotificationPanel createConfigureNotificationPanel(final @Nonnull Module module) {
-    final EditorNotificationPanel panel = new EditorNotificationPanel();
-    panel.setText(GroovyBundle.message("groovy.library.is.not.configured.for.module", module.getName()));
-    panel.createActionLabel(GroovyBundle.message("configure.groovy.library"), new Runnable() {
-      @Override
-      public void run() {
-        /*AddFrameworkSupportDialog dialog = AddFrameworkSupportDialog.createDialog(module);
+  public EditorNotificationBuilder createConfigureNotificationPanel(@Nonnull Module module, Supplier<EditorNotificationBuilder> factory) {
+    EditorNotificationBuilder builder = factory.get();
+    builder.withText(LocalizeValue.localizeTODO(GroovyBundle.message("groovy.library.is.not.configured.for.module", module.getName())));
+    builder.withAction(LocalizeValue.localizeTODO(GroovyBundle.message("configure.groovy.library")), uiEvent -> {
+       /*AddFrameworkSupportDialog dialog = AddFrameworkSupportDialog.createDialog(module);
         if (dialog != null) {
           dialog.show();
         }*/
-      }
     });
-    return panel;
+    return builder;
   }
 }

@@ -16,8 +16,9 @@
 package org.jetbrains.plugins.groovy.codeInspection.utils;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
-import com.intellij.psi.tree.IElementType;
+import consulo.language.ast.IElementType;
 import org.jetbrains.plugins.groovy.intentions.utils.ComparisonUtils;
 import org.jetbrains.plugins.groovy.intentions.utils.ParenthesesUtils;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
@@ -39,7 +40,7 @@ public class BoolUtils {
     return GroovyTokenTypes.mBNOT.equals(sign);
   }
 
-  public static boolean isTrue(@javax.annotation.Nullable GrCondition condition) {
+  public static boolean isTrue(@Nullable GrCondition condition) {
     if (condition == null) {
       return false;
     }

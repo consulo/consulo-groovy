@@ -15,12 +15,12 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.util;
 
-import com.intellij.codeInsight.CodeInsightSettings;
-import com.intellij.psi.*;
-import com.intellij.psi.util.InheritanceUtil;
-import com.intellij.psi.util.PsiTreeUtil;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.intellij.java.language.psi.*;
+import com.intellij.java.language.psi.util.InheritanceUtil;
+import consulo.language.editor.CodeInsightSettings;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.util.PsiTreeUtil;
 import org.jetbrains.plugins.groovy.lang.psi.GrQualifiedReference;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
@@ -30,6 +30,9 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrRefere
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrGdkMethod;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMember;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author Max Medvedev
@@ -199,7 +202,7 @@ public class StaticChecker {
     return isInStaticContext(refExpression, targetClass);
   }
 
-  public static boolean isInStaticContext(GrQualifiedReference refExpression, @javax.annotation.Nullable PsiClass targetClass) {
+  public static boolean isInStaticContext(GrQualifiedReference refExpression, @Nullable PsiClass targetClass) {
     PsiElement qualifier = refExpression.getQualifier();
     if (qualifier != null && !PsiUtil.isThisOrSuperRef(refExpression)) {
       if (PsiUtil.isInstanceThisRef(qualifier) || PsiUtil.isSuperReference(qualifier)) {

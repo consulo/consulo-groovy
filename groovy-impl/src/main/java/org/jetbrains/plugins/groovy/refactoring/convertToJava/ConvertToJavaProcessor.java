@@ -15,22 +15,27 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.convertToJava;
 
-import com.intellij.codeInsight.daemon.impl.quickfix.MoveClassToSeparateFileFix;
-import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.ui.Messages;
-import com.intellij.openapi.util.io.FileUtil;
-import com.intellij.psi.*;
-import com.intellij.psi.codeStyle.CodeStyleManager;
-import com.intellij.psi.codeStyle.JavaCodeStyleManager;
-import com.intellij.refactoring.BaseRefactoringProcessor;
-import com.intellij.refactoring.RefactoringBundle;
-import com.intellij.refactoring.ui.UsageViewDescriptorAdapter;
-import com.intellij.usageView.UsageInfo;
-import com.intellij.usageView.UsageViewDescriptor;
-import com.intellij.util.IncorrectOperationException;
+import com.intellij.java.impl.codeInsight.daemon.impl.quickfix.MoveClassToSeparateFileFix;
+import com.intellij.java.language.psi.PsiClass;
+import com.intellij.java.language.psi.PsiJavaFile;
+import com.intellij.java.language.psi.codeStyle.JavaCodeStyleManager;
+import consulo.application.ApplicationManager;
+import consulo.document.Document;
+import consulo.language.codeStyle.CodeStyleManager;
+import consulo.language.editor.refactoring.BaseRefactoringProcessor;
+import consulo.language.editor.refactoring.RefactoringBundle;
+import consulo.language.editor.refactoring.ui.UsageViewDescriptorAdapter;
+import consulo.language.psi.PsiDirectory;
+import consulo.language.psi.PsiDocumentManager;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.util.IncorrectOperationException;
+import consulo.logging.Logger;
+import consulo.project.Project;
+import consulo.ui.ex.awt.Messages;
+import consulo.usage.UsageInfo;
+import consulo.usage.UsageViewDescriptor;
+import consulo.util.io.FileUtil;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.refactoring.GroovyRefactoringBundle;
 

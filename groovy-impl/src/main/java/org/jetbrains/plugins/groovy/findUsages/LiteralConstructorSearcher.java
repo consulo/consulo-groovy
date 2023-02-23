@@ -1,9 +1,11 @@
 package org.jetbrains.plugins.groovy.findUsages;
 
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiMethod;
-import com.intellij.psi.PsiReference;
-import com.intellij.util.Processor;
+import com.intellij.java.language.psi.PsiClass;
+import com.intellij.java.language.psi.PsiMethod;
+import consulo.application.util.function.Processor;
+import consulo.language.psi.PsiReference;
+import consulo.application.util.function.Processor;
+import consulo.language.psi.PsiReference;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.GrListOrMap;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 

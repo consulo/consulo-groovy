@@ -15,24 +15,25 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.synthetic;
 
-import javax.annotation.Nonnull;
-
+import com.intellij.java.language.psi.JavaTokenType;
+import com.intellij.java.language.psi.PsiCodeBlock;
+import com.intellij.java.language.psi.PsiJavaToken;
+import com.intellij.java.language.psi.PsiStatement;
+import consulo.document.util.TextRange;
+import consulo.language.ast.IElementType;
+import consulo.language.impl.psi.LightElement;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.util.IncorrectOperationException;
+import consulo.logging.Logger;
+import consulo.util.dataholder.Key;
+import consulo.util.lang.ref.SoftReference;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrCodeBlock;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrOpenBlock;
 import org.jetbrains.plugins.groovy.lang.psi.impl.PsiImplUtil;
-import com.intellij.openapi.diagnostic.Logger;
-import consulo.util.dataholder.Key;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.JavaTokenType;
-import com.intellij.psi.PsiCodeBlock;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiJavaToken;
-import com.intellij.psi.PsiStatement;
-import com.intellij.psi.impl.light.LightElement;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.reference.SoftReference;
-import com.intellij.util.IncorrectOperationException;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author Medvedev Max
@@ -84,8 +85,8 @@ public class GrSyntheticCodeBlock extends LightElement implements PsiCodeBlock {
     return getOrCreateJavaToken(myCodeBlock.getRBrace(), JavaTokenType.RBRACE);
   }
 
-  @javax.annotation.Nullable
-  private static PsiJavaToken getOrCreateJavaToken(@javax.annotation.Nullable PsiElement element, @Nonnull IElementType type) {
+  @Nullable
+  private static PsiJavaToken getOrCreateJavaToken(@Nullable PsiElement element, @Nonnull IElementType type) {
     if (element == null) return null;
 
     final SoftReference<PsiJavaToken> ref = element.getUserData(PSI_JAVA_TOKEN);
@@ -149,7 +150,8 @@ public class GrSyntheticCodeBlock extends LightElement implements PsiCodeBlock {
   }
 
   @Override
-  public void delete() throws IncorrectOperationException {
+  public void delete() throws IncorrectOperationException
+  {
     myCodeBlock.delete();
   }
 }

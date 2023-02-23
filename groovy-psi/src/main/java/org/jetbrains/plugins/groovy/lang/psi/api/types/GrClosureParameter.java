@@ -15,9 +15,10 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.api.types;
 
-import javax.annotation.Nullable;
+import com.intellij.java.language.psi.PsiType;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
-import com.intellij.psi.PsiType;
+
+import javax.annotation.Nullable;
 
 /**
  * @author Maxim.Medvedev
@@ -34,6 +35,6 @@ public interface GrClosureParameter {
 
   boolean isValid();
 
-  @javax.annotation.Nullable
+  @Nullable
   String getName();
 }

@@ -15,13 +15,14 @@
  */
 package org.jetbrains.plugins.groovy.intentions.declaration;
 
-import com.intellij.codeInsight.intention.impl.CreateFieldFromParameterActionBase;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.*;
-import com.intellij.psi.codeStyle.JavaCodeStyleManager;
-import com.intellij.psi.search.searches.ReferencesSearch;
-import com.intellij.util.ArrayUtil;
-import javax.annotation.Nullable;
+import com.intellij.java.impl.codeInsight.intention.impl.CreateFieldFromParameterActionBase;
+import com.intellij.java.language.psi.*;
+import com.intellij.java.language.psi.codeStyle.JavaCodeStyleManager;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiReference;
+import consulo.language.psi.search.ReferencesSearch;
+import consulo.project.Project;
+import consulo.util.collection.ArrayUtil;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrConstructorInvocation;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
@@ -34,6 +35,7 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameter;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
 import org.jetbrains.plugins.groovy.refactoring.GroovyRefactoringUtil;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 

@@ -16,7 +16,7 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.arithmetic;
 
-import com.intellij.lang.ASTNode;
+import consulo.language.ast.ASTNode;
 import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.GrBinaryExpressionImpl;
 

@@ -16,17 +16,17 @@
 
 package org.jetbrains.plugins.groovy.refactoring;
 
-import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.application.WriteAction;
-import com.intellij.openapi.progress.ProgressIndicator;
-import com.intellij.openapi.progress.ProgressManager;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.roots.ProjectRootManager;
-import com.intellij.openapi.util.Pair;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.PsiFile;
-import com.intellij.refactoring.RefactoringHelper;
-import com.intellij.usageView.UsageInfo;
+import consulo.application.ApplicationManager;
+import consulo.application.WriteAction;
+import consulo.application.progress.ProgressIndicator;
+import consulo.application.progress.ProgressManager;
+import consulo.project.Project;
+import consulo.module.content.ProjectRootManager;
+import consulo.util.lang.Pair;
+import consulo.virtualFileSystem.VirtualFile;
+import consulo.language.psi.PsiFile;
+import consulo.language.editor.refactoring.RefactoringHelper;
+import consulo.usage.UsageInfo;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.api.toplevel.imports.GrImportStatement;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyImportUtil;

@@ -16,16 +16,17 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.types;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.intellij.java.language.psi.CommonClassNames;
+import com.intellij.java.language.psi.PsiType;
+import consulo.language.ast.ASTNode;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrInstanceOfExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeElement;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.GrExpressionImpl;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.CommonClassNames;
-import com.intellij.psi.PsiType;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author ven

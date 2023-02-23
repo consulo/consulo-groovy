@@ -15,16 +15,17 @@
  */
 package org.jetbrains.plugins.groovy.dsl.toplevel.scopes
 
-import com.intellij.psi.SyntheticElement
+import consulo.language.psi.SyntheticElement
 import org.jetbrains.plugins.groovy.dsl.toplevel.*
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrArgumentList
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlock
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrCall
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames
 
-import static com.intellij.patterns.PlatformPatterns.*
-import static com.intellij.patterns.PsiJavaPatterns.psiClass
-import static com.intellij.patterns.StandardPatterns.*
+import static com.intellij.java.language.patterns.PsiJavaPatterns.psiClass
+import static consulo.language.pattern.PlatformPatterns.psiFile
+import static consulo.language.pattern.PlatformPatterns.virtualFile
+import static consulo.language.pattern.StandardPatterns.*
 import static org.jetbrains.plugins.groovy.lang.psi.patterns.GrAnnotationPattern.annotation
 import static org.jetbrains.plugins.groovy.lang.psi.patterns.GroovyPatterns.groovyScript
 import static org.jetbrains.plugins.groovy.lang.psi.patterns.GroovyPatterns.methodCall

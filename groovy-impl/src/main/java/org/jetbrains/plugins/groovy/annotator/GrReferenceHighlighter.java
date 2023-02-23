@@ -15,50 +15,50 @@
  */
 package org.jetbrains.plugins.groovy.annotator;
 
-import java.util.ArrayList;
-import java.util.List;
+import consulo.application.progress.ProgressIndicator;
+import consulo.document.Document;
+import consulo.language.editor.impl.highlight.TextEditorHighlightingPass;
+import consulo.language.editor.impl.highlight.UpdateHighlightersUtil;
+import consulo.language.editor.rawHighlight.HighlightInfo;
+import org.jetbrains.plugins.groovy.lang.psi.GroovyFileBase;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import org.jetbrains.plugins.groovy.lang.psi.GroovyFileBase;
-import com.intellij.codeHighlighting.TextEditorHighlightingPass;
-import com.intellij.codeInsight.daemon.impl.HighlightInfo;
-import com.intellij.codeInsight.daemon.impl.UpdateHighlightersUtil;
-import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.progress.ProgressIndicator;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Max Medvedev
  */
-public class GrReferenceHighlighter extends TextEditorHighlightingPass
-{
-	private final GroovyFileBase myFile;
-	private List<HighlightInfo> myInfos = null;
+public class GrReferenceHighlighter extends TextEditorHighlightingPass {
+  private final GroovyFileBase myFile;
+  private List<HighlightInfo> myInfos = null;
 
-	public GrReferenceHighlighter(@Nullable Document document, @Nonnull GroovyFileBase file)
-	{
-		super(file.getProject(), document);
-		myFile = file;
-	}
+  public GrReferenceHighlighter(@Nullable Document document, @Nonnull GroovyFileBase file) {
+    super(file.getProject(), document);
+    myFile = file;
+  }
 
-	@Override
-	public void doCollectInformation(@Nonnull ProgressIndicator progress)
-	{
-		myInfos = new ArrayList<HighlightInfo>();
+  @Override
+  public void doCollectInformation(@Nonnull ProgressIndicator progress) {
+    myInfos = new ArrayList<HighlightInfo>();
 
-		myFile.accept(new GrDeclarationHighlightingVisitor(myInfos));
-		myFile.accept(new ResolveHighlightingVisitor(myFile, myProject, myInfos));
-		myFile.accept(new InaccessibleElementVisitor(myFile, myProject, myInfos));
-	}
+    myFile.accept(new GrDeclarationHighlightingVisitor(myInfos));
+    myFile.accept(new ResolveHighlightingVisitor(myFile, myProject, myInfos));
+    myFile.accept(new InaccessibleElementVisitor(myFile, myProject, myInfos));
+  }
 
-	@Override
-	public void doApplyInformationToEditor()
-	{
-		if(myInfos == null || myDocument == null)
-		{
-			return;
-		}
-		UpdateHighlightersUtil.setHighlightersToEditor(myProject, myDocument, 0, myFile.getTextLength(), myInfos,
-				getColorsScheme(), getId());
-	}
+  @Override
+  public void doApplyInformationToEditor() {
+    if (myInfos == null || myDocument == null) {
+      return;
+    }
+    UpdateHighlightersUtil.setHighlightersToEditor(myProject,
+																									 myDocument,
+																									 0,
+																									 myFile.getTextLength(),
+																									 myInfos,
+																									 getColorsScheme(),
+																									 getId());
+  }
 }

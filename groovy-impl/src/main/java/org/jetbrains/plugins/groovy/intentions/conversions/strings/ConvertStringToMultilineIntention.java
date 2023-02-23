@@ -15,21 +15,19 @@
  */
 package org.jetbrains.plugins.groovy.intentions.conversions.strings;
 
-import com.intellij.lang.ASTNode;
-import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.application.ReadAction;
-import com.intellij.openapi.command.CommandProcessor;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.Pass;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.refactoring.IntroduceTargetChooser;
-import com.intellij.util.Function;
-import com.intellij.util.IncorrectOperationException;
-import com.intellij.util.containers.ContainerUtil;
+import consulo.application.ApplicationManager;
+import consulo.application.ReadAction;
+import consulo.codeEditor.Editor;
+import consulo.document.util.TextRange;
+import consulo.language.ast.ASTNode;
+import consulo.language.ast.IElementType;
+import consulo.language.editor.refactoring.IntroduceTargetChooser;
+import consulo.language.psi.PsiElement;
+import consulo.language.util.IncorrectOperationException;
+import consulo.logging.Logger;
+import consulo.project.Project;
+import consulo.undoRedo.CommandProcessor;
+import consulo.util.collection.ContainerUtil;
 import org.jetbrains.plugins.groovy.intentions.GroovyIntentionsBundle;
 import org.jetbrains.plugins.groovy.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.intentions.base.PsiElementPredicate;
@@ -48,6 +46,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 /**
  * @author Max Medvedev
@@ -58,13 +58,15 @@ public class ConvertStringToMultilineIntention extends Intention {
   public static final String hint = GroovyIntentionsBundle.message("convert.string.to.multiline.intention.name");
 
   @Override
-  protected void processIntention(@Nonnull PsiElement element, final Project project, final Editor editor) throws IncorrectOperationException {
+  protected void processIntention(@Nonnull PsiElement element,
+                                  final Project project,
+                                  final Editor editor) throws IncorrectOperationException {
     final List<GrExpression> expressions;
     if (editor.getSelectionModel().hasSelection()) {
       expressions = Collections.singletonList(((GrExpression)element));
     }
     else {
-        expressions = ReadAction.compute(() -> collectExpressions(element));
+      expressions = ReadAction.compute(() -> collectExpressions(element));
     }
 
     if (expressions.size() == 1) {
@@ -74,17 +76,12 @@ public class ConvertStringToMultilineIntention extends Intention {
       invokeImpl(expressions.get(expressions.size() - 1), project, editor);
     }
     else {
-      final Pass<GrExpression> callback = new Pass<GrExpression>() {
-        public void pass(@Nonnull final GrExpression selectedValue) {
+      final Consumer<GrExpression> callback = new Consumer<GrExpression>() {
+        public void accept(@Nonnull final GrExpression selectedValue) {
           invokeImpl(selectedValue, project, editor);
         }
       };
-      final Function<GrExpression, String> renderer = new Function<GrExpression, String>() {
-        @Override
-        public String fun(@Nonnull GrExpression grExpression) {
-          return grExpression.getText();
-        }
-      };
+      final Function<GrExpression, String> renderer = grExpression -> grExpression.getText();
       IntroduceTargetChooser.showChooser(editor, expressions, callback, renderer);
     }
   }
@@ -109,7 +106,7 @@ public class ConvertStringToMultilineIntention extends Intention {
       final GrExpression left = binary.getLeftOperand();
       final GrExpression right = binary.getRightOperand();
       if ((left != prevChecked || containsOnlyLiterals(right)) &&
-          (right != prevChecked || containsOnlyLiterals(left))) {
+        (right != prevChecked || containsOnlyLiterals(left))) {
         return true;
       }
     }
@@ -251,8 +248,8 @@ public class ConvertStringToMultilineIntention extends Intention {
       @Override
       public boolean satisfiedBy(PsiElement element) {
         return element instanceof GrLiteral && ("\"".equals(GrStringUtil.getStartQuote(element.getText())) ||
-                                                "\'".equals(GrStringUtil.getStartQuote(element.getText())))
-               || element instanceof GrBinaryExpression && isAppropriateBinary((GrBinaryExpression)element, null);
+          "\'".equals(GrStringUtil.getStartQuote(element.getText())))
+          || element instanceof GrBinaryExpression && isAppropriateBinary((GrBinaryExpression)element, null);
       }
     };
   }

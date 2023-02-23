@@ -15,22 +15,23 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.bugs;
 
-import com.intellij.codeInsight.generation.OverrideImplementUtil;
-import com.intellij.codeInspection.ProblemDescriptor;
-import com.intellij.ide.fileTemplates.FileTemplate;
-import com.intellij.ide.fileTemplates.FileTemplateManager;
-import com.intellij.ide.fileTemplates.JavaTemplateUtil;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.*;
-import com.intellij.psi.codeStyle.JavaCodeStyleManager;
-import com.intellij.psi.util.InheritanceUtil;
-import com.intellij.psi.util.PsiTypesUtil;
-import com.intellij.util.ArrayUtil;
-import com.intellij.util.IncorrectOperationException;
+import com.intellij.java.impl.codeInsight.generation.OverrideImplementUtil;
+import com.intellij.java.language.impl.codeInsight.template.JavaTemplateUtil;
+import com.intellij.java.language.psi.*;
+import com.intellij.java.language.psi.codeStyle.JavaCodeStyleManager;
+import com.intellij.java.language.psi.util.InheritanceUtil;
+import com.intellij.java.language.psi.util.PsiTypesUtil;
+import consulo.fileTemplate.FileTemplate;
+import consulo.fileTemplate.FileTemplateManager;
+import consulo.language.ast.TokenType;
+import consulo.language.editor.inspection.ProblemDescriptor;
+import consulo.language.psi.PsiElement;
+import consulo.language.util.IncorrectOperationException;
+import consulo.logging.Logger;
+import consulo.project.Project;
+import consulo.util.collection.ArrayUtil;
+import consulo.util.lang.StringUtil;
 import org.jetbrains.annotations.Nls;
-import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.codeInspection.GroovyFix;
@@ -46,6 +47,7 @@ import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GrRangeType;
 import org.jetbrains.plugins.groovy.lang.resolve.ResolveUtil;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -249,7 +251,8 @@ public class GroovyRangeTypeCheckInspection extends BaseInspection {
     }
 
     @Override
-    protected void doFix(Project project, ProblemDescriptor descriptor) throws IncorrectOperationException {
+    protected void doFix(Project project, ProblemDescriptor descriptor) throws IncorrectOperationException
+	{
 
       GrReferenceList list;
       final GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(project);

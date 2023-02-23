@@ -15,8 +15,9 @@
  */
 package org.jetbrains.plugins.groovy.lang.surroundWith;
 
-import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.PsiElement;
+import consulo.document.util.TextRange;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrParenthesizedExpression;

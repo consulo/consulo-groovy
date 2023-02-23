@@ -20,6 +20,9 @@ import java.util.ArrayList;
 
 import javax.annotation.Nonnull;
 
+import consulo.language.ast.IElementType;
+import consulo.language.editor.util.PsiUtilBase;
+import consulo.language.psi.PsiElement;
 import org.jetbrains.annotations.NonNls;
 
 import javax.annotation.Nullable;
@@ -29,12 +32,9 @@ import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocCommentOwner;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocTag;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.impl.source.tree.LazyParseablePsiElement;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.psi.util.PsiUtilBase;
+import consulo.language.ast.ASTNode;
+import consulo.language.impl.psi.LazyParseablePsiElement;
+import consulo.language.psi.util.PsiTreeUtil;
 
 /**
  * @author ilyas

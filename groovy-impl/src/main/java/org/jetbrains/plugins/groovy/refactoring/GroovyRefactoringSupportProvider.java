@@ -16,11 +16,12 @@
 
 package org.jetbrains.plugins.groovy.refactoring;
 
-import com.intellij.lang.refactoring.RefactoringSupportProvider;
-import com.intellij.psi.PsiElement;
-import com.intellij.refactoring.RefactoringActionHandler;
-import com.intellij.refactoring.changeSignature.ChangeSignatureHandler;
-import javax.annotation.Nullable;
+import consulo.language.Language;
+import consulo.language.editor.refactoring.RefactoringSupportProvider;
+import consulo.language.editor.refactoring.action.RefactoringActionHandler;
+import consulo.language.editor.refactoring.changeSignature.ChangeSignatureHandler;
+import consulo.language.psi.PsiElement;
+import org.jetbrains.plugins.groovy.GroovyLanguage;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
@@ -31,6 +32,9 @@ import org.jetbrains.plugins.groovy.refactoring.introduce.field.GrIntroduceField
 import org.jetbrains.plugins.groovy.refactoring.introduce.parameter.GrIntroduceParameterHandler;
 import org.jetbrains.plugins.groovy.refactoring.introduce.variable.GrIntroduceVariableHandler;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 /**
  * @author ilyas
  */
@@ -40,8 +44,8 @@ public class GroovyRefactoringSupportProvider extends RefactoringSupportProvider
 
   public boolean isSafeDeleteAvailable(PsiElement element) {
     return element instanceof GrTypeDefinition ||
-           element instanceof GrField ||
-           element instanceof GrMethod;
+      element instanceof GrField ||
+      element instanceof GrMethod;
   }
 
   /**
@@ -80,5 +84,11 @@ public class GroovyRefactoringSupportProvider extends RefactoringSupportProvider
   @Override
   public RefactoringActionHandler getIntroduceConstantHandler() {
     return new GrIntroduceConstantHandler();
+  }
+
+  @Nonnull
+  @Override
+  public Language getLanguage() {
+    return GroovyLanguage.INSTANCE;
   }
 }

@@ -16,11 +16,14 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.arguments;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.intellij.java.language.psi.PsiExpression;
+import com.intellij.java.language.psi.PsiType;
+import consulo.language.ast.ASTNode;
+import consulo.language.codeStyle.CodeStyleManager;
+import consulo.language.impl.ast.TreeUtil;
+import consulo.language.psi.PsiElement;
+import consulo.language.util.IncorrectOperationException;
+import consulo.util.collection.ContainerUtil;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.lexer.TokenSets;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
@@ -31,14 +34,11 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpres
 import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyPsiElementImpl;
 import org.jetbrains.plugins.groovy.lang.psi.impl.PsiImplUtil;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiExpression;
-import com.intellij.psi.PsiType;
-import com.intellij.psi.codeStyle.CodeStyleManager;
-import com.intellij.psi.impl.source.tree.TreeUtil;
-import com.intellij.util.IncorrectOperationException;
-import com.intellij.util.containers.ContainerUtil;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author ilyas
@@ -61,7 +61,7 @@ public class GrArgumentListImpl extends GroovyPsiElementImpl implements GrArgume
   @Override
   @Nonnull
   public GrNamedArgument[] getNamedArguments() {
-    List<GrNamedArgument> result = new ArrayList<GrNamedArgument>();
+    List<GrNamedArgument> result = new ArrayList<>();
     for (PsiElement cur = this.getFirstChild(); cur != null; cur = cur.getNextSibling()) {
       if (cur instanceof GrNamedArgument) result.add((GrNamedArgument)cur);
     }
@@ -76,7 +76,7 @@ public class GrArgumentListImpl extends GroovyPsiElementImpl implements GrArgume
   @Override
   @Nonnull
   public GrExpression[] getExpressionArguments() {
-    List<GrExpression> result = new ArrayList<GrExpression>();
+    List<GrExpression> result = new ArrayList<>();
     for (PsiElement cur = this.getFirstChild(); cur != null; cur = cur.getNextSibling()) {
       if (cur instanceof GrExpression) result.add((GrExpression)cur);
     }
@@ -86,11 +86,11 @@ public class GrArgumentListImpl extends GroovyPsiElementImpl implements GrArgume
   @Nonnull
   @Override
   public GroovyPsiElement[] getAllArguments() {
-    List<GroovyPsiElement> args = new ArrayList<GroovyPsiElement>();
+    List<GroovyPsiElement> args = new ArrayList<>();
     for (PsiElement child = getFirstChild(); child != null; child = child.getNextSibling()) {
       if (child instanceof GrNamedArgument || child instanceof GrExpression) args.add((GroovyPsiElement)child);
     }
-    return ContainerUtil.toArray(args, new GroovyPsiElement[args.size()]);
+    return args.toArray(new GroovyPsiElement[args.size()]);
   }
 
   @Override
@@ -109,7 +109,7 @@ public class GrArgumentListImpl extends GroovyPsiElementImpl implements GrArgume
   }
 
   @Override
-  @javax.annotation.Nullable
+  @Nullable
   public PsiElement getLeftParen() {
     ASTNode paren = getNode().findChildByType(GroovyTokenTypes.mLPAREN);
     return paren != null ? paren.getPsi() : null;
@@ -185,7 +185,7 @@ public class GrArgumentListImpl extends GroovyPsiElementImpl implements GrArgume
   }
 
   @Override
-  public PsiElement addAfter(@Nonnull PsiElement element, @javax.annotation.Nullable PsiElement anchor) throws IncorrectOperationException {
+  public PsiElement addAfter(@Nonnull PsiElement element, @Nullable PsiElement anchor) throws IncorrectOperationException {
     if (element instanceof GrExpression || element instanceof GrNamedArgument) {
       final boolean insertComma = getAllArguments().length != 0;
 

@@ -15,12 +15,13 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.api.statements;
 
-import javax.annotation.Nonnull;
-
-import com.intellij.psi.PsiClass;
+import com.intellij.java.language.psi.PsiClass;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrArgumentList;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrConstructorCall;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * User: Dmitry.Krasilschikov
@@ -33,7 +34,7 @@ public interface GrConstructorInvocation extends GrStatement, GrConstructorCall 
 
   GrReferenceExpression getInvokedExpression();
 
-  @javax.annotation.Nullable
+  @Nullable
   PsiClass getDelegatedClass();
 
   @Override

@@ -15,9 +15,10 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.binaryCalculators;
 
+import com.intellij.java.language.psi.PsiType;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames;
-import com.intellij.psi.PsiType;
-import com.intellij.util.Function;
+
+import java.util.function.Function;
 
 /**
  * Created by Max Medvedev on 12/20/13
@@ -26,7 +27,7 @@ public class GrMatcherTypeCalculator implements Function<GrBinaryFacade, PsiType
   public static final GrMatcherTypeCalculator INSTANCE = new GrMatcherTypeCalculator();
 
   @Override
-  public PsiType fun(GrBinaryFacade expression) {
+  public PsiType apply(GrBinaryFacade expression) {
     return GrBinaryExpressionUtil.getTypeByFQName(GroovyCommonClassNames.JAVA_UTIL_REGEX_MATCHER, expression);
   }
 }

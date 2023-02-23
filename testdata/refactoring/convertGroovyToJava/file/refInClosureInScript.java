@@ -1,13 +1,18 @@
+import java.lang.Integer;
+import java.lang.Object;
+import java.lang.String;
+import java.lang.Void;
+
 public class refInClosureInScript extends groovy.lang.Script {
-public static void main(java.lang.String[] args) {
+public static void main(String[] args) {
 new refInClosureInScript(new groovy.lang.Binding(args)).run();
 }
 
-public java.lang.Object run() {
-final groovy.lang.Reference<java.lang.Integer> foo = new groovy.lang.Reference<java.lang.Integer>(2);
+public Object run() {
+final groovy.lang.Reference<Integer> foo = new groovy.lang.Reference<Integer>(2);
 
-org.codehaus.groovy.runtime.DefaultGroovyMethods.times(3, new groovy.lang.Closure<java.lang.Void>(this, this) {
-public void doCall(java.lang.Integer it) {
+org.codehaus.groovy.runtime.DefaultGroovyMethods.times(3, new groovy.lang.Closure<Void>(this, this) {
+public void doCall(Integer it) {
 foo.set(foo.get()++);
 foo.set(foo.get() + 2);
 foo.set(foo.get() - 1);

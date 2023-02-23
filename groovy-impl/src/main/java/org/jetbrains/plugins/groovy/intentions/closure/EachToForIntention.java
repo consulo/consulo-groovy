@@ -18,15 +18,21 @@ package org.jetbrains.plugins.groovy.intentions.closure;
 
 import javax.annotation.Nonnull;
 
-import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.PsiDocumentManager;
-import com.intellij.psi.PsiElement;
-import com.intellij.refactoring.rename.inplace.VariableInplaceRenamer;
-import com.intellij.util.IncorrectOperationException;
+import consulo.application.ApplicationManager;
+import consulo.document.Document;
+import consulo.codeEditor.Editor;
+import consulo.language.editor.refactoring.rename.inplace.VariableInplaceRenamer;
+import consulo.language.psi.PsiDocumentManager;
+import consulo.language.util.IncorrectOperationException;
+import consulo.project.Project;
+import consulo.util.lang.StringUtil;
+import consulo.language.psi.PsiDocumentManager;
+import consulo.language.psi.PsiElement;
+import consulo.language.editor.refactoring.rename.inplace.VariableInplaceRenamer;
+import consulo.language.util.IncorrectOperationException;
+import consulo.application.ApplicationManager;
+import consulo.document.Document;
+import consulo.util.lang.StringUtil;
 import org.jetbrains.plugins.groovy.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.intentions.base.PsiElementPredicate;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
@@ -55,7 +61,8 @@ public class EachToForIntention extends Intention {
   }
 
   @Override
-  protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
+  protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException
+  {
     final GrMethodCallExpression expression = (GrMethodCallExpression)element;
     final GrClosableBlock block = expression.getClosureArguments()[0];
     final GrParameterList parameterList = block.getParameterList();

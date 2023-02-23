@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.intentions.utils;
 
-import com.intellij.psi.tree.IElementType;
+import consulo.language.ast.IElementType;
 import org.jetbrains.annotations.NonNls;
 import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;

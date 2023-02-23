@@ -15,9 +15,12 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.controlFlow;
 
-import com.intellij.openapi.util.Pair;
-import com.intellij.psi.*;
-import javax.annotation.Nullable;
+import com.intellij.java.language.psi.JavaPsiFacade;
+import com.intellij.java.language.psi.PsiClass;
+import com.intellij.java.language.psi.PsiClassType;
+import com.intellij.java.language.psi.PsiType;
+import consulo.language.psi.PsiElement;
+import consulo.util.lang.Pair;
 import org.jetbrains.plugins.groovy.codeInspection.utils.ControlFlowUtils;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrBinaryExpression;
@@ -27,6 +30,8 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrRefere
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeElement;
 import org.jetbrains.plugins.groovy.lang.psi.controlFlow.impl.ConditionInstruction;
 import org.jetbrains.plugins.groovy.lang.psi.controlFlow.impl.InstructionImpl;
+
+import javax.annotation.Nullable;
 
 /**
  * @author peter
@@ -66,7 +71,7 @@ public class InstanceOfInstruction extends InstructionImpl implements MixinTypeI
     return null;
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   public PsiType inferMixinType() {
     Pair<GrExpression, PsiType> instanceOf = getInstanceof();
     if (instanceOf == null) return null;

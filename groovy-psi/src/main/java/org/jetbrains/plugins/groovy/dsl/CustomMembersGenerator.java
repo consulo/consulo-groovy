@@ -15,19 +15,23 @@
  */
 package org.jetbrains.plugins.groovy.dsl;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.Nonnull;
-
+import com.intellij.java.language.psi.CommonClassNames;
+import com.intellij.java.language.psi.PsiClass;
+import com.intellij.java.language.psi.PsiClassType;
+import com.intellij.java.language.psi.PsiType;
+import consulo.language.impl.psi.FakePsiElement;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.resolve.PsiScopeProcessor;
+import consulo.language.psi.resolve.ResolveState;
+import consulo.language.psi.scope.GlobalSearchScope;
+import consulo.logging.Logger;
+import consulo.project.Project;
+import consulo.util.collection.ContainerUtil;
+import groovy.lang.Closure;
+import groovy.lang.GroovyObjectSupport;
+import groovy.lang.MetaMethod;
 import org.codehaus.groovy.runtime.DefaultGroovyMethods;
 import org.codehaus.groovy.runtime.InvokerHelper;
-
-import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.dsl.dsltop.GdslMembersProvider;
 import org.jetbrains.plugins.groovy.dsl.holders.CompoundMembersHolder;
 import org.jetbrains.plugins.groovy.dsl.holders.CustomMembersHolder;
@@ -41,29 +45,17 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrRefere
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyPropertyUtils;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.CommonClassNames;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiClassType;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiType;
-import com.intellij.psi.ResolveState;
-import com.intellij.psi.impl.FakePsiElement;
-import com.intellij.psi.scope.PsiScopeProcessor;
-import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.util.Function;
-import com.intellij.util.containers.ContainerUtil;
-import groovy.lang.Closure;
-import groovy.lang.GroovyObjectSupport;
-import groovy.lang.MetaMethod;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.*;
+import java.util.function.Function;
 
 /**
  * @author peter
  */
 public class CustomMembersGenerator extends GroovyObjectSupport implements GdslMembersHolderConsumer {
-  private static final Logger LOG = Logger.getInstance("#org.jetbrains.plugins.groovy.dsl.CustomMembersGenerator");
-  private static final GdslMembersProvider[] PROVIDERS = GdslMembersProvider.EP_NAME.getExtensions();
+  private static final Logger LOG = Logger.getInstance(CustomMembersGenerator.class);
   public static final String THROWS = "throws";
   private final List<Map> myDeclarations = ContainerUtil.newArrayList();
   private final Project myProject;
@@ -72,7 +64,7 @@ public class CustomMembersGenerator extends GroovyObjectSupport implements GdslM
   @Nullable private final Map<String, List> myBindings;
   private final PsiClass myPsiClass;
 
-  public CustomMembersGenerator(@Nonnull GroovyClassDescriptor descriptor, @Nullable PsiType type, @javax.annotation.Nullable Map<String, List> bindings) {
+  public CustomMembersGenerator(@Nonnull GroovyClassDescriptor descriptor, @Nullable PsiType type, @Nullable Map<String, List> bindings) {
     myDescriptor = descriptor;
     myBindings = bindings;
     myProject = descriptor.getProject();
@@ -107,7 +99,7 @@ public class CustomMembersGenerator extends GroovyObjectSupport implements GdslM
     return myProject;
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   public CustomMembersHolder getMembersHolder() {
     if (!myDeclarations.isEmpty()) {
       addMemberHolder(new CustomMembersHolder() {
@@ -196,12 +188,9 @@ public class CustomMembersGenerator extends GroovyObjectSupport implements GdslM
       if (argTypes == null) return;
 
       String[] types = new String[argTypes.length];
-      ContainerUtil.map(argTypes, new Function<PsiType, Object>() {
-        @Override
-        public Object fun(PsiType type) {
-          String canonical = type.getCanonicalText();
-          return canonical != null ? canonical : type.getPresentableText();
-        }
+      ContainerUtil.map(argTypes, (Function<PsiType, Object>)type -> {
+        String canonical = type.getCanonicalText();
+        return canonical != null ? canonical : type.getPresentableText();
       }, types);
 
       generator.setDelegate(this);
@@ -304,7 +293,7 @@ public class CustomMembersGenerator extends GroovyObjectSupport implements GdslM
     final Object[] newArgs = constructNewArgs((Object[])args);
 
     // Get other DSL methods from extensions
-    for (GdslMembersProvider provider : PROVIDERS) {
+    for (GdslMembersProvider provider : GdslMembersProvider.EP_NAME.getExtensionList()) {
       final List<MetaMethod> variants = DefaultGroovyMethods.getMetaClass(provider).respondsTo(provider, name, newArgs);
       if (variants.size() == 1) {
         return InvokerHelper.invokeMethod(provider, name, newArgs);
@@ -314,7 +303,7 @@ public class CustomMembersGenerator extends GroovyObjectSupport implements GdslM
   }
 
   @SuppressWarnings("UnusedDeclaration")
-  @javax.annotation.Nullable
+  @Nullable
   public Object propertyMissing(String name) {
     if (myBindings != null) {
       final List list = myBindings.get(name);
@@ -345,11 +334,12 @@ public class CustomMembersGenerator extends GroovyObjectSupport implements GdslM
 
   }
   
-  public static class GdslNamedParameter extends FakePsiElement {
+  public static class GdslNamedParameter extends FakePsiElement
+  {
     private final String myName;
     public final String docString;
     private final PsiElement myParent;
-    @javax.annotation.Nullable
+    @Nullable
 	public final String myParameterTypeText;
 
     public GdslNamedParameter(String name, String doc, @Nonnull PsiElement parent, @Nullable String type) {

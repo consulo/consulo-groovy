@@ -16,8 +16,8 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions;
 
-import com.intellij.navigation.NavigationItem;
-import com.intellij.psi.PsiElement;
+import consulo.language.psi.PsiElement;
+import consulo.navigation.NavigationItem;
 import consulo.util.dataholder.UserDataHolderEx;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrArgumentList;

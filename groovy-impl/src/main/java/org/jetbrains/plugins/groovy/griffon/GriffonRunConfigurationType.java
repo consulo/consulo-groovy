@@ -17,22 +17,21 @@
 package org.jetbrains.plugins.groovy.griffon;
 
 import javax.annotation.Nonnull;
-import javax.swing.Icon;
 
+import consulo.compiler.execution.CompileStepBeforeRun;
+import consulo.execution.configuration.*;
+import consulo.project.Project;
 import org.jetbrains.annotations.NonNls;
-import consulo.groovy.griffon.module.extension.GriffonModuleExtension;
-import com.intellij.compiler.options.CompileStepBeforeRun;
-import com.intellij.compiler.options.CompileStepBeforeRunNoErrorCheck;
-import com.intellij.execution.BeforeRunTask;
-import com.intellij.execution.configurations.ConfigurationFactory;
-import com.intellij.execution.configurations.ConfigurationType;
-import com.intellij.execution.configurations.ConfigurationTypeUtil;
-import com.intellij.execution.configurations.RunConfiguration;
-import com.intellij.openapi.project.Project;
+import consulo.groovy.impl.griffon.module.extension.GriffonModuleExtension;
+import consulo.compiler.execution.CompileStepBeforeRunNoErrorCheck;
+import consulo.execution.BeforeRunTask;
+import consulo.execution.configuration.ConfigurationFactory;
+import consulo.execution.configuration.ConfigurationType;
+import consulo.execution.configuration.RunConfiguration;
 import consulo.util.dataholder.Key;
 import consulo.module.extension.ModuleExtensionHelper;
 import consulo.ui.image.Image;
-import icons.JetgroovyIcons;
+import org.jetbrains.plugins.groovy.JetgroovyIcons;
 
 public class GriffonRunConfigurationType implements ConfigurationType
 {

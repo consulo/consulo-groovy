@@ -1,6 +1,6 @@
 package org.jetbrains.plugins.groovy.dsl;
 
-import com.intellij.psi.PsiMethod;
+import com.intellij.java.language.psi.PsiMethod;
 
 /**
  * @author peter

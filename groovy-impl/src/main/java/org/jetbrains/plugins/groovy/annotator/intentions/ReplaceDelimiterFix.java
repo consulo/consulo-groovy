@@ -15,20 +15,20 @@
  */
 package org.jetbrains.plugins.groovy.annotator.intentions;
 
-import javax.annotation.Nonnull;
-
-import com.intellij.codeInsight.intention.IntentionAction;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.IncorrectOperationException;
+import consulo.codeEditor.Editor;
+import consulo.language.editor.intention.IntentionAction;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.language.util.IncorrectOperationException;
+import consulo.project.Project;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrForStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.clauses.GrForClause;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.clauses.GrForInClause;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author Max Medvedev
@@ -41,7 +41,7 @@ public class ReplaceDelimiterFix implements IntentionAction {
   }
 
   @Nonnull
-  @Override
+  //@Override
   public String getFamilyName() {
     return "Replace for-each operator";
   }

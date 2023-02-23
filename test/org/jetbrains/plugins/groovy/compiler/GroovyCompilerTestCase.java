@@ -36,12 +36,12 @@ import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.module.StdModuleTypes;
 import com.intellij.openapi.roots.*;
-import com.intellij.openapi.util.Disposer;
+import consulo.ide.impl.idea.openapi.util.Disposer;
 import com.intellij.openapi.util.JDOMExternalizable;
 import consulo.util.dataholder.Key;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.PsiFile;
+import com.intellij.java.language.psi.PsiFile;
 import com.intellij.testFramework.CompilerTester;
 import com.intellij.testFramework.IdeaTestUtil;
 import com.intellij.testFramework.PsiTestUtil;
@@ -232,7 +232,7 @@ public abstract class GroovyCompilerTestCase extends JavaCodeInsightFixtureTestC
         disposeOnTearDown(new Disposable() {
           @Override
           public void dispose() {
-            Disposer.dispose(descriptor);
+            consulo.ide.impl.idea.openapi.util.Disposer.dispose(descriptor);
           }
         });
         final ProcessHandler handler = descriptor.getProcessHandler();

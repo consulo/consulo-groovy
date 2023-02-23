@@ -15,20 +15,25 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.safeDelete;
 
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.*;
-import com.intellij.refactoring.safeDelete.JavaSafeDeleteDelegate;
-import com.intellij.refactoring.safeDelete.usageInfo.SafeDeleteReferenceJavaDeleteUsageInfo;
-import com.intellij.usageView.UsageInfo;
-import com.intellij.util.Function;
-import com.intellij.util.IncorrectOperationException;
+import com.intellij.java.impl.refactoring.safeDelete.JavaSafeDeleteDelegate;
+import com.intellij.java.impl.refactoring.safeDelete.usageInfo.SafeDeleteReferenceJavaDeleteUsageInfo;
+import com.intellij.java.language.psi.PsiMethod;
+import com.intellij.java.language.psi.PsiParameter;
+import consulo.language.Language;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiReference;
+import consulo.language.util.IncorrectOperationException;
+import consulo.usage.UsageInfo;
+import consulo.util.lang.StringUtil;
 import org.jetbrains.annotations.NonNls;
+import org.jetbrains.plugins.groovy.GroovyLanguage;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocMethodReference;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocReferenceElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.signatures.GrClosureSignature;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrCall;
 import org.jetbrains.plugins.groovy.lang.psi.impl.signatures.GrClosureSignatureUtil;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -73,12 +78,7 @@ public class JavaSafeDeleteDelegateForGroovy implements JavaSafeDeleteDelegate {
       newText.append('(');
       final List<PsiParameter> parameters = new ArrayList<PsiParameter>(Arrays.asList(method.getParameterList().getParameters()));
       parameters.remove(parameter);
-      newText.append(StringUtil.join(parameters, new Function<PsiParameter, String>() {
-        @Override
-        public String fun(PsiParameter psiParameter) {
-          return parameter.getType().getCanonicalText();
-        }
-      }, ","));
+      newText.append(StringUtil.join(parameters, psiParameter -> parameter.getType().getCanonicalText(), ","));
       newText.append(")*/");
       usages.add(new SafeDeleteReferenceJavaDeleteUsageInfo(element, parameter, true) {
         public void deleteElement() throws IncorrectOperationException {
@@ -86,5 +86,11 @@ public class JavaSafeDeleteDelegateForGroovy implements JavaSafeDeleteDelegate {
         }
       });
     }
+  }
+
+  @Nonnull
+  @Override
+  public Language getLanguage() {
+    return GroovyLanguage.INSTANCE;
   }
 }

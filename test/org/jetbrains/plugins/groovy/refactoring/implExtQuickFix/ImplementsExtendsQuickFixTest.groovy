@@ -1,7 +1,7 @@
 package org.jetbrains.plugins.groovy.refactoring.implExtQuickFix
 
 import com.intellij.openapi.application.ApplicationManager
-import com.intellij.psi.PsiFile
+import com.intellij.java.language.psi.PsiFile
 import com.intellij.testFramework.fixtures.LightCodeInsightFixtureTestCase
 import org.jetbrains.plugins.groovy.annotator.intentions.ChangeExtendsImplementsQuickFix
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFileBase

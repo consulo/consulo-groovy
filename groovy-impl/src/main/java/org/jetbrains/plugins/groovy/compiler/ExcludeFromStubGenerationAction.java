@@ -16,22 +16,30 @@
 
 package org.jetbrains.plugins.groovy.compiler;
 
+import consulo.application.dumb.DumbAware;
+import consulo.language.editor.LangDataKeys;
+import consulo.language.psi.PsiFile;
+import consulo.project.Project;
+import consulo.ui.ex.action.AnAction;
+import consulo.ui.ex.action.AnActionEvent;
+import consulo.virtualFileSystem.VirtualFile;
 import org.jetbrains.plugins.groovy.GroovyFileType;
-import com.intellij.openapi.actionSystem.AnAction;
-import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.actionSystem.LangDataKeys;
-import com.intellij.openapi.actionSystem.Presentation;
-import com.intellij.openapi.compiler.options.ExcludeEntryDescription;
-import com.intellij.openapi.options.ShowSettingsUtil;
-import com.intellij.openapi.project.DumbAware;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.PsiFile;
+import consulo.ui.ex.action.AnAction;
+import consulo.ui.ex.action.AnActionEvent;
+import consulo.language.editor.LangDataKeys;
+import consulo.ui.ex.action.Presentation;
+import consulo.compiler.setting.ExcludeEntryDescription;
+import consulo.ide.setting.ShowSettingsUtil;
+import consulo.application.dumb.DumbAware;
+import consulo.project.Project;
+import consulo.virtualFileSystem.VirtualFile;
+import consulo.language.psi.PsiFile;
 
 /**
  * @author peter
  */
-public class ExcludeFromStubGenerationAction extends AnAction implements DumbAware {
+public class ExcludeFromStubGenerationAction extends AnAction implements DumbAware
+{
   public void actionPerformed(final AnActionEvent e) {
     final PsiFile file = e.getData(LangDataKeys.PSI_FILE);
 

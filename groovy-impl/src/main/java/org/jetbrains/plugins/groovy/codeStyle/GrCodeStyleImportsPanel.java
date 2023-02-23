@@ -15,13 +15,15 @@
  */
 package org.jetbrains.plugins.groovy.codeStyle;
 
-import com.intellij.application.options.ImportLayoutPanel;
-import com.intellij.application.options.PackagePanel;
-import com.intellij.openapi.application.ApplicationBundle;
-import com.intellij.psi.codeStyle.PackageEntry;
-import com.intellij.psi.codeStyle.PackageEntryTable;
-import com.intellij.ui.*;
-import com.intellij.ui.table.JBTable;
+import com.intellij.java.impl.application.options.ImportLayoutPanel;
+import com.intellij.java.impl.application.options.PackagePanel;
+import consulo.application.ApplicationBundle;
+import consulo.language.codeStyle.PackageEntry;
+import consulo.language.codeStyle.PackageEntryTable;
+import consulo.ui.ex.awt.IdeBorderFactory;
+import consulo.ui.ex.awt.OptionGroup;
+import consulo.ui.ex.awt.table.JBTable;
+import consulo.ui.ex.awt.util.TableUtil;
 
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;

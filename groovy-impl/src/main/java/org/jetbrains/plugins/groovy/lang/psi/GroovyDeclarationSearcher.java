@@ -1,12 +1,12 @@
 package org.jetbrains.plugins.groovy.lang.psi;
 
-import javax.annotation.Nonnull;
-
-import com.intellij.pom.PomDeclarationSearcher;
-import com.intellij.pom.PomTarget;
-import com.intellij.psi.PsiElement;
-import com.intellij.util.Consumer;
+import consulo.language.pom.PomDeclarationSearcher;
+import consulo.language.pom.PomTarget;
+import consulo.language.psi.PsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
+
+import javax.annotation.Nonnull;
+import java.util.function.Consumer;
 
 /**
  * @author peter
@@ -17,7 +17,7 @@ public class GroovyDeclarationSearcher extends PomDeclarationSearcher {
     if (element instanceof GrTypeDefinition) {
       final PsiElement name = ((GrTypeDefinition)element).getNameIdentifierGroovy();
       if (name.getTextRange().shiftRight(-element.getTextRange().getStartOffset()).contains(offsetInElement)) {
-		  consumer.consume((GrTypeDefinition) element);
+        consumer.accept((GrTypeDefinition)element);
       }
     }
   }

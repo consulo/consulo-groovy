@@ -103,8 +103,8 @@ import com.intellij.openapi.vfs.JarFileSystem;
 import com.intellij.openapi.vfs.ReadonlyStatusHandler;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.*;
-import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.java.language.psi.*;
+import com.intellij.java.language.psi.util.PsiTreeUtil;
 import com.intellij.refactoring.RefactoringBundle;
 import com.intellij.util.containers.ContainerUtil;
 import gnu.trove.THashSet;
@@ -337,8 +337,8 @@ import com.intellij.openapi.vfs.JarFileSystem
 import com.intellij.openapi.vfs.ReadonlyStatusHandler
 import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.psi.*
-import com.intellij.psi.util.PsiTreeUtil
+import com.intellij.java.language.psi.*
+import com.intellij.java.language.psi.util.PsiTreeUtil
 import com.intellij.refactoring.RefactoringBundle
 import com.intellij.util.containers.ContainerUtil
 import gnu.trove.THashSet

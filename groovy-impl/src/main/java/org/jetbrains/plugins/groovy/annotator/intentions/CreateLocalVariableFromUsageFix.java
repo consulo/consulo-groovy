@@ -15,25 +15,26 @@
  */
 package org.jetbrains.plugins.groovy.annotator.intentions;
 
-import javax.annotation.Nonnull;
-
-import com.intellij.codeInsight.CodeInsightUtilBase;
-import com.intellij.codeInsight.intention.IntentionAction;
-import com.intellij.codeInsight.template.Template;
-import com.intellij.codeInsight.template.TemplateBuilderImpl;
-import com.intellij.codeInsight.template.TemplateManager;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.fileEditor.FileEditorManager;
-import com.intellij.openapi.fileEditor.OpenFileDescriptor;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.*;
-import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.util.ArrayUtil;
-import com.intellij.util.IncorrectOperationException;
-
-import javax.annotation.Nullable;
+import com.intellij.java.language.psi.JavaPsiFacade;
+import com.intellij.java.language.psi.PsiClassType;
+import consulo.codeEditor.Editor;
+import consulo.document.util.TextRange;
+import consulo.fileEditor.FileEditorManager;
+import consulo.ide.impl.idea.codeInsight.CodeInsightUtilBase;
+import consulo.language.editor.impl.internal.template.TemplateBuilderImpl;
+import consulo.language.editor.intention.IntentionAction;
+import consulo.language.editor.template.Template;
+import consulo.language.editor.template.TemplateManager;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.PsiManager;
+import consulo.language.psi.scope.GlobalSearchScope;
+import consulo.language.util.IncorrectOperationException;
+import consulo.navigation.OpenFileDescriptor;
+import consulo.navigation.OpenFileDescriptorFactory;
+import consulo.project.Project;
+import consulo.util.collection.ArrayUtil;
+import consulo.virtualFileSystem.VirtualFile;
 import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
@@ -44,6 +45,9 @@ import org.jetbrains.plugins.groovy.lang.psi.api.util.GrVariableDeclarationOwner
 import org.jetbrains.plugins.groovy.lang.psi.expectedTypes.GroovyExpectedTypesProvider;
 import org.jetbrains.plugins.groovy.lang.psi.expectedTypes.TypeConstraint;
 import org.jetbrains.plugins.groovy.template.expressions.ChooseTypeExpression;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author ven
@@ -78,13 +82,18 @@ public class CreateLocalVariableFromUsageFix implements IntentionAction {
 
     VirtualFile vFile = targetFile.getVirtualFile();
     assert vFile != null;
-    OpenFileDescriptor descriptor = new OpenFileDescriptor(project, vFile, textOffset);
+    OpenFileDescriptor descriptor = OpenFileDescriptorFactory.getInstance(project).builder(vFile).offset(textOffset).build();
     return FileEditorManager.getInstance(project).openTextEditor(descriptor, true);
   }
 
   public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
-    PsiClassType type = JavaPsiFacade.getInstance(project).getElementFactory().createTypeByFQClassName("Object", GlobalSearchScope.allScope(project));
-    GrVariableDeclaration decl = GroovyPsiElementFactory.getInstance(project).createVariableDeclaration(ArrayUtil.EMPTY_STRING_ARRAY, "", type, myRefExpression.getReferenceName());
+    PsiClassType
+      type = JavaPsiFacade.getInstance(project).getElementFactory().createTypeByFQClassName("Object", GlobalSearchScope.allScope(project));
+    GrVariableDeclaration decl = GroovyPsiElementFactory.getInstance(project)
+                                                        .createVariableDeclaration(ArrayUtil.EMPTY_STRING_ARRAY,
+                                                                                   "",
+                                                                                   type,
+                                                                                   myRefExpression.getReferenceName());
     int offset = myRefExpression.getTextRange().getStartOffset();
     GrStatement anchor = findAnchor(file, offset);
 
@@ -111,7 +120,7 @@ public class CreateLocalVariableFromUsageFix implements IntentionAction {
     manager.startTemplate(newEditor, template);
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   private GrStatement findAnchor(PsiFile file, int offset) {
     PsiElement element = file.findElementAt(offset);
     if (element == null && offset > 0) element = file.findElementAt(offset - 1);

@@ -15,11 +15,25 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection;
 
-import com.intellij.codeInspection.ex.UnfairLocalInspectionTool;
+import consulo.language.editor.inspection.UnfairLocalInspectionTool;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author peter
  */
 public class GroovyUnusedDeclarationInspection extends GroovySuppressableInspectionTool implements UnfairLocalInspectionTool {
   public static final String SHORT_NAME = "GroovyUnusedDeclaration";
+
+  @Nonnull
+  @Override
+  public String getGroupDisplayName() {
+    return "Declaration redundancy";
+  }
+
+  @Nonnull
+  @Override
+  public String getDisplayName() {
+    return "Unused declaration";
+  }
 }

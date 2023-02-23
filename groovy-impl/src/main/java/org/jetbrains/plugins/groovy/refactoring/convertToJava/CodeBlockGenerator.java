@@ -15,11 +15,12 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.convertToJava;
 
-import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.*;
-import com.intellij.psi.util.PsiUtil;
+import com.intellij.java.language.psi.*;
+import com.intellij.java.language.psi.util.PsiUtil;
+import consulo.application.ApplicationManager;
+import consulo.language.psi.PsiElement;
+import consulo.logging.Logger;
+import consulo.util.lang.StringUtil;
 import org.jetbrains.plugins.groovy.codeInspection.noReturnMethod.MissingReturnInspection;
 import org.jetbrains.plugins.groovy.codeInspection.utils.ControlFlowUtils;
 import org.jetbrains.plugins.groovy.lang.lexer.TokenSets;
@@ -66,7 +67,7 @@ import static org.jetbrains.plugins.groovy.refactoring.convertToJava.TypeWriter.
  * @author Maxim.Medvedev
  */
 public class CodeBlockGenerator extends Generator {
-  private static final Logger LOG = Logger.getInstance("#org.jetbrains.plugins.groovy.refactoring.convertToJava.CodeBlockGenerator");
+  private static final Logger LOG = Logger.getInstance(CodeBlockGenerator.class);
 
   private static final boolean IN_TEST = ApplicationManager.getApplication().isUnitTestMode();
 
@@ -79,7 +80,7 @@ public class CodeBlockGenerator extends Generator {
     this(builder, context, null);
   }
 
-  public CodeBlockGenerator(StringBuilder builder, ExpressionContext context, @javax.annotation.Nullable Collection<GrStatement> exitPoints) {
+  public CodeBlockGenerator(StringBuilder builder, ExpressionContext context, @Nullable Collection<GrStatement> exitPoints) {
     this.builder = builder;
     this.context = context;
     myExitPoints = new HashSet<GrStatement>();
@@ -107,8 +108,8 @@ public class CodeBlockGenerator extends Generator {
     if (!method.isConstructor() && returnType != PsiType.VOID) {
       myExitPoints.addAll(ControlFlowUtils.collectReturns(block));
       shouldInsertReturnNull = block != null && !(returnType instanceof PsiPrimitiveType) &&
-                               MissingReturnInspection.methodMissesSomeReturns(block,
-                                                                               MissingReturnInspection.ReturnStatus.getReturnStatus(method));
+        MissingReturnInspection.methodMissesSomeReturns(block,
+                                                        MissingReturnInspection.ReturnStatus.getReturnStatus(method));
     }
 
     if (block != null) {
@@ -146,7 +147,7 @@ public class CodeBlockGenerator extends Generator {
         writeTypeParameters(typeText, new PsiType[]{context.typeProvider.getParameterType(parameter)}, parameter,
                             new GeneratorClassNameProvider());
         builder.append("final ").append(typeText).append(' ').append(context.analyzedVars.toVarName(parameter))
-          .append(" = new ").append(typeText).append('(').append(parameter.getName()).append(");\n");
+               .append(" = new ").append(typeText).append('(').append(parameter.getName()).append(");\n");
       }
     }
     visitStatementOwner(block, shouldInsertReturnNull);

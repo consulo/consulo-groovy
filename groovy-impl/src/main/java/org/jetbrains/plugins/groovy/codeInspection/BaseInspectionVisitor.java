@@ -17,13 +17,17 @@ package org.jetbrains.plugins.groovy.codeInspection;
 
 import javax.annotation.Nonnull;
 
-import com.intellij.codeInspection.LocalQuickFix;
-import com.intellij.codeInspection.ProblemHighlightType;
-import com.intellij.codeInspection.ProblemsHolder;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.PsiElement;
+import consulo.language.editor.inspection.LocalQuickFix;
+import consulo.language.editor.inspection.ProblemHighlightType;
+import consulo.language.editor.inspection.ProblemsHolder;
+import consulo.language.psi.PsiElement;
+import consulo.util.lang.StringUtil;
+import consulo.language.psi.PsiElement;
 
 import javax.annotation.Nullable;
+
+import consulo.language.editor.inspection.ProblemHighlightType;
+import consulo.util.lang.StringUtil;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyRecursiveElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;

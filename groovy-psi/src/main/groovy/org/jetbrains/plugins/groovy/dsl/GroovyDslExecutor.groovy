@@ -15,15 +15,14 @@
  */
 package org.jetbrains.plugins.groovy.dsl
 
-import com.intellij.openapi.application.ApplicationInfo
-import com.intellij.openapi.util.Pair
-import com.intellij.openapi.util.text.StringUtil
-import com.intellij.patterns.ElementPattern
-import com.intellij.patterns.PsiJavaPatterns
-import com.intellij.psi.PsiType
-import com.intellij.util.ObjectUtils
-import com.intellij.util.ProcessingContext
-import com.intellij.util.containers.MultiMap
+import com.intellij.java.language.patterns.PsiJavaPatterns
+import com.intellij.java.language.psi.PsiType
+import consulo.application.internal.ApplicationInfo
+import consulo.language.pattern.ElementPattern
+import consulo.language.util.ProcessingContext
+import consulo.util.collection.MultiMap
+import consulo.util.lang.Pair
+import consulo.util.lang.StringUtil
 import org.jetbrains.annotations.Nullable
 import org.jetbrains.plugins.groovy.dsl.holders.CompoundMembersHolder
 import org.jetbrains.plugins.groovy.dsl.psi.PsiEnhancerCategory

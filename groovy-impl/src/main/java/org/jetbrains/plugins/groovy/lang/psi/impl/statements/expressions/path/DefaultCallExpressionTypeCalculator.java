@@ -15,9 +15,14 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.path;
 
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.psi.*;
-import com.intellij.util.ArrayUtil;
+import com.intellij.java.language.psi.PsiClass;
+import com.intellij.java.language.psi.PsiClassType;
+import com.intellij.java.language.psi.PsiMethod;
+import com.intellij.java.language.psi.PsiType;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiManager;
+import consulo.logging.Logger;
+import consulo.util.collection.ArrayUtil;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrArgumentList;
@@ -82,7 +87,7 @@ public class DefaultCallExpressionTypeCalculator extends GrCallExpressionTypeCal
     }
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   private static PsiType calculateReturnTypeInner(GrMethodCall callExpression,
                                                   GrReferenceExpression refExpr,
                                                   GroovyResolveResult resolveResult) {
@@ -150,7 +155,7 @@ public class DefaultCallExpressionTypeCalculator extends GrCallExpressionTypeCal
     CLOSURE_METHODS.add("memoize");
     CLOSURE_METHODS.add("trampoline");
   }
-  @javax.annotation.Nullable
+  @Nullable
   private static PsiType getClosureMethodsReturnType(GrMethodCall callExpression, GrReferenceExpression refExpr, PsiMethod resolved) {
     PsiClass clazz = resolved.getContainingClass();
     if (clazz == null || !GroovyCommonClassNames.GROOVY_LANG_CLOSURE.equals(clazz.getQualifiedName())) return null;

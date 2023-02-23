@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.exception;
 
-import com.intellij.openapi.util.text.StringUtil;
+import consulo.util.lang.StringUtil;
 import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameter;
 

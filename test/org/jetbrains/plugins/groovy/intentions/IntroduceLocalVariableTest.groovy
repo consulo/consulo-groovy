@@ -2,8 +2,8 @@ package org.jetbrains.plugins.groovy.intentions
 import com.intellij.codeInsight.intention.impl.config.IntentionActionWrapper
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
-import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiType
+import com.intellij.java.language.psi.PsiElement
+import com.intellij.java.language.psi.PsiType
 import com.intellij.util.IncorrectOperationException
 import org.jetbrains.plugins.groovy.intentions.declaration.GrIntroduceLocalVariableIntention
 import org.jetbrains.plugins.groovy.refactoring.introduce.GrIntroduceContext

@@ -16,9 +16,10 @@
 package org.jetbrains.plugins.groovy.lang.psi.typeEnhancers;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
-import com.intellij.psi.PsiArrayType;
-import com.intellij.psi.PsiType;
+import com.intellij.java.language.psi.PsiArrayType;
+import com.intellij.java.language.psi.PsiType;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil;
 
@@ -31,7 +32,7 @@ public class GrContainerConverter extends GrTypeConverter {
     return false;
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   @Override
   public Boolean isConvertible(@Nonnull PsiType lType, @Nonnull PsiType rType, @Nonnull GroovyPsiElement context) {
     if (lType instanceof PsiArrayType) {

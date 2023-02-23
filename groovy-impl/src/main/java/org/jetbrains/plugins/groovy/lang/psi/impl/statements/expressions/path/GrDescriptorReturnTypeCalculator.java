@@ -15,14 +15,14 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.path;
 
-import javax.annotation.Nonnull;
-
-import com.intellij.psi.JavaPsiFacade;
-import com.intellij.psi.PsiMethod;
-import com.intellij.psi.PsiType;
+import com.intellij.java.language.psi.JavaPsiFacade;
+import com.intellij.java.language.psi.PsiMethod;
+import com.intellij.java.language.psi.PsiType;
 import org.jetbrains.plugins.groovy.extensions.GroovyMethodInfo;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrMethodCall;
 import org.jetbrains.plugins.groovy.lang.psi.typeEnhancers.GrCallExpressionTypeCalculator;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author Sergey Evdokimov

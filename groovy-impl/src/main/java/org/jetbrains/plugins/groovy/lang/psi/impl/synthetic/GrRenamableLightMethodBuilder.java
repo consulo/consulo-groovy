@@ -15,10 +15,11 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.synthetic;
 
-import javax.annotation.Nonnull;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiManager;
+import consulo.language.util.IncorrectOperationException;
 
-import com.intellij.psi.*;
-import com.intellij.util.IncorrectOperationException;
+import javax.annotation.Nonnull;
 
 /**
  * @author Sergey Evdokimov

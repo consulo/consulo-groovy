@@ -18,8 +18,8 @@ package org.jetbrains.plugins.groovy.lang.resolve.processors;
 
 import java.util.EnumSet;
 
+import consulo.language.psi.PsiElement;
 import consulo.util.dataholder.Key;
-import com.intellij.psi.PsiElement;
 
 /**
  * @author ven

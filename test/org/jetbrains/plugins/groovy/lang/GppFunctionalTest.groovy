@@ -10,7 +10,7 @@ import com.intellij.openapi.roots.ModifiableRootModel
 import com.intellij.openapi.roots.OrderRootType
 import com.intellij.openapi.roots.libraries.Library
 import com.intellij.openapi.vfs.JarFileSystem
-import com.intellij.psi.search.GlobalSearchScope
+import com.intellij.java.language.psi.search.GlobalSearchScope
 import com.intellij.testFramework.LightProjectDescriptor
 import com.intellij.testFramework.fixtures.DefaultLightProjectDescriptor
 import com.intellij.testFramework.fixtures.LightCodeInsightFixtureTestCase
@@ -22,7 +22,7 @@ import org.jetbrains.plugins.groovy.codeInspection.unassignedVariable.Unassigned
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod
 import org.jetbrains.plugins.groovy.util.TestUtils
-import com.intellij.psi.*
+import com.intellij.java.language.psi.*
 
 /**
  * @author peter
@@ -612,8 +612,8 @@ class GppProjectDescriptor extends DefaultLightProjectDescriptor {
   @Override
     public void configureModule(Module module, ModifiableRootModel model, ContentEntry contentEntry) {
     final Library.ModifiableModel modifiableModel = model.moduleLibraryTable.createLibrary("GROOVY++").modifiableModel;
-    modifiableModel.addRoot(JarFileSystem.instance.refreshAndFindFileByPath(TestUtils.absoluteTestDataPath + "mockGroovypp/groovypp-0.9.0_1.8.2.jar!/"), OrderRootType.CLASSES)
-    modifiableModel.addRoot(JarFileSystem.instance.refreshAndFindFileByPath(TestUtils.mockGroovy1_7LibraryName + "!/"), OrderRootType.CLASSES);
+    modifiableModel.addRoot(JarFileSystem.instance.refreshAndFindFileByPath(TestUtils.absoluteTestDataPath + "mockGroovypp/groovypp-0.9.0_1.8.2.jar!/"), BinariesOrderRootType.getInstance())
+    modifiableModel.addRoot(JarFileSystem.instance.refreshAndFindFileByPath(TestUtils.mockGroovy1_7LibraryName + "!/"), BinariesOrderRootType.getInstance());
     modifiableModel.commit();
   }
 }

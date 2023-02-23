@@ -17,11 +17,11 @@ package org.jetbrains.plugins.groovy.intentions.control;
 
 import javax.annotation.Nonnull;
 
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.util.IncorrectOperationException;
+import consulo.codeEditor.Editor;
+import consulo.language.ast.IElementType;
+import consulo.language.util.IncorrectOperationException;
+import consulo.project.Project;
+import consulo.language.psi.PsiElement;
 import org.jetbrains.plugins.groovy.intentions.GroovyIntentionsBundle;
 import org.jetbrains.plugins.groovy.intentions.base.MutablyNamedIntention;
 import org.jetbrains.plugins.groovy.intentions.base.PsiElementPredicate;
@@ -50,7 +50,8 @@ public class DemorgansLawIntention extends MutablyNamedIntention {
     return new ConjunctionPredicate();
   }
 
-  public void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
+  public void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException
+  {
     GrBinaryExpression exp = (GrBinaryExpression)element;
     final IElementType tokenType = exp.getOperationTokenType();
     PsiElement parent = exp.getParent();

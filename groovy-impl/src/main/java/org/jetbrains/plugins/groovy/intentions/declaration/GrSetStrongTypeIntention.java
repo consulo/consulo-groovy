@@ -15,18 +15,18 @@
  */
 package org.jetbrains.plugins.groovy.intentions.declaration;
 
-import com.intellij.codeInsight.CodeInsightUtilBase;
-import com.intellij.codeInsight.template.Template;
-import com.intellij.codeInsight.template.TemplateBuilderImpl;
-import com.intellij.codeInsight.template.TemplateManager;
-import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.*;
-import com.intellij.util.IncorrectOperationException;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.intellij.java.language.psi.PsiClassType;
+import com.intellij.java.language.psi.PsiParameter;
+import com.intellij.java.language.psi.PsiType;
+import consulo.codeEditor.Editor;
+import consulo.document.Document;
+import consulo.document.util.TextRange;
+import consulo.language.editor.template.Template;
+import consulo.language.editor.template.TemplateManager;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiManager;
+import consulo.language.util.IncorrectOperationException;
+import consulo.project.Project;
 import org.jetbrains.plugins.groovy.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.intentions.base.PsiElementPredicate;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.GrModifier;
@@ -46,6 +46,8 @@ import org.jetbrains.plugins.groovy.lang.psi.typeEnhancers.ClosureParameterEnhan
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 import org.jetbrains.plugins.groovy.template.expressions.ChooseTypeExpression;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 
 /**
@@ -107,7 +109,7 @@ public class GrSetStrongTypeIntention extends Intention {
       }
     }
 
-    TemplateBuilderImpl builder = new TemplateBuilderImpl(elementToBuildTemplate);
+    consulo.language.editor.impl.internal.template.TemplateBuilderImpl builder = new consulo.language.editor.impl.internal.template.TemplateBuilderImpl(elementToBuildTemplate);
     PsiManager manager = element.getManager();
 
     PsiElement replaceElement = setType(element, parent, elementToBuildTemplate);
@@ -118,7 +120,7 @@ public class GrSetStrongTypeIntention extends Intention {
     builder.replaceElement(replaceElement, chooseTypeExpression);
 
 
-    final PsiElement afterPostprocess = CodeInsightUtilBase.forcePsiPostprocessAndRestoreElement(elementToBuildTemplate);
+    final PsiElement afterPostprocess = consulo.ide.impl.idea.codeInsight.CodeInsightUtilBase.forcePsiPostprocessAndRestoreElement(elementToBuildTemplate);
     final Template template = builder.buildTemplate();
     TextRange range = afterPostprocess.getTextRange();
     Document document = editor.getDocument();
@@ -161,7 +163,7 @@ public class GrSetStrongTypeIntention extends Intention {
     }
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   private static GrTypeElement getTypeElement(PsiElement parent) {
     if (parent instanceof GrVariable) {
       return ((GrVariable)parent).getTypeElementGroovy();
@@ -171,7 +173,7 @@ public class GrSetStrongTypeIntention extends Intention {
     }
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   private static GrModifierList getModifierList(PsiElement parent) {
     GrModifierList modifierList;
 

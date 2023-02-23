@@ -15,15 +15,17 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.extract;
 
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.Condition;
-import com.intellij.psi.CommonClassNames;
-import com.intellij.psi.JavaPsiFacade;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiType;
-import com.intellij.util.containers.ContainerUtil;
+import consulo.project.Project;
+import consulo.util.lang.function.Condition;
+import com.intellij.java.language.psi.CommonClassNames;
+import com.intellij.java.language.psi.JavaPsiFacade;
+import consulo.language.psi.PsiElement;
+import com.intellij.java.language.psi.PsiType;
+import consulo.util.collection.ContainerUtil;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
+import consulo.project.Project;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.branch.GrReturnStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;

@@ -15,20 +15,20 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.changeSignature;
 
-import com.intellij.lang.Language;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.*;
-import com.intellij.refactoring.changeSignature.JavaChangeInfo;
-import com.intellij.refactoring.changeSignature.JavaParameterInfo;
-import com.intellij.refactoring.changeSignature.ThrownExceptionInfo;
-import com.intellij.refactoring.util.CanonicalTypes;
-import com.intellij.util.IncorrectOperationException;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.intellij.java.impl.refactoring.changeSignature.JavaChangeInfo;
+import com.intellij.java.impl.refactoring.changeSignature.JavaParameterInfo;
+import com.intellij.java.impl.refactoring.changeSignature.ThrownExceptionInfo;
+import com.intellij.java.impl.refactoring.util.CanonicalTypes;
+import com.intellij.java.language.psi.*;
+import consulo.language.Language;
+import consulo.language.util.IncorrectOperationException;
+import consulo.util.lang.StringUtil;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameter;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;

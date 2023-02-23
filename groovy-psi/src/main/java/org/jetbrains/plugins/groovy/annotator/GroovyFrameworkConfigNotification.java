@@ -15,26 +15,32 @@
  */
 package org.jetbrains.plugins.groovy.annotator;
 
-import javax.annotation.Nonnull;
+import consulo.annotation.component.ComponentScope;
+import consulo.annotation.component.ExtensionAPI;
+import consulo.component.extension.ExtensionPointName;
+import consulo.fileEditor.EditorNotificationBuilder;
+import consulo.module.Module;
+import consulo.virtualFileSystem.fileType.FileType;
 
-import com.intellij.openapi.extensions.ExtensionPointName;
-import com.intellij.openapi.fileTypes.FileType;
-import com.intellij.openapi.module.Module;
-import com.intellij.ui.EditorNotificationPanel;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.function.Supplier;
 
 /**
  * @author sergey.evdokimov
  */
+@ExtensionAPI(ComponentScope.APPLICATION)
 public abstract class GroovyFrameworkConfigNotification {
   public static final ExtensionPointName<GroovyFrameworkConfigNotification> EP_NAME =
-    ExtensionPointName.create("org.intellij.groovy.groovyFrameworkConfigNotification");
+    ExtensionPointName.create(GroovyFrameworkConfigNotification.class);
 
   public abstract boolean hasFrameworkStructure(@Nonnull Module module);
 
   public abstract boolean hasFrameworkLibrary(@Nonnull Module module);
 
-  @javax.annotation.Nullable
-  public abstract EditorNotificationPanel createConfigureNotificationPanel(@Nonnull Module module);
+  @Nullable
+  public abstract EditorNotificationBuilder createConfigureNotificationPanel(@Nonnull Module module,
+                                                                             Supplier<EditorNotificationBuilder> factory);
 
   public FileType[] getFrameworkFileTypes() {
     return FileType.EMPTY_ARRAY;

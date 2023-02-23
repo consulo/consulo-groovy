@@ -15,17 +15,18 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.inline;
 
-import com.intellij.lang.refactoring.InlineHandler;
-import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiModifier;
-import com.intellij.refactoring.HelpID;
-import com.intellij.refactoring.RefactoringBundle;
-import com.intellij.refactoring.util.CommonRefactoringUtil;
-import javax.annotation.Nullable;
+import com.intellij.java.impl.refactoring.HelpID;
+import com.intellij.java.language.psi.PsiModifier;
+import consulo.application.ApplicationManager;
+import consulo.codeEditor.Editor;
+import consulo.language.editor.refactoring.RefactoringBundle;
+import consulo.language.editor.refactoring.inline.InlineHandler;
+import consulo.language.editor.refactoring.util.CommonRefactoringUtil;
+import consulo.project.Project;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
 import org.jetbrains.plugins.groovy.refactoring.GroovyRefactoringBundle;
+
+import javax.annotation.Nullable;
 
 /**
  * @author Max Medvedev

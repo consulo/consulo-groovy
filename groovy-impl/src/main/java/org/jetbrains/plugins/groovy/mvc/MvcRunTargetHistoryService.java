@@ -15,20 +15,24 @@
  */
 package org.jetbrains.plugins.groovy.mvc;
 
-import com.intellij.openapi.components.*;
-import com.intellij.util.ArrayUtil;
-import javax.annotation.Nonnull;
+import consulo.component.persist.PersistentStateComponent;
+import consulo.component.persist.State;
+import consulo.component.persist.Storage;
+import consulo.component.persist.StoragePathMacros;
+import consulo.ide.ServiceManager;
+import consulo.util.collection.ArrayUtil;
 
+import javax.annotation.Nonnull;
 import java.util.LinkedList;
 
 /**
  * @author Sergey Evdokimov
  */
 @State(
-    name = "mvcRunTargetHistory",
-    storages = @Storage(
-      file = StoragePathMacros.APP_CONFIG + "/other.xml"
-    )
+  name = "mvcRunTargetHistory",
+  storages = @Storage(
+    file = StoragePathMacros.APP_CONFIG + "/other.xml"
+  )
 )
 public class MvcRunTargetHistoryService implements PersistentStateComponent<String[]> {
 

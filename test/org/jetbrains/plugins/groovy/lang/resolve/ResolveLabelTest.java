@@ -16,8 +16,8 @@
 
 package org.jetbrains.plugins.groovy.lang.resolve;
 
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiReference;
+import com.intellij.java.language.psi.PsiElement;
+import com.intellij.java.language.psi.PsiReference;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrLabeledStatement;
 import org.jetbrains.plugins.groovy.util.TestUtils;
 

@@ -15,17 +15,27 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl;
 
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.JVMElementFactory;
-import com.intellij.psi.JVMElementFactoryProvider;
+import com.intellij.java.language.psi.JVMElementFactory;
+import com.intellij.java.language.psi.JVMElementFactoryProvider;
+import consulo.language.Language;
+import consulo.project.Project;
+import org.jetbrains.plugins.groovy.GroovyLanguage;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 
+import javax.annotation.Nonnull;
+
 /**
-* @author Medvedev Max
-*/
+ * @author Medvedev Max
+ */
 public class GroovyFactoryProvider implements JVMElementFactoryProvider {
   @Override
   public JVMElementFactory getFactory(Project project) {
     return GroovyPsiElementFactory.getInstance(project);
+  }
+
+  @Nonnull
+  @Override
+  public Language getLanguage() {
+    return GroovyLanguage.INSTANCE;
   }
 }

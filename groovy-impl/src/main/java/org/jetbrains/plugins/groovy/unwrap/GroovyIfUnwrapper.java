@@ -15,9 +15,10 @@
  */
 package org.jetbrains.plugins.groovy.unwrap;
 
-import com.intellij.codeInsight.CodeInsightBundle;
-import com.intellij.psi.PsiElement;
-import com.intellij.util.IncorrectOperationException;
+import consulo.language.editor.CodeInsightBundle;
+import consulo.language.psi.PsiElement;
+import consulo.language.util.IncorrectOperationException;
+import consulo.language.editor.CodeInsightBundle;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrIfStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
 

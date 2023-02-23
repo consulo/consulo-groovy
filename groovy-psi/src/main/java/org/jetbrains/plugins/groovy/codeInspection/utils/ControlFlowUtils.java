@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.utils;
 
-import static com.intellij.util.containers.ContainerUtil.addIfNotNull;
+import static consulo.util.collection.ContainerUtil.addIfNotNull;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -28,6 +28,12 @@ import java.util.Set;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
+import consulo.application.util.CachedValueProvider;
+import consulo.document.util.TextRange;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.util.collection.ContainerUtil;
+import consulo.util.lang.function.Condition;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GrControlFlowOwner;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
@@ -59,15 +65,11 @@ import org.jetbrains.plugins.groovy.lang.psi.dataFlow.DFAEngine;
 import org.jetbrains.plugins.groovy.lang.psi.dataFlow.DfaInstance;
 import org.jetbrains.plugins.groovy.lang.psi.dataFlow.Semilattice;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.util.Condition;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.util.CachedValueProvider;
-import com.intellij.psi.util.CachedValuesManager;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.containers.ContainerUtil;
+import consulo.logging.Logger;
+import consulo.language.psi.PsiElement;
+import consulo.language.ast.IElementType;
+import consulo.application.util.CachedValuesManager;
+
 import java.util.HashSet;
 
 @SuppressWarnings({"OverlyComplexClass"})
@@ -406,7 +408,7 @@ public class ControlFlowUtils {
     return PsiTreeUtil.getParentOfType(statement, GrStatement.class);
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   private static GroovyPsiElement getContainingStatementOrBlock(@Nonnull GroovyPsiElement statement) {
     return PsiTreeUtil.getParentOfType(statement, GrStatement.class, GrCodeBlock.class);
   }
@@ -786,7 +788,7 @@ public class ControlFlowUtils {
     return result;
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   public static Instruction findInstruction(final PsiElement place, Instruction[] controlFlow) {
     return ContainerUtil.find(controlFlow, new Condition<Instruction>() {
       @Override

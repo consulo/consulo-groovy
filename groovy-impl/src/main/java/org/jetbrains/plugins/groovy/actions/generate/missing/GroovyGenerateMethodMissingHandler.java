@@ -15,32 +15,32 @@
  */
 package org.jetbrains.plugins.groovy.actions.generate.missing;
 
-import com.intellij.codeInsight.generation.ClassMember;
-import com.intellij.codeInsight.generation.GenerateMembersHandlerBase;
-import com.intellij.codeInsight.generation.GenerationInfo;
-import com.intellij.ide.fileTemplates.FileTemplate;
-import com.intellij.ide.fileTemplates.FileTemplateManager;
-import com.intellij.ide.fileTemplates.JavaTemplateUtil;
-import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.ui.DialogWrapper;
-import com.intellij.openapi.ui.Messages;
-import com.intellij.openapi.util.Computable;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.CommonClassNames;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiMethod;
-import com.intellij.psi.PsiParameter;
-import com.intellij.util.IncorrectOperationException;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.intellij.java.impl.codeInsight.generation.GenerateMembersHandlerBase;
+import com.intellij.java.language.impl.codeInsight.generation.GenerationInfo;
+import com.intellij.java.language.impl.codeInsight.template.JavaTemplateUtil;
+import com.intellij.java.language.psi.CommonClassNames;
+import com.intellij.java.language.psi.PsiClass;
+import com.intellij.java.language.psi.PsiMethod;
+import com.intellij.java.language.psi.PsiParameter;
+import consulo.application.ApplicationManager;
+import consulo.application.util.function.Computable;
+import consulo.codeEditor.Editor;
+import consulo.fileTemplate.FileTemplate;
+import consulo.fileTemplate.FileTemplateManager;
+import consulo.language.editor.generation.ClassMember;
+import consulo.language.util.IncorrectOperationException;
+import consulo.logging.Logger;
+import consulo.project.Project;
+import consulo.ui.ex.awt.DialogWrapper;
+import consulo.ui.ex.awt.Messages;
+import consulo.util.lang.StringUtil;
 import org.jetbrains.plugins.groovy.actions.generate.GroovyCodeInsightBundle;
 import org.jetbrains.plugins.groovy.actions.generate.GroovyGenerationInfo;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
@@ -71,8 +71,8 @@ public class GroovyGenerateMethodMissingHandler extends GenerateMembersHandlerBa
 
     final GrMethod method = genMethod(aClass, template);
     return method != null
-           ? Collections.singletonList(new GroovyGenerationInfo<GrMethod>(method, true))
-           : Collections.<GenerationInfo>emptyList();
+      ? Collections.singletonList(new GroovyGenerationInfo<GrMethod>(method, true))
+      : Collections.<GenerationInfo>emptyList();
   }
 
   @Nullable
@@ -93,7 +93,7 @@ public class GroovyGenerateMethodMissingHandler extends GenerateMembersHandlerBa
       return null;
     }
     return GroovyPsiElementFactory.getInstance(aClass.getProject())
-      .createMethodFromText("def methodMissing(String name, def args) {\n" + bodyText + "\n}");
+                                  .createMethodFromText("def methodMissing(String name, def args) {\n" + bodyText + "\n}");
   }
 
 
@@ -154,7 +154,7 @@ public class GroovyGenerateMethodMissingHandler extends GenerateMembersHandlerBa
 
   private static boolean isNameParam(PsiParameter parameter) {
     return parameter.getType().equalsToText(CommonClassNames.JAVA_LANG_STRING) ||
-           parameter.getType().equalsToText(CommonClassNames.JAVA_LANG_OBJECT);
+      parameter.getType().equalsToText(CommonClassNames.JAVA_LANG_OBJECT);
   }
 
   @Nullable
@@ -163,7 +163,7 @@ public class GroovyGenerateMethodMissingHandler extends GenerateMembersHandlerBa
                                         boolean allowEmptySelection,
                                         boolean copyJavadocCheckbox,
                                         Project project,
-                                        @javax.annotation.Nullable Editor editor) {
+                                        @Nullable Editor editor) {
     return ClassMember.EMPTY_ARRAY;
   }
 }

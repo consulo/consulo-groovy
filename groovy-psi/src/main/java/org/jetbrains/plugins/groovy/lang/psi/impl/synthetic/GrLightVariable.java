@@ -15,19 +15,22 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.synthetic;
 
-import com.intellij.psi.*;
-import com.intellij.psi.impl.source.tree.LeafElement;
-import com.intellij.psi.search.LocalSearchScope;
-import com.intellij.psi.search.SearchScope;
-import com.intellij.psi.xml.XmlAttributeValue;
-import com.intellij.psi.xml.XmlToken;
-import com.intellij.util.IncorrectOperationException;
+import com.intellij.java.language.psi.JavaPsiFacade;
+import com.intellij.java.language.psi.PsiMethod;
+import com.intellij.java.language.psi.PsiType;
+import consulo.content.scope.SearchScope;
+import consulo.language.impl.ast.LeafElement;
+import consulo.language.psi.*;
+import consulo.language.psi.scope.LocalSearchScope;
+import consulo.language.util.IncorrectOperationException;
+import consulo.xml.psi.xml.XmlAttributeValue;
+import consulo.xml.psi.xml.XmlToken;
 import org.jetbrains.annotations.NonNls;
-import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrArgumentLabel;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyPropertyUtils;
 
+import javax.annotation.Nonnull;
 import java.util.Collections;
 import java.util.List;
 
@@ -115,7 +118,8 @@ public class GrLightVariable extends GrImplicitVariableImpl implements Navigatab
   }
 
   @Override
-  public PsiElement setName(@Nonnull String name) throws IncorrectOperationException {
+  public PsiElement setName(@Nonnull String name) throws IncorrectOperationException
+  {
     for (PsiElement declaration : myDeclarations) {
       if (declaration instanceof PsiNamedElement) {
         if (declaration instanceof PsiMethod) {

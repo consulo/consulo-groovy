@@ -17,8 +17,9 @@ package org.jetbrains.plugins.groovy.codeInspection;
 
 import javax.annotation.Nonnull;
 
-import com.intellij.codeInspection.ProblemsHolder;
-import com.intellij.psi.PsiElementVisitor;
+import consulo.language.editor.inspection.ProblemsHolder;
+import consulo.language.psi.PsiElementVisitor;
+import consulo.language.editor.inspection.ProblemsHolder;
 import org.jetbrains.plugins.groovy.lang.psi.GrControlFlowOwner;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFileBase;

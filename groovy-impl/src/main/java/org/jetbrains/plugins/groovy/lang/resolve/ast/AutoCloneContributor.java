@@ -15,14 +15,14 @@
  */
 package org.jetbrains.plugins.groovy.lang.resolve.ast;
 
-import com.intellij.psi.PsiMethod;
-import com.intellij.psi.PsiModifier;
-import com.intellij.psi.impl.light.LightMethodBuilder;
-import javax.annotation.Nonnull;
+import com.intellij.java.language.impl.psi.impl.light.LightMethodBuilder;
+import com.intellij.java.language.psi.PsiMethod;
+import com.intellij.java.language.psi.PsiModifier;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
 import org.jetbrains.plugins.groovy.lang.psi.impl.PsiImplUtil;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames;
 
+import javax.annotation.Nonnull;
 import java.util.Collection;
 
 /**

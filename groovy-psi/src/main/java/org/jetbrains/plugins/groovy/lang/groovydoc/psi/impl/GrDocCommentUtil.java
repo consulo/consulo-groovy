@@ -18,6 +18,9 @@ package org.jetbrains.plugins.groovy.lang.groovydoc.psi.impl;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
+import consulo.language.ast.ASTNode;
+import consulo.language.psi.PsiElement;
 import org.jetbrains.plugins.groovy.lang.groovydoc.parser.GroovyDocElementTypes;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocComment;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocCommentOwner;
@@ -28,8 +31,6 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariableDeclaration;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMember;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMembersDeclaration;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
 
 /**
  * @author Maxim.Medvedev

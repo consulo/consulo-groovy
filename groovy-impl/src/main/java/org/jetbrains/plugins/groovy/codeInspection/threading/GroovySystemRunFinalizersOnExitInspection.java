@@ -15,10 +15,11 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.threading;
 
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiMethod;
+import com.intellij.java.language.psi.PsiClass;
+import com.intellij.java.language.psi.PsiMethod;
 import org.jetbrains.annotations.Nls;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspectionVisitor;
@@ -39,7 +40,7 @@ public class GroovySystemRunFinalizersOnExitInspection extends BaseInspection {
     return "Call to System.runFinalizersOnExit()";
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   protected String buildErrorString(Object... args) {
     return "Call to System.'#ref' #loc";
 

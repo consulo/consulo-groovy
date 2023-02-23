@@ -15,23 +15,25 @@
  */
 package org.jetbrains.plugins.groovy.overrideImplement;
 
-import javax.annotation.Nonnull;
-
-import com.intellij.codeInsight.CodeInsightUtilBase;
-import com.intellij.codeInsight.generation.OverrideImplementUtil;
-import com.intellij.codeInsight.hint.HintManager;
-import com.intellij.lang.LanguageCodeInsightActionHandler;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiFile;
+import com.intellij.java.impl.codeInsight.generation.OverrideImplementUtil;
+import com.intellij.java.language.psi.PsiClass;
+import consulo.codeEditor.Editor;
+import consulo.ide.impl.idea.codeInsight.CodeInsightUtilBase;
+import consulo.language.Language;
+import consulo.language.editor.generation.ImplementMethodHandler;
+import consulo.language.editor.hint.HintManager;
+import consulo.language.psi.PsiFile;
+import consulo.project.Project;
 import org.jetbrains.plugins.groovy.GroovyFileType;
+import org.jetbrains.plugins.groovy.GroovyLanguage;
+
+import javax.annotation.Nonnull;
 
 /**
  * User: Dmitry.Krasilschikov
  * Date: 14.09.2007
  */
-public class GroovyImplementMethodsHandler implements LanguageCodeInsightActionHandler {
+public class GroovyImplementMethodsHandler implements ImplementMethodHandler {
   public boolean isValidFor(Editor editor, PsiFile psiFile) {
     return psiFile != null && GroovyFileType.GROOVY_FILE_TYPE.equals(psiFile.getFileType());
   }
@@ -51,5 +53,11 @@ public class GroovyImplementMethodsHandler implements LanguageCodeInsightActionH
 
   public boolean startInWriteAction() {
     return false;
+  }
+
+  @Nonnull
+  @Override
+  public Language getLanguage() {
+    return GroovyLanguage.INSTANCE;
   }
 }

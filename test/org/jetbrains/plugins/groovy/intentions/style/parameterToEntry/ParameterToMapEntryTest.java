@@ -8,9 +8,9 @@ import com.intellij.openapi.roots.libraries.Library;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.openapi.vfs.JarFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.impl.source.PostprocessReformattingAspect;
+import com.intellij.java.language.psi.PsiElement;
+import com.intellij.java.language.psi.PsiFile;
+import com.intellij.java.language.psi.impl.source.PostprocessReformattingAspect;
 import com.intellij.testFramework.LightProjectDescriptor;
 import com.intellij.testFramework.fixtures.DefaultLightProjectDescriptor;
 import junit.framework.Assert;
@@ -38,7 +38,7 @@ public class ParameterToMapEntryTest extends GroovyFormatterTestCase {
       final Library.ModifiableModel modifiableModel = model.getModuleLibraryTable().createLibrary("GROOVY").getModifiableModel();
       final VirtualFile groovyJar = JarFileSystem.getInstance().refreshAndFindFileByPath(TestUtils.getMockGroovy1_7LibraryName()+"!/");
       assert groovyJar != null;
-      modifiableModel.addRoot(groovyJar, OrderRootType.CLASSES);
+      modifiableModel.addRoot(groovyJar, BinariesOrderRootType.getInstance());
       modifiableModel.commit();
     }
   };

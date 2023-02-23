@@ -15,71 +15,62 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl;
 
-import javax.annotation.Nonnull;
-
+import com.intellij.java.language.psi.PsiAnnotation;
+import com.intellij.java.language.psi.PsiType;
+import com.intellij.java.language.psi.PsiTypeVisitor;
+import consulo.language.psi.scope.GlobalSearchScope;
 import org.jetbrains.annotations.NonNls;
-import com.intellij.psi.PsiAnnotation;
-import com.intellij.psi.PsiType;
-import com.intellij.psi.PsiTypeVisitor;
-import com.intellij.psi.search.GlobalSearchScope;
 
-public class GrPsiTypeStub extends PsiType
-{
-	public GrPsiTypeStub()
-	{
-		super(PsiAnnotation.EMPTY_ARRAY);
-	}
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
-	@Nonnull
-	@Override
-	public String getPresentableText()
-	{
-		return "?";
-	}
+public class GrPsiTypeStub extends PsiType {
+  public GrPsiTypeStub() {
+    super(PsiAnnotation.EMPTY_ARRAY);
+  }
 
-	@Nonnull
-	@Override
-	public String getCanonicalText()
-	{
-		return "?";
-	}
+  @Nonnull
+  @Override
+  public String getPresentableText() {
+    return "?";
+  }
 
-	@Nonnull
-	@Override
-	public String getInternalCanonicalText()
-	{
-		return "?";
-	}
+  @Nonnull
+  @Override
+  public String getCanonicalText() {
+    return "?";
+  }
 
-	@Override
-	public boolean isValid()
-	{
-		return true;
-	}
+  @Nonnull
+  @Override
+  public String getInternalCanonicalText() {
+    return "?";
+  }
 
-	@Override
-	public boolean equalsToText(@Nonnull @NonNls String text)
-	{
-		return false;
-	}
+  @Override
+  public boolean isValid() {
+    return true;
+  }
 
-	@Override
-	public <A> A accept(@Nonnull PsiTypeVisitor<A> visitor)
-	{
-		return null;
-	}
+  @Override
+  public boolean equalsToText(@Nonnull @NonNls String text) {
+    return false;
+  }
 
-	@javax.annotation.Nullable
-	@Override
-	public GlobalSearchScope getResolveScope()
-	{
-		return null;
-	}
+  @Override
+  public <A> A accept(@Nonnull PsiTypeVisitor<A> visitor) {
+    return null;
+  }
 
-	@Nonnull
-	@Override
-	public PsiType[] getSuperTypes()
-	{
-		return EMPTY_ARRAY;
-	}
+  @Nullable
+  @Override
+  public GlobalSearchScope getResolveScope() {
+    return null;
+  }
+
+  @Nonnull
+  @Override
+  public PsiType[] getSuperTypes() {
+    return EMPTY_ARRAY;
+  }
 }

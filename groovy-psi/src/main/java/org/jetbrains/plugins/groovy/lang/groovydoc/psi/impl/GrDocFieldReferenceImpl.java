@@ -16,13 +16,15 @@
 
 package org.jetbrains.plugins.groovy.lang.groovydoc.psi.impl;
 
-import com.intellij.lang.ASTNode;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.*;
-import com.intellij.psi.util.PropertyUtil;
-import com.intellij.util.ArrayUtil;
-import com.intellij.util.IncorrectOperationException;
-import javax.annotation.Nonnull;
+import com.intellij.java.language.psi.*;
+import com.intellij.java.language.psi.util.PropertyUtil;
+import consulo.language.ast.ASTNode;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.ResolveResult;
+import consulo.language.psi.resolve.ResolveState;
+import consulo.language.util.IncorrectOperationException;
+import consulo.util.collection.ArrayUtil;
+import consulo.util.lang.StringUtil;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocFieldReference;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocReferenceElement;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
@@ -32,6 +34,8 @@ import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 import org.jetbrains.plugins.groovy.lang.resolve.processors.MethodResolverProcessor;
 import org.jetbrains.plugins.groovy.lang.resolve.processors.PropertyResolverProcessor;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author ilyas

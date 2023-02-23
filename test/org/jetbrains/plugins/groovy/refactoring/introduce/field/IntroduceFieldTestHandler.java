@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.introduce.field;
 
-import com.intellij.psi.PsiType;
+import com.intellij.java.language.psi.PsiType;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.GrModifier;
 import org.jetbrains.plugins.groovy.refactoring.introduce.GrIntroduceContext;
 import org.jetbrains.plugins.groovy.refactoring.introduce.GrIntroduceDialog;

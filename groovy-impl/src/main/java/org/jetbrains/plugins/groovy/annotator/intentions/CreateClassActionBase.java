@@ -16,8 +16,25 @@
 
 package org.jetbrains.plugins.groovy.annotator.intentions;
 
-import javax.annotation.Nonnull;
-
+import com.intellij.java.impl.codeInsight.intention.impl.CreateClassDialog;
+import com.intellij.java.language.psi.JavaPsiFacade;
+import com.intellij.java.language.psi.PsiModifier;
+import com.intellij.java.language.psi.PsiModifierList;
+import consulo.application.AccessToken;
+import consulo.application.ApplicationManager;
+import consulo.application.WriteAction;
+import consulo.codeEditor.Editor;
+import consulo.language.psi.PsiDirectory;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.PsiManager;
+import consulo.language.util.IncorrectOperationException;
+import consulo.language.util.ModuleUtilCore;
+import consulo.logging.Logger;
+import consulo.module.Module;
+import consulo.project.Project;
+import consulo.ui.ex.awt.DialogWrapper;
+import consulo.ui.ex.awt.Messages;
 import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.actions.GroovyTemplatesFactory;
 import org.jetbrains.plugins.groovy.intentions.base.Intention;
@@ -25,25 +42,9 @@ import org.jetbrains.plugins.groovy.intentions.base.PsiElementPredicate;
 import org.jetbrains.plugins.groovy.lang.GrCreateClassKind;
 import org.jetbrains.plugins.groovy.lang.psi.GrReferenceElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
-import com.intellij.codeInsight.intention.impl.CreateClassDialog;
-import com.intellij.openapi.application.AccessToken;
-import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.application.WriteAction;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.module.ModuleUtilCore;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.ui.DialogWrapper;
-import com.intellij.openapi.ui.Messages;
-import com.intellij.psi.JavaPsiFacade;
-import com.intellij.psi.PsiDirectory;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiManager;
-import com.intellij.psi.PsiModifier;
-import com.intellij.psi.PsiModifierList;
-import com.intellij.util.IncorrectOperationException;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author ilyas
@@ -109,11 +110,11 @@ public abstract class CreateClassActionBase extends Intention
 		return myType;
 	}
 
-	@javax.annotation.Nullable
+	@Nullable
 	public static GrTypeDefinition createClassByType(@Nonnull final PsiDirectory directory,
 			@Nonnull final String name,
 			@Nonnull final PsiManager manager,
-			@javax.annotation.Nullable final PsiElement contextElement,
+			@Nullable final PsiElement contextElement,
 			@Nonnull final String templateName,
 			boolean allowReformatting)
 	{
@@ -155,7 +156,7 @@ public abstract class CreateClassActionBase extends Intention
 			PsiModifierList modifiers = targetClass.getModifierList();
 			if(contextElement != null &&
 					!JavaPsiFacade.getInstance(manager.getProject()).getResolveHelper().isAccessible(targetClass,
-							contextElement, null) &&
+																																													 contextElement, null) &&
 					modifiers != null)
 			{
 				modifiers.setModifierProperty(PsiModifier.PUBLIC, true);
@@ -173,11 +174,11 @@ public abstract class CreateClassActionBase extends Intention
 		}
 	}
 
-	@javax.annotation.Nullable
+	@Nullable
 	protected PsiDirectory getTargetDirectory(@Nonnull Project project,
 			@Nonnull String qualifier,
 			@Nonnull String name,
-			@javax.annotation.Nullable Module module,
+			@Nullable Module module,
 			@Nonnull String title)
 	{
 		CreateClassDialog dialog = new CreateClassDialog(project, title, name, qualifier, getType(), false, module)

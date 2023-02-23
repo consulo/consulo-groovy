@@ -16,12 +16,15 @@
 
 package org.jetbrains.plugins.groovy.mvc.projectView;
 
-import com.intellij.ide.projectView.ViewSettings;
-import com.intellij.ide.projectView.impl.ModuleGroup;
-import com.intellij.ide.projectView.impl.nodes.AbstractProjectNode;
-import com.intellij.ide.util.treeView.AbstractTreeNode;
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.project.Project;
+import consulo.module.Module;
+import consulo.project.Project;
+import consulo.project.ui.view.tree.ModuleGroup;
+import consulo.project.ui.view.tree.ViewSettings;
+import consulo.project.ui.view.tree.ModuleGroup;
+import consulo.ide.impl.idea.ide.projectView.impl.nodes.AbstractProjectNode;
+import consulo.project.ui.view.tree.AbstractTreeNode;
+import consulo.module.Module;
+import consulo.project.Project;
 import org.jetbrains.plugins.groovy.mvc.MvcModuleStructureUtil;
 
 import javax.annotation.Nonnull;

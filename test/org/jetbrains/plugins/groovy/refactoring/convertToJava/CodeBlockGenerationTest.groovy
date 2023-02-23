@@ -16,8 +16,8 @@
 package org.jetbrains.plugins.groovy.refactoring.convertToJava
 
 import com.intellij.lang.java.JavaLanguage
-import com.intellij.psi.PsiFile
-import com.intellij.psi.impl.source.PostprocessReformattingAspect
+import com.intellij.java.language.psi.PsiFile
+import com.intellij.java.language.psi.impl.source.PostprocessReformattingAspect
 import org.jetbrains.plugins.groovy.LightGroovyTestCase
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile
 import org.jetbrains.plugins.groovy.lang.psi.api.toplevel.GrTopStatement

@@ -16,24 +16,24 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.types;
 
-import javax.annotation.Nonnull;
-
-import com.intellij.lang.ASTNode;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.psi.*;
-import com.intellij.util.Function;
-import com.intellij.util.IncorrectOperationException;
+import com.intellij.java.language.psi.*;
+import consulo.language.ast.ASTNode;
+import consulo.language.util.IncorrectOperationException;
+import consulo.logging.Logger;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrBuiltinTypeClassExpression;
 import org.jetbrains.plugins.groovy.lang.psi.dataFlow.types.TypeInferenceHelper;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.GrExpressionImpl;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil;
 
+import javax.annotation.Nonnull;
+import java.util.function.Function;
+
 /**
  * @author ven
  */
 public class GrBuiltinTypeClassExpressionImpl extends GrExpressionImpl implements GrBuiltinTypeClassExpression {
-  private static final Logger LOG = Logger.getInstance("org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.types.GrBuiltinTypeClassExpressionImpl");
+  private static final Logger LOG = Logger.getInstance(GrBuiltinTypeClassExpressionImpl.class);
 
   private static final Function<GrBuiltinTypeClassExpressionImpl, PsiType> TYPES_CALCULATOR = new MyTypesCalculator();
 
@@ -61,9 +61,10 @@ public class GrBuiltinTypeClassExpressionImpl extends GrExpressionImpl implement
     return TypesUtil.getPrimitiveTypeByText(getText());
   }
 
-  private static class MyTypesCalculator implements Function<GrBuiltinTypeClassExpressionImpl, PsiType> {
+  private static class MyTypesCalculator implements Function<GrBuiltinTypeClassExpressionImpl, PsiType>
+  {
     @Override
-    public PsiType fun(GrBuiltinTypeClassExpressionImpl expression) {
+    public PsiType apply(GrBuiltinTypeClassExpressionImpl expression) {
       JavaPsiFacade facade = JavaPsiFacade.getInstance(expression.getProject());
       PsiClass clazz = facade.findClass(CommonClassNames.JAVA_LANG_CLASS, expression.getResolveScope());
       if (clazz != null) {

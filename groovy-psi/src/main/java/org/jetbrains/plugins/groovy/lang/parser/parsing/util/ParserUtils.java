@@ -16,11 +16,11 @@
 
 package org.jetbrains.plugins.groovy.lang.parser.parsing.util;
 
+import consulo.language.ast.IElementType;
+import consulo.language.ast.TokenSet;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
-import com.intellij.lang.PsiBuilder;
-import com.intellij.lang.PsiBuilder.Marker;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.tree.TokenSet;
+import consulo.language.parser.PsiBuilder;
+import consulo.language.parser.PsiBuilder.Marker;
 
 /**
  * Utility classdef, that contains various useful methods for

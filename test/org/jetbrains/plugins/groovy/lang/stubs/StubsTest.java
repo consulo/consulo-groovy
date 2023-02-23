@@ -1,13 +1,13 @@
 package org.jetbrains.plugins.groovy.lang.stubs;
 
 import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.StubBuilder;
-import com.intellij.psi.stubs.NamedStub;
-import com.intellij.psi.stubs.StubElement;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.tree.IStubFileElementType;
+import com.intellij.java.language.psi.PsiElement;
+import com.intellij.java.language.psi.PsiFile;
+import com.intellij.java.language.psi.StubBuilder;
+import com.intellij.java.language.psi.stubs.NamedStub;
+import com.intellij.java.language.psi.stubs.StubElement;
+import com.intellij.java.language.psi.tree.IElementType;
+import com.intellij.java.language.psi.tree.IStubFileElementType;
 import com.intellij.testFramework.fixtures.LightCodeInsightFixtureTestCase;
 import junit.framework.Assert;
 import org.jetbrains.plugins.groovy.util.TestUtils;

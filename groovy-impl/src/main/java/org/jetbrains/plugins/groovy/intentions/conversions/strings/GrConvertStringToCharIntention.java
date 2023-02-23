@@ -17,10 +17,10 @@ package org.jetbrains.plugins.groovy.intentions.conversions.strings;
 
 import javax.annotation.Nonnull;
 
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiElement;
-import com.intellij.util.IncorrectOperationException;
+import consulo.codeEditor.Editor;
+import consulo.language.psi.PsiElement;
+import consulo.language.util.IncorrectOperationException;
+import consulo.project.Project;
 import org.jetbrains.plugins.groovy.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.intentions.base.PsiElementPredicate;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
@@ -33,7 +33,8 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.literals
  */
 public class GrConvertStringToCharIntention extends Intention {
   @Override
-  protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
+  protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException
+  {
     final GrExpression cast = GroovyPsiElementFactory.getInstance(project).createExpressionFromText("a as char");
     ((GrSafeCastExpression)cast).getOperand().replaceWithExpression((GrExpression)element, true);
 

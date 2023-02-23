@@ -15,23 +15,23 @@
  */
 package org.jetbrains.plugins.groovy.lang.resolve;
 
-import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.java.language.psi.*;
+import com.intellij.java.language.psi.infos.CandidateInfo;
+import com.intellij.java.language.psi.util.TypeConversionUtil;
+import consulo.application.util.CachedValue;
+import consulo.application.util.CachedValueProvider;
+import consulo.application.util.CachedValuesManager;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiModificationTracker;
+import consulo.logging.Logger;
 import consulo.util.dataholder.Key;
-import com.intellij.openapi.util.Trinity;
-import com.intellij.psi.*;
-import com.intellij.psi.infos.CandidateInfo;
-import com.intellij.psi.util.*;
-import java.util.HashMap;
-import java.util.HashSet;
-import javax.annotation.Nonnull;
+import consulo.util.lang.Trinity;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.GrModifierList;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import javax.annotation.Nonnull;
+import java.util.*;
 
 /**
  * @author ven

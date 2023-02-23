@@ -33,17 +33,17 @@ public interface GrNewExpression extends GrCallExpression, GrConstructorCall {
   @Nullable
   GrCodeReferenceElement getReferenceElement();
 
-  @javax.annotation.Nullable
+  @Nullable
   GrTypeElement getTypeElement();
 
   int getArrayCount();
 
-  @javax.annotation.Nullable
+  @Nullable
   GrAnonymousClassDefinition getAnonymousClassDefinition();
 
-  @javax.annotation.Nullable
+  @Nullable
   GrArrayDeclaration getArrayDeclaration();
 
-  @javax.annotation.Nullable
+  @Nullable
   GrTypeArgumentList getConstructorTypeArguments();
 }

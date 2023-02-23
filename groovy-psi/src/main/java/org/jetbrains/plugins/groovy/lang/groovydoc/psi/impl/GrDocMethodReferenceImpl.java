@@ -16,34 +16,26 @@
 
 package org.jetbrains.plugins.groovy.lang.groovydoc.psi.impl;
 
-import javax.annotation.Nonnull;
-import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocComment;
-import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocMethodParams;
-import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocMethodReference;
-import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocReferenceElement;
-import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocTag;
+import com.intellij.java.language.psi.*;
+import com.intellij.java.language.psi.util.PropertyUtil;
+import consulo.language.ast.ASTNode;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiNamedElement;
+import consulo.language.psi.ResolveResult;
+import consulo.language.psi.resolve.ResolveState;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.language.util.IncorrectOperationException;
+import consulo.project.Project;
+import consulo.util.collection.ArrayUtil;
+import consulo.util.lang.Comparing;
+import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.*;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 import org.jetbrains.plugins.groovy.lang.resolve.processors.MethodResolverProcessor;
-import com.intellij.lang.ASTNode;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.Comparing;
-import com.intellij.psi.JavaPsiFacade;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiMethod;
-import com.intellij.psi.PsiNamedElement;
-import com.intellij.psi.PsiSubstitutor;
-import com.intellij.psi.PsiType;
-import com.intellij.psi.ResolveResult;
-import com.intellij.psi.ResolveState;
-import com.intellij.psi.util.PropertyUtil;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.ArrayUtil;
-import com.intellij.util.IncorrectOperationException;
 
+import javax.annotation.Nonnull;
 /**
  * @author ilyas
  */

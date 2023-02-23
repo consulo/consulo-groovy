@@ -17,14 +17,15 @@ package org.jetbrains.plugins.groovy.lang.psi.stubs.index;
 
 import javax.annotation.Nonnull;
 
+import consulo.language.psi.stub.StringStubIndexExtension;
+import consulo.language.psi.stub.StubIndexKey;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
-import com.intellij.psi.stubs.StringStubIndexExtension;
-import com.intellij.psi.stubs.StubIndexKey;
 
 /**
  * @author ilyas
  */
-public class GrFieldNameIndex extends StringStubIndexExtension<GrField> {
+public class GrFieldNameIndex extends StringStubIndexExtension<GrField>
+{
   public static final StubIndexKey<String, GrField> KEY = StubIndexKey.createIndexKey("gr.field.name");
 
   @Nonnull

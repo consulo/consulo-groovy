@@ -16,12 +16,12 @@
 
 package org.jetbrains.plugins.groovy.dsl.psi;
 
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.JavaPsiFacade;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiClassType;
-import com.intellij.psi.PsiType;
-import com.intellij.psi.search.GlobalSearchScope;
+import consulo.project.Project;
+import com.intellij.java.language.psi.JavaPsiFacade;
+import com.intellij.java.language.psi.PsiClass;
+import com.intellij.java.language.psi.PsiClassType;
+import com.intellij.java.language.psi.PsiType;
+import consulo.language.psi.scope.GlobalSearchScope;
 import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.path.GrCallExpression;

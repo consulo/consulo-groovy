@@ -15,13 +15,12 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.confusing;
 
-import com.intellij.codeInspection.LocalQuickFix;
-import com.intellij.codeInspection.ProblemHighlightType;
-import com.intellij.psi.PsiAnnotation;
-import com.intellij.psi.PsiAnnotationMemberValue;
-import com.intellij.psi.PsiElement;
+import com.intellij.java.language.psi.PsiAnnotation;
+import com.intellij.java.language.psi.PsiAnnotationMemberValue;
+import consulo.language.editor.inspection.LocalQuickFix;
+import consulo.language.editor.inspection.ProblemHighlightType;
+import consulo.language.psi.PsiElement;
 import org.codehaus.groovy.runtime.DefaultGroovyMethods;
-import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.codeInspection.GroovyInspectionBundle;
@@ -31,10 +30,18 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameterLi
 import org.jetbrains.plugins.groovy.lang.psi.impl.GrAnnotationUtil;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames;
 
+import javax.annotation.Nonnull;
+
 /**
  * @author Max Medvedev
  */
 public class DelegatesToInspection extends BaseInspection {
+  @Nonnull
+  @Override
+  public String getDisplayName() {
+    return "@DelegatesTo inspection";
+  }
+
   @Nonnull
   @Override
   protected BaseInspectionVisitor buildVisitor() {

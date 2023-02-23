@@ -15,19 +15,19 @@
  */
 package org.jetbrains.plugins.groovy.gant;
 
-import java.io.File;
+import consulo.content.base.BinariesOrderRootType;
+import consulo.content.base.SourcesOrderRootType;
+import consulo.content.library.LibraryKind;
+import consulo.content.library.ui.LibraryEditor;
+import consulo.ide.impl.idea.openapi.vfs.VfsUtil;
+import consulo.ui.image.Image;
+import consulo.virtualFileSystem.VirtualFile;
+import org.jetbrains.annotations.Nls;
+import org.jetbrains.plugins.groovy.JetgroovyIcons;
+import org.jetbrains.plugins.groovy.config.GroovyLibraryPresentationProviderBase;
 
 import javax.annotation.Nonnull;
-
-import org.jetbrains.annotations.Nls;
-import org.jetbrains.plugins.groovy.config.GroovyLibraryPresentationProviderBase;
-import com.intellij.openapi.roots.OrderRootType;
-import com.intellij.openapi.roots.libraries.LibraryKind;
-import com.intellij.openapi.roots.ui.configuration.libraryEditor.LibraryEditor;
-import com.intellij.openapi.vfs.VfsUtil;
-import com.intellij.openapi.vfs.VirtualFile;
-import consulo.ui.image.Image;
-import icons.JetgroovyIcons;
+import java.io.File;
 
 /**
  * @author nik
@@ -75,7 +75,7 @@ public class GantLibraryPresentationProvider extends GroovyLibraryPresentationPr
   protected void fillLibrary(String path, LibraryEditor libraryEditor) {
     File srcRoot = new File(path + "/src/main");
     if (srcRoot.exists()) {
-      libraryEditor.addRoot(VfsUtil.getUrlForLibraryRoot(srcRoot), OrderRootType.SOURCES);
+      libraryEditor.addRoot(VfsUtil.getUrlForLibraryRoot(srcRoot), SourcesOrderRootType.getInstance());
     }
 
     // Add Gant jars
@@ -84,7 +84,7 @@ public class GantLibraryPresentationProvider extends GroovyLibraryPresentationPr
     if (jars != null) {
       for (File file : jars) {
         if (file.getName().endsWith(".jar")) {
-          libraryEditor.addRoot(VfsUtil.getUrlForLibraryRoot(file), OrderRootType.CLASSES);
+          libraryEditor.addRoot(VfsUtil.getUrlForLibraryRoot(file), BinariesOrderRootType.getInstance());
         }
       }
     }

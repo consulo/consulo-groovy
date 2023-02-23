@@ -15,71 +15,62 @@
  */
 package org.jetbrains.plugins.groovy.annotator.intentions;
 
-import javax.annotation.Nonnull;
-
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiModifier;
-import com.intellij.util.ArrayUtil;
+import com.intellij.java.language.psi.PsiClass;
+import com.intellij.java.language.psi.PsiModifier;
+import consulo.project.Project;
+import consulo.util.collection.ArrayUtil;
 import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
 import org.jetbrains.plugins.groovy.lang.psi.expectedTypes.GroovyExpectedTypesProvider;
 import org.jetbrains.plugins.groovy.lang.psi.expectedTypes.TypeConstraint;
 import org.jetbrains.plugins.groovy.lang.psi.util.GrStaticChecker;
 
+import javax.annotation.Nonnull;
+
 /**
  * @author ven
  */
-public class CreateFieldFromUsageFix extends GrCreateFromUsageBaseFix
-{
-	private final
-	@Nonnull
-	String myReferenceName;
+public class CreateFieldFromUsageFix extends GrCreateFromUsageBaseFix {
+  private final
+  @Nonnull
+  String myReferenceName;
 
-	public CreateFieldFromUsageFix(GrReferenceExpression refExpression, @Nonnull String referenceName)
-	{
-		super(refExpression);
-		myReferenceName = referenceName;
-	}
+  public CreateFieldFromUsageFix(GrReferenceExpression refExpression, @Nonnull String referenceName) {
+    super(refExpression);
+    myReferenceName = referenceName;
+  }
 
-	private String[] generateModifiers(@Nonnull PsiClass targetClass)
-	{
-		final GrReferenceExpression myRefExpression = getRefExpr();
-		if(myRefExpression != null && GrStaticChecker.isInStaticContext(myRefExpression, targetClass))
-		{
-			return new String[]{PsiModifier.STATIC};
-		}
-		return ArrayUtil.EMPTY_STRING_ARRAY;
-	}
+  private String[] generateModifiers(@Nonnull PsiClass targetClass) {
+    final GrReferenceExpression myRefExpression = getRefExpr();
+    if (myRefExpression != null && GrStaticChecker.isInStaticContext(myRefExpression, targetClass)) {
+      return new String[]{PsiModifier.STATIC};
+    }
+    return ArrayUtil.EMPTY_STRING_ARRAY;
+  }
 
-	private TypeConstraint[] calculateTypeConstrains()
-	{
-		return GroovyExpectedTypesProvider.calculateTypeConstraints(getRefExpr());
-	}
+  private TypeConstraint[] calculateTypeConstrains() {
+    return GroovyExpectedTypesProvider.calculateTypeConstraints(getRefExpr());
+  }
 
-	@Override
-	@Nonnull
-	public String getText()
-	{
-		return GroovyBundle.message("create.field.from.usage", myReferenceName);
-	}
+  @Override
+  @Nonnull
+  public String getText() {
+    return GroovyBundle.message("create.field.from.usage", myReferenceName);
+  }
 
-	@Override
-	protected void invokeImpl(Project project, @Nonnull PsiClass targetClass)
-	{
-		final CreateFieldFix fix = new CreateFieldFix(targetClass);
-		fix.doFix(targetClass.getProject(), generateModifiers(targetClass), myReferenceName, calculateTypeConstrains(), getRefExpr());
-	}
+  @Override
+  protected void invokeImpl(Project project, @Nonnull PsiClass targetClass) {
+    final CreateFieldFix fix = new CreateFieldFix(targetClass);
+    fix.doFix(targetClass.getProject(), generateModifiers(targetClass), myReferenceName, calculateTypeConstrains(), getRefExpr());
+  }
 
-	@Override
-	public boolean startInWriteAction()
-	{
-		return true;
-	}
+  @Override
+  public boolean startInWriteAction() {
+    return true;
+  }
 
-	@Override
-	protected boolean canBeTargetClass(PsiClass psiClass)
-	{
-		return super.canBeTargetClass(psiClass) && !psiClass.isInterface() && !psiClass.isAnnotationType();
-	}
+  @Override
+  protected boolean canBeTargetClass(PsiClass psiClass) {
+    return super.canBeTargetClass(psiClass) && !psiClass.isInterface() && !psiClass.isAnnotationType();
+  }
 }

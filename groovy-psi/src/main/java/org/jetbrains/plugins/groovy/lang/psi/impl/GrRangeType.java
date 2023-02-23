@@ -15,25 +15,27 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl;
 
-import static org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil.boxPrimitiveType;
-import static org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil.getLeastUpperBoundNullable;
+import com.intellij.java.language.LanguageLevel;
+import com.intellij.java.language.psi.JavaPsiFacade;
+import com.intellij.java.language.psi.PsiClassType;
+import com.intellij.java.language.psi.PsiType;
+import consulo.language.psi.scope.GlobalSearchScope;
+import consulo.util.lang.StringUtil;
+import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil;
+import org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil;
-import org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.pom.java.LanguageLevel;
-import com.intellij.psi.JavaPsiFacade;
-import com.intellij.psi.PsiClassType;
-import com.intellij.psi.PsiType;
-import com.intellij.psi.search.GlobalSearchScope;
+
+import static org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil.boxPrimitiveType;
+import static org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil.getLeastUpperBoundNullable;
 
 /**
  * @author Maxim.Medvedev
  */
 public class GrRangeType extends GrLiteralClassType {
-  private final @Nullable PsiType myLeft;
+  private final @Nullable
+  PsiType myLeft;
   private final @Nullable PsiType myRight;
   private final PsiType myIterationType;
   private final String myQualifiedName;
@@ -55,7 +57,7 @@ public class GrRangeType extends GrLiteralClassType {
     }
   }
 
-  public GrRangeType(GlobalSearchScope scope, JavaPsiFacade facade, @javax.annotation.Nullable PsiType left, @Nullable PsiType right) {
+  public GrRangeType(GlobalSearchScope scope, JavaPsiFacade facade, @Nullable PsiType left, @Nullable PsiType right) {
     this(LanguageLevel.JDK_1_5, scope, facade, left, right);
   }
 

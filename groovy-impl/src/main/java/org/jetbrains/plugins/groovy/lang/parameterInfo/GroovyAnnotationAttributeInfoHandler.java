@@ -15,18 +15,22 @@
  */
 package org.jetbrains.plugins.groovy.lang.parameterInfo;
 
-import com.intellij.codeInsight.lookup.LookupElement;
-import com.intellij.lang.parameterInfo.*;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.*;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.psi.util.PsiUtil;
-import com.intellij.util.containers.ContainerUtil;
-import com.intellij.util.text.CharArrayUtil;
+import com.intellij.java.language.psi.*;
+import com.intellij.java.language.psi.util.PsiUtil;
+import consulo.codeEditor.Editor;
+import consulo.language.Language;
+import consulo.language.ast.IElementType;
+import consulo.language.editor.completion.lookup.LookupElement;
+import consulo.language.editor.parameterInfo.*;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.PsiReference;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.util.lang.CharArrayUtil;
+import consulo.util.lang.StringUtil;
 import org.codehaus.groovy.runtime.DefaultGroovyMethods;
 import org.jetbrains.annotations.NonNls;
+import org.jetbrains.plugins.groovy.GroovyLanguage;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
@@ -44,7 +48,7 @@ import java.util.Set;
  */
 public class GroovyAnnotationAttributeInfoHandler implements ParameterInfoHandlerWithTabActionSupport<GrAnnotationArgumentList, PsiAnnotationMethod, GrAnnotationNameValuePair> {
 
-  private static final Set<Class<?>> ALLOWED_CLASSES = ContainerUtil.<Class<?>>newHashSet(GrAnnotation.class);
+  private static final Set<Class<?>> ALLOWED_CLASSES = Set.of(GrAnnotation.class);
   private static final Set<Class<GroovyFile>> STOP_SEARCHING_CLASSES = Collections.singleton(GroovyFile.class);
 
   @Nonnull
@@ -182,6 +186,18 @@ public class GroovyAnnotationAttributeInfoHandler implements ParameterInfoHandle
     }
 
 
-    context.setupUIComponentPresentation(StringUtil.escapeXml(buffer.toString()), highlightStartOffset, highlightEndOffset, false, p.isDeprecated(), false, context.getDefaultParameterColor());
+    context.setupUIComponentPresentation(StringUtil.escapeXml(buffer.toString()),
+                                         highlightStartOffset,
+                                         highlightEndOffset,
+                                         false,
+                                         p.isDeprecated(),
+                                         false,
+                                         context.getDefaultParameterColor());
+  }
+
+  @Nonnull
+  @Override
+  public Language getLanguage() {
+    return GroovyLanguage.INSTANCE;
   }
 }

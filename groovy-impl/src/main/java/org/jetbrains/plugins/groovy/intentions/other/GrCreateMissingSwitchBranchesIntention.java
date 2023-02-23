@@ -15,14 +15,13 @@
  */
 package org.jetbrains.plugins.groovy.intentions.other;
 
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.*;
-import com.intellij.psi.codeStyle.JavaCodeStyleManager;
-import com.intellij.util.IncorrectOperationException;
-import com.intellij.util.containers.ContainerUtil;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.intellij.java.language.psi.*;
+import com.intellij.java.language.psi.codeStyle.JavaCodeStyleManager;
+import consulo.codeEditor.Editor;
+import consulo.language.psi.PsiElement;
+import consulo.language.util.IncorrectOperationException;
+import consulo.project.Project;
+import consulo.util.collection.ContainerUtil;
 import org.jetbrains.plugins.groovy.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.intentions.base.PsiElementPredicate;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
@@ -33,6 +32,8 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.clauses.GrCaseSectio
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
 

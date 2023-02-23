@@ -15,15 +15,16 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.signatures;
 
-import javax.annotation.Nonnull;
-
+import com.intellij.java.language.psi.PsiSubstitutor;
+import com.intellij.java.language.psi.PsiType;
+import consulo.language.psi.PsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.signatures.GrClosureSignature;
 import org.jetbrains.plugins.groovy.lang.psi.api.signatures.GrSignature;
 import org.jetbrains.plugins.groovy.lang.psi.api.signatures.GrSignatureVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrClosureParameter;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiSubstitutor;
-import com.intellij.psi.PsiType;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * Created by Max Medvedev on 14/03/14
@@ -59,7 +60,7 @@ public class GrClosureSignatureWithNewParameters implements GrClosureSignature {
     return GrClosureSignatureUtil.isVarArgsImpl(myParams);
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   @Override
   public PsiType getReturnType() {
     return myDelegate.getReturnType();
@@ -75,7 +76,7 @@ public class GrClosureSignatureWithNewParameters implements GrClosureSignature {
     return myDelegate.isValid();
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   @Override
   public GrSignature curry(@Nonnull PsiType[] args, int position, @Nonnull PsiElement context) {
     return GrClosureSignatureUtil.curryImpl(this, args, position, context);

@@ -15,16 +15,13 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.synthetic;
 
-import com.intellij.navigation.NavigationItem;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiIntersectionType;
-import com.intellij.psi.PsiType;
-import com.intellij.psi.search.LocalSearchScope;
-import com.intellij.psi.search.SearchScope;
-import com.intellij.util.Function;
-import com.intellij.util.IncorrectOperationException;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.intellij.java.language.psi.PsiIntersectionType;
+import com.intellij.java.language.psi.PsiType;
+import consulo.content.scope.SearchScope;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.scope.LocalSearchScope;
+import consulo.language.util.IncorrectOperationException;
+import consulo.navigation.NavigationItem;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlock;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
@@ -33,19 +30,20 @@ import org.jetbrains.plugins.groovy.lang.psi.dataFlow.types.TypeInferenceHelper;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil;
 import org.jetbrains.plugins.groovy.lang.psi.typeEnhancers.GrVariableEnhancer;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.function.Function;
+
 /**
  * @author ven
  */
 public class ClosureSyntheticParameter extends GrLightParameter implements NavigationItem, GrRenameableLightElement {
-  private static final Function<ClosureSyntheticParameter,PsiType> TYPES_CALCULATOR = new Function<ClosureSyntheticParameter, PsiType>() {
-    @Override
-    public PsiType fun(ClosureSyntheticParameter parameter) {
-      PsiType typeGroovy = GrVariableEnhancer.getEnhancedType(parameter);
-      if (typeGroovy instanceof PsiIntersectionType) {
-        return ((PsiIntersectionType)typeGroovy).getRepresentative();
-      }
-      return typeGroovy;
+  private static final Function<ClosureSyntheticParameter, PsiType> TYPES_CALCULATOR = parameter -> {
+    PsiType typeGroovy = GrVariableEnhancer.getEnhancedType(parameter);
+    if (typeGroovy instanceof PsiIntersectionType) {
+      return ((PsiIntersectionType)typeGroovy).getRepresentative();
     }
+    return typeGroovy;
   };
 
   private final GrClosableBlock myClosure;

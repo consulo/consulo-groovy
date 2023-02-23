@@ -16,12 +16,13 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.api.util;
 
-import javax.annotation.Nonnull;
-
-import com.intellij.psi.PsiElement;
-import com.intellij.util.IncorrectOperationException;
+import consulo.language.psi.PsiElement;
+import consulo.language.util.IncorrectOperationException;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author ilyas
@@ -29,7 +30,7 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
 public interface GrStatementOwner extends GroovyPsiElement {
 
   @Nonnull
-  GrStatement addStatementBefore(@Nonnull GrStatement statement, @javax.annotation.Nullable GrStatement anchor) throws IncorrectOperationException;
+  GrStatement addStatementBefore(@Nonnull GrStatement statement, @Nullable GrStatement anchor) throws IncorrectOperationException;
 
   void removeElements(PsiElement[] elements) throws IncorrectOperationException;
 

@@ -16,6 +16,7 @@
 package org.jetbrains.plugins.groovy.codeInspection.bugs;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspection;
@@ -37,7 +38,7 @@ public class GroovyInfiniteLoopStatementInspection extends BaseInspection {
     return "Infinite loop statement";
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   protected String buildErrorString(Object... args) {
     return "<code>#ref</code> statement cannot complete without throwing an exception #loc";
 

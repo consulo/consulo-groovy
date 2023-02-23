@@ -1,23 +1,20 @@
 package org.jetbrains.plugins.groovy.mvc.util;
 
-import com.intellij.codeInsight.TailType;
-import com.intellij.codeInsight.lookup.LookupElement;
-import com.intellij.codeInsight.lookup.LookupElementBuilder;
-import com.intellij.codeInsight.lookup.TailTypeDecorator;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.JavaPsiFacade;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiJavaPackage;
-import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.psi.util.CachedValue;
-import com.intellij.psi.util.CachedValueProvider;
-import com.intellij.psi.util.CachedValuesManager;
-import com.intellij.psi.util.PsiModificationTracker;
-import com.intellij.util.SystemProperties;
+import com.intellij.java.language.psi.JavaPsiFacade;
+import com.intellij.java.language.psi.PsiClass;
+import com.intellij.java.language.psi.PsiJavaPackage;
+import consulo.application.util.CachedValue;
+import consulo.application.util.CachedValueProvider;
+import consulo.application.util.CachedValuesManager;
+import consulo.codeEditor.Editor;
+import consulo.language.editor.completion.lookup.*;
+import consulo.language.psi.PsiModificationTracker;
+import consulo.language.psi.scope.GlobalSearchScope;
+import consulo.module.Module;
 import consulo.util.dataholder.Key;
 import consulo.util.dataholder.UserDataHolderEx;
+import consulo.util.lang.SystemProperties;
+import consulo.virtualFileSystem.VirtualFile;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyNamesUtil;
 import org.jetbrains.plugins.groovy.mvc.MvcFramework;
 
@@ -29,7 +26,7 @@ import java.util.*;
  * @author Sergey Evdokimov
  */
 public class MvcTargetDialogCompletionUtils {
-  
+
   private static final Key<CachedValue<Set<String>>> ALL_TARGET_KEY = Key.create("MvcTargetDialogCompletionUtils");
 
   private static final String[] SYSTEM_PROPERTIES = {
@@ -53,7 +50,7 @@ public class MvcTargetDialogCompletionUtils {
   };
 
   private static List<LookupElement> SYSTEM_PROPERTIES_VARIANTS;
-  
+
   private MvcTargetDialogCompletionUtils() {
   }
 
@@ -69,8 +66,11 @@ public class MvcTargetDialogCompletionUtils {
 
     return SYSTEM_PROPERTIES_VARIANTS;
   }
-  
-  public static Collection<LookupElement> collectVariants(@Nonnull Module module, @Nonnull String text, int offset, @Nonnull String prefix) {
+
+  public static Collection<LookupElement> collectVariants(@Nonnull Module module,
+                                                          @Nonnull String text,
+                                                          int offset,
+                                                          @Nonnull String prefix) {
     if (prefix.startsWith("-D")) {
       return getSystemPropertiesVariants();
     }
@@ -88,7 +88,7 @@ public class MvcTargetDialogCompletionUtils {
 
       GlobalSearchScope scope = GlobalSearchScope.moduleScope(module);
       JavaPsiFacade facade = JavaPsiFacade.getInstance(module.getProject());
-      
+
       // Complete class names if prefix is a package name with dot at end.
       if (prefix.endsWith(".") && prefix.length() > 1) {
         PsiJavaPackage p = facade.findPackage(prefix.substring(0, prefix.length() - 1));
@@ -111,7 +111,9 @@ public class MvcTargetDialogCompletionUtils {
     return res;
   }
 
-  private static void collectClassesAndPackageNames(Collection<LookupElement> res, @Nonnull PsiJavaPackage aPackage, GlobalSearchScope scope) {
+  private static void collectClassesAndPackageNames(Collection<LookupElement> res,
+                                                    @Nonnull PsiJavaPackage aPackage,
+                                                    GlobalSearchScope scope) {
     PsiJavaPackage[] subPackages = aPackage.getSubPackages(scope);
 
     String qualifiedName = aPackage.getQualifiedName();
@@ -179,10 +181,10 @@ public class MvcTargetDialogCompletionUtils {
     CachedValue<Set<String>> cachedTargets = module.getUserData(ALL_TARGET_KEY);
     if (cachedTargets == null) {
       cachedTargets = CachedValuesManager.getManager(module.getProject()).createCachedValue(new CachedValueProvider<Set<String>>() {
-          public Result<Set<String>> compute() {
-            return Result.create(getAllTargetNamesInternal(module), PsiModificationTracker.MODIFICATION_COUNT);
-          }
-        }, false);
+        public Result<Set<String>> compute() {
+          return Result.create(getAllTargetNamesInternal(module), PsiModificationTracker.MODIFICATION_COUNT);
+        }
+      }, false);
 
       cachedTargets = ((UserDataHolderEx)module).putUserDataIfAbsent(ALL_TARGET_KEY, cachedTargets);
     }
@@ -190,7 +192,7 @@ public class MvcTargetDialogCompletionUtils {
     return cachedTargets.getValue();
   }
 
-  private static class MyTailTypeEQ extends TailType.TailTypeEQ {
+  private static class MyTailTypeEQ extends EqTailType {
     public static final MyTailTypeEQ INSTANCE = new MyTailTypeEQ();
 
     @Override

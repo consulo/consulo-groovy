@@ -16,8 +16,9 @@
 package org.jetbrains.plugins.groovy.lang.psi.dataFlow.reachingDefs;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
-import com.intellij.psi.PsiType;
+import com.intellij.java.language.psi.PsiType;
 
 /**
  * @author ven
@@ -26,6 +27,6 @@ public interface VariableInfo {
   @Nonnull
   String getName();
 
-  @javax.annotation.Nullable
+  @Nullable
   PsiType getType();
 }

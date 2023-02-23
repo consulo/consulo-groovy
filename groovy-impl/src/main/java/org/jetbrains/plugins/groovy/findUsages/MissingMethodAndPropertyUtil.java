@@ -15,8 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.findUsages;
 
-import com.intellij.psi.PsiMethod;
-import com.intellij.psi.PsiParameter;
+import com.intellij.java.language.psi.PsiMethod;
+import com.intellij.java.language.psi.PsiParameter;
 
 /**
  * @author Max Medvedev

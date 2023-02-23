@@ -16,13 +16,13 @@
 
 package org.jetbrains.plugins.groovy.lang.groovydoc.parser.elements;
 
-import com.intellij.lang.ASTNode;
-import com.intellij.lang.PsiBuilder;
-import com.intellij.lang.PsiBuilderFactory;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.impl.source.tree.LeafPsiElement;
-import consulo.lang.util.LanguageVersionUtil;
+import consulo.language.ast.ASTNode;
+import consulo.language.impl.psi.LeafPsiElement;
+import consulo.language.parser.PsiBuilder;
+import consulo.language.parser.PsiBuilderFactory;
+import consulo.language.psi.PsiElement;
+import consulo.language.version.LanguageVersionUtil;
+import consulo.project.Project;
 import org.jetbrains.plugins.groovy.lang.groovydoc.lexer.GroovyDocTokenTypes;
 import org.jetbrains.plugins.groovy.lang.groovydoc.lexer.IGroovyDocElementType;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocInlinedTag;

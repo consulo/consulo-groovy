@@ -15,21 +15,21 @@
  */
 package org.jetbrains.plugins.groovy.lang.completion;
 
-import com.intellij.codeInsight.PsiEquivalenceUtil;
-import com.intellij.codeInsight.completion.PrefixMatcher;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.containers.ContainerUtil;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import consulo.application.util.matcher.PrefixMatcher;
+import consulo.language.editor.PsiEquivalenceUtil;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.util.PsiTreeUtil;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMember;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
@@ -59,7 +59,7 @@ public class CompleteReferencesWithSameQualifier {
     if (myQualifier != null && myQualifier.getType() != null) return Collections.emptySet();
 
     final PsiElement scope = PsiTreeUtil.getParentOfType(myRefExpr, GrMember.class, PsiFile.class);
-    Set<String> result = ContainerUtil.newLinkedHashSet();
+    Set<String> result = new LinkedHashSet<>();
     if (scope != null) {
       addVariantsWithSameQualifier(scope, result);
     }

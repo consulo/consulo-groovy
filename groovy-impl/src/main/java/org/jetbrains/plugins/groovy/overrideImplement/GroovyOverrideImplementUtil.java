@@ -15,18 +15,17 @@
  */
 package org.jetbrains.plugins.groovy.overrideImplement;
 
-import com.intellij.codeInsight.generation.OverrideImplementUtil;
-import com.intellij.ide.fileTemplates.FileTemplate;
-import com.intellij.ide.fileTemplates.FileTemplateManager;
-import com.intellij.ide.fileTemplates.JavaTemplateUtil;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.*;
-import com.intellij.psi.util.PsiTypesUtil;
+import com.intellij.java.impl.codeInsight.generation.OverrideImplementUtil;
+import com.intellij.java.language.impl.codeInsight.template.JavaTemplateUtil;
+import com.intellij.java.language.psi.*;
+import com.intellij.java.language.psi.util.PsiTypesUtil;
+import consulo.fileTemplate.FileTemplate;
+import consulo.fileTemplate.FileTemplateManager;
+import consulo.language.psi.PsiCompiledElement;
+import consulo.logging.Logger;
+import consulo.project.Project;
+import consulo.util.lang.StringUtil;
 import org.jetbrains.annotations.NonNls;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.GrModifierList;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotation;
@@ -38,6 +37,8 @@ import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeElement;
 import org.jetbrains.plugins.groovy.refactoring.GroovyChangeContextUtil;
 import org.jetbrains.plugins.groovy.refactoring.convertToJava.ModifierListGenerator;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;

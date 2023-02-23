@@ -16,34 +16,26 @@
 
 package org.jetbrains.plugins.groovy.refactoring.extract;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
+import com.intellij.java.impl.refactoring.ui.TypeSelector;
+import com.intellij.java.language.psi.PsiPrimitiveType;
+import com.intellij.java.language.psi.PsiType;
+import consulo.language.psi.PsiManager;
+import consulo.language.psi.scope.GlobalSearchScope;
+import consulo.project.Project;
+import consulo.ui.ex.awt.*;
+import consulo.ui.ex.awt.table.JBTable;
+import consulo.ui.ex.awt.util.TableUtil;
+import org.jetbrains.annotations.NonNls;
+import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyNamesUtil;
+import org.jetbrains.plugins.groovy.refactoring.GroovyRefactoringBundle;
 
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellEditor;
-
-import org.jetbrains.annotations.NonNls;
-import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyNamesUtil;
-import org.jetbrains.plugins.groovy.refactoring.GroovyRefactoringBundle;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiManager;
-import com.intellij.psi.PsiPrimitiveType;
-import com.intellij.psi.PsiType;
-import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.refactoring.ui.TypeSelector;
-import com.intellij.ui.BooleanTableCellRenderer;
-import com.intellij.ui.IdeBorderFactory;
-import com.intellij.ui.ListCellRendererWrapper;
-import com.intellij.ui.TableUtil;
-import com.intellij.ui.ToolbarDecorator;
-import com.intellij.ui.table.JBTable;
-import com.intellij.util.ui.AbstractTableCellEditor;
-import com.intellij.util.ui.EditableModel;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 
 /**
  * @author ilyas

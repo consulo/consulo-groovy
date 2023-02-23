@@ -16,11 +16,11 @@
 
 package org.jetbrains.plugins.groovy.lang.lexer;
 
-import com.intellij.lexer.LookAheadLexer;
-import com.intellij.lexer.MergingLexerAdapter;
-import com.intellij.psi.tree.TokenSet;
+import consulo.language.ast.TokenSet;
+import consulo.language.lexer.LookAheadLexer;
+import consulo.language.lexer.MergingLexerAdapter;
 
-import static com.intellij.psi.TokenType.WHITE_SPACE;
+import static consulo.language.ast.TokenType.WHITE_SPACE;
 import static org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes.*;
 
 /**

@@ -16,27 +16,28 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.params;
 
-import javax.annotation.Nonnull;
-
+import com.intellij.java.language.impl.psi.impl.PsiImplUtil;
+import com.intellij.java.language.psi.PsiParameter;
+import consulo.language.ast.ASTNode;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.StubBasedPsiElement;
+import consulo.language.psi.stub.EmptyStub;
+import consulo.logging.Logger;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameter;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameterList;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GrStubElementBase;
-import com.intellij.lang.ASTNode;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiParameter;
-import com.intellij.psi.StubBasedPsiElement;
-import com.intellij.psi.impl.PsiImplUtil;
-import com.intellij.psi.stubs.EmptyStub;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author: Dmitry.Krasilschikov
  */
-public class GrParameterListImpl extends GrStubElementBase<EmptyStub> implements GrParameterList, StubBasedPsiElement<EmptyStub> {
-  private static final Logger LOG = Logger.getInstance("#org.jetbrains.plugins.groovy.lang.psi.impl.statements.params.GrParameterListImpl");
+public class GrParameterListImpl extends GrStubElementBase<EmptyStub> implements GrParameterList, StubBasedPsiElement<EmptyStub>
+{
+  private static final Logger LOG = Logger.getInstance(GrParameterListImpl.class);
 
   public GrParameterListImpl(@Nonnull ASTNode node) {
     super(node);

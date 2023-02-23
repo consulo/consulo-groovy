@@ -16,17 +16,14 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.arguments;
 
-import com.intellij.lang.ASTNode;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.*;
-import com.intellij.psi.impl.source.resolve.reference.ReferenceProvidersRegistry;
-import com.intellij.psi.impl.source.resolve.reference.impl.PsiMultiReference;
-import com.intellij.psi.impl.source.tree.LeafPsiElement;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.util.ArrayUtil;
-import com.intellij.util.IncorrectOperationException;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.intellij.java.language.psi.*;
+import consulo.document.util.TextRange;
+import consulo.language.ast.ASTNode;
+import consulo.language.ast.IElementType;
+import consulo.language.impl.psi.LeafPsiElement;
+import consulo.language.psi.*;
+import consulo.language.util.IncorrectOperationException;
+import consulo.util.collection.ArrayUtil;
 import org.jetbrains.plugins.groovy.extensions.GroovyNamedArgumentProvider;
 import org.jetbrains.plugins.groovy.extensions.NamedArgumentDescriptor;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
@@ -46,6 +43,8 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUt
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.literals.GrLiteralImpl;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Map;
 
 /**
@@ -283,7 +282,7 @@ public class GrArgumentLabelImpl extends GroovyPsiElementImpl implements GrArgum
   }
 
   @Override
-  @javax.annotation.Nullable
+  @Nullable
   public PsiType getExpectedArgumentType() { // TODO use GroovyNamedArgumentProvider to determinate expected argument type.
     return null;
   }

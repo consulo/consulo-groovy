@@ -18,14 +18,15 @@ package org.jetbrains.plugins.groovy.lang.psi.impl.statements;
 
 import javax.annotation.Nonnull;
 
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.ResolveState;
-import com.intellij.psi.scope.PsiScopeProcessor;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.IncorrectOperationException;
+import consulo.language.ast.ASTNode;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.resolve.PsiScopeProcessor;
+import consulo.language.psi.resolve.ResolveState;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.language.util.IncorrectOperationException;
 
 import javax.annotation.Nullable;
+
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.GrCondition;

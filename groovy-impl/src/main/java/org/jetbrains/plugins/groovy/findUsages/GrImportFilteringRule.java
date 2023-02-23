@@ -15,21 +15,21 @@
  */
 package org.jetbrains.plugins.groovy.findUsages;
 
-import javax.annotation.Nonnull;
-
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.usages.Usage;
-import com.intellij.usages.rules.ImportFilteringRule;
-import com.intellij.usages.rules.PsiElementUsage;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.usage.Usage;
+import consulo.usage.rule.ImportFilteringRule;
+import consulo.usage.rule.PsiElementUsage;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.api.toplevel.imports.GrImportStatement;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author Max Medvedev
  */
-public class GrImportFilteringRule extends ImportFilteringRule {
+public class GrImportFilteringRule implements ImportFilteringRule {
   @Override
   public boolean isVisible(@Nonnull Usage usage) {
     if (usage instanceof PsiElementUsage) {

@@ -15,15 +15,16 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.synthetic;
 
-import javax.annotation.Nonnull;
+import com.intellij.java.language.psi.PsiClass;
+import com.intellij.java.language.psi.PsiField;
+import com.intellij.java.language.psi.PsiModifier;
+import com.intellij.java.language.psi.PsiSubstitutor;
+import consulo.language.psi.PsiMirrorElement;
+import consulo.logging.Logger;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
 import org.jetbrains.plugins.groovy.lang.psi.util.GrTraitUtil;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiField;
-import com.intellij.psi.PsiMirrorElement;
-import com.intellij.psi.PsiModifier;
-import com.intellij.psi.PsiSubstitutor;
+
+import javax.annotation.Nonnull;
 
 /**
  * Created by Max Medvedev on 19/05/14

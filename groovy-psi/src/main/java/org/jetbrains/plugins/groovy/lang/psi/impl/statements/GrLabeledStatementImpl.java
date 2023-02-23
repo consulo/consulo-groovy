@@ -18,13 +18,13 @@ package org.jetbrains.plugins.groovy.lang.psi.impl.statements;
 
 import javax.annotation.Nonnull;
 
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.ResolveState;
-import com.intellij.psi.scope.PsiScopeProcessor;
-import com.intellij.psi.search.LocalSearchScope;
-import com.intellij.psi.search.SearchScope;
-import com.intellij.util.IncorrectOperationException;
+import consulo.language.ast.ASTNode;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.resolve.PsiScopeProcessor;
+import consulo.language.psi.resolve.ResolveState;
+import consulo.language.psi.scope.LocalSearchScope;
+import consulo.content.scope.SearchScope;
+import consulo.language.util.IncorrectOperationException;
 import org.jetbrains.annotations.NonNls;
 
 import javax.annotation.Nullable;
@@ -87,7 +87,8 @@ public class GrLabeledStatementImpl extends GroovyPsiElementImpl implements GrLa
   }
 
   @Override
-  public PsiElement setName(@NonNls @Nonnull String name) throws IncorrectOperationException {
+  public PsiElement setName(@NonNls @Nonnull String name) throws IncorrectOperationException
+  {
     final PsiElement labelElement = getLabel();
     final PsiElement newLabel = GroovyPsiElementFactory.getInstance(getProject()).createReferenceNameFromText(name);
     labelElement.replace(newLabel);

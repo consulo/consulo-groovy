@@ -15,18 +15,24 @@
  */
 package org.jetbrains.plugins.groovy.mvc.projectView;
 
-import com.intellij.ide.projectView.PresentationData;
-import com.intellij.ide.projectView.ViewSettings;
-import com.intellij.ide.projectView.impl.nodes.AbstractPsiBasedNode;
-import com.intellij.navigation.ItemPresentation;
-import com.intellij.navigation.NavigationItem;
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.ui.Queryable;
-import com.intellij.openapi.util.Condition;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.problems.WolfTheProblemSolver;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.util.PsiUtilCore;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiUtilCore;
+import consulo.navigation.ItemPresentation;
+import consulo.project.ui.view.tree.ViewSettings;
+import consulo.ui.ex.tree.PresentationData;
+import consulo.project.ui.view.tree.ViewSettings;
+import consulo.project.ui.view.tree.AbstractPsiBasedNode;
+import consulo.navigation.ItemPresentation;
+import consulo.navigation.NavigationItem;
+import consulo.module.Module;
+import consulo.application.util.Queryable;
+import consulo.util.lang.function.Condition;
+import consulo.virtualFileSystem.VirtualFile;
+import consulo.language.editor.wolfAnalyzer.WolfTheProblemSolver;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiUtilCore;
+import consulo.util.lang.function.Condition;
+import consulo.virtualFileSystem.VirtualFile;
 import org.jetbrains.annotations.NonNls;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -79,13 +85,13 @@ public abstract class AbstractMvcPsiNodeDescriptor extends AbstractPsiBasedNode<
 	}
 
 	@Override
-	@javax.annotation.Nullable
+	@Nullable
 	protected PsiElement extractPsiFromValue()
 	{
 		return getValue();
 	}
 
-	@javax.annotation.Nullable
+	@Nullable
 	@Override
 	public String toTestString(@Nullable Queryable.PrintInfo printInfo)
 	{
@@ -104,7 +110,7 @@ public abstract class AbstractMvcPsiNodeDescriptor extends AbstractPsiBasedNode<
 		return myModule;
 	}
 
-	@javax.annotation.Nullable
+	@Nullable
 	@Override
 	public VirtualFile getVirtualFile()
 	{

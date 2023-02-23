@@ -15,17 +15,18 @@
  */
 package org.jetbrains.plugins.groovy.lang.completion.weighers;
 
-import com.intellij.codeInsight.completion.CompletionLocation;
-import com.intellij.codeInsight.completion.CompletionWeigher;
-import com.intellij.codeInsight.lookup.LookupElement;
-import com.intellij.codeInsight.lookup.PsiTypeLookupItem;
-import com.intellij.psi.*;
-import com.intellij.psi.impl.PsiImplUtil;
-import com.intellij.psi.impl.light.LightElement;
-import com.intellij.psi.util.InheritanceUtil;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.containers.ContainerUtil;
-import consulo.psi.PsiPackage;
+import com.intellij.java.impl.codeInsight.lookup.PsiTypeLookupItem;
+import com.intellij.java.language.impl.psi.impl.PsiImplUtil;
+import com.intellij.java.language.psi.*;
+import com.intellij.java.language.psi.util.InheritanceUtil;
+import consulo.language.editor.completion.CompletionLocation;
+import consulo.language.editor.completion.CompletionWeigher;
+import consulo.language.editor.completion.lookup.LookupElement;
+import consulo.language.impl.psi.LightElement;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiPackage;
+import consulo.language.psi.ResolveResult;
+import consulo.language.psi.util.PsiTreeUtil;
 import org.jetbrains.plugins.groovy.extensions.NamedArgumentDescriptor;
 import org.jetbrains.plugins.groovy.lang.completion.GrMainCompletionProvider;
 import org.jetbrains.plugins.groovy.lang.completion.GrPropertyForCompletion;
@@ -47,10 +48,10 @@ import java.util.Set;
  */
 public class GrKindWeigher extends CompletionWeigher {
   private static final Set<String> TRASH_CLASSES = new HashSet<String>(10);
-  private static final Set<String> PRIORITY_KEYWORDS = ContainerUtil.newHashSet(
+  private static final Set<String> PRIORITY_KEYWORDS = Set.of(
     PsiKeyword.RETURN, PsiKeyword.INSTANCEOF, "in",
     PsiKeyword.PRIVATE, PsiKeyword.PROTECTED, PsiKeyword.PUBLIC, PsiKeyword.STATIC, "def",
-    PsiKeyword.TRUE,  PsiKeyword.FALSE, PsiKeyword.NULL);
+    PsiKeyword.TRUE, PsiKeyword.FALSE, PsiKeyword.NULL);
 
   static {
     TRASH_CLASSES.add(CommonClassNames.JAVA_LANG_CLASS);
@@ -105,7 +106,7 @@ public class GrKindWeigher extends CompletionWeigher {
           }
         }
         if (GrMainCompletionProvider.IN_CATCH_TYPE.accepts(position) &&
-            InheritanceUtil.isInheritor((PsiClass)o, CommonClassNames.JAVA_LANG_THROWABLE)) {
+          InheritanceUtil.isInheritor((PsiClass)o, CommonClassNames.JAVA_LANG_THROWABLE)) {
           return NotQualifiedKind.restrictedClass;
         }
       }
@@ -152,7 +153,8 @@ public class GrKindWeigher extends CompletionWeigher {
   }
 
   private static boolean isAccessor(PsiMember member) {
-    return member instanceof PsiMethod && (GroovyPropertyUtils.isSimplePropertyAccessor((PsiMethod)member) || "setProperty".equals(((PsiMethod)member).getName()));
+    return member instanceof PsiMethod && (GroovyPropertyUtils.isSimplePropertyAccessor((PsiMethod)member) || "setProperty".equals(((PsiMethod)member)
+                                                                                                                                     .getName()));
   }
 
 

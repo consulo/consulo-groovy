@@ -16,6 +16,7 @@
 package org.jetbrains.plugins.groovy.codeInspection.control;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspection;
@@ -39,7 +40,7 @@ public class GroovyLoopStatementThatDoesntLoopInspection extends BaseInspection 
     return "Loop statement that doesn't loop";
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   protected String buildErrorString(Object... args) {
     return "<code>#ref</code> statement doesn't loop #loc";
 

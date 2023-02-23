@@ -15,11 +15,11 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions;
 
-import com.intellij.psi.JavaPsiFacade;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiType;
-import com.intellij.psi.util.InheritanceUtil;
-import com.intellij.util.ProcessingContext;
+import com.intellij.java.language.psi.JavaPsiFacade;
+import com.intellij.java.language.psi.PsiClass;
+import com.intellij.java.language.psi.PsiType;
+import com.intellij.java.language.psi.util.InheritanceUtil;
+import consulo.language.util.ProcessingContext;
 import org.jetbrains.plugins.groovy.dsl.GroovyClassDescriptor;
 import org.jetbrains.plugins.groovy.util.LightCacheKey;
 

@@ -16,17 +16,17 @@
 
 package org.jetbrains.plugins.groovy.codeInspection;
 
-import javax.annotation.Nonnull;
-
-import com.intellij.codeInsight.daemon.DaemonCodeAnalyzer;
-import com.intellij.codeInsight.daemon.HighlightDisplayKey;
-import com.intellij.codeInsight.daemon.impl.actions.AbstractBatchSuppressByNoInspectionCommentFix;
-import com.intellij.codeInspection.InspectionsBundle;
-import com.intellij.codeInspection.SuppressManager;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.*;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.IncorrectOperationException;
+import com.intellij.java.analysis.codeInspection.BatchSuppressManager;
+import com.intellij.java.language.psi.*;
+import consulo.language.editor.DaemonCodeAnalyzer;
+import consulo.language.editor.inspection.AbstractBatchSuppressByNoInspectionCommentFix;
+import consulo.language.editor.inspection.InspectionsBundle;
+import consulo.language.editor.rawHighlight.HighlightDisplayKey;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.language.util.IncorrectOperationException;
+import consulo.project.Project;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocComment;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocCommentOwner;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
@@ -37,6 +37,9 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpres
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrAnonymousClassDefinition;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeParameter;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author peter
@@ -51,7 +54,7 @@ public class SuppressForMemberFix extends AbstractBatchSuppressByNoInspectionCom
   }
 
   @Override
-  @javax.annotation.Nullable
+  @Nullable
   public GrDocCommentOwner getContainer(final PsiElement context) {
     if (context == null || context instanceof PsiFile) {
       return null;
@@ -113,7 +116,7 @@ public class SuppressForMemberFix extends AbstractBatchSuppressByNoInspectionCom
   }
 
   private static void addSuppressAnnotation(final Project project, final GrModifierList modifierList, final String id) throws IncorrectOperationException {
-    PsiAnnotation annotation = modifierList.findAnnotation(SuppressManager.SUPPRESS_INSPECTIONS_ANNOTATION_NAME);
+    PsiAnnotation annotation = modifierList.findAnnotation(BatchSuppressManager.SUPPRESS_INSPECTIONS_ANNOTATION_NAME);
     final GrExpression toAdd = GroovyPsiElementFactory.getInstance(project).createExpressionFromText("\"" + id + "\"");
     if (annotation != null) {
       final PsiAnnotationMemberValue value = annotation.findDeclaredAttributeValue(null);
@@ -128,7 +131,7 @@ public class SuppressForMemberFix extends AbstractBatchSuppressByNoInspectionCom
       }
     }
     else {
-      modifierList.addAnnotation(SuppressManager.SUPPRESS_INSPECTIONS_ANNOTATION_NAME).setDeclaredAttributeValue(null, toAdd);
+      modifierList.addAnnotation(BatchSuppressManager.SUPPRESS_INSPECTIONS_ANNOTATION_NAME).setDeclaredAttributeValue(null, toAdd);
     }
   }
 

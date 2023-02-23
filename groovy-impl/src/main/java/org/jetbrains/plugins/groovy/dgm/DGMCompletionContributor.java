@@ -15,25 +15,20 @@
  */
 package org.jetbrains.plugins.groovy.dgm;
 
-import java.util.Map;
-
-import javax.annotation.Nonnull;
-
-import org.jetbrains.plugins.groovy.lang.completion.GroovyCompletionUtil;
-import com.intellij.codeInsight.completion.AllClassesGetter;
-import com.intellij.codeInsight.completion.CompletionContributor;
-import com.intellij.codeInsight.completion.CompletionParameters;
-import com.intellij.codeInsight.completion.CompletionResultSet;
-import com.intellij.codeInsight.completion.CompletionType;
-import com.intellij.codeInsight.lookup.LookupElementBuilder;
+import com.intellij.java.impl.codeInsight.completion.AllClassesGetter;
 import com.intellij.lang.properties.parsing.PropertiesTokenTypes;
 import com.intellij.lang.properties.psi.PropertiesFile;
-import com.intellij.patterns.PlatformPatterns;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiElement;
-import com.intellij.util.Consumer;
-import com.intellij.util.ProcessingContext;
-import consulo.codeInsight.completion.CompletionProvider;
+import consulo.language.Language;
+import consulo.language.editor.completion.*;
+import consulo.language.editor.completion.lookup.LookupElementBuilder;
+import consulo.language.pattern.PlatformPatterns;
+import consulo.language.psi.PsiElement;
+import consulo.language.util.ProcessingContext;
+import org.jetbrains.plugins.groovy.GroovyLanguage;
+import org.jetbrains.plugins.groovy.lang.completion.GroovyCompletionUtil;
+
+import javax.annotation.Nonnull;
+import java.util.Map;
 
 /**
  * @author Max Medvedev
@@ -44,8 +39,8 @@ public class DGMCompletionContributor extends CompletionContributor {
            new CompletionProvider() {
              @Override
              public void addCompletions(@Nonnull CompletionParameters parameters,
-                                           ProcessingContext context,
-                                           @Nonnull CompletionResultSet result) {
+                                        ProcessingContext context,
+                                        @Nonnull CompletionResultSet result) {
                PsiElement position = parameters.getPosition();
                if (!DGMUtil.isInDGMFile(position)) return;
 
@@ -61,19 +56,21 @@ public class DGMCompletionContributor extends CompletionContributor {
     extend(CompletionType.BASIC, PlatformPatterns.psiElement(PropertiesTokenTypes.VALUE_CHARACTERS),
            new CompletionProvider() {
              @Override
-			 public void addCompletions(@Nonnull CompletionParameters parameters,
-                                           ProcessingContext context,
-                                           @Nonnull final CompletionResultSet result) {
+             public void addCompletions(@Nonnull CompletionParameters parameters,
+                                        ProcessingContext context,
+                                        @Nonnull final CompletionResultSet result) {
                PsiElement position = parameters.getPosition();
                if (!DGMUtil.isInDGMFile(position)) return;
 
-               AllClassesGetter.processJavaClasses(parameters, result.getPrefixMatcher(), true, new Consumer<PsiClass>() {
-                 @Override
-                 public void consume(PsiClass aClass) {
-                   result.addElement(GroovyCompletionUtil.createClassLookupItem(aClass));
-                 }
-               });
+               AllClassesGetter.processJavaClasses(parameters, result.getPrefixMatcher(), true,
+                                                   aClass -> result.addElement(GroovyCompletionUtil.createClassLookupItem(aClass)));
              }
            });
+  }
+
+  @Nonnull
+  @Override
+  public Language getLanguage() {
+    return GroovyLanguage.INSTANCE;
   }
 }

@@ -15,10 +15,12 @@
  */
 package org.jetbrains.plugins.groovy.configSlurper;
 
-import com.intellij.psi.CommonClassNames;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiType;
+import com.intellij.java.language.psi.CommonClassNames;
+import consulo.language.psi.PsiElement;
+import com.intellij.java.language.psi.PsiType;
 import javax.annotation.Nullable;
+
+import consulo.language.psi.PsiElement;
 import org.jetbrains.plugins.groovy.extensions.GroovyMapContentProvider;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrMethodCall;

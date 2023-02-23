@@ -15,12 +15,12 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.rename;
 
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiReference;
-import com.intellij.refactoring.rename.RenameJavaClassProcessor;
-import javax.annotation.Nonnull;
+import com.intellij.java.impl.refactoring.rename.RenameJavaClassProcessor;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiReference;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 
+import javax.annotation.Nonnull;
 import java.util.Collection;
 
 /**

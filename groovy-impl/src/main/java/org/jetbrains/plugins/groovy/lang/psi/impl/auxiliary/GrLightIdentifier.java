@@ -16,17 +16,22 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.auxiliary;
 
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiManager;
-import com.intellij.psi.impl.light.LightElement;
-import com.intellij.psi.tree.IElementType;
+import consulo.language.ast.IElementType;
+import consulo.language.impl.psi.LightElement;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiManager;
+import consulo.language.impl.psi.LightElement;
+import consulo.language.ast.IElementType;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiManager;
 import org.jetbrains.plugins.groovy.GroovyLanguage;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 
 /**
  * @author ilyas
  */
-public class GrLightIdentifier extends LightElement {
+public class GrLightIdentifier extends LightElement
+{
 
   private final String myText;
 

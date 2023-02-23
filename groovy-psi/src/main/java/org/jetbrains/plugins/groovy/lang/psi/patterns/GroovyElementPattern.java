@@ -15,8 +15,14 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.patterns;
 
-import javax.annotation.Nonnull;
-
+import com.intellij.java.language.patterns.PsiJavaElementPattern;
+import com.intellij.java.language.psi.PsiMethod;
+import consulo.language.pattern.ElementPattern;
+import consulo.language.pattern.InitialPatternCondition;
+import consulo.language.pattern.PatternCondition;
+import consulo.language.pattern.PsiNamePatternCondition;
+import consulo.language.psi.PsiElement;
+import consulo.language.util.ProcessingContext;
 import org.jetbrains.plugins.groovy.lang.psi.GrReferenceElement;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
@@ -25,14 +31,8 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrCall;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrMethodCall;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrNewExpression;
-import com.intellij.patterns.ElementPattern;
-import com.intellij.patterns.InitialPatternCondition;
-import com.intellij.patterns.PatternCondition;
-import com.intellij.patterns.PsiJavaElementPattern;
-import com.intellij.patterns.PsiNamePatternCondition;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiMethod;
-import com.intellij.util.ProcessingContext;
+
+import javax.annotation.Nonnull;
 
 public class GroovyElementPattern<T extends GroovyPsiElement,Self extends GroovyElementPattern<T,Self>> extends PsiJavaElementPattern<T,Self> {
   public GroovyElementPattern(final Class<T> aClass) {

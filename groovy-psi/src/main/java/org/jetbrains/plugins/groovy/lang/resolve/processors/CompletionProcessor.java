@@ -16,16 +16,15 @@
 
 package org.jetbrains.plugins.groovy.lang.resolve.processors;
 
-import java.util.EnumSet;
-
-import javax.annotation.Nonnull;
-
+import com.intellij.java.language.psi.PsiMethod;
+import com.intellij.java.language.psi.PsiType;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.resolve.ResolveState;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
 import org.jetbrains.plugins.groovy.lang.resolve.ResolveUtil;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiMethod;
-import com.intellij.psi.PsiType;
-import com.intellij.psi.ResolveState;
+
+import javax.annotation.Nonnull;
+import java.util.EnumSet;
 
 /**
  * @author ven

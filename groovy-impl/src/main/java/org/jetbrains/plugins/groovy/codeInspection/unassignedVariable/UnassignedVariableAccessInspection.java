@@ -15,17 +15,15 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.unassignedVariable;
 
-import com.intellij.codeInspection.ProblemsHolder;
-import com.intellij.codeInspection.ui.MultipleCheckboxOptionsPanel;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiField;
-import com.intellij.psi.PsiParameter;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.java.language.psi.PsiField;
+import com.intellij.java.language.psi.PsiParameter;
+import consulo.language.ast.IElementType;
+import consulo.language.editor.inspection.ProblemsHolder;
+import consulo.language.editor.inspection.ui.MultipleCheckboxOptionsPanel;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.util.PsiTreeUtil;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NonNls;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.codeInspection.GrInspectionUtil;
 import org.jetbrains.plugins.groovy.codeInspection.GroovyInspectionBundle;
 import org.jetbrains.plugins.groovy.codeInspection.GroovyLocalInspectionBase;
@@ -43,6 +41,8 @@ import org.jetbrains.plugins.groovy.lang.psi.controlFlow.Instruction;
 import org.jetbrains.plugins.groovy.lang.psi.controlFlow.ReadWriteVariableInstruction;
 import org.jetbrains.plugins.groovy.lang.resolve.ResolveUtil;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.swing.*;
 
 /**
@@ -54,7 +54,8 @@ public class UnassignedVariableAccessInspection extends GroovyLocalInspectionBas
   @Nullable
   @Override
   public JComponent createOptionsPanel() {
-    final MultipleCheckboxOptionsPanel optionsPanel = new MultipleCheckboxOptionsPanel(this);
+    final MultipleCheckboxOptionsPanel optionsPanel =
+      new MultipleCheckboxOptionsPanel(this);
     optionsPanel.addCheckbox(GroovyInspectionBundle.message("ignore.boolean.expressions"), "myIgnoreBooleanExpressions");
     return optionsPanel;
   }
@@ -90,11 +91,11 @@ public class UnassignedVariableAccessInspection extends GroovyLocalInspectionBas
         String name = read.getVariableName();
         GroovyPsiElement property = ResolveUtil.resolveProperty((GroovyPsiElement)element, name);
         if (property != null &&
-            !(property instanceof PsiParameter) &&
-            !(property instanceof PsiField) &&
-            PsiTreeUtil.isAncestor(owner, property, false) &&
-            !(myIgnoreBooleanExpressions && isBooleanCheck(element))
-          ) {
+          !(property instanceof PsiParameter) &&
+          !(property instanceof PsiField) &&
+          PsiTreeUtil.isAncestor(owner, property, false) &&
+          !(myIgnoreBooleanExpressions && isBooleanCheck(element))
+        ) {
           problemsHolder.registerProblem(element, GroovyInspectionBundle.message("unassigned.access.tooltip", name));
         }
       }
@@ -104,17 +105,17 @@ public class UnassignedVariableAccessInspection extends GroovyLocalInspectionBas
   private static boolean isBooleanCheck(PsiElement element) {
     final PsiElement parent = element.getParent();
     return parent instanceof GrIfStatement && ((GrIfStatement)parent).getCondition() == element ||
-           parent instanceof GrWhileStatement && ((GrWhileStatement)parent).getCondition() == element ||
-           parent instanceof GrTraditionalForClause && ((GrTraditionalForClause)parent).getCondition() == element ||
-           isLogicalExpression(parent) ||
-           parent instanceof GrUnaryExpression && ((GrUnaryExpression)parent).getOperationTokenType() == GroovyTokenTypes.mBNOT ||
-           isCheckForNull(parent, element);
+      parent instanceof GrWhileStatement && ((GrWhileStatement)parent).getCondition() == element ||
+      parent instanceof GrTraditionalForClause && ((GrTraditionalForClause)parent).getCondition() == element ||
+      isLogicalExpression(parent) ||
+      parent instanceof GrUnaryExpression && ((GrUnaryExpression)parent).getOperationTokenType() == GroovyTokenTypes.mBNOT ||
+      isCheckForNull(parent, element);
   }
 
   private static boolean isLogicalExpression(PsiElement parent) {
     return parent instanceof GrBinaryExpression &&
-           (((GrBinaryExpression)parent).getOperationTokenType() == GroovyTokenTypes.mLAND ||
-            ((GrBinaryExpression)parent).getOperationTokenType() == GroovyTokenTypes.mLOR);
+      (((GrBinaryExpression)parent).getOperationTokenType() == GroovyTokenTypes.mLAND ||
+        ((GrBinaryExpression)parent).getOperationTokenType() == GroovyTokenTypes.mLOR);
   }
 
   private static boolean isCheckForNull(PsiElement parent, PsiElement element) {

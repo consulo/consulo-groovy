@@ -16,16 +16,22 @@
 package org.jetbrains.plugins.groovy.codeInspection.confusing;
 
 import javax.annotation.Nonnull;
+
+import consulo.language.editor.inspection.ProblemDescriptor;
+import consulo.language.psi.PsiElement;
+import consulo.language.util.IncorrectOperationException;
+import consulo.logging.Logger;
+import consulo.project.Project;
 import org.jetbrains.plugins.groovy.codeInspection.GroovyFix;
 import org.jetbrains.plugins.groovy.codeInspection.GroovyInspectionBundle;
 import org.jetbrains.plugins.groovy.codeStyle.GrReferenceAdjuster;
 import org.jetbrains.plugins.groovy.lang.psi.GrQualifiedReference;
 import org.jetbrains.plugins.groovy.lang.psi.GrReferenceElement;
-import com.intellij.codeInspection.ProblemDescriptor;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiElement;
-import com.intellij.util.IncorrectOperationException;
+import consulo.language.editor.inspection.ProblemDescriptor;
+import consulo.logging.Logger;
+import consulo.project.Project;
+import consulo.language.psi.PsiElement;
+import consulo.language.util.IncorrectOperationException;
 
 public class ReplaceWithImportFix extends GroovyFix
 {

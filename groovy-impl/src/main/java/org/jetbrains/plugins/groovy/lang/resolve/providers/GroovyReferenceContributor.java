@@ -15,23 +15,34 @@
  */
 package org.jetbrains.plugins.groovy.lang.resolve.providers;
 
-import com.intellij.psi.PsiReferenceContributor;
-import com.intellij.psi.PsiReferenceRegistrar;
+import consulo.language.Language;
+import consulo.language.psi.PsiReferenceContributor;
+import consulo.language.psi.PsiReferenceRegistrar;
+import org.jetbrains.plugins.groovy.GroovyLanguage;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotationNameValuePair;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.literals.GrLiteral;
 import org.jetbrains.plugins.groovy.lang.psi.patterns.GroovyPatterns;
 import org.jetbrains.plugins.groovy.spock.SpockUnrollReferenceProvider;
 
-import static com.intellij.patterns.PlatformPatterns.psiElement;
+import javax.annotation.Nonnull;
+
+import static consulo.language.pattern.PlatformPatterns.psiElement;
 
 /**
  * @author Dmitry.Krasilschikov
  */
-public class GroovyReferenceContributor extends PsiReferenceContributor {
+public class GroovyReferenceContributor extends PsiReferenceContributor
+{
   public void registerReferenceProviders(final PsiReferenceRegistrar registrar) {
     registrar.registerReferenceProvider(psiElement(GrLiteral.class), new PropertiesReferenceProvider());
 
     registrar.registerReferenceProvider(GroovyPatterns.stringLiteral().withParent(GrAnnotationNameValuePair.class),
                                         new SpockUnrollReferenceProvider());
+  }
+
+  @Nonnull
+  @Override
+  public Language getLanguage() {
+    return GroovyLanguage.INSTANCE;
   }
 }

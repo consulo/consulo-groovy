@@ -58,14 +58,14 @@ import org.jetbrains.plugins.groovy.lang.psi.stubs.GrTypeDefinitionStub;
 import org.jetbrains.plugins.groovy.lang.psi.stubs.GrTypeParameterStub;
 import org.jetbrains.plugins.groovy.lang.psi.stubs.elements.*;
 import org.jetbrains.plugins.groovy.lang.psi.stubs.index.GrAnnotationMethodNameIndex;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.stubs.EmptyStub;
-import com.intellij.psi.stubs.EmptyStubElementType;
-import com.intellij.psi.stubs.IndexSink;
-import com.intellij.psi.stubs.StubElement;
-import com.intellij.psi.stubs.StubInputStream;
-import com.intellij.psi.stubs.StubOutputStream;
-import com.intellij.util.io.StringRef;
+import consulo.language.ast.ASTNode;
+import consulo.language.psi.stub.EmptyStub;
+import consulo.language.psi.stub.EmptyStubElementType;
+import consulo.language.psi.stub.IndexSink;
+import consulo.language.psi.stub.StubElement;
+import consulo.language.psi.stub.StubInputStream;
+import consulo.language.psi.stub.StubOutputStream;
+import consulo.index.io.StringRef;
 
 /**
  * Utility interface that contains all Groovy non-token element types

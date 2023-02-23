@@ -15,23 +15,23 @@
  */
 package org.jetbrains.plugins.groovy.lang.completion;
 
-import com.intellij.codeInsight.completion.CompletionContributor;
-import com.intellij.codeInsight.completion.CompletionParameters;
-import com.intellij.codeInsight.completion.CompletionResultSet;
-import com.intellij.codeInsight.completion.CompletionType;
-import com.intellij.codeInsight.lookup.LookupElementBuilder;
-import com.intellij.icons.AllIcons;
-import com.intellij.patterns.ElementPattern;
-import com.intellij.patterns.PatternCondition;
-import com.intellij.psi.*;
-import com.intellij.psi.infos.CandidateInfo;
-import com.intellij.psi.util.PsiFormatUtil;
-import com.intellij.psi.util.PsiFormatUtilBase;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.ProcessingContext;
-import com.intellij.util.VisibilityUtil;
-import consulo.codeInsight.completion.CompletionProvider;
-import consulo.ide.IconDescriptorUpdaters;
+import com.intellij.java.language.psi.PsiMethod;
+import com.intellij.java.language.psi.PsiModifier;
+import com.intellij.java.language.psi.PsiSubstitutor;
+import com.intellij.java.language.psi.PsiType;
+import com.intellij.java.language.psi.infos.CandidateInfo;
+import com.intellij.java.language.psi.util.PsiFormatUtil;
+import com.intellij.java.language.psi.util.PsiFormatUtilBase;
+import com.intellij.java.language.util.VisibilityUtil;
+import consulo.application.AllIcons;
+import consulo.language.editor.completion.*;
+import consulo.language.editor.completion.lookup.LookupElementBuilder;
+import consulo.language.icon.IconDescriptorUpdaters;
+import consulo.language.pattern.ElementPattern;
+import consulo.language.pattern.PatternCondition;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.language.util.ProcessingContext;
 import consulo.ui.image.ImageEffects;
 import org.jetbrains.plugins.groovy.lang.completion.handlers.GroovyMethodOverrideHandler;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
@@ -41,8 +41,8 @@ import org.jetbrains.plugins.groovy.overrideImplement.GroovyOverrideImplementExp
 import javax.annotation.Nonnull;
 import java.util.Collection;
 
-import static com.intellij.patterns.PlatformPatterns.psiComment;
-import static com.intellij.patterns.PlatformPatterns.psiElement;
+import static consulo.language.pattern.PlatformPatterns.psiComment;
+import static consulo.language.pattern.PlatformPatterns.psiElement;
 
 class GrMethodOverrideCompletionProvider implements CompletionProvider
 {

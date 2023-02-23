@@ -15,16 +15,17 @@
  */
 package org.jetbrains.plugins.groovy.lang.completion;
 
-import com.intellij.codeInsight.completion.CompletionParameters;
-import com.intellij.codeInsight.completion.JavaCompletionUtil;
-import com.intellij.codeInsight.completion.SmartCompletionDecorator;
-import com.intellij.codeInsight.lookup.LookupElement;
-import com.intellij.psi.*;
-import com.intellij.psi.filters.getters.MembersGetter;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.Consumer;
+import com.intellij.java.impl.codeInsight.completion.JavaCompletionUtil;
+import com.intellij.java.impl.codeInsight.completion.SmartCompletionDecorator;
+import com.intellij.java.impl.psi.filters.getters.MembersGetter;
+import com.intellij.java.language.psi.*;
+import consulo.language.editor.completion.CompletionParameters;
+import consulo.language.editor.completion.lookup.LookupElement;
+import consulo.language.psi.util.PsiTreeUtil;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotation;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil;
+
+import java.util.function.Consumer;
 
 /**
  * @author peter

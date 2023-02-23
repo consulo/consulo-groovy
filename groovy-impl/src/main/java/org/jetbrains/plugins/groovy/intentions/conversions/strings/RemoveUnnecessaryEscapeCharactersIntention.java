@@ -15,15 +15,16 @@
  */
 package org.jetbrains.plugins.groovy.intentions.conversions.strings;
 
-import com.intellij.lang.ASTNode;
-import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.util.IncorrectOperationException;
+import consulo.document.Document;
+import consulo.document.util.TextRange;
+import consulo.language.ast.ASTNode;
+import consulo.codeEditor.Editor;
+import consulo.language.ast.IElementType;
+import consulo.language.psi.PsiElement;
+import consulo.project.Project;
+import consulo.language.util.IncorrectOperationException;
 import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.intentions.base.PsiElementPredicate;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;

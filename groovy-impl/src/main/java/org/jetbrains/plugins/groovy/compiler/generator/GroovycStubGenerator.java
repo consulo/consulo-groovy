@@ -16,44 +16,44 @@
 
 package org.jetbrains.plugins.groovy.compiler.generator;
 
-import com.intellij.compiler.impl.CompilerUtil;
-import com.intellij.compiler.impl.FileSetCompileScope;
-import com.intellij.compiler.impl.TranslationSourceFileInfo;
-import com.intellij.ide.highlighter.JavaFileType;
-import com.intellij.openapi.application.AccessToken;
-import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.application.ModalityState;
-import com.intellij.openapi.application.WriteAction;
-import com.intellij.openapi.compiler.CompileContext;
-import com.intellij.openapi.compiler.CompileScope;
-import com.intellij.openapi.compiler.CompilerPaths;
-import com.intellij.openapi.compiler.ex.CompileContextEx;
-import com.intellij.openapi.compiler.options.ExcludedEntriesConfiguration;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.fileTypes.FileType;
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.module.ModuleManager;
-import com.intellij.openapi.progress.ProgressIndicator;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.roots.*;
-import com.intellij.openapi.util.Pair;
-import com.intellij.openapi.util.io.FileUtil;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.openapi.vfs.LocalFileSystem;
-import com.intellij.openapi.vfs.VfsUtil;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.JavaPsiFacade;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiManager;
-import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.util.Chunk;
-import com.intellij.util.Processor;
-import com.intellij.util.containers.ContainerUtil;
-import com.intellij.util.containers.FactoryMap;
-import consulo.application.AccessRule;
-import consulo.roots.ContentFolderScopes;
-import consulo.roots.impl.ProductionContentFolderTypeProvider;
-import consulo.roots.impl.TestContentFolderTypeProvider;
+import com.intellij.java.language.impl.JavaFileType;
+import com.intellij.java.language.psi.JavaPsiFacade;
+import com.intellij.java.language.psi.PsiClass;
+import consulo.application.*;
+import consulo.application.progress.ProgressIndicator;
+import consulo.application.util.function.Processor;
+import consulo.compiler.CompileContext;
+import consulo.compiler.CompileContextEx;
+import consulo.compiler.CompilerPaths;
+import consulo.compiler.scope.CompileScope;
+import consulo.compiler.scope.FileSetCompileScope;
+import consulo.compiler.setting.ExcludedEntriesConfiguration;
+import consulo.compiler.util.CompilerUtil;
+import consulo.content.ContentIterator;
+import consulo.ide.impl.idea.compiler.impl.TranslationSourceFileInfo;
+import consulo.language.content.LanguageContentFolderScopes;
+import consulo.language.content.ProductionContentFolderTypeProvider;
+import consulo.language.content.TestContentFolderTypeProvider;
+import consulo.language.psi.PsiManager;
+import consulo.language.psi.scope.GlobalSearchScope;
+import consulo.logging.Logger;
+import consulo.module.Module;
+import consulo.module.ModuleManager;
+import consulo.module.content.ModuleRootManager;
+import consulo.module.content.ProjectFileIndex;
+import consulo.module.content.ProjectRootManager;
+import consulo.module.content.layer.ContentEntry;
+import consulo.module.content.layer.ContentFolder;
+import consulo.project.Project;
+import consulo.util.collection.Chunk;
+import consulo.util.collection.ContainerUtil;
+import consulo.util.collection.FactoryMap;
+import consulo.util.io.FileUtil;
+import consulo.util.lang.Pair;
+import consulo.util.lang.StringUtil;
+import consulo.virtualFileSystem.LocalFileSystem;
+import consulo.virtualFileSystem.VirtualFile;
+import consulo.virtualFileSystem.fileType.FileType;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.compiler.GroovyCompilerBase;
 import org.jetbrains.plugins.groovy.compiler.GroovyCompilerConfiguration;
@@ -62,6 +62,7 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyNamesUtil;
 import org.jetbrains.plugins.groovy.refactoring.convertToJava.GroovyToJavaGenerator;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
@@ -69,254 +70,216 @@ import java.util.*;
 /**
  * @author peter
  */
-public class GroovycStubGenerator extends GroovyCompilerBase
-{
-	private static Logger LOG = Logger.getInstance(GroovycStubGenerator.class);
+public class GroovycStubGenerator extends GroovyCompilerBase {
+  private static Logger LOG = Logger.getInstance(GroovycStubGenerator.class);
 
-	public static final String GROOVY_STUBS = "groovyStubs";
+  public static final String GROOVY_STUBS = "groovyStubs";
 
-	public GroovycStubGenerator(Project project)
-	{
-		super(project);
-	}
+  public GroovycStubGenerator(Project project) {
+    super(project);
+  }
 
-	@Override
-	public void compile(CompileContext compileContext, Chunk<Module> moduleChunk, VirtualFile[] virtualFiles, OutputSink sink)
-	{
-		final ExcludedEntriesConfiguration excluded = GroovyCompilerConfiguration.getExcludeConfiguration(myProject);
+  @Override
+  public void compile(CompileContext compileContext, Chunk<Module> moduleChunk, VirtualFile[] virtualFiles, OutputSink sink) {
+    final ExcludedEntriesConfiguration excluded = GroovyCompilerConfiguration.getExcludeConfiguration(myProject);
 
-		Map<Pair<Module, Boolean>, Boolean> hasJava = FactoryMap.create(key -> containsJavaSources(key.first, key.second));
+    Map<Pair<Module, Boolean>, Boolean> hasJava = FactoryMap.create(key -> containsJavaSources(key.first, key.second));
 
-		ProjectFileIndex index = ProjectRootManager.getInstance(myProject).getFileIndex();
+    ProjectFileIndex index = ProjectRootManager.getInstance(myProject).getFileIndex();
 
-		List<VirtualFile> total = new ArrayList<>();
-		for(final VirtualFile virtualFile : virtualFiles)
-		{
-			if(!excluded.isExcluded(virtualFile) && GroovyNamesUtil.isIdentifier(virtualFile.getNameWithoutExtension()))
-			{
-				Module module = index.getModuleForFile(virtualFile);
-				if(module == null || hasJava.get(Pair.create(module, index.isInTestSourceContent(virtualFile))))
-				{
-					total.add(virtualFile);
-				}
-			}
-		}
+    List<VirtualFile> total = new ArrayList<>();
+    for (final VirtualFile virtualFile : virtualFiles) {
+      if (!excluded.isExcluded(virtualFile) && GroovyNamesUtil.isIdentifier(virtualFile.getNameWithoutExtension())) {
+        Module module = index.getModuleForFile(virtualFile);
+        if (module == null || hasJava.get(Pair.create(module, index.isInTestSourceContent(virtualFile)))) {
+          total.add(virtualFile);
+        }
+      }
+    }
 
-		if(total.isEmpty())
-		{
-			return;
-		}
+    if (total.isEmpty()) {
+      return;
+    }
 
-		//long l = System.currentTimeMillis();
-		super.compile(compileContext, moduleChunk, VfsUtil.toVirtualFileArray(total), sink);
-		//System.out.println("Stub generation took " + (System.currentTimeMillis() - l));
-	}
+    //long l = System.currentTimeMillis();
+    super.compile(compileContext, moduleChunk, consulo.ide.impl.idea.openapi.vfs.VfsUtil.toVirtualFileArray(total), sink);
+    //System.out.println("Stub generation took " + (System.currentTimeMillis() - l));
+  }
 
-	@Nonnull
-	@Override
-	public FileType[] getInputFileTypes()
-	{
-		return new FileType[]{
-				JavaFileType.INSTANCE,
-				GroovyFileType.GROOVY_FILE_TYPE
-		};
-	}
+  @Nonnull
+  @Override
+  public FileType[] getInputFileTypes() {
+    return new FileType[]{
+      JavaFileType.INSTANCE,
+      GroovyFileType.GROOVY_FILE_TYPE
+    };
+  }
 
-	@Nonnull
-	@Override
-	public FileType[] getOutputFileTypes()
-	{
-		return new FileType[]{JavaFileType.INSTANCE};
-	}
+  @Nonnull
+  @Override
+  public FileType[] getOutputFileTypes() {
+    return new FileType[]{JavaFileType.INSTANCE};
+  }
 
-	private static boolean containsJavaSources(Module module, boolean inTests)
-	{
-		ModuleRootManager rootManager = ModuleRootManager.getInstance(module);
-		for(ContentEntry entry : rootManager.getContentEntries())
-		{
-			for(ContentFolder folder : entry.getFolders(ContentFolderScopes.all(false)))
-			{
-				VirtualFile dir = folder.getFile();
-				if((!inTests && folder.getType() == ProductionContentFolderTypeProvider.getInstance() || folder.getType() ==
-						TestContentFolderTypeProvider.getInstance() && inTests) && dir != null)
-				{
-					if(!rootManager.getFileIndex().iterateContentUnderDirectory(dir, new ContentIterator()
-					{
-						@Override
-						public boolean processFile(VirtualFile fileOrDir)
-						{
-							if(!fileOrDir.isDirectory() && JavaFileType.INSTANCE == fileOrDir.getFileType())
-							{
-								return false;
-							}
-							return true;
-						}
-					}))
-					{
-						return true;
-					}
-				}
-			}
-		}
-		return false;
-	}
+  private static boolean containsJavaSources(Module module, boolean inTests) {
+    ModuleRootManager rootManager = ModuleRootManager.getInstance(module);
+    for (ContentEntry entry : rootManager.getContentEntries()) {
+      for (ContentFolder folder : entry.getFolders(LanguageContentFolderScopes.all(false))) {
+        VirtualFile dir = folder.getFile();
+        if ((!inTests && folder.getType() == ProductionContentFolderTypeProvider.getInstance() || folder.getType() ==
+          TestContentFolderTypeProvider.getInstance() && inTests) && dir != null) {
+          if (!rootManager.getFileIndex().iterateContentUnderDirectory(dir, new ContentIterator() {
+            @Override
+            public boolean processFile(VirtualFile fileOrDir) {
+              if (!fileOrDir.isDirectory() && JavaFileType.INSTANCE == fileOrDir.getFileType()) {
+                return false;
+              }
+              return true;
+            }
+          })) {
+            return true;
+          }
+        }
+      }
+    }
+    return false;
+  }
 
-	@Override
-	protected void compileFiles(CompileContext compileContext, Module module, final List<VirtualFile> toCompile, OutputSink sink, boolean tests)
-	{
-		final File outDir = getStubOutput(module, tests);
-		outDir.mkdirs();
+  @Override
+  protected void compileFiles(CompileContext compileContext,
+                              Module module,
+                              final List<VirtualFile> toCompile,
+                              OutputSink sink,
+                              boolean tests) {
+    final File outDir = getStubOutput(module, tests);
+    outDir.mkdirs();
 
-		final VirtualFile tempOutput = LocalFileSystem.getInstance().refreshAndFindFileByIoFile(outDir);
-		assert tempOutput != null;
-		cleanDirectory(tempOutput);
+    final VirtualFile tempOutput = LocalFileSystem.getInstance().refreshAndFindFileByIoFile(outDir);
+    assert tempOutput != null;
+    cleanDirectory(tempOutput);
 
-		((CompileContextEx) compileContext).assignModule(tempOutput, module, tests, this);
+    ((CompileContextEx)compileContext).assignModule(tempOutput, module, tests, this);
 
-		ProgressIndicator indicator = compileContext.getProgressIndicator();
-		indicator.pushState();
+    ProgressIndicator indicator = compileContext.getProgressIndicator();
+    indicator.pushState();
 
-		try
-		{
-			final GroovyToJavaGenerator generator = new GroovyToJavaGenerator(myProject, new HashSet<>(toCompile));
-			for(int i = 0; i < toCompile.size(); i++)
-			{
-				indicator.setFraction((double) i / toCompile.size());
+    try {
+      final GroovyToJavaGenerator generator = new GroovyToJavaGenerator(myProject, new HashSet<>(toCompile));
+      for (int i = 0; i < toCompile.size(); i++) {
+        indicator.setFraction((double)i / toCompile.size());
 
-				final Collection<VirtualFile> stubFiles = generateItems(generator, toCompile.get(i), tempOutput, compileContext, myProject);
-				((CompileContextEx) compileContext).addScope(new FileSetCompileScope(stubFiles, new Module[]{module}));
-			}
-		}
-		finally
-		{
-			indicator.popState();
-		}
-	}
+        final Collection<VirtualFile> stubFiles = generateItems(generator, toCompile.get(i), tempOutput, compileContext, myProject);
+        ((CompileContextEx)compileContext).addScope(new FileSetCompileScope(stubFiles, new Module[]{module}));
+      }
+    }
+    finally {
+      indicator.popState();
+    }
+  }
 
-	private static File getStubOutput(Module module, boolean tests)
-	{
-		final Project project = module.getProject();
-		final String rootPath = CompilerPaths.getGeneratedDataDirectory(project).getPath() + "/" + GROOVY_STUBS + "/";
-		return new File(rootPath + module.getName() + "/" + (tests ? "tests" : "production") + "/");
-	}
+  private static File getStubOutput(Module module, boolean tests) {
+    final Project project = module.getProject();
+    final String rootPath = CompilerPaths.getGeneratedDataDirectory(project).getPath() + "/" + GROOVY_STUBS + "/";
+    return new File(rootPath + module.getName() + "/" + (tests ? "tests" : "production") + "/");
+  }
 
-	@javax.annotation.Nullable
-	public static PsiClass findClassByStub(Project project, VirtualFile stubFile)
-	{
-		final String[] components = StringUtil.trimEnd(stubFile.getPath(), ".java").split("[\\\\/]");
-		final int stubs = Arrays.asList(components).indexOf(GROOVY_STUBS);
-		if(stubs < 0 || stubs >= components.length - 3)
-		{
-			return null;
-		}
+  @Nullable
+  public static PsiClass findClassByStub(Project project, VirtualFile stubFile) {
+    final String[] components = StringUtil.trimEnd(stubFile.getPath(), ".java").split("[\\\\/]");
+    final int stubs = Arrays.asList(components).indexOf(GROOVY_STUBS);
+    if (stubs < 0 || stubs >= components.length - 3) {
+      return null;
+    }
 
-		final String moduleName = components[stubs + 1];
-		final Module module = ModuleManager.getInstance(project).findModuleByName(moduleName);
-		if(module == null)
-		{
-			return null;
-		}
+    final String moduleName = components[stubs + 1];
+    final Module module = ModuleManager.getInstance(project).findModuleByName(moduleName);
+    if (module == null) {
+      return null;
+    }
 
-		final String fqn = StringUtil.join(Arrays.asList(components).subList(stubs + 3, components.length), ".");
-		return JavaPsiFacade.getInstance(project).findClass(fqn, GlobalSearchScope.moduleScope(module));
-	}
+    final String fqn = StringUtil.join(Arrays.asList(components).subList(stubs + 3, components.length), ".");
+    return JavaPsiFacade.getInstance(project).findClass(fqn, GlobalSearchScope.moduleScope(module));
+  }
 
-	private void cleanDirectory(final VirtualFile dir)
-	{
-		Runnable runnable = new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				AccessToken token = WriteAction.start();
-				try
-				{
-					VfsUtil.processFilesRecursively(dir, new Processor<>()
-					{
-						@Override
-						public boolean process(VirtualFile virtualFile)
-						{
-							if(!virtualFile.isDirectory())
-							{
-								TranslationSourceFileInfo.removeSourceInfo(virtualFile);
-								try
-								{
-									virtualFile.delete(this);
-								}
-								catch(IOException e)
-								{
-									LOG.info(e);
-								}
-							}
-							return true;
-						}
-					});
-				}
-				finally
-				{
-					token.finish();
-				}
-			}
-		};
-		if(ApplicationManager.getApplication().isDispatchThread())
-		{
-			assert ApplicationManager.getApplication().isUnitTestMode();
+  private void cleanDirectory(final VirtualFile dir) {
+    Runnable runnable = new Runnable() {
+      @Override
+      public void run() {
+        AccessToken token = WriteAction.start();
+        try {
+          consulo.ide.impl.idea.openapi.vfs.VfsUtil.processFilesRecursively(dir, new Processor<>() {
+            @Override
+            public boolean process(VirtualFile virtualFile) {
+              if (!virtualFile.isDirectory()) {
+                TranslationSourceFileInfo.removeSourceInfo(virtualFile);
+                try {
+                  virtualFile.delete(this);
+                }
+                catch (IOException e) {
+                  LOG.info(e);
+                }
+              }
+              return true;
+            }
+          });
+        }
+        finally {
+          token.finish();
+        }
+      }
+    };
+    if (ApplicationManager.getApplication().isDispatchThread()) {
+      assert ApplicationManager.getApplication().isUnitTestMode();
 
-			runnable.run();
-		}
-		else
-		{
-			ApplicationManager.getApplication().invokeAndWait(runnable, ModalityState.NON_MODAL);
-		}
-	}
+      runnable.run();
+    }
+    else {
+      ApplicationManager.getApplication().invokeAndWait(runnable, Application.get().getNoneModalityState());
+    }
+  }
 
-	@Nonnull
-	public String getDescription()
-	{
-		return "Groovy to java source code generator";
-	}
+  @Nonnull
+  public String getDescription() {
+    return "Groovy to java source code generator";
+  }
 
-	public boolean validateConfiguration(CompileScope scope)
-	{
-		return true;
-	}
+  public boolean validateConfiguration(CompileScope scope) {
+    return true;
+  }
 
-	public static Collection<VirtualFile> generateItems(final GroovyToJavaGenerator generator, final VirtualFile item,
-			final VirtualFile outputRootDirectory, CompileContext context, final Project project)
-	{
-		ProgressIndicator indicator = context.getProgressIndicator();
-		indicator.setText("Generating stubs for " + item.getName() + "...");
+  public static Collection<VirtualFile> generateItems(final GroovyToJavaGenerator generator,
+                                                      final VirtualFile item,
+                                                      final VirtualFile outputRootDirectory,
+                                                      CompileContext context,
+                                                      final Project project) {
+    ProgressIndicator indicator = context.getProgressIndicator();
+    indicator.setText("Generating stubs for " + item.getName() + "...");
 
-		if(LOG.isDebugEnabled())
-		{
-			LOG.debug("Generating stubs for " + item.getName() + "...");
-		}
+    if (LOG.isDebugEnabled()) {
+      LOG.debug("Generating stubs for " + item.getName() + "...");
+    }
 
-		final Map<String, CharSequence> output;
+    final Map<String, CharSequence> output;
 
-		output =  AccessRule.read(() -> generator.generateStubs((GroovyFile) PsiManager.getInstance(project).findFile(item)));
+    output = AccessRule.read(() -> generator.generateStubs((GroovyFile)PsiManager.getInstance(project).findFile(item)));
 
-		return writeStubs(outputRootDirectory, output, item);
-	}
+    return writeStubs(outputRootDirectory, output, item);
+  }
 
-	private static List<VirtualFile> writeStubs(VirtualFile outputRootDirectory, Map<String, CharSequence> output, VirtualFile src)
-	{
-		final ArrayList<VirtualFile> stubs = ContainerUtil.newArrayList();
-		for(String relativePath : output.keySet())
-		{
-			final File stubFile = new File(outputRootDirectory.getPath(), relativePath);
-			FileUtil.createIfDoesntExist(stubFile);
-			try
-			{
-				FileUtil.writeToFile(stubFile, output.get(relativePath).toString().getBytes(src.getCharset()));
-			}
-			catch(IOException e)
-			{
-				LOG.error(e);
-			}
-			CompilerUtil.refreshIOFile(stubFile);
-			ContainerUtil.addIfNotNull(LocalFileSystem.getInstance().refreshAndFindFileByIoFile(stubFile), stubs);
-		}
-		return stubs;
-	}
+  private static List<VirtualFile> writeStubs(VirtualFile outputRootDirectory, Map<String, CharSequence> output, VirtualFile src) {
+    final ArrayList<VirtualFile> stubs = ContainerUtil.newArrayList();
+    for (String relativePath : output.keySet()) {
+      final File stubFile = new File(outputRootDirectory.getPath(), relativePath);
+      FileUtil.createIfDoesntExist(stubFile);
+      try {
+        FileUtil.writeToFile(stubFile, output.get(relativePath).toString().getBytes(src.getCharset()));
+      }
+      catch (IOException e) {
+        LOG.error(e);
+      }
+      CompilerUtil.refreshIOFile(stubFile);
+      ContainerUtil.addIfNotNull(stubs, LocalFileSystem.getInstance().refreshAndFindFileByIoFile(stubFile));
+    }
+    return stubs;
+  }
 }

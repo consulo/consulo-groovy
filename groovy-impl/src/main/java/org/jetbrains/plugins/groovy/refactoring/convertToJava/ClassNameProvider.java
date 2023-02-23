@@ -15,16 +15,18 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.convertToJava;
 
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiElement;
+import com.intellij.java.language.psi.PsiClass;
+import consulo.language.psi.PsiElement;
+
+import javax.annotation.Nullable;
 
 /**
  * @author Maxim.Medvedev
  */
 public interface ClassNameProvider {
 
-  @javax.annotation.Nullable
-  String getQualifiedClassName(PsiClass clazz, @javax.annotation.Nullable PsiElement context);
+  @Nullable
+  String getQualifiedClassName(PsiClass clazz, @Nullable PsiElement context);
 
   boolean forStubs();
 }

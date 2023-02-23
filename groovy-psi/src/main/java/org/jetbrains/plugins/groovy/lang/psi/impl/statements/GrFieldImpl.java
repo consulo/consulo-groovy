@@ -15,11 +15,24 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements;
 
-import java.util.Collections;
-import java.util.Map;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.intellij.java.language.impl.psi.impl.PsiImplUtil;
+import com.intellij.java.language.impl.psi.presentation.java.JavaPresentationUtil;
+import com.intellij.java.language.psi.PsiClass;
+import com.intellij.java.language.psi.PsiExpression;
+import com.intellij.java.language.psi.PsiField;
+import com.intellij.java.language.psi.PsiType;
+import consulo.application.util.CachedValueProvider;
+import consulo.content.scope.SearchScope;
+import consulo.language.ast.ASTNode;
+import consulo.language.impl.psi.ResolveScopeManager;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.PsiModificationTracker;
+import consulo.language.psi.StubBasedPsiElement;
+import consulo.language.psi.stub.IStubElementType;
+import consulo.language.psi.util.LanguageCachedValueUtil;
+import consulo.language.util.IncorrectOperationException;
+import consulo.navigation.ItemPresentation;
 import org.jetbrains.plugins.groovy.extensions.NamedArgumentDescriptor;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocComment;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.impl.GrDocCommentUtil;
@@ -39,26 +52,12 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GrAccessorMethodImpl
 import org.jetbrains.plugins.groovy.lang.psi.stubs.GrFieldStub;
 import org.jetbrains.plugins.groovy.lang.psi.typeEnhancers.GrVariableEnhancer;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
-import com.intellij.lang.ASTNode;
-import com.intellij.navigation.ItemPresentation;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiExpression;
-import com.intellij.psi.PsiField;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiType;
-import com.intellij.psi.StubBasedPsiElement;
-import com.intellij.psi.impl.PsiImplUtil;
-import com.intellij.psi.impl.ResolveScopeManager;
-import com.intellij.psi.presentation.java.JavaPresentationUtil;
-import com.intellij.psi.search.SearchScope;
-import com.intellij.psi.stubs.IStubElementType;
-import com.intellij.psi.util.CachedValueProvider;
-import com.intellij.psi.util.CachedValuesManager;
-import com.intellij.psi.util.PsiModificationTracker;
-import com.intellij.util.Function;
-import com.intellij.util.IncorrectOperationException;
-import com.intellij.util.containers.ContainerUtil;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * User: Dmitry.Krasilschikov
@@ -149,17 +148,14 @@ public class GrFieldImpl extends GrVariableBaseImpl<GrFieldStub> implements GrFi
 
   @Override
   public PsiType getTypeGroovy() {
-    PsiType type = TypeInferenceHelper.getCurrentContext().getExpressionType(this, new Function<GrFieldImpl, PsiType>() {
-      @Override
-      public PsiType fun(GrFieldImpl field) {
-        if (getDeclaredType() == null && getInitializerGroovy() == null) {
-          final PsiType type = GrVariableEnhancer.getEnhancedType(field);
-          if (type != null) {
-            return type;
-          }
+    PsiType type = TypeInferenceHelper.getCurrentContext().getExpressionType(this, field -> {
+      if (getDeclaredType() == null && getInitializerGroovy() == null) {
+        final PsiType type1 = GrVariableEnhancer.getEnhancedType(field);
+        if (type1 != null) {
+          return type1;
         }
-        return null;
       }
+      return null;
     });
 
     if (type != null) {
@@ -198,11 +194,12 @@ public class GrFieldImpl extends GrVariableBaseImpl<GrFieldStub> implements GrFi
 
   @Override
   public GrAccessorMethod getSetter() {
-    return CachedValuesManager.getCachedValue(this, new CachedValueProvider<GrAccessorMethod>() {
+    return LanguageCachedValueUtil.getCachedValue(this, new CachedValueProvider<GrAccessorMethod>() {
       @Nullable
       @Override
       public Result<GrAccessorMethod> compute() {
-        return Result.create(GrAccessorMethodImpl.createSetterMethod(GrFieldImpl.this), PsiModificationTracker.OUT_OF_CODE_BLOCK_MODIFICATION_COUNT);
+        return Result.create(GrAccessorMethodImpl.createSetterMethod(GrFieldImpl.this),
+                             PsiModificationTracker.OUT_OF_CODE_BLOCK_MODIFICATION_COUNT);
       }
     });
   }
@@ -210,11 +207,12 @@ public class GrFieldImpl extends GrVariableBaseImpl<GrFieldStub> implements GrFi
   @Override
   @Nonnull
   public GrAccessorMethod[] getGetters() {
-    return CachedValuesManager.getCachedValue(this, new CachedValueProvider<GrAccessorMethod[]>() {
+    return LanguageCachedValueUtil.getCachedValue(this, new CachedValueProvider<GrAccessorMethod[]>() {
       @Nullable
       @Override
       public Result<GrAccessorMethod[]> compute() {
-        return Result.create(GrAccessorMethodImpl.createGetterMethods(GrFieldImpl.this), PsiModificationTracker.OUT_OF_CODE_BLOCK_MODIFICATION_COUNT);
+        return Result.create(GrAccessorMethodImpl.createGetterMethods(GrFieldImpl.this),
+                             PsiModificationTracker.OUT_OF_CODE_BLOCK_MODIFICATION_COUNT);
       }
     });
   }
@@ -260,7 +258,7 @@ public class GrFieldImpl extends GrVariableBaseImpl<GrFieldStub> implements GrFi
       String[] namedParameters = stub.getNamedParameters();
       if (namedParameters.length == 0) return Collections.emptyMap();
 
-      Map<String, NamedArgumentDescriptor> result = ContainerUtil.newHashMap();
+      Map<String, NamedArgumentDescriptor> result = new HashMap<>();
       for (String parameter : namedParameters) {
         result.put(parameter, GrNamedArgumentSearchVisitor.CODE_NAMED_ARGUMENTS_DESCR);
       }

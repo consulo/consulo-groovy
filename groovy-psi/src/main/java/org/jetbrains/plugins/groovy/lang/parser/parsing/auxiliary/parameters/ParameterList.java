@@ -16,8 +16,8 @@
 
 package org.jetbrains.plugins.groovy.lang.parser.parsing.auxiliary.parameters;
 
-import com.intellij.lang.PsiBuilder;
-import com.intellij.psi.tree.IElementType;
+import consulo.language.parser.PsiBuilder;
+import consulo.language.ast.IElementType;
 import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;

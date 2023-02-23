@@ -15,20 +15,25 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.rename;
 
-import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.ui.DialogWrapper;
-import com.intellij.openapi.util.Pair;
-import com.intellij.psi.*;
-import com.intellij.refactoring.RefactoringBundle;
-import com.intellij.refactoring.util.RadioUpDownListener;
-import com.intellij.usageView.UsageViewUtil;
-import com.intellij.util.containers.ContainerUtil;
+import com.intellij.java.language.psi.PsiClass;
+import com.intellij.java.language.psi.PsiField;
+import com.intellij.java.language.psi.PsiMember;
+import com.intellij.java.language.psi.PsiModifier;
+import consulo.application.ApplicationManager;
+import consulo.language.editor.refactoring.RefactoringBundle;
+import consulo.language.editor.refactoring.ui.RadioUpDownListener;
+import consulo.language.psi.PsiElement;
+import consulo.ui.ex.awt.DialogWrapper;
+import consulo.usage.UsageViewUtil;
+import consulo.util.collection.ContainerUtil;
+import consulo.util.lang.Pair;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrAccessorMethod;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyPropertyUtils;
 import org.jetbrains.plugins.groovy.refactoring.GroovyRefactoringBundle;
 
+import javax.annotation.Nullable;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
@@ -129,7 +134,7 @@ public class RenamePropertyUtil {
       return new JLabel(RefactoringBundle.message("what.would.you.like.to.do"));
     }
 
-    @javax.annotation.Nullable
+    @Nullable
     private String getPropertyName() {
       if (myMember instanceof GrMethod) {
         return GroovyPropertyUtils.getPropertyNameByAccessorName(myMember.getName());

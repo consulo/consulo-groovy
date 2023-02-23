@@ -17,13 +17,14 @@ package org.jetbrains.plugins.groovy.annotator;
 
 import java.util.List;
 
+import consulo.language.editor.rawHighlight.HighlightInfo;
 import org.jetbrains.plugins.groovy.codeInspection.bugs.GrAccessibilityChecker;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFileBase;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyRecursiveElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
-import com.intellij.codeInsight.daemon.impl.HighlightInfo;
-import com.intellij.openapi.project.Project;
+import consulo.language.editor.rawHighlight.HighlightInfo;
+import consulo.project.Project;
 
 /**
  * Created by Max Medvedev on 21/03/14

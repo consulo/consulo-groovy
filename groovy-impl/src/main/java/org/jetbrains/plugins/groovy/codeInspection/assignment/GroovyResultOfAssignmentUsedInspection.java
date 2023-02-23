@@ -16,6 +16,7 @@
 package org.jetbrains.plugins.groovy.codeInspection.assignment;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspection;
@@ -40,7 +41,7 @@ public class GroovyResultOfAssignmentUsedInspection extends BaseInspection {
   }
 
   @Override
-  @javax.annotation.Nullable
+  @Nullable
   protected String buildErrorString(Object... args) {
     return "Result of assignment expression used #loc";
   }

@@ -15,8 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.testIntegration;
 
-import com.intellij.execution.application.ApplicationRunLineMarkerProvider;
-import com.intellij.psi.PsiElement;
+import com.intellij.java.execution.impl.application.ApplicationRunLineMarkerProvider;
+import consulo.language.psi.PsiElement;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 
 /**
@@ -24,9 +24,8 @@ import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
  */
 public class GroovyAppLineMarkerContributor extends ApplicationRunLineMarkerProvider {
 
-	@Override
-	protected boolean isIdentifier(PsiElement e)
-	{
-		return e.getNode().getElementType() == GroovyTokenTypes.mIDENT;
-	}
+  @Override
+  protected boolean isIdentifier(PsiElement e) {
+    return e.getNode().getElementType() == GroovyTokenTypes.mIDENT;
+  }
 }

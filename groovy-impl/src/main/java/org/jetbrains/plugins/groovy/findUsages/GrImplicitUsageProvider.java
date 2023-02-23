@@ -15,11 +15,13 @@
  */
 package org.jetbrains.plugins.groovy.findUsages;
 
+import consulo.language.editor.ImplicitUsageProvider;
+import consulo.language.psi.PsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameter;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
-import com.intellij.codeInsight.daemon.ImplicitUsageProvider;
-import com.intellij.psi.PsiElement;
+import consulo.language.editor.ImplicitUsageProvider;
+import consulo.language.psi.PsiElement;
 
 /**
  * @author Max Medvedev

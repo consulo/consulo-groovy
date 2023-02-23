@@ -16,10 +16,11 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members;
 
-import com.intellij.psi.PsiMember;
-import javax.annotation.Nullable;
+import com.intellij.java.language.psi.PsiMember;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.GrModifierList;
+
+import javax.annotation.Nullable;
 
 /**
  * @author: Dmitry.Krasilschikov

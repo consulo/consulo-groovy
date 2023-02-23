@@ -17,9 +17,9 @@ package org.jetbrains.plugins.groovy.refactoring.introduce.field;
 
 
 import com.intellij.openapi.application.WriteAction
-import com.intellij.psi.JavaPsiFacade
-import com.intellij.psi.PsiType
-import com.intellij.psi.impl.source.PostprocessReformattingAspect
+import com.intellij.java.language.psi.JavaPsiFacade
+import com.intellij.java.language.psi.PsiType
+import com.intellij.java.language.psi.impl.source.PostprocessReformattingAspect
 import org.jetbrains.annotations.NotNull
 import org.jetbrains.annotations.Nullable
 import org.jetbrains.plugins.groovy.LightGroovyTestCase

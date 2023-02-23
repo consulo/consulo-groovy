@@ -17,11 +17,11 @@ package org.jetbrains.plugins.groovy.lang.psi.typeEnhancers;
 
 import javax.annotation.Nonnull;
 
-import com.intellij.psi.CommonClassNames;
-import com.intellij.psi.PsiArrayType;
-import com.intellij.psi.PsiType;
-import com.intellij.psi.util.InheritanceUtil;
-import com.intellij.psi.util.PsiUtil;
+import com.intellij.java.language.psi.CommonClassNames;
+import com.intellij.java.language.psi.PsiArrayType;
+import com.intellij.java.language.psi.PsiType;
+import com.intellij.java.language.psi.util.InheritanceUtil;
+import com.intellij.java.language.psi.util.PsiUtil;
 
 import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;

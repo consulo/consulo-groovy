@@ -17,8 +17,8 @@ package org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions;
 
 import javax.annotation.Nonnull;
 
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiPolyVariantReference;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiPolyVariantReference;
 import org.jetbrains.plugins.groovy.lang.psi.GrQualifiedReference;
 
 /**

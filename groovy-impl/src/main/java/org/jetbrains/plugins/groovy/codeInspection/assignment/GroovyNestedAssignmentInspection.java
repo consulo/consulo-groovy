@@ -16,8 +16,9 @@
 package org.jetbrains.plugins.groovy.codeInspection.assignment;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
-import com.intellij.psi.PsiElement;
+import consulo.language.psi.PsiElement;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspectionVisitor;
@@ -40,7 +41,7 @@ public class GroovyNestedAssignmentInspection extends BaseInspection {
   }
 
   @Override
-  @javax.annotation.Nullable
+  @Nullable
   protected String buildErrorString(Object... args) {
     return "Nested assignment expression #loc";
   }

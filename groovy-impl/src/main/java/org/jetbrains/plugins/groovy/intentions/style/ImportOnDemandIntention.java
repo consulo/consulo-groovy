@@ -17,15 +17,17 @@ package org.jetbrains.plugins.groovy.intentions.style;
 
 import javax.annotation.Nonnull;
 
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiReference;
-import com.intellij.psi.search.LocalSearchScope;
-import com.intellij.psi.search.searches.ReferencesSearch;
-import com.intellij.util.IncorrectOperationException;
+import consulo.codeEditor.Editor;
+import consulo.language.psi.PsiElement;
+import consulo.project.Project;
+import com.intellij.java.language.psi.PsiClass;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.PsiReference;
+import consulo.language.psi.scope.LocalSearchScope;
+import consulo.language.psi.search.ReferencesSearch;
+import consulo.language.util.IncorrectOperationException;
+import consulo.project.Project;
 import org.jetbrains.plugins.groovy.codeStyle.GrReferenceAdjuster;
 import org.jetbrains.plugins.groovy.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.intentions.base.PsiElementPredicate;

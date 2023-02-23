@@ -1,8 +1,12 @@
+import java.lang.String;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 public class G {
-public int register(java.lang.String virtualHash, java.util.Map<java.lang.String, java.lang.String> commitDetails) {
+public int register(String virtualHash, Map<String, String> commitDetails) {
 commits.put(virtualHash, commitDetails);
 return ((int)(commitDetails));
 }
 
-private java.util.Map<java.lang.String, java.util.Map<java.lang.String, java.lang.String>> commits = new java.util.LinkedHashMap<java.lang.String, java.util.Map<java.lang.String, java.lang.String>>();
+private Map<String, Map<String, String>> commits = new LinkedHashMap<String, Map<String, String>>();
 }

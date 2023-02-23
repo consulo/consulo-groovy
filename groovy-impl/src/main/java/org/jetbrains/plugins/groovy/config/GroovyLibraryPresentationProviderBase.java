@@ -20,13 +20,14 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import consulo.virtualFileSystem.VirtualFile;
 import org.jetbrains.annotations.Nls;
-import com.intellij.openapi.roots.libraries.LibraryKind;
-import com.intellij.openapi.roots.libraries.LibraryPresentationProvider;
-import com.intellij.openapi.roots.ui.configuration.libraryEditor.LibraryEditor;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.openapi.vfs.VfsUtilCore;
-import com.intellij.openapi.vfs.VirtualFile;
+import consulo.content.library.LibraryKind;
+import consulo.content.library.LibraryPresentationProvider;
+import consulo.content.library.ui.LibraryEditor;
+import consulo.util.lang.StringUtil;
+import consulo.ide.impl.idea.openapi.vfs.VfsUtilCore;
+import consulo.virtualFileSystem.VirtualFile;
 import consulo.ui.image.Image;
 
 /**

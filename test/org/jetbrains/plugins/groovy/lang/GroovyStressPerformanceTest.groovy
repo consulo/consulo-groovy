@@ -16,9 +16,9 @@
 package org.jetbrains.plugins.groovy.lang
 
 import com.intellij.openapi.util.RecursionManager
-import com.intellij.psi.PsiClass
-import com.intellij.psi.PsiDocumentManager
-import com.intellij.psi.PsiFile
+import com.intellij.java.language.psi.PsiClass
+import com.intellij.java.language.psi.PsiDocumentManager
+import com.intellij.java.language.psi.PsiFile
 import com.intellij.testFramework.IdeaTestUtil
 import com.intellij.util.ThrowableRunnable
 import org.jetbrains.plugins.groovy.LightGroovyTestCase

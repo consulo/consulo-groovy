@@ -18,14 +18,16 @@ import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlock;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 
+import javax.annotation.Nullable;
+
 /**
  * @author Maxim.Medvedev
  */
 public interface GrStringInjection extends GroovyPsiElement {
   GrStringInjection[] EMPTY_ARRAY = new GrStringInjection[0];
-  @javax.annotation.Nullable
+  @Nullable
   GrClosableBlock getClosableBlock();
 
-  @javax.annotation.Nullable
+  @Nullable
   GrExpression getExpression();
 }

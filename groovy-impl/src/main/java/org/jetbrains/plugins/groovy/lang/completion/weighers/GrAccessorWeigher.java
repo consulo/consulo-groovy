@@ -15,19 +15,24 @@
  */
 package org.jetbrains.plugins.groovy.lang.completion.weighers;
 
-import com.intellij.codeInsight.completion.CompletionLocation;
-import com.intellij.codeInsight.completion.CompletionWeigher;
-import com.intellij.codeInsight.lookup.LookupElement;
-import com.intellij.psi.PsiMethod;
-import com.intellij.psi.ResolveResult;
+import consulo.language.editor.completion.CompletionLocation;
+import consulo.language.editor.completion.CompletionWeigher;
+import consulo.language.editor.completion.lookup.LookupElement;
+import com.intellij.java.language.psi.PsiMethod;
+import consulo.language.psi.ResolveResult;
 import javax.annotation.Nonnull;
+
+import consulo.language.editor.completion.CompletionWeigher;
+import consulo.language.editor.completion.lookup.LookupElement;
+import consulo.language.psi.ResolveResult;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFileBase;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyPropertyUtils;
 
 /**
  * @author Max Medvedev
  */
-public class GrAccessorWeigher extends CompletionWeigher {
+public class GrAccessorWeigher extends CompletionWeigher
+{
   @Override
   public Integer weigh(@Nonnull LookupElement element, @Nonnull CompletionLocation location) {
     if (!(location.getCompletionParameters().getPosition().getContainingFile() instanceof GroovyFileBase)) {

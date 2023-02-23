@@ -15,10 +15,10 @@
  */
 package org.jetbrains.plugins.groovy.intentions.comments;
 
-import com.intellij.psi.PsiComment;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.javadoc.PsiDocComment;
-import com.intellij.psi.tree.IElementType;
+import consulo.language.psi.PsiComment;
+import consulo.language.psi.PsiElement;
+import com.intellij.java.language.psi.javadoc.PsiDocComment;
+import consulo.language.ast.IElementType;
 import org.jetbrains.plugins.groovy.intentions.base.PsiElementPredicate;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 

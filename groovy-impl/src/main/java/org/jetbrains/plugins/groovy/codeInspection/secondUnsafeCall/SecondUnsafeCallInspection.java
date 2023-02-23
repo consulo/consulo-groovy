@@ -16,10 +16,11 @@
 package org.jetbrains.plugins.groovy.codeInspection.secondUnsafeCall;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
-import com.intellij.codeInspection.ProblemsHolder;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiElementVisitor;
+import consulo.language.editor.inspection.ProblemsHolder;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiElementVisitor;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.plugins.groovy.annotator.inspections.SecondUnsafeCallQuickFix;
@@ -50,7 +51,7 @@ public class SecondUnsafeCallInspection extends GroovySuppressableInspectionTool
     checkForSecondUnsafeCall(expression, holder, null);
   }
 
-  private static void checkForSecondUnsafeCall(GrExpression expression, ProblemsHolder holder, @javax.annotation.Nullable PsiElement highlightElement) {
+  private static void checkForSecondUnsafeCall(GrExpression expression, ProblemsHolder holder, @Nullable PsiElement highlightElement) {
     if (highlightElement == null) highlightElement = expression;
 
     final GrReferenceExpression referenceExpression = (GrReferenceExpression)expression;

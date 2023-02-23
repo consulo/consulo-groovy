@@ -16,19 +16,15 @@
 
 package org.jetbrains.plugins.groovy.refactoring.introduce.variable;
 
-import java.awt.BorderLayout;
-import java.awt.FlowLayout;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.util.LinkedHashSet;
-
-import javax.annotation.Nonnull;
-import javax.swing.JCheckBox;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-
-import javax.annotation.Nullable;
+import com.intellij.java.impl.refactoring.HelpID;
+import com.intellij.java.language.psi.PsiType;
+import consulo.application.HelpManager;
+import consulo.language.editor.refactoring.ui.NameSuggestionsField;
+import consulo.project.Project;
+import consulo.ui.ex.awt.DialogWrapper;
+import consulo.ui.ex.awt.GridBag;
+import consulo.ui.ex.awt.UIUtil;
+import consulo.ui.ex.awt.ValidationInfo;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyNamesUtil;
@@ -37,15 +33,12 @@ import org.jetbrains.plugins.groovy.refactoring.introduce.GrIntroduceContext;
 import org.jetbrains.plugins.groovy.refactoring.introduce.GrIntroduceDialog;
 import org.jetbrains.plugins.groovy.refactoring.ui.GrTypeComboBox;
 import org.jetbrains.plugins.groovy.settings.GroovyApplicationSettings;
-import com.intellij.openapi.help.HelpManager;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.ui.DialogWrapper;
-import com.intellij.openapi.ui.ValidationInfo;
-import com.intellij.psi.PsiType;
-import com.intellij.refactoring.HelpID;
-import com.intellij.refactoring.ui.NameSuggestionsField;
-import com.intellij.util.ui.GridBag;
-import com.intellij.util.ui.UIUtil;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.swing.*;
+import java.awt.*;
+import java.util.LinkedHashSet;
 
 public class GroovyIntroduceVariableDialog extends DialogWrapper implements GrIntroduceDialog<GroovyIntroduceVariableSettings> {
   private static final String REFACTORING_NAME = GroovyRefactoringBundle.message("introduce.variable.title");
@@ -131,7 +124,8 @@ public class GroovyIntroduceVariableDialog extends DialogWrapper implements GrIn
     c.nextLine().next().weightx(0).fillCellNone();
     namePanel.add(typeLabel, c);
 
-    myTypeComboBox = GrTypeComboBox.createTypeComboBoxFromExpression(myExpression, GroovyApplicationSettings.getInstance().INTRODUCE_LOCAL_SELECT_DEF);
+    myTypeComboBox =
+      GrTypeComboBox.createTypeComboBoxFromExpression(myExpression, GroovyApplicationSettings.getInstance().INTRODUCE_LOCAL_SELECT_DEF);
     c.next().weightx(1).fillCellHorizontally();
     namePanel.add(myTypeComboBox, c);
     typeLabel.setLabelFor(myTypeComboBox);

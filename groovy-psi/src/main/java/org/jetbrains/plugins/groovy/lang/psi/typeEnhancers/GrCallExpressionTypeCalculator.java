@@ -15,21 +15,25 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.typeEnhancers;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.intellij.java.language.psi.PsiMethod;
+import com.intellij.java.language.psi.PsiType;
+import consulo.annotation.component.ComponentScope;
+import consulo.annotation.component.ExtensionAPI;
+import consulo.component.extension.ExtensionPointName;
+import consulo.language.psi.PsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrMethodCall;
-import com.intellij.openapi.extensions.ExtensionPointName;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiMethod;
-import com.intellij.psi.PsiType;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author sergey.evdokimov
  */
+@ExtensionAPI(ComponentScope.APPLICATION)
 public abstract class GrCallExpressionTypeCalculator {
 
-  public static final ExtensionPointName<GrCallExpressionTypeCalculator> EP_NAME = ExtensionPointName.create("org.intellij.groovy.callExpressionTypeCalculator");
+  public static final ExtensionPointName<GrCallExpressionTypeCalculator> EP_NAME = ExtensionPointName.create(GrCallExpressionTypeCalculator.class);
 
   @Nullable
   protected PsiType calculateReturnType(@Nonnull GrMethodCall callExpression, @Nonnull PsiMethod resolvedMethod) {
@@ -37,7 +41,7 @@ public abstract class GrCallExpressionTypeCalculator {
   }
 
   @Nullable
-  protected PsiType calculateReturnType(@Nonnull GrMethodCall callExpression, @javax.annotation.Nullable PsiElement resolve) {
+  protected PsiType calculateReturnType(@Nonnull GrMethodCall callExpression, @Nullable PsiElement resolve) {
     if (resolve instanceof PsiMethod) {
       return calculateReturnType(callExpression, (PsiMethod)resolve);
     }

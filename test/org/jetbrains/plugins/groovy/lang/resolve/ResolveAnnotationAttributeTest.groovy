@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.lang.resolve
 
-import com.intellij.psi.PsiPolyVariantReference
+import com.intellij.java.language.psi.PsiPolyVariantReference
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrAnnotationMethod
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod

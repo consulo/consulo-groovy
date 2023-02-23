@@ -15,8 +15,8 @@
  */
 package org.jetbrains.plugins.groovy
 
-import com.intellij.psi.PsiElement
-import com.intellij.psi.util.PsiTreeUtil
+import com.intellij.java.language.psi.PsiElement
+import com.intellij.java.language.psi.util.PsiTreeUtil
 import com.intellij.testFramework.fixtures.LightCodeInsightFixtureTestCase
 import org.jetbrains.annotations.NotNull
 import org.jetbrains.plugins.groovy.codeInspection.utils.ControlFlowUtils

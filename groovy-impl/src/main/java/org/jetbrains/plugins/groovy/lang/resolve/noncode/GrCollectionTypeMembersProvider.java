@@ -15,20 +15,23 @@
  */
 package org.jetbrains.plugins.groovy.lang.resolve.noncode;
 
+import com.intellij.java.language.impl.psi.impl.light.LightFieldBuilder;
+import com.intellij.java.language.impl.psi.scope.ElementClassHint;
+import com.intellij.java.language.impl.psi.scope.NameHint;
+import com.intellij.java.language.psi.*;
+import com.intellij.java.language.psi.util.PsiUtil;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.resolve.DelegatingScopeProcessor;
+import consulo.language.psi.resolve.PsiScopeProcessor;
+import consulo.language.psi.resolve.ResolveState;
 import consulo.util.dataholder.Key;
-import com.intellij.psi.*;
-import com.intellij.psi.impl.light.LightFieldBuilder;
-import com.intellij.psi.scope.DelegatingScopeProcessor;
-import com.intellij.psi.scope.ElementClassHint;
-import com.intellij.psi.scope.NameHint;
-import com.intellij.psi.scope.PsiScopeProcessor;
-import com.intellij.psi.util.PsiUtil;
-import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.resolve.NonCodeMembersContributor;
 import org.jetbrains.plugins.groovy.lang.resolve.ResolveUtil;
 import org.jetbrains.plugins.groovy.lang.resolve.processors.ClassHint;
 
-import static com.intellij.psi.CommonClassNames.JAVA_UTIL_COLLECTION;
+import javax.annotation.Nonnull;
+
+import static com.intellij.java.language.psi.CommonClassNames.JAVA_UTIL_COLLECTION;
 
 /**
  * @author Maxim.Medvedev

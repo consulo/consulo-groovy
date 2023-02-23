@@ -15,14 +15,14 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.synthetic;
 
-import javax.annotation.Nonnull;
-
+import com.intellij.java.language.psi.PsiType;
+import consulo.language.impl.psi.LightElement;
+import consulo.language.psi.PsiManager;
 import org.jetbrains.plugins.groovy.GroovyLanguage;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeElement;
-import com.intellij.psi.PsiManager;
-import com.intellij.psi.PsiType;
-import com.intellij.psi.impl.light.LightElement;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author Max Medvedev

@@ -15,18 +15,17 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.convertToJava;
 
-import com.intellij.codeInsight.generation.OverrideImplementUtil;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.*;
-import com.intellij.psi.impl.light.LightElement;
-import com.intellij.psi.impl.light.LightMethodBuilder;
-import com.intellij.psi.util.MethodSignature;
-import com.intellij.psi.util.MethodSignatureBackedByPsiMethod;
-import com.intellij.psi.util.PsiUtil;
-import com.intellij.psi.util.TypeConversionUtil;
-import com.intellij.util.ArrayUtil;
-import com.intellij.util.containers.ContainerUtil;
+import com.intellij.java.impl.codeInsight.generation.OverrideImplementUtil;
+import com.intellij.java.language.impl.psi.impl.light.LightMethodBuilder;
+import com.intellij.java.language.psi.*;
+import com.intellij.java.language.psi.util.MethodSignature;
+import com.intellij.java.language.psi.util.MethodSignatureBackedByPsiMethod;
+import com.intellij.java.language.psi.util.PsiUtil;
+import com.intellij.java.language.psi.util.TypeConversionUtil;
+import consulo.language.impl.psi.LightElement;
+import consulo.language.psi.PsiElement;
+import consulo.logging.Logger;
+import consulo.util.lang.StringUtil;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.GrModifierList;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrConstructorInvocation;
@@ -181,7 +180,10 @@ public class StubGenerator implements ClassItemGenerator {
     for (PsiMethod method : constructors) {
       if (PsiUtil.isAccessible(method, containingClass, containingClass)) {
         text.append("super(");
-        writeStubConstructorInvocation(text, method, TypeConversionUtil.getSuperClassSubstitutor(superClass, containingClass, PsiSubstitutor.EMPTY), constructor);
+        writeStubConstructorInvocation(text,
+                                       method,
+                                       TypeConversionUtil.getSuperClassSubstitutor(superClass, containingClass, PsiSubstitutor.EMPTY),
+                                       constructor);
         text.append(");");
         return;
       }
@@ -192,7 +194,7 @@ public class StubGenerator implements ClassItemGenerator {
     LOG.assertTrue(constructor.isConstructor());
 
     final GroovyResolveResult resolveResult = constructor instanceof GrMethod ? resolveChainingConstructor((GrMethod)constructor) : null;
-    
+
     if (resolveResult == null) {
       return Collections.emptySet();
     }
@@ -206,7 +208,7 @@ public class StubGenerator implements ClassItemGenerator {
       return Collections.emptySet();
     }
 
-    final Set<String> result = ContainerUtil.newTroveSet(ArrayUtil.EMPTY_STRING_ARRAY);
+    final Set<String> result = new LinkedHashSet<>();
     for (PsiClassType type : chainedConstructor.getThrowsList().getReferencedTypes()) {
       StringBuilder builder = new StringBuilder();
       writeType(builder, substitutor.substitute(type), constructor, classNameProvider);
@@ -249,8 +251,8 @@ public class StubGenerator implements ClassItemGenerator {
       for (MethodSignatureBackedByPsiMethod superSignature : superSignatures) {
         final PsiType superType = superSignature.getSubstitutor().substitute(superSignature.getMethod().getReturnType());
         if (superType != null &&
-            !superType.isAssignableFrom(retType) &&
-            !(PsiUtil.resolveClassInType(superType) instanceof PsiTypeParameter)) {
+          !superType.isAssignableFrom(retType) &&
+          !(PsiUtil.resolveClassInType(superType) instanceof PsiTypeParameter)) {
           retType = superType;
         }
       }
@@ -328,9 +330,9 @@ public class StubGenerator implements ClassItemGenerator {
       methods.add(method);
     }
     boolean isClass = !typeDefinition.isInterface() &&
-                      !typeDefinition.isAnnotationType() &&
-                      !typeDefinition.isEnum() &&
-                      !(typeDefinition instanceof GroovyScriptClass);
+      !typeDefinition.isAnnotationType() &&
+      !typeDefinition.isEnum() &&
+      !(typeDefinition instanceof GroovyScriptClass);
     if (isClass) {
       final Collection<MethodSignature> toOverride = OverrideImplementUtil.getMethodSignaturesToOverride(typeDefinition);
       for (MethodSignature signature : toOverride) {
@@ -340,8 +342,8 @@ public class StubGenerator implements ClassItemGenerator {
         final PsiClass baseClass = method.getContainingClass();
         if (baseClass == null) continue;
         final String qname = baseClass.getQualifiedName();
-		  if (DEFAULT_BASE_CLASS_NAME.equals(qname) || GROOVY_OBJECT_SUPPORT.equals(qname) ||
-            method.hasModifierProperty(PsiModifier.ABSTRACT) && typeDefinition.isInheritor(baseClass, true)) {
+        if (DEFAULT_BASE_CLASS_NAME.equals(qname) || GROOVY_OBJECT_SUPPORT.equals(qname) ||
+          method.hasModifierProperty(PsiModifier.ABSTRACT) && typeDefinition.isInheritor(baseClass, true)) {
           if (method.isConstructor()) continue;
           methods.add(mirrorMethod(typeDefinition, method, baseClass, signature.getSubstitutor()));
         }
@@ -417,7 +419,7 @@ public class StubGenerator implements ClassItemGenerator {
     if (declaredType instanceof PsiPrimitiveType) {
       Object eval = GroovyConstantExpressionEvaluator.evaluate(variable.getInitializerGroovy());
       if (eval instanceof Float ||
-          PsiType.FLOAT.equals(TypesUtil.unboxPrimitiveTypeWrapper(variable.getType())) && eval instanceof Number) {
+        PsiType.FLOAT.equals(TypesUtil.unboxPrimitiveTypeWrapper(variable.getType())) && eval instanceof Number) {
         return eval.toString() + "f";
       }
       else if (eval instanceof Character) {

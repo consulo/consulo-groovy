@@ -15,13 +15,14 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.bugs;
 
-import javax.annotation.Nonnull;
-
-import com.intellij.psi.PsiModifier;
+import com.intellij.java.language.psi.PsiModifier;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class GroovyInfiniteRecursionInspection extends BaseInspection {
 
@@ -37,7 +38,7 @@ public class GroovyInfiniteRecursionInspection extends BaseInspection {
     return "Infinite recursion";
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   protected String buildErrorString(Object... args) {
     return "<code>#ref</code> recurses infinitely, and can only complete by throwing an exception #loc";
 

@@ -16,8 +16,9 @@
 
 package org.jetbrains.plugins.groovy.intentions;
 
+import consulo.component.util.localize.AbstractBundle;
 import org.jetbrains.annotations.PropertyKey;
-import com.intellij.AbstractBundle;
+import consulo.component.util.localize.AbstractBundle;
 
 /**
  * @author ilyas

@@ -16,10 +16,13 @@
 
 package org.jetbrains.plugins.groovy.mvc.projectView;
 
-import com.intellij.ide.projectView.PresentationData;
-import com.intellij.ide.projectView.ViewSettings;
-import com.intellij.openapi.module.Module;
-import com.intellij.psi.PsiElement;
+import consulo.language.psi.PsiElement;
+import consulo.module.Module;
+import consulo.ui.ex.tree.PresentationData;
+import consulo.project.ui.view.tree.ViewSettings;
+import consulo.module.Module;
+import consulo.language.psi.PsiElement;
+import consulo.ui.ex.tree.PresentationData;
 import consulo.ui.image.Image;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;

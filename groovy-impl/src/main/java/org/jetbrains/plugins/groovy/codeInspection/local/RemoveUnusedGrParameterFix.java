@@ -1,15 +1,14 @@
 package org.jetbrains.plugins.groovy.codeInspection.local;
 
-import com.intellij.codeInsight.FileModificationService;
-import com.intellij.codeInsight.intention.IntentionAction;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.refactoring.util.CanonicalTypes;
-import com.intellij.util.IncorrectOperationException;
-import javax.annotation.Nonnull;
+import com.intellij.java.impl.refactoring.util.CanonicalTypes;
+import consulo.codeEditor.Editor;
+import consulo.language.editor.FileModificationService;
+import consulo.language.editor.intention.IntentionAction;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.language.util.IncorrectOperationException;
+import consulo.project.Project;
 import org.jetbrains.plugins.groovy.intentions.GroovyIntentionsBundle;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameter;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
@@ -18,6 +17,7 @@ import org.jetbrains.plugins.groovy.refactoring.changeSignature.GrChangeInfoImpl
 import org.jetbrains.plugins.groovy.refactoring.changeSignature.GrChangeSignatureProcessor;
 import org.jetbrains.plugins.groovy.refactoring.changeSignature.GrParameterInfo;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,7 +38,6 @@ public class RemoveUnusedGrParameterFix implements IntentionAction {
   }
 
   @Nonnull
-  @Override
   public String getFamilyName() {
     return GroovyIntentionsBundle.message("remove.unused.parameter");
   }

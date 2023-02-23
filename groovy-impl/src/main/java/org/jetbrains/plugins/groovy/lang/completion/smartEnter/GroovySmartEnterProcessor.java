@@ -15,19 +15,23 @@
  */
 package org.jetbrains.plugins.groovy.lang.completion.smartEnter;
 
-import com.intellij.lang.SmartEnterProcessorWithFixers;
-import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.psi.*;
-import com.intellij.psi.codeStyle.CodeStyleSettings;
-import com.intellij.psi.codeStyle.CodeStyleSettingsManager;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.psi.util.PsiUtilCore;
-import com.intellij.util.IncorrectOperationException;
-import com.intellij.util.containers.OrderedSet;
-import com.intellij.util.text.CharArrayUtil;
-import javax.annotation.Nonnull;
-
+import com.intellij.java.language.psi.PsiClass;
+import com.intellij.java.language.psi.PsiMethod;
+import consulo.codeEditor.Editor;
+import consulo.document.Document;
+import consulo.language.Language;
+import consulo.language.codeStyle.CodeStyleSettings;
+import consulo.language.codeStyle.CodeStyleSettingsManager;
+import consulo.language.editor.action.SmartEnterProcessorWithFixers;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.PsiUtilCore;
+import consulo.language.psi.PsiWhiteSpace;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.language.util.IncorrectOperationException;
+import consulo.util.collection.OrderedSet;
+import consulo.util.lang.CharArrayUtil;
+import org.jetbrains.plugins.groovy.GroovyLanguage;
 import org.jetbrains.plugins.groovy.lang.completion.smartEnter.fixers.*;
 import org.jetbrains.plugins.groovy.lang.completion.smartEnter.processors.GroovyPlainEnterProcessor;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocComment;
@@ -46,6 +50,8 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefini
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -152,7 +158,7 @@ public class GroovySmartEnterProcessor extends SmartEnterProcessorWithFixers {
   }
 
   @Override
-  @javax.annotation.Nullable
+  @Nullable
   protected PsiElement getStatementAtCaret(Editor editor, PsiFile psiFile) {
     PsiElement atCaret = super.getStatementAtCaret(editor, psiFile);
 
@@ -167,7 +173,8 @@ public class GroovySmartEnterProcessor extends SmartEnterProcessorWithFixers {
   }
 
   @Override
-  protected void moveCaretInsideBracesIfAny(@Nonnull final Editor editor, @Nonnull final PsiFile file) throws IncorrectOperationException {
+  protected void moveCaretInsideBracesIfAny(@Nonnull final Editor editor, @Nonnull final PsiFile file) throws IncorrectOperationException
+  {
     int caretOffset = editor.getCaretModel().getOffset();
     final CharSequence chars = editor.getDocument().getCharsSequence();
 
@@ -209,5 +216,11 @@ public class GroovySmartEnterProcessor extends SmartEnterProcessorWithFixers {
       psiChild = psiChild.getNextSibling();
     }
     return PsiUtilCore.toPsiElementArray(result);
+  }
+
+  @Nonnull
+  @Override
+  public Language getLanguage() {
+    return GroovyLanguage.INSTANCE;
   }
 }

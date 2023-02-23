@@ -19,10 +19,11 @@ import java.util.EnumSet;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
+import consulo.language.psi.resolve.ResolveState;
 import consulo.util.dataholder.Key;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.ResolveState;
-import com.intellij.psi.scope.PsiScopeProcessor;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.resolve.PsiScopeProcessor;
 
 /**
  * Created by Max Medvedev on 31/03/14
@@ -33,7 +34,7 @@ public class GrDelegatingScopeProcessorWithHints extends GrScopeProcessorWithHin
 
 	public GrDelegatingScopeProcessorWithHints(@Nonnull PsiScopeProcessor delegate,
 			@Nullable String name,
-			@javax.annotation.Nullable EnumSet<ClassHint.ResolveKind> resolveTargets)
+			@Nullable EnumSet<ClassHint.ResolveKind> resolveTargets)
 	{
 		super(name, resolveTargets);
 		myDelegate = delegate;

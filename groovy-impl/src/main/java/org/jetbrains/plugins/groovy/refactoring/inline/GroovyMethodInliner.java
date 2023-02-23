@@ -16,28 +16,30 @@
 
 package org.jetbrains.plugins.groovy.refactoring.inline;
 
-import com.intellij.lang.refactoring.InlineHandler;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.editor.RangeMarker;
-import com.intellij.openapi.fileEditor.FileEditorManager;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.openapi.wm.WindowManager;
-import com.intellij.psi.*;
-import com.intellij.psi.codeStyle.CodeStyleManager;
-import com.intellij.psi.codeStyle.JavaCodeStyleManager;
-import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.psi.search.searches.ReferencesSearch;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.refactoring.util.CommonRefactoringUtil;
-import com.intellij.usageView.UsageInfo;
-import com.intellij.util.ArrayUtil;
-import com.intellij.util.IncorrectOperationException;
-import com.intellij.util.containers.MultiMap;
-import javax.annotation.Nonnull;
-
+import com.intellij.java.language.psi.CommonClassNames;
+import com.intellij.java.language.psi.PsiField;
+import com.intellij.java.language.psi.PsiMethod;
+import com.intellij.java.language.psi.PsiType;
+import com.intellij.java.language.psi.codeStyle.JavaCodeStyleManager;
+import consulo.codeEditor.Editor;
+import consulo.document.Document;
+import consulo.document.RangeMarker;
+import consulo.document.util.TextRange;
+import consulo.fileEditor.FileEditorManager;
+import consulo.language.codeStyle.CodeStyleManager;
+import consulo.language.editor.refactoring.inline.InlineHandler;
+import consulo.language.editor.refactoring.util.CommonRefactoringUtil;
+import consulo.language.psi.*;
+import consulo.language.psi.scope.GlobalSearchScope;
+import consulo.language.psi.search.ReferencesSearch;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.language.util.IncorrectOperationException;
+import consulo.logging.Logger;
+import consulo.project.Project;
+import consulo.project.ui.wm.WindowManager;
+import consulo.usage.UsageInfo;
+import consulo.util.collection.ArrayUtil;
+import consulo.util.collection.MultiMap;
 import org.jetbrains.plugins.groovy.codeInspection.utils.ControlFlowUtils;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
@@ -64,6 +66,8 @@ import org.jetbrains.plugins.groovy.refactoring.GroovyRefactoringUtil;
 import org.jetbrains.plugins.groovy.refactoring.NameValidator;
 import org.jetbrains.plugins.groovy.refactoring.util.AnySupers;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -79,7 +83,7 @@ public class GroovyMethodInliner implements InlineHandler.Inliner {
     myMethod = method;
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   public MultiMap<PsiElement, String> getConflicts(@Nonnull PsiReference reference, @Nonnull PsiElement referenced) {
     PsiElement element = reference.getElement();
     if (!(element instanceof GrExpression && element.getParent() instanceof GrCallExpression)) {
@@ -145,7 +149,7 @@ public class GroovyMethodInliner implements InlineHandler.Inliner {
     }
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   private static Editor getCurrentEditorIfApplicable(@Nonnull PsiElement element) {
     final Project project = element.getProject();
     final Editor editor = FileEditorManager.getInstance(project).getSelectedTextEditor();
@@ -158,12 +162,12 @@ public class GroovyMethodInliner implements InlineHandler.Inliner {
     return null;
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   static RangeMarker inlineReferenceImpl(@Nonnull GrCallExpression call,
                                          @Nonnull GrMethod method,
                                          boolean resultOfCallExplicitlyUsed,
                                          boolean isTailMethodCall,
-                                         @javax.annotation.Nullable Editor editor) {
+                                         @Nullable Editor editor) {
     try {
       GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(call.getProject());
       final Project project = call.getProject();
@@ -317,7 +321,7 @@ public class GroovyMethodInliner implements InlineHandler.Inliner {
   }
 
   @Nonnull
-  private static String generateQualifierName(@Nonnull GrCallExpression call, @javax.annotation.Nullable GrMethod method, @Nonnull final Project project, @Nonnull GrExpression qualifier) {
+  private static String generateQualifierName(@Nonnull GrCallExpression call, @Nullable GrMethod method, @Nonnull final Project project, @Nonnull GrExpression qualifier) {
     String[] possibleNames = GroovyNameSuggestionUtil.suggestVariableNames(qualifier, new NameValidator() {
       public String validateName(String name, boolean increaseNumber) {
         return name;
@@ -332,7 +336,8 @@ public class GroovyMethodInliner implements InlineHandler.Inliner {
     return qualName;
   }
 
-  private static void reformatOwner(@javax.annotation.Nullable GrVariableDeclarationOwner owner) throws IncorrectOperationException {
+  private static void reformatOwner(@Nullable GrVariableDeclarationOwner owner) throws IncorrectOperationException
+  {
     if (owner == null) return;
     PsiFile file = owner.getContainingFile();
     Project project = file.getProject();
@@ -349,7 +354,7 @@ public class GroovyMethodInliner implements InlineHandler.Inliner {
    * Prepare temporary method with non-conflicting local names
    */
   @Nonnull
-  private static GrMethod prepareNewMethod(@Nonnull GrCallExpression call, @Nonnull GrMethod method, @javax.annotation.Nullable GrExpression qualifier) throws IncorrectOperationException {
+  private static GrMethod prepareNewMethod(@Nonnull GrCallExpression call, @Nonnull GrMethod method, @Nullable GrExpression qualifier) throws IncorrectOperationException {
     GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(method.getProject());
 
     if (method instanceof GrReflectedMethod) {
@@ -389,7 +394,7 @@ public class GroovyMethodInliner implements InlineHandler.Inliner {
     return newMethod;
   }
 
-  private static void collectInnerDefinitions(@javax.annotation.Nullable PsiElement element, ArrayList<PsiNamedElement> defintions) {
+  private static void collectInnerDefinitions(@Nullable PsiElement element, ArrayList<PsiNamedElement> defintions) {
     if (element == null) return;
     for (PsiElement child : element.getChildren()) {
       if (child instanceof GrVariable && !(child instanceof GrParameter)) {
@@ -406,7 +411,7 @@ public class GroovyMethodInliner implements InlineHandler.Inliner {
    *
    * @return null if method has more or less than one return statement or has void type
    */
-  @javax.annotation.Nullable
+  @Nullable
   static GrExpression getAloneResultExpression(@Nonnull GrMethod method) {
     GrOpenBlock body = method.getBlock();
     assert body != null;

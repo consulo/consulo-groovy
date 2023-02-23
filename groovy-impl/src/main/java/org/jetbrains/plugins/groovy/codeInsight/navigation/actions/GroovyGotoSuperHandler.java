@@ -15,32 +15,38 @@
  */
 package org.jetbrains.plugins.groovy.codeInsight.navigation.actions;
 
-import com.intellij.codeInsight.CodeInsightBundle;
-import com.intellij.codeInsight.navigation.GotoTargetHandler;
-import com.intellij.codeInsight.navigation.actions.GotoSuperAction;
-import com.intellij.lang.LanguageCodeInsightActionHandler;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.*;
-import com.intellij.psi.util.PsiSuperMethodUtil;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.IncorrectOperationException;
-import com.intellij.util.containers.ContainerUtil;
-import javax.annotation.Nonnull;
-
+import com.intellij.java.language.psi.CommonClassNames;
+import com.intellij.java.language.psi.PsiClass;
+import com.intellij.java.language.psi.PsiMember;
+import com.intellij.java.language.psi.PsiMethod;
+import com.intellij.java.language.psi.util.PsiSuperMethodUtil;
+import consulo.codeEditor.Editor;
+import consulo.ide.impl.idea.codeInsight.navigation.GotoTargetHandler;
+import consulo.ide.impl.idea.codeInsight.navigation.actions.GotoSuperAction;
+import consulo.language.Language;
+import consulo.language.editor.CodeInsightBundle;
+import consulo.language.editor.action.GotoSuperActionHander;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.language.util.IncorrectOperationException;
+import consulo.logging.Logger;
+import consulo.project.Project;
 import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.GroovyFileType;
+import org.jetbrains.plugins.groovy.GroovyLanguage;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrAccessorMethod;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyPropertyUtils;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.*;
 
 /**
  * @author Medvedev Max
  */
-public class GroovyGotoSuperHandler extends GotoTargetHandler implements LanguageCodeInsightActionHandler {
+public class GroovyGotoSuperHandler extends GotoTargetHandler implements GotoSuperActionHander {
 
   private static final Logger LOG = Logger.getInstance(GroovyGotoSuperHandler.class);
 
@@ -76,11 +82,12 @@ public class GroovyGotoSuperHandler extends GotoTargetHandler implements Languag
       return GroovyBundle.message("no.super.method.found");
     }
     else {
-      throw new IncorrectOperationException("incorrect element is found: " + (source == null ? "null" : source.getClass().getCanonicalName()));
+      throw new IncorrectOperationException("incorrect element is found: " + (source == null ? "null" : source.getClass()
+                                                                                                              .getCanonicalName()));
     }
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   private static PsiMember findSource(Editor editor, PsiFile file) {
     PsiElement element = file.findElementAt(editor.getCaretModel().getOffset());
     if (element == null) return null;
@@ -95,7 +102,7 @@ public class GroovyGotoSuperHandler extends GotoTargetHandler implements Languag
         PsiClass superClass = iterator.next();
         if (CommonClassNames.JAVA_LANG_OBJECT.equals(superClass.getQualifiedName())) iterator.remove();
       }
-      return ContainerUtil.toArray(allSupers, new PsiClass[allSupers.size()]);
+      return allSupers.toArray(new PsiClass[allSupers.size()]);
     }
     else if (e instanceof PsiMethod) {
       return getSupers((PsiMethod)e);
@@ -106,7 +113,7 @@ public class GroovyGotoSuperHandler extends GotoTargetHandler implements Languag
       for (GrAccessorMethod method : GroovyPropertyUtils.getFieldAccessors((GrField)e)) {
         supers.addAll(Arrays.asList(getSupers(method)));
       }
-      return ContainerUtil.toArray(supers, new PsiMethod[supers.size()]);
+      return supers.toArray(new PsiMethod[supers.size()]);
     }
   }
 
@@ -132,5 +139,11 @@ public class GroovyGotoSuperHandler extends GotoTargetHandler implements Languag
   @Override
   public boolean isValidFor(Editor editor, PsiFile file) {
     return file != null && GroovyFileType.GROOVY_FILE_TYPE.equals(file.getFileType());
+  }
+
+  @Nonnull
+  @Override
+  public Language getLanguage() {
+    return GroovyLanguage.INSTANCE;
   }
 }

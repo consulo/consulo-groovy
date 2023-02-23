@@ -24,7 +24,7 @@ public class ClosureParameterInfo
 {
 	private final String myName;
 
-	@javax.annotation.Nullable
+	@Nullable
 	private final String myType;
 
 	public ClosureParameterInfo(@Nullable String type, String name)

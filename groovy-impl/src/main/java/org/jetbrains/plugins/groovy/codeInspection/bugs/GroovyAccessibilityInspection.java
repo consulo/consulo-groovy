@@ -15,79 +15,69 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.bugs;
 
-import javax.annotation.Nonnull;
-
+import consulo.language.editor.inspection.scheme.InspectionProfile;
+import consulo.language.editor.inspection.scheme.InspectionProjectProfileManager;
+import consulo.language.editor.rawHighlight.HighlightDisplayKey;
+import consulo.language.editor.rawHighlight.HighlightDisplayLevel;
+import consulo.language.psi.PsiElement;
+import consulo.project.Project;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.codeInspection.GroovyInspectionBundle;
 import org.jetbrains.plugins.groovy.codeInspection.GroovySuppressableInspectionTool;
 import org.jetbrains.plugins.groovy.lang.psi.GrReferenceElement;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFileBase;
-import com.intellij.codeHighlighting.HighlightDisplayLevel;
-import com.intellij.codeInsight.daemon.HighlightDisplayKey;
-import com.intellij.codeInspection.InspectionProfile;
-import com.intellij.openapi.project.Project;
-import com.intellij.profile.codeInspection.InspectionProjectProfileManager;
-import com.intellij.psi.PsiElement;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author Maxim.Medvedev
  */
-public class GroovyAccessibilityInspection extends GroovySuppressableInspectionTool
-{
-	private static final String SHORT_NAME = "GroovyAccessibility";
+public class GroovyAccessibilityInspection extends GroovySuppressableInspectionTool {
+  private static final String SHORT_NAME = "GroovyAccessibility";
 
-	@Nls
-	@Nonnull
-	@Override
-	public String getGroupDisplayName()
-	{
-		return BaseInspection.PROBABLE_BUGS;
-	}
+  @Nls
+  @Nonnull
+  @Override
+  public String getGroupDisplayName() {
+    return BaseInspection.PROBABLE_BUGS;
+  }
 
-	@Nls
-	@Nonnull
-	@Override
-	public String getDisplayName()
-	{
-		return GroovyInspectionBundle.message("access.to.inaccessible.element");
-	}
+  @Nls
+  @Nonnull
+  @Override
+  public String getDisplayName() {
+    return GroovyInspectionBundle.message("access.to.inaccessible.element");
+  }
 
-	@Override
-	public boolean isEnabledByDefault()
-	{
-		return true;
-	}
+  @Override
+  public boolean isEnabledByDefault() {
+    return true;
+  }
 
-	public static boolean isInspectionEnabled(GroovyFileBase file, Project project)
-	{
-		return getInspectionProfile(project).isToolEnabled(findDisplayKey(), file);
-	}
+  public static boolean isInspectionEnabled(GroovyFileBase file, Project project) {
+    return getInspectionProfile(project).isToolEnabled(findDisplayKey(), file);
+  }
 
-	public static GroovyAccessibilityInspection getInstance(GroovyFileBase file, Project project)
-	{
-		return (GroovyAccessibilityInspection) getInspectionProfile(project).getUnwrappedTool(SHORT_NAME, file);
-	}
+  public static GroovyAccessibilityInspection getInstance(GroovyFileBase file, Project project) {
+    return (GroovyAccessibilityInspection)getInspectionProfile(project).getUnwrappedTool(SHORT_NAME, file);
+  }
 
-	public static HighlightDisplayKey findDisplayKey()
-	{
-		return HighlightDisplayKey.find(SHORT_NAME);
-	}
+  public static HighlightDisplayKey findDisplayKey() {
+    return HighlightDisplayKey.find(SHORT_NAME);
+  }
 
-	public static HighlightDisplayLevel getHighlightDisplayLevel(Project project, GrReferenceElement ref)
-	{
-		return getInspectionProfile(project).getErrorLevel(findDisplayKey(), ref);
-	}
+  public static HighlightDisplayLevel getHighlightDisplayLevel(Project project, GrReferenceElement ref) {
+    return getInspectionProfile(project).getErrorLevel(findDisplayKey(), ref);
+  }
 
-	@Nonnull
-	private static InspectionProfile getInspectionProfile(@Nonnull Project project)
-	{
-		return InspectionProjectProfileManager.getInstance(project).getInspectionProfile();
-	}
+  @Nonnull
+  private static InspectionProfile getInspectionProfile(@Nonnull Project project) {
+    return InspectionProjectProfileManager.getInstance(project).getInspectionProfile();
+  }
 
-	public static boolean isSuppressed(PsiElement ref)
-	{
-		return isElementToolSuppressedIn(ref, SHORT_NAME);
-	}
+  public static boolean isSuppressed(PsiElement ref) {
+    return isElementToolSuppressedIn(ref, SHORT_NAME);
+  }
 
 }

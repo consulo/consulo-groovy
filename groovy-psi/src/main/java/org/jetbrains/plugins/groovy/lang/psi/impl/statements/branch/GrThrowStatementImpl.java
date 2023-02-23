@@ -22,7 +22,7 @@ import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.branch.GrThrowStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyPsiElementImpl;
-import com.intellij.lang.ASTNode;
+import consulo.language.ast.ASTNode;
 
 /**
  * @author ilyas

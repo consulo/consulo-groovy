@@ -17,7 +17,8 @@ package org.jetbrains.plugins.groovy.codeInspection.metrics;
 
 import javax.annotation.Nonnull;
 
-import com.intellij.psi.tree.IElementType;
+import consulo.language.ast.IElementType;
+import consulo.language.ast.IElementType;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyRecursiveElementVisitor;

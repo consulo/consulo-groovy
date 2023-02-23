@@ -15,25 +15,25 @@
  */
 package org.jetbrains.plugins.groovy.annotator.intentions;
 
-import javax.annotation.Nonnull;
-
-import com.intellij.CommonBundle;
-import com.intellij.codeInspection.LocalQuickFix;
-import com.intellij.codeInspection.ProblemDescriptor;
-import com.intellij.ide.util.PackageUtil;
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.module.ModuleUtilCore;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.ui.Messages;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.PsiDirectory;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.refactoring.move.moveFilesOrDirectories.MoveFilesOrDirectoriesProcessor;
-import com.intellij.refactoring.util.RefactoringMessageUtil;
+import com.intellij.java.impl.refactoring.util.RefactoringMessageUtil;
+import com.intellij.java.language.impl.codeInsight.PackageUtil;
+import consulo.application.CommonBundle;
+import consulo.language.editor.inspection.LocalQuickFix;
+import consulo.language.editor.inspection.ProblemDescriptor;
+import consulo.language.editor.refactoring.move.fileOrDirectory.MoveFilesOrDirectoriesProcessor;
+import consulo.language.psi.PsiDirectory;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.util.ModuleUtilCore;
+import consulo.module.Module;
+import consulo.project.Project;
+import consulo.ui.ex.awt.Messages;
+import consulo.util.lang.StringUtil;
+import consulo.virtualFileSystem.VirtualFile;
 import org.jetbrains.plugins.groovy.intentions.GroovyIntentionsBundle;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author Max Medvedev

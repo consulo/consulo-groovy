@@ -15,14 +15,13 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.introduce.constant;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.intellij.java.impl.refactoring.HelpID;
+import com.intellij.java.language.psi.*;
+import consulo.language.editor.refactoring.RefactoringBundle;
+import consulo.language.editor.refactoring.introduce.inplace.OccurrencesChooser;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.util.lang.ref.Ref;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyRecursiveElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
@@ -31,218 +30,169 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpres
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
 import org.jetbrains.plugins.groovy.refactoring.GrRefactoringError;
 import org.jetbrains.plugins.groovy.refactoring.GroovyRefactoringBundle;
-import org.jetbrains.plugins.groovy.refactoring.introduce.GrAbstractInplaceIntroducer;
-import org.jetbrains.plugins.groovy.refactoring.introduce.GrIntroduceContext;
-import org.jetbrains.plugins.groovy.refactoring.introduce.GrIntroduceDialog;
-import org.jetbrains.plugins.groovy.refactoring.introduce.GrIntroduceFieldHandlerBase;
-import org.jetbrains.plugins.groovy.refactoring.introduce.GrIntroduceHandlerBase;
-import org.jetbrains.plugins.groovy.refactoring.introduce.StringPartInfo;
-import com.intellij.openapi.util.Ref;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiField;
-import com.intellij.psi.PsiMethod;
-import com.intellij.psi.PsiModifier;
-import com.intellij.psi.PsiVariable;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.refactoring.HelpID;
-import com.intellij.refactoring.RefactoringBundle;
-import com.intellij.refactoring.introduce.inplace.OccurrencesChooser;
-import com.intellij.util.containers.ContainerUtil;
+import org.jetbrains.plugins.groovy.refactoring.introduce.*;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.*;
 
 /**
  * @author Maxim.Medvedev
  */
-public class GrIntroduceConstantHandler extends GrIntroduceFieldHandlerBase<GrIntroduceConstantSettings>
-{
-	public static final String REFACTORING_NAME = "Introduce Constant";
+public class GrIntroduceConstantHandler extends GrIntroduceFieldHandlerBase<GrIntroduceConstantSettings> {
+  public static final String REFACTORING_NAME = "Introduce Constant";
 
-	@Nonnull
-	@Override
-	protected String getRefactoringName()
-	{
-		return REFACTORING_NAME;
-	}
+  @Nonnull
+  @Override
+  protected String getRefactoringName() {
+    return REFACTORING_NAME;
+  }
 
-	@Nonnull
-	@Override
-	protected String getHelpID()
-	{
-		return HelpID.INTRODUCE_CONSTANT;
-	}
+  @Nonnull
+  @Override
+  protected String getHelpID() {
+    return HelpID.INTRODUCE_CONSTANT;
+  }
 
-	@Override
-	protected void checkExpression(@Nonnull GrExpression selectedExpr)
-	{
-		GrVariable variable = GrIntroduceHandlerBase.resolveLocalVar(selectedExpr);
-		if(variable != null)
-		{
-			checkVariable(variable);
-		}
-		else
-		{
-			selectedExpr.accept(new ConstantChecker(selectedExpr, selectedExpr));
-		}
-	}
+  @Override
+  protected void checkExpression(@Nonnull GrExpression selectedExpr) {
+    GrVariable variable = GrIntroduceHandlerBase.resolveLocalVar(selectedExpr);
+    if (variable != null) {
+      checkVariable(variable);
+    }
+    else {
+      selectedExpr.accept(new ConstantChecker(selectedExpr, selectedExpr));
+    }
+  }
 
-	@Override
-	protected void checkVariable(@Nonnull GrVariable variable) throws GrRefactoringError
-	{
-		final GrExpression initializer = variable.getInitializerGroovy();
-		if(initializer == null)
-		{
-			throw new GrRefactoringError(RefactoringBundle.message("variable.does.not.have.an.initializer",
-					variable.getName()));
-		}
-		checkExpression(initializer);
-	}
+  @Override
+  protected void checkVariable(@Nonnull GrVariable variable) throws GrRefactoringError {
+    final GrExpression initializer = variable.getInitializerGroovy();
+    if (initializer == null) {
+      throw new GrRefactoringError(RefactoringBundle.message("variable.does.not.have.an.initializer",
+                                                             variable.getName()));
+    }
+    checkExpression(initializer);
+  }
 
-	@Override
-	protected void checkStringLiteral(@Nonnull StringPartInfo info) throws GrRefactoringError
-	{
-		//todo
-	}
+  @Override
+  protected void checkStringLiteral(@Nonnull StringPartInfo info) throws GrRefactoringError {
+    //todo
+  }
 
-	@Override
-	protected void checkOccurrences(@Nonnull PsiElement[] occurrences)
-	{
-		if(hasLhs(occurrences))
-		{
-			throw new GrRefactoringError(GroovyRefactoringBundle.message("selected.variable.is.used.for.write"));
-		}
-	}
+  @Override
+  protected void checkOccurrences(@Nonnull PsiElement[] occurrences) {
+    if (hasLhs(occurrences)) {
+      throw new GrRefactoringError(GroovyRefactoringBundle.message("selected.variable.is.used.for.write"));
+    }
+  }
 
-	@Nullable
-	public static PsiClass findContainingClass(GrIntroduceContext context)
-	{
-		return (PsiClass) context.getScope();
-	}
+  @Nullable
+  public static PsiClass findContainingClass(GrIntroduceContext context) {
+    return (PsiClass)context.getScope();
+  }
 
-	@Nonnull
-	@Override
-	protected GrIntroduceDialog<GrIntroduceConstantSettings> getDialog(@Nonnull GrIntroduceContext context)
-	{
-		return new GrIntroduceConstantDialog(context, findContainingClass(context));
-	}
+  @Nonnull
+  @Override
+  protected GrIntroduceDialog<GrIntroduceConstantSettings> getDialog(@Nonnull GrIntroduceContext context) {
+    return new GrIntroduceConstantDialog(context, findContainingClass(context));
+  }
 
-	@Override
-	public GrField runRefactoring(@Nonnull GrIntroduceContext context, @Nonnull GrIntroduceConstantSettings settings)
-	{
-		return new GrIntroduceConstantProcessor(context, settings).run();
-	}
+  @Override
+  public GrField runRefactoring(@Nonnull GrIntroduceContext context, @Nonnull GrIntroduceConstantSettings settings) {
+    return new GrIntroduceConstantProcessor(context, settings).run();
+  }
 
-	@Override
-	protected GrAbstractInplaceIntroducer<GrIntroduceConstantSettings> getIntroducer(@Nonnull GrIntroduceContext
-			context,
-			@Nonnull OccurrencesChooser.ReplaceChoice choice)
-	{
-		final Ref<GrIntroduceContext> contextRef = Ref.create(context);
+  @Override
+  protected GrAbstractInplaceIntroducer<GrIntroduceConstantSettings> getIntroducer(@Nonnull GrIntroduceContext
+                                                                                     context,
+                                                                                   @Nonnull OccurrencesChooser.ReplaceChoice choice) {
+    final Ref<GrIntroduceContext> contextRef = Ref.create(context);
 
-		if(context.getStringPart() != null)
-		{
-			extractStringPart(contextRef);
-		}
+    if (context.getStringPart() != null) {
+      extractStringPart(contextRef);
+    }
 
-		return new GrInplaceConstantIntroducer(contextRef.get(), choice);
-	}
+    return new GrInplaceConstantIntroducer(contextRef.get(), choice);
+  }
 
-	@Nonnull
-	@Override
-	protected Map<OccurrencesChooser.ReplaceChoice, List<Object>> getOccurrenceOptions(@Nonnull GrIntroduceContext
-			context)
-	{
-		HashMap<OccurrencesChooser.ReplaceChoice, List<Object>> map = ContainerUtil.newLinkedHashMap();
+  @Nonnull
+  @Override
+  protected Map<OccurrencesChooser.ReplaceChoice, List<Object>> getOccurrenceOptions(@Nonnull GrIntroduceContext
+                                                                                       context) {
+    HashMap<OccurrencesChooser.ReplaceChoice, List<Object>> map = new LinkedHashMap<>();
 
-		GrVariable localVar = resolveLocalVar(context);
-		if(localVar != null)
-		{
-			map.put(OccurrencesChooser.ReplaceChoice.ALL, Arrays.<Object>asList(context.getOccurrences()));
-			return map;
-		}
+    GrVariable localVar = resolveLocalVar(context);
+    if (localVar != null) {
+      map.put(OccurrencesChooser.ReplaceChoice.ALL, Arrays.<Object>asList(context.getOccurrences()));
+      return map;
+    }
 
-		if(context.getExpression() != null)
-		{
-			map.put(OccurrencesChooser.ReplaceChoice.NO, Collections.<Object>singletonList(context.getExpression()));
-		}
-		else if(context.getStringPart() != null)
-		{
-			map.put(OccurrencesChooser.ReplaceChoice.NO, Collections.<Object>singletonList(context.getStringPart()));
-		}
+    if (context.getExpression() != null) {
+      map.put(OccurrencesChooser.ReplaceChoice.NO, Collections.<Object>singletonList(context.getExpression()));
+    }
+    else if (context.getStringPart() != null) {
+      map.put(OccurrencesChooser.ReplaceChoice.NO, Collections.<Object>singletonList(context.getStringPart()));
+    }
 
-		PsiElement[] occurrences = context.getOccurrences();
-		if(occurrences.length > 1)
-		{
-			map.put(OccurrencesChooser.ReplaceChoice.ALL, Arrays.<Object>asList(occurrences));
-		}
-		return map;
-	}
+    PsiElement[] occurrences = context.getOccurrences();
+    if (occurrences.length > 1) {
+      map.put(OccurrencesChooser.ReplaceChoice.ALL, Arrays.<Object>asList(occurrences));
+    }
+    return map;
+  }
 
-	private static class ConstantChecker extends GroovyRecursiveElementVisitor
-	{
-		private final PsiElement scope;
-		private final GrExpression expr;
+  private static class ConstantChecker extends GroovyRecursiveElementVisitor {
+    private final PsiElement scope;
+    private final GrExpression expr;
 
-		@Override
-		public void visitReferenceExpression(GrReferenceExpression referenceExpression)
-		{
-			final PsiElement resolved = referenceExpression.resolve();
-			if(resolved instanceof PsiVariable)
-			{
-				if(!isStaticFinalField((PsiVariable) resolved))
-				{
-					if(expr instanceof GrClosableBlock)
-					{
-						if(!PsiTreeUtil.isContextAncestor(scope, resolved, true))
-						{
-							throw new GrRefactoringError(GroovyRefactoringBundle.message("closure.uses.external" +
-									".variables"));
-						}
-					}
-					else
-					{
-						throw new GrRefactoringError(RefactoringBundle.message("selected.expression.cannot.be.a" +
-								".constant.initializer"));
-					}
-				}
-			}
-			else if(resolved instanceof PsiMethod && ((PsiMethod) resolved).getContainingClass() != null)
-			{
-				final GrExpression qualifier = referenceExpression.getQualifierExpression();
-				if(qualifier == null || (qualifier instanceof GrReferenceExpression && ((GrReferenceExpression)
-						qualifier).resolve() instanceof PsiClass))
-				{
-					if(!((PsiMethod) resolved).hasModifierProperty(PsiModifier.STATIC))
-					{
-						throw new GrRefactoringError(RefactoringBundle.message("selected.expression.cannot.be.a" +
-								".constant.initializer"));
-					}
-				}
-			}
-		}
+    @Override
+    public void visitReferenceExpression(GrReferenceExpression referenceExpression) {
+      final PsiElement resolved = referenceExpression.resolve();
+      if (resolved instanceof PsiVariable) {
+        if (!isStaticFinalField((PsiVariable)resolved)) {
+          if (expr instanceof GrClosableBlock) {
+            if (!PsiTreeUtil.isContextAncestor(scope, resolved, true)) {
+              throw new GrRefactoringError(GroovyRefactoringBundle.message("closure.uses.external" +
+                                                                             ".variables"));
+            }
+          }
+          else {
+            throw new GrRefactoringError(RefactoringBundle.message("selected.expression.cannot.be.a" +
+                                                                     ".constant.initializer"));
+          }
+        }
+      }
+      else if (resolved instanceof PsiMethod && ((PsiMethod)resolved).getContainingClass() != null) {
+        final GrExpression qualifier = referenceExpression.getQualifierExpression();
+        if (qualifier == null || (qualifier instanceof GrReferenceExpression && ((GrReferenceExpression)
+          qualifier).resolve() instanceof PsiClass)) {
+          if (!((PsiMethod)resolved).hasModifierProperty(PsiModifier.STATIC)) {
+            throw new GrRefactoringError(RefactoringBundle.message("selected.expression.cannot.be.a" +
+                                                                     ".constant.initializer"));
+          }
+        }
+      }
+    }
 
-		private static boolean isStaticFinalField(PsiVariable var)
-		{
-			return var instanceof PsiField && var.hasModifierProperty(PsiModifier.FINAL) && var.hasModifierProperty
-					(PsiModifier.STATIC);
-		}
+    private static boolean isStaticFinalField(PsiVariable var) {
+      return var instanceof PsiField && var.hasModifierProperty(PsiModifier.FINAL) && var.hasModifierProperty
+        (PsiModifier.STATIC);
+    }
 
-		@Override
-		public void visitClosure(GrClosableBlock closure)
-		{
-			if(closure == expr)
-			{
-				super.visitClosure(closure);
-			}
-			else
-			{
-				closure.accept(new ConstantChecker(closure, scope));
-			}
-		}
+    @Override
+    public void visitClosure(GrClosableBlock closure) {
+      if (closure == expr) {
+        super.visitClosure(closure);
+      }
+      else {
+        closure.accept(new ConstantChecker(closure, scope));
+      }
+    }
 
-		private ConstantChecker(GrExpression expr, PsiElement expressionScope)
-		{
-			scope = expressionScope;
-			this.expr = expr;
-		}
-	}
+    private ConstantChecker(GrExpression expr, PsiElement expressionScope) {
+      scope = expressionScope;
+      this.expr = expr;
+    }
+  }
 }

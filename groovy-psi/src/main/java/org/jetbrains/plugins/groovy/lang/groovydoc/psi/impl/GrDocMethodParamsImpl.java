@@ -16,33 +16,33 @@
 
 package org.jetbrains.plugins.groovy.lang.groovydoc.psi.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.annotation.Nonnull;
-
+import com.intellij.java.language.psi.JavaPsiFacade;
+import com.intellij.java.language.psi.PsiElementFactory;
+import com.intellij.java.language.psi.PsiType;
+import consulo.language.ast.ASTNode;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiManager;
+import consulo.language.psi.scope.GlobalSearchScope;
+import consulo.language.util.IncorrectOperationException;
+import consulo.logging.Logger;
 import org.jetbrains.plugins.groovy.lang.groovydoc.lexer.GroovyDocTokenTypes;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocMethodParameter;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocMethodParams;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocReferenceElement;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil;
-import com.intellij.lang.ASTNode;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.psi.JavaPsiFacade;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiElementFactory;
-import com.intellij.psi.PsiType;
-import com.intellij.psi.impl.PsiManagerEx;
-import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.util.IncorrectOperationException;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author ilyas
  */
 public class GrDocMethodParamsImpl extends GroovyDocPsiElementImpl implements GrDocMethodParams {
 
-  private static final Logger LOG = Logger.getInstance("#org.jetbrains.plugins.groovy.lang.groovydoc.psi.impl.GrDocMethodParamsImpl");
+  private static final Logger LOG = Logger.getInstance(GrDocMethodParamsImpl.class);
 
   public GrDocMethodParamsImpl(@Nonnull ASTNode node) {
     super(node);
@@ -58,7 +58,7 @@ public class GrDocMethodParamsImpl extends GroovyDocPsiElementImpl implements Gr
 
   public PsiType[] getParameterTypes() {
     ArrayList<PsiType> types = new ArrayList<PsiType>();
-    PsiManagerEx manager = getManager();
+    PsiManager manager = getManager();
     GlobalSearchScope scope = GlobalSearchScope.allScope(getProject());
     PsiElementFactory factory = JavaPsiFacade.getInstance(getProject()).getElementFactory();
     for (GrDocMethodParameter parameter : getParameters()) {
@@ -67,7 +67,8 @@ public class GrDocMethodParamsImpl extends GroovyDocPsiElementImpl implements Gr
         PsiType type = factory.createTypeFromText(typeElement.getText(), this);
         type = TypesUtil.boxPrimitiveType(type, manager, scope);
         types.add(type);
-      } catch (IncorrectOperationException e) {
+      }
+      catch (IncorrectOperationException e) {
         LOG.info(e);
         types.add(null);
       }
@@ -90,7 +91,7 @@ public class GrDocMethodParamsImpl extends GroovyDocPsiElementImpl implements Gr
     return paren.getPsi();
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   public PsiElement getRightParen() {
     ASTNode paren = getNode().findChildByType(GroovyDocTokenTypes.mGDOC_TAG_VALUE_RPAREN);
     return paren != null ? paren.getPsi() : null;

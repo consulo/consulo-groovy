@@ -15,24 +15,31 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.changeSignature;
 
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.psi.*;
-import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.psi.search.searches.MethodReferencesSearch;
-import com.intellij.psi.search.searches.OverridingMethodsSearch;
-import com.intellij.psi.search.searches.ReferencesSearch;
-import com.intellij.refactoring.RefactoringBundle;
-import com.intellij.refactoring.changeSignature.*;
-import com.intellij.refactoring.rename.UnresolvableCollisionUsageInfo;
-import com.intellij.refactoring.util.MoveRenameUsageInfo;
-import com.intellij.refactoring.util.RefactoringUIUtil;
-import com.intellij.refactoring.util.RefactoringUtil;
-import com.intellij.refactoring.util.usageInfo.DefaultConstructorImplicitUsageInfo;
-import com.intellij.refactoring.util.usageInfo.NoConstructorClassUsageInfo;
-import com.intellij.usageView.UsageInfo;
-import com.intellij.usageView.UsageViewUtil;
-import com.intellij.util.containers.ContainerUtil;
-import java.util.HashSet;
+import com.intellij.java.impl.refactoring.changeSignature.*;
+import com.intellij.java.impl.refactoring.util.RefactoringUtil;
+import com.intellij.java.impl.refactoring.util.usageInfo.DefaultConstructorImplicitUsageInfo;
+import com.intellij.java.impl.refactoring.util.usageInfo.NoConstructorClassUsageInfo;
+import com.intellij.java.indexing.search.searches.MethodReferencesSearch;
+import com.intellij.java.indexing.search.searches.OverridingMethodsSearch;
+import com.intellij.java.language.psi.PsiClass;
+import com.intellij.java.language.psi.PsiMethod;
+import com.intellij.java.language.psi.PsiParameter;
+import com.intellij.java.language.psi.PsiVariable;
+import consulo.language.editor.refactoring.RefactoringBundle;
+import consulo.language.editor.refactoring.changeSignature.ParameterInfo;
+import consulo.language.editor.refactoring.changeSignature.PsiCallReference;
+import consulo.language.editor.refactoring.rename.UnresolvableCollisionUsageInfo;
+import consulo.language.editor.refactoring.ui.RefactoringUIUtil;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiManager;
+import consulo.language.psi.PsiReference;
+import consulo.language.psi.scope.GlobalSearchScope;
+import consulo.language.psi.search.ReferencesSearch;
+import consulo.logging.Logger;
+import consulo.usage.MoveRenameUsageInfo;
+import consulo.usage.UsageInfo;
+import consulo.usage.UsageViewUtil;
+import consulo.util.collection.ContainerUtil;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocTagValueToken;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrOpenBlock;
@@ -41,6 +48,7 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMe
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Set;
 
 /**

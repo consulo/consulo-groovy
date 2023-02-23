@@ -18,9 +18,9 @@ package org.jetbrains.plugins.groovy.refactoring.introduceVariable
 
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.editor.Editor
-import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiType
-import com.intellij.psi.impl.source.PostprocessReformattingAspect
+import com.intellij.java.language.psi.PsiElement
+import com.intellij.java.language.psi.PsiType
+import com.intellij.java.language.psi.impl.source.PostprocessReformattingAspect
 import com.intellij.testFramework.fixtures.LightCodeInsightFixtureTestCase
 import org.jetbrains.annotations.Nullable
 import org.jetbrains.plugins.groovy.GroovyFileType

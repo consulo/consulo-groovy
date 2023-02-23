@@ -16,9 +16,9 @@
 package org.jetbrains.plugins.groovy.lang.resolve;
 
 
-import com.intellij.psi.PsiIntersectionType
-import com.intellij.psi.PsiReference
-import com.intellij.psi.PsiType
+import com.intellij.java.language.psi.PsiIntersectionType
+import com.intellij.java.language.psi.PsiReference
+import com.intellij.java.language.psi.PsiType
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.GrListOrMap
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariableDeclaration
@@ -28,7 +28,7 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrRefere
 import org.jetbrains.plugins.groovy.lang.psi.impl.GrClosureType
 import org.jetbrains.plugins.groovy.util.TestUtils
 
-import static com.intellij.psi.CommonClassNames.*
+import static com.intellij.java.language.psi.CommonClassNames.*
 
 /**
  * @author ven

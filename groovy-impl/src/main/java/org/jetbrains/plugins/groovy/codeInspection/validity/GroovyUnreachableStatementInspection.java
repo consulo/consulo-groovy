@@ -17,6 +17,7 @@ package org.jetbrains.plugins.groovy.codeInspection.validity;
 
 import org.jetbrains.annotations.Nls;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspectionVisitor;
@@ -39,7 +40,7 @@ public class GroovyUnreachableStatementInspection extends BaseInspection {
     return "Unreachable Statement";
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   protected String buildErrorString(Object... args) {
     return "Unreachable statement #loc";
 

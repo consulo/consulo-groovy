@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.intentions.declaration;
 
-import com.intellij.psi.PsiModifier;
+import com.intellij.java.language.psi.PsiModifier;
 
 /**
  * @author Max Medvedev

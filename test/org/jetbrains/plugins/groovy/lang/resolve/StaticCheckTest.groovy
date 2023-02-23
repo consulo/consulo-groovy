@@ -1,7 +1,7 @@
 package org.jetbrains.plugins.groovy.lang.resolve;
 
 
-import com.intellij.psi.PsiElement
+import com.intellij.java.language.psi.PsiElement
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult
 import org.jetbrains.plugins.groovy.util.TestUtils
 

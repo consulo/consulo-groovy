@@ -16,25 +16,26 @@
 
 package org.jetbrains.plugins.groovy.mvc.projectView;
 
-import java.util.List;
-
-import javax.annotation.Nonnull;
-
+import consulo.application.dumb.DumbAware;
+import consulo.language.psi.PsiDirectory;
+import consulo.language.psi.PsiManager;
+import consulo.localize.LocalizeValue;
+import consulo.module.Module;
+import consulo.project.Project;
+import consulo.project.ui.view.tree.AbstractTreeNode;
+import consulo.project.ui.view.tree.ViewSettings;
+import consulo.project.ui.wm.ToolWindowFactory;
+import consulo.ui.ex.toolWindow.ToolWindow;
+import consulo.ui.ex.toolWindow.ToolWindowAnchor;
+import consulo.ui.image.Image;
+import consulo.util.lang.function.Condition;
+import consulo.virtualFileSystem.VirtualFile;
 import org.jetbrains.plugins.groovy.mvc.MvcFramework;
 import org.jetbrains.plugins.groovy.mvc.MvcModuleStructureUtil;
-import com.intellij.ide.projectView.ViewSettings;
-import com.intellij.ide.util.treeView.AbstractTreeNode;
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.project.DumbAware;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.Condition;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.openapi.wm.ToolWindow;
-import com.intellij.openapi.wm.ToolWindowFactory;
-import com.intellij.openapi.wm.ex.ToolWindowEx;
-import com.intellij.psi.PsiDirectory;
-import com.intellij.psi.PsiManager;
-import consulo.ui.image.Image;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.List;
 
 /**
  * @author peter
@@ -56,7 +57,7 @@ public abstract class MvcToolWindowDescriptor implements ToolWindowFactory, Cond
     toolWindow.setTitle(myFramework.getDisplayName());
 
     MvcProjectViewPane view = new MvcProjectViewPane(project, this);
-    view.setup((ToolWindowEx)toolWindow);
+    view.setup((consulo.ide.impl.idea.openapi.wm.ex.ToolWindowEx)toolWindow);
   }
 
   public boolean value(Project project) {
@@ -71,14 +72,41 @@ public abstract class MvcToolWindowDescriptor implements ToolWindowFactory, Cond
     return framework.getFrameworkName() + " View";
   }
 
-  public abstract void fillModuleChildren(List<AbstractTreeNode> result, final Module module, final ViewSettings viewSettings, VirtualFile root);
+  @Nonnull
+  @Override
+  public LocalizeValue getDisplayName() {
+    return LocalizeValue.localizeTODO(myFramework.getDisplayName());
+  }
+
+  @Nonnull
+  @Override
+  public Image getIcon() {
+    return myFramework.getToolWindowIcon();
+  }
+
+  @Nonnull
+  @Override
+  public String getId() {
+    return getToolWindowId();
+  }
+
+  @Nonnull
+  @Override
+  public ToolWindowAnchor getAnchor() {
+    return ToolWindowAnchor.RIGHT;
+  }
+
+  public abstract void fillModuleChildren(List<AbstractTreeNode> result,
+                                          final Module module,
+                                          final ViewSettings viewSettings,
+                                          VirtualFile root);
 
   public abstract Image getModuleNodeIcon();
 
   @Nonnull
   public abstract MvcProjectViewState getProjectViewState(Project project);
 
-  @javax.annotation.Nullable
+  @Nullable
   protected static PsiDirectory findDirectory(Project project, VirtualFile root, @Nonnull String relativePath) {
     final VirtualFile file = root.findFileByRelativePath(relativePath);
     return file == null ? null : PsiManager.getInstance(project).findDirectory(file);

@@ -15,39 +15,42 @@
  */
 package org.jetbrains.plugins.groovy.codeInsight.hint;
 
-import java.util.List;
-
-import javax.annotation.Nonnull;
-
+import com.intellij.java.language.psi.PsiType;
+import consulo.language.Language;
+import consulo.language.editor.ExpressionTypeProvider;
+import consulo.language.psi.PsiElement;
+import consulo.util.lang.StringUtil;
+import org.jetbrains.plugins.groovy.GroovyLanguage;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.refactoring.introduce.GrIntroduceHandlerBase;
-import com.intellij.lang.ExpressionTypeProvider;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiType;
 
-public class GroovyExpressionTypeProvider extends ExpressionTypeProvider<GrExpression>
-{
+import javax.annotation.Nonnull;
+import java.util.List;
 
-	@Nonnull
-	@Override
-	public String getInformationHint(@Nonnull GrExpression element)
-	{
-		final PsiType type = element.getType();
-		return type == null ? "<unknown>" : StringUtil.escapeXml(type.getCanonicalText());
-	}
+public class GroovyExpressionTypeProvider extends ExpressionTypeProvider<GrExpression> {
 
-	@Nonnull
-	@Override
-	public String getErrorHint()
-	{
-		return "No expression found";
-	}
+  @Nonnull
+  @Override
+  public String getInformationHint(@Nonnull GrExpression element) {
+    final PsiType type = element.getType();
+    return type == null ? "<unknown>" : StringUtil.escapeXml(type.getCanonicalText());
+  }
 
-	@Nonnull
-	@Override
-	public List<GrExpression> getExpressionsAt(@Nonnull PsiElement elementAt)
-	{
-		return GrIntroduceHandlerBase.collectExpressions(elementAt, true);
-	}
+  @Nonnull
+  @Override
+  public String getErrorHint() {
+    return "No expression found";
+  }
+
+  @Nonnull
+  @Override
+  public List<GrExpression> getExpressionsAt(@Nonnull PsiElement elementAt) {
+    return GrIntroduceHandlerBase.collectExpressions(elementAt, true);
+  }
+
+  @Nonnull
+  @Override
+  public Language getLanguage() {
+    return GroovyLanguage.INSTANCE;
+  }
 }

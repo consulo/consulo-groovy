@@ -16,17 +16,23 @@
 
 package org.jetbrains.plugins.groovy.lang.groovydoc.psi.impl;
 
-import javax.annotation.Nonnull;
-
+import com.intellij.java.language.psi.*;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.access.RequiredWriteAction;
+import consulo.document.util.TextRange;
+import consulo.language.ast.ASTNode;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiReference;
+import consulo.language.psi.ResolveResult;
+import consulo.language.util.IncorrectOperationException;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocMemberReference;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocReferenceElement;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocTagValueToken;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
-import com.intellij.lang.ASTNode;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.*;
-import com.intellij.util.IncorrectOperationException;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author ilyas
@@ -36,16 +42,18 @@ public abstract class GrDocMemberReferenceImpl extends GroovyDocPsiElementImpl i
     super(node);
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   public GrDocReferenceElement getReferenceHolder() {
     return findChildByClass(GrDocReferenceElement.class);
   }
 
+  @RequiredReadAction
   public boolean isReferenceTo(PsiElement element) {
     return getManager().areElementsEquivalent(element, resolve());
   }
 
-  @javax.annotation.Nullable
+  @RequiredWriteAction
+  @Nullable
   public PsiElement bindToElement(@Nonnull PsiElement element) throws IncorrectOperationException {
     if (isReferenceTo(element)) return this;
 
@@ -89,7 +97,9 @@ public abstract class GrDocMemberReferenceImpl extends GroovyDocPsiElementImpl i
     return null;
   }
 
-  public PsiElement handleElementRename(String newElementName) throws IncorrectOperationException {
+  @RequiredWriteAction
+  public PsiElement handleElementRename(String newElementName) throws IncorrectOperationException
+  {
     PsiElement nameElement = getReferenceNameElement();
     ASTNode node = nameElement.getNode();
     ASTNode newNameNode = GroovyPsiElementFactory.getInstance(getProject()).createDocMemberReferenceNameFromText(newElementName).getNode();
@@ -105,6 +115,7 @@ public abstract class GrDocMemberReferenceImpl extends GroovyDocPsiElementImpl i
     return token;
   }
 
+  @RequiredReadAction
   public PsiElement getElement() {
     return this;
   }
@@ -113,33 +124,37 @@ public abstract class GrDocMemberReferenceImpl extends GroovyDocPsiElementImpl i
     return this;
   }
 
+  @RequiredReadAction
   public TextRange getRangeInElement() {
     final PsiElement refNameElement = getReferenceNameElement();
     final int offsetInParent = refNameElement.getStartOffsetInParent();
     return new TextRange(offsetInParent, offsetInParent + refNameElement.getTextLength());
   }
 
+  @RequiredReadAction
   @Nonnull
   public String getCanonicalText() {
     return getRangeInElement().substring(getElement().getText());
   }
 
+  @RequiredReadAction
   public boolean isSoft() {
     return false;
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   public PsiElement getQualifier() {
     return getReferenceHolder();
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   @NonNls
   public String getReferenceName() {
     return getReferenceNameElement().getText();
   }
 
-  @javax.annotation.Nullable
+  @RequiredReadAction
+  @Nullable
   public PsiElement resolve() {
     ResolveResult[] results = multiResolve(false);
     if (results.length == 1) {
@@ -148,14 +163,10 @@ public abstract class GrDocMemberReferenceImpl extends GroovyDocPsiElementImpl i
     return null;
   }
 
+  @RequiredReadAction
   @Nonnull
   public ResolveResult[] multiResolve(boolean incompleteCode) {
     return multiResolveImpl();
-  }
-
-  @Nonnull
-  public Object[] getVariants() {
-    return PsiElement.EMPTY_ARRAY;
   }
 
   protected abstract ResolveResult[] multiResolveImpl();

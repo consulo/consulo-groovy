@@ -18,11 +18,12 @@ package org.jetbrains.plugins.groovy.lang.parser.parsing.statements.declaration;
 
 import javax.annotation.Nonnull;
 
-import com.intellij.lang.PsiBuilder;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.tree.IElementType;
+import consulo.language.ast.IElementType;
+import consulo.language.parser.PsiBuilder;
+import consulo.util.lang.StringUtil;
 
 import javax.annotation.Nullable;
+
 import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.lexer.TokenSets;
@@ -150,7 +151,7 @@ public class Declaration {
   private static IElementType parseDeclarationWithoutGenerics(@Nonnull PsiBuilder builder,
                                                               boolean isInClass,
                                                               boolean isInAnnotation,
-                                                              @javax.annotation.Nullable String typeDefinitionName,
+                                                              @Nullable String typeDefinitionName,
                                                               @Nonnull GroovyParser parser,
                                                               boolean modifiersParsed,
                                                               boolean expressionPossible) {

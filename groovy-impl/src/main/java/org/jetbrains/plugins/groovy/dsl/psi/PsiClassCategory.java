@@ -16,10 +16,10 @@
 
 package org.jetbrains.plugins.groovy.dsl.psi;
 
-import com.intellij.psi.*;
+import com.intellij.java.language.psi.*;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;

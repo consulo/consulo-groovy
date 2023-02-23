@@ -1,15 +1,16 @@
 package org.jetbrains.plugins.groovy.mvc;
 
-import javax.annotation.Nonnull;
+import consulo.language.editor.LangDataKeys;
+import consulo.module.Module;
+import consulo.module.ModuleManager;
+import consulo.project.Project;
+import consulo.ui.ex.action.ActionPlaces;
+import consulo.ui.ex.action.AnActionEvent;
+import consulo.ui.ex.action.DumbAwareAction;
+import consulo.util.lang.Pair;
 
-import com.intellij.openapi.actionSystem.ActionPlaces;
-import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.actionSystem.LangDataKeys;
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.module.ModuleManager;
-import com.intellij.openapi.project.DumbAwareAction;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.Pair;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public abstract class MvcActionBase extends DumbAwareAction {
 
@@ -27,7 +28,7 @@ public abstract class MvcActionBase extends DumbAwareAction {
     return true;
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   public static Pair<MvcFramework, Module> guessFramework(AnActionEvent event) {
     final Module module = event.getData(event.getPlace().equals(ActionPlaces.MAIN_MENU) ? LangDataKeys.MODULE : LangDataKeys.MODULE_CONTEXT);
 
@@ -52,7 +53,7 @@ public abstract class MvcActionBase extends DumbAwareAction {
       }
     }
 
-    final Project project = event.getProject();
+    final Project project = event.getData(Project.KEY);
     if (project == null) {
       return null;
     }

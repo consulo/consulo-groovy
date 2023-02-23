@@ -16,17 +16,15 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.typedef;
 
-import javax.annotation.Nonnull;
-
-import com.intellij.lang.ASTNode;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.*;
-import com.intellij.psi.scope.PsiScopeProcessor;
-import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.reference.SoftReference;
+import com.intellij.java.language.psi.*;
+import consulo.language.ast.ASTNode;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.resolve.PsiScopeProcessor;
+import consulo.language.psi.resolve.ResolveState;
+import consulo.language.psi.scope.GlobalSearchScope;
+import consulo.project.Project;
+import consulo.util.lang.ref.SoftReference;
 import org.jetbrains.annotations.NonNls;
-
-import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrArgumentList;
@@ -42,6 +40,9 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUt
 import org.jetbrains.plugins.groovy.lang.psi.stubs.GrTypeDefinitionStub;
 import org.jetbrains.plugins.groovy.lang.psi.stubs.elements.GrStubElementType;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author Maxim.Medvedev
@@ -149,7 +150,7 @@ public class GrAnonymousClassDefinitionImpl extends GrTypeDefinitionImpl impleme
   @Override
   public boolean processDeclarations(@Nonnull PsiScopeProcessor processor,
                                      @Nonnull ResolveState state,
-                                     @javax.annotation.Nullable PsiElement lastParent,
+                                     @Nullable PsiElement lastParent,
                                      @Nonnull PsiElement place) {
     if (lastParent instanceof GrArgumentList) return true;
 

@@ -15,23 +15,22 @@
  */
 package org.jetbrains.plugins.groovy.mvc;
 
-import com.intellij.application.options.ModuleListCellRenderer;
-import com.intellij.codeInsight.completion.CompletionResultSet;
-import com.intellij.codeInsight.lookup.LookupElement;
-import com.intellij.openapi.editor.event.DocumentAdapter;
-import com.intellij.openapi.editor.event.DocumentEvent;
-import com.intellij.openapi.fileTypes.PlainTextFileType;
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.module.ModuleManager;
-import com.intellij.openapi.ui.ComboBox;
-import com.intellij.openapi.ui.DialogWrapper;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.ui.*;
-import com.intellij.util.TextFieldCompletionProvider;
-import com.intellij.util.TextFieldCompletionProviderDumbAware;
-import javax.annotation.Nonnull;
+import consulo.document.event.DocumentAdapter;
+import consulo.document.event.DocumentEvent;
+import consulo.language.editor.completion.CompletionResultSet;
+import consulo.language.editor.completion.lookup.LookupElement;
+import consulo.language.editor.ui.awt.*;
+import consulo.language.plain.PlainTextFileType;
+import consulo.module.Module;
+import consulo.module.ModuleManager;
+import consulo.module.ui.awt.ModuleListCellRenderer;
+import consulo.ui.ex.awt.CollectionComboBoxModel;
+import consulo.ui.ex.awt.ComboBox;
+import consulo.ui.ex.awt.DialogWrapper;
+import consulo.util.lang.StringUtil;
 import org.jetbrains.plugins.groovy.mvc.util.MvcTargetDialogCompletionUtils;
 
+import javax.annotation.Nonnull;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -185,12 +184,12 @@ public class MvcRunTargetDialog extends DialogWrapper {
     TextFieldCompletionProvider vmOptionCompletionProvider = new TextFieldCompletionProviderDumbAware() {
       @Nonnull
       @Override
-      protected String getPrefix(@Nonnull String currentTextPrefix) {
+      public String getPrefix(@Nonnull String currentTextPrefix) {
         return MvcRunTargetDialog.getPrefix(currentTextPrefix);
       }
 
       @Override
-      protected void addCompletionVariants(@Nonnull String text, int offset, @Nonnull String prefix, @Nonnull CompletionResultSet result) {
+      public void addCompletionVariants(@Nonnull String text, int offset, @Nonnull String prefix, @Nonnull CompletionResultSet result) {
         if (prefix.endsWith("-D")) {
           result.addAllElements(MvcTargetDialogCompletionUtils.getSystemPropertiesVariants());
         }
@@ -202,12 +201,12 @@ public class MvcRunTargetDialog extends DialogWrapper {
 
       @Nonnull
       @Override
-      protected String getPrefix(@Nonnull String currentTextPrefix) {
+      public String getPrefix(@Nonnull String currentTextPrefix) {
         return MvcRunTargetDialog.getPrefix(currentTextPrefix);
       }
 
       @Override
-      protected void addCompletionVariants(@Nonnull String text, int offset, @Nonnull String prefix, @Nonnull CompletionResultSet result) {
+      public void addCompletionVariants(@Nonnull String text, int offset, @Nonnull String prefix, @Nonnull CompletionResultSet result) {
         for (LookupElement variant : MvcTargetDialogCompletionUtils.collectVariants(myModule, text, offset, prefix)) {
           result.addElement(variant);
         }

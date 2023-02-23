@@ -15,19 +15,17 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.synthetic;
 
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiExpression;
-import com.intellij.psi.PsiType;
-import com.intellij.psi.impl.ResolveScopeManager;
-import com.intellij.psi.search.SearchScope;
-import com.intellij.psi.util.CachedValueProvider;
-import com.intellij.psi.util.CachedValuesManager;
-import com.intellij.psi.util.PsiModificationTracker;
-import com.intellij.util.IncorrectOperationException;
+import com.intellij.java.language.psi.PsiClass;
+import com.intellij.java.language.psi.PsiExpression;
+import com.intellij.java.language.psi.PsiType;
+import consulo.application.util.CachedValueProvider;
+import consulo.content.scope.SearchScope;
+import consulo.language.impl.psi.ResolveScopeManager;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiModificationTracker;
+import consulo.language.psi.util.LanguageCachedValueUtil;
+import consulo.language.util.IncorrectOperationException;
 import org.jetbrains.annotations.NonNls;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.extensions.NamedArgumentDescriptor;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocComment;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
@@ -37,6 +35,8 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrAc
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeElement;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.Map;
 
@@ -85,7 +85,7 @@ public class GrLightField extends GrLightVariable implements GrField {
   }
 
   @Override
-  public void setInitializer(@javax.annotation.Nullable PsiExpression initializer) throws IncorrectOperationException {
+  public void setInitializer(@Nullable PsiExpression initializer) throws IncorrectOperationException {
     throw new IncorrectOperationException();
   }
 
@@ -97,22 +97,25 @@ public class GrLightField extends GrLightVariable implements GrField {
   @Nullable
   @Override
   public GrAccessorMethod getSetter() {
-    return CachedValuesManager.getCachedValue(this, new CachedValueProvider<GrAccessorMethod>() {
-      @javax.annotation.Nullable
+    return LanguageCachedValueUtil.getCachedValue(this, new CachedValueProvider<GrAccessorMethod>() {
+      @Nullable
       @Override
       public Result<GrAccessorMethod> compute() {
-        return Result.create(GrAccessorMethodImpl.createSetterMethod(GrLightField.this), PsiModificationTracker.OUT_OF_CODE_BLOCK_MODIFICATION_COUNT);
+        return Result.create(GrAccessorMethodImpl.createSetterMethod(GrLightField.this),
+                             PsiModificationTracker.OUT_OF_CODE_BLOCK_MODIFICATION_COUNT);
       }
     });
   }
+
   @Nonnull
   @Override
   public GrAccessorMethod[] getGetters() {
-    return CachedValuesManager.getCachedValue(this, new CachedValueProvider<GrAccessorMethod[]>() {
-      @javax.annotation.Nullable
+    return LanguageCachedValueUtil.getCachedValue(this, new CachedValueProvider<GrAccessorMethod[]>() {
+      @Nullable
       @Override
       public Result<GrAccessorMethod[]> compute() {
-        return Result.create(GrAccessorMethodImpl.createGetterMethods(GrLightField.this), PsiModificationTracker.OUT_OF_CODE_BLOCK_MODIFICATION_COUNT);
+        return Result.create(GrAccessorMethodImpl.createGetterMethods(GrLightField.this),
+                             PsiModificationTracker.OUT_OF_CODE_BLOCK_MODIFICATION_COUNT);
       }
     });
   }
@@ -134,7 +137,7 @@ public class GrLightField extends GrLightVariable implements GrField {
   }
 
   @Override
-  public void setType(@javax.annotation.Nullable PsiType type) throws IncorrectOperationException {
+  public void setType(@Nullable PsiType type) throws IncorrectOperationException {
     throw new IncorrectOperationException();
   }
 

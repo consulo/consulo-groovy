@@ -16,7 +16,7 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.api.types;
 
-import com.intellij.psi.PsiTypeParameter;
+import com.intellij.java.language.psi.PsiTypeParameter;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
 
 /**

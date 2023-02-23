@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.lang.aliasAnnotations
 
-import com.intellij.psi.util.PsiTreeUtil
+import com.intellij.java.language.psi.util.PsiTreeUtil
 import org.jetbrains.annotations.NonNls
 import org.jetbrains.annotations.NotNull
 import org.jetbrains.plugins.groovy.LightGroovyTestCase

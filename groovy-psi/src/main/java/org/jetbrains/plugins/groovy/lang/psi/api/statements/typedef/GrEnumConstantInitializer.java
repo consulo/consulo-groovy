@@ -15,10 +15,10 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef;
 
-import javax.annotation.Nonnull;
-
-import com.intellij.psi.PsiEnumConstantInitializer;
+import com.intellij.java.language.psi.PsiEnumConstantInitializer;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrEnumConstant;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author Maxim.Medvedev

@@ -1,6 +1,6 @@
 package org.jetbrains.plugins.groovy.dsl
 
-import com.intellij.psi.util.PsiTreeUtil
+import com.intellij.java.language.psi.util.PsiTreeUtil
 import org.jetbrains.plugins.groovy.LightGroovyTestCase
 import org.jetbrains.plugins.groovy.codeInspection.untypedUnresolvedAccess.GrUnresolvedAccessInspection
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrNewExpression

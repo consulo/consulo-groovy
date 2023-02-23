@@ -15,8 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.changeSignature
 
-import com.intellij.psi.*
-import com.intellij.psi.search.GlobalSearchScope
+import com.intellij.java.language.psi.*
+import com.intellij.java.language.psi.search.GlobalSearchScope
 import com.intellij.refactoring.BaseRefactoringProcessor.ConflictsInTestsException
 import com.intellij.refactoring.changeSignature.JavaThrownExceptionInfo
 import com.intellij.refactoring.changeSignature.ThrownExceptionInfo

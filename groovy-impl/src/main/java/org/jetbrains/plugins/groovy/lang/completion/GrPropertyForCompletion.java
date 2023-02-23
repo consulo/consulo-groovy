@@ -15,19 +15,16 @@
  */
 package org.jetbrains.plugins.groovy.lang.completion;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.intellij.java.language.impl.psi.impl.light.LightFieldBuilder;
+import com.intellij.java.language.psi.PsiMethod;
+import com.intellij.java.language.psi.PsiType;
+import consulo.language.psi.PsiElement;
+import consulo.util.collection.ArrayUtil;
+import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.GrModifier;
 
 import javax.annotation.Nonnull;
-
-import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.GrModifier;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiMethod;
-import com.intellij.psi.PsiType;
-import com.intellij.psi.impl.light.LightFieldBuilder;
-import com.intellij.util.ArrayUtil;
-import consulo.awt.TargetAWT;
-import icons.JetgroovyIcons;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Maxim.Medvedev
@@ -49,7 +46,7 @@ public class GrPropertyForCompletion extends LightFieldBuilder {
 
     setContainingClass(method.getContainingClass());
     setModifiers(ArrayUtil.toStringArray(modifiers));
-    setBaseIcon(TargetAWT.to(JetgroovyIcons.Groovy.Property));
+    //setBaseIcon(TargetAWT.to(JetgroovyIcons.Groovy.Property));
   }
 
   @Nonnull

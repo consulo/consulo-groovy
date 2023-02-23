@@ -15,11 +15,14 @@
  */
 package org.jetbrains.plugins.groovy.findUsages;
 
-import com.intellij.lang.cacheBuilder.WordOccurrence;
-import com.intellij.lang.cacheBuilder.WordsScanner;
-import com.intellij.lexer.Lexer;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.util.Processor;
+import consulo.application.util.function.Processor;
+import consulo.language.cacheBuilder.WordOccurrence;
+import consulo.language.cacheBuilder.WordsScanner;
+import consulo.language.lexer.Lexer;
+import consulo.language.ast.IElementType;
+import consulo.application.util.function.Processor;
+import consulo.language.cacheBuilder.WordOccurrence;
+import consulo.language.lexer.Lexer;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyLexer;
 import org.jetbrains.plugins.groovy.lang.lexer.TokenSets;
 

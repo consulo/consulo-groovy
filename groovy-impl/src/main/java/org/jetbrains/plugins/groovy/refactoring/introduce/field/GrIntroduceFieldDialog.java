@@ -15,22 +15,21 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.introduce.field;
 
-import com.intellij.codeInsight.TestFrameworks;
-import com.intellij.openapi.ui.DialogWrapper;
-import com.intellij.openapi.ui.Messages;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.*;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.refactoring.RefactoringBundle;
-import com.intellij.refactoring.introduceField.IntroduceFieldHandler;
-import com.intellij.refactoring.ui.NameSuggestionsField;
-import com.intellij.refactoring.util.RadioUpDownListener;
-import com.intellij.ui.components.JBRadioButton;
-import com.intellij.util.ArrayUtil;
-import com.intellij.util.IncorrectOperationException;
-import com.intellij.util.containers.ContainerUtil;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.intellij.java.impl.refactoring.introduceField.IntroduceFieldHandler;
+import com.intellij.java.language.codeInsight.TestFrameworks;
+import com.intellij.java.language.psi.*;
+import consulo.language.editor.refactoring.RefactoringBundle;
+import consulo.language.editor.refactoring.ui.NameSuggestionsField;
+import consulo.language.editor.refactoring.ui.RadioUpDownListener;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.language.util.IncorrectOperationException;
+import consulo.ui.ex.awt.DialogWrapper;
+import consulo.ui.ex.awt.JBRadioButton;
+import consulo.ui.ex.awt.Messages;
+import consulo.util.collection.ArrayUtil;
+import consulo.util.collection.ContainerUtil;
+import consulo.util.lang.StringUtil;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyRecursiveElementVisitor;
@@ -43,10 +42,10 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.literals
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMember;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
+import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyNamesUtil;
 import org.jetbrains.plugins.groovy.lang.psi.impl.PsiImplUtil;
 import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GroovyScriptClass;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
-import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyNamesUtil;
 import org.jetbrains.plugins.groovy.refactoring.GroovyRefactoringBundle;
 import org.jetbrains.plugins.groovy.refactoring.introduce.GrIntroduceContext;
 import org.jetbrains.plugins.groovy.refactoring.introduce.GrIntroduceDialog;
@@ -54,6 +53,8 @@ import org.jetbrains.plugins.groovy.refactoring.introduce.GrIntroduceHandlerBase
 import org.jetbrains.plugins.groovy.refactoring.introduce.StringPartInfo;
 import org.jetbrains.plugins.groovy.refactoring.ui.GrTypeComboBox;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.swing.*;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;

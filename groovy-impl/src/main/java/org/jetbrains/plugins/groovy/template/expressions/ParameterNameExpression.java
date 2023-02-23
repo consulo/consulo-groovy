@@ -15,21 +15,24 @@
  */
 package org.jetbrains.plugins.groovy.template.expressions;
 
-import com.intellij.codeInsight.lookup.LookupElement;
-import com.intellij.codeInsight.lookup.LookupElementBuilder;
-import com.intellij.codeInsight.template.Expression;
-import com.intellij.codeInsight.template.ExpressionContext;
-import com.intellij.codeInsight.template.Result;
-import com.intellij.codeInsight.template.TextResult;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiDocumentManager;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.codeStyle.JavaCodeStyleManager;
-import com.intellij.psi.codeStyle.SuggestedNameInfo;
-import com.intellij.psi.codeStyle.VariableKind;
-import com.intellij.psi.util.PsiTreeUtil;
+import consulo.language.editor.completion.lookup.LookupElement;
+import consulo.language.editor.completion.lookup.LookupElementBuilder;
+import consulo.language.editor.refactoring.rename.SuggestedNameInfo;
+import consulo.language.editor.template.*;
+import consulo.language.editor.template.TextResult;
+import consulo.language.psi.PsiDocumentManager;
+import consulo.language.psi.PsiFile;
+import consulo.project.Project;
+import consulo.language.psi.PsiDocumentManager;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import com.intellij.java.language.psi.codeStyle.JavaCodeStyleManager;
+import consulo.language.editor.refactoring.rename.SuggestedNameInfo;
+import com.intellij.java.language.psi.codeStyle.VariableKind;
+import consulo.language.psi.util.PsiTreeUtil;
 import javax.annotation.Nullable;
+
+import consulo.language.editor.template.ExpressionContext;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameter;
 
 /**

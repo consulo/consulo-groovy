@@ -17,12 +17,12 @@ package org.jetbrains.plugins.groovy.lang.psi.impl;
 
 import javax.annotation.Nonnull;
 
+import consulo.ide.ServiceManager;
+import consulo.language.util.IncorrectOperationException;
+import consulo.project.Project;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFileBase;
 import org.jetbrains.plugins.groovy.lang.psi.api.toplevel.imports.GrImportStatement;
-import com.intellij.openapi.components.ServiceManager;
-import com.intellij.openapi.project.Project;
-import com.intellij.util.IncorrectOperationException;
 
 public abstract class GroovyCodeStyleManager
 {

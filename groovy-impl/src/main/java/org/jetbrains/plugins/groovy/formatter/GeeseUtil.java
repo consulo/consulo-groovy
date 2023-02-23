@@ -15,17 +15,24 @@
  */
 package org.jetbrains.plugins.groovy.formatter;
 
-import com.intellij.lang.ASTNode;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.TokenType;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.util.PsiTreeUtil;
+import consulo.language.ast.ASTNode;
+import consulo.language.ast.TokenType;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.logging.Logger;
+import consulo.language.psi.PsiElement;
+import consulo.language.ast.TokenType;
+import consulo.language.ast.IElementType;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.language.ast.ASTNode;
+import consulo.logging.Logger;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlock;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrMethodCall;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
+
+import javax.annotation.Nullable;
 
 import static org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes.mRCURLY;
 import static org.jetbrains.plugins.groovy.lang.lexer.TokenSets.WHITE_SPACES_SET;
@@ -40,7 +47,7 @@ public class GeeseUtil {
   private GeeseUtil() {
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   public static ASTNode getClosureRBraceAtTheEnd(ASTNode node) {
     IElementType elementType = node.getElementType();
     if (elementType == CLOSABLE_BLOCK) {
@@ -63,14 +70,14 @@ public class GeeseUtil {
            ((GrClosableBlock)e.getParent()).getRBrace() == e;
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   public static PsiElement getNextNonWhitespaceToken(PsiElement e) {
     PsiElement next = PsiTreeUtil.nextLeaf(e);
     while (next != null && next.getNode().getElementType() == TokenType.WHITE_SPACE) next = PsiTreeUtil.nextLeaf(next);
     return next;
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   public static PsiElement getPreviousNonWhitespaceToken(PsiElement e) {
     PsiElement next = PsiTreeUtil.prevLeaf(e);
     while (next != null && next.getNode().getElementType() == TokenType.WHITE_SPACE) next = PsiTreeUtil.prevLeaf(next);

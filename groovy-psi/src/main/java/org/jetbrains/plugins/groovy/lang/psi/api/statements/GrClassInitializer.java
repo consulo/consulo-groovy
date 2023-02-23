@@ -16,13 +16,13 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.api.statements;
 
-import javax.annotation.Nonnull;
-
-import com.intellij.psi.PsiClassInitializer;
+import com.intellij.java.language.psi.PsiClassInitializer;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.GrModifierList;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrOpenBlock;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMember;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMembersDeclaration;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author ilyas

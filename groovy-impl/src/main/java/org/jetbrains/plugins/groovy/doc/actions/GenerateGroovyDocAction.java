@@ -15,20 +15,25 @@
  */
 package org.jetbrains.plugins.groovy.doc.actions;
 
+import consulo.language.editor.CommonDataKeys;
+import consulo.module.content.ModuleRootManager;
+import consulo.ui.ex.action.AnActionEvent;
+import consulo.ui.ex.action.Presentation;
+import consulo.virtualFileSystem.VirtualFile;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.plugins.groovy.doc.GenerateGroovyDocDialog;
 import org.jetbrains.plugins.groovy.doc.GroovyDocConfiguration;
 import org.jetbrains.plugins.groovy.util.LibrariesUtil;
-import com.intellij.openapi.actionSystem.AnAction;
-import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.actionSystem.CommonDataKeys;
-import com.intellij.openapi.actionSystem.LangDataKeys;
-import com.intellij.openapi.actionSystem.Presentation;
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.project.DumbAware;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.roots.ModuleRootManager;
-import com.intellij.openapi.vfs.VirtualFile;
+import consulo.ui.ex.action.AnAction;
+import consulo.ui.ex.action.AnActionEvent;
+import consulo.language.editor.CommonDataKeys;
+import consulo.language.editor.LangDataKeys;
+import consulo.ui.ex.action.Presentation;
+import consulo.module.Module;
+import consulo.application.dumb.DumbAware;
+import consulo.project.Project;
+import consulo.module.content.ModuleRootManager;
+import consulo.virtualFileSystem.VirtualFile;
 
 public final class GenerateGroovyDocAction extends AnAction implements DumbAware
 {

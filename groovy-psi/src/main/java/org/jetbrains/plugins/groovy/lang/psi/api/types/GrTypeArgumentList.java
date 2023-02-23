@@ -16,7 +16,7 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.api.types;
 
-import com.intellij.psi.PsiType;
+import com.intellij.java.language.psi.PsiType;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 
 /**

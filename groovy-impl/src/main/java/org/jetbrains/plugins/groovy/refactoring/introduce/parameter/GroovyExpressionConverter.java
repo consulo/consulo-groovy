@@ -15,17 +15,27 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.introduce.parameter;
 
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiElement;
-import com.intellij.refactoring.introduceParameter.ExpressionConverter;
+import com.intellij.java.impl.refactoring.introduceParameter.ExpressionConverter;
+import com.intellij.java.language.JavaLanguage;
+import consulo.language.Language;
+import consulo.language.psi.PsiElement;
+import consulo.project.Project;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author Maxim.Medvedev
  */
-public class GroovyExpressionConverter extends ExpressionConverter {
+public class GroovyExpressionConverter implements ExpressionConverter {
   @Override
-  protected PsiElement convert(PsiElement expression, Project project) {
+  public PsiElement convert(PsiElement expression, Project project) {
     return GroovyPsiElementFactory.getInstance(project).createExpressionFromText(expression.getText(), expression);
+  }
+
+  @Nonnull
+  @Override
+  public Language getLanguage() {
+    return JavaLanguage.INSTANCE;
   }
 }

@@ -40,12 +40,12 @@ public interface GrIntroduceParameterSettings extends GrIntroduceSettings, Intro
 
   boolean removeLocalVariable();
 
-  @javax.annotation.Nullable
+  @Nullable
   GrVariable getVar();
 
   @Nullable
   GrExpression getExpression();
 
-  @javax.annotation.Nullable
+  @Nullable
   StringPartInfo getStringPartInfo();
 }

@@ -15,8 +15,10 @@
  */
 package org.jetbrains.plugins.groovy.annotator.intentions.dynamic.elements;
 
-import com.intellij.openapi.project.Project;
+import consulo.project.Project;
 import javax.annotation.Nullable;
+
+import consulo.project.Project;
 import org.jetbrains.plugins.groovy.annotator.intentions.QuickfixUtil;
 import org.jetbrains.plugins.groovy.annotator.intentions.dynamic.DynamicManager;
 import org.jetbrains.plugins.groovy.annotator.intentions.dynamic.ParamInfo;
@@ -112,7 +114,7 @@ public class DClassElement implements DNamedElement {
     return result;
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   public DMethodElement getMethod(String methodName, String[] parametersTypes) {
     for (DMethodElement method : myMethods) {
       final List<ParamInfo> myPairList = method.getPairs();

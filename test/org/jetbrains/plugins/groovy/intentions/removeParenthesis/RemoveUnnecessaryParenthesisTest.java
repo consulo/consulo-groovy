@@ -16,7 +16,7 @@
 
 package org.jetbrains.plugins.groovy.intentions.removeParenthesis;
 
-import com.intellij.psi.impl.source.PostprocessReformattingAspect;
+import com.intellij.java.language.psi.impl.source.PostprocessReformattingAspect;
 import com.intellij.testFramework.fixtures.LightCodeInsightFixtureTestCase;
 import org.jetbrains.plugins.groovy.util.TestUtils;
 

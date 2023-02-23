@@ -15,19 +15,19 @@
  */
 package org.jetbrains.plugins.groovy.annotator.intentions;
 
-import javax.annotation.Nonnull;
-
-import com.intellij.codeInsight.intention.IntentionAction;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.IncorrectOperationException;
+import consulo.codeEditor.Editor;
+import consulo.language.editor.intention.IntentionAction;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.language.util.IncorrectOperationException;
+import consulo.logging.Logger;
+import consulo.project.Project;
 import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author Max Medvedev
@@ -49,7 +49,6 @@ public class GrMoveClassToCorrectPlaceFix implements IntentionAction {
   }
 
   @Nonnull
-  @Override
   public String getFamilyName() {
     return GroovyBundle.message("move.class.from.method.family.name");
   }

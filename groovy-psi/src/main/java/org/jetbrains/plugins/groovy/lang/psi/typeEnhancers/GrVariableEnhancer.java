@@ -15,16 +15,20 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.typeEnhancers;
 
-import javax.annotation.Nullable;
+import com.intellij.java.language.psi.PsiType;
+import consulo.annotation.component.ComponentScope;
+import consulo.annotation.component.ExtensionAPI;
+import consulo.component.extension.ExtensionPointName;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
-import com.intellij.openapi.extensions.ExtensionPointName;
-import com.intellij.psi.PsiType;
+
+import javax.annotation.Nullable;
 
 /**
  * @author peter
  */
+@ExtensionAPI(ComponentScope.APPLICATION)
 public abstract class GrVariableEnhancer {
-  public static final ExtensionPointName<GrVariableEnhancer> EP_NAME = ExtensionPointName.create("org.intellij.groovy.variableEnhancer");
+  public static final ExtensionPointName<GrVariableEnhancer> EP_NAME = ExtensionPointName.create(GrVariableEnhancer.class);
 
   @Nullable
   public abstract PsiType getVariableType(GrVariable variable);

@@ -15,43 +15,32 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.introduce;
 
-import java.util.List;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.intellij.java.language.psi.PsiType;
+import com.intellij.java.language.psi.SmartTypePointer;
+import com.intellij.java.language.psi.SmartTypePointerManager;
+import consulo.application.ApplicationManager;
+import consulo.application.util.function.Computable;
+import consulo.codeEditor.Editor;
+import consulo.document.RangeMarker;
+import consulo.language.editor.refactoring.introduce.inplace.AbstractInplaceIntroducer;
+import consulo.language.editor.refactoring.introduce.inplace.OccurrencesChooser;
+import consulo.language.psi.*;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.language.util.IncorrectOperationException;
+import consulo.project.Project;
+import consulo.util.collection.ContainerUtil;
+import consulo.util.lang.Comparing;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrCall;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrMethodCall;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrNewExpression;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrParenthesizedExpression;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.*;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.path.GrMethodCallExpression;
 import org.jetbrains.plugins.groovy.lang.psi.impl.PsiImplUtil;
-import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.editor.RangeMarker;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.Comparing;
-import com.intellij.openapi.util.Computable;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiType;
-import com.intellij.psi.SmartPointerManager;
-import com.intellij.psi.SmartPsiElementPointer;
-import com.intellij.psi.SmartTypePointer;
-import com.intellij.psi.SmartTypePointerManager;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.psi.util.PsiUtilCore;
-import com.intellij.refactoring.introduce.inplace.AbstractInplaceIntroducer;
-import com.intellij.refactoring.introduce.inplace.OccurrencesChooser;
-import com.intellij.util.Function;
-import com.intellij.util.IncorrectOperationException;
-import com.intellij.util.containers.ContainerUtil;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.List;
 
 /**
  * Created by Max Medvedev on 10/28/13
@@ -69,8 +58,8 @@ public abstract class GrAbstractInplaceIntroducer<Settings extends GrIntroduceSe
 	private final GrIntroduceContext myContext;
 
 	public GrAbstractInplaceIntroducer(String title,
-			OccurrencesChooser.ReplaceChoice replaceChoice,
-			GrIntroduceContext context)
+									   OccurrencesChooser.ReplaceChoice replaceChoice,
+									   GrIntroduceContext context)
 	{
 		super(context.getProject(), context.getEditor(), context.getExpression(), context.getVar(),
 				context.getOccurrences(), title, GroovyFileType.GROOVY_FILE_TYPE);
@@ -92,9 +81,9 @@ public abstract class GrAbstractInplaceIntroducer<Settings extends GrIntroduceSe
 
 	@Override
 	public GrExpression restoreExpression(PsiFile containingFile,
-			GrVariable variable,
-			RangeMarker marker,
-			String exprText)
+										  GrVariable variable,
+										  RangeMarker marker,
+										  String exprText)
 	{
 		if(exprText == null)
 		{
@@ -195,7 +184,7 @@ public abstract class GrAbstractInplaceIntroducer<Settings extends GrIntroduceSe
 		revalidate();
 	}
 
-	@javax.annotation.Nullable
+	@Nullable
 	@Override
 	protected PsiElement getNameIdentifier()
 	{
@@ -232,15 +221,8 @@ public abstract class GrAbstractInplaceIntroducer<Settings extends GrIntroduceSe
 	@Nonnull
 	protected PsiElement[] restoreOccurrences()
 	{
-		List<PsiElement> result = ContainerUtil.map(getOccurrenceMarkers(), new Function<RangeMarker, PsiElement>()
-		{
-			@Override
-			public PsiElement fun(RangeMarker marker)
-			{
-				return PsiImplUtil.findElementInRange(myFile, marker.getStartOffset(), marker.getEndOffset(),
-						GrExpression.class);
-			}
-		});
+		List<PsiElement> result = ContainerUtil.map(getOccurrenceMarkers(), marker -> PsiImplUtil.findElementInRange(myFile, marker.getStartOffset(), marker.getEndOffset(),
+				GrExpression.class));
 		return PsiUtilCore.toPsiElementArray(result);
 	}
 
@@ -257,15 +239,16 @@ public abstract class GrAbstractInplaceIntroducer<Settings extends GrIntroduceSe
 
 		SmartPsiElementPointer<GrVariable> pointer = ApplicationManager.getApplication().runWriteAction(new
 																												Computable<SmartPsiElementPointer<GrVariable>>()
-		{
-			@Override
-			public SmartPsiElementPointer<GrVariable> compute()
-			{
-				GrVariable var = runRefactoring(myContext, settings, false);
-				return var != null ? SmartPointerManager.getInstance(myProject).createSmartPsiElementPointer(var) :
-						null;
-			}
-		});
+																												{
+																													@Override
+																													public SmartPsiElementPointer<GrVariable> compute()
+																													{
+																														GrVariable var = runRefactoring(myContext, settings, false);
+																														return var != null ? SmartPointerManager.getInstance(myProject)
+																																.createSmartPsiElementPointer(var) :
+																																null;
+																													}
+																												});
 
 		if(pointer != null)
 		{
@@ -286,8 +269,8 @@ public abstract class GrAbstractInplaceIntroducer<Settings extends GrIntroduceSe
 
 	@Nullable
 	protected abstract Settings getInitialSettingsForInplace(@Nonnull GrIntroduceContext context,
-			@Nonnull OccurrencesChooser.ReplaceChoice choice,
-			String[] names);
+															 @Nonnull OccurrencesChooser.ReplaceChoice choice,
+															 String[] names);
 
 	@Override
 	public boolean isReplaceAllOccurrences()
@@ -327,7 +310,7 @@ public abstract class GrAbstractInplaceIntroducer<Settings extends GrIntroduceSe
 			return myEditor;
 		}
 
-		@javax.annotation.Nullable
+		@Nullable
 		@Override
 		public GrExpression getExpression()
 		{

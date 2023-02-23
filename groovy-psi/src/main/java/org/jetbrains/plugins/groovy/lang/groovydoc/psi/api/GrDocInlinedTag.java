@@ -16,7 +16,7 @@
 
 package org.jetbrains.plugins.groovy.lang.groovydoc.psi.api;
 
-import com.intellij.psi.javadoc.PsiInlineDocTag;
+import com.intellij.java.language.psi.javadoc.PsiInlineDocTag;
 
 /**
  * @author ilyas

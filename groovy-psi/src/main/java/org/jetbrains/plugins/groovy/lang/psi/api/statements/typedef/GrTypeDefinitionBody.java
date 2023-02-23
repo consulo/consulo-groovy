@@ -16,15 +16,16 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef;
 
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiElement;
-import javax.annotation.Nonnull;
-
+import com.intellij.java.language.psi.PsiClass;
+import consulo.language.psi.PsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrClassInitializer;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMembersDeclaration;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
 import org.jetbrains.plugins.groovy.lang.psi.api.util.GrVariableDeclarationOwner;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @autor: Dmitry.Krasilschikov
@@ -37,10 +38,10 @@ public interface GrTypeDefinitionBody extends GrVariableDeclarationOwner {
 
   GrMembersDeclaration[] getMemberDeclarations();
 
-  @javax.annotation.Nullable
+  @Nullable
   PsiElement getLBrace();
 
-  @javax.annotation.Nullable
+  @Nullable
   PsiElement getRBrace();
 
   @Nonnull

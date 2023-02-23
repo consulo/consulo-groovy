@@ -16,12 +16,13 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions;
 
-import javax.annotation.Nonnull;
-
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiPolyVariantReference;
-import com.intellij.psi.tree.IElementType;
+import consulo.language.ast.IElementType;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiPolyVariantReference;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author ilyas
@@ -37,7 +38,7 @@ public interface GrBinaryExpression extends GrExpression, PsiPolyVariantReferenc
   /**
    * @return right operand of binary expression
    */
-  @javax.annotation.Nullable
+  @Nullable
   GrExpression getRightOperand();
 
   @Nonnull

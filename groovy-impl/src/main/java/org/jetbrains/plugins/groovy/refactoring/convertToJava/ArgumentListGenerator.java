@@ -15,12 +15,14 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.convertToJava;
 
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.NullUtils;
-import com.intellij.psi.*;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.intellij.java.language.psi.PsiArrayType;
+import com.intellij.java.language.psi.PsiEllipsisType;
+import com.intellij.java.language.psi.PsiSubstitutor;
+import com.intellij.java.language.psi.PsiType;
+import consulo.language.psi.PsiElement;
+import consulo.logging.Logger;
+import consulo.project.Project;
+import consulo.util.lang.NullUtils;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.GrListOrMap;
 import org.jetbrains.plugins.groovy.lang.psi.api.signatures.GrClosureSignature;
@@ -32,6 +34,8 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.signatures.GrClosureSignatureU
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil;
 import org.jetbrains.plugins.groovy.refactoring.GroovyRefactoringUtil;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Arrays;
 
 /**

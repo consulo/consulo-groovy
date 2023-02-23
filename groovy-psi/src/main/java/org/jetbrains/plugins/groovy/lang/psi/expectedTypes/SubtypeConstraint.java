@@ -15,14 +15,14 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.expectedTypes;
 
-import static org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil.createType;
+import com.intellij.java.language.psi.PsiClassType;
+import com.intellij.java.language.psi.PsiType;
+import consulo.language.psi.PsiElement;
+import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil;
 
 import javax.annotation.Nonnull;
 
-import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil;
-import com.intellij.psi.PsiClassType;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiType;
+import static org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil.createType;
 
 /**
  * @author ven

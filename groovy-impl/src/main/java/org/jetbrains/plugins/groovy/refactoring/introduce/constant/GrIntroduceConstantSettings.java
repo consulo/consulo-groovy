@@ -12,8 +12,10 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.introduce.constant;
 
-import com.intellij.psi.PsiClass;
+import com.intellij.java.language.psi.PsiClass;
 import org.jetbrains.plugins.groovy.refactoring.introduce.GrIntroduceSettings;
+
+import javax.annotation.Nullable;
 
 /**
  * @author Maxim.Medvedev
@@ -21,6 +23,6 @@ import org.jetbrains.plugins.groovy.refactoring.introduce.GrIntroduceSettings;
 public interface GrIntroduceConstantSettings extends GrIntroduceSettings {
   String getVisibilityModifier();
 
-  @javax.annotation.Nullable
+  @Nullable
   PsiClass getTargetClass();
 }

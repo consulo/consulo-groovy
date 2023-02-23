@@ -16,11 +16,13 @@
 
 package org.jetbrains.plugins.groovy.refactoring.extract.method;
 
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiModifier;
+import com.intellij.java.language.psi.PsiClass;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import com.intellij.java.language.psi.PsiModifier;
 import javax.annotation.Nonnull;
+
+import consulo.language.psi.PsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
 import org.jetbrains.plugins.groovy.refactoring.extract.ExtractInfoHelperBase;

@@ -15,13 +15,16 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.synthetic;
 
-import java.util.List;
-
-import javax.annotation.Nonnull;
-
+import com.intellij.java.language.impl.psi.impl.PsiImplUtil;
+import com.intellij.java.language.impl.psi.impl.light.LightClassReference;
+import com.intellij.java.language.psi.*;
+import consulo.language.Language;
+import consulo.language.impl.psi.LightElement;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiManager;
+import consulo.language.psi.meta.PsiMetaData;
+import consulo.util.lang.StringUtil;
 import org.jetbrains.annotations.NonNls;
-
-import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
@@ -31,20 +34,11 @@ import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotationNameValuePair;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
 import org.jetbrains.plugins.groovy.lang.psi.impl.AnnotationArgConverter;
-import com.intellij.lang.Language;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.PsiAnnotationMemberValue;
-import com.intellij.psi.PsiAnnotationOwner;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiJavaCodeReferenceElement;
-import com.intellij.psi.PsiManager;
-import com.intellij.psi.PsiNameValuePair;
-import com.intellij.psi.impl.PsiImplUtil;
-import com.intellij.psi.impl.light.LightClassReference;
-import com.intellij.psi.impl.light.LightElement;
-import com.intellij.psi.meta.PsiMetaData;
-import com.intellij.util.containers.ContainerUtilRt;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Max Medvedev
@@ -193,7 +187,7 @@ public class GrLightAnnotation extends LightElement implements GrAnnotation {
     }
 
     public void addAttribute(@Nonnull GrAnnotationNameValuePair attribute) {
-      if (myAttributes == null) myAttributes = ContainerUtilRt.newArrayList();
+      if (myAttributes == null) myAttributes = new ArrayList<>();
       myAttributes.add(attribute);
       myCachedAttributes = null;
     }

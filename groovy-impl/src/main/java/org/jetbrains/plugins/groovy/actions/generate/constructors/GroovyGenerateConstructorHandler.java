@@ -15,16 +15,19 @@
  */
 package org.jetbrains.plugins.groovy.actions.generate.constructors;
 
-import com.intellij.codeInsight.generation.*;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.*;
-import com.intellij.psi.codeStyle.JavaCodeStyleManager;
-import com.intellij.util.ArrayUtil;
-import com.intellij.util.IncorrectOperationException;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.intellij.java.impl.codeInsight.generation.GenerateConstructorHandler;
+import com.intellij.java.impl.codeInsight.generation.PsiFieldMember;
+import com.intellij.java.impl.codeInsight.generation.PsiGenerationInfo;
+import com.intellij.java.impl.codeInsight.generation.PsiMethodMember;
+import com.intellij.java.language.impl.codeInsight.generation.GenerationInfo;
+import com.intellij.java.language.psi.*;
+import com.intellij.java.language.psi.codeStyle.JavaCodeStyleManager;
+import consulo.language.editor.generation.ClassMember;
+import consulo.language.util.IncorrectOperationException;
+import consulo.logging.Logger;
+import consulo.project.Project;
+import consulo.util.collection.ArrayUtil;
+import consulo.util.lang.StringUtil;
 import org.jetbrains.plugins.groovy.actions.generate.GroovyGenerationInfo;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
@@ -32,6 +35,8 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameter;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
 import org.jetbrains.plugins.groovy.refactoring.convertToJava.GroovyToJavaGenerator;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 

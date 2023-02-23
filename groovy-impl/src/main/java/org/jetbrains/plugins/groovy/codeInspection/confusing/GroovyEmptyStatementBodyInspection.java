@@ -17,7 +17,8 @@ package org.jetbrains.plugins.groovy.codeInspection.confusing;
 
 import javax.annotation.Nonnull;
 
-import com.intellij.psi.PsiElement;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiElement;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;

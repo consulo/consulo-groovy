@@ -15,16 +15,21 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements;
 
-import com.intellij.lang.ASTNode;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.*;
-import com.intellij.psi.codeStyle.JavaCodeStyleManager;
-import com.intellij.psi.scope.PsiScopeProcessor;
-import com.intellij.psi.stubs.EmptyStub;
-import com.intellij.util.IncorrectOperationException;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.intellij.java.language.psi.PsiClassType;
+import com.intellij.java.language.psi.PsiModifier;
+import com.intellij.java.language.psi.PsiType;
+import com.intellij.java.language.psi.codeStyle.JavaCodeStyleManager;
+import consulo.document.util.TextRange;
+import consulo.language.ast.ASTNode;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiReference;
+import consulo.language.psi.PsiReferenceBase;
+import consulo.language.psi.StubBasedPsiElement;
+import consulo.language.psi.resolve.PsiScopeProcessor;
+import consulo.language.psi.resolve.ResolveState;
+import consulo.language.psi.stub.EmptyStub;
+import consulo.language.util.IncorrectOperationException;
+import consulo.logging.Logger;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.lexer.TokenSets;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
@@ -49,6 +54,8 @@ import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 import org.jetbrains.plugins.groovy.lang.resolve.ResolveUtil;
 import org.jetbrains.plugins.groovy.lang.resolve.processors.ClassHint;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -132,7 +139,7 @@ public class GrVariableDeclarationImpl extends GrStubElementBase<EmptyStub> impl
     return findChildByType(GroovyTokenTypes.mLPAREN) != null;
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   @Override
   public GrExpression getTupleInitializer() {
     return GroovyPsiElementImpl.findExpressionChild(this);
@@ -162,7 +169,7 @@ public class GrVariableDeclarationImpl extends GrStubElementBase<EmptyStub> impl
   }
 
   @Override
-  @javax.annotation.Nullable
+  @Nullable
   public GrTypeElement getTypeElementGroovy() {
     if (isTuple()) return null;
     return findChildByClass(GrTypeElement.class);
@@ -195,7 +202,7 @@ public class GrVariableDeclarationImpl extends GrStubElementBase<EmptyStub> impl
   @Override
   public boolean processDeclarations(@Nonnull PsiScopeProcessor processor,
                                      @Nonnull ResolveState state,
-                                     @javax.annotation.Nullable PsiElement lastParent,
+                                     @Nullable PsiElement lastParent,
                                      @Nonnull PsiElement place) {
     if (!ResolveUtil.shouldProcessProperties(processor.getHint(ClassHint.KEY))) return true;
 
@@ -251,7 +258,7 @@ public class GrVariableDeclarationImpl extends GrStubElementBase<EmptyStub> impl
       super(GrVariableDeclarationImpl.this, range, true);
     }
 
-    @javax.annotation.Nullable
+    @Nullable
     @Override
     public PsiElement resolve() {
       GrVariable[] variables = getVariables();

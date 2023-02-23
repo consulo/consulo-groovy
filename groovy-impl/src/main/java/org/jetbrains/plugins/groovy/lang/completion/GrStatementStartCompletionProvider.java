@@ -15,25 +15,26 @@
  */
 package org.jetbrains.plugins.groovy.lang.completion;
 
-import javax.annotation.Nonnull;
-
-import com.intellij.codeInsight.TailTypes;
-import com.intellij.codeInsight.completion.*;
-import com.intellij.codeInsight.lookup.LookupElement;
-import com.intellij.codeInsight.lookup.LookupElementBuilder;
-import com.intellij.patterns.PlatformPatterns;
-import com.intellij.patterns.PsiElementPattern;
-import com.intellij.patterns.StandardPatterns;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiErrorElement;
-import com.intellij.util.ProcessingContext;
-import consulo.codeInsight.completion.CompletionProvider;
+import com.intellij.java.impl.codeInsight.TailTypes;
+import consulo.language.editor.completion.*;
+import consulo.language.editor.completion.lookup.InsertHandler;
+import consulo.language.editor.completion.lookup.InsertionContext;
+import consulo.language.editor.completion.lookup.LookupElement;
+import consulo.language.editor.completion.lookup.LookupElementBuilder;
+import consulo.language.pattern.PlatformPatterns;
+import consulo.language.pattern.PsiElementPattern;
+import consulo.language.pattern.StandardPatterns;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiErrorElement;
+import consulo.language.util.ProcessingContext;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.lexer.TokenSets;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrForStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrIfStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrWhileStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinitionBody;
+
+import javax.annotation.Nonnull;
 
 /**
 * Created by Max Medvedev on 14/05/14

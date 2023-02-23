@@ -15,14 +15,16 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.controlFlow.impl;
 
-import com.intellij.psi.PsiElement;
+import consulo.language.psi.PsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.controlFlow.Instruction;
+
+import javax.annotation.Nullable;
 
 /**
  * @author Max Medvedev
  */
 public class ThrowingInstruction extends InstructionImpl {
-  public ThrowingInstruction(@javax.annotation.Nullable PsiElement element) {
+  public ThrowingInstruction(@Nullable PsiElement element) {
     super(element);
   }
 

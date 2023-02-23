@@ -16,7 +16,7 @@
 package org.jetbrains.plugins.groovy.lang.resolve.ast;
 
 import com.google.common.collect.ImmutableMap;
-import com.intellij.psi.PsiModifier;
+import com.intellij.java.language.psi.PsiModifier;
 import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.GrModifierList;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotation;

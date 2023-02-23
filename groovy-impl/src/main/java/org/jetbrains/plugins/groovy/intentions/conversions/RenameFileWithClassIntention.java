@@ -15,56 +15,52 @@
  */
 package org.jetbrains.plugins.groovy.intentions.conversions;
 
-import javax.annotation.Nonnull;
+import consulo.codeEditor.Editor;
+import consulo.ide.impl.idea.refactoring.openapi.impl.RenameRefactoringImpl;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.util.IncorrectOperationException;
+import consulo.project.Project;
+import consulo.util.io.FileUtil;
 import org.jetbrains.plugins.groovy.intentions.GroovyIntentionsBundle;
 import org.jetbrains.plugins.groovy.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.intentions.base.PsiElementPredicate;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.io.FileUtilRt;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.refactoring.openapi.impl.RenameRefactoringImpl;
-import com.intellij.util.Consumer;
-import com.intellij.util.IncorrectOperationException;
+
+import javax.annotation.Nonnull;
+import java.util.function.Consumer;
 
 /**
  * @author Maxim.Medvedev
  */
-public class RenameFileWithClassIntention extends Intention implements Consumer<GrTypeDefinition>
-{
+public class RenameFileWithClassIntention extends Intention implements Consumer<GrTypeDefinition> {
 
-	private String myNewFileName = null;
+  private String myNewFileName = null;
 
-	@Override
-	protected void processIntention(@Nonnull PsiElement element,
-			Project project,
-			Editor editor) throws IncorrectOperationException
-	{
-		final PsiFile file = element.getContainingFile();
-		new RenameRefactoringImpl(project, file, myNewFileName, true, true).run();
-	}
+  @Override
+  protected void processIntention(@Nonnull PsiElement element,
+                                  Project project,
+                                  Editor editor) throws IncorrectOperationException {
+    final PsiFile file = element.getContainingFile();
+    new RenameRefactoringImpl(project, file, myNewFileName, true, true).run();
+  }
 
-	@Nonnull
-	@Override
-	public String getText()
-	{
-		return GroovyIntentionsBundle.message("rename.file.to.0", myNewFileName);
-	}
+  @Nonnull
+  @Override
+  public String getText() {
+    return GroovyIntentionsBundle.message("rename.file.to.0", myNewFileName);
+  }
 
-	@Nonnull
-	@Override
-	protected PsiElementPredicate getElementPredicate()
-	{
-		return new ClassNameDiffersFromFileNamePredicate(this);
-	}
+  @Nonnull
+  @Override
+  protected PsiElementPredicate getElementPredicate() {
+    return new ClassNameDiffersFromFileNamePredicate(this);
+  }
 
-	@Override
-	public void consume(GrTypeDefinition def)
-	{
-		final String name = def.getName();
-		final PsiFile file = def.getContainingFile();
-		myNewFileName = name + "." + FileUtilRt.getExtension(file.getName());
-	}
+  @Override
+  public void accept(GrTypeDefinition def) {
+    final String name = def.getName();
+    final PsiFile file = def.getContainingFile();
+    myNewFileName = name + "." + FileUtil.getExtension(file.getName());
+  }
 }

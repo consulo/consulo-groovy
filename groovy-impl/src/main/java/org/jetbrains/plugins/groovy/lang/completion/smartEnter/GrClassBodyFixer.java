@@ -15,13 +15,14 @@
  */
 package org.jetbrains.plugins.groovy.lang.completion.smartEnter;
 
-import com.intellij.lang.SmartEnterProcessorWithFixers;
-import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.psi.PsiElement;
-import com.intellij.util.IncorrectOperationException;
-import javax.annotation.Nonnull;
+import consulo.codeEditor.Editor;
+import consulo.document.Document;
+import consulo.language.editor.action.SmartEnterProcessorWithFixers;
+import consulo.language.psi.PsiElement;
+import consulo.language.util.IncorrectOperationException;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
+
+import javax.annotation.Nonnull;
 
 /**
  * Created by Max Medvedev on 9/5/13
@@ -29,7 +30,8 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefini
 public class GrClassBodyFixer extends SmartEnterProcessorWithFixers.Fixer<GroovySmartEnterProcessor> {
   @Override
   public void apply(@Nonnull Editor editor, @Nonnull GroovySmartEnterProcessor processor, @Nonnull PsiElement element)
-    throws IncorrectOperationException {
+    throws IncorrectOperationException
+  {
     if (element instanceof GrTypeDefinition && ((GrTypeDefinition)element).getBody() == null) {
       final Document doc = editor.getDocument();
       doc.insertString(element.getTextRange().getEndOffset(), "{\n}");

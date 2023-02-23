@@ -15,14 +15,14 @@
  */
 package org.jetbrains.plugins.groovy.annotator.intentions;
 
-import javax.annotation.Nonnull;
-
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiType;
+import com.intellij.java.language.psi.PsiClass;
+import com.intellij.java.language.psi.PsiType;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
 import org.jetbrains.plugins.groovy.lang.psi.expectedTypes.GroovyExpectedTypesProvider;
 import org.jetbrains.plugins.groovy.lang.psi.expectedTypes.TypeConstraint;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyPropertyUtils;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author Max Medvedev

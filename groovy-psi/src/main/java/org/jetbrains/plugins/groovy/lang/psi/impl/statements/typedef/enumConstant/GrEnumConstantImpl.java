@@ -16,13 +16,15 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.typedef.enumConstant;
 
-import javax.annotation.Nonnull;
-
-import com.intellij.lang.ASTNode;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.*;
-import com.intellij.util.ArrayUtil;
-import com.intellij.util.IncorrectOperationException;
+import com.intellij.java.language.psi.*;
+import consulo.document.util.TextRange;
+import consulo.language.ast.ASTNode;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiPolyVariantReference;
+import consulo.language.psi.PsiReference;
+import consulo.language.psi.ResolveResult;
+import consulo.language.util.IncorrectOperationException;
+import consulo.util.collection.ArrayUtil;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
@@ -42,6 +44,9 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.statements.GrFieldImpl;
 import org.jetbrains.plugins.groovy.lang.psi.stubs.GrFieldStub;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 import org.jetbrains.plugins.groovy.lang.resolve.ResolveUtil;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author: Dmitry.Krasilschikov
@@ -76,7 +81,7 @@ public class GrEnumConstantImpl extends GrFieldImpl implements GrEnumConstant {
   }
 
   @Override
-  @javax.annotation.Nullable
+  @Nullable
   public GrTypeElement getTypeElementGroovy() {
     return null;
   }
@@ -88,18 +93,18 @@ public class GrEnumConstantImpl extends GrFieldImpl implements GrEnumConstant {
   }
 
   @Override
-  @javax.annotation.Nullable
+  @Nullable
   public PsiType getTypeGroovy() {
     return getType();
   }
 
   @Override
-  public void setType(@javax.annotation.Nullable PsiType type) {
+  public void setType(@Nullable PsiType type) {
     throw new RuntimeException("Cannot set type for enum constant");
   }
 
   @Override
-  @javax.annotation.Nullable
+  @Nullable
   public GrExpression getInitializerGroovy() {
     return null;
   }
@@ -116,7 +121,7 @@ public class GrEnumConstantImpl extends GrFieldImpl implements GrEnumConstant {
   }
 
   @Override
-  @javax.annotation.Nullable
+  @Nullable
   public GrArgumentList getArgumentList() {
     return findChildByClass(GrArgumentList.class);
   }
@@ -149,7 +154,7 @@ public class GrEnumConstantImpl extends GrFieldImpl implements GrEnumConstant {
 
   @Nonnull
   @Override
-  public GroovyResolveResult[] getCallVariants(@javax.annotation.Nullable GrExpression upToArgument) {
+  public GroovyResolveResult[] getCallVariants(@Nullable GrExpression upToArgument) {
     return multiResolve(true);
   }
 
@@ -171,7 +176,7 @@ public class GrEnumConstantImpl extends GrFieldImpl implements GrEnumConstant {
   }
 
   @Override
-  @javax.annotation.Nullable
+  @Nullable
   public GrEnumConstantInitializer getInitializingClass() {
     return findChildByClass(GrEnumConstantInitializer.class);
   }
@@ -265,7 +270,8 @@ public class GrEnumConstantImpl extends GrFieldImpl implements GrEnumConstant {
     }
 
     @Override
-    public PsiElement bindToElement(@Nonnull PsiElement element) throws IncorrectOperationException {
+    public PsiElement bindToElement(@Nonnull PsiElement element) throws IncorrectOperationException
+	{
       throw new IncorrectOperationException("invalid operation");
     }
 

@@ -15,10 +15,10 @@
  */
 package org.jetbrains.plugins.groovy.editor.actions;
 
-import com.intellij.codeInsight.editorActions.BackspaceHandlerDelegate;
-import com.intellij.codeInsight.editorActions.JavaBackspaceHandler;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.psi.PsiFile;
+import com.intellij.java.impl.codeInsight.editorActions.JavaBackspaceHandler;
+import consulo.codeEditor.Editor;
+import consulo.language.editor.action.BackspaceHandlerDelegate;
+import consulo.language.psi.PsiFile;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 
@@ -30,7 +30,7 @@ public class GroovyBackspaceHandler extends BackspaceHandlerDelegate {
 
   public void beforeCharDeleted(char c, PsiFile file, Editor editor) {
     int offset = editor.getCaretModel().getOffset() - 1;
-    myToDeleteGt = c =='<' && file instanceof GroovyFile && GroovyTypedHandler.isAfterClassLikeIdentifier(offset, editor);
+    myToDeleteGt = c == '<' && file instanceof GroovyFile && GroovyTypedHandler.isAfterClassLikeIdentifier(offset, editor);
   }
 
   public boolean charDeleted(final char c, final PsiFile file, final Editor editor) {
@@ -41,7 +41,11 @@ public class GroovyBackspaceHandler extends BackspaceHandlerDelegate {
     char c1 = chars.charAt(offset);
     if (c == '<' && myToDeleteGt) {
       if (c1 != '>') return true;
-      JavaBackspaceHandler.handleLTDeletion(editor, offset, GroovyTokenTypes.mLT, GroovyTokenTypes.mGT, GroovyTypedHandler.INVALID_INSIDE_REFERENCE);
+      JavaBackspaceHandler.handleLTDeletion(editor,
+                                            offset,
+                                            GroovyTokenTypes.mLT,
+                                            GroovyTokenTypes.mGT,
+                                            GroovyTypedHandler.INVALID_INSIDE_REFERENCE);
       return true;
     }
     return false;

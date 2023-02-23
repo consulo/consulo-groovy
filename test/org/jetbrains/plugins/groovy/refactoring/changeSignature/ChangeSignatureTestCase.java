@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.changeSignature;
 
-import com.intellij.psi.*;
+import com.intellij.java.language.psi.*;
 import com.intellij.refactoring.changeSignature.ThrownExceptionInfo;
 import com.intellij.refactoring.util.CanonicalTypes;
 import com.intellij.testFramework.fixtures.LightCodeInsightFixtureTestCase;

@@ -15,13 +15,9 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.bugs;
 
-import javax.annotation.Nonnull;
-
-import com.intellij.psi.PsiMethod;
-import com.intellij.psi.PsiModifier;
-import com.intellij.psi.tree.IElementType;
-
-import javax.annotation.Nullable;
+import com.intellij.java.language.psi.PsiMethod;
+import com.intellij.java.language.psi.PsiModifier;
+import consulo.language.ast.IElementType;
 import org.jetbrains.plugins.groovy.codeInspection.utils.BoolUtils;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.GrCondition;
@@ -40,6 +36,9 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.path.GrI
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.path.GrMethodCallExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 @SuppressWarnings({"OverlyComplexClass"})
 class RecursionUtils {

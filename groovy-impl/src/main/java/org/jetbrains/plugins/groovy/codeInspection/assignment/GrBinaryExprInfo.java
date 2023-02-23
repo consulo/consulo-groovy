@@ -15,12 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.assignment;
 
-import javax.annotation.Nonnull;
-
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiType;
-
-import javax.annotation.Nullable;
+import com.intellij.java.language.psi.PsiType;
+import consulo.language.psi.PsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrArgumentList;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrNamedArgument;
@@ -28,6 +24,9 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlo
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrBinaryExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.impl.PsiImplUtil;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * Created by Max Medvedev on 05/02/14
@@ -39,7 +38,7 @@ public class GrBinaryExprInfo implements CallInfo<GrBinaryExpression> {
     myExpr = expr;
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   @Override
   public GrArgumentList getArgumentList() {
     return null;
@@ -53,13 +52,13 @@ public class GrBinaryExprInfo implements CallInfo<GrBinaryExpression> {
     return new PsiType[]{operand != null ? operand.getType() : null};
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   @Override
   public GrExpression getInvokedExpression() {
     return myExpr.getLeftOperand();
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   @Override
   public PsiType getQualifierInstanceType() {
     return myExpr.getLeftOperand().getType();

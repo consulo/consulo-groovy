@@ -16,11 +16,15 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.auxiliary;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.annotation.Nonnull;
-
+import com.intellij.java.language.impl.psi.impl.light.LightClassReference;
+import com.intellij.java.language.psi.PsiClass;
+import com.intellij.java.language.psi.PsiClassType;
+import com.intellij.java.language.psi.PsiJavaCodeReferenceElement;
+import consulo.language.ast.ASTNode;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiManager;
+import consulo.language.util.IncorrectOperationException;
+import consulo.util.collection.ContainerUtil;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
@@ -29,15 +33,10 @@ import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GrClassReferenceType;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyPsiElementImpl;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiClassType;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiJavaCodeReferenceElement;
-import com.intellij.psi.impl.PsiManagerEx;
-import com.intellij.psi.impl.light.LightClassReference;
-import com.intellij.util.IncorrectOperationException;
-import com.intellij.util.containers.ContainerUtil;
+
+import javax.annotation.Nonnull;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author: Dmitry.Krasilschikov
@@ -63,7 +62,7 @@ public class GrThrowsClauseImpl extends GroovyPsiElementImpl implements GrThrows
     PsiClassType[] types = getReferencedTypes();
     if (types.length == 0) return PsiJavaCodeReferenceElement.EMPTY_ARRAY;
 
-    PsiManagerEx manager = getManager();
+    PsiManager manager = getManager();
 
     List<PsiJavaCodeReferenceElement> result = ContainerUtil.newArrayList();
     for (PsiClassType type : types) {

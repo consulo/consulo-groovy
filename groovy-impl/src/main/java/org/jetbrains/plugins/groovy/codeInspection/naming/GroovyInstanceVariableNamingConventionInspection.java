@@ -15,13 +15,13 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.naming;
 
-import javax.annotation.Nonnull;
-
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiModifier;
+import com.intellij.java.language.psi.PsiModifier;
+import consulo.language.psi.PsiElement;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.codeInspection.GroovyFix;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
+
+import javax.annotation.Nonnull;
 
 public class GroovyInstanceVariableNamingConventionInspection extends ConventionInspection {
 

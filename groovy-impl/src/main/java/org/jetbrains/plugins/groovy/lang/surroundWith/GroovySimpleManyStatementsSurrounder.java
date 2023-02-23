@@ -15,13 +15,15 @@
  */
 package org.jetbrains.plugins.groovy.lang.surroundWith;
 
+import consulo.document.util.TextRange;
+import consulo.language.psi.PsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.path.GrMethodCallExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.GrCondition;
-import com.intellij.psi.PsiElement;
-import com.intellij.util.IncorrectOperationException;
-import com.intellij.openapi.util.TextRange;
+import consulo.language.psi.PsiElement;
+import consulo.language.util.IncorrectOperationException;
+import consulo.document.util.TextRange;
 
 /**
  * This is a base class for simple "Many Statement" surrounds, such as with() and shouldFail().

@@ -15,12 +15,11 @@
  */
 package org.jetbrains.plugins.groovy.annotator.checkers;
 
-import com.intellij.lang.annotation.AnnotationHolder;
-import com.intellij.psi.PsiAnnotationOwner;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiElement;
+import com.intellij.java.language.psi.PsiAnnotationOwner;
+import com.intellij.java.language.psi.PsiClass;
+import consulo.language.editor.annotation.AnnotationHolder;
+import consulo.language.psi.PsiElement;
 import consulo.util.lang.Pair;
-import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.annotator.GrRemoveAnnotationIntention;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotation;
@@ -28,6 +27,7 @@ import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
 import org.jetbrains.plugins.groovy.lang.psi.impl.auxiliary.modifiers.GrAnnotationCollector;
 import org.jetbrains.plugins.groovy.lang.resolve.ResolveUtil;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**

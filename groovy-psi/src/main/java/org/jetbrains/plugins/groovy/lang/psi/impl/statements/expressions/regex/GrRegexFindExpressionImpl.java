@@ -17,8 +17,9 @@
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.regex;
 
 import javax.annotation.Nonnull;
+
+import consulo.language.ast.ASTNode;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.GrBinaryExpressionImpl;
-import com.intellij.lang.ASTNode;
 
 /**
  * @author ilyas

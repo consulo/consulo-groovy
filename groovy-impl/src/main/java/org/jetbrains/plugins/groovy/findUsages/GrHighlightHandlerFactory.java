@@ -15,22 +15,29 @@
  */
 package org.jetbrains.plugins.groovy.findUsages;
 
+import consulo.language.ast.ASTNode;
+import consulo.language.editor.TargetElementUtil;
+import consulo.language.editor.highlight.usage.HighlightUsagesHandlerBase;
+import consulo.language.editor.highlight.usage.HighlightUsagesHandlerFactory;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrReferenceList;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
-import consulo.codeInsight.TargetElementUtil;
-import com.intellij.codeInsight.highlighting.HighlightUsagesHandlerBase;
-import com.intellij.codeInsight.highlighting.HighlightUsagesHandlerFactory;
-import com.intellij.lang.ASTNode;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.tree.IElementType;
+import consulo.language.editor.TargetElementUtil;
+import consulo.language.editor.highlight.usage.HighlightUsagesHandlerBase;
+import consulo.language.editor.highlight.usage.HighlightUsagesHandlerFactory;
+import consulo.language.ast.ASTNode;
+import consulo.codeEditor.Editor;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.ast.IElementType;
 
 /**
  * @author Max Medvedev
  */
-public class GrHighlightHandlerFactory implements HighlightUsagesHandlerFactory {
+public class GrHighlightHandlerFactory implements HighlightUsagesHandlerFactory
+{
   @Override
   public HighlightUsagesHandlerBase createHighlightUsagesHandler(Editor editor, PsiFile file) {
     int offset = TargetElementUtil.adjustOffset(file, editor.getDocument(), editor.getCaretModel().getOffset());

@@ -15,10 +15,12 @@
  */
 package org.jetbrains.plugins.groovy.unwrap;
 
-import com.intellij.codeInsight.CodeInsightBundle;
-import com.intellij.psi.*;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.IncorrectOperationException;
+import com.intellij.java.language.psi.*;
+import consulo.language.editor.CodeInsightBundle;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.language.util.IncorrectOperationException;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrAnonymousClassDefinition;
 
 import java.util.List;
@@ -40,7 +42,8 @@ public class GroovyAnonymousUnwrapper extends GroovyUnwrapper {
   }
 
   @Override
-  protected void doUnwrap(PsiElement element, Context context) throws IncorrectOperationException {
+  protected void doUnwrap(PsiElement element, Context context) throws IncorrectOperationException
+  {
     PsiElement from = findElementToExtractFrom(element);
 
     for (PsiMethod m : ((PsiAnonymousClass)element).getMethods()) {

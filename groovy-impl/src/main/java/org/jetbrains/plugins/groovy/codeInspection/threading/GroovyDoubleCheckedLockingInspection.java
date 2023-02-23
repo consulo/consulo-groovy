@@ -15,13 +15,11 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.threading;
 
-import com.intellij.codeInspection.ui.SingleCheckboxOptionsPanel;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiField;
-import com.intellij.psi.PsiModifier;
+import com.intellij.java.language.psi.PsiField;
+import com.intellij.java.language.psi.PsiModifier;
+import consulo.language.editor.inspection.ui.SingleCheckboxOptionsPanel;
+import consulo.language.psi.PsiElement;
 import org.jetbrains.annotations.Nls;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.codeInspection.utils.ControlFlowUtils;
@@ -35,6 +33,8 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrAssign
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.swing.*;
 
 public class GroovyDoubleCheckedLockingInspection extends BaseInspection {

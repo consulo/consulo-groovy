@@ -15,10 +15,9 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.confusing;
 
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiType;
-import com.intellij.psi.tree.IElementType;
-import javax.annotation.Nonnull;
+import com.intellij.java.language.psi.PsiType;
+import consulo.language.ast.IElementType;
+import consulo.language.psi.PsiElement;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.codeInspection.utils.SingleIntegerFieldOptionsPanel;
@@ -28,6 +27,7 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpres
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrParenthesizedExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrUnaryExpression;
 
+import javax.annotation.Nonnull;
 import javax.swing.*;
 import java.util.HashSet;
 import java.util.Set;

@@ -15,16 +15,17 @@
  */
 package org.jetbrains.plugins.groovy.actions.generate;
 
-import com.intellij.codeInsight.CodeInsightActionHandler;
-import com.intellij.codeInsight.generation.actions.BaseGenerateAction;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiCompiledElement;
-import com.intellij.psi.PsiDocumentManager;
-import com.intellij.psi.PsiFile;
-import javax.annotation.Nonnull;
+import com.intellij.java.impl.codeInsight.generation.actions.BaseGenerateAction;
+import com.intellij.java.language.psi.PsiClass;
+import consulo.codeEditor.Editor;
+import consulo.language.editor.action.CodeInsightActionHandler;
+import consulo.language.psi.PsiCompiledElement;
+import consulo.language.psi.PsiDocumentManager;
+import consulo.language.psi.PsiFile;
+import consulo.project.Project;
 import org.jetbrains.plugins.groovy.GroovyFileType;
+
+import javax.annotation.Nonnull;
 
 /**
  * User: Dmitry.Krasilschikov

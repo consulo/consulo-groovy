@@ -15,8 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.lang.resolve.processors;
 
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiType;
+import com.intellij.java.language.psi.PsiType;
+import consulo.language.psi.PsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.GrReferenceElement;
 
 import java.util.EnumSet;

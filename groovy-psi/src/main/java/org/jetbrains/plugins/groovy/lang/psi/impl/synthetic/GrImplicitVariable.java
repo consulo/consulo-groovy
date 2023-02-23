@@ -15,8 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.synthetic;
 
-import com.intellij.psi.NavigatablePsiElement;
-import com.intellij.psi.PsiVariable;
+import com.intellij.java.language.psi.PsiVariable;
+import consulo.language.psi.NavigatablePsiElement;
 
 /**
  * User: Dmitry.Krasilschikov

@@ -15,15 +15,15 @@
  */
 package org.jetbrains.plugins.groovy.lang.resolve.ast;
 
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.*;
-import com.intellij.psi.util.TypeConversionUtil;
-import com.intellij.util.VisibilityUtil;
-import javax.annotation.Nonnull;
+import com.intellij.java.language.psi.*;
+import com.intellij.java.language.psi.util.TypeConversionUtil;
+import com.intellij.java.language.util.VisibilityUtil;
+import consulo.util.lang.StringUtil;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
 import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GrLightMethodBuilder;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames;
 
+import javax.annotation.Nonnull;
 import java.util.Collection;
 
 /**

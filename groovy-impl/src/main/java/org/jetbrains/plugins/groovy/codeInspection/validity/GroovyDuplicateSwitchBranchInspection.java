@@ -15,9 +15,10 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.validity;
 
-import com.intellij.psi.PsiElement;
+import consulo.language.psi.PsiElement;
 import org.jetbrains.annotations.Nls;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspectionVisitor;
@@ -48,7 +49,7 @@ public class GroovyDuplicateSwitchBranchInspection extends BaseInspection {
     return "Duplicate switch case";
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   protected String buildErrorString(Object... args) {
     return "Duplicate switch case '#ref' #loc";
   }
@@ -98,7 +99,7 @@ public class GroovyDuplicateSwitchBranchInspection extends BaseInspection {
     return labels.toArray(new GrCaseLabel[labels.size()]);
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   private static GrExpression getExpressionForCaseLabel(GrCaseLabel label) {
     for (PsiElement child : label.getChildren()) {
       if (child instanceof GrExpression) {

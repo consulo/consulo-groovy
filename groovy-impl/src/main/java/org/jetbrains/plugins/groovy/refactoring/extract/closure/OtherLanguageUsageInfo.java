@@ -15,8 +15,10 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.extract.closure;
 
-import com.intellij.psi.PsiReference;
-import com.intellij.usageView.UsageInfo;
+import consulo.language.psi.PsiReference;
+import consulo.usage.UsageInfo;
+import consulo.language.psi.PsiReference;
+
 import javax.annotation.Nonnull;
 
 /**

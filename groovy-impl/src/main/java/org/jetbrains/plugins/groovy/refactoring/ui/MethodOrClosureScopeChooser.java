@@ -15,27 +15,35 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.ui;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import javax.annotation.Nonnull;
-import javax.swing.DefaultListCellRenderer;
-import javax.swing.JCheckBox;
-import javax.swing.JList;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.KeyStroke;
-import javax.swing.ListSelectionModel;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-
+import com.intellij.java.language.psi.PsiMethod;
+import com.intellij.java.language.psi.PsiSubstitutor;
+import com.intellij.java.language.psi.util.PsiFormatUtil;
+import com.intellij.java.language.psi.util.PsiFormatUtilBase;
+import consulo.application.ui.wm.IdeFocusManager;
+import consulo.codeEditor.Editor;
+import consulo.codeEditor.EditorColors;
+import consulo.codeEditor.markup.HighlighterLayer;
+import consulo.codeEditor.markup.HighlighterTargetArea;
+import consulo.codeEditor.markup.MarkupModel;
+import consulo.codeEditor.markup.RangeHighlighter;
+import consulo.colorScheme.EditorColorsManager;
+import consulo.colorScheme.TextAttributes;
+import consulo.component.util.Iconable;
+import consulo.document.util.TextRange;
+import consulo.language.icon.IconDescriptorUpdaters;
+import consulo.language.psi.PsiElement;
+import consulo.logging.Logger;
+import consulo.ui.ex.awt.JBList;
+import consulo.ui.ex.awt.ScrollPaneFactory;
+import consulo.ui.ex.awtUnsafe.TargetAWT;
+import consulo.ui.ex.popup.JBPopup;
+import consulo.ui.ex.popup.JBPopupFactory;
+import consulo.ui.ex.popup.event.JBPopupAdapter;
+import consulo.ui.ex.popup.event.LightweightWindowEvent;
+import consulo.util.lang.Pair;
+import consulo.util.lang.function.PairFunction;
 import org.jetbrains.annotations.NonNls;
+import org.jetbrains.plugins.groovy.JetgroovyIcons;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrParameterListOwner;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
@@ -44,34 +52,19 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrAssign
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.editor.colors.EditorColors;
-import com.intellij.openapi.editor.colors.EditorColorsManager;
-import com.intellij.openapi.editor.markup.HighlighterLayer;
-import com.intellij.openapi.editor.markup.HighlighterTargetArea;
-import com.intellij.openapi.editor.markup.MarkupModel;
-import com.intellij.openapi.editor.markup.RangeHighlighter;
-import com.intellij.openapi.editor.markup.TextAttributes;
-import com.intellij.openapi.ui.popup.JBPopup;
-import com.intellij.openapi.ui.popup.JBPopupAdapter;
-import com.intellij.openapi.ui.popup.JBPopupFactory;
-import com.intellij.openapi.ui.popup.LightweightWindowEvent;
-import com.intellij.openapi.util.Iconable;
-import com.intellij.openapi.util.Pair;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.openapi.wm.IdeFocusManager;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiMethod;
-import com.intellij.psi.PsiSubstitutor;
-import com.intellij.psi.util.PsiFormatUtil;
-import com.intellij.psi.util.PsiFormatUtilBase;
-import com.intellij.ui.ScrollPaneFactory;
-import com.intellij.ui.components.JBList;
-import com.intellij.util.PairFunction;
-import consulo.awt.TargetAWT;
-import consulo.ide.IconDescriptorUpdaters;
-import icons.JetgroovyIcons;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * @author Max Medvedev
@@ -79,8 +72,10 @@ import icons.JetgroovyIcons;
 public class MethodOrClosureScopeChooser {
   private static final Logger LOG = Logger.getInstance(MethodOrClosureScopeChooser.class);
 
-  @NonNls private static final String USE_SUPER_METHOD_OF = "Change base method";
-  @NonNls private static final String CHANGE_USAGES_OF = "Change usages";
+  @NonNls
+  private static final String USE_SUPER_METHOD_OF = "Change base method";
+  @NonNls
+  private static final String CHANGE_USAGES_OF = "Change usages";
 
   public interface JBPopupOwner {
     JBPopup get();
@@ -110,8 +105,8 @@ public class MethodOrClosureScopeChooser {
           final PsiMethod method = (PsiMethod)value;
           text = PsiFormatUtil.formatMethod(method, PsiSubstitutor.EMPTY,
                                             PsiFormatUtilBase.SHOW_CONTAINING_CLASS |
-                                            PsiFormatUtilBase.SHOW_NAME |
-                                            PsiFormatUtilBase.SHOW_PARAMETERS,
+                                              PsiFormatUtilBase.SHOW_NAME |
+                                              PsiFormatUtilBase.SHOW_PARAMETERS,
                                             PsiFormatUtilBase.SHOW_TYPE);
           setIcon(TargetAWT.to(IconDescriptorUpdaters.getIcon(method, Iconable.ICON_FLAG_VISIBILITY)));
         }
@@ -171,11 +166,11 @@ public class MethodOrClosureScopeChooser {
 
 
     return JBPopupFactory.getInstance().createComponentPopupBuilder(panel, list)
-      .setTitle("Introduce parameter to")
-      .setMovable(false)
-      .setResizable(false)
-      .setRequestFocus(true)
-      .setKeyboardActions(keyboardActions).addListener(new JBPopupAdapter() {
+                         .setTitle("Introduce parameter to")
+                         .setMovable(false)
+                         .setResizable(false)
+                         .setRequestFocus(true)
+                         .setKeyboardActions(keyboardActions).addListener(new JBPopupAdapter() {
         @Override
         public void onClosed(LightweightWindowEvent event) {
           dropHighlighters(highlighters);
@@ -205,13 +200,13 @@ public class MethodOrClosureScopeChooser {
     }
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   public static GrVariable findVariableToUse(@Nonnull GrParameterListOwner owner) {
     final PsiElement parent = owner.getParent();
     if (parent instanceof GrVariable) return (GrVariable)parent;
     if (parent instanceof GrAssignmentExpression &&
-        ((GrAssignmentExpression)parent).getRValue() == owner &&
-        ((GrAssignmentExpression)parent).getOperationToken() == GroovyTokenTypes.mASSIGN) {
+      ((GrAssignmentExpression)parent).getRValue() == owner &&
+      ((GrAssignmentExpression)parent).getOperationToken() == GroovyTokenTypes.mASSIGN) {
       final GrExpression lValue = ((GrAssignmentExpression)parent).getLValue();
       if (lValue instanceof GrReferenceExpression) {
         final PsiElement resolved = ((GrReferenceExpression)lValue).resolve();

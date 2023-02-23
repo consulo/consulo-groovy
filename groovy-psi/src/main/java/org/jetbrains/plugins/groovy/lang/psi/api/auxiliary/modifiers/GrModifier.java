@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers;
 
-import com.intellij.psi.PsiModifier;
+import com.intellij.java.language.psi.PsiModifier;
 import org.intellij.lang.annotations.MagicConstant;
 import org.jetbrains.annotations.NonNls;
 

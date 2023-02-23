@@ -15,14 +15,20 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.move;
 
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.*;
-import com.intellij.refactoring.move.moveClassesOrPackages.MoveClassesOrPackagesUtil;
-import com.intellij.refactoring.move.moveFilesOrDirectories.MoveFileHandler;
-import com.intellij.refactoring.util.MoveRenameUsageInfo;
-import com.intellij.usageView.UsageInfo;
-import com.intellij.util.IncorrectOperationException;
+import com.intellij.java.impl.refactoring.move.moveClassesOrPackages.MoveClassesOrPackagesUtil;
+import com.intellij.java.language.psi.JavaDirectoryService;
+import com.intellij.java.language.psi.PsiClass;
+import com.intellij.java.language.psi.PsiJavaPackage;
+import consulo.language.editor.refactoring.move.MoveFileHandler;
+import consulo.language.psi.PsiDirectory;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.PsiReference;
+import consulo.language.util.IncorrectOperationException;
+import consulo.logging.Logger;
+import consulo.usage.MoveRenameUsageInfo;
+import consulo.usage.UsageInfo;
+import consulo.util.lang.StringUtil;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.refactoring.GroovyChangeContextUtil;
 
@@ -34,7 +40,8 @@ import java.util.Map;
 /**
  * @author Max Medvedev
  */
-public class MoveGroovyFileHandler extends MoveFileHandler {
+public class MoveGroovyFileHandler extends MoveFileHandler
+{
   private static final Logger LOG = Logger.getInstance(MoveGroovyFileHandler.class);
 
   @Override

@@ -1,6 +1,6 @@
 package org.jetbrains.plugins.groovy.lang.overriding;
 
-import com.intellij.psi.PsiMethod;
+import com.intellij.java.language.psi.PsiMethod;
 
 /**
  * User: Dmitry.Krasilschikov

@@ -15,19 +15,22 @@
  */
 package org.jetbrains.plugins.groovy.griffon;
 
-import com.intellij.execution.configurations.ParametersList;
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.ui.DialogWrapper;
+import consulo.process.cmd.ParametersList;
+import consulo.module.Module;
+import consulo.ui.ex.awt.DialogWrapper;
 import javax.annotation.Nonnull;
 
+import consulo.ui.ex.awt.DialogWrapper;
 import org.jetbrains.plugins.groovy.mvc.MvcCommand;
 
+import javax.annotation.Nullable;
 import javax.swing.*;
 
 /**
  * @author peter
  */
-public class GriffonCreateProjectDialog extends DialogWrapper {
+public class GriffonCreateProjectDialog extends DialogWrapper
+{
   private JTextField myOptionField;
   private JPanel myComponent;
   private JRadioButton myCreateApp;
@@ -43,7 +46,7 @@ public class GriffonCreateProjectDialog extends DialogWrapper {
     init();
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   @Override
   protected JComponent createCenterPanel() {
     return myComponent;

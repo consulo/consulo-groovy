@@ -16,8 +16,9 @@
 
 package org.jetbrains.plugins.groovy.intentions.utils;
 
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiType;
+import consulo.language.psi.PsiElement;
+import com.intellij.java.language.psi.PsiType;
+import consulo.language.psi.PsiElement;
 import consulo.util.collection.HashingStrategy;
 import consulo.util.collection.Maps;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;

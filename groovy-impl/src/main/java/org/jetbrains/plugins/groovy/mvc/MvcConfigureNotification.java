@@ -1,10 +1,15 @@
 package org.jetbrains.plugins.groovy.mvc;
 
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.ui.EditorNotificationPanel;
-import javax.annotation.Nonnull;
+import consulo.fileEditor.EditorNotificationBuilder;
+import consulo.ide.impl.idea.ui.EditorNotificationPanel;
+import consulo.localize.LocalizeValue;
+import consulo.module.Module;
+import consulo.virtualFileSystem.VirtualFile;
 import org.jetbrains.plugins.groovy.annotator.GroovyFrameworkConfigNotification;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.function.Supplier;
 
 /**
  * @author sergey.evdokimov
@@ -41,18 +46,14 @@ public class MvcConfigureNotification extends GroovyFrameworkConfigNotification 
     }
   }    */
 
+  @Nullable
   @Override
-  public EditorNotificationPanel createConfigureNotificationPanel(final @Nonnull Module module) {
-    final EditorNotificationPanel panel = new EditorNotificationPanel();
-    panel.setText(framework.getFrameworkName() + " SDK is not configured for module '"+ module.getName() + '\'');
-    panel.createActionLabel("Configure " + framework.getFrameworkName() + " SDK", new Runnable() {
-      @Override
-      public void run() {
-       // configure(framework, module);
-      }
+  public EditorNotificationBuilder createConfigureNotificationPanel(@Nonnull Module module, Supplier<EditorNotificationBuilder> factory) {
+    EditorNotificationBuilder builder = factory.get();
+    builder.withText(LocalizeValue.localizeTODO(framework.getFrameworkName() + " SDK is not configured for module '" + module.getName() + '\''));
+    builder.withAction(LocalizeValue.localizeTODO("Configure " + framework.getFrameworkName() + " SDK"), uiEvent -> {
+      // configure(framework, module);
     });
-
-    return panel;
+    return builder;
   }
-
 }

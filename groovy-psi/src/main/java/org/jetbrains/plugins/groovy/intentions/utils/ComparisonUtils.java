@@ -18,10 +18,10 @@ package org.jetbrains.plugins.groovy.intentions.utils;
 import java.util.HashMap;
 import java.util.Map;
 
+import consulo.language.ast.IElementType;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrBinaryExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
-import com.intellij.psi.tree.IElementType;
 
 public class ComparisonUtils {
   private static final Map<IElementType, String> s_comparisonStrings = new HashMap<IElementType, String>(6);

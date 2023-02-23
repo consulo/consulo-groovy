@@ -15,14 +15,16 @@
  */
 package org.jetbrains.plugins.groovy.lang.resolve;
 
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.AbstractElementManipulator;
-import com.intellij.util.IncorrectOperationException;
+import consulo.document.util.TextRange;
+import consulo.language.psi.AbstractElementManipulator;
+import consulo.language.util.IncorrectOperationException;
+import consulo.logging.Logger;
+import consulo.util.lang.StringUtil;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.literals.GrLiteral;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.literals.GrLiteralImpl;
 import org.jetbrains.plugins.groovy.lang.psi.util.GrStringUtil;
+
+import javax.annotation.Nonnull;
 
 public class GroovyStringLiteralManipulator extends AbstractElementManipulator<GrLiteral> {
   private static final Logger LOG = Logger.getInstance(GroovyStringLiteralManipulator.class);
@@ -60,6 +62,12 @@ public class GroovyStringLiteralManipulator extends AbstractElementManipulator<G
       return super.getRangeInElement(element);
     }
     return getLiteralRange(text);
+  }
+
+  @Nonnull
+  @Override
+  public Class<GrLiteral> getElementClass() {
+    return GrLiteral.class;
   }
 
   public static TextRange getLiteralRange(String text) {

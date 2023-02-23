@@ -16,7 +16,7 @@
 
 package org.jetbrains.plugins.groovy;
 
-import com.intellij.lang.Language;
+import consulo.language.Language;
 
 /**
  * All main properties for Groovy language

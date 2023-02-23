@@ -15,44 +15,38 @@
  */
 package org.jetbrains.plugins.groovy.annotator.intentions.dynamic;
 
+import com.intellij.java.language.psi.PsiMethod;
+import com.intellij.java.language.psi.PsiVariable;
+import consulo.codeEditor.Editor;
+import consulo.component.persist.State;
+import consulo.component.persist.Storage;
+import consulo.component.persist.StoragePathMacros;
+import consulo.fileEditor.FileEditorManager;
+import consulo.ide.impl.idea.ui.treeStructure.treetable.ListTreeTableModelOnColumns;
+import consulo.language.editor.DaemonCodeAnalyzer;
+import consulo.language.impl.internal.psi.PsiModificationTrackerImpl;
+import consulo.language.psi.PsiDocumentManager;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.PsiManager;
+import consulo.project.Project;
+import consulo.project.startup.StartupManager;
+import consulo.ui.ex.awt.tree.TreeUtil;
+import consulo.ui.ex.toolWindow.ToolWindow;
+import consulo.util.collection.ContainerUtil;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
+import org.jetbrains.plugins.groovy.annotator.intentions.QuickfixUtil;
+import org.jetbrains.plugins.groovy.annotator.intentions.dynamic.elements.*;
+import org.jetbrains.plugins.groovy.annotator.intentions.dynamic.ui.DynamicElementSettings;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.swing.tree.DefaultMutableTreeNode;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import jakarta.inject.Inject;
-import jakarta.inject.Singleton;
-import javax.swing.tree.DefaultMutableTreeNode;
-
-import org.jetbrains.plugins.groovy.annotator.intentions.QuickfixUtil;
-import org.jetbrains.plugins.groovy.annotator.intentions.dynamic.elements.DClassElement;
-import org.jetbrains.plugins.groovy.annotator.intentions.dynamic.elements.DItemElement;
-import org.jetbrains.plugins.groovy.annotator.intentions.dynamic.elements.DMethodElement;
-import org.jetbrains.plugins.groovy.annotator.intentions.dynamic.elements.DNamedElement;
-import org.jetbrains.plugins.groovy.annotator.intentions.dynamic.elements.DPropertyElement;
-import org.jetbrains.plugins.groovy.annotator.intentions.dynamic.elements.DRootElement;
-import org.jetbrains.plugins.groovy.annotator.intentions.dynamic.ui.DynamicElementSettings;
-import com.intellij.codeInsight.daemon.DaemonCodeAnalyzer;
-import com.intellij.openapi.components.State;
-import com.intellij.openapi.components.Storage;
-import com.intellij.openapi.components.StoragePathMacros;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.fileEditor.FileEditorManager;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.startup.StartupManager;
-import com.intellij.openapi.wm.ToolWindow;
-import com.intellij.psi.PsiDocumentManager;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiManager;
-import com.intellij.psi.PsiMethod;
-import com.intellij.psi.PsiVariable;
-import com.intellij.psi.impl.PsiModificationTrackerImpl;
-import com.intellij.ui.treeStructure.treetable.ListTreeTableModelOnColumns;
-import com.intellij.util.Function;
-import com.intellij.util.containers.ContainerUtil;
-import com.intellij.util.ui.tree.TreeUtil;
+import java.util.function.Function;
 
 /**
  * User: Dmitry.Krasilschikov
@@ -60,510 +54,433 @@ import com.intellij.util.ui.tree.TreeUtil;
  */
 @Singleton
 @State(name = "DynamicElementsStorage", storages = @Storage(file = StoragePathMacros.PROJECT_CONFIG_DIR + "/dynamic.xml"))
-public class DynamicManagerImpl extends DynamicManager
-{
-	private final Project myProject;
-	private DRootElement myRootElement = new DRootElement();
+public class DynamicManagerImpl extends DynamicManager {
+  private final Project myProject;
+  private DRootElement myRootElement = new DRootElement();
 
-	@Inject
-	public DynamicManagerImpl(Project project, StartupManager startupManager)
-	{
-		myProject = project;
+  @Inject
+  public DynamicManagerImpl(Project project, StartupManager startupManager) {
+    myProject = project;
 
-		if(myProject.isDefault())
-		{
-			return;
-		}
+    if (myProject.isDefault()) {
+      return;
+    }
 
-		startupManager.registerPostStartupActivity((ui) ->
-		{
-			if(myRootElement.getContainingClasses().size() > 0)
-			{
-				DynamicToolWindowWrapper.getInstance(project).getToolWindow(); //initialize myToolWindow
-			}
-		});
-	}
+    startupManager.registerPostStartupActivity((ui) ->
+                                               {
+                                                 if (myRootElement.getContainingClasses().size() > 0) {
+                                                   DynamicToolWindowWrapper.getInstance(project).getToolWindow(); //initialize myToolWindow
+                                                 }
+                                               });
+  }
 
-	public Project getProject()
-	{
-		return myProject;
-	}
+  public Project getProject() {
+    return myProject;
+  }
 
-	public void addProperty(DynamicElementSettings settings)
-	{
-		assert settings != null;
-		assert !settings.isMethod();
+  public void addProperty(DynamicElementSettings settings) {
+    assert settings != null;
+    assert !settings.isMethod();
 
-		final DPropertyElement propertyElement = (DPropertyElement) createDynamicElement(settings);
-		final DClassElement classElement = getOrCreateClassElement(myProject, settings.getContainingClassName());
+    final DPropertyElement propertyElement = (DPropertyElement)createDynamicElement(settings);
+    final DClassElement classElement = getOrCreateClassElement(myProject, settings.getContainingClassName());
 
-		ToolWindow window = DynamicToolWindowWrapper.getInstance(myProject).getToolWindow(); //important to fetch myToolWindow before adding
-		classElement.addProperty(propertyElement);
-		addItemInTree(classElement, propertyElement, window);
-	}
+    ToolWindow window = DynamicToolWindowWrapper.getInstance(myProject).getToolWindow(); //important to fetch myToolWindow before adding
+    classElement.addProperty(propertyElement);
+    addItemInTree(classElement, propertyElement, window);
+  }
 
-	private void removeItemFromTree(DItemElement itemElement, DClassElement classElement)
-	{
-		DynamicToolWindowWrapper wrapper = DynamicToolWindowWrapper.getInstance(myProject);
-		ListTreeTableModelOnColumns model = wrapper.getTreeTableModel();
-		Object classNode = TreeUtil.findNodeWithObject(classElement, model, model.getRoot());
-		final DefaultMutableTreeNode node = (DefaultMutableTreeNode) TreeUtil.findNodeWithObject(itemElement, model, classNode);
-		if(node == null)
-		{
-			return;
-		}
-		DefaultMutableTreeNode parent = (DefaultMutableTreeNode) node.getParent();
+  private void removeItemFromTree(DItemElement itemElement, DClassElement classElement) {
+    DynamicToolWindowWrapper wrapper = DynamicToolWindowWrapper.getInstance(myProject);
+    consulo.ide.impl.idea.ui.treeStructure.treetable.ListTreeTableModelOnColumns model = wrapper.getTreeTableModel();
+    Object classNode = TreeUtil.findNodeWithObject(classElement, model, model.getRoot());
+    final DefaultMutableTreeNode node = (DefaultMutableTreeNode)TreeUtil.findNodeWithObject(itemElement, model, classNode);
+    if (node == null) {
+      return;
+    }
+    DefaultMutableTreeNode parent = (DefaultMutableTreeNode)node.getParent();
 
-		doRemove(wrapper, node, parent);
-	}
+    doRemove(wrapper, node, parent);
+  }
 
-	private void removeClassFromTree(DClassElement classElement)
-	{
-		DynamicToolWindowWrapper wrapper = DynamicToolWindowWrapper.getInstance(myProject);
-		ListTreeTableModelOnColumns model = wrapper.getTreeTableModel();
-		final DefaultMutableTreeNode node = (DefaultMutableTreeNode) TreeUtil.findNodeWithObject(classElement, model, model.getRoot());
-		if(node == null)
-		{
-			return;
-		}
-		DefaultMutableTreeNode parent = (DefaultMutableTreeNode) node.getParent();
+  private void removeClassFromTree(DClassElement classElement) {
+    DynamicToolWindowWrapper wrapper = DynamicToolWindowWrapper.getInstance(myProject);
+    ListTreeTableModelOnColumns model = wrapper.getTreeTableModel();
+    final DefaultMutableTreeNode node = (DefaultMutableTreeNode)TreeUtil.findNodeWithObject(classElement, model, model.getRoot());
+    if (node == null) {
+      return;
+    }
+    DefaultMutableTreeNode parent = (DefaultMutableTreeNode)node.getParent();
 
-		doRemove(wrapper, node, parent);
-	}
+    doRemove(wrapper, node, parent);
+  }
 
-	private static void doRemove(DynamicToolWindowWrapper wrapper, DefaultMutableTreeNode node, DefaultMutableTreeNode parent)
-	{
-		DefaultMutableTreeNode toSelect = (parent.getChildAfter(node) != null || parent.getChildCount() == 1 ?
-				node.getNextNode() :
-				node.getPreviousNode());
+  private static void doRemove(DynamicToolWindowWrapper wrapper, DefaultMutableTreeNode node, DefaultMutableTreeNode parent) {
+    DefaultMutableTreeNode toSelect = (parent.getChildAfter(node) != null || parent.getChildCount() == 1 ?
+      node.getNextNode() :
+      node.getPreviousNode());
 
 
-		wrapper.removeFromParent(parent, node);
-		if(toSelect != null)
-		{
-			wrapper.setSelectedNode(toSelect);
-		}
-	}
+    wrapper.removeFromParent(parent, node);
+    if (toSelect != null) {
+      wrapper.setSelectedNode(toSelect);
+    }
+  }
 
-	private void addItemInTree(final DClassElement classElement, final DItemElement itemElement, final ToolWindow window)
-	{
-		final ListTreeTableModelOnColumns myTreeTableModel = DynamicToolWindowWrapper.getInstance(myProject).getTreeTableModel();
+  private void addItemInTree(final DClassElement classElement, final DItemElement itemElement, final ToolWindow window) {
+    final consulo.ide.impl.idea.ui.treeStructure.treetable.ListTreeTableModelOnColumns myTreeTableModel =
+      DynamicToolWindowWrapper.getInstance(myProject).getTreeTableModel();
 
-		window.activate(new Runnable()
-		{
-			public void run()
-			{
-				final Object rootObject = myTreeTableModel.getRoot();
-				if(!(rootObject instanceof DefaultMutableTreeNode))
-				{
-					return;
-				}
-				final DefaultMutableTreeNode rootNode = (DefaultMutableTreeNode) rootObject;
+    window.activate(new Runnable() {
+      public void run() {
+        final Object rootObject = myTreeTableModel.getRoot();
+        if (!(rootObject instanceof DefaultMutableTreeNode)) {
+          return;
+        }
+        final DefaultMutableTreeNode rootNode = (DefaultMutableTreeNode)rootObject;
 
-				DefaultMutableTreeNode node = new DefaultMutableTreeNode(itemElement);
-				if(rootNode.getChildCount() > 0)
-				{
-					for(DefaultMutableTreeNode classNode = (DefaultMutableTreeNode) rootNode.getFirstChild();
-							classNode != null;
-							classNode = (DefaultMutableTreeNode) rootNode.getChildAfter(classNode))
-					{
+        DefaultMutableTreeNode node = new DefaultMutableTreeNode(itemElement);
+        if (rootNode.getChildCount() > 0) {
+          for (DefaultMutableTreeNode classNode = (DefaultMutableTreeNode)rootNode.getFirstChild();
+               classNode != null;
+               classNode = (DefaultMutableTreeNode)rootNode.getChildAfter(classNode)) {
 
-						final Object classRow = classNode.getUserObject();
-						if(!(classRow instanceof DClassElement))
-						{
-							return;
-						}
+            final Object classRow = classNode.getUserObject();
+            if (!(classRow instanceof DClassElement)) {
+              return;
+            }
 
-						DClassElement otherClassName = (DClassElement) classRow;
-						if(otherClassName.equals(classElement))
-						{
-							int index = getIndexToInsert(classNode, itemElement);
-							classNode.insert(node, index);
-							myTreeTableModel.nodesWereInserted(classNode, new int[]{index});
-							DynamicToolWindowWrapper.getInstance(myProject).setSelectedNode(node);
-							return;
-						}
-					}
-				}
+            DClassElement otherClassName = (DClassElement)classRow;
+            if (otherClassName.equals(classElement)) {
+              int index = getIndexToInsert(classNode, itemElement);
+              classNode.insert(node, index);
+              myTreeTableModel.nodesWereInserted(classNode, new int[]{index});
+              DynamicToolWindowWrapper.getInstance(myProject).setSelectedNode(node);
+              return;
+            }
+          }
+        }
 
-				// if there is no such class in tree
-				int index = getIndexToInsert(rootNode, classElement);
-				DefaultMutableTreeNode classNode = new DefaultMutableTreeNode(classElement);
-				rootNode.insert(classNode, index);
-				myTreeTableModel.nodesWereInserted(rootNode, new int[]{index});
+        // if there is no such class in tree
+        int index = getIndexToInsert(rootNode, classElement);
+        DefaultMutableTreeNode classNode = new DefaultMutableTreeNode(classElement);
+        rootNode.insert(classNode, index);
+        myTreeTableModel.nodesWereInserted(rootNode, new int[]{index});
 
-				classNode.add(node);
-				myTreeTableModel.nodesWereInserted(classNode, new int[]{0});
+        classNode.add(node);
+        myTreeTableModel.nodesWereInserted(classNode, new int[]{0});
 
-				DynamicToolWindowWrapper.getInstance(myProject).setSelectedNode(node);
-			}
-		}, true);
-	}
+        DynamicToolWindowWrapper.getInstance(myProject).setSelectedNode(node);
+      }
+    }, true);
+  }
 
-	private static int getIndexToInsert(DefaultMutableTreeNode parent, DNamedElement namedElement)
-	{
-		if(parent.getChildCount() == 0)
-		{
-			return 0;
-		}
+  private static int getIndexToInsert(DefaultMutableTreeNode parent, DNamedElement namedElement) {
+    if (parent.getChildCount() == 0) {
+      return 0;
+    }
 
-		int res = 0;
-		for(DefaultMutableTreeNode child = (DefaultMutableTreeNode) parent.getFirstChild();
-				child != null;
-				child = (DefaultMutableTreeNode) parent.getChildAfter(child))
-		{
-			Object childObject = child.getUserObject();
+    int res = 0;
+    for (DefaultMutableTreeNode child = (DefaultMutableTreeNode)parent.getFirstChild();
+         child != null;
+         child = (DefaultMutableTreeNode)parent.getChildAfter(child)) {
+      Object childObject = child.getUserObject();
 
-			if(!(childObject instanceof DNamedElement))
-			{
-				return 0;
-			}
+      if (!(childObject instanceof DNamedElement)) {
+        return 0;
+      }
 
-			String otherName = ((DNamedElement) childObject).getName();
-			if(otherName.compareTo(namedElement.getName()) > 0)
-			{
-				return res;
-			}
-			res++;
-		}
-		return res;
-	}
+      String otherName = ((DNamedElement)childObject).getName();
+      if (otherName.compareTo(namedElement.getName()) > 0) {
+        return res;
+      }
+      res++;
+    }
+    return res;
+  }
 
-	public void addMethod(DynamicElementSettings settings)
-	{
-		if(settings == null)
-		{
-			return;
-		}
-		assert settings.isMethod();
+  public void addMethod(DynamicElementSettings settings) {
+    if (settings == null) {
+      return;
+    }
+    assert settings.isMethod();
 
-		final DMethodElement methodElement = (DMethodElement) createDynamicElement(settings);
-		final DClassElement classElement = getOrCreateClassElement(myProject, settings.getContainingClassName());
+    final DMethodElement methodElement = (DMethodElement)createDynamicElement(settings);
+    final DClassElement classElement = getOrCreateClassElement(myProject, settings.getContainingClassName());
 
-		ToolWindow window = DynamicToolWindowWrapper.getInstance(myProject).getToolWindow(); //important to fetch myToolWindow before adding
-		classElement.addMethod(methodElement);
-		addItemInTree(classElement, methodElement, window);
-	}
+    ToolWindow window = DynamicToolWindowWrapper.getInstance(myProject).getToolWindow(); //important to fetch myToolWindow before adding
+    classElement.addMethod(methodElement);
+    addItemInTree(classElement, methodElement, window);
+  }
 
-	public void removeClassElement(DClassElement classElement)
-	{
+  public void removeClassElement(DClassElement classElement) {
 
-		final DRootElement rootElement = getRootElement();
-		rootElement.removeClassElement(classElement.getName());
-		removeClassFromTree(classElement);
-	}
+    final DRootElement rootElement = getRootElement();
+    rootElement.removeClassElement(classElement.getName());
+    removeClassFromTree(classElement);
+  }
 
-	private void removePropertyElement(DPropertyElement propertyElement)
-	{
-		final DClassElement classElement = getClassElementByItem(propertyElement);
-		assert classElement != null;
+  private void removePropertyElement(DPropertyElement propertyElement) {
+    final DClassElement classElement = getClassElementByItem(propertyElement);
+    assert classElement != null;
 
-		classElement.removeProperty(propertyElement);
-	}
+    classElement.removeProperty(propertyElement);
+  }
 
-	@Nonnull
-	public Collection<DPropertyElement> findDynamicPropertiesOfClass(String className)
-	{
-		final DClassElement classElement = findClassElement(getRootElement(), className);
+  @Nonnull
+  public Collection<DPropertyElement> findDynamicPropertiesOfClass(String className) {
+    final DClassElement classElement = findClassElement(getRootElement(), className);
 
-		if(classElement != null)
-		{
-			return classElement.getProperties();
-		}
-		return new ArrayList<DPropertyElement>();
-	}
+    if (classElement != null) {
+      return classElement.getProperties();
+    }
+    return new ArrayList<DPropertyElement>();
+  }
 
-	@Nullable
-	public String getPropertyType(String className, String propertyName)
-	{
-		final DPropertyElement dynamicProperty = findConcreteDynamicProperty(getRootElement(), className, propertyName);
+  @Nullable
+  public String getPropertyType(String className, String propertyName) {
+    final DPropertyElement dynamicProperty = findConcreteDynamicProperty(getRootElement(), className, propertyName);
 
-		if(dynamicProperty == null)
-		{
-			return null;
-		}
-		return dynamicProperty.getType();
-	}
+    if (dynamicProperty == null) {
+      return null;
+    }
+    return dynamicProperty.getType();
+  }
 
-	@Nonnull
-	public Collection<DClassElement> getAllContainingClasses()
-	{
-		//TODO: use iterator
-		final DRootElement root = getRootElement();
+  @Nonnull
+  public Collection<DClassElement> getAllContainingClasses() {
+    //TODO: use iterator
+    final DRootElement root = getRootElement();
 
-		return root.getContainingClasses();
-	}
+    return root.getContainingClasses();
+  }
 
-	public DRootElement getRootElement()
-	{
-		return myRootElement;
-	}
+  public DRootElement getRootElement() {
+    return myRootElement;
+  }
 
-	@Nullable
-	public String replaceDynamicPropertyName(String className, String oldPropertyName, String newPropertyName)
-	{
-		final DClassElement classElement = findClassElement(getRootElement(), className);
-		if(classElement == null)
-		{
-			return null;
-		}
+  @Nullable
+  public String replaceDynamicPropertyName(String className, String oldPropertyName, String newPropertyName) {
+    final DClassElement classElement = findClassElement(getRootElement(), className);
+    if (classElement == null) {
+      return null;
+    }
 
-		final DPropertyElement oldPropertyElement = classElement.getPropertyByName(oldPropertyName);
-		if(oldPropertyElement == null)
-		{
-			return null;
-		}
-		classElement.removeProperty(oldPropertyElement);
-		classElement.addProperty(new DPropertyElement(oldPropertyElement.isStatic(), newPropertyName, oldPropertyElement.getType()));
-		fireChange();
-		DynamicToolWindowWrapper.getInstance(getProject()).rebuildTreePanel();
+    final DPropertyElement oldPropertyElement = classElement.getPropertyByName(oldPropertyName);
+    if (oldPropertyElement == null) {
+      return null;
+    }
+    classElement.removeProperty(oldPropertyElement);
+    classElement.addProperty(new DPropertyElement(oldPropertyElement.isStatic(), newPropertyName, oldPropertyElement.getType()));
+    fireChange();
+    DynamicToolWindowWrapper.getInstance(getProject()).rebuildTreePanel();
 
 
-		return newPropertyName;
-	}
+    return newPropertyName;
+  }
 
-	@Nullable
-	public String replaceDynamicPropertyType(String className, String propertyName, String oldPropertyType, String newPropertyType)
-	{
-		final DPropertyElement property = findConcreteDynamicProperty(className, propertyName);
+  @Nullable
+  public String replaceDynamicPropertyType(String className, String propertyName, String oldPropertyType, String newPropertyType) {
+    final DPropertyElement property = findConcreteDynamicProperty(className, propertyName);
 
-		if(property == null)
-		{
-			return null;
-		}
+    if (property == null) {
+      return null;
+    }
 
-		property.setType(newPropertyType);
-		fireChange();
-		return newPropertyType;
-	}
+    property.setType(newPropertyType);
+    fireChange();
+    return newPropertyType;
+  }
 
   /*
-  * Find dynamic property in class with name
-  */
+   * Find dynamic property in class with name
+   */
 
-	@Nullable
-	private static DMethodElement findConcreteDynamicMethod(DRootElement rootElement,
-															String containingClassName,
-															String methodName,
-															String[] parametersTypes)
-	{
-		DClassElement classElement = findClassElement(rootElement, containingClassName);
-		if(classElement == null)
-		{
-			return null;
-		}
+  @Nullable
+  private static DMethodElement findConcreteDynamicMethod(DRootElement rootElement,
+                                                          String containingClassName,
+                                                          String methodName,
+                                                          String[] parametersTypes) {
+    DClassElement classElement = findClassElement(rootElement, containingClassName);
+    if (classElement == null) {
+      return null;
+    }
 
-		return classElement.getMethod(methodName, parametersTypes);
-	}
+    return classElement.getMethod(methodName, parametersTypes);
+  }
 
-	//  @Nullable
+  //  @Nullable
 
-	public DMethodElement findConcreteDynamicMethod(String containingClassName, String name, String[] parameterTypes)
-	{
-		return findConcreteDynamicMethod(getRootElement(), containingClassName, name, parameterTypes);
-	}
+  public DMethodElement findConcreteDynamicMethod(String containingClassName, String name, String[] parameterTypes) {
+    return findConcreteDynamicMethod(getRootElement(), containingClassName, name, parameterTypes);
+  }
 
-	private void removeMethodElement(DMethodElement methodElement)
-	{
-		final DClassElement classElement = getClassElementByItem(methodElement);
-		assert classElement != null;
+  private void removeMethodElement(DMethodElement methodElement) {
+    final DClassElement classElement = getClassElementByItem(methodElement);
+    assert classElement != null;
 
-		classElement.removeMethod(methodElement);
-	}
+    classElement.removeMethod(methodElement);
+  }
 
-	public void removeItemElement(DItemElement element)
-	{
-		DClassElement classElement = getClassElementByItem(element);
-		if(classElement == null)
-		{
-			return;
-		}
+  public void removeItemElement(DItemElement element) {
+    DClassElement classElement = getClassElementByItem(element);
+    if (classElement == null) {
+      return;
+    }
 
-		if(element instanceof DPropertyElement)
-		{
-			removePropertyElement(((DPropertyElement) element));
-		}
-		else if(element instanceof DMethodElement)
-		{
-			removeMethodElement(((DMethodElement) element));
-		}
+    if (element instanceof DPropertyElement) {
+      removePropertyElement(((DPropertyElement)element));
+    }
+    else if (element instanceof DMethodElement) {
+      removeMethodElement(((DMethodElement)element));
+    }
 
-		removeItemFromTree(element, classElement);
-	}
+    removeItemFromTree(element, classElement);
+  }
 
-	public void replaceDynamicMethodType(String className, String name, List<ParamInfo> myPairList, String oldType, String newType)
-	{
-		final DMethodElement method = findConcreteDynamicMethod(className, name, QuickfixUtil.getArgumentsTypes(myPairList));
+  public void replaceDynamicMethodType(String className, String name, List<ParamInfo> myPairList, String oldType, String newType) {
+    final DMethodElement method = findConcreteDynamicMethod(className, name, QuickfixUtil.getArgumentsTypes(myPairList));
 
-		if(method == null)
-		{
-			return;
-		}
-		method.setType(newType);
-		fireChange();
-	}
+    if (method == null) {
+      return;
+    }
+    method.setType(newType);
+    fireChange();
+  }
 
-	@Nonnull
-	public DClassElement getOrCreateClassElement(Project project, String className)
-	{
-		DClassElement classElement = DynamicManager.getInstance(myProject).getRootElement().getClassElement(className);
-		if(classElement == null)
-		{
-			return new DClassElement(project, className);
-		}
+  @Nonnull
+  public DClassElement getOrCreateClassElement(Project project, String className) {
+    DClassElement classElement = DynamicManager.getInstance(myProject).getRootElement().getClassElement(className);
+    if (classElement == null) {
+      return new DClassElement(project, className);
+    }
 
-		return classElement;
-	}
+    return classElement;
+  }
 
-	@Nullable
-	public DClassElement getClassElementByItem(DItemElement itemElement)
-	{
-		final Collection<DClassElement> classes = getAllContainingClasses();
-		for(DClassElement aClass : classes)
-		{
-			if(aClass.containsElement(itemElement))
-			{
-				return aClass;
-			}
-		}
-		return null;
-	}
+  @Nullable
+  public DClassElement getClassElementByItem(DItemElement itemElement) {
+    final Collection<DClassElement> classes = getAllContainingClasses();
+    for (DClassElement aClass : classes) {
+      if (aClass.containsElement(itemElement)) {
+        return aClass;
+      }
+    }
+    return null;
+  }
 
-	public void replaceDynamicMethodName(String className, String oldName, String newName, String[] types)
-	{
-		final DMethodElement oldMethodElement = findConcreteDynamicMethod(className, oldName, types);
-		if(oldMethodElement != null)
-		{
-			oldMethodElement.setName(newName);
-		}
-		DynamicToolWindowWrapper.getInstance(getProject()).rebuildTreePanel();
-		fireChange();
-	}
+  public void replaceDynamicMethodName(String className, String oldName, String newName, String[] types) {
+    final DMethodElement oldMethodElement = findConcreteDynamicMethod(className, oldName, types);
+    if (oldMethodElement != null) {
+      oldMethodElement.setName(newName);
+    }
+    DynamicToolWindowWrapper.getInstance(getProject()).rebuildTreePanel();
+    fireChange();
+  }
 
-	public Iterable<PsiMethod> getMethods(final String classQname)
-	{
-		DClassElement classElement = getRootElement().getClassElement(classQname);
-		if(classElement == null)
-		{
-			return Collections.emptyList();
-		}
-		return ContainerUtil.map(classElement.getMethods(), new Function<DMethodElement, PsiMethod>()
-		{
-			public PsiMethod fun(DMethodElement methodElement)
-			{
-				return methodElement.getPsi(PsiManager.getInstance(myProject), classQname);
-			}
-		});
-	}
+  public Iterable<PsiMethod> getMethods(final String classQname) {
+    DClassElement classElement = getRootElement().getClassElement(classQname);
+    if (classElement == null) {
+      return Collections.emptyList();
+    }
+    return ContainerUtil.map(classElement.getMethods(), new Function<DMethodElement, PsiMethod>() {
+      public PsiMethod apply(DMethodElement methodElement) {
+        return methodElement.getPsi(PsiManager.getInstance(myProject), classQname);
+      }
+    });
+  }
 
-	public Iterable<PsiVariable> getProperties(final String classQname)
-	{
-		DClassElement classElement = getRootElement().getClassElement(classQname);
-		if(classElement == null)
-		{
-			return Collections.emptyList();
-		}
-		return ContainerUtil.map(classElement.getProperties(), new Function<DPropertyElement, PsiVariable>()
-		{
-			public PsiVariable fun(DPropertyElement propertyElement)
-			{
-				return propertyElement.getPsi(PsiManager.getInstance(myProject), classQname);
-			}
-		});
-	}
+  public Iterable<PsiVariable> getProperties(final String classQname) {
+    DClassElement classElement = getRootElement().getClassElement(classQname);
+    if (classElement == null) {
+      return Collections.emptyList();
+    }
+    return ContainerUtil.map(classElement.getProperties(), new Function<DPropertyElement, PsiVariable>() {
+      public PsiVariable apply(DPropertyElement propertyElement) {
+        return propertyElement.getPsi(PsiManager.getInstance(myProject), classQname);
+      }
+    });
+  }
 
-	public void replaceClassName(final DClassElement oldClassElement, String newClassName)
-	{
-		if(oldClassElement == null)
-		{
-			return;
-		}
+  public void replaceClassName(final DClassElement oldClassElement, String newClassName) {
+    if (oldClassElement == null) {
+      return;
+    }
 
-		final DRootElement rootElement = getRootElement();
-		rootElement.removeClassElement(oldClassElement.getName());
+    final DRootElement rootElement = getRootElement();
+    rootElement.removeClassElement(oldClassElement.getName());
 
-		oldClassElement.setName(newClassName);
-		rootElement.mergeAddClass(oldClassElement);
+    oldClassElement.setName(newClassName);
+    rootElement.mergeAddClass(oldClassElement);
 
-		fireChange();
-	}
+    fireChange();
+  }
 
-	public void fireChange()
-	{
-		fireChangeCodeAnalyze();
-	}
+  public void fireChange() {
+    fireChangeCodeAnalyze();
+  }
 
-	private void fireChangeCodeAnalyze()
-	{
-		final Editor textEditor = FileEditorManager.getInstance(myProject).getSelectedTextEditor();
-		if(textEditor == null)
-		{
-			return;
-		}
-		final PsiFile file = PsiDocumentManager.getInstance(myProject).getPsiFile(textEditor.getDocument());
-		if(file == null)
-		{
-			return;
-		}
+  private void fireChangeCodeAnalyze() {
+    final Editor textEditor = FileEditorManager.getInstance(myProject).getSelectedTextEditor();
+    if (textEditor == null) {
+      return;
+    }
+    final PsiFile file = PsiDocumentManager.getInstance(myProject).getPsiFile(textEditor.getDocument());
+    if (file == null) {
+      return;
+    }
 
-		((PsiModificationTrackerImpl) PsiManager.getInstance(myProject).getModificationTracker()).incCounter();
-		DaemonCodeAnalyzer.getInstance(myProject).restart();
-	}
+    ((PsiModificationTrackerImpl)PsiManager.getInstance(myProject).getModificationTracker()).incCounter();
+    DaemonCodeAnalyzer.getInstance(myProject).restart();
+  }
 
-	@Nullable
-	public DPropertyElement findConcreteDynamicProperty(final String containingClassName, final String propertyName)
-	{
-		return findConcreteDynamicProperty(getRootElement(), containingClassName, propertyName);
-	}
+  @Nullable
+  public DPropertyElement findConcreteDynamicProperty(final String containingClassName, final String propertyName) {
+    return findConcreteDynamicProperty(getRootElement(), containingClassName, propertyName);
+  }
 
-	@Nullable
-	private static DPropertyElement findConcreteDynamicProperty(DRootElement rootElement, final String conatainingClassName, final String propertyName)
-	{
-		final DClassElement classElement = rootElement.getClassElement(conatainingClassName);
+  @Nullable
+  private static DPropertyElement findConcreteDynamicProperty(DRootElement rootElement,
+                                                              final String conatainingClassName,
+                                                              final String propertyName) {
+    final DClassElement classElement = rootElement.getClassElement(conatainingClassName);
 
-		if(classElement == null)
-		{
-			return null;
-		}
+    if (classElement == null) {
+      return null;
+    }
 
-		return classElement.getPropertyByName(propertyName);
-	}
+    return classElement.getPropertyByName(propertyName);
+  }
 
-	@Nullable
-	private static DClassElement findClassElement(DRootElement rootElement, final String conatainingClassName)
-	{
-		return rootElement.getClassElement(conatainingClassName);
-	}
+  @Nullable
+  private static DClassElement findClassElement(DRootElement rootElement, final String conatainingClassName) {
+    return rootElement.getClassElement(conatainingClassName);
+  }
 
-	/**
-	 * On exit
-	 */
-	public DRootElement getState()
-	{
-		//    return XmlSerializer.serialize(myRootElement);
-		return myRootElement;
-	}
+  /**
+   * On exit
+   */
+  public DRootElement getState() {
+    //    return XmlSerializer.serialize(myRootElement);
+    return myRootElement;
+  }
 
-	/*
-	 * On loading
-	 */
-	public void loadState(DRootElement element)
-	{
-		//    myRootElement = XmlSerializer.deserialize(element, myRootElement.getClass());
-		myRootElement = element;
-	}
+  /*
+   * On loading
+   */
+  public void loadState(DRootElement element) {
+    //    myRootElement = XmlSerializer.deserialize(element, myRootElement.getClass());
+    myRootElement = element;
+  }
 
-	public DItemElement createDynamicElement(DynamicElementSettings settings)
-	{
-		DItemElement itemElement;
-		if(settings.isMethod())
-		{
-			itemElement = new DMethodElement(settings.isStatic(), settings.getName(), settings.getType(), settings.getParams());
-		}
-		else
-		{
-			itemElement = new DPropertyElement(settings.isStatic(), settings.getName(), settings.getType());
-		}
-		return itemElement;
-	}
+  public DItemElement createDynamicElement(DynamicElementSettings settings) {
+    DItemElement itemElement;
+    if (settings.isMethod()) {
+      itemElement = new DMethodElement(settings.isStatic(), settings.getName(), settings.getType(), settings.getParams());
+    }
+    else {
+      itemElement = new DPropertyElement(settings.isStatic(), settings.getName(), settings.getType());
+    }
+    return itemElement;
+  }
 }

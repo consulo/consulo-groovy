@@ -15,21 +15,20 @@
  */
 package org.jetbrains.plugins.groovy.annotator.intentions;
 
-import javax.annotation.Nonnull;
-
-import com.intellij.codeInsight.intention.IntentionAction;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.IncorrectOperationException;
-
-import javax.annotation.Nullable;
+import consulo.codeEditor.Editor;
+import consulo.language.editor.intention.IntentionAction;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.language.util.IncorrectOperationException;
+import consulo.project.Project;
 import org.jetbrains.plugins.groovy.intentions.GroovyIntentionsBundle;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrCatchClause;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrDisjunctionTypeElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeElement;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author Max Medvedev
@@ -55,7 +54,7 @@ public class GrRemoveExceptionFix implements IntentionAction {
   }
 
   @Nonnull
-  @Override
+  //@Override
   public String getFamilyName() {
     return GroovyIntentionsBundle.message("try.catch.fix");
   }

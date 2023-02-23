@@ -20,12 +20,12 @@ import java.util.Map;
 
 import javax.annotation.Nonnull;
 
+import consulo.language.ast.IElementType;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.*;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.literals.GrLiteral;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.path.GrMethodCallExpression;
-import com.intellij.psi.tree.IElementType;
 
 public class ParenthesesUtils {
 

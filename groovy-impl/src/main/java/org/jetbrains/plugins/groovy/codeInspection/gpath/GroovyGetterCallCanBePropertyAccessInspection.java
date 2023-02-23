@@ -17,11 +17,12 @@ package org.jetbrains.plugins.groovy.codeInspection.gpath;
 
 import javax.annotation.Nonnull;
 
-import com.intellij.codeInspection.ProblemDescriptor;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.PsiElement;
-import com.intellij.util.IncorrectOperationException;
+import consulo.language.editor.inspection.ProblemDescriptor;
+import consulo.project.Project;
+import consulo.util.lang.StringUtil;
+import consulo.language.psi.PsiElement;
+import consulo.language.util.IncorrectOperationException;
+import consulo.project.Project;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NonNls;
 

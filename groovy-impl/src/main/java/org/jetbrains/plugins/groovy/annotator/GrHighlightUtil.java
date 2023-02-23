@@ -15,10 +15,19 @@
  */
 package org.jetbrains.plugins.groovy.annotator;
 
-import java.util.Set;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.intellij.java.language.psi.*;
+import consulo.application.util.CachedValueProvider;
+import consulo.application.util.CachedValuesManager;
+import consulo.colorScheme.TextAttributesKey;
+import consulo.document.util.TextRange;
+import consulo.language.ast.ASTNode;
+import consulo.language.ast.IElementType;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiNamedElement;
+import consulo.language.psi.resolve.PsiElementProcessor;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.logging.Logger;
+import consulo.project.DumbService;
 import org.jetbrains.plugins.groovy.highlighter.GroovySyntaxHighlighter;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.lexer.TokenSets;
@@ -42,18 +51,11 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GroovyScriptClass;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyPropertyUtils;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 import org.jetbrains.plugins.groovy.lang.resolve.ResolveUtil;
-import com.intellij.lang.ASTNode;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.editor.colors.TextAttributesKey;
-import com.intellij.openapi.project.DumbService;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.*;
-import com.intellij.psi.search.PsiElementProcessor;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.util.CachedValueProvider;
-import com.intellij.psi.util.CachedValuesManager;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.containers.ContainerUtil;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author Max Medvedev
@@ -63,7 +65,7 @@ public class GrHighlightUtil {
 
   private static Set<String> getReassignedNames(final PsiElement scope) {
     return CachedValuesManager.getManager(scope.getProject()).getCachedValue(scope, new CachedValueProvider<Set<String>>() {
-      @javax.annotation.Nullable
+      @Nullable
       @Override
       public Result<Set<String>> compute() {
         return Result.create(collectReassignedNames(scope), scope);
@@ -72,7 +74,7 @@ public class GrHighlightUtil {
   }
 
   private static Set<String> collectReassignedNames(PsiElement scope) {
-    final Set<String> result = ContainerUtil.newHashSet();
+    final Set<String> result = new HashSet<>();
     PsiTreeUtil.processElements(scope, new PsiElementProcessor() {
       @Override
       public boolean execute(@Nonnull PsiElement element) {
@@ -86,7 +88,7 @@ public class GrHighlightUtil {
           if (!result.contains(varName)) {
             PsiElement target = ref.resolve();
             if (target instanceof GrVariable && ((GrVariable)target).getInitializerGroovy() != null ||
-                target instanceof GrParameter) {
+              target instanceof GrParameter) {
               result.add(varName);
             }
           }
@@ -99,7 +101,7 @@ public class GrHighlightUtil {
 
   private static boolean isWriteAccess(GrReferenceExpression element) {
     return PsiUtil.isLValue(element) ||
-        element.getParent() instanceof GrUnaryExpression && ((GrUnaryExpression)element.getParent()).isPostfix();
+      element.getParent() instanceof GrUnaryExpression && ((GrUnaryExpression)element.getParent()).isPostfix();
   }
 
   static boolean isReassigned(final GrVariable var) {
@@ -111,13 +113,12 @@ public class GrHighlightUtil {
   }
 
   /**
-   *
-   * @param resolved declaration element
+   * @param resolved   declaration element
    * @param refElement reference to highlight. if null, 'resolved' is highlighted and no resolve is allowed.
    * @return
    */
   @Nullable
-  static TextAttributesKey getDeclarationHighlightingAttribute(PsiElement resolved, @javax.annotation.Nullable PsiElement refElement) {
+  static TextAttributesKey getDeclarationHighlightingAttribute(PsiElement resolved, @Nullable PsiElement refElement) {
     if (refElement != null && isReferenceWithLiteralName(refElement)) return null; //don't highlight literal references
 
     if (resolved instanceof PsiField || resolved instanceof GrVariable && ResolveUtil.isScriptField((GrVariable)resolved)) {
@@ -135,7 +136,7 @@ public class GrHighlightUtil {
       if (((PsiMethod)resolved).isConstructor()) {
         if (refElement != null) {
           if (refElement.getNode().getElementType() == GroovyTokenTypes.kTHIS || //don't highlight this() or super()
-              refElement.getNode().getElementType() == GroovyTokenTypes.kSUPER) {
+            refElement.getNode().getElementType() == GroovyTokenTypes.kSUPER) {
             return null;
           }
           else {
@@ -183,7 +184,7 @@ public class GrHighlightUtil {
     return null;
   }
 
-  private static boolean isMethodWithLiteralName(@javax.annotation.Nullable PsiMethod method) {
+  private static boolean isMethodWithLiteralName(@Nullable PsiMethod method) {
     if (method instanceof GrMethod) {
       final PsiElement nameIdentifier = ((GrMethod)method).getNameIdentifierGroovy();
       if (isStringNameElement(nameIdentifier)) {
@@ -217,7 +218,7 @@ public class GrHighlightUtil {
 
   private static boolean isAssignmentLhs(GrReferenceExpression refExpr) {
     return refExpr.getParent() instanceof GrAssignmentExpression &&
-           refExpr.equals(((GrAssignmentExpression)refExpr.getParent()).getLValue());
+      refExpr.equals(((GrAssignmentExpression)refExpr.getParent()).getLValue());
   }
 
   private static boolean isScriptPropertyAccess(GrReferenceExpression refExpr) {
@@ -232,7 +233,7 @@ public class GrHighlightUtil {
 
     final PsiType type = qualifier.getType();
     if (type instanceof PsiClassType &&
-        !(qualifier instanceof GrReferenceExpression && ((GrReferenceExpression)qualifier).resolve() instanceof GroovyScriptClass)) {
+      !(qualifier instanceof GrReferenceExpression && ((GrReferenceExpression)qualifier).resolve() instanceof GroovyScriptClass)) {
       final PsiClassType classType = (PsiClassType)type;
       final PsiClass psiClass = classType.resolve();
       if (psiClass instanceof GroovyScriptClass) {

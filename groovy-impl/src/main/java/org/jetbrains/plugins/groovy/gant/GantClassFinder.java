@@ -15,9 +15,9 @@
  */
 package org.jetbrains.plugins.groovy.gant;
 
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.NonClasspathClassFinder;
+import com.intellij.java.language.impl.psi.NonClasspathClassFinder;
+import consulo.project.Project;
+import consulo.virtualFileSystem.VirtualFile;
 
 import java.util.List;
 

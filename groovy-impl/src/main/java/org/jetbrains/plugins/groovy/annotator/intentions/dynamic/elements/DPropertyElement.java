@@ -15,63 +15,55 @@
  */
 package org.jetbrains.plugins.groovy.annotator.intentions.dynamic.elements;
 
-import javax.annotation.Nonnull;
-
+import com.intellij.java.language.psi.CommonClassNames;
+import com.intellij.java.language.psi.PsiModifier;
+import com.intellij.java.language.psi.PsiVariable;
+import consulo.language.psi.PsiManager;
 import org.jetbrains.plugins.groovy.annotator.intentions.dynamic.GrDynamicImplicitProperty;
-import com.intellij.psi.CommonClassNames;
-import com.intellij.psi.PsiManager;
-import com.intellij.psi.PsiModifier;
-import com.intellij.psi.PsiVariable;
+
+import javax.annotation.Nonnull;
 
 /**
  * User: Dmitry.Krasilschikov
  * Date: 20.12.2007
  */
-public class DPropertyElement extends DItemElement
-{
-	private GrDynamicImplicitProperty myPsi;
+public class DPropertyElement extends DItemElement {
+  private GrDynamicImplicitProperty myPsi;
 
-	//Do not use directly! Persistence component uses default constructor for deserializable
-	@SuppressWarnings("UnusedDeclaration")
-	public DPropertyElement()
-	{
-		super(null, null, null);
-	}
+  //Do not use directly! Persistence component uses default constructor for deserializable
+  @SuppressWarnings("UnusedDeclaration")
+  public DPropertyElement() {
+    super(null, null, null);
+  }
 
-	public DPropertyElement(Boolean isStatic, String name, String type)
-	{
-		super(isStatic, name, type);
-	}
+  public DPropertyElement(Boolean isStatic, String name, String type) {
+    super(isStatic, name, type);
+  }
 
-	@Override
-	public void clearCache()
-	{
-		myPsi = null;
-	}
+  @Override
+  public void clearCache() {
+    myPsi = null;
+  }
 
-	@Override
-	@Nonnull
-	public PsiVariable getPsi(PsiManager manager, final String containingClassName)
-	{
-		if(myPsi != null)
-		{
-			return myPsi;
-		}
+  @Override
+  @Nonnull
+  public PsiVariable getPsi(PsiManager manager, final String containingClassName) {
+    if (myPsi != null) {
+      return myPsi;
+    }
 
-		Boolean isStatic = isStatic();
+    Boolean isStatic = isStatic();
 
-		String type = getType();
-		if(type == null || type.trim().isEmpty())
-		{
-			type = CommonClassNames.JAVA_LANG_OBJECT;
-		}
-		myPsi = new GrDynamicImplicitProperty(manager, getName(), type, containingClassName);
+    String type = getType();
+    if (type == null || type.trim().isEmpty()) {
+      type = CommonClassNames.JAVA_LANG_OBJECT;
+    }
+    myPsi = new GrDynamicImplicitProperty(manager, getName(), type, containingClassName);
 
-		if(isStatic != null && isStatic.booleanValue())
-		{
-			myPsi.getModifierList().addModifier(PsiModifier.STATIC);
-		}
+    if (isStatic != null && isStatic.booleanValue()) {
+      myPsi.getModifierList().addModifier(PsiModifier.STATIC);
+    }
 
-		return myPsi;
-	}
+    return myPsi;
+  }
 }

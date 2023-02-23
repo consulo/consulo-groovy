@@ -15,16 +15,16 @@
  */
 package org.jetbrains.plugins.groovy.template;
 
-import javax.annotation.Nonnull;
-
-import com.intellij.codeInsight.template.macro.VariableTypeCalculator;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiType;
-import com.intellij.psi.PsiVariable;
+import com.intellij.java.impl.codeInsight.template.macro.VariableTypeCalculator;
+import com.intellij.java.language.psi.PsiType;
+import com.intellij.java.language.psi.PsiVariable;
+import consulo.language.psi.PsiElement;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
 import org.jetbrains.plugins.groovy.lang.psi.dataFlow.types.TypeInferenceHelper;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author Max Medvedev

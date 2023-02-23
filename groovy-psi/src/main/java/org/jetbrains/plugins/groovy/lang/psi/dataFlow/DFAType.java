@@ -15,18 +15,18 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.dataFlow;
 
-import com.intellij.openapi.util.Comparing;
-import com.intellij.psi.PsiIntersectionType;
-import com.intellij.psi.PsiManager;
-import com.intellij.psi.PsiType;
-import com.intellij.psi.util.TypeConversionUtil;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.intellij.java.language.psi.PsiIntersectionType;
+import com.intellij.java.language.psi.PsiType;
+import com.intellij.java.language.psi.util.TypeConversionUtil;
+import consulo.language.psi.PsiManager;
+import consulo.util.lang.Comparing;
 import org.jetbrains.plugins.groovy.lang.psi.controlFlow.Instruction;
 import org.jetbrains.plugins.groovy.lang.psi.controlFlow.NegatingGotoInstruction;
 import org.jetbrains.plugins.groovy.lang.psi.controlFlow.impl.ConditionInstruction;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
@@ -74,11 +74,11 @@ public class DFAType {
 
   private final List<Mixin> mixins = new ArrayList<Mixin>();
 
-  private DFAType(@javax.annotation.Nullable PsiType primary) {
+  private DFAType(@Nullable PsiType primary) {
     this.primary = primary;
   }
 
-  public void addMixin(@javax.annotation.Nullable PsiType mixin, ConditionInstruction instruction) {
+  public void addMixin(@Nullable PsiType mixin, ConditionInstruction instruction) {
     if (mixin == null) {
       return;
     }
@@ -147,7 +147,7 @@ public class DFAType {
     return PsiIntersectionType.createIntersection(types.toArray(new PsiType[types.size()]));
   }
 
-  public static DFAType create(@javax.annotation.Nullable PsiType type) {
+  public static DFAType create(@Nullable PsiType type) {
     return new DFAType(type);
   }
 
@@ -155,7 +155,7 @@ public class DFAType {
     return t1 == t2 || Comparing.equal(TypeConversionUtil.erasure(t1), TypeConversionUtil.erasure(t2));
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   public static DFAType create(DFAType t1, DFAType t2, PsiManager manager) {
     if (t1.equals(t2)) return t1;
 

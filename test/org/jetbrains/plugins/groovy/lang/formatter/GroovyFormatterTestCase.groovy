@@ -20,11 +20,11 @@ import com.intellij.openapi.command.CommandProcessor
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.TextRange
-import com.intellij.psi.PsiFile
-import com.intellij.psi.codeStyle.CodeStyleManager
-import com.intellij.psi.codeStyle.CodeStyleSettings
-import com.intellij.psi.codeStyle.CodeStyleSettingsManager
-import com.intellij.psi.codeStyle.CommonCodeStyleSettings
+import com.intellij.java.language.psi.PsiFile
+import com.intellij.java.language.psi.codeStyle.CodeStyleManager
+import com.intellij.java.language.psi.codeStyle.CodeStyleSettings
+import com.intellij.java.language.psi.codeStyle.CodeStyleSettingsManager
+import com.intellij.java.language.psi.codeStyle.CommonCodeStyleSettings
 import com.intellij.testFramework.fixtures.LightCodeInsightFixtureTestCase
 import com.intellij.util.IncorrectOperationException
 import org.jetbrains.plugins.groovy.GroovyFileType

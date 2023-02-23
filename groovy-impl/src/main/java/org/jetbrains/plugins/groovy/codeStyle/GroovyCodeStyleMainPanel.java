@@ -15,14 +15,17 @@
  */
 package org.jetbrains.plugins.groovy.codeStyle;
 
-import com.intellij.application.options.TabbedLanguageCodeStylePanel;
-import com.intellij.psi.codeStyle.CodeStyleSettings;
+import consulo.language.codeStyle.CodeStyleSettings;
+import consulo.language.codeStyle.ui.setting.TabbedLanguageCodeStylePanel;
+import consulo.language.codeStyle.CodeStyleSettings;
+import consulo.language.codeStyle.ui.setting.TabbedLanguageCodeStylePanel;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 
 /**
  * @author Max Medvedev
  */
-public class GroovyCodeStyleMainPanel extends TabbedLanguageCodeStylePanel {
+public class GroovyCodeStyleMainPanel extends TabbedLanguageCodeStylePanel
+{
   public GroovyCodeStyleMainPanel(CodeStyleSettings currentSettings, CodeStyleSettings settings) {
     super(GroovyFileType.GROOVY_LANGUAGE, currentSettings, settings);
   }

@@ -16,12 +16,14 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.javaView;
 
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiElementFinder;
-import com.intellij.psi.search.GlobalSearchScope;
+import consulo.project.Project;
+import com.intellij.java.language.psi.PsiClass;
+import com.intellij.java.language.psi.PsiElementFinder;
+import consulo.language.psi.scope.GlobalSearchScope;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
+import consulo.project.Project;
 import org.jetbrains.plugins.groovy.lang.stubs.GroovyShortNamesCache;
 
 import java.util.Collection;
@@ -37,7 +39,7 @@ public class GroovyClassFinder extends PsiElementFinder {
     myCache = GroovyShortNamesCache.getGroovyShortNamesCache(project);
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   public PsiClass findClass(@Nonnull String qualifiedName, @Nonnull GlobalSearchScope scope) {
     final List<PsiClass> classes = myCache.getScriptClassesByFQName(qualifiedName, scope, true);
     return classes.isEmpty() ? null : classes.get(0);

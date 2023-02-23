@@ -15,15 +15,15 @@
  */
 package org.jetbrains.plugins.groovy.lang.resolve.processors;
 
-import java.util.EnumSet;
+import com.intellij.java.language.impl.psi.scope.ElementClassHint;
+import com.intellij.java.language.impl.psi.scope.NameHint;
+import consulo.language.psi.resolve.PsiScopeProcessor;
+import consulo.language.psi.resolve.ResolveState;
+import consulo.util.dataholder.Key;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import consulo.util.dataholder.Key;
-import com.intellij.psi.ResolveState;
-import com.intellij.psi.scope.ElementClassHint;
-import com.intellij.psi.scope.NameHint;
-import com.intellij.psi.scope.PsiScopeProcessor;
+import java.util.EnumSet;
 
 /**
  * Created by Max Medvedev on 31/03/14
@@ -33,7 +33,7 @@ public abstract class GrScopeProcessorWithHints implements PsiScopeProcessor, Na
 	protected final EnumSet<ResolveKind> myResolveTargetKinds;
 	protected final String myName;
 
-	public GrScopeProcessorWithHints(@javax.annotation.Nullable String name, @javax.annotation.Nullable EnumSet<ResolveKind> resolveTargets)
+	public GrScopeProcessorWithHints(@Nullable String name, @Nullable EnumSet<ResolveKind> resolveTargets)
 	{
 		myName = name;
 		myResolveTargetKinds = resolveTargets;

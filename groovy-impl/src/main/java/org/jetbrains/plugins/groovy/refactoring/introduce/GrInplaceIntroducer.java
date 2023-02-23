@@ -15,13 +15,16 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.introduce;
 
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.editor.RangeMarker;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiElement;
-import com.intellij.refactoring.introduce.inplace.InplaceVariableIntroducer;
+import consulo.codeEditor.Editor;
+import consulo.document.RangeMarker;
+import consulo.language.psi.PsiElement;
+import consulo.project.Project;
+import consulo.language.psi.PsiElement;
+import consulo.language.editor.refactoring.introduce.inplace.InplaceVariableIntroducer;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
+import consulo.document.RangeMarker;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
 
 import java.util.LinkedHashSet;
@@ -41,7 +44,7 @@ public abstract class GrInplaceIntroducer extends InplaceVariableIntroducer<PsiE
     setOccurrenceMarkers(occurrences);
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   @Override
   protected PsiElement getNameIdentifier() {
     return getVariable().getNameIdentifierGroovy();

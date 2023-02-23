@@ -15,10 +15,12 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.introduce;
 
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.PsiElement;
-import com.intellij.refactoring.introduce.inplace.OccurrencesChooser;
+import consulo.codeEditor.Editor;
+import consulo.document.util.TextRange;
+import consulo.language.psi.PsiElement;
+import consulo.language.editor.refactoring.introduce.inplace.OccurrencesChooser;
+import consulo.codeEditor.Editor;
+import consulo.document.util.TextRange;
 
 /**
  * Created by Max Medvedev on 29/01/14

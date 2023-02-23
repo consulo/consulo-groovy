@@ -15,10 +15,11 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.changeSignature;
 
-import com.intellij.psi.*;
-import com.intellij.psi.util.MethodSignature;
-import com.intellij.refactoring.util.RefactoringUIUtil;
-import com.intellij.util.containers.MultiMap;
+import com.intellij.java.language.psi.*;
+import com.intellij.java.language.psi.util.MethodSignature;
+import consulo.language.editor.refactoring.ui.RefactoringUIUtil;
+import consulo.language.psi.PsiElement;
+import consulo.util.collection.MultiMap;
 import org.jetbrains.plugins.groovy.lang.documentation.GroovyPresentationUtil;
 import org.jetbrains.plugins.groovy.lang.psi.api.signatures.GrClosureSignature;
 import org.jetbrains.plugins.groovy.lang.psi.api.signatures.GrRecursiveSignatureVisitor;
@@ -42,9 +43,9 @@ public class GrMethodConflictUtil {
   }
 
   public static void checkMethodConflicts(PsiClass clazz,
-                                          GrMethod prototype,
-                                          GrMethod refactoredMethod,
-                                          final MultiMap<PsiElement, String> conflicts, boolean excludeJavaConflicts) {
+										  GrMethod prototype,
+										  GrMethod refactoredMethod,
+										  final MultiMap<PsiElement, String> conflicts, boolean excludeJavaConflicts) {
     List<MethodSignature> prototypeSignatures = GrClosureSignatureUtil.generateAllSignaturesForMethod(prototype, PsiSubstitutor.EMPTY);
     checkForClosurePropertySignatureOverload(clazz, prototype, refactoredMethod, conflicts, prototypeSignatures);
     checkForMethodSignatureOverload(clazz, prototype, refactoredMethod, conflicts, excludeJavaConflicts, prototypeSignatures);

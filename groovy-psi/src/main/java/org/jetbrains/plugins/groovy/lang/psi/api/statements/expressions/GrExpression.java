@@ -16,10 +16,11 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions;
 
-import com.intellij.psi.PsiType;
-import javax.annotation.Nullable;
+import com.intellij.java.language.psi.PsiType;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotationMemberValue;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
+
+import javax.annotation.Nullable;
 
 /**
  * @author ilyas
@@ -30,7 +31,7 @@ public interface GrExpression extends GrStatement, GrAnnotationMemberValue {
   @Nullable
   PsiType getType();
 
-  @javax.annotation.Nullable
+  @Nullable
   PsiType getNominalType();
 
   GrExpression replaceWithExpression(GrExpression expression, boolean removeUnnecessaryParentheses);

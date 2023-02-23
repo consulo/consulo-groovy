@@ -18,13 +18,14 @@ package org.jetbrains.plugins.groovy.editor.actions;
 
 import javax.annotation.Nonnull;
 
-import com.intellij.codeInsight.editorActions.TypedHandlerDelegate;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.editor.ex.EditorEx;
-import com.intellij.openapi.editor.highlighter.EditorHighlighter;
-import com.intellij.openapi.editor.highlighter.HighlighterIterator;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiFile;
+import consulo.language.editor.action.TypedHandlerDelegate;
+import consulo.codeEditor.Editor;
+import consulo.codeEditor.EditorEx;
+import consulo.codeEditor.EditorHighlighter;
+import consulo.codeEditor.HighlighterIterator;
+import consulo.project.Project;
+import consulo.language.psi.PsiFile;
+import consulo.project.Project;
 import org.jetbrains.plugins.groovy.editor.HandlerUtils;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;

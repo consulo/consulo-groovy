@@ -17,17 +17,18 @@ package org.jetbrains.plugins.groovy.lang.psi.stubs;
 
 import javax.annotation.Nonnull;
 
+import consulo.index.io.StringRef;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameter;
-import com.intellij.psi.stubs.NamedStub;
-import com.intellij.psi.stubs.StubBase;
-import com.intellij.psi.stubs.StubElement;
-import com.intellij.util.io.StringRef;
+import consulo.language.psi.stub.NamedStub;
+import consulo.language.psi.stub.StubBase;
+import consulo.language.psi.stub.StubElement;
 
 /**
  * @author peter
  */
-public class GrParameterStub extends StubBase<GrParameter> implements NamedStub<GrParameter> {
+public class GrParameterStub extends StubBase<GrParameter> implements NamedStub<GrParameter>
+{
   private final StringRef myName;
   private final String[] myAnnotations;
   private final String myTypeText;

@@ -15,33 +15,37 @@
  */
 package org.jetbrains.idea.maven.plugins.groovy;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import consulo.language.Language;
+import consulo.xml.psi.xml.XmlText;
 import org.jetbrains.idea.maven.dom.model.MavenDomConfiguration;
 import org.jetbrains.idea.maven.plugins.api.MavenParamLanguageProvider;
-import org.jetbrains.plugins.groovy.GroovyFileType;
-import com.intellij.lang.Language;
-import com.intellij.psi.xml.XmlText;
+import org.jetbrains.plugins.groovy.GroovyLanguage;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author Sergey Evdokimov
  */
-public class MavenGroovyLanguageProvider extends MavenParamLanguageProvider {
+public class MavenGroovyLanguageProvider implements MavenParamLanguageProvider
+{
+	@Nullable
+	@Override
+	public Language getLanguage(@Nonnull XmlText xmlText, @Nonnull MavenDomConfiguration configuration)
+	{
+		// Parameter 'source' of gmaven-plugin can be a peace of groovy code or file path or URL.
 
-  @Nullable
-  @Override
-  public Language getLanguage(@Nonnull XmlText xmlText, @Nonnull MavenDomConfiguration configuration) {
-    // Parameter 'source' of gmaven-plugin can be a peace of groovy code or file path or URL.
+		String text = xmlText.getText();
 
-    String text = xmlText.getText();
+		if(text.indexOf('\n') >= 0)
+		{ // URL or file path can not be multiline so it's a groovy code
+			return GroovyLanguage.INSTANCE;
+		}
+		if(text.indexOf('(') >= 0)
+		{ // URL or file path hardly contains '(', but code usually contain '('
+			return GroovyLanguage.INSTANCE;
+		}
 
-    if (text.indexOf('\n') >= 0) { // URL or file path can not be multiline so it's a groovy code
-      return GroovyFileType.GROOVY_LANGUAGE;
-    }
-    if (text.indexOf('(') >= 0) { // URL or file path hardly contains '(', but code usually contain '('
-      return GroovyFileType.GROOVY_LANGUAGE;
-    }
-
-    return null;
-  }
+		return null;
+	}
 }

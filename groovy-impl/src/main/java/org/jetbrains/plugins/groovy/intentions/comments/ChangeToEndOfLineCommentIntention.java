@@ -17,13 +17,13 @@ package org.jetbrains.plugins.groovy.intentions.comments;
 
 import javax.annotation.Nonnull;
 
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.JavaPsiFacade;
-import com.intellij.psi.PsiComment;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiElementFactory;
-import com.intellij.util.IncorrectOperationException;
+import consulo.codeEditor.Editor;
+import consulo.language.psi.PsiComment;
+import consulo.language.psi.PsiElement;
+import consulo.project.Project;
+import com.intellij.java.language.psi.JavaPsiFacade;
+import com.intellij.java.language.psi.PsiElementFactory;
+import consulo.language.util.IncorrectOperationException;
 import org.jetbrains.plugins.groovy.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.intentions.base.PsiElementPredicate;
 

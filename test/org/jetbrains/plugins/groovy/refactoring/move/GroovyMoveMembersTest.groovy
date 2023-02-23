@@ -19,10 +19,10 @@ package org.jetbrains.plugins.groovy.refactoring.move
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.VirtualFileFilter
-import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiMember
-import com.intellij.psi.PsiModifier
-import com.intellij.psi.search.ProjectScope
+import com.intellij.java.language.psi.PsiElement
+import com.intellij.java.language.psi.PsiMember
+import com.intellij.java.language.psi.PsiModifier
+import com.intellij.java.language.psi.search.ProjectScope
 import com.intellij.refactoring.move.moveMembers.MoveMembersOptions
 import com.intellij.refactoring.move.moveMembers.MoveMembersProcessor
 import com.intellij.testFramework.PlatformTestUtil

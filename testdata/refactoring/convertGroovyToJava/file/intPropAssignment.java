@@ -1,3 +1,6 @@
+import java.lang.Object;
+import java.lang.String;
+
 public class A {
 public int getProp() {
  return prop;
@@ -8,11 +11,11 @@ this.prop = prop;
 private int prop;
 }
 public class intPropAssignment extends groovy.lang.Script {
-public static void main(java.lang.String[] args) {
+public static void main(String[] args) {
 new intPropAssignment(new groovy.lang.Binding(args)).run();
 }
 
-public java.lang.Object run() {
+public Object run() {
 
 
 A a = new A();

@@ -1,10 +1,12 @@
 package org.jetbrains.plugins.groovy.gpp;
 
-import com.intellij.openapi.util.Pair;
-import com.intellij.psi.*;
-import com.intellij.util.NullableFunction;
-import com.intellij.util.containers.ContainerUtil;
-import javax.annotation.Nonnull;
+import com.intellij.java.language.psi.PsiClassType;
+import com.intellij.java.language.psi.PsiMethod;
+import com.intellij.java.language.psi.PsiParameter;
+import com.intellij.java.language.psi.PsiType;
+import consulo.language.psi.PsiElement;
+import consulo.util.collection.ContainerUtil;
+import consulo.util.lang.Pair;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.GrListOrMap;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrNamedArgument;
@@ -18,6 +20,7 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.GrTupleType;
 import org.jetbrains.plugins.groovy.lang.psi.impl.signatures.GrClosureSignatureUtil;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -62,7 +65,7 @@ public class GppExpectedTypesContributor extends GroovyExpectedTypesContributor 
         for (GroovyResolveResult resolveResult : PsiUtil.getConstructorCandidates((PsiClassType)type, argTypes, list)) {
           final PsiElement method = resolveResult.getElement();
           if (method instanceof PsiMethod && ((PsiMethod)method).isConstructor()) {
-            final Map<GrExpression,Pair<PsiParameter,PsiType>> map = GrClosureSignatureUtil
+            final Map<GrExpression, Pair<PsiParameter, PsiType>> map = GrClosureSignatureUtil
               .mapArgumentsToParameters(resolveResult, list, false, true, GrNamedArgument.EMPTY_ARRAY, args, GrClosableBlock.EMPTY_ARRAY);
             if (map != null) {
               final Pair<PsiParameter, PsiType> pair = map.get(arg);

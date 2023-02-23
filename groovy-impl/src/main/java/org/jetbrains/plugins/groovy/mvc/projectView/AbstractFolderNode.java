@@ -1,19 +1,27 @@
 package org.jetbrains.plugins.groovy.mvc.projectView;
 
-import com.intellij.ide.projectView.PresentationData;
-import com.intellij.ide.projectView.ViewSettings;
-import com.intellij.ide.util.treeView.AbstractTreeNode;
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.roots.ModuleRootManager;
-import com.intellij.openapi.roots.ProjectFileIndex;
-import com.intellij.openapi.roots.ProjectRootManager;
-import com.intellij.openapi.vfs.VfsUtil;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.PsiDirectory;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import consulo.ide.IconDescriptorUpdaters;
+import consulo.language.psi.*;
+import consulo.module.Module;
+import consulo.module.content.ModuleRootManager;
+import consulo.module.content.ProjectRootManager;
+import consulo.project.Project;
+import consulo.project.ui.view.tree.AbstractTreeNode;
+import consulo.project.ui.view.tree.ViewSettings;
+import consulo.ui.ex.tree.PresentationData;
+import consulo.project.ui.view.tree.ViewSettings;
+import consulo.project.ui.view.tree.AbstractTreeNode;
+import consulo.module.Module;
+import consulo.project.Project;
+import consulo.module.content.ModuleRootManager;
+import consulo.module.content.ProjectFileIndex;
+import consulo.module.content.ProjectRootManager;
+import consulo.ide.impl.idea.openapi.vfs.VfsUtil;
+import consulo.virtualFileSystem.VirtualFile;
+import consulo.language.psi.PsiDirectory;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.icon.IconDescriptorUpdaters;
+import consulo.virtualFileSystem.VirtualFile;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
 
@@ -33,10 +41,10 @@ public class AbstractFolderNode extends AbstractMvcPsiNodeDescriptor {
   private final String myPresentableText;
 
   protected AbstractFolderNode(@Nonnull final Module module,
-                               @Nonnull final PsiDirectory directory,
-                               @Nonnull String presentableText,
-                               @javax.annotation.Nullable final String locationMark,
-                               final ViewSettings viewSettings, int weight) {
+							   @Nonnull final PsiDirectory directory,
+							   @Nonnull String presentableText,
+							   @Nullable final String locationMark,
+							   final ViewSettings viewSettings, int weight) {
     super(module, viewSettings, directory, weight);
     myLocationMark = locationMark;
     myPresentableText = presentableText;
@@ -55,7 +63,7 @@ public class AbstractFolderNode extends AbstractMvcPsiNodeDescriptor {
     return (PsiDirectory)extractPsiFromValue();
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   protected Collection<AbstractTreeNode> getChildrenImpl() {
     final PsiDirectory directory = getPsiDirectory();
     if (!directory.isValid()) {
@@ -130,7 +138,7 @@ public class AbstractFolderNode extends AbstractMvcPsiNodeDescriptor {
     }
 
     final VirtualFile valueFile = ((PsiDirectory)psiElement).getVirtualFile();
-    if (!VfsUtil.isAncestor(valueFile, file, false)) {
+    if (!consulo.ide.impl.idea.openapi.vfs.VfsUtil.isAncestor(valueFile, file, false)) {
       return false;
     }
 

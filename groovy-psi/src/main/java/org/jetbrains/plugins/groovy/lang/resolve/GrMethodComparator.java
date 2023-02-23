@@ -15,25 +15,29 @@
  */
 package org.jetbrains.plugins.groovy.lang.resolve;
 
+import com.intellij.java.language.psi.PsiMethod;
+import com.intellij.java.language.psi.PsiSubstitutor;
+import com.intellij.java.language.psi.PsiType;
+import consulo.annotation.component.ComponentScope;
+import consulo.annotation.component.ExtensionAPI;
+import consulo.component.extension.ExtensionPointName;
+import consulo.language.psi.PsiElement;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import com.intellij.openapi.extensions.ExtensionPointName;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiMethod;
-import com.intellij.psi.PsiSubstitutor;
-import com.intellij.psi.PsiType;
 
 /**
  * @author Max Medvedev
  */
+@ExtensionAPI(ComponentScope.APPLICATION)
 public abstract class GrMethodComparator {
-  private static final ExtensionPointName<GrMethodComparator> EP_NAME = ExtensionPointName.create("org.intellij.groovy.methodComparator");
+  private static final ExtensionPointName<GrMethodComparator> EP_NAME = ExtensionPointName.create(GrMethodComparator.class);
 
   public interface Context {
-    @javax.annotation.Nullable
+    @Nullable
     PsiType[] getArgumentTypes();
 
-    @javax.annotation.Nullable
+    @Nullable
     PsiType[] getTypeArguments();
 
     @Nullable
@@ -55,7 +59,7 @@ public abstract class GrMethodComparator {
                                        @Nonnull PsiMethod method2,
                                        @Nonnull PsiSubstitutor substitutor2,
                                        @Nonnull Context context) {
-    for (GrMethodComparator comparator : EP_NAME.getExtensions()) {
+    for (GrMethodComparator comparator : EP_NAME.getExtensionList()) {
       Boolean result = comparator.dominated(method1, substitutor1, method2, substitutor2, context);
       if (result != null) {
         return result;

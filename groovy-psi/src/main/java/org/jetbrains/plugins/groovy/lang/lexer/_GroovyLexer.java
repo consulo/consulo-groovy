@@ -18,11 +18,18 @@
 
 package org.jetbrains.plugins.groovy.lang.lexer;
 
+import consulo.language.ast.IElementType;
+import consulo.language.lexer.FlexLexer;
+import consulo.util.collection.Stack;
+import consulo.util.lang.CharArrayUtil;
 import org.jetbrains.plugins.groovy.lang.groovydoc.parser.GroovyDocElementTypes;
-import com.intellij.lexer.FlexLexer;
-import com.intellij.psi.TokenType;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.util.containers.Stack;
+import consulo.language.ast.TokenType;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.util.Arrays;
 
 
 /**
@@ -31,7 +38,8 @@ import com.intellij.util.containers.Stack;
  * on 21.05.14 20:33 from the specification file
  * <tt>C:/Work/Idea/tools/lexer/../../community/plugins/groovy/groovy-psi/src/org/jetbrains/plugins/groovy/lang/lexer/groovy.flex</tt>
  */
-public class _GroovyLexer implements FlexLexer {
+public class _GroovyLexer implements FlexLexer
+{
 	/** initial size of the lookahead buffer */
 	private static final int ZZ_BUFFERSIZE = 16384;
 
@@ -2085,7 +2093,7 @@ public class _GroovyLexer implements FlexLexer {
 	private static final int ZZ_NO_MATCH = 1;
 	private static final int ZZ_PUSHBACK_2BIG = 2;
 	private static final int YYEOF = -1;
-	private static java.io.Reader zzReader = null; // Fake
+	private static Reader zzReader = null; // Fake
 
 	/* error messages for the codes above */
 	private static final String[] ZZ_ERROR_MSG = {
@@ -2195,7 +2203,7 @@ public class _GroovyLexer implements FlexLexer {
 
 
 
-	public _GroovyLexer(java.io.Reader in) {
+	public _GroovyLexer(Reader in) {
 		this.zzReader = in;
 	}
 
@@ -2205,8 +2213,8 @@ public class _GroovyLexer implements FlexLexer {
 	 *
 	 * @param   in  the java.io.Inputstream to read input from.
 	 */
-	public _GroovyLexer(java.io.InputStream in) {
-		this(new java.io.InputStreamReader(in));
+	public _GroovyLexer(InputStream in) {
+		this(new InputStreamReader(in));
 	}
 
 	/**
@@ -2241,13 +2249,13 @@ public class _GroovyLexer implements FlexLexer {
 		afterComment = YYINITIAL;
 
 		zzBuffer = buffer;
-		zzBufferArray = com.intellij.util.text.CharArrayUtil.fromSequenceWithoutCopying(buffer);
+		zzBufferArray = CharArrayUtil.fromSequenceWithoutCopying(buffer);
 		zzCurrentPos = zzMarkedPos = zzStartRead = start;
 		zzPushbackPos = 0;
 		zzAtEOF  = false;
 		zzAtBOL = true;
 		zzEndRead = end;
-		java.util.Arrays.fill(zzFin, false);
+		Arrays.fill(zzFin, false);
 
 		yybegin(initialState);
 	}
@@ -2257,9 +2265,9 @@ public class _GroovyLexer implements FlexLexer {
 	 *
 	 * @return      <code>false</code>, iff there was new input.
 	 *
-	 * @exception   java.io.IOException  if any I/O-Error occurs
+	 * @exception   IOException  if any I/O-Error occurs
 	 */
-	private boolean zzRefill() throws java.io.IOException {
+	private boolean zzRefill() throws IOException {
 		return true;
 	}
 
@@ -2374,9 +2382,9 @@ public class _GroovyLexer implements FlexLexer {
 	 * the end of input is encountered or an I/O-Error occurs.
 	 *
 	 * @return      the next token
-	 * @exception   java.io.IOException  if any I/O-Error occurs
+	 * @exception   IOException  if any I/O-Error occurs
 	 */
-	public IElementType advance() throws java.io.IOException {
+	public IElementType advance() throws IOException {
 		int zzInput;
 		int zzAction;
 

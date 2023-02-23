@@ -1,7 +1,7 @@
 package org.jetbrains.plugins.groovy.refactoring.changeSignature;
 
 import com.intellij.codeInsight.TargetElementUtilBase;
-import com.intellij.psi.*;
+import com.intellij.java.language.psi.*;
 import com.intellij.refactoring.changeSignature.ChangeSignatureProcessor;
 import com.intellij.refactoring.changeSignature.JavaThrownExceptionInfo;
 import com.intellij.refactoring.changeSignature.ParameterInfoImpl;

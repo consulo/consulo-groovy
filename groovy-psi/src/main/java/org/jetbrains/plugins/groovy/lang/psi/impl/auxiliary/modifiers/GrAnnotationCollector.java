@@ -15,12 +15,10 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.auxiliary.modifiers;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.intellij.java.language.psi.*;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiManager;
+import consulo.util.collection.ContainerUtil;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.GrModifierList;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotation;
@@ -31,15 +29,10 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrRefere
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
 import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GrLightAnnotation;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames;
-import com.intellij.psi.JavaPsiFacade;
-import com.intellij.psi.PsiAnnotation;
-import com.intellij.psi.PsiAnnotationMemberValue;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiManager;
-import com.intellij.psi.PsiModifierList;
-import com.intellij.psi.PsiNameValuePair;
-import com.intellij.util.containers.ContainerUtil;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.*;
 
 public class GrAnnotationCollector {
 
@@ -89,14 +82,14 @@ public class GrAnnotationCollector {
 
     final PsiModifierList modifierList = (PsiModifierList)annotationCollector.getParent();
 
-    Map<String, Map<String, PsiNameValuePair>> annotations = ContainerUtil.newLinkedHashMap();
+    Map<String, Map<String, PsiNameValuePair>> annotations = new LinkedHashMap<>();
     collectAliasedAnnotationsFromAnnotationCollectorValueAttribute(annotationCollector, annotations);
     collectAliasedAnnotationsFromAnnotationCollectorAnnotations(modifierList, annotations);
 
     final PsiManager manager = alias.getManager();
     final GrAnnotationNameValuePair[] attributes = alias.getParameterList().getAttributes();
 
-    Set<String> allUsedAttrs = ContainerUtil.newLinkedHashSet();
+    Set<String> allUsedAttrs = new LinkedHashSet<>();
     for (Map.Entry<String, Map<String, PsiNameValuePair>> entry : annotations.entrySet()) {
       final String qname = entry.getKey();
       final PsiClass resolved = JavaPsiFacade.getInstance(alias.getProject()).findClass(qname, alias.getResolveScope());
@@ -104,7 +97,7 @@ public class GrAnnotationCollector {
 
       final GrLightAnnotation annotation = new GrLightAnnotation(manager, alias.getLanguage(), qname, modifierList);
 
-      Set<String> usedAttrs = ContainerUtil.newLinkedHashSet();
+      Set<String> usedAttrs = new LinkedHashSet<>();
       for (GrAnnotationNameValuePair attr : attributes) {
         final String name = attr.getName() != null ? attr.getName() : "value";
         if (resolved.findMethodsByName(name, false).length > 0) {
@@ -134,7 +127,7 @@ public class GrAnnotationCollector {
     PsiElement parent = modifierList.getParent();
     if (parent instanceof PsiClass &&
         GroovyCommonClassNames.GROOVY_TRANSFORM_COMPILE_DYNAMIC.equals(((PsiClass)parent).getQualifiedName())) {
-      Map<String, PsiNameValuePair> params = ContainerUtil.newLinkedHashMap();
+      Map<String, PsiNameValuePair> params = new LinkedHashMap<>();
       annotations.put(GroovyCommonClassNames.GROOVY_TRANSFORM_COMPILE_STATIC, params);
       GrAnnotation annotation =
         GroovyPsiElementFactory.getInstance(modifierList.getProject()).createAnnotationFromText("@CompileStatic(TypeCheckingMode.SKIP)");
@@ -153,14 +146,14 @@ public class GrAnnotationCollector {
       for (PsiNameValuePair pair : attributes) {
         Map<String, PsiNameValuePair> map = annotations.get(qname);
         if (map == null) {
-          map = ContainerUtil.newLinkedHashMap();
+          map = new LinkedHashMap<>();
           annotations.put(qname, map);
         }
 
         map.put(pair.getName() != null ? pair.getName() : "value", pair);
       }
       if (attributes.length == 0 && !annotations.containsKey(qname)) {
-        annotations.put(qname, ContainerUtil.<String, PsiNameValuePair>newLinkedHashMap());
+        annotations.put(qname, new LinkedHashMap<>());
       }
     }
 
@@ -175,14 +168,14 @@ public class GrAnnotationCollector {
         if (member instanceof GrReferenceExpression) {
           final PsiElement resolved = ((GrReferenceExpression)member).resolve();
           if (resolved instanceof PsiClass && ((PsiClass)resolved).isAnnotationType()) {
-            annotations.put(((PsiClass)resolved).getQualifiedName(), ContainerUtil.<String, PsiNameValuePair>newLinkedHashMap());
+            annotations.put(((PsiClass)resolved).getQualifiedName(), new LinkedHashMap<>());
           }
         }
       }
     }
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   public static PsiAnnotation findAnnotationCollector(@Nullable PsiClass clazz) {
     if (clazz != null) {
       final PsiModifierList modifierList = clazz.getModifierList();
@@ -200,7 +193,7 @@ public class GrAnnotationCollector {
   }
 
 
-  @javax.annotation.Nullable
+  @Nullable
   public static PsiAnnotation findAnnotationCollector(@Nonnull GrAnnotation annotation) {
     final GrCodeReferenceElement ref = annotation.getClassReference();
 

@@ -15,13 +15,13 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.typeEnhancers;
 
-import com.intellij.openapi.util.Couple;
-import com.intellij.openapi.util.text.StringUtilRt;
-import com.intellij.psi.*;
-import com.intellij.psi.util.InheritanceUtil;
-import com.intellij.psi.util.PsiUtil;
-import com.intellij.util.containers.ContainerUtil;
+import consulo.util.lang.Couple;
+import com.intellij.java.language.psi.*;
+import com.intellij.java.language.psi.util.InheritanceUtil;
+import com.intellij.java.language.psi.util.PsiUtil;
+import consulo.util.collection.ContainerUtil;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import java.util.List;
 
@@ -44,19 +44,19 @@ public class MapEntryOrKeyValueHintProcessor extends SignatureHintProcessor {
 
     PsiParameter[] parameters = method.getParameterList().getParameters();
 
-    if (argNum >= parameters.length) return ContainerUtil.emptyList();
+    if (argNum >= parameters.length) return List.of();
 
     PsiParameter parameter = parameters[argNum];
     PsiType type = parameter.getType();
     PsiType substituted = substitutor.substitute(type);
 
-    if (!InheritanceUtil.isInheritor(substituted, CommonClassNames.JAVA_UTIL_MAP)) return ContainerUtil.emptyList();
+    if (!InheritanceUtil.isInheritor(substituted, CommonClassNames.JAVA_UTIL_MAP)) return List.of();
 
     PsiType key = PsiUtil.substituteTypeParameter(substituted, CommonClassNames.JAVA_UTIL_MAP, 0, true);
     PsiType value = PsiUtil.substituteTypeParameter(substituted, CommonClassNames.JAVA_UTIL_MAP, 1, true);
 
     PsiClass mapEntry = JavaPsiFacade.getInstance(method.getProject()).findClass(CommonClassNames.JAVA_UTIL_MAP_ENTRY, method.getResolveScope());
-    if (mapEntry == null) return ContainerUtil.emptyList();
+    if (mapEntry == null) return List.of();
 
     PsiClassType mapEntryType = JavaPsiFacade.getElementFactory(method.getProject()).createType(mapEntry, key, value);
 
@@ -77,7 +77,7 @@ public class MapEntryOrKeyValueHintProcessor extends SignatureHintProcessor {
     }
 
     if (options.length == 1) {
-      return StringUtilRt.parseInt(options[0], 0);
+      return consulo.ide.impl.idea.openapi.util.text.StringUtilRt.parseInt(options[0], 0);
     }
 
     return 0;
@@ -92,7 +92,7 @@ public class MapEntryOrKeyValueHintProcessor extends SignatureHintProcessor {
     }
 
     if (options.length == 1) {
-      return StringUtilRt.parseBoolean(options[0], false);
+      return consulo.ide.impl.idea.openapi.util.text.StringUtilRt.parseBoolean(options[0], false);
     }
 
     return false;
@@ -102,7 +102,7 @@ public class MapEntryOrKeyValueHintProcessor extends SignatureHintProcessor {
     Couple<String> pair = parseValue(value);
     if (pair == null) return null;
 
-    Boolean parsedValue = StringUtilRt.parseBoolean(pair.getSecond(), false);
+    Boolean parsedValue = consulo.ide.impl.idea.openapi.util.text.StringUtilRt.parseBoolean(pair.getSecond(), false);
     if ("index".equals(pair.getFirst())) {
       return parsedValue;
     }
@@ -114,7 +114,7 @@ public class MapEntryOrKeyValueHintProcessor extends SignatureHintProcessor {
     Couple<String> pair = parseValue(value);
     if (pair == null) return null;
 
-    Integer parsedValue = StringUtilRt.parseInt(pair.getSecond(), 0);
+    Integer parsedValue = consulo.ide.impl.idea.openapi.util.text.StringUtilRt.parseInt(pair.getSecond(), 0);
     if ("argNum".equals(pair.getFirst())) {
       return parsedValue;
     }
@@ -122,7 +122,7 @@ public class MapEntryOrKeyValueHintProcessor extends SignatureHintProcessor {
     return null;
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   private static Couple<String> parseValue(String value) {
     String[] splitted = value.split("=");
 

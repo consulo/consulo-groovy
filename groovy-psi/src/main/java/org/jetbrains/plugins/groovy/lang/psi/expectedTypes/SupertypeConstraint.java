@@ -15,11 +15,11 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.expectedTypes;
 
-import javax.annotation.Nonnull;
-
+import com.intellij.java.language.psi.PsiType;
+import consulo.language.psi.PsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiType;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author ven

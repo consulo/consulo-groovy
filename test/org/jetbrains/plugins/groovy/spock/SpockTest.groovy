@@ -16,9 +16,9 @@
 package org.jetbrains.plugins.groovy.spock
 
 import com.intellij.codeInsight.lookup.LookupElement
-import com.intellij.psi.CommonClassNames
-import com.intellij.psi.PsiFile
-import com.intellij.psi.PsiVariable
+import com.intellij.java.language.psi.CommonClassNames
+import com.intellij.java.language.psi.PsiFile
+import com.intellij.java.language.psi.PsiVariable
 import com.intellij.testFramework.fixtures.LightCodeInsightFixtureTestCase
 import com.intellij.util.containers.ContainerUtil
 import org.jetbrains.plugins.groovy.codeInspection.assignment.GroovyAssignabilityCheckInspection

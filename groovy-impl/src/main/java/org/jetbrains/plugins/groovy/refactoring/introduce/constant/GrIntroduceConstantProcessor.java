@@ -15,10 +15,16 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.introduce.constant;
 
-import java.util.ArrayList;
-
-import javax.annotation.Nonnull;
-
+import com.intellij.java.impl.refactoring.HelpID;
+import com.intellij.java.impl.refactoring.util.RefactoringMessageUtil;
+import com.intellij.java.language.psi.*;
+import com.intellij.java.language.psi.codeStyle.JavaCodeStyleManager;
+import com.intellij.java.language.util.VisibilityUtil;
+import consulo.language.editor.refactoring.RefactoringBundle;
+import consulo.language.editor.refactoring.util.CommonRefactoringUtil;
+import consulo.language.psi.PsiElement;
+import consulo.ui.ex.awt.Messages;
+import consulo.util.collection.ArrayUtil;
 import org.jetbrains.plugins.groovy.GroovyLanguage;
 import org.jetbrains.plugins.groovy.codeStyle.GrReferenceAdjuster;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
@@ -35,264 +41,213 @@ import org.jetbrains.plugins.groovy.refactoring.GroovyRefactoringBundle;
 import org.jetbrains.plugins.groovy.refactoring.GroovyRefactoringUtil;
 import org.jetbrains.plugins.groovy.refactoring.introduce.GrIntroduceContext;
 import org.jetbrains.plugins.groovy.refactoring.introduce.GrIntroduceHandlerBase;
-import com.intellij.openapi.ui.Messages;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiField;
-import com.intellij.psi.PsiModifier;
-import com.intellij.psi.PsiNameHelper;
-import com.intellij.psi.PsiType;
-import com.intellij.psi.codeStyle.JavaCodeStyleManager;
-import com.intellij.refactoring.HelpID;
-import com.intellij.refactoring.RefactoringBundle;
-import com.intellij.refactoring.util.CommonRefactoringUtil;
-import com.intellij.refactoring.util.RefactoringMessageUtil;
-import com.intellij.util.ArrayUtil;
-import com.intellij.util.VisibilityUtil;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.ArrayList;
 
 /**
  * @author Max Medvedev
  */
-public class GrIntroduceConstantProcessor
-{
-	private final GrIntroduceContext context;
-	private final GrIntroduceConstantSettings settings;
+public class GrIntroduceConstantProcessor {
+  private final GrIntroduceContext context;
+  private final GrIntroduceConstantSettings settings;
 
-	public GrIntroduceConstantProcessor(GrIntroduceContext context, GrIntroduceConstantSettings settings)
-	{
+  public GrIntroduceConstantProcessor(GrIntroduceContext context, GrIntroduceConstantSettings settings) {
 
-		this.context = context;
-		this.settings = settings;
-	}
+    this.context = context;
+    this.settings = settings;
+  }
 
-	@javax.annotation.Nullable
-	public GrField run()
-	{
-		final PsiClass targetClass = settings.getTargetClass();
-		if(targetClass == null)
-		{
-			return null;
-		}
+  @Nullable
+  public GrField run() {
+    final PsiClass targetClass = settings.getTargetClass();
+    if (targetClass == null) {
+      return null;
+    }
 
-		if(checkErrors(targetClass))
-		{
-			return null;
-		}
+    if (checkErrors(targetClass)) {
+      return null;
+    }
 
-		final GrVariableDeclaration declaration = addDeclaration(targetClass);
-		final GrField field = (GrField) declaration.getVariables()[0];
+    final GrVariableDeclaration declaration = addDeclaration(targetClass);
+    final GrField field = (GrField)declaration.getVariables()[0];
 
-		GrVariable localVar = GrIntroduceHandlerBase.resolveLocalVar(context);
-		if(localVar != null)
-		{
-			assert localVar.getInitializerGroovy() != null : "initializer should exist: " + localVar.getText();
-			GrIntroduceHandlerBase.deleteLocalVar(localVar);
+    GrVariable localVar = GrIntroduceHandlerBase.resolveLocalVar(context);
+    if (localVar != null) {
+      assert localVar.getInitializerGroovy() != null : "initializer should exist: " + localVar.getText();
+      GrIntroduceHandlerBase.deleteLocalVar(localVar);
 
-			if(settings.replaceAllOccurrences())
-			{
-				processOccurrences(field);
-			}
-			else
-			{
-				replaceOccurrence(field, localVar.getInitializerGroovy(), isEscalateVisibility());
-			}
-		}
-		else if(context.getStringPart() != null)
-		{
-			final GrExpression ref = context.getStringPart().replaceLiteralWithConcatenation(field.getName());
-			final PsiElement element = replaceOccurrence(field, ref, isEscalateVisibility());
-			updateCaretPosition(element);
-		}
-		else if(context.getExpression() != null)
-		{
-			if(settings.replaceAllOccurrences())
-			{
-				processOccurrences(field);
-			}
-			else
-			{
-				replaceOccurrence(field, context.getExpression(), isEscalateVisibility());
-			}
-		}
-		return field;
-	}
+      if (settings.replaceAllOccurrences()) {
+        processOccurrences(field);
+      }
+      else {
+        replaceOccurrence(field, localVar.getInitializerGroovy(), isEscalateVisibility());
+      }
+    }
+    else if (context.getStringPart() != null) {
+      final GrExpression ref = context.getStringPart().replaceLiteralWithConcatenation(field.getName());
+      final PsiElement element = replaceOccurrence(field, ref, isEscalateVisibility());
+      updateCaretPosition(element);
+    }
+    else if (context.getExpression() != null) {
+      if (settings.replaceAllOccurrences()) {
+        processOccurrences(field);
+      }
+      else {
+        replaceOccurrence(field, context.getExpression(), isEscalateVisibility());
+      }
+    }
+    return field;
+  }
 
-	private void processOccurrences(GrField field)
-	{
-		final PsiElement[] occurrences = context.getOccurrences();
-		GroovyRefactoringUtil.sortOccurrences(occurrences);
-		for(PsiElement occurrence : occurrences)
-		{
-			replaceOccurrence(field, occurrence, isEscalateVisibility());
-		}
-	}
+  private void processOccurrences(GrField field) {
+    final PsiElement[] occurrences = context.getOccurrences();
+    GroovyRefactoringUtil.sortOccurrences(occurrences);
+    for (PsiElement occurrence : occurrences) {
+      replaceOccurrence(field, occurrence, isEscalateVisibility());
+    }
+  }
 
-	private void updateCaretPosition(PsiElement element)
-	{
-		context.getEditor().getCaretModel().moveToOffset(element.getTextRange().getEndOffset());
-		context.getEditor().getSelectionModel().removeSelection();
-	}
+  private void updateCaretPosition(PsiElement element) {
+    context.getEditor().getCaretModel().moveToOffset(element.getTextRange().getEndOffset());
+    context.getEditor().getSelectionModel().removeSelection();
+  }
 
-	protected GrVariableDeclaration addDeclaration(PsiClass targetClass)
-	{
-		GrVariableDeclaration declaration = createField(targetClass);
-		final GrVariableDeclaration added;
-		if(targetClass instanceof GrEnumTypeDefinition)
-		{
-			final GrEnumConstantList enumConstants = ((GrEnumTypeDefinition) targetClass).getEnumConstantList();
-			added = (GrVariableDeclaration) targetClass.addAfter(declaration, enumConstants);
-		}
-		else
-		{
-			added = ((GrVariableDeclaration) targetClass.add(declaration));
-		}
+  protected GrVariableDeclaration addDeclaration(PsiClass targetClass) {
+    GrVariableDeclaration declaration = createField(targetClass);
+    final GrVariableDeclaration added;
+    if (targetClass instanceof GrEnumTypeDefinition) {
+      final GrEnumConstantList enumConstants = ((GrEnumTypeDefinition)targetClass).getEnumConstantList();
+      added = (GrVariableDeclaration)targetClass.addAfter(declaration, enumConstants);
+    }
+    else {
+      added = ((GrVariableDeclaration)targetClass.add(declaration));
+    }
 
-		JavaCodeStyleManager.getInstance(added.getProject()).shortenClassReferences(added);
-		return added;
-	}
+    JavaCodeStyleManager.getInstance(added.getProject()).shortenClassReferences(added);
+    return added;
+  }
 
-	protected boolean checkErrors(@Nonnull PsiClass targetClass)
-	{
-		String fieldName = settings.getName();
-		String errorString = check(targetClass, fieldName);
+  protected boolean checkErrors(@Nonnull PsiClass targetClass) {
+    String fieldName = settings.getName();
+    String errorString = check(targetClass, fieldName);
 
-		if(errorString != null)
-		{
-			String message = RefactoringBundle.getCannotRefactorMessage(errorString);
-			CommonRefactoringUtil.showErrorMessage(GrIntroduceConstantHandler.REFACTORING_NAME, message,
-					HelpID.INTRODUCE_CONSTANT, context.getProject());
-			return true;
-		}
+    if (errorString != null) {
+      String message = RefactoringBundle.getCannotRefactorMessage(errorString);
+      CommonRefactoringUtil.showErrorMessage(GrIntroduceConstantHandler.REFACTORING_NAME, message,
+																						 HelpID.INTRODUCE_CONSTANT, context.getProject());
+      return true;
+    }
 
-		PsiField oldField = targetClass.findFieldByName(fieldName, true);
-		if(oldField != null)
-		{
-			String message = RefactoringBundle.message("field.exists", fieldName,
-					oldField.getContainingClass().getQualifiedName());
-			int answer = Messages.showYesNoDialog(context.getProject(), message,
-					GrIntroduceConstantHandler.REFACTORING_NAME, Messages.getWarningIcon());
-			if(answer != Messages.YES)
-			{
-				return true;
-			}
-		}
-		return false;
-	}
+    PsiField oldField = targetClass.findFieldByName(fieldName, true);
+    if (oldField != null) {
+      String message = RefactoringBundle.message("field.exists", fieldName,
+                                                 oldField.getContainingClass().getQualifiedName());
+      int answer = Messages.showYesNoDialog(context.getProject(), message,
+                                            GrIntroduceConstantHandler.REFACTORING_NAME, Messages.getWarningIcon());
+      if (answer != Messages.YES) {
+        return true;
+      }
+    }
+    return false;
+  }
 
-	@javax.annotation.Nullable
-	private String check(@Nonnull PsiClass targetClass, @javax.annotation.Nullable final String fieldName)
-	{
-		if(!GroovyLanguage.INSTANCE.equals(targetClass.getLanguage()))
-		{
-			return GroovyRefactoringBundle.message("class.language.is.not.groovy");
-		}
+  @Nullable
+  private String check(@Nonnull PsiClass targetClass, @Nullable final String fieldName) {
+    if (!GroovyLanguage.INSTANCE.equals(targetClass.getLanguage())) {
+      return GroovyRefactoringBundle.message("class.language.is.not.groovy");
+    }
 
-		if(fieldName == null || fieldName.isEmpty())
-		{
-			return RefactoringBundle.message("no.field.name.specified");
-		}
+    if (fieldName == null || fieldName.isEmpty()) {
+      return RefactoringBundle.message("no.field.name.specified");
+    }
 
-		else if(!PsiNameHelper.getInstance(context.getProject()).isIdentifier(fieldName))
-		{
-			return RefactoringMessageUtil.getIncorrectIdentifierMessage(fieldName);
-		}
+    else if (!PsiNameHelper.getInstance(context.getProject()).isIdentifier(fieldName)) {
+      return RefactoringMessageUtil.getIncorrectIdentifierMessage(fieldName);
+    }
 
-		if(targetClass instanceof GroovyScriptClass)
-		{
-			return GroovyRefactoringBundle.message("target.class.must.not.be.script");
-		}
+    if (targetClass instanceof GroovyScriptClass) {
+      return GroovyRefactoringBundle.message("target.class.must.not.be.script");
+    }
 
-		return null;
-	}
+    return null;
+  }
 
 
-	private PsiElement replaceOccurrence(@Nonnull GrField field,
-			@Nonnull PsiElement occurrence,
-			boolean escalateVisibility)
-	{
-		boolean isOriginal = occurrence == context.getExpression();
-		final GrReferenceExpression newExpr = createRefExpression(field, occurrence);
-		final PsiElement replaced = occurrence instanceof GrExpression ? ((GrExpression) occurrence)
-				.replaceWithExpression(newExpr, false) : occurrence.replace(newExpr);
-		if(escalateVisibility)
-		{
-			PsiUtil.escalateVisibility(field, replaced);
-		}
-		if(replaced instanceof GrReferenceExpression)
-		{
-			GrReferenceAdjuster.shortenReference((GrReferenceExpression) replaced);
-		}
-		if(isOriginal)
-		{
-			updateCaretPosition(replaced);
-		}
-		return replaced;
-	}
+  private PsiElement replaceOccurrence(@Nonnull GrField field,
+                                       @Nonnull PsiElement occurrence,
+                                       boolean escalateVisibility) {
+    boolean isOriginal = occurrence == context.getExpression();
+    final GrReferenceExpression newExpr = createRefExpression(field, occurrence);
+    final PsiElement replaced = occurrence instanceof GrExpression ? ((GrExpression)occurrence)
+      .replaceWithExpression(newExpr, false) : occurrence.replace(newExpr);
+    if (escalateVisibility) {
+      PsiUtil.escalateVisibility(field, replaced);
+    }
+    if (replaced instanceof GrReferenceExpression) {
+      GrReferenceAdjuster.shortenReference((GrReferenceExpression)replaced);
+    }
+    if (isOriginal) {
+      updateCaretPosition(replaced);
+    }
+    return replaced;
+  }
 
-	@Nonnull
-	private static GrReferenceExpression createRefExpression(@Nonnull GrField field, @Nonnull PsiElement place)
-	{
-		final PsiClass containingClass = field.getContainingClass();
-		assert containingClass != null;
-		final String qname = containingClass.getQualifiedName();
-		final String fieldName = field.getName();
-		final String refText = qname != null && !qname.equals(fieldName) ? qname + "." + fieldName : fieldName;
-		return GroovyPsiElementFactory.getInstance(place.getProject()).createReferenceExpressionFromText(refText,
-				place);
-	}
+  @Nonnull
+  private static GrReferenceExpression createRefExpression(@Nonnull GrField field, @Nonnull PsiElement place) {
+    final PsiClass containingClass = field.getContainingClass();
+    assert containingClass != null;
+    final String qname = containingClass.getQualifiedName();
+    final String fieldName = field.getName();
+    final String refText = qname != null && !qname.equals(fieldName) ? qname + "." + fieldName : fieldName;
+    return GroovyPsiElementFactory.getInstance(place.getProject()).createReferenceExpressionFromText(refText,
+                                                                                                     place);
+  }
 
-	@Nonnull
-	private GrVariableDeclaration createField(PsiClass targetClass)
-	{
-		final String name = settings.getName();
-		final PsiType type = settings.getSelectedType();
+  @Nonnull
+  private GrVariableDeclaration createField(PsiClass targetClass) {
+    final String name = settings.getName();
+    final PsiType type = settings.getSelectedType();
 
-		String[] modifiers = collectModifiers(targetClass);
+    String[] modifiers = collectModifiers(targetClass);
 
-		final GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(context.getProject());
-		return factory.createFieldDeclaration(modifiers, name, getInitializer(), type);
-	}
+    final GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(context.getProject());
+    return factory.createFieldDeclaration(modifiers, name, getInitializer(), type);
+  }
 
-	@Nonnull
-	protected GrExpression getInitializer()
-	{
-		GrVariable var = GrIntroduceHandlerBase.resolveLocalVar(context);
-		GrExpression expression = context.getExpression();
+  @Nonnull
+  protected GrExpression getInitializer() {
+    GrVariable var = GrIntroduceHandlerBase.resolveLocalVar(context);
+    GrExpression expression = context.getExpression();
 
-		if(var != null)
-		{
-			return var.getInitializerGroovy();
-		}
-		else if(expression != null)
-		{
-			return expression;
-		}
-		else
-		{
-			return context.getStringPart().createLiteralFromSelected();
-		}
-	}
+    if (var != null) {
+      return var.getInitializerGroovy();
+    }
+    else if (expression != null) {
+      return expression;
+    }
+    else {
+      return context.getStringPart().createLiteralFromSelected();
+    }
+  }
 
-	@Nonnull
-	private String[] collectModifiers(PsiClass targetClass)
-	{
-		String modifier = isEscalateVisibility() ? PsiModifier.PRIVATE : settings.getVisibilityModifier();
-		ArrayList<String> modifiers = new ArrayList<String>();
-		if(modifier != null && !PsiModifier.PACKAGE_LOCAL.equals(modifier))
-		{
-			modifiers.add(modifier);
-		}
-		if(!targetClass.isInterface())
-		{
-			modifiers.add(PsiModifier.STATIC);
-			modifiers.add(PsiModifier.FINAL);
-		}
-		return ArrayUtil.toStringArray(modifiers);
-	}
+  @Nonnull
+  private String[] collectModifiers(PsiClass targetClass) {
+    String modifier = isEscalateVisibility() ? PsiModifier.PRIVATE : settings.getVisibilityModifier();
+    ArrayList<String> modifiers = new ArrayList<String>();
+    if (modifier != null && !PsiModifier.PACKAGE_LOCAL.equals(modifier)) {
+      modifiers.add(modifier);
+    }
+    if (!targetClass.isInterface()) {
+      modifiers.add(PsiModifier.STATIC);
+      modifiers.add(PsiModifier.FINAL);
+    }
+    return ArrayUtil.toStringArray(modifiers);
+  }
 
-	private boolean isEscalateVisibility()
-	{
-		return VisibilityUtil.ESCALATE_VISIBILITY.equals(settings.getVisibilityModifier());
-	}
+  private boolean isEscalateVisibility() {
+    return VisibilityUtil.ESCALATE_VISIBILITY.equals(settings.getVisibilityModifier());
+  }
 
 }

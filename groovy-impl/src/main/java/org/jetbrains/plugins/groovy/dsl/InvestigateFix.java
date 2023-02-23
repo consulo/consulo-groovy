@@ -15,60 +15,53 @@
  */
 package org.jetbrains.plugins.groovy.dsl;
 
+import consulo.codeEditor.Editor;
+import consulo.execution.unscramble.UnscrambleService;
+import consulo.language.editor.intention.IntentionAction;
+import consulo.language.psi.PsiFile;
+import consulo.language.util.IncorrectOperationException;
+import consulo.project.Project;
+import consulo.ui.annotation.RequiredUIAccess;
+
 import javax.annotation.Nonnull;
 
-import com.intellij.codeInsight.intention.IntentionAction;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiFile;
-import com.intellij.unscramble.UnscrambleDialog;
-import com.intellij.util.IncorrectOperationException;
+public class InvestigateFix implements IntentionAction {
+  private final String myReason;
 
-public class InvestigateFix implements IntentionAction
-{
-	private final String myReason;
+  public InvestigateFix(String reason) {
+    myReason = reason;
+  }
 
-	public InvestigateFix(String reason)
-	{
-		myReason = reason;
-	}
+  @RequiredUIAccess
+  static void analyzeStackTrace(Project project, String exceptionText) {
+    UnscrambleService unscrambleService = project.getInstance(UnscrambleService.class);
+    unscrambleService.showAsync(exceptionText);
+  }
 
-	static void analyzeStackTrace(Project project, String exceptionText)
-	{
-		final UnscrambleDialog dialog = new UnscrambleDialog(project);
-		dialog.setText(exceptionText);
-		dialog.show();
-	}
+  @Nonnull
+  @Override
+  public String getText() {
+    return "View details";
+  }
 
-	@Nonnull
-	@Override
-	public String getText()
-	{
-		return "View details";
-	}
+  @Nonnull
+  //@Override
+  public String getFamilyName() {
+    return "Investigate DSL descriptor processing error";
+  }
 
-	@Nonnull
-	@Override
-	public String getFamilyName()
-	{
-		return "Investigate DSL descriptor processing error";
-	}
+  @Override
+  public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file) {
+    return true;
+  }
 
-	@Override
-	public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file)
-	{
-		return true;
-	}
+  @Override
+  public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
+    analyzeStackTrace(project, myReason);
+  }
 
-	@Override
-	public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException
-	{
-		analyzeStackTrace(project, myReason);
-	}
-
-	@Override
-	public boolean startInWriteAction()
-	{
-		return false;
-	}
+  @Override
+  public boolean startInWriteAction() {
+    return false;
+  }
 }

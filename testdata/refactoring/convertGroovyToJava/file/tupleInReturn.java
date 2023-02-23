@@ -1,6 +1,8 @@
+import java.lang.String;
+
 public class A {
-public java.lang.String[] foo() {
-return new java.lang.String[]{"a"};
+public String[] foo() {
+return new String[]{"a"};
 }
 
 }

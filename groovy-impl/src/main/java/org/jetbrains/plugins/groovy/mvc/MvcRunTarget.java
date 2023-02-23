@@ -17,9 +17,9 @@ package org.jetbrains.plugins.groovy.mvc;
 
 import javax.annotation.Nonnull;
 
-import com.intellij.execution.configurations.GeneralCommandLine;
-import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.module.Module;
+import consulo.process.cmd.GeneralCommandLine;
+import consulo.ui.ex.action.AnActionEvent;
+import consulo.module.Module;
 
 /**
  * @author ilyas

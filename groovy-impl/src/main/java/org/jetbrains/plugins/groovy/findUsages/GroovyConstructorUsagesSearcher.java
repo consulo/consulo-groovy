@@ -16,20 +16,25 @@
 
 package org.jetbrains.plugins.groovy.findUsages;
 
-import com.intellij.openapi.application.QueryExecutorBase;
-import com.intellij.openapi.application.ReadActionProcessor;
+import com.intellij.java.indexing.search.searches.DirectClassInheritorsSearch;
+import com.intellij.java.indexing.search.searches.MethodReferencesSearch;
+import com.intellij.java.language.impl.psi.impl.light.LightMemberReference;
+import com.intellij.java.language.psi.*;
+import consulo.application.util.ReadActionProcessor;
+import consulo.application.util.function.Processor;
+import consulo.content.scope.SearchScope;
+import consulo.document.util.TextRange;
+import consulo.language.impl.psi.PsiAnchor;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiManager;
+import consulo.language.psi.PsiReference;
+import consulo.language.psi.search.ReferencesSearch;
+import consulo.language.psi.search.SearchRequestCollector;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.project.util.query.QueryExecutorBase;
+import consulo.util.collection.ContainerUtil;
 import consulo.util.dataholder.Key;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.*;
-import com.intellij.psi.impl.light.LightMemberReference;
-import com.intellij.psi.search.*;
-import com.intellij.psi.search.searches.DirectClassInheritorsSearch;
-import com.intellij.psi.search.searches.MethodReferencesSearch;
-import com.intellij.psi.search.searches.ReferencesSearch;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.PairProcessor;
-import com.intellij.util.Processor;
-import com.intellij.util.containers.ContainerUtil;
+import consulo.util.lang.function.PairProcessor;
 import org.jetbrains.plugins.groovy.codeInspection.utils.ControlFlowUtils;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.GrListOrMap;
@@ -38,7 +43,10 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariableDeclaration;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrOpenBlock;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.*;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrNewExpression;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrSafeCastExpression;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrTypeCastExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameter;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrAnonymousClassDefinition;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
@@ -67,7 +75,13 @@ public class GroovyConstructorUsagesSearcher extends QueryExecutorBase<PsiRefere
   }
 
   public static final Key<Set<PsiClass>> LITERALLY_CONSTRUCTED_CLASSES = Key.create("LITERALLY_CONSTRUCTED_CLASSES");
-  static void processConstructorUsages(final PsiMethod constructor, final SearchScope searchScope, final Processor<? super PsiReference> consumer, final SearchRequestCollector collector, final boolean searchGppCalls, final boolean includeOverloads) {
+
+  static void processConstructorUsages(final PsiMethod constructor,
+                                       final SearchScope searchScope,
+                                       final Processor<? super PsiReference> consumer,
+                                       final SearchRequestCollector collector,
+                                       final boolean searchGppCalls,
+                                       final boolean includeOverloads) {
     if (!constructor.isConstructor()) return;
 
     final PsiClass clazz = constructor.getContainingClass();
@@ -207,7 +221,7 @@ public class GroovyConstructorUsagesSearcher extends QueryExecutorBase<PsiRefere
         if (typeElement == method.getReturnTypeElementGroovy()) {
           ControlFlowUtils.visitAllExitPoints(method.getBlock(), new ControlFlowUtils.ExitPointVisitor() {
             @Override
-            public boolean visitExitPoint(Instruction instruction, @javax.annotation.Nullable GrExpression returnValue) {
+            public boolean visitExitPoint(Instruction instruction, @Nullable GrExpression returnValue) {
               if (!checkLiteralInstantiation(returnValue, literalProcessor)) {
                 return false;
               }
@@ -219,21 +233,20 @@ public class GroovyConstructorUsagesSearcher extends QueryExecutorBase<PsiRefere
       else if (grandpa instanceof GrTypeCastExpression) {
         final GrTypeCastExpression cast = (GrTypeCastExpression)grandpa;
         if (cast.getCastTypeElement() == typeElement &&
-            !checkLiteralInstantiation(cast.getOperand(), literalProcessor)) {
+          !checkLiteralInstantiation(cast.getOperand(), literalProcessor)) {
           return false;
         }
       }
       else if (grandpa instanceof GrSafeCastExpression) {
         final GrSafeCastExpression cast = (GrSafeCastExpression)grandpa;
         if (cast.getCastTypeElement() == typeElement &&
-            !checkLiteralInstantiation(cast.getOperand(), literalProcessor)) {
+          !checkLiteralInstantiation(cast.getOperand(), literalProcessor)) {
           return false;
         }
       }
     }
     return true;
   }
-
 
 
   private static boolean checkLiteralInstantiation(GrExpression expression,
@@ -245,7 +258,9 @@ public class GroovyConstructorUsagesSearcher extends QueryExecutorBase<PsiRefere
     return true;
   }
 
-  private static boolean processConstructors(final PsiMethod searchedConstructor, final Processor<? super PsiReference> consumer, final PsiClass clazz,
+  private static boolean processConstructors(final PsiMethod searchedConstructor,
+                                             final Processor<? super PsiReference> consumer,
+                                             final PsiClass clazz,
                                              final boolean processThisRefs) {
     final PsiMethod[] constructors = clazz.getConstructors();
     if (constructors.length == 0) {
@@ -258,8 +273,8 @@ public class GroovyConstructorUsagesSearcher extends QueryExecutorBase<PsiRefere
         if (statements.length > 0 && statements[0] instanceof GrConstructorInvocation) {
           final GrConstructorInvocation invocation = (GrConstructorInvocation)statements[0];
           if (invocation.isThisCall() == processThisRefs &&
-              invocation.getManager().areElementsEquivalent(invocation.resolveMethod(), searchedConstructor) &&
-              !consumer.process(invocation.getInvokedExpression())) {
+            invocation.getManager().areElementsEquivalent(invocation.resolveMethod(), searchedConstructor) &&
+            !consumer.process(invocation.getInvokedExpression())) {
             return false;
           }
         }
@@ -282,7 +297,8 @@ public class GroovyConstructorUsagesSearcher extends QueryExecutorBase<PsiRefere
 
 
     PsiManager manager = constructor.getManager();
-    if (manager.areElementsEquivalent(usage, constructor) || manager.areElementsEquivalent(constructor.getContainingClass(), usage.getContainingClass())) return;
+    if (manager.areElementsEquivalent(usage, constructor) || manager.areElementsEquivalent(constructor.getContainingClass(),
+                                                                                           usage.getContainingClass())) return;
     processor.process(new LightMemberReference(manager, usage, PsiSubstitutor.EMPTY) {
       public PsiElement getElement() {
         return usage;

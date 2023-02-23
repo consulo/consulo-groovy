@@ -16,11 +16,16 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.intellij.java.language.LanguageLevel;
+import com.intellij.java.language.psi.*;
+import com.intellij.java.language.psi.util.InheritanceUtil;
+import consulo.document.util.TextRange;
+import consulo.language.ast.ASTNode;
+import consulo.language.psi.*;
+import consulo.language.psi.resolve.ResolveCache;
+import consulo.language.util.IncorrectOperationException;
+import consulo.util.collection.ArrayUtil;
+import consulo.util.collection.ContainerUtil;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
@@ -43,26 +48,21 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.path.Gr
 import org.jetbrains.plugins.groovy.lang.psi.util.GrInnerClassConstructorUtil;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 import org.jetbrains.plugins.groovy.lang.resolve.ResolveUtil;
-import com.intellij.lang.ASTNode;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.pom.java.LanguageLevel;
-import com.intellij.psi.*;
-import com.intellij.psi.impl.source.resolve.ResolveCache;
-import com.intellij.psi.util.InheritanceUtil;
-import com.intellij.util.ArrayUtil;
-import com.intellij.util.Function;
-import com.intellij.util.IncorrectOperationException;
-import com.intellij.util.NullableFunction;
-import com.intellij.util.containers.ContainerUtil;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Function;
 
 /**
  * @author ilyas
  */
 public class GrNewExpressionImpl extends GrCallExpressionImpl implements GrNewExpression {
 
-  private static final Function<GrNewExpressionImpl,PsiType> MY_TYPE_CALCULATOR = new NullableFunction<GrNewExpressionImpl, PsiType>() {
+  private static final Function<GrNewExpressionImpl,PsiType> MY_TYPE_CALCULATOR = new Function<GrNewExpressionImpl, PsiType>() {
     @Override
-    public PsiType fun(GrNewExpressionImpl newExpression) {
+    public PsiType apply(GrNewExpressionImpl newExpression) {
       final GrAnonymousClassDefinition anonymous = newExpression.getAnonymousClassDefinition();
       if (anonymous != null) {
         return new GrAnonymousClassType(LanguageLevel.JDK_1_5, anonymous.getResolveScope(),
@@ -182,13 +182,13 @@ public class GrNewExpressionImpl extends GrCallExpressionImpl implements GrNewEx
     return findChildByClass(GrAnonymousClassDefinition.class);
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   @Override
   public GrArrayDeclaration getArrayDeclaration() {
     return findChildByClass(GrArrayDeclaration.class);
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   @Override
   public GrTypeArgumentList getConstructorTypeArguments() {
     return findChildByClass(GrTypeArgumentList.class);
@@ -308,7 +308,7 @@ public class GrNewExpressionImpl extends GrCallExpressionImpl implements GrNewEx
       return TextRange.EMPTY_RANGE;
     }
 
-    @javax.annotation.Nullable
+    @Nullable
     @Override
     public PsiElement resolve() {
       return resolveMethod();
@@ -321,7 +321,8 @@ public class GrNewExpressionImpl extends GrCallExpressionImpl implements GrNewEx
     }
 
     @Override
-    public PsiElement handleElementRename(String newElementName) throws IncorrectOperationException {
+    public PsiElement handleElementRename(String newElementName) throws IncorrectOperationException
+	{
       throw new UnsupportedOperationException("unsupported!");
     }
 

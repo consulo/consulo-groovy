@@ -15,10 +15,10 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.typeEnhancers;
 
-import com.intellij.psi.PsiArrayType;
-import com.intellij.psi.PsiMethod;
-import com.intellij.psi.PsiSubstitutor;
-import com.intellij.psi.PsiType;
+import com.intellij.java.language.psi.PsiArrayType;
+import com.intellij.java.language.psi.PsiMethod;
+import com.intellij.java.language.psi.PsiSubstitutor;
+import com.intellij.java.language.psi.PsiType;
 import javax.annotation.Nonnull;
 
 import java.util.Collections;

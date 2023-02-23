@@ -16,11 +16,13 @@
 
 package org.jetbrains.plugins.groovy.mvc.projectView;
 
+import consulo.project.ui.view.tree.AbstractTreeNode;
+import consulo.project.ui.view.tree.ViewSettings;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
-import com.intellij.ide.projectView.ViewSettings;
-import com.intellij.ide.util.treeView.AbstractTreeNode;
-import com.intellij.openapi.module.Module;
-import com.intellij.psi.PsiDirectory;
+import consulo.project.ui.view.tree.ViewSettings;
+import consulo.project.ui.view.tree.AbstractTreeNode;
+import consulo.module.Module;
+import consulo.language.psi.PsiDirectory;
 import consulo.ui.image.Image;
 
 /**

@@ -15,9 +15,15 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.synthetic;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
+import com.intellij.java.language.impl.psi.impl.light.LightMethodBuilder;
+import com.intellij.java.language.impl.psi.impl.light.LightModifierList;
+import com.intellij.java.language.impl.psi.impl.light.LightParameterListBuilder;
+import com.intellij.java.language.psi.*;
+import consulo.language.psi.PsiElement;
+import consulo.logging.Logger;
+import consulo.ui.ex.awtUnsafe.TargetAWT;
+import consulo.util.lang.StringUtil;
+import org.jetbrains.plugins.groovy.JetgroovyIcons;
 import org.jetbrains.plugins.groovy.GroovyLanguage;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
@@ -27,19 +33,9 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUt
 import org.jetbrains.plugins.groovy.lang.psi.util.GrTraitUtil;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyPropertyUtils;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiField;
-import com.intellij.psi.PsiMethod;
-import com.intellij.psi.PsiModifier;
-import com.intellij.psi.PsiType;
-import com.intellij.psi.impl.light.LightMethodBuilder;
-import com.intellij.psi.impl.light.LightModifierList;
-import com.intellij.psi.impl.light.LightParameterListBuilder;
-import consulo.awt.TargetAWT;
-import icons.JetgroovyIcons;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author ven

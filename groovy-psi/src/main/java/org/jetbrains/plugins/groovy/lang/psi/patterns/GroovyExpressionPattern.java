@@ -18,11 +18,11 @@ package org.jetbrains.plugins.groovy.lang.psi.patterns;
 
 import javax.annotation.Nonnull;
 
+import consulo.language.pattern.PatternCondition;
+import consulo.language.util.ProcessingContext;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrParenthesizedExpression;
-import com.intellij.patterns.ElementPattern;
-import com.intellij.patterns.PatternCondition;
-import com.intellij.util.ProcessingContext;
+import consulo.language.pattern.ElementPattern;
 
 public class GroovyExpressionPattern<T extends GrExpression, Self extends GroovyExpressionPattern<T,Self>> extends GroovyElementPattern<T,Self> {
   protected GroovyExpressionPattern(final Class<T> aClass) {

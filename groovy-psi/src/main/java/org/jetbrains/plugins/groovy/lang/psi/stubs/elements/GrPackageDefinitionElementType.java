@@ -19,15 +19,15 @@ import java.io.IOException;
 
 import javax.annotation.Nonnull;
 
+import consulo.index.io.StringRef;
+import consulo.language.psi.stub.StubElement;
+import consulo.language.psi.stub.StubOutputStream;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
 import org.jetbrains.plugins.groovy.lang.psi.api.toplevel.packaging.GrPackageDefinition;
 import org.jetbrains.plugins.groovy.lang.psi.impl.toplevel.packaging.GrPackageDefinitionImpl;
 import org.jetbrains.plugins.groovy.lang.psi.stubs.GrPackageDefinitionStub;
-import com.intellij.psi.stubs.StubElement;
-import com.intellij.psi.stubs.StubInputStream;
-import com.intellij.psi.stubs.StubOutputStream;
-import com.intellij.util.io.StringRef;
+import consulo.language.psi.stub.StubInputStream;
 
 public class GrPackageDefinitionElementType extends GrStubElementType<GrPackageDefinitionStub, GrPackageDefinition> {
   public GrPackageDefinitionElementType(@NonNls @Nonnull String debugName) {

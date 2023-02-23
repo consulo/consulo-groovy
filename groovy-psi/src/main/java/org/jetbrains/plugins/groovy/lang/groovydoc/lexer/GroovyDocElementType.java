@@ -19,8 +19,8 @@ package org.jetbrains.plugins.groovy.lang.groovydoc.lexer;
 import org.jetbrains.annotations.NonNls;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import com.intellij.lang.Language;
-import com.intellij.psi.tree.IElementType;
+import consulo.language.Language;
+import consulo.language.ast.IElementType;
 
 /**
  * @author ilyas

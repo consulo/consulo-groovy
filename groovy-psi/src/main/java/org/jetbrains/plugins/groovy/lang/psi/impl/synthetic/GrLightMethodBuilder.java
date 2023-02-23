@@ -15,13 +15,26 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.synthetic;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
+import com.intellij.java.language.impl.psi.impl.PsiClassImplUtil;
+import com.intellij.java.language.impl.psi.impl.PsiImplUtil;
+import com.intellij.java.language.impl.psi.impl.PsiSuperMethodImplUtil;
+import com.intellij.java.language.impl.psi.impl.light.LightIdentifier;
+import com.intellij.java.language.impl.psi.impl.light.LightReferenceListBuilder;
+import com.intellij.java.language.impl.psi.impl.light.LightTypeParameterListBuilder;
+import com.intellij.java.language.impl.psi.presentation.java.JavaPresentationUtil;
+import com.intellij.java.language.psi.*;
+import com.intellij.java.language.psi.util.MethodSignature;
+import com.intellij.java.language.psi.util.MethodSignatureBackedByPsiMethod;
+import consulo.application.util.CachedValueProvider;
+import consulo.content.scope.SearchScope;
+import consulo.language.impl.psi.LightElement;
+import consulo.language.psi.*;
+import consulo.language.psi.scope.GlobalSearchScope;
+import consulo.language.psi.util.LanguageCachedValueUtil;
+import consulo.language.util.IncorrectOperationException;
+import consulo.navigation.ItemPresentation;
+import consulo.ui.image.Image;
+import consulo.util.dataholder.Key;
 import org.jetbrains.plugins.groovy.GroovyLanguage;
 import org.jetbrains.plugins.groovy.extensions.NamedArgumentDescriptor;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocComment;
@@ -34,34 +47,17 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMe
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrReflectedMethod;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeElement;
-import com.intellij.codeInsight.completion.originInfo.OriginInfoAwareElement;
-import com.intellij.navigation.ItemPresentation;
-import consulo.util.dataholder.Key;
-import com.intellij.psi.*;
-import com.intellij.psi.impl.PsiClassImplUtil;
-import com.intellij.psi.impl.PsiImplUtil;
-import com.intellij.psi.impl.PsiSuperMethodImplUtil;
-import com.intellij.psi.impl.light.LightElement;
-import com.intellij.psi.impl.light.LightIdentifier;
-import com.intellij.psi.impl.light.LightReferenceListBuilder;
-import com.intellij.psi.impl.light.LightTypeParameterListBuilder;
-import com.intellij.psi.presentation.java.JavaPresentationUtil;
-import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.psi.search.SearchScope;
-import com.intellij.psi.util.CachedValueProvider;
-import com.intellij.psi.util.CachedValuesManager;
-import com.intellij.psi.util.MethodSignature;
-import com.intellij.psi.util.MethodSignatureBackedByPsiMethod;
-import com.intellij.psi.util.PsiModificationTracker;
-import com.intellij.util.IncorrectOperationException;
-import consulo.ui.image.Image;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Sergey Evdokimov
  */
-public class GrLightMethodBuilder extends LightElement implements GrMethod, OriginInfoAwareElement
-{
-
+public class GrLightMethodBuilder extends LightElement implements GrMethod, OriginInfoAwareElement {
   public static final Key<String> KIND_KEY = Key.create("GrLightMethodBuilder.Key");
 
   protected String myName;
@@ -73,7 +69,7 @@ public class GrLightMethodBuilder extends LightElement implements GrMethod, Orig
   private boolean myConstructor = false;
   private PsiClass myContainingClass;
   private Map<String, NamedArgumentDescriptor> myNamedParameters = Collections.emptyMap();
-  
+
   private Image myBaseIcon;
   private Object myMethodKind;
   private Object myData;
@@ -167,7 +163,7 @@ public class GrLightMethodBuilder extends LightElement implements GrMethod, Orig
   @Nonnull
   @Override
   public GrReflectedMethod[] getReflectedMethods() {
-    return CachedValuesManager.getCachedValue(this, new CachedValueProvider<GrReflectedMethod[]>() {
+    return LanguageCachedValueUtil.getCachedValue(this, new CachedValueProvider<GrReflectedMethod[]>() {
       @Override
       public Result<GrReflectedMethod[]> compute() {
         return Result.create(GrReflectedMethodImpl.createReflectedMethods(GrLightMethodBuilder.this),
@@ -225,14 +221,14 @@ public class GrLightMethodBuilder extends LightElement implements GrMethod, Orig
     return myReturnType;
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   public GrTypeElement setReturnType(String returnType, GlobalSearchScope scope) {
     setReturnType(JavaPsiFacade.getInstance(myManager.getProject()).getElementFactory().createTypeByFQClassName(returnType, scope));
     return null;
   }
 
   @Override
-  public GrTypeElement setReturnType(@javax.annotation.Nullable PsiType returnType) {
+  public GrTypeElement setReturnType(@Nullable PsiType returnType) {
     myReturnType = returnType;
     return null;
   }
@@ -391,7 +387,7 @@ public class GrLightMethodBuilder extends LightElement implements GrMethod, Orig
     return method.getUserData(KIND_KEY);
   }
 
-  public static boolean checkKind(@javax.annotation.Nullable PsiElement method, @Nonnull Object kind) {
+  public static boolean checkKind(@Nullable PsiElement method, @Nonnull Object kind) {
     return kind.equals(getMethodKind(method));
   }
 
@@ -422,7 +418,7 @@ public class GrLightMethodBuilder extends LightElement implements GrMethod, Orig
   }
 
   @Override
-  @javax.annotation.Nullable
+  @Nullable
   public PsiFile getContainingFile() {
     final PsiClass containingClass = getContainingClass();
     return containingClass == null ? null : containingClass.getContainingFile();
@@ -474,8 +470,8 @@ public class GrLightMethodBuilder extends LightElement implements GrMethod, Orig
     return (T)myData;
   }
 
-  @javax.annotation.Nullable
-  public static <T> T getData(@javax.annotation.Nullable PsiElement method, @Nonnull Object kind) {
+  @Nullable
+  public static <T> T getData(@Nullable PsiElement method, @Nonnull Object kind) {
     if (method instanceof GrLightMethodBuilder) {
       if (kind.equals(((GrLightMethodBuilder)method).getMethodKind())) {
         return ((GrLightMethodBuilder)method).<T>getData();
@@ -484,7 +480,7 @@ public class GrLightMethodBuilder extends LightElement implements GrMethod, Orig
     return null;
   }
 
-  public GrLightMethodBuilder setData(@javax.annotation.Nullable Object data) {
+  public GrLightMethodBuilder setData(@Nullable Object data) {
     myData = data;
     return this;
   }

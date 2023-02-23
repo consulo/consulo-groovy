@@ -16,6 +16,7 @@
 package org.jetbrains.plugins.groovy.refactoring.convertToJava;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import org.jetbrains.plugins.groovy.codeInspection.utils.ControlFlowUtils;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
@@ -30,11 +31,11 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpres
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyConstantExpressionEvaluator;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiType;
-import com.intellij.psi.util.PsiUtil;
-import com.intellij.psi.util.TypeConversionUtil;
-import com.intellij.util.ArrayUtil;
+import com.intellij.java.language.psi.PsiClass;
+import com.intellij.java.language.psi.PsiType;
+import com.intellij.java.language.psi.util.PsiUtil;
+import com.intellij.java.language.psi.util.TypeConversionUtil;
+import consulo.util.collection.ArrayUtil;
 
 /**
  * @author Maxim.Medvedev
@@ -232,7 +233,7 @@ public class SwitchStatementGenerator
 
 	private static void generateSwitch(@Nonnull StringBuilder builder,
 			@Nonnull ExpressionContext context,
-			@javax.annotation.Nullable GrExpression condition,
+			@Nullable GrExpression condition,
 			@Nonnull GrCaseSection[] caseSections)
 	{
 		builder.append("switch (");

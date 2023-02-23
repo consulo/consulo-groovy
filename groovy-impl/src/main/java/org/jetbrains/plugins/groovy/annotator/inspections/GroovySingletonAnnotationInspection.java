@@ -16,12 +16,10 @@
 
 package org.jetbrains.plugins.groovy.annotator.inspections;
 
-import javax.annotation.Nonnull;
-
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiMethod;
-import com.intellij.psi.PsiModifier;
-import com.intellij.psi.PsiModifierList;
+import com.intellij.java.language.psi.PsiMethod;
+import com.intellij.java.language.psi.PsiModifier;
+import com.intellij.java.language.psi.PsiModifierList;
+import consulo.language.psi.PsiElement;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspection;
@@ -29,6 +27,8 @@ import org.jetbrains.plugins.groovy.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotation;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames;
+
+import javax.annotation.Nonnull;
 
 /**
  * User: Dmitry.Krasilschikov

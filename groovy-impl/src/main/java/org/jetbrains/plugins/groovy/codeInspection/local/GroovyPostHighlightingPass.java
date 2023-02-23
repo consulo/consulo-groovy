@@ -16,29 +16,38 @@
 
 package org.jetbrains.plugins.groovy.codeInspection.local;
 
-import com.intellij.codeHighlighting.TextEditorHighlightingPass;
-import com.intellij.codeInsight.daemon.HighlightDisplayKey;
-import com.intellij.codeInsight.daemon.impl.*;
-import com.intellij.codeInsight.daemon.impl.analysis.JavaHighlightUtil;
-import com.intellij.codeInsight.daemon.impl.quickfix.QuickFixAction;
-import com.intellij.codeInsight.intention.IntentionAction;
-import com.intellij.codeInsight.intention.QuickFixFactory;
-import com.intellij.codeInspection.InspectionProfile;
-import com.intellij.codeInspection.deadCode.UnusedDeclarationInspectionBase;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.progress.ProgressIndicator;
-import com.intellij.openapi.roots.ProjectFileIndex;
-import com.intellij.openapi.roots.ProjectRootManager;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.profile.codeInspection.InspectionProjectProfileManager;
-import com.intellij.psi.*;
-import com.intellij.psi.impl.PsiClassImplUtil;
-import com.intellij.psi.search.searches.OverridingMethodsSearch;
-import com.intellij.psi.search.searches.SuperMethodsSearch;
-import com.intellij.util.containers.ContainerUtil;
+import com.intellij.java.analysis.codeInsight.intention.QuickFixFactory;
+import com.intellij.java.analysis.impl.codeInsight.daemon.impl.GlobalUsageHelper;
+import com.intellij.java.analysis.impl.codeInsight.daemon.impl.UnusedSymbolUtil;
+import com.intellij.java.analysis.impl.codeInsight.daemon.impl.analysis.JavaHighlightUtil;
+import com.intellij.java.analysis.impl.codeInspection.deadCode.UnusedDeclarationInspectionBase;
+import com.intellij.java.indexing.search.searches.OverridingMethodsSearch;
+import com.intellij.java.language.impl.psi.impl.PsiClassImplUtil;
+import com.intellij.java.language.psi.PsiMember;
+import com.intellij.java.language.psi.PsiMethod;
+import com.intellij.java.language.psi.PsiModifier;
+import com.intellij.java.language.psi.PsiModifierListOwner;
+import com.intellij.java.language.psi.search.searches.SuperMethodsSearch;
 import consulo.annotation.access.RequiredReadAction;
+import consulo.application.progress.ProgressIndicator;
+import consulo.codeEditor.Editor;
+import consulo.document.util.TextRange;
+import consulo.language.editor.impl.highlight.UpdateHighlightersUtil;
+import consulo.language.editor.inspection.scheme.InspectionProfile;
+import consulo.language.editor.inspection.scheme.InspectionProjectProfileManager;
+import consulo.language.editor.intention.IntentionAction;
+import consulo.language.editor.intention.QuickFixAction;
+import consulo.language.editor.rawHighlight.HighlightDisplayKey;
+import consulo.language.editor.rawHighlight.HighlightInfo;
+import consulo.language.editor.rawHighlight.HighlightInfoType;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiNamedElement;
+import consulo.language.psi.PsiRecursiveElementWalkingVisitor;
+import consulo.module.content.ProjectFileIndex;
+import consulo.module.content.ProjectRootManager;
+import consulo.util.collection.ContainerUtil;
+import consulo.util.lang.StringUtil;
+import consulo.virtualFileSystem.VirtualFile;
 import org.jetbrains.plugins.groovy.codeInspection.GroovyInspectionBundle;
 import org.jetbrains.plugins.groovy.codeInspection.GroovyQuickFixFactory;
 import org.jetbrains.plugins.groovy.codeInspection.GroovySuppressableInspectionTool;
@@ -64,7 +73,7 @@ import java.util.*;
 /**
  * @author ilyas
  */
-public class GroovyPostHighlightingPass extends TextEditorHighlightingPass
+public class GroovyPostHighlightingPass extends consulo.language.editor.impl.highlight.TextEditorHighlightingPass
 {
 
 	private final GroovyFile myFile;
@@ -139,7 +148,7 @@ public class GroovyPostHighlightingPass extends TextEditorHighlightingPass
 				if(deadCodeEnabled &&
 						element instanceof GrNamedElement && element instanceof PsiModifierListOwner &&
 						!UnusedSymbolUtil.isImplicitUsage(element.getProject(), (PsiModifierListOwner) element,
-								progress) &&
+																							progress) &&
 						!GroovySuppressableInspectionTool.isElementToolSuppressedIn(element,
 								GroovyUnusedDeclarationInspection.SHORT_NAME))
 				{
@@ -151,9 +160,9 @@ public class GroovyPostHighlightingPass extends TextEditorHighlightingPass
 								element.getContainingFile(), (GrTypeDefinition) element, progress, usageHelper))
 						{
 							HighlightInfo highlightInfo = UnusedSymbolUtil.createUnusedSymbolInfo(nameId,
-									"Class " + name + " is unused", HighlightInfoType.UNUSED_SYMBOL);
+																																										"Class " + name + " is unused", HighlightInfoType.UNUSED_SYMBOL);
 							QuickFixAction.registerQuickFixAction(highlightInfo, QuickFixFactory.getInstance()
-									.createSafeDeleteFix(element), unusedDefKey);
+																																									.createSafeDeleteFix(element), unusedDefKey);
 							ContainerUtil.addIfNotNull(unusedDeclarations, highlightInfo);
 						}
 						else if(element instanceof GrMethod)
@@ -291,7 +300,7 @@ public class GroovyPostHighlightingPass extends TextEditorHighlightingPass
 		}
 
 		UpdateHighlightersUtil.setHighlightersToEditor(myProject, myDocument, 0, myFile.getTextLength(), infos,
-				getColorsScheme(), getId());
+																									 getColorsScheme(), getId());
 
 		if(myUnusedImports != null && !myUnusedImports.isEmpty())
 		{

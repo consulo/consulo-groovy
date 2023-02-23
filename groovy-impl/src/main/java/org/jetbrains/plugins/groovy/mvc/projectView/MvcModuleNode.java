@@ -16,12 +16,17 @@
 
 package org.jetbrains.plugins.groovy.mvc.projectView;
 
-import com.intellij.ide.projectView.PresentationData;
-import com.intellij.ide.projectView.ViewSettings;
-import com.intellij.ide.projectView.impl.nodes.AbstractModuleNode;
-import com.intellij.ide.util.treeView.AbstractTreeNode;
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.vfs.VirtualFile;
+import consulo.module.Module;
+import consulo.project.ui.view.tree.AbstractTreeNode;
+import consulo.ui.ex.tree.PresentationData;
+import consulo.project.ui.view.tree.ViewSettings;
+import consulo.ide.impl.idea.ide.projectView.impl.nodes.AbstractModuleNode;
+import consulo.project.ui.view.tree.AbstractTreeNode;
+import consulo.module.Module;
+import consulo.virtualFileSystem.VirtualFile;
+import consulo.ui.ex.tree.PresentationData;
+import consulo.virtualFileSystem.VirtualFile;
+
 import javax.annotation.Nonnull;
 
 import java.util.ArrayList;
@@ -33,7 +38,8 @@ import java.util.List;
  * @author peter
  */
 
-public class MvcModuleNode extends AbstractModuleNode {
+public class MvcModuleNode extends consulo.ide.impl.idea.ide.projectView.impl.nodes.AbstractModuleNode
+{
   private final MvcToolWindowDescriptor myDescriptor;
 
   public MvcModuleNode(@Nonnull final Module module, final ViewSettings viewSettings, MvcToolWindowDescriptor descriptor) {

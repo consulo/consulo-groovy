@@ -15,14 +15,18 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.confusing;
 
-import com.intellij.codeInspection.LocalQuickFix;
-import com.intellij.codeInspection.ProblemDescriptor;
-import com.intellij.codeInspection.ProblemHighlightType;
-import com.intellij.diagnostic.LogMessageEx;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.tree.IElementType;
+import consulo.language.ast.IElementType;
+import consulo.language.editor.inspection.*;
+import consulo.language.editor.inspection.ProblemHighlightType;
+import consulo.ide.impl.idea.diagnostic.LogMessageEx;
+import consulo.language.psi.PsiElement;
+import consulo.project.Project;
+import consulo.language.psi.PsiElement;
+import consulo.language.ast.IElementType;
+import consulo.language.editor.inspection.LocalQuickFix;
+import consulo.language.editor.inspection.ProblemDescriptor;
 import consulo.logging.Logger;
+import consulo.project.Project;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspection;
@@ -101,7 +105,7 @@ public class GrUnusedIncDecInspection extends BaseInspection {
       final Instruction cur = ControlFlowUtils.findInstruction(operand, owner.getControlFlow());
 
       if (cur == null) {
-        LogMessageEx.error(LOG, "no instruction found in flow." + "operand: " + operand.getText(), owner.getText());
+        consulo.ide.impl.idea.diagnostic.LogMessageEx.error(LOG, "no instruction found in flow." + "operand: " + operand.getText(), owner.getText());
       }
 
       //get write access for inc or dec
@@ -196,7 +200,8 @@ public class GrUnusedIncDecInspection extends BaseInspection {
       }
     }
 
-    private static class ReplaceIncDecWithBinary implements LocalQuickFix {
+    private static class ReplaceIncDecWithBinary implements LocalQuickFix
+	{
       private final String myMessage;
 
       public ReplaceIncDecWithBinary(GrUnaryExpression expression) {

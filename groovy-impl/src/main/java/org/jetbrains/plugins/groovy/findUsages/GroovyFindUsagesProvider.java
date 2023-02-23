@@ -15,17 +15,21 @@
  */
 package org.jetbrains.plugins.groovy.findUsages;
 
-import javax.annotation.Nonnull;
-
-import com.intellij.lang.cacheBuilder.WordsScanner;
-import com.intellij.lang.findUsages.FindUsagesProvider;
-import com.intellij.psi.*;
-import com.intellij.psi.util.PsiFormatUtil;
+import com.intellij.java.language.psi.*;
+import com.intellij.java.language.psi.util.PsiFormatUtil;
+import consulo.language.Language;
+import consulo.language.cacheBuilder.WordsScanner;
+import consulo.language.findUsage.FindUsagesProvider;
+import consulo.language.psi.PsiElement;
+import org.jetbrains.plugins.groovy.GroovyLanguage;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrLabeledStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlock;
 import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GrBindingVariable;
 import org.jetbrains.plugins.groovy.refactoring.rename.PropertyForRename;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author ven
@@ -37,18 +41,18 @@ public class GroovyFindUsagesProvider implements FindUsagesProvider {
   public GroovyFindUsagesProvider() {
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   public WordsScanner getWordsScanner() {
     return new GroovyWordsScanner();
   }
 
   public boolean canFindUsagesFor(@Nonnull PsiElement psiElement) {
     return psiElement instanceof PsiClass ||
-           psiElement instanceof PsiMethod ||
-           psiElement instanceof GrVariable;
+      psiElement instanceof PsiMethod ||
+      psiElement instanceof GrVariable;
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   public String getHelpId(@Nonnull PsiElement psiElement) {
     return null;
   }
@@ -70,11 +74,12 @@ public class GroovyFindUsagesProvider implements FindUsagesProvider {
   @Nonnull
   public String getDescriptiveName(@Nonnull PsiElement element) {
     if (element instanceof PsiClass) {
-      final PsiClass aClass = (PsiClass) element;
+      final PsiClass aClass = (PsiClass)element;
       String qName = aClass.getQualifiedName();
       return qName == null ? "" : qName;
-    } else if (element instanceof PsiMethod) {
-      final PsiMethod method = (PsiMethod) element;
+    }
+    else if (element instanceof PsiMethod) {
+      final PsiMethod method = (PsiMethod)element;
       String result = PsiFormatUtil.formatMethod(method,
                                                  PsiSubstitutor.EMPTY, PsiFormatUtil.SHOW_NAME | PsiFormatUtil.SHOW_PARAMETERS,
                                                  PsiFormatUtil.SHOW_TYPE);
@@ -84,16 +89,20 @@ public class GroovyFindUsagesProvider implements FindUsagesProvider {
       }
 
       return result;
-    } else if (element instanceof PsiVariable) {
-      final String name = ((PsiVariable) element).getName();
+    }
+    else if (element instanceof PsiVariable) {
+      final String name = ((PsiVariable)element).getName();
       if (name != null) {
         return name;
       }
-    } else if (element instanceof GrLabeledStatement) {
+    }
+    else if (element instanceof GrLabeledStatement) {
       return ((GrLabeledStatement)element).getName();
-    } else if (element instanceof PropertyForRename) {
+    }
+    else if (element instanceof PropertyForRename) {
       return ((PropertyForRename)element).getPropertyName();
-    } else if (element instanceof GrClosableBlock) {
+    }
+    else if (element instanceof GrClosableBlock) {
       return "closure";
     }
 
@@ -103,24 +112,32 @@ public class GroovyFindUsagesProvider implements FindUsagesProvider {
   @Nonnull
   public String getNodeText(@Nonnull PsiElement element, boolean useFullName) {
     if (element instanceof PsiClass) {
-      String name = ((PsiClass) element).getQualifiedName();
+      String name = ((PsiClass)element).getQualifiedName();
       if (name == null || !useFullName) {
-        name = ((PsiClass) element).getName();
+        name = ((PsiClass)element).getName();
       }
       if (name != null) return name;
-    } else if (element instanceof PsiMethod) {
-      return PsiFormatUtil.formatMethod((PsiMethod) element,
+    }
+    else if (element instanceof PsiMethod) {
+      return PsiFormatUtil.formatMethod((PsiMethod)element,
                                         PsiSubstitutor.EMPTY,
                                         PsiFormatUtil.SHOW_NAME | PsiFormatUtil.SHOW_PARAMETERS,
                                         PsiFormatUtil.SHOW_TYPE);
 
-    } else if (element instanceof PsiVariable) {
-      final String name = ((PsiVariable) element).getName();
+    }
+    else if (element instanceof PsiVariable) {
+      final String name = ((PsiVariable)element).getName();
       if (name != null) {
         return name;
       }
     }
 
     return "";
+  }
+
+  @Nonnull
+  @Override
+  public Language getLanguage() {
+    return GroovyLanguage.INSTANCE;
   }
 }

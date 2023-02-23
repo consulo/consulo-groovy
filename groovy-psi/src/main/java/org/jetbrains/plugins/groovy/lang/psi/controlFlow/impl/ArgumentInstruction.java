@@ -15,10 +15,10 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.controlFlow.impl;
 
-import static org.jetbrains.plugins.groovy.lang.psi.impl.signatures.GrClosureSignatureUtil.createSignature;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.intellij.java.language.psi.PsiType;
+import consulo.language.psi.PsiElement;
+import consulo.logging.Logger;
+import consulo.util.collection.ArrayUtil;
 import org.jetbrains.plugins.groovy.codeInspection.utils.ControlFlowUtils;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
 import org.jetbrains.plugins.groovy.lang.psi.api.signatures.GrClosureSignature;
@@ -32,10 +32,11 @@ import org.jetbrains.plugins.groovy.lang.psi.controlFlow.ReadWriteVariableInstru
 import org.jetbrains.plugins.groovy.lang.psi.impl.PsiImplUtil;
 import org.jetbrains.plugins.groovy.lang.psi.impl.signatures.GrClosureSignatureUtil;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiType;
-import com.intellij.util.ArrayUtil;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import static org.jetbrains.plugins.groovy.lang.psi.impl.signatures.GrClosureSignatureUtil.createSignature;
 
 /**
  * @author Max Medvedev

@@ -15,14 +15,14 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.stubs;
 
+import consulo.language.psi.stub.StubBase;
+import consulo.language.psi.stub.StubElement;
+import consulo.logging.Logger;
+import consulo.util.lang.ref.SoftReference;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotation;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.psi.stubs.StubBase;
-import com.intellij.psi.stubs.StubElement;
-import com.intellij.reference.SoftReference;
-import com.intellij.util.IncorrectOperationException;
+import consulo.language.util.IncorrectOperationException;
 
 /**
  * @author peter

@@ -15,27 +15,26 @@
  */
 package org.jetbrains.plugins.groovy.griffon;
 
+import com.intellij.java.language.psi.JavaPsiFacade;
+import com.intellij.java.language.psi.PsiJavaPackage;
 import com.intellij.lang.properties.IProperty;
 import com.intellij.lang.properties.psi.PropertiesFile;
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.module.ModuleUtil;
-import com.intellij.openapi.util.Pair;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.openapi.vfs.VfsUtilCore;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.JavaPsiFacade;
-import com.intellij.psi.PsiDirectory;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiJavaPackage;
-import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.psi.util.CachedValueProvider;
-import com.intellij.psi.util.CachedValuesManager;
-import com.intellij.psi.util.PsiModificationTracker;
-import javax.annotation.Nonnull;
+import consulo.application.util.CachedValueProvider;
+import consulo.application.util.CachedValuesManager;
+import consulo.language.psi.PsiDirectory;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.PsiModificationTracker;
+import consulo.language.psi.scope.GlobalSearchScope;
+import consulo.language.util.ModuleUtilCore;
+import consulo.module.Module;
+import consulo.util.lang.Pair;
+import consulo.util.lang.StringUtil;
+import consulo.virtualFileSystem.VirtualFile;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.resolve.DefaultImportContributor;
 import org.jetbrains.plugins.groovy.mvc.MvcFramework;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -83,7 +82,7 @@ public class GriffonDefaultImportContributor extends DefaultImportContributor {
 
   @Override
   public List<String> appendImplicitlyImportedPackages(@Nonnull GroovyFile file) {
-    Module module = ModuleUtil.findModuleForPsiElement(file);
+    Module module = ModuleUtilCore.findModuleForPsiElement(file);
     MvcFramework framework = MvcFramework.getInstance(module);
     if (framework instanceof GriffonFramework) {
       ArrayList<String> result = new ArrayList<String>();
@@ -98,10 +97,10 @@ public class GriffonDefaultImportContributor extends DefaultImportContributor {
 
         assert vFile != null;
         assert module != null;
-        if (models != null && VfsUtilCore.isAncestor(models, vFile, true)) {
+        if (models != null && consulo.ide.impl.idea.openapi.vfs.VfsUtilCore.isAncestor(models, vFile, true)) {
           result.addAll(getDefaultImports(module).first);
         }
-        else if (views != null && VfsUtilCore.isAncestor(views, vFile, true)) {
+        else if (views != null && consulo.ide.impl.idea.openapi.vfs.VfsUtilCore.isAncestor(views, vFile, true)) {
           result.addAll(getDefaultImports(module).second);
         }
       }

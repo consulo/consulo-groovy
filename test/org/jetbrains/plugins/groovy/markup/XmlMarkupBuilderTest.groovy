@@ -1,6 +1,6 @@
 package org.jetbrains.plugins.groovy.markup
 
-import com.intellij.psi.impl.compiled.ClsMethodImpl
+import com.intellij.java.language.psi.impl.compiled.ClsMethodImpl
 import org.jetbrains.plugins.groovy.LightGroovyTestCase
 import org.jetbrains.plugins.groovy.codeInspection.assignment.GroovyAssignabilityCheckInspection
 import org.jetbrains.plugins.groovy.codeInspection.untypedUnresolvedAccess.GrUnresolvedAccessInspection

@@ -16,11 +16,15 @@
 package org.jetbrains.plugins.groovy.lang.completion.smartEnter.processors;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
-import com.intellij.lang.SmartEnterProcessorWithFixers;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
+import consulo.language.editor.action.SmartEnterProcessorWithFixers;
+import consulo.codeEditor.Editor;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.editor.action.SmartEnterProcessorWithFixers;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.*;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlock;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrCodeBlock;
@@ -32,7 +36,7 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMe
  * Date: 05.08.2008
  */
 public class GroovyPlainEnterProcessor extends SmartEnterProcessorWithFixers.FixEnterProcessor {
-  @javax.annotation.Nullable
+  @Nullable
   private static GrCodeBlock getControlStatementBlock(int caret, PsiElement element) {
     GrStatement body = null;
 

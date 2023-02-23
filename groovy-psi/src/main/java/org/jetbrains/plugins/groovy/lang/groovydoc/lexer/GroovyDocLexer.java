@@ -16,14 +16,14 @@
 
 package org.jetbrains.plugins.groovy.lang.groovydoc.lexer;
 
-import com.intellij.lexer.Lexer;
-import com.intellij.lexer.LexerBase;
-import com.intellij.lexer.LookAheadLexer;
-import com.intellij.lexer.MergingLexerAdapter;
-import com.intellij.psi.TokenType;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.tree.TokenSet;
-import com.intellij.util.text.CharArrayUtil;
+import consulo.language.ast.TokenSet;
+import consulo.language.lexer.*;
+import consulo.language.lexer.MergingLexerAdapter;
+import consulo.language.ast.TokenType;
+import consulo.language.ast.IElementType;
+import consulo.util.lang.CharArrayUtil;
+import consulo.language.lexer.LexerBase;
+import consulo.language.lexer.LookAheadLexer;
 
 import java.io.IOException;
 
@@ -72,7 +72,8 @@ public class GroovyDocLexer extends MergingLexerAdapter implements GroovyDocToke
     }, TOKENS_TO_MERGE);
   }
 
-  private static class AsteriskStripperLexer extends LexerBase {
+  private static class AsteriskStripperLexer extends LexerBase
+  {
     private final _GroovyDocLexer myFlexLexer;
     private CharSequence myBuffer;
     private int myBufferIndex;

@@ -15,12 +15,12 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.typeEnhancers;
 
-import com.intellij.psi.*;
-import com.intellij.util.Function;
-import com.intellij.util.IncorrectOperationException;
-import com.intellij.util.containers.ContainerUtil;
-import javax.annotation.Nonnull;
+import com.intellij.java.language.psi.*;
+import consulo.language.psi.PsiElement;
+import consulo.language.util.IncorrectOperationException;
+import consulo.util.collection.ContainerUtil;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 /**
@@ -38,26 +38,20 @@ public class FromStringHintProcessor extends SignatureHintProcessor {
   public List<PsiType[]> inferExpectedSignatures(@Nonnull final PsiMethod method,
                                                  @Nonnull final PsiSubstitutor substitutor,
                                                  @Nonnull String[] options) {
-    return ContainerUtil.map(options, new Function<String, PsiType[]>() {
-      @Override
-      public PsiType[] fun(String value) {
-          String[] params = value.split(",");
-          return ContainerUtil.map(params, new Function<String, PsiType>() {
-            @Override
-            public PsiType fun(String param) {
-              try {
-                PsiTypeParameterList typeParameterList = method.getTypeParameterList();
-                PsiElement context = typeParameterList != null ? typeParameterList : method;
-                PsiType original = JavaPsiFacade.getElementFactory(method.getProject()).createTypeFromText(param, context);
-                return substitutor.substitute(original);
-              }
-              catch (IncorrectOperationException e) {
-                //do nothing. Just don't throw an exception
-              }
-              return PsiType.NULL;
-            }
-          }, new PsiType[params.length]);
-      }
+    return ContainerUtil.map(options, value -> {
+      String[] params = value.split(",");
+      return ContainerUtil.map(params, param -> {
+        try {
+          PsiTypeParameterList typeParameterList = method.getTypeParameterList();
+          PsiElement context = typeParameterList != null ? typeParameterList : method;
+          PsiType original = JavaPsiFacade.getElementFactory(method.getProject()).createTypeFromText(param, context);
+          return substitutor.substitute(original);
+        }
+        catch (IncorrectOperationException e) {
+          //do nothing. Just don't throw an exception
+        }
+        return PsiType.NULL;
+      }, new PsiType[params.length]);
     });
   }
 }

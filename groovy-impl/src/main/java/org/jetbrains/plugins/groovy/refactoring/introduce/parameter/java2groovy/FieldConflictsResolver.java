@@ -16,18 +16,21 @@
 
 package org.jetbrains.plugins.groovy.refactoring.introduce.parameter.java2groovy;
 
-import com.intellij.psi.*;
-import com.intellij.psi.codeStyle.CodeStyleManager;
-import com.intellij.psi.search.LocalSearchScope;
-import com.intellij.psi.search.searches.ReferencesSearch;
-import com.intellij.psi.util.InheritanceUtil;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.IncorrectOperationException;
-import javax.annotation.Nullable;
+import com.intellij.java.language.psi.*;
+import com.intellij.java.language.psi.util.InheritanceUtil;
+import consulo.language.codeStyle.CodeStyleManager;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiManager;
+import consulo.language.psi.PsiReference;
+import consulo.language.psi.scope.LocalSearchScope;
+import consulo.language.psi.search.ReferencesSearch;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.language.util.IncorrectOperationException;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrCodeBlock;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -87,7 +90,8 @@ public class FieldConflictsResolver {
 
   public static GrReferenceExpression qualifyReference(GrReferenceExpression referenceExpression,
                                                         final PsiMember member,
-                                                        @Nullable final PsiClass qualifyingClass) throws IncorrectOperationException {
+                                                        @Nullable final PsiClass qualifyingClass) throws IncorrectOperationException
+  {
     PsiManager manager = referenceExpression.getManager();
     GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(manager.getProject());
 

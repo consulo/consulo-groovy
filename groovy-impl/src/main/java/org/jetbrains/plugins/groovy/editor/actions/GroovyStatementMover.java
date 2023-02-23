@@ -16,21 +16,27 @@
 
 package org.jetbrains.plugins.groovy.editor.actions;
 
-import com.intellij.codeInsight.editorActions.moveUpDown.LineRange;
-import com.intellij.codeInsight.editorActions.moveUpDown.StatementUpDownMover;
-import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.Condition;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.PsiComment;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiRecursiveElementVisitor;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.text.CharArrayUtil;
+import consulo.document.Document;
+import consulo.language.editor.moveUpDown.LineRange;
+import consulo.language.editor.moveUpDown.StatementUpDownMover;
+import consulo.document.Document;
+import consulo.codeEditor.Editor;
+import consulo.language.psi.*;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.project.Project;
+import consulo.util.lang.StringUtil;
+import consulo.util.lang.function.Condition;
+import consulo.util.lang.StringUtil;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.PsiRecursiveElementVisitor;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.util.lang.CharArrayUtil;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
+import consulo.language.editor.moveUpDown.LineRange;
+import consulo.language.editor.moveUpDown.StatementUpDownMover;
 import org.jetbrains.plugins.groovy.editor.HandlerUtils;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocComment;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocCommentOwner;
@@ -55,7 +61,8 @@ import java.util.List;
 /**
  * @author peter
  */
-public class GroovyStatementMover extends StatementUpDownMover {
+public class GroovyStatementMover extends StatementUpDownMover
+{
 
   @Override
   public boolean checkAvailable(@Nonnull Editor editor, @Nonnull PsiFile file, @Nonnull MoveInfo info, boolean down) {
@@ -209,7 +216,7 @@ public class GroovyStatementMover extends StatementUpDownMover {
     return result;
   }
 
-  private static boolean nlsAfter(@javax.annotation.Nullable PsiElement element) {
+  private static boolean nlsAfter(@Nullable PsiElement element) {
     if (element == null) return false;
 
     PsiElement sibling = element;

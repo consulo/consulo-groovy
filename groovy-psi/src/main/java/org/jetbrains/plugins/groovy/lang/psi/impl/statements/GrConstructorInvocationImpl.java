@@ -15,12 +15,12 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements;
 
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.*;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.util.TypeConversionUtil;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.intellij.java.language.psi.*;
+import com.intellij.java.language.psi.util.TypeConversionUtil;
+import consulo.language.ast.ASTNode;
+import consulo.language.ast.IElementType;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.resolve.ResolveState;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
@@ -33,6 +33,9 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.GrCallI
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 import org.jetbrains.plugins.groovy.lang.resolve.ResolveUtil;
 import org.jetbrains.plugins.groovy.lang.resolve.processors.MethodResolverProcessor;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * User: Dmitry.Krasilschikov

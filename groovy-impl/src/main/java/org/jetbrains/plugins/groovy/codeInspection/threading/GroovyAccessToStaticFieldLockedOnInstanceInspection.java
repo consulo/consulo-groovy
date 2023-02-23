@@ -15,13 +15,11 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.threading;
 
-import javax.annotation.Nonnull;
-
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiField;
-import com.intellij.psi.PsiModifier;
-import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.java.language.psi.PsiClass;
+import com.intellij.java.language.psi.PsiField;
+import com.intellij.java.language.psi.PsiModifier;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.util.PsiTreeUtil;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspectionVisitor;
@@ -30,6 +28,8 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpres
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
+
+import javax.annotation.Nonnull;
 
 public class GroovyAccessToStaticFieldLockedOnInstanceInspection
     extends BaseInspection {
@@ -70,7 +70,7 @@ public class GroovyAccessToStaticFieldLockedOnInstanceInspection
           PsiTreeUtil.getParentOfType(expression, GrMethod.class);
       if (containingMethod != null &&
           containingMethod.hasModifierProperty(
-              PsiModifier.SYNCHRONIZED)) {
+            PsiModifier.SYNCHRONIZED)) {
         if (containingMethod.hasModifierProperty(
             PsiModifier.STATIC)) {
           isLockedOnClass = true;

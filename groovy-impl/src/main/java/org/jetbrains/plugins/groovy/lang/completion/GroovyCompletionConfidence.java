@@ -15,68 +15,60 @@
  */
 package org.jetbrains.plugins.groovy.lang.completion;
 
-import static org.jetbrains.plugins.groovy.shell.GroovyShellRunnerImpl.GROOVY_SHELL_FILE;
+import com.intellij.java.language.impl.psi.impl.PsiImplUtil;
+import com.intellij.java.language.patterns.PsiJavaPatterns;
+import consulo.language.Language;
+import consulo.language.editor.CodeInsightSettings;
+import consulo.language.editor.completion.CompletionConfidence;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.PsiReference;
+import consulo.util.lang.ThreeState;
+import org.jetbrains.plugins.groovy.GroovyLanguage;
+import org.jetbrains.plugins.groovy.lang.lexer.TokenSets;
 
 import javax.annotation.Nonnull;
-import org.jetbrains.plugins.groovy.lang.lexer.TokenSets;
-import com.intellij.codeInsight.CodeInsightSettings;
-import com.intellij.codeInsight.completion.CompletionConfidence;
-import com.intellij.codeInsight.completion.CompletionParameters;
-import com.intellij.patterns.PsiJavaPatterns;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiReference;
-import com.intellij.psi.impl.PsiImplUtil;
-import com.intellij.util.ThreeState;
+
+import static org.jetbrains.plugins.groovy.shell.GroovyShellRunnerImpl.GROOVY_SHELL_FILE;
 
 /**
  * @author peter
  */
-public class GroovyCompletionConfidence extends CompletionConfidence
-{
+public class GroovyCompletionConfidence extends CompletionConfidence {
 
-	@Nonnull
-	@Override
-	public ThreeState shouldFocusLookup(@Nonnull CompletionParameters completionParameters)
-	{
-		return ThreeState.UNSURE;
-	}
+  @Nonnull
+  @Override
+  public ThreeState shouldSkipAutopopup(@Nonnull PsiElement contextElement, @Nonnull PsiFile psiFile, int offset) {
+    if (CodeInsightSettings.getInstance().SELECT_AUTOPOPUP_SUGGESTIONS_BY_CHARS && psiFile.getUserData(GROOVY_SHELL_FILE) == Boolean.TRUE) {
+      return ThreeState.YES;
+    }
 
-	@Nonnull
-	@Override
-	public ThreeState shouldSkipAutopopup(@Nonnull PsiElement contextElement, @Nonnull PsiFile psiFile, int offset)
-	{
-		if(CodeInsightSettings.getInstance().SELECT_AUTOPOPUP_SUGGESTIONS_BY_CHARS && psiFile.getUserData(GROOVY_SHELL_FILE) == Boolean.TRUE)
-		{
-			return ThreeState.YES;
-		}
+    if (PsiImplUtil.isLeafElementOfType(contextElement, TokenSets.STRING_LITERALS)) {
+      @SuppressWarnings("ConstantConditions") PsiElement parent = contextElement.getParent();
+      if (parent != null) {
+        for (PsiReference reference : parent.getReferences()) {
+          if (!reference.isSoft() && reference.getRangeInElement().shiftRight(parent.getTextOffset()).containsOffset(offset)) {
+            return ThreeState.NO;
+          }
+        }
+      }
 
-		if(PsiImplUtil.isLeafElementOfType(contextElement, TokenSets.STRING_LITERALS))
-		{
-			@SuppressWarnings("ConstantConditions") PsiElement parent = contextElement.getParent();
-			if(parent != null)
-			{
-				for(PsiReference reference : parent.getReferences())
-				{
-					if(!reference.isSoft() && reference.getRangeInElement().shiftRight(parent.getTextOffset()).containsOffset(offset))
-					{
-						return ThreeState.NO;
-					}
-				}
-			}
+      return ThreeState.YES;
+    }
 
-			return ThreeState.YES;
-		}
+    if (PsiJavaPatterns.psiElement().afterLeaf("def").accepts(contextElement)) {
+      return ThreeState.YES;
+    }
+    if (contextElement.textMatches("..") || contextElement.textMatches("...")) {
+      return ThreeState.YES;
+    }
 
-		if(PsiJavaPatterns.psiElement().afterLeaf("def").accepts(contextElement))
-		{
-			return ThreeState.YES;
-		}
-		if(contextElement.textMatches("..") || contextElement.textMatches("..."))
-		{
-			return ThreeState.YES;
-		}
+    return ThreeState.UNSURE;
+  }
 
-		return ThreeState.UNSURE;
-	}
+  @Nonnull
+  @Override
+  public Language getLanguage() {
+    return GroovyLanguage.INSTANCE;
+  }
 }

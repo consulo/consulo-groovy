@@ -18,6 +18,8 @@ package org.jetbrains.plugins.groovy.lang.psi.impl.statements.clauses;
 
 import javax.annotation.Nonnull;
 
+import consulo.language.ast.ASTNode;
+import consulo.language.util.IncorrectOperationException;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.GrCondition;
@@ -26,8 +28,6 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpres
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameter;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameterList;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyPsiElementImpl;
-import com.intellij.lang.ASTNode;
-import com.intellij.util.IncorrectOperationException;
 
 /**
  * @author ilyas

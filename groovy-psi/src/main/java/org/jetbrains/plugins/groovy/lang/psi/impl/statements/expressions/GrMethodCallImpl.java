@@ -15,18 +15,13 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions;
 
-import javax.annotation.Nonnull;
-
-import com.intellij.lang.ASTNode;
-import com.intellij.navigation.ItemPresentation;
-import com.intellij.navigation.ItemPresentationProviders;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiMethod;
-import com.intellij.psi.PsiType;
-import com.intellij.util.Function;
-import com.intellij.util.IncorrectOperationException;
-
-import javax.annotation.Nullable;
+import com.intellij.java.language.psi.PsiMethod;
+import com.intellij.java.language.psi.PsiType;
+import consulo.language.ast.ASTNode;
+import consulo.language.psi.PsiElement;
+import consulo.language.util.IncorrectOperationException;
+import consulo.navigation.ItemPresentation;
+import consulo.navigation.ItemPresentationProvider;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrMethodCall;
@@ -35,6 +30,10 @@ import org.jetbrains.plugins.groovy.lang.psi.dataFlow.types.TypeInferenceHelper;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.path.GrCallExpressionImpl;
 import org.jetbrains.plugins.groovy.lang.psi.typeEnhancers.GrCallExpressionTypeCalculator;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.function.Function;
+
 /**
  * @author Maxim.Medvedev
  */
@@ -42,7 +41,7 @@ public abstract class GrMethodCallImpl extends GrCallExpressionImpl implements G
   private static final Function<GrMethodCall, PsiType> METHOD_CALL_TYPES_CALCULATOR = new Function<GrMethodCall, PsiType>() {
     @Override
     @Nullable
-    public PsiType fun(GrMethodCall callExpression) {
+    public PsiType apply(GrMethodCall callExpression) {
       GroovyResolveResult[] resolveResults;
 
       GrExpression invokedExpression = callExpression.getInvokedExpression();
@@ -53,7 +52,7 @@ public abstract class GrMethodCallImpl extends GrCallExpressionImpl implements G
         resolveResults = GroovyResolveResult.EMPTY_ARRAY;
       }
 
-      for (GrCallExpressionTypeCalculator typeCalculator : GrCallExpressionTypeCalculator.EP_NAME.getExtensions()) {
+      for (GrCallExpressionTypeCalculator typeCalculator : GrCallExpressionTypeCalculator.EP_NAME.getExtensionList()) {
           PsiType res = typeCalculator.calculateReturnType(callExpression, resolveResults);
         if (res != null) {
           return res;
@@ -131,6 +130,6 @@ public abstract class GrMethodCallImpl extends GrCallExpressionImpl implements G
 
   @Override
   public ItemPresentation getPresentation() {
-    return ItemPresentationProviders.getItemPresentation(this);
+    return ItemPresentationProvider.getItemPresentation(this);
   }
 }

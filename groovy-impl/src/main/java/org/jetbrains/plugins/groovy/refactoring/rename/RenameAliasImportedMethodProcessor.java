@@ -15,23 +15,23 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.rename;
 
-import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.*;
-import com.intellij.psi.search.searches.OverridingMethodsSearch;
-import com.intellij.refactoring.RefactoringBundle;
-import com.intellij.refactoring.listeners.RefactoringElementListener;
-import com.intellij.refactoring.rename.RenameDialog;
-import com.intellij.refactoring.rename.RenameJavaMethodProcessor;
-import com.intellij.refactoring.rename.RenameUtil;
-import com.intellij.refactoring.rename.UnresolvableCollisionUsageInfo;
-import com.intellij.usageView.UsageInfo;
-import com.intellij.util.IncorrectOperationException;
-import com.intellij.util.Processor;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.intellij.java.impl.refactoring.rename.RenameJavaMethodProcessor;
+import com.intellij.java.indexing.search.searches.OverridingMethodsSearch;
+import com.intellij.java.language.psi.PsiMethod;
+import com.intellij.java.language.psi.PsiReferenceExpression;
+import consulo.application.util.function.Processor;
+import consulo.codeEditor.Editor;
+import consulo.document.Document;
+import consulo.document.util.TextRange;
+import consulo.language.editor.refactoring.RefactoringBundle;
+import consulo.language.editor.refactoring.event.RefactoringElementListener;
+import consulo.language.editor.refactoring.rename.RenameDialog;
+import consulo.language.editor.refactoring.rename.RenameUtil;
+import consulo.language.editor.refactoring.rename.UnresolvableCollisionUsageInfo;
+import consulo.language.psi.*;
+import consulo.language.util.IncorrectOperationException;
+import consulo.project.Project;
+import consulo.usage.UsageInfo;
 import org.jetbrains.plugins.groovy.lang.psi.GrReferenceElement;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
@@ -41,6 +41,8 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpres
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
 import org.jetbrains.plugins.groovy.refactoring.GroovyRefactoringBundle;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.*;
 
 import static org.jetbrains.plugins.groovy.lang.psi.util.GroovyPropertyUtils.*;
@@ -74,7 +76,8 @@ public class RenameAliasImportedMethodProcessor extends RenameJavaMethodProcesso
   public void renameElement(PsiElement psiElement,
                             String newName,
                             UsageInfo[] usages,
-                            @Nullable RefactoringElementListener listener) throws IncorrectOperationException {
+                            @Nullable RefactoringElementListener listener) throws IncorrectOperationException
+  {
     boolean isGetter = isSimplePropertyGetter((PsiMethod)psiElement);
     boolean isSetter = isSimplePropertySetter((PsiMethod)psiElement);
 

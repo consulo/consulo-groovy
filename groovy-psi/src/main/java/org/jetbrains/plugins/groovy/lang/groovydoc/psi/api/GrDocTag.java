@@ -16,7 +16,8 @@
 
 package org.jetbrains.plugins.groovy.lang.groovydoc.psi.api;
 
-import com.intellij.psi.javadoc.PsiDocTag;
+import com.intellij.java.language.psi.javadoc.PsiDocTag;
+
 import javax.annotation.Nullable;
 
 /**
@@ -27,7 +28,7 @@ public interface GrDocTag extends GroovyDocPsiElement, PsiDocTag {
 
   GrDocComment getContainingComment();
 
-  @javax.annotation.Nullable
+  @Nullable
   GrDocTagValueToken getValueElement();
 
   @Nullable

@@ -15,12 +15,38 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.synthetic;
 
-import java.util.Collection;
-import java.util.List;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
+import com.intellij.java.language.impl.psi.impl.InheritanceImplUtil;
+import com.intellij.java.language.impl.psi.impl.JavaPsiImplementationHelper;
+import com.intellij.java.language.impl.psi.impl.PsiClassImplUtil;
+import com.intellij.java.language.impl.psi.impl.PsiSuperMethodImplUtil;
+import com.intellij.java.language.impl.psi.impl.light.LightMethodBuilder;
+import com.intellij.java.language.impl.psi.impl.light.LightModifierList;
+import com.intellij.java.language.psi.*;
+import com.intellij.java.language.psi.javadoc.PsiDocComment;
+import com.intellij.java.language.psi.util.PsiUtil;
+import consulo.application.util.CachedValueProvider;
+import consulo.application.util.RecursionManager;
+import consulo.application.util.function.Computable;
+import consulo.component.util.Iconable;
+import consulo.document.util.TextRange;
+import consulo.language.icon.IconDescriptorUpdaters;
+import consulo.language.impl.psi.LightElement;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiElementVisitor;
+import consulo.language.psi.SyntheticElement;
+import consulo.language.psi.resolve.PsiScopeProcessor;
+import consulo.language.psi.resolve.ResolveState;
+import consulo.language.psi.util.LanguageCachedValueUtil;
+import consulo.language.util.IncorrectOperationException;
+import consulo.navigation.ItemPresentation;
+import consulo.ui.image.Image;
+import consulo.util.collection.ContainerUtil;
+import consulo.util.io.FileUtil;
+import consulo.util.io.PathUtil;
+import consulo.util.lang.Pair;
+import consulo.util.lang.StringUtil;
+import consulo.util.lang.function.Condition;
+import consulo.util.lang.ref.Ref;
 import org.jetbrains.plugins.groovy.GroovyLanguage;
 import org.jetbrains.plugins.groovy.dsl.GroovyDslFileIndex;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
@@ -31,34 +57,12 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariableDeclaratio
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeElement;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames;
-import com.intellij.navigation.ItemPresentation;
-import com.intellij.openapi.util.Computable;
-import com.intellij.openapi.util.Condition;
-import com.intellij.openapi.util.Iconable;
-import com.intellij.openapi.util.Pair;
-import com.intellij.openapi.util.RecursionManager;
-import com.intellij.openapi.util.Ref;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.openapi.util.io.FileUtilRt;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.*;
-import com.intellij.psi.impl.InheritanceImplUtil;
-import com.intellij.psi.impl.JavaPsiImplementationHelper;
-import com.intellij.psi.impl.PsiClassImplUtil;
-import com.intellij.psi.impl.PsiSuperMethodImplUtil;
-import com.intellij.psi.impl.light.LightElement;
-import com.intellij.psi.impl.light.LightMethodBuilder;
-import com.intellij.psi.impl.light.LightModifierList;
-import com.intellij.psi.javadoc.PsiDocComment;
-import com.intellij.psi.scope.PsiScopeProcessor;
-import com.intellij.psi.util.CachedValueProvider;
-import com.intellij.psi.util.CachedValuesManager;
-import com.intellij.psi.util.PsiUtil;
-import com.intellij.util.IncorrectOperationException;
-import com.intellij.util.PathUtil;
-import com.intellij.util.containers.ContainerUtil;
-import consulo.ide.IconDescriptorUpdaters;
-import consulo.ui.image.Image;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
 
 /**
  * @author ven
@@ -204,7 +208,7 @@ public class GroovyScriptClass extends LightElement implements PsiClass, Synthet
     return RecursionManager.doPreventingRecursion(this, false, new Computable<PsiClassType>() {
       @Override
       public PsiClassType compute() {
-        return CachedValuesManager.getCachedValue(myFile, new CachedValueProvider<PsiClassType>() {
+        return LanguageCachedValueUtil.getCachedValue(myFile, new CachedValueProvider<PsiClassType>() {
           @Nullable
           @Override
           public Result<PsiClassType> compute() {
@@ -300,7 +304,7 @@ public class GroovyScriptClass extends LightElement implements PsiClass, Synthet
   @Override
   @Nonnull
   public PsiMethod[] getMethods() {
-    return CachedValuesManager.getCachedValue(this, new CachedValueProvider<PsiMethod[]>() {
+    return LanguageCachedValueUtil.getCachedValue(this, new CachedValueProvider<PsiMethod[]>() {
       @Nullable
       @Override
       public Result<PsiMethod[]> compute() {
@@ -354,14 +358,20 @@ public class GroovyScriptClass extends LightElement implements PsiClass, Synthet
   private synchronized void initMethods() {
     if (myInitialized) return;
     myMainMethod = new LightMethodBuilder(getManager(), GroovyLanguage.INSTANCE, "main").
-      setContainingClass(this).
-      setMethodReturnType(PsiType.VOID).
-      addParameter("args", new PsiArrayType(PsiType.getJavaLangString(getManager(), getResolveScope()))).
-      addModifiers(PsiModifier.PUBLIC, PsiModifier.STATIC);
+                                                                                          setContainingClass(this).
+                                                                                          setMethodReturnType(PsiType.VOID).
+                                                                                          addParameter("args",
+                                                                                                       new PsiArrayType(PsiType.getJavaLangString(
+                                                                                                         getManager(),
+                                                                                                         getResolveScope()))).
+                                                                                          addModifiers(PsiModifier.PUBLIC,
+                                                                                                       PsiModifier.STATIC);
     myRunMethod = new LightMethodBuilder(getManager(), GroovyLanguage.INSTANCE, "run").
-      setContainingClass(this).
-      setMethodReturnType(TypesUtil.getJavaLangObject(this)).
-      addModifier(PsiModifier.PUBLIC);
+                                                                                        setContainingClass(this)
+                                                                                      .
+                                                                                        setMethodReturnType(TypesUtil.getJavaLangObject(this))
+                                                                                      .
+                                                                                        addModifier(PsiModifier.PUBLIC);
 
     myInitialized = true;
   }
@@ -492,7 +502,7 @@ public class GroovyScriptClass extends LightElement implements PsiClass, Synthet
   @Nullable
   public String getName() {
     String fileName = myFile.getName();
-    final String name = FileUtilRt.getNameWithoutExtension(fileName);
+    final String name = FileUtil.getNameWithoutExtension(fileName);
     if (StringUtil.isJavaIdentifier(name)) {
       return name;
     }
@@ -532,7 +542,7 @@ public class GroovyScriptClass extends LightElement implements PsiClass, Synthet
                                      @Nonnull final ResolveState state,
                                      @Nullable PsiElement lastParent,
                                      @Nonnull PsiElement place) {
-    return PsiClassImplUtil.processDeclarationsInClass(this, processor, state, ContainerUtil.<PsiClass>newHashSet(), lastParent, place,
+    return PsiClassImplUtil.processDeclarationsInClass(this, processor, state, new HashSet<>(), lastParent, place,
                                                        PsiUtil.getLanguageLevel(place), false);
   }
 

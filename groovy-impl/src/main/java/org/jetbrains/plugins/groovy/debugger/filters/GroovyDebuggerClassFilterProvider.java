@@ -15,8 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.debugger.filters;
 
-import com.intellij.ui.classFilter.ClassFilter;
-import com.intellij.ui.classFilter.DebuggerClassFilterProvider;
+import com.intellij.java.debugger.ui.classFilter.ClassFilter;
+import com.intellij.java.debugger.ui.classFilter.DebuggerClassFilterProvider;
 import org.jetbrains.plugins.groovy.debugger.GroovyDebuggerSettings;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames;
 

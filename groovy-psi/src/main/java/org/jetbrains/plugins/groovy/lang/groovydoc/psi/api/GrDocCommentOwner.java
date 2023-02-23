@@ -16,18 +16,19 @@
 
 package org.jetbrains.plugins.groovy.lang.groovydoc.psi.api;
 
+import com.intellij.java.language.psi.PsiDocCommentOwner;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
-import com.intellij.psi.PsiDocCommentOwner;
+
+import javax.annotation.Nullable;
 
 /**
  * @author Maxim.Medvedev
  */
-public interface GrDocCommentOwner extends GroovyPsiElement, PsiDocCommentOwner
-{
-	@Override
-	@javax.annotation.Nullable
-	GrDocComment getDocComment();
+public interface GrDocCommentOwner extends GroovyPsiElement, PsiDocCommentOwner {
+  @Override
+  @Nullable
+  GrDocComment getDocComment();
 
-	@Override
-	boolean isDeprecated();
+  @Override
+  boolean isDeprecated();
 }

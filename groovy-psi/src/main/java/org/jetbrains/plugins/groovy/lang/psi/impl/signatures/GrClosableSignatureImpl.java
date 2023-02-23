@@ -15,23 +15,22 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.signatures;
 
-import javax.annotation.Nonnull;
-
-import com.intellij.psi.PsiArrayType;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiSubstitutor;
-import com.intellij.psi.PsiType;
-import com.intellij.util.ArrayUtil;
-import com.intellij.util.Function;
-import com.intellij.util.containers.ContainerUtil;
-
-import javax.annotation.Nullable;
+import com.intellij.java.language.psi.PsiArrayType;
+import com.intellij.java.language.psi.PsiSubstitutor;
+import com.intellij.java.language.psi.PsiType;
+import consulo.language.psi.PsiElement;
+import consulo.util.collection.ArrayUtil;
+import consulo.util.collection.ContainerUtil;
 import org.jetbrains.plugins.groovy.lang.psi.api.signatures.GrClosureSignature;
 import org.jetbrains.plugins.groovy.lang.psi.api.signatures.GrSignature;
 import org.jetbrains.plugins.groovy.lang.psi.api.signatures.GrSignatureVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlock;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameter;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrClosureParameter;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.function.Function;
 
 /**
 * Created by Max Medvedev on 26/02/14
@@ -54,12 +53,7 @@ class GrClosableSignatureImpl implements GrClosureSignature {
   public GrClosureParameter[] getParameters() {
     GrParameter[] parameters = myBlock.getAllParameters();
 
-    return ContainerUtil.map(parameters, new Function<GrParameter, GrClosureParameter>() {
-      @Override
-      public GrClosureParameter fun(final GrParameter parameter) {
-        return createClosureParameter(parameter);
-      }
-    }, new GrClosureParameter[parameters.length]);
+    return ContainerUtil.map(parameters, parameter -> createClosureParameter(parameter), new GrClosureParameter[parameters.length]);
   }
 
   @Nonnull

@@ -4,12 +4,12 @@
  */
 package org.jetbrains.plugins.groovy.mvc;
 
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.module.ModuleManager;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.roots.WatchedRootsProvider;
-import javax.annotation.Nonnull;
+import consulo.module.Module;
+import consulo.module.ModuleManager;
+import consulo.project.Project;
+import consulo.project.content.WatchedRootsProvider;
 
+import javax.annotation.Nonnull;
 import java.io.File;
 import java.util.Collections;
 import java.util.HashSet;

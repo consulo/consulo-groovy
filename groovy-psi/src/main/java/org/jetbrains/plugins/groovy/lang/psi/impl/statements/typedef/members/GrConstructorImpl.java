@@ -16,16 +16,17 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.typedef.members;
 
-import javax.annotation.Nonnull;
+import consulo.application.util.CachedValueProvider;
+import consulo.language.ast.ASTNode;
+import consulo.language.psi.PsiModificationTracker;
+import consulo.language.psi.util.LanguageCachedValueUtil;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrReflectedMethod;
 import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GrReflectedMethodImpl;
 import org.jetbrains.plugins.groovy.lang.psi.stubs.GrMethodStub;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.util.CachedValueProvider;
-import com.intellij.psi.util.CachedValuesManager;
-import com.intellij.psi.util.PsiModificationTracker;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author Dmitry.Krasilschikov
@@ -51,11 +52,8 @@ public class GrConstructorImpl extends GrMethodBaseImpl implements GrMethod {
   @Nonnull
   @Override
   public GrReflectedMethod[] getReflectedMethods() {
-    return CachedValuesManager.getCachedValue(this, new CachedValueProvider<GrReflectedMethod[]>() {
-      @Override
-      public Result<GrReflectedMethod[]> compute() {
-        return Result.create(GrReflectedMethodImpl.createReflectedConstructors(GrConstructorImpl.this), PsiModificationTracker.OUT_OF_CODE_BLOCK_MODIFICATION_COUNT);
-      }
-    });
+    return LanguageCachedValueUtil.getCachedValue(this,
+                                                  () -> CachedValueProvider.Result.create(GrReflectedMethodImpl.createReflectedConstructors(
+                                                    GrConstructorImpl.this), PsiModificationTracker.OUT_OF_CODE_BLOCK_MODIFICATION_COUNT));
   }
 }

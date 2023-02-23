@@ -15,14 +15,14 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.api.statements;
 
-import com.intellij.psi.PsiField;
-import javax.annotation.Nonnull;
-
+import com.intellij.java.language.psi.PsiField;
 import org.jetbrains.plugins.groovy.extensions.NamedArgumentDescriptor;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocCommentOwner;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrAccessorMethod;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMember;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Map;
 
 /**
@@ -33,7 +33,7 @@ public interface GrField extends GrVariable, GrMember, PsiField, GrTopLevelDefin
 
   boolean isProperty();
 
-  @javax.annotation.Nullable
+  @Nullable
   GrAccessorMethod getSetter();
 
   @Nonnull

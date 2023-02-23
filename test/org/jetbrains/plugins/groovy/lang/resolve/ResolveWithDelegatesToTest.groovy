@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.lang.resolve
 
-import com.intellij.psi.PsiMethod
+import com.intellij.java.language.psi.PsiMethod
 import org.jetbrains.plugins.groovy.LightGroovyTestCase
 
 /**

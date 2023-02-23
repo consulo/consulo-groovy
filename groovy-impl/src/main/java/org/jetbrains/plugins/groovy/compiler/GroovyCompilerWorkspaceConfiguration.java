@@ -16,12 +16,13 @@
 
 package org.jetbrains.plugins.groovy.compiler;
 
+import consulo.component.persist.*;
 import consulo.disposer.Disposable;
-import com.intellij.openapi.compiler.options.ExcludedEntriesConfiguration;
-import com.intellij.openapi.components.PersistentStateComponent;
-import com.intellij.openapi.components.State;
-import com.intellij.openapi.components.Storage;
-import com.intellij.openapi.components.StoragePathMacros;
+import consulo.compiler.setting.ExcludedEntriesConfiguration;
+import consulo.component.persist.PersistentStateComponent;
+import consulo.component.persist.State;
+import consulo.component.persist.Storage;
+import consulo.component.persist.StoragePathMacros;
 import consulo.disposer.Disposer;
 
 /**

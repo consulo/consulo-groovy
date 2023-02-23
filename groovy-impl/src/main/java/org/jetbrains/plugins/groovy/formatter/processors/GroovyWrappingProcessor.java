@@ -16,6 +16,11 @@
 package org.jetbrains.plugins.groovy.formatter.processors;
 
 import javax.annotation.Nullable;
+
+import consulo.language.ast.*;
+import consulo.language.codeStyle.CommonCodeStyleSettings;
+import consulo.language.codeStyle.Wrap;
+import consulo.util.lang.StringUtil;
 import org.jetbrains.plugins.groovy.formatter.FormattingContext;
 import org.jetbrains.plugins.groovy.formatter.blocks.GroovyBlock;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
@@ -23,14 +28,14 @@ import org.jetbrains.plugins.groovy.lang.lexer.TokenSets;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.GrModifierList;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotation;
-import com.intellij.formatting.Wrap;
-import com.intellij.formatting.WrapType;
-import com.intellij.lang.ASTNode;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.codeStyle.CommonCodeStyleSettings;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.tree.TokenSet;
+import consulo.language.codeStyle.Wrap;
+import consulo.language.codeStyle.WrapType;
+import consulo.language.ast.ASTNode;
+import consulo.util.lang.StringUtil;
+import consulo.language.psi.PsiElement;
+import consulo.language.codeStyle.CommonCodeStyleSettings;
+import consulo.language.ast.IElementType;
+import consulo.language.ast.TokenSet;
 
 /**
  * @author Max Medvedev

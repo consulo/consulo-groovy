@@ -16,11 +16,11 @@
 package org.jetbrains.plugins.groovy.lang.overriding
 import com.intellij.codeInsight.generation.OverrideImplementUtil
 import com.intellij.openapi.application.ApplicationManager
-import com.intellij.psi.JavaPsiFacade
-import com.intellij.psi.PsiClassOwner
-import com.intellij.psi.PsiMethod
-import com.intellij.psi.impl.source.PostprocessReformattingAspect
-import com.intellij.psi.search.GlobalSearchScope
+import com.intellij.java.language.psi.JavaPsiFacade
+import com.intellij.java.language.psi.PsiClassOwner
+import com.intellij.java.language.psi.PsiMethod
+import com.intellij.java.language.psi.impl.source.PostprocessReformattingAspect
+import com.intellij.java.language.psi.search.GlobalSearchScope
 import org.jetbrains.plugins.groovy.LightGroovyTestCase
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition
 /**

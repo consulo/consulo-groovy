@@ -20,6 +20,10 @@ import static org.jetbrains.plugins.groovy.lang.psi.util.GroovyPropertyUtils.get
 import static org.jetbrains.plugins.groovy.lang.psi.util.GroovyPropertyUtils.isSimplePropertyGetter;
 import static org.jetbrains.plugins.groovy.lang.psi.util.GroovyPropertyUtils.isSimplePropertySetter;
 
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiManager;
+import consulo.logging.Logger;
+import consulo.util.lang.StringUtil;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
@@ -33,11 +37,11 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrAc
 import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyNamesUtil;
 import org.jetbrains.plugins.groovy.lang.psi.impl.PsiImplUtil;
 import org.jetbrains.plugins.groovy.lang.resolve.ResolveUtil;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiManager;
-import com.intellij.psi.PsiMethod;
+import consulo.logging.Logger;
+import consulo.util.lang.StringUtil;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiManager;
+import com.intellij.java.language.psi.PsiMethod;
 
 /**
  * @author Max Medvedev

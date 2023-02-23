@@ -15,23 +15,21 @@
  */
 package org.jetbrains.plugins.groovy.lang.completion;
 
-import java.util.ArrayList;
-
-import javax.annotation.Nonnull;
+import com.intellij.java.impl.codeInsight.completion.JavaChainLookupElement;
+import com.intellij.java.impl.codeInsight.completion.JavaCompletionUtil;
+import com.intellij.java.impl.codeInsight.completion.JavaMethodMergingContributor;
+import com.intellij.java.language.psi.PsiMethod;
+import com.intellij.java.language.psi.PsiParameter;
+import com.intellij.java.language.psi.PsiType;
+import consulo.language.Language;
+import consulo.language.editor.completion.*;
+import consulo.language.editor.completion.lookup.LookupElement;
+import org.jetbrains.plugins.groovy.GroovyLanguage;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames;
-import com.intellij.codeInsight.completion.AutoCompletionContext;
-import com.intellij.codeInsight.completion.AutoCompletionDecision;
-import com.intellij.codeInsight.completion.CompletionContributor;
-import com.intellij.codeInsight.completion.CompletionParameters;
-import com.intellij.codeInsight.completion.CompletionType;
-import com.intellij.codeInsight.completion.JavaChainLookupElement;
-import com.intellij.codeInsight.completion.JavaCompletionUtil;
-import com.intellij.codeInsight.completion.JavaMethodMergingContributor;
-import com.intellij.codeInsight.lookup.LookupElement;
-import com.intellij.psi.PsiMethod;
-import com.intellij.psi.PsiParameter;
-import com.intellij.psi.PsiType;
+
+import javax.annotation.Nonnull;
+import java.util.ArrayList;
 
 /**
  * @author Maxim.Medvedev
@@ -114,5 +112,12 @@ public class GrMethodMergingContributor extends CompletionContributor
 			}
 		}
 		return params.length > 0;
+	}
+
+	@Nonnull
+	@Override
+	public Language getLanguage()
+	{
+		return GroovyLanguage.INSTANCE;
 	}
 }

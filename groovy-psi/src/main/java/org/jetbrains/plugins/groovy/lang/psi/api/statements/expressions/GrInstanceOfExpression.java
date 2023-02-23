@@ -17,6 +17,7 @@
 package org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeElement;
 
@@ -24,7 +25,7 @@ import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeElement;
  * @author ven
  */
 public interface GrInstanceOfExpression extends GrExpression {
-  @javax.annotation.Nullable
+  @Nullable
   GrTypeElement getTypeElement();
 
   @Nonnull

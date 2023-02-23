@@ -15,22 +15,22 @@
  */
 package org.jetbrains.plugins.groovy.config;
 
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.module.ModuleManager;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.roots.impl.libraries.ProjectLibraryTable;
-import com.intellij.openapi.roots.libraries.Library;
-import com.intellij.openapi.roots.libraries.LibraryTable;
-import com.intellij.openapi.util.Condition;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.util.ArrayUtil;
-import com.intellij.util.containers.ContainerUtil;
+import consulo.content.library.Library;
+import consulo.content.library.LibraryTable;
+import consulo.module.Module;
+import consulo.module.ModuleManager;
+import consulo.project.Project;
+import consulo.project.content.library.ProjectLibraryTable;
+import consulo.util.collection.ArrayUtil;
+import consulo.util.collection.ContainerUtil;
+import consulo.util.lang.function.Condition;
+import consulo.virtualFileSystem.VirtualFile;
 import org.jetbrains.annotations.NonNls;
-import javax.annotation.Nonnull;
-
 import org.jetbrains.plugins.groovy.util.GroovyUtils;
 import org.jetbrains.plugins.groovy.util.LibrariesUtil;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -51,11 +51,7 @@ public abstract class AbstractConfigUtils {
   // SDK-dependent entities
   @NonNls protected String STARTER_SCRIPT_FILE_NAME;
 
-  private final Condition<Library> LIB_SEARCH_CONDITION = new Condition<Library>() {
-    public boolean value(Library library) {
-      return isSDKLibrary(library);
-    }
-  };
+  private final Condition<Library> LIB_SEARCH_CONDITION = library -> isSDKLibrary(library);
 
   // Common entities
   @NonNls public static final String UNDEFINED_VERSION = "undefined";
@@ -82,7 +78,7 @@ public abstract class AbstractConfigUtils {
    * @param manifestPath path to manifest file in jar file
    * @return value of Implementation-Version attribute, null if not found
    */
-  @javax.annotation.Nullable
+  @Nullable
   public static String getSDKJarVersion(String jarPath, final String jarRegex, String manifestPath) {
     return getSDKJarVersion(jarPath, Pattern.compile(jarRegex), manifestPath);
   }
@@ -96,7 +92,7 @@ public abstract class AbstractConfigUtils {
    * @param manifestPath path to manifest file in jar file
    * @return value of Implementation-Version attribute, null if not found
    */
-  @javax.annotation.Nullable
+  @Nullable
   public static String getSDKJarVersion(String jarPath, final Pattern jarPattern, String manifestPath) {
     try {
       File[] jars = GroovyUtils.getFilesInDirectoryByPattern(jarPath, jarPattern);
@@ -144,7 +140,7 @@ public abstract class AbstractConfigUtils {
     return all.toArray(new Library[all.size()]);
   }
 
-  public Library[] getAllSDKLibraries(@javax.annotation.Nullable Project project) {
+  public Library[] getAllSDKLibraries(@Nullable Project project) {
     return ArrayUtil.mergeArrays(getGlobalSDKLibraries(), getProjectSDKLibraries(project));
   }
 

@@ -15,18 +15,18 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.typeEnhancers;
 
-import com.intellij.psi.JavaPsiFacade;
-import com.intellij.psi.PsiMethod;
-import com.intellij.psi.PsiSubstitutor;
-import com.intellij.psi.PsiType;
-import com.intellij.util.Function;
-import com.intellij.util.IncorrectOperationException;
-import com.intellij.util.containers.ContainerUtil;
+import com.intellij.java.language.psi.JavaPsiFacade;
+import com.intellij.java.language.psi.PsiMethod;
+import com.intellij.java.language.psi.PsiSubstitutor;
+import com.intellij.java.language.psi.PsiType;
+import consulo.language.util.IncorrectOperationException;
+import consulo.util.collection.ContainerUtil;
 import org.codehaus.groovy.runtime.DefaultGroovyMethods;
-import javax.annotation.Nonnull;
 
+import javax.annotation.Nonnull;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Function;
 
 /**
  * Created by Max Medvedev on 28/02/14
@@ -44,7 +44,7 @@ public class SimpleTypeHintProcessor extends SignatureHintProcessor {
                                                  @Nonnull String[] options) {
     return Collections.singletonList(ContainerUtil.map(options, new Function<String, PsiType>() {
       @Override
-      public PsiType fun(String value) {
+      public PsiType apply(String value) {
         try {
           PsiType type = JavaPsiFacade.getElementFactory(method.getProject()).createTypeFromText(value, method);
           return DefaultGroovyMethods.asBoolean(type) ? type : PsiType.NULL;

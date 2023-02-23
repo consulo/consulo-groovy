@@ -17,8 +17,8 @@ package org.jetbrains.plugins.groovy.annotator.intentions.dynamic.elements;
 
 import javax.annotation.Nonnull;
 
-import com.intellij.psi.PsiManager;
-import com.intellij.psi.PsiNamedElement;
+import consulo.language.psi.PsiManager;
+import consulo.language.psi.PsiNamedElement;
 
 import javax.annotation.Nullable;
 
@@ -39,7 +39,7 @@ public abstract class DItemElement implements DNamedElement, DTypedElement, Comp
 //  @NotNull
   public String myHighlightedText = null;
 
-  public DItemElement(@Nullable Boolean isStatic, @javax.annotation.Nullable String name, @javax.annotation.Nullable String type) {
+  public DItemElement(@Nullable Boolean isStatic, @Nullable String name, @Nullable String type) {
     myStatic = isStatic;
     myName = name;
     myType = type;

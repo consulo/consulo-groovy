@@ -15,16 +15,23 @@
  */
 package org.jetbrains.plugins.groovy.codeStyle;
 
-import javax.annotation.Nonnull;
-
-import consulo.psi.PsiPackage;
+import com.intellij.java.impl.psi.codeStyle.ReferenceAdjuster;
+import com.intellij.java.language.psi.JavaPsiFacade;
+import com.intellij.java.language.psi.PsiClass;
+import com.intellij.java.language.psi.PsiResolveHelper;
+import consulo.document.util.TextRange;
+import consulo.language.Language;
+import consulo.language.ast.ASTNode;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiPackage;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.project.Project;
+import consulo.util.collection.ArrayUtil;
+import consulo.util.lang.StringUtil;
+import org.jetbrains.plugins.groovy.GroovyLanguage;
 import org.jetbrains.plugins.groovy.debugger.fragments.GroovyCodeFragment;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocComment;
-import org.jetbrains.plugins.groovy.lang.psi.GrQualifiedReference;
-import org.jetbrains.plugins.groovy.lang.psi.GrReferenceElement;
-import org.jetbrains.plugins.groovy.lang.psi.GroovyFileBase;
-import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
-import org.jetbrains.plugins.groovy.lang.psi.GroovyRecursiveElementVisitor;
+import org.jetbrains.plugins.groovy.lang.psi.*;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrMethodCall;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
@@ -36,345 +43,287 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyCodeStyleSettingsFacade;
 import org.jetbrains.plugins.groovy.lang.psi.impl.PsiImplUtil;
 import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GrBindingVariable;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
-import com.intellij.lang.ASTNode;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.JavaPsiFacade;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiResolveHelper;
-import com.intellij.psi.codeStyle.ReferenceAdjuster;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.ArrayUtil;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author Max Medvedev
  */
-public class GrReferenceAdjuster implements ReferenceAdjuster
-{
-	public GrReferenceAdjuster()
-	{
-		@SuppressWarnings("UnusedDeclaration") int i = 0;
-	}
+public class GrReferenceAdjuster implements ReferenceAdjuster {
+  public GrReferenceAdjuster() {
+    @SuppressWarnings("UnusedDeclaration") int i = 0;
+  }
 
-	public static void shortenAllReferencesIn(@javax.annotation.Nullable GroovyPsiElement newTypeElement)
-	{
-		if(newTypeElement != null)
-		{
-			newTypeElement.accept(new GroovyRecursiveElementVisitor()
-			{
-				@Override
-				public void visitCodeReferenceElement(GrCodeReferenceElement refElement)
-				{
-					super.visitCodeReferenceElement(refElement);
-					shortenReference(refElement);
-				}
-			});
-		}
-	}
+  public static void shortenAllReferencesIn(@Nullable GroovyPsiElement newTypeElement) {
+    if (newTypeElement != null) {
+      newTypeElement.accept(new GroovyRecursiveElementVisitor() {
+        @Override
+        public void visitCodeReferenceElement(GrCodeReferenceElement refElement) {
+          super.visitCodeReferenceElement(refElement);
+          shortenReference(refElement);
+        }
+      });
+    }
+  }
 
-	@Override
-	public ASTNode process(@Nonnull ASTNode element,
-			boolean addImports,
-			boolean incompleteCode,
-			boolean useFqInJavadoc,
-			boolean useFqInCode)
-	{
-		final TextRange range = element.getTextRange();
-		process(element.getPsi(), range.getStartOffset(), range.getEndOffset(), addImports, incompleteCode,
-				useFqInJavadoc, useFqInCode);
-		return element;
-	}
+  @Override
+  public ASTNode process(@Nonnull ASTNode element,
+                         boolean addImports,
+                         boolean incompleteCode,
+                         boolean useFqInJavadoc,
+                         boolean useFqInCode) {
+    final TextRange range = element.getTextRange();
+    process(element.getPsi(), range.getStartOffset(), range.getEndOffset(), addImports, incompleteCode,
+            useFqInJavadoc, useFqInCode);
+    return element;
+  }
 
-	@Override
-	public ASTNode process(@Nonnull ASTNode element, boolean addImports, boolean incompleteCode, Project project)
-	{
-		GroovyCodeStyleSettingsFacade facade = GroovyCodeStyleSettingsFacade.getInstance(project);
-		return process(element, addImports, incompleteCode, facade.useFqClassNamesInJavadoc(),
-				facade.useFqClassNames());
-	}
+  @Override
+  public ASTNode process(@Nonnull ASTNode element, boolean addImports, boolean incompleteCode, Project project) {
+    GroovyCodeStyleSettingsFacade facade = GroovyCodeStyleSettingsFacade.getInstance(project);
+    return process(element, addImports, incompleteCode, facade.useFqClassNamesInJavadoc(),
+                   facade.useFqClassNames());
+  }
 
-	@Override
-	public void processRange(@Nonnull ASTNode element,
-			int startOffset,
-			int endOffset,
-			boolean useFqInJavadoc,
-			boolean useFqInCode)
-	{
-		process(element.getPsi(), startOffset, endOffset, true, true, useFqInJavadoc, useFqInCode);
-	}
+  @Override
+  public void processRange(@Nonnull ASTNode element,
+                           int startOffset,
+                           int endOffset,
+                           boolean useFqInJavadoc,
+                           boolean useFqInCode) {
+    process(element.getPsi(), startOffset, endOffset, true, true, useFqInJavadoc, useFqInCode);
+  }
 
-	@Override
-	public void processRange(@Nonnull ASTNode element, int startOffset, int endOffset, Project project)
-	{
-		GroovyCodeStyleSettingsFacade facade = GroovyCodeStyleSettingsFacade.getInstance(project);
-		processRange(element, startOffset, endOffset, facade.useFqClassNamesInJavadoc(), facade.useFqClassNames());
-	}
+  @Override
+  public void processRange(@Nonnull ASTNode element, int startOffset, int endOffset, Project project) {
+    GroovyCodeStyleSettingsFacade facade = GroovyCodeStyleSettingsFacade.getInstance(project);
+    processRange(element, startOffset, endOffset, facade.useFqClassNamesInJavadoc(), facade.useFqClassNames());
+  }
 
-	private static boolean process(@Nonnull PsiElement element,
-			int start,
-			int end,
-			boolean addImports,
-			boolean incomplete,
-			boolean useFqInJavadoc,
-			boolean useFqInCode)
-	{
-		boolean result = false;
-		if(element instanceof GrQualifiedReference<?> && ((GrQualifiedReference) element).resolve() instanceof
-				PsiClass)
-		{
-			result = shortenReferenceInner((GrQualifiedReference<?>) element, addImports, incomplete, useFqInJavadoc,
-					useFqInCode);
-		}
-		else if(element instanceof GrReferenceExpression && PsiUtil.isSuperReference(((GrReferenceExpression) element)
-				.getQualifier()))
-		{
-			result = shortenReferenceInner((GrReferenceExpression) element, addImports, incomplete, useFqInJavadoc,
-					useFqInCode);
-		}
+  private static boolean process(@Nonnull PsiElement element,
+                                 int start,
+                                 int end,
+                                 boolean addImports,
+                                 boolean incomplete,
+                                 boolean useFqInJavadoc,
+                                 boolean useFqInCode) {
+    boolean result = false;
+    if (element instanceof GrQualifiedReference<?> && ((GrQualifiedReference)element).resolve() instanceof
+      PsiClass) {
+      result = shortenReferenceInner((GrQualifiedReference<?>)element, addImports, incomplete, useFqInJavadoc,
+                                     useFqInCode);
+    }
+    else if (element instanceof GrReferenceExpression && PsiUtil.isSuperReference(((GrReferenceExpression)element)
+                                                                                    .getQualifier())) {
+      result = shortenReferenceInner((GrReferenceExpression)element, addImports, incomplete, useFqInJavadoc,
+                                     useFqInCode);
+    }
 
-		PsiElement child = element.getFirstChild();
-		while(child != null)
-		{
-			final TextRange range = child.getTextRange();
-			if(start < range.getEndOffset() && range.getStartOffset() < end)
-			{
-				result |= process(child, start, end, addImports, incomplete, useFqInJavadoc, useFqInCode);
-			}
-			child = child.getNextSibling();
-		}
-		return result;
-	}
+    PsiElement child = element.getFirstChild();
+    while (child != null) {
+      final TextRange range = child.getTextRange();
+      if (start < range.getEndOffset() && range.getStartOffset() < end) {
+        result |= process(child, start, end, addImports, incomplete, useFqInJavadoc, useFqInCode);
+      }
+      child = child.getNextSibling();
+    }
+    return result;
+  }
 
-	public static <T extends PsiElement> boolean shortenReference(@Nonnull GrQualifiedReference<T> ref)
-	{
-		GroovyCodeStyleSettingsFacade facade = GroovyCodeStyleSettingsFacade.getInstance(ref.getProject());
-		boolean result = shortenReferenceInner(ref, true, false, facade.useFqClassNamesInJavadoc(),
-				facade.useFqClassNames());
-		final TextRange range = ref.getTextRange();
-		result |= process(ref, range.getStartOffset(), range.getEndOffset(), true, false,
-				facade.useFqClassNamesInJavadoc(), facade.useFqClassNames());
-		return result;
-	}
+  public static <T extends PsiElement> boolean shortenReference(@Nonnull GrQualifiedReference<T> ref) {
+    GroovyCodeStyleSettingsFacade facade = GroovyCodeStyleSettingsFacade.getInstance(ref.getProject());
+    boolean result = shortenReferenceInner(ref, true, false, facade.useFqClassNamesInJavadoc(),
+                                           facade.useFqClassNames());
+    final TextRange range = ref.getTextRange();
+    result |= process(ref, range.getStartOffset(), range.getEndOffset(), true, false,
+                      facade.useFqClassNamesInJavadoc(), facade.useFqClassNames());
+    return result;
+  }
 
-	private static <Qualifier extends PsiElement> boolean shortenReferenceInner(@Nonnull
-	GrQualifiedReference<Qualifier> ref,
-			boolean addImports,
-			boolean incomplete,
-			boolean useFqInJavadoc,
-			boolean useFqInCode)
-	{
+  private static <Qualifier extends PsiElement> boolean shortenReferenceInner(@Nonnull
+                                                                                GrQualifiedReference<Qualifier> ref,
+                                                                              boolean addImports,
+                                                                              boolean incomplete,
+                                                                              boolean useFqInJavadoc,
+                                                                              boolean useFqInCode) {
 
-		final Qualifier qualifier = ref.getQualifier();
-		if(qualifier == null || PsiUtil.isSuperReference(qualifier) || cannotShortenInContext(ref))
-		{
-			return false;
-		}
+    final Qualifier qualifier = ref.getQualifier();
+    if (qualifier == null || PsiUtil.isSuperReference(qualifier) || cannotShortenInContext(ref)) {
+      return false;
+    }
 
-		if(ref instanceof GrReferenceExpression)
-		{
-			final GrTypeArgumentList typeArgs = ((GrReferenceExpression) ref).getTypeArgumentList();
-			if(typeArgs != null && typeArgs.getTypeArgumentElements().length > 0)
-			{
-				return false;
-			}
-		}
+    if (ref instanceof GrReferenceExpression) {
+      final GrTypeArgumentList typeArgs = ((GrReferenceExpression)ref).getTypeArgumentList();
+      if (typeArgs != null && typeArgs.getTypeArgumentElements().length > 0) {
+        return false;
+      }
+    }
 
-		if(!shorteningIsMeaningfully(ref, useFqInJavadoc, useFqInCode))
-		{
-			return false;
-		}
+    if (!shorteningIsMeaningfully(ref, useFqInJavadoc, useFqInCode)) {
+      return false;
+    }
 
-		final PsiElement resolved = resolveRef(ref, incomplete);
-		if(resolved == null)
-		{
-			return false;
-		}
+    final PsiElement resolved = resolveRef(ref, incomplete);
+    if (resolved == null) {
+      return false;
+    }
 
-		if(!checkCopyWithoutQualifier(ref, addImports, resolved))
-		{
-			return false;
-		}
-		ref.setQualifier(null);
-		return true;
-	}
+    if (!checkCopyWithoutQualifier(ref, addImports, resolved)) {
+      return false;
+    }
+    ref.setQualifier(null);
+    return true;
+  }
 
-	private static <Qualifier extends PsiElement> boolean checkCopyWithoutQualifier(@Nonnull
-	GrQualifiedReference<Qualifier> ref,
-			boolean addImports,
-			@Nonnull PsiElement resolved)
-	{
-		final GrQualifiedReference<Qualifier> copy = getCopy(ref);
-		if(copy == null)
-		{
-			return false;
-		}
-		copy.setQualifier(null);
+  private static <Qualifier extends PsiElement> boolean checkCopyWithoutQualifier(@Nonnull
+                                                                                    GrQualifiedReference<Qualifier> ref,
+                                                                                  boolean addImports,
+                                                                                  @Nonnull PsiElement resolved) {
+    final GrQualifiedReference<Qualifier> copy = getCopy(ref);
+    if (copy == null) {
+      return false;
+    }
+    copy.setQualifier(null);
 
-		final PsiElement resolvedCopy = copy.resolve();
-		if(ref.getManager().areElementsEquivalent(resolved, resolvedCopy))
-		{
-			return true;
-		}
-		else if(resolvedCopy != null && !(resolvedCopy instanceof GrBindingVariable) && !isFromDefaultPackage
-				(resolvedCopy))
-		{
-			return false;
-		}
+    final PsiElement resolvedCopy = copy.resolve();
+    if (ref.getManager().areElementsEquivalent(resolved, resolvedCopy)) {
+      return true;
+    }
+    else if (resolvedCopy != null && !(resolvedCopy instanceof GrBindingVariable) && !isFromDefaultPackage
+      (resolvedCopy)) {
+      return false;
+    }
 
-		if(resolved instanceof PsiClass)
-		{
-			final PsiClass clazz = (PsiClass) resolved;
-			final String qName = clazz.getQualifiedName();
-			if(qName != null && addImports && checkIsInnerClass(clazz, ref) && mayInsertImport(ref))
-			{
-				final GroovyFileBase file = (GroovyFileBase) ref.getContainingFile();
-				final GrImportStatement added = file.addImportForClass(clazz);
-				if(added != null)
-				{
-					if(copy.isReferenceTo(resolved))
-					{
-						return true;
-					}
-					file.removeImport(added);
-				}
-			}
-		}
+    if (resolved instanceof PsiClass) {
+      final PsiClass clazz = (PsiClass)resolved;
+      final String qName = clazz.getQualifiedName();
+      if (qName != null && addImports && checkIsInnerClass(clazz, ref) && mayInsertImport(ref)) {
+        final GroovyFileBase file = (GroovyFileBase)ref.getContainingFile();
+        final GrImportStatement added = file.addImportForClass(clazz);
+        if (added != null) {
+          if (copy.isReferenceTo(resolved)) {
+            return true;
+          }
+          file.removeImport(added);
+        }
+      }
+    }
 
-		return false;
-	}
+    return false;
+  }
 
-	private static boolean isFromDefaultPackage(@javax.annotation.Nullable PsiElement element)
-	{
-		if(element instanceof PsiClass)
-		{
-			String qname = ((PsiClass) element).getQualifiedName();
-			if(qname != null)
-			{
-				String packageName = StringUtil.getPackageName(qname);
-				if(ArrayUtil.contains(packageName, GroovyFileBase.IMPLICITLY_IMPORTED_PACKAGES))
-				{
-					return true;
-				}
-				if(ArrayUtil.contains(qname, GroovyFileBase.IMPLICITLY_IMPORTED_CLASSES))
-				{
-					return true;
-				}
-			}
-		}
+  private static boolean isFromDefaultPackage(@Nullable PsiElement element) {
+    if (element instanceof PsiClass) {
+      String qname = ((PsiClass)element).getQualifiedName();
+      if (qname != null) {
+        String packageName = StringUtil.getPackageName(qname);
+        if (ArrayUtil.contains(packageName, GroovyFileBase.IMPLICITLY_IMPORTED_PACKAGES)) {
+          return true;
+        }
+        if (ArrayUtil.contains(qname, GroovyFileBase.IMPLICITLY_IMPORTED_CLASSES)) {
+          return true;
+        }
+      }
+    }
 
-		return false;
-	}
+    return false;
+  }
 
-	private static <Qualifier extends PsiElement> boolean checkIsInnerClass(@Nonnull PsiClass resolved,
-			GrQualifiedReference<Qualifier> ref)
-	{
-		final PsiClass containingClass = resolved.getContainingClass();
-		return containingClass == null ||
-				PsiTreeUtil.isAncestor(containingClass, ref, true) ||
-				GroovyCodeStyleSettingsFacade.getInstance(containingClass.getProject()).insertInnerClassImports();
-	}
+  private static <Qualifier extends PsiElement> boolean checkIsInnerClass(@Nonnull PsiClass resolved,
+                                                                          GrQualifiedReference<Qualifier> ref) {
+    final PsiClass containingClass = resolved.getContainingClass();
+    return containingClass == null ||
+      PsiTreeUtil.isAncestor(containingClass, ref, true) ||
+      GroovyCodeStyleSettingsFacade.getInstance(containingClass.getProject()).insertInnerClassImports();
+  }
 
-	@javax.annotation.Nullable
-	private static <Qualifier extends PsiElement> PsiElement resolveRef(@Nonnull GrQualifiedReference<Qualifier> ref,
-			boolean incomplete)
-	{
-		if(!incomplete)
-		{
-			return ref.resolve();
-		}
+  @Nullable
+  private static <Qualifier extends PsiElement> PsiElement resolveRef(@Nonnull GrQualifiedReference<Qualifier> ref,
+                                                                      boolean incomplete) {
+    if (!incomplete) {
+      return ref.resolve();
+    }
 
-		PsiResolveHelper helper = JavaPsiFacade.getInstance(ref.getProject()).getResolveHelper();
-		if(ref instanceof GrReferenceElement)
-		{
-			final String classNameText = ((GrReferenceElement) ref).getClassNameText();
-			return helper.resolveReferencedClass(classNameText, ref);
-		}
-		return null;
-	}
+    PsiResolveHelper helper = JavaPsiFacade.getInstance(ref.getProject()).getResolveHelper();
+    if (ref instanceof GrReferenceElement) {
+      final String classNameText = ((GrReferenceElement)ref).getClassNameText();
+      return helper.resolveReferencedClass(classNameText, ref);
+    }
+    return null;
+  }
 
 
-	@SuppressWarnings("unchecked")
-	@javax.annotation.Nullable
-	private static <Qualifier extends PsiElement> GrQualifiedReference<Qualifier> getCopy(@Nonnull
-	GrQualifiedReference<Qualifier> ref)
-	{
-		if(ref.getParent() instanceof GrMethodCall)
-		{
-			final GrMethodCall copy = ((GrMethodCall) ref.getParent().copy());
-			return (GrQualifiedReference<Qualifier>) copy.getInvokedExpression();
-		}
-		return (GrQualifiedReference<Qualifier>) ref.copy();
-	}
+  @SuppressWarnings("unchecked")
+  @Nullable
+  private static <Qualifier extends PsiElement> GrQualifiedReference<Qualifier> getCopy(@Nonnull
+                                                                                          GrQualifiedReference<Qualifier> ref) {
+    if (ref.getParent() instanceof GrMethodCall) {
+      final GrMethodCall copy = ((GrMethodCall)ref.getParent().copy());
+      return (GrQualifiedReference<Qualifier>)copy.getInvokedExpression();
+    }
+    return (GrQualifiedReference<Qualifier>)ref.copy();
+  }
 
-	private static <Qualifier extends PsiElement> boolean shorteningIsMeaningfully(@Nonnull
-	GrQualifiedReference<Qualifier> ref,
-			boolean useFqInJavadoc,
-			boolean useFqInCode)
-	{
+  private static <Qualifier extends PsiElement> boolean shorteningIsMeaningfully(@Nonnull
+                                                                                   GrQualifiedReference<Qualifier> ref,
+                                                                                 boolean useFqInJavadoc,
+                                                                                 boolean useFqInCode) {
 
-		if(ref instanceof GrReferenceElementImpl && ((GrReferenceElementImpl) ref).isFullyQualified())
-		{
-			final GrDocComment doc = PsiTreeUtil.getParentOfType(ref, GrDocComment.class);
-			if(doc != null)
-			{
-				if(useFqInJavadoc)
-				{
-					return false;
-				}
-			}
-			else
-			{
-				if(useFqInCode)
-				{
-					return false;
-				}
-			}
-		}
+    if (ref instanceof GrReferenceElementImpl && ((GrReferenceElementImpl)ref).isFullyQualified()) {
+      final GrDocComment doc = PsiTreeUtil.getParentOfType(ref, GrDocComment.class);
+      if (doc != null) {
+        if (useFqInJavadoc) {
+          return false;
+        }
+      }
+      else {
+        if (useFqInCode) {
+          return false;
+        }
+      }
+    }
 
-		final Qualifier qualifier = ref.getQualifier();
+    final Qualifier qualifier = ref.getQualifier();
 
-		if(qualifier instanceof GrCodeReferenceElement)
-		{
-			return true;
-		}
+    if (qualifier instanceof GrCodeReferenceElement) {
+      return true;
+    }
 
-		if(qualifier instanceof GrExpression)
-		{
-			if(qualifier instanceof GrReferenceExpression && PsiUtil.isThisReference(qualifier))
-			{
-				return true;
-			}
-			if(qualifier instanceof GrReferenceExpression && PsiImplUtil.seemsToBeQualifiedClassName((GrExpression)
-					qualifier))
-			{
-				final PsiElement resolved = ((GrReferenceExpression) qualifier).resolve();
-				if(resolved instanceof PsiClass || resolved instanceof PsiPackage)
-				{
-					return true;
-				}
-			}
-		}
-		return false;
-	}
+    if (qualifier instanceof GrExpression) {
+      if (qualifier instanceof GrReferenceExpression && PsiUtil.isThisReference(qualifier)) {
+        return true;
+      }
+      if (qualifier instanceof GrReferenceExpression && PsiImplUtil.seemsToBeQualifiedClassName((GrExpression)
+                                                                                                  qualifier)) {
+        final PsiElement resolved = ((GrReferenceExpression)qualifier).resolve();
+        if (resolved instanceof PsiClass || resolved instanceof PsiPackage) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
 
-	private static <Qualifier extends PsiElement> boolean cannotShortenInContext(@Nonnull
-	GrQualifiedReference<Qualifier> ref)
-	{
-		return PsiTreeUtil.getParentOfType(ref, GrImportStatement.class) != null || PsiTreeUtil.getParentOfType(ref,
-				GroovyCodeFragment.class) != null;
-	}
+  private static <Qualifier extends PsiElement> boolean cannotShortenInContext(@Nonnull
+                                                                                 GrQualifiedReference<Qualifier> ref) {
+    return PsiTreeUtil.getParentOfType(ref, GrImportStatement.class) != null || PsiTreeUtil.getParentOfType(ref,
+                                                                                                            GroovyCodeFragment.class) != null;
+  }
 
-	private static <Qualifier extends PsiElement> boolean mayInsertImport(@Nonnull GrQualifiedReference<Qualifier> ref)
-	{
-		return !(ref.getContainingFile() instanceof GroovyCodeFragment) &&
-				PsiTreeUtil.getParentOfType(ref, GrImportStatement.class) == null &&
-				ref.getContainingFile() instanceof GroovyFileBase;
-	}
+  private static <Qualifier extends PsiElement> boolean mayInsertImport(@Nonnull GrQualifiedReference<Qualifier> ref) {
+    return !(ref.getContainingFile() instanceof GroovyCodeFragment) &&
+      PsiTreeUtil.getParentOfType(ref, GrImportStatement.class) == null &&
+      ref.getContainingFile() instanceof GroovyFileBase;
+  }
 
-	public static GrReferenceAdjuster getInstance()
-	{
-		return new GrReferenceAdjuster();
-	}
+  public static GrReferenceAdjuster getInstance() {
+    return new GrReferenceAdjuster();
+  }
+
+  @Nonnull
+  @Override
+  public Language getLanguage() {
+    return GroovyLanguage.INSTANCE;
+  }
 }

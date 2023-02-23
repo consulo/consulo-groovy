@@ -15,10 +15,15 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.synthetic;
 
-import com.intellij.psi.*;
-import com.intellij.psi.impl.cache.ModifierFlags;
-import com.intellij.psi.impl.light.LightElement;
-import com.intellij.util.IncorrectOperationException;
+import com.intellij.java.language.impl.psi.impl.cache.ModifierFlags;
+import com.intellij.java.language.psi.JavaElementVisitor;
+import com.intellij.java.language.psi.PsiAnnotation;
+import com.intellij.java.language.psi.PsiModifierList;
+import com.intellij.java.language.psi.PsiModifierListOwner;
+import consulo.language.impl.psi.LightElement;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiElementVisitor;
+import consulo.language.util.IncorrectOperationException;
 import org.intellij.lang.annotations.MagicConstant;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;

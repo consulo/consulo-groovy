@@ -15,8 +15,10 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.typeEnhancers;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.intellij.java.language.psi.PsiType;
+import consulo.annotation.component.ComponentScope;
+import consulo.annotation.component.ExtensionAPI;
+import consulo.component.extension.ExtensionPointName;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.branch.GrReturnStatement;
@@ -26,15 +28,17 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrTypeCa
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.literals.GrLiteral;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.ConversionResult;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
-import com.intellij.openapi.extensions.ExtensionPointName;
-import com.intellij.psi.PsiType;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author peter
  */
+@ExtensionAPI(ComponentScope.APPLICATION)
 public abstract class GrTypeConverter {
 
-  public static final ExtensionPointName<GrTypeConverter> EP_NAME = ExtensionPointName.create("org.intellij.groovy.typeConverter");
+  public static final ExtensionPointName<GrTypeConverter> EP_NAME = ExtensionPointName.create(GrTypeConverter.class);
 
   protected static boolean isMethodCallConversion(GroovyPsiElement context) {
     return PsiUtil.isInMethodCallContext(context);
@@ -62,7 +66,7 @@ public abstract class GrTypeConverter {
   }
 
   /**
-   * @deprecated see {@link #isApplicableTo(org.jetbrains.plugins.groovy.lang.psi.typeEnhancers.GrTypeConverter.ApplicableTo)}
+   * @deprecated see {@link #isApplicableTo(GrTypeConverter.ApplicableTo)}
    */
   @Deprecated
   public boolean isAllowedInMethodCall() {
@@ -86,7 +90,7 @@ public abstract class GrTypeConverter {
   }
 
   /**
-   * @deprecated see {@link #isConvertibleEx(com.intellij.psi.PsiType, com.intellij.psi.PsiType, org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement, org.jetbrains.plugins.groovy.lang.psi.typeEnhancers.GrTypeConverter.ApplicableTo)}
+   * @deprecated see {@link #isConvertibleEx(PsiType, PsiType, GroovyPsiElement, GrTypeConverter.ApplicableTo)}
    */
   @Deprecated
   @Nullable

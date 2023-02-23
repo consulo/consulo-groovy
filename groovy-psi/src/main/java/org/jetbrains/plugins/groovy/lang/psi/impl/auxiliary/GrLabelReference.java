@@ -21,16 +21,16 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
+import consulo.document.util.TextRange;
+import consulo.language.psi.PsiElement;
+import consulo.language.util.IncorrectOperationException;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrLabeledStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.branch.GrBreakStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.branch.GrContinueStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.branch.GrFlowInterruptingStatement;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiReference;
-import com.intellij.util.ArrayUtil;
-import com.intellij.util.IncorrectOperationException;
+import consulo.language.psi.PsiReference;
+import consulo.util.collection.ArrayUtil;
 
 /**
  * @author Maxim.Medvedev
@@ -74,7 +74,8 @@ public class GrLabelReference implements PsiReference {
   }
 
   @Override
-  public GrFlowInterruptingStatement handleElementRename(String newElementName) throws IncorrectOperationException {
+  public GrFlowInterruptingStatement handleElementRename(String newElementName) throws IncorrectOperationException
+  {
     if (myStatement instanceof GrBreakStatement) {
       myStatement = (GrFlowInterruptingStatement)myStatement.replaceWithStatement(
         GroovyPsiElementFactory.getInstance(myStatement.getProject()).createStatementFromText("break " + newElementName));

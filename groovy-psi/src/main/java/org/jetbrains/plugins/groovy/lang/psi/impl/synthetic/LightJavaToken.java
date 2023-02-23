@@ -15,12 +15,12 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.synthetic;
 
-import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiJavaToken;
-import com.intellij.psi.impl.light.LightElement;
-import com.intellij.psi.tree.IElementType;
+import com.intellij.java.language.psi.PsiJavaToken;
+import consulo.document.util.TextRange;
+import consulo.language.ast.IElementType;
+import consulo.language.impl.psi.LightElement;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
 
 /**
  * @author Medvedev Max

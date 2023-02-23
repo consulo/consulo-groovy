@@ -15,14 +15,15 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.signatures;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.intellij.java.language.psi.PsiParameter;
+import com.intellij.java.language.psi.PsiSubstitutor;
+import com.intellij.java.language.psi.PsiType;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameter;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrClosureParameter;
-import com.intellij.psi.PsiParameter;
-import com.intellij.psi.PsiSubstitutor;
-import com.intellij.psi.PsiType;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
 * Created by Max Medvedev on 14/03/14
@@ -62,7 +63,7 @@ class GrClosureParameterImpl implements GrClosureParameter {
     return myParameter.isValid();
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   @Override
   public String getName() {
     return myParameter.getName();

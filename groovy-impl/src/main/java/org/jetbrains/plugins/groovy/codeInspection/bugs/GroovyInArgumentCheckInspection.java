@@ -15,11 +15,9 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.bugs;
 
-import javax.annotation.Nonnull;
-
-import com.intellij.psi.*;
-import com.intellij.psi.util.InheritanceUtil;
-import com.intellij.psi.util.PsiUtil;
+import com.intellij.java.language.psi.*;
+import com.intellij.java.language.psi.util.InheritanceUtil;
+import com.intellij.java.language.psi.util.PsiUtil;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspectionVisitor;
@@ -28,6 +26,8 @@ import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrBinaryExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author Max Medvedev

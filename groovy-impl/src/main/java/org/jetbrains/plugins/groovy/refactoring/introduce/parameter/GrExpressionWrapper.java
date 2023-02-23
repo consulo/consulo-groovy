@@ -15,11 +15,12 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.introduce.parameter;
 
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiType;
-import com.intellij.refactoring.introduceParameter.IntroduceParameterData;
-import javax.annotation.Nonnull;
+import com.intellij.java.impl.refactoring.introduceParameter.IntroduceParameterData;
+import com.intellij.java.language.psi.PsiType;
+import consulo.language.psi.PsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author Maxim.Medvedev

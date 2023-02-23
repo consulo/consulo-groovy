@@ -16,6 +16,9 @@
 
 package org.jetbrains.plugins.groovy.lang.parser;
 
+import consulo.language.ast.ASTNode;
+import consulo.language.ast.IElementType;
+import consulo.language.psi.PsiElement;
 import org.jetbrains.plugins.groovy.lang.groovydoc.lexer.IGroovyDocElementType;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.GroovyDocPsiCreator;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyElementType;
@@ -77,10 +80,7 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.statements.typedef.members.GrM
 import org.jetbrains.plugins.groovy.lang.psi.impl.toplevel.imports.GrImportStatementImpl;
 import org.jetbrains.plugins.groovy.lang.psi.impl.toplevel.packaging.GrPackageDefinitionImpl;
 import org.jetbrains.plugins.groovy.lang.psi.impl.types.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.tree.IElementType;
+import consulo.language.impl.psi.ASTWrapperPsiElement;
 
 /**
  * Creates Groovy PSI element by given AST node

@@ -1,12 +1,13 @@
 package org.jetbrains.plugins.groovy.intentions.conversions;
 
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiMethod;
-import com.intellij.util.IncorrectOperationException;
+import consulo.codeEditor.Editor;
+import consulo.language.psi.PsiElement;
+import consulo.project.Project;
+import com.intellij.java.language.psi.PsiClass;
+import com.intellij.java.language.psi.PsiMethod;
+import consulo.language.util.IncorrectOperationException;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import org.jetbrains.plugins.groovy.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.intentions.base.PsiElementPredicate;
@@ -44,7 +45,7 @@ public class ConvertJunitAssertionToAssertStatementIntention extends Intention i
     ourStatementMap.put("assertNotSame", new String[]{null, null, "assert !arg0.is(arg1)", "assert !arg1.is(arg2) : arg0"});
   }
   
-  @javax.annotation.Nullable
+  @Nullable
   private static String getReplacementStatement(@Nonnull PsiMethod method, @Nonnull GrMethodCall methodCall) {
     PsiClass containingClass = method.getContainingClass();
     if (containingClass == null) return null;
@@ -67,7 +68,7 @@ public class ConvertJunitAssertionToAssertStatementIntention extends Intention i
     return replacementStatements[arguments.length];
   }
   
-  @javax.annotation.Nullable
+  @Nullable
   private static GrStatement getReplacementElement(@Nonnull PsiMethod method, @Nonnull GrMethodCall methodCall) {
     String replacementStatement = getReplacementStatement(method, methodCall);
     if (replacementStatement == null) return null;

@@ -15,14 +15,14 @@
  */
 package org.jetbrains.plugins.groovy.configSlurper;
 
-import com.intellij.openapi.extensions.ExtensionPointName;
-import com.intellij.psi.PsiElement;
-import com.intellij.util.PairConsumer;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import consulo.component.extension.ExtensionPointName;
+import consulo.language.psi.PsiElement;
+import consulo.util.lang.function.PairConsumer;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.List;
 
 /**
@@ -30,10 +30,9 @@ import java.util.List;
  */
 public abstract class ConfigSlurperSupport {
 
-  public static final ExtensionPointName<ConfigSlurperSupport> EP_NAME =
-    ExtensionPointName.create("org.intellij.groovy.configSlurperSupport");
+  public static final ExtensionPointName<ConfigSlurperSupport> EP_NAME = ExtensionPointName.create(ConfigSlurperSupport.class);
 
-  @javax.annotation.Nullable
+  @Nullable
   public abstract PropertiesProvider getProvider(@Nonnull GroovyFile file);
 
   @Nullable

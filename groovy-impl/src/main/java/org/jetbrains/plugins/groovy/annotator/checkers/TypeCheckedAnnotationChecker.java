@@ -15,10 +15,10 @@
  */
 package org.jetbrains.plugins.groovy.annotator.checkers;
 
-import com.intellij.lang.annotation.AnnotationHolder;
-import com.intellij.lang.annotation.HighlightSeverity;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiElement;
+import com.intellij.java.language.psi.PsiClass;
+import consulo.language.editor.annotation.AnnotationHolder;
+import consulo.language.editor.annotation.HighlightSeverity;
+import consulo.language.psi.PsiElement;
 import consulo.util.lang.Pair;
 import org.jetbrains.plugins.groovy.config.GroovyConfigUtils;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotation;

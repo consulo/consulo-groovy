@@ -16,11 +16,12 @@
 package org.jetbrains.plugins.groovy.lang.psi.patterns;
 
 import javax.annotation.Nonnull;
+
+import consulo.language.pattern.PatternCondition;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrAssignmentExpression;
-import com.intellij.patterns.ElementPattern;
-import com.intellij.patterns.PatternCondition;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.util.ProcessingContext;
+import consulo.language.pattern.ElementPattern;
+import consulo.language.ast.IElementType;
+import consulo.language.util.ProcessingContext;
 
 public class GroovyAssignmentExpressionPattern extends GroovyExpressionPattern<GrAssignmentExpression, GroovyAssignmentExpressionPattern> {
   protected GroovyAssignmentExpressionPattern() {

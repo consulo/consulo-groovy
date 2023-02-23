@@ -16,7 +16,7 @@
 package org.jetbrains.plugins.groovy.lang.actions
 
 import com.intellij.openapi.actionSystem.IdeActions
-import com.intellij.psi.codeStyle.CommonCodeStyleSettings
+import com.intellij.java.language.psi.codeStyle.CommonCodeStyleSettings
 import org.jetbrains.plugins.groovy.GroovyFileType
 
 /**

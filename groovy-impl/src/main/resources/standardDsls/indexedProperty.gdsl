@@ -23,8 +23,8 @@ package standardDsls
  * @author Andres Almiray
  */
 
-import com.intellij.psi.PsiArrayType
-import com.intellij.psi.PsiClassType
+import com.intellij.java.language.psi.PsiArrayType
+import com.intellij.java.language.psi.PsiClassType
 
 contributor(ctype: hasField(hasAnnotation('groovy.transform.IndexedProperty'))) {
   for (field in psiClass?.fields?.grep {it.hasAnnotation("groovy.transform.IndexedProperty")}) {

@@ -15,14 +15,17 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions;
 
+import consulo.navigation.NavigationItem;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.path.GrCallExpression;
-import com.intellij.navigation.NavigationItem;
+
+import javax.annotation.Nullable;
 
 /**
  * @author peter
  */
-public interface GrMethodCall extends GrCallExpression, NavigationItem {
-  @javax.annotation.Nullable
+public interface GrMethodCall extends GrCallExpression, NavigationItem
+{
+  @Nullable
   GrExpression getInvokedExpression();
 
   boolean isCommandExpression();

@@ -15,14 +15,19 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.synthetic;
 
-import javax.annotation.Nonnull;
-
-import com.intellij.psi.*;
-import com.intellij.psi.impl.light.LightIdentifier;
-import com.intellij.psi.impl.light.LightVariableBase;
-import com.intellij.util.IncorrectOperationException;
+import com.intellij.java.language.impl.psi.impl.light.LightIdentifier;
+import com.intellij.java.language.impl.psi.impl.light.LightVariableBase;
+import com.intellij.java.language.psi.JavaPsiFacade;
+import com.intellij.java.language.psi.PsiIdentifier;
+import com.intellij.java.language.psi.PsiModifierList;
+import com.intellij.java.language.psi.PsiType;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiManager;
+import consulo.language.util.IncorrectOperationException;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.plugins.groovy.GroovyLanguage;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author ilyas

@@ -15,16 +15,15 @@
  */
 package org.jetbrains.plugins.groovy.codeInsight;
 
-import javax.annotation.Nonnull;
-
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiMethod;
-import com.intellij.psi.impl.compiled.ClsCustomNavigationPolicyEx;
-import com.intellij.psi.impl.compiled.ClsMethodImpl;
-import com.intellij.psi.impl.light.LightElement;
-
-import javax.annotation.Nullable;
+import com.intellij.java.language.impl.psi.impl.compiled.ClsCustomNavigationPolicyEx;
+import com.intellij.java.language.impl.psi.impl.compiled.ClsMethodImpl;
+import com.intellij.java.language.psi.PsiMethod;
+import consulo.language.impl.psi.LightElement;
+import consulo.language.psi.PsiElement;
 import org.jetbrains.plugins.groovy.GroovyFileType;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author Max Medvedev

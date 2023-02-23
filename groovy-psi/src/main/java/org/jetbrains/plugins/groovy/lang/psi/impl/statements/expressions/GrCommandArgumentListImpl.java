@@ -21,7 +21,7 @@ import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrCommandArgumentList;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.arguments.GrArgumentListImpl;
-import com.intellij.lang.ASTNode;
+import consulo.language.ast.ASTNode;
 
 /**
  * @author ilyas

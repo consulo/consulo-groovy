@@ -16,8 +16,8 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.api.types;
 
+import com.intellij.java.language.psi.PsiTypeParameterList;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
-import com.intellij.psi.PsiTypeParameterList;
 
 /**
  * @author ilyas

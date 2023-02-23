@@ -15,10 +15,13 @@
  */
 package org.jetbrains.plugins.groovy.codeStyle;
 
+import consulo.language.codeStyle.CodeStyleSettingsManager;
+import consulo.language.codeStyle.ProjectCodeStyleSettingsManager;
+import consulo.project.Project;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyCodeStyleSettingsFacade;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.codeStyle.CodeStyleSettingsManager;
-import com.intellij.psi.codeStyle.ProjectCodeStyleSettingsManager;
+import consulo.project.Project;
+import consulo.language.codeStyle.CodeStyleSettingsManager;
+import consulo.language.codeStyle.ProjectCodeStyleSettingsManager;
 
 public class GroovyCodeStyleSettingsFacadeImpl extends GroovyCodeStyleSettingsFacade
 {

@@ -16,18 +16,20 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.synthetic;
 
-import com.intellij.navigation.ItemPresentation;
-import com.intellij.navigation.NavigationItem;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.search.SearchScope;
+import com.intellij.java.language.psi.PsiClass;
+import consulo.content.scope.SearchScope;
+import consulo.language.psi.PsiFile;
+import consulo.navigation.ItemPresentation;
+import consulo.navigation.NavigationItem;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
  * @author ilyas
  */
-public interface GrDynamicImplicitElement extends ItemPresentation, NavigationItem {
+public interface GrDynamicImplicitElement extends ItemPresentation, NavigationItem
+{
   @Nullable
   public PsiClass getContainingClassElement();
 

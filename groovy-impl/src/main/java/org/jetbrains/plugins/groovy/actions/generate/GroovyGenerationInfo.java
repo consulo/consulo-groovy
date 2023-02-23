@@ -15,8 +15,20 @@
  */
 package org.jetbrains.plugins.groovy.actions.generate;
 
-import javax.annotation.Nonnull;
-
+import com.intellij.java.impl.codeInsight.generation.GenerateMembersUtil;
+import com.intellij.java.impl.codeInsight.generation.PsiGenerationInfo;
+import com.intellij.java.language.psi.PsiClass;
+import com.intellij.java.language.psi.PsiMember;
+import com.intellij.java.language.psi.codeStyle.JavaCodeStyleManager;
+import com.intellij.java.language.psi.javadoc.PsiDocComment;
+import consulo.codeEditor.Editor;
+import consulo.codeEditor.ScrollType;
+import consulo.language.codeStyle.CodeStyleManager;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.language.util.IncorrectOperationException;
+import consulo.logging.Logger;
+import consulo.project.Project;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocComment;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
@@ -28,20 +40,9 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMe
 import org.jetbrains.plugins.groovy.lang.psi.impl.PsiImplUtil;
 import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GroovyScriptClass;
 import org.jetbrains.plugins.groovy.refactoring.GroovyChangeContextUtil;
-import com.intellij.codeInsight.generation.GenerateMembersUtil;
-import com.intellij.codeInsight.generation.PsiGenerationInfo;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.editor.ScrollType;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiMember;
-import com.intellij.psi.codeStyle.CodeStyleManager;
-import com.intellij.psi.codeStyle.JavaCodeStyleManager;
-import com.intellij.psi.javadoc.PsiDocComment;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.IncorrectOperationException;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author peter
@@ -62,7 +63,7 @@ public class GroovyGenerationInfo<T extends PsiMember> extends PsiGenerationInfo
 
 	@Override
 	public void insert(@Nonnull PsiClass aClass,
-			@javax.annotation.Nullable PsiElement anchor,
+			@Nullable PsiElement anchor,
 			boolean before) throws IncorrectOperationException
 	{
 

@@ -16,27 +16,27 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions;
 
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiType;
-import com.intellij.util.Function;
-import com.intellij.util.NullableFunction;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.intellij.java.language.psi.PsiType;
+import consulo.language.ast.ASTNode;
+import consulo.language.psi.PsiElement;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrConditionalExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.dataFlow.types.TypeInferenceHelper;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.function.Function;
+
 /**
  * @author ilyas
  */
 public class GrConditionalExprImpl extends GrExpressionImpl implements GrConditionalExpression {
-  private static final Function<GrConditionalExpression, PsiType> TYPE_CALCULATOR = new NullableFunction<GrConditionalExpression, PsiType>() {
+  private static final Function<GrConditionalExpression, PsiType> TYPE_CALCULATOR = new Function<GrConditionalExpression, PsiType>() {
     @Override
     @Nullable
-    public PsiType fun(GrConditionalExpression conditional) {
+    public PsiType apply(GrConditionalExpression conditional) {
       GrExpression thenBranch = conditional.getThenBranch();
       GrExpression elseBranch = conditional.getElseBranch();
       if (thenBranch == null) {
@@ -67,7 +67,7 @@ public class GrConditionalExprImpl extends GrExpressionImpl implements GrConditi
   }
 
   @Override
-  @javax.annotation.Nullable
+  @Nullable
   public GrExpression getThenBranch() {
     final PsiElement question = findChildByType(GroovyTokenTypes.mQUESTION);
     for (PsiElement nextSibling = question;

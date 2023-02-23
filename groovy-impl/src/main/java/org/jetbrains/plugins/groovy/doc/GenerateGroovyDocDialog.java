@@ -15,15 +15,21 @@
  */
 package org.jetbrains.plugins.groovy.doc;
 
-import com.intellij.CommonBundle;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.ui.DialogWrapper;
-import com.intellij.openapi.ui.Messages;
+import consulo.application.CommonBundle;
+import consulo.project.Project;
+import consulo.ui.ex.awt.DialogWrapper;
+import consulo.ui.ex.awt.Messages;
+import consulo.application.CommonBundle;
+import consulo.project.Project;
+import consulo.ui.ex.awt.DialogWrapper;
+import consulo.ui.ex.awt.Messages;
 
+import javax.annotation.Nullable;
 import javax.swing.*;
 import java.io.File;
 
-public final class GenerateGroovyDocDialog extends DialogWrapper {
+public final class GenerateGroovyDocDialog extends DialogWrapper
+{
   private final Project myProject;
   private final GroovyDocConfiguration myConfiguration;
 
@@ -59,7 +65,7 @@ public final class GenerateGroovyDocDialog extends DialogWrapper {
     //Disposer.dispose(myPanel);
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   @Override
   protected String getHelpId() {
     return "editing.groovydocGeneration";

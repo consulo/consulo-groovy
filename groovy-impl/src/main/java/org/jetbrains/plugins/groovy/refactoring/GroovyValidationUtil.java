@@ -17,12 +17,12 @@ package org.jetbrains.plugins.groovy.refactoring;
 
 import javax.annotation.Nonnull;
 
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiNamedElement;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.refactoring.util.CommonRefactoringUtil;
-import com.intellij.util.containers.MultiMap;
+import consulo.language.editor.refactoring.util.CommonRefactoringUtil;
+import consulo.language.psi.PsiNamedElement;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.util.collection.MultiMap;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.*;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.clauses.GrForClause;

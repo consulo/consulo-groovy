@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.compiler
 import com.intellij.openapi.util.text.StringUtil
-import com.intellij.psi.PsiFile
+import com.intellij.java.language.psi.PsiFile
 import org.jetbrains.plugins.groovy.LightGroovyTestCase
 import org.jetbrains.plugins.groovy.refactoring.convertToJava.GroovyToJavaGenerator
 import org.jetbrains.plugins.groovy.util.TestUtils

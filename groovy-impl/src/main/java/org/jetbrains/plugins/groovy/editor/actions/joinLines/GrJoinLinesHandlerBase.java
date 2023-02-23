@@ -17,21 +17,28 @@ package org.jetbrains.plugins.groovy.editor.actions.joinLines;
 
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
-import com.intellij.codeInsight.editorActions.JoinRawLinesHandlerDelegate;
-import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.TokenType;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.util.PsiTreeUtil;
+import consulo.document.Document;
+import consulo.language.ast.IElementType;
+import consulo.language.editor.action.JoinRawLinesHandlerDelegate;
+import consulo.document.Document;
+import consulo.document.util.TextRange;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.ast.TokenType;
+import consulo.language.ast.IElementType;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.language.editor.action.JoinRawLinesHandlerDelegate;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.util.PsiTreeUtil;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFileBase;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.util.GrStatementOwner;
 
-public abstract class GrJoinLinesHandlerBase implements JoinRawLinesHandlerDelegate {
+public abstract class GrJoinLinesHandlerBase implements JoinRawLinesHandlerDelegate
+{
   private static final boolean BACK = false;
   private static final boolean FORWARD = false;
 
@@ -63,7 +70,7 @@ public abstract class GrJoinLinesHandlerBase implements JoinRawLinesHandlerDeleg
     return CANNOT_JOIN;
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   private static GrStatement skipSemicolonsAndWhitespaces(PsiElement child, boolean forward) {
     while (child != null && !(child instanceof GrStatement)) {
       final IElementType type = child.getNode().getElementType();

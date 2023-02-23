@@ -16,11 +16,10 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.annotation.Nonnull;
-
+import com.intellij.java.language.LanguageLevel;
+import com.intellij.java.language.psi.*;
+import consulo.language.psi.scope.GlobalSearchScope;
+import consulo.util.lang.Comparing;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
@@ -30,16 +29,11 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlo
 import org.jetbrains.plugins.groovy.lang.psi.impl.signatures.GrClosureSignatureUtil;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames;
-import com.intellij.openapi.util.Comparing;
-import com.intellij.pom.java.LanguageLevel;
-import com.intellij.psi.JavaPsiFacade;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiClassType;
-import com.intellij.psi.PsiMethod;
-import com.intellij.psi.PsiParameter;
-import com.intellij.psi.PsiSubstitutor;
-import com.intellij.psi.PsiType;
-import com.intellij.psi.search.GlobalSearchScope;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author ven
@@ -106,7 +100,7 @@ public class GrClosureType extends GrLiteralClassType {
     return new GrClosureType(getLanguageLevel(), getResolveScope(), myFacade, mySignature, false);
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   public String getInternalCanonicalText() {
     return getCanonicalText();
   }
@@ -168,7 +162,7 @@ public class GrClosureType extends GrLiteralClassType {
   }
 
   public static GrClosureType create(@Nonnull PsiParameter[] parameters,
-                                     @javax.annotation.Nullable PsiType returnType,
+                                     @Nullable PsiType returnType,
                                      JavaPsiFacade facade,
                                      GlobalSearchScope scope,
                                      LanguageLevel languageLevel) {
@@ -183,7 +177,7 @@ public class GrClosureType extends GrLiteralClassType {
     return new GrClosureType(languageLevel, scope, facade, signature, shouldInferTypeParameters);
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   public PsiType curry(@Nonnull PsiType[] args, int position, @Nonnull GroovyPsiElement context) {
     final GrSignature newSignature = mySignature.curry(args, position, context);
     if (newSignature == null) return null;

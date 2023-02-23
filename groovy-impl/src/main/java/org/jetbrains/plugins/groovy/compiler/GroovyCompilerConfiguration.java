@@ -16,11 +16,15 @@
 
 package org.jetbrains.plugins.groovy.compiler;
 
+import consulo.compiler.setting.ExcludedEntriesConfiguration;
+import consulo.component.persist.PersistentStateComponent;
+import consulo.component.persist.State;
+import consulo.component.persist.Storage;
+import consulo.component.persist.StoragePathMacros;
 import consulo.disposer.Disposable;
-import com.intellij.openapi.compiler.options.ExcludedEntriesConfiguration;
-import com.intellij.openapi.components.*;
-import com.intellij.openapi.project.Project;
 import consulo.disposer.Disposer;
+import consulo.ide.ServiceManager;
+import consulo.project.Project;
 
 /**
  * @author peter
@@ -32,8 +36,7 @@ public class GroovyCompilerConfiguration implements PersistentStateComponent<Jps
   public boolean transformsOk = JpsGroovySettings.DEFAULT_TRANSFORMS_OK;
   private final ExcludedEntriesConfiguration myExcludeFromStubGeneration = new ExcludedEntriesConfiguration();
 
-  public GroovyCompilerConfiguration(Project project) {
-    GroovyCompilerWorkspaceConfiguration workspaceConfiguration = ServiceManager.getService(project, GroovyCompilerWorkspaceConfiguration.class);
+  public GroovyCompilerConfiguration(Project project, GroovyCompilerWorkspaceConfiguration workspaceConfiguration) {
     loadState(workspaceConfiguration.getState());
     workspaceConfiguration.myHeapSize = JpsGroovySettings.DEFAULT_HEAP_SIZE;
     workspaceConfiguration.transformsOk = JpsGroovySettings.DEFAULT_TRANSFORMS_OK;

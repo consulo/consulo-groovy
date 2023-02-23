@@ -15,29 +15,23 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.bugs;
 
-import javax.annotation.Nonnull;
-
+import com.intellij.java.impl.codeInsight.generation.OverrideImplementUtil;
+import com.intellij.java.language.psi.*;
+import com.intellij.java.language.psi.codeStyle.JavaCodeStyleManager;
+import com.intellij.java.language.psi.util.InheritanceUtil;
+import consulo.language.ast.TokenType;
+import consulo.language.editor.inspection.ProblemDescriptor;
+import consulo.language.psi.PsiElement;
+import consulo.language.util.IncorrectOperationException;
+import consulo.project.Project;
 import org.jetbrains.plugins.groovy.codeInspection.GroovyFix;
 import org.jetbrains.plugins.groovy.codeInspection.GroovyInspectionBundle;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrReferenceList;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
-import com.intellij.codeInsight.generation.OverrideImplementUtil;
-import com.intellij.codeInspection.ProblemDescriptor;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.CommonClassNames;
-import com.intellij.psi.JavaPsiFacade;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiElementFactory;
-import com.intellij.psi.PsiMethod;
-import com.intellij.psi.PsiSubstitutor;
-import com.intellij.psi.PsiTypeParameter;
-import com.intellij.psi.TokenType;
-import com.intellij.psi.codeStyle.JavaCodeStyleManager;
-import com.intellij.psi.util.InheritanceUtil;
-import com.intellij.util.IncorrectOperationException;
+
+import javax.annotation.Nonnull;
 
 public class AddClassToExtendsFix extends GroovyFix
 {

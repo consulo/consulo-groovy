@@ -18,8 +18,8 @@ package org.jetbrains.plugins.groovy.lang.psi.impl.statements.blocks;
 
 import javax.annotation.Nonnull;
 
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.tree.IElementType;
+import consulo.language.ast.IElementType;
+import consulo.language.psi.PsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrClassInitializer;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrOpenBlock;

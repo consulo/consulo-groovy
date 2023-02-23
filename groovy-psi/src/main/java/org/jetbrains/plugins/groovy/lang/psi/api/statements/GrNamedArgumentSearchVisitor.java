@@ -16,8 +16,8 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.api.statements;
 
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.PsiElement;
+import consulo.util.lang.StringUtil;
+import consulo.language.psi.PsiElement;
 import org.jetbrains.plugins.groovy.extensions.NamedArgumentDescriptor;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyRecursiveElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrArgumentList;

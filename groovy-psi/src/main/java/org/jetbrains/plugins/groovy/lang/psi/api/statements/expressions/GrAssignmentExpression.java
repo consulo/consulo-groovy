@@ -17,11 +17,12 @@
 package org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
+import consulo.language.ast.IElementType;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiPolyVariantReference;
-import com.intellij.psi.tree.IElementType;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiPolyVariantReference;
 
 /**
  * @author ilyas
@@ -31,7 +32,7 @@ public interface GrAssignmentExpression extends GrExpression, PsiPolyVariantRefe
   @Nonnull
   GrExpression getLValue();
 
-  @javax.annotation.Nullable
+  @Nullable
   GrExpression getRValue();
 
   IElementType getOperationTokenType();

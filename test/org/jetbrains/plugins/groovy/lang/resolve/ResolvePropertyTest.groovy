@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package org.jetbrains.plugins.groovy.lang.resolve
-import com.intellij.psi.*
-import com.intellij.psi.util.PropertyUtil
+import com.intellij.java.language.psi.*
+import com.intellij.java.language.psi.util.PropertyUtil
 import org.jetbrains.plugins.groovy.GroovyFileType
 import org.jetbrains.plugins.groovy.lang.psi.GrReferenceElement
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult

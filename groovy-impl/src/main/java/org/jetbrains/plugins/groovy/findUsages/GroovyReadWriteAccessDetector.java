@@ -15,8 +15,12 @@
  */
 package org.jetbrains.plugins.groovy.findUsages;
 
-import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector;
-import com.intellij.psi.*;
+import com.intellij.java.language.psi.PsiExpression;
+import com.intellij.java.language.psi.PsiMethod;
+import com.intellij.java.language.psi.PsiReferenceExpression;
+import consulo.language.editor.highlight.ReadWriteAccessDetector;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiReference;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
@@ -64,8 +68,8 @@ public class GroovyReadWriteAccessDetector extends ReadWriteAccessDetector{
     }
     else if (expression instanceof PsiExpression) {
       PsiExpression expr = (PsiExpression)expression;
-      boolean readAccess = com.intellij.psi.util.PsiUtil.isAccessedForReading(expr);
-      boolean writeAccess = com.intellij.psi.util.PsiUtil.isAccessedForWriting(expr);
+      boolean readAccess = com.intellij.java.language.psi.util.PsiUtil.isAccessedForReading(expr);
+      boolean writeAccess = com.intellij.java.language.psi.util.PsiUtil.isAccessedForWriting(expr);
       if (!writeAccess && expr instanceof PsiReferenceExpression) {
         //when searching usages of fields, should show all found setters as a "only write usage"
         PsiElement actualReferee = ((PsiReferenceExpression)expr).resolve();

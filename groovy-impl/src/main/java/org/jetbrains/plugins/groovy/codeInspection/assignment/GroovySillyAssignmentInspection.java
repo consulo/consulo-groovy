@@ -15,8 +15,9 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.assignment;
 
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.tree.IElementType;
+import consulo.language.psi.PsiElement;
+import consulo.language.ast.IElementType;
+import consulo.language.psi.PsiElement;
 import org.jetbrains.annotations.Nls;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

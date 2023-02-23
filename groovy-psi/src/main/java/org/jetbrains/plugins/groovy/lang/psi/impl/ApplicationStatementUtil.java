@@ -15,6 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl;
 
+import consulo.language.psi.PsiElement;
+import consulo.project.Project;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrArgumentList;
@@ -23,9 +25,7 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrComman
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.path.GrMethodCallExpression;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiElement;
+import consulo.logging.Logger;
 
 /**
  * @author Max Medvedev

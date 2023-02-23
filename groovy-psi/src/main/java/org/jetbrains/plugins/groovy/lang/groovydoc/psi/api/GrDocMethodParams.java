@@ -16,10 +16,11 @@
 
 package org.jetbrains.plugins.groovy.lang.groovydoc.psi.api;
 
-import javax.annotation.Nonnull;
+import com.intellij.java.language.psi.PsiType;
+import consulo.language.psi.PsiElement;
 
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiType;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author ilyas
@@ -33,8 +34,6 @@ public interface GrDocMethodParams extends GroovyDocPsiElement {
   @Nonnull
   PsiElement getLeftParen();
 
-  @javax.annotation.Nullable
+  @Nullable
   PsiElement getRightParen();
-
-
 }

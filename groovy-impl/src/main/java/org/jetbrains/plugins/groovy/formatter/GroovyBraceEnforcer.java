@@ -15,19 +15,21 @@
  */
 package org.jetbrains.plugins.groovy.formatter;
 
-import javax.annotation.Nonnull;
-
-import com.intellij.lang.ASTNode;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.*;
-import com.intellij.psi.codeStyle.CodeStyleManager;
-import com.intellij.psi.codeStyle.CodeStyleSettings;
-import com.intellij.psi.codeStyle.CommonCodeStyleSettings;
-import com.intellij.psi.impl.source.SourceTreeToPsiMap;
-import com.intellij.psi.impl.source.codeStyle.CodeEditUtil;
-import com.intellij.psi.impl.source.codeStyle.PostFormatProcessorHelper;
-import com.intellij.util.IncorrectOperationException;
+import consulo.document.util.TextRange;
+import consulo.ide.impl.psi.impl.source.codeStyle.PostFormatProcessorHelper;
+import consulo.language.ast.ASTNode;
+import consulo.language.ast.TokenType;
+import consulo.language.codeStyle.CodeStyleManager;
+import consulo.language.codeStyle.CodeStyleSettings;
+import consulo.language.codeStyle.CommonCodeStyleSettings;
+import consulo.language.impl.psi.CodeEditUtil;
+import consulo.language.impl.psi.SourceTreeToPsiMap;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiManager;
+import consulo.language.psi.SmartPointerManager;
+import consulo.language.psi.SmartPsiElementPointer;
+import consulo.language.util.IncorrectOperationException;
+import consulo.logging.Logger;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
@@ -36,6 +38,9 @@ import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyRecursiveElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.*;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrCodeBlock;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author Max Medvedev
@@ -122,7 +127,7 @@ public class GroovyBraceEnforcer extends GroovyRecursiveElementVisitor {
     return myPostProcessor.isElementFullyInRange(element);
   }
 
-  private void processStatement(GrStatement statement, @javax.annotation.Nullable GrStatement blockCandidate, int options) {
+  private void processStatement(GrStatement statement, @Nullable GrStatement blockCandidate, int options) {
     if (blockCandidate instanceof GrCodeBlock || blockCandidate instanceof GrBlockStatement || blockCandidate == null) return;
     if (options == CommonCodeStyleSettings.FORCE_BRACES_ALWAYS ||
         options == CommonCodeStyleSettings.FORCE_BRACES_IF_MULTILINE && PostFormatProcessorHelper.isMultiline(statement)) {

@@ -15,14 +15,14 @@
  */
 package org.jetbrains.plugins.groovy.findUsages;
 
-import com.intellij.codeInsight.navigation.MethodImplementationsSearch;
-import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.util.Computable;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.search.SearchScope;
-import com.intellij.psi.search.searches.DefinitionsScopedSearch;
-import com.intellij.util.Processor;
-import com.intellij.util.QueryExecutor;
+import com.intellij.java.indexing.impl.MethodImplementationsSearch;
+import consulo.application.ApplicationManager;
+import consulo.application.util.function.Computable;
+import consulo.application.util.function.Processor;
+import consulo.content.scope.SearchScope;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.search.DefinitionsScopedSearch;
+import consulo.language.psi.search.DefinitionsScopedSearchExecutor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrAccessorMethod;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
@@ -34,57 +34,43 @@ import javax.annotation.Nonnull;
 /**
  * @author Maxim.Medvedev
  */
-public class GroovyImplementationSearch implements QueryExecutor<PsiElement, DefinitionsScopedSearch.SearchParameters>
-{
-	@Override
-	public boolean execute(@Nonnull final DefinitionsScopedSearch.SearchParameters queryParameters,
-			@Nonnull final Processor<? super PsiElement> consumer)
-	{
-		return ApplicationManager.getApplication().runReadAction(new Computable<Boolean>()
-		{
-			@Override
-			public Boolean compute()
-			{
-				final PsiElement source = queryParameters.getElement();
-				if(!source.isValid())
-				{
-					return true;
-				}
+public class GroovyImplementationSearch implements DefinitionsScopedSearchExecutor {
+  @Override
+  public boolean execute(@Nonnull final DefinitionsScopedSearch.SearchParameters queryParameters,
+                         @Nonnull final Processor<? super PsiElement> consumer) {
+    return ApplicationManager.getApplication().runReadAction(new Computable<Boolean>() {
+      @Override
+      public Boolean compute() {
+        final PsiElement source = queryParameters.getElement();
+        if (!source.isValid()) {
+          return true;
+        }
 
-				if(source instanceof GrAccessorMethod)
-				{
-					GrField property = ((GrAccessorMethod) source).getProperty();
-					return consumer.process(property);
-				}
-				else
-				{
-					final SearchScope searchScope = queryParameters.getScope();
-					if(source instanceof GrMethod)
-					{
-						GrReflectedMethod[] reflectedMethods = ((GrMethod) source).getReflectedMethods();
-						for(GrReflectedMethod reflectedMethod : reflectedMethods)
-						{
-							if(!MethodImplementationsSearch.processImplementations(reflectedMethod, consumer, searchScope))
+        if (source instanceof GrAccessorMethod) {
+          GrField property = ((GrAccessorMethod)source).getProperty();
+          return consumer.process(property);
+        }
+        else {
+          final SearchScope searchScope = queryParameters.getScope();
+          if (source instanceof GrMethod) {
+            GrReflectedMethod[] reflectedMethods = ((GrMethod)source).getReflectedMethods();
+            for (GrReflectedMethod reflectedMethod : reflectedMethods) {
+              if (!MethodImplementationsSearch.processImplementations(reflectedMethod, consumer, searchScope)) {
+                return false;
+              }
+            }
+          }
 
-							{
-								return false;
-							}
-						}
-					}
-
-					else if(source instanceof GrField)
-					{
-						for(GrAccessorMethod method : GroovyPropertyUtils.getFieldAccessors((GrField) source))
-						{
-							if(!MethodImplementationsSearch.processImplementations(method, consumer, searchScope))
-							{
-								return false;
-							}
-						}
-					}
-				}
-				return true;
-			}
-		});
-	}
+          else if (source instanceof GrField) {
+            for (GrAccessorMethod method : GroovyPropertyUtils.getFieldAccessors((GrField)source)) {
+              if (!MethodImplementationsSearch.processImplementations(method, consumer, searchScope)) {
+                return false;
+              }
+            }
+          }
+        }
+        return true;
+      }
+    });
+  }
 }

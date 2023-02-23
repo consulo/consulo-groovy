@@ -15,11 +15,14 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.convertToJava;
 
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.psi.*;
-import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.java.language.psi.PsiClass;
+import com.intellij.java.language.psi.PsiModifier;
+import com.intellij.java.language.psi.PsiPrimitiveType;
+import com.intellij.java.language.psi.PsiType;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.logging.Logger;
 import org.jetbrains.annotations.NonNls;
-import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.codeInspection.noReturnMethod.MissingReturnInspection;
 import org.jetbrains.plugins.groovy.codeInspection.utils.ControlFlowUtils;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
@@ -33,6 +36,7 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMe
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrReflectedMethod;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyFileImpl;
 
+import javax.annotation.Nonnull;
 import java.util.Collection;
 
 import static org.jetbrains.plugins.groovy.refactoring.convertToJava.TypeWriter.writeType;

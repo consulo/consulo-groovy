@@ -16,12 +16,14 @@
 
 package org.jetbrains.plugins.groovy.editor.actions;
 
-import com.intellij.codeInsight.editorActions.BackspaceHandlerDelegate;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.editor.ex.EditorEx;
-import com.intellij.openapi.editor.highlighter.EditorHighlighter;
-import com.intellij.openapi.editor.highlighter.HighlighterIterator;
-import com.intellij.psi.PsiFile;
+import consulo.codeEditor.*;
+import consulo.language.editor.action.BackspaceHandlerDelegate;
+import consulo.codeEditor.Editor;
+import consulo.codeEditor.EditorEx;
+import consulo.codeEditor.EditorHighlighter;
+import consulo.codeEditor.HighlighterIterator;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.PsiFile;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 

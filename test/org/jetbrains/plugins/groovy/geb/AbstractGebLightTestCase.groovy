@@ -47,7 +47,7 @@ class GebProjectDescriptor extends DefaultLightProjectDescriptor {
       final Library.ModifiableModel modifiableModel = model.getModuleLibraryTable().createLibrary("GROOVY").getModifiableModel();
 
       def fs = JarFileSystem.instance
-      modifiableModel.addRoot(fs.findFileByPath("$TestUtils.mockGroovyLibraryHome/$TestUtils.GROOVY_JAR!/"), OrderRootType.CLASSES);
+      modifiableModel.addRoot(fs.findFileByPath("$TestUtils.mockGroovyLibraryHome/$TestUtils.GROOVY_JAR!/"), BinariesOrderRootType.getInstance());
 
       def gebJarFolder = new File(TestUtils.absoluteTestDataPath + "/mockGeb")
       for (File gebJar : gebJarFolder.listFiles()) {
@@ -55,7 +55,7 @@ class GebProjectDescriptor extends DefaultLightProjectDescriptor {
           modifiableModel.addRoot(fs.findFileByPath("${gebJar.path}!/"), OrderRootType.SOURCES);
         }
         else if  (gebJar.name.endsWith(".jar")) {
-          modifiableModel.addRoot(fs.findFileByPath("${gebJar.path}!/"), OrderRootType.CLASSES);
+          modifiableModel.addRoot(fs.findFileByPath("${gebJar.path}!/"), BinariesOrderRootType.getInstance());
         }
       }
 

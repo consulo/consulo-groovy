@@ -19,8 +19,8 @@ import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.dsl.GroovyClassDescriptor;
 import org.jetbrains.plugins.groovy.extensions.GroovyScriptTypeDetector;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
-import com.intellij.psi.PsiFile;
-import com.intellij.util.ProcessingContext;
+import consulo.language.psi.PsiFile;
+import consulo.language.util.ProcessingContext;
 
 /**
  * @author peter

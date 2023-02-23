@@ -15,20 +15,21 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.assignment;
 
-import com.intellij.codeInspection.ProblemDescriptor;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.JavaPsiFacade;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiType;
-import com.intellij.util.IncorrectOperationException;
-import javax.annotation.Nonnull;
+import com.intellij.java.language.psi.JavaPsiFacade;
+import com.intellij.java.language.psi.PsiType;
+import consulo.language.editor.inspection.ProblemDescriptor;
+import consulo.language.psi.PsiElement;
+import consulo.language.util.IncorrectOperationException;
+import consulo.logging.Logger;
+import consulo.project.Project;
 import org.jetbrains.plugins.groovy.codeInspection.GroovyFix;
 import org.jetbrains.plugins.groovy.codeInspection.GroovyInspectionBundle;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrAssignmentExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameter;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author Max Medvedev

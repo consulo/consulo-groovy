@@ -20,18 +20,23 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
+import consulo.document.util.TextRange;
+import consulo.language.ast.ASTNode;
+import consulo.language.codeStyle.*;
+import consulo.language.psi.PsiErrorElement;
 import org.jetbrains.plugins.groovy.formatter.AlignmentProvider;
 import org.jetbrains.plugins.groovy.formatter.FormattingContext;
 import org.jetbrains.plugins.groovy.formatter.processors.GroovyWrappingProcessor;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
-import com.intellij.formatting.Block;
-import com.intellij.formatting.Indent;
-import com.intellij.formatting.Wrap;
-import com.intellij.formatting.WrapType;
-import com.intellij.lang.ASTNode;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.PsiErrorElement;
+import consulo.language.codeStyle.Block;
+import consulo.language.codeStyle.Indent;
+import consulo.language.codeStyle.Wrap;
+import consulo.language.codeStyle.WrapType;
+import consulo.language.ast.ASTNode;
+import consulo.document.util.TextRange;
+import consulo.language.psi.PsiErrorElement;
 
 /**
  * @author Max Medvedev

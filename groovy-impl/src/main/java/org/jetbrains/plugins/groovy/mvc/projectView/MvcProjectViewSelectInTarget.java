@@ -16,13 +16,14 @@
 
 package org.jetbrains.plugins.groovy.mvc.projectView;
 
-import com.intellij.ide.SelectInContext;
-import com.intellij.ide.SelectInTarget;
-import com.intellij.openapi.module.ModuleUtil;
-import com.intellij.openapi.project.DumbAware;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.openapi.wm.ToolWindowManager;
+import consulo.project.ui.view.SelectInContext;
+import consulo.project.ui.view.SelectInTarget;
+import consulo.ide.impl.idea.openapi.module.ModuleUtil;
+import consulo.application.dumb.DumbAware;
+import consulo.project.Project;
+import consulo.virtualFileSystem.VirtualFile;
+import consulo.project.ui.wm.ToolWindowManager;
+import consulo.project.ui.view.SelectInContext;
 import org.jetbrains.plugins.groovy.mvc.MvcFramework;
 
 /**
@@ -33,7 +34,7 @@ public class MvcProjectViewSelectInTarget implements SelectInTarget, DumbAware {
   public boolean canSelect(SelectInContext context) {
     final Project project = context.getProject();
     final VirtualFile file = context.getVirtualFile();
-    final MvcFramework framework = MvcFramework.getInstance(ModuleUtil.findModuleForFile(file, project));
+    final MvcFramework framework = MvcFramework.getInstance(consulo.ide.impl.idea.openapi.module.ModuleUtil.findModuleForFile(file, project));
     if (framework == null) {
       return false;
     }
@@ -45,7 +46,7 @@ public class MvcProjectViewSelectInTarget implements SelectInTarget, DumbAware {
     final Project project = context.getProject();
     final VirtualFile file = context.getVirtualFile();
 
-    final MvcFramework framework = MvcFramework.getInstance(ModuleUtil.findModuleForFile(file, project));
+    final MvcFramework framework = MvcFramework.getInstance(consulo.ide.impl.idea.openapi.module.ModuleUtil.findModuleForFile(file, project));
     if (framework == null) {
       return;
     }

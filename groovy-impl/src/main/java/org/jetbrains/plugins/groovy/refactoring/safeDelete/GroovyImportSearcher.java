@@ -15,10 +15,10 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.safeDelete;
 
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.refactoring.safeDelete.ImportSearcher;
+import com.intellij.java.impl.refactoring.safeDelete.ImportSearcher;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.util.PsiTreeUtil;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.api.toplevel.imports.GrImportStatement;
 

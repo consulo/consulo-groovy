@@ -15,17 +15,18 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.threading;
 
-import com.intellij.psi.PsiModifier;
-import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.java.language.psi.PsiModifier;
+import consulo.language.psi.util.PsiTreeUtil;
 import org.jetbrains.annotations.Nls;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrSynchronizedStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlock;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class GroovyNestedSynchronizedStatementInspection extends BaseInspection {
 

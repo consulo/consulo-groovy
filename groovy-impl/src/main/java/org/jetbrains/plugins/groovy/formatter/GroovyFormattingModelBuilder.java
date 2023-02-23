@@ -16,30 +16,25 @@
 
 package org.jetbrains.plugins.groovy.formatter;
 
-import javax.annotation.Nonnull;
-
-import com.intellij.formatting.Block;
-import com.intellij.formatting.FormattingModel;
-import com.intellij.formatting.FormattingModelBuilder;
-import com.intellij.formatting.Indent;
-import com.intellij.lang.ASTNode;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiRecursiveElementVisitor;
-import com.intellij.psi.TokenType;
-import com.intellij.psi.codeStyle.CodeStyleSettings;
-import com.intellij.psi.codeStyle.CommonCodeStyleSettings;
-import com.intellij.psi.formatter.FormatterUtil;
-import com.intellij.psi.formatter.FormattingDocumentModelImpl;
-import com.intellij.psi.formatter.PsiBasedFormattingModel;
-import com.intellij.psi.impl.source.tree.TreeUtil;
-import com.intellij.psi.tree.IElementType;
+import consulo.document.util.TextRange;
+import consulo.language.Language;
+import consulo.language.ast.ASTNode;
+import consulo.language.ast.IElementType;
+import consulo.language.ast.TokenType;
+import consulo.language.codeStyle.*;
+import consulo.language.impl.ast.TreeUtil;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.PsiRecursiveElementVisitor;
 import org.jetbrains.plugins.groovy.GroovyFileType;
+import org.jetbrains.plugins.groovy.GroovyLanguage;
 import org.jetbrains.plugins.groovy.codeStyle.GroovyCodeStyleSettings;
 import org.jetbrains.plugins.groovy.formatter.blocks.GroovyBlock;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.lexer.TokenSets;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 
 /**
@@ -47,7 +42,10 @@ import org.jetbrains.plugins.groovy.lang.lexer.TokenSets;
  */
 public class GroovyFormattingModelBuilder implements FormattingModelBuilder {
   @Nonnull
-  public FormattingModel createModel(final PsiElement element, final CodeStyleSettings settings) {
+  @Override
+  public FormattingModel createModel(@Nonnull consulo.language.codeStyle.FormattingContext context) {
+    PsiElement element = context.getPsiElement();
+    CodeStyleSettings settings = context.getCodeStyleSettings();
     ASTNode node = element.getNode();
     assert node != null;
     PsiFile containingFile = element.getContainingFile().getViewProvider().getPsi(GroovyFileType.GROOVY_LANGUAGE);
@@ -71,13 +69,20 @@ public class GroovyFormattingModelBuilder implements FormattingModelBuilder {
         }
       });
     }
-    final GroovyBlock block = new GroovyBlock(astNode, Indent.getAbsoluteNoneIndent(), null, new FormattingContext(groovySettings, alignments, customSettings, false));
-    return new GroovyFormattingModel(containingFile, block, FormattingDocumentModelImpl.createOn(containingFile));
+    final GroovyBlock block = new GroovyBlock(astNode,
+                                              Indent.getAbsoluteNoneIndent(),
+                                              null,
+                                              new FormattingContext(groovySettings, alignments, customSettings, false));
+    return new GroovyFormattingModel(containingFile,
+                                     block,
+                                     FormattingDocumentModel.create(containingFile));
+
   }
 
-  @javax.annotation.Nullable
-  public TextRange getRangeAffectingIndent(PsiFile file, int offset, ASTNode elementAtOffset) {
-    return null;
+  @Nonnull
+  @Override
+  public Language getLanguage() {
+    return GroovyLanguage.INSTANCE;
   }
 
   /**
@@ -87,7 +92,7 @@ public class GroovyFormattingModelBuilder implements FormattingModelBuilder {
    */
   private static class GroovyFormattingModel extends PsiBasedFormattingModel {
 
-    GroovyFormattingModel(PsiFile file, @Nonnull Block rootBlock, FormattingDocumentModelImpl documentModel) {
+    GroovyFormattingModel(PsiFile file, @Nonnull Block rootBlock, FormattingDocumentModel documentModel) {
       super(file, rootBlock, documentModel);
     }
 

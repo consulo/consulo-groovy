@@ -15,18 +15,22 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.typeEnhancers;
 
-import javax.annotation.Nullable;
+import com.intellij.java.language.psi.PsiType;
+import consulo.annotation.component.ComponentScope;
+import consulo.annotation.component.ExtensionAPI;
+import consulo.component.extension.ExtensionPointName;
+import consulo.language.psi.PsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
-import com.intellij.openapi.extensions.ExtensionPointName;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiType;
+
+import javax.annotation.Nullable;
 
 /**
  * @author Sergey Evdokimov
  */
+@ExtensionAPI(ComponentScope.APPLICATION)
 public abstract class GrReferenceTypeEnhancer {
 
-  public static final ExtensionPointName<GrReferenceTypeEnhancer> EP_NAME = ExtensionPointName.create("org.intellij.groovy.referenceTypeEnhancer");
+  public static final ExtensionPointName<GrReferenceTypeEnhancer> EP_NAME = ExtensionPointName.create(GrReferenceTypeEnhancer.class);
 
   @Nullable
   public abstract PsiType getReferenceType(GrReferenceExpression ref, @Nullable PsiElement resolved);

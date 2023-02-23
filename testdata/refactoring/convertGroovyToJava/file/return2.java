@@ -1,23 +1,27 @@
+import java.lang.Integer;
+import java.lang.Object;
+import java.lang.String;
+
 public class return2 extends groovy.lang.Script {
-public static void main(java.lang.String[] args) {
+public static void main(String[] args) {
 new return2(new groovy.lang.Binding(args)).run();
 }
 
-public java.lang.Object run() {
+public Object run() {
 
 return null;
 
 }
 
 public boolean foo() {
-java.lang.Integer a = 5;
+Integer a = 5;
 
-org.codehaus.groovy.runtime.DefaultGroovyMethods.times(a, new groovy.lang.Closure<java.lang.Integer>(this, this) {
-public java.lang.Integer doCall(java.lang.Integer it) {
+org.codehaus.groovy.runtime.DefaultGroovyMethods.times(a, new groovy.lang.Closure<Integer>(this, this) {
+public Integer doCall(Integer it) {
 if (it == 2)return 5;
 }
 
-public java.lang.Integer doCall() {
+public Integer doCall() {
 return doCall(null);
 }
 

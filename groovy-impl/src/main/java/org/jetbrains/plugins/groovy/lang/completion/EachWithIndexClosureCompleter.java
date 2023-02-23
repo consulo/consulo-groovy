@@ -19,6 +19,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.Nullable;
+
+import consulo.language.editor.completion.lookup.InsertionContext;
+import consulo.project.Project;
 import org.jetbrains.plugins.groovy.lang.completion.closureParameters.ClosureParameterInfo;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
@@ -26,19 +29,19 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrGd
 import org.jetbrains.plugins.groovy.lang.psi.impl.PsiImplUtil;
 import org.jetbrains.plugins.groovy.lang.psi.typeEnhancers.ClosureParameterEnhancer;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames;
-import com.intellij.codeInsight.completion.InsertionContext;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.CommonClassNames;
-import com.intellij.psi.JavaPsiFacade;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiClassType;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiMethod;
-import com.intellij.psi.PsiParameter;
-import com.intellij.psi.PsiSubstitutor;
-import com.intellij.psi.PsiType;
-import com.intellij.psi.util.InheritanceUtil;
-import com.intellij.psi.util.PsiUtil;
+import consulo.language.editor.completion.lookup.InsertionContext;
+import consulo.project.Project;
+import com.intellij.java.language.psi.CommonClassNames;
+import com.intellij.java.language.psi.JavaPsiFacade;
+import com.intellij.java.language.psi.PsiClass;
+import com.intellij.java.language.psi.PsiClassType;
+import consulo.language.psi.PsiElement;
+import com.intellij.java.language.psi.PsiMethod;
+import com.intellij.java.language.psi.PsiParameter;
+import com.intellij.java.language.psi.PsiSubstitutor;
+import com.intellij.java.language.psi.PsiType;
+import com.intellij.java.language.psi.util.InheritanceUtil;
+import com.intellij.java.language.psi.util.PsiUtil;
 
 /**
  * @author Max Medvedev

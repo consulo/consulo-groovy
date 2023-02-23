@@ -16,8 +16,9 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.types;
 
-import javax.annotation.Nonnull;
-
+import com.intellij.java.language.psi.PsiType;
+import consulo.language.ast.ASTNode;
+import consulo.language.psi.PsiElement;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
@@ -25,9 +26,9 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrTypeCa
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeElement;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.GrExpressionImpl;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiType;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author ilyas
@@ -59,7 +60,7 @@ public class GrTypeCastExpressionImpl extends GrExpressionImpl implements GrType
   }
 
   @Override
-  @javax.annotation.Nullable
+  @Nullable
   public GrExpression getOperand() {
     return findExpressionChild(this);
   }

@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.introduceParameter;
 
-import com.intellij.psi.impl.source.PostprocessReformattingAspect;
+import com.intellij.java.language.psi.impl.source.PostprocessReformattingAspect;
 import com.intellij.refactoring.IntroduceParameterRefactoring;
 import com.intellij.testFramework.fixtures.LightCodeInsightFixtureTestCase;
 import org.jetbrains.annotations.Nullable;

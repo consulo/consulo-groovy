@@ -16,8 +16,8 @@
 package org.jetbrains.plugins.groovy.lang.controlFlow
 
 import com.intellij.openapi.editor.SelectionModel
-import com.intellij.psi.PsiElement
-import com.intellij.psi.util.PsiTreeUtil
+import com.intellij.java.language.psi.PsiElement
+import com.intellij.java.language.psi.util.PsiTreeUtil
 import com.intellij.testFramework.fixtures.LightCodeInsightFixtureTestCase
 import org.jetbrains.plugins.groovy.GroovyFileType
 import org.jetbrains.plugins.groovy.codeInspection.utils.ControlFlowUtils

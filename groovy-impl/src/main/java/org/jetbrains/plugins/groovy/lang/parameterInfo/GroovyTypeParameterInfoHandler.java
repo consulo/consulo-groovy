@@ -15,17 +15,16 @@
  */
 package org.jetbrains.plugins.groovy.lang.parameterInfo;
 
-import com.intellij.codeInsight.lookup.LookupElement;
-import com.intellij.lang.parameterInfo.*;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.PsiClassType;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiTypeParameter;
-import com.intellij.psi.PsiTypeParameterListOwner;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.util.Function;
-import com.intellij.util.containers.ContainerUtil;
+import com.intellij.java.language.psi.PsiTypeParameter;
+import com.intellij.java.language.psi.PsiTypeParameterListOwner;
+import consulo.language.Language;
+import consulo.language.ast.IElementType;
+import consulo.language.editor.completion.lookup.LookupElement;
+import consulo.language.editor.parameterInfo.*;
+import consulo.language.psi.PsiElement;
+import consulo.util.lang.StringUtil;
 import org.jetbrains.annotations.NonNls;
+import org.jetbrains.plugins.groovy.GroovyLanguage;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
@@ -42,8 +41,8 @@ import java.util.Set;
  */
 public class GroovyTypeParameterInfoHandler implements ParameterInfoHandlerWithTabActionSupport<GrTypeArgumentList, PsiTypeParameter, GrTypeElement> {
 
-  private static final Set<Class<?>> ALLOWED_PARENT_CLASSES = ContainerUtil.<Class<?>>newHashSet(GrCodeReferenceElement.class);
-  private static final Set<Class<?>> STOP_SEARCHING_CLASSES = ContainerUtil.<Class<?>>newHashSet(GroovyFile.class);
+  private static final Set<Class<?>> ALLOWED_PARENT_CLASSES = Set.of(GrCodeReferenceElement.class);
+  private static final Set<Class<?>> STOP_SEARCHING_CLASSES = Set.of(GroovyFile.class);
 
   @Nonnull
   @Override
@@ -86,7 +85,7 @@ public class GroovyTypeParameterInfoHandler implements ParameterInfoHandlerWithT
     return false;
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   @Override
   public Object[] getParametersForLookup(LookupElement item, ParameterInfoContext context) {
     return null;
@@ -96,7 +95,8 @@ public class GroovyTypeParameterInfoHandler implements ParameterInfoHandlerWithT
   @Nullable
   @Override
   public GrTypeArgumentList findElementForParameterInfo(CreateParameterInfoContext context) {
-    final GrTypeArgumentList parameterList = ParameterInfoUtils.findParentOfType(context.getFile(), context.getOffset(), GrTypeArgumentList.class);
+    final GrTypeArgumentList parameterList =
+      ParameterInfoUtils.findParentOfType(context.getFile(), context.getOffset(), GrTypeArgumentList.class);
 
     if (parameterList != null) {
       if (!(parameterList.getParent() instanceof GrCodeReferenceElement)) return null;
@@ -120,7 +120,7 @@ public class GroovyTypeParameterInfoHandler implements ParameterInfoHandlerWithT
     context.showHint(element, element.getTextRange().getStartOffset() + 1, this);
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   @Override
   public GrTypeArgumentList findElementForUpdatingParameterInfo(UpdateParameterInfoContext context) {
     return ParameterInfoUtils.findParentOfType(context.getFile(), context.getOffset(), GrTypeArgumentList.class);
@@ -140,13 +140,20 @@ public class GroovyTypeParameterInfoHandler implements ParameterInfoHandlerWithT
     buffer.append(p.getName());
     int highlightEndOffset = buffer.length();
     buffer.append(" extends ");
-    buffer.append(StringUtil.join(Arrays.asList(p.getSuperTypes()), new Function<PsiClassType, String>() {
-        @Override
-        public String fun(final PsiClassType t) {
-          return t.getPresentableText();
-        }
-      }, ", "));
+    buffer.append(StringUtil.join(Arrays.asList(p.getSuperTypes()), t -> t.getPresentableText(), ", "));
 
-    context.setupUIComponentPresentation(StringUtil.escapeXml(buffer.toString()), 0, highlightEndOffset, false, false, false, context.getDefaultParameterColor());
+    context.setupUIComponentPresentation(StringUtil.escapeXml(buffer.toString()),
+                                         0,
+                                         highlightEndOffset,
+                                         false,
+                                         false,
+                                         false,
+                                         context.getDefaultParameterColor());
+  }
+
+  @Nonnull
+  @Override
+  public Language getLanguage() {
+    return GroovyLanguage.INSTANCE;
   }
 }

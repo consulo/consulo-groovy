@@ -39,7 +39,7 @@ class GroovyLightProjectDescriptor extends DefaultLightProjectDescriptor {
     final Library.ModifiableModel modifiableModel = model.moduleLibraryTable.createLibrary("GROOVY").modifiableModel;
     final VirtualFile groovyJar = JarFileSystem.instance.refreshAndFindFileByPath("$mockGroovy2_1LibraryName!/");
     assert groovyJar != null;
-    modifiableModel.addRoot(groovyJar, OrderRootType.CLASSES);
+    modifiableModel.addRoot(groovyJar, BinariesOrderRootType.getInstance());
     modifiableModel.commit();
   }
 }

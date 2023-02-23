@@ -1,20 +1,27 @@
+import java.lang.Integer;
+import java.lang.Object;
+import java.lang.String;
+import java.lang.Thread;
+import java.lang.Void;
+import java.util.concurrent.atomic.AtomicInteger;
+
 public class concurency extends groovy.lang.Script {
-public static void main(java.lang.String[] args) {
+public static void main(String[] args) {
 new concurency(new groovy.lang.Binding(args)).run();
 }
 
-public java.lang.Object run() {
+public Object run() {
 
 
-final java.util.concurrent.atomic.AtomicInteger counter = new java.util.concurrent.atomic.AtomicInteger();
+final AtomicInteger counter = new AtomicInteger();
 
 
 
-java.lang.Thread th = org.codehaus.groovy.runtime.DefaultGroovyStaticMethods.start(null, new groovy.lang.Closure<java.lang.Void>(this, this) {
-public void doCall(java.lang.Object it) {
-for(java.lang.Integer i : new groovy.lang.IntRange(1, 8)){
+Thread th = org.codehaus.groovy.runtime.DefaultGroovyStaticMethods.start(null, new groovy.lang.Closure<Void>(this, this) {
+public void doCall(Object it) {
+for(Integer i : new groovy.lang.IntRange(1, 8)){
 org.codehaus.groovy.runtime.DefaultGroovyStaticMethods.sleep(null, 30);
-out("thread loop " + java.lang.String.valueOf(i));
+out("thread loop " + String.valueOf(i));
 counter.incrementAndGet();
 }
 
@@ -26,9 +33,9 @@ doCall(null);
 
 });
 
-for(java.lang.Integer j : new groovy.lang.IntRange(1, 4)){
+for(Integer j : new groovy.lang.IntRange(1, 4)){
 org.codehaus.groovy.runtime.DefaultGroovyStaticMethods.sleep(null, 50);
-out("main loop " + java.lang.String.valueOf(j));
+out("main loop " + String.valueOf(j));
 counter.incrementAndGet();
 }
 

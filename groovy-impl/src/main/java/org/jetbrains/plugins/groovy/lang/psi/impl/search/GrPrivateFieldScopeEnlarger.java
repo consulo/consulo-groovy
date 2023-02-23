@@ -15,15 +15,15 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.search;
 
-import javax.annotation.Nonnull;
+import com.intellij.java.language.psi.PsiField;
+import com.intellij.java.language.psi.PsiModifier;
+import consulo.content.scope.SearchScope;
+import consulo.language.impl.psi.ResolveScopeManager;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.UseScopeEnlarger;
+import consulo.language.psi.scope.GlobalSearchScope;
 
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiField;
-import com.intellij.psi.PsiModifier;
-import com.intellij.psi.impl.ResolveScopeManager;
-import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.psi.search.SearchScope;
-import com.intellij.psi.search.UseScopeEnlarger;
+import javax.annotation.Nonnull;
 
 /**
  * @author Maxim.Medvedev

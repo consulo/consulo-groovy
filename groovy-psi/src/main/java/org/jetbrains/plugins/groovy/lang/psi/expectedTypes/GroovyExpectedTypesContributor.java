@@ -1,17 +1,20 @@
 package org.jetbrains.plugins.groovy.lang.psi.expectedTypes;
 
-import java.util.List;
+import consulo.annotation.component.ComponentScope;
+import consulo.annotation.component.ExtensionAPI;
+import consulo.component.extension.ExtensionPointName;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 
 import javax.annotation.Nonnull;
-
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
-import com.intellij.openapi.extensions.ExtensionPointName;
+import java.util.List;
 
 /**
  * @author peter
  */
+@ExtensionAPI(ComponentScope.APPLICATION)
 public abstract class GroovyExpectedTypesContributor {
-  public static final ExtensionPointName<GroovyExpectedTypesContributor> EP_NAME = ExtensionPointName.create("org.intellij.groovy.expectedTypesContributor");
+  public static final ExtensionPointName<GroovyExpectedTypesContributor> EP_NAME = ExtensionPointName.create
+    (GroovyExpectedTypesContributor.class);
 
   public abstract List<TypeConstraint> calculateTypeConstraints(@Nonnull GrExpression expression);
 }

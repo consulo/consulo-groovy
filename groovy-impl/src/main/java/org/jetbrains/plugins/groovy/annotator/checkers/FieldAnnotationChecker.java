@@ -15,13 +15,13 @@
  */
 package org.jetbrains.plugins.groovy.annotator.checkers;
 
-import com.intellij.codeInsight.daemon.JavaErrorBundle;
-import com.intellij.lang.annotation.AnnotationHolder;
-import com.intellij.psi.PsiAnnotation;
-import com.intellij.psi.PsiAnnotationOwner;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiModifierList;
-import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.java.language.impl.codeInsight.daemon.JavaErrorBundle;
+import com.intellij.java.language.psi.PsiAnnotation;
+import com.intellij.java.language.psi.PsiAnnotationOwner;
+import com.intellij.java.language.psi.PsiModifierList;
+import consulo.language.editor.annotation.AnnotationHolder;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.util.PsiTreeUtil;
 import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotation;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariableDeclaration;

@@ -1,9 +1,12 @@
+import java.lang.String;
+import java.util.List;
+
 public class X {
-public void foo(java.util.List l) {
-if (l instanceof java.lang.String){
+public void foo(List l) {
+if (l instanceof String){
 if (l instanceof MyList){
 org.codehaus.groovy.runtime.DefaultGroovyMethods.print(this, l);
-java.lang.String v = ((MyList)l).getValue();
+String v = ((MyList)l).getValue();
 }
 
 }
@@ -12,6 +15,6 @@ java.lang.String v = ((MyList)l).getValue();
 
 }
 public class MyList {
-public java.lang.String getValue() {return "";}
+public String getValue() {return "";}
 
 }

@@ -15,22 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.actions.generate.accessors;
 
-import com.intellij.codeInsight.generation.EncapsulatableClassMember;
-import com.intellij.codeInsight.generation.GenerateAccessorProviderRegistrar;
-import com.intellij.codeInsight.generation.GenerateGetterAndSetterHandler;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiEnumConstant;
-import com.intellij.psi.PsiField;
-import com.intellij.util.NotNullFunction;
-import javax.annotation.Nonnull;
+import com.intellij.java.impl.codeInsight.generation.GenerateGetterAndSetterHandler;
 import org.jetbrains.plugins.groovy.actions.generate.GrBaseGenerateAction;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * @author Max Medvedev
@@ -39,21 +25,4 @@ public class GroovyGenerateGetterSetterAction extends GrBaseGenerateAction {
   public GroovyGenerateGetterSetterAction() {
     super(new GenerateGetterAndSetterHandler());
   }
-
-  static {
-    GenerateAccessorProviderRegistrar.registerProvider(new NotNullFunction<PsiClass, Collection<EncapsulatableClassMember>>() {
-      @Nonnull
-      public Collection<EncapsulatableClassMember> fun(PsiClass s) {
-        if (!(s instanceof GrTypeDefinition)) return Collections.emptyList();
-        final List<EncapsulatableClassMember> result = new ArrayList<EncapsulatableClassMember>();
-        for (PsiField field : s.getFields()) {
-          if (!(field instanceof PsiEnumConstant) && field instanceof GrField) {
-            result.add(new GrFieldMember((GrField)field));
-          }
-        }
-        return result;
-      }
-    });
-  }
-
 }

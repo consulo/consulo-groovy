@@ -17,16 +17,21 @@ package org.jetbrains.plugins.groovy.gant;
 
 import javax.annotation.Nonnull;
 
+import consulo.component.ProcessCanceledException;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.scope.GlobalSearchScope;
+import consulo.language.psi.search.FilenameIndex;
+import consulo.util.lang.StringUtil;
 import org.jetbrains.plugins.groovy.extensions.debugger.ScriptPositionManagerHelper;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.runner.GroovyScriptUtil;
-import com.intellij.openapi.progress.ProcessCanceledException;
-import com.intellij.openapi.project.IndexNotReadyException;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.search.FilenameIndex;
-import com.intellij.psi.search.GlobalSearchScope;
+import consulo.component.ProcessCanceledException;
+import consulo.application.dumb.IndexNotReadyException;
+import consulo.project.Project;
+import consulo.util.lang.StringUtil;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.search.FilenameIndex;
+import consulo.language.psi.scope.GlobalSearchScope;
 import consulo.internal.com.sun.jdi.ReferenceType;
 
 /**

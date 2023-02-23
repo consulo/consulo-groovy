@@ -1,8 +1,13 @@
-public class MyClass {
-public void foo(java.util.Map args, java.lang.String a, java.lang.String... b) {}
+import java.lang.Object;
+import java.lang.String;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
-public void foo(java.lang.String a, java.lang.String... b) {
-foo(new java.util.LinkedHashMap<java.lang.Object, java.lang.Object>(), a, b);
+public class MyClass {
+public void foo(Map args, String a, String... b) {}
+
+public void foo(String a, String... b) {
+foo(new LinkedHashMap<Object, Object>(), a, b);
 }
 
 }

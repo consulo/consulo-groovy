@@ -16,8 +16,10 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.toplevel.packaging;
 
-import javax.annotation.Nonnull;
-
+import com.intellij.java.language.psi.PsiModifierList;
+import consulo.language.ast.ASTNode;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.StubBasedPsiElement;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
@@ -27,10 +29,8 @@ import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GrStubElementBase;
 import org.jetbrains.plugins.groovy.lang.psi.stubs.GrPackageDefinitionStub;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiModifierList;
-import com.intellij.psi.StubBasedPsiElement;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author ilyas

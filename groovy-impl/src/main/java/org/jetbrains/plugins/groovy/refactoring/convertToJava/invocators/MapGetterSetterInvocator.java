@@ -16,9 +16,10 @@
 package org.jetbrains.plugins.groovy.refactoring.convertToJava.invocators;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
-import com.intellij.psi.*;
-import com.intellij.psi.util.InheritanceUtil;
+import com.intellij.java.language.psi.*;
+import com.intellij.java.language.psi.util.InheritanceUtil;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrNamedArgument;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlock;
@@ -35,7 +36,7 @@ public class MapGetterSetterInvocator extends CustomMethodInvocator {
   @Override
   protected boolean invoke(@Nonnull ExpressionGenerator generator,
                            @Nonnull PsiMethod method,
-                           @javax.annotation.Nullable GrExpression caller,
+                           @Nullable GrExpression caller,
                            @Nonnull GrExpression[] exprs,
                            @Nonnull GrNamedArgument[] namedArgs,
                            @Nonnull GrClosableBlock[] closures,

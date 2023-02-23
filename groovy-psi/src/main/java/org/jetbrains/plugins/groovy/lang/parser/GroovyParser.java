@@ -18,6 +18,10 @@ package org.jetbrains.plugins.groovy.lang.parser;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
+import consulo.language.ast.ASTNode;
+import consulo.language.ast.TokenSet;
+import consulo.language.parser.PsiBuilder;
 import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.parser.parsing.auxiliary.Separators;
@@ -37,12 +41,9 @@ import org.jetbrains.plugins.groovy.lang.parser.parsing.statements.imports.Impor
 import org.jetbrains.plugins.groovy.lang.parser.parsing.statements.typeDefinitions.TypeDefinition;
 import org.jetbrains.plugins.groovy.lang.parser.parsing.toplevel.CompilationUnit;
 import org.jetbrains.plugins.groovy.lang.parser.parsing.util.ParserUtils;
-import com.intellij.lang.ASTNode;
-import consulo.lang.LanguageVersion;
-import com.intellij.lang.PsiBuilder;
-import com.intellij.lang.PsiParser;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.tree.TokenSet;
+import consulo.language.version.LanguageVersion;
+import consulo.language.parser.PsiParser;
+import consulo.language.ast.IElementType;
 
 /**
  * Parser for Groovy script files
@@ -200,7 +201,7 @@ public class GroovyParser implements PsiParser
 	}
 
 	//gsp directives, scriptlets and such
-	protected boolean isExtendedSeparator(@javax.annotation.Nullable final IElementType tokenType)
+	protected boolean isExtendedSeparator(@Nullable final IElementType tokenType)
 	{
 		return false;
 	}

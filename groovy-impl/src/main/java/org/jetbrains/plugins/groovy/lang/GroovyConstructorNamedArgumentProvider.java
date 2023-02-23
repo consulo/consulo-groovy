@@ -15,16 +15,15 @@
  */
 package org.jetbrains.plugins.groovy.lang;
 
+import com.intellij.java.language.impl.psi.scope.ElementClassHint;
+import com.intellij.java.language.impl.psi.scope.NameHint;
+import com.intellij.java.language.psi.*;
+import com.intellij.java.language.psi.util.InheritanceUtil;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.resolve.PsiScopeProcessor;
+import consulo.language.psi.resolve.ResolveState;
 import consulo.util.dataholder.Key;
-import com.intellij.openapi.util.Trinity;
-import com.intellij.psi.*;
-import com.intellij.psi.scope.ElementClassHint;
-import com.intellij.psi.scope.NameHint;
-import com.intellij.psi.scope.PsiScopeProcessor;
-import com.intellij.psi.util.InheritanceUtil;
-import com.intellij.util.containers.ContainerUtil;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import consulo.util.lang.Trinity;
 import org.jetbrains.plugins.groovy.extensions.GroovyNamedArgumentProvider;
 import org.jetbrains.plugins.groovy.extensions.NamedArgumentDescriptor;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
@@ -40,6 +39,8 @@ import org.jetbrains.plugins.groovy.lang.resolve.ResolveUtil;
 import org.jetbrains.plugins.groovy.lang.resolve.processors.ClassHint;
 import org.jetbrains.plugins.groovy.lang.resolve.processors.ResolverProcessorImpl;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
@@ -97,7 +98,7 @@ public class GroovyConstructorNamedArgumentProvider extends GroovyNamedArgumentP
                                   @Nullable String argumentName,
                                   final Map<String, NamedArgumentDescriptor> result) {
     if (argumentName == null) {
-      final HashMap<String, Trinity<PsiType, PsiElement, PsiSubstitutor>> map = ContainerUtil.newHashMap();
+      final HashMap<String, Trinity<PsiType, PsiElement, PsiSubstitutor>> map = new HashMap<>();
 
       MyPsiScopeProcessor processor = new MyPsiScopeProcessor() {
         @Override

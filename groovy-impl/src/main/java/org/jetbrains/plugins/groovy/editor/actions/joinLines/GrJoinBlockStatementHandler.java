@@ -15,16 +15,19 @@
  */
 package org.jetbrains.plugins.groovy.editor.actions.joinLines;
 
-import com.intellij.codeInsight.editorActions.JoinLinesHandlerDelegate;
-import com.intellij.openapi.editor.Document;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
+import consulo.language.editor.action.JoinLinesHandlerDelegate;
+import consulo.document.Document;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.editor.action.JoinLinesHandlerDelegate;
+import consulo.language.psi.PsiElement;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFileBase;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.*;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrOpenBlock;
 
-public class GrJoinBlockStatementHandler implements JoinLinesHandlerDelegate {
+public class GrJoinBlockStatementHandler implements JoinLinesHandlerDelegate
+{
   @Override
   public int tryJoinLines(Document document, PsiFile file, int start, int end) {
     if (!(file instanceof GroovyFileBase)) return CANNOT_JOIN;

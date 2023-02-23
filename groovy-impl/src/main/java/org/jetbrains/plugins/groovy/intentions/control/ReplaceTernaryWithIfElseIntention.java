@@ -15,12 +15,13 @@
  */
 package org.jetbrains.plugins.groovy.intentions.control;
 
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.IncorrectOperationException;
+import consulo.codeEditor.Editor;
+import consulo.language.psi.PsiElement;
+import consulo.project.Project;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.language.util.IncorrectOperationException;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import org.jetbrains.plugins.groovy.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.intentions.base.PsiElementPredicate;
@@ -76,7 +77,7 @@ public class ReplaceTernaryWithIfElseIntention extends Intention {
     };
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   private static GrConditionalExpression findTernary(PsiElement element) {
     GrConditionalExpression ternary = PsiTreeUtil.getParentOfType(element, GrConditionalExpression.class);
     if (ternary == null) {

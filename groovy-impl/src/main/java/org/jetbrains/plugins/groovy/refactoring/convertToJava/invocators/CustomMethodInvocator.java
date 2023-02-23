@@ -15,11 +15,9 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.convertToJava.invocators;
 
-import javax.annotation.Nonnull;
-
-import com.intellij.openapi.extensions.ExtensionPointName;
-import com.intellij.psi.PsiMethod;
-import com.intellij.psi.PsiSubstitutor;
+import com.intellij.java.language.psi.PsiMethod;
+import com.intellij.java.language.psi.PsiSubstitutor;
+import consulo.component.extension.ExtensionPointName;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrNamedArgument;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlock;
@@ -27,16 +25,18 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpres
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrGdkMethod;
 import org.jetbrains.plugins.groovy.refactoring.convertToJava.ExpressionGenerator;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 /**
  * @author Max Medvedev
  */
 public abstract class CustomMethodInvocator {
-  private static final ExtensionPointName<CustomMethodInvocator> EP_NAME =
-    ExtensionPointName.create("org.intellij.groovy.convertToJava.customMethodInvocator");
+  private static final ExtensionPointName<CustomMethodInvocator> EP_NAME = ExtensionPointName.create(CustomMethodInvocator.class);
 
   protected abstract boolean invoke(@Nonnull ExpressionGenerator generator,
                                     @Nonnull PsiMethod method,
-                                    @javax.annotation.Nullable GrExpression caller,
+                                    @Nullable GrExpression caller,
                                     @Nonnull GrExpression[] exprs,
                                     @Nonnull GrNamedArgument[] namedArgs,
                                     @Nonnull GrClosableBlock[] closures,
@@ -45,7 +45,7 @@ public abstract class CustomMethodInvocator {
 
   public static boolean invokeMethodOn(@Nonnull ExpressionGenerator generator,
                                        @Nonnull GrGdkMethod method,
-                                       @javax.annotation.Nullable GrExpression caller,
+                                       @Nullable GrExpression caller,
                                        @Nonnull GrExpression[] exprs,
                                        @Nonnull GrNamedArgument[] namedArgs,
                                        @Nonnull GrClosableBlock[] closures,

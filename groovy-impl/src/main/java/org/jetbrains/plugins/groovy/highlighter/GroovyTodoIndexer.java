@@ -15,11 +15,15 @@
  */
 package org.jetbrains.plugins.groovy.highlighter;
 
-import com.intellij.lexer.Lexer;
-import com.intellij.psi.impl.cache.impl.OccurrenceConsumer;
-import com.intellij.psi.impl.cache.impl.todo.LexerBasedTodoIndexer;
+import consulo.language.lexer.Lexer;
+import consulo.language.psi.stub.OccurrenceConsumer;
+import consulo.language.psi.stub.todo.LexerBasedTodoIndexer;
+import consulo.virtualFileSystem.fileType.FileType;
+import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyFilterLexer;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyLexer;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author Maxim.Medvedev
@@ -28,5 +32,11 @@ public class GroovyTodoIndexer extends LexerBasedTodoIndexer {
   @Override
   public Lexer createLexer(OccurrenceConsumer consumer) {
     return new GroovyFilterLexer(new GroovyLexer(), consumer);
+  }
+
+  @Nonnull
+  @Override
+  public FileType getFileType() {
+    return GroovyFileType.GROOVY_FILE_TYPE;
   }
 }

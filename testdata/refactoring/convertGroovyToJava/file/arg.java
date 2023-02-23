@@ -1,21 +1,24 @@
+import java.lang.Object;
+import java.lang.String;
+
 public class args extends groovy.lang.Script {
-public static void main(java.lang.String[] args) {
+public static void main(String[] args) {
 new args(new groovy.lang.Binding(args)).run();
 }
 
-public java.lang.Object run() {
-foo(new java.lang.String[]{"a", "b", "c"});
-foo(new java.lang.String[]{"a"});
+public Object run() {
+foo(new String[]{"a", "b", "c"});
+foo(new String[]{"a"});
 foo("a", 2);
 foo(4);
 return null;
 
 }
 
-public void foo(java.lang.String... args) {
+public void foo(String... args) {
 }
 
-public void foo(java.lang.String s, int x) {
+public void foo(String s, int x) {
 }
 
 public void foo(int x) {

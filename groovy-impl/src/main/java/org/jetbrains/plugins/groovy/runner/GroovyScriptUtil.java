@@ -21,9 +21,9 @@ import org.jetbrains.plugins.groovy.extensions.GroovyRunnableScriptType;
 import org.jetbrains.plugins.groovy.extensions.GroovyScriptType;
 import org.jetbrains.plugins.groovy.extensions.GroovyScriptTypeDetector;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
-import com.intellij.psi.PsiFile;
+import consulo.language.psi.PsiFile;
 import consulo.ui.image.Image;
-import icons.JetgroovyIcons;
+import org.jetbrains.plugins.groovy.JetgroovyIcons;
 
 public class GroovyScriptUtil
 {

@@ -18,6 +18,8 @@ package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions;
 
 import javax.annotation.Nonnull;
 
+import consulo.language.psi.PsiElement;
+import consulo.language.util.IncorrectOperationException;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrArgumentList;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrNamedArgument;
@@ -25,9 +27,7 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlo
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrCall;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyPsiElementImpl;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
-import com.intellij.util.IncorrectOperationException;
+import consulo.language.ast.ASTNode;
 
 /**
  * @author ven
@@ -60,7 +60,8 @@ public abstract class GrCallImpl extends GroovyPsiElementImpl implements GrCall 
   }
 
   @Override
-  public GrNamedArgument addNamedArgument(final GrNamedArgument namedArgument) throws IncorrectOperationException {
+  public GrNamedArgument addNamedArgument(final GrNamedArgument namedArgument) throws IncorrectOperationException
+  {
     GrArgumentList list = getArgumentList();
     assert list != null;
     if (list.getText().trim().isEmpty()) {

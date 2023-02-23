@@ -20,28 +20,36 @@
  */
 package org.jetbrains.plugins.groovy.copyright;
 
-import java.util.List;
-
-import javax.swing.JPanel;
-
-import javax.annotation.Nonnull;
+import com.intellij.java.impl.copyright.psi.UpdateJavaFileCopyright;
+import com.intellij.java.language.psi.PsiClass;
+import consulo.language.copyright.UpdateCopyrightsProvider;
+import consulo.language.copyright.UpdatePsiFileCopyright;
+import consulo.language.copyright.config.CopyrightFileConfig;
+import consulo.language.copyright.config.CopyrightProfile;
+import consulo.language.copyright.ui.TemplateCommentPanel;
+import consulo.language.psi.PsiComment;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.project.Project;
+import consulo.virtualFileSystem.fileType.FileType;
+import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
 import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GroovyScriptClass;
-import com.intellij.openapi.fileTypes.FileType;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiComment;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.maddyhome.idea.copyright.CopyrightProfile;
-import com.maddyhome.idea.copyright.psi.UpdateCopyrightsProvider;
-import com.maddyhome.idea.copyright.psi.UpdateJavaFileCopyright;   import com.maddyhome.idea.copyright.psi.UpdatePsiFileCopyright;
-import com.maddyhome.idea.copyright.ui.TemplateCommentPanel;
-import consulo.copyright.config.CopyrightFileConfig;
+
+import javax.annotation.Nonnull;
+import javax.swing.*;
+import java.util.List;
 
 public class UpdateGroovyCopyrightsProvider extends UpdateCopyrightsProvider<CopyrightFileConfig>
 {
+	@Nonnull
+	@Override
+	public FileType getFileType()
+	{
+		return GroovyFileType.GROOVY_FILE_TYPE;
+	}
+
 	@Nonnull
 	@Override
 	public UpdatePsiFileCopyright<CopyrightFileConfig> createInstance(@Nonnull PsiFile file, @Nonnull CopyrightProfile copyrightProfile)

@@ -15,18 +15,17 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.unusedDef;
 
-import com.intellij.codeInspection.ProblemHighlightType;
-import com.intellij.codeInspection.ProblemsHolder;
-import com.intellij.diagnostic.LogMessageEx;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiReference;
-import com.intellij.psi.search.LocalSearchScope;
-import com.intellij.psi.search.searches.ReferencesSearch;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.util.Processor;
-import com.intellij.util.containers.ContainerUtil;
+import consulo.application.util.function.Processor;
+import consulo.document.util.TextRange;
+import consulo.ide.impl.idea.diagnostic.LogMessageEx;
+import consulo.language.ast.IElementType;
+import consulo.language.editor.inspection.ProblemHighlightType;
+import consulo.language.editor.inspection.ProblemsHolder;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.PsiReference;
+import consulo.language.psi.scope.LocalSearchScope;
+import consulo.language.psi.search.ReferencesSearch;
 import consulo.logging.Logger;
 import consulo.util.collection.primitive.ints.IntSet;
 import consulo.util.collection.primitive.ints.IntSets;
@@ -54,6 +53,7 @@ import org.jetbrains.plugins.groovy.lang.psi.dataFlow.reachingDefs.ReachingDefin
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -124,7 +124,7 @@ public class UnusedDefInspection extends GroovyLocalInspectionBase {
       }
     }
 
-    final Set<PsiElement> checked = ContainerUtil.newHashSet();
+    final Set<PsiElement> checked = new HashSet<>();
 
     unusedDefs.forEach(new IntConsumer() {
       public void accept(int num) {

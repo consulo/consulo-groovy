@@ -16,11 +16,12 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.path;
 
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
-import com.intellij.util.ArrayUtil;
-import com.intellij.util.IncorrectOperationException;
+import consulo.language.ast.ASTNode;
+import consulo.language.psi.PsiElement;
+import consulo.util.collection.ArrayUtil;
+import consulo.language.util.IncorrectOperationException;
 import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;

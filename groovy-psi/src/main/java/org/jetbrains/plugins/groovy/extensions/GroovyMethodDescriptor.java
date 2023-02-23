@@ -1,22 +1,15 @@
 package org.jetbrains.plugins.groovy.extensions;
 
-import static org.jetbrains.plugins.groovy.extensions.NamedArgumentDescriptor.Priority;
-import static org.jetbrains.plugins.groovy.extensions.NamedArgumentDescriptor.SIMPLE_NORMAL;
-import static org.jetbrains.plugins.groovy.extensions.NamedArgumentDescriptor.SIMPLE_ON_TOP;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.StringTokenizer;
+import consulo.util.lang.StringUtil;
+import consulo.util.xml.serializer.annotation.AbstractCollection;
+import consulo.util.xml.serializer.annotation.Attribute;
+import consulo.util.xml.serializer.annotation.Property;
+import consulo.util.xml.serializer.annotation.Tag;
 
 import javax.annotation.Nullable;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.util.xmlb.annotations.AbstractCollection;
-import com.intellij.util.xmlb.annotations.Attribute;
-import com.intellij.util.xmlb.annotations.Property;
-import com.intellij.util.xmlb.annotations.Tag;
+import java.util.*;
+
+import static org.jetbrains.plugins.groovy.extensions.NamedArgumentDescriptor.*;
 
 /**
  * @author Sergey Evdokimov
@@ -143,7 +136,7 @@ public class GroovyMethodDescriptor {
   }
 
   private static NamedArgumentDescriptor getDescriptor(@Nullable Boolean methodFirstFlag,
-                                                       @javax.annotation.Nullable Boolean attrFirstFlag,
+                                                       @Nullable Boolean attrFirstFlag,
                                                        @Nullable String type) {
     Boolean objShowFirst = attrFirstFlag;
     if (objShowFirst == null) {

@@ -15,13 +15,12 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.controlFlow;
 
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.search.PsiShortNamesCache;
-import com.intellij.util.ArrayUtil;
-import com.intellij.util.ArrayUtilRt;
+import com.intellij.java.language.psi.PsiClass;
+import com.intellij.java.language.psi.search.PsiShortNamesCache;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.logging.Logger;
+import consulo.util.collection.ArrayUtil;
 import consulo.util.collection.primitive.ints.IntLists;
 import consulo.util.collection.primitive.ints.IntSet;
 import consulo.util.collection.primitive.ints.IntSets;
@@ -276,7 +275,7 @@ public class ControlFlowBuilderUtil {
 
   private static boolean isLastStatementInCaseSection(GrCaseSection caseSection, GrSwitchStatement switchStatement) {
     final GrCaseSection[] sections = switchStatement.getCaseSections();
-    final int i = ArrayUtilRt.find(sections, caseSection);
+    final int i = ArrayUtil.find(sections, caseSection);
     if (i == sections.length - 1) {
       return true;
     }

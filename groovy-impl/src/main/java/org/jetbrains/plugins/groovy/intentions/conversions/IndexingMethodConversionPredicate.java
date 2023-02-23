@@ -15,11 +15,11 @@
  */
 package org.jetbrains.plugins.groovy.intentions.conversions;
 
-import com.intellij.psi.CommonClassNames;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiType;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.util.InheritanceUtil;
+import com.intellij.java.language.psi.CommonClassNames;
+import consulo.language.psi.PsiElement;
+import com.intellij.java.language.psi.PsiType;
+import consulo.language.ast.IElementType;
+import com.intellij.java.language.psi.util.InheritanceUtil;
 import org.jetbrains.plugins.groovy.intentions.base.ErrorUtil;
 import org.jetbrains.plugins.groovy.intentions.base.PsiElementPredicate;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;

@@ -15,17 +15,22 @@
  */
 package org.jetbrains.plugins.groovy.lang.parameterInfo;
 
-import com.intellij.codeInsight.CodeInsightSettings;
-import com.intellij.codeInsight.completion.JavaCompletionUtil;
-import com.intellij.codeInsight.lookup.LookupElement;
-import com.intellij.lang.parameterInfo.*;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.*;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.ArrayUtil;
-import com.intellij.util.text.CharArrayUtil;
+import com.intellij.java.impl.codeInsight.completion.JavaCompletionUtil;
+import com.intellij.java.language.psi.*;
+import consulo.language.Language;
+import consulo.language.ast.IElementType;
+import consulo.language.editor.CodeInsightSettings;
+import consulo.language.editor.completion.lookup.LookupElement;
+import consulo.language.editor.parameterInfo.*;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.PsiNamedElement;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.logging.Logger;
+import consulo.util.collection.ArrayUtil;
+import consulo.util.lang.CharArrayUtil;
+import consulo.util.lang.StringUtil;
+import org.jetbrains.plugins.groovy.GroovyLanguage;
 import org.jetbrains.plugins.groovy.lang.documentation.GroovyPresentationUtil;
 import org.jetbrains.plugins.groovy.lang.documentation.TypePresentation;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
@@ -51,6 +56,7 @@ import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 import org.jetbrains.plugins.groovy.lang.resolve.ResolveUtil;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.*;
 
 /**
@@ -95,7 +101,7 @@ public class GroovyParameterInfoHandler implements ParameterInfoHandlerWithTabAc
     return findAnchorElement(context.getEditor().getCaretModel().getOffset(), context.getFile());
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   private static GroovyPsiElement findAnchorElement(int offset, PsiFile file) {
     PsiElement element = file.findElementAt(offset);
     if (element == null) return null;
@@ -479,5 +485,11 @@ public class GroovyParameterInfoHandler implements ParameterInfoHandlerWithTabAc
   @Override
   public Class<GroovyPsiElement> getArgumentListClass() {
     return GroovyPsiElement.class;
+  }
+
+  @Nonnull
+  @Override
+  public Language getLanguage() {
+    return GroovyLanguage.INSTANCE;
   }
 }

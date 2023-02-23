@@ -16,9 +16,12 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.literals;
 
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.*;
-import javax.annotation.Nonnull;
+import com.intellij.java.language.psi.CommonClassNames;
+import com.intellij.java.language.psi.PsiType;
+import consulo.language.ast.ASTNode;
+import consulo.language.psi.LiteralTextEscaper;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiLanguageInjectionHost;
 import org.jetbrains.plugins.groovy.lang.lexer.TokenSets;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
@@ -29,6 +32,7 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.literals
 import org.jetbrains.plugins.groovy.lang.psi.util.GrStringUtil;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 /**
@@ -47,7 +51,7 @@ public class GrStringImpl extends GrAbstractLiteral implements GrString {
   @Override
   public PsiType getType() {
     return getTypeByFQName(findChildByClass(GrStringInjection.class) != null ? GroovyCommonClassNames.GROOVY_LANG_GSTRING
-                                                                             : CommonClassNames.JAVA_LANG_STRING);
+                             : CommonClassNames.JAVA_LANG_STRING);
   }
 
   @Override

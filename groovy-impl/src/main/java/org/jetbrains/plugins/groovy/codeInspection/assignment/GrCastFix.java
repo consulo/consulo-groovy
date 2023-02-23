@@ -15,19 +15,17 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.assignment;
 
-import javax.annotation.Nonnull;
-
-import com.intellij.codeInspection.LocalQuickFix;
-import com.intellij.codeInspection.ProblemDescriptor;
-import com.intellij.openapi.diagnostic.Attachment;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiType;
-import com.intellij.psi.codeStyle.JavaCodeStyleManager;
-import com.intellij.util.IncorrectOperationException;
+import com.intellij.java.language.psi.PsiType;
+import com.intellij.java.language.psi.codeStyle.JavaCodeStyleManager;
+import consulo.language.editor.inspection.LocalQuickFix;
+import consulo.language.editor.inspection.ProblemDescriptor;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.util.IncorrectOperationException;
+import consulo.logging.Logger;
+import consulo.logging.attachment.AttachmentFactory;
+import consulo.project.Project;
+import consulo.virtualFileSystem.VirtualFile;
 import org.jetbrains.plugins.groovy.codeInspection.GroovyFix;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
@@ -38,6 +36,8 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpres
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrSafeCastExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeElement;
 import org.jetbrains.plugins.groovy.lang.psi.impl.PsiImplUtil;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author Maxim.Medvedev
@@ -78,7 +78,7 @@ public class GrCastFix extends GroovyFix implements LocalQuickFix {
     PsiFile file = element.getContainingFile();
     VirtualFile virtualFile = file.getVirtualFile();
     String url = virtualFile == null ? "" : virtualFile.getPresentableUrl();
-    LOG.error("can't find expression to cast at position " + element.getTextRange(), new Attachment(url, file.getText()));
+    LOG.error("can't find expression to cast at position " + element.getTextRange(), AttachmentFactory.get().create(url, file.getText()));
     return null;
   }
 

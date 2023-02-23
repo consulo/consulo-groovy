@@ -15,13 +15,17 @@
  */
 package org.jetbrains.plugins.groovy.actions;
 
-import com.intellij.openapi.actionSystem.AnAction;
-import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.actionSystem.PlatformDataKeys;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.DumbAware;
-import com.intellij.psi.PsiFile;
+import consulo.application.dumb.DumbAware;
+import consulo.codeEditor.Editor;
+import consulo.language.psi.PsiFile;
+import consulo.ui.ex.action.AnAction;
+import consulo.ui.ex.action.AnActionEvent;
+import consulo.language.editor.PlatformDataKeys;
+import consulo.codeEditor.Editor;
+import consulo.application.dumb.DumbAware;
+import consulo.language.psi.PsiFile;
 import consulo.ui.annotation.RequiredUIAccess;
+import consulo.ui.ex.action.AnActionEvent;
 import org.jetbrains.plugins.groovy.editor.HandlerUtils;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.refactoring.convertToJava.GroovyToJavaGenerator;

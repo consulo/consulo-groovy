@@ -19,6 +19,8 @@ import java.util.Map;
 
 import javax.annotation.Nonnull;
 
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.resolve.PsiScopeProcessor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlock;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrMethodCall;
@@ -26,13 +28,13 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.ClassUt
 import org.jetbrains.plugins.groovy.lang.resolve.NonCodeMembersContributor;
 import org.jetbrains.plugins.groovy.lang.resolve.ResolveUtil;
 import org.jetbrains.plugins.groovy.lang.resolve.processors.ClassHint;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiField;
-import com.intellij.psi.PsiModifier;
-import com.intellij.psi.PsiType;
-import com.intellij.psi.ResolveState;
-import com.intellij.psi.scope.PsiScopeProcessor;
+import com.intellij.java.language.psi.PsiClass;
+import consulo.language.psi.PsiElement;
+import com.intellij.java.language.psi.PsiField;
+import com.intellij.java.language.psi.PsiModifier;
+import com.intellij.java.language.psi.PsiType;
+import consulo.language.psi.resolve.ResolveState;
+import consulo.language.psi.resolve.PsiScopeProcessor;
 
 /**
  * @author Sergey Evdokimov

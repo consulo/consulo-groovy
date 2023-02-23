@@ -17,9 +17,9 @@ package org.jetbrains.plugins.groovy.refactoring.copy
 
 import com.intellij.openapi.application.Result
 import com.intellij.openapi.command.WriteCommandAction
-import com.intellij.psi.PsiClass
-import com.intellij.psi.PsiFile
-import com.intellij.psi.search.GlobalSearchScope
+import com.intellij.java.language.psi.PsiClass
+import com.intellij.java.language.psi.PsiFile
+import com.intellij.java.language.psi.search.GlobalSearchScope
 import com.intellij.refactoring.copy.CopyClassesHandler
 import com.intellij.testFramework.fixtures.LightCodeInsightFixtureTestCase
 import org.jetbrains.plugins.groovy.util.TestUtils

@@ -16,11 +16,18 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.auxiliary.annotation;
 
-import javax.annotation.Nonnull;
-
+import com.intellij.java.language.impl.psi.impl.PsiImplUtil;
+import com.intellij.java.language.impl.psi.impl.light.LightClassReference;
+import com.intellij.java.language.psi.*;
+import consulo.language.ast.ASTNode;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.StubBasedPsiElement;
+import consulo.language.psi.meta.PsiMetaData;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.logging.Logger;
+import consulo.project.Project;
+import consulo.util.lang.function.PairFunction;
 import org.jetbrains.annotations.NonNls;
-
-import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
@@ -39,29 +46,16 @@ import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeParameter;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GrStubElementBase;
 import org.jetbrains.plugins.groovy.lang.psi.stubs.GrAnnotationStub;
 import org.jetbrains.plugins.groovy.lang.resolve.ResolveUtil;
-import com.intellij.lang.ASTNode;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiAnnotation;
-import com.intellij.psi.PsiAnnotationMemberValue;
-import com.intellij.psi.PsiAnnotationOwner;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiJavaCodeReferenceElement;
-import com.intellij.psi.PsiMethod;
-import com.intellij.psi.StubBasedPsiElement;
-import com.intellij.psi.impl.PsiImplUtil;
-import com.intellij.psi.impl.light.LightClassReference;
-import com.intellij.psi.meta.PsiMetaData;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.PairFunction;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author: Dmitry.Krasilschikov
  * @date: 04.04.2007
  */
 public class GrAnnotationImpl extends GrStubElementBase<GrAnnotationStub> implements GrAnnotation, StubBasedPsiElement<GrAnnotationStub> {
-  private static final Logger LOG = Logger.getInstance("#org.jetbrains.plugins.groovy.lang.psi.impl.auxiliary.annotation.GrAnnotationImpl");
+  private static final Logger LOG = Logger.getInstance(GrAnnotationImpl.class);
 
   private static final PairFunction<Project, String, PsiAnnotation> ANNOTATION_CREATOR = new PairFunction<Project, String, PsiAnnotation>() {
     @Override

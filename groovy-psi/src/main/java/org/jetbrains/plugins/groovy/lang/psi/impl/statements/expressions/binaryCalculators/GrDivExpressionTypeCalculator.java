@@ -15,10 +15,9 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.binaryCalculators;
 
+import com.intellij.java.language.psi.PsiType;
+
 import javax.annotation.Nonnull;
-
-import com.intellij.psi.PsiType;
-
 import javax.annotation.Nullable;
 
 /**

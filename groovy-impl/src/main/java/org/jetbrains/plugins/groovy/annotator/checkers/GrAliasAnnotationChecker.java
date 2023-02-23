@@ -1,21 +1,20 @@
 // Copyright 2000-2020 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
 package org.jetbrains.plugins.groovy.annotator.checkers;
 
-import com.intellij.lang.annotation.AnnotationBuilder;
-import com.intellij.lang.annotation.AnnotationHolder;
-import com.intellij.lang.annotation.HighlightSeverity;
-import com.intellij.psi.PsiAnnotation;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.java.language.psi.PsiAnnotation;
+import consulo.language.editor.annotation.AnnotationBuilder;
+import consulo.language.editor.annotation.AnnotationHolder;
+import consulo.language.editor.annotation.HighlightSeverity;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.util.PsiTreeUtil;
 import consulo.util.lang.Pair;
-import javax.annotation.Nonnull;
-
 import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotation;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotationNameValuePair;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
 import org.jetbrains.plugins.groovy.lang.psi.impl.auxiliary.modifiers.GrAnnotationCollector;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Set;

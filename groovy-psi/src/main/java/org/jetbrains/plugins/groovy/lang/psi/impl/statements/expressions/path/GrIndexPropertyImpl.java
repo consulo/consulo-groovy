@@ -16,17 +16,16 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.path;
 
-import javax.annotation.Nonnull;
-
-import com.intellij.lang.ASTNode;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.*;
-import com.intellij.psi.impl.source.resolve.ResolveCache;
-import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.psi.util.InheritanceUtil;
-import com.intellij.util.*;
-
-import javax.annotation.Nullable;
+import com.intellij.java.language.psi.*;
+import com.intellij.java.language.psi.util.InheritanceUtil;
+import consulo.document.util.TextRange;
+import consulo.language.ast.ASTNode;
+import consulo.language.psi.*;
+import consulo.language.psi.resolve.ResolveCache;
+import consulo.language.psi.scope.GlobalSearchScope;
+import consulo.language.util.IncorrectOperationException;
+import consulo.util.collection.ArrayFactory;
+import consulo.util.collection.ArrayUtil;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrArgumentList;
@@ -47,17 +46,16 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUt
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 import org.jetbrains.plugins.groovy.lang.resolve.ResolveUtil;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.function.Function;
+
 /**
  * @author ilyas
  */
 public class GrIndexPropertyImpl extends GrExpressionImpl implements GrIndexProperty {
 
-  private static final Function<GrIndexPropertyImpl, PsiType> TYPE_CALCULATOR = new NullableFunction<GrIndexPropertyImpl, PsiType>() {
-    @Override
-    public PsiType fun(GrIndexPropertyImpl index) {
-      return index.inferType(null);
-    }
-  };
+  private static final Function<GrIndexPropertyImpl, PsiType> TYPE_CALCULATOR = index -> index.inferType(null);
   private static final ResolveCache.PolyVariantResolver<MyReference> RESOLVER = new ResolveCache.PolyVariantResolver<MyReference>() {
     @Nonnull
     @Override
@@ -69,7 +67,7 @@ public class GrIndexPropertyImpl extends GrExpressionImpl implements GrIndexProp
 
   private final MyReference myReference = new MyReference();
 
-  private PsiType inferType(@javax.annotation.Nullable Boolean isSetter) {
+  private PsiType inferType(@Nullable Boolean isSetter) {
     GrExpression selected = getInvokedExpression();
     PsiType thisType = selected.getType();
 
@@ -143,15 +141,15 @@ public class GrIndexPropertyImpl extends GrExpressionImpl implements GrIndexProp
     return componentType;
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   private static PsiType extractMapValueType(PsiType thisType, PsiType[] argTypes, PsiManager manager, GlobalSearchScope resolveScope) {
     if (argTypes.length != 1 || !InheritanceUtil.isInheritor(thisType, CommonClassNames.JAVA_UTIL_MAP)) return null;
-    final PsiType substituted = com.intellij.psi.util.PsiUtil.substituteTypeParameter(thisType, CommonClassNames.JAVA_UTIL_MAP, 1, true);
+    final PsiType substituted = com.intellij.java.language.psi.util.PsiUtil.substituteTypeParameter(thisType, CommonClassNames.JAVA_UTIL_MAP, 1, true);
     return TypesUtil.boxPrimitiveType(substituted, manager, resolveScope);
   }
 
 
-  private GroovyResolveResult[] resolveImpl(boolean incompleteCode, @javax.annotation.Nullable GrExpression upToArgument, @Nullable Boolean isSetter) {
+  private GroovyResolveResult[] resolveImpl(boolean incompleteCode, @Nullable GrExpression upToArgument, @Nullable Boolean isSetter) {
     if (isSetter == null) isSetter = PsiUtil.isLValue(this);
 
     GrExpression invoked = getInvokedExpression();
@@ -262,13 +260,13 @@ public class GrIndexPropertyImpl extends GrExpressionImpl implements GrIndexProp
     return findNotNullChildByClass(GrArgumentList.class);
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   @Override
   public PsiType getGetterType() {
     return inferType(false);
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   @Override
   public PsiType getSetterType() {
     return inferType(true);
@@ -308,7 +306,7 @@ public class GrIndexPropertyImpl extends GrExpressionImpl implements GrIndexProp
     return null;
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   private PsiType extractLastParameterType(GroovyResolveResult candidate) {
     PsiElement element = candidate.getElement();
     if (element instanceof PsiMethod) {
@@ -343,7 +341,7 @@ public class GrIndexPropertyImpl extends GrExpressionImpl implements GrIndexProp
 
   @Nonnull
   @Override
-  public GroovyResolveResult[] getCallVariants(@javax.annotation.Nullable GrExpression upToArgument) {
+  public GroovyResolveResult[] getCallVariants(@Nullable GrExpression upToArgument) {
     if (upToArgument == null) {
       return multiResolve(true);
     }

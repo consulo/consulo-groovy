@@ -1,13 +1,13 @@
 package org.jetbrains.plugins.groovy.dsl;
 
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.roots.ProjectRootManager;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.util.CachedValue;
-import com.intellij.psi.util.CachedValueProvider;
-import com.intellij.psi.util.CachedValuesManager;
-import com.intellij.psi.util.PsiModificationTracker;
+import consulo.application.util.CachedValue;
+import consulo.application.util.CachedValueProvider;
+import consulo.language.psi.PsiFile;
+import consulo.project.Project;
+import consulo.module.content.ProjectRootManager;
+import consulo.language.psi.PsiElement;
+import consulo.application.util.CachedValuesManager;
+import consulo.language.psi.PsiModificationTracker;
 import consulo.util.dataholder.Key;
 import consulo.util.dataholder.UserDataHolder;
 import consulo.util.dataholder.UserDataHolderBase;

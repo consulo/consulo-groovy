@@ -15,17 +15,18 @@
  */
 package org.jetbrains.plugins.groovy.lang.resolve;
 
-import java.util.List;
-
+import com.intellij.java.language.psi.PsiType;
+import consulo.application.util.function.Computable;
+import consulo.language.psi.PsiManager;
 import org.jetbrains.plugins.groovy.codeInspection.utils.ControlFlowUtils;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.branch.GrReturnStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.util.GrStatementOwner;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil;
-import com.intellij.openapi.util.Computable;
-import com.intellij.psi.PsiManager;
-import com.intellij.psi.PsiType;
+
+import javax.annotation.Nullable;
+import java.util.List;
 
 /**
  * @author ven
@@ -37,7 +38,7 @@ public class MethodTypeInferencer implements Computable<PsiType> {
     myBlock = block;
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   public PsiType compute() {
     List<GrStatement> returns = ControlFlowUtils.collectReturns(myBlock);
     if (returns.size() == 0) return PsiType.VOID;

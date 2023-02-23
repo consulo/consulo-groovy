@@ -15,25 +15,31 @@
  */
 package org.jetbrains.plugins.groovy.template;
 
-import com.intellij.codeInsight.CodeInsightBundle;
-import com.intellij.codeInsight.template.Template;
-import com.intellij.codeInsight.template.impl.TemplateOptionalProcessor;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.editor.RangeMarker;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiDocumentManager;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.codeStyle.JavaCodeStyleManager;
-import com.intellij.psi.util.PsiUtilBase;
-import com.intellij.util.IncorrectOperationException;
+import consulo.document.RangeMarker;
+import consulo.language.editor.CodeInsightBundle;
+import consulo.language.editor.template.Template;
+import consulo.language.editor.template.TemplateOptionalProcessor;
+import consulo.language.psi.PsiDocumentManager;
+import consulo.language.util.IncorrectOperationException;
+import consulo.logging.Logger;
+import consulo.document.Document;
+import consulo.codeEditor.Editor;
+import consulo.document.RangeMarker;
+import consulo.project.Project;
+import consulo.language.psi.PsiDocumentManager;
+import consulo.language.psi.PsiFile;
+import com.intellij.java.language.psi.codeStyle.JavaCodeStyleManager;
+import consulo.language.editor.util.PsiUtilBase;
+import consulo.language.util.IncorrectOperationException;
+import consulo.language.editor.template.Template;
+import consulo.language.editor.template.TemplateOptionalProcessor;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 
 /**
  * @author Maxim.Medvedev
  */
-public class GroovyShortenFQNamesProcessor implements TemplateOptionalProcessor {
+public class GroovyShortenFQNamesProcessor implements TemplateOptionalProcessor
+{
   private static final Logger LOG = Logger.getInstance("#org.jetbrains.plugins.groovy.template.GroovyShortenFQNamesProcessor");
 
   public void processText(final Project project,

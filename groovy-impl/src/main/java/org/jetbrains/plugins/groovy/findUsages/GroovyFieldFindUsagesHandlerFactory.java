@@ -15,26 +15,26 @@
  */
 package org.jetbrains.plugins.groovy.findUsages;
 
-import com.intellij.find.FindBundle;
-import com.intellij.find.findUsages.FindUsagesHandler;
-import com.intellij.find.findUsages.JavaFindUsagesHandler;
-import com.intellij.find.findUsages.JavaFindUsagesHandlerFactory;
-import com.intellij.ide.util.SuperMethodWarningUtil;
-import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.ui.DialogWrapper;
-import com.intellij.openapi.ui.Messages;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiField;
-import com.intellij.psi.PsiMethod;
-import com.intellij.psi.util.PsiUtilCore;
-import com.intellij.util.containers.ContainerUtil;
-import javax.annotation.Nonnull;
+import com.intellij.java.impl.find.findUsages.JavaFindUsagesHandler;
+import com.intellij.java.impl.find.findUsages.JavaFindUsagesHandlerFactory;
+import com.intellij.java.impl.ide.util.SuperMethodWarningUtil;
+import com.intellij.java.language.psi.PsiClass;
+import com.intellij.java.language.psi.PsiField;
+import com.intellij.java.language.psi.PsiMethod;
+import consulo.application.ApplicationManager;
+import consulo.find.FindBundle;
+import consulo.find.FindUsagesHandler;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiUtilCore;
+import consulo.project.Project;
+import consulo.ui.ex.awt.DialogWrapper;
+import consulo.ui.ex.awt.Messages;
+import consulo.util.collection.ContainerUtil;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrAccessorMethod;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyPropertyUtils;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -69,8 +69,8 @@ public class GroovyFieldFindUsagesHandlerFactory extends JavaFindUsagesHandlerFa
             if (arePhysical(getters) || arePhysical(setters)) {
               if (ApplicationManager.getApplication().isUnitTestMode()) return PsiElement.EMPTY_ARRAY;
               doSearch = Messages.showYesNoDialog(FindBundle.message("find.field.accessors.prompt", field.getName()),
-                                             FindBundle.message("find.field.accessors.title"),
-                                             Messages.getQuestionIcon()) == DialogWrapper.OK_EXIT_CODE;
+                                                  FindBundle.message("find.field.accessors.title"),
+                                                  Messages.getQuestionIcon()) == DialogWrapper.OK_EXIT_CODE;
             }
             else {
               doSearch = true;

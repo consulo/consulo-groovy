@@ -15,7 +15,14 @@
  */
 package org.jetbrains.plugins.groovy.overrideImplement;
 
-import javax.annotation.Nonnull;
+import com.intellij.java.impl.codeInsight.MethodImplementor;
+import com.intellij.java.impl.codeInsight.generation.OverrideImplementUtil;
+import com.intellij.java.language.impl.codeInsight.generation.GenerationInfo;
+import com.intellij.java.language.psi.*;
+import com.intellij.java.language.psi.javadoc.PsiDocComment;
+import com.intellij.java.language.psi.util.TypeConversionUtil;
+import consulo.language.util.IncorrectOperationException;
+import consulo.project.Project;
 import org.jetbrains.plugins.groovy.actions.generate.GroovyGenerationInfo;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocComment;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.impl.GrDocCommentUtil;
@@ -23,123 +30,98 @@ import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
 import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GrTraitMethod;
-import com.intellij.codeInsight.MethodImplementor;
-import com.intellij.codeInsight.generation.GenerationInfo;
-import com.intellij.codeInsight.generation.OverrideImplementUtil;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.CommonClassNames;
-import com.intellij.psi.JavaPsiFacade;
-import com.intellij.psi.PsiAnnotation;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiMethod;
-import com.intellij.psi.PsiSubstitutor;
-import com.intellij.psi.javadoc.PsiDocComment;
-import com.intellij.psi.util.TypeConversionUtil;
-import com.intellij.util.Consumer;
-import com.intellij.util.IncorrectOperationException;
+
+import javax.annotation.Nonnull;
+import java.util.function.Consumer;
 
 /**
  * @author Medvedev Max
  */
-public class GroovyMethodImplementor implements MethodImplementor
-{
-	@Nonnull
-	@Override
-	public PsiMethod[] getMethodsToImplement(PsiClass aClass)
-	{
-		return PsiMethod.EMPTY_ARRAY;
-	}
+public class GroovyMethodImplementor implements MethodImplementor {
+  @Nonnull
+  @Override
+  public PsiMethod[] getMethodsToImplement(PsiClass aClass) {
+    return PsiMethod.EMPTY_ARRAY;
+  }
 
-	@Nonnull
-	@Override
-	public PsiMethod[] createImplementationPrototypes(PsiClass inClass, PsiMethod method) throws IncorrectOperationException
-	{
-		if(!(inClass instanceof GrTypeDefinition))
-		{
-			return PsiMethod.EMPTY_ARRAY;
-		}
-		if(method instanceof GrTraitMethod)
-		{
-			return PsiMethod.EMPTY_ARRAY;
-		}
+  @Nonnull
+  @Override
+  public PsiMethod[] createImplementationPrototypes(PsiClass inClass, PsiMethod method) throws IncorrectOperationException {
+    if (!(inClass instanceof GrTypeDefinition)) {
+      return PsiMethod.EMPTY_ARRAY;
+    }
+    if (method instanceof GrTraitMethod) {
+      return PsiMethod.EMPTY_ARRAY;
+    }
 
-		final PsiClass containingClass = method.getContainingClass();
-		PsiSubstitutor substitutor = inClass.isInheritor(containingClass, true) ? TypeConversionUtil.getSuperClassSubstitutor(containingClass, inClass, PsiSubstitutor.EMPTY) : PsiSubstitutor.EMPTY;
-		return new PsiMethod[]{GroovyOverrideImplementUtil.generateMethodPrototype((GrTypeDefinition) inClass, method, substitutor)};
-	}
+    final PsiClass containingClass = method.getContainingClass();
+    PsiSubstitutor substitutor = inClass.isInheritor(containingClass, true) ? TypeConversionUtil.getSuperClassSubstitutor(containingClass,
+                                                                                                                          inClass,
+                                                                                                                          PsiSubstitutor.EMPTY) : PsiSubstitutor.EMPTY;
+    return new PsiMethod[]{GroovyOverrideImplementUtil.generateMethodPrototype((GrTypeDefinition)inClass, method, substitutor)};
+  }
 
-	@Override
-	public GenerationInfo createGenerationInfo(PsiMethod method, boolean mergeIfExists)
-	{
-		if(method instanceof GrMethod)
-		{
-			return new GroovyGenerationInfo<GrMethod>((GrMethod) method, mergeIfExists);
-		}
-		return null;
-	}
+  @Override
+  public GenerationInfo createGenerationInfo(PsiMethod method, boolean mergeIfExists) {
+    if (method instanceof GrMethod) {
+      return new GroovyGenerationInfo<GrMethod>((GrMethod)method, mergeIfExists);
+    }
+    return null;
+  }
 
-	@Nonnull
-	@Override
-	public Consumer<PsiMethod> createDecorator(final PsiClass targetClass, final PsiMethod baseMethod, final boolean toCopyJavaDoc, final boolean insertOverrideIfPossible)
-	{
-		return new PsiMethodConsumer(targetClass, toCopyJavaDoc, baseMethod, insertOverrideIfPossible);
-	}
+  @Nonnull
+  @Override
+  public Consumer<PsiMethod> createDecorator(final PsiClass targetClass,
+                                             final PsiMethod baseMethod,
+                                             final boolean toCopyJavaDoc,
+                                             final boolean insertOverrideIfPossible) {
+    return new PsiMethodConsumer(targetClass, toCopyJavaDoc, baseMethod, insertOverrideIfPossible);
+  }
 
-	static class PsiMethodConsumer implements Consumer<PsiMethod>
-	{
-		private final PsiClass myTargetClass;
-		private final boolean myToCopyJavaDoc;
-		private final PsiMethod myBaseMethod;
-		private final boolean myInsertOverrideIfPossible;
+  static class PsiMethodConsumer implements Consumer<PsiMethod> {
+    private final PsiClass myTargetClass;
+    private final boolean myToCopyJavaDoc;
+    private final PsiMethod myBaseMethod;
+    private final boolean myInsertOverrideIfPossible;
 
-		public PsiMethodConsumer(PsiClass targetClass, boolean toCopyJavaDoc, PsiMethod baseMethod, boolean insertOverrideIfPossible)
-		{
-			myTargetClass = targetClass;
-			myToCopyJavaDoc = toCopyJavaDoc;
-			myBaseMethod = baseMethod;
-			myInsertOverrideIfPossible = insertOverrideIfPossible;
-		}
+    public PsiMethodConsumer(PsiClass targetClass, boolean toCopyJavaDoc, PsiMethod baseMethod, boolean insertOverrideIfPossible) {
+      myTargetClass = targetClass;
+      myToCopyJavaDoc = toCopyJavaDoc;
+      myBaseMethod = baseMethod;
+      myInsertOverrideIfPossible = insertOverrideIfPossible;
+    }
 
-		@Override
-		public void consume(PsiMethod method)
-		{
-			Project project = myTargetClass.getProject();
+    @Override
+    public void accept(PsiMethod method) {
+      Project project = myTargetClass.getProject();
 
-			if(myToCopyJavaDoc)
-			{
-				PsiDocComment baseMethodDocComment = myBaseMethod.getDocComment();
-				if(baseMethodDocComment != null)
-				{
-					GrDocComment docComment = GroovyPsiElementFactory.getInstance(project).createDocCommentFromText(baseMethodDocComment.getText());
-					GrDocCommentUtil.setDocComment(((GrMethod) method), docComment);
-				}
-			}
-			else
-			{
-				PsiDocComment docComment = method.getDocComment();
-				if(docComment != null)
-				{
-					docComment.delete();
-				}
-			}
+      if (myToCopyJavaDoc) {
+        PsiDocComment baseMethodDocComment = myBaseMethod.getDocComment();
+        if (baseMethodDocComment != null) {
+          GrDocComment docComment = GroovyPsiElementFactory.getInstance(project).createDocCommentFromText(baseMethodDocComment.getText());
+          GrDocCommentUtil.setDocComment(((GrMethod)method), docComment);
+        }
+      }
+      else {
+        PsiDocComment docComment = method.getDocComment();
+        if (docComment != null) {
+          docComment.delete();
+        }
+      }
 
-			if(myInsertOverrideIfPossible)
-			{
-				if(OverrideImplementUtil.canInsertOverride(method, myTargetClass) &&
-						JavaPsiFacade.getInstance(project).findClass(CommonClassNames.JAVA_LANG_OVERRIDE, myTargetClass.getResolveScope()) != null &&
-						method.getModifierList().findAnnotation(CommonClassNames.JAVA_LANG_OVERRIDE) == null)
-				{
-					method.getModifierList().addAnnotation(CommonClassNames.JAVA_LANG_OVERRIDE);
-				}
-			}
-			else
-			{
-				PsiAnnotation annotation = method.getModifierList().findAnnotation(CommonClassNames.JAVA_LANG_OVERRIDE);
-				if(annotation != null)
-				{
-					annotation.delete();
-				}
-			}
-		}
-	}
+      if (myInsertOverrideIfPossible) {
+        if (OverrideImplementUtil.canInsertOverride(method, myTargetClass) &&
+          JavaPsiFacade.getInstance(project).findClass(CommonClassNames.JAVA_LANG_OVERRIDE, myTargetClass.getResolveScope()) != null &&
+          method.getModifierList().findAnnotation(CommonClassNames.JAVA_LANG_OVERRIDE) == null) {
+          method.getModifierList().addAnnotation(CommonClassNames.JAVA_LANG_OVERRIDE);
+        }
+      }
+      else {
+        PsiAnnotation annotation = method.getModifierList().findAnnotation(CommonClassNames.JAVA_LANG_OVERRIDE);
+        if (annotation != null) {
+          annotation.delete();
+        }
+      }
+    }
+  }
 }

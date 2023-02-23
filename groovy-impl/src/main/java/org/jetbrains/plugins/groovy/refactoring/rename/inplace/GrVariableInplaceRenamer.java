@@ -15,12 +15,15 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.rename.inplace;
 
-import com.intellij.openapi.editor.Editor;
-import com.intellij.psi.PsiNameIdentifierOwner;
-import com.intellij.psi.PsiNamedElement;
-import com.intellij.psi.PsiType;
-import com.intellij.psi.codeStyle.JavaCodeStyleManager;
-import com.intellij.refactoring.rename.inplace.VariableInplaceRenamer;
+import consulo.codeEditor.Editor;
+import consulo.language.editor.refactoring.rename.inplace.VariableInplaceRenamer;
+import consulo.language.psi.PsiNameIdentifierOwner;
+import consulo.language.psi.PsiNamedElement;
+import com.intellij.java.language.psi.PsiType;
+import com.intellij.java.language.psi.codeStyle.JavaCodeStyleManager;
+import consulo.language.editor.refactoring.rename.inplace.VariableInplaceRenamer;
+import consulo.codeEditor.Editor;
+import consulo.language.psi.PsiNamedElement;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlock;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameter;
@@ -30,7 +33,8 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.ClosureSyntheticPara
 /**
  * @author Max Medvedev
  */
-public class GrVariableInplaceRenamer extends VariableInplaceRenamer {
+public class GrVariableInplaceRenamer extends VariableInplaceRenamer
+{
   public GrVariableInplaceRenamer(PsiNameIdentifierOwner elementToRename, Editor editor) {
     super(elementToRename, editor);
   }

@@ -16,8 +16,9 @@
 package org.jetbrains.plugins.groovy.lang.psi.typeEnhancers;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
-import com.intellij.psi.PsiType;
+import com.intellij.java.language.psi.PsiType;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.ConversionResult;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil;
@@ -32,7 +33,7 @@ public class GrNumberConverter extends GrTypeConverter {
     return position == ApplicableTo.ASSIGNMENT || position == ApplicableTo.EXPLICIT_CAST || position == ApplicableTo.RETURN_VALUE;
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   @Override
   public ConversionResult isConvertibleEx(@Nonnull PsiType targetType,
                                           @Nonnull PsiType actualType,

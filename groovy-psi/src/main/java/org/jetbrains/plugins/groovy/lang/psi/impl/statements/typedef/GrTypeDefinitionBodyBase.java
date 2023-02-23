@@ -15,19 +15,19 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.typedef;
 
-import java.util.List;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.intellij.java.language.psi.PsiClass;
+import consulo.language.ast.ASTNode;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.StubBasedPsiElement;
+import consulo.language.psi.stub.EmptyStub;
+import consulo.language.psi.stub.IStubElementType;
+import consulo.language.util.IncorrectOperationException;
+import consulo.util.collection.ContainerUtil;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.lexer.TokenSets;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrClassInitializer;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariableDeclaration;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.*;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrEnumDefinitionBody;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinitionBody;
@@ -37,14 +37,10 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMe
 import org.jetbrains.plugins.groovy.lang.psi.api.toplevel.GrTopStatement;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GrStubElementBase;
 import org.jetbrains.plugins.groovy.lang.psi.impl.PsiImplUtil;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.StubBasedPsiElement;
-import com.intellij.psi.stubs.EmptyStub;
-import com.intellij.psi.stubs.IStubElementType;
-import com.intellij.util.IncorrectOperationException;
-import com.intellij.util.containers.ContainerUtil;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.List;
 
 /**
  * @author: Dmitry.Krasilschikov, ilyas
@@ -125,7 +121,8 @@ public abstract class GrTypeDefinitionBodyBase extends GrStubElementBase<EmptySt
   }
 
   @Override
-  public GrVariableDeclaration addVariableDeclarationBefore(GrVariableDeclaration declaration, GrStatement anchor) throws IncorrectOperationException {
+  public GrVariableDeclaration addVariableDeclarationBefore(GrVariableDeclaration declaration, GrStatement anchor) throws IncorrectOperationException
+  {
     PsiElement rBrace = getRBrace();
     if (anchor == null && rBrace == null) {
       throw new IncorrectOperationException();
@@ -176,7 +173,8 @@ public abstract class GrTypeDefinitionBodyBase extends GrStubElementBase<EmptySt
 
   }
 
-  public static class GrEnumBody extends GrTypeDefinitionBodyBase implements GrEnumDefinitionBody, StubBasedPsiElement<EmptyStub> {
+  public static class GrEnumBody extends GrTypeDefinitionBodyBase implements GrEnumDefinitionBody, StubBasedPsiElement<EmptyStub>
+  {
     public GrEnumBody(@Nonnull ASTNode node) {
       super(node);
     }

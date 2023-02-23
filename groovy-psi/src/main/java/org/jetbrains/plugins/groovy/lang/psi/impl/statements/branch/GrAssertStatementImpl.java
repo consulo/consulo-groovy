@@ -17,12 +17,13 @@
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.branch;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.branch.GrAssertStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyPsiElementImpl;
-import com.intellij.lang.ASTNode;
+import consulo.language.ast.ASTNode;
 
 /**
  * @author ilyas
@@ -42,7 +43,7 @@ public class GrAssertStatementImpl extends GroovyPsiElementImpl implements GrAss
   }
 
   @Override
-  @javax.annotation.Nullable
+  @Nullable
   public GrExpression getAssertion() {
     return findExpressionChild(this);
   }

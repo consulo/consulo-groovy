@@ -16,13 +16,19 @@
 
 package org.jetbrains.plugins.groovy.lang.parser;
 
-import static org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes.GSTRING;
-import static org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes.GSTRING_INJECTION;
-import static org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes.MODIFIERS;
-import static org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes.REGEX;
-
-import javax.annotation.Nonnull;
-
+import consulo.language.Language;
+import consulo.language.ast.*;
+import consulo.language.file.FileViewProvider;
+import consulo.language.impl.ast.TreeUtil;
+import consulo.language.lexer.Lexer;
+import consulo.language.parser.ParserDefinition;
+import consulo.language.parser.PsiParser;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.stub.IStubFileElementType;
+import consulo.language.util.LanguageUtil;
+import consulo.language.version.LanguageVersion;
+import consulo.util.collection.ArrayUtil;
 import org.jetbrains.plugins.groovy.GroovyLanguage;
 import org.jetbrains.plugins.groovy.lang.groovydoc.lexer.GroovyDocTokenTypes;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyLexer;
@@ -30,127 +36,104 @@ import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.lexer.TokenSets;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyFileImpl;
 import org.jetbrains.plugins.groovy.lang.psi.stubs.elements.GrStubFileElementType;
-import com.intellij.lang.ASTNode;
-import com.intellij.lang.LanguageUtil;
-import com.intellij.lang.ParserDefinition;
-import com.intellij.lang.PsiParser;
-import com.intellij.lexer.Lexer;
-import com.intellij.psi.FileViewProvider;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.TokenType;
-import com.intellij.psi.impl.source.tree.TreeUtil;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.tree.IFileElementType;
-import com.intellij.psi.tree.IStubFileElementType;
-import com.intellij.psi.tree.TokenSet;
-import com.intellij.util.ArrayUtil;
-import consulo.lang.LanguageVersion;
+
+import javax.annotation.Nonnull;
+
+import static org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes.*;
 
 /**
  * @author ilyas
  */
-public class GroovyParserDefinition implements ParserDefinition
-{
-	public static final IStubFileElementType GROOVY_FILE = new GrStubFileElementType(GroovyLanguage.INSTANCE);
-	private static final IElementType[] STRINGS = new IElementType[]{
-			GSTRING,
-			REGEX,
-			GSTRING_INJECTION,
-			GroovyTokenTypes.mREGEX_LITERAL,
-			GroovyTokenTypes.mDOLLAR_SLASH_REGEX_LITERAL
-	};
+public class GroovyParserDefinition implements ParserDefinition {
+  public static final IStubFileElementType GROOVY_FILE = new GrStubFileElementType(GroovyLanguage.INSTANCE);
+  private static final IElementType[] STRINGS = new IElementType[]{
+    GSTRING,
+    REGEX,
+    GSTRING_INJECTION,
+    GroovyTokenTypes.mREGEX_LITERAL,
+    GroovyTokenTypes.mDOLLAR_SLASH_REGEX_LITERAL
+  };
 
-	@Override
-	@Nonnull
-	public Lexer createLexer(LanguageVersion languageVersion)
-	{
-		return new GroovyLexer();
-	}
+  @Nonnull
+  @Override
+  public Language getLanguage() {
+    return GroovyLanguage.INSTANCE;
+  }
 
-	@Override
-	public PsiParser createParser(LanguageVersion languageVersion)
-	{
-		return new GroovyParser();
-	}
+  @Override
+  @Nonnull
+  public Lexer createLexer(LanguageVersion languageVersion) {
+    return new GroovyLexer();
+  }
 
-	@Override
-	public IFileElementType getFileNodeType()
-	{
-		return GROOVY_FILE;
-	}
+  @Override
+  public PsiParser createParser(LanguageVersion languageVersion) {
+    return new GroovyParser();
+  }
 
-	@Override
-	@Nonnull
-	public TokenSet getWhitespaceTokens(LanguageVersion languageVersion)
-	{
-		return TokenSets.WHITE_SPACE_TOKEN_SET;
-	}
+  @Override
+  public IFileElementType getFileNodeType() {
+    return GROOVY_FILE;
+  }
 
-	@Override
-	@Nonnull
-	public TokenSet getCommentTokens(LanguageVersion languageVersion)
-	{
-		return TokenSets.COMMENTS_TOKEN_SET;
-	}
+  @Override
+  @Nonnull
+  public TokenSet getWhitespaceTokens(LanguageVersion languageVersion) {
+    return TokenSets.WHITE_SPACE_TOKEN_SET;
+  }
 
-	@Override
-	@Nonnull
-	public TokenSet getStringLiteralElements(LanguageVersion languageVersion)
-	{
-		return TokenSets.STRING_LITERALS;
-	}
+  @Override
+  @Nonnull
+  public TokenSet getCommentTokens(LanguageVersion languageVersion) {
+    return TokenSets.COMMENTS_TOKEN_SET;
+  }
 
-	@Override
-	@Nonnull
-	public PsiElement createElement(ASTNode node)
-	{
-		return GroovyPsiCreator.createElement(node);
-	}
+  @Override
+  @Nonnull
+  public TokenSet getStringLiteralElements(LanguageVersion languageVersion) {
+    return TokenSets.STRING_LITERALS;
+  }
 
-	@Override
-	public PsiFile createFile(FileViewProvider viewProvider)
-	{
-		return new GroovyFileImpl(viewProvider);
-	}
+  @Override
+  @Nonnull
+  public PsiElement createElement(ASTNode node) {
+    return GroovyPsiCreator.createElement(node);
+  }
 
-	@Override
-	public SpaceRequirements spaceExistanceTypeBetweenTokens(ASTNode left, ASTNode right)
-	{
-		final IElementType lType = left.getElementType();
-		final IElementType rType = right.getElementType();
+  @Override
+  public PsiFile createFile(FileViewProvider viewProvider) {
+    return new GroovyFileImpl(viewProvider);
+  }
 
-		if(rType == GroovyTokenTypes.kIMPORT && lType != TokenType.WHITE_SPACE)
-		{
-			return SpaceRequirements.MUST_LINE_BREAK;
-		}
-		else if(lType == MODIFIERS && rType == MODIFIERS)
-		{
-			return SpaceRequirements.MUST;
-		}
-		if(lType == GroovyTokenTypes.mSEMI || lType == GroovyTokenTypes.mSL_COMMENT)
-		{
-			return SpaceRequirements.MUST_LINE_BREAK;
-		}
-		if(lType == GroovyTokenTypes.mNLS || lType == GroovyDocTokenTypes.mGDOC_COMMENT_START)
-		{
-			return SpaceRequirements.MAY;
-		}
-		if(lType == GroovyTokenTypes.mGT)
-		{
-			return SpaceRequirements.MUST;
-		}
-		if(rType == GroovyTokenTypes.mLT)
-		{
-			return SpaceRequirements.MUST;
-		}
+  @Override
+  public SpaceRequirements spaceExistanceTypeBetweenTokens(ASTNode left, ASTNode right) {
+    final IElementType lType = left.getElementType();
+    final IElementType rType = right.getElementType();
 
-		final ASTNode parent = TreeUtil.findCommonParent(left, right);
-		if(parent == null || ArrayUtil.contains(parent.getElementType(), STRINGS))
-		{
-			return SpaceRequirements.MUST_NOT;
-		}
+    if (rType == GroovyTokenTypes.kIMPORT && lType != TokenType.WHITE_SPACE) {
+      return SpaceRequirements.MUST_LINE_BREAK;
+    }
+    else if (lType == MODIFIERS && rType == MODIFIERS) {
+      return SpaceRequirements.MUST;
+    }
+    if (lType == GroovyTokenTypes.mSEMI || lType == GroovyTokenTypes.mSL_COMMENT) {
+      return SpaceRequirements.MUST_LINE_BREAK;
+    }
+    if (lType == GroovyTokenTypes.mNLS || lType == GroovyDocTokenTypes.mGDOC_COMMENT_START) {
+      return SpaceRequirements.MAY;
+    }
+    if (lType == GroovyTokenTypes.mGT) {
+      return SpaceRequirements.MUST;
+    }
+    if (rType == GroovyTokenTypes.mLT) {
+      return SpaceRequirements.MUST;
+    }
 
-		return LanguageUtil.canStickTokensTogetherByLexer(left, right, new GroovyLexer());
-	}
+    final ASTNode parent = TreeUtil.findCommonParent(left, right);
+    if (parent == null || ArrayUtil.contains(parent.getElementType(), STRINGS)) {
+      return SpaceRequirements.MUST_NOT;
+    }
+
+    return LanguageUtil.canStickTokensTogetherByLexer(left, right, new GroovyLexer());
+  }
 }

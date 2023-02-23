@@ -15,34 +15,32 @@
  */
 package org.jetbrains.plugins.groovy.lang.completion;
 
-import java.util.List;
-
-import javax.annotation.Nonnull;
-
-import consulo.psi.PsiPackage;
-
-import javax.annotation.Nullable;
+import com.intellij.java.impl.codeInsight.completion.JavaClassNameCompletionContributor;
+import com.intellij.java.language.psi.*;
+import consulo.application.util.matcher.PrefixMatcher;
+import consulo.language.editor.completion.lookup.LookupElement;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiErrorElement;
+import consulo.language.psi.PsiNamedElement;
+import consulo.language.psi.PsiPackage;
+import consulo.language.psi.resolve.ResolveState;
+import consulo.language.psi.scope.GlobalSearchScope;
+import consulo.logging.Logger;
+import consulo.util.lang.StringUtil;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariableDeclaration;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinitionBody;
-import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
-import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeArgumentList;
-import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeElement;
-import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeParameter;
-import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeParameterList;
+import org.jetbrains.plugins.groovy.lang.psi.api.types.*;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyResolveResultImpl;
 import org.jetbrains.plugins.groovy.lang.psi.impl.types.GrCodeReferenceElementImpl;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 import org.jetbrains.plugins.groovy.lang.resolve.ResolveUtil;
 import org.jetbrains.plugins.groovy.lang.resolve.processors.CompletionProcessor;
 import org.jetbrains.plugins.groovy.lang.resolve.processors.ResolverProcessorImpl;
-import com.intellij.codeInsight.completion.JavaClassNameCompletionContributor;
-import com.intellij.codeInsight.completion.PrefixMatcher;
-import com.intellij.codeInsight.lookup.LookupElement;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.*;
-import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.util.Consumer;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * Created by Max Medvedev on 25/04/14
@@ -72,7 +70,7 @@ public class CompleteCodeReferenceElement {
     GroovyResolveResultImpl candidate = new GroovyResolveResultImpl(psi, true);
     List<? extends LookupElement> elements = GroovyCompletionUtil.createLookupElements(candidate, afterNew, myMatcher, null);
     for (LookupElement element : elements) {
-      myConsumer.consume(element);
+      myConsumer.accept(element);
     }
   }
 
@@ -174,7 +172,7 @@ public class CompleteCodeReferenceElement {
           ResolveUtil.treeWalkUp(myRef, classProcessor, false);
 
           for (LookupElement o : GroovyCompletionUtil.getCompletionVariants(classProcessor.getCandidates(), afterNew, myMatcher, myRef)) {
-            myConsumer.consume(o);
+            myConsumer.accept(o);
           }
         }
       }

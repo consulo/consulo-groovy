@@ -1,8 +1,8 @@
 package org.jetbrains.plugins.groovy.util;
 
 import consulo.util.dataholder.Key;
-import com.intellij.openapi.util.Pair;
-import com.intellij.psi.PsiElement;
+import consulo.util.lang.Pair;
+import consulo.language.psi.PsiElement;
 import consulo.util.dataholder.UserDataHolderEx;
 
 import javax.annotation.Nonnull;

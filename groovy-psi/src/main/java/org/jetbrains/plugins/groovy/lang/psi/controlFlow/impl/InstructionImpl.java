@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.controlFlow.impl;
 
-import com.intellij.psi.PsiElement;
+import consulo.language.psi.PsiElement;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.controlFlow.CallEnvironment;
@@ -43,7 +43,7 @@ public class InstructionImpl implements Instruction {
     return myPsiElement;
   }
 
-  public InstructionImpl(@javax.annotation.Nullable PsiElement element) {
+  public InstructionImpl(@Nullable PsiElement element) {
     myPsiElement = element;
   }
 

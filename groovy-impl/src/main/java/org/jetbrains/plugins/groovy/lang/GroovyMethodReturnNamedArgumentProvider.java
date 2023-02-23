@@ -15,12 +15,14 @@
  */
 package org.jetbrains.plugins.groovy.lang;
 
-import com.intellij.psi.PsiClassType;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiMethod;
-import com.intellij.psi.PsiType;
+import com.intellij.java.language.psi.PsiClassType;
+import consulo.language.psi.PsiElement;
+import com.intellij.java.language.psi.PsiMethod;
+import com.intellij.java.language.psi.PsiType;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
+import consulo.language.psi.PsiElement;
 import org.jetbrains.plugins.groovy.extensions.GroovyNamedArgumentProvider;
 import org.jetbrains.plugins.groovy.extensions.NamedArgumentDescriptor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrCall;

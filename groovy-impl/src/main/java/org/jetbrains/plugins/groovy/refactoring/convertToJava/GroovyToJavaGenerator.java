@@ -15,20 +15,21 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.convertToJava;
 
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.progress.ProcessCanceledException;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiMethod;
+import consulo.language.psi.PsiFile;
+import consulo.logging.Logger;
+import consulo.component.ProcessCanceledException;
+import consulo.project.Project;
+import consulo.util.lang.StringUtil;
+import consulo.virtualFileSystem.VirtualFile;
+import com.intellij.java.language.psi.PsiClass;
+import com.intellij.java.language.psi.PsiMethod;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
 import org.jetbrains.plugins.groovy.lang.psi.api.toplevel.packaging.GrPackageDefinition;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.*;
 
 /**
@@ -99,7 +100,7 @@ public class GroovyToJavaGenerator {
     return getPackageDirectory(packageDefinition) + clazz.getName() + ".java";
   }
 
-  private static String getPackageDirectory(@javax.annotation.Nullable GrPackageDefinition packageDefinition) {
+  private static String getPackageDirectory(@Nullable GrPackageDefinition packageDefinition) {
     if (packageDefinition == null) return "";
 
     String prefix = packageDefinition.getPackageName();

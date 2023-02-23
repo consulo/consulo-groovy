@@ -15,9 +15,9 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.declaration;
 
-import com.intellij.openapi.util.Condition;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiElement;
+import com.intellij.java.language.psi.PsiClass;
+import consulo.language.psi.PsiElement;
+import consulo.util.lang.function.Condition;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
 import org.jetbrains.plugins.groovy.lang.psi.util.GdkMethodUtil;
 

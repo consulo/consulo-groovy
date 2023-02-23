@@ -15,8 +15,12 @@
  */
 package org.jetbrains.plugins.groovy.unwrap;
 
-import com.intellij.codeInsight.unwrap.UnwrapDescriptorBase;
-import com.intellij.codeInsight.unwrap.Unwrapper;
+import consulo.language.Language;
+import consulo.language.editor.refactoring.unwrap.UnwrapDescriptorBase;
+import consulo.language.editor.refactoring.unwrap.Unwrapper;
+import org.jetbrains.plugins.groovy.GroovyLanguage;
+
+import javax.annotation.Nonnull;
 
 public class GroovyUnwrapDescriptor extends UnwrapDescriptorBase {
   public Unwrapper[] createUnwrappers() {
@@ -33,5 +37,11 @@ public class GroovyUnwrapDescriptor extends UnwrapDescriptorBase {
       new GroovyElseRemover(),
       new GroovyConditionalUnwrapper(),
     };
+  }
+
+  @Nonnull
+  @Override
+  public Language getLanguage() {
+    return GroovyLanguage.INSTANCE;
   }
 }

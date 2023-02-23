@@ -16,10 +16,11 @@
 
 package org.jetbrains.plugins.groovy.dsl.dsltop;
 
-import com.intellij.psi.*;
-import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.psi.util.PsiTreeUtil;
-import javax.annotation.Nullable;
+import com.intellij.java.language.psi.*;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.resolve.ResolveState;
+import consulo.language.psi.scope.GlobalSearchScope;
+import consulo.language.psi.util.PsiTreeUtil;
 import org.jetbrains.plugins.groovy.dsl.GdslMembersHolderConsumer;
 import org.jetbrains.plugins.groovy.dsl.holders.DelegatedMembersHolder;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
@@ -35,6 +36,8 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefini
 import org.jetbrains.plugins.groovy.lang.resolve.ResolveUtil;
 import org.jetbrains.plugins.groovy.lang.resolve.processors.CompletionProcessor;
 import org.jetbrains.plugins.groovy.lang.resolve.processors.ResolverProcessorImpl;
+
+import javax.annotation.Nullable;
 
 /**
  * @author ilyas
@@ -60,7 +63,7 @@ public class GroovyDslDefaultMembers implements GdslMembersProvider {
    * **********************************************************************************
    */
 
-  public void delegatesTo(@javax.annotation.Nullable PsiElement elem, GdslMembersHolderConsumer consumer) {
+  public void delegatesTo(@Nullable PsiElement elem, GdslMembersHolderConsumer consumer) {
     if (elem instanceof PsiClass) {
       final PsiClass clazz = (PsiClass)elem;
       final DelegatedMembersHolder holder = new DelegatedMembersHolder();
@@ -142,7 +145,7 @@ public class GroovyDslDefaultMembers implements GdslMembersProvider {
     return null;
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   public PsiMethod enclosingMethod(GdslMembersHolderConsumer consumer) {
     final PsiElement place = consumer.getPlace();
     if (place == null) return null;
@@ -158,7 +161,7 @@ public class GroovyDslDefaultMembers implements GdslMembersProvider {
     return member;
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   public PsiClass enclosingClass(GdslMembersHolderConsumer consumer) {
     final PsiElement place = consumer.getPlace();
     if (place == null) return null;

@@ -15,7 +15,32 @@
  */
 package org.jetbrains.plugins.groovy.intentions.declaration;
 
-import javax.annotation.Nullable;
+import com.intellij.java.impl.codeInsight.CodeInsightUtil;
+import com.intellij.java.impl.codeInsight.daemon.impl.quickfix.CreateFromUsageBaseFix;
+import com.intellij.java.impl.codeInsight.intention.impl.CreateClassDialog;
+import com.intellij.java.impl.codeInsight.intention.impl.CreateSubclassAction;
+import com.intellij.java.language.psi.JavaPsiFacade;
+import com.intellij.java.language.psi.PsiClass;
+import com.intellij.java.language.psi.PsiElementFactory;
+import com.intellij.java.language.psi.PsiTypeParameter;
+import com.intellij.java.language.psi.codeStyle.JavaCodeStyleManager;
+import consulo.application.ApplicationManager;
+import consulo.application.Result;
+import consulo.codeEditor.Editor;
+import consulo.document.util.TextRange;
+import consulo.language.editor.CodeInsightBundle;
+import consulo.language.editor.WriteCommandAction;
+import consulo.language.editor.impl.internal.template.TemplateBuilderImpl;
+import consulo.language.editor.template.Template;
+import consulo.language.editor.template.TemplateBuilderFactory;
+import consulo.language.editor.template.event.TemplateEditingAdapter;
+import consulo.language.psi.*;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.language.util.IncorrectOperationException;
+import consulo.logging.Logger;
+import consulo.project.Project;
+import consulo.ui.ex.awt.Messages;
+import consulo.util.lang.ref.Ref;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.actions.GroovyTemplates;
 import org.jetbrains.plugins.groovy.annotator.intentions.CreateClassActionBase;
@@ -25,37 +50,8 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrImplements
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeParameterList;
-import com.intellij.codeInsight.CodeInsightBundle;
-import com.intellij.codeInsight.CodeInsightUtil;
-import com.intellij.codeInsight.daemon.impl.quickfix.CreateFromUsageBaseFix;
-import com.intellij.codeInsight.intention.impl.CreateClassDialog;
-import com.intellij.codeInsight.intention.impl.CreateSubclassAction;
-import com.intellij.codeInsight.template.Template;
-import com.intellij.codeInsight.template.TemplateBuilderFactory;
-import com.intellij.codeInsight.template.TemplateBuilderImpl;
-import com.intellij.codeInsight.template.TemplateEditingAdapter;
-import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.application.Result;
-import com.intellij.openapi.command.WriteCommandAction;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.fileEditor.ex.IdeDocumentHistory;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.ui.Messages;
-import com.intellij.openapi.util.Ref;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.JavaPsiFacade;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiDirectory;
-import com.intellij.psi.PsiDocumentManager;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiElementFactory;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiManager;
-import com.intellij.psi.PsiTypeParameter;
-import com.intellij.psi.codeStyle.JavaCodeStyleManager;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.IncorrectOperationException;
+
+import javax.annotation.Nullable;
 
 /**
  * @author Max Medvedev
@@ -84,7 +80,7 @@ public class GrCreateSubclassAction extends CreateSubclassAction {
     new WriteCommandAction(project, getTitle(psiClass), getTitle(psiClass)) {
       @Override
       protected void run(Result result) throws Throwable {
-        IdeDocumentHistory.getInstance(project).includeCurrentPlaceAsChangePlace();
+        consulo.ide.impl.idea.openapi.fileEditor.ex.IdeDocumentHistory.getInstance(project).includeCurrentPlaceAsChangePlace();
 
         final GrTypeParameterList oldTypeParameterList = psiClass.getTypeParameterList();
 

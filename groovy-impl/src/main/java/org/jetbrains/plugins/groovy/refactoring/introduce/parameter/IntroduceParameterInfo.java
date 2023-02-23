@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.introduce.parameter;
 
-import com.intellij.psi.PsiElement;
+import consulo.language.psi.PsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrParameterListOwner;
 import org.jetbrains.plugins.groovy.refactoring.extract.ExtractInfoHelper;
 

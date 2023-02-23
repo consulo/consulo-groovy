@@ -15,14 +15,17 @@
  */
 package org.jetbrains.plugins.groovy.formatter.blocks;
 
-import com.intellij.formatting.Block;
-import com.intellij.formatting.Indent;
-import com.intellij.formatting.Wrap;
-import com.intellij.formatting.WrapType;
-import com.intellij.lang.ASTNode;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.PsiElement;
+import consulo.language.ast.ASTNode;
+import consulo.language.codeStyle.Block;
+import consulo.language.codeStyle.Indent;
+import consulo.language.codeStyle.Wrap;
+import consulo.language.codeStyle.WrapType;
+import consulo.language.ast.ASTNode;
+import consulo.document.util.TextRange;
+import consulo.language.psi.PsiElement;
 import javax.annotation.Nonnull;
+
+import consulo.language.codeStyle.Wrap;
 import org.jetbrains.plugins.groovy.formatter.FormattingContext;
 
 import java.util.ArrayList;

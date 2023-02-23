@@ -1,23 +1,27 @@
+import java.lang.Object;
+import java.lang.String;
+import java.util.Date;
+
 public class X {
 public X plus(X x) {return new X();}
 
 }
 public class casts extends groovy.lang.Script {
-public static void main(java.lang.String[] args) {
+public static void main(String[] args) {
 new casts(new groovy.lang.Binding(args)).run();
 }
 
-public java.lang.Object run() {
-java.lang.Object a = new java.util.Date();
-java.util.Date d = (java.util.Date)a;
+public Object run() {
+Object a = new Date();
+Date d = (Date)a;
 
 
 
-foo((java.util.Date)a);
+foo((Date)a);
 
-d = ((java.util.Date)(a));
+d = ((Date)(a));
 
-java.util.Date b = (java.util.Date)a;
+Date b = (Date)a;
 
 a = org.codehaus.groovy.runtime.DateGroovyMethods.plus(a, 2);
 
@@ -36,7 +40,7 @@ return null;
 
 }
 
-public void foo(java.util.Date d) {}
+public void foo(Date d) {}
 
 public casts(groovy.lang.Binding binding) {
 super(binding);

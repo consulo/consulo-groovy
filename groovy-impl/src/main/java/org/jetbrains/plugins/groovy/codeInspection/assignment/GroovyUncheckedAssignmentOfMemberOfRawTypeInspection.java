@@ -16,12 +16,10 @@
 
 package org.jetbrains.plugins.groovy.codeInspection.assignment;
 
-import javax.annotation.Nonnull;
-
-import com.intellij.psi.*;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.psi.util.TypeConversionUtil;
+import com.intellij.java.language.psi.*;
+import com.intellij.java.language.psi.util.TypeConversionUtil;
+import consulo.language.ast.IElementType;
+import consulo.language.psi.util.PsiTreeUtil;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspection;
@@ -41,6 +39,8 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMe
 import org.jetbrains.plugins.groovy.lang.psi.impl.PsiImplUtil;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author Maxim.Medvedev
@@ -116,7 +116,7 @@ public class GroovyUncheckedAssignmentOfMemberOfRawTypeInspection extends BaseIn
             final PsiType argType = expr.getType();
             if (argType != null) {
               final PsiClassType listType = JavaPsiFacade.getInstance(argument.getProject()).getElementFactory()
-                .createTypeByFQClassName(CommonClassNames.JAVA_UTIL_LIST, argument.getResolveScope());
+                                                         .createTypeByFQClassName(CommonClassNames.JAVA_UTIL_LIST, argument.getResolveScope());
               if (listType.isAssignableFrom(argType)) return; //this is constructor arguments list
               checkAssignability(expectedType, expr, argument);
             }

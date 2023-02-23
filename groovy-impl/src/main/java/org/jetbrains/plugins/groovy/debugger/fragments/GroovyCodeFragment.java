@@ -15,28 +15,34 @@
  */
 package org.jetbrains.plugins.groovy.debugger.fragments;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.Map;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.intellij.java.language.impl.psi.scope.NameHint;
+import com.intellij.java.language.psi.*;
+import consulo.language.editor.intention.IntentionFilterOwner;
+import consulo.language.file.FileViewProvider;
+import consulo.language.file.light.LightVirtualFile;
+import consulo.language.impl.ast.FileElement;
+import consulo.language.impl.file.SingleRootFileViewProvider;
+import consulo.language.impl.internal.file.FileManager;
+import consulo.language.impl.internal.psi.PsiManagerEx;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiManager;
+import consulo.language.psi.resolve.PsiScopeProcessor;
+import consulo.language.psi.resolve.ResolveState;
+import consulo.language.psi.scope.GlobalSearchScope;
+import consulo.language.util.IncorrectOperationException;
+import consulo.project.Project;
+import consulo.util.collection.ContainerUtil;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrUnAmbiguousClosureContainer;
 import org.jetbrains.plugins.groovy.lang.psi.api.toplevel.imports.GrImportStatement;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyFileImpl;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.*;
-import com.intellij.psi.impl.PsiManagerEx;
-import com.intellij.psi.impl.file.impl.FileManager;
-import com.intellij.psi.impl.source.tree.FileElement;
-import com.intellij.psi.scope.NameHint;
-import com.intellij.psi.scope.PsiScopeProcessor;
-import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.testFramework.LightVirtualFile;
-import com.intellij.util.IncorrectOperationException;
-import com.intellij.util.containers.ContainerUtil;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * @author ven
@@ -51,7 +57,7 @@ public class GroovyCodeFragment extends GroovyFileImpl implements JavaCodeFragme
   /**
    * map from a class's imported name (e.g. its short name or alias) to its qualified name
    */
-  private final LinkedHashMap<String, GrImportStatement> myPseudoImports = ContainerUtil.newLinkedHashMap();
+  private final LinkedHashMap<String, GrImportStatement> myPseudoImports = new LinkedHashMap<>();
   private final ArrayList<GrImportStatement> myOnDemandImports = ContainerUtil.newArrayList();
   private FileViewProvider myViewProvider = null;
 
@@ -249,7 +255,7 @@ public class GroovyCodeFragment extends GroovyFileImpl implements JavaCodeFragme
     return true;
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   private GrImportStatement createImportOnDemand(@Nonnull String qname) {
     final PsiClass aClass = JavaPsiFacade.getInstance(getProject()).findClass(qname, getResolveScope());
     final boolean isStatic = aClass != null;
@@ -264,7 +270,7 @@ public class GroovyCodeFragment extends GroovyFileImpl implements JavaCodeFragme
   }
 
   @Nullable
-  private GrImportStatement createSingleImport(@Nonnull String qname, @javax.annotation.Nullable String importedName) {
+  private GrImportStatement createSingleImport(@Nonnull String qname, @Nullable String importedName) {
     final PsiClass aClass = JavaPsiFacade.getInstance(getProject()).findClass(qname, getResolveScope());
     final boolean isStatic = aClass == null;
 

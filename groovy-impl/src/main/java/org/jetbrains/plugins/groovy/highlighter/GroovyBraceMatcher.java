@@ -16,19 +16,19 @@
 
 package org.jetbrains.plugins.groovy.highlighter;
 
-import com.intellij.lang.BracePair;
-import com.intellij.lang.PairedBraceMatcher;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.tree.IElementType;
+import consulo.language.BracePair;
+import consulo.language.Language;
+import consulo.language.PairedBraceMatcher;
+import consulo.language.ast.IElementType;
+import consulo.language.psi.PsiFile;
+import org.jetbrains.plugins.groovy.GroovyLanguage;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import static com.intellij.psi.TokenType.WHITE_SPACE;
+import static consulo.language.ast.TokenType.WHITE_SPACE;
 import static org.jetbrains.plugins.groovy.GroovyFileType.GROOVY_LANGUAGE;
-import static org.jetbrains.plugins.groovy.lang.groovydoc.lexer.GroovyDocTokenTypes.mGDOC_INLINE_TAG_END;
-import static org.jetbrains.plugins.groovy.lang.groovydoc.lexer.GroovyDocTokenTypes.mGDOC_INLINE_TAG_START;
-import static org.jetbrains.plugins.groovy.lang.groovydoc.lexer.GroovyDocTokenTypes.mGDOC_TAG_VALUE_LPAREN;
-import static org.jetbrains.plugins.groovy.lang.groovydoc.lexer.GroovyDocTokenTypes.mGDOC_TAG_VALUE_RPAREN;
+import static org.jetbrains.plugins.groovy.lang.groovydoc.lexer.GroovyDocTokenTypes.*;
 import static org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes.*;
 import static org.jetbrains.plugins.groovy.lang.lexer.TokenSets.COMMENT_SET;
 
@@ -56,20 +56,26 @@ public class GroovyBraceMatcher implements PairedBraceMatcher {
 
   public boolean isPairedBracesAllowedBeforeType(@Nonnull IElementType braceType, @Nullable IElementType tokenType) {
     return tokenType == null
-           || tokenType == WHITE_SPACE
-           || tokenType == mSEMI
-           || tokenType == mCOMMA
-           || tokenType == mRPAREN
-           || tokenType == mRBRACK
-           || tokenType == mRCURLY
-           || tokenType == mGSTRING_BEGIN
-           || tokenType == mREGEX_BEGIN
-           || tokenType == mDOLLAR_SLASH_REGEX_BEGIN
-           || COMMENT_SET.contains(tokenType)
-           || tokenType.getLanguage() != GROOVY_LANGUAGE;
+      || tokenType == WHITE_SPACE
+      || tokenType == mSEMI
+      || tokenType == mCOMMA
+      || tokenType == mRPAREN
+      || tokenType == mRBRACK
+      || tokenType == mRCURLY
+      || tokenType == mGSTRING_BEGIN
+      || tokenType == mREGEX_BEGIN
+      || tokenType == mDOLLAR_SLASH_REGEX_BEGIN
+      || COMMENT_SET.contains(tokenType)
+      || tokenType.getLanguage() != GROOVY_LANGUAGE;
   }
 
   public int getCodeConstructStart(PsiFile file, int openingBraceOffset) {
     return openingBraceOffset;
+  }
+
+  @Nonnull
+  @Override
+  public Language getLanguage() {
+    return GroovyLanguage.INSTANCE;
   }
 }

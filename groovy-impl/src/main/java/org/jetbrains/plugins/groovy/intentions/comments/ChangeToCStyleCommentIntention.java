@@ -15,16 +15,18 @@
  */
 package org.jetbrains.plugins.groovy.intentions.comments;
 
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.JavaPsiFacade;
-import com.intellij.psi.PsiComment;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiElementFactory;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.util.IncorrectOperationException;
+import consulo.codeEditor.Editor;
+import consulo.language.psi.PsiComment;
+import consulo.language.psi.PsiElement;
+import consulo.language.util.IncorrectOperationException;
+import consulo.project.Project;
+import com.intellij.java.language.psi.JavaPsiFacade;
+import com.intellij.java.language.psi.PsiElementFactory;
+import consulo.language.ast.IElementType;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
 import org.jetbrains.plugins.groovy.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.intentions.base.PsiElementPredicate;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
@@ -41,7 +43,8 @@ public class ChangeToCStyleCommentIntention extends Intention {
   }
 
   public void processIntention(@Nonnull PsiElement element, Project project, Editor editor)
-      throws IncorrectOperationException {
+      throws IncorrectOperationException
+  {
     final PsiComment selectedComment = (PsiComment) element;
     PsiComment firstComment = selectedComment;
 

@@ -15,27 +15,26 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.binaryCalculators;
 
-import javax.annotation.Nonnull;
-
-import com.intellij.psi.PsiType;
-import com.intellij.util.NullableFunction;
-
-import javax.annotation.Nullable;
+import com.intellij.java.language.psi.PsiType;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
 import org.jetbrains.plugins.groovy.lang.psi.impl.PsiImplUtil;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 import org.jetbrains.plugins.groovy.lang.resolve.ResolveUtil;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.function.Function;
+
 /**
  * Created by Max Medvedev on 12/20/13
  */
-public class GrNumericBinaryExpressionTypeCalculator implements NullableFunction<GrBinaryFacade, PsiType> {
+public class GrNumericBinaryExpressionTypeCalculator implements Function<GrBinaryFacade, PsiType> {
   public static final GrNumericBinaryExpressionTypeCalculator INSTANCE = new GrNumericBinaryExpressionTypeCalculator();
 
   @Nullable
   @Override
-  public PsiType fun(GrBinaryFacade e) {
+  public PsiType apply(GrBinaryFacade e) {
 
     final GroovyResolveResult resolveResult = PsiImplUtil.extractUniqueResult(e.multiResolve(false));
     if (resolveResult.isApplicable() && !PsiUtil.isDGMMethod(resolveResult.getElement())) {

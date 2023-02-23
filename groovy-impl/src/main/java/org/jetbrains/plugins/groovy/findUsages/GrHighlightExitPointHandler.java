@@ -15,14 +15,12 @@
  */
 package org.jetbrains.plugins.groovy.findUsages;
 
-import com.intellij.codeInsight.highlighting.HighlightUsagesHandlerBase;
-import com.intellij.featureStatistics.FeatureUsageTracker;
-import com.intellij.featureStatistics.ProductivityFeatureNames;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.util.Consumer;
+import consulo.codeEditor.Editor;
+import consulo.document.util.TextRange;
+import consulo.externalService.statistic.FeatureUsageTracker;
+import consulo.language.editor.highlight.usage.HighlightUsagesHandlerBase;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
 import org.jetbrains.plugins.groovy.codeInspection.utils.ControlFlowUtils;
 import org.jetbrains.plugins.groovy.lang.psi.GrControlFlowOwner;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.branch.GrReturnStatement;
@@ -30,8 +28,10 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.branch.GrThrowStatem
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.controlFlow.Instruction;
 
+import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * @author Max Medvedev
@@ -51,12 +51,13 @@ public class GrHighlightExitPointHandler extends HighlightUsagesHandlerBase<PsiE
 
   @Override
   protected void selectTargets(List<PsiElement> targets, Consumer<List<PsiElement>> selectionConsumer) {
-    selectionConsumer.consume(targets);
+    selectionConsumer.accept(targets);
   }
 
   @Override
   public void computeUsages(List<PsiElement> targets) {
-    FeatureUsageTracker.getInstance().triggerFeatureUsed(ProductivityFeatureNames.CODEASSISTS_HIGHLIGHT_RETURN);
+    FeatureUsageTracker.getInstance()
+                       .triggerFeatureUsed(consulo.ide.impl.idea.featureStatistics.ProductivityFeatureNames.CODEASSISTS_HIGHLIGHT_RETURN);
 
     PsiElement parent = myTarget.getParent();
     if (!(parent instanceof GrReturnStatement) && !(parent instanceof GrThrowStatement)) return;
@@ -64,7 +65,7 @@ public class GrHighlightExitPointHandler extends HighlightUsagesHandlerBase<PsiE
     final GrControlFlowOwner flowOwner = ControlFlowUtils.findControlFlowOwner(parent);
     ControlFlowUtils.visitAllExitPoints(flowOwner, new ControlFlowUtils.ExitPointVisitor() {
       @Override
-      public boolean visitExitPoint(Instruction instruction, @javax.annotation.Nullable GrExpression returnValue) {
+      public boolean visitExitPoint(Instruction instruction, @Nullable GrExpression returnValue) {
         final PsiElement returnElement = instruction.getElement();
         if (returnElement != null && isCorrectReturn(returnElement)) {
           final TextRange range = returnElement.getTextRange();
@@ -75,7 +76,7 @@ public class GrHighlightExitPointHandler extends HighlightUsagesHandlerBase<PsiE
     });
   }
 
-  private static boolean isCorrectReturn(@javax.annotation.Nullable PsiElement e) {
+  private static boolean isCorrectReturn(@Nullable PsiElement e) {
     return e instanceof GrReturnStatement || e instanceof GrThrowStatement || e instanceof GrExpression;
   }
 }

@@ -16,8 +16,25 @@
 
 package org.jetbrains.plugins.groovy.lang.completion;
 
-import com.intellij.codeInsight.completion.util.CompletionStyleUtil;
-import consulo.psi.PsiPackage;
+import com.intellij.java.impl.codeInsight.completion.util.MethodParenthesesHandler;
+import com.intellij.java.language.psi.PsiClass;
+import com.intellij.java.language.psi.PsiMethod;
+import com.intellij.java.language.psi.PsiParameter;
+import com.intellij.java.language.psi.PsiSubstitutor;
+import consulo.codeEditor.CaretModel;
+import consulo.codeEditor.Editor;
+import consulo.document.Document;
+import consulo.language.codeStyle.CodeStyleSettingsManager;
+import consulo.language.codeStyle.CommonCodeStyleSettings;
+import consulo.language.editor.AutoPopupController;
+import consulo.language.editor.completion.CompletionStyleUtil;
+import consulo.language.editor.completion.lookup.*;
+import consulo.language.psi.PsiDocumentManager;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.PsiPackage;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.util.lang.CharArrayUtil;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.plugins.groovy.codeStyle.GroovyCodeStyleSettings;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
@@ -29,28 +46,6 @@ import org.jetbrains.plugins.groovy.lang.psi.api.toplevel.imports.GrImportStatem
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames;
-import com.intellij.codeInsight.AutoPopupController;
-import com.intellij.codeInsight.TailType;
-import com.intellij.codeInsight.completion.InsertHandler;
-import com.intellij.codeInsight.completion.InsertionContext;
-import com.intellij.codeInsight.completion.util.MethodParenthesesHandler;
-import com.intellij.codeInsight.completion.util.ParenthesesInsertHandler;
-import com.intellij.codeInsight.lookup.Lookup;
-import com.intellij.codeInsight.lookup.LookupElement;
-import com.intellij.openapi.editor.CaretModel;
-import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiDocumentManager;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiMethod;
-import com.intellij.psi.PsiParameter;
-import com.intellij.psi.PsiSubstitutor;
-import com.intellij.psi.codeStyle.CodeStyleSettingsManager;
-import com.intellij.psi.codeStyle.CommonCodeStyleSettings;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.text.CharArrayUtil;
 
 /**
  * @author ven
@@ -106,7 +101,7 @@ public class GroovyInsertHandler implements InsertHandler<LookupElement> {
 
       if (parameters.length == 1) {
         if ((context.getCompletionChar() != '(' && context.getCompletionChar() != ' ') &&
-            TypesUtil.isClassType(parameters[0].getType(), GroovyCommonClassNames.GROOVY_LANG_CLOSURE)) {
+          TypesUtil.isClassType(parameters[0].getType(), GroovyCommonClassNames.GROOVY_LANG_CLOSURE)) {
           int afterBrace;
           final int nonWs = CharArrayUtil.shiftForward(charsSequence, offset, " \t");
           if (nonWs < document.getTextLength() && charsSequence.charAt(nonWs) == '{') {
@@ -165,8 +160,8 @@ public class GroovyInsertHandler implements InsertHandler<LookupElement> {
       final String text = document.getText();
       final PsiElement parent = elementAt.getParent();
       if (parent instanceof GrCodeReferenceElement &&
-          parent.getParent() instanceof GrNewExpression &&
-          (offset == text.length() || !text.substring(offset).trim().startsWith("("))) {
+        parent.getParent() instanceof GrNewExpression &&
+        (offset == text.length() || !text.substring(offset).trim().startsWith("("))) {
         document.insertString(offset, "()");
         if (GroovyCompletionUtil.hasConstructorParameters(clazz, parent)) {
           caretModel.moveToOffset(offset + 1);
@@ -179,7 +174,7 @@ public class GroovyInsertHandler implements InsertHandler<LookupElement> {
 
     if (context.getCompletionChar() == '=') {
       context.setAddCompletionChar(false);
-      TailType.EQ.processTail(context.getEditor(), context.getTailOffset());
+      EqTailType.INSTANCE.processTail(context.getEditor(), context.getTailOffset());
       return;
     }
 
@@ -190,7 +185,7 @@ public class GroovyInsertHandler implements InsertHandler<LookupElement> {
 
   private static boolean isSpaceBeforeClosure(PsiFile file) {
     return CodeStyleSettingsManager.getSettings(file.getProject())
-      .getCustomSettings(GroovyCodeStyleSettings.class).SPACE_BEFORE_CLOSURE_LBRACE;
+                                   .getCustomSettings(GroovyCodeStyleSettings.class).SPACE_BEFORE_CLOSURE_LBRACE;
   }
 
   private static boolean isAnnotationNameValuePair(Object obj, PsiElement parent) {

@@ -18,9 +18,10 @@ package org.jetbrains.plugins.groovy.lang.psi.api.statements;
 
 import javax.annotation.Nonnull;
 
-import com.intellij.psi.PsiElement;
+import consulo.language.psi.PsiElement;
 
 import javax.annotation.Nullable;
+
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.clauses.GrCaseSection;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
@@ -29,14 +30,15 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpres
  * @author ilyas
  */
 public interface GrSwitchStatement extends GroovyPsiElement, GrStatement {
-  @javax.annotation.Nullable
+  @Nullable
   GrExpression getCondition();
 
   @Nonnull
   GrCaseSection[] getCaseSections();
 
-  @javax.annotation.Nullable
+  @Nullable
   PsiElement getRParenth();
 
-  @Nullable PsiElement getLBrace();
+  @Nullable
+  PsiElement getLBrace();
 }

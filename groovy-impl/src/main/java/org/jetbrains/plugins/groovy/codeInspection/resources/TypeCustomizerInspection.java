@@ -15,10 +15,16 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.resources;
 
-import java.util.HashSet;
-
-import javax.annotation.Nonnull;
-
+import consulo.compiler.resourceCompiler.ResourceCompilerConfiguration;
+import consulo.ide.impl.idea.openapi.vfs.VfsUtilCore;
+import consulo.language.editor.DaemonCodeAnalyzer;
+import consulo.language.editor.inspection.LocalQuickFix;
+import consulo.language.editor.inspection.ProblemDescriptor;
+import consulo.language.editor.inspection.ProblemHighlightType;
+import consulo.language.psi.PsiFile;
+import consulo.module.content.ProjectRootManager;
+import consulo.project.Project;
+import consulo.virtualFileSystem.VirtualFile;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.codeInspection.GroovyInspectionBundle;
@@ -28,22 +34,21 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrMethodCall;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
-import com.intellij.codeInsight.daemon.DaemonCodeAnalyzer;
-import com.intellij.codeInspection.LocalQuickFix;
-import com.intellij.codeInspection.ProblemDescriptor;
-import com.intellij.codeInspection.ProblemHighlightType;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.roots.ProjectRootManager;
-import com.intellij.openapi.vfs.VfsUtilCore;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.PsiFile;
-import com.intellij.util.containers.ContainerUtil;
-import consulo.compiler.impl.resourceCompiler.ResourceCompilerConfiguration;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Set;
 
 /**
  * @author Max Medvedev
  */
 public class TypeCustomizerInspection extends BaseInspection {
+  @Nonnull
+  @Override
+  public String getDisplayName() {
+    return "Type customizer inspection";
+  }
+
   @Nonnull
   @Override
   protected BaseInspectionVisitor buildVisitor() {
@@ -62,10 +67,10 @@ public class TypeCustomizerInspection extends BaseInspection {
   }
 
 
-  private static final HashSet<String> CUSTOMIZER_EVENT_NAMES = ContainerUtil
-    .newHashSet("setup", "finish", "unresolvedVariable", "unresolvedProperty", "unresolvedAttribute", "beforeMethodCall", "afterMethodCall",
-                "onMethodSelection", "methodNotFound", "beforeVisitMethod", "afterVisitMethod", "beforeVisitClass", "afterVisitClass",
-                "incompatibleAssignment");
+  private static final Set<String> CUSTOMIZER_EVENT_NAMES =
+    Set.of("setup", "finish", "unresolvedVariable", "unresolvedProperty", "unresolvedAttribute", "beforeMethodCall", "afterMethodCall",
+           "onMethodSelection", "methodNotFound", "beforeVisitMethod", "afterVisitMethod", "beforeVisitClass", "afterVisitClass",
+           "incompatibleAssignment");
 
 
   public static boolean fileSeemsToBeTypeCustomizer(@Nonnull final PsiFile file) {
@@ -74,8 +79,8 @@ public class TypeCustomizerInspection extends BaseInspection {
         if (statement instanceof GrMethodCall) {
           GrExpression invoked = ((GrMethodCall)statement).getInvokedExpression();
           if (invoked instanceof GrReferenceExpression &&
-              !((GrReferenceExpression)invoked).isQualified() &&
-              isCustomizerEvent(((GrReferenceExpression)invoked).getReferenceName())) {
+            !((GrReferenceExpression)invoked).isQualified() &&
+            isCustomizerEvent(((GrReferenceExpression)invoked).getReferenceName())) {
             return true;
           }
         }
@@ -84,7 +89,8 @@ public class TypeCustomizerInspection extends BaseInspection {
 
     return false;
   }
-  private static boolean isCustomizerEvent(@javax.annotation.Nullable String name) {
+
+  private static boolean isCustomizerEvent(@Nullable String name) {
     return CUSTOMIZER_EVENT_NAMES.contains(name);
   }
 
@@ -119,7 +125,7 @@ public class TypeCustomizerInspection extends BaseInspection {
         ResourceCompilerConfiguration.getInstance(project).addResourceFilePattern(path);
       }
       else {
-        final String path = VfsUtilCore.getRelativePath(virtualFile, sourceRoot, '/');
+        final String path = consulo.ide.impl.idea.openapi.vfs.VfsUtilCore.getRelativePath(virtualFile, sourceRoot, '/');
         final String sourceRootPath = VfsUtilCore.getRelativePath(sourceRoot, projectRoot, '/');
         ResourceCompilerConfiguration.getInstance(project).addResourceFilePattern(sourceRootPath + ':' + path);
       }

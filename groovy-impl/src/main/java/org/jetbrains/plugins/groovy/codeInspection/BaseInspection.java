@@ -15,15 +15,19 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection;
 
-import javax.annotation.Nonnull;
-
-import com.intellij.codeInspection.InspectionManager;
-import com.intellij.codeInspection.ProblemDescriptor;
-import com.intellij.codeInspection.ProblemsHolder;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
+import consulo.language.Language;
+import consulo.language.editor.inspection.ProblemDescriptor;
+import consulo.language.editor.inspection.ProblemsHolder;
+import consulo.language.editor.inspection.scheme.InspectionManager;
+import consulo.language.editor.rawHighlight.HighlightDisplayLevel;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.util.lang.StringUtil;
+import org.jetbrains.plugins.groovy.GroovyLanguage;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFileBase;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public abstract class BaseInspection extends GroovySuppressableInspectionTool {
 
@@ -40,10 +44,22 @@ public abstract class BaseInspection extends GroovySuppressableInspectionTool {
   public static final String VALIDITY_ISSUES = "Validity issues";
   public static final String ANNOTATIONS_ISSUES = "Annotations verifying";
 
+  @Nullable
+  @Override
+  public Language getLanguage() {
+    return GroovyLanguage.INSTANCE;
+  }
+
   @Nonnull
   @Override
-  public String[] getGroupPath() {
-    return new String[]{"Groovy", getGroupDisplayName()};
+  public String getGroupDisplayName() {
+    return "General";
+  }
+
+  @Nonnull
+  @Override
+  public HighlightDisplayLevel getDefaultLevel() {
+    return HighlightDisplayLevel.WARNING;
   }
 
   @Nonnull
@@ -61,7 +77,7 @@ public abstract class BaseInspection extends GroovySuppressableInspectionTool {
   }
 
 
-  @javax.annotation.Nullable
+  @Nullable
   protected String buildErrorString(Object... args) {
     return null;
   }
@@ -70,22 +86,22 @@ public abstract class BaseInspection extends GroovySuppressableInspectionTool {
     return false;
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   protected GroovyFix buildFix(@Nonnull PsiElement location) {
     return null;
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   protected GroovyFix[] buildFixes(@Nonnull PsiElement location) {
     return null;
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   public ProblemDescriptor[] checkFile(@Nonnull PsiFile psiFile, @Nonnull InspectionManager inspectionManager, boolean isOnTheFly) {
     if (!(psiFile instanceof GroovyFileBase)) {
       return super.checkFile(psiFile, inspectionManager, isOnTheFly);
     }
-    final GroovyFileBase groovyFile = (GroovyFileBase) psiFile;
+    final GroovyFileBase groovyFile = (GroovyFileBase)psiFile;
 
     final ProblemsHolder problemsHolder = new ProblemsHolder(inspectionManager, psiFile, isOnTheFly);
     final BaseInspectionVisitor visitor = buildGroovyVisitor(problemsHolder, isOnTheFly);

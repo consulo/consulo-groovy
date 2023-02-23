@@ -23,8 +23,8 @@ import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.command.CommandProcessor
 import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.psi.*
-import com.intellij.psi.search.GlobalSearchScope
+import com.intellij.java.language.psi.*
+import com.intellij.java.language.psi.search.GlobalSearchScope
 import com.intellij.refactoring.PackageWrapper
 import com.intellij.refactoring.move.moveClassesOrPackages.MoveClassesOrPackagesProcessor
 import com.intellij.refactoring.move.moveClassesOrPackages.SingleSourceRootMoveDestination

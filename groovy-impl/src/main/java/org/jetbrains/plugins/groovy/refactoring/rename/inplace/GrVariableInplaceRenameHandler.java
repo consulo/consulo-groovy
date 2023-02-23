@@ -15,15 +15,20 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.rename.inplace;
 
-import com.intellij.openapi.editor.Editor;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiNameIdentifierOwner;
-import com.intellij.psi.search.LocalSearchScope;
-import com.intellij.psi.search.SearchScope;
-import com.intellij.refactoring.rename.inplace.VariableInplaceRenameHandler;
-import com.intellij.refactoring.rename.inplace.VariableInplaceRenamer;
+import consulo.codeEditor.Editor;
+import consulo.language.editor.refactoring.rename.inplace.VariableInplaceRenameHandler;
+import consulo.language.editor.refactoring.rename.inplace.VariableInplaceRenamer;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.PsiNameIdentifierOwner;
+import consulo.language.psi.scope.LocalSearchScope;
+import consulo.content.scope.SearchScope;
+import consulo.language.editor.refactoring.rename.inplace.VariableInplaceRenameHandler;
+import consulo.language.editor.refactoring.rename.inplace.VariableInplaceRenamer;
 import javax.annotation.Nonnull;
+
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocComment;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
@@ -31,7 +36,8 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
 /**
  * @author Max Medvedev
  */
-public class GrVariableInplaceRenameHandler extends VariableInplaceRenameHandler {
+public class GrVariableInplaceRenameHandler extends VariableInplaceRenameHandler
+{
   @Override
   protected boolean isAvailable(PsiElement element, Editor editor, PsiFile file) {
     if (!editor.getSettings().isVariableInplaceRenameEnabled()) return false;

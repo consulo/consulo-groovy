@@ -16,26 +16,24 @@
 
 package org.jetbrains.plugins.groovy.compiler;
 
-import com.intellij.openapi.compiler.options.ExcludedEntriesConfigurable;
-import com.intellij.openapi.compiler.options.ExcludedEntriesConfiguration;
-import com.intellij.openapi.fileChooser.FileChooserDescriptor;
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.module.ModuleManager;
-import com.intellij.openapi.options.Configurable;
-import com.intellij.openapi.options.ConfigurationException;
-import com.intellij.openapi.options.SearchableConfigurable;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.roots.ModuleRootManager;
-import com.intellij.openapi.roots.ProjectFileIndex;
-import com.intellij.openapi.roots.ProjectRootManager;
-import com.intellij.openapi.util.Comparing;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.ui.components.JBCheckBox;
-import com.intellij.util.Function;
-import com.intellij.util.containers.ContainerUtil;
+import consulo.compiler.setting.ExcludedEntriesConfiguration;
+import consulo.configurable.Configurable;
+import consulo.configurable.ConfigurationException;
+import consulo.configurable.SearchableConfigurable;
+import consulo.fileChooser.FileChooserDescriptor;
+import consulo.ide.impl.compiler.setting.ExcludedEntriesConfigurable;
+import consulo.module.Module;
+import consulo.module.ModuleManager;
+import consulo.module.content.ModuleRootManager;
+import consulo.module.content.ProjectFileIndex;
+import consulo.module.content.ProjectRootManager;
+import consulo.project.Project;
+import consulo.ui.ex.awt.JBCheckBox;
+import consulo.util.lang.Comparing;
+import consulo.virtualFileSystem.VirtualFile;
 import org.jetbrains.annotations.Nls;
-import javax.annotation.Nonnull;
 
+import javax.annotation.Nonnull;
 import javax.swing.*;
 import java.util.Arrays;
 import java.util.List;
@@ -69,13 +67,10 @@ public class GroovyCompilerConfigurable implements SearchableConfigurable, Confi
         return super.isFileVisible(file, showHiddenFiles) && !index.isIgnored(file);
       }
     };
-    descriptor.setRoots(ContainerUtil.concat(
-      ContainerUtil.map(ModuleManager.getInstance(project).getModules(), new Function<Module, List<VirtualFile>>() {
-        @Override
-        public List<VirtualFile> fun(final Module module) {
-          return Arrays.asList(ModuleRootManager.getInstance(module).getSourceRoots());
-        }
-      })));
+    Module[] modules = ModuleManager.getInstance(project).getModules();
+    List<VirtualFile> roots =
+      Arrays.stream(modules).flatMap(module -> Arrays.stream(ModuleRootManager.getInstance(module).getSourceRoots())).toList();
+    descriptor.setRoots(roots);
     return new ExcludedEntriesConfigurable(project, descriptor, configuration);
   }
 
@@ -105,8 +100,8 @@ public class GroovyCompilerConfigurable implements SearchableConfigurable, Confi
 
   public boolean isModified() {
     return !Comparing.equal(myConfig.getHeapSize(), myHeapSize.getText()) ||
-           myInvokeDynamicSupportCB.isSelected() != myConfig.isInvokeDynamic() ||
-           myExcludes.isModified();
+      myInvokeDynamicSupportCB.isSelected() != myConfig.isInvokeDynamic() ||
+      myExcludes.isModified();
   }
 
   public void apply() throws ConfigurationException {

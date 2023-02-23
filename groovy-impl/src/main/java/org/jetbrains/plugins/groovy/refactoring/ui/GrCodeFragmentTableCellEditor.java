@@ -15,11 +15,11 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.ui;
 
-import com.intellij.codeInsight.daemon.impl.JavaReferenceImporter;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiCodeFragment;
-import com.intellij.refactoring.ui.CodeFragmentTableCellEditorBase;
+import com.intellij.java.impl.codeInsight.daemon.impl.JavaReferenceImporter;
+import consulo.codeEditor.Editor;
+import consulo.ide.impl.idea.refactoring.ui.CodeFragmentTableCellEditorBase;
+import consulo.language.psi.PsiCodeFragment;
+import consulo.project.Project;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 
 import javax.swing.table.TableCellEditor;

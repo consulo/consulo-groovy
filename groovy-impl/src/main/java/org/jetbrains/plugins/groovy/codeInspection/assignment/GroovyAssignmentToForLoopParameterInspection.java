@@ -16,10 +16,11 @@
 package org.jetbrains.plugins.groovy.codeInspection.assignment;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiReference;
-import com.intellij.psi.util.PsiTreeUtil;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiReference;
+import consulo.language.psi.util.PsiTreeUtil;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspectionVisitor;
@@ -47,7 +48,7 @@ public class GroovyAssignmentToForLoopParameterInspection extends BaseInspection
   }
 
   @Override
-  @javax.annotation.Nullable
+  @Nullable
   protected String buildErrorString(Object... args) {
     return "Assignment to for-loop parameter '#ref' #loc";
 

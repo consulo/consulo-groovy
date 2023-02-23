@@ -15,26 +15,31 @@
  */
 package org.jetbrains.plugins.groovy.actions.generate.equals;
 
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.project.Project;
-import com.intellij.pom.java.LanguageLevel;
-import com.intellij.psi.*;
-import com.intellij.psi.codeStyle.*;
-import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.psi.util.MethodSignature;
-import com.intellij.psi.util.MethodSignatureUtil;
-import com.intellij.psi.util.PsiUtil;
-import com.intellij.util.IncorrectOperationException;
-import com.intellij.util.StringBuilderSpinAllocator;
-import com.intellij.util.containers.ContainerUtil;
-import java.util.HashMap;
+import com.intellij.java.language.LanguageLevel;
+import com.intellij.java.language.psi.*;
+import com.intellij.java.language.psi.codeStyle.JavaCodeStyleManager;
+import com.intellij.java.language.psi.codeStyle.VariableKind;
+import com.intellij.java.language.psi.util.MethodSignature;
+import com.intellij.java.language.psi.util.MethodSignatureUtil;
+import com.intellij.java.language.psi.util.PsiUtil;
+import consulo.ide.impl.idea.util.StringBuilderSpinAllocator;
+import consulo.language.codeStyle.CodeStyleManager;
+import consulo.language.codeStyle.CodeStyleSettings;
+import consulo.language.codeStyle.CodeStyleSettingsManager;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiManager;
+import consulo.language.psi.scope.GlobalSearchScope;
+import consulo.language.util.IncorrectOperationException;
+import consulo.logging.Logger;
+import consulo.project.Project;
+import consulo.util.collection.ContainerUtil;
 import org.jetbrains.annotations.NonNls;
-import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.actions.generate.GroovyCodeInsightBundle;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil;
 
+import javax.annotation.Nullable;
 import java.text.MessageFormat;
 import java.util.*;
 
@@ -235,7 +240,8 @@ public class GroovyGenerateEqualsHelper {
   }
 
 
-  private PsiMethod createEquals() throws IncorrectOperationException {
+  private PsiMethod createEquals() throws IncorrectOperationException
+  {
     final JavaCodeStyleManager codeStyleManager = JavaCodeStyleManager.getInstance(myProject);
     String[] nameSuggestions = codeStyleManager.suggestVariableName(VariableKind.PARAMETER, null, null, PsiType.getJavaLangObject(myClass.getManager(), myClass.getResolveScope())).names;
     final String objectBaseName = nameSuggestions.length > 0 ? nameSuggestions[0] : BASE_OBJECT_PARAMETER_NAME;
@@ -366,7 +372,7 @@ public class GroovyGenerateEqualsHelper {
       return hashCode;
     }
     finally {
-      StringBuilderSpinAllocator.dispose(buffer);
+      consulo.ide.impl.idea.util.StringBuilderSpinAllocator.dispose(buffer);
     }
   }
 
@@ -384,7 +390,7 @@ public class GroovyGenerateEqualsHelper {
     buffer.append(") : 0L\n");
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   @SuppressWarnings("HardCodedStringLiteral")
   private String addTempDeclaration(StringBuilder buffer) {
     for (PsiField hashCodeField : myHashCodeFields) {

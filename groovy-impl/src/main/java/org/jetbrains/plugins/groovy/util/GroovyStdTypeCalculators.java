@@ -15,11 +15,10 @@
  */
 package org.jetbrains.plugins.groovy.util;
 
-import com.intellij.openapi.util.NullableComputable;
-import com.intellij.openapi.util.RecursionManager;
-import com.intellij.psi.PsiMethod;
-import com.intellij.psi.PsiType;
-import com.intellij.util.PairFunction;
+import com.intellij.java.language.psi.PsiMethod;
+import com.intellij.java.language.psi.PsiType;
+import consulo.application.util.RecursionManager;
+import consulo.util.lang.function.PairFunction;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrArgumentList;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlock;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
@@ -50,7 +49,7 @@ public class GroovyStdTypeCalculators {
 
       final GrClosableBlock finalClosure = closure;
 
-      return RecursionManager.doPreventingRecursion(methodCall, true, new NullableComputable<PsiType>() {
+      return RecursionManager.doPreventingRecursion(methodCall, true, new consulo.ide.impl.idea.openapi.util.NullableComputable<PsiType>() {
         @Override
         public PsiType compute() {
           PsiType returnType = finalClosure.getReturnType();
@@ -61,7 +60,8 @@ public class GroovyStdTypeCalculators {
     }
   }
 
-  public static class TypeSameAsFirstArgument implements PairFunction<GrMethodCall, PsiMethod, PsiType> {
+  public static class TypeSameAsFirstArgument implements PairFunction<GrMethodCall, PsiMethod, PsiType>
+  {
 
     @Override
     public PsiType fun(GrMethodCall methodCall, PsiMethod method) {

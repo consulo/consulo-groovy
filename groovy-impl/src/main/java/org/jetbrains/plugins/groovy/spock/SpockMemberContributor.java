@@ -15,13 +15,16 @@
  */
 package org.jetbrains.plugins.groovy.spock;
 
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiType;
-import com.intellij.psi.ResolveState;
-import com.intellij.psi.scope.PsiScopeProcessor;
-import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.java.language.psi.PsiClass;
+import consulo.language.psi.PsiElement;
+import com.intellij.java.language.psi.PsiType;
+import consulo.language.psi.resolve.ResolveState;
+import consulo.language.psi.resolve.PsiScopeProcessor;
+import consulo.language.psi.util.PsiTreeUtil;
 import javax.annotation.Nonnull;
+
+import consulo.language.psi.resolve.ResolveState;
+import consulo.language.psi.util.PsiTreeUtil;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
 import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GrLightMethodBuilder;
 import org.jetbrains.plugins.groovy.lang.resolve.NonCodeMembersContributor;

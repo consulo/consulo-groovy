@@ -16,18 +16,17 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.api.statements;
 
-import javax.annotation.Nonnull;
-
-import com.intellij.psi.PsiType;
-import com.intellij.psi.PsiVariable;
-import com.intellij.util.ArrayFactory;
-import com.intellij.util.IncorrectOperationException;
-
-import javax.annotation.Nullable;
+import com.intellij.java.language.psi.PsiType;
+import com.intellij.java.language.psi.PsiVariable;
+import consulo.language.util.IncorrectOperationException;
+import consulo.util.collection.ArrayFactory;
 import org.jetbrains.plugins.groovy.lang.psi.GrNamedElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.GrModifierList;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeElement;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author: Dmitry.Krasilschikov
@@ -51,7 +50,7 @@ public interface GrVariable extends PsiVariable, GrNamedElement {
 
   void setType(@Nullable PsiType type) throws IncorrectOperationException;
 
-  @javax.annotation.Nullable
+  @Nullable
   GrTypeElement getTypeElementGroovy();
 
   @Nullable

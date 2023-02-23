@@ -15,19 +15,19 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.rename;
 
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiField;
-import com.intellij.psi.PsiMethod;
-import com.intellij.psi.search.SearchScope;
-import com.intellij.refactoring.listeners.RefactoringElementListener;
-import com.intellij.refactoring.rename.RenameJavaMethodProcessor;
-import com.intellij.usageView.UsageInfo;
-import com.intellij.util.IncorrectOperationException;
-import javax.annotation.Nonnull;
-
+import com.intellij.java.impl.refactoring.rename.RenameJavaMethodProcessor;
+import com.intellij.java.language.psi.PsiField;
+import com.intellij.java.language.psi.PsiMethod;
+import consulo.content.scope.SearchScope;
+import consulo.language.editor.refactoring.event.RefactoringElementListener;
+import consulo.language.psi.PsiElement;
+import consulo.language.util.IncorrectOperationException;
+import consulo.usage.UsageInfo;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrAccessorMethod;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyPropertyUtils;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Map;
 
 import static org.jetbrains.plugins.groovy.lang.psi.util.GroovyPropertyUtils.isSimplePropertyAccessor;
@@ -47,7 +47,8 @@ public class RenameGrAccessorProcessor extends RenameJavaMethodProcessor {
   public void renameElement(PsiElement psiElement,
                             String newName,
                             UsageInfo[] usages,
-                            @javax.annotation.Nullable RefactoringElementListener listener) throws IncorrectOperationException {
+                            @Nullable RefactoringElementListener listener) throws IncorrectOperationException
+  {
 
   }
 

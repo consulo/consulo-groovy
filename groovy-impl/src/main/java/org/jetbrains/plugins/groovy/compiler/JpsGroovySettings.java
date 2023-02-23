@@ -15,7 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.compiler;
 
-import com.intellij.util.xmlb.annotations.Tag;
+import consulo.util.xml.serializer.annotation.Tag;
+import consulo.util.xml.serializer.annotation.Tag;
 import org.jdom.Element;
 
 /**

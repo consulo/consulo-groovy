@@ -15,11 +15,11 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.threading;
 
-import com.intellij.codeInspection.ui.SingleCheckboxOptionsPanel;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiField;
-import com.intellij.psi.PsiLiteralExpression;
-import com.intellij.psi.PsiModifier;
+import consulo.language.editor.inspection.ui.SingleCheckboxOptionsPanel;
+import consulo.language.psi.PsiElement;
+import com.intellij.java.language.psi.PsiField;
+import com.intellij.java.language.psi.PsiLiteralExpression;
+import com.intellij.java.language.psi.PsiModifier;
 import org.jetbrains.annotations.Nls;
 import javax.annotation.Nonnull;
 
@@ -36,6 +36,7 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrRefere
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrUnaryExpression;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 
+import javax.annotation.Nullable;
 import javax.swing.*;
 
 public class GroovyWhileLoopSpinsOnFieldInspection extends BaseInspection {
@@ -59,7 +60,7 @@ public class GroovyWhileLoopSpinsOnFieldInspection extends BaseInspection {
     return "<code>#ref</code> loop spins on field #loc";
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   public JComponent createOptionsPanel() {
     return new SingleCheckboxOptionsPanel("Only warn if loop is empty",
         this, "ignoreNonEmtpyLoops");

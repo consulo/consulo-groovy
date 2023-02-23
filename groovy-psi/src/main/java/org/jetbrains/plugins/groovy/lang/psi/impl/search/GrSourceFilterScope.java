@@ -17,12 +17,12 @@ package org.jetbrains.plugins.groovy.lang.psi.impl.search;
 
 import javax.annotation.Nonnull;
 
+import consulo.language.psi.scope.DelegatingGlobalSearchScope;
+import consulo.module.content.ProjectFileIndex;
+import consulo.module.content.ProjectRootManager;
+import consulo.virtualFileSystem.VirtualFile;
 import org.jetbrains.plugins.groovy.GroovyFileType;
-import com.intellij.openapi.roots.ProjectFileIndex;
-import com.intellij.openapi.roots.ProjectRootManager;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.search.DelegatingGlobalSearchScope;
-import com.intellij.psi.search.GlobalSearchScope;
+import consulo.language.psi.scope.GlobalSearchScope;
 
 /**
  * @author ilyas

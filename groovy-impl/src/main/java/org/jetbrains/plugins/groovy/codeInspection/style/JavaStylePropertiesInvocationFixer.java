@@ -2,10 +2,12 @@ package org.jetbrains.plugins.groovy.codeInspection.style;
 
 import javax.annotation.Nonnull;
 
-import com.intellij.codeInspection.LocalQuickFix;
-import com.intellij.codeInspection.ProblemDescriptor;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiElement;
+import consulo.language.editor.inspection.LocalQuickFix;
+import consulo.language.editor.inspection.ProblemDescriptor;
+import consulo.language.psi.PsiElement;
+import consulo.project.Project;
+import consulo.language.psi.PsiElement;
+import consulo.project.Project;
 import org.jetbrains.plugins.groovy.codeInspection.utils.JavaStylePropertiesUtil;
 import org.jetbrains.plugins.groovy.intentions.GroovyIntentionsBundle;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrMethodCall;

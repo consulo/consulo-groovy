@@ -15,19 +15,20 @@
  */
 package org.jetbrains.plugins.groovy.actions.generate.accessors;
 
-import com.intellij.codeInsight.generation.EncapsulatableClassMember;
-import com.intellij.codeInsight.generation.PsiElementClassMember;
-import com.intellij.psi.PsiField;
-import com.intellij.psi.PsiMethod;
-import com.intellij.psi.PsiModifier;
-import com.intellij.psi.PsiSubstitutor;
-import com.intellij.psi.util.PsiFormatUtil;
-import com.intellij.psi.util.PsiFormatUtilBase;
-import javax.annotation.Nullable;
+import com.intellij.java.language.impl.codeInsight.generation.EncapsulatableClassMember;
+import com.intellij.java.language.impl.codeInsight.generation.PsiElementClassMember;
+import com.intellij.java.language.psi.PsiField;
+import com.intellij.java.language.psi.PsiMethod;
+import com.intellij.java.language.psi.PsiModifier;
+import com.intellij.java.language.psi.PsiSubstitutor;
+import com.intellij.java.language.psi.util.PsiFormatUtil;
+import com.intellij.java.language.psi.util.PsiFormatUtilBase;
 import org.jetbrains.plugins.groovy.actions.generate.GroovyGenerationInfo;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrAccessorMethod;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyPropertyUtils;
+
+import javax.annotation.Nullable;
 
 /**
  * @author Max Medvedev

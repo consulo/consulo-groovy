@@ -15,28 +15,28 @@
  */
 package org.jetbrains.plugins.groovy.util;
 
-import com.intellij.icons.AllIcons;
-import com.intellij.ide.util.PropertiesComponent;
-import com.intellij.openapi.actionSystem.DataContext;
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.module.ModuleUtilCore;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.projectRoots.JavaSdkType;
-import com.intellij.openapi.projectRoots.Sdk;
-import com.intellij.openapi.roots.ui.configuration.ModulesAlphaComparator;
-import com.intellij.openapi.ui.popup.JBPopupFactory;
-import com.intellij.openapi.ui.popup.ListPopup;
-import com.intellij.openapi.ui.popup.PopupStep;
-import com.intellij.openapi.ui.popup.util.BaseListPopupStep;
-import com.intellij.openapi.util.Condition;
-import com.intellij.util.Consumer;
-import com.intellij.util.Function;
-import com.intellij.util.containers.ContainerUtil;
-import consulo.java.module.extension.JavaModuleExtension;
+import com.intellij.java.language.projectRoots.JavaSdkType;
+import consulo.application.AllIcons;
+import consulo.content.bundle.Sdk;
+import consulo.dataContext.DataContext;
+import consulo.ide.impl.idea.ide.util.PropertiesComponent;
+import consulo.java.language.module.extension.JavaModuleExtension;
+import consulo.language.util.ModuleUtilCore;
+import consulo.module.Module;
+import consulo.module.ModulesAlphaComparator;
+import consulo.project.Project;
+import consulo.ui.ex.popup.BaseListPopupStep;
+import consulo.ui.ex.popup.JBPopupFactory;
+import consulo.ui.ex.popup.ListPopup;
+import consulo.ui.ex.popup.PopupStep;
+import consulo.util.collection.ContainerUtil;
+import consulo.util.lang.function.Condition;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class ModuleChooserUtil
 {
@@ -60,12 +60,12 @@ public class ModuleChooserUtil
 		for(Module module : suitableModules)
 		{
 			modules.add(module);
-			versions.put(module, versionProvider.fun(module));
+			versions.put(module, versionProvider.apply(module));
 		}
 
 		if(modules.size() == 1)
 		{
-			callback.consume(modules.get(0));
+			callback.accept(modules.get(0));
 			return;
 		}
 
@@ -96,7 +96,7 @@ public class ModuleChooserUtil
 			public PopupStep onChosen(Module selectedValue, boolean finalChoice)
 			{
 				PropertiesComponent.getInstance(selectedValue.getProject()).setValue(GROOVY_LAST_MODULE, selectedValue.getName());
-				callback.consume(selectedValue);
+				callback.accept(selectedValue);
 				return null;
 			}
 		};

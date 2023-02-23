@@ -18,8 +18,8 @@ package org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions;
 
 import javax.annotation.Nonnull;
 
+import consulo.language.psi.PsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeElement;
-import com.intellij.psi.PsiElement;
 
 /**
  * @author ilyas

@@ -16,26 +16,33 @@
 
 package org.jetbrains.plugins.groovy.refactoring.move;
 
-import com.intellij.lang.ASTNode;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.Comparing;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.*;
-import com.intellij.psi.impl.source.resolve.JavaResolveUtil;
-import com.intellij.psi.javadoc.PsiDocComment;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.util.PsiUtilCore;
-import com.intellij.refactoring.RefactoringBundle;
-import com.intellij.refactoring.move.moveMembers.MoveMemberHandler;
-import com.intellij.refactoring.move.moveMembers.MoveMembersOptions;
-import com.intellij.refactoring.move.moveMembers.MoveMembersProcessor;
-import com.intellij.refactoring.util.*;
-import com.intellij.util.ArrayUtil;
-import com.intellij.util.IncorrectOperationException;
-import com.intellij.util.VisibilityUtil;
-import com.intellij.util.containers.MultiMap;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.intellij.java.impl.refactoring.move.moveMembers.MoveMemberHandler;
+import com.intellij.java.impl.refactoring.move.moveMembers.MoveMembersOptions;
+import com.intellij.java.impl.refactoring.move.moveMembers.MoveMembersProcessor;
+import com.intellij.java.impl.refactoring.util.ConflictsUtil;
+import com.intellij.java.impl.refactoring.util.EnumConstantsUtil;
+import com.intellij.java.impl.refactoring.util.RefactoringHierarchyUtil;
+import com.intellij.java.impl.refactoring.util.RefactoringUtil;
+import com.intellij.java.language.impl.psi.impl.source.resolve.JavaResolveUtil;
+import com.intellij.java.language.psi.*;
+import com.intellij.java.language.psi.javadoc.PsiDocComment;
+import com.intellij.java.language.util.VisibilityUtil;
+import consulo.language.Language;
+import consulo.language.ast.ASTNode;
+import consulo.language.ast.IElementType;
+import consulo.language.editor.refactoring.RefactoringBundle;
+import consulo.language.editor.refactoring.ui.RefactoringUIUtil;
+import consulo.language.editor.refactoring.util.CommonRefactoringUtil;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiReference;
+import consulo.language.psi.PsiUtilCore;
+import consulo.language.util.IncorrectOperationException;
+import consulo.project.Project;
+import consulo.util.collection.ArrayUtil;
+import consulo.util.collection.MultiMap;
+import consulo.util.lang.Comparing;
+import consulo.util.lang.StringUtil;
+import org.jetbrains.plugins.groovy.GroovyLanguage;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
@@ -55,6 +62,8 @@ import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 import org.jetbrains.plugins.groovy.refactoring.GroovyChangeContextUtil;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.*;
 
 /**
@@ -185,7 +194,8 @@ public class MoveGroovyMemberHandler implements MoveMemberHandler {
     GroovyChangeContextUtil.decodeContextInfo(scope, null, null);
   }
 
-  private static void changeQualifier(GrReferenceExpression refExpr, PsiClass aClass, PsiMember member) throws IncorrectOperationException {
+  private static void changeQualifier(GrReferenceExpression refExpr, PsiClass aClass, PsiMember member) throws IncorrectOperationException
+  {
     if (hasOnDemandStaticImport(refExpr, aClass)) {
       refExpr.setQualifier(null);
     }
@@ -224,7 +234,7 @@ public class MoveGroovyMemberHandler implements MoveMemberHandler {
   }
 
   @Override
-  @javax.annotation.Nullable
+  @Nullable
   public PsiElement getAnchor(@Nonnull final PsiMember member, @Nonnull final PsiClass targetClass, Set<PsiMember> membersToMove) {
     if (member instanceof GrField && member.hasModifierProperty(PsiModifier.STATIC)) {
       final List<PsiField> referencedFields = new ArrayList<PsiField>();
@@ -263,7 +273,7 @@ public class MoveGroovyMemberHandler implements MoveMemberHandler {
     return elementFactory.createEnumConstantFromText(enumConstantText);
   }
 
-  private static PsiElement addEnumConstant(PsiClass targetClass, GrEnumConstant constant, @javax.annotation.Nullable PsiElement anchor) {
+  private static PsiElement addEnumConstant(PsiClass targetClass, GrEnumConstant constant, @Nullable PsiElement anchor) {
     if (targetClass instanceof GrEnumTypeDefinition) {
       final GrEnumTypeDefinition enumeration = (GrEnumTypeDefinition)targetClass;
       final GrEnumConstantList constantList = enumeration.getEnumConstantList();
@@ -318,7 +328,7 @@ public class MoveGroovyMemberHandler implements MoveMemberHandler {
   @Override
   public void checkConflictsOnUsage(@Nonnull MoveMembersProcessor.MoveMembersUsageInfo usageInfo,
                                     @Nullable String newVisibility,
-                                    @javax.annotation.Nullable PsiModifierList modifierListCopy,
+                                    @Nullable PsiModifierList modifierListCopy,
                                     @Nonnull PsiClass targetClass,
                                     @Nonnull Set<PsiMember> membersToMove,
                                     @Nonnull MultiMap<PsiElement, String> conflicts) {
@@ -346,10 +356,16 @@ public class MoveGroovyMemberHandler implements MoveMemberHandler {
 
   @Override
   public void checkConflictsOnMember(@Nonnull PsiMember member,
-                                     @javax.annotation.Nullable String newVisibility,
-                                     @javax.annotation.Nullable PsiModifierList modifierListCopy,
+                                     @Nullable String newVisibility,
+                                     @Nullable PsiModifierList modifierListCopy,
                                      @Nonnull PsiClass targetClass,
                                      @Nonnull Set<PsiMember> membersToMove,
                                      @Nonnull MultiMap<PsiElement, String> conflicts) {
+  }
+
+  @Nonnull
+  @Override
+  public Language getLanguage() {
+    return GroovyLanguage.INSTANCE;
   }
 }

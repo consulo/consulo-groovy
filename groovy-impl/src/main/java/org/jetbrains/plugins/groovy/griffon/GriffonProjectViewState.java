@@ -15,9 +15,10 @@
  */
 package org.jetbrains.plugins.groovy.griffon;
 
-import com.intellij.openapi.components.State;
-import com.intellij.openapi.components.Storage;
-import com.intellij.openapi.components.StoragePathMacros;
+import consulo.component.persist.State;
+import consulo.component.persist.Storage;
+import consulo.component.persist.StoragePathMacros;
+import consulo.component.persist.Storage;
 import org.jetbrains.plugins.groovy.mvc.projectView.MvcProjectViewState;
 
 /**

@@ -15,22 +15,23 @@
  */
 package org.jetbrains.plugins.groovy.lang.completion;
 
-import com.intellij.codeInsight.completion.PrefixMatcher;
-import com.intellij.codeInsight.lookup.LookupElement;
-import com.intellij.psi.PsiAnnotation;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiMethod;
-import com.intellij.util.Consumer;
-import com.intellij.util.containers.ContainerUtil;
-import javax.annotation.Nonnull;
+import com.intellij.java.language.psi.PsiAnnotation;
+import com.intellij.java.language.psi.PsiClass;
+import com.intellij.java.language.psi.PsiMethod;
+import consulo.application.util.matcher.PrefixMatcher;
+import consulo.language.editor.completion.lookup.LookupElement;
+import consulo.language.psi.PsiElement;
+import consulo.util.collection.ContainerUtil;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotation;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyResolveResultImpl;
 import org.jetbrains.plugins.groovy.lang.psi.impl.auxiliary.modifiers.GrAnnotationCollector;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Consumer;
 
 /**
  * Created by Max Medvedev on 14/05/14
@@ -53,7 +54,7 @@ public class AnnotationAttributeCompletionResultProcessor {
         final ArrayList<GrAnnotation> annotations = ContainerUtil.newArrayList();
         GrAnnotationCollector.collectAnnotations(annotations, myAnnotation, annotationCollector);
 
-        Set<String> usedNames = ContainerUtil.newHashSet();
+        Set<String> usedNames = new HashSet<>();
         for (GrAnnotation annotation : annotations) {
           final PsiElement resolvedAliased = annotation.getClassReference().resolve();
           if (resolvedAliased instanceof PsiClass && ((PsiClass)resolvedAliased).isAnnotationType()) {
@@ -61,7 +62,7 @@ public class AnnotationAttributeCompletionResultProcessor {
               if (usedNames.add(method.getName())) {
                 for (LookupElement element : GroovyCompletionUtil
                   .createLookupElements(new GroovyResolveResultImpl(method, true), false, matcher, null)) {
-                  consumer.consume(element);
+                  consumer.accept(element);
                 }
               }
             }
@@ -72,7 +73,7 @@ public class AnnotationAttributeCompletionResultProcessor {
         for (PsiMethod method : ((PsiClass)resolved).getMethods()) {
           for (LookupElement element : GroovyCompletionUtil
             .createLookupElements(new GroovyResolveResultImpl(method, true), false, matcher, null)) {
-            consumer.consume(element);
+            consumer.accept(element);
           }
         }
       }

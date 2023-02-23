@@ -15,13 +15,13 @@
  */
 package org.jetbrains.plugins.groovy.annotator.checkers;
 
-import com.intellij.lang.annotation.AnnotationHolder;
-import com.intellij.lang.annotation.HighlightSeverity;
-import com.intellij.openapi.util.Condition;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiElement;
-import com.intellij.util.containers.ContainerUtil;
+import com.intellij.java.language.psi.PsiClass;
+import consulo.language.editor.annotation.AnnotationHolder;
+import consulo.language.editor.annotation.HighlightSeverity;
+import consulo.language.psi.PsiElement;
+import consulo.util.collection.ContainerUtil;
 import consulo.util.lang.Pair;
+import consulo.util.lang.function.Condition;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.GrModifierList;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotation;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotationNameValuePair;

@@ -15,12 +15,13 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.threading;
 
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiField;
-import com.intellij.psi.PsiModifier;
-import com.intellij.psi.PsiReference;
+import consulo.language.psi.PsiElement;
+import com.intellij.java.language.psi.PsiField;
+import com.intellij.java.language.psi.PsiModifier;
+import consulo.language.psi.PsiReference;
 import org.jetbrains.annotations.Nls;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspectionVisitor;
@@ -46,7 +47,7 @@ public class GroovySynchronizationOnNonFinalFieldInspection extends BaseInspecti
     return "Synchronization on non-final field";
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   protected String buildErrorString(Object... args) {
     return "Synchronization on non-final field '#ref' #loc";
 

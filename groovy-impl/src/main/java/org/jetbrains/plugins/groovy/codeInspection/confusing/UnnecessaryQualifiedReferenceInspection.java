@@ -15,14 +15,14 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.confusing;
 
-import javax.annotation.Nonnull;
-
+import com.intellij.java.language.psi.PsiClass;
+import com.intellij.java.language.psi.PsiMember;
+import com.intellij.java.language.psi.PsiModifier;
+import consulo.language.psi.PsiComment;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.util.PsiTreeUtil;
 import org.jetbrains.annotations.Nls;
-import org.jetbrains.plugins.groovy.codeInspection.BaseInspection;
-import org.jetbrains.plugins.groovy.codeInspection.BaseInspectionVisitor;
-import org.jetbrains.plugins.groovy.codeInspection.GroovyFix;
-import org.jetbrains.plugins.groovy.codeInspection.GroovyInspectionBundle;
-import org.jetbrains.plugins.groovy.codeInspection.GroovyQuickFixFactory;
+import org.jetbrains.plugins.groovy.codeInspection.*;
 import org.jetbrains.plugins.groovy.lang.psi.GrReferenceElement;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFileBase;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
@@ -34,12 +34,8 @@ import org.jetbrains.plugins.groovy.lang.psi.api.toplevel.packaging.GrPackageDef
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyCodeStyleSettingsFacade;
 import org.jetbrains.plugins.groovy.lang.psi.impl.PsiImplUtil;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiComment;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiMember;
-import com.intellij.psi.PsiModifier;
-import com.intellij.psi.util.PsiTreeUtil;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author Max Medvedev

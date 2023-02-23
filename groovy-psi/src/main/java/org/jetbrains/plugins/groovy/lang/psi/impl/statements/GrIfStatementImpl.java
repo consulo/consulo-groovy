@@ -16,10 +16,11 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements;
 
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
-import com.intellij.util.IncorrectOperationException;
+import consulo.language.ast.ASTNode;
+import consulo.language.psi.PsiElement;
+import consulo.language.util.IncorrectOperationException;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
@@ -51,7 +52,7 @@ public class GrIfStatementImpl extends GroovyPsiElementImpl implements GrIfState
   }
 
   @Override
-  @javax.annotation.Nullable
+  @Nullable
   public GrExpression getCondition() {
     PsiElement lParenth = getLParenth();
 
@@ -64,7 +65,7 @@ public class GrIfStatementImpl extends GroovyPsiElementImpl implements GrIfState
   }
 
   @Override
-  @javax.annotation.Nullable
+  @Nullable
   public GrStatement getThenBranch() {
     List<GrStatement> statements = new ArrayList<GrStatement>();
     for (PsiElement cur = getFirstChild(); cur != null; cur = cur.getNextSibling()) {
@@ -77,7 +78,7 @@ public class GrIfStatementImpl extends GroovyPsiElementImpl implements GrIfState
   }
 
   @Override
-  @javax.annotation.Nullable
+  @Nullable
   public GrStatement getElseBranch() {
     List<GrStatement> statements = new ArrayList<GrStatement>();
     for (PsiElement cur = getFirstChild(); cur != null; cur = cur.getNextSibling()) {

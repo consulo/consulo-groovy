@@ -16,11 +16,12 @@
 
 package org.jetbrains.plugins.groovy.lang.psi;
 
-import javax.annotation.Nonnull;
-
+import com.intellij.java.language.psi.*;
+import consulo.ide.ServiceManager;
+import consulo.language.psi.PsiElement;
+import consulo.language.util.IncorrectOperationException;
+import consulo.project.Project;
 import org.jetbrains.annotations.NonNls;
-
-import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocComment;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocMemberReference;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocReferenceElement;
@@ -28,13 +29,7 @@ import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocTag;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.GrModifierList;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotation;
 import org.jetbrains.plugins.groovy.lang.psi.api.signatures.GrClosureSignature;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrBlockStatement;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrCatchClause;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrClassInitializer;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrConstructorInvocation;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariableDeclaration;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.*;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrArgumentList;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrNamedArgument;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlock;
@@ -57,15 +52,9 @@ import org.jetbrains.plugins.groovy.lang.psi.api.toplevel.GrTopStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.toplevel.imports.GrImportStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeElement;
-import com.intellij.openapi.components.ServiceManager;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.JVMElementFactory;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiClassType;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiReferenceList;
-import com.intellij.psi.PsiType;
-import com.intellij.util.IncorrectOperationException;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author dimaskin
@@ -112,14 +101,14 @@ public abstract class GroovyPsiElementFactory implements JVMElementFactory
 	public abstract GrImportStatement createImportStatementFromText(@Nonnull String qName,
 			boolean isStatic,
 			boolean isOnDemand,
-			@javax.annotation.Nullable String alias);
+			@Nullable String alias);
 
 	public abstract GrImportStatement createImportStatementFromText(@Nonnull String text);
 
 	public abstract GrImportStatement createImportStatement(@Nonnull String qname,
 			boolean isStatic,
 			boolean isOnDemand,
-			@javax.annotation.Nullable String alias,
+			@Nullable String alias,
 			@Nullable PsiElement context);
 
 	public abstract PsiElement createWhiteSpace();
@@ -211,7 +200,7 @@ public abstract class GroovyPsiElementFactory implements JVMElementFactory
 
 	public abstract GrParameter createParameter(String name,
 			@Nullable String typeText,
-			@javax.annotation.Nullable String initializer,
+			@Nullable String initializer,
 			@Nullable GroovyPsiElement context,
 			String... modifiers) throws IncorrectOperationException;
 
@@ -245,7 +234,7 @@ public abstract class GroovyPsiElementFactory implements JVMElementFactory
 
 	@Override
 	@Nonnull
-	public abstract GrMethod createMethodFromText(String methodText, @javax.annotation.Nullable PsiElement context);
+	public abstract GrMethod createMethodFromText(String methodText, @Nullable PsiElement context);
 
 	@Nonnull
 	@Override
@@ -309,7 +298,7 @@ public abstract class GroovyPsiElementFactory implements JVMElementFactory
 
 	public abstract GrImplementsClause createImplementsClause();
 
-	public abstract GrLiteral createLiteralFromValue(@javax.annotation.Nullable Object value);
+	public abstract GrLiteral createLiteralFromValue(@Nullable Object value);
 
 	@Override
 	@Nonnull

@@ -17,11 +17,11 @@ package org.jetbrains.plugins.groovy.intentions.control;
 
 import javax.annotation.Nonnull;
 
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.util.IncorrectOperationException;
+import consulo.codeEditor.Editor;
+import consulo.language.ast.IElementType;
+import consulo.language.psi.PsiElement;
+import consulo.project.Project;
+import consulo.language.util.IncorrectOperationException;
 import org.jetbrains.plugins.groovy.intentions.GroovyIntentionsBundle;
 import org.jetbrains.plugins.groovy.intentions.base.MutablyNamedIntention;
 import org.jetbrains.plugins.groovy.intentions.base.PsiElementPredicate;

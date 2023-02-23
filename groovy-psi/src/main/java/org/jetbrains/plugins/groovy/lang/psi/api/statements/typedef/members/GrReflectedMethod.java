@@ -17,7 +17,7 @@ package org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members;
 
 import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameter;
-import com.intellij.psi.PsiMirrorElement;
+import consulo.language.psi.PsiMirrorElement;
 
 /**
  * @author Max Medvedev

@@ -15,86 +15,77 @@
  */
 package org.jetbrains.plugins.groovy.shell;
 
-import java.util.Collection;
-
-import org.jetbrains.plugins.groovy.util.ModuleChooserUtil;
-import com.intellij.openapi.actionSystem.AnAction;
-import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.actionSystem.CommonDataKeys;
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.roots.ProjectRootModificationTracker;
-import com.intellij.openapi.util.Condition;
+import consulo.application.util.CachedValue;
+import consulo.application.util.CachedValueProvider;
+import consulo.application.util.CachedValuesManager;
+import consulo.language.editor.CommonDataKeys;
+import consulo.module.Module;
+import consulo.project.Project;
+import consulo.project.content.ProjectRootModificationTracker;
+import consulo.ui.ex.action.AnAction;
+import consulo.ui.ex.action.AnActionEvent;
 import consulo.util.dataholder.Key;
-import com.intellij.psi.util.CachedValue;
-import com.intellij.psi.util.CachedValueProvider;
-import com.intellij.psi.util.CachedValuesManager;
-import com.intellij.util.Consumer;
-import com.intellij.util.Function;
+import consulo.util.lang.function.Condition;
+import org.jetbrains.plugins.groovy.util.ModuleChooserUtil;
 
-public abstract class GroovyShellActionBase extends AnAction
-{
-	private final GroovyShellConfig myConfig;
+import java.util.Collection;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
-	private final Condition<Module> APPLICABLE_MODULE = new Condition<Module>()
-	{
-		@Override
-		public boolean value(Module module)
-		{
-			return myConfig.isSuitableModule(module);
-		}
-	};
+public abstract class GroovyShellActionBase extends AnAction {
+  private final GroovyShellConfig myConfig;
 
-	// non-static to distinguish different module acceptability conditions
-	private final Key<CachedValue<Boolean>> APPLICABLE_MODULE_CACHE = Key.create("APPLICABLE_MODULE_CACHE");
+  private final Condition<Module> APPLICABLE_MODULE = new Condition<Module>() {
+    @Override
+    public boolean value(Module module) {
+      return myConfig.isSuitableModule(module);
+    }
+  };
 
-	private final Function<Module, String> VERSION_PROVIDER = new Function<Module, String>()
-	{
-		@Override
-		public String fun(Module module)
-		{
-			return myConfig.getVersion(module);
-		}
-	};
+  // non-static to distinguish different module acceptability conditions
+  private final Key<CachedValue<Boolean>> APPLICABLE_MODULE_CACHE = Key.create("APPLICABLE_MODULE_CACHE");
 
-	private final Consumer<Module> RUNNER = new Consumer<Module>()
-	{
-		@Override
-		public void consume(final Module module)
-		{
-			GroovyShellRunnerImpl.doRunShell(myConfig, module);
-		}
-	};
+  private final Function<Module, String> VERSION_PROVIDER = new Function<Module, String>() {
+    @Override
+    public String apply(Module module) {
+      return myConfig.getVersion(module);
+    }
+  };
 
-	public GroovyShellActionBase(GroovyShellConfig runner)
-	{
-		myConfig = runner;
-	}
+  private final Consumer<Module> RUNNER = new Consumer<Module>() {
+    @Override
+    public void accept(final Module module) {
+      GroovyShellRunnerImpl.doRunShell(myConfig, module);
+    }
+  };
 
-	@Override
-	public void update(AnActionEvent e)
-	{
-		final Project project = e.getData(CommonDataKeys.PROJECT);
-		boolean enabled = project != null && hasGroovyCompatibleModule(project);
+  public GroovyShellActionBase(GroovyShellConfig runner) {
+    myConfig = runner;
+  }
 
-		e.getPresentation().setEnabled(enabled);
-		e.getPresentation().setVisible(enabled);
-	}
+  @Override
+  public void update(AnActionEvent e) {
+    final Project project = e.getData(CommonDataKeys.PROJECT);
+    boolean enabled = project != null && hasGroovyCompatibleModule(project);
 
-	private boolean hasGroovyCompatibleModule(final Project project)
-	{
-		return CachedValuesManager.getManager(project).getCachedValue(project, APPLICABLE_MODULE_CACHE, () -> {
-			Collection<Module> possibleModules = myConfig.getPossiblySuitableModules(project);
-			return CachedValueProvider.Result.create(ModuleChooserUtil.hasGroovyCompatibleModules(possibleModules, APPLICABLE_MODULE), ProjectRootModificationTracker.getInstance(project));
-		}, false);
-	}
+    e.getPresentation().setEnabled(enabled);
+    e.getPresentation().setVisible(enabled);
+  }
 
-	@Override
-	public void actionPerformed(AnActionEvent e)
-	{
-		final Project project = e.getData(CommonDataKeys.PROJECT);
-		assert project != null;
-		Collection<Module> suitableModules = ModuleChooserUtil.filterGroovyCompatibleModules(myConfig.getPossiblySuitableModules(project), APPLICABLE_MODULE);
-		ModuleChooserUtil.selectModule(project, suitableModules, VERSION_PROVIDER, RUNNER);
-	}
+  private boolean hasGroovyCompatibleModule(final Project project) {
+    return CachedValuesManager.getManager(project).getCachedValue(project, APPLICABLE_MODULE_CACHE, () -> {
+      Collection<Module> possibleModules = myConfig.getPossiblySuitableModules(project);
+      return CachedValueProvider.Result.create(ModuleChooserUtil.hasGroovyCompatibleModules(possibleModules, APPLICABLE_MODULE),
+                                               ProjectRootModificationTracker.getInstance(project));
+    }, false);
+  }
+
+  @Override
+  public void actionPerformed(AnActionEvent e) {
+    final Project project = e.getData(CommonDataKeys.PROJECT);
+    assert project != null;
+    Collection<Module> suitableModules =
+      ModuleChooserUtil.filterGroovyCompatibleModules(myConfig.getPossiblySuitableModules(project), APPLICABLE_MODULE);
+    ModuleChooserUtil.selectModule(project, suitableModules, VERSION_PROVIDER, RUNNER);
+  }
 }

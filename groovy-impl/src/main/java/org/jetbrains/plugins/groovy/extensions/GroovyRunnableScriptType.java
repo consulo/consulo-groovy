@@ -17,10 +17,12 @@ package org.jetbrains.plugins.groovy.extensions;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
+import consulo.execution.action.Location;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.runner.GroovyScriptRunConfiguration;
 import org.jetbrains.plugins.groovy.runner.GroovyScriptRunner;
-import com.intellij.execution.Location;
+import consulo.execution.action.Location;
 
 public abstract class GroovyRunnableScriptType extends GroovyScriptType
 {

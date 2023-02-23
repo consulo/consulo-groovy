@@ -20,8 +20,8 @@ package org.jetbrains.plugins.groovy.lang.resolve;
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiReference
+import com.intellij.java.language.psi.PsiElement
+import com.intellij.java.language.psi.PsiReference
 import org.jetbrains.annotations.NonNls
 import org.jetbrains.annotations.Nullable
 import org.jetbrains.plugins.groovy.LightGroovyTestCase

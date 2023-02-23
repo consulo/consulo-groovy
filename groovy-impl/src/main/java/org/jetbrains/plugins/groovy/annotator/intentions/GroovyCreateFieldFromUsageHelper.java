@@ -15,18 +15,23 @@
  */
 package org.jetbrains.plugins.groovy.annotator.intentions;
 
-import com.intellij.codeInsight.CodeInsightUtilBase;
-import com.intellij.codeInsight.ExpectedTypeInfo;
-import com.intellij.codeInsight.daemon.impl.quickfix.CreateFieldFromUsageHelper;
-import com.intellij.codeInsight.daemon.impl.quickfix.EmptyExpression;
-import com.intellij.codeInsight.daemon.impl.quickfix.GuessTypeParameters;
-import com.intellij.codeInsight.template.Template;
-import com.intellij.codeInsight.template.TemplateBuilderImpl;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.*;
-import javax.annotation.Nonnull;
+import com.intellij.java.impl.codeInsight.ExpectedTypeInfo;
+import com.intellij.java.impl.codeInsight.daemon.impl.quickfix.CreateFieldFromUsageHelper;
+import com.intellij.java.impl.codeInsight.daemon.impl.quickfix.GuessTypeParameters;
+import com.intellij.java.language.psi.PsiClass;
+import com.intellij.java.language.psi.PsiField;
+import com.intellij.java.language.psi.PsiSubstitutor;
+import consulo.codeEditor.Editor;
+import consulo.document.util.TextRange;
+import consulo.ide.impl.idea.codeInsight.CodeInsightUtilBase;
+import consulo.language.Language;
+import consulo.language.editor.impl.internal.template.TemplateBuilderImpl;
+import consulo.language.editor.template.EmptyExpression;
+import consulo.language.editor.template.Template;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiManager;
+import consulo.project.Project;
+import org.jetbrains.plugins.groovy.GroovyLanguage;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariableDeclaration;
@@ -35,10 +40,12 @@ import org.jetbrains.plugins.groovy.lang.psi.expectedTypes.TypeConstraint;
 import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GroovyScriptClass;
 import org.jetbrains.plugins.groovy.template.expressions.ChooseTypeExpression;
 
+import javax.annotation.Nonnull;
+
 /**
  * @author Max Medvedev
  */
-public class GroovyCreateFieldFromUsageHelper extends CreateFieldFromUsageHelper {
+public class GroovyCreateFieldFromUsageHelper implements CreateFieldFromUsageHelper {
   @Override
   public Template setupTemplateImpl(PsiField f,
                                     Object expectedTypes,
@@ -92,5 +99,11 @@ public class GroovyCreateFieldFromUsageHelper extends CreateFieldFromUsageHelper
     else {
       return (PsiField)targetClass.add(field);
     }
+  }
+
+  @Nonnull
+  @Override
+  public Language getLanguage() {
+    return GroovyLanguage.INSTANCE;
   }
 }

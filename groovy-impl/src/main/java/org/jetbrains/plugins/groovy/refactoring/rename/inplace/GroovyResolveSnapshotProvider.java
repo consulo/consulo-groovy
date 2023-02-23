@@ -15,15 +15,25 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.rename.inplace;
 
-import com.intellij.psi.PsiElement;
-import com.intellij.refactoring.rename.ResolveSnapshotProvider;
+import consulo.language.Language;
+import consulo.language.editor.refactoring.ResolveSnapshotProvider;
+import consulo.language.psi.PsiElement;
+import org.jetbrains.plugins.groovy.GroovyLanguage;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author Maxim.Medvedev
  */
-public class GroovyResolveSnapshotProvider extends ResolveSnapshotProvider{
+public class GroovyResolveSnapshotProvider extends ResolveSnapshotProvider {
   @Override
   public ResolveSnapshot createSnapshot(PsiElement scope) {
     return new GroovyResolveSnapshot(scope);
+  }
+
+  @Nonnull
+  @Override
+  public Language getLanguage() {
+    return GroovyLanguage.INSTANCE;
   }
 }

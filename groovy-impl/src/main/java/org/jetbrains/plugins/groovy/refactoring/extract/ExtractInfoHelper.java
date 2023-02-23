@@ -16,10 +16,13 @@
 package org.jetbrains.plugins.groovy.refactoring.extract;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiType;
+import consulo.language.psi.PsiElement;
+import consulo.project.Project;
+import consulo.language.psi.PsiElement;
+import com.intellij.java.language.psi.PsiType;
+import consulo.project.Project;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
 import org.jetbrains.plugins.groovy.lang.psi.dataFlow.reachingDefs.VariableInfo;
 import org.jetbrains.plugins.groovy.refactoring.introduce.StringPartInfo;
@@ -49,7 +52,7 @@ public interface ExtractInfoHelper {
   @Nonnull
   GrStatement[] getStatements();
 
-  @javax.annotation.Nullable
+  @Nullable
   StringPartInfo getStringPartInfo();
 
   boolean hasReturnValue();

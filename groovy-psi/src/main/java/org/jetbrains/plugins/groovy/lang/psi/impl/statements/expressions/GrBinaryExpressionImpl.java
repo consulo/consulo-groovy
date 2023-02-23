@@ -16,10 +16,17 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions;
 
-import java.util.List;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.intellij.java.language.psi.PsiType;
+import consulo.document.util.TextRange;
+import consulo.language.ast.ASTNode;
+import consulo.language.ast.IElementType;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiRecursiveElementWalkingVisitor;
+import consulo.language.psi.PsiReference;
+import consulo.language.psi.resolve.ResolveCache;
+import consulo.language.util.IncorrectOperationException;
+import consulo.util.collection.ArrayUtil;
+import consulo.util.collection.SmartList;
 import org.jetbrains.plugins.groovy.lang.lexer.TokenSets;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
@@ -29,18 +36,11 @@ import org.jetbrains.plugins.groovy.lang.psi.dataFlow.types.TypeInferenceHelper;
 import org.jetbrains.plugins.groovy.lang.psi.impl.PsiImplUtil;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.binaryCalculators.GrBinaryExpressionTypeCalculators;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.binaryCalculators.GrBinaryFacade;
-import com.intellij.lang.ASTNode;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiRecursiveElementWalkingVisitor;
-import com.intellij.psi.PsiReference;
-import com.intellij.psi.PsiType;
-import com.intellij.psi.impl.source.resolve.ResolveCache;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.util.ArrayUtil;
-import com.intellij.util.Function;
-import com.intellij.util.IncorrectOperationException;
-import com.intellij.util.SmartList;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.List;
+import java.util.function.Function;
 
 /**
  * @author ilyas
@@ -89,12 +89,8 @@ public abstract class GrBinaryExpressionImpl extends GrExpressionImpl implements
     }
   };
 
-  private static final Function<GrBinaryExpressionImpl, PsiType> TYPE_CALCULATOR = new Function<GrBinaryExpressionImpl, PsiType>() {
-    @Override
-    public PsiType fun(GrBinaryExpressionImpl expression) {
-      return GrBinaryExpressionTypeCalculators.getTypeCalculator(expression.getFacade()).fun(expression.getFacade());
-    }
-  };
+  private static final Function<GrBinaryExpressionImpl, PsiType> TYPE_CALCULATOR =
+    expression -> GrBinaryExpressionTypeCalculators.getTypeCalculator(expression.getFacade()).apply(expression.getFacade());
 
   private final GrBinaryFacade myFacade = new GrBinaryFacade() {
     @Nonnull
@@ -222,7 +218,8 @@ public abstract class GrBinaryExpressionImpl extends GrExpressionImpl implements
   }
 
   @Override
-  public PsiElement bindToElement(@Nonnull PsiElement element) throws IncorrectOperationException {
+  public PsiElement bindToElement(@Nonnull PsiElement element) throws IncorrectOperationException
+  {
     throw new IncorrectOperationException("binary expression cannot be bound to anything");
   }
 

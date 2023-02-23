@@ -16,13 +16,14 @@
 package org.jetbrains.plugins.groovy.intentions.control;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.ArrayUtilRt;
-import com.intellij.util.IncorrectOperationException;
+import consulo.codeEditor.Editor;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.language.util.IncorrectOperationException;
+import consulo.project.Project;
+import consulo.ide.impl.idea.util.ArrayUtilRt;
 import org.jetbrains.plugins.groovy.codeInspection.utils.ControlFlowUtils;
 import org.jetbrains.plugins.groovy.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.intentions.base.PsiElementPredicate;
@@ -105,7 +106,7 @@ public class InvertIfIntention extends Intention {
     parentIf.replace(newIf);
   }
 
-  private static boolean isNotEmpty(@javax.annotation.Nullable GrStatement thenBranch) {
+  private static boolean isNotEmpty(@Nullable GrStatement thenBranch) {
     return thenBranch != null &&
            !(thenBranch instanceof GrBlockStatement && ((GrBlockStatement)thenBranch).getBlock().getStatements().length == 0);
   }

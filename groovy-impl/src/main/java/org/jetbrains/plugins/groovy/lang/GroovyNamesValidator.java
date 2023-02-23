@@ -15,9 +15,13 @@
  */
 package org.jetbrains.plugins.groovy.lang;
 
-import com.intellij.lang.refactoring.NamesValidator;
-import com.intellij.openapi.project.Project;
+import consulo.language.Language;
+import consulo.language.editor.refactoring.NamesValidator;
+import consulo.project.Project;
+import org.jetbrains.plugins.groovy.GroovyLanguage;
 import org.jetbrains.plugins.groovy.refactoring.GroovyRefactoringUtil;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author Maxim.Medvedev
@@ -31,5 +35,11 @@ public class GroovyNamesValidator implements NamesValidator {
   @Override
   public boolean isIdentifier(String name, Project project) {
     return GroovyRefactoringUtil.isCorrectReferenceName(name, project);
+  }
+
+  @Nonnull
+  @Override
+  public Language getLanguage() {
+    return GroovyLanguage.INSTANCE;
   }
 }

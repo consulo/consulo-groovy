@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.utils;
 
-import com.intellij.util.ui.UIUtil;
+import consulo.ui.ex.awt.UIUtil;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspection;
 

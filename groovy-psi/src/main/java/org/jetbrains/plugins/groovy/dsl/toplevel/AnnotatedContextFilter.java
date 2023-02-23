@@ -1,17 +1,18 @@
 package org.jetbrains.plugins.groovy.dsl.toplevel;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.intellij.java.language.psi.PsiAnnotation;
+import com.intellij.java.language.psi.PsiModifierList;
+import com.intellij.java.language.psi.PsiModifierListOwner;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.util.ProcessingContext;
 import org.jetbrains.plugins.groovy.dsl.GroovyClassDescriptor;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariableDeclaration;
 import org.jetbrains.plugins.groovy.lang.psi.api.toplevel.packaging.GrPackageDefinition;
-import com.intellij.psi.PsiAnnotation;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiModifierList;
-import com.intellij.psi.PsiModifierListOwner;
-import com.intellij.util.ProcessingContext;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author peter

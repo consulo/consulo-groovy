@@ -15,9 +15,9 @@
  */
 package org.jetbrains.plugins.groovy.gant;
 
-import com.intellij.openapi.options.Configurable;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vfs.VirtualFile;
+import consulo.configurable.Configurable;
+import consulo.project.Project;
+import consulo.virtualFileSystem.VirtualFile;
 import org.jetbrains.plugins.groovy.util.SdkHomeConfigurable;
 
 /**

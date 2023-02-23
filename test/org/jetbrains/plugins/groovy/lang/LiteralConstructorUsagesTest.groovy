@@ -15,8 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.lang
 
-import com.intellij.psi.search.searches.MethodReferencesSearch
-import com.intellij.psi.search.searches.ReferencesSearch
+import com.intellij.java.language.psi.search.searches.MethodReferencesSearch
+import com.intellij.java.language.psi.search.searches.ReferencesSearch
 import org.jetbrains.plugins.groovy.LightGroovyTestCase
 
 /**

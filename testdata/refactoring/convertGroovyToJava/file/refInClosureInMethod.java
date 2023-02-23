@@ -1,16 +1,19 @@
+import java.lang.Integer;
+import java.lang.Object;
+
 public class X {
 public void foo() {
-final groovy.lang.Reference<java.lang.Integer> ab = new groovy.lang.Reference<java.lang.Integer>(4);
+final groovy.lang.Reference<Integer> ab = new groovy.lang.Reference<Integer>(4);
 
 org.codehaus.groovy.runtime.DefaultGroovyMethods.each(this, new groovy.lang.Closure<X>(this, this) {
-public X doCall(java.lang.Object it) {
-return org.codehaus.groovy.runtime.DefaultGroovyMethods.each(X.this, new groovy.lang.Closure<java.lang.Integer>(X.this, X.this) {
-public java.lang.Integer doCall(java.lang.Object it) {
+public X doCall(Object it) {
+return org.codehaus.groovy.runtime.DefaultGroovyMethods.each(X.this, new groovy.lang.Closure<Integer>(X.this, X.this) {
+public Integer doCall(Object it) {
 return setGroovyRef(ab, 2);
 
 }
 
-public java.lang.Integer doCall() {
+public Integer doCall() {
 return doCall(null);
 }
 

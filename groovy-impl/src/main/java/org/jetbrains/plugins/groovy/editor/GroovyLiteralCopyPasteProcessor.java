@@ -15,25 +15,26 @@
  */
 package org.jetbrains.plugins.groovy.editor;
 
-import com.intellij.codeInsight.editorActions.StringLiteralCopyPasteProcessor;
-import com.intellij.lang.ASTNode;
-import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.editor.RawText;
-import com.intellij.openapi.editor.SelectionModel;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.openapi.util.text.LineTokenizer;
-import com.intellij.psi.PsiDocumentManager;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.tree.IElementType;
+import com.intellij.java.impl.codeInsight.editorActions.StringLiteralCopyPasteProcessor;
+import consulo.application.util.LineTokenizer;
+import consulo.codeEditor.Editor;
+import consulo.codeEditor.RawText;
+import consulo.codeEditor.SelectionModel;
+import consulo.document.Document;
+import consulo.document.util.TextRange;
+import consulo.language.ast.ASTNode;
+import consulo.language.ast.IElementType;
+import consulo.language.psi.PsiDocumentManager;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.project.Project;
 import org.jetbrains.annotations.NonNls;
-import javax.annotation.Nonnull;
-
 import org.jetbrains.plugins.groovy.lang.lexer.TokenSets;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
 import org.jetbrains.plugins.groovy.lang.psi.util.GrStringUtil;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import static org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes.*;
 
@@ -53,7 +54,7 @@ public class GroovyLiteralCopyPasteProcessor extends StringLiteralCopyPasteProce
     return node != null && (TokenSets.STRING_LITERALS.contains(node.getElementType()) || node.getElementType() == GroovyElementTypes.GSTRING_INJECTION);
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   protected PsiElement findLiteralTokenType(PsiFile file, int selectionStart, int selectionEnd) {
     PsiElement elementAtSelectionStart = file.findElementAt(selectionStart);
     if (elementAtSelectionStart == null) {

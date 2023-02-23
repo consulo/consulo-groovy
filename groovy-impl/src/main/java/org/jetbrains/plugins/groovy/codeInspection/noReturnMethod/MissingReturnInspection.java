@@ -15,16 +15,15 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.noReturnMethod;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.Nonnull;
-
+import com.intellij.java.language.psi.*;
+import consulo.document.util.TextRange;
+import consulo.language.editor.inspection.ProblemsHolder;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiElementVisitor;
+import consulo.util.lang.Pair;
+import consulo.util.lang.ref.Ref;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NonNls;
-
-import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.codeInspection.GroovyInspectionBundle;
 import org.jetbrains.plugins.groovy.codeInspection.GroovySuppressableInspectionTool;
 import org.jetbrains.plugins.groovy.codeInspection.utils.ControlFlowUtils;
@@ -46,17 +45,12 @@ import org.jetbrains.plugins.groovy.lang.psi.controlFlow.impl.ThrowingInstructio
 import org.jetbrains.plugins.groovy.lang.psi.expectedTypes.GroovyExpectedTypesProvider;
 import org.jetbrains.plugins.groovy.lang.psi.impl.signatures.GrClosureSignatureUtil;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil;
-import com.intellij.codeInspection.ProblemsHolder;
-import com.intellij.openapi.util.Pair;
-import com.intellij.openapi.util.Ref;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiClassType;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.PsiParameter;
-import com.intellij.psi.PsiType;
-import com.intellij.psi.PsiTypeParameter;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author ven
@@ -233,7 +227,7 @@ public class MissingReturnInspection extends GroovySuppressableInspectionTool
 		ControlFlowUtils.visitAllExitPoints(block, new ControlFlowUtils.ExitPointVisitor()
 		{
 			@Override
-			public boolean visitExitPoint(Instruction instruction, @javax.annotation.Nullable GrExpression returnValue)
+			public boolean visitExitPoint(Instruction instruction, @Nullable GrExpression returnValue)
 			{
 				//don't modify sometimesHaveReturn  in this case:
 				// def foo() {

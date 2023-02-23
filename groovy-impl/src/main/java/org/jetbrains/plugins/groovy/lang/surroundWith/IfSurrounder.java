@@ -15,9 +15,12 @@
  */
 package org.jetbrains.plugins.groovy.lang.surroundWith;
 
-import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.PsiElement;
-import com.intellij.util.IncorrectOperationException;
+import consulo.document.util.TextRange;
+import consulo.language.psi.PsiElement;
+import consulo.language.util.IncorrectOperationException;
+import consulo.document.util.TextRange;
+import consulo.language.psi.PsiElement;
+import consulo.language.util.IncorrectOperationException;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.GrCondition;
@@ -29,7 +32,8 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrIfStatement;
  * Date: 23.05.2007
  */
 public class IfSurrounder extends GroovyManyStatementsSurrounder {
-  protected GroovyPsiElement doSurroundElements(PsiElement[] elements, PsiElement context) throws IncorrectOperationException {
+  protected GroovyPsiElement doSurroundElements(PsiElement[] elements, PsiElement context) throws IncorrectOperationException
+  {
     GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(elements[0].getProject());
     GrIfStatement ifStatement = (GrIfStatement)factory.createStatementFromText("if (a) {\n}", context);
     addStatements(((GrBlockStatement)ifStatement.getThenBranch()).getBlock(), elements);

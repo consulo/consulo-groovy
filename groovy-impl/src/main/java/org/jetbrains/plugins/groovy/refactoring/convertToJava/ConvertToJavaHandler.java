@@ -15,22 +15,21 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.convertToJava;
 
-import java.util.Set;
-
-import javax.annotation.Nonnull;
-
+import consulo.application.ApplicationManager;
+import consulo.codeEditor.Editor;
+import consulo.dataContext.DataContext;
+import consulo.language.editor.PlatformDataKeys;
+import consulo.language.editor.refactoring.action.RefactoringActionHandler;
+import consulo.language.editor.refactoring.util.CommonRefactoringUtil;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.project.Project;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.refactoring.GroovyRefactoringBundle;
-import com.intellij.openapi.actionSystem.DataContext;
-import com.intellij.openapi.actionSystem.PlatformDataKeys;
-import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.refactoring.RefactoringActionHandler;
-import com.intellij.refactoring.util.CommonRefactoringUtil;
-import com.intellij.util.containers.ContainerUtil;
+
+import javax.annotation.Nonnull;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author Maxim.Medvedev
@@ -53,7 +52,7 @@ public class ConvertToJavaHandler implements RefactoringActionHandler {
   }
 
   private static void invokeInner(Project project, PsiElement[] elements, Editor editor) {
-    Set<GroovyFile> files = ContainerUtil.newHashSet();
+    Set<GroovyFile> files = new HashSet<>();
 
     for (PsiElement element : elements) {
       if (!(element instanceof PsiFile)) {
@@ -65,7 +64,11 @@ public class ConvertToJavaHandler implements RefactoringActionHandler {
       }
       else {
         if (!ApplicationManager.getApplication().isUnitTestMode()) {
-          CommonRefactoringUtil.showErrorHint(project, editor, GroovyRefactoringBundle.message("convert.to.java.can.work.only.with.groovy"), REFACTORING_NAME, null);
+          CommonRefactoringUtil.showErrorHint(project,
+                                              editor,
+                                              GroovyRefactoringBundle.message("convert.to.java.can.work.only.with.groovy"),
+                                              REFACTORING_NAME,
+                                              null);
           return;
         }
       }

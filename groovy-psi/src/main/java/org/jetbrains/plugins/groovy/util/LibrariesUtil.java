@@ -16,22 +16,29 @@
 
 package org.jetbrains.plugins.groovy.util;
 
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.roots.*;
-import com.intellij.openapi.roots.libraries.Library;
-import com.intellij.openapi.roots.libraries.LibraryTable;
-import com.intellij.openapi.roots.libraries.LibraryTablesRegistrar;
-import com.intellij.openapi.util.Condition;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.openapi.vfs.VirtualFileSystem;
-import com.intellij.psi.JavaPsiFacade;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.util.containers.ContainerUtil;
+import com.intellij.java.language.psi.JavaPsiFacade;
+import com.intellij.java.language.psi.PsiClass;
 import consulo.application.AccessRule;
-import consulo.vfs.ArchiveFileSystem;
-import consulo.vfs.util.ArchiveVfsUtil;
+import consulo.content.base.BinariesOrderRootType;
+import consulo.content.library.Library;
+import consulo.content.library.LibraryTable;
+import consulo.content.library.LibraryTablesRegistrar;
+import consulo.language.psi.scope.GlobalSearchScope;
+import consulo.module.Module;
+import consulo.module.content.ModuleRootManager;
+import consulo.module.content.layer.ModifiableRootModel;
+import consulo.module.content.layer.OrderEnumerator;
+import consulo.module.content.layer.orderEntry.LibraryOrderEntry;
+import consulo.module.content.layer.orderEntry.ModuleOrderEntry;
+import consulo.module.content.layer.orderEntry.ModuleSourceOrderEntry;
+import consulo.module.content.layer.orderEntry.OrderEntry;
+import consulo.util.collection.ContainerUtil;
+import consulo.util.lang.StringUtil;
+import consulo.util.lang.function.Condition;
+import consulo.virtualFileSystem.VirtualFile;
+import consulo.virtualFileSystem.VirtualFileSystem;
+import consulo.virtualFileSystem.archive.ArchiveFileSystem;
+import consulo.virtualFileSystem.archive.ArchiveVfsUtil;
 import org.jetbrains.plugins.groovy.config.GroovyConfigUtils;
 
 import javax.annotation.Nonnull;
@@ -45,228 +52,187 @@ import java.util.Set;
 /**
  * @author ilyas
  */
-public class LibrariesUtil
-{
-	public static final String SOME_GROOVY_CLASS = "org.codehaus.groovy.control.CompilationUnit";
+public class LibrariesUtil {
+  public static final String SOME_GROOVY_CLASS = "org.codehaus.groovy.control.CompilationUnit";
 
-	private LibrariesUtil()
-	{
-	}
+  private LibrariesUtil() {
+  }
 
-	public static Library[] getLibrariesByCondition(final Module module, final Condition<Library> condition)
-	{
-		if(module == null)
-		{
-			return new Library[0];
-		}
-		final ArrayList<Library> libraries = new ArrayList<Library>();
+  public static Library[] getLibrariesByCondition(final Module module, final Condition<Library> condition) {
+    if (module == null) {
+      return new Library[0];
+    }
+    final ArrayList<Library> libraries = new ArrayList<Library>();
 
-		AccessRule.read(() -> populateOrderEntries(module, condition, libraries, false, new HashSet<>()));
+    AccessRule.read(() -> populateOrderEntries(module, condition, libraries, false, new HashSet<>()));
 
-		return libraries.toArray(new Library[libraries.size()]);
-	}
+    return libraries.toArray(new Library[libraries.size()]);
+  }
 
-	private static void populateOrderEntries(@Nonnull Module module, Condition<Library> condition, ArrayList<Library> libraries, boolean exportedOnly, Set<Module> visited)
-	{
-		if(!visited.add(module))
-		{
-			return;
-		}
+  private static void populateOrderEntries(@Nonnull Module module,
+                                           Condition<Library> condition,
+                                           ArrayList<Library> libraries,
+                                           boolean exportedOnly,
+                                           Set<Module> visited) {
+    if (!visited.add(module)) {
+      return;
+    }
 
-		for(OrderEntry entry : ModuleRootManager.getInstance(module).getOrderEntries())
-		{
-			if(entry instanceof LibraryOrderEntry)
-			{
-				LibraryOrderEntry libEntry = (LibraryOrderEntry) entry;
-				if(exportedOnly && !libEntry.isExported())
-				{
-					continue;
-				}
+    for (OrderEntry entry : ModuleRootManager.getInstance(module).getOrderEntries()) {
+      if (entry instanceof LibraryOrderEntry) {
+        LibraryOrderEntry libEntry = (LibraryOrderEntry)entry;
+        if (exportedOnly && !libEntry.isExported()) {
+          continue;
+        }
 
-				Library library = libEntry.getLibrary();
-				if(condition.value(library))
-				{
-					libraries.add(library);
-				}
-			}
-			else if(entry instanceof ModuleOrderEntry)
-			{
-				final Module dep = ((ModuleOrderEntry) entry).getModule();
-				if(dep != null)
-				{
-					populateOrderEntries(dep, condition, libraries, true, visited);
-				}
-			}
-		}
-	}
+        Library library = libEntry.getLibrary();
+        if (condition.value(library)) {
+          libraries.add(library);
+        }
+      }
+      else if (entry instanceof ModuleOrderEntry) {
+        final Module dep = ((ModuleOrderEntry)entry).getModule();
+        if (dep != null) {
+          populateOrderEntries(dep, condition, libraries, true, visited);
+        }
+      }
+    }
+  }
 
-	public static Library[] getGlobalLibraries(Condition<Library> condition)
-	{
-		LibraryTable table = LibraryTablesRegistrar.getInstance().getLibraryTable();
-		List<Library> libs = ContainerUtil.findAll(table.getLibraries(), condition);
-		return libs.toArray(new Library[libs.size()]);
-	}
+  public static Library[] getGlobalLibraries(Condition<Library> condition) {
+    LibraryTable table = LibraryTablesRegistrar.getInstance().getLibraryTable();
+    List<Library> libs = ContainerUtil.findAll(table.getLibraries(), condition);
+    return libs.toArray(new Library[libs.size()]);
+  }
 
-	@Nonnull
-	public static String getGroovyLibraryHome(Library library)
-	{
-		final VirtualFile[] classRoots = library.getFiles(OrderRootType.CLASSES);
-		final String home = getGroovyLibraryHome(classRoots);
-		return home == null ? "" : home;
-	}
+  @Nonnull
+  public static String getGroovyLibraryHome(Library library) {
+    final VirtualFile[] classRoots = library.getFiles(BinariesOrderRootType.getInstance());
+    final String home = getGroovyLibraryHome(classRoots);
+    return home == null ? "" : home;
+  }
 
-	public static boolean hasGroovySdk(@Nullable Module module)
-	{
-		return module != null && getGroovyHomePath(module) != null;
-	}
+  public static boolean hasGroovySdk(@Nullable Module module) {
+    return module != null && getGroovyHomePath(module) != null;
+  }
 
-	@Nullable
-	public static VirtualFile findJarWithClass(@Nonnull Module module, final String classQName)
-	{
-		GlobalSearchScope scope = GlobalSearchScope.moduleWithDependenciesAndLibrariesScope(module);
-		for(PsiClass psiClass : JavaPsiFacade.getInstance(module.getProject()).findClasses(classQName, scope))
-		{
-			final VirtualFile local = ArchiveVfsUtil.getVirtualFileForJar(psiClass.getContainingFile().getVirtualFile());
-			if(local != null)
-			{
-				return local;
-			}
-		}
-		return null;
-	}
+  @Nullable
+  public static VirtualFile findJarWithClass(@Nonnull Module module, final String classQName) {
+    GlobalSearchScope scope = GlobalSearchScope.moduleWithDependenciesAndLibrariesScope(module);
+    for (PsiClass psiClass : JavaPsiFacade.getInstance(module.getProject()).findClasses(classQName, scope)) {
+      final VirtualFile local = ArchiveVfsUtil.getVirtualFileForJar(psiClass.getContainingFile().getVirtualFile());
+      if (local != null) {
+        return local;
+      }
+    }
+    return null;
+  }
 
 
-	@Nullable
-	public static String getGroovyHomePath(@Nonnull Module module)
-	{
-		final VirtualFile local = findJarWithClass(module, SOME_GROOVY_CLASS);
-		if(local != null)
-		{
-			final VirtualFile parent = local.getParent();
-			if(parent != null)
-			{
-				if(("lib".equals(parent.getName()) || "embeddable".equals(parent.getName())) && parent.getParent() != null)
-				{
-					return parent.getParent().getPath();
-				}
-				return parent.getPath();
-			}
-		}
+  @Nullable
+  public static String getGroovyHomePath(@Nonnull Module module) {
+    final VirtualFile local = findJarWithClass(module, SOME_GROOVY_CLASS);
+    if (local != null) {
+      final VirtualFile parent = local.getParent();
+      if (parent != null) {
+        if (("lib".equals(parent.getName()) || "embeddable".equals(parent.getName())) && parent.getParent() != null) {
+          return parent.getParent().getPath();
+        }
+        return parent.getPath();
+      }
+    }
 
-		final String home = getGroovyLibraryHome(OrderEnumerator.orderEntries(module).getAllLibrariesAndSdkClassesRoots());
-		return StringUtil.isEmpty(home) ? null : home;
-	}
+    final String home = getGroovyLibraryHome(OrderEnumerator.orderEntries(module).getAllLibrariesAndSdkClassesRoots());
+    return StringUtil.isEmpty(home) ? null : home;
+  }
 
-	@Nullable
-	private static String getGroovySdkHome(VirtualFile[] classRoots)
-	{
-		for(VirtualFile file : classRoots)
-		{
-			final String name = file.getName();
-			if(name.matches(GroovyConfigUtils.GROOVY_JAR_PATTERN_NOVERSION) || name.matches(GroovyConfigUtils.GROOVY_JAR_PATTERN))
-			{
-				String jarPath = file.getPresentableUrl();
-				File realFile = new File(jarPath);
-				if(realFile.exists())
-				{
-					File parentFile = realFile.getParentFile();
-					if(parentFile != null)
-					{
-						if("lib".equals(parentFile.getName()))
-						{
-							return parentFile.getParent();
-						}
-						return parentFile.getPath();
-					}
-				}
-			}
-		}
-		return null;
-	}
+  @Nullable
+  private static String getGroovySdkHome(VirtualFile[] classRoots) {
+    for (VirtualFile file : classRoots) {
+      final String name = file.getName();
+      if (name.matches(GroovyConfigUtils.GROOVY_JAR_PATTERN_NOVERSION) || name.matches(GroovyConfigUtils.GROOVY_JAR_PATTERN)) {
+        String jarPath = file.getPresentableUrl();
+        File realFile = new File(jarPath);
+        if (realFile.exists()) {
+          File parentFile = realFile.getParentFile();
+          if (parentFile != null) {
+            if ("lib".equals(parentFile.getName())) {
+              return parentFile.getParent();
+            }
+            return parentFile.getPath();
+          }
+        }
+      }
+    }
+    return null;
+  }
 
-	@Nullable
-	private static String getEmbeddableGroovyJar(VirtualFile[] classRoots)
-	{
-		for(VirtualFile file : classRoots)
-		{
-			final String name = file.getName();
-			if(GroovyConfigUtils.matchesGroovyAll(name))
-			{
-				String jarPath = file.getPresentableUrl();
-				File realFile = new File(jarPath);
-				if(realFile.exists())
-				{
-					return realFile.getPath();
-				}
-			}
-		}
-		return null;
-	}
+  @Nullable
+  private static String getEmbeddableGroovyJar(VirtualFile[] classRoots) {
+    for (VirtualFile file : classRoots) {
+      final String name = file.getName();
+      if (GroovyConfigUtils.matchesGroovyAll(name)) {
+        String jarPath = file.getPresentableUrl();
+        File realFile = new File(jarPath);
+        if (realFile.exists()) {
+          return realFile.getPath();
+        }
+      }
+    }
+    return null;
+  }
 
-	@Nullable
-	public static String getGroovyLibraryHome(VirtualFile[] classRoots)
-	{
-		final String sdkHome = getGroovySdkHome(classRoots);
-		if(sdkHome != null)
-		{
-			return sdkHome;
-		}
+  @Nullable
+  public static String getGroovyLibraryHome(VirtualFile[] classRoots) {
+    final String sdkHome = getGroovySdkHome(classRoots);
+    if (sdkHome != null) {
+      return sdkHome;
+    }
 
-		final String embeddable = getEmbeddableGroovyJar(classRoots);
-		if(embeddable != null)
-		{
-			final File emb = new File(embeddable);
-			if(emb.exists())
-			{
-				final File parent = emb.getParentFile();
-				if("embeddable".equals(parent.getName()) || "lib".equals(parent.getName()))
-				{
-					return parent.getParent();
-				}
-				return parent.getPath();
-			}
-		}
-		return null;
-	}
+    final String embeddable = getEmbeddableGroovyJar(classRoots);
+    if (embeddable != null) {
+      final File emb = new File(embeddable);
+      if (emb.exists()) {
+        final File parent = emb.getParentFile();
+        if ("embeddable".equals(parent.getName()) || "lib".equals(parent.getName())) {
+          return parent.getParent();
+        }
+        return parent.getPath();
+      }
+    }
+    return null;
+  }
 
-	@Nonnull
-	public static VirtualFile getLocalFile(@Nonnull VirtualFile libFile)
-	{
-		final VirtualFileSystem system = libFile.getFileSystem();
-		if(system instanceof ArchiveFileSystem)
-		{
-			final VirtualFile local = ArchiveVfsUtil.getVirtualFileForJar(libFile);
-			if(local != null)
-			{
-				return local;
-			}
-		}
-		return libFile;
-	}
+  @Nonnull
+  public static VirtualFile getLocalFile(@Nonnull VirtualFile libFile) {
+    final VirtualFileSystem system = libFile.getFileSystem();
+    if (system instanceof ArchiveFileSystem) {
+      final VirtualFile local = ArchiveVfsUtil.getVirtualFileForJar(libFile);
+      if (local != null) {
+        return local;
+      }
+    }
+    return libFile;
+  }
 
-	public static void placeEntryToCorrectPlace(ModifiableRootModel model, LibraryOrderEntry addedEntry)
-	{
-		final OrderEntry[] order = model.getOrderEntries();
-		//place library after module sources
-		assert order[order.length - 1] == addedEntry;
-		int insertionPoint = -1;
-		for(int i = 0; i < order.length - 1; i++)
-		{
-			if(order[i] instanceof ModuleSourceOrderEntry)
-			{
-				insertionPoint = i + 1;
-				break;
-			}
-		}
-		if(insertionPoint >= 0)
-		{
-			for(int i = order.length - 1; i > insertionPoint; i--)
-			{
-				order[i] = order[i - 1];
-			}
-			order[insertionPoint] = addedEntry;
-			model.rearrangeOrderEntries(order);
-		}
-	}
+  public static void placeEntryToCorrectPlace(ModifiableRootModel model, LibraryOrderEntry addedEntry) {
+    final OrderEntry[] order = model.getOrderEntries();
+    //place library after module sources
+    assert order[order.length - 1] == addedEntry;
+    int insertionPoint = -1;
+    for (int i = 0; i < order.length - 1; i++) {
+      if (order[i] instanceof ModuleSourceOrderEntry) {
+        insertionPoint = i + 1;
+        break;
+      }
+    }
+    if (insertionPoint >= 0) {
+      for (int i = order.length - 1; i > insertionPoint; i--) {
+        order[i] = order[i - 1];
+      }
+      order[insertionPoint] = addedEntry;
+      model.rearrangeOrderEntries(order);
+    }
+  }
 
 }

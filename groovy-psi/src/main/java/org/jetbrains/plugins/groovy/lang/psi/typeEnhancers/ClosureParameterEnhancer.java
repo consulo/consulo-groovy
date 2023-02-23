@@ -15,11 +15,13 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.typeEnhancers;
 
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.*;
-import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.psi.util.InheritanceUtil;
-import com.intellij.psi.util.PsiUtil;
+import com.intellij.java.language.psi.*;
+import com.intellij.java.language.psi.util.InheritanceUtil;
+import com.intellij.java.language.psi.util.PsiUtil;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiManager;
+import consulo.language.psi.scope.GlobalSearchScope;
+import consulo.project.Project;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrArgumentList;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlock;
@@ -42,7 +44,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import static com.intellij.psi.CommonClassNames.*;
+import static com.intellij.java.language.psi.CommonClassNames.*;
 
 /**
  * @author peter
@@ -254,7 +256,7 @@ public class ClosureParameterEnhancer extends AbstractClosureParameterEnhancer {
     return null;
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   private static PsiType getEntryForMap(@Nullable PsiType map, @Nonnull final Project project, @Nonnull final GlobalSearchScope scope) {
     PsiType key = PsiUtil.substituteTypeParameter(map, JAVA_UTIL_MAP, 0, true);
     PsiType value = PsiUtil.substituteTypeParameter(map, JAVA_UTIL_MAP, 1, true);
@@ -337,7 +339,7 @@ public class ClosureParameterEnhancer extends AbstractClosureParameterEnhancer {
     return PsiUtil.substituteTypeParameter(iteratorType, JAVA_UTIL_ITERATOR, 0, false);
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   private static String findMethodName(@Nonnull GrMethodCall methodCall) {
     GrExpression expression = methodCall.getInvokedExpression();
     if (expression instanceof GrReferenceExpression) {

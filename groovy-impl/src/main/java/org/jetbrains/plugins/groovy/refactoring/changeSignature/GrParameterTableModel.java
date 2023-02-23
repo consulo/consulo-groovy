@@ -15,22 +15,22 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.changeSignature;
 
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiCodeFragment;
-import com.intellij.psi.PsiElement;
-import com.intellij.refactoring.changeSignature.ParameterTableModelBase;
-import com.intellij.refactoring.ui.JavaCodeFragmentTableCellEditor;
-import com.intellij.util.ui.ColumnInfo;
-import javax.annotation.Nullable;
+import com.intellij.java.impl.refactoring.ui.JavaCodeFragmentTableCellEditor;
+import consulo.ide.impl.idea.refactoring.changeSignature.ParameterTableModelBase;
+import consulo.language.psi.PsiCodeFragment;
+import consulo.language.psi.PsiElement;
+import consulo.project.Project;
+import consulo.ui.ex.awt.ColumnInfo;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.refactoring.ui.GrCodeFragmentTableCellEditor;
 
+import javax.annotation.Nullable;
 import javax.swing.table.TableCellEditor;
 
 /**
  * @author Max Medvedev
  */
-public class GrParameterTableModel extends ParameterTableModelBase<GrParameterInfo, GrParameterTableModelItem>{
+public class GrParameterTableModel extends ParameterTableModelBase<GrParameterInfo, GrParameterTableModelItem> {
   public GrParameterTableModel(final PsiElement typeContext, PsiElement defaultValueContext, final GrChangeSignatureDialog dialog) {
     this(typeContext, defaultValueContext,
          new GrTypeColumn(typeContext.getProject()),

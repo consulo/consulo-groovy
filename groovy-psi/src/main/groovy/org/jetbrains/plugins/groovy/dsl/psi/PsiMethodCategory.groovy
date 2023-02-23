@@ -14,10 +14,13 @@
  *  limitations under the License.
  */
 
-package org.jetbrains.plugins.groovy.dsl.psi;
+package org.jetbrains.plugins.groovy.dsl.psi
 
-import com.intellij.psi.*;
-import org.jetbrains.annotations.Nullable;
+import com.intellij.java.language.psi.PsiClass
+import com.intellij.java.language.psi.PsiField
+import com.intellij.java.language.psi.PsiMethod
+import com.intellij.java.language.psi.PsiType
+import org.jetbrains.annotations.Nullable
 
 /**
  * @author ilyas

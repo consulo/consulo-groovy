@@ -15,213 +15,171 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl;
 
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.intellij.java.language.psi.CommonClassNames;
+import com.intellij.java.language.psi.JavaPsiFacade;
+import com.intellij.java.language.psi.PsiType;
+import consulo.application.util.RecursionManager;
+import consulo.application.util.VolatileNotNullLazyValue;
+import consulo.application.util.function.Computable;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.scope.GlobalSearchScope;
+import consulo.util.collection.ContainerUtil;
+import consulo.util.lang.Couple;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrArgumentLabel;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrNamedArgument;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
-import com.intellij.openapi.util.Computable;
-import com.intellij.openapi.util.Couple;
-import com.intellij.openapi.util.RecursionManager;
-import com.intellij.openapi.util.VolatileNotNullLazyValue;
-import com.intellij.psi.CommonClassNames;
-import com.intellij.psi.JavaPsiFacade;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiType;
-import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.util.Function;
-import com.intellij.util.containers.ContainerUtil;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.*;
 
 /**
  * Created by Max Medvedev on 07/04/14
  */
-public class GrMapTypeFromNamedArgs extends GrMapType
-{
+public class GrMapTypeFromNamedArgs extends GrMapType {
 
-	private final LinkedHashMap<String, GrExpression> myStringEntries;
-	private final List<Couple<GrExpression>> myOtherEntries;
+  private final LinkedHashMap<String, GrExpression> myStringEntries;
+  private final List<Couple<GrExpression>> myOtherEntries;
 
-	private final VolatileNotNullLazyValue<List<Couple<PsiType>>> myTypesOfOtherEntries = new
-			VolatileNotNullLazyValue<List<Couple<PsiType>>>()
-	{
-		@Nonnull
-		@Override
-		protected List<Couple<PsiType>> compute()
-		{
-			return ContainerUtil.map(myOtherEntries, new Function<Couple<GrExpression>, Couple<PsiType>>()
-			{
-				@Override
-				public Couple<PsiType> fun(Couple<GrExpression> pair)
-				{
-					return Couple.of(inferTypePreventingRecursion(pair.first), inferTypePreventingRecursion(pair
-							.second));
-				}
-			});
-		}
-	};
+  private final VolatileNotNullLazyValue<List<Couple<PsiType>>> myTypesOfOtherEntries = new
+    VolatileNotNullLazyValue<List<Couple<PsiType>>>() {
+      @Nonnull
+      @Override
+      protected List<Couple<PsiType>> compute() {
+        return ContainerUtil.map(myOtherEntries,
+                                 pair -> Couple.of(inferTypePreventingRecursion(pair.first), inferTypePreventingRecursion(pair
+                                                                                                                            .second)));
+      }
+    };
 
-	private final VolatileNotNullLazyValue<LinkedHashMap<String, PsiType>> myTypesOfStringEntries = new
-			VolatileNotNullLazyValue<LinkedHashMap<String, PsiType>>()
-	{
-		@Nonnull
-		@Override
-		protected LinkedHashMap<String, PsiType> compute()
-		{
-			LinkedHashMap<String, PsiType> result = ContainerUtil.newLinkedHashMap();
-			for(Map.Entry<String, GrExpression> entry : myStringEntries.entrySet())
-			{
-				result.put(entry.getKey(), inferTypePreventingRecursion(entry.getValue()));
-			}
-			return result;
-		}
+  private final VolatileNotNullLazyValue<LinkedHashMap<String, PsiType>> myTypesOfStringEntries =
+    new VolatileNotNullLazyValue<LinkedHashMap<String, PsiType>>() {
+      @Nonnull
+      @Override
+      protected LinkedHashMap<String, PsiType> compute() {
+        LinkedHashMap<String, PsiType> result = new LinkedHashMap<>();
+        for (Map.Entry<String, GrExpression> entry : myStringEntries.entrySet()) {
+          result.put(entry.getKey(), inferTypePreventingRecursion(entry.getValue()));
+        }
+        return result;
+      }
 
-	};
+    };
 
-	public GrMapTypeFromNamedArgs(@Nonnull PsiElement context, @Nonnull GrNamedArgument[] namedArgs)
-	{
-		this(JavaPsiFacade.getInstance(context.getProject()), context.getResolveScope(), namedArgs);
-	}
+  public GrMapTypeFromNamedArgs(@Nonnull PsiElement context, @Nonnull GrNamedArgument[] namedArgs) {
+    this(JavaPsiFacade.getInstance(context.getProject()), context.getResolveScope(), namedArgs);
+  }
 
-	public GrMapTypeFromNamedArgs(@Nonnull JavaPsiFacade facade,
-			@Nonnull GlobalSearchScope scope,
-			@Nonnull GrNamedArgument[] namedArgs)
-	{
-		super(facade, scope);
+  public GrMapTypeFromNamedArgs(@Nonnull JavaPsiFacade facade,
+                                @Nonnull GlobalSearchScope scope,
+                                @Nonnull GrNamedArgument[] namedArgs) {
+    super(facade, scope);
 
-		myStringEntries = ContainerUtil.newLinkedHashMap();
-		myOtherEntries = ContainerUtil.newArrayList();
-		for(GrNamedArgument namedArg : namedArgs)
-		{
-			final GrArgumentLabel label = namedArg.getLabel();
-			final GrExpression expression = namedArg.getExpression();
-			if(label == null || expression == null)
-			{
-				continue;
-			}
+    myStringEntries = new LinkedHashMap<>();
+    myOtherEntries = ContainerUtil.newArrayList();
+    for (GrNamedArgument namedArg : namedArgs) {
+      final GrArgumentLabel label = namedArg.getLabel();
+      final GrExpression expression = namedArg.getExpression();
+      if (label == null || expression == null) {
+        continue;
+      }
 
-			final String name = label.getName();
-			if(name != null)
-			{
-				myStringEntries.put(name, expression);
-			}
-			else if(label.getExpression() != null)
-			{
-				myOtherEntries.add(Couple.of(label.getExpression(), expression));
-			}
-		}
-	}
+      final String name = label.getName();
+      if (name != null) {
+        myStringEntries.put(name, expression);
+      }
+      else if (label.getExpression() != null) {
+        myOtherEntries.add(Couple.of(label.getExpression(), expression));
+      }
+    }
+  }
 
-	@Nullable
-	@Override
-	public PsiType getTypeByStringKey(String key)
-	{
-		GrExpression expression = myStringEntries.get(key);
-		return expression != null ? inferTypePreventingRecursion(expression) : null;
-	}
+  @Nullable
+  @Override
+  public PsiType getTypeByStringKey(String key) {
+    GrExpression expression = myStringEntries.get(key);
+    return expression != null ? inferTypePreventingRecursion(expression) : null;
+  }
 
-	@Nonnull
-	@Override
-	public Set<String> getStringKeys()
-	{
-		return myStringEntries.keySet();
-	}
+  @Nonnull
+  @Override
+  public Set<String> getStringKeys() {
+    return myStringEntries.keySet();
+  }
 
-	@Override
-	public boolean isEmpty()
-	{
-		return myStringEntries.isEmpty() && myOtherEntries.isEmpty();
-	}
+  @Override
+  public boolean isEmpty() {
+    return myStringEntries.isEmpty() && myOtherEntries.isEmpty();
+  }
 
-	@Nonnull
-	@Override
-	protected PsiType[] getAllKeyTypes()
-	{
-		Set<PsiType> result = ContainerUtil.newHashSet();
-		if(!myStringEntries.isEmpty())
-		{
-			result.add(GroovyPsiManager.getInstance(myFacade.getProject()).createTypeByFQClassName(CommonClassNames
-					.JAVA_LANG_STRING, getResolveScope()));
-		}
-		for(Couple<GrExpression> entry : myOtherEntries)
-		{
-			result.add(inferTypePreventingRecursion(entry.first));
-		}
-		result.remove(null);
-		return result.toArray(createArray(result.size()));
-	}
+  @Nonnull
+  @Override
+  protected PsiType[] getAllKeyTypes() {
+    Set<PsiType> result = new HashSet<>();
+    if (!myStringEntries.isEmpty()) {
+      result.add(GroovyPsiManager.getInstance(myFacade.getProject()).createTypeByFQClassName(CommonClassNames
+                                                                                               .JAVA_LANG_STRING, getResolveScope()));
+    }
+    for (Couple<GrExpression> entry : myOtherEntries) {
+      result.add(inferTypePreventingRecursion(entry.first));
+    }
+    result.remove(null);
+    return result.toArray(createArray(result.size()));
+  }
 
-	@Nonnull
-	@Override
-	protected PsiType[] getAllValueTypes()
-	{
-		Set<PsiType> result = ContainerUtil.newHashSet();
-		for(GrExpression expression : myStringEntries.values())
-		{
-			result.add(inferTypePreventingRecursion(expression));
-		}
-		for(Couple<GrExpression> entry : myOtherEntries)
-		{
-			result.add(inferTypePreventingRecursion(entry.second));
-		}
-		result.remove(null);
-		return result.toArray(createArray(result.size()));
-	}
+  @Nonnull
+  @Override
+  protected PsiType[] getAllValueTypes() {
+    Set<PsiType> result = new HashSet<>();
+    for (GrExpression expression : myStringEntries.values()) {
+      result.add(inferTypePreventingRecursion(expression));
+    }
+    for (Couple<GrExpression> entry : myOtherEntries) {
+      result.add(inferTypePreventingRecursion(entry.second));
+    }
+    result.remove(null);
+    return result.toArray(createArray(result.size()));
+  }
 
-	@javax.annotation.Nullable
-	private static PsiType inferTypePreventingRecursion(final GrExpression expression)
-	{
-		return RecursionManager.doPreventingRecursion(expression, false, new Computable<PsiType>()
-		{
-			@Override
-			public PsiType compute()
-			{
-				return expression.getType();
-			}
-		});
-	}
+  @Nullable
+  private static PsiType inferTypePreventingRecursion(final GrExpression expression) {
+    return RecursionManager.doPreventingRecursion(expression, false, new Computable<PsiType>() {
+      @Override
+      public PsiType compute() {
+        return expression.getType();
+      }
+    });
+  }
 
-	@Nonnull
-	@Override
-	protected List<Couple<PsiType>> getOtherEntries()
-	{
-		return myTypesOfOtherEntries.getValue();
-	}
+  @Nonnull
+  @Override
+  protected List<Couple<PsiType>> getOtherEntries() {
+    return myTypesOfOtherEntries.getValue();
+  }
 
-	@Nonnull
-	@Override
-	protected LinkedHashMap<String, PsiType> getStringEntries()
-	{
-		return myTypesOfStringEntries.getValue();
-	}
+  @Nonnull
+  @Override
+  protected LinkedHashMap<String, PsiType> getStringEntries() {
+    return myTypesOfStringEntries.getValue();
+  }
 
-	@Override
-	public boolean isValid()
-	{
-		for(GrExpression expression : myStringEntries.values())
-		{
-			if(!expression.isValid())
-			{
-				return false;
-			}
-		}
+  @Override
+  public boolean isValid() {
+    for (GrExpression expression : myStringEntries.values()) {
+      if (!expression.isValid()) {
+        return false;
+      }
+    }
 
-		for(Couple<GrExpression> entry : myOtherEntries)
-		{
-			if(!entry.first.isValid())
-			{
-				return false;
-			}
-			if(!entry.second.isValid())
-			{
-				return false;
-			}
-		}
+    for (Couple<GrExpression> entry : myOtherEntries) {
+      if (!entry.first.isValid()) {
+        return false;
+      }
+      if (!entry.second.isValid()) {
+        return false;
+      }
+    }
 
-		return true;
-	}
+    return true;
+  }
 }

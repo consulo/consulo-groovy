@@ -17,11 +17,16 @@ package org.jetbrains.plugins.groovy.refactoring.extract.closure;
 
 import javax.annotation.Nonnull;
 
-import com.intellij.psi.PsiElement;
-import com.intellij.refactoring.BaseRefactoringProcessor;
-import com.intellij.refactoring.ui.UsageViewDescriptorAdapter;
-import com.intellij.usageView.UsageInfo;
-import com.intellij.usageView.UsageViewDescriptor;
+import consulo.language.editor.refactoring.BaseRefactoringProcessor;
+import consulo.language.editor.refactoring.ui.UsageViewDescriptorAdapter;
+import consulo.language.psi.PsiElement;
+import consulo.language.editor.refactoring.BaseRefactoringProcessor;
+import consulo.language.editor.refactoring.ui.UsageViewDescriptorAdapter;
+import consulo.usage.UsageInfo;
+import consulo.usage.UsageViewDescriptor;
+import consulo.language.psi.PsiElement;
+import consulo.usage.UsageInfo;
+import consulo.usage.UsageViewDescriptor;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlock;
 import org.jetbrains.plugins.groovy.refactoring.extract.ExtractUtil;
@@ -30,7 +35,8 @@ import org.jetbrains.plugins.groovy.refactoring.introduce.parameter.GrIntroduceP
 /**
  * @author Max Medvedev
  */
-public abstract class ExtractClosureProcessorBase extends BaseRefactoringProcessor {
+public abstract class ExtractClosureProcessorBase extends BaseRefactoringProcessor
+{
   protected final GrIntroduceParameterSettings myHelper;
   private static final String EXTRACT_CLOSURE = "Extract closure";
 

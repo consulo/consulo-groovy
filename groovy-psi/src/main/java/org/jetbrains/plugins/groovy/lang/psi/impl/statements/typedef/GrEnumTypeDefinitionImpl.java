@@ -16,20 +16,18 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.typedef;
 
-import javax.annotation.Nonnull;
-
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.*;
-import com.intellij.psi.impl.PsiManagerEx;
-import com.intellij.psi.impl.light.LightMethodBuilder;
-import com.intellij.psi.scope.NameHint;
-import com.intellij.psi.scope.PsiScopeProcessor;
-import com.intellij.psi.util.CachedValueProvider;
-import com.intellij.psi.util.CachedValuesManager;
-import com.intellij.util.ArrayUtil;
+import com.intellij.java.language.impl.psi.impl.light.LightMethodBuilder;
+import com.intellij.java.language.impl.psi.scope.NameHint;
+import com.intellij.java.language.psi.*;
+import consulo.application.util.CachedValueProvider;
+import consulo.language.ast.ASTNode;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiManager;
+import consulo.language.psi.resolve.PsiScopeProcessor;
+import consulo.language.psi.resolve.ResolveState;
+import consulo.language.psi.util.LanguageCachedValueUtil;
+import consulo.util.collection.ArrayUtil;
 import org.jetbrains.annotations.NonNls;
-
-import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.GroovyLanguage;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
@@ -43,6 +41,9 @@ import org.jetbrains.plugins.groovy.lang.psi.stubs.GrTypeDefinitionStub;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames;
 import org.jetbrains.plugins.groovy.lang.resolve.ResolveUtil;
 import org.jetbrains.plugins.groovy.lang.resolve.processors.ClassHint;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author Dmitry.Krasilschikov
@@ -135,11 +136,11 @@ public class GrEnumTypeDefinitionImpl extends GrTypeDefinitionImpl implements Gr
   }
 
   private PsiMethod[] getDefEnumMethods() {
-    return CachedValuesManager.getCachedValue(this, new CachedValueProvider<PsiMethod[]>() {
+    return LanguageCachedValueUtil.getCachedValue(this, new CachedValueProvider<PsiMethod[]>() {
       @Override
       public Result<PsiMethod[]> compute() {
         PsiMethod[] defMethods = new PsiMethod[4];
-        final PsiManagerEx manager = getManager();
+        final PsiManager manager = getManager();
         final PsiElementFactory factory = JavaPsiFacade.getElementFactory(getProject());
         defMethods[0] = new LightMethodBuilder(manager, GroovyLanguage.INSTANCE, "values")
           .setMethodReturnType(factory.createTypeFromText(CommonClassNames.JAVA_UTIL_COLLECTION + "<" + getName() + ">", GrEnumTypeDefinitionImpl.this))

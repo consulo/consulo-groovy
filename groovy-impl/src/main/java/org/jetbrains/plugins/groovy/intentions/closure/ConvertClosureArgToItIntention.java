@@ -19,6 +19,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
+
+import consulo.language.psi.PsiElement;
+import consulo.language.util.IncorrectOperationException;
 import org.jetbrains.plugins.groovy.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.intentions.base.PsiElementPredicate;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyRecursiveElementVisitor;
@@ -27,10 +30,10 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrRefere
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameter;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameterList;
 import org.jetbrains.plugins.groovy.lang.psi.impl.PsiImplUtil;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiElement;
-import com.intellij.util.IncorrectOperationException;
+import consulo.codeEditor.Editor;
+import consulo.project.Project;
+import consulo.language.psi.PsiElement;
+import consulo.language.util.IncorrectOperationException;
 
 public class ConvertClosureArgToItIntention extends Intention {
 
@@ -41,7 +44,8 @@ public class ConvertClosureArgToItIntention extends Intention {
     }
 
     public void processIntention(@Nonnull PsiElement element, Project project, Editor editor)
-            throws IncorrectOperationException {
+            throws IncorrectOperationException
+	{
         final GrClosableBlock closure =
                 (GrClosableBlock) element;
 

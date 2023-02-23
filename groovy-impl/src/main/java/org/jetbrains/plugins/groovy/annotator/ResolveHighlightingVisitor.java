@@ -15,18 +15,17 @@
  */
 package org.jetbrains.plugins.groovy.annotator;
 
-import java.util.List;
-
-import javax.annotation.Nonnull;
-
+import consulo.language.editor.rawHighlight.HighlightInfo;
+import consulo.project.Project;
+import consulo.util.collection.ContainerUtil;
 import org.jetbrains.plugins.groovy.codeInspection.untypedUnresolvedAccess.GrUnresolvedAccessChecker;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFileBase;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyRecursiveElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
-import com.intellij.codeInsight.daemon.impl.HighlightInfo;
-import com.intellij.openapi.project.Project;
-import com.intellij.util.containers.ContainerUtil;
+
+import javax.annotation.Nonnull;
+import java.util.List;
 
 /**
  * Created by Max Medvedev on 21/03/14

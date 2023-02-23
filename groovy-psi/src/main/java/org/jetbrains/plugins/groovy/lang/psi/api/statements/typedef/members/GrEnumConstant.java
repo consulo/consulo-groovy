@@ -16,14 +16,15 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members;
 
-import javax.annotation.Nonnull;
-
-import com.intellij.psi.PsiEnumConstant;
-import com.intellij.util.ArrayFactory;
+import com.intellij.java.language.psi.PsiEnumConstant;
+import consulo.util.collection.ArrayFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrArgumentList;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrConstructorCall;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrEnumConstantInitializer;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author: Dmitry.Krasilschikov
@@ -39,7 +40,7 @@ public interface GrEnumConstant extends GrField, GrConstructorCall, PsiEnumConst
     }
   };
 
-  @javax.annotation.Nullable
+  @Nullable
   GrEnumConstantInitializer getInitializingClass();
 
   @Override

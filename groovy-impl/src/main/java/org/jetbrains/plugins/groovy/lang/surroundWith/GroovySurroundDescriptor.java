@@ -15,13 +15,15 @@
  */
 package org.jetbrains.plugins.groovy.lang.surroundWith;
 
-import javax.annotation.Nonnull;
-
-import com.intellij.lang.surroundWith.SurroundDescriptor;
-import com.intellij.lang.surroundWith.Surrounder;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
+import consulo.language.Language;
+import consulo.language.editor.surroundWith.SurroundDescriptor;
+import consulo.language.editor.surroundWith.Surrounder;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import org.jetbrains.plugins.groovy.GroovyLanguage;
 import org.jetbrains.plugins.groovy.refactoring.GroovyRefactoringUtil;
+
+import javax.annotation.Nonnull;
 
 /**
  * User: Dmitry.Krasilschikov
@@ -72,4 +74,9 @@ public class GroovySurroundDescriptor implements SurroundDescriptor {
     return GroovyRefactoringUtil.findStatementsInRange(file, startOffset, endOffset, true);
   }
 
+  @Nonnull
+  @Override
+  public Language getLanguage() {
+    return GroovyLanguage.INSTANCE;
+  }
 }

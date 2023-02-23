@@ -16,16 +16,25 @@
 
 package org.jetbrains.plugins.groovy.refactoring.inline;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.intellij.java.impl.refactoring.HelpID;
+import com.intellij.java.language.psi.*;
+import consulo.application.Application;
+import consulo.application.ApplicationManager;
+import consulo.application.HelpManager;
+import consulo.codeEditor.Editor;
+import consulo.ide.impl.idea.refactoring.inline.InlineOptionsDialog;
+import consulo.language.editor.TargetElementUtil;
+import consulo.language.editor.refactoring.inline.InlineHandler;
+import consulo.language.editor.refactoring.util.CommonRefactoringUtil;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.PsiReference;
+import consulo.language.psi.scope.LocalSearchScope;
+import consulo.language.psi.search.ReferencesSearch;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.language.util.IncorrectOperationException;
+import consulo.project.Project;
+import consulo.project.ui.wm.WindowManager;
 import org.jetbrains.plugins.groovy.codeInspection.utils.ControlFlowUtils;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
@@ -40,12 +49,7 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrArgument
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlock;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrOpenBlock;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.branch.GrReturnStatement;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrAssignmentExpression;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrMethodCall;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrSafeCastExpression;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrUnaryExpression;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.*;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.path.GrCallExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameter;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMember;
@@ -54,22 +58,10 @@ import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeElement;
 import org.jetbrains.plugins.groovy.lang.psi.impl.signatures.GrClosureSignatureUtil;
 import org.jetbrains.plugins.groovy.refactoring.GroovyRefactoringBundle;
 import org.jetbrains.plugins.groovy.refactoring.GroovyRefactoringUtil;
-import consulo.codeInsight.TargetElementUtil;
-import com.intellij.lang.refactoring.InlineHandler;
-import com.intellij.openapi.application.Application;
-import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.help.HelpManager;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.wm.WindowManager;
-import com.intellij.psi.*;
-import com.intellij.psi.search.LocalSearchScope;
-import com.intellij.psi.search.searches.ReferencesSearch;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.refactoring.HelpID;
-import com.intellij.refactoring.inline.InlineOptionsDialog;
-import com.intellij.refactoring.util.CommonRefactoringUtil;
-import com.intellij.util.IncorrectOperationException;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.*;
 
 /**
  * @author ilyas
@@ -183,7 +175,7 @@ public class GroovyInlineMethodUtil {
   /**
    * Shows dialog with question to inline
    */
-  @javax.annotation.Nullable
+  @Nullable
   private static InlineHandler.Settings inlineMethodDialogResult(GrMethod method, Project project, boolean invokedOnReference) {
     Application application = ApplicationManager.getApplication();
     if (!application.isUnitTestMode()) {
@@ -315,7 +307,7 @@ public class GroovyInlineMethodUtil {
     public final int offsetInMethod;
     public final PsiClass containingClass;
 
-    @javax.annotation.Nullable
+    @Nullable
     public String getPresentation() {
       return declaration.getName();
     }
@@ -478,7 +470,7 @@ public class GroovyInlineMethodUtil {
     }
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   private static GrExpression inferArg(GrClosureSignature signature,
                                        GrParameter[] parameters,
                                        GrParameter parameter,
@@ -522,7 +514,8 @@ public class GroovyInlineMethodUtil {
     * @param nameFilter specified parameter names (which ma have default initializers)
     * @param call
     */
-  private static void setDefaultValuesToParameters(GrMethod method, @Nullable Collection<String> nameFilter, GrCallExpression call) throws IncorrectOperationException {
+  private static void setDefaultValuesToParameters(GrMethod method, @Nullable Collection<String> nameFilter, GrCallExpression call) throws IncorrectOperationException
+  {
     if (nameFilter == null) {
       nameFilter = new ArrayList<String>();
       for (GrParameter parameter : method.getParameters()) {

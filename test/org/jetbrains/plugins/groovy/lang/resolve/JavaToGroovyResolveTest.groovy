@@ -17,11 +17,11 @@
 package org.jetbrains.plugins.groovy.lang.resolve;
 
 
-import com.intellij.psi.JavaResolveResult
-import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiJavaReference
-import com.intellij.psi.PsiReference
-import com.intellij.psi.impl.light.LightMethodBuilder
+import com.intellij.java.language.psi.JavaResolveResult
+import com.intellij.java.language.psi.PsiElement
+import com.intellij.java.language.psi.PsiJavaReference
+import com.intellij.java.language.psi.PsiReference
+import com.intellij.java.language.psi.impl.light.LightMethodBuilder
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrAccessorMethod
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod

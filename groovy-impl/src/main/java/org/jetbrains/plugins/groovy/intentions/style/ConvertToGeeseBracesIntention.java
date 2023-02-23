@@ -15,23 +15,33 @@
  */
 package org.jetbrains.plugins.groovy.intentions.style;
 
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.editor.RangeMarker;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.PsiDocumentManager;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.codeStyle.CodeStyleManager;
-import com.intellij.psi.codeStyle.CodeStyleSettingsManager;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.IncorrectOperationException;
+import consulo.document.RangeMarker;
+import consulo.document.util.TextRange;
+import consulo.language.ast.IElementType;
+import consulo.language.codeStyle.CodeStyleSettingsManager;
+import consulo.language.psi.PsiDocumentManager;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.language.util.IncorrectOperationException;
+import consulo.logging.Logger;
+import consulo.document.Document;
+import consulo.codeEditor.Editor;
+import consulo.document.RangeMarker;
+import consulo.project.Project;
+import consulo.document.util.TextRange;
+import consulo.util.lang.StringUtil;
+import consulo.language.psi.PsiDocumentManager;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.codeStyle.CodeStyleManager;
+import consulo.language.codeStyle.CodeStyleSettingsManager;
+import consulo.language.ast.IElementType;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.language.util.IncorrectOperationException;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
+import consulo.logging.Logger;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.codeStyle.GroovyCodeStyleSettings;
 import org.jetbrains.plugins.groovy.intentions.base.Intention;
@@ -86,7 +96,8 @@ public class ConvertToGeeseBracesIntention extends Intention {
   }
 
   @Override
-  protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
+  protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException
+  {
     IElementType elementType = element.getNode().getElementType();
     if (TokenSets.WHITE_SPACES_SET.contains(elementType)) {
       element = PsiTreeUtil.prevLeaf(element);

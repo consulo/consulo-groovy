@@ -15,10 +15,10 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.path;
 
-import com.intellij.psi.*;
-import com.intellij.psi.util.PsiTypesUtil;
-import com.intellij.psi.util.PsiUtil;
-import com.intellij.util.containers.ContainerUtil;
+import com.intellij.java.language.psi.*;
+import com.intellij.java.language.psi.util.PsiTypesUtil;
+import com.intellij.java.language.psi.util.PsiUtil;
+import consulo.util.collection.ContainerUtil;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;

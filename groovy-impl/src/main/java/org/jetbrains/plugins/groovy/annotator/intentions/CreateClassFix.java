@@ -16,23 +16,19 @@
 
 package org.jetbrains.plugins.groovy.annotator.intentions;
 
-import com.intellij.codeInsight.FileModificationService;
-import com.intellij.codeInsight.hint.HintManager;
-import com.intellij.codeInsight.intention.IntentionAction;
-import com.intellij.openapi.application.AccessToken;
-import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.application.ReadAction;
-import com.intellij.openapi.application.WriteAction;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.module.ModuleUtilCore;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.*;
-import com.intellij.psi.codeStyle.JavaCodeStyleManager;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.IncorrectOperationException;
-import consulo.application.AccessRule;
-import consulo.psi.PsiPackage;
+import com.intellij.java.language.psi.*;
+import com.intellij.java.language.psi.codeStyle.JavaCodeStyleManager;
+import consulo.application.*;
+import consulo.codeEditor.Editor;
+import consulo.language.editor.FileModificationService;
+import consulo.language.editor.hint.HintManager;
+import consulo.language.editor.intention.IntentionAction;
+import consulo.language.psi.*;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.language.util.IncorrectOperationException;
+import consulo.language.util.ModuleUtilCore;
+import consulo.module.Module;
+import consulo.project.Project;
 import org.jetbrains.plugins.groovy.actions.GroovyTemplates;
 import org.jetbrains.plugins.groovy.intentions.GroovyIntentionsBundle;
 import org.jetbrains.plugins.groovy.intentions.base.IntentionUtils;
@@ -149,7 +145,7 @@ public abstract class CreateClassFix
 
 			method = (GrMethod) targetClass.addBefore(method, null);
 			final PsiElement context = PsiTreeUtil.getParentOfType(refElement, PsiMethod.class, PsiClass.class,
-					PsiFile.class);
+																														 PsiFile.class);
 			IntentionUtils.createTemplateForMethod(argTypes, paramTypesExpressions, method, targetClass,
 					new TypeConstraint[0], true, context);
 		}

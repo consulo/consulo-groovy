@@ -15,135 +15,105 @@
  */
 package org.jetbrains.plugins.groovy.annotator;
 
+import consulo.annotation.access.RequiredReadAction;
+import consulo.application.dumb.IndexNotReadyException;
+import consulo.compiler.CompilerManager;
+import consulo.component.ProcessCanceledException;
+import consulo.fileEditor.EditorNotificationBuilder;
+import consulo.fileEditor.EditorNotificationProvider;
+import consulo.fileEditor.FileEditor;
+import consulo.language.util.ModuleUtilCore;
+import consulo.module.Module;
+import consulo.module.content.ModuleRootManager;
+import consulo.project.Project;
+import consulo.util.lang.StringUtil;
+import consulo.virtualFileSystem.VirtualFile;
+import consulo.virtualFileSystem.fileType.FileType;
+import org.jetbrains.plugins.groovy.GroovyFileType;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-
-import javax.annotation.Nonnull;
-
-import org.jetbrains.plugins.groovy.GroovyFileType;
-import com.intellij.ProjectTopics;
-import com.intellij.openapi.compiler.CompilerManager;
-import com.intellij.openapi.fileEditor.FileEditor;
-import com.intellij.openapi.fileTypes.FileType;
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.module.ModuleUtil;
-import com.intellij.openapi.progress.ProcessCanceledException;
-import com.intellij.openapi.project.IndexNotReadyException;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.roots.ModuleRootAdapter;
-import com.intellij.openapi.roots.ModuleRootEvent;
-import com.intellij.openapi.roots.ModuleRootManager;
-import consulo.util.dataholder.Key;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.ui.EditorNotificationPanel;
-import com.intellij.ui.EditorNotifications;
+import java.util.function.Supplier;
 
 /**
  * @author Maxim.Medvedev
  */
-public class ConfigureGroovyLibraryNotificationProvider extends EditorNotifications.Provider<EditorNotificationPanel>
-{
-	private static final Key<EditorNotificationPanel> KEY = Key.create("configure.groovy.library");
+public class ConfigureGroovyLibraryNotificationProvider implements EditorNotificationProvider {
+  private final Project myProject;
 
-	private final Project myProject;
+  private final Set<FileType> supportedFileTypes;
 
-	private final Set<FileType> supportedFileTypes;
+  public ConfigureGroovyLibraryNotificationProvider(Project project) {
+    myProject = project;
 
-	public ConfigureGroovyLibraryNotificationProvider(Project project, final EditorNotifications notifications)
-	{
-		myProject = project;
-		project.getMessageBus().connect(project).subscribe(ProjectTopics.PROJECT_ROOTS, new ModuleRootAdapter()
-		{
-			@Override
-			public void rootsChanged(ModuleRootEvent event)
-			{
-				notifications.updateAllNotifications();
-			}
-		});
+    supportedFileTypes = new HashSet<>();
+    supportedFileTypes.add(GroovyFileType.GROOVY_FILE_TYPE);
 
-		supportedFileTypes = new HashSet<FileType>();
-		supportedFileTypes.add(GroovyFileType.GROOVY_FILE_TYPE);
+    for (GroovyFrameworkConfigNotification configNotification : GroovyFrameworkConfigNotification.EP_NAME.getExtensionList()) {
+      Collections.addAll(supportedFileTypes, configNotification.getFrameworkFileTypes());
+    }
+  }
 
-		for(GroovyFrameworkConfigNotification configNotification : GroovyFrameworkConfigNotification.EP_NAME.getExtensions())
-		{
-			Collections.addAll(supportedFileTypes, configNotification.getFrameworkFileTypes());
-		}
-	}
+  @Nonnull
+  @Override
+  public String getId() {
+    return "configure-groovy-library";
+  }
 
-	@Override
-	public Key<EditorNotificationPanel> getKey()
-	{
-		return KEY;
-	}
+  @RequiredReadAction
+  @Nullable
+  @Override
+  public EditorNotificationBuilder buildNotification(@Nonnull VirtualFile file,
+                                                     @Nonnull FileEditor fileEditor,
+                                                     @Nonnull Supplier<EditorNotificationBuilder> supplier) {
+    try {
+      if (!supportedFileTypes.contains(file.getFileType())) {
+        return null;
+      }
+      // do not show the panel for Gradle build scripts
+      // expecting groovy library to always be available at the gradle distribution
+      if (StringUtil.endsWith(file.getName(), ".gradle")) {
+        return null;
+      }
+      if (CompilerManager.getInstance(myProject).isExcludedFromCompilation(file)) {
+        return null;
+      }
 
-	@Override
-	public EditorNotificationPanel createNotificationPanel(VirtualFile file, FileEditor fileEditor)
-	{
-		try
-		{
-			if(!supportedFileTypes.contains(file.getFileType()))
-			{
-				return null;
-			}
-			// do not show the panel for Gradle build scripts
-			// expecting groovy library to always be available at the gradle distribution
-			if(StringUtil.endsWith(file.getName(), ".gradle"))
-			{
-				return null;
-			}
-			if(CompilerManager.getInstance(myProject).isExcludedFromCompilation(file))
-			{
-				return null;
-			}
+      final Module module = ModuleUtilCore.findModuleForFile(file, myProject);
+      if (module == null) {
+        return null;
+      }
 
-			final Module module = ModuleUtil.findModuleForFile(file, myProject);
-			if(module == null)
-			{
-				return null;
-			}
+      if (isMavenModule(module)) {
+        return null;
+      }
 
-			if(isMavenModule(module))
-			{
-				return null;
-			}
+      for (GroovyFrameworkConfigNotification configNotification : GroovyFrameworkConfigNotification.EP_NAME.getExtensions()) {
+        if (configNotification.hasFrameworkStructure(module)) {
+          if (!configNotification.hasFrameworkLibrary(module)) {
+            return configNotification.createConfigureNotificationPanel(module, supplier);
+          }
+          return null;
+        }
+      }
+    }
+    catch (ProcessCanceledException | IndexNotReadyException ignored) {
+    }
 
-			for(GroovyFrameworkConfigNotification configNotification : GroovyFrameworkConfigNotification.EP_NAME.getExtensions())
-			{
-				if(configNotification.hasFrameworkStructure(module))
-				{
-					if(!configNotification.hasFrameworkLibrary(module))
-					{
-						return configNotification.createConfigureNotificationPanel(module);
-					}
-					return null;
-				}
-			}
-		}
-		catch(ProcessCanceledException ignored)
-		{
+    return null;
+  }
 
-		}
-		catch(IndexNotReadyException ignored)
-		{
+  private static boolean isMavenModule(@Nonnull Module module) {
+    for (VirtualFile root : ModuleRootManager.getInstance(module).getContentRoots()) {
+      if (root.findChild("pom.xml") != null) {
+        return true;
+      }
+    }
 
-		}
-
-		return null;
-	}
-
-	private static boolean isMavenModule(@Nonnull Module module)
-	{
-		for(VirtualFile root : ModuleRootManager.getInstance(module).getContentRoots())
-		{
-			if(root.findChild("pom.xml") != null)
-			{
-				return true;
-			}
-		}
-
-		return false;
-	}
+    return false;
+  }
 
 }

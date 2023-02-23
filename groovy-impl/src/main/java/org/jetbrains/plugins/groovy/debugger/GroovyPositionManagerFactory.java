@@ -15,9 +15,9 @@
  */
 package org.jetbrains.plugins.groovy.debugger;
 
-import com.intellij.debugger.PositionManager;
-import com.intellij.debugger.PositionManagerFactory;
-import com.intellij.debugger.engine.DebugProcess;
+import com.intellij.java.debugger.PositionManager;
+import com.intellij.java.debugger.PositionManagerFactory;
+import com.intellij.java.debugger.engine.DebugProcess;
 
 /**
  * @author peter

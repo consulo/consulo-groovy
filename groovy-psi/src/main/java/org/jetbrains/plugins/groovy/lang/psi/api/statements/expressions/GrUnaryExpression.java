@@ -18,15 +18,17 @@ package org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiPolyVariantReference;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiPolyVariantReference;
-import com.intellij.psi.tree.IElementType;
+import consulo.language.ast.IElementType;
 
 /**
  * @author ilyas
  */
-public interface GrUnaryExpression extends GrExpression, PsiPolyVariantReference {
+public interface GrUnaryExpression extends GrExpression, PsiPolyVariantReference
+{
   IElementType getOperationTokenType();
   PsiElement getOperationToken();
 

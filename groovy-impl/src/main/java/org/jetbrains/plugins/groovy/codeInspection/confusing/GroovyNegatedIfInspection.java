@@ -16,6 +16,7 @@
 package org.jetbrains.plugins.groovy.codeInspection.confusing;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspection;
@@ -38,7 +39,7 @@ public class GroovyNegatedIfInspection extends BaseInspection {
     return "Negated if condition expression";
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   protected String buildErrorString(Object... args) {
     return "Negated if condition expression #loc";
 

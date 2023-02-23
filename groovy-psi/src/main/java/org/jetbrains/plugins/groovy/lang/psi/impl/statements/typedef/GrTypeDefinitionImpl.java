@@ -16,15 +16,27 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.typedef;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
-import javax.annotation.Nonnull;
-
+import com.intellij.java.language.impl.psi.impl.*;
+import com.intellij.java.language.psi.*;
+import consulo.application.util.CachedValueProvider;
+import consulo.language.ast.ASTNode;
+import consulo.language.impl.psi.CheckUtil;
+import consulo.language.impl.psi.LeafPsiElement;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.PsiModificationTracker;
+import consulo.language.psi.StubBasedPsiElement;
+import consulo.language.psi.resolve.PsiScopeProcessor;
+import consulo.language.psi.resolve.ResolveState;
+import consulo.language.psi.stub.IStubElementType;
+import consulo.language.psi.util.LanguageCachedValueUtil;
+import consulo.language.util.IncorrectOperationException;
+import consulo.navigation.ItemPresentation;
+import consulo.navigation.ItemPresentationProvider;
+import consulo.util.collection.ArrayUtil;
+import consulo.util.lang.Pair;
+import consulo.virtualFileSystem.VirtualFile;
 import org.jetbrains.annotations.NonNls;
-
-import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocComment;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.impl.GrDocCommentUtil;
@@ -54,27 +66,12 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyFileImpl;
 import org.jetbrains.plugins.groovy.lang.psi.stubs.GrTypeDefinitionStub;
 import org.jetbrains.plugins.groovy.lang.psi.util.GrClassImplUtil;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
-import com.intellij.lang.ASTNode;
-import com.intellij.navigation.ItemPresentation;
-import com.intellij.navigation.ItemPresentationProviders;
-import com.intellij.openapi.util.Pair;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.*;
-import com.intellij.psi.impl.CheckUtil;
-import com.intellij.psi.impl.InheritanceImplUtil;
-import com.intellij.psi.impl.JavaPsiImplementationHelper;
-import com.intellij.psi.impl.PsiClassImplUtil;
-import com.intellij.psi.impl.PsiImplUtil;
-import com.intellij.psi.impl.PsiSuperMethodImplUtil;
-import com.intellij.psi.impl.source.tree.LeafPsiElement;
-import com.intellij.psi.scope.PsiScopeProcessor;
-import com.intellij.psi.stubs.IStubElementType;
-import com.intellij.psi.util.CachedValueProvider;
-import com.intellij.psi.util.CachedValuesManager;
-import com.intellij.psi.util.PsiModificationTracker;
-import com.intellij.util.ArrayUtil;
-import com.intellij.util.ArrayUtilRt;
-import com.intellij.util.IncorrectOperationException;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * @author ilyas
@@ -144,7 +141,7 @@ public abstract class GrTypeDefinitionImpl extends GrStubElementBase<GrTypeDefin
 
   @Override
   public ItemPresentation getPresentation() {
-    return ItemPresentationProviders.getItemPresentation(this);
+    return ItemPresentationProvider.getItemPresentation(this);
   }
 
   @Nullable
@@ -153,7 +150,7 @@ public abstract class GrTypeDefinitionImpl extends GrStubElementBase<GrTypeDefin
     return getStubOrPsiChild(GroovyElementTypes.EXTENDS_CLAUSE);
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   @Override
   public GrImplementsClause getImplementsClause() {
     return getStubOrPsiChild(GroovyElementTypes.IMPLEMENTS_CLAUSE);
@@ -223,7 +220,7 @@ public abstract class GrTypeDefinitionImpl extends GrStubElementBase<GrTypeDefin
   @Override
   public boolean processDeclarations(@Nonnull PsiScopeProcessor processor,
                                      @Nonnull ResolveState state,
-                                     @javax.annotation.Nullable PsiElement lastParent,
+                                     @Nullable PsiElement lastParent,
                                      @Nonnull PsiElement place) {
     return GrClassImplUtil.processDeclarations(this, processor, state, lastParent, place);
   }
@@ -279,18 +276,15 @@ public abstract class GrTypeDefinitionImpl extends GrStubElementBase<GrTypeDefin
   @Nonnull
   @Override
   public PsiClassType[] getExtendsListTypes() {
-    return CachedValuesManager.getCachedValue(this, new CachedValueProvider<PsiClassType[]>() {
-      @Override
-      public Result<PsiClassType[]> compute() {
-        return Result.create(GrClassImplUtil.getExtendsListTypes(GrTypeDefinitionImpl.this), PsiModificationTracker.JAVA_STRUCTURE_MODIFICATION_COUNT);
-      }
-    });
+    return LanguageCachedValueUtil.getCachedValue(this,
+                                                  () -> CachedValueProvider.Result.create(GrClassImplUtil.getExtendsListTypes(
+                                                    GrTypeDefinitionImpl.this), PsiModificationTracker.JAVA_STRUCTURE_MODIFICATION_COUNT));
   }
 
   @Nonnull
   @Override
   public PsiClassType[] getImplementsListTypes() {
-    return CachedValuesManager.getCachedValue(this, new CachedValueProvider<PsiClassType[]>() {
+    return LanguageCachedValueUtil.getCachedValue(this, new CachedValueProvider<PsiClassType[]>() {
       @Override
       public Result<PsiClassType[]> compute() {
         return Result.create(GrClassImplUtil.getImplementsListTypes(GrTypeDefinitionImpl.this),
@@ -307,7 +301,7 @@ public abstract class GrTypeDefinitionImpl extends GrStubElementBase<GrTypeDefin
 
   @Override
   public PsiClass[] getInterfaces() {
-    return CachedValuesManager.getCachedValue(this, new CachedValueProvider<PsiClass[]>() {
+    return LanguageCachedValueUtil.getCachedValue(this, new CachedValueProvider<PsiClass[]>() {
       @Override
       public Result<PsiClass[]> compute() {
         return Result
@@ -490,7 +484,7 @@ public abstract class GrTypeDefinitionImpl extends GrStubElementBase<GrTypeDefin
     return PsiUtil.getJavaNameIdentifier(this);
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   @Override
   public PsiElement getScope() {
     final GrTypeDefinitionStub stub = getStub();
@@ -568,7 +562,8 @@ public abstract class GrTypeDefinitionImpl extends GrStubElementBase<GrTypeDefin
       final String ext;
       if (virtualFile != null) {
         ext = virtualFile.getExtension();
-      } else {
+      }
+      else {
         ext = GroovyFileType.GROOVY_FILE_TYPE.getDefaultExtension();
       }
       file.setName(name + "." + ext);
@@ -577,7 +572,7 @@ public abstract class GrTypeDefinitionImpl extends GrStubElementBase<GrTypeDefin
     return this;
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   @Override
   public GrModifierList getModifierList() {
     return getStubOrPsiChild(GroovyElementTypes.MODIFIERS);
@@ -636,7 +631,7 @@ public abstract class GrTypeDefinitionImpl extends GrStubElementBase<GrTypeDefin
     return vFile != null && name != null && name.equals(vFile.getNameWithoutExtension());
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   @Override
   public PsiElement getOriginalElement() {
     return JavaPsiImplementationHelper.getInstance(getProject()).getOriginalClass(this);
@@ -702,7 +697,7 @@ public abstract class GrTypeDefinitionImpl extends GrStubElementBase<GrTypeDefin
       }
       if (psiElement instanceof GrField) {
         //add field with modifiers which are in its parent
-        int i = ArrayUtilRt.find(((GrVariableDeclaration)psiElement.getParent()).getVariables(), psiElement);
+        int i = ArrayUtil.find(((GrVariableDeclaration)psiElement.getParent()).getVariables(), psiElement);
         psiElement = body.addBefore(psiElement.getParent(), anchor);
         GrVariable[] vars = ((GrVariableDeclaration)psiElement).getVariables();
         for (int j = 0; j < vars.length; j++) {
@@ -721,7 +716,7 @@ public abstract class GrTypeDefinitionImpl extends GrStubElementBase<GrTypeDefin
     return psiElement;
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   private static PsiMember getAnyMember(@Nullable PsiElement psiElement) {
     if (psiElement instanceof PsiMember) {
       return (PsiMember)psiElement;
@@ -735,25 +730,25 @@ public abstract class GrTypeDefinitionImpl extends GrStubElementBase<GrTypeDefin
     return null;
   }
 
-    // TODO remove as soon as an arrangement sub-system is provided for groovy.
+  // TODO remove as soon as an arrangement sub-system is provided for groovy.
   public static int getMemberOrderWeight(PsiElement member, GroovyCodeStyleSettingsFacade settings) {
     if (member instanceof PsiField) {
       if (member instanceof PsiEnumConstant) {
         return 1;
       }
       return ((PsiField)member).hasModifierProperty(PsiModifier.STATIC) ? settings.staticFieldsOrderWeight() + 1
-                                                                        : settings.fieldsOrderWeight() + 1;
+        : settings.fieldsOrderWeight() + 1;
     }
     if (member instanceof PsiMethod) {
       if (((PsiMethod)member).isConstructor()) {
         return settings.constructorsOrderWeight() + 1;
       }
       return ((PsiMethod)member).hasModifierProperty(PsiModifier.STATIC) ? settings.staticMethodsOrderWeight() + 1
-                                                                         : settings.methodsOrderWeight() + 1;
+        : settings.methodsOrderWeight() + 1;
     }
     if (member instanceof PsiClass) {
       return ((PsiClass)member).hasModifierProperty(PsiModifier.STATIC) ? settings.staticInnerClassesOrderWeight() + 1
-                                                                        : settings.innerClassesOrderWeight() + 1;
+        : settings.innerClassesOrderWeight() + 1;
     }
     return -1;
   }

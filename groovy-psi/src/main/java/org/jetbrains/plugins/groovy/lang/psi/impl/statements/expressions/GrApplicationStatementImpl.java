@@ -18,8 +18,8 @@ package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions;
 
 import javax.annotation.Nonnull;
 
-import com.intellij.lang.ASTNode;
-import com.intellij.util.IncorrectOperationException;
+import consulo.language.ast.ASTNode;
+import consulo.language.util.IncorrectOperationException;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrNamedArgument;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrApplicationStatement;
@@ -48,7 +48,8 @@ public class GrApplicationStatementImpl extends GrMethodCallImpl implements GrAp
   }
 
   @Override
-  public GrNamedArgument addNamedArgument(final GrNamedArgument namedArgument) throws IncorrectOperationException {
+  public GrNamedArgument addNamedArgument(final GrNamedArgument namedArgument) throws IncorrectOperationException
+  {
     GrCommandArgumentList list = getArgumentList();
     assert list != null;
     return list.addNamedArgument(namedArgument);

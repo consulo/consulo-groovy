@@ -17,10 +17,11 @@ package org.jetbrains.plugins.groovy.annotator.inspections;
 
 import javax.annotation.Nonnull;
 
-import com.intellij.codeInspection.LocalQuickFix;
-import com.intellij.codeInspection.ProblemDescriptor;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiElement;
+import consulo.language.editor.inspection.LocalQuickFix;
+import consulo.language.editor.inspection.ProblemDescriptor;
+import consulo.project.Project;
+import consulo.language.psi.PsiElement;
+import consulo.language.editor.inspection.LocalQuickFix;
 import org.jetbrains.plugins.groovy.codeInspection.GroovyInspectionBundle;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
@@ -30,7 +31,8 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrRefere
  * User: Dmitry.Krasilschikov
  * Date: 13.11.2007
  */
-public class SecondUnsafeCallQuickFix implements LocalQuickFix {
+public class SecondUnsafeCallQuickFix implements LocalQuickFix
+{
 
   @Nonnull
   public String getName() {

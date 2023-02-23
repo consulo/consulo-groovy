@@ -15,19 +15,19 @@
  */
 package org.jetbrains.plugins.groovy.lang.lexer;
 
-import static com.intellij.psi.search.UsageSearchContext.IN_CODE;
-import static com.intellij.psi.search.UsageSearchContext.IN_COMMENTS;
-import static com.intellij.psi.search.UsageSearchContext.IN_FOREIGN_LANGUAGES;
-import static com.intellij.psi.search.UsageSearchContext.IN_PLAIN_TEXT;
-import static com.intellij.psi.search.UsageSearchContext.IN_STRINGS;
+import static consulo.language.psi.search.UsageSearchContext.IN_CODE;
+import static consulo.language.psi.search.UsageSearchContext.IN_COMMENTS;
+import static consulo.language.psi.search.UsageSearchContext.IN_FOREIGN_LANGUAGES;
+import static consulo.language.psi.search.UsageSearchContext.IN_PLAIN_TEXT;
+import static consulo.language.psi.search.UsageSearchContext.IN_STRINGS;
 import static org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes.mIDENT;
 import static org.jetbrains.plugins.groovy.lang.lexer.TokenSets.COMMENT_SET;
 import static org.jetbrains.plugins.groovy.lang.lexer.TokenSets.STRING_LITERALS;
 
-import com.intellij.lexer.Lexer;
-import com.intellij.psi.impl.cache.impl.BaseFilterLexer;
-import com.intellij.psi.impl.cache.impl.OccurrenceConsumer;
-import com.intellij.psi.tree.IElementType;
+import consulo.language.lexer.Lexer;
+import consulo.language.psi.stub.BaseFilterLexer;
+import consulo.language.psi.stub.OccurrenceConsumer;
+import consulo.language.ast.IElementType;
 
 /**
  * @author Maxim.Medvedev

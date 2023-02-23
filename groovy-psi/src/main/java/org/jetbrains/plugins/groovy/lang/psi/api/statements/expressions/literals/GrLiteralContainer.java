@@ -15,10 +15,11 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.literals;
 
-import javax.annotation.Nonnull;
+import com.intellij.java.language.psi.PsiLiteral;
+import consulo.language.psi.PsiLanguageInjectionHost;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
-import com.intellij.psi.PsiLanguageInjectionHost;
-import com.intellij.psi.PsiLiteral;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author Max Medvedev

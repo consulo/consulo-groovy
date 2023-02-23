@@ -19,23 +19,21 @@ import java.io.IOException;
 
 import javax.annotation.Nonnull;
 
+import consulo.index.io.StringRef;
+import consulo.language.Language;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.stub.*;
+import consulo.util.lang.StringUtil;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.stubs.GrFileStub;
 import org.jetbrains.plugins.groovy.lang.psi.stubs.GrStubUtils;
 import org.jetbrains.plugins.groovy.lang.psi.stubs.index.GrAnnotatedMemberIndex;
 import org.jetbrains.plugins.groovy.lang.psi.stubs.index.GrFullScriptNameIndex;
 import org.jetbrains.plugins.groovy.lang.psi.stubs.index.GrScriptClassNameIndex;
-import com.intellij.lang.Language;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.StubBuilder;
-import com.intellij.psi.stubs.DefaultStubBuilder;
-import com.intellij.psi.stubs.IndexSink;
-import com.intellij.psi.stubs.StubElement;
-import com.intellij.psi.stubs.StubInputStream;
-import com.intellij.psi.stubs.StubOutputStream;
-import com.intellij.psi.tree.IStubFileElementType;
-import com.intellij.util.io.StringRef;
+import consulo.language.psi.stub.StubBuilder;
+import consulo.language.psi.stub.IndexSink;
+import consulo.language.psi.stub.StubOutputStream;
+import consulo.language.psi.stub.IStubFileElementType;
 
 /**
  * @author ilyas

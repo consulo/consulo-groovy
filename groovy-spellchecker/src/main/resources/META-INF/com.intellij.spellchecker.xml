@@ -1,6 +1,0 @@
-<consulo-plugin>
-	<extensions defaultExtensionNs="com.intellij.spellchecker">
-		<support language="Groovy"
-							  implementationClass="org.jetbrains.plugins.groovy.codeInspection.spellchecker.GroovySpellcheckingStrategy"/>
-	</extensions>
-</consulo-plugin>

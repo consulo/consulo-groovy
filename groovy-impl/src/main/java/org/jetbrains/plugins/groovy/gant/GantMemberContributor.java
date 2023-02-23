@@ -15,8 +15,19 @@
  */
 package org.jetbrains.plugins.groovy.gant;
 
-import javax.annotation.Nonnull;
-
+import com.intellij.java.language.impl.psi.impl.light.LightMethodBuilder;
+import com.intellij.java.language.impl.psi.impl.light.LightVariableBuilder;
+import com.intellij.java.language.psi.PsiClass;
+import com.intellij.java.language.psi.PsiMethod;
+import com.intellij.java.language.psi.PsiType;
+import consulo.groovy.impl.GroovyIconDescriptorUpdater;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.PsiNamedElement;
+import consulo.language.psi.resolve.PsiScopeProcessor;
+import consulo.language.psi.resolve.ResolveState;
+import consulo.language.psi.util.PsiTreeUtil;
+import org.jetbrains.plugins.groovy.JetgroovyIcons;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrArgumentLabel;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlock;
@@ -28,113 +39,88 @@ import org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames;
 import org.jetbrains.plugins.groovy.lang.resolve.NonCodeMembersContributor;
 import org.jetbrains.plugins.groovy.lang.resolve.ResolveUtil;
 import org.jetbrains.plugins.groovy.runner.GroovyScriptUtil;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiMethod;
-import com.intellij.psi.PsiNamedElement;
-import com.intellij.psi.PsiType;
-import com.intellij.psi.ResolveState;
-import com.intellij.psi.impl.light.LightMethodBuilder;
-import com.intellij.psi.impl.light.LightVariableBuilder;
-import com.intellij.psi.scope.PsiScopeProcessor;
-import com.intellij.psi.util.PsiTreeUtil;
-import consulo.awt.TargetAWT;
-import icons.JetgroovyIcons;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author peter
  */
-public class GantMemberContributor extends NonCodeMembersContributor
-{
-	@Override
-	public void processDynamicElements(@Nonnull PsiType qualifierType, PsiClass aClass, @Nonnull PsiScopeProcessor processor, @Nonnull PsiElement place, @Nonnull ResolveState state)
-	{
-		if(aClass != null && ClassUtil.getSuperClassesWithCache(aClass).containsKey("groovy.util.AntBuilder"))
-		{
-			processAntTasks(processor, place, state);
-			return;
-		}
+public class GantMemberContributor extends NonCodeMembersContributor {
+  @Override
+  public void processDynamicElements(@Nonnull PsiType qualifierType,
+                                     PsiClass aClass,
+                                     @Nonnull PsiScopeProcessor processor,
+                                     @Nonnull PsiElement place,
+                                     @Nonnull ResolveState state) {
+    if (aClass != null && ClassUtil.getSuperClassesWithCache(aClass).containsKey("groovy.util.AntBuilder")) {
+      processAntTasks(processor, place, state);
+      return;
+    }
 
-		if(!(place instanceof GrReferenceExpression) || ((GrReferenceExpression) place).isQualified())
-		{
-			return;
-		}
+    if (!(place instanceof GrReferenceExpression) || ((GrReferenceExpression)place).isQualified()) {
+      return;
+    }
 
-		GrClosableBlock closure = PsiTreeUtil.getContextOfType(place, GrClosableBlock.class, true);
+    GrClosableBlock closure = PsiTreeUtil.getContextOfType(place, GrClosableBlock.class, true);
 
-		boolean antTasksProcessed = false;
-		while(closure != null)
-		{
-			final PsiElement parent = closure.getParent();
-			if(parent instanceof GrMethodCall)
-			{
-				final PsiMethod method = ((GrMethodCall) parent).resolveMethod();
-				if(method instanceof AntBuilderMethod)
-				{
-					antTasksProcessed = true;
-					if(!processAntTasks(processor, place, state))
-					{
-						return;
-					}
-					if(!((AntBuilderMethod) method).processNestedElements(processor))
-					{
-						return;
-					}
-					break;
-				}
-			}
+    boolean antTasksProcessed = false;
+    while (closure != null) {
+      final PsiElement parent = closure.getParent();
+      if (parent instanceof GrMethodCall) {
+        final PsiMethod method = ((GrMethodCall)parent).resolveMethod();
+        if (method instanceof AntBuilderMethod) {
+          antTasksProcessed = true;
+          if (!processAntTasks(processor, place, state)) {
+            return;
+          }
+          if (!((AntBuilderMethod)method).processNestedElements(processor)) {
+            return;
+          }
+          break;
+        }
+      }
 
-			closure = PsiTreeUtil.getContextOfType(closure, GrClosableBlock.class, true);
-		}
+      closure = PsiTreeUtil.getContextOfType(closure, GrClosableBlock.class, true);
+    }
 
-		// ------- gant-specific
+    // ------- gant-specific
 
-		PsiFile file = place.getContainingFile();
-		if(file == null || !GroovyScriptUtil.isSpecificScriptFile(file, GantScriptType.INSTANCE))
-		{
-			return;
-		}
+    PsiFile file = place.getContainingFile();
+    if (file == null || !GroovyScriptUtil.isSpecificScriptFile(file, GantScriptType.INSTANCE)) {
+      return;
+    }
 
-		if(aClass instanceof GroovyScriptClass)
-		{
-			for(GrArgumentLabel label : GantUtils.getScriptTargets((GroovyFile) file))
-			{
-				final String targetName = label.getName();
-				if(targetName != null)
-				{
-					final PsiNamedElement variable = new LightVariableBuilder(targetName, GroovyCommonClassNames.GROOVY_LANG_CLOSURE, label).
-							setBaseIcon(TargetAWT.to(JetgroovyIcons.Groovy.Gant_target));
-					if(!ResolveUtil.processElement(processor, variable, state))
-					{
-						return;
-					}
-				}
-			}
-		}
+    if (aClass instanceof GroovyScriptClass) {
+      for (GrArgumentLabel label : GantUtils.getScriptTargets((GroovyFile)file)) {
+        final String targetName = label.getName();
+        if (targetName != null) {
+          final PsiNamedElement variable = new LightVariableBuilder(targetName, GroovyCommonClassNames.GROOVY_LANG_CLOSURE, label);
+          variable.putUserData(GroovyIconDescriptorUpdater.ICON_KEY, JetgroovyIcons.Groovy.Gant_target);
 
-		if(!antTasksProcessed)
-		{
-			processAntTasks(processor, place, state);
-		}
-	}
+          if (!ResolveUtil.processElement(processor, variable, state)) {
+            return;
+          }
+        }
+      }
+    }
 
-	private static boolean processAntTasks(PsiScopeProcessor processor, PsiElement place, ResolveState state)
-	{
-		if(!AntTasksProvider.antAvailable)
-		{
-			return true;
-		}
+    if (!antTasksProcessed) {
+      processAntTasks(processor, place, state);
+    }
+  }
 
-		for(LightMethodBuilder task : AntTasksProvider.getAntTasks(place))
-		{
-			if(!ResolveUtil.processElement(processor, task, state))
-			{
-				return false;
-			}
-		}
-		return true;
-	}
+  private static boolean processAntTasks(PsiScopeProcessor processor, PsiElement place, ResolveState state) {
+    if (!AntTasksProvider.antAvailable) {
+      return true;
+    }
+
+    for (LightMethodBuilder task : AntTasksProvider.getAntTasks(place)) {
+      if (!ResolveUtil.processElement(processor, task, state)) {
+        return false;
+      }
+    }
+    return true;
+  }
 
 }
 

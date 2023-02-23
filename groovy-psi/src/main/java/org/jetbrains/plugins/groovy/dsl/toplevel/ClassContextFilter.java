@@ -15,22 +15,22 @@
  */
 package org.jetbrains.plugins.groovy.dsl.toplevel;
 
-import java.util.Map;
-
+import com.intellij.java.language.psi.JavaPsiFacade;
+import com.intellij.java.language.psi.PsiClass;
+import com.intellij.java.language.psi.PsiClassType;
+import com.intellij.java.language.psi.PsiType;
+import consulo.language.pattern.ElementPattern;
+import consulo.language.psi.PsiFile;
+import consulo.language.util.ProcessingContext;
+import consulo.util.collection.ContainerUtil;
+import consulo.util.dataholder.Key;
+import consulo.util.lang.Pair;
+import consulo.util.lang.function.Condition;
 import org.jetbrains.plugins.groovy.dsl.GroovyClassDescriptor;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.ClassUtil;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil;
-import com.intellij.openapi.util.Condition;
-import consulo.util.dataholder.Key;
-import com.intellij.openapi.util.Pair;
-import com.intellij.patterns.ElementPattern;
-import com.intellij.psi.JavaPsiFacade;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiClassType;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiType;
-import com.intellij.util.ProcessingContext;
-import com.intellij.util.containers.ContainerUtil;
+
+import java.util.Map;
 
 /**
  * @author peter

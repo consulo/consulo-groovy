@@ -15,128 +15,116 @@
  */
 package org.jetbrains.plugins.groovy.shell;
 
-import java.util.List;
-
-import javax.annotation.Nonnull;
+import com.intellij.java.language.projectRoots.JavaSdkType;
+import consulo.content.bundle.Sdk;
+import consulo.content.bundle.SdkTypeId;
+import consulo.execution.executor.Executor;
+import consulo.execution.ui.RunContentDescriptor;
+import consulo.execution.ui.console.language.AbstractConsoleRunnerWithHistory;
+import consulo.execution.ui.console.language.LanguageConsoleView;
+import consulo.execution.ui.console.language.ProcessBackedConsoleExecuteActionHandler;
+import consulo.ide.impl.idea.execution.console.ConsoleHistoryController;
+import consulo.java.execution.configurations.OwnJavaParameters;
+import consulo.java.execution.projectRoots.OwnJdkUtil;
+import consulo.java.language.module.extension.JavaModuleExtension;
+import consulo.language.util.ModuleUtilCore;
+import consulo.logging.Logger;
+import consulo.module.Module;
+import consulo.process.ExecutionException;
+import consulo.process.cmd.GeneralCommandLine;
+import consulo.process.internal.OSProcessHandler;
+import consulo.ui.ex.action.AnAction;
+import consulo.ui.ex.action.DefaultActionGroup;
+import consulo.ui.ex.awt.Messages;
+import consulo.util.dataholder.Key;
 import org.jetbrains.plugins.groovy.console.BuildAndRestartConsoleAction;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyFileImpl;
-import com.intellij.execution.ExecutionException;
-import com.intellij.execution.Executor;
-import com.intellij.execution.configurations.GeneralCommandLine;
-import com.intellij.execution.console.ConsoleHistoryController;
-import com.intellij.execution.console.LanguageConsoleView;
-import com.intellij.execution.console.ProcessBackedConsoleExecuteActionHandler;
-import com.intellij.execution.process.OSProcessHandler;
-import com.intellij.execution.runners.AbstractConsoleRunnerWithHistory;
-import com.intellij.execution.ui.RunContentDescriptor;
-import com.intellij.openapi.actionSystem.AnAction;
-import com.intellij.openapi.actionSystem.DefaultActionGroup;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.module.ModuleUtilCore;
-import com.intellij.openapi.projectRoots.JavaSdkType;
-import com.intellij.openapi.projectRoots.Sdk;
-import com.intellij.openapi.projectRoots.SdkTypeId;
-import com.intellij.openapi.ui.Messages;
-import consulo.util.dataholder.Key;
-import com.intellij.util.Consumer;
-import consulo.java.execution.configurations.OwnJavaParameters;
-import consulo.java.module.extension.JavaModuleExtension;
-import consulo.java.projectRoots.OwnJdkUtil;
 
-public class GroovyShellRunnerImpl extends AbstractConsoleRunnerWithHistory<LanguageConsoleView>
-{
+import javax.annotation.Nonnull;
+import java.util.List;
+import java.util.function.Consumer;
 
-	private static final Logger LOG = Logger.getInstance(GroovyShellRunnerImpl.class);
-	public static final Key<Boolean> GROOVY_SHELL_FILE = Key.create("GROOVY_SHELL_FILE");
-	public static final String GROOVY_SHELL_EXECUTE = "Groovy.Shell.Execute";
+public class GroovyShellRunnerImpl extends AbstractConsoleRunnerWithHistory<LanguageConsoleView> {
+  private static final Logger LOG = Logger.getInstance(GroovyShellRunnerImpl.class);
+  public static final Key<Boolean> GROOVY_SHELL_FILE = Key.create("GROOVY_SHELL_FILE");
+  public static final String GROOVY_SHELL_EXECUTE = "Groovy.Shell.Execute";
 
-	private final GroovyShellConfig myShellRunner;
-	private final Module myModule;
-	private final Consumer<Module> myStarter = new Consumer<Module>()
-	{
-		@Override
-		public void consume(Module module)
-		{
-			doRunShell(myShellRunner, module);
-		}
-	};
-	private GeneralCommandLine myCommandLine;
+  private final GroovyShellConfig myShellRunner;
+  private final Module myModule;
+  private final Consumer<Module> myStarter = new Consumer<Module>() {
+    public void accept(Module module) {
+      doRunShell(myShellRunner, module);
+    }
+  };
+  private GeneralCommandLine myCommandLine;
 
-	public GroovyShellRunnerImpl(@Nonnull String consoleTitle, @Nonnull GroovyShellConfig shellRunner, @Nonnull Module module)
-	{
-		super(module.getProject(), consoleTitle, shellRunner.getWorkingDirectory(module));
-		myShellRunner = shellRunner;
-		myModule = module;
-	}
+  public GroovyShellRunnerImpl(@Nonnull String consoleTitle, @Nonnull GroovyShellConfig shellRunner, @Nonnull Module module) {
+    super(module.getProject(), consoleTitle, shellRunner.getWorkingDirectory(module));
+    myShellRunner = shellRunner;
+    myModule = module;
+  }
 
-	@Override
-	protected List<AnAction> fillToolBarActions(DefaultActionGroup toolbarActions, final Executor defaultExecutor, final RunContentDescriptor contentDescriptor)
-	{
-		BuildAndRestartConsoleAction rebuildAction = new BuildAndRestartConsoleAction(myModule, getProject(), defaultExecutor, contentDescriptor, myStarter);
-		toolbarActions.add(rebuildAction);
-		List<AnAction> actions = super.fillToolBarActions(toolbarActions, defaultExecutor, contentDescriptor);
-		actions.add(rebuildAction);
-		return actions;
-	}
+  @Override
+  protected List<AnAction> fillToolBarActions(DefaultActionGroup toolbarActions,
+                                              final Executor defaultExecutor,
+                                              final RunContentDescriptor contentDescriptor) {
+    BuildAndRestartConsoleAction rebuildAction =
+      new BuildAndRestartConsoleAction(myModule, getProject(), defaultExecutor, contentDescriptor, myStarter);
+    toolbarActions.add(rebuildAction);
+    List<AnAction> actions = super.fillToolBarActions(toolbarActions, defaultExecutor, contentDescriptor);
+    actions.add(rebuildAction);
+    return actions;
+  }
 
-	@Override
-	protected LanguageConsoleView createConsoleView()
-	{
-		final LanguageConsoleView res = new GroovyShellLanguageConsoleView(getProject(), getConsoleTitle());
-		final GroovyFileImpl file = (GroovyFileImpl) res.getFile();
-		assert file.getContext() == null;
-		file.putUserData(GROOVY_SHELL_FILE, Boolean.TRUE);
-		file.setContext(myShellRunner.getContext(myModule));
-		return res;
-	}
+  @Override
+  protected LanguageConsoleView createConsoleView() {
+    final LanguageConsoleView res = new GroovyShellLanguageConsoleView(getProject(), getConsoleTitle());
+    final GroovyFileImpl file = (GroovyFileImpl)res.getFile();
+    assert file.getContext() == null;
+    file.putUserData(GROOVY_SHELL_FILE, Boolean.TRUE);
+    file.setContext(myShellRunner.getContext(myModule));
+    return res;
+  }
 
-	@Override
-	protected Process createProcess() throws ExecutionException
-	{
-		OwnJavaParameters javaParameters = myShellRunner.createJavaParameters(myModule);
+  @Override
+  protected Process createProcess() throws ExecutionException {
+    OwnJavaParameters javaParameters = myShellRunner.createJavaParameters(myModule);
 
-		final Sdk sdk = ModuleUtilCore.getSdk(myModule, JavaModuleExtension.class);
-		assert sdk != null;
-		SdkTypeId sdkType = sdk.getSdkType();
-		assert sdkType instanceof JavaSdkType;
-		javaParameters.setJdk(sdk);
-		myCommandLine = OwnJdkUtil.setupJVMCommandLine(javaParameters);
-		return myCommandLine.createProcess();
-	}
+    final Sdk sdk = ModuleUtilCore.getSdk(myModule, JavaModuleExtension.class);
+    assert sdk != null;
+    SdkTypeId sdkType = sdk.getSdkType();
+    assert sdkType instanceof JavaSdkType;
+    javaParameters.setJdk(sdk);
+    myCommandLine = OwnJdkUtil.setupJVMCommandLine(javaParameters);
+    return myCommandLine.createProcess();
+  }
 
-	@Override
-	protected OSProcessHandler createProcessHandler(Process process)
-	{
-		return new OSProcessHandler(process, myCommandLine.getCommandLineString());
-	}
+  @Override
+  protected OSProcessHandler createProcessHandler(Process process) {
+    return new OSProcessHandler(process, myCommandLine.getCommandLineString());
+  }
 
-	@Nonnull
-	@Override
-	protected ProcessBackedConsoleExecuteActionHandler createExecuteActionHandler()
-	{
-		ProcessBackedConsoleExecuteActionHandler handler = new ProcessBackedConsoleExecuteActionHandler(getProcessHandler(), false)
-		{
-			@Override
-			public String getEmptyExecuteAction()
-			{
-				return GROOVY_SHELL_EXECUTE;
-			}
-		};
-		new ConsoleHistoryController(getConsoleTitle(), null, getConsoleView()).install();
-		return handler;
-	}
+  @Nonnull
+  @Override
+  protected ProcessBackedConsoleExecuteActionHandler createExecuteActionHandler() {
+    ProcessBackedConsoleExecuteActionHandler handler =
+      new ProcessBackedConsoleExecuteActionHandler(getProcessHandler(), false) {
+        @Override
+        public String getEmptyExecuteAction() {
+          return GROOVY_SHELL_EXECUTE;
+        }
+      };
+    new ConsoleHistoryController(getConsoleTitle(), null, getConsoleView()).install();
+    return handler;
+  }
 
-	public static void doRunShell(final GroovyShellConfig config, final Module module)
-	{
-		try
-		{
-			new GroovyShellRunnerImpl(config.getTitle(), config, module).initAndRun();
-		}
-		catch(ExecutionException e)
-		{
-			LOG.info(e);
-			Messages.showErrorDialog(module.getProject(), e.getMessage(), "Cannot Run " + config.getTitle());
-		}
-	}
+  public static void doRunShell(final GroovyShellConfig config, final Module module) {
+    try {
+      new GroovyShellRunnerImpl(config.getTitle(), config, module).initAndRun();
+    }
+    catch (ExecutionException e) {
+      LOG.info(e);
+      Messages.showErrorDialog(module.getProject(), e.getMessage(), "Cannot Run " + config.getTitle());
+    }
+  }
 }

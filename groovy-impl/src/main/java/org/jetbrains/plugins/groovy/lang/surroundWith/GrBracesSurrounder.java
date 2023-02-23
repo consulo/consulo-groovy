@@ -15,11 +15,13 @@
  */
 package org.jetbrains.plugins.groovy.lang.surroundWith;
 
-import com.intellij.lang.ASTNode;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.TokenType;
-import com.intellij.util.IncorrectOperationException;
+import consulo.document.util.TextRange;
+import consulo.language.ast.ASTNode;
+import consulo.document.util.TextRange;
+import consulo.language.psi.PsiElement;
+import consulo.language.ast.TokenType;
+import consulo.language.util.IncorrectOperationException;
+import consulo.language.psi.PsiElement;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;

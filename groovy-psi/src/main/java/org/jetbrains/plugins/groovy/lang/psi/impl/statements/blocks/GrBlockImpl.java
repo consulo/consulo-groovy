@@ -16,8 +16,22 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.blocks;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import consulo.application.util.CachedValue;
+import consulo.application.util.CachedValueProvider;
+import consulo.application.util.CachedValuesManager;
+import consulo.language.ast.ASTNode;
+import consulo.language.ast.IElementType;
+import consulo.language.impl.ast.Factory;
+import consulo.language.impl.ast.LeafElement;
+import consulo.language.impl.psi.ASTDelegatePsiElement;
+import consulo.language.impl.psi.CheckUtil;
+import consulo.language.impl.psi.LazyParseablePsiElement;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiModificationTracker;
+import consulo.language.psi.resolve.PsiScopeProcessor;
+import consulo.language.psi.resolve.ResolveState;
+import consulo.language.util.IncorrectOperationException;
+import consulo.util.dataholder.Key;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GrControlFlowOwner;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
@@ -33,22 +47,9 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyPsiElementImpl;
 import org.jetbrains.plugins.groovy.lang.psi.impl.PsiImplUtil;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 import org.jetbrains.plugins.groovy.lang.resolve.ResolveUtil;
-import com.intellij.extapi.psi.ASTDelegatePsiElement;
-import com.intellij.lang.ASTNode;
-import consulo.util.dataholder.Key;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.ResolveState;
-import com.intellij.psi.impl.CheckUtil;
-import com.intellij.psi.impl.source.tree.Factory;
-import com.intellij.psi.impl.source.tree.LazyParseablePsiElement;
-import com.intellij.psi.impl.source.tree.LeafElement;
-import com.intellij.psi.scope.PsiScopeProcessor;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.util.CachedValue;
-import com.intellij.psi.util.CachedValueProvider;
-import com.intellij.psi.util.CachedValuesManager;
-import com.intellij.psi.util.PsiModificationTracker;
-import com.intellij.util.IncorrectOperationException;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author ven

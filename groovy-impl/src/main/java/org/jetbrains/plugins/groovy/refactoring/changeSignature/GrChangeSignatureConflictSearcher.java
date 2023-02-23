@@ -15,22 +15,23 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.changeSignature;
 
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.util.Ref;
-import com.intellij.psi.*;
-import com.intellij.refactoring.RefactoringBundle;
-import com.intellij.refactoring.changeSignature.JavaChangeInfo;
-import com.intellij.refactoring.changeSignature.JavaParameterInfo;
-import com.intellij.refactoring.rename.RenameUtil;
-import com.intellij.refactoring.util.CanonicalTypes;
-import com.intellij.refactoring.util.ConflictsUtil;
-import com.intellij.refactoring.util.RefactoringUIUtil;
-import com.intellij.usageView.UsageInfo;
-import com.intellij.util.ArrayUtil;
-import com.intellij.util.IncorrectOperationException;
-import com.intellij.util.VisibilityUtil;
-import java.util.HashSet;
-import com.intellij.util.containers.MultiMap;
+import com.intellij.java.impl.refactoring.changeSignature.JavaChangeInfo;
+import com.intellij.java.impl.refactoring.changeSignature.JavaParameterInfo;
+import com.intellij.java.impl.refactoring.util.CanonicalTypes;
+import com.intellij.java.impl.refactoring.util.ConflictsUtil;
+import com.intellij.java.language.psi.*;
+import com.intellij.java.language.util.VisibilityUtil;
+import consulo.language.editor.refactoring.RefactoringBundle;
+import consulo.language.editor.refactoring.rename.RenameUtil;
+import consulo.language.editor.refactoring.ui.RefactoringUIUtil;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiManager;
+import consulo.language.util.IncorrectOperationException;
+import consulo.logging.Logger;
+import consulo.usage.UsageInfo;
+import consulo.util.collection.ArrayUtil;
+import consulo.util.collection.MultiMap;
+import consulo.util.lang.ref.Ref;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrConstructorInvocation;
@@ -39,7 +40,9 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrRefere
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameter;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
 
+import javax.annotation.Nullable;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -111,7 +114,7 @@ class GrChangeSignatureConflictSearcher {
     }
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   private static PsiClass getAccessObjectClass(GrExpression expression) {
     if (expression instanceof GrConstructorInvocation) return null;
     PsiType type = expression.getType();

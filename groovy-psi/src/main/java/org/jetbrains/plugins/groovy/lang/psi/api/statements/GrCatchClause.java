@@ -1,10 +1,11 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.api.statements;
 
-import com.intellij.psi.PsiElement;
-import javax.annotation.Nullable;
+import consulo.language.psi.PsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrOpenBlock;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameter;
+
+import javax.annotation.Nullable;
 
 /**
  * @author ilyas

@@ -15,165 +15,151 @@
  */
 package org.jetbrains.plugins.groovy.runner;
 
+import com.intellij.java.language.projectRoots.JavaSdkType;
+import consulo.content.bundle.Sdk;
+import consulo.execution.CantRunException;
+import consulo.execution.configuration.RunProfile;
+import consulo.execution.executor.Executor;
+import consulo.ide.impl.idea.util.PathUtil;
+import consulo.java.execution.configurations.OwnJavaParameters;
+import consulo.module.Module;
+import consulo.module.content.layer.OrderEnumerator;
+import consulo.process.ExecutionException;
+import consulo.project.Project;
+import consulo.util.io.FileUtil;
+import consulo.util.lang.StringUtil;
+import consulo.virtualFileSystem.VirtualFile;
+import consulo.virtualFileSystem.util.PathsList;
+import org.jetbrains.plugins.groovy.config.GroovyConfigUtils;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import org.jetbrains.plugins.groovy.config.GroovyConfigUtils;
-import com.intellij.execution.CantRunException;
-import com.intellij.execution.ExecutionException;
-import com.intellij.execution.Executor;
-import com.intellij.execution.configurations.RunProfile;
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.projectRoots.JavaSdkType;
-import com.intellij.openapi.projectRoots.Sdk;
-import com.intellij.openapi.roots.OrderEnumerator;
-import com.intellij.openapi.util.io.FileUtil;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.util.PathUtil;
-import com.intellij.util.PathsList;
-import consulo.java.execution.configurations.OwnJavaParameters;
-
 /**
  * @author peter
  */
-public abstract class GroovyScriptRunner
-{
-	public abstract boolean isValidModule(@Nonnull Module module);
+public abstract class GroovyScriptRunner {
+  public abstract boolean isValidModule(@Nonnull Module module);
 
-	public abstract boolean ensureRunnerConfigured(@javax.annotation.Nullable Module module, RunProfile profile, Executor executor, final Project project) throws ExecutionException;
+  public abstract boolean ensureRunnerConfigured(@Nullable Module module,
+                                                 RunProfile profile,
+                                                 Executor executor,
+                                                 final Project project) throws ExecutionException;
 
-	public abstract void configureCommandLine(OwnJavaParameters params, @Nullable Module module, boolean tests, VirtualFile script, GroovyScriptRunConfiguration configuration) throws
-			CantRunException;
+  public abstract void configureCommandLine(OwnJavaParameters params,
+                                            @Nullable Module module,
+                                            boolean tests,
+                                            VirtualFile script,
+                                            GroovyScriptRunConfiguration configuration) throws
+    CantRunException;
 
-	public boolean shouldRefreshAfterFinish()
-	{
-		return false;
-	}
+  public boolean shouldRefreshAfterFinish() {
+    return false;
+  }
 
-	protected static String getConfPath(final String groovyHomePath)
-	{
-		String confpath = FileUtil.toSystemDependentName(groovyHomePath + "/conf/groovy-starter.conf");
-		if(new File(confpath).exists())
-		{
-			return confpath;
-		}
+  protected static String getConfPath(final String groovyHomePath) {
+    String confpath = FileUtil.toSystemDependentName(groovyHomePath + "/conf/groovy-starter.conf");
+    if (new File(confpath).exists()) {
+      return confpath;
+    }
 
-		return getPathInConf("groovy-starter.conf");
-	}
+    return getPathInConf("groovy-starter.conf");
+  }
 
-	public static String getPathInConf(String fileName)
-	{
-		try
-		{
-			final String jarPath = PathUtil.getJarPathForClass(GroovyScriptRunner.class);
-			if(new File(jarPath).isFile())
-			{ //jar; distribution mode
-				return new File(jarPath, "../" + fileName).getCanonicalPath();
-			}
+  public static String getPathInConf(String fileName) {
+    try {
+      final String jarPath = PathUtil.getJarPathForClass(GroovyScriptRunner.class);
+      if (new File(jarPath).isFile()) { //jar; distribution mode
+        return new File(jarPath, "../" + fileName).getCanonicalPath();
+      }
 
-			//else, it's directory in out, development mode
-			return new File(jarPath, "conf/" + fileName).getCanonicalPath();
-		}
-		catch(IOException e)
-		{
-			throw new RuntimeException(e);
-		}
-	}
+      //else, it's directory in out, development mode
+      return new File(jarPath, "conf/" + fileName).getCanonicalPath();
+    }
+    catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+  }
 
-	protected static void setGroovyHome(OwnJavaParameters params, @Nonnull String groovyHome)
-	{
-		params.getVMParametersList().add("-Dgroovy.home=" + groovyHome);
-		if(groovyHome.contains("grails"))
-		{ //a bit of a hack
-			params.getVMParametersList().add("-Dgrails.home=" + groovyHome);
-		}
-		if(groovyHome.contains("griffon"))
-		{ //a bit of a hack
-			params.getVMParametersList().add("-Dgriffon.home=" + groovyHome);
-		}
-	}
+  protected static void setGroovyHome(OwnJavaParameters params, @Nonnull String groovyHome) {
+    params.getVMParametersList().add("-Dgroovy.home=" + groovyHome);
+    if (groovyHome.contains("grails")) { //a bit of a hack
+      params.getVMParametersList().add("-Dgrails.home=" + groovyHome);
+    }
+    if (groovyHome.contains("griffon")) { //a bit of a hack
+      params.getVMParametersList().add("-Dgriffon.home=" + groovyHome);
+    }
+  }
 
-	protected static void setToolsJar(OwnJavaParameters params)
-	{
-		Sdk jdk = params.getJdk();
-		if(jdk != null && jdk.getSdkType() instanceof JavaSdkType)
-		{
-			String toolsPath = ((JavaSdkType) jdk.getSdkType()).getToolsPath(jdk);
-			if(toolsPath != null)
-			{
-				params.getVMParametersList().add("-Dtools.jar=" + toolsPath);
-			}
-		}
-	}
+  protected static void setToolsJar(OwnJavaParameters params) {
+    Sdk jdk = params.getJdk();
+    if (jdk != null && jdk.getSdkType() instanceof JavaSdkType) {
+      String toolsPath = ((JavaSdkType)jdk.getSdkType()).getToolsPath(jdk);
+      if (toolsPath != null) {
+        params.getVMParametersList().add("-Dtools.jar=" + toolsPath);
+      }
+    }
+  }
 
-	@javax.annotation.Nullable
-	protected static VirtualFile findGroovyJar(@Nonnull Module module)
-	{
-		final VirtualFile[] files = OrderEnumerator.orderEntries(module).getAllLibrariesAndSdkClassesRoots();
-		for(VirtualFile root : files)
-		{
-			if(root.getName().matches(GroovyConfigUtils.GROOVY_JAR_PATTERN) || GroovyConfigUtils.matchesGroovyAll(root.getName()))
-			{
-				return root;
-			}
-		}
-		for(VirtualFile file : files)
-		{
-			if(file.getName().contains("groovy") && "jar".equals(file.getExtension()))
-			{
-				return file;
-			}
-		}
-		return null;
-	}
+  @Nullable
+  protected static VirtualFile findGroovyJar(@Nonnull Module module) {
+    final VirtualFile[] files = OrderEnumerator.orderEntries(module).getAllLibrariesAndSdkClassesRoots();
+    for (VirtualFile root : files) {
+      if (root.getName().matches(GroovyConfigUtils.GROOVY_JAR_PATTERN) || GroovyConfigUtils.matchesGroovyAll(root.getName())) {
+        return root;
+      }
+    }
+    for (VirtualFile file : files) {
+      if (file.getName().contains("groovy") && "jar".equals(file.getExtension())) {
+        return file;
+      }
+    }
+    return null;
+  }
 
-	protected static void addClasspathFromRootModel(@javax.annotation.Nullable Module module, boolean isTests, OwnJavaParameters params, boolean allowDuplication) throws CantRunException
-	{
-		PathsList nonCore = getClassPathFromRootModel(module, isTests, params, allowDuplication);
-		if(nonCore == null)
-		{
-			return;
-		}
+  protected static void addClasspathFromRootModel(@Nullable Module module,
+                                                  boolean isTests,
+                                                  OwnJavaParameters params,
+                                                  boolean allowDuplication) throws CantRunException {
+    PathsList nonCore = getClassPathFromRootModel(module, isTests, params, allowDuplication);
+    if (nonCore == null) {
+      return;
+    }
 
-		final String cp = nonCore.getPathsString();
-		if(!StringUtil.isEmptyOrSpaces(cp))
-		{
-			params.getProgramParametersList().add("--classpath");
-			params.getProgramParametersList().add(cp);
-		}
-	}
+    final String cp = nonCore.getPathsString();
+    if (!StringUtil.isEmptyOrSpaces(cp)) {
+      params.getProgramParametersList().add("--classpath");
+      params.getProgramParametersList().add(cp);
+    }
+  }
 
-	@javax.annotation.Nullable
-	public static PathsList getClassPathFromRootModel(Module module, boolean isTests, OwnJavaParameters params, boolean allowDuplication) throws CantRunException
-	{
-		if(module == null)
-		{
-			return null;
-		}
+  @Nullable
+  public static PathsList getClassPathFromRootModel(Module module,
+                                                    boolean isTests,
+                                                    OwnJavaParameters params,
+                                                    boolean allowDuplication) throws CantRunException {
+    if (module == null) {
+      return null;
+    }
 
-		final OwnJavaParameters tmp = new OwnJavaParameters();
-		tmp.configureByModule(module, isTests ? OwnJavaParameters.CLASSES_AND_TESTS : OwnJavaParameters.CLASSES_ONLY);
-		if(tmp.getClassPath().getVirtualFiles().isEmpty())
-		{
-			return null;
-		}
+    final OwnJavaParameters tmp = new OwnJavaParameters();
+    tmp.configureByModule(module, isTests ? OwnJavaParameters.CLASSES_AND_TESTS : OwnJavaParameters.CLASSES_ONLY);
+    if (tmp.getClassPath().getVirtualFiles().isEmpty()) {
+      return null;
+    }
 
-		Set<VirtualFile> core = new HashSet<VirtualFile>(params.getClassPath().getVirtualFiles());
+    Set<VirtualFile> core = new HashSet<VirtualFile>(params.getClassPath().getVirtualFiles());
 
-		PathsList nonCore = new PathsList();
-		for(VirtualFile virtualFile : tmp.getClassPath().getVirtualFiles())
-		{
-			if(allowDuplication || !core.contains(virtualFile))
-			{
-				nonCore.add(virtualFile);
-			}
-		}
-		return nonCore;
-	}
+    PathsList nonCore = new PathsList();
+    for (VirtualFile virtualFile : tmp.getClassPath().getVirtualFiles()) {
+      if (allowDuplication || !core.contains(virtualFile)) {
+        nonCore.add(virtualFile);
+      }
+    }
+    return nonCore;
+  }
 }

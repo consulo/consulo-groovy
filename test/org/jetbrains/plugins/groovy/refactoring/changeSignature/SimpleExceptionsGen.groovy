@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.jetbrains.plugins.groovy.refactoring.changeSignature
-import com.intellij.psi.PsiMethod
+import com.intellij.java.language.psi.PsiMethod
 import com.intellij.refactoring.changeSignature.ThrownExceptionInfo
 /**
 * @author Max Medvedev

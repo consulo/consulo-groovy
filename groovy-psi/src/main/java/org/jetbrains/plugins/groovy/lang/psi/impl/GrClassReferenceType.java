@@ -16,16 +16,17 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl;
 
-import javax.annotation.Nonnull;
-
+import com.intellij.java.language.LanguageLevel;
+import com.intellij.java.language.psi.*;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.ResolveResult;
+import consulo.language.psi.scope.GlobalSearchScope;
 import org.jetbrains.annotations.NonNls;
-
-import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GrReferenceElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
-import com.intellij.pom.java.LanguageLevel;
-import com.intellij.psi.*;
-import com.intellij.psi.search.GlobalSearchScope;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author ven
@@ -42,7 +43,7 @@ public class GrClassReferenceType extends PsiClassType {
     myReferenceElement = referenceElement;
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   public PsiClass resolve() {
     ResolveResult[] results = multiResolve();
     if (results.length == 1) {

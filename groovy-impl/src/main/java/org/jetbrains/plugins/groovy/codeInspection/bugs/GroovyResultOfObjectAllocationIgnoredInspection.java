@@ -17,7 +17,7 @@ package org.jetbrains.plugins.groovy.codeInspection.bugs;
 
 import javax.annotation.Nonnull;
 
-import com.intellij.psi.PsiElement;
+import consulo.language.psi.PsiElement;
 import org.jetbrains.annotations.Nls;
 
 import javax.annotation.Nullable;

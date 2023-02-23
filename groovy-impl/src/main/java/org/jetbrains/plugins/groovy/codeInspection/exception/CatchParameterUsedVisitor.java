@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.exception;
 
-import com.intellij.psi.PsiElement;
+import consulo.language.psi.PsiElement;
 import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyRecursiveElementVisitor;

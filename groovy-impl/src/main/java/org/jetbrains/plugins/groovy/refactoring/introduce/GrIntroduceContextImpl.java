@@ -15,16 +15,15 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.introduce;
 
-import javax.annotation.Nonnull;
-
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiElement;
-
-import javax.annotation.Nullable;
+import consulo.codeEditor.Editor;
+import consulo.language.psi.PsiElement;
+import consulo.logging.Logger;
+import consulo.project.Project;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author Maxim.Medvedev
@@ -44,7 +43,7 @@ public class GrIntroduceContextImpl implements GrIntroduceContext {
 
   public GrIntroduceContextImpl(@Nonnull Project project,
                                 Editor editor,
-                                @javax.annotation.Nullable GrExpression expression,
+                                @Nullable GrExpression expression,
                                 @Nullable GrVariable var,
                                 @Nullable StringPartInfo stringPart,
                                 @Nonnull PsiElement[] occurrences,
@@ -70,7 +69,7 @@ public class GrIntroduceContextImpl implements GrIntroduceContext {
     return myEditor;
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   public GrExpression getExpression() {
     return myExpression;
   }
@@ -84,7 +83,7 @@ public class GrIntroduceContextImpl implements GrIntroduceContext {
     return myScope;
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   public GrVariable getVar() {
     return myVar;
   }

@@ -16,18 +16,20 @@
 
 package org.jetbrains.plugins.groovy.dsl.psi;
 
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiClassType;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiPrimitiveType;
-import com.intellij.psi.PsiType;
+import com.intellij.java.language.psi.PsiClass;
+import com.intellij.java.language.psi.PsiClassType;
+import com.intellij.java.language.psi.PsiPrimitiveType;
+import com.intellij.java.language.psi.PsiType;
+import consulo.language.psi.PsiElement;
+
+import javax.annotation.Nullable;
 
 /**
  * @author ilyas
  */
 public class PsiCategoryUtil {
 
-  @javax.annotation.Nullable
+  @Nullable
   public static PsiClass getClassType(PsiType type, PsiElement place) {
     if (type instanceof PsiClassType) {
       PsiClassType classType = (PsiClassType)type;

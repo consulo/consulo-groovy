@@ -15,16 +15,16 @@
  */
 package org.jetbrains.plugins.groovy.refactoring;
 
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiType;
-import com.intellij.psi.codeStyle.JavaCodeStyleManager;
-import com.intellij.psi.codeStyle.SuggestedNameInfo;
-import com.intellij.psi.statistics.JavaStatisticsManager;
-import com.intellij.refactoring.rename.NameSuggestionProvider;
-import javax.annotation.Nullable;
+import com.intellij.java.impl.psi.statistics.JavaStatisticsManager;
+import com.intellij.java.language.psi.PsiType;
+import com.intellij.java.language.psi.codeStyle.JavaCodeStyleManager;
+import consulo.language.editor.refactoring.rename.NameSuggestionProvider;
+import consulo.language.editor.refactoring.rename.SuggestedNameInfo;
+import consulo.language.psi.PsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
 
+import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Set;
 

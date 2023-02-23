@@ -15,18 +15,14 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.synthetic;
 
-import javax.annotation.Nonnull;
-
+import com.intellij.java.language.impl.psi.impl.light.LightTypeParameter;
+import com.intellij.java.language.psi.*;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiMirrorElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GrPsiTypeStub;
-import com.intellij.codeInsight.completion.originInfo.OriginInfoAwareElement;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiMethod;
-import com.intellij.psi.PsiMirrorElement;
-import com.intellij.psi.PsiSubstitutor;
-import com.intellij.psi.PsiType;
-import com.intellij.psi.PsiTypeParameter;
-import com.intellij.psi.impl.light.LightTypeParameter;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author Sergey Evdokimov

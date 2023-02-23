@@ -15,10 +15,10 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.convertToJava;
 
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.Ref;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiMethod;
+import consulo.project.Project;
+import consulo.util.lang.ref.Ref;
+import com.intellij.java.language.psi.PsiClass;
+import com.intellij.java.language.psi.PsiMethod;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 

@@ -17,10 +17,11 @@ package org.jetbrains.plugins.groovy.codeInspection.utils;
 
 import javax.annotation.Nonnull;
 
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiMethod;
-import com.intellij.psi.PsiType;
-import com.intellij.psi.tree.IElementType;
+import consulo.language.ast.IElementType;
+import consulo.language.psi.PsiElement;
+import com.intellij.java.language.psi.PsiMethod;
+import com.intellij.java.language.psi.PsiType;
+import consulo.language.ast.IElementType;
 
 import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.GrListOrMap;

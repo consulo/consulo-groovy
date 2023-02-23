@@ -15,31 +15,30 @@
  */
 package org.jetbrains.plugins.groovy.shell;
 
-import java.util.Map;
-
-import javax.annotation.Nonnull;
-
+import com.intellij.java.language.impl.psi.scope.NameHint;
+import com.intellij.java.language.psi.PsiType;
+import com.intellij.java.language.psi.PsiVariable;
+import consulo.language.file.light.LightVirtualFile;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.resolve.PsiScopeProcessor;
+import consulo.language.psi.resolve.ResolveState;
+import consulo.project.Project;
 import org.jetbrains.plugins.groovy.debugger.fragments.GroovyCodeFragment;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
 import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GrLightVariable;
 import org.jetbrains.plugins.groovy.lang.resolve.processors.ClassHint;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiType;
-import com.intellij.psi.PsiVariable;
-import com.intellij.psi.ResolveState;
-import com.intellij.psi.scope.NameHint;
-import com.intellij.psi.scope.PsiScopeProcessor;
-import com.intellij.testFramework.LightVirtualFile;
-import com.intellij.util.containers.ContainerUtil;
+
+import javax.annotation.Nonnull;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Max Medvedev on 9/8/13
  */
 public class GroovyShellCodeFragment extends GroovyCodeFragment {
-  private final Map<String, PsiVariable> myVariables = ContainerUtil.newHashMap();
-  private final Map<String, GrTypeDefinition> myTypeDefinitions = ContainerUtil.newHashMap();
+  private final Map<String, PsiVariable> myVariables = new HashMap<>();
+  private final Map<String, GrTypeDefinition> myTypeDefinitions = new HashMap<>();
 
   public GroovyShellCodeFragment(Project project, LightVirtualFile virtualFile) {
     super(project, virtualFile);

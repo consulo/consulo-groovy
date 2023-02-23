@@ -16,8 +16,11 @@
 
 package org.jetbrains.plugins.groovy.mvc;
 
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.vfs.VirtualFile;
+import consulo.module.Module;
+import consulo.virtualFileSystem.VirtualFile;
+import consulo.module.Module;
+import consulo.virtualFileSystem.VirtualFile;
+
 import javax.annotation.Nonnull;
 
 import java.io.File;

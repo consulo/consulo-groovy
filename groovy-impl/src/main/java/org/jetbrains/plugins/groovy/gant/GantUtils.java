@@ -15,19 +15,17 @@
  */
 package org.jetbrains.plugins.groovy.gant;
 
-import com.intellij.lang.ASTNode;
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.roots.OrderRootType;
-import com.intellij.openapi.roots.libraries.Library;
-import com.intellij.openapi.util.Condition;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.PsiElement;
-import com.intellij.util.PathUtil;
+import consulo.content.base.BinariesOrderRootType;
+import consulo.content.library.Library;
+import consulo.language.ast.ASTNode;
+import consulo.language.psi.PsiElement;
+import consulo.module.Module;
+import consulo.project.Project;
+import consulo.util.lang.StringUtil;
+import consulo.util.lang.function.Condition;
+import consulo.virtualFileSystem.VirtualFile;
+import consulo.virtualFileSystem.util.VirtualFilePathUtil;
 import org.jetbrains.annotations.NonNls;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.config.AbstractConfigUtils;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
@@ -37,6 +35,8 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.path.GrM
 import org.jetbrains.plugins.groovy.util.GroovyUtils;
 import org.jetbrains.plugins.groovy.util.LibrariesUtil;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 
 /**
@@ -95,7 +95,7 @@ public class GantUtils {
 
   public static boolean isSDKLibrary(Library library) {
     if (library == null) return false;
-    return isGantLibrary(library.getFiles(OrderRootType.CLASSES));
+    return isGantLibrary(library.getFiles(BinariesOrderRootType.getInstance()));
   }
 
   public static boolean isGantLibrary(VirtualFile[] files) {
@@ -116,7 +116,7 @@ public class GantUtils {
   }
 
   public static String getGantLibraryHome(Library library) {
-    return getGantLibraryHome(library.getFiles(OrderRootType.CLASSES));
+    return getGantLibraryHome(library.getFiles(BinariesOrderRootType.getInstance()));
   }
 
   public static String getGantLibraryHome(VirtualFile[] files) {
@@ -126,7 +126,7 @@ public class GantUtils {
         if (parent != null) {
           final VirtualFile gantHome = parent.getParent();
           if (gantHome != null) {
-            return PathUtil.getLocalPath(gantHome);
+            return VirtualFilePathUtil.getLocalPath(gantHome);
           }
         }
       }

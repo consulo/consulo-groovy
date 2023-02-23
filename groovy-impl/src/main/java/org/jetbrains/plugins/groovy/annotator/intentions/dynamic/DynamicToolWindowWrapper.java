@@ -15,46 +15,52 @@
  */
 package org.jetbrains.plugins.groovy.annotator.intentions.dynamic;
 
-import com.intellij.ide.DeleteProvider;
-import com.intellij.openapi.actionSystem.*;
-import com.intellij.openapi.components.ServiceManager;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.editor.markup.TextAttributes;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.ui.DialogWrapper;
-import com.intellij.openapi.ui.Messages;
-import com.intellij.openapi.ui.SimpleToolWindowPanel;
-import consulo.awt.TargetAWT;
-import consulo.util.dataholder.Key;
-import com.intellij.openapi.wm.IdeFocusManager;
-import com.intellij.openapi.wm.ToolWindow;
-import com.intellij.openapi.wm.ToolWindowAnchor;
-import com.intellij.openapi.wm.ToolWindowManager;
-import com.intellij.psi.*;
-import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.refactoring.listeners.RefactoringElementListener;
-import com.intellij.refactoring.listeners.RefactoringElementListenerProvider;
-import com.intellij.refactoring.listeners.RefactoringListenerManager;
-import com.intellij.ui.*;
-import com.intellij.ui.content.Content;
-import com.intellij.ui.content.ContentManager;
-import com.intellij.ui.treeStructure.treetable.ListTreeTableModelOnColumns;
-import com.intellij.ui.treeStructure.treetable.TreeTable;
-import com.intellij.ui.treeStructure.treetable.TreeTableModel;
-import com.intellij.ui.treeStructure.treetable.TreeTableTree;
-import com.intellij.util.IncorrectOperationException;
-import com.intellij.util.NullableFunction;
-import com.intellij.util.containers.ContainerUtil;
-import com.intellij.util.containers.Convertor;
-import com.intellij.util.ui.AbstractTableCellEditor;
-import com.intellij.util.ui.ColumnInfo;
-import com.intellij.util.ui.UIUtil;
-import com.intellij.util.ui.tree.TreeUtil;
+import com.intellij.java.language.psi.*;
+import consulo.application.ui.wm.ApplicationIdeFocusManager;
+import consulo.colorScheme.TextAttributes;
+import consulo.dataContext.DataContext;
+import consulo.dataContext.DataProvider;
+import consulo.document.Document;
+import consulo.ide.ServiceManager;
+import consulo.language.editor.LangDataKeys;
+import consulo.language.editor.PlatformDataKeys;
+import consulo.language.editor.refactoring.event.RefactoringElementListener;
+import consulo.language.editor.refactoring.event.RefactoringElementListenerProvider;
+import consulo.language.editor.refactoring.event.RefactoringListenerManager;
+import consulo.language.editor.ui.awt.EditorTextField;
+import consulo.language.psi.PsiDocumentManager;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiManager;
+import consulo.language.psi.scope.GlobalSearchScope;
+import consulo.language.util.IncorrectOperationException;
+import consulo.logging.Logger;
+import consulo.project.Project;
+import consulo.project.ui.wm.ToolWindowManager;
 import consulo.ui.annotation.RequiredUIAccess;
-import icons.JetgroovyIcons;
+import consulo.ui.ex.DeleteProvider;
+import consulo.ui.ex.SimpleTextAttributes;
+import consulo.ui.ex.action.ActionGroup;
+import consulo.ui.ex.action.ActionManager;
+import consulo.ui.ex.action.ActionToolbar;
+import consulo.ui.ex.action.DefaultActionGroup;
+import consulo.ui.ex.awt.*;
+import consulo.ui.ex.awt.speedSearch.TreeTableSpeedSearch;
+import consulo.ui.ex.awt.tree.ColoredTreeCellRenderer;
+import consulo.ui.ex.awt.tree.TreeUtil;
+import consulo.ui.ex.awt.tree.table.TreeTable;
+import consulo.ui.ex.awt.tree.table.TreeTableModel;
+import consulo.ui.ex.awt.tree.table.TreeTableTree;
+import consulo.ui.ex.awtUnsafe.TargetAWT;
+import consulo.ui.ex.content.Content;
+import consulo.ui.ex.content.ContentManager;
+import consulo.ui.ex.toolWindow.ToolWindow;
+import consulo.ui.ex.toolWindow.ToolWindowAnchor;
+import consulo.ui.ex.util.TextAttributesUtil;
+import consulo.util.collection.ContainerUtil;
+import consulo.util.dataholder.Key;
 import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.GroovyFileType;
+import org.jetbrains.plugins.groovy.JetgroovyIcons;
 import org.jetbrains.plugins.groovy.annotator.intentions.QuickfixUtil;
 import org.jetbrains.plugins.groovy.annotator.intentions.dynamic.elements.*;
 import org.jetbrains.plugins.groovy.debugger.fragments.GroovyCodeFragment;
@@ -95,7 +101,7 @@ public class DynamicToolWindowWrapper {
 
   private JPanel myTreeTablePanel;
   private SimpleToolWindowPanel myBigPanel;
-  private ListTreeTableModelOnColumns myTreeTableModel;
+  private consulo.ide.impl.idea.ui.treeStructure.treetable.ListTreeTableModelOnColumns myTreeTableModel;
   private MyTreeTable myTreeTable;
 
   public DynamicToolWindowWrapper(Project project) {
@@ -115,7 +121,8 @@ public class DynamicToolWindowWrapper {
   @RequiredUIAccess
   public ToolWindow getToolWindow() {
     if (myToolWindow == null) {
-      myToolWindow = ToolWindowManager.getInstance(myProject).registerToolWindow(GroovyBundle.message("dynamic.tool.window.id"), true, ToolWindowAnchor.RIGHT);
+      myToolWindow = ToolWindowManager.getInstance(myProject)
+                                      .registerToolWindow(GroovyBundle.message("dynamic.tool.window.id"), true, ToolWindowAnchor.RIGHT);
       myToolWindow.setIcon(JetgroovyIcons.Groovy.DynamicProperty_13);
       myToolWindow.setTitle(GroovyBundle.message("dynamic.window"));
       myToolWindow.setToHideOnEmptyContent(true);
@@ -201,7 +208,9 @@ public class DynamicToolWindowWrapper {
         final String[] psiTypes = QuickfixUtil.getArgumentsTypes(methodElement.getPairs());
 
         final DMethodElement method = DynamicManager.getInstance(myProject)
-          .findConcreteDynamicMethod(containingClassElement.getName(), methodElement.getName(), psiTypes);
+                                                    .findConcreteDynamicMethod(containingClassElement.getName(),
+                                                                               methodElement.getName(),
+                                                                               psiTypes);
 
         methodTreeNode = new DefaultMutableTreeNode(method);
         containingClassNode.add(methodTreeNode);
@@ -216,11 +225,11 @@ public class DynamicToolWindowWrapper {
     ColumnInfo[] columnInfos =
       {new ClassColumnInfo(myColumnNames[CLASS_OR_ELEMENT_NAME_COLUMN]), new PropertyTypeColumnInfo(myColumnNames[TYPE_COLUMN])};
 
-    myTreeTableModel = new ListTreeTableModelOnColumns(myTreeRoot, columnInfos);
+    myTreeTableModel = new consulo.ide.impl.idea.ui.treeStructure.treetable.ListTreeTableModelOnColumns(myTreeRoot, columnInfos);
 
     myTreeTable = new MyTreeTable(myTreeTableModel);
 
-    new TreeTableSpeedSearch(myTreeTable, new Convertor<TreePath, String>() {
+    new TreeTableSpeedSearch(myTreeTable, new consulo.ide.impl.idea.util.containers.Convertor<TreePath, String>() {
       @Override
       public String convert(TreePath o) {
         final Object node = o.getLastPathComponent();
@@ -415,7 +424,8 @@ public class DynamicToolWindowWrapper {
 
         if (!removeClass(((DefaultMutableTreeNode)classRow), isShowDialog, rowsCount)) return;
 
-      } else {
+      }
+      else {
         //selectionPath is dynamic item
         final Object classRow = parent.getLastPathComponent();
         final Object dynamicRow = selectionPath.getLastPathComponent();
@@ -453,7 +463,8 @@ public class DynamicToolWindowWrapper {
         result = Messages.showOkCancelDialog(myBigPanel, GroovyBundle.message("are.you.sure.to.delete.elements", String.valueOf(rowsCount)),
                                              GroovyBundle.message("dynamic.element.deletion"), Messages.getQuestionIcon());
 
-      } else {
+      }
+      else {
         result = Messages.showOkCancelDialog(myBigPanel, GroovyBundle.message("are.you.sure.to.delete.dynamic.property",
                                                                               ((DNamedElement)namedElement).getName()),
                                              GroovyBundle.message("dynamic.property.deletion"), Messages.getQuestionIcon());
@@ -470,7 +481,8 @@ public class DynamicToolWindowWrapper {
   private void removeNamedElement(DNamedElement namedElement) {
     if (namedElement instanceof DClassElement) {
       DynamicManager.getInstance(myProject).removeClassElement((DClassElement)namedElement);
-    } else if (namedElement instanceof DItemElement) {
+    }
+    else if (namedElement instanceof DItemElement) {
       DynamicManager.getInstance(myProject).removeItemElement((DItemElement)namedElement);
     }
   }
@@ -482,7 +494,7 @@ public class DynamicToolWindowWrapper {
     int row = tree.getRowForPath(path);
     myTreeTable.getSelectionModel().setSelectionInterval(row, row);
     myTreeTable.scrollRectToVisible(myTreeTable.getCellRect(row, 0, true));
-    IdeFocusManager.getInstance(myProject).requestFocus(myTreeTable, true);
+    ApplicationIdeFocusManager.getInstance().getInstanceForProject(myProject).requestFocus(myTreeTable, true);
   }
 
   public void removeFromParent(DefaultMutableTreeNode parent, DefaultMutableTreeNode child) {
@@ -541,7 +553,7 @@ public class DynamicToolWindowWrapper {
     }
   }
 
-  public ListTreeTableModelOnColumns getTreeTableModel() {
+  public consulo.ide.impl.idea.ui.treeStructure.treetable.ListTreeTableModelOnColumns getTreeTableModel() {
     getToolWindow();
 
     return myTreeTableModel;
@@ -575,7 +587,8 @@ public class DynamicToolWindowWrapper {
 
         if (substringToHighlight != null) {
           appendHighlightName(substringToHighlight, name);
-        } else {
+        }
+        else {
           appendName(name);
         }
 
@@ -592,7 +605,7 @@ public class DynamicToolWindowWrapper {
       append(first, SimpleTextAttributes.SIMPLE_CELL_ATTRIBUTES);
       final TextAttributes textAttributes = new TextAttributes();
       textAttributes.setBackgroundColor(TargetAWT.from(UIUtil.getListSelectionBackground()));
-      append(substringToHighlight, SimpleTextAttributes.fromTextAttributes(textAttributes));
+      append(substringToHighlight, TextAttributesUtil.fromTextAttributes(textAttributes));
       append(name.substring(first.length() + substringToHighlight.length()), SimpleTextAttributes.SIMPLE_CELL_ATTRIBUTES);
     }
 
@@ -617,14 +630,11 @@ public class DynamicToolWindowWrapper {
     }
 
     private static String[] mapToUnqualified(final String[] argumentsNames) {
-      return ContainerUtil.map2Array(argumentsNames, String.class, new NullableFunction<String, String>() {
-        @Nullable
-        public String fun(final String s) {
-          if (s == null) return null;
-          int index = s.lastIndexOf(".");
-          if (index > 0 && index < s.length() - 1) return s.substring(index + 1);
-          return s;
-        }
+      return ContainerUtil.map2Array(argumentsNames, String.class, s -> {
+        if (s == null) return null;
+        int index = s.lastIndexOf(".");
+        if (index > 0 && index < s.length() - 1) return s.substring(index + 1);
+        return s;
       });
     }
   }
@@ -698,7 +708,7 @@ public class DynamicToolWindowWrapper {
         final DClassElement classElement = (DClassElement)userObject;
 
         try {
-          PsiType type  = JavaPsiFacade.getElementFactory(myProject).createTypeFromText(classElement.getName(), null);
+          PsiType type = JavaPsiFacade.getElementFactory(myProject).createTypeFromText(classElement.getName(), null);
 
           if (type instanceof PsiPrimitiveType) {
             type = ((PsiPrimitiveType)type).getBoxedType(PsiManager.getInstance(myProject), GlobalSearchScope.allScope(myProject));
@@ -711,7 +721,8 @@ public class DynamicToolWindowWrapper {
         catch (IncorrectOperationException e) {
           return null;
         }
-      } else if (userObject instanceof DItemElement) {
+      }
+      else if (userObject instanceof DItemElement) {
         final DItemElement itemElement = (DItemElement)userObject;
 
         final TreeNode parentNode = selectedNode.getParent();

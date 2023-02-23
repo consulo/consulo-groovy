@@ -17,7 +17,10 @@
 package org.jetbrains.plugins.groovy.lang.parser.parsing.statements.declaration;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
+import consulo.language.ast.IElementType;
+import consulo.language.parser.PsiBuilder;
 import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
@@ -30,8 +33,6 @@ import org.jetbrains.plugins.groovy.lang.parser.parsing.statements.blocks.OpenOr
 import org.jetbrains.plugins.groovy.lang.parser.parsing.statements.constructor.ConstructorBody;
 import org.jetbrains.plugins.groovy.lang.parser.parsing.statements.expressions.AssignmentExpression;
 import org.jetbrains.plugins.groovy.lang.parser.parsing.util.ParserUtils;
-import com.intellij.lang.PsiBuilder;
-import com.intellij.psi.tree.IElementType;
 
 /**
  * @autor: Dmitry.Krasilschikov
@@ -43,7 +44,7 @@ public class VariableDefinitions {
   public static IElementType parseDefinitions(@Nonnull PsiBuilder builder,
                                               boolean isInClass,
                                               boolean isInAnnotation,
-                                              @javax.annotation.Nullable String typeDefinitionName,
+                                              @Nullable String typeDefinitionName,
                                               boolean hasModifiers,
                                               boolean canBeTuple,
                                               @Nonnull GroovyParser parser) {

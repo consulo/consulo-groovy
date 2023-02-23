@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.lang
 
-import com.intellij.psi.PsiReference
+import com.intellij.java.language.psi.PsiReference
 import com.intellij.testFramework.LightProjectDescriptor
 import com.intellij.testFramework.fixtures.LightCodeInsightFixtureTestCase
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrGdkMethod

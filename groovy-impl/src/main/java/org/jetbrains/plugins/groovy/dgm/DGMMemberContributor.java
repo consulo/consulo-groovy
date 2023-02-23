@@ -15,14 +15,18 @@
  */
 package org.jetbrains.plugins.groovy.dgm;
 
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.Pair;
-import com.intellij.psi.*;
-import com.intellij.psi.scope.PsiScopeProcessor;
-import com.intellij.psi.search.GlobalSearchScope;
-import javax.annotation.Nonnull;
+import com.intellij.java.language.psi.JavaPsiFacade;
+import com.intellij.java.language.psi.PsiClass;
+import com.intellij.java.language.psi.PsiType;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.resolve.PsiScopeProcessor;
+import consulo.language.psi.resolve.ResolveState;
+import consulo.language.psi.scope.GlobalSearchScope;
+import consulo.project.Project;
+import consulo.util.lang.Pair;
 import org.jetbrains.plugins.groovy.lang.resolve.NonCodeMembersContributor;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 /**

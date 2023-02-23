@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.introduce.constant;
 
-import com.intellij.ui.components.JBCheckBox;
+import consulo.ui.ex.awt.JBCheckBox;
 
 import javax.swing.*;
 

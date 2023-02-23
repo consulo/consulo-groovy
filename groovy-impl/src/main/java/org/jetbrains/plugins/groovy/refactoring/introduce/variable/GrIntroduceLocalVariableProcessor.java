@@ -15,19 +15,16 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.introduce.variable;
 
-import java.util.List;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.intellij.java.impl.refactoring.util.RefactoringUtil;
+import com.intellij.java.language.psi.codeStyle.JavaCodeStyleManager;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiReference;
+import consulo.language.psi.PsiUtilCore;
+import consulo.language.util.IncorrectOperationException;
+import consulo.logging.Logger;
+import consulo.util.collection.ContainerUtil;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrBlockStatement;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrIfStatement;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrLabeledStatement;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrLoopStatement;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariableDeclaration;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.*;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlock;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
@@ -38,227 +35,195 @@ import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 import org.jetbrains.plugins.groovy.refactoring.GroovyRefactoringUtil;
 import org.jetbrains.plugins.groovy.refactoring.introduce.GrIntroduceContext;
 import org.jetbrains.plugins.groovy.refactoring.introduce.GrIntroduceHandlerBase;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiReference;
-import com.intellij.psi.codeStyle.JavaCodeStyleManager;
-import com.intellij.psi.util.PsiUtilCore;
-import com.intellij.refactoring.util.RefactoringUtil;
-import com.intellij.util.ArrayUtilRt;
-import com.intellij.util.IncorrectOperationException;
-import com.intellij.util.containers.ContainerUtil;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.List;
 
 /**
  * @author Max Medvedev
  */
-public abstract class GrIntroduceLocalVariableProcessor
-{
-	private static final Logger LOG = Logger.getInstance(GrIntroduceLocalVariableProcessor.class);
+public abstract class GrIntroduceLocalVariableProcessor {
+  private static final Logger LOG = Logger.getInstance(GrIntroduceLocalVariableProcessor.class);
 
-	private final GrIntroduceContext myContext;
-	private final GroovyIntroduceVariableSettings mySettings;
-	private final boolean myProcessUsages;
-	private final PsiElement[] myOccurrences;
-	private final GrExpression myExpression;
+  private final GrIntroduceContext myContext;
+  private final GroovyIntroduceVariableSettings mySettings;
+  private final boolean myProcessUsages;
+  private final PsiElement[] myOccurrences;
+  private final GrExpression myExpression;
 
-	public GrIntroduceLocalVariableProcessor(@Nonnull GrIntroduceContext context,
-			@Nonnull GroovyIntroduceVariableSettings settings,
-			@Nonnull PsiElement[] occurrences,
-			@Nonnull GrExpression expression,
-			boolean processUsages)
-	{
+  public GrIntroduceLocalVariableProcessor(@Nonnull GrIntroduceContext context,
+                                           @Nonnull GroovyIntroduceVariableSettings settings,
+                                           @Nonnull PsiElement[] occurrences,
+                                           @Nonnull GrExpression expression,
+                                           boolean processUsages) {
 
-		myContext = context;
-		mySettings = settings;
-		myProcessUsages = processUsages;
-		myOccurrences = settings.replaceAllOccurrences() ? occurrences : new PsiElement[]{expression};
-		myExpression = expression;
-	}
+    myContext = context;
+    mySettings = settings;
+    myProcessUsages = processUsages;
+    myOccurrences = settings.replaceAllOccurrences() ? occurrences : new PsiElement[]{expression};
+    myExpression = expression;
+  }
 
-	@Nonnull
-	public GrVariable processExpression(@Nonnull GrVariableDeclaration declaration)
-	{
-		resolveLocalConflicts(myContext.getScope(), mySettings.getName());
+  @Nonnull
+  public GrVariable processExpression(@Nonnull GrVariableDeclaration declaration) {
+    resolveLocalConflicts(myContext.getScope(), mySettings.getName());
 
-		preprocessOccurrences();
+    preprocessOccurrences();
 
-		int expressionIndex = ArrayUtilRt.find(myOccurrences, myExpression);
-		final PsiElement[] replaced = myProcessUsages ? processOccurrences() : myOccurrences;
-		PsiElement replacedExpression = replaced[expressionIndex];
-		GrStatement anchor = GrIntroduceHandlerBase.getAnchor(replaced, myContext.getScope());
+    int expressionIndex = consulo.ide.impl.idea.util.ArrayUtilRt.find(myOccurrences, myExpression);
+    final PsiElement[] replaced = myProcessUsages ? processOccurrences() : myOccurrences;
+    PsiElement replacedExpression = replaced[expressionIndex];
+    GrStatement anchor = GrIntroduceHandlerBase.getAnchor(replaced, myContext.getScope());
 
-		RefactoringUtil.highlightAllOccurrences(myContext.getProject(), replaced, myContext.getEditor());
+    RefactoringUtil.highlightAllOccurrences(myContext.getProject(), replaced, myContext.getEditor());
 
-		return insertVariableDefinition(declaration, anchor, replacedExpression);
-	}
+    return insertVariableDefinition(declaration, anchor, replacedExpression);
+  }
 
-	protected abstract void refreshPositionMarker(PsiElement e);
+  protected abstract void refreshPositionMarker(PsiElement e);
 
-	private static boolean isControlStatementBranch(GrStatement statement)
-	{
-		return statement.getParent() instanceof GrLoopStatement && statement == ((GrLoopStatement) statement.getParent
-				()).getBody() || statement.getParent() instanceof GrIfStatement && (statement == ((GrIfStatement)
-				statement.getParent()).getThenBranch() || statement == ((GrIfStatement) statement.getParent())
-				.getElseBranch());
-	}
+  private static boolean isControlStatementBranch(GrStatement statement) {
+    return statement.getParent() instanceof GrLoopStatement && statement == ((GrLoopStatement)statement.getParent
+      ()).getBody() || statement.getParent() instanceof GrIfStatement && (statement == ((GrIfStatement)
+      statement.getParent()).getThenBranch() || statement == ((GrIfStatement)statement.getParent())
+      .getElseBranch());
+  }
 
-	private PsiElement[] processOccurrences()
-	{
+  private PsiElement[] processOccurrences() {
 
-		List<PsiElement> result = ContainerUtil.newArrayList();
+    List<PsiElement> result = ContainerUtil.newArrayList();
 
-		GrReferenceExpression templateRef = GroovyPsiElementFactory.getInstance(myContext.getProject())
-				.createReferenceExpressionFromText(mySettings.getName());
-		for(PsiElement occurrence : myOccurrences)
-		{
-			if(!(occurrence instanceof GrExpression))
-			{
-				throw new IncorrectOperationException("Expression occurrence to be replaced is not instance of " +
-						"GroovyPsiElement");
-			}
+    GrReferenceExpression templateRef = GroovyPsiElementFactory.getInstance(myContext.getProject())
+                                                               .createReferenceExpressionFromText(mySettings.getName());
+    for (PsiElement occurrence : myOccurrences) {
+      if (!(occurrence instanceof GrExpression)) {
+        throw new IncorrectOperationException("Expression occurrence to be replaced is not instance of " +
+                                                "GroovyPsiElement");
+      }
 
-			final GrExpression replaced = ((GrExpression) occurrence).replaceWithExpression(templateRef, true);
-			result.add(replaced);
-		}
+      final GrExpression replaced = ((GrExpression)occurrence).replaceWithExpression(templateRef, true);
+      result.add(replaced);
+    }
 
-		return PsiUtilCore.toPsiElementArray(result);
-	}
+    return PsiUtilCore.toPsiElementArray(result);
+  }
 
-	@Nonnull
-	private GrExpression preprocessOccurrences()
-	{
-		GroovyRefactoringUtil.sortOccurrences(myOccurrences);
-		if(myOccurrences.length == 0 || !(myOccurrences[0] instanceof GrExpression))
-		{
-			throw new IncorrectOperationException("Wrong expression occurrence");
-		}
+  @Nonnull
+  private GrExpression preprocessOccurrences() {
+    GroovyRefactoringUtil.sortOccurrences(myOccurrences);
+    if (myOccurrences.length == 0 || !(myOccurrences[0] instanceof GrExpression)) {
+      throw new IncorrectOperationException("Wrong expression occurrence");
+    }
 
-		return (GrExpression) myOccurrences[0];
-	}
+    return (GrExpression)myOccurrences[0];
+  }
 
-	private static void resolveLocalConflicts(@Nonnull PsiElement tempContainer, @Nonnull String varName)
-	{
-		for(PsiElement child : tempContainer.getChildren())
-		{
-			if(child instanceof GrReferenceExpression && !child.getText().contains("."))
-			{
-				PsiReference psiReference = child.getReference();
-				if(psiReference != null)
-				{
-					final PsiElement resolved = psiReference.resolve();
-					if(resolved != null)
-					{
-						String fieldName = getFieldName(resolved);
-						if(fieldName != null && varName.equals(fieldName))
-						{
-							GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(tempContainer
-									.getProject());
-							((GrReferenceExpression) child).replaceWithExpression(factory.createExpressionFromText
-									("this." + child.getText()), true);
-						}
-					}
-				}
-			}
-			else
-			{
-				resolveLocalConflicts(child, varName);
-			}
-		}
-	}
+  private static void resolveLocalConflicts(@Nonnull PsiElement tempContainer, @Nonnull String varName) {
+    for (PsiElement child : tempContainer.getChildren()) {
+      if (child instanceof GrReferenceExpression && !child.getText().contains(".")) {
+        PsiReference psiReference = child.getReference();
+        if (psiReference != null) {
+          final PsiElement resolved = psiReference.resolve();
+          if (resolved != null) {
+            String fieldName = getFieldName(resolved);
+            if (fieldName != null && varName.equals(fieldName)) {
+              GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(tempContainer
+                                                                                      .getProject());
+              ((GrReferenceExpression)child).replaceWithExpression(factory.createExpressionFromText
+                ("this." + child.getText()), true);
+            }
+          }
+        }
+      }
+      else {
+        resolveLocalConflicts(child, varName);
+      }
+    }
+  }
 
-	@Nonnull
-	private GrVariable insertVariableDefinition(@Nonnull GrVariableDeclaration declaration,
-			@Nonnull GrStatement anchor,
-			@Nullable PsiElement expression) throws IncorrectOperationException
-	{
-		GrLabeledStatement labeledStatement = expression != null && expression.getParent() instanceof
-				GrLabeledStatement ? (GrLabeledStatement) expression.getParent() : null;
+  @Nonnull
+  private GrVariable insertVariableDefinition(@Nonnull GrVariableDeclaration declaration,
+                                              @Nonnull GrStatement anchor,
+                                              @Nullable PsiElement expression) throws IncorrectOperationException {
+    GrLabeledStatement labeledStatement = expression != null && expression.getParent() instanceof
+      GrLabeledStatement ? (GrLabeledStatement)expression.getParent() : null;
 
-		boolean expressionMustBeDeleted = expression != null && PsiUtil.isExpressionStatement(expression) &&
-				!isSingleGStringInjectionExpr(expression);
-		boolean anchorEqualsExpression = anchor == expression || labeledStatement == anchor;
+    boolean expressionMustBeDeleted = expression != null && PsiUtil.isExpressionStatement(expression) &&
+      !isSingleGStringInjectionExpr(expression);
+    boolean anchorEqualsExpression = anchor == expression || labeledStatement == anchor;
 
-		String usedLabel = labeledStatement != null ? labeledStatement.getName() : null;
+    String usedLabel = labeledStatement != null ? labeledStatement.getName() : null;
 
-		if(expressionMustBeDeleted && !anchorEqualsExpression)
-		{
-			expression.delete();
-		}
+    if (expressionMustBeDeleted && !anchorEqualsExpression) {
+      expression.delete();
+    }
 
-		boolean isInsideControlStatement = isControlStatementBranch(anchor);
-		if(isInsideControlStatement)
-		{
-			anchor = insertBraces(anchor);
-		}
+    boolean isInsideControlStatement = isControlStatementBranch(anchor);
+    if (isInsideControlStatement) {
+      anchor = insertBraces(anchor);
+    }
 
-		LOG.assertTrue(myOccurrences.length > 0);
+    LOG.assertTrue(myOccurrences.length > 0);
 
-		GrStatementOwner block = (GrStatementOwner) anchor.getParent();
+    GrStatementOwner block = (GrStatementOwner)anchor.getParent();
 
-		if(usedLabel != null && expressionMustBeDeleted && anchorEqualsExpression)
-		{
-			GrLabeledStatement definitionWithLabel = (GrLabeledStatement) GroovyPsiElementFactory.getInstance(anchor
-					.getProject()).createStatementFromText(usedLabel + ": foo()");
-			GrLabeledStatement inserted = insertStatement(definitionWithLabel, anchor, block, true);
-			declaration = inserted.getStatement().replaceWithStatement(declaration);
-		}
-		else
-		{
-			declaration = insertStatement(declaration, anchor, block, expressionMustBeDeleted &&
-					anchorEqualsExpression);
-		}
+    if (usedLabel != null && expressionMustBeDeleted && anchorEqualsExpression) {
+      GrLabeledStatement definitionWithLabel = (GrLabeledStatement)GroovyPsiElementFactory.getInstance(anchor
+                                                                                                         .getProject())
+                                                                                          .createStatementFromText(usedLabel + ": foo()");
+      GrLabeledStatement inserted = insertStatement(definitionWithLabel, anchor, block, true);
+      declaration = inserted.getStatement().replaceWithStatement(declaration);
+    }
+    else {
+      declaration = insertStatement(declaration, anchor, block, expressionMustBeDeleted &&
+        anchorEqualsExpression);
+    }
 
-		final GrVariable variable = declaration.getVariables()[0];
-		JavaCodeStyleManager.getInstance(declaration.getProject()).shortenClassReferences(declaration);
+    final GrVariable variable = declaration.getVariables()[0];
+    JavaCodeStyleManager.getInstance(declaration.getProject()).shortenClassReferences(declaration);
 
 
-		PsiElement markerPlace = expressionMustBeDeleted ? variable : isInsideControlStatement ? declaration.getParent
-				() : expression;
-		refreshPositionMarker(markerPlace);
+    PsiElement markerPlace = expressionMustBeDeleted ? variable : isInsideControlStatement ? declaration.getParent
+      () : expression;
+    refreshPositionMarker(markerPlace);
 
-		return variable;
-	}
+    return variable;
+  }
 
-	private static <T extends GrStatement> T insertStatement(T declaration,
-			GrStatement anchor,
-			GrStatementOwner block,
-			boolean replaceAnchor)
-	{
-		if(replaceAnchor)
-		{
-			return (T) anchor.replace(declaration);
-		}
-		else
-		{
-			return (T) block.addStatementBefore(declaration, anchor);
-		}
-	}
+  private static <T extends GrStatement> T insertStatement(T declaration,
+                                                           GrStatement anchor,
+                                                           GrStatementOwner block,
+                                                           boolean replaceAnchor) {
+    if (replaceAnchor) {
+      return (T)anchor.replace(declaration);
+    }
+    else {
+      return (T)block.addStatementBefore(declaration, anchor);
+    }
+  }
 
-	@Nonnull
-	static GrStatement insertBraces(@Nonnull GrStatement anchor)
-	{
-		GrBlockStatement blockStatement = GroovyPsiElementFactory.getInstance(anchor.getProject())
-				.createBlockStatement();
+  @Nonnull
+  static GrStatement insertBraces(@Nonnull GrStatement anchor) {
+    GrBlockStatement blockStatement = GroovyPsiElementFactory.getInstance(anchor.getProject())
+                                                             .createBlockStatement();
 
-		blockStatement.getBlock().addStatementBefore(anchor, null);
-		GrBlockStatement newBlockStatement = ((GrBlockStatement) anchor.replace(blockStatement));
-		return newBlockStatement.getBlock().getStatements()[0];
-	}
+    blockStatement.getBlock().addStatementBefore(anchor, null);
+    GrBlockStatement newBlockStatement = ((GrBlockStatement)anchor.replace(blockStatement));
+    return newBlockStatement.getBlock().getStatements()[0];
+  }
 
-	private static boolean isSingleGStringInjectionExpr(PsiElement expression)
-	{
-		PsiElement parent = expression.getParent();
-		return parent instanceof GrClosableBlock && parent.getParent() instanceof GrStringInjection;
-	}
+  private static boolean isSingleGStringInjectionExpr(PsiElement expression) {
+    PsiElement parent = expression.getParent();
+    return parent instanceof GrClosableBlock && parent.getParent() instanceof GrStringInjection;
+  }
 
-	@javax.annotation.Nullable
-	private static String getFieldName(@javax.annotation.Nullable PsiElement element)
-	{
-		if(element instanceof GrAccessorMethod)
-		{
-			element = ((GrAccessorMethod) element).getProperty();
-		}
-		return element instanceof GrField ? ((GrField) element).getName() : null;
-	}
+  @Nullable
+  private static String getFieldName(@Nullable PsiElement element) {
+    if (element instanceof GrAccessorMethod) {
+      element = ((GrAccessorMethod)element).getProperty();
+    }
+    return element instanceof GrField ? ((GrField)element).getName() : null;
+  }
 
 }

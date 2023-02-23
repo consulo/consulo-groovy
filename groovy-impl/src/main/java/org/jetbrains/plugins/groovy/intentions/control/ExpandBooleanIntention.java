@@ -17,6 +17,7 @@ package org.jetbrains.plugins.groovy.intentions.control;
 
 import javax.annotation.Nonnull;
 
+import consulo.project.Project;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.plugins.groovy.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.intentions.base.PsiElementPredicate;
@@ -25,10 +26,9 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.branch.GrReturnState
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrAssignmentExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.impl.PsiImplUtil;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiElement;
-import com.intellij.util.IncorrectOperationException;
+import consulo.codeEditor.Editor;
+import consulo.language.psi.PsiElement;
+import consulo.language.util.IncorrectOperationException;
 
 public class ExpandBooleanIntention extends Intention
 {

@@ -15,14 +15,15 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.ui;
 
-import com.intellij.openapi.project.Project;
-import com.intellij.refactoring.ui.MethodSignatureComponent;
+import consulo.project.Project;
+import consulo.ide.impl.idea.refactoring.ui.MethodSignatureComponent;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 
 /**
  * @author Max Medvedev
  */
-public class GrMethodSignatureComponent extends MethodSignatureComponent {
+public class GrMethodSignatureComponent extends consulo.ide.impl.idea.refactoring.ui.MethodSignatureComponent
+{
   private final String myFileName;
 
   public GrMethodSignatureComponent(String signature, Project project) {

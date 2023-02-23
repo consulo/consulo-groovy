@@ -16,11 +16,12 @@
 
 package org.jetbrains.plugins.groovy.refactoring.inline;
 
-import com.intellij.psi.PsiDirectory;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
+import consulo.language.psi.PsiDirectory;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFileBase;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrOpenBlock;

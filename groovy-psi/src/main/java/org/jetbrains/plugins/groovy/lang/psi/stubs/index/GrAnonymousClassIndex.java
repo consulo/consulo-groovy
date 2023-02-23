@@ -17,14 +17,16 @@
 package org.jetbrains.plugins.groovy.lang.psi.stubs.index;
 
 import javax.annotation.Nonnull;
+
+import consulo.language.psi.stub.StringStubIndexExtension;
+import consulo.language.psi.stub.StubIndexKey;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrAnonymousClassDefinition;
-import com.intellij.psi.stubs.StringStubIndexExtension;
-import com.intellij.psi.stubs.StubIndexKey;
 
 /**
  * @author Maxim.Medvedev
  */
-public class GrAnonymousClassIndex extends StringStubIndexExtension<GrAnonymousClassDefinition> {
+public class GrAnonymousClassIndex extends StringStubIndexExtension<GrAnonymousClassDefinition>
+{
   public static final StubIndexKey<String, GrAnonymousClassDefinition> KEY = StubIndexKey.createIndexKey("gr.anonymous.class");
 
   @Nonnull

@@ -16,8 +16,8 @@
 package org.jetbrains.plugins.groovy.lang.resolve
 
 import com.intellij.codeInsight.generation.OverrideImplementUtil
-import com.intellij.psi.PsiMethod
-import com.intellij.psi.PsiMirrorElement
+import com.intellij.java.language.psi.PsiMethod
+import com.intellij.java.language.psi.PsiMirrorElement
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrMethodCall
 import org.jetbrains.plugins.groovy.util.TestUtils

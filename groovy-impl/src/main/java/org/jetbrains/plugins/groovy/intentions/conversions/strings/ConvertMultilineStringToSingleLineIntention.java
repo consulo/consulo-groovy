@@ -17,6 +17,11 @@ package org.jetbrains.plugins.groovy.intentions.conversions.strings;
 
 import javax.annotation.Nonnull;
 
+import consulo.codeEditor.Editor;
+import consulo.document.util.TextRange;
+import consulo.language.util.IncorrectOperationException;
+import consulo.logging.Logger;
+import consulo.project.Project;
 import org.jetbrains.plugins.groovy.intentions.GroovyIntentionsBundle;
 import org.jetbrains.plugins.groovy.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.intentions.base.PsiElementPredicate;
@@ -29,12 +34,7 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.literals
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.literals.GrLiteralImpl;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.literals.GrStringImpl;
 import org.jetbrains.plugins.groovy.lang.psi.util.GrStringUtil;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.PsiElement;
-import com.intellij.util.IncorrectOperationException;
+import consulo.language.psi.PsiElement;
 
 /**
  * @author Max Medvedev

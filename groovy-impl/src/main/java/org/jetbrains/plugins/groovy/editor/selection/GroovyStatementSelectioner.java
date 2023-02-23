@@ -15,12 +15,16 @@
  */
 package org.jetbrains.plugins.groovy.editor.selection;
 
-import com.intellij.codeInsight.editorActions.ExtendWordSelectionHandler;
-import com.intellij.codeInsight.editorActions.ExtendWordSelectionHandlerBase;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiWhiteSpace;
+import consulo.document.util.TextRange;
+import consulo.language.editor.action.ExtendWordSelectionHandler;
+import consulo.language.editor.action.ExtendWordSelectionHandlerBase;
+import consulo.codeEditor.Editor;
+import consulo.document.util.TextRange;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiWhiteSpace;
+import consulo.language.editor.action.ExtendWordSelectionHandler;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiWhiteSpace;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.lexer.TokenSets;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
@@ -32,7 +36,8 @@ import java.util.List;
 /**
  * @author Max Medvedev
  */
-public class GroovyStatementSelectioner implements ExtendWordSelectionHandler {
+public class GroovyStatementSelectioner implements ExtendWordSelectionHandler
+{
   @Override
   public boolean canSelect(PsiElement e) {
     return e instanceof GrExpression && PsiUtil.isExpressionStatement(e) ||

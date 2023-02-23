@@ -15,12 +15,11 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.api;
 
+import com.intellij.java.language.psi.PsiSubstitutor;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.ResolveResult;
+
 import javax.annotation.Nonnull;
-
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiSubstitutor;
-import com.intellij.psi.ResolveResult;
-
 import javax.annotation.Nullable;
 
 /**

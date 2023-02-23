@@ -15,9 +15,9 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.rename;
 
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiManager;
-import com.intellij.psi.impl.light.LightElement;
+import consulo.language.impl.psi.LightElement;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiManager;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 
 import java.util.List;
@@ -25,7 +25,8 @@ import java.util.List;
 /**
 * @author Maxim.Medvedev
 */
-public class PropertyForRename extends LightElement {
+public class PropertyForRename extends LightElement
+{
   private List<? extends PsiElement> myToRename;
   private String myPropertyName;
 

@@ -15,14 +15,14 @@
  */
 package org.jetbrains.plugins.groovy.lang.resolve.processors;
 
-import javax.annotation.Nonnull;
+import com.intellij.java.language.impl.psi.scope.NameHint;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiNamedElement;
+import consulo.language.psi.resolve.DelegatingScopeProcessor;
+import consulo.language.psi.resolve.PsiScopeProcessor;
+import consulo.language.psi.resolve.ResolveState;
 
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiNamedElement;
-import com.intellij.psi.ResolveState;
-import com.intellij.psi.scope.DelegatingScopeProcessor;
-import com.intellij.psi.scope.NameHint;
-import com.intellij.psi.scope.PsiScopeProcessor;
+import javax.annotation.Nonnull;
 
 /**
  * Checks names of processed element because our Groovy processors don't do it

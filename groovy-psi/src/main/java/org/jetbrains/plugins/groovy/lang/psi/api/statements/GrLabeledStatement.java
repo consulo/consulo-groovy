@@ -16,8 +16,8 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.api.statements;
 
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiNameIdentifierOwner;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiNameIdentifierOwner;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GrNamedElement;

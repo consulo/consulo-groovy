@@ -15,19 +15,18 @@
  */
 package org.jetbrains.plugins.groovy.lang.completion;
 
-import com.intellij.codeInsight.completion.CompletionContributor;
-import com.intellij.codeInsight.completion.CompletionParameters;
-import com.intellij.codeInsight.completion.CompletionResultSet;
-import com.intellij.codeInsight.completion.CompletionType;
-import com.intellij.codeInsight.lookup.LookupElementBuilder;
-import com.intellij.patterns.ElementPattern;
-import com.intellij.patterns.PlatformPatterns;
-import com.intellij.patterns.StandardPatterns;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiRecursiveElementWalkingVisitor;
-import com.intellij.util.ProcessingContext;
-import consulo.codeInsight.completion.CompletionProvider;
-import icons.JetgroovyIcons;
+import consulo.language.editor.completion.*;
+import consulo.language.editor.completion.CompletionType;
+import consulo.language.editor.completion.lookup.LookupElementBuilder;
+import consulo.language.pattern.ElementPattern;
+import consulo.language.pattern.PlatformPatterns;
+import consulo.language.pattern.StandardPatterns;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiRecursiveElementWalkingVisitor;
+import consulo.language.util.ProcessingContext;
+import consulo.language.editor.completion.CompletionProvider;
+import consulo.language.editor.completion.CompletionContributor;
+import org.jetbrains.plugins.groovy.JetgroovyIcons;
 import org.jetbrains.plugins.groovy.extensions.GroovyNamedArgumentProvider;
 import org.jetbrains.plugins.groovy.extensions.NamedArgumentDescriptor;
 import org.jetbrains.plugins.groovy.highlighter.GroovySyntaxHighlighter;

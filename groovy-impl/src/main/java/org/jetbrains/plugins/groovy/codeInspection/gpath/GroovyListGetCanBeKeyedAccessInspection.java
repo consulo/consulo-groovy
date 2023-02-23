@@ -15,15 +15,13 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.gpath;
 
-import javax.annotation.Nonnull;
-
-import com.intellij.codeInspection.ProblemDescriptor;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.CommonClassNames;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiType;
-import com.intellij.psi.util.InheritanceUtil;
-import com.intellij.util.IncorrectOperationException;
+import com.intellij.java.language.psi.CommonClassNames;
+import com.intellij.java.language.psi.PsiType;
+import com.intellij.java.language.psi.util.InheritanceUtil;
+import consulo.language.editor.inspection.ProblemDescriptor;
+import consulo.language.psi.PsiElement;
+import consulo.language.util.IncorrectOperationException;
+import consulo.project.Project;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspectionVisitor;
@@ -35,6 +33,9 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrRefere
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.path.GrMethodCallExpression;
 import org.jetbrains.plugins.groovy.lang.psi.impl.PsiImplUtil;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class GroovyListGetCanBeKeyedAccessInspection extends BaseInspection {
 
@@ -50,7 +51,7 @@ public class GroovyListGetCanBeKeyedAccessInspection extends BaseInspection {
     return "Call to List.get can be keyed access";
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   protected String buildErrorString(Object... args) {
     return "Call to '#ref' can be keyed access #loc";
   }
@@ -71,7 +72,8 @@ public class GroovyListGetCanBeKeyedAccessInspection extends BaseInspection {
     }
 
     public void doFix(Project project, ProblemDescriptor descriptor)
-        throws IncorrectOperationException {
+        throws IncorrectOperationException
+	{
       final PsiElement referenceName = descriptor.getPsiElement();
       final GrReferenceExpression invokedExpression = (GrReferenceExpression) referenceName.getParent();
       final GrMethodCallExpression callExpression = (GrMethodCallExpression) invokedExpression.getParent();

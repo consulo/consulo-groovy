@@ -15,28 +15,31 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.extract.closure;
 
-import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.Ref;
-import com.intellij.psi.*;
-import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.psi.search.searches.MethodReferencesSearch;
-import com.intellij.psi.search.searches.OverridingMethodsSearch;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.refactoring.IntroduceParameterRefactoring;
-import com.intellij.refactoring.RefactoringBundle;
-import com.intellij.refactoring.introduceParameter.ChangedMethodCallInfo;
-import com.intellij.refactoring.introduceParameter.ExternalUsageInfo;
-import com.intellij.refactoring.introduceParameter.InternalUsageInfo;
-import com.intellij.refactoring.introduceParameter.IntroduceParameterData;
-import com.intellij.refactoring.ui.ConflictsDialog;
-import com.intellij.refactoring.util.CommonRefactoringUtil;
-import com.intellij.refactoring.util.usageInfo.DefaultConstructorImplicitUsageInfo;
-import com.intellij.refactoring.util.usageInfo.NoConstructorClassUsageInfo;
-import com.intellij.usageView.UsageInfo;
-import com.intellij.usageView.UsageViewUtil;
-import com.intellij.util.containers.MultiMap;
+import com.intellij.java.impl.refactoring.IntroduceParameterRefactoring;
+import com.intellij.java.impl.refactoring.introduceParameter.ChangedMethodCallInfo;
+import com.intellij.java.impl.refactoring.introduceParameter.ExternalUsageInfo;
+import com.intellij.java.impl.refactoring.introduceParameter.InternalUsageInfo;
+import com.intellij.java.impl.refactoring.introduceParameter.IntroduceParameterData;
+import com.intellij.java.impl.refactoring.util.usageInfo.DefaultConstructorImplicitUsageInfo;
+import com.intellij.java.impl.refactoring.util.usageInfo.NoConstructorClassUsageInfo;
+import com.intellij.java.indexing.search.searches.MethodReferencesSearch;
+import com.intellij.java.indexing.search.searches.OverridingMethodsSearch;
+import com.intellij.java.language.psi.*;
+import consulo.application.ApplicationManager;
+import consulo.language.editor.refactoring.RefactoringBundle;
+import consulo.language.editor.refactoring.ui.ConflictsDialog;
+import consulo.language.editor.refactoring.util.CommonRefactoringUtil;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiManager;
+import consulo.language.psi.PsiReference;
+import consulo.language.psi.scope.GlobalSearchScope;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.project.Project;
+import consulo.usage.UsageInfo;
+import consulo.usage.UsageViewUtil;
+import consulo.util.collection.MultiMap;
 import consulo.util.collection.primitive.ints.IntList;
+import consulo.util.lang.ref.Ref;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlock;
@@ -56,8 +59,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import static com.intellij.refactoring.introduceParameter.IntroduceParameterUtil.changeMethodSignatureAndResolveFieldConflicts;
-import static com.intellij.refactoring.introduceParameter.IntroduceParameterUtil.processUsages;
+import static com.intellij.java.impl.refactoring.introduceParameter.IntroduceParameterUtil.changeMethodSignatureAndResolveFieldConflicts;
+import static com.intellij.java.impl.refactoring.introduceParameter.IntroduceParameterUtil.processUsages;
 import static org.jetbrains.plugins.groovy.refactoring.introduce.parameter.GroovyIntroduceParameterUtil.*;
 
 /**

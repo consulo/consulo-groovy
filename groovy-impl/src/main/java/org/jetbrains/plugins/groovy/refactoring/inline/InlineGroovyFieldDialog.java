@@ -15,15 +15,15 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.inline;
 
-import com.intellij.openapi.help.HelpManager;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiField;
-import com.intellij.psi.PsiSubstitutor;
-import com.intellij.psi.util.PsiFormatUtil;
-import com.intellij.refactoring.HelpID;
-import com.intellij.refactoring.JavaRefactoringSettings;
-import com.intellij.refactoring.RefactoringBundle;
-import com.intellij.refactoring.inline.InlineOptionsDialog;
+import com.intellij.java.impl.refactoring.HelpID;
+import com.intellij.java.impl.refactoring.JavaRefactoringSettings;
+import com.intellij.java.language.psi.PsiField;
+import com.intellij.java.language.psi.PsiSubstitutor;
+import com.intellij.java.language.psi.util.PsiFormatUtil;
+import consulo.application.HelpManager;
+import consulo.ide.impl.idea.refactoring.inline.InlineOptionsDialog;
+import consulo.language.editor.refactoring.RefactoringBundle;
+import consulo.project.Project;
 
 /**
 * @author Max Medvedev

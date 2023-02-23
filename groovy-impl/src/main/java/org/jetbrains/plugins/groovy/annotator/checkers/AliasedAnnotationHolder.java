@@ -15,8 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.annotator.checkers;
 
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.util.PsiTreeUtil;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.util.PsiTreeUtil;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotation;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
 

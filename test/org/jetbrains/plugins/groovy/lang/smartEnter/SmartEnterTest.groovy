@@ -16,8 +16,8 @@
 package org.jetbrains.plugins.groovy.lang.smartEnter
 
 import com.intellij.openapi.actionSystem.IdeActions
-import com.intellij.psi.codeStyle.CodeStyleSettingsManager
-import com.intellij.psi.codeStyle.CommonCodeStyleSettings
+import com.intellij.java.language.psi.codeStyle.CodeStyleSettingsManager
+import com.intellij.java.language.psi.codeStyle.CommonCodeStyleSettings
 import org.jetbrains.plugins.groovy.GroovyFileType
 import org.jetbrains.plugins.groovy.LightGroovyTestCase
 import org.jetbrains.plugins.groovy.util.TestUtils

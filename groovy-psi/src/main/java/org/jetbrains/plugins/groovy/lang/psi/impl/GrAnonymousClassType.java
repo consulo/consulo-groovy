@@ -15,14 +15,18 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl;
 
-import javax.annotation.Nonnull;
-
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.pom.java.LanguageLevel;
-import com.intellij.psi.*;
-import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.java.language.LanguageLevel;
+import com.intellij.java.language.psi.JavaPsiFacade;
+import com.intellij.java.language.psi.PsiClass;
+import com.intellij.java.language.psi.PsiClassType;
+import com.intellij.java.language.psi.PsiType;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.scope.GlobalSearchScope;
+import consulo.util.lang.StringUtil;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrAnonymousClassDefinition;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author Max Medvedev

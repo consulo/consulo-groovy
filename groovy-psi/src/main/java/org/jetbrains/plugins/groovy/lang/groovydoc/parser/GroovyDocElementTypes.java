@@ -16,25 +16,25 @@
 
 package org.jetbrains.plugins.groovy.lang.groovydoc.parser;
 
-import javax.annotation.Nonnull;
-
+import com.intellij.java.language.psi.JavaPsiFacade;
+import consulo.language.Language;
+import consulo.language.ast.ASTNode;
+import consulo.language.ast.ILazyParseableElementType;
+import consulo.language.parser.PsiBuilder;
+import consulo.language.parser.PsiBuilderFactory;
+import consulo.language.parser.PsiParser;
+import consulo.language.psi.PsiElement;
+import consulo.language.version.LanguageVersion;
+import consulo.language.version.LanguageVersionUtil;
+import consulo.project.Project;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.lang.groovydoc.lexer.GroovyDocElementType;
 import org.jetbrains.plugins.groovy.lang.groovydoc.lexer.GroovyDocElementTypeImpl;
 import org.jetbrains.plugins.groovy.lang.groovydoc.lexer.GroovyDocLexer;
 import org.jetbrains.plugins.groovy.lang.groovydoc.lexer.GroovyDocTokenTypes;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.impl.GrDocCommentImpl;
-import com.intellij.lang.ASTNode;
-import com.intellij.lang.Language;
-import com.intellij.lang.PsiBuilder;
-import com.intellij.lang.PsiBuilderFactory;
-import com.intellij.lang.PsiParser;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.JavaPsiFacade;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.tree.ILazyParseableElementType;
-import consulo.lang.LanguageVersion;
-import consulo.lang.util.LanguageVersionUtil;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author ilyas

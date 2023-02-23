@@ -16,8 +16,8 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.api.auxiliary;
 
+import com.intellij.java.language.psi.PsiReferenceList;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
-import com.intellij.psi.PsiReferenceList;
 
 /**
  * @author: Dmitry.Krasilschikov

@@ -16,11 +16,13 @@
 
 package org.jetbrains.plugins.groovy.codeInspection;
 
-import com.intellij.codeInsight.daemon.HighlightDisplayKey;
-import com.intellij.codeInsight.daemon.impl.actions.SuppressByCommentFix;
-import com.intellij.psi.PsiElement;
-import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
+import consulo.language.editor.inspection.SuppressByCommentFix;
+import consulo.language.editor.rawHighlight.HighlightDisplayKey;
+import consulo.language.psi.PsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
+import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
+
+import javax.annotation.Nullable;
 
 /**
  * @author peter
@@ -31,7 +33,7 @@ public class SuppressByGroovyCommentFix extends SuppressByCommentFix {
   }
 
   @Override
-  @javax.annotation.Nullable
+  @Nullable
   public PsiElement getContainer(PsiElement context) {
     return PsiUtil.findEnclosingStatement(context);
   }

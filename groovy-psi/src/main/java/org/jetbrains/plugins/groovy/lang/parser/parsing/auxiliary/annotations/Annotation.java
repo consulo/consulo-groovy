@@ -16,7 +16,7 @@
 
 package org.jetbrains.plugins.groovy.lang.parser.parsing.auxiliary.annotations;
 
-import com.intellij.lang.PsiBuilder;
+import consulo.language.parser.PsiBuilder;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyParser;

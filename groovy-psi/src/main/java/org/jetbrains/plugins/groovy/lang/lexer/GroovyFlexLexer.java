@@ -16,14 +16,15 @@
 
 package org.jetbrains.plugins.groovy.lang.lexer;
 
-import com.intellij.lexer.FlexAdapter;
+import consulo.language.lexer.FlexAdapter;
 
 import java.io.Reader;
 
 /**
  * @author ilyas
  */
-public class GroovyFlexLexer extends FlexAdapter {
+public class GroovyFlexLexer extends FlexAdapter
+{
   public GroovyFlexLexer() {
     super(new _GroovyLexer((Reader) null));
   }

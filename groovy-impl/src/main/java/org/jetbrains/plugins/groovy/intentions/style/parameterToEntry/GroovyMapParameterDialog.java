@@ -23,6 +23,7 @@ import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.util.EventListener;
 
+import javax.annotation.Nullable;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -32,19 +33,22 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.EventListenerList;
 
+import consulo.document.event.DocumentEvent;
+import consulo.document.event.DocumentListener;
+import consulo.language.editor.ui.awt.*;
+import consulo.project.Project;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.intentions.GroovyIntentionsBundle;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyNamesUtil;
 import org.jetbrains.plugins.groovy.settings.GroovyApplicationSettings;
-import com.intellij.openapi.editor.event.DocumentEvent;
-import com.intellij.openapi.editor.event.DocumentListener;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.ui.ComboBox;
-import com.intellij.openapi.ui.DialogWrapper;
-import com.intellij.ui.EditorComboBoxEditor;
-import com.intellij.ui.EditorComboBoxRenderer;
-import com.intellij.ui.EditorTextField;
-import com.intellij.ui.StringComboboxEditor;
+import consulo.document.event.DocumentEvent;
+import consulo.document.event.DocumentListener;
+import consulo.project.Project;
+import consulo.ui.ex.awt.ComboBox;
+import consulo.ui.ex.awt.DialogWrapper;
+import consulo.language.editor.ui.awt.EditorComboBoxEditor;
+import consulo.language.editor.ui.awt.EditorTextField;
+import consulo.language.editor.ui.awt.StringComboboxEditor;
 
 public class GroovyMapParameterDialog extends DialogWrapper {
   private JPanel contentPane;
@@ -131,7 +135,7 @@ public class GroovyMapParameterDialog extends DialogWrapper {
     return contentPane;
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   protected String getEnteredName() {
     if (myNameComboBox.getEditor().getItem() instanceof String && ((String)myNameComboBox.getEditor().getItem()).length() > 0) {
       return (String)myNameComboBox.getEditor().getItem();

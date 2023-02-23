@@ -15,17 +15,18 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.signatures;
 
-import javax.annotation.Nonnull;
-
+import com.intellij.java.language.psi.PsiParameter;
+import com.intellij.java.language.psi.PsiSubstitutor;
+import com.intellij.java.language.psi.PsiType;
+import consulo.language.psi.PsiCompiledElement;
+import consulo.logging.Logger;
+import consulo.util.lang.Comparing;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameter;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrClosureParameter;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.util.Comparing;
-import com.intellij.psi.PsiCompiledElement;
-import com.intellij.psi.PsiParameter;
-import com.intellij.psi.PsiSubstitutor;
-import com.intellij.psi.PsiType;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author Maxim.Medvedev
@@ -38,7 +39,7 @@ public class GrImmediateClosureParameterImpl implements GrClosureParameter {
   private final boolean myOptional;
   private final GrExpression myDefaultInitializer;
 
-  public GrImmediateClosureParameterImpl(@javax.annotation.Nullable PsiType type, @javax.annotation.Nullable String name, boolean optional, @javax.annotation.Nullable GrExpression defaultInitializer) {
+  public GrImmediateClosureParameterImpl(@Nullable PsiType type, @Nullable String name, boolean optional, @Nullable GrExpression defaultInitializer) {
     LOG.assertTrue(type == null || type.isValid());
     LOG.assertTrue(defaultInitializer == null || defaultInitializer.isValid());
 
@@ -52,12 +53,12 @@ public class GrImmediateClosureParameterImpl implements GrClosureParameter {
     this(substitutor.substitute(getParameterType(parameter)), getParameterName(parameter), isParameterOptional(parameter), getDefaultInitializer(parameter));
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   private static PsiType getParameterType(@Nonnull PsiParameter parameter) {
     return parameter instanceof GrParameter ? ((GrParameter)parameter).getDeclaredType() : parameter.getType();
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   public static GrExpression getDefaultInitializer(PsiParameter parameter) {
     return parameter instanceof GrParameter ? ((GrParameter)parameter).getInitializerGroovy() : null;
   }
@@ -66,7 +67,7 @@ public class GrImmediateClosureParameterImpl implements GrClosureParameter {
     return parameter instanceof GrParameter && ((GrParameter)parameter).isOptional();
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   public static String getParameterName(@Nonnull PsiParameter param) {
     if (param instanceof PsiCompiledElement) { // don't try to find out a compiled parameter name
       return null;
@@ -77,7 +78,7 @@ public class GrImmediateClosureParameterImpl implements GrClosureParameter {
   }
 
   @Override
-  @javax.annotation.Nullable
+  @Nullable
   public PsiType getType() {
     return myType;
   }
@@ -88,7 +89,7 @@ public class GrImmediateClosureParameterImpl implements GrClosureParameter {
   }
 
   @Override
-  @javax.annotation.Nullable
+  @Nullable
   public GrExpression getDefaultInitializer() {
     return myDefaultInitializer;
   }
@@ -98,7 +99,7 @@ public class GrImmediateClosureParameterImpl implements GrClosureParameter {
     return (myType == null || myType.isValid()) && (myDefaultInitializer == null || myDefaultInitializer.isValid());
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   @Override
   public String getName() {
     return myName;

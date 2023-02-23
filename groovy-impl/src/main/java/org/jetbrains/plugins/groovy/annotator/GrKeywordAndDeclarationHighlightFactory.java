@@ -18,10 +18,10 @@ package org.jetbrains.plugins.groovy.annotator;
 import javax.annotation.Nonnull;
 
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
-import com.intellij.codeHighlighting.TextEditorHighlightingPass;
-import com.intellij.codeHighlighting.TextEditorHighlightingPassFactory;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.psi.PsiFile;
+import consulo.language.editor.impl.highlight.TextEditorHighlightingPass;
+import consulo.language.editor.impl.highlight.TextEditorHighlightingPassFactory;
+import consulo.codeEditor.Editor;
+import consulo.language.psi.PsiFile;
 
 /**
  * @author Max Medvedev

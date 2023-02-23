@@ -1,5 +1,8 @@
+import java.util.List;
+import java.util.Set;
+
 public class A {
-public java.util.List<? extends java.util.Set> foo() {
+public List<? extends Set> foo() {
 return null;
 }
 

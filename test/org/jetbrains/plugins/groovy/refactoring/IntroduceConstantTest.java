@@ -17,10 +17,10 @@ package org.jetbrains.plugins.groovy.refactoring;
 
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.editor.Editor;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiModifier;
-import com.intellij.psi.PsiType;
-import com.intellij.psi.impl.source.PostprocessReformattingAspect;
+import com.intellij.java.language.psi.PsiClass;
+import com.intellij.java.language.psi.PsiModifier;
+import com.intellij.java.language.psi.PsiType;
+import com.intellij.java.language.psi.impl.source.PostprocessReformattingAspect;
 import com.intellij.testFramework.fixtures.LightCodeInsightFixtureTestCase;
 import com.intellij.util.VisibilityUtil;
 import org.jetbrains.annotations.NotNull;

@@ -15,15 +15,29 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.typedef.members;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.Nonnull;
-
+import com.intellij.java.language.impl.psi.impl.PsiClassImplUtil;
+import com.intellij.java.language.impl.psi.impl.PsiSuperMethodImplUtil;
+import com.intellij.java.language.impl.psi.presentation.java.JavaPresentationUtil;
+import com.intellij.java.language.psi.*;
+import com.intellij.java.language.psi.util.MethodSignature;
+import com.intellij.java.language.psi.util.MethodSignatureBackedByPsiMethod;
+import consulo.application.ApplicationManager;
+import consulo.application.util.CachedValueProvider;
+import consulo.content.scope.SearchScope;
+import consulo.language.ast.ASTNode;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.PsiModificationTracker;
+import consulo.language.psi.StubBasedPsiElement;
+import consulo.language.psi.resolve.PsiScopeProcessor;
+import consulo.language.psi.resolve.ResolveState;
+import consulo.language.psi.stub.IStubElementType;
+import consulo.language.psi.util.LanguageCachedValueUtil;
+import consulo.language.util.IncorrectOperationException;
+import consulo.logging.Logger;
+import consulo.navigation.ItemPresentation;
+import consulo.util.lang.ObjectUtil;
 import org.jetbrains.annotations.NonNls;
-
-import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.extensions.NamedArgumentDescriptor;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocComment;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.impl.GrDocCommentUtil;
@@ -58,27 +72,14 @@ import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 import org.jetbrains.plugins.groovy.lang.resolve.MethodTypeInferencer;
 import org.jetbrains.plugins.groovy.lang.resolve.ResolveUtil;
 import org.jetbrains.plugins.groovy.lang.resolve.processors.ClassHint;
-import com.intellij.lang.ASTNode;
-import com.intellij.navigation.ItemPresentation;
-import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.psi.*;
-import com.intellij.psi.impl.PsiClassImplUtil;
-import com.intellij.psi.impl.PsiSuperMethodImplUtil;
-import com.intellij.psi.presentation.java.JavaPresentationUtil;
-import com.intellij.psi.scope.PsiScopeProcessor;
-import com.intellij.psi.search.SearchScope;
-import com.intellij.psi.stubs.IStubElementType;
-import com.intellij.psi.util.CachedValueProvider;
-import com.intellij.psi.util.CachedValuesManager;
-import com.intellij.psi.util.MethodSignature;
-import com.intellij.psi.util.MethodSignatureBackedByPsiMethod;
-import com.intellij.psi.util.PsiModificationTracker;
-import com.intellij.util.Function;
-import com.intellij.util.IncorrectOperationException;
-import com.intellij.util.NullableFunction;
-import com.intellij.util.ObjectUtils;
-import com.intellij.util.containers.ContainerUtil;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 
 /**
  * @author ilyas
@@ -117,7 +118,7 @@ public abstract class GrMethodBaseImpl extends GrStubElementBase<GrMethodStub> i
   }
 
   @Override
-  @javax.annotation.Nullable
+  @Nullable
   public GrOpenBlock getBlock() {
     return findChildByClass(GrOpenBlock.class);
   }
@@ -139,7 +140,7 @@ public abstract class GrMethodBaseImpl extends GrStubElementBase<GrMethodStub> i
   }
 
   @Override
-  @javax.annotation.Nullable
+  @Nullable
   public GrTypeElement getReturnTypeElementGroovy() {
     final GrMethodStub stub = getStub();
     if (stub != null) {
@@ -171,7 +172,7 @@ public abstract class GrMethodBaseImpl extends GrStubElementBase<GrMethodStub> i
   @Override
   public boolean processDeclarations(@Nonnull PsiScopeProcessor processor,
                                      @Nonnull ResolveState state,
-                                     @javax.annotation.Nullable PsiElement lastParent,
+                                     @Nullable PsiElement lastParent,
                                      @Nonnull PsiElement place) {
     ClassHint classHint = processor.getHint(ClassHint.KEY);
 
@@ -195,13 +196,13 @@ public abstract class GrMethodBaseImpl extends GrStubElementBase<GrMethodStub> i
     return new GrMember[]{this};
   }
 
-  private static final Function<GrMethodBaseImpl, PsiType> ourTypesCalculator = new NullableFunction<GrMethodBaseImpl, PsiType>() {
+  private static final Function<GrMethodBaseImpl, PsiType> ourTypesCalculator = new Function<GrMethodBaseImpl, PsiType>() {
     private boolean hasTypeParametersToInfer(PsiClassType classType) {
       final PsiClassType.ClassResolveResult resolveResult = classType.resolveGenerics();
       PsiClass aClass = resolveResult.getElement();
       if (aClass == null) return false;
 
-      final Iterable<PsiTypeParameter> iterable = com.intellij.psi.util.PsiUtil.typeParametersIterable(aClass);
+      final Iterable<PsiTypeParameter> iterable = com.intellij.java.language.psi.util.PsiUtil.typeParametersIterable(aClass);
       if (!iterable.iterator().hasNext()) {
         return false;
       }
@@ -218,7 +219,7 @@ public abstract class GrMethodBaseImpl extends GrStubElementBase<GrMethodStub> i
     }
 
     @Override
-    public PsiType fun(GrMethodBaseImpl method) {
+    public PsiType apply(GrMethodBaseImpl method) {
       PsiType nominal = method.getNominalType();
       if (nominal != null) {
         if (!(nominal instanceof PsiClassType && hasTypeParametersToInfer((PsiClassType)nominal))) {
@@ -244,7 +245,7 @@ public abstract class GrMethodBaseImpl extends GrStubElementBase<GrMethodStub> i
   };
 
   @Override
-  @javax.annotation.Nullable
+  @Nullable
   public PsiType getReturnType() {
     if (isConstructor()) {
       return null;
@@ -272,8 +273,8 @@ public abstract class GrMethodBaseImpl extends GrStubElementBase<GrMethodStub> i
   }
 
   @Override
-  @javax.annotation.Nullable
-  public GrTypeElement setReturnType(@javax.annotation.Nullable PsiType newReturnType) {
+  @Nullable
+  public GrTypeElement setReturnType(@Nullable PsiType newReturnType) {
     GrTypeElement typeElement = getReturnTypeElementGroovy();
     if (newReturnType == null || newReturnType == PsiType.NULL) {
       if (typeElement != null) typeElement.delete();
@@ -305,7 +306,7 @@ public abstract class GrMethodBaseImpl extends GrStubElementBase<GrMethodStub> i
   }
 
   @Override
-  @javax.annotation.Nullable
+  @Nullable
   public PsiTypeElement getReturnTypeElement() {
     return PsiImplUtil.getOrCreateTypeElement(getReturnTypeElementGroovy());
   }
@@ -347,7 +348,7 @@ public abstract class GrMethodBaseImpl extends GrStubElementBase<GrMethodStub> i
   }
 
   @Override
-  @javax.annotation.Nullable
+  @Nullable
   public PsiIdentifier getNameIdentifier() {
     return PsiUtil.getJavaNameIdentifier(this);
   }
@@ -391,7 +392,7 @@ public abstract class GrMethodBaseImpl extends GrStubElementBase<GrMethodStub> i
   }
 
   @Override
-  @javax.annotation.Nullable
+  @Nullable
   public PsiMethod findDeepestSuperMethod() {
     final PsiMethod[] methods = findDeepestSuperMethods();
     if (methods.length > 0) return methods[0];
@@ -401,7 +402,7 @@ public abstract class GrMethodBaseImpl extends GrStubElementBase<GrMethodStub> i
   @Override
   @Nonnull
   public GrModifierList getModifierList() {
-    return ObjectUtils.assertNotNull(getStubOrPsiChild(GroovyElementTypes.MODIFIERS));
+    return ObjectUtil.assertNotNull(getStubOrPsiChild(GroovyElementTypes.MODIFIERS));
   }
 
   @Override
@@ -453,7 +454,7 @@ public abstract class GrMethodBaseImpl extends GrStubElementBase<GrMethodStub> i
   }
 
   @Override
-  @javax.annotation.Nullable
+  @Nullable
   public GrTypeParameterList getTypeParameterList() {
     return getStubOrPsiChild(GroovyElementTypes.TYPE_PARAMETER_LIST);
   }
@@ -489,7 +490,7 @@ public abstract class GrMethodBaseImpl extends GrStubElementBase<GrMethodStub> i
   }
 
   @Override
-  @javax.annotation.Nullable
+  @Nullable
   public GrDocComment getDocComment() {
     return GrDocCommentUtil.findDocComment(this);
   }
@@ -498,15 +499,16 @@ public abstract class GrMethodBaseImpl extends GrStubElementBase<GrMethodStub> i
   public boolean isDeprecated() {
     final GrMethodStub stub = getStub();
     if (stub != null) {
-      return stub.isDeprecatedByDoc() || com.intellij.psi.impl.PsiImplUtil.isDeprecatedByAnnotation(this);
+      return stub.isDeprecatedByDoc() || com.intellij.java.language.impl.psi.impl.PsiImplUtil.isDeprecatedByAnnotation(this);
     }
-    return com.intellij.psi.impl.PsiImplUtil.isDeprecatedByDocTag(this) || com.intellij.psi.impl.PsiImplUtil.isDeprecatedByAnnotation(this);
+    return com.intellij.java.language.impl.psi.impl.PsiImplUtil.isDeprecatedByDocTag(this) || com.intellij.java.language.impl.psi.impl.PsiImplUtil
+      .isDeprecatedByAnnotation(this);
   }
 
   @Override
   @Nonnull
   public SearchScope getUseScope() {
-    return com.intellij.psi.impl.PsiImplUtil.getMemberUseScope(this);
+    return com.intellij.java.language.impl.psi.impl.PsiImplUtil.getMemberUseScope(this);
   }
 
   @Override
@@ -537,7 +539,7 @@ public abstract class GrMethodBaseImpl extends GrStubElementBase<GrMethodStub> i
       String[] namedParameters = stub.getNamedParameters();
       if (namedParameters.length == 0) return Collections.emptyMap();
 
-      Map<String, NamedArgumentDescriptor> result = ContainerUtil.newHashMap();
+      Map<String, NamedArgumentDescriptor> result = new HashMap<>();
 
       for (String parameter : namedParameters) {
         result.put(parameter, GrNamedArgumentSearchVisitor.CODE_NAMED_ARGUMENTS_DESCR);
@@ -574,11 +576,8 @@ public abstract class GrMethodBaseImpl extends GrStubElementBase<GrMethodStub> i
   @Nonnull
   @Override
   public GrReflectedMethod[] getReflectedMethods() {
-    return CachedValuesManager.getCachedValue(this, new CachedValueProvider<GrReflectedMethod[]>() {
-      @Override
-      public Result<GrReflectedMethod[]> compute() {
-        return Result.create(GrReflectedMethodImpl.createReflectedMethods(GrMethodBaseImpl.this), PsiModificationTracker.OUT_OF_CODE_BLOCK_MODIFICATION_COUNT);
-      }
-    });
+    return LanguageCachedValueUtil.getCachedValue(this,
+                                                  () -> CachedValueProvider.Result.create(GrReflectedMethodImpl.createReflectedMethods(
+                                                    GrMethodBaseImpl.this), PsiModificationTracker.OUT_OF_CODE_BLOCK_MODIFICATION_COUNT));
   }
 }

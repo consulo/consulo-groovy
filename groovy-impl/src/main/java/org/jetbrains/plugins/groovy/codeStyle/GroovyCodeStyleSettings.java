@@ -15,11 +15,10 @@
  */
 package org.jetbrains.plugins.groovy.codeStyle;
 
-import com.intellij.psi.codeStyle.CodeStyleSettings;
-import com.intellij.psi.codeStyle.CommonCodeStyleSettings;
-import com.intellij.psi.codeStyle.CustomCodeStyleSettings;
-import com.intellij.psi.codeStyle.PackageEntry;
-import com.intellij.psi.codeStyle.PackageEntryTable;
+import consulo.language.codeStyle.*;
+import consulo.language.codeStyle.PackageEntry;
+import consulo.language.codeStyle.PackageEntryTable;
+import consulo.language.codeStyle.CommonCodeStyleSettings;
 
 /**
  * @author Max Medvedev

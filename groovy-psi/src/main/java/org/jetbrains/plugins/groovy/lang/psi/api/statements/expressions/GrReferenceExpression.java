@@ -16,26 +16,27 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions;
 
-import javax.annotation.Nonnull;
-
+import com.intellij.java.language.psi.PsiMember;
+import consulo.language.ast.IElementType;
+import consulo.language.psi.PsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.GrReferenceElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiMember;
-import com.intellij.psi.tree.IElementType;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author ilyas
  */
 public interface GrReferenceExpression extends GrExpression, GrReferenceElement<GrExpression> {
 
-  @javax.annotation.Nullable
+  @Nullable
   GrExpression getQualifierExpression();
 
-  @javax.annotation.Nullable
+  @Nullable
   IElementType getDotTokenType();
 
-  @javax.annotation.Nullable
+  @Nullable
   PsiElement getDotToken();
 
   boolean hasAt();

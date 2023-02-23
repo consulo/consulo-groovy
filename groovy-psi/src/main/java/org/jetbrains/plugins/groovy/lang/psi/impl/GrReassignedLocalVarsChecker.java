@@ -15,11 +15,17 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl;
 
-import java.util.Collection;
-import java.util.Set;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.intellij.java.language.psi.PsiType;
+import consulo.application.util.CachedValueProvider;
+import consulo.application.util.RecursionManager;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiManager;
+import consulo.language.psi.PsiModificationTracker;
+import consulo.language.psi.PsiReference;
+import consulo.language.psi.search.ReferencesSearch;
+import consulo.language.psi.util.LanguageCachedValueUtil;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.util.lang.ref.Ref;
 import org.jetbrains.plugins.groovy.lang.psi.GrControlFlowOwner;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
@@ -33,207 +39,159 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrRefere
 import org.jetbrains.plugins.groovy.lang.psi.dataFlow.types.TypeInferenceHelper;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
-import com.intellij.openapi.util.NullableComputable;
-import com.intellij.openapi.util.RecursionManager;
-import com.intellij.openapi.util.Ref;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiManager;
-import com.intellij.psi.PsiReference;
-import com.intellij.psi.PsiType;
-import com.intellij.psi.search.searches.ReferencesSearch;
-import com.intellij.psi.util.CachedValueProvider;
-import com.intellij.psi.util.CachedValuesManager;
-import com.intellij.psi.util.PsiModificationTracker;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.Function;
-import com.intellij.util.containers.ContainerUtil;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.function.Supplier;
 
 /**
  * @author Max Medvedev
  */
-public class GrReassignedLocalVarsChecker
-{
+public class GrReassignedLocalVarsChecker {
 
-	@javax.annotation.Nullable
-	public static Boolean isReassignedVar(@Nonnull final GrReferenceExpression refExpr)
-	{
-		if(!PsiUtil.isCompileStatic(refExpr))
-		{
-			return false;
-		}
+  @Nullable
+  public static Boolean isReassignedVar(@Nonnull final GrReferenceExpression refExpr) {
+    if (!PsiUtil.isCompileStatic(refExpr)) {
+      return false;
+    }
 
-		if(refExpr.getQualifier() != null)
-		{
-			return false;
-		}
+    if (refExpr.getQualifier() != null) {
+      return false;
+    }
 
-		final PsiElement resolved = refExpr.resolve();
-		if(!PsiUtil.isLocalVariable(resolved))
-		{
-			return false;
-		}
+    final PsiElement resolved = refExpr.resolve();
+    if (!PsiUtil.isLocalVariable(resolved)) {
+      return false;
+    }
 
-		assert resolved instanceof GrVariable;
-		return CachedValuesManager.getCachedValue(resolved, new CachedValueProvider<Boolean>()
-		{
-			@javax.annotation.Nullable
-			@Override
-			public Result<Boolean> compute()
-			{
-				return Result.create(isReassignedVarImpl((GrVariable) resolved),
-						PsiModificationTracker.MODIFICATION_COUNT);
-			}
-		});
-	}
+    assert resolved instanceof GrVariable;
+    return LanguageCachedValueUtil.getCachedValue(resolved, new CachedValueProvider<Boolean>() {
+      @Nullable
+      @Override
+      public Result<Boolean> compute() {
+        return Result.create(isReassignedVarImpl((GrVariable)resolved),
+                             PsiModificationTracker.MODIFICATION_COUNT);
+      }
+    });
+  }
 
-	private static boolean isReassignedVarImpl(@Nonnull final GrVariable resolved)
-	{
-		final GrControlFlowOwner variableScope = PsiTreeUtil.getParentOfType(resolved, GrCodeBlock.class,
-				GroovyFile.class);
-		if(variableScope == null)
-		{
-			return false;
-		}
+  private static boolean isReassignedVarImpl(@Nonnull final GrVariable resolved) {
+    final GrControlFlowOwner variableScope = PsiTreeUtil.getParentOfType(resolved, GrCodeBlock.class,
+                                                                         GroovyFile.class);
+    if (variableScope == null) {
+      return false;
+    }
 
-		final String name = resolved.getName();
-		final Ref<Boolean> isReassigned = Ref.create(false);
-		for(PsiElement scope = resolved.getParent().getNextSibling(); scope != null; scope = scope.getNextSibling())
-		{
-			if(scope instanceof GroovyPsiElement)
-			{
-				((GroovyPsiElement) scope).accept(new GroovyRecursiveElementVisitor()
-				{
-					@Override
-					public void visitClosure(GrClosableBlock closure)
-					{
-						if(getUsedVarsInsideBlock(closure).contains(name))
-						{
-							isReassigned.set(true);
-						}
-					}
+    final String name = resolved.getName();
+    final Ref<Boolean> isReassigned = Ref.create(false);
+    for (PsiElement scope = resolved.getParent().getNextSibling(); scope != null; scope = scope.getNextSibling()) {
+      if (scope instanceof GroovyPsiElement) {
+        ((GroovyPsiElement)scope).accept(new GroovyRecursiveElementVisitor() {
+          @Override
+          public void visitClosure(GrClosableBlock closure) {
+            if (getUsedVarsInsideBlock(closure).contains(name)) {
+              isReassigned.set(true);
+            }
+          }
 
-					@Override
-					public void visitElement(GroovyPsiElement element)
-					{
-						if(isReassigned.get())
-						{
-							return;
-						}
-						super.visitElement(element);
-					}
-				});
+          @Override
+          public void visitElement(GroovyPsiElement element) {
+            if (isReassigned.get()) {
+              return;
+            }
+            super.visitElement(element);
+          }
+        });
 
-				if(isReassigned.get())
-				{
-					break;
-				}
-			}
-		}
+        if (isReassigned.get()) {
+          break;
+        }
+      }
+    }
 
-		return isReassigned.get();
-	}
+    return isReassigned.get();
+  }
 
 
-	@Nullable
-	public static PsiType getReassignedVarType(GrReferenceExpression refExpr, boolean honorCompileStatic)
-	{
-		if(honorCompileStatic && !PsiUtil.isCompileStatic(refExpr) || refExpr.getQualifier() != null)
-		{
-			return null;
-		}
+  @Nullable
+  public static PsiType getReassignedVarType(GrReferenceExpression refExpr, boolean honorCompileStatic) {
+    if (honorCompileStatic && !PsiUtil.isCompileStatic(refExpr) || refExpr.getQualifier() != null) {
+      return null;
+    }
 
-		final PsiElement resolved = refExpr.resolve();
-		if(!PsiUtil.isLocalVariable(resolved))
-		{
-			return null;
-		}
+    final PsiElement resolved = refExpr.resolve();
+    if (!PsiUtil.isLocalVariable(resolved)) {
+      return null;
+    }
 
-		assert resolved instanceof GrVariable;
+    assert resolved instanceof GrVariable;
 
-		return TypeInferenceHelper.getCurrentContext().getExpressionType(((GrVariable) resolved),
-				new Function<GrVariable, PsiType>()
-		{
-			@Override
-			public PsiType fun(GrVariable variable)
-			{
-				return getLeastUpperBoundByVar(variable);
-			}
-		});
-	}
+    return TypeInferenceHelper.getCurrentContext().getExpressionType(((GrVariable)resolved),
+																																		 variable -> getLeastUpperBoundByVar(variable));
+  }
 
-	@javax.annotation.Nullable
-	private static PsiType getLeastUpperBoundByVar(@Nonnull final GrVariable var)
-	{
-		return RecursionManager.doPreventingRecursion(var, false, new NullableComputable<PsiType>()
-		{
-			@Override
-			public PsiType compute()
-			{
-				final Collection<PsiReference> all = ReferencesSearch.search(var, var.getUseScope()).findAll();
-				final GrExpression initializer = var.getInitializerGroovy();
+  @Nullable
+  private static PsiType getLeastUpperBoundByVar(@Nonnull final GrVariable var) {
+    return RecursionManager.doPreventingRecursion(var, false, new Supplier<PsiType>() {
+      @Override
+      public PsiType get() {
+        final Collection<PsiReference> all = ReferencesSearch.search(var, var.getUseScope()).findAll();
+        final GrExpression initializer = var.getInitializerGroovy();
 
-				if(initializer == null && all.isEmpty())
-				{
-					return var.getDeclaredType();
-				}
+        if (initializer == null && all.isEmpty()) {
+          return var.getDeclaredType();
+        }
 
-				PsiType result = initializer != null ? initializer.getType() : null;
+        PsiType result = initializer != null ? initializer.getType() : null;
 
-				final PsiManager manager = var.getManager();
-				for(PsiReference reference : all)
-				{
-					final PsiElement ref = reference.getElement();
-					if(ref instanceof GrReferenceExpression && PsiUtil.isLValue(((GrReferenceExpression) ref)))
-					{
-						result = TypesUtil.getLeastUpperBoundNullable(result,
-								TypeInferenceHelper.getInitializerTypeFor(ref), manager);
-					}
-				}
+        final PsiManager manager = var.getManager();
+        for (PsiReference reference : all) {
+          final PsiElement ref = reference.getElement();
+          if (ref instanceof GrReferenceExpression && PsiUtil.isLValue(((GrReferenceExpression)ref))) {
+            result = TypesUtil.getLeastUpperBoundNullable(result,
+                                                          TypeInferenceHelper.getInitializerTypeFor(ref), manager);
+          }
+        }
 
-				return result;
-			}
-		});
-	}
+        return result;
+      }
+    });
+  }
 
-	@Nonnull
-	private static Set<String> getUsedVarsInsideBlock(@Nonnull final GrCodeBlock block)
-	{
-		return CachedValuesManager.getCachedValue(block, new CachedValueProvider<Set<String>>()
-		{
-			@javax.annotation.Nullable
-			@Override
-			public Result<Set<String>> compute()
-			{
-				final Set<String> result = ContainerUtil.newHashSet();
+  @Nonnull
+  private static Set<String> getUsedVarsInsideBlock(@Nonnull final GrCodeBlock block) {
+    return LanguageCachedValueUtil.getCachedValue(block, new CachedValueProvider<Set<String>>() {
+      @Nullable
+      @Override
+      public Result<Set<String>> compute() {
+				final Set<String> result = new HashSet<>();
 
-				block.acceptChildren(new GroovyRecursiveElementVisitor()
-				{
+        block.acceptChildren(new GroovyRecursiveElementVisitor() {
 
-					@Override
-					public void visitOpenBlock(GrOpenBlock openBlock)
-					{
-						result.addAll(getUsedVarsInsideBlock(openBlock));
-					}
+          @Override
+          public void visitOpenBlock(GrOpenBlock openBlock) {
+            result.addAll(getUsedVarsInsideBlock(openBlock));
+          }
 
-					@Override
-					public void visitClosure(GrClosableBlock closure)
-					{
-						result.addAll(getUsedVarsInsideBlock(closure));
-					}
+          @Override
+          public void visitClosure(GrClosableBlock closure) {
+            result.addAll(getUsedVarsInsideBlock(closure));
+          }
 
-					@Override
-					public void visitReferenceExpression(GrReferenceExpression referenceExpression)
-					{
-						if(referenceExpression.getQualifier() == null && referenceExpression.getReferenceName() !=
-								null)
-						{
-							result.add(referenceExpression.getReferenceName());
-						}
-					}
-				});
-				return Result.create(result, block);
-			}
-		});
-	}
+          @Override
+          public void visitReferenceExpression(GrReferenceExpression referenceExpression) {
+            if (referenceExpression.getQualifier() == null && referenceExpression.getReferenceName() !=
+              null) {
+              result.add(referenceExpression.getReferenceName());
+            }
+          }
+        });
+        return Result.create(result, block);
+      }
+    });
+  }
 
 }

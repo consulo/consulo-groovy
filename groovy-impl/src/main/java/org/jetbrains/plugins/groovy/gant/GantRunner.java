@@ -15,30 +15,29 @@
  */
 package org.jetbrains.plugins.groovy.gant;
 
-import static com.intellij.util.containers.ContainerUtil.ar;
-
-import java.io.File;
-
-import javax.annotation.Nonnull;
-
+import consulo.execution.CantRunException;
+import consulo.execution.configuration.RunProfile;
+import consulo.execution.executor.Executor;
+import consulo.ide.setting.ShowSettingsUtil;
+import consulo.java.execution.configurations.OwnJavaParameters;
+import consulo.module.Module;
+import consulo.project.Project;
+import consulo.ui.ex.awt.Messages;
+import consulo.util.io.FileUtil;
+import consulo.util.lang.StringUtil;
+import consulo.virtualFileSystem.VirtualFile;
+import org.jetbrains.plugins.groovy.JetgroovyIcons;
 import org.jetbrains.plugins.groovy.config.GroovyConfigUtils;
 import org.jetbrains.plugins.groovy.runner.GroovyScriptRunConfiguration;
 import org.jetbrains.plugins.groovy.runner.GroovyScriptRunner;
 import org.jetbrains.plugins.groovy.util.GroovyUtils;
 import org.jetbrains.plugins.groovy.util.LibrariesUtil;
-import com.intellij.execution.CantRunException;
-import com.intellij.execution.Executor;
-import com.intellij.execution.configurations.RunProfile;
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.options.ShowSettingsUtil;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.ui.Messages;
-import com.intellij.openapi.util.io.FileUtil;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.openapi.vfs.VirtualFile;
-import consulo.awt.TargetAWT;
-import consulo.java.execution.configurations.OwnJavaParameters;
-import icons.JetgroovyIcons;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.io.File;
+
+import static consulo.ide.impl.idea.util.containers.ContainerUtil.ar;
 
 /**
  * @author ilyas
@@ -55,9 +54,11 @@ public class GantRunner extends GroovyScriptRunner {
   }
 
   @Override
-  public boolean ensureRunnerConfigured(@javax.annotation.Nullable Module module, RunProfile profile, Executor executor, final Project project) {
+  public boolean ensureRunnerConfigured(@Nullable Module module, RunProfile profile, Executor executor, final Project project) {
     if (!(GantUtils.getSDKInstallPath(module, project).length() > 0)) {
-      int result = Messages.showOkCancelDialog("Gant is not configured. Do you want to configure it?", "Configure Gant SDK", JetgroovyIcons.Groovy.Gant_16x16);
+      int result = Messages.showOkCancelDialog("Gant is not configured. Do you want to configure it?",
+                                               "Configure Gant SDK",
+                                               JetgroovyIcons.Groovy.Gant_16x16);
       if (result == 0) {
         ShowSettingsUtil.getInstance().editConfigurable(project, new GantConfigurable(project));
       }
@@ -79,7 +80,11 @@ public class GantRunner extends GroovyScriptRunner {
   }
 
   @Override
-  public void configureCommandLine(OwnJavaParameters params, @javax.annotation.Nullable Module module, boolean tests, VirtualFile script, GroovyScriptRunConfiguration configuration) throws CantRunException {
+  public void configureCommandLine(OwnJavaParameters params,
+                                   @Nullable Module module,
+                                   boolean tests,
+                                   VirtualFile script,
+                                   GroovyScriptRunConfiguration configuration) throws CantRunException {
     String gantHome = GantUtils.getSDKInstallPath(module, configuration.getProject());
 
     addGroovyAndAntJars(params, module, gantHome);

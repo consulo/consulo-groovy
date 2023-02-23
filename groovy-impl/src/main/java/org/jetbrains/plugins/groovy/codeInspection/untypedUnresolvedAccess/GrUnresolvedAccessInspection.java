@@ -16,98 +16,89 @@
 
 package org.jetbrains.plugins.groovy.codeInspection.untypedUnresolvedAccess;
 
-import javax.annotation.Nonnull;
-import javax.swing.JComponent;
-
+import consulo.language.editor.inspection.scheme.InspectionProfile;
+import consulo.language.editor.inspection.scheme.InspectionProjectProfileManager;
+import consulo.language.editor.inspection.ui.MultipleCheckboxOptionsPanel;
+import consulo.language.editor.rawHighlight.HighlightDisplayKey;
+import consulo.language.editor.rawHighlight.HighlightDisplayLevel;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.project.Project;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.codeInspection.GroovyInspectionBundle;
 import org.jetbrains.plugins.groovy.codeInspection.GroovySuppressableInspectionTool;
 import org.jetbrains.plugins.groovy.lang.psi.GrReferenceElement;
-import com.intellij.codeHighlighting.HighlightDisplayLevel;
-import com.intellij.codeInsight.daemon.HighlightDisplayKey;
-import com.intellij.codeInspection.InspectionProfile;
-import com.intellij.codeInspection.ui.MultipleCheckboxOptionsPanel;
-import com.intellij.openapi.project.Project;
-import com.intellij.profile.codeInspection.InspectionProjectProfileManager;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.swing.*;
 
 /**
  * @author Maxim.Medvedev
  */
-public class GrUnresolvedAccessInspection extends GroovySuppressableInspectionTool
-{
-	private static final String SHORT_NAME = "GrUnresolvedAccess";
+public class GrUnresolvedAccessInspection extends GroovySuppressableInspectionTool {
+  private static final String SHORT_NAME = "GrUnresolvedAccess";
 
-	public boolean myHighlightIfGroovyObjectOverridden = true;
-	public boolean myHighlightIfMissingMethodsDeclared = true;
-	public boolean myHighlightInnerClasses = true;
+  public boolean myHighlightIfGroovyObjectOverridden = true;
+  public boolean myHighlightIfMissingMethodsDeclared = true;
+  public boolean myHighlightInnerClasses = true;
 
-	public static boolean isSuppressed(@Nonnull PsiElement ref)
-	{
-		return isElementToolSuppressedIn(ref, SHORT_NAME);
-	}
+  public static boolean isSuppressed(@Nonnull PsiElement ref) {
+    return isElementToolSuppressedIn(ref, SHORT_NAME);
+  }
 
-	public static HighlightDisplayKey findDisplayKey()
-	{
-		return HighlightDisplayKey.find(SHORT_NAME);
-	}
+  public static HighlightDisplayKey findDisplayKey() {
+    return HighlightDisplayKey.find(SHORT_NAME);
+  }
 
-	public static GrUnresolvedAccessInspection getInstance(PsiFile file, Project project)
-	{
-		return (GrUnresolvedAccessInspection) getInspectionProfile(project).getUnwrappedTool(SHORT_NAME, file);
-	}
+  public static GrUnresolvedAccessInspection getInstance(PsiFile file, Project project) {
+    return (GrUnresolvedAccessInspection)getInspectionProfile(project).getUnwrappedTool(SHORT_NAME, file);
+  }
 
-	@javax.annotation.Nullable
-	@Override
-	public JComponent createOptionsPanel()
-	{
-		final MultipleCheckboxOptionsPanel optionsPanel = new MultipleCheckboxOptionsPanel(this);
-		optionsPanel.addCheckbox(GroovyInspectionBundle.message("highlight.if.groovy.object.methods.overridden"),
-				"myHighlightIfGroovyObjectOverridden");
-		optionsPanel.addCheckbox(GroovyInspectionBundle.message("highlight.if.missing.methods.declared"),
-				"myHighlightIfMissingMethodsDeclared");
-		optionsPanel.addCheckbox(GroovyBundle.message("highlight.constructor.calls.of.a.non.static.inner.classes" +
-				".without.enclosing.instance.passed"), "myHighlightInnerClasses");
-		return optionsPanel;
-	}
+  @Nullable
+  @Override
+  public JComponent createOptionsPanel() {
+    final MultipleCheckboxOptionsPanel optionsPanel =
+      new MultipleCheckboxOptionsPanel(this);
+    optionsPanel.addCheckbox(GroovyInspectionBundle.message("highlight.if.groovy.object.methods.overridden"),
+                             "myHighlightIfGroovyObjectOverridden");
+    optionsPanel.addCheckbox(GroovyInspectionBundle.message("highlight.if.missing.methods.declared"),
+                             "myHighlightIfMissingMethodsDeclared");
+    optionsPanel.addCheckbox(GroovyBundle.message("highlight.constructor.calls.of.a.non.static.inner.classes" +
+                                                    ".without.enclosing.instance.passed"), "myHighlightInnerClasses");
+    return optionsPanel;
+  }
 
-	public static boolean isInspectionEnabled(PsiFile file, Project project)
-	{
-		return getInspectionProfile(project).isToolEnabled(findDisplayKey(), file);
-	}
+  public static boolean isInspectionEnabled(PsiFile file, Project project) {
+    return getInspectionProfile(project).isToolEnabled(findDisplayKey(), file);
+  }
 
-	public static HighlightDisplayLevel getHighlightDisplayLevel(Project project, GrReferenceElement ref)
-	{
-		return getInspectionProfile(project).getErrorLevel(findDisplayKey(), ref);
-	}
+  public static HighlightDisplayLevel getHighlightDisplayLevel(Project project, GrReferenceElement ref) {
+    return getInspectionProfile(project).getErrorLevel(findDisplayKey(), ref);
+  }
 
-	@Nonnull
-	private static InspectionProfile getInspectionProfile(@Nonnull Project project)
-	{
-		return InspectionProjectProfileManager.getInstance(project).getInspectionProfile();
-	}
+  @Nonnull
+  private static InspectionProfile getInspectionProfile(@Nonnull Project project) {
+    return InspectionProjectProfileManager.getInstance(project).getInspectionProfile();
+  }
 
-	@Override
-	@Nls
-	@Nonnull
-	public String getGroupDisplayName()
-	{
-		return BaseInspection.PROBABLE_BUGS;
-	}
+  @Override
+  @Nls
+  @Nonnull
+  public String getGroupDisplayName() {
+    return BaseInspection.PROBABLE_BUGS;
+  }
 
-	@Override
-	@Nls
-	@Nonnull
-	public String getDisplayName()
-	{
-		return getDisplayText();
-	}
+  @Override
+  @Nls
+  @Nonnull
+  public String getDisplayName() {
+    return getDisplayText();
+  }
 
-	public static String getDisplayText()
-	{
-		return "Access to unresolved expression";
-	}
+  public static String getDisplayText() {
+    return "Access to unresolved expression";
+  }
 }

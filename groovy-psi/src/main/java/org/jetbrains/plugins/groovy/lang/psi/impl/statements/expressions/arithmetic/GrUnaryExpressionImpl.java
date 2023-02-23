@@ -16,8 +16,18 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.arithmetic;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.intellij.java.language.psi.CommonClassNames;
+import com.intellij.java.language.psi.PsiMethod;
+import com.intellij.java.language.psi.PsiParameter;
+import com.intellij.java.language.psi.PsiType;
+import consulo.document.util.TextRange;
+import consulo.language.ast.ASTNode;
+import consulo.language.ast.IElementType;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiReference;
+import consulo.language.psi.resolve.ResolveCache;
+import consulo.language.util.IncorrectOperationException;
+import consulo.util.collection.ArrayUtil;
 import org.jetbrains.plugins.groovy.lang.lexer.TokenSets;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
@@ -30,19 +40,10 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.GrExpre
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 import org.jetbrains.plugins.groovy.lang.resolve.ResolveUtil;
-import com.intellij.lang.ASTNode;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.CommonClassNames;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiMethod;
-import com.intellij.psi.PsiParameter;
-import com.intellij.psi.PsiReference;
-import com.intellij.psi.PsiType;
-import com.intellij.psi.impl.source.resolve.ResolveCache;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.util.ArrayUtil;
-import com.intellij.util.Function;
-import com.intellij.util.IncorrectOperationException;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.function.Function;
 
 /**
  * @author ilyas
@@ -52,7 +53,7 @@ public class GrUnaryExpressionImpl extends GrExpressionImpl implements GrUnaryEx
   private static final Function<GrUnaryExpressionImpl,PsiType> TYPE_CALCULATOR = new Function<GrUnaryExpressionImpl, PsiType>() {
     @Nullable
     @Override
-    public PsiType fun(GrUnaryExpressionImpl unary) {
+    public PsiType apply(GrUnaryExpressionImpl unary) {
       final GroovyResolveResult resolveResult = PsiImplUtil.extractUniqueResult(unary.multiResolve(false));
 
       if (isIncDecNumber(resolveResult)) {

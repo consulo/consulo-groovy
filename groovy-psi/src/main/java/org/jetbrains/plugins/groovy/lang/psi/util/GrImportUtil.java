@@ -19,13 +19,13 @@ import java.util.Collection;
 
 import javax.annotation.Nonnull;
 
+import consulo.language.psi.PsiFile;
+import consulo.util.collection.MultiMap;
 import org.jetbrains.plugins.groovy.lang.psi.GrReferenceElement;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.api.toplevel.imports.GrImportStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
 import org.jetbrains.plugins.groovy.util.LightCacheKey;
-import com.intellij.psi.PsiFile;
-import com.intellij.util.containers.MultiMap;
 
 /**
  * @author Max Medvedev

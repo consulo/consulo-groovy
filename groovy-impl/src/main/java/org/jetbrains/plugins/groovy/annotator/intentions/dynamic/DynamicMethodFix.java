@@ -15,15 +15,13 @@
  */
 package org.jetbrains.plugins.groovy.annotator.intentions.dynamic;
 
-import javax.annotation.Nonnull;
-
-import com.intellij.codeInsight.intention.IntentionAction;
-import com.intellij.codeInsight.intention.LowPriorityAction;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiType;
-import com.intellij.util.IncorrectOperationException;
+import com.intellij.java.language.psi.PsiType;
+import consulo.codeEditor.Editor;
+import consulo.language.editor.intention.IntentionAction;
+import consulo.language.editor.intention.LowPriorityAction;
+import consulo.language.psi.PsiFile;
+import consulo.language.util.IncorrectOperationException;
+import consulo.project.Project;
 import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.annotator.intentions.QuickfixUtil;
 import org.jetbrains.plugins.groovy.annotator.intentions.dynamic.ui.DynamicDialog;
@@ -31,10 +29,13 @@ import org.jetbrains.plugins.groovy.annotator.intentions.dynamic.ui.DynamicEleme
 import org.jetbrains.plugins.groovy.annotator.intentions.dynamic.ui.DynamicMethodDialog;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
 
+import javax.annotation.Nonnull;
+
 /**
  * @author Maxim.Medvedev
  */
-public class DynamicMethodFix implements IntentionAction, LowPriorityAction {
+public class DynamicMethodFix implements IntentionAction, LowPriorityAction
+{
   private final GrReferenceExpression myReferenceExpression;
   private final String mySignature;
 
@@ -74,7 +75,8 @@ public class DynamicMethodFix implements IntentionAction, LowPriorityAction {
     return myReferenceExpression.isValid();
   }
 
-  public void invoke(@Nonnull Project project, Editor editor, PsiFile psiFile) throws IncorrectOperationException {
+  public void invoke(@Nonnull Project project, Editor editor, PsiFile psiFile) throws IncorrectOperationException
+  {
     DynamicDialog dialog = new DynamicMethodDialog(myReferenceExpression);
     dialog.show();
   }

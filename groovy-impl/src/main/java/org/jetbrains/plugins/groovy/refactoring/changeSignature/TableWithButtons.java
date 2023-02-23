@@ -15,8 +15,9 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.changeSignature;
 
-import com.intellij.ui.RowEditableTableModel;
-import com.intellij.ui.table.JBTable;
+import consulo.ide.impl.idea.ui.RowEditableTableModel;
+import consulo.ui.ex.awt.table.JBTable;
+import consulo.ui.ex.awt.table.JBTable;
 
 import javax.swing.*;
 import javax.swing.event.TableModelEvent;
@@ -87,7 +88,7 @@ public abstract class TableWithButtons {
     });
   }
 
-  private RowEditableTableModel myModel;
+  private consulo.ide.impl.idea.ui.RowEditableTableModel myModel;
 
   private JPanel myPanel;
   private JButton myAddButton;

@@ -15,16 +15,16 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.synthetic;
 
-import javax.annotation.Nonnull;
-
+import com.intellij.java.language.psi.PsiExpression;
+import com.intellij.java.language.psi.PsiType;
+import consulo.document.util.TextRange;
+import consulo.language.impl.psi.LightElement;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.util.IncorrectOperationException;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiExpression;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiType;
-import com.intellij.psi.impl.light.LightElement;
-import com.intellij.util.IncorrectOperationException;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author Max Medvedev

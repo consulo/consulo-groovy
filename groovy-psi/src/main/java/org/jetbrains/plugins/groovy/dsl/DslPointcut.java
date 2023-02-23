@@ -15,26 +15,19 @@
  */
 package org.jetbrains.plugins.groovy.dsl;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
+import com.intellij.java.language.psi.JavaPsiFacade;
+import com.intellij.java.language.psi.PsiClass;
+import com.intellij.java.language.psi.PsiMethod;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.language.util.ProcessingContext;
+import consulo.util.dataholder.Key;
 import org.jetbrains.plugins.groovy.dsl.toplevel.ClassContextFilter;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.ClassUtil;
-import consulo.util.dataholder.Key;
-import com.intellij.psi.JavaPsiFacade;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiMethod;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.ProcessingContext;
+
+import javax.annotation.Nullable;
+import java.util.*;
 
 /**
  * @author peter
@@ -59,7 +52,7 @@ public abstract class DslPointcut<T, V>
 	};
 	public static Key<Map<String, List>> BOUND = Key.create("gdsl.bound");
 
-	@javax.annotation.Nullable
+	@Nullable
 	abstract List<V> matches(T src, ProcessingContext context);
 
 	abstract boolean operatesOn(Class c);

@@ -15,8 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.lang.parser
 
-import com.intellij.psi.PsiDocumentManager
-import com.intellij.psi.impl.DebugUtil
+import com.intellij.java.language.psi.PsiDocumentManager
+import com.intellij.java.language.psi.impl.DebugUtil
 import com.intellij.testFramework.fixtures.LightCodeInsightFixtureTestCase
 import org.jetbrains.plugins.groovy.util.TestUtils
 

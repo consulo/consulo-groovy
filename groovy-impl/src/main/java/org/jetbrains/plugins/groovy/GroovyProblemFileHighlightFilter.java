@@ -15,8 +15,8 @@
  */
 package org.jetbrains.plugins.groovy;
 
-import com.intellij.openapi.util.Condition;
-import com.intellij.openapi.vfs.VirtualFile;
+import consulo.util.lang.function.Condition;
+import consulo.virtualFileSystem.VirtualFile;
 
 /**
 * @author yole

@@ -19,14 +19,15 @@
  */
 package org.jetbrains.plugins.groovy.lang;
 
-import com.intellij.lang.ASTNode;
+import com.intellij.java.language.psi.*;
+import consulo.language.ast.ASTNode;
+import consulo.language.ast.TreeCopyHandler;
+import consulo.language.impl.ast.CompositeElement;
+import consulo.language.impl.ast.TreeElement;
+import consulo.language.impl.psi.SourceTreeToPsiMap;
+import consulo.language.psi.PsiElement;
+import consulo.language.util.IncorrectOperationException;
 import consulo.util.dataholder.Key;
-import com.intellij.psi.*;
-import com.intellij.psi.impl.source.SourceTreeToPsiMap;
-import com.intellij.psi.impl.source.tree.CompositeElement;
-import com.intellij.psi.impl.source.tree.TreeCopyHandler;
-import com.intellij.psi.impl.source.tree.TreeElement;
-import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GrReferenceElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
@@ -40,7 +41,7 @@ import java.util.Map;
  */
 public class GroovyChangeUtilSupport implements TreeCopyHandler {
 
-  public TreeElement decodeInformation(TreeElement element, final Map<Object, Object> decodingState) {
+  public TreeElement decodeInformation(ASTNode element, final Map<Object, Object> decodingState) {
     if (element instanceof CompositeElement) {
       if (element.getElementType() == GroovyElementTypes.REFERENCE_ELEMENT || element.getElementType() == GroovyElementTypes.REFERENCE_EXPRESSION) {
         GrReferenceElement ref = (GrReferenceElement)SourceTreeToPsiMap.treeElementToPsi(element);
@@ -60,16 +61,16 @@ public class GroovyChangeUtilSupport implements TreeCopyHandler {
             return (TreeElement)SourceTreeToPsiMap.psiElementToTree(ref);
           }
         }
-        return element;
+        return (TreeElement)element;
       }
     }
     return null;
   }
 
-  public void encodeInformation(final TreeElement element, final ASTNode original, final Map<Object, Object> encodingState) {
+  public void encodeInformation(final ASTNode element, final ASTNode original, final Map<Object, Object> encodingState) {
     if (original instanceof CompositeElement) {
       if (original.getElementType() == GroovyElementTypes.REFERENCE_ELEMENT ||
-          original.getElementType() == GroovyElementTypes.REFERENCE_EXPRESSION) {
+        original.getElementType() == GroovyElementTypes.REFERENCE_EXPRESSION) {
         PsiElement psi = original.getPsi();
         if (!PsiUtil.isThisOrSuperRef(psi)) {
           final GroovyResolveResult result = ((GrReferenceElement)psi).advancedResolve();
@@ -77,7 +78,7 @@ public class GroovyChangeUtilSupport implements TreeCopyHandler {
             final PsiElement target = result.getElement();
 
             if (target instanceof PsiClass ||
-                (target instanceof PsiMethod || target instanceof PsiField) &&
+              (target instanceof PsiMethod || target instanceof PsiField) &&
                 ((PsiMember)target).hasModifierProperty(PsiModifier.STATIC) &&
                 result.getCurrentFileResolveContext() instanceof GrImportStatement) {
               element.putCopyableUserData(REFERENCED_MEMBER_KEY, (PsiMember)target);

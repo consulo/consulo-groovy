@@ -15,15 +15,17 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.controlFlow.impl;
 
-import com.intellij.diagnostic.LogMessageEx;
-import com.intellij.openapi.progress.ProgressManager;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.Pair;
-import com.intellij.psi.*;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.containers.ContainerUtil;
+import com.intellij.java.language.psi.*;
+import consulo.application.progress.ProgressManager;
+import consulo.application.util.logging.LoggerUtil;
+import consulo.language.ast.IElementType;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.util.PsiTreeUtil;
 import consulo.logging.Logger;
+import consulo.project.Project;
+import consulo.util.collection.ContainerUtil;
+import consulo.util.lang.Pair;
 import org.jetbrains.plugins.groovy.codeInspection.utils.ControlFlowUtils;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFileBase;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
@@ -453,7 +455,7 @@ public class ControlFlowBuilder extends GroovyRecursiveElementVisitor {
     }
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   private InstructionImpl reduceAllNegationsIntoInstruction(GroovyPsiElement currentScope, List<? extends GotoInstruction> negations) {
     if (negations.size() > 1) {
       InstructionImpl instruction = addNode(new InstructionImpl(currentScope));
@@ -706,7 +708,7 @@ public class ControlFlowBuilder extends GroovyRecursiveElementVisitor {
     myConditions.push(conditionStart);
   }
 
-  private void acceptNullable(@javax.annotation.Nullable GroovyPsiElement element) {
+  private void acceptNullable(@Nullable GroovyPsiElement element) {
     if (element != null) {
       element.accept(this);
     }
@@ -740,13 +742,13 @@ public class ControlFlowBuilder extends GroovyRecursiveElementVisitor {
     finishNode(start);
   }
 
-  private void processForLoopInitializer(@javax.annotation.Nullable GrForClause clause) {
+  private void processForLoopInitializer(@Nullable GrForClause clause) {
     GroovyPsiElement initializer = clause instanceof GrTraditionalForClause ? ((GrTraditionalForClause)clause).getInitialization() :
-                                   clause instanceof GrForInClause ? ((GrForInClause)clause).getIteratedExpression() : null;
+      clause instanceof GrForInClause ? ((GrForInClause)clause).getIteratedExpression() : null;
     acceptNullable(initializer);
   }
 
-  private void addForLoopBreakingEdge(GrForStatement forStatement, @javax.annotation.Nullable GrForClause clause) {
+  private void addForLoopBreakingEdge(GrForStatement forStatement, @Nullable GrForClause clause) {
     if (clause instanceof GrTraditionalForClause) {
       final GrExpression condition = ((GrTraditionalForClause)clause).getCondition();
       if (condition != null) {
@@ -772,7 +774,7 @@ public class ControlFlowBuilder extends GroovyRecursiveElementVisitor {
 
 
   @Nonnull
-  private List<Pair<InstructionImpl, GroovyPsiElement>> collectCorrespondingPendingEdges(@javax.annotation.Nullable PsiElement currentScope) {
+  private List<Pair<InstructionImpl, GroovyPsiElement>> collectCorrespondingPendingEdges(@Nullable PsiElement currentScope) {
     if (currentScope == null) {
       List<Pair<InstructionImpl, GroovyPsiElement>> result = myPending;
       myPending = ContainerUtil.newArrayList();
@@ -1087,7 +1089,7 @@ public class ControlFlowBuilder extends GroovyRecursiveElementVisitor {
     PsiFile file = myScope.getContainingFile();
     String fileText = file != null ? file.getText() : null;
 
-    LogMessageEx.error(LOG, descr, myScope.getText(), "\n------------------\n", fileText);
+    LoggerUtil.error(LOG, descr, myScope.getText(), "\n------------------\n", fileText);
   }
 
   private AfterCallInstruction addCallNode(InstructionImpl finallyInstruction, GroovyPsiElement scopeWhenAdded, InstructionImpl src) {
@@ -1102,7 +1104,7 @@ public class ControlFlowBuilder extends GroovyRecursiveElementVisitor {
     return afterCall;
   }
 
-  private InstructionImpl startNode(@javax.annotation.Nullable GroovyPsiElement element) {
+  private InstructionImpl startNode(@Nullable GroovyPsiElement element) {
     return startNode(element, true);
   }
 
@@ -1117,7 +1119,8 @@ public class ControlFlowBuilder extends GroovyRecursiveElementVisitor {
   private void finishNode(InstructionImpl instruction) {
     final InstructionImpl popped = myProcessingStack.pop();
     if (!instruction.equals(popped)) {
-      String description = "popped: " + popped.toString() + " : " + popped.hashCode() + "   ,  expected: " + instruction.toString() + " : " + instruction.hashCode();
+      String description =
+        "popped: " + popped.toString() + " : " + popped.hashCode() + "   ,  expected: " + instruction.toString() + " : " + instruction.hashCode();
       error(description);
     }
   }

@@ -15,17 +15,18 @@
  */
 package org.jetbrains.plugins.groovy.extensions;
 
-import javax.annotation.Nonnull;
-
-import com.intellij.openapi.extensions.ExtensionPointName;
+import consulo.component.extension.ExtensionPointName;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author Sergey Evdokimov
  */
 public abstract class GroovyUnresolvedHighlightFilter {
 
-  public static final ExtensionPointName<GroovyUnresolvedHighlightFilter> EP_NAME = ExtensionPointName.create("org.intellij.groovy.unresolvedHighlightFilter");
+  public static final ExtensionPointName<GroovyUnresolvedHighlightFilter> EP_NAME = ExtensionPointName.create(
+    GroovyUnresolvedHighlightFilter.class);
 
   public abstract boolean isReject(@Nonnull GrReferenceExpression expression);
 

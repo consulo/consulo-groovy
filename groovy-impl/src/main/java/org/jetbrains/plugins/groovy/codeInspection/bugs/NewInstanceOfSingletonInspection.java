@@ -15,14 +15,12 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.bugs;
 
-import javax.annotation.Nonnull;
-
-import com.intellij.codeInspection.ProblemDescriptor;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.codeStyle.JavaCodeStyleManager;
-import com.intellij.util.IncorrectOperationException;
+import com.intellij.java.language.psi.codeStyle.JavaCodeStyleManager;
+import consulo.language.editor.inspection.ProblemDescriptor;
+import consulo.language.psi.PsiElement;
+import consulo.language.util.IncorrectOperationException;
+import consulo.logging.Logger;
+import consulo.project.Project;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspectionVisitor;
@@ -35,6 +33,8 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrNewExp
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author Max Medvedev
@@ -76,7 +76,8 @@ public class NewInstanceOfSingletonInspection extends BaseInspection {
 
     return new GroovyFix() {
       @Override
-      protected void doFix(Project project, ProblemDescriptor descriptor) throws IncorrectOperationException {
+      protected void doFix(Project project, ProblemDescriptor descriptor) throws IncorrectOperationException
+	  {
         final GrExpression instanceRef =
           GroovyPsiElementFactory.getInstance(project).createExpressionFromText(singleton.getQualifiedName() + ".instance");
 

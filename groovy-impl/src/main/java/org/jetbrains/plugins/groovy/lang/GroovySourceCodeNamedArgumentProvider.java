@@ -15,9 +15,11 @@
  */
 package org.jetbrains.plugins.groovy.lang;
 
-import com.intellij.psi.PsiElement;
+import consulo.language.psi.PsiElement;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
+import consulo.language.psi.PsiElement;
 import org.jetbrains.plugins.groovy.extensions.GroovyNamedArgumentProvider;
 import org.jetbrains.plugins.groovy.extensions.NamedArgumentDescriptor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
@@ -34,8 +36,8 @@ import java.util.Map;
 public class GroovySourceCodeNamedArgumentProvider extends GroovyNamedArgumentProvider {
   @Override
   public void getNamedArguments(@Nonnull GrCall call,
-                                @javax.annotation.Nullable PsiElement resolve,
-                                @javax.annotation.Nullable String argumentName,
+                                @Nullable PsiElement resolve,
+                                @Nullable String argumentName,
                                 boolean forCompletion,
                                 Map<String, NamedArgumentDescriptor> result) {
     if (resolve instanceof GrMethod) {

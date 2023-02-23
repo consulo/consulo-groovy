@@ -15,9 +15,9 @@
  */
 package org.jetbrains.plugins.groovy.lang.formatter
 
-import com.intellij.psi.codeStyle.CodeStyleSettings
-import com.intellij.psi.codeStyle.CodeStyleSettingsManager
-import com.intellij.psi.codeStyle.CommonCodeStyleSettings
+import com.intellij.java.language.psi.codeStyle.CodeStyleSettings
+import com.intellij.java.language.psi.codeStyle.CodeStyleSettingsManager
+import com.intellij.java.language.psi.codeStyle.CommonCodeStyleSettings
 import org.jetbrains.annotations.NotNull
 import org.jetbrains.annotations.Nullable
 import org.jetbrains.plugins.groovy.GroovyFileType

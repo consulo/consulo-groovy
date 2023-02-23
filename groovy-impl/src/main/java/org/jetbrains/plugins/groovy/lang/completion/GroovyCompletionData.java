@@ -16,9 +16,29 @@
 
 package org.jetbrains.plugins.groovy.lang.completion;
 
-
-import javax.annotation.Nonnull;
-
+import com.intellij.java.impl.codeInsight.TailTypes;
+import com.intellij.java.impl.codeInsight.completion.JavaKeywordCompletion;
+import com.intellij.java.impl.codeInsight.completion.ModifierChooser;
+import com.intellij.java.language.patterns.PsiJavaPatterns;
+import com.intellij.java.language.psi.PsiClass;
+import com.intellij.java.language.psi.PsiKeyword;
+import com.intellij.java.language.psi.PsiModifierList;
+import com.intellij.java.language.psi.PsiType;
+import consulo.language.ast.ASTNode;
+import consulo.language.editor.completion.CompletionParameters;
+import consulo.language.editor.completion.CompletionResultSet;
+import consulo.language.editor.completion.lookup.LookupElement;
+import consulo.language.editor.completion.lookup.LookupElementBuilder;
+import consulo.language.editor.completion.lookup.TailType;
+import consulo.language.editor.completion.lookup.TailTypeDecorator;
+import consulo.language.pattern.ElementPattern;
+import consulo.language.pattern.PlatformPatterns;
+import consulo.language.pattern.StandardPatterns;
+import consulo.language.psi.OuterLanguageElement;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiErrorElement;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.util.collection.ArrayUtil;
 import org.jetbrains.plugins.groovy.codeInspection.utils.ControlFlowUtils;
 import org.jetbrains.plugins.groovy.lang.groovydoc.lexer.GroovyDocTokenTypes;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocInlinedTag;
@@ -40,14 +60,7 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.clauses.GrTraditiona
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.*;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.literals.GrLiteral;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameter;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrClassDefinition;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrEnumTypeDefinition;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrExtendsClause;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrImplementsClause;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrInterfaceDefinition;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTraitTypeDefinition;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinitionBody;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.*;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrAnnotationMethod;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
 import org.jetbrains.plugins.groovy.lang.psi.api.toplevel.imports.GrImportStatement;
@@ -57,29 +70,9 @@ import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.util.GrStatementOwner;
 import org.jetbrains.plugins.groovy.lang.psi.impl.PsiImplUtil;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
-import com.intellij.codeInsight.TailType;
-import com.intellij.codeInsight.TailTypes;
-import com.intellij.codeInsight.completion.CompletionParameters;
-import com.intellij.codeInsight.completion.CompletionResultSet;
-import com.intellij.codeInsight.completion.JavaKeywordCompletion;
-import com.intellij.codeInsight.completion.ModifierChooser;
-import com.intellij.codeInsight.lookup.LookupElement;
-import com.intellij.codeInsight.lookup.LookupElementBuilder;
-import com.intellij.codeInsight.lookup.TailTypeDecorator;
-import com.intellij.lang.ASTNode;
-import com.intellij.patterns.ElementPattern;
-import com.intellij.patterns.PlatformPatterns;
-import com.intellij.patterns.PsiJavaPatterns;
-import com.intellij.patterns.StandardPatterns;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiErrorElement;
-import com.intellij.psi.PsiKeyword;
-import com.intellij.psi.PsiModifierList;
-import com.intellij.psi.PsiType;
-import com.intellij.psi.templateLanguages.OuterLanguageElement;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.ArrayUtil;
+
+import javax.annotation.Nonnull;
+
 
 /**
  * @author ilyas

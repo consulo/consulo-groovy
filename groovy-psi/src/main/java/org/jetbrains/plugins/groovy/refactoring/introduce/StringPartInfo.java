@@ -20,6 +20,12 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
+import consulo.document.util.TextRange;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.util.collection.ContainerUtil;
 import org.jetbrains.plugins.groovy.lang.lexer.TokenSets;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrBinaryExpression;
@@ -29,14 +35,9 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.literals
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.literals.GrStringInjection;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.literals.GrLiteralImpl;
 import org.jetbrains.plugins.groovy.lang.psi.util.GrStringUtil;
-import com.intellij.openapi.util.Condition;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.ArrayUtil;
-import com.intellij.util.IncorrectOperationException;
-import com.intellij.util.containers.ContainerUtil;
+import consulo.util.lang.function.Condition;
+import consulo.util.collection.ArrayUtil;
+import consulo.language.util.IncorrectOperationException;
 
 /**
  * @author Max Medvedev

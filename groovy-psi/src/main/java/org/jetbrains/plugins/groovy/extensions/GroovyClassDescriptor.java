@@ -1,25 +1,23 @@
 package org.jetbrains.plugins.groovy.extensions;
 
-import com.intellij.openapi.extensions.AbstractExtensionPointBean;
-import com.intellij.openapi.extensions.ExtensionPointName;
-import com.intellij.util.xml.Required;
-import com.intellij.util.xmlb.annotations.AbstractCollection;
-import com.intellij.util.xmlb.annotations.Attribute;
-import com.intellij.util.xmlb.annotations.Property;
+import consulo.annotation.component.ComponentScope;
+import consulo.annotation.component.ExtensionAPI;
+import consulo.component.extension.ExtensionPointName;
+
+import javax.annotation.Nonnull;
+import java.util.Set;
 
 /**
  * @author Sergey Evdokimov
  */
-public class GroovyClassDescriptor extends AbstractExtensionPointBean {
+@ExtensionAPI(ComponentScope.APPLICATION)
+public interface GroovyClassDescriptor {
 
-  public static final ExtensionPointName<GroovyClassDescriptor> EP_NAME = new ExtensionPointName<GroovyClassDescriptor>("org.intellij.groovy.classDescriptor");
+  public static final ExtensionPointName<GroovyClassDescriptor> EP_NAME = ExtensionPointName.create(GroovyClassDescriptor.class);
 
-  @Attribute("class")
-  @Required
-  public String className;
+  @Nonnull
+  String getClassName();
 
-  @Property(surroundWithTag = false)
-  @AbstractCollection(surroundWithTag = false)
-  public GroovyMethodDescriptorTag[] methods;
-
+  @Nonnull
+  Set<GroovyMethodDescriptor> getMethods();
 }

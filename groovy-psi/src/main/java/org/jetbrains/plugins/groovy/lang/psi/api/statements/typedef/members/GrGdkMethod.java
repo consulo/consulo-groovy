@@ -15,15 +15,17 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members;
 
+import com.intellij.java.language.psi.PsiMethod;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiMirrorElement;
+
 import javax.annotation.Nonnull;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiMethod;
-import com.intellij.psi.PsiMirrorElement;
 
 /**
  * @author ven
  */
-public interface GrGdkMethod extends PsiElement, PsiMirrorElement {
+public interface GrGdkMethod extends PsiElement, PsiMirrorElement
+{
   @Nonnull
   PsiMethod getStaticMethod();
 }

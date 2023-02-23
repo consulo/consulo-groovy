@@ -19,9 +19,9 @@ import com.intellij.codeInsight.TargetElementUtilBase
 import com.intellij.lang.ASTNode
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
-import com.intellij.psi.*
-import com.intellij.psi.impl.source.codeStyle.CodeEditUtil
-import com.intellij.psi.impl.source.tree.TreeElement
+import com.intellij.java.language.psi.*
+import com.intellij.java.language.psi.impl.source.codeStyle.CodeEditUtil
+import com.intellij.java.language.psi.impl.source.tree.TreeElement
 import com.intellij.refactoring.util.CommonRefactoringUtil
 import com.intellij.testFramework.fixtures.LightCodeInsightFixtureTestCase
 import junit.framework.Assert

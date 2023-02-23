@@ -15,13 +15,17 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.rename;
 
-import com.intellij.openapi.util.io.FileUtil;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiElement;
-import com.intellij.refactoring.rename.RenamePsiFileProcessor;
-import com.intellij.util.containers.MultiMap;
+import consulo.language.psi.PsiElement;
+import consulo.util.collection.MultiMap;
+import consulo.util.io.FileUtil;
+import consulo.util.lang.StringUtil;
+import com.intellij.java.language.psi.PsiClass;
+import consulo.language.psi.PsiElement;
+import consulo.ide.impl.idea.refactoring.rename.RenamePsiFileProcessor;
+import consulo.util.collection.MultiMap;
 import javax.annotation.Nonnull;
+
+import consulo.util.lang.StringUtil;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.refactoring.GroovyRefactoringBundle;
 

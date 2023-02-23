@@ -2,8 +2,8 @@ package org.jetbrains.plugins.groovy.lang.psi.dataFlow.types;
 
 import java.util.ArrayList;
 
+import consulo.language.psi.PsiManager;
 import org.jetbrains.plugins.groovy.lang.psi.dataFlow.Semilattice;
-import com.intellij.psi.PsiManager;
 
 /**
  * @author ven

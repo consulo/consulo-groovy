@@ -15,46 +15,43 @@
  */
 package org.jetbrains.plugins.groovy.lang.resolve;
 
+import consulo.annotation.component.ComponentScope;
+import consulo.annotation.component.ExtensionAPI;
+import consulo.component.extension.ExtensionPointName;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.resolve.PsiScopeProcessor;
+import consulo.language.psi.resolve.ResolveState;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlock;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.GrReferenceExpressionImpl;
 import org.jetbrains.plugins.groovy.lang.resolve.processors.ClassHint;
-import com.intellij.openapi.extensions.ExtensionPointName;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.ResolveState;
-import com.intellij.psi.scope.PsiScopeProcessor;
 
 /**
  * @author Sergey Evdokimov
  */
-public abstract class ClosureMissingMethodContributor
-{
+@ExtensionAPI(ComponentScope.APPLICATION)
+public abstract class ClosureMissingMethodContributor {
 
-	public static final ExtensionPointName<ClosureMissingMethodContributor> EP_NAME = ExtensionPointName.create("org" +
-			".intellij.groovy.closureMissingMethodContributor");
+  public static final ExtensionPointName<ClosureMissingMethodContributor> EP_NAME =
+    ExtensionPointName.create(ClosureMissingMethodContributor.class);
 
-	public static boolean processMethodsFromClosures(GrReferenceExpressionImpl ref, PsiScopeProcessor processor)
-	{
-		for(PsiElement e = ref.getContext(); e != null; e = e.getContext())
-		{
-			if(e instanceof GrClosableBlock)
-			{
-				ResolveState state = ResolveState.initial().put(ClassHint.RESOLVE_CONTEXT, e);
-				for(ClosureMissingMethodContributor contributor : EP_NAME.getExtensions())
-				{
-					if(!contributor.processMembers((GrClosableBlock) e, processor, ref, state))
-					{
-						return false;
-					}
-				}
-			}
-		}
-		return true;
-	}
+  public static boolean processMethodsFromClosures(GrReferenceExpressionImpl ref, PsiScopeProcessor processor) {
+    for (PsiElement e = ref.getContext(); e != null; e = e.getContext()) {
+      if (e instanceof GrClosableBlock) {
+        ResolveState state = ResolveState.initial().put(ClassHint.RESOLVE_CONTEXT, e);
+        for (ClosureMissingMethodContributor contributor : EP_NAME.getExtensionList()) {
+          if (!contributor.processMembers((GrClosableBlock)e, processor, ref, state)) {
+            return false;
+          }
+        }
+      }
+    }
+    return true;
+  }
 
-	public abstract boolean processMembers(GrClosableBlock closure,
-			PsiScopeProcessor processor,
-			GrReferenceExpression refExpr,
-			ResolveState state);
+  public abstract boolean processMembers(GrClosableBlock closure,
+                                         PsiScopeProcessor processor,
+                                         GrReferenceExpression refExpr,
+                                         ResolveState state);
 
 }

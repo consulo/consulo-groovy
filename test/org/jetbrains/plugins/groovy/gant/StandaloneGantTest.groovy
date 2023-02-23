@@ -22,7 +22,7 @@ public class StandaloneGantTest extends LightCodeInsightFixtureTestCase {
     public void configureModule(Module module, ModifiableRootModel model, ContentEntry contentEntry) {
       final Library.ModifiableModel modifiableModel = model.getModuleLibraryTable().createLibrary("GROOVY").getModifiableModel();
       final VirtualFile groovyJar = JarFileSystem.getInstance().refreshAndFindFileByPath(TestUtils.getMockGroovy1_7LibraryName() + "!/");
-      modifiableModel.addRoot(groovyJar, OrderRootType.CLASSES);
+      modifiableModel.addRoot(groovyJar, BinariesOrderRootType.getInstance());
       modifiableModel.commit();
     }
   };

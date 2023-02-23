@@ -15,15 +15,13 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.confusing;
 
-import com.intellij.codeInspection.ProblemDescriptor;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiType;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.util.IncorrectOperationException;
+import com.intellij.java.language.psi.PsiType;
+import consulo.language.ast.IElementType;
+import consulo.language.editor.inspection.ProblemDescriptor;
+import consulo.language.psi.PsiElement;
+import consulo.language.util.IncorrectOperationException;
+import consulo.project.Project;
 import org.jetbrains.annotations.NonNls;
-import javax.annotation.Nonnull;
-
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.codeInspection.GroovyFix;
@@ -37,6 +35,8 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrUnaryE
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.literals.GrLiteral;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -72,7 +72,7 @@ public class GroovyPointlessBooleanInspection extends BaseInspection {
     }
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   private static String calculateSimplifiedBinaryExpression(GrBinaryExpression expression) {
     final IElementType sign = expression.getOperationTokenType();
     final GrExpression lhs = expression.getLeftOperand();
@@ -169,7 +169,8 @@ public class GroovyPointlessBooleanInspection extends BaseInspection {
     }
 
     public void doFix(Project project, ProblemDescriptor descriptor)
-        throws IncorrectOperationException {
+        throws IncorrectOperationException
+	{
       final PsiElement element = descriptor.getPsiElement();
       if (element instanceof GrBinaryExpression) {
         final GrBinaryExpression expression =

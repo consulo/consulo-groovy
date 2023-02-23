@@ -15,32 +15,32 @@
  */
 package org.jetbrains.plugins.groovy.actions.generate.missing;
 
-import com.intellij.codeInsight.generation.ClassMember;
-import com.intellij.codeInsight.generation.GenerateMembersHandlerBase;
-import com.intellij.codeInsight.generation.GenerationInfo;
-import com.intellij.ide.fileTemplates.FileTemplate;
-import com.intellij.ide.fileTemplates.FileTemplateManager;
-import com.intellij.ide.fileTemplates.JavaTemplateUtil;
-import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.ui.DialogWrapper;
-import com.intellij.openapi.ui.Messages;
-import com.intellij.openapi.util.Computable;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.CommonClassNames;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiMethod;
-import com.intellij.psi.PsiParameter;
-import com.intellij.util.IncorrectOperationException;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.intellij.java.impl.codeInsight.generation.GenerateMembersHandlerBase;
+import com.intellij.java.language.impl.codeInsight.generation.GenerationInfo;
+import com.intellij.java.language.impl.codeInsight.template.JavaTemplateUtil;
+import com.intellij.java.language.psi.CommonClassNames;
+import com.intellij.java.language.psi.PsiClass;
+import com.intellij.java.language.psi.PsiMethod;
+import com.intellij.java.language.psi.PsiParameter;
+import consulo.application.ApplicationManager;
+import consulo.application.util.function.Computable;
+import consulo.codeEditor.Editor;
+import consulo.fileTemplate.FileTemplate;
+import consulo.fileTemplate.FileTemplateManager;
+import consulo.language.editor.generation.ClassMember;
+import consulo.language.util.IncorrectOperationException;
+import consulo.logging.Logger;
+import consulo.project.Project;
+import consulo.ui.ex.awt.DialogWrapper;
+import consulo.ui.ex.awt.Messages;
+import consulo.util.lang.StringUtil;
 import org.jetbrains.plugins.groovy.actions.generate.GroovyCodeInsightBundle;
 import org.jetbrains.plugins.groovy.actions.generate.GroovyGenerationInfo;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -79,7 +79,7 @@ public class GroovyGeneratePropertyMissingHandler extends GenerateMembersHandler
     return result;
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   private static GrMethod genGetter(PsiClass aClass, FileTemplate template) {
     Properties properties = FileTemplateManager.getInstance().getDefaultProperties(aClass.getProject());
     properties.setProperty(FileTemplate.ATTRIBUTE_RETURN_TYPE, "java.lang.Object");
@@ -193,10 +193,10 @@ public class GroovyGeneratePropertyMissingHandler extends GenerateMembersHandler
   @Nullable
   @Override
   protected ClassMember[] chooseMembers(ClassMember[] members,
-                                        boolean allowEmptySelection,
-                                        boolean copyJavadocCheckbox,
-                                        Project project,
-                                        @Nullable Editor editor) {
+																					 boolean allowEmptySelection,
+																					 boolean copyJavadocCheckbox,
+																					 Project project,
+																					 @Nullable Editor editor) {
     return ClassMember.EMPTY_ARRAY;
   }
 }

@@ -17,12 +17,15 @@ package org.jetbrains.plugins.groovy.util;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
+import consulo.language.content.FileIndexFacade;
+import consulo.virtualFileSystem.VirtualFile;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFileBase;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.roots.FileIndexFacade;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.PsiFile;
-import com.intellij.testFramework.LightVirtualFile;
+import consulo.project.Project;
+import consulo.language.content.FileIndexFacade;
+import consulo.virtualFileSystem.VirtualFile;
+import consulo.language.psi.PsiFile;
+import consulo.language.file.light.LightVirtualFile;
 
 public class GrFileIndexUtil
 {

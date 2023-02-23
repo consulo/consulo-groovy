@@ -16,22 +16,20 @@
 
 package org.jetbrains.plugins.groovy.refactoring.extract.method;
 
-import com.intellij.openapi.editor.event.DocumentEvent;
-import com.intellij.openapi.editor.event.DocumentListener;
-import com.intellij.openapi.help.HelpManager;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.ui.DialogWrapper;
-import com.intellij.openapi.ui.Splitter;
-import com.intellij.openapi.ui.ValidationInfo;
-import com.intellij.psi.*;
-import com.intellij.refactoring.HelpID;
-import com.intellij.refactoring.ui.ComboBoxVisibilityPanel;
-import com.intellij.refactoring.ui.ConflictsDialog;
-import com.intellij.refactoring.ui.MethodSignatureComponent;
-import com.intellij.refactoring.util.CommonRefactoringUtil;
-import com.intellij.ui.EditorTextField;
-import com.intellij.ui.IdeBorderFactory;
-import com.intellij.util.ArrayUtil;
+import com.intellij.java.impl.refactoring.HelpID;
+import com.intellij.java.language.psi.*;
+import consulo.application.HelpManager;
+import consulo.document.event.DocumentEvent;
+import consulo.document.event.DocumentListener;
+import consulo.language.editor.refactoring.ui.ConflictsDialog;
+import consulo.language.editor.refactoring.util.CommonRefactoringUtil;
+import consulo.language.editor.ui.awt.EditorTextField;
+import consulo.project.Project;
+import consulo.ui.ex.awt.DialogWrapper;
+import consulo.ui.ex.awt.IdeBorderFactory;
+import consulo.ui.ex.awt.Splitter;
+import consulo.ui.ex.awt.ValidationInfo;
+import consulo.util.collection.ArrayUtil;
 import consulo.util.collection.HashingStrategy;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.plugins.groovy.GroovyFileType;
@@ -48,6 +46,7 @@ import org.jetbrains.plugins.groovy.refactoring.ui.GroovyComboboxVisibilityPanel
 import org.jetbrains.plugins.groovy.settings.GroovyApplicationSettings;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -71,8 +70,8 @@ public class GroovyExtractMethodDialog extends DialogWrapper {
   private EditorTextField myNameField;
   private JCheckBox myCbSpecifyType;
   private JLabel myNameLabel;
-  private MethodSignatureComponent mySignature;
-  private ComboBoxVisibilityPanel<String> myVisibilityPanel;
+  private consulo.ide.impl.idea.refactoring.ui.MethodSignatureComponent mySignature;
+  private consulo.ide.impl.idea.refactoring.ui.ComboBoxVisibilityPanel<String> myVisibilityPanel;
   private Splitter mySplitter;
   private JCheckBox myForceReturnCheckBox;
   private ParameterTablePanel myParameterTablePanel;
@@ -164,7 +163,7 @@ public class GroovyExtractMethodDialog extends DialogWrapper {
     myListenerList.add(DataChangedListener.class, new DataChangedListener());
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   protected JComponent createCenterPanel() {
     return contentPane;
   }
@@ -189,7 +188,7 @@ public class GroovyExtractMethodDialog extends DialogWrapper {
     return null;
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   protected String getEnteredName() {
     String text = myNameField.getText();
     if (text != null && text.trim().length() > 0) {
@@ -229,7 +228,7 @@ public class GroovyExtractMethodDialog extends DialogWrapper {
       visibility = PsiModifier.PRIVATE;
     }
     myVisibilityPanel.setVisibility(visibility);
-    myVisibilityPanel.addListener(new ChangeListener(){
+    myVisibilityPanel.addListener(new ChangeListener() {
       @Override
       public void stateChanged(ChangeEvent e) {
         myHelper.setVisibility(myVisibilityPanel.getVisibility());
@@ -238,15 +237,15 @@ public class GroovyExtractMethodDialog extends DialogWrapper {
     });
 
     myParameterTablePanel = new ParameterTablePanel() {
-      protected void updateSignature(){
+      protected void updateSignature() {
         GroovyExtractMethodDialog.this.updateSignature();
       }
 
-      protected void doEnterAction(){
+      protected void doEnterAction() {
         GroovyExtractMethodDialog.this.clickDefaultButton();
       }
 
-      protected void doCancelAction(){
+      protected void doCancelAction() {
         GroovyExtractMethodDialog.this.doCancelAction();
       }
     };
@@ -273,10 +272,10 @@ public class GroovyExtractMethodDialog extends DialogWrapper {
         PsiClass containingClass = psiMethod.getContainingClass();
         if (containingClass == null) return true;
         String message = containingClass instanceof GroovyScriptClass ?
-            GroovyRefactoringBundle.message("method.is.already.defined.in.script", GroovyRefactoringUtil.getMethodSignature(method),
-                CommonRefactoringUtil.htmlEmphasize(containingClass.getQualifiedName())) :
-            GroovyRefactoringBundle.message("method.is.already.defined.in.class", GroovyRefactoringUtil.getMethodSignature(method),
-                CommonRefactoringUtil.htmlEmphasize(containingClass.getQualifiedName()));
+          GroovyRefactoringBundle.message("method.is.already.defined.in.script", GroovyRefactoringUtil.getMethodSignature(method),
+                                          CommonRefactoringUtil.htmlEmphasize(containingClass.getQualifiedName())) :
+          GroovyRefactoringBundle.message("method.is.already.defined.in.class", GroovyRefactoringUtil.getMethodSignature(method),
+                                          CommonRefactoringUtil.htmlEmphasize(containingClass.getQualifiedName()));
         conflicts.add(message);
       }
     }

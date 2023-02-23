@@ -15,16 +15,19 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.extract;
 
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.editor.SelectionModel;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.*;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.refactoring.RefactoringBundle;
-import com.intellij.refactoring.util.CommonRefactoringUtil;
-import com.intellij.util.ArrayUtil;
-import java.util.HashSet;
+import com.intellij.java.language.psi.PsiClass;
+import com.intellij.java.language.psi.PsiType;
+import consulo.codeEditor.Editor;
+import consulo.codeEditor.SelectionModel;
+import consulo.language.editor.refactoring.RefactoringBundle;
+import consulo.language.editor.refactoring.util.CommonRefactoringUtil;
+import consulo.language.psi.PsiDocumentManager;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.logging.Logger;
+import consulo.project.Project;
+import consulo.util.collection.ArrayUtil;
 import org.jetbrains.plugins.groovy.codeInspection.utils.ControlFlowUtils;
 import org.jetbrains.plugins.groovy.lang.psi.GrControlFlowOwner;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
@@ -51,10 +54,7 @@ import org.jetbrains.plugins.groovy.refactoring.inline.GroovyInlineMethodUtil;
 import org.jetbrains.plugins.groovy.refactoring.introduce.GrIntroduceHandlerBase;
 import org.jetbrains.plugins.groovy.refactoring.introduce.StringPartInfo;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static org.jetbrains.plugins.groovy.refactoring.GroovyRefactoringUtil.*;
 

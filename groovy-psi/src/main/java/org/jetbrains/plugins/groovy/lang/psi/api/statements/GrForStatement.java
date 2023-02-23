@@ -16,19 +16,21 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.api.statements;
 
+import consulo.language.psi.PsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.formatter.GrControlStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.clauses.GrForClause;
-import com.intellij.psi.PsiElement;
+
+import javax.annotation.Nullable;
 
 /**
  * @autor: ilyas
  */
 public interface GrForStatement extends GrControlStatement, GrLoopStatement {
 
-  @javax.annotation.Nullable
+  @Nullable
   GrForClause getClause();
 
-  @javax.annotation.Nullable
+  @Nullable
   GrStatement getBody();
 
   PsiElement getRParenth();

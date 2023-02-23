@@ -15,28 +15,28 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.bugs;
 
-import java.io.IOException;
-import java.util.Properties;
-
-import javax.annotation.Nonnull;
+import com.intellij.java.language.impl.codeInsight.template.JavaTemplateUtil;
+import com.intellij.java.language.psi.JavaPsiFacade;
+import com.intellij.java.language.psi.PsiTypeParameter;
+import com.intellij.java.language.psi.util.PsiTypesUtil;
+import consulo.fileTemplate.FileTemplate;
+import consulo.fileTemplate.FileTemplateManager;
+import consulo.language.editor.inspection.ProblemDescriptor;
+import consulo.language.util.IncorrectOperationException;
+import consulo.logging.Logger;
+import consulo.project.Project;
+import consulo.util.collection.ArrayUtil;
+import consulo.util.lang.StringUtil;
 import org.jetbrains.plugins.groovy.codeInspection.GroovyFix;
 import org.jetbrains.plugins.groovy.codeInspection.GroovyInspectionBundle;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrCodeBlock;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
-import com.intellij.codeInspection.ProblemDescriptor;
-import com.intellij.ide.fileTemplates.FileTemplate;
-import com.intellij.ide.fileTemplates.FileTemplateManager;
-import com.intellij.ide.fileTemplates.JavaTemplateUtil;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.JavaPsiFacade;
-import com.intellij.psi.PsiTypeParameter;
-import com.intellij.psi.util.PsiTypesUtil;
-import com.intellij.util.ArrayUtil;
-import com.intellij.util.IncorrectOperationException;
+
+import javax.annotation.Nonnull;
+import java.io.IOException;
+import java.util.Properties;
 
 public class AddMethodFix extends GroovyFix
 {

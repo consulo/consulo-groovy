@@ -15,49 +15,49 @@
  */
 package org.jetbrains.plugins.groovy.annotator.intentions;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import javax.annotation.Nonnull;
-import javax.swing.JList;
-
+import com.intellij.java.impl.codeInsight.completion.JavaCompletionUtil;
+import com.intellij.java.impl.ide.util.MethodCellRenderer;
+import com.intellij.java.language.psi.PsiClassOwner;
+import com.intellij.java.language.psi.PsiMethod;
+import com.intellij.java.language.psi.PsiModifier;
+import com.intellij.java.language.psi.PsiSubstitutor;
+import com.intellij.java.language.psi.search.PsiShortNamesCache;
+import com.intellij.java.language.psi.util.PsiFormatUtil;
+import consulo.application.AccessToken;
+import consulo.application.WriteAction;
+import consulo.application.progress.ProgressManager;
+import consulo.codeEditor.Editor;
+import consulo.ide.impl.psi.util.proximity.PsiProximityComparator;
+import consulo.java.analysis.impl.JavaQuickFixBundle;
+import consulo.language.editor.FileModificationService;
+import consulo.language.editor.intention.IntentionAction;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.SmartPointerManager;
+import consulo.language.psi.SmartPsiElementPointer;
+import consulo.language.psi.scope.GlobalSearchScope;
+import consulo.language.util.IncorrectOperationException;
+import consulo.logging.Logger;
+import consulo.project.Project;
+import consulo.ui.ex.awt.JBList;
+import consulo.undoRedo.CommandProcessor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrArgumentList;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrMethodCall;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
-import com.intellij.codeInsight.FileModificationService;
-import com.intellij.codeInsight.completion.JavaCompletionUtil;
-import com.intellij.codeInsight.intention.IntentionAction;
-import com.intellij.ide.util.MethodCellRenderer;
-import com.intellij.openapi.application.AccessToken;
-import com.intellij.openapi.application.WriteAction;
-import com.intellij.openapi.command.CommandProcessor;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.progress.ProgressManager;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.ui.popup.PopupChooserBuilder;
-import com.intellij.psi.PsiClassOwner;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiMethod;
-import com.intellij.psi.PsiModifier;
-import com.intellij.psi.PsiSubstitutor;
-import com.intellij.psi.SmartPointerManager;
-import com.intellij.psi.SmartPsiElementPointer;
-import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.psi.search.PsiShortNamesCache;
-import com.intellij.psi.util.PsiFormatUtil;
-import com.intellij.psi.util.proximity.PsiProximityComparator;
-import com.intellij.ui.components.JBList;
-import com.intellij.util.IncorrectOperationException;
-import consulo.java.JavaQuickFixBundle;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.swing.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * @author Maxim.Medvedev
  */
-public class GroovyStaticImportMethodFix implements IntentionAction {
+public class GroovyStaticImportMethodFix implements IntentionAction
+{
   private static final Logger LOG = Logger.getInstance("#org.jetbrains.plugins.groovy.annotator.intentions.GroovyStaticImportMethodFix");
   private final SmartPsiElementPointer<GrMethodCall> myMethodCall;
   private List<PsiMethod> myCandidates = null;
@@ -84,7 +84,7 @@ public class GroovyStaticImportMethodFix implements IntentionAction {
     return getText();
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   private static GrReferenceExpression getMethodExpression(GrMethodCall call) {
     GrExpression result = call.getInvokedExpression();
     return result instanceof GrReferenceExpression ? (GrReferenceExpression)result : null;
@@ -174,7 +174,7 @@ public class GroovyStaticImportMethodFix implements IntentionAction {
   private void chooseAndImport(Editor editor) {
     final JList list = new JBList(getCandidates().toArray(new PsiMethod[getCandidates().size()]));
     list.setCellRenderer(new MethodCellRenderer(true));
-    new PopupChooserBuilder(list).
+    new consulo.ide.impl.ui.impl.PopupChooserBuilder(list).
       setTitle(JavaQuickFixBundle.message("static.import.method.choose.method.to.import")).
       setMovable(true).
       setItemChoosenCallback(new Runnable() {
@@ -185,7 +185,7 @@ public class GroovyStaticImportMethodFix implements IntentionAction {
           doImport(selectedValue);
         }
       }).createPopup().
-      showInBestPositionFor(editor);
+      showInBestPositionFor((consulo.dataContext.DataContext)editor);
   }
 
   public boolean startInWriteAction() {

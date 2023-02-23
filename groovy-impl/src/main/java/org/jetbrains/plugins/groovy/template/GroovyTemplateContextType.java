@@ -17,17 +17,18 @@ package org.jetbrains.plugins.groovy.template;
 
 import javax.annotation.Nonnull;
 
-import com.intellij.codeInsight.template.EverywhereContextType;
-import com.intellij.codeInsight.template.TemplateContextType;
-import com.intellij.openapi.util.Condition;
-import com.intellij.patterns.PlatformPatterns;
-import com.intellij.psi.PsiComment;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiWhiteSpace;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.psi.util.PsiUtilCore;
-import com.intellij.util.ProcessingContext;
+import consulo.language.editor.template.context.EverywhereContextType;
+import consulo.language.editor.template.context.TemplateContextType;
+import consulo.language.psi.*;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.util.lang.function.Condition;
+import consulo.language.pattern.PlatformPatterns;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiWhiteSpace;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.language.psi.PsiUtilCore;
+import consulo.language.util.ProcessingContext;
+import consulo.language.editor.template.context.EverywhereContextType;
 import org.jetbrains.annotations.NonNls;
 
 import javax.annotation.Nullable;

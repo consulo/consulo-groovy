@@ -15,8 +15,31 @@
  */
 package org.jetbrains.plugins.groovy.lang.completion;
 
-import java.util.List;
-
+import com.intellij.java.language.impl.psi.impl.compiled.ClsMethodImpl;
+import com.intellij.java.language.psi.JavaPsiFacade;
+import com.intellij.java.language.psi.PsiMethod;
+import com.intellij.java.language.psi.PsiSubstitutor;
+import com.intellij.java.language.psi.PsiType;
+import consulo.application.ApplicationManager;
+import consulo.codeEditor.CaretModel;
+import consulo.codeEditor.Editor;
+import consulo.component.extension.ExtensionPointName;
+import consulo.document.Document;
+import consulo.document.util.TextRange;
+import consulo.language.codeStyle.CodeStyleManager;
+import consulo.language.editor.CodeInsightUtilCore;
+import consulo.language.editor.completion.lookup.InsertionContext;
+import consulo.language.editor.template.Template;
+import consulo.language.editor.template.TemplateManager;
+import consulo.language.editor.template.event.TemplateEditingAdapter;
+import consulo.language.editor.template.event.TemplateEditingListener;
+import consulo.language.psi.PsiDocumentManager;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.PsiManager;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.project.Project;
+import consulo.util.collection.ContainerUtil;
 import org.jetbrains.plugins.groovy.lang.completion.closureParameters.ClosureParameterInfo;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlock;
@@ -26,40 +49,17 @@ import org.jetbrains.plugins.groovy.lang.psi.expectedTypes.SupertypeConstraint;
 import org.jetbrains.plugins.groovy.lang.psi.expectedTypes.TypeConstraint;
 import org.jetbrains.plugins.groovy.template.expressions.ChooseTypeExpression;
 import org.jetbrains.plugins.groovy.template.expressions.ParameterNameExpression;
-import com.intellij.codeInsight.CodeInsightUtilCore;
-import com.intellij.codeInsight.completion.InsertionContext;
-import com.intellij.codeInsight.template.Template;
-import com.intellij.codeInsight.template.TemplateBuilderImpl;
-import com.intellij.codeInsight.template.TemplateEditingAdapter;
-import com.intellij.codeInsight.template.TemplateEditingListener;
-import com.intellij.codeInsight.template.TemplateManager;
-import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.editor.CaretModel;
-import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.extensions.ExtensionPointName;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.JavaPsiFacade;
-import com.intellij.psi.PsiDocumentManager;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiManager;
-import com.intellij.psi.PsiMethod;
-import com.intellij.psi.PsiSubstitutor;
-import com.intellij.psi.PsiType;
-import com.intellij.psi.codeStyle.CodeStyleManager;
-import com.intellij.psi.impl.compiled.ClsMethodImpl;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.containers.ContainerUtil;
+
+import javax.annotation.Nullable;
+import java.util.List;
 
 /**
  * @author Max Medvedev
  */
 public abstract class ClosureCompleter {
-  private static final ExtensionPointName<ClosureCompleter> EP_NAME = ExtensionPointName.create("org.intellij.groovy.closureCompleter");
+  private static final ExtensionPointName<ClosureCompleter> EP_NAME = ExtensionPointName.create(ClosureCompleter.class);
 
-  @javax.annotation.Nullable
+  @Nullable
   protected abstract List<ClosureParameterInfo> getParameterInfos(InsertionContext context,
                                                                   PsiMethod method,
                                                                   PsiSubstitutor substitutor,
@@ -136,7 +136,8 @@ public abstract class ClosureCompleter {
     final GrClosableBlock closure = GroovyPsiElementFactory.getInstance(project).createClosureFromText(buffer.toString());
     final GrClosableBlock templateClosure = (GrClosableBlock)block.replaceWithExpression(closure, false);
 
-    final TemplateBuilderImpl builder = new TemplateBuilderImpl(templateClosure);
+    final consulo.language.editor.impl.internal.template.TemplateBuilderImpl builder =
+      new consulo.language.editor.impl.internal.template.TemplateBuilderImpl(templateClosure);
 
     int i = 0;
     for (GrParameter p : templateClosure.getParameters()) {
@@ -145,7 +146,8 @@ public abstract class ClosureCompleter {
 
       if (typeElement != null) {
         final TypeConstraint[] typeConstraints = {SupertypeConstraint.create(paramTypes.get(i++))};
-        final ChooseTypeExpression expression = new ChooseTypeExpression(typeConstraints, PsiManager.getInstance(project), nameIdentifier.getResolveScope());
+        final ChooseTypeExpression expression =
+          new ChooseTypeExpression(typeConstraints, PsiManager.getInstance(project), nameIdentifier.getResolveScope());
         builder.replaceElement(typeElement, expression);
       }
       else {
@@ -180,7 +182,8 @@ public abstract class ClosureCompleter {
 
               // fix space before closure lbrace
               final TextRange range = block.getTextRange();
-              CodeStyleManager.getInstance(project).reformatRange(block.getParent(), range.getStartOffset() - 1, range.getEndOffset(), true);
+              CodeStyleManager.getInstance(project)
+                              .reformatRange(block.getParent(), range.getStartOffset() - 1, range.getEndOffset(), true);
             }
           }
         });

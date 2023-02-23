@@ -16,8 +16,10 @@
 package org.jetbrains.plugins.groovy.codeInspection.bugs;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
-import com.intellij.psi.tree.IElementType;
+import consulo.language.ast.IElementType;
+import consulo.language.ast.IElementType;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspection;
@@ -41,7 +43,7 @@ public class GroovyDivideByZeroInspection extends BaseInspection {
     return "Divide by zero";
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   protected String buildErrorString(Object... args) {
     return "Division by zero #loc";
 

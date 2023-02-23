@@ -16,8 +16,8 @@
 package org.jetbrains.plugins.groovy.lang.lexer;
 
 import com.intellij.lexer.FlexLexer;
-import com.intellij.psi.TokenType;
-import com.intellij.psi.tree.IElementType;
+import com.intellij.java.language.psi.TokenType;
+import com.intellij.java.language.psi.tree.IElementType;
 import com.intellij.util.containers.Stack;
 import org.jetbrains.plugins.groovy.lang.groovydoc.parser.GroovyDocElementTypes;
 

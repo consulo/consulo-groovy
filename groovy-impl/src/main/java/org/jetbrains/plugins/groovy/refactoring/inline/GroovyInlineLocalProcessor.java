@@ -15,20 +15,22 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.inline;
 
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.Ref;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiReference;
-import com.intellij.psi.search.searches.ReferencesSearch;
-import com.intellij.refactoring.BaseRefactoringProcessor;
-import com.intellij.refactoring.RefactoringBundle;
-import com.intellij.refactoring.util.CommonRefactoringUtil;
-import com.intellij.usageView.BaseUsageViewDescriptor;
-import com.intellij.usageView.UsageInfo;
-import com.intellij.usageView.UsageViewDescriptor;
-import com.intellij.util.containers.MultiMap;
+import consulo.language.editor.refactoring.RefactoringBundle;
+import consulo.language.editor.refactoring.util.CommonRefactoringUtil;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiReference;
+import consulo.language.psi.search.ReferencesSearch;
+import consulo.logging.Logger;
+import consulo.project.Project;
+import consulo.usage.UsageInfo;
+import consulo.usage.UsageViewDescriptor;
+import consulo.util.collection.MultiMap;
+import consulo.util.lang.ref.Ref;
+import consulo.language.editor.refactoring.BaseRefactoringProcessor;
+import consulo.ide.impl.idea.usageView.BaseUsageViewDescriptor;
+
 import javax.annotation.Nonnull;
+
 import org.jetbrains.plugins.groovy.codeInspection.utils.ControlFlowUtils;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyRecursiveElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrClassInitializer;

@@ -18,10 +18,10 @@ package org.jetbrains.plugins.groovy.lang.lexer;
 
 import javax.annotation.Nonnull;
 
+import consulo.language.ast.IElementType;
 import org.jetbrains.plugins.groovy.GroovyLanguage;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.tree.IElementType;
+import consulo.language.ast.ASTNode;
+import consulo.language.psi.PsiElement;
 
 /**
  * Main classdef for Groovy element types, such as lexems or AST nodes

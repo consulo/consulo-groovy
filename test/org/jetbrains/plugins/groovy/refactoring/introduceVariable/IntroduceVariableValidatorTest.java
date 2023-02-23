@@ -18,7 +18,7 @@ package org.jetbrains.plugins.groovy.refactoring.introduceVariable;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.util.InvalidDataException;
 import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.PsiElement;
+import com.intellij.java.language.psi.PsiElement;
 import com.intellij.testFramework.fixtures.LightCodeInsightFixtureTestCase;
 import com.intellij.util.IncorrectOperationException;
 import junit.framework.Assert;

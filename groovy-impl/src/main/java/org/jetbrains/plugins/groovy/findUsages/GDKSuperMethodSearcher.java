@@ -16,14 +16,17 @@
 
 package org.jetbrains.plugins.groovy.findUsages;
 
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.*;
-import com.intellij.psi.search.searches.SuperMethodsSearch;
-import com.intellij.psi.util.MethodSignature;
-import com.intellij.psi.util.MethodSignatureBackedByPsiMethod;
-import com.intellij.psi.util.TypeConversionUtil;
-import com.intellij.util.Processor;
-import com.intellij.util.QueryExecutor;
+import com.intellij.java.language.psi.*;
+import com.intellij.java.language.psi.search.searches.SuperMethodsSearch;
+import com.intellij.java.language.psi.util.MethodSignature;
+import com.intellij.java.language.psi.util.MethodSignatureBackedByPsiMethod;
+import com.intellij.java.language.psi.util.TypeConversionUtil;
+import consulo.application.util.function.Processor;
+import consulo.application.util.query.QueryExecutor;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiManager;
+import consulo.language.psi.resolve.ResolveState;
+import consulo.project.Project;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
 import org.jetbrains.plugins.groovy.lang.psi.impl.PsiImplUtil;
@@ -42,7 +45,8 @@ import java.util.List;
  * @author Maxim.Medvedev
  */
 public class GDKSuperMethodSearcher implements QueryExecutor<MethodSignatureBackedByPsiMethod, SuperMethodsSearch.SearchParameters> {
-  public boolean execute(@Nonnull SuperMethodsSearch.SearchParameters queryParameters, @Nonnull Processor<? super MethodSignatureBackedByPsiMethod> consumer) {
+  public boolean execute(@Nonnull SuperMethodsSearch.SearchParameters queryParameters,
+                         @Nonnull Processor<? super MethodSignatureBackedByPsiMethod> consumer) {
     final PsiMethod method = queryParameters.getMethod();
     if (!(method instanceof GrMethod)) {
       return true;
@@ -101,7 +105,7 @@ public class GDKSuperMethodSearcher implements QueryExecutor<MethodSignatureBack
 
     Outer:
     for (PsiMethod current : goodSupers) {
-      for (Iterator<PsiMethod> i = result.iterator(); i.hasNext();) {
+      for (Iterator<PsiMethod> i = result.iterator(); i.hasNext(); ) {
         PsiMethod m = i.next();
         final int res = comparator.compare(m, current);
         if (res > 0) {

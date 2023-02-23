@@ -16,21 +16,23 @@
 
 package org.jetbrains.plugins.groovy.intentions.conversions;
 
-import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.ui.DialogWrapper;
-import com.intellij.psi.*;
-import com.intellij.psi.search.searches.MethodReferencesSearch;
-import com.intellij.psi.search.searches.ReferencesSearch;
-import com.intellij.psi.util.MethodSignature;
-import com.intellij.psi.util.MethodSignatureUtil;
-import com.intellij.refactoring.ui.ConflictsDialog;
-import com.intellij.util.IncorrectOperationException;
-import java.util.HashSet;
-import com.intellij.util.containers.MultiMap;
-import javax.annotation.Nonnull;
+import com.intellij.java.indexing.search.searches.MethodReferencesSearch;
+import com.intellij.java.language.psi.PsiClass;
+import com.intellij.java.language.psi.PsiMethod;
+import com.intellij.java.language.psi.PsiType;
+import com.intellij.java.language.psi.util.MethodSignature;
+import com.intellij.java.language.psi.util.MethodSignatureUtil;
+import consulo.application.ApplicationManager;
+import consulo.codeEditor.Editor;
+import consulo.language.editor.refactoring.ui.ConflictsDialog;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiReference;
+import consulo.language.psi.search.ReferencesSearch;
+import consulo.language.util.IncorrectOperationException;
+import consulo.logging.Logger;
+import consulo.project.Project;
+import consulo.ui.ex.awt.DialogWrapper;
+import consulo.util.collection.MultiMap;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.intentions.GroovyIntentionsBundle;
 import org.jetbrains.plugins.groovy.intentions.base.Intention;
@@ -52,7 +54,9 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.GrClosureType;
 import org.jetbrains.plugins.groovy.lang.psi.impl.signatures.GrClosureSignatureUtil;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 
+import javax.annotation.Nonnull;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -69,7 +73,8 @@ public class ConvertClosureToMethodIntention extends Intention {
   }
 
   @Override
-  protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
+  protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException
+  {
     final GrField field;
     if (element.getParent() instanceof GrField) {
       field = (GrField)element.getParent();

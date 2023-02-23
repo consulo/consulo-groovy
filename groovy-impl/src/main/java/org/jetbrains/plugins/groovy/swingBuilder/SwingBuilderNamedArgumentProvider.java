@@ -15,12 +15,12 @@
  */
 package org.jetbrains.plugins.groovy.swingBuilder;
 
-import com.intellij.openapi.util.Pair;
-import com.intellij.psi.*;
-import com.intellij.psi.util.InheritanceUtil;
-import com.intellij.psi.util.PsiTypesUtil;
-import javax.annotation.Nonnull;
-
+import com.intellij.java.language.psi.*;
+import com.intellij.java.language.psi.util.InheritanceUtil;
+import com.intellij.java.language.psi.util.PsiTypesUtil;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiManager;
+import consulo.util.lang.Pair;
 import org.jetbrains.plugins.groovy.extensions.GroovyNamedArgumentProvider;
 import org.jetbrains.plugins.groovy.extensions.NamedArgumentDescriptor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrCall;
@@ -28,6 +28,8 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUt
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyPropertyUtils;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -38,8 +40,8 @@ public class SwingBuilderNamedArgumentProvider extends GroovyNamedArgumentProvid
 
   @Override
   public void getNamedArguments(@Nonnull GrCall call,
-                                @javax.annotation.Nullable PsiElement resolve,
-                                @javax.annotation.Nullable String argumentName,
+                                @Nullable PsiElement resolve,
+                                @Nullable String argumentName,
                                 boolean forCompletion,
                                 Map<String, NamedArgumentDescriptor> result) {
     PsiType returnType = ((PsiMethod)resolve).getReturnType();

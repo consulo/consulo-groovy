@@ -16,6 +16,12 @@
 package org.jetbrains.plugins.groovy.lang.completion;
 
 import javax.annotation.Nonnull;
+
+import consulo.language.editor.completion.*;
+import consulo.language.editor.completion.lookup.LookupElement;
+import consulo.language.editor.completion.lookup.PrioritizedLookupElement;
+import consulo.language.pattern.PlatformPatterns;
+import consulo.language.psi.PsiElement;
 import org.jetbrains.plugins.groovy.extensions.GroovyMapCompletionUtil;
 import org.jetbrains.plugins.groovy.extensions.GroovyMapContentProvider;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
@@ -23,19 +29,18 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrMethod
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GrMapType;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyPsiManager;
-import com.intellij.codeInsight.completion.CompletionContributor;
-import com.intellij.codeInsight.completion.CompletionParameters;
-import com.intellij.codeInsight.completion.CompletionResultSet;
-import com.intellij.codeInsight.completion.CompletionType;
-import com.intellij.codeInsight.completion.PrioritizedLookupElement;
-import com.intellij.codeInsight.lookup.LookupElement;
-import com.intellij.codeInsight.lookup.LookupElementBuilder;
-import com.intellij.patterns.PlatformPatterns;
-import com.intellij.psi.CommonClassNames;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiType;
-import com.intellij.util.ProcessingContext;
-import consulo.codeInsight.completion.CompletionProvider;
+import consulo.language.editor.completion.CompletionContributor;
+import consulo.language.editor.completion.CompletionResultSet;
+import consulo.language.editor.completion.CompletionType;
+import consulo.language.editor.completion.lookup.PrioritizedLookupElement;
+import consulo.language.editor.completion.lookup.LookupElement;
+import consulo.language.editor.completion.lookup.LookupElementBuilder;
+import consulo.language.pattern.PlatformPatterns;
+import com.intellij.java.language.psi.CommonClassNames;
+import consulo.language.psi.PsiElement;
+import com.intellij.java.language.psi.PsiType;
+import consulo.language.util.ProcessingContext;
+import consulo.language.editor.completion.CompletionProvider;
 
 /**
  * @author Sergey Evdokimov

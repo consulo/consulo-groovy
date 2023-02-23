@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.literals;
 
-import com.intellij.psi.PsiElement;
+import consulo.language.psi.PsiElement;
 
 /**
  * @author Max Medvedev

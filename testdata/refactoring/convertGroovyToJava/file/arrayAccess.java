@@ -1,20 +1,26 @@
+import java.lang.Integer;
+import java.lang.Object;
+import java.lang.String;
+import java.util.HashMap;
+import java.util.Map;
+
 public class Foo {
-public void putAt(java.lang.String s, java.lang.Integer x, java.lang.Object value) {
+public void putAt(String s, Integer x, Object value) {
 
 }
 
-public java.lang.Object getAt(java.lang.String s, java.lang.Integer x) {
-return new java.lang.Object();
+public Object getAt(String s, Integer x) {
+return new Object();
 }
 
 }
 public class arrayAccess extends groovy.lang.Script {
-public static void main(java.lang.String[] args) {
+public static void main(String[] args) {
 new arrayAccess(new groovy.lang.Binding(args)).run();
 }
 
-public java.lang.Object run() {
-java.util.HashMap<java.lang.String, java.lang.String> map = new java.util.HashMap<java.lang.String, java.lang.String>();
+public Object run() {
+HashMap<String, String> map = new HashMap<String, String>();
 
 print(putAt0(map, "1", "6"));
 print(putAt0(map, 2, "7"));
@@ -32,7 +38,7 @@ print(putAt1(foo, "a", 2, 4));
 print(foo.getAt("b", 1));
 print(org.codehaus.groovy.runtime.DefaultGroovyMethods.getAt(foo, "4"));
 
-java.lang.Integer[] arr = new java.lang.Integer[]{1, 2, 3};
+Integer[] arr = new Integer[]{1, 2, 3};
 print(arr[1]);
 return arr[1] = 3;
 
@@ -44,11 +50,11 @@ super(binding);
 public arrayAccess() {
 super();
 }
-private static <K, V, Value extends V>Value putAt0(java.util.Map<K, V> propOwner, K key, Value value) {
+private static <K, V, Value extends V>Value putAt0(Map<K, V> propOwner, K key, Value value) {
 propOwner.put(key, value);
 return value;
 }
-private static <Value>Value putAt1(Foo propOwner, java.lang.String s, java.lang.Integer x, Value value) {
+private static <Value>Value putAt1(Foo propOwner, String s, Integer x, Value value) {
 propOwner.putAt(s, x, value);
 return value;
 }

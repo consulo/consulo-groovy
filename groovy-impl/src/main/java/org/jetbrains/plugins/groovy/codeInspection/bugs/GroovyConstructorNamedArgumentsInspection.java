@@ -15,12 +15,12 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.bugs;
 
-import com.intellij.codeInspection.LocalQuickFix;
-import com.intellij.codeInspection.ProblemHighlightType;
-import com.intellij.psi.*;
-import com.intellij.psi.util.InheritanceUtil;
+import com.intellij.java.language.psi.*;
+import com.intellij.java.language.psi.util.InheritanceUtil;
+import consulo.language.editor.inspection.LocalQuickFix;
+import consulo.language.editor.inspection.ProblemHighlightType;
+import consulo.language.psi.PsiElement;
 import org.jetbrains.annotations.Nls;
-import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.annotator.intentions.CreateFieldFromConstructorLabelFix;
 import org.jetbrains.plugins.groovy.annotator.intentions.dynamic.DynamicPropertyFix;
@@ -37,6 +37,7 @@ import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 

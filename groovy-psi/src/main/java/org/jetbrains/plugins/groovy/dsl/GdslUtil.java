@@ -15,11 +15,11 @@
  */
 package org.jetbrains.plugins.groovy.dsl;
 
+import consulo.util.lang.StringUtil;
+import consulo.virtualFileSystem.VirtualFile;
 import org.jetbrains.annotations.Contract;
-import com.intellij.openapi.util.Condition;
+import consulo.util.lang.function.Condition;
 import consulo.util.dataholder.Key;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.openapi.vfs.VirtualFile;
 
 public class GdslUtil
 {

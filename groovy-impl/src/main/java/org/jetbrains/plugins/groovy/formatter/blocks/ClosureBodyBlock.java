@@ -15,14 +15,16 @@
  */
 package org.jetbrains.plugins.groovy.formatter.blocks;
 
-import com.intellij.formatting.Block;
-import com.intellij.formatting.ChildAttributes;
-import com.intellij.formatting.Indent;
-import com.intellij.formatting.Wrap;
-import com.intellij.lang.ASTNode;
-import com.intellij.openapi.util.TextRange;
+import consulo.document.util.TextRange;
+import consulo.language.ast.ASTNode;
+import consulo.language.codeStyle.*;
+import consulo.language.codeStyle.Wrap;
+import consulo.language.ast.ASTNode;
+import consulo.document.util.TextRange;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
+import consulo.language.codeStyle.Block;
 import org.jetbrains.plugins.groovy.formatter.FormattingContext;
 
 import java.util.List;
@@ -35,7 +37,7 @@ public class ClosureBodyBlock extends GroovyBlock {
 
   public ClosureBodyBlock(@Nonnull ASTNode node,
                           @Nonnull Indent indent,
-                          @javax.annotation.Nullable Wrap wrap,
+                          @Nullable Wrap wrap,
                           FormattingContext context) {
     super(node, indent, wrap, context);
   }

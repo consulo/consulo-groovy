@@ -15,13 +15,17 @@
  */
 package org.jetbrains.plugins.groovy.annotator;
 
-import static com.intellij.codeInsight.daemon.impl.HighlightInfoType.INFORMATION;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.annotation.Nonnull;
-
+import consulo.application.dumb.DumbAware;
+import consulo.application.progress.ProgressIndicator;
+import consulo.colorScheme.TextAttributesKey;
+import consulo.document.Document;
+import consulo.language.ast.IElementType;
+import consulo.language.editor.impl.highlight.UpdateHighlightersUtil;
+import consulo.language.editor.rawHighlight.HighlightInfo;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiErrorElement;
+import consulo.language.psi.PsiRecursiveElementVisitor;
+import consulo.language.psi.util.PsiTreeUtil;
 import org.jetbrains.plugins.groovy.highlighter.GroovySyntaxHighlighter;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.lexer.TokenSets;
@@ -36,23 +40,18 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrRefere
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameter;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
 import org.jetbrains.plugins.groovy.refactoring.GroovyRefactoringUtil;
-import com.intellij.codeHighlighting.TextEditorHighlightingPass;
-import com.intellij.codeInsight.daemon.impl.HighlightInfo;
-import com.intellij.codeInsight.daemon.impl.UpdateHighlightersUtil;
-import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.editor.colors.TextAttributesKey;
-import com.intellij.openapi.progress.ProgressIndicator;
-import com.intellij.openapi.project.DumbAware;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiErrorElement;
-import com.intellij.psi.PsiRecursiveElementVisitor;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.util.PsiTreeUtil;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
+
+import static consulo.language.editor.rawHighlight.HighlightInfoType.INFORMATION;
 
 /**
  * @author Max Medvedev
  */
-public class GrKeywordAndDeclarationHighlighter extends TextEditorHighlightingPass implements DumbAware {
+public class GrKeywordAndDeclarationHighlighter extends consulo.language.editor.impl.highlight.TextEditorHighlightingPass implements DumbAware {
   private final GroovyFile myFile;
 
   private List<HighlightInfo> toHighlight;
@@ -126,7 +125,7 @@ public class GrKeywordAndDeclarationHighlighter extends TextEditorHighlightingPa
       .setHighlightersToEditor(myProject, myDocument, 0, myFile.getTextLength(), toHighlight, getColorsScheme(), getId());
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   private static TextAttributesKey getDeclarationAttribute(PsiElement element) {
     if (element.getParent() instanceof GrAnnotation && element.getNode().getElementType() == GroovyTokenTypes.mAT) {
       return GroovySyntaxHighlighter.ANNOTATION;

@@ -16,15 +16,15 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.typedef;
 
-import javax.annotation.Nonnull;
-
+import com.intellij.java.language.psi.PsiClassType;
+import consulo.language.ast.ASTNode;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrAnnotationTypeDefinition;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil;
 import org.jetbrains.plugins.groovy.lang.psi.stubs.GrTypeDefinitionStub;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiClassType;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author Dmitry.Krasilschikov

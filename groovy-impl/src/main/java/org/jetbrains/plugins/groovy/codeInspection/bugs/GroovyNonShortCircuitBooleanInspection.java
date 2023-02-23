@@ -15,14 +15,12 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.bugs;
 
-import javax.annotation.Nonnull;
-
-import com.intellij.codeInspection.ProblemDescriptor;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiType;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.util.IncorrectOperationException;
+import com.intellij.java.language.psi.PsiType;
+import consulo.language.ast.IElementType;
+import consulo.language.editor.inspection.ProblemDescriptor;
+import consulo.language.psi.PsiElement;
+import consulo.language.util.IncorrectOperationException;
+import consulo.project.Project;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspectionVisitor;
@@ -30,6 +28,9 @@ import org.jetbrains.plugins.groovy.codeInspection.GroovyFix;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrBinaryExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class GroovyNonShortCircuitBooleanInspection extends BaseInspection {
 
@@ -45,7 +46,7 @@ public class GroovyNonShortCircuitBooleanInspection extends BaseInspection {
     return "Non short-circuit boolean";
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   protected String buildErrorString(Object... args) {
     return "Non short-circuit boolean expression #loc";
 
@@ -68,7 +69,8 @@ public class GroovyNonShortCircuitBooleanInspection extends BaseInspection {
     }
 
     public void doFix(Project project, ProblemDescriptor descriptor)
-        throws IncorrectOperationException {
+        throws IncorrectOperationException
+	{
       final GrBinaryExpression expression =
           (GrBinaryExpression) descriptor.getPsiElement();
       final GrExpression lhs = expression.getLeftOperand();

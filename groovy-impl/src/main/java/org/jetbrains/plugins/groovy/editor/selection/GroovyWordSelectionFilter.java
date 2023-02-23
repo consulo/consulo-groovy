@@ -15,8 +15,9 @@
  */
 package org.jetbrains.plugins.groovy.editor.selection;
 
-import com.intellij.openapi.util.Condition;
-import com.intellij.psi.PsiElement;
+import consulo.language.psi.PsiElement;
+import consulo.util.lang.function.Condition;
+import consulo.language.psi.PsiElement;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 

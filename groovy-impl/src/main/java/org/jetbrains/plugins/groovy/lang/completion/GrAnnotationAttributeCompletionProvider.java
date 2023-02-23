@@ -17,18 +17,22 @@ package org.jetbrains.plugins.groovy.lang.completion;
 
 import javax.annotation.Nonnull;
 
+import consulo.application.util.matcher.PrefixMatcher;
+import consulo.language.editor.completion.CompletionContributor;
+import consulo.language.pattern.PlatformPatterns;
+import consulo.language.psi.PsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotation;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotationNameValuePair;
 import org.jetbrains.plugins.groovy.lang.psi.impl.PsiImplUtil;
-import com.intellij.codeInsight.completion.CompletionContributor;
-import com.intellij.codeInsight.completion.CompletionParameters;
-import com.intellij.codeInsight.completion.CompletionResultSet;
-import com.intellij.codeInsight.completion.CompletionType;
-import com.intellij.codeInsight.completion.PrefixMatcher;
-import com.intellij.patterns.PlatformPatterns;
-import com.intellij.psi.PsiElement;
-import com.intellij.util.ProcessingContext;
-import consulo.codeInsight.completion.CompletionProvider;
+import consulo.language.editor.completion.CompletionContributor;
+import consulo.language.editor.completion.CompletionParameters;
+import consulo.language.editor.completion.CompletionResultSet;
+import consulo.language.editor.completion.CompletionType;
+import consulo.application.util.matcher.PrefixMatcher;
+import consulo.language.pattern.PlatformPatterns;
+import consulo.language.psi.PsiElement;
+import consulo.language.util.ProcessingContext;
+import consulo.language.editor.completion.CompletionProvider;
 
 /**
  * Created by Max Medvedev on 14/05/14

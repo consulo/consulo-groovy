@@ -15,13 +15,18 @@
  */
 package org.jetbrains.plugins.groovy.editor.selection;
 
-import com.intellij.codeInsight.editorActions.ExtendWordSelectionHandlerBase;
-import com.intellij.codeInsight.editorActions.SelectWordUtil;
-import com.intellij.lang.ASTNode;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.tree.IElementType;
+import consulo.document.util.TextRange;
+import consulo.language.ast.IElementType;
+import consulo.language.editor.action.ExtendWordSelectionHandlerBase;
+import consulo.language.editor.action.SelectWordUtil;
+import consulo.language.ast.ASTNode;
+import consulo.codeEditor.Editor;
+import consulo.document.util.TextRange;
+import consulo.language.psi.PsiElement;
+import consulo.language.ast.IElementType;
+import consulo.language.editor.action.ExtendWordSelectionHandlerBase;
+import consulo.language.editor.action.SelectWordUtil;
+import consulo.language.psi.PsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.literals.GrString;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.literals.GrStringInjection;
@@ -34,7 +39,8 @@ import static org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes.*;
 /**
  * @author Maxim.Medvedev
  */
-public class GroovyGStringSelectioner extends ExtendWordSelectionHandlerBase {
+public class GroovyGStringSelectioner extends ExtendWordSelectionHandlerBase
+{
   public boolean canSelect(PsiElement e) {
     PsiElement parent = e.getParent();
     return parent instanceof GrStringInjection || parent instanceof GrString;

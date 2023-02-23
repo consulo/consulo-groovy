@@ -15,15 +15,15 @@
  */
 package org.jetbrains.plugins.groovy.completion
 
-import com.intellij.psi.PsiFile
+import com.intellij.java.language.psi.PsiFile
 
-import com.intellij.psi.util.PsiTreeUtil
-import com.intellij.psi.xml.XmlText
+import com.intellij.java.language.psi.util.PsiTreeUtil
+import com.intellij.java.language.psi.xml.XmlText
 import com.intellij.testFramework.fixtures.LightCodeInsightFixtureTestCase
 import org.intellij.plugins.intelliLang.inject.TemporaryPlacesRegistry
 import org.jetbrains.plugins.groovy.GroovyFileType
 
-import com.intellij.psi.impl.source.tree.injected.InjectedLanguageUtil
+import com.intellij.java.language.psi.impl.source.tree.injected.InjectedLanguageUtil
 
 /**
  * @author peter

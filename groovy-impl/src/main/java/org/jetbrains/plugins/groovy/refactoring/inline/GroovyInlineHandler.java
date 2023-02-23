@@ -16,22 +16,25 @@
 
 package org.jetbrains.plugins.groovy.refactoring.inline;
 
-import com.intellij.lang.findUsages.DescriptiveNameUtil;
-import com.intellij.lang.refactoring.InlineHandler;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiMember;
-import com.intellij.refactoring.HelpID;
-import com.intellij.refactoring.util.CommonRefactoringUtil;
-import com.intellij.usageView.UsageViewUtil;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.intellij.java.impl.refactoring.HelpID;
+import com.intellij.java.language.psi.PsiMember;
+import consulo.codeEditor.Editor;
+import consulo.language.Language;
+import consulo.language.editor.refactoring.inline.InlineHandler;
+import consulo.language.editor.refactoring.util.CommonRefactoringUtil;
+import consulo.language.findUsage.DescriptiveNameUtil;
+import consulo.language.psi.PsiElement;
+import consulo.usage.UsageViewUtil;
+import org.jetbrains.plugins.groovy.GroovyLanguage;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
 import org.jetbrains.plugins.groovy.lang.psi.api.util.GrVariableDeclarationOwner;
 import org.jetbrains.plugins.groovy.refactoring.GroovyRefactoringBundle;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author ilyas
@@ -85,6 +88,12 @@ public class GroovyInlineHandler implements InlineHandler {
       return new GroovyMethodInliner((GrMethod)element);
     }
     return null;
+  }
+
+  @Nonnull
+  @Override
+  public Language getLanguage() {
+    return GroovyLanguage.INSTANCE;
   }
 }
 

@@ -16,12 +16,11 @@
 
 package org.jetbrains.plugins.groovy.lang.psi;
 
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiClassOwner;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiImportHolder;
-import com.intellij.util.IncorrectOperationException;
-import javax.annotation.Nullable;
+import com.intellij.java.language.psi.PsiClass;
+import com.intellij.java.language.psi.PsiClassOwner;
+import com.intellij.java.language.psi.PsiImportHolder;
+import consulo.language.psi.PsiFile;
+import consulo.language.util.IncorrectOperationException;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrTopLevelDefinition;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
@@ -30,6 +29,8 @@ import org.jetbrains.plugins.groovy.lang.psi.api.toplevel.imports.GrImportStatem
 import org.jetbrains.plugins.groovy.lang.psi.api.util.GrDeclarationHolder;
 import org.jetbrains.plugins.groovy.lang.psi.api.util.GrStatementOwner;
 import org.jetbrains.plugins.groovy.lang.psi.api.util.GrVariableDeclarationOwner;
+
+import javax.annotation.Nullable;
 
 /**
  * @author ilyas

@@ -1,9 +1,9 @@
 package org.jetbrains.plugins.groovy.dsl.toplevel;
 
+import consulo.language.pattern.ElementPattern;
+import consulo.language.psi.PsiElement;
+import consulo.language.util.ProcessingContext;
 import org.jetbrains.plugins.groovy.dsl.GroovyClassDescriptor;
-import com.intellij.patterns.ElementPattern;
-import com.intellij.psi.PsiElement;
-import com.intellij.util.ProcessingContext;
 
 /**
  * @author peter

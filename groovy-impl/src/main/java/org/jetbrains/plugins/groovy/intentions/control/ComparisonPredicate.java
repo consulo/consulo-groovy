@@ -19,7 +19,7 @@ import org.jetbrains.plugins.groovy.intentions.base.ErrorUtil;
 import org.jetbrains.plugins.groovy.intentions.base.PsiElementPredicate;
 import org.jetbrains.plugins.groovy.intentions.utils.ComparisonUtils;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrBinaryExpression;
-import com.intellij.psi.PsiElement;
+import consulo.language.psi.PsiElement;
 
 class ComparisonPredicate implements PsiElementPredicate
 {

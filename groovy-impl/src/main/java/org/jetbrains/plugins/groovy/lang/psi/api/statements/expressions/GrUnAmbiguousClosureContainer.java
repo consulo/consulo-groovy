@@ -15,9 +15,12 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions;
 
+import org.jetbrains.plugins.groovy.annotator.GroovyAnnotator;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlock;
+
 /**
  * Marker interface. Hack for GSP injected expressions with closures
- * @see org.jetbrains.plugins.groovy.annotator.GroovyAnnotator#isClosureAmbiguous(org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlock)
+ * @see GroovyAnnotator#isClosureAmbiguous(GrClosableBlock)
  * @author Max Medvedev
  */
 public interface GrUnAmbiguousClosureContainer {}

@@ -15,10 +15,13 @@
  */
 package org.jetbrains.plugins.groovy.lang.surroundWith;
 
+import consulo.document.util.TextRange;
+import consulo.language.psi.PsiElement;
+import consulo.language.util.IncorrectOperationException;
 import consulo.util.dataholder.Key;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.PsiElement;
-import com.intellij.util.IncorrectOperationException;
+import consulo.document.util.TextRange;
+import consulo.language.psi.PsiElement;
+import consulo.language.util.IncorrectOperationException;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyRecursiveElementVisitor;
@@ -38,7 +41,8 @@ public class SurrounderByClosure extends GroovyManyStatementsSurrounder {
     return "{ -> ... }.call()";
   }
 
-  protected GroovyPsiElement doSurroundElements(PsiElement[] elements, PsiElement context) throws IncorrectOperationException {
+  protected GroovyPsiElement doSurroundElements(PsiElement[] elements, PsiElement context) throws IncorrectOperationException
+  {
     for (PsiElement element : elements) {
       if (element instanceof GroovyPsiElement) {
         ((GroovyPsiElement) element).accept(new MyMemoizingVisitor());

@@ -16,21 +16,19 @@
 
 package org.jetbrains.plugins.groovy.intentions.conversions;
 
-import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.ui.DialogWrapper;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiField;
-import com.intellij.psi.PsiReference;
-import com.intellij.psi.search.searches.MethodReferencesSearch;
-import com.intellij.refactoring.ui.ConflictsDialog;
-import com.intellij.util.IncorrectOperationException;
-import java.util.HashSet;
-import com.intellij.util.containers.MultiMap;
-import javax.annotation.Nonnull;
+import com.intellij.java.indexing.search.searches.MethodReferencesSearch;
+import com.intellij.java.language.psi.PsiClass;
+import com.intellij.java.language.psi.PsiField;
+import consulo.application.ApplicationManager;
+import consulo.codeEditor.Editor;
+import consulo.language.editor.refactoring.ui.ConflictsDialog;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiReference;
+import consulo.language.util.IncorrectOperationException;
+import consulo.logging.Logger;
+import consulo.project.Project;
+import consulo.ui.ex.awt.DialogWrapper;
+import consulo.util.collection.MultiMap;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.intentions.GroovyIntentionsBundle;
 import org.jetbrains.plugins.groovy.intentions.base.Intention;
@@ -44,7 +42,9 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefini
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 
+import javax.annotation.Nonnull;
 import java.util.Collection;
+import java.util.HashSet;
 
 
 /**

@@ -18,9 +18,9 @@ package org.jetbrains.plugins.groovy;
 
 import com.intellij.codeInsight.TargetElementUtilBase;
 import com.intellij.openapi.util.Condition;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiMethod;
+import com.intellij.java.language.psi.PsiClass;
+import com.intellij.java.language.psi.PsiElement;
+import com.intellij.java.language.psi.PsiMethod;
 import com.intellij.testFramework.fixtures.LightCodeInsightFixtureTestCase;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameter;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;

@@ -15,8 +15,18 @@
  */
 package org.jetbrains.plugins.groovy.lang.completion;
 
-import javax.annotation.Nonnull;
-
+import com.intellij.java.language.patterns.PsiJavaPatterns;
+import com.intellij.java.language.psi.PsiClass;
+import com.intellij.java.language.psi.PsiMethod;
+import consulo.language.editor.completion.*;
+import consulo.language.editor.completion.lookup.LookupElement;
+import consulo.language.editor.completion.lookup.LookupElementBuilder;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiNamedElement;
+import consulo.language.psi.resolve.ResolveState;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.language.util.ProcessingContext;
+import consulo.util.collection.ArrayUtil;
 import org.jetbrains.plugins.groovy.lang.completion.handlers.GroovyMethodSignatureInsertHandler;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocMemberReference;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocReferenceElement;
@@ -26,22 +36,8 @@ import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 import org.jetbrains.plugins.groovy.lang.resolve.ResolveUtil;
 import org.jetbrains.plugins.groovy.lang.resolve.processors.CompletionProcessor;
 import org.jetbrains.plugins.groovy.lang.resolve.processors.ResolverProcessorImpl;
-import com.intellij.codeInsight.completion.CompletionContributor;
-import com.intellij.codeInsight.completion.CompletionParameters;
-import com.intellij.codeInsight.completion.CompletionResultSet;
-import com.intellij.codeInsight.completion.CompletionType;
-import com.intellij.codeInsight.lookup.LookupElement;
-import com.intellij.codeInsight.lookup.LookupElementBuilder;
-import com.intellij.patterns.PsiJavaPatterns;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiMethod;
-import com.intellij.psi.PsiNamedElement;
-import com.intellij.psi.ResolveState;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.ArrayUtil;
-import com.intellij.util.ProcessingContext;
-import consulo.codeInsight.completion.CompletionProvider;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author Max Medvedev

@@ -18,7 +18,7 @@ package org.jetbrains.plugins.groovy.lang.highlighting
 import com.intellij.codeInsight.highlighting.HighlightUsagesHandler
 import com.intellij.codeInsight.highlighting.HighlightUsagesHandlerBase
 import com.intellij.openapi.util.TextRange
-import com.intellij.psi.PsiElement
+import com.intellij.java.language.psi.PsiElement
 import org.jetbrains.plugins.groovy.LightGroovyTestCase
 
 /**

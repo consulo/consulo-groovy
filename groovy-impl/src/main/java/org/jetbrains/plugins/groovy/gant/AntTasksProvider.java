@@ -15,28 +15,30 @@
  */
 package org.jetbrains.plugins.groovy.gant;
 
-import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.module.ModuleUtil;
-import com.intellij.openapi.progress.ProgressManager;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.roots.OrderEnumerator;
-import com.intellij.openapi.roots.ProjectRootManager;
+import com.intellij.java.language.impl.psi.impl.light.LightMethodBuilder;
+import com.intellij.java.language.psi.CommonClassNames;
+import com.intellij.java.language.psi.PsiClassType;
+import com.intellij.java.language.psi.PsiType;
+import consulo.application.ApplicationManager;
+import consulo.application.progress.ProgressManager;
+import consulo.application.util.CachedValue;
+import consulo.application.util.CachedValueProvider;
+import consulo.application.util.CachedValuesManager;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.PsiModificationTracker;
+import consulo.logging.Logger;
+import consulo.module.Module;
+import consulo.module.content.ProjectRootManager;
+import consulo.module.content.layer.OrderEnumerator;
+import consulo.project.Project;
+import consulo.util.collection.ContainerUtil;
 import consulo.util.dataholder.Key;
-import com.intellij.openapi.vfs.LocalFileSystem;
-import com.intellij.openapi.vfs.VfsUtil;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.*;
-import com.intellij.psi.impl.light.LightMethodBuilder;
-import com.intellij.psi.util.CachedValue;
-import com.intellij.psi.util.CachedValueProvider;
-import com.intellij.psi.util.CachedValuesManager;
-import com.intellij.psi.util.PsiModificationTracker;
-import com.intellij.reference.SoftReference;
-import com.intellij.util.PathUtil;
-import com.intellij.util.containers.ContainerUtil;
+import consulo.util.lang.ref.SoftReference;
 import consulo.util.nodep.classloader.UrlClassLoader;
+import consulo.virtualFileSystem.LocalFileSystem;
+import consulo.virtualFileSystem.VirtualFile;
+import consulo.virtualFileSystem.util.VirtualFilePathUtil;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames;
@@ -101,7 +103,7 @@ public class AntTasksProvider {
   private static Map<String, Class> getAntObjects(final GroovyFile groovyFile) {
     final Project project = groovyFile.getProject();
 
-    final Module module = ModuleUtil.findModuleForPsiElement(groovyFile);
+    final Module module = consulo.ide.impl.idea.openapi.module.ModuleUtil.findModuleForPsiElement(groovyFile);
     Set<VirtualFile> jars = new HashSet<VirtualFile>();
     if (module != null) {
       ContainerUtil.addAll(jars, OrderEnumerator.orderEntries(module).getAllLibrariesAndSdkClassesRoots());
@@ -113,9 +115,9 @@ public class AntTasksProvider {
 
     final ArrayList<URL> urls = new ArrayList<URL>();
     for (VirtualFile jar : jars) {
-      VirtualFile localFile = PathUtil.getLocalFile(jar);
+      VirtualFile localFile = VirtualFilePathUtil.getLocalFile(jar);
       if (localFile.getFileSystem() instanceof LocalFileSystem) {
-        urls.add(VfsUtil.convertToURL(localFile.getUrl()));
+        urls.add(consulo.ide.impl.idea.openapi.vfs.VfsUtil.convertToURL(localFile.getUrl()));
       }
     }
 
@@ -124,7 +126,7 @@ public class AntTasksProvider {
       final Map<List<URL>, SoftReference<AntClassLoader>> map = CachedValuesManager.getManager(project).getCachedValue(project, new CachedValueProvider<Map<List<URL>, SoftReference<AntClassLoader>>>() {
         @Override
         public Result<Map<List<URL>, SoftReference<AntClassLoader>>> compute() {
-          final Map<List<URL>, SoftReference<AntClassLoader>> map = ContainerUtil.newHashMap();
+          final Map<List<URL>, SoftReference<AntClassLoader>> map = new HashMap<>();
           return Result.create(map, ProjectRootManager.getInstance(project));
         }
       });

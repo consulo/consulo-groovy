@@ -16,14 +16,19 @@
 package org.jetbrains.plugins.groovy.refactoring.rename;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
-import com.intellij.lang.Language;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.impl.light.LightElement;
-import com.intellij.refactoring.RefactoringBundle;
-import com.intellij.refactoring.rename.RenamePsiElementProcessor;
-import com.intellij.refactoring.util.CommonRefactoringUtil;
+import consulo.codeEditor.Editor;
+import consulo.language.Language;
+import consulo.codeEditor.Editor;
+import consulo.language.editor.refactoring.RefactoringBundle;
+import consulo.language.impl.psi.LightElement;
+import consulo.language.psi.PsiElement;
+import consulo.language.impl.psi.LightElement;
+import consulo.language.editor.refactoring.RefactoringBundle;
+import consulo.language.editor.refactoring.rename.RenamePsiElementProcessor;
+import consulo.language.editor.refactoring.util.CommonRefactoringUtil;
+import consulo.language.psi.PsiElement;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GrRenameableLightElement;
 import org.jetbrains.plugins.groovy.refactoring.GroovyRefactoringBundle;
@@ -34,7 +39,7 @@ import org.jetbrains.plugins.groovy.refactoring.GroovyRefactoringBundle;
 public class GrLightElementRenamer extends RenamePsiElementProcessor {
 
   @Override
-  public PsiElement substituteElementToRename(PsiElement element, @javax.annotation.Nullable Editor editor) {
+  public PsiElement substituteElementToRename(PsiElement element, @Nullable Editor editor) {
     String message =
       RefactoringBundle.getCannotRefactorMessage(GroovyRefactoringBundle.message("rename.is.not.applicable.to.implicit.elements"));
     CommonRefactoringUtil.showErrorHint(element.getProject(), editor, message, RefactoringBundle.message("rename.title"), null);

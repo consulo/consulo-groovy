@@ -15,22 +15,29 @@
  */
 package org.jetbrains.plugins.groovy.runner;
 
-import com.intellij.execution.configurations.RunConfigurationModule;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.*;
-import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.psi.util.PsiMethodUtil;
-import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.java.language.psi.CommonClassNames;
+import com.intellij.java.language.psi.JavaPsiFacade;
+import com.intellij.java.language.psi.PsiAnonymousClass;
+import com.intellij.java.language.psi.PsiClass;
+import com.intellij.java.language.psi.util.PsiMethodUtil;
+import consulo.execution.configuration.RunConfigurationModule;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.scope.GlobalSearchScope;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.project.Project;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
 import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GroovyScriptClass;
+
+import javax.annotation.Nullable;
 
 /**
  * @author Max Medvedev
  */
 public class GroovyRunnerUtil {
-  @javax.annotation.Nullable
-  public static PsiClass getRunningClass(@javax.annotation.Nullable PsiElement element) {
+  @Nullable
+  public static PsiClass getRunningClass(@Nullable PsiElement element) {
     if (element == null) return null;
 
     final PsiFile file = element.getContainingFile();
@@ -52,7 +59,7 @@ public class GroovyRunnerUtil {
     return null;
   }
 
-  public static boolean isRunnable(@javax.annotation.Nullable final PsiClass psiClass) {
+  public static boolean isRunnable(@Nullable final PsiClass psiClass) {
     if (psiClass == null) return false;
     final PsiClass runnable =
       JavaPsiFacade.getInstance(psiClass.getProject()).findClass(CommonClassNames.JAVA_LANG_RUNNABLE, psiClass.getResolveScope());

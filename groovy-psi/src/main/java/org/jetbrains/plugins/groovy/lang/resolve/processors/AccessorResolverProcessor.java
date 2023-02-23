@@ -15,19 +15,20 @@
  */
 package org.jetbrains.plugins.groovy.lang.resolve.processors;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.intellij.java.language.psi.PsiMethod;
+import com.intellij.java.language.psi.PsiSubstitutor;
+import com.intellij.java.language.psi.PsiType;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.resolve.ResolveState;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
 import org.jetbrains.plugins.groovy.lang.psi.api.SpreadState;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrGdkMethod;
 import org.jetbrains.plugins.groovy.lang.psi.api.toplevel.imports.GrImportStatement;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyResolveResultImpl;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyPropertyUtils;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiMethod;
-import com.intellij.psi.PsiSubstitutor;
-import com.intellij.psi.PsiType;
-import com.intellij.psi.ResolveState;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author Maxim.Medvedev
@@ -47,12 +48,12 @@ public class AccessorResolverProcessor extends MethodResolverProcessor
 		this(accessorName, propertyName, place, searchForGetter, false, null, PsiType.EMPTY_ARRAY);
 	}
 
-	public AccessorResolverProcessor(@javax.annotation.Nullable String accessorName,
+	public AccessorResolverProcessor(@Nullable String accessorName,
 			@Nonnull String propertyName,
 			@Nonnull PsiElement place,
 			boolean searchForGetter,
 			boolean byShape,
-			@javax.annotation.Nullable PsiType thisType,
+			@Nullable PsiType thisType,
 			@Nonnull PsiType[] typeArguments)
 	{
 		super(accessorName, place, false, thisType, null, typeArguments, false, byShape);

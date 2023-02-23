@@ -16,10 +16,10 @@
 
 package org.jetbrains.plugins.groovy.codeInspection.untypedUnresolvedAccess;
 
-import com.intellij.psi.PsiClassType;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiJavaPackage;
-import com.intellij.psi.PsiType;
+import com.intellij.java.language.psi.PsiClassType;
+import consulo.language.psi.PsiElement;
+import com.intellij.java.language.psi.PsiJavaPackage;
+import com.intellij.java.language.psi.PsiType;
 import org.jetbrains.annotations.Nls;
 import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspection;

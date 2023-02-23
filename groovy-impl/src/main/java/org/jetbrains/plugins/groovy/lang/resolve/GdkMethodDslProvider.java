@@ -15,19 +15,19 @@
  */
 package org.jetbrains.plugins.groovy.lang.resolve;
 
-import javax.annotation.Nonnull;
-
-import com.intellij.openapi.util.VolatileNotNullLazyValue;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.ResolveState;
-import com.intellij.psi.scope.PsiScopeProcessor;
-import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.java.language.psi.PsiClass;
+import consulo.application.util.VolatileNotNullLazyValue;
+import consulo.language.psi.resolve.PsiScopeProcessor;
+import consulo.language.psi.resolve.ResolveState;
+import consulo.language.psi.scope.GlobalSearchScope;
 import org.jetbrains.plugins.groovy.dgm.GdkMethodHolder;
 import org.jetbrains.plugins.groovy.dsl.GdslMembersHolderConsumer;
 import org.jetbrains.plugins.groovy.dsl.GroovyClassDescriptor;
 import org.jetbrains.plugins.groovy.dsl.dsltop.GdslMembersProvider;
 import org.jetbrains.plugins.groovy.dsl.holders.CustomMembersHolder;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyPsiManager;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author Maxim.Medvedev

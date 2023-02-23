@@ -15,8 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.synthetic;
 
-import com.intellij.psi.PsiMethod;
-import com.intellij.psi.PsiSubstitutor;
+import com.intellij.java.language.psi.PsiMethod;
+import com.intellij.java.language.psi.PsiSubstitutor;
 
 /**
  * Created by Max Medvedev on 25/04/14

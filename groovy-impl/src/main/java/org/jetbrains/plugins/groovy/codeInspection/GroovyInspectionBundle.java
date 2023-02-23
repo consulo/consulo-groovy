@@ -15,8 +15,9 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection;
 
+import consulo.component.util.localize.AbstractBundle;
 import org.jetbrains.annotations.PropertyKey;
-import com.intellij.AbstractBundle;
+import consulo.component.util.localize.AbstractBundle;
 
 /**
  * @author ilyas

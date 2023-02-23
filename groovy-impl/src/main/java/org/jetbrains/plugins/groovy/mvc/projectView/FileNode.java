@@ -1,14 +1,18 @@
 package org.jetbrains.plugins.groovy.mvc.projectView;
 
-import com.intellij.ide.projectView.PresentationData;
-import com.intellij.ide.projectView.ViewSettings;
-import com.intellij.ide.projectView.impl.nodes.PsiFileNode;
-import com.intellij.ide.util.treeView.AbstractTreeNode;
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.util.Iconable;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import consulo.ide.IconDescriptorUpdaters;
+import consulo.language.icon.IconDescriptorUpdaters;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.module.Module;
+import consulo.ui.ex.tree.PresentationData;
+import consulo.project.ui.view.tree.ViewSettings;
+import consulo.project.ui.view.tree.PsiFileNode;
+import consulo.project.ui.view.tree.AbstractTreeNode;
+import consulo.module.Module;
+import consulo.component.util.Iconable;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.icon.IconDescriptorUpdaters;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

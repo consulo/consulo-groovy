@@ -19,8 +19,8 @@ import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.command.CommandProcessor
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
-import com.intellij.psi.*
-import com.intellij.psi.impl.source.PostprocessReformattingAspect
+import com.intellij.java.language.psi.*
+import com.intellij.java.language.psi.impl.source.PostprocessReformattingAspect
 import com.intellij.refactoring.HelpID
 import com.intellij.refactoring.IntroduceParameterRefactoring
 import com.intellij.refactoring.introduceField.ElementToWorkOn

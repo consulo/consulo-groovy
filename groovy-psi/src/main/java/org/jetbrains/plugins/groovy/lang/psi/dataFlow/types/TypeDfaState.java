@@ -15,26 +15,25 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.dataFlow.types;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.annotation.Nonnull;
-
+import com.intellij.java.language.psi.PsiType;
+import consulo.language.psi.PsiManager;
 import org.jetbrains.plugins.groovy.lang.psi.controlFlow.Instruction;
 import org.jetbrains.plugins.groovy.lang.psi.dataFlow.DFAType;
-import com.intellij.psi.PsiManager;
-import com.intellij.psi.PsiType;
-import com.intellij.util.containers.ContainerUtil;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.HashMap;
+import java.util.Map;
 
 class TypeDfaState {
   private final Map<String, DFAType> myVarTypes;
 
   TypeDfaState() {
-    myVarTypes = ContainerUtil.newHashMap();
+    myVarTypes = new HashMap<>();
   }
 
   TypeDfaState(TypeDfaState another) {
-    myVarTypes = ContainerUtil.newHashMap(another.myVarTypes);
+    myVarTypes = new HashMap<>(another.myVarTypes);
   }
 
   TypeDfaState mergeWith(TypeDfaState another) {
@@ -66,13 +65,13 @@ class TypeDfaState {
     return myVarTypes.equals(another.myVarTypes);
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   DFAType getVariableType(String variableName) {
     return myVarTypes.get(variableName);
   }
 
   Map<String, PsiType> getBindings(Instruction instruction) {
-    HashMap<String,PsiType> map = ContainerUtil.newHashMap();
+    HashMap<String, PsiType> map = new HashMap<>();
     for (Map.Entry<String, DFAType> entry : myVarTypes.entrySet()) {
       DFAType value = entry.getValue();
       map.put(entry.getKey(), value == null ? null : value.negate(instruction).getResultType());
@@ -80,7 +79,7 @@ class TypeDfaState {
     return map;
   }
 
-  void putType(String variableName, @javax.annotation.Nullable DFAType type) {
+  void putType(String variableName, @Nullable DFAType type) {
     myVarTypes.put(variableName, type);
   }
 

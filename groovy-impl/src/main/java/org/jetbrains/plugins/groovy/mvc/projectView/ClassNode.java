@@ -1,14 +1,18 @@
 package org.jetbrains.plugins.groovy.mvc.projectView;
 
-import com.intellij.ide.projectView.ViewSettings;
-import com.intellij.ide.util.treeView.AbstractTreeNode;
-import com.intellij.openapi.module.Module;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiModifier;
+import consulo.module.Module;
+import consulo.project.ui.view.tree.AbstractTreeNode;
+import consulo.project.ui.view.tree.ViewSettings;
+import consulo.project.ui.view.tree.AbstractTreeNode;
+import consulo.module.Module;
+import consulo.language.psi.PsiElement;
+import com.intellij.java.language.psi.PsiModifier;
+import consulo.project.ui.view.tree.ViewSettings;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -19,7 +23,7 @@ import java.util.List;
 public class ClassNode extends AbstractMvcPsiNodeDescriptor {
   public ClassNode(@Nonnull final Module module,
                    @Nonnull final GrTypeDefinition rClass,
-                   @javax.annotation.Nullable final ViewSettings viewSettings) {
+                   @Nullable final ViewSettings viewSettings) {
     super(module, viewSettings, rClass, CLASS);
   }
 
@@ -33,7 +37,7 @@ public class ClassNode extends AbstractMvcPsiNodeDescriptor {
     return (GrTypeDefinition)super.extractPsiFromValue();
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   protected Collection<AbstractTreeNode> getChildrenImpl() {
     final List<AbstractTreeNode> children = new ArrayList<AbstractTreeNode>();
     final Module module = getModule();
@@ -61,7 +65,7 @@ public class ClassNode extends AbstractMvcPsiNodeDescriptor {
     return false;
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   protected MethodNode createNodeForMethod(final Module module, final GrMethod method) {
     return null;
   }

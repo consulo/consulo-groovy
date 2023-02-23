@@ -17,13 +17,14 @@
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.literals;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlock;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.literals.GrStringInjection;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyPsiElementImpl;
-import com.intellij.lang.ASTNode;
+import consulo.language.ast.ASTNode;
 
 /**
  * @author Maxim.Medvedev
@@ -34,14 +35,14 @@ public class GrStringInjectionImpl extends GroovyPsiElementImpl implements GrStr
   }
 
   @Override
-  @javax.annotation.Nullable
+  @Nullable
   public GrExpression getExpression() {
     final GrExpression expression = findExpressionChild(this);
     return expression instanceof GrClosableBlock ? null : expression;
   }
 
   @Override
-  @javax.annotation.Nullable
+  @Nullable
   public GrClosableBlock getClosableBlock() {
     return findChildByClass(GrClosableBlock.class);
   }

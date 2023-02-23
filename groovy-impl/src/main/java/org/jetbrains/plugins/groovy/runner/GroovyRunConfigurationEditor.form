@@ -13,13 +13,13 @@
           <grid row="7" column="1" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
         </constraints>
       </vspacer>
-      <component id="3b65f" class="com.intellij.ui.RawCommandLineEditor" binding="myVMParameters">
+      <component id="3b65f" class="consulo.execution.ui.awt.RawCommandLineEditor" binding="myVMParameters">
         <constraints>
           <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="7" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties/>
       </component>
-      <component id="3d033" class="com.intellij.ui.RawCommandLineEditor" binding="myParameters" default-binding="true">
+      <component id="3d033" class="consulo.execution.ui.awt.RawCommandLineEditor" binding="myParameters" default-binding="true">
         <constraints>
           <grid row="3" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="7" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
@@ -41,7 +41,7 @@
         <border type="none"/>
         <children/>
       </grid>
-      <component id="39213" class="com.intellij.execution.configuration.EnvironmentVariablesComponent" binding="myEnvVariables">
+      <component id="39213" class="consulo.execution.ui.awt.EnvironmentVariablesComponent" binding="myEnvVariables">
         <constraints>
           <grid row="4" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="7" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
@@ -49,7 +49,7 @@
           <labelLocation value="West"/>
         </properties>
       </component>
-      <component id="5f62b" class="com.intellij.ui.components.JBLabel" binding="myScriptParametersLabel">
+      <component id="5f62b" class="consulo.ui.ex.awt.JBLabel" binding="myScriptParametersLabel">
         <constraints>
           <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>

@@ -15,11 +15,11 @@
  */
 package org.jetbrains.plugins.groovy.findUsages;
 
-import com.intellij.openapi.application.QueryExecutorBase;
-import com.intellij.psi.PsiMethod;
-import com.intellij.psi.PsiReference;
-import com.intellij.psi.search.searches.MethodReferencesSearch;
-import com.intellij.util.Processor;
+import com.intellij.java.indexing.search.searches.MethodReferencesSearch;
+import com.intellij.java.language.psi.PsiMethod;
+import consulo.application.util.function.Processor;
+import consulo.language.psi.PsiReference;
+import consulo.project.util.query.QueryExecutorBase;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrReflectedMethod;
 
@@ -34,7 +34,8 @@ public class GroovyReflectedMethodReferenceSearcher extends QueryExecutorBase<Ps
   }
 
   @Override
-  public void processQuery(@Nonnull MethodReferencesSearch.SearchParameters queryParameters, @Nonnull Processor<? super PsiReference> consumer) {
+  public void processQuery(@Nonnull MethodReferencesSearch.SearchParameters queryParameters,
+                           @Nonnull Processor<? super PsiReference> consumer) {
     final PsiMethod method = queryParameters.getMethod();
     if (method instanceof GrMethod) {
       for (GrReflectedMethod reflectedMethod : ((GrMethod)method).getReflectedMethods()) {

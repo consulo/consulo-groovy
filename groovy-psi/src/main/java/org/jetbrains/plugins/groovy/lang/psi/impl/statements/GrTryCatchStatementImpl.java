@@ -21,14 +21,15 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
+import consulo.language.ast.ASTNode;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrCatchClause;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrFinallyClause;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrTryCatchStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrOpenBlock;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyPsiElementImpl;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
+import consulo.language.psi.PsiElement;
 
 /**
  * @author ilyas

@@ -5,7 +5,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 
 import org.jetbrains.plugins.groovy.dsl.GroovyClassDescriptor;
-import com.intellij.util.ProcessingContext;
+import consulo.language.util.ProcessingContext;
 
 /**
  * @author peter

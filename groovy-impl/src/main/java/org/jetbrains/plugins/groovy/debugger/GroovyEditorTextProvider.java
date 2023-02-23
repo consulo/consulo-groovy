@@ -15,20 +15,25 @@
  */
 package org.jetbrains.plugins.groovy.debugger;
 
-import com.intellij.debugger.engine.evaluation.CodeFragmentKind;
-import com.intellij.debugger.engine.evaluation.TextWithImports;
-import com.intellij.debugger.engine.evaluation.TextWithImportsImpl;
-import com.intellij.debugger.impl.EditorTextProvider;
-import com.intellij.openapi.util.Pair;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiEnumConstant;
+import com.intellij.java.debugger.engine.evaluation.CodeFragmentKind;
+import com.intellij.java.debugger.engine.evaluation.TextWithImports;
+import com.intellij.java.debugger.impl.EditorTextProvider;
+import com.intellij.java.debugger.impl.engine.evaluation.TextWithImportsImpl;
+import com.intellij.java.language.psi.PsiClass;
+import com.intellij.java.language.psi.PsiEnumConstant;
+import consulo.document.util.TextRange;
+import consulo.language.Language;
+import consulo.language.psi.PsiElement;
+import consulo.util.lang.Pair;
+import org.jetbrains.plugins.groovy.GroovyLanguage;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrCall;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
 import org.jetbrains.plugins.groovy.refactoring.GroovyRefactoringUtil;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author Maxim.Medvedev
@@ -59,7 +64,7 @@ public class GroovyEditorTextProvider implements EditorTextProvider {
     return new TextWithImportsImpl(CodeFragmentKind.EXPRESSION, result);
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   private static PsiElement findExpressionInner(PsiElement element, boolean allowMethodCalls) {
     PsiElement parent = element.getParent();
     if (parent instanceof GrVariable && element == ((GrVariable)parent).getNameIdentifierGroovy()) {
@@ -83,5 +88,11 @@ public class GroovyEditorTextProvider implements EditorTextProvider {
     PsiElement expression = findExpressionInner(element, allowMethodCalls);
     if (expression == null) return null;
     return new Pair<PsiElement, TextRange>(expression, expression.getTextRange());
+  }
+
+  @Nonnull
+  @Override
+  public Language getLanguage() {
+    return GroovyLanguage.INSTANCE;
   }
 }

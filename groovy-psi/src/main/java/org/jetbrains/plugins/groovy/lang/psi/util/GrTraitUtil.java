@@ -15,63 +15,55 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.util;
 
-import static com.intellij.psi.PsiModifier.ABSTRACT;
+import com.intellij.java.language.psi.PsiClass;
+import com.intellij.java.language.psi.PsiMethod;
+import consulo.logging.Logger;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
 
 import javax.annotation.Nonnull;
-
-import org.jetbrains.annotations.Contract;
-
 import javax.annotation.Nullable;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiMethod;
+
+import static com.intellij.java.language.psi.PsiModifier.ABSTRACT;
 
 /**
  * Created by Max Medvedev on 16/05/14
  */
-public class GrTraitUtil
-{
-	private static final Logger LOG = Logger.getInstance(GrTraitUtil.class);
+public class GrTraitUtil {
+  private static final Logger LOG = Logger.getInstance(GrTraitUtil.class);
 
-	@Contract("null -> false")
-	public static boolean isInterface(@Nullable PsiClass aClass)
-	{
-		return aClass != null && aClass.isInterface() && !isTrait(aClass);
-	}
+  @Contract("null -> false")
+  public static boolean isInterface(@Nullable PsiClass aClass) {
+    return aClass != null && aClass.isInterface() && !isTrait(aClass);
+  }
 
-	public static boolean isMethodAbstract(PsiMethod method)
-	{
-		if(method.getModifierList().hasExplicitModifier(ABSTRACT))
-		{
-			return true;
-		}
+  public static boolean isMethodAbstract(PsiMethod method) {
+    if (method.getModifierList().hasExplicitModifier(ABSTRACT)) {
+      return true;
+    }
 
-		PsiClass aClass = method.getContainingClass();
-		return isInterface(aClass);
-	}
+    PsiClass aClass = method.getContainingClass();
+    return isInterface(aClass);
+  }
 
-	@Nonnull
-	public static String getTraitFieldPrefix(@Nonnull PsiClass aClass)
-	{
-		String qname = aClass.getQualifiedName();
-		LOG.assertTrue(qname != null, aClass.getClass());
+  @Nonnull
+  public static String getTraitFieldPrefix(@Nonnull PsiClass aClass) {
+    String qname = aClass.getQualifiedName();
+    LOG.assertTrue(qname != null, aClass.getClass());
 
-		String[] idents = qname.split("\\.");
+    String[] idents = qname.split("\\.");
 
-		StringBuilder buffer = new StringBuilder();
-		for(String ident : idents)
-		{
-			buffer.append(ident).append("_");
-		}
+    StringBuilder buffer = new StringBuilder();
+    for (String ident : idents) {
+      buffer.append(ident).append("_");
+    }
 
-		buffer.append("_");
-		return buffer.toString();
-	}
+    buffer.append("_");
+    return buffer.toString();
+  }
 
-	@Contract("null -> false")
-	public static boolean isTrait(@javax.annotation.Nullable PsiClass containingClass)
-	{
-		return containingClass instanceof GrTypeDefinition && ((GrTypeDefinition) containingClass).isTrait();
-	}
+  @Contract("null -> false")
+  public static boolean isTrait(@Nullable PsiClass containingClass) {
+    return containingClass instanceof GrTypeDefinition && ((GrTypeDefinition)containingClass).isTrait();
+  }
 }

@@ -15,9 +15,9 @@
  */
 package org.jetbrains.plugins.groovy.lang
 
-import com.intellij.psi.CommonClassNames
-import com.intellij.psi.PsiType
-import com.intellij.psi.util.PsiTreeUtil
+import com.intellij.java.language.psi.CommonClassNames
+import com.intellij.java.language.psi.PsiType
+import com.intellij.java.language.psi.util.PsiTreeUtil
 import com.intellij.testFramework.fixtures.LightCodeInsightFixtureTestCase
 import org.jetbrains.plugins.groovy.extensions.NamedArgumentDescriptor
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement

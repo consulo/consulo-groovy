@@ -15,11 +15,12 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.changeSignature;
 
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiMethod;
-import com.intellij.psi.PsiVariable;
-import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.java.language.psi.PsiClass;
+import consulo.language.psi.PsiElement;
+import com.intellij.java.language.psi.PsiMethod;
+import com.intellij.java.language.psi.PsiVariable;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.language.psi.PsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyRecursiveElementVisitor;

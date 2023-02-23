@@ -1,10 +1,10 @@
 package org.jetbrains.plugins.groovy.dsl;
 
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiClassType;
-import com.intellij.psi.PsiType;
-import com.intellij.psi.PsiWildcardType;
+import com.intellij.java.language.psi.PsiClass;
+import com.intellij.java.language.psi.PsiClassType;
+import com.intellij.java.language.psi.PsiType;
+import com.intellij.java.language.psi.PsiWildcardType;
+import consulo.util.lang.StringUtil;
 
 /**
  * @author peter

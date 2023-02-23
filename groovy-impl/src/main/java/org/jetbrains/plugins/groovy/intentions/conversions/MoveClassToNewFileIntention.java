@@ -16,6 +16,9 @@
 package org.jetbrains.plugins.groovy.intentions.conversions;
 
 import javax.annotation.Nonnull;
+
+import consulo.language.editor.refactoring.util.CommonRefactoringUtil;
+import consulo.language.psi.PsiDirectory;
 import org.jetbrains.plugins.groovy.actions.GroovyTemplates;
 import org.jetbrains.plugins.groovy.actions.GroovyTemplatesFactory;
 import org.jetbrains.plugins.groovy.intentions.GroovyIntentionsBundle;
@@ -26,15 +29,13 @@ import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocComment;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
-import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.io.FileUtilRt;
-import com.intellij.psi.PsiDirectory;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.refactoring.util.CommonRefactoringUtil;
-import com.intellij.util.IncorrectOperationException;
+import consulo.application.ApplicationManager;
+import consulo.codeEditor.Editor;
+import consulo.project.Project;
+import consulo.util.io.FileUtil;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.util.IncorrectOperationException;
 
 /**
  * @author Maxim.Medvedev
@@ -50,7 +51,7 @@ public class MoveClassToNewFileIntention extends Intention
 		final String name = psiClass.getName();
 
 		final PsiFile file = psiClass.getContainingFile();
-		final String fileExtension = FileUtilRt.getExtension(file.getName());
+		final String fileExtension = FileUtil.getExtension(file.getName());
 		final String newFileName = name + "." + fileExtension;
 		final PsiDirectory dir = file.getParent();
 		if(dir != null)

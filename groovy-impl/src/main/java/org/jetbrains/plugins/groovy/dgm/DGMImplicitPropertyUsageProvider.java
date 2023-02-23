@@ -15,9 +15,9 @@
  */
 package org.jetbrains.plugins.groovy.dgm;
 
-import com.intellij.codeInspection.unused.ImplicitPropertyUsageProvider;
+import com.intellij.lang.properties.inspection.unused.ImplicitPropertyUsageProvider;
 import com.intellij.lang.properties.psi.Property;
-import com.intellij.util.ArrayUtil;
+import consulo.util.collection.ArrayUtil;
 
 /**
  * @author Max Medvedev
@@ -29,6 +29,6 @@ public class DGMImplicitPropertyUsageProvider extends ImplicitPropertyUsageProvi
       String name = property.getName();
       return ArrayUtil.find(DGMUtil.KEYS, name) >= 0;
     }
-    return  false;
+    return false;
   }
 }

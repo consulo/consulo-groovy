@@ -17,7 +17,8 @@ package org.jetbrains.plugins.groovy.codeInspection.confusing;
 
 import javax.annotation.Nonnull;
 
-import com.intellij.psi.tree.IElementType;
+import consulo.language.ast.IElementType;
+import consulo.language.ast.IElementType;
 import org.jetbrains.annotations.Nls;
 
 import javax.annotation.Nullable;

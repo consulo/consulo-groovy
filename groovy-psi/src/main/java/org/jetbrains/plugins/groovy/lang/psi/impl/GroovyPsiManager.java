@@ -16,26 +16,27 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl;
 
-import com.intellij.ProjectTopics;
-import com.intellij.openapi.components.ServiceManager;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.roots.ModuleRootAdapter;
-import com.intellij.openapi.roots.ModuleRootEvent;
-import com.intellij.openapi.util.Computable;
-import com.intellij.openapi.util.RecursionGuard;
-import com.intellij.openapi.util.RecursionManager;
-import com.intellij.psi.*;
-import com.intellij.psi.impl.PsiManagerEx;
-import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.psi.util.InheritanceUtil;
-import com.intellij.reference.SoftReference;
-import com.intellij.util.ConcurrencyUtil;
-import com.intellij.util.Function;
-import com.intellij.util.IncorrectOperationException;
-import com.intellij.util.containers.ContainerUtil;
-import java.util.HashMap;
-import com.intellij.util.messages.MessageBusConnection;
+import com.intellij.java.language.psi.*;
+import com.intellij.java.language.psi.util.InheritanceUtil;
+import consulo.application.util.RecursionGuard;
+import consulo.application.util.RecursionManager;
+import consulo.application.util.function.Computable;
+import consulo.component.messagebus.MessageBusConnection;
+import consulo.ide.ServiceManager;
+import consulo.language.impl.internal.psi.PsiManagerEx;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiManager;
+import consulo.language.psi.PsiReference;
+import consulo.language.psi.scope.GlobalSearchScope;
+import consulo.language.util.IncorrectOperationException;
 import consulo.logging.Logger;
+import consulo.module.content.layer.event.ModuleRootAdapter;
+import consulo.module.content.layer.event.ModuleRootEvent;
+import consulo.module.content.layer.event.ModuleRootListener;
+import consulo.project.Project;
+import consulo.util.collection.ContainerUtil;
+import consulo.util.collection.Maps;
+import consulo.util.lang.ref.SoftReference;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
@@ -43,12 +44,14 @@ import org.jetbrains.plugins.groovy.lang.resolve.ResolveUtil;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentMap;
+import java.util.function.Function;
 
-import static com.intellij.psi.CommonClassNames.*;
+import static com.intellij.java.language.psi.CommonClassNames.*;
 import static org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames.*;
 
 /**
@@ -56,13 +59,13 @@ import static org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames.
  */
 public class GroovyPsiManager {
   private static final Logger LOG = Logger.getInstance(GroovyPsiManager.class);
-  private static final Set<String> ourPopularClasses = ContainerUtil.newHashSet(GROOVY_LANG_CLOSURE,
-                                                                                DEFAULT_BASE_CLASS_NAME,
-                                                                                GROOVY_OBJECT_SUPPORT,
-                                                                                GROOVY_LANG_SCRIPT,
-                                                                                JAVA_UTIL_LIST,
-                                                                                JAVA_UTIL_COLLECTION,
-                                                                                JAVA_LANG_STRING);
+  private static final Set<String> ourPopularClasses = Set.of(GROOVY_LANG_CLOSURE,
+                                                              DEFAULT_BASE_CLASS_NAME,
+                                                              GROOVY_OBJECT_SUPPORT,
+                                                              GROOVY_LANG_SCRIPT,
+                                                              JAVA_UTIL_LIST,
+                                                              JAVA_UTIL_COLLECTION,
+                                                              JAVA_LANG_STRING);
   private final Project myProject;
 
   private volatile Map<String, GrTypeDefinition> myArrayClass = new HashMap<String, GrTypeDefinition>();
@@ -88,7 +91,7 @@ public class GroovyPsiManager {
     });
 
     final MessageBusConnection connection = myProject.getMessageBus().connect();
-    connection.subscribe(ProjectTopics.PROJECT_ROOTS, new ModuleRootAdapter() {
+    connection.subscribe(ModuleRootListener.class, new ModuleRootAdapter() {
       public void rootsChanged(ModuleRootEvent event) {
         dropTypesCache();
         myClassCache.clear();
@@ -104,7 +107,9 @@ public class GroovyPsiManager {
   public static boolean isInheritorCached(@Nullable PsiClass aClass, @Nonnull String baseClassName) {
     if (aClass == null) return false;
 
-    return InheritanceUtil.isInheritorOrSelf(aClass, getInstance(aClass.getProject()).findClassWithCache(baseClassName, aClass.getResolveScope()), true);
+    return InheritanceUtil.isInheritorOrSelf(aClass,
+                                             getInstance(aClass.getProject()).findClassWithCache(baseClassName, aClass.getResolveScope()),
+                                             true);
   }
 
   public static boolean isInheritorCached(@Nullable PsiType type, @Nonnull String baseClassName) {
@@ -132,7 +137,7 @@ public class GroovyPsiManager {
   public boolean isCompileStatic(@Nonnull PsiMember member) {
     Boolean aBoolean = myCompileStatic.get(member);
     if (aBoolean == null) {
-      aBoolean = ConcurrencyUtil.cacheOrGet(myCompileStatic, member, isCompileStaticInner(member));
+      aBoolean = Maps.cacheOrGet(myCompileStatic, member, isCompileStaticInner(member));
     }
     return aBoolean;
   }
@@ -153,11 +158,11 @@ public class GroovyPsiManager {
   private static boolean checkForPass(@Nonnull PsiAnnotation annotation) {
     PsiAnnotationMemberValue value = annotation.findAttributeValue("value");
     return value == null ||
-           value instanceof PsiReference &&
-           ResolveUtil.isEnumConstant((PsiReference)value, "PASS", GROOVY_TRANSFORM_TYPE_CHECKING_MODE);
+      value instanceof PsiReference &&
+        ResolveUtil.isEnumConstant((PsiReference)value, "PASS", GROOVY_TRANSFORM_TYPE_CHECKING_MODE);
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   public PsiClass findClassWithCache(@Nonnull String fqName, @Nonnull GlobalSearchScope resolveScope) {
     SoftReference<Map<GlobalSearchScope, PsiClass>> reference = myClassCache.get(fqName);
     Map<GlobalSearchScope, PsiClass> map = reference == null ? null : reference.get();
@@ -179,18 +184,20 @@ public class GroovyPsiManager {
 
 
   private static final PsiType UNKNOWN_TYPE = new PsiPrimitiveType("unknown type", PsiAnnotation.EMPTY_ARRAY);
+
   @Nullable
   public <T extends GroovyPsiElement> PsiType getType(@Nonnull T element, @Nonnull Function<T, PsiType> calculator) {
     PsiType type = myCalculatedTypes.get(element);
     if (type == null) {
       RecursionGuard.StackStamp stamp = RecursionManager.markStack();
-      type = calculator.fun(element);
+      type = calculator.apply(element);
       if (type == null) {
         type = UNKNOWN_TYPE;
       }
       if (stamp.mayCacheNow()) {
-        type = ConcurrencyUtil.cacheOrGet(myCalculatedTypes, element, type);
-      } else {
+        type = Maps.cacheOrGet(myCalculatedTypes, element, type);
+      }
+      else {
         final PsiType alreadyInferred = myCalculatedTypes.get(element);
         if (alreadyInferred != null) {
           type = alreadyInferred;
@@ -209,7 +216,8 @@ public class GroovyPsiManager {
     GrTypeDefinition definition = myArrayClass.get(typeText);
     if (definition == null) {
       try {
-        definition = GroovyPsiElementFactory.getInstance(myProject).createTypeDefinition("class __ARRAY__ { public int length; public " + typeText + "[] clone(){} }");
+        definition = GroovyPsiElementFactory.getInstance(myProject)
+                                            .createTypeDefinition("class __ARRAY__ { public int length; public " + typeText + "[] clone(){} }");
         myArrayClass.put(typeText, definition);
       }
       catch (IncorrectOperationException e) {

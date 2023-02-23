@@ -17,6 +17,7 @@ package org.jetbrains.plugins.groovy.griffon;
 
 import javax.annotation.Nonnull;
 
+import consulo.language.psi.PsiElement;
 import org.jetbrains.plugins.groovy.annotator.checkers.CustomAnnotationChecker;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotation;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotationMemberValue;
@@ -25,10 +26,10 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlock;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
-import com.intellij.lang.annotation.AnnotationHolder;
-import com.intellij.psi.PsiAnnotationOwner;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiElement;
+import consulo.language.editor.annotation.AnnotationHolder;
+import com.intellij.java.language.psi.PsiAnnotationOwner;
+import com.intellij.java.language.psi.PsiClass;
+import consulo.language.psi.PsiElement;
 
 /**
  * @author Max Medvedev

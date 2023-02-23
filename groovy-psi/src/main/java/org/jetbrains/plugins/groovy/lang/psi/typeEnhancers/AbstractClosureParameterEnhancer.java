@@ -15,14 +15,16 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.typeEnhancers;
 
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiPrimitiveType;
-import com.intellij.psi.PsiType;
+import com.intellij.java.language.psi.PsiPrimitiveType;
+import com.intellij.java.language.psi.PsiType;
+import consulo.language.psi.PsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlock;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameter;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameterList;
 import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.ClosureSyntheticParameter;
+
+import javax.annotation.Nullable;
 
 /**
  * @author peter
@@ -63,6 +65,6 @@ public abstract class AbstractClosureParameterEnhancer extends GrVariableEnhance
     return res;
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   protected abstract PsiType getClosureParameterType(GrClosableBlock closure, int index);
 }

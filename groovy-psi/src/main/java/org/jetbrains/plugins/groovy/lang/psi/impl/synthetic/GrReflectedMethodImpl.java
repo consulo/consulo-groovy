@@ -15,15 +15,13 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.synthetic;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.Nonnull;
-
+import com.intellij.java.language.impl.psi.impl.light.LightMethodBuilder;
+import com.intellij.java.language.impl.psi.impl.light.LightReferenceListBuilder;
+import com.intellij.java.language.impl.psi.impl.light.LightTypeParameterListBuilder;
+import com.intellij.java.language.psi.*;
+import consulo.language.psi.PsiElement;
+import consulo.logging.Logger;
 import org.jetbrains.annotations.NonNls;
-
-import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.extensions.NamedArgumentDescriptor;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocComment;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
@@ -41,17 +39,12 @@ import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeElement;
 import org.jetbrains.plugins.groovy.lang.psi.util.GdkMethodUtil;
 import org.jetbrains.plugins.groovy.lang.psi.util.GrInnerClassConstructorUtil;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiClassType;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiIdentifier;
-import com.intellij.psi.PsiModifier;
-import com.intellij.psi.PsiType;
-import com.intellij.psi.PsiTypeParameter;
-import com.intellij.psi.impl.light.LightMethodBuilder;
-import com.intellij.psi.impl.light.LightReferenceListBuilder;
-import com.intellij.psi.impl.light.LightTypeParameterListBuilder;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Max Medvedev
@@ -189,7 +182,7 @@ public class GrReflectedMethodImpl extends LightMethodBuilder implements GrRefle
   }
 
   @Override
-  public GrTypeElement setReturnType(@javax.annotation.Nullable PsiType newReturnType) {
+  public GrTypeElement setReturnType(@Nullable PsiType newReturnType) {
     throw new UnsupportedOperationException("synthetic method!");
   }
 

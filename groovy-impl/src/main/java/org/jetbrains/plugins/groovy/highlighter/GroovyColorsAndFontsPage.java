@@ -19,17 +19,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.annotation.Nonnull;
-import javax.swing.Icon;
 
+import consulo.colorScheme.setting.AttributesDescriptor;
+import consulo.colorScheme.setting.ColorDescriptor;
+import consulo.language.editor.highlight.SyntaxHighlighter;
 import org.jetbrains.annotations.NonNls;
 
 import javax.annotation.Nullable;
-import com.intellij.openapi.editor.colors.TextAttributesKey;
-import com.intellij.openapi.fileTypes.SyntaxHighlighter;
-import com.intellij.openapi.options.colors.AttributesDescriptor;
-import com.intellij.openapi.options.colors.ColorDescriptor;
-import com.intellij.openapi.options.colors.ColorSettingsPage;
-import icons.JetgroovyIcons;
+import consulo.colorScheme.TextAttributesKey;
+import consulo.language.editor.colorScheme.setting.ColorSettingsPage;
 
 /**
  * @author ven

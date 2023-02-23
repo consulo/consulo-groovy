@@ -17,13 +17,17 @@ package org.jetbrains.plugins.groovy.actions;
 
 import javax.annotation.Nonnull;
 
-import com.intellij.lang.Language;
-import com.intellij.openapi.actionSystem.DataContext;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.refactoring.RefactoringActionHandler;
-import com.intellij.refactoring.actions.BaseRefactoringAction;
+import consulo.dataContext.DataContext;
+import consulo.language.Language;
+import consulo.dataContext.DataContext;
+import consulo.codeEditor.Editor;
+import consulo.language.editor.refactoring.action.BaseRefactoringAction;
+import consulo.language.editor.refactoring.action.RefactoringActionHandler;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.editor.refactoring.action.RefactoringActionHandler;
+import consulo.language.editor.refactoring.action.BaseRefactoringAction;
+import consulo.language.Language;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.refactoring.convertToJava.ConvertToJavaHandler;
@@ -31,7 +35,8 @@ import org.jetbrains.plugins.groovy.refactoring.convertToJava.ConvertToJavaHandl
 /**
  * @author Maxim.Medvedev
  */
-public class ConvertToJavaAction extends BaseRefactoringAction {
+public class ConvertToJavaAction extends BaseRefactoringAction
+{
 
   @Override
   protected boolean isAvailableOnElementInEditorAndFile(@Nonnull PsiElement element, @Nonnull Editor editor, @Nonnull PsiFile file, @Nonnull DataContext context) {

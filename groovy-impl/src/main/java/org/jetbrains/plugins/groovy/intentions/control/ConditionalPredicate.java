@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.intentions.control;
 
-import com.intellij.psi.PsiElement;
+import consulo.language.psi.PsiElement;
 import org.jetbrains.plugins.groovy.intentions.base.ErrorUtil;
 import org.jetbrains.plugins.groovy.intentions.base.PsiElementPredicate;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrConditionalExpression;

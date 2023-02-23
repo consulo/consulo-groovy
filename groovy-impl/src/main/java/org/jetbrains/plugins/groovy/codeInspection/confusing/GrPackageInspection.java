@@ -15,18 +15,16 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.confusing;
 
-import com.intellij.codeInspection.LocalQuickFix;
-import com.intellij.codeInspection.ProblemDescriptor;
-import com.intellij.codeInspection.ProblemHighlightType;
-import com.intellij.codeInspection.ui.MultipleCheckboxOptionsPanel;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.SyntheticElement;
+import com.intellij.java.language.psi.PsiClass;
+import consulo.language.editor.inspection.LocalQuickFix;
+import consulo.language.editor.inspection.ProblemDescriptor;
+import consulo.language.editor.inspection.ProblemHighlightType;
+import consulo.language.editor.inspection.ui.MultipleCheckboxOptionsPanel;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.SyntheticElement;
+import consulo.project.Project;
 import org.jetbrains.annotations.Nls;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.annotator.intentions.GrMoveToDirFix;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspection;
@@ -40,6 +38,8 @@ import org.jetbrains.plugins.groovy.lang.psi.api.toplevel.GrTopStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.toplevel.packaging.GrPackageDefinition;
 import org.jetbrains.plugins.groovy.lang.resolve.ResolveUtil;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.swing.*;
 
 /**

@@ -29,7 +29,7 @@ import com.intellij.openapi.module.Module
 import com.intellij.openapi.roots.ModuleRootModificationUtil
 import com.intellij.openapi.util.io.FileUtil
 import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.psi.PsiFile
+import com.intellij.java.language.psi.PsiFile
 import com.intellij.testFramework.TestLoggerFactory
 import org.consulo.compiler.impl.resourceCompiler.ResourceCompilerConfiguration
 import org.jetbrains.plugins.groovy.compiler.generator.GroovycStubGenerator

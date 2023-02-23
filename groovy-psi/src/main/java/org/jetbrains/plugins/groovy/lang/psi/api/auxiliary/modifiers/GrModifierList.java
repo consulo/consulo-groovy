@@ -16,19 +16,21 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers;
 
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiModifierList;
-import com.intellij.util.IncorrectOperationException;
+import com.intellij.java.language.psi.PsiModifierList;
+import consulo.language.psi.PsiElement;
+import consulo.language.util.IncorrectOperationException;
 import org.jetbrains.annotations.NonNls;
-import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotation;
+
+import javax.annotation.Nonnull;
 
 /**
  * @autor: Dmitry.Krasilschikov
  * @date: 18.03.2007
  */
-public interface GrModifierList extends GroovyPsiElement, PsiModifierList {
+public interface GrModifierList extends GroovyPsiElement, PsiModifierList
+{
 
   @Nonnull
   PsiElement[] getModifiers();

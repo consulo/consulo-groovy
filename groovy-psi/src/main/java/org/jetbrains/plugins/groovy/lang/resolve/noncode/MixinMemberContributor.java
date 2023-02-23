@@ -15,15 +15,15 @@
  */
 package org.jetbrains.plugins.groovy.lang.resolve.noncode;
 
-import com.intellij.codeInsight.completion.originInfo.OriginInfoAwareElement;
-import com.intellij.psi.*;
-import com.intellij.psi.impl.light.LightMethod;
-import com.intellij.psi.scope.DelegatingScopeProcessor;
-import com.intellij.psi.scope.PsiScopeProcessor;
-import com.intellij.psi.util.PsiUtil;
-import com.intellij.util.ObjectUtils;
-import javax.annotation.Nonnull;
-
+import com.intellij.java.language.impl.psi.impl.light.LightMethod;
+import com.intellij.java.language.psi.*;
+import com.intellij.java.language.psi.util.PsiUtil;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiMirrorElement;
+import consulo.language.psi.resolve.DelegatingScopeProcessor;
+import consulo.language.psi.resolve.PsiScopeProcessor;
+import consulo.language.psi.resolve.ResolveState;
+import consulo.util.lang.ObjectUtil;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotation;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotationArrayInitializer;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotationMemberValue;
@@ -34,6 +34,8 @@ import org.jetbrains.plugins.groovy.lang.psi.util.GdkMethodUtil;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames;
 import org.jetbrains.plugins.groovy.lang.resolve.NonCodeMembersContributor;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -117,12 +119,12 @@ public class MixinMemberContributor extends NonCodeMembersContributor {
     private final PsiMethod myPrototype;
 
     public MixinedMethod(@Nonnull PsiMethod method, String originInfo) {
-      super(method.getManager(), method, ObjectUtils.assertNotNull(method.getContainingClass()));
+      super(method.getManager(), method, ObjectUtil.assertNotNull(method.getContainingClass()));
       myOriginInfo = originInfo;
       myPrototype = method;
     }
 
-    @javax.annotation.Nullable
+    @Nullable
     @Override
     public String getOriginInfo() {
       return myOriginInfo;
@@ -139,7 +141,7 @@ public class MixinMemberContributor extends NonCodeMembersContributor {
     private final PsiType myType;
     private final PsiElement myPlace;
 
-    public MixinProcessor(PsiScopeProcessor delegate, @Nonnull PsiType qualifierType, @javax.annotation.Nullable PsiElement place) {
+    public MixinProcessor(PsiScopeProcessor delegate, @Nonnull PsiType qualifierType, @Nullable PsiElement place) {
       super(delegate);
       myType = qualifierType;
       myPlace = place;

@@ -21,6 +21,10 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
+import consulo.language.ast.ASTNode;
+import consulo.language.psi.PsiElement;
+import consulo.language.util.IncorrectOperationException;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.GrCondition;
@@ -30,9 +34,6 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpres
 import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyPsiElementImpl;
 import org.jetbrains.plugins.groovy.lang.psi.impl.PsiImplUtil;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
-import com.intellij.util.IncorrectOperationException;
 
 /**
  * @autor: ilyas
@@ -65,7 +66,7 @@ public class GrWhileStatementImpl extends GroovyPsiElementImpl implements GrWhil
   }
 
   @Override
-  @javax.annotation.Nullable
+  @Nullable
   public GrStatement getBody() {
     List<GrStatement> statements = new ArrayList<GrStatement>();
     for (PsiElement cur = getFirstChild(); cur != null; cur = cur.getNextSibling()) {
@@ -78,7 +79,8 @@ public class GrWhileStatementImpl extends GroovyPsiElementImpl implements GrWhil
   }
 
   @Override
-  public <T extends GrCondition> T replaceBody(T newBody) throws IncorrectOperationException {
+  public <T extends GrCondition> T replaceBody(T newBody) throws IncorrectOperationException
+  {
     return PsiImplUtil.replaceBody(newBody, getBody(), getNode(), getProject());
   }
 

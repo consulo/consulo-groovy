@@ -15,21 +15,21 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.stubs.index;
 
-import java.util.Collection;
+import com.intellij.java.language.psi.PsiClass;
+import consulo.language.psi.scope.GlobalSearchScope;
+import consulo.language.psi.stub.IntStubIndexExtension;
+import consulo.language.psi.stub.StubIndexKey;
+import consulo.project.Project;
+import org.jetbrains.plugins.groovy.lang.psi.impl.search.GrSourceFilterScope;
 
 import javax.annotation.Nonnull;
-
-import org.jetbrains.plugins.groovy.lang.psi.impl.search.GrSourceFilterScope;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.psi.stubs.IntStubIndexExtension;
-import com.intellij.psi.stubs.StubIndexKey;
+import java.util.Collection;
 
 /**
  * @author ilyas
  */
-public class GrFullClassNameIndex extends IntStubIndexExtension<PsiClass> {
+public class GrFullClassNameIndex extends IntStubIndexExtension<PsiClass>
+{
   public static final StubIndexKey<Integer,PsiClass> KEY = StubIndexKey.createIndexKey("gr.class.fqn");
 
   private static final GrFullClassNameIndex ourInstance = new GrFullClassNameIndex();

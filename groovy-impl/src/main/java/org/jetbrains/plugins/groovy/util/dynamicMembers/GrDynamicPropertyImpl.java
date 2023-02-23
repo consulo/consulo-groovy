@@ -15,13 +15,13 @@
  */
 package org.jetbrains.plugins.groovy.util.dynamicMembers;
 
-import java.util.Map;
-
-import javax.annotation.Nonnull;
-
+import com.intellij.java.language.psi.*;
+import consulo.language.impl.psi.LightElement;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiElementVisitor;
+import consulo.language.psi.PsiFile;
+import consulo.language.util.IncorrectOperationException;
 import org.jetbrains.annotations.NonNls;
-
-import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.extensions.NamedArgumentDescriptor;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocComment;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
@@ -30,16 +30,10 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrAccessorMethod;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeElement;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.PsiExpression;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiIdentifier;
-import com.intellij.psi.PsiType;
-import com.intellij.psi.PsiTypeElement;
-import com.intellij.psi.impl.light.LightElement;
-import com.intellij.util.IncorrectOperationException;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Map;
 
 /**
  * @author Maxim.Medvedev
@@ -90,6 +84,7 @@ public class GrDynamicPropertyImpl extends LightElement implements GrField
 	{
 		return myNavigationalElement;
 	}
+
 	@Override
 	public PsiFile getContainingFile()
 	{

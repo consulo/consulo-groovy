@@ -21,10 +21,10 @@ import com.intellij.codeInsight.completion.impl.CamelHumpMatcher
 import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.codeInsight.lookup.LookupElementPresentation
 import com.intellij.codeInsight.lookup.PsiTypeLookupItem
-import com.intellij.psi.codeStyle.CodeStyleSettingsManager
-import com.intellij.psi.statistics.StatisticsManager
-import com.intellij.psi.statistics.impl.StatisticsManagerImpl
-import com.intellij.psi.util.PsiTreeUtil
+import com.intellij.java.language.psi.codeStyle.CodeStyleSettingsManager
+import com.intellij.java.language.psi.statistics.StatisticsManager
+import com.intellij.java.language.psi.statistics.impl.StatisticsManagerImpl
+import com.intellij.java.language.psi.util.PsiTreeUtil
 import org.jetbrains.plugins.groovy.GroovyFileType
 import org.jetbrains.plugins.groovy.codeStyle.GroovyCodeStyleSettings
 

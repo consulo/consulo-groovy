@@ -17,7 +17,7 @@ package org.jetbrains.plugins.groovy.refactoring.move;
 
 
 import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.psi.PsiFile
+import com.intellij.java.language.psi.PsiFile
 import com.intellij.refactoring.move.moveFilesOrDirectories.MoveFilesOrDirectoriesProcessor
 import org.jetbrains.plugins.groovy.util.TestUtils
 

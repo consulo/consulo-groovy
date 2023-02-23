@@ -15,15 +15,13 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.confusing;
 
-import com.intellij.openapi.util.Pair;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiMethod;
-import com.intellij.psi.PsiSubstitutor;
-import com.intellij.psi.util.PsiFormatUtil;
-import com.intellij.psi.util.PsiFormatUtilBase;
+import com.intellij.java.language.psi.PsiMethod;
+import com.intellij.java.language.psi.PsiSubstitutor;
+import com.intellij.java.language.psi.util.PsiFormatUtil;
+import com.intellij.java.language.psi.util.PsiFormatUtilBase;
+import consulo.language.psi.PsiElement;
+import consulo.util.lang.Pair;
 import org.jetbrains.annotations.Nls;
-import javax.annotation.Nonnull;
-
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.codeInspection.GroovyInspectionBundle;
@@ -33,6 +31,8 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMe
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrReflectedMethod;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyPropertyUtils;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -52,7 +52,7 @@ public class ClashingGettersInspection extends BaseInspection {
     return "Clashing getters";
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   protected String buildErrorString(Object... args) {
     return GroovyInspectionBundle.message("getter.0.clashes.with.getter.1", args);
   }

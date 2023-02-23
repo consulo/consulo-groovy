@@ -15,15 +15,16 @@
  */
 package org.jetbrains.plugins.groovy.lang.completion.weighers;
 
-import com.intellij.patterns.PlatformPatterns;
-import com.intellij.patterns.PsiElementPattern;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.util.proximity.ReferenceListWeigher;
-import javax.annotation.Nonnull;
+import com.intellij.java.impl.psi.util.proximity.ReferenceListWeigher;
+import consulo.language.pattern.PlatformPatterns;
+import consulo.language.pattern.PsiElementPattern;
+import consulo.language.psi.PsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrReferenceList;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author peter
@@ -33,7 +34,7 @@ public class GrReferenceListWeigher extends ReferenceListWeigher {
     PlatformPatterns.psiElement().withParents(GrCodeReferenceElement.class, GrReferenceList.class);
 
   @Override
-  protected Preference getPreferredCondition(@Nonnull PsiElement  position) {
+  protected Preference getPreferredCondition(@Nonnull PsiElement position) {
     if (INSIDE_REFERENCE_LIST.accepts(position)) {
       GrReferenceList list = (GrReferenceList)position.getParent().getParent();
       PsiElement parent = list.getParent();

@@ -15,11 +15,11 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.literals;
 
-import javax.annotation.Nonnull;
-
-import com.intellij.lang.ASTNode;
+import consulo.language.ast.ASTNode;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.literals.GrLiteral;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.GrExpressionImpl;
+
+import javax.annotation.Nonnull;
 
 
 public abstract class GrAbstractLiteral extends GrExpressionImpl implements GrLiteral {

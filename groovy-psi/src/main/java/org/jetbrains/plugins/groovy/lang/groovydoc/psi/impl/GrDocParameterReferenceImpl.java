@@ -16,10 +16,16 @@
 
 package org.jetbrains.plugins.groovy.lang.groovydoc.psi.impl;
 
-import java.util.ArrayList;
-
-import javax.annotation.Nonnull;
-
+import com.intellij.java.language.psi.PsiMethod;
+import com.intellij.java.language.psi.PsiTypeParameter;
+import com.intellij.java.language.psi.PsiTypeParameterListOwner;
+import consulo.document.util.TextRange;
+import consulo.language.ast.ASTNode;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiReference;
+import consulo.language.psi.ResolveResult;
+import consulo.language.util.IncorrectOperationException;
+import consulo.util.collection.ArrayUtil;
 import org.jetbrains.plugins.groovy.lang.groovydoc.lexer.GroovyDocTokenTypes;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocParameterReference;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocTagValueToken;
@@ -30,16 +36,10 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMe
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeParameter;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeParameterListOwner;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyResolveResultImpl;
-import com.intellij.lang.ASTNode;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiMethod;
-import com.intellij.psi.PsiReference;
-import com.intellij.psi.PsiTypeParameter;
-import com.intellij.psi.PsiTypeParameterListOwner;
-import com.intellij.psi.ResolveResult;
-import com.intellij.util.ArrayUtil;
-import com.intellij.util.IncorrectOperationException;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.ArrayList;
 
 /**
  * @author ilyas
@@ -106,7 +106,7 @@ public class GrDocParameterReferenceImpl extends GroovyDocPsiElementImpl impleme
     return getText();
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   public PsiElement resolve() {
     final ResolveResult[] results = multiResolve(false);
     if (results.length != 1) return null;

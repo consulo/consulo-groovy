@@ -15,24 +15,23 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.stubs.elements;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.annotation.Nonnull;
-
+import com.intellij.java.language.psi.PsiNameHelper;
+import consulo.language.psi.stub.IndexSink;
+import consulo.language.psi.stub.StubElement;
+import consulo.language.psi.stub.StubInputStream;
+import consulo.language.psi.stub.StubOutputStream;
+import consulo.util.collection.ArrayUtil;
+import consulo.util.lang.StringUtil;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrReferenceList;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
 import org.jetbrains.plugins.groovy.lang.psi.stubs.GrReferenceListStub;
 import org.jetbrains.plugins.groovy.lang.psi.stubs.GrStubUtils;
 import org.jetbrains.plugins.groovy.lang.psi.stubs.index.GrDirectInheritorsIndex;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.PsiNameHelper;
-import com.intellij.psi.stubs.IndexSink;
-import com.intellij.psi.stubs.StubElement;
-import com.intellij.psi.stubs.StubInputStream;
-import com.intellij.psi.stubs.StubOutputStream;
-import com.intellij.util.ArrayUtil;
+
+import javax.annotation.Nonnull;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author ilyas

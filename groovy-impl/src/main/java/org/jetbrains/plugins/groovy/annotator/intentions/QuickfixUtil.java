@@ -15,11 +15,15 @@
  */
 package org.jetbrains.plugins.groovy.annotator.intentions;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import javax.annotation.Nullable;
+import com.intellij.java.language.psi.CommonClassNames;
+import com.intellij.java.language.psi.PsiClass;
+import com.intellij.java.language.psi.PsiClassType;
+import com.intellij.java.language.psi.PsiType;
+import com.intellij.java.language.psi.util.PsiTypesUtil;
+import consulo.language.editor.FileModificationService;
+import consulo.language.psi.PsiFile;
+import consulo.project.Project;
+import consulo.util.collection.ArrayUtil;
 import org.jetbrains.plugins.groovy.annotator.intentions.dynamic.ParamInfo;
 import org.jetbrains.plugins.groovy.annotator.intentions.dynamic.ui.DynamicElementSettings;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
@@ -32,15 +36,11 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.PsiImplUtil;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 import org.jetbrains.plugins.groovy.lang.resolve.ResolveUtil;
-import com.intellij.codeInsight.FileModificationService;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.CommonClassNames;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiClassType;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiType;
-import com.intellij.psi.util.PsiTypesUtil;
-import com.intellij.util.ArrayUtil;
+
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * User: Dmitry.Krasilschikov

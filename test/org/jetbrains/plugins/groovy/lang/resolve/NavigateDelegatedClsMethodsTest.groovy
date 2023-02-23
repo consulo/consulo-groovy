@@ -22,7 +22,7 @@ import com.intellij.openapi.roots.OrderRootType
 import com.intellij.openapi.roots.libraries.Library
 import com.intellij.openapi.vfs.JarFileSystem
 import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.psi.PsiMethod
+import com.intellij.java.language.psi.PsiMethod
 import com.intellij.testFramework.LightProjectDescriptor
 import org.jetbrains.plugins.groovy.GroovyLightProjectDescriptor
 import org.jetbrains.plugins.groovy.LightGroovyTestCase
@@ -43,7 +43,7 @@ public class NavigateDelegatedClsMethodsTest extends LightGroovyTestCase {
       final Library.ModifiableModel gebModel = model.moduleLibraryTable.createLibrary("Geb").modifiableModel;
       final VirtualFile gebJar = JarFileSystem.instance.refreshAndFindFileByPath(absoluteTestDataPath + 'mockGeb/geb-core-0.7.1.jar!/');
       assert gebJar != null;
-      gebModel.addRoot(gebJar, OrderRootType.CLASSES);
+      gebModel.addRoot(gebJar, BinariesOrderRootType.getInstance());
       final VirtualFile gebSource = JarFileSystem.instance.refreshAndFindFileByPath(absoluteTestDataPath + 'mockGeb/geb-core-0.7.1-sources.jar!/');
       assert gebSource != null;
       gebModel.addRoot(gebSource, OrderRootType.SOURCES);

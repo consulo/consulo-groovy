@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.dataFlow;
 
-import com.intellij.openapi.progress.ProgressManager;
+import consulo.application.progress.ProgressManager;
 import org.jetbrains.plugins.groovy.lang.psi.controlFlow.CallEnvironment;
 import org.jetbrains.plugins.groovy.lang.psi.controlFlow.CallInstruction;
 import org.jetbrains.plugins.groovy.lang.psi.controlFlow.ControlFlowBuilderUtil;
@@ -77,7 +77,7 @@ public class DFAEngine<E>
 		return result;
 	}
 
-	@javax.annotation.Nullable
+	@Nullable
 	public ArrayList<E> performDFAWithTimeout()
 	{
 		return performDFA(true);

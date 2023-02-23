@@ -17,11 +17,11 @@ package org.jetbrains.plugins.groovy.lang.psi.impl.statements;
 
 import javax.annotation.Nonnull;
 
+import consulo.language.ast.ASTNode;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrBlockStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrOpenBlock;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyPsiElementImpl;
-import com.intellij.lang.ASTNode;
 
 /**
  * @author ilyas

@@ -15,61 +15,53 @@
  */
 package org.jetbrains.plugins.groovy.annotator.intentions.dynamic.elements;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.annotation.Nonnull;
-
+import com.intellij.java.language.psi.PsiMethod;
+import consulo.language.psi.PsiManager;
 import org.jetbrains.plugins.groovy.annotator.intentions.dynamic.GrDynamicImplicitMethod;
 import org.jetbrains.plugins.groovy.annotator.intentions.dynamic.ParamInfo;
-import com.intellij.psi.PsiManager;
-import com.intellij.psi.PsiMethod;
+
+import javax.annotation.Nonnull;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * User: Dmitry.Krasilschikov
  * Date: 12.02.2008
  */
-public class DMethodElement extends DItemElement
-{
-	public List<ParamInfo> myPairs = new ArrayList<ParamInfo>();
-	private GrDynamicImplicitMethod myImplicitMethod;
+public class DMethodElement extends DItemElement {
+  public List<ParamInfo> myPairs = new ArrayList<ParamInfo>();
+  private GrDynamicImplicitMethod myImplicitMethod;
 
-	@SuppressWarnings("UnusedDeclaration") //for serialization
-	public DMethodElement()
-	{
-		super(null, null, null);
-	}
+  @SuppressWarnings("UnusedDeclaration") //for serialization
+  public DMethodElement() {
+    super(null, null, null);
+  }
 
-	public DMethodElement(Boolean isStatic, String name, String returnType, List<ParamInfo> pairs)
-	{
-		super(isStatic, name, returnType);
+  public DMethodElement(Boolean isStatic, String name, String returnType, List<ParamInfo> pairs) {
+    super(isStatic, name, returnType);
 
-		myPairs = pairs;
-	}
+    myPairs = pairs;
+  }
 
-	public List<ParamInfo> getPairs()
-	{
-		return myPairs;
-	}
+  public List<ParamInfo> getPairs() {
+    return myPairs;
+  }
 
-	@Override
-	public void clearCache()
-	{
-		myImplicitMethod = null;
-	}
+  @Override
+  public void clearCache() {
+    myImplicitMethod = null;
+  }
 
-	@Override
-	@Nonnull
-	public PsiMethod getPsi(PsiManager manager, final String containingClassName)
-	{
-		if(myImplicitMethod != null)
-		{
-			return myImplicitMethod;
-		}
+  @Override
+  @Nonnull
+  public PsiMethod getPsi(PsiManager manager, final String containingClassName) {
+    if (myImplicitMethod != null) {
+      return myImplicitMethod;
+    }
 
-		Boolean aStatic = isStatic();
-		myImplicitMethod = new GrDynamicImplicitMethod(manager, getName(), containingClassName,
-				aStatic != null && aStatic.booleanValue(), myPairs, getType());
-		return myImplicitMethod;
-	}
+    Boolean aStatic = isStatic();
+    myImplicitMethod = new GrDynamicImplicitMethod(manager, getName(), containingClassName,
+                                                   aStatic != null && aStatic.booleanValue(), myPairs, getType());
+    return myImplicitMethod;
+  }
 }

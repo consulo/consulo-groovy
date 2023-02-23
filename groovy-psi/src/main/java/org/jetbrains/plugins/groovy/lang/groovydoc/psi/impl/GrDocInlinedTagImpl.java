@@ -16,11 +16,11 @@
 
 package org.jetbrains.plugins.groovy.lang.groovydoc.psi.impl;
 
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.tree.TokenSet;
-import com.intellij.psi.util.PsiUtilBase;
-import com.intellij.util.IncorrectOperationException;
+import consulo.language.ast.ASTNode;
+import consulo.language.ast.TokenSet;
+import consulo.language.psi.PsiElement;
+import consulo.language.editor.util.PsiUtilBase;
+import consulo.language.util.IncorrectOperationException;
 import org.jetbrains.annotations.NonNls;
 import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocComment;

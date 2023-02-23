@@ -15,8 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.threading;
 
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiMethod;
+import com.intellij.java.language.psi.PsiClass;
+import com.intellij.java.language.psi.PsiMethod;
 import org.jetbrains.annotations.Nls;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

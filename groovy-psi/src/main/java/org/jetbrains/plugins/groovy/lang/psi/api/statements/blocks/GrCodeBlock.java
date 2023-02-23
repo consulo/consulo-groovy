@@ -16,9 +16,10 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks;
 
-import com.intellij.psi.PsiElement;
+import consulo.language.psi.PsiElement;
 
 import javax.annotation.Nullable;
+
 import org.jetbrains.plugins.groovy.lang.psi.GrControlFlowOwner;
 import org.jetbrains.plugins.groovy.lang.psi.api.util.GrDeclarationHolder;
 import org.jetbrains.plugins.groovy.lang.psi.api.util.GrStatementOwner;

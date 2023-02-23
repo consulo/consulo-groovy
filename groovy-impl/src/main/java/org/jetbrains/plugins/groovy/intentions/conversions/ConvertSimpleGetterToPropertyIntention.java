@@ -15,14 +15,15 @@
  */
 package org.jetbrains.plugins.groovy.intentions.conversions;
 
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiModifier;
-import com.intellij.psi.PsiType;
-import com.intellij.psi.codeStyle.JavaCodeStyleManager;
-import com.intellij.util.IncorrectOperationException;
+import consulo.codeEditor.Editor;
+import consulo.language.util.IncorrectOperationException;
+import consulo.project.Project;
+import com.intellij.java.language.psi.PsiClass;
+import consulo.language.psi.PsiElement;
+import com.intellij.java.language.psi.PsiModifier;
+import com.intellij.java.language.psi.PsiType;
+import com.intellij.java.language.psi.codeStyle.JavaCodeStyleManager;
+
 import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.intentions.base.PsiElementPredicate;
@@ -40,7 +41,8 @@ import org.jetbrains.plugins.groovy.lang.psi.util.GroovyPropertyUtils;
  */
 public class ConvertSimpleGetterToPropertyIntention extends Intention {
   @Override
-  protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
+  protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException
+  {
     GrMethod method = (GrMethod)element.getParent();
 
     GrStatement statement = method.getBlock().getStatements()[0];

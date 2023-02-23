@@ -15,28 +15,30 @@
  */
 package org.jetbrains.plugins.groovy.editor.actions;
 
-import com.intellij.codeInsight.AutoPopupController;
-import com.intellij.codeInsight.CodeInsightSettings;
-import com.intellij.codeInsight.editorActions.JavaTypedHandler;
-import com.intellij.codeInsight.editorActions.TypedHandlerDelegate;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.editor.ex.EditorEx;
-import com.intellij.openapi.editor.highlighter.HighlighterIterator;
-import com.intellij.openapi.fileTypes.FileType;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.Condition;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.tree.TokenSet;
-import com.intellij.psi.util.PsiTreeUtil;
-import javax.annotation.Nonnull;
+import com.intellij.java.impl.codeInsight.editorActions.JavaTypedHandler;
+import consulo.codeEditor.Editor;
+import consulo.codeEditor.EditorEx;
+import consulo.codeEditor.HighlighterIterator;
+import consulo.language.ast.TokenSet;
+import consulo.language.editor.AutoPopupController;
+import consulo.language.editor.CodeInsightSettings;
+import consulo.language.editor.action.TypedHandlerDelegate;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.project.Project;
+import consulo.util.lang.function.Condition;
+import consulo.virtualFileSystem.fileType.FileType;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author peter
  */
-public class GroovyTypedHandler extends TypedHandlerDelegate {
+public class GroovyTypedHandler extends TypedHandlerDelegate
+{
   static final TokenSet INVALID_INSIDE_REFERENCE = TokenSet.create(GroovyTokenTypes.mSEMI, GroovyTokenTypes.mLCURLY, GroovyTokenTypes.mRCURLY);
   private boolean myJavaLTTyped;
 

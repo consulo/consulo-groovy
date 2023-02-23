@@ -16,7 +16,7 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation;
 
-import com.intellij.psi.PsiAnnotationMemberValue;
+import com.intellij.java.language.psi.PsiAnnotationMemberValue;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 
 /**

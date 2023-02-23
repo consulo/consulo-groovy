@@ -16,18 +16,18 @@
 
 package org.jetbrains.plugins.groovy.compiler;
 
-import com.intellij.compiler.impl.ModuleChunk;
-import com.intellij.util.PathsList;
-import com.intellij.openapi.extensions.ExtensionPointName;
-import javax.annotation.Nonnull;
+import consulo.compiler.ModuleChunk;
+import consulo.component.extension.ExtensionPointName;
+import consulo.virtualFileSystem.util.PathsList;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 /**
  * @author peter
  */
 public abstract class GroovyCompilerExtension {
-  public static final ExtensionPointName<GroovyCompilerExtension> EP_NAME = ExtensionPointName.create("org.intellij.groovy.compilerExtension");
+  public static final ExtensionPointName<GroovyCompilerExtension> EP_NAME = ExtensionPointName.create(GroovyCompilerExtension.class);
 
   public abstract void enhanceCompilationClassPath(@Nonnull ModuleChunk chunk, @Nonnull PathsList classPath);
 

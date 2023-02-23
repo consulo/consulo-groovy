@@ -15,25 +15,26 @@
  */
 package org.jetbrains.plugins.groovy.dsl.holders;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.Nullable;
+import com.intellij.java.language.psi.*;
+import consulo.application.util.CachedValueProvider;
+import consulo.application.util.CachedValuesManager;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.PsiManager;
+import consulo.language.psi.PsiModificationTracker;
+import consulo.language.psi.resolve.PsiScopeProcessor;
+import consulo.language.psi.resolve.ResolveState;
+import consulo.util.collection.ContainerUtil;
+import consulo.util.dataholder.Key;
 import org.jetbrains.plugins.groovy.dsl.CustomMembersGenerator;
 import org.jetbrains.plugins.groovy.dsl.GroovyClassDescriptor;
 import org.jetbrains.plugins.groovy.extensions.NamedArgumentDescriptor;
 import org.jetbrains.plugins.groovy.lang.completion.closureParameters.ClosureDescriptor;
 import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GrLightMethodBuilder;
 import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GrLightVariable;
-import consulo.util.dataholder.Key;
-import com.intellij.psi.*;
-import com.intellij.psi.scope.PsiScopeProcessor;
-import com.intellij.psi.util.CachedValueProvider;
-import com.intellij.psi.util.CachedValuesManager;
-import com.intellij.psi.util.PsiModificationTracker;
-import com.intellij.util.containers.ContainerUtil;
+
+import javax.annotation.Nullable;
+import java.util.*;
 
 /**
  * @author peter
@@ -144,7 +145,7 @@ public class NonCodeMembersHolder implements CustomMembersHolder {
         method.addParameter(String.valueOf(paramName), convertToPsiType(typeName, place), false);
 
         if (isNamed) {
-          Map<String, NamedArgumentDescriptor> namedParams = ContainerUtil.newHashMap();
+          Map<String, NamedArgumentDescriptor> namedParams = new HashMap<>();
           for (Object o : (List)value) {
             if (o instanceof CustomMembersGenerator.ParameterDescriptor) {
               namedParams.put(((CustomMembersGenerator.ParameterDescriptor)o).name,

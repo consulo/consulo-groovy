@@ -15,16 +15,17 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.assignment;
 
-import javax.annotation.Nonnull;
-
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiType;
-import com.intellij.util.IncorrectOperationException;
+import com.intellij.java.language.psi.PsiType;
+import consulo.language.psi.PsiElement;
+import consulo.language.util.IncorrectOperationException;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrArgumentList;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrNewExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * Created by Max Medvedev on 05/02/14
@@ -35,19 +36,19 @@ public class GrNewExpressionInfo extends ConstructorCallInfoBase<GrNewExpression
     super(expr);
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   @Override
   protected PsiType[] inferArgTypes() {
     return PsiUtil.getArgumentTypes(getCall().getReferenceElement(), true);
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   @Override
   public GrExpression getInvokedExpression() {
     return null;
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   @Override
   public PsiType getQualifierInstanceType() {
     return null;

@@ -15,16 +15,17 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.typeEnhancers;
 
-import com.intellij.psi.*;
-import com.intellij.psi.util.InheritanceUtil;
-import com.intellij.psi.util.PsiUtil;
-import com.intellij.psi.util.TypeConversionUtil;
-import javax.annotation.Nonnull;
-
+import com.intellij.java.language.psi.*;
+import com.intellij.java.language.psi.util.InheritanceUtil;
+import com.intellij.java.language.psi.util.PsiUtil;
+import com.intellij.java.language.psi.util.TypeConversionUtil;
+import consulo.language.psi.PsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.ConversionResult;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Iterator;
 
 /**
@@ -45,7 +46,7 @@ public class GrGenericTypeConverter extends GrTypeConverter {
   }
 
   @Override
-  @javax.annotation.Nullable
+  @Nullable
   public ConversionResult isConvertibleEx(@Nonnull PsiType ltype,
                                           @Nonnull PsiType rtype,
                                           @Nonnull GroovyPsiElement context,

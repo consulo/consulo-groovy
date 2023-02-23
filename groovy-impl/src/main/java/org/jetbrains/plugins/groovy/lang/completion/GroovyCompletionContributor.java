@@ -15,15 +15,17 @@
  */
 package org.jetbrains.plugins.groovy.lang.completion;
 
-import com.intellij.codeInsight.completion.*;
-import com.intellij.patterns.ElementPattern;
-import com.intellij.patterns.PlatformPatterns;
-import com.intellij.patterns.PsiJavaPatterns;
-import com.intellij.patterns.StandardPatterns;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiReference;
-import com.intellij.util.ProcessingContext;
-import consulo.codeInsight.completion.CompletionProvider;
+import com.intellij.java.language.patterns.PsiJavaPatterns;
+import consulo.ide.impl.idea.codeInsight.completion.WordCompletionContributor;
+import consulo.language.Language;
+import consulo.language.editor.completion.*;
+import consulo.language.pattern.ElementPattern;
+import consulo.language.pattern.PlatformPatterns;
+import consulo.language.pattern.StandardPatterns;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiReference;
+import consulo.language.util.ProcessingContext;
+import org.jetbrains.plugins.groovy.GroovyLanguage;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.literals.GrLiteral;
 
@@ -39,9 +41,12 @@ public class GroovyCompletionContributor extends CompletionContributor {
   private static final ElementPattern<PsiElement> AFTER_NUMBER_LITERAL = PlatformPatterns.psiElement().afterLeafSkipping(
     StandardPatterns.alwaysFalse(),
     PlatformPatterns.psiElement().withElementType(PsiJavaPatterns
-                                                    .elementType().oneOf(GroovyTokenTypes.mNUM_DOUBLE, GroovyTokenTypes.mNUM_INT,
-                                                                         GroovyTokenTypes.mNUM_LONG, GroovyTokenTypes.mNUM_FLOAT,
-                                                                         GroovyTokenTypes.mNUM_BIG_INT, GroovyTokenTypes.mNUM_BIG_DECIMAL)));
+                                                    .elementType().oneOf(GroovyTokenTypes.mNUM_DOUBLE,
+                                                                         GroovyTokenTypes.mNUM_INT,
+                                                                         GroovyTokenTypes.mNUM_LONG,
+                                                                         GroovyTokenTypes.mNUM_FLOAT,
+                                                                         GroovyTokenTypes.mNUM_BIG_INT,
+                                                                         GroovyTokenTypes.mNUM_BIG_DECIMAL)));
 
 
   public GroovyCompletionContributor() {
@@ -57,9 +62,9 @@ public class GroovyCompletionContributor extends CompletionContributor {
 
     extend(CompletionType.BASIC, PlatformPatterns.psiElement().withParent(GrLiteral.class), new CompletionProvider() {
       @Override
-	  public void addCompletions(@Nonnull CompletionParameters parameters,
-                                    ProcessingContext context,
-                                    @Nonnull final CompletionResultSet result) {
+      public void addCompletions(@Nonnull CompletionParameters parameters,
+                                 ProcessingContext context,
+                                 @Nonnull final CompletionResultSet result) {
         final Set<String> usedWords = new HashSet<String>();
         for (CompletionResult element : result.runRemainingContributors(parameters, true)) {
           usedWords.add(element.getLookupElement().getLookupString());
@@ -91,8 +96,14 @@ public class GroovyCompletionContributor extends CompletionContributor {
 
     //don't eat $ from gstrings when completing previous injection ref. see IDEA-110369
     PsiElement position = context.getFile().findElementAt(context.getStartOffset());
-    if (position!= null && position.getNode().getElementType() == GroovyTokenTypes.mDOLLAR) {
+    if (position != null && position.getNode().getElementType() == GroovyTokenTypes.mDOLLAR) {
       context.getOffsetMap().addOffset(CompletionInitializationContext.IDENTIFIER_END_OFFSET, context.getStartOffset());
     }
+  }
+
+  @Nonnull
+  @Override
+  public Language getLanguage() {
+    return GroovyLanguage.INSTANCE;
   }
 }

@@ -15,29 +15,30 @@
  */
 package org.jetbrains.plugins.groovy.overrideImplement;
 
-import javax.annotation.Nonnull;
-
-import com.intellij.codeInsight.CodeInsightUtilBase;
-import com.intellij.codeInsight.generation.OverrideImplementUtil;
-import com.intellij.codeInsight.hint.HintManager;
-import com.intellij.lang.LanguageCodeInsightActionHandler;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiFile;
+import com.intellij.java.impl.codeInsight.generation.OverrideImplementUtil;
+import com.intellij.java.language.psi.PsiClass;
+import consulo.codeEditor.Editor;
+import consulo.language.Language;
+import consulo.language.editor.generation.OverrideMethodHandler;
+import consulo.language.editor.hint.HintManager;
+import consulo.language.psi.PsiFile;
+import consulo.project.Project;
 import org.jetbrains.plugins.groovy.GroovyFileType;
+import org.jetbrains.plugins.groovy.GroovyLanguage;
+
+import javax.annotation.Nonnull;
 
 /**
  * User: Dmitry.Krasilschikov
  * Date: 11.09.2007
  */
-public class GroovyOverrideMethodsHandler implements LanguageCodeInsightActionHandler {
+public class GroovyOverrideMethodsHandler implements OverrideMethodHandler {
   public boolean isValidFor(Editor editor, PsiFile psiFile) {
     return psiFile != null && GroovyFileType.GROOVY_FILE_TYPE.equals(psiFile.getFileType());
   }
 
   public void invoke(@Nonnull final Project project, @Nonnull Editor editor, @Nonnull PsiFile file) {
-    if (!CodeInsightUtilBase.prepareEditorForWrite(editor)) return;
+    if (!consulo.ide.impl.idea.codeInsight.CodeInsightUtilBase.prepareEditorForWrite(editor)) return;
     PsiClass aClass = OverrideImplementUtil.getContextClass(project, editor, file, true);
     if (aClass == null) return;
 
@@ -51,5 +52,11 @@ public class GroovyOverrideMethodsHandler implements LanguageCodeInsightActionHa
 
   public boolean startInWriteAction() {
     return false;
+  }
+
+  @Nonnull
+  @Override
+  public Language getLanguage() {
+    return GroovyLanguage.INSTANCE;
   }
 }

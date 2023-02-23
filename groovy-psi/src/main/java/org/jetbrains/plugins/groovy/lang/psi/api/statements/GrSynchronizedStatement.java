@@ -16,7 +16,7 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.api.statements;
 
-import com.intellij.psi.PsiElement;
+import consulo.language.psi.PsiElement;
 import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.formatter.GrControlStatement;
@@ -28,10 +28,10 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpres
  */
 public interface GrSynchronizedStatement extends GroovyPsiElement, GrStatement, GrControlStatement {
 
-  @javax.annotation.Nullable
+  @Nullable
   GrExpression getMonitor();
 
-  @javax.annotation.Nullable
+  @Nullable
   GrOpenBlock getBody();
 
 

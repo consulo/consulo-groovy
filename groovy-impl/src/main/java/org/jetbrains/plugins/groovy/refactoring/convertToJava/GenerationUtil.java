@@ -15,16 +15,20 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.convertToJava;
 
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.util.Pair;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.*;
-import com.intellij.psi.javadoc.PsiDocComment;
-import com.intellij.psi.scope.BaseScopeProcessor;
-import com.intellij.psi.scope.PsiScopeProcessor;
-import com.intellij.psi.tree.IElementType;
-import consulo.psi.PsiPackage;
+import com.intellij.java.language.psi.*;
+import com.intellij.java.language.psi.javadoc.PsiDocComment;
+import consulo.language.ast.IElementType;
+import consulo.language.psi.PsiCompiledElement;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiManager;
+import consulo.language.psi.PsiPackage;
+import consulo.language.psi.resolve.BaseScopeProcessor;
+import consulo.language.psi.resolve.PsiScopeProcessor;
+import consulo.language.psi.resolve.ResolveState;
+import consulo.logging.Logger;
 import consulo.util.dataholder.Key;
+import consulo.util.lang.Pair;
+import consulo.util.lang.StringUtil;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
@@ -272,7 +276,7 @@ public class GenerationUtil {
   static void writeParameterList(@Nonnull StringBuilder text,
                                  @Nonnull PsiParameter[] parameters,
                                  @Nonnull final ClassNameProvider classNameProvider,
-                                 @javax.annotation.Nullable ExpressionContext context) {
+                                 @Nullable ExpressionContext context) {
     Set<String> usedNames = new HashSet<String>();
     text.append('(');
 

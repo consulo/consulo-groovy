@@ -16,13 +16,16 @@
 
 package org.jetbrains.plugins.groovy.dsl.psi;
 
-import com.intellij.openapi.extensions.ExtensionPointName;
+import consulo.annotation.component.ComponentScope;
+import consulo.annotation.component.ExtensionAPI;
+import consulo.component.extension.ExtensionPointName;
 
 /**
  * Category class to add new methods int IntelliJ PSI classes
  *
  * @author ilyas
  */
+@ExtensionAPI(ComponentScope.APPLICATION)
 public interface PsiEnhancerCategory {
-  ExtensionPointName<PsiEnhancerCategory> EP_NAME = ExtensionPointName.create("org.intellij.groovy.psiEnhancerCategory");
+  ExtensionPointName<PsiEnhancerCategory> EP_NAME = ExtensionPointName.create(PsiEnhancerCategory.class);
 }

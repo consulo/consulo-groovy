@@ -16,9 +16,9 @@
 package org.jetbrains.plugins.groovy.refactoring.rename
 
 import com.intellij.openapi.util.text.StringUtil
-import com.intellij.psi.*
-import com.intellij.psi.impl.source.PostprocessReformattingAspect
-import com.intellij.psi.util.PsiTreeUtil
+import com.intellij.java.language.psi.*
+import com.intellij.java.language.psi.impl.source.PostprocessReformattingAspect
+import com.intellij.java.language.psi.util.PsiTreeUtil
 import com.intellij.refactoring.BaseRefactoringProcessor.ConflictsInTestsException
 import com.intellij.refactoring.rename.RenameProcessor
 import com.intellij.refactoring.rename.RenameUtil

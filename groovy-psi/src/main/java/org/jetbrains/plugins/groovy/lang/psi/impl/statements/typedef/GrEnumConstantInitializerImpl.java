@@ -15,8 +15,10 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.typedef;
 
-import javax.annotation.Nonnull;
-
+import com.intellij.java.language.psi.PsiClass;
+import consulo.language.ast.ASTNode;
+import consulo.language.psi.PsiElement;
+import consulo.logging.Logger;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrArgumentList;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrEnumConstantInitializer;
@@ -25,10 +27,9 @@ import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeParameterList;
 import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GrLightClassReferenceElement;
 import org.jetbrains.plugins.groovy.lang.psi.stubs.GrTypeDefinitionStub;
-import com.intellij.lang.ASTNode;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiElement;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author Maxim.Medvedev
@@ -75,7 +76,7 @@ public class GrEnumConstantInitializerImpl extends GrAnonymousClassDefinitionImp
     return getEnumConstant().getNameIdentifierGroovy();
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   @Override
   public GrArgumentList getArgumentListGroovy() {
     return getEnumConstant().getArgumentList();

@@ -16,17 +16,22 @@
 
 package org.jetbrains.plugins.groovy.actions;
 
-import com.intellij.CommonBundle;
-import com.intellij.ide.actions.CreateElementActionBase;
-import com.intellij.openapi.actionSystem.DataContext;
-import com.intellij.openapi.actionSystem.LangDataKeys;
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.module.ModuleUtilCore;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.ui.Messages;
-import com.intellij.psi.PsiDirectory;
-import com.intellij.psi.PsiElement;
+import consulo.application.CommonBundle;
+import consulo.dataContext.DataContext;
+import consulo.ide.action.CreateElementActionBase;
+import consulo.dataContext.DataContext;
+import consulo.language.editor.LangDataKeys;
+import consulo.language.psi.PsiDirectory;
+import consulo.language.util.ModuleUtilCore;
+import consulo.module.Module;
+import consulo.language.util.ModuleUtilCore;
+import consulo.project.Project;
+import consulo.ui.ex.awt.Messages;
+import consulo.language.psi.PsiDirectory;
+import consulo.language.psi.PsiElement;
 import consulo.groovy.module.extension.GroovyModuleExtension;
+import consulo.language.editor.LangDataKeys;
+import consulo.ui.ex.awt.Messages;
 import consulo.ui.image.Image;
 import org.jetbrains.annotations.NonNls;
 

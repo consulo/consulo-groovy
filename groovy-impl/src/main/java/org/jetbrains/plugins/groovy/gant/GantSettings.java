@@ -15,12 +15,14 @@
  */
 package org.jetbrains.plugins.groovy.gant;
 
+import consulo.component.persist.*;
+import consulo.project.Project;
 import org.jetbrains.plugins.groovy.util.SdkHomeSettings;
-import com.intellij.openapi.components.ServiceManager;
-import com.intellij.openapi.components.State;
-import com.intellij.openapi.components.Storage;
-import com.intellij.openapi.components.StoragePathMacros;
-import com.intellij.openapi.project.Project;
+import consulo.ide.ServiceManager;
+import consulo.component.persist.State;
+import consulo.component.persist.Storage;
+import consulo.component.persist.StoragePathMacros;
+import consulo.project.Project;
 
 /**
  * @author peter

@@ -17,10 +17,13 @@ package org.jetbrains.plugins.groovy.codeInspection.control;
 
 import javax.annotation.Nonnull;
 
-import com.intellij.codeInspection.ProblemDescriptor;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiElement;
-import com.intellij.util.IncorrectOperationException;
+import consulo.language.editor.inspection.ProblemDescriptor;
+import consulo.language.psi.PsiElement;
+import consulo.language.util.IncorrectOperationException;
+import consulo.project.Project;
+import consulo.language.psi.PsiElement;
+import consulo.language.util.IncorrectOperationException;
+import consulo.project.Project;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.codeInspection.GroovyFix;
@@ -58,7 +61,8 @@ public class GroovyConditionalWithIdenticalBranchesInspection extends BaseInspec
       return "Collapse conditional expression";
     }
 
-    public void doFix(Project project, ProblemDescriptor descriptor) throws IncorrectOperationException {
+    public void doFix(Project project, ProblemDescriptor descriptor) throws IncorrectOperationException
+	{
       final PsiElement element = descriptor.getPsiElement();
       if (!(element instanceof GrConditionalExpression)) return;
       final GrConditionalExpression expression = (GrConditionalExpression)element;

@@ -15,13 +15,13 @@
  */
 package org.jetbrains.plugins.groovy.util.dynamicMembers;
 
-import com.intellij.psi.*;
-import com.intellij.psi.impl.light.LightElement;
-import com.intellij.psi.util.MethodSignature;
-import com.intellij.psi.util.MethodSignatureBackedByPsiMethod;
-import com.intellij.util.IncorrectOperationException;
+import com.intellij.java.language.psi.*;
+import com.intellij.java.language.psi.util.MethodSignature;
+import com.intellij.java.language.psi.util.MethodSignatureBackedByPsiMethod;
+import consulo.language.impl.psi.LightElement;
+import consulo.language.psi.PsiElement;
+import consulo.language.util.IncorrectOperationException;
 import org.jetbrains.annotations.NonNls;
-import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.extensions.NamedArgumentDescriptor;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocComment;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
@@ -35,6 +35,7 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMe
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrReflectedMethod;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeElement;
 
+import javax.annotation.Nonnull;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;

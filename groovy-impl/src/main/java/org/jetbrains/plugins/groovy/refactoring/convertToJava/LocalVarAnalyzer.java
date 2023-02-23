@@ -15,10 +15,10 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.convertToJava;
 
-import com.intellij.psi.PsiAnonymousClass;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiParameter;
-import com.intellij.psi.PsiVariable;
+import com.intellij.java.language.psi.PsiAnonymousClass;
+import consulo.language.psi.PsiElement;
+import com.intellij.java.language.psi.PsiParameter;
+import com.intellij.java.language.psi.PsiVariable;
 import consulo.util.collection.primitive.objects.ObjectIntMap;
 import consulo.util.collection.primitive.objects.ObjectMaps;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;

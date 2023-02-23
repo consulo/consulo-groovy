@@ -16,11 +16,12 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.api.types;
 
-import javax.annotation.Nonnull;
+import com.intellij.java.language.psi.PsiTypeParameter;
+import com.intellij.java.language.psi.PsiTypeParameterList;
+import com.intellij.java.language.psi.PsiTypeParameterListOwner;
 
-import com.intellij.psi.PsiTypeParameter;
-import com.intellij.psi.PsiTypeParameterList;
-import com.intellij.psi.PsiTypeParameterListOwner;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author ilyas
@@ -29,11 +30,9 @@ public interface GrTypeParameterListOwner extends PsiTypeParameterListOwner {
 
   boolean hasTypeParameters();
 
-  @javax.annotation.Nullable
+  @Nullable
   PsiTypeParameterList getTypeParameterList();
 
   @Nonnull
   PsiTypeParameter[] getTypeParameters();
-
-
 }

@@ -1,16 +1,16 @@
 package org.jetbrains.plugins.groovy.spock;
 
-import com.intellij.pom.PomDeclarationSearcher;
-import com.intellij.pom.PomTarget;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.Consumer;
-import javax.annotation.Nonnull;
+import com.intellij.java.language.psi.PsiClass;
+import consulo.language.pom.PomDeclarationSearcher;
+import consulo.language.pom.PomTarget;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.util.PsiTreeUtil;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyPsiManager;
 
+import javax.annotation.Nonnull;
 import java.util.Map;
+import java.util.function.Consumer;
 
 /**
  * @author Sergey Evdokimov
@@ -35,7 +35,7 @@ public class SpockPomDeclarationSearcher extends PomDeclarationSearcher {
     if (descriptor == null) return;
 
     if (descriptor.getNavigationElement() == element) {
-      consumer.consume(descriptor.getVariable());
+      consumer.accept(descriptor.getVariable());
     }
   }
 }

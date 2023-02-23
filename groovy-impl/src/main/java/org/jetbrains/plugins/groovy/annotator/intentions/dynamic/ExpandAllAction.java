@@ -15,11 +15,11 @@
  */
 package org.jetbrains.plugins.groovy.annotator.intentions.dynamic;
 
-import com.intellij.openapi.actionSystem.AnAction;
-import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.project.Project;
-import com.intellij.ui.treeStructure.treetable.TreeTableTree;
-import com.intellij.util.ui.tree.TreeUtil;
+import consulo.project.Project;
+import consulo.ui.ex.action.AnAction;
+import consulo.ui.ex.action.AnActionEvent;
+import consulo.ui.ex.awt.tree.TreeUtil;
+import consulo.ui.ex.awt.tree.table.TreeTableTree;
 
 /**
  * @author Max Medvedev
@@ -27,7 +27,7 @@ import com.intellij.util.ui.tree.TreeUtil;
 public class ExpandAllAction extends AnAction {
   @Override
   public void actionPerformed(AnActionEvent e) {
-    final Project project = e.getProject();
+    final Project project = e.getData(Project.KEY);
     if (project == null) return;
 
     final TreeTableTree tree = DynamicToolWindowWrapper.getInstance(project).getTreeTable().getTree();
@@ -36,7 +36,7 @@ public class ExpandAllAction extends AnAction {
 
   @Override
   public void update(AnActionEvent e) {
-    final Project project = e.getProject();
+    final Project project = e.getData(Project.KEY);
     if (project == null) {
       e.getPresentation().setEnabled(false);
       return;

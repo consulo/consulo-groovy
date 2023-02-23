@@ -3,7 +3,7 @@ package org.jetbrains.plugins.groovy.lang
 import com.intellij.codeInsight.unwrap.UnwrapHandler
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.editor.Editor
-import com.intellij.psi.PsiFile
+import com.intellij.java.language.psi.PsiFile
 import com.intellij.testFramework.fixtures.LightCodeInsightFixtureTestCase
 
 /**

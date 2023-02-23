@@ -16,14 +16,18 @@
 
 package org.jetbrains.plugins.groovy.lang.groovydoc.completion.handlers;
 
-import com.intellij.codeInsight.completion.InsertionContext;
-import com.intellij.codeInsight.lookup.LookupElement;
-import com.intellij.openapi.editor.CaretModel;
-import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.psi.*;
-import com.intellij.psi.codeStyle.JavaCodeStyleManager;
-import com.intellij.psi.util.PsiTypesUtil;
+import com.intellij.java.language.psi.*;
+import com.intellij.java.language.psi.codeStyle.JavaCodeStyleManager;
+import com.intellij.java.language.psi.util.PsiTypesUtil;
+import consulo.codeEditor.CaretModel;
+import consulo.codeEditor.Editor;
+import consulo.document.Document;
+import consulo.language.editor.completion.lookup.InsertionContext;
+import consulo.language.editor.completion.lookup.LookupElement;
+import consulo.language.psi.PsiDocumentManager;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.PsiReference;
 import org.jetbrains.plugins.groovy.extensions.completion.ContextSpecificInsertHandler;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocComment;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocMethodParameter;

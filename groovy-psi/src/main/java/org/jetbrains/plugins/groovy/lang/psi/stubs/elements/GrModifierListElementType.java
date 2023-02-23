@@ -19,13 +19,13 @@ import java.io.IOException;
 
 import javax.annotation.Nonnull;
 
+import consulo.language.psi.stub.StubInputStream;
+import consulo.language.psi.stub.StubOutputStream;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.GrModifierList;
 import org.jetbrains.plugins.groovy.lang.psi.impl.auxiliary.modifiers.GrModifierListImpl;
 import org.jetbrains.plugins.groovy.lang.psi.stubs.GrModifierListStub;
-import com.intellij.psi.stubs.StubElement;
-import com.intellij.psi.stubs.StubInputStream;
-import com.intellij.psi.stubs.StubOutputStream;
+import consulo.language.psi.stub.StubElement;
 
 /**
  * @author Maxim.Medvedev

@@ -15,8 +15,10 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.introduce;
 
-import com.intellij.psi.PsiElement;
-import com.intellij.util.containers.MultiMap;
+import consulo.language.psi.PsiElement;
+import consulo.util.collection.MultiMap;
+import consulo.language.psi.PsiElement;
+import consulo.util.collection.MultiMap;
 
 /**
  * @author Maxim.Medvedev

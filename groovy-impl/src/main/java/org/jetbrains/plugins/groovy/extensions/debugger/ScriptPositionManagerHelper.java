@@ -15,25 +15,28 @@
  */
 package org.jetbrains.plugins.groovy.extensions.debugger;
 
+import com.intellij.java.language.psi.PsiClass;
+import consulo.annotation.component.ComponentScope;
+import consulo.annotation.component.ExtensionAPI;
+import consulo.component.extension.ExtensionPointName;
+import consulo.internal.com.sun.jdi.ReferenceType;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.scope.GlobalSearchScope;
+import consulo.project.Project;
+import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
-import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
-import com.intellij.openapi.extensions.ExtensionPointName;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.search.GlobalSearchScope;
-import consulo.internal.com.sun.jdi.ReferenceType;
 
 /**
  * Class to extend debugger functionality to handle various Groovy scripts
  *
  * @author ilyas
  */
+@ExtensionAPI(ComponentScope.APPLICATION)
 public abstract class ScriptPositionManagerHelper
 {
-	public static final ExtensionPointName<ScriptPositionManagerHelper> EP_NAME = ExtensionPointName.create("org.intellij.groovy.positionManagerDelegate");
+	public static final ExtensionPointName<ScriptPositionManagerHelper> EP_NAME = ExtensionPointName.create(ScriptPositionManagerHelper.class);
 
 	/**
 	 * @param runtimeName runtime name of class

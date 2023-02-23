@@ -15,9 +15,9 @@
  */
 package org.jetbrains.plugins.groovy.annotator.intentions.dynamic;
 
-import com.intellij.openapi.actionSystem.AnAction;
-import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.project.Project;
+import consulo.project.Project;
+import consulo.ui.ex.action.AnAction;
+import consulo.ui.ex.action.AnActionEvent;
 
 import javax.swing.tree.TreePath;
 
@@ -29,14 +29,14 @@ public class RemoveDynamicAction extends AnAction {
 
   @Override
   public void actionPerformed(AnActionEvent e) {
-    final DynamicToolWindowWrapper toolWindow = DynamicToolWindowWrapper.getInstance(e.getProject());
+    final DynamicToolWindowWrapper toolWindow = DynamicToolWindowWrapper.getInstance(e.getData(Project.KEY));
 
     toolWindow.deleteRow();
   }
 
   @Override
   public void update(AnActionEvent e) {
-    final Project project = e.getProject();
+    final Project project = e.getData(Project.KEY);
     if (project == null) {
       e.getPresentation().setEnabled(false);
       return;

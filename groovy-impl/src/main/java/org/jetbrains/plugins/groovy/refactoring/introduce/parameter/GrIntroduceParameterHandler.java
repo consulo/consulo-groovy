@@ -15,27 +15,24 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.introduce.parameter;
 
-import com.intellij.ide.util.SuperMethodWarningUtil;
-import com.intellij.openapi.actionSystem.DataContext;
-import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.editor.SelectionModel;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.ui.popup.JBPopup;
-import com.intellij.openapi.util.Pass;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiMethod;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.refactoring.IntroduceTargetChooser;
-import com.intellij.refactoring.RefactoringActionHandler;
-import com.intellij.refactoring.RefactoringBundle;
-import com.intellij.refactoring.util.CommonRefactoringUtil;
-import com.intellij.util.Function;
-import com.intellij.util.PairFunction;
-import javax.annotation.Nonnull;
-
+import com.intellij.java.impl.ide.util.SuperMethodWarningUtil;
+import com.intellij.java.language.psi.PsiMethod;
+import consulo.application.ApplicationManager;
+import consulo.codeEditor.Editor;
+import consulo.codeEditor.EditorPopupHelper;
+import consulo.codeEditor.SelectionModel;
+import consulo.dataContext.DataContext;
+import consulo.document.util.TextRange;
+import consulo.language.editor.refactoring.IntroduceTargetChooser;
+import consulo.language.editor.refactoring.RefactoringBundle;
+import consulo.language.editor.refactoring.action.RefactoringActionHandler;
+import consulo.language.editor.refactoring.util.CommonRefactoringUtil;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.project.Project;
+import consulo.ui.ex.popup.JBPopup;
+import consulo.util.lang.function.PairFunction;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrParameterListOwner;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
@@ -50,8 +47,11 @@ import org.jetbrains.plugins.groovy.refactoring.extract.InitialInfo;
 import org.jetbrains.plugins.groovy.refactoring.introduce.GrIntroduceHandlerBase;
 import org.jetbrains.plugins.groovy.refactoring.ui.MethodOrClosureScopeChooser;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 import static org.jetbrains.plugins.groovy.refactoring.HelpID.GROOVY_INTRODUCE_PARAMETER;
 
@@ -61,7 +61,7 @@ import static org.jetbrains.plugins.groovy.refactoring.HelpID.GROOVY_INTRODUCE_P
 public class GrIntroduceParameterHandler implements RefactoringActionHandler, MethodOrClosureScopeChooser.JBPopupOwner {
   private JBPopup myEnclosingMethodsPopup;
 
-  public void invoke(final @Nonnull Project project, final Editor editor, final PsiFile file, final @javax.annotation.Nullable DataContext dataContext) {
+  public void invoke(final @Nonnull Project project, final Editor editor, final PsiFile file, final @Nullable DataContext dataContext) {
     final SelectionModel selectionModel = editor.getSelectionModel();
     if (!selectionModel.hasSelection()) {
       final int offset = editor.getCaretModel().getOffset();
@@ -82,16 +82,11 @@ public class GrIntroduceParameterHandler implements RefactoringActionHandler, Me
         selectionModel.setSelection(textRange.getStartOffset(), textRange.getEndOffset());
       }
       else {
-        IntroduceTargetChooser.showChooser(editor, expressions, new Pass<GrExpression>() {
-          public void pass(final GrExpression selectedValue) {
-            invoke(project, editor, file, selectedValue.getTextRange().getStartOffset(), selectedValue.getTextRange().getEndOffset());
-          }
-        }, new Function<GrExpression, String>() {
-          @Override
-          public String fun(GrExpression grExpression) {
-            return grExpression.getText();
-          }
-        }
+        IntroduceTargetChooser.showChooser(editor, expressions, new Consumer<GrExpression>() {
+                                             public void accept(final GrExpression selectedValue) {
+                                               invoke(project, editor, file, selectedValue.getTextRange().getStartOffset(), selectedValue.getTextRange().getEndOffset());
+                                             }
+                                           }, grExpression -> grExpression.getText()
         );
         return;
       }
@@ -106,7 +101,11 @@ public class GrIntroduceParameterHandler implements RefactoringActionHandler, Me
     }
     catch (GrRefactoringError e) {
       if (ApplicationManager.getApplication().isUnitTestMode()) throw e;
-      CommonRefactoringUtil.showErrorHint(project, editor, e.getMessage(), RefactoringBundle.message("introduce.parameter.title"), GROOVY_INTRODUCE_PARAMETER);
+      CommonRefactoringUtil.showErrorHint(project,
+                                          editor,
+                                          e.getMessage(),
+                                          RefactoringBundle.message("introduce.parameter.title"),
+                                          GROOVY_INTRODUCE_PARAMETER);
     }
   }
 
@@ -136,14 +135,15 @@ public class GrIntroduceParameterHandler implements RefactoringActionHandler, Me
       showDialog(new IntroduceParameterInfoImpl(initialInfo, owner, toSearchFor));
     }
     else {
-      myEnclosingMethodsPopup = MethodOrClosureScopeChooser.create(scopes, editor, this, new PairFunction<GrParameterListOwner, PsiElement, Object>() {
-        @Override
-        public Object fun(GrParameterListOwner owner, PsiElement element) {
-          showDialog(new IntroduceParameterInfoImpl(initialInfo, owner, element));
-          return null;
-        }
-      });
-      myEnclosingMethodsPopup.showInBestPositionFor(editor);
+      myEnclosingMethodsPopup =
+        MethodOrClosureScopeChooser.create(scopes, editor, this, new PairFunction<GrParameterListOwner, PsiElement, Object>() {
+          @Override
+          public Object fun(GrParameterListOwner owner, PsiElement element) {
+            showDialog(new IntroduceParameterInfoImpl(initialInfo, owner, element));
+            return null;
+          }
+        });
+      EditorPopupHelper.getInstance().showPopupInBestPositionFor(editor, myEnclosingMethodsPopup);
     }
   }
 

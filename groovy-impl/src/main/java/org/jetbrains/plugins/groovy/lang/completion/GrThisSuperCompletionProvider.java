@@ -15,35 +15,30 @@
  */
 package org.jetbrains.plugins.groovy.lang.completion;
 
-import javax.annotation.Nonnull;
-
+import com.intellij.java.impl.codeInsight.completion.JavaCompletionFeatures;
+import com.intellij.java.language.psi.PsiClass;
+import consulo.language.editor.completion.*;
+import consulo.language.editor.completion.lookup.LookupElementBuilder;
+import consulo.language.pattern.ElementPattern;
+import consulo.language.pattern.PlatformPatterns;
+import consulo.language.psi.PsiElement;
+import consulo.language.util.ProcessingContext;
+import consulo.ui.ex.action.ActionManager;
+import consulo.ui.ex.action.IdeActions;
+import consulo.ui.ex.keymap.util.KeymapUtil;
+import consulo.util.lang.StringUtil;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
-import com.intellij.codeInsight.completion.CompletionContributor;
-import com.intellij.codeInsight.completion.CompletionParameters;
-import com.intellij.codeInsight.completion.CompletionResultSet;
-import com.intellij.codeInsight.completion.CompletionType;
-import com.intellij.codeInsight.completion.CompletionUtil;
-import com.intellij.codeInsight.completion.JavaCompletionFeatures;
-import com.intellij.codeInsight.lookup.LookupElementBuilder;
-import com.intellij.openapi.actionSystem.ActionManager;
-import com.intellij.openapi.actionSystem.IdeActions;
-import com.intellij.openapi.keymap.KeymapUtil;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.patterns.ElementPattern;
-import com.intellij.patterns.PlatformPatterns;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiElement;
-import com.intellij.util.ProcessingContext;
-import consulo.codeInsight.completion.CompletionProvider;
+
+import javax.annotation.Nonnull;
 
 /**
-* Created by Max Medvedev on 14/05/14
-*/
-class GrThisSuperCompletionProvider implements CompletionProvider
-{
-  private static final ElementPattern<PsiElement> AFTER_DOT = PlatformPatterns.psiElement().afterLeaf(".").withParent(GrReferenceExpression.class);
+ * Created by Max Medvedev on 14/05/14
+ */
+class GrThisSuperCompletionProvider implements CompletionProvider {
+  private static final ElementPattern<PsiElement> AFTER_DOT =
+    PlatformPatterns.psiElement().afterLeaf(".").withParent(GrReferenceExpression.class);
   private static final String[] THIS_SUPER = {"this", "super"};
 
   public static void register(CompletionContributor contributor) {
@@ -52,8 +47,8 @@ class GrThisSuperCompletionProvider implements CompletionProvider
 
   @Override
   public void addCompletions(@Nonnull CompletionParameters parameters,
-                                ProcessingContext context,
-                                @Nonnull CompletionResultSet result) {
+                             ProcessingContext context,
+                             @Nonnull CompletionResultSet result) {
     final PsiElement position = parameters.getPosition();
 
     assert position.getParent() instanceof GrReferenceExpression;
@@ -66,8 +61,10 @@ class GrThisSuperCompletionProvider implements CompletionProvider
     if (!(resolved instanceof PsiClass)) return;
 
     if (parameters.getInvocationCount() > 0 &&
-        CompletionUtil.shouldShowFeature(parameters, JavaCompletionFeatures.GLOBAL_MEMBER_NAME)) {
-      final String shortcut = KeymapUtil.getFirstKeyboardShortcutText(ActionManager.getInstance().getAction(IdeActions.ACTION_CODE_COMPLETION));
+      consulo.language.editor.impl.internal.completion.CompletionUtil.shouldShowFeature(parameters,
+                                                                                        JavaCompletionFeatures.GLOBAL_MEMBER_NAME)) {
+      final String shortcut =
+        KeymapUtil.getFirstKeyboardShortcutText(ActionManager.getInstance().getAction(IdeActions.ACTION_CODE_COMPLETION));
       if (StringUtil.isNotEmpty(shortcut)) {
         result.addLookupAdvertisement("Pressing " + shortcut + " twice without a class qualifier would show all accessible static methods");
       }

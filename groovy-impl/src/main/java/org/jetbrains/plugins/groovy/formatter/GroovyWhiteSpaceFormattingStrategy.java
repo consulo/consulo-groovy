@@ -15,10 +15,13 @@
  */
 package org.jetbrains.plugins.groovy.formatter;
 
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.formatter.WhiteSpaceFormattingStrategyAdapter;
-import javax.annotation.Nonnull;
+import consulo.language.Language;
+import consulo.language.ast.ASTNode;
+import consulo.language.codeStyle.WhiteSpaceFormattingStrategyAdapter;
+import org.jetbrains.plugins.groovy.GroovyLanguage;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author peter
@@ -27,5 +30,11 @@ public class GroovyWhiteSpaceFormattingStrategy extends WhiteSpaceFormattingStra
   @Override
   public boolean containsWhitespacesOnly(@Nonnull ASTNode node) {
     return node.getElementType() == GroovyTokenTypes.mNLS;
+  }
+
+  @Nonnull
+  @Override
+  public Language getLanguage() {
+    return GroovyLanguage.INSTANCE;
   }
 }

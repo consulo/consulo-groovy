@@ -1,30 +1,26 @@
 package org.jetbrains.plugins.groovy.extensions;
 
-import com.intellij.openapi.extensions.ExtensionPointName;
-import com.intellij.util.xmlb.annotations.Attribute;
-import consulo.container.plugin.PluginDescriptor;
-import consulo.extensions.PluginAware;
+import consulo.annotation.component.ComponentScope;
+import consulo.annotation.component.ExtensionAPI;
+import consulo.component.extension.ExtensionPointName;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author Sergey Evdokimov
  */
-public class GroovyMethodDescriptorExtension extends GroovyMethodDescriptor implements PluginAware {
-  public static final ExtensionPointName<GroovyMethodDescriptorExtension> EP_NAME = ExtensionPointName.create("org.intellij.groovy.methodDescriptor");
+@ExtensionAPI(ComponentScope.APPLICATION)
+public interface GroovyMethodDescriptorExtension {
+  public static final ExtensionPointName<GroovyMethodDescriptorExtension> EP_NAME =
+    ExtensionPointName.create(GroovyMethodDescriptorExtension.class);
 
-  @Attribute("class")
-  public String className;
+  @Nullable
+  String getClassName();
 
-  @Attribute("lightMethodKey")
-  public String lightMethodKey;
+  @Nullable
+  String getLightMethodKey();
 
-  private PluginDescriptor myPluginDescriptor;
-
-  @Override
-  public final void setPluginDescriptor(PluginDescriptor pluginDescriptor) {
-    myPluginDescriptor = pluginDescriptor;
-  }
-
-  public ClassLoader getLoaderForClass() {
-    return myPluginDescriptor == null ? getClass().getClassLoader() : myPluginDescriptor.getPluginClassLoader();
-  }
+  @Nonnull
+  GroovyMethodDescriptor getMethodDescriptor();
 }

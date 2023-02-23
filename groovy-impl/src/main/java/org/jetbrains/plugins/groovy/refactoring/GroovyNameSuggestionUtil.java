@@ -22,28 +22,29 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
+import consulo.logging.Logger;
+import consulo.project.Project;
+import consulo.util.lang.StringUtil;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.literals.GrLiteral;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.path.GrMethodCallExpression;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyNamesUtil;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.CommonClassNames;
-import com.intellij.psi.JavaPsiFacade;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiClassType;
-import com.intellij.psi.PsiIntersectionType;
-import com.intellij.psi.PsiNameHelper;
-import com.intellij.psi.PsiSubstitutor;
-import com.intellij.psi.PsiType;
-import com.intellij.psi.util.InheritanceUtil;
-import com.intellij.psi.util.PsiTypesUtil;
-import com.intellij.psi.util.TypeConversionUtil;
-import com.intellij.util.ArrayUtil;
+import com.intellij.java.language.psi.CommonClassNames;
+import com.intellij.java.language.psi.JavaPsiFacade;
+import com.intellij.java.language.psi.PsiClass;
+import com.intellij.java.language.psi.PsiClassType;
+import com.intellij.java.language.psi.PsiIntersectionType;
+import com.intellij.java.language.psi.PsiNameHelper;
+import com.intellij.java.language.psi.PsiSubstitutor;
+import com.intellij.java.language.psi.PsiType;
+import com.intellij.java.language.psi.util.InheritanceUtil;
+import com.intellij.java.language.psi.util.PsiTypesUtil;
+import com.intellij.java.language.psi.util.TypeConversionUtil;
+import consulo.util.collection.ArrayUtil;
 
 /**
  * @author ilyas
@@ -369,7 +370,7 @@ public class GroovyNameSuggestionUtil
 		return str.substring(0, 1).toUpperCase() + str.substring(1);
 	}
 
-	@javax.annotation.Nullable
+	@Nullable
 	private static PsiType getCollectionComponentType(PsiType type, Project project)
 	{
 		if(!(type instanceof PsiClassType))

@@ -17,13 +17,13 @@
 package org.jetbrains.plugins.groovy;
 
 
-import com.intellij.codeInsight.navigation.GotoImplementationHandler;
+import consulo.ide.impl.idea.codeInsight.navigation.GotoImplementationHandler;
 import com.intellij.openapi.application.Result;
 import com.intellij.openapi.command.WriteCommandAction;
-import com.intellij.openapi.vfs.VfsUtil;
+import consulo.ide.impl.idea.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
+import com.intellij.java.language.psi.PsiElement;
+import com.intellij.java.language.psi.PsiFile;
 import com.intellij.testFramework.PsiTestUtil;
 import com.intellij.testFramework.fixtures.JavaCodeInsightFixtureTestCase;
 import com.intellij.testFramework.fixtures.TempDirTestFixture;
@@ -44,7 +44,7 @@ public class GroovyGotoImplementationTest extends JavaCodeInsightFixtureTestCase
         final VirtualFile outside = dirFixture.getFile("").createChildDirectory(this, "outside");
         PsiTestUtil.addContentRoot(myModule, outside);
         VirtualFile out = outside.createChildData(this, "Outside.groovy");
-        VfsUtil.saveText(out, "class Bar {}\n class Goo extends Bar {}");
+        consulo.ide.impl.idea.openapi.vfs.VfsUtil.saveText(out, "class Bar {}\n class Goo extends Bar {}");
       }
     }.execute();
 

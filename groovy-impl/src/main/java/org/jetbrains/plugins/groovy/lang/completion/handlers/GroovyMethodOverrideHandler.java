@@ -15,13 +15,13 @@
  */
 package org.jetbrains.plugins.groovy.lang.completion.handlers;
 
-import com.intellij.codeInsight.completion.InsertHandler;
-import com.intellij.codeInsight.completion.InsertionContext;
-import com.intellij.codeInsight.generation.GenerateMembersUtil;
-import com.intellij.codeInsight.generation.OverrideImplementUtil;
-import com.intellij.codeInsight.lookup.LookupElement;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiMethod;
+import com.intellij.java.impl.codeInsight.generation.GenerateMembersUtil;
+import com.intellij.java.impl.codeInsight.generation.OverrideImplementUtil;
+import com.intellij.java.language.psi.PsiClass;
+import com.intellij.java.language.psi.PsiMethod;
+import consulo.language.editor.completion.lookup.InsertHandler;
+import consulo.language.editor.completion.lookup.InsertionContext;
+import consulo.language.editor.completion.lookup.LookupElement;
 
 import java.util.List;
 

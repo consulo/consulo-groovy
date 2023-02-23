@@ -1,36 +1,42 @@
+import java.lang.Integer;
+import java.lang.Object;
+import java.lang.String;
+import java.util.ArrayList;
+import java.util.Arrays;
+
 public class methodParamInClosureImplicitReturn extends groovy.lang.Script {
-public static void main(java.lang.String[] args) {
+public static void main(String[] args) {
 new methodParamInClosureImplicitReturn(new groovy.lang.Binding(args)).run();
 }
 
-public java.lang.Object run() {
+public Object run() {
 
 return null;
 
 }
 
-public void foo(int x) {final groovy.lang.Reference<java.lang.Integer> i = new groovy.lang.Reference<java.lang.Integer>(x);
+public void foo(int x) {final groovy.lang.Reference<Integer> i = new groovy.lang.Reference<Integer>(x);
 
-org.codehaus.groovy.runtime.DefaultGroovyMethods.each(new java.util.ArrayList<java.lang.Integer>(java.util.Arrays.asList(1, 2, 3)), new groovy.lang.Closure<java.lang.Integer>(this, this) {
-public java.lang.Integer doCall(java.lang.Integer it) {
+org.codehaus.groovy.runtime.DefaultGroovyMethods.each(new ArrayList<Integer>(Arrays.asList(1, 2, 3)), new groovy.lang.Closure<Integer>(this, this) {
+public Integer doCall(Integer it) {
 print(i.get());
 return setGroovyRef(i, i.get() + 1);
 }
 
-public java.lang.Integer doCall() {
+public Integer doCall() {
 return doCall(null);
 }
 
 });
 
-org.codehaus.groovy.runtime.DefaultGroovyMethods.each(new java.util.ArrayList<java.lang.Integer>(java.util.Arrays.asList(1, 2, 3)), new groovy.lang.Closure<java.lang.Integer>(this, this) {
-public java.lang.Integer doCall(java.lang.Integer it) {
+org.codehaus.groovy.runtime.DefaultGroovyMethods.each(new ArrayList<Integer>(Arrays.asList(1, 2, 3)), new groovy.lang.Closure<Integer>(this, this) {
+public Integer doCall(Integer it) {
 print(i.get());
 i.set(i.get()++);
 return i.get();
 }
 
-public java.lang.Integer doCall() {
+public Integer doCall() {
 return doCall(null);
 }
 

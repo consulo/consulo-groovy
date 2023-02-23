@@ -15,13 +15,12 @@
  */
 package org.jetbrains.plugins.groovy.unwrap;
 
-import com.intellij.codeInsight.unwrap.AbstractUnwrapper;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.impl.PsiImplUtil;
-import com.intellij.psi.impl.source.codeStyle.CodeEditUtil;
-import com.intellij.util.IncorrectOperationException;
-import javax.annotation.Nullable;
+import com.intellij.java.language.impl.psi.impl.PsiImplUtil;
+import consulo.codeEditor.Editor;
+import consulo.language.editor.refactoring.unwrap.AbstractUnwrapper;
+import consulo.language.impl.psi.CodeEditUtil;
+import consulo.language.psi.PsiElement;
+import consulo.language.util.IncorrectOperationException;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.lexer.TokenSets;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
@@ -30,6 +29,7 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrIfStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrCodeBlock;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 public abstract class GroovyUnwrapper extends AbstractUnwrapper<GroovyUnwrapper.Context> {
@@ -63,7 +63,8 @@ public abstract class GroovyUnwrapper extends AbstractUnwrapper<GroovyUnwrapper.
 
   protected static class Context extends AbstractUnwrapper.AbstractContext {
 
-    public void extractFromBlockOrSingleStatement(GrStatement block, PsiElement from) throws IncorrectOperationException {
+    public void extractFromBlockOrSingleStatement(GrStatement block, PsiElement from) throws IncorrectOperationException
+	{
       if (block instanceof GrBlockStatement) {
         extractFromCodeBlock(((GrBlockStatement)block).getBlock(), from);
       }

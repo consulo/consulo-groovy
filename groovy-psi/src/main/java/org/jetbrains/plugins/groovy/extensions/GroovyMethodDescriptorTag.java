@@ -1,6 +1,6 @@
 package org.jetbrains.plugins.groovy.extensions;
 
-import com.intellij.util.xmlb.annotations.Tag;
+import consulo.util.xml.serializer.annotation.Tag;
 
 /**
  * @author Sergey Evdokimov

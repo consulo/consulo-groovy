@@ -16,32 +16,37 @@
 
 package org.jetbrains.plugins.groovy.refactoring;
 
-import static com.intellij.refactoring.util.RefactoringUtil.EXPR_COPY_PROHIBITED;
-import static com.intellij.refactoring.util.RefactoringUtil.EXPR_COPY_SAFE;
-import static com.intellij.refactoring.util.RefactoringUtil.EXPR_COPY_UNSAFE;
-import static org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil.isNewLine;
-import static org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil.skipParentheses;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.intellij.java.language.psi.*;
+import com.intellij.java.language.psi.PsiElementFactory;
+import com.intellij.java.language.psi.codeStyle.JavaCodeStyleManager;
+import com.intellij.java.language.psi.util.MethodSignature;
+import com.intellij.java.language.psi.util.PsiUtil;
+import com.intellij.java.language.psi.util.TypeConversionUtil;
+import consulo.codeEditor.Editor;
+import consulo.codeEditor.EditorColors;
+import consulo.codeEditor.markup.RangeHighlighter;
+import consulo.colorScheme.EditorColorsManager;
+import consulo.colorScheme.TextAttributes;
+import consulo.document.util.TextRange;
+import consulo.language.Language;
+import consulo.language.ast.IElementType;
+import consulo.language.editor.PsiEquivalenceUtil;
+import consulo.language.editor.highlight.HighlightManager;
+import consulo.language.impl.psi.LeafPsiElement;
+import consulo.language.psi.*;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.language.util.IncorrectOperationException;
+import consulo.logging.Logger;
+import consulo.project.Project;
+import consulo.util.collection.ArrayUtil;
+import consulo.util.collection.ContainerUtil;
+import consulo.util.lang.StringUtil;
+import consulo.util.lang.ref.Ref;
+import consulo.util.lang.reflect.ReflectionUtil;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.lexer.TokenSets;
-import org.jetbrains.plugins.groovy.lang.psi.GrNamedElement;
-import org.jetbrains.plugins.groovy.lang.psi.GroovyFileBase;
-import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
-import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
-import org.jetbrains.plugins.groovy.lang.psi.GroovyRecursiveElementVisitor;
+import org.jetbrains.plugins.groovy.lang.psi.*;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.*;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlock;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrCodeBlock;
@@ -50,12 +55,7 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.branch.GrBreakStatem
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.branch.GrContinueStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.branch.GrReturnStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.clauses.GrCaseSection;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrApplicationStatement;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrAssignmentExpression;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrCall;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrNewExpression;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrUnaryExpression;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.*;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.literals.GrStringInjection;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.path.GrCallExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.path.GrMethodCallExpression;
@@ -68,32 +68,14 @@ import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeArgumentList;
 import org.jetbrains.plugins.groovy.lang.psi.api.util.GrDeclarationHolder;
 import org.jetbrains.plugins.groovy.lang.psi.api.util.GrStatementOwner;
 import org.jetbrains.plugins.groovy.lang.psi.api.util.GrVariableDeclarationOwner;
-import com.intellij.codeInsight.PsiEquivalenceUtil;
-import com.intellij.codeInsight.highlighting.HighlightManager;
-import com.intellij.lang.Language;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.editor.colors.EditorColors;
-import com.intellij.openapi.editor.colors.EditorColorsManager;
-import com.intellij.openapi.editor.markup.RangeHighlighter;
-import com.intellij.openapi.editor.markup.TextAttributes;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.Ref;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.*;
-import com.intellij.psi.codeStyle.JavaCodeStyleManager;
-import com.intellij.psi.impl.source.tree.LeafPsiElement;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.util.MethodSignature;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.psi.util.PsiUtil;
-import com.intellij.psi.util.PsiUtilCore;
-import com.intellij.psi.util.TypeConversionUtil;
-import com.intellij.util.ArrayUtil;
-import com.intellij.util.IncorrectOperationException;
-import com.intellij.util.ReflectionUtil;
-import com.intellij.util.containers.ContainerUtil;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.*;
+
+import static com.intellij.java.impl.refactoring.util.RefactoringUtil.*;
+import static org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil.isNewLine;
+import static org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil.skipParentheses;
 
 /**
  * @author ilyas
@@ -102,7 +84,7 @@ public abstract class GroovyRefactoringUtil {
   private static final Logger LOG = Logger.getInstance(GroovyRefactoringUtil.class);
 
   public static final Collection<String> KEYWORDS = ContainerUtil.map(
-      TokenSets.KEYWORDS.getTypes(), StringUtil.createToStringFunction(IElementType.class));
+      TokenSets.KEYWORDS.getTypes(), IElementType::toString);
 
   private static final String[] finalModifiers = new String[]{PsiModifier.FINAL};
 
@@ -218,7 +200,7 @@ public abstract class GroovyRefactoringUtil {
     });
   }
 
-  public static boolean isLocalVariable(@javax.annotation.Nullable PsiElement variable) {
+  public static boolean isLocalVariable(@Nullable PsiElement variable) {
     return variable instanceof GrVariable && !(variable instanceof GrField || variable instanceof GrParameter);
   }
 
@@ -416,8 +398,8 @@ public abstract class GroovyRefactoringUtil {
 
   }
 
-  @javax.annotation.Nullable
-  public static GrCall getCallExpressionByMethodReference(@javax.annotation.Nullable PsiElement ref) {
+  @Nullable
+  public static GrCall getCallExpressionByMethodReference(@Nullable PsiElement ref) {
     if (ref == null) return null;
     if (ref instanceof GrEnumConstant) return (GrEnumConstant)ref;
     if (ref instanceof GrConstructorInvocation) return (GrCall)ref;
@@ -467,7 +449,7 @@ public abstract class GroovyRefactoringUtil {
     GrVariableDeclaration decl =
       factory.createVariableDeclaration(modifiers, (GrExpression)skipParentheses(expr, false), expr.getType(), id);
 /*    if (declareFinal) {
-      com.intellij.psi.util.PsiUtil.setModifierProperty((decl.getMembers()[0]), PsiModifier.FINAL, true);
+      com.intellij.java.language.psi.util.PsiUtil.setModifierProperty((decl.getMembers()[0]), PsiModifier.FINAL, true);
     }*/
     final GrStatement statement = ((GrStatementOwner)anchorStatement.getParent()).addStatementBefore(decl, (GrStatement)anchorStatement);
     JavaCodeStyleManager.getInstance(project).shortenClassReferences(statement);
@@ -549,7 +531,7 @@ public abstract class GroovyRefactoringUtil {
 
   public static GrExpression generateArgFromMultiArg(PsiSubstitutor substitutor,
                                                      List<? extends PsiElement> arguments,
-                                                     @javax.annotation.Nullable PsiType type,
+                                                     @Nullable PsiType type,
                                                      final Project project) {
     StringBuilder argText = new StringBuilder();
     argText.append("[");
@@ -616,7 +598,7 @@ public abstract class GroovyRefactoringUtil {
    *    while(true) {a=foo()}
    * @param statement
    * @return corresponding statement inside block if it has been created or statement itself.
-   * @throws com.intellij.util.IncorrectOperationException
+   * @throws IncorrectOperationException
    */
 
   @Nonnull
@@ -699,14 +681,14 @@ public abstract class GroovyRefactoringUtil {
     return true;
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   public static GrStatementOwner getDeclarationOwner(GrStatement statement) {
     PsiElement parent = statement.getParent();
     return parent instanceof GrStatementOwner ? ((GrStatementOwner) parent) : null;
   }
 
   @Nullable
-  public static PsiType getType(@javax.annotation.Nullable PsiParameter myParameter) {
+  public static PsiType getType(@Nullable PsiParameter myParameter) {
     if (myParameter == null) return null;
     PsiType type = myParameter.getType();
     return type instanceof PsiEllipsisType ? ((PsiEllipsisType)type).toArrayType() : type;

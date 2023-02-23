@@ -15,15 +15,16 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions;
 
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.*;
-import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.psi.util.InheritanceUtil;
+import com.intellij.java.language.psi.*;
+import com.intellij.java.language.psi.util.InheritanceUtil;
+import consulo.language.psi.scope.GlobalSearchScope;
+import consulo.project.Project;
+
 import javax.annotation.Nullable;
 
 public class CollectionUtil {
   @Nullable
-  public static PsiClassType createSimilarCollection(@javax.annotation.Nullable PsiType collection, Project project, PsiType... itemType) {
+  public static PsiClassType createSimilarCollection(@Nullable PsiType collection, Project project, PsiType... itemType) {
     if (InheritanceUtil.isInheritor(collection, "java.util.SortedSet")) {
       return createCollection(project, "java.util.SortedSet", itemType);
     }

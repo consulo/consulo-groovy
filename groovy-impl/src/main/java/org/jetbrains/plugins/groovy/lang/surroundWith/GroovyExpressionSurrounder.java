@@ -15,29 +15,30 @@
  */
 package org.jetbrains.plugins.groovy.lang.surroundWith;
 
-import javax.annotation.Nonnull;
-
-import com.intellij.lang.surroundWith.Surrounder;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.PsiElement;
-import com.intellij.util.IncorrectOperationException;
-
-import javax.annotation.Nullable;
+import consulo.codeEditor.Editor;
+import consulo.document.util.TextRange;
+import consulo.language.editor.surroundWith.Surrounder;
+import consulo.language.psi.PsiElement;
+import consulo.language.util.IncorrectOperationException;
+import consulo.project.Project;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * User: Dmitry.Krasilschikov
  * Date: 22.05.2007
  */
-public abstract class GroovyExpressionSurrounder implements Surrounder {
+public abstract class GroovyExpressionSurrounder implements Surrounder
+{
   protected boolean isApplicable(@Nonnull PsiElement element) {
     return element instanceof GrExpression;
   }
 
   @Nullable
-  public TextRange surroundElements(@Nonnull Project project, @Nonnull Editor editor, @Nonnull PsiElement[] elements) throws IncorrectOperationException {
+  public TextRange surroundElements(@Nonnull Project project, @Nonnull Editor editor, @Nonnull PsiElement[] elements) throws IncorrectOperationException
+  {
     if (elements.length != 1) return null;
 
     PsiElement element = elements[0];

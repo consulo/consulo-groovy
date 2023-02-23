@@ -15,8 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.binaryCalculators;
 
-import com.intellij.psi.JavaPsiFacade;
-import com.intellij.psi.PsiType;
+import com.intellij.java.language.psi.JavaPsiFacade;
+import com.intellij.java.language.psi.PsiType;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GrRangeType;
 
 /**
@@ -26,8 +26,8 @@ public class GrRangeExpressionTypeCalculator extends GrBinaryExpressionTypeCalcu
   public static final GrBinaryExpressionTypeCalculator INSTANCE = new GrRangeExpressionTypeCalculator();
 
   @Override
-  public PsiType fun(GrBinaryFacade e) {
-    final PsiType type = super.fun(e);
+  public PsiType apply(GrBinaryFacade e) {
+    final PsiType type = super.apply(e);
     if (type != null) return type;
 
     final PsiType ltype = GrBinaryExpressionUtil.getLeftType(e);

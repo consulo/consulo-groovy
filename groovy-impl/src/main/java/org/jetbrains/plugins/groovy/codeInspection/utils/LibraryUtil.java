@@ -15,10 +15,15 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.utils;
 
-import javax.annotation.Nonnull;
-
-import com.intellij.psi.*;
+import com.intellij.java.language.psi.PsiClass;
+import com.intellij.java.language.psi.PsiMethod;
+import com.intellij.java.language.psi.PsiParameter;
+import com.intellij.java.language.psi.PsiVariable;
+import consulo.language.psi.PsiCompiledElement;
+import consulo.language.psi.PsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.path.GrMethodCallExpression;
+
+import javax.annotation.Nonnull;
 
 public class LibraryUtil {
 

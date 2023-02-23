@@ -15,14 +15,14 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.introduce.parameter;
 
-import com.intellij.psi.PsiType;
+import com.intellij.java.language.psi.PsiType;
 import consulo.util.collection.primitive.ints.IntList;
 import org.intellij.lang.annotations.MagicConstant;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.refactoring.extract.closure.ExtractClosureHelperImpl;
 
-import static com.intellij.refactoring.IntroduceParameterRefactoring.*;
+import static com.intellij.java.impl.refactoring.IntroduceParameterRefactoring.*;
 
 /**
  * @author Max Medvedev

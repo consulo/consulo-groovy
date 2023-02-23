@@ -19,7 +19,7 @@ import javax.annotation.Nonnull;
 
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotation;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames;
-import com.intellij.lang.annotation.AnnotationHolder;
+import consulo.language.editor.annotation.AnnotationHolder;
 
 /**
  * @author Max Medvedev

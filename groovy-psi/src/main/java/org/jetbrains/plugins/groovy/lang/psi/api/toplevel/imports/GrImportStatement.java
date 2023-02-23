@@ -16,16 +16,15 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.api.toplevel.imports;
 
-import javax.annotation.Nonnull;
-
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiElement;
-import com.intellij.util.ArrayFactory;
-
-import javax.annotation.Nullable;
+import com.intellij.java.language.psi.PsiClass;
+import consulo.language.psi.PsiElement;
+import consulo.util.collection.ArrayFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.GrModifierList;
 import org.jetbrains.plugins.groovy.lang.psi.api.toplevel.GrTopStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author ilyas

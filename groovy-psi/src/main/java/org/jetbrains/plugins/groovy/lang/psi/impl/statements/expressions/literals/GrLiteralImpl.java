@@ -16,11 +16,11 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.literals;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-
-import javax.annotation.Nonnull;
-
+import com.intellij.java.language.psi.PsiType;
+import consulo.language.ast.ASTNode;
+import consulo.language.ast.IElementType;
+import consulo.language.psi.*;
+import consulo.logging.Logger;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.lexer.TokenSets;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
@@ -30,17 +30,11 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.literals
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.literals.GrLiteralContainer;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil;
 import org.jetbrains.plugins.groovy.lang.psi.util.GrStringUtil;
-import com.intellij.lang.ASTNode;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.psi.LiteralTextEscaper;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiLanguageInjectionHost;
-import com.intellij.psi.PsiReference;
-import com.intellij.psi.PsiReferenceService;
-import com.intellij.psi.PsiType;
-import com.intellij.psi.impl.source.resolve.reference.ReferenceProvidersRegistry;
-import com.intellij.psi.impl.source.resolve.reference.impl.PsiMultiReference;
-import com.intellij.psi.tree.IElementType;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 
 /**
  * @author ilyas
@@ -166,7 +160,7 @@ public class GrLiteralImpl extends GrAbstractLiteral implements GrLiteral, PsiLa
     return ReferenceProvidersRegistry.getReferencesFromProviders(this, PsiReferenceService.Hints.NO_HINTS);
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   @Override
   public PsiReference getReference() {
     final PsiReference[] references = getReferences();

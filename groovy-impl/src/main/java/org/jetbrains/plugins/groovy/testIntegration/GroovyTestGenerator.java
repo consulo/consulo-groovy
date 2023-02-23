@@ -15,10 +15,34 @@
  */
 package org.jetbrains.plugins.groovy.testIntegration;
 
-import java.util.Collection;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.intellij.java.impl.codeInsight.CodeInsightUtil;
+import com.intellij.java.impl.refactoring.util.classMembers.MemberInfo;
+import com.intellij.java.impl.testIntegration.TestIntegrationUtils;
+import com.intellij.java.impl.testIntegration.createTest.CreateTestDialog;
+import com.intellij.java.impl.testIntegration.createTest.TestGenerator;
+import com.intellij.java.language.psi.JavaPsiFacade;
+import com.intellij.java.language.psi.PsiClass;
+import com.intellij.java.language.psi.PsiMethod;
+import com.intellij.java.language.psi.PsiType;
+import com.intellij.java.language.psi.codeStyle.JavaCodeStyleManager;
+import com.intellij.java.language.testIntegration.TestFramework;
+import consulo.application.AccessToken;
+import consulo.application.ApplicationManager;
+import consulo.application.WriteAction;
+import consulo.application.util.function.Computable;
+import consulo.codeEditor.Editor;
+import consulo.language.Language;
+import consulo.language.codeStyle.CodeStyleManager;
+import consulo.language.codeStyle.PostprocessReformattingAspect;
+import consulo.language.editor.CodeInsightBundle;
+import consulo.language.psi.PsiDocumentManager;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiManager;
+import consulo.language.psi.scope.GlobalSearchScope;
+import consulo.language.util.IncorrectOperationException;
+import consulo.project.Project;
+import consulo.ui.ex.awt.Messages;
+import org.jetbrains.plugins.groovy.GroovyLanguage;
 import org.jetbrains.plugins.groovy.actions.GroovyTemplates;
 import org.jetbrains.plugins.groovy.annotator.intentions.CreateClassActionBase;
 import org.jetbrains.plugins.groovy.intentions.GroovyIntentionsBundle;
@@ -26,33 +50,10 @@ import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrExtendsClause;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
-import com.intellij.codeInsight.CodeInsightBundle;
-import com.intellij.codeInsight.CodeInsightUtil;
-import com.intellij.openapi.application.AccessToken;
-import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.application.WriteAction;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.fileEditor.ex.IdeDocumentHistory;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.ui.Messages;
-import com.intellij.openapi.util.Computable;
-import com.intellij.psi.JavaPsiFacade;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiDocumentManager;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiManager;
-import com.intellij.psi.PsiMethod;
-import com.intellij.psi.PsiType;
-import com.intellij.psi.codeStyle.CodeStyleManager;
-import com.intellij.psi.codeStyle.JavaCodeStyleManager;
-import com.intellij.psi.impl.source.PostprocessReformattingAspect;
-import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.refactoring.util.classMembers.MemberInfo;
-import com.intellij.testIntegration.TestFramework;
-import com.intellij.testIntegration.TestIntegrationUtils;
-import com.intellij.testIntegration.createTest.CreateTestDialog;
-import com.intellij.testIntegration.createTest.TestGenerator;
-import com.intellij.util.IncorrectOperationException;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Collection;
 
 /**
  * @author Maxim.Medvedev
@@ -68,7 +69,7 @@ public class GroovyTestGenerator implements TestGenerator {
         new Computable<PsiElement>() {
           public PsiElement compute() {
             try {
-              IdeDocumentHistory.getInstance(project).includeCurrentPlaceAsChangePlace();
+              consulo.ide.impl.idea.openapi.fileEditor.ex.IdeDocumentHistory.getInstance(project).includeCurrentPlaceAsChangePlace();
 
               GrTypeDefinition targetClass = CreateClassActionBase.createClassByType(
                 d.getTargetDirectory(),
@@ -110,7 +111,7 @@ public class GroovyTestGenerator implements TestGenerator {
     return GroovyIntentionsBundle.message("intention.crete.test.groovy");
   }
 
-  private static void addSuperClass(@Nonnull GrTypeDefinition targetClass, @Nonnull Project project, @javax.annotation.Nullable String superClassName)
+  private static void addSuperClass(@Nonnull GrTypeDefinition targetClass, @Nonnull Project project, @Nullable String superClassName)
     throws IncorrectOperationException {
     if (superClassName == null) return;
 
@@ -132,7 +133,7 @@ public class GroovyTestGenerator implements TestGenerator {
     extendsClause.add(superClassRef);
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   private static PsiClass findClass(Project project, String fqName) {
     GlobalSearchScope scope = GlobalSearchScope.allScope(project);
     return JavaPsiFacade.getInstance(project).findClass(fqName, scope);
@@ -169,10 +170,16 @@ public class GroovyTestGenerator implements TestGenerator {
                                      TestFramework descriptor,
                                      PsiClass targetClass,
                                      Editor editor,
-                                     @javax.annotation.Nullable String name) {
+                                     @Nullable String name) {
     GroovyPsiElementFactory f = GroovyPsiElementFactory.getInstance(targetClass.getProject());
     PsiMethod method = (PsiMethod)targetClass.add(f.createMethod("dummy", PsiType.VOID));
     PsiDocumentManager.getInstance(targetClass.getProject()).doPostponedOperationsAndUnblockDocument(editor.getDocument());
     TestIntegrationUtils.runTestMethodTemplate(methodKind, descriptor, editor, targetClass, method, name, true);
+  }
+
+  @Nonnull
+  @Override
+  public Language getLanguage() {
+    return GroovyLanguage.INSTANCE;
   }
 }

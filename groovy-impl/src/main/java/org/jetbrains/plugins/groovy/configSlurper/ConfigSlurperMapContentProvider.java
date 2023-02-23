@@ -15,14 +15,12 @@
  */
 package org.jetbrains.plugins.groovy.configSlurper;
 
-import com.intellij.openapi.util.Pair;
-import com.intellij.openapi.util.Ref;
-import com.intellij.psi.JavaPsiFacade;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiType;
-import com.intellij.util.PairConsumer;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.intellij.java.language.psi.JavaPsiFacade;
+import com.intellij.java.language.psi.PsiType;
+import consulo.language.psi.PsiElement;
+import consulo.util.lang.Pair;
+import consulo.util.lang.function.PairConsumer;
+import consulo.util.lang.ref.Ref;
 import org.jetbrains.plugins.groovy.extensions.GroovyMapContentProvider;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrMethodCall;
@@ -30,6 +28,8 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrRefere
 import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyPsiManager;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.*;
 
 /**
@@ -81,7 +81,7 @@ public class ConfigSlurperMapContentProvider extends GroovyMapContentProvider {
   }
 
   @Override
-  protected Collection<String> getKeyVariants(@Nonnull GrExpression qualifier, @javax.annotation.Nullable PsiElement resolve) {
+  protected Collection<String> getKeyVariants(@Nonnull GrExpression qualifier, @Nullable PsiElement resolve) {
     Pair<ConfigSlurperSupport.PropertiesProvider, List<String>> info = getInfo(qualifier, resolve);
     if (info == null) return Collections.emptyList();
 
@@ -98,7 +98,7 @@ public class ConfigSlurperMapContentProvider extends GroovyMapContentProvider {
   }
 
   @Override
-  public PsiType getValueType(@Nonnull GrExpression qualifier, @javax.annotation.Nullable PsiElement resolve, @Nonnull final String key) {
+  public PsiType getValueType(@Nonnull GrExpression qualifier, @Nullable PsiElement resolve, @Nonnull final String key) {
     Pair<ConfigSlurperSupport.PropertiesProvider, List<String>> info = getInfo(qualifier, resolve);
     if (info == null) return null;
 

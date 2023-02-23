@@ -1,6 +1,6 @@
 package org.jetbrains.plugins.groovy.lang.overriding;
 
-import com.intellij.psi.PsiMethod;
+import com.intellij.java.language.psi.PsiMethod;
 import com.intellij.testFramework.fixtures.LightCodeInsightFixtureTestCase;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFileBase;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;

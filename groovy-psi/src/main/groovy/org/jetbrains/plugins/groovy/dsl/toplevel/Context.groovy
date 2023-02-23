@@ -1,12 +1,12 @@
 package org.jetbrains.plugins.groovy.dsl.toplevel
 
-import com.intellij.openapi.util.text.StringUtil
-import com.intellij.patterns.ElementPattern
-import com.intellij.patterns.StandardPatterns
+import consulo.language.pattern.ElementPattern
+import consulo.util.lang.StringUtil
 import org.jetbrains.annotations.NotNull
 import org.jetbrains.plugins.groovy.dsl.toplevel.scopes.Scope
-import static com.intellij.patterns.PlatformPatterns.psiFile
-import static com.intellij.patterns.PlatformPatterns.virtualFile
+
+import static consulo.language.pattern.PlatformPatterns.psiFile
+import static consulo.language.pattern.PlatformPatterns.virtualFile
 
 /**
  * @author ilyas

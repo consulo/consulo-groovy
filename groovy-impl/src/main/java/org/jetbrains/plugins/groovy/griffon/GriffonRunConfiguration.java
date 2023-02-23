@@ -16,10 +16,12 @@
 
 package org.jetbrains.plugins.groovy.griffon;
 
-import com.intellij.execution.configurations.ConfigurationFactory;
-import com.intellij.execution.configurations.ModuleBasedConfiguration;
-import com.intellij.execution.configurations.RunConfigurationModule;
-import com.intellij.openapi.project.Project;
+import consulo.execution.configuration.ConfigurationFactory;
+import consulo.execution.configuration.ModuleBasedConfiguration;
+import consulo.execution.configuration.RunConfigurationModule;
+import consulo.project.Project;
+import consulo.execution.configuration.ModuleBasedConfiguration;
+import consulo.execution.configuration.RunConfigurationModule;
 import org.jetbrains.plugins.groovy.mvc.MvcRunConfiguration;
 
 public class GriffonRunConfiguration extends MvcRunConfiguration {

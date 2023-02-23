@@ -1,18 +1,21 @@
+import java.lang.Object;
+import java.lang.String;
+
 public class A {
-public java.lang.Object getProp() {
+public Object getProp() {
  return prop;
 }
-public void setProp(java.lang.Object prop) {
+public void setProp(Object prop) {
 this.prop = prop;
 }
-private java.lang.Object prop;
+private Object prop;
 }
 public class propAssignment extends groovy.lang.Script {
-public static void main(java.lang.String[] args) {
+public static void main(String[] args) {
 new propAssignment(new groovy.lang.Binding(args)).run();
 }
 
-public java.lang.Object run() {
+public Object run() {
 
 
 A a = new A();

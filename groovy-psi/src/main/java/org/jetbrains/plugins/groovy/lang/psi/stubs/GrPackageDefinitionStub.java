@@ -15,10 +15,10 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.stubs;
 
-import com.intellij.psi.stubs.IStubElementType;
-import com.intellij.psi.stubs.StubBase;
-import com.intellij.psi.stubs.StubElement;
-import com.intellij.util.io.StringRef;
+import consulo.index.io.StringRef;
+import consulo.language.psi.stub.IStubElementType;
+import consulo.language.psi.stub.StubBase;
+import consulo.language.psi.stub.StubElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.toplevel.packaging.GrPackageDefinition;
 
 public class GrPackageDefinitionStub extends StubBase<GrPackageDefinition> implements StubElement<GrPackageDefinition> {

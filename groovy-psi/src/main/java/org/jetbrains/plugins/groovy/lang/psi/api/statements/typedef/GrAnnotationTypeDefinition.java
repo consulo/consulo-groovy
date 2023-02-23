@@ -16,9 +16,6 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef;
 
-import com.intellij.psi.StubBasedPsiElement;
-import org.jetbrains.plugins.groovy.lang.psi.stubs.GrTypeDefinitionStub;
-
 /**
  * @author Dmitry.Krasilschikov
  */

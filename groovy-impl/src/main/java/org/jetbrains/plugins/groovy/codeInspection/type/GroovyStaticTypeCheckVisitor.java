@@ -15,21 +15,28 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.type;
 
-import com.intellij.codeInsight.intention.IntentionAction;
-import com.intellij.codeInspection.InspectionManager;
-import com.intellij.codeInspection.LocalQuickFix;
-import com.intellij.codeInspection.ProblemDescriptor;
-import com.intellij.codeInspection.ProblemHighlightType;
-import com.intellij.lang.annotation.Annotation;
-import com.intellij.lang.annotation.AnnotationHolder;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.util.IncorrectOperationException;
-import com.intellij.util.containers.ContainerUtil;
+import consulo.language.editor.annotation.Annotation;
+import consulo.language.editor.annotation.AnnotationHolder;
+import consulo.language.editor.inspection.LocalQuickFix;
+import consulo.language.editor.intention.IntentionAction;
+import consulo.language.editor.inspection.scheme.InspectionManager;
+import consulo.language.editor.inspection.LocalQuickFix;
+import consulo.language.editor.inspection.ProblemDescriptor;
+import consulo.language.editor.inspection.ProblemHighlightType;
+import consulo.language.editor.annotation.Annotation;
+import consulo.language.editor.annotation.AnnotationHolder;
+import consulo.codeEditor.Editor;
+import consulo.language.psi.PsiFile;
+import consulo.project.Project;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.util.IncorrectOperationException;
+import consulo.util.collection.ContainerUtil;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
+import consulo.project.Project;
+import consulo.util.collection.ContainerUtil;
 import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.GrListOrMap;
@@ -85,7 +92,7 @@ public class GroovyStaticTypeCheckVisitor extends GroovyTypeCheckVisitor {
   @Override
   protected void registerError(@Nonnull final PsiElement location,
                                @Nonnull final String description,
-                               @javax.annotation.Nullable final LocalQuickFix[] fixes,
+                               @Nullable final LocalQuickFix[] fixes,
                                final ProblemHighlightType highlightType) {
     if (highlightType != ProblemHighlightType.GENERIC_ERROR) return;
     final List<IntentionAction> intentions = ContainerUtil.newArrayList();
@@ -96,12 +103,6 @@ public class GroovyStaticTypeCheckVisitor extends GroovyTypeCheckVisitor {
           @Override
           public String getText() {
             return fix.getName();
-          }
-
-          @Nonnull
-          @Override
-          public String getFamilyName() {
-            return fix.getFamilyName();
           }
 
           @Override
@@ -129,7 +130,7 @@ public class GroovyStaticTypeCheckVisitor extends GroovyTypeCheckVisitor {
 
   protected void registerError(@Nonnull final PsiElement location,
                                @Nonnull final String description,
-                               @javax.annotation.Nullable final IntentionAction[] fixes,
+                               @Nullable final IntentionAction[] fixes,
                                final ProblemHighlightType highlightType) {
     if (highlightType != ProblemHighlightType.GENERIC_ERROR) return;
     final Annotation annotation = myHolder.createErrorAnnotation(location, description);

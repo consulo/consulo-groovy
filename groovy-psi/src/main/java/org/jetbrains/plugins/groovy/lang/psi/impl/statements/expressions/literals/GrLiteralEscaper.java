@@ -18,12 +18,12 @@ package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.litera
 
 import javax.annotation.Nonnull;
 
+import consulo.document.util.TextRange;
+import consulo.language.ast.IElementType;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.literals.GrLiteralContainer;
 import org.jetbrains.plugins.groovy.lang.psi.util.GrStringUtil;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.LiteralTextEscaper;
-import com.intellij.psi.tree.IElementType;
+import consulo.language.psi.LiteralTextEscaper;
 
 public class GrLiteralEscaper extends LiteralTextEscaper<GrLiteralContainer> {
   private int[] outSourceOffsets;

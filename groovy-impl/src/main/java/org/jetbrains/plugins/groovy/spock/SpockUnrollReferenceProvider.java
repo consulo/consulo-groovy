@@ -1,16 +1,16 @@
 package org.jetbrains.plugins.groovy.spock;
 
-import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.*;
-import com.intellij.util.IncorrectOperationException;
-import com.intellij.util.ProcessingContext;
-import javax.annotation.Nonnull;
+import consulo.document.util.TextRange;
+import consulo.language.psi.*;
+import consulo.language.util.IncorrectOperationException;
+import consulo.language.util.ProcessingContext;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.GrModifierList;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotation;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotationArgumentList;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotationNameValuePair;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;

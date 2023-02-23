@@ -16,12 +16,12 @@
 
 package org.jetbrains.plugins.groovy.mvc.projectView;
 
-import com.intellij.execution.PsiLocation;
-import com.intellij.execution.junit.JUnitUtil;
-import com.intellij.ide.projectView.ViewSettings;
-import com.intellij.openapi.module.Module;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiMethod;
+import com.intellij.java.execution.impl.junit.JUnitUtil;
+import com.intellij.java.language.psi.PsiMethod;
+import consulo.execution.action.PsiLocation;
+import consulo.language.psi.PsiElement;
+import consulo.module.Module;
+import consulo.project.ui.view.tree.ViewSettings;
 import consulo.ui.image.Image;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
@@ -38,7 +38,7 @@ public class TestClassNode extends ClassNode {
 
   public TestClassNode(@Nonnull final Module module,
                        @Nonnull final GrTypeDefinition controllerClass,
-                       @javax.annotation.Nullable final ViewSettings viewSettings, final Image methodIcon) {
+                       @Nullable final ViewSettings viewSettings, final Image methodIcon) {
     super(module, controllerClass, viewSettings);
     myMethodIcon = methodIcon;
   }

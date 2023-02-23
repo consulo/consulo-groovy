@@ -15,9 +15,12 @@
  */
 package org.jetbrains.plugins.groovy.formatter;
 
-import com.intellij.formatting.Alignment;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
+import consulo.language.ast.ASTNode;
+import consulo.language.codeStyle.Alignment;
+import consulo.language.ast.ASTNode;
+import consulo.language.psi.PsiElement;
+import consulo.language.codeStyle.Alignment;
+import consulo.language.psi.PsiElement;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

@@ -16,29 +16,28 @@
 
 package org.jetbrains.plugins.groovy.highlighter;
 
-import static com.intellij.openapi.editor.colors.TextAttributesKey.createTextAttributesKey;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.annotation.Nonnull;
-
+import com.intellij.java.analysis.impl.ide.highlighter.JavaHighlightingColors;
+import consulo.application.PowerSaveMode;
+import consulo.codeEditor.DefaultLanguageHighlighterColors;
+import consulo.codeEditor.HighlighterColors;
+import consulo.colorScheme.TextAttributesKey;
+import consulo.language.ast.IElementType;
+import consulo.language.ast.StringEscapesTokenTypes;
+import consulo.language.ast.TokenSet;
+import consulo.language.editor.highlight.SyntaxHighlighterBase;
+import consulo.language.lexer.LayeredLexer;
+import consulo.language.lexer.Lexer;
+import consulo.language.lexer.StringLiteralLexer;
 import org.jetbrains.plugins.groovy.lang.groovydoc.parser.GroovyDocElementTypes;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyLexer;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.lexer.TokenSets;
-import com.intellij.ide.PowerSaveMode;
-import com.intellij.ide.highlighter.JavaHighlightingColors;
-import com.intellij.lexer.LayeredLexer;
-import com.intellij.lexer.Lexer;
-import com.intellij.lexer.StringLiteralLexer;
-import com.intellij.openapi.editor.DefaultLanguageHighlighterColors;
-import com.intellij.openapi.editor.HighlighterColors;
-import com.intellij.openapi.editor.colors.TextAttributesKey;
-import com.intellij.openapi.fileTypes.SyntaxHighlighterBase;
-import com.intellij.psi.StringEscapesTokenTypes;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.tree.TokenSet;
+
+import javax.annotation.Nonnull;
+import java.util.HashMap;
+import java.util.Map;
+
+import static consulo.colorScheme.TextAttributesKey.createTextAttributesKey;
 
 /**
  * @author ilyas

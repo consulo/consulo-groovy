@@ -15,10 +15,16 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.typedef;
 
-import java.util.ArrayList;
-
-import javax.annotation.Nonnull;
-
+import com.intellij.java.language.psi.PsiClassType;
+import com.intellij.java.language.psi.PsiJavaCodeReferenceElement;
+import consulo.language.ast.ASTNode;
+import consulo.language.ast.IElementType;
+import consulo.language.ast.TokenType;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.StubBasedPsiElement;
+import consulo.language.psi.stub.IStubElementType;
+import consulo.language.util.IncorrectOperationException;
+import consulo.logging.Logger;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrReferenceList;
@@ -27,16 +33,10 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.GrClassReferenceType;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GrStubElementBase;
 import org.jetbrains.plugins.groovy.lang.psi.stubs.GrReferenceListStub;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
-import com.intellij.lang.ASTNode;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.psi.PsiClassType;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiJavaCodeReferenceElement;
-import com.intellij.psi.StubBasedPsiElement;
-import com.intellij.psi.TokenType;
-import com.intellij.psi.stubs.IStubElementType;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.util.IncorrectOperationException;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.ArrayList;
 
 /**
  * @author Maxim.Medvedev
@@ -80,7 +80,7 @@ public abstract class GrReferenceListImpl extends GrStubElementBase<GrReferenceL
   }
 
   @Override
-  @javax.annotation.Nullable
+  @Nullable
   public PsiElement getKeyword() {
     PsiElement firstChild = getFirstChild();
     if (firstChild != null && firstChild.getNode().getElementType() == getKeywordType()) {

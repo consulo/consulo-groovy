@@ -16,10 +16,11 @@
 package org.jetbrains.plugins.groovy.dgm;
 
 import com.intellij.lang.properties.psi.PropertiesFile;
-import com.intellij.openapi.util.Comparing;
-import com.intellij.openapi.util.SystemInfo;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
+import consulo.language.psi.PsiElement;
+import consulo.util.lang.Comparing;
+import consulo.application.util.SystemInfo;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
 
 /**
  * @author Max Medvedev

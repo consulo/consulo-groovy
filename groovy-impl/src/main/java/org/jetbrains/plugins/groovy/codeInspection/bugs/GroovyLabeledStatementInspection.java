@@ -15,7 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.bugs;
 
-import com.intellij.psi.util.PsiTreeUtil;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.language.psi.util.PsiTreeUtil;
 import org.jetbrains.annotations.Nls;
 import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.GroovyBundle;

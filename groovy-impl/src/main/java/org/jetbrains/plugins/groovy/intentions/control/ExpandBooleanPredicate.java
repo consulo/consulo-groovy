@@ -15,9 +15,9 @@
  */
 package org.jetbrains.plugins.groovy.intentions.control;
 
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiType;
+import consulo.language.psi.PsiElement;
+import consulo.logging.Logger;
+import com.intellij.java.language.psi.PsiType;
 import org.jetbrains.plugins.groovy.intentions.base.PsiElementPredicate;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.branch.GrReturnStatement;

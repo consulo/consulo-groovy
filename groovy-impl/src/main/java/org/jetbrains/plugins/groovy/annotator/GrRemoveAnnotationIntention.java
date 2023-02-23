@@ -17,13 +17,15 @@ package org.jetbrains.plugins.groovy.annotator;
 
 import javax.annotation.Nonnull;
 
+import consulo.language.psi.PsiElement;
+import consulo.language.util.IncorrectOperationException;
 import org.jetbrains.plugins.groovy.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.intentions.base.PsiElementPredicate;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotation;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiElement;
-import com.intellij.util.IncorrectOperationException;
+import consulo.codeEditor.Editor;
+import consulo.project.Project;
+import consulo.language.psi.PsiElement;
+import consulo.language.util.IncorrectOperationException;
 
 /**
  * Created by Max Medvedev on 06/02/14

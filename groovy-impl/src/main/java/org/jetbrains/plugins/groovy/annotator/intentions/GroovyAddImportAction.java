@@ -16,10 +16,13 @@
 
 package org.jetbrains.plugins.groovy.annotator.intentions;
 
-import com.intellij.codeInsight.daemon.impl.quickfix.ImportClassFixBase;
-import com.intellij.openapi.util.Comparing;
-import com.intellij.psi.*;
-import javax.annotation.Nonnull;
+import com.intellij.java.impl.codeInsight.daemon.impl.quickfix.ImportClassFixBase;
+import com.intellij.java.language.psi.PsiClass;
+import com.intellij.java.language.psi.PsiExpression;
+import com.intellij.java.language.psi.PsiMember;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.util.lang.Comparing;
 import org.jetbrains.plugins.groovy.lang.psi.GrReferenceElement;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
@@ -28,6 +31,7 @@ import org.jetbrains.plugins.groovy.lang.psi.api.toplevel.imports.GrImportStatem
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeElement;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 /**

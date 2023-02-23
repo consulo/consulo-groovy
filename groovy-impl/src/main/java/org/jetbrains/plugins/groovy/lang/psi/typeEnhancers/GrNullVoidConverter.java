@@ -15,9 +15,9 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.typeEnhancers;
 
-import com.intellij.psi.PsiClassType;
-import com.intellij.psi.PsiPrimitiveType;
-import com.intellij.psi.PsiType;
+import com.intellij.java.language.psi.PsiClassType;
+import com.intellij.java.language.psi.PsiPrimitiveType;
+import com.intellij.java.language.psi.PsiType;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;

@@ -1,5 +1,30 @@
 package org.jetbrains.plugins.groovy.ivy;
 
+import com.intellij.java.impl.codeInsight.AttachSourcesProvider;
+import consulo.application.AccessToken;
+import consulo.application.ApplicationManager;
+import consulo.application.WriteAction;
+import consulo.application.progress.ProgressIndicator;
+import consulo.application.progress.Task;
+import consulo.application.util.ProgressStreamUtil;
+import consulo.content.base.SourcesOrderRootType;
+import consulo.content.library.Library;
+import consulo.http.HttpProxyManager;
+import consulo.language.psi.PsiFile;
+import consulo.logging.Logger;
+import consulo.module.content.layer.orderEntry.LibraryOrderEntry;
+import consulo.project.Project;
+import consulo.project.ui.notification.Notification;
+import consulo.project.ui.notification.NotificationGroup;
+import consulo.project.ui.notification.NotificationType;
+import consulo.ui.Component;
+import consulo.ui.event.UIEvent;
+import consulo.util.concurrent.AsyncResult;
+import consulo.virtualFileSystem.VirtualFile;
+import consulo.virtualFileSystem.archive.ArchiveVfsUtil;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -7,34 +32,12 @@ import java.net.HttpURLConnection;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import com.intellij.codeInsight.AttachSourcesProvider;
-import com.intellij.notification.Notification;
-import com.intellij.notification.NotificationType;
-import com.intellij.openapi.application.AccessToken;
-import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.application.WriteAction;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.progress.ProgressIndicator;
-import com.intellij.openapi.progress.Task;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.roots.LibraryOrderEntry;
-import com.intellij.openapi.roots.OrderRootType;
-import com.intellij.openapi.roots.libraries.Library;
-import com.intellij.openapi.util.ActionCallback;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.PsiFile;
-import com.intellij.util.net.HttpConfigurable;
-import com.intellij.util.net.NetUtils;
-import consulo.vfs.util.ArchiveVfsUtil;
-
 /**
  * @author Sergey Evdokimov
  */
 public abstract class AbstractAttachSourceProvider implements AttachSourcesProvider {
 
-  private static final Logger LOG = Logger.getInstance("#org.jetbrains.plugins.groovy.ivy.AbstractAttachSourceProvider");
+  private static final Logger LOG = Logger.getInstance(AbstractAttachSourceProvider.class);
 
   @Nullable
   protected static VirtualFile getJarByPsiFile(PsiFile psiFile) {
@@ -48,7 +51,7 @@ public abstract class AbstractAttachSourceProvider implements AttachSourcesProvi
     return jar;
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   protected static Library getLibraryFromOrderEntriesList(List<LibraryOrderEntry> orderEntries) {
     if (orderEntries.isEmpty()) return null;
 
@@ -66,9 +69,9 @@ public abstract class AbstractAttachSourceProvider implements AttachSourcesProvi
 
   protected void addSourceFile(@Nullable VirtualFile jarRoot, @Nonnull Library library) {
     if (jarRoot != null) {
-      if (!Arrays.asList(library.getFiles(OrderRootType.SOURCES)).contains(jarRoot)) {
+      if (!Arrays.asList(library.getFiles(SourcesOrderRootType.getInstance())).contains(jarRoot)) {
         Library.ModifiableModel model = library.getModifiableModel();
-        model.addRoot(jarRoot, OrderRootType.SOURCES);
+        model.addRoot(jarRoot, SourcesOrderRootType.getInstance());
         model.commit();
       }
     }
@@ -96,16 +99,16 @@ public abstract class AbstractAttachSourceProvider implements AttachSourcesProvi
     }
 
     @Override
-    public ActionCallback perform(List<LibraryOrderEntry> orderEntriesContainingFile) {
+    public AsyncResult<Void> perform(@Nonnull List<LibraryOrderEntry> orderEntriesContainingFile, @Nonnull UIEvent<Component> uiEvent) {
       ApplicationManager.getApplication().assertIsDispatchThread();
 
-      ActionCallback callback = new ActionCallback();
-      callback.setDone();
+      if (!mySrcFile.isValid()) {
+        return AsyncResult.rejected();
+      }
 
-      if (!mySrcFile.isValid()) return callback;
+      if (myLibrary != getLibraryFromOrderEntriesList(orderEntriesContainingFile)) return AsyncResult.rejected();
 
-      if (myLibrary != getLibraryFromOrderEntriesList(orderEntriesContainingFile)) return callback;
-
+      AsyncResult<Void> result = AsyncResult.undefined();
       AccessToken accessToken = WriteAction.start();
       try {
         addSourceFile(mySrcFile, myLibrary);
@@ -114,16 +117,17 @@ public abstract class AbstractAttachSourceProvider implements AttachSourcesProvi
         accessToken.finish();
       }
 
-      return callback;
+      result.setDone();
+      return result;
     }
   }
 
   protected abstract class DownloadSourcesAction implements AttachSourcesAction {
     protected final Project myProject;
     protected final String myUrl;
-    protected final String myMessageGroupId;
+    protected final NotificationGroup myMessageGroupId;
 
-    public DownloadSourcesAction(Project project, String messageGroupId, String url) {
+    public DownloadSourcesAction(Project project, NotificationGroup messageGroupId, String url) {
       myProject = project;
       myUrl = url;
       myMessageGroupId = messageGroupId;
@@ -142,9 +146,8 @@ public abstract class AbstractAttachSourceProvider implements AttachSourcesProvi
     protected abstract void storeFile(byte[] content);
 
     @Override
-    public ActionCallback perform(List<LibraryOrderEntry> orderEntriesContainingFile) {
-
-      final ActionCallback callback = new ActionCallback();
+    public AsyncResult<Void> perform(@Nonnull List<LibraryOrderEntry> orderEntriesContainingFile, @Nonnull UIEvent<Component> e) {
+      final AsyncResult<Void> callback = AsyncResult.undefined();
 
       Task task = new Task.Backgroundable(myProject, "Downloading sources...", true) {
         @Override
@@ -156,19 +159,14 @@ public abstract class AbstractAttachSourceProvider implements AttachSourcesProvi
 
             indicator.checkCanceled();
 
-            HttpURLConnection urlConnection = HttpConfigurable.getInstance().openHttpConnection(myUrl);
+            HttpURLConnection urlConnection = HttpProxyManager.getInstance().openHttpConnection(myUrl);
 
             int contentLength = urlConnection.getContentLength();
 
             out = new ByteArrayOutputStream(contentLength > 0 ? contentLength : 100 * 1024);
 
-            InputStream in = urlConnection.getInputStream();
-
-            try {
-              NetUtils.copyStreamContent(indicator, in, out, contentLength);
-            }
-            finally {
-              in.close();
+            try (InputStream in = urlConnection.getInputStream()) {
+              ProgressStreamUtil.copyStreamContent(indicator, in, out, contentLength);
             }
           }
           catch (IOException e) {
@@ -180,7 +178,7 @@ public abstract class AbstractAttachSourceProvider implements AttachSourcesProvi
                                  "Downloading failed",
                                  "Failed to download sources: " + myUrl,
                                  NotificationType.ERROR)
-                  .notify(getProject());
+                  .notify((Project)getProject());
 
                 callback.setDone();
               }

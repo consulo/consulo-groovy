@@ -15,16 +15,19 @@
  */
 package org.jetbrains.plugins.groovy;
 
-import com.intellij.patterns.ElementPattern;
-import com.intellij.psi.PsiElement;
-import com.intellij.refactoring.rename.RenameInputValidator;
-import com.intellij.util.ProcessingContext;
+import consulo.language.editor.refactoring.rename.RenameInputValidator;
+import consulo.language.pattern.ElementPattern;
+import consulo.language.psi.PsiElement;
+import consulo.language.editor.refactoring.rename.RenameInputValidator;
+import consulo.language.util.ProcessingContext;
+import consulo.language.pattern.ElementPattern;
 import org.jetbrains.plugins.groovy.lang.psi.GrNamedElement;
 import org.jetbrains.plugins.groovy.refactoring.GroovyRefactoringUtil;
 
-import static com.intellij.patterns.PlatformPatterns.psiElement;
+import static consulo.language.pattern.PlatformPatterns.psiElement;
 
-public class GroovyRenameInputValidator implements RenameInputValidator {
+public class GroovyRenameInputValidator implements RenameInputValidator
+{
   @Override
   public ElementPattern<? extends PsiElement> getPattern() {
     return psiElement(GrNamedElement.class);

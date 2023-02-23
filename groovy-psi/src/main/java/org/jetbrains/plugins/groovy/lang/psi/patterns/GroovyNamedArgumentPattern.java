@@ -1,14 +1,15 @@
 package org.jetbrains.plugins.groovy.lang.psi.patterns;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
+import consulo.language.pattern.ElementPattern;
+import consulo.language.util.ProcessingContext;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrNamedArgument;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrCall;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
-import com.intellij.patterns.ElementPattern;
-import com.intellij.patterns.PatternCondition;
-import com.intellij.patterns.StringPattern;
-import com.intellij.util.ProcessingContext;
+import consulo.language.pattern.PatternCondition;
+import consulo.language.pattern.StringPattern;
 
 /**
  * @author Sergey Evdokimov
@@ -43,7 +44,7 @@ public class GroovyNamedArgumentPattern extends GroovyElementPattern<GrNamedArgu
     });
   }
 
-  public GroovyNamedArgumentPattern isParameterOfMethodCall(@javax.annotation.Nullable final ElementPattern<? extends GrCall> methodCall) {
+  public GroovyNamedArgumentPattern isParameterOfMethodCall(@Nullable final ElementPattern<? extends GrCall> methodCall) {
     return with(new PatternCondition<GrNamedArgument>("left") {
       public boolean accepts(@Nonnull GrNamedArgument namedArgument, final ProcessingContext context) {
         GrCall call = PsiUtil.getCallByNamedParameter(namedArgument);

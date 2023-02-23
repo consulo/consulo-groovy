@@ -16,7 +16,7 @@
 
 package org.jetbrains.plugins.groovy.refactoring.introduce.variable;
 
-import static com.intellij.refactoring.util.CommonRefactoringUtil.htmlEmphasize;
+import static consulo.language.editor.refactoring.util.CommonRefactoringUtil.htmlEmphasize;
 
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
@@ -25,8 +25,8 @@ import org.jetbrains.plugins.groovy.refactoring.GroovyRefactoringBundle;
 import org.jetbrains.plugins.groovy.refactoring.introduce.ConflictReporter;
 import org.jetbrains.plugins.groovy.refactoring.introduce.GrIntroduceContext;
 import org.jetbrains.plugins.groovy.refactoring.introduce.GrIntroduceValidatorEngine;
-import com.intellij.psi.PsiElement;
-import com.intellij.util.containers.MultiMap;
+import consulo.language.psi.PsiElement;
+import consulo.util.collection.MultiMap;
 
 /**
  * @author ilyas

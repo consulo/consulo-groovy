@@ -15,17 +15,15 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.assignment;
 
-import com.intellij.codeInspection.ProblemDescriptor;
-import com.intellij.codeInspection.ui.MultipleCheckboxOptionsPanel;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.JavaTokenType;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.util.IncorrectOperationException;
+import com.intellij.java.language.psi.JavaTokenType;
+import consulo.language.ast.IElementType;
+import consulo.language.editor.inspection.ProblemDescriptor;
+import consulo.language.editor.inspection.ui.MultipleCheckboxOptionsPanel;
+import consulo.language.psi.PsiElement;
+import consulo.language.util.IncorrectOperationException;
+import consulo.project.Project;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NonNls;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.codeInspection.GroovyFix;
@@ -37,6 +35,8 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrBinary
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.swing.*;
 
 public class GroovyAssignmentCanBeOperatorAssignmentInspection

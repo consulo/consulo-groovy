@@ -16,23 +16,23 @@
 
 package org.jetbrains.plugins.groovy.intentions.conversions.strings;
 
-import com.intellij.openapi.application.AccessToken;
-import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.application.ReadAction;
-import com.intellij.openapi.application.WriteAction;
-import com.intellij.openapi.command.CommandProcessor;
-import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.Pass;
-import com.intellij.openapi.util.Ref;
-import com.intellij.psi.*;
-import com.intellij.psi.util.MethodSignatureUtil;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.psi.util.TypeConversionUtil;
-import com.intellij.refactoring.IntroduceTargetChooser;
-import com.intellij.util.Function;
-import com.intellij.util.IncorrectOperationException;
+import com.intellij.java.language.psi.*;
+import com.intellij.java.language.psi.util.MethodSignatureUtil;
+import com.intellij.java.language.psi.util.TypeConversionUtil;
+import consulo.application.AccessToken;
+import consulo.application.ApplicationManager;
+import consulo.application.ReadAction;
+import consulo.application.WriteAction;
+import consulo.codeEditor.Editor;
+import consulo.document.Document;
+import consulo.language.editor.refactoring.IntroduceTargetChooser;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.language.util.IncorrectOperationException;
+import consulo.project.Project;
+import consulo.undoRedo.CommandProcessor;
+import consulo.util.lang.ref.Ref;
 import org.jetbrains.plugins.groovy.intentions.base.ErrorUtil;
 import org.jetbrains.plugins.groovy.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.intentions.base.PsiElementPredicate;
@@ -112,17 +112,8 @@ public class ConvertConcatenationToGstringIntention extends Intention {
         return;
       }
       IntroduceTargetChooser.showChooser(editor, expressions,
-                                         new Pass<GrExpression>() {
-                                           public void pass(final GrExpression selectedValue) {
-                                             invokeImpl(selectedValue, document);
-                                           }
-                                         },
-                                         new Function<GrExpression, String>() {
-                                           @Override
-                                           public String fun(GrExpression grExpression) {
-                                             return grExpression.getText();
-                                           }
-                                         }
+                                         selectedValue -> invokeImpl(selectedValue, document),
+                                         grExpression -> grExpression.getText()
       );
     }
   }
@@ -190,7 +181,7 @@ public class ConvertConcatenationToGstringIntention extends Intention {
     getOperandText(right, builder, multiline);
   }
 
-  private static void getOperandText(@javax.annotation.Nullable GrExpression operand, StringBuilder builder, boolean multiline) {
+  private static void getOperandText(@Nullable GrExpression operand, StringBuilder builder, boolean multiline) {
     if (operand instanceof GrRegex) {
       StringBuilder b = new StringBuilder();
       GrStringUtil.parseRegexCharacters(GrStringUtil.removeQuotes(operand.getText()), b, null, operand.getText().startsWith("/"));
@@ -285,8 +276,8 @@ public class ConvertConcatenationToGstringIntention extends Intention {
 
     public static boolean satisfied(PsiElement element) {
       if (element instanceof GrLiteral &&
-          ((GrLiteral)element).getValue() instanceof String &&
-          GrLiteralImpl.getLiteralType((GrLiteral)element) != GroovyTokenTypes.mGSTRING_LITERAL) {
+        ((GrLiteral)element).getValue() instanceof String &&
+        GrLiteralImpl.getLiteralType((GrLiteral)element) != GroovyTokenTypes.mGSTRING_LITERAL) {
         return true;
       }
 

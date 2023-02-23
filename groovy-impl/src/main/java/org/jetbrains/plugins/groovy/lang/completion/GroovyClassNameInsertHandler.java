@@ -15,12 +15,22 @@
  */
 package org.jetbrains.plugins.groovy.lang.completion;
 
-import com.intellij.codeInsight.completion.*;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.*;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.containers.ContainerUtil;
+import com.intellij.java.impl.codeInsight.completion.AllClassesGetter;
+import com.intellij.java.impl.codeInsight.completion.JavaCompletionUtil;
+import com.intellij.java.impl.codeInsight.completion.JavaPsiClassReferenceElement;
+import com.intellij.java.language.psi.JavaPsiFacade;
+import com.intellij.java.language.psi.PsiArrayType;
+import com.intellij.java.language.psi.PsiClass;
+import consulo.codeEditor.Editor;
+import consulo.language.editor.completion.lookup.InsertHandler;
+import consulo.language.editor.completion.lookup.InsertionContext;
+import consulo.language.editor.impl.internal.completion.CompletionUtil;
+import consulo.language.psi.PsiDocumentManager;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.project.Project;
+import consulo.util.collection.ContainerUtil;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFileBase;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrCatchClause;
@@ -31,12 +41,14 @@ import org.jetbrains.plugins.groovy.lang.psi.api.toplevel.imports.GrImportStatem
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
 import org.jetbrains.plugins.groovy.lang.psi.expectedTypes.GroovyExpectedTypesProvider;
 
+import javax.annotation.Nullable;
+
 /**
  * @author Maxim.Medvedev
  */
 public class GroovyClassNameInsertHandler implements InsertHandler<JavaPsiClassReferenceElement> {
-  @javax.annotation.Nullable
-  private static GrNewExpression findNewExpression(@javax.annotation.Nullable PsiElement position) {
+  @Nullable
+  private static GrNewExpression findNewExpression(@Nullable PsiElement position) {
     if (position == null) return null;
     final PsiElement reference = position.getParent();
     if (!(reference instanceof GrCodeReferenceElement)) return null;
@@ -102,7 +114,7 @@ public class GroovyClassNameInsertHandler implements InsertHandler<JavaPsiClassR
                                                                PsiArrayType.class) == null;
   }
 
-  private static boolean isInVariable(@javax.annotation.Nullable PsiElement position) {
+  private static boolean isInVariable(@Nullable PsiElement position) {
     if (position == null) {
       return false;
     }

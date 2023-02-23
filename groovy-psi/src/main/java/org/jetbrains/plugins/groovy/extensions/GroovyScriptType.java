@@ -20,8 +20,8 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
+import consulo.language.psi.scope.GlobalSearchScope;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
-import com.intellij.psi.search.GlobalSearchScope;
 import consulo.ui.image.Image;
 
 /**

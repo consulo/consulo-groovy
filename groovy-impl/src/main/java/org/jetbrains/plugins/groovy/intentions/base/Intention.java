@@ -15,16 +15,24 @@
  */
 package org.jetbrains.plugins.groovy.intentions.base;
 
-import com.intellij.codeInsight.intention.IntentionAction;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.editor.SelectionModel;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.util.IncorrectOperationException;
+import consulo.codeEditor.Editor;
+import consulo.document.util.TextRange;
+import consulo.language.editor.intention.IntentionAction;
+import consulo.codeEditor.Editor;
+import consulo.codeEditor.SelectionModel;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.util.IncorrectOperationException;
+import consulo.project.Project;
+import consulo.document.util.TextRange;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.util.IncorrectOperationException;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
+import consulo.language.editor.intention.IntentionAction;
+import consulo.project.Project;
 import org.jetbrains.plugins.groovy.annotator.intentions.QuickfixUtil;
 import org.jetbrains.plugins.groovy.intentions.GroovyIntentionsBundle;
 import org.jetbrains.plugins.groovy.intentions.utils.BoolUtils;
@@ -34,7 +42,8 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpres
 import org.jetbrains.plugins.groovy.refactoring.GroovyRefactoringUtil;
 
 
-public abstract class Intention implements IntentionAction {
+public abstract class Intention implements IntentionAction
+{
   private final PsiElementPredicate predicate;
 
   /**
@@ -63,7 +72,8 @@ public abstract class Intention implements IntentionAction {
   protected abstract PsiElementPredicate getElementPredicate();
 
 
-  protected static void replaceExpressionWithNegatedExpressionString(@Nonnull String newExpression, @Nonnull GrExpression expression) throws IncorrectOperationException {
+  protected static void replaceExpressionWithNegatedExpressionString(@Nonnull String newExpression, @Nonnull GrExpression expression) throws IncorrectOperationException
+  {
     final GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(expression.getProject());
 
     GrExpression expressionToReplace = expression;
@@ -82,7 +92,7 @@ public abstract class Intention implements IntentionAction {
   }
 
 
-  @javax.annotation.Nullable
+  @Nullable
   PsiElement findMatchingElement(PsiFile file, Editor editor) {
     if (!(file instanceof GroovyFileBase)) {
       return null;

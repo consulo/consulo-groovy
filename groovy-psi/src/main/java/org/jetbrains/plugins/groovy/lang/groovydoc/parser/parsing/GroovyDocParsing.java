@@ -20,12 +20,12 @@ import static org.jetbrains.plugins.groovy.lang.groovydoc.parser.parsing.GroovyD
 import static org.jetbrains.plugins.groovy.lang.groovydoc.parser.parsing.GroovyDocParsing.RESULT.FIELD;
 import static org.jetbrains.plugins.groovy.lang.groovydoc.parser.parsing.GroovyDocParsing.RESULT.METHOD;
 
+import consulo.language.ast.IElementType;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.plugins.groovy.lang.groovydoc.parser.GroovyDocElementTypes;
 import org.jetbrains.plugins.groovy.lang.parser.parsing.util.ParserUtils;
-import com.intellij.lang.PsiBuilder;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.tree.TokenSet;
+import consulo.language.parser.PsiBuilder;
+import consulo.language.ast.TokenSet;
 
 /**
  * @author ilyas

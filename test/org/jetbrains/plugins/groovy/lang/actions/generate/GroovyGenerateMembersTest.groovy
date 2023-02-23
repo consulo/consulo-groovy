@@ -21,9 +21,9 @@ import com.intellij.openapi.application.RunResult
 import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
-import com.intellij.psi.PsiClass
-import com.intellij.psi.PsiFile
-import com.intellij.psi.impl.source.PostprocessReformattingAspect
+import com.intellij.java.language.psi.PsiClass
+import com.intellij.java.language.psi.PsiFile
+import com.intellij.java.language.psi.impl.source.PostprocessReformattingAspect
 import com.intellij.testFramework.fixtures.LightCodeInsightFixtureTestCase
 import org.jetbrains.annotations.Nullable
 import org.jetbrains.plugins.groovy.actions.generate.accessors.GroovyGenerateGetterSetterAction

@@ -15,32 +15,31 @@
  */
 package org.jetbrains.plugins.groovy.intentions.style.parameterToEntry;
 
-import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.command.CommandProcessor;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.progress.ProgressIndicator;
-import com.intellij.openapi.progress.ProgressManager;
-import com.intellij.openapi.progress.Task;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.Ref;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.*;
-import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.psi.search.searches.MethodReferencesSearch;
-import com.intellij.psi.search.searches.ReferencesSearch;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.refactoring.ui.ConflictsDialog;
-import com.intellij.refactoring.util.CommonRefactoringUtil;
-import com.intellij.util.Function;
-import com.intellij.util.IncorrectOperationException;
-import com.intellij.util.Processor;
-import com.intellij.util.containers.ContainerUtil;
-import java.util.HashSet;
-import com.intellij.util.containers.MultiMap;
+import com.intellij.java.indexing.search.searches.MethodReferencesSearch;
+import com.intellij.java.language.psi.*;
+import consulo.application.ApplicationManager;
+import consulo.application.progress.ProgressIndicator;
+import consulo.application.progress.ProgressManager;
+import consulo.application.progress.Task;
+import consulo.application.util.function.Processor;
+import consulo.codeEditor.Editor;
+import consulo.language.editor.refactoring.ui.ConflictsDialog;
+import consulo.language.editor.refactoring.util.CommonRefactoringUtil;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.PsiReference;
+import consulo.language.psi.scope.GlobalSearchScope;
+import consulo.language.psi.search.ReferencesSearch;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.language.util.IncorrectOperationException;
+import consulo.logging.Logger;
+import consulo.project.Project;
+import consulo.undoRedo.CommandProcessor;
+import consulo.util.collection.ContainerUtil;
+import consulo.util.collection.MultiMap;
+import consulo.util.lang.StringUtil;
+import consulo.util.lang.ref.Ref;
 import org.jetbrains.annotations.NonNls;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.intentions.GroovyIntentionsBundle;
 import org.jetbrains.plugins.groovy.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.intentions.base.PsiElementPredicate;
@@ -68,9 +67,12 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.statements.typedef.members.GrM
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyPropertyUtils;
 import org.jetbrains.plugins.groovy.refactoring.GroovyValidationUtil;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 
 import static org.jetbrains.plugins.groovy.intentions.style.parameterToEntry.ConvertParameterToMapEntryIntention.FIRST_PARAMETER_KIND.*;
 
@@ -81,15 +83,24 @@ public class ConvertParameterToMapEntryIntention extends Intention {
 
   private static final Logger LOG =
     Logger.getInstance("#org.jetbrains.plugins.groovy.intentions.style.ConvertParameterToMapEntryIntention");
-  @NonNls private static final String CLOSURE_CAPTION = "closure";
-  @NonNls private static final String CLOSURE_CAPTION_CAP = "Closure";
-  @NonNls private static final String METHOD_CAPTION = "method";
-  @NonNls private static final String METHOD_CAPTION_CAP = "Method";
-  @NonNls private static final String REFACTORING_NAME = "Convert Parameter to Map Entry";
-  @NonNls private static final String MAP_TYPE_TEXT = "Map";
-  @NonNls private static final String[] MY_POSSIBLE_NAMES = new String[]{"attrs", "args", "params", "map"};
+  @NonNls
+  private static final String CLOSURE_CAPTION = "closure";
+  @NonNls
+  private static final String CLOSURE_CAPTION_CAP = "Closure";
+  @NonNls
+  private static final String METHOD_CAPTION = "method";
+  @NonNls
+  private static final String METHOD_CAPTION_CAP = "Method";
+  @NonNls
+  private static final String REFACTORING_NAME = "Convert Parameter to Map Entry";
+  @NonNls
+  private static final String MAP_TYPE_TEXT = "Map";
+  @NonNls
+  private static final String[] MY_POSSIBLE_NAMES = new String[]{"attrs", "args", "params", "map"};
 
-  protected void processIntention(@Nonnull final PsiElement element, final Project project, Editor editor) throws IncorrectOperationException {
+  protected void processIntention(@Nonnull final PsiElement element,
+                                  final Project project,
+                                  Editor editor) throws IncorrectOperationException {
     // Method or closure to be refactored
     final GrParameterListOwner owner = PsiTreeUtil.getParentOfType(element, GrParameterListOwner.class);
     final Collection<PsiElement> occurrences = new ArrayList<PsiElement>();
@@ -172,11 +183,7 @@ public class ConvertParameterToMapEntryIntention extends Intention {
   }
 
   private static String[] generateValidNames(final String[] names, final GrParameter param) {
-    return ContainerUtil.map2Array(names, String.class, new Function<String, String>() {
-      public String fun(final String s) {
-        return (new GroovyValidationUtil.ParameterNameSuggester(s, param)).generateName();
-      }
-    });
+    return ContainerUtil.map2Array(names, String.class, s -> (new GroovyValidationUtil.ParameterNameSuggester(s, param)).generateName());
   }
 
   private static void performRefactoring(final PsiElement element,
@@ -217,9 +224,9 @@ public class ConvertParameterToMapEntryIntention extends Intention {
                 resolveResult = refExpr.advancedResolve();
                 final PsiElement resolved = resolveResult.getElement();
                 if (resolved instanceof PsiMethod &&
-                    GroovyPropertyUtils.isSimplePropertyGetter(((PsiMethod)resolved)) &&
-                    //check for explicit getter call
-                    ((PsiMethod)resolved).getName().equals(refExpr.getReferenceName())) {
+                  GroovyPropertyUtils.isSimplePropertyGetter(((PsiMethod)resolved)) &&
+                  //check for explicit getter call
+                  ((PsiMethod)resolved).getName().equals(refExpr.getReferenceName())) {
                   isExplicitGetterCall = true;
                 }
               }
@@ -276,11 +283,7 @@ public class ConvertParameterToMapEntryIntention extends Intention {
             final GrNamedArgument namedArg;
             if (argInfo.isMultiArg) {
               if (argInfo.args.size() == 0) continue;
-              String arg = "[" + StringUtil.join(ContainerUtil.map(argInfo.args, new Function<PsiElement, String>() {
-                public String fun(PsiElement element) {
-                  return element.getText();
-                }
-              }), ", ") + "]";
+              String arg = "[" + StringUtil.join(ContainerUtil.map(argInfo.args, element1 -> element1.getText()), ", ") + "]";
               for (PsiElement psiElement : argInfo.args) {
                 psiElement.delete();
               }
@@ -405,7 +408,9 @@ public class ConvertParameterToMapEntryIntention extends Intention {
   }
 
   protected enum FIRST_PARAMETER_KIND {
-    IS_NOT_MAP, MUST_BE_MAP, ERROR
+    IS_NOT_MAP,
+    MUST_BE_MAP,
+    ERROR
   }
 
   @Nullable
@@ -445,7 +450,7 @@ public class ConvertParameterToMapEntryIntention extends Intention {
     final Task task = new Task.Modal(project, GroovyIntentionsBundle
       .message("find.method.ro.closure.usages.0", owner instanceof GrClosableBlock ? CLOSURE_CAPTION : METHOD_CAPTION), true) {
       public void run(@Nonnull final ProgressIndicator indicator) {
-        final GlobalSearchScope projectScope = GlobalSearchScope.projectScope(getProject());
+        final GlobalSearchScope projectScope = GlobalSearchScope.projectScope((Project)getProject());
         final Collection<PsiReference> references = Collections.synchronizedSet(new HashSet<PsiReference>());
         final Processor<PsiReference> consumer = new Processor<PsiReference>() {
           @Override

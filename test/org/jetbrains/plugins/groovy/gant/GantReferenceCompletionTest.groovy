@@ -165,10 +165,10 @@ class GantProjectDescriptor extends DefaultLightProjectDescriptor {
       final Library.ModifiableModel modifiableModel = model.getModuleLibraryTable().createLibrary("GROOVY").getModifiableModel();
 
       def fs = JarFileSystem.instance
-      modifiableModel.addRoot(fs.findFileByPath("$TestUtils.mockGroovyLibraryHome/$TestUtils.GROOVY_JAR!/"), OrderRootType.CLASSES);
+      modifiableModel.addRoot(fs.findFileByPath("$TestUtils.mockGroovyLibraryHome/$TestUtils.GROOVY_JAR!/"), BinariesOrderRootType.getInstance());
 
       GantReferenceCompletionTest.GANT_JARS.each {
-        modifiableModel.addRoot(fs.findFileByPath("${TestUtils.absoluteTestDataPath}mockGantLib/lib/$it!/"), OrderRootType.CLASSES);
+        modifiableModel.addRoot(fs.findFileByPath("${TestUtils.absoluteTestDataPath}mockGantLib/lib/$it!/"), BinariesOrderRootType.getInstance());
       }
       modifiableModel.commit();
     }

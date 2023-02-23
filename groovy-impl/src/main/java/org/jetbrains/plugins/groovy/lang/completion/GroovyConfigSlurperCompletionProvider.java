@@ -15,23 +15,17 @@
  */
 package org.jetbrains.plugins.groovy.lang.completion;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import consulo.language.editor.completion.*;
+import consulo.language.editor.completion.lookup.*;
+import consulo.language.pattern.PlatformPatterns;
+import consulo.language.pattern.PsiElementPattern;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.util.ProcessingContext;
+import consulo.util.lang.function.PairConsumer;
 import org.jetbrains.plugins.groovy.configSlurper.ConfigSlurperSupport;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrBlockStatement;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrForStatement;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrIfStatement;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrTryCatchStatement;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrWhileStatement;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.*;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlock;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrOpenBlock;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrAssignmentExpression;
@@ -40,27 +34,15 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrMethod
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.literals.GrLiteralImpl;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
-import com.intellij.codeInsight.TailType;
-import com.intellij.codeInsight.completion.CompletionContributor;
-import com.intellij.codeInsight.completion.CompletionParameters;
-import com.intellij.codeInsight.completion.CompletionResultSet;
-import com.intellij.codeInsight.completion.CompletionType;
-import com.intellij.codeInsight.lookup.LookupElement;
-import com.intellij.codeInsight.lookup.LookupElementBuilder;
-import com.intellij.codeInsight.lookup.TailTypeDecorator;
-import com.intellij.patterns.PlatformPatterns;
-import com.intellij.patterns.PsiElementPattern;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.util.PairConsumer;
-import com.intellij.util.ProcessingContext;
-import consulo.codeInsight.completion.CompletionProvider;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.*;
 
 /**
  * @author Sergey Evdokimov
  */
-class GroovyConfigSlurperCompletionProvider implements CompletionProvider
-{
+class GroovyConfigSlurperCompletionProvider implements CompletionProvider {
 
   private final boolean myAddPrefixes;
 
@@ -69,7 +51,8 @@ class GroovyConfigSlurperCompletionProvider implements CompletionProvider
   }
 
   public static void register(CompletionContributor contributor) {
-    PsiElementPattern.Capture<PsiElement> pattern = PlatformPatterns.psiElement().withParent(PlatformPatterns.psiElement(GrReferenceExpression.class));
+    PsiElementPattern.Capture<PsiElement> pattern =
+      PlatformPatterns.psiElement().withParent(PlatformPatterns.psiElement(GrReferenceExpression.class));
 
     contributor.extend(CompletionType.BASIC, pattern, new GroovyConfigSlurperCompletionProvider(true));
     contributor.extend(CompletionType.SMART, pattern, new GroovyConfigSlurperCompletionProvider(false));
@@ -77,8 +60,8 @@ class GroovyConfigSlurperCompletionProvider implements CompletionProvider
 
   @Override
   public void addCompletions(@Nonnull CompletionParameters parameters,
-                                ProcessingContext context,
-                                @Nonnull CompletionResultSet result) {
+                             ProcessingContext context,
+                             @Nonnull CompletionResultSet result) {
     PsiFile file = parameters.getOriginalFile();
     if (!(file instanceof GroovyFile)) return;
 
@@ -91,11 +74,11 @@ class GroovyConfigSlurperCompletionProvider implements CompletionProvider
 
     final Map<String, Boolean> variants = new HashMap<String, Boolean>();
     collectVariants(new PairConsumer<String, Boolean>() {
-                      @Override
-                      public void consume(String s, Boolean isFinal) {
-                        variants.put(s, isFinal);
-                      }
-                    }, ref, groovyFile);
+      @Override
+      public void consume(String s, Boolean isFinal) {
+        variants.put(s, isFinal);
+      }
+    }, ref, groovyFile);
 
     if (variants.isEmpty()) return;
 
@@ -153,14 +136,16 @@ class GroovyConfigSlurperCompletionProvider implements CompletionProvider
 
       LookupElement lookupElement = LookupElementBuilder.create(variant);
       if (entry.getValue()) {
-        lookupElement = TailTypeDecorator.withTail(lookupElement, TailType.EQ);
+        lookupElement = TailTypeDecorator.withTail(lookupElement, EqTailType.INSTANCE);
       }
 
       result.addElement(lookupElement);
     }
   }
 
-  private static void collectVariants(@Nonnull PairConsumer<String, Boolean> consumer, @Nonnull GrReferenceExpression ref, @Nonnull GroovyFile originalFile) {
+  private static void collectVariants(@Nonnull PairConsumer<String, Boolean> consumer,
+                                      @Nonnull GrReferenceExpression ref,
+                                      @Nonnull GroovyFile originalFile) {
     List<String> prefix = getPrefix(ref);
     if (prefix == null) return;
 
@@ -199,7 +184,7 @@ class GroovyConfigSlurperCompletionProvider implements CompletionProvider
     return sb.toString();
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   public static List<String> getPrefix(GrReferenceExpression ref) {
     List<String> res = new ArrayList<String>();
 
@@ -245,7 +230,7 @@ class GroovyConfigSlurperCompletionProvider implements CompletionProvider
         e = call.getParent();
       }
       else if (e instanceof GrBlockStatement || e instanceof GrOpenBlock || e instanceof GrIfStatement || e instanceof GrForStatement
-          || e instanceof GrWhileStatement || e instanceof GrTryCatchStatement) {
+        || e instanceof GrWhileStatement || e instanceof GrTryCatchStatement) {
         e = e.getParent();
       }
       else {

@@ -18,6 +18,23 @@ package org.jetbrains.plugins.groovy.editor.actions;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
+import consulo.codeEditor.*;
+import consulo.codeEditor.action.EditorActionHandler;
+import consulo.dataContext.DataContext;
+import consulo.document.Document;
+import consulo.document.util.TextRange;
+import consulo.language.ast.*;
+import consulo.language.codeStyle.CodeStyleManager;
+import consulo.language.codeStyle.CodeStyleSettingsManager;
+import consulo.language.editor.CodeInsightSettings;
+import consulo.language.editor.CommonDataKeys;
+import consulo.language.editor.action.EnterHandlerDelegateAdapter;
+import consulo.language.psi.*;
+import consulo.project.Project;
+import consulo.util.lang.CharArrayCharSequence;
+import consulo.util.lang.StringUtil;
+import consulo.util.lang.ref.Ref;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.codeStyle.GroovyCodeStyleSettings;
 import org.jetbrains.plugins.groovy.editor.HandlerUtils;
@@ -32,36 +49,30 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrRefere
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.literals.GrLiteral;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.literals.GrStringInjection;
 import org.jetbrains.plugins.groovy.lang.psi.util.GrStringUtil;
-import com.intellij.codeInsight.CodeInsightSettings;
-import com.intellij.codeInsight.editorActions.enter.EnterHandlerDelegateAdapter;
-import com.intellij.lang.ASTNode;
-import com.intellij.openapi.actionSystem.CommonDataKeys;
-import com.intellij.openapi.actionSystem.DataContext;
-import com.intellij.openapi.editor.CaretModel;
-import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.editor.EditorModificationUtil;
-import com.intellij.openapi.editor.actionSystem.EditorActionHandler;
-import com.intellij.openapi.editor.ex.EditorEx;
-import com.intellij.openapi.editor.highlighter.EditorHighlighter;
-import com.intellij.openapi.editor.highlighter.HighlighterIterator;
-import com.intellij.openapi.fileEditor.FileDocumentManager;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.Ref;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.PsiDocumentManager;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiErrorElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiManager;
-import com.intellij.psi.TokenType;
-import com.intellij.psi.codeStyle.CodeStyleManager;
-import com.intellij.psi.codeStyle.CodeStyleSettingsManager;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.tree.TokenSet;
-import com.intellij.util.text.CharArrayCharSequence;
+import consulo.language.editor.CodeInsightSettings;
+import consulo.language.editor.action.EnterHandlerDelegateAdapter;
+import consulo.language.editor.CommonDataKeys;
+import consulo.dataContext.DataContext;
+import consulo.document.Document;
+import consulo.ide.impl.idea.openapi.editor.EditorModificationUtil;
+import consulo.codeEditor.action.EditorActionHandler;
+import consulo.codeEditor.HighlighterIterator;
+import consulo.document.FileDocumentManager;
+import consulo.project.Project;
+import consulo.util.lang.ref.Ref;
+import consulo.document.util.TextRange;
+import consulo.util.lang.StringUtil;
+import consulo.virtualFileSystem.VirtualFile;
+import consulo.language.psi.PsiDocumentManager;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.PsiManager;
+import consulo.language.ast.TokenType;
+import consulo.language.codeStyle.CodeStyleManager;
+import consulo.language.codeStyle.CodeStyleSettingsManager;
+import consulo.language.ast.IElementType;
+import consulo.language.ast.TokenSet;
+import consulo.util.lang.CharArrayCharSequence;
 
 /**
  * @author ilyas
@@ -102,7 +113,7 @@ public class GroovyEnterHandler extends EnterHandlerDelegateAdapter
 	public static void insertSpacesByGroovyContinuationIndent(Editor editor, Project project)
 	{
 		int indentSize = CodeStyleSettingsManager.getSettings(project).getContinuationIndentSize(GroovyFileType.GROOVY_FILE_TYPE);
-		EditorModificationUtil.insertStringAtCaret(editor, StringUtil.repeatSymbol(' ', indentSize));
+		consulo.ide.impl.idea.openapi.editor.EditorModificationUtil.insertStringAtCaret(editor, StringUtil.repeatSymbol(' ', indentSize));
 	}
 
 
@@ -352,9 +363,9 @@ public class GroovyEnterHandler extends EnterHandlerDelegateAdapter
 				}
 				else
 				{
-					EditorModificationUtil.insertStringAtCaret(editor, "'+");
+					consulo.ide.impl.idea.openapi.editor.EditorModificationUtil.insertStringAtCaret(editor, "'+");
 					originalHandler.execute(editor, dataContext);
-					EditorModificationUtil.insertStringAtCaret(editor, "'");
+					consulo.ide.impl.idea.openapi.editor.EditorModificationUtil.insertStringAtCaret(editor, "'");
 					PsiDocumentManager.getInstance(project).commitDocument(document);
 					CodeStyleManager.getInstance(project).reformatRange(file, caretOffset, caretModel.getOffset());
 				}
@@ -407,11 +418,11 @@ public class GroovyEnterHandler extends EnterHandlerDelegateAdapter
 				}
 				else if(isSlashBeforeCaret(caretOffset, fileText))
 				{
-					EditorModificationUtil.insertStringAtCaret(editor, "\n");
+					consulo.ide.impl.idea.openapi.editor.EditorModificationUtil.insertStringAtCaret(editor, "\n");
 				}
 				else
 				{
-					EditorModificationUtil.insertStringAtCaret(editor, "\"+");
+					consulo.ide.impl.idea.openapi.editor.EditorModificationUtil.insertStringAtCaret(editor, "\"+");
 					originalHandler.execute(editor, dataContext);
 					EditorModificationUtil.insertStringAtCaret(editor, "\"");
 					PsiDocumentManager.getInstance(project).commitDocument(document);

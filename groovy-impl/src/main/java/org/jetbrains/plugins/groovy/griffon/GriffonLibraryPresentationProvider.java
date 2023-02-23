@@ -15,35 +15,35 @@
  */
 package org.jetbrains.plugins.groovy.griffon;
 
-import java.io.File;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import consulo.content.base.BinariesOrderRootType;
+import consulo.content.library.LibraryKind;
+import consulo.content.library.ui.LibraryEditor;
+import consulo.ide.impl.idea.openapi.vfs.VfsUtil;
+import consulo.module.Module;
+import consulo.module.content.ModuleRootManager;
+import consulo.module.content.layer.orderEntry.LibraryOrderEntry;
+import consulo.module.content.layer.orderEntry.OrderEntry;
+import consulo.ui.image.Image;
+import consulo.virtualFileSystem.LocalFileSystem;
+import consulo.virtualFileSystem.VirtualFile;
+import org.jetbrains.annotations.Nls;
+import org.jetbrains.annotations.NonNls;
+import org.jetbrains.plugins.groovy.JetgroovyIcons;
+import org.jetbrains.plugins.groovy.config.GroovyLibraryPresentationProviderBase;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
-import org.jetbrains.annotations.Nls;
-import org.jetbrains.annotations.NonNls;
-import org.jetbrains.plugins.groovy.config.GroovyLibraryPresentationProviderBase;
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.roots.LibraryOrderEntry;
-import com.intellij.openapi.roots.ModuleRootManager;
-import com.intellij.openapi.roots.OrderEntry;
-import com.intellij.openapi.roots.OrderRootType;
-import com.intellij.openapi.roots.libraries.LibraryKind;
-import com.intellij.openapi.roots.ui.configuration.libraryEditor.LibraryEditor;
-import com.intellij.openapi.vfs.LocalFileSystem;
-import com.intellij.openapi.vfs.VfsUtil;
-import com.intellij.openapi.vfs.VirtualFile;
-import consulo.ui.image.Image;
-import icons.JetgroovyIcons;
+import java.io.File;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author nik
  */
 public class GriffonLibraryPresentationProvider extends GroovyLibraryPresentationProviderBase {
   public static final LibraryKind GRIFFON_KIND = LibraryKind.create("griffon");
-  @NonNls private static final Pattern GRIFFON_JAR_FILE_PATTERN = Pattern.compile("griffon-rt-(\\d.*)\\.jar");
+  @NonNls
+  private static final Pattern GRIFFON_JAR_FILE_PATTERN = Pattern.compile("griffon-rt-(\\d.*)\\.jar");
 
   public GriffonLibraryPresentationProvider() {
     super(GRIFFON_KIND);
@@ -56,7 +56,7 @@ public class GriffonLibraryPresentationProvider extends GroovyLibraryPresentatio
     if (jars != null) {
       for (String fileName : jars) {
         if (fileName.endsWith(".jar")) {
-          libraryEditor.addRoot(VfsUtil.getUrlForLibraryRoot(new File(path + ("/dist/") + fileName)), OrderRootType.CLASSES);
+          libraryEditor.addRoot(VfsUtil.getUrlForLibraryRoot(new File(path + ("/dist/") + fileName)), BinariesOrderRootType.getInstance());
         }
       }
     }
@@ -65,7 +65,7 @@ public class GriffonLibraryPresentationProvider extends GroovyLibraryPresentatio
     if (jars != null) {
       for (String fileName : jars) {
         if (fileName.endsWith(".jar")) {
-          libraryEditor.addRoot(VfsUtil.getUrlForLibraryRoot(new File(path + "/lib/" + fileName)), OrderRootType.CLASSES);
+          libraryEditor.addRoot(VfsUtil.getUrlForLibraryRoot(new File(path + "/lib/" + fileName)), BinariesOrderRootType.getInstance());
         }
       }
     }
@@ -118,11 +118,11 @@ public class GriffonLibraryPresentationProvider extends GroovyLibraryPresentatio
     return false;
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   public static String getGriffonVersion(@Nonnull Module module) {
     for (final OrderEntry orderEntry : ModuleRootManager.getInstance(module).getOrderEntries()) {
       if (orderEntry instanceof LibraryOrderEntry) {
-        final VirtualFile[] files = orderEntry.getFiles(OrderRootType.CLASSES);
+        final VirtualFile[] files = orderEntry.getFiles(BinariesOrderRootType.getInstance());
         if (isGriffonSdk(files)) {
           return getGriffonVersion(files);
         }

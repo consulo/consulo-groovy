@@ -18,16 +18,15 @@ package org.jetbrains.plugins.groovy.runner;
 
 import javax.annotation.Nonnull;
 
+import consulo.execution.configuration.*;
 import org.jetbrains.annotations.NonNls;
-import com.intellij.execution.configurations.ConfigurationFactory;
-import com.intellij.execution.configurations.ConfigurationType;
-import com.intellij.execution.configurations.ConfigurationTypeUtil;
-import com.intellij.execution.configurations.RunConfiguration;
-import com.intellij.openapi.project.Project;
+import consulo.execution.configuration.ConfigurationType;
+import consulo.execution.configuration.RunConfiguration;
+import consulo.project.Project;
 import consulo.groovy.module.extension.GroovyModuleExtension;
 import consulo.module.extension.ModuleExtensionHelper;
 import consulo.ui.image.Image;
-import icons.JetgroovyIcons;
+import org.jetbrains.plugins.groovy.JetgroovyIcons;
 
 public class GroovyScriptRunConfigurationType implements ConfigurationType
 {

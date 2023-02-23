@@ -15,136 +15,111 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.intellij.java.language.psi.*;
+import consulo.language.psi.PsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotation;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
-import com.intellij.psi.*;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author Max Medvedev
  */
-public class GrAnnotationUtil
-{
-	@javax.annotation.Nullable
-	public static String inferStringAttribute(@Nonnull PsiAnnotation annotation, @Nonnull String attributeName)
-	{
-		final PsiAnnotationMemberValue targetValue = annotation.findAttributeValue(attributeName);
-		if(targetValue instanceof PsiLiteral)
-		{
-			final Object value = ((PsiLiteral) targetValue).getValue();
-			if(value instanceof String)
-			{
-				return (String) value;
-			}
-		}
-		return null;
-	}
+public class GrAnnotationUtil {
+  @Nullable
+  public static String inferStringAttribute(@Nonnull PsiAnnotation annotation, @Nonnull String attributeName) {
+    final PsiAnnotationMemberValue targetValue = annotation.findAttributeValue(attributeName);
+    if (targetValue instanceof PsiLiteral) {
+      final Object value = ((PsiLiteral)targetValue).getValue();
+      if (value instanceof String) {
+        return (String)value;
+      }
+    }
+    return null;
+  }
 
-	@Nullable
-	public static Integer inferIntegerAttribute(@Nonnull PsiAnnotation annotation, @Nonnull String attributeName)
-	{
-		final PsiAnnotationMemberValue targetValue = annotation.findAttributeValue(attributeName);
-		if(targetValue instanceof PsiLiteral)
-		{
-			final Object value = ((PsiLiteral) targetValue).getValue();
-			if(value instanceof Integer)
-			{
-				return (Integer) value;
-			}
-		}
-		return null;
-	}
+  @Nullable
+  public static Integer inferIntegerAttribute(@Nonnull PsiAnnotation annotation, @Nonnull String attributeName) {
+    final PsiAnnotationMemberValue targetValue = annotation.findAttributeValue(attributeName);
+    if (targetValue instanceof PsiLiteral) {
+      final Object value = ((PsiLiteral)targetValue).getValue();
+      if (value instanceof Integer) {
+        return (Integer)value;
+      }
+    }
+    return null;
+  }
 
-	@Nullable
-	public static Boolean inferBooleanAttribute(@Nonnull PsiAnnotation annotation, @Nonnull String attributeName)
-	{
-		final PsiAnnotationMemberValue targetValue = annotation.findAttributeValue(attributeName);
-		if(targetValue instanceof PsiLiteral)
-		{
-			final Object value = ((PsiLiteral) targetValue).getValue();
-			if(value instanceof Boolean)
-			{
-				return (Boolean) value;
-			}
-		}
-		return null;
-	}
+  @Nullable
+  public static Boolean inferBooleanAttribute(@Nonnull PsiAnnotation annotation, @Nonnull String attributeName) {
+    final PsiAnnotationMemberValue targetValue = annotation.findAttributeValue(attributeName);
+    if (targetValue instanceof PsiLiteral) {
+      final Object value = ((PsiLiteral)targetValue).getValue();
+      if (value instanceof Boolean) {
+        return (Boolean)value;
+      }
+    }
+    return null;
+  }
 
-	@javax.annotation.Nullable
-	public static PsiClass inferClassAttribute(@Nonnull PsiAnnotation annotation, @Nonnull String attributeName)
-	{
-		final PsiAnnotationMemberValue targetValue = annotation.findAttributeValue(attributeName);
-		if(targetValue instanceof PsiClassObjectAccessExpression)
-		{
-			PsiType type = ((PsiClassObjectAccessExpression) targetValue).getOperand().getType();
-			if(type instanceof PsiClassType)
-			{
-				return ((PsiClassType) type).resolve();
-			}
-		}
-		else if(targetValue instanceof GrReferenceExpression)
-		{
-			if("class".equals(((GrReferenceExpression) targetValue).getReferenceName()))
-			{
-				GrExpression qualifier = ((GrReferenceExpression) targetValue).getQualifier();
-				if(qualifier instanceof GrReferenceExpression)
-				{
-					PsiElement resolved = ((GrReferenceExpression) qualifier).resolve();
-					if(resolved instanceof PsiClass)
-					{
-						return (PsiClass) resolved;
-					}
-				}
-			}
-			PsiElement resolved = ((GrReferenceExpression) targetValue).resolve();
-			if(resolved instanceof PsiClass)
-			{
-				return (PsiClass) resolved;
-			}
-		}
-		return null;
-	}
+  @Nullable
+  public static PsiClass inferClassAttribute(@Nonnull PsiAnnotation annotation, @Nonnull String attributeName) {
+    final PsiAnnotationMemberValue targetValue = annotation.findAttributeValue(attributeName);
+    if (targetValue instanceof PsiClassObjectAccessExpression) {
+      PsiType type = ((PsiClassObjectAccessExpression)targetValue).getOperand().getType();
+      if (type instanceof PsiClassType) {
+        return ((PsiClassType)type).resolve();
+      }
+    }
+    else if (targetValue instanceof GrReferenceExpression) {
+      if ("class".equals(((GrReferenceExpression)targetValue).getReferenceName())) {
+        GrExpression qualifier = ((GrReferenceExpression)targetValue).getQualifier();
+        if (qualifier instanceof GrReferenceExpression) {
+          PsiElement resolved = ((GrReferenceExpression)qualifier).resolve();
+          if (resolved instanceof PsiClass) {
+            return (PsiClass)resolved;
+          }
+        }
+      }
+      PsiElement resolved = ((GrReferenceExpression)targetValue).resolve();
+      if (resolved instanceof PsiClass) {
+        return (PsiClass)resolved;
+      }
+    }
+    return null;
+  }
 
-	@Nullable
-	public static PsiType extractClassTypeFromClassAttributeValue(PsiAnnotationMemberValue targetValue)
-	{
-		if(targetValue instanceof PsiClassObjectAccessExpression)
-		{
-			return ((PsiClassObjectAccessExpression) targetValue).getOperand().getType();
-		}
-		else if(targetValue instanceof GrReferenceExpression)
-		{
-			if("class".equals(((GrReferenceExpression) targetValue).getReferenceName()))
-			{
-				GrExpression qualifier = ((GrReferenceExpression) targetValue).getQualifier();
-				if(qualifier instanceof GrReferenceExpression)
-				{
-					PsiElement resolved = ((GrReferenceExpression) qualifier).resolve();
-					if(resolved instanceof PsiClass)
-					{
-						return qualifier.getType();
-					}
-				}
-			}
-			PsiElement resolved = ((GrReferenceExpression) targetValue).resolve();
-			if(resolved instanceof PsiClass)
-			{
-				return ((GrReferenceExpression) targetValue).getType();
-			}
-		}
-		return null;
-	}
+  @Nullable
+  public static PsiType extractClassTypeFromClassAttributeValue(PsiAnnotationMemberValue targetValue) {
+    if (targetValue instanceof PsiClassObjectAccessExpression) {
+      return ((PsiClassObjectAccessExpression)targetValue).getOperand().getType();
+    }
+    else if (targetValue instanceof GrReferenceExpression) {
+      if ("class".equals(((GrReferenceExpression)targetValue).getReferenceName())) {
+        GrExpression qualifier = ((GrReferenceExpression)targetValue).getQualifier();
+        if (qualifier instanceof GrReferenceExpression) {
+          PsiElement resolved = ((GrReferenceExpression)qualifier).resolve();
+          if (resolved instanceof PsiClass) {
+            return qualifier.getType();
+          }
+        }
+      }
+      PsiElement resolved = ((GrReferenceExpression)targetValue).resolve();
+      if (resolved instanceof PsiClass) {
+        return ((GrReferenceExpression)targetValue).getType();
+      }
+    }
+    return null;
+  }
 
-	public static PsiElement getActualOwner(GrAnnotation annotation)
-	{
-		PsiAnnotationOwner owner = annotation.getOwner();
-		if(owner instanceof PsiModifierList)
-		{
-			return ((PsiModifierList) owner).getParent();
-		}
+  public static PsiElement getActualOwner(GrAnnotation annotation) {
+    PsiAnnotationOwner owner = annotation.getOwner();
+    if (owner instanceof PsiModifierList) {
+      return ((PsiModifierList)owner).getParent();
+    }
 
-		return (PsiElement) owner;
-	}
+    return (PsiElement)owner;
+  }
 }

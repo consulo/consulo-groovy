@@ -16,6 +16,19 @@
 
 package org.jetbrains.plugins.groovy.util;
 
+import consulo.container.plugin.PluginManager;
+import consulo.groovy.module.extension.GroovyModuleExtension;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.PsiManager;
+import consulo.language.util.ModuleUtilCore;
+import consulo.module.Module;
+import consulo.virtualFileSystem.VirtualFile;
+import org.jetbrains.plugins.groovy.config.GroovyConfigUtils;
+import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
@@ -23,114 +36,83 @@ import java.util.Collection;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import org.jetbrains.plugins.groovy.config.GroovyConfigUtils;
-import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
-import consulo.groovy.module.extension.GroovyModuleExtension;
-import com.intellij.ide.plugins.PluginManager;
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.module.ModuleUtilCore;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiManager;
-
 /**
  * @author ilyas
  */
-public abstract class GroovyUtils
-{
-	public static final String PLUGIN_MODULE_ID = "PLUGIN_MODULE";
+public abstract class GroovyUtils {
+  public static final String PLUGIN_MODULE_ID = "PLUGIN_MODULE";
 
-	public static File[] getFilesInDirectoryByPattern(String dirPath, final String patternString)
-	{
-		final Pattern pattern = Pattern.compile(patternString);
-		return getFilesInDirectoryByPattern(dirPath, pattern);
-	}
+  public static File[] getFilesInDirectoryByPattern(String dirPath, final String patternString) {
+    final Pattern pattern = Pattern.compile(patternString);
+    return getFilesInDirectoryByPattern(dirPath, pattern);
+  }
 
-	public static File[] getFilesInDirectoryByPattern(String dirPath, final Pattern pattern)
-	{
-		File distDir = new File(dirPath);
-		File[] files = distDir.listFiles(new FilenameFilter()
-		{
-			public boolean accept(File dir, String name)
-			{
-				return pattern.matcher(name).matches();
-			}
-		});
-		return files != null ? files : new File[0];
-	}
+  public static File[] getFilesInDirectoryByPattern(String dirPath, final Pattern pattern) {
+    File distDir = new File(dirPath);
+    File[] files = distDir.listFiles(new FilenameFilter() {
+      public boolean accept(File dir, String name) {
+        return pattern.matcher(name).matches();
+      }
+    });
+    return files != null ? files : new File[0];
+  }
 
-	public static <E> List<E> flatten(Collection<? extends Collection<E>> collections)
-	{
-		List<E> result = new ArrayList<E>();
-		for(Collection<E> list : collections)
-		{
-			result.addAll(list);
-		}
+  public static <E> List<E> flatten(Collection<? extends Collection<E>> collections) {
+    List<E> result = new ArrayList<E>();
+    for (Collection<E> list : collections) {
+      result.addAll(list);
+    }
 
-		return result;
-	}
+    return result;
+  }
 
-	public static boolean isSuitableModule(Module module)
-	{
-		if(module == null)
-		{
-			return false;
-		}
-		return ModuleUtilCore.getExtension(module, GroovyModuleExtension.class) != null;
-	}
+  public static boolean isSuitableModule(Module module) {
+    if (module == null) {
+      return false;
+    }
+    return ModuleUtilCore.getExtension(module, GroovyModuleExtension.class) != null;
+  }
 
-	@Nullable
-	public static GrTypeDefinition getPublicClass(@Nullable VirtualFile virtualFile, PsiManager manager)
-	{
-		if(virtualFile == null)
-		{
-			return null;
-		}
+  @Nullable
+  public static GrTypeDefinition getPublicClass(@Nullable VirtualFile virtualFile, PsiManager manager) {
+    if (virtualFile == null) {
+      return null;
+    }
 
-		PsiFile psiFile = manager.findFile(virtualFile);
-		if((psiFile instanceof GroovyFile))
-		{
-			return getClassDefinition((GroovyFile) psiFile);
-		}
+    PsiFile psiFile = manager.findFile(virtualFile);
+    if ((psiFile instanceof GroovyFile)) {
+      return getClassDefinition((GroovyFile)psiFile);
+    }
 
-		return null;
-	}
+    return null;
+  }
 
-	@Nullable
-	public static GrTypeDefinition getClassDefinition(@Nonnull GroovyFile groovyFile)
-	{
-		String fileName = groovyFile.getName();
-		int idx = fileName.lastIndexOf('.');
-		if(idx < 0)
-		{
-			return null;
-		}
+  @Nullable
+  public static GrTypeDefinition getClassDefinition(@Nonnull GroovyFile groovyFile) {
+    String fileName = groovyFile.getName();
+    int idx = fileName.lastIndexOf('.');
+    if (idx < 0) {
+      return null;
+    }
 
-		return getClassDefinition(groovyFile, fileName.substring(0, idx));
-	}
+    return getClassDefinition(groovyFile, fileName.substring(0, idx));
+  }
 
-	@Nullable
-	public static GrTypeDefinition getClassDefinition(@Nonnull GroovyFile groovyFile, @Nonnull String classSimpleName)
-	{
-		for(GrTypeDefinition definition : (groovyFile).getTypeDefinitions())
-		{
-			if(classSimpleName.equals(definition.getName()))
-			{
-				return definition;
-			}
-		}
+  @Nullable
+  public static GrTypeDefinition getClassDefinition(@Nonnull GroovyFile groovyFile, @Nonnull String classSimpleName) {
+    for (GrTypeDefinition definition : (groovyFile).getTypeDefinitions()) {
+      if (classSimpleName.equals(definition.getName())) {
+        return definition;
+      }
+    }
 
-		return null;
-	}
+    return null;
+  }
 
-	public static File getBundledGroovyJar()
-	{
-		File pluginPath = PluginManager.getPluginPath(GroovyUtils.class);
-		final File[] groovyJars = GroovyConfigUtils.getGroovyAllJars(new File(pluginPath, "lib").getPath());
-		assert groovyJars.length == 1;
-		return groovyJars[0];
-	}
+  public static File getBundledGroovyJar() {
+    File pluginPath = PluginManager.getPluginPath(GroovyUtils.class);
+    final File[] groovyJars = GroovyConfigUtils.getGroovyAllJars(new File(pluginPath, "lib").getPath());
+    assert groovyJars.length == 1;
+    return groovyJars[0];
+  }
 }

@@ -15,25 +15,18 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl;
 
-import javax.annotation.Nonnull;
-
+import com.intellij.java.language.LanguageLevel;
+import com.intellij.java.language.psi.*;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiManager;
+import consulo.language.psi.scope.GlobalSearchScope;
+import consulo.util.lang.StringUtil;
 import org.jetbrains.annotations.NonNls;
-
-import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.pom.java.LanguageLevel;
-import com.intellij.psi.CommonClassNames;
-import com.intellij.psi.JavaPsiFacade;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiClassType;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiManager;
-import com.intellij.psi.PsiSubstitutor;
-import com.intellij.psi.PsiType;
-import com.intellij.psi.PsiTypeParameter;
-import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.util.Function;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.function.Function;
 
 /**
  * @author peter
@@ -114,12 +107,7 @@ public abstract class GrLiteralClassType extends PsiClassType {
     final PsiType[] params = getParameters();
     if (params.length == 0 || params[0] == null) return name;
 
-    return name + "<" + StringUtil.join(params, new Function<PsiType, String>() {
-      @Override
-      public String fun(PsiType psiType) {
-        return psiType.getPresentableText();
-      }
-    }, ", ") + ">";
+    return name + "<" + StringUtil.join(params, psiType -> psiType.getPresentableText(), ", ") + ">";
   }
 
   @Nonnull
@@ -128,12 +116,7 @@ public abstract class GrLiteralClassType extends PsiClassType {
     final PsiType[] params = getParameters();
     if (params.length == 0 || params[0] == null) return name;
 
-    final Function<PsiType, String> f = new Function<PsiType, String>() {
-      @Override
-      public String fun(PsiType psiType) {
-        return psiType.getCanonicalText();
-      }
-    };
+    final Function<PsiType, String> f = psiType -> psiType.getCanonicalText();
     return name + "<" + StringUtil.join(params, f, ", ") + ">";
   }
 
@@ -147,7 +130,7 @@ public abstract class GrLiteralClassType extends PsiClassType {
     return myScope;
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   public PsiClass resolve() {
     return myGroovyPsiManager.findClassWithCache(getJavaClassName(), getResolveScope());
   }

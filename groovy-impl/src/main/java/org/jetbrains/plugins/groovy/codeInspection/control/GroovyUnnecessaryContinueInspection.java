@@ -16,12 +16,16 @@
 package org.jetbrains.plugins.groovy.codeInspection.control;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
-import com.intellij.codeInspection.ProblemDescriptor;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.templateLanguages.TemplateLanguageFileViewProvider;
-import com.intellij.util.IncorrectOperationException;
+import consulo.language.editor.inspection.ProblemDescriptor;
+import consulo.language.psi.PsiElement;
+import consulo.language.util.IncorrectOperationException;
+import consulo.project.Project;
+import consulo.language.psi.PsiElement;
+import consulo.language.template.TemplateLanguageFileViewProvider;
+import consulo.language.util.IncorrectOperationException;
+import consulo.project.Project;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspectionVisitor;
@@ -47,7 +51,7 @@ public class GroovyUnnecessaryContinueInspection extends BaseInspection {
     return "Unnecessary 'continue' statement";
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   protected String buildErrorString(Object... args) {
     return "#ref is unnecessary as the last statement in a loop #loc";
 
@@ -61,7 +65,7 @@ public class GroovyUnnecessaryContinueInspection extends BaseInspection {
     return new Visitor();
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   protected GroovyFix buildFix(PsiElement location) {
     return new UnnecessaryContinueFix();
   }
@@ -74,7 +78,8 @@ public class GroovyUnnecessaryContinueInspection extends BaseInspection {
     }
 
     public void doFix(Project project, ProblemDescriptor descriptor)
-        throws IncorrectOperationException {
+        throws IncorrectOperationException
+	{
       final PsiElement continueKeywordElement = descriptor.getPsiElement();
       final GrContinueStatement continueStatement = (GrContinueStatement) continueKeywordElement.getParent();
       assert continueStatement != null;

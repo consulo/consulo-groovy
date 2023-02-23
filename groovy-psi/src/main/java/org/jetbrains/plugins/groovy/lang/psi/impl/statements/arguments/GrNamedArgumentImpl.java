@@ -18,6 +18,9 @@ package org.jetbrains.plugins.groovy.lang.psi.impl.statements.arguments;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
+import consulo.language.ast.ASTNode;
+import consulo.language.psi.PsiElement;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
@@ -25,8 +28,6 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrArgument
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrNamedArgument;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyPsiElementImpl;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
 
 /**
  * @author ilyas
@@ -47,14 +48,14 @@ public class GrNamedArgumentImpl extends GroovyPsiElementImpl implements GrNamed
   }
 
   @Override
-  @javax.annotation.Nullable
+  @Nullable
   public GrArgumentLabel getLabel() {
     return (GrArgumentLabel)findChildByType(GroovyElementTypes.ARGUMENT_LABEL);
   }
 
 
   @Override
-  @javax.annotation.Nullable
+  @Nullable
   public GrExpression getExpression() {
     return findExpressionChild(this);
   }

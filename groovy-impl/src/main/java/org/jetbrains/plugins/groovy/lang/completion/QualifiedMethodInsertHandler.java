@@ -15,12 +15,12 @@
  */
 package org.jetbrains.plugins.groovy.lang.completion;
 
-import com.intellij.codeInsight.completion.InsertHandler;
-import com.intellij.codeInsight.completion.InsertionContext;
-import com.intellij.codeInsight.completion.JavaGlobalMemberLookupElement;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiDocumentManager;
-import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.java.impl.codeInsight.completion.JavaGlobalMemberLookupElement;
+import com.intellij.java.language.psi.PsiClass;
+import consulo.language.editor.completion.lookup.InsertHandler;
+import consulo.language.editor.completion.lookup.InsertionContext;
+import consulo.language.psi.PsiDocumentManager;
+import consulo.language.psi.util.PsiTreeUtil;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
 
 /**

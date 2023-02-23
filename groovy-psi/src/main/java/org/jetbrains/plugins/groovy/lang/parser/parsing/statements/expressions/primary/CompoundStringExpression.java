@@ -17,10 +17,11 @@
 package org.jetbrains.plugins.groovy.lang.parser.parsing.statements.expressions.primary;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
-import com.intellij.lang.PsiBuilder;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.psi.tree.IElementType;
+import consulo.language.ast.IElementType;
+import consulo.language.parser.PsiBuilder;
+import consulo.logging.Logger;
 import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyElementType;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
@@ -178,7 +179,7 @@ public class CompoundStringExpression {
                               @Nonnull IElementType begin,
                               @Nonnull IElementType content,
                               @Nonnull IElementType end,
-                              @javax.annotation.Nullable IElementType literal,
+                              @Nullable IElementType literal,
                               @Nonnull GroovyElementType compoundLiteral,
                               @Nonnull String message) {
     return new CompoundStringExpression(builder, parser, forRefExpr, begin, content, end, literal, compoundLiteral, message).parse();

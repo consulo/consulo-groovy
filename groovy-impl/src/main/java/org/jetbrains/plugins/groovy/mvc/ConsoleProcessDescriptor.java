@@ -18,8 +18,10 @@ package org.jetbrains.plugins.groovy.mvc;
 
 import javax.annotation.Nonnull;
 
-import com.intellij.execution.process.ProcessListener;
-import com.intellij.openapi.progress.ProgressIndicator;
+import consulo.application.progress.ProgressIndicator;
+import consulo.process.event.ProcessListener;
+import consulo.application.progress.ProgressIndicator;
+import consulo.process.event.ProcessListener;
 
 /**
  * @author peter

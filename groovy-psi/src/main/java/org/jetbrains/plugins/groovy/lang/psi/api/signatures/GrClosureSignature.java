@@ -15,11 +15,12 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.api.signatures;
 
-import javax.annotation.Nonnull;
-
+import com.intellij.java.language.psi.PsiSubstitutor;
+import com.intellij.java.language.psi.PsiType;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrClosureParameter;
-import com.intellij.psi.PsiSubstitutor;
-import com.intellij.psi.PsiType;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author Maxim.Medvedev
@@ -37,7 +38,7 @@ public interface GrClosureSignature extends GrSignature {
 
 	boolean isVarargs();
 
-	@javax.annotation.Nullable
+	@Nullable
 	PsiType getReturnType();
 
 	boolean isCurried();

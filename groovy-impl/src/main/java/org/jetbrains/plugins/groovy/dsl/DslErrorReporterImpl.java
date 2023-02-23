@@ -15,62 +15,47 @@
  */
 package org.jetbrains.plugins.groovy.dsl;
 
+import consulo.application.internal.ApplicationManagerEx;
+import consulo.ide.impl.idea.notification.impl.NotificationsConfigurationImpl;
+import consulo.logging.Logger;
+import consulo.module.content.ProjectRootManager;
+import consulo.project.Project;
+import consulo.project.ui.notification.NotificationDisplayType;
+import consulo.project.ui.notification.NotificationGroup;
+import consulo.project.ui.notification.NotificationType;
+import consulo.util.lang.ExceptionUtil;
+import consulo.virtualFileSystem.VirtualFile;
+
 import javax.annotation.Nonnull;
-import javax.swing.event.HyperlinkEvent;
 
-import com.intellij.notification.Notification;
-import com.intellij.notification.NotificationDisplayType;
-import com.intellij.notification.NotificationGroup;
-import com.intellij.notification.NotificationListener;
-import com.intellij.notification.NotificationType;
-import com.intellij.notification.impl.NotificationsConfigurationImpl;
-import com.intellij.openapi.application.ex.ApplicationManagerEx;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.roots.ProjectRootManager;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.util.ExceptionUtil;
+public class DslErrorReporterImpl extends DslErrorReporter {
+  private static final Logger LOG = Logger.getInstance("#org.jetbrains.plugins.groovy.dsl.GroovyDslFileIndex");
+  public static final NotificationGroup NOTIFICATION_GROUP = new NotificationGroup("Groovy DSL errors",
+                                                                             NotificationDisplayType.BALLOON, true);
+  public DslErrorReporterImpl() {
+    NotificationsConfigurationImpl.remove("Groovy DSL parsing");
+  }
 
-public class DslErrorReporterImpl extends DslErrorReporter
-{
-	private static final Logger LOG = Logger.getInstance("#org.jetbrains.plugins.groovy.dsl.GroovyDslFileIndex");
-	private final NotificationGroup NOTIFICATION_GROUP = new NotificationGroup("Groovy DSL errors",
-			NotificationDisplayType.BALLOON, true);
+  @Override
+  public void invokeDslErrorPopup(Throwable e, final Project project, @Nonnull VirtualFile vfile) {
+    if (!GroovyDslFileIndex.isActivated(vfile)) {
+      return;
+    }
 
-	public DslErrorReporterImpl()
-	{
-		NotificationsConfigurationImpl.remove("Groovy DSL parsing");
-	}
-
-	@Override
-	public void invokeDslErrorPopup(Throwable e, final Project project, @Nonnull VirtualFile vfile)
-	{
-		if(!GroovyDslFileIndex.isActivated(vfile))
-		{
-			return;
-		}
-
-		final String exceptionText = ExceptionUtil.getThrowableText(e);
-		LOG.info(exceptionText);
-		GroovyDslFileIndex.disableFile(vfile, DslActivationStatus.Status.ERROR, exceptionText);
+    final String exceptionText = ExceptionUtil.getThrowableText(e);
+    LOG.info(exceptionText);
+    GroovyDslFileIndex.disableFile(vfile, DslActivationStatus.Status.ERROR, exceptionText);
 
 
-		if(!ApplicationManagerEx.getApplicationEx().isInternal() && !ProjectRootManager.getInstance(project)
-				.getFileIndex().isInContent(vfile))
-		{
-			return;
-		}
+    if (!ApplicationManagerEx.getApplicationEx().isInternal() && !ProjectRootManager.getInstance(project)
+                                                                                    .getFileIndex().isInContent(vfile)) {
+      return;
+    }
 
-		String content = "<p>" + e.getMessage() + "</p><p><a href=\"\">Click here to investigate.</a></p>";
-		NOTIFICATION_GROUP.createNotification("DSL script execution error", content, NotificationType.ERROR,
-				new NotificationListener()
-		{
-			@Override
-			public void hyperlinkUpdate(@Nonnull Notification notification, @Nonnull HyperlinkEvent event)
-			{
-				InvestigateFix.analyzeStackTrace(project, exceptionText);
-				notification.expire();
-			}
-		}).notify(project);
-	}
+    String content = "<p>" + e.getMessage() + "</p><p><a href=\"\">Click here to investigate.</a></p>";
+    NOTIFICATION_GROUP.createNotification("DSL script execution error", content, NotificationType.ERROR, (notification, event) -> {
+      InvestigateFix.analyzeStackTrace(project, exceptionText);
+      notification.expire();
+    }).notify(project);
+  }
 }

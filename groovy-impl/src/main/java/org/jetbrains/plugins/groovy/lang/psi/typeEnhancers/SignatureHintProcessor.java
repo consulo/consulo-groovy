@@ -15,20 +15,24 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.typeEnhancers;
 
-import com.intellij.openapi.extensions.ExtensionPointName;
-import com.intellij.psi.*;
-import com.intellij.util.ArrayUtil;
-import com.intellij.util.containers.ContainerUtil;
-import javax.annotation.Nonnull;
+import com.intellij.java.language.psi.*;
+import consulo.annotation.component.ComponentScope;
+import consulo.annotation.component.ExtensionAPI;
+import consulo.component.extension.ExtensionPointName;
+import consulo.util.collection.ArrayUtil;
+import consulo.util.collection.ContainerUtil;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by Max Medvedev on 28/02/14
  */
+@ExtensionAPI(ComponentScope.APPLICATION)
 public abstract class SignatureHintProcessor {
-  private static final ExtensionPointName<SignatureHintProcessor> EP_NAME = ExtensionPointName.create("org.intellij.groovy.signatureHintProcessor");
+  private static final ExtensionPointName<SignatureHintProcessor> EP_NAME = ExtensionPointName.create(SignatureHintProcessor.class);
 
   static String[] buildOptions(PsiAnnotation anno) {
     PsiAnnotationMemberValue options = anno.findAttributeValue("options");
@@ -63,7 +67,7 @@ public abstract class SignatureHintProcessor {
                                                           @Nonnull PsiSubstitutor substitutor,
                                                           @Nonnull String[] options);
 
-  @javax.annotation.Nullable
+  @Nullable
   public static SignatureHintProcessor getHintProcessor(@Nonnull String hint) {
     for (SignatureHintProcessor processor : EP_NAME.getExtensions()) {
       if (hint.equals(processor.getHintName())) {

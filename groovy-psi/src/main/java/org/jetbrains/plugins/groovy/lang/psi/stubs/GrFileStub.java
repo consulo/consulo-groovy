@@ -15,11 +15,11 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.stubs;
 
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.stubs.PsiFileStubImpl;
-import com.intellij.psi.tree.IStubFileElementType;
-import com.intellij.util.ArrayUtil;
-import com.intellij.util.io.StringRef;
+import consulo.index.io.StringRef;
+import consulo.language.psi.stub.PsiFileStubImpl;
+import consulo.util.lang.StringUtil;
+import consulo.language.psi.stub.IStubFileElementType;
+import consulo.util.collection.ArrayUtil;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyParserDefinition;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.api.toplevel.packaging.GrPackageDefinition;
@@ -27,7 +27,8 @@ import org.jetbrains.plugins.groovy.lang.psi.api.toplevel.packaging.GrPackageDef
 /**
  * @author ilyas
  */
-public class GrFileStub extends PsiFileStubImpl<GroovyFile> {
+public class GrFileStub extends PsiFileStubImpl<GroovyFile>
+{
   private final String[] myAnnotations;
   private final StringRef myName;
   private final boolean isScript;

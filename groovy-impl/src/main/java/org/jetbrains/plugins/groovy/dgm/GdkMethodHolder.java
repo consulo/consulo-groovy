@@ -15,19 +15,20 @@
  */
 package org.jetbrains.plugins.groovy.dgm;
 
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.roots.ProjectRootManager;
+import com.intellij.java.language.impl.psi.scope.NameHint;
+import com.intellij.java.language.psi.*;
+import com.intellij.java.language.psi.util.TypeConversionUtil;
+import consulo.application.util.*;
+import consulo.language.psi.PsiManager;
+import consulo.language.psi.PsiModificationTracker;
+import consulo.language.psi.resolve.PsiScopeProcessor;
+import consulo.language.psi.resolve.ResolveState;
+import consulo.language.psi.scope.GlobalSearchScope;
+import consulo.module.content.ProjectRootManager;
+import consulo.project.Project;
+import consulo.util.collection.MultiMap;
 import consulo.util.dataholder.Key;
-import com.intellij.openapi.util.NotNullLazyValue;
-import com.intellij.openapi.util.VolatileNotNullLazyValue;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.*;
-import com.intellij.psi.scope.NameHint;
-import com.intellij.psi.scope.PsiScopeProcessor;
-import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.psi.util.*;
-import com.intellij.util.containers.ConcurrentFactoryMap;
-import com.intellij.util.containers.MultiMap;
+import consulo.virtualFileSystem.VirtualFile;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrGdkMethod;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil;
 import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GrGdkMethodImpl;
@@ -40,119 +41,100 @@ import java.util.Map;
 /**
  * @author Max Medvedev
  */
-public class GdkMethodHolder
-{
-	private static Key<CachedValue<GdkMethodHolder>> CACHED_NON_STATIC = Key.create("Cached instance gdk method holder");
-	private static Key<CachedValue<GdkMethodHolder>> CACHED_STATIC = Key.create("Cached static gdk method holder");
+public class GdkMethodHolder {
+  private static Key<CachedValue<GdkMethodHolder>> CACHED_NON_STATIC = Key.create("Cached instance gdk method holder");
+  private static Key<CachedValue<GdkMethodHolder>> CACHED_STATIC = Key.create("Cached static gdk method holder");
 
-	private final Map<String, MultiMap<String, PsiMethod>> myOriginalMethodsByNameAndType;
-	private final NotNullLazyValue<MultiMap<String, PsiMethod>> myOriginalMethodByType;
-	private final boolean myStatic;
-	private final GlobalSearchScope myScope;
-	private final PsiManager myPsiManager;
+  private final Map<String, MultiMap<String, PsiMethod>> myOriginalMethodsByNameAndType;
+  private final NotNullLazyValue<MultiMap<String, PsiMethod>> myOriginalMethodByType;
+  private final boolean myStatic;
+  private final GlobalSearchScope myScope;
+  private final PsiManager myPsiManager;
 
-	private GdkMethodHolder(final PsiClass categoryClass, final boolean isStatic, final GlobalSearchScope scope)
-	{
-		myStatic = isStatic;
-		myScope = scope;
-		final MultiMap<String, PsiMethod> byName = new MultiMap<>();
-		myPsiManager = categoryClass.getManager();
-		for(PsiMethod m : categoryClass.getMethods())
-		{
-			final PsiParameter[] params = m.getParameterList().getParameters();
-			if(params.length == 0)
-			{
-				continue;
-			}
+  private GdkMethodHolder(final PsiClass categoryClass, final boolean isStatic, final GlobalSearchScope scope) {
+    myStatic = isStatic;
+    myScope = scope;
+    final MultiMap<String, PsiMethod> byName = new MultiMap<>();
+    myPsiManager = categoryClass.getManager();
+    for (PsiMethod m : categoryClass.getMethods()) {
+      final PsiParameter[] params = m.getParameterList().getParameters();
+      if (params.length == 0) {
+        continue;
+      }
 
-			byName.putValue(m.getName(), m);
-		}
-		this.myOriginalMethodByType = new VolatileNotNullLazyValue<MultiMap<String, PsiMethod>>()
-		{
-			@Nonnull
-			@Override
-			protected MultiMap<String, PsiMethod> compute()
-			{
-				MultiMap<String, PsiMethod> map = new MultiMap<>();
-				for(PsiMethod method : byName.values())
-				{
-					if(!method.hasModifierProperty(PsiModifier.PUBLIC))
-					{
-						continue;
-					}
-					map.putValue(getCategoryTargetType(method).getCanonicalText(), method);
-				}
-				return map;
-			}
-		};
+      byName.putValue(m.getName(), m);
+    }
+    this.myOriginalMethodByType = new VolatileNotNullLazyValue<MultiMap<String, PsiMethod>>() {
+      @Nonnull
+      @Override
+      protected MultiMap<String, PsiMethod> compute() {
+        MultiMap<String, PsiMethod> map = new MultiMap<>();
+        for (PsiMethod method : byName.values()) {
+          if (!method.hasModifierProperty(PsiModifier.PUBLIC)) {
+            continue;
+          }
+          map.putValue(getCategoryTargetType(method).getCanonicalText(), method);
+        }
+        return map;
+      }
+    };
 
-		myOriginalMethodsByNameAndType = ConcurrentFactoryMap.createMap(name -> {
-			MultiMap<String, PsiMethod> map = new MultiMap<>();
-			for(PsiMethod method : byName.get(name))
-			{
-				map.putValue(getCategoryTargetType(method).getCanonicalText(), method);
-			}
-			return map;
-		});
-	}
+    myOriginalMethodsByNameAndType = ConcurrentFactoryMap.createMap(name -> {
+      MultiMap<String, PsiMethod> map = new MultiMap<>();
+      for (PsiMethod method : byName.get(name)) {
+        map.putValue(getCategoryTargetType(method).getCanonicalText(), method);
+      }
+      return map;
+    });
+  }
 
-	private PsiType getCategoryTargetType(PsiMethod method)
-	{
-		final PsiType parameterType = method.getParameterList().getParameters()[0].getType();
-		return TypesUtil.boxPrimitiveType(TypeConversionUtil.erasure(parameterType), myPsiManager, myScope);
-	}
+  private PsiType getCategoryTargetType(PsiMethod method) {
+    final PsiType parameterType = method.getParameterList().getParameters()[0].getType();
+    return TypesUtil.boxPrimitiveType(TypeConversionUtil.erasure(parameterType), myPsiManager, myScope);
+  }
 
-	public boolean processMethods(PsiScopeProcessor processor, ResolveState state, PsiType qualifierType, Project project)
-	{
-		if(qualifierType == null)
-		{
-			return true;
-		}
+  public boolean processMethods(PsiScopeProcessor processor, ResolveState state, PsiType qualifierType, Project project) {
+    if (qualifierType == null) {
+      return true;
+    }
 
-		NameHint nameHint = processor.getHint(NameHint.KEY);
-		String name = nameHint == null ? null : nameHint.getName(state);
-		final MultiMap<String, PsiMethod> map = name != null ? myOriginalMethodsByNameAndType.get(name) : myOriginalMethodByType.getValue();
-		if(map.isEmpty())
-		{
-			return true;
-		}
+    NameHint nameHint = processor.getHint(NameHint.KEY);
+    String name = nameHint == null ? null : nameHint.getName(state);
+    final MultiMap<String, PsiMethod> map = name != null ? myOriginalMethodsByNameAndType.get(name) : myOriginalMethodByType.getValue();
+    if (map.isEmpty()) {
+      return true;
+    }
 
-		for(String superType : ResolveUtil.getAllSuperTypes(qualifierType, project).keySet())
-		{
-			for(PsiMethod method : map.get(superType))
-			{
-				String info = GdkMethodUtil.generateOriginInfo(method);
-				GrGdkMethod gdk = GrGdkMethodImpl.createGdkMethod(method, myStatic, info);
-				if(!processor.execute(gdk, state))
-				{
-					return false;
-				}
-			}
-		}
+    for (String superType : ResolveUtil.getAllSuperTypes(qualifierType, project).keySet()) {
+      for (PsiMethod method : map.get(superType)) {
+        String info = GdkMethodUtil.generateOriginInfo(method);
+        GrGdkMethod gdk = GrGdkMethodImpl.createGdkMethod(method, myStatic, info);
+        if (!processor.execute(gdk, state)) {
+          return false;
+        }
+      }
+    }
 
-		return true;
-	}
+    return true;
+  }
 
-	public static GdkMethodHolder getHolderForClass(final PsiClass categoryClass, final boolean isStatic, final GlobalSearchScope scope)
-	{
-		final Project project = categoryClass.getProject();
-		Key<CachedValue<GdkMethodHolder>> key = isStatic ? CACHED_STATIC : CACHED_NON_STATIC;
-		return CachedValuesManager.getManager(project).getCachedValue(categoryClass, key, new CachedValueProvider<GdkMethodHolder>()
-		{
-			@Override
-			public Result<GdkMethodHolder> compute()
-			{
-				GdkMethodHolder result = new GdkMethodHolder(categoryClass, isStatic, scope);
+  public static GdkMethodHolder getHolderForClass(final PsiClass categoryClass, final boolean isStatic, final GlobalSearchScope scope) {
+    final Project project = categoryClass.getProject();
+    Key<CachedValue<GdkMethodHolder>> key = isStatic ? CACHED_STATIC : CACHED_NON_STATIC;
+    return CachedValuesManager.getManager(project).getCachedValue(categoryClass, key, new CachedValueProvider<GdkMethodHolder>() {
+      @Override
+      public Result<GdkMethodHolder> compute() {
+        GdkMethodHolder result = new GdkMethodHolder(categoryClass, isStatic, scope);
 
-				final ProjectRootManager rootManager = ProjectRootManager.getInstance(project);
-				final VirtualFile vfile = categoryClass.getContainingFile().getVirtualFile();
-				if(vfile != null && (rootManager.getFileIndex().isInLibraryClasses(vfile) || rootManager.getFileIndex().isInLibrarySource(vfile)))
-				{
-					return Result.create(result, rootManager);
-				}
+        final ProjectRootManager rootManager = ProjectRootManager.getInstance(project);
+        final VirtualFile vfile = categoryClass.getContainingFile().getVirtualFile();
+        if (vfile != null && (rootManager.getFileIndex().isInLibraryClasses(vfile) || rootManager.getFileIndex()
+                                                                                                 .isInLibrarySource(vfile))) {
+          return Result.create(result, rootManager);
+        }
 
-				return Result.create(result, PsiModificationTracker.JAVA_STRUCTURE_MODIFICATION_COUNT, rootManager);
-			}
-		}, false);
-	}
+        return Result.create(result, PsiModificationTracker.JAVA_STRUCTURE_MODIFICATION_COUNT, rootManager);
+      }
+    }, false);
+  }
 }

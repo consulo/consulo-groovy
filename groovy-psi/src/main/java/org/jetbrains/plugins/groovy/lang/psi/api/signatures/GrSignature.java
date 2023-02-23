@@ -15,10 +15,11 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.api.signatures;
 
+import com.intellij.java.language.psi.PsiType;
+import consulo.language.psi.PsiElement;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiType;
 
 /**
  * @author Max Medvedev

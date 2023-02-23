@@ -15,8 +15,10 @@
  */
 package org.jetbrains.plugins.groovy.compiler.generator;
 
-import com.intellij.openapi.compiler.ValidityState;
-import com.intellij.openapi.diagnostic.Logger;
+import consulo.compiler.ValidityState;
+import consulo.logging.Logger;
+import consulo.compiler.ValidityState;
+import consulo.logging.Logger;
 
 import java.io.*;
 import java.util.ArrayList;

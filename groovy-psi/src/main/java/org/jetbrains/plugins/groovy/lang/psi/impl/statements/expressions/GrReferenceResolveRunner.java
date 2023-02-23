@@ -15,11 +15,11 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions;
 
-import java.util.List;
-import java.util.ListIterator;
-
-import javax.annotation.Nonnull;
-
+import com.intellij.java.language.psi.*;
+import com.intellij.java.language.psi.util.InheritanceUtil;
+import consulo.application.progress.ProgressManager;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.resolve.ResolveState;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.api.SpreadState;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
@@ -34,9 +34,10 @@ import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 import org.jetbrains.plugins.groovy.lang.resolve.ResolveUtil;
 import org.jetbrains.plugins.groovy.lang.resolve.processors.ClassHint;
 import org.jetbrains.plugins.groovy.lang.resolve.processors.ResolverProcessorImpl;
-import com.intellij.openapi.progress.ProgressManager;
-import com.intellij.psi.*;
-import com.intellij.psi.util.InheritanceUtil;
+
+import javax.annotation.Nonnull;
+import java.util.List;
+import java.util.ListIterator;
 
 /**
  * @author Medvedev Max
@@ -79,8 +80,8 @@ public class GrReferenceResolveRunner {
         final PsiType componentType = ClosureParameterEnhancer.findTypeForIteration(qtype, place);
         if (componentType != null) {
           final ResolveState state = ResolveState.initial()
-            .put(ClassHint.RESOLVE_CONTEXT, qualifier)
-            .put(SpreadState.SPREAD_STATE, SpreadState.create(qtype, null));
+                                                 .put(ClassHint.RESOLVE_CONTEXT, qualifier)
+                                                 .put(SpreadState.SPREAD_STATE, SpreadState.create(qtype, null));
           if (!processQualifierType(componentType, state)) return false;
         }
       }

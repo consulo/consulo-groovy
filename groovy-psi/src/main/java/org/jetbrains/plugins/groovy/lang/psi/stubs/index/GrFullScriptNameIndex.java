@@ -18,8 +18,8 @@ package org.jetbrains.plugins.groovy.lang.psi.stubs.index;
 import javax.annotation.Nonnull;
 
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
-import com.intellij.psi.stubs.IntStubIndexExtension;
-import com.intellij.psi.stubs.StubIndexKey;
+import consulo.language.psi.stub.IntStubIndexExtension;
+import consulo.language.psi.stub.StubIndexKey;
 
 /**
  * @author ilyas

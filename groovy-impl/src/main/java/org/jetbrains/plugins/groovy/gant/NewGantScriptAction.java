@@ -15,15 +15,15 @@
  */
 package org.jetbrains.plugins.groovy.gant;
 
-import com.intellij.openapi.actionSystem.DataContext;
-import com.intellij.openapi.actionSystem.LangDataKeys;
-import com.intellij.psi.PsiDirectory;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.util.IncorrectOperationException;
-import com.intellij.util.ObjectUtil;
+import consulo.dataContext.DataContext;
+import consulo.language.editor.LangDataKeys;
+import consulo.language.psi.PsiDirectory;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.util.IncorrectOperationException;
+import consulo.util.lang.ObjectUtil;
 import consulo.annotation.access.RequiredReadAction;
-import icons.JetgroovyIcons;
+import org.jetbrains.plugins.groovy.JetgroovyIcons;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.plugins.groovy.actions.GroovyTemplates;
 import org.jetbrains.plugins.groovy.actions.GroovyTemplatesFactory;

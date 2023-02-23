@@ -15,20 +15,24 @@
  */
 package org.jetbrains.plugins.groovy.doc;
 
-import com.intellij.openapi.actionSystem.ActionGroup;
-import com.intellij.openapi.actionSystem.ActionManager;
-import com.intellij.openapi.actionSystem.ActionToolbar;
-import com.intellij.openapi.actionSystem.DefaultActionGroup;
-import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory;
-import com.intellij.openapi.ui.TextFieldWithBrowseButton;
-import com.intellij.ui.IdeBorderFactory;
-import com.intellij.ui.NonFocusableCheckBox;
-import com.intellij.ui.ScrollPaneFactory;
-import com.intellij.ui.components.JBList;
-import com.intellij.util.ArrayUtil;
+import consulo.fileChooser.FileChooserDescriptorFactory;
+import consulo.ui.ex.action.*;
+import consulo.ui.ex.action.ActionToolbar;
+import consulo.ui.ex.action.DefaultActionGroup;
+import consulo.fileChooser.FileChooserDescriptorFactory;
+import consulo.ui.ex.awt.*;
+import consulo.ui.ex.awt.NonFocusableCheckBox;
+import consulo.ui.ex.awt.ScrollPaneFactory;
+import consulo.ui.ex.awt.JBList;
+import consulo.util.collection.ArrayUtil;
+import consulo.ui.ex.action.ActionGroup;
+import consulo.ui.ex.action.ActionManager;
+import consulo.ui.ex.awt.TextFieldWithBrowseButton;
+import consulo.util.collection.ArrayUtil;
 import org.jetbrains.plugins.groovy.doc.actions.GroovyDocAddPackageAction;
 import org.jetbrains.plugins.groovy.doc.actions.GroovyDocReducePackageAction;
 
+import javax.annotation.Nullable;
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
@@ -129,7 +133,7 @@ public final class GroovyDocGenerationPanel extends JPanel/* implements Disposab
     myIsPrivate.setSelected(configuration.OPTION_IS_PRIVATE);
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   private static String toSystemIndependentFormat(String directory) {
     if (directory.length() == 0) {
       return null;

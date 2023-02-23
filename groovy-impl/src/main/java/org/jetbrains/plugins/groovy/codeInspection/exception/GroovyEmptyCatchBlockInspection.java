@@ -17,9 +17,11 @@ package org.jetbrains.plugins.groovy.codeInspection.exception;
 
 import javax.annotation.Nonnull;
 
-import com.intellij.codeInsight.daemon.impl.quickfix.RenameElementFix;
-import com.intellij.codeInspection.LocalQuickFix;
-import com.intellij.codeInspection.ProblemHighlightType;
+import consulo.ide.impl.idea.codeInsight.daemon.impl.quickfix.RenameElementFix;
+import consulo.language.editor.inspection.LocalQuickFix;
+import consulo.language.editor.inspection.ProblemHighlightType;
+import consulo.language.editor.inspection.LocalQuickFix;
+import consulo.language.editor.inspection.ProblemHighlightType;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspectionVisitor;
@@ -59,7 +61,7 @@ public class GroovyEmptyCatchBlockInspection extends BaseInspection {
       if (parameter == null) return;
       if (GrExceptionUtil.ignore(parameter)) return;
 
-      final LocalQuickFix[] fixes = {new RenameElementFix(parameter, "ignored")};
+      final LocalQuickFix[] fixes = {new consulo.ide.impl.idea.codeInsight.daemon.impl.quickfix.RenameElementFix(parameter, "ignored")};
       registerError(catchClause.getFirstChild(), "Empty '#ref' block #loc", fixes, ProblemHighlightType.GENERIC_ERROR_OR_WARNING);
     }
 

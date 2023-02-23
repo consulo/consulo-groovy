@@ -16,10 +16,12 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.auxiliary.annotation;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.annotation.Nonnull;
+import com.intellij.java.language.psi.PsiAnnotation;
+import com.intellij.java.language.psi.PsiNameValuePair;
+import consulo.language.ast.ASTNode;
+import consulo.language.psi.PsiElement;
+import consulo.language.util.IncorrectOperationException;
+import consulo.logging.Logger;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
@@ -27,20 +29,17 @@ import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotationArgumentList;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotationNameValuePair;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyPsiElementImpl;
-import com.intellij.lang.ASTNode;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.psi.PsiAnnotation;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiNameValuePair;
-import com.intellij.util.IncorrectOperationException;
+
+import javax.annotation.Nonnull;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author: Dmitry.Krasilschikov
  * @date: 04.04.2007
  */
 public class GrAnnotationArgumentListImpl extends GroovyPsiElementImpl implements GrAnnotationArgumentList {
-  private static final Logger LOG =
-    Logger.getInstance("#org.jetbrains.plugins.groovy.lang.psi.impl.auxiliary.annotation.GrAnnotationArgumentListImpl");
+  private static final Logger LOG = Logger.getInstance(GrAnnotationArgumentListImpl.class);
 
   public GrAnnotationArgumentListImpl(@Nonnull ASTNode node) {
     super(node);

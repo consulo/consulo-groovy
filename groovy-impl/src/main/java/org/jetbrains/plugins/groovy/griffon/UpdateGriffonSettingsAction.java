@@ -16,9 +16,11 @@ package org.jetbrains.plugins.groovy.griffon;
 
 import javax.annotation.Nonnull;
 
-import com.intellij.icons.AllIcons;
-import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.module.Module;
+import consulo.application.AllIcons;
+import consulo.ui.ex.action.AnActionEvent;
+import consulo.module.Module;
+import consulo.application.AllIcons;
+import consulo.ui.ex.action.AnActionEvent;
 import org.jetbrains.plugins.groovy.mvc.MvcActionBase;
 import org.jetbrains.plugins.groovy.mvc.MvcFramework;
 

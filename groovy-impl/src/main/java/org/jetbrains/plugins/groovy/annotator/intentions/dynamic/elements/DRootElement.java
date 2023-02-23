@@ -15,6 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.annotator.intentions.dynamic.elements;
 
+import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -45,7 +46,7 @@ public class DRootElement {
     return classElement;
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   public DClassElement getClassElement(String name) {
     return containingClasses.get(name);
   }

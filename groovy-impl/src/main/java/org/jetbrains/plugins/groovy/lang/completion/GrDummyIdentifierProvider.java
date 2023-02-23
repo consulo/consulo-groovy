@@ -15,20 +15,22 @@
  */
 package org.jetbrains.plugins.groovy.lang.completion;
 
-import javax.annotation.Nonnull;
-
-import com.intellij.codeInsight.completion.CompletionInitializationContext;
-import com.intellij.codeInsight.completion.CompletionType;
-import com.intellij.codeInsight.completion.CompletionUtil;
-import com.intellij.openapi.editor.ex.EditorEx;
-import com.intellij.openapi.editor.highlighter.HighlighterIterator;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.PsiElement;
+import consulo.codeEditor.EditorEx;
+import consulo.codeEditor.HighlighterIterator;
+import consulo.language.ast.IElementType;
+import consulo.language.editor.completion.CompletionInitializationContext;
+import consulo.language.editor.completion.CompletionType;
+import consulo.language.editor.impl.internal.completion.CompletionUtil;
+import consulo.language.psi.PsiElement;
+import consulo.util.lang.StringUtil;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.lexer.TokenSets;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotationNameValuePair;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * Created by Max Medvedev on 14/05/14
@@ -42,7 +44,7 @@ public class GrDummyIdentifierProvider {
     myContext = context;
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   public String getIdentifier() {
     if (myContext.getCompletionType() == CompletionType.BASIC && myContext.getFile() instanceof GroovyFile) {
       PsiElement position = myContext.getFile().findElementAt(myContext.getStartOffset());
@@ -81,7 +83,7 @@ public class GrDummyIdentifierProvider {
       iterator.advance();
     }
 
-    while (!iterator.atEnd() && TokenSets.WHITE_SPACES_OR_COMMENTS.contains(iterator.getTokenType())) {
+    while (!iterator.atEnd() && TokenSets.WHITE_SPACES_OR_COMMENTS.contains((IElementType)iterator.getTokenType())) {
       iterator.advance();
     }
 
@@ -107,7 +109,7 @@ public class GrDummyIdentifierProvider {
       iterator.advance();
     }
 
-    while (!iterator.atEnd() && TokenSets.WHITE_SPACES_OR_COMMENTS.contains(iterator.getTokenType())) {
+    while (!iterator.atEnd() && TokenSets.WHITE_SPACES_OR_COMMENTS.contains((IElementType)iterator.getTokenType())) {
       iterator.advance();
     }
 

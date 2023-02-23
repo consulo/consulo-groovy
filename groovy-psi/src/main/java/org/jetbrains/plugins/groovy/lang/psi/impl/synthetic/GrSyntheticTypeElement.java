@@ -15,22 +15,18 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.synthetic;
 
-import javax.annotation.Nonnull;
-
+import com.intellij.java.language.psi.*;
+import consulo.document.util.TextRange;
+import consulo.language.impl.psi.LightElement;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiElementVisitor;
+import consulo.language.util.IncorrectOperationException;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeElement;
 import org.jetbrains.plugins.groovy.lang.psi.impl.PsiImplUtil;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.JavaElementVisitor;
-import com.intellij.psi.PsiAnnotation;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.PsiJavaCodeReferenceElement;
-import com.intellij.psi.PsiType;
-import com.intellij.psi.PsiTypeElement;
-import com.intellij.psi.impl.light.LightElement;
-import com.intellij.util.IncorrectOperationException;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author Max Medvedev

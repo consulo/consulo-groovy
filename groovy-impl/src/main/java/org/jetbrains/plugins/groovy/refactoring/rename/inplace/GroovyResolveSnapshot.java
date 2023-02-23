@@ -15,15 +15,19 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.rename.inplace;
 
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiDocumentManager;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.SmartPointerManager;
-import com.intellij.psi.SmartPsiElementPointer;
-import com.intellij.refactoring.rename.ResolveSnapshotProvider;
+import consulo.language.editor.refactoring.ResolveSnapshotProvider;
+import consulo.language.psi.*;
+import consulo.logging.Logger;
+import consulo.document.Document;
+import consulo.project.Project;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.SmartPointerManager;
+import consulo.language.psi.SmartPsiElementPointer;
+import consulo.language.editor.refactoring.ResolveSnapshotProvider;
 import java.util.HashMap;
+
+import consulo.logging.Logger;
+import consulo.project.Project;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyRecursiveElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;

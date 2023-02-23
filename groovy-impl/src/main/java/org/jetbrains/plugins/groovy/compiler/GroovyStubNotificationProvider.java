@@ -16,106 +16,95 @@
 package org.jetbrains.plugins.groovy.compiler;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.intellij.openapi.fileEditor.FileEditor;
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.module.ModuleManager;
-import com.intellij.openapi.project.DumbService;
-import com.intellij.openapi.project.Project;
-import consulo.util.dataholder.Key;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.JavaPsiFacade;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.ui.EditorNotificationPanel;
+import com.intellij.java.language.psi.JavaPsiFacade;
+import com.intellij.java.language.psi.PsiClass;
 import consulo.annotation.access.RequiredReadAction;
-import consulo.editor.notifications.EditorNotificationProvider;
+import consulo.fileEditor.EditorNotificationBuilder;
+import consulo.fileEditor.EditorNotificationProvider;
+import consulo.fileEditor.FileEditor;
+import consulo.language.psi.scope.GlobalSearchScope;
+import consulo.localize.LocalizeValue;
+import consulo.module.Module;
+import consulo.module.ModuleManager;
+import consulo.project.DumbService;
+import consulo.project.Project;
+import consulo.util.lang.StringUtil;
+import consulo.virtualFileSystem.VirtualFile;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Arrays;
+import java.util.function.Supplier;
 
 /**
  * @author peter
  */
-public class GroovyStubNotificationProvider implements EditorNotificationProvider<EditorNotificationPanel>
-{
-	static final String GROOVY_STUBS = "groovyStubs";
-	private static final Key<EditorNotificationPanel> KEY = Key.create("GroovyStubNotificationProvider");
-	private final Project myProject;
+public class GroovyStubNotificationProvider implements EditorNotificationProvider {
+  static final String GROOVY_STUBS = "groovyStubs";
+  private final Project myProject;
 
-	public GroovyStubNotificationProvider(Project project)
-	{
-		myProject = project;
-	}
+  public GroovyStubNotificationProvider(Project project) {
+    myProject = project;
+  }
 
-	@Nullable
-	@VisibleForTesting
-	@RequiredReadAction
-	public static PsiClass findClassByStub(Project project, VirtualFile stubFile)
-	{
-		final String[] components = StringUtil.trimEnd(stubFile.getPath(), ".java").split("[\\\\/]");
-		final int stubs = Arrays.asList(components).indexOf(GROOVY_STUBS);
-		if(stubs < 0 || stubs >= components.length - 3)
-		{
-			return null;
-		}
+  @Nonnull
+  @Override
+  public String getId() {
+    return "groovy.stub.notification";
+  }
 
-		final String moduleName = components[stubs + 1];
-		final Module module = ModuleManager.getInstance(project).findModuleByName(moduleName);
-		if(module == null)
-		{
-			return null;
-		}
+  @Nullable
+  @VisibleForTesting
+  @RequiredReadAction
+  public static PsiClass findClassByStub(Project project, VirtualFile stubFile) {
+    final String[] components = StringUtil.trimEnd(stubFile.getPath(), ".java").split("[\\\\/]");
+    final int stubs = Arrays.asList(components).indexOf(GROOVY_STUBS);
+    if (stubs < 0 || stubs >= components.length - 3) {
+      return null;
+    }
 
-		final String fqn = StringUtil.join(Arrays.asList(components).subList(stubs + 3, components.length), ".");
-		return JavaPsiFacade.getInstance(project).findClass(fqn, GlobalSearchScope.moduleScope(module));
-	}
+    final String moduleName = components[stubs + 1];
+    final Module module = ModuleManager.getInstance(project).findModuleByName(moduleName);
+    if (module == null) {
+      return null;
+    }
 
-	private static EditorNotificationPanel decorateStubFile(final VirtualFile file, final Project project)
-	{
-		final EditorNotificationPanel panel = new EditorNotificationPanel();
-		panel.setText("This stub is generated for Groovy class to make Groovy-Java cross-compilation possible");
-		panel.createActionLabel("Go to the Groovy class", () -> DumbService.getInstance(project).withAlternativeResolveEnabled(() ->
-		{
-			final PsiClass original = findClassByStub(project, file);
-			if(original != null)
-			{
-				original.navigate(true);
-			}
-		}));
-		panel.createActionLabel("Exclude from stub generation", () -> DumbService.getInstance(project).withAlternativeResolveEnabled(() ->
-		{
-			final PsiClass psiClass = findClassByStub(project, file);
-			if(psiClass != null)
-			{
-				ExcludeFromStubGenerationAction.doExcludeFromStubGeneration(psiClass.getContainingFile());
-			}
-		}));
-		return panel;
-	}
+    final String fqn = StringUtil.join(Arrays.asList(components).subList(stubs + 3, components.length), ".");
+    return JavaPsiFacade.getInstance(project).findClass(fqn, GlobalSearchScope.moduleScope(module));
+  }
 
-	@Nonnull
-	@Override
-	public Key<EditorNotificationPanel> getKey()
-	{
-		return KEY;
-	}
+  private static EditorNotificationBuilder decorateStubFile(final VirtualFile file,
+                                                            final Project project,
+                                                            EditorNotificationBuilder builder) {
+    builder.withText(LocalizeValue.localizeTODO("This stub is generated for Groovy class to make Groovy-Java cross-compilation possible"));
+    builder.withAction(LocalizeValue.localizeTODO("Go to the Groovy class"), (c) -> DumbService.getInstance(project).withAlternativeResolveEnabled(() -> {
+      final PsiClass
+        original = findClassByStub(project, file);
+      if (original != null) {
+        original.navigate(true);
+      }
+    }));
+    builder.withAction(LocalizeValue.localizeTODO("Exclude from stub generation"), (c) -> DumbService.getInstance(project).withAlternativeResolveEnabled(() -> {
+      final PsiClass psiClass = findClassByStub(project, file);
+      if (psiClass != null) {
+        ExcludeFromStubGenerationAction.doExcludeFromStubGeneration(psiClass.getContainingFile());
+      }
+    }));
+    return builder;
+  }
 
-	@RequiredReadAction
-	@Nullable
-	@Override
-	public EditorNotificationPanel createNotificationPanel(@Nonnull VirtualFile file, @Nonnull FileEditor fileEditor)
-	{
-		if(file.getName().endsWith(".java") && file.getPath().contains(GROOVY_STUBS))
-		{
-			final PsiClass psiClass = findClassByStub(myProject, file);
-			if(psiClass != null)
-			{
-				return decorateStubFile(file, myProject);
-			}
-		}
-
-		return null;
-	}
+  @RequiredReadAction
+  @Nullable
+  @Override
+  public EditorNotificationBuilder buildNotification(@Nonnull VirtualFile file,
+                                                     @Nonnull FileEditor fileEditor,
+                                                     @Nonnull Supplier<EditorNotificationBuilder> supplier) {
+    if (file.getName().endsWith(".java") && file.getPath().contains(GROOVY_STUBS)) {
+      final PsiClass psiClass = findClassByStub(myProject, file);
+      if (psiClass != null) {
+        return decorateStubFile(file, myProject, supplier.get());
+      }
+    }
+    return null;
+  }
 }

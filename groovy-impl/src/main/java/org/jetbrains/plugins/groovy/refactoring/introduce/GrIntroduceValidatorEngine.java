@@ -15,13 +15,18 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.introduce;
 
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiDirectory;
-import com.intellij.psi.PsiElement;
-import com.intellij.refactoring.ui.ConflictsDialog;
-import com.intellij.util.ArrayUtil;
-import com.intellij.util.containers.MultiMap;
+import consulo.language.psi.PsiElement;
+import consulo.project.Project;
+import consulo.language.psi.PsiDirectory;
+import consulo.language.psi.PsiElement;
+import consulo.language.editor.refactoring.ui.ConflictsDialog;
+import consulo.util.collection.ArrayUtil;
+import consulo.util.collection.MultiMap;
 import javax.annotation.Nonnull;
+
+import consulo.project.Project;
+import consulo.util.collection.ArrayUtil;
+import consulo.util.collection.MultiMap;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFileBase;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;

@@ -15,7 +15,7 @@
  */
 package standardDsls
 
-import com.intellij.psi.PsiClass
+import com.intellij.java.language.psi.PsiClass
 
 contributor(context(scope:annotatedScope(ctype: "groovy.lang.Newify"))) {
   // For methods

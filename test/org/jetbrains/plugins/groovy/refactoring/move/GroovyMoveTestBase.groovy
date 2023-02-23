@@ -18,7 +18,7 @@ package org.jetbrains.plugins.groovy.refactoring.move
 import com.intellij.openapi.application.PathManager
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.psi.impl.source.PostprocessReformattingAspect
+import com.intellij.java.language.psi.impl.source.PostprocessReformattingAspect
 import com.intellij.testFramework.IdeaTestUtil
 import com.intellij.testFramework.PlatformTestUtil
 import com.intellij.testFramework.PsiTestUtil

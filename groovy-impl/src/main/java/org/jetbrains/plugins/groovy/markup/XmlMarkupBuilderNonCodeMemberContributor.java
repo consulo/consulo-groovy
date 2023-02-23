@@ -1,20 +1,25 @@
 package org.jetbrains.plugins.groovy.markup;
 
-import com.intellij.psi.*;
-import com.intellij.psi.scope.PsiScopeProcessor;
-import javax.annotation.Nonnull;
-
+import com.intellij.java.language.psi.CommonClassNames;
+import com.intellij.java.language.psi.PsiClass;
+import com.intellij.java.language.psi.PsiType;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.resolve.PsiScopeProcessor;
+import consulo.language.psi.resolve.ResolveState;
 import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GrLightMethodBuilder;
 import org.jetbrains.plugins.groovy.lang.resolve.NonCodeMembersContributor;
 import org.jetbrains.plugins.groovy.lang.resolve.ResolveUtil;
 import org.jetbrains.plugins.groovy.lang.resolve.processors.ClassHint;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author Sergey Evdokimov
  */
 public class XmlMarkupBuilderNonCodeMemberContributor extends NonCodeMembersContributor {
 
-  @javax.annotation.Nullable
+  @Nullable
   @Override
   protected String getParentClassName() {
     return "groovy.xml.MarkupBuilder";

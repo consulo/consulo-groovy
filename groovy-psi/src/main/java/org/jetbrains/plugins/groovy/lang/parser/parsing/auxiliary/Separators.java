@@ -16,9 +16,9 @@
 
 package org.jetbrains.plugins.groovy.lang.parser.parsing.auxiliary;
 
+import consulo.language.parser.PsiBuilder;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.parser.parsing.util.ParserUtils;
-import com.intellij.lang.PsiBuilder;
 
 /**
  * Parse separators

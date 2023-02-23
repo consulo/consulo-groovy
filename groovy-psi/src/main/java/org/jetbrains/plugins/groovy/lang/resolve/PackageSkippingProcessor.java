@@ -16,7 +16,7 @@
 package org.jetbrains.plugins.groovy.lang.resolve;
 
 import org.jetbrains.plugins.groovy.lang.resolve.processors.GrDelegatingScopeProcessorWithHints;
-import com.intellij.psi.scope.PsiScopeProcessor;
+import consulo.language.psi.resolve.PsiScopeProcessor;
 
 /**
  * Created by Max Medvedev on 27/03/14

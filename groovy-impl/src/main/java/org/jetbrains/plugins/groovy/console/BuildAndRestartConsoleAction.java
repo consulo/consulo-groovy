@@ -15,86 +15,75 @@
  */
 package org.jetbrains.plugins.groovy.console;
 
-import javax.annotation.Nonnull;
+import consulo.application.AllIcons;
+import consulo.compiler.CompileContext;
+import consulo.compiler.CompileStatusNotification;
+import consulo.compiler.CompilerManager;
+import consulo.execution.ExecutionManager;
+import consulo.execution.executor.Executor;
+import consulo.execution.ui.RunContentDescriptor;
+import consulo.module.Module;
+import consulo.process.ProcessHandler;
+import consulo.project.Project;
+import consulo.ui.ex.action.AnAction;
+import consulo.ui.ex.action.AnActionEvent;
 
-import com.intellij.execution.ExecutionManager;
-import com.intellij.execution.Executor;
-import com.intellij.execution.process.ProcessHandler;
-import com.intellij.execution.ui.RunContentDescriptor;
-import com.intellij.icons.AllIcons;
-import com.intellij.openapi.actionSystem.AnAction;
-import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.compiler.CompileContext;
-import com.intellij.openapi.compiler.CompileStatusNotification;
-import com.intellij.openapi.compiler.CompilerManager;
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.project.Project;
-import com.intellij.util.Consumer;
+import javax.annotation.Nonnull;
+import java.util.function.Consumer;
 
 /**
  * Created by Max Medvedev on 21/03/14
  */
-public class BuildAndRestartConsoleAction extends AnAction
-{
+public class BuildAndRestartConsoleAction extends AnAction {
 
-	private Module myModule;
-	private Project myProject;
-	private Executor myExecutor;
-	private RunContentDescriptor myContentDescriptor;
-	private Consumer<Module> myRestarter;
+  private Module myModule;
+  private Project myProject;
+  private Executor myExecutor;
+  private RunContentDescriptor myContentDescriptor;
+  private Consumer<Module> myRestarter;
 
-	public BuildAndRestartConsoleAction(@Nonnull Module module,
-			@Nonnull Project project,
-			@Nonnull Executor executor,
-			@Nonnull RunContentDescriptor contentDescriptor,
-			@Nonnull Consumer<Module> restarter)
-	{
-		super("Build and restart", "Build module '" + module.getName() + "' and restart", AllIcons.Actions.Restart);
-		myModule = module;
-		myProject = project;
-		myExecutor = executor;
-		myContentDescriptor = contentDescriptor;
-		myRestarter = restarter;
-	}
+  public BuildAndRestartConsoleAction(@Nonnull Module module,
+                                      @Nonnull Project project,
+                                      @Nonnull Executor executor,
+                                      @Nonnull RunContentDescriptor contentDescriptor,
+                                      @Nonnull Consumer<Module> restarter) {
+    super("Build and restart", "Build module '" + module.getName() + "' and restart", AllIcons.Actions.Restart);
+    myModule = module;
+    myProject = project;
+    myExecutor = executor;
+    myContentDescriptor = contentDescriptor;
+    myRestarter = restarter;
+  }
 
-	@Override
-	public void update(AnActionEvent e)
-	{
-		e.getPresentation().setEnabled(isEnabled());
-	}
+  @Override
+  public void update(AnActionEvent e) {
+    e.getPresentation().setEnabled(isEnabled());
+  }
 
-	private boolean isEnabled()
-	{
-		if(myModule == null || myModule.isDisposed())
-		{
-			return false;
-		}
+  private boolean isEnabled() {
+    if (myModule == null || myModule.isDisposed()) {
+      return false;
+    }
 
-		final ProcessHandler processHandler = myContentDescriptor.getProcessHandler();
-		if(processHandler == null || processHandler.isProcessTerminated())
-		{
-			return false;
-		}
+    final ProcessHandler processHandler = myContentDescriptor.getProcessHandler();
+    if (processHandler == null || processHandler.isProcessTerminated()) {
+      return false;
+    }
 
-		return true;
-	}
+    return true;
+  }
 
-	@Override
-	public void actionPerformed(AnActionEvent e)
-	{
-		if(ExecutionManager.getInstance(myProject).getContentManager().removeRunContent(myExecutor, myContentDescriptor))
-		{
-			CompilerManager.getInstance(myProject).compile(myModule, new CompileStatusNotification()
-			{
-				@Override
-				public void finished(boolean aborted, int errors, int warnings, CompileContext compileContext)
-				{
-					if(!myModule.isDisposed())
-					{
-						myRestarter.consume(myModule);
-					}
-				}
-			});
-		}
-	}
+  @Override
+  public void actionPerformed(AnActionEvent e) {
+    if (ExecutionManager.getInstance(myProject).getContentManager().removeRunContent(myExecutor, myContentDescriptor)) {
+      CompilerManager.getInstance(myProject).compile(myModule, new CompileStatusNotification() {
+        @Override
+        public void finished(boolean aborted, int errors, int warnings, CompileContext compileContext) {
+          if (!myModule.isDisposed()) {
+            myRestarter.accept(myModule);
+          }
+        }
+      });
+    }
+  }
 }

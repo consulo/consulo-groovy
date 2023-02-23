@@ -15,19 +15,19 @@
  */
 package org.jetbrains.plugins.groovy.griffon;
 
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.openapi.vfs.LocalFileSystem;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiManager;
-import com.intellij.psi.util.CachedValueProvider;
-import com.intellij.psi.util.CachedValuesManager;
-import com.intellij.psi.xml.XmlAttribute;
-import com.intellij.psi.xml.XmlFile;
-import com.intellij.psi.xml.XmlTag;
-import com.intellij.util.containers.ContainerUtil;
+import consulo.application.util.CachedValueProvider;
+import consulo.application.util.CachedValuesManager;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.PsiManager;
+import consulo.module.Module;
 import consulo.ui.image.Image;
+import consulo.util.collection.ContainerUtil;
+import consulo.util.lang.StringUtil;
+import consulo.virtualFileSystem.LocalFileSystem;
+import consulo.virtualFileSystem.VirtualFile;
+import consulo.xml.psi.xml.XmlAttribute;
+import consulo.xml.psi.xml.XmlFile;
+import consulo.xml.psi.xml.XmlTag;
 
 import java.io.File;
 import java.util.ArrayList;

@@ -15,16 +15,15 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.ui;
 
-import com.intellij.ide.ui.UISettings;
-import com.intellij.openapi.actionSystem.AnAction;
-import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.actionSystem.CustomShortcutSet;
-import com.intellij.openapi.actionSystem.KeyboardShortcut;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.ui.ComboBox;
-import com.intellij.psi.*;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.intellij.java.language.psi.*;
+import consulo.application.ui.UISettings;
+import consulo.language.psi.PsiElement;
+import consulo.logging.Logger;
+import consulo.ui.ex.action.AnAction;
+import consulo.ui.ex.action.AnActionEvent;
+import consulo.ui.ex.action.CustomShortcutSet;
+import consulo.ui.ex.action.KeyboardShortcut;
+import consulo.ui.ex.awt.ComboBox;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrNewExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
@@ -33,6 +32,8 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUt
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames;
 import org.jetbrains.plugins.groovy.refactoring.GroovyRefactoringUtil;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.swing.*;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
@@ -41,7 +42,8 @@ import java.util.*;
 /**
  * @author Maxim.Medvedev
  */
-public class GrTypeComboBox extends ComboBox {
+public class GrTypeComboBox extends ComboBox
+{
 
   private static final Logger LOG = Logger.getInstance(GrTypeComboBox.class);
 
@@ -79,10 +81,10 @@ public class GrTypeComboBox extends ComboBox {
     return new GrTypeComboBox(null, null, false, null, false);
   }
 
-  private GrTypeComboBox(@javax.annotation.Nullable PsiType type,
+  private GrTypeComboBox(@Nullable PsiType type,
                          @Nullable PsiType min,
                          boolean createDef,
-                         @javax.annotation.Nullable PsiElement context,
+                         @Nullable PsiElement context,
                          boolean selectDef) {
     LOG.assertTrue(min == null || context != null);
     LOG.assertTrue(type == null || context != null);
@@ -123,7 +125,7 @@ public class GrTypeComboBox extends ComboBox {
     addItem(new PsiTypeItem(cl, true));
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   public PsiType getSelectedType() {
     final Object selected = getSelectedItem();
     assert selected instanceof PsiTypeItem;
@@ -136,7 +138,7 @@ public class GrTypeComboBox extends ComboBox {
 
 
   private static Map<String, PsiType> getCompatibleTypeNames(@Nonnull PsiType type,
-                                                             @javax.annotation.Nullable PsiType min,
+                                                             @Nullable PsiType min,
                                                              @Nonnull PsiElement context) {
     if (type instanceof PsiDisjunctionType) type = ((PsiDisjunctionType)type).getLeastUpperBound();
 
@@ -227,7 +229,7 @@ public class GrTypeComboBox extends ComboBox {
       isClosure = closure;
     }
 
-    @javax.annotation.Nullable
+    @Nullable
     public PsiType getType() {
       return myType;
     }

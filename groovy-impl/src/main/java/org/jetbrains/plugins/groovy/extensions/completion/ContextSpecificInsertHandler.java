@@ -16,8 +16,10 @@
 
 package org.jetbrains.plugins.groovy.extensions.completion;
 
-import com.intellij.codeInsight.completion.InsertionContext;
-import com.intellij.codeInsight.lookup.LookupElement;
+import consulo.language.editor.completion.lookup.InsertionContext;
+import consulo.language.editor.completion.lookup.LookupElement;
+import consulo.language.editor.completion.lookup.InsertionContext;
+import consulo.language.editor.completion.lookup.LookupElement;
 
 /**
  * @author ilyas
@@ -27,7 +29,7 @@ public interface ContextSpecificInsertHandler {
   boolean isAcceptable(InsertionContext context, int startOffset, LookupElement item);
 
   /**
-   * Handler can be executed ONLY if {@link #isAcceptable(com.intellij.codeInsight.completion.InsertionContext, int, com.intellij.codeInsight.lookup.LookupElement)}
+   * Handler can be executed ONLY if {@link #isAcceptable(InsertionContext, int, LookupElement)}
    * returns true.
    */
   void handleInsert(InsertionContext context, int startOffset, LookupElement item);

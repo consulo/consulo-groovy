@@ -16,8 +16,8 @@
 
 package org.jetbrains.plugins.groovy.lang.parser.parsing.toplevel.packaging;
 
-import com.intellij.lang.PsiBuilder;
-import com.intellij.lang.PsiBuilder.Marker;
+import consulo.language.parser.PsiBuilder;
+import consulo.language.parser.PsiBuilder.Marker;
 import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;

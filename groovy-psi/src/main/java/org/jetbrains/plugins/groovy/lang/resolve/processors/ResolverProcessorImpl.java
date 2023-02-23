@@ -16,12 +16,15 @@
 
 package org.jetbrains.plugins.groovy.lang.resolve.processors;
 
-import com.intellij.psi.*;
-import com.intellij.psi.impl.light.LightElement;
-import com.intellij.psi.impl.source.tree.java.PsiLocalVariableImpl;
-import com.intellij.psi.scope.ElementClassHint;
-import com.intellij.psi.scope.NameHint;
-import com.intellij.psi.scope.PsiScopeProcessor;
+import com.intellij.java.language.impl.psi.impl.source.tree.java.PsiLocalVariableImpl;
+import com.intellij.java.language.impl.psi.scope.ElementClassHint;
+import com.intellij.java.language.impl.psi.scope.NameHint;
+import com.intellij.java.language.psi.*;
+import consulo.language.impl.psi.LightElement;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiNamedElement;
+import consulo.language.psi.resolve.PsiScopeProcessor;
+import consulo.language.psi.resolve.ResolveState;
 import consulo.util.dataholder.Key;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
 import org.jetbrains.plugins.groovy.lang.psi.api.SpreadState;
@@ -253,7 +256,7 @@ public class ResolverProcessorImpl implements PsiScopeProcessor, NameHint, Class
 		return myCandidates != null;
 	}
 
-	@javax.annotation.Nullable
+	@Nullable
 	private static ResolveKind getResolveKind(PsiElement element)
 	{
 		if(element instanceof PsiVariable)

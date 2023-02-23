@@ -1,22 +1,23 @@
 package org.jetbrains.plugins.groovy.gant;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.intellij.java.language.impl.psi.impl.light.LightMethodBuilder;
+import com.intellij.java.language.psi.JavaPsiFacade;
+import com.intellij.java.language.psi.PsiClass;
+import com.intellij.java.language.psi.PsiModifier;
+import com.intellij.java.language.psi.PsiType;
+import consulo.application.util.function.Computable;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.resolve.PsiScopeProcessor;
+import consulo.ui.ex.awtUnsafe.TargetAWT;
 import org.jetbrains.plugins.groovy.GroovyFileType;
+import org.jetbrains.plugins.groovy.JetgroovyIcons;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrBuilderMethod;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GrMapType;
 import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GrLightParameter;
-import com.intellij.openapi.util.Computable;
-import com.intellij.psi.JavaPsiFacade;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiModifier;
-import com.intellij.psi.PsiType;
-import com.intellij.psi.impl.light.LightMethodBuilder;
-import com.intellij.psi.scope.PsiScopeProcessor;
-import consulo.awt.TargetAWT;
-import icons.JetgroovyIcons;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
 * @author peter

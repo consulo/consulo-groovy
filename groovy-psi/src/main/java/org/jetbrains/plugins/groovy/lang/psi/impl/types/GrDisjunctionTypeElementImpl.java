@@ -15,19 +15,19 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.types;
 
-import java.util.ArrayList;
-
-import javax.annotation.Nonnull;
+import com.intellij.java.language.psi.PsiDisjunctionType;
+import com.intellij.java.language.psi.PsiType;
+import consulo.language.ast.ASTNode;
+import consulo.language.psi.PsiElement;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrDisjunctionTypeElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeElement;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyPsiElementImpl;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiDisjunctionType;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiType;
+
+import javax.annotation.Nonnull;
+import java.util.ArrayList;
 
 /**
  * @author Max Medvedev

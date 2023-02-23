@@ -1,16 +1,20 @@
+import java.lang.Integer;
+import java.lang.Object;
+import java.lang.String;
+
 public class grScript extends groovy.lang.Script {
-public static void main(java.lang.String[] args) {
+public static void main(String[] args) {
 new grScript(new groovy.lang.Binding(args)).run();
 }
 
-public java.lang.Object run() {
+public Object run() {
 print("foo");
 if (true){
 print("false");
 }
  else {
 print("true");
-java.lang.Integer a = 5;
+Integer a = 5;
 }
 
 return null;

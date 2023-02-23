@@ -15,45 +15,47 @@
  */
 package org.jetbrains.plugins.groovy.structure;
 
-import java.util.Arrays;
-import java.util.Collection;
+import com.intellij.java.impl.ide.structureView.impl.java.JavaFileTreeModel;
+import com.intellij.java.impl.ide.structureView.impl.java.JavaInheritedMembersNodeProvider;
+import consulo.codeEditor.Editor;
+import consulo.fileEditor.structureView.StructureViewBuilder;
+import consulo.fileEditor.structureView.StructureViewModel;
+import consulo.fileEditor.structureView.TreeBasedStructureViewBuilder;
+import consulo.fileEditor.structureView.tree.NodeProvider;
+import consulo.language.Language;
+import consulo.language.editor.structureView.PsiStructureViewFactory;
+import consulo.language.psi.PsiFile;
+import org.jetbrains.plugins.groovy.GroovyLanguage;
+import org.jetbrains.plugins.groovy.lang.psi.GroovyFileBase;
 
 import javax.annotation.Nonnull;
-
-import org.jetbrains.plugins.groovy.lang.psi.GroovyFileBase;
-import com.intellij.ide.structureView.StructureViewBuilder;
-import com.intellij.ide.structureView.StructureViewModel;
-import com.intellij.ide.structureView.TreeBasedStructureViewBuilder;
-import com.intellij.ide.structureView.impl.java.JavaFileTreeModel;
-import com.intellij.ide.structureView.impl.java.JavaInheritedMembersNodeProvider;
-import com.intellij.ide.util.treeView.smartTree.NodeProvider;
-import com.intellij.lang.PsiStructureViewFactory;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.psi.PsiFile;
+import javax.annotation.Nullable;
+import java.util.Arrays;
+import java.util.Collection;
 
 /**
  * User: Dmitry.Krasilschikov
  * Date: 19.06.2008
  */
-public class GroovyStructureViewFactory implements PsiStructureViewFactory
-{
-	public StructureViewBuilder getStructureViewBuilder(final PsiFile psiFile)
-	{
-		return new TreeBasedStructureViewBuilder()
-		{
-			@Nonnull
-			public StructureViewModel createStructureViewModel(@javax.annotation.Nullable Editor editor)
-			{
-				return new JavaFileTreeModel((GroovyFileBase) psiFile, editor)
-				{
-					@Nonnull
-					@Override
-					public Collection<NodeProvider> getNodeProviders()
-					{
-						return Arrays.<NodeProvider>asList(new JavaInheritedMembersNodeProvider());
-					}
-				};
-			}
-		};
-	}
+public class GroovyStructureViewFactory implements PsiStructureViewFactory {
+  public StructureViewBuilder getStructureViewBuilder(final PsiFile psiFile) {
+    return new TreeBasedStructureViewBuilder() {
+      @Nonnull
+      public StructureViewModel createStructureViewModel(@Nullable Editor editor) {
+        return new JavaFileTreeModel((GroovyFileBase)psiFile, editor) {
+          @Nonnull
+          @Override
+          public Collection<NodeProvider> getNodeProviders() {
+            return Arrays.<NodeProvider>asList(new JavaInheritedMembersNodeProvider());
+          }
+        };
+      }
+    };
+  }
+
+  @Nonnull
+  @Override
+  public Language getLanguage() {
+    return GroovyLanguage.INSTANCE;
+  }
 }

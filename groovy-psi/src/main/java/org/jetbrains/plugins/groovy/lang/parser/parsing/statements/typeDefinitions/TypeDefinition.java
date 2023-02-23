@@ -18,6 +18,8 @@ package org.jetbrains.plugins.groovy.lang.parser.parsing.statements.typeDefiniti
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
+import consulo.language.parser.PsiBuilder;
 import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
@@ -26,9 +28,8 @@ import org.jetbrains.plugins.groovy.lang.parser.parsing.auxiliary.Separators;
 import org.jetbrains.plugins.groovy.lang.parser.parsing.statements.typeDefinitions.members.EnumConstant;
 import org.jetbrains.plugins.groovy.lang.parser.parsing.types.TypeParameters;
 import org.jetbrains.plugins.groovy.lang.parser.parsing.util.ParserUtils;
-import com.intellij.lang.PsiBuilder;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.tree.TokenSet;
+import consulo.language.ast.IElementType;
+import consulo.language.ast.TokenSet;
 
 /**
  * @autor: Dmitry.Krasilschikov

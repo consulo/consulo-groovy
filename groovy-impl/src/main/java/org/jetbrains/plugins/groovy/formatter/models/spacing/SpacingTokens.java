@@ -16,9 +16,10 @@
 
 package org.jetbrains.plugins.groovy.formatter.models.spacing;
 
+import consulo.language.ast.TokenSet;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
-import com.intellij.psi.tree.TokenSet;
+import consulo.language.ast.TokenSet;
 
 /**
  * @author ilyas

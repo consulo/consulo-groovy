@@ -15,23 +15,25 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions;
 
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.Ref;
-import com.intellij.pom.java.LanguageLevel;
-import com.intellij.psi.*;
-import com.intellij.psi.impl.PsiSubstitutorImpl;
-import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.util.InheritanceUtil;
-import com.intellij.psi.util.PsiUtil;
-import com.intellij.psi.util.TypeConversionUtil;
-import com.intellij.util.Function;
-import com.intellij.util.containers.ComparatorUtil;
-import com.intellij.util.containers.ContainerUtil;
+import com.intellij.java.language.LanguageLevel;
+import com.intellij.java.language.impl.psi.PsiTypeVisitorEx;
+import com.intellij.java.language.impl.psi.impl.PsiSubstitutorImpl;
+import com.intellij.java.language.psi.*;
+import com.intellij.java.language.psi.util.InheritanceUtil;
+import com.intellij.java.language.psi.util.PsiUtil;
+import com.intellij.java.language.psi.util.TypeConversionUtil;
+import consulo.language.ast.IElementType;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiManager;
+import consulo.language.psi.scope.GlobalSearchScope;
+import consulo.project.Project;
+import consulo.util.collection.ContainerUtil;
 import consulo.util.collection.primitive.ints.IntMaps;
 import consulo.util.collection.primitive.ints.IntObjectMap;
 import consulo.util.collection.primitive.objects.ObjectIntMap;
 import consulo.util.collection.primitive.objects.ObjectMaps;
+import consulo.util.lang.ComparatorUtil;
+import consulo.util.lang.ref.Ref;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
@@ -360,7 +362,7 @@ public class TypesUtil {
     return false;
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   private static Boolean isAssignableForNativeTypes(@Nonnull PsiType lType,
                                                     @Nonnull PsiClassType rType,
                                                     @Nonnull PsiElement context) {
@@ -474,7 +476,7 @@ public class TypesUtil {
     return getLeastUpperBound(type1, type2, manager);
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   public static PsiType getLeastUpperBoundNullable(@Nonnull Iterable<PsiType> collection, @Nonnull PsiManager manager) {
     Iterator<PsiType> iterator = collection.iterator();
     if (!iterator.hasNext()) return null;
@@ -718,8 +720,8 @@ public class TypesUtil {
     return false;
   }
 
-  @javax.annotation.Nullable
-  public static PsiType substituteAndNormalizeType(@javax.annotation.Nullable PsiType type,
+  @Nullable
+  public static PsiType substituteAndNormalizeType(@Nullable PsiType type,
                                                    @Nonnull PsiSubstitutor substitutor,
                                                    @Nullable SpreadState state, @Nonnull GrExpression expression) {
     if (type == null) return null;
@@ -730,7 +732,7 @@ public class TypesUtil {
     return type;
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   public static PsiType getItemType(@Nullable PsiType containerType) {
     if (containerType == null) return null;
 
@@ -766,12 +768,7 @@ public class TypesUtil {
       @Override
       protected PsiType[] inferComponents() {
         final GrAnnotationMemberValue[] initializers = value.getInitializers();
-        return ContainerUtil.map(initializers, new Function<GrAnnotationMemberValue, PsiType>() {
-          @Override
-          public PsiType fun(GrAnnotationMemberValue value) {
-            return inferAnnotationMemberValueType(value);
-          }
-        }, PsiType.createArray(initializers.length));
+        return ContainerUtil.map(initializers, value1 -> inferAnnotationMemberValueType(value1), PsiType.createArray(initializers.length));
       }
 
       @Override

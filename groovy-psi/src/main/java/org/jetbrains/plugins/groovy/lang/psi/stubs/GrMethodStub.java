@@ -15,20 +15,22 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.stubs;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.intellij.java.language.impl.psi.impl.PsiImplUtil;
+import consulo.index.io.StringRef;
+import consulo.language.psi.stub.NamedStub;
+import consulo.language.psi.stub.StubBase;
+import consulo.language.psi.stub.StubElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
 import org.jetbrains.plugins.groovy.lang.psi.stubs.elements.GrMethodElementType;
-import com.intellij.psi.impl.PsiImplUtil;
-import com.intellij.psi.stubs.NamedStub;
-import com.intellij.psi.stubs.StubBase;
-import com.intellij.psi.stubs.StubElement;
-import com.intellij.util.io.StringRef;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author ilyas
  */
-public class GrMethodStub extends StubBase<GrMethod> implements NamedStub<GrMethod> {
+public class GrMethodStub extends StubBase<GrMethod> implements NamedStub<GrMethod>
+{
   public static final byte IS_DEPRECATED_BY_DOC_TAG = 0x01;
 
   private final StringRef myName;
@@ -42,7 +44,7 @@ public class GrMethodStub extends StubBase<GrMethod> implements NamedStub<GrMeth
                       final String[] annotations,
                       final @Nonnull String[] namedParameters,
                       final GrMethodElementType elementType,
-                      @javax.annotation.Nullable String typeText,
+                      @Nullable String typeText,
                       byte flags) {
     super(parent, elementType);
     myName = name;

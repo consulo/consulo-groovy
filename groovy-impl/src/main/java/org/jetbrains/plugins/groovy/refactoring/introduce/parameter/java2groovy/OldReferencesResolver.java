@@ -16,15 +16,19 @@
 
 package org.jetbrains.plugins.groovy.refactoring.introduce.parameter.java2groovy;
 
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.*;
-import com.intellij.psi.search.LocalSearchScope;
-import com.intellij.psi.search.searches.ReferencesSearch;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.refactoring.util.RefactoringUtil;
-import com.intellij.util.ArrayUtil;
-import com.intellij.util.IncorrectOperationException;
+import com.intellij.java.impl.refactoring.util.RefactoringUtil;
+import com.intellij.java.language.psi.*;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiManager;
+import consulo.language.psi.PsiNamedElement;
+import consulo.language.psi.PsiReference;
+import consulo.language.psi.scope.LocalSearchScope;
+import consulo.language.psi.search.ReferencesSearch;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.language.util.IncorrectOperationException;
+import consulo.logging.Logger;
+import consulo.project.Project;
+import consulo.util.collection.ArrayUtil;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
@@ -45,8 +49,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 
-import static com.intellij.codeInsight.ChangeContextUtil.*;
-import static com.intellij.refactoring.IntroduceParameterRefactoring.*;
+import static com.intellij.java.impl.refactoring.IntroduceParameterRefactoring.*;
+import static com.intellij.java.language.impl.codeInsight.ChangeContextUtil.*;
 
 /**
  * @author Maxim.Medvedev
@@ -362,7 +366,8 @@ public class OldReferencesResolver {
     return instanceRef;
   }
 
-  private String getTempVar(GrExpression expr) throws IncorrectOperationException {
+  private String getTempVar(GrExpression expr) throws IncorrectOperationException
+  {
     String id = myTempVars.get(expr);
     if (id != null) {
       return id;

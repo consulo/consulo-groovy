@@ -17,11 +17,13 @@ package org.jetbrains.plugins.groovy.geb;
 
 import javax.annotation.Nonnull;
 
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiType;
-import com.intellij.psi.ResolveState;
-import com.intellij.psi.scope.PsiScopeProcessor;
+import com.intellij.java.language.psi.PsiClass;
+import consulo.language.psi.PsiElement;
+import com.intellij.java.language.psi.PsiType;
+import consulo.language.psi.resolve.ResolveState;
+import consulo.language.psi.resolve.PsiScopeProcessor;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.resolve.ResolveState;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyPsiManager;
 import org.jetbrains.plugins.groovy.lang.resolve.NonCodeMembersContributor;
 

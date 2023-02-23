@@ -15,20 +15,21 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements;
 
-import com.intellij.lang.ASTNode;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.util.NullableComputable;
-import com.intellij.openapi.util.RecursionManager;
-import com.intellij.psi.*;
-import com.intellij.psi.codeStyle.JavaCodeStyleManager;
-import com.intellij.psi.impl.source.tree.LeafPsiElement;
-import com.intellij.psi.search.LocalSearchScope;
-import com.intellij.psi.search.SearchScope;
-import com.intellij.psi.stubs.IStubElementType;
-import com.intellij.psi.stubs.StubElement;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.ArrayUtil;
-import com.intellij.util.IncorrectOperationException;
+import com.intellij.java.language.psi.*;
+import com.intellij.java.language.psi.codeStyle.JavaCodeStyleManager;
+import consulo.application.util.RecursionManager;
+import consulo.content.scope.SearchScope;
+import consulo.language.ast.ASTNode;
+import consulo.language.ast.TokenType;
+import consulo.language.impl.psi.LeafPsiElement;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.scope.LocalSearchScope;
+import consulo.language.psi.stub.IStubElementType;
+import consulo.language.psi.stub.StubElement;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.language.util.IncorrectOperationException;
+import consulo.logging.Logger;
+import consulo.util.collection.ArrayUtil;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.lexer.TokenSets;
@@ -49,6 +50,7 @@ import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.function.Supplier;
 
 /**
  * @author ilyas
@@ -70,13 +72,13 @@ public abstract class GrVariableBaseImpl<T extends StubElement> extends GrStubEl
   }
 
   @Override
-  @javax.annotation.Nullable
+  @Nullable
   public PsiTypeElement getTypeElement() {
     return PsiImplUtil.getOrCreateTypeElement(getTypeElementGroovy());
   }
 
   @Override
-  @javax.annotation.Nullable
+  @Nullable
   public PsiExpression getInitializer() {
     return null;
   }
@@ -87,11 +89,12 @@ public abstract class GrVariableBaseImpl<T extends StubElement> extends GrStubEl
   }
 
   @Override
-  public void normalizeDeclaration() throws IncorrectOperationException {
+  public void normalizeDeclaration() throws IncorrectOperationException
+  {
   }
 
   @Override
-  @javax.annotation.Nullable
+  @Nullable
   public Object computeConstantValue() {
     return null;
   }
@@ -129,7 +132,7 @@ public abstract class GrVariableBaseImpl<T extends StubElement> extends GrStubEl
   }
 
   @Override
-  @javax.annotation.Nullable
+  @Nullable
   public GrTypeElement getTypeElementGroovy() {
     PsiElement parent = getParent();
     if (parent instanceof GrVariableDeclaration) {
@@ -139,7 +142,7 @@ public abstract class GrVariableBaseImpl<T extends StubElement> extends GrStubEl
   }
 
   @Override
-  @javax.annotation.Nullable
+  @Nullable
   public PsiType getDeclaredType() {
     GrTypeElement typeElement = getTypeElementGroovy();
     if (typeElement != null) return typeElement.getType();
@@ -162,9 +165,9 @@ public abstract class GrVariableBaseImpl<T extends StubElement> extends GrStubEl
     }
 
     if (initializer != null) {
-      PsiType initializerType = RecursionManager.doPreventingRecursion(this, true, new NullableComputable<PsiType>() {
+      PsiType initializerType = RecursionManager.doPreventingRecursion(this, true, new Supplier<PsiType>() {
         @Override
-        public PsiType compute() {
+        public PsiType get() {
           return initializer.getType();
         }
       });
@@ -174,7 +177,7 @@ public abstract class GrVariableBaseImpl<T extends StubElement> extends GrStubEl
         final PsiClassType.ClassResolveResult initializerResult = ((PsiClassType)initializerType).resolveGenerics();
         final PsiClass initializerClass = initializerResult.getElement();
         if (initializerClass != null &&
-            !com.intellij.psi.util.PsiUtil.isRawSubstitutor(initializerClass, initializerResult.getSubstitutor())) {
+            !com.intellij.java.language.psi.util.PsiUtil.isRawSubstitutor(initializerClass, initializerResult.getSubstitutor())) {
           return initializerType;
         }
       }
@@ -186,7 +189,7 @@ public abstract class GrVariableBaseImpl<T extends StubElement> extends GrStubEl
   }
 
   @Override
-  public void setType(@javax.annotation.Nullable PsiType type) {
+  public void setType(@Nullable PsiType type) {
     final GrVariableDeclaration variableDeclaration = getDeclaration();
     if (variableDeclaration == null) return;
     final GrTypeElement typeElement = variableDeclaration.getTypeElementGroovyForVariable(this);
@@ -229,7 +232,7 @@ public abstract class GrVariableBaseImpl<T extends StubElement> extends GrStubEl
   }
 
   @Override
-  @javax.annotation.Nullable
+  @Nullable
   public GrExpression getInitializerGroovy() {
     final PsiElement parent = getParent();
     if (parent instanceof GrVariableDeclaration && ((GrVariableDeclaration)parent).isTuple()){
@@ -281,14 +284,14 @@ public abstract class GrVariableBaseImpl<T extends StubElement> extends GrStubEl
   }
 
   @Override
-  @javax.annotation.Nullable
+  @Nullable
   public GrModifierList getModifierList() {
     final GrVariableDeclaration variableDeclaration = getDeclaration();
     if (variableDeclaration!=null) return variableDeclaration.getModifierList();
     return null;
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   private GrVariableDeclaration getDeclaration() {
     PsiElement parent = getParent();
     if (parent instanceof GrVariableDeclaration) {

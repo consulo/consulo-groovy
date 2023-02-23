@@ -21,24 +21,31 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
+import consulo.codeEditor.Editor;
+import consulo.dataContext.DataContext;
+import consulo.language.editor.refactoring.rename.PsiElementRenameHandler;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.project.Project;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrAccessorMethod;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyPropertyUtils;
 import org.jetbrains.plugins.groovy.refactoring.GroovyRefactoringBundle;
-import com.intellij.ide.TitledHandler;
-import com.intellij.openapi.actionSystem.DataContext;
-import com.intellij.openapi.actionSystem.LangDataKeys;
-import com.intellij.openapi.actionSystem.PlatformDataKeys;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.Pair;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiMember;
-import com.intellij.psi.PsiMethod;
-import com.intellij.refactoring.rename.PsiElementRenameHandler;
-import com.intellij.refactoring.rename.RenameHandler;
+import consulo.ide.impl.idea.ide.TitledHandler;
+import consulo.dataContext.DataContext;
+import consulo.language.editor.LangDataKeys;
+import consulo.language.editor.PlatformDataKeys;
+import consulo.codeEditor.Editor;
+import consulo.project.Project;
+import consulo.util.lang.Pair;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import com.intellij.java.language.psi.PsiMember;
+import com.intellij.java.language.psi.PsiMethod;
+import consulo.language.editor.refactoring.rename.PsiElementRenameHandler;
+import consulo.language.editor.refactoring.rename.RenameHandler;
 
 /**
  * @author ven

@@ -16,16 +16,22 @@
 
 package org.jetbrains.plugins.groovy.mvc;
 
-import com.intellij.application.options.ModuleListCellRenderer;
-import com.intellij.execution.configuration.EnvironmentVariablesComponent;
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.options.ConfigurationException;
-import com.intellij.openapi.options.SettingsEditor;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.ui.DocumentAdapter;
-import com.intellij.ui.PanelWithAnchor;
-import com.intellij.ui.RawCommandLineEditor;
-import com.intellij.ui.components.JBLabel;
+import consulo.configurable.ConfigurationException;
+import consulo.execution.ui.awt.RawCommandLineEditor;
+import consulo.module.Module;
+import consulo.module.ui.awt.ModuleListCellRenderer;
+import consulo.execution.ui.awt.EnvironmentVariablesComponent;
+import consulo.module.Module;
+import consulo.configurable.ConfigurationException;
+import consulo.execution.configuration.ui.SettingsEditor;
+import consulo.ui.ex.awt.PanelWithAnchor;
+import consulo.util.lang.StringUtil;
+import consulo.ui.ex.awt.event.DocumentAdapter;
+import consulo.ui.ex.awt.PanelWithAnchor;
+import consulo.execution.ui.awt.RawCommandLineEditor;
+import consulo.ui.ex.awt.JBLabel;
+import consulo.module.ui.awt.ModuleListCellRenderer;
+
 import javax.annotation.Nonnull;
 
 import javax.swing.*;
@@ -34,7 +40,8 @@ import java.awt.*;
 import java.io.File;
 import java.util.HashMap;
 
-public class MvcRunConfigurationEditor<T extends MvcRunConfiguration> extends SettingsEditor<T> implements PanelWithAnchor {
+public class MvcRunConfigurationEditor<T extends MvcRunConfiguration> extends SettingsEditor<T> implements PanelWithAnchor
+{
   private DefaultComboBoxModel myModulesModel;
   protected JComboBox myModulesBox;
   private JPanel myMainPanel;
@@ -122,7 +129,8 @@ public class MvcRunConfigurationEditor<T extends MvcRunConfiguration> extends Se
     }
   }
 
-  protected void applyEditorTo(T configuration) throws ConfigurationException {
+  protected void applyEditorTo(T configuration) throws ConfigurationException
+  {
     configuration.setModule(getSelectedModule());
     configuration.vmParams = myVMParameters.getText().trim();
     configuration.cmdLine = getCommandLine();

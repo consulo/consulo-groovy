@@ -15,17 +15,21 @@
  */
 package org.jetbrains.plugins.groovy.editor;
 
-import com.intellij.psi.*;
-import com.intellij.psi.scope.DelegatingScopeProcessor;
-import com.intellij.psi.scope.PsiScopeProcessor;
-import com.intellij.util.containers.ContainerUtil;
-import javax.annotation.Nonnull;
+import com.intellij.java.language.psi.JavaPsiFacade;
+import com.intellij.java.language.psi.PsiClass;
+import com.intellij.java.language.psi.PsiJavaPackage;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.resolve.DelegatingScopeProcessor;
+import consulo.language.psi.resolve.PsiScopeProcessor;
+import consulo.language.psi.resolve.ResolveState;
+import consulo.util.collection.ContainerUtil;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFileBase;
 import org.jetbrains.plugins.groovy.lang.psi.api.toplevel.imports.GrImportStatement;
 import org.jetbrains.plugins.groovy.lang.resolve.DefaultImportContributor;
 import org.jetbrains.plugins.groovy.lang.resolve.ResolveUtil;
 
+import javax.annotation.Nonnull;
 import java.util.LinkedHashSet;
 
 /**

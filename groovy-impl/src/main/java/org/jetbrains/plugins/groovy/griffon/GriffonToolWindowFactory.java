@@ -16,19 +16,19 @@
 
 package org.jetbrains.plugins.groovy.griffon;
 
-import com.intellij.icons.AllIcons;
-import com.intellij.ide.projectView.ViewSettings;
-import com.intellij.ide.util.treeView.AbstractTreeNode;
-import com.intellij.openapi.components.ServiceManager;
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.roots.ModuleRootManager;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.PsiDirectory;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiManager;
+import consulo.application.AllIcons;
+import consulo.ide.ServiceManager;
+import consulo.module.Module;
+import consulo.module.content.ModuleRootManager;
+import consulo.project.Project;
+import consulo.project.ui.view.tree.AbstractTreeNode;
+import consulo.project.ui.view.tree.ViewSettings;
+import consulo.virtualFileSystem.VirtualFile;
+import consulo.language.psi.PsiDirectory;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.PsiManager;
 import consulo.ui.image.Image;
-import icons.JetgroovyIcons;
+import org.jetbrains.plugins.groovy.JetgroovyIcons;
 import org.jetbrains.plugins.groovy.mvc.projectView.*;
 
 import javax.annotation.Nonnull;

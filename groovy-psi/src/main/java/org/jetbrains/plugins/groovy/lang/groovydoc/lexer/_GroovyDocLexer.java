@@ -17,9 +17,15 @@
 
 package org.jetbrains.plugins.groovy.lang.groovydoc.lexer;
 
-import com.intellij.lexer.FlexLexer;
-import com.intellij.psi.TokenType;
-import com.intellij.psi.tree.IElementType;
+import consulo.language.ast.IElementType;
+import consulo.language.lexer.FlexLexer;
+import consulo.language.ast.TokenType;
+import consulo.util.lang.CharArrayUtil;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 
 
 /**
@@ -240,7 +246,7 @@ public class _GroovyDocLexer implements FlexLexer, GroovyDocTokenTypes, TokenTyp
   private static final int ZZ_PUSHBACK_2BIG = 2;
   private static final char[] EMPTY_BUFFER = new char[0];
   private static final int YYEOF = -1;
-  private static java.io.Reader zzReader = null; // Fake
+  private static Reader zzReader = null; // Fake
 
   /* error messages for the codes above */
   private static final String ZZ_ERROR_MSG[] = {
@@ -321,7 +327,7 @@ public class _GroovyDocLexer implements FlexLexer, GroovyDocTokenTypes, TokenTyp
   /* user code: */
 
   public _GroovyDocLexer() {
-    this((java.io.Reader)null);
+    this((Reader)null);
   }
 
   public boolean checkAhead(char c) {
@@ -338,7 +344,7 @@ public class _GroovyDocLexer implements FlexLexer, GroovyDocTokenTypes, TokenTyp
 
 
 
-  public _GroovyDocLexer(java.io.Reader in) {
+  public _GroovyDocLexer(Reader in) {
     this.zzReader = in;
   }
 
@@ -348,8 +354,8 @@ public class _GroovyDocLexer implements FlexLexer, GroovyDocTokenTypes, TokenTyp
    *
    * @param   in  the java.io.Inputstream to read input from.
    */
-  public _GroovyDocLexer(java.io.InputStream in) {
-    this(new java.io.InputStreamReader(in));
+  public _GroovyDocLexer(InputStream in) {
+    this(new InputStreamReader(in));
   }
 
   /** 
@@ -380,7 +386,7 @@ public class _GroovyDocLexer implements FlexLexer, GroovyDocTokenTypes, TokenTyp
 
   public void reset(CharSequence buffer, int start, int end,int initialState){
     zzBuffer = buffer;
-    zzBufferArray = com.intellij.util.text.CharArrayUtil.fromSequenceWithoutCopying(buffer);
+    zzBufferArray = CharArrayUtil.fromSequenceWithoutCopying(buffer);
     zzCurrentPos = zzMarkedPos = zzStartRead = start;
     zzPushbackPos = 0;
     zzAtEOF  = false;
@@ -394,9 +400,9 @@ public class _GroovyDocLexer implements FlexLexer, GroovyDocTokenTypes, TokenTyp
    *
    * @return      <code>false</code>, iff there was new input.
    *
-   * @exception   java.io.IOException  if any I/O-Error occurs
+   * @exception   IOException  if any I/O-Error occurs
    */
-  private boolean zzRefill() throws java.io.IOException {
+  private boolean zzRefill() throws IOException {
     return true;
   }
 
@@ -511,9 +517,9 @@ public class _GroovyDocLexer implements FlexLexer, GroovyDocTokenTypes, TokenTyp
    * the end of input is encountered or an I/O-Error occurs.
    *
    * @return      the next token
-   * @exception   java.io.IOException  if any I/O-Error occurs
+   * @exception   IOException  if any I/O-Error occurs
    */
-  public IElementType advance() throws java.io.IOException {
+  public IElementType advance() throws IOException {
     int zzInput;
     int zzAction;
 

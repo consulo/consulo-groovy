@@ -16,10 +16,11 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl;
 
+import com.intellij.java.language.psi.JavaPsiFacade;
+import com.intellij.java.language.psi.PsiType;
+import consulo.language.psi.scope.GlobalSearchScope;
+
 import javax.annotation.Nonnull;
-import com.intellij.psi.JavaPsiFacade;
-import com.intellij.psi.PsiType;
-import com.intellij.psi.search.GlobalSearchScope;
 
 /**
  * @author ven

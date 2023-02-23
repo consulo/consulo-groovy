@@ -16,48 +16,42 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.types;
 
-import javax.annotation.Nonnull;
-
+import com.intellij.java.language.psi.PsiType;
+import consulo.language.ast.ASTNode;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrArrayTypeElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeElement;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyPsiElementImpl;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiType;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author ilyas
  */
-public class GrArrayTypeElementImpl extends GroovyPsiElementImpl implements GrArrayTypeElement
-{
+public class GrArrayTypeElementImpl extends GroovyPsiElementImpl implements GrArrayTypeElement {
 
-	public GrArrayTypeElementImpl(@Nonnull ASTNode node)
-	{
-		super(node);
-	}
+  public GrArrayTypeElementImpl(@Nonnull ASTNode node) {
+    super(node);
+  }
 
-	@Override
-	public void accept(GroovyElementVisitor visitor)
-	{
-		visitor.visitArrayTypeElement(this);
-	}
+  @Override
+  public void accept(GroovyElementVisitor visitor) {
+    visitor.visitArrayTypeElement(this);
+  }
 
-	public String toString()
-	{
-		return "Array type";
-	}
+  public String toString() {
+    return "Array type";
+  }
 
-	@Override
-	@Nonnull
-	public GrTypeElement getComponentTypeElement()
-	{
-		return findNotNullChildByClass(GrTypeElement.class);
-	}
+  @Override
+  @Nonnull
+  public GrTypeElement getComponentTypeElement() {
+    return findNotNullChildByClass(GrTypeElement.class);
+  }
 
-	@Override
-	@Nonnull
-	public PsiType getType()
-	{
-		return getComponentTypeElement().getType().createArrayType();
-	}
+  @Override
+  @Nonnull
+  public PsiType getType() {
+    return getComponentTypeElement().getType().createArrayType();
+  }
 }

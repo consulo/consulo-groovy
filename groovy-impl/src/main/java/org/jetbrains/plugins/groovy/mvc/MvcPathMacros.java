@@ -15,51 +15,43 @@
  */
 package org.jetbrains.plugins.groovy.mvc;
 
-import java.util.Set;
-
+import consulo.application.macro.PathMacros;
+import consulo.util.io.FileUtil;
+import consulo.util.lang.StringUtil;
+import consulo.util.lang.SystemProperties;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
-import com.intellij.openapi.application.PathMacros;
-import com.intellij.openapi.util.io.FileUtil;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.util.SystemProperties;
-import com.intellij.util.containers.ContainerUtil;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author peter
  */
 @Singleton
-public class MvcPathMacros
-{
-	@Inject
-	public MvcPathMacros(PathMacros pathMacros)
-	{
-		Set<String> macroNames = pathMacros.getUserMacroNames();
-		for(String framework : ContainerUtil.ar("grails", "griffon"))
-		{
-			String name = "USER_HOME_" + framework.toUpperCase();
-			if(!macroNames.contains(name))
-			{
-				// OK, it may appear/disappear during the application lifetime, but we ignore that for now. Restart will help anyway
-				pathMacros.addLegacyMacro(name, StringUtil.trimEnd(getSdkWorkDirParent(framework), "/"));
-			}
-		}
-	}
+public class MvcPathMacros {
+  @Inject
+  public MvcPathMacros(PathMacros pathMacros) {
+    Set<String> macroNames = pathMacros.getUserMacroNames();
+    for (String framework : List.of("grails", "griffon")) {
+      String name = "USER_HOME_" + framework.toUpperCase();
+      if (!macroNames.contains(name)) {
+        // OK, it may appear/disappear during the application lifetime, but we ignore that for now. Restart will help anyway
+        pathMacros.addLegacyMacro(name, StringUtil.trimEnd(getSdkWorkDirParent(framework), "/"));
+      }
+    }
+  }
 
-	public static String getSdkWorkDirParent(String framework)
-	{
-		String grailsWorkDir = System.getProperty(framework + ".work.dir");
-		if(StringUtil.isNotEmpty(grailsWorkDir))
-		{
-			grailsWorkDir = FileUtil.toSystemIndependentName(grailsWorkDir);
-			if(!grailsWorkDir.endsWith("/"))
-			{
-				grailsWorkDir += "/";
-			}
-			return grailsWorkDir;
-		}
+  public static String getSdkWorkDirParent(String framework) {
+    String grailsWorkDir = System.getProperty(framework + ".work.dir");
+    if (StringUtil.isNotEmpty(grailsWorkDir)) {
+      grailsWorkDir = FileUtil.toSystemIndependentName(grailsWorkDir);
+      if (!grailsWorkDir.endsWith("/")) {
+        grailsWorkDir += "/";
+      }
+      return grailsWorkDir;
+    }
 
-		return StringUtil.trimEnd(FileUtil.toSystemIndependentName(SystemProperties.getUserHome()), "/") + "/." + framework + "/";
-	}
+    return StringUtil.trimEnd(FileUtil.toSystemIndependentName(SystemProperties.getUserHome()), "/") + "/." + framework + "/";
+  }
 }

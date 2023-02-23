@@ -15,8 +15,11 @@
  */
 package org.jetbrains.plugins.groovy.annotator;
 
-import java.util.List;
-
+import consulo.application.progress.ProgressManager;
+import consulo.colorScheme.TextAttributesKey;
+import consulo.language.editor.rawHighlight.HighlightInfo;
+import consulo.language.editor.rawHighlight.HighlightInfoType;
+import consulo.language.psi.PsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.GrReferenceElement;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyRecursiveElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
@@ -24,11 +27,8 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrRefere
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameter;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
-import com.intellij.codeInsight.daemon.impl.HighlightInfo;
-import com.intellij.codeInsight.daemon.impl.HighlightInfoType;
-import com.intellij.openapi.editor.colors.TextAttributesKey;
-import com.intellij.openapi.progress.ProgressManager;
-import com.intellij.psi.PsiElement;
+
+import java.util.List;
 
 /**
  * Created by Max Medvedev on 21/03/14

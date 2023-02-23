@@ -19,8 +19,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.tree.IElementType;
+import consulo.language.psi.PsiElement;
+import consulo.language.ast.IElementType;
 
 /**
  * Created by Max Medvedev on 12/20/13

@@ -37,7 +37,7 @@ class GroovyMapAttributeTest extends LightCodeInsightFixtureTestCase {
     public void configureModule(Module module, ModifiableRootModel model, ContentEntry contentEntry) {
       final Library.ModifiableModel modifiableModel = model.moduleLibraryTable.createLibrary("GROOVY").modifiableModel;
       final VirtualFile groovyJar = JarFileSystem.instance.refreshAndFindFileByPath(TestUtils.mockGroovy1_7LibraryName + "!/");
-      modifiableModel.addRoot(groovyJar, OrderRootType.CLASSES);
+      modifiableModel.addRoot(groovyJar, BinariesOrderRootType.getInstance());
       modifiableModel.commit();
     }
   }

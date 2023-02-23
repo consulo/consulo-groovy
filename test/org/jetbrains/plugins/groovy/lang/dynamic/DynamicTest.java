@@ -16,7 +16,7 @@
 package org.jetbrains.plugins.groovy.lang.dynamic;
 
 import com.intellij.codeInsight.intention.IntentionAction;
-import com.intellij.psi.PsiType;
+import com.intellij.java.language.psi.PsiType;
 import com.intellij.testFramework.fixtures.JavaCodeInsightFixtureTestCase;
 import com.intellij.util.containers.ContainerUtil;
 import org.jetbrains.annotations.NotNull;

@@ -15,11 +15,12 @@
  */
 package org.jetbrains.plugins.groovy.util.dynamicMembers;
 
-import com.intellij.codeInsight.completion.originInfo.OriginInfoAwareElement;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.*;
-import com.intellij.psi.scope.PsiScopeProcessor;
-import com.intellij.util.containers.MultiMap;
+import com.intellij.java.language.psi.*;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.resolve.PsiScopeProcessor;
+import consulo.language.psi.resolve.ResolveState;
+import consulo.project.Project;
+import consulo.util.collection.MultiMap;
 import consulo.util.dataholder.Key;
 import consulo.util.dataholder.UserDataHolderEx;
 import org.jetbrains.plugins.groovy.extensions.NamedArgumentDescriptor;
@@ -215,7 +216,7 @@ public class DynamicMemberUtils {
       myNonStaticMethodMap = convertMap(nonStaticMultiMap);
     }
 
-    private static Map<String, String> parseComment(@javax.annotation.Nullable GrDocComment comment) {
+    private static Map<String, String> parseComment(@Nullable GrDocComment comment) {
       if (comment == null) return Collections.emptyMap();
 
       GrDocTag[] docTags = comment.getTags();
@@ -267,7 +268,7 @@ public class DynamicMemberUtils {
       return getMethods(null);
     }
 
-    public PsiMethod[] getDynamicMethods(@javax.annotation.Nullable String nameHint) {
+    public PsiMethod[] getDynamicMethods(@Nullable String nameHint) {
       PsiMethod[] res = myNonStaticMethodMap.get(nameHint);
       if (res == null) {
         res = PsiMethod.EMPTY_ARRAY;
@@ -276,7 +277,7 @@ public class DynamicMemberUtils {
       return res;
     }
 
-    public PsiMethod[] getStaticMethods(@javax.annotation.Nullable String nameHint) {
+    public PsiMethod[] getStaticMethods(@Nullable String nameHint) {
       PsiMethod[] res = myStaticMethodMap.get(nameHint);
       if (res == null) {
         res = PsiMethod.EMPTY_ARRAY;
@@ -285,7 +286,7 @@ public class DynamicMemberUtils {
       return res;
     }
 
-    public PsiMethod[] getMethods(@javax.annotation.Nullable String nameHint) {
+    public PsiMethod[] getMethods(@Nullable String nameHint) {
       PsiMethod[] res = myMethodMap.get(nameHint);
       if (res == null) {
         res = PsiMethod.EMPTY_ARRAY;
@@ -307,7 +308,7 @@ public class DynamicMemberUtils {
       return res;
     }
 
-    public PsiField[] getStaticFields(@javax.annotation.Nullable String nameHint) {
+    public PsiField[] getStaticFields(@Nullable String nameHint) {
       PsiField[] res = myStaticFieldMap.get(nameHint);
       if (res == null) {
         res = PsiField.EMPTY_ARRAY;
@@ -317,11 +318,11 @@ public class DynamicMemberUtils {
     }
   }
 
-  public static boolean isDynamicElement(@javax.annotation.Nullable PsiElement element) {
+  public static boolean isDynamicElement(@Nullable PsiElement element) {
     return element instanceof DynamicElement;
   }
 
-  public static boolean isDynamicElement(@javax.annotation.Nullable PsiElement element, @Nonnull String classSource) {
+  public static boolean isDynamicElement(@Nullable PsiElement element, @Nonnull String classSource) {
     return element instanceof DynamicElement && classSource.equals(((DynamicElement)element).getSource());
   }
 
@@ -331,7 +332,8 @@ public class DynamicMemberUtils {
     PsiClass getSourceClass();
   }
 
-  private static class GrDynamicMethodWithCache extends GrDynamicMethodImpl implements DynamicElement, OriginInfoAwareElement {
+  private static class GrDynamicMethodWithCache extends GrDynamicMethodImpl implements DynamicElement, OriginInfoAwareElement
+  {
 
     private PsiTypeParameter[] myTypeParameters;
     private GrParameterList myParameterList;
@@ -413,7 +415,7 @@ public class DynamicMemberUtils {
       return myClass;
     }
 
-    @javax.annotation.Nullable
+    @Nullable
     @Override
     public String getOriginInfo() {
       return myOriginalInfo;

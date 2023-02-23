@@ -17,7 +17,8 @@ package org.jetbrains.plugins.groovy.formatter;
 
 import javax.annotation.Nonnull;
 
-import com.intellij.psi.codeStyle.CommonCodeStyleSettings;
+import consulo.language.codeStyle.CommonCodeStyleSettings;
+import consulo.language.codeStyle.CommonCodeStyleSettings;
 import org.jetbrains.plugins.groovy.codeStyle.GroovyCodeStyleSettings;
 
 /**

@@ -16,12 +16,12 @@
 
 package org.jetbrains.plugins.groovy.formatter.blocks;
 
-import com.intellij.diagnostic.LogMessageEx;
-import com.intellij.formatting.*;
-import com.intellij.lang.ASTNode;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.*;
-import com.intellij.psi.tree.ILazyParseableElementType;
+import consulo.document.util.TextRange;
+import consulo.ide.impl.idea.diagnostic.LogMessageEx;
+import consulo.language.ast.ASTNode;
+import consulo.language.ast.ILazyParseableElementType;
+import consulo.language.codeStyle.*;
+import consulo.language.psi.*;
 import consulo.logging.Logger;
 import org.jetbrains.plugins.groovy.formatter.FormattingContext;
 import org.jetbrains.plugins.groovy.formatter.processors.GroovyIndentProcessor;
@@ -72,7 +72,7 @@ public class GroovyBlock implements Block, GroovyElementTypes, ASTBlock {
 
   public GroovyBlock(@Nonnull final ASTNode node,
                      @Nonnull final Indent indent,
-                     @javax.annotation.Nullable final Wrap wrap,
+                     @Nullable final Wrap wrap,
                      @Nonnull FormattingContext context) {
     myNode = node;
 
@@ -105,7 +105,7 @@ public class GroovyBlock implements Block, GroovyElementTypes, ASTBlock {
       }
       catch (RuntimeException e) {
         final PsiFile file = myNode.getPsi().getContainingFile();
-        LogMessageEx.error(LOG, "Formatting failed for file " + file.getName(), e, file.getText(), myNode.getText());
+        consulo.ide.impl.idea.diagnostic.LogMessageEx.error(LOG, "Formatting failed for file " + file.getName(), e, file.getText(), myNode.getText());
         mySubBlocks = new ArrayList<Block>();
       }
     }
@@ -138,7 +138,7 @@ public class GroovyBlock implements Block, GroovyElementTypes, ASTBlock {
    * @param child2 right element
    * @return
    */
-  @javax.annotation.Nullable
+  @Nullable
   public Spacing getSpacing(Block child1, @Nonnull Block child2) {
     if (child1 instanceof GroovyBlock && child2 instanceof GroovyBlock) {
       if (((GroovyBlock)child1).getNode() == ((GroovyBlock)child2).getNode()) {

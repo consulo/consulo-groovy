@@ -16,16 +16,44 @@
 
 package org.jetbrains.plugins.groovy.lang.completion;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
-import javax.annotation.Nonnull;
-
-import consulo.psi.PsiPackage;
+import com.intellij.java.impl.codeInsight.completion.AllClassesGetter;
+import com.intellij.java.impl.codeInsight.completion.JavaClassNameCompletionContributor;
+import com.intellij.java.impl.codeInsight.completion.JavaCompletionUtil;
+import com.intellij.java.language.psi.*;
+import com.intellij.java.language.psi.codeStyle.JavaCodeStyleManager;
+import com.intellij.java.language.psi.util.InheritanceUtil;
+import com.intellij.java.language.psi.util.PsiFormatUtil;
+import com.intellij.java.language.psi.util.PsiFormatUtilBase;
+import com.intellij.java.language.psi.util.TypeConversionUtil;
+import consulo.application.progress.ProgressManager;
+import consulo.application.util.matcher.PrefixMatcher;
+import consulo.codeEditor.Editor;
+import consulo.codeEditor.EditorEx;
+import consulo.codeEditor.HighlighterIterator;
+import consulo.component.util.Iconable;
+import consulo.document.Document;
+import consulo.document.RangeMarker;
+import consulo.language.ast.IElementType;
+import consulo.language.ast.TokenSet;
+import consulo.language.codeStyle.CodeStyleSettingsManager;
+import consulo.language.editor.CodeInsightUtilCore;
+import consulo.language.editor.completion.CompletionParameters;
+import consulo.language.editor.completion.lookup.LookupElement;
+import consulo.language.editor.completion.lookup.LookupElementBuilder;
+import consulo.language.editor.completion.lookup.TailType;
+import consulo.language.icon.IconDescriptorUpdaters;
+import consulo.language.impl.psi.LeafPsiElement;
+import consulo.language.psi.*;
+import consulo.language.psi.filter.FilterPositionUtil;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.language.util.IncorrectOperationException;
+import consulo.project.Project;
+import consulo.util.collection.ContainerUtil;
+import consulo.util.lang.CharArrayUtil;
+import consulo.util.lang.StringUtil;
+import consulo.util.lang.function.Condition;
+import consulo.util.lang.function.Conditions;
 import org.jetbrains.annotations.NonNls;
-
-import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.lexer.TokenSets;
 import org.jetbrains.plugins.groovy.lang.psi.GrControlFlowOwner;
@@ -60,45 +88,14 @@ import org.jetbrains.plugins.groovy.lang.psi.util.GdkMethodUtil;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyPropertyUtils;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 import org.jetbrains.plugins.groovy.lang.resolve.ResolveUtil;
-import com.intellij.codeInsight.CodeInsightUtilCore;
-import com.intellij.codeInsight.TailType;
-import com.intellij.codeInsight.completion.AllClassesGetter;
-import com.intellij.codeInsight.completion.CompletionParameters;
-import com.intellij.codeInsight.completion.JavaClassNameCompletionContributor;
-import com.intellij.codeInsight.completion.JavaCompletionUtil;
-import com.intellij.codeInsight.completion.PrefixMatcher;
-import com.intellij.codeInsight.completion.originInfo.OriginInfoProvider;
-import com.intellij.codeInsight.lookup.LookupElement;
-import com.intellij.codeInsight.lookup.LookupElementBuilder;
-import consulo.ide.IconDescriptorUpdaters;
-import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.editor.RangeMarker;
-import com.intellij.openapi.editor.ex.EditorEx;
-import com.intellij.openapi.editor.highlighter.HighlighterIterator;
-import com.intellij.openapi.progress.ProgressManager;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.Condition;
-import com.intellij.openapi.util.Conditions;
-import com.intellij.openapi.util.Iconable;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.*;
-import com.intellij.psi.codeStyle.CodeStyleSettingsManager;
-import com.intellij.psi.codeStyle.JavaCodeStyleManager;
-import com.intellij.psi.filters.FilterPositionUtil;
-import com.intellij.psi.impl.source.tree.LeafPsiElement;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.tree.TokenSet;
-import com.intellij.psi.util.InheritanceUtil;
-import com.intellij.psi.util.PsiFormatUtil;
-import com.intellij.psi.util.PsiFormatUtilBase;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.psi.util.TypeConversionUtil;
-import com.intellij.util.Consumer;
-import com.intellij.util.Function;
-import com.intellij.util.IncorrectOperationException;
-import com.intellij.util.containers.ContainerUtil;
-import com.intellij.util.text.CharArrayUtil;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 /**
  * @author ilyas
@@ -137,7 +134,7 @@ public class GroovyCompletionUtil {
     return elem;
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   public static PsiElement nearestLeftLeaf(PsiElement elem) {
     elem = PsiTreeUtil.prevLeaf(elem);
     while (elem != null &&
@@ -170,7 +167,7 @@ public class GroovyCompletionUtil {
     return (previousLeaf == null || SEPARATORS.contains(previousLeaf.getNode().getElementType()));
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   public static PsiElement getLeafByOffset(int offset, PsiElement element) {
     if (offset < 0) {
       return null;
@@ -279,7 +276,7 @@ public class GroovyCompletionUtil {
   public static List<? extends LookupElement> createLookupElements(@Nonnull GroovyResolveResult candidate,
                                                                    boolean afterNew,
                                                                    @Nonnull PrefixMatcher matcher,
-                                                                   @javax.annotation.Nullable PsiElement position) {
+                                                                   @Nullable PsiElement position) {
     final PsiElement element = candidate.getElement();
     final PsiElement context = candidate.getCurrentFileResolveContext();
     if (context instanceof GrImportStatement && element != null) {
@@ -382,19 +379,10 @@ public class GroovyCompletionUtil {
       String tailText = getPackageText((PsiClass)element);
       final PsiClass psiClass = (PsiClass)element;
       if ((substitutor == null || substitutor.getSubstitutionMap().isEmpty()) && psiClass.getTypeParameters().length > 0) {
-        tailText = "<" + StringUtil.join(psiClass.getTypeParameters(), new Function<PsiTypeParameter, String>() {
-          @Override
-          public String fun(PsiTypeParameter psiTypeParameter) {
-            return psiTypeParameter.getName();
-          }
-        }, "," + (showSpaceAfterComma(psiClass) ? " " : "")) + ">" + tailText;
+        tailText = "<" + StringUtil.join(psiClass.getTypeParameters(),
+                                         psiTypeParameter -> psiTypeParameter.getName(), "," + (showSpaceAfterComma(psiClass) ? " " : "")) + ">" + tailText;
       }
       builder = builder.withTailText(tailText, true);
-    }
-
-    String originInfo = OriginInfoProvider.getOriginInfo(element);
-    if (originInfo != null) {
-      builder = builder.appendTailText(" " + originInfo, true);
     }
 
     return builder;
@@ -414,10 +402,10 @@ public class GroovyCompletionUtil {
   private static LookupElementBuilder setTypeText(PsiElement element,
                                                   LookupElementBuilder builder,
                                                   PsiSubstitutor substitutor,
-                                                  @javax.annotation.Nullable PsiElement position) {
+                                                  @Nullable PsiElement position) {
     PsiType type = null;
     if (element instanceof GrVariable) {
-      if (position != null && org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil.isLocalVariable(element)) {
+      if (position != null && PsiUtil.isLocalVariable(element)) {
         type = TypeInferenceHelper.getInferredType(position, ((GrVariable)element).getName());
       }
       else {
@@ -488,7 +476,8 @@ public class GroovyCompletionUtil {
     }
   }
 
-  public static int addImportForClass(PsiFile file, int startOffset, int endOffset, PsiClass aClass) throws IncorrectOperationException {
+  public static int addImportForClass(PsiFile file, int startOffset, int endOffset, PsiClass aClass) throws IncorrectOperationException
+  {
 //    LOG.assertTrue(CommandProcessor.getInstance().getCurrentCommand() != null);
 //    LOG.assertTrue(
 //      ApplicationManager.getApplication().isUnitTestMode() || ApplicationManager.getApplication().getCurrentWriteAction(null) != null);
@@ -549,7 +538,7 @@ public class GroovyCompletionUtil {
 
     final HighlighterIterator iterator = ((EditorEx)editor).getHighlighter().createIterator(oldTail);
     while (!iterator.atEnd()) {
-      final IElementType tokenType = iterator.getTokenType();
+      final IElementType tokenType = (IElementType)iterator.getTokenType();
       if (TokenSets.WHITE_SPACES_OR_COMMENTS.contains(tokenType)) {
         iterator.advance();
         continue;
@@ -567,7 +556,7 @@ public class GroovyCompletionUtil {
     return TailType.insertChar(editor, offset, ')');
   }
 
-  public static boolean skipDefGroovyMethod(GrGdkMethod gdkMethod, PsiSubstitutor substitutor, @javax.annotation.Nullable PsiType type) {
+  public static boolean skipDefGroovyMethod(GrGdkMethod gdkMethod, PsiSubstitutor substitutor, @Nullable PsiType type) {
     if (type == null) return false;
     String name = gdkMethod.getStaticMethod().getName();
 

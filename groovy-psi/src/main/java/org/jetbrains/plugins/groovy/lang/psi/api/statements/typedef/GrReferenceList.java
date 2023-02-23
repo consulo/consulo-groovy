@@ -15,13 +15,14 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.intellij.java.language.psi.PsiReferenceList;
+import consulo.language.psi.PsiElement;
+import consulo.util.collection.ArrayFactory;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiReferenceList;
-import com.intellij.util.ArrayFactory;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author ilyas

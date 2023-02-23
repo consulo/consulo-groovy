@@ -17,15 +17,17 @@ package org.jetbrains.plugins.groovy.lang.psi.api.util;
 
 import javax.annotation.Nonnull;
 
-import com.intellij.psi.PsiElement;
+import consulo.language.psi.PsiElement;
 
 import javax.annotation.Nullable;
+
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrNamedArgument;
 
 /**
  * @author Sergey Evdokimov
  */
-public interface GrNamedArgumentsOwner extends PsiElement {
+public interface GrNamedArgumentsOwner extends PsiElement
+{
 
   @Nonnull
   GrNamedArgument[] getNamedArguments();

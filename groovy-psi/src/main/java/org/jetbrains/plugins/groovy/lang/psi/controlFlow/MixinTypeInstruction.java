@@ -15,9 +15,10 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.controlFlow;
 
-import javax.annotation.Nullable;
+import com.intellij.java.language.psi.PsiType;
 import org.jetbrains.plugins.groovy.lang.psi.controlFlow.impl.ConditionInstruction;
-import com.intellij.psi.PsiType;
+
+import javax.annotation.Nullable;
 
 /**
  * @author Max Medvedev

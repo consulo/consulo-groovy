@@ -15,12 +15,14 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.convertToJava;
 
-import javax.annotation.Nonnull;
-
-import com.intellij.psi.*;
-import com.intellij.psi.util.TypeConversionUtil;
+import com.intellij.java.language.psi.*;
+import com.intellij.java.language.psi.util.TypeConversionUtil;
+import consulo.language.psi.PsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GrAnonymousClassType;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author Medvedev Max
@@ -32,7 +34,7 @@ public class TypeWriter extends PsiTypeVisitor<Object> {
   private final ClassNameProvider classNameProvider;
   private final PsiElement context;
 
-  public static void writeTypeForNew(@Nonnull StringBuilder builder, @javax.annotation.Nullable PsiType type, @Nonnull PsiElement context) {
+  public static void writeTypeForNew(@Nonnull StringBuilder builder, @Nullable PsiType type, @Nonnull PsiElement context) {
 
     //new Array[] cannot contain generics
     if (type instanceof PsiArrayType) {
@@ -45,12 +47,12 @@ public class TypeWriter extends PsiTypeVisitor<Object> {
     writeType(builder, type, context, new GeneratorClassNameProvider());
   }
 
-  public static void writeType(@Nonnull StringBuilder builder, @javax.annotation.Nullable PsiType type, @Nonnull PsiElement context) {
+  public static void writeType(@Nonnull StringBuilder builder, @Nullable PsiType type, @Nonnull PsiElement context) {
     writeType(builder, type, context, new GeneratorClassNameProvider());
   }
 
   public static void writeType(@Nonnull final StringBuilder builder,
-                               @javax.annotation.Nullable PsiType type,
+                               @Nullable PsiType type,
                                @Nonnull final PsiElement context,
                                @Nonnull final ClassNameProvider classNameProvider) {
     if (type instanceof PsiPrimitiveType) {

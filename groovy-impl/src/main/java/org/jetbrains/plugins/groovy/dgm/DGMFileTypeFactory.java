@@ -16,16 +16,20 @@
 package org.jetbrains.plugins.groovy.dgm;
 
 import com.intellij.lang.properties.PropertiesFileType;
-import com.intellij.openapi.fileTypes.ExactFileNameMatcher;
-import com.intellij.openapi.fileTypes.FileTypeConsumer;
-import com.intellij.openapi.fileTypes.FileTypeFactory;
-import com.intellij.openapi.util.SystemInfo;
+import consulo.virtualFileSystem.fileType.FileTypeFactory;
+import consulo.virtualFileSystem.internal.matcher.ExactFileNameMatcher;
+import consulo.virtualFileSystem.fileType.FileTypeConsumer;
+import consulo.virtualFileSystem.fileType.FileTypeFactory;
+import consulo.application.util.SystemInfo;
+import consulo.virtualFileSystem.internal.matcher.ExactFileNameMatcher;
+
 import javax.annotation.Nonnull;
 
 /**
  * @author Max Medvedev
  */
-public class DGMFileTypeFactory extends FileTypeFactory {
+public class DGMFileTypeFactory extends FileTypeFactory
+{
 
   @Override
   public void createFileTypes(@Nonnull FileTypeConsumer consumer) {

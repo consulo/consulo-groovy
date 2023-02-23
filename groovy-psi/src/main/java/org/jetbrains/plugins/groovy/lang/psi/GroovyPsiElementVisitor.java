@@ -15,7 +15,9 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi;
 
-import com.intellij.psi.*;
+import com.intellij.java.language.psi.PsiReferenceExpression;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiElementVisitor;
 
 /**
  * User: Dmitry.Krasilschikov

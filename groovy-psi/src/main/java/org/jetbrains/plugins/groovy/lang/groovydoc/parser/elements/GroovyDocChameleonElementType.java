@@ -19,8 +19,8 @@ package org.jetbrains.plugins.groovy.lang.groovydoc.parser.elements;
 import org.jetbrains.annotations.NonNls;
 import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.GroovyFileType;
-import com.intellij.lang.Language;
-import com.intellij.psi.tree.ILazyParseableElementType;
+import consulo.language.Language;
+import consulo.language.ast.ILazyParseableElementType;
 
 /**
  * @author ilyas

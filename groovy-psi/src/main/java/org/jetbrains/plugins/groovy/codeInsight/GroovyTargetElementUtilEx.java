@@ -16,10 +16,12 @@
 
 package org.jetbrains.plugins.groovy.codeInsight;
 
-import java.util.Set;
-
-import javax.annotation.Nonnull;
-
+import com.intellij.java.language.impl.psi.impl.compiled.ClsMethodImpl;
+import com.intellij.java.language.psi.PsiMethod;
+import consulo.language.editor.TargetElementUtilExtender;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiReference;
+import consulo.util.dataholder.Key;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrArgumentList;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrNewExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
@@ -28,86 +30,71 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrGd
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
 import org.jetbrains.plugins.groovy.lang.psi.impl.PsiImplUtil;
 import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GrRenameableLightElement;
-import consulo.util.dataholder.Key;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiMethod;
-import com.intellij.psi.PsiReference;
-import com.intellij.psi.impl.compiled.ClsMethodImpl;
-import consulo.codeInsight.TargetElementUtilEx;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Set;
 
 /**
  * @author Maxim.Medvedev
  */
-public class GroovyTargetElementUtilEx extends TargetElementUtilEx.Adapter
-{
-	public static final Key<Object> NAVIGATION_ELEMENT_IS_NOT_TARGET = Key.create("GroovyTargetElementEvaluator.DONT_FOLLOW_NAVIGATION_ELEMENT");
+public class GroovyTargetElementUtilEx implements TargetElementUtilExtender {
+  public static final Key<Object> NAVIGATION_ELEMENT_IS_NOT_TARGET =
+    Key.create("GroovyTargetElementEvaluator.DONT_FOLLOW_NAVIGATION_ELEMENT");
 
-	@Override
-	public PsiElement getReferenceOrReferencedElement(@Nonnull PsiReference ref, @Nonnull Set<String> flags)
-	{
-		PsiElement sourceElement = ref.getElement();
+  @Override
+  public PsiElement getReferenceOrReferencedElement(@Nonnull PsiReference ref, @Nonnull Set<String> flags) {
+    PsiElement sourceElement = ref.getElement();
 
-		if(sourceElement instanceof GrCodeReferenceElement)
-		{
-			GrNewExpression newExpr;
+    if (sourceElement instanceof GrCodeReferenceElement) {
+      GrNewExpression newExpr;
 
-			if(sourceElement.getParent() instanceof GrNewExpression)
-			{
-				newExpr = (GrNewExpression) sourceElement.getParent();
-			}
-			else if(sourceElement.getParent().getParent() instanceof GrNewExpression)
-			{//anonymous class declaration
-				newExpr = (GrNewExpression) sourceElement.getParent().getParent();
-			}
-			else
-			{
-				return null;
-			}
+      if (sourceElement.getParent() instanceof GrNewExpression) {
+        newExpr = (GrNewExpression)sourceElement.getParent();
+      }
+      else if (sourceElement.getParent().getParent() instanceof GrNewExpression) {//anonymous class declaration
+        newExpr = (GrNewExpression)sourceElement.getParent().getParent();
+      }
+      else {
+        return null;
+      }
 
-			final PsiMethod constructor = newExpr.resolveMethod();
-			final GrArgumentList argumentList = newExpr.getArgumentList();
-			if(constructor != null &&
-					argumentList != null &&
-					PsiImplUtil.hasNamedArguments(argumentList) &&
-					!PsiImplUtil.hasExpressionArguments(argumentList))
-			{
-				if(constructor.getParameterList().getParametersCount() == 0)
-				{
-					return constructor.getContainingClass();
-				}
-			}
+      final PsiMethod constructor = newExpr.resolveMethod();
+      final GrArgumentList argumentList = newExpr.getArgumentList();
+      if (constructor != null &&
+        argumentList != null &&
+        PsiImplUtil.hasNamedArguments(argumentList) &&
+        !PsiImplUtil.hasExpressionArguments(argumentList)) {
+        if (constructor.getParameterList().getParametersCount() == 0) {
+          return constructor.getContainingClass();
+        }
+      }
 
-			return constructor;
-		}
+      return constructor;
+    }
 
-		if(sourceElement instanceof GrReferenceExpression)
-		{
-			PsiElement resolved = ((GrReferenceExpression) sourceElement).resolve();
-			if(resolved instanceof GrGdkMethod || !(resolved instanceof GrRenameableLightElement))
-			{
-				return correctSearchTargets(resolved);
-			}
-			return resolved;
-		}
+    if (sourceElement instanceof GrReferenceExpression) {
+      PsiElement resolved = ((GrReferenceExpression)sourceElement).resolve();
+      if (resolved instanceof GrGdkMethod || !(resolved instanceof GrRenameableLightElement)) {
+        return correctSearchTargets(resolved);
+      }
+      return resolved;
+    }
 
-		return null;
-	}
+    return null;
+  }
 
-	@javax.annotation.Nullable
-	public static PsiElement correctSearchTargets(@javax.annotation.Nullable PsiElement target)
-	{
-		if(target instanceof ClsMethodImpl)
-		{
-			PsiElement mirror = ((ClsMethodImpl) target).getSourceMirrorMethod();
-			if(mirror != null)
-			{
-				return mirror.getNavigationElement();
-			}
-		}
-		if(target != null && !(target instanceof GrAccessorMethod) && target.getUserData(NAVIGATION_ELEMENT_IS_NOT_TARGET) == null)
-		{
-			return target.getNavigationElement();
-		}
-		return target;
-	}
+  @Nullable
+  public static PsiElement correctSearchTargets(@Nullable PsiElement target) {
+    if (target instanceof ClsMethodImpl) {
+      PsiElement mirror = ((ClsMethodImpl)target).getSourceMirrorMethod();
+      if (mirror != null) {
+        return mirror.getNavigationElement();
+      }
+    }
+    if (target != null && !(target instanceof GrAccessorMethod) && target.getUserData(NAVIGATION_ELEMENT_IS_NOT_TARGET) == null) {
+      return target.getNavigationElement();
+    }
+    return target;
+  }
 }

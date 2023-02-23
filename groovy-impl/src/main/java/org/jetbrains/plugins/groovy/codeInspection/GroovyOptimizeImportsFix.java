@@ -15,188 +15,169 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection;
 
-import javax.annotation.Nonnull;
-
+import consulo.application.ApplicationManager;
+import consulo.application.util.function.Processor;
+import consulo.codeEditor.Editor;
+import consulo.document.Document;
+import consulo.document.util.TextRange;
+import consulo.ide.impl.idea.codeInsight.daemon.impl.DaemonCodeAnalyzerImpl;
+import consulo.ide.impl.idea.codeInsight.daemon.impl.DaemonListeners;
+import consulo.language.editor.CodeInsightSettings;
+import consulo.language.editor.DaemonCodeAnalyzer;
+import consulo.language.editor.annotation.HighlightSeverity;
+import consulo.language.editor.intention.IntentionAction;
+import consulo.language.editor.rawHighlight.HighlightInfo;
+import consulo.language.editor.rawHighlight.HighlightInfoType;
+import consulo.language.psi.PsiDocumentManager;
+import consulo.language.psi.PsiFile;
+import consulo.language.util.IncorrectOperationException;
+import consulo.logging.Logger;
+import consulo.logging.attachment.AttachmentFactory;
+import consulo.module.content.ProjectRootManager;
+import consulo.project.Project;
+import consulo.undoRedo.ProjectUndoManager;
+import consulo.undoRedo.UndoManager;
+import consulo.undoRedo.util.UndoUtil;
+import consulo.util.lang.Comparing;
+import consulo.virtualFileSystem.VirtualFile;
 import org.jetbrains.plugins.groovy.editor.GroovyImportOptimizer;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.api.toplevel.imports.GrImportStatement;
-import com.intellij.codeInsight.CodeInsightSettings;
-import com.intellij.codeInsight.daemon.DaemonCodeAnalyzer;
-import com.intellij.codeInsight.daemon.impl.DaemonCodeAnalyzerEx;
-import com.intellij.codeInsight.daemon.impl.DaemonCodeAnalyzerImpl;
-import com.intellij.codeInsight.daemon.impl.DaemonListeners;
-import com.intellij.codeInsight.daemon.impl.HighlightInfo;
-import com.intellij.codeInsight.daemon.impl.HighlightInfoType;
-import com.intellij.codeInsight.intention.IntentionAction;
-import com.intellij.lang.annotation.HighlightSeverity;
-import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.command.undo.UndoManager;
-import com.intellij.openapi.diagnostic.Attachment;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.roots.ProjectRootManager;
-import com.intellij.openapi.util.Comparing;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.PsiDocumentManager;
-import com.intellij.psi.PsiFile;
-import com.intellij.util.DocumentUtil;
-import com.intellij.util.IncorrectOperationException;
-import com.intellij.util.Processor;
 
-public class GroovyOptimizeImportsFix implements IntentionAction
-{
-	private static final Logger LOG = Logger.getInstance("#org.jetbrains.plugins.groovy.codeInspection.local" +
-			".GroovyPostHighlightingPass");
-	private final boolean onTheFly;
+import javax.annotation.Nonnull;
 
-	public GroovyOptimizeImportsFix(boolean onTheFly)
-	{
-		this.onTheFly = onTheFly;
-	}
+public class GroovyOptimizeImportsFix implements IntentionAction {
+  private static final Logger LOG = Logger.getInstance("#org.jetbrains.plugins.groovy.codeInspection.local" +
+                                                         ".GroovyPostHighlightingPass");
+  private final boolean onTheFly;
 
-	@Override
-	public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException
-	{
-		final Runnable optimize = new GroovyImportOptimizer().processFile(file);
-		GroovyOptimizeImportsFix.invokeOnTheFlyImportOptimizer(optimize, file, editor);
-	}
+  public GroovyOptimizeImportsFix(boolean onTheFly) {
+    this.onTheFly = onTheFly;
+  }
 
-	@Override
-	@Nonnull
-	public String getText()
-	{
-		return GroovyInspectionBundle.message("optimize.all.imports");
-	}
+  @Override
+  public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
+    final Runnable optimize = new GroovyImportOptimizer().processFile(file);
+    GroovyOptimizeImportsFix.invokeOnTheFlyImportOptimizer(optimize, file, editor);
+  }
 
-	@Override
-	@Nonnull
-	public String getFamilyName()
-	{
-		return GroovyInspectionBundle.message("optimize.imports");
-	}
+  @Override
+  @Nonnull
+  public String getText() {
+    return GroovyInspectionBundle.message("optimize.all.imports");
+  }
 
-	@Override
-	public boolean startInWriteAction()
-	{
-		return false;
-	}
+  //@Override
+  @Nonnull
+  public String getFamilyName() {
+    return GroovyInspectionBundle.message("optimize.imports");
+  }
 
-	@Override
-	public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file)
-	{
-		return file instanceof GroovyFile && (!onTheFly || timeToOptimizeImports((GroovyFile) file, editor));
-	}
+  @Override
+  public boolean startInWriteAction() {
+    return false;
+  }
 
-	private boolean timeToOptimizeImports(GroovyFile myFile, Editor editor)
-	{
-		if(!CodeInsightSettings.getInstance().OPTIMIZE_IMPORTS_ON_THE_FLY)
-		{
-			return false;
-		}
-		if(onTheFly && editor != null)
-		{
-			// if we stand inside import statements, do not optimize
-			final VirtualFile vfile = myFile.getVirtualFile();
-			if(vfile != null && ProjectRootManager.getInstance(myFile.getProject()).getFileIndex().isInSource(vfile))
-			{
-				final GrImportStatement[] imports = myFile.getImportStatements();
-				if(imports.length > 0)
-				{
-					final int offset = editor.getCaretModel().getOffset();
-					if(imports[0].getTextRange().getStartOffset() <= offset && offset <= imports[imports.length - 1]
-							.getTextRange().getEndOffset())
-					{
-						return false;
-					}
-				}
-			}
-		}
+  @Override
+  public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file) {
+    return file instanceof GroovyFile && (!onTheFly || timeToOptimizeImports((GroovyFile)file, editor));
+  }
 
-		DaemonCodeAnalyzerImpl codeAnalyzer = (DaemonCodeAnalyzerImpl) DaemonCodeAnalyzer.getInstance(myFile
-				.getProject());
-		if(!codeAnalyzer.isHighlightingAvailable(myFile))
-		{
-			return false;
-		}
+  private boolean timeToOptimizeImports(GroovyFile myFile, Editor editor) {
+    if (!CodeInsightSettings.getInstance().OPTIMIZE_IMPORTS_ON_THE_FLY) {
+      return false;
+    }
+    if (onTheFly && editor != null) {
+      // if we stand inside import statements, do not optimize
+      final VirtualFile vfile = myFile.getVirtualFile();
+      if (vfile != null && ProjectRootManager.getInstance(myFile.getProject()).getFileIndex().isInSource(vfile)) {
+        final GrImportStatement[] imports = myFile.getImportStatements();
+        if (imports.length > 0) {
+          final int offset = editor.getCaretModel().getOffset();
+          if (imports[0].getTextRange().getStartOffset() <= offset && offset <= imports[imports.length - 1]
+            .getTextRange().getEndOffset()) {
+            return false;
+          }
+        }
+      }
+    }
 
-		if(!codeAnalyzer.isErrorAnalyzingFinished(myFile))
-		{
-			return false;
-		}
-		Document myDocument = PsiDocumentManager.getInstance(myFile.getProject()).getDocument(myFile);
-		boolean errors = containsErrorsPreventingOptimize(myFile, myDocument);
+    DaemonCodeAnalyzerImpl codeAnalyzer = (DaemonCodeAnalyzerImpl)DaemonCodeAnalyzer.getInstance(myFile
+                                                                                                   .getProject());
+    if (!codeAnalyzer.isHighlightingAvailable(myFile)) {
+      return false;
+    }
 
-		return !errors && DaemonListeners.canChangeFileSilently(myFile);
-	}
+    if (!codeAnalyzer.isErrorAnalyzingFinished(myFile)) {
+      return false;
+    }
+    Document myDocument = PsiDocumentManager.getInstance(myFile.getProject()).getDocument(myFile);
+    boolean errors = containsErrorsPreventingOptimize(myFile, myDocument);
 
-	private boolean containsErrorsPreventingOptimize(GroovyFile myFile, Document myDocument)
-	{
-		// ignore unresolved imports errors
-		final TextRange ignoreRange;
-		final GrImportStatement[] imports = myFile.getImportStatements();
-		if(imports.length != 0)
-		{
-			final int start = imports[0].getTextRange().getStartOffset();
-			final int end = imports[imports.length - 1].getTextRange().getEndOffset();
-			ignoreRange = new TextRange(start, end);
-		}
-		else
-		{
-			ignoreRange = TextRange.EMPTY_RANGE;
-		}
+    return !errors && DaemonListeners.canChangeFileSilently(myFile);
+  }
 
-		return !DaemonCodeAnalyzerEx.processHighlights(myDocument, myFile.getProject(), HighlightSeverity.ERROR, 0,
-				myDocument.getTextLength(), new Processor<HighlightInfo>()
-		{
-			@Override
-			public boolean process(HighlightInfo error)
-			{
-				int infoStart = error.getActualStartOffset();
-				int infoEnd = error.getActualEndOffset();
+  private boolean containsErrorsPreventingOptimize(GroovyFile myFile, Document myDocument) {
+    // ignore unresolved imports errors
+    final TextRange ignoreRange;
+    final GrImportStatement[] imports = myFile.getImportStatements();
+    if (imports.length != 0) {
+      final int start = imports[0].getTextRange().getStartOffset();
+      final int end = imports[imports.length - 1].getTextRange().getEndOffset();
+      ignoreRange = new TextRange(start, end);
+    }
+    else {
+      ignoreRange = TextRange.EMPTY_RANGE;
+    }
 
-				return ignoreRange.containsRange(infoStart, infoEnd) && error.type.equals(HighlightInfoType.WRONG_REF);
-			}
-		});
-	}
+    return !DaemonCodeAnalyzer.processHighlights(myDocument,
+                                                 myFile.getProject(),
+                                                 HighlightSeverity.ERROR,
+                                                 0,
+                                                 myDocument.getTextLength(),
+                                                 new Processor<HighlightInfo>() {
+                                                   @Override
+                                                   public boolean process(HighlightInfo error) {
+                                                     int infoStart =
+                                                       error.getActualStartOffset();
+                                                     int infoEnd =
+                                                       error.getActualEndOffset();
 
-	public static void invokeOnTheFlyImportOptimizer(@Nonnull final Runnable runnable,
-			@Nonnull final PsiFile file,
-			@Nonnull final Editor editor)
-	{
-		final long stamp = editor.getDocument().getModificationStamp();
-		ApplicationManager.getApplication().invokeLater(new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				if(file.getProject().isDisposed() || editor.isDisposed() || editor.getDocument().getModificationStamp() != stamp)
+                                                     return ignoreRange.containsRange(
+                                                       infoStart,
+                                                       infoEnd) && error.getType().equals(
+                                                       HighlightInfoType.WRONG_REF);
+                                                   }
+                                                 });
+  }
 
-				{
-					return;
-				}
-				//no need to optimize imports on the fly during undo/redo
-				final UndoManager undoManager = UndoManager.getInstance(editor.getProject());
-				if(undoManager.isUndoInProgress() || undoManager.isRedoInProgress())
-				{
-					return;
-				}
-				PsiDocumentManager.getInstance(file.getProject()).commitAllDocuments();
-				String beforeText = file.getText();
-				final long oldStamp = editor.getDocument().getModificationStamp();
-				DocumentUtil.writeInRunUndoTransparentAction(runnable);
-				if(oldStamp != editor.getDocument().getModificationStamp())
-				{
-					String afterText = file.getText();
-					if(Comparing.strEqual(beforeText, afterText))
-					{
-						String path = file.getViewProvider().getVirtualFile().getPath();
-						LOG.error("Import optimizer  hasn't optimized any imports", new Attachment(path, afterText));
-					}
-				}
-			}
-		});
-	}
+  public static void invokeOnTheFlyImportOptimizer(@Nonnull final Runnable runnable,
+                                                   @Nonnull final PsiFile file,
+                                                   @Nonnull final Editor editor) {
+    final long stamp = editor.getDocument().getModificationStamp();
+    ApplicationManager.getApplication().invokeLater(new Runnable() {
+      @Override
+      public void run() {
+        if (file.getProject().isDisposed() || editor.isDisposed() || editor.getDocument().getModificationStamp() != stamp) {
+          return;
+        }
+        //no need to optimize imports on the fly during undo/redo
+        final UndoManager undoManager = ProjectUndoManager.getInstance(editor.getProject());
+        if (undoManager.isUndoInProgress() || undoManager.isRedoInProgress()) {
+          return;
+        }
+        PsiDocumentManager.getInstance(file.getProject()).commitAllDocuments();
+        String beforeText = file.getText();
+        final long oldStamp = editor.getDocument().getModificationStamp();
+        UndoUtil.writeInRunUndoTransparentAction(runnable);
+        if (oldStamp != editor.getDocument().getModificationStamp()) {
+          String afterText = file.getText();
+          if (Comparing.strEqual(beforeText, afterText)) {
+            String path = file.getViewProvider().getVirtualFile().getPath();
+            LOG.error("Import optimizer  hasn't optimized any imports", AttachmentFactory.get().create(path, afterText));
+          }
+        }
+      }
+    });
+  }
 }

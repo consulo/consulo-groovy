@@ -17,19 +17,26 @@
 package org.jetbrains.plugins.groovy.editor;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
+import consulo.codeEditor.Editor;
+import consulo.codeEditor.action.EditorActionHandler;
+import consulo.dataContext.DataContext;
+import consulo.language.editor.CommonDataKeys;
+import consulo.language.psi.PsiFile;
+import consulo.project.Project;
 import org.jetbrains.plugins.groovy.GroovyFileType;
-import com.intellij.lang.Language;
-import com.intellij.openapi.actionSystem.CommonDataKeys;
-import com.intellij.openapi.actionSystem.DataContext;
-import com.intellij.openapi.actionSystem.LangDataKeys;
-import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.editor.actionSystem.EditorActionHandler;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiDocumentManager;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.util.PsiUtilBase;
+import consulo.language.Language;
+import consulo.language.editor.CommonDataKeys;
+import consulo.dataContext.DataContext;
+import consulo.language.editor.LangDataKeys;
+import consulo.document.Document;
+import consulo.codeEditor.Editor;
+import consulo.codeEditor.action.EditorActionHandler;
+import consulo.project.Project;
+import consulo.language.psi.PsiDocumentManager;
+import consulo.language.psi.PsiFile;
+import consulo.language.editor.util.PsiUtilBase;
 
 /**
  * @author ilyas
@@ -40,7 +47,7 @@ public class HandlerUtils
 	{
 	}
 
-	public static boolean isEnabled(@Nonnull final Editor editor, @Nonnull final DataContext dataContext, @javax.annotation.Nullable final EditorActionHandler originalHandler)
+	public static boolean isEnabled(@Nonnull final Editor editor, @Nonnull final DataContext dataContext, @Nullable final EditorActionHandler originalHandler)
 	{
 		final Project project = getProject(dataContext);
 		if(project != null)
@@ -89,13 +96,13 @@ public class HandlerUtils
 		return PsiDocumentManager.getInstance(project).getPsiFile(editor.getDocument());
 	}
 
-	@javax.annotation.Nullable
+	@Nullable
 	public static Language getLanguage(@Nonnull final DataContext dataContext)
 	{
 		return dataContext.getData(LangDataKeys.LANGUAGE);
 	}
 
-	@javax.annotation.Nullable
+	@Nullable
 	public static Project getProject(@Nonnull final DataContext dataContext)
 	{
 		return dataContext.getData(CommonDataKeys.PROJECT);

@@ -15,26 +15,30 @@
  */
 package org.jetbrains.plugins.groovy.lang.completion.handlers;
 
-import com.intellij.codeInsight.completion.InsertHandler;
-import com.intellij.codeInsight.completion.InsertionContext;
-import com.intellij.codeInsight.lookup.Lookup;
-import com.intellij.codeInsight.lookup.LookupElement;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.editor.EditorModificationUtil;
-import com.intellij.openapi.editor.ScrollType;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.*;
-import com.intellij.psi.codeStyle.CodeStyleSettings;
-import com.intellij.psi.codeStyle.CodeStyleSettingsManager;
-import com.intellij.psi.codeStyle.JavaCodeStyleManager;
-import com.intellij.psi.javadoc.PsiDocTag;
-import com.intellij.psi.javadoc.PsiDocTagValue;
-import com.intellij.psi.javadoc.PsiInlineDocTag;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.psi.util.TypeConversionUtil;
-import com.intellij.util.IncorrectOperationException;
-import com.intellij.util.text.CharArrayUtil;
+import com.intellij.java.language.psi.PsiMethod;
+import com.intellij.java.language.psi.PsiParameter;
+import com.intellij.java.language.psi.PsiType;
+import com.intellij.java.language.psi.codeStyle.JavaCodeStyleManager;
+import com.intellij.java.language.psi.javadoc.PsiDocTag;
+import com.intellij.java.language.psi.javadoc.PsiDocTagValue;
+import com.intellij.java.language.psi.javadoc.PsiInlineDocTag;
+import com.intellij.java.language.psi.util.TypeConversionUtil;
+import consulo.codeEditor.Editor;
+import consulo.codeEditor.ScrollType;
+import consulo.ide.impl.idea.openapi.editor.EditorModificationUtil;
+import consulo.language.codeStyle.CodeStyleSettings;
+import consulo.language.codeStyle.CodeStyleSettingsManager;
+import consulo.language.editor.completion.lookup.InsertHandler;
+import consulo.language.editor.completion.lookup.InsertionContext;
+import consulo.language.editor.completion.lookup.Lookup;
+import consulo.language.editor.completion.lookup.LookupElement;
+import consulo.language.psi.PsiDocumentManager;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.language.util.IncorrectOperationException;
+import consulo.logging.Logger;
+import consulo.project.Project;
+import consulo.util.lang.CharArrayUtil;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocMemberReference;
 
 /**

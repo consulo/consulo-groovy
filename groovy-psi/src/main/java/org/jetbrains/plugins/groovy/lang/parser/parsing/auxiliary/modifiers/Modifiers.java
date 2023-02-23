@@ -16,13 +16,13 @@
 
 package org.jetbrains.plugins.groovy.lang.parser.parsing.auxiliary.modifiers;
 
+import consulo.language.parser.PsiBuilder;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.lexer.TokenSets;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyParser;
 import org.jetbrains.plugins.groovy.lang.parser.parsing.auxiliary.annotations.Annotation;
 import org.jetbrains.plugins.groovy.lang.parser.parsing.util.ParserUtils;
-import com.intellij.lang.PsiBuilder;
 
 /**
  * @autor: Dmitry.Krasilschikov

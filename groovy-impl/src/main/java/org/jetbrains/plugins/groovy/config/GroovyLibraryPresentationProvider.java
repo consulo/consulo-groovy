@@ -15,19 +15,20 @@
  */
 package org.jetbrains.plugins.groovy.config;
 
-import java.io.File;
+import consulo.content.base.BinariesOrderRootType;
+import consulo.content.base.SourcesOrderRootType;
+import consulo.content.library.LibraryKind;
+import consulo.content.library.ui.LibraryEditor;
+import consulo.ide.impl.idea.openapi.vfs.VfsUtil;
+import consulo.ui.image.Image;
+import consulo.virtualFileSystem.VirtualFile;
+import consulo.virtualFileSystem.util.VirtualFileUtil;
+import org.jetbrains.annotations.Nls;
+import org.jetbrains.plugins.groovy.JetgroovyIcons;
+import org.jetbrains.plugins.groovy.util.LibrariesUtil;
 
 import javax.annotation.Nonnull;
-
-import org.jetbrains.annotations.Nls;
-import org.jetbrains.plugins.groovy.util.LibrariesUtil;
-import com.intellij.openapi.roots.OrderRootType;
-import com.intellij.openapi.roots.libraries.LibraryKind;
-import com.intellij.openapi.roots.ui.configuration.libraryEditor.LibraryEditor;
-import com.intellij.openapi.vfs.VfsUtil;
-import com.intellij.openapi.vfs.VirtualFile;
-import consulo.ui.image.Image;
-import icons.JetgroovyIcons;
+import java.io.File;
 
 /**
  * @author nik
@@ -64,24 +65,25 @@ public class GroovyLibraryPresentationProvider extends GroovyLibraryPresentation
   @Override
   protected void fillLibrary(String path, LibraryEditor libraryEditor) {
     File srcRoot = new File(path + "/src/main");
-      if (srcRoot.exists()) {
-        libraryEditor.addRoot(VfsUtil.getUrlForLibraryRoot(srcRoot), OrderRootType.SOURCES);
-      }
+    if (srcRoot.exists()) {
+      libraryEditor.addRoot(VirtualFileUtil.getUrlForLibraryRoot(srcRoot), SourcesOrderRootType.getInstance());
+    }
 
-      File[] jars;
-      File libDir = new File(path + "/lib");
-      if (libDir.exists()) {
-        jars = libDir.listFiles();
-      } else {
-        jars = new File(path + "/embeddable").listFiles();
-      }
-      if (jars != null) {
-        for (File file : jars) {
-          if (file.getName().endsWith(".jar")) {
-            libraryEditor.addRoot(VfsUtil.getUrlForLibraryRoot(file), OrderRootType.CLASSES);
-          }
+    File[] jars;
+    File libDir = new File(path + "/lib");
+    if (libDir.exists()) {
+      jars = libDir.listFiles();
+    }
+    else {
+      jars = new File(path + "/embeddable").listFiles();
+    }
+    if (jars != null) {
+      for (File file : jars) {
+        if (file.getName().endsWith(".jar")) {
+          libraryEditor.addRoot(VfsUtil.getUrlForLibraryRoot(file), BinariesOrderRootType.getInstance());
         }
       }
+    }
   }
 
   @Nonnull

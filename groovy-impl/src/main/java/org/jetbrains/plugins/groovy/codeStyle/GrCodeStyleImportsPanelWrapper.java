@@ -15,15 +15,15 @@
  */
 package org.jetbrains.plugins.groovy.codeStyle;
 
-import com.intellij.application.options.CodeStyleAbstractPanel;
-import com.intellij.ide.highlighter.JavaFileType;
-import com.intellij.openapi.application.ApplicationBundle;
-import com.intellij.openapi.editor.colors.EditorColorsScheme;
-import com.intellij.openapi.editor.highlighter.EditorHighlighter;
-import com.intellij.openapi.fileTypes.FileType;
-import com.intellij.psi.codeStyle.CodeStyleSettings;
-import javax.annotation.Nonnull;
+import com.intellij.java.language.impl.JavaFileType;
+import consulo.application.ApplicationBundle;
+import consulo.codeEditor.EditorHighlighter;
+import consulo.colorScheme.EditorColorsScheme;
+import consulo.language.codeStyle.CodeStyleSettings;
+import consulo.language.codeStyle.ui.setting.CodeStyleAbstractPanel;
+import consulo.virtualFileSystem.fileType.FileType;
 
+import javax.annotation.Nonnull;
 import javax.swing.*;
 
 /**

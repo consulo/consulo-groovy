@@ -15,14 +15,14 @@
  */
 package org.jetbrains.plugins.groovy.doc.actions;
 
-import com.intellij.ide.util.PackageChooserDialog;
-import com.intellij.openapi.actionSystem.AnAction;
-import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.project.DumbAware;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiJavaPackage;
-import com.intellij.util.IconUtil;
+import com.intellij.java.language.impl.codeInsight.PackageChooserDialog;
+import com.intellij.java.language.psi.PsiJavaPackage;
+import consulo.application.dumb.DumbAware;
+import consulo.ide.impl.idea.util.IconUtil;
+import consulo.project.Project;
 import consulo.ui.annotation.RequiredUIAccess;
+import consulo.ui.ex.action.AnAction;
+import consulo.ui.ex.action.AnActionEvent;
 import org.jetbrains.plugins.groovy.doc.GroovyDocConfiguration;
 
 import javax.swing.*;
@@ -32,35 +32,30 @@ import java.util.List;
  * User: Dmitry.Krasilschikov
  * Date: 14.10.2008
  */
-public class GroovyDocAddPackageAction extends AnAction implements DumbAware
-{
-	private final DefaultListModel myDataModel;
+public class GroovyDocAddPackageAction extends AnAction implements DumbAware {
+  private final DefaultListModel myDataModel;
 
-	public GroovyDocAddPackageAction(final DefaultListModel dataModel)
-	{
-		super("Add package", "Add package", IconUtil.getAddIcon());
-		myDataModel = dataModel;
-	}
+  public GroovyDocAddPackageAction(final DefaultListModel dataModel) {
+    super("Add package", "Add package", IconUtil.getAddIcon());
+    myDataModel = dataModel;
+  }
 
-	@RequiredUIAccess
-	public void actionPerformed(final AnActionEvent e)
-	{
-		final Project project = e.getProject();
+  @RequiredUIAccess
+  public void actionPerformed(final AnActionEvent e) {
+    final Project project = e.getData(Project.KEY);
 
-		PackageChooserDialog chooser = new PackageChooserDialog("Choose packages", project);
-		chooser.show();
+    PackageChooserDialog chooser = new PackageChooserDialog("Choose packages", project);
+    chooser.show();
 
-		final List<PsiJavaPackage> packages = chooser.getSelectedPackages();
+    final List<PsiJavaPackage> packages = chooser.getSelectedPackages();
 
-		for(PsiJavaPackage aPackage : packages)
-		{
-			final String qualifiedName = aPackage.getQualifiedName();
+    for (PsiJavaPackage aPackage : packages) {
+      final String qualifiedName = aPackage.getQualifiedName();
 
-			if(qualifiedName.isEmpty())
-			{
-				myDataModel.addElement(GroovyDocConfiguration.ALL_PACKAGES);
-			}
-			myDataModel.addElement(qualifiedName);
-		}
-	}
+      if (qualifiedName.isEmpty()) {
+        myDataModel.addElement(GroovyDocConfiguration.ALL_PACKAGES);
+      }
+      myDataModel.addElement(qualifiedName);
+    }
+  }
 }

@@ -15,13 +15,13 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.typeEnhancers;
 
-import com.intellij.openapi.util.Condition;
-import com.intellij.openapi.util.Pair;
-import com.intellij.psi.*;
-import com.intellij.util.ArrayUtil;
-import com.intellij.util.containers.ContainerUtil;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.intellij.java.language.psi.*;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiMirrorElement;
+import consulo.util.collection.ArrayUtil;
+import consulo.util.collection.ContainerUtil;
+import consulo.util.lang.Pair;
+import consulo.util.lang.function.Condition;
 import org.jetbrains.plugins.groovy.config.GroovyConfigUtils;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrArgumentList;
@@ -32,6 +32,8 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.GrAnnotationUtil;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames;
 import org.jetbrains.plugins.groovy.lang.resolve.ResolveUtil;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
 
@@ -40,7 +42,7 @@ import java.util.List;
  */
 public class ClosureParamsEnhancer extends AbstractClosureParameterEnhancer {
 
-  @javax.annotation.Nullable
+  @Nullable
   @Override
   protected PsiType getClosureParameterType(GrClosableBlock closure, int index) {
     if (!GroovyConfigUtils.getInstance().isVersionAtLeast(closure, GroovyConfigUtils.GROOVY2_3)) return null;

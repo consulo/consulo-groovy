@@ -20,7 +20,7 @@ package org.jetbrains.plugins.groovy.intentions;
 import com.intellij.codeInsight.intention.IntentionAction
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.openapi.util.text.StringUtil
-import com.intellij.psi.impl.source.PostprocessReformattingAspect
+import com.intellij.java.language.psi.impl.source.PostprocessReformattingAspect
 import com.intellij.testFramework.fixtures.LightCodeInsightFixtureTestCase
 import com.intellij.util.Function
 import org.jetbrains.annotations.NotNull

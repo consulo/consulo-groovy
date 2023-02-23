@@ -18,12 +18,12 @@ package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions;
 
 import javax.annotation.Nonnull;
 
+import consulo.language.ast.ASTNode;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrArrayDeclaration;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyPsiElementImpl;
-import com.intellij.lang.ASTNode;
 
 /**
  * @author ilyas

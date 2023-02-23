@@ -16,16 +16,22 @@
 
 package org.jetbrains.plugins.groovy.codeInspection.assignment;
 
-import javax.annotation.Nonnull;
-
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.codeInspection.type.GroovyTypeCheckVisitor;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author Maxim.Medvedev
  */
 public class GroovyAssignabilityCheckInspection extends BaseInspection {
+
+  @Nonnull
+  @Override
+  public String getDisplayName() {
+    return "Incompatible type assignments";
+  }
 
   @Nonnull
   @Override

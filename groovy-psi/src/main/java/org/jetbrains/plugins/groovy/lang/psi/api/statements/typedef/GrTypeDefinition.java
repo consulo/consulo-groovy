@@ -16,11 +16,12 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef;
 
-import javax.annotation.Nonnull;
-
+import com.intellij.java.language.psi.PsiClass;
+import com.intellij.java.language.psi.PsiField;
+import com.intellij.java.language.psi.PsiMethod;
+import consulo.language.psi.NavigatablePsiElement;
+import consulo.util.collection.ArrayFactory;
 import org.jetbrains.annotations.NonNls;
-
-import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocCommentOwner;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrClassInitializer;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
@@ -30,83 +31,79 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMe
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
 import org.jetbrains.plugins.groovy.lang.psi.api.toplevel.GrTopStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeParameterList;
-import com.intellij.psi.NavigatablePsiElement;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiField;
-import com.intellij.psi.PsiMethod;
-import com.intellij.util.ArrayFactory;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @autor: Dmitry.Krasilschikov
  * @date: 18.03.2007
  */
 public interface GrTypeDefinition
-		extends GrTopStatement, NavigatablePsiElement, PsiClass, GrTopLevelDefinition, GrDocCommentOwner, GrMember {
+  extends GrTopStatement, NavigatablePsiElement, PsiClass, GrTopLevelDefinition, GrDocCommentOwner, GrMember {
 
-	public static final GrTypeDefinition[] EMPTY_ARRAY = new GrTypeDefinition[0];
+  public static final GrTypeDefinition[] EMPTY_ARRAY = new GrTypeDefinition[0];
 
-	public static ArrayFactory<GrTypeDefinition> ARRAY_FACTORY = new ArrayFactory<GrTypeDefinition>()
-	{
-		@Nonnull
-		@Override
-		public GrTypeDefinition[] create(int count)
-		{
-			return count == 0 ? EMPTY_ARRAY : new GrTypeDefinition[count];
-		}
-	};
+  public static ArrayFactory<GrTypeDefinition> ARRAY_FACTORY = new ArrayFactory<GrTypeDefinition>() {
+    @Nonnull
+    @Override
+    public GrTypeDefinition[] create(int count) {
+      return count == 0 ? EMPTY_ARRAY : new GrTypeDefinition[count];
+    }
+  };
 
-	boolean isTrait();
+  boolean isTrait();
 
-	@Nullable
-	GrTypeDefinitionBody getBody();
+  @Nullable
+  GrTypeDefinitionBody getBody();
 
-	@Override
-	@Nonnull
-	GrField[] getFields();
+  @Override
+  @Nonnull
+  GrField[] getFields();
 
-	@Nonnull
-	GrField[] getCodeFields();
+  @Nonnull
+  GrField[] getCodeFields();
 
-	@Nonnull
-	GrMethod[] getCodeConstructors();
+  @Nonnull
+  GrMethod[] getCodeConstructors();
 
-	@javax.annotation.Nullable
-	PsiField findCodeFieldByName(String name, boolean checkBases);
+  @Nullable
+  PsiField findCodeFieldByName(String name, boolean checkBases);
 
-	@Override
-	@Nonnull
-	GrClassInitializer[] getInitializers();
+  @Override
+  @Nonnull
+  GrClassInitializer[] getInitializers();
 
-	@Nonnull
-	GrMembersDeclaration[] getMemberDeclarations();
+  @Nonnull
+  GrMembersDeclaration[] getMemberDeclarations();
 
-	@Override
-	@Nullable
-	String getQualifiedName();
+  @Override
+  @Nullable
+  String getQualifiedName();
 
-	@javax.annotation.Nullable
-	GrExtendsClause getExtendsClause();
+  @Nullable
+  GrExtendsClause getExtendsClause();
 
-	@javax.annotation.Nullable
-	GrImplementsClause getImplementsClause();
+  @Nullable
+  GrImplementsClause getImplementsClause();
 
-	String[] getSuperClassNames();
+  String[] getSuperClassNames();
 
-	@Nonnull
-	GrMethod[] getCodeMethods();
+  @Nonnull
+  GrMethod[] getCodeMethods();
 
-	@Nonnull
-	PsiMethod[] findCodeMethodsByName(@NonNls String name, boolean checkBases);
+  @Nonnull
+  PsiMethod[] findCodeMethodsByName(@NonNls String name, boolean checkBases);
 
-	@Nonnull
-	PsiMethod[] findCodeMethodsBySignature(PsiMethod patternMethod, boolean checkBases);
+  @Nonnull
+  PsiMethod[] findCodeMethodsBySignature(PsiMethod patternMethod, boolean checkBases);
 
-	boolean isAnonymous();
+  boolean isAnonymous();
 
-	@Override
-	@javax.annotation.Nullable
-	String getName();
+  @Override
+  @Nullable
+  String getName();
 
-	@Override
-	GrTypeParameterList getTypeParameterList();
+  @Override
+  GrTypeParameterList getTypeParameterList();
 }

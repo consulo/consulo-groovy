@@ -1,7 +1,7 @@
 package org.jetbrains.plugins.groovy.dsl.toplevel;
 
+import consulo.language.util.ProcessingContext;
 import org.jetbrains.plugins.groovy.dsl.GroovyClassDescriptor;
-import com.intellij.util.ProcessingContext;
 
 /**
  * @author peter

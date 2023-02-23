@@ -15,11 +15,13 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.changeSignature;
 
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.JavaCodeFragmentFactory;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiType;
-import com.intellij.psi.PsiTypeCodeFragment;
+import consulo.language.psi.PsiElement;
+import consulo.project.Project;
+import com.intellij.java.language.psi.JavaCodeFragmentFactory;
+import consulo.language.psi.PsiElement;
+import com.intellij.java.language.psi.PsiType;
+import com.intellij.java.language.psi.PsiTypeCodeFragment;
+import consulo.project.Project;
 import org.jetbrains.plugins.groovy.debugger.fragments.GroovyCodeFragment;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameter;

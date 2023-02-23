@@ -1,3 +1,5 @@
+import java.lang.Object;
+
 /**
  * class comment
  */
@@ -6,27 +8,27 @@ public class Foo {
    * method comment
    * @param f
    */
-public <A, B> void abc(java.lang.Object f) {}
+public <A, B> void abc(Object f) {}
 
 public void abr() {
 abc(null);
 }
 
-public java.lang.Object getA() {
+public Object getA() {
  return a;
 }
-public void setA(java.lang.Object a) {
+public void setA(Object a) {
 this.a = a;
 }
-public java.lang.Object getB() {
+public Object getB() {
  return b;
 }
-public void setB(java.lang.Object b) {
+public void setB(Object b) {
 this.b = b;
 }
 /**
    * field comment
    */
-private java.lang.Object a;
-private java.lang.Object b;
+private Object a;
+private Object b;
 }

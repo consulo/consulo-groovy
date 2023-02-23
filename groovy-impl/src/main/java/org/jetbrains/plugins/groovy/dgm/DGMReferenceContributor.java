@@ -15,16 +15,18 @@
  */
 package org.jetbrains.plugins.groovy.dgm;
 
+import com.intellij.java.impl.psi.impl.source.resolve.reference.impl.providers.JavaClassReferenceProvider;
+import com.intellij.java.impl.psi.impl.source.resolve.reference.impl.providers.JavaClassReferenceSet;
 import com.intellij.lang.properties.IProperty;
+import com.intellij.lang.properties.PropertiesLanguage;
 import com.intellij.lang.properties.parsing.PropertiesTokenTypes;
-import com.intellij.patterns.PlatformPatterns;
-import com.intellij.psi.*;
-import com.intellij.psi.impl.source.resolve.reference.impl.providers.JavaClassReferenceProvider;
-import com.intellij.psi.impl.source.resolve.reference.impl.providers.JavaClassReferenceSet;
-import com.intellij.util.ProcessingContext;
-import com.intellij.util.containers.ContainerUtil;
-import javax.annotation.Nonnull;
+import consulo.language.Language;
+import consulo.language.pattern.PlatformPatterns;
+import consulo.language.psi.*;
+import consulo.language.util.ProcessingContext;
+import consulo.util.collection.ContainerUtil;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 
 /**
@@ -82,5 +84,11 @@ public class DGMReferenceContributor extends PsiReferenceContributor {
       i++;
     }
     return i;
+  }
+
+  @Nonnull
+  @Override
+  public Language getLanguage() {
+    return PropertiesLanguage.INSTANCE;
   }
 }

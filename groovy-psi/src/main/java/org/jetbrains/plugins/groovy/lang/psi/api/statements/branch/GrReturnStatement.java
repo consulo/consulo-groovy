@@ -16,8 +16,9 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.api.statements.branch;
 
-import com.intellij.psi.PsiElement;
+import consulo.language.psi.PsiElement;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
@@ -26,7 +27,7 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpres
  * @author ilyas
  */
 public interface GrReturnStatement extends GrStatement {
-  @javax.annotation.Nullable
+  @Nullable
   GrExpression getReturnValue();
 
   @Nonnull

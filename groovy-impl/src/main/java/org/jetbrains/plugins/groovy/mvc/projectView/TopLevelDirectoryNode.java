@@ -17,11 +17,14 @@ package org.jetbrains.plugins.groovy.mvc.projectView;
 
 import javax.annotation.Nonnull;
 
-import com.intellij.ide.projectView.PresentationData;
-import com.intellij.ide.projectView.ViewSettings;
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.util.Comparing;
-import com.intellij.psi.PsiDirectory;
+import consulo.language.psi.PsiDirectory;
+import consulo.module.Module;
+import consulo.ui.ex.tree.PresentationData;
+import consulo.project.ui.view.tree.ViewSettings;
+import consulo.module.Module;
+import consulo.util.lang.Comparing;
+import consulo.language.psi.PsiDirectory;
+import consulo.ui.ex.tree.PresentationData;
 import consulo.ui.image.Image;
 
 /**

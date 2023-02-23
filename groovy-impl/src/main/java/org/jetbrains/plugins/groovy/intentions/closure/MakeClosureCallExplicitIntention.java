@@ -17,6 +17,10 @@ package org.jetbrains.plugins.groovy.intentions.closure;
 
 import javax.annotation.Nonnull;
 
+import consulo.codeEditor.Editor;
+import consulo.language.psi.PsiElement;
+import consulo.language.util.IncorrectOperationException;
+import consulo.project.Project;
 import org.jetbrains.plugins.groovy.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.intentions.base.PsiElementPredicate;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrArgumentList;
@@ -24,10 +28,10 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlo
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.path.GrMethodCallExpression;
 import org.jetbrains.plugins.groovy.lang.psi.impl.PsiImplUtil;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiElement;
-import com.intellij.util.IncorrectOperationException;
+import consulo.codeEditor.Editor;
+import consulo.project.Project;
+import consulo.language.psi.PsiElement;
+import consulo.language.util.IncorrectOperationException;
 
 public class MakeClosureCallExplicitIntention extends Intention {
 
@@ -38,7 +42,8 @@ public class MakeClosureCallExplicitIntention extends Intention {
     }
 
     public void processIntention(@Nonnull PsiElement element, Project project, Editor editor)
-            throws IncorrectOperationException {
+            throws IncorrectOperationException
+	{
         final GrMethodCallExpression expression =
                 (GrMethodCallExpression) element;
         final GrExpression invokedExpression = expression.getInvokedExpression();

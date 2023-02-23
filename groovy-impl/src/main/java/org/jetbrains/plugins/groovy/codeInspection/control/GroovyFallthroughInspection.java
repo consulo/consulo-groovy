@@ -15,10 +15,13 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.control;
 
-import com.intellij.psi.PsiComment;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiWhiteSpace;
-import com.intellij.psi.util.PsiTreeUtil;
+import consulo.language.psi.PsiComment;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiWhiteSpace;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.language.psi.PsiComment;
+import consulo.language.psi.PsiWhiteSpace;
+import consulo.language.psi.util.PsiTreeUtil;
 import org.jetbrains.annotations.Nls;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

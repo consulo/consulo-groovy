@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.annotator.intentions.dynamic.ui;
 
-import com.intellij.psi.PsiClass;
+import com.intellij.java.language.psi.PsiClass;
 import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.annotator.intentions.QuickfixUtil;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrArgumentLabel;

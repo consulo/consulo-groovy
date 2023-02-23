@@ -15,8 +15,11 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.confusing;
 
+import com.intellij.java.language.psi.PsiType;
+import consulo.language.editor.inspection.LocalQuickFix;
+import consulo.language.editor.inspection.ProblemHighlightType;
+import consulo.language.psi.PsiElement;
 import org.jetbrains.annotations.Nls;
-import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.codeInspection.GroovyInspectionBundle;
@@ -29,10 +32,8 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrAnonymousC
 import org.jetbrains.plugins.groovy.lang.psi.impl.GrReassignedLocalVarsChecker;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
-import com.intellij.codeInspection.LocalQuickFix;
-import com.intellij.codeInspection.ProblemHighlightType;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiType;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author Max Medvedev

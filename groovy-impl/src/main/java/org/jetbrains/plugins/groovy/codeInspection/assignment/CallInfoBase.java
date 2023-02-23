@@ -15,15 +15,16 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.assignment;
 
-import javax.annotation.Nonnull;
-
-import com.intellij.psi.PsiType;
+import com.intellij.java.language.psi.PsiType;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrArgumentList;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrNamedArgument;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlock;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrCall;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * Created by Max Medvedev on 05/02/14
@@ -37,16 +38,16 @@ public abstract class CallInfoBase<T extends GrCall> implements CallInfo<T> {
     myArgTypes = inferArgTypes();
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   protected abstract PsiType[] inferArgTypes();
 
-  @javax.annotation.Nullable
+  @Nullable
   @Override
   public GrArgumentList getArgumentList() {
     return myCall.getArgumentList();
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   @Override
   public PsiType[] getArgumentTypes() {
     return myArgTypes;

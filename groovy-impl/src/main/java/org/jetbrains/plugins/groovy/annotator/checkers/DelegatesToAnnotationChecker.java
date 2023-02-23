@@ -15,17 +15,17 @@
  */
 package org.jetbrains.plugins.groovy.annotator.checkers;
 
-import javax.annotation.Nonnull;
-
+import com.intellij.java.language.psi.PsiAnnotationMemberValue;
+import com.intellij.java.language.psi.PsiAnnotationOwner;
+import consulo.language.editor.annotation.AnnotationHolder;
+import consulo.language.psi.PsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.GrModifierList;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotation;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameter;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameterList;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames;
-import com.intellij.lang.annotation.AnnotationHolder;
-import com.intellij.psi.PsiAnnotationMemberValue;
-import com.intellij.psi.PsiAnnotationOwner;
-import com.intellij.psi.PsiElement;
+
+import javax.annotation.Nonnull;
 
 /**
  * checks the following case:

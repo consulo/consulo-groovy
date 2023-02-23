@@ -16,16 +16,20 @@
 
 package org.jetbrains.plugins.groovy.dsl.dsltop;
 
-import com.intellij.openapi.extensions.ExtensionPointName;
+import consulo.annotation.component.ComponentScope;
+import consulo.annotation.component.ExtensionAPI;
+import consulo.component.extension.ExtensionPointName;
+import org.jetbrains.plugins.groovy.dsl.GdslMembersHolderConsumer;
 
 /**
  * Container of methods, which will be available on a top-level of closures,
  * passed to GroovyDSL contributors. See {@link org.jetbrains.plugins.groovy.dsl.dsltop.GroovyDslDefaultMembers} for an example.
- * All methods to inject should take one extra parameter - an instance of {@link org.jetbrains.plugins.groovy.dsl.GdslMembersHolderConsumer}
+ * All methods to inject should take one extra parameter - an instance of {@link GdslMembersHolderConsumer}
  * to be refer its properties.
  *
  * @author ilyas
  */
+@ExtensionAPI(ComponentScope.APPLICATION)
 public interface GdslMembersProvider {
-  ExtensionPointName<GdslMembersProvider> EP_NAME = ExtensionPointName.create("org.intellij.groovy.gdslTopLevelProvider");
+  ExtensionPointName<GdslMembersProvider> EP_NAME = ExtensionPointName.create(GdslMembersProvider.class);
 }

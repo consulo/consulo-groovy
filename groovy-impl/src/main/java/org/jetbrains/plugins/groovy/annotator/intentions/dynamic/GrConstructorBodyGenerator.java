@@ -15,11 +15,13 @@
  */
 package org.jetbrains.plugins.groovy.annotator.intentions.dynamic;
 
-import javax.annotation.Nonnull;
+import com.intellij.java.impl.codeInsight.generation.ConstructorBodyGenerator;
+import com.intellij.java.language.psi.PsiField;
+import com.intellij.java.language.psi.PsiParameter;
+import consulo.language.Language;
+import org.jetbrains.plugins.groovy.GroovyLanguage;
 
-import com.intellij.codeInsight.generation.ConstructorBodyGenerator;
-import com.intellij.psi.PsiField;
-import com.intellij.psi.PsiParameter;
+import javax.annotation.Nonnull;
 
 /**
  * @author Max Medvedev
@@ -71,5 +73,11 @@ public class GrConstructorBodyGenerator implements ConstructorBodyGenerator {
   @Override
   public void finish(StringBuilder buffer) {
     buffer.append('}');
+  }
+
+  @Nonnull
+  @Override
+  public Language getLanguage() {
+    return GroovyLanguage.INSTANCE;
   }
 }

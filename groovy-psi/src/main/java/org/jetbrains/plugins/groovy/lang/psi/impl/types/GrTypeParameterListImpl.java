@@ -16,7 +16,12 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.types;
 
-import javax.annotation.Nonnull;
+import com.intellij.java.language.psi.PsiTypeParameter;
+import consulo.language.ast.ASTNode;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.StubBasedPsiElement;
+import consulo.language.psi.stub.EmptyStub;
+import consulo.util.collection.ArrayFactory;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
@@ -26,12 +31,8 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMe
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeParameter;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeParameterList;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GrStubElementBase;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiTypeParameter;
-import com.intellij.psi.StubBasedPsiElement;
-import com.intellij.psi.stubs.EmptyStub;
-import com.intellij.util.ArrayFactory;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author ilyas

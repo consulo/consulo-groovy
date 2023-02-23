@@ -16,12 +16,16 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.types;
 
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.List;
-
-import javax.annotation.Nonnull;
-
+import com.intellij.java.language.psi.*;
+import consulo.language.ast.ASTNode;
+import consulo.language.psi.*;
+import consulo.language.psi.resolve.ResolveCache;
+import consulo.language.psi.resolve.ResolveState;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.language.util.IncorrectOperationException;
+import consulo.logging.Logger;
+import consulo.util.collection.ArrayUtil;
+import consulo.util.lang.StringUtil;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocReferenceElement;
 import org.jetbrains.plugins.groovy.lang.lexer.TokenSets;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
@@ -47,15 +51,12 @@ import org.jetbrains.plugins.groovy.lang.resolve.ResolveUtil;
 import org.jetbrains.plugins.groovy.lang.resolve.processors.ClassHint;
 import org.jetbrains.plugins.groovy.lang.resolve.processors.ClassResolverProcessor;
 import org.jetbrains.plugins.groovy.lang.resolve.processors.ResolverProcessorImpl;
-import com.intellij.lang.ASTNode;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.*;
-import com.intellij.psi.impl.source.resolve.ResolveCache;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.ArrayUtil;
-import com.intellij.util.IncorrectOperationException;
-import consulo.psi.PsiPackage;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.List;
 
 /**
  * @author: Dmitry.Krasilschikov
@@ -134,7 +135,7 @@ public class GrCodeReferenceElementImpl extends GrReferenceElementImpl<GrCodeRef
 	}
 
 	@Override
-	@javax.annotation.Nullable
+	@Nullable
 	public PsiElement resolve()
 	{
 		ResolveResult[] results = TypeInferenceHelper.getCurrentContext().multiResolve(this, false, RESOLVER);

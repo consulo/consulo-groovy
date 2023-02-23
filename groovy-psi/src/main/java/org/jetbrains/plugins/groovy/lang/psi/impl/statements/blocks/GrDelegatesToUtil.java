@@ -15,16 +15,13 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.blocks;
 
-import javax.annotation.Nonnull;
-
-import com.intellij.psi.*;
-import com.intellij.psi.util.InheritanceUtil;
-import com.intellij.psi.util.PsiUtil;
-import com.intellij.psi.util.TypeConversionUtil;
-import com.intellij.util.ArrayUtil;
+import com.intellij.java.language.psi.*;
+import com.intellij.java.language.psi.util.InheritanceUtil;
+import com.intellij.java.language.psi.util.PsiUtil;
+import com.intellij.java.language.psi.util.TypeConversionUtil;
+import consulo.language.psi.PsiElement;
+import consulo.util.collection.ArrayUtil;
 import groovy.lang.Closure;
-
-import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
 import org.jetbrains.plugins.groovy.lang.psi.api.signatures.GrClosureSignature;
 import org.jetbrains.plugins.groovy.lang.psi.api.signatures.GrSignature;
@@ -42,11 +39,14 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.signatures.GrClosureSignatureU
 import org.jetbrains.plugins.groovy.lang.psi.util.GdkMethodUtil;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 /**
  * @author Max Medvedev
  */
 public class GrDelegatesToUtil {
-  @javax.annotation.Nullable
+  @Nullable
   static DelegatesToInfo getDelegatesToInfo(@Nonnull PsiElement place, @Nonnull final GrClosableBlock closableBlock) {
     GrCall call = getContainingCall(closableBlock);
     if (call == null) return null;
@@ -89,7 +89,7 @@ public class GrDelegatesToUtil {
     );
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   private static GrClosureSignature inferSignature(@Nullable PsiElement element) {
     if (element instanceof PsiMethod) {
       return GrClosureSignatureUtil.createSignature((PsiMethod)element, PsiSubstitutor.EMPTY);
@@ -122,7 +122,7 @@ public class GrDelegatesToUtil {
     return null;
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   private static PsiType inferDelegateType(@Nonnull PsiAnnotation delegatesTo,
                                            @Nonnull GrClosureSignature signature,
                                            @Nonnull GrClosureSignatureUtil.ArgInfo<PsiElement>[] map) {
@@ -263,7 +263,7 @@ public class GrDelegatesToUtil {
     return -1;
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   static GrCall getContainingCall(@Nonnull GrClosableBlock closableBlock) {
     final PsiElement parent = closableBlock.getParent();
     if (parent instanceof GrCall && ArrayUtil.contains(closableBlock, ((GrCall)parent).getClosureArguments())) {

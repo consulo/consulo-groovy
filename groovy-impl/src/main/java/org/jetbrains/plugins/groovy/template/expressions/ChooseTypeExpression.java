@@ -15,217 +15,185 @@
  */
 package org.jetbrains.plugins.groovy.template.expressions;
 
-import java.util.List;
-
-import javax.annotation.Nonnull;
-
+import com.intellij.java.impl.codeInsight.lookup.PsiTypeLookupItem;
+import com.intellij.java.language.impl.codeInsight.template.JavaTemplateUtilImpl;
+import com.intellij.java.language.impl.codeInsight.template.macro.PsiTypeResult;
+import com.intellij.java.language.psi.CommonClassNames;
+import com.intellij.java.language.psi.PsiType;
+import com.intellij.java.language.psi.SmartTypePointer;
+import com.intellij.java.language.psi.SmartTypePointerManager;
+import consulo.document.Document;
+import consulo.language.editor.completion.lookup.InsertHandler;
+import consulo.language.editor.completion.lookup.InsertionContext;
+import consulo.language.editor.completion.lookup.LookupElement;
+import consulo.language.editor.completion.lookup.LookupElementBuilder;
+import consulo.language.editor.template.Expression;
+import consulo.language.editor.template.ExpressionContext;
+import consulo.language.editor.template.Result;
+import consulo.language.editor.template.TextResult;
+import consulo.language.psi.PsiDocumentManager;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.PsiManager;
+import consulo.language.psi.scope.GlobalSearchScope;
+import consulo.util.collection.ContainerUtil;
 import org.jetbrains.plugins.groovy.lang.completion.GroovyCompletionUtil;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.GrModifier;
 import org.jetbrains.plugins.groovy.lang.psi.expectedTypes.SubtypeConstraint;
 import org.jetbrains.plugins.groovy.lang.psi.expectedTypes.SupertypeConstraint;
 import org.jetbrains.plugins.groovy.lang.psi.expectedTypes.TypeConstraint;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil;
-import com.intellij.codeInsight.completion.InsertHandler;
-import com.intellij.codeInsight.completion.InsertionContext;
-import com.intellij.codeInsight.lookup.LookupElement;
-import com.intellij.codeInsight.lookup.LookupElementBuilder;
-import com.intellij.codeInsight.lookup.PsiTypeLookupItem;
-import com.intellij.codeInsight.template.Expression;
-import com.intellij.codeInsight.template.ExpressionContext;
-import com.intellij.codeInsight.template.PsiTypeResult;
-import com.intellij.codeInsight.template.Result;
-import com.intellij.codeInsight.template.TextResult;
-import com.intellij.codeInsight.template.impl.JavaTemplateUtil;
-import com.intellij.openapi.editor.Document;
-import com.intellij.psi.CommonClassNames;
-import com.intellij.psi.PsiDocumentManager;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiManager;
-import com.intellij.psi.PsiType;
-import com.intellij.psi.SmartTypePointer;
-import com.intellij.psi.SmartTypePointerManager;
-import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.util.containers.ContainerUtil;
+
+import javax.annotation.Nonnull;
+import java.util.List;
 
 /**
  * @author ven
  */
-public class ChooseTypeExpression extends Expression
-{
-	public static final InsertHandler<PsiTypeLookupItem> IMPORT_FIXER = new InsertHandler<PsiTypeLookupItem>()
-	{
-		@Override
-		public void handleInsert(InsertionContext context, PsiTypeLookupItem item)
-		{
-			GroovyCompletionUtil.addImportForItem(context.getFile(), context.getStartOffset(), item);
-		}
-	};
+public class ChooseTypeExpression extends Expression {
+  public static final InsertHandler<PsiTypeLookupItem> IMPORT_FIXER = new InsertHandler<PsiTypeLookupItem>() {
+    @Override
+    public void handleInsert(InsertionContext context, PsiTypeLookupItem item) {
+      GroovyCompletionUtil.addImportForItem(context.getFile(), context.getStartOffset(), item);
+    }
+  };
 
-	protected final SmartTypePointer myTypePointer;
-	private final List<SmartTypePointer> myItems;
-	private final boolean myForGroovy;
-	private final boolean mySelectDef;
+  protected final SmartTypePointer myTypePointer;
+  private final List<SmartTypePointer> myItems;
+  private final boolean myForGroovy;
+  private final boolean mySelectDef;
 
-	public ChooseTypeExpression(@Nonnull TypeConstraint[] constraints,
-			PsiManager manager,
-			GlobalSearchScope resolveScope)
-	{
-		this(constraints, manager, resolveScope, true);
-	}
+  public ChooseTypeExpression(@Nonnull TypeConstraint[] constraints,
+                              PsiManager manager,
+                              GlobalSearchScope resolveScope) {
+    this(constraints, manager, resolveScope, true);
+  }
 
-	public ChooseTypeExpression(TypeConstraint[] constraints,
-			PsiManager manager,
-			GlobalSearchScope resolveScope,
-			boolean forGroovy)
-	{
-		this(constraints, manager, resolveScope, forGroovy, false);
-	}
+  public ChooseTypeExpression(TypeConstraint[] constraints,
+                              PsiManager manager,
+                              GlobalSearchScope resolveScope,
+                              boolean forGroovy) {
+    this(constraints, manager, resolveScope, forGroovy, false);
+  }
 
-	public ChooseTypeExpression(TypeConstraint[] constraints,
-			PsiManager manager,
-			GlobalSearchScope resolveScope,
-			boolean forGroovy,
-			boolean selectDef)
-	{
-		myForGroovy = forGroovy;
+  public ChooseTypeExpression(TypeConstraint[] constraints,
+                              PsiManager manager,
+                              GlobalSearchScope resolveScope,
+                              boolean forGroovy,
+                              boolean selectDef) {
+    myForGroovy = forGroovy;
 
-		SmartTypePointerManager typePointerManager = SmartTypePointerManager.getInstance(manager.getProject());
-		myTypePointer = typePointerManager.createSmartTypePointer(chooseType(constraints, resolveScope, manager));
-		myItems = createItems(constraints, typePointerManager);
+    SmartTypePointerManager typePointerManager = SmartTypePointerManager.getInstance(manager.getProject());
+    myTypePointer = typePointerManager.createSmartTypePointer(chooseType(constraints, resolveScope, manager));
+    myItems = createItems(constraints, typePointerManager);
 
-		mySelectDef = selectDef;
-	}
+    mySelectDef = selectDef;
+  }
 
-	@Nonnull
-	private static List<SmartTypePointer> createItems(@Nonnull TypeConstraint[] constraints,
-			@Nonnull SmartTypePointerManager typePointerManager)
-	{
-		List<SmartTypePointer> result = ContainerUtil.newArrayList();
+  @Nonnull
+  private static List<SmartTypePointer> createItems(@Nonnull TypeConstraint[] constraints,
+                                                    @Nonnull SmartTypePointerManager typePointerManager) {
+    List<SmartTypePointer> result = ContainerUtil.newArrayList();
 
-		for(TypeConstraint constraint : constraints)
-		{
-			if(constraint instanceof SubtypeConstraint)
-			{
-				PsiType type = constraint.getDefaultType();
-				result.add(typePointerManager.createSmartTypePointer(type));
-			}
-			else if(constraint instanceof SupertypeConstraint)
-			{
-				processSuperTypes(constraint.getType(), result, typePointerManager);
-			}
-		}
+    for (TypeConstraint constraint : constraints) {
+      if (constraint instanceof SubtypeConstraint) {
+        PsiType type = constraint.getDefaultType();
+        result.add(typePointerManager.createSmartTypePointer(type));
+      }
+      else if (constraint instanceof SupertypeConstraint) {
+        processSuperTypes(constraint.getType(), result, typePointerManager);
+      }
+    }
 
-		return result;
-	}
+    return result;
+  }
 
-	private static void processSuperTypes(@Nonnull PsiType type,
-			@Nonnull List<SmartTypePointer> result,
-			@Nonnull SmartTypePointerManager typePointerManager)
-	{
-		result.add(typePointerManager.createSmartTypePointer(type));
-		PsiType[] superTypes = type.getSuperTypes();
-		for(PsiType superType : superTypes)
-		{
-			processSuperTypes(superType, result, typePointerManager);
-		}
-	}
+  private static void processSuperTypes(@Nonnull PsiType type,
+                                        @Nonnull List<SmartTypePointer> result,
+                                        @Nonnull SmartTypePointerManager typePointerManager) {
+    result.add(typePointerManager.createSmartTypePointer(type));
+    PsiType[] superTypes = type.getSuperTypes();
+    for (PsiType superType : superTypes) {
+      processSuperTypes(superType, result, typePointerManager);
+    }
+  }
 
-	@Nonnull
-	private static PsiType chooseType(@Nonnull TypeConstraint[] constraints,
-			@Nonnull GlobalSearchScope scope,
-			@Nonnull PsiManager manager)
-	{
-		if(constraints.length > 0)
-		{
-			return constraints[0].getDefaultType();
-		}
-		return PsiType.getJavaLangObject(manager, scope);
-	}
+  @Nonnull
+  private static PsiType chooseType(@Nonnull TypeConstraint[] constraints,
+                                    @Nonnull GlobalSearchScope scope,
+                                    @Nonnull PsiManager manager) {
+    if (constraints.length > 0) {
+      return constraints[0].getDefaultType();
+    }
+    return PsiType.getJavaLangObject(manager, scope);
+  }
 
-	@Override
-	public Result calculateResult(ExpressionContext context)
-	{
-		PsiDocumentManager.getInstance(context.getProject()).commitAllDocuments();
-		PsiType type = myTypePointer.getType();
-		if(type != null)
-		{
-			if(myForGroovy && (type.equalsToText(CommonClassNames.JAVA_LANG_OBJECT) || mySelectDef))
-			{
-				return new TextResult(GrModifier.DEF);
-			}
+  @Override
+  public Result calculateResult(ExpressionContext context) {
+    PsiDocumentManager.getInstance(context.getProject()).commitAllDocuments();
+    PsiType type = myTypePointer.getType();
+    if (type != null) {
+      if (myForGroovy && (type.equalsToText(CommonClassNames.JAVA_LANG_OBJECT) || mySelectDef)) {
+        return new TextResult(GrModifier.DEF);
+      }
 
-			type = TypesUtil.unboxPrimitiveTypeWrapper(type);
-			if(type == null)
-			{
-				return null;
-			}
+      type = TypesUtil.unboxPrimitiveTypeWrapper(type);
+      if (type == null) {
+        return null;
+      }
 
-			final PsiType finalType = type;
-			return new PsiTypeResult(finalType, context.getProject())
-			{
-				@Override
-				public void handleRecalc(PsiFile psiFile, Document document, int segmentStart, int segmentEnd)
-				{
-					if(myItems.size() <= 1)
-					{
-						super.handleRecalc(psiFile, document, segmentStart, segmentEnd);
-					}
-					else
-					{
-						JavaTemplateUtil.updateTypeBindings(getType(), psiFile, document, segmentStart, segmentEnd,
-								true);
-					}
-				}
+      final PsiType finalType = type;
+      return new PsiTypeResult(finalType, context.getProject()) {
+        @Override
+        public void handleRecalc(PsiFile psiFile, Document document, int segmentStart, int segmentEnd) {
+          if (myItems.size() <= 1) {
+            super.handleRecalc(psiFile, document, segmentStart, segmentEnd);
+          }
+          else {
+            JavaTemplateUtilImpl.updateTypeBindings(getType(), psiFile, document, segmentStart, segmentEnd, true);
+          }
+        }
 
-				@Override
-				public String toString()
-				{
-					return myItems.size() == 1 ? super.toString() : finalType.getPresentableText();
-				}
+        @Override
+        public String toString() {
+          return myItems.size() == 1 ? super.toString() : finalType.getPresentableText();
+        }
 
-			};
-		}
+      };
+    }
 
-		return null;
-	}
+    return null;
+  }
 
-	@Override
-	public Result calculateQuickResult(ExpressionContext context)
-	{
-		return calculateResult(context);
-	}
+  @Override
+  public Result calculateQuickResult(ExpressionContext context) {
+    return calculateResult(context);
+  }
 
-	@Override
-	public LookupElement[] calculateLookupItems(ExpressionContext context)
-	{
-		List<LookupElement> result = ContainerUtil.newArrayList();
+  @Override
+  public LookupElement[] calculateLookupItems(ExpressionContext context) {
+    List<LookupElement> result = ContainerUtil.newArrayList();
 
-		for(SmartTypePointer item : myItems)
-		{
-			PsiType type = TypesUtil.unboxPrimitiveTypeWrapper(item.getType());
-			if(type == null)
-			{
-				continue;
-			}
+    for (SmartTypePointer item : myItems) {
+      PsiType type = TypesUtil.unboxPrimitiveTypeWrapper(item.getType());
+      if (type == null) {
+        continue;
+      }
 
-			PsiTypeLookupItem lookupItem = PsiTypeLookupItem.createLookupItem(type, null,
-					PsiTypeLookupItem.isDiamond(type), IMPORT_FIXER);
-			result.add(lookupItem);
-		}
+      PsiTypeLookupItem lookupItem = PsiTypeLookupItem.createLookupItem(type, null,
+                                                                        PsiTypeLookupItem.isDiamond(type), IMPORT_FIXER);
+      result.add(lookupItem);
+    }
 
-		if(myForGroovy)
-		{
-			LookupElementBuilder def = LookupElementBuilder.create(GrModifier.DEF).bold();
-			if(mySelectDef)
-			{
-				result.add(0, def);
-			}
-			else
-			{
-				result.add(def);
-			}
-		}
+    if (myForGroovy) {
+      LookupElementBuilder def = LookupElementBuilder.create(GrModifier.DEF).bold();
+      if (mySelectDef) {
+        result.add(0, def);
+      }
+      else {
+        result.add(def);
+      }
+    }
 
-		return result.toArray(new LookupElement[result.size()]);
-	}
+    return result.toArray(new LookupElement[result.size()]);
+  }
 }

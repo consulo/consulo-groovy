@@ -16,6 +16,7 @@
 package org.jetbrains.plugins.groovy.codeInspection.control;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspection;
@@ -37,7 +38,7 @@ public class GroovySwitchStatementWithNoDefaultInspection extends BaseInspection
     return "Switch statement with no default case";
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   protected String buildErrorString(Object... args) {
     return "#ref statement with no default branch#loc";
 

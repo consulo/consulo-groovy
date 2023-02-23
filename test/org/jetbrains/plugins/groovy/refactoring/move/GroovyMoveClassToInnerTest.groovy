@@ -18,9 +18,9 @@ package org.jetbrains.plugins.groovy.refactoring.move;
 
 import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.psi.PsiClass
-import com.intellij.psi.PsiDocumentManager
-import com.intellij.psi.codeStyle.CodeStyleSettingsManager
+import com.intellij.java.language.psi.PsiClass
+import com.intellij.java.language.psi.PsiDocumentManager
+import com.intellij.java.language.psi.codeStyle.CodeStyleSettingsManager
 import com.intellij.refactoring.move.moveClassesOrPackages.MoveClassToInnerProcessor
 import org.jetbrains.plugins.groovy.util.TestUtils
 import org.jetbrains.plugins.groovy.codeStyle.GroovyCodeStyleSettings

@@ -17,6 +17,8 @@ package org.jetbrains.plugins.groovy.intentions.control;
 
 import javax.annotation.Nonnull;
 
+import consulo.language.ast.IElementType;
+import consulo.language.psi.PsiElement;
 import org.jetbrains.plugins.groovy.intentions.GroovyIntentionsBundle;
 import org.jetbrains.plugins.groovy.intentions.base.MutablyNamedIntention;
 import org.jetbrains.plugins.groovy.intentions.base.PsiElementPredicate;
@@ -24,11 +26,9 @@ import org.jetbrains.plugins.groovy.intentions.utils.ComparisonUtils;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrBinaryExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.impl.PsiImplUtil;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.util.IncorrectOperationException;
+import consulo.codeEditor.Editor;
+import consulo.project.Project;
+import consulo.language.util.IncorrectOperationException;
 
 public class FlipComparisonIntention extends MutablyNamedIntention
 {

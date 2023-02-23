@@ -15,7 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.lang.surroundWith;
 
-import com.intellij.openapi.util.TextRange;
+import consulo.document.util.TextRange;
+import consulo.document.util.TextRange;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrTryCatchStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrCatchClause;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;

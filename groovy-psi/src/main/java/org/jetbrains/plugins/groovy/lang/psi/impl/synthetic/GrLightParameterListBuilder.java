@@ -15,15 +15,20 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.synthetic;
 
-import com.intellij.lang.Language;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.*;
-import com.intellij.psi.impl.light.LightElement;
-import javax.annotation.Nonnull;
+import com.intellij.java.language.psi.JavaElementVisitor;
+import com.intellij.java.language.psi.PsiMethod;
+import com.intellij.java.language.psi.PsiParameter;
+import com.intellij.java.language.psi.PsiSubstitutor;
+import consulo.language.Language;
+import consulo.language.impl.psi.LightElement;
+import consulo.language.psi.PsiElementVisitor;
+import consulo.language.psi.PsiManager;
+import consulo.util.lang.StringUtil;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameter;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameterList;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 

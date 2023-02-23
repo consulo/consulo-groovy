@@ -16,23 +16,23 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments;
 
-import javax.annotation.Nonnull;
-
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiPolyVariantReference;
-import com.intellij.psi.PsiType;
-import com.intellij.util.IncorrectOperationException;
+import com.intellij.java.language.psi.PsiType;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiPolyVariantReference;
+import consulo.language.util.IncorrectOperationException;
 import org.jetbrains.annotations.NonNls;
-
-import javax.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 /**
  * @author ilyas
  */
-public interface GrArgumentLabel extends GroovyPsiElement, PsiPolyVariantReference {
+public interface GrArgumentLabel extends GroovyPsiElement, PsiPolyVariantReference
+{
 
   GrArgumentLabel[] EMPTY_ARRAY = new GrArgumentLabel[0];
 
@@ -45,7 +45,7 @@ public interface GrArgumentLabel extends GroovyPsiElement, PsiPolyVariantReferen
    */
   GrExpression getExpression();
 
-  @javax.annotation.Nullable
+  @Nullable
   String getName();
 
   PsiElement setName(@NonNls @Nonnull String name) throws IncorrectOperationException;
@@ -53,7 +53,7 @@ public interface GrArgumentLabel extends GroovyPsiElement, PsiPolyVariantReferen
   @Nullable
   PsiType getExpectedArgumentType();
 
-  @javax.annotation.Nullable
+  @Nullable
   PsiType getLabelType();
 
   GrNamedArgument getNamedArgument();

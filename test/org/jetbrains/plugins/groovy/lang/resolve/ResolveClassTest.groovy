@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.lang.resolve
 
-import com.intellij.psi.*
+import com.intellij.java.language.psi.*
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrAccessorMethod
 import org.jetbrains.plugins.groovy.util.TestUtils
 

@@ -15,11 +15,15 @@
  */
 package org.jetbrains.plugins.groovy.lang.documentation;
 
-import com.intellij.psi.*;
-import com.intellij.psi.search.searches.ReferencesSearch;
-import com.intellij.psi.util.MethodSignature;
-import com.intellij.util.ArrayUtil;
-import com.intellij.util.Processor;
+import com.intellij.java.language.psi.PsiAnnotation;
+import com.intellij.java.language.psi.PsiSubstitutor;
+import com.intellij.java.language.psi.PsiType;
+import com.intellij.java.language.psi.util.MethodSignature;
+import consulo.application.util.function.Processor;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiReference;
+import consulo.language.psi.search.ReferencesSearch;
+import consulo.util.collection.ArrayUtil;
 import org.jetbrains.plugins.groovy.lang.psi.GrReferenceElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameter;

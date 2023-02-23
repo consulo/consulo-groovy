@@ -16,7 +16,7 @@
 package org.jetbrains.plugins.groovy.refactoring.safeDelete
 
 import com.intellij.codeInsight.TargetElementUtilBase
-import com.intellij.psi.PsiElement
+import com.intellij.java.language.psi.PsiElement
 import com.intellij.refactoring.safeDelete.SafeDeleteHandler
 import com.intellij.refactoring.safeDelete.SafeDeleteProcessor
 import org.jetbrains.plugins.groovy.LightGroovyTestCase

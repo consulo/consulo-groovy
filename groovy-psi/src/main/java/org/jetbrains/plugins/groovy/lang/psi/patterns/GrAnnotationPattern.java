@@ -17,8 +17,8 @@ package org.jetbrains.plugins.groovy.lang.psi.patterns;
 
 import javax.annotation.Nonnull;
 
-import com.intellij.patterns.PatternCondition;
-import com.intellij.util.ProcessingContext;
+import consulo.language.pattern.PatternCondition;
+import consulo.language.util.ProcessingContext;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotation;
 
 public class GrAnnotationPattern extends GroovyElementPattern<GrAnnotation, GrAnnotationPattern> {

@@ -15,33 +15,32 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.changeSignature;
 
-import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.Ref;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiMethod;
-import com.intellij.refactoring.changeSignature.ChangeSignatureProcessorBase;
-import com.intellij.refactoring.changeSignature.ChangeSignatureUsageProcessor;
-import com.intellij.refactoring.changeSignature.ChangeSignatureViewDescriptor;
-import com.intellij.refactoring.rename.RenameUtil;
-import com.intellij.refactoring.ui.ConflictsDialog;
-import com.intellij.usageView.UsageInfo;
-import com.intellij.usageView.UsageViewDescriptor;
-import java.util.HashSet;
-import com.intellij.util.containers.MultiMap;
-import javax.annotation.Nonnull;
+import com.intellij.java.impl.refactoring.changeSignature.ChangeSignatureViewDescriptor;
+import com.intellij.java.language.psi.PsiMethod;
+import consulo.application.ApplicationManager;
+import consulo.language.editor.refactoring.changeSignature.ChangeSignatureProcessorBase;
+import consulo.language.editor.refactoring.changeSignature.ChangeSignatureUsageProcessor;
+import consulo.language.editor.refactoring.rename.RenameUtil;
+import consulo.language.editor.refactoring.ui.ConflictsDialog;
+import consulo.language.psi.PsiElement;
+import consulo.logging.Logger;
+import consulo.project.Project;
+import consulo.usage.UsageInfo;
+import consulo.usage.UsageViewDescriptor;
+import consulo.util.collection.MultiMap;
+import consulo.util.lang.ref.Ref;
 
+import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
  * @author Maxim.Medvedev
  */
 public class GrChangeSignatureProcessor extends ChangeSignatureProcessorBase {
-  public static final Logger LOG =
-    Logger.getInstance("#org.jetbrains.plugins.groovy.refactoring.changeSignature.GrChangeSignatureProcessor");
+  public static final Logger LOG =   Logger.getInstance(GrChangeSignatureProcessor.class);
 
   public GrChangeSignatureProcessor(Project project, GrChangeInfoImpl changeInfo) {
     super(project, changeInfo);

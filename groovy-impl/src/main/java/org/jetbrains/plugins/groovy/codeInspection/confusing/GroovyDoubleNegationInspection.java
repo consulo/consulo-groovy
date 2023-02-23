@@ -16,12 +16,17 @@
 package org.jetbrains.plugins.groovy.codeInspection.confusing;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
-import com.intellij.codeInspection.ProblemDescriptor;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.util.IncorrectOperationException;
+import consulo.language.ast.IElementType;
+import consulo.language.editor.inspection.ProblemDescriptor;
+import consulo.language.psi.PsiElement;
+import consulo.project.Project;
+import consulo.language.psi.PsiElement;
+import consulo.language.ast.IElementType;
+import consulo.language.util.IncorrectOperationException;
+import consulo.language.editor.inspection.ProblemDescriptor;
+import consulo.project.Project;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspectionVisitor;
@@ -51,7 +56,7 @@ public class GroovyDoubleNegationInspection extends BaseInspection {
     return "Double negation #ref #loc";
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   protected GroovyFix buildFix(PsiElement location) {
     return new DoubleNegationFix();
   }

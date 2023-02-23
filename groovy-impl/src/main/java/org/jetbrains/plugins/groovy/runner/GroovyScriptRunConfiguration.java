@@ -15,42 +15,51 @@
  */
 package org.jetbrains.plugins.groovy.runner;
 
-import com.intellij.execution.*;
-import com.intellij.execution.configurations.*;
-import com.intellij.execution.filters.TextConsoleBuilderFactory;
-import com.intellij.execution.process.OSProcessHandler;
-import com.intellij.execution.process.ProcessAdapter;
-import com.intellij.execution.process.ProcessEvent;
-import com.intellij.execution.runners.ExecutionEnvironment;
-import com.intellij.execution.util.ProgramParametersUtil;
-import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.components.PathMacroManager;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.module.ModuleManager;
-import com.intellij.openapi.module.ModuleUtilCore;
-import com.intellij.openapi.options.SettingsEditor;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.projectRoots.Sdk;
-import com.intellij.openapi.projectRoots.SimpleJavaSdkType;
-import com.intellij.openapi.roots.ProjectRootManager;
-import com.intellij.openapi.util.InvalidDataException;
-import com.intellij.openapi.util.JDOMExternalizer;
-import com.intellij.openapi.util.WriteExternalException;
-import com.intellij.openapi.util.io.FileUtil;
-import com.intellij.openapi.vfs.LocalFileSystem;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.openapi.vfs.VirtualFileManager;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiManager;
-import com.intellij.refactoring.listeners.RefactoringElementAdapter;
-import com.intellij.refactoring.listeners.RefactoringElementListener;
-import com.intellij.util.PathUtil;
-import com.intellij.util.SystemProperties;
+import com.intellij.java.execution.CommonJavaRunConfigurationParameters;
+import com.intellij.java.execution.configurations.JavaCommandLineState;
+import com.intellij.java.language.psi.PsiClass;
+import consulo.application.ApplicationManager;
+import consulo.component.macro.PathMacroManager;
+import consulo.content.bundle.Sdk;
+import consulo.execution.CantRunException;
+import consulo.execution.RuntimeConfigurationException;
+import consulo.execution.RuntimeConfigurationWarning;
+import consulo.execution.configuration.*;
+import consulo.execution.configuration.ui.SettingsEditor;
+import consulo.execution.executor.Executor;
+import consulo.execution.runner.ExecutionEnvironment;
+import consulo.execution.ui.console.TextConsoleBuilderFactory;
+import consulo.execution.util.ProgramParametersUtil;
 import consulo.java.execution.configurations.OwnJavaParameters;
-import consulo.java.module.extension.JavaModuleExtension;
+import consulo.java.language.module.extension.JavaModuleExtension;
+import consulo.language.editor.refactoring.event.RefactoringElementAdapter;
+import consulo.language.editor.refactoring.event.RefactoringElementListener;
+import consulo.language.editor.refactoring.event.RefactoringListenerProvider;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.PsiManager;
+import consulo.language.util.ModuleUtilCore;
+import consulo.logging.Logger;
+import consulo.module.Module;
+import consulo.module.ModuleManager;
+import consulo.module.content.ProjectRootManager;
+import consulo.process.ExecutionException;
+import consulo.process.ProcessHandler;
+import consulo.process.ProcessHandlerBuilder;
+import consulo.process.event.ProcessAdapter;
+import consulo.process.event.ProcessEvent;
+import consulo.process.event.ProcessListener;
+import consulo.project.Project;
+import consulo.project.macro.ProjectPathMacroManager;
+import consulo.util.io.FileUtil;
+import consulo.util.lang.SystemProperties;
+import consulo.util.xml.serializer.InvalidDataException;
+import consulo.util.xml.serializer.JDOMExternalizer;
+import consulo.util.xml.serializer.WriteExternalException;
+import consulo.virtualFileSystem.LocalFileSystem;
+import consulo.virtualFileSystem.VirtualFile;
+import consulo.virtualFileSystem.VirtualFileManager;
+import consulo.virtualFileSystem.util.VirtualFilePathUtil;
 import org.jdom.Element;
 import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
@@ -64,457 +73,374 @@ import java.util.*;
 /**
  * @author peter
  */
-public class GroovyScriptRunConfiguration extends ModuleBasedConfiguration<RunConfigurationModule> implements CommonJavaRunConfigurationParameters, RefactoringListenerProvider
-{
+public class GroovyScriptRunConfiguration extends ModuleBasedConfiguration<RunConfigurationModule> implements CommonJavaRunConfigurationParameters, RefactoringListenerProvider {
+  private static final Logger LOG = Logger.getInstance(GroovyScriptRunConfiguration.class);
+  private String vmParams;
+  private String workDir;
+  private boolean isDebugEnabled;
+  @Nullable
+  private String scriptParams;
+  @Nullable
+  private String scriptPath;
+  private final Map<String, String> envs = new LinkedHashMap<String, String>();
+  public boolean passParentEnv = true;
 
-	private static final Logger LOG = Logger.getInstance(GroovyScriptRunConfiguration.class);
-	private String vmParams;
-	private String workDir;
-	private boolean isDebugEnabled;
-	@javax.annotation.Nullable
-	private String scriptParams;
-	@javax.annotation.Nullable
-	private String scriptPath;
-	private final Map<String, String> envs = new LinkedHashMap<String, String>();
-	public boolean passParentEnv = true;
+  public GroovyScriptRunConfiguration(final String name, final Project project, final ConfigurationFactory factory) {
+    super(name, new RunConfigurationModule(project), factory);
+    workDir = VirtualFilePathUtil.getLocalPath(project.getBaseDir());
+  }
 
-	public GroovyScriptRunConfiguration(final String name, final Project project, final ConfigurationFactory factory)
-	{
-		super(name, new RunConfigurationModule(project), factory);
-		workDir = PathUtil.getLocalPath(project.getBaseDir());
-	}
+  @Override
+  protected ModuleBasedConfiguration createInstance() {
+    return new GroovyScriptRunConfiguration(getName(), getProject(), getFactory());
+  }
 
-	@Override
-	protected ModuleBasedConfiguration createInstance()
-	{
-		return new GroovyScriptRunConfiguration(getName(), getProject(), getFactory());
-	}
+  public void setWorkDir(String dir) {
+    workDir = dir;
+  }
 
-	public void setWorkDir(String dir)
-	{
-		workDir = dir;
-	}
+  public String getWorkDir() {
+    return workDir;
+  }
 
-	public String getWorkDir()
-	{
-		return workDir;
-	}
+  @Nullable
+  public Module getModule() {
+    return getConfigurationModule().getModule();
+  }
 
-	@Nullable
-	public Module getModule()
-	{
-		return getConfigurationModule().getModule();
-	}
-
-	public Collection<Module> getValidModules()
-	{
-		Module[] modules = ModuleManager.getInstance(getProject()).getModules();
-		final GroovyScriptRunner scriptRunner = findConfiguration();
-		if(scriptRunner == null)
-		{
-			return Arrays.asList(modules);
-		}
+  public Collection<Module> getValidModules() {
+    Module[] modules = ModuleManager.getInstance(getProject()).getModules();
+    final GroovyScriptRunner scriptRunner = findConfiguration();
+    if (scriptRunner == null) {
+      return Arrays.asList(modules);
+    }
 
 
-		ArrayList<Module> res = new ArrayList<Module>();
-		for(Module module : modules)
-		{
-			if(scriptRunner.isValidModule(module))
-			{
-				res.add(module);
-			}
-		}
-		return res;
-	}
+    ArrayList<Module> res = new ArrayList<Module>();
+    for (Module module : modules) {
+      if (scriptRunner.isValidModule(module)) {
+        res.add(module);
+      }
+    }
+    return res;
+  }
 
-	@javax.annotation.Nullable
-	private GroovyScriptRunner findConfiguration()
-	{
-		final VirtualFile scriptFile = getScriptFile();
-		if(scriptFile == null)
-		{
-			return null;
-		}
+  @Nullable
+  private GroovyScriptRunner findConfiguration() {
+    final VirtualFile scriptFile = getScriptFile();
+    if (scriptFile == null) {
+      return null;
+    }
 
-		final PsiFile psiFile = PsiManager.getInstance(getProject()).findFile(scriptFile);
-		if(!(psiFile instanceof GroovyFile))
-		{
-			return null;
-		}
+    final PsiFile psiFile = PsiManager.getInstance(getProject()).findFile(scriptFile);
+    if (!(psiFile instanceof GroovyFile)) {
+      return null;
+    }
 
-		final GroovyFile groovyFile = (GroovyFile) psiFile;
-		if(groovyFile.isScript())
-		{
-			return GroovyScriptUtil.getScriptType(groovyFile).getRunner();
-		}
-		else
-		{
-			return new DefaultGroovyScriptRunner();
-		}
-	}
+    final GroovyFile groovyFile = (GroovyFile)psiFile;
+    if (groovyFile.isScript()) {
+      return GroovyScriptUtil.getScriptType(groovyFile).getRunner();
+    }
+    else {
+      return new DefaultGroovyScriptRunner();
+    }
+  }
 
-	public void readExternal(Element element) throws InvalidDataException
-	{
-		PathMacroManager.getInstance(getProject()).expandPaths(element);
-		super.readExternal(element);
-		readModule(element);
-		scriptPath = ExternalizablePath.localPathValue(JDOMExternalizer.readString(element, "path"));
-		vmParams = JDOMExternalizer.readString(element, "vmparams");
-		scriptParams = JDOMExternalizer.readString(element, "params");
-		final String wrk = JDOMExternalizer.readString(element, "workDir");
-		if(!".".equals(wrk))
-		{
-			workDir = ExternalizablePath.localPathValue(wrk);
-		}
-		isDebugEnabled = Boolean.parseBoolean(JDOMExternalizer.readString(element, "debug"));
-		envs.clear();
-		JDOMExternalizer.readMap(element, envs, null, "env");
-	}
+  public void readExternal(Element element) throws InvalidDataException {
+    ProjectPathMacroManager.getInstance(getProject()).expandPaths(element);
+    super.readExternal(element);
+    scriptPath = ExternalizablePath.localPathValue(JDOMExternalizer.readString(element, "path"));
+    vmParams = JDOMExternalizer.readString(element, "vmparams");
+    scriptParams = JDOMExternalizer.readString(element, "params");
+    final String wrk = JDOMExternalizer.readString(element, "workDir");
+    if (!".".equals(wrk)) {
+      workDir = ExternalizablePath.localPathValue(wrk);
+    }
+    isDebugEnabled = Boolean.parseBoolean(JDOMExternalizer.readString(element, "debug"));
+    envs.clear();
+    JDOMExternalizer.readMap(element, envs, null, "env");
+  }
 
-	public void writeExternal(Element element) throws WriteExternalException
-	{
-		super.writeExternal(element);
-		writeModule(element);
-		JDOMExternalizer.write(element, "path", ExternalizablePath.urlValue(scriptPath));
-		JDOMExternalizer.write(element, "vmparams", vmParams);
-		JDOMExternalizer.write(element, "params", scriptParams);
-		JDOMExternalizer.write(element, "workDir", ExternalizablePath.urlValue(workDir));
-		JDOMExternalizer.write(element, "debug", isDebugEnabled);
-		JDOMExternalizer.writeMap(element, envs, null, "env");
-		PathMacroManager.getInstance(getProject()).collapsePathsRecursively(element);
-	}
+  public void writeExternal(Element element) throws WriteExternalException {
+    super.writeExternal(element);
+    JDOMExternalizer.write(element, "path", ExternalizablePath.urlValue(scriptPath));
+    JDOMExternalizer.write(element, "vmparams", vmParams);
+    JDOMExternalizer.write(element, "params", scriptParams);
+    JDOMExternalizer.write(element, "workDir", ExternalizablePath.urlValue(workDir));
+    JDOMExternalizer.write(element, "debug", isDebugEnabled);
+    JDOMExternalizer.writeMap(element, envs, null, "env");
+    ProjectPathMacroManager.getInstance(getProject()).collapsePathsRecursively(element);
+  }
 
-	public RunProfileState getState(@Nonnull Executor executor, @Nonnull ExecutionEnvironment environment) throws ExecutionException
-	{
-		final VirtualFile script = getScriptFile();
-		if(script == null)
-		{
-			throw new CantRunException("Cannot find script " + scriptPath);
-		}
+  public RunProfileState getState(@Nonnull Executor executor, @Nonnull ExecutionEnvironment environment) throws ExecutionException {
+    final VirtualFile script = getScriptFile();
+    if (script == null) {
+      throw new CantRunException("Cannot find script " + scriptPath);
+    }
 
-		final GroovyScriptRunner scriptRunner = findConfiguration();
-		if(scriptRunner == null)
-		{
-			throw new CantRunException("Unknown script type " + scriptPath);
-		}
+    final GroovyScriptRunner scriptRunner = findConfiguration();
+    if (scriptRunner == null) {
+      throw new CantRunException("Unknown script type " + scriptPath);
+    }
 
-		final Module module = getModule();
-		if(!scriptRunner.ensureRunnerConfigured(module, this, executor, getProject()))
-		{
-			return null;
-		}
+    final Module module = getModule();
+    if (!scriptRunner.ensureRunnerConfigured(module, this, executor, getProject())) {
+      return null;
+    }
 
-		final boolean tests = ProjectRootManager.getInstance(getProject()).getFileIndex().isInTestSourceContent(script);
+    final boolean tests = ProjectRootManager.getInstance(getProject()).getFileIndex().isInTestSourceContent(script);
 
-		final JavaCommandLineState state = new JavaCommandLineState(environment)
-		{
-			@Nonnull
-			@Override
-			protected OSProcessHandler startProcess() throws ExecutionException
-			{
-				final OSProcessHandler handler = super.startProcess();
-				handler.setShouldDestroyProcessRecursively(true);
-				if(scriptRunner.shouldRefreshAfterFinish())
-				{
-					handler.addProcessListener(new ProcessAdapter()
-					{
-						@Override
-						public void processTerminated(ProcessEvent event)
-						{
-							if(!ApplicationManager.getApplication().isDisposed())
-							{
-								VirtualFileManager.getInstance().asyncRefresh(null);
-							}
-						}
-					});
-				}
+    final JavaCommandLineState state = new JavaCommandLineState(environment) {
+      @Override
+      protected void buildProcessHandler(@Nonnull ProcessHandlerBuilder builder) throws ExecutionException {
+        super.buildProcessHandler(builder);
+        builder.shouldDestroyProcessRecursively(true);
+      }
 
-				return handler;
-			}
+      @Override
+      protected void setupProcessHandler(@Nonnull ProcessHandler handler) {
+        super.setupProcessHandler(handler);
 
-			protected OwnJavaParameters createJavaParameters() throws ExecutionException
-			{
-				OwnJavaParameters params = createJavaParametersWithSdk(module);
-				ProgramParametersUtil.configureConfiguration(params, GroovyScriptRunConfiguration.this);
-				scriptRunner.configureCommandLine(params, module, tests, script, GroovyScriptRunConfiguration.this);
+        if (scriptRunner.shouldRefreshAfterFinish()) {
+          handler.addProcessListener(new ProcessListener() {
+            @Override
+            public void processTerminated(ProcessEvent event) {
+              if (!ApplicationManager.getApplication().isDisposed()) {
+                VirtualFileManager.getInstance().asyncRefresh(null);
+              }
+            }
+          });
+        }
+      }
 
-				return params;
-			}
-		};
+      protected OwnJavaParameters createJavaParameters() throws ExecutionException {
+        OwnJavaParameters params = createJavaParametersWithSdk(module);
+        ProgramParametersUtil.configureConfiguration(params, GroovyScriptRunConfiguration.this);
+        scriptRunner.configureCommandLine(params, module, tests, script, GroovyScriptRunConfiguration.this);
 
-		state.setConsoleBuilder(TextConsoleBuilderFactory.getInstance().createBuilder(getProject()));
-		return state;
-	}
+        return params;
+      }
+    };
 
-	public void setScriptParameters(String scriptParameters)
-	{
-		scriptParams = scriptParameters;
-	}
+    state.setConsoleBuilder(TextConsoleBuilderFactory.getInstance().createBuilder(getProject()));
+    return state;
+  }
 
-	@Override
-	public RefactoringElementListener getRefactoringElementListener(PsiElement element)
-	{
-		if(scriptPath == null || !scriptPath.equals(getPathByElement(element)))
-		{
-			return null;
-		}
+  public void setScriptParameters(String scriptParameters) {
+    scriptParams = scriptParameters;
+  }
 
-		final PsiClass classToRun = GroovyRunnerUtil.getRunningClass(element);
+  @Override
+  public RefactoringElementListener getRefactoringElementListener(PsiElement element) {
+    if (scriptPath == null || !scriptPath.equals(getPathByElement(element))) {
+      return null;
+    }
 
-		if(element instanceof GroovyFile)
-		{
-			return new RefactoringElementAdapter()
-			{
-				@Override
-				protected void elementRenamedOrMoved(@Nonnull PsiElement newElement)
-				{
-					if(newElement instanceof GroovyFile)
-					{
-						GroovyFile file = (GroovyFile) newElement;
-						setScriptPath(file.getVirtualFile().getPath());
+    final PsiClass classToRun = GroovyRunnerUtil.getRunningClass(element);
 
-						final PsiClass newClassToRun = GroovyRunnerUtil.getRunningClass(newElement);
-						if(newClassToRun instanceof GroovyScriptClass)
-						{
-							setName(GroovyRunnerUtil.getConfigurationName(file.getScriptClass(), getConfigurationModule()));
-						}
-					}
-				}
+    if (element instanceof GroovyFile) {
+      return new RefactoringElementAdapter() {
+        @Override
+        protected void elementRenamedOrMoved(@Nonnull PsiElement newElement) {
+          if (newElement instanceof GroovyFile) {
+            GroovyFile file = (GroovyFile)newElement;
+            setScriptPath(file.getVirtualFile().getPath());
 
-				@Override
-				public void undoElementMovedOrRenamed(@Nonnull PsiElement newElement, @Nonnull String oldQualifiedName)
-				{
-					elementRenamedOrMoved(newElement);
-				}
-			};
-		}
-		else if(element instanceof PsiClass && element.getManager().areElementsEquivalent(element, classToRun))
-		{
-			return new RefactoringElementAdapter()
-			{
-				@Override
-				protected void elementRenamedOrMoved(@Nonnull PsiElement newElement)
-				{
-					setName(((PsiClass) newElement).getName());
-				}
+            final PsiClass newClassToRun = GroovyRunnerUtil.getRunningClass(newElement);
+            if (newClassToRun instanceof GroovyScriptClass) {
+              setName(GroovyRunnerUtil.getConfigurationName(file.getScriptClass(), getConfigurationModule()));
+            }
+          }
+        }
 
-				@Override
-				public void undoElementMovedOrRenamed(@Nonnull PsiElement newElement, @Nonnull String oldQualifiedName)
-				{
-					elementRenamedOrMoved(newElement);
-				}
-			};
-		}
-		return null;
-	}
+        @Override
+        public void undoElementMovedOrRenamed(@Nonnull PsiElement newElement, @Nonnull String oldQualifiedName) {
+          elementRenamedOrMoved(newElement);
+        }
+      };
+    }
+    else if (element instanceof PsiClass && element.getManager().areElementsEquivalent(element, classToRun)) {
+      return new RefactoringElementAdapter() {
+        @Override
+        protected void elementRenamedOrMoved(@Nonnull PsiElement newElement) {
+          setName(((PsiClass)newElement).getName());
+        }
 
-	@Nullable
-	private static String getPathByElement(@Nonnull PsiElement element)
-	{
-		PsiFile file = element.getContainingFile();
-		if(file == null)
-		{
-			return null;
-		}
-		VirtualFile vfile = file.getVirtualFile();
-		if(vfile == null)
-		{
-			return null;
-		}
-		return vfile.getPath();
-	}
+        @Override
+        public void undoElementMovedOrRenamed(@Nonnull PsiElement newElement, @Nonnull String oldQualifiedName) {
+          elementRenamedOrMoved(newElement);
+        }
+      };
+    }
+    return null;
+  }
 
-	public static OwnJavaParameters createJavaParametersWithSdk(@Nullable Module module)
-	{
-		OwnJavaParameters params = new OwnJavaParameters();
-		params.setCharset(null);
+  @Nullable
+  private static String getPathByElement(@Nonnull PsiElement element) {
+    PsiFile file = element.getContainingFile();
+    if (file == null) {
+      return null;
+    }
+    VirtualFile vfile = file.getVirtualFile();
+    if (vfile == null) {
+      return null;
+    }
+    return vfile.getPath();
+  }
 
-		if(module != null)
-		{
-			final Sdk sdk = ModuleUtilCore.getSdk(module, JavaModuleExtension.class);
-			if(sdk != null)
-			{
-				params.setJdk(sdk);
-			}
-		}
-		if(params.getJdk() == null)
-		{
-			params.setJdk(new SimpleJavaSdkType().createJdk("tmp", SystemProperties.getJavaHome()));
-		}
-		return params;
-	}
+  public static OwnJavaParameters createJavaParametersWithSdk(@Nullable Module module) {
+    OwnJavaParameters params = new OwnJavaParameters();
+    params.setCharset(null);
 
-	@javax.annotation.Nullable
-	private VirtualFile getScriptFile()
-	{
-		if(scriptPath == null)
-		{
-			return null;
-		}
-		return LocalFileSystem.getInstance().findFileByPath(FileUtil.toSystemIndependentName(scriptPath));
-	}
+    if (module != null) {
+      final Sdk sdk = ModuleUtilCore.getSdk(module, JavaModuleExtension.class);
+      if (sdk != null) {
+        params.setJdk(sdk);
+      }
+    }
+    return params;
+  }
 
-	@Nullable
-	private PsiClass getScriptClass()
-	{
-		final VirtualFile scriptFile = getScriptFile();
-		if(scriptFile == null)
-		{
-			return null;
-		}
-		final PsiFile file = PsiManager.getInstance(getProject()).findFile(scriptFile);
-		return GroovyRunnerUtil.getRunningClass(file);
-	}
+  @Nullable
+  private VirtualFile getScriptFile() {
+    if (scriptPath == null) {
+      return null;
+    }
+    return LocalFileSystem.getInstance().findFileByPath(FileUtil.toSystemIndependentName(scriptPath));
+  }
 
-	public SettingsEditor<? extends RunConfiguration> getConfigurationEditor()
-	{
-		return new GroovyRunConfigurationEditor();
-	}
+  @Nullable
+  private PsiClass getScriptClass() {
+    final VirtualFile scriptFile = getScriptFile();
+    if (scriptFile == null) {
+      return null;
+    }
+    final PsiFile file = PsiManager.getInstance(getProject()).findFile(scriptFile);
+    return GroovyRunnerUtil.getRunningClass(file);
+  }
 
-	@Override
-	public void checkConfiguration() throws RuntimeConfigurationException
-	{
-		super.checkConfiguration();
-		final PsiClass toRun = getScriptClass();
-		if(toRun == null)
-		{
-			throw new RuntimeConfigurationWarning(GroovyBundle.message("class.does.not.exist"));
-		}
-		if(toRun instanceof GrTypeDefinition)
-		{
-			if(!GroovyRunnerUtil.canBeRunByGroovy(toRun))
-			{
-				throw new RuntimeConfigurationWarning(GroovyBundle.message("class.can't be executed"));
-			}
-		}
-		else if(!(toRun instanceof GroovyScriptClass))
-		{
-			throw new RuntimeConfigurationWarning(GroovyBundle.message("script.file.is.not.groovy.file"));
-		}
-	}
+  public SettingsEditor<? extends RunConfiguration> getConfigurationEditor() {
+    return new GroovyRunConfigurationEditor();
+  }
 
-	@Override
-	public void setVMParameters(String value)
-	{
-		vmParams = value;
-	}
+  @Override
+  public void checkConfiguration() throws RuntimeConfigurationException {
+    super.checkConfiguration();
+    final PsiClass toRun = getScriptClass();
+    if (toRun == null) {
+      throw new RuntimeConfigurationWarning(GroovyBundle.message("class.does.not.exist"));
+    }
+    if (toRun instanceof GrTypeDefinition) {
+      if (!GroovyRunnerUtil.canBeRunByGroovy(toRun)) {
+        throw new RuntimeConfigurationWarning(GroovyBundle.message("class.can't be executed"));
+      }
+    }
+    else if (!(toRun instanceof GroovyScriptClass)) {
+      throw new RuntimeConfigurationWarning(GroovyBundle.message("script.file.is.not.groovy.file"));
+    }
+  }
 
-	@Override
-	public String getVMParameters()
-	{
-		return vmParams;
-	}
+  @Override
+  public void setVMParameters(String value) {
+    vmParams = value;
+  }
 
-	@Override
-	public boolean isAlternativeJrePathEnabled()
-	{
-		throw new UnsupportedOperationException();
-	}
+  @Override
+  public String getVMParameters() {
+    return vmParams;
+  }
 
-	@Override
-	public void setAlternativeJrePathEnabled(boolean enabled)
-	{
-		throw new UnsupportedOperationException();
-	}
+  @Override
+  public boolean isAlternativeJrePathEnabled() {
+    throw new UnsupportedOperationException();
+  }
 
-	@Override
-	public String getAlternativeJrePath()
-	{
-		throw new UnsupportedOperationException();
-	}
+  @Override
+  public void setAlternativeJrePathEnabled(boolean enabled) {
+    throw new UnsupportedOperationException();
+  }
 
-	@Override
-	public void setAlternativeJrePath(String path)
-	{
-		throw new UnsupportedOperationException();
-	}
+  @Override
+  public String getAlternativeJrePath() {
+    throw new UnsupportedOperationException();
+  }
 
-	@Override
-	public String getRunClass()
-	{
-		return null;
-	}
+  @Override
+  public void setAlternativeJrePath(String path) {
+    throw new UnsupportedOperationException();
+  }
 
-	@Override
-	public String getPackage()
-	{
-		return null;
-	}
+  @Override
+  public String getRunClass() {
+    return null;
+  }
 
-	@Override
-	public void setProgramParameters(@javax.annotation.Nullable String value)
-	{
-		LOG.error("Don't add program parameters to Groovy script run configuration. Use Script parameters instead");
-	}
+  @Override
+  public String getPackage() {
+    return null;
+  }
 
-	@Override
-	public String getProgramParameters()
-	{
-		return null;
-	}
+  @Override
+  public void setProgramParameters(@Nullable String value) {
+    LOG.error("Don't add program parameters to Groovy script run configuration. Use Script parameters instead");
+  }
 
-	@Nullable
-	public String getScriptParameters()
-	{
-		return scriptParams;
-	}
+  @Override
+  public String getProgramParameters() {
+    return null;
+  }
 
-	@Override
-	public void setWorkingDirectory(@javax.annotation.Nullable String value)
-	{
-		workDir = value;
-	}
+  @Nullable
+  public String getScriptParameters() {
+    return scriptParams;
+  }
 
-	@Override
-	public String getWorkingDirectory()
-	{
-		return workDir;
-	}
+  @Override
+  public void setWorkingDirectory(@Nullable String value) {
+    workDir = value;
+  }
 
-	@Override
-	public void setEnvs(@Nonnull Map<String, String> envs)
-	{
-		this.envs.clear();
-		this.envs.putAll(envs);
-	}
+  @Override
+  public String getWorkingDirectory() {
+    return workDir;
+  }
 
-	@Nonnull
-	@Override
-	public Map<String, String> getEnvs()
-	{
-		return envs;
-	}
+  @Override
+  public void setEnvs(@Nonnull Map<String, String> envs) {
+    this.envs.clear();
+    this.envs.putAll(envs);
+  }
 
-	@Override
-	public void setPassParentEnvs(boolean passParentEnvs)
-	{
-		this.passParentEnv = passParentEnvs;
-	}
+  @Nonnull
+  @Override
+  public Map<String, String> getEnvs() {
+    return envs;
+  }
 
-	@Override
-	public boolean isPassParentEnvs()
-	{
-		return passParentEnv;
-	}
+  @Override
+  public void setPassParentEnvs(boolean passParentEnvs) {
+    this.passParentEnv = passParentEnvs;
+  }
 
-	public boolean isDebugEnabled()
-	{
-		return isDebugEnabled;
-	}
+  @Override
+  public boolean isPassParentEnvs() {
+    return passParentEnv;
+  }
 
-	public void setDebugEnabled(boolean debugEnabled)
-	{
-		isDebugEnabled = debugEnabled;
-	}
+  public boolean isDebugEnabled() {
+    return isDebugEnabled;
+  }
 
-	@Nullable
-	public String getScriptPath()
-	{
-		return scriptPath;
-	}
+  public void setDebugEnabled(boolean debugEnabled) {
+    isDebugEnabled = debugEnabled;
+  }
 
-	public void setScriptPath(@Nullable String scriptPath)
-	{
-		this.scriptPath = scriptPath;
-	}
+  @Nullable
+  public String getScriptPath() {
+    return scriptPath;
+  }
+
+  public void setScriptPath(@Nullable String scriptPath) {
+    this.scriptPath = scriptPath;
+  }
 }

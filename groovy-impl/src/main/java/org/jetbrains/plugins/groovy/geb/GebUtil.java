@@ -15,9 +15,12 @@
  */
 package org.jetbrains.plugins.groovy.geb;
 
-import com.intellij.psi.*;
-import com.intellij.psi.scope.PsiScopeProcessor;
-import javax.annotation.Nonnull;
+import com.intellij.java.language.psi.PsiClass;
+import com.intellij.java.language.psi.PsiField;
+import com.intellij.java.language.psi.PsiType;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.resolve.PsiScopeProcessor;
+import consulo.language.psi.resolve.ResolveState;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlock;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrCall;
@@ -29,6 +32,7 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GrLightField;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 import org.jetbrains.plugins.groovy.util.LightCacheKey;
 
+import javax.annotation.Nonnull;
 import java.lang.reflect.Modifier;
 import java.util.Collections;
 import java.util.HashMap;

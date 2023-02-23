@@ -15,22 +15,23 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.rename;
 
-import com.intellij.psi.*;
-import com.intellij.psi.codeStyle.JavaCodeStyleManager;
-import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.psi.search.searches.MethodReferencesSearch;
-import com.intellij.psi.search.searches.ReferencesSearch;
-import com.intellij.psi.util.PropertyUtil;
-import com.intellij.psi.util.PsiFormatUtil;
-import com.intellij.psi.util.PsiFormatUtilBase;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.refactoring.listeners.RefactoringElementListener;
-import com.intellij.refactoring.rename.RenameJavaVariableProcessor;
-import com.intellij.refactoring.rename.UnresolvableCollisionUsageInfo;
-import com.intellij.refactoring.util.MoveRenameUsageInfo;
-import com.intellij.usageView.UsageInfo;
-import com.intellij.util.IncorrectOperationException;
-import com.intellij.util.containers.MultiMap;
+import com.intellij.java.impl.refactoring.rename.RenameJavaVariableProcessor;
+import com.intellij.java.indexing.search.searches.MethodReferencesSearch;
+import com.intellij.java.language.psi.*;
+import com.intellij.java.language.psi.codeStyle.JavaCodeStyleManager;
+import com.intellij.java.language.psi.util.PropertyUtil;
+import com.intellij.java.language.psi.util.PsiFormatUtil;
+import com.intellij.java.language.psi.util.PsiFormatUtilBase;
+import consulo.language.editor.refactoring.event.RefactoringElementListener;
+import consulo.language.editor.refactoring.rename.UnresolvableCollisionUsageInfo;
+import consulo.language.psi.*;
+import consulo.language.psi.scope.GlobalSearchScope;
+import consulo.language.psi.search.ReferencesSearch;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.language.util.IncorrectOperationException;
+import consulo.usage.MoveRenameUsageInfo;
+import consulo.usage.UsageInfo;
+import consulo.util.collection.MultiMap;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
@@ -44,6 +45,7 @@ import org.jetbrains.plugins.groovy.lang.resolve.processors.MethodResolverProces
 import org.jetbrains.plugins.groovy.refactoring.GroovyRefactoringBundle;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.*;
 
 import static org.jetbrains.plugins.groovy.lang.psi.util.GroovyPropertyUtils.findGetterForField;
@@ -79,7 +81,7 @@ public class RenameGrFieldProcessor extends RenameJavaVariableProcessor {
   public void renameElement(final PsiElement psiElement,
                             String newName,
                             final UsageInfo[] usages,
-                            @javax.annotation.Nullable RefactoringElementListener listener) throws IncorrectOperationException {
+                            @Nullable RefactoringElementListener listener) throws IncorrectOperationException {
     final GrField field = (GrField)psiElement;
     String fieldName = field.getName();
     Map<PsiElement, String> renames = new HashMap<PsiElement, String>();

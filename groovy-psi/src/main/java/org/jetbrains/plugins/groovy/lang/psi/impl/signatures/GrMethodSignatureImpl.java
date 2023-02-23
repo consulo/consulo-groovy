@@ -15,20 +15,21 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.signatures;
 
-import javax.annotation.Nonnull;
-
+import com.intellij.java.language.psi.PsiMethod;
+import com.intellij.java.language.psi.PsiParameter;
+import com.intellij.java.language.psi.PsiSubstitutor;
+import com.intellij.java.language.psi.PsiType;
+import consulo.language.psi.PsiElement;
+import consulo.util.collection.ContainerUtil;
 import org.jetbrains.plugins.groovy.lang.psi.api.signatures.GrClosureSignature;
 import org.jetbrains.plugins.groovy.lang.psi.api.signatures.GrSignature;
 import org.jetbrains.plugins.groovy.lang.psi.api.signatures.GrSignatureVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrClosureParameter;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiMethod;
-import com.intellij.psi.PsiParameter;
-import com.intellij.psi.PsiSubstitutor;
-import com.intellij.psi.PsiType;
-import com.intellij.util.Function;
-import com.intellij.util.containers.ContainerUtil;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.function.Function;
 
 /**
 * Created by Max Medvedev on 14/03/14
@@ -56,12 +57,7 @@ class GrMethodSignatureImpl implements GrClosureSignature {
   @Override
   public GrClosureParameter[] getParameters() {
     PsiParameter[] parameters = myMethod.getParameterList().getParameters();
-    return ContainerUtil.map(parameters, new Function<PsiParameter, GrClosureParameter>() {
-      @Override
-      public GrClosureParameter fun(PsiParameter parameter) {
-        return createClosureParameter(parameter);
-      }
-    }, new GrClosureParameter[parameters.length]);
+    return ContainerUtil.map(parameters, parameter -> createClosureParameter(parameter), new GrClosureParameter[parameters.length]);
   }
 
   @Nonnull
@@ -94,7 +90,7 @@ class GrMethodSignatureImpl implements GrClosureSignature {
     return myMethod.isValid() && getSubstitutor().isValid();
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   @Override
   public GrSignature curry(@Nonnull PsiType[] args, int position, @Nonnull PsiElement context) {
     return GrClosureSignatureUtil.curryImpl(this, args, position, context);

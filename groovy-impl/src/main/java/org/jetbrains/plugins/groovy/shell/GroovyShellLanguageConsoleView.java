@@ -17,6 +17,9 @@ package org.jetbrains.plugins.groovy.shell;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
+import consulo.language.file.light.LightVirtualFile;
+import consulo.language.psi.PsiFile;
 import org.jetbrains.plugins.groovy.GroovyLanguage;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
@@ -30,13 +33,13 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMe
 import org.jetbrains.plugins.groovy.lang.psi.api.toplevel.GrTopStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.toplevel.imports.GrImportStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
-import com.intellij.execution.console.LanguageConsoleImpl;
-import com.intellij.openapi.editor.ex.EditorEx;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiType;
-import com.intellij.testFramework.LightVirtualFile;
+import consulo.ide.impl.idea.execution.console.LanguageConsoleImpl;
+import consulo.codeEditor.EditorEx;
+import consulo.project.Project;
+import consulo.document.util.TextRange;
+import consulo.language.psi.PsiFile;
+import com.intellij.java.language.psi.PsiType;
+import consulo.language.file.light.LightVirtualFile;
 
 public class GroovyShellLanguageConsoleView extends LanguageConsoleImpl
 {

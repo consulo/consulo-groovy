@@ -16,7 +16,7 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.api.statements;
 
-import com.intellij.util.IncorrectOperationException;
+import consulo.language.util.IncorrectOperationException;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.GrCondition;
 import org.jetbrains.plugins.groovy.lang.psi.api.toplevel.GrTopStatement;
 

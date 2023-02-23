@@ -15,14 +15,15 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.metrics;
 
-import com.intellij.psi.PsiType;
+import com.intellij.java.language.psi.PsiType;
 import org.jetbrains.annotations.Nls;
-import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.codeInspection.utils.ControlFlowUtils;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrCodeBlock;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
+
+import javax.annotation.Nonnull;
 
 public class GroovyMultipleReturnPointsPerMethodInspection
     extends GroovyMethodMetricInspection {

@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.convertToJava
 
-import com.intellij.psi.PsiFile
+import com.intellij.java.language.psi.PsiFile
 import org.jetbrains.plugins.groovy.LightGroovyTestCase
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile
 import org.jetbrains.plugins.groovy.util.TestUtils

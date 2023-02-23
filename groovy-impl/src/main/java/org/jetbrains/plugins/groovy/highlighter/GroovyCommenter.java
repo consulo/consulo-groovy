@@ -16,94 +16,91 @@
 
 package org.jetbrains.plugins.groovy.highlighter;
 
-import javax.annotation.Nullable;
+import consulo.language.CodeDocumentationAwareCommenter;
+import consulo.language.Language;
+import consulo.language.ast.IElementType;
+import consulo.language.psi.PsiComment;
+import org.jetbrains.plugins.groovy.GroovyLanguage;
 import org.jetbrains.plugins.groovy.lang.groovydoc.parser.GroovyDocElementTypes;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
-import com.intellij.lang.CodeDocumentationAwareCommenter;
-import com.intellij.psi.PsiComment;
-import com.intellij.psi.tree.IElementType;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author ilyas
  */
 
-public class GroovyCommenter implements CodeDocumentationAwareCommenter
-{
-	@Override
-	public String getLineCommentPrefix()
-	{
-		return "//";
-	}
+public class GroovyCommenter implements CodeDocumentationAwareCommenter {
+  @Override
+  public String getLineCommentPrefix() {
+    return "//";
+  }
 
-	@Override
-	public String getBlockCommentPrefix()
-	{
-		return "/*";
-	}
+  @Override
+  public String getBlockCommentPrefix() {
+    return "/*";
+  }
 
-	@Override
-	public String getBlockCommentSuffix()
-	{
-		return "*/";
-	}
+  @Override
+  public String getBlockCommentSuffix() {
+    return "*/";
+  }
 
-	@Override
-	public String getCommentedBlockCommentPrefix()
-	{
-		return null;
-	}
+  @Override
+  public String getCommentedBlockCommentPrefix() {
+    return null;
+  }
 
-	@Override
-	public String getCommentedBlockCommentSuffix()
-	{
-		return null;
-	}
+  @Override
+  public String getCommentedBlockCommentSuffix() {
+    return null;
+  }
 
-	@Override
-	@Nullable
-	public IElementType getLineCommentTokenType()
-	{
-		return GroovyTokenTypes.mSL_COMMENT;
-	}
+  @Override
+  @Nullable
+  public IElementType getLineCommentTokenType() {
+    return GroovyTokenTypes.mSL_COMMENT;
+  }
 
-	@Override
-	@javax.annotation.Nullable
-	public IElementType getBlockCommentTokenType()
-	{
-		return GroovyTokenTypes.mML_COMMENT;
-	}
+  @Override
+  @Nullable
+  public IElementType getBlockCommentTokenType() {
+    return GroovyTokenTypes.mML_COMMENT;
+  }
 
-	@Override
-	@Nullable
-	public IElementType getDocumentationCommentTokenType()
-	{
-		return GroovyDocElementTypes.GROOVY_DOC_COMMENT;
-	}
+  @Override
+  @Nullable
+  public IElementType getDocumentationCommentTokenType() {
+    return GroovyDocElementTypes.GROOVY_DOC_COMMENT;
+  }
 
-	@Override
-	@javax.annotation.Nullable
-	public String getDocumentationCommentPrefix()
-	{
-		return "/**";
-	}
+  @Override
+  @Nullable
+  public String getDocumentationCommentPrefix() {
+    return "/**";
+  }
 
-	@Override
-	@Nullable
-	public String getDocumentationCommentLinePrefix()
-	{
-		return "*";
-	}
+  @Override
+  @Nullable
+  public String getDocumentationCommentLinePrefix() {
+    return "*";
+  }
 
-	@Override
-	@Nullable
-	public String getDocumentationCommentSuffix()
-	{
-		return "*/";
-	}
+  @Override
+  @Nullable
+  public String getDocumentationCommentSuffix() {
+    return "*/";
+  }
 
-	@Override
-	public boolean isDocumentationComment(PsiComment element)
-	{
-		return element.getText().startsWith(getDocumentationCommentPrefix());
-	}
+  @Override
+  public boolean isDocumentationComment(PsiComment element) {
+    return element.getText().startsWith(getDocumentationCommentPrefix());
+  }
+
+  @Nonnull
+  @Override
+  public Language getLanguage() {
+    return GroovyLanguage.INSTANCE;
+  }
 }

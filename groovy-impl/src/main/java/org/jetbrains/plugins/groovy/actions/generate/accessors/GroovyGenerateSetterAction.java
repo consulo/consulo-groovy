@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.actions.generate.accessors;
 
-import com.intellij.codeInsight.generation.GenerateSetterHandler;
+import com.intellij.java.impl.codeInsight.generation.GenerateSetterHandler;
 import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.actions.generate.GrBaseGenerateAction;
 

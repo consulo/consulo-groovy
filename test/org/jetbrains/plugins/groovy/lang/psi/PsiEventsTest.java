@@ -1,9 +1,9 @@
 package org.jetbrains.plugins.groovy.lang.psi;
 
 import com.intellij.testFramework.PsiTestCase;
-import com.intellij.psi.PsiTreeChangeAdapter;
-import com.intellij.psi.PsiTreeChangeEvent;
-import com.intellij.psi.PsiDocumentManager;
+import com.intellij.java.language.psi.PsiTreeChangeAdapter;
+import com.intellij.java.language.psi.PsiTreeChangeEvent;
+import com.intellij.java.language.psi.PsiDocumentManager;
 import com.intellij.openapi.util.Ref;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.command.CommandProcessor;

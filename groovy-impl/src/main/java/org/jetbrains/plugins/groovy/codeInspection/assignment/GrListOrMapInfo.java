@@ -15,12 +15,10 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.assignment;
 
-import javax.annotation.Nonnull;
-
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiClassType;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiType;
+import com.intellij.java.language.psi.PsiClass;
+import com.intellij.java.language.psi.PsiClassType;
+import com.intellij.java.language.psi.PsiType;
+import consulo.language.psi.PsiElement;
 import org.jetbrains.plugins.groovy.findUsages.LiteralConstructorReference;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.GrListOrMap;
@@ -31,6 +29,9 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpres
 import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyResolveResultImpl;
 import org.jetbrains.plugins.groovy.lang.psi.impl.PsiImplUtil;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * Created by Max Medvedev on 05/02/14
@@ -46,13 +47,13 @@ public class GrListOrMapInfo implements ConstructorCallInfo<GrListOrMap> {
     myReference = ((LiteralConstructorReference)listOrMap.getReference());
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   @Override
   public GrArgumentList getArgumentList() {
     return null;
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   @Override
   public PsiType[] getArgumentTypes() {
     if (myListOrMap.isMap()) {
@@ -67,13 +68,13 @@ public class GrListOrMapInfo implements ConstructorCallInfo<GrListOrMap> {
     }
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   @Override
   public GrExpression getInvokedExpression() {
     return null;
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   @Override
   public PsiType getQualifierInstanceType() {
     return null;

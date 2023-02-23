@@ -18,11 +18,13 @@ package org.jetbrains.plugins.groovy.lang.groovydoc.psi.api;
 
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
 
+import javax.annotation.Nullable;
+
 /**
  * @author ilyas
  */
 public interface GrDocReferenceElement extends GroovyDocPsiElement{
 
-  @javax.annotation.Nullable
+  @Nullable
   GrCodeReferenceElement getReferenceElement();
 }

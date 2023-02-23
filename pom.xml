@@ -21,7 +21,7 @@
 	<parent>
 		<groupId>consulo</groupId>
 		<artifactId>arch.managment</artifactId>
-		<version>2-SNAPSHOT</version>
+		<version>3-SNAPSHOT</version>
 		<relativePath/>
 	</parent>
 
@@ -38,15 +38,13 @@
 
 	<groupId>consulo.plugin</groupId>
 	<artifactId>org.intellij.groovy.parent</artifactId>
-	<version>2-SNAPSHOT</version>
+	<version>3-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<modules>
 		<module>groovy-impl</module>
 		<module>groovy-rt</module>
-		<module>groovy-spellchecker</module>
 		<module>groovy-psi</module>
-		<module>groovy-intelliLang</module>
 		<module>groovy-maven</module>
 		<module>hotswap/gragent</module>
 	</modules>

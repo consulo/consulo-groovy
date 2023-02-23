@@ -15,14 +15,15 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.intellij.java.language.psi.PsiClassType;
+import com.intellij.java.language.psi.PsiSubstitutor;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiNamedElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
 import org.jetbrains.plugins.groovy.lang.psi.api.SpreadState;
-import com.intellij.psi.PsiClassType;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiNamedElement;
-import com.intellij.psi.PsiSubstitutor;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author ven
@@ -100,7 +101,7 @@ public class GroovyResolveResultImpl implements GroovyResolveResult
 	}
 
 	@Override
-	@javax.annotation.Nullable
+	@Nullable
 	public PsiElement getElement()
 	{
 		return myElement;

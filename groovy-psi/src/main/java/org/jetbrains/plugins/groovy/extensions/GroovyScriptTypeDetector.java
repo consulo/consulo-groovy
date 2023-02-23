@@ -15,10 +15,12 @@
  */
 package org.jetbrains.plugins.groovy.extensions;
 
-import com.intellij.openapi.extensions.ExtensionPointName;
-import com.intellij.psi.search.GlobalSearchScope;
+import consulo.annotation.component.ComponentScope;
+import consulo.annotation.component.ExtensionAPI;
+import consulo.component.extension.ExtensionPointName;
+import consulo.language.psi.scope.GlobalSearchScope;
 import consulo.ui.image.Image;
-import icons.JetgroovyIcons;
+import org.jetbrains.plugins.groovy.JetgroovyIcons;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 
 import javax.annotation.Nonnull;
@@ -26,49 +28,41 @@ import javax.annotation.Nonnull;
 /**
  * @author sergey.evdokimov
  */
-public abstract class GroovyScriptTypeDetector
-{
-	public static final ExtensionPointName<GroovyScriptTypeDetector> EP_NAME = ExtensionPointName.create("org.intellij.groovy.scriptTypeDetector");
+@ExtensionAPI(ComponentScope.APPLICATION)
+public abstract class GroovyScriptTypeDetector {
+  public static final ExtensionPointName<GroovyScriptTypeDetector> EP_NAME =
+    ExtensionPointName.create(GroovyScriptTypeDetector.class);
 
-	private final GroovyScriptType myScriptType;
+  private final GroovyScriptType myScriptType;
 
+  protected GroovyScriptTypeDetector(GroovyScriptType scriptType) {
+    myScriptType = scriptType;
+  }
 
-	protected GroovyScriptTypeDetector(GroovyScriptType scriptType)
-	{
-		myScriptType = scriptType;
-	}
+  @Nonnull
+  public final GroovyScriptType getScriptType() {
+    return myScriptType;
+  }
 
-	@Nonnull
-	public final GroovyScriptType getScriptType()
-	{
-		return myScriptType;
-	}
+  public abstract boolean isSpecificScriptFile(@Nonnull GroovyFile script);
 
-	public abstract boolean isSpecificScriptFile(@Nonnull GroovyFile script);
+  @Nonnull
+  public static Image getIcon(@Nonnull GroovyFile script) {
+    for (GroovyScriptTypeDetector detector : EP_NAME.getExtensionList()) {
+      if (detector.isSpecificScriptFile(script)) {
+        return detector.getScriptType().getScriptIcon();
+      }
+    }
 
-	@Nonnull
-	public static Image getIcon(@Nonnull GroovyFile script)
-	{
-		for(GroovyScriptTypeDetector detector : EP_NAME.getExtensionList())
-		{
-			if(detector.isSpecificScriptFile(script))
-			{
-				return detector.getScriptType().getScriptIcon();
-			}
-		}
+    return JetgroovyIcons.Groovy.Groovy_16x16;
+  }
 
-		return JetgroovyIcons.Groovy.Groovy_16x16;
-	}
-
-	public static GlobalSearchScope patchResolveScope(@Nonnull GroovyFile script, GlobalSearchScope scope)
-	{
-		for(GroovyScriptTypeDetector detector : EP_NAME.getExtensionList())
-		{
-			if(detector.isSpecificScriptFile(script))
-			{
-				return detector.getScriptType().patchResolveScope(script, scope);
-			}
-		}
-		return scope;
-	}
+  public static GlobalSearchScope patchResolveScope(@Nonnull GroovyFile script, GlobalSearchScope scope) {
+    for (GroovyScriptTypeDetector detector : EP_NAME.getExtensionList()) {
+      if (detector.isSpecificScriptFile(script)) {
+        return detector.getScriptType().patchResolveScope(script, scope);
+      }
+    }
+    return scope;
+  }
 }

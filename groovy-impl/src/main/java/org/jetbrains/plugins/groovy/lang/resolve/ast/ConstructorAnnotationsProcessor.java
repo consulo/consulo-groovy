@@ -16,10 +16,11 @@
 
 package org.jetbrains.plugins.groovy.lang.resolve.ast;
 
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.*;
-import com.intellij.psi.util.PropertyUtil;
+import consulo.util.lang.StringUtil;
+import com.intellij.java.language.psi.*;
+import com.intellij.java.language.psi.util.PropertyUtil;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
@@ -79,7 +80,7 @@ public class ConstructorAnnotationsProcessor extends AstTransformContributor {
 
   @Nonnull
   private static GrLightMethodBuilder generateFieldConstructor(@Nonnull GrTypeDefinition typeDefinition,
-                                                               @javax.annotation.Nullable PsiAnnotation tupleConstructor,
+                                                               @Nullable PsiAnnotation tupleConstructor,
                                                                boolean immutable,
                                                                boolean canonical) {
     final GrLightMethodBuilder fieldsConstructor = new GrLightMethodBuilder(typeDefinition.getManager(), typeDefinition.getName());

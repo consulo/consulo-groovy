@@ -15,15 +15,21 @@
  */
 package org.jetbrains.plugins.groovy.codeStyle;
 
-import com.intellij.application.options.IndentOptionsEditor;
-import com.intellij.application.options.SmartIndentOptionsEditor;
-import com.intellij.lang.Language;
-import com.intellij.openapi.application.ApplicationBundle;
-import com.intellij.psi.codeStyle.CodeStyleSettings;
-import com.intellij.psi.codeStyle.CodeStyleSettingsCustomizable;
-import com.intellij.psi.codeStyle.CommonCodeStyleSettings;
-import com.intellij.psi.codeStyle.LanguageCodeStyleSettingsProvider;
+import consulo.application.ApplicationBundle;
+import consulo.language.codeStyle.CodeStyleSettings;
+import consulo.language.codeStyle.CommonCodeStyleSettings;
+import consulo.language.codeStyle.setting.CodeStyleSettingsCustomizable;
+import consulo.language.codeStyle.setting.IndentOptionsEditor;
+import consulo.language.codeStyle.ui.setting.SmartIndentOptionsEditor;
+import consulo.language.Language;
+import consulo.application.ApplicationBundle;
+import consulo.language.codeStyle.CodeStyleSettings;
+import consulo.language.codeStyle.setting.CodeStyleSettingsCustomizable;
+import consulo.language.codeStyle.CommonCodeStyleSettings;
+import consulo.language.codeStyle.setting.LanguageCodeStyleSettingsProvider;
 import javax.annotation.Nonnull;
+
+import consulo.language.codeStyle.setting.IndentOptionsEditor;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 
 import javax.swing.*;

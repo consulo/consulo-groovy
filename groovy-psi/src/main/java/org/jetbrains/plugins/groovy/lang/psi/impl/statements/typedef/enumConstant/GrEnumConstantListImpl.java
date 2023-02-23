@@ -18,21 +18,22 @@ package org.jetbrains.plugins.groovy.lang.psi.impl.statements.typedef.enumConsta
 
 import javax.annotation.Nonnull;
 
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.StubBasedPsiElement;
+import consulo.language.psi.stub.EmptyStub;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrEnumConstant;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrEnumConstantList;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GrStubElementBase;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.StubBasedPsiElement;
-import com.intellij.psi.stubs.EmptyStub;
+import consulo.language.ast.ASTNode;
 
 /**
  * @author: Dmitry.Krasilschikov
  * @date: 06.04.2007
  */
-public class GrEnumConstantListImpl extends GrStubElementBase<EmptyStub> implements GrEnumConstantList, StubBasedPsiElement<EmptyStub> {
+public class GrEnumConstantListImpl extends GrStubElementBase<EmptyStub> implements GrEnumConstantList, StubBasedPsiElement<EmptyStub>
+{
 
   public GrEnumConstantListImpl(@Nonnull ASTNode node) {
     super(node);

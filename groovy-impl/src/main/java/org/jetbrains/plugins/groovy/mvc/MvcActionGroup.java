@@ -1,12 +1,15 @@
 package org.jetbrains.plugins.groovy.mvc;
 
-import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.actionSystem.DefaultActionGroup;
-import com.intellij.openapi.actionSystem.Presentation;
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.project.DumbAware;
-import com.intellij.openapi.util.Pair;
-import consulo.awt.TargetAWT;
+import consulo.module.Module;
+import consulo.ui.ex.action.AnActionEvent;
+import consulo.ui.ex.action.DefaultActionGroup;
+import consulo.ui.ex.action.Presentation;
+import consulo.module.Module;
+import consulo.application.dumb.DumbAware;
+import consulo.util.lang.Pair;
+import consulo.ui.ex.awtUnsafe.TargetAWT;
+import consulo.ui.ex.action.DefaultActionGroup;
+import consulo.util.lang.Pair;
 
 public class MvcActionGroup extends DefaultActionGroup implements DumbAware {
 

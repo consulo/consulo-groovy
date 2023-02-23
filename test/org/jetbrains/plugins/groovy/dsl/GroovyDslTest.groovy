@@ -18,8 +18,8 @@ import com.intellij.codeInsight.documentation.DocumentationManager
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.roots.ContentEntry
 import com.intellij.openapi.roots.ModifiableRootModel
-import com.intellij.psi.PsiClass
-import com.intellij.psi.PsiFile
+import com.intellij.java.language.psi.PsiClass
+import com.intellij.java.language.psi.PsiFile
 import com.intellij.testFramework.LightProjectDescriptor
 import com.intellij.testFramework.PsiTestUtil
 import com.intellij.testFramework.fixtures.DefaultLightProjectDescriptor

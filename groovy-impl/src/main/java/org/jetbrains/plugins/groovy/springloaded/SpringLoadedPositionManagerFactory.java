@@ -1,9 +1,9 @@
 package org.jetbrains.plugins.groovy.springloaded;
 
-import com.intellij.debugger.PositionManager;
-import com.intellij.debugger.PositionManagerFactory;
-import com.intellij.debugger.engine.DebugProcess;
-import com.intellij.psi.JavaPsiFacade;
+import com.intellij.java.debugger.PositionManager;
+import com.intellij.java.debugger.PositionManagerFactory;
+import com.intellij.java.debugger.engine.DebugProcess;
+import com.intellij.java.language.psi.JavaPsiFacade;
 import consulo.application.AccessRule;
 
 /**
@@ -11,39 +11,37 @@ import consulo.application.AccessRule;
  *
  * @author Sergey Evdokimov
  */
-public class SpringLoadedPositionManagerFactory extends PositionManagerFactory
-{
-	@Override
-	public PositionManager createPositionManager(final DebugProcess process)
-	{
-		SpringLoadedPositionManager manager = AccessRule.read(() ->
-		{
-			JavaPsiFacade facade = JavaPsiFacade.getInstance(process.getProject());
-			if(facade.findPackage("com.springsource.loaded") != null || facade.findPackage("org.springsource.loaded") != null)
-			{
-				return new SpringLoadedPositionManager(process);
-			}
-			return null;
-		});
+public class SpringLoadedPositionManagerFactory extends PositionManagerFactory {
+  @Override
+  public PositionManager createPositionManager(final DebugProcess process) {
+    SpringLoadedPositionManager manager = AccessRule.read(() ->
+                                                          {
+                                                            JavaPsiFacade facade = JavaPsiFacade.getInstance(process.getProject());
+                                                            if (facade.findPackage("com.springsource.loaded") != null || facade.findPackage(
+                                                              "org.springsource.loaded") != null) {
+                                                              return new SpringLoadedPositionManager(process);
+                                                            }
+                                                            return null;
+                                                          });
 
-		if(manager != null)
-		{
-			return manager;
-		}
+    if (manager != null) {
+      return manager;
+    }
 
-		try
-		{
-			// Check spring loaded for remote process
-			if(process.getVirtualMachineProxy().classesByName("com.springsource.loaded.agent.SpringLoadedAgent").size() > 0 || process.getVirtualMachineProxy().classesByName("org.springsource.loaded.agent.SpringLoadedAgent").size() > 0)
-			{
-				return new SpringLoadedPositionManager(process);
-			}
-		}
-		catch(Exception ignored)
-		{
-			// Some problem with virtual machine.
-		}
+    try {
+      // Check spring loaded for remote process
+      if (process.getVirtualMachineProxy()
+                 .classesByName("com.springsource.loaded.agent.SpringLoadedAgent")
+                 .size() > 0 || process.getVirtualMachineProxy()
+                                       .classesByName("org.springsource.loaded.agent.SpringLoadedAgent")
+                                       .size() > 0) {
+        return new SpringLoadedPositionManager(process);
+      }
+    }
+    catch (Exception ignored) {
+      // Some problem with virtual machine.
+    }
 
-		return null;
-	}
+    return null;
+  }
 }

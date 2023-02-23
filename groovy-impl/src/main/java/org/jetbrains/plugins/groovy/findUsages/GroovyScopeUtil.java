@@ -15,9 +15,10 @@
  */
 package org.jetbrains.plugins.groovy.findUsages;
 
-import com.intellij.psi.PsiMethod;
-import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.psi.search.SearchScope;
+import com.intellij.java.language.psi.PsiMethod;
+import consulo.content.scope.SearchScope;
+import consulo.language.psi.scope.GlobalSearchScope;
+import consulo.content.scope.SearchScope;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 
 /**

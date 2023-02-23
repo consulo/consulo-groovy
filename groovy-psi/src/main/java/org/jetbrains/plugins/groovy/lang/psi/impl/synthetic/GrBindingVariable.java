@@ -15,13 +15,12 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.synthetic;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
-import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
-import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
-import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
-import org.jetbrains.plugins.groovy.lang.psi.GroovyRecursiveElementVisitor;
+import com.intellij.java.language.psi.CommonClassNames;
+import com.intellij.java.language.psi.PsiType;
+import consulo.language.psi.PsiElement;
+import consulo.language.util.IncorrectOperationException;
+import consulo.util.lang.StringUtil;
+import org.jetbrains.plugins.groovy.lang.psi.*;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrAssignmentExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
@@ -29,11 +28,9 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrRefere
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrTupleExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeElement;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.CommonClassNames;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiType;
-import com.intellij.util.IncorrectOperationException;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author Max Medvedev
@@ -53,14 +50,15 @@ public class GrBindingVariable extends GrLightVariable implements GrVariable {
     return myFile;
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   @Override
   public GrExpression getInitializerGroovy() {
     return null;
   }
 
   @Override
-  public void setType(@javax.annotation.Nullable PsiType type) throws IncorrectOperationException {
+  public void setType(@Nullable PsiType type) throws IncorrectOperationException
+  {
     throw new UnsupportedOperationException();
   }
 
@@ -76,7 +74,7 @@ public class GrBindingVariable extends GrLightVariable implements GrVariable {
     return null;
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   @Override
   public PsiType getDeclaredType() {
     return null;
@@ -143,7 +141,7 @@ public class GrBindingVariable extends GrLightVariable implements GrVariable {
     return myHasWriteAccess.booleanValue();
   }
 
-  private boolean isRefToMe(@javax.annotation.Nullable PsiElement element) {
+  private boolean isRefToMe(@Nullable PsiElement element) {
     if (maybeRefToMe(element)) {
       final PsiElement resolved = ((GrReferenceExpression)element).resolve();
       if (resolved == null || resolved == this) {

@@ -15,11 +15,15 @@
  */
 package org.jetbrains.plugins.groovy.doc.actions;
 
-import com.intellij.icons.AllIcons;
-import com.intellij.openapi.actionSystem.AnAction;
-import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.actionSystem.Presentation;
-import com.intellij.openapi.project.DumbAware;
+import consulo.application.AllIcons;
+import consulo.application.dumb.DumbAware;
+import consulo.ui.ex.action.AnAction;
+import consulo.ui.ex.action.AnActionEvent;
+import consulo.ui.ex.action.Presentation;
+import consulo.application.dumb.DumbAware;
+import consulo.application.AllIcons;
+import consulo.ui.ex.action.AnAction;
+import consulo.ui.ex.action.AnActionEvent;
 
 import javax.swing.*;
 
@@ -27,7 +31,8 @@ import javax.swing.*;
  * User: Dmitry.Krasilschikov
  * Date: 14.10.2008
  */
-public class GroovyDocReducePackageAction extends AnAction implements DumbAware {
+public class GroovyDocReducePackageAction extends AnAction implements DumbAware
+{
   private final JList myPackagesList;
   private final DefaultListModel myDataModel;
 

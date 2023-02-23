@@ -15,17 +15,23 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.changeSignature;
 
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.*;
-import com.intellij.refactoring.changeSignature.ParameterTableModelItemBase;
+import com.intellij.java.language.psi.JavaCodeFragmentFactory;
+import com.intellij.java.language.psi.PsiArrayType;
+import com.intellij.java.language.psi.PsiType;
+import com.intellij.java.language.psi.PsiTypeCodeFragment;
+import consulo.language.psi.PsiCodeFragment;
+import consulo.language.psi.PsiElement;
+import consulo.project.Project;
+import org.jetbrains.plugins.groovy.debugger.fragments.GroovyCodeFragment;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import org.jetbrains.plugins.groovy.debugger.fragments.GroovyCodeFragment;
 
 /**
 * @author Max Medvedev
 */
-public class GrParameterTableModelItem extends ParameterTableModelItemBase<GrParameterInfo> {
+public class GrParameterTableModelItem extends consulo.ide.impl.idea.refactoring.changeSignature.ParameterTableModelItemBase<GrParameterInfo>
+{
   public PsiCodeFragment initializerCodeFragment;
 
   public GrParameterTableModelItem(GrParameterInfo parameter,
@@ -38,7 +44,7 @@ public class GrParameterTableModelItem extends ParameterTableModelItemBase<GrPar
 
   public static GrParameterTableModelItem create(@Nullable GrParameterInfo parameterInfo,
                                                  @Nonnull final Project project,
-                                                 @javax.annotation.Nullable final PsiElement context) {
+                                                 @Nullable final PsiElement context) {
     if (parameterInfo == null) {
       parameterInfo = new GrParameterInfo("", "", "", null, -1, false);
     }

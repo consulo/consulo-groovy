@@ -15,16 +15,15 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.extract.closure;
 
-import com.intellij.openapi.util.Ref;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiReference;
-import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.psi.search.searches.ReferencesSearch;
-import com.intellij.refactoring.IntroduceParameterRefactoring;
-import com.intellij.refactoring.introduceParameter.ExternalUsageInfo;
-import com.intellij.usageView.UsageInfo;
-import com.intellij.util.containers.MultiMap;
-import javax.annotation.Nonnull;
+import com.intellij.java.impl.refactoring.IntroduceParameterRefactoring;
+import com.intellij.java.impl.refactoring.introduceParameter.ExternalUsageInfo;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiReference;
+import consulo.language.psi.scope.GlobalSearchScope;
+import consulo.language.psi.search.ReferencesSearch;
+import consulo.usage.UsageInfo;
+import consulo.util.collection.MultiMap;
+import consulo.util.lang.ref.Ref;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
@@ -36,6 +35,7 @@ import org.jetbrains.plugins.groovy.refactoring.introduce.parameter.GrIntroduceC
 import org.jetbrains.plugins.groovy.refactoring.introduce.parameter.GrIntroduceParameterSettings;
 import org.jetbrains.plugins.groovy.refactoring.introduce.parameter.GroovyIntroduceParameterUtil;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 

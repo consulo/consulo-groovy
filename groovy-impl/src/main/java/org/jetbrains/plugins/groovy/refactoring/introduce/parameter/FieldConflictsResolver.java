@@ -15,14 +15,17 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.introduce.parameter;
 
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.psi.*;
-import com.intellij.psi.codeStyle.CodeStyleManager;
-import com.intellij.psi.search.LocalSearchScope;
-import com.intellij.psi.search.searches.ReferencesSearch;
-import com.intellij.psi.util.InheritanceUtil;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.IncorrectOperationException;
+import com.intellij.java.language.psi.*;
+import com.intellij.java.language.psi.util.InheritanceUtil;
+import consulo.language.codeStyle.CodeStyleManager;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiManager;
+import consulo.language.psi.PsiReference;
+import consulo.language.psi.scope.LocalSearchScope;
+import consulo.language.psi.search.ReferencesSearch;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.language.util.IncorrectOperationException;
+import consulo.logging.Logger;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyRecursiveElementVisitor;
@@ -31,6 +34,7 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpres
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
 import org.jetbrains.plugins.groovy.lang.resolve.ResolveUtil;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,8 +42,7 @@ import java.util.List;
  * @author Maxim.Medvedev
  */
 public class FieldConflictsResolver {
-  private static final Logger LOG =
-    Logger.getInstance("#org.jetbrains.plugins.groovy.refactoring.introduce.parameter.FieldConflictsResolver");
+  private static final Logger LOG = Logger.getInstance(FieldConflictsResolver.class);
   private final GrCodeBlock myScope;
   private PsiField myField = null;
   private List<GrReferenceExpression> myReferenceExpressions = null;
@@ -52,9 +55,9 @@ public class FieldConflictsResolver {
     final GroovyPsiElement resolved = ResolveUtil.resolveProperty(myScope, name);
     if (resolved instanceof GrReferenceExpression || resolved == null) return;
 
-    assert  resolved instanceof PsiVariable;
+    assert resolved instanceof PsiVariable;
     final PsiVariable oldVariable = (PsiVariable)resolved;
-    myField = oldVariable instanceof PsiField ? (PsiField) oldVariable : null;
+    myField = oldVariable instanceof PsiField ? (PsiField)oldVariable : null;
     if (!(oldVariable instanceof PsiField)) return;
 
     myReferenceExpressions = new ArrayList<GrReferenceExpression>();
@@ -114,7 +117,7 @@ public class FieldConflictsResolver {
 
   public static GrReferenceExpression qualifyReference(GrReferenceExpression referenceExpression,
                                                        final PsiMember member,
-                                                       @javax.annotation.Nullable final PsiClass qualifyingClass) throws IncorrectOperationException {
+                                                       @Nullable final PsiClass qualifyingClass) throws IncorrectOperationException {
     PsiManager manager = referenceExpression.getManager();
     GrReferenceExpression expressionFromText;
     final GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(referenceExpression.getProject());
@@ -128,7 +131,8 @@ public class FieldConflictsResolver {
         LOG.assertTrue(parentClass != null);
         expressionFromText = factory.createReferenceExpressionFromText("A.this." + member.getName());
         //noinspection ConstantConditions
-        ((GrReferenceExpression)expressionFromText.getQualifier()).getQualifier().replace(factory.createReferenceElementForClass(parentClass));
+        ((GrReferenceExpression)expressionFromText.getQualifier()).getQualifier()
+                                                                  .replace(factory.createReferenceElementForClass(parentClass));
       }
       else {
         expressionFromText = (GrReferenceExpression)factory.createExpressionFromText("this." + member.getName());

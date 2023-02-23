@@ -15,49 +15,44 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.untypedUnresolvedAccess;
 
-import javax.annotation.Nonnull;
+import consulo.document.util.TextRange;
+import consulo.language.editor.intention.IntentionAction;
+import consulo.language.editor.intention.QuickFixAction;
+import consulo.language.editor.intention.QuickFixActionRegistrar;
+import consulo.language.editor.rawHighlight.HighlightDisplayKey;
+import consulo.language.editor.rawHighlight.HighlightInfo;
 
-import com.intellij.codeInsight.daemon.HighlightDisplayKey;
-import com.intellij.codeInsight.daemon.QuickFixActionRegistrar;
-import com.intellij.codeInsight.daemon.impl.HighlightInfo;
-import com.intellij.codeInsight.daemon.impl.quickfix.QuickFixAction;
-import com.intellij.codeInsight.intention.IntentionAction;
-import com.intellij.openapi.util.Condition;
-import com.intellij.openapi.util.TextRange;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.function.Predicate;
 
 /**
  * Created by Max Medvedev on 21/03/14
  */
-class QuickFixActionRegistrarAdapter implements QuickFixActionRegistrar
-{
-	private final HighlightInfo myInfo;
-	private HighlightDisplayKey myKey;
+class QuickFixActionRegistrarAdapter implements QuickFixActionRegistrar {
+  private final HighlightInfo myInfo;
+  private HighlightDisplayKey myKey;
 
-	public QuickFixActionRegistrarAdapter(@javax.annotation.Nullable HighlightInfo info, HighlightDisplayKey displayKey)
-	{
-		myInfo = info;
-		myKey = displayKey;
-	}
+  public QuickFixActionRegistrarAdapter(@Nullable HighlightInfo info, HighlightDisplayKey displayKey) {
+    myInfo = info;
+    myKey = displayKey;
+  }
 
-	@Override
-	public void register(@Nonnull IntentionAction action)
-	{
-		myKey = GrUnresolvedAccessInspection.findDisplayKey();
-		QuickFixAction.registerQuickFixAction(myInfo, action, myKey);
-	}
+  @Override
+  public void register(@Nonnull IntentionAction action) {
+    myKey = GrUnresolvedAccessInspection.findDisplayKey();
+    QuickFixAction.registerQuickFixAction(myInfo, action, myKey);
+  }
 
-	@Override
-	public void register(@Nonnull TextRange fixRange, @Nonnull IntentionAction action, HighlightDisplayKey key)
-	{
-		QuickFixAction.registerQuickFixAction(myInfo, fixRange, action, key);
-	}
+  @Override
+  public void register(@Nonnull TextRange fixRange, @Nonnull IntentionAction action, HighlightDisplayKey key) {
+    QuickFixAction.registerQuickFixAction(myInfo, fixRange, action, key);
+  }
 
-	@Override
-	public void unregister(@Nonnull Condition<IntentionAction> condition)
-	{
-		if(myInfo != null)
-		{
-			myInfo.unregisterQuickFix(condition);
-		}
-	}
+  @Override
+  public void unregister(@Nonnull Predicate<IntentionAction> condition) {
+    if (myInfo != null) {
+      myInfo.unregisterQuickFix(condition);
+    }
+  }
 }

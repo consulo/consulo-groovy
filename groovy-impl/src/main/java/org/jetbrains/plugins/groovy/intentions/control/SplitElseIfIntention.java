@@ -16,15 +16,16 @@
 package org.jetbrains.plugins.groovy.intentions.control;
 
 import javax.annotation.Nonnull;
+
+import consulo.codeEditor.Editor;
+import consulo.project.Project;
 import org.jetbrains.plugins.groovy.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.intentions.base.PsiElementPredicate;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrIfStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
 import org.jetbrains.plugins.groovy.lang.psi.impl.PsiImplUtil;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiElement;
-import com.intellij.util.IncorrectOperationException;
+import consulo.language.psi.PsiElement;
+import consulo.language.util.IncorrectOperationException;
 
 public class SplitElseIfIntention extends Intention
 {

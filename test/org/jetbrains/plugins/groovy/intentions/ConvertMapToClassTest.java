@@ -17,9 +17,9 @@ package org.jetbrains.plugins.groovy.intentions;
 
 import com.intellij.codeInsight.intention.IntentionAction;
 import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.java.language.psi.PsiClass;
+import com.intellij.java.language.psi.PsiElement;
+import com.intellij.java.language.psi.util.PsiTreeUtil;
 import org.jetbrains.plugins.groovy.intentions.conversions.ConvertMapToClassIntention;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.GrListOrMap;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;

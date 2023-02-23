@@ -15,13 +15,15 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.introduce;
 
-import com.intellij.codeInsight.lookup.LookupManager;
-import com.intellij.codeInsight.lookup.impl.LookupImpl;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.psi.PsiDocumentManager;
-import com.intellij.psi.PsiModifier;
+import consulo.codeEditor.Editor;
+import consulo.language.editor.completion.lookup.LookupManager;
+import consulo.ide.impl.idea.codeInsight.lookup.impl.LookupImpl;
+import consulo.logging.Logger;
+import consulo.document.Document;
+import consulo.codeEditor.Editor;
+import consulo.language.psi.PsiDocumentManager;
+import com.intellij.java.language.psi.PsiModifier;
+import consulo.language.editor.completion.lookup.LookupManager;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.GrModifierList;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeElement;
@@ -61,7 +63,7 @@ public class GrFinalListener {
         }
       }
     };
-    final LookupImpl lookup = (LookupImpl)LookupManager.getActiveLookup(myEditor);
+    final LookupImpl lookup = (consulo.ide.impl.idea.codeInsight.lookup.impl.LookupImpl)LookupManager.getActiveLookup(myEditor);
     if (lookup != null) {
       lookup.performGuardedChange(runnable);
     } else {

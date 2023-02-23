@@ -16,6 +16,10 @@
 package org.jetbrains.plugins.groovy.annotator;
 
 import javax.annotation.Nonnull;
+
+import consulo.language.content.FileIndexFacade;
+import consulo.language.psi.PsiComment;
+import consulo.language.psi.PsiElement;
 import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.codeInspection.type.GroovyStaticTypeCheckVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
@@ -23,12 +27,12 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrAccessorMethod;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
-import com.intellij.lang.annotation.AnnotationHolder;
-import com.intellij.lang.annotation.Annotator;
-import com.intellij.openapi.roots.FileIndexFacade;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.PsiComment;
-import com.intellij.psi.PsiElement;
+import consulo.language.editor.annotation.AnnotationHolder;
+import consulo.language.editor.annotation.Annotator;
+import consulo.language.content.FileIndexFacade;
+import consulo.document.util.TextRange;
+import consulo.language.psi.PsiComment;
+import consulo.language.psi.PsiElement;
 
 /**
  * @author Max Medvedev

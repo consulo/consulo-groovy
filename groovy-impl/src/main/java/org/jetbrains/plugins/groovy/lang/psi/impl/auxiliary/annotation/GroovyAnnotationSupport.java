@@ -15,19 +15,27 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.auxiliary.annotation;
 
-import javax.annotation.Nonnull;
-
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.PsiAnnotationSupport;
-import com.intellij.psi.PsiElement;
+import com.intellij.java.language.psi.PsiAnnotationSupport;
+import consulo.language.Language;
+import consulo.language.psi.PsiElement;
+import consulo.util.lang.StringUtil;
+import org.jetbrains.plugins.groovy.GroovyLanguage;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.literals.GrLiteral;
+
+import javax.annotation.Nonnull;
 
 public class GroovyAnnotationSupport implements PsiAnnotationSupport {
   @Override
   @Nonnull
   public GrLiteral createLiteralValue(@Nonnull String value, @Nonnull PsiElement context) {
     return (GrLiteral)GroovyPsiElementFactory.getInstance(context.getProject())
-      .createExpressionFromText("\"" + StringUtil.escapeStringCharacters(value) + "\"");
+                                             .createExpressionFromText("\"" + StringUtil.escapeStringCharacters(value) + "\"");
+  }
+
+  @Nonnull
+  @Override
+  public Language getLanguage() {
+    return GroovyLanguage.INSTANCE;
   }
 }

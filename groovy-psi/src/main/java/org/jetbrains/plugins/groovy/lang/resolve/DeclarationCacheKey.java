@@ -15,27 +15,27 @@
  */
 package org.jetbrains.plugins.groovy.lang.resolve;
 
+import com.intellij.java.language.psi.PsiType;
+import consulo.application.util.CachedValueProvider;
+import consulo.application.util.CachedValuesManager;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiModificationTracker;
+import consulo.language.psi.resolve.PsiScopeProcessor;
+import consulo.language.psi.resolve.ResolveState;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.util.collection.ContainerUtil;
+import consulo.util.lang.Pair;
+import consulo.util.lang.function.PairProcessor;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlock;
+import org.jetbrains.plugins.groovy.lang.resolve.processors.ClassHint;
+import org.jetbrains.plugins.groovy.lang.resolve.processors.ResolverProcessorImpl;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.concurrent.ConcurrentMap;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlock;
-import org.jetbrains.plugins.groovy.lang.resolve.processors.ClassHint;
-import org.jetbrains.plugins.groovy.lang.resolve.processors.ResolverProcessorImpl;
-import com.intellij.openapi.util.Pair;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiType;
-import com.intellij.psi.ResolveState;
-import com.intellij.psi.scope.PsiScopeProcessor;
-import com.intellij.psi.util.CachedValueProvider;
-import com.intellij.psi.util.CachedValuesManager;
-import com.intellij.psi.util.PsiModificationTracker;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.PairProcessor;
-import com.intellij.util.containers.ContainerUtil;
 
 /**
 * @author peter

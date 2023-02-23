@@ -16,7 +16,7 @@
 
 package org.jetbrains.plugins.groovy.lang.lexer;
 
-import com.intellij.psi.tree.IElementType;
+import consulo.language.ast.IElementType;
 
 /**
  * Interface that contains all tokens returned by GroovyLexer

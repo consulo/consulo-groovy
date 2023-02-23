@@ -16,16 +16,21 @@
 package org.jetbrains.plugins.groovy.lang.surroundWith;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
-import com.intellij.lang.ASTNode;
-import com.intellij.lang.surroundWith.Surrounder;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.PsiComment;
-import com.intellij.psi.PsiElement;
-import com.intellij.util.IncorrectOperationException;
+import consulo.document.util.TextRange;
+import consulo.language.ast.ASTNode;
+import consulo.language.editor.surroundWith.Surrounder;
+import consulo.codeEditor.Editor;
+import consulo.language.psi.PsiComment;
+import consulo.language.psi.PsiElement;
+import consulo.project.Project;
+import consulo.document.util.TextRange;
+import consulo.util.lang.StringUtil;
+import consulo.language.psi.PsiComment;
+import consulo.language.psi.PsiElement;
+import consulo.language.util.IncorrectOperationException;
+import consulo.language.editor.surroundWith.Surrounder;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrBlockStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrCodeBlock;
@@ -35,7 +40,8 @@ import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
  * User: Dmitry.Krasilschikov
  * Date: 22.05.2007
  */
-public abstract class GroovyManyStatementsSurrounder implements Surrounder {
+public abstract class GroovyManyStatementsSurrounder implements Surrounder
+{
 
   public boolean isApplicable(@Nonnull PsiElement[] elements) {
     if (elements.length == 0) return false;
@@ -55,7 +61,7 @@ public abstract class GroovyManyStatementsSurrounder implements Surrounder {
     return ";".equals(element.getText()) || element instanceof PsiComment || StringUtil.isEmptyOrSpaces(element.getText()) || PsiUtil.isExpressionStatement(element);
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   public TextRange surroundElements(@Nonnull Project project, @Nonnull Editor editor, @Nonnull PsiElement[] elements) throws IncorrectOperationException {
     if (elements.length == 0) return null;
 

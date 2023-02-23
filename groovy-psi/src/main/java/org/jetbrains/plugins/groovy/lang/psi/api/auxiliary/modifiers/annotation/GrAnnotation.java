@@ -16,11 +16,11 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation;
 
-import javax.annotation.Nonnull;
-
-import com.intellij.psi.PsiAnnotation;
+import com.intellij.java.language.psi.PsiAnnotation;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.GrCondition;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author: Dmitry.Krasilschikov

@@ -15,13 +15,18 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.control;
 
-import com.intellij.codeInspection.ProblemDescriptor;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.IncorrectOperationException;
+import consulo.language.editor.inspection.ProblemDescriptor;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.language.util.IncorrectOperationException;
+import consulo.project.Project;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.language.util.IncorrectOperationException;
+import consulo.language.editor.inspection.ProblemDescriptor;
 import org.jetbrains.annotations.Nls;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspectionVisitor;
@@ -46,7 +51,7 @@ public class GroovyReturnFromClosureCanBeImplicitInspection extends BaseInspecti
         return "'return' statement can be implicit";
     }
 
-    @javax.annotation.Nullable
+    @Nullable
     protected String buildErrorString(Object... args) {
         return "#ref statement at end of a closure can be made implicit #loc";
 
@@ -56,7 +61,7 @@ public class GroovyReturnFromClosureCanBeImplicitInspection extends BaseInspecti
         return new Visitor();
     }
 
-    @javax.annotation.Nullable
+    @Nullable
     protected GroovyFix buildFix(PsiElement location) {
         return new MakeReturnImplicitFix();
     }
@@ -67,7 +72,8 @@ public class GroovyReturnFromClosureCanBeImplicitInspection extends BaseInspecti
             return "Make return implicit";
         }
 
-        public void doFix(Project project, ProblemDescriptor descriptor) throws IncorrectOperationException {
+        public void doFix(Project project, ProblemDescriptor descriptor) throws IncorrectOperationException
+		{
 
             final PsiElement returnKeywordElement = descriptor.getPsiElement();
             final GrReturnStatement returnStatement = (GrReturnStatement) returnKeywordElement.getParent();

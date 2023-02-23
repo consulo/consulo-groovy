@@ -16,14 +16,16 @@
 package org.jetbrains.plugins.groovy.lang.psi.stubs.index;
 
 import javax.annotation.Nonnull;
+
+import consulo.language.psi.stub.StringStubIndexExtension;
+import consulo.language.psi.stub.StubIndexKey;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrAnnotationMethod;
-import com.intellij.psi.stubs.StringStubIndexExtension;
-import com.intellij.psi.stubs.StubIndexKey;
 
 /**
  * @author ilyas
  */
-public class GrAnnotationMethodNameIndex extends StringStubIndexExtension<GrAnnotationMethod> {
+public class GrAnnotationMethodNameIndex extends StringStubIndexExtension<GrAnnotationMethod>
+{
   public static final StubIndexKey<String, GrAnnotationMethod> KEY = StubIndexKey.createIndexKey("gr.annot.method.name");
 
   @Nonnull

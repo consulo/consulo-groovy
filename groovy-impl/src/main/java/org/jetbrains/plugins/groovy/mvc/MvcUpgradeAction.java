@@ -1,21 +1,17 @@
 package org.jetbrains.plugins.groovy.mvc;
 
-import java.util.Arrays;
+import consulo.content.base.BinariesOrderRootType;
+import consulo.content.library.Library;
+import consulo.ide.impl.idea.openapi.roots.ui.configuration.libraries.LibraryPresentationManager;
+import consulo.module.Module;
+import consulo.module.content.layer.ModifiableRootModel;
+import consulo.module.content.layer.orderEntry.LibraryOrderEntry;
+import consulo.module.content.layer.orderEntry.OrderEntry;
+import consulo.ui.ex.action.AnActionEvent;
+import consulo.virtualFileSystem.VirtualFile;
 
 import javax.annotation.Nonnull;
-
-import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.roots.LibraryOrderEntry;
-import com.intellij.openapi.roots.ModifiableRootModel;
-import com.intellij.openapi.roots.OrderEntry;
-import com.intellij.openapi.roots.OrderRootType;
-import com.intellij.openapi.roots.libraries.Library;
-import com.intellij.openapi.roots.ui.configuration.libraries.LibraryPresentationManager;
-import com.intellij.openapi.roots.ui.configuration.projectRoot.LibrariesContainer;
-import com.intellij.openapi.roots.ui.configuration.projectRoot.LibrariesContainerFactory;
-import com.intellij.openapi.vfs.VirtualFile;
-import consulo.awt.TargetAWT;
+import java.util.Arrays;
 
 /**
  * @author peter
@@ -44,9 +40,9 @@ public class MvcUpgradeAction extends MvcActionBase {
     for (OrderEntry entry : model.getOrderEntries()) {
       if (entry instanceof LibraryOrderEntry) {
         final Library library = ((LibraryOrderEntry)entry).getLibrary();
-        final LibrariesContainer container = LibrariesContainerFactory.createContainer(model);
+        final consulo.ide.impl.idea.openapi.roots.ui.configuration.projectRoot.LibrariesContainer container = consulo.ide.impl.idea.openapi.roots.ui.configuration.projectRoot.LibrariesContainerFactory.createContainer(model);
         if (library != null) {
-          final VirtualFile[] files = container.getLibraryFiles(library, OrderRootType.CLASSES);
+          final VirtualFile[] files = container.getLibraryFiles(library, BinariesOrderRootType.getInstance());
           if (presentationManager.isLibraryOfKind(Arrays.asList(files), framework.getLibraryKind())) {
             model.removeOrderEntry(entry);
           }

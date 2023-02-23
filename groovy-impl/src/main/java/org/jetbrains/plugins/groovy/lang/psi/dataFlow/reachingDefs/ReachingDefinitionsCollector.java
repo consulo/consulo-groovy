@@ -15,8 +15,12 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.dataFlow.reachingDefs;
 
-import com.intellij.psi.*;
-import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.java.language.psi.PsiIntersectionType;
+import com.intellij.java.language.psi.PsiModifier;
+import com.intellij.java.language.psi.PsiType;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiManager;
+import consulo.language.psi.util.PsiTreeUtil;
 import consulo.util.collection.primitive.ints.IntObjConsumer;
 import consulo.util.collection.primitive.ints.IntObjectMap;
 import consulo.util.collection.primitive.ints.IntSet;
@@ -217,7 +221,7 @@ public class ReachingDefinitionsCollector {
     return false;
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   private static PsiType getType(PsiElement element) {
     if (element instanceof GrVariable) {
       return ((GrVariable)element).getTypeGroovy();
@@ -320,7 +324,7 @@ public class ReachingDefinitionsCollector {
   /**
    * return true if path is outside of fragment, null if there is no pathand false if path is inside fragment
    */
-  @javax.annotation.Nullable
+  @Nullable
   private static Boolean findPath(Instruction cur,
                                   int destination,
                                   LinkedHashSet<Integer> fragmentInsns,
@@ -407,7 +411,7 @@ public class ReachingDefinitionsCollector {
       return myName;
     }
 
-    @javax.annotation.Nullable
+    @Nullable
     public PsiType getType() {
       if (myType instanceof PsiIntersectionType) return ((PsiIntersectionType)myType).getConjuncts()[0];
       return myType;

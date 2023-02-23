@@ -15,8 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.intentions.conversions;
 
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiType;
+import consulo.language.psi.PsiElement;
+import com.intellij.java.language.psi.PsiType;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.plugins.groovy.intentions.base.PsiElementPredicate;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.literals.GrLiteral;

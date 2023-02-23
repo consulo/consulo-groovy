@@ -15,17 +15,21 @@
  */
 package org.jetbrains.plugins.groovy.lang.completion.handlers;
 
-import com.intellij.codeInsight.completion.InsertHandler;
-import com.intellij.codeInsight.completion.InsertionContext;
-import com.intellij.codeInsight.lookup.Lookup;
-import com.intellij.codeInsight.lookup.LookupElement;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.editor.ScrollType;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.codeStyle.CodeStyleSettings;
-import com.intellij.psi.codeStyle.CodeStyleSettingsManager;
-import com.intellij.psi.codeStyle.CommonCodeStyleSettings;
+import consulo.language.editor.completion.lookup.InsertHandler;
+import consulo.language.editor.completion.lookup.InsertionContext;
+import consulo.language.editor.completion.lookup.Lookup;
+import consulo.language.editor.completion.lookup.LookupElement;
+import consulo.codeEditor.Editor;
+import consulo.codeEditor.ScrollType;
+import consulo.language.psi.PsiElement;
+import consulo.util.lang.StringUtil;
+import consulo.language.psi.PsiElement;
+import consulo.language.codeStyle.CodeStyleSettings;
+import consulo.language.codeStyle.CodeStyleSettingsManager;
+import consulo.language.codeStyle.CommonCodeStyleSettings;
+import consulo.language.editor.completion.lookup.InsertionContext;
+import consulo.language.editor.completion.lookup.Lookup;
+import consulo.util.lang.StringUtil;
 import org.jetbrains.plugins.groovy.GroovyLanguage;
 import org.jetbrains.plugins.groovy.codeStyle.GroovyCodeStyleSettings;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.GrListOrMap;

@@ -15,8 +15,12 @@
  */
 package org.jetbrains.plugins.groovy.refactoring;
 
-import com.intellij.openapi.components.*;
-import com.intellij.util.xmlb.XmlSerializerUtil;
+import consulo.component.persist.PersistentStateComponent;
+import consulo.component.persist.State;
+import consulo.component.persist.Storage;
+import consulo.component.persist.StoragePathMacros;
+import consulo.ide.ServiceManager;
+import consulo.util.xml.serializer.XmlSerializerUtil;
 
 /**
  * @author Max Medvedev

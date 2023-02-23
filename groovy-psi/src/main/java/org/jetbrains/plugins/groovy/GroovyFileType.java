@@ -16,14 +16,13 @@
 
 package org.jetbrains.plugins.groovy;
 
-import com.intellij.lang.Language;
-import com.intellij.openapi.fileTypes.FileType;
-import com.intellij.openapi.fileTypes.FileTypeManager;
-import com.intellij.openapi.fileTypes.LanguageFileType;
-import com.intellij.util.containers.ContainerUtil;
+import consulo.language.Language;
+import consulo.language.file.LanguageFileType;
+import consulo.util.collection.ContainerUtil;
+import consulo.virtualFileSystem.fileType.FileType;
+import consulo.language.file.FileTypeManager;
 import consulo.localize.LocalizeValue;
 import consulo.ui.image.Image;
-import icons.JetgroovyIcons;
 
 import javax.annotation.Nonnull;
 import java.util.Collection;

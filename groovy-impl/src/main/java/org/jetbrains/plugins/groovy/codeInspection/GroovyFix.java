@@ -15,17 +15,16 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection;
 
-import com.intellij.codeInspection.LocalQuickFix;
-import com.intellij.codeInspection.ProblemDescriptor;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vfs.ReadonlyStatusHandler;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.JavaPsiFacade;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.util.IncorrectOperationException;
-import javax.annotation.Nonnull;
+import com.intellij.java.language.psi.JavaPsiFacade;
+import consulo.language.editor.inspection.LocalQuickFix;
+import consulo.language.editor.inspection.ProblemDescriptor;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.util.IncorrectOperationException;
+import consulo.logging.Logger;
+import consulo.project.Project;
+import consulo.virtualFileSystem.ReadonlyStatusHandler;
+import consulo.virtualFileSystem.VirtualFile;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.formatter.GrControlStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrBlockStatement;
@@ -34,7 +33,10 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrOpenBlock;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.util.GrStatementOwner;
 
-public abstract class GroovyFix implements LocalQuickFix {
+import javax.annotation.Nonnull;
+
+public abstract class GroovyFix implements LocalQuickFix
+{
 
   public static final GroovyFix[] EMPTY_ARRAY = new GroovyFix[0];
 

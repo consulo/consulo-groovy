@@ -16,17 +16,18 @@
 
 package org.jetbrains.plugins.groovy.highlighter;
 
+import consulo.language.editor.highlight.LayerDescriptor;
+import consulo.language.editor.highlight.LayeredLexerEditorHighlighter;
 import org.jetbrains.plugins.groovy.lang.groovydoc.highlighter.GroovyDocSyntaxHighlighter;
 import org.jetbrains.plugins.groovy.lang.groovydoc.parser.GroovyDocElementTypes;
-import com.intellij.openapi.editor.colors.EditorColorsScheme;
-import com.intellij.openapi.editor.ex.util.LayerDescriptor;
-import com.intellij.openapi.editor.ex.util.LayeredLexerEditorHighlighter;
-import com.intellij.openapi.fileTypes.SyntaxHighlighter;
+import consulo.colorScheme.EditorColorsScheme;
+import consulo.language.editor.highlight.SyntaxHighlighter;
 
 /**
  * @author ilyas
  */
-public class GroovyEditorHighlighter extends LayeredLexerEditorHighlighter {
+public class GroovyEditorHighlighter extends LayeredLexerEditorHighlighter
+{
 
   public GroovyEditorHighlighter(EditorColorsScheme scheme) {
     super(new GroovySyntaxHighlighter(), scheme);

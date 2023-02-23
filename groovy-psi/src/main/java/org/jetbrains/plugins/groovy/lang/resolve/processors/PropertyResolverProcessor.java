@@ -16,16 +16,15 @@
 
 package org.jetbrains.plugins.groovy.lang.resolve.processors;
 
-import java.util.List;
-
-import javax.annotation.Nonnull;
-
+import com.intellij.java.language.psi.PsiField;
+import com.intellij.java.language.psi.PsiType;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.resolve.ResolveState;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
 import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GrBindingVariable;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiField;
-import com.intellij.psi.PsiType;
-import com.intellij.psi.ResolveState;
+
+import javax.annotation.Nonnull;
+import java.util.List;
 
 /**
  * @author ven

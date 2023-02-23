@@ -19,6 +19,10 @@ import java.util.Comparator;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
+import consulo.language.ast.ASTNode;
+import consulo.language.codeStyle.*;
+import consulo.util.lang.StringUtil;
 import org.jetbrains.plugins.groovy.editor.GroovyImportOptimizer;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
@@ -29,13 +33,13 @@ import org.jetbrains.plugins.groovy.lang.psi.api.toplevel.packaging.GrPackageDef
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyCodeStyleManager;
 import org.jetbrains.plugins.groovy.lang.psi.impl.PsiImplUtil;
-import com.intellij.lang.ASTNode;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.codeStyle.CodeStyleSettingsManager;
-import com.intellij.psi.codeStyle.PackageEntry;
-import com.intellij.psi.codeStyle.PackageEntryTable;
-import com.intellij.util.IncorrectOperationException;
+import consulo.language.ast.ASTNode;
+import consulo.util.lang.StringUtil;
+import consulo.language.psi.PsiElement;
+import consulo.language.codeStyle.CodeStyleSettingsManager;
+import consulo.language.codeStyle.PackageEntry;
+import consulo.language.codeStyle.PackageEntryTable;
+import consulo.language.util.IncorrectOperationException;
 
 public class GroovyCodeStyleManagerImpl extends GroovyCodeStyleManager
 {

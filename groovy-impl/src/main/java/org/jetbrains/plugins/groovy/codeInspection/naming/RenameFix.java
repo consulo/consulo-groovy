@@ -15,16 +15,19 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection.naming;
 
-import com.intellij.codeInspection.ProblemDescriptor;
-import com.intellij.ide.DataManager;
-import com.intellij.openapi.actionSystem.DataContext;
-import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiElement;
-import com.intellij.refactoring.RefactoringActionHandler;
-import com.intellij.refactoring.RefactoringActionHandlerFactory;
-import com.intellij.refactoring.RefactoringFactory;
-import com.intellij.refactoring.RenameRefactoring;
+import consulo.language.editor.inspection.ProblemDescriptor;
+import consulo.dataContext.DataManager;
+import consulo.dataContext.DataContext;
+import consulo.application.ApplicationManager;
+import consulo.language.editor.refactoring.action.RefactoringActionHandler;
+import consulo.language.psi.PsiElement;
+import consulo.project.Project;
+import consulo.language.psi.PsiElement;
+import consulo.language.editor.refactoring.action.RefactoringActionHandler;
+import consulo.language.editor.refactoring.action.RefactoringActionHandlerFactory;
+import consulo.language.editor.refactoring.RefactoringFactory;
+import consulo.language.editor.refactoring.RenameRefactoring;
+import consulo.language.editor.inspection.ProblemDescriptor;
 import org.jetbrains.annotations.NonNls;
 import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.codeInspection.GroovyFix;

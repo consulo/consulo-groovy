@@ -17,8 +17,8 @@ package org.jetbrains.plugins.groovy.refactoring.changeSignature;
 
 import javax.annotation.Nonnull;
 
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.JavaPsiFacade;
+import consulo.project.Project;
+import com.intellij.java.language.psi.JavaPsiFacade;
 import org.jetbrains.plugins.groovy.lang.psi.util.GrStringUtil;
 
 public class GrChangeSignatureUtil {

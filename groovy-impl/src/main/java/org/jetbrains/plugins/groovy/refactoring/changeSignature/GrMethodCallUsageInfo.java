@@ -15,16 +15,19 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.changeSignature;
 
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiMethod;
-import com.intellij.psi.PsiSubstitutor;
-import com.intellij.psi.util.InheritanceUtil;
-import com.intellij.psi.util.MethodSignature;
-import com.intellij.psi.util.MethodSignatureUtil;
-import com.intellij.psi.util.TypeConversionUtil;
-import com.intellij.refactoring.changeSignature.PossiblyIncorrectUsage;
-import com.intellij.usageView.UsageInfo;
+import com.intellij.java.language.psi.PsiClass;
+import consulo.language.editor.refactoring.changeSignature.PossiblyIncorrectUsage;
+import consulo.language.psi.PsiElement;
+import com.intellij.java.language.psi.PsiMethod;
+import com.intellij.java.language.psi.PsiSubstitutor;
+import com.intellij.java.language.psi.util.InheritanceUtil;
+import com.intellij.java.language.psi.util.MethodSignature;
+import com.intellij.java.language.psi.util.MethodSignatureUtil;
+import com.intellij.java.language.psi.util.TypeConversionUtil;
+import consulo.language.editor.refactoring.changeSignature.PossiblyIncorrectUsage;
+import consulo.usage.UsageInfo;
+import consulo.language.psi.PsiElement;
+import consulo.usage.UsageInfo;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
 import org.jetbrains.plugins.groovy.lang.psi.api.signatures.GrClosureSignature;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.*;
@@ -33,10 +36,13 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.signatures.GrClosureSignatureU
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil;
 import org.jetbrains.plugins.groovy.refactoring.GroovyRefactoringUtil;
 
+import javax.annotation.Nullable;
+
 /**
  * @author Maxim.Medvedev
  */
-public class GrMethodCallUsageInfo extends UsageInfo implements PossiblyIncorrectUsage {
+public class GrMethodCallUsageInfo extends UsageInfo implements PossiblyIncorrectUsage
+{
   private final boolean myToChangeArguments;
   private final boolean myToCatchExceptions;
   private GrClosureSignatureUtil.ArgInfo<PsiElement>[] myMapToArguments;
@@ -85,7 +91,7 @@ public class GrMethodCallUsageInfo extends UsageInfo implements PossiblyIncorrec
     }
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   public PsiMethod getReferencedMethod() {
     final GroovyResolveResult result = resolveMethod(getElement());
     if (result == null) return null;
@@ -94,7 +100,7 @@ public class GrMethodCallUsageInfo extends UsageInfo implements PossiblyIncorrec
     return element instanceof PsiMethod ? (PsiMethod)element : null;
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   private static GroovyResolveResult resolveMethod(final PsiElement ref) {
     if (ref instanceof GrEnumConstant) return ((GrEnumConstant)ref).advancedResolve();
     PsiElement parent = ref.getParent();

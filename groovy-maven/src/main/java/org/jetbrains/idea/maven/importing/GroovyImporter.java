@@ -10,7 +10,7 @@ import org.jetbrains.idea.maven.project.MavenProjectsProcessorTask;
 import org.jetbrains.idea.maven.project.MavenProjectsTree;
 import org.jetbrains.idea.maven.utils.MavenJDOMUtil;
 import consulo.groovy.module.extension.GroovyModuleExtension;
-import com.intellij.openapi.module.Module;
+import consulo.module.Module;
 import consulo.maven.importing.MavenImporterFromBuildPlugin;
 
 public abstract class GroovyImporter extends MavenImporterFromBuildPlugin

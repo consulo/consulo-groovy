@@ -16,10 +16,12 @@
 
 package org.jetbrains.plugins.groovy.editor.selection;
 
-import com.intellij.codeInsight.editorActions.ExtendWordSelectionHandlerBase;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.PsiElement;
+import consulo.language.editor.action.ExtendWordSelectionHandlerBase;
+import consulo.codeEditor.Editor;
+import consulo.document.util.TextRange;
+import consulo.language.psi.PsiElement;
+import consulo.language.editor.action.ExtendWordSelectionHandlerBase;
+import consulo.language.psi.PsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrTypeCastExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeElement;
 
@@ -28,7 +30,8 @@ import java.util.List;
 /**
  * @author ilyas
  */
-public class GroovyTypeCastSelectioner extends ExtendWordSelectionHandlerBase {
+public class GroovyTypeCastSelectioner extends ExtendWordSelectionHandlerBase
+{
   public boolean canSelect(PsiElement e) {
     return e instanceof GrTypeCastExpression;
   }

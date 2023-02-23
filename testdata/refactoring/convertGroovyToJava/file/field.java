@@ -1,38 +1,44 @@
+import java.lang.Integer;
+import java.lang.String;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+
 public class X {
-public java.util.LinkedHashMap<java.lang.String, java.lang.Integer> getField() {
+public LinkedHashMap<String, Integer> getField() {
  return field;
 }
-public void setField(java.util.LinkedHashMap<java.lang.String, java.lang.Integer> field) {
+public void setField(LinkedHashMap<String, Integer> field) {
 this.field = field;
 }
-public java.util.ArrayList<java.lang.Integer> getSecond() {
+public ArrayList<Integer> getSecond() {
  return second;
 }
-public void setSecond(java.util.ArrayList<java.lang.Integer> second) {
+public void setSecond(ArrayList<Integer> second) {
 this.second = second;
 }
-public java.lang.Integer getA() {
+public Integer getA() {
  return a;
 }
-public void setA(java.lang.Integer a) {
+public void setA(Integer a) {
 this.a = a;
 }
-public java.lang.Integer getB() {
+public Integer getB() {
  return b;
 }
-public void setB(java.lang.Integer b) {
+public void setB(Integer b) {
 this.b = b;
 }
-public java.util.LinkedHashMap<java.lang.String, java.lang.Integer> getC() {
+public LinkedHashMap<String, Integer> getC() {
  return c;
 }
-public void setC(java.util.LinkedHashMap<java.lang.String, java.lang.Integer> c) {
+public void setC(LinkedHashMap<String, Integer> c) {
 this.c = c;
 }
-public java.lang.Integer getD() {
+public Integer getD() {
  return d;
 }
-public void setD(java.lang.Integer d) {
+public void setD(Integer d) {
 this.d = d;
 }
 public int getX() {
@@ -42,19 +48,19 @@ public void setX(int x) {
 this.x = x;
 }
 {
-java.util.LinkedHashMap<java.lang.String, java.lang.Integer> map = new java.util.LinkedHashMap<java.lang.String, java.lang.Integer>(2);
+LinkedHashMap<String, Integer> map = new LinkedHashMap<String, Integer>(2);
 map.put("1", 2);
 map.put("3", 4);
 field = map;}
-private java.util.LinkedHashMap<java.lang.String, java.lang.Integer> field;
-private java.util.ArrayList<java.lang.Integer> second = new java.util.ArrayList<java.lang.Integer>(java.util.Arrays.asList(1, 2, 3));
-private java.lang.Integer a = 5;
-private java.lang.Integer b = 3;
+private LinkedHashMap<String, Integer> field;
+private ArrayList<Integer> second = new ArrayList<Integer>(Arrays.asList(1, 2, 3));
+private Integer a = 5;
+private Integer b = 3;
 {
-java.util.LinkedHashMap<java.lang.String, java.lang.Integer> map = new java.util.LinkedHashMap<java.lang.String, java.lang.Integer>(1);
+LinkedHashMap<String, Integer> map = new LinkedHashMap<String, Integer>(1);
 map.put("1", 2);
 c = map;}
-private java.util.LinkedHashMap<java.lang.String, java.lang.Integer> c;
-private java.lang.Integer d = 5;
+private LinkedHashMap<String, Integer> c;
+private Integer d = 5;
 private int x;
 }

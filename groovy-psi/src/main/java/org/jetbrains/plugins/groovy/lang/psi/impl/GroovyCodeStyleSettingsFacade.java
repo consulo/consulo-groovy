@@ -15,8 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl;
 
-import com.intellij.openapi.components.ServiceManager;
-import com.intellij.openapi.project.Project;
+import consulo.ide.ServiceManager;
+import consulo.project.Project;
 
 public abstract class GroovyCodeStyleSettingsFacade
 {

@@ -16,376 +16,457 @@
 
 package org.jetbrains.plugins.groovy.mvc;
 
-import java.awt.BorderLayout;
+import consulo.application.AllIcons;
+import consulo.application.Application;
+import consulo.application.ApplicationManager;
+import consulo.application.progress.ProgressIndicator;
+import consulo.disposer.Disposable;
+import consulo.disposer.Disposer;
+import consulo.document.FileDocumentManager;
+import consulo.execution.ui.console.ConsoleViewContentType;
+import consulo.execution.ui.console.TextConsoleBuilderFactory;
+import consulo.execution.ui.layout.PlaceInGrid;
+import consulo.execution.ui.layout.RunnerLayoutUi;
+import consulo.execution.ui.layout.RunnerLayoutUiFactory;
+import consulo.ide.ServiceManager;
+import consulo.ide.impl.idea.execution.impl.ConsoleViewImpl;
+import consulo.logging.Logger;
+import consulo.module.Module;
+import consulo.process.ProcessOutputTypes;
+import consulo.process.cmd.GeneralCommandLine;
+import consulo.process.event.ProcessAdapter;
+import consulo.process.event.ProcessEvent;
+import consulo.process.event.ProcessListener;
+import consulo.process.internal.OSProcessHandler;
+import consulo.project.Project;
+import consulo.project.ui.wm.ToolWindowManager;
+import consulo.ui.ModalityState;
+import consulo.ui.ex.action.ActionPlaces;
+import consulo.ui.ex.action.AnAction;
+import consulo.ui.ex.action.AnActionEvent;
+import consulo.ui.ex.action.DefaultActionGroup;
+import consulo.ui.ex.awt.Messages;
+import consulo.ui.ex.content.Content;
+import consulo.ui.ex.content.ContentFactory;
+import consulo.ui.ex.content.ContentManager;
+import consulo.ui.ex.toolWindow.ToolWindow;
+import consulo.ui.ex.toolWindow.ToolWindowAnchor;
+import consulo.util.collection.Lists;
+import consulo.util.dataholder.Key;
+import consulo.util.lang.ref.Ref;
+import consulo.virtualFileSystem.LocalFileSystem;
+import org.jetbrains.annotations.NonNls;
+import org.jetbrains.plugins.groovy.JetgroovyIcons;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.swing.*;
+import java.awt.*;
 import java.io.OutputStreamWriter;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.swing.JComponent;
-import javax.swing.JPanel;
-
-import org.jetbrains.annotations.NonNls;
-import com.intellij.execution.configurations.GeneralCommandLine;
-import com.intellij.execution.filters.TextConsoleBuilderFactory;
-import com.intellij.execution.impl.ConsoleViewImpl;
-import com.intellij.execution.process.OSProcessHandler;
-import com.intellij.execution.process.ProcessAdapter;
-import com.intellij.execution.process.ProcessEvent;
-import com.intellij.execution.process.ProcessListener;
-import com.intellij.execution.process.ProcessOutputTypes;
-import com.intellij.execution.ui.ConsoleViewContentType;
-import com.intellij.execution.ui.RunnerLayoutUi;
-import com.intellij.execution.ui.layout.PlaceInGrid;
-import com.intellij.icons.AllIcons;
-import com.intellij.openapi.actionSystem.ActionPlaces;
-import com.intellij.openapi.actionSystem.AnAction;
-import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.actionSystem.DefaultActionGroup;
-import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.application.ModalityState;
-import com.intellij.openapi.components.ServiceManager;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.fileEditor.FileDocumentManager;
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.progress.ProgressIndicator;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.ui.Messages;
-import consulo.disposer.Disposable;
-import consulo.disposer.Disposer;
-import consulo.util.dataholder.Key;
-import com.intellij.openapi.util.Ref;
-import com.intellij.openapi.vfs.LocalFileSystem;
-import com.intellij.openapi.wm.ToolWindow;
-import com.intellij.openapi.wm.ToolWindowAnchor;
-import com.intellij.openapi.wm.ToolWindowManager;
-import com.intellij.ui.content.Content;
-import com.intellij.ui.content.ContentFactory;
-import com.intellij.ui.content.ContentManager;
-import com.intellij.util.containers.ContainerUtil;
-import icons.JetgroovyIcons;
-
 public class MvcConsole implements Disposable
 {
-  private static final Key<Boolean> UPDATING_BY_CONSOLE_PROCESS = Key.create("UPDATING_BY_CONSOLE_PROCESS");
+	private static final Key<Boolean> UPDATING_BY_CONSOLE_PROCESS = Key.create("UPDATING_BY_CONSOLE_PROCESS");
 
-  private static final Logger LOG = Logger.getInstance("#org.jetbrains.plugins.groovy.mvc.MvcConsole");
-  private final ConsoleViewImpl myConsole;
-  private final Project myProject;
-  private final ToolWindow myToolWindow;
-  private final JPanel myPanel = new JPanel(new BorderLayout());
-  private final Queue<MyProcessInConsole> myProcessQueue = new LinkedList<MyProcessInConsole>();
+	private static final Logger LOG = Logger.getInstance("#org.jetbrains.plugins.groovy.mvc.MvcConsole");
+	private final ConsoleViewImpl myConsole;
+	private final Project myProject;
+	private final ToolWindow myToolWindow;
+	private final JPanel myPanel = new JPanel(new BorderLayout());
+	private final Queue<MyProcessInConsole> myProcessQueue = new LinkedList<MyProcessInConsole>();
 
-  @NonNls private static final String CONSOLE_ID = "Groovy MVC Console";
+	@NonNls
+	private static final String CONSOLE_ID = "Groovy MVC Console";
 
-  @NonNls public static final String TOOL_WINDOW_ID = "Console";
+	@NonNls
+	public static final String TOOL_WINDOW_ID = "Console";
 
-  private final MyKillProcessAction myKillAction = new MyKillProcessAction();
-  private boolean myExecuting = false;
-  private final Content myContent;
+	private final MyKillProcessAction myKillAction = new MyKillProcessAction();
+	private boolean myExecuting = false;
+	private final Content myContent;
 
-  public MvcConsole(Project project, TextConsoleBuilderFactory consoleBuilderFactory) {
-    myProject = project;
-    myConsole = (ConsoleViewImpl)consoleBuilderFactory.createBuilder(myProject).getConsole();
-    Disposer.register(this, myConsole);
+	public MvcConsole(Project project, TextConsoleBuilderFactory consoleBuilderFactory)
+	{
+		myProject = project;
+		myConsole = (ConsoleViewImpl) consoleBuilderFactory.createBuilder(myProject).getConsole();
+		Disposer.register(this, myConsole);
 
-    myToolWindow = ToolWindowManager.getInstance(myProject).registerToolWindow(TOOL_WINDOW_ID, false, ToolWindowAnchor.BOTTOM, this, true);
-    myToolWindow.setIcon(JetgroovyIcons.Groovy.Groovy_13x13);
+		myToolWindow = ToolWindowManager.getInstance(myProject).registerToolWindow(TOOL_WINDOW_ID, false, ToolWindowAnchor.BOTTOM, this, true);
+		myToolWindow.setIcon(JetgroovyIcons.Groovy.Groovy_13x13);
 
-    myContent = setUpToolWindow();
-  }
+		myContent = setUpToolWindow();
+	}
 
-  public static MvcConsole getInstance(@Nonnull Project project) {
-    return ServiceManager.getService(project, MvcConsole.class);
-  }
+	public static MvcConsole getInstance(@Nonnull Project project)
+	{
+		return ServiceManager.getService(project, MvcConsole.class);
+	}
 
-  public static boolean isUpdatingVfsByConsoleProcess(@Nonnull Module module) {
-    Boolean flag = module.getUserData(UPDATING_BY_CONSOLE_PROCESS);
-    return flag != null && flag;
-  }
+	public static boolean isUpdatingVfsByConsoleProcess(@Nonnull Module module)
+	{
+		Boolean flag = module.getUserData(UPDATING_BY_CONSOLE_PROCESS);
+		return flag != null && flag;
+	}
 
-  private Content setUpToolWindow() {
-    //Create runner UI layout
-    final RunnerLayoutUi.Factory factory = RunnerLayoutUi.Factory.getInstance(myProject);
-    final RunnerLayoutUi layoutUi = factory.create("", "", "session", myProject);
+	private Content setUpToolWindow()
+	{
+		//Create runner UI layout
+		final RunnerLayoutUiFactory factory = RunnerLayoutUiFactory.getInstance(myProject);
+		final RunnerLayoutUi layoutUi = factory.create("", "", "session", myProject);
 
-    // Adding actions
-    DefaultActionGroup group = new DefaultActionGroup();
-    group.add(myKillAction);
-    group.addSeparator();
+		// Adding actions
+		DefaultActionGroup group = new DefaultActionGroup();
+		group.add(myKillAction);
+		group.addSeparator();
 
-    layoutUi.getOptions().setLeftToolbar(group, ActionPlaces.UNKNOWN);
+		layoutUi.getOptions().setLeftToolbar(group, ActionPlaces.UNKNOWN);
 
-    final Content console = layoutUi.createContent(CONSOLE_ID, myConsole.getComponent(), "", null, null);
-    layoutUi.addContent(console, 0, PlaceInGrid.right, false);
+		final Content console = layoutUi.createContent(CONSOLE_ID, myConsole.getComponent(), "", null, null);
+		layoutUi.addContent(console, 0, PlaceInGrid.right, false);
 
-    final JComponent uiComponent = layoutUi.getComponent();
-    myPanel.add(uiComponent, BorderLayout.CENTER);
+		final JComponent uiComponent = layoutUi.getComponent();
+		myPanel.add(uiComponent, BorderLayout.CENTER);
 
-    final ContentManager manager = myToolWindow.getContentManager();
-    final ContentFactory contentFactory = ContentFactory.SERVICE.getInstance();
-    final Content content = contentFactory.createContent(uiComponent, null, true);
-    manager.addContent(content);
-    return content;
-  }
+		final ContentManager manager = myToolWindow.getContentManager();
+		final ContentFactory contentFactory = ContentFactory.SERVICE.getInstance();
+		final Content content = contentFactory.createContent(uiComponent, null, true);
+		manager.addContent(content);
+		return content;
+	}
 
-  public void show(@javax.annotation.Nullable final Runnable runnable, boolean focus) {
-    Runnable r = null;
-    if (runnable != null) {
-      r = new Runnable() {
-        public void run() {
-          if (myProject.isDisposed()) return;
+	public void show(@Nullable final Runnable runnable, boolean focus)
+	{
+		Runnable r = null;
+		if(runnable != null)
+		{
+			r = new Runnable()
+			{
+				public void run()
+				{
+					if(myProject.isDisposed())
+					{
+						return;
+					}
 
-          runnable.run();
-        }
-      };
-    }
+					runnable.run();
+				}
+			};
+		}
 
-    myToolWindow.activate(r, focus);
-  }
+		myToolWindow.activate(r, focus);
+	}
 
-  private static class MyProcessInConsole implements ConsoleProcessDescriptor {
-    final Module module;
-    final GeneralCommandLine commandLine;
-    final @javax.annotation.Nullable
-	Runnable onDone;
-    final boolean closeOnDone;
-    final boolean showConsole;
-    final String[] input;
-    private final List<ProcessListener> myListeners = ContainerUtil.createLockFreeCopyOnWriteList();
+	private static class MyProcessInConsole implements ConsoleProcessDescriptor
+	{
+		final Module module;
+		final GeneralCommandLine commandLine;
+		final
+		@Nullable
+		Runnable onDone;
+		final boolean closeOnDone;
+		final boolean showConsole;
+		final String[] input;
+		private final List<ProcessListener> myListeners = Lists.newLockFreeCopyOnWriteList();
 
-    private OSProcessHandler myHandler;
+		private OSProcessHandler myHandler;
 
-    public MyProcessInConsole(final Module module,
-                              final GeneralCommandLine commandLine,
-                              final Runnable onDone,
-                              final boolean showConsole,
-                              final boolean closeOnDone,
-                              final String[] input) {
-      this.module = module;
-      this.commandLine = commandLine;
-      this.onDone = onDone;
-      this.closeOnDone = closeOnDone;
-      this.input = input;
-      this.showConsole = showConsole;
-    }
+		public MyProcessInConsole(final Module module,
+								  final GeneralCommandLine commandLine,
+								  final Runnable onDone,
+								  final boolean showConsole,
+								  final boolean closeOnDone,
+								  final String[] input)
+		{
+			this.module = module;
+			this.commandLine = commandLine;
+			this.onDone = onDone;
+			this.closeOnDone = closeOnDone;
+			this.input = input;
+			this.showConsole = showConsole;
+		}
 
-    public ConsoleProcessDescriptor addProcessListener(@Nonnull ProcessListener listener) {
-      if (myHandler != null) {
-        myHandler.addProcessListener(listener);
-      }
-      else {
-        myListeners.add(listener);
-      }
-      return this;
-    }
+		public ConsoleProcessDescriptor addProcessListener(@Nonnull ProcessListener listener)
+		{
+			if(myHandler != null)
+			{
+				myHandler.addProcessListener(listener);
+			}
+			else
+			{
+				myListeners.add(listener);
+			}
+			return this;
+		}
 
-    public ConsoleProcessDescriptor waitWith(ProgressIndicator progressIndicator) {
-      if (myHandler != null) {
-        doWait(progressIndicator);
-      }
-      return this;
-    }
+		public ConsoleProcessDescriptor waitWith(ProgressIndicator progressIndicator)
+		{
+			if(myHandler != null)
+			{
+				doWait(progressIndicator);
+			}
+			return this;
+		}
 
-    private void doWait(ProgressIndicator progressIndicator) {
-      while (!myHandler.waitFor(500)) {
-        if (progressIndicator.isCanceled()) {
-          myHandler.destroyProcess();
-          break;
-        }
-      }
-    }
+		private void doWait(ProgressIndicator progressIndicator)
+		{
+			while(!myHandler.waitFor(500))
+			{
+				if(progressIndicator.isCanceled())
+				{
+					myHandler.destroyProcess();
+					break;
+				}
+			}
+		}
 
-    public void setHandler(OSProcessHandler handler) {
-      myHandler = handler;
-      for (final ProcessListener listener : myListeners) {
-        handler.addProcessListener(listener);
-      }
-    }
-  }
+		public void setHandler(OSProcessHandler handler)
+		{
+			myHandler = handler;
+			for(final ProcessListener listener : myListeners)
+			{
+				handler.addProcessListener(listener);
+			}
+		}
+	}
 
-  public static ConsoleProcessDescriptor executeProcess(final Module module,
-                                                        final GeneralCommandLine commandLine,
-                                                        final @Nullable Runnable onDone,
-                                                        final boolean closeOnDone,
-                                                        final String... input) {
-    return getInstance(module.getProject()).executeProcess(module, commandLine, onDone, true, closeOnDone, input);
-  }
+	public static ConsoleProcessDescriptor executeProcess(final Module module,
+														  final GeneralCommandLine commandLine,
+														  final @Nullable Runnable onDone,
+														  final boolean closeOnDone,
+														  final String... input)
+	{
+		return getInstance(module.getProject()).executeProcess(module, commandLine, onDone, true, closeOnDone, input);
+	}
 
-  public ConsoleProcessDescriptor executeProcess(final Module module,
-                                                 final GeneralCommandLine commandLine,
-                                                 final @Nullable Runnable onDone,
-                                                 boolean showConsole,
-                                                 final boolean closeOnDone,
-                                                 final String... input) {
-    ApplicationManager.getApplication().assertIsDispatchThread();
-    assert module.getProject() == myProject;
-    
-    final MyProcessInConsole process = new MyProcessInConsole(module, commandLine, onDone, showConsole, closeOnDone, input);
-    if (isExecuting()) {
-      myProcessQueue.add(process);
-    }
-    else {
-      executeProcessImpl(process, true);
-    }
-    return process;
-  }
+	public ConsoleProcessDescriptor executeProcess(final Module module,
+												   final GeneralCommandLine commandLine,
+												   final @Nullable Runnable onDone,
+												   boolean showConsole,
+												   final boolean closeOnDone,
+												   final String... input)
+	{
+		ApplicationManager.getApplication().assertIsDispatchThread();
+		assert module.getProject() == myProject;
 
-  public boolean isExecuting() {
-    return myExecuting;
-  }
+		final MyProcessInConsole process = new MyProcessInConsole(module, commandLine, onDone, showConsole, closeOnDone, input);
+		if(isExecuting())
+		{
+			myProcessQueue.add(process);
+		}
+		else
+		{
+			executeProcessImpl(process, true);
+		}
+		return process;
+	}
 
-  private void executeProcessImpl(final MyProcessInConsole pic, boolean toFocus) {
-    final Module module = pic.module;
-    final GeneralCommandLine commandLine = pic.commandLine;
-    final String[] input = pic.input;
-    final boolean closeOnDone = pic.closeOnDone;
-    final Runnable onDone = pic.onDone;
+	public boolean isExecuting()
+	{
+		return myExecuting;
+	}
 
-    assert module.getProject() == myProject;
+	private void executeProcessImpl(final MyProcessInConsole pic, boolean toFocus)
+	{
+		final Module module = pic.module;
+		final GeneralCommandLine commandLine = pic.commandLine;
+		final String[] input = pic.input;
+		final boolean closeOnDone = pic.closeOnDone;
+		final Runnable onDone = pic.onDone;
 
-    myExecuting = true;
+		assert module.getProject() == myProject;
 
-    // Module creation was cancelled
-    if (module.isDisposed()) return;
+		myExecuting = true;
 
-    final ModalityState modalityState = ModalityState.current();
-    final boolean modalContext = modalityState != ModalityState.NON_MODAL;
+		// Module creation was cancelled
+		if(module.isDisposed())
+		{
+			return;
+		}
 
-    if (!modalContext && pic.showConsole) {
-      show(null, toFocus);
-    }
+		Application application = Application.get();
+		final ModalityState modalityState = application.getCurrentModalityState();
+		final boolean modalContext = modalityState != application.getNoneModalityState();
 
-    FileDocumentManager.getInstance().saveAllDocuments();
-    myConsole.print(commandLine.getCommandLineString(), ConsoleViewContentType.SYSTEM_OUTPUT);
-    final OSProcessHandler handler;
-    try {
-      Process process = commandLine.createProcess();
-      handler = new OSProcessHandler(process, commandLine.toString());
+		if(!modalContext && pic.showConsole)
+		{
+			show(null, toFocus);
+		}
 
-      @SuppressWarnings("IOResourceOpenedButNotSafelyClosed")
-      OutputStreamWriter writer = new OutputStreamWriter(process.getOutputStream());
-      for (String s : input) {
-        writer.write(s);
-      }
-      writer.flush();
+		FileDocumentManager.getInstance().saveAllDocuments();
+		myConsole.print(commandLine.getCommandLineString(), ConsoleViewContentType.SYSTEM_OUTPUT);
+		final OSProcessHandler handler;
+		try
+		{
+			Process process = commandLine.createProcess();
+			handler = new OSProcessHandler(process, commandLine.toString());
 
-      final Ref<Boolean> gotError = new Ref<Boolean>(false);
-      handler.addProcessListener(new ProcessAdapter() {
-        public void onTextAvailable(ProcessEvent event, Key key) {
-          if (key == ProcessOutputTypes.STDERR) gotError.set(true);
-          LOG.debug("got text: " + event.getText());
-        }
+			@SuppressWarnings("IOResourceOpenedButNotSafelyClosed")
+			OutputStreamWriter writer = new OutputStreamWriter(process.getOutputStream());
+			for(String s : input)
+			{
+				writer.write(s);
+			}
+			writer.flush();
 
-        public void processTerminated(ProcessEvent event) {
-          final int exitCode = event.getExitCode();
-          if (exitCode == 0 && !gotError.get().booleanValue()) {
-            ApplicationManager.getApplication().invokeLater(new Runnable() {
-              public void run() {
-                if (myProject.isDisposed() || !closeOnDone) return;
-                myToolWindow.hide(null);
-              }
-            }, modalityState);
-          }
-        }
-      });
-    }
-    catch (final Exception e) {
-      ApplicationManager.getApplication().invokeLater(new Runnable() {
-        public void run() {
-          Messages.showErrorDialog(e.getMessage(), "Cannot Start Process");
+			final Ref<Boolean> gotError = new Ref<Boolean>(false);
+			handler.addProcessListener(new ProcessAdapter()
+			{
+				public void onTextAvailable(ProcessEvent event, Key key)
+				{
+					if(key == ProcessOutputTypes.STDERR)
+					{
+						gotError.set(true);
+					}
+					LOG.debug("got text: " + event.getText());
+				}
 
-          try {
-            if (onDone != null && !module.isDisposed()) onDone.run();
-          }
-          catch (Exception e) {
-            LOG.error(e);
-          }
-        }
-      }, modalityState);
-      return;
-    }
+				public void processTerminated(ProcessEvent event)
+				{
+					final int exitCode = event.getExitCode();
+					if(exitCode == 0 && !gotError.get().booleanValue())
+					{
+						ApplicationManager.getApplication().invokeLater(new Runnable()
+						{
+							public void run()
+							{
+								if(myProject.isDisposed() || !closeOnDone)
+								{
+									return;
+								}
+								myToolWindow.hide(null);
+							}
+						}, modalityState);
+					}
+				}
+			});
+		}
+		catch(final Exception e)
+		{
+			ApplicationManager.getApplication().invokeLater(new Runnable()
+			{
+				public void run()
+				{
+					Messages.showErrorDialog(e.getMessage(), "Cannot Start Process");
 
-    pic.setHandler(handler);
-    myKillAction.setHandler(handler);
+					try
+					{
+						if(onDone != null && !module.isDisposed())
+						{
+							onDone.run();
+						}
+					}
+					catch(Exception e)
+					{
+						LOG.error(e);
+					}
+				}
+			}, modalityState);
+			return;
+		}
 
-    final MvcFramework framework = MvcFramework.getInstance(module);
-    myToolWindow.setIcon(framework == null ? JetgroovyIcons.Groovy.Groovy_13x13 : framework.getToolWindowIcon());
+		pic.setHandler(handler);
+		myKillAction.setHandler(handler);
 
-    myContent.setDisplayName((framework == null ? "" : framework.getDisplayName() + ":") + "Executing...");
-    myConsole.scrollToEnd();
-    myConsole.attachToProcess(handler);
-    ApplicationManager.getApplication().executeOnPooledThread(new Runnable() {
-      public void run() {
-        handler.startNotify();
-        handler.waitFor();
+		final MvcFramework framework = MvcFramework.getInstance(module);
+		myToolWindow.setIcon(framework == null ? JetgroovyIcons.Groovy.Groovy_13x13 : framework.getToolWindowIcon());
 
-        ApplicationManager.getApplication().invokeLater(new Runnable() {
-          public void run() {
-            if (myProject.isDisposed()) return;
+		myContent.setDisplayName((framework == null ? "" : framework.getDisplayName() + ":") + "Executing...");
+		myConsole.scrollToEnd();
+		myConsole.attachToProcess(handler);
+		ApplicationManager.getApplication().executeOnPooledThread(new Runnable()
+		{
+			public void run()
+			{
+				handler.startNotify();
+				handler.waitFor();
 
-            module.putUserData(UPDATING_BY_CONSOLE_PROCESS, true);
-            LocalFileSystem.getInstance().refresh(false);
-            module.putUserData(UPDATING_BY_CONSOLE_PROCESS, null);
+				ApplicationManager.getApplication().invokeLater(new Runnable()
+				{
+					public void run()
+					{
+						if(myProject.isDisposed())
+						{
+							return;
+						}
 
-            try {
-              if (onDone != null && !module.isDisposed()) onDone.run();
-            }
-            catch (Exception e) {
-              LOG.error(e);
-            }
-            myConsole.print("\n", ConsoleViewContentType.NORMAL_OUTPUT);
-            myKillAction.setHandler(null);
-            myContent.setDisplayName("");
+						module.putUserData(UPDATING_BY_CONSOLE_PROCESS, true);
+						LocalFileSystem.getInstance().refresh(false);
+						module.putUserData(UPDATING_BY_CONSOLE_PROCESS, null);
 
-            myExecuting = false;
+						try
+						{
+							if(onDone != null && !module.isDisposed())
+							{
+								onDone.run();
+							}
+						}
+						catch(Exception e)
+						{
+							LOG.error(e);
+						}
+						myConsole.print("\n", ConsoleViewContentType.NORMAL_OUTPUT);
+						myKillAction.setHandler(null);
+						myContent.setDisplayName("");
 
-            final MyProcessInConsole pic = myProcessQueue.poll();
-            if (pic != null) {
-              executeProcessImpl(pic, false);
-            }
-          }
-        }, modalityState);
-      }
-    });
-  }
+						myExecuting = false;
 
-  public void dispose() {
-  }
+						final MyProcessInConsole pic = myProcessQueue.poll();
+						if(pic != null)
+						{
+							executeProcessImpl(pic, false);
+						}
+					}
+				}, modalityState);
+			}
+		});
+	}
 
-  private class MyKillProcessAction extends AnAction {
-    private OSProcessHandler myHandler = null;
+	public void dispose()
+	{
+	}
 
-    public MyKillProcessAction() {
-      super("Kill process", "Kill process", AllIcons.Debugger.KillProcess);
-    }
+	private class MyKillProcessAction extends AnAction
+	{
+		private OSProcessHandler myHandler = null;
 
-    public void setHandler(@javax.annotation.Nullable OSProcessHandler handler) {
-      myHandler = handler;
-    }
+		public MyKillProcessAction()
+		{
+			super("Kill process", "Kill process", AllIcons.Debugger.KillProcess);
+		}
 
-    @Override
-    public void update(final AnActionEvent e) {
-      super.update(e);
-      e.getPresentation().setEnabled(isEnabled());
-    }
+		public void setHandler(@Nullable OSProcessHandler handler)
+		{
+			myHandler = handler;
+		}
 
-    public void actionPerformed(final AnActionEvent e) {
-      if (myHandler != null) {
-        final Process process = myHandler.getProcess();
-        process.destroy();
-        myConsole.print("Process terminated", ConsoleViewContentType.ERROR_OUTPUT);
-      }
-    }
+		@Override
+		public void update(final AnActionEvent e)
+		{
+			super.update(e);
+			e.getPresentation().setEnabled(isEnabled());
+		}
 
-    public boolean isEnabled() {
-      return myHandler != null;
-    }
-  }
+		public void actionPerformed(final AnActionEvent e)
+		{
+			if(myHandler != null)
+			{
+				final Process process = myHandler.getProcess();
+				process.destroy();
+				myConsole.print("Process terminated", ConsoleViewContentType.ERROR_OUTPUT);
+			}
+		}
 
-  public ConsoleViewImpl getConsole() {
-    return myConsole;
-  }
+		public boolean isEnabled()
+		{
+			return myHandler != null;
+		}
+	}
+
+	public consulo.ide.impl.idea.execution.impl.ConsoleViewImpl getConsole()
+	{
+		return myConsole;
+	}
 }

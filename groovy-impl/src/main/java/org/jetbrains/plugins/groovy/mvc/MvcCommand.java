@@ -1,6 +1,8 @@
 package org.jetbrains.plugins.groovy.mvc;
 
-import com.intellij.execution.configurations.ParametersList;
+import consulo.process.cmd.ParametersList;
+import consulo.process.cmd.ParametersList;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -27,7 +29,7 @@ public class MvcCommand {
     Collections.addAll(myArgs, args);
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   public String getEnv() {
     return myEnv;
   }
@@ -41,7 +43,7 @@ public class MvcCommand {
     return myCommand;
   }
 
-  public void setCommand(@javax.annotation.Nullable String command) {
+  public void setCommand(@Nullable String command) {
     myCommand = command;
   }
 

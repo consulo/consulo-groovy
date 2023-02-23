@@ -15,10 +15,11 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.typeEnhancers;
 
-import com.intellij.psi.*;
-import com.intellij.util.containers.ContainerUtil;
-import com.intellij.util.containers.ContainerUtilRt;
+import com.intellij.java.language.psi.*;
+import consulo.util.collection.ContainerUtil;
+import consulo.ide.impl.idea.util.containers.ContainerUtilRt;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,7 +74,7 @@ public abstract class ParamHintProcessor extends SignatureHintProcessor {
   }
 
   @Nonnull
-  protected static ArrayList<PsiType[]> produceResult(@javax.annotation.Nullable PsiType type) {
+  protected static ArrayList<PsiType[]> produceResult(@Nullable PsiType type) {
     PsiType notNull = type != null ? type : PsiType.NULL;
     PsiType[] signature = {notNull};
     ArrayList<PsiType[]> result = ContainerUtil.newArrayList();

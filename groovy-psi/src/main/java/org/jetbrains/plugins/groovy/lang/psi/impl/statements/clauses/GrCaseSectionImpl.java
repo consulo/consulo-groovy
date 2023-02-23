@@ -16,13 +16,14 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.clauses;
 
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.ResolveState;
-import com.intellij.psi.scope.PsiScopeProcessor;
-import com.intellij.util.IncorrectOperationException;
+import consulo.language.ast.ASTNode;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.resolve.ResolveState;
+import consulo.language.psi.resolve.PsiScopeProcessor;
+import consulo.language.util.IncorrectOperationException;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
@@ -66,7 +67,8 @@ public class GrCaseSectionImpl extends GroovyPsiElementImpl implements GrCaseSec
   }
 
   @Override
-  public GrVariableDeclaration addVariableDeclarationBefore(GrVariableDeclaration declaration, GrStatement anchor) throws IncorrectOperationException {
+  public GrVariableDeclaration addVariableDeclarationBefore(GrVariableDeclaration declaration, GrStatement anchor) throws IncorrectOperationException
+  {
     GrStatement statement = addStatementBefore(declaration, anchor);
     assert statement instanceof GrVariableDeclaration;
     return ((GrVariableDeclaration) statement);

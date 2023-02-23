@@ -15,17 +15,21 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.changeSignature;
 
-import javax.annotation.Nonnull;
-
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.*;
-import com.intellij.refactoring.changeSignature.JavaParameterInfo;
-import com.intellij.refactoring.util.CanonicalTypes;
-import com.intellij.util.IncorrectOperationException;
-
-import javax.annotation.Nullable;
+import com.intellij.java.impl.refactoring.changeSignature.JavaParameterInfo;
+import com.intellij.java.impl.refactoring.util.CanonicalTypes;
+import com.intellij.java.language.psi.JavaPsiFacade;
+import com.intellij.java.language.psi.PsiCallExpression;
+import com.intellij.java.language.psi.PsiExpression;
+import com.intellij.java.language.psi.PsiType;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiManager;
+import consulo.language.util.IncorrectOperationException;
+import consulo.util.lang.StringUtil;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameter;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author Maxim.Medvedev
@@ -65,7 +69,7 @@ public class GrParameterInfo implements JavaParameterInfo {
   public GrParameterInfo(@Nonnull String name,
                          @Nullable String defaultValue,
                          @Nullable String defaultInitializer,
-                         @javax.annotation.Nullable PsiType type,
+                         @Nullable PsiType type,
                          int position,
                          boolean useAnySingleVariable) {
     myName = name;

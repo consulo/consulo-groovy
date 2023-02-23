@@ -17,10 +17,13 @@ package org.jetbrains.plugins.groovy.codeInspection.control;
 
 import javax.annotation.Nonnull;
 
-import com.intellij.codeInspection.ProblemDescriptor;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiElement;
-import com.intellij.util.IncorrectOperationException;
+import consulo.language.editor.inspection.ProblemDescriptor;
+import consulo.language.psi.PsiElement;
+import consulo.language.util.IncorrectOperationException;
+import consulo.project.Project;
+import consulo.language.psi.PsiElement;
+import consulo.language.util.IncorrectOperationException;
+import consulo.project.Project;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrConditionalExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
@@ -79,7 +82,8 @@ public class GroovyConstantConditionalInspection extends BaseInspection {
         }
 
         public void doFix(Project project, ProblemDescriptor descriptor)
-                throws IncorrectOperationException {
+                throws IncorrectOperationException
+		{
             final GrConditionalExpression expression =
                     (GrConditionalExpression) descriptor.getPsiElement();
             final String newExpression =

@@ -16,26 +16,35 @@
 
 package org.jetbrains.plugins.groovy.lang.completion.handlers;
 
-import com.intellij.codeInsight.AutoPopupController;
-import com.intellij.codeInsight.completion.ConstructorInsertHandler;
-import com.intellij.codeInsight.completion.InsertHandler;
-import com.intellij.codeInsight.completion.InsertionContext;
-import com.intellij.codeInsight.completion.JavaCompletionFeatures;
-import com.intellij.codeInsight.completion.util.ParenthesesInsertHandler;
-import com.intellij.codeInsight.lookup.LookupItem;
-import com.intellij.featureStatistics.FeatureUsageTracker;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.*;
-import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.java.impl.codeInsight.completion.ConstructorInsertHandler;
+import com.intellij.java.impl.codeInsight.completion.JavaCompletionFeatures;
+import com.intellij.java.language.psi.PsiAnonymousClass;
+import com.intellij.java.language.psi.PsiClass;
+import com.intellij.java.language.psi.PsiClassType;
+import com.intellij.java.language.psi.PsiModifier;
+import consulo.codeEditor.Editor;
+import consulo.externalService.statistic.FeatureUsageTracker;
+import consulo.language.editor.AutoPopupController;
+import consulo.language.editor.completion.lookup.InsertHandler;
+import consulo.language.editor.completion.lookup.InsertionContext;
+import consulo.language.editor.completion.lookup.LookupItem;
+import consulo.language.editor.completion.lookup.ParenthesesInsertHandler;
+import consulo.language.psi.PsiDocumentManager;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.util.PsiTreeUtil;
+import consulo.logging.Logger;
+import consulo.project.Project;
 import org.jetbrains.plugins.groovy.lang.completion.GroovyCompletionUtil;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
+
+import javax.annotation.Nullable;
 
 /**
  * @author Maxim.Medvedev
  */
-public class AfterNewClassInsertHandler implements InsertHandler<LookupItem<PsiClassType>> {
+public class AfterNewClassInsertHandler implements InsertHandler<LookupItem<PsiClassType>>
+{
   private static final Logger LOG = Logger.getInstance(AfterNewClassInsertHandler.class);
 
   private final PsiClassType myClassType;
@@ -98,7 +107,7 @@ public class AfterNewClassInsertHandler implements InsertHandler<LookupItem<PsiC
     }
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   private static Runnable generateAnonymousBody(final Editor editor, final PsiFile file) {
     final Project project = file.getProject();
     PsiDocumentManager.getInstance(project).commitAllDocuments();

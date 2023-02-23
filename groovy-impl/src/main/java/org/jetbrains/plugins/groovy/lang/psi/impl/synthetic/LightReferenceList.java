@@ -15,11 +15,16 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.synthetic;
 
-import javax.annotation.Nonnull;
-
-import com.intellij.psi.*;
-import com.intellij.psi.impl.light.LightElement;
+import com.intellij.java.language.psi.JavaElementVisitor;
+import com.intellij.java.language.psi.PsiClassType;
+import com.intellij.java.language.psi.PsiJavaCodeReferenceElement;
+import com.intellij.java.language.psi.PsiReferenceList;
+import consulo.language.impl.psi.LightElement;
+import consulo.language.psi.PsiElementVisitor;
+import consulo.language.psi.PsiManager;
 import org.jetbrains.plugins.groovy.GroovyLanguage;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author ven

@@ -15,13 +15,11 @@
  */
 package org.jetbrains.plugins.groovy.annotator.intentions;
 
-import javax.annotation.Nonnull;
-
-import com.intellij.codeInspection.ProblemDescriptor;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiType;
-import com.intellij.util.ArrayUtil;
-import com.intellij.util.IncorrectOperationException;
+import com.intellij.java.language.psi.PsiType;
+import consulo.language.editor.inspection.ProblemDescriptor;
+import consulo.language.util.IncorrectOperationException;
+import consulo.project.Project;
+import consulo.util.collection.ArrayUtil;
 import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.codeInspection.GroovyFix;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrArgumentLabel;
@@ -30,6 +28,9 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpres
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
 import org.jetbrains.plugins.groovy.lang.psi.expectedTypes.SupertypeConstraint;
 import org.jetbrains.plugins.groovy.lang.psi.expectedTypes.TypeConstraint;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author Maxim.Medvedev
@@ -43,7 +44,7 @@ public class CreateFieldFromConstructorLabelFix extends GroovyFix {
     myNamedArgument = namedArgument;
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   private String getFieldName() {
     final GrArgumentLabel label = myNamedArgument.getLabel();
     assert label != null;

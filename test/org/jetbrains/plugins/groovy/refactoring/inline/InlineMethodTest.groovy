@@ -19,10 +19,10 @@ package org.jetbrains.plugins.groovy.refactoring.inline
 import com.intellij.lang.ASTNode
 import com.intellij.lang.refactoring.InlineHandler
 import com.intellij.openapi.editor.Editor
-import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiFile
-import com.intellij.psi.impl.source.codeStyle.CodeEditUtil
-import com.intellij.psi.impl.source.tree.TreeElement
+import com.intellij.java.language.psi.PsiElement
+import com.intellij.java.language.psi.PsiFile
+import com.intellij.java.language.psi.impl.source.codeStyle.CodeEditUtil
+import com.intellij.java.language.psi.impl.source.tree.TreeElement
 import com.intellij.refactoring.BaseRefactoringProcessor
 import com.intellij.refactoring.inline.GenericInlineHandler
 import com.intellij.refactoring.util.CommonRefactoringUtil

@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.lang.formatter
 
-import com.intellij.psi.codeStyle.CommonCodeStyleSettings
+import com.intellij.java.language.psi.codeStyle.CommonCodeStyleSettings
 
 /**
  * @author Max Medvedev

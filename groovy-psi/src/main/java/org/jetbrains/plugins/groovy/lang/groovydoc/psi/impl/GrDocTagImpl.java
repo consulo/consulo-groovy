@@ -20,6 +20,9 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
+import consulo.language.ast.ASTNode;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiUtilCore;
 import org.jetbrains.annotations.NonNls;
 
 import javax.annotation.Nullable;
@@ -31,11 +34,8 @@ import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocTag;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocTagValueToken;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.tree.TokenSet;
-import com.intellij.psi.util.PsiUtilCore;
-import com.intellij.util.IncorrectOperationException;
+import consulo.language.ast.TokenSet;
+import consulo.language.util.IncorrectOperationException;
 
 /**
  * @author ilyas
@@ -87,7 +87,7 @@ public class GrDocTagImpl extends GroovyDocPsiElementImpl implements GrDocTag
 	}
 
 	@Override
-	@javax.annotation.Nullable
+	@Nullable
 	public GrDocTagValueToken getValueElement()
 	{
 		return findChildByClass(GrDocTagValueToken.class);

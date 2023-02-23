@@ -15,18 +15,17 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.signatures;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import javax.annotation.Nonnull;
-
+import com.intellij.java.language.psi.PsiType;
+import consulo.language.psi.PsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.signatures.GrClosureSignature;
 import org.jetbrains.plugins.groovy.lang.psi.api.signatures.GrMultiSignature;
 import org.jetbrains.plugins.groovy.lang.psi.api.signatures.GrSignature;
 import org.jetbrains.plugins.groovy.lang.psi.api.signatures.GrSignatureVisitor;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiType;
+
+import javax.annotation.Nonnull;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author Max Medvedev

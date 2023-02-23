@@ -15,12 +15,12 @@
  */
 package org.jetbrains.plugins.groovy.refactoring;
 
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiField;
-import com.intellij.psi.PsiModifier;
-import com.intellij.psi.PsiNamedElement;
-import com.intellij.psi.util.PsiTreeUtil;
+import consulo.language.psi.PsiNamedElement;
+import consulo.project.Project;
+import consulo.language.psi.PsiElement;
+import com.intellij.java.language.psi.PsiField;
+import com.intellij.java.language.psi.PsiModifier;
+import consulo.language.psi.util.PsiTreeUtil;
 import org.jetbrains.plugins.groovy.lang.psi.GrControlFlowOwner;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyRecursiveElementVisitor;

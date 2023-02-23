@@ -16,8 +16,9 @@
 package org.jetbrains.plugins.groovy.codeInspection.threading;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
-import com.intellij.psi.PsiModifier;
+import com.intellij.java.language.psi.PsiModifier;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.codeInspection.BaseInspectionVisitor;
@@ -37,7 +38,7 @@ public class GroovySynchronizedMethodInspection extends BaseInspection {
     return "Synchronized method";
   }
 
-  @javax.annotation.Nullable
+  @Nullable
   protected String buildErrorString(Object... args) {
     return "Synchronized method '#ref' #loc";
 

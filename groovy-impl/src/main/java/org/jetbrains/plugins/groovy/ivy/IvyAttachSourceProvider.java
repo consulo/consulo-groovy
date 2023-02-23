@@ -1,32 +1,34 @@
 package org.jetbrains.plugins.groovy.ivy;
 
+import com.intellij.lang.properties.IProperty;
+import com.intellij.lang.properties.psi.PropertiesFile;
+import consulo.content.base.SourcesOrderRootType;
+import consulo.content.library.Library;
+import consulo.language.psi.PsiFile;
+import consulo.logging.Logger;
+import consulo.module.content.layer.orderEntry.LibraryOrderEntry;
+import consulo.project.ui.notification.Notification;
+import consulo.project.ui.notification.NotificationGroup;
+import consulo.project.ui.notification.NotificationType;
+import consulo.util.collection.ArrayUtil;
+import consulo.util.lang.StringUtil;
+import consulo.virtualFileSystem.VirtualFile;
+import consulo.virtualFileSystem.archive.ArchiveVfsUtil;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import com.intellij.lang.properties.IProperty;
-import com.intellij.lang.properties.psi.PropertiesFile;
-import com.intellij.notification.Notification;
-import com.intellij.notification.NotificationType;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.roots.LibraryOrderEntry;
-import com.intellij.openapi.roots.OrderRootType;
-import com.intellij.openapi.roots.libraries.Library;
-import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.PsiFile;
-import com.intellij.util.ArrayUtil;
-import consulo.vfs.util.ArchiveVfsUtil;
-
 /**
  * @author Sergey Evdokimov
  */
 public class IvyAttachSourceProvider extends AbstractAttachSourceProvider {
+  public static final NotificationGroup GROOVY_IVY = NotificationGroup.balloonGroup("Groovy Ivy");
 
-  private static final Logger LOG = Logger.getInstance("#org.jetbrains.plugins.groovy.ivy.IvyAttachSourceProvider");
+  private static final Logger LOG = Logger.getInstance(IvyAttachSourceProvider.class);
 
   @Nullable
   private static String extractUrl(PropertiesFile properties, String artifactName) {
@@ -59,7 +61,7 @@ public class IvyAttachSourceProvider extends AbstractAttachSourceProvider {
     String artifactName = artifactDir.getName();
 
     if (!jarNameWithoutExt.startsWith(artifactName)
-        || !jarNameWithoutExt.substring(artifactName.length()).startsWith("-")) {
+      || !jarNameWithoutExt.substring(artifactName.length()).startsWith("-")) {
       return Collections.emptyList();
     }
 
@@ -79,11 +81,13 @@ public class IvyAttachSourceProvider extends AbstractAttachSourceProvider {
       if (srcFile != null) {
         // File already downloaded.
         VirtualFile jarRoot = ArchiveVfsUtil.getJarRootForLocalFile(srcFile);
-        if (jarRoot == null || ArrayUtil.contains(jarRoot, library.getFiles(OrderRootType.SOURCES))) {
+        if (jarRoot == null || ArrayUtil.contains(jarRoot, library.getFiles(SourcesOrderRootType.getInstance()))) {
           return Collections.emptyList(); // Sources already attached.
         }
 
-        return Collections.<AttachSourcesAction>singleton(new AttachExistingSourceAction(jarRoot, library, "Attache sources from Ivy repository") );
+        return Collections.<AttachSourcesAction>singleton(new AttachExistingSourceAction(jarRoot,
+                                                                                         library,
+                                                                                         "Attache sources from Ivy repository"));
       }
     }
 
@@ -93,7 +97,7 @@ public class IvyAttachSourceProvider extends AbstractAttachSourceProvider {
     final String url = extractUrl((PropertiesFile)propertiesFileFile, artifactName);
     if (StringUtil.isEmptyOrSpaces(url)) return Collections.emptyList();
 
-    return Collections.<AttachSourcesAction>singleton(new DownloadSourcesAction(psiFile.getProject(), "Downloading Ivy Sources", url) {
+    return Collections.<AttachSourcesAction>singleton(new DownloadSourcesAction(psiFile.getProject(), GROOVY_IVY, url) {
       @Override
       protected void storeFile(byte[] content) {
         try {

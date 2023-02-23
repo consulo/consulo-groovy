@@ -15,9 +15,12 @@
  */
 package org.jetbrains.plugins.groovy.lang.surroundWith;
 
-import javax.annotation.Nonnull;
+import com.intellij.java.language.psi.PsiPrimitiveType;
+import com.intellij.java.language.psi.PsiType;
+import consulo.language.psi.PsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
-import com.intellij.psi.*;
+
+import javax.annotation.Nonnull;
 
 /**
  * User: Dmitry.Krasilschikov

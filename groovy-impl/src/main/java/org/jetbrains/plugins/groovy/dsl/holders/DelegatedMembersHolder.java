@@ -16,9 +16,10 @@
 
 package org.jetbrains.plugins.groovy.dsl.holders;
 
-import com.intellij.psi.PsiMember;
-import com.intellij.psi.ResolveState;
-import com.intellij.psi.scope.PsiScopeProcessor;
+import com.intellij.java.language.psi.PsiMember;
+import consulo.language.psi.resolve.ResolveState;
+import consulo.language.psi.resolve.PsiScopeProcessor;
+import consulo.language.psi.resolve.ResolveState;
 import org.jetbrains.plugins.groovy.dsl.GroovyClassDescriptor;
 
 import java.util.HashSet;

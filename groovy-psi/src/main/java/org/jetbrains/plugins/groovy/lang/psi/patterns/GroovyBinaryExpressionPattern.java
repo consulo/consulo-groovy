@@ -17,10 +17,10 @@ package org.jetbrains.plugins.groovy.lang.psi.patterns;
 
 import javax.annotation.Nonnull;
 
+import consulo.language.pattern.ElementPattern;
+import consulo.language.pattern.PatternCondition;
+import consulo.language.util.ProcessingContext;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrBinaryExpression;
-import com.intellij.patterns.ElementPattern;
-import com.intellij.patterns.PatternCondition;
-import com.intellij.util.ProcessingContext;
 
 public class GroovyBinaryExpressionPattern extends GroovyExpressionPattern<GrBinaryExpression, GroovyBinaryExpressionPattern> {
   protected GroovyBinaryExpressionPattern() {

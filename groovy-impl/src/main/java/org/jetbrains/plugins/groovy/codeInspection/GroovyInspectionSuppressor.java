@@ -15,24 +15,29 @@
  */
 package org.jetbrains.plugins.groovy.codeInspection;
 
+import consulo.language.Language;
+import consulo.language.editor.inspection.InspectionSuppressor;
+import consulo.language.editor.inspection.SuppressQuickFix;
+import consulo.language.psi.PsiElement;
+import org.jetbrains.plugins.groovy.GroovyLanguage;
+
 import javax.annotation.Nonnull;
 
-import com.intellij.codeInspection.InspectionSuppressor;
-import com.intellij.codeInspection.SuppressQuickFix;
-import com.intellij.psi.PsiElement;
+public class GroovyInspectionSuppressor implements InspectionSuppressor {
+  @Override
+  public boolean isSuppressedFor(@Nonnull PsiElement element, @Nonnull String name) {
+    return GroovySuppressableInspectionTool.getElementToolSuppressedIn(element, name) != null;
+  }
 
-public class GroovyInspectionSuppressor implements InspectionSuppressor
-{
-	@Override
-	public boolean isSuppressedFor(@Nonnull PsiElement element, @Nonnull String name)
-	{
-		return GroovySuppressableInspectionTool.getElementToolSuppressedIn(element, name) != null;
-	}
+  @Override
+  public SuppressQuickFix[] getSuppressActions(@Nonnull PsiElement element, String toolShortName) {
+    return GroovySuppressableInspectionTool.getSuppressActions(toolShortName);
+  }
 
-	@Override
-	public SuppressQuickFix[] getSuppressActions(@Nonnull PsiElement element, String toolShortName)
-	{
-		return GroovySuppressableInspectionTool.getSuppressActions(toolShortName);
-	}
+  @Nonnull
+  @Override
+  public Language getLanguage() {
+    return GroovyLanguage.INSTANCE;
+  }
 }
 

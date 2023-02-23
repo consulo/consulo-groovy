@@ -15,22 +15,24 @@
  */
 package org.jetbrains.plugins.groovy.lang.resolve;
 
-import java.util.Collections;
-import java.util.List;
+import consulo.annotation.component.ComponentScope;
+import consulo.annotation.component.ExtensionAPI;
+import consulo.component.extension.ExtensionPointName;
+import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 
 import javax.annotation.Nonnull;
-
-import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
-import com.intellij.openapi.extensions.ExtensionPointName;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * @author peter
  */
+@ExtensionAPI(ComponentScope.APPLICATION)
 public abstract class DefaultImportContributor {
-  public static final ExtensionPointName<DefaultImportContributor> EP_NAME = ExtensionPointName.create("org.intellij.groovy.defaultImportContributor");
-  
+  public static final ExtensionPointName<DefaultImportContributor> EP_NAME = ExtensionPointName.create(DefaultImportContributor.class);
+
   public List<String> appendImplicitlyImportedPackages(@Nonnull GroovyFile file) {
     return Collections.emptyList();
   }
-  
+
 }

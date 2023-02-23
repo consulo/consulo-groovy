@@ -15,8 +15,10 @@
  */
 package org.jetbrains.plugins.groovy.refactoring.introduce.field;
 
-import static com.intellij.refactoring.util.CommonRefactoringUtil.htmlEmphasize;
+import static consulo.language.editor.refactoring.util.CommonRefactoringUtil.htmlEmphasize;
 
+import consulo.language.findUsage.DescriptiveNameUtil;
+import consulo.language.psi.PsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyPropertyUtils;
@@ -24,10 +26,10 @@ import org.jetbrains.plugins.groovy.refactoring.GroovyRefactoringBundle;
 import org.jetbrains.plugins.groovy.refactoring.introduce.ConflictReporter;
 import org.jetbrains.plugins.groovy.refactoring.introduce.GrIntroduceContext;
 import org.jetbrains.plugins.groovy.refactoring.introduce.GrIntroduceValidatorEngine;
-import com.intellij.lang.findUsages.DescriptiveNameUtil;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiMethod;
-import com.intellij.util.containers.MultiMap;
+import consulo.language.findUsage.DescriptiveNameUtil;
+import consulo.language.psi.PsiElement;
+import com.intellij.java.language.psi.PsiMethod;
+import consulo.util.collection.MultiMap;
 
 /**
  * @author Maxim.Medvedev
