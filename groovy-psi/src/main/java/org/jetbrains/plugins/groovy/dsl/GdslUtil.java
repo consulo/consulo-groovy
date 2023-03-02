@@ -15,29 +15,19 @@
  */
 package org.jetbrains.plugins.groovy.dsl;
 
-import consulo.util.lang.StringUtil;
-import consulo.virtualFileSystem.VirtualFile;
-import org.jetbrains.annotations.Contract;
-import consulo.util.lang.function.Condition;
 import consulo.util.dataholder.Key;
+import consulo.util.lang.StringUtil;
+import consulo.util.lang.function.Condition;
+import consulo.virtualFileSystem.VirtualFile;
 
-public class GdslUtil
-{
-	public static final Key<GroovyClassDescriptor> INITIAL_CONTEXT = Key.create("gdsl.initialContext");
+public class GdslUtil {
+  public static final Key<GroovyClassDescriptor> INITIAL_CONTEXT = Key.create("gdsl.initialContext");
 
-	public static final Condition<VirtualFile> GDSL_FILTER = new Condition<VirtualFile>()
-	{
-		@Override
-		@Contract("null -> false")
-		public boolean value(VirtualFile file)
-		{
-			return file != null && !file.isDirectory() && StringUtil.endsWith(file.getNameSequence(), ".gdsl");
-		}
-	};
-	static volatile boolean ourGdslStopped = false;
+  public static final Condition<VirtualFile> GDSL_FILTER =
+    file -> file != null && !file.isDirectory() && StringUtil.endsWith(file.getNameSequence(), ".gdsl");
+  static volatile boolean ourGdslStopped = false;
 
-	static void stopGdsl()
-	{
-		ourGdslStopped = true;
-	}
+  static void stopGdsl() {
+    ourGdslStopped = true;
+  }
 }

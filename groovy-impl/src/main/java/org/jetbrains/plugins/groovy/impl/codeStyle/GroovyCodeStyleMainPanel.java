@@ -1,0 +1,36 @@
+/*
+ * Copyright 2000-2012 JetBrains s.r.o.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.jetbrains.plugins.groovy.impl.codeStyle;
+
+import consulo.language.codeStyle.CodeStyleSettings;
+import consulo.language.codeStyle.ui.setting.TabbedLanguageCodeStylePanel;
+import org.jetbrains.plugins.groovy.GroovyFileType;
+
+/**
+ * @author Max Medvedev
+ */
+public class GroovyCodeStyleMainPanel extends TabbedLanguageCodeStylePanel
+{
+  public GroovyCodeStyleMainPanel(CodeStyleSettings currentSettings, CodeStyleSettings settings) {
+    super(GroovyFileType.GROOVY_LANGUAGE, currentSettings, settings);
+  }
+
+  @Override
+  protected void initTabs(CodeStyleSettings settings) {
+    super.initTabs(settings);
+    addTab(new GrCodeStyleImportsPanelWrapper(settings));
+  }
+}

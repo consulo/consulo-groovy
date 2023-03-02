@@ -18,14 +18,16 @@ package org.jetbrains.plugins.groovy.lang.psi.impl;
 
 import com.intellij.java.language.psi.*;
 import com.intellij.java.language.psi.util.InheritanceUtil;
+import consulo.annotation.component.ComponentScope;
+import consulo.annotation.component.ServiceAPI;
+import consulo.annotation.component.ServiceImpl;
 import consulo.application.util.RecursionGuard;
 import consulo.application.util.RecursionManager;
 import consulo.application.util.function.Computable;
 import consulo.component.messagebus.MessageBusConnection;
 import consulo.ide.ServiceManager;
-import consulo.language.impl.internal.psi.PsiManagerEx;
+import consulo.language.psi.AnyPsiChangeListener;
 import consulo.language.psi.PsiElement;
-import consulo.language.psi.PsiManager;
 import consulo.language.psi.PsiReference;
 import consulo.language.psi.scope.GlobalSearchScope;
 import consulo.language.util.IncorrectOperationException;
@@ -37,6 +39,8 @@ import consulo.project.Project;
 import consulo.util.collection.ContainerUtil;
 import consulo.util.collection.Maps;
 import consulo.util.lang.ref.SoftReference;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
@@ -57,6 +61,9 @@ import static org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames.
 /**
  * @author ven
  */
+@Singleton
+@ServiceAPI(ComponentScope.PROJECT)
+@ServiceImpl
 public class GroovyPsiManager {
   private static final Logger LOG = Logger.getInstance(GroovyPsiManager.class);
   private static final Set<String> ourPopularClasses = Set.of(GROOVY_LANG_CLOSURE,
@@ -76,17 +83,18 @@ public class GroovyPsiManager {
 
   private static final RecursionGuard<PsiElement> ourGuard = RecursionManager.createGuard("groovyPsiManager");
 
+  @Inject
   public GroovyPsiManager(Project project) {
     myProject = project;
 
-    ((PsiManagerEx)PsiManager.getInstance(myProject)).registerRunnableToRunOnAnyChange(new Runnable() {
-      public void run() {
+    myProject.getMessageBus().connect().subscribe(AnyPsiChangeListener.class, new AnyPsiChangeListener() {
+      @Override
+      public void beforePsiChanged(boolean isPhysical) {
         dropTypesCache();
-      }
-    });
-    ((PsiManagerEx)PsiManager.getInstance(myProject)).registerRunnableToRunOnChange(new Runnable() {
-      public void run() {
-        myClassCache.clear();
+
+        if (isPhysical) {
+          myClassCache.clear();
+        }
       }
     });
 

@@ -40,8 +40,6 @@ import java.util.regex.Pattern;
  * @author ilyas
  */
 public abstract class GroovyUtils {
-  public static final String PLUGIN_MODULE_ID = "PLUGIN_MODULE";
-
   public static File[] getFilesInDirectoryByPattern(String dirPath, final String patternString) {
     final Pattern pattern = Pattern.compile(patternString);
     return getFilesInDirectoryByPattern(dirPath, pattern);

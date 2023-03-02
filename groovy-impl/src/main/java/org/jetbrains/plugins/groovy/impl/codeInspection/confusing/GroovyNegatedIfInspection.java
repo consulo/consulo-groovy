@@ -1,0 +1,69 @@
+/*
+ * Copyright 2007-2008 Dave Griffith
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.jetbrains.plugins.groovy.impl.codeInspection.confusing;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import org.jetbrains.annotations.Nls;
+import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
+import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
+import org.jetbrains.plugins.groovy.impl.intentions.utils.BoolUtils;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrIfStatement;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
+
+public class GroovyNegatedIfInspection extends BaseInspection {
+
+  @Nls
+  @Nonnull
+  public String getGroupDisplayName() {
+    return CONFUSING_CODE_CONSTRUCTS;
+  }
+
+  @Nls
+  @Nonnull
+  public String getDisplayName() {
+    return "Negated if condition expression";
+  }
+
+  @Nullable
+  protected String buildErrorString(Object... args) {
+    return "Negated if condition expression #loc";
+
+  }
+
+  public BaseInspectionVisitor buildVisitor() {
+    return new Visitor();
+  }
+
+  private static class Visitor extends BaseInspectionVisitor {
+
+    public void visitIfStatement(GrIfStatement grIfStatement) {
+      super.visitIfStatement(grIfStatement);
+      final GrExpression condition = grIfStatement.getCondition();
+      if (condition == null) {
+        return;
+      }
+      if (!BoolUtils.isNegation(condition)) {
+        return;
+      }
+      if (grIfStatement.getElseBranch() == null || grIfStatement.getThenBranch() == null) {
+        return;
+      }
+      registerError(condition);
+    }
+  }
+}

@@ -17,6 +17,7 @@ package org.jetbrains.plugins.groovy.lang.psi.util;
 
 import com.intellij.java.language.impl.psi.impl.ConstantExpressionEvaluator;
 import com.intellij.java.language.psi.PsiConstantEvaluationHelper;
+import consulo.annotation.component.ExtensionImpl;
 import consulo.language.Language;
 import consulo.language.psi.PsiElement;
 import org.jetbrains.plugins.groovy.GroovyLanguage;
@@ -30,6 +31,7 @@ import javax.annotation.Nullable;
 /**
  * @author peter
  */
+@ExtensionImpl
 public class GroovyConstantExpressionEvaluator implements ConstantExpressionEvaluator {
 
   @Nullable

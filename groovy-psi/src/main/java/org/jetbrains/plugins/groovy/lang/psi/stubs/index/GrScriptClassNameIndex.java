@@ -15,15 +15,17 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.stubs.index;
 
-import javax.annotation.Nonnull;
-
+import consulo.annotation.component.ExtensionImpl;
+import consulo.language.psi.stub.StringStubIndexExtension;
 import consulo.language.psi.stub.StubIndexKey;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
-import consulo.language.psi.stub.StringStubIndexExtension;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author ilyas
  */
+@ExtensionImpl
 public class GrScriptClassNameIndex extends StringStubIndexExtension<GroovyFile> {
   public static final StubIndexKey<String, GroovyFile> KEY = StubIndexKey.createIndexKey("gr.script.class");
 

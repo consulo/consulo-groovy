@@ -15,8 +15,9 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl;
 
-import javax.annotation.Nonnull;
-
+import consulo.annotation.component.ComponentScope;
+import consulo.annotation.component.ServiceAPI;
+import consulo.annotation.component.ServiceImpl;
 import consulo.ide.ServiceManager;
 import consulo.language.util.IncorrectOperationException;
 import consulo.project.Project;
@@ -24,17 +25,18 @@ import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFileBase;
 import org.jetbrains.plugins.groovy.lang.psi.api.toplevel.imports.GrImportStatement;
 
-public abstract class GroovyCodeStyleManager
-{
-	public static GroovyCodeStyleManager getInstance(Project project)
-	{
-		return ServiceManager.getService(project, GroovyCodeStyleManager.class);
-	}
+import javax.annotation.Nonnull;
 
-	@Nonnull
-	public abstract GrImportStatement addImport(@Nonnull GroovyFile psiFile,
-			@Nonnull GrImportStatement statement) throws IncorrectOperationException;
+@ServiceAPI(ComponentScope.PROJECT)
+public abstract class GroovyCodeStyleManager {
+  public static GroovyCodeStyleManager getInstance(Project project) {
+    return ServiceManager.getService(project, GroovyCodeStyleManager.class);
+  }
 
-	public abstract void removeImport(@Nonnull GroovyFileBase psiFile,
-			@Nonnull GrImportStatement importStatement) throws IncorrectOperationException;
+  @Nonnull
+  public abstract GrImportStatement addImport(@Nonnull GroovyFile psiFile,
+                                              @Nonnull GrImportStatement statement) throws IncorrectOperationException;
+
+  public abstract void removeImport(@Nonnull GroovyFileBase psiFile,
+                                    @Nonnull GrImportStatement importStatement) throws IncorrectOperationException;
 }

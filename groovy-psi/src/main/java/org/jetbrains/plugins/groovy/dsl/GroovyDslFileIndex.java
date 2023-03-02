@@ -19,6 +19,7 @@ import com.intellij.java.language.psi.PsiAnnotation;
 import com.intellij.java.language.psi.PsiClassType;
 import com.intellij.java.language.psi.PsiMethod;
 import com.intellij.java.language.psi.PsiType;
+import consulo.annotation.component.ExtensionImpl;
 import consulo.application.Application;
 import consulo.application.ApplicationManager;
 import consulo.application.progress.ProgressManager;
@@ -31,9 +32,10 @@ import consulo.index.io.DataIndexer;
 import consulo.index.io.EnumeratorStringDescriptor;
 import consulo.index.io.ID;
 import consulo.index.io.KeyDescriptor;
-import consulo.language.impl.internal.psi.LoadTextUtil;
-import consulo.language.impl.internal.psi.PsiModificationTrackerImpl;
-import consulo.language.psi.*;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.psi.PsiModificationTracker;
+import consulo.language.psi.PsiNamedElement;
 import consulo.language.psi.resolve.DelegatingScopeProcessor;
 import consulo.language.psi.resolve.PsiScopeProcessor;
 import consulo.language.psi.resolve.ResolveState;
@@ -61,7 +63,6 @@ import consulo.virtualFileSystem.VirtualFile;
 import consulo.virtualFileSystem.VirtualFileManager;
 import consulo.virtualFileSystem.event.VirtualFileAdapter;
 import consulo.virtualFileSystem.event.VirtualFileEvent;
-import org.jetbrains.annotations.NonNls;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.annotator.GroovyFrameworkConfigNotification;
 import org.jetbrains.plugins.groovy.dsl.DslActivationStatus.Status;
@@ -83,17 +84,14 @@ import java.util.regex.Pattern;
 /**
  * @author peter
  */
+@ExtensionImpl
 public class GroovyDslFileIndex extends ScalarIndexExtension<String> {
 
   private static final Key<Pair<GroovyDslExecutor, Long>> CACHED_EXECUTOR = Key.create("CachedGdslExecutor");
   private static final Key<CachedValue<List<GroovyDslScript>>> SCRIPTS_CACHE = Key.create("GdslScriptCache");
   private static final Logger LOG = Logger.getInstance(GroovyDslFileIndex.class);
-  private static final
-  @NonNls
-  String OUR_KEY = "ourKey";
-  public static final
-  @NonNls
-  ID<String, Void> NAME = ID.create("GroovyDslFileIndex");
+  private static final String OUR_KEY = "ourKey";
+  public static final ID<String, Void> NAME = ID.create("GroovyDslFileIndex");
 
   private static final MultiMap<String, LinkedBlockingQueue<Pair<VirtualFile, GroovyDslExecutor>>> filesInProcessing
     = new ConcurrentMultiMap<String, LinkedBlockingQueue<Pair<VirtualFile, GroovyDslExecutor>>>();
@@ -187,14 +185,13 @@ public class GroovyDslFileIndex extends ScalarIndexExtension<String> {
       public void run() {
         for (Project project : ProjectManager.getInstance().getOpenProjects()) {
           project.putUserData(SCRIPTS_CACHE, null);
-          ((PsiModificationTrackerImpl)PsiManager.getInstance(project).getModificationTracker())
-            .incCounter();
+          PsiModificationTracker.getInstance(project).incCounter();
         }
       }
     }, app.getDisposed());
   }
 
-  static void disableFile(@Nonnull VirtualFile vfile, @Nonnull Status status, @Nullable String error) {
+  public static void disableFile(@Nonnull VirtualFile vfile, @Nonnull Status status, @Nullable String error) {
     assert status != Status.ACTIVE;
     setStatusAndError(vfile, status, error);
     vfile.putUserData(CACHED_EXECUTOR, null);
@@ -417,74 +414,73 @@ public class GroovyDslFileIndex extends ScalarIndexExtension<String> {
   }
 
   private static List<GroovyDslScript> getDslScripts(final Project project) {
-    return CachedValuesManager.getManager(project).getCachedValue(project, SCRIPTS_CACHE,
-                                                                  new CachedValueProvider<List<GroovyDslScript>>() {
-                                                                    @Override
-                                                                    public Result<List<GroovyDslScript>> compute() {
-                                                                      if (GdslUtil.ourGdslStopped) {
-                                                                        return Result.create(Collections.<GroovyDslScript>emptyList(),
-                                                                                             ModificationTracker.NEVER_CHANGED);
-                                                                      }
+    return CachedValuesManager.getManager(project).getCachedValue(project, SCRIPTS_CACHE, new CachedValueProvider<List<GroovyDslScript>>() {
+      @Override
+      public Result<List<GroovyDslScript>> compute() {
+        if (GdslUtil.ourGdslStopped) {
+          return Result.create(Collections.<GroovyDslScript>emptyList(),
+                               ModificationTracker.NEVER_CHANGED);
+        }
 
-                                                                      // eagerly initialize some services used by background gdsl parsing threads
-                                                                      // because service init requires a read action
-                                                                      // and there could be a deadlock with a write action waiting already on EDT
-                                                                      // if current thread is inside a non-cancellable read action
-                                                                      GroovyDslExecutor.getIdeaVersion();
-                                                                      DslActivationStatus.getInstance();
+        // eagerly initialize some services used by background gdsl parsing threads
+        // because service init requires a read action
+        // and there could be a deadlock with a write action waiting already on EDT
+        // if current thread is inside a non-cancellable read action
+        GroovyDslExecutor.getIdeaVersion();
+        DslActivationStatus.getInstance();
 
-                                                                      int count = 0;
+        int count = 0;
 
-                                                                      List<GroovyDslScript> result = new ArrayList<GroovyDslScript>();
+        List<GroovyDslScript> result = new ArrayList<GroovyDslScript>();
 
-                                                                      final LinkedBlockingQueue<Pair<VirtualFile, GroovyDslExecutor>>
-                                                                        queue = new
-                                                                        LinkedBlockingQueue<Pair<VirtualFile, GroovyDslExecutor>>();
+        final LinkedBlockingQueue<Pair<VirtualFile, GroovyDslExecutor>>
+          queue = new
+          LinkedBlockingQueue<Pair<VirtualFile, GroovyDslExecutor>>();
 
-                                                                      for (VirtualFile vfile : getGdslFiles(project)) {
-                                                                        final long stamp = vfile.getModificationStamp();
-                                                                        final GroovyDslExecutor cached = getCachedExecutor(vfile, stamp);
-                                                                        if (cached == null) {
-                                                                          scheduleParsing(queue,
-                                                                                          project,
-                                                                                          vfile,
-                                                                                          stamp,
-                                                                                          LoadTextUtil.loadText(vfile).toString());
-                                                                          count++;
-                                                                        }
-                                                                        else {
-                                                                          result.add(new GroovyDslScript(project,
-                                                                                                         vfile,
-                                                                                                         cached,
-                                                                                                         vfile.getPath()));
-                                                                        }
-                                                                      }
+        for (VirtualFile vfile : getGdslFiles(project)) {
+          final long stamp = vfile.getModificationStamp();
+          final GroovyDslExecutor cached = getCachedExecutor(vfile, stamp);
+          if (cached == null) {
+            scheduleParsing(queue,
+                            project,
+                            vfile,
+                            stamp,
+                            vfile.loadText().toString());
+            count++;
+          }
+          else {
+            result.add(new GroovyDslScript(project,
+                                           vfile,
+                                           cached,
+                                           vfile.getPath()));
+          }
+        }
 
-                                                                      try {
-                                                                        while (count > 0 && !GdslUtil.ourGdslStopped) {
-                                                                          ProgressManager.checkCanceled();
-                                                                          final Pair<VirtualFile, GroovyDslExecutor> pair =
-                                                                            queue.poll(20, TimeUnit.MILLISECONDS);
-                                                                          if (pair != null) {
-                                                                            count--;
-                                                                            if (pair.second != null) {
-                                                                              result.add(new GroovyDslScript(project,
-                                                                                                             pair.first,
-                                                                                                             pair.second,
-                                                                                                             pair.first.getPath()));
-                                                                            }
-                                                                          }
-                                                                        }
-                                                                      }
-                                                                      catch (InterruptedException e) {
-                                                                        LOG.error(e);
-                                                                      }
+        try {
+          while (count > 0 && !GdslUtil.ourGdslStopped) {
+            ProgressManager.checkCanceled();
+            final Pair<VirtualFile, GroovyDslExecutor> pair =
+              queue.poll(20, TimeUnit.MILLISECONDS);
+            if (pair != null) {
+              count--;
+              if (pair.second != null) {
+                result.add(new GroovyDslScript(project,
+                                               pair.first,
+                                               pair.second,
+                                               pair.first.getPath()));
+              }
+            }
+          }
+        }
+        catch (InterruptedException e) {
+          LOG.error(e);
+        }
 
-                                                                      return Result.create(result,
-                                                                                           PsiModificationTracker.MODIFICATION_COUNT,
-                                                                                           ProjectRootManager.getInstance(project));
-                                                                    }
-                                                                  }, false);
+        return Result.create(result,
+                             PsiModificationTracker.MODIFICATION_COUNT,
+                             ProjectRootManager.getInstance(project));
+      }
+    }, false);
   }
 
   private static class MyDataIndexer implements DataIndexer<String, Void, FileContent> {

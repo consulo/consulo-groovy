@@ -15,15 +15,17 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.stubs.index;
 
-import javax.annotation.Nonnull;
-
-import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
+import consulo.annotation.component.ExtensionImpl;
 import consulo.language.psi.stub.IntStubIndexExtension;
 import consulo.language.psi.stub.StubIndexKey;
+import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author ilyas
  */
+@ExtensionImpl
 public class GrFullScriptNameIndex extends IntStubIndexExtension<GroovyFile> {
   public static final StubIndexKey<Integer, GroovyFile> KEY = StubIndexKey.createIndexKey("gr.script.fqn");
 

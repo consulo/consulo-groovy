@@ -15,34 +15,35 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl;
 
+import consulo.annotation.component.ComponentScope;
+import consulo.annotation.component.ServiceAPI;
 import consulo.ide.ServiceManager;
 import consulo.project.Project;
 
-public abstract class GroovyCodeStyleSettingsFacade
-{
+@ServiceAPI(ComponentScope.PROJECT)
+public abstract class GroovyCodeStyleSettingsFacade {
 
-	public static GroovyCodeStyleSettingsFacade getInstance(Project project)
-	{
-		return ServiceManager.getService(project, GroovyCodeStyleSettingsFacade.class);
-	}
+  public static GroovyCodeStyleSettingsFacade getInstance(Project project) {
+    return ServiceManager.getService(project, GroovyCodeStyleSettingsFacade.class);
+  }
 
-	public abstract boolean useFqClassNames();
+  public abstract boolean useFqClassNames();
 
-	public abstract boolean useFqClassNamesInJavadoc();
+  public abstract boolean useFqClassNamesInJavadoc();
 
-	public abstract int staticFieldsOrderWeight();
+  public abstract int staticFieldsOrderWeight();
 
-	public abstract int fieldsOrderWeight();
+  public abstract int fieldsOrderWeight();
 
-	public abstract int staticMethodsOrderWeight();
+  public abstract int staticMethodsOrderWeight();
 
-	public abstract int methodsOrderWeight();
+  public abstract int methodsOrderWeight();
 
-	public abstract int staticInnerClassesOrderWeight();
+  public abstract int staticInnerClassesOrderWeight();
 
-	public abstract int innerClassesOrderWeight();
+  public abstract int innerClassesOrderWeight();
 
-	public abstract int constructorsOrderWeight();
+  public abstract int constructorsOrderWeight();
 
-	public abstract boolean insertInnerClassImports();
+  public abstract boolean insertInnerClassImports();
 }

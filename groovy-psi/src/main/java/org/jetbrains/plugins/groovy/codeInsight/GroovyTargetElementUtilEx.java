@@ -18,6 +18,7 @@ package org.jetbrains.plugins.groovy.codeInsight;
 
 import com.intellij.java.language.impl.psi.impl.compiled.ClsMethodImpl;
 import com.intellij.java.language.psi.PsiMethod;
+import consulo.annotation.component.ExtensionImpl;
 import consulo.language.editor.TargetElementUtilExtender;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiReference;
@@ -38,6 +39,7 @@ import java.util.Set;
 /**
  * @author Maxim.Medvedev
  */
+@ExtensionImpl
 public class GroovyTargetElementUtilEx implements TargetElementUtilExtender {
   public static final Key<Object> NAVIGATION_ELEMENT_IS_NOT_TARGET =
     Key.create("GroovyTargetElementEvaluator.DONT_FOLLOW_NAVIGATION_ELEMENT");

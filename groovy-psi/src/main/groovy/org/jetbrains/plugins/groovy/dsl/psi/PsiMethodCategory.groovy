@@ -20,11 +20,13 @@ import com.intellij.java.language.psi.PsiClass
 import com.intellij.java.language.psi.PsiField
 import com.intellij.java.language.psi.PsiMethod
 import com.intellij.java.language.psi.PsiType
+import consulo.annotation.component.ExtensionImpl
 import org.jetbrains.annotations.Nullable
 
 /**
  * @author ilyas
  */
+@ExtensionImpl
 public class PsiMethodCategory implements PsiEnhancerCategory {
 
   @Nullable

@@ -15,17 +15,18 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.stubs.index;
 
-import javax.annotation.Nonnull;
-
+import consulo.annotation.component.ExtensionImpl;
 import consulo.language.psi.stub.StringStubIndexExtension;
 import consulo.language.psi.stub.StubIndexKey;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
 
+import javax.annotation.Nonnull;
+
 /**
  * @author ilyas
  */
-public class GrMethodNameIndex extends StringStubIndexExtension<GrMethod>
-{
+@ExtensionImpl
+public class GrMethodNameIndex extends StringStubIndexExtension<GrMethod> {
   public static final StubIndexKey<String, GrMethod> KEY = StubIndexKey.createIndexKey("gr.method.name");
 
   @Nonnull

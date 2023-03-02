@@ -18,6 +18,7 @@ package org.jetbrains.plugins.groovy.lang.resolve.noncode;
 import com.intellij.java.language.impl.psi.impl.light.LightMethod;
 import com.intellij.java.language.psi.*;
 import com.intellij.java.language.psi.util.PsiUtil;
+import consulo.annotation.component.ExtensionImpl;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiMirrorElement;
 import consulo.language.psi.resolve.DelegatingScopeProcessor;
@@ -42,6 +43,7 @@ import java.util.List;
 /**
  * @author Max Medvedev
  */
+@ExtensionImpl
 public class MixinMemberContributor extends NonCodeMembersContributor {
   @Override
   public void processDynamicElements(@Nonnull final PsiType qualifierType,

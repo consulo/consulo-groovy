@@ -15,6 +15,9 @@
  */
 package org.jetbrains.plugins.groovy.dsl;
 
+import consulo.annotation.component.ComponentScope;
+import consulo.annotation.component.ServiceAPI;
+import consulo.annotation.component.ServiceImpl;
 import consulo.component.persist.*;
 import consulo.ide.ServiceManager;
 import consulo.util.collection.ContainerUtil;
@@ -38,13 +41,15 @@ import java.util.*;
     @Storage(file = StoragePathMacros.APP_CONFIG + "/dslActivationStatus.xml",
       roamingType = RoamingType.DISABLED)
   })
+@ServiceAPI(ComponentScope.APPLICATION)
+@ServiceImpl
 public class DslActivationStatus implements PersistentStateComponent<DslActivationStatus.State> {
   @Nonnull
   public static DslActivationStatus getInstance() {
     return ServiceManager.getService(DslActivationStatus.class);
   }
 
-  enum Status {
+  public enum Status {
     ACTIVE,
     MODIFIED,
     ERROR

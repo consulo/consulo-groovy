@@ -16,6 +16,7 @@
 package org.jetbrains.plugins.groovy.lang.psi.stubs.index;
 
 import com.intellij.java.language.psi.PsiClass;
+import consulo.annotation.component.ExtensionImpl;
 import consulo.language.psi.scope.GlobalSearchScope;
 import consulo.language.psi.stub.IntStubIndexExtension;
 import consulo.language.psi.stub.StubIndexKey;
@@ -28,6 +29,7 @@ import java.util.Collection;
 /**
  * @author ilyas
  */
+@ExtensionImpl
 public class GrFullClassNameIndex extends IntStubIndexExtension<PsiClass>
 {
   public static final StubIndexKey<Integer,PsiClass> KEY = StubIndexKey.createIndexKey("gr.class.fqn");

@@ -17,6 +17,7 @@ package consulo.groovy.impl;
 
 import com.intellij.java.language.psi.PsiModifier;
 import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.component.ExtensionImpl;
 import consulo.language.icon.IconDescriptor;
 import consulo.language.icon.IconDescriptorUpdater;
 import consulo.language.icon.IconDescriptorUpdaters;
@@ -34,6 +35,7 @@ import javax.annotation.Nonnull;
  * @author VISTALL
  * @since 22:25/19.07.13
  */
+@ExtensionImpl(order = "after java", id = "groovy")
 public class GroovyIconDescriptorUpdater implements IconDescriptorUpdater {
   public static final Key<Image> ICON_KEY = Key.create("groovy-icon-key");
 

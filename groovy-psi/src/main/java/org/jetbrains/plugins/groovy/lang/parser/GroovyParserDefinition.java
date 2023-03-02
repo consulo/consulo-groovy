@@ -16,6 +16,7 @@
 
 package org.jetbrains.plugins.groovy.lang.parser;
 
+import consulo.annotation.component.ExtensionImpl;
 import consulo.language.Language;
 import consulo.language.ast.*;
 import consulo.language.file.FileViewProvider;
@@ -44,6 +45,7 @@ import static org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes.*;
 /**
  * @author ilyas
  */
+@ExtensionImpl
 public class GroovyParserDefinition implements ParserDefinition {
   public static final IStubFileElementType GROOVY_FILE = new GrStubFileElementType(GroovyLanguage.INSTANCE);
   private static final IElementType[] STRINGS = new IElementType[]{

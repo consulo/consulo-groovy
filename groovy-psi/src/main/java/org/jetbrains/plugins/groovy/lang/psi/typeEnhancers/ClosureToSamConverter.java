@@ -19,6 +19,7 @@ import com.intellij.java.language.impl.codeInsight.generation.OverrideImplementE
 import com.intellij.java.language.psi.*;
 import com.intellij.java.language.psi.util.MethodSignature;
 import com.intellij.java.language.psi.util.MethodSignatureUtil;
+import consulo.annotation.component.ExtensionImpl;
 import consulo.language.psi.PsiElement;
 import consulo.util.lang.ref.Ref;
 import org.jetbrains.plugins.groovy.config.GroovyConfigUtils;
@@ -37,6 +38,7 @@ import java.util.Collection;
 /**
  * @author Max Medvedev
  */
+@ExtensionImpl
 public class ClosureToSamConverter extends GrTypeConverter {
   private static final LightCacheKey<Ref<MethodSignature>> SAM_SIGNATURE_LIGHT_CACHE_KEY = LightCacheKey.createByJavaModificationCount();
 

@@ -18,6 +18,7 @@ package org.jetbrains.plugins.groovy.lang.psi.typeEnhancers;
 import com.intellij.java.language.psi.*;
 import com.intellij.java.language.psi.util.InheritanceUtil;
 import com.intellij.java.language.psi.util.PsiUtil;
+import consulo.annotation.component.ExtensionImpl;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiManager;
 import consulo.language.psi.scope.GlobalSearchScope;
@@ -49,6 +50,7 @@ import static com.intellij.java.language.psi.CommonClassNames.*;
 /**
  * @author peter
  */
+@ExtensionImpl
 public class ClosureParameterEnhancer extends AbstractClosureParameterEnhancer {
   private static final Map<String, String> simpleTypes = new HashMap<String, String>();
   private static final Set<String> iterations = new HashSet<String>();
