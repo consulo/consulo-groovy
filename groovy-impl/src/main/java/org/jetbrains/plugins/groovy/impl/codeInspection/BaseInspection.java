@@ -15,22 +15,22 @@
  */
 package org.jetbrains.plugins.groovy.impl.codeInspection;
 
+import consulo.language.editor.inspection.InspectionToolState;
+import consulo.language.editor.inspection.LocalInspectionToolSession;
 import consulo.language.editor.inspection.ProblemDescriptor;
 import consulo.language.editor.inspection.ProblemsHolder;
 import consulo.language.editor.inspection.scheme.InspectionManager;
 import consulo.language.editor.rawHighlight.HighlightDisplayLevel;
 import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiElementVisitor;
 import consulo.language.psi.PsiFile;
-import consulo.util.lang.StringUtil;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFileBase;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Objects;
 
-public abstract class BaseInspection extends GroovySuppressableInspectionTool {
-
-  private final String m_shortName = StringUtil.trimEnd(getClass().getSimpleName(), "Inspection");
-
+public abstract class BaseInspection<State> extends GroovySuppressableInspectionTool {
   public static final String ASSIGNMENT_ISSUES = "Assignment issues";
   public static final String CONFUSING_CODE_CONSTRUCTS = "Potentially confusing code constructs";
   public static final String CONTROL_FLOW = "Control Flow";
@@ -41,6 +41,12 @@ public abstract class BaseInspection extends GroovySuppressableInspectionTool {
   public static final String THREADING_ISSUES = "Threading issues";
   public static final String VALIDITY_ISSUES = "Validity issues";
   public static final String ANNOTATIONS_ISSUES = "Annotations verifying";
+
+  @Nonnull
+  @Override
+  public InspectionToolState<State> createStateProvider() {
+    return (InspectionToolState<State>)super.createStateProvider();
+  }
 
   @Nonnull
   @Override
@@ -55,19 +61,14 @@ public abstract class BaseInspection extends GroovySuppressableInspectionTool {
   }
 
   @Nonnull
-  public String getShortName() {
-    return m_shortName;
-  }
-
-  @Nonnull
-  protected BaseInspectionVisitor buildGroovyVisitor(@Nonnull ProblemsHolder problemsHolder, boolean onTheFly) {
-    final BaseInspectionVisitor visitor = buildVisitor();
+  protected BaseInspectionVisitor<State> buildGroovyVisitor(@Nonnull ProblemsHolder problemsHolder, boolean onTheFly, State state) {
+    final BaseInspectionVisitor<State> visitor = buildVisitor();
     visitor.setProblemsHolder(problemsHolder);
     visitor.setOnTheFly(onTheFly);
     visitor.setInspection(this);
+    visitor.setState(state);
     return visitor;
   }
-
 
   @Nullable
   protected String buildErrorString(Object... args) {
@@ -88,20 +89,50 @@ public abstract class BaseInspection extends GroovySuppressableInspectionTool {
     return null;
   }
 
+  @Nonnull
+  @Override
+  public final PsiElementVisitor buildVisitor(@Nonnull ProblemsHolder holder, boolean isOnTheFly) {
+    throw new UnsupportedOperationException();
+  }
+
+  @Nonnull
+  @Override
+  public final PsiElementVisitor buildVisitor(@Nonnull ProblemsHolder holder,
+                                        boolean isOnTheFly,
+                                        @Nonnull LocalInspectionToolSession session,
+                                        @Nonnull Object state) {
+    return new PsiElementVisitor() {
+      @Override
+      public void visitFile(PsiFile file) {
+        addDescriptors(checkFile(file, holder.getManager(), isOnTheFly, state));
+      }
+
+      private void addDescriptors(final ProblemDescriptor[] descriptors) {
+        if (descriptors != null) {
+          for (ProblemDescriptor descriptor : descriptors) {
+            holder.registerProblem(Objects.requireNonNull(descriptor));
+          }
+        }
+      }
+    };
+  }
+
   @Nullable
-  public ProblemDescriptor[] checkFile(@Nonnull PsiFile psiFile, @Nonnull InspectionManager inspectionManager, boolean isOnTheFly) {
+  @SuppressWarnings("unchecked")
+  public ProblemDescriptor[] checkFile(@Nonnull PsiFile psiFile, @Nonnull InspectionManager inspectionManager, boolean isOnTheFly, Object state) {
     if (!(psiFile instanceof GroovyFileBase)) {
       return super.checkFile(psiFile, inspectionManager, isOnTheFly);
     }
     final GroovyFileBase groovyFile = (GroovyFileBase)psiFile;
 
+    State inspectionState = (State)state;
     final ProblemsHolder problemsHolder = new ProblemsHolder(inspectionManager, psiFile, isOnTheFly);
-    final BaseInspectionVisitor visitor = buildGroovyVisitor(problemsHolder, isOnTheFly);
+    final BaseInspectionVisitor visitor = buildGroovyVisitor(problemsHolder, isOnTheFly, inspectionState);
     groovyFile.accept(visitor);
     return problemsHolder.getResultsArray();
 
   }
 
   @Nonnull
-  protected abstract BaseInspectionVisitor buildVisitor();
+  protected abstract BaseInspectionVisitor<State> buildVisitor();
 }

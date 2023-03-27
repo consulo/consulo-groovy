@@ -300,10 +300,6 @@
                      displayName="Unsynchronized method overrides synchronized method" groupName="Threading issues" enabledByDefault="true"
                      level="WARNING"
                      implementationClass="org.jetbrains.plugins.groovy.impl.codeInspection.threading.GroovyUnsynchronizedMethodOverridesSynchronizedMethodInspection"/>
-    <localInspection language="Groovy" groupPath="Groovy" shortName="GroovyWhileLoopSpinsOnField" displayName="While loop spins on field"
-                     groupName="Threading issues"
-                     enabledByDefault="false" level="WARNING"
-                     implementationClass="org.jetbrains.plugins.groovy.impl.codeInspection.threading.GroovyWhileLoopSpinsOnFieldInspection"/>
     <localInspection language="Groovy" groupPath="Groovy" shortName="GroovyMethodParameterCount"
                      displayName="Method with too many parameters" groupName="Method Metrics"
                      enabledByDefault="false" level="WARNING"
@@ -344,10 +340,7 @@
                      bundle="messages.GroovyInspectionBundle"
                      key="clashing.getters" groupName="Potentially confusing code constructs" enabledByDefault="false" level="WARNING"
                      implementationClass="org.jetbrains.plugins.groovy.impl.codeInspection.confusing.ClashingGettersInspection"/>
-    <localInspection language="Groovy" groupPath="Groovy" shortName="GrPackage"
-                     bundle="messages.GroovyInspectionBundle"
-                     key="gr.package" groupName="Potentially confusing code constructs" enabledByDefault="true" level="WARNING"
-                     implementationClass="org.jetbrains.plugins.groovy.impl.codeInspection.confusing.GrPackageInspection"/>
+
     <localInspection language="Groovy" groupPath="Groovy" shortName="GrDeprecatedAPIUsage"
                      bundle="messages.GroovyInspectionBundle"
                      key="gr.deprecated.api.usage" groupName="Potentially confusing code constructs" enabledByDefault="true" level="WARNING"
@@ -527,10 +520,6 @@
                      groupName="Probable bugs"
                      enabledByDefault="false" level="WARNING"
                      implementationClass="org.jetbrains.plugins.groovy.impl.codeInspection.untypedUnresolvedAccess.GroovyUntypedAccessInspection"/>
-    <localInspection language="Groovy" groupPath="Groovy" shortName="GrUnresolvedAccess" displayName="Access to unresolved expression"
-                     groupName="Probable bugs"
-                     enabledByDefault="true" level="WEAK WARNING"
-                     implementationClass="org.jetbrains.plugins.groovy.impl.codeInspection.untypedUnresolvedAccess.GrUnresolvedAccessInspection"/>
     <localInspection language="Groovy" groupPath="Groovy" shortName="GroovySingletonAnnotation"
                      displayName="Check '@Singleton' annotation conventions"
                      groupName="Annotations verifying" enabledByDefault="true" level="WARNING"

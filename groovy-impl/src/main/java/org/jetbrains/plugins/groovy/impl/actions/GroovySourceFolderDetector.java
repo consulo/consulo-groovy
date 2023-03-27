@@ -15,16 +15,18 @@
  */
 package org.jetbrains.plugins.groovy.impl.actions;
 
+import consulo.annotation.component.ComponentScope;
+import consulo.annotation.component.ExtensionAPI;
 import consulo.component.extension.ExtensionPointName;
 import consulo.language.psi.PsiDirectory;
 
 /**
  * @author sergey.evdokimov
  */
+@ExtensionAPI(ComponentScope.APPLICATION)
 public abstract class GroovySourceFolderDetector {
 
   public static final ExtensionPointName<GroovySourceFolderDetector> EP_NAME = ExtensionPointName.create(GroovySourceFolderDetector.class);
 
   public abstract boolean isGroovySourceFolder(PsiDirectory file);
-
 }

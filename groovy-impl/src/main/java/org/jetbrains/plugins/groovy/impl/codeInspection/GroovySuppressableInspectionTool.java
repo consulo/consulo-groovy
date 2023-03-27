@@ -50,131 +50,161 @@ import java.util.regex.Matcher;
 /**
  * @author peter
  */
-public abstract class GroovySuppressableInspectionTool extends LocalInspectionTool implements BatchSuppressableTool {
-  @Nonnull
-  @Override
-  public SuppressQuickFix[] getBatchSuppressActions(@Nullable PsiElement element) {
-    return getSuppressActions(getShortName());
-  }
+public abstract class GroovySuppressableInspectionTool extends LocalInspectionTool implements BatchSuppressableTool
+{
+	@Nonnull
+	@Override
+	public SuppressQuickFix[] getBatchSuppressActions(@Nullable PsiElement element)
+	{
+		return getSuppressActions(getShortName());
+	}
 
-  @Nullable
-  @Override
-  public Language getLanguage() {
-    return GroovyLanguage.INSTANCE;
-  }
+	@Nullable
+	@Override
+	public Language getLanguage()
+	{
+		return GroovyLanguage.INSTANCE;
+	}
 
-  @Nonnull
-  @Override
-  public HighlightDisplayLevel getDefaultLevel() {
-    return HighlightDisplayLevel.WARNING;
-  }
+	@Nonnull
+	@Override
+	public HighlightDisplayLevel getDefaultLevel()
+	{
+		return HighlightDisplayLevel.WARNING;
+	}
 
-  public static SuppressQuickFix[] getSuppressActions(String name) {
-    final HighlightDisplayKey displayKey = HighlightDisplayKey.find(name);
-    return new SuppressQuickFix[]{
-      new SuppressByGroovyCommentFix(displayKey),
-      new SuppressForMemberFix(displayKey, false),
-      new SuppressForMemberFix(displayKey, true),
-    };
-  }
+	public static SuppressQuickFix[] getSuppressActions(String name)
+	{
+		final HighlightDisplayKey displayKey = HighlightDisplayKey.find(name);
+		return new SuppressQuickFix[]{
+				new SuppressByGroovyCommentFix(displayKey),
+				new SuppressForMemberFix(displayKey, false),
+				new SuppressForMemberFix(displayKey, true),
+		};
+	}
 
-  @Override
-  public boolean isSuppressedFor(@Nonnull final PsiElement element) {
-    return isElementToolSuppressedIn(element, getID());
-  }
+	@Override
+	public boolean isSuppressedFor(@Nonnull final PsiElement element)
+	{
+		return isElementToolSuppressedIn(element, getID());
+	}
 
-  public static boolean isElementToolSuppressedIn(final PsiElement place, final String toolId) {
-    return getElementToolSuppressedIn(place, toolId) != null;
-  }
+	public static boolean isElementToolSuppressedIn(final PsiElement place, final String toolId)
+	{
+		return getElementToolSuppressedIn(place, toolId) != null;
+	}
 
-  @Nullable
-  public static PsiElement getElementToolSuppressedIn(final PsiElement place, final String toolId) {
-    if (place == null) {
-      return null;
-    }
+	@Nullable
+	public static PsiElement getElementToolSuppressedIn(final PsiElement place, final String toolId)
+	{
+		if(place == null)
+		{
+			return null;
+		}
 
-    return AccessRule.read(() ->
-                           {
-                             final PsiElement statement = PsiUtil.findEnclosingStatement(place);
-                             if (statement != null) {
-                               PsiElement prev = statement.getPrevSibling();
-                               while (prev != null && StringUtil.isEmpty(prev.getText().trim())) {
-                                 prev = prev.getPrevSibling();
-                               }
-                               if (prev instanceof PsiComment) {
-                                 String text = prev.getText();
-                                 Matcher matcher = SuppressionUtil.SUPPRESS_IN_LINE_COMMENT_PATTERN.matcher(text);
-                                 if (matcher.matches() && SuppressionUtil.isInspectionToolIdMentioned(matcher.group(1), toolId)) {
-                                   return prev;
-                                 }
-                               }
-                             }
+		return AccessRule.read(() ->
+		{
+			final PsiElement statement = PsiUtil.findEnclosingStatement(place);
+			if(statement != null)
+			{
+				PsiElement prev = statement.getPrevSibling();
+				while(prev != null && StringUtil.isEmpty(prev.getText().trim()))
+				{
+					prev = prev.getPrevSibling();
+				}
+				if(prev instanceof PsiComment)
+				{
+					String text = prev.getText();
+					Matcher matcher = SuppressionUtil.SUPPRESS_IN_LINE_COMMENT_PATTERN.matcher(text);
+					if(matcher.matches() && SuppressionUtil.isInspectionToolIdMentioned(matcher.group(1), toolId))
+					{
+						return prev;
+					}
+				}
+			}
 
-                             GrMember member = null;
-                             GrDocComment docComment = PsiTreeUtil.getParentOfType(place, GrDocComment.class);
-                             if (docComment != null) {
-                               GrDocCommentOwner owner = docComment.getOwner();
-                               if (owner instanceof GrMember) {
-                                 member = (GrMember)owner;
-                               }
-                             }
-                             if (member == null) {
-                               member = PsiTreeUtil.getNonStrictParentOfType(place, GrMember.class);
-                             }
+			GrMember member = null;
+			GrDocComment docComment = PsiTreeUtil.getParentOfType(place, GrDocComment.class);
+			if(docComment != null)
+			{
+				GrDocCommentOwner owner = docComment.getOwner();
+				if(owner instanceof GrMember)
+				{
+					member = (GrMember) owner;
+				}
+			}
+			if(member == null)
+			{
+				member = PsiTreeUtil.getNonStrictParentOfType(place, GrMember.class);
+			}
 
-                             while (member != null) {
-                               GrModifierList modifierList = member.getModifierList();
-                               for (String ids : getInspectionIdsSuppressedInAnnotation(modifierList)) {
-                                 if (SuppressionUtil.isInspectionToolIdMentioned(ids, toolId)) {
-                                   return modifierList;
-                                 }
-                               }
+			while(member != null)
+			{
+				GrModifierList modifierList = member.getModifierList();
+				for(String ids : getInspectionIdsSuppressedInAnnotation(modifierList))
+				{
+					if(SuppressionUtil.isInspectionToolIdMentioned(ids, toolId))
+					{
+						return modifierList;
+					}
+				}
 
-                               member = PsiTreeUtil.getParentOfType(member, GrMember.class);
-                             }
+				member = PsiTreeUtil.getParentOfType(member, GrMember.class);
+			}
 
-                             return null;
-                           });
-  }
+			return null;
+		});
+	}
 
-  @Nonnull
-  private static Collection<String> getInspectionIdsSuppressedInAnnotation(final GrModifierList modifierList) {
-    if (modifierList == null) {
-      return Collections.emptyList();
-    }
-    PsiAnnotation annotation = modifierList.findAnnotation(JavaSuppressionUtil.SUPPRESS_INSPECTIONS_ANNOTATION_NAME);
-    if (annotation == null) {
-      return Collections.emptyList();
-    }
-    final GrAnnotationMemberValue attributeValue = (GrAnnotationMemberValue)annotation.findAttributeValue(null);
-    Collection<String> result = new ArrayList<String>();
-    if (attributeValue instanceof GrAnnotationArrayInitializer) {
-      for (GrAnnotationMemberValue annotationMemberValue : ((GrAnnotationArrayInitializer)attributeValue).getInitializers()) {
-        final String id = getInspectionIdSuppressedInAnnotationAttribute(annotationMemberValue);
-        if (id != null) {
-          result.add(id);
-        }
-      }
-    }
-    else {
-      final String id = getInspectionIdSuppressedInAnnotationAttribute(attributeValue);
-      if (id != null) {
-        result.add(id);
-      }
-    }
-    return result;
-  }
+	@Nonnull
+	private static Collection<String> getInspectionIdsSuppressedInAnnotation(final GrModifierList modifierList)
+	{
+		if(modifierList == null)
+		{
+			return Collections.emptyList();
+		}
+		PsiAnnotation annotation = modifierList.findAnnotation(JavaSuppressionUtil.SUPPRESS_INSPECTIONS_ANNOTATION_NAME);
+		if(annotation == null)
+		{
+			return Collections.emptyList();
+		}
+		final GrAnnotationMemberValue attributeValue = (GrAnnotationMemberValue) annotation.findAttributeValue(null);
+		Collection<String> result = new ArrayList<String>();
+		if(attributeValue instanceof GrAnnotationArrayInitializer)
+		{
+			for(GrAnnotationMemberValue annotationMemberValue : ((GrAnnotationArrayInitializer) attributeValue).getInitializers())
+			{
+				final String id = getInspectionIdSuppressedInAnnotationAttribute(annotationMemberValue);
+				if(id != null)
+				{
+					result.add(id);
+				}
+			}
+		}
+		else
+		{
+			final String id = getInspectionIdSuppressedInAnnotationAttribute(attributeValue);
+			if(id != null)
+			{
+				result.add(id);
+			}
+		}
+		return result;
+	}
 
-  @Nullable
-  private static String getInspectionIdSuppressedInAnnotationAttribute(GrAnnotationMemberValue element) {
-    if (element instanceof GrLiteral) {
-      final Object value = ((GrLiteral)element).getValue();
-      if (value instanceof String) {
-        return (String)value;
-      }
-    }
-    return null;
-  }
+	@Nullable
+	private static String getInspectionIdSuppressedInAnnotationAttribute(GrAnnotationMemberValue element)
+	{
+		if(element instanceof GrLiteral)
+		{
+			final Object value = ((GrLiteral) element).getValue();
+			if(value instanceof String)
+			{
+				return (String) value;
+			}
+		}
+		return null;
+	}
 
 
 }

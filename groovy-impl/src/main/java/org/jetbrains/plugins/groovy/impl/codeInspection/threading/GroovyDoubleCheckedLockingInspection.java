@@ -17,12 +17,12 @@ package org.jetbrains.plugins.groovy.impl.codeInspection.threading;
 
 import com.intellij.java.language.psi.PsiField;
 import com.intellij.java.language.psi.PsiModifier;
-import consulo.language.editor.inspection.ui.SingleCheckboxOptionsPanel;
+import consulo.language.editor.inspection.InspectionToolState;
 import consulo.language.psi.PsiElement;
 import org.jetbrains.annotations.Nls;
+import org.jetbrains.plugins.groovy.codeInspection.utils.ControlFlowUtils;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
-import org.jetbrains.plugins.groovy.codeInspection.utils.ControlFlowUtils;
 import org.jetbrains.plugins.groovy.impl.codeInspection.utils.EquivalenceChecker;
 import org.jetbrains.plugins.groovy.impl.codeInspection.utils.SideEffectChecker;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrIfStatement;
@@ -34,16 +34,8 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpres
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.swing.*;
 
-public class GroovyDoubleCheckedLockingInspection extends BaseInspection {
-
-  /**
-   * @noinspection PublicField,WeakerAccess
-   */
-  public boolean ignoreOnVolatileVariables = false;
-
+public class GroovyDoubleCheckedLockingInspection extends BaseInspection<GroovyDoubleCheckedLockingInspectionState> {
   @Nls
   @Nonnull
   public String getGroupDisplayName() {
@@ -60,20 +52,18 @@ public class GroovyDoubleCheckedLockingInspection extends BaseInspection {
     return "Double-checked locking #loc";
   }
 
-  @Nullable
-  public JComponent createOptionsPanel() {
-    return new SingleCheckboxOptionsPanel("Ignore double-checked locking on volatile fields", this,
-        "ignoreOnVolatileVariables"
-    );
+  @Nonnull
+  @Override
+  public InspectionToolState<GroovyDoubleCheckedLockingInspectionState> createStateProvider() {
+    return new GroovyDoubleCheckedLockingInspectionState();
   }
 
-  public BaseInspectionVisitor buildVisitor() {
+  @Nonnull
+  public BaseInspectionVisitor<GroovyDoubleCheckedLockingInspectionState> buildVisitor() {
     return new DoubleCheckedLockingVisitor();
   }
 
-  private class DoubleCheckedLockingVisitor
-      extends BaseInspectionVisitor {
-
+  private class DoubleCheckedLockingVisitor extends BaseInspectionVisitor<GroovyDoubleCheckedLockingInspectionState> {
     public void visitIfStatement(@Nonnull GrIfStatement statement) {
       super.visitIfStatement(statement);
       final GrExpression outerCondition = statement.getCondition();
@@ -112,8 +102,7 @@ public class GroovyDoubleCheckedLockingInspection extends BaseInspection {
       if (!EquivalenceChecker.expressionsAreEquivalent(innerCondition, outerCondition)) {
         return;
       }
-      if (ignoreOnVolatileVariables &&
-          ifStatementAssignsVolatileVariable(innerIf)) {
+      if (myState.ignoreOnVolatileVariables && ifStatementAssignsVolatileVariable(innerIf)) {
         return;
       }
       registerStatementError(statement);

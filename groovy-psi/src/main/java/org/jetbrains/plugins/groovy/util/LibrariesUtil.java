@@ -21,8 +21,6 @@ import com.intellij.java.language.psi.PsiClass;
 import consulo.application.AccessRule;
 import consulo.content.base.BinariesOrderRootType;
 import consulo.content.library.Library;
-import consulo.content.library.LibraryTable;
-import consulo.content.library.LibraryTablesRegistrar;
 import consulo.language.psi.scope.GlobalSearchScope;
 import consulo.module.Module;
 import consulo.module.content.ModuleRootManager;
@@ -32,7 +30,6 @@ import consulo.module.content.layer.orderEntry.LibraryOrderEntry;
 import consulo.module.content.layer.orderEntry.ModuleOrderEntry;
 import consulo.module.content.layer.orderEntry.ModuleSourceOrderEntry;
 import consulo.module.content.layer.orderEntry.OrderEntry;
-import consulo.util.collection.ContainerUtil;
 import consulo.util.lang.StringUtil;
 import consulo.util.lang.function.Condition;
 import consulo.virtualFileSystem.VirtualFile;
@@ -46,7 +43,6 @@ import javax.annotation.Nullable;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -99,10 +95,9 @@ public class LibrariesUtil {
     }
   }
 
+  @Deprecated
   public static Library[] getGlobalLibraries(Condition<Library> condition) {
-    LibraryTable table = LibraryTablesRegistrar.getInstance().getLibraryTable();
-    List<Library> libs = ContainerUtil.findAll(table.getLibraries(), condition);
-    return libs.toArray(new Library[libs.size()]);
+    return Library.EMPTY_ARRAY;
   }
 
   @Nonnull

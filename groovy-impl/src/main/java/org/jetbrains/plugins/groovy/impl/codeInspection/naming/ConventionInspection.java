@@ -96,11 +96,6 @@ public abstract class ConventionInspection extends BaseInspection {
     return matcher.matches();
   }
 
-  public void readSettings(@Nonnull Element element) throws InvalidDataException {
-    super.readSettings(element);
-    m_regexPattern = Pattern.compile(m_regex);
-  }
-
   private static final int REGEX_COLUMN_COUNT = 25;
 
   public JComponent createOptionsPanel() {

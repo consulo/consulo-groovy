@@ -16,6 +16,8 @@
 
 package org.jetbrains.plugins.groovy.impl.compiler;
 
+import consulo.annotation.component.ComponentScope;
+import consulo.annotation.component.ExtensionAPI;
 import consulo.compiler.ModuleChunk;
 import consulo.component.extension.ExtensionPointName;
 import consulo.virtualFileSystem.util.PathsList;
@@ -26,6 +28,7 @@ import java.util.List;
 /**
  * @author peter
  */
+@ExtensionAPI(ComponentScope.APPLICATION)
 public abstract class GroovyCompilerExtension {
   public static final ExtensionPointName<GroovyCompilerExtension> EP_NAME = ExtensionPointName.create(GroovyCompilerExtension.class);
 

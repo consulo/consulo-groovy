@@ -15,16 +15,11 @@
  */
 package org.jetbrains.plugins.groovy.impl.codeInspection;
 
-import javax.annotation.Nonnull;
-
 import consulo.language.editor.inspection.LocalQuickFix;
 import consulo.language.editor.inspection.ProblemHighlightType;
 import consulo.language.editor.inspection.ProblemsHolder;
 import consulo.language.psi.PsiElement;
 import consulo.util.lang.StringUtil;
-
-import javax.annotation.Nullable;
-
 import org.jetbrains.plugins.groovy.lang.psi.GroovyRecursiveElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
@@ -34,10 +29,15 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.path.GrM
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
 
-public abstract class BaseInspectionVisitor extends GroovyRecursiveElementVisitor {
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+public abstract class BaseInspectionVisitor<State> extends GroovyRecursiveElementVisitor {
   private BaseInspection inspection = null;
   private ProblemsHolder problemsHolder = null;
   private boolean onTheFly = false;
+
+  protected State myState;
 
   public void setInspection(BaseInspection inspection) {
     this.inspection = inspection;
@@ -49,6 +49,10 @@ public abstract class BaseInspectionVisitor extends GroovyRecursiveElementVisito
 
   public void setOnTheFly(boolean onTheFly) {
     this.onTheFly = onTheFly;
+  }
+
+  public void setState(State state) {
+    myState = state;
   }
 
   protected void registerStatementError(GrStatement statement, Object... args) {

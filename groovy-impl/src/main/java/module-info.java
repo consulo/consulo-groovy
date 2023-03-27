@@ -186,4 +186,5 @@ open module org.intellij.groovy {
   exports org.jetbrains.plugins.groovy.impl.unwrap;
   exports org.jetbrains.plugins.groovy.impl.util;
   exports org.jetbrains.plugins.groovy.impl.util.dynamicMembers;
+  exports consulo.groovy.impl.localize;
 }

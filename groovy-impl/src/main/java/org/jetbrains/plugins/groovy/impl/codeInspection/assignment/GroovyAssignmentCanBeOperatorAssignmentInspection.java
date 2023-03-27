@@ -18,8 +18,8 @@ package org.jetbrains.plugins.groovy.impl.codeInspection.assignment;
 import com.intellij.java.language.psi.JavaTokenType;
 import consulo.annotation.component.ExtensionImpl;
 import consulo.language.ast.IElementType;
+import consulo.language.editor.inspection.InspectionToolState;
 import consulo.language.editor.inspection.ProblemDescriptor;
-import consulo.language.editor.inspection.ui.MultipleCheckboxOptionsPanel;
 import consulo.language.psi.PsiElement;
 import consulo.language.util.IncorrectOperationException;
 import consulo.project.Project;
@@ -38,21 +38,15 @@ import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.swing.*;
 
 @ExtensionImpl
-public class GroovyAssignmentCanBeOperatorAssignmentInspection
-  extends BaseInspection {
+public class GroovyAssignmentCanBeOperatorAssignmentInspection extends BaseInspection<GroovyAssignmentCanBeOperatorAssignmentInspectionState> {
 
-  /**
-   * @noinspection PublicField, WeakerAccess
-   */
-  public boolean ignoreLazyOperators = true;
-
-  /**
-   * @noinspection PublicField, WeakerAccess
-   */
-  public boolean ignoreObscureOperators = false;
+  @Nonnull
+  @Override
+  public InspectionToolState<GroovyAssignmentCanBeOperatorAssignmentInspectionState> createStateProvider() {
+    return new GroovyAssignmentCanBeOperatorAssignmentInspectionState();
+  }
 
   @Override
   @Nls
@@ -73,16 +67,6 @@ public class GroovyAssignmentCanBeOperatorAssignmentInspection
     final GrAssignmentExpression assignmentExpression =
       (GrAssignmentExpression)infos[0];
     return "<code>#ref</code> could be simplified to '" + calculateReplacementExpression(assignmentExpression) + "' #loc";
-  }
-
-  @Override
-  @Nullable
-  public JComponent createOptionsPanel() {
-    final MultipleCheckboxOptionsPanel optionsPanel =
-      new MultipleCheckboxOptionsPanel(this);
-    optionsPanel.addCheckbox("Ignore conditional operators", "ignoreLazyOperators");
-    optionsPanel.addCheckbox("Ignore obscure operators", "ignoreObscureOperators");
-    return optionsPanel;
   }
 
   static String calculateReplacementExpression(
@@ -162,8 +146,7 @@ public class GroovyAssignmentCanBeOperatorAssignmentInspection
     }
   }
 
-  private class ReplaceAssignmentWithOperatorAssignmentVisitor
-    extends BaseInspectionVisitor {
+  private class ReplaceAssignmentWithOperatorAssignmentVisitor extends BaseInspectionVisitor<GroovyAssignmentCanBeOperatorAssignmentInspectionState> {
 
     @Override
     public void visitAssignmentExpression(@Nonnull GrAssignmentExpression assignment) {
@@ -189,13 +172,13 @@ public class GroovyAssignmentCanBeOperatorAssignmentInspection
       if (JavaTokenType.EQEQ.equals(expressionTokenType)) {
         return;
       }
-      if (ignoreLazyOperators) {
+      if (myState.ignoreLazyOperators) {
         if (GroovyTokenTypes.mLAND.equals(expressionTokenType) ||
           GroovyTokenTypes.mLOR.equals(expressionTokenType)) {
           return;
         }
       }
-      if (ignoreObscureOperators) {
+      if (myState.ignoreObscureOperators) {
         if (GroovyTokenTypes.mBXOR.equals(expressionTokenType) ||
           GroovyTokenTypes.mMOD.equals(expressionTokenType)) {
           return;

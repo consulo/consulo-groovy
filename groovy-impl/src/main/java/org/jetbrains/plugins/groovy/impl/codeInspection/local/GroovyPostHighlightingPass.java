@@ -21,6 +21,7 @@ import com.intellij.java.analysis.impl.codeInsight.daemon.impl.GlobalUsageHelper
 import com.intellij.java.analysis.impl.codeInsight.daemon.impl.UnusedSymbolUtil;
 import com.intellij.java.analysis.impl.codeInsight.daemon.impl.analysis.JavaHighlightUtil;
 import com.intellij.java.analysis.impl.codeInspection.deadCode.UnusedDeclarationInspectionBase;
+import com.intellij.java.analysis.impl.codeInspection.deadCode.UnusedDeclarationInspectionState;
 import com.intellij.java.indexing.search.searches.OverridingMethodsSearch;
 import com.intellij.java.language.impl.psi.impl.PsiClassImplUtil;
 import com.intellij.java.language.psi.PsiMember;
@@ -32,6 +33,7 @@ import consulo.annotation.access.RequiredReadAction;
 import consulo.application.progress.ProgressIndicator;
 import consulo.codeEditor.Editor;
 import consulo.document.util.TextRange;
+import consulo.language.editor.impl.highlight.TextEditorHighlightingPass;
 import consulo.language.editor.impl.highlight.UpdateHighlightersUtil;
 import consulo.language.editor.inspection.scheme.InspectionProfile;
 import consulo.language.editor.inspection.scheme.InspectionProjectProfileManager;
@@ -73,9 +75,8 @@ import java.util.*;
 /**
  * @author ilyas
  */
-public class GroovyPostHighlightingPass extends consulo.language.editor.impl.highlight.TextEditorHighlightingPass
+public class GroovyPostHighlightingPass extends TextEditorHighlightingPass
 {
-
 	private final GroovyFile myFile;
 	private final Editor myEditor;
 	private volatile Set<GrImportStatement> myUnusedImports;
@@ -102,8 +103,8 @@ public class GroovyPostHighlightingPass extends consulo.language.editor.impl.hig
 		final HighlightDisplayKey unusedDefKey = HighlightDisplayKey.find(GroovyUnusedDeclarationInspection
 				.SHORT_NAME);
 		final boolean deadCodeEnabled = profile.isToolEnabled(unusedDefKey, myFile);
-		final UnusedDeclarationInspectionBase deadCodeInspection = (UnusedDeclarationInspectionBase) profile
-				.getUnwrappedTool(UnusedDeclarationInspectionBase.SHORT_NAME, myFile);
+		final UnusedDeclarationInspectionBase deadCodeInspection = (UnusedDeclarationInspectionBase) profile.getUnwrappedTool(UnusedDeclarationInspectionBase.SHORT_NAME, myFile);
+		final UnusedDeclarationInspectionState declarationInspectionState = (UnusedDeclarationInspectionState) profile.getToolState(UnusedDeclarationInspectionBase.SHORT_NAME, myFile);
 		final GlobalUsageHelper usageHelper = new GlobalUsageHelper()
 		{
 			@Override
@@ -121,7 +122,7 @@ public class GroovyPostHighlightingPass extends consulo.language.editor.impl.hig
 			@Override
 			public boolean shouldCheckUsages(@Nonnull PsiMember member)
 			{
-				return deadCodeInspection == null || !deadCodeInspection.isEntryPoint(member);
+				return deadCodeInspection == null || !deadCodeInspection.isEntryPoint(member, declarationInspectionState);
 			}
 		};
 

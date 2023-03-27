@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 package org.jetbrains.plugins.groovy.dsl
-
 import com.intellij.java.language.patterns.PsiJavaPatterns
 import com.intellij.java.language.psi.PsiType
-import consulo.application.internal.ApplicationInfo
+import consulo.groovy.dsl.ConsuloVersionHolder
 import consulo.language.pattern.ElementPattern
 import consulo.language.util.ProcessingContext
 import consulo.util.collection.MultiMap
@@ -35,7 +34,6 @@ import org.jetbrains.plugins.groovy.dsl.toplevel.scopes.ClosureScope
 import org.jetbrains.plugins.groovy.dsl.toplevel.scopes.ScriptScope
 
 import java.lang.reflect.Modifier
-
 /**
  * @author ilyas
  */
@@ -46,15 +44,7 @@ public class GroovyDslExecutor {
   private MultiMap staticInfo = null
 
   private final String myFileName;
-  static final String ideaVersion
   private boolean locked = false
-
-  static {
-    def major = ApplicationInfo.instance.majorVersion
-    def minor = ApplicationInfo.instance.minorVersion
-    def full = major + (minor ? ".$minor" : "")
-    ideaVersion = full
-  }
 
   public GroovyDslExecutor(String text, String fileName) {
     myFileName = fileName
@@ -126,14 +116,14 @@ public class GroovyDslExecutor {
 
   private static boolean supportsVersion(ver) {
     if (ver instanceof String) {
-      return StringUtil.compareVersionNumbers(ideaVersion, ver) >= 0
+      return StringUtil.compareVersionNumbers(ConsuloVersionHolder.ideaVersion, ver) >= 0
     }
     else if (ver instanceof Map) {
       if (ver.dsl) {
         return StringUtil.compareVersionNumbers('1.0', ver.dsl) >= 0
       }
       if (ver.intellij) {
-        return StringUtil.compareVersionNumbers(ideaVersion, ver.intellij) >= 0
+        return StringUtil.compareVersionNumbers(ConsuloVersionHolder.ideaVersion, ver.intellij) >= 0
       }
     }
     return false

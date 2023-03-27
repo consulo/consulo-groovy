@@ -16,10 +16,11 @@
 package org.jetbrains.plugins.groovy.impl.codeInspection.confusing;
 
 import com.intellij.java.language.psi.PsiClass;
+import consulo.annotation.component.ExtensionImpl;
+import consulo.language.editor.inspection.InspectionToolState;
 import consulo.language.editor.inspection.LocalQuickFix;
 import consulo.language.editor.inspection.ProblemDescriptor;
 import consulo.language.editor.inspection.ProblemHighlightType;
-import consulo.language.editor.inspection.ui.MultipleCheckboxOptionsPanel;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiFile;
 import consulo.language.psi.SyntheticElement;
@@ -29,7 +30,6 @@ import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.impl.annotator.intentions.GrMoveToDirFix;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
-import org.jetbrains.plugins.groovy.impl.codeInspection.GroovyInspectionBundle;
 import org.jetbrains.plugins.groovy.lang.psi.GrNamedElement;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFileBase;
@@ -40,115 +40,145 @@ import org.jetbrains.plugins.groovy.lang.resolve.ResolveUtil;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.swing.*;
 
 /**
  * @author Max Medvedev
  */
-public class GrPackageInspection extends BaseInspection {
-  public boolean myCheckScripts = true;
+@ExtensionImpl
+public class GrPackageInspection extends BaseInspection<GrPackageInspectionState>
+{
+	@Nls
+	@Nonnull
+	public String getGroupDisplayName()
+	{
+		return CONFUSING_CODE_CONSTRUCTS;
+	}
 
-  @Nls
-  @Nonnull
-  public String getGroupDisplayName() {
-    return CONFUSING_CODE_CONSTRUCTS;
-  }
+	@Nls
+	@Nonnull
+	public String getDisplayName()
+	{
+		return "Package name mismatch";
+	}
 
-  @Nls
-  @Nonnull
-  public String getDisplayName() {
-    return "Package name mismatch";
-  }
+	@Nonnull
+	@Override
+	public InspectionToolState<GrPackageInspectionState> createStateProvider()
+	{
+		return new GrPackageInspectionState();
+	}
 
+	@Nullable
+	protected String buildErrorString(Object... args)
+	{
+		return "Package name mismatch";
+	}
 
+	@Nonnull
+	@Override
+	protected BaseInspectionVisitor<GrPackageInspectionState> buildVisitor()
+	{
+		return new BaseInspectionVisitor<>()
+		{
+			@Override
+			public void visitFile(GroovyFileBase file)
+			{
+				if(!(file instanceof GroovyFile))
+				{
+					return;
+				}
 
-  @Nullable
-  protected String buildErrorString(Object... args) {
-    return "Package name mismatch";
-  }
+				if(!myState.myCheckScripts && file.isScript())
+				{
+					return;
+				}
 
-  @Nullable
-  @Override
-  public JComponent createOptionsPanel() {
-    final MultipleCheckboxOptionsPanel optionsPanel = new MultipleCheckboxOptionsPanel(this);
-    optionsPanel.addCheckbox(GroovyInspectionBundle.message("gr.package.inspection.check.scripts"), "myCheckScripts");
-    return optionsPanel;
+				String expectedPackage = ResolveUtil.inferExpectedPackageName(file);
+				String actual = file.getPackageName();
+				if(!expectedPackage.equals(actual))
+				{
 
-  }
+					PsiElement toHighlight = getElementToHighlight((GroovyFile) file);
+					if(toHighlight == null)
+					{
+						return;
+					}
 
-  @Override
-  protected BaseInspectionVisitor buildVisitor() {
-    return new BaseInspectionVisitor() {
-      @Override
-      public void visitFile(GroovyFileBase file) {
-        if (!(file instanceof GroovyFile)) return;
+					registerError(toHighlight, "Package name mismatch. Actual: '" + actual + "', expected: '" + expectedPackage + "'",
+							new LocalQuickFix[]{
+									new ChangePackageQuickFix(expectedPackage),
+									new GrMoveToDirFix(actual)
+							},
+							ProblemHighlightType.GENERIC_ERROR_OR_WARNING);
+				}
+			}
+		};
+	}
 
-        if (!myCheckScripts && file.isScript()) return;
+	@Nullable
+	private static PsiElement getElementToHighlight(GroovyFile file)
+	{
+		GrPackageDefinition packageDefinition = file.getPackageDefinition();
+		if(packageDefinition != null)
+		{
+			return packageDefinition;
+		}
 
-        String expectedPackage = ResolveUtil.inferExpectedPackageName(file);
-        String actual = file.getPackageName();
-        if (!expectedPackage.equals(actual)) {
+		PsiClass[] classes = file.getClasses();
+		for(PsiClass aClass : classes)
+		{
+			if(!(aClass instanceof SyntheticElement) && aClass instanceof GrTypeDefinition)
+			{
+				return ((GrTypeDefinition) aClass).getNameIdentifierGroovy();
+			}
+		}
 
-          PsiElement toHighlight = getElementToHighlight((GroovyFile)file);
-          if (toHighlight == null) return;
+		GrTopStatement[] statements = file.getTopStatements();
+		if(statements.length > 0)
+		{
+			GrTopStatement first = statements[0];
+			if(first instanceof GrNamedElement)
+			{
+				return ((GrNamedElement) first).getNameIdentifierGroovy();
+			}
 
-          registerError(toHighlight, "Package name mismatch. Actual: '" + actual + "', expected: '" + expectedPackage+"'",
-                        new LocalQuickFix[]{new ChangePackageQuickFix(expectedPackage), new GrMoveToDirFix(actual)},
-                        ProblemHighlightType.GENERIC_ERROR_OR_WARNING);
-        }
-      }
-    };
-  }
+			return first;
+		}
 
-  @Nullable
-  private static PsiElement getElementToHighlight(GroovyFile file) {
-    GrPackageDefinition packageDefinition = file.getPackageDefinition();
-    if (packageDefinition != null) return packageDefinition;
+		return null;
+	}
 
-    PsiClass[] classes = file.getClasses();
-    for (PsiClass aClass : classes) {
-      if (!(aClass instanceof SyntheticElement) && aClass instanceof GrTypeDefinition) {
-        return ((GrTypeDefinition)aClass).getNameIdentifierGroovy();
-      }
-    }
+	/**
+	 * User: Dmitry.Krasilschikov
+	 * Date: 01.11.2007
+	 */
+	public static class ChangePackageQuickFix implements LocalQuickFix
+	{
+		private final String myNewPackageName;
 
-    GrTopStatement[] statements = file.getTopStatements();
-    if (statements.length > 0) {
-      GrTopStatement first = statements[0];
-      if (first instanceof GrNamedElement) return ((GrNamedElement)first).getNameIdentifierGroovy();
+		public ChangePackageQuickFix(String newPackageName)
+		{
+			myNewPackageName = newPackageName;
+		}
 
-      return first;
-    }
+		@Nonnull
+		@Override
+		public String getName()
+		{
+			return GroovyBundle.message("fix.package.name");
+		}
 
-    return null;
-  }
+		@Nonnull
+		public String getFamilyName()
+		{
+			return GroovyBundle.message("fix.package.name");
+		}
 
-  /**
-   * User: Dmitry.Krasilschikov
-   * Date: 01.11.2007
-   */
-  public static class ChangePackageQuickFix implements LocalQuickFix {
-    private final String myNewPackageName;
-
-    public ChangePackageQuickFix(String newPackageName) {
-      myNewPackageName = newPackageName;
-    }
-
-    @Nonnull
-    @Override
-    public String getName() {
-      return GroovyBundle.message("fix.package.name");
-    }
-
-    @Nonnull
-    public String getFamilyName() {
-      return GroovyBundle.message("fix.package.name");
-    }
-
-    @Override
-    public void applyFix(@Nonnull Project project, @Nonnull ProblemDescriptor descriptor) {
-      PsiFile file = descriptor.getPsiElement().getContainingFile();
-      ((GroovyFile)file).setPackageName(myNewPackageName);
-    }
-  }
+		@Override
+		public void applyFix(@Nonnull Project project, @Nonnull ProblemDescriptor descriptor)
+		{
+			PsiFile file = descriptor.getPsiElement().getContainingFile();
+			((GroovyFile) file).setPackageName(myNewPackageName);
+		}
+	}
 }

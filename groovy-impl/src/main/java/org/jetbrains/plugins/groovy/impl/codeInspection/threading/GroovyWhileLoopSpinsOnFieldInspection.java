@@ -15,14 +15,13 @@
  */
 package org.jetbrains.plugins.groovy.impl.codeInspection.threading;
 
-import consulo.language.editor.inspection.ui.SingleCheckboxOptionsPanel;
-import consulo.language.psi.PsiElement;
 import com.intellij.java.language.psi.PsiField;
 import com.intellij.java.language.psi.PsiLiteralExpression;
 import com.intellij.java.language.psi.PsiModifier;
+import consulo.annotation.component.ExtensionImpl;
+import consulo.language.editor.inspection.InspectionToolState;
+import consulo.language.psi.PsiElement;
 import org.jetbrains.annotations.Nls;
-import javax.annotation.Nonnull;
-
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.GrCondition;
@@ -36,13 +35,16 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrRefere
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrUnaryExpression;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 
-import javax.annotation.Nullable;
-import javax.swing.*;
+import javax.annotation.Nonnull;
 
-public class GroovyWhileLoopSpinsOnFieldInspection extends BaseInspection {
+@ExtensionImpl
+public class GroovyWhileLoopSpinsOnFieldInspection extends BaseInspection<GroovyWhileLoopSpinsOnFieldInspectionState> {
 
-  @SuppressWarnings({"PublicField", "WeakerAccess"})
-  public boolean ignoreNonEmtpyLoops = false;
+  @Nonnull
+  @Override
+  public InspectionToolState<GroovyWhileLoopSpinsOnFieldInspectionState> createStateProvider() {
+    return new GroovyWhileLoopSpinsOnFieldInspectionState();
+  }
 
   @Nls
   @Nonnull
@@ -60,23 +62,17 @@ public class GroovyWhileLoopSpinsOnFieldInspection extends BaseInspection {
     return "<code>#ref</code> loop spins on field #loc";
   }
 
-  @Nullable
-  public JComponent createOptionsPanel() {
-    return new SingleCheckboxOptionsPanel("Only warn if loop is empty",
-        this, "ignoreNonEmtpyLoops");
-  }
-
-  public BaseInspectionVisitor buildVisitor() {
+  @Nonnull
+  public BaseInspectionVisitor<GroovyWhileLoopSpinsOnFieldInspectionState> buildVisitor() {
     return new WhileLoopSpinsOnFieldVisitor();
   }
 
-  private class WhileLoopSpinsOnFieldVisitor
-      extends BaseInspectionVisitor {
+  private class WhileLoopSpinsOnFieldVisitor extends BaseInspectionVisitor<GroovyWhileLoopSpinsOnFieldInspectionState> {
 
     public void visitWhileStatement(@Nonnull GrWhileStatement statement) {
       super.visitWhileStatement(statement);
       final GrStatement body = statement.getBody();
-      if (ignoreNonEmtpyLoops && !statementIsEmpty(body)) {
+      if (myState.ignoreNonEmtpyLoops && !statementIsEmpty(body)) {
         return;
       }
       final GrCondition condition = statement.getCondition();

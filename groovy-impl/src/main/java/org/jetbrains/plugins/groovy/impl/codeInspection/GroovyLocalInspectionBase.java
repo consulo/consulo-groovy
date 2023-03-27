@@ -15,10 +15,11 @@
  */
 package org.jetbrains.plugins.groovy.impl.codeInspection;
 
-import javax.annotation.Nonnull;
-
+import consulo.language.Language;
+import consulo.language.editor.inspection.LocalInspectionToolSession;
 import consulo.language.editor.inspection.ProblemsHolder;
 import consulo.language.psi.PsiElementVisitor;
+import org.jetbrains.plugins.groovy.GroovyLanguage;
 import org.jetbrains.plugins.groovy.lang.psi.GrControlFlowOwner;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFileBase;
@@ -28,41 +29,56 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlo
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrOpenBlock;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 /**
  * @author ven
  */
-public abstract class GroovyLocalInspectionBase extends GroovySuppressableInspectionTool {
-  @Nonnull
-   @Override
-   public String[] getGroupPath() {
-     return new String[]{"Groovy", getGroupDisplayName()};
-   }
+public abstract class GroovyLocalInspectionBase<State> extends GroovySuppressableInspectionTool
+{
+	@Nullable
+	@Override
+	public Language getLanguage()
+	{
+		return GroovyLanguage.INSTANCE;
+	}
 
+	@Nonnull
+	@Override
+	@SuppressWarnings("unchecked")
+	public PsiElementVisitor buildVisitor(@Nonnull ProblemsHolder problemsHolder, boolean isOnTheFly, @Nonnull LocalInspectionToolSession session, @Nonnull Object state)
+	{
+		State inspectionState = (State) state;
 
-  @Nonnull
-  public PsiElementVisitor buildVisitor(@Nonnull final ProblemsHolder problemsHolder, boolean isOnTheFly) {
-    return new GroovyPsiElementVisitor(new GroovyElementVisitor() {
-      public void visitClosure(GrClosableBlock closure) {
-        check(closure, problemsHolder);
-      }
+		return new GroovyPsiElementVisitor(new GroovyElementVisitor()
+		{
+			public void visitClosure(GrClosableBlock closure)
+			{
+				check(closure, problemsHolder, inspectionState);
+			}
 
-      public void visitMethod(GrMethod method) {
-        final GrOpenBlock block = method.getBlock();
-        if (block != null) {
-          check(block, problemsHolder);
-        }
-      }
+			public void visitMethod(GrMethod method)
+			{
+				final GrOpenBlock block = method.getBlock();
+				if(block != null)
+				{
+					check(block, problemsHolder, inspectionState);
+				}
+			}
 
-      public void visitFile(GroovyFileBase file) {
-        check(file, problemsHolder);
-      }
+			public void visitFile(GroovyFileBase file)
+			{
+				check(file, problemsHolder, inspectionState);
+			}
 
-      @Override
-      public void visitClassInitializer(GrClassInitializer initializer) {
-        check(initializer.getBlock(), problemsHolder);
-      }
-    });
-  }
+			@Override
+			public void visitClassInitializer(GrClassInitializer initializer)
+			{
+				check(initializer.getBlock(), problemsHolder, inspectionState);
+			}
+		});
+	}
 
-  protected abstract void check(GrControlFlowOwner owner, ProblemsHolder problemsHolder);
+	protected abstract void check(GrControlFlowOwner owner, ProblemsHolder problemsHolder, State inspectionState);
 }

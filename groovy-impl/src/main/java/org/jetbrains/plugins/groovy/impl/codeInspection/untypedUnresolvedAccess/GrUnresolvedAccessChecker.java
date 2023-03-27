@@ -100,11 +100,11 @@ public class GrUnresolvedAccessChecker {
 
   private final HighlightDisplayKey myDisplayKey;
   private final boolean myInspectionEnabled;
-  private final GrUnresolvedAccessInspection myInspection;
+  private final GrUnresolvedAccessInspectionState myInspectionState;
 
   public GrUnresolvedAccessChecker(@Nonnull GroovyFileBase file, @Nonnull Project project) {
     myInspectionEnabled = GrUnresolvedAccessInspection.isInspectionEnabled(file, project);
-    myInspection = myInspectionEnabled ? GrUnresolvedAccessInspection.getInstance(file, project) : null;
+    myInspectionState = myInspectionEnabled ? GrUnresolvedAccessInspection.getInstanceState(file, project) : null;
     myDisplayKey = GrUnresolvedAccessInspection.findDisplayKey();
   }
 
@@ -168,8 +168,8 @@ public class GrUnresolvedAccessChecker {
         if (!myInspectionEnabled) {
           return null;
         }
-        assert myInspection != null;
-        if (!myInspection.myHighlightInnerClasses) {
+        assert myInspectionState != null;
+        if (!myInspectionState.myHighlightInnerClasses) {
           return null;
         }
       }
@@ -244,12 +244,12 @@ public class GrUnresolvedAccessChecker {
       if (!GrUnresolvedAccessInspection.isInspectionEnabled(ref.getContainingFile(), ref.getProject())) {
         return null;
       }
-      assert myInspection != null;
+      assert myInspectionState != null;
 
-      if (!myInspection.myHighlightIfGroovyObjectOverridden && areGroovyObjectMethodsOverridden(ref)) {
+      if (!myInspectionState.myHighlightIfGroovyObjectOverridden && areGroovyObjectMethodsOverridden(ref)) {
         return null;
       }
-      if (!myInspection.myHighlightIfMissingMethodsDeclared && areMissingMethodsDeclared(ref)) {
+      if (!myInspectionState.myHighlightIfMissingMethodsDeclared && areMissingMethodsDeclared(ref)) {
         return null;
       }
 
