@@ -21,8 +21,7 @@
   <version>SNAPSHOT</version>
   <category>Custom Languages</category>
   <vendor>JetBrains</vendor>
-  <depends optional="true" config-file="com.intellij.spellchecker.xml">com.intellij.spellchecker</depends>
-  <depends optional="true" config-file="org.jetbrains.idea.maven.xml">org.jetbrains.idea.maven</depends>
+  <depends optional="true">org.jetbrains.idea.maven</depends>
 
   <depends>com.intellij.properties</depends>
   <depends>consulo.java</depends>
