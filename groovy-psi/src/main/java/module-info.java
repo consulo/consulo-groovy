@@ -7,7 +7,7 @@ open module org.intellij.groovy.psi {
   requires transitive consulo.java.language.api;
   requires transitive consulo.java.language.impl;
 
-  requires org.codehaus.groovy;
+  requires org.apache.groovy;
 
   requires com.intellij.xml;
   
