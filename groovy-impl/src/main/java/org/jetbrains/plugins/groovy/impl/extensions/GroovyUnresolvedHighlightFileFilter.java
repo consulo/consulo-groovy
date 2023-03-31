@@ -15,6 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.impl.extensions;
 
+import consulo.annotation.component.ComponentScope;
+import consulo.annotation.component.ExtensionAPI;
 import consulo.component.extension.ExtensionPointName;
 import consulo.language.psi.PsiFile;
 
@@ -23,6 +25,7 @@ import javax.annotation.Nonnull;
 /**
  * @author Sergey Evdokimov
  */
+@ExtensionAPI(ComponentScope.APPLICATION)
 public abstract class GroovyUnresolvedHighlightFileFilter {
 
   public static final ExtensionPointName<GroovyUnresolvedHighlightFileFilter> EP_NAME =

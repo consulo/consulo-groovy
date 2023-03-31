@@ -40,7 +40,7 @@ public final class GroovyUnresolvedReferenceFilterByFile extends GroovyUnresolve
 
     boolean res = false;
 
-    for (GroovyUnresolvedHighlightFileFilter filter : GroovyUnresolvedHighlightFileFilter.EP_NAME.getExtensions()) {
+    for (GroovyUnresolvedHighlightFileFilter filter : GroovyUnresolvedHighlightFileFilter.EP_NAME.getExtensionList()) {
       if (filter.isReject(file)) {
         res = true;
         break;
