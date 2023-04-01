@@ -16,13 +16,15 @@
 package org.jetbrains.plugins.groovy.impl.lang.completion;
 
 import consulo.language.editor.completion.*;
-import consulo.language.editor.completion.lookup.*;
+import consulo.language.editor.completion.lookup.EqTailType;
+import consulo.language.editor.completion.lookup.LookupElement;
+import consulo.language.editor.completion.lookup.LookupElementBuilder;
+import consulo.language.editor.completion.lookup.TailTypeDecorator;
 import consulo.language.pattern.PlatformPatterns;
 import consulo.language.pattern.PsiElementPattern;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiFile;
 import consulo.language.util.ProcessingContext;
-import consulo.util.lang.function.PairConsumer;
 import org.jetbrains.plugins.groovy.impl.configSlurper.ConfigSlurperSupport;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.*;
@@ -38,6 +40,7 @@ import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.function.BiConsumer;
 
 /**
  * @author Sergey Evdokimov
@@ -73,12 +76,7 @@ class GroovyConfigSlurperCompletionProvider implements CompletionProvider {
     if (ref == null) return;
 
     final Map<String, Boolean> variants = new HashMap<String, Boolean>();
-    collectVariants(new PairConsumer<String, Boolean>() {
-      @Override
-      public void consume(String s, Boolean isFinal) {
-        variants.put(s, isFinal);
-      }
-    }, ref, groovyFile);
+    collectVariants(variants::put, ref, groovyFile);
 
     if (variants.isEmpty()) return;
 
@@ -143,13 +141,13 @@ class GroovyConfigSlurperCompletionProvider implements CompletionProvider {
     }
   }
 
-  private static void collectVariants(@Nonnull PairConsumer<String, Boolean> consumer,
+  private static void collectVariants(@Nonnull BiConsumer<String, Boolean> consumer,
                                       @Nonnull GrReferenceExpression ref,
                                       @Nonnull GroovyFile originalFile) {
     List<String> prefix = getPrefix(ref);
     if (prefix == null) return;
 
-    for (ConfigSlurperSupport configSlurperSupport : ConfigSlurperSupport.EP_NAME.getExtensions()) {
+    for (ConfigSlurperSupport configSlurperSupport : ConfigSlurperSupport.EP_NAME.getExtensionList()) {
       ConfigSlurperSupport.PropertiesProvider provider = configSlurperSupport.getProvider(originalFile);
       if (provider == null) continue;
 

@@ -20,7 +20,6 @@ import com.intellij.java.language.psi.PsiType;
 import consulo.annotation.component.ExtensionImpl;
 import consulo.language.psi.PsiElement;
 import consulo.util.lang.Pair;
-import consulo.util.lang.function.PairConsumer;
 import consulo.util.lang.ref.Ref;
 import org.jetbrains.plugins.groovy.impl.extensions.GroovyMapContentProvider;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
@@ -37,92 +36,112 @@ import java.util.*;
  * @author Sergey Evdokimov
  */
 @ExtensionImpl
-public class ConfigSlurperMapContentProvider extends GroovyMapContentProvider {
+public class ConfigSlurperMapContentProvider extends GroovyMapContentProvider
+{
 
-  @Nullable
-  private static Pair<ConfigSlurperSupport.PropertiesProvider, List<String>> getInfo(@Nonnull GrExpression qualifier,
-                                                                                     @Nullable PsiElement resolve) {
-    if (!GroovyPsiManager.isInheritorCached(qualifier.getType(), GroovyCommonClassNames.GROOVY_UTIL_CONFIG_OBJECT)) {
-      return null;
-    }
+	@Nullable
+	private static Pair<ConfigSlurperSupport.PropertiesProvider, List<String>> getInfo(@Nonnull GrExpression qualifier,
+																					   @Nullable PsiElement resolve)
+	{
+		if(!GroovyPsiManager.isInheritorCached(qualifier.getType(), GroovyCommonClassNames.GROOVY_UTIL_CONFIG_OBJECT))
+		{
+			return null;
+		}
 
-    GrExpression resolvedQualifier = qualifier;
-    PsiElement resolveResult = resolve;
-    List<String> path = new ArrayList<String>();
+		GrExpression resolvedQualifier = qualifier;
+		PsiElement resolveResult = resolve;
+		List<String> path = new ArrayList<String>();
 
-    while (resolveResult == null) {
-      if (!(resolvedQualifier instanceof GrReferenceExpression)) return null;
+		while(resolveResult == null)
+		{
+			if(!(resolvedQualifier instanceof GrReferenceExpression))
+			{
+				return null;
+			}
 
-      GrReferenceExpression expr = (GrReferenceExpression)resolvedQualifier;
-      path.add(expr.getReferenceName());
+			GrReferenceExpression expr = (GrReferenceExpression) resolvedQualifier;
+			path.add(expr.getReferenceName());
 
-      resolvedQualifier = expr.getQualifierExpression();
-      if (resolvedQualifier instanceof GrReferenceExpression) {
-        resolveResult = ((GrReferenceExpression)resolvedQualifier).resolve();
-      }
-      else if (resolvedQualifier instanceof GrMethodCall) {
-        resolveResult = ((GrMethodCall)resolvedQualifier).resolveMethod();
-      }
-      else {
-        return null;
-      }
-    }
+			resolvedQualifier = expr.getQualifierExpression();
+			if(resolvedQualifier instanceof GrReferenceExpression)
+			{
+				resolveResult = ((GrReferenceExpression) resolvedQualifier).resolve();
+			}
+			else if(resolvedQualifier instanceof GrMethodCall)
+			{
+				resolveResult = ((GrMethodCall) resolvedQualifier).resolveMethod();
+			}
+			else
+			{
+				return null;
+			}
+		}
 
-    Collections.reverse(path);
+		Collections.reverse(path);
 
-    ConfigSlurperSupport.PropertiesProvider propertiesProvider = null;
+		ConfigSlurperSupport.PropertiesProvider propertiesProvider = null;
 
-    for (ConfigSlurperSupport slurperSupport : ConfigSlurperSupport.EP_NAME.getExtensions()) {
-      propertiesProvider = slurperSupport.getConfigSlurperInfo(resolvedQualifier, resolveResult);
-      if (propertiesProvider != null) break;
-    }
+		for(ConfigSlurperSupport slurperSupport : ConfigSlurperSupport.EP_NAME.getExtensionList())
+		{
+			propertiesProvider = slurperSupport.getConfigSlurperInfo(resolvedQualifier, resolveResult);
+			if(propertiesProvider != null)
+			{
+				break;
+			}
+		}
 
-    if (propertiesProvider == null) return null;
+		if(propertiesProvider == null)
+		{
+			return null;
+		}
 
-    return Pair.create(propertiesProvider, path);
-  }
+		return Pair.create(propertiesProvider, path);
+	}
 
-  @Override
-  protected Collection<String> getKeyVariants(@Nonnull GrExpression qualifier, @Nullable PsiElement resolve) {
-    Pair<ConfigSlurperSupport.PropertiesProvider, List<String>> info = getInfo(qualifier, resolve);
-    if (info == null) return Collections.emptyList();
+	@Override
+	protected Collection<String> getKeyVariants(@Nonnull GrExpression qualifier, @Nullable PsiElement resolve)
+	{
+		Pair<ConfigSlurperSupport.PropertiesProvider, List<String>> info = getInfo(qualifier, resolve);
+		if(info == null)
+		{
+			return Collections.emptyList();
+		}
 
-    final Set<String> res = new HashSet<String>();
+		final Set<String> res = new HashSet<String>();
 
-    info.first.collectVariants(info.second, new PairConsumer<String, Boolean>() {
-      @Override
-      public void consume(String variant, Boolean isFinal) {
-        res.add(variant);
-      }
-    });
+		info.first.collectVariants(info.second, (variant, isFinal) -> res.add(variant));
 
-    return res;
-  }
+		return res;
+	}
 
-  @Override
-  public PsiType getValueType(@Nonnull GrExpression qualifier, @Nullable PsiElement resolve, @Nonnull final String key) {
-    Pair<ConfigSlurperSupport.PropertiesProvider, List<String>> info = getInfo(qualifier, resolve);
-    if (info == null) return null;
+	@Override
+	public PsiType getValueType(@Nonnull GrExpression qualifier, @Nullable PsiElement resolve, @Nonnull final String key)
+	{
+		Pair<ConfigSlurperSupport.PropertiesProvider, List<String>> info = getInfo(qualifier, resolve);
+		if(info == null)
+		{
+			return null;
+		}
 
-    final Ref<Boolean> res = new Ref<Boolean>();
+		final Ref<Boolean> res = new Ref<Boolean>();
 
-    info.first.collectVariants(info.second, new PairConsumer<String, Boolean>() {
-      @Override
-      public void consume(String variant, Boolean isFinal) {
-        if (variant.equals(key)) {
-          res.set(isFinal);
-        }
-        else if (variant.startsWith(key) && variant.length() > key.length() && variant.charAt(key.length()) == '.') {
-          res.set(false);
-        }
-      }
-    });
+		info.first.collectVariants(info.second, (variant, isFinal) -> {
+			if(variant.equals(key))
+			{
+				res.set(isFinal);
+			}
+			else if(variant.startsWith(key) && variant.length() > key.length() && variant.charAt(key.length()) == '.')
+			{
+				res.set(false);
+			}
+		});
 
-    if (res.get() != null && !res.get()) {
-      return JavaPsiFacade.getElementFactory(qualifier.getProject())
-                          .createTypeByFQClassName(GroovyCommonClassNames.GROOVY_UTIL_CONFIG_OBJECT, qualifier.getResolveScope());
-    }
+		if(res.get() != null && !res.get())
+		{
+			return JavaPsiFacade.getElementFactory(qualifier.getProject())
+					.createTypeByFQClassName(GroovyCommonClassNames.GROOVY_UTIL_CONFIG_OBJECT, qualifier.getResolveScope());
+		}
 
-    return null;
-  }
+		return null;
+	}
 }

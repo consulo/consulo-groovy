@@ -15,19 +15,22 @@
  */
 package org.jetbrains.plugins.groovy.impl.configSlurper;
 
+import consulo.annotation.component.ComponentScope;
+import consulo.annotation.component.ExtensionAPI;
 import consulo.component.extension.ExtensionPointName;
 import consulo.language.psi.PsiElement;
-import consulo.util.lang.function.PairConsumer;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.function.BiConsumer;
 
 /**
  * @author Sergey Evdokimov
  */
+@ExtensionAPI(ComponentScope.APPLICATION)
 public abstract class ConfigSlurperSupport {
 
   public static final ExtensionPointName<ConfigSlurperSupport> EP_NAME = ExtensionPointName.create(ConfigSlurperSupport.class);
@@ -41,7 +44,6 @@ public abstract class ConfigSlurperSupport {
   }
 
   public interface PropertiesProvider {
-    void collectVariants(@Nonnull List<String> prefix, @Nonnull PairConsumer<String, Boolean> consumer);
+    void collectVariants(@Nonnull List<String> prefix, @Nonnull BiConsumer<String, Boolean> consumer);
   }
-
 }
