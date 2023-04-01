@@ -33,6 +33,7 @@ import consulo.colorScheme.EditorColorsScheme;
 import consulo.document.Document;
 import consulo.document.util.TextRange;
 import consulo.ide.impl.idea.util.FunctionUtil;
+import consulo.language.Language;
 import consulo.language.editor.DaemonCodeAnalyzerSettings;
 import consulo.language.editor.Pass;
 import consulo.language.editor.gutter.LineMarkerInfo;
@@ -43,6 +44,7 @@ import consulo.language.psi.PsiNameIdentifierOwner;
 import consulo.ui.image.Image;
 import consulo.util.lang.StringUtil;
 import jakarta.inject.Inject;
+import org.jetbrains.plugins.groovy.GroovyLanguage;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocComment;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocCommentOwner;
 import org.jetbrains.plugins.groovy.lang.psi.GrNamedElement;
@@ -72,6 +74,17 @@ public class GroovyLineMarkerProvider extends JavaLineMarkerProvider {
   @Inject
   public GroovyLineMarkerProvider(DaemonCodeAnalyzerSettings daemonSettings, EditorColorsManager colorsManager) {
     super(daemonSettings, colorsManager);
+  }
+
+  @Nonnull
+  @Override
+  public Language getLanguage() {
+    return GroovyLanguage.INSTANCE;
+  }
+
+  @Override
+  public String getName() {
+    return "Groovy line markers";
   }
 
   @Override
