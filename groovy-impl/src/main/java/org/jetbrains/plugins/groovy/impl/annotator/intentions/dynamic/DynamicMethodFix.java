@@ -17,8 +17,8 @@ package org.jetbrains.plugins.groovy.impl.annotator.intentions.dynamic;
 
 import com.intellij.java.language.psi.PsiType;
 import consulo.codeEditor.Editor;
-import consulo.language.editor.intention.IntentionAction;
 import consulo.language.editor.intention.LowPriorityAction;
+import consulo.language.editor.intention.SyntheticIntentionAction;
 import consulo.language.psi.PsiFile;
 import consulo.language.util.IncorrectOperationException;
 import consulo.project.Project;
@@ -34,8 +34,7 @@ import javax.annotation.Nonnull;
 /**
  * @author Maxim.Medvedev
  */
-public class DynamicMethodFix implements IntentionAction, LowPriorityAction
-{
+public class DynamicMethodFix implements SyntheticIntentionAction, LowPriorityAction {
   private final GrReferenceExpression myReferenceExpression;
   private final String mySignature;
 
