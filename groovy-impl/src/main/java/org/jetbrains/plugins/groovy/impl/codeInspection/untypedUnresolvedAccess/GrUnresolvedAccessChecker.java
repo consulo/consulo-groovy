@@ -17,6 +17,8 @@ package org.jetbrains.plugins.groovy.impl.codeInspection.untypedUnresolvedAccess
 
 import com.intellij.java.analysis.codeInsight.intention.QuickFixFactory;
 import com.intellij.java.language.psi.*;
+import consulo.language.editor.inspection.LocalQuickFix;
+import consulo.language.editor.intention.IntentionAction;
 import consulo.language.editor.intention.QuickFixAction;
 import consulo.language.editor.intention.UnresolvedReferenceQuickFixProvider;
 import consulo.language.editor.rawHighlight.HighlightDisplayKey;
@@ -148,10 +150,15 @@ public class GrUnresolvedAccessChecker {
       // todo implement for nested classes
       registerCreateClassByTypeFix(refElement, info, myDisplayKey);
       registerAddImportFixes(refElement, info, myDisplayKey);
-      UnresolvedReferenceQuickFixProvider.registerReferenceFixes(refElement, new QuickFixActionRegistrarAdapter
-        (info, myDisplayKey));
-      QuickFixFactory.getInstance().registerOrderEntryFixes(new QuickFixActionRegistrarAdapter(info,
-																																															 myDisplayKey), refElement);
+      QuickFixActionRegistrarAdapter registrar = new QuickFixActionRegistrarAdapter
+        (info, myDisplayKey);
+      UnresolvedReferenceQuickFixProvider.registerReferenceFixes(refElement, registrar);
+      List<LocalQuickFix> fixes = QuickFixFactory.getInstance().registerOrderEntryFixes(refElement);
+      if (fixes != null) {
+        for (LocalQuickFix fix : fixes) {
+          registrar.register((IntentionAction)fix);
+        }
+      }
 
       return info;
     }
@@ -276,10 +283,15 @@ public class GrUnresolvedAccessChecker {
       }
 
       registerReferenceFixes(ref, info, inStaticContext, myDisplayKey);
-      UnresolvedReferenceQuickFixProvider.registerReferenceFixes(ref, new QuickFixActionRegistrarAdapter(info,
-                                                                                                         myDisplayKey));
-      QuickFixFactory.getInstance().registerOrderEntryFixes(new QuickFixActionRegistrarAdapter(info,
-                                                                                               myDisplayKey), ref);
+      QuickFixActionRegistrarAdapter registrar = new QuickFixActionRegistrarAdapter(info,
+                                                                                    myDisplayKey);
+      UnresolvedReferenceQuickFixProvider.registerReferenceFixes(ref, registrar);
+      List<LocalQuickFix> fixes = QuickFixFactory.getInstance().registerOrderEntryFixes(ref);
+      if (fixes != null) {
+        for (LocalQuickFix fix : fixes) {
+          registrar.register((IntentionAction)fix);
+        }
+      }
       return result;
     }
 
