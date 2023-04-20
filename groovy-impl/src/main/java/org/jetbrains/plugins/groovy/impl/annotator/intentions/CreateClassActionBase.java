@@ -24,6 +24,7 @@ import consulo.application.AccessToken;
 import consulo.application.ApplicationManager;
 import consulo.application.WriteAction;
 import consulo.codeEditor.Editor;
+import consulo.language.editor.intention.SyntheticIntentionAction;
 import consulo.language.psi.PsiDirectory;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiFile;
@@ -49,7 +50,7 @@ import javax.annotation.Nullable;
 /**
  * @author ilyas
  */
-public abstract class CreateClassActionBase extends Intention
+public abstract class CreateClassActionBase extends Intention implements SyntheticIntentionAction
 {
 	private final GrCreateClassKind myType;
 
