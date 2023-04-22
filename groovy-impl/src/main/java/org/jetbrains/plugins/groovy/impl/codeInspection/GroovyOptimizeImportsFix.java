@@ -16,17 +16,14 @@
 package org.jetbrains.plugins.groovy.impl.codeInspection;
 
 import consulo.application.ApplicationManager;
-import consulo.application.util.function.Processor;
 import consulo.codeEditor.Editor;
 import consulo.document.Document;
 import consulo.document.util.TextRange;
-import consulo.ide.impl.idea.codeInsight.daemon.impl.DaemonCodeAnalyzerImpl;
-import consulo.ide.impl.idea.codeInsight.daemon.impl.DaemonListeners;
+import consulo.language.editor.AutoImportHelper;
 import consulo.language.editor.CodeInsightSettings;
 import consulo.language.editor.DaemonCodeAnalyzer;
 import consulo.language.editor.annotation.HighlightSeverity;
-import consulo.language.editor.intention.IntentionAction;
-import consulo.language.editor.rawHighlight.HighlightInfo;
+import consulo.language.editor.intention.SyntheticIntentionAction;
 import consulo.language.editor.rawHighlight.HighlightInfoType;
 import consulo.language.psi.PsiDocumentManager;
 import consulo.language.psi.PsiFile;
@@ -46,7 +43,7 @@ import org.jetbrains.plugins.groovy.lang.psi.api.toplevel.imports.GrImportStatem
 
 import javax.annotation.Nonnull;
 
-public class GroovyOptimizeImportsFix implements IntentionAction {
+public class GroovyOptimizeImportsFix implements SyntheticIntentionAction {
   private static final Logger LOG = Logger.getInstance("#org.jetbrains.plugins.groovy.codeInspection.local" +
                                                          ".GroovyPostHighlightingPass");
   private final boolean onTheFly;
@@ -83,15 +80,16 @@ public class GroovyOptimizeImportsFix implements IntentionAction {
     return file instanceof GroovyFile && (!onTheFly || timeToOptimizeImports((GroovyFile)file, editor));
   }
 
-  private boolean timeToOptimizeImports(GroovyFile myFile, Editor editor) {
+  private boolean timeToOptimizeImports(GroovyFile file, Editor editor) {
     if (!CodeInsightSettings.getInstance().OPTIMIZE_IMPORTS_ON_THE_FLY) {
       return false;
     }
+    Project project = file.getProject();
     if (onTheFly && editor != null) {
       // if we stand inside import statements, do not optimize
-      final VirtualFile vfile = myFile.getVirtualFile();
-      if (vfile != null && ProjectRootManager.getInstance(myFile.getProject()).getFileIndex().isInSource(vfile)) {
-        final GrImportStatement[] imports = myFile.getImportStatements();
+      final VirtualFile vfile = file.getVirtualFile();
+      if (vfile != null && ProjectRootManager.getInstance(project).getFileIndex().isInSource(vfile)) {
+        final GrImportStatement[] imports = file.getImportStatements();
         if (imports.length > 0) {
           final int offset = editor.getCaretModel().getOffset();
           if (imports[0].getTextRange().getStartOffset() <= offset && offset <= imports[imports.length - 1]
@@ -102,25 +100,24 @@ public class GroovyOptimizeImportsFix implements IntentionAction {
       }
     }
 
-    DaemonCodeAnalyzerImpl codeAnalyzer = (DaemonCodeAnalyzerImpl)DaemonCodeAnalyzer.getInstance(myFile
-                                                                                                   .getProject());
-    if (!codeAnalyzer.isHighlightingAvailable(myFile)) {
+    DaemonCodeAnalyzer codeAnalyzer = DaemonCodeAnalyzer.getInstance(project);
+    if (!codeAnalyzer.isHighlightingAvailable(file)) {
       return false;
     }
 
-    if (!codeAnalyzer.isErrorAnalyzingFinished(myFile)) {
+    if (!codeAnalyzer.isErrorAnalyzingFinished(file)) {
       return false;
     }
-    Document myDocument = PsiDocumentManager.getInstance(myFile.getProject()).getDocument(myFile);
-    boolean errors = containsErrorsPreventingOptimize(myFile, myDocument);
+    Document document = PsiDocumentManager.getInstance(project).getDocument(file);
+    boolean errors = containsErrorsPreventingOptimize(file, document);
 
-    return !errors && DaemonListeners.canChangeFileSilently(myFile);
+    return !errors && AutoImportHelper.getInstance(project).canChangeFileSilently(file);
   }
 
-  private boolean containsErrorsPreventingOptimize(GroovyFile myFile, Document myDocument) {
+  private boolean containsErrorsPreventingOptimize(GroovyFile file, Document document) {
     // ignore unresolved imports errors
     final TextRange ignoreRange;
-    final GrImportStatement[] imports = myFile.getImportStatements();
+    final GrImportStatement[] imports = file.getImportStatements();
     if (imports.length != 0) {
       final int start = imports[0].getTextRange().getStartOffset();
       final int end = imports[imports.length - 1].getTextRange().getEndOffset();
@@ -130,24 +127,19 @@ public class GroovyOptimizeImportsFix implements IntentionAction {
       ignoreRange = TextRange.EMPTY_RANGE;
     }
 
-    return !DaemonCodeAnalyzer.processHighlights(myDocument,
-                                                 myFile.getProject(),
+    return !DaemonCodeAnalyzer.processHighlights(document,
+                                                 file.getProject(),
                                                  HighlightSeverity.ERROR,
                                                  0,
-                                                 myDocument.getTextLength(),
-                                                 new Processor<HighlightInfo>() {
-                                                   @Override
-                                                   public boolean process(HighlightInfo error) {
-                                                     int infoStart =
-                                                       error.getActualStartOffset();
-                                                     int infoEnd =
-                                                       error.getActualEndOffset();
+                                                 document.getTextLength(),
+                                                 error -> {
+                                                   int infoStart = error.getActualStartOffset();
+                                                   int infoEnd = error.getActualEndOffset();
 
-                                                     return ignoreRange.containsRange(
-                                                       infoStart,
-                                                       infoEnd) && error.getType().equals(
-                                                       HighlightInfoType.WRONG_REF);
-                                                   }
+                                                   return ignoreRange.containsRange(
+                                                     infoStart,
+                                                     infoEnd) && error.getType().equals(
+                                                     HighlightInfoType.WRONG_REF);
                                                  });
   }
 
