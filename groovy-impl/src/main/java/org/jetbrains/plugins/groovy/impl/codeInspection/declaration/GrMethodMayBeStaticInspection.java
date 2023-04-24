@@ -173,7 +173,7 @@ public class GrMethodMayBeStaticInspection extends BaseInspection<GrMethodMayBeS
 			return true;
 		}
 
-		for(GrMethodMayBeStaticInspectionFilter filter : GrMethodMayBeStaticInspectionFilter.EP_NAME.getExtensions())
+		for(GrMethodMayBeStaticInspectionFilter filter : GrMethodMayBeStaticInspectionFilter.EP_NAME.getExtensionList())
 		{
 			if(filter.isIgnored(method))
 			{

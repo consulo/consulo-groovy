@@ -15,6 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.impl.codeInspection.declaration;
 
+import consulo.annotation.component.ComponentScope;
+import consulo.annotation.component.ExtensionAPI;
 import consulo.component.extension.ExtensionPointName;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
 
@@ -23,6 +25,7 @@ import javax.annotation.Nonnull;
 /**
  * @author Sergey Evdokimov
  */
+@ExtensionAPI(ComponentScope.APPLICATION)
 public abstract class GrMethodMayBeStaticInspectionFilter {
 
   public static final ExtensionPointName<GrMethodMayBeStaticInspectionFilter> EP_NAME =
