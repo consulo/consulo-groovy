@@ -18,8 +18,8 @@ package org.jetbrains.plugins.groovy.impl.annotator.intentions.dynamic;
 import com.intellij.java.language.psi.PsiClass;
 import consulo.codeEditor.Editor;
 import consulo.language.editor.inspection.ProblemDescriptor;
-import consulo.language.editor.intention.IntentionAction;
 import consulo.language.editor.intention.LowPriorityAction;
+import consulo.language.editor.intention.SyntheticIntentionAction;
 import consulo.language.psi.PsiFile;
 import consulo.language.util.IncorrectOperationException;
 import consulo.project.Project;
@@ -38,7 +38,7 @@ import javax.annotation.Nullable;
 /**
  * @author Maxim.Medvedev
  */
-public class DynamicPropertyFix extends GroovyFix implements IntentionAction, LowPriorityAction {
+public class DynamicPropertyFix extends GroovyFix implements SyntheticIntentionAction, LowPriorityAction {
   private final GrReferenceExpression myReferenceExpression;
   private final GrArgumentLabel myArgumentLabel;
   private final PsiClass myTargetClass;
