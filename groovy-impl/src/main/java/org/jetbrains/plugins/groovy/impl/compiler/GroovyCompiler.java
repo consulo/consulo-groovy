@@ -81,7 +81,7 @@ public class GroovyCompiler extends GroovyCompilerBase {
   }
 
   public boolean validateConfiguration(CompileScope compileScope) {
-    VirtualFile[] files = compileScope.getFiles(GroovyFileType.GROOVY_FILE_TYPE, true);
+    VirtualFile[] files = compileScope.getFiles(GroovyFileType.GROOVY_FILE_TYPE);
     if (files.length == 0) {
       return true;
     }
