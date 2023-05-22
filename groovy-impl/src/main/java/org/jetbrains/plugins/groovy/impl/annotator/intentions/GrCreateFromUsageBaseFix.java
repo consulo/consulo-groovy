@@ -21,6 +21,7 @@ import consulo.application.ApplicationManager;
 import consulo.codeEditor.Editor;
 import consulo.codeEditor.EditorPopupHelper;
 import consulo.java.analysis.impl.JavaQuickFixBundle;
+import consulo.language.editor.intention.SyntheticIntentionAction;
 import consulo.language.editor.ui.PsiElementListCellRenderer;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiFile;
@@ -47,7 +48,7 @@ import java.util.List;
 /**
  * @author Max Medvedev
  */
-public abstract class GrCreateFromUsageBaseFix extends Intention {
+public abstract class GrCreateFromUsageBaseFix extends Intention implements SyntheticIntentionAction {
   protected final SmartPsiElementPointer<GrReferenceExpression> myRefExpression;
 
   public GrCreateFromUsageBaseFix(@Nonnull GrReferenceExpression refExpression) {
