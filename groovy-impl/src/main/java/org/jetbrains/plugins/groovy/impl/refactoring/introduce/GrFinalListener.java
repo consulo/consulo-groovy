@@ -15,13 +15,13 @@
  */
 package org.jetbrains.plugins.groovy.impl.refactoring.introduce;
 
-import consulo.codeEditor.Editor;
-import consulo.language.editor.completion.lookup.LookupManager;
-import consulo.ide.impl.idea.codeInsight.lookup.impl.LookupImpl;
-import consulo.logging.Logger;
-import consulo.document.Document;
-import consulo.language.psi.PsiDocumentManager;
 import com.intellij.java.language.psi.PsiModifier;
+import consulo.codeEditor.Editor;
+import consulo.document.Document;
+import consulo.language.editor.completion.lookup.LookupEx;
+import consulo.language.editor.completion.lookup.LookupManager;
+import consulo.language.psi.PsiDocumentManager;
+import consulo.logging.Logger;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.GrModifierList;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeElement;
@@ -31,7 +31,7 @@ import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeElement;
  */
 public class GrFinalListener {
   private final Editor myEditor;
-  private static final Logger LOG = Logger.getInstance("#" + GrFinalListener.class.getName());
+  private static final Logger LOG = Logger.getInstance(GrFinalListener.class);
 
   public GrFinalListener(Editor editor) {
     myEditor = editor;
@@ -61,7 +61,7 @@ public class GrFinalListener {
         }
       }
     };
-    final LookupImpl lookup = (consulo.ide.impl.idea.codeInsight.lookup.impl.LookupImpl)LookupManager.getActiveLookup(myEditor);
+    final LookupEx lookup = LookupManager.getActiveLookup(myEditor);
     if (lookup != null) {
       lookup.performGuardedChange(runnable);
     } else {
