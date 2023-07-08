@@ -15,17 +15,24 @@
  */
 package org.jetbrains.plugins.groovy.impl.griffon;
 
+import consulo.annotation.component.ComponentScope;
+import consulo.annotation.component.ServiceAPI;
+import consulo.annotation.component.ServiceImpl;
 import consulo.component.persist.State;
 import consulo.component.persist.Storage;
 import consulo.component.persist.StoragePathMacros;
+import jakarta.inject.Singleton;
 import org.jetbrains.plugins.groovy.impl.mvc.projectView.MvcProjectViewState;
 
 /**
  * @author Sergey Evdokimov
  */
 @State(
-  name="GriffonProjectView",
-  storages= {@Storage(file = StoragePathMacros.WORKSPACE_FILE)})
+  name = "GriffonProjectView",
+  storages = {@Storage(file = StoragePathMacros.WORKSPACE_FILE)})
+@ServiceAPI(ComponentScope.PROJECT)
+@ServiceImpl
+@Singleton
 public class GriffonProjectViewState extends MvcProjectViewState {
 
 }

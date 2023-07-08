@@ -16,10 +16,10 @@
 
 package org.jetbrains.plugins.groovy.impl.compiler;
 
+import consulo.annotation.component.ExtensionImpl;
 import consulo.compiler.setting.ExcludedEntriesConfiguration;
-import consulo.configurable.Configurable;
-import consulo.configurable.ConfigurationException;
-import consulo.configurable.SearchableConfigurable;
+import consulo.configurable.*;
+import consulo.disposer.Disposable;
 import consulo.fileChooser.FileChooserDescriptor;
 import consulo.ide.impl.compiler.setting.ExcludedEntriesConfigurable;
 import consulo.module.Module;
@@ -31,6 +31,8 @@ import consulo.project.Project;
 import consulo.ui.ex.awt.JBCheckBox;
 import consulo.util.lang.Comparing;
 import consulo.virtualFileSystem.VirtualFile;
+import jakarta.annotation.Nullable;
+import jakarta.inject.Inject;
 import org.jetbrains.annotations.Nls;
 
 import javax.annotation.Nonnull;
@@ -41,7 +43,8 @@ import java.util.List;
 /**
  * @author peter
  */
-public class GroovyCompilerConfigurable implements SearchableConfigurable, Configurable.NoScroll {
+@ExtensionImpl
+public class GroovyCompilerConfigurable implements ProjectConfigurable, Configurable.NoScroll {
   private JTextField myHeapSize;
   private JPanel myMainPanel;
   private JPanel myExcludesPanel;
@@ -50,8 +53,9 @@ public class GroovyCompilerConfigurable implements SearchableConfigurable, Confi
   private final ExcludedEntriesConfigurable myExcludes;
   private final GroovyCompilerConfiguration myConfig;
 
-  public GroovyCompilerConfigurable(Project project) {
-    myConfig = GroovyCompilerConfiguration.getInstance(project);
+  @Inject
+  public GroovyCompilerConfigurable(Project project, GroovyCompilerConfiguration compilerConfiguration) {
+    myConfig = compilerConfiguration;
     myExcludes = createExcludedConfigurable(project);
   }
 
@@ -80,10 +84,13 @@ public class GroovyCompilerConfigurable implements SearchableConfigurable, Confi
     return "Groovy compiler";
   }
 
-  public Runnable enableSearch(String option) {
-    return null;
+  @Nullable
+  @Override
+  public String getParentId() {
+    return StandardConfigurableIds.COMPILER_GROUP;
   }
 
+  @Nonnull
   @Nls
   public String getDisplayName() {
     return "Groovy Compiler";
@@ -93,7 +100,7 @@ public class GroovyCompilerConfigurable implements SearchableConfigurable, Confi
     return "reference.projectsettings.compiler.groovy";
   }
 
-  public JComponent createComponent() {
+  public JComponent createComponent(@Nonnull Disposable uiDisposable) {
     myExcludesPanel.add(myExcludes.createComponent());
     return myMainPanel;
   }

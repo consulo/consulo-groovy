@@ -15,6 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.impl.findUsages;
 
+import consulo.annotation.component.ExtensionImpl;
 import consulo.language.editor.ImplicitUsageProvider;
 import consulo.language.psi.PsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameter;
@@ -24,6 +25,7 @@ import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 /**
  * @author Max Medvedev
  */
+@ExtensionImpl
 public class GrImplicitUsageProvider implements ImplicitUsageProvider
 {
 	@Override

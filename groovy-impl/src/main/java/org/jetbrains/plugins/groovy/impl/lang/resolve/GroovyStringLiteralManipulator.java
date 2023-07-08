@@ -15,6 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.impl.lang.resolve;
 
+import consulo.annotation.component.ExtensionImpl;
 import consulo.document.util.TextRange;
 import consulo.language.psi.AbstractElementManipulator;
 import consulo.language.util.IncorrectOperationException;
@@ -26,6 +27,7 @@ import org.jetbrains.plugins.groovy.lang.psi.util.GrStringUtil;
 
 import javax.annotation.Nonnull;
 
+@ExtensionImpl
 public class GroovyStringLiteralManipulator extends AbstractElementManipulator<GrLiteral> {
   private static final Logger LOG = Logger.getInstance(GroovyStringLiteralManipulator.class);
 

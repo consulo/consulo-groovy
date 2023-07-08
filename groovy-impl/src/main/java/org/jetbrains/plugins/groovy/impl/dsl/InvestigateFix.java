@@ -17,7 +17,7 @@ package org.jetbrains.plugins.groovy.impl.dsl;
 
 import consulo.codeEditor.Editor;
 import consulo.execution.unscramble.UnscrambleService;
-import consulo.language.editor.intention.IntentionAction;
+import consulo.language.editor.intention.SyntheticIntentionAction;
 import consulo.language.psi.PsiFile;
 import consulo.language.util.IncorrectOperationException;
 import consulo.project.Project;
@@ -25,7 +25,7 @@ import consulo.ui.annotation.RequiredUIAccess;
 
 import javax.annotation.Nonnull;
 
-public class InvestigateFix implements IntentionAction {
+public class InvestigateFix implements SyntheticIntentionAction {
   private final String myReason;
 
   public InvestigateFix(String reason) {

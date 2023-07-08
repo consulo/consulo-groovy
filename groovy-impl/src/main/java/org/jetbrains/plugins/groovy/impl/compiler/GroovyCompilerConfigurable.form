@@ -21,7 +21,7 @@
               <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
-              <text resource-bundle="messages/CompilerBundle" key="javac.option.max.heap.size"/>
+              <text value="Maximum heap size (MB):"/>
             </properties>
           </component>
           <component id="22ced" class="javax.swing.JTextField" binding="myHeapSize">
@@ -44,8 +44,8 @@
           <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="7" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties/>
-        <clientProperties>
-          <BorderFactoryClass class="java.lang.String" value="com.intellij.ui.IdeBorderFactory$PlainSmallWithoutIndent"/>
+		<clientProperties>
+          <BorderFactoryClass class="java.lang.String" value="consulo.ui.ex.awt.IdeBorderFactory$PlainSmallWithoutIndent"/>
         </clientProperties>
         <border type="etched" title="Exclude from stub generation"/>
         <children/>

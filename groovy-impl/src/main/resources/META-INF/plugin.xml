@@ -108,25 +108,6 @@
 
   <extensions defaultExtensionNs="com.intellij">
 
-    <moduleExtensionProvider key="groovy"
-                             parentKey="java"
-                             icon="consulo.groovy.psi.GroovyPsiIconGroup@groovy.groovy_16x16"
-                             name="Groovy"
-                             immutableClass="consulo.groovy.module.extension.GroovyModuleExtension"
-                             mutableClass="consulo.groovy.module.extension.GroovyMutableModuleExtension"/>
-    <moduleExtensionProvider key="griffon"
-                             parentKey="groovy"
-                             name="Griffon"
-                             icon="consulo.groovy.psi.GroovyPsiIconGroup@griffon.griffon"
-                             immutableClass="consulo.groovy.impl.griffon.module.extension.GriffonModuleExtension"
-                             mutableClass="consulo.groovy.impl.griffon.module.extension.GriffonMutableModuleExtension"/>
-
-
-
-
-
-    <annotator language="Groovy" implementationClass="org.jetbrains.plugins.groovy.impl.annotator.GrAnnotatorImpl"/>
-    <annotator language="Groovy" implementationClass="org.jetbrains.plugins.groovy.impl.dsl.GroovyDslAnnotator"/>
 
 
     <liveTemplateContext implementation="org.jetbrains.plugins.groovy.impl.template.GroovyTemplateContextType$Generic"/>
@@ -136,20 +117,7 @@
 
     <bundleLiveTemplateSet path="liveTemplates/Groovy"/>
 
-
-
-    <lang.elementManipulator forClass="org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.literals.GrLiteral"
-                             implementationClass="org.jetbrains.plugins.groovy.impl.lang.resolve.GroovyStringLiteralManipulator"/>
-    <lang.elementManipulator forClass="org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrArgumentLabel"
-                             implementationClass="org.jetbrains.plugins.groovy.impl.lang.psi.impl.statements.arguments.GrArgumentLabelManipulator"/>
-
-
-    <projectConfigurable instance="org.jetbrains.plugins.groovy.impl.compiler.GroovyCompilerConfigurable" id="Groovy compiler"
-                         displayName="Groovy Compiler" parentId="project.propCompiler"/>
-
     <stubElementTypeHolder class="org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes"/>
-
-
 
 
 
@@ -528,7 +496,6 @@
                      groupName="Annotations verifying" enabledByDefault="true" level="WARNING"
                      implementationClass="org.jetbrains.plugins.groovy.impl.codeInspection.confusing.DelegatesToInspection"/>
 
-    <implicitUsageProvider implementation="org.jetbrains.plugins.groovy.impl.findUsages.GrImplicitUsageProvider"/>
 
     <!-- control flow -->
     <intentionAction>
@@ -901,10 +868,6 @@
       <categoryKey>intention.category.groovy/intention.category.groovy.other</categoryKey>
       <className>org.jetbrains.plugins.groovy.impl.intentions.other.GrCopyStringConcatenationContentIntention</className>
     </intentionAction>
-
-
-    <projectService serviceInterface="org.jetbrains.plugins.groovy.impl.griffon.GriffonProjectViewState"
-                    serviceImplementation="org.jetbrains.plugins.groovy.impl.griffon.GriffonProjectViewState"/>
 
 
     <toolWindow id="Griffon View" anchor="left" secondary="false" icon="consulo.groovy.psi.GroovyPsiIconGroup@griffon.griffontoolwindow"

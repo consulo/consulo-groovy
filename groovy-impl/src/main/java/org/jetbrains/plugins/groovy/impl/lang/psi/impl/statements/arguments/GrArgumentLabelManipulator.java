@@ -15,6 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.impl.lang.psi.impl.statements.arguments;
 
+import consulo.annotation.component.ExtensionImpl;
 import consulo.document.util.TextRange;
 import consulo.language.impl.psi.LeafPsiElement;
 import consulo.language.psi.AbstractElementManipulator;
@@ -29,6 +30,7 @@ import javax.annotation.Nonnull;
 /**
  * @author peter
  */
+@ExtensionImpl
 public class GrArgumentLabelManipulator extends AbstractElementManipulator<GrArgumentLabel> {
   @Nonnull
   @Override

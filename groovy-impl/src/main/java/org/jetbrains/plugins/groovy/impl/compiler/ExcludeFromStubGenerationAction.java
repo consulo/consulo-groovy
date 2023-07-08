@@ -20,6 +20,7 @@ import consulo.application.dumb.DumbAware;
 import consulo.language.editor.LangDataKeys;
 import consulo.language.psi.PsiFile;
 import consulo.project.Project;
+import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.ex.action.AnAction;
 import consulo.ui.ex.action.AnActionEvent;
 import consulo.virtualFileSystem.VirtualFile;
@@ -33,6 +34,7 @@ import consulo.ide.setting.ShowSettingsUtil;
  */
 public class ExcludeFromStubGenerationAction extends AnAction implements DumbAware
 {
+  @RequiredUIAccess
   public void actionPerformed(final AnActionEvent e) {
     final PsiFile file = e.getData(LangDataKeys.PSI_FILE);
 
@@ -41,16 +43,14 @@ public class ExcludeFromStubGenerationAction extends AnAction implements DumbAwa
     doExcludeFromStubGeneration(file);
   }
 
+  @RequiredUIAccess
   public static void doExcludeFromStubGeneration(PsiFile file) {
     final VirtualFile virtualFile = file.getVirtualFile();
     assert virtualFile != null;
     final Project project = file.getProject();
 
-    final GroovyCompilerConfigurable configurable = new GroovyCompilerConfigurable(project);
-    ShowSettingsUtil.getInstance().editConfigurable(project, configurable, new Runnable() {
-      public void run() {
-        configurable.getExcludes().addEntry(new ExcludeEntryDescription(virtualFile, false, true, project));
-      }
+    ShowSettingsUtil.getInstance().showAndSelect(project, GroovyCompilerConfigurable.class, configurable -> {
+      configurable.getExcludes().addEntry(new ExcludeEntryDescription(virtualFile, false, true, project));
     });
   }
 
