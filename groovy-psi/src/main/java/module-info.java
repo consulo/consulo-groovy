@@ -14,6 +14,7 @@ open module org.intellij.groovy.psi {
   // TODO remove in future
   requires java.desktop;
   
+  exports consulo.groovy.localize;
   exports consulo.groovy.module.extension;
   exports consulo.groovy.psi.icon;
   exports org.jetbrains.plugins.groovy;

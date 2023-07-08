@@ -25,25 +25,26 @@ import consulo.execution.configuration.ConfigurationType;
 import consulo.execution.configuration.ConfigurationTypeUtil;
 import consulo.execution.configuration.RunConfiguration;
 import consulo.groovy.impl.griffon.module.extension.GriffonModuleExtension;
+import consulo.groovy.localize.GroovyLocalize;
+import consulo.groovy.psi.icon.GroovyPsiIconGroup;
+import consulo.localize.LocalizeValue;
 import consulo.module.extension.ModuleExtensionHelper;
 import consulo.project.Project;
 import consulo.ui.image.Image;
 import consulo.util.dataholder.Key;
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.plugins.groovy.JetgroovyIcons;
 
 import javax.annotation.Nonnull;
 
 @ExtensionImpl
 public class GriffonRunConfigurationType implements ConfigurationType {
   private final ConfigurationFactory myConfigurationFactory;
-  private static final String GRIFFON_APPLICATION = "Griffon";
 
   public GriffonRunConfigurationType() {
     myConfigurationFactory = new ConfigurationFactory(this) {
       @Override
       public RunConfiguration createTemplateConfiguration(Project project) {
-        return new GriffonRunConfiguration(this, project, GRIFFON_APPLICATION, "run-app");
+        return new GriffonRunConfiguration(this, project, GroovyLocalize.griffonConfigurationName().get(), "run-app");
       }
 
       @Override
@@ -60,16 +61,12 @@ public class GriffonRunConfigurationType implements ConfigurationType {
     };
   }
 
-  public String getDisplayName() {
-    return GRIFFON_APPLICATION;
-  }
-
-  public String getConfigurationTypeDescription() {
-    return GRIFFON_APPLICATION;
+  public LocalizeValue getDisplayName() {
+    return GroovyLocalize.griffonConfigurationName();
   }
 
   public Image getIcon() {
-    return JetgroovyIcons.Griffon.Griffon;
+    return GroovyPsiIconGroup.griffonGriffon();
   }
 
   @NonNls

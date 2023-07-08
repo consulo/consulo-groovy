@@ -1,0 +1,631 @@
+groovy.script.configuration.name:
+  text: Groovy
+groovy.script.configuration.description:
+  text: Groovy Class or Script
+griffon.configuration.name:
+  text: Griffon
+file.template.group.title.groovy:
+  text: Groovy
+newclass.dlg.title:
+  text: New Groovy Class
+newclass.menu.action.text:
+  text: Groovy Class
+newclass.menu.action.description:
+  text: Creates new Groovy Class
+newscript.dlg.prompt:
+  text: Enter name for new Groovy Script
+newscript.menu.action.text:
+  text: Groovy Script
+newscript.menu.action.description:
+  text: Creates new Groovy Script
+cannot.compile.groovy.files.no.facet:
+  text: |-
+    Cannot find Groovy home for module ''{0}''.
+    You should either:
+    - invoke 'Add Framework support' action for this module,
+    or:
+    - add Groovy jars to module classpath manually.
+cannot.compile.groovy.files.no.sdk:
+  text: |-
+    Cannot Compile Groovy Files.
+    Please Set up SDK for module ''{0}''.
+cannot.compile.groovy.files.no.sdk.mult:
+  text: |-
+    Cannot Compile Groovy Files.
+    Please Set up SDK for modules ''{0}''.
+cannot.compile:
+  text: Cannot Compile
+debug.option:
+  text: Enable &debug stacktrace
+groovy.debug.disable.specific.methods:
+  text: Do not step &into specific Groovy classes
+groovy.debug.caption:
+  text: Groovy
+separator.expected:
+  text: ''';'' or new line expected'
+separator.or.rcurly.expected:
+  text: ''';'', ''}'' or new line expected'
+import.keyword.expected:
+  text: '''import'' expected'
+import.identifier.expected:
+  text: package or class name expected
+identifier.expected:
+  text: Identifier expected
+import.not.allowed:
+  text: Imports are not allowed inside blocks
+identifier.or.block.expected:
+  text: Identifier or code block expected
+string.end.expected:
+  text: String end expected
+regex.end.expected:
+  text: Regex ending expected
+lbrack.expected:
+  text: '''['' expected'
+rbrack.expected:
+  text: ''']'' expected'
+lparen.expected:
+  text: '''('' expected'
+lcurly.expected:
+  text: '''{'' expected'
+comma.expected:
+  text: ''','' expected'
+rcurly.expected:
+  text: '''}'' expected'
+rparen.expected:
+  text: ''')'' expected'
+comma.or.rparen.expected:
+  text: ''','' or '')'' expected'
+semi.expected:
+  text: ''';'' expected'
+gt.expected:
+  text: '''>'' expected'
+else.without.if:
+  text: '''else'' without ''if'''
+catch.without.try:
+  text: '''catch'' without ''try'''
+finally.without.try:
+  text: '''finally'' without ''try'''
+case.without.switch:
+  text: '''case'' outside ''switch'' block'
+default.without.switch:
+  text: '''default'' outside ''switch'' block'
+catch.or.finally.expected:
+  text: '''catch'' or ''finally'' expected'
+colon.expected:
+  text: ''':'' expected'
+wrong.statement:
+  text: Wrong statement
+variable.definitions.expected:
+  text: Variable definition expected
+method.definitions.expected:
+  text: Method definition expected
+type.specification.expected:
+  text: Type specification expected
+type.definition.expected:
+  text: Type definition expected
+expression.expected:
+  text: Expression expected
+annotation.initializer.expected:
+  text: Annotation initializer expected
+annotation.member.value.initializer.expected:
+  text: Annotation member value initializer expected
+case.block.expected:
+  text: Case block expected
+case.expected:
+  text: '''case'' or ''default'' expected'
+block.expression.expected:
+  text: Block expression expected
+wrong.string:
+  text: Wrong string literal
+path.selector.expected:
+  text: Property selector expected
+duplicate.modifier:
+  text: Duplicate modifier ''{0}''
+param.expected:
+  text: Parameter expected
+for.clause.expected:
+  text: clause expected
+at.expected:
+  text: '''@'' expected'
+if.expected:
+  text: '''if'' expected'
+compound.statemenet.expected:
+  text: Initializer block expected
+indentifier.or.string.or.left.parenth.literal.expected:
+  text: Identifier, string literal or '(' expected
+empty.parameter.list.expected:
+  text: empty parameter list expected
+string.name.unexpected:
+  text: string name unexpected
+method.definition.without.modifier:
+  text: Method definition must be precede by modifier, type or 'def' keyword
+interface.body.expected:
+  text: interface body expected
+interface.must.has.no.static.compound.statemenet:
+  text: static compound statement unexpected in interface
+interface.must.has.no.compound.statemenet:
+  text: compound statement unexpected in interface
+cannot.resolve:
+  text: Cannot resolve symbol ''{0}''
+ambiguous.constructor.call:
+  text: Ambiguous constructor call
+cannot.access:
+  text: Access to ''{0}'' exceeds its access rights
+cannot.reference.static:
+  text: Cannot reference static symbol ''{0}'', class qualifier needed
+cannot.reference.non.static:
+  text: Cannot reference non-static symbol ''{0}'' from static context
+cannot.return.from.constructor:
+  text: Cannot return an object from constructor
+cannot.return.from.void.method:
+  text: Cannot return an object from a method that returns 'void'
+cannot.apply.method.or.closure:
+  text: '''''{0}'''' cannot be applied to ''''{1}'''''
+cannot.apply.method1:
+  text: '''''{0}'''' in ''''{1}'''' cannot be applied to ''''{2}'''''
+cannot.apply.constructor:
+  text: Constructor ''{0}'' in ''{1}'' cannot be applied to ''{2}''
+cannot.apply.default.constructor:
+  text: Cannot apply default constructor for class ''{0}''
+cannot.instantiate.abstract.class:
+  text: Cannot instantiate abstract class ''{0}''
+cannot.instantiate.interface:
+  text: Cannot instantiate interface ''{0}''
+cannot.assign:
+  text: Cannot assign ''{0}'' to ''{1}''
+invalid.lvalue:
+  text: Invalid value to assign to
+duplicate.class:
+  text: Class ''{0}'' already exists in ''{1}''
+duplicate.inner.class:
+  text: 'Duplicate class: ''''{0}'''''
+script.generated.with.same.name:
+  text: There is a synthetic class ''{0}'' generated for script code
+variable.already.defined:
+  text: Variable ''{0}'' already defined
+field.already.defined:
+  text: Field ''{0}'' already defined
+import.what:
+  text: Import ''{0}''
+import.class:
+  text: Import Class
+create.class.family.name:
+  text: Create Class
+create.class.text:
+  text: Create Class {0}
+create.interface.text:
+  text: Create Interface {0}
+create.annotation.text:
+  text: Create Annotation {0}
+static.declaration.in.inner.class:
+  text: Inner classes cannot have static declarations
+constructors.are.not.allowed.in.anonymous.class:
+  text: Constructors are not allowed in anonymous class
+no.such.property:
+  text: Property ''{0}'' does not exist
+change.modifier:
+  text: Make ''{0}'' {1}
+change.modifier.not:
+  text: Make ''{0}'' not {1}
+change.modifier.family.name:
+  text: Change modifiers
+packageLocal.visibility.presentation:
+  text: default visible
+protected.visibility.presentation:
+  text: protected
+private.visibility.presentation:
+  text: private
+public.visibility.presentation:
+  text: public
+abstract.visibility.presentation:
+  text: abstract
+static.visibility.presentation:
+  text: static
+final.visibility.presentation:
+  text: final
+native.visibility.presentation:
+  text: native
+synchronized.visibility.presentation:
+  text: synchronized
+strictfp.visibility.presentation:
+  text: strictfp
+transient.visibility.presentation:
+  text: transient
+volatile.visibility.presentation:
+  text: volatile
+def.visibility.presentation:
+  text: def
+class.already.exists:
+  text: Class ''{0}'' already exists
+annotation.definition.qualified.name.expected:
+  text: Annotation definition qualified name expected
+type.expected:
+  text: Type expected
+type.parameter.expected:
+  text: Type parameter expected
+type.argument.expected:
+  text: Type argument expected
+illegal.combination.of.modifiers:
+  text: Illegal combination of modifiers
+illegal.combination.of.modifiers.abstract.and.final:
+  text: Illegal combination of modifiers 'abstract' and 'final'
+modifier.volatile.not.allowed.here:
+  text: Modifier 'volatile' not allowed here
+modifier.transient.not.allowed.here:
+  text: Modifier 'transient' not allowed here
+intarface.cannot.have.modifier.final:
+  text: Interface cannot have modifier 'final'
+script.method.cannot.have.modifier.abstract:
+  text: Script method cannot have modifier 'abstract'
+script.cannot.have.modifier.native:
+  text: Script cannot have modifier 'native'
+interface.must.have.no.static.method:
+  text: Interface must have no static method
+only.abstract.class.can.have.abstract.method:
+  text: Only abstract class can have abstract method
+anonymous.class.cannot.have.abstract.method:
+  text: Anonymous class cannot have abstract method
+illegal.combination.of.modifiers.volatile.and.final:
+  text: Illegal combination of modifiers 'volatile' and 'final'
+variable.cannot.be.native:
+  text: Variable cannot have modifier 'native'
+variable.cannot.be.abstract:
+  text: Variable cannot have modifier 'abstract'
+not.abstract.method.should.have.body:
+  text: Not abstract method should have body
+cannot.create.class.error.text:
+  text: 'Cannot Create Class ''''{0}'''': {1}'
+cannot.create.class.error.title:
+  text: Cannot Create Class
+no.class.in.file.template:
+  text: No Class Found in File Template
+error.external:
+  text: External error
+Inner.methods.are.not.supported:
+  text: Inner methods are not supported
+final.class.cannot.be.extended:
+  text: Final class cannot be extended
+method.is.not.implemented:
+  text: Method ''{0}'' is not implemented
+change.implements.and.extends.classes:
+  text: Normalize extends and implements lists
+class.is.not.expected.here:
+  text: Class is not expected here
+fix.package.name:
+  text: Fix package name
+add.dynamic.property:
+  text: Add Dynamic Property ''{0}''
+duplicate.element.in.the.map:
+  text: Duplicate element in the map
+dynamic.toolwindow.search.elements:
+  text: Search dynamic element
+dynamic.toolwindow.property.filter:
+  text: Property Filter
+dynamic.tool.window.id:
+  text: Dynamic Properties
+create.from.usage.family.name:
+  text: Create From Usage
+create.field.from.usage:
+  text: Create Field ''{0}''
+create.method.from.usage:
+  text: Create Method ''{0}''
+create.variable.from.usage:
+  text: Create Variable ''{0}''
+add.dynamic.element:
+  text: Add dynamic element
+add.dynamic.method:
+  text: Add Dynamic Method
+dynamic.type:
+  text: Type
+dynamic.name:
+  text: Name
+dynamic.properties.table.name:
+  text: Method arguments
+dynamic.method.return.type:
+  text: 'Return &type:'
+dynamic.method.property.type:
+  text: 'Property &type:'
+are.you.sure.to.delete.dynamic.property:
+  text: Are you sure to delete ''{0}''?
+dynamic.property.deletion:
+  text: Deletion Dynamic Property
+are.you.sure.to.delete.elements:
+  text: Are you sure to delete ''{0}'' elements?
+dynamic.element.deletion:
+  text: Dynamic Element Deletion
+dynamic.window:
+  text: Dynamic window
+dynamic.properties.table.no.arguments:
+  text: Arguments list is empty.
+assignment.expected:
+  text: '''='' expected'
+tuple.cant.be.placed.in.class:
+  text: Multiple assignments are not allowed for fields
+singleton.class.should.have.private.constructor:
+  text: Class with '@Singleton' annotation should have private constructor
+qualified.new.of.static.class:
+  text: Qualified new of static class
+unknown.class:
+  text: unknown class ''{0}''
+is.not.enclosing.class:
+  text: '''''{0}'''' is not an enclosing class'
+package.definition.cannot.have.modifiers:
+  text: Package definition cannot have modifiers
+import.statement.cannot.have.modifiers:
+  text: Import statement cannot have modifiers
+inner.classes.are.not.supported:
+  text: Inner classes are not supported in Groovy {0}
+anonymous.classes.are.not.supported:
+  text: Anonymous classes are not supported in Groovy {0}
+undefined.label:
+  text: Undefined label ''{0}''
+continue.outside.loop:
+  text: The continue statement is only allowed inside loops
+break.outside.loop.or.switch:
+  text: The break statement is only allowed inside loops or switches
+label.already.used:
+  text: Label ''{0}'' is already in use
+break.outside.loop:
+  text: The break statement with named labels is only allowed inside loops
+Constructor:
+  text: Constructor
+Getter:
+  text: Getter
+Setter:
+  text: Setter
+groovy.like.library.found:
+  text: Groovy Library Found
+groovy.like.library.found.text:
+  text: "Do you want to set up Groovy for module ''{0}'' \nwith found library ''{1}'' (Groovy version {2})?"
+compile.groovy.files:
+  text: '&Compile Groovy files'
+in.expected:
+  text: '''in'' expected'
+not.allowed.modifier.in.forin:
+  text: Modifier ''{0}'' is not allowed here
+property.name.expected:
+  text: Property name expected
+add.method.body:
+  text: Add method body
+wildcards.are.not.allowed.in.extends.list:
+  text: A super type may not specify a wildcard type
+method.doesnot.override.super:
+  text: Method does not override method from its super class
+method.duplicate:
+  text: Method with signature {0} is already defined in the class ''{1}''
+ambiguous.code.block:
+  text: Ambiguous code block
+cyclic.inheritance.involving.0:
+  text: Cyclic inheritance involving ''{0}''
+there.is.no.default.constructor.available.in.class.0:
+  text: There is no default constructor available in class ''{0}''
+groovy.library.is.not.configured.for.module:
+  text: Groovy SDK is not configured for module ''{0}''
+configure.groovy.library:
+  text: Configure Groovy SDK...
+create.instance.of.built.in.type:
+  text: Instantiation of built-in type
+incorrect.variable.name:
+  text: Incorrect variable name
+is.not.supported.in.version:
+  text: Command Expression syntax is not supported in Groovy {0}
+no.interface.expected.here:
+  text: No interface expected here
+no.class.expected.here:
+  text: No class expected here
+move.to.extends.list:
+  text: Move reference to extends list
+move.to.implements.list:
+  text: Move reference to implements list
+script.file.is.not.groovy.file:
+  text: Script file is not Groovy file
+class.does.not.exist:
+  text: Class does not exist
+class.can.t.be.executed:
+  text: Class cannot be executed
+invoke.completion.second.time.to.show.skipped.methods:
+  text: Invoke completion second time to show skipped methods
+groovy.file.extension.is.not.mapped.to.groovy.file.type:
+  text: |-
+    *.groovy files are mapped to ''{0}''.
+    You can map them to Groovy in Settings | File types
+class.is.not.annotation:
+  text: '''''{0}'''' is not an annotation'
+method.call.is.ambiguous:
+  text: Method call is ambiguous
+duplicated.named.parameter:
+  text: Duplicated named parameter ''{0}'' found
+no.super.classes.found:
+  text: No super classes found
+no.super.method.found:
+  text: No super methods found
+wrong.package.name:
+  text: Package name ''{0}'' does not corresponding to the file path ''{1}''
+cannot.assign.string.to.enum.0:
+  text: Cannot assign string to enum ''{0}''
+cannot.find.enum.constant.0.in.enum.1:
+  text: Cannot find enum constant ''{0}'' in enum ''{1}''
+recursive.constructor.invocation:
+  text: Recursive constructor invocation
+the.usage.of.a.map.entry.expression.to.initialize.an.enum.is.currently.not.supported:
+  text: The usage of a map entry expression to initialize an Enum is currently not supported
+class.definition.is.not.expected.here:
+  text: Class definition is not expected here
+move.class.0.from.method:
+  text: Move ''{0}'' to correct place
+move.class.from.method.family.name:
+  text: Move to correct place quick fix
+diamonds.are.not.allowed.in.groovy.0:
+  text: Diamonds are not allowed in Groovy {0}
+multiline.slashy.strings.are.not.allowed.in.groovy.0:
+  text: Multi-line slashy strings are not allowed in Groovy {0}
+slashy.strings.with.injections.are.not.allowed.in.groovy.0:
+  text: Slashy strings with injections are not allowed in Groovy {0}
+constructor.call.is.ambiguous:
+  text: Constructor call is ambiguous
+cannot.infer.argument.types:
+  text: Cannot infer argument types
+triple.is.not.expected.here:
+  text: '''...'' is not expected here'
+Equals:
+  text: Equals
+default.initializers.are.not.allowed.in.abstract.method:
+  text: Default initializers are not allowed in abstract methods
+groovy.does.not.support.constructor.type.arguments:
+  text: Groovy does not support constructor type arguments
+illegal.escape.character.in.string.literal:
+  text: Illegal escape character in string literal
+dollar.slash.end.expected:
+  text: Dollar slash ending expected
+add.parentheses:
+  text: Add parentheses
+add.parentheses.to.command.method.call:
+  text: Add parentheses to command method call
+dollar.slash.strings.are.not.allowed.in.0:
+  text: Dollar slashy strings are not allowed in Groovy {0}
+method.with.type.parameters.should.have.return.type:
+  text: Method with type parameters should have return type
+primitive.type.parameters.are.not.allowed:
+  text: Primitive type parameters are not allowed in type parameter list
+primitive.bound.types.are.not.allowed:
+  text: Primitive bound types are not allowed
+ellipsis.type.is.not.allowed.here:
+  text: Ellipsis type is not allowed here
+method.0.is.too.complex.too.analyze:
+  text: |-
+    Method ''{0}'' is too complex to analyze.
+    Types of local variables are not inferred.
+closure.is.too.complex.to.analyze:
+  text: |-
+    Closure is complex to analyze.
+    Types of local variables are not inferred.
+0.is.deprecated:
+  text: '''''{0}'''' is deprecated'
+create.parameter.from.usage:
+  text: Create Parameter ''{0}''
+wrong.number.of.type.arguments:
+  text: 'Wrong number of type arguments: {0}; required: {1}'
+type.argument.0.is.not.in.its.bound.should.extend.1:
+  text: Type parameter ''{0}'' is not in its bound; should extend ''{1}''
+catch.statement.parameter.type.should.be.a.subclass.of.throwable:
+  text: Catch statement parameter type should be a subclass of Throwable
+exception.0.has.already.been.caught:
+  text: Exception ''{0}'' has already been caught
+unnecessary.type:
+  text: Unnecessary exception ''{0}''. ''{1}'' is already declared
+create.enum:
+  text: Create Enum {0}
+create.inner.class:
+  text: Create Inner Class {0}
+annotation.field.can.only.be.used.within.a.script.body:
+  text: Annotation @Field can only be used within a script body
+annotation.field.can.only.be.used.within.a.script:
+  text: Annotation @Field can only be used within a script
+public.modifier.is.not.allowed.in.interfaces:
+  text: '''public'' modifier is not allowed in interfaces'
+return.type.is.incompatible:
+  text: The return type of {0} in {1} is incompatible with {2} in {3}
+anonymous.class.derived.from.0:
+  text: anonymous class derived from {0}
+throws.clause.is.not.allowed.in.at.interface:
+  text: '''throws'' clause is not allowed in @interface members'
+at.interface.0.does.not.contain.attribute:
+  text: '@interface ''''{0}'''' does not contain attribute ''''{1}'''''
+duplicate.attribute:
+  text: Duplicate attribute
+missed.attributes:
+  text: 'Missed attributes: {0}'
+unexpected.attribute.type.0:
+  text: 'Unexpected attribute type: ''''{0}'''''
+annotation.attribute.should.have.return.type.declaration:
+  text: Annotation attribute should have return type declaration
+interface.members.are.not.allowed.to.be:
+  text: Interface members are not allowed to be {0}
+abstract.method.cannot.be.final:
+  text: Abstract method cannot be final
+abstract.methods.must.not.have.body:
+  text: Abstract methods must not have body
+method.has.incorrect.modifier.volatile:
+  text: Method has incorrect modifier 'volatile'
+native.methods.cannot.have.body:
+  text: Native methods cannot have body
+top.level.class.maynot.have.private.modifier:
+  text: Top level class may not have 'private' modifier
+top.level.class.maynot.have.protected.modifier:
+  text: Top level class may not have 'protected' modifier
+property.missing:
+  text: propertyMissing
+attribute.name.expected:
+  text: Attribute name expected
+java.style.for.each.statement.requires.a.type.declaration:
+  text: Java-style for-each statement requires a type declaration
+super.cannot.be.used.in.static.context:
+  text: '''super'' cannot be used in static context'
+qualified.0.is.allowed.only.in.nested.or.inner.classes:
+  text: Qualified {0} is allowed only in nested/inner classes
+groovy.file.0:
+  text: Groovy file ''{0}''
+type.argument.list.is.not.allowed.here:
+  text: Type argument list is not allowed here
+initializers.are.not.allowed.in.interface:
+  text: Initializers are not allowed in interface
+initializer.cannot.have.annotations:
+  text: Initializers cannot have annotations
+initializer.cannot.be.0:
+  text: Initializer cannot be {0}
+constructors.are.not.allowed.in.interface:
+  text: Constructors are not allowed in interface
+type.parameters.are.unexpected:
+  text: Type parameters are unexpected
+constructors.cannot.have.return.type:
+  text: Return type element is not allowed in constructor
+constructor.cannot.have.static.modifier:
+  text: Constructor may not be static
+annotation.types.may.not.have.extends.clause:
+  text: Annotation types may not have 'extends' clause
+annotation.types.may.not.have.implements.clause:
+  text: Annotation types may not have 'implements' clause
+no.implements.clause.allowed.for.interface:
+  text: Interfaces may not have 'implements' clause
+enums.may.not.have.extends.clause:
+  text: Enums may not have 'extends' clause
+method.0.cannot.override.method.1.in.2.overridden.method.is.final:
+  text: Method ''{0}'' cannot override method ''{1}'' in ''{2}''; overridden method is final
+method.0.cannot.have.weaker.access.privileges.1.than.2.in.3.4:
+  text: Method ''{0}'' cannot have weaker access privileges (''{1}'') than ''{2}'' in ''{3}'' (''{4}'')
+tuple.declaration.should.end.with.def.modifier:
+  text: Tuple declaration should end with 'def' modifier
+injection.should.not.contain.line.feeds:
+  text: GString injection must not contain line feeds
+collection.literal.contains.named.argument.and.expression.items:
+  text: Collection literal contains named and expression arguments at the same time
+annotation.collector.cannot.have.attributes:
+  text: Annotation type annotated with @AnnotationCollector cannot have attributes
+annotation.expected:
+  text: Annotation expected
+annotation.type.cannot.be.inner:
+  text: Annotation type cannot be inner
+cannot.find.operator.overload.method:
+  text: Cannot resolve index access with arguments {0}
+named.arguments.are.not.allowed.inside.index.operations:
+  text: Named arguments are not allowed inside index operations
+expected.0.to.be.inline.constant:
+  text: Expected ''{0}'' to be an inline constant
+cannot.assign.a.value.to.final.field.0:
+  text: Cannot assign a value to final field ''{0}''
+cannot.assign.a.value.to.final.parameter.0:
+  text: Cannot assign a value to final parameter ''{0}''
+variable.0.might.not.have.been.initialized:
+  text: Variable ''{0}'' might not have been initialized
+unexpected.symbol:
+  text: Unexpected symbol
+statement.expected:
+  text: Statement expected
+annotation.attribute.expected:
+  text: Annotation attribute expected
+highlight.constructor.calls.of.a.non.static.inner.classes.without.enclosing.instance.passed:
+  text: Highlight constructor calls of non-static inner classes without enclosing instance passed
+doc.end.expected:
+  text: '''*/'' expected'
+mixing.private.and.public.protected.methods.of.the.same.name:
+  text: Mixing private and public/protected methods of the same name

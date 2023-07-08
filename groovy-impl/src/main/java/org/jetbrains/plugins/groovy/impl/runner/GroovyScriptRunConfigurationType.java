@@ -21,7 +21,9 @@ import consulo.execution.configuration.ConfigurationFactory;
 import consulo.execution.configuration.ConfigurationType;
 import consulo.execution.configuration.ConfigurationTypeUtil;
 import consulo.execution.configuration.RunConfiguration;
+import consulo.groovy.localize.GroovyLocalize;
 import consulo.groovy.module.extension.GroovyModuleExtension;
+import consulo.localize.LocalizeValue;
 import consulo.module.extension.ModuleExtensionHelper;
 import consulo.project.Project;
 import consulo.ui.image.Image;
@@ -38,12 +40,12 @@ public class GroovyScriptRunConfigurationType implements ConfigurationType {
     myConfigurationFactory = new GroovyFactory(this);
   }
 
-  public String getDisplayName() {
-    return "Groovy";
+  public LocalizeValue getDisplayName() {
+    return GroovyLocalize.groovyScriptConfigurationName();
   }
 
-  public String getConfigurationTypeDescription() {
-    return "Groovy Class or Script";
+  public LocalizeValue getConfigurationTypeDescription() {
+    return GroovyLocalize.groovyScriptConfigurationDescription();
   }
 
   public Image getIcon() {
