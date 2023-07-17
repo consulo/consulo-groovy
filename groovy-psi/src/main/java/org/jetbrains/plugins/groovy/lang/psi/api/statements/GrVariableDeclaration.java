@@ -16,13 +16,7 @@ import javax.annotation.Nullable;
  * @date: 27.03.2007
  */
 public interface GrVariableDeclaration extends GrStatement, GrMembersDeclaration {
-  ArrayFactory<GrVariableDeclaration> ARRAY_FACTORY = new ArrayFactory<GrVariableDeclaration>() {
-    @Nonnull
-    @Override
-    public GrVariableDeclaration[] create(int count) {
-      return new GrVariableDeclaration[count];
-    }
-  };
+  ArrayFactory<GrVariableDeclaration> ARRAY_FACTORY = GrVariableDeclaration[]::new;
 
   @Nullable
   GrTypeElement getTypeElementGroovy();

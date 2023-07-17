@@ -25,6 +25,7 @@ import consulo.language.psi.PsiElement;
 import consulo.language.psi.util.PsiTreeUtil;
 import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotation;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariableDeclaration;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMember;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
@@ -51,8 +52,12 @@ public class FieldAnnotationChecker extends CustomAnnotationChecker {
 
     PsiElement annoParent = annotation.getParent();
     PsiElement ownerToUse = annoParent instanceof PsiModifierList ? annoParent.getParent() : annoParent;
-    if (!(ownerToUse instanceof GrVariableDeclaration) || !PsiUtil.isLocalVariable(((GrVariableDeclaration)
-      ownerToUse).getVariables()[0])) {
+    if (!(ownerToUse instanceof GrVariableDeclaration variableDeclaration)) {
+      return false;
+    }
+
+    GrVariable[] variables = variableDeclaration.getVariables();
+    if (variables.length == 0 || !PsiUtil.isLocalVariable(variables[0])) {
       return false;
     }
 
