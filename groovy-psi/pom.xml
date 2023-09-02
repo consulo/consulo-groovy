@@ -86,6 +86,7 @@
 						<goals>
 							<goal>generate-icon</goal>
 							<goal>generate-localize</goal>
+							<goal>generate-lexers</goal>
 						</goals>
 					</execution>
 				</executions>

@@ -16,6 +16,7 @@
 
 package org.jetbrains.plugins.groovy.lang.groovydoc.psi.api;
 
+import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiPolyVariantReference;
 import consulo.language.psi.PsiQualifiedReferenceElement;
 
@@ -31,5 +32,5 @@ public interface GrDocMemberReference extends GroovyDocPsiElement, PsiPolyVarian
   GrDocReferenceElement getReferenceHolder();
 
   @Nonnull
-  GrDocTagValueToken getReferenceNameElement();
+  PsiElement getReferenceNameElement();
 }

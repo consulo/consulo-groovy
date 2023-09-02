@@ -15,11 +15,18 @@
 
 package org.jetbrains.plugins.groovy.lang.lexer;
 
-import com.intellij.lexer.FlexLexer;
-import com.intellij.java.language.psi.TokenType;
-import com.intellij.java.language.psi.tree.IElementType;
-import com.intellij.util.containers.Stack;
+import consulo.language.ast.IElementType;
+import consulo.language.lexer.FlexLexer;
+import consulo.util.collection.Stack;
+import consulo.util.lang.CharArrayUtil;
 import org.jetbrains.plugins.groovy.lang.groovydoc.parser.GroovyDocElementTypes;
+import consulo.language.ast.TokenType;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.util.Arrays;
 
 %%
 

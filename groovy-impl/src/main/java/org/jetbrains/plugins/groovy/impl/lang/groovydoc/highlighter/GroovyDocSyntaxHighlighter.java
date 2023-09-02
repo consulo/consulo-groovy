@@ -16,11 +16,6 @@
 
 package org.jetbrains.plugins.groovy.impl.lang.groovydoc.highlighter;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.annotation.Nonnull;
-
 import consulo.colorScheme.TextAttributesKey;
 import consulo.language.ast.IElementType;
 import consulo.language.ast.TokenSet;
@@ -30,6 +25,10 @@ import org.jetbrains.plugins.groovy.impl.highlighter.GroovySyntaxHighlighter;
 import org.jetbrains.plugins.groovy.lang.groovydoc.lexer.GroovyDocElementTypeImpl;
 import org.jetbrains.plugins.groovy.lang.groovydoc.lexer.GroovyDocLexer;
 import org.jetbrains.plugins.groovy.lang.groovydoc.lexer.GroovyDocTokenTypes;
+
+import javax.annotation.Nonnull;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author ilyas
@@ -41,7 +40,7 @@ public class GroovyDocSyntaxHighlighter extends SyntaxHighlighterBase implements
 
   @Nonnull
   public Lexer getHighlightingLexer() {
-    return new GroovyDocHighlightingLexer();
+    return new GroovyDocLexer();
   }
 
   static final TokenSet tGDOC_COMMENT_TAGS = TokenSet.create(
@@ -62,11 +61,5 @@ public class GroovyDocSyntaxHighlighter extends SyntaxHighlighterBase implements
   @Nonnull
   public TextAttributesKey[] getTokenHighlights(IElementType type) {
     return pack(ATTRIBUTES.get(type));
-  }
-
-  private static class GroovyDocHighlightingLexer extends GroovyDocLexer {
-    public IElementType getTokenType() {
-      return super.getTokenType() == mGDOC_TAG_NAME ? mGDOC_TAG_NAME : super.getTokenType();
-    }
   }
 }

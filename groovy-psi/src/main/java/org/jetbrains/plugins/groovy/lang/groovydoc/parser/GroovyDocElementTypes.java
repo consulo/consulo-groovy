@@ -17,7 +17,6 @@
 package org.jetbrains.plugins.groovy.lang.groovydoc.parser;
 
 import com.intellij.java.language.psi.JavaPsiFacade;
-import consulo.language.Language;
 import consulo.language.ast.ASTNode;
 import consulo.language.ast.ILazyParseableElementType;
 import consulo.language.parser.PsiBuilder;
@@ -27,14 +26,12 @@ import consulo.language.psi.PsiElement;
 import consulo.language.version.LanguageVersion;
 import consulo.language.version.LanguageVersionUtil;
 import consulo.project.Project;
-import org.jetbrains.plugins.groovy.GroovyFileType;
+import org.jetbrains.plugins.groovy.GroovyLanguage;
 import org.jetbrains.plugins.groovy.lang.groovydoc.lexer.GroovyDocElementType;
 import org.jetbrains.plugins.groovy.lang.groovydoc.lexer.GroovyDocElementTypeImpl;
 import org.jetbrains.plugins.groovy.lang.groovydoc.lexer.GroovyDocLexer;
 import org.jetbrains.plugins.groovy.lang.groovydoc.lexer.GroovyDocTokenTypes;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.impl.GrDocCommentImpl;
-
-import javax.annotation.Nonnull;
 
 /**
  * @author ilyas
@@ -44,12 +41,7 @@ public interface GroovyDocElementTypes extends GroovyDocTokenTypes {
   /**
    * GroovyDoc comment
    */
-  ILazyParseableElementType GROOVY_DOC_COMMENT = new ILazyParseableElementType("GrDocComment") {
-    @Nonnull
-    public Language getLanguage() {
-      return GroovyFileType.GROOVY_LANGUAGE;
-    }
-
+  ILazyParseableElementType GROOVY_DOC_COMMENT = new ILazyParseableElementType("GrDocComment", GroovyLanguage.INSTANCE) {
     public ASTNode parseContents(ASTNode chameleon) {
       final PsiElement parentElement = chameleon.getTreeParent().getPsi();
       final Project project = JavaPsiFacade.getInstance(parentElement.getProject()).getProject();

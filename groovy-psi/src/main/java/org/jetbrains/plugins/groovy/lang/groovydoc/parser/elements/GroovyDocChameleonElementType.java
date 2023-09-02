@@ -16,23 +16,15 @@
 
 package org.jetbrains.plugins.groovy.lang.groovydoc.parser.elements;
 
-import org.jetbrains.annotations.NonNls;
-import javax.annotation.Nonnull;
-import org.jetbrains.plugins.groovy.GroovyFileType;
-import consulo.language.Language;
 import consulo.language.ast.ILazyParseableElementType;
+import org.jetbrains.annotations.NonNls;
+import org.jetbrains.plugins.groovy.GroovyLanguage;
 
 /**
  * @author ilyas
  */
 public abstract class GroovyDocChameleonElementType extends ILazyParseableElementType {
   public GroovyDocChameleonElementType(@NonNls String debugName) {
-    super(debugName);
+    super(debugName, GroovyLanguage.INSTANCE);
   }
-
-  @Nonnull
-  public Language getLanguage() {
-    return GroovyFileType.GROOVY_LANGUAGE;
-  }
-
 }
