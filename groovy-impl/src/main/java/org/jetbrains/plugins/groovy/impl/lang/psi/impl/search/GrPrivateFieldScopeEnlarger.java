@@ -31,7 +31,7 @@ import javax.annotation.Nonnull;
  * @author Maxim.Medvedev
  */
 @ExtensionImpl
-public class GrPrivateFieldScopeEnlarger extends UseScopeEnlarger {
+public class GrPrivateFieldScopeEnlarger implements UseScopeEnlarger {
   @Override
   public SearchScope getAdditionalUseScope(@Nonnull PsiElement element) {
     if (element instanceof PsiField && ((PsiField)element).hasModifierProperty(PsiModifier.PRIVATE)) {
