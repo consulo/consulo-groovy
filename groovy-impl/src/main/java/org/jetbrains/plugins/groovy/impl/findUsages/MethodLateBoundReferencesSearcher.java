@@ -43,6 +43,7 @@ import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 import org.jetbrains.plugins.groovy.lang.resolve.ResolveUtil;
 
 import javax.annotation.Nonnull;
+import java.util.function.Predicate;
 
 /**
  * @author ven
@@ -85,7 +86,7 @@ public class MethodLateBoundReferencesSearcher extends QueryExecutorBase<PsiRefe
     if (StringUtil.isEmpty(name)) return;
     collector.searchWord(name, searchScope, UsageSearchContext.IN_CODE, true, new RequestResultProcessor("groovy.lateBound") {
       @Override
-      public boolean processTextOccurrence(@Nonnull PsiElement element, int offsetInElement, @Nonnull Processor<? super PsiReference> consumer) {
+      public boolean processTextOccurrence(@Nonnull PsiElement element, int offsetInElement, @Nonnull Predicate<? super PsiReference> consumer) {
         if (!(element instanceof GrReferenceExpression)) {
           return true;
         }
@@ -104,7 +105,7 @@ public class MethodLateBoundReferencesSearcher extends QueryExecutorBase<PsiRefe
           return true;
         }
 
-        return consumer.process((PsiReference)element);
+        return consumer.test((PsiReference)element);
       }
     });
   }

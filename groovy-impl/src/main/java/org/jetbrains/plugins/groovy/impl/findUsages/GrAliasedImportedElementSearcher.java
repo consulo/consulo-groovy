@@ -34,6 +34,7 @@ import org.jetbrains.plugins.groovy.lang.psi.util.GroovyPropertyUtils;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.function.Predicate;
 
 /**
  * @author Maxim.Medvedev
@@ -90,7 +91,7 @@ public class GrAliasedImportedElementSearcher extends QueryExecutorBase<PsiRefer
     @Override
     public boolean processTextOccurrence(@Nonnull final PsiElement element,
                                          int offsetInElement,
-                                         @Nonnull Processor<? super PsiReference> consumer) {
+                                         @Nonnull Predicate<? super PsiReference> consumer) {
       String alias = getAlias(element);
       if (alias == null) return true;
 
@@ -110,7 +111,7 @@ public class GrAliasedImportedElementSearcher extends QueryExecutorBase<PsiRefer
       }
 
 
-      return PsiSearchHelper.SERVICE.getInstance(element.getProject()).processRequests(collector, consumer);
+      return PsiSearchHelper.getInstance(element.getProject()).processRequests(collector, consumer);
     }
 
     @Nullable
