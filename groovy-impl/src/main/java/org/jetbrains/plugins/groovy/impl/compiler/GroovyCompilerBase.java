@@ -35,7 +35,6 @@ import consulo.content.bundle.Sdk;
 import consulo.content.library.Library;
 import consulo.groovy.module.extension.GroovyModuleExtension;
 import consulo.http.HttpProxyManager;
-import consulo.ide.impl.compiler.TranslatingCompilerFilesMonitor;
 import consulo.ide.impl.idea.openapi.vfs.VfsUtil;
 import consulo.ide.impl.idea.util.PathUtil;
 import consulo.java.execution.configurations.OwnJavaParameters;

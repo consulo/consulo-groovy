@@ -20,9 +20,9 @@ import com.intellij.java.language.impl.JavaFileType;
 import com.intellij.java.language.psi.JavaPsiFacade;
 import com.intellij.java.language.psi.PsiClass;
 import consulo.annotation.component.ExtensionImpl;
-import consulo.application.*;
+import consulo.application.AccessRule;
+import consulo.application.WriteAction;
 import consulo.application.progress.ProgressIndicator;
-import consulo.application.util.function.Processor;
 import consulo.compiler.CompileContext;
 import consulo.compiler.CompileContextEx;
 import consulo.compiler.CompilerPaths;
@@ -31,7 +31,6 @@ import consulo.compiler.scope.FileSetCompileScope;
 import consulo.compiler.setting.ExcludedEntriesConfiguration;
 import consulo.compiler.util.CompilerUtil;
 import consulo.content.ContentIterator;
-import consulo.ide.impl.idea.compiler.impl.TranslationSourceFileInfo;
 import consulo.language.content.LanguageContentFolderScopes;
 import consulo.language.content.ProductionContentFolderTypeProvider;
 import consulo.language.content.TestContentFolderTypeProvider;
@@ -55,19 +54,21 @@ import consulo.util.lang.StringUtil;
 import consulo.virtualFileSystem.LocalFileSystem;
 import consulo.virtualFileSystem.VirtualFile;
 import consulo.virtualFileSystem.fileType.FileType;
+import consulo.virtualFileSystem.util.VirtualFileUtil;
 import jakarta.inject.Inject;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.impl.compiler.GroovyCompilerBase;
 import org.jetbrains.plugins.groovy.impl.compiler.GroovyCompilerConfiguration;
+import org.jetbrains.plugins.groovy.impl.refactoring.convertToJava.GroovyToJavaGenerator;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyNamesUtil;
-import org.jetbrains.plugins.groovy.impl.refactoring.convertToJava.GroovyToJavaGenerator;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.function.Predicate;
 
 /**
  * @author peter
@@ -206,40 +207,22 @@ public class GroovycStubGenerator extends GroovyCompilerBase {
   }
 
   private void cleanDirectory(final VirtualFile dir) {
-    Runnable runnable = new Runnable() {
-      @Override
-      public void run() {
-        AccessToken token = WriteAction.start();
-        try {
-          consulo.ide.impl.idea.openapi.vfs.VfsUtil.processFilesRecursively(dir, new Processor<>() {
-            @Override
-            public boolean process(VirtualFile virtualFile) {
-              if (!virtualFile.isDirectory()) {
-                TranslationSourceFileInfo.removeSourceInfo(virtualFile);
-                try {
-                  virtualFile.delete(this);
-                }
-                catch (IOException e) {
-                  LOG.info(e);
-                }
-              }
-              return true;
+    WriteAction.runAndWait(() -> {
+      VirtualFileUtil.processFilesRecursively(dir, new Predicate<>() {
+        @Override
+        public boolean test(VirtualFile virtualFile) {
+          if (!virtualFile.isDirectory()) {
+            try {
+              virtualFile.delete(this);
             }
-          });
+            catch (IOException e) {
+              LOG.info(e);
+            }
+          }
+          return true;
         }
-        finally {
-          token.finish();
-        }
-      }
-    };
-    if (ApplicationManager.getApplication().isDispatchThread()) {
-      assert ApplicationManager.getApplication().isUnitTestMode();
-
-      runnable.run();
-    }
-    else {
-      ApplicationManager.getApplication().invokeAndWait(runnable, Application.get().getNoneModalityState());
-    }
+      });
+    });
   }
 
   @Nonnull
