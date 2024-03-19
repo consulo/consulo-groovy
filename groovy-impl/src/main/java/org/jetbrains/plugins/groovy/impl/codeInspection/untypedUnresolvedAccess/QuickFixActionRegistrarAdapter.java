@@ -24,7 +24,6 @@ import consulo.language.editor.rawHighlight.HighlightInfo;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.function.Predicate;
 
 /**
  * Created by Max Medvedev on 21/03/14
@@ -47,12 +46,5 @@ class QuickFixActionRegistrarAdapter implements QuickFixActionRegistrar {
   @Override
   public void register(@Nonnull TextRange fixRange, @Nonnull IntentionAction action, HighlightDisplayKey key) {
     QuickFixAction.registerQuickFixAction(myInfo, fixRange, action, key);
-  }
-
-  @Override
-  public void unregister(@Nonnull Predicate<IntentionAction> condition) {
-    if (myInfo != null) {
-      myInfo.unregisterQuickFix(condition);
-    }
   }
 }

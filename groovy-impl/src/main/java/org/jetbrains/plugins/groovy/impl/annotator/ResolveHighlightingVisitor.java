@@ -30,46 +30,38 @@ import java.util.List;
 /**
  * Created by Max Medvedev on 21/03/14
  */
-class ResolveHighlightingVisitor extends GroovyRecursiveElementVisitor
-{
-	private final GrUnresolvedAccessChecker myReferenceChecker;
-	private final List<HighlightInfo> myInfos;
+class ResolveHighlightingVisitor extends GroovyRecursiveElementVisitor {
+  private final GrUnresolvedAccessChecker myReferenceChecker;
+  private final List<HighlightInfo> myInfos;
 
-	public ResolveHighlightingVisitor(@Nonnull GroovyFileBase file,
-			@Nonnull Project project,
-			@Nonnull List<HighlightInfo> collector)
-	{
-		myReferenceChecker = new GrUnresolvedAccessChecker(file, project);
-		myInfos = collector;
-	}
+  public ResolveHighlightingVisitor(@Nonnull GroovyFileBase file,
+                                    @Nonnull Project project,
+                                    @Nonnull List<HighlightInfo> collector) {
+    myReferenceChecker = new GrUnresolvedAccessChecker(file, project);
+    myInfos = collector;
+  }
 
-	@Override
-	public void visitReferenceExpression(GrReferenceExpression referenceExpression)
-	{
-		final int size = myInfos.size();
-		super.visitReferenceExpression(referenceExpression);
-		if(size == myInfos.size())
-		{
-			List<HighlightInfo> infos = myReferenceChecker.checkReferenceExpression(referenceExpression);
-			if(infos != null)
-			{
-				ContainerUtil.addAllNotNull(myInfos, infos);
-			}
-		}
-	}
+  @Override
+  public void visitReferenceExpression(GrReferenceExpression referenceExpression) {
+    final int size = myInfos.size();
+    super.visitReferenceExpression(referenceExpression);
+    if (size == myInfos.size()) {
+      List<HighlightInfo> infos = myReferenceChecker.checkReferenceExpression(referenceExpression);
+      if (infos != null) {
+        ContainerUtil.addAllNotNull(myInfos, infos);
+      }
+    }
+  }
 
-	@Override
-	public void visitCodeReferenceElement(GrCodeReferenceElement refElement)
-	{
-		final int size = myInfos.size();
-		super.visitCodeReferenceElement(refElement);
-		if(size == myInfos.size())
-		{
-			HighlightInfo info = myReferenceChecker.checkCodeReferenceElement(refElement);
-			if(info != null)
-			{
-				myInfos.add(info);
-			}
-		}
-	}
+  @Override
+  public void visitCodeReferenceElement(GrCodeReferenceElement refElement) {
+    final int size = myInfos.size();
+    super.visitCodeReferenceElement(refElement);
+    if (size == myInfos.size()) {
+      HighlightInfo info = myReferenceChecker.checkCodeReferenceElement(refElement);
+      if (info != null) {
+        myInfos.add(info);
+      }
+    }
+  }
 }

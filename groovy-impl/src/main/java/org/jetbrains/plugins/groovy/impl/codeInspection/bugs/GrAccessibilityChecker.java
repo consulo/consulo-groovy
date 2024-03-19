@@ -18,6 +18,7 @@ package org.jetbrains.plugins.groovy.impl.codeInspection.bugs;
 import com.intellij.java.language.psi.*;
 import com.intellij.java.language.psi.util.PsiFormatUtil;
 import com.intellij.java.language.psi.util.PsiFormatUtilBase;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.language.editor.inspection.LocalQuickFix;
 import consulo.language.editor.inspection.LocalQuickFixAsIntentionAdapter;
 import consulo.language.editor.inspection.ProblemDescriptor;
@@ -233,11 +234,13 @@ public class GrAccessibilityChecker {
   }
 
   @Nullable
+  @RequiredReadAction
   private static HighlightInfo createAnnotationForRef(@Nonnull GrReferenceElement ref,
                                                       boolean strongError,
                                                       @Nonnull String message) {
     HighlightDisplayLevel displayLevel = strongError ? HighlightDisplayLevel.ERROR : GroovyAccessibilityInspection
       .getHighlightDisplayLevel(ref.getProject(), ref);
-    return GrInspectionUtil.createAnnotationForRef(ref, displayLevel, message);
+    HighlightInfo.Builder builder = GrInspectionUtil.createAnnotationForRef(ref, displayLevel, message);
+    return builder == null ? null : builder.create();
   }
 }

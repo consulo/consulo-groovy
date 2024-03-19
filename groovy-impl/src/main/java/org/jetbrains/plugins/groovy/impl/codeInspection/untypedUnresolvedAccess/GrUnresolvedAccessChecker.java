@@ -17,10 +17,11 @@ package org.jetbrains.plugins.groovy.impl.codeInspection.untypedUnresolvedAccess
 
 import com.intellij.java.analysis.codeInsight.intention.QuickFixFactory;
 import com.intellij.java.language.psi.*;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.document.util.TextRange;
 import consulo.language.editor.inspection.LocalQuickFix;
 import consulo.language.editor.intention.IntentionAction;
-import consulo.language.editor.intention.QuickFixAction;
-import consulo.language.editor.intention.UnresolvedReferenceQuickFixProvider;
+import consulo.language.editor.intention.UnresolvedReferenceQuickFixUpdater;
 import consulo.language.editor.rawHighlight.HighlightDisplayKey;
 import consulo.language.editor.rawHighlight.HighlightDisplayLevel;
 import consulo.language.editor.rawHighlight.HighlightInfo;
@@ -48,6 +49,7 @@ import org.jetbrains.plugins.groovy.impl.codeInspection.GroovyQuickFixFactory;
 import org.jetbrains.plugins.groovy.impl.extensions.GroovyUnresolvedHighlightFilter;
 import org.jetbrains.plugins.groovy.impl.findUsages.MissingMethodAndPropertyUtil;
 import org.jetbrains.plugins.groovy.impl.lang.GrCreateClassKind;
+import org.jetbrains.plugins.groovy.impl.lang.psi.util.GrStaticChecker;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GroovyDocPsiElement;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GrReferenceElement;
@@ -70,7 +72,6 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyPsiManager;
 import org.jetbrains.plugins.groovy.lang.psi.impl.PsiImplUtil;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil;
 import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GroovyScriptClass;
-import org.jetbrains.plugins.groovy.impl.lang.psi.util.GrStaticChecker;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 import org.jetbrains.plugins.groovy.lang.resolve.ResolveUtil;
@@ -81,7 +82,6 @@ import org.jetbrains.plugins.groovy.util.LightCacheKey;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -91,14 +91,12 @@ import java.util.Map;
 public class GrUnresolvedAccessChecker {
   public static final Logger LOG = Logger.getInstance(GrUnresolvedAccessChecker.class);
 
-  private static final LightCacheKey<Map<String, Boolean>> GROOVY_OBJECT_METHODS_CACHE = new
-    LightCacheKey<Map<String, Boolean>>() {
+  private static final LightCacheKey<Map<String, Boolean>> GROOVY_OBJECT_METHODS_CACHE = new LightCacheKey<>() {
       @Override
       protected long getModificationCount(PsiElement holder) {
         return holder.getManager().getModificationTracker().getModificationCount();
       }
     };
-
 
   private final HighlightDisplayKey myDisplayKey;
   private final boolean myInspectionEnabled;
@@ -111,21 +109,22 @@ public class GrUnresolvedAccessChecker {
   }
 
   @Nullable
+  @RequiredReadAction
   public HighlightInfo checkCodeReferenceElement(GrCodeReferenceElement refElement) {
-    HighlightInfo info = checkCodeRefInner(refElement);
-    addEmptyIntentionIfNeeded(info);
-    return info;
+    HighlightInfo.Builder builder = checkCodeRefInner(refElement);
+    return builder == null ? null : builder.create();
   }
 
   @Nullable
+  @RequiredReadAction
   public List<HighlightInfo> checkReferenceExpression(GrReferenceExpression ref) {
-    List<HighlightInfo> info = checkRefInner(ref);
-    addEmptyIntentionIfNeeded(ContainerUtil.getFirstItem(info));
-    return info;
+    List<HighlightInfo.Builder> builders = checkRefInner(ref);
+    return builders == null ? null : ContainerUtil.mapNotNull(builders, HighlightInfo.Builder::create);
   }
 
   @Nullable
-  private HighlightInfo checkCodeRefInner(GrCodeReferenceElement refElement) {
+  @RequiredReadAction
+  private HighlightInfo.Builder checkCodeRefInner(GrCodeReferenceElement refElement) {
     if (PsiTreeUtil.getParentOfType(refElement, GroovyDocPsiElement.class) != null) {
       return null;
     }
@@ -144,23 +143,21 @@ public class GrUnresolvedAccessChecker {
 
     if (!(refElement.getParent() instanceof GrPackageDefinition) && resolved == null) {
       String message = GroovyBundle.message("cannot.resolve", refElement.getReferenceName());
-      HighlightInfo info = HighlightInfo.newHighlightInfo(HighlightInfoType.WRONG_REF).range(nameElement)
-                                        .descriptionAndTooltip(message).create();
+      HighlightInfo.Builder builder =
+        HighlightInfo.newHighlightInfo(HighlightInfoType.WRONG_REF).range(nameElement).descriptionAndTooltip(message);
 
       // todo implement for nested classes
-      registerCreateClassByTypeFix(refElement, info, myDisplayKey);
-      registerAddImportFixes(refElement, info, myDisplayKey);
-      QuickFixActionRegistrarAdapter registrar = new QuickFixActionRegistrarAdapter
-        (info, myDisplayKey);
-      UnresolvedReferenceQuickFixProvider.registerReferenceFixes(refElement, registrar);
+      registerCreateClassByTypeFix(refElement, builder, myDisplayKey);
+      registerAddImportFixes(refElement, builder, myDisplayKey);
+      UnresolvedReferenceQuickFixUpdater.getInstance(refElement.getProject()).registerQuickFixesLater(refElement, builder);
       List<LocalQuickFix> fixes = QuickFixFactory.getInstance().registerOrderEntryFixes(refElement);
       if (fixes != null) {
         for (LocalQuickFix fix : fixes) {
-          registrar.register((IntentionAction)fix);
+          builder.registerFix((IntentionAction)fix, null, null, null, null);
         }
       }
 
-      return info;
+      return builder;
     }
 
     if (refElement.getParent() instanceof GrNewExpression) {
@@ -221,7 +218,8 @@ public class GrUnresolvedAccessChecker {
   }
 
   @Nullable
-  private List<HighlightInfo> checkRefInner(GrReferenceExpression ref) {
+  @RequiredReadAction
+  private List<HighlightInfo.Builder> checkRefInner(GrReferenceExpression ref) {
     PsiElement refNameElement = ref.getReferenceNameElement();
     if (refNameElement == null) {
       return null;
@@ -237,7 +235,8 @@ public class GrUnresolvedAccessChecker {
 
       if (!isStaticOk(resolveResult)) {
         String message = GroovyBundle.message("cannot.reference.non.static", ref.getReferenceName());
-        return Collections.singletonList(createAnnotationForRef(ref, inStaticContext, message));
+        HighlightInfo.Builder builder = createAnnotationForRef(ref, inStaticContext, message);
+        return builder == null ? null : List.of(builder);
       }
 
       return null;
@@ -266,30 +265,28 @@ public class GrUnresolvedAccessChecker {
     }
 
     if (inStaticContext || shouldHighlightAsUnresolved(ref)) {
-      HighlightInfo info = createAnnotationForRef(ref, inStaticContext, GroovyBundle.message("cannot.resolve",
-                                                                                             ref.getReferenceName()));
-      if (info == null) {
+      HighlightInfo.Builder builder = createAnnotationForRef(ref, inStaticContext, GroovyBundle.message("cannot.resolve",
+                                                                                                        ref.getReferenceName()));
+      if (builder == null) {
         return null;
       }
 
-      ArrayList<HighlightInfo> result = ContainerUtil.newArrayList();
-      result.add(info);
+      List<HighlightInfo.Builder> result = new ArrayList<>();
+      result.add(builder);
       if (ref.getParent() instanceof GrMethodCall) {
         ContainerUtil.addIfNotNull(result, registerStaticImportFix(ref, myDisplayKey));
       }
       else {
-        registerCreateClassByTypeFix(ref, info, myDisplayKey);
-        registerAddImportFixes(ref, info, myDisplayKey);
+        registerCreateClassByTypeFix(ref, builder, myDisplayKey);
+        registerAddImportFixes(ref, builder, myDisplayKey);
       }
 
-      registerReferenceFixes(ref, info, inStaticContext, myDisplayKey);
-      QuickFixActionRegistrarAdapter registrar = new QuickFixActionRegistrarAdapter(info,
-                                                                                    myDisplayKey);
-      UnresolvedReferenceQuickFixProvider.registerReferenceFixes(ref, registrar);
+      registerReferenceFixes(ref, builder, inStaticContext, myDisplayKey);
+      UnresolvedReferenceQuickFixUpdater.getInstance(ref.getProject()).registerQuickFixesLater(ref, builder);
       List<LocalQuickFix> fixes = QuickFixFactory.getInstance().registerOrderEntryFixes(ref);
       if (fixes != null) {
         for (LocalQuickFix fix : fixes) {
-          registrar.register((IntentionAction)fix);
+          builder.registerFix((IntentionAction)fix, null, null, null, null);
         }
       }
       return result;
@@ -441,20 +438,6 @@ public class GrUnresolvedAccessChecker {
     return patternMethods[0];
   }
 
-  private void addEmptyIntentionIfNeeded(@Nullable HighlightInfo info) {
-    // TODO dead
-//    if (info != null) {
-//      int s1 = info.quickFixActionMarkers != null ? info.quickFixActionMarkers.size() : 0;
-//      int s2 = info.quickFixActionRanges != null ? info.quickFixActionRanges.size() : 0;
-//
-//      if (s1 + s2 == 0) {
-//        EmptyIntentionAction emptyIntentionAction = new EmptyIntentionAction(GrUnresolvedAccessInspection
-//                                                                               .getDisplayText());
-//        QuickFixAction.registerQuickFixAction(info, emptyIntentionAction, myDisplayKey);
-//      }
-//    }
-  }
-
   private static boolean isResolvedStaticImport(GrCodeReferenceElement refElement) {
     final PsiElement parent = refElement.getParent();
     return parent instanceof GrImportStatement &&
@@ -500,17 +483,19 @@ public class GrUnresolvedAccessChecker {
   }
 
   @Nullable
-  private static HighlightInfo createAnnotationForRef(@Nonnull GrReferenceElement ref,
-                                                      boolean strongError,
-                                                      @Nonnull String message) {
+  @RequiredReadAction
+  private static HighlightInfo.Builder createAnnotationForRef(@Nonnull GrReferenceElement ref,
+                                                              boolean strongError,
+                                                              @Nonnull String message) {
     HighlightDisplayLevel displayLevel = strongError ? HighlightDisplayLevel.ERROR : GrUnresolvedAccessInspection
       .getHighlightDisplayLevel(ref.getProject(), ref);
     return GrInspectionUtil.createAnnotationForRef(ref, displayLevel, message);
   }
 
   @Nullable
-  private static HighlightInfo registerStaticImportFix(@Nonnull GrReferenceExpression referenceExpression,
-                                                       @Nullable final HighlightDisplayKey key) {
+  @RequiredReadAction
+  private static HighlightInfo.Builder registerStaticImportFix(@Nonnull GrReferenceExpression referenceExpression,
+                                                               @Nullable final HighlightDisplayKey key) {
     final String referenceName = referenceExpression.getReferenceName();
     if (StringUtil.isEmpty(referenceName)) {
       return null;
@@ -519,17 +504,16 @@ public class GrUnresolvedAccessChecker {
       return null;
     }
 
-    HighlightInfo info = HighlightInfo.newHighlightInfo(HighlightInfoType.INFORMATION).range(referenceExpression
-                                                                                               .getParent()).createUnconditionally();
-    QuickFixAction.registerQuickFixAction(info,
-                                          GroovyQuickFixFactory.getInstance()
-                                                               .createGroovyStaticImportMethodFix((GrMethodCall)referenceExpression.getParent()),
-                                          key);
-    return info;
+    HighlightInfo.Builder builder = HighlightInfo.newHighlightInfo(HighlightInfoType.INFORMATION).range(referenceExpression.getParent());
+    registerQuickFixAction(builder,
+                           GroovyQuickFixFactory.getInstance()
+                                                .createGroovyStaticImportMethodFix((GrMethodCall)referenceExpression.getParent()),
+                           key);
+    return builder;
   }
 
   private static void registerReferenceFixes(GrReferenceExpression refExpr,
-                                             HighlightInfo info,
+                                             HighlightInfo.Builder builder,
                                              boolean compileStatic,
                                              final HighlightDisplayKey key) {
     PsiClass targetClass = QuickfixUtil.findTargetClass(refExpr, compileStatic);
@@ -538,43 +522,36 @@ public class GrUnresolvedAccessChecker {
     }
 
     if (!compileStatic) {
-      addDynamicAnnotation(info, refExpr, key);
+      addDynamicAnnotation(builder, refExpr, key);
     }
 
     if (!(targetClass instanceof SyntheticElement) || (targetClass instanceof GroovyScriptClass)) {
-
-      QuickFixAction.registerQuickFixAction(info, GroovyQuickFixFactory.getInstance()
-                                                                       .createCreateFieldFromUsageFix(refExpr), key);
+      registerQuickFixAction(builder, GroovyQuickFixFactory.getInstance().createCreateFieldFromUsageFix(refExpr), key);
 
       if (PsiUtil.isAccessedForReading(refExpr)) {
-        QuickFixAction.registerQuickFixAction(info, GroovyQuickFixFactory.getInstance()
-                                                                         .createCreateGetterFromUsageFix(refExpr, targetClass), key);
+        registerQuickFixAction(builder, GroovyQuickFixFactory.getInstance().createCreateGetterFromUsageFix(refExpr, targetClass), key);
       }
       if (PsiUtil.isLValue(refExpr)) {
-        QuickFixAction.registerQuickFixAction(info, GroovyQuickFixFactory.getInstance()
-                                                                         .createCreateSetterFromUsageFix(refExpr), key);
+        registerQuickFixAction(builder, GroovyQuickFixFactory.getInstance().createCreateSetterFromUsageFix(refExpr), key);
       }
 
       if (refExpr.getParent() instanceof GrCall && refExpr.getParent() instanceof GrExpression) {
-        QuickFixAction.registerQuickFixAction(info, GroovyQuickFixFactory.getInstance()
-                                                                         .createCreateMethodFromUsageFix(refExpr), key);
+        registerQuickFixAction(builder, GroovyQuickFixFactory.getInstance().createCreateMethodFromUsageFix(refExpr), key);
       }
     }
 
     if (!refExpr.isQualified()) {
       GrVariableDeclarationOwner owner = PsiTreeUtil.getParentOfType(refExpr, GrVariableDeclarationOwner.class);
       if (!(owner instanceof GroovyFileBase) || ((GroovyFileBase)owner).isScript()) {
-        QuickFixAction.registerQuickFixAction(info, GroovyQuickFixFactory.getInstance()
-                                                                         .createCreateLocalVariableFromUsageFix(refExpr, owner), key);
+        registerQuickFixAction(builder, GroovyQuickFixFactory.getInstance().createCreateLocalVariableFromUsageFix(refExpr, owner), key);
       }
       if (PsiTreeUtil.getParentOfType(refExpr, GrMethod.class) != null) {
-        QuickFixAction.registerQuickFixAction(info, GroovyQuickFixFactory.getInstance()
-                                                                         .createCreateParameterFromUsageFix(refExpr), key);
+        registerQuickFixAction(builder, GroovyQuickFixFactory.getInstance().createCreateParameterFromUsageFix(refExpr), key);
       }
     }
   }
 
-  private static void addDynamicAnnotation(HighlightInfo info,
+  private static void addDynamicAnnotation(HighlightInfo.Builder builder,
                                            GrReferenceExpression referenceExpression,
                                            HighlightDisplayKey key) {
     final PsiFile containingFile = referenceExpression.getContainingFile();
@@ -591,20 +568,20 @@ public class GrUnresolvedAccessChecker {
     if (PsiUtil.isCall(referenceExpression)) {
       PsiType[] argumentTypes = PsiUtil.getArgumentTypes(referenceExpression, false);
       if (argumentTypes != null) {
-        QuickFixAction.registerQuickFixAction(info, referenceExpression.getTextRange(),
-                                              GroovyQuickFixFactory.getInstance().createDynamicMethodFix(referenceExpression,
-                                                                                                         argumentTypes), key);
+        registerQuickFixAction(builder, referenceExpression.getTextRange(),
+                               GroovyQuickFixFactory.getInstance().createDynamicMethodFix(referenceExpression,
+                                                                                          argumentTypes), key);
       }
     }
     else {
-      QuickFixAction.registerQuickFixAction(info, referenceExpression.getTextRange(),
-                                            GroovyQuickFixFactory.getInstance().createDynamicPropertyFix(referenceExpression), key);
+      registerQuickFixAction(builder, referenceExpression.getTextRange(),
+                             GroovyQuickFixFactory.getInstance().createDynamicPropertyFix(referenceExpression), key);
     }
   }
 
   private static void registerAddImportFixes(GrReferenceElement refElement,
-                                             @Nullable HighlightInfo info,
-                                             final HighlightDisplayKey key) {
+                                             @Nonnull HighlightInfo.Builder builder,
+                                             HighlightDisplayKey key) {
     final String referenceName = refElement.getReferenceName();
     //noinspection ConstantConditions
     if (StringUtil.isEmpty(referenceName)) {
@@ -617,12 +594,11 @@ public class GrUnresolvedAccessChecker {
       return;
     }
 
-    QuickFixAction.registerQuickFixAction(info, GroovyQuickFixFactory.getInstance().createGroovyAddImportAction
-      (refElement), key);
+    registerQuickFixAction(builder, GroovyQuickFixFactory.getInstance().createGroovyAddImportAction(refElement), key);
   }
 
   private static void registerCreateClassByTypeFix(@Nonnull GrReferenceElement refElement,
-                                                   @Nullable HighlightInfo info,
+                                                   @Nonnull HighlightInfo.Builder builder,
                                                    final HighlightDisplayKey key) {
     GrPackageDefinition packageDefinition = PsiTreeUtil.getParentOfType(refElement, GrPackageDefinition.class);
     if (packageDefinition != null) {
@@ -632,43 +608,53 @@ public class GrUnresolvedAccessChecker {
     PsiElement parent = refElement.getParent();
     if (parent instanceof GrNewExpression && refElement.getManager().areElementsEquivalent(((GrNewExpression)
       parent).getReferenceElement(), refElement)) {
-      QuickFixAction.registerQuickFixAction(info, GroovyQuickFixFactory.getInstance().createClassFromNewAction(
-        (GrNewExpression)parent), key);
+      registerQuickFixAction(builder, GroovyQuickFixFactory.getInstance().createClassFromNewAction((GrNewExpression)parent), key);
     }
     else if (canBeClassOrPackage(refElement)) {
       if (shouldBeInterface(refElement)) {
-        QuickFixAction.registerQuickFixAction(info, GroovyQuickFixFactory.getInstance().createClassFixAction
-          (refElement, GrCreateClassKind.INTERFACE), key);
-        QuickFixAction.registerQuickFixAction(info, GroovyQuickFixFactory.getInstance().createClassFixAction
-          (refElement, GrCreateClassKind.TRAIT), key);
+        registerQuickFixAction(builder,
+                               GroovyQuickFixFactory.getInstance().createClassFixAction(refElement, GrCreateClassKind.INTERFACE),
+                               key);
+        registerQuickFixAction(builder, GroovyQuickFixFactory.getInstance().createClassFixAction(refElement, GrCreateClassKind.TRAIT), key);
       }
       else if (shouldBeClass(refElement)) {
-        QuickFixAction.registerQuickFixAction(info, GroovyQuickFixFactory.getInstance().createClassFixAction
-          (refElement, GrCreateClassKind.CLASS), key);
-        QuickFixAction.registerQuickFixAction(info, GroovyQuickFixFactory.getInstance().createClassFixAction
-          (refElement, GrCreateClassKind.ENUM), key);
+        registerQuickFixAction(builder, GroovyQuickFixFactory.getInstance().createClassFixAction(refElement, GrCreateClassKind.CLASS), key);
+        registerQuickFixAction(builder, GroovyQuickFixFactory.getInstance().createClassFixAction(refElement, GrCreateClassKind.ENUM), key);
       }
       else if (shouldBeAnnotation(refElement)) {
-        QuickFixAction.registerQuickFixAction(info, GroovyQuickFixFactory.getInstance().createClassFixAction
-          (refElement, GrCreateClassKind.ANNOTATION), key);
+        registerQuickFixAction(builder,
+                               GroovyQuickFixFactory.getInstance().createClassFixAction(refElement, GrCreateClassKind.ANNOTATION),
+                               key);
       }
       else {
-        QuickFixAction.registerQuickFixAction(info, GroovyQuickFixFactory.getInstance().createClassFixAction
-          (refElement, GrCreateClassKind.CLASS), key);
-        QuickFixAction.registerQuickFixAction(info, GroovyQuickFixFactory.getInstance().createClassFixAction
-          (refElement, GrCreateClassKind.INTERFACE), key);
+        registerQuickFixAction(builder, GroovyQuickFixFactory.getInstance().createClassFixAction(refElement, GrCreateClassKind.CLASS), key);
+        registerQuickFixAction(builder,
+                               GroovyQuickFixFactory.getInstance().createClassFixAction(refElement, GrCreateClassKind.INTERFACE),
+                               key);
 
         if (!refElement.isQualified() || resolvesToGroovy(refElement.getQualifier())) {
-          QuickFixAction.registerQuickFixAction(info, GroovyQuickFixFactory.getInstance()
-                                                                           .createClassFixAction(refElement, GrCreateClassKind.TRAIT), key);
+          registerQuickFixAction(builder,
+                                 GroovyQuickFixFactory.getInstance().createClassFixAction(refElement, GrCreateClassKind.TRAIT),
+                                 key);
         }
 
-        QuickFixAction.registerQuickFixAction(info, GroovyQuickFixFactory.getInstance().createClassFixAction
-          (refElement, GrCreateClassKind.ENUM), key);
-        QuickFixAction.registerQuickFixAction(info, GroovyQuickFixFactory.getInstance().createClassFixAction
-          (refElement, GrCreateClassKind.ANNOTATION), key);
+        registerQuickFixAction(builder, GroovyQuickFixFactory.getInstance().createClassFixAction(refElement, GrCreateClassKind.ENUM), key);
+        registerQuickFixAction(builder,
+                               GroovyQuickFixFactory.getInstance().createClassFixAction(refElement, GrCreateClassKind.ANNOTATION),
+                               key);
       }
     }
+  }
+
+  private static void registerQuickFixAction(HighlightInfo.Builder builder, IntentionAction action, HighlightDisplayKey key) {
+    builder.registerFix(action, List.of(), null, null, key);
+  }
+
+  private static void registerQuickFixAction(HighlightInfo.Builder builder,
+                                             TextRange textRange,
+                                             IntentionAction action,
+                                             HighlightDisplayKey key) {
+    builder.registerFix(action, List.of(), null, textRange, key);
   }
 
   private static boolean resolvesToGroovy(PsiElement qualifier) {

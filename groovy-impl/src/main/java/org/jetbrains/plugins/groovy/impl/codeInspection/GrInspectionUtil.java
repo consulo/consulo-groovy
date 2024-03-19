@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.impl.codeInspection;
 
-import consulo.application.ApplicationManager;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.language.ast.IElementType;
 import consulo.language.editor.rawHighlight.HighlightDisplayLevel;
 import consulo.language.editor.rawHighlight.HighlightInfo;
@@ -34,6 +34,7 @@ import javax.annotation.Nonnull;
  * @author Max Medvedev
  */
 public class GrInspectionUtil {
+  @RequiredReadAction
   public static boolean isNull(@Nonnull GrExpression expression) {
     return "null".equals(expression.getText());
   }
@@ -48,29 +49,26 @@ public class GrInspectionUtil {
     return GroovyTokenTypes.mNOT_EQUAL == tokenType;
   }
 
-  public static HighlightInfo createAnnotationForRef(@Nonnull GrReferenceElement ref,
+  @RequiredReadAction
+  public static HighlightInfo.Builder createAnnotationForRef(@Nonnull GrReferenceElement ref,
                                                      @Nonnull HighlightDisplayLevel displayLevel,
                                                      @Nonnull String message) {
     PsiElement refNameElement = ref.getReferenceNameElement();
     assert refNameElement != null;
 
     if (displayLevel == HighlightDisplayLevel.ERROR) {
-      return HighlightInfo.newHighlightInfo(HighlightInfoType.WRONG_REF).range(refNameElement)
-                          .descriptionAndTooltip(message).create();
+      return HighlightInfo.newHighlightInfo(HighlightInfoType.WRONG_REF).range(refNameElement).descriptionAndTooltip(message);
     }
 
     if (displayLevel == HighlightDisplayLevel.WEAK_WARNING) {
-      boolean isTestMode = ApplicationManager.getApplication().isUnitTestMode();
-      HighlightInfoType infotype = isTestMode ? HighlightInfoType.WARNING : HighlightInfoType.INFORMATION;
+      HighlightInfoType infotype = HighlightInfoType.INFORMATION;
 
       HighlightInfo.Builder builder = HighlightInfo.newHighlightInfo(infotype).range(refNameElement);
       builder.descriptionAndTooltip(message);
-      return builder.needsUpdateOnTyping(false).textAttributes(GroovySyntaxHighlighter.UNRESOLVED_ACCESS)
-                    .create();
+      return builder.needsUpdateOnTyping(false).textAttributes(GroovySyntaxHighlighter.UNRESOLVED_ACCESS);
     }
 
     HighlightInfoType highlightInfoType = HighlightTypeUtil.convertSeverity(displayLevel.getSeverity());
-    return HighlightInfo.newHighlightInfo(highlightInfoType).range(refNameElement).descriptionAndTooltip(message)
-                        .create();
+    return HighlightInfo.newHighlightInfo(highlightInfoType).range(refNameElement).descriptionAndTooltip(message);
   }
 }
