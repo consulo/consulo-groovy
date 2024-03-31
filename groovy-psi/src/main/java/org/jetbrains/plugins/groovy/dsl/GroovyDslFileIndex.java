@@ -49,7 +49,6 @@ import consulo.module.content.ProjectFileIndex;
 import consulo.module.content.ProjectRootManager;
 import consulo.project.Project;
 import consulo.project.ProjectManager;
-import consulo.util.collection.ConcurrentMultiMap;
 import consulo.util.collection.ContainerUtil;
 import consulo.util.collection.MultiMap;
 import consulo.util.concurrent.ConcurrencyUtil;
@@ -93,8 +92,7 @@ public class GroovyDslFileIndex extends ScalarIndexExtension<String> {
   private static final String OUR_KEY = "ourKey";
   public static final ID<String, Void> NAME = ID.create("GroovyDslFileIndex");
 
-  private static final MultiMap<String, LinkedBlockingQueue<Pair<VirtualFile, GroovyDslExecutor>>> filesInProcessing
-    = new ConcurrentMultiMap<String, LinkedBlockingQueue<Pair<VirtualFile, GroovyDslExecutor>>>();
+  private static final MultiMap<String, LinkedBlockingQueue<Pair<VirtualFile, GroovyDslExecutor>>> filesInProcessing = MultiMap.createConcurrent();
 
   private static final ThreadPoolExecutor ourPool = new ThreadPoolExecutor(4,
                                                                            4,

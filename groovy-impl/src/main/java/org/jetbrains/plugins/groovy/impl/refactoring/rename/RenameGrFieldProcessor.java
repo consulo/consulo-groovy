@@ -97,18 +97,8 @@ public class RenameGrFieldProcessor extends RenameJavaVariableProcessor {
       renames.put(setter, GroovyPropertyUtils.getSetterName(newName));
     }
 
-    MultiMap<PsiNamedElement, UsageInfo> propertyUsages = new MultiMap<PsiNamedElement, UsageInfo>() {
-      @Override
-      protected Map<PsiNamedElement, Collection<UsageInfo>> createMap() {
-        return new LinkedHashMap<PsiNamedElement, Collection<UsageInfo>>();
-      }
-    };
-    MultiMap<PsiNamedElement, UsageInfo> simpleUsages = new MultiMap<PsiNamedElement, UsageInfo>() {
-      @Override
-      protected Map<PsiNamedElement, Collection<UsageInfo>> createMap() {
-        return new LinkedHashMap<PsiNamedElement, Collection<UsageInfo>>();
-      }
-    };
+    MultiMap<PsiNamedElement, UsageInfo> propertyUsages = MultiMap.createLinked();
+    MultiMap<PsiNamedElement, UsageInfo> simpleUsages = MultiMap.createLinked();
 
     List<PsiReference> unknownUsages = new ArrayList<PsiReference>();
 
