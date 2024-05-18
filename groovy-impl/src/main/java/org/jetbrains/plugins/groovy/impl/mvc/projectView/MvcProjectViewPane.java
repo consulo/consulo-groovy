@@ -28,7 +28,6 @@ import consulo.ide.impl.idea.ide.projectView.impl.*;
 import consulo.ide.impl.idea.ide.util.DeleteHandler;
 import consulo.ide.impl.idea.openapi.roots.ui.configuration.actions.ModuleDeleteProvider;
 import consulo.ide.impl.idea.openapi.vfs.VfsUtil;
-import consulo.ide.impl.idea.openapi.wm.ex.ToolWindowEx;
 import consulo.ide.util.DirectoryChooserUtil;
 import consulo.language.editor.LangDataKeys;
 import consulo.language.editor.refactoring.ui.CopyPasteDelegator;
@@ -147,7 +146,7 @@ public class MvcProjectViewPane extends AbstractProjectViewPSIPane implements Id
     myDeletePSIElementProvider = new DeleteHandler.DefaultDeleteProvider();
   }
 
-  public void setup(ToolWindowEx toolWindow) {
+  public void setup(ToolWindow toolWindow) {
     JPanel p = new JPanel(new BorderLayout());
     p.add(myComponent, BorderLayout.CENTER);
 

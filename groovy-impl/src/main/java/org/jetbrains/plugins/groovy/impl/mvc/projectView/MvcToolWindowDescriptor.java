@@ -57,7 +57,7 @@ public abstract class MvcToolWindowDescriptor implements ToolWindowFactory, Cond
     toolWindow.setTitle(myFramework.getDisplayName());
 
     MvcProjectViewPane view = new MvcProjectViewPane(project, this);
-    view.setup((consulo.ide.impl.idea.openapi.wm.ex.ToolWindowEx)toolWindow);
+    view.setup(toolWindow);
   }
 
   public boolean value(Project project) {
