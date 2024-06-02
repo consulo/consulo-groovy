@@ -19,7 +19,7 @@ package org.jetbrains.plugins.groovy.impl.compiler;
 import com.intellij.java.compiler.impl.cache.JavaDependencyCache;
 import com.intellij.java.compiler.impl.javaCompiler.OutputItemImpl;
 import com.intellij.java.language.impl.JavaFileType;
-import com.intellij.java.language.projectRoots.JavaSdk;
+import com.intellij.java.language.projectRoots.JavaSdkType;
 import com.intellij.java.language.util.cls.ClsFormatException;
 import consulo.application.AccessRule;
 import consulo.application.progress.ProgressIndicator;
@@ -32,6 +32,7 @@ import consulo.container.boot.ContainerPathManager;
 import consulo.content.ContentIterator;
 import consulo.content.base.BinariesOrderRootType;
 import consulo.content.bundle.Sdk;
+import consulo.content.bundle.SdkTypeId;
 import consulo.content.library.Library;
 import consulo.groovy.module.extension.GroovyModuleExtension;
 import consulo.http.HttpProxyManager;
@@ -115,8 +116,9 @@ public abstract class GroovyCompilerBase implements TranslatingCompiler {
       classPathBuilder.addVirtualFiles(Arrays.asList(libraries[0].getFiles(BinariesOrderRootType.getInstance())));
     }
 
-    classPathBuilder.addVirtualFiles(chunk.getCompilationBootClasspathFiles(JavaSdk.getInstance(), false));
-    classPathBuilder.addVirtualFiles(chunk.getCompilationClasspathFiles(JavaSdk.getInstance(), false));
+    JavaSdkType javaSdkType = (JavaSdkType)sdk.getSdkType();
+    classPathBuilder.addVirtualFiles(chunk.getCompilationBootClasspathFiles(javaSdkType, false));
+    classPathBuilder.addVirtualFiles(chunk.getCompilationClasspathFiles(javaSdkType, false));
     appendOutputPath(module, classPathBuilder, false);
     if (tests) {
       appendOutputPath(module, classPathBuilder, true);
