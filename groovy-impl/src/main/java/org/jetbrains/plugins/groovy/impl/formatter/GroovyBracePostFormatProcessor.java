@@ -17,8 +17,8 @@ package org.jetbrains.plugins.groovy.impl.formatter;
 
 import consulo.annotation.component.ExtensionImpl;
 import consulo.document.util.TextRange;
-import consulo.ide.impl.psi.impl.source.codeStyle.PostFormatProcessor;
 import consulo.language.codeStyle.CodeStyleSettings;
+import consulo.language.codeStyle.PostFormatProcessor;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiFile;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
