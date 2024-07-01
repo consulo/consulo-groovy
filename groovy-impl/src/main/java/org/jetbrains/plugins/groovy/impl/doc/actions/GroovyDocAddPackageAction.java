@@ -15,7 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.impl.doc.actions;
 
-import com.intellij.java.language.impl.codeInsight.PackageChooserDialog;
+import com.intellij.java.language.impl.ui.PackageChooser;
+import com.intellij.java.language.impl.ui.PackageChooserFactory;
 import com.intellij.java.language.psi.PsiJavaPackage;
 import consulo.application.dumb.DumbAware;
 import consulo.ide.impl.idea.util.IconUtil;
@@ -43,11 +44,16 @@ public class GroovyDocAddPackageAction extends AnAction implements DumbAware {
   @RequiredUIAccess
   public void actionPerformed(final AnActionEvent e) {
     final Project project = e.getData(Project.KEY);
+    if (project == null) {
+      return;
+    }
 
-    PackageChooserDialog chooser = new PackageChooserDialog("Choose packages", project);
-    chooser.show();
+    PackageChooser chooser = project.getInstance(PackageChooserFactory.class).create();
 
-    final List<PsiJavaPackage> packages = chooser.getSelectedPackages();
+    final List<PsiJavaPackage> packages = chooser.showAndSelect();
+    if (packages == null) {
+      return;
+    }
 
     for (PsiJavaPackage aPackage : packages) {
       final String qualifiedName = aPackage.getQualifiedName();

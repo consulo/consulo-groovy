@@ -15,10 +15,10 @@
  */
 package org.jetbrains.plugins.groovy.impl.refactoring.introduce.constant;
 
+import com.intellij.java.impl.codeInsight.PackageUtil;
 import com.intellij.java.impl.refactoring.JavaRefactoringSettings;
 import com.intellij.java.impl.refactoring.ui.JavaVisibilityPanel;
 import com.intellij.java.impl.ui.ReferenceEditorComboWithBrowseButton;
-import com.intellij.java.language.impl.codeInsight.PackageUtil;
 import com.intellij.java.language.impl.psi.impl.source.resolve.JavaResolveUtil;
 import com.intellij.java.language.psi.*;
 import com.intellij.java.language.util.TreeClassChooser;
@@ -53,17 +53,17 @@ import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.impl.actions.GroovyTemplates;
 import org.jetbrains.plugins.groovy.impl.actions.GroovyTemplatesFactory;
 import org.jetbrains.plugins.groovy.impl.actions.NewGroovyActionBase;
+import org.jetbrains.plugins.groovy.impl.refactoring.GroovyRefactoringBundle;
+import org.jetbrains.plugins.groovy.impl.refactoring.introduce.GrIntroduceContext;
+import org.jetbrains.plugins.groovy.impl.refactoring.introduce.GrIntroduceDialog;
+import org.jetbrains.plugins.groovy.impl.refactoring.introduce.field.GrFieldNameSuggester;
+import org.jetbrains.plugins.groovy.impl.refactoring.introduce.variable.GroovyVariableValidator;
+import org.jetbrains.plugins.groovy.impl.refactoring.ui.GrTypeComboBox;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyNamesUtil;
-import org.jetbrains.plugins.groovy.impl.refactoring.GroovyRefactoringBundle;
-import org.jetbrains.plugins.groovy.impl.refactoring.introduce.GrIntroduceContext;
-import org.jetbrains.plugins.groovy.impl.refactoring.introduce.GrIntroduceDialog;
 import org.jetbrains.plugins.groovy.refactoring.introduce.StringPartInfo;
-import org.jetbrains.plugins.groovy.impl.refactoring.introduce.field.GrFieldNameSuggester;
-import org.jetbrains.plugins.groovy.impl.refactoring.introduce.variable.GroovyVariableValidator;
-import org.jetbrains.plugins.groovy.impl.refactoring.ui.GrTypeComboBox;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

@@ -15,8 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.impl.annotator.intentions;
 
+import com.intellij.java.impl.codeInsight.PackageUtil;
 import com.intellij.java.impl.refactoring.util.RefactoringMessageUtil;
-import com.intellij.java.language.impl.codeInsight.PackageUtil;
 import consulo.application.CommonBundle;
 import consulo.language.editor.inspection.LocalQuickFix;
 import consulo.language.editor.inspection.ProblemDescriptor;
