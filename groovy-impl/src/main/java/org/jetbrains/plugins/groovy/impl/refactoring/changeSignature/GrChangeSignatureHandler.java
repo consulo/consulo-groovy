@@ -61,7 +61,7 @@ public class GrChangeSignatureHandler implements ChangeSignatureHandler {
     else {
       String message =
         RefactoringBundle.getCannotRefactorMessage(GroovyRefactoringBundle.message("error.wrong.caret.position.method.name"));
-      CommonRefactoringUtil.showErrorHint(project, editor, message, REFACTORING_NAME, HelpID.CHANGE_SIGNATURE);
+      CommonRefactoringUtil.showErrorHint(project, editor, message, REFACTORING_NAME.get(), HelpID.CHANGE_SIGNATURE);
     }
   }
 
