@@ -19,19 +19,20 @@ import com.intellij.java.impl.ide.util.SuperMethodWarningUtil;
 import com.intellij.java.impl.refactoring.HelpID;
 import com.intellij.java.impl.refactoring.changeSignature.ChangeSignatureUtil;
 import com.intellij.java.language.psi.PsiMethod;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.codeEditor.Editor;
 import consulo.codeEditor.ScrollType;
 import consulo.dataContext.DataContext;
-import consulo.language.editor.LangDataKeys;
-import consulo.language.editor.PlatformDataKeys;
 import consulo.language.editor.refactoring.RefactoringBundle;
 import consulo.language.editor.refactoring.changeSignature.ChangeSignatureHandler;
+import consulo.language.editor.refactoring.localize.RefactoringLocalize;
 import consulo.language.editor.refactoring.util.CommonRefactoringUtil;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiFile;
 import consulo.language.psi.PsiReference;
 import consulo.language.psi.util.PsiTreeUtil;
 import consulo.project.Project;
+import consulo.ui.annotation.RequiredUIAccess;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrCall;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameterList;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
@@ -45,18 +46,20 @@ import javax.annotation.Nullable;
  * @author Maxim.Medvedev
  */
 public class GrChangeSignatureHandler implements ChangeSignatureHandler {
+  @RequiredUIAccess
   public void invoke(@Nonnull Project project, Editor editor, PsiFile file, DataContext dataContext) {
     editor.getScrollingModel().scrollToCaret(ScrollType.MAKE_VISIBLE);
     PsiElement element = findTargetMember(file, editor);
     if (element == null) {
-      element = dataContext.getData(LangDataKeys.PSI_ELEMENT);
+      element = dataContext.getData(PsiElement.KEY);
     }
     invokeOnElement(project, editor, element);
   }
 
+  @RequiredUIAccess
   private static void invokeOnElement(Project project, Editor editor, PsiElement element) {
-    if (element instanceof PsiMethod) {
-      invoke((PsiMethod)element, project);
+    if (element instanceof PsiMethod method) {
+      invoke(method, project);
     }
     else {
       String message =
@@ -65,11 +68,12 @@ public class GrChangeSignatureHandler implements ChangeSignatureHandler {
     }
   }
 
+  @RequiredUIAccess
   public void invoke(@Nonnull final Project project, @Nonnull final PsiElement[] elements, final DataContext dataContext) {
     if (elements.length != 1) {
       return;
     }
-    Editor editor = dataContext == null ? null : dataContext.getData(PlatformDataKeys.EDITOR);
+    Editor editor = dataContext == null ? null : dataContext.getData(Editor.KEY);
     invokeOnElement(project, editor, elements[0]);
   }
 
@@ -79,15 +83,16 @@ public class GrChangeSignatureHandler implements ChangeSignatureHandler {
     return null;
   }
 
+  @RequiredUIAccess
   private static void invoke(PsiMethod method, final Project project) {
     if (!CommonRefactoringUtil.checkReadOnlyStatus(project, method)) {
       return;
     }
-    if (method instanceof GrReflectedMethod) {
-      method = ((GrReflectedMethod)method).getBaseMethod();
+    if (method instanceof GrReflectedMethod reflectedMethod) {
+      method = reflectedMethod.getBaseMethod();
     }
 
-    PsiMethod newMethod = SuperMethodWarningUtil.checkSuperMethod(method, RefactoringBundle.message("to.refactor"));
+    PsiMethod newMethod = SuperMethodWarningUtil.checkSuperMethod(method, RefactoringLocalize.toRefactor().get());
     if (newMethod == null) {
       return;
     }
@@ -109,6 +114,7 @@ public class GrChangeSignatureHandler implements ChangeSignatureHandler {
   }
 
   @Nullable
+  @RequiredReadAction
   public PsiElement findTargetMember(PsiFile file, Editor editor) {
     final PsiElement element = file.findElementAt(editor.getCaretModel().getOffset());
     final PsiElement targetMember = findTargetMember(element);
@@ -124,6 +130,7 @@ public class GrChangeSignatureHandler implements ChangeSignatureHandler {
   }
 
   @Nullable
+  @RequiredReadAction
   public PsiElement findTargetMember(PsiElement element) {
     final GrParameterList parameterList = PsiTreeUtil.getParentOfType(element, GrParameterList.class);
     if (parameterList != null) {
@@ -133,7 +140,7 @@ public class GrChangeSignatureHandler implements ChangeSignatureHandler {
       }
     }
 
-    if (element.getParent() instanceof GrMethod && ((GrMethod)element.getParent()).getNameIdentifierGroovy() == element) {
+    if (element.getParent() instanceof GrMethod method && method.getNameIdentifierGroovy() == element) {
       return element.getParent();
     }
     final GrCall expression = PsiTreeUtil.getParentOfType(element, GrCall.class);
