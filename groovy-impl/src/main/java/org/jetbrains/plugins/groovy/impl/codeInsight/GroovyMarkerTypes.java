@@ -31,6 +31,7 @@ import consulo.application.progress.ProgressIndicator;
 import consulo.application.progress.ProgressManager;
 import consulo.application.util.ReadActionProcessor;
 import consulo.application.util.function.CommonProcessors;
+import consulo.ide.impl.idea.codeInsight.navigation.ListBackgroundUpdaterTask;
 import consulo.ide.impl.idea.util.NullableFunction;
 import consulo.language.editor.DaemonBundle;
 import consulo.language.editor.ui.PsiElementListCellRenderer;
@@ -49,8 +50,8 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.PsiImplUtil;
 import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GrTraitMethod;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyPropertyUtils;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import javax.swing.*;
 import java.awt.event.MouseEvent;
 import java.text.MessageFormat;
@@ -395,7 +396,7 @@ public class GroovyMarkerTypes {
     return result;
   }
 
-  private static class OverridingMethodsUpdater extends consulo.ide.impl.idea.codeInsight.navigation.ListBackgroundUpdaterTask {
+  private static class OverridingMethodsUpdater extends ListBackgroundUpdaterTask {
     private final GrMethod myMethod;
     private final PsiElementListCellRenderer myRenderer;
 

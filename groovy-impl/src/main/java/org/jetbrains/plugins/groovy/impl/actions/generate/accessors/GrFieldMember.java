@@ -23,12 +23,11 @@ import com.intellij.java.language.psi.PsiModifier;
 import com.intellij.java.language.psi.PsiSubstitutor;
 import com.intellij.java.language.psi.util.PsiFormatUtil;
 import com.intellij.java.language.psi.util.PsiFormatUtilBase;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.impl.actions.generate.GroovyGenerationInfo;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrAccessorMethod;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyPropertyUtils;
-
-import javax.annotation.Nullable;
 
 /**
  * @author Max Medvedev

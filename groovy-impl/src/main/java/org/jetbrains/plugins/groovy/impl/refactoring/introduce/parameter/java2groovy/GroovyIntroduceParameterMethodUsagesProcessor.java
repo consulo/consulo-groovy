@@ -37,6 +37,7 @@ import consulo.usage.UsageInfo;
 import consulo.util.collection.ArrayUtil;
 import consulo.util.collection.MultiMap;
 import consulo.util.collection.primitive.ints.IntList;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.signatures.GrClosureSignature;
@@ -57,7 +58,6 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.signatures.GrClosureSignatureU
 import org.jetbrains.plugins.groovy.impl.refactoring.GroovyRefactoringUtil;
 import org.jetbrains.plugins.groovy.impl.refactoring.introduce.parameter.GroovyIntroduceParameterUtil;
 
-import javax.annotation.Nullable;
 import java.util.function.IntConsumer;
 
 /**

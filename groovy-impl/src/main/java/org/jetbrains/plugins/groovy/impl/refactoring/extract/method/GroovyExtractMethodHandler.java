@@ -67,8 +67,8 @@ import org.jetbrains.plugins.groovy.impl.refactoring.extract.InitialInfo;
 import org.jetbrains.plugins.groovy.impl.refactoring.extract.ParameterInfo;
 import org.jetbrains.plugins.groovy.impl.refactoring.introduce.GrIntroduceHandlerBase;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;

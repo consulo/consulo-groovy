@@ -20,11 +20,10 @@ import consulo.language.lexer.Lexer;
 import consulo.language.psi.stub.OccurrenceConsumer;
 import consulo.language.psi.stub.todo.LexerBasedTodoIndexer;
 import consulo.virtualFileSystem.fileType.FileType;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyFilterLexer;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyLexer;
-
-import javax.annotation.Nonnull;
 
 /**
  * @author Maxim.Medvedev

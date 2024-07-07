@@ -15,8 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.impl.codeInspection.control;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;

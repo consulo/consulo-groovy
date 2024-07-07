@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.impl.refactoring.introduce.field;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.impl.refactoring.GroovyNameSuggestionUtil;

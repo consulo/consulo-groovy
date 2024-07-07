@@ -16,17 +16,17 @@
 package org.jetbrains.plugins.groovy.impl.codeInspection.exception;
 
 import consulo.annotation.component.ExtensionImpl;
+import consulo.ide.impl.idea.codeInsight.daemon.impl.quickfix.RenameElementFix;
 import consulo.language.editor.inspection.LocalQuickFix;
 import consulo.language.editor.inspection.ProblemHighlightType;
 import consulo.language.psi.PsiElement;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrCatchClause;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrOpenBlock;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameter;
-
-import javax.annotation.Nonnull;
 
 @ExtensionImpl
 public class GroovyUnusedCatchParameterInspection extends BaseInspection {
@@ -68,7 +68,7 @@ public class GroovyUnusedCatchParameterInspection extends BaseInspection {
       block.accept(visitor);
       if (!visitor.isUsed()) {
         final PsiElement nameIdentifier = parameter.getNameIdentifierGroovy();
-        registerError(nameIdentifier, "Unused catch parameter '#ref' #loc", new LocalQuickFix[]{new consulo.ide.impl.idea.codeInsight.daemon.impl.quickfix.RenameElementFix(parameter, "ignored")},
+        registerError(nameIdentifier, "Unused catch parameter '#ref' #loc", new LocalQuickFix[]{new RenameElementFix(parameter, "ignored")},
                       ProblemHighlightType.GENERIC_ERROR_OR_WARNING);
       }
     }

@@ -20,7 +20,7 @@ import consulo.project.Project;
 import consulo.util.dataholder.Key;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.CollectionUtil;
 
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 
 /**
  * @author Max Medvedev

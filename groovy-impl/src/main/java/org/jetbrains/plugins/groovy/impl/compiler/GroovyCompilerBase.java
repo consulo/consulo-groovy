@@ -32,7 +32,6 @@ import consulo.container.boot.ContainerPathManager;
 import consulo.content.ContentIterator;
 import consulo.content.base.BinariesOrderRootType;
 import consulo.content.bundle.Sdk;
-import consulo.content.bundle.SdkTypeId;
 import consulo.content.library.Library;
 import consulo.groovy.module.extension.GroovyModuleExtension;
 import consulo.http.HttpProxyManager;
@@ -73,7 +72,7 @@ import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.impl.runner.GroovyScriptUtil;
 import org.jetbrains.plugins.groovy.impl.runner.GroovycOSProcessHandler;
 
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -231,7 +230,7 @@ public abstract class GroovyCompilerBase implements TranslatingCompiler {
         final String url = compilerMessage.getUrl();
         compileContext.addMessage(getMessageCategory(compilerMessage),
                                   compilerMessage.getMessage(),
-                                  url == null ? null : consulo.ide.impl.idea.openapi.vfs.VfsUtil.pathToUrl(FileUtil.toSystemIndependentName(
+                                  url == null ? null : VfsUtil.pathToUrl(FileUtil.toSystemIndependentName(
                                     url)),
                                   (int)compilerMessage.getLineNum(),
                                   (int)compilerMessage.getColumnNum());

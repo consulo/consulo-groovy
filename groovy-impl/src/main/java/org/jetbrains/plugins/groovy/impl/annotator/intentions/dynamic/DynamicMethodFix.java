@@ -22,14 +22,13 @@ import consulo.language.editor.intention.SyntheticIntentionAction;
 import consulo.language.psi.PsiFile;
 import consulo.language.util.IncorrectOperationException;
 import consulo.project.Project;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.impl.annotator.intentions.QuickfixUtil;
 import org.jetbrains.plugins.groovy.impl.annotator.intentions.dynamic.ui.DynamicDialog;
 import org.jetbrains.plugins.groovy.impl.annotator.intentions.dynamic.ui.DynamicElementSettings;
 import org.jetbrains.plugins.groovy.impl.annotator.intentions.dynamic.ui.DynamicMethodDialog;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
-
-import javax.annotation.Nonnull;
 
 /**
  * @author Maxim.Medvedev

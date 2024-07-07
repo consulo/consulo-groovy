@@ -16,11 +16,10 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.api.statements;
 
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameter;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameterList;
-
-import javax.annotation.Nullable;
 
 /**
  * @author ven

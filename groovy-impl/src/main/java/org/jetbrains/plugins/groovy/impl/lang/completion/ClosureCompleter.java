@@ -44,6 +44,7 @@ import consulo.language.psi.PsiManager;
 import consulo.language.psi.util.PsiTreeUtil;
 import consulo.project.Project;
 import consulo.util.collection.ContainerUtil;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.impl.template.expressions.ChooseTypeExpression;
 import org.jetbrains.plugins.groovy.impl.template.expressions.ParameterNameExpression;
 import org.jetbrains.plugins.groovy.lang.completion.closureParameters.ClosureParameterInfo;
@@ -54,7 +55,6 @@ import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeElement;
 import org.jetbrains.plugins.groovy.lang.psi.expectedTypes.SupertypeConstraint;
 import org.jetbrains.plugins.groovy.lang.psi.expectedTypes.TypeConstraint;
 
-import javax.annotation.Nullable;
 import java.util.List;
 
 /**

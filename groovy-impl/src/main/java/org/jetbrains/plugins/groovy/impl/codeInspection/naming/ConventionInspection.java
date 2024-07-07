@@ -16,14 +16,12 @@
 package org.jetbrains.plugins.groovy.impl.codeInspection.naming;
 
 import consulo.ui.ex.awt.UIUtil;
-import consulo.util.xml.serializer.InvalidDataException;
 import consulo.ui.ex.awt.event.DocumentAdapter;
 import consulo.ide.impl.idea.util.ui.RegExFormatter;
 import consulo.ide.impl.idea.util.ui.RegExInputVerifier;
-import org.jdom.Element;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NonNls;
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
 
 import javax.swing.*;

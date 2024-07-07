@@ -22,6 +22,7 @@ import consulo.language.editor.refactoring.RefactoringSupportProvider;
 import consulo.language.editor.refactoring.action.RefactoringActionHandler;
 import consulo.language.editor.refactoring.changeSignature.ChangeSignatureHandler;
 import consulo.language.psi.PsiElement;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.GroovyLanguage;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
@@ -33,8 +34,7 @@ import org.jetbrains.plugins.groovy.impl.refactoring.introduce.field.GrIntroduce
 import org.jetbrains.plugins.groovy.impl.refactoring.introduce.parameter.GrIntroduceParameterHandler;
 import org.jetbrains.plugins.groovy.impl.refactoring.introduce.variable.GrIntroduceVariableHandler;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 
 /**
  * @author ilyas

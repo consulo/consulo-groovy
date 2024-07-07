@@ -48,6 +48,8 @@ import consulo.language.util.IncorrectOperationException;
 import consulo.project.Project;
 import consulo.usage.UsageInfo;
 import consulo.usage.UsageViewUtil;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.impl.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.impl.intentions.base.IntentionUtils;
 import org.jetbrains.plugins.groovy.impl.intentions.base.PsiElementPredicate;
@@ -60,8 +62,6 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrAc
 import org.jetbrains.plugins.groovy.lang.psi.api.toplevel.imports.GrImportStatement;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyPropertyUtils;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashSet;

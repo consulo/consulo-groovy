@@ -22,9 +22,8 @@ import com.intellij.java.language.psi.PsiReferenceList;
 import consulo.language.impl.psi.LightElement;
 import consulo.language.psi.PsiElementVisitor;
 import consulo.language.psi.PsiManager;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.GroovyLanguage;
-
-import javax.annotation.Nonnull;
 
 /**
  * @author ven

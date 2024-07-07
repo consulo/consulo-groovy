@@ -1,4 +1,4 @@
-java.lang.String x = "5";
+import java.lang.String;String x = "5";
 if (org.codehaus.groovy.runtime.DefaultGroovyMethods.isCase("0", x)||org.codehaus.groovy.runtime.DefaultGroovyMethods.isCase("1", x)) {
 print(2);
 }

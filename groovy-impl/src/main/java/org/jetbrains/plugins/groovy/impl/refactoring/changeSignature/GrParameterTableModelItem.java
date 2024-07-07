@@ -19,18 +19,19 @@ import com.intellij.java.language.psi.JavaCodeFragmentFactory;
 import com.intellij.java.language.psi.PsiArrayType;
 import com.intellij.java.language.psi.PsiType;
 import com.intellij.java.language.psi.PsiTypeCodeFragment;
+import consulo.ide.impl.idea.refactoring.changeSignature.ParameterTableModelItemBase;
 import consulo.language.psi.PsiCodeFragment;
 import consulo.language.psi.PsiElement;
 import consulo.project.Project;
 import org.jetbrains.plugins.groovy.impl.debugger.fragments.GroovyCodeFragment;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 /**
 * @author Max Medvedev
 */
-public class GrParameterTableModelItem extends consulo.ide.impl.idea.refactoring.changeSignature.ParameterTableModelItemBase<GrParameterInfo>
+public class GrParameterTableModelItem extends ParameterTableModelItemBase<GrParameterInfo>
 {
   public PsiCodeFragment initializerCodeFragment;
 

@@ -18,7 +18,7 @@ package org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation
 
 import com.intellij.java.language.psi.PsiArrayInitializerMemberValue;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author: Dmitry.Krasilschikov

@@ -19,7 +19,7 @@ package org.jetbrains.plugins.groovy.lang.psi.impl.auxiliary;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 import consulo.document.util.TextRange;
 import consulo.language.psi.PsiElement;

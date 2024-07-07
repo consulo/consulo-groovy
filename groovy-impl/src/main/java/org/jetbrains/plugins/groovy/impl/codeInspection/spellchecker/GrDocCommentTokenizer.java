@@ -21,8 +21,8 @@ import consulo.language.psi.PsiElement;
 import consulo.language.spellcheker.tokenizer.TokenConsumer;
 import consulo.language.spellcheker.tokenizer.Tokenizer;
 import consulo.language.spellcheker.tokenizer.splitter.CommentTokenSplitter;
+import jakarta.annotation.Nonnull;
 
-import javax.annotation.Nonnull;
 import java.util.Set;
 
 /**

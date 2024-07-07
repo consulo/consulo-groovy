@@ -26,6 +26,7 @@ import consulo.language.psi.PsiRecursiveElementWalkingVisitor;
 import consulo.language.util.ProcessingContext;
 import consulo.language.editor.completion.CompletionProvider;
 import consulo.language.editor.completion.CompletionContributor;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.JetgroovyIcons;
 import org.jetbrains.plugins.groovy.extensions.GroovyNamedArgumentProvider;
 import org.jetbrains.plugins.groovy.extensions.NamedArgumentDescriptor;
@@ -41,8 +42,8 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrRefere
 import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyNamesUtil;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;

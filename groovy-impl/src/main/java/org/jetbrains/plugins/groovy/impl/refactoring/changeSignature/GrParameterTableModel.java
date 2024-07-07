@@ -21,10 +21,10 @@ import consulo.language.psi.PsiCodeFragment;
 import consulo.language.psi.PsiElement;
 import consulo.project.Project;
 import consulo.ui.ex.awt.ColumnInfo;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.impl.refactoring.ui.GrCodeFragmentTableCellEditor;
 
-import javax.annotation.Nullable;
 import javax.swing.table.TableCellEditor;
 
 /**

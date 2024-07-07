@@ -18,9 +18,8 @@ package org.jetbrains.plugins.groovy.impl.extensions;
 import consulo.annotation.component.ExtensionImpl;
 import consulo.language.psi.PsiFile;
 import consulo.util.dataholder.Key;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
-
-import javax.annotation.Nonnull;
 
 /**
  * @author Sergey Evdokimov

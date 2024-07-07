@@ -16,7 +16,7 @@
 package org.jetbrains.plugins.groovy.impl.util;
 
 import org.jetbrains.annotations.NonNls;
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 import java.io.FileWriter;
 import java.io.IOException;

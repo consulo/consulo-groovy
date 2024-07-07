@@ -19,7 +19,7 @@ import com.intellij.java.language.psi.PsiLiteral;
 import consulo.language.psi.PsiLanguageInjectionHost;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author Max Medvedev

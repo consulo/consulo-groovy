@@ -16,9 +16,8 @@
 
 package org.jetbrains.plugins.groovy.lang.groovydoc.psi.api;
 
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
-
-import javax.annotation.Nullable;
 
 /**
  * @author ilyas

@@ -17,7 +17,7 @@ package org.jetbrains.plugins.groovy.lang.psi.util;
 
 import java.util.Collection;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 import consulo.language.psi.PsiFile;
 import consulo.util.collection.MultiMap;

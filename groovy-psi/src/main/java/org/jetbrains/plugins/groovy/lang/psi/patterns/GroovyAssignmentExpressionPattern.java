@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.patterns;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 import consulo.language.pattern.PatternCondition;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrAssignmentExpression;

@@ -18,11 +18,11 @@ package org.jetbrains.plugins.groovy.impl.griffon;
 import consulo.process.cmd.ParametersList;
 import consulo.module.Module;
 import consulo.ui.ex.awt.DialogWrapper;
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 import org.jetbrains.plugins.groovy.impl.mvc.MvcCommand;
 
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 import javax.swing.*;
 
 /**

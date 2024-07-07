@@ -25,7 +25,7 @@ import consulo.language.psi.PsiFile;
 import consulo.project.Project;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 /**
  * User: Dmitry.Krasilschikov

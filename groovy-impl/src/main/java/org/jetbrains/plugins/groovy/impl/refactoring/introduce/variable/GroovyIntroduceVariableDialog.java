@@ -25,6 +25,7 @@ import consulo.ui.ex.awt.DialogWrapper;
 import consulo.ui.ex.awt.GridBag;
 import consulo.ui.ex.awt.UIUtil;
 import consulo.ui.ex.awt.ValidationInfo;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyNamesUtil;
@@ -34,8 +35,7 @@ import org.jetbrains.plugins.groovy.impl.refactoring.introduce.GrIntroduceDialog
 import org.jetbrains.plugins.groovy.impl.refactoring.ui.GrTypeComboBox;
 import org.jetbrains.plugins.groovy.impl.settings.GroovyApplicationSettings;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 import javax.swing.*;
 import java.awt.*;
 import java.util.LinkedHashSet;

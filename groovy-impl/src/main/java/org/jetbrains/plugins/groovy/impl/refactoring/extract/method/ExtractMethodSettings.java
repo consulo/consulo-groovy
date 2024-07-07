@@ -16,7 +16,7 @@
 
 package org.jetbrains.plugins.groovy.impl.refactoring.extract.method;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author ilyas

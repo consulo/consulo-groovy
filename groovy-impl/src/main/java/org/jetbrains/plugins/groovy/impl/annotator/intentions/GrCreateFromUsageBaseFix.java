@@ -20,6 +20,7 @@ import com.intellij.java.language.psi.PsiClass;
 import consulo.application.ApplicationManager;
 import consulo.codeEditor.Editor;
 import consulo.codeEditor.EditorPopupHelper;
+import consulo.ide.impl.ui.impl.PopupChooserBuilder;
 import consulo.java.analysis.impl.JavaQuickFixBundle;
 import consulo.language.editor.intention.SyntheticIntentionAction;
 import consulo.language.editor.ui.PsiElementListCellRenderer;
@@ -39,7 +40,7 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrRefere
 import org.jetbrains.plugins.groovy.impl.lang.psi.util.GrStaticChecker;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -114,7 +115,7 @@ public abstract class GrCreateFromUsageBaseFix extends Intention implements Synt
     PsiElementListCellRenderer renderer = new PsiClassListCellRenderer();
     list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     list.setCellRenderer(renderer);
-    final consulo.ide.impl.ui.impl.PopupChooserBuilder builder = new consulo.ide.impl.ui.impl.PopupChooserBuilder(list);
+    final PopupChooserBuilder builder = new PopupChooserBuilder(list);
     renderer.installSpeedSearch(builder);
 
     Runnable runnable = new Runnable() {

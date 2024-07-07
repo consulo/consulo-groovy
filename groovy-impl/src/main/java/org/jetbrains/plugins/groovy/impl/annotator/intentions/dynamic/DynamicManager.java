@@ -21,11 +21,12 @@ import consulo.annotation.component.ComponentScope;
 import consulo.annotation.component.ServiceAPI;
 import consulo.component.persist.PersistentStateComponent;
 import consulo.project.Project;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.impl.annotator.intentions.dynamic.elements.*;
 import org.jetbrains.plugins.groovy.impl.annotator.intentions.dynamic.ui.DynamicElementSettings;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+
 import java.util.Collection;
 import java.util.List;
 

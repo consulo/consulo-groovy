@@ -22,7 +22,7 @@ import consulo.language.codeStyle.Wrap;
 import consulo.language.codeStyle.WrapType;
 import consulo.document.util.TextRange;
 import consulo.language.psi.PsiElement;
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 import org.jetbrains.plugins.groovy.impl.formatter.FormattingContext;
 

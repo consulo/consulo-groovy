@@ -22,7 +22,7 @@ import consulo.language.psi.resolve.DelegatingScopeProcessor;
 import consulo.language.psi.resolve.PsiScopeProcessor;
 import consulo.language.psi.resolve.ResolveState;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 /**
  * Checks names of processed element because our Groovy processors don't do it

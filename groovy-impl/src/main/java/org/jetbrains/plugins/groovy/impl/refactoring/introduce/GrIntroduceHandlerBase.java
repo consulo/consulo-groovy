@@ -32,6 +32,7 @@ import consulo.document.Document;
 import consulo.document.RangeMarker;
 import consulo.document.util.Segment;
 import consulo.document.util.TextRange;
+import consulo.ide.impl.idea.diagnostic.LogMessageEx;
 import consulo.language.codeStyle.CodeStyleManager;
 import consulo.language.editor.highlight.HighlightManager;
 import consulo.language.editor.refactoring.IntroduceTargetChooser;
@@ -75,8 +76,8 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GroovyScriptClass;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 import org.jetbrains.plugins.groovy.refactoring.introduce.StringPartInfo;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -785,7 +786,7 @@ public abstract class GrIntroduceHandlerBase<Settings extends GrIntroduceSetting
 
   public static void assertStatement(@Nullable PsiElement anchor, @Nonnull PsiElement scope) {
     if (!(anchor instanceof GrStatement)) {
-      consulo.ide.impl.idea.diagnostic.LogMessageEx.error(LOG, "cannot find anchor for variable", scope.getText());
+      LogMessageEx.error(LOG, "cannot find anchor for variable", scope.getText());
     }
   }
 

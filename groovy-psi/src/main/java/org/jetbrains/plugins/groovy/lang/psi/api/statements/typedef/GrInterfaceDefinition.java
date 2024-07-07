@@ -18,7 +18,7 @@ package org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef;
 
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeParameterListOwner;
 
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 
 /**
  * @autor: Dmitry.Krasilschikov

@@ -19,10 +19,10 @@ package org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions;
 import consulo.language.ast.IElementType;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiPolyVariantReference;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author ilyas

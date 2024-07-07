@@ -1,3 +1,7 @@
-java.util.ArrayList<java.lang.Object> list = new java.util.ArrayList<java.lang.Object>();
-java.lang.Integer[] arr = new java.lang.Integer[0];
-java.util.List<java.lang.String> strings = new java.util.ArrayList<java.lang.String>();
+import java.lang.Integer;
+import java.lang.Object;
+import java.lang.String;
+import java.util.ArrayList;
+import java.util.List;ArrayList<Object> list = new ArrayList<Object>();
+Integer[] arr = new Integer[0];
+List<String> strings = new ArrayList<String>();

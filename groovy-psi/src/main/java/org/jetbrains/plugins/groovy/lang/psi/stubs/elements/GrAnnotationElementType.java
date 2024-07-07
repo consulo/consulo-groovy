@@ -17,7 +17,7 @@ package org.jetbrains.plugins.groovy.lang.psi.stubs.elements;
 
 import java.io.IOException;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 import consulo.language.psi.stub.StubElement;
 import consulo.language.psi.stub.StubInputStream;

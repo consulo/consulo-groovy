@@ -27,7 +27,7 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrMethod
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 
 import static org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes.mRCURLY;
 import static org.jetbrains.plugins.groovy.lang.lexer.TokenSets.WHITE_SPACES_SET;

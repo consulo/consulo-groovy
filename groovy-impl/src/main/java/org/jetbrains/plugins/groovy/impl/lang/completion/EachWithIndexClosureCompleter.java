@@ -22,6 +22,7 @@ import consulo.annotation.component.ExtensionImpl;
 import consulo.language.editor.completion.lookup.InsertionContext;
 import consulo.language.psi.PsiElement;
 import consulo.project.Project;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.completion.closureParameters.ClosureParameterInfo;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
@@ -30,7 +31,6 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.PsiImplUtil;
 import org.jetbrains.plugins.groovy.lang.psi.typeEnhancers.ClosureParameterEnhancer;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames;
 
-import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.List;
 

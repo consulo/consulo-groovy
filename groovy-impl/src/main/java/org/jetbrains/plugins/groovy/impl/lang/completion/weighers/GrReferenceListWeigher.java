@@ -20,12 +20,11 @@ import consulo.annotation.component.ExtensionImpl;
 import consulo.language.pattern.PlatformPatterns;
 import consulo.language.pattern.PsiElementPattern;
 import consulo.language.psi.PsiElement;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrReferenceList;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
-
-import javax.annotation.Nonnull;
 
 /**
  * @author peter

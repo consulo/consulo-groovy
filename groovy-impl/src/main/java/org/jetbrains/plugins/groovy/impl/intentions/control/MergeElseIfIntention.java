@@ -15,10 +15,9 @@
  */
 package org.jetbrains.plugins.groovy.impl.intentions.control;
 
-import javax.annotation.Nonnull;
-
 import consulo.codeEditor.Editor;
 import consulo.project.Project;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.impl.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.impl.intentions.base.PsiElementPredicate;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrBlockStatement;

@@ -17,13 +17,13 @@ package org.jetbrains.plugins.groovy.impl.lang.psi.typeEnhancers;
 
 import com.intellij.java.language.psi.PsiType;
 import consulo.annotation.component.ExtensionImpl;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.ConversionResult;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil;
 import org.jetbrains.plugins.groovy.lang.psi.typeEnhancers.GrTypeConverter;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
 
 /**
  * Created by Max Medvedev on 8/16/13

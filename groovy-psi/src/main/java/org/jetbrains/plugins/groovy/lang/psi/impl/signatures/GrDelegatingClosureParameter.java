@@ -16,10 +16,9 @@
 package org.jetbrains.plugins.groovy.lang.psi.impl.signatures;
 
 import com.intellij.java.language.psi.PsiType;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrClosureParameter;
-
-import javax.annotation.Nullable;
 
 /**
  * Created by Max Medvedev on 14/03/14

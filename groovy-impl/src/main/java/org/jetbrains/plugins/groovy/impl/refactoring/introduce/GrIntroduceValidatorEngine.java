@@ -21,7 +21,7 @@ import consulo.language.psi.PsiDirectory;
 import consulo.language.editor.refactoring.ui.ConflictsDialog;
 import consulo.util.collection.ArrayUtil;
 import consulo.util.collection.MultiMap;
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFileBase;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;

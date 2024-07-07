@@ -21,11 +21,10 @@ import consulo.module.Module;
 import consulo.ui.ex.tree.PresentationData;
 import consulo.project.ui.view.tree.ViewSettings;
 import consulo.ui.image.Image;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 /**
  * User: Dmitry.Krasilschikov

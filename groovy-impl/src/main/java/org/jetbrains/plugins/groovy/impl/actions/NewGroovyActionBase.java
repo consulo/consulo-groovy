@@ -19,23 +19,18 @@ package org.jetbrains.plugins.groovy.impl.actions;
 import consulo.application.CommonBundle;
 import consulo.dataContext.DataContext;
 import consulo.ide.action.CreateElementActionBase;
-import consulo.dataContext.DataContext;
 import consulo.language.editor.LangDataKeys;
 import consulo.language.psi.PsiDirectory;
 import consulo.language.util.ModuleUtilCore;
 import consulo.module.Module;
-import consulo.language.util.ModuleUtilCore;
 import consulo.project.Project;
 import consulo.ui.ex.awt.Messages;
-import consulo.language.psi.PsiDirectory;
 import consulo.language.psi.PsiElement;
 import consulo.groovy.module.extension.GroovyModuleExtension;
-import consulo.language.editor.LangDataKeys;
-import consulo.ui.ex.awt.Messages;
 import consulo.ui.image.Image;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.annotations.NonNls;
 
-import javax.annotation.Nonnull;
 import java.util.function.Consumer;
 
 public abstract class NewGroovyActionBase extends CreateElementActionBase

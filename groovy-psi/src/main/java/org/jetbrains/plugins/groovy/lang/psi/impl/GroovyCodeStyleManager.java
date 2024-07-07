@@ -17,7 +17,6 @@ package org.jetbrains.plugins.groovy.lang.psi.impl;
 
 import consulo.annotation.component.ComponentScope;
 import consulo.annotation.component.ServiceAPI;
-import consulo.annotation.component.ServiceImpl;
 import consulo.ide.ServiceManager;
 import consulo.language.util.IncorrectOperationException;
 import consulo.project.Project;
@@ -25,7 +24,7 @@ import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFileBase;
 import org.jetbrains.plugins.groovy.lang.psi.api.toplevel.imports.GrImportStatement;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 @ServiceAPI(ComponentScope.PROJECT)
 public abstract class GroovyCodeStyleManager {

@@ -16,13 +16,14 @@
 
 package org.jetbrains.plugins.groovy.impl.mvc.projectView;
 
+import consulo.ide.impl.idea.ide.projectView.impl.nodes.AbstractModuleNode;
 import consulo.module.Module;
 import consulo.project.ui.view.tree.AbstractTreeNode;
 import consulo.ui.ex.tree.PresentationData;
 import consulo.project.ui.view.tree.ViewSettings;
 import consulo.virtualFileSystem.VirtualFile;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -33,7 +34,7 @@ import java.util.List;
  * @author peter
  */
 
-public class MvcModuleNode extends consulo.ide.impl.idea.ide.projectView.impl.nodes.AbstractModuleNode
+public class MvcModuleNode extends AbstractModuleNode
 {
   private final MvcToolWindowDescriptor myDescriptor;
 

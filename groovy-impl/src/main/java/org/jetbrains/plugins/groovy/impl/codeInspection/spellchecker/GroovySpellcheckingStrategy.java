@@ -24,12 +24,11 @@ import consulo.language.spellcheker.tokenizer.EscapeSequenceTokenizer;
 import consulo.language.spellcheker.tokenizer.TokenConsumer;
 import consulo.language.spellcheker.tokenizer.Tokenizer;
 import consulo.language.spellcheker.tokenizer.splitter.PlainTextTokenSplitter;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.GroovyLanguage;
 import org.jetbrains.plugins.groovy.lang.lexer.TokenSets;
 import org.jetbrains.plugins.groovy.lang.psi.GrNamedElement;
 import org.jetbrains.plugins.groovy.lang.psi.util.GrStringUtil;
-
-import javax.annotation.Nonnull;
 
 /**
  * @author peter

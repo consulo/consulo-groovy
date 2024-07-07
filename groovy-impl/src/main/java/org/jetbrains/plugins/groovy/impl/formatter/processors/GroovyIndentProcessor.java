@@ -16,7 +16,7 @@
 
 package org.jetbrains.plugins.groovy.impl.formatter.processors;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 import consulo.language.ast.IElementType;
 import consulo.language.ast.TokenSet;

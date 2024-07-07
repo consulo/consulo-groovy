@@ -16,7 +16,7 @@
 
 package org.jetbrains.plugins.groovy.impl.mvc;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 import consulo.application.progress.ProgressIndicator;
 import consulo.process.event.ProcessListener;

@@ -20,7 +20,7 @@ import com.intellij.java.language.psi.*;
 import com.intellij.java.language.psi.util.MethodSignature;
 import consulo.util.collection.ContainerUtil;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;

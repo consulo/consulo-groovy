@@ -1,2 +1,2 @@
-java.lang.String s;
+import java.lang.String;String s;
 print(s == null);

@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.dataFlow;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.controlFlow.Instruction;
 
 /**

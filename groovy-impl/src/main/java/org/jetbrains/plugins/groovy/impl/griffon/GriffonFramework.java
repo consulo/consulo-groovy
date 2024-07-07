@@ -26,6 +26,7 @@ import consulo.content.base.BinariesOrderRootType;
 import consulo.content.bundle.Sdk;
 import consulo.content.library.Library;
 import consulo.content.library.LibraryKind;
+import consulo.ide.impl.idea.openapi.vfs.VfsUtil;
 import consulo.ide.impl.idea.openapi.vfs.VfsUtilCore;
 import consulo.java.execution.configurations.OwnJavaParameters;
 import consulo.java.language.module.extension.JavaModuleExtension;
@@ -52,8 +53,8 @@ import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.JetgroovyIcons;
 import org.jetbrains.plugins.groovy.impl.mvc.*;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -179,7 +180,7 @@ public class GriffonFramework extends MvcFramework {
       if (separatorIndexes.size() > 0) {
         String json;
         try {
-          json = consulo.ide.impl.idea.openapi.vfs.VfsUtil.loadText(pluginJson);
+          json = VfsUtil.loadText(pluginJson);
         }
         catch (IOException e) {
           return null;

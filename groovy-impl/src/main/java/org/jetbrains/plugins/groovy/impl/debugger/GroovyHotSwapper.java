@@ -27,7 +27,7 @@ import consulo.util.io.FilePermissionCopier;
 import consulo.util.io.FileUtil;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.util.Set;

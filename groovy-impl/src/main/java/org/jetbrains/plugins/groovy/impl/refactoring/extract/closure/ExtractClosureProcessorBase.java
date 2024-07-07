@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.impl.refactoring.extract.closure;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 import consulo.language.editor.refactoring.BaseRefactoringProcessor;
 import consulo.language.editor.refactoring.ui.UsageViewDescriptorAdapter;

@@ -18,6 +18,7 @@ package org.jetbrains.plugins.groovy.impl.findUsages;
 import consulo.codeEditor.Editor;
 import consulo.document.util.TextRange;
 import consulo.externalService.statistic.FeatureUsageTracker;
+import consulo.ide.impl.idea.featureStatistics.ProductivityFeatureNames;
 import consulo.language.editor.highlight.usage.HighlightUsagesHandlerBase;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiFile;
@@ -28,7 +29,7 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.branch.GrThrowStatem
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.controlFlow.Instruction;
 
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
@@ -57,7 +58,7 @@ public class GrHighlightExitPointHandler extends HighlightUsagesHandlerBase<PsiE
   @Override
   public void computeUsages(List<PsiElement> targets) {
     FeatureUsageTracker.getInstance()
-                       .triggerFeatureUsed(consulo.ide.impl.idea.featureStatistics.ProductivityFeatureNames.CODEASSISTS_HIGHLIGHT_RETURN);
+                       .triggerFeatureUsed(ProductivityFeatureNames.CODEASSISTS_HIGHLIGHT_RETURN);
 
     PsiElement parent = myTarget.getParent();
     if (!(parent instanceof GrReturnStatement) && !(parent instanceof GrThrowStatement)) return;

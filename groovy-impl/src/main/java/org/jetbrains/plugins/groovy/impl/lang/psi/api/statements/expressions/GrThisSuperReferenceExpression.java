@@ -17,11 +17,10 @@ package org.jetbrains.plugins.groovy.impl.lang.psi.api.statements.expressions;
 
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiPolyVariantReference;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.GrQualifiedReference;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
-
-import javax.annotation.Nonnull;
 
 /**
  * @author Maxim.Medvedev

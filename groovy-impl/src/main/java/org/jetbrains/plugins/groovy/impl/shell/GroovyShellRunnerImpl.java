@@ -41,7 +41,7 @@ import consulo.util.dataholder.Key;
 import org.jetbrains.plugins.groovy.impl.console.BuildAndRestartConsoleAction;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyFileImpl;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 import java.util.List;
 import java.util.function.Consumer;
 

@@ -1,10 +1,17 @@
-java.lang.String s = "1";
+import java.io.Serializable;
+import java.lang.Integer;
+import java.lang.Object;
+import java.lang.String;
+import java.util.Arrays;
+import java.util.Iterator;
+
+String s = "1";
 int x = 2;
 
-java.lang.String s = "1";
-java.lang.Integer x = 2;
+String s = "1";
+Integer x = 2;
 
-final java.util.Iterator<java.io.Serializable> iterator = java.util.Arrays.asList("2", 1).iterator();
-java.lang.String s = ((java.lang.String)(iterator.hasNext() ? iterator.next() : null));
-java.lang.Object x = iterator.hasNext() ? iterator.next() : null;
+final Iterator<Serializable> iterator = Arrays.asList("2", 1).iterator();
+String s = ((String)(iterator.hasNext() ? iterator.next() : null));
+Object x = iterator.hasNext() ? iterator.next() : null;
 

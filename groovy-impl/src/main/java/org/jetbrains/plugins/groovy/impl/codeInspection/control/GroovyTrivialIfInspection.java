@@ -36,7 +36,7 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrAssignmentExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 public class GroovyTrivialIfInspection extends BaseInspection {
 

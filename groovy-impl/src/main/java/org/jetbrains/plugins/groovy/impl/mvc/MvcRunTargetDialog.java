@@ -30,7 +30,7 @@ import consulo.ui.ex.awt.DialogWrapper;
 import consulo.util.lang.StringUtil;
 import org.jetbrains.plugins.groovy.impl.mvc.util.MvcTargetDialogCompletionUtils;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;

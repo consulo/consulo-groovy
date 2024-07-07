@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.impl.refactoring.introduce.variable;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.impl.refactoring.GroovyNameSuggestionUtil;
 import org.jetbrains.plugins.groovy.impl.refactoring.NameValidator;

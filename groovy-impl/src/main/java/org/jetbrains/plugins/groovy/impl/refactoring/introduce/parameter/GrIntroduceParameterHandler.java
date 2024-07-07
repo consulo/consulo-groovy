@@ -33,6 +33,7 @@ import consulo.language.psi.util.PsiTreeUtil;
 import consulo.project.Project;
 import consulo.ui.ex.popup.JBPopup;
 import consulo.util.lang.function.PairFunction;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrParameterListOwner;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
@@ -47,8 +48,8 @@ import org.jetbrains.plugins.groovy.impl.refactoring.extract.InitialInfo;
 import org.jetbrains.plugins.groovy.impl.refactoring.introduce.GrIntroduceHandlerBase;
 import org.jetbrains.plugins.groovy.impl.refactoring.ui.MethodOrClosureScopeChooser;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;

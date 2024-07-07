@@ -23,7 +23,7 @@ import consulo.language.psi.PsiCompiledElement;
 import consulo.language.psi.PsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.path.GrMethodCallExpression;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 public class LibraryUtil {
 

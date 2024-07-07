@@ -27,7 +27,9 @@ import consulo.application.AccessToken;
 import consulo.application.WriteAction;
 import consulo.application.progress.ProgressManager;
 import consulo.codeEditor.Editor;
+import consulo.dataContext.DataContext;
 import consulo.ide.impl.psi.util.proximity.PsiProximityComparator;
+import consulo.ide.impl.ui.impl.PopupChooserBuilder;
 import consulo.java.analysis.impl.JavaQuickFixBundle;
 import consulo.language.editor.FileModificationService;
 import consulo.language.editor.intention.IntentionAction;
@@ -40,14 +42,15 @@ import consulo.logging.Logger;
 import consulo.project.Project;
 import consulo.ui.ex.awt.JBList;
 import consulo.undoRedo.CommandProcessor;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrArgumentList;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrMethodCall;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -174,7 +177,7 @@ public class GroovyStaticImportMethodFix implements IntentionAction
   private void chooseAndImport(Editor editor) {
     final JList list = new JBList(getCandidates().toArray(new PsiMethod[getCandidates().size()]));
     list.setCellRenderer(new MethodCellRenderer(true));
-    new consulo.ide.impl.ui.impl.PopupChooserBuilder(list).
+    new PopupChooserBuilder(list).
       setTitle(JavaQuickFixBundle.message("static.import.method.choose.method.to.import")).
       setMovable(true).
       setItemChoosenCallback(new Runnable() {
@@ -185,7 +188,7 @@ public class GroovyStaticImportMethodFix implements IntentionAction
           doImport(selectedValue);
         }
       }).createPopup().
-      showInBestPositionFor((consulo.dataContext.DataContext)editor);
+      showInBestPositionFor((DataContext)editor);
   }
 
   public boolean startInWriteAction() {

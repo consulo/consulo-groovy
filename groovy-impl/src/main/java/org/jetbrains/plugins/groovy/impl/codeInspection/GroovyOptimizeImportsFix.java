@@ -41,7 +41,7 @@ import org.jetbrains.plugins.groovy.impl.editor.GroovyImportOptimizer;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.api.toplevel.imports.GrImportStatement;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 public class GroovyOptimizeImportsFix implements SyntheticIntentionAction {
   private static final Logger LOG = Logger.getInstance("#org.jetbrains.plugins.groovy.codeInspection.local" +

@@ -25,11 +25,10 @@ import consulo.project.ui.notification.NotificationGroup;
 import consulo.project.ui.notification.NotificationType;
 import consulo.util.lang.ExceptionUtil;
 import consulo.virtualFileSystem.VirtualFile;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.dsl.DslActivationStatus;
 import org.jetbrains.plugins.groovy.dsl.DslErrorReporter;
 import org.jetbrains.plugins.groovy.dsl.GroovyDslFileIndex;
-
-import javax.annotation.Nonnull;
 
 public class DslErrorReporterImpl extends DslErrorReporter {
   private static final Logger LOG = Logger.getInstance("#org.jetbrains.plugins.groovy.dsl.GroovyDslFileIndex");

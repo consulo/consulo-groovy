@@ -15,12 +15,11 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.search;
 
-import javax.annotation.Nonnull;
-
 import consulo.language.psi.scope.DelegatingGlobalSearchScope;
 import consulo.module.content.ProjectFileIndex;
 import consulo.module.content.ProjectRootManager;
 import consulo.virtualFileSystem.VirtualFile;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import consulo.language.psi.scope.GlobalSearchScope;
 

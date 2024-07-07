@@ -21,9 +21,8 @@ import consulo.annotation.component.ExtensionImpl;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.resolve.PsiScopeProcessor;
 import consulo.language.psi.resolve.ResolveState;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.resolve.NonCodeMembersContributor;
-
-import javax.annotation.Nonnull;
 
 /**
  * @author Sergey Evdokimov

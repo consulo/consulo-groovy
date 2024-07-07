@@ -22,7 +22,7 @@ import consulo.compiler.ModuleChunk;
 import consulo.component.extension.ExtensionPointName;
 import consulo.virtualFileSystem.util.PathsList;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 import java.util.List;
 
 /**

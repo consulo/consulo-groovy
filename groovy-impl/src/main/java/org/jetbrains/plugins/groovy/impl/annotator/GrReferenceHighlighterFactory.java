@@ -20,9 +20,8 @@ import consulo.codeEditor.Editor;
 import consulo.language.editor.impl.highlight.TextEditorHighlightingPass;
 import consulo.language.editor.impl.highlight.TextEditorHighlightingPassFactory;
 import consulo.language.psi.PsiFile;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFileBase;
-
-import javax.annotation.Nonnull;
 
 /**
  * @author Max Medvedev

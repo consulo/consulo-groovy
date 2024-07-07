@@ -23,7 +23,7 @@ import consulo.language.psi.scope.GlobalSearchScope;
 import consulo.project.Project;
 import org.jetbrains.plugins.groovy.dsl.holders.CustomMembersHolder;
 
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 
 /**
  * @author ilyas

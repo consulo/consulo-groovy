@@ -18,11 +18,11 @@ package org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef;
 import com.intellij.java.language.psi.PsiReferenceList;
 import consulo.language.psi.PsiElement;
 import consulo.util.collection.ArrayFactory;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 
 /**
  * @author ilyas

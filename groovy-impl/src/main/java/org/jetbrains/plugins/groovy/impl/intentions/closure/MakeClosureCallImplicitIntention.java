@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.impl.intentions.closure;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 import consulo.project.Project;
 import org.jetbrains.plugins.groovy.impl.intentions.base.Intention;

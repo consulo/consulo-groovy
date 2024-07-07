@@ -20,6 +20,7 @@ import com.intellij.java.language.psi.PsiClassType;
 import consulo.language.psi.PsiElement;
 import com.intellij.java.language.psi.PsiType;
 import consulo.util.collection.primitive.ints.IntList;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrParameterListOwner;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlock;
@@ -27,8 +28,6 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpres
 import org.jetbrains.plugins.groovy.impl.refactoring.extract.ExtractInfoHelperBase;
 import org.jetbrains.plugins.groovy.impl.refactoring.introduce.parameter.GrIntroduceParameterSettings;
 import org.jetbrains.plugins.groovy.impl.refactoring.introduce.parameter.IntroduceParameterInfo;
-
-import javax.annotation.Nonnull;
 
 /**
  * @author Max Medvedev

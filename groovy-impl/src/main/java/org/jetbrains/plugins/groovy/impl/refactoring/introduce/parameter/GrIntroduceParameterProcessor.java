@@ -52,7 +52,7 @@ import org.jetbrains.plugins.groovy.impl.refactoring.introduce.GrIntroduceHandle
 import org.jetbrains.plugins.groovy.refactoring.introduce.StringPartInfo;
 import org.jetbrains.plugins.groovy.impl.refactoring.util.AnySupers;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Collection;
 

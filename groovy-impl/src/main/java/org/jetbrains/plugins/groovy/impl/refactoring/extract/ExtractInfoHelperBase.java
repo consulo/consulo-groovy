@@ -18,9 +18,9 @@ package org.jetbrains.plugins.groovy.impl.refactoring.extract;
 import consulo.language.psi.PsiElement;
 import consulo.project.Project;
 import com.intellij.java.language.psi.PsiType;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
 
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
 import org.jetbrains.plugins.groovy.impl.lang.psi.dataFlow.reachingDefs.VariableInfo;
 import org.jetbrains.plugins.groovy.refactoring.introduce.StringPartInfo;

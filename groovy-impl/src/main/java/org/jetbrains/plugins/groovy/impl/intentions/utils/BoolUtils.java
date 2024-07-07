@@ -16,6 +16,7 @@
 package org.jetbrains.plugins.groovy.impl.intentions.utils;
 
 import consulo.language.ast.IElementType;
+import jakarta.annotation.Nullable;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.plugins.groovy.intentions.utils.ComparisonUtils;
 import org.jetbrains.plugins.groovy.intentions.utils.ParenthesesUtils;
@@ -26,8 +27,6 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrParent
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrUnaryExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.literals.GrLiteral;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
-
-import javax.annotation.Nullable;
 
 public class BoolUtils {
   private BoolUtils() {

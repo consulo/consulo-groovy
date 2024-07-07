@@ -25,8 +25,8 @@ import consulo.project.Project;
 import consulo.language.editor.refactoring.action.RefactoringActionHandlerFactory;
 import consulo.language.editor.refactoring.RefactoringFactory;
 import consulo.language.editor.refactoring.RenameRefactoring;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.annotations.NonNls;
-import javax.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.impl.codeInspection.GroovyFix;
 
 public class RenameFix extends GroovyFix {

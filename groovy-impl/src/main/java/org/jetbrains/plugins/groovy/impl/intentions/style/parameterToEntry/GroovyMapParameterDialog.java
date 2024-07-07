@@ -23,7 +23,7 @@ import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.util.EventListener;
 
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;

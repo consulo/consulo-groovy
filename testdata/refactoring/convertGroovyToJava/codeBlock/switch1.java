@@ -1,4 +1,4 @@
-java.lang.Integer a = 2;
+import java.lang.Integer;Integer a = 2;
 switch (a) {
 case 1:
 print(a);

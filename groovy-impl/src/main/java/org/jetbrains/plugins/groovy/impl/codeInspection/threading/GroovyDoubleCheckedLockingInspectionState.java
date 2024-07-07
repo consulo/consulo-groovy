@@ -6,8 +6,7 @@ import consulo.configurable.UnnamedConfigurable;
 import consulo.language.editor.inspection.InspectionToolState;
 import consulo.localize.LocalizeValue;
 import consulo.util.xml.serializer.XmlSerializerUtil;
-
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 
 /**
  * @author VISTALL

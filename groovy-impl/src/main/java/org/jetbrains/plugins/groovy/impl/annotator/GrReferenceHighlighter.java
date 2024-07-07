@@ -22,8 +22,8 @@ import consulo.language.editor.impl.highlight.UpdateHighlightersUtil;
 import consulo.language.editor.rawHighlight.HighlightInfo;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFileBase;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 

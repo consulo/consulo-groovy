@@ -17,9 +17,8 @@
 package org.jetbrains.plugins.groovy.lang.psi.api.statements.params;
 
 import com.intellij.java.language.psi.PsiParameterList;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
-
-import javax.annotation.Nonnull;
 
 /**
  * @author: Dmitry.Krasilschikov

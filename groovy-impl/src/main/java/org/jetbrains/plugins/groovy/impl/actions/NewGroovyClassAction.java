@@ -24,6 +24,7 @@ import consulo.fileTemplate.FileTemplate;
 import consulo.fileTemplate.FileTemplateManager;
 import consulo.ide.IdeView;
 import consulo.ide.action.CreateFileFromTemplateDialog;
+import consulo.ide.impl.idea.openapi.fileTypes.ex.FileTypeManagerEx;
 import consulo.language.codeStyle.CodeStyleManager;
 import consulo.language.editor.LangDataKeys;
 import consulo.language.psi.PsiDirectory;
@@ -37,6 +38,7 @@ import consulo.project.Project;
 import consulo.ui.ex.action.AnActionEvent;
 import consulo.ui.ex.action.Presentation;
 import consulo.virtualFileSystem.fileType.FileType;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.JetgroovyIcons;
@@ -44,8 +46,6 @@ import org.jetbrains.plugins.groovy.config.GroovyConfigUtils;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
 import org.jetbrains.plugins.groovy.util.LibrariesUtil;
-
-import javax.annotation.Nonnull;
 
 public class NewGroovyClassAction extends JavaCreateTemplateInPackageAction<GrTypeDefinition> implements DumbAware {
 
@@ -71,7 +71,7 @@ public class NewGroovyClassAction extends JavaCreateTemplateInPackageAction<GrTy
 
     for (FileTemplate template : FileTemplateManager.getInstance(project).getAllTemplates()) {
       FileType fileType =
-        consulo.ide.impl.idea.openapi.fileTypes.ex.FileTypeManagerEx.getInstanceEx().getFileTypeByExtension(template.getExtension());
+        FileTypeManagerEx.getInstanceEx().getFileTypeByExtension(template.getExtension());
       if (fileType.equals(GroovyFileType.GROOVY_FILE_TYPE) && JavaDirectoryService.getInstance().getPackage(directory) != null) {
         builder.addKind(template.getName(), JetgroovyIcons.Groovy.Class, template.getName());
       }

@@ -24,8 +24,10 @@ import consulo.dataContext.DataManager;
 import consulo.fileEditor.FileEditor;
 import consulo.fileEditor.FileEditorManager;
 import consulo.ide.IdeView;
+import consulo.ide.impl.idea.ide.projectView.BaseProjectTreeBuilder;
 import consulo.ide.impl.idea.ide.projectView.impl.*;
 import consulo.ide.impl.idea.ide.util.DeleteHandler;
+import consulo.ide.impl.idea.openapi.module.ModuleUtil;
 import consulo.ide.impl.idea.openapi.roots.ui.configuration.actions.ModuleDeleteProvider;
 import consulo.ide.impl.idea.openapi.vfs.VfsUtil;
 import consulo.ide.util.DirectoryChooserUtil;
@@ -59,8 +61,8 @@ import consulo.virtualFileSystem.VirtualFile;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.plugins.groovy.impl.mvc.MvcFramework;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
@@ -206,7 +208,7 @@ public class MvcProjectViewPane extends AbstractProjectViewPSIPane implements Id
 
   @Nonnull
   @Override
-  public consulo.ide.impl.idea.ide.projectView.BaseProjectTreeBuilder createBuilder(final DefaultTreeModel treeModel) {
+  public BaseProjectTreeBuilder createBuilder(final DefaultTreeModel treeModel) {
     return new ProjectTreeBuilder(myProject, myTree, treeModel, null, (ProjectAbstractTreeStructureBase)myTreeStructure) {
       protected AbstractTreeUpdater createUpdater() {
         return createTreeUpdater(this);
@@ -362,7 +364,7 @@ public class MvcProjectViewPane extends AbstractProjectViewPSIPane implements Id
       return null;
     }
 
-    final Module module = consulo.ide.impl.idea.openapi.module.ModuleUtil.findModuleForFile(file, project);
+    final Module module = ModuleUtil.findModuleForFile(file, project);
     if (module == null || !framework.hasSupport(module)) {
       return null;
     }

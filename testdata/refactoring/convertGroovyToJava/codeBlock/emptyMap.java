@@ -1,2 +1,3 @@
-java.util.Map<java.lang.Object, java.lang.Object> map = new java.util.Map<java.lang.Object, java.lang.Object>();
+import java.lang.Object;
+import java.util.Map;Map<Object, Object> map = new Map<Object, Object>();
 print(map.get(1));

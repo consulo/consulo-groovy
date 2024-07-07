@@ -22,8 +22,8 @@ import consulo.logging.Logger;
 import consulo.logging.attachment.AttachmentFactory;
 import consulo.util.lang.StringUtil;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 /**
  * Created by Max Medvedev on 10/22/13

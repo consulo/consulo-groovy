@@ -20,11 +20,11 @@ import consulo.index.io.StringRef;
 import consulo.language.psi.stub.NamedStub;
 import consulo.language.psi.stub.StubBase;
 import consulo.language.psi.stub.StubElement;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
 import org.jetbrains.plugins.groovy.lang.psi.stubs.elements.GrMethodElementType;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author ilyas

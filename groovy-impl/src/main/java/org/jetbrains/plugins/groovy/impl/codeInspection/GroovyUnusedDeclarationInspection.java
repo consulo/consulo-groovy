@@ -18,7 +18,7 @@ package org.jetbrains.plugins.groovy.impl.codeInspection;
 import consulo.annotation.component.ExtensionImpl;
 import consulo.language.editor.inspection.UnfairLocalInspectionTool;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author peter

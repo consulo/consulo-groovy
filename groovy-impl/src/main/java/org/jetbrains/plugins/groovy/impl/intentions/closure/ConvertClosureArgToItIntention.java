@@ -18,7 +18,7 @@ package org.jetbrains.plugins.groovy.impl.intentions.closure;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 import consulo.language.psi.PsiElement;
 import consulo.language.util.IncorrectOperationException;

@@ -17,10 +17,10 @@
 package org.jetbrains.plugins.groovy.lang.groovydoc.psi.impl;
 
 import consulo.language.ast.ASTNode;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocReferenceElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author ilyas

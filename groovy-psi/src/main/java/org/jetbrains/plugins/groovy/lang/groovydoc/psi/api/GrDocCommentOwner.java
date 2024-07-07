@@ -19,7 +19,7 @@ package org.jetbrains.plugins.groovy.lang.groovydoc.psi.api;
 import com.intellij.java.language.psi.PsiDocCommentOwner;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 
 /**
  * @author Maxim.Medvedev

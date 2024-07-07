@@ -10,8 +10,9 @@ import consulo.project.ui.view.tree.PsiFileNode;
 import consulo.project.ui.view.tree.AbstractTreeNode;
 import consulo.component.util.Iconable;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
+
 import java.util.Collection;
 
 /**

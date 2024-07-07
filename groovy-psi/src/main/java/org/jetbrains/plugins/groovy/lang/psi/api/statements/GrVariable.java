@@ -20,13 +20,13 @@ import com.intellij.java.language.psi.PsiType;
 import com.intellij.java.language.psi.PsiVariable;
 import consulo.language.util.IncorrectOperationException;
 import consulo.util.collection.ArrayFactory;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.GrNamedElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.GrModifierList;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeElement;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 
 /**
  * @author: Dmitry.Krasilschikov

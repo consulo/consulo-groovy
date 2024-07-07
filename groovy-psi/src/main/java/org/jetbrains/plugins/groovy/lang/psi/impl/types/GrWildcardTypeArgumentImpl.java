@@ -20,13 +20,12 @@ import com.intellij.java.language.psi.PsiType;
 import com.intellij.java.language.psi.PsiWildcardType;
 import consulo.language.ast.ASTNode;
 import consulo.logging.Logger;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrWildcardTypeArgument;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyPsiElementImpl;
-
-import javax.annotation.Nonnull;
 
 /**
  * @author: Dmitry.Krasilschikov

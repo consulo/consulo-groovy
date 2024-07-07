@@ -19,8 +19,7 @@ package org.jetbrains.plugins.groovy.lang.psi.api.types;
 import consulo.navigation.NavigationItem;
 import consulo.language.psi.PsiElement;
 import consulo.util.dataholder.UserDataHolderEx;
-
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author ilyas

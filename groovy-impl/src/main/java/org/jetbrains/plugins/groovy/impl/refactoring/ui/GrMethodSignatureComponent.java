@@ -22,7 +22,7 @@ import org.jetbrains.plugins.groovy.GroovyFileType;
 /**
  * @author Max Medvedev
  */
-public class GrMethodSignatureComponent extends consulo.ide.impl.idea.refactoring.ui.MethodSignatureComponent
+public class GrMethodSignatureComponent extends MethodSignatureComponent
 {
   private final String myFileName;
 

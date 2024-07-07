@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.impl.actions;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 import consulo.dataContext.DataContext;
 import consulo.language.Language;

@@ -6,13 +6,13 @@ import com.intellij.java.language.psi.PsiModifierListOwner;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiFile;
 import consulo.language.util.ProcessingContext;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.dsl.GroovyClassDescriptor;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariableDeclaration;
 import org.jetbrains.plugins.groovy.lang.psi.api.toplevel.packaging.GrPackageDefinition;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 
 /**
  * @author peter
@@ -56,7 +56,8 @@ public class AnnotatedContextFilter implements ContextFilter {
     return null;
   }
 
-  @Nullable private static PsiAnnotation findAnnotation(PsiModifierList modifierList, String annoQName) {
+  @Nullable
+  private static PsiAnnotation findAnnotation(PsiModifierList modifierList, String annoQName) {
     return modifierList != null ? modifierList.findAnnotation(annoQName) : null;
   }
 

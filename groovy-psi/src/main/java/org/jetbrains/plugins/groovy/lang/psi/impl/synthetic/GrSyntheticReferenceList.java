@@ -21,7 +21,7 @@ import com.intellij.java.language.psi.PsiReferenceList;
 import consulo.language.impl.psi.LightElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrReferenceList;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 /**
  * Created by Max Medvedev on 10/1/13

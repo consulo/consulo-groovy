@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.impl.intentions.control;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 import consulo.language.ast.IElementType;
 import consulo.language.psi.PsiElement;

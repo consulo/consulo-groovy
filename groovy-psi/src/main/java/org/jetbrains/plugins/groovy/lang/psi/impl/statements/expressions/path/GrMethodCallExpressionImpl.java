@@ -20,8 +20,8 @@ import consulo.language.ast.ASTNode;
 import consulo.language.psi.PsiElement;
 import consulo.util.collection.ArrayUtil;
 import consulo.language.util.IncorrectOperationException;
-import javax.annotation.Nonnull;
 
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;

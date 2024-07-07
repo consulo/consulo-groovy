@@ -3,9 +3,8 @@ package consulo.groovy.impl.debugger;
 import consulo.annotation.component.ExtensionImpl;
 import consulo.java.debugger.impl.BaseJavaLineBreakpointTypeResolver;
 import consulo.virtualFileSystem.fileType.FileType;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.GroovyFileType;
-
-import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL

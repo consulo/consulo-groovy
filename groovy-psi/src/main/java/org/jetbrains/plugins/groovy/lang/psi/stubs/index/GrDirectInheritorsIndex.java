@@ -18,9 +18,8 @@ package org.jetbrains.plugins.groovy.lang.psi.stubs.index;
 import consulo.annotation.component.ExtensionImpl;
 import consulo.language.psi.stub.StringStubIndexExtension;
 import consulo.language.psi.stub.StubIndexKey;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrReferenceList;
-
-import javax.annotation.Nonnull;
 
 /**
  * @author ilyas

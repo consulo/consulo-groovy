@@ -16,13 +16,13 @@
 package org.jetbrains.plugins.groovy.impl.extensions;
 
 import consulo.execution.action.Location;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.extensions.GroovyScriptType;
 import org.jetbrains.plugins.groovy.impl.runner.GroovyScriptRunConfiguration;
 import org.jetbrains.plugins.groovy.impl.runner.GroovyScriptRunner;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 
 public abstract class GroovyRunnableScriptType extends GroovyScriptType {
   public GroovyRunnableScriptType(String id) {

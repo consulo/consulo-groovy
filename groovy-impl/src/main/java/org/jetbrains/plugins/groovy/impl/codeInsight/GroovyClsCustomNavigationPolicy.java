@@ -21,10 +21,9 @@ import com.intellij.java.language.psi.PsiMethod;
 import consulo.annotation.component.ExtensionImpl;
 import consulo.language.impl.psi.LightElement;
 import consulo.language.psi.PsiElement;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.GroovyFileType;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 /**
  * @author Max Medvedev

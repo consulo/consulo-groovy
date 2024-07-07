@@ -19,6 +19,7 @@ import com.intellij.java.analysis.codeInsight.intention.QuickFixFactory;
 import com.intellij.java.language.psi.*;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.document.util.TextRange;
+import consulo.ide.impl.idea.util.CollectConsumer;
 import consulo.language.editor.inspection.LocalQuickFix;
 import consulo.language.editor.intention.IntentionAction;
 import consulo.language.editor.intention.UnresolvedReferenceQuickFixUpdater;
@@ -79,8 +80,8 @@ import org.jetbrains.plugins.groovy.lang.resolve.processors.ClassHint;
 import org.jetbrains.plugins.groovy.lang.resolve.processors.GrScopeProcessorWithHints;
 import org.jetbrains.plugins.groovy.util.LightCacheKey;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -711,7 +712,7 @@ public class GrUnresolvedAccessChecker {
       return false;
     }
 
-    consulo.ide.impl.idea.util.CollectConsumer<PomTarget> consumer = new consulo.ide.impl.idea.util.CollectConsumer<PomTarget>();
+    CollectConsumer<PomTarget> consumer = new CollectConsumer<PomTarget>();
     for (PomDeclarationSearcher searcher : PomDeclarationSearcher.EP_NAME.getExtensions()) {
       searcher.findDeclarationsAt(referenceExpression, 0, consumer);
       if (!consumer.getResult().isEmpty()) {

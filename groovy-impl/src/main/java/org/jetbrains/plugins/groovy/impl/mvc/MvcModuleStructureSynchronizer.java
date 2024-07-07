@@ -25,6 +25,7 @@ import consulo.application.dumb.DumbAwareRunnable;
 import consulo.component.messagebus.MessageBusConnection;
 import consulo.component.util.ModificationTracker;
 import consulo.content.ContentIterator;
+import consulo.ide.impl.idea.codeInsight.actions.ReformatCodeProcessor;
 import consulo.ide.impl.idea.openapi.module.ModuleUtil;
 import consulo.language.psi.PsiFile;
 import consulo.language.psi.PsiManager;
@@ -47,12 +48,12 @@ import consulo.util.lang.Trinity;
 import consulo.virtualFileSystem.LocalFileSystem;
 import consulo.virtualFileSystem.VirtualFile;
 import consulo.virtualFileSystem.event.*;
+import jakarta.annotation.Nonnull;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import org.jetbrains.annotations.TestOnly;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArraySet;
 
@@ -197,7 +198,7 @@ public class MvcModuleStructureSynchronizer {
                 for (VirtualFile virtualFile : files) {
                   PsiFile psiFile = manager.findFile(virtualFile);
                   if (psiFile != null) {
-                    new consulo.ide.impl.idea.codeInsight.actions.ReformatCodeProcessor(myProject, psiFile, null, false).run();
+                    new ReformatCodeProcessor(myProject, psiFile, null, false).run();
                   }
                 }
               }

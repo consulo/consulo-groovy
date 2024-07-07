@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.impl.formatter.processors;
 
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 
 import consulo.language.codeStyle.CommonCodeStyleSettings;
 import consulo.language.codeStyle.Wrap;

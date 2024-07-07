@@ -17,8 +17,8 @@
 package org.jetbrains.plugins.groovy.lang.psi.api.statements.branch;
 
 import consulo.language.psi.PsiElement;
-import javax.annotation.Nullable;
 
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrLabeledStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
 

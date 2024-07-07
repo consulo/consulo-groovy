@@ -71,7 +71,7 @@ import org.jetbrains.plugins.groovy.impl.refactoring.introduce.GrIntroduceHandle
 import org.jetbrains.plugins.groovy.refactoring.introduce.StringPartInfo;
 import org.jetbrains.plugins.groovy.impl.refactoring.introduce.field.GroovyFieldValidator;
 
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 import java.util.*;
 import java.util.function.IntConsumer;
 

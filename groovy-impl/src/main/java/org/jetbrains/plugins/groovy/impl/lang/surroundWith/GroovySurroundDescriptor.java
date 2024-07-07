@@ -21,10 +21,9 @@ import consulo.language.editor.surroundWith.SurroundDescriptor;
 import consulo.language.editor.surroundWith.Surrounder;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiFile;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.GroovyLanguage;
 import org.jetbrains.plugins.groovy.impl.refactoring.GroovyRefactoringUtil;
-
-import javax.annotation.Nonnull;
 
 /**
  * User: Dmitry.Krasilschikov

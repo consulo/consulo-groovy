@@ -24,6 +24,8 @@ import consulo.content.base.BinariesOrderRootType;
 import consulo.content.base.ExcludedContentFolderTypeProvider;
 import consulo.content.library.Library;
 import consulo.content.library.LibraryTable;
+import consulo.ide.impl.idea.openapi.roots.libraries.LibraryUtil;
+import consulo.ide.impl.idea.openapi.roots.ui.configuration.actions.ModuleDeleteProvider;
 import consulo.ide.impl.idea.openapi.vfs.VfsUtil;
 import consulo.java.impl.module.extension.JavaModuleExtensionImpl;
 import consulo.java.language.module.extension.JavaModuleExtension;
@@ -59,8 +61,8 @@ import consulo.virtualFileSystem.VirtualFile;
 import consulo.virtualFileSystem.VirtualFileManager;
 import org.jetbrains.annotations.NonNls;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import java.io.File;
 import java.util.*;
 import java.util.function.Consumer;
@@ -195,7 +197,7 @@ public class MvcModuleStructureUtil {
     }
 
     Library library =
-      consulo.ide.impl.idea.openapi.roots.libraries.LibraryUtil.createLibrary(libTable, libName + " (" + model.getModule().getName() + ')');
+      LibraryUtil.createLibrary(libTable, libName + " (" + model.getModule().getName() + ')');
 
     for (OrderEntry entry : model.getOrderEntries()) {
       if (!(entry instanceof LibraryOrderEntry)) {
@@ -572,7 +574,7 @@ public class MvcModuleStructureUtil {
 
     final ModifiableModuleModel moduleModel = moduleManager.getModifiableModel();
 
-    consulo.ide.impl.idea.openapi.roots.ui.configuration.actions.ModuleDeleteProvider.removeModule(toRemove,
+    ModuleDeleteProvider.removeModule(toRemove,
                                                                                                    null,
                                                                                                    usingModels,
                                                                                                    moduleModel);

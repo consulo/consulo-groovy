@@ -16,11 +16,10 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiPolyVariantReference;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
 import consulo.language.ast.IElementType;
 
@@ -32,7 +31,8 @@ public interface GrUnaryExpression extends GrExpression, PsiPolyVariantReference
   IElementType getOperationTokenType();
   PsiElement getOperationToken();
 
-  @Nullable GrExpression getOperand();
+  @Nullable
+  GrExpression getOperand();
 
   @Nonnull
   @Override

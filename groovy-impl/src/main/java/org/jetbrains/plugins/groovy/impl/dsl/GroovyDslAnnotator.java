@@ -35,7 +35,7 @@ import org.jetbrains.plugins.groovy.impl.codeInspection.GroovyQuickFixFactory;
 import org.jetbrains.plugins.groovy.impl.util.GrFileIndexUtil;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 import static org.jetbrains.plugins.groovy.dsl.DslActivationStatus.Status.*;
 

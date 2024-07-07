@@ -16,7 +16,7 @@
 package org.jetbrains.plugins.groovy.impl.annotator.intentions.dynamic.elements;
 
 import consulo.project.Project;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 
 import org.jetbrains.plugins.groovy.impl.annotator.intentions.QuickfixUtil;
 import org.jetbrains.plugins.groovy.impl.annotator.intentions.dynamic.DynamicManager;

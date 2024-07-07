@@ -15,8 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.impl.refactoring.introduce;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 import java.util.LinkedHashSet;
 

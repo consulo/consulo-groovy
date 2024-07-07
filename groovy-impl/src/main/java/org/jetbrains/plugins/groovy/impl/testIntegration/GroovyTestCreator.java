@@ -3,9 +3,8 @@ package org.jetbrains.plugins.groovy.impl.testIntegration;
 import com.intellij.java.impl.testIntegration.JavaTestCreator;
 import consulo.annotation.component.ExtensionImpl;
 import consulo.language.Language;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.GroovyLanguage;
-
-import javax.annotation.Nonnull;
 
 /**
  * @author VISTALL

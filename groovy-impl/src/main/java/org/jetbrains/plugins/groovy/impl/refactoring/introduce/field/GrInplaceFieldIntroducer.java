@@ -22,6 +22,7 @@ import com.intellij.java.language.psi.PsiField;
 import com.intellij.java.language.psi.PsiModifier;
 import com.intellij.java.language.psi.PsiType;
 import consulo.application.Result;
+import consulo.ide.impl.idea.refactoring.introduce.inplace.KeyboardComboSwitcher;
 import consulo.language.editor.WriteCommandAction;
 import consulo.language.editor.refactoring.introduce.inplace.OccurrencesChooser;
 import consulo.language.psi.PsiDocumentManager;
@@ -45,8 +46,8 @@ import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 import org.jetbrains.plugins.groovy.impl.refactoring.GroovyNameSuggestionUtil;
 import org.jetbrains.plugins.groovy.refactoring.introduce.*;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -306,7 +307,7 @@ public class GrInplaceFieldIntroducer extends GrAbstractInplaceIntroducer<GrIntr
 
     public GrInplaceIntroduceFieldPanel() {
 
-      consulo.ide.impl.idea.refactoring.introduce.inplace.KeyboardComboSwitcher.setupActions(myInitCB, myProject);
+      KeyboardComboSwitcher.setupActions(myInitCB, myProject);
 
       for (GrIntroduceFieldSettings.Init place : myApplicablePlaces) {
         myInitCB.addItem(place);

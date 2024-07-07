@@ -26,7 +26,7 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpres
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameter;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrGdkMethod;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 import static org.jetbrains.plugins.groovy.impl.refactoring.convertToJava.GenerationUtil.writeTypeParameters;
 import static org.jetbrains.plugins.groovy.impl.refactoring.convertToJava.TypeWriter.writeType;

@@ -42,8 +42,8 @@ import org.jetbrains.plugins.groovy.impl.refactoring.GroovyRefactoringUtil;
 import org.jetbrains.plugins.groovy.impl.refactoring.introduce.GrIntroduceContext;
 import org.jetbrains.plugins.groovy.impl.refactoring.introduce.GrIntroduceHandlerBase;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import java.util.ArrayList;
 
 /**

@@ -22,10 +22,9 @@ import consulo.annotation.component.ExtensionImpl;
 import consulo.application.util.function.Processor;
 import consulo.language.psi.PsiReference;
 import consulo.project.util.query.QueryExecutorBase;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrReflectedMethod;
-
-import javax.annotation.Nonnull;
 
 /**
  * @author Max Medvedev

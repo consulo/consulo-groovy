@@ -18,7 +18,7 @@ package org.jetbrains.plugins.groovy.impl.mvc.projectView;
 import consulo.component.persist.PersistentStateComponent;
 import consulo.util.xml.serializer.XmlSerializerUtil;
 
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 
 /**
  * @author Sergey Evdokimov

@@ -20,6 +20,7 @@ import com.intellij.java.language.psi.PsiClass;
 import consulo.language.editor.annotation.AnnotationHolder;
 import consulo.language.psi.PsiElement;
 import consulo.util.lang.Pair;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.impl.annotator.GrRemoveAnnotationIntention;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotation;
@@ -27,8 +28,7 @@ import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
 import org.jetbrains.plugins.groovy.lang.psi.impl.auxiliary.modifiers.GrAnnotationCollector;
 import org.jetbrains.plugins.groovy.lang.resolve.ResolveUtil;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
 
 /**
  * Created by Max Medvedev on 25/03/14

@@ -18,7 +18,7 @@ package org.jetbrains.plugins.groovy.impl.config;
 import consulo.content.library.LibraryProperties;
 import consulo.util.lang.Comparing;
 
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 
 /**
  * @author nik

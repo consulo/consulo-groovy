@@ -19,9 +19,8 @@ import consulo.annotation.component.ExtensionImpl;
 import consulo.language.Language;
 import consulo.language.editor.refactoring.unwrap.UnwrapDescriptorBase;
 import consulo.language.editor.refactoring.unwrap.Unwrapper;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.GroovyLanguage;
-
-import javax.annotation.Nonnull;
 
 @ExtensionImpl
 public class GroovyUnwrapDescriptor extends UnwrapDescriptorBase {

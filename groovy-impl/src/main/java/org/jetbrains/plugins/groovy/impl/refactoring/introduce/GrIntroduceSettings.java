@@ -14,7 +14,7 @@ package org.jetbrains.plugins.groovy.impl.refactoring.introduce;
 
 import com.intellij.java.language.psi.PsiType;
 
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 
 /**
  * @author Maxim.Medvedev

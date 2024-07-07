@@ -16,10 +16,9 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.blocks;
 
-import javax.annotation.Nonnull;
-
 import consulo.language.ast.IElementType;
 import consulo.language.psi.PsiElement;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrClassInitializer;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrOpenBlock;

@@ -17,7 +17,7 @@ import org.jetbrains.plugins.groovy.impl.refactoring.changeSignature.GrChangeInf
 import org.jetbrains.plugins.groovy.impl.refactoring.changeSignature.GrChangeSignatureProcessor;
 import org.jetbrains.plugins.groovy.impl.refactoring.changeSignature.GrParameterInfo;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 

@@ -1,2 +1,2 @@
-java.lang.Integer[] foo = new java.lang.Integer[]{1, 2, 3};
+import java.lang.Integer;Integer[] foo = new Integer[]{1, 2, 3};
 print(foo[2]);

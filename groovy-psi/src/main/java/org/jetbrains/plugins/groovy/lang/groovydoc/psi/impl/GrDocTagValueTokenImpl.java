@@ -16,9 +16,8 @@
 
 package org.jetbrains.plugins.groovy.lang.groovydoc.psi.impl;
 
-import javax.annotation.Nonnull;
-
 import consulo.language.ast.ASTNode;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocTagValueToken;
 
 /**

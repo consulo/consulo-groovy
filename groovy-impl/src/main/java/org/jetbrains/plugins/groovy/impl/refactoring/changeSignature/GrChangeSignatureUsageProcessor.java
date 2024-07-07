@@ -26,6 +26,7 @@ import com.intellij.java.language.psi.codeStyle.JavaCodeStyleManager;
 import com.intellij.java.language.psi.util.*;
 import consulo.annotation.component.ExtensionImpl;
 import consulo.application.ApplicationManager;
+import consulo.ide.impl.idea.refactoring.changeSignature.DefaultValueChooser;
 import consulo.java.impl.refactoring.changeSignature.ChangeSignatureUsageProcessorEx;
 import consulo.language.codeStyle.CodeStyleManager;
 import consulo.language.editor.refactoring.ResolveSnapshotProvider;
@@ -84,8 +85,8 @@ import org.jetbrains.plugins.groovy.impl.refactoring.DefaultGroovyVariableNameVa
 import org.jetbrains.plugins.groovy.impl.refactoring.GroovyNameSuggestionUtil;
 import org.jetbrains.plugins.groovy.impl.refactoring.GroovyRefactoringUtil;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -173,8 +174,8 @@ public class GrChangeSignatureUsageProcessor implements ChangeSignatureUsageProc
                 ((ParameterInfoImpl)parameter).setDefaultValue("");
                 if (!ApplicationManager.getApplication().isUnitTestMode()) {
                   final PsiType type = ((ParameterInfoImpl)parameter).getTypeWrapper().getType(element, element.getManager());
-                  final consulo.ide.impl.idea.refactoring.changeSignature.DefaultValueChooser chooser =
-                    new consulo.ide.impl.idea.refactoring.changeSignature.DefaultValueChooser(project,
+                  final DefaultValueChooser chooser =
+                    new DefaultValueChooser(project,
                                                                                               parameter.getName(),
                                                                                               PsiTypesUtil
                                                                                                 .getDefaultValueOfType(type));

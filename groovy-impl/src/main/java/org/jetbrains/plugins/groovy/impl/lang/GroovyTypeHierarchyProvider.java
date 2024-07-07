@@ -18,9 +18,8 @@ package org.jetbrains.plugins.groovy.impl.lang;
 import com.intellij.java.impl.ide.hierarchy.type.JavaTypeHierarchyProvider;
 import consulo.annotation.component.ExtensionImpl;
 import consulo.language.Language;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.GroovyLanguage;
-
-import javax.annotation.Nonnull;
 
 /**
  * @author peter

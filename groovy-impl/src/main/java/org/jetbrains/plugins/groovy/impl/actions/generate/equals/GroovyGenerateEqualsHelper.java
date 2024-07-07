@@ -39,7 +39,7 @@ import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil;
 
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 import java.text.MessageFormat;
 import java.util.*;
 
@@ -372,7 +372,7 @@ public class GroovyGenerateEqualsHelper {
       return hashCode;
     }
     finally {
-      consulo.ide.impl.idea.util.StringBuilderSpinAllocator.dispose(buffer);
+      StringBuilderSpinAllocator.dispose(buffer);
     }
   }
 

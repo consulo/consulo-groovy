@@ -47,6 +47,7 @@ import consulo.util.collection.MultiMap;
 import consulo.util.collection.primitive.ints.IntList;
 import consulo.util.lang.function.Condition;
 import consulo.util.lang.ref.Ref;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.GroovyLanguage;
 import org.jetbrains.plugins.groovy.codeInspection.utils.ControlFlowUtils;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
@@ -75,8 +76,8 @@ import org.jetbrains.plugins.groovy.impl.refactoring.introduce.parameter.java2gr
 import org.jetbrains.plugins.groovy.impl.refactoring.introduce.parameter.java2groovy.OldReferencesResolver;
 import org.jetbrains.plugins.groovy.impl.refactoring.util.AnySupers;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Collection;

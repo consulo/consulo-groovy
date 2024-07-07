@@ -22,6 +22,7 @@ import com.intellij.lang.properties.psi.PropertiesFile;
 import consulo.annotation.component.ExtensionImpl;
 import consulo.application.util.CachedValueProvider;
 import consulo.application.util.CachedValuesManager;
+import consulo.ide.impl.idea.openapi.vfs.VfsUtilCore;
 import consulo.language.psi.PsiDirectory;
 import consulo.language.psi.PsiFile;
 import consulo.language.psi.PsiModificationTracker;
@@ -31,11 +32,11 @@ import consulo.module.Module;
 import consulo.util.lang.Pair;
 import consulo.util.lang.StringUtil;
 import consulo.virtualFileSystem.VirtualFile;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.resolve.DefaultImportContributor;
 import org.jetbrains.plugins.groovy.impl.mvc.MvcFramework;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -99,10 +100,10 @@ public class GriffonDefaultImportContributor extends DefaultImportContributor {
 
         assert vFile != null;
         assert module != null;
-        if (models != null && consulo.ide.impl.idea.openapi.vfs.VfsUtilCore.isAncestor(models, vFile, true)) {
+        if (models != null && VfsUtilCore.isAncestor(models, vFile, true)) {
           result.addAll(getDefaultImports(module).first);
         }
-        else if (views != null && consulo.ide.impl.idea.openapi.vfs.VfsUtilCore.isAncestor(views, vFile, true)) {
+        else if (views != null && VfsUtilCore.isAncestor(views, vFile, true)) {
           result.addAll(getDefaultImports(module).second);
         }
       }

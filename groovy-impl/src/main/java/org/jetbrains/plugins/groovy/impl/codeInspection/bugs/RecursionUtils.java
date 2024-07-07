@@ -18,6 +18,7 @@ package org.jetbrains.plugins.groovy.impl.codeInspection.bugs;
 import com.intellij.java.language.psi.PsiMethod;
 import com.intellij.java.language.psi.PsiModifier;
 import consulo.language.ast.IElementType;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.codeInspection.utils.BoolUtils;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.GrCondition;
@@ -37,8 +38,7 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.path.GrM
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
 
 @SuppressWarnings({"OverlyComplexClass"})
 class RecursionUtils {
@@ -48,7 +48,7 @@ class RecursionUtils {
   }
 
   public static boolean statementMayReturnBeforeRecursing(
-      @Nullable GrStatement statement, GrMethod method) {
+    @Nullable GrStatement statement, GrMethod method) {
     if (statement == null) {
       return true;
     }
@@ -186,7 +186,7 @@ class RecursionUtils {
   }
 
   private static boolean codeBlockMayReturnBeforeRecursing(
-      @Nullable GrCodeBlock block, GrMethod method, boolean endsInImplicitReturn) {
+    @Nullable GrCodeBlock block, GrMethod method, boolean endsInImplicitReturn) {
     if (block == null) {
       return true;
     }

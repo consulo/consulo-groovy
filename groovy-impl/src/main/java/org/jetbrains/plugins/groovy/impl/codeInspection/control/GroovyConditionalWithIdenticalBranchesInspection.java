@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.impl.codeInspection.control;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 import consulo.language.editor.inspection.ProblemDescriptor;
 import consulo.language.psi.PsiElement;

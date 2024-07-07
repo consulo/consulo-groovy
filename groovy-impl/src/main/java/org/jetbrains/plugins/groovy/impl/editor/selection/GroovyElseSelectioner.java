@@ -20,10 +20,10 @@ import consulo.codeEditor.Editor;
 import consulo.document.util.TextRange;
 import consulo.language.editor.action.ExtendWordSelectionHandlerBase;
 import consulo.language.psi.PsiElement;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrIfStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
 
-import javax.annotation.Nullable;
 import java.util.List;
 
 /**

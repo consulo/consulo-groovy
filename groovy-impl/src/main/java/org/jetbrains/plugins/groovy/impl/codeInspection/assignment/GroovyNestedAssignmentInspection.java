@@ -17,13 +17,12 @@ package org.jetbrains.plugins.groovy.impl.codeInspection.assignment;
 
 import consulo.annotation.component.ExtensionImpl;
 import consulo.language.psi.PsiElement;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrAssignmentExpression;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 @ExtensionImpl
 public class GroovyNestedAssignmentInspection extends BaseInspection {

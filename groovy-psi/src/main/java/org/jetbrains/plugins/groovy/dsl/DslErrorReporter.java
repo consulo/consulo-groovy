@@ -18,8 +18,7 @@ package org.jetbrains.plugins.groovy.dsl;
 import consulo.ide.ServiceManager;
 import consulo.project.Project;
 import consulo.virtualFileSystem.VirtualFile;
-
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 public abstract class DslErrorReporter
 {

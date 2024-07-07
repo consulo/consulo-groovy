@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.impl.lang.completion;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 import consulo.application.util.matcher.PrefixMatcher;
 import consulo.language.editor.completion.CompletionContributor;

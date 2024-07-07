@@ -20,8 +20,8 @@ import consulo.document.RangeMarker;
 import consulo.language.psi.PsiElement;
 import consulo.project.Project;
 import consulo.language.editor.refactoring.introduce.inplace.InplaceVariableIntroducer;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
 

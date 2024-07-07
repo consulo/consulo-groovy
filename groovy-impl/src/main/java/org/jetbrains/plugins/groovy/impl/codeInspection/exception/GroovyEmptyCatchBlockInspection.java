@@ -16,8 +16,10 @@
 package org.jetbrains.plugins.groovy.impl.codeInspection.exception;
 
 import consulo.annotation.component.ExtensionImpl;
+import consulo.ide.impl.idea.codeInsight.daemon.impl.quickfix.RenameElementFix;
 import consulo.language.editor.inspection.LocalQuickFix;
 import consulo.language.editor.inspection.ProblemHighlightType;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
@@ -25,8 +27,6 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrCatchClause;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrOpenBlock;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameter;
-
-import javax.annotation.Nonnull;
 
 @ExtensionImpl
 public class GroovyEmptyCatchBlockInspection extends BaseInspection {
@@ -60,7 +60,7 @@ public class GroovyEmptyCatchBlockInspection extends BaseInspection {
       if (parameter == null) return;
       if (GrExceptionUtil.ignore(parameter)) return;
 
-      final LocalQuickFix[] fixes = {new consulo.ide.impl.idea.codeInsight.daemon.impl.quickfix.RenameElementFix(parameter, "ignored")};
+      final LocalQuickFix[] fixes = {new RenameElementFix(parameter, "ignored")};
       registerError(catchClause.getFirstChild(), "Empty '#ref' block #loc", fixes, ProblemHighlightType.GENERIC_ERROR_OR_WARNING);
     }
 

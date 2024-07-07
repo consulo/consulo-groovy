@@ -37,6 +37,7 @@ import consulo.util.lang.EmptyRunnable;
 import consulo.util.lang.StringUtil;
 import consulo.util.lang.function.Condition;
 import consulo.util.lang.function.PairConsumer;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.impl.refactoring.DefaultGroovyVariableNameValidator;
 import org.jetbrains.plugins.groovy.impl.refactoring.GroovyNameSuggestionUtil;
@@ -61,8 +62,8 @@ import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeParameterList;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyPropertyUtils;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+
 import java.util.*;
 import java.util.function.Consumer;
 

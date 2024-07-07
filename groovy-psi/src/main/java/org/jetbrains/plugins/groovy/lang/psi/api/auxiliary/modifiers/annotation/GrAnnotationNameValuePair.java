@@ -18,9 +18,8 @@ package org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation
 
 import com.intellij.java.language.psi.PsiNameValuePair;
 import consulo.language.psi.PsiElement;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
-
-import javax.annotation.Nullable;
 
 /**
  * @author: Dmitry.Krasilschikov

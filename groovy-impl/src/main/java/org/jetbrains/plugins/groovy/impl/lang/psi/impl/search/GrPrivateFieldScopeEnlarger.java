@@ -23,9 +23,8 @@ import consulo.language.impl.psi.ResolveScopeManager;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.UseScopeEnlarger;
 import consulo.language.psi.scope.GlobalSearchScope;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.impl.search.GrSourceFilterScope;
-
-import javax.annotation.Nonnull;
 
 /**
  * @author Maxim.Medvedev

@@ -17,6 +17,7 @@ package org.jetbrains.plugins.groovy.impl.refactoring.introduce.variable;
 
 import com.intellij.java.impl.refactoring.util.RefactoringUtil;
 import com.intellij.java.language.psi.codeStyle.JavaCodeStyleManager;
+import consulo.ide.impl.idea.util.ArrayUtilRt;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiReference;
 import consulo.language.psi.PsiUtilCore;
@@ -36,8 +37,8 @@ import org.jetbrains.plugins.groovy.impl.refactoring.GroovyRefactoringUtil;
 import org.jetbrains.plugins.groovy.impl.refactoring.introduce.GrIntroduceContext;
 import org.jetbrains.plugins.groovy.impl.refactoring.introduce.GrIntroduceHandlerBase;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import java.util.List;
 
 /**
@@ -71,7 +72,7 @@ public abstract class GrIntroduceLocalVariableProcessor {
 
     preprocessOccurrences();
 
-    int expressionIndex = consulo.ide.impl.idea.util.ArrayUtilRt.find(myOccurrences, myExpression);
+    int expressionIndex = ArrayUtilRt.find(myOccurrences, myExpression);
     final PsiElement[] replaced = myProcessUsages ? processOccurrences() : myOccurrences;
     PsiElement replacedExpression = replaced[expressionIndex];
     GrStatement anchor = GrIntroduceHandlerBase.getAnchor(replaced, myContext.getScope());

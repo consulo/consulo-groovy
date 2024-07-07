@@ -54,8 +54,8 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.literals
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.literals.GrStringInjection;
 import org.jetbrains.plugins.groovy.lang.psi.util.GrStringUtil;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 /**
  * @author ilyas
@@ -97,7 +97,7 @@ public class GroovyEnterHandler extends EnterHandlerDelegateAdapter
 	public static void insertSpacesByGroovyContinuationIndent(Editor editor, Project project)
 	{
 		int indentSize = CodeStyleSettingsManager.getSettings(project).getContinuationIndentSize(GroovyFileType.GROOVY_FILE_TYPE);
-		consulo.ide.impl.idea.openapi.editor.EditorModificationUtil.insertStringAtCaret(editor, StringUtil.repeatSymbol(' ', indentSize));
+		EditorModificationUtil.insertStringAtCaret(editor, StringUtil.repeatSymbol(' ', indentSize));
 	}
 
 
@@ -347,9 +347,9 @@ public class GroovyEnterHandler extends EnterHandlerDelegateAdapter
 				}
 				else
 				{
-					consulo.ide.impl.idea.openapi.editor.EditorModificationUtil.insertStringAtCaret(editor, "'+");
+					EditorModificationUtil.insertStringAtCaret(editor, "'+");
 					originalHandler.execute(editor, dataContext);
-					consulo.ide.impl.idea.openapi.editor.EditorModificationUtil.insertStringAtCaret(editor, "'");
+					EditorModificationUtil.insertStringAtCaret(editor, "'");
 					PsiDocumentManager.getInstance(project).commitDocument(document);
 					CodeStyleManager.getInstance(project).reformatRange(file, caretOffset, caretModel.getOffset());
 				}
@@ -402,11 +402,11 @@ public class GroovyEnterHandler extends EnterHandlerDelegateAdapter
 				}
 				else if(isSlashBeforeCaret(caretOffset, fileText))
 				{
-					consulo.ide.impl.idea.openapi.editor.EditorModificationUtil.insertStringAtCaret(editor, "\n");
+					EditorModificationUtil.insertStringAtCaret(editor, "\n");
 				}
 				else
 				{
-					consulo.ide.impl.idea.openapi.editor.EditorModificationUtil.insertStringAtCaret(editor, "\"+");
+					EditorModificationUtil.insertStringAtCaret(editor, "\"+");
 					originalHandler.execute(editor, dataContext);
 					EditorModificationUtil.insertStringAtCaret(editor, "\"");
 					PsiDocumentManager.getInstance(project).commitDocument(document);

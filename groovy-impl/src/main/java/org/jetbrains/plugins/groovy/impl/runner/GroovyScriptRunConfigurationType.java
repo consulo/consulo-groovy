@@ -30,7 +30,7 @@ import consulo.ui.image.Image;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.plugins.groovy.JetgroovyIcons;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 @ExtensionImpl
 public class GroovyScriptRunConfigurationType implements ConfigurationType {

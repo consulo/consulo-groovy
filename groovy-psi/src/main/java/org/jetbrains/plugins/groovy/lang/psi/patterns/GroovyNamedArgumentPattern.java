@@ -1,10 +1,10 @@
 package org.jetbrains.plugins.groovy.lang.psi.patterns;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
 
 import consulo.language.pattern.ElementPattern;
 import consulo.language.util.ProcessingContext;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrNamedArgument;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrCall;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;

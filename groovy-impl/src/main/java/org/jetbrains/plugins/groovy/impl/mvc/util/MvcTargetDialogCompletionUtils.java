@@ -15,10 +15,10 @@ import consulo.util.dataholder.Key;
 import consulo.util.dataholder.UserDataHolderEx;
 import consulo.util.lang.SystemProperties;
 import consulo.virtualFileSystem.VirtualFile;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyNamesUtil;
 import org.jetbrains.plugins.groovy.impl.mvc.MvcFramework;
 
-import javax.annotation.Nonnull;
 import java.io.File;
 import java.util.*;
 

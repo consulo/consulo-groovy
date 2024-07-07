@@ -14,11 +14,10 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.literals;
 
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlock;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
-
-import javax.annotation.Nullable;
 
 /**
  * @author Maxim.Medvedev

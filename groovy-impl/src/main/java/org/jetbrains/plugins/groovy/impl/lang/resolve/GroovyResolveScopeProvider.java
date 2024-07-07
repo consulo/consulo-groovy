@@ -25,11 +25,10 @@ import consulo.module.content.ProjectFileIndex;
 import consulo.module.content.ProjectRootManager;
 import consulo.project.Project;
 import consulo.virtualFileSystem.VirtualFile;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.impl.runner.GroovyScriptUtil;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
-
-import javax.annotation.Nonnull;
 
 /**
  * @author Max Medvedev

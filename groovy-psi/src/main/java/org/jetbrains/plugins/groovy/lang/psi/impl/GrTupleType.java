@@ -25,9 +25,8 @@ import consulo.application.util.VolatileNotNullLazyValue;
 import consulo.language.psi.scope.GlobalSearchScope;
 import consulo.util.lang.Comparing;
 import consulo.util.lang.StringUtil;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil;
-
-import javax.annotation.Nonnull;
 
 /**
  * @author ven

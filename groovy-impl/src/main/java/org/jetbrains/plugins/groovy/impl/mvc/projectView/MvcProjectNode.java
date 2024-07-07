@@ -24,7 +24,7 @@ import consulo.ide.impl.idea.ide.projectView.impl.nodes.AbstractProjectNode;
 import consulo.project.ui.view.tree.AbstractTreeNode;
 import org.jetbrains.plugins.groovy.impl.mvc.MvcModuleStructureUtil;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;

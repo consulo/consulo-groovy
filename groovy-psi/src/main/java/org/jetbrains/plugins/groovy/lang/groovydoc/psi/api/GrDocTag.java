@@ -17,8 +17,7 @@
 package org.jetbrains.plugins.groovy.lang.groovydoc.psi.api;
 
 import com.intellij.java.language.psi.javadoc.PsiDocTag;
-
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 
 /**
  * @author ilyas

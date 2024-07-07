@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.lang.completion.closureParameters;
 
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 
 /**
  * @author Max Medvedev

@@ -18,7 +18,7 @@ package org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members;
 import com.intellij.java.language.psi.PsiAnnotationMethod;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotationMemberValue;
 
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 
 /**
  * User: Dmitry.Krasilschikov

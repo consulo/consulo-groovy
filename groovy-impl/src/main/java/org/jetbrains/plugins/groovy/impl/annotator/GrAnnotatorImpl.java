@@ -15,11 +15,10 @@
  */
 package org.jetbrains.plugins.groovy.impl.annotator;
 
-import javax.annotation.Nonnull;
-
 import consulo.language.content.FileIndexFacade;
 import consulo.language.psi.PsiComment;
 import consulo.language.psi.PsiElement;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.impl.codeInspection.type.GroovyStaticTypeCheckVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;

@@ -27,9 +27,9 @@ import consulo.module.ModulesAlphaComparator;
 import consulo.ui.ex.awt.*;
 import consulo.ui.ex.awt.util.BrowseFilesListener;
 import consulo.virtualFileSystem.VirtualFile;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 
-import javax.annotation.Nonnull;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;

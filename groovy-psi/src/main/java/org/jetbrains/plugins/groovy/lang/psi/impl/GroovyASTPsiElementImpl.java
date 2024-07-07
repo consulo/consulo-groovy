@@ -15,9 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl;
 
-import javax.annotation.Nonnull;
-
 import consulo.language.ast.ASTNode;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author Max Medvedev

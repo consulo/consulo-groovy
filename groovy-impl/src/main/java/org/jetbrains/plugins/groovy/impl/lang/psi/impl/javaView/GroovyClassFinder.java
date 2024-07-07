@@ -24,8 +24,8 @@ import consulo.project.Project;
 import jakarta.inject.Inject;
 import org.jetbrains.plugins.groovy.impl.lang.stubs.GroovyShortNamesCache;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import java.util.Collection;
 import java.util.List;
 

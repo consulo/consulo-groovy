@@ -19,9 +19,8 @@ package org.jetbrains.plugins.groovy.impl;
 import consulo.annotation.component.ExtensionImpl;
 import consulo.virtualFileSystem.fileType.FileTypeConsumer;
 import consulo.virtualFileSystem.fileType.FileTypeFactory;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.GroovyFileType;
-
-import javax.annotation.Nonnull;
 
 /**
  * @author ilyas

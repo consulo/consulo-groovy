@@ -15,10 +15,9 @@
  */
 package org.jetbrains.plugins.groovy.impl.intentions.control;
 
-import javax.annotation.Nonnull;
-
 import consulo.language.ast.IElementType;
 import consulo.language.psi.PsiElement;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.impl.intentions.GroovyIntentionsBundle;
 import org.jetbrains.plugins.groovy.impl.intentions.base.MutablyNamedIntention;
 import org.jetbrains.plugins.groovy.impl.intentions.base.PsiElementPredicate;

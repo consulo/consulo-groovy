@@ -18,10 +18,9 @@ package org.jetbrains.plugins.groovy.impl.lang.psi.impl.synthetic;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiManager;
 import consulo.language.util.IncorrectOperationException;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GrLightMethodBuilder;
 import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GrRenameableLightElement;
-
-import javax.annotation.Nonnull;
 
 /**
  * @author Sergey Evdokimov

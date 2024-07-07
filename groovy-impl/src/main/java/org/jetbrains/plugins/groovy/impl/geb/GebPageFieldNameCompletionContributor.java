@@ -11,11 +11,10 @@ import consulo.language.editor.completion.lookup.TailTypeDecorator;
 import consulo.language.psi.util.PsiTreeUtil;
 import consulo.language.util.ProcessingContext;
 import consulo.util.lang.Pair;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.GroovyLanguage;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.impl.util.FieldInitializerTailTypes;
-
-import javax.annotation.Nonnull;
 
 import static com.intellij.java.language.patterns.PsiJavaPatterns.psiClass;
 import static com.intellij.java.language.patterns.PsiJavaPatterns.psiField;

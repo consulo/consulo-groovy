@@ -18,7 +18,7 @@ package org.jetbrains.plugins.groovy.lang.psi;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiQualifiedReferenceElement;
 
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 
 /**
  * @author Maxim.Medvedev

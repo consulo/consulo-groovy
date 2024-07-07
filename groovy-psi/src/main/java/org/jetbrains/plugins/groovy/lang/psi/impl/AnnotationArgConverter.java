@@ -18,10 +18,9 @@ package org.jetbrains.plugins.groovy.lang.psi.impl;
 import com.intellij.java.language.psi.*;
 import consulo.language.psi.PsiElement;
 import consulo.language.util.IncorrectOperationException;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotationMemberValue;
-
-import javax.annotation.Nullable;
 
 /**
  * Created by Max Medvedev on 8/19/13

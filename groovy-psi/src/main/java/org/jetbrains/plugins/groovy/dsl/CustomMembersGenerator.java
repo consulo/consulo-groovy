@@ -46,8 +46,8 @@ import org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyPropertyUtils;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import java.util.*;
 import java.util.function.Function;
 
@@ -61,7 +61,8 @@ public class CustomMembersGenerator extends GroovyObjectSupport implements GdslM
   private final Project myProject;
   private final CompoundMembersHolder myDepot = new CompoundMembersHolder();
   private final GroovyClassDescriptor myDescriptor;
-  @Nullable private final Map<String, List> myBindings;
+  @Nullable
+  private final Map<String, List> myBindings;
   private final PsiClass myPsiClass;
 
   public CustomMembersGenerator(@Nonnull GroovyClassDescriptor descriptor, @Nullable PsiType type, @Nullable Map<String, List> bindings) {

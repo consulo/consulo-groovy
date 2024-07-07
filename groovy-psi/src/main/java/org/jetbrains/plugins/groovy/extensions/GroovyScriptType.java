@@ -18,7 +18,7 @@ package org.jetbrains.plugins.groovy.extensions;
 import java.util.Collections;
 import java.util.List;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 import consulo.language.psi.scope.GlobalSearchScope;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;

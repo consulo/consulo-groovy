@@ -20,7 +20,7 @@ import consulo.language.pattern.InitialPatternCondition;
 import consulo.language.util.ProcessingContext;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
 
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 
 /**
  * @author Sergey Evdokimov

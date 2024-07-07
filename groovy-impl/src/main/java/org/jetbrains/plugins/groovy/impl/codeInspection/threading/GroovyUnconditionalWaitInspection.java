@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.impl.codeInspection.threading;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 import com.intellij.java.language.psi.CommonClassNames;
 import com.intellij.java.language.psi.PsiClass;

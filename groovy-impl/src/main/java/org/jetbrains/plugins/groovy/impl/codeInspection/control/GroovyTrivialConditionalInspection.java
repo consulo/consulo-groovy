@@ -29,7 +29,7 @@ import org.jetbrains.plugins.groovy.impl.intentions.utils.BoolUtils;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrConditionalExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 public class GroovyTrivialConditionalInspection extends BaseInspection {
 

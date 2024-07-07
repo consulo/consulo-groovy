@@ -59,13 +59,13 @@ import consulo.util.collection.Lists;
 import consulo.util.dataholder.Key;
 import consulo.util.lang.ref.Ref;
 import consulo.virtualFileSystem.LocalFileSystem;
+import jakarta.annotation.Nonnull;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.plugins.groovy.JetgroovyIcons;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 import javax.swing.*;
 import java.awt.*;
 import java.io.OutputStreamWriter;
@@ -410,7 +410,7 @@ public class MvcConsole implements Disposable {
     }
   }
 
-  public consulo.ide.impl.idea.execution.impl.ConsoleViewImpl getConsole() {
+  public ConsoleViewImpl getConsole() {
     return myConsole;
   }
 }

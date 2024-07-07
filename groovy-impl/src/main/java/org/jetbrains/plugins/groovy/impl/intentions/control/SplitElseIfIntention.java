@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.impl.intentions.control;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 import consulo.codeEditor.Editor;
 import consulo.project.Project;

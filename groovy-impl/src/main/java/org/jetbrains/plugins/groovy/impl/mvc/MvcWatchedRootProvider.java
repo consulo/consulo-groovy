@@ -11,7 +11,7 @@ import consulo.project.Project;
 import consulo.project.content.WatchedRootsProvider;
 import jakarta.inject.Inject;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 import java.io.File;
 import java.util.Collections;
 import java.util.HashSet;

@@ -48,8 +48,8 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrComman
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrConditionalExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameterList;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -105,7 +105,7 @@ public class GroovyBlock implements Block, GroovyElementTypes, ASTBlock {
       }
       catch (RuntimeException e) {
         final PsiFile file = myNode.getPsi().getContainingFile();
-        consulo.ide.impl.idea.diagnostic.LogMessageEx.error(LOG, "Formatting failed for file " + file.getName(), e, file.getText(), myNode.getText());
+        LogMessageEx.error(LOG, "Formatting failed for file " + file.getName(), e, file.getText(), myNode.getText());
         mySubBlocks = new ArrayList<Block>();
       }
     }

@@ -18,7 +18,7 @@ package org.jetbrains.plugins.groovy.lang.psi.impl.statements.typedef.members;
 import java.util.Collections;
 import java.util.Map;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 import org.jetbrains.plugins.groovy.extensions.NamedArgumentDescriptor;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;

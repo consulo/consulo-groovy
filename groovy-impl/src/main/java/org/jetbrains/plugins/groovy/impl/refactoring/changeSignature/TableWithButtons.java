@@ -88,7 +88,7 @@ public abstract class TableWithButtons {
     });
   }
 
-  private consulo.ide.impl.idea.ui.RowEditableTableModel myModel;
+  private RowEditableTableModel myModel;
 
   private JPanel myPanel;
   private JButton myAddButton;

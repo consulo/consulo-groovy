@@ -26,10 +26,10 @@ import consulo.util.collection.ArrayUtil;
 import consulo.ui.ex.action.ActionGroup;
 import consulo.ui.ex.action.ActionManager;
 import consulo.ui.ex.awt.TextFieldWithBrowseButton;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.impl.doc.actions.GroovyDocAddPackageAction;
 import org.jetbrains.plugins.groovy.impl.doc.actions.GroovyDocReducePackageAction;
 
-import javax.annotation.Nullable;
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;

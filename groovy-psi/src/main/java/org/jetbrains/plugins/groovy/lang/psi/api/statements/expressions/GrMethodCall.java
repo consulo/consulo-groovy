@@ -18,7 +18,7 @@ package org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions;
 import consulo.navigation.NavigationItem;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.path.GrCallExpression;
 
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 
 /**
  * @author peter

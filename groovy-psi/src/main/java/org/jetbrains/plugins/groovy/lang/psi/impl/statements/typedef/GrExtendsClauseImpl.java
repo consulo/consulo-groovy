@@ -19,13 +19,12 @@ package org.jetbrains.plugins.groovy.lang.psi.impl.statements.typedef;
 import com.intellij.java.language.psi.PsiJavaCodeReferenceElement;
 import consulo.language.ast.ASTNode;
 import consulo.language.ast.IElementType;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrExtendsClause;
 import org.jetbrains.plugins.groovy.lang.psi.stubs.GrReferenceListStub;
-
-import javax.annotation.Nonnull;
 
 /**
  * @author: Dmitry.Krasilschikov

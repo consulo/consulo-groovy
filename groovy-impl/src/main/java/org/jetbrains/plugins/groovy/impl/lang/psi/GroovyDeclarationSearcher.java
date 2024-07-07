@@ -4,9 +4,9 @@ import consulo.annotation.component.ExtensionImpl;
 import consulo.language.pom.PomDeclarationSearcher;
 import consulo.language.pom.PomTarget;
 import consulo.language.psi.PsiElement;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
 
-import javax.annotation.Nonnull;
 import java.util.function.Consumer;
 
 /**

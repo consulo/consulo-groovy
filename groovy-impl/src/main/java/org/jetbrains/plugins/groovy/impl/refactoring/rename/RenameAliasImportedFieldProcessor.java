@@ -21,7 +21,7 @@ import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiReference;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 import java.util.Collection;
 
 /**

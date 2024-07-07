@@ -17,13 +17,10 @@ package org.jetbrains.plugins.groovy.impl.formatter;
 
 import consulo.language.ast.ASTNode;
 import consulo.language.codeStyle.Alignment;
-import consulo.language.ast.ASTNode;
-import consulo.language.psi.PsiElement;
-import consulo.language.codeStyle.Alignment;
 import consulo.language.psi.PsiElement;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import java.util.*;
 
 /**

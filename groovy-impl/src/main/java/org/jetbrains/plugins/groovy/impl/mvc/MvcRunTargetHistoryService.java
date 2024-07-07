@@ -26,7 +26,7 @@ import consulo.ide.ServiceManager;
 import consulo.util.collection.ArrayUtil;
 import jakarta.inject.Singleton;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 import java.util.LinkedList;
 
 /**

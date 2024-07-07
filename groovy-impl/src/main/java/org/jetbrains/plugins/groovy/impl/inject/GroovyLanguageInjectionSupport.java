@@ -22,7 +22,7 @@ import consulo.language.psi.PsiLanguageInjectionHost;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.patterns.GroovyPatterns;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author Gregory.Shrago

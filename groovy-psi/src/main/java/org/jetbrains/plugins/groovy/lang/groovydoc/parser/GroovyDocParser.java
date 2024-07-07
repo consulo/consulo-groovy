@@ -16,12 +16,11 @@
 
 package org.jetbrains.plugins.groovy.lang.groovydoc.parser;
 
-import javax.annotation.Nonnull;
-
 import consulo.language.ast.ASTNode;
 import consulo.language.ast.IElementType;
 import consulo.language.parser.PsiBuilder;
 import consulo.language.version.LanguageVersion;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.groovydoc.parser.parsing.GroovyDocParsing;
 import consulo.language.parser.PsiParser;
 

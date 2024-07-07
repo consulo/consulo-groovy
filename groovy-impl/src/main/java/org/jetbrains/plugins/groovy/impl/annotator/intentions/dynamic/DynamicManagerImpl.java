@@ -33,14 +33,14 @@ import consulo.project.startup.StartupManager;
 import consulo.ui.ex.awt.tree.TreeUtil;
 import consulo.ui.ex.toolWindow.ToolWindow;
 import consulo.util.collection.ContainerUtil;
+import jakarta.annotation.Nonnull;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import org.jetbrains.plugins.groovy.impl.annotator.intentions.QuickfixUtil;
 import org.jetbrains.plugins.groovy.impl.annotator.intentions.dynamic.elements.*;
 import org.jetbrains.plugins.groovy.impl.annotator.intentions.dynamic.ui.DynamicElementSettings;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 import javax.swing.tree.DefaultMutableTreeNode;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -93,7 +93,7 @@ public class DynamicManagerImpl extends DynamicManager {
 
   private void removeItemFromTree(DItemElement itemElement, DClassElement classElement) {
     DynamicToolWindowWrapper wrapper = DynamicToolWindowWrapper.getInstance(myProject);
-    consulo.ide.impl.idea.ui.treeStructure.treetable.ListTreeTableModelOnColumns model = wrapper.getTreeTableModel();
+    ListTreeTableModelOnColumns model = wrapper.getTreeTableModel();
     Object classNode = TreeUtil.findNodeWithObject(classElement, model, model.getRoot());
     final DefaultMutableTreeNode node = (DefaultMutableTreeNode)TreeUtil.findNodeWithObject(itemElement, model, classNode);
     if (node == null) {
@@ -129,7 +129,7 @@ public class DynamicManagerImpl extends DynamicManager {
   }
 
   private void addItemInTree(final DClassElement classElement, final DItemElement itemElement, final ToolWindow window) {
-    final consulo.ide.impl.idea.ui.treeStructure.treetable.ListTreeTableModelOnColumns myTreeTableModel =
+    final ListTreeTableModelOnColumns myTreeTableModel =
       DynamicToolWindowWrapper.getInstance(myProject).getTreeTableModel();
 
     window.activate(new Runnable() {

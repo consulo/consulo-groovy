@@ -18,8 +18,8 @@ package org.jetbrains.plugins.groovy.impl.lang.psi.typeEnhancers;
 import com.intellij.java.language.psi.*;
 import consulo.util.collection.ContainerUtil;
 import consulo.ide.impl.idea.util.containers.ContainerUtilRt;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -17,11 +17,10 @@ package org.jetbrains.plugins.groovy.impl.codeInspection.naming;
 
 import com.intellij.java.language.psi.PsiModifier;
 import consulo.language.psi.PsiElement;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.impl.codeInspection.GroovyFix;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
-
-import javax.annotation.Nonnull;
 
 public class GroovyConstantNamingConventionInspection extends ConventionInspection {
 

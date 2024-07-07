@@ -15,14 +15,13 @@
  */
 package org.jetbrains.plugins.groovy.impl.mvc.projectView;
 
-import javax.annotation.Nonnull;
-
 import consulo.language.psi.PsiDirectory;
 import consulo.module.Module;
 import consulo.ui.ex.tree.PresentationData;
 import consulo.project.ui.view.tree.ViewSettings;
 import consulo.util.lang.Comparing;
 import consulo.ui.image.Image;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author peter

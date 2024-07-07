@@ -49,6 +49,7 @@ import consulo.util.collection.ContainerUtil;
 import consulo.util.dataholder.Key;
 import consulo.util.lang.StringUtil;
 import consulo.util.lang.function.Condition;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.impl.intentions.GroovyIntentionsBundle;
 import org.jetbrains.plugins.groovy.impl.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.impl.intentions.base.PsiElementPredicate;
@@ -69,8 +70,8 @@ import org.jetbrains.plugins.groovy.impl.refactoring.changeSignature.GrChangeInf
 import org.jetbrains.plugins.groovy.impl.refactoring.changeSignature.GrChangeSignatureProcessor;
 import org.jetbrains.plugins.groovy.impl.refactoring.changeSignature.GrParameterInfo;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+
 import javax.swing.*;
 import java.util.*;
 

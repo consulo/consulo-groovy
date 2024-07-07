@@ -20,9 +20,8 @@ import com.intellij.java.language.psi.PsiParameter;
 import com.intellij.java.language.psi.PsiSubstitutor;
 import com.intellij.java.language.psi.PsiType;
 import com.intellij.java.language.psi.util.TypeConversionUtil;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrClosureParameter;
-
-import javax.annotation.Nonnull;
 
 /**
  * Created by Max Medvedev on 14/03/14

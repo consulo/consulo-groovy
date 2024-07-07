@@ -16,21 +16,16 @@
 package org.jetbrains.plugins.groovy.impl.editor.actions.joinLines;
 
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 import consulo.document.Document;
 import consulo.language.ast.IElementType;
 import consulo.language.editor.action.JoinRawLinesHandlerDelegate;
-import consulo.document.Document;
 import consulo.document.util.TextRange;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiFile;
 import consulo.language.ast.TokenType;
-import consulo.language.ast.IElementType;
-import consulo.language.psi.util.PsiTreeUtil;
-import consulo.language.editor.action.JoinRawLinesHandlerDelegate;
-import consulo.language.psi.PsiElement;
 import consulo.language.psi.util.PsiTreeUtil;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFileBase;

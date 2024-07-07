@@ -44,7 +44,7 @@ import org.jetbrains.plugins.groovy.impl.refactoring.changeSignature.GrParameter
 import org.jetbrains.plugins.groovy.impl.refactoring.convertToJava.GroovyToJavaGenerator;
 import org.jetbrains.plugins.groovy.impl.refactoring.ui.MethodOrClosureScopeChooser;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

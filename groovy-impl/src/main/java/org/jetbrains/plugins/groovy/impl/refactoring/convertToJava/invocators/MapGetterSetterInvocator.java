@@ -18,6 +18,7 @@ package org.jetbrains.plugins.groovy.impl.refactoring.convertToJava.invocators;
 import com.intellij.java.language.psi.*;
 import com.intellij.java.language.psi.util.InheritanceUtil;
 import consulo.annotation.component.ExtensionImpl;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.impl.refactoring.convertToJava.ExpressionGenerator;
 import org.jetbrains.plugins.groovy.impl.refactoring.convertToJava.GenerationUtil;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
@@ -26,8 +27,7 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlo
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 
 /**
  * @author Max Medvedev

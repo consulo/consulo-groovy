@@ -39,8 +39,8 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMe
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrReflectedMethod;
 import org.jetbrains.plugins.groovy.impl.refactoring.GroovyRefactoringBundle;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 /**
  * @author Maxim.Medvedev
@@ -113,7 +113,7 @@ public class GrChangeSignatureHandler implements ChangeSignatureHandler {
     dialog.show();
   }
 
-  @Nullable
+  @jakarta.annotation.Nullable
   @RequiredReadAction
   public PsiElement findTargetMember(PsiFile file, Editor editor) {
     final PsiElement element = file.findElementAt(editor.getCaretModel().getOffset());

@@ -28,7 +28,7 @@ import consulo.util.lang.ThreeState;
 import org.jetbrains.plugins.groovy.GroovyLanguage;
 import org.jetbrains.plugins.groovy.lang.lexer.TokenSets;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 import static org.jetbrains.plugins.groovy.impl.shell.GroovyShellRunnerImpl.GROOVY_SHELL_FILE;
 

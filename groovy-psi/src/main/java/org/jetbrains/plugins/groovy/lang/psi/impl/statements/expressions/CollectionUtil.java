@@ -20,7 +20,7 @@ import com.intellij.java.language.psi.util.InheritanceUtil;
 import consulo.language.psi.scope.GlobalSearchScope;
 import consulo.project.Project;
 
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 
 public class CollectionUtil {
   @Nullable

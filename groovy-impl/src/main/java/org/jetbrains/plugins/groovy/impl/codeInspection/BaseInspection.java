@@ -26,8 +26,8 @@ import consulo.language.psi.PsiElementVisitor;
 import consulo.language.psi.PsiFile;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFileBase;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import java.util.Objects;
 
 public abstract class BaseInspection<State> extends GroovySuppressableInspectionTool {

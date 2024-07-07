@@ -15,12 +15,12 @@
  */
 package org.jetbrains.plugins.groovy.impl.annotator.intentions.dynamic.elements;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 import consulo.language.psi.PsiManager;
 import consulo.language.psi.PsiNamedElement;
 
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 
 /**
  * User: Dmitry.Krasilschikov

@@ -20,22 +20,16 @@ import consulo.language.psi.PsiUtilCore;
 import consulo.navigation.ItemPresentation;
 import consulo.project.ui.view.tree.ViewSettings;
 import consulo.ui.ex.tree.PresentationData;
-import consulo.project.ui.view.tree.ViewSettings;
 import consulo.project.ui.view.tree.AbstractPsiBasedNode;
-import consulo.navigation.ItemPresentation;
 import consulo.navigation.NavigationItem;
 import consulo.module.Module;
 import consulo.application.util.Queryable;
 import consulo.util.lang.function.Condition;
 import consulo.virtualFileSystem.VirtualFile;
 import consulo.language.editor.wolfAnalyzer.WolfTheProblemSolver;
-import consulo.language.psi.PsiElement;
-import consulo.language.psi.PsiUtilCore;
-import consulo.util.lang.function.Condition;
-import consulo.virtualFileSystem.VirtualFile;
 import org.jetbrains.annotations.NonNls;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 /**
  * @author Dmitry Krasilschikov

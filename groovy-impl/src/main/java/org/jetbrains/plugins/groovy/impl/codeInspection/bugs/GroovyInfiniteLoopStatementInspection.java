@@ -16,14 +16,13 @@
 package org.jetbrains.plugins.groovy.impl.codeInspection.bugs;
 
 import consulo.annotation.component.ExtensionImpl;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.plugins.groovy.codeInspection.utils.ControlFlowUtils;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrWhileStatement;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 @ExtensionImpl
 public class GroovyInfiniteLoopStatementInspection extends BaseInspection {

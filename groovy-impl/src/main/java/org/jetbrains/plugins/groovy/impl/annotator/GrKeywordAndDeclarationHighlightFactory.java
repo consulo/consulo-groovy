@@ -22,7 +22,7 @@ import consulo.language.editor.impl.highlight.TextEditorHighlightingPassFactory;
 import consulo.language.psi.PsiFile;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author Max Medvedev

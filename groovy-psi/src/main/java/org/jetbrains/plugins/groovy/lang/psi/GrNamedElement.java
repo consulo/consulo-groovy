@@ -16,10 +16,9 @@
 
 package org.jetbrains.plugins.groovy.lang.psi;
 
-import javax.annotation.Nonnull;
-
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiNamedElement;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author ven

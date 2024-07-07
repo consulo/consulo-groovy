@@ -26,8 +26,8 @@ import java.util.List;
 import java.util.Queue;
 import java.util.Set;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 import consulo.application.util.CachedValueProvider;
 import consulo.document.util.TextRange;
@@ -281,7 +281,7 @@ public class ControlFlowUtils {
     }
   }
 
-  public static boolean statementCompletesWithStatement(@Nonnull GrStatement containingStatement,@Nonnull GrStatement statement) {
+  public static boolean statementCompletesWithStatement(@Nonnull GrStatement containingStatement, @Nonnull GrStatement statement) {
     GroovyPsiElement statementToCheck = statement;
     while (true) {
       if (statementToCheck.equals(containingStatement)) {
@@ -371,7 +371,7 @@ public class ControlFlowUtils {
     }
   }
 
-  public static boolean closureCompletesWithStatement(@Nonnull GrClosableBlock body,@Nonnull GrStatement statement) {
+  public static boolean closureCompletesWithStatement(@Nonnull GrClosableBlock body, @Nonnull GrStatement statement) {
     GroovyPsiElement statementToCheck = statement;
     while (true) {
       if (!(statementToCheck instanceof GrExpression || statementToCheck instanceof GrReturnStatement)) {

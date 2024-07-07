@@ -15,12 +15,12 @@
  */
 package org.jetbrains.plugins.groovy.impl.extensions;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
 
 import consulo.language.editor.completion.CompletionResultSet;
 import consulo.language.editor.completion.lookup.LookupElementBuilder;
 import consulo.language.psi.PsiElement;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import consulo.language.editor.completion.lookup.PrioritizedLookupElement;
 import consulo.language.editor.completion.lookup.LookupElement;

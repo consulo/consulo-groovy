@@ -47,8 +47,8 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMe
 import org.jetbrains.plugins.groovy.impl.refactoring.GroovyRefactoringBundle;
 import org.jetbrains.plugins.groovy.impl.refactoring.ui.GroovyComboboxVisibilityPanel;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;

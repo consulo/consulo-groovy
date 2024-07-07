@@ -16,9 +16,8 @@
 package org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef;
 
 import com.intellij.java.language.psi.PsiEnumConstantInitializer;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrEnumConstant;
-
-import javax.annotation.Nonnull;
 
 /**
  * @author Maxim.Medvedev

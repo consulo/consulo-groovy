@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.impl.codeInspection.metrics;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.impl.codeInspection.utils.LibraryUtil;

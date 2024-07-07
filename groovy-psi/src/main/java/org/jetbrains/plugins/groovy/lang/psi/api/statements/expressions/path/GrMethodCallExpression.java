@@ -17,8 +17,8 @@
 package org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.path;
 
 import consulo.language.util.IncorrectOperationException;
-import javax.annotation.Nonnull;
 
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlock;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrMethodCall;

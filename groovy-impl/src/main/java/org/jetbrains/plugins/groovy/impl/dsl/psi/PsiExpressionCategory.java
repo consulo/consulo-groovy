@@ -19,13 +19,13 @@ package org.jetbrains.plugins.groovy.impl.dsl.psi;
 import com.intellij.java.language.psi.PsiClass;
 import com.intellij.java.language.psi.PsiType;
 import consulo.annotation.component.ExtensionImpl;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.dsl.psi.PsiCategoryUtil;
 import org.jetbrains.plugins.groovy.dsl.psi.PsiEnhancerCategory;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrArgumentList;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrCall;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 
-import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;

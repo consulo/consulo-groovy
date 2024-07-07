@@ -20,8 +20,8 @@ import com.intellij.java.language.psi.PsiType;
 import consulo.language.psi.PsiMirrorElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 /**
  * synthetic method (either getter or setter) generated for groovy property

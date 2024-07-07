@@ -23,7 +23,7 @@ import consulo.language.psi.PsiElement;
 import consulo.project.Project;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author Maxim.Medvedev

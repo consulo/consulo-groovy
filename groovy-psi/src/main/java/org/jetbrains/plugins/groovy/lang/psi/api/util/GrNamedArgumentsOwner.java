@@ -15,12 +15,11 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.api.util;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 import consulo.language.psi.PsiElement;
 
-import javax.annotation.Nullable;
-
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrNamedArgument;
 
 /**

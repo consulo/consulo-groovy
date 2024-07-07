@@ -24,11 +24,10 @@ import consulo.codeEditor.HighlighterIterator;
 import consulo.language.editor.action.TypedHandlerDelegate;
 import consulo.language.psi.PsiFile;
 import consulo.project.Project;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.impl.editor.HandlerUtils;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
-
-import javax.annotation.Nonnull;
 
 /**
  * @author Maxim.Medvedev

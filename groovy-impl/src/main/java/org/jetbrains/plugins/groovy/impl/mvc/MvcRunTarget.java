@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.impl.mvc;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 import consulo.process.cmd.GeneralCommandLine;
 import consulo.ui.ex.action.AnActionEvent;

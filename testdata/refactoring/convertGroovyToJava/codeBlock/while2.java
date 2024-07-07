@@ -1,5 +1,8 @@
+import java.util.ArrayList;
+import java.util.List;
+
 int i = 5;
-java.util.List<Integer> list = new java.util.ArrayList<Integer>(4);
+List<Integer> list = new ArrayList<Integer>(4);
 list.add(1);
 list.add(2);
 list.add(3);

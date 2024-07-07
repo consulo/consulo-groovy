@@ -21,9 +21,9 @@ import consulo.language.codeStyle.Block;
 import consulo.language.codeStyle.Indent;
 import consulo.language.codeStyle.Wrap;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
 
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.impl.formatter.FormattingContext;
 
 import java.util.List;

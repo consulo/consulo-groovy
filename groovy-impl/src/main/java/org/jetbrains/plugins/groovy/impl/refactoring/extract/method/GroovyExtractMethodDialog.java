@@ -21,6 +21,8 @@ import com.intellij.java.language.psi.*;
 import consulo.application.HelpManager;
 import consulo.document.event.DocumentEvent;
 import consulo.document.event.DocumentListener;
+import consulo.ide.impl.idea.refactoring.ui.ComboBoxVisibilityPanel;
+import consulo.ide.impl.idea.refactoring.ui.MethodSignatureComponent;
 import consulo.language.editor.refactoring.ui.ConflictsDialog;
 import consulo.language.editor.refactoring.util.CommonRefactoringUtil;
 import consulo.language.editor.ui.awt.EditorTextField;
@@ -31,6 +33,7 @@ import consulo.ui.ex.awt.Splitter;
 import consulo.ui.ex.awt.ValidationInfo;
 import consulo.util.collection.ArrayUtil;
 import consulo.util.collection.HashingStrategy;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.impl.intentions.utils.DuplicatesUtil;
@@ -45,8 +48,7 @@ import org.jetbrains.plugins.groovy.impl.refactoring.ui.GrMethodSignatureCompone
 import org.jetbrains.plugins.groovy.impl.refactoring.ui.GroovyComboboxVisibilityPanel;
 import org.jetbrains.plugins.groovy.impl.settings.GroovyApplicationSettings;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -70,8 +72,8 @@ public class GroovyExtractMethodDialog extends DialogWrapper {
   private EditorTextField myNameField;
   private JCheckBox myCbSpecifyType;
   private JLabel myNameLabel;
-  private consulo.ide.impl.idea.refactoring.ui.MethodSignatureComponent mySignature;
-  private consulo.ide.impl.idea.refactoring.ui.ComboBoxVisibilityPanel<String> myVisibilityPanel;
+  private MethodSignatureComponent mySignature;
+  private ComboBoxVisibilityPanel<String> myVisibilityPanel;
   private Splitter mySplitter;
   private JCheckBox myForceReturnCheckBox;
   private ParameterTablePanel myParameterTablePanel;

@@ -55,8 +55,8 @@ import org.jetbrains.plugins.groovy.lang.resolve.processors.MethodResolverProces
 import org.jetbrains.plugins.groovy.impl.refactoring.DefaultGroovyVariableNameValidator;
 import org.jetbrains.plugins.groovy.impl.refactoring.GroovyNameSuggestionUtil;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import java.util.*;
 
 import static org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes.*;

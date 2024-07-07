@@ -16,6 +16,7 @@
 package org.jetbrains.plugins.groovy.impl.codeInspection.confusing;
 
 import consulo.annotation.component.ExtensionImpl;
+import consulo.ide.impl.idea.diagnostic.LogMessageEx;
 import consulo.language.ast.IElementType;
 import consulo.language.editor.inspection.ProblemHighlightType;
 import consulo.language.psi.PsiElement;
@@ -41,8 +42,8 @@ import org.jetbrains.plugins.groovy.lang.psi.controlFlow.Instruction;
 import org.jetbrains.plugins.groovy.lang.psi.controlFlow.ReadWriteVariableInstruction;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import java.util.Iterator;
 import java.util.List;
 
@@ -102,7 +103,7 @@ public class GrUnusedIncDecInspection extends BaseInspection {
       final Instruction cur = ControlFlowUtils.findInstruction(operand, owner.getControlFlow());
 
       if (cur == null) {
-        consulo.ide.impl.idea.diagnostic.LogMessageEx.error(LOG, "no instruction found in flow." + "operand: " + operand.getText(), owner.getText());
+        LogMessageEx.error(LOG, "no instruction found in flow." + "operand: " + operand.getText(), owner.getText());
       }
 
       //get write access for inc or dec

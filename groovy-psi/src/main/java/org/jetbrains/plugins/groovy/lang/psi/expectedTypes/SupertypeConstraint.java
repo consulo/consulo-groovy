@@ -19,7 +19,7 @@ import com.intellij.java.language.psi.PsiType;
 import consulo.language.psi.PsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author ven

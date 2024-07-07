@@ -16,11 +16,10 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.typedef.enumConstant;
 
-import javax.annotation.Nonnull;
-
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.StubBasedPsiElement;
 import consulo.language.psi.stub.EmptyStub;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrEnumConstant;

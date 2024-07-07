@@ -20,10 +20,9 @@ import com.intellij.java.language.psi.JVMElementFactoryProvider;
 import consulo.annotation.component.ExtensionImpl;
 import consulo.language.Language;
 import consulo.project.Project;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.GroovyLanguage;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
-
-import javax.annotation.Nonnull;
 
 /**
  * @author Medvedev Max

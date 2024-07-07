@@ -17,10 +17,10 @@ package org.jetbrains.plugins.groovy.lang.psi.api.signatures;
 
 import com.intellij.java.language.psi.PsiSubstitutor;
 import com.intellij.java.language.psi.PsiType;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrClosureParameter;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author Maxim.Medvedev

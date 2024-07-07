@@ -15,12 +15,11 @@
  */
 package org.jetbrains.plugins.groovy.impl.lang.completion.smartEnter.fixers;
 
-import javax.annotation.Nonnull;
-
 import consulo.codeEditor.Editor;
 import consulo.language.editor.action.SmartEnterProcessorWithFixers;
 import consulo.document.Document;
 import consulo.language.psi.PsiElement;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.impl.lang.completion.smartEnter.GroovySmartEnterProcessor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrBlockStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrWhileStatement;

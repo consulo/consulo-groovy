@@ -2,8 +2,8 @@ package org.jetbrains.plugins.groovy.impl.mvc;
 
 import consulo.process.cmd.ParametersList;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 import java.util.*;
 

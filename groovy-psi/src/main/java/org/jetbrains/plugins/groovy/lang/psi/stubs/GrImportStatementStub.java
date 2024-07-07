@@ -15,8 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.stubs;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 import consulo.language.psi.stub.IStubElementType;
 import org.jetbrains.plugins.groovy.lang.psi.api.toplevel.imports.GrImportStatement;

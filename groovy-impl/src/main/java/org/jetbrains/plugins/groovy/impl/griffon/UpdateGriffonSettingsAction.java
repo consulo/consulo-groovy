@@ -14,7 +14,7 @@
  */
 package org.jetbrains.plugins.groovy.impl.griffon;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 import consulo.application.AllIcons;
 import consulo.ui.ex.action.AnActionEvent;

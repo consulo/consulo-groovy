@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.stubs.elements;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 import consulo.language.psi.stub.IStubElementType;
 import org.jetbrains.annotations.NonNls;

@@ -17,8 +17,8 @@
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions;
 
 import consulo.language.ast.ASTNode;
-import javax.annotation.Nonnull;
 
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrOperationSign;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyPsiElementImpl;
 

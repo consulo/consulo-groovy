@@ -19,12 +19,12 @@ import consulo.codeEditor.Editor;
 import consulo.language.psi.PsiElement;
 import consulo.logging.Logger;
 import consulo.project.Project;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.refactoring.introduce.StringPartInfo;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author Maxim.Medvedev
@@ -34,10 +34,12 @@ public class GrIntroduceContextImpl implements GrIntroduceContext {
 
   private final Project myProject;
   private final Editor myEditor;
-  @Nullable private final GrExpression myExpression;
+  @Nullable
+  private final GrExpression myExpression;
   private final PsiElement[] myOccurrences;
   private final PsiElement myScope;
-  @Nullable private final GrVariable myVar;
+  @Nullable
+  private final GrVariable myVar;
   @Nonnull
   private final PsiElement myPlace;
   private final StringPartInfo myStringPart;

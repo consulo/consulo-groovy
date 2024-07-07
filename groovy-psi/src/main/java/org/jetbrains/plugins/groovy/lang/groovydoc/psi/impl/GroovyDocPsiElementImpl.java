@@ -17,10 +17,9 @@
 package org.jetbrains.plugins.groovy.lang.groovydoc.psi.impl;
 
 import consulo.language.ast.ASTNode;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GroovyDocPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyPsiElementImpl;
-
-import javax.annotation.Nonnull;
 
 /**
  * @author ilyas

@@ -15,15 +15,13 @@
  */
 package org.jetbrains.plugins.groovy.impl.util;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
 
 import consulo.language.content.FileIndexFacade;
 import consulo.virtualFileSystem.VirtualFile;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFileBase;
 import consulo.project.Project;
-import consulo.language.content.FileIndexFacade;
-import consulo.virtualFileSystem.VirtualFile;
 import consulo.language.psi.PsiFile;
 import consulo.language.file.light.LightVirtualFile;
 

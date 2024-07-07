@@ -30,8 +30,8 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlo
 import org.jetbrains.plugins.groovy.lang.resolve.processors.ClassHint;
 import org.jetbrains.plugins.groovy.lang.resolve.processors.ResolverProcessorImpl;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
@@ -50,7 +50,8 @@ class DeclarationCacheKey {
         return Result.create(map, PsiModificationTracker.MODIFICATION_COUNT);
       }
     };
-  @Nullable private final String name;
+  @Nullable
+  private final String name;
   @Nonnull
   private final EnumSet<ClassHint.ResolveKind> kinds;
   private final boolean nonCode;

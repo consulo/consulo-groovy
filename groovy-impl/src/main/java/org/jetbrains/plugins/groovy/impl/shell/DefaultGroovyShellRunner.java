@@ -30,7 +30,7 @@ import org.jetbrains.plugins.groovy.impl.runner.DefaultGroovyScriptRunner;
 import org.jetbrains.plugins.groovy.impl.runner.GroovyScriptRunConfiguration;
 import org.jetbrains.plugins.groovy.util.LibrariesUtil;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;

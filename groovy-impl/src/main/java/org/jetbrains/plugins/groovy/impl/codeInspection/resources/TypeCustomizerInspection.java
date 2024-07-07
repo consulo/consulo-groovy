@@ -36,8 +36,8 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpres
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrMethodCall;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import java.util.Set;
 
 /**
@@ -127,7 +127,7 @@ public class TypeCustomizerInspection extends BaseInspection {
         ResourceCompilerConfiguration.getInstance(project).addResourceFilePattern(path);
       }
       else {
-        final String path = consulo.ide.impl.idea.openapi.vfs.VfsUtilCore.getRelativePath(virtualFile, sourceRoot, '/');
+        final String path = VfsUtilCore.getRelativePath(virtualFile, sourceRoot, '/');
         final String sourceRootPath = VfsUtilCore.getRelativePath(sourceRoot, projectRoot, '/');
         ResourceCompilerConfiguration.getInstance(project).addResourceFilePattern(sourceRootPath + ':' + path);
       }

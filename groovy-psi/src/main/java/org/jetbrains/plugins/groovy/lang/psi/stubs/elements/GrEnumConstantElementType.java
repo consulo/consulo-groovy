@@ -19,7 +19,7 @@ import consulo.language.psi.stub.*;
 import consulo.language.psi.stub.StubOutputStream;
 import consulo.util.collection.ArrayUtil;
 import consulo.index.io.StringRef;
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 import consulo.language.psi.stub.StubElement;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;

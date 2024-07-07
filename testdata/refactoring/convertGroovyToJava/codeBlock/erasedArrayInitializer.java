@@ -1,1 +1,4 @@
-java.util.List<java.lang.Integer>[] x = new java.util.List[]{new java.util.ArrayList<java.lang.Integer>(java.util.Arrays.asList(1, 2)), new java.util.ArrayList<java.lang.Integer>(java.util.Arrays.asList(3))};
+import java.lang.Integer;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;List<Integer>[] x = new List[]{new ArrayList<Integer>(Arrays.asList(1, 2)), new ArrayList<Integer>(Arrays.asList(3))};

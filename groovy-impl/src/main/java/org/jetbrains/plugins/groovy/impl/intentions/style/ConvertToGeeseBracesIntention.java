@@ -31,8 +31,8 @@ import consulo.util.lang.StringUtil;
 import consulo.language.psi.PsiFile;
 import consulo.language.codeStyle.CodeStyleManager;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.impl.codeStyle.GroovyCodeStyleSettings;

@@ -16,9 +16,8 @@
 package org.jetbrains.plugins.groovy.lang.psi.api.types;
 
 import com.intellij.java.language.psi.PsiType;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
-
-import javax.annotation.Nonnull;
 
 /**
  * @author Dmitry.Krasilschikov

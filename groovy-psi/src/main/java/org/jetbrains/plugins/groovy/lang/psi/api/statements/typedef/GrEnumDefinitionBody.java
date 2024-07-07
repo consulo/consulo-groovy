@@ -15,9 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef;
 
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrEnumConstantList;
-
-import javax.annotation.Nullable;
 
 /**
  * @author ven

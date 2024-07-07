@@ -20,7 +20,7 @@ package org.jetbrains.plugins.groovy.impl.lang.completion.smartEnter.fixers;
  * Date: 05.08.2008
  */
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 import consulo.language.editor.action.SmartEnterProcessorWithFixers;
 import consulo.codeEditor.Editor;

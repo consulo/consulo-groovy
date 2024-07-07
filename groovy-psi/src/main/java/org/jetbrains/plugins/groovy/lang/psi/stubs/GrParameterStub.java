@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.stubs;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 import consulo.index.io.StringRef;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;

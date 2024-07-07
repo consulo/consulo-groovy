@@ -1,1 +1,3 @@
-print(java.util.Arrays.asList());
+import java.util.Arrays;
+
+print(Arrays.asList());

@@ -20,9 +20,8 @@ import consulo.language.Language;
 import consulo.language.editor.inspection.InspectionSuppressor;
 import consulo.language.editor.inspection.SuppressQuickFix;
 import consulo.language.psi.PsiElement;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.GroovyLanguage;
-
-import javax.annotation.Nonnull;
 
 @ExtensionImpl
 public class GroovyInspectionSuppressor implements InspectionSuppressor {

@@ -28,6 +28,7 @@ import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiPackage;
 import consulo.language.psi.ResolveResult;
 import consulo.language.psi.util.PsiTreeUtil;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.extensions.NamedArgumentDescriptor;
 import org.jetbrains.plugins.groovy.impl.lang.completion.GrMainCompletionProvider;
 import org.jetbrains.plugins.groovy.impl.lang.completion.GrPropertyForCompletion;
@@ -40,7 +41,6 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.auxiliary.annotation.GrAnnotat
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyPropertyUtils;
 
-import javax.annotation.Nonnull;
 import java.util.HashSet;
 import java.util.Set;
 

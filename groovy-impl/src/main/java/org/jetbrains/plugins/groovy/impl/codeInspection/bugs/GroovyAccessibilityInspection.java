@@ -28,7 +28,7 @@ import org.jetbrains.plugins.groovy.impl.codeInspection.GroovySuppressableInspec
 import org.jetbrains.plugins.groovy.lang.psi.GrReferenceElement;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFileBase;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author Maxim.Medvedev

@@ -20,11 +20,8 @@ import consulo.language.editor.completion.CompletionWeigher;
 import consulo.language.editor.completion.lookup.LookupElement;
 import com.intellij.java.language.psi.PsiMethod;
 import consulo.language.psi.ResolveResult;
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
-import consulo.language.editor.completion.CompletionWeigher;
-import consulo.language.editor.completion.lookup.LookupElement;
-import consulo.language.psi.ResolveResult;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFileBase;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyPropertyUtils;
 

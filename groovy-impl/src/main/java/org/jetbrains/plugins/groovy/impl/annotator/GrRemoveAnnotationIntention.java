@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.impl.annotator;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 import consulo.language.psi.PsiElement;
 import consulo.language.util.IncorrectOperationException;

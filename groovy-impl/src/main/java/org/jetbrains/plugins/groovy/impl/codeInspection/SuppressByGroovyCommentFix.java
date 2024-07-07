@@ -19,10 +19,9 @@ package org.jetbrains.plugins.groovy.impl.codeInspection;
 import consulo.language.editor.inspection.SuppressByCommentFix;
 import consulo.language.editor.rawHighlight.HighlightDisplayKey;
 import consulo.language.psi.PsiElement;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
-
-import javax.annotation.Nullable;
 
 /**
  * @author peter

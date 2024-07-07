@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.impl.template;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 import consulo.language.editor.template.context.EverywhereContextType;
 import consulo.language.editor.template.context.TemplateContextType;
@@ -29,7 +29,7 @@ import consulo.language.psi.PsiUtilCore;
 import consulo.language.util.ProcessingContext;
 import org.jetbrains.annotations.NonNls;
 
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.impl.lang.completion.GroovyCompletionData;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrCodeBlock;

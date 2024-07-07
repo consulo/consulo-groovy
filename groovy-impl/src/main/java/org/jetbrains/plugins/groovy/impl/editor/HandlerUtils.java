@@ -16,8 +16,8 @@
 
 package org.jetbrains.plugins.groovy.impl.editor;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 import consulo.codeEditor.Editor;
 import consulo.codeEditor.action.EditorActionHandler;
@@ -27,15 +27,9 @@ import consulo.language.psi.PsiFile;
 import consulo.project.Project;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import consulo.language.Language;
-import consulo.language.editor.CommonDataKeys;
-import consulo.dataContext.DataContext;
 import consulo.language.editor.LangDataKeys;
 import consulo.document.Document;
-import consulo.codeEditor.Editor;
-import consulo.codeEditor.action.EditorActionHandler;
-import consulo.project.Project;
 import consulo.language.psi.PsiDocumentManager;
-import consulo.language.psi.PsiFile;
 import consulo.language.editor.util.PsiUtilBase;
 
 /**

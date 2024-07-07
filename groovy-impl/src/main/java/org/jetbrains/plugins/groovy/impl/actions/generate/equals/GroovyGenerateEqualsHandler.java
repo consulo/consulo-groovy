@@ -34,11 +34,12 @@ import consulo.project.Project;
 import consulo.ui.ex.awt.DialogWrapper;
 import consulo.ui.ex.awt.Messages;
 import consulo.util.collection.ContainerUtil;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.impl.actions.generate.GroovyCodeInsightBundle;
 import org.jetbrains.plugins.groovy.impl.actions.generate.GroovyGenerationInfo;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+
 import java.util.Collection;
 import java.util.List;
 

@@ -23,14 +23,13 @@ import consulo.language.psi.PsiElement;
 import consulo.language.psi.StubBasedPsiElement;
 import consulo.language.psi.stub.EmptyStub;
 import consulo.logging.Logger;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameter;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameterList;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GrStubElementBase;
-
-import javax.annotation.Nonnull;
 
 /**
  * @author: Dmitry.Krasilschikov

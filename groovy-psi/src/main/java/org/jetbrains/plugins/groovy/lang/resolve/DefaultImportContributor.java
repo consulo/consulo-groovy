@@ -18,9 +18,9 @@ package org.jetbrains.plugins.groovy.lang.resolve;
 import consulo.annotation.component.ComponentScope;
 import consulo.annotation.component.ExtensionAPI;
 import consulo.component.extension.ExtensionPointName;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 
-import javax.annotation.Nonnull;
 import java.util.Collections;
 import java.util.List;
 

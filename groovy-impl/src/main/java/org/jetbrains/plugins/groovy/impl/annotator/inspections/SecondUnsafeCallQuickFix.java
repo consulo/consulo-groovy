@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.impl.annotator.inspections;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 import consulo.language.editor.inspection.LocalQuickFix;
 import consulo.language.editor.inspection.ProblemDescriptor;

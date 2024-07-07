@@ -3,12 +3,11 @@ package org.jetbrains.plugins.groovy.lang.psi.api;
 
 import com.intellij.java.language.psi.PsiType;
 import consulo.language.psi.PsiElement;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrParameterListOwner;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameter;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 public interface GrFunctionalExpression extends GrExpression, GrParameterListOwner
 {

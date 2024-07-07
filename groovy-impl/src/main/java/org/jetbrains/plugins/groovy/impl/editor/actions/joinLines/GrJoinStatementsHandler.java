@@ -20,10 +20,9 @@ import consulo.annotation.component.ExtensionImpl;
 import consulo.document.Document;
 import consulo.language.psi.PsiDocumentManager;
 import consulo.language.psi.PsiElement;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
 import org.jetbrains.plugins.groovy.lang.psi.impl.PsiImplUtil;
-
-import javax.annotation.Nonnull;
 
 /**
  * @author Max Medvedev

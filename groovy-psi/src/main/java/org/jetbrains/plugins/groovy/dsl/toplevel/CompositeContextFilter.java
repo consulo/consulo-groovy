@@ -2,8 +2,7 @@ package org.jetbrains.plugins.groovy.dsl.toplevel;
 
 import java.util.List;
 
-import javax.annotation.Nonnull;
-
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.dsl.GroovyClassDescriptor;
 import consulo.language.util.ProcessingContext;
 

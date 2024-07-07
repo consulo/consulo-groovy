@@ -1,8 +1,10 @@
+import java.lang.String;
+
 print("a");
 print("v");
 char a = 'a';
-java.lang.String s = "b";
-java.lang.String x = "ab";
+String s = "b";
+String x = "ab";
 print("a\t\nabc");
 print("a'b\tc");
 print("a\"b\tc");

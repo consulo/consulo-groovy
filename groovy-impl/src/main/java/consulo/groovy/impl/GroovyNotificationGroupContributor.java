@@ -4,10 +4,10 @@ import consulo.annotation.component.ComponentScope;
 import consulo.annotation.component.ExtensionAPI;
 import consulo.project.ui.notification.NotificationGroup;
 import consulo.project.ui.notification.NotificationGroupContributor;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.impl.dsl.DslErrorReporterImpl;
 import org.jetbrains.plugins.groovy.impl.ivy.IvyAttachSourceProvider;
 
-import javax.annotation.Nonnull;
 import java.util.function.Consumer;
 
 /**

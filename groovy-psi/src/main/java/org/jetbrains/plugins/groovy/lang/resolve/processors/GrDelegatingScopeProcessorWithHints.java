@@ -17,13 +17,12 @@ package org.jetbrains.plugins.groovy.lang.resolve.processors;
 
 import java.util.EnumSet;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import consulo.language.psi.resolve.ResolveState;
 import consulo.util.dataholder.Key;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.resolve.PsiScopeProcessor;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 /**
  * Created by Max Medvedev on 31/03/14

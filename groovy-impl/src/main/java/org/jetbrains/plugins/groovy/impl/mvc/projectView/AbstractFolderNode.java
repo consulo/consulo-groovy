@@ -1,5 +1,6 @@
 package org.jetbrains.plugins.groovy.impl.mvc.projectView;
 
+import consulo.ide.impl.idea.openapi.vfs.VfsUtil;
 import consulo.module.Module;
 import consulo.module.content.ModuleRootManager;
 import consulo.module.content.ProjectRootManager;
@@ -16,8 +17,8 @@ import consulo.language.icon.IconDescriptorUpdaters;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -129,7 +130,7 @@ public class AbstractFolderNode extends AbstractMvcPsiNodeDescriptor {
     }
 
     final VirtualFile valueFile = ((PsiDirectory)psiElement).getVirtualFile();
-    if (!consulo.ide.impl.idea.openapi.vfs.VfsUtil.isAncestor(valueFile, file, false)) {
+    if (!VfsUtil.isAncestor(valueFile, file, false)) {
       return false;
     }
 

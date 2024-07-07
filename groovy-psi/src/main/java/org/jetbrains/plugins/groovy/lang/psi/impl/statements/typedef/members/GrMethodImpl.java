@@ -17,7 +17,7 @@
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.typedef.members;
 
 import consulo.language.ast.ASTNode;
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.GrModifier;

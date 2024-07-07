@@ -1,1 +1,1 @@
-java.lang.Integer[] list = new java.lang.Integer[]{1, 2, 3};
+import java.lang.Integer;Integer[] list = new Integer[]{1, 2, 3};

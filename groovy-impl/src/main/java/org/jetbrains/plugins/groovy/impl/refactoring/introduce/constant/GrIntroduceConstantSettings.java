@@ -13,9 +13,8 @@
 package org.jetbrains.plugins.groovy.impl.refactoring.introduce.constant;
 
 import com.intellij.java.language.psi.PsiClass;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.impl.refactoring.introduce.GrIntroduceSettings;
-
-import javax.annotation.Nullable;
 
 /**
  * @author Maxim.Medvedev

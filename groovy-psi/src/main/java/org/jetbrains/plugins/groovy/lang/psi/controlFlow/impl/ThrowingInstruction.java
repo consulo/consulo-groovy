@@ -16,9 +16,8 @@
 package org.jetbrains.plugins.groovy.lang.psi.controlFlow.impl;
 
 import consulo.language.psi.PsiElement;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.controlFlow.Instruction;
-
-import javax.annotation.Nullable;
 
 /**
  * @author Max Medvedev

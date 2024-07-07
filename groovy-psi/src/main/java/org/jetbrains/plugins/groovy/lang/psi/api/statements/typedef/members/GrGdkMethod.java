@@ -19,7 +19,7 @@ import com.intellij.java.language.psi.PsiMethod;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiMirrorElement;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author ven

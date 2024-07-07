@@ -28,6 +28,7 @@ import consulo.content.bundle.Sdk;
 import consulo.content.library.Library;
 import consulo.content.library.LibraryTable;
 import consulo.execution.CantRunException;
+import consulo.ide.impl.idea.openapi.module.ModuleUtil;
 import consulo.ide.impl.idea.util.PathUtil;
 import consulo.java.execution.configurations.OwnJavaParameters;
 import consulo.java.execution.projectRoots.OwnJdkUtil;
@@ -64,13 +65,13 @@ import consulo.virtualFileSystem.LocalFileSystem;
 import consulo.virtualFileSystem.VirtualFile;
 import consulo.virtualFileSystem.archive.ArchiveVfsUtil;
 import consulo.virtualFileSystem.util.PathsList;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.grape.GrapeRunner;
 import org.jetbrains.plugins.groovy.impl.runner.DefaultGroovyScriptRunner;
 import org.jetbrains.plugins.groovy.impl.runner.GroovyScriptRunConfiguration;
 import org.jetbrains.plugins.groovy.impl.runner.GroovyScriptRunner;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotation;
 
-import javax.annotation.Nonnull;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
@@ -121,7 +122,7 @@ public class GrabDependencies implements IntentionAction {
   }
 
   public void invoke(@Nonnull final Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
-    final Module module = consulo.ide.impl.idea.openapi.module.ModuleUtil.findModuleForPsiElement(file);
+    final Module module = ModuleUtil.findModuleForPsiElement(file);
     assert module != null;
 
     final VirtualFile vfile = file.getOriginalFile().getVirtualFile();
@@ -207,7 +208,7 @@ public class GrabDependencies implements IntentionAction {
 
         final String finalMessages = messages;
         final String title = jarCount + " Grape dependency jar" + (jarCount == 1 ? "" : "s") + " added";
-        NOTIFICATION_GROUP.createNotification(title, finalMessages, consulo.project.ui.notification.NotificationType.INFORMATION, null)
+        NOTIFICATION_GROUP.createNotification(title, finalMessages, NotificationType.INFORMATION, null)
                           .notify(project);
       }
     });

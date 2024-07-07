@@ -21,7 +21,7 @@ import consulo.language.editor.refactoring.ResolveSnapshotProvider;
 import consulo.language.psi.PsiElement;
 import org.jetbrains.plugins.groovy.GroovyLanguage;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author Maxim.Medvedev

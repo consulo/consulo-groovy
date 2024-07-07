@@ -17,8 +17,8 @@ package org.jetbrains.plugins.groovy.lang.psi.controlFlow.impl;
 
 import consulo.language.psi.PsiElement;
 import java.util.HashSet;
-import javax.annotation.Nonnull;
 
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.controlFlow.Instruction;
 
 import java.util.Set;

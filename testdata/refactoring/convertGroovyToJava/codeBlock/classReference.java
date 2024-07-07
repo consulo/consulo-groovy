@@ -1,1 +1,3 @@
-print(java.lang.String.class);
+import java.lang.String;
+
+print(String.class);

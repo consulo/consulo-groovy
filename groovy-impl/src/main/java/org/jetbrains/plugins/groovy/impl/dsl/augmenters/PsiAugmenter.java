@@ -16,7 +16,7 @@
 
 package org.jetbrains.plugins.groovy.impl.dsl.augmenters;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author ilyas

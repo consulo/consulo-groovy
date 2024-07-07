@@ -18,8 +18,7 @@ package org.jetbrains.plugins.groovy.lang.psi.impl.signatures;
 import com.intellij.java.language.psi.PsiParameter;
 import com.intellij.java.language.psi.PsiType;
 import com.intellij.java.language.psi.util.TypeConversionUtil;
-
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 
 /**
  * Created by Max Medvedev on 14/03/14

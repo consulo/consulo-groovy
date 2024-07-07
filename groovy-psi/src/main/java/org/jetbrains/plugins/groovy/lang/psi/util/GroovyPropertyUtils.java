@@ -42,8 +42,8 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.PsiImplUtil;
 import org.jetbrains.plugins.groovy.lang.resolve.ResolveUtil;
 import org.jetbrains.plugins.groovy.lang.resolve.processors.AccessorResolverProcessor;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import java.beans.Introspector;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -570,7 +570,7 @@ public class GroovyPropertyUtils {
       PsiType type = field instanceof GrField ? ((GrField)field).getDeclaredType() : field.getType();
       GrMethod getter = factory.createMethod(getName, type);
       if (field.hasModifierProperty(PsiModifier.STATIC)) {
-        com.intellij.java.language.psi.util.PsiUtil.setModifierProperty(getter, PsiModifier.STATIC, true);
+        PsiUtil.setModifierProperty(getter, PsiModifier.STATIC, true);
       }
 
       annotateWithNullableStuff(field, getter);

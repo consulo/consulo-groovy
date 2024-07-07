@@ -16,7 +16,7 @@
 
 package org.jetbrains.plugins.groovy.lang.parser.parsing.statements.expressions.arithmetic;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 import consulo.language.ast.IElementType;
 import consulo.language.ast.TokenSet;

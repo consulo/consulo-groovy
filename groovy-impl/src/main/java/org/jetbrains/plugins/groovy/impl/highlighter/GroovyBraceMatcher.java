@@ -22,10 +22,10 @@ import consulo.language.Language;
 import consulo.language.PairedBraceMatcher;
 import consulo.language.ast.IElementType;
 import consulo.language.psi.PsiFile;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.GroovyLanguage;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
 
 import static consulo.language.ast.TokenType.WHITE_SPACE;
 import static org.jetbrains.plugins.groovy.GroovyFileType.GROOVY_LANGUAGE;

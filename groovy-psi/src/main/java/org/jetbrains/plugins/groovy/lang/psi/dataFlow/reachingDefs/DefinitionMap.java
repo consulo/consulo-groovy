@@ -18,7 +18,7 @@ package org.jetbrains.plugins.groovy.lang.psi.dataFlow.reachingDefs;
 import consulo.util.collection.primitive.ints.*;
 import org.jetbrains.plugins.groovy.lang.psi.controlFlow.Instruction;
 
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 import java.util.function.Consumer;
 
 /**

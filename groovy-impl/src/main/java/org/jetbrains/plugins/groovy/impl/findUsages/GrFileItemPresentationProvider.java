@@ -25,7 +25,7 @@ import consulo.ui.image.Image;
 import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyFileImpl;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 @ExtensionImpl
 public class GrFileItemPresentationProvider implements ItemPresentationProvider<GroovyFileImpl> {

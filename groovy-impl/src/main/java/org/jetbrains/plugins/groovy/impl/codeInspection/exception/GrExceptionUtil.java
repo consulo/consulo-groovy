@@ -16,7 +16,7 @@
 package org.jetbrains.plugins.groovy.impl.codeInspection.exception;
 
 import consulo.util.lang.StringUtil;
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameter;
 
 public class GrExceptionUtil {

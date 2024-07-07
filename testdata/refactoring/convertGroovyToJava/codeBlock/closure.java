@@ -1,6 +1,9 @@
-java.util.ArrayList<java.lang.Integer> list = new java.util.ArrayList<java.lang.Integer>(java.util.Arrays.asList(1, 2, 3));
-org.codehaus.groovy.runtime.DefaultGroovyMethods.each(list, new groovy.lang.Closure<java.lang.Void>(this, this) {
-public void doCall(java.lang.Integer it) {
+import java.lang.Integer;
+import java.lang.Void;
+import java.util.ArrayList;
+import java.util.Arrays;ArrayList<Integer> list = new ArrayList<Integer>(Arrays.asList(1, 2, 3));
+org.codehaus.groovy.runtime.DefaultGroovyMethods.each(list, new groovy.lang.Closure<Void>(this, this) {
+public void doCall(Integer it) {
 print(it);
 }
 

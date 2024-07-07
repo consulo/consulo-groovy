@@ -29,7 +29,7 @@ import consulo.util.lang.ref.Ref;
 import consulo.language.editor.refactoring.BaseRefactoringProcessor;
 import consulo.ide.impl.idea.usageView.BaseUsageViewDescriptor;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 import org.jetbrains.plugins.groovy.codeInspection.utils.ControlFlowUtils;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyRecursiveElementVisitor;

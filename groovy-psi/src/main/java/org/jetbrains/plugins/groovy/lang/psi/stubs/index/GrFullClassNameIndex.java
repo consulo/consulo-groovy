@@ -21,9 +21,9 @@ import consulo.language.psi.scope.GlobalSearchScope;
 import consulo.language.psi.stub.IntStubIndexExtension;
 import consulo.language.psi.stub.StubIndexKey;
 import consulo.project.Project;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.impl.search.GrSourceFilterScope;
 
-import javax.annotation.Nonnull;
 import java.util.Collection;
 
 /**

@@ -39,8 +39,8 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrAc
 import org.jetbrains.plugins.groovy.impl.refactoring.GroovyRefactoringBundle;
 import org.jetbrains.plugins.groovy.impl.refactoring.GroovyRefactoringUtil;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 import static org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil.LOG;
 import static org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil.skipParentheses;

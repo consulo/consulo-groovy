@@ -29,9 +29,9 @@ import consulo.language.psi.PsiFile;
 import consulo.language.codeStyle.CodeStyleSettingsManager;
 import consulo.language.ast.IElementType;
 import consulo.language.util.IncorrectOperationException;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
 
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.impl.codeStyle.GroovyCodeStyleSettings;
 import org.jetbrains.plugins.groovy.impl.formatter.GeeseUtil;

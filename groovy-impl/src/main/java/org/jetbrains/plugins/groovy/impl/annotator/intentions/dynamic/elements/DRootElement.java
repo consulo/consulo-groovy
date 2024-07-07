@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.impl.annotator.intentions.dynamic.elements;
 
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;

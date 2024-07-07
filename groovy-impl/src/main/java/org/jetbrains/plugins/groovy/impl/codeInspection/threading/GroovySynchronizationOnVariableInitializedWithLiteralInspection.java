@@ -20,6 +20,7 @@ import com.intellij.java.language.psi.PsiLiteralExpression;
 import com.intellij.java.language.psi.PsiVariable;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiReference;
+import jakarta.annotation.Nullable;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
@@ -29,8 +30,7 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpres
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.literals.GrLiteral;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
 
 public class GroovySynchronizationOnVariableInitializedWithLiteralInspection extends BaseInspection {
   @Override

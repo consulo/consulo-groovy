@@ -25,9 +25,8 @@ import consulo.language.ast.IElementType;
 import consulo.language.editor.action.FileQuoteHandler;
 import consulo.language.editor.action.MultiCharQuoteHandler;
 import consulo.virtualFileSystem.fileType.FileType;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.GroovyFileType;
-
-import javax.annotation.Nonnull;
 
 import static org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes.*;
 

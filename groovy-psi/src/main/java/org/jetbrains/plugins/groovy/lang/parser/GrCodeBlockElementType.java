@@ -21,8 +21,8 @@ import consulo.language.lexer.Lexer;
 import consulo.project.Project;
 import consulo.language.ast.ICompositeElementType;
 import consulo.language.ast.IErrorCounterReparseableElementType;
-import javax.annotation.Nonnull;
 
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyLexer;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;

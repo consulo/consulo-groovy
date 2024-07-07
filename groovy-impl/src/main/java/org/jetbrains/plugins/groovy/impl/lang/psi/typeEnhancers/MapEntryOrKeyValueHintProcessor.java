@@ -15,13 +15,14 @@
  */
 package org.jetbrains.plugins.groovy.impl.lang.psi.typeEnhancers;
 
+import consulo.ide.impl.idea.openapi.util.text.StringUtilRt;
 import consulo.util.lang.Couple;
 import com.intellij.java.language.psi.*;
 import com.intellij.java.language.psi.util.InheritanceUtil;
 import com.intellij.java.language.psi.util.PsiUtil;
 import consulo.util.collection.ContainerUtil;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 import java.util.List;
 
@@ -77,7 +78,7 @@ public class MapEntryOrKeyValueHintProcessor extends SignatureHintProcessor {
     }
 
     if (options.length == 1) {
-      return consulo.ide.impl.idea.openapi.util.text.StringUtilRt.parseInt(options[0], 0);
+      return StringUtilRt.parseInt(options[0], 0);
     }
 
     return 0;
@@ -92,7 +93,7 @@ public class MapEntryOrKeyValueHintProcessor extends SignatureHintProcessor {
     }
 
     if (options.length == 1) {
-      return consulo.ide.impl.idea.openapi.util.text.StringUtilRt.parseBoolean(options[0], false);
+      return StringUtilRt.parseBoolean(options[0], false);
     }
 
     return false;
@@ -102,7 +103,7 @@ public class MapEntryOrKeyValueHintProcessor extends SignatureHintProcessor {
     Couple<String> pair = parseValue(value);
     if (pair == null) return null;
 
-    Boolean parsedValue = consulo.ide.impl.idea.openapi.util.text.StringUtilRt.parseBoolean(pair.getSecond(), false);
+    Boolean parsedValue = StringUtilRt.parseBoolean(pair.getSecond(), false);
     if ("index".equals(pair.getFirst())) {
       return parsedValue;
     }
@@ -114,7 +115,7 @@ public class MapEntryOrKeyValueHintProcessor extends SignatureHintProcessor {
     Couple<String> pair = parseValue(value);
     if (pair == null) return null;
 
-    Integer parsedValue = consulo.ide.impl.idea.openapi.util.text.StringUtilRt.parseInt(pair.getSecond(), 0);
+    Integer parsedValue = StringUtilRt.parseInt(pair.getSecond(), 0);
     if ("argNum".equals(pair.getFirst())) {
       return parsedValue;
     }

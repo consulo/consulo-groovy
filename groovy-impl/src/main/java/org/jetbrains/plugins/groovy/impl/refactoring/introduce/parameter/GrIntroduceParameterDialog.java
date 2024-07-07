@@ -35,6 +35,7 @@ import consulo.util.collection.primitive.ints.IntList;
 import consulo.util.collection.primitive.ints.IntLists;
 import consulo.util.collection.primitive.objects.ObjectIntMap;
 import consulo.util.collection.primitive.objects.ObjectMaps;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrParameterListOwner;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
@@ -58,8 +59,8 @@ import org.jetbrains.plugins.groovy.impl.refactoring.ui.GrMethodSignatureCompone
 import org.jetbrains.plugins.groovy.impl.refactoring.ui.GrTypeComboBox;
 import org.jetbrains.plugins.groovy.impl.settings.GroovyApplicationSettings;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ItemEvent;

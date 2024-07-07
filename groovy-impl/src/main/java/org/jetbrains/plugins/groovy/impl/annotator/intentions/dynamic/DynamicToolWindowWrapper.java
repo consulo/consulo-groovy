@@ -25,6 +25,8 @@ import consulo.dataContext.DataContext;
 import consulo.dataContext.DataProvider;
 import consulo.document.Document;
 import consulo.ide.ServiceManager;
+import consulo.ide.impl.idea.ui.treeStructure.treetable.ListTreeTableModelOnColumns;
+import consulo.ide.impl.idea.util.containers.Convertor;
 import consulo.language.editor.LangDataKeys;
 import consulo.language.editor.PlatformDataKeys;
 import consulo.language.editor.refactoring.event.RefactoringElementListener;
@@ -70,8 +72,8 @@ import org.jetbrains.plugins.groovy.impl.annotator.intentions.QuickfixUtil;
 import org.jetbrains.plugins.groovy.impl.debugger.fragments.GroovyCodeFragment;
 import org.jetbrains.plugins.groovy.impl.annotator.intentions.dynamic.elements.*;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import javax.swing.*;
 import javax.swing.event.CellEditorListener;
 import javax.swing.event.ChangeEvent;
@@ -109,7 +111,7 @@ public class DynamicToolWindowWrapper {
 
   private JPanel myTreeTablePanel;
   private SimpleToolWindowPanel myBigPanel;
-  private consulo.ide.impl.idea.ui.treeStructure.treetable.ListTreeTableModelOnColumns myTreeTableModel;
+  private ListTreeTableModelOnColumns myTreeTableModel;
   private MyTreeTable myTreeTable;
 
   @Inject
@@ -234,11 +236,11 @@ public class DynamicToolWindowWrapper {
     ColumnInfo[] columnInfos =
       {new ClassColumnInfo(myColumnNames[CLASS_OR_ELEMENT_NAME_COLUMN]), new PropertyTypeColumnInfo(myColumnNames[TYPE_COLUMN])};
 
-    myTreeTableModel = new consulo.ide.impl.idea.ui.treeStructure.treetable.ListTreeTableModelOnColumns(myTreeRoot, columnInfos);
+    myTreeTableModel = new ListTreeTableModelOnColumns(myTreeRoot, columnInfos);
 
     myTreeTable = new MyTreeTable(myTreeTableModel);
 
-    new TreeTableSpeedSearch(myTreeTable, new consulo.ide.impl.idea.util.containers.Convertor<TreePath, String>() {
+    new TreeTableSpeedSearch(myTreeTable, new Convertor<TreePath, String>() {
       @Override
       public String convert(TreePath o) {
         final Object node = o.getLastPathComponent();
@@ -562,7 +564,7 @@ public class DynamicToolWindowWrapper {
     }
   }
 
-  public consulo.ide.impl.idea.ui.treeStructure.treetable.ListTreeTableModelOnColumns getTreeTableModel() {
+  public ListTreeTableModelOnColumns getTreeTableModel() {
     getToolWindow();
 
     return myTreeTableModel;

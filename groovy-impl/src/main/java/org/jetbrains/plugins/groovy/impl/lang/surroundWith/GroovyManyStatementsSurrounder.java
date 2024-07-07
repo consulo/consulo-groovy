@@ -15,8 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.impl.lang.surroundWith;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
 
 import consulo.document.util.TextRange;
 import consulo.language.ast.ASTNode;
@@ -25,12 +24,9 @@ import consulo.codeEditor.Editor;
 import consulo.language.psi.PsiComment;
 import consulo.language.psi.PsiElement;
 import consulo.project.Project;
-import consulo.document.util.TextRange;
 import consulo.util.lang.StringUtil;
-import consulo.language.psi.PsiComment;
-import consulo.language.psi.PsiElement;
 import consulo.language.util.IncorrectOperationException;
-import consulo.language.editor.surroundWith.Surrounder;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrBlockStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrCodeBlock;

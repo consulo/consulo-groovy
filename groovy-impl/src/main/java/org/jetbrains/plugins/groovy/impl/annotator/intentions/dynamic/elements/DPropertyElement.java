@@ -21,7 +21,7 @@ import com.intellij.java.language.psi.PsiVariable;
 import consulo.language.psi.PsiManager;
 import org.jetbrains.plugins.groovy.impl.annotator.intentions.dynamic.GrDynamicImplicitProperty;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 /**
  * User: Dmitry.Krasilschikov

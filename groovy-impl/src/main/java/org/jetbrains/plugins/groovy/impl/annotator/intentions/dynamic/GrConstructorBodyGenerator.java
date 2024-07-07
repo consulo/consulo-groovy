@@ -22,7 +22,7 @@ import consulo.annotation.component.ExtensionImpl;
 import consulo.language.Language;
 import org.jetbrains.plugins.groovy.GroovyLanguage;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author Max Medvedev

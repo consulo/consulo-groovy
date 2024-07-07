@@ -17,9 +17,7 @@ package org.jetbrains.plugins.groovy.impl.refactoring.extract.closure;
 
 import consulo.language.psi.PsiReference;
 import consulo.usage.UsageInfo;
-import consulo.language.psi.PsiReference;
-
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author Max Medvedev

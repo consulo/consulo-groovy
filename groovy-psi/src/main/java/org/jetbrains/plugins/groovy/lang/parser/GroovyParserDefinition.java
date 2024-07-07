@@ -30,6 +30,7 @@ import consulo.language.psi.stub.IStubFileElementType;
 import consulo.language.util.LanguageUtil;
 import consulo.language.version.LanguageVersion;
 import consulo.util.collection.ArrayUtil;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.GroovyLanguage;
 import org.jetbrains.plugins.groovy.lang.groovydoc.lexer.GroovyDocTokenTypes;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyLexer;
@@ -37,8 +38,6 @@ import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.lexer.TokenSets;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyFileImpl;
 import org.jetbrains.plugins.groovy.lang.psi.stubs.elements.GrStubFileElementType;
-
-import javax.annotation.Nonnull;
 
 import static org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes.*;
 

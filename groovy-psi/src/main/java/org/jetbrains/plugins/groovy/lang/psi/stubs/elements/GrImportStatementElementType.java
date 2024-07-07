@@ -25,7 +25,7 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.toplevel.imports.GrImportState
 import org.jetbrains.plugins.groovy.lang.psi.stubs.GrImportStatementStub;
 import org.jetbrains.plugins.groovy.lang.psi.stubs.GrStubUtils;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 import java.io.IOException;
 
 /**
