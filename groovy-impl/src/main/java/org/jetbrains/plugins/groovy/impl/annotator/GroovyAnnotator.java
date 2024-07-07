@@ -118,7 +118,7 @@ import java.util.*;
  */
 @SuppressWarnings({"unchecked"})
 public class GroovyAnnotator extends GroovyElementVisitor {
-  private static final Logger LOG = Logger.getInstance("org.jetbrains.plugins.groovy.annotator.GroovyAnnotator");
+  private static final Logger LOG = Logger.getInstance(GroovyAnnotator.class);
   public static final Condition<PsiClass> IS_INTERFACE = new Condition<PsiClass>() {
     @Override
     public boolean value(PsiClass aClass) {
@@ -1155,8 +1155,7 @@ public class GroovyAnnotator extends GroovyElementVisitor {
                                 holder);
       checkModifierIsNotAllowed(modifierList,
                                 PsiModifier.PROTECTED,
-                                GroovyBundle.message("interface.members.are" +
-                                                       ".not.allowed.to.be", PsiModifier.PROTECTED),
+                                GroovyBundle.message("interface.members.are.not.allowed.to.be", PsiModifier.PROTECTED),
                                 holder);
     }
   }
@@ -1165,7 +1164,7 @@ public class GroovyAnnotator extends GroovyElementVisitor {
     final InspectionManager manager = InspectionManager.getInstance(place.getProject());
     assert !place.getTextRange().isEmpty() : place.getContainingFile().getName();
 
-    final ProblemDescriptor descriptor = manager.createProblemDescriptor(place, place, annotation.getMessage(),
+    final ProblemDescriptor descriptor = manager.createProblemDescriptor(place, place, annotation.getMessage().get(),
                                                                          annotation.getHighlightType(), true, LocalQuickFix.EMPTY_ARRAY);
     final TextRange range = TextRange.create(annotation.getStartOffset(), annotation.getEndOffset());
     annotation.registerFix(fix, range, null, descriptor);

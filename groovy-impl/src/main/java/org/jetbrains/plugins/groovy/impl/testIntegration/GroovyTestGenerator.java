@@ -30,8 +30,8 @@ import consulo.annotation.component.ExtensionImpl;
 import consulo.application.AccessToken;
 import consulo.application.ApplicationManager;
 import consulo.application.WriteAction;
-import consulo.application.util.function.Computable;
 import consulo.codeEditor.Editor;
+import consulo.fileEditor.history.IdeDocumentHistory;
 import consulo.language.Language;
 import consulo.language.codeStyle.CodeStyleManager;
 import consulo.language.codeStyle.PostprocessReformattingAspect;
@@ -67,35 +67,32 @@ public class GroovyTestGenerator implements TestGenerator {
   public PsiElement generateTest(final Project project, final CreateTestDialog d) {
     AccessToken accessToken = WriteAction.start();
     try {
-      final PsiClass test = (PsiClass)PostprocessReformattingAspect.getInstance(project).postponeFormattingInside(
-        new Computable<PsiElement>() {
-          public PsiElement compute() {
-            try {
-              consulo.ide.impl.idea.openapi.fileEditor.ex.IdeDocumentHistory.getInstance(project).includeCurrentPlaceAsChangePlace();
+      final PsiClass test = PostprocessReformattingAspect.getInstance(project).postponeFormattingInside(() -> {
+          try {
+            IdeDocumentHistory.getInstance(project).includeCurrentPlaceAsChangePlace();
 
-              GrTypeDefinition targetClass = CreateClassActionBase.createClassByType(
-                d.getTargetDirectory(),
-                d.getClassName(),
-                PsiManager.getInstance(project),
-                null,
-                GroovyTemplates.GROOVY_CLASS, true);
-              if (targetClass == null) return null;
+            GrTypeDefinition targetClass = CreateClassActionBase.createClassByType(
+              d.getTargetDirectory(),
+              d.getClassName(),
+              PsiManager.getInstance(project),
+              null,
+              GroovyTemplates.GROOVY_CLASS, true);
+            if (targetClass == null) return null;
 
-              addSuperClass(targetClass, project, d.getSuperClassName());
+            addSuperClass(targetClass, project, d.getSuperClassName());
 
-              Editor editor = CodeInsightUtil.positionCursor(project, targetClass.getContainingFile(), targetClass.getLBrace());
-              addTestMethods(editor,
-                             targetClass,
-                             d.getSelectedTestFrameworkDescriptor(),
-                             d.getSelectedMethods(),
-                             d.shouldGeneratedBefore(),
-                             d.shouldGeneratedAfter());
-              return targetClass;
-            }
-            catch (IncorrectOperationException e1) {
-              showErrorLater(project, d.getClassName());
-              return null;
-            }
+            Editor editor = CodeInsightUtil.positionCursor(project, targetClass.getContainingFile(), targetClass.getLBrace());
+            addTestMethods(editor,
+                           targetClass,
+                           d.getSelectedTestFrameworkDescriptor(),
+                           d.getSelectedMethods(),
+                           d.shouldGeneratedBefore(),
+                           d.shouldGeneratedAfter());
+            return targetClass;
+          }
+          catch (IncorrectOperationException e1) {
+            showErrorLater(project, d.getClassName());
+            return null;
           }
         });
       if (test == null) return null;

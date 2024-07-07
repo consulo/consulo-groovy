@@ -28,6 +28,7 @@ import consulo.application.ApplicationManager;
 import consulo.application.Result;
 import consulo.codeEditor.Editor;
 import consulo.document.util.TextRange;
+import consulo.fileEditor.history.IdeDocumentHistory;
 import consulo.language.editor.CodeInsightBundle;
 import consulo.language.editor.WriteCommandAction;
 import consulo.language.editor.template.Template;
@@ -80,7 +81,7 @@ public class GrCreateSubclassAction extends CreateSubclassAction {
     new WriteCommandAction(project, getTitle(psiClass), getTitle(psiClass)) {
       @Override
       protected void run(Result result) throws Throwable {
-        consulo.ide.impl.idea.openapi.fileEditor.ex.IdeDocumentHistory.getInstance(project).includeCurrentPlaceAsChangePlace();
+        IdeDocumentHistory.getInstance(project).includeCurrentPlaceAsChangePlace();
 
         final GrTypeParameterList oldTypeParameterList = psiClass.getTypeParameterList();
 
