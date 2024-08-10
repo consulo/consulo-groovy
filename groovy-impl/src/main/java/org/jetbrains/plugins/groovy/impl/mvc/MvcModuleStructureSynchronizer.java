@@ -33,7 +33,6 @@ import consulo.module.Module;
 import consulo.module.ModuleManager;
 import consulo.module.content.ModuleRootManager;
 import consulo.module.content.ProjectRootManager;
-import consulo.module.content.layer.event.ModuleRootAdapter;
 import consulo.module.content.layer.event.ModuleRootEvent;
 import consulo.module.content.layer.event.ModuleRootListener;
 import consulo.module.event.ModuleAdapter;
@@ -49,11 +48,11 @@ import consulo.virtualFileSystem.LocalFileSystem;
 import consulo.virtualFileSystem.VirtualFile;
 import consulo.virtualFileSystem.event.*;
 import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import org.jetbrains.annotations.TestOnly;
 
-import jakarta.annotation.Nullable;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArraySet;
 
@@ -86,7 +85,7 @@ public class MvcModuleStructureSynchronizer {
     }
 
     final MessageBusConnection connection = myProject.getMessageBus().connect();
-    connection.subscribe(ModuleRootListener.class, new ModuleRootAdapter() {
+    connection.subscribe(ModuleRootListener.class, new ModuleRootListener() {
       @Override
       public void rootsChanged(ModuleRootEvent event) {
         queue(SyncAction.SyncLibrariesInPluginsModule, myProject);
@@ -99,8 +98,6 @@ public class MvcModuleStructureSynchronizer {
         updateProjectViewVisibility();
       }
     });
-
-    startupManager.registerPostStartupActivity(uiAccess -> uiAccess.give(this::projectOpened));
 
     connection.subscribe(ModuleListener.class, new ModuleAdapter() {
       @Override
@@ -244,7 +241,7 @@ public class MvcModuleStructureSynchronizer {
   }
 
   public static MvcModuleStructureSynchronizer getInstance(Project project) {
-    return project.getComponent(MvcModuleStructureSynchronizer.class);
+    return project.getInstance(MvcModuleStructureSynchronizer.class);
   }
 
   private static boolean isApplicationDirectoryName(String fileName) {
@@ -260,7 +257,7 @@ public class MvcModuleStructureSynchronizer {
     return file != null && "lib".equals(file.getName());
   }
 
-  private void projectOpened() {
+  public void projectOpened() {
     queue(SyncAction.UpdateProjectStructure, myProject);
     queue(SyncAction.EnsureRunConfigurationExists, myProject);
     queue(SyncAction.UpgradeFramework, myProject);
