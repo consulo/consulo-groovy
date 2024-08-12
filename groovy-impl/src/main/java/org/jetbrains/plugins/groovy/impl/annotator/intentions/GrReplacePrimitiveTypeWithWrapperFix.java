@@ -34,51 +34,47 @@ import jakarta.annotation.Nonnull;
 /**
  * @author Max Medvedev
  */
-public class GrReplacePrimitiveTypeWithWrapperFix extends GroovyFix
-{
-	private static final Logger LOG = Logger.getInstance(GrReplacePrimitiveTypeWithWrapperFix.class);
+public class GrReplacePrimitiveTypeWithWrapperFix extends GroovyFix {
+    private static final Logger LOG = Logger.getInstance(GrReplacePrimitiveTypeWithWrapperFix.class);
 
-	private final String myBoxedName;
+    private final String myBoxedName;
 
-	public GrReplacePrimitiveTypeWithWrapperFix(GrTypeElement typeElement)
-	{
-		LOG.assertTrue(typeElement.isValid());
+    public GrReplacePrimitiveTypeWithWrapperFix(GrTypeElement typeElement) {
+        LOG.assertTrue(typeElement.isValid());
 
-		final PsiType type = typeElement.getType();
-		LOG.assertTrue(type instanceof PsiPrimitiveType);
+        final PsiType type = typeElement.getType();
+        LOG.assertTrue(type instanceof PsiPrimitiveType);
 
-		myBoxedName = ((PsiPrimitiveType) type).getBoxedType(typeElement).getClassName();
-	}
+        myBoxedName = ((PsiPrimitiveType)type).getBoxedType(typeElement).getClassName();
+    }
 
-	@Nonnull
-	@Override
-	public String getName()
-	{
-		return GroovyIntentionsBundle.message("replace.with.wrapper", myBoxedName);
-	}
+    @Nonnull
+    @Override
+    public String getName() {
+        return GroovyIntentionsBundle.message("replace.with.wrapper", myBoxedName);
+    }
 
-	@Nonnull
-	@Override
-	public String getFamilyName()
-	{
-		return GroovyIntentionsBundle.message("replace.primitive.type.with.wrapper");
-	}
+    @Nonnull
+    @Override
+    public String getFamilyName() {
+        return GroovyIntentionsBundle.message("replace.primitive.type.with.wrapper");
+    }
 
-	@Override
-	protected void doFix(Project project, ProblemDescriptor descriptor) throws IncorrectOperationException
-	{
-		final PsiElement element = descriptor.getPsiElement();
-		assert element instanceof GrTypeElement : element;
+    @Override
+    protected void doFix(Project project, ProblemDescriptor descriptor) throws IncorrectOperationException {
+        final PsiElement element = descriptor.getPsiElement();
+        assert element instanceof GrTypeElement : element;
 
-		GrTypeElement typeElement = (GrTypeElement) element;
-		final PsiType type = typeElement.getType();
-		if(!(type instanceof PsiPrimitiveType))
-			return;
+        GrTypeElement typeElement = (GrTypeElement)element;
+        final PsiType type = typeElement.getType();
+        if (!(type instanceof PsiPrimitiveType)) {
+            return;
+        }
 
-		final PsiClassType boxed = ((PsiPrimitiveType) type).getBoxedType(typeElement);
-		final GrTypeElement newTypeElement = GroovyPsiElementFactory.getInstance(project).createTypeElement(boxed);
+        final PsiClassType boxed = ((PsiPrimitiveType)type).getBoxedType(typeElement);
+        final GrTypeElement newTypeElement = GroovyPsiElementFactory.getInstance(project).createTypeElement(boxed);
 
-		final PsiElement replaced = typeElement.replace(newTypeElement);
-		JavaCodeStyleManager.getInstance(project).shortenClassReferences(replaced);
-	}
+        final PsiElement replaced = typeElement.replace(newTypeElement);
+        JavaCodeStyleManager.getInstance(project).shortenClassReferences(replaced);
+    }
 }

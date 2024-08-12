@@ -28,24 +28,24 @@ import jakarta.annotation.Nonnull;
  * @author Max Medvedev
  */
 public class CreateGetterFromUsageFix extends CreateMethodFromUsageFix {
-  public CreateGetterFromUsageFix(@Nonnull GrReferenceExpression refExpression, @Nonnull PsiClass targetClass) {
-    super(refExpression);
-  }
+    public CreateGetterFromUsageFix(@Nonnull GrReferenceExpression refExpression, @Nonnull PsiClass targetClass) {
+        super(refExpression);
+    }
 
-  @Nonnull
-  @Override
-  protected TypeConstraint[] getReturnTypeConstraints() {
-    return GroovyExpectedTypesProvider.calculateTypeConstraints(getRefExpr());
-  }
+    @Nonnull
+    @Override
+    protected TypeConstraint[] getReturnTypeConstraints() {
+        return GroovyExpectedTypesProvider.calculateTypeConstraints(getRefExpr());
+    }
 
-  @Override
-  protected PsiType[] getArgumentTypes() {
-    return PsiType.EMPTY_ARRAY;
-  }
+    @Override
+    protected PsiType[] getArgumentTypes() {
+        return PsiType.EMPTY_ARRAY;
+    }
 
-  @Nonnull
-  @Override
-  protected String getMethodName() {
-    return GroovyPropertyUtils.getGetterNameNonBoolean(getRefExpr().getReferenceName());
-  }
+    @Nonnull
+    @Override
+    protected String getMethodName() {
+        return GroovyPropertyUtils.getGetterNameNonBoolean(getRefExpr().getReferenceName());
+    }
 }

@@ -39,46 +39,63 @@ import jakarta.annotation.Nonnull;
  * @author Max Medvedev
  */
 public class GrMoveToDirFix implements LocalQuickFix {
-  private String myPackageName;
+    private String myPackageName;
 
-  public GrMoveToDirFix(String packageName) {
-    myPackageName = packageName;
-  }
-
-  @Nonnull
-  @Override
-  public String getName() {
-    String packName = StringUtil.isEmptyOrSpaces(myPackageName) ? "default package" : myPackageName;
-    return GroovyIntentionsBundle.message("move.to.correct.dir", packName);
-  }
-
-  @Nonnull
-  @Override
-  public String getFamilyName() {
-    return GroovyIntentionsBundle.message("move.to.correct.dir.family.name");
-  }
-
-  @Override
-  public void applyFix(@Nonnull Project project, @Nonnull ProblemDescriptor descriptor) {
-    PsiFile file = descriptor.getPsiElement().getContainingFile();
-
-    if (!(file instanceof GroovyFile)) return;
-
-    VirtualFile vfile = file.getVirtualFile();
-    if (vfile == null) return;
-
-    final Module module = ModuleUtilCore.findModuleForFile(vfile, project);
-    if (module == null) return;
-
-    final String packageName = ((GroovyFile)file).getPackageName();
-    PsiDirectory directory = PackageUtil.findOrCreateDirectoryForPackage(module, packageName, null, true);
-    if (directory == null) return;
-
-    String error = RefactoringMessageUtil.checkCanCreateFile(directory, file.getName());
-    if (error != null) {
-      Messages.showMessageDialog(project, error, CommonBundle.getErrorTitle(), Messages.getErrorIcon());
-      return;
+    public GrMoveToDirFix(String packageName) {
+        myPackageName = packageName;
     }
-    new MoveFilesOrDirectoriesProcessor(project, new PsiElement[]{file}, directory, false, false, false, null, null).run();
-  }
+
+    @Nonnull
+    @Override
+    public String getName() {
+        String packName = StringUtil.isEmptyOrSpaces(myPackageName) ? "default package" : myPackageName;
+        return GroovyIntentionsBundle.message("move.to.correct.dir", packName);
+    }
+
+    @Nonnull
+    @Override
+    public String getFamilyName() {
+        return GroovyIntentionsBundle.message("move.to.correct.dir.family.name");
+    }
+
+    @Override
+    public void applyFix(@Nonnull Project project, @Nonnull ProblemDescriptor descriptor) {
+        PsiFile file = descriptor.getPsiElement().getContainingFile();
+
+        if (!(file instanceof GroovyFile)) {
+            return;
+        }
+
+        VirtualFile vfile = file.getVirtualFile();
+        if (vfile == null) {
+            return;
+        }
+
+        final Module module = ModuleUtilCore.findModuleForFile(vfile, project);
+        if (module == null) {
+            return;
+        }
+
+        final String packageName = ((GroovyFile)file).getPackageName();
+        PsiDirectory directory = PackageUtil.findOrCreateDirectoryForPackage(module, packageName, null, true);
+        if (directory == null) {
+            return;
+        }
+
+        String error = RefactoringMessageUtil.checkCanCreateFile(directory, file.getName());
+        if (error != null) {
+            Messages.showMessageDialog(project, error, CommonBundle.getErrorTitle(), Messages.getErrorIcon());
+            return;
+        }
+        new MoveFilesOrDirectoriesProcessor(
+            project,
+            new PsiElement[]{file},
+            directory,
+            false,
+            false,
+            false,
+            null,
+            null
+        ).run();
+    }
 }

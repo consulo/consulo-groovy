@@ -36,43 +36,43 @@ import jakarta.annotation.Nullable;
  * @author Maxim.Medvedev
  */
 public class CreateFieldFromConstructorLabelFix extends GroovyFix {
-  private final CreateFieldFix myFix;
-  private final GrNamedArgument myNamedArgument;
+    private final CreateFieldFix myFix;
+    private final GrNamedArgument myNamedArgument;
 
-  public CreateFieldFromConstructorLabelFix(GrTypeDefinition targetClass, GrNamedArgument namedArgument) {
-    myFix = new CreateFieldFix(targetClass);
-    myNamedArgument = namedArgument;
-  }
-
-  @Nullable
-  private String getFieldName() {
-    final GrArgumentLabel label = myNamedArgument.getLabel();
-    assert label != null;
-    return label.getName();
-  }
-
-  private TypeConstraint[] calculateTypeConstrains() {
-    final GrExpression expression = myNamedArgument.getExpression();
-    PsiType type = null;
-    if (expression != null) {
-      type = expression.getType();
+    public CreateFieldFromConstructorLabelFix(GrTypeDefinition targetClass, GrNamedArgument namedArgument) {
+        myFix = new CreateFieldFix(targetClass);
+        myNamedArgument = namedArgument;
     }
-    if (type != null) {
-      return new TypeConstraint[]{SupertypeConstraint.create(type, type)};
-    }
-    else {
-      return TypeConstraint.EMPTY_ARRAY;
-    }
-  }
 
-  @Nonnull
-  @Override
-  public String getName() {
-    return GroovyBundle.message("create.field.from.usage", getFieldName());
-  }
+    @Nullable
+    private String getFieldName() {
+        final GrArgumentLabel label = myNamedArgument.getLabel();
+        assert label != null;
+        return label.getName();
+    }
 
-  @Override
-  protected void doFix(Project project, ProblemDescriptor descriptor) throws IncorrectOperationException {
-    myFix.doFix(project, ArrayUtil.EMPTY_STRING_ARRAY, getFieldName(), calculateTypeConstrains(), myNamedArgument);
-  }
+    private TypeConstraint[] calculateTypeConstrains() {
+        final GrExpression expression = myNamedArgument.getExpression();
+        PsiType type = null;
+        if (expression != null) {
+            type = expression.getType();
+        }
+        if (type != null) {
+            return new TypeConstraint[]{SupertypeConstraint.create(type, type)};
+        }
+        else {
+            return TypeConstraint.EMPTY_ARRAY;
+        }
+    }
+
+    @Nonnull
+    @Override
+    public String getName() {
+        return GroovyBundle.message("create.field.from.usage", getFieldName());
+    }
+
+    @Override
+    protected void doFix(Project project, ProblemDescriptor descriptor) throws IncorrectOperationException {
+        myFix.doFix(project, ArrayUtil.EMPTY_STRING_ARRAY, getFieldName(), calculateTypeConstrains(), myNamedArgument);
+    }
 }

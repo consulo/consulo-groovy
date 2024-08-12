@@ -30,37 +30,31 @@ import jakarta.annotation.Nonnull;
 /**
  * @author Max Medvedev
  */
-public class CreateSetterFromUsageFix extends CreateMethodFromUsageFix implements LowPriorityAction
-{
-	public CreateSetterFromUsageFix(@Nonnull GrReferenceExpression refExpression)
-	{
-		super(refExpression);
-	}
+public class CreateSetterFromUsageFix extends CreateMethodFromUsageFix implements LowPriorityAction {
+    public CreateSetterFromUsageFix(@Nonnull GrReferenceExpression refExpression) {
+        super(refExpression);
+    }
 
-	@Nonnull
-	@Override
-	protected TypeConstraint[] getReturnTypeConstraints()
-	{
-		return new TypeConstraint[]{SubtypeConstraint.create(PsiType.VOID)};
-	}
+    @Nonnull
+    @Override
+    protected TypeConstraint[] getReturnTypeConstraints() {
+        return new TypeConstraint[]{SubtypeConstraint.create(PsiType.VOID)};
+    }
 
-	@Override
-	protected PsiType[] getArgumentTypes()
-	{
-		final GrReferenceExpression ref = getRefExpr();
-		assert PsiUtil.isLValue(ref);
-		PsiType initializer = TypeInferenceHelper.getInitializerTypeFor(ref);
-		if(initializer == null || initializer == PsiType.NULL)
-		{
-			initializer = TypesUtil.getJavaLangObject(ref);
-		}
-		return new PsiType[]{initializer};
-	}
+    @Override
+    protected PsiType[] getArgumentTypes() {
+        final GrReferenceExpression ref = getRefExpr();
+        assert PsiUtil.isLValue(ref);
+        PsiType initializer = TypeInferenceHelper.getInitializerTypeFor(ref);
+        if (initializer == null || initializer == PsiType.NULL) {
+            initializer = TypesUtil.getJavaLangObject(ref);
+        }
+        return new PsiType[]{initializer};
+    }
 
-	@Nonnull
-	@Override
-	protected String getMethodName()
-	{
-		return GroovyPropertyUtils.getSetterName(getRefExpr().getReferenceName());
-	}
+    @Nonnull
+    @Override
+    protected String getMethodName() {
+        return GroovyPropertyUtils.getSetterName(getRefExpr().getReferenceName());
+    }
 }

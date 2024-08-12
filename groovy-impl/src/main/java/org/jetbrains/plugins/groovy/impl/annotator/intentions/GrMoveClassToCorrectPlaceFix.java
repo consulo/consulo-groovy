@@ -32,51 +32,51 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefini
  * @author Max Medvedev
  */
 public class GrMoveClassToCorrectPlaceFix implements IntentionAction {
-  private static final Logger LOG = Logger.getInstance(GrMoveClassToCorrectPlaceFix.class);
+    private static final Logger LOG = Logger.getInstance(GrMoveClassToCorrectPlaceFix.class);
 
-  private final GrTypeDefinition myClass;
+    private final GrTypeDefinition myClass;
 
-  public GrMoveClassToCorrectPlaceFix(GrTypeDefinition clazz) {
-    myClass = clazz;
-    LOG.assertTrue(!myClass.isAnonymous());
-  }
-
-  @Nonnull
-  @Override
-  public String getText() {
-    return GroovyBundle.message("move.class.0.from.method", myClass.getName());
-  }
-
-  @Nonnull
-  public String getFamilyName() {
-    return GroovyBundle.message("move.class.from.method.family.name");
-  }
-
-  @Override
-  public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file) {
-    return myClass.isValid();
-  }
-
-  @Override
-  public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
-    final GrTypeDefinition containingClass = PsiTreeUtil.getParentOfType(myClass, GrTypeDefinition.class);
-    if (containingClass != null) {
-      containingClass.add(myClass);
-    }
-    else {
-      final PsiFile containingFile = myClass.getContainingFile();
-      final PsiElement added = containingFile.add(myClass);
-      final PsiElement prevSibling = added.getPrevSibling();
-      if (prevSibling != null && prevSibling.getNode().getElementType() != GroovyTokenTypes.mNLS) {
-        containingFile.getNode().addLeaf(GroovyTokenTypes.mNLS, "\n", added.getNode());
-      }
+    public GrMoveClassToCorrectPlaceFix(GrTypeDefinition clazz) {
+        myClass = clazz;
+        LOG.assertTrue(!myClass.isAnonymous());
     }
 
-    myClass.delete();
-  }
+    @Nonnull
+    @Override
+    public String getText() {
+        return GroovyBundle.message("move.class.0.from.method", myClass.getName());
+    }
 
-  @Override
-  public boolean startInWriteAction() {
-    return true;
-  }
+    @Nonnull
+    public String getFamilyName() {
+        return GroovyBundle.message("move.class.from.method.family.name");
+    }
+
+    @Override
+    public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file) {
+        return myClass.isValid();
+    }
+
+    @Override
+    public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
+        final GrTypeDefinition containingClass = PsiTreeUtil.getParentOfType(myClass, GrTypeDefinition.class);
+        if (containingClass != null) {
+            containingClass.add(myClass);
+        }
+        else {
+            final PsiFile containingFile = myClass.getContainingFile();
+            final PsiElement added = containingFile.add(myClass);
+            final PsiElement prevSibling = added.getPrevSibling();
+            if (prevSibling != null && prevSibling.getNode().getElementType() != GroovyTokenTypes.mNLS) {
+                containingFile.getNode().addLeaf(GroovyTokenTypes.mNLS, "\n", added.getNode());
+            }
+        }
+
+        myClass.delete();
+    }
+
+    @Override
+    public boolean startInWriteAction() {
+        return true;
+    }
 }

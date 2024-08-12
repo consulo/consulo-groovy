@@ -54,86 +54,90 @@ import jakarta.annotation.Nullable;
  * @author ven
  */
 public class CreateLocalVariableFromUsageFix implements IntentionAction {
-  private final GrVariableDeclarationOwner myOwner;
-  private final GrReferenceExpression myRefExpression;
+    private final GrVariableDeclarationOwner myOwner;
+    private final GrReferenceExpression myRefExpression;
 
-  public CreateLocalVariableFromUsageFix(GrReferenceExpression refExpression, GrVariableDeclarationOwner owner) {
-    myRefExpression = refExpression;
-    myOwner = owner;
-  }
-
-  @Nonnull
-  public String getText() {
-    return GroovyBundle.message("create.variable.from.usage", myRefExpression.getReferenceName());
-  }
-
-  @Nonnull
-  public String getFamilyName() {
-    return GroovyBundle.message("create.from.usage.family.name");
-  }
-
-  public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file) {
-    return myOwner.isValid() && myRefExpression.isValid();
-  }
-
-  @Nullable
-  protected static Editor positionCursor(Project project, PsiFile targetFile, PsiElement element) {
-    TextRange range = element.getTextRange();
-    int textOffset = range.getStartOffset();
-
-    VirtualFile vFile = targetFile.getVirtualFile();
-    assert vFile != null;
-    OpenFileDescriptor descriptor = OpenFileDescriptorFactory.getInstance(project).builder(vFile).offset(textOffset).build();
-    return FileEditorManager.getInstance(project).openTextEditor(descriptor, true);
-  }
-
-  public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
-    PsiClassType
-      type = JavaPsiFacade.getInstance(project).getElementFactory().createTypeByFQClassName("Object", GlobalSearchScope.allScope(project));
-    GrVariableDeclaration decl = GroovyPsiElementFactory.getInstance(project)
-                                                        .createVariableDeclaration(ArrayUtil.EMPTY_STRING_ARRAY,
-                                                                                   "",
-                                                                                   type,
-                                                                                   myRefExpression.getReferenceName());
-    int offset = myRefExpression.getTextRange().getStartOffset();
-    GrStatement anchor = findAnchor(file, offset);
-
-    TypeConstraint[] constraints = GroovyExpectedTypesProvider.calculateTypeConstraints(myRefExpression);
-    if (myRefExpression.equals(anchor)) {
-      decl = myRefExpression.replaceWithStatement(decl);
+    public CreateLocalVariableFromUsageFix(GrReferenceExpression refExpression, GrVariableDeclarationOwner owner) {
+        myRefExpression = refExpression;
+        myOwner = owner;
     }
-    else {
-      decl = myOwner.addVariableDeclarationBefore(decl, anchor);
+
+    @Nonnull
+    public String getText() {
+        return GroovyBundle.message("create.variable.from.usage", myRefExpression.getReferenceName());
     }
-    GrTypeElement typeElement = decl.getTypeElementGroovy();
-    assert typeElement != null;
-    ChooseTypeExpression expr = new ChooseTypeExpression(constraints, PsiManager.getInstance(project), typeElement.getResolveScope());
-    TemplateBuilder builder = TemplateBuilderFactory.getInstance().createTemplateBuilder(decl);
-    builder.replaceElement(typeElement, expr);
-    decl = CodeInsightUtilBase.forcePsiPostprocessAndRestoreElement(decl);
-    Template template = builder.buildTemplate();
 
-    Editor newEditor = positionCursor(project, myOwner.getContainingFile(), decl);
-    TextRange range = decl.getTextRange();
-    newEditor.getDocument().deleteString(range.getStartOffset(), range.getEndOffset());
-
-    TemplateManager manager = TemplateManager.getInstance(project);
-    manager.startTemplate(newEditor, template);
-  }
-
-  @Nullable
-  private GrStatement findAnchor(PsiFile file, int offset) {
-    PsiElement element = file.findElementAt(offset);
-    if (element == null && offset > 0) element = file.findElementAt(offset - 1);
-    while (element != null) {
-      if (myOwner.equals(element.getParent())) return element instanceof GrStatement ? (GrStatement)element : null;
-      element = element.getParent();
+    @Nonnull
+    public String getFamilyName() {
+        return GroovyBundle.message("create.from.usage.family.name");
     }
-    return null;
-  }
 
+    public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file) {
+        return myOwner.isValid() && myRefExpression.isValid();
+    }
 
-  public boolean startInWriteAction() {
-    return true;
-  }
+    @Nullable
+    protected static Editor positionCursor(Project project, PsiFile targetFile, PsiElement element) {
+        TextRange range = element.getTextRange();
+        int textOffset = range.getStartOffset();
+
+        VirtualFile vFile = targetFile.getVirtualFile();
+        assert vFile != null;
+        OpenFileDescriptor descriptor = OpenFileDescriptorFactory.getInstance(project).builder(vFile).offset(textOffset).build();
+        return FileEditorManager.getInstance(project).openTextEditor(descriptor, true);
+    }
+
+    public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
+        PsiClassType type = JavaPsiFacade.getInstance(project).getElementFactory()
+            .createTypeByFQClassName("Object", GlobalSearchScope.allScope(project));
+        GrVariableDeclaration decl = GroovyPsiElementFactory.getInstance(project).createVariableDeclaration(
+            ArrayUtil.EMPTY_STRING_ARRAY,
+            "",
+            type,
+            myRefExpression.getReferenceName()
+        );
+        int offset = myRefExpression.getTextRange().getStartOffset();
+        GrStatement anchor = findAnchor(file, offset);
+
+        TypeConstraint[] constraints = GroovyExpectedTypesProvider.calculateTypeConstraints(myRefExpression);
+        if (myRefExpression.equals(anchor)) {
+            decl = myRefExpression.replaceWithStatement(decl);
+        }
+        else {
+            decl = myOwner.addVariableDeclarationBefore(decl, anchor);
+        }
+        GrTypeElement typeElement = decl.getTypeElementGroovy();
+        assert typeElement != null;
+        ChooseTypeExpression expr = new ChooseTypeExpression(constraints, PsiManager.getInstance(project), typeElement.getResolveScope());
+        TemplateBuilder builder = TemplateBuilderFactory.getInstance().createTemplateBuilder(decl);
+        builder.replaceElement(typeElement, expr);
+        decl = CodeInsightUtilBase.forcePsiPostprocessAndRestoreElement(decl);
+        Template template = builder.buildTemplate();
+
+        Editor newEditor = positionCursor(project, myOwner.getContainingFile(), decl);
+        TextRange range = decl.getTextRange();
+        newEditor.getDocument().deleteString(range.getStartOffset(), range.getEndOffset());
+
+        TemplateManager manager = TemplateManager.getInstance(project);
+        manager.startTemplate(newEditor, template);
+    }
+
+    @Nullable
+    private GrStatement findAnchor(PsiFile file, int offset) {
+        PsiElement element = file.findElementAt(offset);
+        if (element == null && offset > 0) {
+            element = file.findElementAt(offset - 1);
+        }
+        while (element != null) {
+            if (myOwner.equals(element.getParent())) {
+                return element instanceof GrStatement statement ? statement : null;
+            }
+            element = element.getParent();
+        }
+        return null;
+    }
+
+    public boolean startInWriteAction() {
+        return true;
+    }
 }

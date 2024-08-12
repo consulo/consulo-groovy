@@ -34,39 +34,41 @@ import jakarta.annotation.Nonnull;
  * @author Max Medvedev
  */
 public class ReplaceDelimiterFix implements IntentionAction {
-  @Nonnull
-  @Override
-  public String getText() {
-    return "Replace ':' with 'in'";
-  }
-
-  @Nonnull
-  //@Override
-  public String getFamilyName() {
-    return "Replace for-each operator";
-  }
-
-  @Override
-  public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file) {
-    return true;
-  }
-
-  @Override
-  public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
-    PsiElement at = file.findElementAt(editor.getCaretModel().getOffset());
-    GrForStatement forStatement = PsiTreeUtil.getParentOfType(at, GrForStatement.class);
-    if (forStatement == null) return;
-    GrForClause clause = forStatement.getClause();
-    if (clause instanceof GrForInClause) {
-      GroovyFile f = GroovyPsiElementFactory.getInstance(project).createGroovyFile("in", false, null);
-      PsiElement child = f.getFirstChild().getFirstChild();
-      PsiElement delimiter = ((GrForInClause)clause).getDelimiter();
-      delimiter.replace(child);
+    @Nonnull
+    @Override
+    public String getText() {
+        return "Replace ':' with 'in'";
     }
-  }
 
-  @Override
-  public boolean startInWriteAction() {
-    return true;
-  }
+    @Nonnull
+    //@Override
+    public String getFamilyName() {
+        return "Replace for-each operator";
+    }
+
+    @Override
+    public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file) {
+        return true;
+    }
+
+    @Override
+    public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
+        PsiElement at = file.findElementAt(editor.getCaretModel().getOffset());
+        GrForStatement forStatement = PsiTreeUtil.getParentOfType(at, GrForStatement.class);
+        if (forStatement == null) {
+            return;
+        }
+        GrForClause clause = forStatement.getClause();
+        if (clause instanceof GrForInClause) {
+            GroovyFile f = GroovyPsiElementFactory.getInstance(project).createGroovyFile("in", false, null);
+            PsiElement child = f.getFirstChild().getFirstChild();
+            PsiElement delimiter = ((GrForInClause)clause).getDelimiter();
+            delimiter.replace(child);
+        }
+    }
+
+    @Override
+    public boolean startInWriteAction() {
+        return true;
+    }
 }

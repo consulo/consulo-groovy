@@ -34,55 +34,57 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpres
  * @author Max Medvedev
  */
 public class AddParenthesesFix implements IntentionAction {
-  private static final Logger LOG = Logger.getInstance(AddParenthesesFix.class);
+    private static final Logger LOG = Logger.getInstance(AddParenthesesFix.class);
 
-  @Nonnull
-  @Override
-  public String getText() {
-    return GroovyBundle.message("add.parentheses");
-  }
-
-  @Nonnull
-  //@Override
-  public String getFamilyName() {
-    return GroovyBundle.message("add.parentheses.to.command.method.call");
-  }
-
-  @Override
-  public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file) {
-    final int offset = editor.getCaretModel().getOffset();
-    final PsiElement at = file.findElementAt(offset);
-    final GrCommandArgumentList argList = PsiTreeUtil.getParentOfType(at, GrCommandArgumentList.class);
-    return argList != null;
-  }
-
-  @Override
-  public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
-    final int offset = editor.getCaretModel().getOffset();
-    final PsiElement at = file.findElementAt(offset);
-    final GrCommandArgumentList argList = PsiTreeUtil.getParentOfType(at, GrCommandArgumentList.class);
-    if (argList == null) return;
-
-    final PsiElement parent = argList.getParent();
-    LOG.assertTrue(parent instanceof GrApplicationStatement);
-
-    final GrExpression newExpr;
-    try {
-      newExpr = GroovyPsiElementFactory.getInstance(project)
-                                       .createExpressionFromText(((GrApplicationStatement)parent).getInvokedExpression()
-                                                                                                 .getText() + '(' + argList.getText() + ')');
-    }
-    catch (IncorrectOperationException e) {
-      LOG.error(e);
-      return;
+    @Nonnull
+    @Override
+    public String getText() {
+        return GroovyBundle.message("add.parentheses");
     }
 
-    parent.replace(newExpr);
-    editor.getCaretModel().moveToOffset(offset + 1);
-  }
+    @Nonnull
+    //@Override
+    public String getFamilyName() {
+        return GroovyBundle.message("add.parentheses.to.command.method.call");
+    }
 
-  @Override
-  public boolean startInWriteAction() {
-    return true;
-  }
+    @Override
+    public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file) {
+        final int offset = editor.getCaretModel().getOffset();
+        final PsiElement at = file.findElementAt(offset);
+        final GrCommandArgumentList argList = PsiTreeUtil.getParentOfType(at, GrCommandArgumentList.class);
+        return argList != null;
+    }
+
+    @Override
+    public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
+        final int offset = editor.getCaretModel().getOffset();
+        final PsiElement at = file.findElementAt(offset);
+        final GrCommandArgumentList argList = PsiTreeUtil.getParentOfType(at, GrCommandArgumentList.class);
+        if (argList == null) {
+            return;
+        }
+
+        final PsiElement parent = argList.getParent();
+        LOG.assertTrue(parent instanceof GrApplicationStatement);
+
+        final GrExpression newExpr;
+        try {
+            newExpr = GroovyPsiElementFactory.getInstance(project).createExpressionFromText(
+                ((GrApplicationStatement)parent).getInvokedExpression().getText() + '(' + argList.getText() + ')'
+            );
+        }
+        catch (IncorrectOperationException e) {
+            LOG.error(e);
+            return;
+        }
+
+        parent.replace(newExpr);
+        editor.getCaretModel().moveToOffset(offset + 1);
+    }
+
+    @Override
+    public boolean startInWriteAction() {
+        return true;
+    }
 }
