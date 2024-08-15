@@ -17,29 +17,30 @@ package org.jetbrains.plugins.groovy.impl.annotator.intentions;
 
 import com.intellij.java.language.psi.PsiClass;
 import com.intellij.java.language.psi.PsiModifier;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.groovy.localize.GroovyLocalize;
 import consulo.project.Project;
+import consulo.ui.annotation.RequiredUIAccess;
 import consulo.util.collection.ArrayUtil;
-import org.jetbrains.plugins.groovy.GroovyBundle;
+import jakarta.annotation.Nonnull;
+import org.jetbrains.plugins.groovy.impl.lang.psi.util.GrStaticChecker;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
 import org.jetbrains.plugins.groovy.lang.psi.expectedTypes.GroovyExpectedTypesProvider;
 import org.jetbrains.plugins.groovy.lang.psi.expectedTypes.TypeConstraint;
-import org.jetbrains.plugins.groovy.impl.lang.psi.util.GrStaticChecker;
-
-import jakarta.annotation.Nonnull;
 
 /**
  * @author ven
  */
 public class CreateFieldFromUsageFix extends GrCreateFromUsageBaseFix {
-    private final
     @Nonnull
-    String myReferenceName;
+    private final String myReferenceName;
 
     public CreateFieldFromUsageFix(GrReferenceExpression refExpression, @Nonnull String referenceName) {
         super(refExpression);
         myReferenceName = referenceName;
     }
 
+    @RequiredReadAction
     private String[] generateModifiers(@Nonnull PsiClass targetClass) {
         final GrReferenceExpression myRefExpression = getRefExpr();
         if (myRefExpression != null && GrStaticChecker.isInStaticContext(myRefExpression, targetClass)) {
@@ -48,6 +49,7 @@ public class CreateFieldFromUsageFix extends GrCreateFromUsageBaseFix {
         return ArrayUtil.EMPTY_STRING_ARRAY;
     }
 
+    @RequiredReadAction
     private TypeConstraint[] calculateTypeConstrains() {
         return GroovyExpectedTypesProvider.calculateTypeConstraints(getRefExpr());
     }
@@ -55,10 +57,11 @@ public class CreateFieldFromUsageFix extends GrCreateFromUsageBaseFix {
     @Override
     @Nonnull
     public String getText() {
-        return GroovyBundle.message("create.field.from.usage", myReferenceName);
+        return GroovyLocalize.createFieldFromUsage(myReferenceName).get();
     }
 
     @Override
+    @RequiredUIAccess
     protected void invokeImpl(Project project, @Nonnull PsiClass targetClass) {
         final CreateFieldFix fix = new CreateFieldFix(targetClass);
         fix.doFix(targetClass.getProject(), generateModifiers(targetClass), myReferenceName, calculateTypeConstrains(), getRefExpr());

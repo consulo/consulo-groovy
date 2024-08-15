@@ -17,7 +17,6 @@ package org.jetbrains.plugins.groovy.impl.annotator.intentions;
 
 import com.intellij.java.impl.codeInsight.PackageUtil;
 import com.intellij.java.impl.refactoring.util.RefactoringMessageUtil;
-import consulo.application.CommonBundle;
 import consulo.language.editor.inspection.LocalQuickFix;
 import consulo.language.editor.inspection.ProblemDescriptor;
 import consulo.language.editor.refactoring.move.fileOrDirectory.MoveFilesOrDirectoriesProcessor;
@@ -26,14 +25,16 @@ import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiFile;
 import consulo.language.util.ModuleUtilCore;
 import consulo.module.Module;
+import consulo.platform.base.localize.CommonLocalize;
 import consulo.project.Project;
+import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.ex.awt.Messages;
+import consulo.ui.ex.awt.UIUtil;
 import consulo.util.lang.StringUtil;
 import consulo.virtualFileSystem.VirtualFile;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.impl.intentions.GroovyIntentionsBundle;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
-
-import jakarta.annotation.Nonnull;
 
 /**
  * @author Max Medvedev
@@ -59,6 +60,7 @@ public class GrMoveToDirFix implements LocalQuickFix {
     }
 
     @Override
+    @RequiredUIAccess
     public void applyFix(@Nonnull Project project, @Nonnull ProblemDescriptor descriptor) {
         PsiFile file = descriptor.getPsiElement().getContainingFile();
 
@@ -84,7 +86,7 @@ public class GrMoveToDirFix implements LocalQuickFix {
 
         String error = RefactoringMessageUtil.checkCanCreateFile(directory, file.getName());
         if (error != null) {
-            Messages.showMessageDialog(project, error, CommonBundle.getErrorTitle(), Messages.getErrorIcon());
+            Messages.showMessageDialog(project, error, CommonLocalize.titleError().get(), UIUtil.getErrorIcon());
             return;
         }
         new MoveFilesOrDirectoriesProcessor(

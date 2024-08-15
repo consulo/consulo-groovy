@@ -19,31 +19,28 @@ import com.intellij.java.language.psi.PsiClassType;
 import com.intellij.java.language.psi.PsiPrimitiveType;
 import com.intellij.java.language.psi.PsiType;
 import com.intellij.java.language.psi.codeStyle.JavaCodeStyleManager;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.language.editor.inspection.ProblemDescriptor;
 import consulo.language.psi.PsiElement;
 import consulo.language.util.IncorrectOperationException;
-import consulo.logging.Logger;
 import consulo.project.Project;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.impl.codeInspection.GroovyFix;
 import org.jetbrains.plugins.groovy.impl.intentions.GroovyIntentionsBundle;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeElement;
 
-import jakarta.annotation.Nonnull;
-
 /**
  * @author Max Medvedev
  */
 public class GrReplacePrimitiveTypeWithWrapperFix extends GroovyFix {
-    private static final Logger LOG = Logger.getInstance(GrReplacePrimitiveTypeWithWrapperFix.class);
-
     private final String myBoxedName;
 
     public GrReplacePrimitiveTypeWithWrapperFix(GrTypeElement typeElement) {
-        LOG.assertTrue(typeElement.isValid());
+        assert typeElement.isValid();
 
         final PsiType type = typeElement.getType();
-        LOG.assertTrue(type instanceof PsiPrimitiveType);
+        assert type instanceof PsiPrimitiveType;
 
         myBoxedName = ((PsiPrimitiveType)type).getBoxedType(typeElement).getClassName();
     }
@@ -61,20 +58,19 @@ public class GrReplacePrimitiveTypeWithWrapperFix extends GroovyFix {
     }
 
     @Override
+    @RequiredReadAction
     protected void doFix(Project project, ProblemDescriptor descriptor) throws IncorrectOperationException {
         final PsiElement element = descriptor.getPsiElement();
         assert element instanceof GrTypeElement : element;
 
         GrTypeElement typeElement = (GrTypeElement)element;
         final PsiType type = typeElement.getType();
-        if (!(type instanceof PsiPrimitiveType)) {
-            return;
+        if (type instanceof PsiPrimitiveType primitiveType) {
+            final PsiClassType boxed = primitiveType.getBoxedType(typeElement);
+            final GrTypeElement newTypeElement = GroovyPsiElementFactory.getInstance(project).createTypeElement(boxed);
+
+            final PsiElement replaced = typeElement.replace(newTypeElement);
+            JavaCodeStyleManager.getInstance(project).shortenClassReferences(replaced);
         }
-
-        final PsiClassType boxed = ((PsiPrimitiveType)type).getBoxedType(typeElement);
-        final GrTypeElement newTypeElement = GroovyPsiElementFactory.getInstance(project).createTypeElement(boxed);
-
-        final PsiElement replaced = typeElement.replace(newTypeElement);
-        JavaCodeStyleManager.getInstance(project).shortenClassReferences(replaced);
     }
 }

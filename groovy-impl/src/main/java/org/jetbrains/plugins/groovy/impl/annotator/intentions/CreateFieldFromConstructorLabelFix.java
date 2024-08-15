@@ -16,12 +16,14 @@
 package org.jetbrains.plugins.groovy.impl.annotator.intentions;
 
 import com.intellij.java.language.psi.PsiType;
+import consulo.groovy.localize.GroovyLocalize;
 import consulo.language.editor.inspection.ProblemDescriptor;
 import consulo.language.util.IncorrectOperationException;
 import consulo.project.Project;
+import consulo.ui.annotation.RequiredUIAccess;
 import consulo.util.collection.ArrayUtil;
 import jakarta.annotation.Nonnull;
-import org.jetbrains.plugins.groovy.GroovyBundle;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.impl.codeInspection.GroovyFix;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrArgumentLabel;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrNamedArgument;
@@ -29,8 +31,6 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpres
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
 import org.jetbrains.plugins.groovy.lang.psi.expectedTypes.SupertypeConstraint;
 import org.jetbrains.plugins.groovy.lang.psi.expectedTypes.TypeConstraint;
-
-import jakarta.annotation.Nullable;
 
 /**
  * @author Maxim.Medvedev
@@ -68,10 +68,11 @@ public class CreateFieldFromConstructorLabelFix extends GroovyFix {
     @Nonnull
     @Override
     public String getName() {
-        return GroovyBundle.message("create.field.from.usage", getFieldName());
+        return GroovyLocalize.createFieldFromUsage(getFieldName()).get();
     }
 
     @Override
+    @RequiredUIAccess
     protected void doFix(Project project, ProblemDescriptor descriptor) throws IncorrectOperationException {
         myFix.doFix(project, ArrayUtil.EMPTY_STRING_ARRAY, getFieldName(), calculateTypeConstrains(), myNamedArgument);
     }

@@ -17,13 +17,17 @@ package org.jetbrains.plugins.groovy.impl.annotator.intentions;
 
 import com.intellij.java.language.psi.PsiClass;
 import com.intellij.java.language.psi.codeStyle.JavaCodeStyleManager;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.codeEditor.Editor;
+import consulo.groovy.localize.GroovyLocalize;
 import consulo.language.editor.intention.IntentionAction;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiFile;
 import consulo.language.util.IncorrectOperationException;
 import consulo.project.Project;
-import org.jetbrains.plugins.groovy.GroovyBundle;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrExtendsClause;
@@ -31,16 +35,13 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrImplements
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
-
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
- * User: Dmitry.Krasilschikov
- * Date: 21.09.2007
+ * @author Dmitry.Krasilschikov
+ * @since 2007-09-21
  */
 public class ChangeExtendsImplementsQuickFix implements IntentionAction {
     @Nullable
@@ -59,7 +60,7 @@ public class ChangeExtendsImplementsQuickFix implements IntentionAction {
     @Override
     @Nonnull
     public String getText() {
-        return GroovyBundle.message("change.implements.and.extends.classes");
+        return GroovyLocalize.changeImplementsAndExtendsClasses().get();
     }
 
     @Override
@@ -68,6 +69,7 @@ public class ChangeExtendsImplementsQuickFix implements IntentionAction {
     }
 
     @Override
+    @RequiredWriteAction
     public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
         Set<String> classes = new LinkedHashSet<>();
         Set<String> interfaces = new LinkedHashSet<>();
@@ -75,9 +77,8 @@ public class ChangeExtendsImplementsQuickFix implements IntentionAction {
         Set<String> unknownInterfaces = new LinkedHashSet<>();
 
         if (myExtendsClause != null) {
-            collectRefs(myExtendsClause.getReferenceElementsGroovy(), classes, interfaces,
-                myClass.isInterface() ? unknownInterfaces : unknownClasses
-            );
+            Set<String> unknown = myClass.isInterface() ? unknownInterfaces : unknownClasses;
+            collectRefs(myExtendsClause.getReferenceElementsGroovy(), classes, interfaces, unknown);
             myExtendsClause.delete();
         }
 
@@ -97,6 +98,7 @@ public class ChangeExtendsImplementsQuickFix implements IntentionAction {
         }
     }
 
+    @RequiredReadAction
     private static void collectRefs(
         GrCodeReferenceElement[] refs,
         Collection<String> classes,
@@ -121,6 +123,7 @@ public class ChangeExtendsImplementsQuickFix implements IntentionAction {
         }
     }
 
+    @RequiredWriteAction
     private void addNewClause(
         Collection<String> elements,
         Collection<String> additional,
@@ -132,17 +135,14 @@ public class ChangeExtendsImplementsQuickFix implements IntentionAction {
         }
 
         StringBuilder classText = new StringBuilder();
-        classText.append("class A ");
-        classText.append(isExtends ? "extends " : "implements ");
+        classText.append("class A ").append(isExtends ? "extends " : "implements ");
 
         for (String str : elements) {
-            classText.append(str);
-            classText.append(", ");
+            classText.append(str).append(", ");
         }
 
         for (String str : additional) {
-            classText.append(str);
-            classText.append(", ");
+            classText.append(str).append(", ");
         }
 
         classText.delete(classText.length() - 2, classText.length());

@@ -25,14 +25,13 @@ import consulo.language.editor.template.TemplateManager;
 import consulo.language.psi.PsiElement;
 import consulo.language.util.IncorrectOperationException;
 import consulo.project.Project;
-import org.jetbrains.annotations.NonNls;
+import consulo.ui.annotation.RequiredUIAccess;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.impl.intentions.base.IntentionUtils;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.GrModifier;
 import org.jetbrains.plugins.groovy.lang.psi.expectedTypes.TypeConstraint;
 import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GroovyScriptClass;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames;
-
-import jakarta.annotation.Nonnull;
 
 /**
  * @author Maxim.Medvedev
@@ -52,10 +51,11 @@ public class CreateFieldFix {
         return myTargetClass.isValid();
     }
 
+    @RequiredUIAccess
     protected void doFix(
         @Nonnull Project project,
         @Nonnull @GrModifier.ModifierConstant String[] modifiers,
-        @Nonnull @NonNls String fieldName,
+        @Nonnull String fieldName,
         @Nonnull TypeConstraint[] typeConstraints,
         @Nonnull PsiElement context
     ) throws IncorrectOperationException {

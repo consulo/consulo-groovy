@@ -15,15 +15,17 @@
  */
 package org.jetbrains.plugins.groovy.impl.annotator.intentions;
 
-import com.intellij.java.language.psi.CommonClassNames;
 import com.intellij.java.language.psi.PsiClass;
 import com.intellij.java.language.psi.PsiClassType;
 import com.intellij.java.language.psi.PsiType;
 import com.intellij.java.language.psi.util.PsiTypesUtil;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.java.language.module.util.JavaClassNames;
 import consulo.language.editor.FileModificationService;
 import consulo.language.psi.PsiFile;
 import consulo.project.Project;
 import consulo.util.collection.ArrayUtil;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.impl.annotator.intentions.dynamic.ParamInfo;
 import org.jetbrains.plugins.groovy.impl.annotator.intentions.dynamic.ui.DynamicElementSettings;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
@@ -37,15 +39,13 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUt
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 import org.jetbrains.plugins.groovy.lang.resolve.ResolveUtil;
 
-import jakarta.annotation.Nullable;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 /**
- * User: Dmitry.Krasilschikov
- * Date: 20.12.2007
+ * @author Dmitry.Krasilschikov
+ * @since 2007-12-20
  */
 public class QuickfixUtil {
     @Nullable
@@ -58,37 +58,23 @@ public class QuickfixUtil {
 
         if (type == null && compileStatic) {
             return GroovyPsiManager.getInstance(refExpr.getProject())
-                .findClassWithCache(CommonClassNames.JAVA_LANG_OBJECT, refExpr.getResolveScope());
+                .findClassWithCache(JavaClassNames.JAVA_LANG_OBJECT, refExpr.getResolveScope());
         }
-        if (!(type instanceof PsiClassType)) {
-            return null;
-        }
-        return ((PsiClassType)type).resolve();
+        return type instanceof PsiClassType classType ? classType.resolve() : null;
     }
 
     public static boolean isStaticCall(GrReferenceExpression refExpr) {
-
         //todo: look more carefully
         GrExpression qualifierExpression = refExpr.getQualifierExpression();
 
-        if (!(qualifierExpression instanceof GrReferenceExpression)) {
+        if (qualifierExpression instanceof GrReferenceExpression referenceExpression) {
+            GroovyPsiElement resolvedElement = ResolveUtil.resolveProperty(referenceExpression, referenceExpression.getReferenceName());
+            return resolvedElement instanceof PsiClass;
+        }
+        else {
             return false;
         }
-
-        GrReferenceExpression referenceExpression = (GrReferenceExpression)qualifierExpression;
-        GroovyPsiElement resolvedElement =
-            ResolveUtil.resolveProperty(referenceExpression, referenceExpression.getReferenceName());
-
-        if (resolvedElement == null) {
-            return false;
-        }
-        if (resolvedElement instanceof PsiClass) {
-            return true;
-        }
-
-        return false;
     }
-
 
     public static boolean ensureFileWritable(Project project, PsiFile file) {
         return FileModificationService.getInstance().preparePsiElementsForWrite(file);
@@ -146,6 +132,7 @@ public class QuickfixUtil {
         return typeText;
     }
 
+    @RequiredReadAction
     public static DynamicElementSettings createSettings(GrReferenceExpression referenceExpression) {
         DynamicElementSettings settings = new DynamicElementSettings();
         final PsiClass containingClass = findTargetClass(referenceExpression, false);
@@ -179,6 +166,7 @@ public class QuickfixUtil {
         return settings;
     }
 
+    @RequiredReadAction
     public static DynamicElementSettings createSettings(GrArgumentLabel label, PsiClass targetClass) {
         DynamicElementSettings settings = new DynamicElementSettings();
 

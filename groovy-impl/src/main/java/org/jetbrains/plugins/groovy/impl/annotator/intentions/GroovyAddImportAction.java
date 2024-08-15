@@ -20,9 +20,11 @@ import com.intellij.java.impl.codeInsight.daemon.impl.quickfix.ImportClassFixBas
 import com.intellij.java.language.psi.PsiClass;
 import com.intellij.java.language.psi.PsiExpression;
 import com.intellij.java.language.psi.PsiMember;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiFile;
 import consulo.util.lang.Comparing;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.GrReferenceElement;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
@@ -30,8 +32,6 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariableDeclaratio
 import org.jetbrains.plugins.groovy.lang.psi.api.toplevel.imports.GrImportStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeElement;
-
-import jakarta.annotation.Nonnull;
 
 import java.util.List;
 
@@ -59,6 +59,7 @@ public class GroovyAddImportAction extends ImportClassFixBase<GrReferenceElement
     }
 
     @Override
+    @RequiredReadAction
     protected String getQualifiedName(GrReferenceElement reference) {
         return reference.getCanonicalText();
     }
@@ -86,8 +87,9 @@ public class GroovyAddImportAction extends ImportClassFixBase<GrReferenceElement
         return false;
     }
 
+    @Nonnull
     @Override
-    protected List<PsiClass> filterByContext(List<PsiClass> candidates, GrReferenceElement ref) {
+    protected List<PsiClass> filterByContext(@Nonnull List<PsiClass> candidates, GrReferenceElement ref) {
         PsiElement typeElement = ref.getParent();
         if (typeElement instanceof GrTypeElement && typeElement.getParent() instanceof GrVariableDeclaration variableDeclaration) {
             GrVariable[] vars = variableDeclaration.getVariables();
@@ -109,6 +111,7 @@ public class GroovyAddImportAction extends ImportClassFixBase<GrReferenceElement
             : super.getRequiredMemberName(reference);
     }
 
+    @Override
     protected boolean isAccessible(PsiMember member, GrReferenceElement reference) {
         return true;
     }

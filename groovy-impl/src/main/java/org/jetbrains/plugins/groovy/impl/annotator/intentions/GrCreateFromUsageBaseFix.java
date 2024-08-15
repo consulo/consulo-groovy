@@ -17,9 +17,10 @@ package org.jetbrains.plugins.groovy.impl.annotator.intentions;
 
 import com.intellij.java.language.impl.codeInsight.PsiClassListCellRenderer;
 import com.intellij.java.language.psi.PsiClass;
-import consulo.application.ApplicationManager;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.codeEditor.Editor;
 import consulo.codeEditor.EditorPopupHelper;
+import consulo.groovy.localize.GroovyLocalize;
 import consulo.ide.impl.ui.impl.PopupChooserBuilder;
 import consulo.java.analysis.impl.JavaQuickFixBundle;
 import consulo.language.editor.intention.SyntheticIntentionAction;
@@ -30,17 +31,16 @@ import consulo.language.psi.SmartPointerManager;
 import consulo.language.psi.SmartPsiElementPointer;
 import consulo.language.util.IncorrectOperationException;
 import consulo.project.Project;
+import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.ex.awt.JBList;
 import consulo.ui.ex.popup.JBPopup;
 import consulo.undoRedo.CommandProcessor;
-import org.jetbrains.plugins.groovy.GroovyBundle;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.impl.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.impl.intentions.base.PsiElementPredicate;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
 import org.jetbrains.plugins.groovy.impl.lang.psi.util.GrStaticChecker;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
-
-import jakarta.annotation.Nonnull;
 
 import javax.swing.*;
 import java.util.ArrayList;
@@ -60,14 +60,16 @@ public abstract class GrCreateFromUsageBaseFix extends Intention implements Synt
     @Override
     @Nonnull
     public String getFamilyName() {
-        return GroovyBundle.message("create.from.usage.family.name");
+        return GroovyLocalize.createFromUsageFamilyName().get();
     }
 
+    @RequiredReadAction
     protected GrReferenceExpression getRefExpr() {
         return myRefExpression.getElement();
     }
 
     @Override
+    @RequiredReadAction
     public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file) {
         final GrReferenceExpression element = myRefExpression.getElement();
         if (element == null || !element.isValid()) {
@@ -85,6 +87,7 @@ public abstract class GrCreateFromUsageBaseFix extends Intention implements Synt
 
 
     @Override
+    @RequiredUIAccess
     protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
         final List<PsiClass> classes = getTargetClasses();
         if (classes.size() == 1) {
@@ -104,7 +107,7 @@ public abstract class GrCreateFromUsageBaseFix extends Intention implements Synt
     private void chooseClass(List<PsiClass> classes, Editor editor) {
         final Project project = classes.get(0).getProject();
 
-        final JList list = new JBList(classes);
+        final JList<PsiClass> list = new JBList<>(classes);
         PsiElementListCellRenderer renderer = new PsiClassListCellRenderer();
         list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         list.setCellRenderer(renderer);
@@ -116,35 +119,35 @@ public abstract class GrCreateFromUsageBaseFix extends Intention implements Synt
             if (index < 0) {
                 return;
             }
-            final PsiClass aClass = (PsiClass)list.getSelectedValue();
+            final PsiClass aClass = list.getSelectedValue();
             CommandProcessor.getInstance().executeCommand(
                 project,
-                () -> ApplicationManager.getApplication().runWriteAction(() -> invokeImpl(project, aClass)),
+                () -> aClass.getApplication().runWriteAction(() -> invokeImpl(project, aClass)),
                 getText(),
                 null
             );
         };
 
-        JBPopup popup = builder.
-            setTitle(JavaQuickFixBundle.message("target.class.chooser.title")).
-            setItemChoosenCallback(runnable).
-            createPopup();
+        JBPopup popup = builder.setTitle(JavaQuickFixBundle.message("target.class.chooser.title"))
+            .setItemChoosenCallback(runnable)
+            .createPopup();
 
         EditorPopupHelper.getInstance().showPopupInBestPositionFor(editor, popup);
     }
 
+    @RequiredUIAccess
     protected abstract void invokeImpl(Project project, @Nonnull PsiClass targetClass);
 
+    @RequiredReadAction
     private List<PsiClass> getTargetClasses() {
         final GrReferenceExpression ref = getRefExpr();
-        final boolean compileStatic = PsiUtil.isCompileStatic(ref) || GrStaticChecker.isPropertyAccessInStaticMethod
-            (ref);
+        final boolean compileStatic = PsiUtil.isCompileStatic(ref) || GrStaticChecker.isPropertyAccessInStaticMethod(ref);
         final PsiClass targetClass = QuickfixUtil.findTargetClass(ref, compileStatic);
         if (targetClass == null || !canBeTargetClass(targetClass)) {
             return Collections.emptyList();
         }
 
-        final ArrayList<PsiClass> classes = new ArrayList<PsiClass>();
+        final ArrayList<PsiClass> classes = new ArrayList<>();
         collectSupers(targetClass, classes);
         return classes;
     }

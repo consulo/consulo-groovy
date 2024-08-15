@@ -18,7 +18,11 @@ package org.jetbrains.plugins.groovy.impl.annotator.intentions;
 
 import com.intellij.java.language.psi.*;
 import com.intellij.java.language.psi.codeStyle.JavaCodeStyleManager;
-import consulo.application.*;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.application.AccessRule;
+import consulo.application.AccessToken;
+import consulo.application.ReadAction;
+import consulo.application.WriteAction;
 import consulo.codeEditor.Editor;
 import consulo.language.editor.FileModificationService;
 import consulo.language.editor.hint.HintManager;
@@ -29,11 +33,14 @@ import consulo.language.util.IncorrectOperationException;
 import consulo.language.util.ModuleUtilCore;
 import consulo.module.Module;
 import consulo.project.Project;
+import consulo.ui.annotation.RequiredUIAccess;
+import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.impl.actions.GroovyTemplates;
 import org.jetbrains.plugins.groovy.impl.intentions.GroovyIntentionsBundle;
 import org.jetbrains.plugins.groovy.impl.intentions.base.IntentionUtils;
 import org.jetbrains.plugins.groovy.impl.lang.GrCreateClassKind;
+import org.jetbrains.plugins.groovy.impl.template.expressions.ChooseTypeExpression;
 import org.jetbrains.plugins.groovy.lang.psi.GrReferenceElement;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFileBase;
@@ -48,9 +55,6 @@ import org.jetbrains.plugins.groovy.lang.psi.expectedTypes.SupertypeConstraint;
 import org.jetbrains.plugins.groovy.lang.psi.expectedTypes.TypeConstraint;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
-import org.jetbrains.plugins.groovy.impl.template.expressions.ChooseTypeExpression;
-
-import jakarta.annotation.Nonnull;
 
 /**
  * @author ilyas
@@ -58,8 +62,8 @@ import jakarta.annotation.Nonnull;
 public abstract class CreateClassFix {
     public static IntentionAction createClassFromNewAction(final GrNewExpression expression) {
         return new CreateClassActionBase(GrCreateClassKind.CLASS, expression.getReferenceElement()) {
-
             @Override
+            @RequiredUIAccess
             protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor)
                 throws IncorrectOperationException {
                 final PsiFile file = element.getContainingFile();
@@ -70,8 +74,8 @@ public abstract class CreateClassFix {
                 final PsiManager manager = myRefElement.getManager();
 
                 final String qualifier = ReadAction.compute(() -> groovyFile instanceof GroovyFile ? groovyFile.getPackageName() : "");
-                final String name = ReadAction.compute(() -> myRefElement.getReferenceName());
-                final Module module = ReadAction.compute(() -> ModuleUtilCore.findModuleForPsiElement(file));
+                final String name = ReadAction.compute(myRefElement::getReferenceName);
+                final Module module = ReadAction.compute(file::getModule);
 
                 PsiDirectory targetDirectory = getTargetDirectory(project, qualifier, name, module, getText());
                 if (targetDirectory == null) {
@@ -149,6 +153,7 @@ public abstract class CreateClassFix {
     public static IntentionAction createClassFixAction(final GrReferenceElement refElement, GrCreateClassKind type) {
         return new CreateClassActionBase(type, refElement) {
             @Override
+            @RequiredUIAccess
             protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor)
                 throws IncorrectOperationException {
                 final PsiFile file = element.getContainingFile();
@@ -167,6 +172,7 @@ public abstract class CreateClassFix {
                 }
             }
 
+            @RequiredReadAction
             private void createInnerClass(Project project, final Editor editor, PsiElement qualifier) {
                 PsiElement resolved = resolveQualifier(qualifier);
                 if (!(resolved instanceof PsiClass)) {
@@ -182,7 +188,7 @@ public abstract class CreateClassFix {
                 PsiClass template = createTemplate(factory, name);
 
                 if (template == null) {
-                    ApplicationManager.getApplication().invokeLater(() -> {
+                    project.getApplication().invokeLater(() -> {
                         if (editor != null && editor.getComponent().isDisplayable()) {
                             HintManager.getInstance().showErrorHint(editor, GroovyIntentionsBundle.message("cannot.create.class"));
                         }
@@ -225,22 +231,17 @@ public abstract class CreateClassFix {
 
             @Nullable
             private PsiClass createTemplate(JVMElementFactory factory, String name) {
-                switch (getType()) {
-                    case ENUM:
-                        return factory.createEnum(name);
-                    case TRAIT:
-                        return factory instanceof GroovyPsiElementFactory psiElementFactory ? psiElementFactory.createTrait(name) : null;
-                    case CLASS:
-                        return factory.createClass(name);
-                    case INTERFACE:
-                        return factory.createInterface(name);
-                    case ANNOTATION:
-                        return factory.createAnnotationType(name);
-                    default:
-                        return null;
-                }
+                return switch (getType()) {
+                    case ENUM -> factory.createEnum(name);
+                    case TRAIT -> factory instanceof GroovyPsiElementFactory psiElemFactory ? psiElemFactory.createTrait(name) : null;
+                    case CLASS -> factory.createClass(name);
+                    case INTERFACE -> factory.createInterface(name);
+                    case ANNOTATION -> factory.createAnnotationType(name);
+                    default -> null;
+                };
             }
 
+            @RequiredUIAccess
             private void createTopLevelClass(@Nonnull Project project, @Nonnull GroovyFileBase file) {
                 final String pack = getPackage(file);
                 final PsiManager manager = PsiManager.getInstance(project);
@@ -274,45 +275,34 @@ public abstract class CreateClassFix {
             }
 
             @Override
+            @RequiredReadAction
             public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file) {
                 if (!super.isAvailable(project, editor, file)) {
                     return false;
                 }
 
                 final PsiElement qualifier = myRefElement.getQualifier();
-                if (qualifier != null && resolveQualifier(qualifier) == null) {
-                    return false;
-                }
-
-                return true;
+                return qualifier == null || resolveQualifier(qualifier) != null;
             }
         };
     }
 
+    @RequiredUIAccess
     private static void bindRef(@Nonnull final PsiClass targetClass, @Nonnull final GrReferenceElement ref) {
-        ApplicationManager.getApplication().runWriteAction(new Runnable() {
-            @Override
-            public void run() {
-                final PsiElement newRef = ref.bindToElement(targetClass);
-                JavaCodeStyleManager.getInstance(targetClass.getProject()).shortenClassReferences(newRef);
-            }
+        targetClass.getApplication().runWriteAction(() -> {
+            final PsiElement newRef = ref.bindToElement(targetClass);
+            JavaCodeStyleManager.getInstance(targetClass.getProject()).shortenClassReferences(newRef);
         });
     }
 
     private static String getTemplateName(GrCreateClassKind createClassKind) {
-        switch (createClassKind) {
-            case TRAIT:
-                return GroovyTemplates.GROOVY_TRAIT;
-            case ENUM:
-                return GroovyTemplates.GROOVY_ENUM;
-            case CLASS:
-                return GroovyTemplates.GROOVY_CLASS;
-            case INTERFACE:
-                return GroovyTemplates.GROOVY_INTERFACE;
-            case ANNOTATION:
-                return GroovyTemplates.GROOVY_ANNOTATION;
-            default:
-                return null;
-        }
+        return switch (createClassKind) {
+            case TRAIT -> GroovyTemplates.GROOVY_TRAIT;
+            case ENUM -> GroovyTemplates.GROOVY_ENUM;
+            case CLASS -> GroovyTemplates.GROOVY_CLASS;
+            case INTERFACE -> GroovyTemplates.GROOVY_INTERFACE;
+            case ANNOTATION -> GroovyTemplates.GROOVY_ANNOTATION;
+            default -> null;
+        };
     }
 }

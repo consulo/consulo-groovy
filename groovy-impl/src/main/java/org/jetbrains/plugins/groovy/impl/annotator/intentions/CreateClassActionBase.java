@@ -20,10 +20,12 @@ import com.intellij.java.impl.codeInsight.intention.impl.CreateClassDialog;
 import com.intellij.java.language.psi.JavaPsiFacade;
 import com.intellij.java.language.psi.PsiModifier;
 import com.intellij.java.language.psi.PsiModifierList;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.application.AccessToken;
-import consulo.application.ApplicationManager;
+import consulo.application.Application;
 import consulo.application.WriteAction;
 import consulo.codeEditor.Editor;
+import consulo.groovy.localize.GroovyLocalize;
 import consulo.language.editor.intention.SyntheticIntentionAction;
 import consulo.language.psi.PsiDirectory;
 import consulo.language.psi.PsiElement;
@@ -31,21 +33,20 @@ import consulo.language.psi.PsiFile;
 import consulo.language.psi.PsiManager;
 import consulo.language.util.IncorrectOperationException;
 import consulo.language.util.ModuleUtilCore;
-import consulo.logging.Logger;
+import consulo.localize.LocalizeValue;
 import consulo.module.Module;
 import consulo.project.Project;
+import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.ex.awt.DialogWrapper;
 import consulo.ui.ex.awt.Messages;
-import org.jetbrains.plugins.groovy.GroovyBundle;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.impl.actions.GroovyTemplatesFactory;
 import org.jetbrains.plugins.groovy.impl.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.impl.intentions.base.PsiElementPredicate;
 import org.jetbrains.plugins.groovy.impl.lang.GrCreateClassKind;
 import org.jetbrains.plugins.groovy.lang.psi.GrReferenceElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
-
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
 
 /**
  * @author ilyas
@@ -54,8 +55,6 @@ public abstract class CreateClassActionBase extends Intention implements Synthet
     private final GrCreateClassKind myType;
 
     protected final GrReferenceElement myRefElement;
-    private static final Logger LOG =
-        Logger.getInstance("#org.jetbrains.plugins.groovy.annotator.intentions.CreateClassActionBase");
 
     public CreateClassActionBase(GrCreateClassKind type, GrReferenceElement refElement) {
         myType = type;
@@ -66,29 +65,25 @@ public abstract class CreateClassActionBase extends Intention implements Synthet
     @Nonnull
     public String getText() {
         String referenceName = myRefElement.getReferenceName();
-        switch (getType()) {
-            case TRAIT:
-                return GroovyBundle.message("create.trait", referenceName);
-            case ENUM:
-                return GroovyBundle.message("create.enum", referenceName);
-            case CLASS:
-                return GroovyBundle.message("create.class.text", referenceName);
-            case INTERFACE:
-                return GroovyBundle.message("create.interface.text", referenceName);
-            case ANNOTATION:
-                return GroovyBundle.message("create.annotation.text", referenceName);
-            default:
-                return "";
-        }
+        LocalizeValue text = switch (getType()) {
+            case TRAIT -> GroovyLocalize.createTrait(referenceName);
+            case ENUM -> GroovyLocalize.createEnum(referenceName);
+            case CLASS -> GroovyLocalize.createClassText(referenceName);
+            case INTERFACE -> GroovyLocalize.createInterfaceText(referenceName);
+            case ANNOTATION -> GroovyLocalize.createAnnotationText(referenceName);
+            default -> LocalizeValue.empty();
+        };
+        return text.get();
     }
 
     @Override
     @Nonnull
     public String getFamilyName() {
-        return GroovyBundle.message("create.class.family.name");
+        return GroovyLocalize.createClassFamilyName().get();
     }
 
     @Override
+    @RequiredReadAction
     public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file) {
         return myRefElement.isValid() && ModuleUtilCore.findModuleForPsiElement(myRefElement) != null;
     }
@@ -104,6 +99,7 @@ public abstract class CreateClassActionBase extends Intention implements Synthet
     }
 
     @Nullable
+    @RequiredReadAction
     public static GrTypeDefinition createClassByType(
         @Nonnull final PsiDirectory directory,
         @Nonnull final String name,
@@ -131,13 +127,13 @@ public abstract class CreateClassActionBase extends Intention implements Synthet
                     }
                 }
                 if (targetClass == null) {
-                    throw new IncorrectOperationException(GroovyBundle.message("no.class.in.file.template"));
+                    throw new IncorrectOperationException(GroovyLocalize.noClassInFileTemplate().get());
                 }
             }
             catch (final IncorrectOperationException e) {
-                ApplicationManager.getApplication().invokeLater(() -> Messages.showErrorDialog(
-                    GroovyBundle.message("cannot.create.class.error.text", name, e.getLocalizedMessage()),
-                    GroovyBundle.message("cannot.create.class.error.title")
+                Application.get().invokeLater(() -> Messages.showErrorDialog(
+                    GroovyLocalize.cannotCreateClassErrorText(name, e.getLocalizedMessage()).get(),
+                    GroovyLocalize.cannotCreateClassErrorTitle().get()
                 ));
                 return null;
             }
@@ -151,8 +147,7 @@ public abstract class CreateClassActionBase extends Intention implements Synthet
             return targetClass;
         }
         catch (IncorrectOperationException e) {
-            LOG.error(e);
-            return null;
+            throw new AssertionError(e.getMessage(), e);
         }
         finally {
             accessToken.finish();
@@ -160,6 +155,7 @@ public abstract class CreateClassActionBase extends Intention implements Synthet
     }
 
     @Nullable
+    @RequiredUIAccess
     protected PsiDirectory getTargetDirectory(
         @Nonnull Project project,
         @Nonnull String qualifier,

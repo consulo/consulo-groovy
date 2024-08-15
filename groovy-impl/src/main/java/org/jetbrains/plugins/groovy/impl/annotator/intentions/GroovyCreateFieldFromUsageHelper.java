@@ -21,6 +21,7 @@ import com.intellij.java.impl.codeInsight.daemon.impl.quickfix.GuessTypeParamete
 import com.intellij.java.language.psi.PsiClass;
 import com.intellij.java.language.psi.PsiField;
 import com.intellij.java.language.psi.PsiSubstitutor;
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.annotation.component.ExtensionImpl;
 import consulo.codeEditor.Editor;
 import consulo.document.util.TextRange;
@@ -33,6 +34,7 @@ import consulo.language.editor.template.TemplateBuilderFactory;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiManager;
 import consulo.project.Project;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.GroovyLanguage;
 import org.jetbrains.plugins.groovy.impl.template.expressions.ChooseTypeExpression;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
@@ -42,14 +44,13 @@ import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeElement;
 import org.jetbrains.plugins.groovy.lang.psi.expectedTypes.TypeConstraint;
 import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GroovyScriptClass;
 
-import jakarta.annotation.Nonnull;
-
 /**
  * @author Max Medvedev
  */
 @ExtensionImpl
 public class GroovyCreateFieldFromUsageHelper implements CreateFieldFromUsageHelper {
     @Override
+    @RequiredWriteAction
     public Template setupTemplateImpl(
         PsiField f,
         Object expectedTypes,
@@ -67,17 +68,17 @@ public class GroovyCreateFieldFromUsageHelper implements CreateFieldFromUsageHel
         Project project = context.getProject();
         GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(project);
 
-        if (expectedTypes instanceof TypeConstraint[]) {
+        if (expectedTypes instanceof TypeConstraint[] expectedTypeConstraints) {
             GrTypeElement typeElement = fieldDecl.getTypeElementGroovy();
             assert typeElement != null;
             ChooseTypeExpression expr =
-                new ChooseTypeExpression((TypeConstraint[])expectedTypes, PsiManager.getInstance(project), typeElement.getResolveScope());
+                new ChooseTypeExpression(expectedTypeConstraints, PsiManager.getInstance(project), typeElement.getResolveScope());
             builder.replaceElement(typeElement, expr);
         }
-        else if (expectedTypes instanceof ExpectedTypeInfo[]) {
+        else if (expectedTypes instanceof ExpectedTypeInfo[] expectedTypeInfos) {
             new GuessTypeParameters(factory).setupTypeElement(
                 field.getTypeElement(),
-                (ExpectedTypeInfo[])expectedTypes,
+                expectedTypeInfos,
                 substitutor,
                 builder,
                 context,

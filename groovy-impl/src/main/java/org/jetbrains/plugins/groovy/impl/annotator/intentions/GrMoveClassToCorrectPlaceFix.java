@@ -16,15 +16,15 @@
 package org.jetbrains.plugins.groovy.impl.annotator.intentions;
 
 import consulo.codeEditor.Editor;
+import consulo.groovy.localize.GroovyLocalize;
 import consulo.language.editor.intention.IntentionAction;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiFile;
 import consulo.language.psi.util.PsiTreeUtil;
 import consulo.language.util.IncorrectOperationException;
-import consulo.logging.Logger;
 import consulo.project.Project;
+import consulo.ui.annotation.RequiredUIAccess;
 import jakarta.annotation.Nonnull;
-import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
 
@@ -32,24 +32,22 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefini
  * @author Max Medvedev
  */
 public class GrMoveClassToCorrectPlaceFix implements IntentionAction {
-    private static final Logger LOG = Logger.getInstance(GrMoveClassToCorrectPlaceFix.class);
-
     private final GrTypeDefinition myClass;
 
     public GrMoveClassToCorrectPlaceFix(GrTypeDefinition clazz) {
         myClass = clazz;
-        LOG.assertTrue(!myClass.isAnonymous());
+        assert !myClass.isAnonymous();
     }
 
     @Nonnull
     @Override
     public String getText() {
-        return GroovyBundle.message("move.class.0.from.method", myClass.getName());
+        return GroovyLocalize.moveClass0FromMethod(myClass.getName()).get();
     }
 
     @Nonnull
     public String getFamilyName() {
-        return GroovyBundle.message("move.class.from.method.family.name");
+        return GroovyLocalize.moveClassFromMethodFamilyName().get();
     }
 
     @Override
@@ -58,6 +56,7 @@ public class GrMoveClassToCorrectPlaceFix implements IntentionAction {
     }
 
     @Override
+    @RequiredUIAccess
     public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
         final GrTypeDefinition containingClass = PsiTreeUtil.getParentOfType(myClass, GrTypeDefinition.class);
         if (containingClass != null) {

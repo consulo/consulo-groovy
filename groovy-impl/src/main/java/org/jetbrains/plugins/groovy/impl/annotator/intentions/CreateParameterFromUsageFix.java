@@ -21,30 +21,29 @@ import com.intellij.java.impl.refactoring.changeSignature.ParameterInfoImpl;
 import com.intellij.java.language.psi.PsiMethod;
 import com.intellij.java.language.psi.PsiType;
 import com.intellij.java.language.psi.util.PsiTypesUtil;
-import consulo.application.ApplicationManager;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.codeEditor.Editor;
 import consulo.codeEditor.EditorPopupHelper;
-import consulo.language.editor.refactoring.RefactoringBundle;
+import consulo.groovy.localize.GroovyLocalize;
+import consulo.language.editor.refactoring.localize.RefactoringLocalize;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.util.PsiTreeUtil;
 import consulo.language.util.IncorrectOperationException;
 import consulo.project.Project;
 import consulo.ui.ex.popup.JBPopup;
-import org.jetbrains.plugins.groovy.GroovyBundle;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.impl.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.impl.intentions.base.PsiElementPredicate;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
-import org.jetbrains.plugins.groovy.lang.psi.expectedTypes.GroovyExpectedTypesProvider;
-import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil;
 import org.jetbrains.plugins.groovy.impl.refactoring.changeSignature.GrChangeSignatureDialog;
 import org.jetbrains.plugins.groovy.impl.refactoring.changeSignature.GrMethodDescriptor;
 import org.jetbrains.plugins.groovy.impl.refactoring.changeSignature.GrParameterInfo;
 import org.jetbrains.plugins.groovy.impl.refactoring.convertToJava.GroovyToJavaGenerator;
 import org.jetbrains.plugins.groovy.impl.refactoring.ui.MethodOrClosureScopeChooser;
-
-import jakarta.annotation.Nonnull;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
+import org.jetbrains.plugins.groovy.lang.psi.expectedTypes.GroovyExpectedTypesProvider;
+import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -64,13 +63,13 @@ public class CreateParameterFromUsageFix extends Intention implements MethodOrCl
     @Nonnull
     @Override
     public String getText() {
-        return GroovyBundle.message("create.parameter.from.usage", myName);
+        return GroovyLocalize.createParameterFromUsage(myName).get();
     }
 
     @Nonnull
     @Override
     public String getFamilyName() {
-        return GroovyBundle.message("create.from.usage.family.name");
+        return GroovyLocalize.createFromUsageFamilyName().get();
     }
 
     @Override
@@ -79,6 +78,7 @@ public class CreateParameterFromUsageFix extends Intention implements MethodOrCl
     }
 
     @Override
+    @RequiredReadAction
     protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
         if (element instanceof GrReferenceExpression referenceExpression) {
             findScope(referenceExpression, editor, project);
@@ -96,11 +96,8 @@ public class CreateParameterFromUsageFix extends Intention implements MethodOrCl
         return element -> element instanceof GrReferenceExpression;
     }
 
-    private void findScope(
-        @Nonnull final GrReferenceExpression ref,
-        @Nonnull final Editor editor,
-        final Project project
-    ) {
+    @RequiredReadAction
+    private void findScope(@Nonnull final GrReferenceExpression ref, @Nonnull final Editor editor, final Project project) {
         PsiElement place = ref;
         final List<GrMethod> scopes = new ArrayList<>();
         while (true) {
@@ -115,7 +112,7 @@ public class CreateParameterFromUsageFix extends Intention implements MethodOrCl
         if (scopes.size() == 1) {
             final GrMethod owner = scopes.get(0);
             final PsiMethod toSearchFor;
-            toSearchFor = SuperMethodWarningUtil.checkSuperMethod(owner, RefactoringBundle.message("to.refactor"));
+            toSearchFor = SuperMethodWarningUtil.checkSuperMethod(owner, RefactoringLocalize.toRefactor().get());
             if (toSearchFor == null) {
                 return; //if it is null, refactoring was canceled
             }
@@ -136,7 +133,7 @@ public class CreateParameterFromUsageFix extends Intention implements MethodOrCl
     }
 
     private static void showDialog(final PsiMethod method, final GrReferenceExpression ref, final Project project) {
-        ApplicationManager.getApplication().invokeLater(() -> {
+        project.getApplication().invokeLater(() -> {
             if (project.isDisposed()) {
                 return;
             }

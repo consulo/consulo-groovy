@@ -16,15 +16,15 @@
 package org.jetbrains.plugins.groovy.impl.annotator.intentions;
 
 import consulo.codeEditor.Editor;
+import consulo.groovy.localize.GroovyLocalize;
 import consulo.language.editor.intention.IntentionAction;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiFile;
 import consulo.language.psi.util.PsiTreeUtil;
 import consulo.language.util.IncorrectOperationException;
-import consulo.logging.Logger;
 import consulo.project.Project;
+import consulo.ui.annotation.RequiredUIAccess;
 import jakarta.annotation.Nonnull;
-import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrApplicationStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrCommandArgumentList;
@@ -34,21 +34,20 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpres
  * @author Max Medvedev
  */
 public class AddParenthesesFix implements IntentionAction {
-    private static final Logger LOG = Logger.getInstance(AddParenthesesFix.class);
-
     @Nonnull
     @Override
     public String getText() {
-        return GroovyBundle.message("add.parentheses");
+        return GroovyLocalize.addParentheses().get();
     }
 
     @Nonnull
     //@Override
     public String getFamilyName() {
-        return GroovyBundle.message("add.parentheses.to.command.method.call");
+        return GroovyLocalize.addParenthesesToCommandMethodCall().get();
     }
 
     @Override
+    @RequiredUIAccess
     public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file) {
         final int offset = editor.getCaretModel().getOffset();
         final PsiElement at = file.findElementAt(offset);
@@ -57,6 +56,7 @@ public class AddParenthesesFix implements IntentionAction {
     }
 
     @Override
+    @RequiredUIAccess
     public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
         final int offset = editor.getCaretModel().getOffset();
         final PsiElement at = file.findElementAt(offset);
@@ -66,7 +66,7 @@ public class AddParenthesesFix implements IntentionAction {
         }
 
         final PsiElement parent = argList.getParent();
-        LOG.assertTrue(parent instanceof GrApplicationStatement);
+        assert parent instanceof GrApplicationStatement;
 
         final GrExpression newExpr;
         try {
@@ -75,8 +75,7 @@ public class AddParenthesesFix implements IntentionAction {
             );
         }
         catch (IncorrectOperationException e) {
-            LOG.error(e);
-            return;
+            throw new AssertionError(e.getMessage(), e);
         }
 
         parent.replace(newExpr);

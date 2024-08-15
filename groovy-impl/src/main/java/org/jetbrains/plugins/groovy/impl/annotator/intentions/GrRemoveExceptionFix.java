@@ -22,13 +22,13 @@ import consulo.language.psi.PsiFile;
 import consulo.language.psi.util.PsiTreeUtil;
 import consulo.language.util.IncorrectOperationException;
 import consulo.project.Project;
+import consulo.ui.annotation.RequiredUIAccess;
 import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.impl.intentions.GroovyIntentionsBundle;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrCatchClause;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrDisjunctionTypeElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeElement;
-
-import jakarta.annotation.Nullable;
 
 /**
  * @author Max Medvedev
@@ -60,11 +60,13 @@ public class GrRemoveExceptionFix implements IntentionAction {
     }
 
     @Override
+    @RequiredUIAccess
     public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file) {
         return myDisjunction && findTypeElementInDisjunction(editor, file) != null || !myDisjunction && findCatch(editor, file) != null;
     }
 
     @Nullable
+    @RequiredUIAccess
     private static GrTypeElement findTypeElementInDisjunction(Editor editor, PsiFile file) {
         final int offset = editor.getCaretModel().getOffset();
         final PsiElement at = file.findElementAt(offset);
@@ -81,6 +83,7 @@ public class GrRemoveExceptionFix implements IntentionAction {
     }
 
     @Nullable
+    @RequiredUIAccess
     private static GrCatchClause findCatch(Editor editor, PsiFile file) {
         final int offset = editor.getCaretModel().getOffset();
         final PsiElement at = file.findElementAt(offset);
@@ -88,6 +91,7 @@ public class GrRemoveExceptionFix implements IntentionAction {
     }
 
     @Override
+    @RequiredUIAccess
     public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
         if (myDisjunction) {
             final GrTypeElement element = findTypeElementInDisjunction(editor, file);

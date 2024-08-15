@@ -16,7 +16,9 @@
 package org.jetbrains.plugins.groovy.impl.annotator.intentions;
 
 import com.intellij.java.language.psi.PsiType;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.language.editor.intention.LowPriorityAction;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
 import org.jetbrains.plugins.groovy.lang.psi.dataFlow.types.TypeInferenceHelper;
 import org.jetbrains.plugins.groovy.lang.psi.expectedTypes.SubtypeConstraint;
@@ -24,8 +26,6 @@ import org.jetbrains.plugins.groovy.lang.psi.expectedTypes.TypeConstraint;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyPropertyUtils;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
-
-import jakarta.annotation.Nonnull;
 
 /**
  * @author Max Medvedev
@@ -37,11 +37,13 @@ public class CreateSetterFromUsageFix extends CreateMethodFromUsageFix implement
 
     @Nonnull
     @Override
+    @RequiredReadAction
     protected TypeConstraint[] getReturnTypeConstraints() {
         return new TypeConstraint[]{SubtypeConstraint.create(PsiType.VOID)};
     }
 
     @Override
+    @RequiredReadAction
     protected PsiType[] getArgumentTypes() {
         final GrReferenceExpression ref = getRefExpr();
         assert PsiUtil.isLValue(ref);
@@ -54,6 +56,7 @@ public class CreateSetterFromUsageFix extends CreateMethodFromUsageFix implement
 
     @Nonnull
     @Override
+    @RequiredReadAction
     protected String getMethodName() {
         return GroovyPropertyUtils.getSetterName(getRefExpr().getReferenceName());
     }

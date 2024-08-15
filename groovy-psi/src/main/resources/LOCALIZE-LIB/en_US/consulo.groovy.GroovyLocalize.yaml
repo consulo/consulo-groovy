@@ -514,7 +514,9 @@ exception.0.has.already.been.caught:
 unnecessary.type:
   text: Unnecessary exception ''{0}''. ''{1}'' is already declared
 create.enum:
-  text: Create Enum {0}
+  text: Create Enum ''{0}''
+create.trait:
+  text: Create trait ''{0}''
 create.inner.class:
   text: Create Inner Class {0}
 annotation.field.can.only.be.used.within.a.script.body:

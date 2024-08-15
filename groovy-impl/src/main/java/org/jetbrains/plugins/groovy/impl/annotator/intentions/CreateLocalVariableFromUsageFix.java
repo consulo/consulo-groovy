@@ -17,9 +17,11 @@ package org.jetbrains.plugins.groovy.impl.annotator.intentions;
 
 import com.intellij.java.language.psi.JavaPsiFacade;
 import com.intellij.java.language.psi.PsiClassType;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.codeEditor.Editor;
 import consulo.document.util.TextRange;
 import consulo.fileEditor.FileEditorManager;
+import consulo.groovy.localize.GroovyLocalize;
 import consulo.ide.impl.idea.codeInsight.CodeInsightUtilBase;
 import consulo.language.editor.intention.IntentionAction;
 import consulo.language.editor.template.Template;
@@ -34,9 +36,11 @@ import consulo.language.util.IncorrectOperationException;
 import consulo.navigation.OpenFileDescriptor;
 import consulo.navigation.OpenFileDescriptorFactory;
 import consulo.project.Project;
+import consulo.ui.annotation.RequiredUIAccess;
 import consulo.util.collection.ArrayUtil;
 import consulo.virtualFileSystem.VirtualFile;
-import org.jetbrains.plugins.groovy.GroovyBundle;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.impl.template.expressions.ChooseTypeExpression;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
@@ -46,9 +50,6 @@ import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.util.GrVariableDeclarationOwner;
 import org.jetbrains.plugins.groovy.lang.psi.expectedTypes.GroovyExpectedTypesProvider;
 import org.jetbrains.plugins.groovy.lang.psi.expectedTypes.TypeConstraint;
-
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
 
 /**
  * @author ven
@@ -63,20 +64,23 @@ public class CreateLocalVariableFromUsageFix implements IntentionAction {
     }
 
     @Nonnull
+    @Override
     public String getText() {
-        return GroovyBundle.message("create.variable.from.usage", myRefExpression.getReferenceName());
+        return GroovyLocalize.createVariableFromUsage(myRefExpression.getReferenceName()).get();
     }
 
     @Nonnull
     public String getFamilyName() {
-        return GroovyBundle.message("create.from.usage.family.name");
+        return GroovyLocalize.createFromUsageFamilyName().get();
     }
 
+    @Override
     public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file) {
         return myOwner.isValid() && myRefExpression.isValid();
     }
 
     @Nullable
+    @RequiredUIAccess
     protected static Editor positionCursor(Project project, PsiFile targetFile, PsiElement element) {
         TextRange range = element.getTextRange();
         int textOffset = range.getStartOffset();
@@ -87,6 +91,8 @@ public class CreateLocalVariableFromUsageFix implements IntentionAction {
         return FileEditorManager.getInstance(project).openTextEditor(descriptor, true);
     }
 
+    @Override
+    @RequiredUIAccess
     public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
         PsiClassType type = JavaPsiFacade.getInstance(project).getElementFactory()
             .createTypeByFQClassName("Object", GlobalSearchScope.allScope(project));
@@ -123,6 +129,7 @@ public class CreateLocalVariableFromUsageFix implements IntentionAction {
     }
 
     @Nullable
+    @RequiredReadAction
     private GrStatement findAnchor(PsiFile file, int offset) {
         PsiElement element = file.findElementAt(offset);
         if (element == null && offset > 0) {
@@ -137,6 +144,7 @@ public class CreateLocalVariableFromUsageFix implements IntentionAction {
         return null;
     }
 
+    @Override
     public boolean startInWriteAction() {
         return true;
     }
