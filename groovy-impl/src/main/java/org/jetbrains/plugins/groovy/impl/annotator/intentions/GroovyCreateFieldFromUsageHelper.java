@@ -21,6 +21,7 @@ import com.intellij.java.impl.codeInsight.daemon.impl.quickfix.GuessTypeParamete
 import com.intellij.java.language.psi.PsiClass;
 import com.intellij.java.language.psi.PsiField;
 import com.intellij.java.language.psi.PsiSubstitutor;
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.annotation.component.ExtensionImpl;
 import consulo.codeEditor.Editor;
 import consulo.document.util.TextRange;
@@ -33,6 +34,7 @@ import consulo.language.editor.template.TemplateBuilderFactory;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiManager;
 import consulo.project.Project;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.GroovyLanguage;
 import org.jetbrains.plugins.groovy.impl.template.expressions.ChooseTypeExpression;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
@@ -42,71 +44,78 @@ import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeElement;
 import org.jetbrains.plugins.groovy.lang.psi.expectedTypes.TypeConstraint;
 import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GroovyScriptClass;
 
-import jakarta.annotation.Nonnull;
-
 /**
  * @author Max Medvedev
  */
 @ExtensionImpl
 public class GroovyCreateFieldFromUsageHelper implements CreateFieldFromUsageHelper {
-  @Override
-  public Template setupTemplateImpl(PsiField f,
-                                    Object expectedTypes,
-                                    PsiClass targetClass,
-                                    Editor editor,
-                                    PsiElement context,
-                                    boolean createConstantField,
-                                    PsiSubstitutor substitutor) {
-    GrVariableDeclaration fieldDecl = (GrVariableDeclaration)f.getParent();
-    GrField field = (GrField)fieldDecl.getVariables()[0];
+    @Override
+    @RequiredWriteAction
+    public Template setupTemplateImpl(
+        PsiField f,
+        Object expectedTypes,
+        PsiClass targetClass,
+        Editor editor,
+        PsiElement context,
+        boolean createConstantField,
+        PsiSubstitutor substitutor
+    ) {
+        GrVariableDeclaration fieldDecl = (GrVariableDeclaration)f.getParent();
+        GrField field = (GrField)fieldDecl.getVariables()[0];
 
-    TemplateBuilder builder = TemplateBuilderFactory.getInstance().createTemplateBuilder(fieldDecl);
+        TemplateBuilder builder = TemplateBuilderFactory.getInstance().createTemplateBuilder(fieldDecl);
 
-    Project project = context.getProject();
-    GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(project);
+        Project project = context.getProject();
+        GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(project);
 
-    if (expectedTypes instanceof TypeConstraint[]) {
-      GrTypeElement typeElement = fieldDecl.getTypeElementGroovy();
-      assert typeElement != null;
-      ChooseTypeExpression expr = new ChooseTypeExpression((TypeConstraint[])expectedTypes, PsiManager.getInstance(project),
-                                                           typeElement.getResolveScope());
-      builder.replaceElement(typeElement, expr);
+        if (expectedTypes instanceof TypeConstraint[] expectedTypeConstraints) {
+            GrTypeElement typeElement = fieldDecl.getTypeElementGroovy();
+            assert typeElement != null;
+            ChooseTypeExpression expr =
+                new ChooseTypeExpression(expectedTypeConstraints, PsiManager.getInstance(project), typeElement.getResolveScope());
+            builder.replaceElement(typeElement, expr);
+        }
+        else if (expectedTypes instanceof ExpectedTypeInfo[] expectedTypeInfos) {
+            new GuessTypeParameters(factory).setupTypeElement(
+                field.getTypeElement(),
+                expectedTypeInfos,
+                substitutor,
+                builder,
+                context,
+                targetClass
+            );
+        }
+        if (createConstantField) {
+            field.setInitializerGroovy(factory.createExpressionFromText("0", null));
+            builder.replaceElement(field.getInitializerGroovy(), new EmptyExpression());
+        }
+
+        fieldDecl = CodeInsightUtilBase.forcePsiPostprocessAndRestoreElement(fieldDecl);
+        Template template = builder.buildTemplate();
+
+        TextRange range = fieldDecl.getTextRange();
+        editor.getDocument().deleteString(range.getStartOffset(), range.getEndOffset());
+
+        if (expectedTypes instanceof ExpectedTypeInfo[] expectedTypeInfos && expectedTypeInfos.length > 1) {
+            template.setToShortenLongNames(false);
+        }
+        return template;
     }
-    else if (expectedTypes instanceof ExpectedTypeInfo[]) {
-      new GuessTypeParameters(factory).setupTypeElement(field.getTypeElement(), (ExpectedTypeInfo[])expectedTypes, substitutor, builder,
-                                                        context, targetClass);
-    }
-    if (createConstantField) {
-      field.setInitializerGroovy(factory.createExpressionFromText("0", null));
-      builder.replaceElement(field.getInitializerGroovy(), new EmptyExpression());
+
+    @Override
+    public PsiField insertFieldImpl(@Nonnull PsiClass targetClass, @Nonnull PsiField field, @Nonnull PsiElement place) {
+        if (targetClass instanceof GroovyScriptClass) {
+            PsiElement added = targetClass.getContainingFile().add(field.getParent());
+            return (PsiField)((GrVariableDeclaration)added).getVariables()[0];
+        }
+        else {
+            return (PsiField)targetClass.add(field);
+        }
     }
 
-    fieldDecl = CodeInsightUtilBase.forcePsiPostprocessAndRestoreElement(fieldDecl);
-    Template template = builder.buildTemplate();
-
-    TextRange range = fieldDecl.getTextRange();
-    editor.getDocument().deleteString(range.getStartOffset(), range.getEndOffset());
-
-    if (expectedTypes instanceof ExpectedTypeInfo[]) {
-      if (((ExpectedTypeInfo[])expectedTypes).length > 1) template.setToShortenLongNames(false);
+    @Nonnull
+    @Override
+    public Language getLanguage() {
+        return GroovyLanguage.INSTANCE;
     }
-    return template;
-  }
-
-  @Override
-  public PsiField insertFieldImpl(@Nonnull PsiClass targetClass, @Nonnull PsiField field, @Nonnull PsiElement place) {
-    if (targetClass instanceof GroovyScriptClass) {
-      PsiElement added = targetClass.getContainingFile().add(field.getParent());
-      return (PsiField)((GrVariableDeclaration)added).getVariables()[0];
-    }
-    else {
-      return (PsiField)targetClass.add(field);
-    }
-  }
-
-  @Nonnull
-  @Override
-  public Language getLanguage() {
-    return GroovyLanguage.INSTANCE;
-  }
 }

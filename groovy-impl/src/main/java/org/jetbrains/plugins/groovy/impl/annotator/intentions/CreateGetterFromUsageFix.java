@@ -17,35 +17,38 @@ package org.jetbrains.plugins.groovy.impl.annotator.intentions;
 
 import com.intellij.java.language.psi.PsiClass;
 import com.intellij.java.language.psi.PsiType;
+import consulo.annotation.access.RequiredReadAction;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
 import org.jetbrains.plugins.groovy.lang.psi.expectedTypes.GroovyExpectedTypesProvider;
 import org.jetbrains.plugins.groovy.lang.psi.expectedTypes.TypeConstraint;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyPropertyUtils;
 
-import jakarta.annotation.Nonnull;
-
 /**
  * @author Max Medvedev
  */
 public class CreateGetterFromUsageFix extends CreateMethodFromUsageFix {
-  public CreateGetterFromUsageFix(@Nonnull GrReferenceExpression refExpression, @Nonnull PsiClass targetClass) {
-    super(refExpression);
-  }
+    public CreateGetterFromUsageFix(@Nonnull GrReferenceExpression refExpression, @Nonnull PsiClass targetClass) {
+        super(refExpression);
+    }
 
-  @Nonnull
-  @Override
-  protected TypeConstraint[] getReturnTypeConstraints() {
-    return GroovyExpectedTypesProvider.calculateTypeConstraints(getRefExpr());
-  }
+    @Nonnull
+    @Override
+    @RequiredReadAction
+    protected TypeConstraint[] getReturnTypeConstraints() {
+        return GroovyExpectedTypesProvider.calculateTypeConstraints(getRefExpr());
+    }
 
-  @Override
-  protected PsiType[] getArgumentTypes() {
-    return PsiType.EMPTY_ARRAY;
-  }
+    @Override
+    @RequiredReadAction
+    protected PsiType[] getArgumentTypes() {
+        return PsiType.EMPTY_ARRAY;
+    }
 
-  @Nonnull
-  @Override
-  protected String getMethodName() {
-    return GroovyPropertyUtils.getGetterNameNonBoolean(getRefExpr().getReferenceName());
-  }
+    @Nonnull
+    @Override
+    @RequiredReadAction
+    protected String getMethodName() {
+        return GroovyPropertyUtils.getGetterNameNonBoolean(getRefExpr().getReferenceName());
+    }
 }

@@ -16,7 +16,9 @@
 package org.jetbrains.plugins.groovy.impl.annotator.intentions;
 
 import com.intellij.java.language.psi.PsiType;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.language.editor.intention.LowPriorityAction;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
 import org.jetbrains.plugins.groovy.lang.psi.dataFlow.types.TypeInferenceHelper;
 import org.jetbrains.plugins.groovy.lang.psi.expectedTypes.SubtypeConstraint;
@@ -25,42 +27,37 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUt
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyPropertyUtils;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 
-import jakarta.annotation.Nonnull;
-
 /**
  * @author Max Medvedev
  */
-public class CreateSetterFromUsageFix extends CreateMethodFromUsageFix implements LowPriorityAction
-{
-	public CreateSetterFromUsageFix(@Nonnull GrReferenceExpression refExpression)
-	{
-		super(refExpression);
-	}
+public class CreateSetterFromUsageFix extends CreateMethodFromUsageFix implements LowPriorityAction {
+    public CreateSetterFromUsageFix(@Nonnull GrReferenceExpression refExpression) {
+        super(refExpression);
+    }
 
-	@Nonnull
-	@Override
-	protected TypeConstraint[] getReturnTypeConstraints()
-	{
-		return new TypeConstraint[]{SubtypeConstraint.create(PsiType.VOID)};
-	}
+    @Nonnull
+    @Override
+    @RequiredReadAction
+    protected TypeConstraint[] getReturnTypeConstraints() {
+        return new TypeConstraint[]{SubtypeConstraint.create(PsiType.VOID)};
+    }
 
-	@Override
-	protected PsiType[] getArgumentTypes()
-	{
-		final GrReferenceExpression ref = getRefExpr();
-		assert PsiUtil.isLValue(ref);
-		PsiType initializer = TypeInferenceHelper.getInitializerTypeFor(ref);
-		if(initializer == null || initializer == PsiType.NULL)
-		{
-			initializer = TypesUtil.getJavaLangObject(ref);
-		}
-		return new PsiType[]{initializer};
-	}
+    @Override
+    @RequiredReadAction
+    protected PsiType[] getArgumentTypes() {
+        final GrReferenceExpression ref = getRefExpr();
+        assert PsiUtil.isLValue(ref);
+        PsiType initializer = TypeInferenceHelper.getInitializerTypeFor(ref);
+        if (initializer == null || initializer == PsiType.NULL) {
+            initializer = TypesUtil.getJavaLangObject(ref);
+        }
+        return new PsiType[]{initializer};
+    }
 
-	@Nonnull
-	@Override
-	protected String getMethodName()
-	{
-		return GroovyPropertyUtils.getSetterName(getRefExpr().getReferenceName());
-	}
+    @Nonnull
+    @Override
+    @RequiredReadAction
+    protected String getMethodName() {
+        return GroovyPropertyUtils.getSetterName(getRefExpr().getReferenceName());
+    }
 }

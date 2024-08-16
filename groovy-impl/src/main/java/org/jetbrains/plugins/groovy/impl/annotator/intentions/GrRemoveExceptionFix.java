@@ -22,88 +22,93 @@ import consulo.language.psi.PsiFile;
 import consulo.language.psi.util.PsiTreeUtil;
 import consulo.language.util.IncorrectOperationException;
 import consulo.project.Project;
+import consulo.ui.annotation.RequiredUIAccess;
 import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.impl.intentions.GroovyIntentionsBundle;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrCatchClause;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrDisjunctionTypeElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeElement;
 
-import jakarta.annotation.Nullable;
-
 /**
  * @author Max Medvedev
  */
 public class GrRemoveExceptionFix implements IntentionAction {
-  private String myText;
-  private final boolean myDisjunction;
+    private String myText;
+    private final boolean myDisjunction;
 
-  public GrRemoveExceptionFix(boolean isDisjunction) {
-    myDisjunction = isDisjunction;
-    if (isDisjunction) {
-      myText = GroovyIntentionsBundle.message("remove.exception");
+    public GrRemoveExceptionFix(boolean isDisjunction) {
+        myDisjunction = isDisjunction;
+        if (isDisjunction) {
+            myText = GroovyIntentionsBundle.message("remove.exception");
+        }
+        else {
+            myText = GroovyIntentionsBundle.message("remove.catch.block");
+        }
     }
-    else {
-      myText = GroovyIntentionsBundle.message("remove.catch.block");
+
+    @Nonnull
+    @Override
+    public String getText() {
+        return myText;
     }
-  }
 
-  @Nonnull
-  @Override
-  public String getText() {
-    return myText;
-  }
-
-  @Nonnull
-  //@Override
-  public String getFamilyName() {
-    return GroovyIntentionsBundle.message("try.catch.fix");
-  }
-
-  @Override
-  public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file) {
-    return myDisjunction && findTypeElementInDisjunction(editor, file) != null || !myDisjunction && findCatch(editor, file) != null;
-  }
-
-  @Nullable
-  private static GrTypeElement findTypeElementInDisjunction(Editor editor, PsiFile file) {
-    final int offset = editor.getCaretModel().getOffset();
-    final PsiElement at = file.findElementAt(offset);
-    final GrDisjunctionTypeElement disjunction = PsiTreeUtil.getParentOfType(at, GrDisjunctionTypeElement.class);
-    if (disjunction == null) return null;
-    for (GrTypeElement element : disjunction.getTypeElements()) {
-      if (element.getTextRange().contains(offset)) {
-        return element;
-      }
+    @Nonnull
+    //@Override
+    public String getFamilyName() {
+        return GroovyIntentionsBundle.message("try.catch.fix");
     }
-    return null;
-  }
 
-  @Nullable
-  private static GrCatchClause findCatch(Editor editor, PsiFile file) {
-    final int offset = editor.getCaretModel().getOffset();
-    final PsiElement at = file.findElementAt(offset);
-    return PsiTreeUtil.getParentOfType(at, GrCatchClause.class);
-  }
-
-
-  @Override
-  public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
-    if (myDisjunction) {
-      final GrTypeElement element = findTypeElementInDisjunction(editor, file);
-      if (element != null) {
-        element.delete();
-      }
+    @Override
+    @RequiredUIAccess
+    public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file) {
+        return myDisjunction && findTypeElementInDisjunction(editor, file) != null || !myDisjunction && findCatch(editor, file) != null;
     }
-    else {
-      final GrCatchClause aCatch = findCatch(editor, file);
-      if (aCatch != null) {
-        aCatch.delete();
-      }
-    }
-  }
 
-  @Override
-  public boolean startInWriteAction() {
-    return true;
-  }
+    @Nullable
+    @RequiredUIAccess
+    private static GrTypeElement findTypeElementInDisjunction(Editor editor, PsiFile file) {
+        final int offset = editor.getCaretModel().getOffset();
+        final PsiElement at = file.findElementAt(offset);
+        final GrDisjunctionTypeElement disjunction = PsiTreeUtil.getParentOfType(at, GrDisjunctionTypeElement.class);
+        if (disjunction == null) {
+            return null;
+        }
+        for (GrTypeElement element : disjunction.getTypeElements()) {
+            if (element.getTextRange().contains(offset)) {
+                return element;
+            }
+        }
+        return null;
+    }
+
+    @Nullable
+    @RequiredUIAccess
+    private static GrCatchClause findCatch(Editor editor, PsiFile file) {
+        final int offset = editor.getCaretModel().getOffset();
+        final PsiElement at = file.findElementAt(offset);
+        return PsiTreeUtil.getParentOfType(at, GrCatchClause.class);
+    }
+
+    @Override
+    @RequiredUIAccess
+    public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
+        if (myDisjunction) {
+            final GrTypeElement element = findTypeElementInDisjunction(editor, file);
+            if (element != null) {
+                element.delete();
+            }
+        }
+        else {
+            final GrCatchClause aCatch = findCatch(editor, file);
+            if (aCatch != null) {
+                aCatch.delete();
+            }
+        }
+    }
+
+    @Override
+    public boolean startInWriteAction() {
+        return true;
+    }
 }

@@ -17,13 +17,17 @@ package org.jetbrains.plugins.groovy.impl.annotator.intentions;
 
 import com.intellij.java.language.psi.PsiClass;
 import com.intellij.java.language.psi.codeStyle.JavaCodeStyleManager;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.codeEditor.Editor;
-import consulo.language.editor.intention.IntentionAction;
+import consulo.groovy.localize.GroovyLocalize;
+import consulo.language.editor.intention.SyntheticIntentionAction;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiFile;
 import consulo.language.util.IncorrectOperationException;
 import consulo.project.Project;
-import org.jetbrains.plugins.groovy.GroovyBundle;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrExtendsClause;
@@ -31,129 +35,130 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrImplements
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
- * User: Dmitry.Krasilschikov
- * Date: 21.09.2007
+ * @author Dmitry.Krasilschikov
+ * @since 2007-09-21
  */
-public class ChangeExtendsImplementsQuickFix implements IntentionAction {
-  @Nullable
-  private final GrExtendsClause myExtendsClause;
-  @Nullable
-  private final GrImplementsClause myImplementsClause;
-  @Nonnull
-  private final GrTypeDefinition myClass;
+public class ChangeExtendsImplementsQuickFix implements SyntheticIntentionAction {
+    @Nullable
+    private final GrExtendsClause myExtendsClause;
+    @Nullable
+    private final GrImplementsClause myImplementsClause;
+    @Nonnull
+    private final GrTypeDefinition myClass;
 
-  public ChangeExtendsImplementsQuickFix(@Nonnull GrTypeDefinition aClass) {
-    myClass = aClass;
-    myExtendsClause = aClass.getExtendsClause();
-    myImplementsClause = aClass.getImplementsClause();
-  }
-
-  @Override
-  @Nonnull
-  public String getText() {
-    return GroovyBundle.message("change.implements.and.extends.classes");
-  }
-
-  @Override
-  public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file) {
-    return myClass.isValid() && myClass.getManager().isInProject(file);
-  }
-
-  @Override
-  public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
-    Set<String> classes = new LinkedHashSet<String>();
-    Set<String> interfaces = new LinkedHashSet<String>();
-    Set<String> unknownClasses = new LinkedHashSet<String>();
-    Set<String> unknownInterfaces = new LinkedHashSet<String>();
-
-    if (myExtendsClause != null) {
-      collectRefs(myExtendsClause.getReferenceElementsGroovy(), classes, interfaces,
-                  myClass.isInterface() ? unknownInterfaces : unknownClasses);
-      myExtendsClause.delete();
+    public ChangeExtendsImplementsQuickFix(@Nonnull GrTypeDefinition aClass) {
+        myClass = aClass;
+        myExtendsClause = aClass.getExtendsClause();
+        myImplementsClause = aClass.getImplementsClause();
     }
 
-    if (myImplementsClause != null) {
-      collectRefs(myImplementsClause.getReferenceElementsGroovy(), classes, interfaces, unknownInterfaces);
-      myImplementsClause.delete();
+    @Override
+    @Nonnull
+    public String getText() {
+        return GroovyLocalize.changeImplementsAndExtendsClasses().get();
     }
 
-    if (myClass.isInterface()) {
-      interfaces.addAll(classes);
-      unknownInterfaces.addAll(unknownClasses);
-      addNewClause(interfaces, unknownInterfaces, project, true);
+    @Override
+    public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file) {
+        return myClass.isValid() && myClass.getManager().isInProject(file);
     }
-    else {
-      addNewClause(classes, unknownClasses, project, true);
-      addNewClause(interfaces, unknownInterfaces, project, false);
-    }
-  }
 
-  private static void collectRefs(GrCodeReferenceElement[] refs,
-                                  Collection<String> classes,
-                                  Collection<String> interfaces,
-                                  Collection<String> unknown) {
-    for (GrCodeReferenceElement ref : refs) {
-      final PsiElement extendsElement = ref.resolve();
-      String canonicalText = ref.getCanonicalText();
+    @Override
+    @RequiredWriteAction
+    public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
+        Set<String> classes = new LinkedHashSet<>();
+        Set<String> interfaces = new LinkedHashSet<>();
+        Set<String> unknownClasses = new LinkedHashSet<>();
+        Set<String> unknownInterfaces = new LinkedHashSet<>();
 
-      if (extendsElement instanceof PsiClass) {
-        if (((PsiClass)extendsElement).isInterface()) {
-          interfaces.add(canonicalText);
+        if (myExtendsClause != null) {
+            Set<String> unknown = myClass.isInterface() ? unknownInterfaces : unknownClasses;
+            collectRefs(myExtendsClause.getReferenceElementsGroovy(), classes, interfaces, unknown);
+            myExtendsClause.delete();
+        }
+
+        if (myImplementsClause != null) {
+            collectRefs(myImplementsClause.getReferenceElementsGroovy(), classes, interfaces, unknownInterfaces);
+            myImplementsClause.delete();
+        }
+
+        if (myClass.isInterface()) {
+            interfaces.addAll(classes);
+            unknownInterfaces.addAll(unknownClasses);
+            addNewClause(interfaces, unknownInterfaces, project, true);
         }
         else {
-          classes.add(canonicalText);
+            addNewClause(classes, unknownClasses, project, true);
+            addNewClause(interfaces, unknownInterfaces, project, false);
         }
-      }
-      else {
-        unknown.add(canonicalText);
-      }
-    }
-  }
-
-  private void addNewClause(Collection<String> elements,
-                            Collection<String> additional,
-                            Project project,
-                            boolean isExtends) throws IncorrectOperationException {
-    if (elements.isEmpty() && additional.isEmpty()) {
-      return;
     }
 
-    StringBuilder classText = new StringBuilder();
-    classText.append("class A ");
-    classText.append(isExtends ? "extends " : "implements ");
+    @RequiredReadAction
+    private static void collectRefs(
+        GrCodeReferenceElement[] refs,
+        Collection<String> classes,
+        Collection<String> interfaces,
+        Collection<String> unknown
+    ) {
+        for (GrCodeReferenceElement ref : refs) {
+            final PsiElement extendsElement = ref.resolve();
+            String canonicalText = ref.getCanonicalText();
 
-    for (String str : elements) {
-      classText.append(str);
-      classText.append(", ");
+            if (extendsElement instanceof PsiClass psiClass) {
+                if (psiClass.isInterface()) {
+                    interfaces.add(canonicalText);
+                }
+                else {
+                    classes.add(canonicalText);
+                }
+            }
+            else {
+                unknown.add(canonicalText);
+            }
+        }
     }
 
-    for (String str : additional) {
-      classText.append(str);
-      classText.append(", ");
+    @RequiredWriteAction
+    private void addNewClause(
+        Collection<String> elements,
+        Collection<String> additional,
+        Project project,
+        boolean isExtends
+    ) throws IncorrectOperationException {
+        if (elements.isEmpty() && additional.isEmpty()) {
+            return;
+        }
+
+        StringBuilder classText = new StringBuilder();
+        classText.append("class A ").append(isExtends ? "extends " : "implements ");
+
+        for (String str : elements) {
+            classText.append(str).append(", ");
+        }
+
+        for (String str : additional) {
+            classText.append(str).append(", ");
+        }
+
+        classText.delete(classText.length() - 2, classText.length());
+
+        classText.append(" {}");
+
+        final GrTypeDefinition definition = GroovyPsiElementFactory.getInstance(project).createTypeDefinition(classText.toString());
+        GroovyPsiElement clause = isExtends ? definition.getExtendsClause() : definition.getImplementsClause();
+        assert clause != null;
+
+        PsiElement addedClause = myClass.addBefore(clause, myClass.getBody());
+        JavaCodeStyleManager.getInstance(project).shortenClassReferences(addedClause);
     }
 
-    classText.delete(classText.length() - 2, classText.length());
-
-    classText.append(" {}");
-
-    final GrTypeDefinition definition = GroovyPsiElementFactory.getInstance(project).createTypeDefinition
-      (classText.toString());
-    GroovyPsiElement clause = isExtends ? definition.getExtendsClause() : definition.getImplementsClause();
-    assert clause != null;
-
-    PsiElement addedClause = myClass.addBefore(clause, myClass.getBody());
-    JavaCodeStyleManager.getInstance(project).shortenClassReferences(addedClause);
-  }
-
-  @Override
-  public boolean startInWriteAction() {
-    return true;
-  }
+    @Override
+    public boolean startInWriteAction() {
+        return true;
+    }
 }

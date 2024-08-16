@@ -16,12 +16,14 @@
 package org.jetbrains.plugins.groovy.impl.annotator.intentions;
 
 import com.intellij.java.language.psi.PsiType;
+import consulo.groovy.localize.GroovyLocalize;
 import consulo.language.editor.inspection.ProblemDescriptor;
 import consulo.language.util.IncorrectOperationException;
 import consulo.project.Project;
+import consulo.ui.annotation.RequiredUIAccess;
 import consulo.util.collection.ArrayUtil;
 import jakarta.annotation.Nonnull;
-import org.jetbrains.plugins.groovy.GroovyBundle;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.impl.codeInspection.GroovyFix;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrArgumentLabel;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrNamedArgument;
@@ -30,49 +32,48 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefini
 import org.jetbrains.plugins.groovy.lang.psi.expectedTypes.SupertypeConstraint;
 import org.jetbrains.plugins.groovy.lang.psi.expectedTypes.TypeConstraint;
 
-import jakarta.annotation.Nullable;
-
 /**
  * @author Maxim.Medvedev
  */
 public class CreateFieldFromConstructorLabelFix extends GroovyFix {
-  private final CreateFieldFix myFix;
-  private final GrNamedArgument myNamedArgument;
+    private final CreateFieldFix myFix;
+    private final GrNamedArgument myNamedArgument;
 
-  public CreateFieldFromConstructorLabelFix(GrTypeDefinition targetClass, GrNamedArgument namedArgument) {
-    myFix = new CreateFieldFix(targetClass);
-    myNamedArgument = namedArgument;
-  }
-
-  @Nullable
-  private String getFieldName() {
-    final GrArgumentLabel label = myNamedArgument.getLabel();
-    assert label != null;
-    return label.getName();
-  }
-
-  private TypeConstraint[] calculateTypeConstrains() {
-    final GrExpression expression = myNamedArgument.getExpression();
-    PsiType type = null;
-    if (expression != null) {
-      type = expression.getType();
+    public CreateFieldFromConstructorLabelFix(GrTypeDefinition targetClass, GrNamedArgument namedArgument) {
+        myFix = new CreateFieldFix(targetClass);
+        myNamedArgument = namedArgument;
     }
-    if (type != null) {
-      return new TypeConstraint[]{SupertypeConstraint.create(type, type)};
-    }
-    else {
-      return TypeConstraint.EMPTY_ARRAY;
-    }
-  }
 
-  @Nonnull
-  @Override
-  public String getName() {
-    return GroovyBundle.message("create.field.from.usage", getFieldName());
-  }
+    @Nullable
+    private String getFieldName() {
+        final GrArgumentLabel label = myNamedArgument.getLabel();
+        assert label != null;
+        return label.getName();
+    }
 
-  @Override
-  protected void doFix(Project project, ProblemDescriptor descriptor) throws IncorrectOperationException {
-    myFix.doFix(project, ArrayUtil.EMPTY_STRING_ARRAY, getFieldName(), calculateTypeConstrains(), myNamedArgument);
-  }
+    private TypeConstraint[] calculateTypeConstrains() {
+        final GrExpression expression = myNamedArgument.getExpression();
+        PsiType type = null;
+        if (expression != null) {
+            type = expression.getType();
+        }
+        if (type != null) {
+            return new TypeConstraint[]{SupertypeConstraint.create(type, type)};
+        }
+        else {
+            return TypeConstraint.EMPTY_ARRAY;
+        }
+    }
+
+    @Nonnull
+    @Override
+    public String getName() {
+        return GroovyLocalize.createFieldFromUsage(getFieldName()).get();
+    }
+
+    @Override
+    @RequiredUIAccess
+    protected void doFix(Project project, ProblemDescriptor descriptor) throws IncorrectOperationException {
+        myFix.doFix(project, ArrayUtil.EMPTY_STRING_ARRAY, getFieldName(), calculateTypeConstrains(), myNamedArgument);
+    }
 }
