@@ -21,7 +21,7 @@ import consulo.annotation.access.RequiredReadAction;
 import consulo.annotation.access.RequiredWriteAction;
 import consulo.codeEditor.Editor;
 import consulo.groovy.localize.GroovyLocalize;
-import consulo.language.editor.intention.IntentionAction;
+import consulo.language.editor.intention.SyntheticIntentionAction;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiFile;
 import consulo.language.util.IncorrectOperationException;
@@ -43,7 +43,7 @@ import java.util.Set;
  * @author Dmitry.Krasilschikov
  * @since 2007-09-21
  */
-public class ChangeExtendsImplementsQuickFix implements IntentionAction {
+public class ChangeExtendsImplementsQuickFix implements SyntheticIntentionAction {
     @Nullable
     private final GrExtendsClause myExtendsClause;
     @Nullable

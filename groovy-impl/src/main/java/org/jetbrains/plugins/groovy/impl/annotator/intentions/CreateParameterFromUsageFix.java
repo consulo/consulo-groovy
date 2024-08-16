@@ -25,6 +25,7 @@ import consulo.annotation.access.RequiredReadAction;
 import consulo.codeEditor.Editor;
 import consulo.codeEditor.EditorPopupHelper;
 import consulo.groovy.localize.GroovyLocalize;
+import consulo.language.editor.intention.SyntheticIntentionAction;
 import consulo.language.editor.refactoring.localize.RefactoringLocalize;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.util.PsiTreeUtil;
@@ -52,7 +53,7 @@ import java.util.List;
 /**
  * @author Max Medvedev
  */
-public class CreateParameterFromUsageFix extends Intention implements MethodOrClosureScopeChooser.JBPopupOwner {
+public class CreateParameterFromUsageFix extends Intention implements SyntheticIntentionAction, MethodOrClosureScopeChooser.JBPopupOwner {
     private final String myName;
     private JBPopup myEnclosingMethodsPopup = null;
 

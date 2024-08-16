@@ -31,7 +31,7 @@ import consulo.ide.impl.psi.util.proximity.PsiProximityComparator;
 import consulo.ide.impl.ui.impl.PopupChooserBuilder;
 import consulo.java.analysis.impl.JavaQuickFixBundle;
 import consulo.language.editor.FileModificationService;
-import consulo.language.editor.intention.IntentionAction;
+import consulo.language.editor.intention.SyntheticIntentionAction;
 import consulo.language.psi.PsiFile;
 import consulo.language.psi.SmartPointerManager;
 import consulo.language.psi.SmartPsiElementPointer;
@@ -56,7 +56,7 @@ import java.util.List;
 /**
  * @author Maxim.Medvedev
  */
-public class GroovyStaticImportMethodFix implements IntentionAction {
+public class GroovyStaticImportMethodFix implements SyntheticIntentionAction {
     private final SmartPsiElementPointer<GrMethodCall> myMethodCall;
     private List<PsiMethod> myCandidates = null;
 

@@ -23,7 +23,7 @@ import consulo.document.util.TextRange;
 import consulo.fileEditor.FileEditorManager;
 import consulo.groovy.localize.GroovyLocalize;
 import consulo.ide.impl.idea.codeInsight.CodeInsightUtilBase;
-import consulo.language.editor.intention.IntentionAction;
+import consulo.language.editor.intention.SyntheticIntentionAction;
 import consulo.language.editor.template.Template;
 import consulo.language.editor.template.TemplateBuilder;
 import consulo.language.editor.template.TemplateBuilderFactory;
@@ -54,7 +54,7 @@ import org.jetbrains.plugins.groovy.lang.psi.expectedTypes.TypeConstraint;
 /**
  * @author ven
  */
-public class CreateLocalVariableFromUsageFix implements IntentionAction {
+public class CreateLocalVariableFromUsageFix implements SyntheticIntentionAction {
     private final GrVariableDeclarationOwner myOwner;
     private final GrReferenceExpression myRefExpression;
 

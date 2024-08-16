@@ -17,7 +17,7 @@ package org.jetbrains.plugins.groovy.impl.annotator.intentions;
 
 import consulo.codeEditor.Editor;
 import consulo.groovy.localize.GroovyLocalize;
-import consulo.language.editor.intention.IntentionAction;
+import consulo.language.editor.intention.SyntheticIntentionAction;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiFile;
 import consulo.language.psi.util.PsiTreeUtil;
@@ -31,7 +31,7 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefini
 /**
  * @author Max Medvedev
  */
-public class GrMoveClassToCorrectPlaceFix implements IntentionAction {
+public class GrMoveClassToCorrectPlaceFix implements SyntheticIntentionAction {
     private final GrTypeDefinition myClass;
 
     public GrMoveClassToCorrectPlaceFix(GrTypeDefinition clazz) {

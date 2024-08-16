@@ -16,7 +16,7 @@
 package org.jetbrains.plugins.groovy.impl.annotator.intentions;
 
 import consulo.codeEditor.Editor;
-import consulo.language.editor.intention.IntentionAction;
+import consulo.language.editor.intention.SyntheticIntentionAction;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiFile;
 import consulo.language.psi.util.PsiTreeUtil;
@@ -33,7 +33,7 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.clauses.GrForInClaus
 /**
  * @author Max Medvedev
  */
-public class ReplaceDelimiterFix implements IntentionAction {
+public class ReplaceDelimiterFix implements SyntheticIntentionAction {
     @Nonnull
     @Override
     public String getText() {
