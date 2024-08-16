@@ -24,47 +24,49 @@ import org.jetbrains.plugins.groovy.dsl.GroovyClassDescriptor;
 import org.jetbrains.plugins.groovy.util.LightCacheKey;
 
 import jakarta.annotation.Nonnull;
+
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
 public class ClassUtil {
-  private static final LightCacheKey<Map<String, PsiClass>> PARENT_CACHE_KEY = LightCacheKey.create();
+    private static final LightCacheKey<Map<String, PsiClass>> PARENT_CACHE_KEY = LightCacheKey.create();
 
-  public static Map<String, PsiClass> getSuperClassesWithCache(@Nonnull PsiClass aClass) {
-    Map<String, PsiClass> superClassNames = PARENT_CACHE_KEY.getCachedValue(aClass);
-    if (superClassNames == null) {
-      Set<PsiClass> superClasses = new HashSet<PsiClass>();
-      superClasses.add(aClass);
-      InheritanceUtil.getSuperClasses(aClass, superClasses, true);
+    public static Map<String, PsiClass> getSuperClassesWithCache(@Nonnull PsiClass aClass) {
+        Map<String, PsiClass> superClassNames = PARENT_CACHE_KEY.getCachedValue(aClass);
+        if (superClassNames == null) {
+            Set<PsiClass> superClasses = new HashSet<>();
+            superClasses.add(aClass);
+            InheritanceUtil.getSuperClasses(aClass, superClasses, true);
 
-      superClassNames = new LinkedHashMap<String, PsiClass>();
-      for (PsiClass superClass : superClasses) {
-        superClassNames.put(superClass.getQualifiedName(), superClass);
-      }
+            superClassNames = new LinkedHashMap<>();
+            for (PsiClass superClass : superClasses) {
+                superClassNames.put(superClass.getQualifiedName(), superClass);
+            }
 
-      superClassNames = PARENT_CACHE_KEY.putCachedValue(aClass, superClassNames);
+            superClassNames = PARENT_CACHE_KEY.putCachedValue(aClass, superClassNames);
+        }
+
+        return superClassNames;
     }
 
-    return superClassNames;
-  }
+    @Nonnull
+    public static PsiType findPsiType(GroovyClassDescriptor descriptor, ProcessingContext ctx) {
+        String typeText = descriptor.getTypeText();
+        final String key = getClassKey(typeText);
+        final Object cached = ctx.get(key);
+        if (cached instanceof PsiType) {
+            return (PsiType)cached;
+        }
 
-  @Nonnull
-  public static PsiType findPsiType(GroovyClassDescriptor descriptor, ProcessingContext ctx) {
-    String typeText = descriptor.getTypeText();
-    final String key = getClassKey(typeText);
-    final Object cached = ctx.get(key);
-    if (cached instanceof PsiType) {
-      return (PsiType)cached;
+        final PsiType found =
+            JavaPsiFacade.getElementFactory(descriptor.getProject()).createTypeFromText(typeText, descriptor.getPlaceFile());
+        ctx.put(key, found);
+        return found;
     }
 
-    final PsiType found = JavaPsiFacade.getElementFactory(descriptor.getProject()).createTypeFromText(typeText, descriptor.getPlaceFile());
-    ctx.put(key, found);
-    return found;
-  }
-
-  public static String getClassKey(String fqName) {
-    return "Class: " + fqName;
-  }
+    public static String getClassKey(String fqName) {
+        return "Class: " + fqName;
+    }
 }

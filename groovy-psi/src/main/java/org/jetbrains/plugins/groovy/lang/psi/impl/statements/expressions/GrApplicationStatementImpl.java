@@ -28,29 +28,28 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrComman
  * @author ilyas
  */
 public class GrApplicationStatementImpl extends GrMethodCallImpl implements GrApplicationStatement {
-  public GrApplicationStatementImpl(@Nonnull ASTNode node) {
-    super(node);
-  }
+    public GrApplicationStatementImpl(@Nonnull ASTNode node) {
+        super(node);
+    }
 
-  @Override
-  public void accept(GroovyElementVisitor visitor) {
-    visitor.visitApplicationStatement(this);
-  }
+    @Override
+    public void accept(GroovyElementVisitor visitor) {
+        visitor.visitApplicationStatement(this);
+    }
 
-  public String toString() {
-    return "Call expression";
-  }
+    public String toString() {
+        return "Call expression";
+    }
 
-  @Override
-  public GrCommandArgumentList getArgumentList() {
-    return findChildByClass(GrCommandArgumentList.class);
-  }
+    @Override
+    public GrCommandArgumentList getArgumentList() {
+        return findChildByClass(GrCommandArgumentList.class);
+    }
 
-  @Override
-  public GrNamedArgument addNamedArgument(final GrNamedArgument namedArgument) throws IncorrectOperationException
-  {
-    GrCommandArgumentList list = getArgumentList();
-    assert list != null;
-    return list.addNamedArgument(namedArgument);
-  }
+    @Override
+    public GrNamedArgument addNamedArgument(final GrNamedArgument namedArgument) throws IncorrectOperationException {
+        GrCommandArgumentList list = getArgumentList();
+        assert list != null;
+        return list.addNamedArgument(namedArgument);
+    }
 }

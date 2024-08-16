@@ -27,31 +27,27 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpres
  * @author ilyas
  */
 public class GrElvisExprImpl extends GrConditionalExprImpl implements GrElvisExpression {
-
-  public GrElvisExprImpl(@Nonnull ASTNode node) {
-    super(node);
-  }
-
-  public String toString() {
-    return "Elvis expression";
-  }
-
-  @Override
-  public GrExpression getThenBranch() {
-    return getCondition();
-  }
-
-  @Override
-  public GrExpression getElseBranch() {
-    GrExpression[] exprs = findChildrenByClass(GrExpression.class);
-    if (exprs.length > 1) {
-      return exprs[1];
+    public GrElvisExprImpl(@Nonnull ASTNode node) {
+        super(node);
     }
-    return null;
-  }
 
-  @Override
-  public void accept(GroovyElementVisitor visitor) {
-    visitor.visitElvisExpression(this);
-  }
+    public String toString() {
+        return "Elvis expression";
+    }
+
+    @Override
+    public GrExpression getThenBranch() {
+        return getCondition();
+    }
+
+    @Override
+    public GrExpression getElseBranch() {
+        GrExpression[] exprs = findChildrenByClass(GrExpression.class);
+        return exprs.length > 1 ? exprs[1] : null;
+    }
+
+    @Override
+    public void accept(GroovyElementVisitor visitor) {
+        visitor.visitElvisExpression(this);
+    }
 }

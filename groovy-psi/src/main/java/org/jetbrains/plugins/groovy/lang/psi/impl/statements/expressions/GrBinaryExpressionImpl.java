@@ -39,6 +39,7 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.binaryC
 
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
+
 import java.util.List;
 import java.util.function.Function;
 
@@ -46,206 +47,203 @@ import java.util.function.Function;
  * @author ilyas
  */
 public abstract class GrBinaryExpressionImpl extends GrExpressionImpl implements GrBinaryExpression {
+    private static final ResolveCache.PolyVariantResolver<GrBinaryExpressionImpl> RESOLVER = new ResolveCache.PolyVariantResolver<>() {
+        @Nonnull
+        private List<GroovyResolveResult[]> resolveSubExpressions(@Nonnull GrBinaryExpression expression, final boolean incompleteCode) {
+            // to avoid SOE, resolve all binary sub-expressions starting from the innermost
+            final List<GroovyResolveResult[]> subExpressions = new SmartList<>();
+            expression.getLeftOperand().accept(new PsiRecursiveElementWalkingVisitor() {
+                @Override
+                public void visitElement(PsiElement element) {
+                    if (element instanceof GrBinaryExpression) {
+                        super.visitElement(element);
+                    }
+                }
 
-  private static final ResolveCache.PolyVariantResolver<GrBinaryExpressionImpl> RESOLVER = new ResolveCache.PolyVariantResolver<GrBinaryExpressionImpl>() {
-
-    @Nonnull
-    private List<GroovyResolveResult[]> resolveSubExpressions(@Nonnull GrBinaryExpression expression, final boolean incompleteCode) {
-      // to avoid SOE, resolve all binary sub-expressions starting from the innermost
-      final List<GroovyResolveResult[]> subExpressions = new SmartList<GroovyResolveResult[]>();
-      expression.getLeftOperand().accept(new PsiRecursiveElementWalkingVisitor() {
-        @Override
-        public void visitElement(PsiElement element) {
-          if (element instanceof GrBinaryExpression) {
-            super.visitElement(element);
-          }
+                @Override
+                protected void elementFinished(@Nonnull PsiElement element) {
+                    if (element instanceof GrBinaryExpressionImpl binaryExpression) {
+                        subExpressions.add(binaryExpression.multiResolve(incompleteCode));
+                    }
+                }
+            });
+            return subExpressions;
         }
 
+        @Nonnull
         @Override
-        protected void elementFinished(@Nonnull PsiElement element) {
-          if (element instanceof GrBinaryExpressionImpl) {
-            subExpressions.add(((GrBinaryExpressionImpl)element).multiResolve(incompleteCode));
-          }
+        public GroovyResolveResult[] resolve(@Nonnull GrBinaryExpressionImpl binary, boolean incompleteCode) {
+            List<GroovyResolveResult[]> subExpressions = resolveSubExpressions(binary, incompleteCode);
+
+            final IElementType opType = binary.getOperationTokenType();
+
+            final PsiType lType = binary.getLeftType();
+            if (lType == null) {
+                return GroovyResolveResult.EMPTY_ARRAY;
+            }
+
+            PsiType rType = binary.getRightType();
+
+            subExpressions.clear(); // hold resolve results until here to avoid them being gc-ed
+
+            return TypesUtil.getOverloadedOperatorCandidates(lType, opType, binary, new PsiType[]{rType}, incompleteCode);
         }
-      });
-      return subExpressions;
-    }
+    };
 
-    @Nonnull
-    @Override
-    public GroovyResolveResult[] resolve(@Nonnull GrBinaryExpressionImpl binary, boolean incompleteCode) {
-      List<GroovyResolveResult[]> subExpressions = resolveSubExpressions(binary, incompleteCode);
+    private static final Function<GrBinaryExpressionImpl, PsiType> TYPE_CALCULATOR =
+        expression -> GrBinaryExpressionTypeCalculators.getTypeCalculator(expression.getFacade()).apply(expression.getFacade());
 
-      final IElementType opType = binary.getOperationTokenType();
+    private final GrBinaryFacade myFacade = new GrBinaryFacade() {
+        @Nonnull
+        @Override
+        public GrExpression getLeftOperand() {
+            return GrBinaryExpressionImpl.this.getLeftOperand();
+        }
 
-      final PsiType lType = binary.getLeftType();
-      if (lType == null) return GroovyResolveResult.EMPTY_ARRAY;
+        @Nullable
+        @Override
+        public GrExpression getRightOperand() {
+            return GrBinaryExpressionImpl.this.getRightOperand();
+        }
 
-      PsiType rType = binary.getRightType();
+        @Nonnull
+        @Override
+        public IElementType getOperationTokenType() {
+            return GrBinaryExpressionImpl.this.getOperationTokenType();
+        }
 
-      subExpressions.clear(); // hold resolve results until here to avoid them being gc-ed
+        @Nonnull
+        @Override
+        public PsiElement getOperationToken() {
+            return GrBinaryExpressionImpl.this.getOperationToken();
+        }
 
-      return TypesUtil.getOverloadedOperatorCandidates(lType, opType, binary, new PsiType[]{rType}, incompleteCode);
-    }
-  };
+        @Nonnull
+        @Override
+        public GroovyResolveResult[] multiResolve(boolean incompleteCode) {
+            return GrBinaryExpressionImpl.this.multiResolve(incompleteCode);
+        }
 
-  private static final Function<GrBinaryExpressionImpl, PsiType> TYPE_CALCULATOR =
-    expression -> GrBinaryExpressionTypeCalculators.getTypeCalculator(expression.getFacade()).apply(expression.getFacade());
+        @Nonnull
+        @Override
+        public GrExpression getPsiElement() {
+            return GrBinaryExpressionImpl.this;
+        }
+    };
 
-  private final GrBinaryFacade myFacade = new GrBinaryFacade() {
-    @Nonnull
-    @Override
-    public GrExpression getLeftOperand() {
-      return GrBinaryExpressionImpl.this.getLeftOperand();
+    @Nullable
+    protected PsiType getRightType() {
+        final GrExpression rightOperand = getRightOperand();
+        return rightOperand == null ? null : rightOperand.getType();
     }
 
     @Nullable
+    protected PsiType getLeftType() {
+        return getLeftOperand().getType();
+    }
+
+    public GrBinaryExpressionImpl(@Nonnull ASTNode node) {
+        super(node);
+    }
+
     @Override
+    @Nonnull
+    public GrExpression getLeftOperand() {
+        return findNotNullChildByClass(GrExpression.class);
+    }
+
+    @Override
+    @Nullable
     public GrExpression getRightOperand() {
-      return GrBinaryExpressionImpl.this.getRightOperand();
+        return getLastChild() instanceof GrExpression expression ? expression : null;
     }
 
-    @Nonnull
     @Override
+    @Nonnull
     public IElementType getOperationTokenType() {
-      return GrBinaryExpressionImpl.this.getOperationTokenType();
+        final PsiElement child = getOperationToken();
+        final ASTNode node = child.getNode();
+        assert node != null;
+        return node.getElementType();
     }
 
-    @Nonnull
     @Override
+    @Nonnull
     public PsiElement getOperationToken() {
-      return GrBinaryExpressionImpl.this.getOperationToken();
+        return findNotNullChildByType(TokenSets.BINARY_OP_SET);
+    }
+
+    @Override
+    public void accept(GroovyElementVisitor visitor) {
+        visitor.visitBinaryExpression(this);
     }
 
     @Nonnull
     @Override
     public GroovyResolveResult[] multiResolve(boolean incompleteCode) {
-      return GrBinaryExpressionImpl.this.multiResolve(incompleteCode);
+        return TypeInferenceHelper.getCurrentContext().multiResolve(this, incompleteCode, RESOLVER);
+    }
+
+    @Override
+    public PsiType getType() {
+        return TypeInferenceHelper.getCurrentContext().getExpressionType(this, TYPE_CALCULATOR);
+    }
+
+    @Override
+    public PsiElement getElement() {
+        return this;
+    }
+
+    @Override
+    public TextRange getRangeInElement() {
+        final PsiElement token = getOperationToken();
+        final int offset = token.getStartOffsetInParent();
+        return new TextRange(offset, offset + token.getTextLength());
+    }
+
+    @Override
+    public PsiElement resolve() {
+        return PsiImplUtil.extractUniqueElement(multiResolve(false));
     }
 
     @Nonnull
     @Override
-    public GrExpression getPsiElement() {
-      return GrBinaryExpressionImpl.this;
+    public String getCanonicalText() {
+        return getText();
     }
-  };
 
-  @Nullable
-  protected PsiType getRightType() {
-    final GrExpression rightOperand = getRightOperand();
-    return rightOperand == null ? null : rightOperand.getType();
-  }
+    @Override
+    public PsiElement handleElementRename(String newElementName) throws IncorrectOperationException {
+        throw new IncorrectOperationException("binary expression cannot be renamed");
+    }
 
-  @Nullable
-  protected PsiType getLeftType() {
-    return getLeftOperand().getType();
-  }
+    @Override
+    public PsiElement bindToElement(@Nonnull PsiElement element) throws IncorrectOperationException {
+        throw new IncorrectOperationException("binary expression cannot be bound to anything");
+    }
 
-  public GrBinaryExpressionImpl(@Nonnull ASTNode node) {
-    super(node);
-  }
+    @Override
+    public boolean isReferenceTo(PsiElement element) {
+        return getManager().areElementsEquivalent(resolve(), element);
+    }
 
-  @Override
-  @Nonnull
-  public GrExpression getLeftOperand() {
-    return findNotNullChildByClass(GrExpression.class);
-  }
+    @Nonnull
+    @Override
+    public Object[] getVariants() {
+        return ArrayUtil.EMPTY_OBJECT_ARRAY;
+    }
 
-  @Override
-  @Nullable
-  public GrExpression getRightOperand() {
-    final PsiElement last = getLastChild();
-    return last instanceof GrExpression ? (GrExpression)last : null;
-  }
+    @Override
+    public boolean isSoft() {
+        return false;
+    }
 
-  @Override
-  @Nonnull
-  public IElementType getOperationTokenType() {
-    final PsiElement child = getOperationToken();
-    final ASTNode node = child.getNode();
-    assert node != null;
-    return node.getElementType();
-  }
+    @Override
+    public PsiReference getReference() {
+        return this;
+    }
 
-  @Override
-  @Nonnull
-  public PsiElement getOperationToken() {
-    return findNotNullChildByType(TokenSets.BINARY_OP_SET);
-  }
-
-  @Override
-  public void accept(GroovyElementVisitor visitor) {
-    visitor.visitBinaryExpression(this);
-  }
-
-  @Nonnull
-  @Override
-  public GroovyResolveResult[] multiResolve(boolean incompleteCode) {
-    return TypeInferenceHelper.getCurrentContext().multiResolve(this, incompleteCode, RESOLVER);
-  }
-
-  @Override
-  public PsiType getType() {
-    return TypeInferenceHelper.getCurrentContext().getExpressionType(this, TYPE_CALCULATOR);
-  }
-
-  @Override
-  public PsiElement getElement() {
-    return this;
-  }
-
-  @Override
-  public TextRange getRangeInElement() {
-    final PsiElement token = getOperationToken();
-    final int offset = token.getStartOffsetInParent();
-    return new TextRange(offset, offset + token.getTextLength());
-  }
-
-  @Override
-  public PsiElement resolve() {
-    return PsiImplUtil.extractUniqueElement(multiResolve(false));
-  }
-
-  @Nonnull
-  @Override
-  public String getCanonicalText() {
-    return getText();
-  }
-
-  @Override
-  public PsiElement handleElementRename(String newElementName) throws IncorrectOperationException {
-    throw new IncorrectOperationException("binary expression cannot be renamed");
-  }
-
-  @Override
-  public PsiElement bindToElement(@Nonnull PsiElement element) throws IncorrectOperationException
-  {
-    throw new IncorrectOperationException("binary expression cannot be bound to anything");
-  }
-
-  @Override
-  public boolean isReferenceTo(PsiElement element) {
-    return getManager().areElementsEquivalent(resolve(), element);
-  }
-
-  @Nonnull
-  @Override
-  public Object[] getVariants() {
-    return ArrayUtil.EMPTY_OBJECT_ARRAY;
-  }
-
-  @Override
-  public boolean isSoft() {
-    return false;
-  }
-
-  @Override
-  public PsiReference getReference() {
-    return this;
-  }
-
-  private GrBinaryFacade getFacade() {
-    return myFacade;
-  }
-
+    private GrBinaryFacade getFacade() {
+        return myFacade;
+    }
 }

@@ -33,48 +33,49 @@ import consulo.language.ast.ASTNode;
  * @author ven
  */
 public abstract class GrCallImpl extends GroovyPsiElementImpl implements GrCall {
-  public GrCallImpl(@Nonnull ASTNode node) {
-    super(node);
-  }
-
-  @Override
-  public GrArgumentList getArgumentList() {
-    for (PsiElement cur = this.getFirstChild(); cur != null; cur = cur.getNextSibling()) {
-      if (cur instanceof GrArgumentList) return (GrArgumentList)cur;
+    public GrCallImpl(@Nonnull ASTNode node) {
+        super(node);
     }
-    return null;
-  }
 
-  @Override
-  @Nonnull
-  public GrNamedArgument[] getNamedArguments() {
-    GrArgumentList argList = getArgumentList();
-    return argList != null ? argList.getNamedArguments() : GrNamedArgument.EMPTY_ARRAY;
-  }
-
-  @Override
-  @Nonnull
-  public GrExpression[] getExpressionArguments() {
-    GrArgumentList argList = getArgumentList();
-    return argList != null ? argList.getExpressionArguments() : GrExpression.EMPTY_ARRAY;
-  }
-
-  @Override
-  public GrNamedArgument addNamedArgument(final GrNamedArgument namedArgument) throws IncorrectOperationException
-  {
-    GrArgumentList list = getArgumentList();
-    assert list != null;
-    if (list.getText().trim().isEmpty()) {
-      final GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(getProject());
-      final GrArgumentList newList = factory.createExpressionArgumentList();
-      list = (GrArgumentList)list.replace(newList);
+    @Override
+    public GrArgumentList getArgumentList() {
+        for (PsiElement cur = this.getFirstChild(); cur != null; cur = cur.getNextSibling()) {
+            if (cur instanceof GrArgumentList argumentList) {
+                return argumentList;
+            }
+        }
+        return null;
     }
-    return list.addNamedArgument(namedArgument);
-  }
 
-  @Nonnull
-  @Override
-  public GrClosableBlock[] getClosureArguments() {
-    return GrClosableBlock.EMPTY_ARRAY;
-  }
+    @Override
+    @Nonnull
+    public GrNamedArgument[] getNamedArguments() {
+        GrArgumentList argList = getArgumentList();
+        return argList != null ? argList.getNamedArguments() : GrNamedArgument.EMPTY_ARRAY;
+    }
+
+    @Override
+    @Nonnull
+    public GrExpression[] getExpressionArguments() {
+        GrArgumentList argList = getArgumentList();
+        return argList != null ? argList.getExpressionArguments() : GrExpression.EMPTY_ARRAY;
+    }
+
+    @Override
+    public GrNamedArgument addNamedArgument(final GrNamedArgument namedArgument) throws IncorrectOperationException {
+        GrArgumentList list = getArgumentList();
+        assert list != null;
+        if (list.getText().trim().isEmpty()) {
+            final GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(getProject());
+            final GrArgumentList newList = factory.createExpressionArgumentList();
+            list = (GrArgumentList)list.replace(newList);
+        }
+        return list.addNamedArgument(namedArgument);
+    }
+
+    @Nonnull
+    @Override
+    public GrClosableBlock[] getClosureArguments() {
+        return GrClosableBlock.EMPTY_ARRAY;
+    }
 }

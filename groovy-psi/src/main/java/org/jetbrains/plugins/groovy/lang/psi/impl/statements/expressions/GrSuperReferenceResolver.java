@@ -36,53 +36,59 @@ import jakarta.annotation.Nullable;
  * Created by Max Medvedev on 15/06/14
  */
 public class GrSuperReferenceResolver {
-  /**
-   * @return null if ref is not 'super' reference
-   */
-  @Nullable
-  public static GroovyResolveResult[] resolveSuperExpression(@Nonnull GrReferenceExpression ref) {
-    GrExpression qualifier = ref.getQualifier();
+    /**
+     * @return null if ref is not 'super' reference
+     */
+    @Nullable
+    public static GroovyResolveResult[] resolveSuperExpression(@Nonnull GrReferenceExpression ref) {
+        GrExpression qualifier = ref.getQualifier();
 
-    if (qualifier == null) {
-      final PsiElement parent = ref.getParent();
-      if (parent instanceof GrConstructorInvocation) {
-        return ((GrConstructorInvocation)parent).multiResolve(false);
-      }
-      PsiClass aClass = PsiUtil.getContextClass(ref);
-      if (aClass != null) {
-        return getSuperClass(aClass);
-      }
-    }
-    else if (qualifier instanceof GrReferenceExpression) {
-      GroovyResolveResult result = ((GrReferenceExpression)qualifier).advancedResolve();
-      PsiElement resolved = result.getElement();
-      if (resolved instanceof PsiClass) {
-        PsiClass superClass = (PsiClass)resolved;
+        if (qualifier == null) {
+            final PsiElement parent = ref.getParent();
+            if (parent instanceof GrConstructorInvocation) {
+                return ((GrConstructorInvocation)parent).multiResolve(false);
+            }
+            PsiClass aClass = PsiUtil.getContextClass(ref);
+            if (aClass != null) {
+                return getSuperClass(aClass);
+            }
+        }
+        else if (qualifier instanceof GrReferenceExpression qualifierRefExpr) {
+            GroovyResolveResult result = qualifierRefExpr.advancedResolve();
+            PsiElement resolved = result.getElement();
+            if (resolved instanceof PsiClass superClass) {
+                GrTypeDefinition scopeClass = PsiTreeUtil.getParentOfType(ref, GrTypeDefinition.class, true);
+                if (scopeClass != null && GrTraitUtil.isTrait(superClass) && scopeClass.isInheritor(superClass, false)) {
+                    PsiSubstitutor superClassSubstitutor =
+                        TypeConversionUtil.getSuperClassSubstitutor(superClass, scopeClass, PsiSubstitutor.EMPTY);
+                    return new GroovyResolveResultImpl[]{new GroovyResolveResultImpl(
+                        superClass,
+                        null,
+                        null,
+                        superClassSubstitutor,
+                        true,
+                        true
+                    )};
+                }
 
-        GrTypeDefinition scopeClass = PsiTreeUtil.getParentOfType(ref, GrTypeDefinition.class, true);
-        if (scopeClass != null && GrTraitUtil.isTrait(superClass) && scopeClass.isInheritor(superClass, false)) {
-          PsiSubstitutor superClassSubstitutor = TypeConversionUtil.getSuperClassSubstitutor(superClass, scopeClass, PsiSubstitutor.EMPTY);
-          return new GroovyResolveResultImpl[]{new GroovyResolveResultImpl(superClass, null, null, superClassSubstitutor, true, true)};
+                if (PsiUtil.hasEnclosingInstanceInScope(superClass, ref, false)) {
+                    return getSuperClass(superClass);
+                }
+            }
         }
 
-        if (PsiUtil.hasEnclosingInstanceInScope(superClass, ref, false)) {
-          return getSuperClass(superClass);
+        return null;
+    }
+
+    @Nonnull
+    private static GroovyResolveResult[] getSuperClass(@Nonnull PsiClass aClass) {
+        PsiClass superClass = aClass.getSuperClass();
+        if (superClass != null) {
+            PsiSubstitutor superClassSubstitutor = TypeConversionUtil.getSuperClassSubstitutor(superClass, aClass, PsiSubstitutor.EMPTY);
+            return new GroovyResolveResultImpl[]{new GroovyResolveResultImpl(superClass, null, null, superClassSubstitutor, true, true)};
         }
-      }
+        else {
+            return GroovyResolveResult.EMPTY_ARRAY; //no super class, but the reference is definitely super-reference
+        }
     }
-
-    return null;
-  }
-
-  @Nonnull
-  private static GroovyResolveResult[] getSuperClass(@Nonnull PsiClass aClass) {
-    PsiClass superClass = aClass.getSuperClass();
-    if (superClass != null) {
-      PsiSubstitutor superClassSubstitutor = TypeConversionUtil.getSuperClassSubstitutor(superClass, aClass, PsiSubstitutor.EMPTY);
-      return new GroovyResolveResultImpl[]{new GroovyResolveResultImpl(superClass, null, null, superClassSubstitutor, true, true)};
-    }
-    else {
-      return GroovyResolveResult.EMPTY_ARRAY; //no super class, but the reference is definitely super-reference
-    }
-  }
 }
