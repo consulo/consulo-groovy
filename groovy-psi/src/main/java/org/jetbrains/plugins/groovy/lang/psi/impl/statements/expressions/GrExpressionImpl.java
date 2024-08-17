@@ -29,27 +29,27 @@ import jakarta.annotation.Nonnull;
  * @author ilyas
  */
 public abstract class GrExpressionImpl extends GroovyPsiElementImpl implements GrExpression {
-  public GrExpressionImpl(@Nonnull ASTNode node) {
-    super(node);
-  }
+    public GrExpressionImpl(@Nonnull ASTNode node) {
+        super(node);
+    }
 
-  @Override
-  public void accept(GroovyElementVisitor visitor) {
-    visitor.visitExpression(this);
-  }
+    @Override
+    public void accept(GroovyElementVisitor visitor) {
+        visitor.visitExpression(this);
+    }
 
-  @Override
-  @Nullable
-  public PsiType getNominalType() {
-    return getType();
-  }
+    @Override
+    @Nullable
+    public PsiType getNominalType() {
+        return getType();
+    }
 
-  @Override
-  public GrExpression replaceWithExpression(@Nonnull GrExpression newExpr, boolean removeUnnecessaryParentheses) {
-    return PsiImplUtil.replaceExpression(this, newExpr, removeUnnecessaryParentheses);
-  }
+    @Override
+    public GrExpression replaceWithExpression(@Nonnull GrExpression newExpr, boolean removeUnnecessaryParentheses) {
+        return PsiImplUtil.replaceExpression(this, newExpr, removeUnnecessaryParentheses);
+    }
 
-  public PsiType getTypeByFQName(@Nonnull String fqName) {
-    return TypesUtil.createTypeByFQClassName(fqName, this);
-  }
+    public PsiType getTypeByFQName(@Nonnull String fqName) {
+        return TypesUtil.createTypeByFQClassName(fqName, this);
+    }
 }

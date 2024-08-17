@@ -16,18 +16,18 @@
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions;
 
 public enum ConversionResult {
-  /**
-   * Can be converted
-   */
-  OK,
-  /**
-   * Can pass compiler's static type check, but probably will fail in runtime.
-   * Will be highlighted as warning.
-   */
-  WARNING,
-  /**
-   * Doesn't pass static type check.
-   * Will be highlighted as error.
-   */
-  ERROR
+    /**
+     * Can be converted
+     */
+    OK,
+    /**
+     * Can pass compiler's static type check, but probably will fail in runtime.
+     * Will be highlighted as warning.
+     */
+    WARNING,
+    /**
+     * Doesn't pass static type check.
+     * Will be highlighted as error.
+     */
+    ERROR
 }

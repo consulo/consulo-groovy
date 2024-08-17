@@ -17,6 +17,7 @@
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions;
 
 import com.intellij.java.language.psi.PsiType;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.language.ast.ASTNode;
 import consulo.language.psi.PsiElement;
 import jakarta.annotation.Nullable;
@@ -34,70 +35,79 @@ import java.util.function.Function;
  * @author ilyas
  */
 public class GrConditionalExprImpl extends GrExpressionImpl implements GrConditionalExpression {
-  private static final Function<GrConditionalExpression, PsiType> TYPE_CALCULATOR = new Function<GrConditionalExpression, PsiType>() {
+    private static final Function<GrConditionalExpression, PsiType> TYPE_CALCULATOR = new Function<>() {
+        @Override
+        @Nullable
+        public PsiType apply(GrConditionalExpression conditional) {
+            GrExpression thenBranch = conditional.getThenBranch();
+            GrExpression elseBranch = conditional.getElseBranch();
+            if (thenBranch == null) {
+                if (elseBranch != null) {
+                    return elseBranch.getType();
+                }
+            }
+            else {
+                if (elseBranch == null) {
+                    return thenBranch.getType();
+                }
+                PsiType thenType = thenBranch.getType();
+                PsiType elseType = elseBranch.getType();
+                return TypesUtil.getLeastUpperBoundNullable(thenType, elseType, conditional.getManager());
+            }
+            return null;
+        }
+    };
+
+    public GrConditionalExprImpl(@Nonnull ASTNode node) {
+        super(node);
+    }
+
+    @Override
+    public String toString() {
+        return "Conditional expression";
+    }
+
+    @Override
+    @Nonnull
+    public GrExpression getCondition() {
+        return findNotNullChildByClass(GrExpression.class);
+    }
+
     @Override
     @Nullable
-    public PsiType apply(GrConditionalExpression conditional) {
-      GrExpression thenBranch = conditional.getThenBranch();
-      GrExpression elseBranch = conditional.getElseBranch();
-      if (thenBranch == null) {
-        if (elseBranch != null) return elseBranch.getType();
-      }
-      else {
-        if (elseBranch == null) return thenBranch.getType();
-        PsiType thenType = thenBranch.getType();
-        PsiType elseType = elseBranch.getType();
-        return TypesUtil.getLeastUpperBoundNullable(thenType, elseType, conditional.getManager());
-      }
-      return null;
+    @RequiredReadAction
+    public GrExpression getThenBranch() {
+        final PsiElement question = findChildByType(GroovyTokenTypes.mQUESTION);
+        for (PsiElement nextSibling = question;
+             nextSibling != null && nextSibling.getNode().getElementType() != GroovyTokenTypes.mCOLON;
+             nextSibling = nextSibling.getNextSibling()) {
+            if (nextSibling instanceof GrExpression nextSiblingExpression) {
+                return nextSiblingExpression;
+            }
+        }
+        return null;
     }
-  };
 
-  public GrConditionalExprImpl(@Nonnull ASTNode node) {
-    super(node);
-  }
-
-  public String toString() {
-    return "Conditional expression";
-  }
-
-  @Override
-  @Nonnull
-  public GrExpression getCondition() {
-    return findNotNullChildByClass(GrExpression.class);
-  }
-
-  @Override
-  @Nullable
-  public GrExpression getThenBranch() {
-    final PsiElement question = findChildByType(GroovyTokenTypes.mQUESTION);
-    for (PsiElement nextSibling = question;
-         nextSibling != null && nextSibling.getNode().getElementType() != GroovyTokenTypes.mCOLON;
-         nextSibling = nextSibling.getNextSibling()) {
-      if (nextSibling instanceof GrExpression) return (GrExpression)nextSibling;
+    @Override
+    @Nullable
+    @RequiredReadAction
+    public GrExpression getElseBranch() {
+        final PsiElement colon = findChildByType(GroovyTokenTypes.mCOLON);
+        for (PsiElement nextSibling = colon; nextSibling != null; nextSibling = nextSibling.getNextSibling()) {
+            if (nextSibling instanceof GrExpression nextSiblingExpression) {
+                return nextSiblingExpression;
+            }
+        }
+        return null;
     }
-    return null;
-  }
 
-  @Override
-  @Nullable
-  public GrExpression getElseBranch() {
-    final PsiElement colon = findChildByType(GroovyTokenTypes.mCOLON);
-    for (PsiElement nextSibling = colon;
-         nextSibling != null;
-         nextSibling = nextSibling.getNextSibling()) {
-      if (nextSibling instanceof GrExpression) return (GrExpression)nextSibling;
+    @Override
+    public PsiType getType() {
+        return TypeInferenceHelper.getCurrentContext().getExpressionType(this, TYPE_CALCULATOR);
     }
-    return null;
-  }
 
-  @Override
-  public PsiType getType() {
-    return TypeInferenceHelper.getCurrentContext().getExpressionType(this, TYPE_CALCULATOR);
-  }
-
-  @Override
-  public void accept(GroovyElementVisitor visitor) {
-    visitor.visitConditionalExpression(this);
-  }
+    @Override
+    public void accept(GroovyElementVisitor visitor) {
+        visitor.visitConditionalExpression(this);
+    }
 }

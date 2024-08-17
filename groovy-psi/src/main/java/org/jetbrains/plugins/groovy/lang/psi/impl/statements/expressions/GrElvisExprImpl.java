@@ -16,9 +16,9 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions;
 
-import jakarta.annotation.Nonnull;
-
+import consulo.annotation.access.RequiredReadAction;
 import consulo.language.ast.ASTNode;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrElvisExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
@@ -27,31 +27,30 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpres
  * @author ilyas
  */
 public class GrElvisExprImpl extends GrConditionalExprImpl implements GrElvisExpression {
-
-  public GrElvisExprImpl(@Nonnull ASTNode node) {
-    super(node);
-  }
-
-  public String toString() {
-    return "Elvis expression";
-  }
-
-  @Override
-  public GrExpression getThenBranch() {
-    return getCondition();
-  }
-
-  @Override
-  public GrExpression getElseBranch() {
-    GrExpression[] exprs = findChildrenByClass(GrExpression.class);
-    if (exprs.length > 1) {
-      return exprs[1];
+    public GrElvisExprImpl(@Nonnull ASTNode node) {
+        super(node);
     }
-    return null;
-  }
 
-  @Override
-  public void accept(GroovyElementVisitor visitor) {
-    visitor.visitElvisExpression(this);
-  }
+    @Override
+    public String toString() {
+        return "Elvis expression";
+    }
+
+    @Override
+    @RequiredReadAction
+    public GrExpression getThenBranch() {
+        return getCondition();
+    }
+
+    @Override
+    @RequiredReadAction
+    public GrExpression getElseBranch() {
+        GrExpression[] exprs = findChildrenByClass(GrExpression.class);
+        return exprs.length > 1 ? exprs[1] : null;
+    }
+
+    @Override
+    public void accept(GroovyElementVisitor visitor) {
+        visitor.visitElvisExpression(this);
+    }
 }

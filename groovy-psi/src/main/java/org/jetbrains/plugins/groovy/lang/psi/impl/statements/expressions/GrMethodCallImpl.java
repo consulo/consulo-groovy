@@ -17,6 +17,7 @@ package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions;
 
 import com.intellij.java.language.psi.PsiMethod;
 import com.intellij.java.language.psi.PsiType;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.language.ast.ASTNode;
 import consulo.language.psi.PsiElement;
 import consulo.language.util.IncorrectOperationException;
@@ -39,98 +40,94 @@ import java.util.function.Function;
  * @author Maxim.Medvedev
  */
 public abstract class GrMethodCallImpl extends GrCallExpressionImpl implements GrMethodCall {
-  private static final Function<GrMethodCall, PsiType> METHOD_CALL_TYPES_CALCULATOR = new Function<GrMethodCall, PsiType>() {
-    @Override
-    @Nullable
-    public PsiType apply(GrMethodCall callExpression) {
-      GroovyResolveResult[] resolveResults;
+    private static final Function<GrMethodCall, PsiType> METHOD_CALL_TYPES_CALCULATOR = new Function<>() {
+        @Override
+        @Nullable
+        public PsiType apply(GrMethodCall callExpression) {
+            GrExpression invokedExpression = callExpression.getInvokedExpression();
 
-      GrExpression invokedExpression = callExpression.getInvokedExpression();
-      if (invokedExpression instanceof GrReferenceExpression) {
-        resolveResults = ((GrReferenceExpression)invokedExpression).multiResolve(false);
-      }
-      else {
-        resolveResults = GroovyResolveResult.EMPTY_ARRAY;
-      }
+            GroovyResolveResult[] resolveResults = invokedExpression instanceof GrReferenceExpression referenceExpression
+                ? referenceExpression.multiResolve(false)
+                : GroovyResolveResult.EMPTY_ARRAY;
 
-      for (GrCallExpressionTypeCalculator typeCalculator : GrCallExpressionTypeCalculator.EP_NAME.getExtensionList()) {
-          PsiType res = typeCalculator.calculateReturnType(callExpression, resolveResults);
-        if (res != null) {
-          return res;
+            for (GrCallExpressionTypeCalculator typeCalculator : GrCallExpressionTypeCalculator.EP_NAME.getExtensionList()) {
+                PsiType res = typeCalculator.calculateReturnType(callExpression, resolveResults);
+                if (res != null) {
+                    return res;
+                }
+            }
+
+            return null;
         }
-      }
+    };
 
-      return null;
-    }
-  };
-
-  public GrMethodCallImpl(@Nonnull ASTNode node) {
-    super(node);
-  }
-
-  @Override
-  @Nonnull
-  public GroovyResolveResult[] getCallVariants(@Nullable GrExpression upToArgument) {
-    final GrExpression invoked = getInvokedExpression();
-    if (!(invoked instanceof GrReferenceExpressionImpl)) return GroovyResolveResult.EMPTY_ARRAY;
-
-    return ((GrReferenceExpressionImpl)invoked).getCallVariants(upToArgument);
-  }
-
-  @Override
-  @Nonnull
-  public GrExpression getInvokedExpression() {
-    for (PsiElement cur = this.getFirstChild(); cur != null; cur = cur.getNextSibling()) {
-      if (cur instanceof GrExpression) return (GrExpression)cur;
-    }
-    throw new IncorrectOperationException("invoked expression must not be null");
-  }
-
-  @Override
-  public PsiMethod resolveMethod() {
-    final GrExpression methodExpr = getInvokedExpression();
-    if (methodExpr instanceof GrReferenceExpression) {
-      final PsiElement resolved = ((GrReferenceExpression) methodExpr).resolve();
-      return resolved instanceof PsiMethod ? (PsiMethod) resolved : null;
+    public GrMethodCallImpl(@Nonnull ASTNode node) {
+        super(node);
     }
 
-    return null;
-  }
-
-  @Nonnull
-  @Override
-  public GroovyResolveResult advancedResolve() {
-    final GrExpression methodExpr = getInvokedExpression();
-    if (methodExpr instanceof GrReferenceExpression) {
-      return ((GrReferenceExpression) methodExpr).advancedResolve();
+    @Override
+    @Nonnull
+    @RequiredReadAction
+    public GroovyResolveResult[] getCallVariants(@Nullable GrExpression upToArgument) {
+        return getInvokedExpression() instanceof GrReferenceExpressionImpl referenceExpression
+            ? referenceExpression.getCallVariants(upToArgument)
+            : GroovyResolveResult.EMPTY_ARRAY;
     }
 
-    return GroovyResolveResult.EMPTY_RESULT;
-  }
+    @Override
+    @Nonnull
+    @RequiredReadAction
+    public GrExpression getInvokedExpression() {
+        for (PsiElement cur = this.getFirstChild(); cur != null; cur = cur.getNextSibling()) {
+            if (cur instanceof GrExpression curExpression) {
+                return curExpression;
+            }
+        }
+        throw new IncorrectOperationException("invoked expression must not be null");
+    }
 
-  @Override
-  public PsiType getType() {
-    return TypeInferenceHelper.getCurrentContext().getExpressionType(this, METHOD_CALL_TYPES_CALCULATOR);
-  }
+    @Override
+    @RequiredReadAction
+    public PsiMethod resolveMethod() {
+        if (getInvokedExpression() instanceof GrReferenceExpression referenceExpression) {
+            return referenceExpression.resolve() instanceof PsiMethod method ? method : null;
+        }
 
-  @Override
-  public boolean isCommandExpression() {
-    final GrExpression expression = getInvokedExpression();
-    if (!(expression instanceof GrReferenceExpression) || ((GrReferenceExpression)expression).getQualifier() == null) return false;
+        return null;
+    }
 
-    return ((GrReferenceExpression)expression).getDotToken() == null;
-  }
+    @Nonnull
+    @Override
+    @RequiredReadAction
+    public GroovyResolveResult advancedResolve() {
+        return getInvokedExpression() instanceof GrReferenceExpression methodRefExpr
+            ? methodRefExpr.advancedResolve()
+            : GroovyResolveResult.EMPTY_RESULT;
+    }
 
-  @Nonnull
-  @Override
-  public GroovyResolveResult[] multiResolve(boolean incompleteCode) {
-    GrExpression expression = getInvokedExpression();
-    if (!(expression instanceof GrReferenceExpression)) return GroovyResolveResult.EMPTY_ARRAY;
-    return ((GrReferenceExpression)expression).multiResolve(incompleteCode);
-  }
+    @Override
+    public PsiType getType() {
+        return TypeInferenceHelper.getCurrentContext().getExpressionType(this, METHOD_CALL_TYPES_CALCULATOR);
+    }
 
-  @Override
-  public ItemPresentation getPresentation() {
-    return ItemPresentationProvider.getItemPresentation(this);
-  }
+    @Override
+    @RequiredReadAction
+    public boolean isCommandExpression() {
+        return getInvokedExpression() instanceof GrReferenceExpression refExpr
+            && refExpr.getQualifier() != null && refExpr.getDotToken() == null;
+    }
+
+    @Nonnull
+    @Override
+    @RequiredReadAction
+    public GroovyResolveResult[] multiResolve(boolean incompleteCode) {
+        return getInvokedExpression() instanceof GrReferenceExpression refExpr
+            ? refExpr.multiResolve(incompleteCode)
+            : GroovyResolveResult.EMPTY_ARRAY;
+    }
+
+    @Override
+    public ItemPresentation getPresentation() {
+        return ItemPresentationProvider.getItemPresentation(this);
+    }
 }

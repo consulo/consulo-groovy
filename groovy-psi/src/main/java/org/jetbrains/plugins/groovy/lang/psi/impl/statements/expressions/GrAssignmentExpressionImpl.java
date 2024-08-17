@@ -17,6 +17,8 @@
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions;
 
 import com.intellij.java.language.psi.PsiType;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.document.util.TextRange;
 import consulo.language.ast.ASTNode;
 import consulo.language.ast.IElementType;
@@ -25,6 +27,7 @@ import consulo.language.psi.PsiReference;
 import consulo.language.psi.resolve.ResolveCache;
 import consulo.language.util.IncorrectOperationException;
 import consulo.util.collection.ArrayUtil;
+import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.lexer.TokenSets;
@@ -39,8 +42,6 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.binaryC
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.binaryCalculators.GrBinaryExpressionUtil;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.binaryCalculators.GrBinaryFacade;
 
-import jakarta.annotation.Nonnull;
-
 import java.util.function.Function;
 
 /**
@@ -48,192 +49,211 @@ import java.util.function.Function;
  */
 public class GrAssignmentExpressionImpl extends GrExpressionImpl implements GrAssignmentExpression {
 
-  private GrBinaryFacade getFacade() {
-    return myFacade;
-  }
-
-  public GrAssignmentExpressionImpl(@Nonnull ASTNode node) {
-    super(node);
-  }
-
-  public String toString() {
-    return "Assignment expression";
-  }
-
-  @Override
-  @Nonnull
-  public GrExpression getLValue() {
-    return findExpressionChild(this);
-  }
-
-  @Override
-  @Nullable
-  public GrExpression getRValue() {
-    GrExpression[] exprs = findChildrenByClass(GrExpression.class);
-    if (exprs.length > 1) {
-      return exprs[1];
+    private GrBinaryFacade getFacade() {
+        return myFacade;
     }
-    return null;
-  }
 
-  @Override
-  @Nonnull
-  public IElementType getOperationTokenType() {
-    return getOperationToken().getNode().getElementType();
-  }
+    public GrAssignmentExpressionImpl(@Nonnull ASTNode node) {
+        super(node);
+    }
 
-  @Override
-  @Nonnull
-  public PsiElement getOperationToken() {
-    return findNotNullChildByType(TokenSets.ASSIGN_OP_SET);
-  }
-
-  @Override
-  public PsiType getType() {
-    return TypeInferenceHelper.getCurrentContext().getExpressionType(this, TYPE_CALCULATOR);
-  }
-
-  @Override
-  public void accept(GroovyElementVisitor visitor) {
-    visitor.visitAssignmentExpression(this);
-  }
-
-  @Nonnull
-  @Override
-  public GroovyResolveResult[] multiResolve(boolean incompleteCode) {
-    return TypeInferenceHelper.getCurrentContext().multiResolve(this, incompleteCode, RESOLVER);
-  }
-
-  @Override
-  public PsiElement getElement() {
-    return this;
-  }
-
-  @Override
-  public TextRange getRangeInElement() {
-    final PsiElement token = getOperationToken();
-    final int offset = token.getStartOffsetInParent();
-    return new TextRange(offset, offset + token.getTextLength());
-  }
-
-  @Override
-  public PsiElement resolve() {
-    return PsiImplUtil.extractUniqueElement(multiResolve(false));
-  }
-
-  @Nonnull
-  @Override
-  public String getCanonicalText() {
-    return getText();
-  }
-
-  @Override
-  public PsiElement handleElementRename(String newElementName) throws IncorrectOperationException {
-    throw new IncorrectOperationException("assignment expression cannot be renamed");
-  }
-
-  @Override
-  public PsiElement bindToElement(@Nonnull PsiElement element) throws IncorrectOperationException {
-    throw new IncorrectOperationException("assignment expression cannot be bound to anything");
-  }
-
-  @Override
-  public boolean isReferenceTo(PsiElement element) {
-    return getManager().areElementsEquivalent(resolve(), element);
-  }
-
-  @Nonnull
-  @Override
-  public Object[] getVariants() {
-    return ArrayUtil.EMPTY_OBJECT_ARRAY;
-  }
-
-  @Override
-  public boolean isSoft() {
-    return false;
-  }
-
-  @Override
-  public PsiReference getReference() {
-    final IElementType operationToken = getOperationTokenType();
-    if (operationToken == GroovyTokenTypes.mASSIGN) return null;
-
-    return this;
-  }
-
-  private final GrBinaryFacade myFacade = new GrBinaryFacade() {
-    @Nonnull
     @Override
-    public GrExpression getLeftOperand() {
-      return getLValue();
+    public String toString() {
+        return "Assignment expression";
     }
 
+    @Override
+    @Nonnull
+    public GrExpression getLValue() {
+        return findExpressionChild(this);
+    }
+
+    @Override
     @Nullable
-    @Override
-    public GrExpression getRightOperand() {
-      return getRValue();
+    public GrExpression getRValue() {
+        GrExpression[] exprs = findChildrenByClass(GrExpression.class);
+        if (exprs.length > 1) {
+            return exprs[1];
+        }
+        return null;
     }
 
-    @Nonnull
     @Override
+    @Nonnull
+    @RequiredReadAction
     public IElementType getOperationTokenType() {
-      return GrAssignmentExpressionImpl.this.getOperationTokenType();
+        return getOperationToken().getNode().getElementType();
     }
 
-    @Nonnull
     @Override
+    @Nonnull
+    @RequiredReadAction
     public PsiElement getOperationToken() {
-      return GrAssignmentExpressionImpl.this.getOperationToken();
+        return findNotNullChildByType(TokenSets.ASSIGN_OP_SET);
+    }
+
+    @Override
+    public PsiType getType() {
+        return TypeInferenceHelper.getCurrentContext().getExpressionType(this, TYPE_CALCULATOR);
+    }
+
+    @Override
+    public void accept(GroovyElementVisitor visitor) {
+        visitor.visitAssignmentExpression(this);
     }
 
     @Nonnull
     @Override
     public GroovyResolveResult[] multiResolve(boolean incompleteCode) {
-      return GrAssignmentExpressionImpl.this.multiResolve(false);
+        return TypeInferenceHelper.getCurrentContext().multiResolve(this, incompleteCode, RESOLVER);
+    }
+
+    @Override
+    @RequiredReadAction
+    public PsiElement getElement() {
+        return this;
     }
 
     @Nonnull
     @Override
-    public GrExpression getPsiElement() {
-      return GrAssignmentExpressionImpl.this;
+    @RequiredReadAction
+    public TextRange getRangeInElement() {
+        final PsiElement token = getOperationToken();
+        final int offset = token.getStartOffsetInParent();
+        return new TextRange(offset, offset + token.getTextLength());
     }
-  };
 
+    @Override
+    @RequiredReadAction
+    public PsiElement resolve() {
+        return PsiImplUtil.extractUniqueElement(multiResolve(false));
+    }
 
-  private static final ResolveCache.PolyVariantResolver<GrAssignmentExpressionImpl> RESOLVER =
-    new ResolveCache.PolyVariantResolver<GrAssignmentExpressionImpl>() {
-      @Nonnull
-      @Override
-      public GroovyResolveResult[] resolve(@Nonnull GrAssignmentExpressionImpl assignmentExpression, boolean incompleteCode) {
-        final IElementType opType = assignmentExpression.getOperationTokenType();
-        if (opType == GroovyTokenTypes.mASSIGN) return GroovyResolveResult.EMPTY_ARRAY;
+    @Nonnull
+    @Override
+    @RequiredReadAction
+    public String getCanonicalText() {
+        return getText();
+    }
 
-        final GrExpression lValue = assignmentExpression.getLValue();
-        final PsiType lType;
-        if (lValue instanceof GrIndexProperty) {
-          /*
-          now we have something like map[i] += 2. It equals to map.putAt(i, map.getAt(i).plus(2))
-          by default map[i] resolves to putAt, but we need getAt(). so this hack is for it =)
-           */
-          lType = ((GrIndexProperty)lValue).getGetterType();
+    @Override
+    @RequiredWriteAction
+    public PsiElement handleElementRename(String newElementName) throws IncorrectOperationException {
+        throw new IncorrectOperationException("assignment expression cannot be renamed");
+    }
+
+    @Override
+    @RequiredWriteAction
+    public PsiElement bindToElement(@Nonnull PsiElement element) throws IncorrectOperationException {
+        throw new IncorrectOperationException("assignment expression cannot be bound to anything");
+    }
+
+    @Override
+    @RequiredReadAction
+    public boolean isReferenceTo(PsiElement element) {
+        return getManager().areElementsEquivalent(resolve(), element);
+    }
+
+    @Nonnull
+    @Override
+    @RequiredReadAction
+    public Object[] getVariants() {
+        return ArrayUtil.EMPTY_OBJECT_ARRAY;
+    }
+
+    @Override
+    @RequiredReadAction
+    public boolean isSoft() {
+        return false;
+    }
+
+    @Override
+    @RequiredReadAction
+    public PsiReference getReference() {
+        final IElementType operationToken = getOperationTokenType();
+        if (operationToken == GroovyTokenTypes.mASSIGN) {
+            return null;
         }
-        else {
-          lType = lValue.getType();
+
+        return this;
+    }
+
+    private final GrBinaryFacade myFacade = new GrBinaryFacade() {
+        @Nonnull
+        @Override
+        public GrExpression getLeftOperand() {
+            return getLValue();
         }
-        if (lType == null) return GroovyResolveResult.EMPTY_ARRAY;
 
-        PsiType rType = GrBinaryExpressionUtil.getRightType(assignmentExpression.getFacade());
+        @Nullable
+        @Override
+        public GrExpression getRightOperand() {
+            return getRValue();
+        }
 
-        final IElementType operatorToken = TokenSets.ASSIGNMENTS_TO_OPERATORS.get(opType);
-        return TypesUtil.getOverloadedOperatorCandidates(lType, operatorToken, lValue, new PsiType[]{rType});
-      }
+        @Nonnull
+        @Override
+        @RequiredReadAction
+        public IElementType getOperationTokenType() {
+            return GrAssignmentExpressionImpl.this.getOperationTokenType();
+        }
+
+        @Nonnull
+        @Override
+        @RequiredReadAction
+        public PsiElement getOperationToken() {
+            return GrAssignmentExpressionImpl.this.getOperationToken();
+        }
+
+        @Nonnull
+        @Override
+        public GroovyResolveResult[] multiResolve(boolean incompleteCode) {
+            return GrAssignmentExpressionImpl.this.multiResolve(false);
+        }
+
+        @Nonnull
+        @Override
+        public GrExpression getPsiElement() {
+            return GrAssignmentExpressionImpl.this;
+        }
     };
 
-  private static final Function<GrAssignmentExpressionImpl, PsiType> TYPE_CALCULATOR = new Function<GrAssignmentExpressionImpl, PsiType>() {
-    @Override
-    public PsiType apply(GrAssignmentExpressionImpl expression) {
-      final Function<GrBinaryFacade, PsiType> calculator = GrBinaryExpressionTypeCalculators.getTypeCalculator(expression.getFacade());
-      return calculator.apply(expression.getFacade());
-    }
-  };
+
+    private static final ResolveCache.PolyVariantResolver<GrAssignmentExpressionImpl> RESOLVER = new ResolveCache.PolyVariantResolver<>() {
+        @Nonnull
+        @Override
+        @RequiredReadAction
+        public GroovyResolveResult[] resolve(@Nonnull GrAssignmentExpressionImpl assignmentExpression, boolean incompleteCode) {
+            final IElementType opType = assignmentExpression.getOperationTokenType();
+            if (opType == GroovyTokenTypes.mASSIGN) {
+                return GroovyResolveResult.EMPTY_ARRAY;
+            }
+
+            final GrExpression lValue = assignmentExpression.getLValue();
+            final PsiType lType;
+            if (lValue instanceof GrIndexProperty indexProperty) {
+                /*
+                now we have something like map[i] += 2. It equals to map.putAt(i, map.getAt(i).plus(2))
+                by default map[i] resolves to putAt, but we need getAt(). so this hack is for it =)
+                 */
+                lType = indexProperty.getGetterType();
+            }
+            else {
+                lType = lValue.getType();
+            }
+            if (lType == null) {
+                return GroovyResolveResult.EMPTY_ARRAY;
+            }
+
+            PsiType rType = GrBinaryExpressionUtil.getRightType(assignmentExpression.getFacade());
+
+            final IElementType operatorToken = TokenSets.ASSIGNMENTS_TO_OPERATORS.get(opType);
+            return TypesUtil.getOverloadedOperatorCandidates(lType, operatorToken, lValue, new PsiType[]{rType});
+        }
+    };
+
+    private static final Function<GrAssignmentExpressionImpl, PsiType> TYPE_CALCULATOR = expression -> {
+        final Function<GrBinaryFacade, PsiType> calculator = GrBinaryExpressionTypeCalculators.getTypeCalculator(expression.getFacade());
+        return calculator.apply(expression.getFacade());
+    };
 }
