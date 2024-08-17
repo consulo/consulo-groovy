@@ -17,6 +17,8 @@
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions;
 
 import com.intellij.java.language.psi.PsiType;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.document.util.TextRange;
 import consulo.language.ast.ASTNode;
 import consulo.language.ast.IElementType;
@@ -72,6 +74,7 @@ public abstract class GrBinaryExpressionImpl extends GrExpressionImpl implements
 
         @Nonnull
         @Override
+        @RequiredReadAction
         public GroovyResolveResult[] resolve(@Nonnull GrBinaryExpressionImpl binary, boolean incompleteCode) {
             List<GroovyResolveResult[]> subExpressions = resolveSubExpressions(binary, incompleteCode);
 
@@ -102,18 +105,21 @@ public abstract class GrBinaryExpressionImpl extends GrExpressionImpl implements
 
         @Nullable
         @Override
+        @RequiredReadAction
         public GrExpression getRightOperand() {
             return GrBinaryExpressionImpl.this.getRightOperand();
         }
 
         @Nonnull
         @Override
+        @RequiredReadAction
         public IElementType getOperationTokenType() {
             return GrBinaryExpressionImpl.this.getOperationTokenType();
         }
 
         @Nonnull
         @Override
+        @RequiredReadAction
         public PsiElement getOperationToken() {
             return GrBinaryExpressionImpl.this.getOperationToken();
         }
@@ -132,6 +138,7 @@ public abstract class GrBinaryExpressionImpl extends GrExpressionImpl implements
     };
 
     @Nullable
+    @RequiredReadAction
     protected PsiType getRightType() {
         final GrExpression rightOperand = getRightOperand();
         return rightOperand == null ? null : rightOperand.getType();
@@ -154,12 +161,14 @@ public abstract class GrBinaryExpressionImpl extends GrExpressionImpl implements
 
     @Override
     @Nullable
+    @RequiredReadAction
     public GrExpression getRightOperand() {
         return getLastChild() instanceof GrExpression expression ? expression : null;
     }
 
     @Override
     @Nonnull
+    @RequiredReadAction
     public IElementType getOperationTokenType() {
         final PsiElement child = getOperationToken();
         final ASTNode node = child.getNode();
@@ -169,6 +178,7 @@ public abstract class GrBinaryExpressionImpl extends GrExpressionImpl implements
 
     @Override
     @Nonnull
+    @RequiredReadAction
     public PsiElement getOperationToken() {
         return findNotNullChildByType(TokenSets.BINARY_OP_SET);
     }
@@ -190,11 +200,14 @@ public abstract class GrBinaryExpressionImpl extends GrExpressionImpl implements
     }
 
     @Override
+    @RequiredReadAction
     public PsiElement getElement() {
         return this;
     }
 
+    @Nonnull
     @Override
+    @RequiredReadAction
     public TextRange getRangeInElement() {
         final PsiElement token = getOperationToken();
         final int offset = token.getStartOffsetInParent();
@@ -202,38 +215,45 @@ public abstract class GrBinaryExpressionImpl extends GrExpressionImpl implements
     }
 
     @Override
+    @RequiredReadAction
     public PsiElement resolve() {
         return PsiImplUtil.extractUniqueElement(multiResolve(false));
     }
 
     @Nonnull
     @Override
+    @RequiredReadAction
     public String getCanonicalText() {
         return getText();
     }
 
     @Override
+    @RequiredWriteAction
     public PsiElement handleElementRename(String newElementName) throws IncorrectOperationException {
         throw new IncorrectOperationException("binary expression cannot be renamed");
     }
 
     @Override
+    @RequiredWriteAction
     public PsiElement bindToElement(@Nonnull PsiElement element) throws IncorrectOperationException {
         throw new IncorrectOperationException("binary expression cannot be bound to anything");
     }
 
     @Override
+    @RequiredReadAction
     public boolean isReferenceTo(PsiElement element) {
         return getManager().areElementsEquivalent(resolve(), element);
     }
 
     @Nonnull
     @Override
+    @RequiredReadAction
     public Object[] getVariants() {
         return ArrayUtil.EMPTY_OBJECT_ARRAY;
     }
 
     @Override
+    @RequiredReadAction
     public boolean isSoft() {
         return false;
     }

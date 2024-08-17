@@ -17,9 +17,9 @@ package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions;
 
 import com.intellij.java.language.psi.*;
 import com.intellij.java.language.psi.util.InheritanceUtil;
+import consulo.java.language.module.util.JavaClassNames;
 import consulo.language.psi.scope.GlobalSearchScope;
 import consulo.project.Project;
-
 import jakarta.annotation.Nullable;
 
 public class CollectionUtil {
@@ -31,7 +31,7 @@ public class CollectionUtil {
         if (InheritanceUtil.isInheritor(collection, "java.util.LinkedHashSet")) {
             return createCollection(project, "java.util.LinkedHashSet", itemType);
         }
-        if (InheritanceUtil.isInheritor(collection, CommonClassNames.JAVA_UTIL_SET)) {
+        if (InheritanceUtil.isInheritor(collection, JavaClassNames.JAVA_UTIL_SET)) {
             return createCollection(project, "java.util.HashSet", itemType);
         }
         if (InheritanceUtil.isInheritor(collection, "java.util.LinkedList")) {
@@ -43,7 +43,7 @@ public class CollectionUtil {
         if (InheritanceUtil.isInheritor(collection, "java.util.Vector")) {
             return createCollection(project, "java.util.Vector", itemType);
         }
-        if (InheritanceUtil.isInheritor(collection, CommonClassNames.JAVA_UTIL_LIST)) {
+        if (InheritanceUtil.isInheritor(collection, JavaClassNames.JAVA_UTIL_LIST)) {
             return createCollection(project, "java.util.ArrayList", itemType);
         }
         if (InheritanceUtil.isInheritor(collection, "java.util.Queue")) {

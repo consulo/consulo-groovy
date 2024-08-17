@@ -13,7 +13,8 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyResolveResultImpl;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 
 /**
- * Created by Max Medvedev on 15/06/14
+ * @author Max Medvedev
+ * @since 2014-06-15
  */
 public class GrThisReferenceResolver {
     /**

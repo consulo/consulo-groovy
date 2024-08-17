@@ -19,13 +19,18 @@ package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions;
 import com.intellij.java.language.LanguageLevel;
 import com.intellij.java.language.psi.*;
 import com.intellij.java.language.psi.util.InheritanceUtil;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.document.util.TextRange;
+import consulo.java.language.module.util.JavaClassNames;
 import consulo.language.ast.ASTNode;
 import consulo.language.psi.*;
 import consulo.language.psi.resolve.ResolveCache;
 import consulo.language.util.IncorrectOperationException;
 import consulo.util.collection.ArrayUtil;
 import consulo.util.collection.ContainerUtil;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
@@ -48,9 +53,6 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.path.Gr
 import org.jetbrains.plugins.groovy.lang.psi.util.GrInnerClassConstructorUtil;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 import org.jetbrains.plugins.groovy.lang.resolve.ResolveUtil;
-
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -95,6 +97,7 @@ public class GrNewExpressionImpl extends GrCallExpressionImpl implements GrNewEx
     private static final ResolveCache.PolyVariantResolver<MyFakeReference> RESOLVER = new ResolveCache.PolyVariantResolver<>() {
         @Nonnull
         @Override
+        @RequiredReadAction
         public GroovyResolveResult[] resolve(@Nonnull MyFakeReference reference, boolean incompleteCode) {
             return reference.getElement().resolveImpl(incompleteCode);
         }
@@ -106,6 +109,7 @@ public class GrNewExpressionImpl extends GrCallExpressionImpl implements GrNewEx
         super(node);
     }
 
+    @Override
     public String toString() {
         return "NEW expression";
     }
@@ -140,6 +144,7 @@ public class GrNewExpressionImpl extends GrCallExpressionImpl implements GrNewEx
     }
 
     @Override
+    @RequiredReadAction
     public GrArgumentList getArgumentList() {
         final GrAnonymousClassDefinition anonymous = getAnonymousClassDefinition();
         if (anonymous != null) {
@@ -150,6 +155,7 @@ public class GrNewExpressionImpl extends GrCallExpressionImpl implements GrNewEx
 
     @Override
     @Nullable
+    @RequiredReadAction
     public GrExpression getQualifier() {
         final PsiElement[] children = getChildren();
         for (PsiElement child : children) {
@@ -285,7 +291,7 @@ public class GrNewExpressionImpl extends GrCallExpressionImpl implements GrNewEx
                 final PsiElement resolved = result.getElement();
                 if (resolved instanceof PsiMethod constructor) {
                     final PsiParameter[] parameters = constructor.getParameterList().getParameters();
-                    if (parameters.length == 1 && InheritanceUtil.isInheritor(parameters[0].getType(), CommonClassNames.JAVA_UTIL_MAP)) {
+                    if (parameters.length == 1 && InheritanceUtil.isInheritor(parameters[0].getType(), JavaClassNames.JAVA_UTIL_MAP)) {
                         return constructorResults;
                     }
                 }
@@ -318,54 +324,65 @@ public class GrNewExpressionImpl extends GrCallExpressionImpl implements GrNewEx
     private class MyFakeReference implements PsiPolyVariantReference {
         @Nonnull
         @Override
+        @RequiredReadAction
         public ResolveResult[] multiResolve(boolean incompleteCode) {
             return GrNewExpressionImpl.this.multiResolve(incompleteCode);
         }
 
         @Override
+        @RequiredReadAction
         public GrNewExpressionImpl getElement() {
             return GrNewExpressionImpl.this;
         }
 
+        @Nonnull
         @Override
+        @RequiredReadAction
         public TextRange getRangeInElement() {
             return TextRange.EMPTY_RANGE;
         }
 
         @Nullable
         @Override
+        @RequiredReadAction
         public PsiElement resolve() {
             return resolveMethod();
         }
 
         @Nonnull
         @Override
+        @RequiredReadAction
         public String getCanonicalText() {
             return "new expression";
         }
 
         @Override
+        @RequiredWriteAction
         public PsiElement handleElementRename(String newElementName) throws IncorrectOperationException {
             throw new UnsupportedOperationException("unsupported!");
         }
 
         @Override
+        @RequiredWriteAction
         public PsiElement bindToElement(@Nonnull PsiElement element) throws IncorrectOperationException {
             throw new UnsupportedOperationException("unsupported!");
         }
 
         @Override
+        @RequiredReadAction
         public boolean isReferenceTo(PsiElement element) {
             return getManager().areElementsEquivalent(element, resolve());
         }
 
         @Nonnull
         @Override
+        @RequiredReadAction
         public Object[] getVariants() {
             return ArrayUtil.EMPTY_OBJECT_ARRAY;
         }
 
         @Override
+        @RequiredReadAction
         public boolean isSoft() {
             return false;
         }

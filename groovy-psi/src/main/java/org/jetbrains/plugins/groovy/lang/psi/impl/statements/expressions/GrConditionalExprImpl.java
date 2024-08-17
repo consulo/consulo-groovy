@@ -17,6 +17,7 @@
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions;
 
 import com.intellij.java.language.psi.PsiType;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.language.ast.ASTNode;
 import consulo.language.psi.PsiElement;
 import jakarta.annotation.Nullable;
@@ -61,6 +62,7 @@ public class GrConditionalExprImpl extends GrExpressionImpl implements GrConditi
         super(node);
     }
 
+    @Override
     public String toString() {
         return "Conditional expression";
     }
@@ -73,6 +75,7 @@ public class GrConditionalExprImpl extends GrExpressionImpl implements GrConditi
 
     @Override
     @Nullable
+    @RequiredReadAction
     public GrExpression getThenBranch() {
         final PsiElement question = findChildByType(GroovyTokenTypes.mQUESTION);
         for (PsiElement nextSibling = question;
@@ -87,6 +90,7 @@ public class GrConditionalExprImpl extends GrExpressionImpl implements GrConditi
 
     @Override
     @Nullable
+    @RequiredReadAction
     public GrExpression getElseBranch() {
         final PsiElement colon = findChildByType(GroovyTokenTypes.mCOLON);
         for (PsiElement nextSibling = colon; nextSibling != null; nextSibling = nextSibling.getNextSibling()) {

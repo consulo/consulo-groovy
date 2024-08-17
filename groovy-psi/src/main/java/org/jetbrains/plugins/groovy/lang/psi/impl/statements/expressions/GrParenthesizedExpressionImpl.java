@@ -37,6 +37,7 @@ public class GrParenthesizedExpressionImpl extends GrExpressionImpl implements G
         visitor.visitParenthesizedExpression(this);
     }
 
+    @Override
     public String toString() {
         return "Parenthesized expression";
     }

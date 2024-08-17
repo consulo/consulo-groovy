@@ -17,6 +17,7 @@ package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions;
 
 import com.intellij.java.language.psi.PsiMethod;
 import com.intellij.java.language.psi.PsiType;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.language.ast.ASTNode;
 import consulo.language.psi.PsiElement;
 import consulo.language.util.IncorrectOperationException;
@@ -66,30 +67,29 @@ public abstract class GrMethodCallImpl extends GrCallExpressionImpl implements G
 
     @Override
     @Nonnull
+    @RequiredReadAction
     public GroovyResolveResult[] getCallVariants(@Nullable GrExpression upToArgument) {
-        final GrExpression invoked = getInvokedExpression();
-        if (!(invoked instanceof GrReferenceExpressionImpl)) {
-            return GroovyResolveResult.EMPTY_ARRAY;
-        }
-
-        return ((GrReferenceExpressionImpl)invoked).getCallVariants(upToArgument);
+        return getInvokedExpression() instanceof GrReferenceExpressionImpl referenceExpression
+            ? referenceExpression.getCallVariants(upToArgument)
+            : GroovyResolveResult.EMPTY_ARRAY;
     }
 
     @Override
     @Nonnull
+    @RequiredReadAction
     public GrExpression getInvokedExpression() {
         for (PsiElement cur = this.getFirstChild(); cur != null; cur = cur.getNextSibling()) {
-            if (cur instanceof GrExpression) {
-                return (GrExpression)cur;
+            if (cur instanceof GrExpression curExpression) {
+                return curExpression;
             }
         }
         throw new IncorrectOperationException("invoked expression must not be null");
     }
 
     @Override
+    @RequiredReadAction
     public PsiMethod resolveMethod() {
-        final GrExpression methodExpr = getInvokedExpression();
-        if (methodExpr instanceof GrReferenceExpression referenceExpression) {
+        if (getInvokedExpression() instanceof GrReferenceExpression referenceExpression) {
             return referenceExpression.resolve() instanceof PsiMethod method ? method : null;
         }
 
@@ -98,10 +98,10 @@ public abstract class GrMethodCallImpl extends GrCallExpressionImpl implements G
 
     @Nonnull
     @Override
+    @RequiredReadAction
     public GroovyResolveResult advancedResolve() {
-        final GrExpression methodExpr = getInvokedExpression();
-        return methodExpr instanceof GrReferenceExpression referenceExpression
-            ? referenceExpression.advancedResolve()
+        return getInvokedExpression() instanceof GrReferenceExpression methodRefExpr
+            ? methodRefExpr.advancedResolve()
             : GroovyResolveResult.EMPTY_RESULT;
     }
 
@@ -111,23 +111,19 @@ public abstract class GrMethodCallImpl extends GrCallExpressionImpl implements G
     }
 
     @Override
+    @RequiredReadAction
     public boolean isCommandExpression() {
-        final GrExpression expression = getInvokedExpression();
-        if (!(expression instanceof GrReferenceExpression) || ((GrReferenceExpression)expression).getQualifier() == null) {
-            return false;
-        }
-
-        return ((GrReferenceExpression)expression).getDotToken() == null;
+        return getInvokedExpression() instanceof GrReferenceExpression refExpr
+            && refExpr.getQualifier() != null && refExpr.getDotToken() == null;
     }
 
     @Nonnull
     @Override
+    @RequiredReadAction
     public GroovyResolveResult[] multiResolve(boolean incompleteCode) {
-        GrExpression expression = getInvokedExpression();
-        if (!(expression instanceof GrReferenceExpression)) {
-            return GroovyResolveResult.EMPTY_ARRAY;
-        }
-        return ((GrReferenceExpression)expression).multiResolve(incompleteCode);
+        return getInvokedExpression() instanceof GrReferenceExpression refExpr
+            ? refExpr.multiResolve(incompleteCode)
+            : GroovyResolveResult.EMPTY_ARRAY;
     }
 
     @Override

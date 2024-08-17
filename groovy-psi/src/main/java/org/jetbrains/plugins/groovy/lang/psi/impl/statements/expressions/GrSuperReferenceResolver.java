@@ -33,7 +33,8 @@ import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 
 /**
- * Created by Max Medvedev on 15/06/14
+ * @author Max Medvedev
+ * @since 2014-06-15
  */
 public class GrSuperReferenceResolver {
     /**
@@ -45,8 +46,8 @@ public class GrSuperReferenceResolver {
 
         if (qualifier == null) {
             final PsiElement parent = ref.getParent();
-            if (parent instanceof GrConstructorInvocation) {
-                return ((GrConstructorInvocation)parent).multiResolve(false);
+            if (parent instanceof GrConstructorInvocation constructorInvocation) {
+                return constructorInvocation.multiResolve(false);
             }
             PsiClass aClass = PsiUtil.getContextClass(ref);
             if (aClass != null) {

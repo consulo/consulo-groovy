@@ -16,9 +16,9 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions;
 
-import jakarta.annotation.Nonnull;
-
+import consulo.annotation.access.RequiredReadAction;
 import consulo.language.ast.ASTNode;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrElvisExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
@@ -31,16 +31,19 @@ public class GrElvisExprImpl extends GrConditionalExprImpl implements GrElvisExp
         super(node);
     }
 
+    @Override
     public String toString() {
         return "Elvis expression";
     }
 
     @Override
+    @RequiredReadAction
     public GrExpression getThenBranch() {
         return getCondition();
     }
 
     @Override
+    @RequiredReadAction
     public GrExpression getElseBranch() {
         GrExpression[] exprs = findChildrenByClass(GrExpression.class);
         return exprs.length > 1 ? exprs[1] : null;

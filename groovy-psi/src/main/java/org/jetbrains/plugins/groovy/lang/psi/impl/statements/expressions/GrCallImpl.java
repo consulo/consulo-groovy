@@ -16,6 +16,7 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions;
 
+import consulo.annotation.access.RequiredReadAction;
 import jakarta.annotation.Nonnull;
 
 import consulo.language.psi.PsiElement;
@@ -38,6 +39,7 @@ public abstract class GrCallImpl extends GroovyPsiElementImpl implements GrCall 
     }
 
     @Override
+    @RequiredReadAction
     public GrArgumentList getArgumentList() {
         for (PsiElement cur = this.getFirstChild(); cur != null; cur = cur.getNextSibling()) {
             if (cur instanceof GrArgumentList argumentList) {
@@ -49,6 +51,7 @@ public abstract class GrCallImpl extends GroovyPsiElementImpl implements GrCall 
 
     @Override
     @Nonnull
+    @RequiredReadAction
     public GrNamedArgument[] getNamedArguments() {
         GrArgumentList argList = getArgumentList();
         return argList != null ? argList.getNamedArguments() : GrNamedArgument.EMPTY_ARRAY;
@@ -56,6 +59,7 @@ public abstract class GrCallImpl extends GroovyPsiElementImpl implements GrCall 
 
     @Override
     @Nonnull
+    @RequiredReadAction
     public GrExpression[] getExpressionArguments() {
         GrArgumentList argList = getArgumentList();
         return argList != null ? argList.getExpressionArguments() : GrExpression.EMPTY_ARRAY;

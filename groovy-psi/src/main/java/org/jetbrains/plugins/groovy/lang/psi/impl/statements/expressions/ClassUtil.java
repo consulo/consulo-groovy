@@ -56,8 +56,8 @@ public class ClassUtil {
         String typeText = descriptor.getTypeText();
         final String key = getClassKey(typeText);
         final Object cached = ctx.get(key);
-        if (cached instanceof PsiType) {
-            return (PsiType)cached;
+        if (cached instanceof PsiType type) {
+            return type;
         }
 
         final PsiType found =

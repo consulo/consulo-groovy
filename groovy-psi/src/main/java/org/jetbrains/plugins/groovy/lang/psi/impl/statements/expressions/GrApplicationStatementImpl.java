@@ -16,6 +16,7 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions;
 
+import consulo.annotation.access.RequiredReadAction;
 import consulo.language.ast.ASTNode;
 import consulo.language.util.IncorrectOperationException;
 import jakarta.annotation.Nonnull;
@@ -37,11 +38,13 @@ public class GrApplicationStatementImpl extends GrMethodCallImpl implements GrAp
         visitor.visitApplicationStatement(this);
     }
 
+    @Override
     public String toString() {
         return "Call expression";
     }
 
     @Override
+    @RequiredReadAction
     public GrCommandArgumentList getArgumentList() {
         return findChildByClass(GrCommandArgumentList.class);
     }

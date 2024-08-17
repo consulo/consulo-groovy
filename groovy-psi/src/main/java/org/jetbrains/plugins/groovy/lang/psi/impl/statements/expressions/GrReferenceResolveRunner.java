@@ -18,8 +18,10 @@ package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions;
 import com.intellij.java.language.psi.*;
 import com.intellij.java.language.psi.util.InheritanceUtil;
 import consulo.application.progress.ProgressManager;
+import consulo.java.language.module.util.JavaClassNames;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.resolve.ResolveState;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.api.SpreadState;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
@@ -35,13 +37,11 @@ import org.jetbrains.plugins.groovy.lang.resolve.ResolveUtil;
 import org.jetbrains.plugins.groovy.lang.resolve.processors.ClassHint;
 import org.jetbrains.plugins.groovy.lang.resolve.processors.ResolverProcessorImpl;
 
-import jakarta.annotation.Nonnull;
-
 import java.util.List;
 import java.util.ListIterator;
 
 /**
- * @author Medvedev Max
+ * @author Max Medvedev
  */
 public class GrReferenceResolveRunner {
     private final GrReferenceExpression place;
@@ -100,33 +100,22 @@ public class GrReferenceResolveRunner {
     }
 
     private boolean processJavaLangClass(@Nonnull GrExpression qualifier) {
-        if (!(qualifier instanceof GrReferenceExpression)) {
-            return true;
-        }
+        if (qualifier instanceof GrReferenceExpression refExpr) {
+            //optimization: only 'class' or 'this' in static context can be an alias of java.lang.Class
+            if (!("class".equals(refExpr.getReferenceName()) || PsiUtil.isThisReference(qualifier))) {
+                return true;
+            }
 
-        //optimization: only 'class' or 'this' in static context can be an alias of java.lang.Class
-        if (!("class".equals(((GrReferenceExpression)qualifier).getReferenceName()) ||
-            PsiUtil.isThisReference(qualifier))) {
-            return true;
-        }
+            if (qualifier.getType() instanceof PsiClassType classType) {
+                final PsiClass psiClass = classType.resolve();
+                if (psiClass == null || !JavaClassNames.JAVA_LANG_CLASS.equals(psiClass.getQualifiedName())) {
+                    return true;
+                }
 
-        PsiType type = qualifier.getType();
-        if (!(type instanceof PsiClassType)) {
-            return true;
-        }
-
-        final PsiClass psiClass = ((PsiClassType)type).resolve();
-        if (psiClass == null || !CommonClassNames.JAVA_LANG_CLASS.equals(psiClass.getQualifiedName())) {
-            return true;
-        }
-
-        final PsiType[] params = ((PsiClassType)type).getParameters();
-        if (params.length != 1) {
-            return true;
-        }
-
-        if (!processQualifierType(params[0], ResolveState.initial().put(ClassHint.RESOLVE_CONTEXT, qualifier))) {
-            return false;
+                final PsiType[] params = classType.getParameters();
+                return params.length != 1
+                    || processQualifierType(params[0], ResolveState.initial().put(ClassHint.RESOLVE_CONTEXT, qualifier));
+            }
         }
         return true;
     }
@@ -232,7 +221,7 @@ public class GrReferenceResolveRunner {
         }
 
         if (!(place.getParent() instanceof GrMethodCall)
-            && InheritanceUtil.isInheritor(qualifierType, CommonClassNames.JAVA_UTIL_COLLECTION)) {
+            && InheritanceUtil.isInheritor(qualifierType, JavaClassNames.JAVA_UTIL_COLLECTION)) {
             final PsiType componentType = ClosureParameterEnhancer.findTypeForIteration(qualifierType, place);
             if (componentType != null) {
                 final SpreadState spreadState = state.get(SpreadState.SPREAD_STATE);
