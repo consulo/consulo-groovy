@@ -23,17 +23,17 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrOperat
 import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyPsiElementImpl;
 
 /**
+ * Use for composite shift operators like >>> or >>=
+ *
  * @author ilyas
- *         <p/>
- *         Use for composite shift operators like >>> or >>=
  */
 public class GrOperationSignImpl extends GroovyPsiElementImpl implements GrOperationSign {
+    public GrOperationSignImpl(@Nonnull ASTNode node) {
+        super(node);
+    }
 
-  public GrOperationSignImpl(@Nonnull ASTNode node) {
-    super(node);
-  }
-
-  public String toString() {
-    return "Composite shift operator";
-  }
+    @Override
+    public String toString() {
+        return "Composite shift operator";
+    }
 }

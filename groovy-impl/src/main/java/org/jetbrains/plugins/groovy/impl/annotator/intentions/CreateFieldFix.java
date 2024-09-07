@@ -25,60 +25,62 @@ import consulo.language.editor.template.TemplateManager;
 import consulo.language.psi.PsiElement;
 import consulo.language.util.IncorrectOperationException;
 import consulo.project.Project;
-import org.jetbrains.annotations.NonNls;
+import consulo.ui.annotation.RequiredUIAccess;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.impl.intentions.base.IntentionUtils;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.GrModifier;
 import org.jetbrains.plugins.groovy.lang.psi.expectedTypes.TypeConstraint;
 import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GroovyScriptClass;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames;
 
-import jakarta.annotation.Nonnull;
-
 /**
  * @author Maxim.Medvedev
  */
 public class CreateFieldFix {
-  private final PsiClass myTargetClass;
+    private final PsiClass myTargetClass;
 
-  protected PsiClass getTargetClass() {
-    return myTargetClass;
-  }
-
-  protected CreateFieldFix(PsiClass targetClass) {
-    myTargetClass = targetClass;
-  }
-
-  public boolean isAvailable() {
-    return myTargetClass.isValid();
-  }
-
-  protected void doFix(@Nonnull Project project,
-                       @Nonnull @GrModifier.ModifierConstant String[] modifiers,
-                       @Nonnull @NonNls String fieldName,
-                       @Nonnull TypeConstraint[] typeConstraints,
-                       @Nonnull PsiElement context) throws IncorrectOperationException {
-    JVMElementFactory factory = JVMElementFactories.getFactory(myTargetClass.getLanguage(), project);
-    if (factory == null) {
-      return;
+    protected PsiClass getTargetClass() {
+        return myTargetClass;
     }
 
-    PsiField field = factory.createField(fieldName, PsiType.INT);
-    if (myTargetClass instanceof GroovyScriptClass) {
-      field.getModifierList().addAnnotation(GroovyCommonClassNames.GROOVY_TRANSFORM_FIELD);
+    protected CreateFieldFix(PsiClass targetClass) {
+        myTargetClass = targetClass;
     }
 
-    for (@GrModifier.ModifierConstant String modifier : modifiers) {
-      PsiUtil.setModifierProperty(field, modifier, true);
+    public boolean isAvailable() {
+        return myTargetClass.isValid();
     }
 
-    field = CreateFieldFromUsageHelper.insertField(myTargetClass, field, context);
-    JavaCodeStyleManager.getInstance(project).shortenClassReferences(field.getParent());
+    @RequiredUIAccess
+    protected void doFix(
+        @Nonnull Project project,
+        @Nonnull @GrModifier.ModifierConstant String[] modifiers,
+        @Nonnull String fieldName,
+        @Nonnull TypeConstraint[] typeConstraints,
+        @Nonnull PsiElement context
+    ) throws IncorrectOperationException {
+        JVMElementFactory factory = JVMElementFactories.getFactory(myTargetClass.getLanguage(), project);
+        if (factory == null) {
+            return;
+        }
 
-    Editor newEditor = IntentionUtils.positionCursor(project, myTargetClass.getContainingFile(), field);
+        PsiField field = factory.createField(fieldName, PsiType.INT);
+        if (myTargetClass instanceof GroovyScriptClass) {
+            field.getModifierList().addAnnotation(GroovyCommonClassNames.GROOVY_TRANSFORM_FIELD);
+        }
 
-    Template template = CreateFieldFromUsageHelper.setupTemplate(field, typeConstraints, myTargetClass, newEditor,
-                                                                 context, false);
-    TemplateManager manager = TemplateManager.getInstance(project);
-    manager.startTemplate(newEditor, template);
-  }
+        for (@GrModifier.ModifierConstant String modifier : modifiers) {
+            PsiUtil.setModifierProperty(field, modifier, true);
+        }
+
+        field = CreateFieldFromUsageHelper.insertField(myTargetClass, field, context);
+        JavaCodeStyleManager.getInstance(project).shortenClassReferences(field.getParent());
+
+        Editor newEditor = IntentionUtils.positionCursor(project, myTargetClass.getContainingFile(), field);
+
+        Template template =
+            CreateFieldFromUsageHelper.setupTemplate(field, typeConstraints, myTargetClass, newEditor, context, false);
+        TemplateManager manager = TemplateManager.getInstance(project);
+        manager.startTemplate(newEditor, template);
+    }
 }

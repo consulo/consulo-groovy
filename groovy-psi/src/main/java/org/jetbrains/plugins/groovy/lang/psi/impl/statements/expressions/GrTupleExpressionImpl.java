@@ -16,50 +16,48 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions;
 
-import com.intellij.java.language.psi.CommonClassNames;
 import com.intellij.java.language.psi.PsiType;
+import consulo.java.language.module.util.JavaClassNames;
 import consulo.language.ast.ASTNode;
 import consulo.language.psi.PsiElement;
 import consulo.util.collection.ArrayUtil;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrTupleExpression;
-
-import jakarta.annotation.Nonnull;
 
 /**
  * @author ilyas
  */
 public class GrTupleExpressionImpl extends GrExpressionImpl implements GrTupleExpression {
+    @Override
+    public String toString() {
+        return "Tuple Assignment Expression";
+    }
 
-  @Override
-  public String toString() {
-    return "Tuple Assignment Expression";
-  }
+    public GrTupleExpressionImpl(@Nonnull ASTNode node) {
+        super(node);
+    }
 
-  public GrTupleExpressionImpl(@Nonnull ASTNode node) {
-    super(node);
-  }
+    @Override
+    public PsiType getType() {
+        return getTypeByFQName(JavaClassNames.JAVA_UTIL_LIST);
+    }
 
-  @Override
-  public PsiType getType() {
-    return getTypeByFQName(CommonClassNames.JAVA_UTIL_LIST);
-  }
+    @Override
+    public int indexOf(@Nonnull PsiElement element) {
+        GrExpression[] children = getExpressions();
+        return ArrayUtil.find(children, element);
+    }
 
-  @Override
-  public int indexOf(@Nonnull PsiElement element) {
-    GrExpression[] children = getExpressions();
-    return ArrayUtil.find(children, element);
-  }
+    @Override
+    @Nonnull
+    public GrExpression[] getExpressions() {
+        return findChildrenByClass(GrExpression.class);
+    }
 
-  @Override
-  @Nonnull
-  public GrExpression[] getExpressions() {
-    return findChildrenByClass(GrExpression.class);
-  }
-
-  @Override
-  public void accept(GroovyElementVisitor visitor) {
-    visitor.visitTupleExpression(this);
-  }
+    @Override
+    public void accept(GroovyElementVisitor visitor) {
+        visitor.visitTupleExpression(this);
+    }
 }

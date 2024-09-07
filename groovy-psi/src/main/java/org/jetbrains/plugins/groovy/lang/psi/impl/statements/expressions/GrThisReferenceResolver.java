@@ -13,36 +13,37 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyResolveResultImpl;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 
 /**
- * Created by Max Medvedev on 15/06/14
+ * @author Max Medvedev
+ * @since 2014-06-15
  */
 public class GrThisReferenceResolver {
-  /**
-   * @return null if ref is not actually 'this' reference
-   */
-  @Nullable
-  public static GroovyResolveResult[] resolveThisExpression(@Nonnull GrReferenceExpression ref) {
-    GrExpression qualifier = ref.getQualifier();
+    /**
+     * @return null if ref is not actually 'this' reference
+     */
+    @Nullable
+    public static GroovyResolveResult[] resolveThisExpression(@Nonnull GrReferenceExpression ref) {
+        GrExpression qualifier = ref.getQualifier();
 
-    if (qualifier == null) {
-      final PsiElement parent = ref.getParent();
-      if (parent instanceof GrConstructorInvocation) {
-        return ((GrConstructorInvocation)parent).multiResolve(false);
-      }
-      else {
-        PsiClass aClass = PsiUtil.getContextClass(ref);
-        if (aClass != null) {
-          return new GroovyResolveResultImpl[]{new GroovyResolveResultImpl(aClass, null, null, PsiSubstitutor.EMPTY, true, true)};
+        if (qualifier == null) {
+            final PsiElement parent = ref.getParent();
+            if (parent instanceof GrConstructorInvocation constructorInvocation) {
+                return constructorInvocation.multiResolve(false);
+            }
+            else {
+                PsiClass aClass = PsiUtil.getContextClass(ref);
+                if (aClass != null) {
+                    return new GroovyResolveResultImpl[]{new GroovyResolveResultImpl(aClass, null, null, PsiSubstitutor.EMPTY, true, true)};
+                }
+            }
         }
-      }
-    }
-    else if (qualifier instanceof GrReferenceExpression) {
-      GroovyResolveResult result = ((GrReferenceExpression)qualifier).advancedResolve();
-      PsiElement resolved = result.getElement();
-      if (resolved instanceof PsiClass && PsiUtil.hasEnclosingInstanceInScope((PsiClass)resolved, ref, false)) {
-        return new GroovyResolveResult[]{result};
-      }
-    }
+        else if (qualifier instanceof GrReferenceExpression referenceExpression) {
+            GroovyResolveResult result = referenceExpression.advancedResolve();
+            PsiElement resolved = result.getElement();
+            if (resolved instanceof PsiClass resolvedClass && PsiUtil.hasEnclosingInstanceInScope(resolvedClass, ref, false)) {
+                return new GroovyResolveResult[]{result};
+            }
+        }
 
-    return null;
-  }
+        return null;
+    }
 }

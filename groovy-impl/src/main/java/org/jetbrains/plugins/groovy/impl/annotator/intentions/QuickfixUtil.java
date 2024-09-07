@@ -15,15 +15,17 @@
  */
 package org.jetbrains.plugins.groovy.impl.annotator.intentions;
 
-import com.intellij.java.language.psi.CommonClassNames;
 import com.intellij.java.language.psi.PsiClass;
 import com.intellij.java.language.psi.PsiClassType;
 import com.intellij.java.language.psi.PsiType;
 import com.intellij.java.language.psi.util.PsiTypesUtil;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.java.language.module.util.JavaClassNames;
 import consulo.language.editor.FileModificationService;
 import consulo.language.psi.PsiFile;
 import consulo.project.Project;
 import consulo.util.collection.ArrayUtil;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.impl.annotator.intentions.dynamic.ParamInfo;
 import org.jetbrains.plugins.groovy.impl.annotator.intentions.dynamic.ui.DynamicElementSettings;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
@@ -37,184 +39,144 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUt
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 import org.jetbrains.plugins.groovy.lang.resolve.ResolveUtil;
 
-import jakarta.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 /**
- * User: Dmitry.Krasilschikov
- * Date: 20.12.2007
+ * @author Dmitry.Krasilschikov
+ * @since 2007-12-20
  */
-public class QuickfixUtil
-{
-	@Nullable
-	public static PsiClass findTargetClass(GrReferenceExpression refExpr, boolean compileStatic)
-	{
-		if(refExpr.getQualifier() == null)
-		{
-			return PsiUtil.getContextClass(refExpr);
-		}
+public class QuickfixUtil {
+    @Nullable
+    public static PsiClass findTargetClass(GrReferenceExpression refExpr, boolean compileStatic) {
+        if (refExpr.getQualifier() == null) {
+            return PsiUtil.getContextClass(refExpr);
+        }
 
-		PsiType type = PsiImplUtil.getQualifierType(refExpr);
+        PsiType type = PsiImplUtil.getQualifierType(refExpr);
 
-		if(type == null && compileStatic)
-		{
-			return GroovyPsiManager.getInstance(refExpr.getProject()).findClassWithCache(CommonClassNames
-					.JAVA_LANG_OBJECT, refExpr.getResolveScope());
-		}
-		if(!(type instanceof PsiClassType))
-		{
-			return null;
-		}
-		return ((PsiClassType) type).resolve();
-	}
+        if (type == null && compileStatic) {
+            return GroovyPsiManager.getInstance(refExpr.getProject())
+                .findClassWithCache(JavaClassNames.JAVA_LANG_OBJECT, refExpr.getResolveScope());
+        }
+        return type instanceof PsiClassType classType ? classType.resolve() : null;
+    }
 
-	public static boolean isStaticCall(GrReferenceExpression refExpr)
-	{
+    public static boolean isStaticCall(GrReferenceExpression refExpr) {
+        //todo: look more carefully
+        GrExpression qualifierExpression = refExpr.getQualifierExpression();
 
-		//todo: look more carefully
-		GrExpression qualifierExpression = refExpr.getQualifierExpression();
+        if (qualifierExpression instanceof GrReferenceExpression referenceExpression) {
+            GroovyPsiElement resolvedElement = ResolveUtil.resolveProperty(referenceExpression, referenceExpression.getReferenceName());
+            return resolvedElement instanceof PsiClass;
+        }
+        else {
+            return false;
+        }
+    }
 
-		if(!(qualifierExpression instanceof GrReferenceExpression))
-		{
-			return false;
-		}
+    public static boolean ensureFileWritable(Project project, PsiFile file) {
+        return FileModificationService.getInstance().preparePsiElementsForWrite(file);
+    }
 
-		GrReferenceExpression referenceExpression = (GrReferenceExpression) qualifierExpression;
-		GroovyPsiElement resolvedElement = ResolveUtil.resolveProperty(referenceExpression,
-				referenceExpression.getReferenceName());
+    public static List<ParamInfo> swapArgumentsAndTypes(String[] names, PsiType[] types) {
+        List<ParamInfo> result = new ArrayList<>();
 
-		if(resolvedElement == null)
-		{
-			return false;
-		}
-		if(resolvedElement instanceof PsiClass)
-		{
-			return true;
-		}
+        if (names.length != types.length) {
+            return Collections.emptyList();
+        }
 
-		return false;
-	}
+        for (int i = 0; i < names.length; i++) {
+            String name = names[i];
+            final PsiType type = types[i];
 
+            result.add(new ParamInfo(name, type.getCanonicalText()));
+        }
 
-	public static boolean ensureFileWritable(Project project, PsiFile file)
-	{
-		return FileModificationService.getInstance().preparePsiElementsForWrite(file);
-	}
+        return result;
+    }
 
-	public static List<ParamInfo> swapArgumentsAndTypes(String[] names, PsiType[] types)
-	{
-		List<ParamInfo> result = new ArrayList<ParamInfo>();
+    public static String[] getArgumentsTypes(List<ParamInfo> listOfPairs) {
+        final List<String> result = new ArrayList<>();
 
-		if(names.length != types.length)
-		{
-			return Collections.emptyList();
-		}
+        if (listOfPairs == null) {
+            return ArrayUtil.EMPTY_STRING_ARRAY;
+        }
+        for (ParamInfo listOfPair : listOfPairs) {
+            String type = PsiTypesUtil.unboxIfPossible(listOfPair.type);
+            result.add(type);
+        }
 
-		for(int i = 0; i < names.length; i++)
-		{
-			String name = names[i];
-			final PsiType type = types[i];
+        return ArrayUtil.toStringArray(result);
+    }
 
-			result.add(new ParamInfo(name, type.getCanonicalText()));
-		}
+    public static String[] getArgumentsNames(List<ParamInfo> listOfPairs) {
+        final ArrayList<String> result = new ArrayList<>();
+        for (ParamInfo listOfPair : listOfPairs) {
+            String name = listOfPair.name;
+            result.add(name);
+        }
 
-		return result;
-	}
+        return ArrayUtil.toStringArray(result);
+    }
 
-	public static String[] getArgumentsTypes(List<ParamInfo> listOfPairs)
-	{
-		final List<String> result = new ArrayList<String>();
+    public static String shortenType(String typeText) {
+        if (typeText == null) {
+            return "";
+        }
+        final int i = typeText.lastIndexOf(".");
+        if (i != -1) {
+            return typeText.substring(i + 1);
+        }
+        return typeText;
+    }
 
-		if(listOfPairs == null)
-		{
-			return ArrayUtil.EMPTY_STRING_ARRAY;
-		}
-		for(ParamInfo listOfPair : listOfPairs)
-		{
-			String type = PsiTypesUtil.unboxIfPossible(listOfPair.type);
-			result.add(type);
-		}
+    @RequiredReadAction
+    public static DynamicElementSettings createSettings(GrReferenceExpression referenceExpression) {
+        DynamicElementSettings settings = new DynamicElementSettings();
+        final PsiClass containingClass = findTargetClass(referenceExpression, false);
 
-		return ArrayUtil.toStringArray(result);
-	}
+        assert containingClass != null;
+        String className = containingClass.getQualifiedName();
+        className = className == null ? containingClass.getContainingFile().getName() : className;
 
-	public static String[] getArgumentsNames(List<ParamInfo> listOfPairs)
-	{
-		final ArrayList<String> result = new ArrayList<String>();
-		for(ParamInfo listOfPair : listOfPairs)
-		{
-			String name = listOfPair.name;
-			result.add(name);
-		}
+        if (isStaticCall(referenceExpression)) {
+            settings.setStatic(true);
+        }
 
-		return ArrayUtil.toStringArray(result);
-	}
+        settings.setContainingClassName(className);
+        settings.setName(referenceExpression.getReferenceName());
 
-	public static String shortenType(String typeText)
-	{
-		if(typeText == null)
-		{
-			return "";
-		}
-		final int i = typeText.lastIndexOf(".");
-		if(i != -1)
-		{
-			return typeText.substring(i + 1);
-		}
-		return typeText;
-	}
+        if (PsiUtil.isCall(referenceExpression)) {
+            List<PsiType> unboxedTypes = new ArrayList<>();
+            for (PsiType type : PsiUtil.getArgumentTypes(referenceExpression, false)) {
+                unboxedTypes.add(TypesUtil.unboxPrimitiveTypeWrapperAndEraseGenerics(type));
+            }
+            final PsiType[] types = unboxedTypes.toArray(PsiType.createArray(unboxedTypes.size()));
+            final String[] names = GroovyNamesUtil.getMethodArgumentsNames(referenceExpression.getProject(), types);
+            final List<ParamInfo> infos = swapArgumentsAndTypes(names, types);
 
-	public static DynamicElementSettings createSettings(GrReferenceExpression referenceExpression)
-	{
-		DynamicElementSettings settings = new DynamicElementSettings();
-		final PsiClass containingClass = findTargetClass(referenceExpression, false);
+            settings.setMethod(true);
+            settings.setParams(infos);
+        }
+        else {
+            settings.setMethod(false);
+        }
+        return settings;
+    }
 
-		assert containingClass != null;
-		String className = containingClass.getQualifiedName();
-		className = className == null ? containingClass.getContainingFile().getName() : className;
+    @RequiredReadAction
+    public static DynamicElementSettings createSettings(GrArgumentLabel label, PsiClass targetClass) {
+        DynamicElementSettings settings = new DynamicElementSettings();
 
-		if(isStaticCall(referenceExpression))
-		{
-			settings.setStatic(true);
-		}
+        assert targetClass != null;
+        String className = targetClass.getQualifiedName();
+        className = className == null ? targetClass.getContainingFile().getName() : className;
 
-		settings.setContainingClassName(className);
-		settings.setName(referenceExpression.getReferenceName());
+        settings.setContainingClassName(className);
+        settings.setName(label.getName());
 
-		if(PsiUtil.isCall(referenceExpression))
-		{
-			List<PsiType> unboxedTypes = new ArrayList<PsiType>();
-			for(PsiType type : PsiUtil.getArgumentTypes(referenceExpression, false))
-			{
-				unboxedTypes.add(TypesUtil.unboxPrimitiveTypeWrapperAndEraseGenerics(type));
-			}
-			final PsiType[] types = unboxedTypes.toArray(PsiType.createArray(unboxedTypes.size()));
-			final String[] names = GroovyNamesUtil.getMethodArgumentsNames(referenceExpression.getProject(), types);
-			final List<ParamInfo> infos = swapArgumentsAndTypes(names, types);
-
-			settings.setMethod(true);
-			settings.setParams(infos);
-		}
-		else
-		{
-			settings.setMethod(false);
-		}
-		return settings;
-	}
-
-	public static DynamicElementSettings createSettings(GrArgumentLabel label, PsiClass targetClass)
-	{
-		DynamicElementSettings settings = new DynamicElementSettings();
-
-		assert targetClass != null;
-		String className = targetClass.getQualifiedName();
-		className = className == null ? targetClass.getContainingFile().getName() : className;
-
-		settings.setContainingClassName(className);
-		settings.setName(label.getName());
-
-		return settings;
-	}
+        return settings;
+    }
 }

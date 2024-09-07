@@ -28,34 +28,37 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyPsiElementImpl;
  * @author ilyas
  */
 public class GrArrayDeclarationImpl extends GroovyPsiElementImpl implements GrArrayDeclaration {
-  public GrArrayDeclarationImpl(@Nonnull ASTNode node) {
-    super(node);
-  }
-
-  @Override
-  public void accept(GroovyElementVisitor visitor) {
-    visitor.visitArrayDeclaration(this);
-  }
-
-  public String toString() {
-    return "Array declaration";
-  }
-
-  @Override
-  public GrExpression[] getBoundExpressions() {
-    return findChildrenByClass(GrExpression.class);
-  }
-
-  @Override
-  public int getArrayCount() {
-    final ASTNode node = getNode();
-    int num = 0;
-    ASTNode run = node.getFirstChildNode();
-    while (run != null) {
-      if (run.getElementType() == GroovyTokenTypes.mLBRACK) num++;
-      run = run.getTreeNext();
+    public GrArrayDeclarationImpl(@Nonnull ASTNode node) {
+        super(node);
     }
 
-    return num;
-  }
+    @Override
+    public void accept(GroovyElementVisitor visitor) {
+        visitor.visitArrayDeclaration(this);
+    }
+
+    @Override
+    public String toString() {
+        return "Array declaration";
+    }
+
+    @Override
+    public GrExpression[] getBoundExpressions() {
+        return findChildrenByClass(GrExpression.class);
+    }
+
+    @Override
+    public int getArrayCount() {
+        final ASTNode node = getNode();
+        int num = 0;
+        ASTNode run = node.getFirstChildNode();
+        while (run != null) {
+            if (run.getElementType() == GroovyTokenTypes.mLBRACK) {
+                num++;
+            }
+            run = run.getTreeNext();
+        }
+
+        return num;
+    }
 }

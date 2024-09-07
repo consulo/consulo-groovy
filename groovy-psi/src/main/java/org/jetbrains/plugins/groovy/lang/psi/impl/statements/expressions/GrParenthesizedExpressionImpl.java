@@ -28,30 +28,29 @@ import jakarta.annotation.Nonnull;
  * @author ilyas
  */
 public class GrParenthesizedExpressionImpl extends GrExpressionImpl implements GrParenthesizedExpression {
+    public GrParenthesizedExpressionImpl(@Nonnull ASTNode node) {
+        super(node);
+    }
 
-  public GrParenthesizedExpressionImpl(@Nonnull ASTNode node) {
-    super(node);
-  }
+    @Override
+    public void accept(GroovyElementVisitor visitor) {
+        visitor.visitParenthesizedExpression(this);
+    }
 
-  @Override
-  public void accept(GroovyElementVisitor visitor) {
-    visitor.visitParenthesizedExpression(this);
-  }
+    @Override
+    public String toString() {
+        return "Parenthesized expression";
+    }
 
-  public String toString() {
-    return "Parenthesized expression";
-  }
+    @Override
+    public PsiType getType() {
+        final GrExpression operand = getOperand();
+        return operand == null ? null : operand.getType();
+    }
 
-  @Override
-  public PsiType getType() {
-    final GrExpression operand = getOperand();
-    if (operand == null) return null;
-    return operand.getType();
-  }
-
-  @Override
-  @Nullable
-  public GrExpression getOperand() {
-    return findExpressionChild(this);
-  }
+    @Override
+    @Nullable
+    public GrExpression getOperand() {
+        return findExpressionChild(this);
+    }
 }

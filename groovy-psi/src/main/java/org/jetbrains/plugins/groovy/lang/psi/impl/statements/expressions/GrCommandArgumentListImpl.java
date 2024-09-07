@@ -26,17 +26,17 @@ import consulo.language.ast.ASTNode;
  * @author ilyas
  */
 public class GrCommandArgumentListImpl extends GrArgumentListImpl implements GrCommandArgumentList {
+    public GrCommandArgumentListImpl(@Nonnull ASTNode node) {
+        super(node);
+    }
 
-  public GrCommandArgumentListImpl(@Nonnull ASTNode node) {
-    super(node);
-  }
+    @Override
+    public String toString() {
+        return "Command arguments";
+    }
 
-  public String toString() {
-    return "Command arguments";
-  }
-
-  @Override
-  public void accept(GroovyElementVisitor visitor) {
-    visitor.visitCommandArguments(this);
-  }
+    @Override
+    public void accept(GroovyElementVisitor visitor) {
+        visitor.visitCommandArguments(this);
+    }
 }
