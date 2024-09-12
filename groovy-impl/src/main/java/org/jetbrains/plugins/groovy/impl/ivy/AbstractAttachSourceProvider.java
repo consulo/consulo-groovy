@@ -18,13 +18,13 @@ import consulo.project.ui.notification.Notification;
 import consulo.project.ui.notification.NotificationGroup;
 import consulo.project.ui.notification.NotificationType;
 import consulo.ui.Component;
-import consulo.ui.event.UIEvent;
+import consulo.ui.event.ComponentEvent;
 import consulo.util.concurrent.AsyncResult;
 import consulo.virtualFileSystem.VirtualFile;
 import consulo.virtualFileSystem.archive.ArchiveVfsUtil;
-
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -99,7 +99,7 @@ public abstract class AbstractAttachSourceProvider implements AttachSourcesProvi
     }
 
     @Override
-    public AsyncResult<Void> perform(@Nonnull List<LibraryOrderEntry> orderEntriesContainingFile, @Nonnull UIEvent<Component> uiEvent) {
+    public AsyncResult<Void> perform(@Nonnull List<LibraryOrderEntry> orderEntriesContainingFile, @Nonnull ComponentEvent<Component> uiEvent) {
       ApplicationManager.getApplication().assertIsDispatchThread();
 
       if (!mySrcFile.isValid()) {
@@ -146,7 +146,7 @@ public abstract class AbstractAttachSourceProvider implements AttachSourcesProvi
     protected abstract void storeFile(byte[] content);
 
     @Override
-    public AsyncResult<Void> perform(@Nonnull List<LibraryOrderEntry> orderEntriesContainingFile, @Nonnull UIEvent<Component> e) {
+    public AsyncResult<Void> perform(@Nonnull List<LibraryOrderEntry> orderEntriesContainingFile, @Nonnull ComponentEvent<Component> e) {
       final AsyncResult<Void> callback = AsyncResult.undefined();
 
       Task task = new Task.Backgroundable(myProject, "Downloading sources...", true) {
