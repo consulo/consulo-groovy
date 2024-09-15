@@ -20,7 +20,7 @@ import com.intellij.java.language.codeInsight.TestFrameworks;
 import com.intellij.java.language.psi.*;
 import consulo.language.editor.refactoring.RefactoringBundle;
 import consulo.language.editor.refactoring.ui.NameSuggestionsField;
-import consulo.language.editor.ui.RadioUpDownListener;
+import consulo.language.editor.ui.awt.RadioUpDownListener;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.util.PsiTreeUtil;
 import consulo.language.util.IncorrectOperationException;
@@ -150,12 +150,7 @@ public class GrIntroduceFieldDialog extends DialogWrapper implements GrIntroduce
       myReplaceAllOccurrencesCheckBox.setVisible(false);
     }
 
-    myNameField.addDataChangedListener(new NameSuggestionsField.DataChanged() {
-      @Override
-      public void dataChanged() {
-        validateOKAction();
-      }
-    });
+    myNameField.addDataChangedListener(() -> validateOKAction());
 
     ItemListener l = new ItemListener() {
       @Override

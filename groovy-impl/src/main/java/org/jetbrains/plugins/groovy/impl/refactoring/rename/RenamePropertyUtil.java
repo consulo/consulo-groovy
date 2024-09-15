@@ -21,7 +21,7 @@ import com.intellij.java.language.psi.PsiMember;
 import com.intellij.java.language.psi.PsiModifier;
 import consulo.application.ApplicationManager;
 import consulo.language.editor.refactoring.RefactoringBundle;
-import consulo.language.editor.ui.RadioUpDownListener;
+import consulo.language.editor.ui.awt.RadioUpDownListener;
 import consulo.language.psi.PsiElement;
 import consulo.ui.ex.awt.DialogWrapper;
 import consulo.usage.UsageViewUtil;

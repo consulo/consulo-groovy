@@ -44,6 +44,7 @@ import consulo.ui.ex.RecentsManager;
 import consulo.ui.ex.awt.DialogWrapper;
 import consulo.ui.ex.awt.Messages;
 import consulo.ui.ex.awt.UIUtil;
+import consulo.ui.ex.awtUnsafe.TargetAWT;
 import consulo.util.collection.ArrayUtil;
 import consulo.util.collection.ContainerUtil;
 import consulo.util.lang.Comparing;
@@ -312,7 +313,7 @@ public class GrIntroduceConstantDialog extends DialogWrapper implements GrIntrod
       myJavaVisibilityPanel.disableAllButPublic();
     }
     else {
-      UIUtil.setEnabled(myJavaVisibilityPanel, true, true);
+      UIUtil.setEnabled(TargetAWT.to(myJavaVisibilityPanel.getComponent()), true, true);
       // exclude all modifiers not visible from all occurrences
       final Set<String> visible = new HashSet<String>();
       visible.add(PsiModifier.PRIVATE);
