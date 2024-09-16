@@ -15,140 +15,61 @@
  */
 package org.jetbrains.plugins.groovy.impl.template;
 
-import jakarta.annotation.Nonnull;
-
-import consulo.language.editor.template.context.EverywhereContextType;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.language.editor.template.context.BaseTemplateContextType;
 import consulo.language.editor.template.context.TemplateContextType;
-import consulo.language.psi.*;
-import consulo.language.psi.util.PsiTreeUtil;
-import consulo.util.lang.function.Condition;
 import consulo.language.pattern.PlatformPatterns;
 import consulo.language.psi.PsiElement;
-import consulo.language.psi.PsiWhiteSpace;
+import consulo.language.psi.PsiFile;
 import consulo.language.psi.PsiUtilCore;
+import consulo.language.psi.PsiWhiteSpace;
+import consulo.language.psi.util.PsiTreeUtil;
 import consulo.language.util.ProcessingContext;
-import org.jetbrains.annotations.NonNls;
-
+import consulo.localize.LocalizeValue;
+import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.GroovyFileType;
-import org.jetbrains.plugins.groovy.impl.lang.completion.GroovyCompletionData;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrCodeBlock;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrCall;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 
 /**
  * @author peter
  */
-public abstract class GroovyTemplateContextType extends TemplateContextType {
+public abstract class GroovyTemplateContextType extends BaseTemplateContextType {
 
-  protected GroovyTemplateContextType(@Nonnull @NonNls String id,
-                                @Nonnull String presentableName,
-                                @Nullable Class<? extends TemplateContextType> baseContextType) {
-    super(id, presentableName, baseContextType);
-  }
-
-  public boolean isInContext(@Nonnull final PsiFile file, final int offset) {
-    if (PsiUtilCore.getLanguageAtOffset(file, offset).isKindOf(GroovyFileType.GROOVY_LANGUAGE)) {
-      PsiElement element = file.findElementAt(offset);
-      if (element instanceof PsiWhiteSpace) {
-        return false;
-      }
-      return element != null && isInContext(element);
-    }
-
-    return false;
-  }
-
-  protected abstract boolean isInContext(@Nonnull PsiElement element);
-
-  public static class Generic extends GroovyTemplateContextType {
-    public Generic() {
-      super("GROOVY", "Groovy", EverywhereContextType.class);
+    protected GroovyTemplateContextType(@Nonnull String id,
+                                        @Nonnull LocalizeValue presentableName,
+                                        @Nullable Class<? extends TemplateContextType> baseContextType) {
+        super(id, presentableName, baseContextType);
     }
 
     @Override
-    protected boolean isInContext(@Nonnull PsiElement element) {
-      return true;
-    }
-  }
-
-  public static class Statement extends GroovyTemplateContextType {
-    public Statement() {
-      super("GROOVY_STATEMENT", "Statement", Generic.class);
-    }
-
-    @Override
-    protected boolean isInContext(@Nonnull PsiElement element) {
-      PsiElement stmt = PsiTreeUtil.findFirstParent(element, new Condition<PsiElement>() {
-        @Override
-        public boolean value(PsiElement element11) {
-          return PsiUtil.isExpressionStatement(element11);
+    public boolean isInContext(@Nonnull final PsiFile file, final int offset) {
+        if (PsiUtilCore.getLanguageAtOffset(file, offset).isKindOf(GroovyFileType.GROOVY_LANGUAGE)) {
+            PsiElement element = file.findElementAt(offset);
+            if (element instanceof PsiWhiteSpace) {
+                return false;
+            }
+            return element != null && isInContext(element);
         }
-      });
 
-      return !isAfterExpression(element) && stmt != null && stmt.getTextRange().getStartOffset() == element.getTextRange().getStartOffset();
-    }
-
-  }
-  public static class Expression extends GroovyTemplateContextType {
-
-    public Expression() {
-      super("GROOVY_EXPRESSION", "Expression", Generic.class);
-    }
-
-    @Override
-    protected boolean isInContext(@Nonnull PsiElement element) {
-      return isExpressionContext(element);
-    }
-
-    private static boolean isExpressionContext(PsiElement element) {
-      final PsiElement parent = element.getParent();
-      if (!(parent instanceof GrReferenceExpression)) {
         return false;
-      }
-      if (((GrReferenceExpression)parent).isQualified()) {
-        return false;
-      }
-      if (parent.getParent() instanceof GrCall) {
-        return false;
-      }
-      return !isAfterExpression(element);
-    }
-  }
-
-  private static boolean isAfterExpression(PsiElement element) {
-    ProcessingContext context = new ProcessingContext();
-    if (PlatformPatterns.psiElement().afterLeaf(
-      PlatformPatterns.psiElement().inside(PlatformPatterns.psiElement(GrExpression.class).save("prevExpr"))).accepts(element, context)) {
-      PsiElement prevExpr = (PsiElement)context.get("prevExpr");
-      if (prevExpr.getTextRange().getEndOffset() <= element.getTextRange().getStartOffset()) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  public static class Declaration extends GroovyTemplateContextType {
-    public Declaration() {
-      super("GROOVY_DECLARATION", "Declaration", Generic.class);
     }
 
-    @Override
-    protected boolean isInContext(@Nonnull PsiElement element) {
-      if (PsiTreeUtil.getParentOfType(element, GrCodeBlock.class, false, GrTypeDefinition.class) != null) {
-        return false;
-      }
+    @RequiredReadAction
+    protected abstract boolean isInContext(@Nonnull PsiElement element);
 
-      if (element instanceof PsiComment) {
+    @RequiredReadAction
+    protected static boolean isAfterExpression(PsiElement element) {
+        ProcessingContext context = new ProcessingContext();
+        if (PlatformPatterns.psiElement().afterLeaf(
+            PlatformPatterns.psiElement().inside(PlatformPatterns.psiElement(GrExpression.class).save("prevExpr"))).accepts(element, context)) {
+            PsiElement prevExpr = (PsiElement) context.get("prevExpr");
+            if (prevExpr.getTextRange().getEndOffset() <= element.getTextRange().getStartOffset()) {
+                return true;
+            }
+        }
         return false;
-      }
-
-      return GroovyCompletionData.suggestClassInterfaceEnum(element) || GroovyCompletionData.suggestFinalDef(element);
     }
-  }
-
 
 }

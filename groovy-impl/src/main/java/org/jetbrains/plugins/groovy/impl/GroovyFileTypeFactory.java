@@ -27,6 +27,7 @@ import org.jetbrains.plugins.groovy.GroovyFileType;
  */
 @ExtensionImpl
 public class GroovyFileTypeFactory extends FileTypeFactory {
+  @Override
   public void createFileTypes(@Nonnull FileTypeConsumer consumer) {
     consumer.consume(GroovyFileType.GROOVY_FILE_TYPE);
     consumer.consume(GroovyFileType.GROOVY_FILE_TYPE, "gdsl");

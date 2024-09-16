@@ -109,16 +109,9 @@
   <extensions defaultExtensionNs="com.intellij">
 
 
-
-    <liveTemplateContext implementation="org.jetbrains.plugins.groovy.impl.template.GroovyTemplateContextType$Generic"/>
-    <liveTemplateContext implementation="org.jetbrains.plugins.groovy.impl.template.GroovyTemplateContextType$Expression"/>
-    <liveTemplateContext implementation="org.jetbrains.plugins.groovy.impl.template.GroovyTemplateContextType$Statement"/>
-    <liveTemplateContext implementation="org.jetbrains.plugins.groovy.impl.template.GroovyTemplateContextType$Declaration"/>
-
     <bundleLiveTemplateSet path="liveTemplates/Groovy"/>
 
     <stubElementTypeHolder class="org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes"/>
-
 
 
     <patterns.patternClass className="org.jetbrains.plugins.groovy.lang.psi.patterns.GroovyPatterns" alias="groovy"/>
