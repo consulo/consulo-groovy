@@ -18,6 +18,7 @@ package org.jetbrains.plugins.groovy.impl.annotator.intentions;
 import com.intellij.java.impl.codeInsight.ExpectedTypeInfo;
 import com.intellij.java.impl.codeInsight.daemon.impl.quickfix.CreateFieldFromUsageHelper;
 import com.intellij.java.impl.codeInsight.daemon.impl.quickfix.GuessTypeParameters;
+import com.intellij.java.impl.codeInsight.template.impl.ShortenFQNamesProcessor;
 import com.intellij.java.language.psi.PsiClass;
 import com.intellij.java.language.psi.PsiField;
 import com.intellij.java.language.psi.PsiSubstitutor;
@@ -97,7 +98,7 @@ public class GroovyCreateFieldFromUsageHelper implements CreateFieldFromUsageHel
         editor.getDocument().deleteString(range.getStartOffset(), range.getEndOffset());
 
         if (expectedTypes instanceof ExpectedTypeInfo[] expectedTypeInfos && expectedTypeInfos.length > 1) {
-            template.setToShortenLongNames(false);
+            template.setOption(ShortenFQNamesProcessor.KEY, false);
         }
         return template;
     }
