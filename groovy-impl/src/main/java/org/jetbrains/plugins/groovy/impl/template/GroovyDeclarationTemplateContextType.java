@@ -1,5 +1,6 @@
 package org.jetbrains.plugins.groovy.impl.template;
 
+import com.intellij.java.impl.codeInsight.template.JavaLikeDeclarationContextType;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.annotation.component.ExtensionImpl;
 import consulo.language.psi.PsiComment;
@@ -12,7 +13,7 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrCodeBlock;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
 
 @ExtensionImpl
-public class GroovyDeclarationTemplateContextType extends GroovyTemplateContextType {
+public class GroovyDeclarationTemplateContextType extends GroovyTemplateContextType implements JavaLikeDeclarationContextType {
     public GroovyDeclarationTemplateContextType() {
         super("GROOVY_DECLARATION", LocalizeValue.localizeTODO("Declaration"), GroovyGenericTemplateContextType.class);
     }
