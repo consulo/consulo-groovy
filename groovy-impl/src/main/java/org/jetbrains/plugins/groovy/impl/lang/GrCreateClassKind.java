@@ -1,24 +1,34 @@
 package org.jetbrains.plugins.groovy.impl.lang;
 
 import com.intellij.java.analysis.impl.codeInsight.daemon.impl.quickfix.ClassKind;
+import consulo.java.language.localize.JavaLanguageLocalize;
+import consulo.localize.LocalizeValue;
+import jakarta.annotation.Nonnull;
 
 /**
- * Created by Max Medvedev on 28/05/14
+ * @author Max Medvedev
+ * @since 2014-05-28
  */
 public enum GrCreateClassKind implements ClassKind {
-    CLASS("class"),
-    INTERFACE("interface"),
-    TRAIT("trait"),
-    ENUM("enum"),
-    ANNOTATION("annotation");
+    CLASS(JavaLanguageLocalize.elementClass()),
+    INTERFACE(JavaLanguageLocalize.elementInterface()),
+    TRAIT(LocalizeValue.localizeTODO("trait")),
+    ENUM(JavaLanguageLocalize.elementEnum()),
+    ANNOTATION(JavaLanguageLocalize.elementAnnotation());
 
-    private final String myDescription;
+    private final LocalizeValue myDescription;
 
-    GrCreateClassKind(final String description) {
+    GrCreateClassKind(@Nonnull LocalizeValue description) {
         myDescription = description;
     }
 
-    public String getDescription() {
+    @Override
+    public LocalizeValue getDescriptionValue() {
         return myDescription;
+    }
+
+    @Override
+    public String getDescription() {
+        return myDescription.get();
     }
 }
