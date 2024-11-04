@@ -15,6 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi;
 
+import consulo.language.psi.PsiElementVisitor;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocComment;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocFieldReference;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocMethodParameter;
@@ -70,7 +71,7 @@ import org.jetbrains.plugins.groovy.lang.psi.api.types.*;
 /**
  * @author ven
  */
-public abstract class GroovyElementVisitor
+public abstract class GroovyElementVisitor extends PsiElementVisitor
 {
 	public void visitElement(GroovyPsiElement element)
 	{

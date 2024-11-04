@@ -15,11 +15,14 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi;
 
+import consulo.language.psi.PsiRecursiveVisitor;
+
 /**
  * @author ven
  */
-public abstract class GroovyRecursiveElementVisitor extends GroovyElementVisitor {
+public abstract class GroovyRecursiveElementVisitor extends GroovyElementVisitor implements PsiRecursiveVisitor {
 
+  @Override
   public void visitElement(GroovyPsiElement element) {
     element.acceptChildren(this);
   }
