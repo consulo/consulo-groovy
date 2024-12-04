@@ -19,13 +19,13 @@ package org.jetbrains.plugins.groovy.impl.mvc;
 import consulo.annotation.component.ComponentScope;
 import consulo.annotation.component.ServiceAPI;
 import consulo.annotation.component.ServiceImpl;
-import consulo.application.AllIcons;
 import consulo.application.Application;
 import consulo.application.ApplicationManager;
 import consulo.application.progress.ProgressIndicator;
 import consulo.disposer.Disposable;
 import consulo.disposer.Disposer;
 import consulo.document.FileDocumentManager;
+import consulo.execution.icon.ExecutionIconGroup;
 import consulo.execution.ui.console.ConsoleViewContentType;
 import consulo.execution.ui.console.TextConsoleBuilderFactory;
 import consulo.execution.ui.layout.PlaceInGrid;
@@ -60,12 +60,12 @@ import consulo.util.dataholder.Key;
 import consulo.util.lang.ref.Ref;
 import consulo.virtualFileSystem.LocalFileSystem;
 import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.plugins.groovy.JetgroovyIcons;
 
-import jakarta.annotation.Nullable;
 import javax.swing.*;
 import java.awt.*;
 import java.io.OutputStreamWriter;
@@ -385,7 +385,7 @@ public class MvcConsole implements Disposable {
     private ProcessHandler myHandler = null;
 
     public MyKillProcessAction() {
-      super("Kill process", "Kill process", AllIcons.Debugger.KillProcess);
+      super("Kill process", "Kill process", ExecutionIconGroup.actionKillprocess());
     }
 
     public void setHandler(@Nullable ProcessHandler handler) {
