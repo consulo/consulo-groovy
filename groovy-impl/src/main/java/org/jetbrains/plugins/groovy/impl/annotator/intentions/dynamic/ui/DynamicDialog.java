@@ -17,7 +17,6 @@ package org.jetbrains.plugins.groovy.impl.annotator.intentions.dynamic.ui;
 
 import com.intellij.java.language.psi.*;
 import consulo.document.Document;
-import consulo.ide.impl.idea.openapi.command.undo.GlobalUndoableAction;
 import consulo.language.editor.DaemonCodeAnalyzer;
 import consulo.language.editor.ui.awt.EditorComboBoxEditor;
 import consulo.language.psi.PsiDocumentManager;
@@ -33,9 +32,7 @@ import consulo.ui.ex.awt.IdeBorderFactory;
 import consulo.ui.ex.awt.Messages;
 import consulo.ui.ex.awt.ValidationInfo;
 import consulo.ui.ex.awt.table.JBTable;
-import consulo.undoRedo.CommandProcessor;
-import consulo.undoRedo.ProjectUndoManager;
-import consulo.undoRedo.UnexpectedUndoException;
+import consulo.undoRedo.*;
 import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.impl.annotator.intentions.QuickfixUtil;
