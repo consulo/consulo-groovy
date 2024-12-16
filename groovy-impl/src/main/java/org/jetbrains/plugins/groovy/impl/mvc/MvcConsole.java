@@ -31,6 +31,7 @@ import consulo.execution.ui.console.TextConsoleBuilderFactory;
 import consulo.execution.ui.layout.PlaceInGrid;
 import consulo.execution.ui.layout.RunnerLayoutUi;
 import consulo.execution.ui.layout.RunnerLayoutUiFactory;
+import consulo.groovy.psi.icon.GroovyPsiIconGroup;
 import consulo.ide.ServiceManager;
 import consulo.ide.impl.idea.execution.impl.ConsoleViewImpl;
 import consulo.logging.Logger;
@@ -64,7 +65,6 @@ import jakarta.annotation.Nullable;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.plugins.groovy.JetgroovyIcons;
 
 import javax.swing.*;
 import java.awt.*;
@@ -103,7 +103,7 @@ public class MvcConsole implements Disposable {
     Disposer.register(this, myConsole);
 
     myToolWindow = ToolWindowManager.getInstance(myProject).registerToolWindow(TOOL_WINDOW_ID, false, ToolWindowAnchor.BOTTOM, this, true);
-    myToolWindow.setIcon(JetgroovyIcons.Groovy.Groovy_13x13);
+    myToolWindow.setIcon(GroovyPsiIconGroup.groovyGroovy_16x16());
 
     myContent = setUpToolWindow();
   }
@@ -334,7 +334,7 @@ public class MvcConsole implements Disposable {
     myKillAction.setHandler(handler);
 
     final MvcFramework framework = MvcFramework.getInstance(module);
-    myToolWindow.setIcon(framework == null ? JetgroovyIcons.Groovy.Groovy_13x13 : framework.getToolWindowIcon());
+    myToolWindow.setIcon(framework == null ? GroovyPsiIconGroup.groovyGroovy_16x16() : framework.getToolWindowIcon());
 
     myContent.setDisplayName((framework == null ? "" : framework.getDisplayName() + ":") + "Executing...");
     myConsole.scrollToEnd();

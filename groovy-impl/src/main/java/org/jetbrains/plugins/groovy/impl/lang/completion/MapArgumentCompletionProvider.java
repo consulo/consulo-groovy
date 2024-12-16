@@ -15,8 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.impl.lang.completion;
 
+import consulo.groovy.psi.icon.GroovyPsiIconGroup;
 import consulo.language.editor.completion.*;
-import consulo.language.editor.completion.CompletionType;
 import consulo.language.editor.completion.lookup.LookupElementBuilder;
 import consulo.language.pattern.ElementPattern;
 import consulo.language.pattern.PlatformPatterns;
@@ -24,10 +24,8 @@ import consulo.language.pattern.StandardPatterns;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiRecursiveElementWalkingVisitor;
 import consulo.language.util.ProcessingContext;
-import consulo.language.editor.completion.CompletionProvider;
-import consulo.language.editor.completion.CompletionContributor;
+import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
-import org.jetbrains.plugins.groovy.JetgroovyIcons;
 import org.jetbrains.plugins.groovy.extensions.GroovyNamedArgumentProvider;
 import org.jetbrains.plugins.groovy.extensions.NamedArgumentDescriptor;
 import org.jetbrains.plugins.groovy.impl.highlighter.GroovySyntaxHighlighter;
@@ -41,8 +39,6 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrCall;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyNamesUtil;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
-
-import jakarta.annotation.Nonnull;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -105,7 +101,7 @@ class MapArgumentCompletionProvider implements CompletionProvider
         lookup.withItemTextForeground(GroovySyntaxHighlighter.MAP_KEY.getDefaultAttributes().getForegroundColor());
       }
       else {
-        lookup = lookup.withIcon(JetgroovyIcons.Groovy.DynamicProperty);
+        lookup = lookup.withIcon(GroovyPsiIconGroup.groovyProperty());
       }
       
       result.addElement(lookup);

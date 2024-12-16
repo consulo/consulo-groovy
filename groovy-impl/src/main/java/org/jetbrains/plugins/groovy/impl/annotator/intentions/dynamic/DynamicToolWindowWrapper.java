@@ -24,6 +24,7 @@ import consulo.colorScheme.TextAttributes;
 import consulo.dataContext.DataContext;
 import consulo.dataContext.DataProvider;
 import consulo.document.Document;
+import consulo.groovy.psi.icon.GroovyPsiIconGroup;
 import consulo.ide.ServiceManager;
 import consulo.ide.impl.idea.ui.treeStructure.treetable.ListTreeTableModelOnColumns;
 import consulo.ide.impl.idea.util.containers.Convertor;
@@ -134,7 +135,7 @@ public class DynamicToolWindowWrapper {
     if (myToolWindow == null) {
       myToolWindow = ToolWindowManager.getInstance(myProject)
                                       .registerToolWindow(GroovyBundle.message("dynamic.tool.window.id"), true, ToolWindowAnchor.RIGHT);
-      myToolWindow.setIcon(JetgroovyIcons.Groovy.DynamicProperty_13);
+      myToolWindow.setIcon(GroovyPsiIconGroup.groovyProperty());
       myToolWindow.setTitle(GroovyBundle.message("dynamic.window"));
       myToolWindow.setToHideOnEmptyContent(true);
 
