@@ -21,13 +21,15 @@ import consulo.codeEditor.Editor;
 import consulo.document.util.TextRange;
 import consulo.language.ast.ASTNode;
 import consulo.language.ast.IElementType;
-import consulo.language.editor.refactoring.IntroduceTargetChooser;
+import consulo.language.editor.refactoring.introduce.IntroduceTargetChooser;
 import consulo.language.psi.PsiElement;
 import consulo.language.util.IncorrectOperationException;
 import consulo.logging.Logger;
 import consulo.project.Project;
 import consulo.undoRedo.CommandProcessor;
 import consulo.util.collection.ContainerUtil;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.impl.intentions.GroovyIntentionsBundle;
 import org.jetbrains.plugins.groovy.impl.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.impl.intentions.base.PsiElementPredicate;
@@ -42,8 +44,6 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.literal
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.literals.GrStringImpl;
 import org.jetbrains.plugins.groovy.lang.psi.util.GrStringUtil;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;

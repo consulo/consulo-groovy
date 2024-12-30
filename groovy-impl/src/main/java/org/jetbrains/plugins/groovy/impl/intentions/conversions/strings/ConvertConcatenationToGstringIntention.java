@@ -25,7 +25,7 @@ import consulo.application.ReadAction;
 import consulo.application.WriteAction;
 import consulo.codeEditor.Editor;
 import consulo.document.Document;
-import consulo.language.editor.refactoring.IntroduceTargetChooser;
+import consulo.language.editor.refactoring.introduce.IntroduceTargetChooser;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiFile;
 import consulo.language.psi.util.PsiTreeUtil;
@@ -33,6 +33,8 @@ import consulo.language.util.IncorrectOperationException;
 import consulo.project.Project;
 import consulo.undoRedo.CommandProcessor;
 import consulo.util.lang.ref.Ref;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.impl.intentions.base.ErrorUtil;
 import org.jetbrains.plugins.groovy.impl.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.impl.intentions.base.PsiElementPredicate;
@@ -54,8 +56,6 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.literal
 import org.jetbrains.plugins.groovy.lang.psi.util.GrStringUtil;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 

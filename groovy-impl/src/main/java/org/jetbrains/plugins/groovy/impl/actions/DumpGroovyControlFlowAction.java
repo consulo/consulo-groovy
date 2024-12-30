@@ -19,7 +19,7 @@ import consulo.annotation.access.RequiredReadAction;
 import consulo.application.dumb.DumbAware;
 import consulo.codeEditor.Editor;
 import consulo.language.editor.PlatformDataKeys;
-import consulo.language.editor.refactoring.IntroduceTargetChooser;
+import consulo.language.editor.refactoring.introduce.IntroduceTargetChooser;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiFile;
 import consulo.ui.annotation.RequiredUIAccess;
