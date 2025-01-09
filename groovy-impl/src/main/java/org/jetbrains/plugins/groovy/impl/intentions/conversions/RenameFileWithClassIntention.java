@@ -16,18 +16,18 @@
 package org.jetbrains.plugins.groovy.impl.intentions.conversions;
 
 import consulo.codeEditor.Editor;
-import consulo.ide.impl.idea.refactoring.openapi.impl.RenameRefactoringImpl;
+import consulo.language.editor.refactoring.RefactoringFactory;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiFile;
 import consulo.language.util.IncorrectOperationException;
 import consulo.project.Project;
 import consulo.util.io.FileUtil;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.impl.intentions.GroovyIntentionsBundle;
 import org.jetbrains.plugins.groovy.impl.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.impl.intentions.base.PsiElementPredicate;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
 
-import jakarta.annotation.Nonnull;
 import java.util.function.Consumer;
 
 /**
@@ -42,7 +42,7 @@ public class RenameFileWithClassIntention extends Intention implements Consumer<
                                   Project project,
                                   Editor editor) throws IncorrectOperationException {
     final PsiFile file = element.getContainingFile();
-    new RenameRefactoringImpl(project, file, myNewFileName, true, true).run();
+    RefactoringFactory.getInstance(project).createRename(file, myNewFileName, true, true).run();
   }
 
   @Nonnull
