@@ -21,9 +21,9 @@ import consulo.annotation.component.ExtensionImpl;
 import consulo.application.util.CachedValue;
 import consulo.application.util.CachedValueProvider;
 import consulo.application.util.CachedValuesManager;
-import consulo.ide.impl.intelliLang.inject.InjectorUtils;
-import consulo.ide.impl.intelliLang.inject.config.BaseInjection;
-import consulo.language.pattern.compiler.PatternCompilerFactory;
+import consulo.language.inject.advanced.BaseInjection;
+import consulo.language.inject.advanced.InjectorUtils;
+import consulo.language.inject.advanced.pattern.PatternCompilerFactory;
 import consulo.language.psi.*;
 import consulo.language.psi.resolve.PsiScopeProcessor;
 import consulo.language.psi.resolve.ResolveState;
@@ -33,11 +33,11 @@ import consulo.util.collection.Lists;
 import consulo.util.dataholder.Key;
 import consulo.xml.psi.xml.XmlTag;
 import consulo.xml.psi.xml.XmlText;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.lang.resolve.NonCodeMembersContributor;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
 

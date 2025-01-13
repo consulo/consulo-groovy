@@ -17,12 +17,11 @@
 package org.jetbrains.plugins.groovy.impl.inject;
 
 import consulo.annotation.component.ExtensionImpl;
-import consulo.ide.impl.psi.injection.AbstractLanguageInjectionSupport;
+import consulo.language.inject.advanced.AbstractLanguageInjectionSupport;
 import consulo.language.psi.PsiLanguageInjectionHost;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.patterns.GroovyPatterns;
-
-import jakarta.annotation.Nonnull;
 
 /**
  * @author Gregory.Shrago
