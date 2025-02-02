@@ -18,10 +18,11 @@ package org.jetbrains.plugins.groovy.impl.findUsages;
 import consulo.codeEditor.Editor;
 import consulo.document.util.TextRange;
 import consulo.externalService.statistic.FeatureUsageTracker;
-import consulo.ide.impl.idea.featureStatistics.ProductivityFeatureNames;
 import consulo.language.editor.highlight.usage.HighlightUsagesHandlerBase;
+import consulo.language.editor.util.ProductivityFeatureNames;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiFile;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.codeInspection.utils.ControlFlowUtils;
 import org.jetbrains.plugins.groovy.lang.psi.GrControlFlowOwner;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.branch.GrReturnStatement;
@@ -29,7 +30,6 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.branch.GrThrowStatem
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.controlFlow.Instruction;
 
-import jakarta.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;

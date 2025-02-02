@@ -18,7 +18,6 @@ package org.jetbrains.plugins.groovy.impl.codeInspection.unusedDef;
 import consulo.annotation.component.ExtensionImpl;
 import consulo.application.util.function.Processor;
 import consulo.document.util.TextRange;
-import consulo.ide.impl.idea.diagnostic.LogMessageEx;
 import consulo.language.ast.IElementType;
 import consulo.language.editor.inspection.ProblemHighlightType;
 import consulo.language.editor.inspection.ProblemsHolder;
@@ -28,14 +27,16 @@ import consulo.language.psi.PsiReference;
 import consulo.language.psi.scope.LocalSearchScope;
 import consulo.language.psi.search.ReferencesSearch;
 import consulo.logging.Logger;
+import consulo.logging.attachment.AttachmentFactory;
 import consulo.util.collection.primitive.ints.IntSet;
 import consulo.util.collection.primitive.ints.IntSets;
+import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NonNls;
+import org.jetbrains.plugins.groovy.codeInspection.utils.ControlFlowUtils;
 import org.jetbrains.plugins.groovy.impl.codeInspection.GroovyInspectionBundle;
 import org.jetbrains.plugins.groovy.impl.codeInspection.GroovyLocalInspectionBase;
-import org.jetbrains.plugins.groovy.codeInspection.utils.ControlFlowUtils;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GrControlFlowOwner;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
@@ -52,8 +53,6 @@ import org.jetbrains.plugins.groovy.lang.psi.dataFlow.DFAEngine;
 import org.jetbrains.plugins.groovy.lang.psi.dataFlow.reachingDefs.DefinitionMap;
 import org.jetbrains.plugins.groovy.lang.psi.dataFlow.reachingDefs.ReachingDefinitionsDfaInstance;
 import org.jetbrains.plugins.groovy.lang.psi.dataFlow.reachingDefs.ReachingDefinitionsSemilattice;
-
-import jakarta.annotation.Nonnull;
 
 import java.util.HashSet;
 import java.util.List;
@@ -199,12 +198,13 @@ public class UnusedDefInspection extends GroovyLocalInspectionBase {
       if (scope == null) {
         PsiFile file = var.getContainingFile();
         if (file == null) {
-          LogMessageEx.error(LOG, "no file??? var of type" + var.getClass().getCanonicalName());
+            LOG.error("no file??? var of type" + var.getClass().getCanonicalName());
           return false;
         }
         else {
           TextRange range = var.getTextRange();
-          LogMessageEx.error(LOG, "var: " + var.getName() + ", offset:" + (range != null ? range.getStartOffset() : -1), file.getText());
+          LOG.error("var: " + var.getName() + ", offset:" + (range != null ? range.getStartOffset() : -1),
+              AttachmentFactory.get().create("file.txt", file.getText()));
           return false;
         }
       }

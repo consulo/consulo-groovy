@@ -16,20 +16,22 @@
 package org.jetbrains.plugins.groovy.impl.codeInspection.confusing;
 
 import consulo.annotation.component.ExtensionImpl;
-import consulo.ide.impl.idea.diagnostic.LogMessageEx;
 import consulo.language.ast.IElementType;
-import consulo.language.editor.inspection.ProblemHighlightType;
-import consulo.language.psi.PsiElement;
-import consulo.project.Project;
 import consulo.language.editor.inspection.LocalQuickFix;
 import consulo.language.editor.inspection.ProblemDescriptor;
+import consulo.language.editor.inspection.ProblemHighlightType;
+import consulo.language.psi.PsiElement;
 import consulo.logging.Logger;
+import consulo.logging.attachment.AttachmentFactory;
+import consulo.project.Project;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NonNls;
+import org.jetbrains.plugins.groovy.codeInspection.utils.ControlFlowUtils;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.impl.codeInspection.GroovyInspectionBundle;
-import org.jetbrains.plugins.groovy.codeInspection.utils.ControlFlowUtils;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GrControlFlowOwner;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
@@ -42,8 +44,6 @@ import org.jetbrains.plugins.groovy.lang.psi.controlFlow.Instruction;
 import org.jetbrains.plugins.groovy.lang.psi.controlFlow.ReadWriteVariableInstruction;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
 import java.util.Iterator;
 import java.util.List;
 
@@ -103,7 +103,8 @@ public class GrUnusedIncDecInspection extends BaseInspection {
       final Instruction cur = ControlFlowUtils.findInstruction(operand, owner.getControlFlow());
 
       if (cur == null) {
-        LogMessageEx.error(LOG, "no instruction found in flow." + "operand: " + operand.getText(), owner.getText());
+        LOG.error("no instruction found in flow." + "operand: " + operand.getText(),
+            AttachmentFactory.get().create("owner.txt", owner.getText()));
       }
 
       //get write access for inc or dec

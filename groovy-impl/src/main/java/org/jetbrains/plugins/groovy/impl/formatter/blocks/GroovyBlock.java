@@ -17,12 +17,14 @@
 package org.jetbrains.plugins.groovy.impl.formatter.blocks;
 
 import consulo.document.util.TextRange;
-import consulo.ide.impl.idea.diagnostic.LogMessageEx;
 import consulo.language.ast.ASTNode;
 import consulo.language.ast.ILazyParseableElementType;
 import consulo.language.codeStyle.*;
 import consulo.language.psi.*;
 import consulo.logging.Logger;
+import consulo.logging.attachment.AttachmentFactory;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.impl.formatter.FormattingContext;
 import org.jetbrains.plugins.groovy.impl.formatter.processors.GroovyIndentProcessor;
 import org.jetbrains.plugins.groovy.impl.formatter.processors.GroovySpacingProcessor;
@@ -48,8 +50,6 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrComman
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrConditionalExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameterList;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -98,14 +98,11 @@ public class GroovyBlock implements Block, GroovyElementTypes, ASTBlock {
       try {
         mySubBlocks = new GroovyBlockGenerator(this).generateSubBlocks();
       }
-      catch (AssertionError e) {
+      catch (AssertionError | RuntimeException e) {
         final PsiFile file = myNode.getPsi().getContainingFile();
-        LogMessageEx.error(LOG, "Formatting failed for file " + file.getName(), e, file.getText(), myNode.getText());
-        mySubBlocks = new ArrayList<Block>();
-      }
-      catch (RuntimeException e) {
-        final PsiFile file = myNode.getPsi().getContainingFile();
-        LogMessageEx.error(LOG, "Formatting failed for file " + file.getName(), e, file.getText(), myNode.getText());
+        LOG.error("Formatting failed for file " + file.getName(), e,
+            AttachmentFactory.get().create("file.txt", file.getText()),
+            AttachmentFactory.get().create("node.txt", myNode.getText()));
         mySubBlocks = new ArrayList<Block>();
       }
     }

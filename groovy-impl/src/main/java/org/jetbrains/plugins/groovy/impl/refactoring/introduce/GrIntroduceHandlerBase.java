@@ -32,7 +32,6 @@ import consulo.document.Document;
 import consulo.document.RangeMarker;
 import consulo.document.util.Segment;
 import consulo.document.util.TextRange;
-import consulo.ide.impl.idea.diagnostic.LogMessageEx;
 import consulo.language.codeStyle.CodeStyleManager;
 import consulo.language.editor.highlight.HighlightManager;
 import consulo.language.editor.refactoring.RefactoringBundle;
@@ -49,6 +48,7 @@ import consulo.language.psi.search.ReferencesSearch;
 import consulo.language.psi.util.PsiTreeUtil;
 import consulo.language.util.IncorrectOperationException;
 import consulo.logging.Logger;
+import consulo.logging.attachment.AttachmentFactory;
 import consulo.project.Project;
 import consulo.project.ui.wm.WindowManager;
 import consulo.undoRedo.CommandProcessor;
@@ -786,7 +786,7 @@ public abstract class GrIntroduceHandlerBase<Settings extends GrIntroduceSetting
 
   public static void assertStatement(@Nullable PsiElement anchor, @Nonnull PsiElement scope) {
     if (!(anchor instanceof GrStatement)) {
-      LogMessageEx.error(LOG, "cannot find anchor for variable", scope.getText());
+      LOG.error("cannot find anchor for variable", AttachmentFactory.get().create("scope.txt", scope.getText()));
     }
   }
 

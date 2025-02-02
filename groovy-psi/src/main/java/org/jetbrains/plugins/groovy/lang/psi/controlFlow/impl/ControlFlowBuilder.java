@@ -17,12 +17,12 @@ package org.jetbrains.plugins.groovy.lang.psi.controlFlow.impl;
 
 import com.intellij.java.language.psi.*;
 import consulo.application.progress.ProgressManager;
-import consulo.application.util.logging.LoggerUtil;
 import consulo.language.ast.IElementType;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiFile;
 import consulo.language.psi.util.PsiTreeUtil;
 import consulo.logging.Logger;
+import consulo.logging.attachment.AttachmentFactory;
 import consulo.project.Project;
 import consulo.util.collection.ContainerUtil;
 import consulo.util.lang.Pair;
@@ -1089,7 +1089,10 @@ public class ControlFlowBuilder extends GroovyRecursiveElementVisitor {
     PsiFile file = myScope.getContainingFile();
     String fileText = file != null ? file.getText() : null;
 
-    LoggerUtil.error(LOG, descr, myScope.getText(), "\n------------------\n", fileText);
+    LOG.error(descr,
+        AttachmentFactory.get().create("scope.txt", myScope.getText()),
+        AttachmentFactory.get().create("file.txt", fileText)
+        );
   }
 
   private AfterCallInstruction addCallNode(InstructionImpl finallyInstruction, GroovyPsiElement scopeWhenAdded, InstructionImpl src) {
