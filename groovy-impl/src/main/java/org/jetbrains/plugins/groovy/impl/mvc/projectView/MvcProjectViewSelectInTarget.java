@@ -19,11 +19,13 @@ package org.jetbrains.plugins.groovy.impl.mvc.projectView;
 import consulo.annotation.component.ExtensionImpl;
 import consulo.application.dumb.DumbAware;
 import consulo.language.util.ModuleUtilCore;
+import consulo.localize.LocalizeValue;
 import consulo.project.Project;
 import consulo.project.ui.view.SelectInContext;
 import consulo.project.ui.view.SelectInTarget;
 import consulo.project.ui.wm.ToolWindowManager;
 import consulo.virtualFileSystem.VirtualFile;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.impl.mvc.MvcFramework;
 
 /**
@@ -31,57 +33,64 @@ import org.jetbrains.plugins.groovy.impl.mvc.MvcFramework;
  */
 @ExtensionImpl
 public class MvcProjectViewSelectInTarget implements SelectInTarget, DumbAware {
-
-  public boolean canSelect(SelectInContext context) {
-    final Project project = context.getProject();
-    final VirtualFile file = context.getVirtualFile();
-    final MvcFramework framework = MvcFramework.getInstance(ModuleUtilCore.findModuleForFile(file, project));
-    if (framework == null) {
-      return false;
-    }
-
-    return MvcProjectViewPane.canSelectFile(project, framework, file);
-  }
-
-  public void selectIn(SelectInContext context, final boolean requestFocus) {
-    final Project project = context.getProject();
-    final VirtualFile file = context.getVirtualFile();
-
-    final MvcFramework framework = MvcFramework.getInstance(ModuleUtilCore.findModuleForFile(file, project));
-    if (framework == null) {
-      return;
-    }
-
-    final Runnable select = new Runnable() {
-      public void run() {
-        final MvcProjectViewPane view = MvcProjectViewPane.getView(project, framework);
-        if (view != null) {
-          view.selectFile(file, requestFocus);
+    @Override
+    public boolean canSelect(SelectInContext context) {
+        final Project project = context.getProject();
+        final VirtualFile file = context.getVirtualFile();
+        final MvcFramework framework = MvcFramework.getInstance(ModuleUtilCore.findModuleForFile(file, project));
+        if (framework == null) {
+            return false;
         }
-      }
-    };
 
-    if (requestFocus) {
-      ToolWindowManager.getInstance(project).getToolWindow(MvcToolWindowDescriptor.getToolWindowId(framework)).activate(select, false);
-    } else {
-      select.run();
+        return MvcProjectViewPane.canSelectFile(project, framework, file);
     }
-  }
 
-  public String getToolWindowId() {
-    throw new UnsupportedOperationException();
-  }
+    @Override
+    public void selectIn(SelectInContext context, final boolean requestFocus) {
+        final Project project = context.getProject();
+        final VirtualFile file = context.getVirtualFile();
 
-  public String toString() {
-    return "Grails/Griffon View";
-  }
+        final MvcFramework framework = MvcFramework.getInstance(ModuleUtilCore.findModuleForFile(file, project));
+        if (framework == null) {
+            return;
+        }
 
-  public String getMinorViewId() {
-    throw new UnsupportedOperationException();
-  }
+        final Runnable select = new Runnable() {
+            @Override
+            public void run() {
+                final MvcProjectViewPane view = MvcProjectViewPane.getView(project, framework);
+                if (view != null) {
+                    view.selectFile(file, requestFocus);
+                }
+            }
+        };
 
-  public float getWeight() {
-    return (float)5.239;
-  }
+        if (requestFocus) {
+            ToolWindowManager.getInstance(project).getToolWindow(MvcToolWindowDescriptor.getToolWindowId(framework)).activate(select, false);
+        }
+        else {
+            select.run();
+        }
+    }
 
+    @Override
+    public String getToolWindowId() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Nonnull
+    @Override
+    public LocalizeValue getActionText() {
+        return LocalizeValue.localizeTODO("Grails/Griffon View");
+    }
+
+    @Override
+    public String getMinorViewId() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public float getWeight() {
+        return (float) 5.239;
+    }
 }

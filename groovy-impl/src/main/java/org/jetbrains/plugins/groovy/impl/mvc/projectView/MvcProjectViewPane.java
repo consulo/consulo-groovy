@@ -35,6 +35,7 @@ import consulo.language.editor.LangDataKeys;
 import consulo.language.editor.refactoring.ui.CopyPasteDelegator;
 import consulo.language.editor.util.EditorHelper;
 import consulo.language.psi.*;
+import consulo.localize.LocalizeValue;
 import consulo.module.Module;
 import consulo.project.Project;
 import consulo.project.ui.view.ProjectViewAutoScrollFromSourceHandler;
@@ -180,7 +181,7 @@ public class MvcProjectViewPane extends AbstractProjectViewPSIPane implements Id
     });
   }
 
-  public String getTitle() {
+  public LocalizeValue getTitle() {
     throw new UnsupportedOperationException();
   }
 
