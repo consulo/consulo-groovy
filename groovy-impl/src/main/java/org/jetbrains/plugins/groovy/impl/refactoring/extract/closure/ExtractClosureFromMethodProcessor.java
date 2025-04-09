@@ -24,9 +24,13 @@ import com.intellij.java.impl.refactoring.util.usageInfo.DefaultConstructorImpli
 import com.intellij.java.impl.refactoring.util.usageInfo.NoConstructorClassUsageInfo;
 import com.intellij.java.indexing.search.searches.MethodReferencesSearch;
 import com.intellij.java.indexing.search.searches.OverridingMethodsSearch;
-import com.intellij.java.language.psi.*;
-import consulo.application.ApplicationManager;
-import consulo.language.editor.refactoring.RefactoringBundle;
+import com.intellij.java.language.psi.PsiClass;
+import com.intellij.java.language.psi.PsiKeyword;
+import com.intellij.java.language.psi.PsiMethod;
+import com.intellij.java.language.psi.PsiType;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.application.Application;
+import consulo.language.editor.refactoring.localize.RefactoringLocalize;
 import consulo.language.editor.refactoring.ui.ConflictsDialog;
 import consulo.language.editor.refactoring.util.CommonRefactoringUtil;
 import consulo.language.psi.PsiElement;
@@ -35,17 +39,14 @@ import consulo.language.psi.PsiReference;
 import consulo.language.psi.scope.GlobalSearchScope;
 import consulo.language.psi.util.PsiTreeUtil;
 import consulo.project.Project;
+import consulo.ui.annotation.RequiredUIAccess;
 import consulo.usage.UsageInfo;
 import consulo.usage.UsageViewUtil;
 import consulo.util.collection.MultiMap;
 import consulo.util.collection.primitive.ints.IntList;
-import consulo.util.lang.ref.Ref;
-import org.jetbrains.plugins.groovy.GroovyFileType;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlock;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrOpenBlock;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
-import org.jetbrains.plugins.groovy.lang.psi.api.util.GrStatementOwner;
+import consulo.util.lang.ref.SimpleReference;
+import jakarta.annotation.Nonnull;
+import org.jetbrains.plugins.groovy.GroovyLanguage;
 import org.jetbrains.plugins.groovy.impl.refactoring.GroovyRefactoringBundle;
 import org.jetbrains.plugins.groovy.impl.refactoring.GroovyRefactoringUtil;
 import org.jetbrains.plugins.groovy.impl.refactoring.extract.ExtractUtil;
@@ -53,8 +54,11 @@ import org.jetbrains.plugins.groovy.impl.refactoring.introduce.parameter.FieldCo
 import org.jetbrains.plugins.groovy.impl.refactoring.introduce.parameter.GrExpressionWrapper;
 import org.jetbrains.plugins.groovy.impl.refactoring.introduce.parameter.GrIntroduceParameterSettings;
 import org.jetbrains.plugins.groovy.impl.refactoring.util.AnySupers;
-
-import jakarta.annotation.Nonnull;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlock;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrOpenBlock;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
+import org.jetbrains.plugins.groovy.lang.psi.api.util.GrStatementOwner;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -78,10 +82,11 @@ public class ExtractClosureFromMethodProcessor extends ExtractClosureProcessorBa
     }
 
     @Override
-    protected boolean preprocessUsages(Ref<UsageInfo[]> refUsages) {
+    @RequiredUIAccess
+    protected boolean preprocessUsages(SimpleReference<UsageInfo[]> refUsages) {
         UsageInfo[] usagesIn = refUsages.get();
-        MultiMap<PsiElement, String> conflicts = new MultiMap<PsiElement, String>();
-        final GrStatement[] statements = myHelper.getStatements();
+        MultiMap<PsiElement, String> conflicts = new MultiMap<>();
+        GrStatement[] statements = myHelper.getStatements();
 
         for (GrStatement statement : statements) {
             detectAccessibilityConflicts(statement, usagesIn, conflicts, false, myProject);
@@ -89,40 +94,40 @@ public class ExtractClosureFromMethodProcessor extends ExtractClosureProcessorBa
 
         for (UsageInfo info : usagesIn) {
             if (info instanceof OtherLanguageUsageInfo) {
-                final String lang = CommonRefactoringUtil.htmlEmphasize(info.getElement().getLanguage().getDisplayName());
+                String lang = CommonRefactoringUtil.htmlEmphasize(info.getElement().getLanguage().getDisplayName());
                 conflicts.putValue(info.getElement(), GroovyRefactoringBundle.message("cannot.process.usage.in.language.{0}", lang));
             }
         }
 
-        if (!myMethod.hasModifierProperty(PsiModifier.PRIVATE)) {
-            final AnySupers anySupers = new AnySupers();
+        if (!myMethod.isPrivate()) {
+            AnySupers anySupers = new AnySupers();
             for (GrStatement statement : statements) {
                 statement.accept(anySupers);
             }
             if (anySupers.containsSupers()) {
                 for (UsageInfo usageInfo : usagesIn) {
-                    if (!(usageInfo.getElement() instanceof PsiMethod) && !(usageInfo instanceof InternalUsageInfo)) {
-                        if (!PsiTreeUtil.isAncestor(myMethod.getContainingClass(), usageInfo.getElement(), false)) {
-                            conflicts.putValue(
-                                statements[0],
-                                RefactoringBundle.message(
-                                    "parameter.initializer.contains.0.but.not.all.calls.to.method.are.in.its.class",
-                                    CommonRefactoringUtil.htmlEmphasize(PsiKeyword.SUPER)
-                                )
-                            );
-                            break;
-                        }
+                    if (usageInfo.getElement() instanceof PsiMethod || usageInfo instanceof InternalUsageInfo
+                        || PsiTreeUtil.isAncestor(myMethod.getContainingClass(), usageInfo.getElement(), false)) {
+                        continue;
                     }
+
+                    conflicts.putValue(
+                        statements[0],
+                        RefactoringLocalize.parameterInitializerContains0ButNotAllCallsToMethodAreInItsClass(
+                            CommonRefactoringUtil.htmlEmphasize(PsiKeyword.SUPER)
+                        ).get()
+                    );
+                    break;
                 }
             }
         }
 
-        if (!conflicts.isEmpty() && ApplicationManager.getApplication().isUnitTestMode()) {
+        if (!conflicts.isEmpty() && Application.get().isUnitTestMode()) {
             throw new ConflictsInTestsException(conflicts.values());
         }
 
         if (!conflicts.isEmpty()) {
-            final ConflictsDialog conflictsDialog = prepareConflictsDialog(conflicts, usagesIn);
+            ConflictsDialog conflictsDialog = prepareConflictsDialog(conflicts, usagesIn);
             conflictsDialog.show();
             if (!conflictsDialog.isOK()) {
                 if (conflictsDialog.isShowConflicts()) {
@@ -138,25 +143,26 @@ public class ExtractClosureFromMethodProcessor extends ExtractClosureProcessorBa
 
     @Nonnull
     @Override
+    @RequiredReadAction
     protected UsageInfo[] findUsages() {
-        List<UsageInfo> result = new ArrayList<UsageInfo>();
+        List<UsageInfo> result = new ArrayList<>();
 
-        final PsiMethod toSearchFor = (PsiMethod)myHelper.getToSearchFor();
+        PsiMethod toSearchFor = (PsiMethod)myHelper.getToSearchFor();
 
         for (PsiReference ref1 : MethodReferencesSearch.search(toSearchFor, GlobalSearchScope.projectScope(myProject), true)) {
             PsiElement ref = ref1.getElement();
-            if (ref.getLanguage() != GroovyFileType.GROOVY_LANGUAGE) {
+            if (ref.getLanguage() != GroovyLanguage.INSTANCE) {
                 result.add(new OtherLanguageUsageInfo(ref1));
                 continue;
             }
 
-            if (ref instanceof PsiMethod && ((PsiMethod)ref).isConstructor()) {
+            if (ref instanceof PsiMethod method && method.isConstructor()) {
                 DefaultConstructorImplicitUsageInfo implicitUsageInfo =
-                    new DefaultConstructorImplicitUsageInfo((PsiMethod)ref, ((PsiMethod)ref).getContainingClass(), toSearchFor);
+                    new DefaultConstructorImplicitUsageInfo(method, method.getContainingClass(), toSearchFor);
                 result.add(implicitUsageInfo);
             }
-            else if (ref instanceof PsiClass) {
-                result.add(new NoConstructorClassUsageInfo((PsiClass)ref));
+            else if (ref instanceof PsiClass psiClass) {
+                result.add(new NoConstructorClassUsageInfo(psiClass));
             }
             else if (!PsiTreeUtil.isAncestor(myMethod, ref, false)) {
                 result.add(new ExternalUsageInfo(ref));
@@ -172,27 +178,27 @@ public class ExtractClosureFromMethodProcessor extends ExtractClosureProcessorBa
             result.add(new UsageInfo(overridingMethod));
         }
 
-        final UsageInfo[] usageInfos = result.toArray(new UsageInfo[result.size()]);
+        UsageInfo[] usageInfos = result.toArray(new UsageInfo[result.size()]);
         return UsageViewUtil.removeDuplicatedUsages(usageInfos);
     }
 
 
     @Override
-    protected void performRefactoring(UsageInfo[] usages) {
-        final IntroduceParameterData data = new IntroduceParameterDataAdapter();
+    protected void performRefactoring(@Nonnull UsageInfo[] usages) {
+        IntroduceParameterData data = new IntroduceParameterDataAdapter();
 
         processUsages(usages, data);
 
-        final PsiMethod toSearchFor = (PsiMethod)myHelper.getToSearchFor();
+        PsiMethod toSearchFor = (PsiMethod)myHelper.getToSearchFor();
 
-        final boolean methodsToProcessAreDifferent = myMethod != toSearchFor;
+        boolean methodsToProcessAreDifferent = myMethod != toSearchFor;
         if (myHelper.generateDelegate()) {
             generateDelegate(myMethod, data.getParameterInitializer(), myProject);
             if (methodsToProcessAreDifferent) {
-                final GrMethod method = generateDelegate(toSearchFor, data.getParameterInitializer(), myProject);
-                final PsiClass containingClass = method.getContainingClass();
+                GrMethod method = generateDelegate(toSearchFor, data.getParameterInitializer(), myProject);
+                PsiClass containingClass = method.getContainingClass();
                 if (containingClass != null && containingClass.isInterface()) {
-                    final GrOpenBlock block = method.getBlock();
+                    GrOpenBlock block = method.getBlock();
                     if (block != null) {
                         block.delete();
                     }
@@ -202,7 +208,7 @@ public class ExtractClosureFromMethodProcessor extends ExtractClosureProcessorBa
 
         // Changing signature of initial method
         // (signature of myMethodToReplaceIn will be either changed now or have already been changed)
-        final FieldConflictsResolver fieldConflictsResolver = new FieldConflictsResolver(myHelper.getName(), myMethod.getBlock());
+        FieldConflictsResolver fieldConflictsResolver = new FieldConflictsResolver(myHelper.getName(), myMethod.getBlock());
         changeMethodSignatureAndResolveFieldConflicts(new UsageInfo(myMethod), usages, data);
         if (methodsToProcessAreDifferent) {
             changeMethodSignatureAndResolveFieldConflicts(new UsageInfo(toSearchFor), usages, data);
@@ -217,18 +223,16 @@ public class ExtractClosureFromMethodProcessor extends ExtractClosureProcessorBa
             }
         }
 
-        final GrStatement newStatement = ExtractUtil.replaceStatement(myDeclarationOwner, myHelper);
-    /*
-    if (myEditor != null) {
-      PsiDocumentManager.getInstance(myProject).commitDocument(myEditor.getDocument());
-      myEditor.getCaretModel().moveToOffset(ExtractUtil.getCaretOffset(newStatement));
-    }*/
+        GrStatement newStatement = ExtractUtil.replaceStatement(myDeclarationOwner, myHelper);
+        /*if (myEditor != null) {
+            PsiDocumentManager.getInstance(myProject).commitDocument(myEditor.getDocument());
+            myEditor.getCaretModel().moveToOffset(ExtractUtil.getCaretOffset(newStatement));
+        }*/
 
         fieldConflictsResolver.fix();
     }
 
     private class IntroduceParameterDataAdapter implements IntroduceParameterData {
-
         private final GrClosableBlock myClosure;
         private final GrExpressionWrapper myWrapper;
 
@@ -294,6 +298,5 @@ public class ExtractClosureFromMethodProcessor extends ExtractClosureProcessorBa
         public IntList getParametersToRemove() {
             return myHelper.parametersToRemove();
         }
-
     }
 }

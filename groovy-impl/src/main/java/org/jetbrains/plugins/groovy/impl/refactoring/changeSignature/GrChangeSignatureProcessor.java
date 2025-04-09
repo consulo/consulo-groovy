@@ -17,7 +17,7 @@ package org.jetbrains.plugins.groovy.impl.refactoring.changeSignature;
 
 import com.intellij.java.impl.refactoring.changeSignature.ChangeSignatureViewDescriptor;
 import com.intellij.java.language.psi.PsiMethod;
-import consulo.application.ApplicationManager;
+import consulo.application.Application;
 import consulo.language.editor.refactoring.changeSignature.ChangeSignatureProcessorBase;
 import consulo.language.editor.refactoring.changeSignature.ChangeSignatureUsageProcessor;
 import consulo.language.editor.refactoring.rename.RenameUtil;
@@ -25,10 +25,11 @@ import consulo.language.editor.refactoring.ui.ConflictsDialog;
 import consulo.language.psi.PsiElement;
 import consulo.logging.Logger;
 import consulo.project.Project;
+import consulo.ui.annotation.RequiredUIAccess;
 import consulo.usage.UsageInfo;
 import consulo.usage.UsageViewDescriptor;
 import consulo.util.collection.MultiMap;
-import consulo.util.lang.ref.Ref;
+import consulo.util.lang.ref.SimpleReference;
 import jakarta.annotation.Nonnull;
 
 import java.util.Arrays;
@@ -53,7 +54,7 @@ public class GrChangeSignatureProcessor extends ChangeSignatureProcessorBase {
 
     @Nonnull
     @Override
-    protected UsageViewDescriptor createUsageViewDescriptor(UsageInfo[] usages) {
+    protected UsageViewDescriptor createUsageViewDescriptor(@Nonnull UsageInfo[] usages) {
         return new ChangeSignatureViewDescriptor(getChangeInfo().getMethod());
     }
 
@@ -65,26 +66,27 @@ public class GrChangeSignatureProcessor extends ChangeSignatureProcessorBase {
     }
 
     @Override
-    protected boolean preprocessUsages(Ref<UsageInfo[]> refUsages) {
-        MultiMap<PsiElement, String> conflictDescriptions = new MultiMap<PsiElement, String>();
+    @RequiredUIAccess
+    protected boolean preprocessUsages(@Nonnull SimpleReference<UsageInfo[]> refUsages) {
+        MultiMap<PsiElement, String> conflictDescriptions = new MultiMap<>();
         for (ChangeSignatureUsageProcessor usageProcessor : ChangeSignatureUsageProcessor.EP_NAME.getExtensions()) {
-            final MultiMap<PsiElement, String> conflicts = usageProcessor.findConflicts(myChangeInfo, refUsages);
+            MultiMap<PsiElement, String> conflicts = usageProcessor.findConflicts(myChangeInfo, refUsages);
             for (PsiElement key : conflicts.keySet()) {
                 Collection<String> collection = conflictDescriptions.get(key);
                 if (collection.size() == 0) {
-                    collection = new HashSet<String>();
+                    collection = new HashSet<>();
                 }
                 collection.addAll(conflicts.get(key));
                 conflictDescriptions.put(key, collection);
             }
         }
 
-        final UsageInfo[] usagesIn = refUsages.get();
+        UsageInfo[] usagesIn = refUsages.get();
         RenameUtil.addConflictDescriptions(usagesIn, conflictDescriptions);
-        Set<UsageInfo> usagesSet = new HashSet<UsageInfo>(Arrays.asList(usagesIn));
+        Set<UsageInfo> usagesSet = new HashSet<>(Arrays.asList(usagesIn));
         RenameUtil.removeConflictUsages(usagesSet);
         if (!conflictDescriptions.isEmpty()) {
-            if (ApplicationManager.getApplication().isUnitTestMode()) {
+            if (Application.get().isUnitTestMode()) {
                 throw new ConflictsInTestsException(conflictDescriptions.values());
             }
 

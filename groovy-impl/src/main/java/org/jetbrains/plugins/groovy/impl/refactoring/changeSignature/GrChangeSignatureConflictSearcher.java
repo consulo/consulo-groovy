@@ -21,26 +21,25 @@ import com.intellij.java.impl.refactoring.util.CanonicalTypes;
 import com.intellij.java.impl.refactoring.util.ConflictsUtil;
 import com.intellij.java.language.psi.*;
 import com.intellij.java.language.util.VisibilityUtil;
-import consulo.language.editor.refactoring.RefactoringBundle;
+import consulo.language.editor.refactoring.localize.RefactoringLocalize;
 import consulo.language.editor.refactoring.rename.RenameUtil;
 import consulo.language.editor.refactoring.ui.RefactoringUIUtil;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiManager;
 import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
 import consulo.logging.Logger;
 import consulo.usage.UsageInfo;
 import consulo.util.collection.ArrayUtil;
 import consulo.util.collection.MultiMap;
-import consulo.util.lang.ref.Ref;
-import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
+import consulo.util.lang.ref.SimpleReference;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrConstructorInvocation;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameter;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
-
-import jakarta.annotation.Nullable;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -58,12 +57,12 @@ class GrChangeSignatureConflictSearcher {
         myChangeInfo = changeInfo;
     }
 
-    public MultiMap<PsiElement, String> findConflicts(Ref<UsageInfo[]> refUsages) {
-        MultiMap<PsiElement, String> conflictDescriptions = new MultiMap<PsiElement, String>();
+    public MultiMap<PsiElement, String> findConflicts(SimpleReference<UsageInfo[]> refUsages) {
+        MultiMap<PsiElement, String> conflictDescriptions = new MultiMap<>();
         addMethodConflicts(conflictDescriptions);
         UsageInfo[] usagesIn = refUsages.get();
         RenameUtil.addConflictDescriptions(usagesIn, conflictDescriptions);
-        Set<UsageInfo> usagesSet = new HashSet<UsageInfo>(Arrays.asList(usagesIn));
+        Set<UsageInfo> usagesSet = new HashSet<>(Arrays.asList(usagesIn));
         RenameUtil.removeConflictUsages(usagesSet);
         if (myChangeInfo.isVisibilityChanged()) {
             try {
@@ -89,27 +88,23 @@ class GrChangeSignatureConflictSearcher {
 
         for (Iterator<UsageInfo> iterator = usages.iterator(); iterator.hasNext(); ) {
             UsageInfo usageInfo = iterator.next();
-            PsiElement element = usageInfo.getElement();
-            if (element != null) {
-                if (element instanceof GrReferenceExpression) {
-                    PsiClass accessObjectClass = null;
-                    GrExpression qualifier = ((GrReferenceExpression)element).getQualifierExpression();
-                    if (qualifier != null) {
-                        accessObjectClass = getAccessObjectClass(qualifier);
-                    }
+            if (usageInfo.getElement() instanceof GrReferenceExpression refExpr) {
+                PsiClass accessObjectClass = null;
+                GrExpression qualifier = refExpr.getQualifierExpression();
+                if (qualifier != null) {
+                    accessObjectClass = getAccessObjectClass(qualifier);
+                }
 
-                    PsiResolveHelper helper = JavaPsiFacade.getInstance(element.getProject()).getResolveHelper();
-                    if (!helper.isAccessible(method, modifierList, element, accessObjectClass, null)) {
-                        String message = RefactoringBundle.message(
-                            "0.with.1.visibility.is.not.accessible.from.2",
-                            RefactoringUIUtil.getDescription(method, true),
-                            myChangeInfo.getNewVisibility(),
-                            RefactoringUIUtil.getDescription(ConflictsUtil.getContainer(element), true)
-                        );
-                        conflictDescriptions.putValue(method, message);
-                        if (!needToChangeCalls()) {
-                            iterator.remove();
-                        }
+                PsiResolveHelper helper = JavaPsiFacade.getInstance(refExpr.getProject()).getResolveHelper();
+                if (!helper.isAccessible(method, modifierList, refExpr, accessObjectClass, null)) {
+                    LocalizeValue message = RefactoringLocalize.zeroWith1VisibilityIsNotAccessibleFrom2(
+                        RefactoringUIUtil.getDescription(method, true),
+                        myChangeInfo.getNewVisibility(),
+                        RefactoringUIUtil.getDescription(ConflictsUtil.getContainer(refExpr), true)
+                    );
+                    conflictDescriptions.putValue(method, message.get());
+                    if (!needToChangeCalls()) {
+                        iterator.remove();
                     }
                 }
             }
@@ -122,13 +117,13 @@ class GrChangeSignatureConflictSearcher {
             return null;
         }
         PsiType type = expression.getType();
-        if (type instanceof PsiClassType) {
-            return ((PsiClassType)type).resolveGenerics().getElement();
+        if (type instanceof PsiClassType classType) {
+            return classType.resolveGenerics().getElement();
         }
-        if (type == null && expression instanceof PsiReferenceExpression) {
-            JavaResolveResult resolveResult = ((PsiReferenceExpression)expression).advancedResolve(false);
-            if (resolveResult.getElement() instanceof PsiClass) {
-                return (PsiClass)resolveResult.getElement();
+        if (type == null && expression instanceof PsiReferenceExpression refExpr) {
+            JavaResolveResult resolveResult = refExpr.advancedResolve(false);
+            if (resolveResult.getElement() instanceof PsiClass psiClass) {
+                return psiClass;
             }
         }
         return null;
@@ -138,14 +133,13 @@ class GrChangeSignatureConflictSearcher {
     private void addMethodConflicts(MultiMap<PsiElement, String> conflicts) {
         try {
             GrMethod prototype;
-            final PsiMethod method = myChangeInfo.getMethod();
-            if (!(method instanceof GrMethod)) {
+            if (!(myChangeInfo.getMethod() instanceof GrMethod method)) {
                 return;
             }
 
             PsiManager manager = method.getManager();
             GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(manager.getProject());
-            final CanonicalTypes.Type returnType = myChangeInfo.getNewReturnType();
+            CanonicalTypes.Type returnType = myChangeInfo.getNewReturnType();
             String newMethodName = myChangeInfo.getNewName();
             if (method.isConstructor()) {
                 prototype =
@@ -166,22 +160,17 @@ class GrChangeSignatureConflictSearcher {
 
             for (JavaParameterInfo info : parameters) {
                 GrParameter param;
-                if (info instanceof GrParameterInfo) {
-                    param = factory.createParameter(
-                        info.getName(),
-                        info.getTypeText(),
-                        ((GrParameterInfo)info).getDefaultInitializer(),
-                        (GroovyPsiElement)method
-                    );
+                if (info instanceof GrParameterInfo paramInfo) {
+                    param = factory.createParameter(info.getName(), info.getTypeText(), paramInfo.getDefaultInitializer(), method);
                 }
                 else {
-                    param = factory.createParameter(info.getName(), info.getTypeText(), (GroovyPsiElement)method);
+                    param = factory.createParameter(info.getName(), info.getTypeText(), method);
                 }
                 prototype.getParameterList().add(param);
             }
 
             ConflictsUtil.checkMethodConflicts(method.getContainingClass(), method, prototype, conflicts);
-            GrMethodConflictUtil.checkMethodConflicts(method.getContainingClass(), prototype, ((GrMethod)method), conflicts, true);
+            GrMethodConflictUtil.checkMethodConflicts(method.getContainingClass(), prototype, method, conflicts, true);
         }
         catch (IncorrectOperationException e) {
             LOG.error(e);
