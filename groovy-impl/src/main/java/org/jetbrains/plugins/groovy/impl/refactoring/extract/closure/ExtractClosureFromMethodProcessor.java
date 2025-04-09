@@ -55,6 +55,7 @@ import org.jetbrains.plugins.groovy.impl.refactoring.introduce.parameter.GrIntro
 import org.jetbrains.plugins.groovy.impl.refactoring.util.AnySupers;
 
 import jakarta.annotation.Nonnull;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -67,225 +68,232 @@ import static org.jetbrains.plugins.groovy.impl.refactoring.introduce.parameter.
  * @author Max Medvedev
  */
 public class ExtractClosureFromMethodProcessor extends ExtractClosureProcessorBase {
+    private final GrMethod myMethod;
+    private final GrStatementOwner myDeclarationOwner;
 
-  private final GrMethod myMethod;
-  private final GrStatementOwner myDeclarationOwner;
-
-  public ExtractClosureFromMethodProcessor(@Nonnull GrIntroduceParameterSettings helper) {
-    super(helper);
-    myDeclarationOwner = GroovyRefactoringUtil.getDeclarationOwner(helper.getStatements()[0]);
-    myMethod = (GrMethod)myHelper.getToReplaceIn();
-  }
-
-  @Override
-  protected boolean preprocessUsages(Ref<UsageInfo[]> refUsages) {
-    UsageInfo[] usagesIn = refUsages.get();
-    MultiMap<PsiElement, String> conflicts = new MultiMap<PsiElement, String>();
-    final GrStatement[] statements = myHelper.getStatements();
-
-    for (GrStatement statement : statements) {
-      detectAccessibilityConflicts(statement, usagesIn, conflicts, false, myProject);
+    public ExtractClosureFromMethodProcessor(@Nonnull GrIntroduceParameterSettings helper) {
+        super(helper);
+        myDeclarationOwner = GroovyRefactoringUtil.getDeclarationOwner(helper.getStatements()[0]);
+        myMethod = (GrMethod)myHelper.getToReplaceIn();
     }
 
-    for (UsageInfo info : usagesIn) {
-      if (info instanceof OtherLanguageUsageInfo) {
-        final String lang = CommonRefactoringUtil.htmlEmphasize(info.getElement().getLanguage().getDisplayName());
-        conflicts.putValue(info.getElement(), GroovyRefactoringBundle.message("cannot.process.usage.in.language.{0}", lang));
-      }
-    }
+    @Override
+    protected boolean preprocessUsages(Ref<UsageInfo[]> refUsages) {
+        UsageInfo[] usagesIn = refUsages.get();
+        MultiMap<PsiElement, String> conflicts = new MultiMap<PsiElement, String>();
+        final GrStatement[] statements = myHelper.getStatements();
 
-    if (!myMethod.hasModifierProperty(PsiModifier.PRIVATE)) {
-      final AnySupers anySupers = new AnySupers();
-      for (GrStatement statement : statements) {
-        statement.accept(anySupers);
-      }
-      if (anySupers.containsSupers()) {
-        for (UsageInfo usageInfo : usagesIn) {
-          if (!(usageInfo.getElement() instanceof PsiMethod) && !(usageInfo instanceof InternalUsageInfo)) {
-            if (!PsiTreeUtil.isAncestor(myMethod.getContainingClass(), usageInfo.getElement(), false)) {
-              conflicts.putValue(statements[0], RefactoringBundle
-                .message("parameter.initializer.contains.0.but.not.all.calls.to.method.are.in.its.class",
-                         CommonRefactoringUtil.htmlEmphasize(PsiKeyword.SUPER)));
-              break;
+        for (GrStatement statement : statements) {
+            detectAccessibilityConflicts(statement, usagesIn, conflicts, false, myProject);
+        }
+
+        for (UsageInfo info : usagesIn) {
+            if (info instanceof OtherLanguageUsageInfo) {
+                final String lang = CommonRefactoringUtil.htmlEmphasize(info.getElement().getLanguage().getDisplayName());
+                conflicts.putValue(info.getElement(), GroovyRefactoringBundle.message("cannot.process.usage.in.language.{0}", lang));
             }
-          }
         }
-      }
-    }
 
-    if (!conflicts.isEmpty() && ApplicationManager.getApplication().isUnitTestMode()) {
-      throw new ConflictsInTestsException(conflicts.values());
-    }
-
-    if (!conflicts.isEmpty()) {
-      final ConflictsDialog conflictsDialog = prepareConflictsDialog(conflicts, usagesIn);
-      conflictsDialog.show();
-      if (!conflictsDialog.isOK()) {
-        if (conflictsDialog.isShowConflicts()) prepareSuccessful();
-        return false;
-      }
-    }
-
-    prepareSuccessful();
-    return true;
-  }
-
-  @Nonnull
-  @Override
-  protected UsageInfo[] findUsages() {
-    List<UsageInfo> result = new ArrayList<UsageInfo>();
-
-    final PsiMethod toSearchFor = (PsiMethod)myHelper.getToSearchFor();
-
-    for (PsiReference ref1 : MethodReferencesSearch.search(toSearchFor, GlobalSearchScope.projectScope(myProject), true)) {
-      PsiElement ref = ref1.getElement();
-      if (ref.getLanguage() != GroovyFileType.GROOVY_LANGUAGE) {
-        result.add(new OtherLanguageUsageInfo(ref1));
-        continue;
-      }
-
-      if (ref instanceof PsiMethod && ((PsiMethod)ref).isConstructor()) {
-        DefaultConstructorImplicitUsageInfo implicitUsageInfo =
-          new DefaultConstructorImplicitUsageInfo((PsiMethod)ref, ((PsiMethod)ref).getContainingClass(), toSearchFor);
-        result.add(implicitUsageInfo);
-      }
-      else if (ref instanceof PsiClass) {
-        result.add(new NoConstructorClassUsageInfo((PsiClass)ref));
-      }
-      else if (!PsiTreeUtil.isAncestor(myMethod, ref, false)) {
-        result.add(new ExternalUsageInfo(ref));
-      }
-      else {
-        result.add(new ChangedMethodCallInfo(ref));
-      }
-    }
-
-    Collection<PsiMethod> overridingMethods = OverridingMethodsSearch.search(toSearchFor, true).findAll();
-
-    for (PsiMethod overridingMethod : overridingMethods) {
-      result.add(new UsageInfo(overridingMethod));
-    }
-
-    final UsageInfo[] usageInfos = result.toArray(new UsageInfo[result.size()]);
-    return UsageViewUtil.removeDuplicatedUsages(usageInfos);
-  }
-
-
-  @Override
-  protected void performRefactoring(UsageInfo[] usages) {
-    final IntroduceParameterData data = new IntroduceParameterDataAdapter();
-
-    processUsages(usages, data);
-
-    final PsiMethod toSearchFor = (PsiMethod)myHelper.getToSearchFor();
-
-    final boolean methodsToProcessAreDifferent = myMethod != toSearchFor;
-    if (myHelper.generateDelegate()) {
-      generateDelegate(myMethod, data.getParameterInitializer(), myProject);
-      if (methodsToProcessAreDifferent) {
-        final GrMethod method = generateDelegate(toSearchFor, data.getParameterInitializer(), myProject);
-        final PsiClass containingClass = method.getContainingClass();
-        if (containingClass != null && containingClass.isInterface()) {
-          final GrOpenBlock block = method.getBlock();
-          if (block != null) {
-            block.delete();
-          }
+        if (!myMethod.hasModifierProperty(PsiModifier.PRIVATE)) {
+            final AnySupers anySupers = new AnySupers();
+            for (GrStatement statement : statements) {
+                statement.accept(anySupers);
+            }
+            if (anySupers.containsSupers()) {
+                for (UsageInfo usageInfo : usagesIn) {
+                    if (!(usageInfo.getElement() instanceof PsiMethod) && !(usageInfo instanceof InternalUsageInfo)) {
+                        if (!PsiTreeUtil.isAncestor(myMethod.getContainingClass(), usageInfo.getElement(), false)) {
+                            conflicts.putValue(
+                                statements[0],
+                                RefactoringBundle.message(
+                                    "parameter.initializer.contains.0.but.not.all.calls.to.method.are.in.its.class",
+                                    CommonRefactoringUtil.htmlEmphasize(PsiKeyword.SUPER)
+                                )
+                            );
+                            break;
+                        }
+                    }
+                }
+            }
         }
-      }
+
+        if (!conflicts.isEmpty() && ApplicationManager.getApplication().isUnitTestMode()) {
+            throw new ConflictsInTestsException(conflicts.values());
+        }
+
+        if (!conflicts.isEmpty()) {
+            final ConflictsDialog conflictsDialog = prepareConflictsDialog(conflicts, usagesIn);
+            conflictsDialog.show();
+            if (!conflictsDialog.isOK()) {
+                if (conflictsDialog.isShowConflicts()) {
+                    prepareSuccessful();
+                }
+                return false;
+            }
+        }
+
+        prepareSuccessful();
+        return true;
     }
 
-    // Changing signature of initial method
-    // (signature of myMethodToReplaceIn will be either changed now or have already been changed)
-    final FieldConflictsResolver fieldConflictsResolver = new FieldConflictsResolver(myHelper.getName(), myMethod.getBlock());
-    changeMethodSignatureAndResolveFieldConflicts(new UsageInfo(myMethod), usages, data);
-    if (methodsToProcessAreDifferent) {
-      changeMethodSignatureAndResolveFieldConflicts(new UsageInfo(toSearchFor), usages, data);
+    @Nonnull
+    @Override
+    protected UsageInfo[] findUsages() {
+        List<UsageInfo> result = new ArrayList<UsageInfo>();
+
+        final PsiMethod toSearchFor = (PsiMethod)myHelper.getToSearchFor();
+
+        for (PsiReference ref1 : MethodReferencesSearch.search(toSearchFor, GlobalSearchScope.projectScope(myProject), true)) {
+            PsiElement ref = ref1.getElement();
+            if (ref.getLanguage() != GroovyFileType.GROOVY_LANGUAGE) {
+                result.add(new OtherLanguageUsageInfo(ref1));
+                continue;
+            }
+
+            if (ref instanceof PsiMethod && ((PsiMethod)ref).isConstructor()) {
+                DefaultConstructorImplicitUsageInfo implicitUsageInfo =
+                    new DefaultConstructorImplicitUsageInfo((PsiMethod)ref, ((PsiMethod)ref).getContainingClass(), toSearchFor);
+                result.add(implicitUsageInfo);
+            }
+            else if (ref instanceof PsiClass) {
+                result.add(new NoConstructorClassUsageInfo((PsiClass)ref));
+            }
+            else if (!PsiTreeUtil.isAncestor(myMethod, ref, false)) {
+                result.add(new ExternalUsageInfo(ref));
+            }
+            else {
+                result.add(new ChangedMethodCallInfo(ref));
+            }
+        }
+
+        Collection<PsiMethod> overridingMethods = OverridingMethodsSearch.search(toSearchFor, true).findAll();
+
+        for (PsiMethod overridingMethod : overridingMethods) {
+            result.add(new UsageInfo(overridingMethod));
+        }
+
+        final UsageInfo[] usageInfos = result.toArray(new UsageInfo[result.size()]);
+        return UsageViewUtil.removeDuplicatedUsages(usageInfos);
     }
 
-    // Replacing expression occurrences
-    for (UsageInfo usage : usages) {
-      if (usage instanceof ChangedMethodCallInfo) {
-        PsiElement element = usage.getElement();
 
-        processChangedMethodCall(element, myHelper, myProject);
-      }
-    }
+    @Override
+    protected void performRefactoring(UsageInfo[] usages) {
+        final IntroduceParameterData data = new IntroduceParameterDataAdapter();
 
-    final GrStatement newStatement = ExtractUtil.replaceStatement(myDeclarationOwner, myHelper);
+        processUsages(usages, data);
+
+        final PsiMethod toSearchFor = (PsiMethod)myHelper.getToSearchFor();
+
+        final boolean methodsToProcessAreDifferent = myMethod != toSearchFor;
+        if (myHelper.generateDelegate()) {
+            generateDelegate(myMethod, data.getParameterInitializer(), myProject);
+            if (methodsToProcessAreDifferent) {
+                final GrMethod method = generateDelegate(toSearchFor, data.getParameterInitializer(), myProject);
+                final PsiClass containingClass = method.getContainingClass();
+                if (containingClass != null && containingClass.isInterface()) {
+                    final GrOpenBlock block = method.getBlock();
+                    if (block != null) {
+                        block.delete();
+                    }
+                }
+            }
+        }
+
+        // Changing signature of initial method
+        // (signature of myMethodToReplaceIn will be either changed now or have already been changed)
+        final FieldConflictsResolver fieldConflictsResolver = new FieldConflictsResolver(myHelper.getName(), myMethod.getBlock());
+        changeMethodSignatureAndResolveFieldConflicts(new UsageInfo(myMethod), usages, data);
+        if (methodsToProcessAreDifferent) {
+            changeMethodSignatureAndResolveFieldConflicts(new UsageInfo(toSearchFor), usages, data);
+        }
+
+        // Replacing expression occurrences
+        for (UsageInfo usage : usages) {
+            if (usage instanceof ChangedMethodCallInfo) {
+                PsiElement element = usage.getElement();
+
+                processChangedMethodCall(element, myHelper, myProject);
+            }
+        }
+
+        final GrStatement newStatement = ExtractUtil.replaceStatement(myDeclarationOwner, myHelper);
     /*
     if (myEditor != null) {
       PsiDocumentManager.getInstance(myProject).commitDocument(myEditor.getDocument());
       myEditor.getCaretModel().moveToOffset(ExtractUtil.getCaretOffset(newStatement));
     }*/
 
-    fieldConflictsResolver.fix();
-  }
-
-  private class IntroduceParameterDataAdapter implements IntroduceParameterData {
-
-    private final GrClosableBlock myClosure;
-    private final GrExpressionWrapper myWrapper;
-
-    private IntroduceParameterDataAdapter() {
-      myClosure = generateClosure(ExtractClosureFromMethodProcessor.this.myHelper);
-      myWrapper = new GrExpressionWrapper(myClosure);
+        fieldConflictsResolver.fix();
     }
 
-    @Nonnull
-    @Override
-    public Project getProject() {
-      return myProject;
-    }
+    private class IntroduceParameterDataAdapter implements IntroduceParameterData {
 
-    @Override
-    public PsiMethod getMethodToReplaceIn() {
-      return myMethod;
-    }
+        private final GrClosableBlock myClosure;
+        private final GrExpressionWrapper myWrapper;
 
-    @Nonnull
-    @Override
-    public PsiMethod getMethodToSearchFor() {
-      return (PsiMethod)myHelper.getToSearchFor();
-    }
+        private IntroduceParameterDataAdapter() {
+            myClosure = generateClosure(ExtractClosureFromMethodProcessor.this.myHelper);
+            myWrapper = new GrExpressionWrapper(myClosure);
+        }
 
-    @Override
-    public ExpressionWrapper getParameterInitializer() {
-      return myWrapper;
-    }
+        @Nonnull
+        @Override
+        public Project getProject() {
+            return myProject;
+        }
 
-    @Nonnull
-    @Override
-    public String getParameterName() {
-      return myHelper.getName();
-    }
+        @Override
+        public PsiMethod getMethodToReplaceIn() {
+            return myMethod;
+        }
 
-    @Override
-    public int getReplaceFieldsWithGetters() {
-      return IntroduceParameterRefactoring.REPLACE_FIELDS_WITH_GETTERS_NONE; //todo add option to dialog
-    }
+        @Nonnull
+        @Override
+        public PsiMethod getMethodToSearchFor() {
+            return (PsiMethod)myHelper.getToSearchFor();
+        }
 
-    @Override
-    public boolean isDeclareFinal() {
-      return myHelper.declareFinal();
-    }
+        @Override
+        public ExpressionWrapper getParameterInitializer() {
+            return myWrapper;
+        }
 
-    @Override
-    public boolean isGenerateDelegate() {
-      return false; //todo
-    }
+        @Nonnull
+        @Override
+        public String getParameterName() {
+            return myHelper.getName();
+        }
 
-    @Nonnull
-    @Override
-    public PsiType getForcedType() {
-      PsiType type = myHelper.getSelectedType();
-      return type != null ? type : PsiType.getJavaLangObject(PsiManager.getInstance(myProject), GlobalSearchScope.allScope(myProject));
-    }
+        @Override
+        public int getReplaceFieldsWithGetters() {
+            return IntroduceParameterRefactoring.REPLACE_FIELDS_WITH_GETTERS_NONE; //todo add option to dialog
+        }
 
-    @Nonnull
-    @Override
-    public IntList getParametersToRemove() {
-      return myHelper.parametersToRemove();
-    }
+        @Override
+        public boolean isDeclareFinal() {
+            return myHelper.declareFinal();
+        }
 
-  }
+        @Override
+        public boolean isGenerateDelegate() {
+            return false; //todo
+        }
+
+        @Nonnull
+        @Override
+        public PsiType getForcedType() {
+            PsiType type = myHelper.getSelectedType();
+            return type != null
+                ? type
+                : PsiType.getJavaLangObject(PsiManager.getInstance(myProject), GlobalSearchScope.allScope(myProject));
+        }
+
+        @Nonnull
+        @Override
+        public IntList getParametersToRemove() {
+            return myHelper.parametersToRemove();
+        }
+
+    }
 }

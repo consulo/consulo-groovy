@@ -59,179 +59,189 @@ import java.util.Collection;
  * @author Max Medvedev
  */
 public class GroovyInlineLocalProcessor extends BaseRefactoringProcessor {
-  private static final Logger LOG = Logger.getInstance(GroovyInlineLocalProcessor.class);
+    private static final Logger LOG = Logger.getInstance(GroovyInlineLocalProcessor.class);
 
-  private final InlineLocalVarSettings mySettings;
-  private final GrVariable myLocal;
+    private final InlineLocalVarSettings mySettings;
+    private final GrVariable myLocal;
 
-  public GroovyInlineLocalProcessor(Project project, InlineLocalVarSettings settings, GrVariable local) {
-    super(project);
-    this.mySettings = settings;
-    this.myLocal = local;
-  }
-
-  @Nonnull
-  @Override
-  protected UsageViewDescriptor createUsageViewDescriptor(UsageInfo[] usages) {
-    return new BaseUsageViewDescriptor(myLocal);
-  }
-
-
-  @Override
-  protected boolean preprocessUsages(Ref<UsageInfo[]> refUsages) {
-    final MultiMap<PsiElement, String> conflicts = new MultiMap<PsiElement, String>();
-    final UsageInfo[] usages = refUsages.get();
-    for (UsageInfo usage : usages) {
-      collectConflicts(usage.getReference(), conflicts);
+    public GroovyInlineLocalProcessor(Project project, InlineLocalVarSettings settings, GrVariable local) {
+        super(project);
+        this.mySettings = settings;
+        this.myLocal = local;
     }
 
-    return showConflicts(conflicts, usages);
-  }
-
-  @Override
-  protected boolean isPreviewUsages(UsageInfo[] usages) {
-    for (UsageInfo usage : usages) {
-      if (usage instanceof ClosureUsage) return true;
+    @Nonnull
+    @Override
+    protected UsageViewDescriptor createUsageViewDescriptor(UsageInfo[] usages) {
+        return new BaseUsageViewDescriptor(myLocal);
     }
-    return false;
-  }
-
-  private void collectConflicts(final PsiReference reference, final MultiMap<PsiElement, String> conflicts) {
-    GrExpression expr = (GrExpression)reference.getElement();
-    if (PsiUtil.isAccessedForWriting(expr)) {
-      conflicts.putValue(expr, GroovyRefactoringBundle.message("variable.is.accessed.for.writing", myLocal.getName()));
-    }
-  }
 
 
-  @Nonnull
-  @Override
-  protected UsageInfo[] findUsages() {
-    final Instruction[] controlFlow = mySettings.getFlow();
-    final ArrayList<BitSet> writes = ControlFlowUtils.inferWriteAccessMap(controlFlow, myLocal);
-
-    ArrayList<UsageInfo> toInline = new ArrayList<UsageInfo>();
-    collectRefs(myLocal, controlFlow, writes, mySettings.getWriteInstructionNumber(), toInline);
-
-    return toInline.toArray(new UsageInfo[toInline.size()]);
-  }
-
-  /**
-   * ClosureUsage represents usage of local var inside closure
-   */
-  private static class ClosureUsage extends UsageInfo {
-    private ClosureUsage(@Nonnull PsiReference reference) {
-      super(reference);
-    }
-  }
-
-  private static void collectRefs(final GrVariable variable,
-                                  Instruction[] flow,
-                                  final ArrayList<BitSet> writes,
-                                  final int writeInstructionNumber,
-                                  final ArrayList<UsageInfo> toInline) {
-    for (Instruction instruction : flow) {
-      final PsiElement element = instruction.getElement();
-      if (instruction instanceof ReadWriteVariableInstruction) {
-        if (((ReadWriteVariableInstruction)instruction).isWrite()) continue;
-
-        if (element instanceof GrVariable && element != variable) continue;
-        if (!(element instanceof GrReferenceExpression)) continue;
-
-        final GrReferenceExpression ref = (GrReferenceExpression)element;
-        if (ref.isQualified() || ref.resolve() != variable) continue;
-
-        final BitSet prev = writes.get(instruction.num());
-        if (writeInstructionNumber >= 0 && prev.cardinality() == 1 && prev.get(writeInstructionNumber)) {
-          toInline.add(new UsageInfo(ref));
+    @Override
+    protected boolean preprocessUsages(Ref<UsageInfo[]> refUsages) {
+        final MultiMap<PsiElement, String> conflicts = new MultiMap<PsiElement, String>();
+        final UsageInfo[] usages = refUsages.get();
+        for (UsageInfo usage : usages) {
+            collectConflicts(usage.getReference(), conflicts);
         }
-        else if (writeInstructionNumber == -1 && prev.cardinality() == 0) {
-          toInline.add(new ClosureUsage(ref));
-        }
-      }
-      else if (element instanceof GrClosableBlock) {
-        final BitSet prev = writes.get(instruction.num());
-        if (writeInstructionNumber >= 0 && prev.cardinality() == 1 && prev.get(writeInstructionNumber) ||
-            writeInstructionNumber == -1 && prev.cardinality() == 0) {
-          final Instruction[] closureFlow = ((GrClosableBlock)element).getControlFlow();
-          collectRefs(variable, closureFlow, ControlFlowUtils.inferWriteAccessMap(closureFlow, variable), -1, toInline);
-        }
-      }
-      else if (element instanceof GrAnonymousClassDefinition) {
-        final BitSet prev = writes.get(instruction.num());
-        if (writeInstructionNumber >= 0 && prev.cardinality() == 1 && prev.get(writeInstructionNumber) ||
-            writeInstructionNumber == -1 && prev.cardinality() == 0) {
-          ((GrAnonymousClassDefinition)element).acceptChildren(new GroovyRecursiveElementVisitor() {
-            @Override
-            public void visitField(GrField field) {
-              GrExpression initializer = field.getInitializerGroovy();
-              if (initializer != null) {
-                Instruction[] flow = new ControlFlowBuilder(field.getProject()).buildControlFlow(initializer);
-                collectRefs(variable, flow, ControlFlowUtils.inferWriteAccessMap(flow, variable), -1, toInline);
-              }
+
+        return showConflicts(conflicts, usages);
+    }
+
+    @Override
+    protected boolean isPreviewUsages(UsageInfo[] usages) {
+        for (UsageInfo usage : usages) {
+            if (usage instanceof ClosureUsage) {
+                return true;
             }
-
-            @Override
-            public void visitMethod(GrMethod method) {
-              GrOpenBlock block = method.getBlock();
-              if (block != null) {
-                Instruction[] flow = block.getControlFlow();
-                collectRefs(variable, flow, ControlFlowUtils.inferWriteAccessMap(flow, variable), -1, toInline);
-              }
-            }
-
-            @Override
-            public void visitClassInitializer(GrClassInitializer initializer) {
-              GrOpenBlock block = initializer.getBlock();
-              Instruction[] flow = block.getControlFlow();
-              collectRefs(variable, flow, ControlFlowUtils.inferWriteAccessMap(flow, variable), -1, toInline);
-            }
-          });
         }
-      }
-    }
-  }
-
-
-  @Override
-  protected void performRefactoring(UsageInfo[] usages) {
-    CommonRefactoringUtil.sortDepthFirstRightLeftOrder(usages);
-
-    final GrExpression initializer = mySettings.getInitializer();
-
-    GrExpression initializerToUse = GrIntroduceHandlerBase.insertExplicitCastIfNeeded(myLocal, mySettings.getInitializer());
-
-    for (UsageInfo usage : usages) {
-      GrVariableInliner.inlineReference(usage, myLocal, initializerToUse);
+        return false;
     }
 
-    final PsiElement initializerParent = initializer.getParent();
-
-    if (initializerParent instanceof GrAssignmentExpression) {
-      initializerParent.delete();
-      return;
+    private void collectConflicts(final PsiReference reference, final MultiMap<PsiElement, String> conflicts) {
+        GrExpression expr = (GrExpression)reference.getElement();
+        if (PsiUtil.isAccessedForWriting(expr)) {
+            conflicts.putValue(expr, GroovyRefactoringBundle.message("variable.is.accessed.for.writing", myLocal.getName()));
+        }
     }
 
-    if (initializerParent instanceof GrVariable) {
-      final Collection<PsiReference> all = ReferencesSearch.search(myLocal).findAll();
-      if (all.size() > 0) {
-        initializer.delete();
-        return;
-      }
+
+    @Nonnull
+    @Override
+    protected UsageInfo[] findUsages() {
+        final Instruction[] controlFlow = mySettings.getFlow();
+        final ArrayList<BitSet> writes = ControlFlowUtils.inferWriteAccessMap(controlFlow, myLocal);
+
+        ArrayList<UsageInfo> toInline = new ArrayList<UsageInfo>();
+        collectRefs(myLocal, controlFlow, writes, mySettings.getWriteInstructionNumber(), toInline);
+
+        return toInline.toArray(new UsageInfo[toInline.size()]);
     }
 
-    final PsiElement owner = myLocal.getParent().getParent();
-    if (owner instanceof GrVariableDeclarationOwner) {
-      ((GrVariableDeclarationOwner)owner).removeVariable(myLocal);
+    /**
+     * ClosureUsage represents usage of local var inside closure
+     */
+    private static class ClosureUsage extends UsageInfo {
+        private ClosureUsage(@Nonnull PsiReference reference) {
+            super(reference);
+        }
     }
-    else {
-      myLocal.delete();
+
+    private static void collectRefs(
+        final GrVariable variable,
+        Instruction[] flow,
+        final ArrayList<BitSet> writes,
+        final int writeInstructionNumber,
+        final ArrayList<UsageInfo> toInline
+    ) {
+        for (Instruction instruction : flow) {
+            final PsiElement element = instruction.getElement();
+            if (instruction instanceof ReadWriteVariableInstruction) {
+                if (((ReadWriteVariableInstruction)instruction).isWrite()) {
+                    continue;
+                }
+
+                if (element instanceof GrVariable && element != variable) {
+                    continue;
+                }
+                if (!(element instanceof GrReferenceExpression)) {
+                    continue;
+                }
+
+                final GrReferenceExpression ref = (GrReferenceExpression)element;
+                if (ref.isQualified() || ref.resolve() != variable) {
+                    continue;
+                }
+
+                final BitSet prev = writes.get(instruction.num());
+                if (writeInstructionNumber >= 0 && prev.cardinality() == 1 && prev.get(writeInstructionNumber)) {
+                    toInline.add(new UsageInfo(ref));
+                }
+                else if (writeInstructionNumber == -1 && prev.cardinality() == 0) {
+                    toInline.add(new ClosureUsage(ref));
+                }
+            }
+            else if (element instanceof GrClosableBlock) {
+                final BitSet prev = writes.get(instruction.num());
+                if (writeInstructionNumber >= 0 && prev.cardinality() == 1 && prev.get(writeInstructionNumber) ||
+                    writeInstructionNumber == -1 && prev.cardinality() == 0) {
+                    final Instruction[] closureFlow = ((GrClosableBlock)element).getControlFlow();
+                    collectRefs(variable, closureFlow, ControlFlowUtils.inferWriteAccessMap(closureFlow, variable), -1, toInline);
+                }
+            }
+            else if (element instanceof GrAnonymousClassDefinition) {
+                final BitSet prev = writes.get(instruction.num());
+                if (writeInstructionNumber >= 0 && prev.cardinality() == 1 && prev.get(writeInstructionNumber) ||
+                    writeInstructionNumber == -1 && prev.cardinality() == 0) {
+                    ((GrAnonymousClassDefinition)element).acceptChildren(new GroovyRecursiveElementVisitor() {
+                        @Override
+                        public void visitField(GrField field) {
+                            GrExpression initializer = field.getInitializerGroovy();
+                            if (initializer != null) {
+                                Instruction[] flow = new ControlFlowBuilder(field.getProject()).buildControlFlow(initializer);
+                                collectRefs(variable, flow, ControlFlowUtils.inferWriteAccessMap(flow, variable), -1, toInline);
+                            }
+                        }
+
+                        @Override
+                        public void visitMethod(GrMethod method) {
+                            GrOpenBlock block = method.getBlock();
+                            if (block != null) {
+                                Instruction[] flow = block.getControlFlow();
+                                collectRefs(variable, flow, ControlFlowUtils.inferWriteAccessMap(flow, variable), -1, toInline);
+                            }
+                        }
+
+                        @Override
+                        public void visitClassInitializer(GrClassInitializer initializer) {
+                            GrOpenBlock block = initializer.getBlock();
+                            Instruction[] flow = block.getControlFlow();
+                            collectRefs(variable, flow, ControlFlowUtils.inferWriteAccessMap(flow, variable), -1, toInline);
+                        }
+                    });
+                }
+            }
+        }
     }
-  }
 
+    @Override
+    protected void performRefactoring(UsageInfo[] usages) {
+        CommonRefactoringUtil.sortDepthFirstRightLeftOrder(usages);
 
-  @Override
-  protected String getCommandName() {
-    return RefactoringBundle.message("inline.command", myLocal.getName());
-  }
+        final GrExpression initializer = mySettings.getInitializer();
+
+        GrExpression initializerToUse = GrIntroduceHandlerBase.insertExplicitCastIfNeeded(myLocal, mySettings.getInitializer());
+
+        for (UsageInfo usage : usages) {
+            GrVariableInliner.inlineReference(usage, myLocal, initializerToUse);
+        }
+
+        final PsiElement initializerParent = initializer.getParent();
+
+        if (initializerParent instanceof GrAssignmentExpression) {
+            initializerParent.delete();
+            return;
+        }
+
+        if (initializerParent instanceof GrVariable) {
+            final Collection<PsiReference> all = ReferencesSearch.search(myLocal).findAll();
+            if (all.size() > 0) {
+                initializer.delete();
+                return;
+            }
+        }
+
+        final PsiElement owner = myLocal.getParent().getParent();
+        if (owner instanceof GrVariableDeclarationOwner) {
+            ((GrVariableDeclarationOwner)owner).removeVariable(myLocal);
+        }
+        else {
+            myLocal.delete();
+        }
+    }
+
+    @Override
+    protected String getCommandName() {
+        return RefactoringBundle.message("inline.command", myLocal.getName());
+    }
 }

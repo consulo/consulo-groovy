@@ -36,6 +36,7 @@ import org.jetbrains.plugins.groovy.impl.refactoring.introduce.parameter.GrIntro
 import org.jetbrains.plugins.groovy.impl.refactoring.introduce.parameter.GroovyIntroduceParameterUtil;
 
 import jakarta.annotation.Nonnull;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,57 +44,58 @@ import java.util.List;
  * @author Max Medvedev
  */
 public class ExtractClosureFromClosureProcessor extends ExtractClosureProcessorBase {
-  public ExtractClosureFromClosureProcessor(@Nonnull GrIntroduceParameterSettings helper) {
-    super(helper);
-  }
-
-  @Override
-  protected boolean preprocessUsages(Ref<UsageInfo[]> refUsages) {
-    UsageInfo[] usagesIn = refUsages.get();
-    MultiMap<PsiElement, String> conflicts = new MultiMap<PsiElement, String>();
-
-    if (!myHelper.generateDelegate()) {
-      for (GrStatement statement : myHelper.getStatements()) {
-        GroovyIntroduceParameterUtil.detectAccessibilityConflicts(statement, usagesIn, conflicts,
-                                                                  myHelper.replaceFieldsWithGetters() !=
-                                                                  IntroduceParameterRefactoring.REPLACE_FIELDS_WITH_GETTERS_NONE,
-                                                                  myProject);
-      }
+    public ExtractClosureFromClosureProcessor(@Nonnull GrIntroduceParameterSettings helper) {
+        super(helper);
     }
-    return showConflicts(conflicts, usagesIn);
-  }
 
+    @Override
+    protected boolean preprocessUsages(Ref<UsageInfo[]> refUsages) {
+        UsageInfo[] usagesIn = refUsages.get();
+        MultiMap<PsiElement, String> conflicts = new MultiMap<PsiElement, String>();
 
-  @Override
-  protected void performRefactoring(UsageInfo[] usages) {
-    GrIntroduceClosureParameterProcessor.processExternalUsages(usages, myHelper, generateClosure(myHelper));
-    GrIntroduceClosureParameterProcessor.processClosure(usages, myHelper);
-
-    GrStatementOwner declarationOwner = GroovyRefactoringUtil.getDeclarationOwner(myHelper.getStatements()[0]);
-    ExtractUtil.replaceStatement(declarationOwner, myHelper);
-  }
-
-  @Nonnull
-  @Override
-  protected UsageInfo[] findUsages() {
-    final GrVariable var = (GrVariable)myHelper.getToSearchFor();
-    if (var != null) {
-      final List<UsageInfo> result = new ArrayList<UsageInfo>();
-      for (PsiReference ref : ReferencesSearch.search(var, GlobalSearchScope.allScope(myHelper.getProject()), true)) {
-        final PsiElement element = ref.getElement();
-        if (element.getLanguage() != GroovyFileType.GROOVY_LANGUAGE) {
-          result.add(new OtherLanguageUsageInfo(ref));
-          continue;
+        if (!myHelper.generateDelegate()) {
+            for (GrStatement statement : myHelper.getStatements()) {
+                GroovyIntroduceParameterUtil.detectAccessibilityConflicts(statement, usagesIn, conflicts,
+                    myHelper.replaceFieldsWithGetters() !=
+                        IntroduceParameterRefactoring.REPLACE_FIELDS_WITH_GETTERS_NONE,
+                    myProject
+                );
+            }
         }
-
-        final GrCall call = GroovyRefactoringUtil.getCallExpressionByMethodReference(element);
-        if (call == null) continue;
-
-        result.add(new ExternalUsageInfo(element));
-      }
-      return result.toArray(new UsageInfo[result.size()]);
+        return showConflicts(conflicts, usagesIn);
     }
-    return UsageInfo.EMPTY_ARRAY;
-  }
-}
 
+    @Override
+    protected void performRefactoring(UsageInfo[] usages) {
+        GrIntroduceClosureParameterProcessor.processExternalUsages(usages, myHelper, generateClosure(myHelper));
+        GrIntroduceClosureParameterProcessor.processClosure(usages, myHelper);
+
+        GrStatementOwner declarationOwner = GroovyRefactoringUtil.getDeclarationOwner(myHelper.getStatements()[0]);
+        ExtractUtil.replaceStatement(declarationOwner, myHelper);
+    }
+
+    @Nonnull
+    @Override
+    protected UsageInfo[] findUsages() {
+        final GrVariable var = (GrVariable)myHelper.getToSearchFor();
+        if (var != null) {
+            final List<UsageInfo> result = new ArrayList<UsageInfo>();
+            for (PsiReference ref : ReferencesSearch.search(var, GlobalSearchScope.allScope(myHelper.getProject()), true)) {
+                final PsiElement element = ref.getElement();
+                if (element.getLanguage() != GroovyFileType.GROOVY_LANGUAGE) {
+                    result.add(new OtherLanguageUsageInfo(ref));
+                    continue;
+                }
+
+                final GrCall call = GroovyRefactoringUtil.getCallExpressionByMethodReference(element);
+                if (call == null) {
+                    continue;
+                }
+
+                result.add(new ExternalUsageInfo(element));
+            }
+            return result.toArray(new UsageInfo[result.size()]);
+        }
+        return UsageInfo.EMPTY_ARRAY;
+    }
+}
