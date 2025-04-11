@@ -15,6 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.impl.editor.actions;
 
+import consulo.annotation.access.RequiredReadAction;
 import consulo.annotation.component.ExtensionImpl;
 import consulo.codeEditor.*;
 import consulo.codeEditor.action.EditorActionHandler;
@@ -30,14 +31,15 @@ import consulo.language.ast.TokenType;
 import consulo.language.codeStyle.CodeStyleManager;
 import consulo.language.codeStyle.CodeStyleSettingsManager;
 import consulo.language.editor.CodeInsightSettings;
-import consulo.language.editor.CommonDataKeys;
 import consulo.language.editor.action.EnterHandlerDelegateAdapter;
 import consulo.language.psi.*;
 import consulo.project.Project;
 import consulo.util.lang.CharArrayCharSequence;
 import consulo.util.lang.StringUtil;
-import consulo.util.lang.ref.Ref;
+import consulo.util.lang.ref.SimpleReference;
 import consulo.virtualFileSystem.VirtualFile;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.impl.codeStyle.GroovyCodeStyleSettings;
 import org.jetbrains.plugins.groovy.impl.editor.HandlerUtils;
@@ -52,9 +54,6 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrRefere
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.literals.GrLiteral;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.literals.GrStringInjection;
 import org.jetbrains.plugins.groovy.lang.psi.util.GrStringUtil;
-
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
 
 /**
  * @author ilyas
@@ -158,16 +157,17 @@ public class GroovyEnterHandler extends EnterHandlerDelegateAdapter {
     );
 
     public static void insertSpacesByGroovyContinuationIndent(Editor editor, Project project) {
-        int indentSize = CodeStyleSettingsManager.getSettings(project).getContinuationIndentSize(GroovyFileType.GROOVY_FILE_TYPE);
+        int indentSize = CodeStyleSettingsManager.getSettings(project).getContinuationIndentSize(GroovyFileType.INSTANCE);
         EditorModificationUtil.insertStringAtCaret(editor, StringUtil.repeatSymbol(' ', indentSize));
     }
 
     @Override
+    @RequiredReadAction
     public Result preprocessEnter(
         @Nonnull PsiFile file,
         @Nonnull Editor editor,
-        @Nonnull Ref<Integer> caretOffset,
-        @Nonnull Ref<Integer> caretAdvance,
+        @Nonnull SimpleReference<Integer> caretOffset,
+        @Nonnull SimpleReference<Integer> caretAdvance,
         @Nonnull DataContext dataContext,
         EditorActionHandler originalHandler
     ) {
@@ -184,8 +184,8 @@ public class GroovyEnterHandler extends EnterHandlerDelegateAdapter {
             return Result.Continue;
         }
 
-        final int caret = caretModel.getOffset();
-        final EditorHighlighter highlighter = ((EditorEx)editor).getHighlighter();
+        int caret = caretModel.getOffset();
+        EditorHighlighter highlighter = editor.getHighlighter();
         if (caret >= 1 && caret < docLength && CodeInsightSettings.getInstance().SMART_INDENT_ON_ENTER) {
             HighlighterIterator iterator = highlighter.createIterator(caret);
             iterator.retreat();
@@ -205,7 +205,7 @@ public class GroovyEnterHandler extends EnterHandlerDelegateAdapter {
             }
             if (!iterator.atEnd() && GroovyTokenTypes.mRCURLY == iterator.getTokenType()) {
                 PsiDocumentManager.getInstance(project).commitDocument(document);
-                final PsiElement element = file.findElementAt(iterator.getStart());
+                PsiElement element = file.findElementAt(iterator.getStart());
                 if (element != null && element.getNode().getElementType() == GroovyTokenTypes.mRCURLY
                     && element.getParent() instanceof GrClosableBlock && docLength > caret && afterArrow) {
                     return Result.DefaultForceIndent;
@@ -227,6 +227,7 @@ public class GroovyEnterHandler extends EnterHandlerDelegateAdapter {
         return Result.Continue;
     }
 
+    @RequiredReadAction
     protected static boolean handleEnter(
         Editor editor,
         DataContext dataContext,
@@ -237,20 +238,16 @@ public class GroovyEnterHandler extends EnterHandlerDelegateAdapter {
             return false;
         }
         int caretOffset = editor.getCaretModel().getOffset();
+        //noinspection SimplifiableIfStatement
         if (caretOffset < 1) {
             return false;
         }
 
-        if (handleBetweenSquareBraces(editor, caretOffset, dataContext, project, originalHandler)) {
-            return true;
-        }
-        if (handleInString(editor, caretOffset, dataContext, originalHandler)) {
-            return true;
-        }
-
-        return false;
+        return handleBetweenSquareBraces(editor, caretOffset, dataContext, project, originalHandler)
+            || handleInString(editor, caretOffset, dataContext, originalHandler);
     }
 
+    @RequiredReadAction
     private static boolean handleFlyingGeese(
         Editor editor,
         int caretOffset,
@@ -258,7 +255,7 @@ public class GroovyEnterHandler extends EnterHandlerDelegateAdapter {
         EditorActionHandler originalHandler,
         PsiFile file
     ) {
-        Project project = dataContext.getData(CommonDataKeys.PROJECT);
+        Project project = dataContext.getData(Project.KEY);
         if (project == null) {
             return false;
         }
@@ -319,58 +316,52 @@ public class GroovyEnterHandler extends EnterHandlerDelegateAdapter {
         if (text == null || text.isEmpty()) {
             return false;
         }
-        final EditorHighlighter highlighter = ((EditorEx)editor).getHighlighter();
+        EditorHighlighter highlighter = editor.getHighlighter();
         if (caret < 1 || caret > text.length() - 1) {
             return false;
         }
         HighlighterIterator iterator = highlighter.createIterator(caret - 1);
-        if (GroovyTokenTypes.mLBRACK == iterator.getTokenType()) {
-            if (text.length() > caret) {
-                iterator = highlighter.createIterator(caret);
-                if (GroovyTokenTypes.mRBRACK == iterator.getTokenType()) {
-                    originalHandler.execute(editor, context);
-                    originalHandler.execute(editor, context);
-                    editor.getCaretModel().moveCaretRelatively(0, -1, false, false, true);
-                    insertSpacesByGroovyContinuationIndent(editor, project);
-                    return true;
-                }
+        if (GroovyTokenTypes.mLBRACK == iterator.getTokenType() && text.length() > caret) {
+            iterator = highlighter.createIterator(caret);
+            if (GroovyTokenTypes.mRBRACK == iterator.getTokenType()) {
+                originalHandler.execute(editor, context);
+                originalHandler.execute(editor, context);
+                editor.getCaretModel().moveCaretRelatively(0, -1, false, false, true);
+                insertSpacesByGroovyContinuationIndent(editor, project);
+                return true;
             }
         }
         return false;
     }
 
+    @RequiredReadAction
     private static boolean handleInString(Editor editor, int caretOffset, DataContext dataContext, EditorActionHandler originalHandler) {
-        Project project = dataContext.getData(CommonDataKeys.PROJECT);
+        Project project = dataContext.getData(Project.KEY);
         if (project == null) {
             return false;
         }
 
-        final VirtualFile vfile = FileDocumentManager.getInstance().getFile(editor.getDocument());
+        VirtualFile vfile = FileDocumentManager.getInstance().getFile(editor.getDocument());
         assert vfile != null;
         PsiFile file = PsiManager.getInstance(project).findFile(vfile);
 
         Document document = editor.getDocument();
         String fileText = document.getText();
-        if (fileText.length() == caretOffset) {
-            return false;
-        }
-
-        if (!checkStringApplicable(editor, caretOffset)) {
-            return false;
-        }
-        if (file == null) {
+        if (fileText.length() == caretOffset
+            || !checkStringApplicable(editor, caretOffset)
+            || file == null) {
             return false;
         }
 
         PsiDocumentManager.getInstance(project).commitDocument(document);
 
-        final PsiElement stringElement = inferStringPair(file, caretOffset);
+        PsiElement stringElement = inferStringPair(file, caretOffset);
         if (stringElement == null) {
             return false;
         }
 
         ASTNode node = stringElement.getNode();
-        final IElementType nodeElementType = node.getElementType();
+        IElementType nodeElementType = node.getElementType();
 
         boolean isInsertIndent = isInsertIndent(caretOffset, stringElement.getTextRange().getStartOffset(), fileText);
 
@@ -378,7 +369,6 @@ public class GroovyEnterHandler extends EnterHandlerDelegateAdapter {
         CaretModel caretModel = editor.getCaretModel();
         if (nodeElementType == GroovyTokenTypes.mSTRING_LITERAL) {
             if (isSingleQuoteString(stringElement)) {
-
                 //the case of print '\<caret>'
                 if (isSlashBeforeCaret(caretOffset, fileText)) {
                     EditorModificationUtil.insertStringAtCaret(editor, "\n");
@@ -405,7 +395,8 @@ public class GroovyEnterHandler extends EnterHandlerDelegateAdapter {
         }
 
         if (GSTRING_TOKENS.contains(nodeElementType)
-            || nodeElementType == GroovyElementTypes.GSTRING_CONTENT && GSTRING_TOKENS.contains(node.getFirstChildNode().getElementType())
+            || nodeElementType == GroovyElementTypes.GSTRING_CONTENT
+            && GSTRING_TOKENS.contains(node.getFirstChildNode().getElementType())
             || nodeElementType == GroovyTokenTypes.mDOLLAR
             && node.getTreeParent().getTreeParent().getElementType() == GroovyElementTypes.GSTRING) {
             PsiElement parent = stringElement.getParent();
@@ -454,7 +445,8 @@ public class GroovyEnterHandler extends EnterHandlerDelegateAdapter {
         }
 
         if (REGEX_TOKENS.contains(nodeElementType)
-            || nodeElementType == GroovyElementTypes.GSTRING_CONTENT && REGEX_TOKENS.contains(node.getFirstChildNode().getElementType())
+            || nodeElementType == GroovyElementTypes.GSTRING_CONTENT
+            && REGEX_TOKENS.contains(node.getFirstChildNode().getElementType())
             || nodeElementType == GroovyTokenTypes.mDOLLAR
             && node.getTreeParent().getTreeParent().getElementType() == GroovyElementTypes.REGEX) {
             PsiElement parent = stringElement.getParent();
@@ -484,15 +476,18 @@ public class GroovyEnterHandler extends EnterHandlerDelegateAdapter {
         return false;
     }
 
+    @RequiredReadAction
     private static boolean isDoubleQuotedString(PsiElement element) {
         return "\"".equals(GrStringUtil.getStartQuote(element.getText()));
     }
 
+    @RequiredReadAction
     private static boolean isSingleQuoteString(PsiElement element) {
         return "'".equals(GrStringUtil.getStartQuote(element.getText()));
     }
 
     @Nullable
+    @RequiredReadAction
     private static PsiElement inferStringPair(PsiFile file, int caretOffset) {
         PsiElement stringElement = file.findElementAt(caretOffset - 1);
         if (stringElement == null) {
@@ -533,12 +528,13 @@ public class GroovyEnterHandler extends EnterHandlerDelegateAdapter {
     }
 
     private static boolean isInsertIndent(int caret, int stringOffset, String text) {
-        final int i = text.indexOf('\n', stringOffset);
+        int i = text.indexOf('\n', stringOffset);
         return stringOffset < i && i < caret;
     }
 
     private static void convertEndToMultiline(int caretOffset, Document document, String fileText, char c) {
-        if (caretOffset < fileText.length() && fileText.charAt(caretOffset) == c || caretOffset > 0 && fileText.charAt(caretOffset - 1) == c) {
+        if (caretOffset < fileText.length() && fileText.charAt(caretOffset) == c
+            || caretOffset > 0 && fileText.charAt(caretOffset - 1) == c) {
             document.insertString(caretOffset, new CharArrayCharSequence(c, c));
         }
         else {
@@ -547,17 +543,17 @@ public class GroovyEnterHandler extends EnterHandlerDelegateAdapter {
     }
 
     private static boolean checkStringApplicable(Editor editor, int caret) {
-        final GroovyLexer lexer = new GroovyLexer();
+        GroovyLexer lexer = new GroovyLexer();
         lexer.start(editor.getDocument().getText());
 
         while (lexer.getTokenEnd() < caret) {
             lexer.advance();
         }
-        final IElementType leftToken = lexer.getTokenType();
+        IElementType leftToken = lexer.getTokenType();
         if (lexer.getTokenEnd() <= caret) {
             lexer.advance();
         }
-        final IElementType rightToken = lexer.getTokenType();
+        IElementType rightToken = lexer.getTokenType();
 
         if (!(ALL_STRINGS.contains(leftToken))) {
             return false;
@@ -568,23 +564,22 @@ public class GroovyEnterHandler extends EnterHandlerDelegateAdapter {
         if (EXPR_END.contains(leftToken) && !AFTER_EXPR_END.contains(rightToken)) {
             return false;
         }
+        //noinspection RedundantIfStatement
         if (STRING_END.contains(leftToken) && !STRING_END.contains(rightToken)) {
             return false;
         }
         return true;
     }
 
+    @RequiredReadAction
     private static boolean checkGStringInjection(PsiElement element) {
         if (element != null && (element.getParent() instanceof GrReferenceExpression || element.getParent() instanceof GrClosableBlock)) {
-            final PsiElement parent = element.getParent().getParent();
+            PsiElement parent = element.getParent().getParent();
             if (!(parent instanceof GrStringInjection)) {
                 return false;
             }
             PsiElement nextSibling = parent.getNextSibling();
-            if (nextSibling == null) {
-                return false;
-            }
-            return INNER_STRING_TOKENS.contains(nextSibling.getNode().getElementType());
+            return nextSibling != null && INNER_STRING_TOKENS.contains(nextSibling.getNode().getElementType());
         }
         return false;
     }
