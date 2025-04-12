@@ -38,34 +38,40 @@ import jakarta.annotation.Nonnull;
  * author ven
  */
 @ExtensionImpl
-public class AccessorMethodReferencesSearcher extends QueryExecutorBase<PsiReference, MethodReferencesSearch.SearchParameters> implements MethodReferencesSearchExecutor {
-
-  public AccessorMethodReferencesSearcher() {
-    super(true);
-  }
-
-  @Override
-  public void processQuery(@Nonnull MethodReferencesSearch.SearchParameters queryParameters, @Nonnull Processor<? super PsiReference> consumer) {
-    final PsiMethod method = queryParameters.getMethod();
-
-    final String propertyName;
-    if (GdkMethodUtil.isCategoryMethod(method, null, null, PsiSubstitutor.EMPTY)) {
-      final GrGdkMethod cat = GrGdkMethodImpl.createGdkMethod(method, false, null);
-      propertyName = GroovyPropertyUtils.getPropertyName((PsiMethod)cat);
-    }
-    else {
-      propertyName = GroovyPropertyUtils.getPropertyName(method);
+public class AccessorMethodReferencesSearcher extends QueryExecutorBase<PsiReference, MethodReferencesSearch.SearchParameters>
+    implements MethodReferencesSearchExecutor {
+    public AccessorMethodReferencesSearcher() {
+        super(true);
     }
 
-    if (propertyName == null) return;
+    @Override
+    public void processQuery(
+        @Nonnull MethodReferencesSearch.SearchParameters queryParameters,
+        @Nonnull Processor<? super PsiReference> consumer
+    ) {
+        final PsiMethod method = queryParameters.getMethod();
 
-    final SearchScope onlyGroovyFiles = GroovyScopeUtil.restrictScopeToGroovyFiles(queryParameters.getScope(), GroovyScopeUtil.getEffectiveScope(method));
+        final String propertyName;
+        if (GdkMethodUtil.isCategoryMethod(method, null, null, PsiSubstitutor.EMPTY)) {
+            final GrGdkMethod cat = GrGdkMethodImpl.createGdkMethod(method, false, null);
+            propertyName = GroovyPropertyUtils.getPropertyName((PsiMethod)cat);
+        }
+        else {
+            propertyName = GroovyPropertyUtils.getPropertyName(method);
+        }
 
-    queryParameters.getOptimizer().searchWord(propertyName, onlyGroovyFiles, UsageSearchContext.IN_CODE, true, method);
+        if (propertyName == null) {
+            return;
+        }
 
-    if (!GroovyPropertyUtils.isPropertyName(propertyName)) {
-      queryParameters.getOptimizer().searchWord(StringUtil.decapitalize(propertyName), onlyGroovyFiles, UsageSearchContext.IN_CODE, true, method);
+        final SearchScope onlyGroovyFiles =
+            GroovyScopeUtil.restrictScopeToGroovyFiles(queryParameters.getScope(), GroovyScopeUtil.getEffectiveScope(method));
+
+        queryParameters.getOptimizer().searchWord(propertyName, onlyGroovyFiles, UsageSearchContext.IN_CODE, true, method);
+
+        if (!GroovyPropertyUtils.isPropertyName(propertyName)) {
+            queryParameters.getOptimizer()
+                .searchWord(StringUtil.decapitalize(propertyName), onlyGroovyFiles, UsageSearchContext.IN_CODE, true, method);
+        }
     }
-  }
-
 }

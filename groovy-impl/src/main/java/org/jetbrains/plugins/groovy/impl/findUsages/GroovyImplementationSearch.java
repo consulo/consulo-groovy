@@ -37,42 +37,44 @@ import jakarta.annotation.Nonnull;
  */
 @ExtensionImpl
 public class GroovyImplementationSearch implements DefinitionsScopedSearchExecutor {
-  @Override
-  public boolean execute(@Nonnull final DefinitionsScopedSearch.SearchParameters queryParameters,
-                         @Nonnull final Processor<? super PsiElement> consumer) {
-    return ApplicationManager.getApplication().runReadAction(new Computable<Boolean>() {
-      @Override
-      public Boolean compute() {
-        final PsiElement source = queryParameters.getElement();
-        if (!source.isValid()) {
-          return true;
-        }
+    @Override
+    public boolean execute(
+        @Nonnull final DefinitionsScopedSearch.SearchParameters queryParameters,
+        @Nonnull final Processor<? super PsiElement> consumer
+    ) {
+        return ApplicationManager.getApplication().runReadAction(new Computable<Boolean>() {
+            @Override
+            public Boolean compute() {
+                final PsiElement source = queryParameters.getElement();
+                if (!source.isValid()) {
+                    return true;
+                }
 
-        if (source instanceof GrAccessorMethod) {
-          GrField property = ((GrAccessorMethod)source).getProperty();
-          return consumer.process(property);
-        }
-        else {
-          final SearchScope searchScope = queryParameters.getScope();
-          if (source instanceof GrMethod) {
-            GrReflectedMethod[] reflectedMethods = ((GrMethod)source).getReflectedMethods();
-            for (GrReflectedMethod reflectedMethod : reflectedMethods) {
-              if (!MethodImplementationsSearch.processImplementations(reflectedMethod, consumer, searchScope)) {
-                return false;
-              }
-            }
-          }
+                if (source instanceof GrAccessorMethod) {
+                    GrField property = ((GrAccessorMethod)source).getProperty();
+                    return consumer.process(property);
+                }
+                else {
+                    final SearchScope searchScope = queryParameters.getScope();
+                    if (source instanceof GrMethod) {
+                        GrReflectedMethod[] reflectedMethods = ((GrMethod)source).getReflectedMethods();
+                        for (GrReflectedMethod reflectedMethod : reflectedMethods) {
+                            if (!MethodImplementationsSearch.processImplementations(reflectedMethod, consumer, searchScope)) {
+                                return false;
+                            }
+                        }
+                    }
 
-          else if (source instanceof GrField) {
-            for (GrAccessorMethod method : GroovyPropertyUtils.getFieldAccessors((GrField)source)) {
-              if (!MethodImplementationsSearch.processImplementations(method, consumer, searchScope)) {
-                return false;
-              }
+                    else if (source instanceof GrField) {
+                        for (GrAccessorMethod method : GroovyPropertyUtils.getFieldAccessors((GrField)source)) {
+                            if (!MethodImplementationsSearch.processImplementations(method, consumer, searchScope)) {
+                                return false;
+                            }
+                        }
+                    }
+                }
+                return true;
             }
-          }
-        }
-        return true;
-      }
-    });
-  }
+        });
+    }
 }

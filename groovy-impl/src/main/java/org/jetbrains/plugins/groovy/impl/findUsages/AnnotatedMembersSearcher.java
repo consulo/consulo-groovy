@@ -38,6 +38,7 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMe
 import org.jetbrains.plugins.groovy.lang.psi.stubs.index.GrAnnotatedMemberIndex;
 
 import jakarta.annotation.Nonnull;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -48,87 +49,89 @@ import java.util.List;
  */
 @ExtensionImpl
 public class AnnotatedMembersSearcher implements AnnotatedElementsSearchExecutor {
-  @Nonnull
-  private static List<PsiModifierListOwner> getAnnotatedMemberCandidates(final PsiClass clazz, final GlobalSearchScope scope) {
-    final String name = clazz.getName();
-    if (name == null) {
-      return Collections.emptyList();
-    }
-    final Collection<PsiElement> members =
-      ReadAction.compute((() -> StubIndex.getInstance().get(GrAnnotatedMemberIndex.KEY, name, clazz.getProject(), scope)));
-    if (members.isEmpty()) {
-      return Collections.emptyList();
-    }
-
-    final ArrayList<PsiModifierListOwner> result = new ArrayList<>();
-    for (PsiElement element : members) {
-      if (element instanceof GroovyFile) {
-        element = ((GroovyFile)element).getPackageDefinition();
-      }
-      if (element instanceof PsiModifierListOwner) {
-        result.add((PsiModifierListOwner)element);
-      }
-    }
-    return result;
-  }
-
-  @Override
-  public boolean execute(@Nonnull final AnnotatedElementsSearch.Parameters p,
-                         @Nonnull final Processor<? super PsiModifierListOwner> consumer) {
-    final PsiClass annClass = p.getAnnotationClass();
-    assert annClass.isAnnotationType() : "Annotation type should be passed to annotated members search";
-
-    final String annotationFQN = ReadAction.compute(annClass::getName);
-
-    assert annotationFQN != null;
-
-    final SearchScope scope = p.getScope();
-
-    final List<PsiModifierListOwner> candidates;
-    if (scope instanceof GlobalSearchScope) {
-      candidates = getAnnotatedMemberCandidates(annClass, ((GlobalSearchScope)scope));
-    }
-    else {
-      candidates = new ArrayList<>();
-      for (PsiElement element : ((LocalSearchScope)scope).getScope()) {
-        if (element instanceof GroovyPsiElement) {
-          ((GroovyPsiElement)element).accept(new GroovyRecursiveElementVisitor() {
-            public void visitMethod(GrMethod method) {
-              candidates.add(method);
-            }
-
-            public void visitField(GrField field) {
-              candidates.add(field);
-            }
-          });
+    @Nonnull
+    private static List<PsiModifierListOwner> getAnnotatedMemberCandidates(final PsiClass clazz, final GlobalSearchScope scope) {
+        final String name = clazz.getName();
+        if (name == null) {
+            return Collections.emptyList();
         }
-      }
+        final Collection<PsiElement> members =
+            ReadAction.compute((() -> StubIndex.getInstance().get(GrAnnotatedMemberIndex.KEY, name, clazz.getProject(), scope)));
+        if (members.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        final ArrayList<PsiModifierListOwner> result = new ArrayList<>();
+        for (PsiElement element : members) {
+            if (element instanceof GroovyFile) {
+                element = ((GroovyFile)element).getPackageDefinition();
+            }
+            if (element instanceof PsiModifierListOwner) {
+                result.add((PsiModifierListOwner)element);
+            }
+        }
+        return result;
     }
 
-    for (PsiModifierListOwner candidate : candidates) {
-      if (!AnnotatedElementsSearcher.isInstanceof(candidate, p.getTypes())) {
-        continue;
-      }
+    @Override
+    public boolean execute(
+        @Nonnull final AnnotatedElementsSearch.Parameters p,
+        @Nonnull final Processor<? super PsiModifierListOwner> consumer
+    ) {
+        final PsiClass annClass = p.getAnnotationClass();
+        assert annClass.isAnnotationType() : "Annotation type should be passed to annotated members search";
 
-      boolean accepted = ReadAction.compute(() ->
-                                            {
-                                              PsiModifierList list = candidate.getModifierList();
-                                              if (list != null) {
-                                                for (PsiAnnotation annotation : list.getAnnotations()) {
-                                                  if (annotationFQN.equals(annotation.getQualifiedName()) && !consumer.process(candidate)) {
-                                                    return false;
-                                                  }
-                                                }
-                                              }
+        final String annotationFQN = ReadAction.compute(annClass::getName);
 
-                                              return true;
-                                            });
+        assert annotationFQN != null;
 
-      if (!accepted) {
-        return false;
-      }
+        final SearchScope scope = p.getScope();
+
+        final List<PsiModifierListOwner> candidates;
+        if (scope instanceof GlobalSearchScope) {
+            candidates = getAnnotatedMemberCandidates(annClass, ((GlobalSearchScope)scope));
+        }
+        else {
+            candidates = new ArrayList<>();
+            for (PsiElement element : ((LocalSearchScope)scope).getScope()) {
+                if (element instanceof GroovyPsiElement) {
+                    ((GroovyPsiElement)element).accept(new GroovyRecursiveElementVisitor() {
+                        public void visitMethod(GrMethod method) {
+                            candidates.add(method);
+                        }
+
+                        public void visitField(GrField field) {
+                            candidates.add(field);
+                        }
+                    });
+                }
+            }
+        }
+
+        for (PsiModifierListOwner candidate : candidates) {
+            if (!AnnotatedElementsSearcher.isInstanceof(candidate, p.getTypes())) {
+                continue;
+            }
+
+            boolean accepted = ReadAction.compute(() ->
+            {
+                PsiModifierList list = candidate.getModifierList();
+                if (list != null) {
+                    for (PsiAnnotation annotation : list.getAnnotations()) {
+                        if (annotationFQN.equals(annotation.getQualifiedName()) && !consumer.process(candidate)) {
+                            return false;
+                        }
+                    }
+                }
+
+                return true;
+            });
+
+            if (!accepted) {
+                return false;
+            }
+        }
+
+        return true;
     }
-
-    return true;
-  }
 }

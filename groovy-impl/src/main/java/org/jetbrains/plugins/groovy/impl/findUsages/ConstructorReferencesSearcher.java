@@ -30,24 +30,28 @@ import jakarta.annotation.Nonnull;
  */
 @ExtensionImpl
 public class ConstructorReferencesSearcher extends QueryExecutorBase<PsiReference, ReferencesSearch.SearchParameters> implements ReferencesSearchQueryExecutor {
-  public ConstructorReferencesSearcher() {
-    super(true);
-  }
-
-  @Override
-  public void processQuery(@Nonnull ReferencesSearch.SearchParameters queryParameters, @Nonnull Processor<? super PsiReference> consumer) {
-    final PsiElement element = queryParameters.getElementToSearch();
-    if (element instanceof PsiMethod) {
-      final PsiMethod method = (PsiMethod)element;
-      if (method.isConstructor()) {
-        GroovyConstructorUsagesSearcher.processConstructorUsages(method,
-                                                                 queryParameters.getEffectiveSearchScope(),
-                                                                 consumer,
-                                                                 queryParameters.getOptimizer(),
-                                                                 true,
-                                                                 false);
-      }
+    public ConstructorReferencesSearcher() {
+        super(true);
     }
-  }
 
+    @Override
+    public void processQuery(
+        @Nonnull ReferencesSearch.SearchParameters queryParameters,
+        @Nonnull Processor<? super PsiReference> consumer
+    ) {
+        final PsiElement element = queryParameters.getElementToSearch();
+        if (element instanceof PsiMethod) {
+            final PsiMethod method = (PsiMethod)element;
+            if (method.isConstructor()) {
+                GroovyConstructorUsagesSearcher.processConstructorUsages(
+                    method,
+                    queryParameters.getEffectiveSearchScope(),
+                    consumer,
+                    queryParameters.getOptimizer(),
+                    true,
+                    false
+                );
+            }
+        }
+    }
 }

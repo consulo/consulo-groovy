@@ -29,53 +29,68 @@ import consulo.project.util.query.QueryExecutorBase;
 import consulo.util.lang.StringUtil;
 
 import jakarta.annotation.Nonnull;
+
 import java.util.List;
 
 /**
  * @author Max Medvedev
  */
 @ExtensionImpl
-public class GrLiteralMethodSearcher extends QueryExecutorBase<PsiReference, MethodReferencesSearch.SearchParameters> implements MethodReferencesSearchExecutor {
-  @Override
-  public void processQuery(@Nonnull MethodReferencesSearch.SearchParameters p, @Nonnull Processor<? super PsiReference> consumer) {
-    final PsiMethod method = p.getMethod();
-    final PsiClass aClass = method.getContainingClass();
-    if (aClass == null) return;
+public class GrLiteralMethodSearcher extends QueryExecutorBase<PsiReference, MethodReferencesSearch.SearchParameters>
+    implements MethodReferencesSearchExecutor {
+    @Override
+    public void processQuery(@Nonnull MethodReferencesSearch.SearchParameters p, @Nonnull Processor<? super PsiReference> consumer) {
+        final PsiMethod method = p.getMethod();
+        final PsiClass aClass = method.getContainingClass();
+        if (aClass == null) {
+            return;
+        }
 
-    final String name = method.getName();
-    if (StringUtil.isEmpty(name)) return;
+        final String name = method.getName();
+        if (StringUtil.isEmpty(name)) {
+            return;
+        }
 
-    final boolean strictSignatureSearch = p.isStrictSignatureSearch();
-    final PsiMethod[] methods = strictSignatureSearch ? new PsiMethod[]{method} : aClass.findMethodsByName(name, false);
+        final boolean strictSignatureSearch = p.isStrictSignatureSearch();
+        final PsiMethod[] methods = strictSignatureSearch ? new PsiMethod[]{method} : aClass.findMethodsByName(name, false);
 
-    SearchScope accessScope = methods[0].getUseScope();
-    for (int i = 1; i < methods.length; i++) {
-      PsiMethod method1 = methods[i];
-      accessScope = accessScope.union(method1.getUseScope());
+        SearchScope accessScope = methods[0].getUseScope();
+        for (int i = 1; i < methods.length; i++) {
+            PsiMethod method1 = methods[i];
+            accessScope = accessScope.union(method1.getUseScope());
+        }
+
+        final SearchScope restrictedByAccess = p.getScope().intersectWith(accessScope);
+
+        final String textToSearch = findLongestWord(name);
+
+        p.getOptimizer().searchWord(
+            textToSearch,
+            restrictedByAccess,
+            UsageSearchContext.IN_STRINGS,
+            true,
+            new MethodTextOccurrenceProcessor(aClass, strictSignatureSearch, methods)
+        );
     }
 
-    final SearchScope restrictedByAccess = p.getScope().intersectWith(accessScope);
+    @Nonnull
+    private static String findLongestWord(@Nonnull String sequence) {
+        final List<String> words = StringUtil.getWordsIn(sequence);
+        if (words.isEmpty()) {
+            return sequence;
+        }
 
-    final String textToSearch = findLongestWord(name);
+        String longest = words.get(0);
+        for (String word : words) {
+            if (word.length() > longest.length()) {
+                longest = word;
+            }
+        }
 
-    p.getOptimizer().searchWord(textToSearch, restrictedByAccess, UsageSearchContext.IN_STRINGS, true,
-                                new MethodTextOccurrenceProcessor(aClass, strictSignatureSearch, methods));
-  }
-
-  @Nonnull
-  private static String findLongestWord(@Nonnull String sequence) {
-    final List<String> words = StringUtil.getWordsIn(sequence);
-    if (words.isEmpty()) return sequence;
-
-    String longest = words.get(0);
-    for (String word : words) {
-      if (word.length() > longest.length()) longest = word;
+        return longest;
     }
 
-    return longest;
-  }
-
-  public GrLiteralMethodSearcher() {
-    super(true);
-  }
+    public GrLiteralMethodSearcher() {
+        super(true);
+    }
 }

@@ -31,18 +31,20 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrRe
  */
 @ExtensionImpl
 public class GroovyReflectedMethodReferenceSearcher extends QueryExecutorBase<PsiReference, MethodReferencesSearch.SearchParameters> implements MethodReferencesSearchExecutor {
-  public GroovyReflectedMethodReferenceSearcher() {
-    super(true);
-  }
-
-  @Override
-  public void processQuery(@Nonnull MethodReferencesSearch.SearchParameters queryParameters,
-                           @Nonnull Processor<? super PsiReference> consumer) {
-    final PsiMethod method = queryParameters.getMethod();
-    if (method instanceof GrMethod) {
-      for (GrReflectedMethod reflectedMethod : ((GrMethod)method).getReflectedMethods()) {
-        MethodReferencesSearch.search(reflectedMethod, queryParameters.getScope(), true).forEach(consumer);
-      }
+    public GroovyReflectedMethodReferenceSearcher() {
+        super(true);
     }
-  }
+
+    @Override
+    public void processQuery(
+        @Nonnull MethodReferencesSearch.SearchParameters queryParameters,
+        @Nonnull Processor<? super PsiReference> consumer
+    ) {
+        final PsiMethod method = queryParameters.getMethod();
+        if (method instanceof GrMethod) {
+            for (GrReflectedMethod reflectedMethod : ((GrMethod)method).getReflectedMethods()) {
+                MethodReferencesSearch.search(reflectedMethod, queryParameters.getScope(), true).forEach(consumer);
+            }
+        }
+    }
 }

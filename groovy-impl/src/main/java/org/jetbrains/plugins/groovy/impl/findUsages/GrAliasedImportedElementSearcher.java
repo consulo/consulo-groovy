@@ -34,94 +34,105 @@ import org.jetbrains.plugins.groovy.lang.psi.api.toplevel.imports.GrImportStatem
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyPropertyUtils;
 
 import jakarta.annotation.Nullable;
+
 import java.util.function.Predicate;
 
 /**
  * @author Maxim.Medvedev
  */
 @ExtensionImpl
-public class GrAliasedImportedElementSearcher extends QueryExecutorBase<PsiReference, ReferencesSearch.SearchParameters> implements ReferencesSearchQueryExecutor {
-
-  public GrAliasedImportedElementSearcher() {
-    super(true);
-  }
-
-  @Override
-  public void processQuery(@Nonnull ReferencesSearch.SearchParameters parameters, @Nonnull Processor<? super PsiReference> consumer) {
-    final PsiElement target = parameters.getElementToSearch();
-    if (!(target instanceof PsiMember) || !(target instanceof PsiNamedElement)) return;
-
-    final String name = ((PsiNamedElement)target).getName();
-    if (name == null || StringUtil.isEmptyOrSpaces(name)) return;
-
-    final SearchScope onlyGroovy = GroovyScopeUtil.restrictScopeToGroovyFiles(parameters.getEffectiveSearchScope());
-
-    final SearchRequestCollector collector = parameters.getOptimizer();
-    final SearchSession session = collector.getSearchSession();
-    if (target instanceof PsiMethod) {
-      final PsiMethod method = (PsiMethod)target;
-      if (GroovyPropertyUtils.isSimplePropertyAccessor(method)) {
-        final PsiField field = GroovyPropertyUtils.findFieldForAccessor(method, true);
-        if (field != null) {
-          final String propertyName = field.getName();
-          if (propertyName != null) {
-            final MyProcessor processor = new MyProcessor(method, GroovyPropertyUtils.getAccessorPrefix(method), session);
-            collector.searchWord(propertyName, onlyGroovy, UsageSearchContext.IN_CODE, true, processor);
-          }
-        }
-      }
-    }
-
-    collector.searchWord(name, onlyGroovy, UsageSearchContext.IN_CODE, true, new MyProcessor(target, null, session));
-
-  }
-
-  private static class MyProcessor extends RequestResultProcessor {
-    private final PsiElement myTarget;
-    private final String prefix;
-    private final SearchSession mySession;
-
-    MyProcessor(PsiElement target, @Nullable String prefix, SearchSession session) {
-      super(target, prefix);
-      myTarget = target;
-      this.prefix = prefix;
-      mySession = session;
+public class GrAliasedImportedElementSearcher extends QueryExecutorBase<PsiReference, ReferencesSearch.SearchParameters>
+    implements ReferencesSearchQueryExecutor {
+    public GrAliasedImportedElementSearcher() {
+        super(true);
     }
 
     @Override
-    public boolean processTextOccurrence(@Nonnull final PsiElement element,
-                                         int offsetInElement,
-                                         @Nonnull Predicate<? super PsiReference> consumer) {
-      String alias = getAlias(element);
-      if (alias == null) return true;
+    public void processQuery(@Nonnull ReferencesSearch.SearchParameters parameters, @Nonnull Processor<? super PsiReference> consumer) {
+        final PsiElement target = parameters.getElementToSearch();
+        if (!(target instanceof PsiMember) || !(target instanceof PsiNamedElement)) {
+            return;
+        }
 
-      final PsiReference reference = element.getReference();
-      if (reference == null) {
-        return true;
-      }
-      if (!reference.isReferenceTo(myTarget instanceof GrAccessorMethod ? ((GrAccessorMethod)myTarget).getProperty() : myTarget)) {
-        return true;
-      }
+        final String name = ((PsiNamedElement)target).getName();
+        if (name == null || StringUtil.isEmptyOrSpaces(name)) {
+            return;
+        }
 
-      final SearchRequestCollector collector = new SearchRequestCollector(mySession);
-      final SearchScope fileScope = new LocalSearchScope(element.getContainingFile());
-      collector.searchWord(alias, fileScope, UsageSearchContext.IN_CODE, true, myTarget);
-      if (prefix != null) {
-        collector.searchWord(prefix + GroovyPropertyUtils.capitalize(alias), fileScope, UsageSearchContext.IN_CODE, true, myTarget);
-      }
+        final SearchScope onlyGroovy = GroovyScopeUtil.restrictScopeToGroovyFiles(parameters.getEffectiveSearchScope());
 
+        final SearchRequestCollector collector = parameters.getOptimizer();
+        final SearchSession session = collector.getSearchSession();
+        if (target instanceof PsiMethod) {
+            final PsiMethod method = (PsiMethod)target;
+            if (GroovyPropertyUtils.isSimplePropertyAccessor(method)) {
+                final PsiField field = GroovyPropertyUtils.findFieldForAccessor(method, true);
+                if (field != null) {
+                    final String propertyName = field.getName();
+                    if (propertyName != null) {
+                        final MyProcessor processor = new MyProcessor(method, GroovyPropertyUtils.getAccessorPrefix(method), session);
+                        collector.searchWord(propertyName, onlyGroovy, UsageSearchContext.IN_CODE, true, processor);
+                    }
+                }
+            }
+        }
 
-      return PsiSearchHelper.getInstance(element.getProject()).processRequests(collector, consumer);
+        collector.searchWord(name, onlyGroovy, UsageSearchContext.IN_CODE, true, new MyProcessor(target, null, session));
+
     }
 
-    @Nullable
-    private static String getAlias(final PsiElement element) {
-      if (!(element.getParent() instanceof GrImportStatement)) return null;
-      final GrImportStatement importStatement = (GrImportStatement)element.getParent();
-      if (!importStatement.isAliasedImport()) return null;
-      return importStatement.getImportedName();
+    private static class MyProcessor extends RequestResultProcessor {
+        private final PsiElement myTarget;
+        private final String prefix;
+        private final SearchSession mySession;
+
+        MyProcessor(PsiElement target, @Nullable String prefix, SearchSession session) {
+            super(target, prefix);
+            myTarget = target;
+            this.prefix = prefix;
+            mySession = session;
+        }
+
+        @Override
+        public boolean processTextOccurrence(
+            @Nonnull final PsiElement element,
+            int offsetInElement,
+            @Nonnull Predicate<? super PsiReference> consumer
+        ) {
+            String alias = getAlias(element);
+            if (alias == null) {
+                return true;
+            }
+
+            final PsiReference reference = element.getReference();
+            if (reference == null) {
+                return true;
+            }
+            if (!reference.isReferenceTo(myTarget instanceof GrAccessorMethod ? ((GrAccessorMethod)myTarget).getProperty() : myTarget)) {
+                return true;
+            }
+
+            final SearchRequestCollector collector = new SearchRequestCollector(mySession);
+            final SearchScope fileScope = new LocalSearchScope(element.getContainingFile());
+            collector.searchWord(alias, fileScope, UsageSearchContext.IN_CODE, true, myTarget);
+            if (prefix != null) {
+                collector.searchWord(prefix + GroovyPropertyUtils.capitalize(alias), fileScope, UsageSearchContext.IN_CODE, true, myTarget);
+            }
+
+
+            return PsiSearchHelper.getInstance(element.getProject()).processRequests(collector, consumer);
+        }
+
+        @Nullable
+        private static String getAlias(final PsiElement element) {
+            if (!(element.getParent() instanceof GrImportStatement)) {
+                return null;
+            }
+            final GrImportStatement importStatement = (GrImportStatement)element.getParent();
+            if (!importStatement.isAliasedImport()) {
+                return null;
+            }
+            return importStatement.getImportedName();
+        }
     }
-
-  }
-
 }

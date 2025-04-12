@@ -35,32 +35,41 @@ import org.jetbrains.plugins.groovy.lang.psi.util.GroovyPropertyUtils;
  * author ven
  */
 @ExtensionImpl
-public class AccessorReferencesSearcher extends QueryExecutorBase<PsiReference, ReferencesSearch.SearchParameters> implements ReferencesSearchQueryExecutor {
-
-  public AccessorReferencesSearcher() {
-    super(true);
-  }
-
-  @Override
-  public void processQuery(@Nonnull ReferencesSearch.SearchParameters queryParameters, @Nonnull Processor<? super PsiReference> consumer) {
-    final PsiElement element = queryParameters.getElementToSearch();
-    if (element instanceof PsiMethod) {
-      final String propertyName = GroovyPropertyUtils.getPropertyName((PsiMethod)element);
-      if (propertyName == null) return;
-
-      queryParameters.getOptimizer().searchWord(propertyName, GroovyScopeUtil
-                                                  .restrictScopeToGroovyFiles(queryParameters.getEffectiveSearchScope()),
-                                                UsageSearchContext.IN_CODE, true, element);
+public class AccessorReferencesSearcher extends QueryExecutorBase<PsiReference, ReferencesSearch.SearchParameters>
+    implements ReferencesSearchQueryExecutor {
+    public AccessorReferencesSearcher() {
+        super(true);
     }
-    else if (element instanceof GrField) {
-      for (GrAccessorMethod method : ((GrField)element).getGetters()) {
-        MethodReferencesSearch.search(method, queryParameters.getEffectiveSearchScope(), true).forEach(consumer);
-      }
 
-      final GrAccessorMethod setter = ((GrField)element).getSetter();
-      if (setter != null) {
-        MethodReferencesSearch.search(setter, queryParameters.getEffectiveSearchScope(), true).forEach(consumer);
-      }
+    @Override
+    public void processQuery(
+        @Nonnull ReferencesSearch.SearchParameters queryParameters,
+        @Nonnull Processor<? super PsiReference> consumer
+    ) {
+        final PsiElement element = queryParameters.getElementToSearch();
+        if (element instanceof PsiMethod) {
+            final String propertyName = GroovyPropertyUtils.getPropertyName((PsiMethod)element);
+            if (propertyName == null) {
+                return;
+            }
+
+            queryParameters.getOptimizer().searchWord(
+                propertyName,
+                GroovyScopeUtil.restrictScopeToGroovyFiles(queryParameters.getEffectiveSearchScope()),
+                UsageSearchContext.IN_CODE,
+                true,
+                element
+            );
+        }
+        else if (element instanceof GrField) {
+            for (GrAccessorMethod method : ((GrField)element).getGetters()) {
+                MethodReferencesSearch.search(method, queryParameters.getEffectiveSearchScope(), true).forEach(consumer);
+            }
+
+            final GrAccessorMethod setter = ((GrField)element).getSetter();
+            if (setter != null) {
+                MethodReferencesSearch.search(setter, queryParameters.getEffectiveSearchScope(), true).forEach(consumer);
+            }
+        }
     }
-  }
 }
