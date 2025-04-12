@@ -21,16 +21,15 @@ import com.intellij.java.indexing.search.searches.MethodReferencesSearchExecutor
 import com.intellij.java.language.psi.PsiClass;
 import com.intellij.java.language.psi.PsiMethod;
 import consulo.annotation.component.ExtensionImpl;
-import consulo.application.util.function.Processor;
 import consulo.content.scope.SearchScope;
 import consulo.language.psi.PsiReference;
 import consulo.language.psi.search.UsageSearchContext;
 import consulo.project.util.query.QueryExecutorBase;
 import consulo.util.lang.StringUtil;
-
 import jakarta.annotation.Nonnull;
 
 import java.util.List;
+import java.util.function.Predicate;
 
 /**
  * @author Max Medvedev
@@ -39,7 +38,7 @@ import java.util.List;
 public class GrLiteralMethodSearcher extends QueryExecutorBase<PsiReference, MethodReferencesSearch.SearchParameters>
     implements MethodReferencesSearchExecutor {
     @Override
-    public void processQuery(@Nonnull MethodReferencesSearch.SearchParameters p, @Nonnull Processor<? super PsiReference> consumer) {
+    public void processQuery(@Nonnull MethodReferencesSearch.SearchParameters p, @Nonnull Predicate<? super PsiReference> consumer) {
         final PsiMethod method = p.getMethod();
         final PsiClass aClass = method.getContainingClass();
         if (aClass == null) {

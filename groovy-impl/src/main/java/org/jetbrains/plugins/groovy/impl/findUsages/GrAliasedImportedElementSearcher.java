@@ -18,8 +18,8 @@ package org.jetbrains.plugins.groovy.impl.findUsages;
 import com.intellij.java.language.psi.PsiField;
 import com.intellij.java.language.psi.PsiMember;
 import com.intellij.java.language.psi.PsiMethod;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.annotation.component.ExtensionImpl;
-import consulo.application.util.function.Processor;
 import consulo.content.scope.SearchScope;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiNamedElement;
@@ -29,11 +29,10 @@ import consulo.language.psi.search.*;
 import consulo.project.util.query.QueryExecutorBase;
 import consulo.util.lang.StringUtil;
 import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrAccessorMethod;
 import org.jetbrains.plugins.groovy.lang.psi.api.toplevel.imports.GrImportStatement;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyPropertyUtils;
-
-import jakarta.annotation.Nullable;
 
 import java.util.function.Predicate;
 
@@ -48,37 +47,33 @@ public class GrAliasedImportedElementSearcher extends QueryExecutorBase<PsiRefer
     }
 
     @Override
-    public void processQuery(@Nonnull ReferencesSearch.SearchParameters parameters, @Nonnull Processor<? super PsiReference> consumer) {
-        final PsiElement target = parameters.getElementToSearch();
+    public void processQuery(@Nonnull ReferencesSearch.SearchParameters parameters, @Nonnull Predicate<? super PsiReference> consumer) {
+        PsiElement target = parameters.getElementToSearch();
         if (!(target instanceof PsiMember) || !(target instanceof PsiNamedElement)) {
             return;
         }
 
-        final String name = ((PsiNamedElement)target).getName();
+        String name = ((PsiNamedElement)target).getName();
         if (name == null || StringUtil.isEmptyOrSpaces(name)) {
             return;
         }
 
-        final SearchScope onlyGroovy = GroovyScopeUtil.restrictScopeToGroovyFiles(parameters.getEffectiveSearchScope());
+        SearchScope onlyGroovy = GroovyScopeUtil.restrictScopeToGroovyFiles(parameters.getEffectiveSearchScope());
 
-        final SearchRequestCollector collector = parameters.getOptimizer();
-        final SearchSession session = collector.getSearchSession();
-        if (target instanceof PsiMethod) {
-            final PsiMethod method = (PsiMethod)target;
-            if (GroovyPropertyUtils.isSimplePropertyAccessor(method)) {
-                final PsiField field = GroovyPropertyUtils.findFieldForAccessor(method, true);
-                if (field != null) {
-                    final String propertyName = field.getName();
-                    if (propertyName != null) {
-                        final MyProcessor processor = new MyProcessor(method, GroovyPropertyUtils.getAccessorPrefix(method), session);
-                        collector.searchWord(propertyName, onlyGroovy, UsageSearchContext.IN_CODE, true, processor);
-                    }
+        SearchRequestCollector collector = parameters.getOptimizer();
+        SearchSession session = collector.getSearchSession();
+        if (target instanceof PsiMethod method && GroovyPropertyUtils.isSimplePropertyAccessor(method)) {
+            PsiField field = GroovyPropertyUtils.findFieldForAccessor(method, true);
+            if (field != null) {
+                String propertyName = field.getName();
+                if (propertyName != null) {
+                    MyProcessor processor = new MyProcessor(method, GroovyPropertyUtils.getAccessorPrefix(method), session);
+                    collector.searchWord(propertyName, onlyGroovy, UsageSearchContext.IN_CODE, true, processor);
                 }
             }
         }
 
         collector.searchWord(name, onlyGroovy, UsageSearchContext.IN_CODE, true, new MyProcessor(target, null, session));
-
     }
 
     private static class MyProcessor extends RequestResultProcessor {
@@ -94,8 +89,9 @@ public class GrAliasedImportedElementSearcher extends QueryExecutorBase<PsiRefer
         }
 
         @Override
+        @RequiredReadAction
         public boolean processTextOccurrence(
-            @Nonnull final PsiElement element,
+            @Nonnull PsiElement element,
             int offsetInElement,
             @Nonnull Predicate<? super PsiReference> consumer
         ) {
@@ -104,16 +100,17 @@ public class GrAliasedImportedElementSearcher extends QueryExecutorBase<PsiRefer
                 return true;
             }
 
-            final PsiReference reference = element.getReference();
+            PsiReference reference = element.getReference();
             if (reference == null) {
                 return true;
             }
-            if (!reference.isReferenceTo(myTarget instanceof GrAccessorMethod ? ((GrAccessorMethod)myTarget).getProperty() : myTarget)) {
+
+            if (!reference.isReferenceTo(myTarget instanceof GrAccessorMethod accessorMethod ? accessorMethod.getProperty() : myTarget)) {
                 return true;
             }
 
-            final SearchRequestCollector collector = new SearchRequestCollector(mySession);
-            final SearchScope fileScope = new LocalSearchScope(element.getContainingFile());
+            SearchRequestCollector collector = new SearchRequestCollector(mySession);
+            SearchScope fileScope = new LocalSearchScope(element.getContainingFile());
             collector.searchWord(alias, fileScope, UsageSearchContext.IN_CODE, true, myTarget);
             if (prefix != null) {
                 collector.searchWord(prefix + GroovyPropertyUtils.capitalize(alias), fileScope, UsageSearchContext.IN_CODE, true, myTarget);
@@ -124,11 +121,11 @@ public class GrAliasedImportedElementSearcher extends QueryExecutorBase<PsiRefer
         }
 
         @Nullable
-        private static String getAlias(final PsiElement element) {
+        private static String getAlias(PsiElement element) {
             if (!(element.getParent() instanceof GrImportStatement)) {
                 return null;
             }
-            final GrImportStatement importStatement = (GrImportStatement)element.getParent();
+            GrImportStatement importStatement = (GrImportStatement)element.getParent();
             if (!importStatement.isAliasedImport()) {
                 return null;
             }

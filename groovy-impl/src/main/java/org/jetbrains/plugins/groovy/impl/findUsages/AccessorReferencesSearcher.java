@@ -19,7 +19,6 @@ package org.jetbrains.plugins.groovy.impl.findUsages;
 import com.intellij.java.indexing.search.searches.MethodReferencesSearch;
 import com.intellij.java.language.psi.PsiMethod;
 import consulo.annotation.component.ExtensionImpl;
-import consulo.application.util.function.Processor;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiReference;
 import consulo.language.psi.search.ReferencesSearch;
@@ -30,6 +29,8 @@ import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrAccessorMethod;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyPropertyUtils;
+
+import java.util.function.Predicate;
 
 /**
  * author ven
@@ -44,11 +45,11 @@ public class AccessorReferencesSearcher extends QueryExecutorBase<PsiReference, 
     @Override
     public void processQuery(
         @Nonnull ReferencesSearch.SearchParameters queryParameters,
-        @Nonnull Processor<? super PsiReference> consumer
+        @Nonnull Predicate<? super PsiReference> consumer
     ) {
-        final PsiElement element = queryParameters.getElementToSearch();
-        if (element instanceof PsiMethod) {
-            final String propertyName = GroovyPropertyUtils.getPropertyName((PsiMethod)element);
+        PsiElement element = queryParameters.getElementToSearch();
+        if (element instanceof PsiMethod method) {
+            String propertyName = GroovyPropertyUtils.getPropertyName(method);
             if (propertyName == null) {
                 return;
             }
@@ -61,12 +62,12 @@ public class AccessorReferencesSearcher extends QueryExecutorBase<PsiReference, 
                 element
             );
         }
-        else if (element instanceof GrField) {
-            for (GrAccessorMethod method : ((GrField)element).getGetters()) {
+        else if (element instanceof GrField field) {
+            for (GrAccessorMethod method : field.getGetters()) {
                 MethodReferencesSearch.search(method, queryParameters.getEffectiveSearchScope(), true).forEach(consumer);
             }
 
-            final GrAccessorMethod setter = ((GrField)element).getSetter();
+            GrAccessorMethod setter = field.getSetter();
             if (setter != null) {
                 MethodReferencesSearch.search(setter, queryParameters.getEffectiveSearchScope(), true).forEach(consumer);
             }

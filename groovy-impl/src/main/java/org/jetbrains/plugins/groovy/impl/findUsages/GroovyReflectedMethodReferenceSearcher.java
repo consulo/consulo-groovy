@@ -17,14 +17,14 @@ package org.jetbrains.plugins.groovy.impl.findUsages;
 
 import com.intellij.java.indexing.search.searches.MethodReferencesSearch;
 import com.intellij.java.indexing.search.searches.MethodReferencesSearchExecutor;
-import com.intellij.java.language.psi.PsiMethod;
 import consulo.annotation.component.ExtensionImpl;
-import consulo.application.util.function.Processor;
 import consulo.language.psi.PsiReference;
 import consulo.project.util.query.QueryExecutorBase;
 import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrReflectedMethod;
+
+import java.util.function.Predicate;
 
 /**
  * @author Max Medvedev
@@ -38,11 +38,10 @@ public class GroovyReflectedMethodReferenceSearcher extends QueryExecutorBase<Ps
     @Override
     public void processQuery(
         @Nonnull MethodReferencesSearch.SearchParameters queryParameters,
-        @Nonnull Processor<? super PsiReference> consumer
+        @Nonnull Predicate<? super PsiReference> consumer
     ) {
-        final PsiMethod method = queryParameters.getMethod();
-        if (method instanceof GrMethod) {
-            for (GrReflectedMethod reflectedMethod : ((GrMethod)method).getReflectedMethods()) {
+        if (queryParameters.getMethod() instanceof GrMethod method) {
+            for (GrReflectedMethod reflectedMethod : method.getReflectedMethods()) {
                 MethodReferencesSearch.search(reflectedMethod, queryParameters.getScope(), true).forEach(consumer);
             }
         }

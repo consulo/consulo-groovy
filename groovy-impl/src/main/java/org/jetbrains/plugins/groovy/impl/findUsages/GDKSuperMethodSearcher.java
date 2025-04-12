@@ -23,11 +23,11 @@ import com.intellij.java.language.psi.util.MethodSignature;
 import com.intellij.java.language.psi.util.MethodSignatureBackedByPsiMethod;
 import com.intellij.java.language.psi.util.TypeConversionUtil;
 import consulo.annotation.component.ExtensionImpl;
-import consulo.application.util.function.Processor;
-import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiManager;
 import consulo.language.psi.resolve.ResolveState;
 import consulo.project.Project;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
 import org.jetbrains.plugins.groovy.lang.psi.impl.PsiImplUtil;
@@ -35,48 +35,43 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUt
 import org.jetbrains.plugins.groovy.lang.resolve.ResolveUtil;
 import org.jetbrains.plugins.groovy.lang.resolve.processors.MethodResolverProcessor;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
-
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.Predicate;
 
 /**
  * @author Maxim.Medvedev
  */
 @ExtensionImpl
 public class GDKSuperMethodSearcher implements SuperMethodsSearchExecutor {
+    @Override
     public boolean execute(
         @Nonnull SuperMethodsSearch.SearchParameters queryParameters,
-        @Nonnull Processor<? super MethodSignatureBackedByPsiMethod> consumer
+        @Nonnull Predicate<? super MethodSignatureBackedByPsiMethod> consumer
     ) {
-        final PsiMethod method = queryParameters.getMethod();
-        if (!(method instanceof GrMethod)) {
+        PsiMethod method = queryParameters.getMethod();
+        if (!(method instanceof GrMethod) || method.isStatic()) {
             return true;
         }
 
-        if (method.hasModifierProperty(PsiModifier.STATIC)) {
-            return true;
-        }
-
-        final PsiClass psiClass = method.getContainingClass();
+        PsiClass psiClass = method.getContainingClass();
         if (psiClass == null) {
             return true;
         }
 
-        final HierarchicalMethodSignature hierarchicalSignature = method.getHierarchicalMethodSignature();
+        HierarchicalMethodSignature hierarchicalSignature = method.getHierarchicalMethodSignature();
         if (hierarchicalSignature.getSuperSignatures().size() != 0) {
             return true;
         }
 
-        final Project project = method.getProject();
+        Project project = method.getProject();
 
-        final String name = method.getName();
-        final MethodResolverProcessor processor = new MethodResolverProcessor(
+        String name = method.getName();
+        MethodResolverProcessor processor = new MethodResolverProcessor(
             name,
-            ((GrMethod)method),
+            method,
             false,
             null,
             null,
@@ -85,25 +80,21 @@ public class GDKSuperMethodSearcher implements SuperMethodsSearchExecutor {
         ResolveUtil.processNonCodeMembers(
             JavaPsiFacade.getElementFactory(project).createType(psiClass),
             processor,
-            (GrMethod)method,
+            method,
             ResolveState.initial()
         );
 
-        final GroovyResolveResult[] candidates = processor.getCandidates();
+        GroovyResolveResult[] candidates = processor.getCandidates();
 
-        final PsiManager psiManager = PsiManager.getInstance(project);
+        PsiManager psiManager = PsiManager.getInstance(project);
 
-        final MethodSignature signature = method.getHierarchicalMethodSignature();
-        List<PsiMethod> goodSupers = new ArrayList<PsiMethod>();
+        MethodSignature signature = method.getHierarchicalMethodSignature();
+        List<PsiMethod> goodSupers = new ArrayList<>();
 
         for (GroovyResolveResult candidate : candidates) {
-            final PsiElement element = candidate.getElement();
-            if (element instanceof PsiMethod) {
-                final PsiMethod m = (PsiMethod)element;
-                if (!isTheSameMethod(method, psiManager, m)
-                    && PsiImplUtil.isExtendsSignature(m.getHierarchicalMethodSignature(), signature)) {
-                    goodSupers.add(m);
-                }
+            if (candidate.getElement() instanceof PsiMethod m && !isTheSameMethod(method, psiManager, m)
+                && PsiImplUtil.isExtendsSignature(m.getHierarchicalMethodSignature(), signature)) {
+                goodSupers.add(m);
             }
         }
 
@@ -111,28 +102,26 @@ public class GDKSuperMethodSearcher implements SuperMethodsSearchExecutor {
             return true;
         }
 
-        List<PsiMethod> result = new ArrayList<PsiMethod>(goodSupers.size());
+        List<PsiMethod> result = new ArrayList<>(goodSupers.size());
         result.add(goodSupers.get(0));
 
-        final Comparator<PsiMethod> comparator = new Comparator<PsiMethod>() {
-            public int compare(PsiMethod o1, PsiMethod o2) { //compare by first parameter type
-                final PsiType type1 = getRealType(o1);
-                final PsiType type2 = getRealType(o2);
-                if (TypesUtil.isAssignableByMethodCallConversion(type1, type2, o1)) {
-                    return -1;
-                }
-                else if (TypesUtil.isAssignableByMethodCallConversion(type2, type1, o1)) {
-                    return 1;
-                }
-                return 0;
+        Comparator<PsiMethod> comparator = (o1, o2) -> { //compare by first parameter type
+            PsiType type1 = getRealType(o1);
+            PsiType type2 = getRealType(o2);
+            if (TypesUtil.isAssignableByMethodCallConversion(type1, type2, o1)) {
+                return -1;
             }
+            else if (TypesUtil.isAssignableByMethodCallConversion(type2, type1, o1)) {
+                return 1;
+            }
+            return 0;
         };
 
         Outer:
         for (PsiMethod current : goodSupers) {
             for (Iterator<PsiMethod> i = result.iterator(); i.hasNext(); ) {
                 PsiMethod m = i.next();
-                final int res = comparator.compare(m, current);
+                int res = comparator.compare(m, current);
                 if (res > 0) {
                     continue Outer;
                 }
@@ -143,7 +132,7 @@ public class GDKSuperMethodSearcher implements SuperMethodsSearchExecutor {
             result.add(current);
         }
         for (PsiMethod psiMethod : result) {
-            if (!consumer.process(getRealMethod(psiMethod).getHierarchicalMethodSignature())) {
+            if (!consumer.test(getRealMethod(psiMethod).getHierarchicalMethodSignature())) {
                 return false;
             }
         }
@@ -155,25 +144,20 @@ public class GDKSuperMethodSearcher implements SuperMethodsSearchExecutor {
     }
 
     private static PsiMethod getRealMethod(PsiMethod method) {
-        final PsiElement element = method.getNavigationElement();
-        if (element instanceof PsiMethod && ((PsiMethod)element).getParameterList().getParametersCount() > 0) {
-            return (PsiMethod)element;
-        }
-        else {
-            return method;
-        }
+        return method.getNavigationElement() instanceof PsiMethod navMethod && navMethod.getParameterList().getParametersCount() > 0
+            ? navMethod
+            : method;
     }
 
     @Nullable
     private static PsiType getRealType(PsiMethod method) {
-        final PsiElement navigationElement = method.getNavigationElement();
-        if (navigationElement instanceof PsiMethod) {
-            final PsiParameter[] parameters = ((PsiMethod)navigationElement).getParameterList().getParameters();
+        if (method.getNavigationElement() instanceof PsiMethod navMethod) {
+            PsiParameter[] parameters = navMethod.getParameterList().getParameters();
             if (parameters.length != 0) {
                 return TypeConversionUtil.erasure(parameters[0].getType());
             }
         }
-        final PsiClass containingClass = method.getContainingClass();
+        PsiClass containingClass = method.getContainingClass();
         if (containingClass == null) {
             return null;
         }
