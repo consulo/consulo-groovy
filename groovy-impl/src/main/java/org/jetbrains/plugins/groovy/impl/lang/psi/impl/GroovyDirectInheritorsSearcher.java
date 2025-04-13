@@ -18,12 +18,10 @@ package org.jetbrains.plugins.groovy.impl.lang.psi.impl;
 import com.intellij.java.indexing.search.searches.DirectClassInheritorsSearch;
 import com.intellij.java.indexing.search.searches.DirectClassInheritorsSearchExecutor;
 import com.intellij.java.language.psi.PsiClass;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.annotation.component.ExtensionImpl;
 import consulo.application.AccessRule;
-import consulo.application.ApplicationManager;
-import consulo.application.util.function.Computable;
-import consulo.application.util.function.Processor;
-import consulo.content.scope.SearchScope;
+import consulo.application.Application;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.scope.GlobalSearchScope;
 import consulo.language.psi.stub.StubIndex;
@@ -36,64 +34,61 @@ import org.jetbrains.plugins.groovy.lang.psi.stubs.index.GrDirectInheritorsIndex
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 /**
  * @author ven
  */
 @ExtensionImpl
 public class GroovyDirectInheritorsSearcher implements DirectClassInheritorsSearchExecutor {
-
-  public GroovyDirectInheritorsSearcher() {
-  }
-
-  @Nonnull
-  private static PsiClass[] getDeriverCandidates(PsiClass clazz, GlobalSearchScope scope) {
-    final String name = clazz.getName();
-    if (name == null) {
-      return GrTypeDefinition.EMPTY_ARRAY;
+    public GroovyDirectInheritorsSearcher() {
     }
-    final ArrayList<PsiClass> inheritors = new ArrayList<PsiClass>();
-    for (GrReferenceList list : StubIndex.getInstance()
-                                         .safeGet(GrDirectInheritorsIndex.KEY, name, clazz.getProject(), scope, GrReferenceList.class)) {
-      final PsiElement parent = list.getParent();
-      if (parent instanceof GrTypeDefinition) {
-        inheritors.add(((GrTypeDefinition)parent));
-      }
-    }
-    final Collection<GrAnonymousClassDefinition> classes =
-      StubIndex.getInstance().get(GrAnonymousClassIndex.KEY, name, clazz.getProject(), scope);
-    for (GrAnonymousClassDefinition aClass : classes) {
-      inheritors.add(aClass);
-    }
-    return inheritors.toArray(new PsiClass[inheritors.size()]);
-  }
 
-  public boolean execute(@Nonnull DirectClassInheritorsSearch.SearchParameters queryParameters,
-                         @Nonnull final Processor<? super PsiClass> consumer) {
-    final PsiClass clazz = queryParameters.getClassToProcess();
-    final SearchScope scope = queryParameters.getScope();
-    if (scope instanceof GlobalSearchScope) {
-      final PsiClass[] candidates = ApplicationManager.getApplication().runReadAction(new Computable<PsiClass[]>() {
-        public PsiClass[] compute() {
-          if (!clazz.isValid()) {
-            return PsiClass.EMPTY_ARRAY;
-          }
-          return getDeriverCandidates(clazz, (GlobalSearchScope)scope);
+    @Nonnull
+    @RequiredReadAction
+    private static PsiClass[] getDeriverCandidates(PsiClass clazz, GlobalSearchScope scope) {
+        String name = clazz.getName();
+        if (name == null) {
+            return GrTypeDefinition.EMPTY_ARRAY;
         }
-      });
-      for (final PsiClass candidate : candidates) {
-        final boolean isInheritor = AccessRule.read(() -> candidate.isValid() && candidate.isInheritor(clazz, false));
-
-        if (isInheritor) {
-          if (!consumer.process(candidate)) {
-            return false;
-          }
+        ArrayList<PsiClass> inheritors = new ArrayList<>();
+        for (GrReferenceList list : StubIndex.getInstance()
+            .safeGet(GrDirectInheritorsIndex.KEY, name, clazz.getProject(), scope, GrReferenceList.class)) {
+            PsiElement parent = list.getParent();
+            if (parent instanceof GrTypeDefinition typeDef) {
+                inheritors.add(typeDef);
+            }
         }
-      }
-
-      return true;
+        Collection<GrAnonymousClassDefinition> classes =
+            StubIndex.getInstance().get(GrAnonymousClassIndex.KEY, name, clazz.getProject(), scope);
+        for (GrAnonymousClassDefinition aClass : classes) {
+            inheritors.add(aClass);
+        }
+        return inheritors.toArray(new PsiClass[inheritors.size()]);
     }
 
-    return true;
-  }
+    @Override
+    public boolean execute(
+        @Nonnull DirectClassInheritorsSearch.SearchParameters queryParameters,
+        @Nonnull Predicate<? super PsiClass> consumer
+    ) {
+        if (queryParameters.getScope() instanceof GlobalSearchScope globalSearchScope) {
+            PsiClass clazz = queryParameters.getClassToProcess();
+            PsiClass[] candidates = Application.get().runReadAction(
+                (Supplier<PsiClass[]>)() -> clazz.isValid() ? getDeriverCandidates(clazz, globalSearchScope) : PsiClass.EMPTY_ARRAY
+            );
+            for (PsiClass candidate : candidates) {
+                boolean isInheritor = AccessRule.read(() -> candidate.isValid() && candidate.isInheritor(clazz, false));
+
+                if (isInheritor && !consumer.test(candidate)) {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        return true;
+    }
 }

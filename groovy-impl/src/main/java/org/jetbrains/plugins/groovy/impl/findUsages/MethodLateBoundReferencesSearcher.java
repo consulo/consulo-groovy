@@ -21,7 +21,6 @@ import com.intellij.java.indexing.search.searches.MethodReferencesSearchExecutor
 import com.intellij.java.language.psi.PsiMethod;
 import com.intellij.java.language.psi.util.PropertyUtil;
 import consulo.annotation.component.ExtensionImpl;
-import consulo.application.util.function.Processor;
 import consulo.content.scope.SearchScope;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiFile;
@@ -35,6 +34,7 @@ import consulo.project.Project;
 import consulo.project.util.query.QueryExecutorBase;
 import consulo.util.lang.StringUtil;
 import consulo.virtualFileSystem.VirtualFile;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrMethodCall;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
 import org.jetbrains.plugins.groovy.lang.psi.impl.PsiImplUtil;
@@ -42,79 +42,86 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.search.GrSourceFilterScope;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 import org.jetbrains.plugins.groovy.lang.resolve.ResolveUtil;
 
-import jakarta.annotation.Nonnull;
 import java.util.function.Predicate;
 
 /**
  * @author ven
  */
 @ExtensionImpl
-public class MethodLateBoundReferencesSearcher extends QueryExecutorBase<PsiReference, MethodReferencesSearch.SearchParameters> implements MethodReferencesSearchExecutor {
-
-  public MethodLateBoundReferencesSearcher() {
-    super(true);
-  }
-
-  @Override
-  public void processQuery(@Nonnull MethodReferencesSearch.SearchParameters queryParameters, @Nonnull Processor<? super PsiReference> consumer) {
-    final PsiMethod method = queryParameters.getMethod();
-    SearchScope searchScope = GroovyScopeUtil.restrictScopeToGroovyFiles(queryParameters.getScope()).intersectWith(getUseScope(method));
-
-    orderSearching(searchScope, method.getName(), queryParameters.getOptimizer(), method.getParameterList().getParametersCount());
-
-    final String propName = PropertyUtil.getPropertyName(method);
-    if (propName != null) {
-      orderSearching(searchScope, propName, queryParameters.getOptimizer(), -1);
+public class MethodLateBoundReferencesSearcher extends QueryExecutorBase<PsiReference, MethodReferencesSearch.SearchParameters>
+    implements MethodReferencesSearchExecutor {
+    public MethodLateBoundReferencesSearcher() {
+        super(true);
     }
-  }
 
-  private static SearchScope getUseScope(final PsiMethod method) {
-    final SearchScope scope = method.getUseScope();
-    final PsiFile file = method.getContainingFile();
-    if (file != null && scope instanceof GlobalSearchScope) {
-      final VirtualFile vfile = file.getOriginalFile().getVirtualFile();
-      final Project project = method.getProject();
-      if (vfile != null && ProjectRootManager.getInstance(project).getFileIndex().isInSource(vfile)) {
-        return new GrSourceFilterScope((GlobalSearchScope)scope);
-      }
+    @Override
+    public void processQuery(
+        @Nonnull MethodReferencesSearch.SearchParameters queryParameters,
+        @Nonnull Predicate<? super PsiReference> consumer
+    ) {
+        PsiMethod method = queryParameters.getMethod();
+        SearchScope searchScope = GroovyScopeUtil.restrictScopeToGroovyFiles(queryParameters.getScope()).intersectWith(getUseScope(method));
+
+        orderSearching(searchScope, method.getName(), queryParameters.getOptimizer(), method.getParameterList().getParametersCount());
+
+        String propName = PropertyUtil.getPropertyName(method);
+        if (propName != null) {
+            orderSearching(searchScope, propName, queryParameters.getOptimizer(), -1);
+        }
     }
-    return scope;
-  }
 
-
-  private static void orderSearching(SearchScope searchScope, final String name, @Nonnull SearchRequestCollector collector, final int paramCount) {
-    if (StringUtil.isEmpty(name)) return;
-    collector.searchWord(name, searchScope, UsageSearchContext.IN_CODE, true, new RequestResultProcessor("groovy.lateBound") {
-      @Override
-      public boolean processTextOccurrence(@Nonnull PsiElement element, int offsetInElement, @Nonnull Predicate<? super PsiReference> consumer) {
-        if (!(element instanceof GrReferenceExpression)) {
-          return true;
+    private static SearchScope getUseScope(PsiMethod method) {
+        SearchScope scope = method.getUseScope();
+        PsiFile file = method.getContainingFile();
+        if (file != null && scope instanceof GlobalSearchScope globalSearchScope) {
+            VirtualFile vfile = file.getOriginalFile().getVirtualFile();
+            Project project = method.getProject();
+            if (vfile != null && ProjectRootManager.getInstance(project).getFileIndex().isInSource(vfile)) {
+                return new GrSourceFilterScope(globalSearchScope);
+            }
         }
-
-        final GrReferenceExpression ref = (GrReferenceExpression)element;
-        if (!name.equals(ref.getReferenceName()) || PsiUtil.isLValue(ref) || ref.resolve() != null) {
-          return true;
-        }
-
-        PsiElement parent = ref.getParent();
-        if (parent instanceof GrMethodCall) {
-          if (!argumentsMatch((GrMethodCall)parent, paramCount)) {
-            return true;
-          }
-        } else if (ResolveUtil.isKeyOfMap(ref)) {
-          return true;
-        }
-
-        return consumer.test((PsiReference)element);
-      }
-    });
-  }
-
-  private static boolean argumentsMatch(GrMethodCall call, int paramCount) {
-    int argCount = call.getExpressionArguments().length;
-    if (PsiImplUtil.hasNamedArguments(call.getArgumentList())) {
-      argCount++;
+        return scope;
     }
-    return argCount == paramCount;
-  }
+
+    private static void orderSearching(SearchScope searchScope, String name, @Nonnull SearchRequestCollector collector, int paramCount) {
+        if (StringUtil.isEmpty(name)) {
+            return;
+        }
+        collector.searchWord(name, searchScope, UsageSearchContext.IN_CODE, true, new RequestResultProcessor("groovy.lateBound") {
+            @Override
+            public boolean processTextOccurrence(
+                @Nonnull PsiElement element,
+                int offsetInElement,
+                @Nonnull Predicate<? super PsiReference> consumer
+            ) {
+                if (!(element instanceof GrReferenceExpression ref)) {
+                    return true;
+                }
+
+                if (!name.equals(ref.getReferenceName()) || PsiUtil.isLValue(ref) || ref.resolve() != null) {
+                    return true;
+                }
+
+                PsiElement parent = ref.getParent();
+                if (parent instanceof GrMethodCall methodCall) {
+                    if (!argumentsMatch(methodCall, paramCount)) {
+                        return true;
+                    }
+                }
+                else if (ResolveUtil.isKeyOfMap(ref)) {
+                    return true;
+                }
+
+                return consumer.test((PsiReference)element);
+            }
+        });
+    }
+
+    private static boolean argumentsMatch(GrMethodCall call, int paramCount) {
+        int argCount = call.getExpressionArguments().length;
+        if (PsiImplUtil.hasNamedArguments(call.getArgumentList())) {
+            argCount++;
+        }
+        return argCount == paramCount;
+    }
 }

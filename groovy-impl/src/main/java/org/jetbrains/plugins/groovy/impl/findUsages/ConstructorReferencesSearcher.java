@@ -16,8 +16,8 @@
 package org.jetbrains.plugins.groovy.impl.findUsages;
 
 import com.intellij.java.language.psi.PsiMethod;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.annotation.component.ExtensionImpl;
-import consulo.application.util.function.Processor;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiReference;
 import consulo.language.psi.search.ReferencesSearch;
@@ -25,29 +25,34 @@ import consulo.language.psi.search.ReferencesSearchQueryExecutor;
 import consulo.project.util.query.QueryExecutorBase;
 import jakarta.annotation.Nonnull;
 
+import java.util.function.Predicate;
+
 /**
  * @author ven
  */
 @ExtensionImpl
-public class ConstructorReferencesSearcher extends QueryExecutorBase<PsiReference, ReferencesSearch.SearchParameters> implements ReferencesSearchQueryExecutor {
-  public ConstructorReferencesSearcher() {
-    super(true);
-  }
-
-  @Override
-  public void processQuery(@Nonnull ReferencesSearch.SearchParameters queryParameters, @Nonnull Processor<? super PsiReference> consumer) {
-    final PsiElement element = queryParameters.getElementToSearch();
-    if (element instanceof PsiMethod) {
-      final PsiMethod method = (PsiMethod)element;
-      if (method.isConstructor()) {
-        GroovyConstructorUsagesSearcher.processConstructorUsages(method,
-                                                                 queryParameters.getEffectiveSearchScope(),
-                                                                 consumer,
-                                                                 queryParameters.getOptimizer(),
-                                                                 true,
-                                                                 false);
-      }
+public class ConstructorReferencesSearcher extends QueryExecutorBase<PsiReference, ReferencesSearch.SearchParameters>
+    implements ReferencesSearchQueryExecutor {
+    public ConstructorReferencesSearcher() {
+        super(true);
     }
-  }
 
+    @Override
+    @RequiredReadAction
+    public void processQuery(
+        @Nonnull ReferencesSearch.SearchParameters queryParameters,
+        @Nonnull Predicate<? super PsiReference> consumer
+    ) {
+        PsiElement element = queryParameters.getElementToSearch();
+        if (element instanceof PsiMethod method && method.isConstructor()) {
+            GroovyConstructorUsagesSearcher.processConstructorUsages(
+                method,
+                queryParameters.getEffectiveSearchScope(),
+                consumer,
+                queryParameters.getOptimizer(),
+                true,
+                false
+            );
+        }
+    }
 }
