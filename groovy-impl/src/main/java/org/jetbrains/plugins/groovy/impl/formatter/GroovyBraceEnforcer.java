@@ -16,12 +16,12 @@
 package org.jetbrains.plugins.groovy.impl.formatter;
 
 import consulo.document.util.TextRange;
-import consulo.ide.impl.psi.impl.source.codeStyle.PostFormatProcessorHelper;
 import consulo.language.ast.ASTNode;
 import consulo.language.ast.TokenType;
 import consulo.language.codeStyle.CodeStyleManager;
 import consulo.language.codeStyle.CodeStyleSettings;
 import consulo.language.codeStyle.CommonCodeStyleSettings;
+import consulo.language.codeStyle.PostFormatProcessorHelper;
 import consulo.language.impl.psi.CodeEditUtil;
 import consulo.language.impl.psi.SourceTreeToPsiMap;
 import consulo.language.psi.PsiElement;
