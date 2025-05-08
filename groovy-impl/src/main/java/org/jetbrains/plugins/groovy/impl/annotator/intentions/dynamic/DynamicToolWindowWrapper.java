@@ -64,20 +64,20 @@ import consulo.ui.ex.toolWindow.ToolWindowAnchor;
 import consulo.ui.ex.util.TextAttributesUtil;
 import consulo.util.collection.ContainerUtil;
 import consulo.util.dataholder.Key;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.GroovyFileType;
-import org.jetbrains.plugins.groovy.JetgroovyIcons;
 import org.jetbrains.plugins.groovy.impl.annotator.intentions.QuickfixUtil;
-import org.jetbrains.plugins.groovy.impl.debugger.fragments.GroovyCodeFragment;
 import org.jetbrains.plugins.groovy.impl.annotator.intentions.dynamic.elements.*;
+import org.jetbrains.plugins.groovy.impl.debugger.fragments.GroovyCodeFragment;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
 import javax.swing.*;
 import javax.swing.event.CellEditorListener;
 import javax.swing.event.ChangeEvent;
+import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.MutableTreeNode;
@@ -399,7 +399,10 @@ public class DynamicToolWindowWrapper {
     }, KeyStroke.getKeyStroke(KeyEvent.VK_F2, InputEvent.CTRL_MASK), JComponent.WHEN_FOCUSED);
 
     myTreeTable.getTree().setShowsRootHandles(true);
-    myTreeTable.getTableHeader().setReorderingAllowed(false);
+    JTableHeader header = myTreeTable.getTableHeader();
+    if (header != null) {
+      header.setReorderingAllowed(false);
+    }
 
     myTreeTable.setPreferredScrollableViewportSize(new Dimension(300, myTreeTable.getRowHeight() * 10));
     myTreeTable.getColumn(myColumnNames[CLASS_OR_ELEMENT_NAME_COLUMN]).setPreferredWidth(200);
