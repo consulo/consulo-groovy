@@ -22,8 +22,10 @@ import com.intellij.java.language.impl.psi.impl.PsiImplUtil;
 import com.intellij.java.language.psi.*;
 import com.intellij.java.language.psi.search.searches.SuperMethodsSearch;
 import com.intellij.java.language.psi.util.MethodSignatureBackedByPsiMethod;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.annotation.component.ExtensionImpl;
 import consulo.application.AllIcons;
+import consulo.application.Application;
 import consulo.application.progress.ProgressManager;
 import consulo.codeEditor.CodeInsightColors;
 import consulo.codeEditor.markup.GutterIconRenderer;
@@ -43,6 +45,7 @@ import consulo.language.psi.PsiFile;
 import consulo.language.psi.PsiNameIdentifierOwner;
 import consulo.ui.image.Image;
 import consulo.util.lang.StringUtil;
+import jakarta.annotation.Nonnull;
 import jakarta.inject.Inject;
 import org.jetbrains.plugins.groovy.GroovyLanguage;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocComment;
@@ -62,7 +65,6 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GrTraitMethod;
 import org.jetbrains.plugins.groovy.lang.psi.util.GrTraitUtil;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyPropertyUtils;
 
-import jakarta.annotation.Nonnull;
 import java.util.*;
 
 /**
@@ -72,8 +74,8 @@ import java.util.*;
 @ExtensionImpl
 public class GroovyLineMarkerProvider extends JavaLineMarkerProvider {
   @Inject
-  public GroovyLineMarkerProvider(DaemonCodeAnalyzerSettings daemonSettings, EditorColorsManager colorsManager) {
-    super(daemonSettings, colorsManager);
+  public GroovyLineMarkerProvider(Application application, DaemonCodeAnalyzerSettings daemonSettings, EditorColorsManager colorsManager) {
+    super(application, daemonSettings, colorsManager);
   }
 
   @Nonnull
@@ -88,6 +90,7 @@ public class GroovyLineMarkerProvider extends JavaLineMarkerProvider {
   }
 
   @Override
+  @RequiredReadAction
   public LineMarkerInfo getLineMarkerInfo(@Nonnull final PsiElement element) {
     final PsiElement parent = element.getParent();
     if (parent instanceof PsiNameIdentifierOwner) {
