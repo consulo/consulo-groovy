@@ -15,12 +15,12 @@
  */
 package org.jetbrains.plugins.groovy.impl.annotator.intentions;
 
+import com.intellij.java.language.psi.CommonClassNames;
 import com.intellij.java.language.psi.PsiClass;
 import com.intellij.java.language.psi.PsiClassType;
 import com.intellij.java.language.psi.PsiType;
 import com.intellij.java.language.psi.util.PsiTypesUtil;
 import consulo.annotation.access.RequiredReadAction;
-import consulo.java.language.module.util.JavaClassNames;
 import consulo.language.editor.FileModificationService;
 import consulo.language.psi.PsiFile;
 import consulo.project.Project;
@@ -58,7 +58,7 @@ public class QuickfixUtil {
 
         if (type == null && compileStatic) {
             return GroovyPsiManager.getInstance(refExpr.getProject())
-                .findClassWithCache(JavaClassNames.JAVA_LANG_OBJECT, refExpr.getResolveScope());
+                .findClassWithCache(CommonClassNames.JAVA_LANG_OBJECT, refExpr.getResolveScope());
         }
         return type instanceof PsiClassType classType ? classType.resolve() : null;
     }

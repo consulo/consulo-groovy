@@ -30,7 +30,6 @@ import consulo.annotation.component.ExtensionImpl;
 import consulo.application.Application;
 import consulo.ide.impl.idea.refactoring.changeSignature.DefaultValueChooser;
 import consulo.java.impl.refactoring.changeSignature.ChangeSignatureUsageProcessorEx;
-import consulo.java.language.module.util.JavaClassNames;
 import consulo.language.codeStyle.CodeStyleManager;
 import consulo.language.editor.refactoring.ResolveSnapshotProvider;
 import consulo.language.editor.refactoring.changeSignature.ChangeInfo;
@@ -123,6 +122,7 @@ public class GrChangeSignatureUsageProcessor implements ChangeSignatureUsageProc
     }
 
     @Override
+    @RequiredWriteAction
     public boolean processPrimaryMethod(@Nonnull ChangeInfo changeInfo) {
         if (!(changeInfo instanceof GrChangeInfoImpl)) {
             return false;
@@ -211,6 +211,7 @@ public class GrChangeSignatureUsageProcessor implements ChangeSignatureUsageProc
     ) {
     }
 
+    @RequiredWriteAction
     private static boolean generateDelegate(GrChangeInfoImpl grInfo) {
         GrMethod method = grInfo.getMethod();
         PsiClass psiClass = method.getContainingClass();
@@ -516,6 +517,7 @@ public class GrChangeSignatureUsageProcessor implements ChangeSignatureUsageProc
         processConstructor(constructor, changeInfo);
     }
 
+    @RequiredWriteAction
     private static void processConstructor(GrMethod constructor, JavaChangeInfo changeInfo) {
         PsiClass containingClass = constructor.getContainingClass();
         PsiClass baseClass = changeInfo.getMethod().getContainingClass();
@@ -862,7 +864,7 @@ public class GrChangeSignatureUsageProcessor implements ChangeSignatureUsageProc
         return ContainerUtil.findAll(
             exceptions,
             o -> {
-                if (!InheritanceUtil.isInheritor(o, JavaClassNames.JAVA_LANG_EXCEPTION)) {
+                if (!InheritanceUtil.isInheritor(o, CommonClassNames.JAVA_LANG_EXCEPTION)) {
                     return false;
                 }
                 for (PsiClassType type : handledExceptions) {

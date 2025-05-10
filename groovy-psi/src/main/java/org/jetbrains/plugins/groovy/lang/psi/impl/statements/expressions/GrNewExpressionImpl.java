@@ -22,7 +22,6 @@ import com.intellij.java.language.psi.util.InheritanceUtil;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.annotation.access.RequiredWriteAction;
 import consulo.document.util.TextRange;
-import consulo.java.language.module.util.JavaClassNames;
 import consulo.language.ast.ASTNode;
 import consulo.language.psi.*;
 import consulo.language.psi.resolve.ResolveCache;
@@ -125,6 +124,7 @@ public class GrNewExpressionImpl extends GrCallExpressionImpl implements GrNewEx
     }
 
     @Override
+    @RequiredWriteAction
     public GrNamedArgument addNamedArgument(final GrNamedArgument namedArgument) throws IncorrectOperationException {
         final GrArgumentList list = getArgumentList();
         if (list == null) { //so it is not anonymous class declaration
@@ -262,6 +262,7 @@ public class GrNewExpressionImpl extends GrCallExpressionImpl implements GrNewEx
         return TypeInferenceHelper.getCurrentContext().multiResolve(myFakeReference, incompleteCode, RESOLVER);
     }
 
+    @RequiredReadAction
     private GroovyResolveResult[] resolveImpl(boolean incompleteCode) {
         GrCodeReferenceElement ref = getReferenceElement();
         if (ref == null) {
@@ -291,7 +292,7 @@ public class GrNewExpressionImpl extends GrCallExpressionImpl implements GrNewEx
                 final PsiElement resolved = result.getElement();
                 if (resolved instanceof PsiMethod constructor) {
                     final PsiParameter[] parameters = constructor.getParameterList().getParameters();
-                    if (parameters.length == 1 && InheritanceUtil.isInheritor(parameters[0].getType(), JavaClassNames.JAVA_UTIL_MAP)) {
+                    if (parameters.length == 1 && InheritanceUtil.isInheritor(parameters[0].getType(), CommonClassNames.JAVA_UTIL_MAP)) {
                         return constructorResults;
                     }
                 }
