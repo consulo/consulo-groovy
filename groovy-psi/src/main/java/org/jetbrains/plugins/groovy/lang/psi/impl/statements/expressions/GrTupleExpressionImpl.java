@@ -16,8 +16,8 @@
 
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions;
 
+import com.intellij.java.language.psi.CommonClassNames;
 import com.intellij.java.language.psi.PsiType;
-import consulo.java.language.module.util.JavaClassNames;
 import consulo.language.ast.ASTNode;
 import consulo.language.psi.PsiElement;
 import consulo.util.collection.ArrayUtil;
@@ -41,7 +41,7 @@ public class GrTupleExpressionImpl extends GrExpressionImpl implements GrTupleEx
 
     @Override
     public PsiType getType() {
-        return getTypeByFQName(JavaClassNames.JAVA_UTIL_LIST);
+        return getTypeByFQName(CommonClassNames.JAVA_UTIL_LIST);
     }
 
     @Override

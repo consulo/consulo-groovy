@@ -18,7 +18,6 @@ package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions;
 import com.intellij.java.language.psi.*;
 import com.intellij.java.language.psi.util.InheritanceUtil;
 import consulo.application.progress.ProgressManager;
-import consulo.java.language.module.util.JavaClassNames;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.resolve.ResolveState;
 import jakarta.annotation.Nonnull;
@@ -108,7 +107,7 @@ public class GrReferenceResolveRunner {
 
             if (qualifier.getType() instanceof PsiClassType classType) {
                 final PsiClass psiClass = classType.resolve();
-                if (psiClass == null || !JavaClassNames.JAVA_LANG_CLASS.equals(psiClass.getQualifiedName())) {
+                if (psiClass == null || !CommonClassNames.JAVA_LANG_CLASS.equals(psiClass.getQualifiedName())) {
                     return true;
                 }
 
@@ -221,7 +220,7 @@ public class GrReferenceResolveRunner {
         }
 
         if (!(place.getParent() instanceof GrMethodCall)
-            && InheritanceUtil.isInheritor(qualifierType, JavaClassNames.JAVA_UTIL_COLLECTION)) {
+            && InheritanceUtil.isInheritor(qualifierType, CommonClassNames.JAVA_UTIL_COLLECTION)) {
             final PsiType componentType = ClosureParameterEnhancer.findTypeForIteration(qualifierType, place);
             if (componentType != null) {
                 final SpreadState spreadState = state.get(SpreadState.SPREAD_STATE);

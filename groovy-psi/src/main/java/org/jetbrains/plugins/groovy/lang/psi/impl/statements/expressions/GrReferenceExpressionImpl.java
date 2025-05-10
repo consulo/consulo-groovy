@@ -21,8 +21,8 @@ import com.intellij.java.language.psi.util.InheritanceUtil;
 import com.intellij.java.language.psi.util.PropertyUtil;
 import com.intellij.java.language.psi.util.TypeConversionUtil;
 import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.application.util.RecursionManager;
-import consulo.java.language.module.util.JavaClassNames;
 import consulo.language.ast.ASTNode;
 import consulo.language.ast.IElementType;
 import consulo.language.psi.PsiElement;
@@ -116,7 +116,7 @@ public class GrReferenceExpressionImpl extends GrReferenceElementImpl<GrExpressi
             return false;
         }
 
-        if (!InheritanceUtil.isInheritor(type, JavaClassNames.JAVA_UTIL_MAP)) {
+        if (!InheritanceUtil.isInheritor(type, CommonClassNames.JAVA_UTIL_MAP)) {
             return false;
         }
 
@@ -156,12 +156,12 @@ public class GrReferenceExpressionImpl extends GrReferenceElementImpl<GrExpressi
         List<GroovyResolveResult> filtered = new ArrayList<>();
         for (GroovyResolveResult result : results) {
             if (result.getElement() instanceof PsiMember member) {
-                if (member.hasModifierProperty(PsiModifier.PRIVATE)) {
+                if (member.isPrivate()) {
                     continue;
                 }
                 final PsiClass containingClass = member.getContainingClass();
                 if (containingClass != null) {
-                    if (!InheritanceUtil.isInheritor(containingClass, JavaClassNames.JAVA_UTIL_MAP)) {
+                    if (!InheritanceUtil.isInheritor(containingClass, CommonClassNames.JAVA_UTIL_MAP)) {
                         continue;
                     }
                     final String name = containingClass.getQualifiedName();
@@ -562,6 +562,7 @@ public class GrReferenceExpressionImpl extends GrReferenceElementImpl<GrExpressi
     }
 
     @Override
+    @RequiredWriteAction
     public PsiElement handleElementRename(String newElementName) throws IncorrectOperationException {
         final GroovyResolveResult result = advancedResolve();
         if (result.isInvokedOnProperty()) {
@@ -737,9 +738,9 @@ public class GrReferenceExpressionImpl extends GrReferenceElementImpl<GrExpressi
 
             //'class' property with explicit generic
             PsiClass containingClass = method.getContainingClass();
-            if (containingClass != null &&
-                JavaClassNames.JAVA_LANG_OBJECT.equals(containingClass.getQualifiedName()) &&
-                "getClass".equals(method.getName())) {
+            if (containingClass != null
+                && CommonClassNames.JAVA_LANG_OBJECT.equals(containingClass.getQualifiedName())
+                && "getClass".equals(method.getName())) {
                 return TypesUtil.createJavaLangClassType(PsiImplUtil.getQualifierType(this), getProject(), getResolveScope());
             }
 
@@ -777,7 +778,7 @@ public class GrReferenceExpressionImpl extends GrReferenceElementImpl<GrExpressi
                 PsiClass clazz = qResult.getElement();
                 if (clazz != null) {
                     PsiClass mapClass =
-                        JavaPsiFacade.getInstance(ref.getProject()).findClass(JavaClassNames.JAVA_UTIL_MAP, ref.getResolveScope());
+                        JavaPsiFacade.getInstance(ref.getProject()).findClass(CommonClassNames.JAVA_UTIL_MAP, ref.getResolveScope());
                     if (mapClass != null && mapClass.getTypeParameters().length == 2) {
                         PsiSubstitutor substitutor = TypeConversionUtil.getClassSubstitutor(mapClass, clazz, qResult.getSubstitutor());
                         if (substitutor != null) {
@@ -797,7 +798,7 @@ public class GrReferenceExpressionImpl extends GrReferenceElementImpl<GrExpressi
     @RequiredReadAction
     private static PsiType getTypeFromSpreadOperator(@Nonnull GrReferenceExpressionImpl ref) {
         return ref.getDotTokenType() == GroovyTokenTypes.mSPREAD_DOT
-            ? TypesUtil.createType(JavaClassNames.JAVA_UTIL_LIST, ref)
+            ? TypesUtil.createType(CommonClassNames.JAVA_UTIL_LIST, ref)
             : null;
     }
 
@@ -811,8 +812,9 @@ public class GrReferenceExpressionImpl extends GrReferenceElementImpl<GrExpressi
     }
 
     private static final class OurTypesCalculator implements Function<GrReferenceExpressionImpl, PsiType> {
-        @Override
         @Nullable
+        @Override
+        @RequiredReadAction
         public PsiType apply(GrReferenceExpressionImpl refExpr) {
             if (ResolveUtil.isClassReference(refExpr)) {
                 GrExpression qualifier = refExpr.getQualifier();
@@ -1003,8 +1005,8 @@ public class GrReferenceExpressionImpl extends GrReferenceElementImpl<GrExpressi
         return false;
     }
 
-    @Override
     @Nonnull
+    @Override
     @RequiredReadAction
     public Object[] getVariants() {
         return ArrayUtil.EMPTY_OBJECT_ARRAY;
@@ -1031,6 +1033,7 @@ public class GrReferenceExpressionImpl extends GrReferenceElementImpl<GrExpressi
     }
 
     @Override
+    @RequiredReadAction
     public void replaceDotToken(PsiElement newDot) {
         if (newDot == null) {
             return;
@@ -1038,7 +1041,7 @@ public class GrReferenceExpressionImpl extends GrReferenceElementImpl<GrExpressi
         if (!TokenSets.DOTS.contains(newDot.getNode().getElementType())) {
             return;
         }
-        final PsiElement oldDot = getDotToken();
+        PsiElement oldDot = getDotToken();
         if (oldDot == null) {
             return;
         }
@@ -1075,6 +1078,7 @@ public class GrReferenceExpressionImpl extends GrReferenceElementImpl<GrExpressi
     }
 
     @Override
+    @RequiredReadAction
     public GrReferenceExpression bindToElementViaStaticImport(@Nonnull PsiMember member) {
         if (getQualifier() != null) {
             throw new IncorrectOperationException("Reference has qualifier");

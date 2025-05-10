@@ -17,7 +17,6 @@ package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions;
 
 import com.intellij.java.language.psi.*;
 import com.intellij.java.language.psi.util.InheritanceUtil;
-import consulo.java.language.module.util.JavaClassNames;
 import consulo.language.psi.scope.GlobalSearchScope;
 import consulo.project.Project;
 import jakarta.annotation.Nullable;
@@ -25,17 +24,17 @@ import jakarta.annotation.Nullable;
 public class CollectionUtil {
     @Nullable
     public static PsiClassType createSimilarCollection(@Nullable PsiType collection, Project project, PsiType... itemType) {
-        if (InheritanceUtil.isInheritor(collection, "java.util.SortedSet")) {
-            return createCollection(project, "java.util.SortedSet", itemType);
+        if (InheritanceUtil.isInheritor(collection, CommonClassNames.JAVA_UTIL_SORTED_SET)) {
+            return createCollection(project, CommonClassNames.JAVA_UTIL_SORTED_SET, itemType);
         }
         if (InheritanceUtil.isInheritor(collection, "java.util.LinkedHashSet")) {
             return createCollection(project, "java.util.LinkedHashSet", itemType);
         }
-        if (InheritanceUtil.isInheritor(collection, JavaClassNames.JAVA_UTIL_SET)) {
-            return createCollection(project, "java.util.HashSet", itemType);
+        if (InheritanceUtil.isInheritor(collection, CommonClassNames.JAVA_UTIL_SET)) {
+            return createCollection(project, CommonClassNames.JAVA_UTIL_HASH_SET, itemType);
         }
         if (InheritanceUtil.isInheritor(collection, "java.util.LinkedList")) {
-            return createCollection(project, "java.util.LInkedList", itemType);
+            return createCollection(project, "java.util.LinkedList", itemType);
         }
         if (InheritanceUtil.isInheritor(collection, "java.util.Stack")) {
             return createCollection(project, "java.util.Stack", itemType);
@@ -43,14 +42,14 @@ public class CollectionUtil {
         if (InheritanceUtil.isInheritor(collection, "java.util.Vector")) {
             return createCollection(project, "java.util.Vector", itemType);
         }
-        if (InheritanceUtil.isInheritor(collection, JavaClassNames.JAVA_UTIL_LIST)) {
-            return createCollection(project, "java.util.ArrayList", itemType);
+        if (InheritanceUtil.isInheritor(collection, CommonClassNames.JAVA_UTIL_LIST)) {
+            return createCollection(project, CommonClassNames.JAVA_UTIL_ARRAY_LIST, itemType);
         }
         if (InheritanceUtil.isInheritor(collection, "java.util.Queue")) {
             return createCollection(project, "java.util.LinkedList", itemType);
         }
 
-        return createCollection(project, "java.util.ArrayList", itemType);
+        return createCollection(project, CommonClassNames.JAVA_UTIL_ARRAY_LIST, itemType);
     }
 
     @Nullable
