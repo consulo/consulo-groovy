@@ -16,8 +16,8 @@
 
 package org.jetbrains.plugins.groovy.impl.refactoring;
 
-import com.intellij.java.language.psi.*;
 import com.intellij.java.language.psi.PsiElementFactory;
+import com.intellij.java.language.psi.*;
 import com.intellij.java.language.psi.codeStyle.JavaCodeStyleManager;
 import com.intellij.java.language.psi.util.MethodSignature;
 import com.intellij.java.language.psi.util.PsiUtil;
@@ -25,8 +25,6 @@ import com.intellij.java.language.psi.util.TypeConversionUtil;
 import consulo.codeEditor.Editor;
 import consulo.codeEditor.EditorColors;
 import consulo.codeEditor.markup.RangeHighlighter;
-import consulo.colorScheme.EditorColorsManager;
-import consulo.colorScheme.TextAttributes;
 import consulo.document.util.TextRange;
 import consulo.language.Language;
 import consulo.language.ast.IElementType;
@@ -43,6 +41,7 @@ import consulo.util.collection.ContainerUtil;
 import consulo.util.lang.StringUtil;
 import consulo.util.lang.ref.Ref;
 import consulo.util.lang.reflect.ReflectionUtil;
+import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
@@ -69,8 +68,6 @@ import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeArgumentList;
 import org.jetbrains.plugins.groovy.lang.psi.api.util.GrDeclarationHolder;
 import org.jetbrains.plugins.groovy.lang.psi.api.util.GrStatementOwner;
 import org.jetbrains.plugins.groovy.lang.psi.api.util.GrVariableDeclarationOwner;
-
-import jakarta.annotation.Nonnull;
 
 import java.util.*;
 
@@ -136,8 +133,8 @@ public abstract class GroovyRefactoringUtil {
   }
 
   public static PsiElement[] getExpressionOccurrences(@Nonnull PsiElement expr, @Nonnull PsiElement scope) {
-    ArrayList<PsiElement> occurrences = new ArrayList<PsiElement>();
-    Comparator<PsiElement> comparator = new Comparator<PsiElement>() {
+    ArrayList<PsiElement> occurrences = new ArrayList<>();
+    Comparator<PsiElement> comparator = new Comparator<>() {
       public int compare(PsiElement element1, PsiElement element2) {
         if (element1 != null && element1.equals(element2)) return 0;
 
@@ -192,7 +189,7 @@ public abstract class GroovyRefactoringUtil {
   }
 
   public static void sortOccurrences(PsiElement[] occurrences) {
-    Arrays.sort(occurrences, new Comparator<PsiElement>() {
+    Arrays.sort(occurrences, new Comparator<>() {
       public int compare(PsiElement elem1, PsiElement elem2) {
         final int offset1 = elem1.getTextRange().getStartOffset();
         final int offset2 = elem2.getTextRange().getStartOffset();
@@ -208,23 +205,19 @@ public abstract class GroovyRefactoringUtil {
 
   public static void highlightOccurrences(Project project, @Nullable Editor editor, PsiElement[] elements) {
     if (editor == null) return;
-    ArrayList<RangeHighlighter> highlighters = new ArrayList<RangeHighlighter>();
+    ArrayList<RangeHighlighter> highlighters = new ArrayList<>();
     HighlightManager highlightManager = HighlightManager.getInstance(project);
-    EditorColorsManager colorsManager = EditorColorsManager.getInstance();
-    TextAttributes attributes = colorsManager.getGlobalScheme().getAttributes(EditorColors.SEARCH_RESULT_ATTRIBUTES);
     if (elements.length > 0) {
-      highlightManager.addOccurrenceHighlights(editor, elements, attributes, false, highlighters);
+      highlightManager.addOccurrenceHighlights(editor, elements, EditorColors.SEARCH_RESULT_ATTRIBUTES, false, highlighters);
     }
   }
 
   public static void highlightOccurrencesByRanges(Project project, Editor editor, TextRange[] ranges) {
     if (editor == null) return;
-    ArrayList<RangeHighlighter> highlighters = new ArrayList<RangeHighlighter>();
+    ArrayList<RangeHighlighter> highlighters = new ArrayList<>();
     HighlightManager highlightManager = HighlightManager.getInstance(project);
-    EditorColorsManager colorsManager = EditorColorsManager.getInstance();
-    TextAttributes attributes = colorsManager.getGlobalScheme().getAttributes(EditorColors.SEARCH_RESULT_ATTRIBUTES);
     for (TextRange range : ranges) {
-      highlightManager.addRangeHighlight(editor, range.getStartOffset(), range.getEndOffset(), attributes, false, highlighters);
+      highlightManager.addRangeHighlight(editor, range.getStartOffset(), range.getEndOffset(), EditorColors.SEARCH_RESULT_ATTRIBUTES, false, highlighters);
     }
   }
 
@@ -306,7 +299,7 @@ public abstract class GroovyRefactoringUtil {
     PsiElement[] children = PsiElement.EMPTY_ARRAY;
     PsiElement psiChild = parent.getFirstChild();
     if (psiChild != null) {
-      List<PsiElement> result = new ArrayList<PsiElement>();
+      List<PsiElement> result = new ArrayList<>();
       while (psiChild != null) {
         result.add(psiChild);
         psiChild = psiChild.getNextSibling();
@@ -315,7 +308,7 @@ public abstract class GroovyRefactoringUtil {
     }
 
 
-    ArrayList<PsiElement> possibleStatements = new ArrayList<PsiElement>();
+    ArrayList<PsiElement> possibleStatements = new ArrayList<>();
     boolean flag = false;
     for (PsiElement child : children) {
       if (child == element1) {
@@ -348,7 +341,7 @@ public abstract class GroovyRefactoringUtil {
   }
 
   public static boolean hasWrongBreakStatements(PsiElement element) {
-    ArrayList<GrBreakStatement> vector = new ArrayList<GrBreakStatement>();
+    ArrayList<GrBreakStatement> vector = new ArrayList<>();
     addBreakStatements(element, vector);
     return !vector.isEmpty();
   }
@@ -366,7 +359,7 @@ public abstract class GroovyRefactoringUtil {
   }
 
   public static boolean hasWrongContinueStatements(PsiElement element) {
-    ArrayList<GrContinueStatement> vector = new ArrayList<GrContinueStatement>();
+    ArrayList<GrContinueStatement> vector = new ArrayList<>();
     addContinueStatements(element, vector);
     return !vector.isEmpty();
   }
@@ -555,7 +548,7 @@ public abstract class GroovyRefactoringUtil {
   }
 
   public static boolean hasSideEffect(@Nonnull GroovyPsiElement statement) {
-    final Ref<Boolean> hasSideEffect = new Ref<Boolean>(false);
+    final Ref<Boolean> hasSideEffect = new Ref<>(false);
     statement.accept(new GroovyRecursiveElementVisitor() {
       @Override
       public void visitMethodCallExpression(GrMethodCallExpression methodCallExpression) {
@@ -708,7 +701,7 @@ public abstract class GroovyRefactoringUtil {
     final PsiClassType.ClassResolveResult result = PsiUtil.resolveGenericsClassInType(type);
     final PsiClass psiClass = result.getElement();
     if (psiClass == null) return type;
-    final HashSet<PsiTypeParameter> usedTypeParameters = new HashSet<PsiTypeParameter>();
+    final HashSet<PsiTypeParameter> usedTypeParameters = new HashSet<>();
     collectTypeParameters(usedTypeParameters, parameter);
     for (Iterator<PsiTypeParameter> iterator = usedTypeParameters.iterator(); iterator.hasNext(); ) {
       PsiTypeParameter usedTypeParameter = iterator.next();
@@ -762,7 +755,7 @@ public abstract class GroovyRefactoringUtil {
       }
 
       class TypeParameterSearcher extends PsiTypeVisitor<Boolean> {
-        private final Set<PsiTypeParameter> myTypeParams = new HashSet<PsiTypeParameter>();
+        private final Set<PsiTypeParameter> myTypeParams = new HashSet<>();
 
         public Boolean visitType(final PsiType type) {
           return false;
