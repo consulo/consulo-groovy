@@ -116,7 +116,7 @@ public class GroovyScriptRunConfigurationProducer extends RuntimeConfigurationPr
   }
 
 
-  public int compareTo(final Object o) {
+  public int compareTo(final RuntimeConfigurationProducer o) {
     return PREFERED;
   }
 
