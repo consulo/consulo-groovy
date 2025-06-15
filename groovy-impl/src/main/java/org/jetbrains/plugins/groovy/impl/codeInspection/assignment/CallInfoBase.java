@@ -62,7 +62,7 @@ public abstract class CallInfoBase<T extends GrCall> implements CallInfo<T> {
   @Nonnull
   @Override
   public GroovyResolveResult[] multiResolve() {
-    return myCall.multiResolve(false);
+    return myCall.multiResolveGroovy(false);
   }
 
   @Nonnull

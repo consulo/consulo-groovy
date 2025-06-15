@@ -27,7 +27,7 @@ public class GrThisReferenceResolver {
         if (qualifier == null) {
             final PsiElement parent = ref.getParent();
             if (parent instanceof GrConstructorInvocation constructorInvocation) {
-                return constructorInvocation.multiResolve(false);
+                return constructorInvocation.multiResolveGroovy(false);
             }
             else {
                 PsiClass aClass = PsiUtil.getContextClass(ref);

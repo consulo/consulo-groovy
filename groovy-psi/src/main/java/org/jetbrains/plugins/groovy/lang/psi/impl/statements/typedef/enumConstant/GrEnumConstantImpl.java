@@ -155,7 +155,7 @@ public class GrEnumConstantImpl extends GrFieldImpl implements GrEnumConstant {
   @Nonnull
   @Override
   public GroovyResolveResult[] getCallVariants(@Nullable GrExpression upToArgument) {
-    return multiResolve(true);
+    return multiResolveGroovy(true);
   }
 
   @Nonnull
@@ -166,7 +166,7 @@ public class GrEnumConstantImpl extends GrFieldImpl implements GrEnumConstant {
 
   @Override
   public PsiMethod resolveMethod() {
-    return PsiImplUtil.extractUniqueElement(multiResolve(false));
+    return PsiImplUtil.extractUniqueElement(multiResolveGroovy(false));
   }
 
   @Nonnull
@@ -207,7 +207,7 @@ public class GrEnumConstantImpl extends GrFieldImpl implements GrEnumConstant {
   @Nonnull
   @Override
   public GroovyResolveResult advancedResolve() {
-    return PsiImplUtil.extractUniqueResult(multiResolve(false));
+    return PsiImplUtil.extractUniqueResult(multiResolveGroovy(false));
   }
 
   @Override
@@ -217,7 +217,7 @@ public class GrEnumConstantImpl extends GrFieldImpl implements GrEnumConstant {
 
   @Nonnull
   @Override
-  public GroovyResolveResult[] multiResolve(boolean incompleteCode) {
+  public GroovyResolveResult[] multiResolveGroovy(boolean incompleteCode) {
     PsiType[] argTypes = PsiUtil.getArgumentTypes(getFirstChild(), false);
     PsiClass clazz = getContainingClass();
     return ResolveUtil.getAllClassConstructors(clazz, PsiSubstitutor.EMPTY, argTypes, this);

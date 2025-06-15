@@ -89,8 +89,7 @@ import jakarta.annotation.Nullable;
  * @author Maxim.Medvedev
  */
 public class ExpressionGenerator extends Generator {
-  private static final Logger LOG = Logger.getInstance("#org.jetbrains.plugins.groovy.refactoring.convertToJava" +
-                                                         ".ExpressionGenerator");
+  private static final Logger LOG = Logger.getInstance(ExpressionGenerator.class);
 
   private final StringBuilder builder;
   private final GroovyPsiElementFactory factory;
@@ -482,7 +481,7 @@ public class ExpressionGenerator extends Generator {
     else if (realLValue instanceof GrIndexProperty) {   //qualifier[args] = rValue
       //write assignment via qualifier.putAt(Args, Value) method
       final GroovyResolveResult result = PsiImplUtil.extractUniqueResult(((GrIndexProperty)realLValue)
-                                                                           .multiResolve(false));
+                                                                           .multiResolveGroovy(false));
       final PsiElement resolved = result.getElement();
       if (resolved instanceof PsiMethod) {
         final GrExpression[] args = ((GrIndexProperty)realLValue).getArgumentList().getExpressionArguments();
@@ -1319,7 +1318,7 @@ public class ExpressionGenerator extends Generator {
     final GrNamedArgument[] namedArgs = argList.getNamedArguments();
 
     if (!PsiImplUtil.isSimpleArrayAccess(thisType, argTypes, expression, PsiUtil.isLValue(expression))) {
-      final GroovyResolveResult candidate = PsiImplUtil.extractUniqueResult(expression.multiResolve(false));
+      final GroovyResolveResult candidate = PsiImplUtil.extractUniqueResult(expression.multiResolveGroovy(false));
       PsiElement element = candidate.getElement();
       if (element != null || !PsiUtil.isLValue(expression)) {                     //see the case of l-value in assignment expression
         if (element instanceof GrGdkMethod && ((GrGdkMethod)element).getStaticMethod().getParameterList()

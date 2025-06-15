@@ -18,6 +18,8 @@ package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.path;
 
 import com.intellij.java.language.psi.*;
 import com.intellij.java.language.psi.util.InheritanceUtil;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.document.util.TextRange;
 import consulo.language.ast.ASTNode;
 import consulo.language.psi.*;
@@ -115,7 +117,7 @@ public class GrIndexPropertyImpl extends GrExpressionImpl implements GrIndexProp
       candidates = isSetter.booleanValue() ? multiResolveSetter(false) : multiResolveGetter(false);
     }
     else {
-      candidates = multiResolve(false);
+      candidates = multiResolveGroovy(false);
     }
 
 
@@ -286,7 +288,7 @@ public class GrIndexPropertyImpl extends GrExpressionImpl implements GrIndexProp
 
   @Nonnull
   @Override
-  public GroovyResolveResult[] multiResolve(boolean incompleteCode) {
+  public GroovyResolveResult[] multiResolveGroovy(boolean incompleteCode) {
     return TypeInferenceHelper.getCurrentContext().multiResolve(myReference, incompleteCode, RESOLVER);
   }
 
@@ -299,7 +301,7 @@ public class GrIndexPropertyImpl extends GrExpressionImpl implements GrIndexProp
   public PsiType getNominalType() {
     if (getParent() instanceof GrThrowStatement) return super.getNominalType();
 
-    GroovyResolveResult[] candidates = multiResolve(true);
+    GroovyResolveResult[] candidates = multiResolveGroovy(true);
     if (candidates.length == 1) {
       return extractLastParameterType(candidates[0]);
     }
@@ -343,7 +345,7 @@ public class GrIndexPropertyImpl extends GrExpressionImpl implements GrIndexProp
   @Override
   public GroovyResolveResult[] getCallVariants(@Nullable GrExpression upToArgument) {
     if (upToArgument == null) {
-      return multiResolve(true);
+      return multiResolveGroovy(true);
     }
     return resolveImpl(true, upToArgument, null);
   }
@@ -356,13 +358,13 @@ public class GrIndexPropertyImpl extends GrExpressionImpl implements GrIndexProp
 
   @Override
   public PsiMethod resolveMethod() {
-    return PsiImplUtil.extractUniqueElement(multiResolve(false));
+    return PsiImplUtil.extractUniqueElement(multiResolveGroovy(false));
   }
 
   @Nonnull
   @Override
   public GroovyResolveResult advancedResolve() {
-    GroovyResolveResult[] results = multiResolve(false);
+    GroovyResolveResult[] results = multiResolveGroovy(false);
     return results.length == 1 ? results[0] : GroovyResolveResult.EMPTY_RESULT;
   }
 
@@ -372,58 +374,68 @@ public class GrIndexPropertyImpl extends GrExpressionImpl implements GrIndexProp
   }
 
   private class MyReference implements PsiPolyVariantReference {
+    @RequiredReadAction
     @Override
     public GrIndexPropertyImpl getElement() {
       return GrIndexPropertyImpl.this;
     }
 
+    @RequiredReadAction
     @Override
     public TextRange getRangeInElement() {
       final int offset = getArgumentList().getStartOffsetInParent();
       return new TextRange(offset, offset + 1);
     }
 
+    @RequiredReadAction
     @Override
     public PsiElement resolve() {
       return resolveMethod();
     }
 
+    @RequiredReadAction
     @Nonnull
     @Override
     public String getCanonicalText() {
       return "Array-style access";
     }
 
+    @RequiredWriteAction
     @Override
     public PsiElement handleElementRename(String newElementName) throws IncorrectOperationException {
       return GrIndexPropertyImpl.this;
     }
 
+    @RequiredWriteAction
     @Override
     public PsiElement bindToElement(@Nonnull PsiElement element) throws IncorrectOperationException {
       return GrIndexPropertyImpl.this;
     }
 
+    @RequiredReadAction
     @Override
     public boolean isReferenceTo(PsiElement element) {
       return getManager().areElementsEquivalent(resolve(), element);
     }
 
+    @RequiredReadAction
     @Nonnull
     @Override
     public Object[] getVariants() {
       return ArrayUtil.EMPTY_OBJECT_ARRAY;
     }
 
+    @RequiredReadAction
     @Override
     public boolean isSoft() {
       return false;
     }
 
+    @RequiredReadAction
     @Nonnull
     @Override
     public ResolveResult[] multiResolve(boolean incompleteCode) {
-      return GrIndexPropertyImpl.this.multiResolve(incompleteCode);
+      return GrIndexPropertyImpl.this.multiResolveGroovy(incompleteCode);
     }
   }
 }

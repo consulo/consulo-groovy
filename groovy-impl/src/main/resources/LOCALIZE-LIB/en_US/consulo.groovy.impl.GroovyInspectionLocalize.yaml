@@ -1,153 +1,152 @@
-unused.import:
-  text: Unused import
-optimize.imports:
-  text: Optimize imports
-optimize.all.imports:
-  text: Optimize unused import statements
-dialog.create.class.package.chooser.title:
-  text: Choose destination package
-create.directory.command:
-  text: Create directory
-destination.package:
-  text: 'Destination package:'
-dialog.create.class.label.0:
-  text: Create class ''{0}''
-second.unsafe.call:
-  text: Second unsafe call
-call.can.throw.npe:
-  text: Calling chain can throw NullPointerException
-groovy.dfa.issues:
-  text: Data flow issues
-other:
-  text: Other
-unused.assignment:
-  text: Unused Assignment
-unused.assignment.tooltip:
-  text: Assignment is not used
-unused.variable:
-  text: Variable is not used
-unused.inc.dec:
-  text: Unused Incrementing or Decrementing
-unassigned.access:
-  text: Variable Not Assigned
-unassigned.access.short.name:
-  text: VariableNotAssigned
-unassigned.access.tooltip:
-  text: Variable ''{0}'' might not be assigned
-no.return.display.name:
-  text: Missing Return Statement
-no.return.short.name:
-  text: MissingReturnStatement
-no.return.message:
-  text: Not all execution paths return a value
-create.dynamic.property:
-  text: Create dynamic property
-dynamic.property:
-  text: Dynamic property
-unresolved.type.status:
-  text: Type ''{0}'' is not resolved
-resolved.type.status:
-  text: Type ''{0}'' is resolved
-no.type.specified:
-  text: No type specified
-dynamic.element:
-  text: Dynamic Element
-pointless.boolean.problem.descriptor:
-  text: '#ref can be simplified to ''''{0}'''' #loc'
-pointless.arithmetic.error.message:
-  text: '#ref can be replaced with ''''{0}'''' #loc'
-pointless.boolean.display.name:
-  text: Pointless boolean expression
-pointless.boolean.quickfix:
-  text: Simplify
 Cannot.perform.undo.operation:
-  text: Cannot perform undo operation
+    text: Cannot perform undo operation
 Undo.disable:
-  text: Undo Disabled
-field.already.defined:
-  text: Variables with field names
-clashing.getters:
-  text: Clashing getters
+    text: Undo Disabled
 access.to.inaccessible.element:
-  text: Access to inaccessible element
-type.doesnt.contain.method:
-  text: Type ''{0}'' cannot be iterated in range because it does not have method ''{1}''
-incorrect.range.argument:
-  text: Incorrect range arguments
-type.doesnt.implemnt.comparable:
-  text: Type ''{0}'' doesn't implement Comparable
+    text: Access to inaccessible element
 add.method:
-  text: Add method ''{0}()'' to class ''{1}''
-implement.class:
-  text: Implement {0}
-fix.class:
-  text: Fix class {0}
-check.labeled.statement:
-  text: Labeled statement inspection
-unnecessary.qualified.reference:
-  text: Unnecessary qualified reference
-rtype.cannot.contain.ltype:
-  text: '''''{1}'''' cannot contain ''''{0}'''''
-new.instance.of.singleton:
-  text: New instance of class annotated with @groovy.lang.Singleton
-replace.new.expression.with.0.instance:
-  text: Replace with ''{0}.instance''
-getter.0.clashes.with.getter.1:
-  text: '{0} clashes with {1}'
-unused.0:
-  text: Unused {0}
-remove.0:
-  text: Remove {0}
-replace.postfix.0.with.prefix.0:
-  text: Replace postfix {0} with prefix {0}
-replace.0.with.1:
-  text: Replace {0} with binary {1}
-gr.deprecated.api.usage:
-  text: Deprecated API inspection
-category.method.0.cannot.be.applied.to.1:
-  text: Category method ''{0}'' cannot be applied to ''{1}''
-local.var.0.is.reassigned.in.closure:
-  text: Local variable {0} is reassigned in {1} with other type
-anonymous.class:
-  text: anonymous class
-closure:
-  text: closure
-other.scope:
-  text: Other scope
-method.may.be.static:
-  text: Method may be static
-method.may.be.static.only.private.or.final.option:
-  text: Only check final or private methods
-method.may.be.static.ignore.empty.method.option:
-  text: Ignore empty methods
-have.instance.refs.in.closure:
-  text: (have instance references inside closure)
-method.may.be.static.ignore.instance.refs.in.closure.option:
-  text: Ignore instance references inside closures
-ignore.boolean.expressions:
-  text: Ignore unassigned variables in boolean checks
-highlight.if.groovy.object.methods.overridden:
-  text: Highlight references from class overriding invokeMethod(), getProperty(), or setProperty()
-highlight.if.missing.methods.declared:
-  text: Highlight references from class declaring missingMethod() or missingProperty()
-gr.package.inspection.check.scripts:
-  text: Check scripts
-gr.package:
-  text: Package mismatch
-java.style.property.access:
-  text: Java-style accessor invocation
-type.customizer.is.not.marked.as.a.resource.file:
-  text: Type customizer script is not marked as compiler resources
+    text: Add method ''{0}()'' to class ''{1}''
 add.to.resources:
-  text: Add to resources
+    text: Add to resources
 add.type.customizer.to.resources:
-  text: Add type customizer script to resources
-target.0.does.not.exist:
-  text: Target ''{0}'' does not exist
-target.annotation.is.unused:
-  text: '@Target is unused'
+    text: Add type customizer script to resources
+anonymous.class:
+    text: anonymous class
+call.can.throw.npe:
+    text: Calling chain can throw NullPointerException
+category.method.0.cannot.be.applied.to.1:
+    text: Category method ''{0}'' cannot be applied to ''{1}''
 change.lvalue.type:
-  text: Change variable ''{0}'' type to ''{1}''
+    text: Change variable ''{0}'' type to ''{1}''
+check.labeled.statement:
+    text: Labeled statement inspection
+clashing.getters:
+    text: Clashing getters
+closure:
+    text: closure
+create.directory.command:
+    text: Create directory
+create.dynamic.property:
+    text: Create dynamic property
+destination.package:
+    text: 'Destination package:'
+dialog.create.class.label.0:
+    text: Create class ''{0}''
+dialog.create.class.package.chooser.title:
+    text: Choose destination package
+dynamic.element:
+    text: Dynamic Element
+dynamic.property:
+    text: Dynamic property
+field.already.defined:
+    text: Variables with field names
+fix.class:
+    text: Fix class {0}
+getter.0.clashes.with.getter.1:
+    text: '{0} clashes with {1}'
+gr.deprecated.api.usage:
+    text: Deprecated API inspection
+gr.package:
+    text: Package mismatch
+gr.package.inspection.check.scripts:
+    text: Check scripts
+groovy.dfa.issues:
+    text: Data flow issues
+have.instance.refs.in.closure:
+    text: (have instance references inside closure)
 highlight.constructor.calls.of.a.non.static.inner.classes.without.enclosing.instance.passed:
-  text: Highlight constructor calls of non-static inner classes without enclosing instance passed
-
+    text: Highlight constructor calls of non-static inner classes without enclosing instance passed
+highlight.if.groovy.object.methods.overridden:
+    text: Highlight references from class overriding invokeMethod(), getProperty(), or setProperty()
+highlight.if.missing.methods.declared:
+    text: Highlight references from class declaring missingMethod() or missingProperty()
+ignore.boolean.expressions:
+    text: Ignore unassigned variables in boolean checks
+implement.class:
+    text: Implement {0}
+incorrect.range.argument:
+    text: Incorrect range arguments
+java.style.property.access:
+    text: Java-style accessor invocation
+local.var.0.is.reassigned.in.closure:
+    text: Local variable {0} is reassigned in {1} with other type
+method.may.be.static:
+    text: Method may be static
+method.may.be.static.ignore.empty.method.option:
+    text: Ignore empty methods
+method.may.be.static.ignore.instance.refs.in.closure.option:
+    text: Ignore instance references inside closures
+method.may.be.static.only.private.or.final.option:
+    text: Only check final or private methods
+new.instance.of.singleton:
+    text: New instance of class annotated with @groovy.lang.Singleton
+no.return.display.name:
+    text: Missing Return Statement
+no.return.message:
+    text: Not all execution paths return a value
+no.return.short.name:
+    text: MissingReturnStatement
+no.type.specified:
+    text: No type specified
+optimize.all.imports:
+    text: Optimize unused import statements
+optimize.imports:
+    text: Optimize imports
+other:
+    text: Other
+other.scope:
+    text: Other scope
+pointless.arithmetic.error.message:
+    text: '#ref can be replaced with ''''{0}'''' #loc'
+pointless.boolean.display.name:
+    text: Pointless boolean expression
+pointless.boolean.problem.descriptor:
+    text: '#ref can be simplified to ''''{0}'''' #loc'
+pointless.boolean.quickfix:
+    text: Simplify
+remove.0:
+    text: Remove {0}
+replace.0.with.1:
+    text: Replace {0} with binary {1}
+replace.new.expression.with.0.instance:
+    text: Replace with ''{0}.instance''
+replace.postfix.0.with.prefix.0:
+    text: Replace postfix {0} with prefix {0}
+resolved.type.status:
+    text: Type ''{0}'' is resolved
+rtype.cannot.contain.ltype:
+    text: '''''{1}'''' cannot contain ''''{0}'''''
+second.unsafe.call:
+    text: Second unsafe call
+target.0.does.not.exist:
+    text: Target ''{0}'' does not exist
+target.annotation.is.unused:
+    text: '@Target is unused'
+type.customizer.is.not.marked.as.a.resource.file:
+    text: Type customizer script is not marked as compiler resources
+type.doesnt.contain.method:
+    text: Type ''{0}'' cannot be iterated in range because it does not have method ''{1}''
+type.doesnt.implemnt.comparable:
+    text: Type ''{0}'' doesn't implement Comparable
+unassigned.access:
+    text: Variable Not Assigned
+unassigned.access.short.name:
+    text: VariableNotAssigned
+unassigned.access.tooltip:
+    text: Variable ''{0}'' might not be assigned
+unnecessary.qualified.reference:
+    text: Unnecessary qualified reference
+unresolved.type.status:
+    text: Type ''{0}'' is not resolved
+unused.0:
+    text: Unused {0}
+unused.assignment:
+    text: Unused Assignment
+unused.assignment.tooltip:
+    text: Assignment is not used
+unused.import:
+    text: Unused import
+unused.inc.dec:
+    text: Unused Incrementing or Decrementing
+unused.variable:
+    text: Variable is not used

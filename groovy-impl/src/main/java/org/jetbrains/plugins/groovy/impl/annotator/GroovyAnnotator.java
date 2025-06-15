@@ -1460,7 +1460,7 @@ public class GroovyAnnotator extends GroovyElementVisitor {
   public void visitConstructorInvocation(GrConstructorInvocation invocation) {
     final GroovyResolveResult resolveResult = invocation.advancedResolve();
     if (resolveResult.getElement() == null) {
-      final GroovyResolveResult[] results = invocation.multiResolve(false);
+      final GroovyResolveResult[] results = invocation.multiResolveGroovy(false);
       final GrArgumentList argList = invocation.getArgumentList();
       if (results.length > 0) {
         String message = GroovyBundle.message("ambiguous.constructor.call");

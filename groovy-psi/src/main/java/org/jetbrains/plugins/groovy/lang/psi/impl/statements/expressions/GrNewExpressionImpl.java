@@ -216,13 +216,13 @@ public class GrNewExpressionImpl extends GrCallExpressionImpl implements GrNewEx
     @Override
     @Nullable
     public PsiMethod resolveMethod() {
-        return PsiImplUtil.extractUniqueElement(multiResolve(false));
+        return PsiImplUtil.extractUniqueElement(multiResolveGroovy(false));
     }
 
     @Nonnull
     @Override
     public GroovyResolveResult advancedResolve() {
-        return PsiImplUtil.extractUniqueResult(multiResolve(false));
+        return PsiImplUtil.extractUniqueResult(multiResolveGroovy(false));
     }
 
     @Override
@@ -254,7 +254,7 @@ public class GrNewExpressionImpl extends GrCallExpressionImpl implements GrNewEx
 
     @Nonnull
     @Override
-    public GroovyResolveResult[] multiResolve(boolean incompleteCode) {
+    public GroovyResolveResult[] multiResolveGroovy(boolean incompleteCode) {
         if (getArrayCount() > 0 || getReferenceElement() == null) {
             return GroovyResolveResult.EMPTY_ARRAY;
         }
@@ -327,7 +327,7 @@ public class GrNewExpressionImpl extends GrCallExpressionImpl implements GrNewEx
         @Override
         @RequiredReadAction
         public ResolveResult[] multiResolve(boolean incompleteCode) {
-            return GrNewExpressionImpl.this.multiResolve(incompleteCode);
+            return GrNewExpressionImpl.this.multiResolveGroovy(incompleteCode);
         }
 
         @Override

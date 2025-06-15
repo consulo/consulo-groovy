@@ -300,12 +300,12 @@ public class StubGenerator implements ClassItemGenerator {
       return resolveResult;
     }
 
-    final GroovyResolveResult[] results = constructorInvocation.multiResolve(false);
+    final GroovyResolveResult[] results = constructorInvocation.multiResolveGroovy(false);
     if (results.length > 0) {
       int i = 0;
+      final PsiResolveHelper resolveHelper = PsiResolveHelper.getInstance(constructor.getProject());
       while (results.length > i + 1) {
-        final PsiMethod candidate = (PsiMethod)results[i].getElement();
-        final PsiResolveHelper resolveHelper = JavaPsiFacade.getInstance(constructor.getProject()).getResolveHelper();
+          final PsiMethod candidate = (PsiMethod)results[i].getElement();
         if (candidate != null && candidate != constructor && resolveHelper.isAccessible(candidate, constructorInvocation, null)) {
           break;
         }

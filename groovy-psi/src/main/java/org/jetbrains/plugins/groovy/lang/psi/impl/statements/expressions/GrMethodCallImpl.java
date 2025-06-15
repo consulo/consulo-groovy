@@ -120,7 +120,7 @@ public abstract class GrMethodCallImpl extends GrCallExpressionImpl implements G
     @Nonnull
     @Override
     @RequiredReadAction
-    public GroovyResolveResult[] multiResolve(boolean incompleteCode) {
+    public GroovyResolveResult[] multiResolveGroovy(boolean incompleteCode) {
         return getInvokedExpression() instanceof GrReferenceExpression refExpr
             ? refExpr.multiResolve(incompleteCode)
             : GroovyResolveResult.EMPTY_ARRAY;

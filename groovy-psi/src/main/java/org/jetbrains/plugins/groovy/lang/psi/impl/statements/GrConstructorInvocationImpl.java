@@ -83,7 +83,7 @@ public class GrConstructorInvocationImpl extends GrCallImpl implements GrConstru
 
   @Override
   @Nonnull
-  public GroovyResolveResult[] multiResolve(boolean incompleteCode) {
+  public GroovyResolveResult[] multiResolveGroovy(boolean incompleteCode) {
     PsiClass clazz = getDelegatedClass();
     if (clazz != null) {
       PsiType[] argTypes = PsiUtil.getArgumentTypes(getFirstChild(), false);
@@ -119,13 +119,13 @@ public class GrConstructorInvocationImpl extends GrCallImpl implements GrConstru
 
   @Override
   public PsiMethod resolveMethod() {
-    return PsiImplUtil.extractUniqueElement(multiResolve(false));
+    return PsiImplUtil.extractUniqueElement(multiResolveGroovy(false));
   }
 
   @Nonnull
   @Override
   public GroovyResolveResult advancedResolve() {
-    return PsiImplUtil.extractUniqueResult(multiResolve(false));
+    return PsiImplUtil.extractUniqueResult(multiResolveGroovy(false));
   }
 
   @Override
@@ -141,6 +141,6 @@ public class GrConstructorInvocationImpl extends GrCallImpl implements GrConstru
   @Nonnull
   @Override
   public GroovyResolveResult[] getCallVariants(@Nullable GrExpression upToArgument) {
-    return multiResolve(true);
+    return multiResolveGroovy(true);
   }
 }

@@ -95,7 +95,7 @@ public class GroovyConstructorNamedArgumentsInspection extends BaseInspection {
         }
       }
       else {
-        final GroovyResolveResult[] results = newExpression.multiResolve(false);
+        final GroovyResolveResult[] results = newExpression.multiResolveGroovy(false);
         final GrArgumentList argList = newExpression.getArgumentList();
         final PsiElement element = refElement.resolve();
 

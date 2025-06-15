@@ -54,5 +54,5 @@ public interface GrCall extends GroovyPsiElement {
   GroovyResolveResult advancedResolve();
 
   @Nonnull
-  GroovyResolveResult[] multiResolve(boolean incompleteCode);
+  GroovyResolveResult[] multiResolveGroovy(boolean incompleteCode);
 }
