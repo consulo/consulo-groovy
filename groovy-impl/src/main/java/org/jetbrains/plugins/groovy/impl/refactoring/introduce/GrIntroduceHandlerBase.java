@@ -48,7 +48,6 @@ import consulo.language.util.IncorrectOperationException;
 import consulo.logging.Logger;
 import consulo.logging.attachment.AttachmentFactory;
 import consulo.project.Project;
-import consulo.project.ui.wm.WindowManager;
 import consulo.undoRedo.CommandProcessor;
 import consulo.util.lang.ref.Ref;
 import jakarta.annotation.Nonnull;
@@ -725,13 +724,6 @@ public abstract class GrIntroduceHandlerBase<Settings extends GrIntroduceSetting
         }
       }
       return dialog.getSettings();
-    }
-    else {
-      if (context.getOccurrences().length > 1) {
-        WindowManager.getInstance()
-                     .getStatusBar(context.getProject())
-                     .setInfo(GroovyRefactoringBundle.message("press.escape.to.remove.the.highlighting"));
-      }
     }
     return null;
   }

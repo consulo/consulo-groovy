@@ -183,7 +183,6 @@ public class GroovyInlineMethodUtil {
 
       dialog.show();
       if (!dialog.isOK()) {
-        WindowManager.getInstance().getStatusBar(project).setInfo(GroovyRefactoringBundle.message("press.escape.to.remove.the.highlighting"));
         return InlineHandler.Settings.CANNOT_INLINE_SETTINGS;
       }
       else {

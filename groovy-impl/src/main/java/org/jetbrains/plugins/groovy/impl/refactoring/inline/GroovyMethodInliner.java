@@ -142,7 +142,6 @@ public class GroovyMethodInliner implements InlineHandler.Inliner {
       TextRange range = TextRange.create(marker);
       GroovyRefactoringUtil.highlightOccurrencesByRanges(project, editor, new TextRange[]{range});
 
-      WindowManager.getInstance().getStatusBar(project).setInfo(GroovyRefactoringBundle.message("press.escape.to.remove.the.highlighting"));
       if (editor != null) {
         editor.getCaretModel().moveToOffset(marker.getEndOffset());
       }

@@ -120,6 +120,5 @@ public class GrVariableInliner implements InlineHandler.Inliner {
     final Project project = usage.getProject();
     Editor editor = FileEditorManager.getInstance(project).getSelectedTextEditor();
     GroovyRefactoringUtil.highlightOccurrences(project, editor, new PsiElement[]{newExpr});
-    WindowManager.getInstance().getStatusBar(project).setInfo(GroovyRefactoringBundle.message("press.escape.to.remove.the.highlighting"));
   }
 }
