@@ -652,10 +652,9 @@ public class GroovyAnnotator extends GroovyElementVisitor {
                     if (resolved instanceof GrField field && field.getContainingClass() instanceof GrTraitTypeDefinition) {
                         myHolder.createErrorAnnotation(
                             expression,
-                            GroovyBundle.message(
-                                "0.expressions.on.trait.fields.properties.are.not.supported.in.traits",
+                            GroovyLocalize.zeroExpressionsOnTraitFieldsPropertiesAreNotSupportedInTraits(
                                 expression.getOperationToken().getText()
-                            )
+                            ).get()
                         );
                     }
                 }
@@ -759,7 +758,7 @@ public class GroovyAnnotator extends GroovyElementVisitor {
 
         holder.createErrorAnnotation(
             method.getNameIdentifierGroovy(),
-            GroovyBundle.message("repetitive.method.name.0", method.getName())
+            GroovyLocalize.repetitiveMethodName0(method.getName()).get()
         );
     }
 
@@ -784,7 +783,7 @@ public class GroovyAnnotator extends GroovyElementVisitor {
 
         holder.createErrorAnnotation(
             method.getNameIdentifierGroovy(),
-            GroovyBundle.message("explicit.constructors.are.not.allowed.in.immutable.class")
+            GroovyLocalize.explicitConstructorsAreNotAllowedInImmutableClass().get()
         );
     }
 
@@ -1201,6 +1200,7 @@ public class GroovyAnnotator extends GroovyElementVisitor {
         annotation.registerFix(fix, range, null, descriptor);
     }
 
+    @RequiredReadAction
     private static void checkModifierIsNotAllowed(
         @Nonnull GrModifierList modifierList,
         @Nonnull @GrModifier.GrModifierConstant String modifier,
@@ -1445,7 +1445,7 @@ public class GroovyAnnotator extends GroovyElementVisitor {
         GrTypeElement typeElement = newExpression.getTypeElement();
 
         if (typeElement instanceof GrBuiltInTypeElement && newExpression.getArrayCount() == 0) {
-            myHolder.createErrorAnnotation(typeElement, GroovyBundle.message("create.instance.of.built-in.type"));
+            myHolder.createErrorAnnotation(typeElement, GroovyLocalize.createInstanceOfBuiltInType().get());
         }
 
         if (newExpression.getArrayCount() > 0) {
@@ -1892,7 +1892,7 @@ public class GroovyAnnotator extends GroovyElementVisitor {
             myHolder.createErrorAnnotation(extendsClause, GroovyLocalize.annotationTypesMayNotHaveExtendsClause().get());
         }
         else if (typeDefinition.isTrait()) {
-            checkReferenceList(myHolder, extendsClause, IS_TRAIT, GroovyBundle.message("only.traits.expected.here"), null);
+            checkReferenceList(myHolder, extendsClause, IS_TRAIT, GroovyLocalize.onlyTraitsExpectedHere().get(), null);
         }
         else if (typeDefinition.isInterface()) {
             checkReferenceList(myHolder, extendsClause, IS_INTERFACE, GroovyLocalize.noClassExpectedHere().get(), null);
@@ -2196,7 +2196,7 @@ public class GroovyAnnotator extends GroovyElementVisitor {
                 checkModifierIsNotAllowed(
                     modifiersList,
                     PsiModifier.PROTECTED,
-                    GroovyBundle.message("trait.method.cannot.be.protected"),
+                    GroovyLocalize.traitMethodCannotBeProtected().get(),
                     holder
                 );
             }
@@ -2511,7 +2511,7 @@ public class GroovyAnnotator extends GroovyElementVisitor {
             if (superClass instanceof GrTypeDefinition typeDef && typeDef.isTrait()) {
                 holder.createErrorAnnotation(
                     typeDefinition.getNameIdentifierGroovy(),
-                    GroovyBundle.message("anonymous.classes.cannot.be.created.from.traits")
+                    GroovyLocalize.anonymousClassesCannotBeCreatedFromTraits().get()
                 );
             }
         }
@@ -2521,7 +2521,7 @@ public class GroovyAnnotator extends GroovyElementVisitor {
                 assert keyword != null;
                 holder.createErrorAnnotation(
                     keyword,
-                    GroovyBundle.message("traits.are.not.supported.in.groovy.0", configUtils.getSDKVersion(typeDefinition))
+                    GroovyLocalize.traitsAreNotSupportedInGroovy0(configUtils.getSDKVersion(typeDefinition)).get()
                 );
             }
         }
