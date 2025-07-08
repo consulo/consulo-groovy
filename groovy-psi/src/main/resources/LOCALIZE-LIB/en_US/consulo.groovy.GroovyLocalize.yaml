@@ -1,3 +1,5 @@
+0.expressions.on.trait.fields.properties.are.not.supported.in.traits:
+    text: '{0} expressions on trait fields/properties are not supported in traits'
 0.is.deprecated:
     text: '''''{0}'''' is deprecated'
 Constructor:
@@ -62,6 +64,8 @@ anonymous.class.derived.from.0:
     text: anonymous class derived from {0}
 anonymous.classes.are.not.supported:
     text: Anonymous classes are not supported in Groovy {0}
+anonymous.classes.cannot.be.created.from.traits:
+    text: Anonymous classes from traits are available since Groovy 2.5.2
 are.you.sure.to.delete.dynamic.property:
     text: Are you sure to delete ''{0}''?
 are.you.sure.to.delete.elements:
@@ -295,6 +299,8 @@ exception.0.has.already.been.caught:
     text: Exception ''{0}'' has already been caught
 expected.0.to.be.inline.constant:
     text: Expected ''{0}'' to be an inline constant
+explicit.constructors.are.not.allowed.in.immutable.class:
+    text: Explicit constructors are not allowed for @Immutable class
 expression.expected:
     text: Expression expected
 field.already.defined:
@@ -491,6 +497,8 @@ not.allowed.modifier.in.forin:
     text: Modifier ''{0}'' is not allowed here
 only.abstract.class.can.have.abstract.method:
     text: Only abstract class can have abstract method
+only.traits.expected.here:
+    text: Only traits are expected here
 package.definition.cannot.have.modifiers:
     text: Package definition cannot have modifiers
 packageLocal.visibility.presentation:
@@ -527,6 +535,8 @@ recursive.constructor.invocation:
     text: Recursive constructor invocation
 regex.end.expected:
     text: Regex ending expected
+repetitive.method.name.0:
+    text: Repetitive method name ''{0}''
 return.type.is.incompatible:
     text: The return type of {0} in {1} is incompatible with {2} in {3}
 rparen.expected:
@@ -577,6 +587,10 @@ top.level.class.maynot.have.private.modifier:
     text: Top level class may not have 'private' modifier
 top.level.class.maynot.have.protected.modifier:
     text: Top level class may not have 'protected' modifier
+trait.method.cannot.be.protected:
+    text: Trait methods are not allowed to be protected
+traits.are.not.supported.in.groovy.0:
+    text: Traits are not supported in Groovy {0}
 transient.visibility.presentation:
     text: transient
 triple.is.not.expected.here:
