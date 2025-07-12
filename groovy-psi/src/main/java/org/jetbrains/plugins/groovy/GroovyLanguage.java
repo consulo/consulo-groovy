@@ -23,18 +23,15 @@ import consulo.language.Language;
  *
  * @author ilyas
  */
-public class GroovyLanguage extends Language
-{
-	public static GroovyLanguage INSTANCE = new GroovyLanguage();
+public class GroovyLanguage extends Language {
+    public static GroovyLanguage INSTANCE = new GroovyLanguage();
 
-	public GroovyLanguage()
-	{
-		super("Groovy");
-	}
+    public GroovyLanguage() {
+        super("Groovy");
+    }
 
-	@Override
-	public boolean isCaseSensitive()
-	{
-		return true;
-	}
+    @Override
+    public boolean isCaseSensitive() {
+        return true;
+    }
 }

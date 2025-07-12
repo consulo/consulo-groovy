@@ -94,7 +94,7 @@ public class ExtractClosureFromMethodProcessor extends ExtractClosureProcessorBa
 
         for (UsageInfo info : usagesIn) {
             if (info instanceof OtherLanguageUsageInfo) {
-                String lang = CommonRefactoringUtil.htmlEmphasize(info.getElement().getLanguage().getDisplayName());
+                String lang = CommonRefactoringUtil.htmlEmphasize(info.getElement().getLanguage().getDisplayName().get());
                 conflicts.putValue(info.getElement(), GroovyRefactoringBundle.message("cannot.process.usage.in.language.{0}", lang));
             }
         }

@@ -17,42 +17,46 @@ package org.jetbrains.plugins.groovy.impl.codeStyle;
 
 import consulo.annotation.component.ExtensionImpl;
 import consulo.configurable.Configurable;
+import consulo.language.Language;
 import consulo.language.codeStyle.CodeStyleSettings;
 import consulo.language.codeStyle.CustomCodeStyleSettings;
 import consulo.language.codeStyle.setting.CodeStyleSettingsProvider;
 import consulo.language.codeStyle.ui.setting.CodeStyleAbstractConfigurable;
 import consulo.language.codeStyle.ui.setting.CodeStyleAbstractPanel;
-
 import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
+import org.jetbrains.plugins.groovy.GroovyLanguage;
 
 /**
  * @author Rustam Vishnyakov
  */
 @ExtensionImpl
 public class GroovyCodeStyleSettingsProvider extends CodeStyleSettingsProvider {
-  @Nonnull
-  @Override
-  public Configurable createSettingsPage(CodeStyleSettings settings, CodeStyleSettings originalSettings) {
-    return new CodeStyleAbstractConfigurable(settings, originalSettings, "Groovy") {
-      @Override
-      protected CodeStyleAbstractPanel createPanel(CodeStyleSettings settings) {
-        return new GroovyCodeStyleMainPanel(getCurrentSettings(), settings) {};
-      }
+    @Nonnull
+    @Override
+    public Configurable createSettingsPage(CodeStyleSettings settings, CodeStyleSettings originalSettings) {
+        return new CodeStyleAbstractConfigurable(settings, originalSettings, "Groovy") {
+            @Override
+            protected CodeStyleAbstractPanel createPanel(CodeStyleSettings settings) {
+                return new GroovyCodeStyleMainPanel(getCurrentSettings(), settings) {
+                };
+            }
 
-      @Override
-      public String getHelpTopic() {
-        return "reference.settingsdialog.codestyle.groovy";
-      }
-    };
-  }
+            @Override
+            public String getHelpTopic() {
+                return "reference.settingsdialog.codestyle.groovy";
+            }
+        };
+    }
 
-  @Override
-  public String getConfigurableDisplayName() {
-    return "Groovy";
-  }
+    @Nullable
+    @Override
+    public Language getLanguage() {
+        return GroovyLanguage.INSTANCE;
+    }
 
-  @Override
-  public CustomCodeStyleSettings createCustomSettings(CodeStyleSettings settings) {
-    return new GroovyCodeStyleSettings(settings);
-  }
+    @Override
+    public CustomCodeStyleSettings createCustomSettings(CodeStyleSettings settings) {
+        return new GroovyCodeStyleSettings(settings);
+    }
 }
