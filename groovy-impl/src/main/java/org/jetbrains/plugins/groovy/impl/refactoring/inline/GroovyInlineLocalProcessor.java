@@ -17,7 +17,6 @@ package org.jetbrains.plugins.groovy.impl.refactoring.inline;
 
 import consulo.annotation.access.RequiredReadAction;
 import consulo.annotation.access.RequiredWriteAction;
-import consulo.ide.impl.idea.usageView.BaseUsageViewDescriptor;
 import consulo.language.editor.refactoring.BaseRefactoringProcessor;
 import consulo.language.editor.refactoring.localize.RefactoringLocalize;
 import consulo.language.editor.refactoring.util.CommonRefactoringUtil;
@@ -27,6 +26,7 @@ import consulo.language.psi.search.ReferencesSearch;
 import consulo.logging.Logger;
 import consulo.project.Project;
 import consulo.ui.annotation.RequiredUIAccess;
+import consulo.usage.BaseUsageViewDescriptor;
 import consulo.usage.UsageInfo;
 import consulo.usage.UsageViewDescriptor;
 import consulo.util.collection.MultiMap;
