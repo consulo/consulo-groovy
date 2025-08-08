@@ -17,7 +17,7 @@ package org.jetbrains.plugins.groovy.impl.refactoring.rename;
 
 import com.intellij.java.language.psi.PsiClass;
 import consulo.annotation.component.ExtensionImpl;
-import consulo.ide.impl.idea.refactoring.rename.RenamePsiFileProcessor;
+import consulo.language.editor.refactoring.rename.RenamePsiFileProcessorBase;
 import consulo.language.psi.PsiElement;
 import consulo.util.collection.MultiMap;
 import consulo.util.io.FileUtil;
@@ -32,7 +32,7 @@ import java.util.Map;
  * @author Max Medvedev
  */
 @ExtensionImpl
-public class RenameGroovyScriptProcessor extends RenamePsiFileProcessor {
+public class RenameGroovyScriptProcessor extends RenamePsiFileProcessorBase {
   @Override
   public boolean canProcessElement(@Nonnull PsiElement element) {
     return element instanceof GroovyFile && ((GroovyFile)element).isScript();
