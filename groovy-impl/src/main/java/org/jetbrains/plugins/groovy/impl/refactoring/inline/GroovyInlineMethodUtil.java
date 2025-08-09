@@ -22,9 +22,9 @@ import consulo.application.Application;
 import consulo.application.ApplicationManager;
 import consulo.application.HelpManager;
 import consulo.codeEditor.Editor;
-import consulo.ide.impl.idea.refactoring.inline.InlineOptionsDialog;
 import consulo.language.editor.TargetElementUtil;
 import consulo.language.editor.refactoring.inline.InlineHandler;
+import consulo.language.editor.refactoring.inline.awt.InlineOptionsDialog;
 import consulo.language.editor.refactoring.util.CommonRefactoringUtil;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiFile;
@@ -34,9 +34,11 @@ import consulo.language.psi.search.ReferencesSearch;
 import consulo.language.psi.util.PsiTreeUtil;
 import consulo.language.util.IncorrectOperationException;
 import consulo.project.Project;
-import consulo.project.ui.wm.WindowManager;
 import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.codeInspection.utils.ControlFlowUtils;
+import org.jetbrains.plugins.groovy.impl.refactoring.GroovyRefactoringBundle;
+import org.jetbrains.plugins.groovy.impl.refactoring.GroovyRefactoringUtil;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
@@ -57,10 +59,7 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMe
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeElement;
 import org.jetbrains.plugins.groovy.lang.psi.impl.signatures.GrClosureSignatureUtil;
-import org.jetbrains.plugins.groovy.impl.refactoring.GroovyRefactoringBundle;
-import org.jetbrains.plugins.groovy.impl.refactoring.GroovyRefactoringUtil;
 
-import jakarta.annotation.Nullable;
 import java.util.*;
 
 /**

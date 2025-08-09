@@ -21,8 +21,8 @@ import com.intellij.java.language.psi.PsiField;
 import com.intellij.java.language.psi.PsiSubstitutor;
 import com.intellij.java.language.psi.util.PsiFormatUtil;
 import consulo.application.HelpManager;
-import consulo.ide.impl.idea.refactoring.inline.InlineOptionsDialog;
 import consulo.language.editor.refactoring.RefactoringBundle;
+import consulo.language.editor.refactoring.inline.awt.InlineOptionsDialog;
 import consulo.project.Project;
 
 /**

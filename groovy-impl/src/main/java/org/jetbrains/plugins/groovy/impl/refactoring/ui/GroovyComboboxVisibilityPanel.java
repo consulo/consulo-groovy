@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.impl.refactoring.ui;
 
-import consulo.ide.impl.idea.refactoring.ui.ComboBoxVisibilityPanel;
+import consulo.language.editor.refactoring.ui.ComboBoxVisibilityPanel;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.GrModifier;
 
 import static com.intellij.java.language.psi.PsiModifier.*;

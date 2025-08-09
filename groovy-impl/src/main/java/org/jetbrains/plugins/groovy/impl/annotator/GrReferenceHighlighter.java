@@ -17,13 +17,13 @@ package org.jetbrains.plugins.groovy.impl.annotator;
 
 import consulo.application.progress.ProgressIndicator;
 import consulo.document.Document;
-import consulo.language.editor.impl.highlight.TextEditorHighlightingPass;
-import consulo.language.editor.impl.highlight.UpdateHighlightersUtil;
+import consulo.language.editor.highlight.TextEditorHighlightingPass;
+import consulo.language.editor.highlight.UpdateHighlightersUtil;
 import consulo.language.editor.rawHighlight.HighlightInfo;
-import org.jetbrains.plugins.groovy.lang.psi.GroovyFileBase;
-
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
+import org.jetbrains.plugins.groovy.lang.psi.GroovyFileBase;
+
 import java.util.ArrayList;
 import java.util.List;
 

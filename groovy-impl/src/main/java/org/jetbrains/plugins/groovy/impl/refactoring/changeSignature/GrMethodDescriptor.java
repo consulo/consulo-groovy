@@ -17,7 +17,7 @@ package org.jetbrains.plugins.groovy.impl.refactoring.changeSignature;
 
 import com.intellij.java.language.psi.PsiClass;
 import com.intellij.java.language.util.VisibilityUtil;
-import consulo.ide.impl.idea.refactoring.changeSignature.MethodDescriptor;
+import consulo.language.editor.refactoring.changeSignature.MethodDescriptor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameter;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;

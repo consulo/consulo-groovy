@@ -17,7 +17,7 @@ package org.jetbrains.plugins.groovy.impl.refactoring.ui;
 
 import com.intellij.java.impl.codeInsight.daemon.impl.JavaReferenceImporter;
 import consulo.codeEditor.Editor;
-import consulo.ide.impl.idea.refactoring.ui.CodeFragmentTableCellEditorBase;
+import consulo.language.editor.refactoring.ui.CodeFragmentTableCellEditorBase;
 import consulo.language.psi.PsiCodeFragment;
 import consulo.project.Project;
 import org.jetbrains.plugins.groovy.GroovyFileType;

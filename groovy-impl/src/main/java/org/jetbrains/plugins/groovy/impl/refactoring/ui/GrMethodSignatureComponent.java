@@ -15,24 +15,23 @@
  */
 package org.jetbrains.plugins.groovy.impl.refactoring.ui;
 
+import consulo.language.editor.refactoring.ui.MethodSignatureComponent;
 import consulo.project.Project;
-import consulo.ide.impl.idea.refactoring.ui.MethodSignatureComponent;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 
 /**
  * @author Max Medvedev
  */
-public class GrMethodSignatureComponent extends MethodSignatureComponent
-{
-  private final String myFileName;
+public class GrMethodSignatureComponent extends MethodSignatureComponent {
+    private final String myFileName;
 
-  public GrMethodSignatureComponent(String signature, Project project) {
-    super(signature, project, GroovyFileType.GROOVY_FILE_TYPE);
-    myFileName = "dummy." + GroovyFileType.GROOVY_FILE_TYPE.getDefaultExtension();
-  }
+    public GrMethodSignatureComponent(String signature, Project project) {
+        super(signature, project, GroovyFileType.GROOVY_FILE_TYPE);
+        myFileName = "dummy." + GroovyFileType.GROOVY_FILE_TYPE.getDefaultExtension();
+    }
 
-  @Override
-  protected String getFileName() {
-    return myFileName;
-  }
+    @Override
+    protected String getFileName() {
+        return myFileName;
+    }
 }

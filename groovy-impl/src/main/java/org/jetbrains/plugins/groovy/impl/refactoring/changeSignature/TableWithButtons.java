@@ -15,9 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.impl.refactoring.changeSignature;
 
-import consulo.ide.impl.idea.ui.RowEditableTableModel;
 import consulo.ui.ex.awt.table.JBTable;
-import consulo.ui.ex.awt.table.JBTable;
+import consulo.ui.ex.awt.table.RowEditableTableModel;
 
 import javax.swing.*;
 import javax.swing.event.TableModelEvent;

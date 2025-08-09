@@ -19,56 +19,54 @@ import com.intellij.java.language.psi.JavaCodeFragmentFactory;
 import com.intellij.java.language.psi.PsiArrayType;
 import com.intellij.java.language.psi.PsiType;
 import com.intellij.java.language.psi.PsiTypeCodeFragment;
-import consulo.ide.impl.idea.refactoring.changeSignature.ParameterTableModelItemBase;
+import consulo.language.editor.refactoring.changeSignature.ParameterTableModelItemBase;
 import consulo.language.psi.PsiCodeFragment;
 import consulo.language.psi.PsiElement;
 import consulo.project.Project;
-import org.jetbrains.plugins.groovy.impl.debugger.fragments.GroovyCodeFragment;
-
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
+import org.jetbrains.plugins.groovy.impl.debugger.fragments.GroovyCodeFragment;
 
 /**
-* @author Max Medvedev
-*/
-public class GrParameterTableModelItem extends ParameterTableModelItemBase<GrParameterInfo>
-{
-  public PsiCodeFragment initializerCodeFragment;
+ * @author Max Medvedev
+ */
+public class GrParameterTableModelItem extends ParameterTableModelItemBase<GrParameterInfo> {
+    public PsiCodeFragment initializerCodeFragment;
 
-  public GrParameterTableModelItem(GrParameterInfo parameter,
-                                   PsiCodeFragment typeCodeFragment,
-                                   PsiCodeFragment initializerCodeFragment,
-                                   PsiCodeFragment defaultValueCodeFragment) {
-    super(parameter, typeCodeFragment, defaultValueCodeFragment);
-    this.initializerCodeFragment = initializerCodeFragment;
-  }
-
-  public static GrParameterTableModelItem create(@Nullable GrParameterInfo parameterInfo,
-                                                 @Nonnull final Project project,
-                                                 @Nullable final PsiElement context) {
-    if (parameterInfo == null) {
-      parameterInfo = new GrParameterInfo("", "", "", null, -1, false);
+    public GrParameterTableModelItem(GrParameterInfo parameter,
+                                     PsiCodeFragment typeCodeFragment,
+                                     PsiCodeFragment initializerCodeFragment,
+                                     PsiCodeFragment defaultValueCodeFragment) {
+        super(parameter, typeCodeFragment, defaultValueCodeFragment);
+        this.initializerCodeFragment = initializerCodeFragment;
     }
 
-    PsiTypeCodeFragment typeCodeFragment =
-      JavaCodeFragmentFactory.getInstance(project).createTypeCodeFragment(parameterInfo.getTypeText(), context, true, JavaCodeFragmentFactory.ALLOW_ELLIPSIS);
-    String initializer = parameterInfo.getDefaultInitializer();
-    GroovyCodeFragment initializerCodeFragment = new GroovyCodeFragment(project, initializer != null ? initializer : "");
-    GroovyCodeFragment defaultValueCodeFragment = new GroovyCodeFragment(project, parameterInfo.getDefaultValue());
-    return new GrParameterTableModelItem(parameterInfo, typeCodeFragment, initializerCodeFragment, defaultValueCodeFragment);
-  }
+    public static GrParameterTableModelItem create(@Nullable GrParameterInfo parameterInfo,
+                                                   @Nonnull final Project project,
+                                                   @Nullable final PsiElement context) {
+        if (parameterInfo == null) {
+            parameterInfo = new GrParameterInfo("", "", "", null, -1, false);
+        }
 
-  @Override
-  public boolean isEllipsisType() {
-    try {
-      PsiType type = ((PsiTypeCodeFragment)typeCodeFragment).getType();
-      return type instanceof PsiArrayType;
+        PsiTypeCodeFragment typeCodeFragment =
+            JavaCodeFragmentFactory.getInstance(project).createTypeCodeFragment(parameterInfo.getTypeText(), context, true, JavaCodeFragmentFactory.ALLOW_ELLIPSIS);
+        String initializer = parameterInfo.getDefaultInitializer();
+        GroovyCodeFragment initializerCodeFragment = new GroovyCodeFragment(project, initializer != null ? initializer : "");
+        GroovyCodeFragment defaultValueCodeFragment = new GroovyCodeFragment(project, parameterInfo.getDefaultValue());
+        return new GrParameterTableModelItem(parameterInfo, typeCodeFragment, initializerCodeFragment, defaultValueCodeFragment);
     }
-    catch (PsiTypeCodeFragment.TypeSyntaxException e) {
-      return false;
+
+    @Override
+    public boolean isEllipsisType() {
+        try {
+            PsiType type = ((PsiTypeCodeFragment) typeCodeFragment).getType();
+            return type instanceof PsiArrayType;
+        }
+        catch (PsiTypeCodeFragment.TypeSyntaxException e) {
+            return false;
+        }
+        catch (PsiTypeCodeFragment.NoTypeException e) {
+            return false;
+        }
     }
-    catch (PsiTypeCodeFragment.NoTypeException e) {
-      return false;
-    }
-  }
 }

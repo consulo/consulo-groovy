@@ -16,7 +16,7 @@
 package org.jetbrains.plugins.groovy.impl.refactoring.changeSignature;
 
 import com.intellij.java.impl.refactoring.ui.JavaCodeFragmentTableCellEditor;
-import consulo.ide.impl.idea.refactoring.changeSignature.ParameterTableModelBase;
+import consulo.language.editor.refactoring.changeSignature.ParameterTableModelBase;
 import consulo.language.psi.PsiCodeFragment;
 import consulo.language.psi.PsiElement;
 import consulo.project.Project;

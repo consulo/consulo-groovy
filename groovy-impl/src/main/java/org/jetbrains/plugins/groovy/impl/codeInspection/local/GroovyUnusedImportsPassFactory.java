@@ -18,13 +18,12 @@ package org.jetbrains.plugins.groovy.impl.codeInspection.local;
 import consulo.annotation.component.ExtensionImpl;
 import consulo.codeEditor.Editor;
 import consulo.language.editor.Pass;
-import consulo.language.editor.impl.highlight.TextEditorHighlightingPass;
-import consulo.language.editor.impl.highlight.TextEditorHighlightingPassFactory;
+import consulo.language.editor.highlight.TextEditorHighlightingPass;
+import consulo.language.editor.highlight.TextEditorHighlightingPassFactory;
 import consulo.language.psi.PsiFile;
-import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
-
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
+import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 
 /**
  * @author ilyas
