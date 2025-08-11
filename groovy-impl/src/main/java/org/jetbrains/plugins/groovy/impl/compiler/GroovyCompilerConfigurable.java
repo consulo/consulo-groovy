@@ -22,6 +22,7 @@ import consulo.configurable.*;
 import consulo.disposer.Disposable;
 import consulo.fileChooser.FileChooserDescriptor;
 import consulo.ide.impl.compiler.setting.ExcludedEntriesConfigurable;
+import consulo.localize.LocalizeValue;
 import consulo.module.Module;
 import consulo.module.ModuleManager;
 import consulo.module.content.ModuleRootManager;
@@ -92,8 +93,8 @@ public class GroovyCompilerConfigurable implements ProjectConfigurable, Configur
 
   @Nonnull
   @Nls
-  public String getDisplayName() {
-    return "Groovy Compiler";
+  public LocalizeValue getDisplayName() {
+    return LocalizeValue.localizeTODO("Groovy Compiler");
   }
 
   public String getHelpTopic() {

@@ -21,6 +21,7 @@ import consulo.configurable.SimpleConfigurableByProperties;
 import consulo.disposer.Disposable;
 import consulo.execution.debug.setting.DebuggerSettingsCategory;
 import consulo.execution.debug.setting.XDebuggerSettings;
+import consulo.groovy.localize.GroovyLocalize;
 import consulo.localize.LocalizeValue;
 import consulo.ui.CheckBox;
 import consulo.ui.Component;
@@ -29,10 +30,9 @@ import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.layout.VerticalLayout;
 import consulo.ui.style.StandardColors;
 import consulo.util.xml.serializer.XmlSerializerUtil;
-import org.jetbrains.annotations.Nls;
-import org.jetbrains.plugins.groovy.GroovyBundle;
-
 import jakarta.annotation.Nonnull;
+import org.jetbrains.annotations.Nls;
+
 import java.util.Collection;
 import java.util.Collections;
 
@@ -49,8 +49,8 @@ public class GroovyDebuggerSettings extends XDebuggerSettings<GroovyDebuggerSett
 
     @Nls
     @Override
-    public String getDisplayName() {
-      return GroovyBundle.message("groovy.debug.caption");
+    public LocalizeValue getDisplayName() {
+      return GroovyLocalize.groovyDebugCaption();
     }
 
     @RequiredUIAccess
@@ -60,8 +60,7 @@ public class GroovyDebuggerSettings extends XDebuggerSettings<GroovyDebuggerSett
       GroovyDebuggerSettings settings = GroovyDebuggerSettings.getInstance();
 
       VerticalLayout verticalLayout = VerticalLayout.create();
-      CheckBox disableSpecificCheckBox =
-        CheckBox.create(LocalizeValue.localizeTODO(GroovyBundle.message("groovy.debug.disable.specific.methods")));
+      CheckBox disableSpecificCheckBox = CheckBox.create(GroovyLocalize.groovyDebugDisableSpecificMethods());
       verticalLayout.add(disableSpecificCheckBox);
       propertyBuilder.add(disableSpecificCheckBox, settings::getDebugDisableSpecificMethods, settings::setDebugDisableSpecificMethods);
       return verticalLayout;
@@ -76,8 +75,8 @@ public class GroovyDebuggerSettings extends XDebuggerSettings<GroovyDebuggerSett
 
     @Nls
     @Override
-    public String getDisplayName() {
-      return GroovyBundle.message("groovy.debug.caption");
+    public LocalizeValue getDisplayName() {
+      return GroovyLocalize.groovyDebugCaption();
     }
 
     @RequiredUIAccess

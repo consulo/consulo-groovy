@@ -319,6 +319,8 @@ for.clause.expected:
     text: clause expected
 griffon.configuration.name:
     text: Griffon
+groovy:
+    text: Groovy
 groovy.debug.caption:
     text: Groovy
 groovy.debug.disable.specific.methods:

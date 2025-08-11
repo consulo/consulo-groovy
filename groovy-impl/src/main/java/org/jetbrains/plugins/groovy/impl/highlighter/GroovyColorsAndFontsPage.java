@@ -19,8 +19,10 @@ import consulo.annotation.component.ExtensionImpl;
 import consulo.colorScheme.TextAttributesKey;
 import consulo.colorScheme.setting.AttributesDescriptor;
 import consulo.colorScheme.setting.ColorDescriptor;
+import consulo.groovy.localize.GroovyLocalize;
 import consulo.language.editor.colorScheme.setting.ColorSettingsPage;
 import consulo.language.editor.highlight.SyntaxHighlighter;
+import consulo.localize.LocalizeValue;
 import jakarta.annotation.Nullable;
 import org.jetbrains.annotations.NonNls;
 
@@ -36,8 +38,8 @@ import java.util.Map;
 public class GroovyColorsAndFontsPage implements ColorSettingsPage {
   @Override
   @Nonnull
-  public String getDisplayName() {
-    return "Groovy";
+  public LocalizeValue getDisplayName() {
+    return GroovyLocalize.groovy();
   }
 
   @Override

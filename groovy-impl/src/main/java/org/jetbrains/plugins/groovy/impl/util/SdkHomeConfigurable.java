@@ -18,6 +18,7 @@ package org.jetbrains.plugins.groovy.impl.util;
 import consulo.configurable.ConfigurationException;
 import consulo.configurable.SearchableConfigurable;
 import consulo.fileChooser.FileChooserDescriptor;
+import consulo.localize.LocalizeValue;
 import consulo.project.Project;
 import consulo.ui.ex.awt.TextFieldWithBrowseButton;
 import consulo.util.io.FileUtil;
@@ -44,8 +45,8 @@ public abstract class SdkHomeConfigurable implements SearchableConfigurable {
   }
 
   @Nls
-  public String getDisplayName() {
-    return myFrameworkName;
+  public LocalizeValue getDisplayName() {
+    return LocalizeValue.ofNullable(myFrameworkName);
   }
 
   public JComponent createComponent() {

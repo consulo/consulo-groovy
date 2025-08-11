@@ -17,6 +17,7 @@ package org.jetbrains.plugins.groovy.impl.codeStyle;
 
 import consulo.annotation.component.ExtensionImpl;
 import consulo.configurable.Configurable;
+import consulo.groovy.localize.GroovyLocalize;
 import consulo.language.Language;
 import consulo.language.codeStyle.CodeStyleSettings;
 import consulo.language.codeStyle.CustomCodeStyleSettings;
@@ -35,7 +36,7 @@ public class GroovyCodeStyleSettingsProvider extends CodeStyleSettingsProvider {
     @Nonnull
     @Override
     public Configurable createSettingsPage(CodeStyleSettings settings, CodeStyleSettings originalSettings) {
-        return new CodeStyleAbstractConfigurable(settings, originalSettings, "Groovy") {
+        return new CodeStyleAbstractConfigurable(settings, originalSettings, GroovyLocalize.groovy()) {
             @Override
             protected CodeStyleAbstractPanel createPanel(CodeStyleSettings settings) {
                 return new GroovyCodeStyleMainPanel(getCurrentSettings(), settings) {

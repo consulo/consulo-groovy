@@ -16,11 +16,12 @@
 package org.jetbrains.plugins.groovy.impl.codeStyle;
 
 import com.intellij.java.language.impl.JavaFileType;
-import consulo.application.ApplicationBundle;
+import consulo.application.localize.ApplicationLocalize;
 import consulo.codeEditor.EditorHighlighter;
 import consulo.colorScheme.EditorColorsScheme;
 import consulo.language.codeStyle.CodeStyleSettings;
 import consulo.language.codeStyle.ui.setting.CodeStyleAbstractPanel;
+import consulo.localize.LocalizeValue;
 import consulo.virtualFileSystem.fileType.FileType;
 import jakarta.annotation.Nonnull;
 
@@ -81,7 +82,7 @@ public class GrCodeStyleImportsPanelWrapper extends CodeStyleAbstractPanel {
   }
 
   @Override
-  protected String getTabTitle() {
-    return ApplicationBundle.message("title.imports");
+  protected LocalizeValue getTabTitle() {
+    return ApplicationLocalize.titleImports();
   }
 }

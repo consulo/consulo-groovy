@@ -16,7 +16,10 @@
 
 package org.jetbrains.plugins.groovy;
 
+import consulo.groovy.localize.GroovyLocalize;
 import consulo.language.Language;
+import consulo.localize.LocalizeValue;
+import jakarta.annotation.Nonnull;
 
 /**
  * All main properties for Groovy language
@@ -33,5 +36,11 @@ public class GroovyLanguage extends Language {
     @Override
     public boolean isCaseSensitive() {
         return true;
+    }
+
+    @Nonnull
+    @Override
+    public LocalizeValue getDisplayName() {
+        return GroovyLocalize.groovy();
     }
 }
