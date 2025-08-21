@@ -24,9 +24,9 @@ import consulo.fileTemplate.FileTemplate;
 import consulo.fileTemplate.FileTemplateManager;
 import consulo.ide.IdeView;
 import consulo.ide.action.CreateFileFromTemplateDialog;
-import consulo.ide.impl.idea.openapi.fileTypes.ex.FileTypeManagerEx;
 import consulo.language.codeStyle.CodeStyleManager;
 import consulo.language.editor.LangDataKeys;
+import consulo.language.file.FileTypeManager;
 import consulo.language.psi.PsiDirectory;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiFile;
@@ -70,8 +70,7 @@ public class NewGroovyClassAction extends JavaCreateTemplateInPackageAction<GrTy
            .addKind("Annotation", JetgroovyIcons.Groovy.AnnotationType, GroovyTemplates.GROOVY_ANNOTATION);
 
     for (FileTemplate template : FileTemplateManager.getInstance(project).getAllTemplates()) {
-      FileType fileType =
-        FileTypeManagerEx.getInstanceEx().getFileTypeByExtension(template.getExtension());
+      FileType fileType = FileTypeManager.getInstance().getFileTypeByExtension(template.getExtension());
       if (fileType.equals(GroovyFileType.GROOVY_FILE_TYPE) && JavaDirectoryService.getInstance().getPackage(directory) != null) {
         builder.addKind(template.getName(), JetgroovyIcons.Groovy.Class, template.getName());
       }
