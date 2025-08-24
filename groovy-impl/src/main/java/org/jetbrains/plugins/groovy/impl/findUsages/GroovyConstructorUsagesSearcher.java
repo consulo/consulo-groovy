@@ -26,7 +26,7 @@ import consulo.annotation.component.ExtensionImpl;
 import consulo.application.util.ReadActionProcessor;
 import consulo.content.scope.SearchScope;
 import consulo.document.util.TextRange;
-import consulo.language.impl.psi.PsiAnchor;
+import consulo.language.psi.PsiAnchor;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiManager;
 import consulo.language.psi.PsiReference;
