@@ -24,6 +24,7 @@ import consulo.fileTemplate.FileTemplate;
 import consulo.fileTemplate.FileTemplateManager;
 import consulo.ide.IdeView;
 import consulo.ide.action.CreateFileFromTemplateDialog;
+import consulo.ide.impl.idea.ide.actions.WeighingActionGroup;
 import consulo.language.codeStyle.CodeStyleManager;
 import consulo.language.editor.LangDataKeys;
 import consulo.language.file.FileTypeManager;
@@ -112,9 +113,9 @@ public class NewGroovyClassAction extends JavaCreateTemplateInPackageAction<GrTy
     ProjectFileIndex projectFileIndex = ProjectRootManager.getInstance(project).getFileIndex();
     for (PsiDirectory dir : view.getDirectories()) {
       if (projectFileIndex.isInSourceContent(dir.getVirtualFile()) && checkPackageExists(dir)) {
-        for (GroovySourceFolderDetector detector : GroovySourceFolderDetector.EP_NAME.getExtensions()) {
+        for (GroovySourceFolderDetector detector : GroovySourceFolderDetector.EP_NAME.getExtensionList()) {
           if (detector.isGroovySourceFolder(dir)) {
-            presentation.setWeight(Presentation.HIGHER_WEIGHT);
+            presentation.putClientProperty(WeighingActionGroup.WEIGHT_KEY, WeighingActionGroup.HIGHER_WEIGHT);
             break;
           }
         }
