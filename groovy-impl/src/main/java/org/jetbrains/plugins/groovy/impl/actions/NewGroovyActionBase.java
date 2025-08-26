@@ -16,69 +16,62 @@
 
 package org.jetbrains.plugins.groovy.impl.actions;
 
-import consulo.application.CommonBundle;
 import consulo.dataContext.DataContext;
+import consulo.groovy.module.extension.GroovyModuleExtension;
 import consulo.ide.action.CreateElementActionBase;
 import consulo.language.editor.LangDataKeys;
 import consulo.language.psi.PsiDirectory;
+import consulo.language.psi.PsiElement;
 import consulo.language.util.ModuleUtilCore;
+import consulo.localize.LocalizeValue;
 import consulo.module.Module;
+import consulo.platform.base.localize.CommonLocalize;
 import consulo.project.Project;
 import consulo.ui.ex.awt.Messages;
-import consulo.language.psi.PsiElement;
-import consulo.groovy.module.extension.GroovyModuleExtension;
 import consulo.ui.image.Image;
 import jakarta.annotation.Nonnull;
 import org.jetbrains.annotations.NonNls;
 
 import java.util.function.Consumer;
 
-public abstract class NewGroovyActionBase extends CreateElementActionBase
-{
-	@NonNls
-	public static final String GROOVY_EXTENSION = ".groovy";
+public abstract class NewGroovyActionBase extends CreateElementActionBase {
+    public static final String GROOVY_EXTENSION = ".groovy";
 
-	public NewGroovyActionBase(String text, String description, Image icon)
-	{
-		super(text, description, icon);
-	}
+    public NewGroovyActionBase(LocalizeValue text, LocalizeValue description, Image icon) {
+        super(text, description, icon);
+    }
 
-	protected final void invokeDialog(final Project project, final PsiDirectory directory, Consumer<PsiElement[]> elementsConsumer)
-	{
-		MyInputValidator validator = new MyInputValidator(project, directory);
-		Messages.showInputDialog(project, getDialogPrompt(), getDialogTitle(), Messages.getQuestionIcon(), "", validator);
+    protected final void invokeDialog(final Project project, final PsiDirectory directory, Consumer<PsiElement[]> elementsConsumer) {
+        MyInputValidator validator = new MyInputValidator(project, directory);
+        Messages.showInputDialog(project, getDialogPrompt(), getDialogTitle(), Messages.getQuestionIcon(), "", validator);
 
-		elementsConsumer.accept(validator.getCreatedElements());
-	}
+        elementsConsumer.accept(validator.getCreatedElements());
+    }
 
-	protected abstract String getDialogPrompt();
+    protected abstract String getDialogPrompt();
 
-	protected abstract String getDialogTitle();
+    protected abstract String getDialogTitle();
 
-	@Override
-	protected boolean isAvailable(DataContext dataContext)
-	{
-		if(!super.isAvailable(dataContext))
-		{
-			return false;
-		}
+    @Override
+    protected boolean isAvailable(DataContext dataContext) {
+        if (!super.isAvailable(dataContext)) {
+            return false;
+        }
 
-		Module module = dataContext.getData(LangDataKeys.MODULE);
-		return module != null && ModuleUtilCore.getExtension(module, GroovyModuleExtension.class) != null;
-	}
+        Module module = dataContext.getData(LangDataKeys.MODULE);
+        return module != null && ModuleUtilCore.getExtension(module, GroovyModuleExtension.class) != null;
+    }
 
-	@Nonnull
-	protected PsiElement[] create(String newName, PsiDirectory directory) throws Exception
-	{
-		return doCreate(newName, directory);
-	}
+    @Nonnull
+    protected PsiElement[] create(String newName, PsiDirectory directory) throws Exception {
+        return doCreate(newName, directory);
+    }
 
-	@Nonnull
-	protected abstract PsiElement[] doCreate(String newName, PsiDirectory directory) throws Exception;
+    @Nonnull
+    protected abstract PsiElement[] doCreate(String newName, PsiDirectory directory) throws Exception;
 
 
-	protected String getErrorTitle()
-	{
-		return CommonBundle.getErrorTitle();
-	}
+    protected LocalizeValue getErrorTitle() {
+        return CommonLocalize.titleError();
+    }
 }
