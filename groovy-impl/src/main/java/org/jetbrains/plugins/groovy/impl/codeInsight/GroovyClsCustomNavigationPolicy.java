@@ -15,26 +15,28 @@
  */
 package org.jetbrains.plugins.groovy.impl.codeInsight;
 
-import com.intellij.java.language.impl.psi.impl.compiled.ClsCustomNavigationPolicyEx;
+import com.intellij.java.language.impl.psi.impl.compiled.ClsCustomNavigationPolicy;
 import com.intellij.java.language.impl.psi.impl.compiled.ClsMethodImpl;
 import com.intellij.java.language.psi.PsiMethod;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.annotation.component.ExtensionImpl;
 import consulo.language.impl.psi.LightElement;
 import consulo.language.psi.PsiElement;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
-import org.jetbrains.plugins.groovy.GroovyFileType;
+import org.jetbrains.plugins.groovy.GroovyLanguage;
 
 /**
  * @author Max Medvedev
  */
 @ExtensionImpl
-public class GroovyClsCustomNavigationPolicy extends ClsCustomNavigationPolicyEx {
+public class GroovyClsCustomNavigationPolicy implements ClsCustomNavigationPolicy {
   @Override
   @Nullable
+  @RequiredReadAction
   public PsiElement getNavigationElement(@Nonnull ClsMethodImpl clsMethod) {
     PsiMethod source = clsMethod.getSourceMirrorMethod();
-    if (source instanceof LightElement && source.getLanguage() == GroovyFileType.GROOVY_LANGUAGE) {
+    if (source instanceof LightElement && source.getLanguage() == GroovyLanguage.INSTANCE) {
       return source.getNavigationElement();
     }
 
