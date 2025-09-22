@@ -18,6 +18,7 @@ package org.jetbrains.plugins.groovy.util;
 
 import com.intellij.java.language.psi.JavaPsiFacade;
 import com.intellij.java.language.psi.PsiClass;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.application.AccessRule;
 import consulo.content.base.BinariesOrderRootType;
 import consulo.content.library.Library;
@@ -108,6 +109,7 @@ public class LibrariesUtil {
     return home == null ? "" : home;
   }
 
+  @RequiredReadAction
   public static boolean hasGroovySdk(@Nullable Module module) {
     return module != null && getGroovyHomePath(module) != null;
   }

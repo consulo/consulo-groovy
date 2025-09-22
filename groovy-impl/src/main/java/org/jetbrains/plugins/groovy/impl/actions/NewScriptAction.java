@@ -17,16 +17,17 @@
 package org.jetbrains.plugins.groovy.impl.actions;
 
 import com.intellij.java.impl.ide.actions.JavaCreateTemplateInPackageAction;
+import consulo.application.ReadAction;
 import consulo.application.dumb.DumbAware;
 import consulo.dataContext.DataContext;
 import consulo.groovy.localize.GroovyLocalize;
 import consulo.ide.action.CreateFileFromTemplateDialog;
-import consulo.language.editor.LangDataKeys;
 import consulo.language.psi.PsiDirectory;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiFile;
 import consulo.language.util.IncorrectOperationException;
 import consulo.localize.LocalizeValue;
+import consulo.module.Module;
 import consulo.project.Project;
 import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.GroovyFileType;
@@ -52,7 +53,7 @@ public class NewScriptAction extends JavaCreateTemplateInPackageAction<GroovyFil
 
     @Override
     protected boolean isAvailable(DataContext dataContext) {
-        return super.isAvailable(dataContext) && LibrariesUtil.hasGroovySdk(dataContext.getData(LangDataKeys.MODULE));
+        return super.isAvailable(dataContext) && ReadAction.compute(() -> LibrariesUtil.hasGroovySdk(dataContext.getData(Module.KEY)));
     }
 
     @Override
