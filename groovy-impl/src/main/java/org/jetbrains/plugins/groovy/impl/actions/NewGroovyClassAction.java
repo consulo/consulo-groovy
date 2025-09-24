@@ -13,16 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.impl.actions;
 
 import com.intellij.java.impl.ide.actions.JavaCreateTemplateInPackageAction;
 import com.intellij.java.language.psi.JavaDirectoryService;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.component.ActionImpl;
+import consulo.annotation.component.ActionParentRef;
+import consulo.annotation.component.ActionRef;
+import consulo.annotation.component.ActionRefAnchor;
+import consulo.application.Application;
 import consulo.application.dumb.DumbAware;
 import consulo.dataContext.DataContext;
 import consulo.fileTemplate.FileTemplate;
 import consulo.fileTemplate.FileTemplateManager;
 import consulo.groovy.localize.GroovyLocalize;
+import consulo.groovy.psi.icon.GroovyPsiIconGroup;
 import consulo.ide.IdeView;
 import consulo.ide.action.CreateFileFromTemplateDialog;
 import consulo.ide.impl.idea.ide.actions.WeighingActionGroup;
@@ -38,50 +44,66 @@ import consulo.module.content.ProjectFileIndex;
 import consulo.module.content.ProjectRootManager;
 import consulo.project.Project;
 import consulo.ui.ex.action.AnActionEvent;
+import consulo.ui.ex.action.IdeActions;
 import consulo.ui.ex.action.Presentation;
 import consulo.virtualFileSystem.fileType.FileType;
 import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.GroovyFileType;
-import org.jetbrains.plugins.groovy.JetgroovyIcons;
 import org.jetbrains.plugins.groovy.config.GroovyConfigUtils;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
 import org.jetbrains.plugins.groovy.util.LibrariesUtil;
 
+@ActionImpl(
+    id = "Groovy.NewClass",
+    parents = @ActionParentRef(
+        value = @ActionRef(id = IdeActions.GROUP_NEW),
+        anchor = ActionRefAnchor.AFTER,
+        relatedToAction = @ActionRef(id = "NewGroup1")
+    )
+)
 public class NewGroovyClassAction extends JavaCreateTemplateInPackageAction<GrTypeDefinition> implements DumbAware {
-
     public NewGroovyClassAction() {
-        super(GroovyLocalize.newclassMenuActionText(), GroovyLocalize.newclassMenuActionDescription(), JetgroovyIcons.Groovy.Class, true);
+        super(
+            GroovyLocalize.newclassMenuActionText(),
+            GroovyLocalize.newclassMenuActionDescription(),
+            GroovyPsiIconGroup.groovyClass(),
+            true
+        );
     }
 
     @Override
     protected void buildDialog(Project project, PsiDirectory directory, CreateFileFromTemplateDialog.Builder builder) {
         builder.setTitle(GroovyLocalize.newclassDlgTitle())
-            .addKind(LocalizeValue.localizeTODO("Class"), JetgroovyIcons.Groovy.Class,
-                GroovyTemplates.GROOVY_CLASS)
-            .addKind(LocalizeValue.localizeTODO("Interface"), JetgroovyIcons.Groovy.Interface,
-                GroovyTemplates.GROOVY_INTERFACE);
+            .addKind(GroovyLocalize.newClassListItemClass(), GroovyPsiIconGroup.groovyClass(), GroovyTemplates.GROOVY_CLASS)
+            .addKind(GroovyLocalize.newClassListItemInterface(), GroovyPsiIconGroup.groovyInterface(), GroovyTemplates.GROOVY_INTERFACE);
 
         if (GroovyConfigUtils.getInstance().isVersionAtLeast(directory, GroovyConfigUtils.GROOVY2_3, true)) {
-            builder.addKind(LocalizeValue.localizeTODO("Trait"), JetgroovyIcons.Groovy.Trait, GroovyTemplates.GROOVY_TRAIT);
+            builder.addKind(GroovyLocalize.newClassListItemTrait(), GroovyPsiIconGroup.groovyTrait(), GroovyTemplates.GROOVY_TRAIT);
         }
 
-        builder.addKind(LocalizeValue.localizeTODO("Enum"), JetgroovyIcons.Groovy.Enum, GroovyTemplates.GROOVY_ENUM)
-            .addKind(LocalizeValue.of("Annotation"), JetgroovyIcons.Groovy.AnnotationType, GroovyTemplates.GROOVY_ANNOTATION);
+        builder.addKind(GroovyLocalize.newClassListItemEnum(), GroovyPsiIconGroup.groovyEnum(), GroovyTemplates.GROOVY_ENUM)
+            .addKind(
+                GroovyLocalize.newClassListItemAnnotation(),
+                GroovyPsiIconGroup.groovyAnnotationtype(),
+                GroovyTemplates.GROOVY_ANNOTATION
+            );
 
         for (FileTemplate template : FileTemplateManager.getInstance(project).getAllTemplates()) {
             FileType fileType = FileTypeManager.getInstance().getFileTypeByExtension(template.getExtension());
-            if (fileType.equals(GroovyFileType.GROOVY_FILE_TYPE) && JavaDirectoryService.getInstance().getPackage(directory) != null) {
-                builder.addKind(LocalizeValue.of(template.getName()), JetgroovyIcons.Groovy.Class, template.getName());
+            if (fileType.equals(GroovyFileType.INSTANCE) && JavaDirectoryService.getInstance().getPackage(directory) != null) {
+                builder.addKind(LocalizeValue.of(template.getName()), GroovyPsiIconGroup.groovyClass(), template.getName());
             }
         }
     }
 
     @Override
+    @RequiredReadAction
     protected boolean isAvailable(DataContext dataContext) {
         return super.isAvailable(dataContext) && LibrariesUtil.hasGroovySdk(dataContext.getData(LangDataKeys.MODULE));
     }
 
+    @Nonnull
     @Override
     protected LocalizeValue getActionName(PsiDirectory directory, String newName, String templateName) {
         return GroovyLocalize.newclassMenuActionText();
@@ -93,7 +115,7 @@ public class NewGroovyClassAction extends JavaCreateTemplateInPackageAction<GrTy
     }
 
     @Override
-    public void update(AnActionEvent e) {
+    public void update(@Nonnull AnActionEvent e) {
         super.update(e);
         Presentation presentation = e.getPresentation();
         if (!presentation.isVisible()) {
@@ -112,11 +134,10 @@ public class NewGroovyClassAction extends JavaCreateTemplateInPackageAction<GrTy
         ProjectFileIndex projectFileIndex = ProjectRootManager.getInstance(project).getFileIndex();
         for (PsiDirectory dir : view.getDirectories()) {
             if (projectFileIndex.isInSourceContent(dir.getVirtualFile()) && checkPackageExists(dir)) {
-                for (GroovySourceFolderDetector detector : GroovySourceFolderDetector.EP_NAME.getExtensionList()) {
-                    if (detector.isGroovySourceFolder(dir)) {
-                        presentation.putClientProperty(WeighingActionGroup.WEIGHT_KEY, WeighingActionGroup.HIGHER_WEIGHT);
-                        break;
-                    }
+                boolean groovySourceFolder = Application.get().getExtensionPoint(GroovySourceFolderDetector.class)
+                    .anyMatchSafe(detector -> detector.isGroovySourceFolder(dir));
+                if (groovySourceFolder) {
+                    presentation.putClientProperty(WeighingActionGroup.WEIGHT_KEY, WeighingActionGroup.HIGHER_WEIGHT);
                 }
                 return;
             }
@@ -124,17 +145,14 @@ public class NewGroovyClassAction extends JavaCreateTemplateInPackageAction<GrTy
     }
 
     @Override
-    protected final GrTypeDefinition doCreate(PsiDirectory dir,
-                                              String className,
-                                              String templateName) throws IncorrectOperationException {
-        final String fileName = className + NewGroovyActionBase.GROOVY_EXTENSION;
-        final PsiFile fromTemplate = GroovyTemplatesFactory.createFromTemplate(dir, className, fileName, templateName,
-            true);
-        if (fromTemplate instanceof GroovyFile) {
+    protected final GrTypeDefinition doCreate(PsiDirectory dir, String className, String templateName) throws IncorrectOperationException {
+        String fileName = className + NewGroovyActionBase.GROOVY_EXTENSION;
+        PsiFile fromTemplate = GroovyTemplatesFactory.createFromTemplate(dir, className, fileName, templateName, true);
+        if (fromTemplate instanceof GroovyFile file) {
             CodeStyleManager.getInstance(fromTemplate.getManager()).reformat(fromTemplate);
-            return ((GroovyFile) fromTemplate).getTypeDefinitions()[0];
+            return file.getTypeDefinitions()[0];
         }
-        final LocalizeValue description = fromTemplate.getFileType().getDescription();
+        LocalizeValue description = fromTemplate.getFileType().getDescription();
         throw new IncorrectOperationException(GroovyLocalize.groovyFileExtensionIsNotMappedToGroovyFileType(description).get());
     }
 }

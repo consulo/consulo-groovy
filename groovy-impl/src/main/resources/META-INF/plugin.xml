@@ -875,15 +875,6 @@
       <keyboard-shortcut first-keystroke="control ENTER" keymap="$default"/>
     </action>
 
-    <action id="Groovy.NewClass" class="org.jetbrains.plugins.groovy.impl.actions.NewGroovyClassAction"
-            text="Groovy Class" description="Create new Groovy class">
-      <add-to-group group-id="NewGroup" anchor="after" relative-to-action="NewGroup1"/>
-    </action>
-    <action id="Groovy.NewScript" class="org.jetbrains.plugins.groovy.impl.actions.NewScriptAction"
-            text="Groovy Script" description="Create new Groovy script">
-      <add-to-group group-id="NewGroup" anchor="last"/>
-    </action>
-
     <group id="Groovy.Dynamic.Toolbar">
       <action id="Groovy.Dynamic.Remove" class="org.jetbrains.plugins.groovy.impl.annotator.intentions.dynamic.RemoveDynamicAction"
               icon="consulo.platform.base.PlatformIconGroup@general.remove" text="Remove" description="Remove dynamic element"/>
