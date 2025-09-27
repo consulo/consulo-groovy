@@ -13,14 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.impl.actions;
 
 import com.intellij.java.impl.ide.actions.JavaCreateTemplateInPackageAction;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.component.ActionImpl;
 import consulo.application.ReadAction;
 import consulo.application.dumb.DumbAware;
 import consulo.dataContext.DataContext;
 import consulo.groovy.localize.GroovyLocalize;
+import consulo.groovy.psi.icon.GroovyPsiIconGroup;
 import consulo.ide.action.CreateFileFromTemplateDialog;
 import consulo.language.psi.PsiDirectory;
 import consulo.language.psi.PsiElement;
@@ -31,24 +33,29 @@ import consulo.module.Module;
 import consulo.project.Project;
 import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.GroovyFileType;
-import org.jetbrains.plugins.groovy.JetgroovyIcons;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.util.LibrariesUtil;
 
+@ActionImpl(id = "Groovy.NewScript")
 public class NewScriptAction extends JavaCreateTemplateInPackageAction<GroovyFile> implements DumbAware {
-
     public NewScriptAction() {
-        super(GroovyLocalize.newscriptMenuActionText(),
+        super(
+            GroovyLocalize.newscriptMenuActionText(),
             GroovyLocalize.newscriptMenuActionDescription(),
-            JetgroovyIcons.Groovy.Groovy_16x16,
-            false);
+            GroovyPsiIconGroup.groovyGroovy_16x16(),
+            false
+        );
     }
 
     @Override
     protected void buildDialog(Project project, PsiDirectory directory, CreateFileFromTemplateDialog.Builder builder) {
         builder.setTitle(GroovyLocalize.newscriptDlgPrompt())
-            .addKind(LocalizeValue.localizeTODO("Groovy script"), JetgroovyIcons.Groovy.Groovy_16x16, GroovyTemplates.GROOVY_SCRIPT)
-            .addKind(LocalizeValue.localizeTODO("GroovyDSL script"), JetgroovyIcons.Groovy.Groovy_16x16, GroovyTemplates.GROOVY_DSL_SCRIPT);
+            .addKind(GroovyLocalize.newScriptListItemScript(), GroovyPsiIconGroup.groovyGroovy_16x16(), GroovyTemplates.GROOVY_SCRIPT)
+            .addKind(
+                GroovyLocalize.newScriptListItemScriptDsl(),
+                GroovyPsiIconGroup.groovyGroovy_16x16(),
+                GroovyTemplates.GROOVY_DSL_SCRIPT
+            );
     }
 
     @Override
@@ -56,27 +63,27 @@ public class NewScriptAction extends JavaCreateTemplateInPackageAction<GroovyFil
         return super.isAvailable(dataContext) && ReadAction.compute(() -> LibrariesUtil.hasGroovySdk(dataContext.getData(Module.KEY)));
     }
 
+    @Nonnull
     @Override
     protected LocalizeValue getActionName(PsiDirectory directory, String newName, String templateName) {
         return GroovyLocalize.newscriptMenuActionText();
     }
 
     @Override
+    @RequiredReadAction
     protected PsiElement getNavigationElement(@Nonnull GroovyFile createdFile) {
         return createdFile.getLastChild();
     }
 
-    @Override
     @Nonnull
-    protected GroovyFile doCreate(PsiDirectory directory,
-                                  String newName,
-                                  String templateName) throws IncorrectOperationException {
+    @Override
+    protected GroovyFile doCreate(PsiDirectory directory, String newName, String templateName) throws IncorrectOperationException {
         String fileName = newName + "." + extractExtension(templateName);
         PsiFile file = GroovyTemplatesFactory.createFromTemplate(directory, newName, fileName, templateName, true);
-        if (file instanceof GroovyFile) {
-            return (GroovyFile) file;
+        if (file instanceof GroovyFile groovyFile) {
+            return groovyFile;
         }
-        final LocalizeValue description = file.getFileType().getDescription();
+        LocalizeValue description = file.getFileType().getDescription();
         throw new IncorrectOperationException(GroovyLocalize.groovyFileExtensionIsNotMappedToGroovyFileType(description).get());
     }
 

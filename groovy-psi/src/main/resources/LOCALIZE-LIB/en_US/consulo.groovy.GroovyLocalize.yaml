@@ -467,6 +467,24 @@ native.methods.cannot.have.body:
     text: Native methods cannot have body
 native.visibility.presentation:
     text: native
+new.class.dialog.title:
+    text: New Groovy Class
+new.class.list.item.annotation:
+    text: Annotation
+new.class.list.item.class:
+    text: Class
+new.class.list.item.enum:
+    text: Enum
+new.class.list.item.interface:
+    text: Interface
+new.class.list.item.record:
+    text: Record
+new.class.list.item.trait:
+    text: Trait
+new.script.list.item.script:
+    text: Groovy script
+new.script.list.item.script.dsl:
+    text: GroovyDSL script
 newclass.dlg.title:
     text: New Groovy Class
 newclass.menu.action.description:
