@@ -18,8 +18,6 @@ package org.jetbrains.plugins.groovy.impl.actions;
 import com.intellij.java.impl.ide.actions.JavaCreateTemplateInPackageAction;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.annotation.component.ActionImpl;
-import consulo.annotation.component.ActionParentRef;
-import consulo.annotation.component.ActionRef;
 import consulo.application.ReadAction;
 import consulo.application.dumb.DumbAware;
 import consulo.dataContext.DataContext;
@@ -33,13 +31,12 @@ import consulo.language.util.IncorrectOperationException;
 import consulo.localize.LocalizeValue;
 import consulo.module.Module;
 import consulo.project.Project;
-import consulo.ui.ex.action.IdeActions;
 import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.util.LibrariesUtil;
 
-@ActionImpl(id = "Groovy.NewScript", parents = @ActionParentRef(@ActionRef(id = IdeActions.GROUP_NEW)))
+@ActionImpl(id = "Groovy.NewScript")
 public class NewScriptAction extends JavaCreateTemplateInPackageAction<GroovyFile> implements DumbAware {
     public NewScriptAction() {
         super(

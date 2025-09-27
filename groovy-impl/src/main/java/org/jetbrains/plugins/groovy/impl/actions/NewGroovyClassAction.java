@@ -19,9 +19,6 @@ import com.intellij.java.impl.ide.actions.JavaCreateTemplateInPackageAction;
 import com.intellij.java.language.psi.JavaDirectoryService;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.annotation.component.ActionImpl;
-import consulo.annotation.component.ActionParentRef;
-import consulo.annotation.component.ActionRef;
-import consulo.annotation.component.ActionRefAnchor;
 import consulo.application.Application;
 import consulo.application.dumb.DumbAware;
 import consulo.dataContext.DataContext;
@@ -44,7 +41,6 @@ import consulo.module.content.ProjectFileIndex;
 import consulo.module.content.ProjectRootManager;
 import consulo.project.Project;
 import consulo.ui.ex.action.AnActionEvent;
-import consulo.ui.ex.action.IdeActions;
 import consulo.ui.ex.action.Presentation;
 import consulo.virtualFileSystem.fileType.FileType;
 import jakarta.annotation.Nonnull;
@@ -54,14 +50,7 @@ import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
 import org.jetbrains.plugins.groovy.util.LibrariesUtil;
 
-@ActionImpl(
-    id = "Groovy.NewClass",
-    parents = @ActionParentRef(
-        value = @ActionRef(id = IdeActions.GROUP_NEW),
-        anchor = ActionRefAnchor.AFTER,
-        relatedToAction = @ActionRef(id = "NewGroup1")
-    )
-)
+@ActionImpl(id = "Groovy.NewClass")
 public class NewGroovyClassAction extends JavaCreateTemplateInPackageAction<GrTypeDefinition> implements DumbAware {
     public NewGroovyClassAction() {
         super(
