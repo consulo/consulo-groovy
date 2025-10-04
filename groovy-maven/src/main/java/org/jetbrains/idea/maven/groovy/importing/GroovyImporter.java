@@ -1,9 +1,13 @@
 package org.jetbrains.idea.maven.groovy.importing;
 
+import consulo.content.ContentFolderTypeProvider;
 import consulo.groovy.module.extension.GroovyModuleExtension;
+import consulo.language.content.ProductionContentFolderTypeProvider;
+import consulo.language.content.TestContentFolderTypeProvider;
 import consulo.maven.importing.MavenImporterFromBuildPlugin;
 import consulo.module.Module;
 import org.jdom.Element;
+import org.jetbrains.idea.maven.importing.MavenContentFolder;
 import org.jetbrains.idea.maven.importing.MavenModifiableModelsProvider;
 import org.jetbrains.idea.maven.importing.MavenRootModelAdapter;
 import org.jetbrains.idea.maven.project.MavenProject;
@@ -14,59 +18,64 @@ import org.jetbrains.idea.maven.utils.MavenJDOMUtil;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiFunction;
+import java.util.function.Consumer;
 
 public abstract class GroovyImporter extends MavenImporterFromBuildPlugin {
-  public GroovyImporter(String pluginGroupID, String pluginArtifactID) {
-    super(pluginGroupID, pluginArtifactID);
-  }
-
-  @Override
-  public void preProcess(Module module,
-                         MavenProject mavenProject,
-                         MavenProjectChanges changes,
-                         MavenModifiableModelsProvider modifiableModelsProvider) {
-  }
-
-  @Override
-  public void process(MavenModifiableModelsProvider modifiableModelsProvider, Module module, MavenRootModelAdapter rootModel,
-                      MavenProjectsTree mavenModel,
-                      MavenProject mavenProject,
-                      MavenProjectChanges changes,
-                      Map<MavenProject, String> mavenProjectToModuleName,
-                      List<MavenProjectsProcessorTask> postTasks) {
-
-    enableModuleExtension(module, modifiableModelsProvider, GroovyModuleExtension.class);
-  }
-
-  @Override
-  public void collectSourceFolders(MavenProject mavenProject, List<String> result) {
-    collectSourceOrTestFolders(mavenProject, "compile", "src/main/groovy", result);
-  }
-
-  @Override
-  public void collectTestFolders(MavenProject mavenProject, List<String> result) {
-    collectSourceOrTestFolders(mavenProject, "testCompile", "src/test/groovy", result);
-  }
-
-  private void collectSourceOrTestFolders(MavenProject mavenProject, String goal, String defaultDir, List<String> result) {
-    Element sourcesElement = getGoalConfig(mavenProject, goal);
-    List<String> dirs = MavenJDOMUtil.findChildrenValuesByPath(sourcesElement, "sources", "fileset.directory");
-    if (dirs.isEmpty()) {
-      result.add(mavenProject.getDirectory() + "/" + defaultDir);
-      return;
+    public GroovyImporter(String pluginGroupID, String pluginArtifactID) {
+        super(pluginGroupID, pluginArtifactID);
     }
-    result.addAll(dirs);
-  }
 
-  @Override
-  public void collectExcludedFolders(MavenProject mavenProject, List<String> result) {
-    String stubsDir = findGoalConfigValue(mavenProject, "generateStubs", "outputDirectory");
-    String testStubsDir = findGoalConfigValue(mavenProject, "generateTestStubs", "outputDirectory");
+    @Override
+    public void preProcess(Module module,
+                           MavenProject mavenProject,
+                           MavenProjectChanges changes,
+                           MavenModifiableModelsProvider modifiableModelsProvider) {
+    }
 
-    // exclude common parent of /groovy-stubs/main and /groovy-stubs/test
-    String defaultStubsDir = mavenProject.getGeneratedSourcesDirectory(false) + "/groovy-stubs";
+    @Override
+    public void process(MavenModifiableModelsProvider modifiableModelsProvider, Module module, MavenRootModelAdapter rootModel,
+                        MavenProjectsTree mavenModel,
+                        MavenProject mavenProject,
+                        MavenProjectChanges changes,
+                        Map<MavenProject, String> mavenProjectToModuleName,
+                        List<MavenProjectsProcessorTask> postTasks) {
 
-    result.add(stubsDir == null ? defaultStubsDir : stubsDir);
-    result.add(testStubsDir == null ? defaultStubsDir : testStubsDir);
-  }
+        enableModuleExtension(module, modifiableModelsProvider, GroovyModuleExtension.class);
+    }
+
+    @Override
+    public void collectContentFolders(MavenProject mavenProject,
+                                      BiFunction<ContentFolderTypeProvider, String, MavenContentFolder> folderAcceptor) {
+        collectSourceOrTestFolders(mavenProject, "compile", "src/main/groovy", path -> {
+            folderAcceptor.apply(ProductionContentFolderTypeProvider.getInstance(), path);
+        });
+
+        collectSourceOrTestFolders(mavenProject, "testCompile", "src/test/groovy", path -> {
+            folderAcceptor.apply(TestContentFolderTypeProvider.getInstance(), path);
+        });
+    }
+
+    private void collectSourceOrTestFolders(MavenProject mavenProject, String goal, String defaultDir, Consumer<String> consumer) {
+        Element sourcesElement = getGoalConfig(mavenProject, goal);
+        List<String> dirs = MavenJDOMUtil.findChildrenValuesByPath(sourcesElement, "sources", "fileset.directory");
+        if (dirs.isEmpty()) {
+            consumer.accept(mavenProject.getDirectory() + "/" + defaultDir);
+            return;
+        }
+
+        dirs.forEach(consumer);
+    }
+
+    @Override
+    public void collectExcludedFolders(MavenProject mavenProject, Consumer<String> result) {
+        String stubsDir = findGoalConfigValue(mavenProject, "generateStubs", "outputDirectory");
+        String testStubsDir = findGoalConfigValue(mavenProject, "generateTestStubs", "outputDirectory");
+
+        // exclude common parent of /groovy-stubs/main and /groovy-stubs/test
+        String defaultStubsDir = mavenProject.getGeneratedSourcesDirectory(false) + "/groovy-stubs";
+
+        result.accept(stubsDir == null ? defaultStubsDir : stubsDir);
+        result.accept(testStubsDir == null ? defaultStubsDir : testStubsDir);
+    }
 }
