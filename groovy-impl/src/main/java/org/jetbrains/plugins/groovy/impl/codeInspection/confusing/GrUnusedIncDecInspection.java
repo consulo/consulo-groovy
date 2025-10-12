@@ -16,18 +16,18 @@
 package org.jetbrains.plugins.groovy.impl.codeInspection.confusing;
 
 import consulo.annotation.component.ExtensionImpl;
+import consulo.groovy.impl.localize.GroovyInspectionLocalize;
 import consulo.language.ast.IElementType;
 import consulo.language.editor.inspection.LocalQuickFix;
 import consulo.language.editor.inspection.ProblemDescriptor;
 import consulo.language.editor.inspection.ProblemHighlightType;
 import consulo.language.psi.PsiElement;
+import consulo.localize.LocalizeValue;
 import consulo.logging.Logger;
 import consulo.logging.attachment.AttachmentFactory;
 import consulo.project.Project;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
-import org.jetbrains.annotations.Nls;
-import org.jetbrains.annotations.NonNls;
 import org.jetbrains.plugins.groovy.codeInspection.utils.ControlFlowUtils;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
@@ -52,195 +52,218 @@ import java.util.List;
  */
 @ExtensionImpl
 public class GrUnusedIncDecInspection extends BaseInspection {
-  private static final Logger LOG = Logger.getInstance(GrUnusedIncDecInspection.class);
-  @Override
-  protected BaseInspectionVisitor buildVisitor() {
-    return new GrUnusedIncDecInspectionVisitor();
-  }
+    private static final Logger LOG = Logger.getInstance(GrUnusedIncDecInspection.class);
 
-  @Override
-  public boolean isEnabledByDefault() {
-    return true;
-  }
-
-  @Nls
-  @Nonnull
-  public String getGroupDisplayName() {
-    return GroovyInspectionBundle.message("groovy.dfa.issues");
-  }
-
-  @Nls
-  @Nonnull
-  public String getDisplayName() {
-    return GroovyInspectionBundle.message("unused.inc.dec");
-  }
-
-  @NonNls
-  @Nonnull
-  public String getShortName() {
-    return "GroovyUnusedIncOrDec";
-  }
-
-  private static class GrUnusedIncDecInspectionVisitor extends BaseInspectionVisitor {
     @Override
-    public void visitUnaryExpression(GrUnaryExpression expression) {
-      super.visitUnaryExpression(expression);
+    protected BaseInspectionVisitor buildVisitor() {
+        return new GrUnusedIncDecInspectionVisitor();
+    }
 
-      IElementType opType = expression.getOperationTokenType();
-      if (opType != GroovyTokenTypes.mINC && opType != GroovyTokenTypes.mDEC) return;
+    @Override
+    public boolean isEnabledByDefault() {
+        return true;
+    }
 
-      GrExpression operand = expression.getOperand();
-      if (!(operand instanceof GrReferenceExpression)) return;
+    @Nonnull
+    @Override
+    public LocalizeValue getGroupDisplayName() {
+        return GroovyInspectionLocalize.groovyDfaIssues();
+    }
 
-      PsiElement resolved = ((GrReferenceExpression)operand).resolve();
-      if (!(resolved instanceof GrVariable) || resolved instanceof GrField) return;
+    @Nonnull
+    @Override
+    public LocalizeValue getDisplayName() {
+        return GroovyInspectionLocalize.unusedIncDec();
+    }
 
-      final GrControlFlowOwner owner = ControlFlowUtils.findControlFlowOwner(expression);
-      assert owner != null;
-      GrControlFlowOwner ownerOfDeclaration = ControlFlowUtils.findControlFlowOwner(resolved);
-      if (ownerOfDeclaration != owner) return;
+    @Nonnull
+    public String getShortName() {
+        return "GroovyUnusedIncOrDec";
+    }
 
-      final Instruction cur = ControlFlowUtils.findInstruction(operand, owner.getControlFlow());
+    private static class GrUnusedIncDecInspectionVisitor extends BaseInspectionVisitor {
+        @Override
+        public void visitUnaryExpression(GrUnaryExpression expression) {
+            super.visitUnaryExpression(expression);
 
-      if (cur == null) {
-        LOG.error("no instruction found in flow." + "operand: " + operand.getText(),
-            AttachmentFactory.get().create("owner.txt", owner.getText()));
-      }
+            IElementType opType = expression.getOperationTokenType();
+            if (opType != GroovyTokenTypes.mINC && opType != GroovyTokenTypes.mDEC) {
+                return;
+            }
 
-      //get write access for inc or dec
-      Iterable<? extends Instruction> successors = cur.allSuccessors();
-      Iterator<? extends Instruction> iterator = successors.iterator();
-      LOG.assertTrue(iterator.hasNext());
-      Instruction writeAccess = iterator.next();
-      LOG.assertTrue(!iterator.hasNext());
+            GrExpression operand = expression.getOperand();
+            if (!(operand instanceof GrReferenceExpression)) {
+                return;
+            }
 
-      List<ReadWriteVariableInstruction> accesses = ControlFlowUtils.findAccess((GrVariable)resolved, true, false, writeAccess);
+            PsiElement resolved = ((GrReferenceExpression) operand).resolve();
+            if (!(resolved instanceof GrVariable) || resolved instanceof GrField) {
+                return;
+            }
 
-      boolean allAreWrite = true;
-      for (ReadWriteVariableInstruction access : accesses) {
-        if (!access.isWrite()) {
-          allAreWrite = false;
-          break;
-        }
-      }
+            final GrControlFlowOwner owner = ControlFlowUtils.findControlFlowOwner(expression);
+            assert owner != null;
+            GrControlFlowOwner ownerOfDeclaration = ControlFlowUtils.findControlFlowOwner(resolved);
+            if (ownerOfDeclaration != owner) {
+                return;
+            }
+
+            final Instruction cur = ControlFlowUtils.findInstruction(operand, owner.getControlFlow());
+
+            if (cur == null) {
+                LOG.error(
+                    "no instruction found in flow." + "operand: " + operand.getText(),
+                    AttachmentFactory.get().create("owner.txt", owner.getText())
+                );
+            }
+
+            //get write access for inc or dec
+            Iterable<? extends Instruction> successors = cur.allSuccessors();
+            Iterator<? extends Instruction> iterator = successors.iterator();
+            LOG.assertTrue(iterator.hasNext());
+            Instruction writeAccess = iterator.next();
+            LOG.assertTrue(!iterator.hasNext());
+
+            List<ReadWriteVariableInstruction> accesses = ControlFlowUtils.findAccess((GrVariable) resolved, true, false, writeAccess);
+
+            boolean allAreWrite = true;
+            for (ReadWriteVariableInstruction access : accesses) {
+                if (!access.isWrite()) {
+                    allAreWrite = false;
+                    break;
+                }
+            }
 
 
-      if (allAreWrite) {
-        if (expression.isPostfix() && PsiUtil.isExpressionUsed(expression)) {
-          registerError(expression.getOperationToken(),
-                        GroovyInspectionBundle.message("unused.0", expression.getOperationToken().getText()),
+            if (allAreWrite) {
+                if (expression.isPostfix() && PsiUtil.isExpressionUsed(expression)) {
+                    registerError(
+                        expression.getOperationToken(),
+                        GroovyInspectionLocalize.unused0(expression.getOperationToken().getText()),
                         new LocalQuickFix[]{new ReplacePostfixIncWithPrefixFix(expression), new RemoveIncOrDecFix(expression)},
-                        ProblemHighlightType.LIKE_UNUSED_SYMBOL);
+                        ProblemHighlightType.LIKE_UNUSED_SYMBOL
+                    );
+                }
+                else if (!PsiUtil.isExpressionUsed(expression)) {
+                    registerError(
+                        expression.getOperationToken(),
+                        GroovyInspectionLocalize.unused0(expression.getOperationToken().getText()), LocalQuickFix.EMPTY_ARRAY,
+                        ProblemHighlightType.LIKE_UNUSED_SYMBOL
+                    );
+                }
+            }
         }
-        else if (!PsiUtil.isExpressionUsed(expression)) {
-          registerError(expression.getOperationToken(),
-                        GroovyInspectionBundle.message("unused.0", expression.getOperationToken().getText()), LocalQuickFix.EMPTY_ARRAY,
-                        ProblemHighlightType.LIKE_UNUSED_SYMBOL);
+
+        private static class RemoveIncOrDecFix implements LocalQuickFix {
+            private final String myMessage;
+
+            public RemoveIncOrDecFix(GrUnaryExpression expression) {
+                myMessage = GroovyInspectionBundle.message("remove.0", expression.getOperationToken().getText());
+            }
+
+            @Nonnull
+            @Override
+            public String getName() {
+                return myMessage;
+            }
+
+            @Nonnull
+            @Override
+            public String getFamilyName() {
+                return myMessage;
+            }
+
+            @Override
+            public void applyFix(@Nonnull Project project, @Nonnull ProblemDescriptor descriptor) {
+                GrUnaryExpression expr = findUnaryExpression(descriptor);
+                if (expr == null) {
+                    return;
+                }
+
+                expr.replaceWithExpression(expr.getOperand(), true);
+            }
         }
-      }
+
+        private static class ReplacePostfixIncWithPrefixFix implements LocalQuickFix {
+            private final String myMessage;
+
+            public ReplacePostfixIncWithPrefixFix(GrUnaryExpression expression) {
+                myMessage = GroovyInspectionBundle.message("replace.postfix.0.with.prefix.0", expression.getOperationToken().getText());
+            }
+
+            @Nonnull
+            @Override
+            public String getName() {
+                return myMessage;
+            }
+
+            @Nonnull
+            @Override
+            public String getFamilyName() {
+                return myMessage;
+            }
+
+            @Override
+            public void applyFix(@Nonnull Project project, @Nonnull ProblemDescriptor descriptor) {
+                GrUnaryExpression expr = findUnaryExpression(descriptor);
+                if (expr == null) {
+                    return;
+                }
+
+                GrExpression prefix = GroovyPsiElementFactory.getInstance(project)
+                    .createExpressionFromText(expr.getOperationToken().getText() + expr.getOperand().getText());
+
+                expr.replaceWithExpression(prefix, true);
+            }
+        }
+
+        private static class ReplaceIncDecWithBinary implements LocalQuickFix {
+            private final String myMessage;
+
+            public ReplaceIncDecWithBinary(GrUnaryExpression expression) {
+                String opToken = expression.getOperationToken().getText();
+                myMessage = GroovyInspectionBundle.message("replace.0.with.1", opToken, opToken.substring(0, 1));
+            }
+
+            @Nonnull
+            @Override
+            public String getName() {
+                return myMessage;
+            }
+
+            @Nonnull
+            @Override
+            public String getFamilyName() {
+                return myMessage;
+            }
+
+            @Override
+            public void applyFix(@Nonnull Project project, @Nonnull ProblemDescriptor descriptor) {
+                GrUnaryExpression expr = findUnaryExpression(descriptor);
+                GrExpression newExpr = GroovyPsiElementFactory.getInstance(project)
+                    .createExpressionFromText(expr.getOperand().getText() + expr.getOperationToken().getText().substring(0, 1) + "1");
+                expr.replaceWithExpression(newExpr, true);
+            }
+        }
     }
 
-    private static class RemoveIncOrDecFix implements LocalQuickFix {
-      private final String myMessage;
-
-      public RemoveIncOrDecFix(GrUnaryExpression expression) {
-        myMessage = GroovyInspectionBundle.message("remove.0", expression.getOperationToken().getText());
-      }
-
-      @Nonnull
-      @Override
-      public String getName() {
-        return myMessage;
-      }
-
-      @Nonnull
-      @Override
-      public String getFamilyName() {
-        return myMessage;
-      }
-
-      @Override
-      public void applyFix(@Nonnull Project project, @Nonnull ProblemDescriptor descriptor) {
-        GrUnaryExpression expr = findUnaryExpression(descriptor);
-        if (expr == null) return;
-
-        expr.replaceWithExpression(expr.getOperand(), true);
-      }
+    @Nullable
+    private static GrUnaryExpression findUnaryExpression(ProblemDescriptor descriptor) {
+        GrUnaryExpression expr;
+        PsiElement element = descriptor.getPsiElement();
+        if (element == null) {
+            return null;
+        }
+        PsiElement parent = element.getParent();
+        IElementType opType = element.getNode().getElementType();
+        if (opType != GroovyTokenTypes.mINC && opType != GroovyTokenTypes.mDEC) {
+            return null;
+        }
+        if (!(parent instanceof GrUnaryExpression)) {
+            return null;
+        }
+        expr = (GrUnaryExpression) parent;
+        return expr;
     }
-
-    private static class ReplacePostfixIncWithPrefixFix implements LocalQuickFix {
-      private final String myMessage;
-
-      public ReplacePostfixIncWithPrefixFix(GrUnaryExpression expression) {
-        myMessage = GroovyInspectionBundle.message("replace.postfix.0.with.prefix.0", expression.getOperationToken().getText());
-      }
-
-      @Nonnull
-      @Override
-      public String getName() {
-        return myMessage;
-      }
-
-      @Nonnull
-      @Override
-      public String getFamilyName() {
-        return myMessage;
-      }
-
-      @Override
-      public void applyFix(@Nonnull Project project, @Nonnull ProblemDescriptor descriptor) {
-        GrUnaryExpression expr = findUnaryExpression(descriptor);
-        if (expr == null) return;
-
-        GrExpression prefix = GroovyPsiElementFactory.getInstance(project)
-          .createExpressionFromText(expr.getOperationToken().getText() + expr.getOperand().getText());
-
-        expr.replaceWithExpression(prefix, true);
-      }
-    }
-
-    private static class ReplaceIncDecWithBinary implements LocalQuickFix
-	{
-      private final String myMessage;
-
-      public ReplaceIncDecWithBinary(GrUnaryExpression expression) {
-        String opToken = expression.getOperationToken().getText();
-        myMessage = GroovyInspectionBundle.message("replace.0.with.1", opToken, opToken.substring(0, 1));
-      }
-
-      @Nonnull
-      @Override
-      public String getName() {
-        return myMessage;
-      }
-
-      @Nonnull
-      @Override
-      public String getFamilyName() {
-        return myMessage;
-      }
-
-      @Override
-      public void applyFix(@Nonnull Project project, @Nonnull ProblemDescriptor descriptor) {
-        GrUnaryExpression expr = findUnaryExpression(descriptor);
-        GrExpression newExpr = GroovyPsiElementFactory.getInstance(project)
-          .createExpressionFromText(expr.getOperand().getText() + expr.getOperationToken().getText().substring(0, 1) + "1");
-        expr.replaceWithExpression(newExpr, true);
-      }
-    }
-  }
-
-  @Nullable
-  private static GrUnaryExpression findUnaryExpression(ProblemDescriptor descriptor) {
-    GrUnaryExpression expr;
-    PsiElement element = descriptor.getPsiElement();
-    if (element == null) return null;
-    PsiElement parent = element.getParent();
-    IElementType opType = element.getNode().getElementType();
-    if (opType != GroovyTokenTypes.mINC && opType != GroovyTokenTypes.mDEC) return null;
-    if (!(parent instanceof GrUnaryExpression)) return null;
-    expr = (GrUnaryExpression)parent;
-    return expr;
-  }
 }
 

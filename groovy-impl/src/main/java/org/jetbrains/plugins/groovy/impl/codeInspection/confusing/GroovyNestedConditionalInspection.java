@@ -15,50 +15,45 @@
  */
 package org.jetbrains.plugins.groovy.impl.codeInspection.confusing;
 
-import jakarta.annotation.Nonnull;
-
 import consulo.language.psi.util.PsiTreeUtil;
-import org.jetbrains.annotations.Nls;
-
+import consulo.localize.LocalizeValue;
+import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrConditionalExpression;
 
 public class GroovyNestedConditionalInspection extends BaseInspection {
-
-  @Nls
-  @Nonnull
-  public String getGroupDisplayName() {
-    return CONFUSING_CODE_CONSTRUCTS;
-  }
-
-  @Nls
-  @Nonnull
-  public String getDisplayName() {
-    return "Nested conditional expression";
-  }
-
-  @Nullable
-  protected String buildErrorString(Object... args) {
-    return "Nested conditional expression #loc";
-
-  }
-
-  public BaseInspectionVisitor buildVisitor() {
-    return new Visitor();
-  }
-
-  private static class Visitor extends BaseInspectionVisitor {
-
-    public void visitConditionalExpression(GrConditionalExpression grConditionalExpression) {
-      super.visitConditionalExpression(grConditionalExpression);
-      final GrConditionalExpression containingConditional =
-          PsiTreeUtil.getParentOfType(grConditionalExpression, GrConditionalExpression.class);
-      if (containingConditional == null) {
-        return;
-      }
-      registerError(grConditionalExpression);
+    @Nonnull
+    @Override
+    public LocalizeValue getGroupDisplayName() {
+        return CONFUSING_CODE_CONSTRUCTS;
     }
-  }
+
+    @Nonnull
+    @Override
+    public LocalizeValue getDisplayName() {
+        return LocalizeValue.localizeTODO("Nested conditional expression");
+    }
+
+    @Nullable
+    protected String buildErrorString(Object... args) {
+        return "Nested conditional expression #loc";
+    }
+
+    public BaseInspectionVisitor buildVisitor() {
+        return new Visitor();
+    }
+
+    private static class Visitor extends BaseInspectionVisitor {
+        public void visitConditionalExpression(GrConditionalExpression grConditionalExpression) {
+            super.visitConditionalExpression(grConditionalExpression);
+            final GrConditionalExpression containingConditional =
+                PsiTreeUtil.getParentOfType(grConditionalExpression, GrConditionalExpression.class);
+            if (containingConditional == null) {
+                return;
+            }
+            registerError(grConditionalExpression);
+        }
+    }
 }

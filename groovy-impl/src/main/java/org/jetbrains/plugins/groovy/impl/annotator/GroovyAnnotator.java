@@ -466,7 +466,7 @@ public class GroovyAnnotator extends GroovyElementVisitor {
         checkTypeDefinition(myHolder, typeDefinition);
 
         checkDuplicateMethod(typeDefinition, myHolder);
-        checkImplementedMethodsOfClass(myHolder, typeDefinition);
+        checkImplementedMethodsOfClass(typeDefinition);
         checkConstructors(myHolder, typeDefinition);
 
         checkAnnotationCollector(myHolder, typeDefinition);
@@ -1612,8 +1612,7 @@ public class GroovyAnnotator extends GroovyElementVisitor {
     @Override
     @RequiredReadAction
     public void visitPackageDefinition(GrPackageDefinition packageDefinition) {
-        GrModifierList modifierList = packageDefinition.getAnnotationList();
-        checkAnnotationList(myHolder, modifierList, GroovyLocalize.packageDefinitionCannotHaveModifiers());
+        checkAnnotationList(packageDefinition.getAnnotationList(), GroovyLocalize.packageDefinitionCannotHaveModifiers());
     }
 
     @Override
@@ -1954,7 +1953,7 @@ public class GroovyAnnotator extends GroovyElementVisitor {
     @Override
     @RequiredReadAction
     public void visitImportStatement(GrImportStatement importStatement) {
-        checkAnnotationList(myHolder, importStatement.getAnnotationList(), GroovyLocalize.importStatementCannotHaveModifiers());
+        checkAnnotationList(importStatement.getAnnotationList(), GroovyLocalize.importStatementCannotHaveModifiers());
     }
 
     @Override
@@ -1968,10 +1967,10 @@ public class GroovyAnnotator extends GroovyElementVisitor {
                 .create();
         }
         else if (typeDefinition.isTrait()) {
-            checkReferenceList(myHolder, extendsClause, IS_TRAIT, GroovyLocalize.onlyTraitsExpectedHere(), null);
+            checkReferenceList(extendsClause, IS_TRAIT, GroovyLocalize.onlyTraitsExpectedHere(), null);
         }
         else if (typeDefinition.isInterface()) {
-            checkReferenceList(myHolder, extendsClause, IS_INTERFACE, GroovyLocalize.noClassExpectedHere(), null);
+            checkReferenceList(extendsClause, IS_INTERFACE, GroovyLocalize.noClassExpectedHere(), null);
         }
         else if (typeDefinition.isEnum()) {
             myHolder.newError(GroovyLocalize.enumsMayNotHaveExtendsClause())
@@ -1980,7 +1979,6 @@ public class GroovyAnnotator extends GroovyElementVisitor {
         }
         else {
             checkReferenceList(
-                myHolder,
                 extendsClause,
                 IS_NOT_INTERFACE,
                 GroovyLocalize.noInterfaceExpectedHere(),
@@ -2008,7 +2006,6 @@ public class GroovyAnnotator extends GroovyElementVisitor {
         }
         else {
             checkReferenceList(
-                myHolder,
                 implementsClause,
                 IS_INTERFACE,
                 GroovyLocalize.noClassExpectedHere(),
@@ -2019,8 +2016,7 @@ public class GroovyAnnotator extends GroovyElementVisitor {
     }
 
     @RequiredReadAction
-    private static void checkReferenceList(
-        @Nonnull AnnotationHolder holder,
+    private void checkReferenceList(
         @Nonnull GrReferenceList list,
         @Nonnull Predicate<PsiClass> applicabilityCondition,
         @Nonnull LocalizeValue message,
@@ -2028,7 +2024,7 @@ public class GroovyAnnotator extends GroovyElementVisitor {
     ) {
         for (GrCodeReferenceElement refElement : list.getReferenceElementsGroovy()) {
             if (refElement.resolve() instanceof PsiClass psiClass && !applicabilityCondition.test(psiClass)) {
-                holder.newError(message)
+                myHolder.newError(message)
                     .range(refElement)
                     .withOptionalFix(fix)
                     .create();
@@ -2145,21 +2141,20 @@ public class GroovyAnnotator extends GroovyElementVisitor {
     }
 
     @RequiredReadAction
-    private static void checkAnnotationList(
-        AnnotationHolder holder,
+    private void checkAnnotationList(
         @Nonnull GrModifierList modifierList,
         @Nonnull LocalizeValue message
     ) {
         PsiElement[] modifiers = modifierList.getModifiers();
         for (PsiElement modifier : modifiers) {
             if (!(modifier instanceof PsiAnnotation)) {
-                holder.newError(message).range(modifier).create();
+                myHolder.newError(message).range(modifier).create();
             }
         }
     }
 
     @RequiredReadAction
-    private static void checkImplementedMethodsOfClass(AnnotationHolder holder, GrTypeDefinition typeDefinition) {
+    private void checkImplementedMethodsOfClass(GrTypeDefinition typeDefinition) {
         if (typeDefinition.isAbstract() || typeDefinition.isAnnotationType() || typeDefinition instanceof GrTypeParameter) {
             return;
         }
@@ -2171,7 +2166,7 @@ public class GroovyAnnotator extends GroovyElementVisitor {
 
         LocalizeValue message = GroovyLocalize.methodIsNotImplemented(abstractMethod.getName());
         TextRange textRange = GrHighlightUtil.getClassHeaderTextRange(typeDefinition);
-        holder.newError(message)
+        myHolder.newError(message)
             .range(textRange)
             .apply(builder -> registerImplementsMethodsFix(
                 typeDefinition,
@@ -2792,4 +2787,3 @@ public class GroovyAnnotator extends GroovyElementVisitor {
         return allClasses.length == 2 && (allClasses[0] instanceof GroovyScriptClass || allClasses[1] instanceof GroovyScriptClass);
     }
 }
-

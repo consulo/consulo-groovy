@@ -15,11 +15,10 @@
  */
 package org.jetbrains.plugins.groovy.impl.codeInspection.bugs;
 
-import jakarta.annotation.Nullable;
-
 import consulo.language.ast.IElementType;
+import consulo.localize.LocalizeValue;
 import jakarta.annotation.Nonnull;
-import org.jetbrains.annotations.Nls;
+import jakarta.annotation.Nullable;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
@@ -29,82 +28,81 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrBinary
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 
 public class GroovyDivideByZeroInspection extends BaseInspection {
-
-  @Nls
-  @Nonnull
-  public String getGroupDisplayName() {
-    return PROBABLE_BUGS;
-  }
-
-  @Nls
-  @Nonnull
-  public String getDisplayName() {
-    return "Divide by zero";
-  }
-
-  @Nullable
-  protected String buildErrorString(Object... args) {
-    return "Division by zero #loc";
-
-  }
-
-  public boolean isEnabledByDefault() {
-    return true;
-  }
-
-  public BaseInspectionVisitor buildVisitor() {
-    return new Visitor();
-  }
-
-  private static class Visitor extends BaseInspectionVisitor {
-
-    public void visitBinaryExpression(
-      @Nonnull GrBinaryExpression expression) {
-      super.visitBinaryExpression(expression);
-      final GrExpression rhs = expression.getRightOperand();
-      if (rhs == null) {
-        return;
-      }
-      final IElementType tokenType = expression.getOperationTokenType();
-      if (!GroovyTokenTypes.mDIV.equals(tokenType) &&
-          !GroovyTokenTypes.mMOD.equals(tokenType)) {
-        return;
-      }
-      if (!isZero(rhs)) {
-        return;
-      }
-      registerError(expression);
+    @Nonnull
+    @Override
+    public LocalizeValue getGroupDisplayName() {
+        return PROBABLE_BUGS;
     }
 
-    public void visitAssignmentExpression(
-      GrAssignmentExpression expression) {
-      super.visitAssignmentExpression(expression);
-      final GrExpression rhs = expression.getRValue();
-      if (rhs == null) {
-        return;
-      }
-      final IElementType tokenType = expression.getOperationTokenType();
-      if (!tokenType.equals(GroovyTokenTypes.mDIV_ASSIGN)
-          && !tokenType.equals(GroovyTokenTypes.mMOD_ASSIGN)) {
-        return;
-      }
-      if (!isZero(rhs)) {
-        return;
-      }
-      registerError(expression);
+    @Nonnull
+    @Override
+    public LocalizeValue getDisplayName() {
+        return LocalizeValue.localizeTODO("Divide by zero");
     }
 
+    @Nullable
+    protected String buildErrorString(Object... args) {
+        return "Division by zero #loc";
+    }
 
-  }
+    public boolean isEnabledByDefault() {
+        return true;
+    }
 
-  private static boolean isZero(GrExpression expression) {
-    @NonNls
-    final String text = expression.getText();
-    return "0".equals(text) ||
-           "0x0".equals(text) ||
-           "0X0".equals(text) ||
-           "0.0".equals(text) ||
-           "0L".equals(text) ||
-           "0l".equals(text);
-  }
+    public BaseInspectionVisitor buildVisitor() {
+        return new Visitor();
+    }
+
+    private static class Visitor extends BaseInspectionVisitor {
+
+        public void visitBinaryExpression(
+            @Nonnull GrBinaryExpression expression
+        ) {
+            super.visitBinaryExpression(expression);
+            final GrExpression rhs = expression.getRightOperand();
+            if (rhs == null) {
+                return;
+            }
+            final IElementType tokenType = expression.getOperationTokenType();
+            if (!GroovyTokenTypes.mDIV.equals(tokenType) &&
+                !GroovyTokenTypes.mMOD.equals(tokenType)) {
+                return;
+            }
+            if (!isZero(rhs)) {
+                return;
+            }
+            registerError(expression);
+        }
+
+        public void visitAssignmentExpression(
+            GrAssignmentExpression expression
+        ) {
+            super.visitAssignmentExpression(expression);
+            final GrExpression rhs = expression.getRValue();
+            if (rhs == null) {
+                return;
+            }
+            final IElementType tokenType = expression.getOperationTokenType();
+            if (!tokenType.equals(GroovyTokenTypes.mDIV_ASSIGN)
+                && !tokenType.equals(GroovyTokenTypes.mMOD_ASSIGN)) {
+                return;
+            }
+            if (!isZero(rhs)) {
+                return;
+            }
+            registerError(expression);
+        }
+
+
+    }
+
+    private static boolean isZero(GrExpression expression) {
+        @NonNls final String text = expression.getText();
+        return "0".equals(text) ||
+            "0x0".equals(text) ||
+            "0X0".equals(text) ||
+            "0.0".equals(text) ||
+            "0L".equals(text) ||
+            "0l".equals(text);
+    }
 }

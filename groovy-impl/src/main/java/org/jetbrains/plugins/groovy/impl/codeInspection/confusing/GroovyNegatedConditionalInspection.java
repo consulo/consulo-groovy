@@ -15,10 +15,10 @@
  */
 package org.jetbrains.plugins.groovy.impl.codeInspection.confusing;
 
+import consulo.localize.LocalizeValue;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 
-import org.jetbrains.annotations.Nls;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.codeInspection.utils.BoolUtils;
@@ -26,38 +26,36 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrCondit
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 
 public class GroovyNegatedConditionalInspection extends BaseInspection {
-
-  @Nls
-  @Nonnull
-  public String getGroupDisplayName() {
-    return CONFUSING_CODE_CONSTRUCTS;
-  }
-
-  @Nls
-  @Nonnull
-  public String getDisplayName() {
-    return "Negated conditional expression";
-  }
-
-  @Nullable
-  protected String buildErrorString(Object... args) {
-    return "Negated conditional expression #loc";
-
-  }
-
-  public BaseInspectionVisitor buildVisitor() {
-    return new Visitor();
-  }
-
-  private static class Visitor extends BaseInspectionVisitor {
-
-    public void visitConditionalExpression(GrConditionalExpression grConditionalExpression) {
-      super.visitConditionalExpression(grConditionalExpression);
-      final GrExpression condition = grConditionalExpression.getCondition();
-      if (!BoolUtils.isNegation(condition)) {
-        return;
-      }
-      registerError(grConditionalExpression);
+    @Nonnull
+    @Override
+    public LocalizeValue getGroupDisplayName() {
+        return CONFUSING_CODE_CONSTRUCTS;
     }
-  }
+
+    @Nonnull
+    @Override
+    public LocalizeValue getDisplayName() {
+        return LocalizeValue.localizeTODO("Negated conditional expression");
+    }
+
+    @Nullable
+    protected String buildErrorString(Object... args) {
+        return "Negated conditional expression #loc";
+
+    }
+
+    public BaseInspectionVisitor buildVisitor() {
+        return new Visitor();
+    }
+
+    private static class Visitor extends BaseInspectionVisitor {
+        public void visitConditionalExpression(GrConditionalExpression grConditionalExpression) {
+            super.visitConditionalExpression(grConditionalExpression);
+            final GrExpression condition = grConditionalExpression.getCondition();
+            if (!BoolUtils.isNegation(condition)) {
+                return;
+            }
+            registerError(grConditionalExpression);
+        }
+    }
 }

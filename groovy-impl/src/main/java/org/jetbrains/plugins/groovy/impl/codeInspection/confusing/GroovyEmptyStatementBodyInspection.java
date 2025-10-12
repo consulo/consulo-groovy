@@ -15,9 +15,9 @@
  */
 package org.jetbrains.plugins.groovy.impl.codeInspection.confusing;
 
-import jakarta.annotation.Nonnull;
-
 import consulo.language.psi.PsiElement;
+import consulo.localize.LocalizeValue;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
@@ -26,90 +26,91 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrOpenBlock;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 
 public class GroovyEmptyStatementBodyInspection extends BaseInspection {
-
-  @Nonnull
-  public String getDisplayName() {
-    return "Statement with empty body";
-  }
-
-  @Nonnull
-  public String getGroupDisplayName() {
-    return CONFUSING_CODE_CONSTRUCTS;
-  }
-
-  public boolean isEnabledByDefault() {
-    return true;
-  }
-
-  public String buildErrorString(Object... args) {
-    if (args[0] instanceof GrIfStatement) {
-      return "'#ref' statement has empty branch";
-    }
-    else {
-      return "'#ref' statement has empty body";
-    }
-  }
-
-  public BaseInspectionVisitor buildVisitor() {
-    return new Visitor();
-  }
-
-  private static class Visitor extends BaseInspectionVisitor {
-
-    public void visitWhileStatement(@Nonnull GrWhileStatement statement) {
-      super.visitWhileStatement(statement);
-      final GrStatement body = statement.getBody();
-      if (body == null) {
-        return;
-      }
-      if (!isEmpty(body)) {
-        return;
-      }
-      registerStatementError(statement, statement);
+    @Nonnull
+    @Override
+    public LocalizeValue getDisplayName() {
+        return LocalizeValue.localizeTODO("Statement with empty body");
     }
 
-    public void visitForStatement(@Nonnull GrForStatement statement) {
-      super.visitForStatement(statement);
-      final GrStatement body = statement.getBody();
-      if (body == null) {
-        return;
-      }
-      if (!isEmpty(body)) {
-        return;
-      }
-      registerStatementError(statement, statement);
+    @Nonnull
+    @Override
+    public LocalizeValue getGroupDisplayName() {
+        return CONFUSING_CODE_CONSTRUCTS;
     }
 
+    public boolean isEnabledByDefault() {
+        return true;
+    }
 
-    public void visitIfStatement(@Nonnull GrIfStatement statement) {
-      super.visitIfStatement(statement);
-      final GrStatement thenBranch = statement.getThenBranch();
-      if (thenBranch != null) {
-        if (isEmpty(thenBranch)) {
-          registerStatementError(statement, statement);
-          return;
+    public String buildErrorString(Object... args) {
+        if (args[0] instanceof GrIfStatement) {
+            return "'#ref' statement has empty branch";
         }
-      }
-      final GrStatement elseBranch = statement.getElseBranch();
-
-      if (elseBranch != null) {
-        if (isEmpty(elseBranch)) {
-          registerStatementError(statement, statement);
+        else {
+            return "'#ref' statement has empty body";
         }
-      }
     }
 
-    private static boolean isEmpty(GroovyPsiElement body) {
-      if (!(body instanceof GrBlockStatement)) {
-        return false;
-      }
-      final GrBlockStatement block = (GrBlockStatement)body;
-      final GrOpenBlock openBlock = block.getBlock();
-
-      final PsiElement brace = openBlock.getLBrace();
-      if (brace == null) return false;
-      final PsiElement nextNonWhitespace = PsiUtil.skipWhitespaces(brace.getNextSibling(), true);
-      return nextNonWhitespace == openBlock.getRBrace();
+    public BaseInspectionVisitor buildVisitor() {
+        return new Visitor();
     }
-  }
+
+    private static class Visitor extends BaseInspectionVisitor {
+        public void visitWhileStatement(@Nonnull GrWhileStatement statement) {
+            super.visitWhileStatement(statement);
+            final GrStatement body = statement.getBody();
+            if (body == null) {
+                return;
+            }
+            if (!isEmpty(body)) {
+                return;
+            }
+            registerStatementError(statement, statement);
+        }
+
+        public void visitForStatement(@Nonnull GrForStatement statement) {
+            super.visitForStatement(statement);
+            final GrStatement body = statement.getBody();
+            if (body == null) {
+                return;
+            }
+            if (!isEmpty(body)) {
+                return;
+            }
+            registerStatementError(statement, statement);
+        }
+
+        public void visitIfStatement(@Nonnull GrIfStatement statement) {
+            super.visitIfStatement(statement);
+            final GrStatement thenBranch = statement.getThenBranch();
+            if (thenBranch != null) {
+                if (isEmpty(thenBranch)) {
+                    registerStatementError(statement, statement);
+                    return;
+                }
+            }
+            final GrStatement elseBranch = statement.getElseBranch();
+
+            if (elseBranch != null) {
+                if (isEmpty(elseBranch)) {
+                    registerStatementError(statement, statement);
+                }
+            }
+        }
+
+        private static boolean isEmpty(GroovyPsiElement body) {
+            if (!(body instanceof GrBlockStatement)) {
+                return false;
+            }
+            final GrBlockStatement block = (GrBlockStatement) body;
+            final GrOpenBlock openBlock = block.getBlock();
+
+            final PsiElement brace = openBlock.getLBrace();
+            if (brace == null) {
+                return false;
+            }
+            final PsiElement nextNonWhitespace = PsiUtil.skipWhitespaces(brace.getNextSibling(), true);
+            return nextNonWhitespace == openBlock.getRBrace();
+        }
+    }
 }

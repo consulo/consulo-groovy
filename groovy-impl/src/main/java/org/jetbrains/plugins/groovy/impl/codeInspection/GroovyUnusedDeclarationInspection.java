@@ -17,7 +17,7 @@ package org.jetbrains.plugins.groovy.impl.codeInspection;
 
 import consulo.annotation.component.ExtensionImpl;
 import consulo.language.editor.inspection.UnfairLocalInspectionTool;
-
+import consulo.localize.LocalizeValue;
 import jakarta.annotation.Nonnull;
 
 /**
@@ -25,17 +25,17 @@ import jakarta.annotation.Nonnull;
  */
 @ExtensionImpl
 public class GroovyUnusedDeclarationInspection extends GroovySuppressableInspectionTool implements UnfairLocalInspectionTool {
-  public static final String SHORT_NAME = "GroovyUnusedDeclaration";
+    public static final String SHORT_NAME = "GroovyUnusedDeclaration";
 
-  @Nonnull
-  @Override
-  public String getGroupDisplayName() {
-    return "Declaration redundancy";
-  }
+    @Nonnull
+    @Override
+    public LocalizeValue getGroupDisplayName() {
+        return LocalizeValue.localizeTODO("Declaration redundancy");
+    }
 
-  @Nonnull
-  @Override
-  public String getDisplayName() {
-    return "Unused declaration";
-  }
+    @Nonnull
+    @Override
+    public LocalizeValue getDisplayName() {
+        return LocalizeValue.localizeTODO("Unused declaration");
+    }
 }

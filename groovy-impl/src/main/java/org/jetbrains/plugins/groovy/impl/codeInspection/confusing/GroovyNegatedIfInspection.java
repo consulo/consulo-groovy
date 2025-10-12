@@ -15,10 +15,9 @@
  */
 package org.jetbrains.plugins.groovy.impl.codeInspection.confusing;
 
+import consulo.localize.LocalizeValue;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
-
-import org.jetbrains.annotations.Nls;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.impl.intentions.utils.BoolUtils;
@@ -26,44 +25,41 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrIfStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 
 public class GroovyNegatedIfInspection extends BaseInspection {
-
-  @Nls
-  @Nonnull
-  public String getGroupDisplayName() {
-    return CONFUSING_CODE_CONSTRUCTS;
-  }
-
-  @Nls
-  @Nonnull
-  public String getDisplayName() {
-    return "Negated if condition expression";
-  }
-
-  @Nullable
-  protected String buildErrorString(Object... args) {
-    return "Negated if condition expression #loc";
-
-  }
-
-  public BaseInspectionVisitor buildVisitor() {
-    return new Visitor();
-  }
-
-  private static class Visitor extends BaseInspectionVisitor {
-
-    public void visitIfStatement(GrIfStatement grIfStatement) {
-      super.visitIfStatement(grIfStatement);
-      final GrExpression condition = grIfStatement.getCondition();
-      if (condition == null) {
-        return;
-      }
-      if (!BoolUtils.isNegation(condition)) {
-        return;
-      }
-      if (grIfStatement.getElseBranch() == null || grIfStatement.getThenBranch() == null) {
-        return;
-      }
-      registerError(condition);
+    @Nonnull
+    @Override
+    public LocalizeValue getGroupDisplayName() {
+        return CONFUSING_CODE_CONSTRUCTS;
     }
-  }
+
+    @Nonnull
+    @Override
+    public LocalizeValue getDisplayName() {
+        return LocalizeValue.localizeTODO("Negated if condition expression");
+    }
+
+    @Nullable
+    protected String buildErrorString(Object... args) {
+        return "Negated if condition expression #loc";
+    }
+
+    public BaseInspectionVisitor buildVisitor() {
+        return new Visitor();
+    }
+
+    private static class Visitor extends BaseInspectionVisitor {
+        public void visitIfStatement(GrIfStatement grIfStatement) {
+            super.visitIfStatement(grIfStatement);
+            final GrExpression condition = grIfStatement.getCondition();
+            if (condition == null) {
+                return;
+            }
+            if (!BoolUtils.isNegation(condition)) {
+                return;
+            }
+            if (grIfStatement.getElseBranch() == null || grIfStatement.getThenBranch() == null) {
+                return;
+            }
+            registerError(condition);
+        }
+    }
 }

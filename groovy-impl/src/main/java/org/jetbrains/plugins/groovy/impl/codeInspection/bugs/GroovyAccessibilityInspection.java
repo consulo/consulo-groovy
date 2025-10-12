@@ -15,69 +15,66 @@
  */
 package org.jetbrains.plugins.groovy.impl.codeInspection.bugs;
 
+import consulo.groovy.impl.localize.GroovyInspectionLocalize;
 import consulo.language.editor.inspection.scheme.InspectionProfile;
 import consulo.language.editor.inspection.scheme.InspectionProjectProfileManager;
 import consulo.language.editor.rawHighlight.HighlightDisplayKey;
 import consulo.language.editor.rawHighlight.HighlightDisplayLevel;
 import consulo.language.psi.PsiElement;
+import consulo.localize.LocalizeValue;
 import consulo.project.Project;
-import org.jetbrains.annotations.Nls;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
-import org.jetbrains.plugins.groovy.impl.codeInspection.GroovyInspectionBundle;
 import org.jetbrains.plugins.groovy.impl.codeInspection.GroovySuppressableInspectionTool;
 import org.jetbrains.plugins.groovy.lang.psi.GrReferenceElement;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFileBase;
-
-import jakarta.annotation.Nonnull;
 
 /**
  * @author Maxim.Medvedev
  */
 public class GroovyAccessibilityInspection extends GroovySuppressableInspectionTool {
-  private static final String SHORT_NAME = "GroovyAccessibility";
+    private static final String SHORT_NAME = "GroovyAccessibility";
 
-  @Nls
-  @Nonnull
-  @Override
-  public String getGroupDisplayName() {
-    return BaseInspection.PROBABLE_BUGS;
-  }
+    @Nonnull
+    @Override
+    public LocalizeValue getGroupDisplayName() {
+        return BaseInspection.PROBABLE_BUGS;
+    }
 
-  @Nls
-  @Nonnull
-  @Override
-  public String getDisplayName() {
-    return GroovyInspectionBundle.message("access.to.inaccessible.element");
-  }
+    @Nonnull
+    @Override
+    public LocalizeValue getDisplayName() {
+        return GroovyInspectionLocalize.accessToInaccessibleElement();
+    }
 
-  @Override
-  public boolean isEnabledByDefault() {
-    return true;
-  }
+    @Override
+    public boolean isEnabledByDefault() {
+        return true;
+    }
 
-  public static boolean isInspectionEnabled(GroovyFileBase file, Project project) {
-    return getInspectionProfile(project).isToolEnabled(findDisplayKey(), file);
-  }
+    public static boolean isInspectionEnabled(GroovyFileBase file, Project project) {
+        return getInspectionProfile(project).isToolEnabled(findDisplayKey(), file);
+    }
 
-  public static GroovyAccessibilityInspection getInstance(GroovyFileBase file, Project project) {
-    return (GroovyAccessibilityInspection)getInspectionProfile(project).getUnwrappedTool(SHORT_NAME, file);
-  }
+    public static GroovyAccessibilityInspection getInstance(GroovyFileBase file, Project project) {
+        return (GroovyAccessibilityInspection) getInspectionProfile(project).getUnwrappedTool(SHORT_NAME, file);
+    }
 
-  public static HighlightDisplayKey findDisplayKey() {
-    return HighlightDisplayKey.find(SHORT_NAME);
-  }
+    public static HighlightDisplayKey findDisplayKey() {
+        return HighlightDisplayKey.find(SHORT_NAME);
+    }
 
-  public static HighlightDisplayLevel getHighlightDisplayLevel(Project project, GrReferenceElement ref) {
-    return getInspectionProfile(project).getErrorLevel(findDisplayKey(), ref);
-  }
+    public static HighlightDisplayLevel getHighlightDisplayLevel(Project project, GrReferenceElement ref) {
+        return getInspectionProfile(project).getErrorLevel(findDisplayKey(), ref);
+    }
 
-  @Nonnull
-  private static InspectionProfile getInspectionProfile(@Nonnull Project project) {
-    return InspectionProjectProfileManager.getInstance(project).getInspectionProfile();
-  }
+    @Nonnull
+    private static InspectionProfile getInspectionProfile(@Nonnull Project project) {
+        return InspectionProjectProfileManager.getInstance(project).getInspectionProfile();
+    }
 
-  public static boolean isSuppressed(PsiElement ref) {
-    return isElementToolSuppressedIn(ref, SHORT_NAME);
-  }
+    public static boolean isSuppressed(PsiElement ref) {
+        return isElementToolSuppressedIn(ref, SHORT_NAME);
+    }
 
 }

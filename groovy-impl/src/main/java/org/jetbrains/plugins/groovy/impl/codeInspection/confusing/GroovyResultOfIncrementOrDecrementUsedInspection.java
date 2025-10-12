@@ -16,9 +16,9 @@
 package org.jetbrains.plugins.groovy.impl.codeInspection.confusing;
 
 import consulo.language.ast.IElementType;
+import consulo.localize.LocalizeValue;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
-import org.jetbrains.annotations.Nls;
 
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
@@ -27,41 +27,39 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrUnaryE
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 
 public class GroovyResultOfIncrementOrDecrementUsedInspection extends BaseInspection {
-
-  @Nls
-  @Nonnull
-  public String getGroupDisplayName() {
-    return CONFUSING_CODE_CONSTRUCTS;
-  }
-
-  @Nls
-  @Nonnull
-  public String getDisplayName() {
-    return "Result of increment or decrement used";
-  }
-
-  @Nullable
-  protected String buildErrorString(Object... args) {
-    return "Result of increment or decrement expression used #loc";
-  }
-
-  public BaseInspectionVisitor buildVisitor() {
-    return new Visitor();
-  }
-
-  private static class Visitor extends BaseInspectionVisitor {
-
-    public void visitUnaryExpression(GrUnaryExpression grUnaryExpression) {
-      super.visitUnaryExpression(grUnaryExpression);
-
-      final IElementType tokenType = grUnaryExpression.getOperationTokenType();
-      if (!GroovyTokenTypes.mINC.equals(tokenType) && !GroovyTokenTypes.mDEC.equals(tokenType)) {
-        return;
-      }
-
-      if (PsiUtil.isExpressionUsed(grUnaryExpression)) {
-        registerError(grUnaryExpression);
-      }
+    @Nonnull
+    @Override
+    public LocalizeValue getGroupDisplayName() {
+        return CONFUSING_CODE_CONSTRUCTS;
     }
-  }
+
+    @Nonnull
+    @Override
+    public LocalizeValue getDisplayName() {
+        return LocalizeValue.localizeTODO("Result of increment or decrement used");
+    }
+
+    @Nullable
+    protected String buildErrorString(Object... args) {
+        return "Result of increment or decrement expression used #loc";
+    }
+
+    public BaseInspectionVisitor buildVisitor() {
+        return new Visitor();
+    }
+
+    private static class Visitor extends BaseInspectionVisitor {
+        public void visitUnaryExpression(GrUnaryExpression grUnaryExpression) {
+            super.visitUnaryExpression(grUnaryExpression);
+
+            final IElementType tokenType = grUnaryExpression.getOperationTokenType();
+            if (!GroovyTokenTypes.mINC.equals(tokenType) && !GroovyTokenTypes.mDEC.equals(tokenType)) {
+                return;
+            }
+
+            if (PsiUtil.isExpressionUsed(grUnaryExpression)) {
+                registerError(grUnaryExpression);
+            }
+        }
+    }
 }

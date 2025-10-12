@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.impl.codeInspection.assignment;
 
 import consulo.annotation.component.ExtensionImpl;
+import consulo.localize.LocalizeValue;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.impl.codeInspection.type.GroovyTypeCheckVisitor;
@@ -28,16 +28,15 @@ import jakarta.annotation.Nonnull;
  */
 @ExtensionImpl
 public class GroovyAssignabilityCheckInspection extends BaseInspection {
+    @Nonnull
+    @Override
+    public LocalizeValue getDisplayName() {
+        return LocalizeValue.localizeTODO("Incompatible type assignments");
+    }
 
-  @Nonnull
-  @Override
-  public String getDisplayName() {
-    return "Incompatible type assignments";
-  }
-
-  @Nonnull
-  @Override
-  protected BaseInspectionVisitor buildVisitor() {
-    return new GroovyTypeCheckVisitor();
-  }
+    @Nonnull
+    @Override
+    protected BaseInspectionVisitor buildVisitor() {
+        return new GroovyTypeCheckVisitor();
+    }
 }

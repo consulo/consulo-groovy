@@ -17,11 +17,11 @@ package org.jetbrains.plugins.groovy.impl.codeInspection.bugs;
 
 import com.intellij.java.language.psi.*;
 import com.intellij.java.language.psi.util.InheritanceUtil;
+import consulo.groovy.localize.GroovyLocalize;
 import consulo.language.editor.inspection.LocalQuickFix;
 import consulo.language.editor.inspection.ProblemHighlightType;
 import consulo.language.psi.PsiElement;
-import org.jetbrains.annotations.Nls;
-import org.jetbrains.plugins.groovy.GroovyBundle;
+import consulo.localize.LocalizeValue;
 import org.jetbrains.plugins.groovy.impl.annotator.intentions.CreateFieldFromConstructorLabelFix;
 import org.jetbrains.plugins.groovy.impl.annotator.intentions.dynamic.DynamicPropertyFix;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
@@ -38,6 +38,7 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUt
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 
 import jakarta.annotation.Nonnull;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,112 +46,124 @@ import java.util.List;
  * @author Max Medvedev
  */
 public class GroovyConstructorNamedArgumentsInspection extends BaseInspection {
-
-  @Override
-  public boolean isEnabledByDefault() {
-    return true;
-  }
-
-  @Override
-  protected BaseInspectionVisitor buildVisitor() {
-    return new MyVisitor();
-  }
-
-  @Nls
-  @Nonnull
-  @Override
-  public String getGroupDisplayName() {
-    return PROBABLE_BUGS;
-  }
-
-  @Nls
-  @Nonnull
-  @Override
-  public String getDisplayName() {
-    return "Named arguments of constructor call";
-  }
-
-  @Override
-  protected String buildErrorString(Object... args) {
-    assert args.length == 1 && args[0] instanceof String;
-    return (String)args[0];
-  }
-
-  private static class MyVisitor extends BaseInspectionVisitor {
     @Override
-    public void visitNewExpression(GrNewExpression newExpression) {
-      super.visitNewExpression(newExpression);
-
-      GrCodeReferenceElement refElement = newExpression.getReferenceElement();
-      if (refElement == null) return;
-
-      final GroovyResolveResult constructorResolveResult = newExpression.advancedResolve();
-      final PsiElement constructor = constructorResolveResult.getElement();
-      if (constructor != null) {
-        final GrArgumentList argList = newExpression.getArgumentList();
-        if (argList != null &&
-            argList.getExpressionArguments().length == 0 &&
-            !PsiUtil.isConstructorHasRequiredParameters((PsiMethod)constructor)) {
-          checkDefaultMapConstructor(argList, constructor);
-        }
-      }
-      else {
-        final GroovyResolveResult[] results = newExpression.multiResolveGroovy(false);
-        final GrArgumentList argList = newExpression.getArgumentList();
-        final PsiElement element = refElement.resolve();
-
-        if (results.length == 0 && element instanceof PsiClass) { //default constructor invocation
-          PsiType[] argumentTypes = PsiUtil.getArgumentTypes(refElement, true);
-          if (argumentTypes == null ||
-              argumentTypes.length == 0 ||
-              (argumentTypes.length == 1 &&
-               InheritanceUtil.isInheritor(argumentTypes[0], CommonClassNames.JAVA_UTIL_MAP))) {
-            checkDefaultMapConstructor(argList, element);
-          }
-        }
-      }
+    public boolean isEnabledByDefault() {
+        return true;
     }
 
-    private void checkDefaultMapConstructor(GrArgumentList argList, PsiElement element) {
-      if (argList == null) return;
-
-      final GrNamedArgument[] args = argList.getNamedArguments();
-      for (GrNamedArgument arg : args) {
-        final GrArgumentLabel label = arg.getLabel();
-        if (label == null) continue;
-        if (label.getName() == null) {
-          final PsiElement nameElement = label.getNameElement();
-          if (nameElement instanceof GrExpression) {
-            final PsiType argType = ((GrExpression)nameElement).getType();
-            if (argType != null && !TypesUtil.isAssignableByMethodCallConversion(TypesUtil.createType(CommonClassNames.JAVA_LANG_STRING, arg), argType, arg)) {
-              registerError(nameElement, GroovyBundle.message("property.name.expected"));
-            }
-          }
-          else if (!"*".equals(nameElement.getText())) {
-            registerError(nameElement, GroovyBundle.message("property.name.expected"));
-          }
-        }
-        else {
-          final PsiElement resolved = label.resolve();
-          if (resolved == null) {
-
-            if (element instanceof PsiMember && !(element instanceof PsiClass)) {
-              element = ((PsiMember)element).getContainingClass();
-            }
-
-            List<LocalQuickFix> fixes = new ArrayList<LocalQuickFix>(2);
-            if (element instanceof GrTypeDefinition) {
-              fixes.add(new CreateFieldFromConstructorLabelFix((GrTypeDefinition)element, label.getNamedArgument()));
-            }
-            if (element instanceof PsiClass) {
-              fixes.add(new DynamicPropertyFix(label, (PsiClass)element));
-            }
-
-            registerError(label, GroovyBundle.message("no.such.property", label.getName()), fixes.toArray(new LocalQuickFix[fixes.size()]),
-                          ProblemHighlightType.GENERIC_ERROR_OR_WARNING);
-          }
-        }
-      }
+    @Override
+    protected BaseInspectionVisitor buildVisitor() {
+        return new MyVisitor();
     }
-  }
+
+    @Nonnull
+    @Override
+    public LocalizeValue getGroupDisplayName() {
+        return PROBABLE_BUGS;
+    }
+
+    @Nonnull
+    @Override
+    public LocalizeValue getDisplayName() {
+        return LocalizeValue.localizeTODO("Named arguments of constructor call");
+    }
+
+    @Override
+    protected String buildErrorString(Object... args) {
+        assert args.length == 1 && args[0] instanceof String;
+        return (String) args[0];
+    }
+
+    private static class MyVisitor extends BaseInspectionVisitor {
+        @Override
+        public void visitNewExpression(GrNewExpression newExpression) {
+            super.visitNewExpression(newExpression);
+
+            GrCodeReferenceElement refElement = newExpression.getReferenceElement();
+            if (refElement == null) {
+                return;
+            }
+
+            final GroovyResolveResult constructorResolveResult = newExpression.advancedResolve();
+            final PsiElement constructor = constructorResolveResult.getElement();
+            if (constructor != null) {
+                final GrArgumentList argList = newExpression.getArgumentList();
+                if (argList != null &&
+                    argList.getExpressionArguments().length == 0 &&
+                    !PsiUtil.isConstructorHasRequiredParameters((PsiMethod) constructor)) {
+                    checkDefaultMapConstructor(argList, constructor);
+                }
+            }
+            else {
+                final GroovyResolveResult[] results = newExpression.multiResolveGroovy(false);
+                final GrArgumentList argList = newExpression.getArgumentList();
+                final PsiElement element = refElement.resolve();
+
+                if (results.length == 0 && element instanceof PsiClass) { //default constructor invocation
+                    PsiType[] argumentTypes = PsiUtil.getArgumentTypes(refElement, true);
+                    if (argumentTypes == null ||
+                        argumentTypes.length == 0 ||
+                        (argumentTypes.length == 1 &&
+                            InheritanceUtil.isInheritor(argumentTypes[0], CommonClassNames.JAVA_UTIL_MAP))) {
+                        checkDefaultMapConstructor(argList, element);
+                    }
+                }
+            }
+        }
+
+        private void checkDefaultMapConstructor(GrArgumentList argList, PsiElement element) {
+            if (argList == null) {
+                return;
+            }
+
+            final GrNamedArgument[] args = argList.getNamedArguments();
+            for (GrNamedArgument arg : args) {
+                final GrArgumentLabel label = arg.getLabel();
+                if (label == null) {
+                    continue;
+                }
+                if (label.getName() == null) {
+                    final PsiElement nameElement = label.getNameElement();
+                    if (nameElement instanceof GrExpression) {
+                        final PsiType argType = ((GrExpression) nameElement).getType();
+                        if (argType != null
+                            && !TypesUtil.isAssignableByMethodCallConversion(
+                                TypesUtil.createType(CommonClassNames.JAVA_LANG_STRING, arg),
+                                argType,
+                                arg
+                            )) {
+                            registerError(nameElement, GroovyLocalize.propertyNameExpected().get());
+                        }
+                    }
+                    else if (!"*".equals(nameElement.getText())) {
+                        registerError(nameElement, GroovyLocalize.propertyNameExpected().get());
+                    }
+                }
+                else {
+                    final PsiElement resolved = label.resolve();
+                    if (resolved == null) {
+
+                        if (element instanceof PsiMember && !(element instanceof PsiClass)) {
+                            element = ((PsiMember) element).getContainingClass();
+                        }
+
+                        List<LocalQuickFix> fixes = new ArrayList<LocalQuickFix>(2);
+                        if (element instanceof GrTypeDefinition) {
+                            fixes.add(new CreateFieldFromConstructorLabelFix((GrTypeDefinition) element, label.getNamedArgument()));
+                        }
+                        if (element instanceof PsiClass) {
+                            fixes.add(new DynamicPropertyFix(label, (PsiClass) element));
+                        }
+
+                        registerError(
+                            label,
+                            GroovyLocalize.noSuchProperty(label.getName()),
+                            fixes.toArray(new LocalQuickFix[fixes.size()]),
+                            ProblemHighlightType.GENERIC_ERROR_OR_WARNING
+                        );
+                    }
+                }
+            }
+        }
+    }
 }

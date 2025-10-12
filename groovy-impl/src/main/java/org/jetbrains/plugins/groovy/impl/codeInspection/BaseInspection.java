@@ -18,25 +18,27 @@ package org.jetbrains.plugins.groovy.impl.codeInspection;
 import consulo.language.editor.inspection.InspectionToolState;
 import consulo.language.editor.inspection.LocalInspectionToolSession;
 import consulo.language.editor.inspection.ProblemsHolder;
+import consulo.language.editor.inspection.localize.InspectionLocalize;
 import consulo.language.editor.rawHighlight.HighlightDisplayLevel;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiElementVisitor;
 import consulo.language.psi.PsiFile;
+import consulo.localize.LocalizeValue;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFileBase;
 
 public abstract class BaseInspection<State> extends GroovySuppressableInspectionTool {
-    public static final String ASSIGNMENT_ISSUES = "Assignment issues";
-    public static final String CONFUSING_CODE_CONSTRUCTS = "Potentially confusing code constructs";
-    public static final String CONTROL_FLOW = "Control Flow";
-    public static final String PROBABLE_BUGS = "Probable bugs";
-    public static final String ERROR_HANDLING = "Error handling";
-    public static final String GPATH = "GPath inspections";
-    public static final String METHOD_METRICS = "Method Metrics";
-    public static final String THREADING_ISSUES = "Threading issues";
-    public static final String VALIDITY_ISSUES = "Validity issues";
-    public static final String ANNOTATIONS_ISSUES = "Annotations verifying";
+    public static final LocalizeValue ASSIGNMENT_ISSUES = LocalizeValue.localizeTODO("Assignment issues");
+    public static final LocalizeValue CONFUSING_CODE_CONSTRUCTS = LocalizeValue.localizeTODO("Potentially confusing code constructs");
+    public static final LocalizeValue CONTROL_FLOW = LocalizeValue.localizeTODO("Control Flow");
+    public static final LocalizeValue PROBABLE_BUGS = LocalizeValue.localizeTODO("Probable bugs");
+    public static final LocalizeValue ERROR_HANDLING = LocalizeValue.localizeTODO("Error handling");
+    public static final LocalizeValue GPATH = LocalizeValue.localizeTODO("GPath inspections");
+    public static final LocalizeValue METHOD_METRICS = LocalizeValue.localizeTODO("Method Metrics");
+    public static final LocalizeValue THREADING_ISSUES = LocalizeValue.localizeTODO("Threading issues");
+    public static final LocalizeValue VALIDITY_ISSUES = LocalizeValue.localizeTODO("Validity issues");
+    public static final LocalizeValue ANNOTATIONS_ISSUES = LocalizeValue.localizeTODO("Annotations verifying");
 
     @Nonnull
     @Override
@@ -47,8 +49,8 @@ public abstract class BaseInspection<State> extends GroovySuppressableInspection
 
     @Nonnull
     @Override
-    public String getGroupDisplayName() {
-        return "General";
+    public LocalizeValue getGroupDisplayName() {
+        return InspectionLocalize.inspectionGeneralToolsGroupName();
     }
 
     @Nonnull
@@ -95,10 +97,12 @@ public abstract class BaseInspection<State> extends GroovySuppressableInspection
     @Nonnull
     @Override
     @SuppressWarnings("unchecked")
-    public final PsiElementVisitor buildVisitor(@Nonnull ProblemsHolder holder,
-                                                boolean isOnTheFly,
-                                                @Nonnull LocalInspectionToolSession session,
-                                                @Nonnull Object state) {
+    public final PsiElementVisitor buildVisitor(
+        @Nonnull ProblemsHolder holder,
+        boolean isOnTheFly,
+        @Nonnull LocalInspectionToolSession session,
+        @Nonnull Object state
+    ) {
         PsiFile file = holder.getFile();
         if (!(file instanceof GroovyFileBase)) {
             return PsiElementVisitor.EMPTY_VISITOR;

@@ -15,14 +15,14 @@
  */
 package org.jetbrains.plugins.groovy.impl.codeInspection.confusing;
 
+import consulo.groovy.impl.localize.GroovyInspectionLocalize;
+import consulo.groovy.localize.GroovyLocalize;
+import consulo.localize.LocalizeValue;
 import jakarta.annotation.Nonnull;
 
 import consulo.language.psi.PsiElement;
-import org.jetbrains.annotations.Nls;
-import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
-import org.jetbrains.plugins.groovy.impl.codeInspection.GroovyInspectionBundle;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
 import org.jetbrains.plugins.groovy.lang.resolve.ResolveUtil;
 
@@ -30,42 +30,40 @@ import org.jetbrains.plugins.groovy.lang.resolve.ResolveUtil;
  * @author Maxim.Medvedev
  */
 public class GrFieldAlreadyDefinedInspection extends BaseInspection {
-  @Nonnull
-  @Override
-  protected BaseInspectionVisitor buildVisitor() {
-    return new MyVisitor();
-  }
-
-
-  @Nls
-  @Nonnull
-  @Override
-  public String getGroupDisplayName() {
-    return CONFUSING_CODE_CONSTRUCTS;
-  }
-
-
-  @Override
-  protected String buildErrorString(Object... args) {
-    return GroovyBundle.message("field.already.defined", args);
-  }
-
-  @Nls
-  @Nonnull
-  @Override
-  public String getDisplayName() {
-    return GroovyInspectionBundle.message("field.already.defined");
-  }
-
-  private static class MyVisitor extends BaseInspectionVisitor {
+    @Nonnull
     @Override
-    public void visitField(GrField field) {
-      super.visitField(field);
-
-      PsiElement duplicate = ResolveUtil.findDuplicate(field);
-      if (duplicate instanceof GrField) {
-        registerError(field.getNameIdentifierGroovy(), field.getName());
-      }
+    protected BaseInspectionVisitor buildVisitor() {
+        return new MyVisitor();
     }
-  }
+
+
+    @Nonnull
+    @Override
+    public LocalizeValue getGroupDisplayName() {
+        return CONFUSING_CODE_CONSTRUCTS;
+    }
+
+
+    @Override
+    protected String buildErrorString(Object... args) {
+        return GroovyLocalize.fieldAlreadyDefined(args).get();
+    }
+
+    @Nonnull
+    @Override
+    public LocalizeValue getDisplayName() {
+        return GroovyInspectionLocalize.fieldAlreadyDefined();
+    }
+
+    private static class MyVisitor extends BaseInspectionVisitor {
+        @Override
+        public void visitField(GrField field) {
+            super.visitField(field);
+
+            PsiElement duplicate = ResolveUtil.findDuplicate(field);
+            if (duplicate instanceof GrField) {
+                registerError(field.getNameIdentifierGroovy(), field.getName());
+            }
+        }
+    }
 }

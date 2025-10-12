@@ -15,12 +15,12 @@
  */
 package org.jetbrains.plugins.groovy.impl.codeInspection.bugs;
 
+import consulo.groovy.localize.GroovyLocalize;
+import consulo.localize.LocalizeValue;
 import jakarta.annotation.Nonnull;
 
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.util.PsiTreeUtil;
-import org.jetbrains.annotations.Nls;
-import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocFieldReference;
@@ -36,63 +36,69 @@ import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
  * @author Max Medvedev
  */
 public class GroovyDocCheckInspection extends BaseInspection {
-  @Nls
-  @Nonnull
-  @Override
-  public String getGroupDisplayName() {
-    return PROBABLE_BUGS;
-  }
+    @Nonnull
+    @Override
+    public LocalizeValue getGroupDisplayName() {
+        return PROBABLE_BUGS;
+    }
 
-  @Nls
-  @Nonnull
-  @Override
-  public String getDisplayName() {
-    return "GroovyDoc issues";
-  }
+    @Nonnull
+    @Override
+    public LocalizeValue getDisplayName() {
+        return LocalizeValue.localizeTODO("GroovyDoc issues");
+    }
 
-  @Override
-  protected String buildErrorString(Object... args) {
-    return (String)args[0];
-  }
+    @Override
+    protected String buildErrorString(Object... args) {
+        return (String) args[0];
+    }
 
-  @Override
-  public boolean isEnabledByDefault() {
-    return true;
-  }
+    @Override
+    public boolean isEnabledByDefault() {
+        return true;
+    }
 
-  @Override
-  protected BaseInspectionVisitor buildVisitor() {
-    return new BaseInspectionVisitor() {
-      @Override
-      public void visitDocMethodReference(GrDocMethodReference reference) {
-        checkGrDocMemberReference(reference);
-      }
+    @Override
+    protected BaseInspectionVisitor buildVisitor() {
+        return new BaseInspectionVisitor() {
+            @Override
+            public void visitDocMethodReference(GrDocMethodReference reference) {
+                checkGrDocMemberReference(reference);
+            }
 
-      @Override
-      public void visitDocFieldReference(GrDocFieldReference reference) {
-        checkGrDocMemberReference(reference);
-      }
+            @Override
+            public void visitDocFieldReference(GrDocFieldReference reference) {
+                checkGrDocMemberReference(reference);
+            }
 
-      @Override
-      public void visitCodeReferenceElement(GrCodeReferenceElement refElement) {
-        GroovyResolveResult resolveResult = refElement.advancedResolve();
-        if (refElement.getReferenceName() == null) return;
+            @Override
+            public void visitCodeReferenceElement(GrCodeReferenceElement refElement) {
+                GroovyResolveResult resolveResult = refElement.advancedResolve();
+                if (refElement.getReferenceName() == null) {
+                    return;
+                }
 
-        if (PsiTreeUtil.getParentOfType(refElement, GroovyDocPsiElement.class, true, GrMember.class, GrCodeBlock.class) == null) return;
+                if (PsiTreeUtil.getParentOfType(refElement, GroovyDocPsiElement.class, true, GrMember.class, GrCodeBlock.class) == null) {
+                    return;
+                }
 
-        final PsiElement resolved = resolveResult.getElement();
-        if (resolved != null) return;
+                final PsiElement resolved = resolveResult.getElement();
+                if (resolved != null) {
+                    return;
+                }
 
-        final PsiElement toHighlight = refElement.getReferenceNameElement();
+                final PsiElement toHighlight = refElement.getReferenceNameElement();
 
-        registerError(toHighlight, GroovyBundle.message("cannot.resolve", refElement.getReferenceName()));
-      }
+                registerError(toHighlight, GroovyLocalize.cannotResolve(refElement.getReferenceName()).get());
+            }
 
-      private void checkGrDocMemberReference(final GrDocMemberReference reference) {
-        if (reference.resolve() != null) return;
+            private void checkGrDocMemberReference(final GrDocMemberReference reference) {
+                if (reference.resolve() != null) {
+                    return;
+                }
 
-        registerError(reference.getReferenceNameElement(), GroovyBundle.message("cannot.resolve", reference.getReferenceName()));
-      }
-    };
-  }
+                registerError(reference.getReferenceNameElement(), GroovyLocalize.cannotResolve(reference.getReferenceName()).get());
+            }
+        };
+    }
 }

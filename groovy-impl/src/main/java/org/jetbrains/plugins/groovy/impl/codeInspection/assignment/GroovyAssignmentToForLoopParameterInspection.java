@@ -19,7 +19,7 @@ import consulo.annotation.component.ExtensionImpl;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiReference;
 import consulo.language.psi.util.PsiTreeUtil;
-import org.jetbrains.annotations.Nls;
+import consulo.localize.LocalizeValue;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.clauses.GrForClause;
@@ -34,58 +34,54 @@ import jakarta.annotation.Nullable;
 
 @ExtensionImpl
 public class GroovyAssignmentToForLoopParameterInspection extends BaseInspection {
-
-  @Override
-  @Nls
-  @Nonnull
-  public String getGroupDisplayName() {
-    return ASSIGNMENT_ISSUES;
-  }
-
-  @Override
-  @Nls
-  @Nonnull
-  public String getDisplayName() {
-    return "Assignment to for-loop parameter";
-  }
-
-  @Override
-  @Nullable
-  protected String buildErrorString(Object... args) {
-    return "Assignment to for-loop parameter '#ref' #loc";
-
-  }
-
-  @Nonnull
-  @Override
-  public BaseInspectionVisitor buildVisitor() {
-    return new Visitor();
-  }
-
-  private static class Visitor extends BaseInspectionVisitor {
-    
+    @Nonnull
     @Override
-    public void visitAssignmentExpression(GrAssignmentExpression grAssignmentExpression) {
-      super.visitAssignmentExpression(grAssignmentExpression);
-      final GrExpression lhs = grAssignmentExpression.getLValue();
-      if (!(lhs instanceof GrReferenceExpression)) {
-        return;
-      }
-      final PsiElement referent = ((PsiReference) lhs).resolve();
-      if (referent == null) {
-        return;
-      }
-      if (!(referent instanceof GrParameter)) {
-        return;
-      }
-      final PsiElement parent = referent.getParent();
-      if (!(parent instanceof GrForClause)) {
-        return;
-      }
-      if (parent instanceof GrTraditionalForClause && PsiTreeUtil.isAncestor(parent, grAssignmentExpression, true)) {
-        return;
-      }
-      registerError(lhs);
+    public LocalizeValue getGroupDisplayName() {
+        return ASSIGNMENT_ISSUES;
     }
-  }
+
+    @Nonnull
+    @Override
+    public LocalizeValue getDisplayName() {
+        return LocalizeValue.localizeTODO("Assignment to for-loop parameter");
+    }
+
+    @Override
+    @Nullable
+    protected String buildErrorString(Object... args) {
+        return "Assignment to for-loop parameter '#ref' #loc";
+    }
+
+    @Nonnull
+    @Override
+    public BaseInspectionVisitor buildVisitor() {
+        return new Visitor();
+    }
+
+    private static class Visitor extends BaseInspectionVisitor {
+
+        @Override
+        public void visitAssignmentExpression(GrAssignmentExpression grAssignmentExpression) {
+            super.visitAssignmentExpression(grAssignmentExpression);
+            final GrExpression lhs = grAssignmentExpression.getLValue();
+            if (!(lhs instanceof GrReferenceExpression)) {
+                return;
+            }
+            final PsiElement referent = ((PsiReference) lhs).resolve();
+            if (referent == null) {
+                return;
+            }
+            if (!(referent instanceof GrParameter)) {
+                return;
+            }
+            final PsiElement parent = referent.getParent();
+            if (!(parent instanceof GrForClause)) {
+                return;
+            }
+            if (parent instanceof GrTraditionalForClause && PsiTreeUtil.isAncestor(parent, grAssignmentExpression, true)) {
+                return;
+            }
+            registerError(lhs);
+        }
+    }
 }

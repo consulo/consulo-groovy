@@ -16,13 +16,12 @@
 package org.jetbrains.plugins.groovy.impl.codeInspection.bugs;
 
 import consulo.language.psi.PsiElement;
+import consulo.localize.LocalizeValue;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
-import org.jetbrains.annotations.Nls;
-
+import org.jetbrains.plugins.groovy.codeInspection.utils.ControlFlowUtils;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
-import org.jetbrains.plugins.groovy.codeInspection.utils.ControlFlowUtils;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlock;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrCodeBlock;
@@ -31,50 +30,50 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrNewExp
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
 
 public class GroovyResultOfObjectAllocationIgnoredInspection extends BaseInspection {
-
-  @Nls
-  @Nonnull
-  public String getGroupDisplayName() {
-    return PROBABLE_BUGS;
-  }
-
-  @Nls
-  @Nonnull
-  public String getDisplayName() {
-    return "Result of object allocation ignored";
-  }
-
-  @Nullable
-  protected String buildErrorString(Object... args) {
-    return "Result of <code>new #ref" + (args[0].equals(new Integer(0)) ? "()" : "[]") + "</code> is ignored #loc";
-
-  }
-
-  public boolean isEnabledByDefault() {
-    return true;
-  }
-
-  public BaseInspectionVisitor buildVisitor() {
-    return new Visitor();
-  }
-
-  private static class Visitor extends BaseInspectionVisitor {
-
-    public void visitNewExpression(GrNewExpression newExpression) {
-      super.visitNewExpression(newExpression);
-      final GrCodeReferenceElement refElement = newExpression.getReferenceElement();
-      if (refElement == null) return;      //new expression is not correct so we shouldn't check it
-      
-      final PsiElement parent = newExpression.getParent();
-
-      if (parent instanceof GrCodeBlock || parent instanceof GroovyFile) {
-        if (parent instanceof GrOpenBlock || parent instanceof GrClosableBlock) {
-          if (ControlFlowUtils.openBlockCompletesWithStatement(((GrCodeBlock)parent), newExpression)) {
-            return;
-          }
-        }
-        registerError(refElement, newExpression.getArrayCount());
-      }
+    @Nonnull
+    @Override
+    public LocalizeValue getGroupDisplayName() {
+        return PROBABLE_BUGS;
     }
-  }
+
+    @Nonnull
+    @Override
+    public LocalizeValue getDisplayName() {
+        return LocalizeValue.localizeTODO("Result of object allocation ignored");
+    }
+
+    @Nullable
+    protected String buildErrorString(Object... args) {
+        return "Result of <code>new #ref" + (args[0].equals(new Integer(0)) ? "()" : "[]") + "</code> is ignored #loc";
+
+    }
+
+    public boolean isEnabledByDefault() {
+        return true;
+    }
+
+    public BaseInspectionVisitor buildVisitor() {
+        return new Visitor();
+    }
+
+    private static class Visitor extends BaseInspectionVisitor {
+        public void visitNewExpression(GrNewExpression newExpression) {
+            super.visitNewExpression(newExpression);
+            final GrCodeReferenceElement refElement = newExpression.getReferenceElement();
+            if (refElement == null) {
+                return;      //new expression is not correct so we shouldn't check it
+            }
+
+            final PsiElement parent = newExpression.getParent();
+
+            if (parent instanceof GrCodeBlock || parent instanceof GroovyFile) {
+                if (parent instanceof GrOpenBlock || parent instanceof GrClosableBlock) {
+                    if (ControlFlowUtils.openBlockCompletesWithStatement(((GrCodeBlock) parent), newExpression)) {
+                        return;
+                    }
+                }
+                registerError(refElement, newExpression.getArrayCount());
+            }
+        }
+    }
 }

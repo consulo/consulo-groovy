@@ -13,76 +13,76 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.impl.annotator.inspections;
 
 import com.intellij.java.language.psi.PsiMethod;
 import com.intellij.java.language.psi.PsiModifier;
 import com.intellij.java.language.psi.PsiModifierList;
+import consulo.groovy.localize.GroovyLocalize;
 import consulo.language.psi.PsiElement;
-import org.jetbrains.annotations.Nls;
-import org.jetbrains.plugins.groovy.GroovyBundle;
+import consulo.localize.LocalizeValue;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotation;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames;
 
-import jakarta.annotation.Nonnull;
-
 /**
- * User: Dmitry.Krasilschikov
- * Date: 29.04.2009
+ * @author Dmitry.Krasilschikov
+ * @since 2009-04-29
  */
 public class GroovySingletonAnnotationInspection extends BaseInspection {
-  public static final String SINGLETON = GroovyCommonClassNames.GROOVY_LANG_SINGLETON;
+    public static final String SINGLETON = GroovyCommonClassNames.GROOVY_LANG_SINGLETON;
 
-  protected BaseInspectionVisitor buildVisitor() {
-    return new Visitor();
-  }
-
-  public boolean isEnabledByDefault() {
-    return true;
-  }
-
-  @Nls
-  @Nonnull
-  public String getGroupDisplayName() {
-    return ANNOTATIONS_ISSUES;
-  }
-
-  @Nls
-  @Nonnull
-  public String getDisplayName() {
-    return "Check '@Singleton' annotation conventions";
-  }
-
-  private static class Visitor extends BaseInspectionVisitor {
-    public void visitAnnotation(GrAnnotation annotation) {
-      super.visitAnnotation(annotation);
-
-      PsiElement parent = annotation.getParent().getParent();
-      if (parent == null || !(parent instanceof GrTypeDefinition)) return;
-
-      if (SINGLETON.equals(annotation.getQualifiedName())) {
-        GrTypeDefinition typeDefinition = (GrTypeDefinition)parent;
-
-        PsiMethod[] methods = typeDefinition.getMethods();
-        for (PsiMethod method : methods) {
-          if (method.isConstructor()) {
-            PsiModifierList modifierList = method.getModifierList();
-
-            if (modifierList.hasModifierProperty(PsiModifier.PUBLIC)) {
-              registerClassError(typeDefinition);
-            }
-          }
-        }
-      }
+    protected BaseInspectionVisitor buildVisitor() {
+        return new Visitor();
     }
-  }
 
-  @Override
-  protected String buildErrorString(Object... args) {
-    return GroovyBundle.message("singleton.class.should.have.private.constructor");
-  }
+    public boolean isEnabledByDefault() {
+        return true;
+    }
+
+    @Nonnull
+    @Override
+    public LocalizeValue getGroupDisplayName() {
+        return ANNOTATIONS_ISSUES;
+    }
+
+    @Nonnull
+    @Override
+    public LocalizeValue getDisplayName() {
+        return LocalizeValue.localizeTODO("Check '@Singleton' annotation conventions");
+    }
+
+    private static class Visitor extends BaseInspectionVisitor {
+        public void visitAnnotation(GrAnnotation annotation) {
+            super.visitAnnotation(annotation);
+
+            PsiElement parent = annotation.getParent().getParent();
+            if (parent == null || !(parent instanceof GrTypeDefinition)) {
+                return;
+            }
+
+            if (SINGLETON.equals(annotation.getQualifiedName())) {
+                GrTypeDefinition typeDefinition = (GrTypeDefinition) parent;
+
+                PsiMethod[] methods = typeDefinition.getMethods();
+                for (PsiMethod method : methods) {
+                    if (method.isConstructor()) {
+                        PsiModifierList modifierList = method.getModifierList();
+
+                        if (modifierList.hasModifierProperty(PsiModifier.PUBLIC)) {
+                            registerClassError(typeDefinition);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    @Override
+    protected String buildErrorString(Object... args) {
+        return GroovyLocalize.singletonClassShouldHavePrivateConstructor().get();
+    }
 }
