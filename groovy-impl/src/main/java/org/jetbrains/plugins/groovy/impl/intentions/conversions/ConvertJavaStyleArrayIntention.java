@@ -16,9 +16,11 @@
 package org.jetbrains.plugins.groovy.impl.intentions.conversions;
 
 import consulo.codeEditor.Editor;
+import consulo.groovy.impl.localize.GroovyIntentionLocalize;
 import consulo.language.psi.PsiElement;
-import consulo.project.Project;
 import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
+import consulo.project.Project;
 import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.impl.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.impl.intentions.base.PsiElementPredicate;
@@ -32,36 +34,54 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.path.GrM
  * @author Maxim.Medvedev
  */
 public class ConvertJavaStyleArrayIntention extends Intention {
-  @Override
-  protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
-    final GrClosableBlock block = ((GrMethodCallExpression)element).getClosureArguments()[0];
-    final String text = block.getText();
-    int start = block.getLBrace().getStartOffsetInParent() + 1;
-    int finish = block.getRBrace().getStartOffsetInParent();
-    String newText = "[" + text.substring(start, finish) + "]";
-    final GrExpression newExpr = GroovyPsiElementFactory.getInstance(element.getProject()).createExpressionFromText(newText);
-    ((GrMethodCallExpression)element).replaceWithStatement(newExpr);
-  }
+    @Nonnull
+    @Override
+    public LocalizeValue getText() {
+        return GroovyIntentionLocalize.convertJavaStyleArrayIntentionName();
+    }
 
-  @Nonnull
-  @Override
-  protected PsiElementPredicate getElementPredicate() {
-    return new PsiElementPredicate() {
-      @Override
-      public boolean satisfiedBy(PsiElement element) {
-        if (!(element instanceof GrMethodCallExpression)) return false;
-        final GrExpression expression = ((GrMethodCallExpression)element).getInvokedExpression();
-        if (!(expression instanceof GrNewExpression)) return false;
-        if (((GrNewExpression)expression).getArrayCount() == 0) return false;
+    @Override
+    protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
+        final GrClosableBlock block = ((GrMethodCallExpression) element).getClosureArguments()[0];
+        final String text = block.getText();
+        int start = block.getLBrace().getStartOffsetInParent() + 1;
+        int finish = block.getRBrace().getStartOffsetInParent();
+        String newText = "[" + text.substring(start, finish) + "]";
+        final GrExpression newExpr = GroovyPsiElementFactory.getInstance(element.getProject()).createExpressionFromText(newText);
+        ((GrMethodCallExpression) element).replaceWithStatement(newExpr);
+    }
 
-        if (((GrMethodCallExpression)element).getArgumentList().getText().trim().length() > 0) return false;
+    @Nonnull
+    @Override
+    protected PsiElementPredicate getElementPredicate() {
+        return new PsiElementPredicate() {
+            @Override
+            public boolean satisfiedBy(PsiElement element) {
+                if (!(element instanceof GrMethodCallExpression)) {
+                    return false;
+                }
+                final GrExpression expression = ((GrMethodCallExpression) element).getInvokedExpression();
+                if (!(expression instanceof GrNewExpression)) {
+                    return false;
+                }
+                if (((GrNewExpression) expression).getArrayCount() == 0) {
+                    return false;
+                }
 
-        final GrClosableBlock[] closureArguments = ((GrMethodCallExpression)element).getClosureArguments();
-        if (closureArguments.length != 1) return false;
-        final GrClosableBlock block = closureArguments[0];
-        if (block.getLBrace() == null || block.getRBrace() == null) return false;
-        return true;
-      }
-    };
-  }
+                if (((GrMethodCallExpression) element).getArgumentList().getText().trim().length() > 0) {
+                    return false;
+                }
+
+                final GrClosableBlock[] closureArguments = ((GrMethodCallExpression) element).getClosureArguments();
+                if (closureArguments.length != 1) {
+                    return false;
+                }
+                final GrClosableBlock block = closureArguments[0];
+                if (block.getLBrace() == null || block.getRBrace() == null) {
+                    return false;
+                }
+                return true;
+            }
+        };
+    }
 }

@@ -15,12 +15,13 @@
  */
 package org.jetbrains.plugins.groovy.impl.intentions.conversions;
 
-import jakarta.annotation.Nonnull;
-
 import consulo.codeEditor.Editor;
-import consulo.language.util.IncorrectOperationException;
-import consulo.project.Project;
+import consulo.groovy.impl.localize.GroovyIntentionLocalize;
 import consulo.language.psi.PsiElement;
+import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
+import consulo.project.Project;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.impl.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.impl.intentions.base.PsiElementPredicate;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
@@ -32,33 +33,44 @@ import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeElement;
  * @author Max Medvedev
  */
 public class GrConvertTypeCastToSafeCastIntention extends Intention {
-  @Override
-  protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException
-  {
-    if (!(element instanceof GrTypeCastExpression)) return;
+    @Nonnull
+    @Override
+    public LocalizeValue getText() {
+        return GroovyIntentionLocalize.grConvertTypeCastToSafeCastIntentionName();
+    }
 
-    GrExpression operand = ((GrTypeCastExpression)element).getOperand();
-    GrTypeElement type = ((GrTypeCastExpression)element).getCastTypeElement();
+    @Override
+    protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
+        if (!(element instanceof GrTypeCastExpression)) {
+            return;
+        }
 
-    if (type == null) return;
-    if (operand == null) return;
+        GrExpression operand = ((GrTypeCastExpression) element).getOperand();
+        GrTypeElement type = ((GrTypeCastExpression) element).getCastTypeElement();
 
-    GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(project);
-    GrExpression safeCast = factory.createExpressionFromText(operand.getText() + " as " + type.getText());
+        if (type == null) {
+            return;
+        }
+        if (operand == null) {
+            return;
+        }
 
-    ((GrTypeCastExpression)element).replaceWithExpression(safeCast, true);
-  }
+        GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(project);
+        GrExpression safeCast = factory.createExpressionFromText(operand.getText() + " as " + type.getText());
 
-  @Nonnull
-  @Override
-  protected PsiElementPredicate getElementPredicate() {
-    return new PsiElementPredicate() {
-      @Override
-      public boolean satisfiedBy(PsiElement element) {
-        return element instanceof GrTypeCastExpression &&
-               ((GrTypeCastExpression)element).getCastTypeElement() != null &&
-               ((GrTypeCastExpression)element).getOperand() != null;
-      }
-    };
-  }
+        ((GrTypeCastExpression) element).replaceWithExpression(safeCast, true);
+    }
+
+    @Nonnull
+    @Override
+    protected PsiElementPredicate getElementPredicate() {
+        return new PsiElementPredicate() {
+            @Override
+            public boolean satisfiedBy(PsiElement element) {
+                return element instanceof GrTypeCastExpression &&
+                    ((GrTypeCastExpression) element).getCastTypeElement() != null &&
+                    ((GrTypeCastExpression) element).getOperand() != null;
+            }
+        };
+    }
 }

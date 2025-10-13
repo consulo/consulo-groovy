@@ -15,12 +15,13 @@
  */
 package org.jetbrains.plugins.groovy.impl.intentions.conversions;
 
-import jakarta.annotation.Nonnull;
-
 import consulo.codeEditor.Editor;
-import consulo.language.util.IncorrectOperationException;
-import consulo.project.Project;
+import consulo.groovy.impl.localize.GroovyIntentionLocalize;
 import consulo.language.psi.PsiElement;
+import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
+import consulo.project.Project;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.impl.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.impl.intentions.base.PsiElementPredicate;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
@@ -30,32 +31,40 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.path.GrM
 import org.jetbrains.plugins.groovy.lang.psi.api.util.GrStatementOwner;
 
 public class RemoveParenthesesFromMethodCallIntention extends Intention {
-
-  @Nonnull
-  protected PsiElementPredicate getElementPredicate() {
-    return new RemoveParenthesesFromMethodPredicate();
-  }
-
-  @Override
-  protected boolean isStopElement(PsiElement element) {
-    return super.isStopElement(element) || element instanceof GrStatementOwner;
-  }
-
-  protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException
-  {
-    final GrMethodCallExpression expression = (GrMethodCallExpression) element;
-    final StringBuilder newStatementText = new StringBuilder();
-    newStatementText.append(expression.getInvokedExpression().getText()).append(' ');
-    final GrArgumentList argumentList = expression.getArgumentList();
-    if (argumentList != null) {
-      final PsiElement leftParen = argumentList.getLeftParen();
-      final PsiElement rightParen = argumentList.getRightParen();
-      if (leftParen != null) leftParen.delete();
-      if (rightParen != null) rightParen.delete();
-      newStatementText.append(argumentList.getText());
+    @Nonnull
+    @Override
+    public LocalizeValue getText() {
+        return GroovyIntentionLocalize.removeParenthesesFromMethodCallIntentionName();
     }
-    final GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(element.getProject());
-    final GrStatement newStatement = factory.createStatementFromText(newStatementText.toString());
-    expression.replaceWithStatement(newStatement);
-  }
+
+    @Nonnull
+    protected PsiElementPredicate getElementPredicate() {
+        return new RemoveParenthesesFromMethodPredicate();
+    }
+
+    @Override
+    protected boolean isStopElement(PsiElement element) {
+        return super.isStopElement(element) || element instanceof GrStatementOwner;
+    }
+
+    protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
+        final GrMethodCallExpression expression = (GrMethodCallExpression) element;
+        final StringBuilder newStatementText = new StringBuilder();
+        newStatementText.append(expression.getInvokedExpression().getText()).append(' ');
+        final GrArgumentList argumentList = expression.getArgumentList();
+        if (argumentList != null) {
+            final PsiElement leftParen = argumentList.getLeftParen();
+            final PsiElement rightParen = argumentList.getRightParen();
+            if (leftParen != null) {
+                leftParen.delete();
+            }
+            if (rightParen != null) {
+                rightParen.delete();
+            }
+            newStatementText.append(argumentList.getText());
+        }
+        final GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(element.getProject());
+        final GrStatement newStatement = factory.createStatementFromText(newStatementText.toString());
+        expression.replaceWithStatement(newStatement);
+    }
 }

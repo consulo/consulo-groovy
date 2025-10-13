@@ -15,12 +15,15 @@
  */
 package org.jetbrains.plugins.groovy.impl.intentions.conversions.strings;
 
-import jakarta.annotation.Nonnull;
-
+import consulo.codeEditor.Editor;
+import consulo.groovy.impl.localize.GroovyIntentionLocalize;
 import consulo.language.ast.ASTNode;
 import consulo.language.ast.IElementType;
 import consulo.language.psi.PsiElement;
+import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
 import consulo.project.Project;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.impl.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.impl.intentions.base.PsiElementPredicate;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
@@ -30,143 +33,125 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpres
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.literals.GrLiteral;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.literals.GrString;
 import org.jetbrains.plugins.groovy.lang.psi.util.GrStringUtil;
-import consulo.codeEditor.Editor;
-import consulo.language.util.IncorrectOperationException;
 
 /**
  * @author Max Medvedev
  */
-public class GrBreakStringOnLineBreaksIntention extends Intention
-{
-	@Override
-	protected void processIntention(@Nonnull PsiElement element,
-			Project project,
-			Editor editor) throws IncorrectOperationException
-	{
-		final String text = invokeImpl(element);
-		final GrExpression newExpr = GroovyPsiElementFactory.getInstance(project).createExpressionFromText(text);
-		((GrExpression) element).replaceWithExpression(newExpr, true);
-	}
+public class GrBreakStringOnLineBreaksIntention extends Intention {
+    @Nonnull
+    @Override
+    public LocalizeValue getText() {
+        return GroovyIntentionLocalize.grBreakStringOnLineBreaksIntentionName();
+    }
 
-	@Nonnull
-	@Override
-	protected PsiElementPredicate getElementPredicate()
-	{
-		return new PsiElementPredicate()
-		{
-			@Override
-			public boolean satisfiedBy(PsiElement element)
-			{
-				return element instanceof GrLiteral && !element.getText().equals(invokeImpl(element));
-			}
-		};
-	}
+    @Override
+    protected void processIntention(
+        @Nonnull PsiElement element,
+        Project project,
+        Editor editor
+    ) throws IncorrectOperationException {
+        final String text = invokeImpl(element);
+        final GrExpression newExpr = GroovyPsiElementFactory.getInstance(project).createExpressionFromText(text);
+        ((GrExpression) element).replaceWithExpression(newExpr, true);
+    }
 
-	private static String invokeImpl(PsiElement element)
-	{
-		final String text = element.getText();
-		final String quote = GrStringUtil.getStartQuote(text);
+    @Nonnull
+    @Override
+    protected PsiElementPredicate getElementPredicate() {
+        return new PsiElementPredicate() {
+            @Override
+            public boolean satisfiedBy(PsiElement element) {
+                return element instanceof GrLiteral && !element.getText().equals(invokeImpl(element));
+            }
+        };
+    }
 
-		if(!("'".equals(quote) || "\"".equals(quote)))
-		{
-			return text;
-		}
-		if(!text.contains("\\n"))
-		{
-			return text;
-		}
+    private static String invokeImpl(PsiElement element) {
+        final String text = element.getText();
+        final String quote = GrStringUtil.getStartQuote(text);
 
-		String value = GrStringUtil.removeQuotes(text);
+        if (!("'".equals(quote) || "\"".equals(quote))) {
+            return text;
+        }
+        if (!text.contains("\\n")) {
+            return text;
+        }
 
-		StringBuilder buffer = new StringBuilder();
-		if(element instanceof GrString)
-		{
-			processGString(element, quote, value, buffer);
-		}
-		else
-		{
-			processSimpleString(quote, value, buffer);
-		}
+        String value = GrStringUtil.removeQuotes(text);
 
-		final String result = buffer.toString();
-		if(result.endsWith("+\n\"\""))
-		{
-			return result.substring(0, result.length() - 4);
-		}
+        StringBuilder buffer = new StringBuilder();
+        if (element instanceof GrString) {
+            processGString(element, quote, value, buffer);
+        }
+        else {
+            processSimpleString(quote, value, buffer);
+        }
 
-		return result;
-	}
+        final String result = buffer.toString();
+        if (result.endsWith("+\n\"\"")) {
+            return result.substring(0, result.length() - 4);
+        }
 
-	private static void processGString(PsiElement element, String quote, String value, StringBuilder buffer)
-	{
-		final ASTNode node = element.getNode();
+        return result;
+    }
 
-		for(ASTNode child = node.getFirstChildNode(); child != null; child = child.getTreeNext())
-		{
-			final IElementType type = child.getElementType();
-			if(type == GroovyTokenTypes.mGSTRING_BEGIN || type == GroovyTokenTypes.mGSTRING_END)
-			{
-				continue;
-			}
-			if(type == GroovyElementTypes.GSTRING_INJECTION)
-			{
-				buffer.append(child.getText());
-			}
-			else
-			{
-				value = child.getText();
-				int prev = 0;
-				if(!isInjection(child.getTreePrev()))
-				{
-					buffer.append(quote);
-				}
-				for(int pos = value.indexOf("\\n"); pos >= 0; pos = value.indexOf("\\n", prev))
-				{
-					int end = checkForR(value, pos);
-					buffer.append(value.substring(prev, end));
-					prev = end;
-					buffer.append(quote);
-					buffer.append("+\n");
-					buffer.append(quote);
-				}
-				buffer.append(value.substring(prev, value.length()));
-				if(!isInjection(child.getTreeNext()))
-				{
-					buffer.append(quote);
-				}
-			}
-		}
-	}
+    private static void processGString(PsiElement element, String quote, String value, StringBuilder buffer) {
+        final ASTNode node = element.getNode();
 
-	private static boolean isInjection(ASTNode next)
-	{
-		return next != null && next.getElementType() == GroovyElementTypes.GSTRING_INJECTION;
-	}
+        for (ASTNode child = node.getFirstChildNode(); child != null; child = child.getTreeNext()) {
+            final IElementType type = child.getElementType();
+            if (type == GroovyTokenTypes.mGSTRING_BEGIN || type == GroovyTokenTypes.mGSTRING_END) {
+                continue;
+            }
+            if (type == GroovyElementTypes.GSTRING_INJECTION) {
+                buffer.append(child.getText());
+            }
+            else {
+                value = child.getText();
+                int prev = 0;
+                if (!isInjection(child.getTreePrev())) {
+                    buffer.append(quote);
+                }
+                for (int pos = value.indexOf("\\n"); pos >= 0; pos = value.indexOf("\\n", prev)) {
+                    int end = checkForR(value, pos);
+                    buffer.append(value.substring(prev, end));
+                    prev = end;
+                    buffer.append(quote);
+                    buffer.append("+\n");
+                    buffer.append(quote);
+                }
+                buffer.append(value.substring(prev, value.length()));
+                if (!isInjection(child.getTreeNext())) {
+                    buffer.append(quote);
+                }
+            }
+        }
+    }
 
-	private static void processSimpleString(String quote, String value, StringBuilder buffer)
-	{
-		int prev = 0;
-		for(int pos = value.indexOf("\\n"); pos >= 0; pos = value.indexOf("\\n", prev))
-		{
-			buffer.append(quote);
-			int end = checkForR(value, pos);
-			buffer.append(value.substring(prev, end));
-			prev = end;
-			buffer.append(quote);
-			buffer.append("+\n");
-		}
-		buffer.append(quote);
-		buffer.append(value.substring(prev, value.length()));
-		buffer.append(quote);
-	}
+    private static boolean isInjection(ASTNode next) {
+        return next != null && next.getElementType() == GroovyElementTypes.GSTRING_INJECTION;
+    }
 
-	private static int checkForR(String value, int pos)
-	{
-		pos += 2;
-		if(value.length() > pos + 2 && "\r".equals(value.substring(pos, pos + 2)))
-		{
-			return pos + 2;
-		}
-		return pos;
-	}
+    private static void processSimpleString(String quote, String value, StringBuilder buffer) {
+        int prev = 0;
+        for (int pos = value.indexOf("\\n"); pos >= 0; pos = value.indexOf("\\n", prev)) {
+            buffer.append(quote);
+            int end = checkForR(value, pos);
+            buffer.append(value.substring(prev, end));
+            prev = end;
+            buffer.append(quote);
+            buffer.append("+\n");
+        }
+        buffer.append(quote);
+        buffer.append(value.substring(prev, value.length()));
+        buffer.append(quote);
+    }
+
+    private static int checkForR(String value, int pos) {
+        pos += 2;
+        if (value.length() > pos + 2 && "\r".equals(value.substring(pos, pos + 2))) {
+            return pos + 2;
+        }
+        return pos;
+    }
 }

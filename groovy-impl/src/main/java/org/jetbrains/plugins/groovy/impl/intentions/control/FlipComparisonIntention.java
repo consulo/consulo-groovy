@@ -15,60 +15,57 @@
  */
 package org.jetbrains.plugins.groovy.impl.intentions.control;
 
+import consulo.codeEditor.Editor;
+import consulo.groovy.impl.localize.GroovyIntentionLocalize;
 import consulo.language.ast.IElementType;
 import consulo.language.psi.PsiElement;
+import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
+import consulo.project.Project;
 import jakarta.annotation.Nonnull;
-import org.jetbrains.plugins.groovy.impl.intentions.GroovyIntentionsBundle;
 import org.jetbrains.plugins.groovy.impl.intentions.base.MutablyNamedIntention;
 import org.jetbrains.plugins.groovy.impl.intentions.base.PsiElementPredicate;
 import org.jetbrains.plugins.groovy.intentions.utils.ComparisonUtils;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrBinaryExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.impl.PsiImplUtil;
-import consulo.codeEditor.Editor;
-import consulo.project.Project;
-import consulo.language.util.IncorrectOperationException;
 
-public class FlipComparisonIntention extends MutablyNamedIntention
-{
-	protected String getTextForElement(PsiElement element)
-	{
-		final GrBinaryExpression binaryExpression = (GrBinaryExpression) element;
-		final IElementType tokenType = binaryExpression.getOperationTokenType();
-		final String comparison = ComparisonUtils.getStringForComparison(tokenType);
-		final String flippedComparison = ComparisonUtils.getFlippedComparison(tokenType);
+public class FlipComparisonIntention extends MutablyNamedIntention {
+    protected LocalizeValue getTextForElement(PsiElement element) {
+        final GrBinaryExpression binaryExpression = (GrBinaryExpression) element;
+        final IElementType tokenType = binaryExpression.getOperationTokenType();
+        final String comparison = ComparisonUtils.getStringForComparison(tokenType);
+        final String flippedComparison = ComparisonUtils.getFlippedComparison(tokenType);
 
-		if(comparison.equals(flippedComparison))
-		{
-			return GroovyIntentionsBundle.message("flip.smth.intention.name", comparison);
-		}
+        if (comparison.equals(flippedComparison)) {
+            return GroovyIntentionLocalize.flipSmthIntentionName(comparison);
+        }
 
-		return GroovyIntentionsBundle.message("flip.comparison.intention.name", comparison, flippedComparison);
-	}
+        return GroovyIntentionLocalize.flipComparisonIntentionName(comparison, flippedComparison);
+    }
 
-	@Nonnull
-	public PsiElementPredicate getElementPredicate()
-	{
-		return new ComparisonPredicate();
-	}
+    @Nonnull
+    public PsiElementPredicate getElementPredicate() {
+        return new ComparisonPredicate();
+    }
 
-	public void processIntention(@Nonnull PsiElement element,
-			Project project,
-			Editor editor) throws IncorrectOperationException
-	{
-		final GrBinaryExpression exp = (GrBinaryExpression) element;
-		final IElementType tokenType = exp.getOperationTokenType();
+    public void processIntention(
+        @Nonnull PsiElement element,
+        Project project,
+        Editor editor
+    ) throws IncorrectOperationException {
+        final GrBinaryExpression exp = (GrBinaryExpression) element;
+        final IElementType tokenType = exp.getOperationTokenType();
 
-		final GrExpression lhs = exp.getLeftOperand();
-		final String lhsText = lhs.getText();
+        final GrExpression lhs = exp.getLeftOperand();
+        final String lhsText = lhs.getText();
 
-		final GrExpression rhs = exp.getRightOperand();
-		final String rhsText = rhs.getText();
+        final GrExpression rhs = exp.getRightOperand();
+        final String rhsText = rhs.getText();
 
-		final String flippedComparison = ComparisonUtils.getFlippedComparison(tokenType);
+        final String flippedComparison = ComparisonUtils.getFlippedComparison(tokenType);
 
-		final String newExpression = rhsText + flippedComparison + lhsText;
-		PsiImplUtil.replaceExpression(newExpression, exp);
-	}
-
+        final String newExpression = rhsText + flippedComparison + lhsText;
+        PsiImplUtil.replaceExpression(newExpression, exp);
+    }
 }

@@ -15,14 +15,14 @@
  */
 package org.jetbrains.plugins.groovy.impl.intentions.control;
 
-import jakarta.annotation.Nonnull;
-
 import consulo.codeEditor.Editor;
+import consulo.groovy.impl.localize.GroovyIntentionLocalize;
 import consulo.language.ast.IElementType;
 import consulo.language.psi.PsiElement;
-import consulo.project.Project;
 import consulo.language.util.IncorrectOperationException;
-import org.jetbrains.plugins.groovy.impl.intentions.GroovyIntentionsBundle;
+import consulo.localize.LocalizeValue;
+import consulo.project.Project;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.impl.intentions.base.MutablyNamedIntention;
 import org.jetbrains.plugins.groovy.impl.intentions.base.PsiElementPredicate;
 import org.jetbrains.plugins.groovy.intentions.utils.ComparisonUtils;
@@ -30,37 +30,35 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrBinary
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 
 public class NegateComparisonIntention extends MutablyNamedIntention {
-  protected String getTextForElement(PsiElement element) {
-    final GrBinaryExpression binaryExpression =
-        (GrBinaryExpression) element;
-    final IElementType tokenType = binaryExpression.getOperationTokenType();
-    final String comparison = ComparisonUtils.getStringForComparison(tokenType);
-    final String negatedComparison = ComparisonUtils.getNegatedComparison(tokenType);
+    protected LocalizeValue getTextForElement(PsiElement element) {
+        final GrBinaryExpression binaryExpression = (GrBinaryExpression) element;
+        final IElementType tokenType = binaryExpression.getOperationTokenType();
+        final String comparison = ComparisonUtils.getStringForComparison(tokenType);
+        final String negatedComparison = ComparisonUtils.getNegatedComparison(tokenType);
 
-    return GroovyIntentionsBundle.message("negate.comparison.intention.name", comparison, negatedComparison);
-  }
+        return GroovyIntentionLocalize.negateComparisonIntentionName(comparison, negatedComparison);
+    }
 
-  @Nonnull
-  public PsiElementPredicate getElementPredicate() {
-    return new ComparisonPredicate();
-  }
+    @Nonnull
+    public PsiElementPredicate getElementPredicate() {
+        return new ComparisonPredicate();
+    }
 
-  public void processIntention(@Nonnull PsiElement element, Project project, Editor editor)
-      throws IncorrectOperationException {
-    final GrBinaryExpression exp =
-        (GrBinaryExpression) element;
-    final IElementType tokenType = exp.getOperationTokenType();
+    public void processIntention(@Nonnull PsiElement element, Project project, Editor editor)
+        throws IncorrectOperationException {
+        final GrBinaryExpression exp =
+            (GrBinaryExpression) element;
+        final IElementType tokenType = exp.getOperationTokenType();
 
-    final GrExpression lhs = exp.getLeftOperand();
-    final String lhsText = lhs.getText();
+        final GrExpression lhs = exp.getLeftOperand();
+        final String lhsText = lhs.getText();
 
-    final GrExpression rhs = exp.getRightOperand();
-    final String rhsText = rhs.getText();
+        final GrExpression rhs = exp.getRightOperand();
+        final String rhsText = rhs.getText();
 
-    final String negatedComparison = ComparisonUtils.getNegatedComparison(tokenType);
+        final String negatedComparison = ComparisonUtils.getNegatedComparison(tokenType);
 
-    final String newExpression = lhsText + negatedComparison + rhsText;
-    replaceExpressionWithNegatedExpressionString(newExpression, exp);
-  }
-
+        final String newExpression = lhsText + negatedComparison + rhsText;
+        replaceExpressionWithNegatedExpressionString(newExpression, exp);
+    }
 }

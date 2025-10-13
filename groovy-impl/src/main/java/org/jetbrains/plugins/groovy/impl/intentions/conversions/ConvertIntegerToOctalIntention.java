@@ -15,62 +15,61 @@
  */
 package org.jetbrains.plugins.groovy.impl.intentions.conversions;
 
-import java.math.BigInteger;
-
 import consulo.codeEditor.Editor;
+import consulo.groovy.impl.localize.GroovyIntentionLocalize;
 import consulo.language.psi.PsiElement;
 import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
 import consulo.project.Project;
-import org.jetbrains.annotations.NonNls;
 import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.impl.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.impl.intentions.base.PsiElementPredicate;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.literals.GrLiteral;
 import org.jetbrains.plugins.groovy.lang.psi.impl.PsiImplUtil;
 
-public class ConvertIntegerToOctalIntention extends Intention
-{
+import java.math.BigInteger;
 
+public class ConvertIntegerToOctalIntention extends Intention {
+    @Nonnull
+    @Override
+    public LocalizeValue getText() {
+        return GroovyIntentionLocalize.convertIntegerToOctalIntentionName();
+    }
 
-	@Nonnull
-	public PsiElementPredicate getElementPredicate()
-	{
-		return new ConvertIntegerToOctalPredicate();
-	}
+    @Nonnull
+    public PsiElementPredicate getElementPredicate() {
+        return new ConvertIntegerToOctalPredicate();
+    }
 
-	public void processIntention(@Nonnull PsiElement element,
-			Project project,
-			Editor editor) throws IncorrectOperationException
-	{
-		final GrLiteral exp = (GrLiteral) element;
-		@NonNls String textString = exp.getText().replaceAll("_", "");
-		final int textLength = textString.length();
-		final char lastChar = textString.charAt(textLength - 1);
-		final boolean isLong = lastChar == 'l' || lastChar == 'L';
-		if(isLong)
-		{
-			textString = textString.substring(0, textLength - 1);
-		}
-		final BigInteger val;
-		if(textString.startsWith("0x") || textString.startsWith("0X"))
-		{
-			final String rawTextString = textString.substring(2);
-			val = new BigInteger(rawTextString, 16);
-		}
-		else if(textString.startsWith("0b") || textString.startsWith("0B"))
-		{
-			final String rawTextString = textString.substring(2);
-			val = new BigInteger(rawTextString, 2);
-		}
-		else
-		{
-			val = new BigInteger(textString, 10);
-		}
-		String octString = '0' + val.toString(8);
-		if(isLong)
-		{
-			octString += 'L';
-		}
-		PsiImplUtil.replaceExpression(octString, exp);
-	}
+    public void processIntention(
+        @Nonnull PsiElement element,
+        Project project,
+        Editor editor
+    ) throws IncorrectOperationException {
+        final GrLiteral exp = (GrLiteral) element;
+        String textString = exp.getText().replaceAll("_", "");
+        final int textLength = textString.length();
+        final char lastChar = textString.charAt(textLength - 1);
+        final boolean isLong = lastChar == 'l' || lastChar == 'L';
+        if (isLong) {
+            textString = textString.substring(0, textLength - 1);
+        }
+        final BigInteger val;
+        if (textString.startsWith("0x") || textString.startsWith("0X")) {
+            final String rawTextString = textString.substring(2);
+            val = new BigInteger(rawTextString, 16);
+        }
+        else if (textString.startsWith("0b") || textString.startsWith("0B")) {
+            final String rawTextString = textString.substring(2);
+            val = new BigInteger(rawTextString, 2);
+        }
+        else {
+            val = new BigInteger(textString, 10);
+        }
+        String octString = '0' + val.toString(8);
+        if (isLong) {
+            octString += 'L';
+        }
+        PsiImplUtil.replaceExpression(octString, exp);
+    }
 }

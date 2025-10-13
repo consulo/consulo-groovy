@@ -15,12 +15,13 @@
  */
 package org.jetbrains.plugins.groovy.impl.intentions.control;
 
-import jakarta.annotation.Nonnull;
-
 import consulo.codeEditor.Editor;
+import consulo.groovy.impl.localize.GroovyIntentionLocalize;
 import consulo.language.psi.PsiElement;
-import consulo.project.Project;
 import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
+import consulo.project.Project;
+import jakarta.annotation.Nonnull;
 import org.codehaus.groovy.runtime.DefaultGroovyMethods;
 import org.jetbrains.plugins.groovy.impl.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.impl.intentions.base.PsiElementPredicate;
@@ -32,50 +33,62 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
  * @author Max Medvedev
  */
 public class FlipIfIntention extends Intention {
-  @Override
-  protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
-    final GrIfStatement ifStatement = DefaultGroovyMethods.asType(element.getParent(), GrIfStatement.class);
-    final GrIfStatement elseIf = getElseIf(ifStatement);
+    @Nonnull
+    @Override
+    public LocalizeValue getText() {
+        return GroovyIntentionLocalize.flipIfIntentionName();
+    }
 
-    final GrIfStatement elseIfCopy = DefaultGroovyMethods.asType(elseIf.copy(), GrIfStatement.class);
-
-    elseIf.getCondition().replaceWithExpression(ifStatement.getCondition(), true);
-    elseIf.getThenBranch().replaceWithStatement(ifStatement.getThenBranch());
-
-    ifStatement.getCondition().replaceWithExpression(elseIfCopy.getCondition(), true);
-    ifStatement.getThenBranch().replaceWithStatement(elseIfCopy.getThenBranch());
-  }
-
-  @Nonnull
-  @Override
-  protected PsiElementPredicate getElementPredicate() {
-    return new PsiElementPredicate() {
-      @Override
-      public boolean satisfiedBy(PsiElement element) {
-        if (!element.getNode().getElementType().equals(GroovyTokenTypes.kIF)) return false;
-        if (!(element.getParent() instanceof GrIfStatement)) return false;
-
+    @Override
+    protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
         final GrIfStatement ifStatement = DefaultGroovyMethods.asType(element.getParent(), GrIfStatement.class);
-
         final GrIfStatement elseIf = getElseIf(ifStatement);
-        return elseIf != null && checkIf(ifStatement) && checkIf(elseIf);
-      }
-    };
-  }
 
-  private static GrIfStatement getElseIf(GrIfStatement ifStatement) {
-    final GrStatement elseBranch = ifStatement.getElseBranch();
-    if (elseBranch == null) return null;
+        final GrIfStatement elseIfCopy = DefaultGroovyMethods.asType(elseIf.copy(), GrIfStatement.class);
 
-    if (elseBranch instanceof GrIfStatement) {
-      return DefaultGroovyMethods.asType(elseBranch, GrIfStatement.class);
+        elseIf.getCondition().replaceWithExpression(ifStatement.getCondition(), true);
+        elseIf.getThenBranch().replaceWithStatement(ifStatement.getThenBranch());
+
+        ifStatement.getCondition().replaceWithExpression(elseIfCopy.getCondition(), true);
+        ifStatement.getThenBranch().replaceWithStatement(elseIfCopy.getThenBranch());
     }
-    else {
-      return null;
-    }
-  }
 
-  private static boolean checkIf(GrIfStatement ifStatement) {
-    return ifStatement.getCondition() != null && ifStatement.getThenBranch() != null;
-  }
+    @Nonnull
+    @Override
+    protected PsiElementPredicate getElementPredicate() {
+        return new PsiElementPredicate() {
+            @Override
+            public boolean satisfiedBy(PsiElement element) {
+                if (!element.getNode().getElementType().equals(GroovyTokenTypes.kIF)) {
+                    return false;
+                }
+                if (!(element.getParent() instanceof GrIfStatement)) {
+                    return false;
+                }
+
+                final GrIfStatement ifStatement = DefaultGroovyMethods.asType(element.getParent(), GrIfStatement.class);
+
+                final GrIfStatement elseIf = getElseIf(ifStatement);
+                return elseIf != null && checkIf(ifStatement) && checkIf(elseIf);
+            }
+        };
+    }
+
+    private static GrIfStatement getElseIf(GrIfStatement ifStatement) {
+        final GrStatement elseBranch = ifStatement.getElseBranch();
+        if (elseBranch == null) {
+            return null;
+        }
+
+        if (elseBranch instanceof GrIfStatement) {
+            return DefaultGroovyMethods.asType(elseBranch, GrIfStatement.class);
+        }
+        else {
+            return null;
+        }
+    }
+
+    private static boolean checkIf(GrIfStatement ifStatement) {
+        return ifStatement.getCondition() != null && ifStatement.getThenBranch() != null;
+    }
 }

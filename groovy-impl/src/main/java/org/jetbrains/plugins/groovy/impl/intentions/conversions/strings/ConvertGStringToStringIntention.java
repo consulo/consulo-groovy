@@ -15,14 +15,16 @@
  */
 package org.jetbrains.plugins.groovy.impl.intentions.conversions.strings;
 
-import java.util.ArrayList;
-
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
-
+import com.intellij.java.language.psi.CommonClassNames;
+import com.intellij.java.language.psi.PsiType;
+import consulo.codeEditor.Editor;
+import consulo.groovy.impl.localize.GroovyIntentionLocalize;
 import consulo.language.psi.PsiElement;
 import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
 import consulo.project.Project;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.impl.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.impl.intentions.base.PsiElementPredicate;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
@@ -37,179 +39,153 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.literals
 import org.jetbrains.plugins.groovy.lang.psi.impl.PsiImplUtil;
 import org.jetbrains.plugins.groovy.lang.psi.util.GrStringUtil;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
-import consulo.codeEditor.Editor;
-import com.intellij.java.language.psi.CommonClassNames;
-import com.intellij.java.language.psi.PsiType;
 
-public class ConvertGStringToStringIntention extends Intention
-{
-	public static final String INTENTION_NAME = "Convert to String";
+import java.util.ArrayList;
 
-	@Override
-	@Nonnull
-	public PsiElementPredicate getElementPredicate()
-	{
-		return new ConvertibleGStringLiteralPredicate();
-	}
+public class ConvertGStringToStringIntention extends Intention {
+    public static final String INTENTION_NAME = "Convert to String";
 
-	@Override
-	public void processIntention(@Nonnull PsiElement element,
-			Project project,
-			Editor editor) throws IncorrectOperationException
-	{
-		final GrLiteral exp = (GrLiteral) element;
-		PsiImplUtil.replaceExpression(convertGStringLiteralToStringLiteral(exp), exp);
-	}
+    @Nonnull
+    @Override
+    public LocalizeValue getText() {
+        return GroovyIntentionLocalize.convertGStringToStringIntentionName();
+    }
 
-	public static String convertGStringLiteralToStringLiteral(GrLiteral literal)
-	{
-		PsiElement child = literal.getFirstChild();
-		if(child == null)
-		{
-			return literal.getText();
-		}
-		String text;
+    @Override
+    @Nonnull
+    public PsiElementPredicate getElementPredicate() {
+        return new ConvertibleGStringLiteralPredicate();
+    }
 
-		ArrayList<String> list = new ArrayList<String>();
+    @Override
+    public void processIntention(
+        @Nonnull PsiElement element,
+        Project project,
+        Editor editor
+    ) throws IncorrectOperationException {
+        final GrLiteral exp = (GrLiteral) element;
+        PsiImplUtil.replaceExpression(convertGStringLiteralToStringLiteral(exp), exp);
+    }
 
-		PsiElement prevSibling = null;
-		PsiElement nextSibling;
-		do
-		{
-			text = child.getText();
-			nextSibling = child.getNextSibling();
-			if(child instanceof GrStringInjection)
-			{
-				if(((GrStringInjection) child).getClosableBlock() != null)
-				{
-					text = prepareClosableBlock(((GrStringInjection) child).getClosableBlock());
-				}
-				else if(((GrStringInjection) child).getExpression() != null)
-				{
-					text = prepareExpression(((GrStringInjection) child).getExpression());
-				}
-				else
-				{
-					text = child.getText();
-				}
-			}
-			else
-			{
-				text = prepareText(text, prevSibling == null, nextSibling == null,
-						nextSibling instanceof GrClosableBlock || nextSibling instanceof GrReferenceExpression);
-			}
-			if(text != null)
-			{
-				list.add(text);
-			}
-			prevSibling = child;
-			child = child.getNextSibling();
-		}
-		while(child != null);
+    public static String convertGStringLiteralToStringLiteral(GrLiteral literal) {
+        PsiElement child = literal.getFirstChild();
+        if (child == null) {
+            return literal.getText();
+        }
+        String text;
 
-		StringBuilder builder = new StringBuilder(literal.getTextLength() * 2);
+        ArrayList<String> list = new ArrayList<String>();
 
-		if(list.isEmpty())
-		{
-			return "''";
-		}
+        PsiElement prevSibling = null;
+        PsiElement nextSibling;
+        do {
+            text = child.getText();
+            nextSibling = child.getNextSibling();
+            if (child instanceof GrStringInjection) {
+                if (((GrStringInjection) child).getClosableBlock() != null) {
+                    text = prepareClosableBlock(((GrStringInjection) child).getClosableBlock());
+                }
+                else if (((GrStringInjection) child).getExpression() != null) {
+                    text = prepareExpression(((GrStringInjection) child).getExpression());
+                }
+                else {
+                    text = child.getText();
+                }
+            }
+            else {
+                text = prepareText(text, prevSibling == null, nextSibling == null,
+                    nextSibling instanceof GrClosableBlock || nextSibling instanceof GrReferenceExpression
+                );
+            }
+            if (text != null) {
+                list.add(text);
+            }
+            prevSibling = child;
+            child = child.getNextSibling();
+        }
+        while (child != null);
 
-		builder.append(list.get(0));
-		for(int i = 1; i < list.size(); i++)
-		{
-			builder.append(" + ").append(list.get(i));
-		}
-		return builder.toString();
-	}
+        StringBuilder builder = new StringBuilder(literal.getTextLength() * 2);
 
-	private static String prepareClosableBlock(GrClosableBlock block)
-	{
-		final GrStatement statement = block.getStatements()[0];
-		final GrExpression expr;
-		if(statement instanceof GrReturnStatement)
-		{
-			expr = ((GrReturnStatement) statement).getReturnValue();
-		}
-		else
-		{
-			expr = (GrExpression) statement;
-		}
-		return prepareExpression(expr);
+        if (list.isEmpty()) {
+            return "''";
+        }
 
-	}
+        builder.append(list.get(0));
+        for (int i = 1; i < list.size(); i++) {
+            builder.append(" + ").append(list.get(i));
+        }
+        return builder.toString();
+    }
 
-	private static String prepareExpression(GrExpression expr)
-	{
-		if(PsiUtil.isThisOrSuperRef(expr))
-		{
-			return expr.getText();
-		}
-		String text = expr.getText();
+    private static String prepareClosableBlock(GrClosableBlock block) {
+        final GrStatement statement = block.getStatements()[0];
+        final GrExpression expr;
+        if (statement instanceof GrReturnStatement) {
+            expr = ((GrReturnStatement) statement).getReturnValue();
+        }
+        else {
+            expr = (GrExpression) statement;
+        }
+        return prepareExpression(expr);
 
-		final PsiType type = expr.getType();
-		if(type != null && CommonClassNames.JAVA_LANG_STRING.equals(type.getCanonicalText()))
-		{
-			if(expr instanceof GrBinaryExpression && GroovyTokenTypes.mPLUS.equals(((GrBinaryExpression) expr)
-					.getOperationTokenType()))
-			{
-				return '(' + text + ')';
-			}
-			else
-			{
-				return text;
-			}
-		}
-		else
-		{
-			return "String.valueOf(" + text + ")";
-		}
-	}
+    }
 
-	@Nullable
-	private static String prepareText(String text, boolean isFirst, boolean isLast, boolean isBeforeInjection)
-	{
-		if(isFirst)
-		{
-			if(text.startsWith("\"\"\""))
-			{
-				text = text.substring(3);
-			}
-			else if(text.startsWith("\""))
-			{
-				text = text.substring(1);
-			}
-		}
-		if(isLast)
-		{
-			if(text.endsWith("\"\"\""))
-			{
-				text = text.substring(0, text.length() - 3);
-			}
-			else if(text.endsWith("\""))
-			{
-				text = text.substring(0, text.length() - 1);
-			}
-		}
-		if(isBeforeInjection)
-		{
-			text = text.substring(0, text.length() - 1);
-		}
-		if(text.isEmpty())
-		{
-			return null;
-		}
+    private static String prepareExpression(GrExpression expr) {
+        if (PsiUtil.isThisOrSuperRef(expr)) {
+            return expr.getText();
+        }
+        String text = expr.getText();
+
+        final PsiType type = expr.getType();
+        if (type != null && CommonClassNames.JAVA_LANG_STRING.equals(type.getCanonicalText())) {
+            if (expr instanceof GrBinaryExpression && GroovyTokenTypes.mPLUS.equals(((GrBinaryExpression) expr)
+                .getOperationTokenType())) {
+                return '(' + text + ')';
+            }
+            else {
+                return text;
+            }
+        }
+        else {
+            return "String.valueOf(" + text + ")";
+        }
+    }
+
+    @Nullable
+    private static String prepareText(String text, boolean isFirst, boolean isLast, boolean isBeforeInjection) {
+        if (isFirst) {
+            if (text.startsWith("\"\"\"")) {
+                text = text.substring(3);
+            }
+            else if (text.startsWith("\"")) {
+                text = text.substring(1);
+            }
+        }
+        if (isLast) {
+            if (text.endsWith("\"\"\"")) {
+                text = text.substring(0, text.length() - 3);
+            }
+            else if (text.endsWith("\"")) {
+                text = text.substring(0, text.length() - 1);
+            }
+        }
+        if (isBeforeInjection) {
+            text = text.substring(0, text.length() - 1);
+        }
+        if (text.isEmpty()) {
+            return null;
+        }
 
 
-		final StringBuilder buffer = new StringBuilder();
-		if(text.indexOf('\n') >= 0)
-		{
-			GrStringUtil.escapeAndUnescapeSymbols(text, "", "\"$", buffer);
-			GrStringUtil.fixAllTripleQuotes(buffer, 0);
-		}
-		else
-		{
-			GrStringUtil.escapeAndUnescapeSymbols(text, "'", "\"$", buffer);
-		}
-		return GrStringUtil.addQuotes(buffer.toString(), false);
-	}
+        final StringBuilder buffer = new StringBuilder();
+        if (text.indexOf('\n') >= 0) {
+            GrStringUtil.escapeAndUnescapeSymbols(text, "", "\"$", buffer);
+            GrStringUtil.fixAllTripleQuotes(buffer, 0);
+        }
+        else {
+            GrStringUtil.escapeAndUnescapeSymbols(text, "'", "\"$", buffer);
+        }
+        return GrStringUtil.addQuotes(buffer.toString(), false);
+    }
 }

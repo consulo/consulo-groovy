@@ -15,12 +15,13 @@
  */
 package org.jetbrains.plugins.groovy.impl.intentions.conversions.strings;
 
-import jakarta.annotation.Nonnull;
-
 import consulo.codeEditor.Editor;
+import consulo.groovy.impl.localize.GroovyIntentionLocalize;
 import consulo.language.psi.PsiElement;
 import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
 import consulo.project.Project;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.impl.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.impl.intentions.base.PsiElementPredicate;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
@@ -32,26 +33,33 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.literals
  * @author Max Medvedev
  */
 public class GrConvertStringToCharIntention extends Intention {
-  @Override
-  protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException
-  {
-    final GrExpression cast = GroovyPsiElementFactory.getInstance(project).createExpressionFromText("a as char");
-    ((GrSafeCastExpression)cast).getOperand().replaceWithExpression((GrExpression)element, true);
+    @Nonnull
+    @Override
+    public LocalizeValue getText() {
+        return GroovyIntentionLocalize.grConvertStringToCharIntentionName();
+    }
 
-    ((GrExpression)element).replaceWithExpression(cast, true);
-  }
+    @Override
+    protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
+        final GrExpression cast = GroovyPsiElementFactory.getInstance(project).createExpressionFromText("a as char");
+        ((GrSafeCastExpression) cast).getOperand().replaceWithExpression((GrExpression) element, true);
 
-  @Nonnull
-  @Override
-  protected PsiElementPredicate getElementPredicate() {
-    return new PsiElementPredicate() {
-      @Override
-      public boolean satisfiedBy(PsiElement element) {
-        if (!(element instanceof GrLiteral)) return false;
+        ((GrExpression) element).replaceWithExpression(cast, true);
+    }
 
-        final Object value = ((GrLiteral)element).getValue();
-        return value instanceof String && ((String)value).length() == 1;
-      }
-    };
-  }
+    @Nonnull
+    @Override
+    protected PsiElementPredicate getElementPredicate() {
+        return new PsiElementPredicate() {
+            @Override
+            public boolean satisfiedBy(PsiElement element) {
+                if (!(element instanceof GrLiteral)) {
+                    return false;
+                }
+
+                final Object value = ((GrLiteral) element).getValue();
+                return value instanceof String && ((String) value).length() == 1;
+            }
+        };
+    }
 }

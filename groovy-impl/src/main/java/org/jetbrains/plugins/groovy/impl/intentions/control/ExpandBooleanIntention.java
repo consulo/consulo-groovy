@@ -15,10 +15,13 @@
  */
 package org.jetbrains.plugins.groovy.impl.intentions.control;
 
-import jakarta.annotation.Nonnull;
-
+import consulo.codeEditor.Editor;
+import consulo.groovy.impl.localize.GroovyIntentionLocalize;
+import consulo.language.psi.PsiElement;
+import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
 import consulo.project.Project;
-import org.jetbrains.annotations.NonNls;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.impl.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.impl.intentions.base.PsiElementPredicate;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
@@ -26,44 +29,41 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.branch.GrReturnState
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrAssignmentExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.impl.PsiImplUtil;
-import consulo.codeEditor.Editor;
-import consulo.language.psi.PsiElement;
-import consulo.language.util.IncorrectOperationException;
 
-public class ExpandBooleanIntention extends Intention
-{
+public class ExpandBooleanIntention extends Intention {
+    @Nonnull
+    @Override
+    public LocalizeValue getText() {
+        return GroovyIntentionLocalize.expandBooleanIntentionName();
+    }
 
+    @Nonnull
+    public PsiElementPredicate getElementPredicate() {
+        return new ExpandBooleanPredicate();
+    }
 
-	@Nonnull
-	public PsiElementPredicate getElementPredicate()
-	{
-		return new ExpandBooleanPredicate();
-	}
-
-	public void processIntention(@Nonnull PsiElement element,
-			Project project,
-			Editor editor) throws IncorrectOperationException
-	{
-		final GrStatement containingStatement = (GrStatement) element;
-		if(ExpandBooleanPredicate.isBooleanAssignment(containingStatement))
-		{
-			final GrAssignmentExpression assignmentExpression = (GrAssignmentExpression) containingStatement;
-			final GrExpression rhs = assignmentExpression.getRValue();
-			assert rhs != null;
-			final String rhsText = rhs.getText();
-			final GrExpression lhs = assignmentExpression.getLValue();
-			final String lhsText = lhs.getText();
-			@NonNls final String statement = "if(" + rhsText + "){\n" + lhsText + " = true\n}else{\n" + lhsText + " = " +
-					"false\n}";
-			PsiImplUtil.replaceStatement(statement, containingStatement);
-		}
-		else if(ExpandBooleanPredicate.isBooleanReturn(containingStatement))
-		{
-			final GrReturnStatement returnStatement = (GrReturnStatement) containingStatement;
-			final GrExpression returnValue = returnStatement.getReturnValue();
-			final String valueText = returnValue.getText();
-			@NonNls final String statement = "if(" + valueText + "){\nreturn true\n}else{\nreturn false\n}";
-			PsiImplUtil.replaceStatement(statement, containingStatement);
-		}
-	}
+    public void processIntention(
+        @Nonnull PsiElement element,
+        Project project,
+        Editor editor
+    ) throws IncorrectOperationException {
+        final GrStatement containingStatement = (GrStatement) element;
+        if (ExpandBooleanPredicate.isBooleanAssignment(containingStatement)) {
+            final GrAssignmentExpression assignmentExpression = (GrAssignmentExpression) containingStatement;
+            final GrExpression rhs = assignmentExpression.getRValue();
+            assert rhs != null;
+            final String rhsText = rhs.getText();
+            final GrExpression lhs = assignmentExpression.getLValue();
+            final String lhsText = lhs.getText();
+            String statement = "if(" + rhsText + "){\n" + lhsText + " = true\n}else{\n" + lhsText + " = false\n}";
+            PsiImplUtil.replaceStatement(statement, containingStatement);
+        }
+        else if (ExpandBooleanPredicate.isBooleanReturn(containingStatement)) {
+            final GrReturnStatement returnStatement = (GrReturnStatement) containingStatement;
+            final GrExpression returnValue = returnStatement.getReturnValue();
+            final String valueText = returnValue.getText();
+            String statement = "if(" + valueText + "){\nreturn true\n}else{\nreturn false\n}";
+            PsiImplUtil.replaceStatement(statement, containingStatement);
+        }
+    }
 }
