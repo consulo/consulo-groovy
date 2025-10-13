@@ -23,7 +23,8 @@ import consulo.project.Project;
 import jakarta.annotation.Nonnull;
 
 public abstract class MutablyNamedIntention extends Intention {
-    private LocalizeValue myText = null;
+    @Nonnull
+    private LocalizeValue myText = LocalizeValue.empty();
 
     protected abstract LocalizeValue getTextForElement(PsiElement element);
 
