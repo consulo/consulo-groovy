@@ -17,99 +17,119 @@ package org.jetbrains.plugins.groovy.impl.codeInspection.confusing;
 
 import com.intellij.java.language.psi.PsiAnnotation;
 import com.intellij.java.language.psi.PsiAnnotationMemberValue;
+import consulo.groovy.impl.localize.GroovyInspectionLocalize;
 import consulo.language.editor.inspection.LocalQuickFix;
 import consulo.language.editor.inspection.ProblemHighlightType;
 import consulo.language.psi.PsiElement;
+import consulo.localize.LocalizeValue;
+import jakarta.annotation.Nonnull;
 import org.codehaus.groovy.runtime.DefaultGroovyMethods;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
-import org.jetbrains.plugins.groovy.impl.codeInspection.GroovyInspectionBundle;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotation;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameter;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameterList;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GrAnnotationUtil;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames;
 
-import jakarta.annotation.Nonnull;
-
 /**
  * @author Max Medvedev
  */
 public class DelegatesToInspection extends BaseInspection {
-  @Nonnull
-  @Override
-  public String getDisplayName() {
-    return "@DelegatesTo inspection";
-  }
+    @Nonnull
+    @Override
+    public LocalizeValue getDisplayName() {
+        return LocalizeValue.localizeTODO("@DelegatesTo inspection");
+    }
 
-  @Nonnull
-  @Override
-  protected BaseInspectionVisitor buildVisitor() {
-    return new BaseInspectionVisitor() {
-      @Override
-      public void visitAnnotation(GrAnnotation annotation) {
-        checkTarget(annotation);
-        checkDelegatesTo(annotation);
-      }
-
-      private void checkTarget(GrAnnotation annotation) {
-        if (!GroovyCommonClassNames.GROOVY_LANG_DELEGATES_TO_TARGET.equals(annotation.getQualifiedName())) return;
-
-
-        final PsiElement owner = annotation.getParent().getParent();
-        if (!(owner instanceof GrParameter)) return;
-
-
-        final boolean isTargetDeclared = annotation.findDeclaredAttributeValue("value") != null;
-        String targetName = GrAnnotationUtil.inferStringAttribute(annotation, "value");
-
-        final GrParameterList parameterList = DefaultGroovyMethods.asType(owner.getParent(), GrParameterList.class);
-        for (GrParameter parameter : parameterList.getParameters()) {
-          final PsiAnnotation delegatesTo = parameter.getModifierList().findAnnotation(GroovyCommonClassNames.GROOVY_LANG_DELEGATES_TO);
-          if (delegatesTo != null) {
-            if (isTargetDeclared) {
-              final String curTarget = GrAnnotationUtil.inferStringAttribute(delegatesTo, "target");
-              if (curTarget != null && curTarget.equals(targetName)) {
-                return; //target is used
-              }
+    @Nonnull
+    @Override
+    protected BaseInspectionVisitor buildVisitor() {
+        return new BaseInspectionVisitor() {
+            @Override
+            public void visitAnnotation(GrAnnotation annotation) {
+                checkTarget(annotation);
+                checkDelegatesTo(annotation);
             }
-            else {
-              if (delegatesTo.findDeclaredAttributeValue("target") == null) {
-                return; // target is used
-              }
+
+            private void checkTarget(GrAnnotation annotation) {
+                if (!GroovyCommonClassNames.GROOVY_LANG_DELEGATES_TO_TARGET.equals(annotation.getQualifiedName())) {
+                    return;
+                }
+
+
+                final PsiElement owner = annotation.getParent().getParent();
+                if (!(owner instanceof GrParameter)) {
+                    return;
+                }
+
+
+                final boolean isTargetDeclared = annotation.findDeclaredAttributeValue("value") != null;
+                String targetName = GrAnnotationUtil.inferStringAttribute(annotation, "value");
+
+                final GrParameterList parameterList = DefaultGroovyMethods.asType(owner.getParent(), GrParameterList.class);
+                for (GrParameter parameter : parameterList.getParameters()) {
+                    final PsiAnnotation delegatesTo =
+                        parameter.getModifierList().findAnnotation(GroovyCommonClassNames.GROOVY_LANG_DELEGATES_TO);
+                    if (delegatesTo != null) {
+                        if (isTargetDeclared) {
+                            final String curTarget = GrAnnotationUtil.inferStringAttribute(delegatesTo, "target");
+                            if (curTarget != null && curTarget.equals(targetName)) {
+                                return; //target is used
+                            }
+                        }
+                        else {
+                            if (delegatesTo.findDeclaredAttributeValue("target") == null) {
+                                return; // target is used
+                            }
+                        }
+                    }
+                }
+
+                registerError(
+                    annotation.getClassReference(),
+                    GroovyInspectionLocalize.targetAnnotationIsUnused(),
+                    LocalQuickFix.EMPTY_ARRAY,
+                    ProblemHighlightType.GENERIC_ERROR_OR_WARNING
+                );
             }
-          }
-        }
 
-        registerError(annotation.getClassReference(), GroovyInspectionBundle.message("target.annotation.is.unused"),
-                      LocalQuickFix.EMPTY_ARRAY, ProblemHighlightType.GENERIC_ERROR_OR_WARNING);
-      }
+            private void checkDelegatesTo(GrAnnotation annotation) {
+                if (!GroovyCommonClassNames.GROOVY_LANG_DELEGATES_TO.equals(annotation.getQualifiedName())) {
+                    return;
+                }
 
-      private void checkDelegatesTo(GrAnnotation annotation) {
-        if (!GroovyCommonClassNames.GROOVY_LANG_DELEGATES_TO.equals(annotation.getQualifiedName())) return;
+                final PsiElement owner = annotation.getParent().getParent();
+                if (!(owner instanceof GrParameter)) {
+                    return;
+                }
 
-        final PsiElement owner = annotation.getParent().getParent();
-        if (!(owner instanceof GrParameter)) return;
+                final PsiAnnotationMemberValue targetPair = annotation.findDeclaredAttributeValue("target");
+                if (targetPair == null) {
+                    return;
+                }
 
-        final PsiAnnotationMemberValue targetPair = annotation.findDeclaredAttributeValue("target");
-        if (targetPair == null) return;
+                String targetName = GrAnnotationUtil.inferStringAttribute(annotation, "target");
 
-        String targetName = GrAnnotationUtil.inferStringAttribute(annotation, "target");
+                final GrParameterList parameterList = DefaultGroovyMethods.asType(owner.getParent(), GrParameterList.class);
+                for (GrParameter parameter : parameterList.getParameters()) {
+                    final PsiAnnotation target =
+                        parameter.getModifierList().findAnnotation(GroovyCommonClassNames.GROOVY_LANG_DELEGATES_TO_TARGET);
+                    if (target != null) {
+                        final String curTarget = GrAnnotationUtil.inferStringAttribute(target, "value");
+                        if (curTarget != null && curTarget.equals(targetName)) {
+                            return; //target is used
+                        }
+                    }
+                }
 
-        final GrParameterList parameterList = DefaultGroovyMethods.asType(owner.getParent(), GrParameterList.class);
-        for (GrParameter parameter : parameterList.getParameters()) {
-          final PsiAnnotation target = parameter.getModifierList().findAnnotation(GroovyCommonClassNames.GROOVY_LANG_DELEGATES_TO_TARGET);
-          if (target != null) {
-            final String curTarget = GrAnnotationUtil.inferStringAttribute(target, "value");
-            if (curTarget != null && curTarget.equals(targetName)) {
-              return; //target is used
+                registerError(
+                    targetPair,
+                    GroovyInspectionLocalize.target0DoesNotExist(targetName != null ? targetName : "?"),
+                    LocalQuickFix.EMPTY_ARRAY,
+                    ProblemHighlightType.GENERIC_ERROR_OR_WARNING
+                );
             }
-          }
-        }
-
-        registerError(targetPair, GroovyInspectionBundle.message("target.0.does.not.exist", targetName != null ? targetName : "?"),
-                      LocalQuickFix.EMPTY_ARRAY, ProblemHighlightType.GENERIC_ERROR_OR_WARNING);
-      }
-    };
-  }
+        };
+    }
 }

@@ -19,6 +19,7 @@ import consulo.language.editor.inspection.LocalQuickFix;
 import consulo.language.editor.inspection.ProblemHighlightType;
 import consulo.language.editor.inspection.ProblemsHolder;
 import consulo.language.psi.PsiElement;
+import consulo.localize.LocalizeValue;
 import consulo.util.lang.StringUtil;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
@@ -32,118 +33,122 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefini
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
 
 public abstract class BaseInspectionVisitor<State> extends GroovyElementVisitor {
-  private BaseInspection inspection = null;
-  private ProblemsHolder problemsHolder = null;
-  private boolean onTheFly = false;
+    private BaseInspection inspection = null;
+    private ProblemsHolder problemsHolder = null;
+    private boolean onTheFly = false;
 
-  protected State myState;
+    protected State myState;
 
-  public void setInspection(BaseInspection inspection) {
-    this.inspection = inspection;
-  }
-
-  public void setProblemsHolder(ProblemsHolder problemsHolder) {
-    this.problemsHolder = problemsHolder;
-  }
-
-  public void setOnTheFly(boolean onTheFly) {
-    this.onTheFly = onTheFly;
-  }
-
-  public void setState(State state) {
-    myState = state;
-  }
-
-  protected void registerStatementError(GrStatement statement, Object... args) {
-    final PsiElement statementToken = statement.getFirstChild();
-    registerError(statementToken, args);
-  }
-
-  protected void registerClassError(GrTypeDefinition aClass, Object... args) {
-    final PsiElement statementToken = aClass.getNameIdentifierGroovy();
-    registerError(statementToken, args);
-  }
-
-  protected void registerError(PsiElement location) {
-    if (location == null) {
-      return;
+    public void setInspection(BaseInspection inspection) {
+        this.inspection = inspection;
     }
-    final LocalQuickFix[] fix = createFixes(location);
-    String description = StringUtil.notNullize(inspection.buildErrorString(location));
 
-    registerError(location, description, fix, ProblemHighlightType.GENERIC_ERROR_OR_WARNING);
-  }
-
-  protected void registerMethodError(GrMethod method, Object... args) {
-    if (method == null) {
-      return;
+    public void setProblemsHolder(ProblemsHolder problemsHolder) {
+        this.problemsHolder = problemsHolder;
     }
-    final LocalQuickFix[] fixes = createFixes(method);
-    String description = StringUtil.notNullize(inspection.buildErrorString(args));
 
-    registerError(method.getNameIdentifierGroovy(), description, fixes, ProblemHighlightType.GENERIC_ERROR_OR_WARNING);
-  }
-
-  protected void registerVariableError(GrVariable variable, Object... args) {
-    if (variable == null) {
-      return;
+    public void setOnTheFly(boolean onTheFly) {
+        this.onTheFly = onTheFly;
     }
-    final LocalQuickFix[] fix = createFixes(variable);
-    final String description = StringUtil.notNullize(inspection.buildErrorString(args));
-    registerError(variable.getNameIdentifierGroovy(), description, fix, ProblemHighlightType.GENERIC_ERROR_OR_WARNING);
-  }
 
-  protected void registerMethodCallError(GrMethodCallExpression method, Object... args) {
-    if (method == null) {
-      return;
+    public void setState(State state) {
+        myState = state;
     }
-    final LocalQuickFix[] fixes = createFixes(method);
-    final String description = StringUtil.notNullize(inspection.buildErrorString(args));
 
-    final GrExpression invoked = method.getInvokedExpression();
-    assert invoked != null;
-    final PsiElement nameElement = ((GrReferenceExpression)invoked).getReferenceNameElement();
-    assert nameElement != null;
-    registerError(nameElement, description, fixes, ProblemHighlightType.GENERIC_ERROR_OR_WARNING);
-  }
-
-  protected void registerError(@Nonnull PsiElement location,
-                               @Nonnull String description,
-                               @Nullable LocalQuickFix[] fixes,
-                               ProblemHighlightType highlightType) {
-    problemsHolder.registerProblem(location, description, highlightType, fixes);
-  }
-
-  protected void registerError(@Nonnull PsiElement location, Object... args) {
-    registerError(location, ProblemHighlightType.GENERIC_ERROR_OR_WARNING, args);
-  }
-
-  protected void registerError(@Nonnull PsiElement location,
-                               ProblemHighlightType highlightType,
-                               Object... args) {
-    final LocalQuickFix[] fix = createFixes(location);
-    final String description = StringUtil.notNullize(inspection.buildErrorString(args));
-    registerError(location, description, fix, highlightType);
-  }
-
-  @Nullable
-  private LocalQuickFix[] createFixes(@Nonnull PsiElement location) {
-    if (!onTheFly &&
-        inspection.buildQuickFixesOnlyForOnTheFlyErrors()) {
-      return null;
+    protected void registerStatementError(GrStatement statement, Object... args) {
+        final PsiElement statementToken = statement.getFirstChild();
+        registerError(statementToken, args);
     }
-    final GroovyFix[] fixes = inspection.buildFixes(location);
-    if (fixes != null) {
-      return fixes;
-    }
-    final GroovyFix fix = inspection.buildFix(location);
-    if (fix == null) {
-      return null;
-    }
-    return new GroovyFix[]{fix};
-  }
 
-  public int getErrorCount() {
-    return problemsHolder.getResultCount();
-  }
+    protected void registerClassError(GrTypeDefinition aClass, Object... args) {
+        final PsiElement statementToken = aClass.getNameIdentifierGroovy();
+        registerError(statementToken, args);
+    }
+
+    protected void registerError(PsiElement location) {
+        if (location == null) {
+            return;
+        }
+        final LocalQuickFix[] fix = createFixes(location);
+        String description = StringUtil.notNullize(inspection.buildErrorString(location));
+
+        registerError(location, description, fix, ProblemHighlightType.GENERIC_ERROR_OR_WARNING);
+    }
+
+    protected void registerMethodError(GrMethod method, Object... args) {
+        if (method == null) {
+            return;
+        }
+        final LocalQuickFix[] fixes = createFixes(method);
+        String description = StringUtil.notNullize(inspection.buildErrorString(args));
+
+        registerError(method.getNameIdentifierGroovy(), description, fixes, ProblemHighlightType.GENERIC_ERROR_OR_WARNING);
+    }
+
+    protected void registerVariableError(GrVariable variable, Object... args) {
+        if (variable == null) {
+            return;
+        }
+        final LocalQuickFix[] fix = createFixes(variable);
+        final String description = StringUtil.notNullize(inspection.buildErrorString(args));
+        registerError(variable.getNameIdentifierGroovy(), description, fix, ProblemHighlightType.GENERIC_ERROR_OR_WARNING);
+    }
+
+    protected void registerMethodCallError(GrMethodCallExpression method, Object... args) {
+        if (method == null) {
+            return;
+        }
+        final LocalQuickFix[] fixes = createFixes(method);
+        final String description = StringUtil.notNullize(inspection.buildErrorString(args));
+
+        final GrExpression invoked = method.getInvokedExpression();
+        assert invoked != null;
+        final PsiElement nameElement = ((GrReferenceExpression) invoked).getReferenceNameElement();
+        assert nameElement != null;
+        registerError(nameElement, description, fixes, ProblemHighlightType.GENERIC_ERROR_OR_WARNING);
+    }
+
+    protected void registerError(
+        @Nonnull PsiElement location,
+        @Nonnull LocalizeValue description,
+        @Nullable LocalQuickFix[] fixes,
+        ProblemHighlightType highlightType
+    ) {
+        problemsHolder.newProblem(description)
+            .range(location)
+            .highlightType(highlightType)
+            .withFixes(fixes)
+            .create();
+    }
+
+    protected void registerError(@Nonnull PsiElement location, Object... args) {
+        registerError(location, ProblemHighlightType.GENERIC_ERROR_OR_WARNING, args);
+    }
+
+    protected void registerError(@Nonnull PsiElement location, ProblemHighlightType highlightType, Object... args) {
+        final LocalQuickFix[] fix = createFixes(location);
+        final String description = StringUtil.notNullize(inspection.buildErrorString(args));
+        registerError(location, description, fix, highlightType);
+    }
+
+    @Nullable
+    private LocalQuickFix[] createFixes(@Nonnull PsiElement location) {
+        if (!onTheFly &&
+            inspection.buildQuickFixesOnlyForOnTheFlyErrors()) {
+            return null;
+        }
+        final GroovyFix[] fixes = inspection.buildFixes(location);
+        if (fixes != null) {
+            return fixes;
+        }
+        final GroovyFix fix = inspection.buildFix(location);
+        if (fix == null) {
+            return null;
+        }
+        return new GroovyFix[]{fix};
+    }
+
+    public int getErrorCount() {
+        return problemsHolder.getResultCount();
+    }
 }

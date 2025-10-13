@@ -16,47 +16,44 @@
 package org.jetbrains.plugins.groovy.impl.codeInspection.confusing;
 
 import consulo.language.psi.util.PsiTreeUtil;
+import consulo.localize.LocalizeValue;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
-import org.jetbrains.annotations.Nls;
 
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrSwitchStatement;
 
 public class GroovyNestedSwitchInspection extends BaseInspection {
-
-  @Nls
-  @Nonnull
-  public String getGroupDisplayName() {
-    return CONFUSING_CODE_CONSTRUCTS;
-  }
-
-  @Nls
-  @Nonnull
-  public String getDisplayName() {
-    return "Nested switch statement";
-  }
-
-  @Nullable
-  protected String buildErrorString(Object... args) {
-    return "Nested #ref statement #loc";
-
-  }
-
-  public BaseInspectionVisitor buildVisitor() {
-    return new Visitor();
-  }
-
-  private static class Visitor extends BaseInspectionVisitor {
-
-    public void visitSwitchStatement(GrSwitchStatement switchStatement) {
-      super.visitSwitchStatement(switchStatement);
-      final GrSwitchStatement containingSwitch = PsiTreeUtil.getParentOfType(switchStatement, GrSwitchStatement.class);
-      if (containingSwitch == null) {
-        return;
-      }
-      registerStatementError(switchStatement);
+    @Nonnull
+    @Override
+    public LocalizeValue getGroupDisplayName() {
+        return CONFUSING_CODE_CONSTRUCTS;
     }
-  }
+
+    @Nonnull
+    @Override
+    public LocalizeValue getDisplayName() {
+        return LocalizeValue.localizeTODO("Nested switch statement");
+    }
+
+    @Nullable
+    protected String buildErrorString(Object... args) {
+        return "Nested #ref statement #loc";
+    }
+
+    public BaseInspectionVisitor buildVisitor() {
+        return new Visitor();
+    }
+
+    private static class Visitor extends BaseInspectionVisitor {
+        public void visitSwitchStatement(GrSwitchStatement switchStatement) {
+            super.visitSwitchStatement(switchStatement);
+            final GrSwitchStatement containingSwitch = PsiTreeUtil.getParentOfType(switchStatement, GrSwitchStatement.class);
+            if (containingSwitch == null) {
+                return;
+            }
+            registerStatementError(switchStatement);
+        }
+    }
 }

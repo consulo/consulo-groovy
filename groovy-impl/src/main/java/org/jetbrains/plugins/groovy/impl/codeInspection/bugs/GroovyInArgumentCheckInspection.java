@@ -18,105 +18,123 @@ package org.jetbrains.plugins.groovy.impl.codeInspection.bugs;
 import com.intellij.java.language.psi.*;
 import com.intellij.java.language.psi.util.InheritanceUtil;
 import com.intellij.java.language.psi.util.PsiUtil;
-import org.jetbrains.annotations.Nls;
+import consulo.groovy.impl.localize.GroovyInspectionLocalize;
+import consulo.localize.LocalizeValue;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
-import org.jetbrains.plugins.groovy.impl.codeInspection.GroovyInspectionBundle;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrBinaryExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil;
 
-import jakarta.annotation.Nonnull;
-
 /**
  * @author Max Medvedev
  */
 public class GroovyInArgumentCheckInspection extends BaseInspection {
-  @Nonnull
-  @Override
-  protected BaseInspectionVisitor buildVisitor() {
-    return new MyVisitor();
-  }
-
-  @Override
-  protected String buildErrorString(Object... args) {
-    PsiType ltype = (PsiType)args[0];
-    PsiType rtype = (PsiType)args[1];
-    return GroovyInspectionBundle.message("rtype.cannot.contain.ltype", ltype.getPresentableText(), rtype.getPresentableText());
-
-  }
-
-  @Nls
-  @Nonnull
-  @Override
-  public String getGroupDisplayName() {
-    return BaseInspection.PROBABLE_BUGS;
-  }
-
-  @Nls
-  @Nonnull
-  @Override
-  public String getDisplayName() {
-    return "Incompatible 'in' argument types";
-  }
-
-  private static class MyVisitor extends BaseInspectionVisitor {
+    @Nonnull
     @Override
-    public void visitBinaryExpression(GrBinaryExpression expression) {
-      super.visitBinaryExpression(expression);
-
-      if (expression.getOperationTokenType() != GroovyTokenTypes.kIN) return;
-
-      GrExpression leftOperand = expression.getLeftOperand();
-      GrExpression rightOperand = expression.getRightOperand();
-      if (rightOperand == null) return;
-
-      PsiType ltype = leftOperand.getType();
-      PsiType rtype = rightOperand.getType();
-      if (ltype == null || rtype == null) return;
-
-      PsiType component;
-
-      if (rtype instanceof PsiArrayType) {
-        component = ((PsiArrayType)rtype).getComponentType();
-      }
-      else if (InheritanceUtil.isInheritor(rtype, CommonClassNames.JAVA_UTIL_COLLECTION)) {
-        component = PsiUtil.substituteTypeParameter(rtype, CommonClassNames.JAVA_UTIL_COLLECTION, 0, false);
-      }
-      else {
-        checkSimpleClasses(ltype, rtype, expression);
-        return;
-      }
-
-      if (component == null) return;
-      
-      if (TypesUtil.isAssignable(ltype, component, expression)) return;
-
-      registerError(expression, ltype, rtype);
+    protected BaseInspectionVisitor buildVisitor() {
+        return new MyVisitor();
     }
 
-    private void checkSimpleClasses(PsiType ltype, PsiType rtype, GrBinaryExpression expression) {
-      if (!(rtype instanceof PsiClassType)) return;
-      if (!(ltype instanceof PsiClassType)) return;
-
-      PsiClass lclass = ((PsiClassType)ltype).resolve();
-      PsiClass rclass = ((PsiClassType)rtype).resolve();
-
-      if (lclass == null || rclass == null) return;
-
-      if (expression.getManager().areElementsEquivalent(lclass, rclass)) return;
-
-      if (lclass.isInterface() || rclass.isInterface()) return;
-
-      if (lclass.isInheritor(rclass, true) || rclass.isInheritor(lclass, true)) return;
-
-      registerError(expression, ltype, rtype);
+    @Override
+    protected String buildErrorString(Object... args) {
+        PsiType ltype = (PsiType) args[0];
+        PsiType rtype = (PsiType) args[1];
+        return GroovyInspectionLocalize.rtypeCannotContainLtype(ltype.getPresentableText(), rtype.getPresentableText()).get();
     }
-  }
 
-  @Override
-  public boolean isEnabledByDefault() {
-    return true;
-  }
+    @Nonnull
+    @Override
+    public LocalizeValue getGroupDisplayName() {
+        return BaseInspection.PROBABLE_BUGS;
+    }
+
+    @Nonnull
+    @Override
+    public LocalizeValue getDisplayName() {
+        return LocalizeValue.localizeTODO("Incompatible 'in' argument types");
+    }
+
+    private static class MyVisitor extends BaseInspectionVisitor {
+        @Override
+        public void visitBinaryExpression(GrBinaryExpression expression) {
+            super.visitBinaryExpression(expression);
+
+            if (expression.getOperationTokenType() != GroovyTokenTypes.kIN) {
+                return;
+            }
+
+            GrExpression leftOperand = expression.getLeftOperand();
+            GrExpression rightOperand = expression.getRightOperand();
+            if (rightOperand == null) {
+                return;
+            }
+
+            PsiType ltype = leftOperand.getType();
+            PsiType rtype = rightOperand.getType();
+            if (ltype == null || rtype == null) {
+                return;
+            }
+
+            PsiType component;
+
+            if (rtype instanceof PsiArrayType) {
+                component = ((PsiArrayType) rtype).getComponentType();
+            }
+            else if (InheritanceUtil.isInheritor(rtype, CommonClassNames.JAVA_UTIL_COLLECTION)) {
+                component = PsiUtil.substituteTypeParameter(rtype, CommonClassNames.JAVA_UTIL_COLLECTION, 0, false);
+            }
+            else {
+                checkSimpleClasses(ltype, rtype, expression);
+                return;
+            }
+
+            if (component == null) {
+                return;
+            }
+
+            if (TypesUtil.isAssignable(ltype, component, expression)) {
+                return;
+            }
+
+            registerError(expression, ltype, rtype);
+        }
+
+        private void checkSimpleClasses(PsiType ltype, PsiType rtype, GrBinaryExpression expression) {
+            if (!(rtype instanceof PsiClassType)) {
+                return;
+            }
+            if (!(ltype instanceof PsiClassType)) {
+                return;
+            }
+
+            PsiClass lclass = ((PsiClassType) ltype).resolve();
+            PsiClass rclass = ((PsiClassType) rtype).resolve();
+
+            if (lclass == null || rclass == null) {
+                return;
+            }
+
+            if (expression.getManager().areElementsEquivalent(lclass, rclass)) {
+                return;
+            }
+
+            if (lclass.isInterface() || rclass.isInterface()) {
+                return;
+            }
+
+            if (lclass.isInheritor(rclass, true) || rclass.isInheritor(lclass, true)) {
+                return;
+            }
+
+            registerError(expression, ltype, rtype);
+        }
+    }
+
+    @Override
+    public boolean isEnabledByDefault() {
+        return true;
+    }
 }

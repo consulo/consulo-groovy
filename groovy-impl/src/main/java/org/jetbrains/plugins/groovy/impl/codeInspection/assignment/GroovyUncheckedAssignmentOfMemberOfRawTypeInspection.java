@@ -19,10 +19,10 @@ package org.jetbrains.plugins.groovy.impl.codeInspection.assignment;
 import com.intellij.java.language.psi.*;
 import com.intellij.java.language.psi.util.TypeConversionUtil;
 import consulo.annotation.component.ExtensionImpl;
+import consulo.groovy.localize.GroovyLocalize;
 import consulo.language.ast.IElementType;
 import consulo.language.psi.util.PsiTreeUtil;
-import org.jetbrains.annotations.Nls;
-import org.jetbrains.plugins.groovy.GroovyBundle;
+import consulo.localize.LocalizeValue;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
@@ -48,144 +48,147 @@ import jakarta.annotation.Nonnull;
  */
 @ExtensionImpl
 public class GroovyUncheckedAssignmentOfMemberOfRawTypeInspection extends BaseInspection {
-  @Override
-  @Nls
-  @Nonnull
-  public String getGroupDisplayName() {
-    return ASSIGNMENT_ISSUES;
-  }
-
-  @Override
-  protected String buildErrorString(Object... args) {
-    PsiType expectedType = (PsiType)args[0];
-    PsiType rType = (PsiType)args[1];
-    return GroovyBundle.message("cannot.assign", rType.getPresentableText(), expectedType.getPresentableText());
-  }
-
-  @Override
-  public boolean isEnabledByDefault() {
-    return true;
-  }
-
-  @Override
-  @Nonnull
-  protected BaseInspectionVisitor buildVisitor() {
-    return new Visitor();
-  }
-
-  @Override
-  @Nls
-  @Nonnull
-  public String getDisplayName() {
-    return "Unchecked assignment from members of raw type";
-  }
-
-  private static class Visitor extends BaseInspectionVisitor {
+    @Nonnull
     @Override
-    public void visitReturnStatement(GrReturnStatement returnStatement) {
-      final GrExpression value = returnStatement.getReturnValue();
-      if (value != null) {
-        final PsiType type = value.getType();
-        if (type != null) {
-          final GrParameterListOwner owner = PsiTreeUtil.getParentOfType(returnStatement, GrMethod.class, GrClosableBlock.class);
-          if (owner instanceof PsiMethod) {
-            final PsiMethod method = (PsiMethod)owner;
-            if (!method.isConstructor()) {
-              final PsiType methodType = method.getReturnType();
-              final PsiType returnType = value.getType();
-              if (methodType != null) {
-                if (!PsiType.VOID.equals(methodType)) {
-                  if (returnType != null) {
-                    checkAssignability(methodType, value, value);
-                  }
+    public LocalizeValue getGroupDisplayName() {
+        return ASSIGNMENT_ISSUES;
+    }
+
+    @Override
+    protected String buildErrorString(Object... args) {
+        PsiType expectedType = (PsiType) args[0];
+        PsiType rType = (PsiType) args[1];
+        return GroovyLocalize.cannotAssign(rType.getPresentableText(), expectedType.getPresentableText()).get();
+    }
+
+    @Override
+    public boolean isEnabledByDefault() {
+        return true;
+    }
+
+    @Override
+    @Nonnull
+    protected BaseInspectionVisitor buildVisitor() {
+        return new Visitor();
+    }
+
+    @Nonnull
+    @Override
+    public LocalizeValue getDisplayName() {
+        return LocalizeValue.localizeTODO("Unchecked assignment from members of raw type");
+    }
+
+    private static class Visitor extends BaseInspectionVisitor {
+        @Override
+        public void visitReturnStatement(GrReturnStatement returnStatement) {
+            final GrExpression value = returnStatement.getReturnValue();
+            if (value != null) {
+                final PsiType type = value.getType();
+                if (type != null) {
+                    final GrParameterListOwner owner = PsiTreeUtil.getParentOfType(returnStatement, GrMethod.class, GrClosableBlock.class);
+                    if (owner instanceof PsiMethod) {
+                        final PsiMethod method = (PsiMethod) owner;
+                        if (!method.isConstructor()) {
+                            final PsiType methodType = method.getReturnType();
+                            final PsiType returnType = value.getType();
+                            if (methodType != null) {
+                                if (!PsiType.VOID.equals(methodType)) {
+                                    if (returnType != null) {
+                                        checkAssignability(methodType, value, value);
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
-              }
             }
-          }
         }
-      }
-    }
 
-    @Override
-    public void visitNamedArgument(GrNamedArgument argument) {
-      final GrArgumentLabel label = argument.getLabel();
-      if (label != null) {
-        PsiType expectedType = label.getExpectedArgumentType();
-        if (expectedType != null) {
-          expectedType = TypeConversionUtil.erasure(expectedType);
-          final GrExpression expr = argument.getExpression();
-          if (expr != null) {
-            final PsiType argType = expr.getType();
-            if (argType != null) {
-              final PsiClassType listType = JavaPsiFacade.getInstance(argument.getProject()).getElementFactory()
-                                                         .createTypeByFQClassName(CommonClassNames.JAVA_UTIL_LIST, argument.getResolveScope());
-              if (listType.isAssignableFrom(argType)) return; //this is constructor arguments list
-              checkAssignability(expectedType, expr, argument);
+        @Override
+        public void visitNamedArgument(GrNamedArgument argument) {
+            final GrArgumentLabel label = argument.getLabel();
+            if (label != null) {
+                PsiType expectedType = label.getExpectedArgumentType();
+                if (expectedType != null) {
+                    expectedType = TypeConversionUtil.erasure(expectedType);
+                    final GrExpression expr = argument.getExpression();
+                    if (expr != null) {
+                        final PsiType argType = expr.getType();
+                        if (argType != null) {
+                            final PsiClassType listType = JavaPsiFacade.getInstance(argument.getProject()).getElementFactory()
+                                .createTypeByFQClassName(CommonClassNames.JAVA_UTIL_LIST, argument.getResolveScope());
+                            if (listType.isAssignableFrom(argType)) {
+                                return; //this is constructor arguments list
+                            }
+                            checkAssignability(expectedType, expr, argument);
+                        }
+                    }
+                }
             }
-          }
         }
-      }
 
-    }
-
-    @Override
-    public void visitVariable(GrVariable variable) {
-      PsiType varType = variable.getType();
-      GrExpression initializer = variable.getInitializerGroovy();
-      if (initializer != null) {
-        PsiType rType = initializer.getType();
-        if (rType != null) {
-          checkAssignability(varType, initializer, initializer);
+        @Override
+        public void visitVariable(GrVariable variable) {
+            PsiType varType = variable.getType();
+            GrExpression initializer = variable.getInitializerGroovy();
+            if (initializer != null) {
+                PsiType rType = initializer.getType();
+                if (rType != null) {
+                    checkAssignability(varType, initializer, initializer);
+                }
+            }
         }
-      }
 
-    }
+        @Override
+        public void visitAssignmentExpression(@Nonnull GrAssignmentExpression assignment) {
+            super.visitAssignmentExpression(assignment);
 
-    @Override
-    public void visitAssignmentExpression(@Nonnull GrAssignmentExpression assignment) {
-      super.visitAssignmentExpression(assignment);
+            GrExpression lValue = assignment.getLValue();
+            if (!PsiUtil.mightBeLValue(lValue)) {
+                return;
+            }
 
-      GrExpression lValue = assignment.getLValue();
-      if (!PsiUtil.mightBeLValue(lValue)) return;
+            IElementType opToken = assignment.getOperationTokenType();
+            if (opToken != GroovyTokenTypes.mASSIGN) {
+                return;
+            }
 
-      IElementType opToken = assignment.getOperationTokenType();
-      if (opToken != GroovyTokenTypes.mASSIGN) return;
+            GrExpression rValue = assignment.getRValue();
+            if (rValue == null) {
+                return;
+            }
 
-      GrExpression rValue = assignment.getRValue();
-      if (rValue == null) return;
+            PsiType lType = lValue.getNominalType();
+            PsiType rType = rValue.getType();
 
-      PsiType lType = lValue.getNominalType();
-      PsiType rType = rValue.getType();
-
-      // For assignments with spread dot
-      if (PsiImplUtil.isSpreadAssignment(lValue) && lType != null && lType instanceof PsiClassType) {
-        final PsiClassType pct = (PsiClassType)lType;
-        final PsiClass clazz = pct.resolve();
-        if (clazz != null && CommonClassNames.JAVA_UTIL_LIST.equals(clazz.getQualifiedName())) {
-          final PsiType[] types = pct.getParameters();
-          if (types.length == 1 && types[0] != null && rType != null) {
-            checkAssignability(types[0], rValue, assignment);
-          }
+            // For assignments with spread dot
+            if (PsiImplUtil.isSpreadAssignment(lValue) && lType != null && lType instanceof PsiClassType) {
+                final PsiClassType pct = (PsiClassType) lType;
+                final PsiClass clazz = pct.resolve();
+                if (clazz != null && CommonClassNames.JAVA_UTIL_LIST.equals(clazz.getQualifiedName())) {
+                    final PsiType[] types = pct.getParameters();
+                    if (types.length == 1 && types[0] != null && rType != null) {
+                        checkAssignability(types[0], rValue, assignment);
+                    }
+                }
+                return;
+            }
+            if (lValue instanceof GrReferenceExpression &&
+                ((GrReferenceExpression) lValue).resolve() instanceof GrReferenceExpression) { //lvalue is nondeclared variable
+                return;
+            }
+            if (lType != null && rType != null) {
+                checkAssignability(lType, rValue, rValue);
+            }
         }
-        return;
-      }
-      if (lValue instanceof GrReferenceExpression &&
-          ((GrReferenceExpression)lValue).resolve() instanceof GrReferenceExpression) { //lvalue is nondeclared variable
-        return;
-      }
-      if (lType != null && rType != null) {
-        checkAssignability(lType, rValue, rValue);
-      }
-    }
 
-    private void checkAssignability(PsiType lType, GrExpression rExpr, GroovyPsiElement element) {
-      if (PsiUtil.isRawClassMemberAccess(rExpr)) {
-        final PsiType rType = rExpr.getType();
-        if (!TypesUtil.isAssignable(lType, rType, element)) {
-          registerError(element, lType, rType);
+        private void checkAssignability(PsiType lType, GrExpression rExpr, GroovyPsiElement element) {
+            if (PsiUtil.isRawClassMemberAccess(rExpr)) {
+                final PsiType rType = rExpr.getType();
+                if (!TypesUtil.isAssignable(lType, rType, element)) {
+                    registerError(element, lType, rType);
+                }
+            }
         }
-      }
     }
-
-  }
 }

@@ -15,6 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.impl.codeInspection.naming;
 
+import consulo.localize.LocalizeValue;
 import jakarta.annotation.Nonnull;
 
 import consulo.language.psi.PsiElement;
@@ -24,67 +25,67 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrAnnotation
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
 
 public class GroovyAnnotationNamingConventionInspection extends ConventionInspection {
+    private static final int DEFAULT_MIN_LENGTH = 8;
+    private static final int DEFAULT_MAX_LENGTH = 64;
 
-  private static final int DEFAULT_MIN_LENGTH = 8;
-  private static final int DEFAULT_MAX_LENGTH = 64;
-
-  @Nonnull
-  public String getDisplayName() {
-    return "Annotation naming convention";
-  }
-
-  protected GroovyFix buildFix(PsiElement location) {
-    return new RenameFix();
-  }
-
-  protected boolean buildQuickFixesOnlyForOnTheFlyErrors() {
-    return true;
-  }
-
-  @Nonnull
-  public String buildErrorString(Object... args) {
-    final String className = (String) args[0];
-    if (className.length() < getMinLength()) {
-      return "Annotation name '#ref' is too short";
-    } else if (className.length() > getMaxLength()) {
-      return "Annotation name '#ref' is too long";
+    @Nonnull
+    @Override
+    public LocalizeValue getDisplayName() {
+        return LocalizeValue.localizeTODO("Annotation naming convention");
     }
-    return "Annotation name '#ref' doesn't match regex '" + getRegex() + "' #loc";
-  }
 
-  protected String getDefaultRegex() {
-    return "[A-Z][A-Za-z\\d]*";
-  }
-
-  protected int getDefaultMinLength() {
-    return DEFAULT_MIN_LENGTH;
-  }
-
-  protected int getDefaultMaxLength() {
-    return DEFAULT_MAX_LENGTH;
-  }
-
-  public BaseInspectionVisitor buildVisitor() {
-    return new NamingConventionsVisitor();
-  }
-
-  private class NamingConventionsVisitor extends BaseInspectionVisitor {
-
-    public void visitTypeDefinition(GrTypeDefinition grTypeDefinition) {
-      super.visitTypeDefinition(grTypeDefinition);
-      if (!(grTypeDefinition instanceof GrAnnotationTypeDefinition)) {
-        return;
-      }
-      final GrAnnotationTypeDefinition aClass = (GrAnnotationTypeDefinition) grTypeDefinition;
-
-      final String name = aClass.getName();
-      if (name == null) {
-        return;
-      }
-      if (isValid(name)) {
-        return;
-      }
-      registerClassError(aClass, name);
+    protected GroovyFix buildFix(PsiElement location) {
+        return new RenameFix();
     }
-  }
+
+    protected boolean buildQuickFixesOnlyForOnTheFlyErrors() {
+        return true;
+    }
+
+    @Nonnull
+    public String buildErrorString(Object... args) {
+        final String className = (String) args[0];
+        if (className.length() < getMinLength()) {
+            return "Annotation name '#ref' is too short";
+        }
+        else if (className.length() > getMaxLength()) {
+            return "Annotation name '#ref' is too long";
+        }
+        return "Annotation name '#ref' doesn't match regex '" + getRegex() + "' #loc";
+    }
+
+    protected String getDefaultRegex() {
+        return "[A-Z][A-Za-z\\d]*";
+    }
+
+    protected int getDefaultMinLength() {
+        return DEFAULT_MIN_LENGTH;
+    }
+
+    protected int getDefaultMaxLength() {
+        return DEFAULT_MAX_LENGTH;
+    }
+
+    public BaseInspectionVisitor buildVisitor() {
+        return new NamingConventionsVisitor();
+    }
+
+    private class NamingConventionsVisitor extends BaseInspectionVisitor {
+        public void visitTypeDefinition(GrTypeDefinition grTypeDefinition) {
+            super.visitTypeDefinition(grTypeDefinition);
+            if (!(grTypeDefinition instanceof GrAnnotationTypeDefinition)) {
+                return;
+            }
+            final GrAnnotationTypeDefinition aClass = (GrAnnotationTypeDefinition) grTypeDefinition;
+
+            final String name = aClass.getName();
+            if (name == null) {
+                return;
+            }
+            if (isValid(name)) {
+                return;
+            }
+            registerClassError(aClass, name);
+        }
+    }
 }

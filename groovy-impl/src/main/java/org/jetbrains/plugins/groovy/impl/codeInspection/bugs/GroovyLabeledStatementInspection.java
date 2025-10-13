@@ -15,13 +15,13 @@
  */
 package org.jetbrains.plugins.groovy.impl.codeInspection.bugs;
 
+import consulo.groovy.impl.localize.GroovyInspectionLocalize;
+import consulo.groovy.localize.GroovyLocalize;
 import consulo.language.psi.util.PsiTreeUtil;
-import org.jetbrains.annotations.Nls;
+import consulo.localize.LocalizeValue;
 import jakarta.annotation.Nonnull;
-import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
-import org.jetbrains.plugins.groovy.impl.codeInspection.GroovyInspectionBundle;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrLabeledStatement;
 import org.jetbrains.plugins.groovy.lang.resolve.ResolveUtil;
 
@@ -29,45 +29,43 @@ import org.jetbrains.plugins.groovy.lang.resolve.ResolveUtil;
  * @author Maxim.Medvedev
  */
 public class GroovyLabeledStatementInspection extends BaseInspection {
-  @Override
-  protected BaseInspectionVisitor buildVisitor() {
-    return new MyVisitor();
-  }
-
-  @Nls
-  @Nonnull
-  @Override
-  public String getGroupDisplayName() {
-    return PROBABLE_BUGS;
-  }
-
-  @Override
-  public boolean isEnabledByDefault() {
-    return true;
-  }
-
-  @Override
-  protected String buildErrorString(Object... args) {
-    return GroovyBundle.message("label.already.used", args);
-  }
-
-  @Nls
-  @Nonnull
-  @Override
-  public String getDisplayName() {
-    return GroovyInspectionBundle.message("check.labeled.statement");
-  }
-
-  private static class MyVisitor extends BaseInspectionVisitor {
     @Override
-    public void visitLabeledStatement(GrLabeledStatement labeledStatement) {
-      super.visitLabeledStatement(labeledStatement);
-
-      final String name = labeledStatement.getName();
-      GrLabeledStatement existing = ResolveUtil.resolveLabeledStatement(name, labeledStatement, true);
-      if (existing != null && PsiTreeUtil.isAncestor(existing, labeledStatement, true)) {
-        registerError(labeledStatement.getLabel(), name);
-      }
+    protected BaseInspectionVisitor buildVisitor() {
+        return new MyVisitor();
     }
-  }
+
+    @Nonnull
+    @Override
+    public LocalizeValue getGroupDisplayName() {
+        return PROBABLE_BUGS;
+    }
+
+    @Override
+    public boolean isEnabledByDefault() {
+        return true;
+    }
+
+    @Override
+    protected String buildErrorString(Object... args) {
+        return GroovyLocalize.labelAlreadyUsed(args).get();
+    }
+
+    @Nonnull
+    @Override
+    public LocalizeValue getDisplayName() {
+        return GroovyInspectionLocalize.checkLabeledStatement();
+    }
+
+    private static class MyVisitor extends BaseInspectionVisitor {
+        @Override
+        public void visitLabeledStatement(GrLabeledStatement labeledStatement) {
+            super.visitLabeledStatement(labeledStatement);
+
+            final String name = labeledStatement.getName();
+            GrLabeledStatement existing = ResolveUtil.resolveLabeledStatement(name, labeledStatement, true);
+            if (existing != null && PsiTreeUtil.isAncestor(existing, labeledStatement, true)) {
+                registerError(labeledStatement.getLabel(), name);
+            }
+        }
+    }
 }

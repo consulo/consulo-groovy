@@ -23,19 +23,20 @@ import com.intellij.java.language.psi.util.InheritanceUtil;
 import com.intellij.java.language.psi.util.PsiTypesUtil;
 import consulo.fileTemplate.FileTemplate;
 import consulo.fileTemplate.FileTemplateManager;
+import consulo.groovy.impl.localize.GroovyInspectionLocalize;
 import consulo.language.ast.TokenType;
 import consulo.language.editor.inspection.ProblemDescriptor;
 import consulo.language.psi.PsiElement;
 import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
 import consulo.logging.Logger;
 import consulo.project.Project;
 import consulo.util.collection.ArrayUtil;
 import consulo.util.lang.StringUtil;
-import org.jetbrains.annotations.Nls;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.impl.codeInspection.GroovyFix;
-import org.jetbrains.plugins.groovy.impl.codeInspection.GroovyInspectionBundle;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrCodeBlock;
@@ -47,7 +48,6 @@ import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GrRangeType;
 import org.jetbrains.plugins.groovy.lang.resolve.ResolveUtil;
 
-import jakarta.annotation.Nonnull;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -58,267 +58,284 @@ import java.util.Properties;
  * @author Maxim.Medvedev
  */
 public class GroovyRangeTypeCheckInspection extends BaseInspection {
-  private static final Logger LOG = Logger.getInstance("#org.jetbrains.plugins.groovy.codeInspection.bugs.GroovyRangeTypeCheckInspection");
+    private static final Logger LOG =
+        Logger.getInstance("#org.jetbrains.plugins.groovy.codeInspection.bugs.GroovyRangeTypeCheckInspection");
 
-  @Nonnull
-  @Override
-  protected BaseInspectionVisitor buildVisitor() {
-    return new MyVisitor();
-  }
+    @Nonnull
+    @Override
+    protected BaseInspectionVisitor buildVisitor() {
+        return new MyVisitor();
+    }
 
-  @Nls
-  @Nonnull
-  @Override
-  public String getGroupDisplayName() {
-    return PROBABLE_BUGS;
-  }
+    @Nonnull
+    @Override
+    public LocalizeValue getGroupDisplayName() {
+        return PROBABLE_BUGS;
+    }
 
-  @Nls
-  @Nonnull
-  @Override
-  public String getDisplayName() {
-    return GroovyInspectionBundle.message("incorrect.range.argument");
-  }
+    @Nonnull
+    @Override
+    public LocalizeValue getDisplayName() {
+        return GroovyInspectionLocalize.incorrectRangeArgument();
+    }
 
-  @Override
-  protected GroovyFix buildFix(@Nonnull PsiElement location) {
-    final GrRangeExpression range = (GrRangeExpression)location;
-    final PsiType type = range.getType();
-    final List<GroovyFix> fixes = new ArrayList<GroovyFix>(3);
-    if (type instanceof GrRangeType) {
-      PsiType iterationType = ((GrRangeType)type).getIterationType();
-      if (!(iterationType instanceof PsiClassType)) return null;
-      final PsiClass psiClass = ((PsiClassType)iterationType).resolve();
-      if (!(psiClass instanceof GrTypeDefinition)) return null;
+    @Override
+    protected GroovyFix buildFix(@Nonnull PsiElement location) {
+        final GrRangeExpression range = (GrRangeExpression) location;
+        final PsiType type = range.getType();
+        final List<GroovyFix> fixes = new ArrayList<GroovyFix>(3);
+        if (type instanceof GrRangeType) {
+            PsiType iterationType = ((GrRangeType) type).getIterationType();
+            if (!(iterationType instanceof PsiClassType)) {
+                return null;
+            }
+            final PsiClass psiClass = ((PsiClassType) iterationType).resolve();
+            if (!(psiClass instanceof GrTypeDefinition)) {
+                return null;
+            }
 
-      final GroovyResolveResult[] nexts = ResolveUtil.getMethodCandidates(iterationType, "next", range);
-      final GroovyResolveResult[] previouses = ResolveUtil.getMethodCandidates(iterationType, "previous", range);
-      final GroovyResolveResult[] compareTos = ResolveUtil.getMethodCandidates(iterationType, "compareTo", range, iterationType);
+            final GroovyResolveResult[] nexts = ResolveUtil.getMethodCandidates(iterationType, "next", range);
+            final GroovyResolveResult[] previouses = ResolveUtil.getMethodCandidates(iterationType, "previous", range);
+            final GroovyResolveResult[] compareTos = ResolveUtil.getMethodCandidates(iterationType, "compareTo", range, iterationType);
 
 
-      if (countImplementations(psiClass, nexts)==0) {
-        fixes.add(new AddMethodFix("next", (GrTypeDefinition)psiClass));
-      }
-      if (countImplementations(psiClass, previouses) == 0) {
-        fixes.add(new AddMethodFix("previous", (GrTypeDefinition)psiClass));
-      }
+            if (countImplementations(psiClass, nexts) == 0) {
+                fixes.add(new AddMethodFix("next", (GrTypeDefinition) psiClass));
+            }
+            if (countImplementations(psiClass, previouses) == 0) {
+                fixes.add(new AddMethodFix("previous", (GrTypeDefinition) psiClass));
+            }
 
-      if (!InheritanceUtil.isInheritor(iterationType, CommonClassNames.JAVA_LANG_COMPARABLE) ||
-          countImplementations(psiClass, compareTos) == 0) {
-        fixes.add(new AddClassToExtends((GrTypeDefinition)psiClass, CommonClassNames.JAVA_LANG_COMPARABLE));
-      }
+            if (!InheritanceUtil.isInheritor(iterationType, CommonClassNames.JAVA_LANG_COMPARABLE) ||
+                countImplementations(psiClass, compareTos) == 0) {
+                fixes.add(new AddClassToExtends((GrTypeDefinition) psiClass, CommonClassNames.JAVA_LANG_COMPARABLE));
+            }
 
-      return new GroovyFix() {
+            return new GroovyFix() {
+                @Override
+                protected void doFix(Project project, ProblemDescriptor descriptor) throws IncorrectOperationException {
+                    for (GroovyFix fix : fixes) {
+                        fix.applyFix(project, descriptor);
+                    }
+                }
+
+                @Nonnull
+                @Override
+                public LocalizeValue getName() {
+                    return GroovyInspectionLocalize.fixClass(psiClass.getName());
+                }
+            };
+        }
+        return null;
+    }
+
+    private static int countImplementations(PsiClass clazz, GroovyResolveResult[] methods) {
+        if (clazz.isInterface()) {
+            return methods.length;
+        }
+        int result = 0;
+        for (GroovyResolveResult method : methods) {
+            final PsiElement el = method.getElement();
+            if (el instanceof PsiMethod && !((PsiMethod) el).hasModifierProperty(PsiModifier.ABSTRACT)) {
+                result++;
+            }
+            else if (el instanceof PsiField) {
+                result++;
+            }
+        }
+        return result;
+    }
+
+    @Override
+    protected String buildErrorString(Object... args) {
+        switch (args.length) {
+            case 1:
+                return GroovyInspectionLocalize.typeDoesntImplemntComparable(args[0]).get();
+            case 2:
+                return GroovyInspectionLocalize.typeDoesntContainMethod(args[0], args[1]).get();
+            default:
+                throw new IncorrectOperationException("incorrect args:" + Arrays.toString(args));
+        }
+    }
+
+    private static class MyVisitor extends BaseInspectionVisitor {
+        @Override
+        public void visitRangeExpression(GrRangeExpression range) {
+            super.visitRangeExpression(range);
+            final PsiType type = range.getType();
+            if (!(type instanceof GrRangeType)) {
+                return;
+            }
+            final PsiType iterationType = ((GrRangeType) type).getIterationType();
+            if (iterationType == null) {
+                return;
+            }
+
+            final GroovyResolveResult[] nexts = ResolveUtil.getMethodCandidates(iterationType, "next", range, PsiType.EMPTY_ARRAY);
+            final GroovyResolveResult[] previouses = ResolveUtil.getMethodCandidates(iterationType, "previous", range, PsiType.EMPTY_ARRAY);
+            if (nexts.length == 0) {
+                registerError(range, iterationType.getPresentableText(), "next()");
+            }
+            if (previouses.length == 0) {
+                registerError(range, iterationType.getPresentableText(), "previous()");
+            }
+
+            if (!InheritanceUtil.isInheritor(iterationType, CommonClassNames.JAVA_LANG_COMPARABLE)) {
+                registerError(range, iterationType.getPresentableText());
+            }
+        }
+    }
+
+    private static class AddMethodFix extends GroovyFix {
+        private final String myMethodName;
+        private final GrTypeDefinition myClass;
+
+        private AddMethodFix(String methodName, GrTypeDefinition aClass) {
+            myMethodName = methodName;
+            myClass = aClass;
+        }
+
         @Override
         protected void doFix(Project project, ProblemDescriptor descriptor) throws IncorrectOperationException {
-          for (GroovyFix fix : fixes) {
-            fix.applyFix(project, descriptor);
-          }
+
+            if (myClass.isInterface()) {
+                final GrMethod method = GroovyPsiElementFactory.getInstance(project)
+                    .createMethodFromText("def " + myClass.getName() + " " + myMethodName + "();");
+                myClass.add(method);
+            }
+            else {
+                String templName = JavaTemplateUtil.TEMPLATE_IMPLEMENTED_METHOD_BODY;
+                final FileTemplate template = FileTemplateManager.getInstance().getCodeTemplate(templName);
+
+                Properties properties = new Properties();
+
+                String returnType = generateTypeText(myClass);
+                properties.setProperty(FileTemplate.ATTRIBUTE_RETURN_TYPE, returnType);
+                properties.setProperty(
+                    FileTemplate.ATTRIBUTE_DEFAULT_RETURN_VALUE,
+                    PsiTypesUtil.getDefaultValueOfType(JavaPsiFacade.getElementFactory(project).createType(myClass))
+                );
+                properties.setProperty(FileTemplate.ATTRIBUTE_CALL_SUPER, "");
+                properties.setProperty(FileTemplate.ATTRIBUTE_CLASS_NAME, myClass.getQualifiedName());
+                properties.setProperty(FileTemplate.ATTRIBUTE_SIMPLE_CLASS_NAME, myClass.getName());
+                properties.setProperty(FileTemplate.ATTRIBUTE_METHOD_NAME, myMethodName);
+
+                try {
+                    String bodyText = StringUtil.replace(template.getText(properties), ";", "");
+                    final GrCodeBlock newBody =
+                        GroovyPsiElementFactory.getInstance(project).createMethodBodyFromText("\n" + bodyText + "\n");
+
+                    final GrMethod method = GroovyPsiElementFactory.getInstance(project)
+                        .createMethodFromText("", myMethodName, returnType, ArrayUtil.EMPTY_STRING_ARRAY, myClass);
+                    method.setBlock(newBody);
+                    myClass.add(method);
+                }
+                catch (IOException e) {
+                    LOG.error(e);
+                }
+            }
         }
 
         @Nonnull
         @Override
-        public String getName() {
-          return GroovyInspectionBundle.message("fix.class", psiClass.getName());
+        public LocalizeValue getName() {
+            return GroovyInspectionLocalize.addMethod(myMethodName, myClass.getName());
         }
-      };
-    }
-    return null;
-  }
-
-  private static int countImplementations(PsiClass clazz, GroovyResolveResult[] methods) {
-    if (clazz.isInterface()) return methods.length;
-    int result = 0;
-    for (GroovyResolveResult method : methods) {
-      final PsiElement el = method.getElement();
-      if (el instanceof PsiMethod && !((PsiMethod)el).hasModifierProperty(PsiModifier.ABSTRACT)) result++;
-      else if (el instanceof PsiField) result++;
-    }
-    return result;
-  }
-
-  @Override
-  protected String buildErrorString(Object... args) {
-    switch (args.length) {
-      case 1:
-        return GroovyInspectionBundle.message("type.doesnt.implemnt.comparable", args);
-      case 2:
-        return GroovyInspectionBundle.message("type.doesnt.contain.method", args);
-      default:
-        throw new IncorrectOperationException("incorrect args:" + Arrays.toString(args));
-    }
-  }
-
-  private static class MyVisitor extends BaseInspectionVisitor {
-    @Override
-    public void visitRangeExpression(GrRangeExpression range) {
-      super.visitRangeExpression(range);
-      final PsiType type = range.getType();
-      if (!(type instanceof GrRangeType)) return;
-      final PsiType iterationType = ((GrRangeType)type).getIterationType();
-      if (iterationType == null) return;
-
-      final GroovyResolveResult[] nexts = ResolveUtil.getMethodCandidates(iterationType, "next", range, PsiType.EMPTY_ARRAY);
-      final GroovyResolveResult[] previouses = ResolveUtil.getMethodCandidates(iterationType, "previous", range, PsiType.EMPTY_ARRAY);
-      if (nexts.length == 0) {
-        registerError(range, iterationType.getPresentableText(), "next()");
-      }
-      if (previouses.length == 0) {
-        registerError(range, iterationType.getPresentableText(), "previous()");
-      }
-
-      if (!InheritanceUtil.isInheritor(iterationType, CommonClassNames.JAVA_LANG_COMPARABLE)) {
-        registerError(range, iterationType.getPresentableText());
-      }
-    }
-  }
-
-  private static class AddMethodFix extends GroovyFix {
-    private final String myMethodName;
-    private final GrTypeDefinition myClass;
-
-    private AddMethodFix(String methodName, GrTypeDefinition aClass) {
-      myMethodName = methodName;
-      myClass = aClass;
     }
 
-    @Override
-    protected void doFix(Project project, ProblemDescriptor descriptor) throws IncorrectOperationException {
-
-      if (myClass.isInterface()) {
-        final GrMethod method = GroovyPsiElementFactory.getInstance(project)
-          .createMethodFromText("def " + myClass.getName() + " " + myMethodName + "();");
-        myClass.add(method);
-      }
-      else {
-        String templName = JavaTemplateUtil.TEMPLATE_IMPLEMENTED_METHOD_BODY;
-        final FileTemplate template = FileTemplateManager.getInstance().getCodeTemplate(templName);
-
-        Properties properties = new Properties();
-
-        String returnType = generateTypeText(myClass);
-        properties.setProperty(FileTemplate.ATTRIBUTE_RETURN_TYPE, returnType);
-        properties.setProperty(FileTemplate.ATTRIBUTE_DEFAULT_RETURN_VALUE,
-                               PsiTypesUtil.getDefaultValueOfType(JavaPsiFacade.getElementFactory(project).createType(myClass)));
-        properties.setProperty(FileTemplate.ATTRIBUTE_CALL_SUPER, "");
-        properties.setProperty(FileTemplate.ATTRIBUTE_CLASS_NAME, myClass.getQualifiedName());
-        properties.setProperty(FileTemplate.ATTRIBUTE_SIMPLE_CLASS_NAME, myClass.getName());
-        properties.setProperty(FileTemplate.ATTRIBUTE_METHOD_NAME, myMethodName);
-
-        try {
-          String bodyText = StringUtil.replace(template.getText(properties), ";", "");
-          final GrCodeBlock newBody = GroovyPsiElementFactory.getInstance(project).createMethodBodyFromText("\n" + bodyText + "\n");
-
-          final GrMethod method = GroovyPsiElementFactory.getInstance(project)
-            .createMethodFromText("", myMethodName, returnType, ArrayUtil.EMPTY_STRING_ARRAY, myClass);
-          method.setBlock(newBody);
-          myClass.add(method);
-        }
-        catch (IOException e) {
-          LOG.error(e);
-        }
-      }
-    }
-
-
-    @Nonnull
-    @Override
-    public String getName() {
-      return GroovyInspectionBundle.message("add.method", myMethodName, myClass.getName());
-    }
-  }
-
-  private static String generateTypeText(GrTypeDefinition aClass) {
-    StringBuilder returnType = new StringBuilder(aClass.getName());
-    final PsiTypeParameter[] typeParameters = aClass.getTypeParameters();
-    if (typeParameters.length > 0) {
-      returnType.append('<');
-      for (PsiTypeParameter typeParameter : typeParameters) {
-        returnType.append(typeParameter.getName()).append(", ");
-      }
-      returnType.replace(returnType.length() - 2, returnType.length(), ">");
-    }
-    return returnType.toString();
-  }
-
-  private static class AddClassToExtends extends GroovyFix {
-    private GrTypeDefinition myPsiClass;
-    private String myInterfaceName;
-
-    public AddClassToExtends(GrTypeDefinition psiClass, String interfaceName) {
-      myPsiClass = psiClass;
-      myInterfaceName = interfaceName;
-    }
-
-    @Override
-    protected void doFix(Project project, ProblemDescriptor descriptor) throws IncorrectOperationException
-	{
-
-      GrReferenceList list;
-      final GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(project);
-
-      final PsiClass comparable =
-        JavaPsiFacade.getInstance(project).findClass(CommonClassNames.JAVA_LANG_COMPARABLE, myPsiClass.getResolveScope());
-      PsiSubstitutor substitutor = PsiSubstitutor.EMPTY;
-      boolean addTypeParam = false;
-      if (comparable != null) {
-        final PsiTypeParameter[] typeParameters = comparable.getTypeParameters();
-        if (typeParameters.length == 1) {
-          final PsiElementFactory elementFactory = JavaPsiFacade.getElementFactory(project);
-          final PsiTypeParameter[] classParams = myPsiClass.getTypeParameters();
-          PsiSubstitutor innerSubstitutor = PsiSubstitutor.EMPTY;
-          for (PsiTypeParameter classParam : classParams) {
-            innerSubstitutor = innerSubstitutor.put(classParam, elementFactory.createType(classParam));
-          }
-          substitutor = substitutor.put(typeParameters[0], elementFactory.createType(myPsiClass, innerSubstitutor));
-          addTypeParam = true;
-        }
-      }
-
-      if (!InheritanceUtil.isInheritor(myPsiClass, CommonClassNames.JAVA_LANG_COMPARABLE)) {
-        if (myPsiClass.isInterface()) {
-          list = myPsiClass.getExtendsClause();
-          if (list == null) {
-            list = factory.createExtendsClause();
-
-            PsiElement anchor = myPsiClass.getImplementsClause();
-            if (anchor == null) {
-              anchor = myPsiClass.getBody();
+    private static String generateTypeText(GrTypeDefinition aClass) {
+        StringBuilder returnType = new StringBuilder(aClass.getName());
+        final PsiTypeParameter[] typeParameters = aClass.getTypeParameters();
+        if (typeParameters.length > 0) {
+            returnType.append('<');
+            for (PsiTypeParameter typeParameter : typeParameters) {
+                returnType.append(typeParameter.getName()).append(", ");
             }
-            if (anchor == null) return;
-            list = (GrReferenceList)myPsiClass.addBefore(list, anchor);
-            myPsiClass.getNode().addLeaf(TokenType.WHITE_SPACE, " ", anchor.getNode());
-            myPsiClass.getNode().addLeaf(TokenType.WHITE_SPACE, " ", list.getNode());
-          }
+            returnType.replace(returnType.length() - 2, returnType.length(), ">");
         }
-        else {
-          list = myPsiClass.getImplementsClause();
-          if (list == null) {
-            list = factory.createImplementsClause();
-            PsiElement anchor = myPsiClass.getBody();
-            if (anchor == null) return;
-            list = (GrReferenceList)myPsiClass.addBefore(list, anchor);
-            myPsiClass.getNode().addLeaf(TokenType.WHITE_SPACE, " ", list.getNode());
-            myPsiClass.getNode().addLeaf(TokenType.WHITE_SPACE, " ", anchor.getNode());
-          }
-        }
-
-
-        final GrCodeReferenceElement _ref =
-          factory.createReferenceElementFromText(myInterfaceName + (addTypeParam ? "<" + generateTypeText(myPsiClass) + ">" : ""));
-        final GrCodeReferenceElement ref = (GrCodeReferenceElement)list.add(_ref);
-        JavaCodeStyleManager.getInstance(project).shortenClassReferences(ref);
-      }
-      if (comparable != null && !myPsiClass.isInterface()) {
-        final PsiMethod baseMethod = comparable.getMethods()[0];
-        OverrideImplementUtil.overrideOrImplement(myPsiClass, baseMethod);
-      }
+        return returnType.toString();
     }
 
-    @Nonnull
-    @Override
-    public String getName() {
-      return GroovyInspectionBundle.message("implement.class", myInterfaceName);
+    private static class AddClassToExtends extends GroovyFix {
+        private GrTypeDefinition myPsiClass;
+        private String myInterfaceName;
+
+        public AddClassToExtends(GrTypeDefinition psiClass, String interfaceName) {
+            myPsiClass = psiClass;
+            myInterfaceName = interfaceName;
+        }
+
+        @Override
+        protected void doFix(Project project, ProblemDescriptor descriptor) throws IncorrectOperationException {
+            GrReferenceList list;
+            final GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(project);
+
+            final PsiClass comparable =
+                JavaPsiFacade.getInstance(project).findClass(CommonClassNames.JAVA_LANG_COMPARABLE, myPsiClass.getResolveScope());
+            PsiSubstitutor substitutor = PsiSubstitutor.EMPTY;
+            boolean addTypeParam = false;
+            if (comparable != null) {
+                final PsiTypeParameter[] typeParameters = comparable.getTypeParameters();
+                if (typeParameters.length == 1) {
+                    final PsiElementFactory elementFactory = JavaPsiFacade.getElementFactory(project);
+                    final PsiTypeParameter[] classParams = myPsiClass.getTypeParameters();
+                    PsiSubstitutor innerSubstitutor = PsiSubstitutor.EMPTY;
+                    for (PsiTypeParameter classParam : classParams) {
+                        innerSubstitutor = innerSubstitutor.put(classParam, elementFactory.createType(classParam));
+                    }
+                    substitutor = substitutor.put(typeParameters[0], elementFactory.createType(myPsiClass, innerSubstitutor));
+                    addTypeParam = true;
+                }
+            }
+
+            if (!InheritanceUtil.isInheritor(myPsiClass, CommonClassNames.JAVA_LANG_COMPARABLE)) {
+                if (myPsiClass.isInterface()) {
+                    list = myPsiClass.getExtendsClause();
+                    if (list == null) {
+                        list = factory.createExtendsClause();
+
+                        PsiElement anchor = myPsiClass.getImplementsClause();
+                        if (anchor == null) {
+                            anchor = myPsiClass.getBody();
+                        }
+                        if (anchor == null) {
+                            return;
+                        }
+                        list = (GrReferenceList) myPsiClass.addBefore(list, anchor);
+                        myPsiClass.getNode().addLeaf(TokenType.WHITE_SPACE, " ", anchor.getNode());
+                        myPsiClass.getNode().addLeaf(TokenType.WHITE_SPACE, " ", list.getNode());
+                    }
+                }
+                else {
+                    list = myPsiClass.getImplementsClause();
+                    if (list == null) {
+                        list = factory.createImplementsClause();
+                        PsiElement anchor = myPsiClass.getBody();
+                        if (anchor == null) {
+                            return;
+                        }
+                        list = (GrReferenceList) myPsiClass.addBefore(list, anchor);
+                        myPsiClass.getNode().addLeaf(TokenType.WHITE_SPACE, " ", list.getNode());
+                        myPsiClass.getNode().addLeaf(TokenType.WHITE_SPACE, " ", anchor.getNode());
+                    }
+                }
+
+
+                final GrCodeReferenceElement _ref =
+                    factory.createReferenceElementFromText(myInterfaceName + (addTypeParam ? "<" + generateTypeText(myPsiClass) + ">" : ""));
+                final GrCodeReferenceElement ref = (GrCodeReferenceElement) list.add(_ref);
+                JavaCodeStyleManager.getInstance(project).shortenClassReferences(ref);
+            }
+            if (comparable != null && !myPsiClass.isInterface()) {
+                final PsiMethod baseMethod = comparable.getMethods()[0];
+                OverrideImplementUtil.overrideOrImplement(myPsiClass, baseMethod);
+            }
+        }
+
+        @Nonnull
+        @Override
+        public LocalizeValue getName() {
+            return GroovyInspectionLocalize.implementClass(myInterfaceName);
+        }
     }
-  }
 }

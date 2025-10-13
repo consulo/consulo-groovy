@@ -16,52 +16,48 @@
 package org.jetbrains.plugins.groovy.impl.codeInspection.assignment;
 
 import consulo.annotation.component.ExtensionImpl;
-import org.jetbrains.annotations.Nls;
+import consulo.localize.LocalizeValue;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrAssignmentExpression;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
-
 @ExtensionImpl
 public class GroovyResultOfAssignmentUsedInspection extends BaseInspection {
+    @Nonnull
+    @Override
+    public LocalizeValue getGroupDisplayName() {
+        return ASSIGNMENT_ISSUES;
+    }
 
-  @Override
-  @Nls
-  @Nonnull
-  public String getGroupDisplayName() {
-    return ASSIGNMENT_ISSUES;
-  }
-
-  @Override
-  @Nls
-  @Nonnull
-  public String getDisplayName() {
-    return "Result of assignment used";
-  }
-
-  @Override
-  @Nullable
-  protected String buildErrorString(Object... args) {
-    return "Result of assignment expression used #loc";
-  }
-
-  @Nonnull
-  @Override
-  public BaseInspectionVisitor buildVisitor() {
-    return new Visitor();
-  }
-
-  private static class Visitor extends BaseInspectionVisitor {
+    @Nonnull
+    @Override
+    public LocalizeValue getDisplayName() {
+        return LocalizeValue.localizeTODO("Result of assignment used");
+    }
 
     @Override
-    public void visitAssignmentExpression(GrAssignmentExpression grAssignmentExpression) {
-      super.visitAssignmentExpression(grAssignmentExpression);
-      if (PsiUtil.isExpressionUsed(grAssignmentExpression)) {
-        registerError(grAssignmentExpression);
-      }
+    @Nullable
+    protected String buildErrorString(Object... args) {
+        return "Result of assignment expression used #loc";
     }
-  }
+
+    @Nonnull
+    @Override
+    public BaseInspectionVisitor buildVisitor() {
+        return new Visitor();
+    }
+
+    private static class Visitor extends BaseInspectionVisitor {
+
+        @Override
+        public void visitAssignmentExpression(GrAssignmentExpression grAssignmentExpression) {
+            super.visitAssignmentExpression(grAssignmentExpression);
+            if (PsiUtil.isExpressionUsed(grAssignmentExpression)) {
+                registerError(grAssignmentExpression);
+            }
+        }
+    }
 }

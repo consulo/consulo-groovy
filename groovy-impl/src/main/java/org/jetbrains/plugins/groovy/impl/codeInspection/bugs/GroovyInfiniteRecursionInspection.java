@@ -16,56 +16,52 @@
 package org.jetbrains.plugins.groovy.impl.codeInspection.bugs;
 
 import com.intellij.java.language.psi.PsiModifier;
-import org.jetbrains.annotations.Nls;
+import consulo.localize.LocalizeValue;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
-
 public class GroovyInfiniteRecursionInspection extends BaseInspection {
-
-  @Nls
-  @Nonnull
-  public String getGroupDisplayName() {
-    return PROBABLE_BUGS;
-  }
-
-  @Nls
-  @Nonnull
-  public String getDisplayName() {
-    return "Infinite recursion";
-  }
-
-  @Nullable
-  protected String buildErrorString(Object... args) {
-    return "<code>#ref</code> recurses infinitely, and can only complete by throwing an exception #loc";
-
-  }
-
-  public boolean isEnabledByDefault() {
-    return true;
-  }
-
-  public BaseInspectionVisitor buildVisitor() {
-    return new Visitor();
-  }
-
-  private static class Visitor extends BaseInspectionVisitor {
-
-    public void visitMethod(@Nonnull GrMethod method) {
-      super.visitMethod(method);
-      if (method.hasModifierProperty(PsiModifier.ABSTRACT)) {
-        return;
-      }
-      if (!RecursionUtils.methodMayRecurse(method)) {
-        return;
-      }
-      if (!RecursionUtils.methodDefinitelyRecurses(method)) {
-        return;
-      }
-      registerMethodError(method);
+    @Nonnull
+    @Override
+    public LocalizeValue getGroupDisplayName() {
+        return PROBABLE_BUGS;
     }
-  }
+
+    @Nonnull
+    @Override
+    public LocalizeValue getDisplayName() {
+        return LocalizeValue.localizeTODO("Infinite recursion");
+    }
+
+    @Nullable
+    protected String buildErrorString(Object... args) {
+        return "<code>#ref</code> recurses infinitely, and can only complete by throwing an exception #loc";
+    }
+
+    public boolean isEnabledByDefault() {
+        return true;
+    }
+
+    public BaseInspectionVisitor buildVisitor() {
+        return new Visitor();
+    }
+
+    private static class Visitor extends BaseInspectionVisitor {
+        public void visitMethod(@Nonnull GrMethod method) {
+            super.visitMethod(method);
+            if (method.hasModifierProperty(PsiModifier.ABSTRACT)) {
+                return;
+            }
+            if (!RecursionUtils.methodMayRecurse(method)) {
+                return;
+            }
+            if (!RecursionUtils.methodDefinitelyRecurses(method)) {
+                return;
+            }
+            registerMethodError(method);
+        }
+    }
 }

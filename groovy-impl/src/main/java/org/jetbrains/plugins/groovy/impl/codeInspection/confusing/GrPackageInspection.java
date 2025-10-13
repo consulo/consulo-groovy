@@ -17,6 +17,7 @@ package org.jetbrains.plugins.groovy.impl.codeInspection.confusing;
 
 import com.intellij.java.language.psi.PsiClass;
 import consulo.annotation.component.ExtensionImpl;
+import consulo.groovy.localize.GroovyLocalize;
 import consulo.language.editor.inspection.InspectionToolState;
 import consulo.language.editor.inspection.LocalQuickFix;
 import consulo.language.editor.inspection.ProblemDescriptor;
@@ -24,9 +25,10 @@ import consulo.language.editor.inspection.ProblemHighlightType;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiFile;
 import consulo.language.psi.SyntheticElement;
+import consulo.localize.LocalizeValue;
 import consulo.project.Project;
-import org.jetbrains.annotations.Nls;
-import org.jetbrains.plugins.groovy.GroovyBundle;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.impl.annotator.intentions.GrMoveToDirFix;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
@@ -38,147 +40,119 @@ import org.jetbrains.plugins.groovy.lang.psi.api.toplevel.GrTopStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.toplevel.packaging.GrPackageDefinition;
 import org.jetbrains.plugins.groovy.lang.resolve.ResolveUtil;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
-
 /**
  * @author Max Medvedev
  */
 @ExtensionImpl
-public class GrPackageInspection extends BaseInspection<GrPackageInspectionState>
-{
-	@Nls
-	@Nonnull
-	public String getGroupDisplayName()
-	{
-		return CONFUSING_CODE_CONSTRUCTS;
-	}
+public class GrPackageInspection extends BaseInspection<GrPackageInspectionState> {
+    @Nonnull
+    @Override
+    public LocalizeValue getGroupDisplayName() {
+        return CONFUSING_CODE_CONSTRUCTS;
+    }
 
-	@Nls
-	@Nonnull
-	public String getDisplayName()
-	{
-		return "Package name mismatch";
-	}
+    @Nonnull
+    @Override
+    public LocalizeValue getDisplayName() {
+        return LocalizeValue.localizeTODO("Package name mismatch");
+    }
 
-	@Nonnull
-	@Override
-	public InspectionToolState<GrPackageInspectionState> createStateProvider()
-	{
-		return new GrPackageInspectionState();
-	}
+    @Nonnull
+    @Override
+    public InspectionToolState<GrPackageInspectionState> createStateProvider() {
+        return new GrPackageInspectionState();
+    }
 
-	@Nullable
-	protected String buildErrorString(Object... args)
-	{
-		return "Package name mismatch";
-	}
+    @Nullable
+    protected String buildErrorString(Object... args) {
+        return "Package name mismatch";
+    }
 
-	@Nonnull
-	@Override
-	protected BaseInspectionVisitor<GrPackageInspectionState> buildVisitor()
-	{
-		return new BaseInspectionVisitor<>()
-		{
-			@Override
-			public void visitFile(GroovyFileBase file)
-			{
-				if(!(file instanceof GroovyFile))
-				{
-					return;
-				}
+    @Nonnull
+    @Override
+    protected BaseInspectionVisitor<GrPackageInspectionState> buildVisitor() {
+        return new BaseInspectionVisitor<>() {
+            @Override
+            public void visitFile(GroovyFileBase file) {
+                if (!(file instanceof GroovyFile)) {
+                    return;
+                }
 
-				if(!myState.myCheckScripts && file.isScript())
-				{
-					return;
-				}
+                if (!myState.myCheckScripts && file.isScript()) {
+                    return;
+                }
 
-				String expectedPackage = ResolveUtil.inferExpectedPackageName(file);
-				String actual = file.getPackageName();
-				if(!expectedPackage.equals(actual))
-				{
+                String expectedPackage = ResolveUtil.inferExpectedPackageName(file);
+                String actual = file.getPackageName();
+                if (!expectedPackage.equals(actual)) {
 
-					PsiElement toHighlight = getElementToHighlight((GroovyFile) file);
-					if(toHighlight == null)
-					{
-						return;
-					}
+                    PsiElement toHighlight = getElementToHighlight((GroovyFile) file);
+                    if (toHighlight == null) {
+                        return;
+                    }
 
-					registerError(toHighlight, "Package name mismatch. Actual: '" + actual + "', expected: '" + expectedPackage + "'",
-							new LocalQuickFix[]{
-									new ChangePackageQuickFix(expectedPackage),
-									new GrMoveToDirFix(actual)
-							},
-							ProblemHighlightType.GENERIC_ERROR_OR_WARNING);
-				}
-			}
-		};
-	}
+                    registerError(
+                        toHighlight,
+                        LocalizeValue.localizeTODO("Package name mismatch. Actual: '" + actual + "', expected: '" + expectedPackage + "'"),
+                        new LocalQuickFix[]{
+                            new ChangePackageQuickFix(expectedPackage),
+                            new GrMoveToDirFix(actual)
+                        },
+                        ProblemHighlightType.GENERIC_ERROR_OR_WARNING
+                    );
+                }
+            }
+        };
+    }
 
-	@Nullable
-	private static PsiElement getElementToHighlight(GroovyFile file)
-	{
-		GrPackageDefinition packageDefinition = file.getPackageDefinition();
-		if(packageDefinition != null)
-		{
-			return packageDefinition;
-		}
+    @Nullable
+    private static PsiElement getElementToHighlight(GroovyFile file) {
+        GrPackageDefinition packageDefinition = file.getPackageDefinition();
+        if (packageDefinition != null) {
+            return packageDefinition;
+        }
 
-		PsiClass[] classes = file.getClasses();
-		for(PsiClass aClass : classes)
-		{
-			if(!(aClass instanceof SyntheticElement) && aClass instanceof GrTypeDefinition)
-			{
-				return ((GrTypeDefinition) aClass).getNameIdentifierGroovy();
-			}
-		}
+        PsiClass[] classes = file.getClasses();
+        for (PsiClass aClass : classes) {
+            if (!(aClass instanceof SyntheticElement) && aClass instanceof GrTypeDefinition) {
+                return ((GrTypeDefinition) aClass).getNameIdentifierGroovy();
+            }
+        }
 
-		GrTopStatement[] statements = file.getTopStatements();
-		if(statements.length > 0)
-		{
-			GrTopStatement first = statements[0];
-			if(first instanceof GrNamedElement)
-			{
-				return ((GrNamedElement) first).getNameIdentifierGroovy();
-			}
+        GrTopStatement[] statements = file.getTopStatements();
+        if (statements.length > 0) {
+            GrTopStatement first = statements[0];
+            if (first instanceof GrNamedElement) {
+                return ((GrNamedElement) first).getNameIdentifierGroovy();
+            }
 
-			return first;
-		}
+            return first;
+        }
 
-		return null;
-	}
+        return null;
+    }
 
-	/**
-	 * User: Dmitry.Krasilschikov
-	 * Date: 01.11.2007
-	 */
-	public static class ChangePackageQuickFix implements LocalQuickFix
-	{
-		private final String myNewPackageName;
+    /**
+     * @author Dmitry.Krasilschikov
+     * @since 2007-11-01
+     */
+    public static class ChangePackageQuickFix implements LocalQuickFix {
+        private final String myNewPackageName;
 
-		public ChangePackageQuickFix(String newPackageName)
-		{
-			myNewPackageName = newPackageName;
-		}
+        public ChangePackageQuickFix(String newPackageName) {
+            myNewPackageName = newPackageName;
+        }
 
-		@Nonnull
-		@Override
-		public String getName()
-		{
-			return GroovyBundle.message("fix.package.name");
-		}
+        @Nonnull
+        @Override
+        public LocalizeValue getName() {
+            return GroovyLocalize.fixPackageName();
+        }
 
-		@Nonnull
-		public String getFamilyName()
-		{
-			return GroovyBundle.message("fix.package.name");
-		}
-
-		@Override
-		public void applyFix(@Nonnull Project project, @Nonnull ProblemDescriptor descriptor)
-		{
-			PsiFile file = descriptor.getPsiElement().getContainingFile();
-			((GroovyFile) file).setPackageName(myNewPackageName);
-		}
-	}
+        @Override
+        public void applyFix(@Nonnull Project project, @Nonnull ProblemDescriptor descriptor) {
+            PsiFile file = descriptor.getPsiElement().getContainingFile();
+            ((GroovyFile) file).setPackageName(myNewPackageName);
+        }
+    }
 }

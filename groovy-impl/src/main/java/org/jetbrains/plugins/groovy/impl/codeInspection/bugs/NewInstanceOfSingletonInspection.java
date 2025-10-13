@@ -16,16 +16,16 @@
 package org.jetbrains.plugins.groovy.impl.codeInspection.bugs;
 
 import com.intellij.java.language.psi.codeStyle.JavaCodeStyleManager;
+import consulo.groovy.impl.localize.GroovyInspectionLocalize;
 import consulo.language.editor.inspection.ProblemDescriptor;
 import consulo.language.psi.PsiElement;
 import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
 import consulo.logging.Logger;
 import consulo.project.Project;
-import org.jetbrains.annotations.Nls;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.impl.codeInspection.GroovyFix;
-import org.jetbrains.plugins.groovy.impl.codeInspection.GroovyInspectionBundle;
 import org.jetbrains.plugins.groovy.impl.dsl.psi.PsiClassCategory;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
@@ -40,75 +40,76 @@ import jakarta.annotation.Nonnull;
  * @author Max Medvedev
  */
 public class NewInstanceOfSingletonInspection extends BaseInspection {
-  private static final Logger LOG = Logger.getInstance(NewInstanceOfSingletonInspection.class);
+    private static final Logger LOG = Logger.getInstance(NewInstanceOfSingletonInspection.class);
 
-  @Override
-  protected BaseInspectionVisitor buildVisitor() {
-    return new BaseInspectionVisitor() {
-      @Override
-      public void visitNewExpression(GrNewExpression newExpression) {
-        super.visitNewExpression(newExpression);
+    @Override
+    protected BaseInspectionVisitor buildVisitor() {
+        return new BaseInspectionVisitor() {
+            @Override
+            public void visitNewExpression(GrNewExpression newExpression) {
+                super.visitNewExpression(newExpression);
 
-        final GrCodeReferenceElement refElement = newExpression.getReferenceElement();
-        if (refElement == null) return;
-        if (newExpression.getArrayDeclaration() != null) return;
+                final GrCodeReferenceElement refElement = newExpression.getReferenceElement();
+                if (refElement == null) {
+                    return;
+                }
+                if (newExpression.getArrayDeclaration() != null) {
+                    return;
+                }
 
-        final PsiElement resolved = refElement.resolve();
-        if (resolved instanceof GrTypeDefinition &&
-            PsiClassCategory.hasAnnotation((GrTypeDefinition)resolved, GroovyCommonClassNames.GROOVY_LANG_SINGLETON)) {
-          registerError(newExpression, GroovyInspectionBundle.message("new.instance.of.singleton"));
-        }
-      }
-    };
-  }
+                final PsiElement resolved = refElement.resolve();
+                if (resolved instanceof GrTypeDefinition &&
+                    PsiClassCategory.hasAnnotation((GrTypeDefinition) resolved, GroovyCommonClassNames.GROOVY_LANG_SINGLETON)) {
+                    registerError(newExpression, GroovyInspectionLocalize.newInstanceOfSingleton().get());
+                }
+            }
+        };
+    }
 
-  @Override
-  public boolean isEnabledByDefault() {
-    return true;
-  }
+    @Override
+    public boolean isEnabledByDefault() {
+        return true;
+    }
 
-  @Override
-  protected GroovyFix buildFix(final PsiElement location) {
-    final GrCodeReferenceElement refElement = ((GrNewExpression)location).getReferenceElement();
-    LOG.assertTrue(refElement != null);
-    final GrTypeDefinition singleton = (GrTypeDefinition)refElement.resolve();
-    LOG.assertTrue(singleton != null);
+    @Override
+    protected GroovyFix buildFix(final PsiElement location) {
+        final GrCodeReferenceElement refElement = ((GrNewExpression) location).getReferenceElement();
+        LOG.assertTrue(refElement != null);
+        final GrTypeDefinition singleton = (GrTypeDefinition) refElement.resolve();
+        LOG.assertTrue(singleton != null);
 
-    return new GroovyFix() {
-      @Override
-      protected void doFix(Project project, ProblemDescriptor descriptor) throws IncorrectOperationException
-	  {
-        final GrExpression instanceRef =
-          GroovyPsiElementFactory.getInstance(project).createExpressionFromText(singleton.getQualifiedName() + ".instance");
+        return new GroovyFix() {
+            @Override
+            protected void doFix(Project project, ProblemDescriptor descriptor) throws IncorrectOperationException {
+                final GrExpression instanceRef =
+                    GroovyPsiElementFactory.getInstance(project).createExpressionFromText(singleton.getQualifiedName() + ".instance");
 
-        final GrExpression replaced = ((GrNewExpression)location).replaceWithExpression(instanceRef, true);
-        JavaCodeStyleManager.getInstance(project).shortenClassReferences(replaced);
-      }
+                final GrExpression replaced = ((GrNewExpression) location).replaceWithExpression(instanceRef, true);
+                JavaCodeStyleManager.getInstance(project).shortenClassReferences(replaced);
+            }
 
-      @Nonnull
-      @Override
-      public String getName() {
-        return GroovyInspectionBundle.message("replace.new.expression.with.0.instance", singleton.getName());
-      }
-    };
-  }
+            @Nonnull
+            @Override
+            public LocalizeValue getName() {
+                return GroovyInspectionLocalize.replaceNewExpressionWith0Instance(singleton.getName());
+            }
+        };
+    }
 
-  @Nls
-  @Nonnull
-  @Override
-  public String getGroupDisplayName() {
-    return CONFUSING_CODE_CONSTRUCTS;
-  }
+    @Nonnull
+    @Override
+    public LocalizeValue getGroupDisplayName() {
+        return CONFUSING_CODE_CONSTRUCTS;
+    }
 
-  @Override
-  protected String buildErrorString(Object... args) {
-    return (String)args[0];
-  }
+    @Override
+    protected String buildErrorString(Object... args) {
+        return (String) args[0];
+    }
 
-  @Nls
-  @Nonnull
-  @Override
-  public String getDisplayName() {
-    return "New instance of class annotated with @groovy.lang.Singleton";
-  }
+    @Nonnull
+    @Override
+    public LocalizeValue getDisplayName() {
+        return LocalizeValue.localizeTODO("New instance of class annotated with @groovy.lang.Singleton");
+    }
 }

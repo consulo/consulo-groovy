@@ -15,29 +15,29 @@
  */
 package org.jetbrains.plugins.groovy.impl.codeInspection.control;
 
-import jakarta.annotation.Nonnull;
-
 import consulo.language.editor.inspection.ProblemDescriptor;
 import consulo.language.psi.PsiElement;
 import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
 import consulo.project.Project;
-import org.jetbrains.annotations.NonNls;
+import jakarta.annotation.Nonnull;
+import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
+import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
+import org.jetbrains.plugins.groovy.impl.codeInspection.GroovyFix;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrConditionalExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
-import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
-import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
-import org.jetbrains.plugins.groovy.impl.codeInspection.GroovyFix;
 
 public class GroovyConstantConditionalInspection extends BaseInspection {
-
     @Nonnull
-    public String getGroupDisplayName() {
+    @Override
+    public LocalizeValue getGroupDisplayName() {
         return CONTROL_FLOW;
     }
 
     @Nonnull
-    public String getDisplayName() {
-        return "Constant conditional expression";
+    @Override
+    public LocalizeValue getDisplayName() {
+        return LocalizeValue.localizeTODO("Constant conditional expression");
     }
 
     public boolean isEnabledByDefault() {
@@ -53,8 +53,7 @@ public class GroovyConstantConditionalInspection extends BaseInspection {
         return "'#ref' can be simplified #loc";
     }
 
-    static String calculateReplacementExpression(
-            GrConditionalExpression exp) {
+    static String calculateReplacementExpression(GrConditionalExpression exp) {
         final GrExpression thenExpression = exp.getThenBranch();
         final GrExpression elseExpression = exp.getElseBranch();
         final GrExpression condition = exp.getCondition();
@@ -72,28 +71,21 @@ public class GroovyConstantConditionalInspection extends BaseInspection {
     }
 
     private static class ConstantConditionalFix extends GroovyFix {
-
         @Nonnull
-        public String getName() {
-            return "Simplify";
+        @Override
+        public LocalizeValue getName() {
+            return LocalizeValue.localizeTODO("Simplify");
         }
 
-        public void doFix(Project project, ProblemDescriptor descriptor)
-                throws IncorrectOperationException
-		{
-            final GrConditionalExpression expression =
-                    (GrConditionalExpression) descriptor.getPsiElement();
-            final String newExpression =
-                    calculateReplacementExpression(expression);
+        public void doFix(Project project, ProblemDescriptor descriptor) throws IncorrectOperationException {
+            final GrConditionalExpression expression = (GrConditionalExpression) descriptor.getPsiElement();
+            final String newExpression = calculateReplacementExpression(expression);
             replaceExpression(expression, newExpression);
         }
     }
 
-    private static class ConstantConditionalExpressionVisitor
-            extends BaseInspectionVisitor {
-
-        public void visitConditionalExpression(
-                GrConditionalExpression expression) {
+    private static class ConstantConditionalExpressionVisitor extends BaseInspectionVisitor {
+        public void visitConditionalExpression(GrConditionalExpression expression) {
             super.visitConditionalExpression(expression);
             final GrExpression condition = expression.getCondition();
             final GrExpression thenExpression = expression.getThenBranch();
@@ -111,12 +103,12 @@ public class GroovyConstantConditionalInspection extends BaseInspection {
     }
 
     private static boolean isFalse(GrExpression expression) {
-        @NonNls final String text = expression.getText();
+        final String text = expression.getText();
         return "false".equals(text);
     }
 
     private static boolean isTrue(GrExpression expression) {
-        @NonNls final String text = expression.getText();
+        final String text = expression.getText();
         return "true".equals(text);
     }
 }

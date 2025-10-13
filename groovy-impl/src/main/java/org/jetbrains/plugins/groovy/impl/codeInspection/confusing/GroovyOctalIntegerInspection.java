@@ -15,8 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.impl.codeInspection.confusing;
 
-import org.jetbrains.annotations.Nls;
-import org.jetbrains.annotations.NonNls;
+import consulo.localize.LocalizeValue;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
@@ -24,46 +23,65 @@ import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.literals.GrLiteral;
 
 public class GroovyOctalIntegerInspection extends BaseInspection {
+    @Nonnull
+    @Override
+    public LocalizeValue getGroupDisplayName() {
+        return CONFUSING_CODE_CONSTRUCTS;
+    }
 
-  @Nls
-  @Nonnull
-  public String getGroupDisplayName() {
-    return CONFUSING_CODE_CONSTRUCTS;
-  }
+    @Nonnull
+    @Override
+    public LocalizeValue getDisplayName() {
+        return LocalizeValue.localizeTODO("Octal integer");
+    }
 
-  @Nls
-  @Nonnull
-  public String getDisplayName() {
-    return "Octal integer";
-  }
+    @Nullable
+    protected String buildErrorString(Object... args) {
+        return "Octal integer #ref #loc";
+    }
 
-  @Nullable
-  protected String buildErrorString(Object... args) {
-    return "Octal integer #ref #loc";
-  }
+    public BaseInspectionVisitor buildVisitor() {
+        return new BaseInspectionVisitor() {
+            public void visitLiteralExpression(GrLiteral literal) {
+                super.visitLiteralExpression(literal);
+                final String text = literal.getText();
+                if (!text.startsWith("0")) {
+                    return;
+                }
 
-  public BaseInspectionVisitor buildVisitor() {
-    return new BaseInspectionVisitor() {
-      public void visitLiteralExpression(GrLiteral literal) {
-        super.visitLiteralExpression(literal);
-        @NonNls final String text = literal.getText();
-        if (!text.startsWith("0")) return;
+                if (text.replaceAll("0", "").isEmpty()) {
+                    return;
+                }
+                if ("0g".equals(text) || "0G".equals(text)) {
+                    return;
+                }
+                if ("0i".equals(text) || "0I".equals(text)) {
+                    return;
+                }
+                if ("0l".equals(text) || "0L".equals(text)) {
+                    return;
+                }
 
-        if (text.replaceAll("0", "").isEmpty()) return;
-        if ("0g".equals(text) || "0G".equals(text)) return;
-        if ("0i".equals(text) || "0I".equals(text)) return;
-        if ("0l".equals(text) || "0L".equals(text)) return;
+                if (text.startsWith("0x") || text.startsWith("0X")) {
+                    return;
+                }
+                if (text.startsWith("0b") || text.startsWith("0B")) {
+                    return;
+                }
 
-        if (text.startsWith("0x") || text.startsWith("0X")) return;
-        if (text.startsWith("0b") || text.startsWith("0B")) return;
+                if (text.endsWith("d") || text.endsWith("D")) {
+                    return;
+                }
+                if (text.endsWith("f") || text.endsWith("F")) {
+                    return;
+                }
 
-        if (text.endsWith("d") || text.endsWith("D")) return;
-        if (text.endsWith("f") || text.endsWith("F")) return;
+                if (text.contains(".") || text.contains("e") || text.contains("E")) {
+                    return;
+                }
 
-        if (text.contains(".") || text.contains("e") || text.contains("E")) return;
-        
-        registerError(literal);
-      }
-    };
-  }
+                registerError(literal);
+            }
+        };
+    }
 }

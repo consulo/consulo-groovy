@@ -19,8 +19,8 @@ import consulo.annotation.component.ExtensionImpl;
 import consulo.ide.impl.idea.codeInsight.daemon.impl.quickfix.RenameElementFix;
 import consulo.language.editor.inspection.LocalQuickFix;
 import consulo.language.editor.inspection.ProblemHighlightType;
+import consulo.localize.LocalizeValue;
 import jakarta.annotation.Nonnull;
-import org.jetbrains.annotations.Nls;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrCatchClause;
@@ -30,43 +30,50 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameter;
 
 @ExtensionImpl
 public class GroovyEmptyCatchBlockInspection extends BaseInspection {
-
-  @Nls
-  @Nonnull
-  public String getGroupDisplayName() {
-    return ERROR_HANDLING;
-  }
-
-  @Nls
-  @Nonnull
-  public String getDisplayName() {
-    return "Empty 'catch' block";
-  }
-
-  public BaseInspectionVisitor buildVisitor() {
-    return new Visitor();
-  }
-
-  private static class Visitor extends BaseInspectionVisitor {
-
-    public void visitCatchClause(GrCatchClause catchClause) {
-      super.visitCatchClause(catchClause);
-      final GrOpenBlock body = catchClause.getBody();
-      if (body == null || !isEmpty(body)) {
-        return;
-      }
-
-      final GrParameter parameter = catchClause.getParameter();
-      if (parameter == null) return;
-      if (GrExceptionUtil.ignore(parameter)) return;
-
-      final LocalQuickFix[] fixes = {new RenameElementFix(parameter, "ignored")};
-      registerError(catchClause.getFirstChild(), "Empty '#ref' block #loc", fixes, ProblemHighlightType.GENERIC_ERROR_OR_WARNING);
+    @Nonnull
+    @Override
+    public LocalizeValue getGroupDisplayName() {
+        return ERROR_HANDLING;
     }
 
-    private static boolean isEmpty(@Nonnull GrOpenBlock body) {
-      final GrStatement[] statements = body.getStatements();
-      return statements.length == 0;
+    @Nonnull
+    @Override
+    public LocalizeValue getDisplayName() {
+        return LocalizeValue.localizeTODO("Empty 'catch' block");
     }
-  }
+
+    public BaseInspectionVisitor buildVisitor() {
+        return new Visitor();
+    }
+
+    private static class Visitor extends BaseInspectionVisitor {
+        public void visitCatchClause(GrCatchClause catchClause) {
+            super.visitCatchClause(catchClause);
+            final GrOpenBlock body = catchClause.getBody();
+            if (body == null || !isEmpty(body)) {
+                return;
+            }
+
+            final GrParameter parameter = catchClause.getParameter();
+            if (parameter == null) {
+                return;
+            }
+            if (GrExceptionUtil.ignore(parameter)) {
+                return;
+            }
+
+            final LocalQuickFix[] fixes = {new RenameElementFix(parameter, "ignored")};
+            registerError(
+                catchClause.getFirstChild(),
+                LocalizeValue.localizeTODO("Empty '#ref' block #loc"),
+                fixes,
+                ProblemHighlightType.GENERIC_ERROR_OR_WARNING
+            );
+        }
+
+        private static boolean isEmpty(@Nonnull GrOpenBlock body) {
+            final GrStatement[] statements = body.getStatements();
+            return statements.length == 0;
+        }
+    }
 }

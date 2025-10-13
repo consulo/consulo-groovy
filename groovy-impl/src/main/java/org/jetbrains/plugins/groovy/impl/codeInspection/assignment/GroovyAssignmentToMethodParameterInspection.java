@@ -19,8 +19,8 @@ import consulo.annotation.component.ExtensionImpl;
 import consulo.language.ast.IElementType;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiReference;
+import consulo.localize.LocalizeValue;
 import jakarta.annotation.Nullable;
-import org.jetbrains.annotations.Nls;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
@@ -35,68 +35,65 @@ import jakarta.annotation.Nonnull;
 
 @ExtensionImpl
 public class GroovyAssignmentToMethodParameterInspection extends BaseInspection {
-
-  @Override
-  @Nls
-  @Nonnull
-  public String getGroupDisplayName() {
-    return ASSIGNMENT_ISSUES;
-  }
-
-  @Override
-  @Nls
-  @Nonnull
-  public String getDisplayName() {
-    return "Assignment to method parameter";
-  }
-
-  @Override
-  @Nullable
-  protected String buildErrorString(Object... args) {
-    return "Assignment to method parameter '#ref' #loc";
-
-  }
-
-  @Override
-  @Nonnull
-  public BaseInspectionVisitor buildVisitor() {
-    return new Visitor();
-  }
-
-  private static class Visitor extends BaseInspectionVisitor {
-    
+    @Nonnull
     @Override
-    public void visitAssignmentExpression(GrAssignmentExpression expr) {
-      super.visitAssignmentExpression(expr);
-
-      check(expr.getLValue());
+    public LocalizeValue getGroupDisplayName() {
+        return ASSIGNMENT_ISSUES;
     }
 
-    private void check(@Nullable GrExpression lhs) {
-      if (!(lhs instanceof GrReferenceExpression)) {
-        return;
-      }
-      final PsiElement referent = ((PsiReference) lhs).resolve();
-      if (referent == null) {
-        return;
-      }
-      if (!(referent instanceof GrParameter)) {
-        return;
-      }
-      if (referent.getParent() instanceof GrForClause) {
-        return;
-      }
-      registerError(lhs);
+    @Nonnull
+    @Override
+    public LocalizeValue getDisplayName() {
+        return LocalizeValue.localizeTODO("Assignment to method parameter");
     }
 
     @Override
-    public void visitUnaryExpression(GrUnaryExpression expression) {
-      super.visitUnaryExpression(expression);
+    @Nullable
+    protected String buildErrorString(Object... args) {
+        return "Assignment to method parameter '#ref' #loc";
 
-      final IElementType op = expression.getOperationTokenType();
-      if (op == GroovyTokenTypes.mINC || op == GroovyTokenTypes.mDEC) {
-        check(expression.getOperand());
-      }
     }
-  }
+
+    @Override
+    @Nonnull
+    public BaseInspectionVisitor buildVisitor() {
+        return new Visitor();
+    }
+
+    private static class Visitor extends BaseInspectionVisitor {
+
+        @Override
+        public void visitAssignmentExpression(GrAssignmentExpression expr) {
+            super.visitAssignmentExpression(expr);
+
+            check(expr.getLValue());
+        }
+
+        private void check(@Nullable GrExpression lhs) {
+            if (!(lhs instanceof GrReferenceExpression)) {
+                return;
+            }
+            final PsiElement referent = ((PsiReference) lhs).resolve();
+            if (referent == null) {
+                return;
+            }
+            if (!(referent instanceof GrParameter)) {
+                return;
+            }
+            if (referent.getParent() instanceof GrForClause) {
+                return;
+            }
+            registerError(lhs);
+        }
+
+        @Override
+        public void visitUnaryExpression(GrUnaryExpression expression) {
+            super.visitUnaryExpression(expression);
+
+            final IElementType op = expression.getOperationTokenType();
+            if (op == GroovyTokenTypes.mINC || op == GroovyTokenTypes.mDEC) {
+                check(expression.getOperand());
+            }
+        }
+    }
 }
