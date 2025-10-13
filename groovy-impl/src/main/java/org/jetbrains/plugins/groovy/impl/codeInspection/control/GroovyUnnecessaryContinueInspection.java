@@ -15,19 +15,18 @@
  */
 package org.jetbrains.plugins.groovy.impl.codeInspection.control;
 
-import jakarta.annotation.Nullable;
-
 import consulo.language.editor.inspection.ProblemDescriptor;
 import consulo.language.psi.PsiElement;
-import consulo.language.util.IncorrectOperationException;
-import consulo.project.Project;
 import consulo.language.template.TemplateLanguageFileViewProvider;
+import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
+import consulo.project.Project;
 import jakarta.annotation.Nonnull;
-import org.jetbrains.annotations.Nls;
+import jakarta.annotation.Nullable;
+import org.jetbrains.plugins.groovy.codeInspection.utils.ControlFlowUtils;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.impl.codeInspection.GroovyFix;
-import org.jetbrains.plugins.groovy.codeInspection.utils.ControlFlowUtils;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.GrCondition;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrBlockStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrLoopStatement;
@@ -35,85 +34,80 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.branch.GrContinueStatement;
 
 public class GroovyUnnecessaryContinueInspection extends BaseInspection {
-
-  @Nls
-  @Nonnull
-  public String getGroupDisplayName() {
-    return CONTROL_FLOW;
-  }
-
-  @Nls
-  @Nonnull
-  public String getDisplayName() {
-    return "Unnecessary 'continue' statement";
-  }
-
-  @Nullable
-  protected String buildErrorString(Object... args) {
-    return "#ref is unnecessary as the last statement in a loop #loc";
-
-  }
-
-  public boolean isEnabledByDefault() {
-    return true;
-  }
-
-  public BaseInspectionVisitor buildVisitor() {
-    return new Visitor();
-  }
-
-  @Nullable
-  protected GroovyFix buildFix(PsiElement location) {
-    return new UnnecessaryContinueFix();
-  }
-
-  private static class UnnecessaryContinueFix extends GroovyFix {
+    @Nonnull
+    @Override
+    public LocalizeValue getGroupDisplayName() {
+        return CONTROL_FLOW;
+    }
 
     @Nonnull
-    public String getName() {
-      return "Remove unnecessary continue";
+    @Override
+    public LocalizeValue getDisplayName() {
+        return LocalizeValue.localizeTODO("Unnecessary 'continue' statement");
     }
 
-    public void doFix(Project project, ProblemDescriptor descriptor)
-        throws IncorrectOperationException
-	{
-      final PsiElement continueKeywordElement = descriptor.getPsiElement();
-      final GrContinueStatement continueStatement = (GrContinueStatement) continueKeywordElement.getParent();
-      assert continueStatement != null;
-      continueStatement.removeStatement();
+    @Nullable
+    protected String buildErrorString(Object... args) {
+        return "#ref is unnecessary as the last statement in a loop #loc";
     }
-  }
 
-  private static class Visitor extends BaseInspectionVisitor {
+    public boolean isEnabledByDefault() {
+        return true;
+    }
 
-    public void visitContinueStatement(GrContinueStatement continueStatement) {
-      super.visitContinueStatement(continueStatement);
-      if (continueStatement.getContainingFile().getViewProvider() instanceof TemplateLanguageFileViewProvider) {
-        return;
-      }
-      final GrStatement continuedStatement = continueStatement.findTargetStatement();
-      if (continuedStatement == null) {
-        return;
-      }
+    public BaseInspectionVisitor buildVisitor() {
+        return new Visitor();
+    }
 
-      if (!(continuedStatement instanceof GrLoopStatement)) {
-        return;
-      }
-      final GrCondition body = ((GrLoopStatement) continuedStatement).getBody();
-      if (body == null) {
-        return;
-      }
-      if (body instanceof GrBlockStatement) {
-        if (ControlFlowUtils.blockCompletesWithStatement((GrBlockStatement) body,
-            continueStatement)) {
-          registerStatementError(continueStatement);
+    @Nullable
+    protected GroovyFix buildFix(PsiElement location) {
+        return new UnnecessaryContinueFix();
+    }
+
+    private static class UnnecessaryContinueFix extends GroovyFix {
+        @Nonnull
+        @Override
+        public LocalizeValue getName() {
+            return LocalizeValue.localizeTODO("Remove unnecessary continue");
         }
-      } else if (body instanceof GrStatement) {
-        if (ControlFlowUtils.statementCompletesWithStatement((GrStatement) body,
-            continueStatement)) {
-          registerStatementError(continueStatement);
+
+        public void doFix(Project project, ProblemDescriptor descriptor)
+            throws IncorrectOperationException {
+            final PsiElement continueKeywordElement = descriptor.getPsiElement();
+            final GrContinueStatement continueStatement = (GrContinueStatement) continueKeywordElement.getParent();
+            assert continueStatement != null;
+            continueStatement.removeStatement();
         }
-      }
     }
-  }
+
+    private static class Visitor extends BaseInspectionVisitor {
+        public void visitContinueStatement(GrContinueStatement continueStatement) {
+            super.visitContinueStatement(continueStatement);
+            if (continueStatement.getContainingFile().getViewProvider() instanceof TemplateLanguageFileViewProvider) {
+                return;
+            }
+            final GrStatement continuedStatement = continueStatement.findTargetStatement();
+            if (continuedStatement == null) {
+                return;
+            }
+
+            if (!(continuedStatement instanceof GrLoopStatement)) {
+                return;
+            }
+            final GrCondition body = ((GrLoopStatement) continuedStatement).getBody();
+            if (body == null) {
+                return;
+            }
+            if (body instanceof GrBlockStatement) {
+                if (ControlFlowUtils.blockCompletesWithStatement((GrBlockStatement) body, continueStatement)) {
+                    registerStatementError(continueStatement);
+                }
+            }
+            else if (body instanceof GrStatement) {
+                if (ControlFlowUtils.statementCompletesWithStatement((GrStatement) body, continueStatement)) {
+                    registerStatementError(continueStatement);
+                }
+            }
+        }
+    }
 }

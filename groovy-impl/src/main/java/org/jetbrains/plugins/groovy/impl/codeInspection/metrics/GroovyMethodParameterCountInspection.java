@@ -15,53 +15,54 @@
  */
 package org.jetbrains.plugins.groovy.impl.codeInspection.metrics;
 
+import consulo.localize.LocalizeValue;
 import jakarta.annotation.Nonnull;
-
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.impl.codeInspection.utils.LibraryUtil;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameter;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
 
 public class GroovyMethodParameterCountInspection extends GroovyMethodMetricInspection {
-
-  @Nonnull
-  public String getDisplayName() {
-    return "Method with too many parameters";
-  }
-
-  @Nonnull
-  public String getGroupDisplayName() {
-    return METHOD_METRICS;
-  }
-
-  protected int getDefaultLimit() {
-    return 5;
-  }
-
-  protected String getConfigurationLabel() {
-    return "Maximum number of parameters:";
-  }
-
-  public String buildErrorString(Object... args) {
-    return "Method '#ref' contains too many parameters (" + args[0] + '>' + args[1] + ')';
-  }
-
-  public BaseInspectionVisitor buildVisitor() {
-    return new Visitor();
-  }
-
-  private class Visitor extends BaseInspectionVisitor {
-    public void visitMethod(GrMethod grMethod) {
-      super.visitMethod(grMethod);
-      final GrParameter[] parameters = grMethod.getParameters();
-      final int limit = getLimit();
-      if (parameters == null || parameters.length <= limit) {
-        return;
-      }
-      if (LibraryUtil.isOverrideOfLibraryMethod(grMethod)) {
-        return;
-      }
-      registerMethodError(grMethod, parameters.length, limit);
+    @Nonnull
+    @Override
+    public LocalizeValue getDisplayName() {
+        return LocalizeValue.localizeTODO("Method with too many parameters");
     }
-  }
+
+    @Nonnull
+    @Override
+    public LocalizeValue getGroupDisplayName() {
+        return METHOD_METRICS;
+    }
+
+    protected int getDefaultLimit() {
+        return 5;
+    }
+
+    protected String getConfigurationLabel() {
+        return "Maximum number of parameters:";
+    }
+
+    public String buildErrorString(Object... args) {
+        return "Method '#ref' contains too many parameters (" + args[0] + '>' + args[1] + ')';
+    }
+
+    public BaseInspectionVisitor buildVisitor() {
+        return new Visitor();
+    }
+
+    private class Visitor extends BaseInspectionVisitor {
+        public void visitMethod(GrMethod grMethod) {
+            super.visitMethod(grMethod);
+            final GrParameter[] parameters = grMethod.getParameters();
+            final int limit = getLimit();
+            if (parameters == null || parameters.length <= limit) {
+                return;
+            }
+            if (LibraryUtil.isOverrideOfLibraryMethod(grMethod)) {
+                return;
+            }
+            registerMethodError(grMethod, parameters.length, limit);
+        }
+    }
 }

@@ -19,8 +19,8 @@ import consulo.language.editor.inspection.ProblemDescriptor;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.util.PsiTreeUtil;
 import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
 import consulo.project.Project;
-import org.jetbrains.annotations.Nls;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 
@@ -34,23 +34,21 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpres
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
 
 public class GroovyReturnFromClosureCanBeImplicitInspection extends BaseInspection {
-
-  @Nls
     @Nonnull
-    public String getGroupDisplayName() {
+    @Override
+    public LocalizeValue getGroupDisplayName() {
         return CONTROL_FLOW;
     }
 
-    @Nls
     @Nonnull
-    public String getDisplayName() {
-        return "'return' statement can be implicit";
+    @Override
+    public LocalizeValue getDisplayName() {
+        return LocalizeValue.localizeTODO("'return' statement can be implicit");
     }
 
     @Nullable
     protected String buildErrorString(Object... args) {
         return "#ref statement at end of a closure can be made implicit #loc";
-
     }
 
     public BaseInspectionVisitor buildVisitor() {
@@ -64,36 +62,36 @@ public class GroovyReturnFromClosureCanBeImplicitInspection extends BaseInspecti
 
     private static class MakeReturnImplicitFix extends GroovyFix {
         @Nonnull
-        public String getName() {
-            return "Make return implicit";
+        @Override
+        public LocalizeValue getName() {
+            return LocalizeValue.localizeTODO("Make return implicit");
         }
 
-        public void doFix(Project project, ProblemDescriptor descriptor) throws IncorrectOperationException
-		{
-
+        public void doFix(Project project, ProblemDescriptor descriptor) throws IncorrectOperationException {
             final PsiElement returnKeywordElement = descriptor.getPsiElement();
             final GrReturnStatement returnStatement = (GrReturnStatement) returnKeywordElement.getParent();
-            if (returnStatement == null) return;
-            if (returnStatement.getReturnValue() == null) return;
+            if (returnStatement == null) {
+                return;
+            }
+            if (returnStatement.getReturnValue() == null) {
+                return;
+            }
             replaceStatement(returnStatement, returnStatement.getReturnValue().getText());
         }
     }
 
     private static class Visitor extends BaseInspectionVisitor {
-
         public void visitReturnStatement(GrReturnStatement returnStatement) {
             super.visitReturnStatement(returnStatement);
             final GrExpression returnValue = returnStatement.getReturnValue();
             if (returnValue == null) {
                 return;
             }
-            final GrClosableBlock closure =
-                    PsiTreeUtil.getParentOfType(returnStatement, GrClosableBlock.class);
+            final GrClosableBlock closure = PsiTreeUtil.getParentOfType(returnStatement, GrClosableBlock.class);
             if (closure == null) {
                 return;
             }
-            final GrMethod containingMethod =
-                    PsiTreeUtil.getParentOfType(returnStatement, GrMethod.class);
+            final GrMethod containingMethod = PsiTreeUtil.getParentOfType(returnStatement, GrMethod.class);
             if (containingMethod != null && PsiTreeUtil.isAncestor(closure, containingMethod, true)) {
                 return;
             }

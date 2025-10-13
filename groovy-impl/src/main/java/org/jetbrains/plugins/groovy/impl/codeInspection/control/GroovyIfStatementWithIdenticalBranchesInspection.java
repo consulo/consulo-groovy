@@ -17,10 +17,10 @@ package org.jetbrains.plugins.groovy.impl.codeInspection.control;
 
 import consulo.language.editor.inspection.ProblemDescriptor;
 import consulo.language.psi.PsiElement;
-import consulo.project.Project;
 import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
+import consulo.project.Project;
 import jakarta.annotation.Nonnull;
-
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.impl.codeInspection.GroovyFix;
@@ -29,61 +29,62 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrIfStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
 
 public class GroovyIfStatementWithIdenticalBranchesInspection extends BaseInspection {
-  @Override
-  public boolean isEnabledByDefault() {
-    return true;
-  }
-
-  @Nonnull
-  public String getDisplayName() {
-    return "If statement with identical branches";
-  }
-
-  @Nonnull
-  public String getGroupDisplayName() {
-    return CONTROL_FLOW;
-  }
-
-  public String buildErrorString(Object... args) {
-    return "'#ref' statement with identical branches #loc";
-  }
-
-  public GroovyFix buildFix(PsiElement location) {
-    return new CollapseIfFix();
-  }
-
-  private static class CollapseIfFix extends GroovyFix {
+    @Override
+    public boolean isEnabledByDefault() {
+        return true;
+    }
 
     @Nonnull
-    public String getName() {
-      return "Collapse 'if' statement'";
+    @Override
+    public LocalizeValue getDisplayName() {
+        return LocalizeValue.localizeTODO("If statement with identical branches");
     }
 
-    public void doFix(Project project, ProblemDescriptor descriptor) throws IncorrectOperationException {
-      final PsiElement identifier = descriptor.getPsiElement();
-      final GrIfStatement statement = (GrIfStatement) identifier.getParent();
-      assert statement != null;
-      final GrStatement thenBranch = statement.getThenBranch();
-      replaceStatement(statement, thenBranch);
+    @Nonnull
+    @Override
+    public LocalizeValue getGroupDisplayName() {
+        return CONTROL_FLOW;
     }
-  }
 
-  public BaseInspectionVisitor buildVisitor() {
-    return new IfStatementWithIdenticalBranchesVisitor();
-  }
-
-  private static class IfStatementWithIdenticalBranchesVisitor extends BaseInspectionVisitor {
-
-    public void visitIfStatement(@Nonnull GrIfStatement statement) {
-      super.visitIfStatement(statement);
-      final GrStatement thenBranch = statement.getThenBranch();
-      final GrStatement elseBranch = statement.getElseBranch();
-      if (thenBranch == null || elseBranch == null) {
-        return;
-      }
-      if (EquivalenceChecker.statementsAreEquivalent(thenBranch, elseBranch)) {
-        registerStatementError(statement);
-      }
+    public String buildErrorString(Object... args) {
+        return "'#ref' statement with identical branches #loc";
     }
-  }
+
+    public GroovyFix buildFix(PsiElement location) {
+        return new CollapseIfFix();
+    }
+
+    private static class CollapseIfFix extends GroovyFix {
+        @Nonnull
+        @Override
+        public LocalizeValue getName() {
+            return LocalizeValue.localizeTODO("Collapse 'if' statement'");
+        }
+
+        public void doFix(Project project, ProblemDescriptor descriptor) throws IncorrectOperationException {
+            final PsiElement identifier = descriptor.getPsiElement();
+            final GrIfStatement statement = (GrIfStatement) identifier.getParent();
+            assert statement != null;
+            final GrStatement thenBranch = statement.getThenBranch();
+            replaceStatement(statement, thenBranch);
+        }
+    }
+
+    public BaseInspectionVisitor buildVisitor() {
+        return new IfStatementWithIdenticalBranchesVisitor();
+    }
+
+    private static class IfStatementWithIdenticalBranchesVisitor extends BaseInspectionVisitor {
+        public void visitIfStatement(@Nonnull GrIfStatement statement) {
+            super.visitIfStatement(statement);
+            final GrStatement thenBranch = statement.getThenBranch();
+            final GrStatement elseBranch = statement.getElseBranch();
+            if (thenBranch == null || elseBranch == null) {
+                return;
+            }
+            if (EquivalenceChecker.statementsAreEquivalent(thenBranch, elseBranch)) {
+                registerStatementError(statement);
+            }
+        }
+    }
 }

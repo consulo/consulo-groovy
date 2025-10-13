@@ -16,47 +16,44 @@
 package org.jetbrains.plugins.groovy.impl.codeInspection.exception;
 
 import consulo.annotation.component.ExtensionImpl;
+import consulo.localize.LocalizeValue;
+import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
-import org.jetbrains.annotations.Nls;
 import org.jetbrains.plugins.groovy.codeInspection.utils.ControlFlowUtils;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.branch.GrThrowStatement;
 
-import jakarta.annotation.Nonnull;
-
 @ExtensionImpl
 public class GroovyThrowFromFinallyBlockInspection extends BaseInspection {
-
-  @Nls
-  @Nonnull
-  public String getGroupDisplayName() {
-    return ERROR_HANDLING;
-  }
-
-  @Nls
-  @Nonnull
-  public String getDisplayName() {
-    return "'throw' inside 'finally' block";
-  }
-
-  @Nullable
-  protected String buildErrorString(Object... args) {
-    return "'#ref' inside 'finally' block #loc";
-  }
-
-  public BaseInspectionVisitor buildVisitor() {
-    return new Visitor();
-  }
-
-  private static class Visitor extends BaseInspectionVisitor {
-
-    public void visitThrowStatement(GrThrowStatement throwStatement) {
-      super.visitThrowStatement(throwStatement);
-      if (!ControlFlowUtils.isInFinallyBlock(throwStatement)) {
-        return;
-      }
-      registerStatementError(throwStatement);
+    @Nonnull
+    @Override
+    public LocalizeValue getGroupDisplayName() {
+        return ERROR_HANDLING;
     }
-  }
+
+    @Nonnull
+    @Override
+    public LocalizeValue getDisplayName() {
+        return LocalizeValue.localizeTODO("'throw' inside 'finally' block");
+    }
+
+    @Nullable
+    protected String buildErrorString(Object... args) {
+        return "'#ref' inside 'finally' block #loc";
+    }
+
+    public BaseInspectionVisitor buildVisitor() {
+        return new Visitor();
+    }
+
+    private static class Visitor extends BaseInspectionVisitor {
+        public void visitThrowStatement(GrThrowStatement throwStatement) {
+            super.visitThrowStatement(throwStatement);
+            if (!ControlFlowUtils.isInFinallyBlock(throwStatement)) {
+                return;
+            }
+            registerStatementError(throwStatement);
+        }
+    }
 }

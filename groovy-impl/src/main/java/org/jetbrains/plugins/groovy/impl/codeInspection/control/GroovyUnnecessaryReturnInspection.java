@@ -15,89 +15,91 @@
  */
 package org.jetbrains.plugins.groovy.impl.codeInspection.control;
 
-import jakarta.annotation.Nonnull;
-
 import consulo.language.editor.inspection.ProblemDescriptor;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.util.PsiTreeUtil;
-import consulo.project.Project;
 import consulo.language.util.IncorrectOperationException;
-import org.jetbrains.annotations.Nls;
-
+import consulo.localize.LocalizeValue;
+import consulo.project.Project;
+import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
+import org.jetbrains.plugins.groovy.codeInspection.utils.ControlFlowUtils;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.impl.codeInspection.GroovyFix;
-import org.jetbrains.plugins.groovy.codeInspection.utils.ControlFlowUtils;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrOpenBlock;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.branch.GrReturnStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
 
 public class GroovyUnnecessaryReturnInspection extends BaseInspection {
-
-  @Nls
-  @Nonnull
-  public String getGroupDisplayName() {
-    return CONTROL_FLOW;
-  }
-
-  @Nls
-  @Nonnull
-  public String getDisplayName() {
-    return "Unnecessary 'return' statement";
-  }
-
-  @Nullable
-  protected String buildErrorString(Object... args) {
-    return "#ref is unnecessary as the last statement in a method with no return value #loc";
-  }
-
-  public boolean isEnabledByDefault() {
-    return true;
-  }
-
-  public BaseInspectionVisitor buildVisitor() {
-    return new Visitor();
-  }
-
-  @Nullable
-  protected GroovyFix buildFix(PsiElement location) {
-    return new UnnecessaryReturnFix();
-
-  }
-
-  private static class UnnecessaryReturnFix extends GroovyFix {
     @Nonnull
-    public String getName() {
-      return "Remove unnecessary return";
+    @Override
+    public LocalizeValue getGroupDisplayName() {
+        return CONTROL_FLOW;
     }
 
-    public void doFix(Project project, ProblemDescriptor descriptor) throws IncorrectOperationException {
-      final PsiElement returnKeywordElement = descriptor.getPsiElement();
-      final GrReturnStatement returnStatement = (GrReturnStatement) returnKeywordElement.getParent();
-      assert returnStatement != null;
-      returnStatement.removeStatement();
+    @Nonnull
+    @Override
+    public LocalizeValue getDisplayName() {
+        return LocalizeValue.localizeTODO("Unnecessary 'return' statement");
     }
-  }
 
-  private static class Visitor extends BaseInspectionVisitor {
-
-    public void visitReturnStatement(GrReturnStatement returnStatement) {
-      super.visitReturnStatement(returnStatement);
-
-      final GrExpression returnValue = returnStatement.getReturnValue();
-      if (returnValue != null) return;
-
-      final GrMethod method = PsiTreeUtil.getParentOfType(returnStatement, GrMethod.class);
-      if (method == null) return;
-
-      final GrOpenBlock body = method.getBlock();
-      if (body == null) return;
-
-      if (ControlFlowUtils.openBlockCompletesWithStatement(body, returnStatement)) {
-        registerStatementError(returnStatement);
-      }
+    @Nullable
+    protected String buildErrorString(Object... args) {
+        return "#ref is unnecessary as the last statement in a method with no return value #loc";
     }
-  }
+
+    public boolean isEnabledByDefault() {
+        return true;
+    }
+
+    public BaseInspectionVisitor buildVisitor() {
+        return new Visitor();
+    }
+
+    @Nullable
+    protected GroovyFix buildFix(PsiElement location) {
+        return new UnnecessaryReturnFix();
+    }
+
+    private static class UnnecessaryReturnFix extends GroovyFix {
+        @Nonnull
+        @Override
+        public LocalizeValue getName() {
+            return LocalizeValue.localizeTODO("Remove unnecessary return");
+        }
+
+        public void doFix(Project project, ProblemDescriptor descriptor) throws IncorrectOperationException {
+            final PsiElement returnKeywordElement = descriptor.getPsiElement();
+            final GrReturnStatement returnStatement = (GrReturnStatement) returnKeywordElement.getParent();
+            assert returnStatement != null;
+            returnStatement.removeStatement();
+        }
+    }
+
+    private static class Visitor extends BaseInspectionVisitor {
+        public void visitReturnStatement(GrReturnStatement returnStatement) {
+            super.visitReturnStatement(returnStatement);
+
+            final GrExpression returnValue = returnStatement.getReturnValue();
+            if (returnValue != null) {
+                return;
+            }
+
+            final GrMethod method = PsiTreeUtil.getParentOfType(returnStatement, GrMethod.class);
+            if (method == null) {
+                return;
+            }
+
+            final GrOpenBlock body = method.getBlock();
+            if (body == null) {
+                return;
+            }
+
+            if (ControlFlowUtils.openBlockCompletesWithStatement(body, returnStatement)) {
+                registerStatementError(returnStatement);
+            }
+        }
+    }
 }

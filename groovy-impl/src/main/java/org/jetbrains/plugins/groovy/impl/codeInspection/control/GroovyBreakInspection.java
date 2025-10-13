@@ -16,8 +16,8 @@
 package org.jetbrains.plugins.groovy.impl.codeInspection.control;
 
 import consulo.annotation.component.ExtensionImpl;
+import consulo.localize.LocalizeValue;
 import jakarta.annotation.Nonnull;
-import org.jetbrains.annotations.Nls;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
@@ -28,38 +28,37 @@ import jakarta.annotation.Nullable;
 
 @ExtensionImpl
 public class GroovyBreakInspection extends BaseInspection {
-
-  @Nls
-  @Nonnull
-  public String getGroupDisplayName() {
-    return CONTROL_FLOW;
-  }
-
-  @Nls
-  @Nonnull
-  public String getDisplayName() {
-    return "Break statement";
-  }
-
-  @Nullable
-  protected String buildErrorString(Object... args) {
-    return "#ref statement #loc";
-
-  }
-
-  public BaseInspectionVisitor buildVisitor() {
-    return new Visitor();
-  }
-
-  private static class Visitor extends BaseInspectionVisitor {
-    public void visitBreakStatement(GrBreakStatement breakStatement) {
-
-      super.visitBreakStatement(breakStatement);
-      final GrStatement target = breakStatement.findTargetStatement();
-      if (target instanceof GrSwitchStatement) {
-        return;
-      }
-      registerError(breakStatement);
+    @Nonnull
+    @Override
+    public LocalizeValue getGroupDisplayName() {
+        return CONTROL_FLOW;
     }
-  }
+
+    @Nonnull
+    @Override
+    public LocalizeValue getDisplayName() {
+        return LocalizeValue.localizeTODO("Break statement");
+    }
+
+    @Nullable
+    protected String buildErrorString(Object... args) {
+        return "#ref statement #loc";
+
+    }
+
+    public BaseInspectionVisitor buildVisitor() {
+        return new Visitor();
+    }
+
+    private static class Visitor extends BaseInspectionVisitor {
+        public void visitBreakStatement(GrBreakStatement breakStatement) {
+
+            super.visitBreakStatement(breakStatement);
+            final GrStatement target = breakStatement.findTargetStatement();
+            if (target instanceof GrSwitchStatement) {
+                return;
+            }
+            registerError(breakStatement);
+        }
+    }
 }

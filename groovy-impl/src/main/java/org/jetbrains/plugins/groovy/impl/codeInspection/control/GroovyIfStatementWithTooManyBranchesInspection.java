@@ -16,6 +16,7 @@
 package org.jetbrains.plugins.groovy.impl.codeInspection.control;
 
 import consulo.language.psi.PsiElement;
+import consulo.localize.LocalizeValue;
 import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
@@ -26,70 +27,71 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
 import javax.swing.*;
 
 public class GroovyIfStatementWithTooManyBranchesInspection extends BaseInspection {
+    private static final int DEFAULT_BRANCH_LIMIT = 3;
 
-  private static final int DEFAULT_BRANCH_LIMIT = 3;
+    /**
+     * @noinspection PublicField, WeakerAccess
+     */
+    public int m_limit = DEFAULT_BRANCH_LIMIT;  //this is public for the DefaultJDOMExternalizer thingy
 
-  /**
-   * @noinspection PublicField,WeakerAccess
-   */
-  public int m_limit = DEFAULT_BRANCH_LIMIT;  //this is public for the DefaultJDOMExternalizer thingy
-
-  @Nonnull
-  public String getDisplayName() {
-    return "If statement with too many branches";
-  }
-
-  @Nonnull
-  public String getGroupDisplayName() {
-    return CONTROL_FLOW;
-  }
-
-  private int getLimit() {
-    return m_limit;
-  }
-
-  public JComponent createOptionsPanel() {
-    return new SingleIntegerFieldOptionsPanel("Maximum number of branches:", this, "m_limit");
-  }
-
-  protected String buildErrorString(Object... args) {
-    final GrIfStatement statement = (GrIfStatement) args[0];
-    final int branches = calculateNumBranches(statement);
-    return "'#ref' statement with too many branches (" + branches + ") #loc";
-  }
-
-  private static int calculateNumBranches(GrIfStatement statement) {
-    final GrStatement branch = statement.getElseBranch();
-    if (branch == null) {
-      return 1;
+    @Nonnull
+    @Override
+    public LocalizeValue getDisplayName() {
+        return LocalizeValue.localizeTODO("If statement with too many branches");
     }
-    if (!(branch instanceof GrIfStatement)) {
-      return 2;
+
+    @Nonnull
+    @Override
+    public LocalizeValue getGroupDisplayName() {
+        return CONTROL_FLOW;
     }
-    return 1 + calculateNumBranches((GrIfStatement) branch);
-  }
 
-  public BaseInspectionVisitor buildVisitor() {
-    return new Visitor();
-  }
+    private int getLimit() {
+        return m_limit;
+    }
 
-  private class Visitor extends BaseInspectionVisitor {
+    public JComponent createOptionsPanel() {
+        return new SingleIntegerFieldOptionsPanel("Maximum number of branches:", this, "m_limit");
+    }
 
-    public void visitIfStatement(@Nonnull GrIfStatement statement) {
-      super.visitIfStatement(statement);
-      final PsiElement parent = statement.getParent();
-      if (parent instanceof GrIfStatement) {
-        final GrIfStatement parentStatement = (GrIfStatement) parent;
-        final GrStatement elseBranch = parentStatement.getElseBranch();
-        if (statement.equals(elseBranch)) {
-          return;
+    protected String buildErrorString(Object... args) {
+        final GrIfStatement statement = (GrIfStatement) args[0];
+        final int branches = calculateNumBranches(statement);
+        return "'#ref' statement with too many branches (" + branches + ") #loc";
+    }
+
+    private static int calculateNumBranches(GrIfStatement statement) {
+        final GrStatement branch = statement.getElseBranch();
+        if (branch == null) {
+            return 1;
         }
-      }
-      final int branches = calculateNumBranches(statement);
-      if (branches <= getLimit()) {
-        return;
-      }
-      registerStatementError(statement, statement);
+        if (!(branch instanceof GrIfStatement)) {
+            return 2;
+        }
+        return 1 + calculateNumBranches((GrIfStatement) branch);
     }
-  }
+
+    public BaseInspectionVisitor buildVisitor() {
+        return new Visitor();
+    }
+
+    private class Visitor extends BaseInspectionVisitor {
+
+        public void visitIfStatement(@Nonnull GrIfStatement statement) {
+            super.visitIfStatement(statement);
+            final PsiElement parent = statement.getParent();
+            if (parent instanceof GrIfStatement) {
+                final GrIfStatement parentStatement = (GrIfStatement) parent;
+                final GrStatement elseBranch = parentStatement.getElseBranch();
+                if (statement.equals(elseBranch)) {
+                    return;
+                }
+            }
+            final int branches = calculateNumBranches(statement);
+            if (branches <= getLimit()) {
+                return;
+            }
+            registerStatementError(statement, statement);
+        }
+    }
 }

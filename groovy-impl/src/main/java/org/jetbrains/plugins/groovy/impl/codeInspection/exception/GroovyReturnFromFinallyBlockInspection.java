@@ -16,50 +16,44 @@
 package org.jetbrains.plugins.groovy.impl.codeInspection.exception;
 
 import consulo.annotation.component.ExtensionImpl;
-import org.jetbrains.annotations.Nls;
+import consulo.localize.LocalizeValue;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.codeInspection.utils.ControlFlowUtils;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.branch.GrReturnStatement;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
-
 @ExtensionImpl
 public class GroovyReturnFromFinallyBlockInspection extends BaseInspection {
-
-  @Nls
-  @Nonnull
-  public String getGroupDisplayName() {
-    return ERROR_HANDLING;
-  }
-
-  @Nls
-  @Nonnull
-  public String getDisplayName() {
-    return "'return' inside 'finally' block";
-  }
-
-  @Nullable
-  protected String buildErrorString(Object... args) {
-    return "'#ref' inside 'finally' block #loc";
-
-  }
-
-  public BaseInspectionVisitor buildVisitor() {
-    return new Visitor();
-  }
-
-  private static class Visitor extends BaseInspectionVisitor {
-    public void visitReturnStatement(GrReturnStatement returnStatement) {
-
-      super.visitReturnStatement(returnStatement);
-      if (!ControlFlowUtils.isInFinallyBlock(returnStatement)) {
-        return;
-      }
-      registerStatementError(returnStatement);
+    @Nonnull
+    @Override
+    public LocalizeValue getGroupDisplayName() {
+        return ERROR_HANDLING;
     }
 
+    @Nonnull
+    @Override
+    public LocalizeValue getDisplayName() {
+        return LocalizeValue.localizeTODO("'return' inside 'finally' block");
+    }
 
-  }
+    @Nullable
+    protected String buildErrorString(Object... args) {
+        return "'#ref' inside 'finally' block #loc";
+    }
+
+    public BaseInspectionVisitor buildVisitor() {
+        return new Visitor();
+    }
+
+    private static class Visitor extends BaseInspectionVisitor {
+        public void visitReturnStatement(GrReturnStatement returnStatement) {
+            super.visitReturnStatement(returnStatement);
+            if (!ControlFlowUtils.isInFinallyBlock(returnStatement)) {
+                return;
+            }
+            registerStatementError(returnStatement);
+        }
+    }
 }

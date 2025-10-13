@@ -18,10 +18,9 @@ package org.jetbrains.plugins.groovy.impl.codeInspection.control;
 import consulo.language.editor.inspection.ProblemDescriptor;
 import consulo.language.psi.PsiElement;
 import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
 import consulo.project.Project;
-
 import jakarta.annotation.Nonnull;
-
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.impl.codeInspection.GroovyFix;
@@ -39,105 +38,106 @@ import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 import static org.jetbrains.plugins.groovy.impl.codeInspection.GrInspectionUtil.*;
 
 public class GroovyConditionalCanBeConditionalCallInspection extends BaseInspection {
-
-  @Nonnull
-  public String getDisplayName() {
-    return "Conditional expression can be conditional call";
-  }
-
-  @Nonnull
-  public String getGroupDisplayName() {
-    return CONTROL_FLOW;
-  }
-
-  public String buildErrorString(Object... args) {
-    return "Conditional expression can be call #loc";
-  }
-
-  public GroovyFix buildFix(PsiElement location) {
-    return new CollapseConditionalFix();
-  }
-
-  private static class CollapseConditionalFix extends GroovyFix {
     @Nonnull
-    public String getName() {
-      return "Replace with conditional call";
+    @Override
+    public LocalizeValue getDisplayName() {
+        return LocalizeValue.localizeTODO("Conditional expression can be conditional call");
     }
 
-    public void doFix(Project project, ProblemDescriptor descriptor) throws IncorrectOperationException
-	{
-      final GrConditionalExpression expression = (GrConditionalExpression) descriptor.getPsiElement();
-      final GrBinaryExpression binaryCondition = (GrBinaryExpression)PsiUtil.skipParentheses(expression.getCondition(), false);
-      final GrMethodCallExpression call;
-      if (isInequality(binaryCondition)) {
-        call = (GrMethodCallExpression) expression.getThenBranch();
-      } else {
-        call = (GrMethodCallExpression) expression.getElseBranch();
-      }
-      final GrReferenceExpression methodExpression = (GrReferenceExpression) call.getInvokedExpression();
-      final GrExpression qualifier = methodExpression.getQualifierExpression();
-      final String methodName = methodExpression.getReferenceName();
-      final GrArgumentList argumentList = call.getArgumentList();
-      if (argumentList == null) {
-        return;
-      }
-      replaceExpression(expression, qualifier.getText() + "?." + methodName + argumentList.getText());
+    @Nonnull
+    @Override
+    public LocalizeValue getGroupDisplayName() {
+        return CONTROL_FLOW;
     }
-  }
 
-  public BaseInspectionVisitor buildVisitor() {
-    return new Visitor();
-  }
+    public String buildErrorString(Object... args) {
+        return "Conditional expression can be call #loc";
+    }
 
-  private static class Visitor extends BaseInspectionVisitor {
+    public GroovyFix buildFix(PsiElement location) {
+        return new CollapseConditionalFix();
+    }
 
-    public void visitConditionalExpression(GrConditionalExpression expression) {
-      super.visitConditionalExpression(expression);
-      GrExpression condition = expression.getCondition();
-      final GrExpression thenBranch = expression.getThenBranch();
-      final GrExpression elseBranch = expression.getElseBranch();
-      if (thenBranch == null || elseBranch == null) {
-        return;
-      }
-      if (SideEffectChecker.mayHaveSideEffects(condition)) {
-        return;
-      }
-      condition = (GrExpression)PsiUtil.skipParentheses(condition, false);
-      if (!(condition instanceof GrBinaryExpression)) {
-        return;
-      }
-      final GrBinaryExpression binaryCondition = (GrBinaryExpression) condition;
-      final GrExpression lhs = binaryCondition.getLeftOperand();
-      final GrExpression rhs = binaryCondition.getRightOperand();
-      if (isInequality(binaryCondition) && isNull(elseBranch)) {
-        if (isNull(lhs) && isCallTargeting(thenBranch, rhs) ||
-            isNull(rhs) && isCallTargeting(thenBranch, lhs)) {
-          registerError(expression);
+    private static class CollapseConditionalFix extends GroovyFix {
+        @Nonnull
+        @Override
+        public LocalizeValue getName() {
+            return LocalizeValue.localizeTODO("Replace with conditional call");
         }
-      }
 
-      if (isEquality(binaryCondition) && isNull(thenBranch)) {
-        if (isNull(lhs) && isCallTargeting(elseBranch, rhs) ||
-            isNull(rhs) && isCallTargeting(elseBranch, lhs)) {
-          registerError(expression);
+        public void doFix(Project project, ProblemDescriptor descriptor) throws IncorrectOperationException {
+            final GrConditionalExpression expression = (GrConditionalExpression) descriptor.getPsiElement();
+            final GrBinaryExpression binaryCondition = (GrBinaryExpression) PsiUtil.skipParentheses(expression.getCondition(), false);
+            final GrMethodCallExpression call;
+            if (isInequality(binaryCondition)) {
+                call = (GrMethodCallExpression) expression.getThenBranch();
+            }
+            else {
+                call = (GrMethodCallExpression) expression.getElseBranch();
+            }
+            final GrReferenceExpression methodExpression = (GrReferenceExpression) call.getInvokedExpression();
+            final GrExpression qualifier = methodExpression.getQualifierExpression();
+            final String methodName = methodExpression.getReferenceName();
+            final GrArgumentList argumentList = call.getArgumentList();
+            if (argumentList == null) {
+                return;
+            }
+            replaceExpression(expression, qualifier.getText() + "?." + methodName + argumentList.getText());
         }
-      }
     }
 
-    private static boolean isCallTargeting(GrExpression call, GrExpression expression) {
-      if (!(call instanceof GrMethodCallExpression)) {
-        return false;
-      }
-      final GrMethodCallExpression callExpression = (GrMethodCallExpression) call;
-      final GrExpression methodExpression = callExpression.getInvokedExpression();
-      if (!(methodExpression instanceof GrReferenceExpression)) {
-        return false;
-      }
-      final GrReferenceExpression referenceExpression = (GrReferenceExpression) methodExpression;
-      if (!GroovyTokenTypes.mDOT.equals(referenceExpression.getDotTokenType())) {
-        return false;
-      }
-      return EquivalenceChecker.expressionsAreEquivalent(expression, referenceExpression.getQualifierExpression());
+    public BaseInspectionVisitor buildVisitor() {
+        return new Visitor();
     }
-  }
+
+    private static class Visitor extends BaseInspectionVisitor {
+        public void visitConditionalExpression(GrConditionalExpression expression) {
+            super.visitConditionalExpression(expression);
+            GrExpression condition = expression.getCondition();
+            final GrExpression thenBranch = expression.getThenBranch();
+            final GrExpression elseBranch = expression.getElseBranch();
+            if (thenBranch == null || elseBranch == null) {
+                return;
+            }
+            if (SideEffectChecker.mayHaveSideEffects(condition)) {
+                return;
+            }
+            condition = (GrExpression) PsiUtil.skipParentheses(condition, false);
+            if (!(condition instanceof GrBinaryExpression)) {
+                return;
+            }
+            final GrBinaryExpression binaryCondition = (GrBinaryExpression) condition;
+            final GrExpression lhs = binaryCondition.getLeftOperand();
+            final GrExpression rhs = binaryCondition.getRightOperand();
+            if (isInequality(binaryCondition) && isNull(elseBranch)) {
+                if (isNull(lhs) && isCallTargeting(thenBranch, rhs) ||
+                    isNull(rhs) && isCallTargeting(thenBranch, lhs)) {
+                    registerError(expression);
+                }
+            }
+
+            if (isEquality(binaryCondition) && isNull(thenBranch)) {
+                if (isNull(lhs) && isCallTargeting(elseBranch, rhs) ||
+                    isNull(rhs) && isCallTargeting(elseBranch, lhs)) {
+                    registerError(expression);
+                }
+            }
+        }
+
+        private static boolean isCallTargeting(GrExpression call, GrExpression expression) {
+            if (!(call instanceof GrMethodCallExpression)) {
+                return false;
+            }
+            final GrMethodCallExpression callExpression = (GrMethodCallExpression) call;
+            final GrExpression methodExpression = callExpression.getInvokedExpression();
+            if (!(methodExpression instanceof GrReferenceExpression)) {
+                return false;
+            }
+            final GrReferenceExpression referenceExpression = (GrReferenceExpression) methodExpression;
+            if (!GroovyTokenTypes.mDOT.equals(referenceExpression.getDotTokenType())) {
+                return false;
+            }
+            return EquivalenceChecker.expressionsAreEquivalent(expression, referenceExpression.getQualifierExpression());
+        }
+    }
 }

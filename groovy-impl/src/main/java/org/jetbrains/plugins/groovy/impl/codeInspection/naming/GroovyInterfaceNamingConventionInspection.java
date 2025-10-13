@@ -16,6 +16,7 @@
 package org.jetbrains.plugins.groovy.impl.codeInspection.naming;
 
 import consulo.language.psi.PsiElement;
+import consulo.localize.LocalizeValue;
 import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.impl.codeInspection.GroovyFix;
@@ -23,67 +24,67 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrInterfaceD
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
 
 public class GroovyInterfaceNamingConventionInspection extends ConventionInspection {
+    private static final int DEFAULT_MIN_LENGTH = 8;
+    private static final int DEFAULT_MAX_LENGTH = 64;
 
-  private static final int DEFAULT_MIN_LENGTH = 8;
-  private static final int DEFAULT_MAX_LENGTH = 64;
-
-  @Nonnull
-  public String getDisplayName() {
-    return "Interface naming convention";
-  }
-
-  protected GroovyFix buildFix(PsiElement location) {
-    return new RenameFix();
-  }
-
-  protected boolean buildQuickFixesOnlyForOnTheFlyErrors() {
-    return true;
-  }
-
-  @Nonnull
-  public String buildErrorString(Object... args) {
-    final String className = (String) args[0];
-    if (className.length() < getMinLength()) {
-      return "Interface name '#ref' is too short";
-    } else if (className.length() > getMaxLength()) {
-      return "Interface name '#ref' is too long";
+    @Nonnull
+    @Override
+    public LocalizeValue getDisplayName() {
+        return LocalizeValue.localizeTODO("Interface naming convention");
     }
-    return "Interface name '#ref' doesn't match regex '" + getRegex() + "' #loc";
-  }
 
-  protected String getDefaultRegex() {
-    return "[A-Z][A-Za-z\\d]*";
-  }
-
-  protected int getDefaultMinLength() {
-    return DEFAULT_MIN_LENGTH;
-  }
-
-  protected int getDefaultMaxLength() {
-    return DEFAULT_MAX_LENGTH;
-  }
-
-  public BaseInspectionVisitor buildVisitor() {
-    return new NamingConventionsVisitor();
-  }
-
-  private class NamingConventionsVisitor extends BaseInspectionVisitor {
-
-    public void visitTypeDefinition(GrTypeDefinition grTypeDefinition) {
-      super.visitTypeDefinition(grTypeDefinition);
-      if (!(grTypeDefinition instanceof GrInterfaceDefinition)) {
-        return;
-      }
-      final GrInterfaceDefinition aClass = (GrInterfaceDefinition) grTypeDefinition;
-
-      final String name = aClass.getName();
-      if (name == null) {
-        return;
-      }
-      if (isValid(name)) {
-        return;
-      }
-      registerClassError(aClass, name);
+    protected GroovyFix buildFix(PsiElement location) {
+        return new RenameFix();
     }
-  }
+
+    protected boolean buildQuickFixesOnlyForOnTheFlyErrors() {
+        return true;
+    }
+
+    @Nonnull
+    public String buildErrorString(Object... args) {
+        final String className = (String) args[0];
+        if (className.length() < getMinLength()) {
+            return "Interface name '#ref' is too short";
+        }
+        else if (className.length() > getMaxLength()) {
+            return "Interface name '#ref' is too long";
+        }
+        return "Interface name '#ref' doesn't match regex '" + getRegex() + "' #loc";
+    }
+
+    protected String getDefaultRegex() {
+        return "[A-Z][A-Za-z\\d]*";
+    }
+
+    protected int getDefaultMinLength() {
+        return DEFAULT_MIN_LENGTH;
+    }
+
+    protected int getDefaultMaxLength() {
+        return DEFAULT_MAX_LENGTH;
+    }
+
+    public BaseInspectionVisitor buildVisitor() {
+        return new NamingConventionsVisitor();
+    }
+
+    private class NamingConventionsVisitor extends BaseInspectionVisitor {
+        public void visitTypeDefinition(GrTypeDefinition grTypeDefinition) {
+            super.visitTypeDefinition(grTypeDefinition);
+            if (!(grTypeDefinition instanceof GrInterfaceDefinition)) {
+                return;
+            }
+            final GrInterfaceDefinition aClass = (GrInterfaceDefinition) grTypeDefinition;
+
+            final String name = aClass.getName();
+            if (name == null) {
+                return;
+            }
+            if (isValid(name)) {
+                return;
+            }
+            registerClassError(aClass, name);
+        }
+    }
 }

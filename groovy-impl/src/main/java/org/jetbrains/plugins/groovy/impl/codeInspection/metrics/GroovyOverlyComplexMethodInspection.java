@@ -15,54 +15,56 @@
  */
 package org.jetbrains.plugins.groovy.impl.codeInspection.metrics;
 
+import consulo.localize.LocalizeValue;
 import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrOpenBlock;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
 
 public class GroovyOverlyComplexMethodInspection extends GroovyMethodMetricInspection {
-
-  @Nonnull
-  public String getDisplayName() {
-    return "Overly complex method";
-  }
-
-  @Nonnull
-  public String getGroupDisplayName() {
-    return METHOD_METRICS;
-  }
-
-  protected int getDefaultLimit() {
-    return 10;
-  }
-
-  protected String getConfigurationLabel() {
-    return "Method complexity limit:";
-  }
-
-  public String buildErrorString(Object... args) {
-    return "Method '#ref' is overly complex ( cyclomatic complexity =" + args[0] + '>' + args[1] + ')';
-  }
-
-  public BaseInspectionVisitor buildVisitor() {
-    return new Visitor();
-  }
-
-  private class Visitor extends BaseInspectionVisitor {
-    public void visitMethod(GrMethod grMethod) {
-      super.visitMethod(grMethod);
-      final int limit = getLimit();
-      final CyclomaticComplexityVisitor visitor = new CyclomaticComplexityVisitor();
-      final GrOpenBlock body = grMethod.getBlock();
-      if (body == null) {
-        return;
-      }
-      body.accept(visitor);
-      final int complexity = visitor.getComplexity();
-      if (complexity <= limit) {
-        return;
-      }
-      registerMethodError(grMethod, complexity, limit);
+    @Nonnull
+    @Override
+    public LocalizeValue getDisplayName() {
+        return LocalizeValue.localizeTODO("Overly complex method");
     }
-  }
+
+    @Nonnull
+    @Override
+    public LocalizeValue getGroupDisplayName() {
+        return METHOD_METRICS;
+    }
+
+    protected int getDefaultLimit() {
+        return 10;
+    }
+
+    protected String getConfigurationLabel() {
+        return "Method complexity limit:";
+    }
+
+    public String buildErrorString(Object... args) {
+        return "Method '#ref' is overly complex ( cyclomatic complexity =" + args[0] + '>' + args[1] + ')';
+    }
+
+    public BaseInspectionVisitor buildVisitor() {
+        return new Visitor();
+    }
+
+    private class Visitor extends BaseInspectionVisitor {
+        public void visitMethod(GrMethod grMethod) {
+            super.visitMethod(grMethod);
+            final int limit = getLimit();
+            final CyclomaticComplexityVisitor visitor = new CyclomaticComplexityVisitor();
+            final GrOpenBlock body = grMethod.getBlock();
+            if (body == null) {
+                return;
+            }
+            body.accept(visitor);
+            final int complexity = visitor.getComplexity();
+            if (complexity <= limit) {
+                return;
+            }
+            registerMethodError(grMethod, complexity, limit);
+        }
+    }
 }

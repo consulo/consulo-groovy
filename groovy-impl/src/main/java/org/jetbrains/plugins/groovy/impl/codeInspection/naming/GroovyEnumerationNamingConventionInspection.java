@@ -16,6 +16,7 @@
 package org.jetbrains.plugins.groovy.impl.codeInspection.naming;
 
 import consulo.language.psi.PsiElement;
+import consulo.localize.LocalizeValue;
 import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.impl.codeInspection.GroovyFix;
@@ -23,13 +24,13 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrEnumTypeDe
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
 
 public class GroovyEnumerationNamingConventionInspection extends ConventionInspection {
-
     private static final int DEFAULT_MIN_LENGTH = 8;
     private static final int DEFAULT_MAX_LENGTH = 64;
 
     @Nonnull
-    public String getDisplayName() {
-        return "Enumeration naming convention";
+    @Override
+    public LocalizeValue getDisplayName() {
+        return LocalizeValue.localizeTODO("Enumeration naming convention");
     }
 
     protected GroovyFix buildFix(PsiElement location) {
@@ -68,7 +69,6 @@ public class GroovyEnumerationNamingConventionInspection extends ConventionInspe
     }
 
     private class NamingConventionsVisitor extends BaseInspectionVisitor {
-
         public void visitTypeDefinition(GrTypeDefinition grTypeDefinition) {
             super.visitTypeDefinition(grTypeDefinition);
             if (!(grTypeDefinition instanceof GrEnumTypeDefinition)) {

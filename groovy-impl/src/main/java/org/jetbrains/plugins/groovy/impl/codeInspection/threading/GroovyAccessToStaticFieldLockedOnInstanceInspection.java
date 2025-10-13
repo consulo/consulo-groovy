@@ -20,7 +20,8 @@ import com.intellij.java.language.psi.PsiField;
 import com.intellij.java.language.psi.PsiModifier;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.util.PsiTreeUtil;
-import org.jetbrains.annotations.Nls;
+import consulo.localize.LocalizeValue;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrSynchronizedStatement;
@@ -29,101 +30,102 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrRefere
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 
-import jakarta.annotation.Nonnull;
+public class GroovyAccessToStaticFieldLockedOnInstanceInspection extends BaseInspection {
+    @Override
+    public boolean isEnabledByDefault() {
+        return true;
+    }
 
-public class GroovyAccessToStaticFieldLockedOnInstanceInspection
-    extends BaseInspection {
-  @Override
-  public boolean isEnabledByDefault() {
-    return true;
-  }
+    @Nonnull
+    @Override
+    public LocalizeValue getGroupDisplayName() {
+        return THREADING_ISSUES;
+    }
 
-  @Nls
-  @Nonnull
-  public String getGroupDisplayName() {
-    return THREADING_ISSUES;
-  }
+    @Nonnull
+    @Override
+    public LocalizeValue getDisplayName() {
+        return LocalizeValue.localizeTODO("Access to static field locked on instance data");
+    }
 
-  @Nonnull
-  public String getDisplayName() {
-    return "Access to static field locked on instance data";
-  }
+    @Nonnull
+    protected String buildErrorString(Object... infos) {
+        return "Access to static field <code>#ref</code> locked on instance data #loc";
+    }
 
-  @Nonnull
-  protected String buildErrorString(Object... infos) {
-    return "Access to static field <code>#ref</code> locked on instance data #loc";
-  }
+    public BaseInspectionVisitor buildVisitor() {
+        return new Visitor();
+    }
 
-  public BaseInspectionVisitor buildVisitor() {
-    return new Visitor();
-  }
+    private static class Visitor
+        extends BaseInspectionVisitor {
 
-  private static class Visitor
-      extends BaseInspectionVisitor {
-
-    public void visitReferenceExpression(
-        @Nonnull GrReferenceExpression expression) {
-      super.visitReferenceExpression(expression);
-      boolean isLockedOnInstance = false;
-      boolean isLockedOnClass = false;
-      final GrMethod containingMethod =
-          PsiTreeUtil.getParentOfType(expression, GrMethod.class);
-      if (containingMethod != null &&
-          containingMethod.hasModifierProperty(
-            PsiModifier.SYNCHRONIZED)) {
-        if (containingMethod.hasModifierProperty(
-            PsiModifier.STATIC)) {
-          isLockedOnClass = true;
-        } else {
-          isLockedOnInstance = true;
-        }
-      }
-      PsiElement elementToCheck = expression;
-      while (true) {
-        final GrSynchronizedStatement syncStatement = PsiTreeUtil.getParentOfType(elementToCheck, GrSynchronizedStatement.class);
-        if (syncStatement == null) {
-          break;
-        }
-        final GrExpression lockExpression = syncStatement.getMonitor();
-
-        if (lockExpression instanceof GrReferenceExpression && PsiUtil.isThisReference(lockExpression)) {
-          isLockedOnInstance = true;
-        }
-        else if (lockExpression instanceof GrReferenceExpression) {
-          final GrReferenceExpression reference = (GrReferenceExpression) lockExpression;
-          final PsiElement referent = reference.resolve();
-          if (referent instanceof PsiField) {
-            final PsiField referentField = (PsiField) referent;
-            if (referentField.hasModifierProperty(PsiModifier.STATIC)) {
-              isLockedOnClass = true;
-            } else {
-              isLockedOnInstance = true;
+        public void visitReferenceExpression(
+            @Nonnull GrReferenceExpression expression
+        ) {
+            super.visitReferenceExpression(expression);
+            boolean isLockedOnInstance = false;
+            boolean isLockedOnClass = false;
+            final GrMethod containingMethod =
+                PsiTreeUtil.getParentOfType(expression, GrMethod.class);
+            if (containingMethod != null &&
+                containingMethod.hasModifierProperty(
+                    PsiModifier.SYNCHRONIZED)) {
+                if (containingMethod.hasModifierProperty(
+                    PsiModifier.STATIC)) {
+                    isLockedOnClass = true;
+                }
+                else {
+                    isLockedOnInstance = true;
+                }
             }
-          }
-        }
-        elementToCheck = syncStatement;
-      }
-      if (!isLockedOnInstance || isLockedOnClass) {
-        return;
-      }
-      final PsiElement referent = expression.resolve();
-      if (!(referent instanceof PsiField)) {
-        return;
-      }
-      final PsiField referredField = (PsiField) referent;
-      if (!referredField.hasModifierProperty(PsiModifier.STATIC) ||
-          isConstant(referredField)) {
-        return;
-      }
-      final PsiClass containingClass = referredField.getContainingClass();
-      if (!PsiTreeUtil.isAncestor(containingClass, expression, false)) {
-        return;
-      }
-      registerError(expression);
-    }
+            PsiElement elementToCheck = expression;
+            while (true) {
+                final GrSynchronizedStatement syncStatement = PsiTreeUtil.getParentOfType(elementToCheck, GrSynchronizedStatement.class);
+                if (syncStatement == null) {
+                    break;
+                }
+                final GrExpression lockExpression = syncStatement.getMonitor();
 
-    private static boolean isConstant(PsiField field) {
-      return field.hasModifierProperty(PsiModifier.FINAL);
+                if (lockExpression instanceof GrReferenceExpression && PsiUtil.isThisReference(lockExpression)) {
+                    isLockedOnInstance = true;
+                }
+                else if (lockExpression instanceof GrReferenceExpression) {
+                    final GrReferenceExpression reference = (GrReferenceExpression) lockExpression;
+                    final PsiElement referent = reference.resolve();
+                    if (referent instanceof PsiField) {
+                        final PsiField referentField = (PsiField) referent;
+                        if (referentField.hasModifierProperty(PsiModifier.STATIC)) {
+                            isLockedOnClass = true;
+                        }
+                        else {
+                            isLockedOnInstance = true;
+                        }
+                    }
+                }
+                elementToCheck = syncStatement;
+            }
+            if (!isLockedOnInstance || isLockedOnClass) {
+                return;
+            }
+            final PsiElement referent = expression.resolve();
+            if (!(referent instanceof PsiField)) {
+                return;
+            }
+            final PsiField referredField = (PsiField) referent;
+            if (!referredField.hasModifierProperty(PsiModifier.STATIC) ||
+                isConstant(referredField)) {
+                return;
+            }
+            final PsiClass containingClass = referredField.getContainingClass();
+            if (!PsiTreeUtil.isAncestor(containingClass, expression, false)) {
+                return;
+            }
+            registerError(expression);
+        }
+
+        private static boolean isConstant(PsiField field) {
+            return field.hasModifierProperty(PsiModifier.FINAL);
+        }
     }
-  }
 }

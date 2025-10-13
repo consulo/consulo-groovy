@@ -15,9 +15,9 @@
  */
 package org.jetbrains.plugins.groovy.impl.codeInspection.threading;
 
-import jakarta.annotation.Nullable;
-import org.jetbrains.annotations.Nls;
+import consulo.localize.LocalizeValue;
 import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
@@ -25,43 +25,40 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrSynchronizedStatem
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrOpenBlock;
 
 public class GroovyEmptySyncBlockInspection extends BaseInspection {
-
-  @Nls
-  @Nonnull
-  public String getGroupDisplayName() {
-    return THREADING_ISSUES;
-  }
-
-  @Nls
-  @Nonnull
-  public String getDisplayName() {
-    return "Empty 'synchronized' block";
-  }
-
-  @Nullable
-  protected String buildErrorString(Object... args) {
-    return "Empty '#ref' block #loc";
-
-  }
-
-  public BaseInspectionVisitor buildVisitor() {
-    return new Visitor();
-  }
-
-  private static class Visitor extends BaseInspectionVisitor {
-
-    public void visitSynchronizedStatement(GrSynchronizedStatement synchronizedStatement) {
-      super.visitSynchronizedStatement(synchronizedStatement);
-      final GrOpenBlock body = synchronizedStatement.getBody();
-      if (body == null || !isEmpty(body)) {
-        return;
-      }
-      registerError(synchronizedStatement.getFirstChild());
+    @Nonnull
+    @Override
+    public LocalizeValue getGroupDisplayName() {
+        return THREADING_ISSUES;
     }
 
-    private static boolean isEmpty(GrOpenBlock body) {
-      final GrStatement[] statements = body.getStatements();
-      return statements.length == 0;
+    @Nonnull
+    @Override
+    public LocalizeValue getDisplayName() {
+        return LocalizeValue.localizeTODO("Empty 'synchronized' block");
     }
-  }
+
+    @Nullable
+    protected String buildErrorString(Object... args) {
+        return "Empty '#ref' block #loc";
+    }
+
+    public BaseInspectionVisitor buildVisitor() {
+        return new Visitor();
+    }
+
+    private static class Visitor extends BaseInspectionVisitor {
+        public void visitSynchronizedStatement(GrSynchronizedStatement synchronizedStatement) {
+            super.visitSynchronizedStatement(synchronizedStatement);
+            final GrOpenBlock body = synchronizedStatement.getBody();
+            if (body == null || !isEmpty(body)) {
+                return;
+            }
+            registerError(synchronizedStatement.getFirstChild());
+        }
+
+        private static boolean isEmpty(GrOpenBlock body) {
+            final GrStatement[] statements = body.getStatements();
+            return statements.length == 0;
+        }
+    }
 }

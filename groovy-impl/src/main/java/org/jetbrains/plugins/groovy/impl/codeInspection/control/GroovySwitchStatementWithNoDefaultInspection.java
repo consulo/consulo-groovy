@@ -15,50 +15,47 @@
  */
 package org.jetbrains.plugins.groovy.impl.codeInspection.control;
 
+import consulo.localize.LocalizeValue;
 import jakarta.annotation.Nonnull;
 
 import jakarta.annotation.Nullable;
-import org.jetbrains.annotations.Nls;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrSwitchStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.clauses.GrCaseSection;
 
 public class GroovySwitchStatementWithNoDefaultInspection extends BaseInspection {
-
-  @Nls
-  @Nonnull
-  public String getGroupDisplayName() {
-    return CONTROL_FLOW;
-  }
-
-  @Nls
-  @Nonnull
-  public String getDisplayName() {
-    return "Switch statement with no default case";
-  }
-
-  @Nullable
-  protected String buildErrorString(Object... args) {
-    return "#ref statement with no default branch#loc";
-
-  }
-
-  public BaseInspectionVisitor buildVisitor() {
-    return new Visitor();
-  }
-
-  private static class Visitor extends BaseInspectionVisitor {
-
-    public void visitSwitchStatement(GrSwitchStatement switchStatement) {
-      super.visitSwitchStatement(switchStatement);
-      final GrCaseSection[] caseSections = switchStatement.getCaseSections();
-      for (GrCaseSection caseSection : caseSections) {
-        if (caseSection.isDefault()) {
-          return;
-        }
-      }
-      registerError(switchStatement.getFirstChild());
+    @Nonnull
+    @Override
+    public LocalizeValue getGroupDisplayName() {
+        return CONTROL_FLOW;
     }
-  }
+
+    @Nonnull
+    @Override
+    public LocalizeValue getDisplayName() {
+        return LocalizeValue.localizeTODO("Switch statement with no default case");
+    }
+
+    @Nullable
+    protected String buildErrorString(Object... args) {
+        return "#ref statement with no default branch#loc";
+    }
+
+    public BaseInspectionVisitor buildVisitor() {
+        return new Visitor();
+    }
+
+    private static class Visitor extends BaseInspectionVisitor {
+        public void visitSwitchStatement(GrSwitchStatement switchStatement) {
+            super.visitSwitchStatement(switchStatement);
+            final GrCaseSection[] caseSections = switchStatement.getCaseSections();
+            for (GrCaseSection caseSection : caseSections) {
+                if (caseSection.isDefault()) {
+                    return;
+                }
+            }
+            registerError(switchStatement.getFirstChild());
+        }
+    }
 }
