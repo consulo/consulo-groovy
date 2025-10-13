@@ -15,6 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.impl.codeInspection.metrics;
 
+import consulo.localize.LocalizeValue;
 import jakarta.annotation.Nonnull;
 
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
@@ -22,48 +23,49 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrOpenBlock;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
 
 public class GroovyOverlyNestedMethodInspection extends GroovyMethodMetricInspection {
-
-  @Nonnull
-  public String getDisplayName() {
-    return "Overly nested method";
-  }
-
-  @Nonnull
-  public String getGroupDisplayName() {
-    return METHOD_METRICS;
-  }
-
-  protected int getDefaultLimit() {
-    return 5;
-  }
-
-  protected String getConfigurationLabel() {
-    return "Maximum nesting depth:";
-  }
-
-  public String buildErrorString(Object... args) {
-    return "Method '#ref' is overly nested ( nesting depth =" + args[0] + '>' + args[1] + ')';
-  }
-
-  public BaseInspectionVisitor buildVisitor() {
-    return new Visitor();
-  }
-
-  private class Visitor extends BaseInspectionVisitor {
-    public void visitMethod(GrMethod grMethod) {
-      super.visitMethod(grMethod);
-      final int limit = getLimit();
-      final NestingDepthVisitor visitor = new NestingDepthVisitor();
-      final GrOpenBlock body = grMethod.getBlock();
-      if (body == null) {
-        return;
-      }
-      body.accept(visitor);
-      final int nestingDepth = visitor.getMaximumDepth();
-      if (nestingDepth <= limit) {
-        return;
-      }
-      registerMethodError(grMethod, nestingDepth, limit);
+    @Nonnull
+    @Override
+    public LocalizeValue getDisplayName() {
+        return LocalizeValue.localizeTODO("Overly nested method");
     }
-  }
+
+    @Nonnull
+    @Override
+    public LocalizeValue getGroupDisplayName() {
+        return METHOD_METRICS;
+    }
+
+    protected int getDefaultLimit() {
+        return 5;
+    }
+
+    protected String getConfigurationLabel() {
+        return "Maximum nesting depth:";
+    }
+
+    public String buildErrorString(Object... args) {
+        return "Method '#ref' is overly nested ( nesting depth =" + args[0] + '>' + args[1] + ')';
+    }
+
+    public BaseInspectionVisitor buildVisitor() {
+        return new Visitor();
+    }
+
+    private class Visitor extends BaseInspectionVisitor {
+        public void visitMethod(GrMethod grMethod) {
+            super.visitMethod(grMethod);
+            final int limit = getLimit();
+            final NestingDepthVisitor visitor = new NestingDepthVisitor();
+            final GrOpenBlock body = grMethod.getBlock();
+            if (body == null) {
+                return;
+            }
+            body.accept(visitor);
+            final int nestingDepth = visitor.getMaximumDepth();
+            if (nestingDepth <= limit) {
+                return;
+            }
+            registerMethodError(grMethod, nestingDepth, limit);
+        }
+    }
 }

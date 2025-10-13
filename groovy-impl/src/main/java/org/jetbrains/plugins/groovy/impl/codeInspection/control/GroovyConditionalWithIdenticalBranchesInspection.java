@@ -15,6 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.impl.codeInspection.control;
 
+import consulo.localize.LocalizeValue;
 import jakarta.annotation.Nonnull;
 
 import consulo.language.editor.inspection.ProblemDescriptor;
@@ -29,61 +30,64 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrCondit
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 
 public class GroovyConditionalWithIdenticalBranchesInspection extends BaseInspection {
-  @Override
-  public boolean isEnabledByDefault() {
-    return true;
-  }
+    @Override
+    public boolean isEnabledByDefault() {
+        return true;
+    }
 
-  @Nonnull
-  public String getDisplayName() {
-    return "Conditional expression with identical branches";
-  }
-
-  @Nonnull
-  public String getGroupDisplayName() {
-    return CONTROL_FLOW;
-  }
-
-  public String buildErrorString(Object... args) {
-    return "Conditional expression with identical branches #loc";
-  }
-
-  public GroovyFix buildFix(PsiElement location) {
-    return new CollapseConditionalFix();
-  }
-
-  private static class CollapseConditionalFix extends GroovyFix {
     @Nonnull
-    public String getName() {
-      return "Collapse conditional expression";
+    @Override
+    public LocalizeValue getDisplayName() {
+        return LocalizeValue.localizeTODO("Conditional expression with identical branches");
     }
 
-    public void doFix(Project project, ProblemDescriptor descriptor) throws IncorrectOperationException
-	{
-      final PsiElement element = descriptor.getPsiElement();
-      if (!(element instanceof GrConditionalExpression)) return;
-      final GrConditionalExpression expression = (GrConditionalExpression)element;
-      final GrExpression thenBranch = expression.getThenBranch();
-      replaceExpression(expression, thenBranch.getText());
+    @Nonnull
+    @Override
+    public LocalizeValue getGroupDisplayName() {
+        return CONTROL_FLOW;
     }
-  }
 
-  public BaseInspectionVisitor buildVisitor() {
-    return new Visitor();
-  }
-
-  private static class Visitor extends BaseInspectionVisitor {
-
-    public void visitConditionalExpression(GrConditionalExpression expression) {
-      super.visitConditionalExpression(expression);
-      final GrExpression thenBranch = expression.getThenBranch();
-      final GrExpression elseBranch = expression.getElseBranch();
-      if (thenBranch == null || elseBranch == null) {
-        return;
-      }
-      if (EquivalenceChecker.expressionsAreEquivalent(thenBranch, elseBranch)) {
-        registerStatementError(expression);
-      }
+    public String buildErrorString(Object... args) {
+        return "Conditional expression with identical branches #loc";
     }
-  }
+
+    public GroovyFix buildFix(PsiElement location) {
+        return new CollapseConditionalFix();
+    }
+
+    private static class CollapseConditionalFix extends GroovyFix {
+        @Nonnull
+        @Override
+        public LocalizeValue getName() {
+            return LocalizeValue.localizeTODO("Collapse conditional expression");
+        }
+
+        public void doFix(Project project, ProblemDescriptor descriptor) throws IncorrectOperationException {
+            final PsiElement element = descriptor.getPsiElement();
+            if (!(element instanceof GrConditionalExpression)) {
+                return;
+            }
+            final GrConditionalExpression expression = (GrConditionalExpression) element;
+            final GrExpression thenBranch = expression.getThenBranch();
+            replaceExpression(expression, thenBranch.getText());
+        }
+    }
+
+    public BaseInspectionVisitor buildVisitor() {
+        return new Visitor();
+    }
+
+    private static class Visitor extends BaseInspectionVisitor {
+        public void visitConditionalExpression(GrConditionalExpression expression) {
+            super.visitConditionalExpression(expression);
+            final GrExpression thenBranch = expression.getThenBranch();
+            final GrExpression elseBranch = expression.getElseBranch();
+            if (thenBranch == null || elseBranch == null) {
+                return;
+            }
+            if (EquivalenceChecker.expressionsAreEquivalent(thenBranch, elseBranch)) {
+                registerStatementError(expression);
+            }
+        }
+    }
 }

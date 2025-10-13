@@ -15,10 +15,9 @@
  */
 package org.jetbrains.plugins.groovy.impl.codeInspection.naming;
 
+import consulo.language.psi.PsiElement;
 import consulo.localize.LocalizeValue;
 import jakarta.annotation.Nonnull;
-
-import consulo.language.psi.PsiElement;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.impl.codeInspection.GroovyFix;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrAnnotationTypeDefinition;

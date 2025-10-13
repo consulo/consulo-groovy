@@ -15,6 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.impl.codeInspection.metrics;
 
+import consulo.localize.LocalizeValue;
 import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
@@ -22,39 +23,40 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrOpenBlock;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
 
 public class GroovyMethodWithMoreThanThreeNegationsInspection extends BaseInspection {
-
-  @Nonnull
-  public String getDisplayName() {
-    return "Method with more than three negations";
-  }
-
-  @Nonnull
-  public String getGroupDisplayName() {
-    return METHOD_METRICS;
-  }
-
-  public String buildErrorString(Object... args) {
-    return "Method '#ref' has too many negations (" + args[0] + " > 3)";
-  }
-
-  public BaseInspectionVisitor buildVisitor() {
-    return new Visitor();
-  }
-
-  private static class Visitor extends BaseInspectionVisitor {
-    public void visitMethod(GrMethod grMethod) {
-      super.visitMethod(grMethod);
-      final NegationCountVisitor visitor = new NegationCountVisitor();
-      final GrOpenBlock body = grMethod.getBlock();
-      if (body == null) {
-        return;
-      }
-      body.accept(visitor);
-      final int numNegations = visitor.getNegationCount();
-      if (numNegations <= 3) {
-        return;
-      }
-      registerMethodError(grMethod, numNegations);
+    @Nonnull
+    @Override
+    public LocalizeValue getDisplayName() {
+        return LocalizeValue.localizeTODO("Method with more than three negations");
     }
-  }
+
+    @Nonnull
+    @Override
+    public LocalizeValue getGroupDisplayName() {
+        return METHOD_METRICS;
+    }
+
+    public String buildErrorString(Object... args) {
+        return "Method '#ref' has too many negations (" + args[0] + " > 3)";
+    }
+
+    public BaseInspectionVisitor buildVisitor() {
+        return new Visitor();
+    }
+
+    private static class Visitor extends BaseInspectionVisitor {
+        public void visitMethod(GrMethod grMethod) {
+            super.visitMethod(grMethod);
+            final NegationCountVisitor visitor = new NegationCountVisitor();
+            final GrOpenBlock body = grMethod.getBlock();
+            if (body == null) {
+                return;
+            }
+            body.accept(visitor);
+            final int numNegations = visitor.getNegationCount();
+            if (numNegations <= 3) {
+                return;
+            }
+            registerMethodError(grMethod, numNegations);
+        }
+    }
 }

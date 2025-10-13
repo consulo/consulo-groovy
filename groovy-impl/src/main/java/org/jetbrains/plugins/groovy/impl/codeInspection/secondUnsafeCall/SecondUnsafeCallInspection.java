@@ -16,13 +16,14 @@
 package org.jetbrains.plugins.groovy.impl.codeInspection.secondUnsafeCall;
 
 import consulo.annotation.component.ExtensionImpl;
+import consulo.groovy.impl.localize.GroovyInspectionLocalize;
+import consulo.groovy.localize.GroovyLocalize;
 import consulo.language.editor.inspection.ProblemsHolder;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiElementVisitor;
+import consulo.localize.LocalizeValue;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
-import org.jetbrains.annotations.Nls;
-import org.jetbrains.annotations.NonNls;
 import org.jetbrains.plugins.groovy.impl.annotator.inspections.SecondUnsafeCallQuickFix;
 import org.jetbrains.plugins.groovy.impl.codeInspection.GroovyInspectionBundle;
 import org.jetbrains.plugins.groovy.impl.codeInspection.GroovySuppressableInspectionTool;
@@ -34,77 +35,89 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrRefere
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.path.GrMethodCallExpression;
 
 /**
- * User: Dmitry.Krasilschikov
- * Date: 13.11.2007
+ * @author Dmitry.Krasilschikov
+ * @since 2007-11-13
  */
 @ExtensionImpl
 public class SecondUnsafeCallInspection extends GroovySuppressableInspectionTool {
-  @Nonnull
-  public PsiElementVisitor buildVisitor(@Nonnull final ProblemsHolder holder, boolean isOnTheFly) {
-    return new GroovyPsiElementVisitor(new GroovyElementVisitor() {
-      public void visitReferenceExpression(GrReferenceExpression refExpression) {
-        checkForSecondUnsafeCall(refExpression, holder);
-      }
-    });
-  }
+    @Nonnull
+    public PsiElementVisitor buildVisitor(@Nonnull final ProblemsHolder holder, boolean isOnTheFly) {
+        return new GroovyPsiElementVisitor(new GroovyElementVisitor() {
+            public void visitReferenceExpression(GrReferenceExpression refExpression) {
+                checkForSecondUnsafeCall(refExpression, holder);
+            }
+        });
+    }
 
-  private static void checkForSecondUnsafeCall(GrExpression expression, ProblemsHolder holder) {
-    checkForSecondUnsafeCall(expression, holder, null);
-  }
+    private static void checkForSecondUnsafeCall(GrExpression expression, ProblemsHolder holder) {
+        checkForSecondUnsafeCall(expression, holder, null);
+    }
 
-  private static void checkForSecondUnsafeCall(GrExpression expression, ProblemsHolder holder, @Nullable PsiElement highlightElement) {
-    if (highlightElement == null) highlightElement = expression;
-
-    final GrReferenceExpression referenceExpression = (GrReferenceExpression)expression;
-
-    if (GroovyTokenTypes.mDOT.equals(referenceExpression.getDotTokenType())) {
-      //        a?.b or a?.b()
-      final GrExpression qualifier = referenceExpression.getQualifierExpression();
-      //        a?.b()
-      if (qualifier instanceof GrMethodCallExpression) {
-        final GrExpression expression1 = ((GrMethodCallExpression)qualifier).getInvokedExpression();
-        //        a?.b
-        if (!(expression1 instanceof GrReferenceExpression)) return;
-
-        if (GroovyTokenTypes.mOPTIONAL_DOT.equals(((GrReferenceExpression)expression1).getDotTokenType())) {
-          holder.registerProblem(highlightElement, GroovyInspectionBundle.message("call.can.throw.npe"), new SecondUnsafeCallQuickFix());
+    private static void checkForSecondUnsafeCall(GrExpression expression, ProblemsHolder holder, @Nullable PsiElement highlightElement) {
+        if (highlightElement == null) {
+            highlightElement = expression;
         }
-      }
-      else
-        //        a?.b
-        if (qualifier instanceof GrReferenceExpression) {
-          if (GroovyTokenTypes.mOPTIONAL_DOT.equals(((GrReferenceExpression)qualifier).getDotTokenType())) {
-            holder.registerProblem(highlightElement, GroovyInspectionBundle.message("call.can.throw.npe"), new SecondUnsafeCallQuickFix());
-          }
+
+        final GrReferenceExpression referenceExpression = (GrReferenceExpression) expression;
+
+        if (GroovyTokenTypes.mDOT.equals(referenceExpression.getDotTokenType())) {
+            //        a?.b or a?.b()
+            final GrExpression qualifier = referenceExpression.getQualifierExpression();
+            //        a?.b()
+            if (qualifier instanceof GrMethodCallExpression) {
+                final GrExpression expression1 = ((GrMethodCallExpression) qualifier).getInvokedExpression();
+                //        a?.b
+                if (!(expression1 instanceof GrReferenceExpression)) {
+                    return;
+                }
+
+                if (GroovyTokenTypes.mOPTIONAL_DOT.equals(((GrReferenceExpression) expression1).getDotTokenType())) {
+                    holder.registerProblem(
+                        highlightElement,
+                        GroovyInspectionBundle.message("call.can.throw.npe"),
+                        new SecondUnsafeCallQuickFix()
+                    );
+                }
+            }
+            else
+                //        a?.b
+                if (qualifier instanceof GrReferenceExpression) {
+                    if (GroovyTokenTypes.mOPTIONAL_DOT.equals(((GrReferenceExpression) qualifier).getDotTokenType())) {
+                        holder.registerProblem(
+                            highlightElement,
+                            GroovyInspectionBundle.message("call.can.throw.npe"),
+                            new SecondUnsafeCallQuickFix()
+                        );
+                    }
+                }
         }
     }
-  }
 
-  @Nls
-  @Nonnull
-  public String getGroupDisplayName() {
-    return "Probable bugs";
-  }
+    @Nonnull
+    @Override
+    public LocalizeValue getGroupDisplayName() {
+        return LocalizeValue.localizeTODO("Probable bugs");
+    }
 
-  @Nonnull
-  @Override
-  public String[] getGroupPath() {
-    return new String[]{"Groovy", getGroupDisplayName()};
-  }
+    @Nonnull
+    @Override
+    public LocalizeValue[] getGroupPath() {
+        return new LocalizeValue[]{GroovyLocalize.groovy(), getGroupDisplayName()};
+    }
 
-  @Nls
-  @Nonnull
-  public String getDisplayName() {
-    return GroovyInspectionBundle.message("second.unsafe.call");
-  }
+    @Nonnull
+    @Override
+    public LocalizeValue getDisplayName() {
+        return GroovyInspectionLocalize.secondUnsafeCall();
+    }
 
-  @NonNls
-  @Nonnull
-  public String getShortName() {
-    return "SecondUnsafeCall";
-  }
+    @Nonnull
+    @Override
+    public String getShortName() {
+        return "SecondUnsafeCall";
+    }
 
-  public boolean isEnabledByDefault() {
-    return true;
-  }
+    public boolean isEnabledByDefault() {
+        return true;
+    }
 }

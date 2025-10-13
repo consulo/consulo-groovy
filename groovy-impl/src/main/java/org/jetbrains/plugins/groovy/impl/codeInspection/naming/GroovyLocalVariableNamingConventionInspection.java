@@ -16,7 +16,7 @@
 package org.jetbrains.plugins.groovy.impl.codeInspection.naming;
 
 import consulo.language.psi.PsiElement;
-
+import consulo.localize.LocalizeValue;
 import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.impl.codeInspection.GroovyFix;
@@ -27,75 +27,76 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameter;
 
 public class GroovyLocalVariableNamingConventionInspection extends ConventionInspection {
+    private static final int DEFAULT_MIN_LENGTH = 4;
+    private static final int DEFAULT_MAX_LENGTH = 32;
 
-  private static final int DEFAULT_MIN_LENGTH = 4;
-  private static final int DEFAULT_MAX_LENGTH = 32;
-
-  @Nonnull
-  public String getDisplayName() {
-    return "Local variable naming convention";
-  }
-
-  protected GroovyFix buildFix(PsiElement location) {
-    return new RenameFix();
-  }
-
-  protected boolean buildQuickFixesOnlyForOnTheFlyErrors() {
-    return true;
-  }
-
-  @Nonnull
-  public String buildErrorString(Object... args) {
-    final String className = (String) args[0];
-    if (className.length() < getMinLength()) {
-      return "Local variable name '#ref' is too short";
-    } else if (className.length() > getMaxLength()) {
-      return "Local variable name '#ref' is too long";
-    }
-    return "Local variable name '#ref' doesn't match regex '" + getRegex() + "' #loc";
-  }
-
-  protected String getDefaultRegex() {
-    return "[a-z][A-Za-z\\d]*";
-  }
-
-  protected int getDefaultMinLength() {
-    return DEFAULT_MIN_LENGTH;
-  }
-
-  protected int getDefaultMaxLength() {
-    return DEFAULT_MAX_LENGTH;
-  }
-
-  public BaseInspectionVisitor buildVisitor() {
-    return new NamingConventionsVisitor();
-  }
-
-  private class NamingConventionsVisitor extends BaseInspectionVisitor {
-    public void visitVariable(GrVariable grVariable) {
-      super.visitVariable(grVariable);
-      if (grVariable instanceof GrField || grVariable instanceof GrParameter) {
-        return;
-      }
-      final String name = grVariable.getName();
-      if (isValid(name)) {
-        return;
-      }
-      registerVariableError(grVariable, name);
+    @Nonnull
+    @Override
+    public LocalizeValue getDisplayName() {
+        return LocalizeValue.localizeTODO("Local variable naming convention");
     }
 
-    public void visitParameter(GrParameter grParameter) {
-      super.visitParameter(grParameter);
-      final String name = grParameter.getName();
-      final PsiElement scope = grParameter.getDeclarationScope();
-      if (!(scope instanceof GrCatchClause) &&
-          !(scope instanceof GrForStatement)) {
-        return;
-      }
-      if (isValid(name)) {
-        return;
-      }
-      registerVariableError(grParameter, name);
+    protected GroovyFix buildFix(PsiElement location) {
+        return new RenameFix();
     }
-  }
+
+    protected boolean buildQuickFixesOnlyForOnTheFlyErrors() {
+        return true;
+    }
+
+    @Nonnull
+    public String buildErrorString(Object... args) {
+        final String className = (String) args[0];
+        if (className.length() < getMinLength()) {
+            return "Local variable name '#ref' is too short";
+        }
+        else if (className.length() > getMaxLength()) {
+            return "Local variable name '#ref' is too long";
+        }
+        return "Local variable name '#ref' doesn't match regex '" + getRegex() + "' #loc";
+    }
+
+    protected String getDefaultRegex() {
+        return "[a-z][A-Za-z\\d]*";
+    }
+
+    protected int getDefaultMinLength() {
+        return DEFAULT_MIN_LENGTH;
+    }
+
+    protected int getDefaultMaxLength() {
+        return DEFAULT_MAX_LENGTH;
+    }
+
+    public BaseInspectionVisitor buildVisitor() {
+        return new NamingConventionsVisitor();
+    }
+
+    private class NamingConventionsVisitor extends BaseInspectionVisitor {
+        public void visitVariable(GrVariable grVariable) {
+            super.visitVariable(grVariable);
+            if (grVariable instanceof GrField || grVariable instanceof GrParameter) {
+                return;
+            }
+            final String name = grVariable.getName();
+            if (isValid(name)) {
+                return;
+            }
+            registerVariableError(grVariable, name);
+        }
+
+        public void visitParameter(GrParameter grParameter) {
+            super.visitParameter(grParameter);
+            final String name = grParameter.getName();
+            final PsiElement scope = grParameter.getDeclarationScope();
+            if (!(scope instanceof GrCatchClause) &&
+                !(scope instanceof GrForStatement)) {
+                return;
+            }
+            if (isValid(name)) {
+                return;
+            }
+            registerVariableError(grParameter, name);
+        }
+    }
 }

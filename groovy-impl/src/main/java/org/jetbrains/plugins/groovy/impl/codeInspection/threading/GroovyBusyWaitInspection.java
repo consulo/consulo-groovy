@@ -17,64 +17,62 @@ package org.jetbrains.plugins.groovy.impl.codeInspection.threading;
 
 import com.intellij.java.language.psi.PsiClass;
 import com.intellij.java.language.psi.PsiMethod;
+import consulo.localize.LocalizeValue;
 import jakarta.annotation.Nonnull;
-import org.jetbrains.annotations.Nls;
+import org.jetbrains.plugins.groovy.codeInspection.utils.ControlFlowUtils;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
-import org.jetbrains.plugins.groovy.codeInspection.utils.ControlFlowUtils;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.path.GrMethodCallExpression;
 
 public class GroovyBusyWaitInspection extends BaseInspection {
-
-  @Nls
-  @Nonnull
-  public String getGroupDisplayName() {
-    return THREADING_ISSUES;
-  }
-
-  @Nonnull
-  public String getDisplayName() {
-    return "Busy wait";
-  }
-
-  @Nonnull
-  protected String buildErrorString(Object... infos) {
-    return "Call to <code>Thread.#ref()</code> in a loop, probably busy-waiting #loc";
-  }
-
-  public BaseInspectionVisitor buildVisitor() {
-    return new BusyWaitVisitor();
-  }
-
-  private static class BusyWaitVisitor extends BaseInspectionVisitor {
-
-    public void visitMethodCallExpression(
-        @Nonnull GrMethodCallExpression grMethodCallExpression) {
-      super.visitMethodCallExpression(grMethodCallExpression);
-
-      final GrExpression methodExpression = grMethodCallExpression.getInvokedExpression();
-      if (!(methodExpression instanceof GrReferenceExpression)) {
-        return;
-      }
-      final GrReferenceExpression reference = (GrReferenceExpression) methodExpression;
-      final String name = reference.getReferenceName();
-      if (!"sleep".equals(name)) {
-        return;
-      }
-      final PsiMethod method = grMethodCallExpression.resolveMethod();
-      if (method == null) {
-        return;
-      }
-      final PsiClass containingClass = method.getContainingClass();
-      if (containingClass == null || !"java.lang.Thread".equals(containingClass.getQualifiedName())) {
-        return;
-      }
-      if (!ControlFlowUtils.isInLoop(grMethodCallExpression)) {
-        return;
-      }
-      registerMethodCallError(grMethodCallExpression);
+    @Nonnull
+    @Override
+    public LocalizeValue getGroupDisplayName() {
+        return THREADING_ISSUES;
     }
-  }
+
+    @Nonnull
+    @Override
+    public LocalizeValue getDisplayName() {
+        return LocalizeValue.localizeTODO("Busy wait");
+    }
+
+    @Nonnull
+    protected String buildErrorString(Object... infos) {
+        return "Call to <code>Thread.#ref()</code> in a loop, probably busy-waiting #loc";
+    }
+
+    public BaseInspectionVisitor buildVisitor() {
+        return new BusyWaitVisitor();
+    }
+
+    private static class BusyWaitVisitor extends BaseInspectionVisitor {
+        public void visitMethodCallExpression(@Nonnull GrMethodCallExpression grMethodCallExpression) {
+            super.visitMethodCallExpression(grMethodCallExpression);
+
+            final GrExpression methodExpression = grMethodCallExpression.getInvokedExpression();
+            if (!(methodExpression instanceof GrReferenceExpression)) {
+                return;
+            }
+            final GrReferenceExpression reference = (GrReferenceExpression) methodExpression;
+            final String name = reference.getReferenceName();
+            if (!"sleep".equals(name)) {
+                return;
+            }
+            final PsiMethod method = grMethodCallExpression.resolveMethod();
+            if (method == null) {
+                return;
+            }
+            final PsiClass containingClass = method.getContainingClass();
+            if (containingClass == null || !"java.lang.Thread".equals(containingClass.getQualifiedName())) {
+                return;
+            }
+            if (!ControlFlowUtils.isInLoop(grMethodCallExpression)) {
+                return;
+            }
+            registerMethodCallError(grMethodCallExpression);
+        }
+    }
 }

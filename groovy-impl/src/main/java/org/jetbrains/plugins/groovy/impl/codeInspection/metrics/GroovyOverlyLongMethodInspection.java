@@ -15,52 +15,56 @@
  */
 package org.jetbrains.plugins.groovy.impl.codeInspection.metrics;
 
+import consulo.localize.LocalizeValue;
 import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrOpenBlock;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
 
 public class GroovyOverlyLongMethodInspection extends GroovyMethodMetricInspection {
-
-  @Nonnull
-  public String getDisplayName() {
-    return "Overly long method";
-  }
-
-  @Nonnull
-  public String getGroupDisplayName() {
-    return METHOD_METRICS;
-  }
-
-  protected int getDefaultLimit() {
-    return 30;
-  }
-
-  protected String getConfigurationLabel() {
-    return "Maximum statements per method:";
-  }
-
-  public String buildErrorString(Object... args) {
-    return "Method '#ref' is too long ( statement count =" + args[0] + '>' + args[1] + ')';
-  }
-
-  public BaseInspectionVisitor buildVisitor() {
-    return new Visitor();
-  }
-
-  private class Visitor extends BaseInspectionVisitor {
-    public void visitMethod(GrMethod method) {
-      super.visitMethod(method);
-      final int limit = getLimit();
-      final StatementCountVisitor visitor = new StatementCountVisitor();
-      final GrOpenBlock block = method.getBlock();
-      if (block == null) return;
-      block.accept(visitor);
-      final int statementCount = visitor.getStatementCount();
-      if (statementCount <= limit) {
-        return;
-      }
-      registerMethodError(method, statementCount, limit);
+    @Nonnull
+    @Override
+    public LocalizeValue getDisplayName() {
+        return LocalizeValue.localizeTODO("Overly long method");
     }
-  }
+
+    @Nonnull
+    @Override
+    public LocalizeValue getGroupDisplayName() {
+        return METHOD_METRICS;
+    }
+
+    protected int getDefaultLimit() {
+        return 30;
+    }
+
+    protected String getConfigurationLabel() {
+        return "Maximum statements per method:";
+    }
+
+    public String buildErrorString(Object... args) {
+        return "Method '#ref' is too long ( statement count =" + args[0] + '>' + args[1] + ')';
+    }
+
+    public BaseInspectionVisitor buildVisitor() {
+        return new Visitor();
+    }
+
+    private class Visitor extends BaseInspectionVisitor {
+        public void visitMethod(GrMethod method) {
+            super.visitMethod(method);
+            final int limit = getLimit();
+            final StatementCountVisitor visitor = new StatementCountVisitor();
+            final GrOpenBlock block = method.getBlock();
+            if (block == null) {
+                return;
+            }
+            block.accept(visitor);
+            final int statementCount = visitor.getStatementCount();
+            if (statementCount <= limit) {
+                return;
+            }
+            registerMethodError(method, statementCount, limit);
+        }
+    }
 }

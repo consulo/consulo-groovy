@@ -29,7 +29,6 @@ import consulo.util.collection.ContainerUtil;
 import consulo.util.collection.MultiMap;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
-import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.impl.lang.psi.controlFlow.impl.GrFieldControlFlowPolicy;
@@ -99,8 +98,10 @@ public class GrFinalVariableAccessInspection extends BaseInspection {
 
                 if (field.hasModifierProperty(FINAL)) {
                     if (!isFieldInitialized(field)) {
-                        registerError(field.getNameIdentifierGroovy(),
-                            GroovyBundle.message("variable.0.might.not.have.been.initialized", field.getName()), LocalQuickFix.EMPTY_ARRAY,
+                        registerError(
+                            field.getNameIdentifierGroovy(),
+                            GroovyLocalize.variable0MightNotHaveBeenInitialized(field.getName()).get(),
+                            LocalQuickFix.EMPTY_ARRAY,
                             ProblemHighlightType.GENERIC_ERROR_OR_WARNING
                         );
                     }
@@ -215,9 +216,11 @@ public class GrFinalVariableAccessInspection extends BaseInspection {
 
                 for (final ReadWriteVariableInstruction instruction : result) {
                     if (variables.containsKey(instruction.getVariableName())) {
-                        registerError(instruction.getElement(),
-                            GroovyBundle.message("cannot.assign.a.value.to.final.field.0", instruction.getVariableName()),
-                            LocalQuickFix.EMPTY_ARRAY, ProblemHighlightType.GENERIC_ERROR_OR_WARNING
+                        registerError(
+                            instruction.getElement(),
+                            GroovyLocalize.cannotAssignAValueToFinalField0(instruction.getVariableName()).get(),
+                            LocalQuickFix.EMPTY_ARRAY,
+                            ProblemHighlightType.GENERIC_ERROR_OR_WARNING
                         );
                     }
                 }

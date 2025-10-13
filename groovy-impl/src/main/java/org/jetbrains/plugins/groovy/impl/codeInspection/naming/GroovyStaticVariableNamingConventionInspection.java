@@ -17,6 +17,7 @@ package org.jetbrains.plugins.groovy.impl.codeInspection.naming;
 
 import com.intellij.java.language.psi.PsiModifier;
 import consulo.language.psi.PsiElement;
+import consulo.localize.LocalizeValue;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.impl.codeInspection.GroovyFix;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
@@ -24,13 +25,13 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
 import jakarta.annotation.Nonnull;
 
 public class GroovyStaticVariableNamingConventionInspection extends ConventionInspection {
-
     private static final int DEFAULT_MIN_LENGTH = 4;
     private static final int DEFAULT_MAX_LENGTH = 32;
 
     @Nonnull
-    public String getDisplayName() {
-        return "Static variable naming convention";
+    @Override
+    public LocalizeValue getDisplayName() {
+        return LocalizeValue.localizeTODO("Static variable naming convention");
     }
 
     protected GroovyFix buildFix(PsiElement location) {
@@ -46,7 +47,8 @@ public class GroovyStaticVariableNamingConventionInspection extends ConventionIn
         final String className = (String) args[0];
         if (className.length() < getMinLength()) {
             return "Static variable name '#ref' is too short";
-        } else if (className.length() > getMaxLength()) {
+        }
+        else if (className.length() > getMaxLength()) {
             return "Static variable name '#ref' is too long";
         }
         return "Static variable name '#ref' doesn't match regex '" + getRegex() + "' #loc";
@@ -67,7 +69,6 @@ public class GroovyStaticVariableNamingConventionInspection extends ConventionIn
     public BaseInspectionVisitor buildVisitor() {
         return new NamingConventionsVisitor();
     }
-
 
     private class NamingConventionsVisitor extends BaseInspectionVisitor {
         public void visitField(GrField grField) {
