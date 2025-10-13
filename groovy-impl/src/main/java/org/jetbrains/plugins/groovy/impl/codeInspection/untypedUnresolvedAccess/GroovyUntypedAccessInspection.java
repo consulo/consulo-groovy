@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.impl.codeInspection.untypedUnresolvedAccess;
 
 import com.intellij.java.language.psi.PsiClassType;
 import consulo.language.psi.PsiElement;
 import com.intellij.java.language.psi.PsiJavaPackage;
 import com.intellij.java.language.psi.PsiType;
+import consulo.localize.LocalizeValue;
 import jakarta.annotation.Nonnull;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
@@ -34,52 +34,55 @@ import static org.jetbrains.plugins.groovy.impl.annotator.GrHighlightUtil.isDecl
  * @author Maxim.Medvedev
  */
 public class GroovyUntypedAccessInspection extends BaseInspection {
-
-  protected BaseInspectionVisitor buildVisitor() {
-    return new Visitor();
-  }
-
-  @Nls
-  @Nonnull
-  public String getGroupDisplayName() {
-    return PROBABLE_BUGS;
-  }
-
-  @Nls
-  @Nonnull
-  public String getDisplayName() {
-    return "Access to untyped expression";
-  }
-
-  @Override
-  protected String buildErrorString(Object... args) {
-    return "Cannot determine type of '#ref'";
-  }
-
-  private static class Visitor extends BaseInspectionVisitor {
-    @Override
-    public void visitReferenceExpression(GrReferenceExpression refExpr) {
-      super.visitReferenceExpression(refExpr);
-      GroovyResolveResult resolveResult = refExpr.advancedResolve();
-
-      PsiElement resolved = resolveResult.getElement();
-      if (resolved != null) {
-        if (isDeclarationAssignment(refExpr) || resolved instanceof PsiJavaPackage) return;
-      }
-      else {
-        GrExpression qualifier = refExpr.getQualifierExpression();
-        if (qualifier == null && isDeclarationAssignment(refExpr)) return;
-      }
-
-      final PsiType refExprType = refExpr.getType();
-      if (refExprType == null) {
-        if (resolved != null) {
-          registerError(refExpr);
-        }
-      }
-      else if (refExprType instanceof PsiClassType && ((PsiClassType)refExprType).resolve() == null) {
-        registerError(refExpr);
-      }
+    protected BaseInspectionVisitor buildVisitor() {
+        return new Visitor();
     }
-  }
+
+    @Nonnull
+    @Override
+    public LocalizeValue getGroupDisplayName() {
+        return PROBABLE_BUGS;
+    }
+
+    @Nonnull
+    @Override
+    public LocalizeValue getDisplayName() {
+        return LocalizeValue.localizeTODO("Access to untyped expression");
+    }
+
+    @Override
+    protected String buildErrorString(Object... args) {
+        return "Cannot determine type of '#ref'";
+    }
+
+    private static class Visitor extends BaseInspectionVisitor {
+        @Override
+        public void visitReferenceExpression(GrReferenceExpression refExpr) {
+            super.visitReferenceExpression(refExpr);
+            GroovyResolveResult resolveResult = refExpr.advancedResolve();
+
+            PsiElement resolved = resolveResult.getElement();
+            if (resolved != null) {
+                if (isDeclarationAssignment(refExpr) || resolved instanceof PsiJavaPackage) {
+                    return;
+                }
+            }
+            else {
+                GrExpression qualifier = refExpr.getQualifierExpression();
+                if (qualifier == null && isDeclarationAssignment(refExpr)) {
+                    return;
+                }
+            }
+
+            final PsiType refExprType = refExpr.getType();
+            if (refExprType == null) {
+                if (resolved != null) {
+                    registerError(refExpr);
+                }
+            }
+            else if (refExprType instanceof PsiClassType && ((PsiClassType) refExprType).resolve() == null) {
+                registerError(refExpr);
+            }
+        }
+    }
 }

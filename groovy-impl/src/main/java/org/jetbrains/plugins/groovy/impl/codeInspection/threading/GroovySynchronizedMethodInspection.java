@@ -15,46 +15,43 @@
  */
 package org.jetbrains.plugins.groovy.impl.codeInspection.threading;
 
-import jakarta.annotation.Nonnull;
-
 import com.intellij.java.language.psi.PsiModifier;
+import consulo.localize.LocalizeValue;
+import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
-import org.jetbrains.annotations.Nls;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
 
 public class GroovySynchronizedMethodInspection extends BaseInspection {
-
-  @Nls
-  @Nonnull
-  public String getGroupDisplayName() {
-    return THREADING_ISSUES;
-  }
-
-  @Nls
-  @Nonnull
-  public String getDisplayName() {
-    return "Synchronized method";
-  }
-
-  @Nullable
-  protected String buildErrorString(Object... args) {
-    return "Synchronized method '#ref' #loc";
-
-  }
-
-  public BaseInspectionVisitor buildVisitor() {
-    return new Visitor();
-  }
-
-  private static class Visitor extends BaseInspectionVisitor {
-    public void visitMethod(GrMethod grMethod) {
-      super.visitMethod(grMethod);
-      if (!grMethod.hasModifierProperty(PsiModifier.SYNCHRONIZED)) {
-        return;
-      }
-      registerMethodError(grMethod);
+    @Nonnull
+    @Override
+    public LocalizeValue getGroupDisplayName() {
+        return THREADING_ISSUES;
     }
-  }
+
+    @Nonnull
+    @Override
+    public LocalizeValue getDisplayName() {
+        return LocalizeValue.localizeTODO("Synchronized method");
+    }
+
+    @Nullable
+    protected String buildErrorString(Object... args) {
+        return "Synchronized method '#ref' #loc";
+    }
+
+    public BaseInspectionVisitor buildVisitor() {
+        return new Visitor();
+    }
+
+    private static class Visitor extends BaseInspectionVisitor {
+        public void visitMethod(GrMethod grMethod) {
+            super.visitMethod(grMethod);
+            if (!grMethod.hasModifierProperty(PsiModifier.SYNCHRONIZED)) {
+                return;
+            }
+            registerMethodError(grMethod);
+        }
+    }
 }

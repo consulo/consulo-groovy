@@ -21,78 +21,70 @@ import com.intellij.java.language.psi.PsiModifier;
 import com.intellij.java.language.psi.PsiModifierListOwner;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.util.PsiTreeUtil;
-import org.jetbrains.annotations.Nls;
+import consulo.localize.LocalizeValue;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrSynchronizedStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
 
-import jakarta.annotation.Nonnull;
-
-public class GroovyPublicFieldAccessedInSynchronizedContextInspection
-    extends BaseInspection {
-
-  @Nls
-  @Nonnull
-  public String getGroupDisplayName() {
-    return THREADING_ISSUES;
-  }
-
-  @Nonnull
-  public String getDisplayName() {
-    return "Non-private field accessed in synchronized context";
-  }
-
-  @Nonnull
-  protected String buildErrorString(Object... infos) {
-    return "Non-private field <code>#ref</code> accessed in synchronized context  #loc";
-  }
-
-  public BaseInspectionVisitor buildVisitor() {
-    return new PublicFieldAccessedInSynchronizedContextVisitor();
-  }
-
-  private static class PublicFieldAccessedInSynchronizedContextVisitor
-      extends BaseInspectionVisitor {
-
-    public void visitReferenceExpression(
-        @Nonnull GrReferenceExpression expression) {
-      final PsiElement element = expression.resolve();
-      if (!(element instanceof PsiField)) {
-        return;
-      }
-      final PsiField field = (PsiField) element;
-      if (field.hasModifierProperty(PsiModifier.PRIVATE) ||
-          field.hasModifierProperty(PsiModifier.FINAL)) {
-        return;
-      }
-      if (!isInSynchronizedContext(expression)) {
-        return;
-      }
-      final PsiClass containingClass = field.getContainingClass();
-      if (containingClass.hasModifierProperty(PsiModifier.PRIVATE)) {
-        return;
-      }
-      registerError(expression);
+public class GroovyPublicFieldAccessedInSynchronizedContextInspection extends BaseInspection {
+    @Nonnull
+    @Override
+    public LocalizeValue getGroupDisplayName() {
+        return THREADING_ISSUES;
     }
 
-    private static boolean isInSynchronizedContext(PsiElement element) {
-      final PsiElement context =
-          PsiTreeUtil.getParentOfType(element, GrMethod.class,
-              GrSynchronizedStatement.class);
-      if (context instanceof GrSynchronizedStatement) {
-        return true;
-      }
-      if (context != null) {
-        final PsiModifierListOwner modifierListOwner =
-            (PsiModifierListOwner) context;
-        if (modifierListOwner.hasModifierProperty(
-            PsiModifier.SYNCHRONIZED)) {
-          return true;
+    @Nonnull
+    @Override
+    public LocalizeValue getDisplayName() {
+        return LocalizeValue.localizeTODO("Non-private field accessed in synchronized context");
+    }
+
+    @Nonnull
+    protected String buildErrorString(Object... infos) {
+        return "Non-private field <code>#ref</code> accessed in synchronized context  #loc";
+    }
+
+    public BaseInspectionVisitor buildVisitor() {
+        return new PublicFieldAccessedInSynchronizedContextVisitor();
+    }
+
+    private static class PublicFieldAccessedInSynchronizedContextVisitor extends BaseInspectionVisitor {
+        public void visitReferenceExpression(@Nonnull GrReferenceExpression expression) {
+            final PsiElement element = expression.resolve();
+            if (!(element instanceof PsiField)) {
+                return;
+            }
+            final PsiField field = (PsiField) element;
+            if (field.hasModifierProperty(PsiModifier.PRIVATE) ||
+                field.hasModifierProperty(PsiModifier.FINAL)) {
+                return;
+            }
+            if (!isInSynchronizedContext(expression)) {
+                return;
+            }
+            final PsiClass containingClass = field.getContainingClass();
+            if (containingClass.hasModifierProperty(PsiModifier.PRIVATE)) {
+                return;
+            }
+            registerError(expression);
         }
-      }
-      return false;
+
+        private static boolean isInSynchronizedContext(PsiElement element) {
+            final PsiElement context = PsiTreeUtil.getParentOfType(element, GrMethod.class, GrSynchronizedStatement.class);
+            if (context instanceof GrSynchronizedStatement) {
+                return true;
+            }
+            if (context != null) {
+                final PsiModifierListOwner modifierListOwner = (PsiModifierListOwner) context;
+                if (modifierListOwner.hasModifierProperty(
+                    PsiModifier.SYNCHRONIZED)) {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
-  }
 }

@@ -20,8 +20,9 @@ import com.intellij.java.language.psi.PsiClass;
 import com.intellij.java.language.psi.PsiMethod;
 import com.intellij.java.language.psi.PsiModifier;
 import consulo.language.psi.util.PsiTreeUtil;
+import consulo.localize.LocalizeValue;
+import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
-import org.jetbrains.annotations.Nls;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
@@ -32,60 +33,58 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrRefere
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.path.GrMethodCallExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
 
-import jakarta.annotation.Nonnull;
-
 public class GroovyNotifyWhileNotSynchronizedInspection extends BaseInspection {
-  @Nls
-  @Nonnull
-  public String getGroupDisplayName() {
-    return THREADING_ISSUES;
-  }
-
-  @Nls
-  @Nonnull
-  public String getDisplayName() {
-    return "'notify()' or 'notifyAll()' while not synced";
-  }
-
-  @Nullable
-  protected String buildErrorString(Object... args) {
-    return "Call to'#ref' outside of synchronized context #loc";
-
-  }
-
-  public BaseInspectionVisitor buildVisitor() {
-    return new Visitor();
-  }
-
-  private static class Visitor extends BaseInspectionVisitor {
-    public void visitMethodCallExpression(GrMethodCallExpression grMethodCallExpression) {
-      super.visitMethodCallExpression(grMethodCallExpression);
-      final GrExpression methodExpression = grMethodCallExpression.getInvokedExpression();
-      if (!(methodExpression instanceof GrReferenceExpression)) {
-        return;
-      }
-      final GrReferenceExpression reference = (GrReferenceExpression) methodExpression;
-      final String name = reference.getReferenceName();
-      if (!"notify".equals(name) && !"notifyAll".equals(name)) {
-        return;
-      }
-      final PsiMethod method = grMethodCallExpression.resolveMethod();
-      if (method == null) {
-        return;
-      }
-      final PsiClass containingClass = method.getContainingClass();
-      if (containingClass == null || !CommonClassNames.JAVA_LANG_OBJECT.equals(containingClass.getQualifiedName())) {
-        return;
-      }
-      final GrMethod containingMethod = PsiTreeUtil.getParentOfType(grMethodCallExpression, GrMethod.class);
-      if (containingMethod != null && containingMethod.hasModifierProperty(PsiModifier.SYNCHRONIZED)) {
-        return;
-      }
-      final GrStatement parent = PsiTreeUtil.getParentOfType(grMethodCallExpression, GrSynchronizedStatement.class, GrClosableBlock.class);
-      if (parent instanceof GrSynchronizedStatement) {
-        return;
-      }
-      registerMethodCallError(grMethodCallExpression);
+    @Nonnull
+    @Override
+    public LocalizeValue getGroupDisplayName() {
+        return THREADING_ISSUES;
     }
-  }
+
+    @Nonnull
+    @Override
+    public LocalizeValue getDisplayName() {
+        return LocalizeValue.localizeTODO("'notify()' or 'notifyAll()' while not synced");
+    }
+
+    @Nullable
+    protected String buildErrorString(Object... args) {
+        return "Call to'#ref' outside of synchronized context #loc";
+    }
+
+    public BaseInspectionVisitor buildVisitor() {
+        return new Visitor();
+    }
+
+    private static class Visitor extends BaseInspectionVisitor {
+        public void visitMethodCallExpression(GrMethodCallExpression grMethodCallExpression) {
+            super.visitMethodCallExpression(grMethodCallExpression);
+            final GrExpression methodExpression = grMethodCallExpression.getInvokedExpression();
+            if (!(methodExpression instanceof GrReferenceExpression)) {
+                return;
+            }
+            final GrReferenceExpression reference = (GrReferenceExpression) methodExpression;
+            final String name = reference.getReferenceName();
+            if (!"notify".equals(name) && !"notifyAll".equals(name)) {
+                return;
+            }
+            final PsiMethod method = grMethodCallExpression.resolveMethod();
+            if (method == null) {
+                return;
+            }
+            final PsiClass containingClass = method.getContainingClass();
+            if (containingClass == null || !CommonClassNames.JAVA_LANG_OBJECT.equals(containingClass.getQualifiedName())) {
+                return;
+            }
+            final GrMethod containingMethod = PsiTreeUtil.getParentOfType(grMethodCallExpression, GrMethod.class);
+            if (containingMethod != null && containingMethod.hasModifierProperty(PsiModifier.SYNCHRONIZED)) {
+                return;
+            }
+            final GrStatement parent =
+                PsiTreeUtil.getParentOfType(grMethodCallExpression, GrSynchronizedStatement.class, GrClosableBlock.class);
+            if (parent instanceof GrSynchronizedStatement) {
+                return;
+            }
+            registerMethodCallError(grMethodCallExpression);
+        }
+    }
 }

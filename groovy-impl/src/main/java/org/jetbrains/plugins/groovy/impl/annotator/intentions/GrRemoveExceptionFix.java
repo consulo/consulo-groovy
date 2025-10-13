@@ -16,16 +16,17 @@
 package org.jetbrains.plugins.groovy.impl.annotator.intentions;
 
 import consulo.codeEditor.Editor;
+import consulo.groovy.impl.localize.GroovyIntentionLocalize;
 import consulo.language.editor.intention.IntentionAction;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiFile;
 import consulo.language.psi.util.PsiTreeUtil;
 import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
 import consulo.project.Project;
 import consulo.ui.annotation.RequiredUIAccess;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
-import org.jetbrains.plugins.groovy.impl.intentions.GroovyIntentionsBundle;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrCatchClause;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrDisjunctionTypeElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeElement;
@@ -34,29 +35,19 @@ import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeElement;
  * @author Max Medvedev
  */
 public class GrRemoveExceptionFix implements IntentionAction {
-    private String myText;
+    @Nonnull
+    private LocalizeValue myText;
     private final boolean myDisjunction;
 
     public GrRemoveExceptionFix(boolean isDisjunction) {
         myDisjunction = isDisjunction;
-        if (isDisjunction) {
-            myText = GroovyIntentionsBundle.message("remove.exception");
-        }
-        else {
-            myText = GroovyIntentionsBundle.message("remove.catch.block");
-        }
+        myText = isDisjunction ? GroovyIntentionLocalize.removeException() : GroovyIntentionLocalize.removeCatchBlock();
     }
 
     @Nonnull
     @Override
-    public String getText() {
+    public LocalizeValue getText() {
         return myText;
-    }
-
-    @Nonnull
-    //@Override
-    public String getFamilyName() {
-        return GroovyIntentionsBundle.message("try.catch.fix");
     }
 
     @Override

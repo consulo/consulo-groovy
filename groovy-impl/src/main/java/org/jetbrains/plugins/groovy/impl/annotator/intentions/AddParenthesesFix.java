@@ -22,6 +22,7 @@ import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiFile;
 import consulo.language.psi.util.PsiTreeUtil;
 import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
 import consulo.project.Project;
 import consulo.ui.annotation.RequiredUIAccess;
 import jakarta.annotation.Nonnull;
@@ -36,14 +37,8 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpres
 public class AddParenthesesFix implements IntentionAction {
     @Nonnull
     @Override
-    public String getText() {
-        return GroovyLocalize.addParentheses().get();
-    }
-
-    @Nonnull
-    //@Override
-    public String getFamilyName() {
-        return GroovyLocalize.addParenthesesToCommandMethodCall().get();
+    public LocalizeValue getText() {
+        return GroovyLocalize.addParentheses();
     }
 
     @Override

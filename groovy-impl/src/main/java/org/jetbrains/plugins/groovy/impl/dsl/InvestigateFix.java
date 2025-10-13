@@ -20,48 +20,42 @@ import consulo.execution.unscramble.UnscrambleService;
 import consulo.language.editor.intention.SyntheticIntentionAction;
 import consulo.language.psi.PsiFile;
 import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
 import consulo.project.Project;
 import consulo.ui.annotation.RequiredUIAccess;
-
 import jakarta.annotation.Nonnull;
 
 public class InvestigateFix implements SyntheticIntentionAction {
-  private final String myReason;
+    private final String myReason;
 
-  public InvestigateFix(String reason) {
-    myReason = reason;
-  }
+    public InvestigateFix(String reason) {
+        myReason = reason;
+    }
 
-  @RequiredUIAccess
-  static void analyzeStackTrace(Project project, String exceptionText) {
-    UnscrambleService unscrambleService = project.getInstance(UnscrambleService.class);
-    unscrambleService.showAsync(exceptionText);
-  }
+    @RequiredUIAccess
+    static void analyzeStackTrace(Project project, String exceptionText) {
+        UnscrambleService unscrambleService = project.getInstance(UnscrambleService.class);
+        unscrambleService.showAsync(exceptionText);
+    }
 
-  @Nonnull
-  @Override
-  public String getText() {
-    return "View details";
-  }
+    @Nonnull
+    @Override
+    public LocalizeValue getText() {
+        return LocalizeValue.localizeTODO("View details");
+    }
 
-  @Nonnull
-  //@Override
-  public String getFamilyName() {
-    return "Investigate DSL descriptor processing error";
-  }
+    @Override
+    public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file) {
+        return true;
+    }
 
-  @Override
-  public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file) {
-    return true;
-  }
+    @Override
+    public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
+        analyzeStackTrace(project, myReason);
+    }
 
-  @Override
-  public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
-    analyzeStackTrace(project, myReason);
-  }
-
-  @Override
-  public boolean startInWriteAction() {
-    return false;
-  }
+    @Override
+    public boolean startInWriteAction() {
+        return false;
+    }
 }

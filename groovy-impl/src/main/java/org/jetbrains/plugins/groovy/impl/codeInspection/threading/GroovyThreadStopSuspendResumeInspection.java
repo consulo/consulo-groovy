@@ -17,9 +17,9 @@ package org.jetbrains.plugins.groovy.impl.codeInspection.threading;
 
 import com.intellij.java.language.psi.PsiClass;
 import com.intellij.java.language.psi.PsiMethod;
-import jakarta.annotation.Nullable;
-import org.jetbrains.annotations.Nls;
+import consulo.localize.LocalizeValue;
 import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
@@ -30,58 +30,56 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class GroovyThreadStopSuspendResumeInspection extends BaseInspection {
+    private static final Set<String> METHOD_NAMES = new HashSet<String>();
 
-  private static final Set<String> METHOD_NAMES = new HashSet<String>();
-
-  static {
-    METHOD_NAMES.add("stop");
-    METHOD_NAMES.add("suspend");
-    METHOD_NAMES.add("resume");
-  }
-
-  @Nls
-  @Nonnull
-  public String getGroupDisplayName() {
-    return THREADING_ISSUES;
-  }
-
-  @Nls
-  @Nonnull
-  public String getDisplayName() {
-    return "Call to Thread.stop(), Thread.suspend(), or Thread.resume()";
-  }
-
-  @Nullable
-  protected String buildErrorString(Object... args) {
-    return "Call to Thread.'#ref' #loc";
-
-  }
-
-  public BaseInspectionVisitor buildVisitor() {
-    return new Visitor();
-  }
-
-  private static class Visitor extends BaseInspectionVisitor {
-    public void visitMethodCallExpression(GrMethodCallExpression grMethodCallExpression) {
-      super.visitMethodCallExpression(grMethodCallExpression);
-      final GrExpression methodExpression = grMethodCallExpression.getInvokedExpression();
-      if (!(methodExpression instanceof GrReferenceExpression)) {
-        return;
-      }
-      final GrReferenceExpression reference = (GrReferenceExpression) methodExpression;
-      final String name = reference.getReferenceName();
-      if (!METHOD_NAMES.contains(name)) {
-        return;
-      }
-      final PsiMethod method = grMethodCallExpression.resolveMethod();
-      if (method == null) {
-        return;
-      }
-      final PsiClass containingClass = method.getContainingClass();
-      if (containingClass == null || !"java.lang.Thread".equals(containingClass.getQualifiedName())) {
-        return;
-      }
-      registerMethodCallError(grMethodCallExpression);
+    static {
+        METHOD_NAMES.add("stop");
+        METHOD_NAMES.add("suspend");
+        METHOD_NAMES.add("resume");
     }
-  }
+
+    @Nonnull
+    @Override
+    public LocalizeValue getGroupDisplayName() {
+        return THREADING_ISSUES;
+    }
+
+    @Nonnull
+    @Override
+    public LocalizeValue getDisplayName() {
+        return LocalizeValue.localizeTODO("Call to Thread.stop(), Thread.suspend(), or Thread.resume()");
+    }
+
+    @Nullable
+    protected String buildErrorString(Object... args) {
+        return "Call to Thread.'#ref' #loc";
+    }
+
+    public BaseInspectionVisitor buildVisitor() {
+        return new Visitor();
+    }
+
+    private static class Visitor extends BaseInspectionVisitor {
+        public void visitMethodCallExpression(GrMethodCallExpression grMethodCallExpression) {
+            super.visitMethodCallExpression(grMethodCallExpression);
+            final GrExpression methodExpression = grMethodCallExpression.getInvokedExpression();
+            if (!(methodExpression instanceof GrReferenceExpression)) {
+                return;
+            }
+            final GrReferenceExpression reference = (GrReferenceExpression) methodExpression;
+            final String name = reference.getReferenceName();
+            if (!METHOD_NAMES.contains(name)) {
+                return;
+            }
+            final PsiMethod method = grMethodCallExpression.resolveMethod();
+            if (method == null) {
+                return;
+            }
+            final PsiClass containingClass = method.getContainingClass();
+            if (containingClass == null || !"java.lang.Thread".equals(containingClass.getQualifiedName())) {
+                return;
+            }
+            registerMethodCallError(grMethodCallExpression);
+        }
+    }
 }

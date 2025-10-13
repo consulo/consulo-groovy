@@ -18,64 +18,62 @@ package org.jetbrains.plugins.groovy.impl.codeInspection.threading;
 import com.intellij.java.language.psi.CommonClassNames;
 import com.intellij.java.language.psi.PsiClass;
 import com.intellij.java.language.psi.PsiMethod;
+import consulo.localize.LocalizeValue;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
-import org.jetbrains.annotations.Nls;
+import org.jetbrains.plugins.groovy.codeInspection.utils.ControlFlowUtils;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
-import org.jetbrains.plugins.groovy.codeInspection.utils.ControlFlowUtils;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.path.GrMethodCallExpression;
 
 public class GroovyWaitCallNotInLoopInspection extends BaseInspection {
-
-  @Nls
-  @Nonnull
-  public String getGroupDisplayName() {
-    return THREADING_ISSUES;
-  }
-
-  @Nls
-  @Nonnull
-  public String getDisplayName() {
-    return "'wait()' not in loop";
-  }
-
-  @Nullable
-  protected String buildErrorString(Object... args) {
-    return "Call to'#ref' outside of loop #loc";
-
-  }
-
-  public BaseInspectionVisitor buildVisitor() {
-    return new Visitor();
-  }
-
-  private static class Visitor extends BaseInspectionVisitor {
-    public void visitMethodCallExpression(GrMethodCallExpression grMethodCallExpression) {
-      super.visitMethodCallExpression(grMethodCallExpression);
-      final GrExpression methodExpression = grMethodCallExpression.getInvokedExpression();
-      if (!(methodExpression instanceof GrReferenceExpression)) {
-        return;
-      }
-      final GrReferenceExpression reference = (GrReferenceExpression) methodExpression;
-      final String name = reference.getReferenceName();
-      if (!"wait".equals(name)) {
-        return;
-      }
-      final PsiMethod method = grMethodCallExpression.resolveMethod();
-      if (method == null) {
-        return;
-      }
-      final PsiClass containingClass = method.getContainingClass();
-      if (containingClass == null || !CommonClassNames.JAVA_LANG_OBJECT.equals(containingClass.getQualifiedName())) {
-        return;
-      }
-      if (ControlFlowUtils.isInLoop(grMethodCallExpression)) {
-        return;
-      }
-      registerMethodCallError(grMethodCallExpression);
+    @Nonnull
+    @Override
+    public LocalizeValue getGroupDisplayName() {
+        return THREADING_ISSUES;
     }
-  }
+
+    @Nonnull
+    @Override
+    public LocalizeValue getDisplayName() {
+        return LocalizeValue.localizeTODO("'wait()' not in loop");
+    }
+
+    @Nullable
+    protected String buildErrorString(Object... args) {
+        return "Call to'#ref' outside of loop #loc";
+    }
+
+    public BaseInspectionVisitor buildVisitor() {
+        return new Visitor();
+    }
+
+    private static class Visitor extends BaseInspectionVisitor {
+        public void visitMethodCallExpression(GrMethodCallExpression grMethodCallExpression) {
+            super.visitMethodCallExpression(grMethodCallExpression);
+            final GrExpression methodExpression = grMethodCallExpression.getInvokedExpression();
+            if (!(methodExpression instanceof GrReferenceExpression)) {
+                return;
+            }
+            final GrReferenceExpression reference = (GrReferenceExpression) methodExpression;
+            final String name = reference.getReferenceName();
+            if (!"wait".equals(name)) {
+                return;
+            }
+            final PsiMethod method = grMethodCallExpression.resolveMethod();
+            if (method == null) {
+                return;
+            }
+            final PsiClass containingClass = method.getContainingClass();
+            if (containingClass == null || !CommonClassNames.JAVA_LANG_OBJECT.equals(containingClass.getQualifiedName())) {
+                return;
+            }
+            if (ControlFlowUtils.isInLoop(grMethodCallExpression)) {
+                return;
+            }
+            registerMethodCallError(grMethodCallExpression);
+        }
+    }
 }

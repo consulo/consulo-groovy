@@ -16,99 +16,102 @@
 package org.jetbrains.plugins.groovy.impl.codeInspection.bugs;
 
 import com.intellij.java.language.psi.*;
+import consulo.groovy.localize.GroovyLocalize;
 import consulo.language.editor.inspection.ProblemDescriptor;
 import consulo.language.psi.PsiElement;
 import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
 import consulo.project.Project;
 import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.impl.codeInspection.GroovyFix;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.GrModifier;
 
 import jakarta.annotation.Nonnull;
+
 import java.util.function.Function;
 
 /**
  * @author Max Medvedev
  */
 public class GrModifierFix extends GroovyFix {
-  public static final Function<ProblemDescriptor, PsiModifierList> MODIFIER_LIST = descriptor -> {
-    final PsiElement element = descriptor.getPsiElement();
-    assert element instanceof PsiModifierList : element;
-    return (PsiModifierList)element;
-  };
+    public static final Function<ProblemDescriptor, PsiModifierList> MODIFIER_LIST = descriptor -> {
+        final PsiElement element = descriptor.getPsiElement();
+        assert element instanceof PsiModifierList : element;
+        return (PsiModifierList) element;
+    };
 
-  public static final Function<ProblemDescriptor, PsiModifierList> MODIFIER_LIST_OWNER = descriptor -> {
-    final PsiElement element = descriptor.getPsiElement();
-    assert element instanceof PsiModifierListOwner : element;
-    return ((PsiModifierListOwner)element).getModifierList();
-  };
+    public static final Function<ProblemDescriptor, PsiModifierList> MODIFIER_LIST_OWNER = descriptor -> {
+        final PsiElement element = descriptor.getPsiElement();
+        assert element instanceof PsiModifierListOwner : element;
+        return ((PsiModifierListOwner) element).getModifierList();
+    };
 
 
-  private final String myModifier;
-  private final String myText;
-  private final boolean myDoSet;
-  private final Function<ProblemDescriptor, PsiModifierList> myModifierListProvider;
+    private final String myModifier;
+    @Nonnull
+    private final LocalizeValue myText;
+    private final boolean myDoSet;
+    private final Function<ProblemDescriptor, PsiModifierList> myModifierListProvider;
 
-  public GrModifierFix(@Nonnull PsiVariable member,
-                       @GrModifier.GrModifierConstant String modifier,
-                       boolean doSet,
-                       @Nonnull Function<ProblemDescriptor, PsiModifierList> modifierListProvider) {
-    myModifier = modifier;
-    myDoSet = doSet;
-    myModifierListProvider = modifierListProvider;
-    myText = initText(doSet, member.getName(), modifier);
-  }
-
-  public GrModifierFix(@Nonnull PsiMember member,
-                       @GrModifier.GrModifierConstant String modifier,
-                       boolean showContainingClass,
-                       boolean doSet,
-                       @Nonnull Function<ProblemDescriptor, PsiModifierList> modifierListProvider) {
-    myModifier = modifier;
-    myDoSet = doSet;
-    myModifierListProvider = modifierListProvider;
-    myText = initText(doSet, getMemberName(member, showContainingClass), modifier);
-  }
-
-  public static String initText(boolean doSet, @Nonnull String name, @Nonnull String modifier) {
-    return GroovyBundle.message(doSet ? "change.modifier" : "change.modifier.not", name,
-                                toPresentableText(modifier));
-  }
-
-  private static String getMemberName(PsiMember member, boolean showContainingClass) {
-    if (showContainingClass) {
-      final PsiClass containingClass = member.getContainingClass();
-      String containingClassName = containingClass != null ? containingClass.getName() + "." : "";
-      return containingClassName + member.getName();
+    public GrModifierFix(
+        @Nonnull PsiVariable member,
+        @GrModifier.GrModifierConstant String modifier,
+        boolean doSet,
+        @Nonnull Function<ProblemDescriptor, PsiModifierList> modifierListProvider
+    ) {
+        myModifier = modifier;
+        myDoSet = doSet;
+        myModifierListProvider = modifierListProvider;
+        myText = initText(doSet, member.getName(), modifier);
     }
-    else {
-      return member.getName();
+
+    public GrModifierFix(
+        @Nonnull PsiMember member,
+        @GrModifier.GrModifierConstant String modifier,
+        boolean showContainingClass,
+        boolean doSet,
+        @Nonnull Function<ProblemDescriptor, PsiModifierList> modifierListProvider
+    ) {
+        myModifier = modifier;
+        myDoSet = doSet;
+        myModifierListProvider = modifierListProvider;
+        myText = initText(doSet, getMemberName(member, showContainingClass), modifier);
     }
-  }
 
-  public static String toPresentableText(String modifier) {
-    return GroovyBundle.message(modifier + ".visibility.presentation");
-  }
+    public static LocalizeValue initText(boolean doSet, @Nonnull String name, @Nonnull String modifier) {
+        return doSet
+            ? GroovyLocalize.changeModifier(name, toPresentableText(modifier))
+            : GroovyLocalize.changeModifierNot(name, toPresentableText(modifier));
+    }
 
-  @Nonnull
-  @Override
-  public String getName() {
-    return myText;
-  }
+    private static String getMemberName(PsiMember member, boolean showContainingClass) {
+        if (showContainingClass) {
+            final PsiClass containingClass = member.getContainingClass();
+            String containingClassName = containingClass != null ? containingClass.getName() + "." : "";
+            return containingClassName + member.getName();
+        }
+        else {
+            return member.getName();
+        }
+    }
 
-  @Override
-  @Nonnull
-  public String getFamilyName() {
-    return GroovyBundle.message("change.modifier.family.name");
-  }
+    public static String toPresentableText(String modifier) {
+        return GroovyBundle.message(modifier + ".visibility.presentation");
+    }
 
-  @Override
-  protected void doFix(Project project, ProblemDescriptor descriptor) throws IncorrectOperationException {
-    final PsiModifierList modifierList = getModifierList(descriptor);
-    modifierList.setModifierProperty(myModifier, myDoSet);
-  }
+    @Nonnull
+    @Override
+    public LocalizeValue getName() {
+        return myText;
+    }
 
-  private PsiModifierList getModifierList(ProblemDescriptor descriptor) {
-    return myModifierListProvider.apply(descriptor);
-  }
+    @Override
+    protected void doFix(Project project, ProblemDescriptor descriptor) throws IncorrectOperationException {
+        final PsiModifierList modifierList = getModifierList(descriptor);
+        modifierList.setModifierProperty(myModifier, myDoSet);
+    }
+
+    private PsiModifierList getModifierList(ProblemDescriptor descriptor) {
+        return myModifierListProvider.apply(descriptor);
+    }
 }

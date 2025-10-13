@@ -17,13 +17,14 @@ package org.jetbrains.plugins.groovy.impl.annotator.intentions.dynamic;
 
 import com.intellij.java.language.psi.PsiType;
 import consulo.codeEditor.Editor;
+import consulo.groovy.localize.GroovyLocalize;
 import consulo.language.editor.intention.LowPriorityAction;
 import consulo.language.editor.intention.SyntheticIntentionAction;
 import consulo.language.psi.PsiFile;
 import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
 import consulo.project.Project;
 import jakarta.annotation.Nonnull;
-import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.impl.annotator.intentions.QuickfixUtil;
 import org.jetbrains.plugins.groovy.impl.annotator.intentions.dynamic.ui.DynamicDialog;
 import org.jetbrains.plugins.groovy.impl.annotator.intentions.dynamic.ui.DynamicElementSettings;
@@ -34,61 +35,56 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrRefere
  * @author Maxim.Medvedev
  */
 public class DynamicMethodFix implements SyntheticIntentionAction, LowPriorityAction {
-  private final GrReferenceExpression myReferenceExpression;
-  private final String mySignature;
+    private final GrReferenceExpression myReferenceExpression;
+    private final String mySignature;
 
-  public DynamicMethodFix(GrReferenceExpression referenceExpression, final PsiType[] argumentTypes) {
-    myReferenceExpression = referenceExpression;
-    mySignature = calcSignature(argumentTypes);
-  }
-
-  @Nonnull
-  public String getText() {
-    return GroovyBundle.message("add.dynamic.method") + mySignature;
-  }
-
-  private String calcSignature(final PsiType[] argTypes) {
-    StringBuilder builder = new StringBuilder(" '").append(myReferenceExpression.getReferenceName());
-    builder.append("(");
-
-    for (int i = 0; i < argTypes.length; i++) {
-      PsiType type = argTypes[i];
-
-      if (i > 0) {
-        builder.append(", ");
-      }
-      builder.append(type.getPresentableText());
+    public DynamicMethodFix(GrReferenceExpression referenceExpression, final PsiType[] argumentTypes) {
+        myReferenceExpression = referenceExpression;
+        mySignature = calcSignature(argumentTypes);
     }
-    builder.append(")");
-    builder.append("' ");
-    return builder.toString();
-  }
 
-  @Nonnull
-  public String getFamilyName() {
-    return GroovyBundle.message("add.dynamic.element");
-  }
+    @Nonnull
+    @Override
+    public LocalizeValue getText() {
+        return LocalizeValue.localizeTODO(GroovyLocalize.addDynamicMethod() + mySignature);
+    }
 
-  public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile psiFile) {
-    return myReferenceExpression.isValid();
-  }
+    private String calcSignature(final PsiType[] argTypes) {
+        StringBuilder builder = new StringBuilder(" '").append(myReferenceExpression.getReferenceName());
+        builder.append("(");
 
-  public void invoke(@Nonnull Project project, Editor editor, PsiFile psiFile) throws IncorrectOperationException
-  {
-    DynamicDialog dialog = new DynamicMethodDialog(myReferenceExpression);
-    dialog.show();
-  }
+        for (int i = 0; i < argTypes.length; i++) {
+            PsiType type = argTypes[i];
 
-  public void invoke(Project project) throws IncorrectOperationException {
-    final DynamicElementSettings settings = QuickfixUtil.createSettings(myReferenceExpression);
-    DynamicManager.getInstance(project).addMethod(settings);
-  }
+            if (i > 0) {
+                builder.append(", ");
+            }
+            builder.append(type.getPresentableText());
+        }
+        builder.append(")");
+        builder.append("' ");
+        return builder.toString();
+    }
 
-  public boolean startInWriteAction() {
-    return false;
-  }
+    public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile psiFile) {
+        return myReferenceExpression.isValid();
+    }
 
-  public GrReferenceExpression getReferenceExpression() {
-    return myReferenceExpression;
-  }
+    public void invoke(@Nonnull Project project, Editor editor, PsiFile psiFile) throws IncorrectOperationException {
+        DynamicDialog dialog = new DynamicMethodDialog(myReferenceExpression);
+        dialog.show();
+    }
+
+    public void invoke(Project project) throws IncorrectOperationException {
+        final DynamicElementSettings settings = QuickfixUtil.createSettings(myReferenceExpression);
+        DynamicManager.getInstance(project).addMethod(settings);
+    }
+
+    public boolean startInWriteAction() {
+        return false;
+    }
+
+    public GrReferenceExpression getReferenceExpression() {
+        return myReferenceExpression;
+    }
 }

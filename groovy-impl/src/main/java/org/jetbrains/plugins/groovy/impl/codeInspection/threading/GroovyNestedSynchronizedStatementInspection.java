@@ -17,7 +17,9 @@ package org.jetbrains.plugins.groovy.impl.codeInspection.threading;
 
 import com.intellij.java.language.psi.PsiModifier;
 import consulo.language.psi.util.PsiTreeUtil;
-import org.jetbrains.annotations.Nls;
+import consulo.localize.LocalizeValue;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
@@ -25,46 +27,41 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrSynchronizedStatem
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlock;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
-
 public class GroovyNestedSynchronizedStatementInspection extends BaseInspection {
-
-  @Nls
-  @Nonnull
-  public String getGroupDisplayName() {
-    return THREADING_ISSUES;
-  }
-
-  @Nls
-  @Nonnull
-  public String getDisplayName() {
-    return "Nested 'synchronized' statement";
-  }
-
-  @Nullable
-  protected String buildErrorString(Object... args) {
-    return "Nested '#ref' statement #loc";
-
-  }
-
-  public BaseInspectionVisitor buildVisitor() {
-    return new Visitor();
-  }
-
-  private static class Visitor extends BaseInspectionVisitor {
-
-    public void visitSynchronizedStatement(GrSynchronizedStatement synchronizedStatement) {
-      super.visitSynchronizedStatement(synchronizedStatement);
-      final GrStatement parent = PsiTreeUtil.getParentOfType(synchronizedStatement, GrSynchronizedStatement.class, GrClosableBlock.class);
-      if ((parent instanceof GrSynchronizedStatement)) {
-        registerStatementError(synchronizedStatement);
-        return;
-      }
-      final GrMethod containingMethod = PsiTreeUtil.getParentOfType(synchronizedStatement, GrMethod.class);
-      if (containingMethod != null && containingMethod.hasModifierProperty(PsiModifier.SYNCHRONIZED)) {
-        registerStatementError(synchronizedStatement);
-      }
+    @Nonnull
+    @Override
+    public LocalizeValue getGroupDisplayName() {
+        return THREADING_ISSUES;
     }
-  }
+
+    @Nonnull
+    @Override
+    public LocalizeValue getDisplayName() {
+        return LocalizeValue.localizeTODO("Nested 'synchronized' statement");
+    }
+
+    @Nullable
+    protected String buildErrorString(Object... args) {
+        return "Nested '#ref' statement #loc";
+    }
+
+    public BaseInspectionVisitor buildVisitor() {
+        return new Visitor();
+    }
+
+    private static class Visitor extends BaseInspectionVisitor {
+        public void visitSynchronizedStatement(GrSynchronizedStatement synchronizedStatement) {
+            super.visitSynchronizedStatement(synchronizedStatement);
+            final GrStatement parent =
+                PsiTreeUtil.getParentOfType(synchronizedStatement, GrSynchronizedStatement.class, GrClosableBlock.class);
+            if ((parent instanceof GrSynchronizedStatement)) {
+                registerStatementError(synchronizedStatement);
+                return;
+            }
+            final GrMethod containingMethod = PsiTreeUtil.getParentOfType(synchronizedStatement, GrMethod.class);
+            if (containingMethod != null && containingMethod.hasModifierProperty(PsiModifier.SYNCHRONIZED)) {
+                registerStatementError(synchronizedStatement);
+            }
+        }
+    }
 }

@@ -17,10 +17,9 @@ package org.jetbrains.plugins.groovy.impl.codeInspection.threading;
 
 import com.intellij.java.language.psi.PsiClass;
 import com.intellij.java.language.psi.PsiMethod;
-import jakarta.annotation.Nullable;
-import org.jetbrains.annotations.Nls;
+import consulo.localize.LocalizeValue;
 import jakarta.annotation.Nonnull;
-
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
@@ -28,49 +27,48 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrRefere
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.path.GrMethodCallExpression;
 
 public class GroovySystemRunFinalizersOnExitInspection extends BaseInspection {
-  @Nls
-  @Nonnull
-  public String getGroupDisplayName() {
-    return THREADING_ISSUES;
-  }
-
-  @Nls
-  @Nonnull
-  public String getDisplayName() {
-    return "Call to System.runFinalizersOnExit()";
-  }
-
-  @Nullable
-  protected String buildErrorString(Object... args) {
-    return "Call to System.'#ref' #loc";
-
-  }
-
-  public BaseInspectionVisitor buildVisitor() {
-    return new Visitor();
-  }
-
-  private static class Visitor extends BaseInspectionVisitor {
-    public void visitMethodCallExpression(GrMethodCallExpression grMethodCallExpression) {
-      super.visitMethodCallExpression(grMethodCallExpression);
-      final GrExpression methodExpression = grMethodCallExpression.getInvokedExpression();
-      if (!(methodExpression instanceof GrReferenceExpression)) {
-        return;
-      }
-      final GrReferenceExpression reference = (GrReferenceExpression) methodExpression;
-      final String name = reference.getReferenceName();
-      if (!"runFinalizersOnExit".equals(name)) {
-        return;
-      }
-      final PsiMethod method = grMethodCallExpression.resolveMethod();
-      if (method == null) {
-        return;
-      }
-      final PsiClass containingClass = method.getContainingClass();
-      if (containingClass == null || !"java.lang.System".equals(containingClass.getQualifiedName())) {
-        return;
-      }
-      registerMethodCallError(grMethodCallExpression);
+    @Nonnull
+    @Override
+    public LocalizeValue getGroupDisplayName() {
+        return THREADING_ISSUES;
     }
-  }
+
+    @Nonnull
+    @Override
+    public LocalizeValue getDisplayName() {
+        return LocalizeValue.localizeTODO("Call to System.runFinalizersOnExit()");
+    }
+
+    @Nullable
+    protected String buildErrorString(Object... args) {
+        return "Call to System.'#ref' #loc";
+    }
+
+    public BaseInspectionVisitor buildVisitor() {
+        return new Visitor();
+    }
+
+    private static class Visitor extends BaseInspectionVisitor {
+        public void visitMethodCallExpression(GrMethodCallExpression grMethodCallExpression) {
+            super.visitMethodCallExpression(grMethodCallExpression);
+            final GrExpression methodExpression = grMethodCallExpression.getInvokedExpression();
+            if (!(methodExpression instanceof GrReferenceExpression)) {
+                return;
+            }
+            final GrReferenceExpression reference = (GrReferenceExpression) methodExpression;
+            final String name = reference.getReferenceName();
+            if (!"runFinalizersOnExit".equals(name)) {
+                return;
+            }
+            final PsiMethod method = grMethodCallExpression.resolveMethod();
+            if (method == null) {
+                return;
+            }
+            final PsiClass containingClass = method.getContainingClass();
+            if (containingClass == null || !"java.lang.System".equals(containingClass.getQualifiedName())) {
+                return;
+            }
+            registerMethodCallError(grMethodCallExpression);
+        }
+    }
 }

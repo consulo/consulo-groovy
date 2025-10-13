@@ -31,7 +31,6 @@ import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.codeInspection.utils.ControlFlowUtils;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
-import org.jetbrains.plugins.groovy.impl.codeInspection.GroovyInspectionBundle;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GrControlFlowOwner;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
@@ -155,21 +154,16 @@ public class GrUnusedIncDecInspection extends BaseInspection {
         }
 
         private static class RemoveIncOrDecFix implements LocalQuickFix {
-            private final String myMessage;
+            @Nonnull
+            private final LocalizeValue myMessage;
 
             public RemoveIncOrDecFix(GrUnaryExpression expression) {
-                myMessage = GroovyInspectionBundle.message("remove.0", expression.getOperationToken().getText());
+                myMessage = GroovyInspectionLocalize.remove0(expression.getOperationToken().getText());
             }
 
             @Nonnull
             @Override
-            public String getName() {
-                return myMessage;
-            }
-
-            @Nonnull
-            @Override
-            public String getFamilyName() {
+            public LocalizeValue getName() {
                 return myMessage;
             }
 
@@ -185,21 +179,16 @@ public class GrUnusedIncDecInspection extends BaseInspection {
         }
 
         private static class ReplacePostfixIncWithPrefixFix implements LocalQuickFix {
-            private final String myMessage;
+            @Nonnull
+            private final LocalizeValue myMessage;
 
             public ReplacePostfixIncWithPrefixFix(GrUnaryExpression expression) {
-                myMessage = GroovyInspectionBundle.message("replace.postfix.0.with.prefix.0", expression.getOperationToken().getText());
+                myMessage = GroovyInspectionLocalize.replacePostfix0WithPrefix0(expression.getOperationToken().getText());
             }
 
             @Nonnull
             @Override
-            public String getName() {
-                return myMessage;
-            }
-
-            @Nonnull
-            @Override
-            public String getFamilyName() {
+            public LocalizeValue getName() {
                 return myMessage;
             }
 
@@ -218,22 +207,16 @@ public class GrUnusedIncDecInspection extends BaseInspection {
         }
 
         private static class ReplaceIncDecWithBinary implements LocalQuickFix {
-            private final String myMessage;
+            private final LocalizeValue myMessage;
 
             public ReplaceIncDecWithBinary(GrUnaryExpression expression) {
                 String opToken = expression.getOperationToken().getText();
-                myMessage = GroovyInspectionBundle.message("replace.0.with.1", opToken, opToken.substring(0, 1));
+                myMessage = GroovyInspectionLocalize.replace0With1(opToken, opToken.substring(0, 1));
             }
 
             @Nonnull
             @Override
-            public String getName() {
-                return myMessage;
-            }
-
-            @Nonnull
-            @Override
-            public String getFamilyName() {
+            public LocalizeValue getName() {
                 return myMessage;
             }
 

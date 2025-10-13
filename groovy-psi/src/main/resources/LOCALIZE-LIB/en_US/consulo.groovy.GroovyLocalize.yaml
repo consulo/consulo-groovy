@@ -102,6 +102,8 @@ cannot.assign.a.value.to.final.parameter.0:
     text: Cannot assign a value to final parameter ''{0}''
 cannot.assign.string.to.enum.0:
     text: Cannot assign string to enum ''{0}''
+cannot.cast:
+    text: Cannot cast ''{0}'' to ''{1}''
 cannot.compile:
     text: Cannot Compile
 cannot.compile.groovy.files.no.facet:
@@ -143,6 +145,8 @@ cannot.return.from.constructor:
     text: Cannot return an object from constructor
 cannot.return.from.void.method:
     text: Cannot return an object from a method that returns 'void'
+cannot.return.type:
+    text: Cannot return ''{0}'' from method returning ''{1}''
 case.block.expected:
     text: Case block expected
 case.expected:
@@ -375,6 +379,8 @@ import.what:
     text: Import ''{0}''
 in.expected:
     text: '''in'' expected'
+incorrect.number.of.values:
+    text: 'Incorrect number of values. Expected: {0}. Was: {1}.'
 incorrect.variable.name:
     text: Incorrect variable name
 indentifier.or.string.or.left.parenth.literal.expected:
@@ -461,6 +467,8 @@ move.to.implements.list:
     text: Move reference to implements list
 multiline.slashy.strings.are.not.allowed.in.groovy.0:
     text: Multi-line slashy strings are not allowed in Groovy {0}
+multiple.assignments.without.list.expr:
+    text: Multiple assignments without list expressions on the right hand side are unsupported in static type checking mode
 named.arguments.are.not.allowed.inside.index.operations:
     text: Named arguments are not allowed inside index operations
 native.methods.cannot.have.body:

@@ -15,13 +15,20 @@
  */
 package org.jetbrains.plugins.groovy.impl.intentions.conversions;
 
-import jakarta.annotation.Nonnull;
-
+import consulo.application.ApplicationManager;
+import consulo.codeEditor.Editor;
+import consulo.groovy.impl.localize.GroovyIntentionLocalize;
 import consulo.language.editor.refactoring.util.CommonRefactoringUtil;
 import consulo.language.psi.PsiDirectory;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
+import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
+import consulo.project.Project;
+import consulo.util.io.FileUtil;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.impl.actions.GroovyTemplates;
 import org.jetbrains.plugins.groovy.impl.actions.GroovyTemplatesFactory;
-import org.jetbrains.plugins.groovy.impl.intentions.GroovyIntentionsBundle;
 import org.jetbrains.plugins.groovy.impl.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.impl.intentions.base.IntentionUtils;
 import org.jetbrains.plugins.groovy.impl.intentions.base.PsiElementPredicate;
@@ -29,73 +36,60 @@ import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocComment;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
-import consulo.application.ApplicationManager;
-import consulo.codeEditor.Editor;
-import consulo.project.Project;
-import consulo.util.io.FileUtil;
-import consulo.language.psi.PsiElement;
-import consulo.language.psi.PsiFile;
-import consulo.language.util.IncorrectOperationException;
 
 /**
  * @author Maxim.Medvedev
  */
-public class MoveClassToNewFileIntention extends Intention
-{
-	@Override
-	protected void processIntention(@Nonnull PsiElement element,
-			Project project,
-			Editor editor) throws IncorrectOperationException
-	{
-		final GrTypeDefinition psiClass = (GrTypeDefinition) element.getParent();
-		final String name = psiClass.getName();
+public class MoveClassToNewFileIntention extends Intention {
+    @Nonnull
+    @Override
+    public LocalizeValue getText() {
+        return GroovyIntentionLocalize.moveClassToNewFileIntentionName();
+    }
 
-		final PsiFile file = psiClass.getContainingFile();
-		final String fileExtension = FileUtil.getExtension(file.getName());
-		final String newFileName = name + "." + fileExtension;
-		final PsiDirectory dir = file.getParent();
-		if(dir != null)
-		{
-			if(dir.findFile(newFileName) != null)
-			{
-				if(!ApplicationManager.getApplication().isUnitTestMode())
-				{
-					final String message = GroovyIntentionsBundle.message("file.exists", newFileName, dir.getName());
-					CommonRefactoringUtil.showErrorHint(project, editor, message, getFamilyName(), null);
-				}
-				return;
-			}
-		}
+    @Override
+    protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
+        final GrTypeDefinition psiClass = (GrTypeDefinition) element.getParent();
+        final String name = psiClass.getName();
 
-		final GroovyFile newFile = (GroovyFile) GroovyTemplatesFactory.createFromTemplate(dir, name, newFileName,
-				GroovyTemplates.GROOVY_CLASS, true);
-		final GrTypeDefinition template = newFile.getTypeDefinitions()[0];
-		final PsiElement newClass = template.replace(psiClass);
-		final GrDocComment docComment = psiClass.getDocComment();
-		if(newClass instanceof GrTypeDefinition && docComment != null)
-		{
-			final GrDocComment newDoc = ((GrTypeDefinition) newClass).getDocComment();
-			if(newDoc != null)
-			{
-				newDoc.replace(docComment);
-			}
-			else
-			{
-				final PsiElement parent = newClass.getParent();
-				parent.addBefore(docComment, psiClass);
-				parent.getNode().addLeaf(GroovyTokenTypes.mNLS, "\n", psiClass.getNode());
-			}
-			docComment.delete();
-		}
-		psiClass.delete();
-		IntentionUtils.positionCursor(project, newClass.getContainingFile(), newClass.getNavigationElement());
-	}
+        final PsiFile file = psiClass.getContainingFile();
+        final String fileExtension = FileUtil.getExtension(file.getName());
+        final String newFileName = name + "." + fileExtension;
+        final PsiDirectory dir = file.getParent();
+        if (dir != null) {
+            if (dir.findFile(newFileName) != null) {
+                if (!ApplicationManager.getApplication().isUnitTestMode()) {
+                    LocalizeValue message = GroovyIntentionLocalize.fileExists(newFileName, dir.getName());
+                    CommonRefactoringUtil.showErrorHint(project, editor, message.get(), getText().get(), null);
+                }
+                return;
+            }
+        }
 
+        final GroovyFile newFile =
+            (GroovyFile) GroovyTemplatesFactory.createFromTemplate(dir, name, newFileName, GroovyTemplates.GROOVY_CLASS, true);
+        final GrTypeDefinition template = newFile.getTypeDefinitions()[0];
+        final PsiElement newClass = template.replace(psiClass);
+        final GrDocComment docComment = psiClass.getDocComment();
+        if (newClass instanceof GrTypeDefinition && docComment != null) {
+            final GrDocComment newDoc = ((GrTypeDefinition) newClass).getDocComment();
+            if (newDoc != null) {
+                newDoc.replace(docComment);
+            }
+            else {
+                final PsiElement parent = newClass.getParent();
+                parent.addBefore(docComment, psiClass);
+                parent.getNode().addLeaf(GroovyTokenTypes.mNLS, "\n", psiClass.getNode());
+            }
+            docComment.delete();
+        }
+        psiClass.delete();
+        IntentionUtils.positionCursor(project, newClass.getContainingFile(), newClass.getNavigationElement());
+    }
 
-	@Nonnull
-	@Override
-	protected PsiElementPredicate getElementPredicate()
-	{
-		return new ClassNameDiffersFromFileNamePredicate(null, true);
-	}
+    @Nonnull
+    @Override
+    protected PsiElementPredicate getElementPredicate() {
+        return new ClassNameDiffersFromFileNamePredicate(null, true);
+    }
 }
