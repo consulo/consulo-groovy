@@ -46,7 +46,7 @@ public class DynamicMethodFix implements SyntheticIntentionAction, LowPriorityAc
     @Nonnull
     @Override
     public LocalizeValue getText() {
-        return LocalizeValue.localizeTODO(GroovyLocalize.addDynamicMethod() + mySignature);
+        return GroovyLocalize.addDynamicMethod0(mySignature);
     }
 
     private String calcSignature(final PsiType[] argTypes) {

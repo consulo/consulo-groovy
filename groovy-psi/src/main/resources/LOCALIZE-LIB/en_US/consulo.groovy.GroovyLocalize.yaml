@@ -22,6 +22,8 @@ add.dynamic.element:
     text: Add dynamic element
 add.dynamic.method:
     text: Add Dynamic Method
+add.dynamic.method.0:
+    text: Add dynamic method ''{0}''
 add.dynamic.property:
     text: Add Dynamic Property ''{0}''
 add.method.body:
