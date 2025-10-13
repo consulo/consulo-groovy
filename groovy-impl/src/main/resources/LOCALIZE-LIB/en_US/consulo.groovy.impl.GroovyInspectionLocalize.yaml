@@ -154,3 +154,5 @@ unused.inc.dec:
     text: Unused Incrementing or Decrementing
 unused.variable:
     text: Variable is not used
+replace.qualified.name.with.import:
+    text: Replace qualified name with import

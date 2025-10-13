@@ -19,6 +19,7 @@ import com.intellij.java.language.psi.PsiType;
 import consulo.groovy.localize.GroovyLocalize;
 import consulo.language.editor.inspection.ProblemDescriptor;
 import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
 import consulo.project.Project;
 import consulo.ui.annotation.RequiredUIAccess;
 import consulo.util.collection.ArrayUtil;
@@ -67,8 +68,8 @@ public class CreateFieldFromConstructorLabelFix extends GroovyFix {
 
     @Nonnull
     @Override
-    public String getName() {
-        return GroovyLocalize.createFieldFromUsage(getFieldName()).get();
+    public LocalizeValue getName() {
+        return GroovyLocalize.createFieldFromUsage(getFieldName());
     }
 
     @Override

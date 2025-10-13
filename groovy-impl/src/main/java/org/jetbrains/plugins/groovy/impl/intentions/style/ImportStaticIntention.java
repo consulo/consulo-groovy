@@ -19,12 +19,14 @@ import com.intellij.java.language.psi.PsiClass;
 import com.intellij.java.language.psi.PsiMember;
 import com.intellij.java.language.psi.PsiModifier;
 import consulo.codeEditor.Editor;
+import consulo.groovy.impl.localize.GroovyIntentionLocalize;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiFile;
 import consulo.language.psi.PsiReference;
 import consulo.language.psi.scope.LocalSearchScope;
 import consulo.language.psi.search.ReferencesSearch;
 import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
 import consulo.project.Project;
 import consulo.util.dataholder.Key;
 import jakarta.annotation.Nonnull;
@@ -44,117 +46,138 @@ import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeArgumentList;
  * @author Maxim.Medvedev
  */
 public class ImportStaticIntention extends Intention {
-  private static final Key<PsiElement> TEMP_REFERENT_USER_DATA = new Key<PsiElement>("TEMP_REFERENT_USER_DATA");
+    private static final Key<PsiElement> TEMP_REFERENT_USER_DATA = new Key<PsiElement>("TEMP_REFERENT_USER_DATA");
 
-  @Override
-  protected void processIntention(@Nonnull PsiElement element, final Project project, final Editor editor)
-    throws IncorrectOperationException
-  {
-    final PsiElement resolved;
-    final String name;
-    final GroovyFile file;
-    final GrImportStatement importStatement;
-    boolean isAnythingShortened;
-    if (!(element instanceof GrReferenceExpression)) return;
-    final GrReferenceExpression ref = (GrReferenceExpression)element;
-    resolved = ref.resolve();
-    if (!(resolved instanceof PsiMember)) return;
-
-    final PsiClass containingClass = ((PsiMember)resolved).getContainingClass();
-    if (containingClass == null) return;
-    final String qname = containingClass.getQualifiedName();
-    name = ((PsiMember)resolved).getName();
-    if (name == null) return;
-
-    final PsiFile containingFile = element.getContainingFile();
-    if (!(containingFile instanceof GroovyFile)) return;
-    file = (GroovyFile)containingFile;
-    file.accept(new GroovyRecursiveElementVisitor() {
-      @Override
-      public void visitReferenceExpression(GrReferenceExpression expression) {
-        super.visitReferenceExpression(expression);
-        if (name.equals(expression.getReferenceName())) {
-          PsiElement resolved = expression.resolve();
-          if (resolved != null) {
-            expression.putUserData(TEMP_REFERENT_USER_DATA, resolved);
-          }
-        }
-      }
-    });
-
-    final GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(project);
-    final GrImportStatement tempImport = factory.createImportStatementFromText(qname + "." + name, true, false, null);
-    importStatement = file.addImport(tempImport);
-
-    isAnythingShortened = false;
-    for (PsiReference reference : ReferencesSearch.search(resolved, new LocalSearchScope(containingFile))) {
-      final PsiElement refElement = reference.getElement();
-      if (refElement instanceof GrQualifiedReference<?>) {
-        isAnythingShortened |= GrReferenceAdjuster.shortenReference((GrQualifiedReference<?>)refElement);
-      }
+    @Nonnull
+    @Override
+    public LocalizeValue getText() {
+        return GroovyIntentionLocalize.importStaticIntentionName();
     }
 
-    if (!isAnythingShortened) {
-      importStatement.delete();
-      return;
+    @Override
+    protected void processIntention(@Nonnull PsiElement element, final Project project, final Editor editor)
+        throws IncorrectOperationException {
+        final PsiElement resolved;
+        final String name;
+        final GroovyFile file;
+        final GrImportStatement importStatement;
+        boolean isAnythingShortened;
+        if (!(element instanceof GrReferenceExpression)) {
+            return;
+        }
+        final GrReferenceExpression ref = (GrReferenceExpression) element;
+        resolved = ref.resolve();
+        if (!(resolved instanceof PsiMember)) {
+            return;
+        }
+
+        final PsiClass containingClass = ((PsiMember) resolved).getContainingClass();
+        if (containingClass == null) {
+            return;
+        }
+        final String qname = containingClass.getQualifiedName();
+        name = ((PsiMember) resolved).getName();
+        if (name == null) {
+            return;
+        }
+
+        final PsiFile containingFile = element.getContainingFile();
+        if (!(containingFile instanceof GroovyFile)) {
+            return;
+        }
+        file = (GroovyFile) containingFile;
+        file.accept(new GroovyRecursiveElementVisitor() {
+            @Override
+            public void visitReferenceExpression(GrReferenceExpression expression) {
+                super.visitReferenceExpression(expression);
+                if (name.equals(expression.getReferenceName())) {
+                    PsiElement resolved = expression.resolve();
+                    if (resolved != null) {
+                        expression.putUserData(TEMP_REFERENT_USER_DATA, resolved);
+                    }
+                }
+            }
+        });
+
+        final GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(project);
+        final GrImportStatement tempImport = factory.createImportStatementFromText(qname + "." + name, true, false, null);
+        importStatement = file.addImport(tempImport);
+
+        isAnythingShortened = false;
+        for (PsiReference reference : ReferencesSearch.search(resolved, new LocalSearchScope(containingFile))) {
+            final PsiElement refElement = reference.getElement();
+            if (refElement instanceof GrQualifiedReference<?>) {
+                isAnythingShortened |= GrReferenceAdjuster.shortenReference((GrQualifiedReference<?>) refElement);
+            }
+        }
+
+        if (!isAnythingShortened) {
+            importStatement.delete();
+            return;
+        }
+
+        file.accept(new GroovyRecursiveElementVisitor() {
+            @Override
+            public void visitReferenceExpression(GrReferenceExpression expression) {
+                super.visitReferenceExpression(expression);
+
+                GrTypeArgumentList typeArgumentList = expression.getTypeArgumentList();
+                if (typeArgumentList != null && typeArgumentList.getFirstChild() != null) {
+                    expression.putUserData(TEMP_REFERENT_USER_DATA, null);
+
+                    return;
+                }
+
+                if (name.equals(expression.getReferenceName())) {
+                    if (expression.isQualified()) {
+                        GrExpression qualifier = expression.getQualifierExpression();
+                        if (qualifier instanceof GrReferenceExpression) {
+                            PsiElement aClass = ((GrReferenceExpression) qualifier).resolve();
+                            if (aClass == ((PsiMember) resolved).getContainingClass()) {
+                                GrReferenceAdjuster.shortenReference(expression);
+                            }
+                        }
+                    }
+                    else {
+                        PsiElement referent = expression.getUserData(TEMP_REFERENT_USER_DATA);
+                        if (referent instanceof PsiMember &&
+                            ((PsiMember) referent).hasModifierProperty(PsiModifier.STATIC) &&
+                            referent != expression.resolve()) {
+                            expression.bindToElement(referent);
+                        }
+                    }
+                }
+                expression.putUserData(TEMP_REFERENT_USER_DATA, null);
+            }
+        });
     }
 
-    file.accept(new GroovyRecursiveElementVisitor() {
-      @Override
-      public void visitReferenceExpression(GrReferenceExpression expression) {
-        super.visitReferenceExpression(expression);
+    @Override
+    protected boolean isStopElement(PsiElement element) {
+        return super.isStopElement(element) || element instanceof GrReferenceExpression;
+    }
 
-        GrTypeArgumentList typeArgumentList = expression.getTypeArgumentList();
-        if (typeArgumentList != null && typeArgumentList.getFirstChild() != null) {
-          expression.putUserData(TEMP_REFERENT_USER_DATA, null);
-
-          return;
-        }
-
-        if (name.equals(expression.getReferenceName())) {
-          if (expression.isQualified()) {
-            GrExpression qualifier = expression.getQualifierExpression();
-            if (qualifier instanceof GrReferenceExpression) {
-              PsiElement aClass = ((GrReferenceExpression)qualifier).resolve();
-              if (aClass == ((PsiMember)resolved).getContainingClass()) {
-                GrReferenceAdjuster.shortenReference(expression);
-              }
+    @Nonnull
+    @Override
+    protected PsiElementPredicate getElementPredicate() {
+        return new PsiElementPredicate() {
+            @Override
+            public boolean satisfiedBy(PsiElement element) {
+                if (!(element instanceof GrReferenceExpression)) {
+                    return false;
+                }
+                final GrReferenceExpression ref = (GrReferenceExpression) element;
+                if (ref.getQualifier() == null) {
+                    return false;
+                }
+                final PsiElement resolved = ref.resolve();
+                if (resolved == null) {
+                    return false;
+                }
+                return resolved instanceof PsiMember && !(resolved instanceof PsiClass) &&
+                    ((PsiMember) resolved).hasModifierProperty(PsiModifier.STATIC) &&
+                    ((PsiMember) resolved).getContainingClass() != null;
             }
-          }
-          else {
-            PsiElement referent = expression.getUserData(TEMP_REFERENT_USER_DATA);
-            if (referent instanceof PsiMember &&
-                ((PsiMember)referent).hasModifierProperty(PsiModifier.STATIC) &&
-                referent != expression.resolve()) {
-              expression.bindToElement(referent);
-            }
-          }
-        }
-        expression.putUserData(TEMP_REFERENT_USER_DATA, null);
-      }
-    });
-  }
-
-  @Override
-  protected boolean isStopElement(PsiElement element) {
-    return super.isStopElement(element) || element instanceof GrReferenceExpression;
-  }
-
-  @Nonnull
-  @Override
-  protected PsiElementPredicate getElementPredicate() {
-    return new PsiElementPredicate() {
-      @Override
-      public boolean satisfiedBy(PsiElement element) {
-        if (!(element instanceof GrReferenceExpression)) return false;
-        final GrReferenceExpression ref = (GrReferenceExpression)element;
-        if (ref.getQualifier() == null) return false;
-        final PsiElement resolved = ref.resolve();
-        if (resolved == null) return false;
-        return resolved instanceof PsiMember && !(resolved instanceof PsiClass) &&
-               ((PsiMember)resolved).hasModifierProperty(PsiModifier.STATIC) &&
-               ((PsiMember)resolved).getContainingClass() != null;
-      }
-    };
-  }
+        };
+    }
 }

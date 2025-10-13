@@ -212,6 +212,8 @@ gr.make.member.public.intention.family.name:
     text: Make 'public'
 gr.make.member.public.intention.name:
     text: Make 'public'
+gr.remove.annotation.intention.name:
+    text: Remove
 gr.set.strong.type.intention.family.name:
     text: Declare explicit type
 gr.set.strong.type.intention.name:
@@ -330,6 +332,8 @@ remove.unnecessary.semicolons.name:
     text: Remove unnecessary semicolons
 remove.unused.parameter:
     text: Remove unused parameter
+rename.file.to.0:
+    text: Rename file to ''{0}''
 rename.file.with.class.intention.family.name:
     text: Rename file to corresponding class name
 rename.file.with.class.intention.name:

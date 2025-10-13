@@ -17,9 +17,11 @@
 package org.jetbrains.plugins.groovy.impl.intentions.style;
 
 import consulo.codeEditor.Editor;
+import consulo.groovy.impl.localize.GroovyIntentionLocalize;
 import consulo.language.psi.PsiElement;
-import consulo.project.Project;
 import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
+import consulo.project.Project;
 import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.impl.intentions.base.ErrorUtil;
 import org.jetbrains.plugins.groovy.impl.intentions.base.Intention;
@@ -34,23 +36,29 @@ import static org.jetbrains.plugins.groovy.impl.codeInspection.utils.JavaStylePr
  * @author ilyas
  */
 public class JavaStylePropertiesInvocationIntention extends Intention {
-  @Override
-  protected boolean isStopElement(PsiElement element) {
-    return element instanceof GrClosableBlock || super.isStopElement(element);
-  }
-
-  protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
-    if (element instanceof GrMethodCall) {
-      fixJavaStyleProperty(((GrMethodCall)element));
+    @Nonnull
+    @Override
+    public LocalizeValue getText() {
+        return GroovyIntentionLocalize.javaStylePropertiesInvocationIntentionName();
     }
-  }
 
-  @Nonnull
-  protected PsiElementPredicate getElementPredicate() {
-    return new PsiElementPredicate() {
-      public boolean satisfiedBy(PsiElement element) {
-        return element instanceof GrMethodCall && isPropertyAccessor((GrMethodCall)element) && !ErrorUtil.containsError(element);
-      }
-    };
-  }
+    @Override
+    protected boolean isStopElement(PsiElement element) {
+        return element instanceof GrClosableBlock || super.isStopElement(element);
+    }
+
+    protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
+        if (element instanceof GrMethodCall) {
+            fixJavaStyleProperty(((GrMethodCall) element));
+        }
+    }
+
+    @Nonnull
+    protected PsiElementPredicate getElementPredicate() {
+        return new PsiElementPredicate() {
+            public boolean satisfiedBy(PsiElement element) {
+                return element instanceof GrMethodCall && isPropertyAccessor((GrMethodCall) element) && !ErrorUtil.containsError(element);
+            }
+        };
+    }
 }

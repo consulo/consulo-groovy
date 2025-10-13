@@ -25,6 +25,7 @@ import consulo.language.editor.intention.SyntheticIntentionAction;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiFile;
 import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
 import consulo.project.Project;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
@@ -57,10 +58,10 @@ public class ChangeExtendsImplementsQuickFix implements SyntheticIntentionAction
         myImplementsClause = aClass.getImplementsClause();
     }
 
-    @Override
     @Nonnull
-    public String getText() {
-        return GroovyLocalize.changeImplementsAndExtendsClasses().get();
+    @Override
+    public LocalizeValue getText() {
+        return GroovyLocalize.changeImplementsAndExtendsClasses();
     }
 
     @Override

@@ -15,74 +15,76 @@
  */
 package org.jetbrains.plugins.groovy.impl.codeInspection.naming;
 
-import consulo.language.editor.inspection.ProblemDescriptor;
-import consulo.dataContext.DataManager;
-import consulo.dataContext.DataContext;
 import consulo.application.ApplicationManager;
-import consulo.language.editor.refactoring.action.RefactoringActionHandler;
-import consulo.language.psi.PsiElement;
-import consulo.project.Project;
-import consulo.language.editor.refactoring.action.RefactoringActionHandlerFactory;
+import consulo.dataContext.DataContext;
+import consulo.dataContext.DataManager;
+import consulo.language.editor.inspection.ProblemDescriptor;
 import consulo.language.editor.refactoring.RefactoringFactory;
 import consulo.language.editor.refactoring.RenameRefactoring;
+import consulo.language.editor.refactoring.action.RefactoringActionHandler;
+import consulo.language.editor.refactoring.action.RefactoringActionHandlerFactory;
+import consulo.language.psi.PsiElement;
+import consulo.localize.LocalizeValue;
+import consulo.project.Project;
 import jakarta.annotation.Nonnull;
-import org.jetbrains.annotations.NonNls;
 import org.jetbrains.plugins.groovy.impl.codeInspection.GroovyFix;
 
 public class RenameFix extends GroovyFix {
+    private final String targetName;
 
-  private final String targetName;
-
-  public RenameFix() {
-    super();
-    targetName = null;
-  }
-
-  public RenameFix(@NonNls String targetName) {
-    super();
-    this.targetName = targetName;
-  }
-
-  @Override
-  @Nonnull
-  public String getName() {
-    if (targetName == null) {
-      return "Rename";
-    } else {
-      return "Rename to " + targetName;
+    public RenameFix() {
+        super();
+        targetName = null;
     }
-  }
 
-  @Override
-  public void doFix(final Project project, ProblemDescriptor descriptor) {
-    final PsiElement nameIdentifier = descriptor.getPsiElement();
-    final PsiElement elementToRename = nameIdentifier.getParent();
-    if (targetName == null) {
-      final RefactoringActionHandlerFactory factory =
-          RefactoringActionHandlerFactory.getInstance();
-      final RefactoringActionHandler renameHandler =
-          factory.createRenameHandler();
-      final DataManager dataManager = DataManager.getInstance();
-      final DataContext dataContext = dataManager.getDataContext();
-      Runnable runnable = new Runnable() {
-        @Override
-        public void run() {
-          renameHandler.invoke(project, new PsiElement[]{elementToRename},
-                               dataContext);
+    public RenameFix(String targetName) {
+        super();
+        this.targetName = targetName;
+    }
+
+    @Nonnull
+    @Override
+    public LocalizeValue getName() {
+        if (targetName == null) {
+            return LocalizeValue.localizeTODO("Rename");
         }
-      };
-      if (ApplicationManager.getApplication().isUnitTestMode()) {
-        runnable.run();
-      }
-      else {
-        ApplicationManager.getApplication().invokeLater(runnable, project.getDisposed());
-      }
-    } else {
-      final RefactoringFactory factory =
-          RefactoringFactory.getInstance(project);
-      final RenameRefactoring renameRefactoring =
-          factory.createRename(elementToRename, targetName);
-      renameRefactoring.run();
+        else {
+            return LocalizeValue.localizeTODO("Rename to " + targetName);
+        }
     }
-  }
+
+    @Override
+    public void doFix(final Project project, ProblemDescriptor descriptor) {
+        final PsiElement nameIdentifier = descriptor.getPsiElement();
+        final PsiElement elementToRename = nameIdentifier.getParent();
+        if (targetName == null) {
+            final RefactoringActionHandlerFactory factory =
+                RefactoringActionHandlerFactory.getInstance();
+            final RefactoringActionHandler renameHandler =
+                factory.createRenameHandler();
+            final DataManager dataManager = DataManager.getInstance();
+            final DataContext dataContext = dataManager.getDataContext();
+            Runnable runnable = new Runnable() {
+                @Override
+                public void run() {
+                    renameHandler.invoke(project, new PsiElement[]{elementToRename},
+                        dataContext
+                    );
+                }
+            };
+            if (ApplicationManager.getApplication().isUnitTestMode()) {
+                runnable.run();
+            }
+            else {
+                ApplicationManager.getApplication().invokeLater(runnable, project.getDisposed());
+            }
+        }
+        else {
+            final RefactoringFactory factory =
+                RefactoringFactory.getInstance(project);
+            final RenameRefactoring renameRefactoring =
+                factory.createRename(elementToRename, targetName);
+            renameRefactoring.run();
+        }
+    }
 }

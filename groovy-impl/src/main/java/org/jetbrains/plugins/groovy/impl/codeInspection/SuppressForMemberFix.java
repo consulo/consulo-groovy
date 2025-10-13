@@ -26,6 +26,7 @@ import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiFile;
 import consulo.language.psi.util.PsiTreeUtil;
 import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
 import consulo.project.Project;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
@@ -44,94 +45,100 @@ import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeParameter;
  * @author peter
  */
 public class SuppressForMemberFix extends AbstractBatchSuppressByNoInspectionCommentFix {
-  private String myKey;
-  private final boolean myForClass;
+    private String myKey;
+    private final boolean myForClass;
 
-  public SuppressForMemberFix(@Nonnull HighlightDisplayKey key, boolean forClass) {
-    super(key.getID(), false);
-    myForClass = forClass;
-  }
-
-  @Override
-  @Nullable
-  public GrDocCommentOwner getContainer(final PsiElement context) {
-    if (context == null || context instanceof PsiFile) {
-      return null;
+    public SuppressForMemberFix(@Nonnull HighlightDisplayKey key, boolean forClass) {
+        super(key.getID(), false);
+        myForClass = forClass;
     }
 
-    GrDocCommentOwner container = null;
-
-    GrDocComment docComment = PsiTreeUtil.getParentOfType(context, GrDocComment.class);
-    if (docComment != null) {
-      container = docComment.getOwner();
-    }
-    if (container == null) {
-      container = PsiTreeUtil.getParentOfType(context, GrDocCommentOwner.class);
-    }
-
-    while (container instanceof GrAnonymousClassDefinition || container instanceof GrTypeParameter) {
-      container = PsiTreeUtil.getParentOfType(container, GrDocCommentOwner.class);
-      if (container == null) return null;
-    }
-    if (myForClass) {
-      while (container != null ) {
-        final GrTypeDefinition parentClass = PsiTreeUtil.getParentOfType(container, GrTypeDefinition.class);
-        if (parentClass == null && container instanceof GrTypeDefinition){
-          return container;
+    @Override
+    @Nullable
+    public GrDocCommentOwner getContainer(final PsiElement context) {
+        if (context == null || context instanceof PsiFile) {
+            return null;
         }
-        container = parentClass;
-      }
+
+        GrDocCommentOwner container = null;
+
+        GrDocComment docComment = PsiTreeUtil.getParentOfType(context, GrDocComment.class);
+        if (docComment != null) {
+            container = docComment.getOwner();
+        }
+        if (container == null) {
+            container = PsiTreeUtil.getParentOfType(context, GrDocCommentOwner.class);
+        }
+
+        while (container instanceof GrAnonymousClassDefinition || container instanceof GrTypeParameter) {
+            container = PsiTreeUtil.getParentOfType(container, GrDocCommentOwner.class);
+            if (container == null) {
+                return null;
+            }
+        }
+        if (myForClass) {
+            while (container != null) {
+                final GrTypeDefinition parentClass = PsiTreeUtil.getParentOfType(container, GrTypeDefinition.class);
+                if (parentClass == null && container instanceof GrTypeDefinition) {
+                    return container;
+                }
+                container = parentClass;
+            }
+        }
+        return container;
     }
-    return container;
-  }
 
-  @Override
-  @Nonnull
-  public String getText() {
-    return myKey != null ? InspectionsBundle.message(myKey) : "Suppress for member";
-  }
-
-
-  @Override
-  public boolean isAvailable(@Nonnull final Project project, @Nonnull final PsiElement context) {
-    final GrDocCommentOwner container = getContainer(context);
-    myKey = container instanceof PsiClass ? "suppress.inspection.class" : container instanceof PsiMethod ? "suppress.inspection.method" : "suppress.inspection.field";
-    return container != null && context.getManager().isInProject(context);
-  }
-
-  @Override
-  protected boolean replaceSuppressionComments(PsiElement container) {
-    return false;
-  }
-
-  @Override
-  protected void createSuppression(@Nonnull Project project, @Nonnull PsiElement element, @Nonnull PsiElement container)
-    throws IncorrectOperationException {
-    final GrModifierList modifierList = (GrModifierList)((PsiModifierListOwner)container).getModifierList();
-    if (modifierList != null) {
-      addSuppressAnnotation(project, modifierList, myID);
+    @Nonnull
+    @Override
+    public LocalizeValue getText() {
+        return LocalizeValue.localizeTODO(myKey != null ? InspectionsBundle.message(myKey) : "Suppress for member");
     }
-    DaemonCodeAnalyzer.getInstance(project).restart();
-  }
 
-  private static void addSuppressAnnotation(final Project project, final GrModifierList modifierList, final String id) throws IncorrectOperationException {
-    PsiAnnotation annotation = modifierList.findAnnotation(BatchSuppressManager.SUPPRESS_INSPECTIONS_ANNOTATION_NAME);
-    final GrExpression toAdd = GroovyPsiElementFactory.getInstance(project).createExpressionFromText("\"" + id + "\"");
-    if (annotation != null) {
-      final PsiAnnotationMemberValue value = annotation.findDeclaredAttributeValue(null);
-      if (value instanceof GrAnnotationArrayInitializer) {
-        value.add(toAdd);
-      } else if (value != null) {
-        GrAnnotation anno = GroovyPsiElementFactory.getInstance(project).createAnnotationFromText("@A([])");
-        final GrAnnotationArrayInitializer list = (GrAnnotationArrayInitializer)anno.findDeclaredAttributeValue(null);
-        list.add(value);
-        list.add(toAdd);
-        annotation.setDeclaredAttributeValue(null, list);
-      }
+    @Override
+    public boolean isAvailable(@Nonnull final Project project, @Nonnull final PsiElement context) {
+        final GrDocCommentOwner container = getContainer(context);
+        myKey =
+            container instanceof PsiClass ? "suppress.inspection.class" : container instanceof PsiMethod ? "suppress.inspection.method" : "suppress.inspection.field";
+        return container != null && context.getManager().isInProject(context);
     }
-    else {
-      modifierList.addAnnotation(BatchSuppressManager.SUPPRESS_INSPECTIONS_ANNOTATION_NAME).setDeclaredAttributeValue(null, toAdd);
-    }
-  }
 
+    @Override
+    protected boolean replaceSuppressionComments(PsiElement container) {
+        return false;
+    }
+
+    @Override
+    protected void createSuppression(@Nonnull Project project, @Nonnull PsiElement element, @Nonnull PsiElement container)
+        throws IncorrectOperationException {
+        final GrModifierList modifierList = (GrModifierList) ((PsiModifierListOwner) container).getModifierList();
+        if (modifierList != null) {
+            addSuppressAnnotation(project, modifierList, myID);
+        }
+        DaemonCodeAnalyzer.getInstance(project).restart();
+    }
+
+    private static void addSuppressAnnotation(
+        final Project project,
+        final GrModifierList modifierList,
+        final String id
+    ) throws IncorrectOperationException {
+        PsiAnnotation annotation = modifierList.findAnnotation(BatchSuppressManager.SUPPRESS_INSPECTIONS_ANNOTATION_NAME);
+        final GrExpression toAdd = GroovyPsiElementFactory.getInstance(project).createExpressionFromText("\"" + id + "\"");
+        if (annotation != null) {
+            final PsiAnnotationMemberValue value = annotation.findDeclaredAttributeValue(null);
+            if (value instanceof GrAnnotationArrayInitializer) {
+                value.add(toAdd);
+            }
+            else if (value != null) {
+                GrAnnotation anno = GroovyPsiElementFactory.getInstance(project).createAnnotationFromText("@A([])");
+                final GrAnnotationArrayInitializer list = (GrAnnotationArrayInitializer) anno.findDeclaredAttributeValue(null);
+                list.add(value);
+                list.add(toAdd);
+                annotation.setDeclaredAttributeValue(null, list);
+            }
+        }
+        else {
+            modifierList.addAnnotation(BatchSuppressManager.SUPPRESS_INSPECTIONS_ANNOTATION_NAME).setDeclaredAttributeValue(null, toAdd);
+        }
+    }
 }

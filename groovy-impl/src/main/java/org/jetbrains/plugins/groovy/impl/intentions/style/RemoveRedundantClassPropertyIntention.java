@@ -15,11 +15,13 @@
  */
 package org.jetbrains.plugins.groovy.impl.intentions.style;
 
+import com.intellij.java.language.psi.PsiClass;
 import consulo.codeEditor.Editor;
+import consulo.groovy.impl.localize.GroovyIntentionLocalize;
 import consulo.language.psi.PsiElement;
 import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
 import consulo.project.Project;
-import com.intellij.java.language.psi.PsiClass;
 import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.impl.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.impl.intentions.base.PsiElementPredicate;
@@ -30,28 +32,33 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrRefere
  * @author Max Medvedev
  */
 public class RemoveRedundantClassPropertyIntention extends Intention {
-  @Override
-  protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException
-  {
-    if (element instanceof GrReferenceExpression) {
-      ((GrReferenceExpression)element).replaceWithExpression(((GrReferenceExpression)element).getQualifier(), true);
+    @Nonnull
+    @Override
+    public LocalizeValue getText() {
+        return GroovyIntentionLocalize.removeRedundantClassPropertyIntentionName();
     }
-  }
 
-  @Nonnull
-  @Override
-  protected PsiElementPredicate getElementPredicate() {
-    return new PsiElementPredicate() {
-      @Override
-      public boolean satisfiedBy(PsiElement element) {
-        if (element instanceof GrReferenceExpression && "class".equals(((GrReferenceExpression)element).getReferenceName())) {
-          GrExpression qualifier = ((GrReferenceExpression)element).getQualifier();
-          if (qualifier instanceof GrReferenceExpression) {
-            return ((GrReferenceExpression)qualifier).resolve() instanceof PsiClass;
-          }
+    @Override
+    protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
+        if (element instanceof GrReferenceExpression) {
+            ((GrReferenceExpression) element).replaceWithExpression(((GrReferenceExpression) element).getQualifier(), true);
         }
-        return false;
-      }
-    };
-  }
+    }
+
+    @Nonnull
+    @Override
+    protected PsiElementPredicate getElementPredicate() {
+        return new PsiElementPredicate() {
+            @Override
+            public boolean satisfiedBy(PsiElement element) {
+                if (element instanceof GrReferenceExpression && "class".equals(((GrReferenceExpression) element).getReferenceName())) {
+                    GrExpression qualifier = ((GrReferenceExpression) element).getQualifier();
+                    if (qualifier instanceof GrReferenceExpression) {
+                        return ((GrReferenceExpression) qualifier).resolve() instanceof PsiClass;
+                    }
+                }
+                return false;
+            }
+        };
+    }
 }

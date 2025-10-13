@@ -19,6 +19,7 @@ import com.intellij.java.language.psi.PsiClass;
 import com.intellij.java.language.psi.PsiModifier;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.groovy.localize.GroovyLocalize;
+import consulo.localize.LocalizeValue;
 import consulo.project.Project;
 import consulo.ui.annotation.RequiredUIAccess;
 import consulo.util.collection.ArrayUtil;
@@ -54,10 +55,10 @@ public class CreateFieldFromUsageFix extends GrCreateFromUsageBaseFix {
         return GroovyExpectedTypesProvider.calculateTypeConstraints(getRefExpr());
     }
 
-    @Override
     @Nonnull
-    public String getText() {
-        return GroovyLocalize.createFieldFromUsage(myReferenceName).get();
+    @Override
+    public LocalizeValue getText() {
+        return GroovyLocalize.createFieldFromUsage(myReferenceName);
     }
 
     @Override

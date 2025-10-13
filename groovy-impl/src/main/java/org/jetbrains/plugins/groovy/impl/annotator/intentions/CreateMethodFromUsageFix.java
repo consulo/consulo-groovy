@@ -24,6 +24,7 @@ import consulo.language.editor.intention.IntentionAction;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiFile;
 import consulo.language.psi.util.PsiTreeUtil;
+import consulo.localize.LocalizeValue;
 import consulo.project.Project;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
@@ -52,8 +53,8 @@ public class CreateMethodFromUsageFix extends GrCreateFromUsageBaseFix implement
     @Override
     @Nonnull
     @RequiredReadAction
-    public String getText() {
-        return GroovyLocalize.createMethodFromUsage(getMethodName()).get();
+    public LocalizeValue getText() {
+        return GroovyLocalize.createMethodFromUsage(getMethodName());
     }
 
     @Override

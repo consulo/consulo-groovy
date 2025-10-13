@@ -15,28 +15,28 @@
  */
 package org.jetbrains.plugins.groovy.impl.intentions.base;
 
-import jakarta.annotation.Nonnull;
-
+import consulo.codeEditor.Editor;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiFile;
+import consulo.localize.LocalizeValue;
 import consulo.project.Project;
-import consulo.codeEditor.Editor;
+import jakarta.annotation.Nonnull;
 
 public abstract class MutablyNamedIntention extends Intention {
-  private String text = null;
+    private LocalizeValue myText = null;
 
-  protected abstract String getTextForElement(PsiElement element);
+    protected abstract LocalizeValue getTextForElement(PsiElement element);
 
-  @Nonnull
-  public String getText() {
-    return text;
-  }
-
-  public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file) {
-    final PsiElement element = findMatchingElement(file, editor);
-    if (element != null) {
-      text = getTextForElement(element);
+    @Nonnull
+    public LocalizeValue getText() {
+        return myText;
     }
-    return element != null;
-  }
+
+    public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file) {
+        final PsiElement element = findMatchingElement(file, editor);
+        if (element != null) {
+            myText = getTextForElement(element);
+        }
+        return element != null;
+    }
 }

@@ -15,9 +15,13 @@
  */
 package org.jetbrains.plugins.groovy.impl.intentions.closure;
 
-import jakarta.annotation.Nonnull;
-
+import consulo.codeEditor.Editor;
+import consulo.groovy.impl.localize.GroovyIntentionLocalize;
+import consulo.language.psi.PsiElement;
+import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
 import consulo.project.Project;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.impl.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.impl.intentions.base.PsiElementPredicate;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrArgumentList;
@@ -26,12 +30,13 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpres
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.path.GrMethodCallExpression;
 import org.jetbrains.plugins.groovy.lang.psi.impl.PsiImplUtil;
-import consulo.codeEditor.Editor;
-import consulo.language.psi.PsiElement;
-import consulo.language.util.IncorrectOperationException;
 
 public class MakeClosureCallImplicitIntention extends Intention {
-
+    @Nonnull
+    @Override
+    public LocalizeValue getText() {
+        return GroovyIntentionLocalize.makeClosureCallImplicitIntentionName();
+    }
 
     @Nonnull
     public PsiElementPredicate getElementPredicate() {
@@ -39,9 +44,9 @@ public class MakeClosureCallImplicitIntention extends Intention {
     }
 
     public void processIntention(@Nonnull PsiElement element, Project project, Editor editor)
-            throws IncorrectOperationException {
+        throws IncorrectOperationException {
         final GrMethodCallExpression expression =
-                (GrMethodCallExpression) element;
+            (GrMethodCallExpression) element;
         final GrReferenceExpression invokedExpression = (GrReferenceExpression) expression.getInvokedExpression();
         final GrExpression qualifier = invokedExpression.getQualifierExpression();
         final GrArgumentList argList = expression.getArgumentList();
