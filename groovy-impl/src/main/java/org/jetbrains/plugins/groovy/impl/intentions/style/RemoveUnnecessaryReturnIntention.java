@@ -15,12 +15,13 @@
  */
 package org.jetbrains.plugins.groovy.impl.intentions.style;
 
-import jakarta.annotation.Nonnull;
-
 import consulo.codeEditor.Editor;
+import consulo.groovy.impl.localize.GroovyIntentionLocalize;
 import consulo.language.psi.PsiElement;
 import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
 import consulo.project.Project;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.impl.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.impl.intentions.base.PsiElementPredicate;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
@@ -32,26 +33,31 @@ import org.jetbrains.plugins.groovy.lang.psi.controlFlow.ControlFlowBuilderUtil;
  * @author Max Medvedev
  */
 public class RemoveUnnecessaryReturnIntention extends Intention {
-  @Override
-  protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException
-  {
-    if (element instanceof GrReturnStatement && ((GrReturnStatement)element).getReturnValue() != null) {
-      GrExpression value = ((GrReturnStatement)element).getReturnValue();
-
-      ((GrReturnStatement)element).replaceWithStatement(value);
+    @Nonnull
+    @Override
+    public LocalizeValue getText() {
+        return GroovyIntentionLocalize.removeUnnecessaryReturnIntentionName();
     }
-  }
 
-  @Nonnull
-  @Override
-  protected PsiElementPredicate getElementPredicate() {
-    return new PsiElementPredicate() {
-      @Override
-      public boolean satisfiedBy(PsiElement element) {
-        return element instanceof GrReturnStatement &&
-               ((GrReturnStatement)element).getReturnValue() != null &&
-               ControlFlowBuilderUtil.isCertainlyReturnStatement((GrStatement)element);
-      }
-    };
-  }
+    @Override
+    protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
+        if (element instanceof GrReturnStatement && ((GrReturnStatement) element).getReturnValue() != null) {
+            GrExpression value = ((GrReturnStatement) element).getReturnValue();
+
+            ((GrReturnStatement) element).replaceWithStatement(value);
+        }
+    }
+
+    @Nonnull
+    @Override
+    protected PsiElementPredicate getElementPredicate() {
+        return new PsiElementPredicate() {
+            @Override
+            public boolean satisfiedBy(PsiElement element) {
+                return element instanceof GrReturnStatement &&
+                    ((GrReturnStatement) element).getReturnValue() != null &&
+                    ControlFlowBuilderUtil.isCertainlyReturnStatement((GrStatement) element);
+            }
+        };
+    }
 }

@@ -16,8 +16,10 @@
 package org.jetbrains.plugins.groovy.impl.intentions.closure;
 
 import consulo.codeEditor.Editor;
+import consulo.groovy.impl.localize.GroovyIntentionLocalize;
 import consulo.language.psi.PsiElement;
 import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
 import consulo.project.Project;
 import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.impl.intentions.base.Intention;
@@ -29,7 +31,11 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.path.GrM
 import org.jetbrains.plugins.groovy.lang.psi.impl.PsiImplUtil;
 
 public class MakeClosureCallExplicitIntention extends Intention {
-
+    @Nonnull
+    @Override
+    public LocalizeValue getText() {
+        return GroovyIntentionLocalize.makeClosureCallExplicitIntentionName();
+    }
 
     @Nonnull
     public PsiElementPredicate getElementPredicate() {
@@ -37,10 +43,9 @@ public class MakeClosureCallExplicitIntention extends Intention {
     }
 
     public void processIntention(@Nonnull PsiElement element, Project project, Editor editor)
-            throws IncorrectOperationException
-	{
+        throws IncorrectOperationException {
         final GrMethodCallExpression expression =
-                (GrMethodCallExpression) element;
+            (GrMethodCallExpression) element;
         final GrExpression invokedExpression = expression.getInvokedExpression();
         final GrArgumentList argList = expression.getArgumentList();
         final GrClosableBlock[] closureArgs = expression.getClosureArguments();
@@ -53,6 +58,6 @@ public class MakeClosureCallExplicitIntention extends Intention {
         for (GrClosableBlock closureArg : closureArgs) {
             newExpression.append(closureArg.getText());
         }
-		PsiImplUtil.replaceExpression(newExpression.toString(), expression);
+        PsiImplUtil.replaceExpression(newExpression.toString(), expression);
     }
 }

@@ -16,17 +16,18 @@
 
 package org.jetbrains.plugins.groovy.impl.intentions.closure;
 
-import jakarta.annotation.Nonnull;
-
 import consulo.application.ApplicationManager;
-import consulo.document.Document;
 import consulo.codeEditor.Editor;
+import consulo.document.Document;
+import consulo.groovy.impl.localize.GroovyIntentionLocalize;
 import consulo.language.editor.refactoring.rename.inplace.VariableInplaceRenamer;
 import consulo.language.psi.PsiDocumentManager;
+import consulo.language.psi.PsiElement;
 import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
 import consulo.project.Project;
 import consulo.util.lang.StringUtil;
-import consulo.language.psi.PsiElement;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.impl.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.impl.intentions.base.PsiElementPredicate;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
@@ -48,98 +49,117 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.PsiImplUtil;
  * @author Maxim.Medvedev
  */
 public class EachToForIntention extends Intention {
-  @Nonnull
-  @Override
-  protected PsiElementPredicate getElementPredicate() {
-    return new EachToForPredicate();
-  }
-
-  @Override
-  protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException
-  {
-    final GrMethodCallExpression expression = (GrMethodCallExpression)element;
-    final GrClosableBlock block = expression.getClosureArguments()[0];
-    final GrParameterList parameterList = block.getParameterList();
-    final GrParameter[] parameters = parameterList.getParameters();
-
-    String var;
-    if (parameters.length == 1) {
-      var = parameters[0].getText();
-      var = StringUtil.replace(var, GrModifier.DEF, "");
-    }
-    else {
-      var = "it";
+    @Nonnull
+    @Override
+    public LocalizeValue getText() {
+        return GroovyIntentionLocalize.eachToForIntentionName();
     }
 
-    final GrExpression invokedExpression = expression.getInvokedExpression();
-    GrExpression qualifier = ((GrReferenceExpression)invokedExpression).getQualifierExpression();
-    final GroovyPsiElementFactory elementFactory = GroovyPsiElementFactory.getInstance(element.getProject());
-    if (qualifier == null) {
-      qualifier = elementFactory.createExpressionFromText("this");
+    @Nonnull
+    @Override
+    protected PsiElementPredicate getElementPredicate() {
+        return new EachToForPredicate();
     }
 
-    StringBuilder builder = new StringBuilder();
-    builder.append("for (").append(var).append(" in ").append(qualifier.getText()).append(") {\n");
-    String text = block.getText();
-    final PsiElement blockArrow = block.getArrow();
-    int index;
-    if (blockArrow != null) {
-      index = blockArrow.getStartOffsetInParent() + blockArrow.getTextLength();
-    }
-    else {
-      index = 1;
-    }
-    while (index < text.length() && Character.isWhitespace(text.charAt(index))) index++;
-    text = text.substring(index, text.length() - 1);
-    builder.append(text);
-    builder.append("}");
+    @Override
+    protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
+        final GrMethodCallExpression expression = (GrMethodCallExpression) element;
+        final GrClosableBlock block = expression.getClosureArguments()[0];
+        final GrParameterList parameterList = block.getParameterList();
+        final GrParameter[] parameters = parameterList.getParameters();
 
-    final GrStatement statement = elementFactory.createStatementFromText(builder.toString());
-    final GrForStatement forStatement = (GrForStatement)expression.replaceWithStatement(statement);
-    final GrForClause clause = forStatement.getClause();
-    GrVariable variable = clause.getDeclaredVariable();
-
-    if (variable == null) return;
-
-    if (ApplicationManager.getApplication().isUnitTestMode()) return;
-
-    final PsiDocumentManager documentManager = PsiDocumentManager.getInstance(project);
-    final Document doc = documentManager.getDocument(element.getContainingFile());
-    if (doc == null) return;
-
-    documentManager.doPostponedOperationsAndUnblockDocument(doc);
-    editor.getCaretModel().moveToOffset(variable.getTextOffset());
-    new VariableInplaceRenamer(variable, editor).performInplaceRename();
-  }
-
-  private static class EachToForPredicate implements PsiElementPredicate {
-    public boolean satisfiedBy(PsiElement element) {
-      if (element instanceof GrMethodCallExpression) {
-        final GrMethodCallExpression expression = (GrMethodCallExpression)element;
-//        final PsiElement parent = expression.getParent();
-//        if (parent instanceof GrAssignmentExpression) return false;
-//        if (parent instanceof GrArgumentList) return false;
-//        if (parent instanceof GrReturnStatement) return false;
-//        if (!(parent instanceof GrCodeBlock || parent instanceof GrIfStatement|| parent instanceof GrCaseSection)) return false;
+        String var;
+        if (parameters.length == 1) {
+            var = parameters[0].getText();
+            var = StringUtil.replace(var, GrModifier.DEF, "");
+        }
+        else {
+            var = "it";
+        }
 
         final GrExpression invokedExpression = expression.getInvokedExpression();
-        if (invokedExpression instanceof GrReferenceExpression) {
-          GrReferenceExpression referenceExpression = (GrReferenceExpression)invokedExpression;
-          if ("each".equals(referenceExpression.getReferenceName())) {
-            final GrArgumentList argumentList = expression.getArgumentList();
-            if (argumentList != null) {
-              if (PsiImplUtil.hasExpressionArguments(argumentList)) return false;
-              if (PsiImplUtil.hasNamedArguments(argumentList)) return false;
-            }
-            final GrClosableBlock[] closureArguments = expression.getClosureArguments();
-            if (closureArguments.length != 1) return false;
-            final GrParameter[] parameters = closureArguments[0].getParameterList().getParameters();
-            if (parameters.length > 1) return false;
-            return true;
-          }
+        GrExpression qualifier = ((GrReferenceExpression) invokedExpression).getQualifierExpression();
+        final GroovyPsiElementFactory elementFactory = GroovyPsiElementFactory.getInstance(element.getProject());
+        if (qualifier == null) {
+            qualifier = elementFactory.createExpressionFromText("this");
         }
-      }
-      return false;
+
+        StringBuilder builder = new StringBuilder();
+        builder.append("for (").append(var).append(" in ").append(qualifier.getText()).append(") {\n");
+        String text = block.getText();
+        final PsiElement blockArrow = block.getArrow();
+        int index;
+        if (blockArrow != null) {
+            index = blockArrow.getStartOffsetInParent() + blockArrow.getTextLength();
+        }
+        else {
+            index = 1;
+        }
+        while (index < text.length() && Character.isWhitespace(text.charAt(index))) index++;
+        text = text.substring(index, text.length() - 1);
+        builder.append(text);
+        builder.append("}");
+
+        final GrStatement statement = elementFactory.createStatementFromText(builder.toString());
+        final GrForStatement forStatement = (GrForStatement) expression.replaceWithStatement(statement);
+        final GrForClause clause = forStatement.getClause();
+        GrVariable variable = clause.getDeclaredVariable();
+
+        if (variable == null) {
+            return;
+        }
+
+        if (ApplicationManager.getApplication().isUnitTestMode()) {
+            return;
+        }
+
+        final PsiDocumentManager documentManager = PsiDocumentManager.getInstance(project);
+        final Document doc = documentManager.getDocument(element.getContainingFile());
+        if (doc == null) {
+            return;
+        }
+
+        documentManager.doPostponedOperationsAndUnblockDocument(doc);
+        editor.getCaretModel().moveToOffset(variable.getTextOffset());
+        new VariableInplaceRenamer(variable, editor).performInplaceRename();
     }
-  }
+
+    private static class EachToForPredicate implements PsiElementPredicate {
+        public boolean satisfiedBy(PsiElement element) {
+            if (element instanceof GrMethodCallExpression) {
+                final GrMethodCallExpression expression = (GrMethodCallExpression) element;
+//                final PsiElement parent = expression.getParent();
+//                if (parent instanceof GrAssignmentExpression) return false;
+//                if (parent instanceof GrArgumentList) return false;
+//                if (parent instanceof GrReturnStatement) return false;
+//                if (!(parent instanceof GrCodeBlock || parent instanceof GrIfStatement|| parent instanceof GrCaseSection)) return false;
+
+                final GrExpression invokedExpression = expression.getInvokedExpression();
+                if (invokedExpression instanceof GrReferenceExpression) {
+                    GrReferenceExpression referenceExpression = (GrReferenceExpression) invokedExpression;
+                    if ("each".equals(referenceExpression.getReferenceName())) {
+                        final GrArgumentList argumentList = expression.getArgumentList();
+                        if (argumentList != null) {
+                            if (PsiImplUtil.hasExpressionArguments(argumentList)) {
+                                return false;
+                            }
+                            if (PsiImplUtil.hasNamedArguments(argumentList)) {
+                                return false;
+                            }
+                        }
+                        final GrClosableBlock[] closureArguments = expression.getClosureArguments();
+                        if (closureArguments.length != 1) {
+                            return false;
+                        }
+                        final GrParameter[] parameters = closureArguments[0].getParameterList().getParameters();
+                        if (parameters.length > 1) {
+                            return false;
+                        }
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+    }
 }

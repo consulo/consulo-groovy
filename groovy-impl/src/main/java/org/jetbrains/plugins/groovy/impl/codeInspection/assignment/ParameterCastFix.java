@@ -19,64 +19,66 @@ import com.intellij.java.language.psi.PsiType;
 import consulo.language.editor.inspection.ProblemDescriptor;
 import consulo.language.psi.PsiElement;
 import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
 import consulo.project.Project;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.impl.codeInspection.GroovyFix;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrArgumentList;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.impl.PsiImplUtil;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 
-import jakarta.annotation.Nonnull;
-
 /**
  * @author Max Medvedev
  */
 public class ParameterCastFix extends GroovyFix {
-  private final GrExpression myArgument;
-  private final PsiType myType;
-  private final String myName;
+    private final GrExpression myArgument;
+    private final PsiType myType;
+    @Nonnull
+    private final LocalizeValue myName;
 
-  public ParameterCastFix(int param, @Nonnull PsiType type, @Nonnull GrExpression argument) {
-    myArgument = argument;
-    myType = PsiImplUtil.normalizeWildcardTypeByPosition(type, argument);
+    public ParameterCastFix(int param, @Nonnull PsiType type, @Nonnull GrExpression argument) {
+        myArgument = argument;
+        myType = PsiImplUtil.normalizeWildcardTypeByPosition(type, argument);
 
-    StringBuilder builder = new StringBuilder();
-    builder.append("Cast ");
+        StringBuilder builder = new StringBuilder();
+        builder.append("Cast ");
 
-    builder.append(param + 1);
-    switch (param + 1) {
-      case 1:
-        builder.append("st");
-        break;
-      case 2:
-        builder.append("nd");
-        break;
-      case 3:
-        builder.append("rd");
-        break;
-      default:
-        builder.append("th");
-        break;
+        builder.append(param + 1);
+        switch (param + 1) {
+            case 1:
+                builder.append("st");
+                break;
+            case 2:
+                builder.append("nd");
+                break;
+            case 3:
+                builder.append("rd");
+                break;
+            default:
+                builder.append("th");
+                break;
+        }
+        builder.append(" parameter to ").append(myType.getPresentableText());
+
+
+        myName = LocalizeValue.localizeTODO(builder.toString());
     }
-    builder.append(" parameter to ").append(myType.getPresentableText());
 
+    @Override
+    protected void doFix(Project project, ProblemDescriptor descriptor) throws IncorrectOperationException {
+        final PsiElement element = descriptor.getPsiElement();
+        final GrArgumentList list = element instanceof GrArgumentList ? (GrArgumentList) element : PsiUtil.getArgumentsList(element);
+        if (list == null) {
+            return;
+        }
 
-    myName = builder.toString();
-  }
+        GrCastFix.doCast(project, myType, myArgument);
+    }
 
-  @Override
-  protected void doFix(Project project, ProblemDescriptor descriptor) throws IncorrectOperationException
-  {
-    final PsiElement element = descriptor.getPsiElement();
-    final GrArgumentList list = element instanceof GrArgumentList ? (GrArgumentList)element :PsiUtil.getArgumentsList(element);
-    if (list == null) return;
-
-    GrCastFix.doCast(project, myType, myArgument);
-  }
-
-  @Nonnull
-  @Override
-  public String getName() {
-    return myName;
-  }
+    @Nonnull
+    @Override
+    public LocalizeValue getName() {
+        return myName;
+    }
 }

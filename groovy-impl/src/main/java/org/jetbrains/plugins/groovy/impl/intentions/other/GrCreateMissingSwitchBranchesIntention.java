@@ -18,10 +18,13 @@ package org.jetbrains.plugins.groovy.impl.intentions.other;
 import com.intellij.java.language.psi.*;
 import com.intellij.java.language.psi.codeStyle.JavaCodeStyleManager;
 import consulo.codeEditor.Editor;
+import consulo.groovy.impl.localize.GroovyIntentionLocalize;
 import consulo.language.psi.PsiElement;
 import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
 import consulo.project.Project;
 import consulo.util.collection.ContainerUtil;
+import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.impl.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.impl.intentions.base.PsiElementPredicate;
@@ -33,8 +36,6 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.clauses.GrCaseSectio
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
 
-import jakarta.annotation.Nonnull;
-
 import java.util.Collections;
 import java.util.List;
 
@@ -42,75 +43,96 @@ import java.util.List;
  * @author Max Medvedev
  */
 public class GrCreateMissingSwitchBranchesIntention extends Intention {
-  @Override
-  protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
-    if (!(element instanceof GrSwitchStatement)) return;
-
-    final List<PsiEnumConstant> constants = findUnusedConstants((GrSwitchStatement)element);
-    if (constants.isEmpty()) return;
-
-    final PsiEnumConstant first = constants.get(0);
-    final PsiClass aClass = first.getContainingClass();
-    if (aClass == null) return;
-    String qName = aClass.getQualifiedName();
-
-    final GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(project);
-    PsiElement anchor = findAnchor(element);
-    for (PsiEnumConstant constant : constants) {
-      final GrCaseSection section = factory.createSwitchSection("case " + qName + "." + constant.getName() + ":\n break");
-      final PsiElement added = element.addBefore(section, anchor);
-
-      element.addBefore(factory.createLineTerminator(1), anchor);
-
-      JavaCodeStyleManager.getInstance(project).shortenClassReferences(added);
+    @Nonnull
+    @Override
+    public LocalizeValue getText() {
+        return GroovyIntentionLocalize.grCreateMissingSwitchBranchesIntentionName();
     }
-  }
 
-  @Nullable
-  private static PsiElement findAnchor(PsiElement element) {
-    final PsiElement last = element.getLastChild();
-    if (last != null && last.getNode().getElementType() == GroovyTokenTypes.mRCURLY) return last;
-    return null;
-  }
-
-  @Nonnull
-  @Override
-  protected PsiElementPredicate getElementPredicate() {
-    return new PsiElementPredicate() {
-      @Override
-      public boolean satisfiedBy(PsiElement element) {
-        if (!(element instanceof GrSwitchStatement)) return false;
-
-
-        final List<PsiEnumConstant> unused = findUnusedConstants((GrSwitchStatement)element);
-        return !unused.isEmpty();
-      }
-    };
-  }
-
-  private static List<PsiEnumConstant> findUnusedConstants(GrSwitchStatement switchStatement) {
-    final GrExpression condition = switchStatement.getCondition();
-    if (condition == null) return Collections.emptyList();
-
-    final PsiType type = condition.getType();
-    if (!(type instanceof PsiClassType)) return Collections.emptyList();
-
-    final PsiClass resolved = ((PsiClassType)type).resolve();
-    if (resolved == null || !resolved.isEnum()) return Collections.emptyList();
-
-    final PsiField[] fields = resolved.getFields();
-    final List<PsiEnumConstant> constants = ContainerUtil.findAll(fields, PsiEnumConstant.class);
-
-    final GrCaseSection[] sections = switchStatement.getCaseSections();
-    for (GrCaseSection section : sections) {
-      for (GrCaseLabel label : section.getCaseLabels()) {
-        final GrExpression value = label.getValue();
-        if (value instanceof GrReferenceExpression) {
-          final PsiElement r = ((GrReferenceExpression)value).resolve();
-          constants.remove(r);
+    @Override
+    protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
+        if (!(element instanceof GrSwitchStatement)) {
+            return;
         }
-      }
+
+        final List<PsiEnumConstant> constants = findUnusedConstants((GrSwitchStatement) element);
+        if (constants.isEmpty()) {
+            return;
+        }
+
+        final PsiEnumConstant first = constants.get(0);
+        final PsiClass aClass = first.getContainingClass();
+        if (aClass == null) {
+            return;
+        }
+        String qName = aClass.getQualifiedName();
+
+        final GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(project);
+        PsiElement anchor = findAnchor(element);
+        for (PsiEnumConstant constant : constants) {
+            final GrCaseSection section = factory.createSwitchSection("case " + qName + "." + constant.getName() + ":\n break");
+            final PsiElement added = element.addBefore(section, anchor);
+
+            element.addBefore(factory.createLineTerminator(1), anchor);
+
+            JavaCodeStyleManager.getInstance(project).shortenClassReferences(added);
+        }
     }
-    return constants;
-  }
+
+    @Nullable
+    private static PsiElement findAnchor(PsiElement element) {
+        final PsiElement last = element.getLastChild();
+        if (last != null && last.getNode().getElementType() == GroovyTokenTypes.mRCURLY) {
+            return last;
+        }
+        return null;
+    }
+
+    @Nonnull
+    @Override
+    protected PsiElementPredicate getElementPredicate() {
+        return new PsiElementPredicate() {
+            @Override
+            public boolean satisfiedBy(PsiElement element) {
+                if (!(element instanceof GrSwitchStatement)) {
+                    return false;
+                }
+
+                final List<PsiEnumConstant> unused = findUnusedConstants((GrSwitchStatement) element);
+                return !unused.isEmpty();
+            }
+        };
+    }
+
+    private static List<PsiEnumConstant> findUnusedConstants(GrSwitchStatement switchStatement) {
+        final GrExpression condition = switchStatement.getCondition();
+        if (condition == null) {
+            return Collections.emptyList();
+        }
+
+        final PsiType type = condition.getType();
+        if (!(type instanceof PsiClassType)) {
+            return Collections.emptyList();
+        }
+
+        final PsiClass resolved = ((PsiClassType) type).resolve();
+        if (resolved == null || !resolved.isEnum()) {
+            return Collections.emptyList();
+        }
+
+        final PsiField[] fields = resolved.getFields();
+        final List<PsiEnumConstant> constants = ContainerUtil.findAll(fields, PsiEnumConstant.class);
+
+        final GrCaseSection[] sections = switchStatement.getCaseSections();
+        for (GrCaseSection section : sections) {
+            for (GrCaseLabel label : section.getCaseLabels()) {
+                final GrExpression value = label.getValue();
+                if (value instanceof GrReferenceExpression) {
+                    final PsiElement r = ((GrReferenceExpression) value).resolve();
+                    constants.remove(r);
+                }
+            }
+        }
+        return constants;
+    }
 }

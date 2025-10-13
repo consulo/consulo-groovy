@@ -15,13 +15,13 @@
  */
 package org.jetbrains.plugins.groovy.impl.intentions.closure;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import jakarta.annotation.Nonnull;
-
+import consulo.codeEditor.Editor;
+import consulo.groovy.impl.localize.GroovyIntentionLocalize;
 import consulo.language.psi.PsiElement;
 import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
+import consulo.project.Project;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.impl.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.impl.intentions.base.PsiElementPredicate;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyRecursiveElementVisitor;
@@ -30,22 +30,25 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrRefere
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameter;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameterList;
 import org.jetbrains.plugins.groovy.lang.psi.impl.PsiImplUtil;
-import consulo.codeEditor.Editor;
-import consulo.project.Project;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class ConvertClosureArgToItIntention extends Intention {
-
+    @Nonnull
+    @Override
+    public LocalizeValue getText() {
+        return GroovyIntentionLocalize.convertClosureArgToItIntentionName();
+    }
 
     @Nonnull
     public PsiElementPredicate getElementPredicate() {
         return new SingleArgClosurePredicate();
     }
 
-    public void processIntention(@Nonnull PsiElement element, Project project, Editor editor)
-            throws IncorrectOperationException
-	{
+    public void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
         final GrClosableBlock closure =
-                (GrClosableBlock) element;
+            (GrClosableBlock) element;
 
         final GrParameterList parameterList = closure.getParameterList();
         final GrParameter parameter = parameterList.getParameters()[0];
@@ -65,7 +68,7 @@ public class ConvertClosureArgToItIntention extends Intention {
         closure.accept(visitor);
         parameter.delete();
         for (GrReferenceExpression referenceExpression : referencesToChange) {
-			PsiImplUtil.replaceExpression("it", referenceExpression);
+            PsiImplUtil.replaceExpression("it", referenceExpression);
         }
     }
 

@@ -28,6 +28,7 @@ import consulo.component.extension.Extensions;
 import consulo.document.Document;
 import consulo.document.RangeMarker;
 import consulo.document.util.TextRange;
+import consulo.groovy.impl.localize.GroovyIntentionLocalize;
 import consulo.language.codeStyle.PostprocessReformattingAspect;
 import consulo.language.editor.refactoring.rename.NameSuggestionProvider;
 import consulo.language.editor.refactoring.rename.PreferrableNameSuggestionProvider;
@@ -45,6 +46,7 @@ import consulo.language.psi.scope.LocalSearchScope;
 import consulo.language.psi.search.ReferencesSearch;
 import consulo.language.psi.util.PsiTreeUtil;
 import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
 import consulo.project.Project;
 import consulo.usage.UsageInfo;
 import consulo.usage.UsageViewUtil;
@@ -71,308 +73,316 @@ import java.util.List;
  * @author Max Medvedev
  */
 public class GrAliasImportIntention extends Intention {
-  @Override
-  protected void processIntention(@Nonnull PsiElement element,
-                                  Project project,
-                                  Editor editor) throws IncorrectOperationException {
-    GrImportStatement context;
-    final PsiMember resolved;
-    if (element instanceof GrReferenceExpression) {
-      GrReferenceExpression ref = (GrReferenceExpression)element;
-
-      GroovyResolveResult result = ref.advancedResolve();
-      context = (GrImportStatement)result.getCurrentFileResolveContext();
-      assert context != null;
-      resolved = (PsiMember)result.getElement();
-    }
-    else if (element instanceof GrImportStatement) {
-      context = (GrImportStatement)element;
-      resolved = (PsiMember)context.getImportReference().resolve();
-    }
-    else {
-      return;
+    @Nonnull
+    @Override
+    public LocalizeValue getText() {
+        return GroovyIntentionLocalize.grAliasImportIntentionName();
     }
 
-    assert resolved != null;
-    doRefactoring(project, context, resolved);
-  }
-
-  private static void doRefactoring(@Nonnull Project project,
-                                    @Nonnull GrImportStatement importStatement,
-                                    @Nonnull PsiMember member) {
-    if (member instanceof GrAccessorMethod &&
-      !importStatement.isOnDemand() &&
-      !importStatement.getImportedName().equals(member.getName())) {
-      member = ((GrAccessorMethod)member).getProperty();
-    }
-
-    final GroovyFileBase file = (GroovyFileBase)importStatement.getContainingFile();
-    final List<UsageInfo> usages = findUsages(member, file);
-    GrImportStatement templateImport = createTemplateImport(project, importStatement, member, file);
-
-    if (ApplicationManager.getApplication().isUnitTestMode()) {
-      if (!importStatement.isOnDemand()) {
-        importStatement.delete();
-      }
-      updateRefs(usages, member.getName(), templateImport);
-    }
-    else {
-      runTemplate(project, importStatement, member, file, usages, templateImport);
-    }
-  }
-
-  private static GrImportStatement createTemplateImport(Project project,
-                                                        GrImportStatement context,
-                                                        PsiMember resolved,
-                                                        GroovyFileBase file) {
-    final PsiClass aClass = resolved.getContainingClass();
-    assert aClass != null;
-    String qname = aClass.getQualifiedName();
-    final String name = resolved.getName();
-
-    GrImportStatement template = GroovyPsiElementFactory.getInstance(project).createImportStatementFromText
-      ("import static " + qname + "." + name + " as aliased");
-    return file.addImport(template);
-  }
-
-  private static void runTemplate(Project project,
-                                  final GrImportStatement context,
-                                  PsiMember resolved,
-                                  final GroovyFileBase file,
-                                  final List<UsageInfo> usages,
-                                  GrImportStatement templateImport) {
-    PostprocessReformattingAspect.getInstance(project).doPostponedFormatting();
-
-    TemplateBuilder templateBuilder = TemplateBuilderFactory.getInstance().createTemplateBuilder(templateImport);
-
-    LinkedHashSet<String> names = getSuggestedNames(resolved, context);
-
-    final PsiElement aliasNameElement = templateImport.getAliasNameElement();
-    assert aliasNameElement != null;
-    templateBuilder.replaceElement(aliasNameElement, new MyLookupExpression(resolved.getName(), names,
-                                                                            (PsiNamedElement)resolved, resolved, true, null));
-    Template built = templateBuilder.buildTemplate();
-
-    final Editor newEditor = IntentionUtils.positionCursor(project, file, templateImport);
-    final Document document = newEditor.getDocument();
-
-    final RangeMarker contextImportPointer = document.createRangeMarker(context.getTextRange());
-
-    final TextRange range = templateImport.getTextRange();
-    document.deleteString(range.getStartOffset(), range.getEndOffset());
-
-    final String name = resolved.getName();
-
-    TemplateManager manager = TemplateManager.getInstance(project);
-    manager.startTemplate(newEditor, built, new TemplateEditingAdapter() {
-      @Override
-      public void templateFinished(Template template, boolean brokenOff) {
-        final GrImportStatement importStatement = ApplicationManager.getApplication().runReadAction(new
-                                                                                                      Computable<GrImportStatement>() {
-                                                                                                        @Nullable
-                                                                                                        @Override
-                                                                                                        public GrImportStatement compute() {
-                                                                                                          return PsiTreeUtil.findElementOfClassAtOffset(
-                                                                                                            file,
-                                                                                                            range.getStartOffset(),
-                                                                                                            GrImportStatement.class,
-                                                                                                            true);
-                                                                                                        }
-                                                                                                      });
-
-        if (brokenOff) {
-          if (importStatement != null) {
-            ApplicationManager.getApplication().runWriteAction(new Runnable() {
-              @Override
-              public void run() {
-                importStatement.delete();
-              }
-            });
-          }
-          return;
-        }
-
-        updateRefs(usages, name, importStatement);
-
-        ApplicationManager.getApplication().runWriteAction(new Runnable() {
-          @Override
-          public void run() {
-            final GrImportStatement context = PsiTreeUtil.findElementOfClassAtRange(file,
-                                                                                    contextImportPointer.getStartOffset(),
-                                                                                    contextImportPointer.getEndOffset(),
-                                                                                    GrImportStatement.class);
-            if (context != null) {
-              context.delete();
-            }
-          }
-        });
-      }
-    });
-  }
-
-  private static void updateRefs(List<UsageInfo> usages,
-                                 final String memberName,
-                                 final GrImportStatement updatedImport) {
-
-    if (updatedImport == null) {
-      return;
-    }
-
-    final String name = ApplicationManager.getApplication().runReadAction(new Computable<String>() {
-      @Nullable
-      @Override
-      public String compute() {
-        return updatedImport.getImportedName();
-      }
-    });
-
-    for (final UsageInfo usage : usages) {
-      ApplicationManager.getApplication().runWriteAction(new Runnable() {
-        @Override
-        public void run() {
-          final PsiElement usageElement = usage.getElement();
-          if (usageElement == null) {
-            return;
-          }
-
-          if (usageElement.getParent() instanceof GrImportStatement) {
-            return;
-          }
-
-          if (usageElement instanceof GrReferenceElement) {
-            final GrReferenceElement ref = (GrReferenceElement)usageElement;
-            final PsiElement qualifier = ref.getQualifier();
-
-            if (qualifier == null) {
-              final String refName = ref.getReferenceName();
-              if (refName == null) {
-                return;
-              }
-
-              if (memberName.equals(refName)) {
-                ref.handleElementRenameSimple(name);
-              }
-              else if (refName.equals(GroovyPropertyUtils.getPropertyNameByAccessorName(memberName))) {
-                final String newPropName = GroovyPropertyUtils.getPropertyNameByAccessorName(name);
-                if (newPropName != null) {
-                  ref.handleElementRenameSimple(newPropName);
-                }
-                else {
-                  ref.handleElementRenameSimple(name);
-                }
-              }
-              else if (refName.equals(GroovyPropertyUtils.getGetterNameBoolean(memberName))) {
-                final String getterName = GroovyPropertyUtils.getGetterNameBoolean(name);
-                ref.handleElementRenameSimple(getterName);
-              }
-              else if (refName.equals(GroovyPropertyUtils.getGetterNameNonBoolean(memberName))) {
-                final String getterName = GroovyPropertyUtils.getGetterNameNonBoolean(name);
-                ref.handleElementRenameSimple(getterName);
-              }
-              else if (refName.equals(GroovyPropertyUtils.getSetterName(memberName))) {
-                final String getterName = GroovyPropertyUtils.getSetterName(name);
-                ref.handleElementRenameSimple(getterName);
-              }
-            }
-          }
-        }
-      });
-    }
-  }
-
-  private static List<UsageInfo> findUsages(PsiMember member, GroovyFileBase file) {
-    LocalSearchScope scope = new LocalSearchScope(file);
-
-    final ArrayList<UsageInfo> infos = new ArrayList<UsageInfo>();
-    final HashSet<Object> usedRefs = new HashSet<>();
-
-    final Processor<PsiReference> consumer = new Processor<PsiReference>() {
-      @Override
-      public boolean process(PsiReference reference) {
-        if (usedRefs.add(reference)) {
-          infos.add(new UsageInfo(reference));
-        }
-
-        return true;
-      }
-    };
-
-
-    if (member instanceof PsiMethod) {
-      MethodReferencesSearch.search((PsiMethod)member, scope, false).forEach(consumer);
-    }
-    else {
-      ReferencesSearch.search(member, scope).forEach(consumer);
-      if (member instanceof PsiField) {
-        final PsiMethod getter = GroovyPropertyUtils.findGetterForField((PsiField)member);
-        if (getter != null) {
-          MethodReferencesSearch.search(getter, scope, false).forEach(consumer);
-        }
-        final PsiMethod setter = GroovyPropertyUtils.findSetterForField((PsiField)member);
-        if (setter != null) {
-          MethodReferencesSearch.search(setter, scope, false).forEach(consumer);
-        }
-      }
-    }
-
-    return infos;
-  }
-
-  public static LinkedHashSet<String> getSuggestedNames(PsiElement psiElement,
-                                                        final PsiElement nameSuggestionContext) {
-    final LinkedHashSet<String> result = new LinkedHashSet<String>();
-    result.add(UsageViewUtil.getShortName(psiElement));
-    final NameSuggestionProvider[] providers = Extensions.getExtensions(NameSuggestionProvider.EP_NAME);
-    for (NameSuggestionProvider provider : providers) {
-      SuggestedNameInfo info = provider.getSuggestedNames(psiElement, nameSuggestionContext, result);
-      if (info != null) {
-        if (provider instanceof PreferrableNameSuggestionProvider && !((PreferrableNameSuggestionProvider)
-          provider).shouldCheckOthers()) {
-          break;
-        }
-      }
-    }
-    return result;
-  }
-
-
-  @Nonnull
-  @Override
-  protected PsiElementPredicate getElementPredicate() {
-    return new PsiElementPredicate() {
-      @Override
-      public boolean satisfiedBy(PsiElement element) {
+    @Override
+    protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
+        GrImportStatement context;
+        final PsiMember resolved;
         if (element instanceof GrReferenceExpression) {
+            GrReferenceExpression ref = (GrReferenceExpression) element;
 
-          GroovyResolveResult result = ((GrReferenceExpression)element).advancedResolve();
-
-          PsiElement context = result.getCurrentFileResolveContext();
-          if (!(context instanceof GrImportStatement)) {
-            return false;
-          }
-
-          GrImportStatement importStatement = (GrImportStatement)context;
-          if (!importStatement.isStatic() || importStatement.isAliasedImport()) {
-            return false;
-          }
-
-          return true;
+            GroovyResolveResult result = ref.advancedResolve();
+            context = (GrImportStatement) result.getCurrentFileResolveContext();
+            assert context != null;
+            resolved = (PsiMember) result.getElement();
         }
         else if (element instanceof GrImportStatement) {
-          final GrImportStatement importStatement = (GrImportStatement)element;
-          if (!importStatement.isStatic()) {
-            return false;
-          }
-          if (importStatement.isOnDemand()) {
-            return false;
-          }
-          if (importStatement.isAliasedImport()) {
-            return false;
-          }
-          return true;
+            context = (GrImportStatement) element;
+            resolved = (PsiMember) context.getImportReference().resolve();
         }
-        return false;
-      }
-    };
-  }
+        else {
+            return;
+        }
+
+        assert resolved != null;
+        doRefactoring(project, context, resolved);
+    }
+
+    private static void doRefactoring(@Nonnull Project project, @Nonnull GrImportStatement importStatement, @Nonnull PsiMember member) {
+        if (member instanceof GrAccessorMethod &&
+            !importStatement.isOnDemand() &&
+            !importStatement.getImportedName().equals(member.getName())) {
+            member = ((GrAccessorMethod) member).getProperty();
+        }
+
+        final GroovyFileBase file = (GroovyFileBase) importStatement.getContainingFile();
+        final List<UsageInfo> usages = findUsages(member, file);
+        GrImportStatement templateImport = createTemplateImport(project, importStatement, member, file);
+
+        if (ApplicationManager.getApplication().isUnitTestMode()) {
+            if (!importStatement.isOnDemand()) {
+                importStatement.delete();
+            }
+            updateRefs(usages, member.getName(), templateImport);
+        }
+        else {
+            runTemplate(project, importStatement, member, file, usages, templateImport);
+        }
+    }
+
+    private static GrImportStatement createTemplateImport(
+        Project project,
+        GrImportStatement context,
+        PsiMember resolved,
+        GroovyFileBase file
+    ) {
+        final PsiClass aClass = resolved.getContainingClass();
+        assert aClass != null;
+        String qname = aClass.getQualifiedName();
+        final String name = resolved.getName();
+
+        GrImportStatement template = GroovyPsiElementFactory.getInstance(project).createImportStatementFromText
+            ("import static " + qname + "." + name + " as aliased");
+        return file.addImport(template);
+    }
+
+    private static void runTemplate(
+        Project project,
+        final GrImportStatement context,
+        PsiMember resolved,
+        final GroovyFileBase file,
+        final List<UsageInfo> usages,
+        GrImportStatement templateImport
+    ) {
+        PostprocessReformattingAspect.getInstance(project).doPostponedFormatting();
+
+        TemplateBuilder templateBuilder = TemplateBuilderFactory.getInstance().createTemplateBuilder(templateImport);
+
+        LinkedHashSet<String> names = getSuggestedNames(resolved, context);
+
+        final PsiElement aliasNameElement = templateImport.getAliasNameElement();
+        assert aliasNameElement != null;
+        templateBuilder.replaceElement(aliasNameElement, new MyLookupExpression(resolved.getName(), names,
+            (PsiNamedElement) resolved, resolved, true, null
+        ));
+        Template built = templateBuilder.buildTemplate();
+
+        final Editor newEditor = IntentionUtils.positionCursor(project, file, templateImport);
+        final Document document = newEditor.getDocument();
+
+        final RangeMarker contextImportPointer = document.createRangeMarker(context.getTextRange());
+
+        final TextRange range = templateImport.getTextRange();
+        document.deleteString(range.getStartOffset(), range.getEndOffset());
+
+        final String name = resolved.getName();
+
+        TemplateManager manager = TemplateManager.getInstance(project);
+        manager.startTemplate(newEditor, built, new TemplateEditingAdapter() {
+            @Override
+            public void templateFinished(Template template, boolean brokenOff) {
+                final GrImportStatement importStatement = ApplicationManager.getApplication().runReadAction(
+                    new Computable<GrImportStatement>() {
+                        @Nullable
+                        @Override
+                        public GrImportStatement compute() {
+                            return PsiTreeUtil.findElementOfClassAtOffset(
+                                file,
+                                range.getStartOffset(),
+                                GrImportStatement.class,
+                                true
+                            );
+                        }
+                    });
+
+                if (brokenOff) {
+                    if (importStatement != null) {
+                        ApplicationManager.getApplication().runWriteAction(new Runnable() {
+                            @Override
+                            public void run() {
+                                importStatement.delete();
+                            }
+                        });
+                    }
+                    return;
+                }
+
+                updateRefs(usages, name, importStatement);
+
+                ApplicationManager.getApplication().runWriteAction(new Runnable() {
+                    @Override
+                    public void run() {
+                        final GrImportStatement context = PsiTreeUtil.findElementOfClassAtRange(
+                            file,
+                            contextImportPointer.getStartOffset(),
+                            contextImportPointer.getEndOffset(),
+                            GrImportStatement.class
+                        );
+                        if (context != null) {
+                            context.delete();
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+    private static void updateRefs(List<UsageInfo> usages, final String memberName, final GrImportStatement updatedImport) {
+        if (updatedImport == null) {
+            return;
+        }
+
+        final String name = ApplicationManager.getApplication().runReadAction(new Computable<String>() {
+            @Nullable
+            @Override
+            public String compute() {
+                return updatedImport.getImportedName();
+            }
+        });
+
+        for (final UsageInfo usage : usages) {
+            ApplicationManager.getApplication().runWriteAction(new Runnable() {
+                @Override
+                public void run() {
+                    final PsiElement usageElement = usage.getElement();
+                    if (usageElement == null) {
+                        return;
+                    }
+
+                    if (usageElement.getParent() instanceof GrImportStatement) {
+                        return;
+                    }
+
+                    if (usageElement instanceof GrReferenceElement) {
+                        final GrReferenceElement ref = (GrReferenceElement) usageElement;
+                        final PsiElement qualifier = ref.getQualifier();
+
+                        if (qualifier == null) {
+                            final String refName = ref.getReferenceName();
+                            if (refName == null) {
+                                return;
+                            }
+
+                            if (memberName.equals(refName)) {
+                                ref.handleElementRenameSimple(name);
+                            }
+                            else if (refName.equals(GroovyPropertyUtils.getPropertyNameByAccessorName(memberName))) {
+                                final String newPropName = GroovyPropertyUtils.getPropertyNameByAccessorName(name);
+                                if (newPropName != null) {
+                                    ref.handleElementRenameSimple(newPropName);
+                                }
+                                else {
+                                    ref.handleElementRenameSimple(name);
+                                }
+                            }
+                            else if (refName.equals(GroovyPropertyUtils.getGetterNameBoolean(memberName))) {
+                                final String getterName = GroovyPropertyUtils.getGetterNameBoolean(name);
+                                ref.handleElementRenameSimple(getterName);
+                            }
+                            else if (refName.equals(GroovyPropertyUtils.getGetterNameNonBoolean(memberName))) {
+                                final String getterName = GroovyPropertyUtils.getGetterNameNonBoolean(name);
+                                ref.handleElementRenameSimple(getterName);
+                            }
+                            else if (refName.equals(GroovyPropertyUtils.getSetterName(memberName))) {
+                                final String getterName = GroovyPropertyUtils.getSetterName(name);
+                                ref.handleElementRenameSimple(getterName);
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    }
+
+    private static List<UsageInfo> findUsages(PsiMember member, GroovyFileBase file) {
+        LocalSearchScope scope = new LocalSearchScope(file);
+
+        final ArrayList<UsageInfo> infos = new ArrayList<UsageInfo>();
+        final HashSet<Object> usedRefs = new HashSet<>();
+
+        final Processor<PsiReference> consumer = new Processor<PsiReference>() {
+            @Override
+            public boolean process(PsiReference reference) {
+                if (usedRefs.add(reference)) {
+                    infos.add(new UsageInfo(reference));
+                }
+
+                return true;
+            }
+        };
+
+        if (member instanceof PsiMethod) {
+            MethodReferencesSearch.search((PsiMethod) member, scope, false).forEach(consumer);
+        }
+        else {
+            ReferencesSearch.search(member, scope).forEach(consumer);
+            if (member instanceof PsiField) {
+                final PsiMethod getter = GroovyPropertyUtils.findGetterForField((PsiField) member);
+                if (getter != null) {
+                    MethodReferencesSearch.search(getter, scope, false).forEach(consumer);
+                }
+                final PsiMethod setter = GroovyPropertyUtils.findSetterForField((PsiField) member);
+                if (setter != null) {
+                    MethodReferencesSearch.search(setter, scope, false).forEach(consumer);
+                }
+            }
+        }
+
+        return infos;
+    }
+
+    public static LinkedHashSet<String> getSuggestedNames(
+        PsiElement psiElement,
+        final PsiElement nameSuggestionContext
+    ) {
+        final LinkedHashSet<String> result = new LinkedHashSet<String>();
+        result.add(UsageViewUtil.getShortName(psiElement));
+        final NameSuggestionProvider[] providers = Extensions.getExtensions(NameSuggestionProvider.EP_NAME);
+        for (NameSuggestionProvider provider : providers) {
+            SuggestedNameInfo info = provider.getSuggestedNames(psiElement, nameSuggestionContext, result);
+            if (info != null) {
+                if (provider instanceof PreferrableNameSuggestionProvider && !((PreferrableNameSuggestionProvider)
+                    provider).shouldCheckOthers()) {
+                    break;
+                }
+            }
+        }
+        return result;
+    }
+
+
+    @Nonnull
+    @Override
+    protected PsiElementPredicate getElementPredicate() {
+        return new PsiElementPredicate() {
+            @Override
+            public boolean satisfiedBy(PsiElement element) {
+                if (element instanceof GrReferenceExpression) {
+
+                    GroovyResolveResult result = ((GrReferenceExpression) element).advancedResolve();
+
+                    PsiElement context = result.getCurrentFileResolveContext();
+                    if (!(context instanceof GrImportStatement)) {
+                        return false;
+                    }
+
+                    GrImportStatement importStatement = (GrImportStatement) context;
+                    if (!importStatement.isStatic() || importStatement.isAliasedImport()) {
+                        return false;
+                    }
+
+                    return true;
+                }
+                else if (element instanceof GrImportStatement) {
+                    final GrImportStatement importStatement = (GrImportStatement) element;
+                    if (!importStatement.isStatic()) {
+                        return false;
+                    }
+                    if (importStatement.isOnDemand()) {
+                        return false;
+                    }
+                    if (importStatement.isAliasedImport()) {
+                        return false;
+                    }
+                    return true;
+                }
+                return false;
+            }
+        };
+    }
 }

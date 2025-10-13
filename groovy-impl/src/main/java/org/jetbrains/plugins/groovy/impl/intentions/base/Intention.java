@@ -56,20 +56,14 @@ public abstract class Intention implements IntentionAction {
         processIntention(element, project, editor);
     }
 
-    protected abstract void processIntention(
-        @Nonnull PsiElement element,
-        Project project,
-        Editor editor
-    ) throws IncorrectOperationException;
+    protected abstract void processIntention(@Nonnull PsiElement element, Project project, Editor editor)
+        throws IncorrectOperationException;
 
     @Nonnull
     protected abstract PsiElementPredicate getElementPredicate();
 
-
-    protected static void replaceExpressionWithNegatedExpressionString(
-        @Nonnull String newExpression,
-        @Nonnull GrExpression expression
-    ) throws IncorrectOperationException {
+    protected static void replaceExpressionWithNegatedExpressionString(@Nonnull String newExpression, @Nonnull GrExpression expression)
+        throws IncorrectOperationException {
         final GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(expression.getProject());
 
         GrExpression expressionToReplace = expression;
@@ -86,7 +80,6 @@ public abstract class Intention implements IntentionAction {
         assert expressionToReplace != null;
         expressionToReplace.replaceWithExpression(newCall, true);
     }
-
 
     @Nullable
     PsiElement findMatchingElement(PsiFile file, Editor editor) {

@@ -16,12 +16,13 @@
 package org.jetbrains.plugins.groovy.impl.intentions.declaration;
 
 import com.intellij.java.language.psi.PsiModifier;
+import consulo.groovy.impl.localize.GroovyIntentionLocalize;
 
 /**
  * @author Max Medvedev
  */
 public class GrMakeMemberPublicIntention extends GrChangeMemberVisibilityModifierBase {
-  public GrMakeMemberPublicIntention() {
-    super(PsiModifier.PUBLIC);
-  }
+    public GrMakeMemberPublicIntention() {
+        super(PsiModifier.PUBLIC, GroovyIntentionLocalize.grMakeMemberPublicIntentionName());
+    }
 }

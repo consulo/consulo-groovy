@@ -16,9 +16,11 @@
 package org.jetbrains.plugins.groovy.impl.intentions.control;
 
 import consulo.codeEditor.Editor;
+import consulo.groovy.impl.localize.GroovyIntentionLocalize;
 import consulo.language.psi.PsiElement;
-import consulo.project.Project;
 import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
+import consulo.project.Project;
 import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.impl.codeInspection.utils.EquivalenceChecker;
 import org.jetbrains.plugins.groovy.impl.intentions.base.Intention;
@@ -36,82 +38,104 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpres
  * @author Max Medvedev
  */
 public class ReplaceIfWithTernaryIntention extends Intention {
-  @Override
-  protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
-    final GrIfStatement ifStatement = (GrIfStatement)element.getParent();
-
-    final PsiElement thenBranch = skipBlock(ifStatement.getThenBranch());
-    final PsiElement elseBranch = skipBlock(ifStatement.getElseBranch());
-
-    if (thenBranch instanceof GrAssignmentExpression && elseBranch instanceof GrAssignmentExpression) {
-      final GrAssignmentExpression assignment = (GrAssignmentExpression)GroovyPsiElementFactory.getInstance(project).createStatementFromText("a = b ? c : d");
-
-      assignment.getLValue().replaceWithExpression(((GrAssignmentExpression)thenBranch).getLValue(), true);
-
-      final GrConditionalExpression conditional = (GrConditionalExpression)assignment.getRValue();
-      replaceConditional(conditional, ifStatement.getCondition(), ((GrAssignmentExpression)thenBranch).getRValue(), ((GrAssignmentExpression)elseBranch).getRValue());
-      ifStatement.replaceWithStatement(assignment);
+    @Nonnull
+    @Override
+    public LocalizeValue getText() {
+        return GroovyIntentionLocalize.replaceIfWithTernaryIntentionName();
     }
 
+    @Override
+    protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
+        final GrIfStatement ifStatement = (GrIfStatement) element.getParent();
 
-    if (thenBranch instanceof GrReturnStatement && elseBranch instanceof GrReturnStatement) {
-      final GrReturnStatement returnSt = (GrReturnStatement)GroovyPsiElementFactory.getInstance(project).createStatementFromText("return a ? b : c");
-      final GrConditionalExpression conditional = (GrConditionalExpression)returnSt.getReturnValue();
-      replaceConditional(conditional, ifStatement.getCondition(), ((GrReturnStatement)thenBranch).getReturnValue(), ((GrReturnStatement)elseBranch).getReturnValue());
-
-      ifStatement.replaceWithStatement(returnSt);
-    }
-  }
-
-  @SuppressWarnings("ConstantConditions")
-  private static void replaceConditional(GrConditionalExpression conditional,
-                                         GrExpression condition,
-                                         GrExpression then,
-                                         GrExpression elze) {
-    conditional.getCondition().replaceWithExpression(condition, true);
-    conditional.getThenBranch().replaceWithExpression(then, true);
-    conditional.getElseBranch().replaceWithExpression(elze, true);
-  }
-
-  @Nonnull
-  @Override
-  protected PsiElementPredicate getElementPredicate() {
-    return new PsiElementPredicate() {
-      @Override
-      public boolean satisfiedBy(PsiElement e) {
-        if (!e.getNode().getElementType().equals(GroovyTokenTypes.kIF)) return false;
-
-        final GrIfStatement ifStatement = (GrIfStatement)e.getParent();
         final PsiElement thenBranch = skipBlock(ifStatement.getThenBranch());
         final PsiElement elseBranch = skipBlock(ifStatement.getElseBranch());
 
-        if (thenBranch instanceof GrAssignmentExpression &&
-            elseBranch instanceof GrAssignmentExpression &&
-            ((GrAssignmentExpression)thenBranch).getRValue() != null &&
-            ((GrAssignmentExpression)elseBranch).getRValue() != null) {
-          final GrExpression lvalue1 = ((GrAssignmentExpression)thenBranch).getLValue();
-          final GrExpression lvalue2 = ((GrAssignmentExpression)elseBranch).getLValue();
-          return EquivalenceChecker.expressionsAreEquivalent(lvalue1, lvalue2);
+        if (thenBranch instanceof GrAssignmentExpression && elseBranch instanceof GrAssignmentExpression) {
+            final GrAssignmentExpression assignment =
+                (GrAssignmentExpression) GroovyPsiElementFactory.getInstance(project).createStatementFromText("a = b ? c : d");
+
+            assignment.getLValue().replaceWithExpression(((GrAssignmentExpression) thenBranch).getLValue(), true);
+
+            final GrConditionalExpression conditional = (GrConditionalExpression) assignment.getRValue();
+            replaceConditional(
+                conditional,
+                ifStatement.getCondition(),
+                ((GrAssignmentExpression) thenBranch).getRValue(),
+                ((GrAssignmentExpression) elseBranch).getRValue()
+            );
+            ifStatement.replaceWithStatement(assignment);
         }
 
-        if (thenBranch instanceof GrReturnStatement &&
-            elseBranch instanceof GrReturnStatement &&
-            ((GrReturnStatement)thenBranch).getReturnValue() != null &&
-            ((GrReturnStatement)elseBranch).getReturnValue() != null) {
-          return true;
+
+        if (thenBranch instanceof GrReturnStatement && elseBranch instanceof GrReturnStatement) {
+            final GrReturnStatement returnSt =
+                (GrReturnStatement) GroovyPsiElementFactory.getInstance(project).createStatementFromText("return a ? b : c");
+            final GrConditionalExpression conditional = (GrConditionalExpression) returnSt.getReturnValue();
+            replaceConditional(
+                conditional,
+                ifStatement.getCondition(),
+                ((GrReturnStatement) thenBranch).getReturnValue(),
+                ((GrReturnStatement) elseBranch).getReturnValue()
+            );
+
+            ifStatement.replaceWithStatement(returnSt);
         }
-
-        return false;
-      }
-    };
-  }
-
-  private static PsiElement skipBlock(PsiElement e) {
-    if (e instanceof GrBlockStatement && ((GrBlockStatement)e).getBlock().getStatements().length == 1) {
-      return ((GrBlockStatement)e).getBlock().getStatements()[0];
     }
-    else {
-      return e;
+
+    @SuppressWarnings("ConstantConditions")
+    private static void replaceConditional(
+        GrConditionalExpression conditional,
+        GrExpression condition,
+        GrExpression then,
+        GrExpression elze
+    ) {
+        conditional.getCondition().replaceWithExpression(condition, true);
+        conditional.getThenBranch().replaceWithExpression(then, true);
+        conditional.getElseBranch().replaceWithExpression(elze, true);
     }
-  }
+
+    @Nonnull
+    @Override
+    protected PsiElementPredicate getElementPredicate() {
+        return new PsiElementPredicate() {
+            @Override
+            public boolean satisfiedBy(PsiElement e) {
+                if (!e.getNode().getElementType().equals(GroovyTokenTypes.kIF)) {
+                    return false;
+                }
+
+                final GrIfStatement ifStatement = (GrIfStatement) e.getParent();
+                final PsiElement thenBranch = skipBlock(ifStatement.getThenBranch());
+                final PsiElement elseBranch = skipBlock(ifStatement.getElseBranch());
+
+                if (thenBranch instanceof GrAssignmentExpression &&
+                    elseBranch instanceof GrAssignmentExpression &&
+                    ((GrAssignmentExpression) thenBranch).getRValue() != null &&
+                    ((GrAssignmentExpression) elseBranch).getRValue() != null) {
+                    final GrExpression lvalue1 = ((GrAssignmentExpression) thenBranch).getLValue();
+                    final GrExpression lvalue2 = ((GrAssignmentExpression) elseBranch).getLValue();
+                    return EquivalenceChecker.expressionsAreEquivalent(lvalue1, lvalue2);
+                }
+
+                if (thenBranch instanceof GrReturnStatement &&
+                    elseBranch instanceof GrReturnStatement &&
+                    ((GrReturnStatement) thenBranch).getReturnValue() != null &&
+                    ((GrReturnStatement) elseBranch).getReturnValue() != null) {
+                    return true;
+                }
+
+                return false;
+            }
+        };
+    }
+
+    private static PsiElement skipBlock(PsiElement e) {
+        if (e instanceof GrBlockStatement && ((GrBlockStatement) e).getBlock().getStatements().length == 1) {
+            return ((GrBlockStatement) e).getBlock().getStatements()[0];
+        }
+        else {
+            return e;
+        }
+    }
 }

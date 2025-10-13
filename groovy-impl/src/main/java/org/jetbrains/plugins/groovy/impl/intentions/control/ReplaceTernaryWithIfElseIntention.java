@@ -16,13 +16,14 @@
 package org.jetbrains.plugins.groovy.impl.intentions.control;
 
 import consulo.codeEditor.Editor;
+import consulo.groovy.impl.localize.GroovyIntentionLocalize;
 import consulo.language.psi.PsiElement;
-import consulo.project.Project;
 import consulo.language.psi.util.PsiTreeUtil;
 import consulo.language.util.IncorrectOperationException;
-import jakarta.annotation.Nullable;
-
+import consulo.localize.LocalizeValue;
+import consulo.project.Project;
 import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.impl.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.impl.intentions.base.PsiElementPredicate;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
@@ -35,57 +36,61 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpres
  * @author Andreas Arledal
  */
 public class ReplaceTernaryWithIfElseIntention extends Intention {
-
-  @Override
-  protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
-
-    GrConditionalExpression parentTernary = findTernary(element);
-    GroovyPsiElementFactory groovyPsiElementFactory = GroovyPsiElementFactory.getInstance(project);
-
-    GrReturnStatement parentReturn = (GrReturnStatement)parentTernary.getParent();
-
-    String condition = parentTernary.getCondition().getText();
-    GrExpression thenBranch = parentTernary.getThenBranch();
-    String thenText = thenBranch != null ? thenBranch.getText() : "";
-
-    GrExpression elseBranch = parentTernary.getElseBranch();
-    String elseText = elseBranch != null ? elseBranch.getText() : "";
-
-    String text = "if (" + condition + ") { \nreturn " + thenText + "\n} else {\n return " + elseText + "\n}";
-    GrIfStatement ifStatement = (GrIfStatement)groovyPsiElementFactory.createStatementFromText(text);
-    ifStatement = parentReturn.replaceWithStatement(ifStatement);
-    editor.getCaretModel().moveToOffset(ifStatement.getRParenth().getTextRange().getEndOffset());
-
-
-  }
-
-  @Nonnull
-  @Override
-  protected PsiElementPredicate getElementPredicate() {
-    return new PsiElementPredicate() {
-      @Override
-      public boolean satisfiedBy(PsiElement element) {
-        GrConditionalExpression ternary = findTernary(element);
-        if (ternary == null || element == null || ternary.getThenBranch() == null || ternary.getElseBranch() == null) {
-          return false;
-        }
-        if (!(ternary.getParent() instanceof GrReturnStatement)) {
-          return false;
-        }
-        return true;
-      }
-    };
-  }
-
-  @Nullable
-  private static GrConditionalExpression findTernary(PsiElement element) {
-    GrConditionalExpression ternary = PsiTreeUtil.getParentOfType(element, GrConditionalExpression.class);
-    if (ternary == null) {
-      GrReturnStatement ret = PsiTreeUtil.getParentOfType(element, GrReturnStatement.class);
-      if (ret != null && ret.getReturnValue() instanceof GrConditionalExpression) {
-        ternary = (GrConditionalExpression)ret.getReturnValue();
-      }
+    @Nonnull
+    @Override
+    public LocalizeValue getText() {
+        return GroovyIntentionLocalize.replaceTernaryWithIfElseIntentionName();
     }
-    return ternary;
-  }
+
+    @Override
+    protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
+        GrConditionalExpression parentTernary = findTernary(element);
+        GroovyPsiElementFactory groovyPsiElementFactory = GroovyPsiElementFactory.getInstance(project);
+
+        GrReturnStatement parentReturn = (GrReturnStatement) parentTernary.getParent();
+
+        String condition = parentTernary.getCondition().getText();
+        GrExpression thenBranch = parentTernary.getThenBranch();
+        String thenText = thenBranch != null ? thenBranch.getText() : "";
+
+        GrExpression elseBranch = parentTernary.getElseBranch();
+        String elseText = elseBranch != null ? elseBranch.getText() : "";
+
+        String text = "if (" + condition + ") { \nreturn " + thenText + "\n} else {\n return " + elseText + "\n}";
+        GrIfStatement ifStatement = (GrIfStatement) groovyPsiElementFactory.createStatementFromText(text);
+        ifStatement = parentReturn.replaceWithStatement(ifStatement);
+        editor.getCaretModel().moveToOffset(ifStatement.getRParenth().getTextRange().getEndOffset());
+
+
+    }
+
+    @Nonnull
+    @Override
+    protected PsiElementPredicate getElementPredicate() {
+        return new PsiElementPredicate() {
+            @Override
+            public boolean satisfiedBy(PsiElement element) {
+                GrConditionalExpression ternary = findTernary(element);
+                if (ternary == null || element == null || ternary.getThenBranch() == null || ternary.getElseBranch() == null) {
+                    return false;
+                }
+                if (!(ternary.getParent() instanceof GrReturnStatement)) {
+                    return false;
+                }
+                return true;
+            }
+        };
+    }
+
+    @Nullable
+    private static GrConditionalExpression findTernary(PsiElement element) {
+        GrConditionalExpression ternary = PsiTreeUtil.getParentOfType(element, GrConditionalExpression.class);
+        if (ternary == null) {
+            GrReturnStatement ret = PsiTreeUtil.getParentOfType(element, GrReturnStatement.class);
+            if (ret != null && ret.getReturnValue() instanceof GrConditionalExpression) {
+                ternary = (GrConditionalExpression) ret.getReturnValue();
+            }
+        }
+        return ternary;
+    }
 }

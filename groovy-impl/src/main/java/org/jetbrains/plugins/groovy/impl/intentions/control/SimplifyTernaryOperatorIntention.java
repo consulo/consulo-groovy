@@ -15,13 +15,14 @@
  */
 package org.jetbrains.plugins.groovy.impl.intentions.control;
 
-import jakarta.annotation.Nonnull;
-
+import com.intellij.java.language.psi.PsiType;
 import consulo.codeEditor.Editor;
+import consulo.groovy.impl.localize.GroovyIntentionLocalize;
 import consulo.language.psi.PsiElement;
 import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
 import consulo.project.Project;
-import com.intellij.java.language.psi.PsiType;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.impl.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.impl.intentions.base.PsiElementPredicate;
 import org.jetbrains.plugins.groovy.intentions.utils.ParenthesesUtils;
@@ -35,110 +36,118 @@ import org.jetbrains.plugins.groovy.lang.psi.util.GroovyConstantExpressionEvalua
  * @author Oscar Toernroth
  */
 public class SimplifyTernaryOperatorIntention extends Intention {
-
-  @Override
-  protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
-    if (!(element instanceof GrConditionalExpression)) {
-      throw new IncorrectOperationException("Not invoked on a conditional");
-    }
-    GrConditionalExpression condExp = (GrConditionalExpression)element;
-    GrExpression thenBranch = condExp.getThenBranch();
-    GrExpression elseBranch = condExp.getElseBranch();
-
-    Object thenVal = GroovyConstantExpressionEvaluator.evaluate(thenBranch);
-    if (Boolean.TRUE.equals(thenVal) && elseBranch != null) {
-      // aaa ? true : bbb -> aaa || bbb
-      GrExpression conditionExp = condExp.getCondition();
-
-      String conditionExpText = getStringToPutIntoOrExpression(conditionExp);
-      String elseExpText = getStringToPutIntoOrExpression(elseBranch);
-      String newExp = conditionExpText + "||" + elseExpText;
-      manageReplace(editor, condExp, conditionExpText, newExp);
-      return;
+    @Nonnull
+    @Override
+    public LocalizeValue getText() {
+        return GroovyIntentionLocalize.simplifyTernaryOperatorIntentionName();
     }
 
-    Object elseVal = GroovyConstantExpressionEvaluator.evaluate(elseBranch);
-    if (Boolean.FALSE.equals(elseVal) && thenBranch != null) {
-      // aaa ? bbb : false -> aaa && bbb
-      GrExpression conditionExp = condExp.getCondition();
-
-      String conditionExpText = getStringToPutIntoAndExpression(conditionExp);
-      String thenExpText = getStringToPutIntoAndExpression(thenBranch);
-
-
-      String newExp = conditionExpText + "&&" + thenExpText;
-      manageReplace(editor, condExp, conditionExpText, newExp);
-    }
-  }
-
-  private static void manageReplace(Editor editor,
-                                    GrConditionalExpression condExp,
-                                    String conditionExpText, String newExp) {
-    int caretOffset = conditionExpText.length() + 2; // after operation sign
-
-    GrExpression expressionFromText = GroovyPsiElementFactory.getInstance(editor.getProject()).createExpressionFromText(newExp, condExp .getContext());
-
-    expressionFromText = (GrExpression)condExp.replace(expressionFromText);
-
-    editor.getCaretModel().moveToOffset(expressionFromText.getTextOffset() + caretOffset); // just past operation sign
-  }
-
-  /**
-   * Convert an expression into something which can be put inside ( a && b )
-   * Wrap in parenthesis, if necessary
-   *
-   * @param expression
-   * @return a string representing the expression
-   */
-  @Nonnull
-  private static String getStringToPutIntoAndExpression(GrExpression expression) {
-    String expressionText = expression.getText();
-    if (ParenthesesUtils.AND_PRECEDENCE < ParenthesesUtils.getPrecedence(expression)) {
-      expressionText = "(" + expressionText + ")";
-    }
-    return expressionText;
-  }
-
-  @Nonnull
-  private static String getStringToPutIntoOrExpression(GrExpression expression) {
-    String expressionText = expression.getText();
-    if (ParenthesesUtils.OR_PRECEDENCE < ParenthesesUtils.getPrecedence(expression)) {
-      expressionText = "(" + expressionText + ")";
-    }
-    return expressionText;
-  }
-
-  @Nonnull
-  @Override
-  protected PsiElementPredicate getElementPredicate() {
-    return new PsiElementPredicate() {
-      @Override
-      public boolean satisfiedBy(PsiElement element) {
+    @Override
+    protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
         if (!(element instanceof GrConditionalExpression)) {
-          return false;
+            throw new IncorrectOperationException("Not invoked on a conditional");
         }
-
-        GrConditionalExpression condExp = (GrConditionalExpression)element;
-        PsiType condType = condExp.getType();
-        if (condType == null || !PsiType.BOOLEAN.isConvertibleFrom(condType)) {
-          return false;
-        }
-
+        GrConditionalExpression condExp = (GrConditionalExpression) element;
         GrExpression thenBranch = condExp.getThenBranch();
         GrExpression elseBranch = condExp.getElseBranch();
 
         Object thenVal = GroovyConstantExpressionEvaluator.evaluate(thenBranch);
         if (Boolean.TRUE.equals(thenVal) && elseBranch != null) {
-          return true;
+            // aaa ? true : bbb -> aaa || bbb
+            GrExpression conditionExp = condExp.getCondition();
+
+            String conditionExpText = getStringToPutIntoOrExpression(conditionExp);
+            String elseExpText = getStringToPutIntoOrExpression(elseBranch);
+            String newExp = conditionExpText + "||" + elseExpText;
+            manageReplace(editor, condExp, conditionExpText, newExp);
+            return;
         }
 
         Object elseVal = GroovyConstantExpressionEvaluator.evaluate(elseBranch);
-        if (thenBranch != null && Boolean.FALSE.equals(elseVal)) {
-          return true;
-        }
+        if (Boolean.FALSE.equals(elseVal) && thenBranch != null) {
+            // aaa ? bbb : false -> aaa && bbb
+            GrExpression conditionExp = condExp.getCondition();
 
-        return false;
-      }
-    };
-  }
+            String conditionExpText = getStringToPutIntoAndExpression(conditionExp);
+            String thenExpText = getStringToPutIntoAndExpression(thenBranch);
+
+
+            String newExp = conditionExpText + "&&" + thenExpText;
+            manageReplace(editor, condExp, conditionExpText, newExp);
+        }
+    }
+
+    private static void manageReplace(
+        Editor editor,
+        GrConditionalExpression condExp,
+        String conditionExpText, String newExp
+    ) {
+        int caretOffset = conditionExpText.length() + 2; // after operation sign
+
+        GrExpression expressionFromText =
+            GroovyPsiElementFactory.getInstance(editor.getProject()).createExpressionFromText(newExp, condExp.getContext());
+
+        expressionFromText = (GrExpression) condExp.replace(expressionFromText);
+
+        editor.getCaretModel().moveToOffset(expressionFromText.getTextOffset() + caretOffset); // just past operation sign
+    }
+
+    /**
+     * Convert an expression into something which can be put inside ( a && b )
+     * Wrap in parenthesis, if necessary
+     *
+     * @param expression
+     * @return a string representing the expression
+     */
+    @Nonnull
+    private static String getStringToPutIntoAndExpression(GrExpression expression) {
+        String expressionText = expression.getText();
+        if (ParenthesesUtils.AND_PRECEDENCE < ParenthesesUtils.getPrecedence(expression)) {
+            expressionText = "(" + expressionText + ")";
+        }
+        return expressionText;
+    }
+
+    @Nonnull
+    private static String getStringToPutIntoOrExpression(GrExpression expression) {
+        String expressionText = expression.getText();
+        if (ParenthesesUtils.OR_PRECEDENCE < ParenthesesUtils.getPrecedence(expression)) {
+            expressionText = "(" + expressionText + ")";
+        }
+        return expressionText;
+    }
+
+    @Nonnull
+    @Override
+    protected PsiElementPredicate getElementPredicate() {
+        return new PsiElementPredicate() {
+            @Override
+            public boolean satisfiedBy(PsiElement element) {
+                if (!(element instanceof GrConditionalExpression)) {
+                    return false;
+                }
+
+                GrConditionalExpression condExp = (GrConditionalExpression) element;
+                PsiType condType = condExp.getType();
+                if (condType == null || !PsiType.BOOLEAN.isConvertibleFrom(condType)) {
+                    return false;
+                }
+
+                GrExpression thenBranch = condExp.getThenBranch();
+                GrExpression elseBranch = condExp.getElseBranch();
+
+                Object thenVal = GroovyConstantExpressionEvaluator.evaluate(thenBranch);
+                if (Boolean.TRUE.equals(thenVal) && elseBranch != null) {
+                    return true;
+                }
+
+                Object elseVal = GroovyConstantExpressionEvaluator.evaluate(elseBranch);
+                if (thenBranch != null && Boolean.FALSE.equals(elseVal)) {
+                    return true;
+                }
+
+                return false;
+            }
+        };
+    }
 }

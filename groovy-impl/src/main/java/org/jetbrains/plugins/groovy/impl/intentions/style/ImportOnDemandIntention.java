@@ -15,17 +15,18 @@
  */
 package org.jetbrains.plugins.groovy.impl.intentions.style;
 
-import jakarta.annotation.Nonnull;
-
-import consulo.codeEditor.Editor;
-import consulo.language.psi.PsiElement;
-import consulo.project.Project;
 import com.intellij.java.language.psi.PsiClass;
+import consulo.codeEditor.Editor;
+import consulo.groovy.impl.localize.GroovyIntentionLocalize;
+import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiFile;
 import consulo.language.psi.PsiReference;
 import consulo.language.psi.scope.LocalSearchScope;
 import consulo.language.psi.search.ReferencesSearch;
 import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
+import consulo.project.Project;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.impl.codeStyle.GrReferenceAdjuster;
 import org.jetbrains.plugins.groovy.impl.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.impl.intentions.base.PsiElementPredicate;
@@ -39,47 +40,66 @@ import org.jetbrains.plugins.groovy.lang.psi.api.toplevel.imports.GrImportStatem
  * @author Maxim.Medvedev
  */
 public class ImportOnDemandIntention extends Intention {
-
-  @Override
-  protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
-    if (!(element instanceof GrReferenceElement)) return;
-    final GrReferenceElement ref = (GrReferenceElement)element;
-    final PsiElement resolved = ref.resolve();
-    if (!(resolved instanceof PsiClass)) return;
-
-    final String qname = ((PsiClass)resolved).getQualifiedName();
-
-    final GrImportStatement importStatement =
-      GroovyPsiElementFactory.getInstance(project).createImportStatementFromText(qname, true, true, null);
-
-    final PsiFile containingFile = element.getContainingFile();
-    if (!(containingFile instanceof GroovyFile)) return;
-    ((GroovyFile)containingFile).addImport(importStatement);
-
-    for (PsiReference reference : ReferencesSearch.search(resolved, new LocalSearchScope(containingFile), true)) {
-      final PsiElement refElement = reference.getElement();
-      if (refElement == null) continue;
-      final PsiElement parent = refElement.getParent();
-      if (parent instanceof GrQualifiedReference<?>) {
-        GrReferenceAdjuster.shortenReference((GrQualifiedReference<?>)parent);
-      }
+    @Nonnull
+    @Override
+    public LocalizeValue getText() {
+        return GroovyIntentionLocalize.importOnDemandIntentionName();
     }
-  }
 
-  @Nonnull
-  @Override
-  protected PsiElementPredicate getElementPredicate() {
-    return new PsiElementPredicate() {
-      @Override
-      public boolean satisfiedBy(PsiElement element) {
-        if (!(element instanceof GrReferenceElement)) return false;
-        final GrReferenceElement ref = (GrReferenceElement)element;
-        final PsiElement parent = ref.getParent();
-        if (!(parent instanceof GrReferenceElement)) return false;
+    @Override
+    protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
+        if (!(element instanceof GrReferenceElement)) {
+            return;
+        }
+        final GrReferenceElement ref = (GrReferenceElement) element;
         final PsiElement resolved = ref.resolve();
-        if (resolved == null) return false;
-        return resolved instanceof PsiClass;
-      }
-    };
-  }
+        if (!(resolved instanceof PsiClass)) {
+            return;
+        }
+
+        final String qname = ((PsiClass) resolved).getQualifiedName();
+
+        final GrImportStatement importStatement =
+            GroovyPsiElementFactory.getInstance(project).createImportStatementFromText(qname, true, true, null);
+
+        final PsiFile containingFile = element.getContainingFile();
+        if (!(containingFile instanceof GroovyFile)) {
+            return;
+        }
+        ((GroovyFile) containingFile).addImport(importStatement);
+
+        for (PsiReference reference : ReferencesSearch.search(resolved, new LocalSearchScope(containingFile), true)) {
+            final PsiElement refElement = reference.getElement();
+            if (refElement == null) {
+                continue;
+            }
+            final PsiElement parent = refElement.getParent();
+            if (parent instanceof GrQualifiedReference<?>) {
+                GrReferenceAdjuster.shortenReference((GrQualifiedReference<?>) parent);
+            }
+        }
+    }
+
+    @Nonnull
+    @Override
+    protected PsiElementPredicate getElementPredicate() {
+        return new PsiElementPredicate() {
+            @Override
+            public boolean satisfiedBy(PsiElement element) {
+                if (!(element instanceof GrReferenceElement)) {
+                    return false;
+                }
+                final GrReferenceElement ref = (GrReferenceElement) element;
+                final PsiElement parent = ref.getParent();
+                if (!(parent instanceof GrReferenceElement)) {
+                    return false;
+                }
+                final PsiElement resolved = ref.resolve();
+                if (resolved == null) {
+                    return false;
+                }
+                return resolved instanceof PsiClass;
+            }
+        };
+    }
 }

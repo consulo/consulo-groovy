@@ -15,40 +15,41 @@
  */
 package org.jetbrains.plugins.groovy.impl.annotator;
 
-import jakarta.annotation.Nonnull;
-
+import consulo.codeEditor.Editor;
+import consulo.groovy.impl.localize.GroovyIntentionLocalize;
 import consulo.language.psi.PsiElement;
 import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
+import consulo.project.Project;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.impl.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.impl.intentions.base.PsiElementPredicate;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotation;
-import consulo.codeEditor.Editor;
-import consulo.project.Project;
 
 /**
- * Created by Max Medvedev on 06/02/14
+ * @author Max Medvedev
+ * @since 2014-06-02
  */
-public class GrRemoveAnnotationIntention extends Intention
-{
-	@Override
-	protected void processIntention(@Nonnull PsiElement element,
-			Project project,
-			Editor editor) throws IncorrectOperationException
-	{
-		element.delete();
-	}
+public class GrRemoveAnnotationIntention extends Intention {
+    @Nonnull
+    @Override
+    public LocalizeValue getText() {
+        return GroovyIntentionLocalize.grRemoveAnnotationIntentionName();
+    }
 
-	@Nonnull
-	@Override
-	protected PsiElementPredicate getElementPredicate()
-	{
-		return new PsiElementPredicate()
-		{
-			@Override
-			public boolean satisfiedBy(PsiElement element)
-			{
-				return element instanceof GrAnnotation;
-			}
-		};
-	}
+    @Override
+    protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
+        element.delete();
+    }
+
+    @Nonnull
+    @Override
+    protected PsiElementPredicate getElementPredicate() {
+        return new PsiElementPredicate() {
+            @Override
+            public boolean satisfiedBy(PsiElement element) {
+                return element instanceof GrAnnotation;
+            }
+        };
+    }
 }

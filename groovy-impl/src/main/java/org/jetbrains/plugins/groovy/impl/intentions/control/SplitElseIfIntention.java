@@ -15,35 +15,40 @@
  */
 package org.jetbrains.plugins.groovy.impl.intentions.control;
 
-import jakarta.annotation.Nonnull;
-
 import consulo.codeEditor.Editor;
+import consulo.groovy.impl.localize.GroovyIntentionLocalize;
+import consulo.language.psi.PsiElement;
+import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
 import consulo.project.Project;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.impl.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.impl.intentions.base.PsiElementPredicate;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrIfStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
 import org.jetbrains.plugins.groovy.lang.psi.impl.PsiImplUtil;
-import consulo.language.psi.PsiElement;
-import consulo.language.util.IncorrectOperationException;
 
-public class SplitElseIfIntention extends Intention
-{
+public class SplitElseIfIntention extends Intention {
+    @Nonnull
+    @Override
+    public LocalizeValue getText() {
+        return GroovyIntentionLocalize.splitElseIfIntentionName();
+    }
 
-	@Nonnull
-	public PsiElementPredicate getElementPredicate()
-	{
-		return new SplitElseIfPredicate();
-	}
+    @Nonnull
+    public PsiElementPredicate getElementPredicate() {
+        return new SplitElseIfPredicate();
+    }
 
-	public void processIntention(@Nonnull PsiElement element,
-			Project project,
-			Editor editor) throws IncorrectOperationException
-	{
-		final GrIfStatement parentStatement = (GrIfStatement) element;
-		final GrStatement elseBranch = parentStatement.getElseBranch();
-		PsiImplUtil.replaceStatement("if(" + parentStatement.getCondition().getText() + ")" + parentStatement
-				.getThenBranch().getText() +
-				"else{\n" + elseBranch.getText() + "\n}", parentStatement);
-	}
+    public void processIntention(
+        @Nonnull PsiElement element,
+        Project project,
+        Editor editor
+    ) throws IncorrectOperationException {
+        final GrIfStatement parentStatement = (GrIfStatement) element;
+        final GrStatement elseBranch = parentStatement.getElseBranch();
+        PsiImplUtil.replaceStatement("if(" + parentStatement.getCondition().getText() + ")" + parentStatement
+            .getThenBranch().getText() +
+            "else{\n" + elseBranch.getText() + "\n}", parentStatement);
+    }
 }

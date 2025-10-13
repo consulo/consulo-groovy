@@ -15,13 +15,13 @@
  */
 package org.jetbrains.plugins.groovy.impl.intentions.closure;
 
-import jakarta.annotation.Nonnull;
-
 import consulo.codeEditor.Editor;
-import consulo.language.util.IncorrectOperationException;
-import consulo.project.Project;
+import consulo.groovy.impl.localize.GroovyIntentionLocalize;
 import consulo.language.psi.PsiElement;
-import org.jetbrains.annotations.NonNls;
+import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
+import consulo.project.Project;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.impl.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.impl.intentions.base.PsiElementPredicate;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
@@ -35,37 +35,39 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrRefere
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.path.GrMethodCallExpression;
 
 public class ForToEachIntention extends Intention {
-
-
-  @Nonnull
-  public PsiElementPredicate getElementPredicate() {
-    return new ForToEachPredicate();
-  }
-
-  public void processIntention(@Nonnull PsiElement element, Project project, Editor editor)
-      throws IncorrectOperationException
-  {
-    final GrForStatement parentStatement =
-        (GrForStatement) element;
-    final GrForInClause clause = (GrForInClause) parentStatement.getClause();
-    final GrVariable var = clause.getDeclaredVariable();
-    final GrStatement body = parentStatement.getBody();
-    final String bodyText;
-    if (body instanceof GrBlockStatement) {
-      final String text = body.getText();
-      bodyText = text.substring(1, text.length() - 1);
-    } else {
-      bodyText = body.getText();
-
+    @Nonnull
+    @Override
+    public LocalizeValue getText() {
+        return GroovyIntentionLocalize.forToEachIntentionName();
     }
 
-    GrExpression collection = clause.getIteratedExpression();
-    assert collection != null;
-    @NonNls final String statement = "x.each{" + var.getText() + " -> " + bodyText + " }";
-    final GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(parentStatement.getProject());
-    final GrMethodCallExpression eachExpression =
-        (GrMethodCallExpression) factory.createTopElementFromText(statement);
-    ((GrReferenceExpression) eachExpression.getInvokedExpression()).getQualifierExpression().replaceWithExpression(collection, true);
-    parentStatement.replaceWithStatement(eachExpression);
-  }
+    @Nonnull
+    public PsiElementPredicate getElementPredicate() {
+        return new ForToEachPredicate();
+    }
+
+    public void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
+        final GrForStatement parentStatement = (GrForStatement) element;
+        final GrForInClause clause = (GrForInClause) parentStatement.getClause();
+        final GrVariable var = clause.getDeclaredVariable();
+        final GrStatement body = parentStatement.getBody();
+        final String bodyText;
+        if (body instanceof GrBlockStatement) {
+            final String text = body.getText();
+            bodyText = text.substring(1, text.length() - 1);
+        }
+        else {
+            bodyText = body.getText();
+
+        }
+
+        GrExpression collection = clause.getIteratedExpression();
+        assert collection != null;
+        final String statement = "x.each{" + var.getText() + " -> " + bodyText + " }";
+        final GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(parentStatement.getProject());
+        final GrMethodCallExpression eachExpression =
+            (GrMethodCallExpression) factory.createTopElementFromText(statement);
+        ((GrReferenceExpression) eachExpression.getInvokedExpression()).getQualifierExpression().replaceWithExpression(collection, true);
+        parentStatement.replaceWithStatement(eachExpression);
+    }
 }

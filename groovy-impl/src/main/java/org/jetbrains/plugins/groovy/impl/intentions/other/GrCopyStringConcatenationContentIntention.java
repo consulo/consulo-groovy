@@ -16,10 +16,12 @@
 package org.jetbrains.plugins.groovy.impl.intentions.other;
 
 import consulo.codeEditor.Editor;
+import consulo.groovy.impl.localize.GroovyIntentionLocalize;
 import consulo.language.psi.PsiElement;
+import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
 import consulo.project.Project;
 import consulo.ui.ex.awt.CopyPasteManager;
-import consulo.language.util.IncorrectOperationException;
 import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.impl.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.impl.intentions.base.PsiElementPredicate;
@@ -34,38 +36,46 @@ import java.awt.datatransfer.Transferable;
  * @author Max Medvedev
  */
 public class GrCopyStringConcatenationContentIntention extends Intention {
-  @Override
-  protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
-    final StringBuilder buffer = new StringBuilder();
-    getValue(element, buffer);
-
-    final Transferable contents = new StringSelection(buffer.toString());
-    CopyPasteManager.getInstance().setContents(contents);
-  }
-
-  private static void getValue(PsiElement element, StringBuilder buffer) {
-    if (element instanceof GrLiteral) {
-      buffer.append(((GrLiteral)element).getValue());
+    @Nonnull
+    @Override
+    public LocalizeValue getText() {
+        return GroovyIntentionLocalize.grCopyStringConcatenationContentIntentionName();
     }
-    else if (element instanceof GrBinaryExpression) {
-      getValue(((GrBinaryExpression)element).getLeftOperand(), buffer);
-      getValue(((GrBinaryExpression)element).getRightOperand(), buffer);
+
+    @Override
+    protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
+        final StringBuilder buffer = new StringBuilder();
+        getValue(element, buffer);
+
+        final Transferable contents = new StringSelection(buffer.toString());
+        CopyPasteManager.getInstance().setContents(contents);
     }
-  }
 
-  @Nonnull
-  @Override
-  protected PsiElementPredicate getElementPredicate() {
-    return new PsiElementPredicate() {
-      @Override
-      public boolean satisfiedBy(PsiElement element) {
-        if (element instanceof GrLiteral && ((GrLiteral)element).getValue() instanceof String) return true;
+    private static void getValue(PsiElement element, StringBuilder buffer) {
+        if (element instanceof GrLiteral) {
+            buffer.append(((GrLiteral) element).getValue());
+        }
+        else if (element instanceof GrBinaryExpression) {
+            getValue(((GrBinaryExpression) element).getLeftOperand(), buffer);
+            getValue(((GrBinaryExpression) element).getRightOperand(), buffer);
+        }
+    }
 
-        return element instanceof GrBinaryExpression &&
-               ((GrBinaryExpression)element).getOperationTokenType() == GroovyTokenTypes.mPLUS &&
-               satisfiedBy(((GrBinaryExpression)element).getLeftOperand()) &&
-               satisfiedBy(((GrBinaryExpression)element).getRightOperand());
-      }
-    };
-  }
+    @Nonnull
+    @Override
+    protected PsiElementPredicate getElementPredicate() {
+        return new PsiElementPredicate() {
+            @Override
+            public boolean satisfiedBy(PsiElement element) {
+                if (element instanceof GrLiteral && ((GrLiteral) element).getValue() instanceof String) {
+                    return true;
+                }
+
+                return element instanceof GrBinaryExpression &&
+                    ((GrBinaryExpression) element).getOperationTokenType() == GroovyTokenTypes.mPLUS &&
+                    satisfiedBy(((GrBinaryExpression) element).getLeftOperand()) &&
+                    satisfiedBy(((GrBinaryExpression) element).getRightOperand());
+            }
+        };
+    }
 }

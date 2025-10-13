@@ -15,12 +15,12 @@
  */
 package org.jetbrains.plugins.groovy.impl.intentions.declaration;
 
-import jakarta.annotation.Nonnull;
-
 import consulo.codeEditor.Editor;
 import consulo.language.psi.PsiElement;
 import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
 import consulo.project.Project;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.impl.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.impl.intentions.base.PsiElementPredicate;
 import org.jetbrains.plugins.groovy.lang.psi.GrNamedElement;
@@ -30,33 +30,43 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMe
  * @author Max Medvedev
  */
 public abstract class GrChangeMemberVisibilityModifierBase extends Intention {
-  private final String myModifier;
+    private final String myModifier;
+    @Nonnull
+    private final LocalizeValue myText;
 
-  public GrChangeMemberVisibilityModifierBase(String modifier) {
-    myModifier = modifier;
-  }
+    public GrChangeMemberVisibilityModifierBase(String modifier, @Nonnull LocalizeValue text) {
+        myModifier = modifier;
+        myText = text;
+    }
 
-  @Override
-  protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException
-  {
-    final PsiElement parent = element.getParent();
-    if (!(parent instanceof GrMember)) return;
+    @Nonnull
+    @Override
+    public LocalizeValue getText() {
+        return myText;
+    }
 
-    ((GrMember)parent).getModifierList().setModifierProperty(myModifier, true);
-  }
-
-  @Nonnull
-  @Override
-  protected PsiElementPredicate getElementPredicate() {
-    return new PsiElementPredicate() {
-      @Override
-      public boolean satisfiedBy(PsiElement element) {
+    @Override
+    protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
         final PsiElement parent = element.getParent();
-        return parent instanceof GrMember &&
-               parent instanceof GrNamedElement &&
-               (((GrNamedElement)parent).getNameIdentifierGroovy() == element || ((GrMember)parent).getModifierList() == element) &&
-               ((GrMember)parent).getModifierList() != null && !((GrMember)parent).getModifierList().hasExplicitModifier(myModifier);
-      }
-    };
-  }
+        if (!(parent instanceof GrMember)) {
+            return;
+        }
+
+        ((GrMember) parent).getModifierList().setModifierProperty(myModifier, true);
+    }
+
+    @Nonnull
+    @Override
+    protected PsiElementPredicate getElementPredicate() {
+        return new PsiElementPredicate() {
+            @Override
+            public boolean satisfiedBy(PsiElement element) {
+                final PsiElement parent = element.getParent();
+                return parent instanceof GrMember &&
+                    parent instanceof GrNamedElement &&
+                    (((GrNamedElement) parent).getNameIdentifierGroovy() == element || ((GrMember) parent).getModifierList() == element) &&
+                    ((GrMember) parent).getModifierList() != null && !((GrMember) parent).getModifierList().hasExplicitModifier(myModifier);
+            }
+        };
+    }
 }

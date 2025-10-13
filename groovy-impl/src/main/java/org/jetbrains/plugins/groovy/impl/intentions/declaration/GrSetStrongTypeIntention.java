@@ -21,6 +21,7 @@ import com.intellij.java.language.psi.PsiType;
 import consulo.codeEditor.Editor;
 import consulo.document.Document;
 import consulo.document.util.TextRange;
+import consulo.groovy.impl.localize.GroovyIntentionLocalize;
 import consulo.language.editor.CodeInsightUtilCore;
 import consulo.language.editor.template.Template;
 import consulo.language.editor.template.TemplateBuilder;
@@ -29,7 +30,10 @@ import consulo.language.editor.template.TemplateManager;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiManager;
 import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
 import consulo.project.Project;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.impl.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.impl.intentions.base.PsiElementPredicate;
 import org.jetbrains.plugins.groovy.impl.template.expressions.ChooseTypeExpression;
@@ -49,208 +53,218 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUt
 import org.jetbrains.plugins.groovy.lang.psi.typeEnhancers.ClosureParameterEnhancer;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
 import java.util.ArrayList;
 
 /**
  * @author Max Medvedev
  */
 public class GrSetStrongTypeIntention extends Intention {
-
-  @Override
-  protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
-    PsiElement parent = element.getParent();
-
-    PsiElement elementToBuildTemplate;
-    GrVariable[] variables;
-    if (parent instanceof GrVariable && parent.getParent() instanceof GrVariableDeclaration) {
-      variables = ((GrVariableDeclaration)parent.getParent()).getVariables();
-      elementToBuildTemplate = parent.getParent();
-    }
-    else if (parent instanceof GrVariable && parent.getParent() instanceof GrForInClause) {
-      variables = new GrVariable[]{(GrVariable)parent};
-      elementToBuildTemplate = parent.getParent().getParent();
-    }
-    else if (parent instanceof GrVariableDeclaration) {
-      variables = ((GrVariableDeclaration)parent).getVariables();
-      elementToBuildTemplate = parent;
-    }
-    else if (parent instanceof GrParameter && parent.getParent() instanceof GrParameterList) {
-      variables = new GrVariable[]{(GrVariable)parent};
-      elementToBuildTemplate = parent.getParent().getParent();
-    }
-    else if (parent instanceof GrVariable) {
-      variables = new GrVariable[]{((GrVariable)parent)};
-      elementToBuildTemplate = parent;
-    }
-    else {
-      return;
+    @Nonnull
+    @Override
+    public LocalizeValue getText() {
+        return GroovyIntentionLocalize.grSetStrongTypeIntentionName();
     }
 
-    ArrayList<TypeConstraint> types = new ArrayList<TypeConstraint>();
-
-    if (parent.getParent() instanceof GrForInClause) {
-      types.add(SupertypeConstraint.create(PsiUtil.extractIteratedType((GrForInClause)parent.getParent())));
-    }
-    else {
-      for (GrVariable variable : variables) {
-        GrExpression initializer = variable.getInitializerGroovy();
-        if (initializer != null) {
-          PsiType type = initializer.getType();
-          if (type != null) {
-            types.add(SupertypeConstraint.create(type));
-          }
-        }
-        if (variable instanceof GrParameter) {
-          final PsiParameter parameter = (PsiParameter)variable;
-          final PsiType type = getClosureParameterType(parameter);
-          if (type != null) {
-            types.add(SupertypeConstraint.create(type));
-          }
-        }
-      }
-    }
-
-    TemplateBuilder builder = TemplateBuilderFactory.getInstance().createTemplateBuilder(elementToBuildTemplate);
-    PsiManager manager = element.getManager();
-
-    PsiElement replaceElement = setType(element, parent, elementToBuildTemplate);
-    assert replaceElement != null;
-
-    TypeConstraint[] constraints = types.toArray(new TypeConstraint[types.size()]);
-    ChooseTypeExpression chooseTypeExpression = new ChooseTypeExpression(constraints, manager, replaceElement.getResolveScope());
-    builder.replaceElement(replaceElement, chooseTypeExpression);
-
-
-    final PsiElement afterPostprocess = CodeInsightUtilCore.forcePsiPostprocessAndRestoreElement(elementToBuildTemplate);
-    final Template template = builder.buildTemplate();
-    TextRange range = afterPostprocess.getTextRange();
-    Document document = editor.getDocument();
-    document.deleteString(range.getStartOffset(), range.getEndOffset());
-
-    TemplateManager templateManager = TemplateManager.getInstance(project);
-    templateManager.startTemplate(editor, template);
-  }
-
-  @Nullable
-  private static PsiType getClosureParameterType(@Nonnull PsiParameter parameter) {
-    final PsiElement scope = parameter.getDeclarationScope();
-    final PsiType type;
-    if (scope instanceof GrClosableBlock) {
-      type =
-        ClosureParameterEnhancer.inferType((GrClosableBlock)scope, ((GrParameterList)parameter.getParent()).getParameterIndex(parameter));
-    }
-    else {
-      type = null;
-    }
-    return type;
-  }
-
-  @Nullable
-  private static PsiElement setType(PsiElement element, PsiElement parent, PsiElement elementToBuildTemplate) {
-    GrModifierList modifierList = getModifierList(parent);
-
-    if (modifierList != null && modifierList.hasModifierProperty(GrModifier.DEF) && modifierList.getModifiers().length == 1) {
-      return PsiUtil.findModifierInList(modifierList, GrModifier.DEF);
-    }
-    else {
-      final PsiClassType typeToUse = TypesUtil.createType("Abc", element);
-      if (elementToBuildTemplate instanceof GrVariableDeclaration) {
-        ((GrVariableDeclaration)elementToBuildTemplate).setType(typeToUse);
-      }
-      else {
-        ((GrVariable)parent).setType(typeToUse);
-      }
-
-      return getTypeElement(parent);
-    }
-  }
-
-  @Nullable
-  private static GrTypeElement getTypeElement(PsiElement parent) {
-    if (parent instanceof GrVariable) {
-      return ((GrVariable)parent).getTypeElementGroovy();
-    }
-    else {
-      return ((GrVariableDeclaration)parent).getTypeElementGroovy();
-    }
-  }
-
-  @Nullable
-  private static GrModifierList getModifierList(PsiElement parent) {
-    GrModifierList modifierList;
-
-    if (parent instanceof GrVariable) {
-      modifierList = ((GrVariable)parent).getModifierList();
-    }
-    else {
-      modifierList = ((GrVariableDeclaration)parent).getModifierList();
-    }
-    return modifierList;
-  }
-
-  @Nonnull
-  @Override
-  protected PsiElementPredicate getElementPredicate() {
-    return new PsiElementPredicate() {
-      @Override
-      public boolean satisfiedBy(PsiElement element) {
+    @Override
+    protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
         PsiElement parent = element.getParent();
 
-        PsiElement pparent;
-        if (isNameIdentifierOfVariable(element, parent) || isModifierListOfVar(element, parent)) {
-          pparent = parent.getParent();
+        PsiElement elementToBuildTemplate;
+        GrVariable[] variables;
+        if (parent instanceof GrVariable && parent.getParent() instanceof GrVariableDeclaration) {
+            variables = ((GrVariableDeclaration) parent.getParent()).getVariables();
+            elementToBuildTemplate = parent.getParent();
         }
-        else if (isModifierListOfVarDecl(element, parent)) {
-          pparent = parent;
+        else if (parent instanceof GrVariable && parent.getParent() instanceof GrForInClause) {
+            variables = new GrVariable[]{(GrVariable) parent};
+            elementToBuildTemplate = parent.getParent().getParent();
         }
-        else {
-          return false;
+        else if (parent instanceof GrVariableDeclaration) {
+            variables = ((GrVariableDeclaration) parent).getVariables();
+            elementToBuildTemplate = parent;
         }
-
-        if (pparent instanceof GrVariableDeclaration) {
-          if (((GrVariableDeclaration)pparent).getTypeElementGroovy() != null) return false;
-
-          GrVariable[] variables = ((GrVariableDeclaration)pparent).getVariables();
-          for (GrVariable variable : variables) {
-            if (isVarDeclaredWithInitializer(variable)) return true;
-          }
+        else if (parent instanceof GrParameter && parent.getParent() instanceof GrParameterList) {
+            variables = new GrVariable[]{(GrVariable) parent};
+            elementToBuildTemplate = parent.getParent().getParent();
         }
-        else if (pparent instanceof GrForInClause) {
-          final GrVariable variable = ((GrForInClause)pparent).getDeclaredVariable();
-          return variable != null && variable.getTypeElementGroovy() == null && PsiUtil.extractIteratedType((GrForInClause)pparent) != null;
-        }
-        else if (parent instanceof GrParameter && pparent instanceof GrParameterList) {
-          return ((GrParameter)parent).getTypeElementGroovy() == null && getClosureParameterType((PsiParameter)parent) != null;
+        else if (parent instanceof GrVariable) {
+            variables = new GrVariable[]{((GrVariable) parent)};
+            elementToBuildTemplate = parent;
         }
         else {
-          final GrVariable variable = (GrVariable)parent;
-          return variable.getTypeElementGroovy() == null && isVarDeclaredWithInitializer(variable);
+            return;
         }
 
-        return false;
-      }
+        ArrayList<TypeConstraint> types = new ArrayList<TypeConstraint>();
 
-      private boolean isModifierListOfVarDecl(PsiElement element, PsiElement parent) {
-        return parent instanceof GrVariableDeclaration && ((GrVariableDeclaration)parent).getModifierList() == element;
-      }
+        if (parent.getParent() instanceof GrForInClause) {
+            types.add(SupertypeConstraint.create(PsiUtil.extractIteratedType((GrForInClause) parent.getParent())));
+        }
+        else {
+            for (GrVariable variable : variables) {
+                GrExpression initializer = variable.getInitializerGroovy();
+                if (initializer != null) {
+                    PsiType type = initializer.getType();
+                    if (type != null) {
+                        types.add(SupertypeConstraint.create(type));
+                    }
+                }
+                if (variable instanceof GrParameter) {
+                    final PsiParameter parameter = (PsiParameter) variable;
+                    final PsiType type = getClosureParameterType(parameter);
+                    if (type != null) {
+                        types.add(SupertypeConstraint.create(type));
+                    }
+                }
+            }
+        }
 
-      private boolean isModifierListOfVar(PsiElement element, PsiElement parent) {
-        return parent instanceof GrVariable && ((GrVariable)parent).getModifierList() == element;
-      }
+        TemplateBuilder builder = TemplateBuilderFactory.getInstance().createTemplateBuilder(elementToBuildTemplate);
+        PsiManager manager = element.getManager();
+
+        PsiElement replaceElement = setType(element, parent, elementToBuildTemplate);
+        assert replaceElement != null;
+
+        TypeConstraint[] constraints = types.toArray(new TypeConstraint[types.size()]);
+        ChooseTypeExpression chooseTypeExpression = new ChooseTypeExpression(constraints, manager, replaceElement.getResolveScope());
+        builder.replaceElement(replaceElement, chooseTypeExpression);
 
 
-      private boolean isNameIdentifierOfVariable(PsiElement element, PsiElement parent) {
-        return parent instanceof GrVariable &&
-          ((GrVariable)parent).getTypeElementGroovy() == null &&
-          element == ((GrVariable)parent).getNameIdentifierGroovy();
-      }
-    };
-  }
+        final PsiElement afterPostprocess = CodeInsightUtilCore.forcePsiPostprocessAndRestoreElement(elementToBuildTemplate);
+        final Template template = builder.buildTemplate();
+        TextRange range = afterPostprocess.getTextRange();
+        Document document = editor.getDocument();
+        document.deleteString(range.getStartOffset(), range.getEndOffset());
 
-  private static boolean isVarDeclaredWithInitializer(GrVariable variable) {
-    GrExpression initializer = variable.getInitializerGroovy();
-    return initializer != null && initializer.getType() != null;
-  }
+        TemplateManager templateManager = TemplateManager.getInstance(project);
+        templateManager.startTemplate(editor, template);
+    }
+
+    @Nullable
+    private static PsiType getClosureParameterType(@Nonnull PsiParameter parameter) {
+        final PsiElement scope = parameter.getDeclarationScope();
+        final PsiType type;
+        if (scope instanceof GrClosableBlock) {
+            type =
+                ClosureParameterEnhancer.inferType(
+                    (GrClosableBlock) scope,
+                    ((GrParameterList) parameter.getParent()).getParameterIndex(parameter)
+                );
+        }
+        else {
+            type = null;
+        }
+        return type;
+    }
+
+    @Nullable
+    private static PsiElement setType(PsiElement element, PsiElement parent, PsiElement elementToBuildTemplate) {
+        GrModifierList modifierList = getModifierList(parent);
+
+        if (modifierList != null && modifierList.hasModifierProperty(GrModifier.DEF) && modifierList.getModifiers().length == 1) {
+            return PsiUtil.findModifierInList(modifierList, GrModifier.DEF);
+        }
+        else {
+            final PsiClassType typeToUse = TypesUtil.createType("Abc", element);
+            if (elementToBuildTemplate instanceof GrVariableDeclaration) {
+                ((GrVariableDeclaration) elementToBuildTemplate).setType(typeToUse);
+            }
+            else {
+                ((GrVariable) parent).setType(typeToUse);
+            }
+
+            return getTypeElement(parent);
+        }
+    }
+
+    @Nullable
+    private static GrTypeElement getTypeElement(PsiElement parent) {
+        if (parent instanceof GrVariable) {
+            return ((GrVariable) parent).getTypeElementGroovy();
+        }
+        else {
+            return ((GrVariableDeclaration) parent).getTypeElementGroovy();
+        }
+    }
+
+    @Nullable
+    private static GrModifierList getModifierList(PsiElement parent) {
+        GrModifierList modifierList;
+
+        if (parent instanceof GrVariable) {
+            modifierList = ((GrVariable) parent).getModifierList();
+        }
+        else {
+            modifierList = ((GrVariableDeclaration) parent).getModifierList();
+        }
+        return modifierList;
+    }
+
+    @Nonnull
+    @Override
+    protected PsiElementPredicate getElementPredicate() {
+        return new PsiElementPredicate() {
+            @Override
+            public boolean satisfiedBy(PsiElement element) {
+                PsiElement parent = element.getParent();
+
+                PsiElement pparent;
+                if (isNameIdentifierOfVariable(element, parent) || isModifierListOfVar(element, parent)) {
+                    pparent = parent.getParent();
+                }
+                else if (isModifierListOfVarDecl(element, parent)) {
+                    pparent = parent;
+                }
+                else {
+                    return false;
+                }
+
+                if (pparent instanceof GrVariableDeclaration) {
+                    if (((GrVariableDeclaration) pparent).getTypeElementGroovy() != null) {
+                        return false;
+                    }
+
+                    GrVariable[] variables = ((GrVariableDeclaration) pparent).getVariables();
+                    for (GrVariable variable : variables) {
+                        if (isVarDeclaredWithInitializer(variable)) {
+                            return true;
+                        }
+                    }
+                }
+                else if (pparent instanceof GrForInClause) {
+                    final GrVariable variable = ((GrForInClause) pparent).getDeclaredVariable();
+                    return variable != null && variable.getTypeElementGroovy() == null && PsiUtil.extractIteratedType((GrForInClause) pparent) != null;
+                }
+                else if (parent instanceof GrParameter && pparent instanceof GrParameterList) {
+                    return ((GrParameter) parent).getTypeElementGroovy() == null && getClosureParameterType((PsiParameter) parent) != null;
+                }
+                else {
+                    final GrVariable variable = (GrVariable) parent;
+                    return variable.getTypeElementGroovy() == null && isVarDeclaredWithInitializer(variable);
+                }
+
+                return false;
+            }
+
+            private boolean isModifierListOfVarDecl(PsiElement element, PsiElement parent) {
+                return parent instanceof GrVariableDeclaration && ((GrVariableDeclaration) parent).getModifierList() == element;
+            }
+
+            private boolean isModifierListOfVar(PsiElement element, PsiElement parent) {
+                return parent instanceof GrVariable && ((GrVariable) parent).getModifierList() == element;
+            }
+
+
+            private boolean isNameIdentifierOfVariable(PsiElement element, PsiElement parent) {
+                return parent instanceof GrVariable &&
+                    ((GrVariable) parent).getTypeElementGroovy() == null &&
+                    element == ((GrVariable) parent).getNameIdentifierGroovy();
+            }
+        };
+    }
+
+    private static boolean isVarDeclaredWithInitializer(GrVariable variable) {
+        GrExpression initializer = variable.getInitializerGroovy();
+        return initializer != null && initializer.getType() != null;
+    }
 }
