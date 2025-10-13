@@ -22,7 +22,6 @@ import consulo.ide.impl.idea.openapi.vfs.VfsUtilCore;
 import consulo.language.editor.DaemonCodeAnalyzer;
 import consulo.language.editor.inspection.LocalQuickFix;
 import consulo.language.editor.inspection.ProblemDescriptor;
-import consulo.language.editor.inspection.ProblemHighlightType;
 import consulo.language.psi.PsiFile;
 import consulo.localize.LocalizeValue;
 import consulo.module.content.ProjectRootManager;
@@ -60,9 +59,10 @@ public class TypeCustomizerInspection extends BaseInspection {
             public void visitFile(GroovyFileBase file) {
                 if (!ResourceCompilerConfiguration.getInstance(file.getProject()).isResourceFile(file.getVirtualFile())) {
                     if (fileSeemsToBeTypeCustomizer(file)) {
-                        final LocalQuickFix[] fixes = {new AddToResourceFix(file)};
-                        final LocalizeValue message = GroovyInspectionLocalize.typeCustomizerIsNotMarkedAsAResourceFile();
-                        registerError(file, message, fixes, ProblemHighlightType.GENERIC_ERROR_OR_WARNING);
+                        problemsHolder.newProblem(GroovyInspectionLocalize.typeCustomizerIsNotMarkedAsAResourceFile())
+                            .range(file)
+                            .withFix(new AddToResourceFix(file))
+                            .create();
                     }
                 }
             }
@@ -70,12 +70,22 @@ public class TypeCustomizerInspection extends BaseInspection {
     }
 
 
-    private static final Set<String> CUSTOMIZER_EVENT_NAMES =
-        Set.of("setup", "finish", "unresolvedVariable", "unresolvedProperty", "unresolvedAttribute", "beforeMethodCall", "afterMethodCall",
-            "onMethodSelection", "methodNotFound", "beforeVisitMethod", "afterVisitMethod", "beforeVisitClass", "afterVisitClass",
-            "incompatibleAssignment"
-        );
-
+    private static final Set<String> CUSTOMIZER_EVENT_NAMES = Set.of(
+        "setup",
+        "finish",
+        "unresolvedVariable",
+        "unresolvedProperty",
+        "unresolvedAttribute",
+        "beforeMethodCall",
+        "afterMethodCall",
+        "onMethodSelection",
+        "methodNotFound",
+        "beforeVisitMethod",
+        "afterVisitMethod",
+        "beforeVisitClass",
+        "afterVisitClass",
+        "incompatibleAssignment"
+    );
 
     public static boolean fileSeemsToBeTypeCustomizer(@Nonnull final PsiFile file) {
         if (file instanceof GroovyFile && ((GroovyFile) file).isScript()) {

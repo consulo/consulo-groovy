@@ -19,9 +19,9 @@ import com.intellij.java.language.psi.*;
 import com.intellij.java.language.psi.util.InheritanceUtil;
 import consulo.groovy.localize.GroovyLocalize;
 import consulo.language.editor.inspection.LocalQuickFix;
-import consulo.language.editor.inspection.ProblemHighlightType;
 import consulo.language.psi.PsiElement;
 import consulo.localize.LocalizeValue;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.impl.annotator.intentions.CreateFieldFromConstructorLabelFix;
 import org.jetbrains.plugins.groovy.impl.annotator.intentions.dynamic.DynamicPropertyFix;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
@@ -36,8 +36,6 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefini
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
-
-import jakarta.annotation.Nonnull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -128,10 +126,10 @@ public class GroovyConstructorNamedArgumentsInspection extends BaseInspection {
                         final PsiType argType = ((GrExpression) nameElement).getType();
                         if (argType != null
                             && !TypesUtil.isAssignableByMethodCallConversion(
-                                TypesUtil.createType(CommonClassNames.JAVA_LANG_STRING, arg),
-                                argType,
-                                arg
-                            )) {
+                            TypesUtil.createType(CommonClassNames.JAVA_LANG_STRING, arg),
+                            argType,
+                            arg
+                        )) {
                             registerError(nameElement, GroovyLocalize.propertyNameExpected().get());
                         }
                     }
@@ -155,12 +153,10 @@ public class GroovyConstructorNamedArgumentsInspection extends BaseInspection {
                             fixes.add(new DynamicPropertyFix(label, (PsiClass) element));
                         }
 
-                        registerError(
-                            label,
-                            GroovyLocalize.noSuchProperty(label.getName()),
-                            fixes.toArray(new LocalQuickFix[fixes.size()]),
-                            ProblemHighlightType.GENERIC_ERROR_OR_WARNING
-                        );
+                        problemsHolder.newProblem(GroovyLocalize.noSuchProperty(label.getName()))
+                            .range((PsiElement) label)
+                            .withFixes(fixes.toArray(new LocalQuickFix[fixes.size()]))
+                            .create();
                     }
                 }
             }

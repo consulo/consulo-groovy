@@ -20,8 +20,6 @@ import com.intellij.java.language.psi.PsiField;
 import com.intellij.java.language.psi.PsiMethod;
 import com.intellij.java.language.psi.PsiModifier;
 import consulo.groovy.localize.GroovyLocalize;
-import consulo.language.editor.inspection.LocalQuickFix;
-import consulo.language.editor.inspection.ProblemHighlightType;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.util.PsiTreeUtil;
 import consulo.localize.LocalizeValue;
@@ -98,12 +96,9 @@ public class GrFinalVariableAccessInspection extends BaseInspection {
 
                 if (field.hasModifierProperty(FINAL)) {
                     if (!isFieldInitialized(field)) {
-                        registerError(
-                            field.getNameIdentifierGroovy(),
-                            GroovyLocalize.variable0MightNotHaveBeenInitialized(field.getName()).get(),
-                            LocalQuickFix.EMPTY_ARRAY,
-                            ProblemHighlightType.GENERIC_ERROR_OR_WARNING
-                        );
+                        problemsHolder.newProblem(GroovyLocalize.variable0MightNotHaveBeenInitialized(field.getName()))
+                            .range(field.getNameIdentifierGroovy())
+                            .create();
                     }
                 }
             }
@@ -118,12 +113,9 @@ public class GrFinalVariableAccessInspection extends BaseInspection {
 
                     final PsiClass containingClass = field.getContainingClass();
                     if (containingClass == null || !PsiTreeUtil.isAncestor(containingClass, ref, true)) {
-                        registerError(
-                            ref,
-                            GroovyLocalize.cannotAssignAValueToFinalField0(field.getName()),
-                            LocalQuickFix.EMPTY_ARRAY,
-                            ProblemHighlightType.GENERIC_ERROR_OR_WARNING
-                        );
+                        problemsHolder.newProblem(GroovyLocalize.cannotAssignAValueToFinalField0(field.getName()))
+                            .range((PsiElement) ref)
+                            .create();
                     }
                 }
             }
@@ -216,12 +208,9 @@ public class GrFinalVariableAccessInspection extends BaseInspection {
 
                 for (final ReadWriteVariableInstruction instruction : result) {
                     if (variables.containsKey(instruction.getVariableName())) {
-                        registerError(
-                            instruction.getElement(),
-                            GroovyLocalize.cannotAssignAValueToFinalField0(instruction.getVariableName()).get(),
-                            LocalQuickFix.EMPTY_ARRAY,
-                            ProblemHighlightType.GENERIC_ERROR_OR_WARNING
-                        );
+                        problemsHolder.newProblem(GroovyLocalize.cannotAssignAValueToFinalField0(instruction.getVariableName()))
+                            .range(instruction.getElement())
+                            .create();
                     }
                 }
             }

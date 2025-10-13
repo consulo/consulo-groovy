@@ -70,6 +70,8 @@ incorrect.range.argument:
     text: Incorrect range arguments
 java.style.property.access:
     text: Java-style accessor invocation
+local.var.0.is.reassigned:
+    text: Local variable ''{0}'' is reassigned
 local.var.0.is.reassigned.in.closure:
     text: Local variable {0} is reassigned in {1} with other type
 method.may.be.static:
@@ -116,6 +118,8 @@ replace.new.expression.with.0.instance:
     text: Replace with ''{0}.instance''
 replace.postfix.0.with.prefix.0:
     text: Replace postfix {0} with prefix {0}
+replace.qualified.name.with.import:
+    text: Replace qualified name with import
 resolved.type.status:
     text: Type ''{0}'' is resolved
 rtype.cannot.contain.ltype:
@@ -154,5 +158,3 @@ unused.inc.dec:
     text: Unused Incrementing or Decrementing
 unused.variable:
     text: Variable is not used
-replace.qualified.name.with.import:
-    text: Replace qualified name with import

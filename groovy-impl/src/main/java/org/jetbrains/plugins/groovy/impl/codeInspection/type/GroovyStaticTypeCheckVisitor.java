@@ -29,7 +29,6 @@ import consulo.language.psi.PsiFile;
 import consulo.language.util.IncorrectOperationException;
 import consulo.localize.LocalizeValue;
 import consulo.project.Project;
-import consulo.util.collection.ContainerUtil;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
@@ -38,10 +37,10 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrAssign
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrTupleExpression;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class GroovyStaticTypeCheckVisitor extends GroovyTypeCheckVisitor {
-
     private AnnotationHolder myHolder;
 
     public void setAnnotationHolder(@Nonnull AnnotationHolder annotationHolder) {
@@ -93,7 +92,7 @@ public class GroovyStaticTypeCheckVisitor extends GroovyTypeCheckVisitor {
         if (highlightType != ProblemHighlightType.GENERIC_ERROR) {
             return;
         }
-        final List<IntentionAction> intentions = ContainerUtil.newArrayList();
+        final List<IntentionAction> intentions = new ArrayList<>();
         if (fixes != null) {
             for (final LocalQuickFix fix : fixes) {
                 intentions.add(new IntentionAction() {

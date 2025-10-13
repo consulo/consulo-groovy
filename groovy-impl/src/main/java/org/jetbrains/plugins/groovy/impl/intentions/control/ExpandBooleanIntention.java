@@ -42,11 +42,7 @@ public class ExpandBooleanIntention extends Intention {
         return new ExpandBooleanPredicate();
     }
 
-    public void processIntention(
-        @Nonnull PsiElement element,
-        Project project,
-        Editor editor
-    ) throws IncorrectOperationException {
+    public void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
         final GrStatement containingStatement = (GrStatement) element;
         if (ExpandBooleanPredicate.isBooleanAssignment(containingStatement)) {
             final GrAssignmentExpression assignmentExpression = (GrAssignmentExpression) containingStatement;
