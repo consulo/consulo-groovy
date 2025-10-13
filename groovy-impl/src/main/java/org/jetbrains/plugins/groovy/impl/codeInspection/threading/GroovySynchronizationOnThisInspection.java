@@ -15,8 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.impl.codeInspection.threading;
 
+import consulo.localize.LocalizeValue;
 import jakarta.annotation.Nonnull;
-import org.jetbrains.annotations.Nls;
 import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
@@ -26,37 +26,35 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrRefere
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 
 public class GroovySynchronizationOnThisInspection extends BaseInspection {
-
-  @Nls
-  @Nonnull
-  public String getGroupDisplayName() {
-    return THREADING_ISSUES;
-  }
-
-  @Nls
-  @Nonnull
-  public String getDisplayName() {
-    return "Synchronization on 'this'";
-  }
-
-  @Nullable
-  protected String buildErrorString(Object... args) {
-    return "Synchronization on '#ref' #loc";
-
-  }
-
-  public BaseInspectionVisitor buildVisitor() {
-    return new Visitor();
-  }
-
-  private static class Visitor extends BaseInspectionVisitor {
-    public void visitSynchronizedStatement(GrSynchronizedStatement synchronizedStatement) {
-      super.visitSynchronizedStatement(synchronizedStatement);
-      final GrExpression lock = synchronizedStatement.getMonitor();
-      if (lock == null || !(lock instanceof GrReferenceExpression && PsiUtil.isThisReference(lock))) {
-        return;
-      }
-      registerError(lock);
+    @Nonnull
+    @Override
+    public LocalizeValue getGroupDisplayName() {
+        return THREADING_ISSUES;
     }
-  }
+
+    @Nonnull
+    @Override
+    public LocalizeValue getDisplayName() {
+        return LocalizeValue.localizeTODO("Synchronization on 'this'");
+    }
+
+    @Nullable
+    protected String buildErrorString(Object... args) {
+        return "Synchronization on '#ref' #loc";
+    }
+
+    public BaseInspectionVisitor buildVisitor() {
+        return new Visitor();
+    }
+
+    private static class Visitor extends BaseInspectionVisitor {
+        public void visitSynchronizedStatement(GrSynchronizedStatement synchronizedStatement) {
+            super.visitSynchronizedStatement(synchronizedStatement);
+            final GrExpression lock = synchronizedStatement.getMonitor();
+            if (lock == null || !(lock instanceof GrReferenceExpression && PsiUtil.isThisReference(lock))) {
+                return;
+            }
+            registerError(lock);
+        }
+    }
 }

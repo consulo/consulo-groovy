@@ -21,7 +21,7 @@ import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiFile;
 import consulo.language.psi.util.PsiTreeUtil;
 import consulo.language.util.IncorrectOperationException;
-import consulo.project.Project;
+import consulo.localize.LocalizeValue;import consulo.project.Project;
 import consulo.ui.annotation.RequiredUIAccess;
 import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
@@ -36,14 +36,8 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.clauses.GrForInClaus
 public class ReplaceDelimiterFix implements SyntheticIntentionAction {
     @Nonnull
     @Override
-    public String getText() {
-        return "Replace ':' with 'in'";
-    }
-
-    @Nonnull
-    //@Override
-    public String getFamilyName() {
-        return "Replace for-each operator";
+    public LocalizeValue getText() {
+        return LocalizeValue.localizeTODO("Replace ':' with 'in'");
     }
 
     @Override

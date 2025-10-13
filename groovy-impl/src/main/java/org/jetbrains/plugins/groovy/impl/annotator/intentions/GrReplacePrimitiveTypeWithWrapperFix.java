@@ -20,13 +20,14 @@ import com.intellij.java.language.psi.PsiPrimitiveType;
 import com.intellij.java.language.psi.PsiType;
 import com.intellij.java.language.psi.codeStyle.JavaCodeStyleManager;
 import consulo.annotation.access.RequiredReadAction;
+import consulo.groovy.impl.localize.GroovyIntentionLocalize;
 import consulo.language.editor.inspection.ProblemDescriptor;
 import consulo.language.psi.PsiElement;
 import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
 import consulo.project.Project;
 import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.impl.codeInspection.GroovyFix;
-import org.jetbrains.plugins.groovy.impl.intentions.GroovyIntentionsBundle;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeElement;
 
@@ -47,14 +48,8 @@ public class GrReplacePrimitiveTypeWithWrapperFix extends GroovyFix {
 
     @Nonnull
     @Override
-    public String getName() {
-        return GroovyIntentionsBundle.message("replace.with.wrapper", myBoxedName);
-    }
-
-    @Nonnull
-    @Override
-    public String getFamilyName() {
-        return GroovyIntentionsBundle.message("replace.primitive.type.with.wrapper");
+    public LocalizeValue getName() {
+        return GroovyIntentionLocalize.replaceWithWrapper(myBoxedName);
     }
 
     @Override

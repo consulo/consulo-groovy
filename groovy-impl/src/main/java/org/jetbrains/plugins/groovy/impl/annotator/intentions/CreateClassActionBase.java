@@ -63,9 +63,9 @@ public abstract class CreateClassActionBase extends Intention implements Synthet
 
     @Override
     @Nonnull
-    public String getText() {
+    public LocalizeValue getText() {
         String referenceName = myRefElement.getReferenceName();
-        LocalizeValue text = switch (getType()) {
+        return switch (getType()) {
             case TRAIT -> GroovyLocalize.createTrait(referenceName);
             case ENUM -> GroovyLocalize.createEnum(referenceName);
             case CLASS -> GroovyLocalize.createClassText(referenceName);
@@ -73,13 +73,6 @@ public abstract class CreateClassActionBase extends Intention implements Synthet
             case ANNOTATION -> GroovyLocalize.createAnnotationText(referenceName);
             default -> LocalizeValue.empty();
         };
-        return text.get();
-    }
-
-    @Override
-    @Nonnull
-    public String getFamilyName() {
-        return GroovyLocalize.createClassFamilyName().get();
     }
 
     @Override
@@ -161,7 +154,7 @@ public abstract class CreateClassActionBase extends Intention implements Synthet
         @Nonnull String qualifier,
         @Nonnull String name,
         @Nullable Module module,
-        @Nonnull String title
+        @Nonnull LocalizeValue title
     ) {
         CreateClassDialog dialog = new CreateClassDialog(project, title, name, qualifier, getType(), false, module) {
             @Override

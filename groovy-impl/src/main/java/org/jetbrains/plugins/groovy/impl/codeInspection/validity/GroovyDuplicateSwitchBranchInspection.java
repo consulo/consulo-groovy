@@ -16,10 +16,9 @@
 package org.jetbrains.plugins.groovy.impl.codeInspection.validity;
 
 import consulo.language.psi.PsiElement;
-import org.jetbrains.annotations.Nls;
+import consulo.localize.LocalizeValue;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
-
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.impl.codeInspection.utils.EquivalenceChecker;
@@ -32,80 +31,80 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class GroovyDuplicateSwitchBranchInspection extends BaseInspection {
-  @Override
-  public boolean isEnabledByDefault() {
-    return true;
-  }
-
-  @Nls
-  @Nonnull
-  public String getGroupDisplayName() {
-    return VALIDITY_ISSUES;
-  }
-
-  @Nls
-  @Nonnull
-  public String getDisplayName() {
-    return "Duplicate switch case";
-  }
-
-  @Nullable
-  protected String buildErrorString(Object... args) {
-    return "Duplicate switch case '#ref' #loc";
-  }
-
-  public BaseInspectionVisitor buildVisitor() {
-    return new Visitor();
-  }
-
-  private static class Visitor extends BaseInspectionVisitor {
-    public void visitSwitchStatement(GrSwitchStatement grSwitchStatement) {
-      super.visitSwitchStatement(grSwitchStatement);
-      final Set<GrExpression> duplicateExpressions = new HashSet<GrExpression>();
-      final GrCaseLabel[] labels = collectCaseLabels(grSwitchStatement);
-      for (int i = 0; i < labels.length; i++) {
-        final GrCaseLabel label1 = labels[i];
-        final GrExpression expression1 = getExpressionForCaseLabel(label1);
-        for (int j = i + 1; j < labels.length; j++) {
-          final GrCaseLabel label2 = labels[j];
-          final GrExpression expression2 = getExpressionForCaseLabel(label2);
-          if (EquivalenceChecker.expressionsAreEquivalent(expression1, expression2)) {
-            duplicateExpressions.add(expression1);
-            duplicateExpressions.add(expression2);
-          }
-        }
-      }
-      for (GrExpression duplicateExpression : duplicateExpressions) {
-        registerError(duplicateExpression);
-      }
+    @Override
+    public boolean isEnabledByDefault() {
+        return true;
     }
-  }
 
-  private static GrCaseLabel[] collectCaseLabels(final GrSwitchStatement containingStatelent) {
-    final Set<GrCaseLabel> labels = new HashSet<GrCaseLabel>();
-    final GroovyRecursiveElementVisitor visitor = new GroovyRecursiveElementVisitor() {
-      public void visitCaseLabel(GrCaseLabel grCaseLabel) {
-        super.visitCaseLabel(grCaseLabel);
-        labels.add(grCaseLabel);
-      }
-
-      public void visitSwitchStatement(GrSwitchStatement grSwitchStatement) {
-        if (containingStatelent.equals(grSwitchStatement)) {
-          super.visitSwitchStatement(grSwitchStatement);
-        }
-      }
-    };
-    containingStatelent.accept(visitor);
-    return labels.toArray(new GrCaseLabel[labels.size()]);
-  }
-
-  @Nullable
-  private static GrExpression getExpressionForCaseLabel(GrCaseLabel label) {
-    for (PsiElement child : label.getChildren()) {
-      if (child instanceof GrExpression) {
-        return (GrExpression) child;
-      }
+    @Nonnull
+    @Override
+    public LocalizeValue getGroupDisplayName() {
+        return VALIDITY_ISSUES;
     }
-    return null;
-  }
+
+    @Nonnull
+    @Override
+    public LocalizeValue getDisplayName() {
+        return LocalizeValue.localizeTODO("Duplicate switch case");
+    }
+
+    @Nullable
+    protected String buildErrorString(Object... args) {
+        return "Duplicate switch case '#ref' #loc";
+    }
+
+    public BaseInspectionVisitor buildVisitor() {
+        return new Visitor();
+    }
+
+    private static class Visitor extends BaseInspectionVisitor {
+        public void visitSwitchStatement(GrSwitchStatement grSwitchStatement) {
+            super.visitSwitchStatement(grSwitchStatement);
+            final Set<GrExpression> duplicateExpressions = new HashSet<GrExpression>();
+            final GrCaseLabel[] labels = collectCaseLabels(grSwitchStatement);
+            for (int i = 0; i < labels.length; i++) {
+                final GrCaseLabel label1 = labels[i];
+                final GrExpression expression1 = getExpressionForCaseLabel(label1);
+                for (int j = i + 1; j < labels.length; j++) {
+                    final GrCaseLabel label2 = labels[j];
+                    final GrExpression expression2 = getExpressionForCaseLabel(label2);
+                    if (EquivalenceChecker.expressionsAreEquivalent(expression1, expression2)) {
+                        duplicateExpressions.add(expression1);
+                        duplicateExpressions.add(expression2);
+                    }
+                }
+            }
+            for (GrExpression duplicateExpression : duplicateExpressions) {
+                registerError(duplicateExpression);
+            }
+        }
+    }
+
+    private static GrCaseLabel[] collectCaseLabels(final GrSwitchStatement containingStatelent) {
+        final Set<GrCaseLabel> labels = new HashSet<GrCaseLabel>();
+        final GroovyRecursiveElementVisitor visitor = new GroovyRecursiveElementVisitor() {
+            public void visitCaseLabel(GrCaseLabel grCaseLabel) {
+                super.visitCaseLabel(grCaseLabel);
+                labels.add(grCaseLabel);
+            }
+
+            public void visitSwitchStatement(GrSwitchStatement grSwitchStatement) {
+                if (containingStatelent.equals(grSwitchStatement)) {
+                    super.visitSwitchStatement(grSwitchStatement);
+                }
+            }
+        };
+        containingStatelent.accept(visitor);
+        return labels.toArray(new GrCaseLabel[labels.size()]);
+    }
+
+    @Nullable
+    private static GrExpression getExpressionForCaseLabel(GrCaseLabel label) {
+        for (PsiElement child : label.getChildren()) {
+            if (child instanceof GrExpression) {
+                return (GrExpression) child;
+            }
+        }
+        return null;
+    }
 }

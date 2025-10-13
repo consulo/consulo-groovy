@@ -17,62 +17,59 @@ package org.jetbrains.plugins.groovy.impl.codeInspection.threading;
 
 import com.intellij.java.language.psi.PsiMethod;
 import com.intellij.java.language.psi.PsiModifier;
+import consulo.localize.LocalizeValue;
 import jakarta.annotation.Nonnull;
-import org.jetbrains.annotations.Nls;
-
 import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
 
 public class GroovyUnsynchronizedMethodOverridesSynchronizedMethodInspection extends BaseInspection {
-
-  @Override
-  public boolean isEnabledByDefault() {
-    return true;
-  }
-
-  @Nls
-  @Nonnull
-  public String getGroupDisplayName() {
-    return THREADING_ISSUES;
-  }
-
-  @Nls
-  @Nonnull
-  public String getDisplayName() {
-    return "Unsynchronized method overrides synchronized method";
-  }
-
-  @Nullable
-  protected String buildErrorString(Object... args) {
-    return "Unsynchronized method '#ref' overrides a synchronized method #loc";
-
-  }
-
-  public BaseInspectionVisitor buildVisitor() {
-    return new Visitor();
-  }
-
-  private static class Visitor extends BaseInspectionVisitor {
-    public void visitMethod(GrMethod method) {
-      super.visitMethod(method);
-      if (method.isConstructor()) {
-        return;
-      }
-      if (method.hasModifierProperty(PsiModifier.SYNCHRONIZED)) {
-        return;
-      }
-      if (method.getNameIdentifier() == null) {
-        return;
-      }
-      final PsiMethod[] superMethods = method.findSuperMethods();
-      for (final PsiMethod superMethod : superMethods) {
-        if (superMethod.hasModifierProperty(PsiModifier.SYNCHRONIZED)) {
-          registerMethodError(method);
-          return;
-        }
-      }
+    @Override
+    public boolean isEnabledByDefault() {
+        return true;
     }
-  }
+
+    @Nonnull
+    @Override
+    public LocalizeValue getGroupDisplayName() {
+        return THREADING_ISSUES;
+    }
+
+    @Nonnull
+    @Override
+    public LocalizeValue getDisplayName() {
+        return LocalizeValue.localizeTODO("Unsynchronized method overrides synchronized method");
+    }
+
+    @Nullable
+    protected String buildErrorString(Object... args) {
+        return "Unsynchronized method '#ref' overrides a synchronized method #loc";
+    }
+
+    public BaseInspectionVisitor buildVisitor() {
+        return new Visitor();
+    }
+
+    private static class Visitor extends BaseInspectionVisitor {
+        public void visitMethod(GrMethod method) {
+            super.visitMethod(method);
+            if (method.isConstructor()) {
+                return;
+            }
+            if (method.hasModifierProperty(PsiModifier.SYNCHRONIZED)) {
+                return;
+            }
+            if (method.getNameIdentifier() == null) {
+                return;
+            }
+            final PsiMethod[] superMethods = method.findSuperMethods();
+            for (final PsiMethod superMethod : superMethods) {
+                if (superMethod.hasModifierProperty(PsiModifier.SYNCHRONIZED)) {
+                    registerMethodError(method);
+                    return;
+                }
+            }
+        }
+    }
 }

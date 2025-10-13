@@ -20,9 +20,8 @@ import com.intellij.java.language.psi.PsiClass;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.codeEditor.Editor;
 import consulo.codeEditor.EditorPopupHelper;
-import consulo.groovy.localize.GroovyLocalize;
 import consulo.ide.impl.ui.impl.PopupChooserBuilder;
-import consulo.java.analysis.impl.JavaQuickFixBundle;
+import consulo.java.analysis.impl.localize.JavaQuickFixLocalize;
 import consulo.language.editor.intention.SyntheticIntentionAction;
 import consulo.language.editor.ui.PsiElementListCellRenderer;
 import consulo.language.psi.PsiElement;
@@ -55,12 +54,6 @@ public abstract class GrCreateFromUsageBaseFix extends Intention implements Synt
 
     public GrCreateFromUsageBaseFix(@Nonnull GrReferenceExpression refExpression) {
         myRefExpression = SmartPointerManager.getInstance(refExpression.getProject()).createSmartPsiElementPointer(refExpression);
-    }
-
-    @Override
-    @Nonnull
-    public String getFamilyName() {
-        return GroovyLocalize.createFromUsageFamilyName().get();
     }
 
     @RequiredReadAction
@@ -123,12 +116,12 @@ public abstract class GrCreateFromUsageBaseFix extends Intention implements Synt
             CommandProcessor.getInstance().executeCommand(
                 project,
                 () -> aClass.getApplication().runWriteAction(() -> invokeImpl(project, aClass)),
-                getText(),
+                getText().get(),
                 null
             );
         };
 
-        JBPopup popup = builder.setTitle(JavaQuickFixBundle.message("target.class.chooser.title"))
+        JBPopup popup = builder.setTitle(JavaQuickFixLocalize.targetClassChooserTitle().get())
             .setItemChoosenCallback(runnable)
             .createPopup();
 

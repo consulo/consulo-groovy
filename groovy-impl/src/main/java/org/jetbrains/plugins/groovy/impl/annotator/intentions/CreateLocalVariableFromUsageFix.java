@@ -33,6 +33,7 @@ import consulo.language.psi.PsiFile;
 import consulo.language.psi.PsiManager;
 import consulo.language.psi.scope.GlobalSearchScope;
 import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
 import consulo.navigation.OpenFileDescriptor;
 import consulo.navigation.OpenFileDescriptorFactory;
 import consulo.project.Project;
@@ -65,13 +66,8 @@ public class CreateLocalVariableFromUsageFix implements SyntheticIntentionAction
 
     @Nonnull
     @Override
-    public String getText() {
-        return GroovyLocalize.createVariableFromUsage(myRefExpression.getReferenceName()).get();
-    }
-
-    @Nonnull
-    public String getFamilyName() {
-        return GroovyLocalize.createFromUsageFamilyName().get();
+    public LocalizeValue getText() {
+        return GroovyLocalize.createVariableFromUsage(myRefExpression.getReferenceName());
     }
 
     @Override

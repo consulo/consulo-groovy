@@ -20,8 +20,9 @@ import com.intellij.java.language.psi.PsiLiteralExpression;
 import com.intellij.java.language.psi.PsiVariable;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiReference;
+import consulo.localize.LocalizeValue;
+import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
-import org.jetbrains.annotations.Nls;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrSynchronizedStatement;
@@ -30,68 +31,63 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpres
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.literals.GrLiteral;
 
-import jakarta.annotation.Nonnull;
-
 public class GroovySynchronizationOnVariableInitializedWithLiteralInspection extends BaseInspection {
-  @Override
-  public boolean isEnabledByDefault() {
-    return true;
-  }
-
-  @Nls
-  @Nonnull
-  public String getGroupDisplayName() {
-    return THREADING_ISSUES;
-  }
-
-  @Nls
-  @Nonnull
-  public String getDisplayName() {
-    return "Synchronization on variable initialized with literal";
-  }
-
-  @Nullable
-  protected String buildErrorString(Object... args) {
-    return "Synchronization on variable '#ref', which was initialized with a literal #loc";
-
-  }
-
-  public BaseInspectionVisitor buildVisitor() {
-    return new Visitor();
-  }
-
-  private static class Visitor extends BaseInspectionVisitor {
-    public void visitSynchronizedStatement(GrSynchronizedStatement synchronizedStatement) {
-      super.visitSynchronizedStatement(synchronizedStatement);
-      final GrExpression lock = synchronizedStatement.getMonitor();
-      if (lock == null || !(lock instanceof GrReferenceExpression)) {
-        return;
-      }
-      final PsiElement referent = ((PsiReference)lock).resolve();
-      if (referent instanceof GrVariable) {
-        final GrVariable variable = (GrVariable)referent;
-        final GrExpression initializer = variable.getInitializerGroovy();
-        if (initializer == null) {
-          return;
-        }
-        if (!(initializer instanceof GrLiteral)) {
-          return;
-        }
-        registerError(lock);
-      }
-      else if (referent instanceof PsiVariable) {
-        final PsiVariable variable = (PsiVariable)referent;
-        final PsiExpression initializer = variable.getInitializer();
-        if (initializer == null) {
-          return;
-        }
-        if (!(initializer instanceof PsiLiteralExpression)) {
-          return;
-        }
-        registerError(lock);
-      }
+    @Override
+    public boolean isEnabledByDefault() {
+        return true;
     }
 
-  }
+    @Nonnull
+    @Override
+    public LocalizeValue getGroupDisplayName() {
+        return THREADING_ISSUES;
+    }
 
+    @Nonnull
+    @Override
+    public LocalizeValue getDisplayName() {
+        return LocalizeValue.localizeTODO("Synchronization on variable initialized with literal");
+    }
+
+    @Nullable
+    protected String buildErrorString(Object... args) {
+        return "Synchronization on variable '#ref', which was initialized with a literal #loc";
+    }
+
+    public BaseInspectionVisitor buildVisitor() {
+        return new Visitor();
+    }
+
+    private static class Visitor extends BaseInspectionVisitor {
+        public void visitSynchronizedStatement(GrSynchronizedStatement synchronizedStatement) {
+            super.visitSynchronizedStatement(synchronizedStatement);
+            final GrExpression lock = synchronizedStatement.getMonitor();
+            if (lock == null || !(lock instanceof GrReferenceExpression)) {
+                return;
+            }
+            final PsiElement referent = ((PsiReference) lock).resolve();
+            if (referent instanceof GrVariable) {
+                final GrVariable variable = (GrVariable) referent;
+                final GrExpression initializer = variable.getInitializerGroovy();
+                if (initializer == null) {
+                    return;
+                }
+                if (!(initializer instanceof GrLiteral)) {
+                    return;
+                }
+                registerError(lock);
+            }
+            else if (referent instanceof PsiVariable) {
+                final PsiVariable variable = (PsiVariable) referent;
+                final PsiExpression initializer = variable.getInitializer();
+                if (initializer == null) {
+                    return;
+                }
+                if (!(initializer instanceof PsiLiteralExpression)) {
+                    return;
+                }
+                registerError(lock);
+            }
+        }
+    }
 }

@@ -13,15 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.impl.intentions;
 
+import consulo.annotation.DeprecationInfo;
+import consulo.annotation.internal.MigratedExtensionsTo;
 import consulo.component.util.localize.AbstractBundle;
+import consulo.groovy.impl.localize.GroovyIntentionLocalize;
 import org.jetbrains.annotations.PropertyKey;
 
 /**
  * @author ilyas
  */
+@Deprecated
+@DeprecationInfo("Replace with GroovyIntentionLocalize")
+@MigratedExtensionsTo(GroovyIntentionLocalize.class)
 public class GroovyIntentionsBundle extends AbstractBundle
 {
 	private static final GroovyIntentionsBundle ourInstance = new GroovyIntentionsBundle();

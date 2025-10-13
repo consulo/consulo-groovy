@@ -17,6 +17,7 @@ package org.jetbrains.plugins.groovy.impl.annotator.intentions;
 
 import com.intellij.java.impl.codeInsight.PackageUtil;
 import com.intellij.java.impl.refactoring.util.RefactoringMessageUtil;
+import consulo.groovy.impl.localize.GroovyIntentionLocalize;
 import consulo.language.editor.inspection.LocalQuickFix;
 import consulo.language.editor.inspection.ProblemDescriptor;
 import consulo.language.editor.refactoring.move.fileOrDirectory.MoveFilesOrDirectoriesProcessor;
@@ -24,6 +25,7 @@ import consulo.language.psi.PsiDirectory;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiFile;
 import consulo.language.util.ModuleUtilCore;
+import consulo.localize.LocalizeValue;
 import consulo.module.Module;
 import consulo.platform.base.localize.CommonLocalize;
 import consulo.project.Project;
@@ -33,7 +35,6 @@ import consulo.ui.ex.awt.UIUtil;
 import consulo.util.lang.StringUtil;
 import consulo.virtualFileSystem.VirtualFile;
 import jakarta.annotation.Nonnull;
-import org.jetbrains.plugins.groovy.impl.intentions.GroovyIntentionsBundle;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 
 /**
@@ -48,15 +49,9 @@ public class GrMoveToDirFix implements LocalQuickFix {
 
     @Nonnull
     @Override
-    public String getName() {
+    public LocalizeValue getName() {
         String packName = StringUtil.isEmptyOrSpaces(myPackageName) ? "default package" : myPackageName;
-        return GroovyIntentionsBundle.message("move.to.correct.dir", packName);
-    }
-
-    @Nonnull
-    @Override
-    public String getFamilyName() {
-        return GroovyIntentionsBundle.message("move.to.correct.dir.family.name");
+        return GroovyIntentionLocalize.moveToCorrectDir(packName);
     }
 
     @Override

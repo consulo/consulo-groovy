@@ -21,6 +21,7 @@ import com.intellij.java.language.psi.PsiModifier;
 import consulo.annotation.component.ExtensionImpl;
 import consulo.language.editor.inspection.InspectionToolState;
 import consulo.language.psi.PsiElement;
+import consulo.localize.LocalizeValue;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
@@ -39,138 +40,133 @@ import jakarta.annotation.Nonnull;
 
 @ExtensionImpl
 public class GroovyWhileLoopSpinsOnFieldInspection extends BaseInspection<GroovyWhileLoopSpinsOnFieldInspectionState> {
-
-  @Nonnull
-  @Override
-  public InspectionToolState<GroovyWhileLoopSpinsOnFieldInspectionState> createStateProvider() {
-    return new GroovyWhileLoopSpinsOnFieldInspectionState();
-  }
-
-  @Nls
-  @Nonnull
-  public String getGroupDisplayName() {
-    return THREADING_ISSUES;
-  }
-
-  @Nonnull
-  public String getDisplayName() {
-    return "While loop spins on field";
-  }
-
-  @Nonnull
-  protected String buildErrorString(Object... infos) {
-    return "<code>#ref</code> loop spins on field #loc";
-  }
-
-  @Nonnull
-  public BaseInspectionVisitor<GroovyWhileLoopSpinsOnFieldInspectionState> buildVisitor() {
-    return new WhileLoopSpinsOnFieldVisitor();
-  }
-
-  private class WhileLoopSpinsOnFieldVisitor extends BaseInspectionVisitor<GroovyWhileLoopSpinsOnFieldInspectionState> {
-
-    public void visitWhileStatement(@Nonnull GrWhileStatement statement) {
-      super.visitWhileStatement(statement);
-      final GrStatement body = statement.getBody();
-      if (myState.ignoreNonEmtpyLoops && !statementIsEmpty(body)) {
-        return;
-      }
-      final GrCondition condition = statement.getCondition();
-      if (!(condition instanceof GrExpression)) {
-        return;
-      }
-      if (!isSimpleFieldComparison((GrExpression) condition)) {
-        return;
-      }
-      registerStatementError(statement);
+    @Nonnull
+    @Override
+    public InspectionToolState<GroovyWhileLoopSpinsOnFieldInspectionState> createStateProvider() {
+        return new GroovyWhileLoopSpinsOnFieldInspectionState();
     }
 
-    private boolean isSimpleFieldComparison(GrExpression condition) {
-      condition = (GrExpression)PsiUtil.skipParentheses(condition, false);
-      if (condition == null) {
-        return false;
-      }
-      if (isSimpleFieldAccess(condition)) {
-        return true;
-      }
+    @Nonnull
+    @Override
+    public LocalizeValue getGroupDisplayName() {
+        return THREADING_ISSUES;
+    }
 
-      if (condition instanceof GrUnaryExpression && ((GrUnaryExpression)condition).isPostfix()) {
-        final GrUnaryExpression postfixExpression = (GrUnaryExpression) condition;
-        final GrExpression operand =
-            postfixExpression.getOperand();
-        return isSimpleFieldComparison(operand);
-      }
-      if (condition instanceof GrUnaryExpression) {
-        final GrUnaryExpression unaryExpression =
-            (GrUnaryExpression) condition;
-        final GrExpression operand =
-            unaryExpression.getOperand();
-        return isSimpleFieldComparison(operand);
-      }
-      if (condition instanceof GrBinaryExpression) {
-        final GrBinaryExpression binaryExpression =
-            (GrBinaryExpression) condition;
-        final GrExpression lOperand = binaryExpression.getLeftOperand();
-        final GrExpression rOperand = binaryExpression.getRightOperand();
-        if (isLiteral(rOperand)) {
-          return isSimpleFieldComparison(lOperand);
-        } else if (isLiteral(lOperand)) {
-          return isSimpleFieldComparison(rOperand);
-        } else {
-          return false;
+    @Nonnull
+    @Override
+    public LocalizeValue getDisplayName() {
+        return LocalizeValue.localizeTODO("While loop spins on field");
+    }
+
+    @Nonnull
+    protected String buildErrorString(Object... infos) {
+        return "<code>#ref</code> loop spins on field #loc";
+    }
+
+    @Nonnull
+    public BaseInspectionVisitor<GroovyWhileLoopSpinsOnFieldInspectionState> buildVisitor() {
+        return new WhileLoopSpinsOnFieldVisitor();
+    }
+
+    private class WhileLoopSpinsOnFieldVisitor extends BaseInspectionVisitor<GroovyWhileLoopSpinsOnFieldInspectionState> {
+
+        public void visitWhileStatement(@Nonnull GrWhileStatement statement) {
+            super.visitWhileStatement(statement);
+            final GrStatement body = statement.getBody();
+            if (myState.ignoreNonEmtpyLoops && !statementIsEmpty(body)) {
+                return;
+            }
+            final GrCondition condition = statement.getCondition();
+            if (!(condition instanceof GrExpression)) {
+                return;
+            }
+            if (!isSimpleFieldComparison((GrExpression) condition)) {
+                return;
+            }
+            registerStatementError(statement);
         }
-      }
-      return false;
-    }
 
-    private boolean isLiteral(GrExpression expression) {
-      expression = (GrExpression)PsiUtil.skipParentheses(expression, false);
-      if (expression == null) {
-        return false;
-      }
-      return expression instanceof PsiLiteralExpression;
-    }
+        private boolean isSimpleFieldComparison(GrExpression condition) {
+            condition = (GrExpression) PsiUtil.skipParentheses(condition, false);
+            if (condition == null) {
+                return false;
+            }
+            if (isSimpleFieldAccess(condition)) {
+                return true;
+            }
 
-    private boolean isSimpleFieldAccess(GrExpression expression) {
-      expression = (GrExpression)PsiUtil.skipParentheses(expression, false);
-      if (expression == null) {
-        return false;
-      }
-      if (!(expression instanceof GrReferenceExpression)) {
-        return false;
-      }
-      final GrReferenceExpression reference =
-          (GrReferenceExpression) expression;
-      final GrExpression qualifierExpression =
-          reference.getQualifierExpression();
-      if (qualifierExpression != null) {
-        return false;
-      }
-      final PsiElement referent = reference.resolve();
-      if (!(referent instanceof PsiField)) {
-        return false;
-      }
-      final PsiField field = (PsiField) referent;
-      return !field.hasModifierProperty(PsiModifier.VOLATILE);
-    }
-
-    private boolean statementIsEmpty(GrStatement statement) {
-      if (statement == null) {
-        return false;
-      }
-      if (statement instanceof GrBlockStatement) {
-        final GrBlockStatement blockStatement =
-            (GrBlockStatement) statement;
-        final GrOpenBlock codeBlock = blockStatement.getBlock();
-        final GrStatement[] codeBlockStatements = codeBlock.getStatements();
-        for (GrStatement codeBlockStatement : codeBlockStatements) {
-          if (!statementIsEmpty(codeBlockStatement)) {
+            if (condition instanceof GrUnaryExpression && ((GrUnaryExpression) condition).isPostfix()) {
+                final GrUnaryExpression postfixExpression = (GrUnaryExpression) condition;
+                final GrExpression operand = postfixExpression.getOperand();
+                return isSimpleFieldComparison(operand);
+            }
+            if (condition instanceof GrUnaryExpression) {
+                final GrUnaryExpression unaryExpression = (GrUnaryExpression) condition;
+                final GrExpression operand = unaryExpression.getOperand();
+                return isSimpleFieldComparison(operand);
+            }
+            if (condition instanceof GrBinaryExpression) {
+                final GrBinaryExpression binaryExpression = (GrBinaryExpression) condition;
+                final GrExpression lOperand = binaryExpression.getLeftOperand();
+                final GrExpression rOperand = binaryExpression.getRightOperand();
+                if (isLiteral(rOperand)) {
+                    return isSimpleFieldComparison(lOperand);
+                }
+                else if (isLiteral(lOperand)) {
+                    return isSimpleFieldComparison(rOperand);
+                }
+                else {
+                    return false;
+                }
+            }
             return false;
-          }
         }
-        return true;
-      }
-      return false;
+
+        private boolean isLiteral(GrExpression expression) {
+            expression = (GrExpression) PsiUtil.skipParentheses(expression, false);
+            if (expression == null) {
+                return false;
+            }
+            return expression instanceof PsiLiteralExpression;
+        }
+
+        private boolean isSimpleFieldAccess(GrExpression expression) {
+            expression = (GrExpression) PsiUtil.skipParentheses(expression, false);
+            if (expression == null) {
+                return false;
+            }
+            if (!(expression instanceof GrReferenceExpression)) {
+                return false;
+            }
+            final GrReferenceExpression reference = (GrReferenceExpression) expression;
+            final GrExpression qualifierExpression = reference.getQualifierExpression();
+            if (qualifierExpression != null) {
+                return false;
+            }
+            final PsiElement referent = reference.resolve();
+            if (!(referent instanceof PsiField)) {
+                return false;
+            }
+            final PsiField field = (PsiField) referent;
+            return !field.hasModifierProperty(PsiModifier.VOLATILE);
+        }
+
+        private boolean statementIsEmpty(GrStatement statement) {
+            if (statement == null) {
+                return false;
+            }
+            if (statement instanceof GrBlockStatement) {
+                final GrBlockStatement blockStatement = (GrBlockStatement) statement;
+                final GrOpenBlock codeBlock = blockStatement.getBlock();
+                final GrStatement[] codeBlockStatements = codeBlock.getStatements();
+                for (GrStatement codeBlockStatement : codeBlockStatements) {
+                    if (!statementIsEmpty(codeBlockStatement)) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+            return false;
+        }
     }
-  }
 }

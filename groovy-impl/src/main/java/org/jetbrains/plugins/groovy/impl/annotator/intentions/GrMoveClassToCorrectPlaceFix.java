@@ -22,7 +22,7 @@ import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiFile;
 import consulo.language.psi.util.PsiTreeUtil;
 import consulo.language.util.IncorrectOperationException;
-import consulo.project.Project;
+import consulo.localize.LocalizeValue;import consulo.project.Project;
 import consulo.ui.annotation.RequiredUIAccess;
 import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
@@ -41,13 +41,8 @@ public class GrMoveClassToCorrectPlaceFix implements SyntheticIntentionAction {
 
     @Nonnull
     @Override
-    public String getText() {
-        return GroovyLocalize.moveClass0FromMethod(myClass.getName()).get();
-    }
-
-    @Nonnull
-    public String getFamilyName() {
-        return GroovyLocalize.moveClassFromMethodFamilyName().get();
+    public LocalizeValue getText() {
+        return GroovyLocalize.moveClass0FromMethod(myClass.getName());
     }
 
     @Override

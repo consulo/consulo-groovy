@@ -28,7 +28,7 @@ import consulo.application.progress.ProgressManager;
 import consulo.codeEditor.Editor;
 import consulo.dataContext.DataContext;
 import consulo.ide.impl.ui.impl.PopupChooserBuilder;
-import consulo.java.analysis.impl.JavaQuickFixBundle;
+import consulo.java.analysis.impl.localize.JavaQuickFixLocalize;
 import consulo.language.editor.FileModificationService;
 import consulo.language.editor.intention.SyntheticIntentionAction;
 import consulo.language.psi.PsiFile;
@@ -36,6 +36,7 @@ import consulo.language.psi.SmartPointerManager;
 import consulo.language.psi.SmartPsiElementPointer;
 import consulo.language.psi.scope.GlobalSearchScope;
 import consulo.language.util.proximity.PsiProximityComparator;
+import consulo.localize.LocalizeValue;
 import consulo.project.Project;
 import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.ex.awt.JBList;
@@ -68,7 +69,7 @@ public class GroovyStaticImportMethodFix implements SyntheticIntentionAction {
     @Nonnull
     @Override
     @RequiredReadAction
-    public String getText() {
+    public LocalizeValue getText() {
         String text = "Static Import Method";
         if (getCandidates().size() == 1) {
             final int options = PsiFormatUtil.SHOW_NAME | PsiFormatUtil.SHOW_CONTAINING_CLASS | PsiFormatUtil.SHOW_FQ_NAME;
@@ -77,13 +78,7 @@ public class GroovyStaticImportMethodFix implements SyntheticIntentionAction {
         else {
             text += "...";
         }
-        return text;
-    }
-
-    @Nonnull
-    @RequiredReadAction
-    public String getFamilyName() {
-        return getText();
+        return LocalizeValue.localizeTODO(text);
     }
 
     @Nullable
@@ -173,7 +168,7 @@ public class GroovyStaticImportMethodFix implements SyntheticIntentionAction {
                     getMethodExpression(element).bindToElementViaStaticImport(toImport);
                 }
             }),
-            getText(),
+            getText().get(),
             this
         );
     }
@@ -184,7 +179,7 @@ public class GroovyStaticImportMethodFix implements SyntheticIntentionAction {
         final JList<PsiMethod> list = new JBList<>(getCandidates());
         list.setCellRenderer(new MethodCellRenderer(true));
         new PopupChooserBuilder(list)
-            .setTitle(JavaQuickFixBundle.message("static.import.method.choose.method.to.import"))
+            .setTitle(JavaQuickFixLocalize.staticImportMethodChooseMethodToImport().get())
             .setMovable(true)
             .setItemChoosenCallback(() -> {
                 PsiMethod selectedValue = list.getSelectedValue();

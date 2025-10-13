@@ -15,39 +15,34 @@
  */
 package org.jetbrains.plugins.groovy.impl.annotator.inspections;
 
-import jakarta.annotation.Nonnull;
-
+import consulo.groovy.impl.localize.GroovyInspectionLocalize;
 import consulo.language.editor.inspection.LocalQuickFix;
 import consulo.language.editor.inspection.ProblemDescriptor;
-import consulo.project.Project;
 import consulo.language.psi.PsiElement;
-import org.jetbrains.plugins.groovy.impl.codeInspection.GroovyInspectionBundle;
+import consulo.localize.LocalizeValue;
+import consulo.project.Project;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
 
 /**
- * User: Dmitry.Krasilschikov
- * Date: 13.11.2007
+ * @author Dmitry.Krasilschikov
+ * @since 2007-11-13
  */
-public class SecondUnsafeCallQuickFix implements LocalQuickFix
-{
+public class SecondUnsafeCallQuickFix implements LocalQuickFix {
+    @Nonnull
+    public LocalizeValue getName() {
+        return GroovyInspectionLocalize.secondUnsafeCall();
+    }
 
-  @Nonnull
-  public String getName() {
-    return GroovyInspectionBundle.message("second.unsafe.call");
-  }
+    public void applyFix(@Nonnull Project project, @Nonnull ProblemDescriptor descriptor) {
+        final PsiElement element = descriptor.getPsiElement();
+        if (!(element instanceof GrReferenceExpression)) {
+            return;
+        }
 
-  @Nonnull
-  public String getFamilyName() {
-    return GroovyInspectionBundle.message("second.unsafe.call");
-  }
-
-  public void applyFix(@Nonnull Project project, @Nonnull ProblemDescriptor descriptor) {
-    final PsiElement element = descriptor.getPsiElement();
-    if (!(element instanceof GrReferenceExpression)) return;
-
-    final PsiElement newDot = GroovyPsiElementFactory.getInstance(project).createDotToken(GroovyTokenTypes.mOPTIONAL_DOT.toString());
-    ((GrReferenceExpression) element).replaceDotToken(newDot);
-  }
+        final PsiElement newDot = GroovyPsiElementFactory.getInstance(project).createDotToken(GroovyTokenTypes.mOPTIONAL_DOT.toString());
+        ((GrReferenceExpression) element).replaceDotToken(newDot);
+    }
 }

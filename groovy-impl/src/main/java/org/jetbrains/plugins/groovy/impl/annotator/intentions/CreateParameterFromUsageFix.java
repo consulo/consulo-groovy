@@ -30,7 +30,7 @@ import consulo.language.editor.refactoring.localize.RefactoringLocalize;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.util.PsiTreeUtil;
 import consulo.language.util.IncorrectOperationException;
-import consulo.project.Project;
+import consulo.localize.LocalizeValue;import consulo.project.Project;
 import consulo.ui.ex.popup.JBPopup;
 import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.impl.intentions.base.Intention;
@@ -63,14 +63,8 @@ public class CreateParameterFromUsageFix extends Intention implements SyntheticI
 
     @Nonnull
     @Override
-    public String getText() {
-        return GroovyLocalize.createParameterFromUsage(myName).get();
-    }
-
-    @Nonnull
-    @Override
-    public String getFamilyName() {
-        return GroovyLocalize.createFromUsageFamilyName().get();
+    public LocalizeValue getText() {
+        return GroovyLocalize.createParameterFromUsage(myName);
     }
 
     @Override

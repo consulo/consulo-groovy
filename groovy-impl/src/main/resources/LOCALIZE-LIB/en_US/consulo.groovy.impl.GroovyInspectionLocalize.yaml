@@ -38,6 +38,8 @@ dynamic.element:
     text: Dynamic Element
 dynamic.property:
     text: Dynamic property
+expected.type.0:
+    text: Expected ''{0}'', found ''{1}''
 field.already.defined:
     text: Variables with field names
 fix.class:
@@ -80,6 +82,8 @@ method.may.be.static.only.private.or.final.option:
     text: Only check final or private methods
 new.instance.of.singleton:
     text: New instance of class annotated with @groovy.lang.Singleton
+no.applicable.signature.found:
+    text: No applicable signature found
 no.return.display.name:
     text: Missing Return Statement
 no.return.message:
