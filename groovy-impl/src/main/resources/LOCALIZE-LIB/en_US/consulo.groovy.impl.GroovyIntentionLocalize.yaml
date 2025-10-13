@@ -1,378 +1,378 @@
-intention.category.groovy:
-    text: Groovy
-intention.category.conversions:
-    text: Expression conversions
-intention.category.closures:
-    text: Closures
-intention.category.comments:
-    text: Comments
-intention.category.groovy.style:
-    text: Groovy-style
-intention.category.control.flow:
-    text: Control Flow
-intention.category.groovy.declaration:
-    text: Declaration
-intention.category.groovy.other:
-    text: Other
-demorgans.law.intention.family.name:
-    text: DeMorgan's Law
-demorgans.intention.name1:
-    text: Replace '\&\&' with '||'
-demorgans.intention.name2:
-    text: Replace '||' with '\&\&'
-merge.if.and.intention.name:
-    text: Merge if's
-merge.if.and.intention.family.name:
-    text: Merge Nested Ifs To ANDed Condition
-make.closure.call.explicit.intention.name:
-    text: Make closure call explicit
-make.closure.call.explicit.intention.family.name:
-    text: Make Closure Call Explicit
-make.closure.call.implicit.intention.name:
-    text: Make closure call implicit
-make.closure.call.implicit.intention.family.name:
-    text: Make Closure Call Implicit
-convert.closure.arg.to.it.intention.name:
-    text: Convert closure arg to 'it'
-convert.closure.arg.to.it.intention.family.name:
-    text: Convert Closure Arg To 'it'
-flip.conjunction.intention.family.name:
-    text: Flip Conjunction Operands
-flip.comparison.intention.family.name:
-    text: Flip Comparison Operands
-negate.comparison.intention.family.name:
-    text: Negate Comparison
-expand.boolean.intention.name:
-    text: Expand boolean use to if-else
-expand.boolean.intention.family.name:
-    text: Expand Boolean
-for.to.each.intention.name:
-    text: Replace with ".each"
-for.to.each.intention.family.name:
-    text: Replace For-In With Each
-each.to.for.intention.name:
-    text: Replace with For-In
-each.to.for.intention.family.name:
-    text: Replace Each With For-In
-convert.integer.to.hex.intention.name:
-    text: Convert to hex
-convert.integer.to.hex.intention.family.name:
-    text: Convert To Hexadecimal
-convert.integer.to.decimal.intention.name:
-    text: Convert to decimal
-convert.integer.to.decimal.intention.family.name:
-    text: Convert To Decimal
-convert.integer.to.octal.intention.name:
-    text: Convert to octal
-convert.integer.to.octal.intention.family.name:
-    text: Convert To Octal
-convert.integer.to.binary.intention.name:
-    text: Convert to binary
-convert.integer.to.binary.intention.family.name:
-    text: Convert To Binary
-flip.comparison.intention.name:
-    text: Flip ''{0}'' to ''{1}''
-negate.comparison.intention.name:
-    text: Negate ''{0}'' to ''{1}''
-flip.smth.intention.name:
-    text: Flip ''{0}''
-merge.else.if.intention.name:
-    text: Merge else-if
-merge.else.if.intention.family.name:
-    text: Merge Else If
-split.else.if.intention.name:
-    text: Split else-if
-split.else.if.intention.family.name:
-    text: Split Else If
-split.if.intention.name:
-    text: Split into 2 if's
-split.if.intention.family.name:
-    text: Split into 2 if's
-invert.if.intention.name:
-    text: Invert If Condition
-invert.if.intention.family.name:
-    text: Invert If Condition
-replace.ternary.with.if.else.intention.name:
-    text: Replace ''?:'' with if else
-replace.ternary.with.if.else.intention.family.name:
-    text: Replace ''?:'' with if else
-simplify.ternary.operator.intention.name:
-    text: Simplify Conditional Expression
-simplify.ternary.operator.intention.family.name:
-    text: Simplify Conditional Expression
-flip.conditional.intention.name:
-    text: Flip ''?:''
-flip.conditional.intention.family.name:
-    text: Flip Conditional
-conditional.to.elvis.intention.name:
-    text: Convert Conditional to Elvis
-conditional.to.elvis.intention.family.name:
-    text: Convert Conditional
-change.to.end.of.line.comment.intention.name:
-    text: Replace with end-of-line comment
-change.to.end.of.line.comment.intention.family.name:
-    text: Replace With End Of Line Comment
-change.to.c.style.comment.intention.name:
-    text: Replace with C-style comment
-change.to.c.style.comment.intention.family.name:
-    text: Replace With C-Style Comment
-convert.string.to.g.string.intention.name:
-    text: Convert to GString
-convert.string.to.g.string.intention.family.name:
-    text: Convert String To GString
-convert.g.string.to.string.intention.name:
-    text: Convert to String
-convert.g.string.to.string.intention.family.name:
-    text: Convert GString To String
-indexing.method.conversion.intention.name:
-    text: Convert to [] form
-indexing.method.conversion.intention.family.name:
-    text: Convert Indexing Method To [] Form
-indexed.expression.conversion.intention.name:
-    text: Convert [] access to method form
-indexed.expression.conversion.intention.family.name:
-    text: Convert [] Form To Index Method
-dynamic.property.dialog.class:
-    text: '&Class:'
-dynamic.property.dialog.type:
-    text: '&Type of property'
-remove.parentheses.from.method.call.intention.family.name:
-    text: Remove Unnecessary Parentheses from Method Call
-remove.parentheses.from.method.call.intention.name:
-    text: Remove Unnecessary Parentheses
-java.style.properties.invocation.intention.family.name:
-    text: Change Java-style accessor invocation to Groovy-style property reference
-java.style.properties.invocation.intention.name:
-    text: Change to Groovy-style property reference
-replace.abstract.class.instance.by.map.intention.family.name:
-    text: Change anonymous class to dynamic instantiation
-replace.abstract.class.instance.by.map.intention.name:
-    text: Change to dynamic instantiation
-remove.unnecessary.braces.in.g.string.intention.family.name:
-    text: Remove Unnecessary Braces in GString
-remove.unnecessary.braces.in.g.string.intention.name:
-    text: Remove unnecessary braces in GString
-convert.concatenation.to.gstring.intention.family.name:
-    text: Convert String Concatenation to GString
-convert.concatenation.to.gstring.intention.name:
-    text: Convert to GString
-convert.closure.to.method.intention.name:
-    text: Convert to method
-convert.closure.to.method.intention.family.name:
-    text: Convert property to method
-convert.method.to.closure.intention.name:
-    text: Convert to closure property
-convert.method.to.closure.intention.family.name:
-    text: Convert method to property of closure type
-convert.string.to.multiline.intention.name:
-    text: Convert to Multiline
-convert.string.to.multiline.intention.family.name:
-    text: Convert literal to multiline literal
-convert.junit.assertion.to.assert.statement.intention.name:
-    text: Convert JUnit assertion to assert statement
-convert.junit.assertion.to.assert.statement.intention.family.name:
-    text: Convert JUnit assertion to assert statement
-convert.parameter.to.map.entry.intention.family.name:
-    text: Convert method or closure parameters to map entries
-convert.parameter.to.map.entry.intention.name:
-    text: Convert parameter to map entry
-find.method.ro.closure.usages.0:
-    text: Searching for usages of enclosing {0} in project files
-conversion.not.allowed.in.non.groovy.files:
-    text: 'Refactoring is not allowed for {0}s which have occurrences in non-Groovy files:'
-wrong.first.parameter.type:
-    text: '{0} ''''{1}'''' is used with named arguments, but its first parameter ''''{2}'''' does not conform to Map type.'
-create.first.new:
-    text: '&Create new parameter for named arguments'
-do.not.create.first.new:
-    text: Use &existing first parameter as map for named arguments
-convert.cannot.itself:
-    text: Refactoring is not available for map parameter itself
-perform.refactoring:
-    text: Performing refactoring
-map.param.name:
-    text: 'Map parameter &name:'
-convert.param.to.map.entry:
-    text: Convert Parameter to Map Entry
-convert.java.style.array.intention.name:
-    text: Convert java-style array creation
-convert.java.style.array.intention.family.name:
-    text: Convert Java-Style Array Creation to Groovy Syntax
-create.parameter.for.field.intention.name:
-    text: Add constructor parameter for field
-create.parameter.for.field.intention.family.name:
-    text: Add constructor parameter for field
-cannot.suggest.parameter.name:
-    text: Cannot suggest parameter name
-create.parameter.for.field:
-    text: Add parameter for field ''{0}''
-create.parameter.for.fields:
-    text: Add parameter for field...
-closure.used.as.variable:
-    text: Closure is passed as argument. Refactoring can break semantic.
-convert.map.to.class.intention.name:
-    text: Convert to Class
-convert.map.to.class.intention.family.name:
-    text: Convert Groovy native map to class instances
-do.you.want.to.change.method.return.type:
-    text: Do you want to change return type of ''{0}'' method
-do.you.want.to.change.variable.type:
-    text: Do you want to change type of ''{0}''
-closure.is.accessed.outside.of.groovy:
-    text: Field <b>{0}</b> is accessed outside of Groovy
-write.access.to.closure.variable:
-    text: Write access to field <b>{0}</b>
-field.is.used.in.argument.label:
-    text: Field <b>{0}</b> is used in argument label
-method.with.signature.already.exists:
-    text: Method with signature {0} already exists
-field.already.exists:
-    text: Field <b>{0}</b> already exists
-method.is.used.outside.of.groovy:
-    text: Method is used outside of Groovy
-do.you.want.to.change.type.of.parameter.in.method:
-    text: Do you want to change type of parameter ''{0}'' in method ''{1}''
-rename.file.with.class.intention.name:
-    text: Rename file to class name
-rename.file.with.class.intention.family.name:
-    text: Rename file to corresponding class name
-move.class.to.new.file.intention.name:
-    text: Move to separate file
-move.class.to.new.file.intention.family.name:
-    text: Move class to separate file
-file.exists:
-    text: File ''{0}'' already exists in directory ''{1}''
-intention.crete.test.groovy:
-    text: Groovy
-import.static.intention.name:
-    text: Add static import
-import.static.intention.family.name:
-    text: Add Single-Member Static Import in Groovy
-import.on.demand.intention.name:
-    text: Add import on demand
-import.on.demand.intention.family.name:
-    text: Add On Demand Static Import in Groovy
-replace.qualified.reference.with.import.intention.name:
-    text: Replace with import
-replace.qualified.reference.with.import.intention.family.name:
-    text: Replace qualified reference with import
-move.to.correct.dir.family.name:
-    text: Move File to Correct Package
-move.to.correct.dir:
-    text: Move to ''{0}''
-convert.to.geese.braces.intention.name:
-    text: Format braces in one line
-convert.to.geese.braces.intention.family.name:
-    text: Format closing closure braces in one line
-convert.from.geese.braces.intention.name:
-    text: Format braces in separate lines
-convert.from.geese.braces.intention.family.name:
-    text: Format braces in separate lines
-remove.unnecessary.semicolons.name:
-    text: Remove unnecessary semicolons
-remove.unnecessary.semicolons.family.name:
-    text: Remove unnecessary semicolons from selected text
-no.unnecessary.semicolons.found:
-    text: No unnecessary semicolons found
 add.return.type:
     text: Add return type
 add.return.type.to.method.declaration:
     text: Add return type to method declaration
-replace.with.wrapper:
-    text: Replace with {0}
+cannot.create.class:
+    text: Cannot create class
+cannot.suggest.parameter.name:
+    text: Cannot suggest parameter name
+change.to.c.style.comment.intention.family.name:
+    text: Replace With C-Style Comment
+change.to.c.style.comment.intention.name:
+    text: Replace with C-style comment
+change.to.end.of.line.comment.intention.family.name:
+    text: Replace With End Of Line Comment
+change.to.end.of.line.comment.intention.name:
+    text: Replace with end-of-line comment
+closure.is.accessed.outside.of.groovy:
+    text: Field <b>{0}</b> is accessed outside of Groovy
+closure.used.as.variable:
+    text: Closure is passed as argument. Refactoring can break semantic.
+conditional.to.elvis.intention.family.name:
+    text: Convert Conditional
+conditional.to.elvis.intention.name:
+    text: Convert Conditional to Elvis
+conversion.not.allowed.in.non.groovy.files:
+    text: 'Refactoring is not allowed for {0}s which have occurrences in non-Groovy files:'
+convert.cannot.itself:
+    text: Refactoring is not available for map parameter itself
+convert.closure.arg.to.it.intention.family.name:
+    text: Convert Closure Arg To 'it'
+convert.closure.arg.to.it.intention.name:
+    text: Convert closure arg to 'it'
+convert.closure.to.method.intention.family.name:
+    text: Convert property to method
+convert.closure.to.method.intention.name:
+    text: Convert to method
+convert.concatenation.to.gstring.intention.family.name:
+    text: Convert String Concatenation to GString
+convert.concatenation.to.gstring.intention.name:
+    text: Convert to GString
+convert.from.geese.braces.intention.family.name:
+    text: Format braces in separate lines
+convert.from.geese.braces.intention.name:
+    text: Format braces in separate lines
+convert.g.string.to.string.intention.family.name:
+    text: Convert GString To String
+convert.g.string.to.string.intention.name:
+    text: Convert to String
+convert.integer.to.binary.intention.family.name:
+    text: Convert To Binary
+convert.integer.to.binary.intention.name:
+    text: Convert to binary
+convert.integer.to.decimal.intention.family.name:
+    text: Convert To Decimal
+convert.integer.to.decimal.intention.name:
+    text: Convert to decimal
+convert.integer.to.hex.intention.family.name:
+    text: Convert To Hexadecimal
+convert.integer.to.hex.intention.name:
+    text: Convert to hex
+convert.integer.to.octal.intention.family.name:
+    text: Convert To Octal
+convert.integer.to.octal.intention.name:
+    text: Convert to octal
+convert.java.style.array.intention.family.name:
+    text: Convert Java-Style Array Creation to Groovy Syntax
+convert.java.style.array.intention.name:
+    text: Convert java-style array creation
+convert.junit.assertion.to.assert.statement.intention.family.name:
+    text: Convert JUnit assertion to assert statement
+convert.junit.assertion.to.assert.statement.intention.name:
+    text: Convert JUnit assertion to assert statement
+convert.map.to.class.intention.family.name:
+    text: Convert Groovy native map to class instances
+convert.map.to.class.intention.name:
+    text: Convert to Class
+convert.method.to.closure.intention.family.name:
+    text: Convert method to property of closure type
+convert.method.to.closure.intention.name:
+    text: Convert to closure property
+convert.multiline.string.to.single.line.intention.family.name:
+    text: Convert multiline string to single-line
+convert.multiline.string.to.single.line.intention.name:
+    text: Convert to single-line
+convert.param.to.map.entry:
+    text: Convert Parameter to Map Entry
+convert.parameter.to.map.entry.intention.family.name:
+    text: Convert method or closure parameters to map entries
+convert.parameter.to.map.entry.intention.name:
+    text: Convert parameter to map entry
+convert.simple.getter.to.property.intention.family.name:
+    text: Convert simple getter to property
+convert.simple.getter.to.property.intention.name:
+    text: Convert to property
+convert.string.to.g.string.intention.family.name:
+    text: Convert String To GString
+convert.string.to.g.string.intention.name:
+    text: Convert to GString
+convert.string.to.multiline.intention.family.name:
+    text: Convert literal to multiline literal
+convert.string.to.multiline.intention.name:
+    text: Convert to Multiline
+convert.to.geese.braces.intention.family.name:
+    text: Format closing closure braces in one line
+convert.to.geese.braces.intention.name:
+    text: Format braces in one line
+create.field.for.parameter:
+    text: Create Field for Parameter
+create.field.for.parameter.0:
+    text: Create Field for Parameter {0}
+create.first.new:
+    text: '&Create new parameter for named arguments'
+create.parameter.for.field:
+    text: Add parameter for field ''{0}''
+create.parameter.for.field.intention.family.name:
+    text: Add constructor parameter for field
+create.parameter.for.field.intention.name:
+    text: Add constructor parameter for field
+create.parameter.for.fields:
+    text: Add parameter for field...
+demorgans.intention.name1:
+    text: Replace '\&\&' with '||'
+demorgans.intention.name2:
+    text: Replace '||' with '\&\&'
+demorgans.law.intention.family.name:
+    text: DeMorgan's Law
+do.not.create.first.new:
+    text: Use &existing first parameter as map for named arguments
+do.you.want.to.change.method.return.type:
+    text: Do you want to change return type of ''{0}'' method
+do.you.want.to.change.type.of.parameter.in.method:
+    text: Do you want to change type of parameter ''{0}'' in method ''{1}''
+do.you.want.to.change.variable.type:
+    text: Do you want to change type of ''{0}''
+dynamic.property.dialog.class:
+    text: '&Class:'
+dynamic.property.dialog.type:
+    text: '&Type of property'
+each.to.for.intention.family.name:
+    text: Replace Each With For-In
+each.to.for.intention.name:
+    text: Replace with For-In
+expand.boolean.intention.family.name:
+    text: Expand Boolean
+expand.boolean.intention.name:
+    text: Expand boolean use to if-else
+field.already.exists:
+    text: Field <b>{0}</b> already exists
+field.is.used.in.argument.label:
+    text: Field <b>{0}</b> is used in argument label
+file.exists:
+    text: File ''{0}'' already exists in directory ''{1}''
+find.method.ro.closure.usages.0:
+    text: Searching for usages of enclosing {0} in project files
+flip.comparison.intention.family.name:
+    text: Flip Comparison Operands
+flip.comparison.intention.name:
+    text: Flip ''{0}'' to ''{1}''
+flip.conditional.intention.family.name:
+    text: Flip Conditional
+flip.conditional.intention.name:
+    text: Flip ''?:''
+flip.conjunction.intention.family.name:
+    text: Flip Conjunction Operands
+flip.if.intention.family.name:
+    text: Flip if statements
+flip.if.intention.name:
+    text: Flip if statements
+flip.smth.intention.name:
+    text: Flip ''{0}''
+for.to.each.intention.family.name:
+    text: Replace For-In With Each
+for.to.each.intention.name:
+    text: Replace with ".each"
+gr.alias.import.intention.family.name:
+    text: Alias import statically imported member
+gr.alias.import.intention.name:
+    text: Alias import
+gr.break.string.on.line.breaks.intention.family.name:
+    text: Break string on '\n'
+gr.break.string.on.line.breaks.intention.name:
+    text: Break string on '\n'
+gr.convert.string.to.char.intention.family.name:
+    text: Cast to char
+gr.convert.string.to.char.intention.name:
+    text: Cast to char
+gr.convert.type.cast.to.safe.cast.intention.family.name:
+    text: Convert cast expression to safe cast expression
+gr.convert.type.cast.to.safe.cast.intention.name:
+    text: Convert to safe cast
+gr.copy.string.concatenation.content.intention.family.name:
+    text: Copy string concatenation text to clipboard
+gr.copy.string.concatenation.content.intention.name:
+    text: Copy string concatenation text to clipboard
+gr.create.missing.switch.branches.intention.family.name:
+    text: Create missing 'switch' branches
+gr.create.missing.switch.branches.intention.name:
+    text: Create missing 'switch' branches
+gr.introduce.local.variable.intention.family.name:
+    text: Groovy Introduce local variable
+gr.introduce.local.variable.intention.name:
+    text: Introduce local variable
+gr.make.member.private.intention.family.name:
+    text: Make 'private'
+gr.make.member.private.intention.name:
+    text: Make 'private'
+gr.make.member.protected.intention.family.name:
+    text: Make 'protected'
+gr.make.member.protected.intention.name:
+    text: Make 'protected'
+gr.make.member.public.intention.family.name:
+    text: Make 'public'
+gr.make.member.public.intention.name:
+    text: Make 'public'
+gr.set.strong.type.intention.family.name:
+    text: Declare explicit type
+gr.set.strong.type.intention.name:
+    text: Declare explicit type
+gr.split.declaration.intention.family.name:
+    text: Split Variable Declaration
+import.on.demand.intention.family.name:
+    text: Add On Demand Static Import in Groovy
+import.on.demand.intention.name:
+    text: Add import on demand
+import.static.intention.family.name:
+    text: Add Single-Member Static Import in Groovy
+import.static.intention.name:
+    text: Add static import
+indexed.expression.conversion.intention.family.name:
+    text: Convert [] Form To Index Method
+indexed.expression.conversion.intention.name:
+    text: Convert [] access to method form
+indexing.method.conversion.intention.family.name:
+    text: Convert Indexing Method To [] Form
+indexing.method.conversion.intention.name:
+    text: Convert to [] form
+intention.category.closures:
+    text: Closures
+intention.category.comments:
+    text: Comments
+intention.category.control.flow:
+    text: Control Flow
+intention.category.conversions:
+    text: Expression conversions
+intention.category.groovy:
+    text: Groovy
+intention.category.groovy.declaration:
+    text: Declaration
+intention.category.groovy.other:
+    text: Other
+intention.category.groovy.style:
+    text: Groovy-style
+intention.crete.test.groovy:
+    text: Groovy
+invert.if.intention.family.name:
+    text: Invert If Condition
+invert.if.intention.name:
+    text: Invert If Condition
+java.style.properties.invocation.intention.family.name:
+    text: Change Java-style accessor invocation to Groovy-style property reference
+java.style.properties.invocation.intention.name:
+    text: Change to Groovy-style property reference
+make.closure.call.explicit.intention.family.name:
+    text: Make Closure Call Explicit
+make.closure.call.explicit.intention.name:
+    text: Make closure call explicit
+make.closure.call.implicit.intention.family.name:
+    text: Make Closure Call Implicit
+make.closure.call.implicit.intention.name:
+    text: Make closure call implicit
+map.param.name:
+    text: 'Map parameter &name:'
+merge.else.if.intention.family.name:
+    text: Merge Else If
+merge.else.if.intention.name:
+    text: Merge else-if
+merge.if.and.intention.family.name:
+    text: Merge Nested Ifs To ANDed Condition
+merge.if.and.intention.name:
+    text: Merge if's
+method.is.used.outside.of.groovy:
+    text: Method is used outside of Groovy
+method.with.signature.already.exists:
+    text: Method with signature {0} already exists
+move.class.to.new.file.intention.family.name:
+    text: Move class to separate file
+move.class.to.new.file.intention.name:
+    text: Move to separate file
+move.to.correct.dir:
+    text: Move to ''{0}''
+move.to.correct.dir.family.name:
+    text: Move File to Correct Package
+negate.comparison.intention.family.name:
+    text: Negate Comparison
+negate.comparison.intention.name:
+    text: Negate ''{0}'' to ''{1}''
+no.unnecessary.semicolons.found:
+    text: No unnecessary semicolons found
+perform.refactoring:
+    text: Performing refactoring
+remove.catch.block:
+    text: Remove catch block
+remove.exception:
+    text: Remove exception
+remove.parameter.0:
+    text: Remove parameter ''{0}''
+remove.parentheses.from.method.call.intention.family.name:
+    text: Remove Unnecessary Parentheses from Method Call
+remove.parentheses.from.method.call.intention.name:
+    text: Remove Unnecessary Parentheses
+remove.redundant.class.property.intention.family.name:
+    text: Remove redundant .class
+remove.redundant.class.property.intention.name:
+    text: Remove redundant .class
+remove.unnecessary.braces.in.g.string.intention.family.name:
+    text: Remove Unnecessary Braces in GString
+remove.unnecessary.braces.in.g.string.intention.name:
+    text: Remove unnecessary braces in GString
+remove.unnecessary.escape.characters.intention.family.name:
+    text: Remove unnecessary escape characters
+remove.unnecessary.escape.characters.intention.name:
+    text: Remove unnecessary escape characters
+remove.unnecessary.return.intention.family.name:
+    text: Remove unnecessary 'return' keyword
+remove.unnecessary.return.intention.name:
+    text: Remove 'return' keyword
+remove.unnecessary.semicolons.family.name:
+    text: Remove unnecessary semicolons from selected text
+remove.unnecessary.semicolons.name:
+    text: Remove unnecessary semicolons
+remove.unused.parameter:
+    text: Remove unused parameter
+rename.file.with.class.intention.family.name:
+    text: Rename file to corresponding class name
+rename.file.with.class.intention.name:
+    text: Rename file to class name
+replace.abstract.class.instance.by.map.intention.family.name:
+    text: Change anonymous class to dynamic instantiation
+replace.abstract.class.instance.by.map.intention.name:
+    text: Change to dynamic instantiation
+replace.if.with.ternary.intention.family.name:
+    text: Replace if-statement with ternary operator
+replace.if.with.ternary.intention.name:
+    text: 'Replace with ?:'
 replace.primitive.type.with.wrapper:
     text: Replace primitive type with wrapper
+replace.qualified.reference.with.import.intention.family.name:
+    text: Replace qualified reference with import
+replace.qualified.reference.with.import.intention.name:
+    text: Replace with import
+replace.ternary.with.if.else.intention.family.name:
+    text: Replace ''?:'' with if else
+replace.ternary.with.if.else.intention.name:
+    text: Replace ''?:'' with if else
+replace.with.wrapper:
+    text: Replace with {0}
+simplify.ternary.operator.intention.family.name:
+    text: Simplify Conditional Expression
+simplify.ternary.operator.intention.name:
+    text: Simplify Conditional Expression
+split.else.if.intention.family.name:
+    text: Split Else If
+split.else.if.intention.name:
+    text: Split else-if
+split.if.intention.family.name:
+    text: Split into 2 if's
+split.if.intention.name:
+    text: Split into 2 if's
 split.into.declaration.and.assignment:
     text: Split into declaration and assignment
 split.into.separate.declaration:
     text: Split into separate declaration
-gr.split.declaration.intention.family.name:
-    text: Split Variable Declaration
-remove.parameter.0:
-    text: Remove parameter ''{0}''
-remove.unused.parameter:
-    text: Remove unused parameter
-remove.exception:
-    text: Remove exception
-remove.catch.block:
-    text: Remove catch block
 try.catch.fix:
     text: Try-catch fix
-gr.convert.string.to.char.intention.name:
-    text: Cast to char
-gr.convert.string.to.char.intention.family.name:
-    text: Cast to char
-create.field.for.parameter.0:
-    text: Create Field for Parameter {0}
-create.field.for.parameter:
-    text: Create Field for Parameter
-gr.set.strong.type.intention.name:
-    text: Declare explicit type
-gr.set.strong.type.intention.family.name:
-    text: Declare explicit type
-remove.unnecessary.escape.characters.intention.name:
-    text: Remove unnecessary escape characters
-remove.unnecessary.escape.characters.intention.family.name:
-    text: Remove unnecessary escape characters
-gr.break.string.on.line.breaks.intention.name:
-    text: Break string on '\n'
-gr.break.string.on.line.breaks.intention.family.name:
-    text: Break string on '\n'
-gr.create.missing.switch.branches.intention.name:
-    text: Create missing 'switch' branches
-gr.create.missing.switch.branches.intention.family.name:
-    text: Create missing 'switch' branches
-remove.redundant.class.property.intention.name:
-    text: Remove redundant .class
-remove.redundant.class.property.intention.family.name:
-    text: Remove redundant .class
-convert.simple.getter.to.property.intention.name:
-    text: Convert to property
-convert.simple.getter.to.property.intention.family.name:
-    text: Convert simple getter to property
-remove.unnecessary.return.intention.name:
-    text: Remove 'return' keyword
-remove.unnecessary.return.intention.family.name:
-    text: Remove unnecessary 'return' keyword
-gr.alias.import.intention.name:
-    text: Alias import
-gr.alias.import.intention.family.name:
-    text: Alias import statically imported member
-gr.copy.string.concatenation.content.intention.name:
-    text: Copy string concatenation text to clipboard
-gr.copy.string.concatenation.content.intention.family.name:
-    text: Copy string concatenation text to clipboard
-gr.make.member.private.intention.name:
-    text: Make 'private'
-gr.make.member.private.intention.family.name:
-    text: Make 'private'
-gr.make.member.public.intention.name:
-    text: Make 'public'
-gr.make.member.public.intention.family.name:
-    text: Make 'public'
-gr.make.member.protected.intention.name:
-    text: Make 'protected'
-gr.make.member.protected.intention.family.name:
-    text: Make 'protected'
-convert.multiline.string.to.single.line.intention.name:
-    text: Convert to single-line
-convert.multiline.string.to.single.line.intention.family.name:
-    text: Convert multiline string to single-line
-gr.convert.type.cast.to.safe.cast.intention.name:
-    text: Convert to safe cast
-gr.convert.type.cast.to.safe.cast.intention.family.name:
-    text: Convert cast expression to safe cast expression
-cannot.create.class:
-    text: Cannot create class
-gr.introduce.local.variable.intention.name:
-    text: Introduce local variable
-gr.introduce.local.variable.intention.family.name:
-    text: Groovy Introduce local variable
-flip.if.intention.name:
-    text: Flip if statements
-flip.if.intention.family.name:
-    text: Flip if statements
-replace.if.with.ternary.intention.name:
-    text: 'Replace with ?:'
-replace.if.with.ternary.intention.family.name:
-    text: Replace if-statement with ternary operator
+write.access.to.closure.variable:
+    text: Write access to field <b>{0}</b>
+wrong.first.parameter.type:
+    text: '{0} ''''{1}'''' is used with named arguments, but its first parameter ''''{2}'''' does not conform to Map type.'
