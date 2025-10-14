@@ -15,14 +15,15 @@
  */
 package org.jetbrains.plugins.groovy.impl.intentions.conversions.strings;
 
-import jakarta.annotation.Nonnull;
-
 import consulo.codeEditor.Editor;
 import consulo.document.util.TextRange;
+import consulo.groovy.impl.localize.GroovyIntentionLocalize;
+import consulo.language.psi.PsiElement;
 import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
 import consulo.logging.Logger;
 import consulo.project.Project;
-import org.jetbrains.plugins.groovy.impl.intentions.GroovyIntentionsBundle;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.impl.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.impl.intentions.base.PsiElementPredicate;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
@@ -34,126 +35,107 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.literals
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.literals.GrLiteralImpl;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.literals.GrStringImpl;
 import org.jetbrains.plugins.groovy.lang.psi.util.GrStringUtil;
-import consulo.language.psi.PsiElement;
 
 /**
  * @author Max Medvedev
  */
-public class ConvertMultilineStringToSingleLineIntention extends Intention
-{
-	private static final Logger LOG = Logger.getInstance(ConvertMultilineStringToSingleLineIntention.class);
+public class ConvertMultilineStringToSingleLineIntention extends Intention {
+    private static final Logger LOG = Logger.getInstance(ConvertMultilineStringToSingleLineIntention.class);
 
-	public static final String hint = GroovyIntentionsBundle.message("convert.multiline.string.to.single.line" +
-			".intention.name");
+    public static final LocalizeValue hint = GroovyIntentionLocalize.convertMultilineStringToSingleLineIntentionName();
 
-	@Override
-	protected void processIntention(@Nonnull PsiElement element,
-			Project project,
-			Editor editor) throws IncorrectOperationException
-	{
-		String quote = element.getText().substring(0, 1);
+    @Nonnull
+    @Override
+    public LocalizeValue getText() {
+        return GroovyIntentionLocalize.convertMultilineStringToSingleLineIntentionName();
+    }
 
-		StringBuilder buffer = new StringBuilder();
-		buffer.append(quote);
+    @Override
+    protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor)
+        throws IncorrectOperationException {
+        String quote = element.getText().substring(0, 1);
 
-		GrExpression old;
+        StringBuilder buffer = new StringBuilder();
+        buffer.append(quote);
 
-		if(element instanceof GrLiteralImpl)
-		{
-			appendSimpleStringValue(element, buffer, quote);
-			old = (GrExpression) element;
-		}
-		else
-		{
-			final GrStringImpl gstring = (GrStringImpl) element;
-			for(GroovyPsiElement child : gstring.getAllContentParts())
-			{
-				if(child instanceof GrStringContent)
-				{
-					appendSimpleStringValue(child, buffer, "\"");
-				}
-				else if(child instanceof GrStringInjection)
-				{
-					buffer.append(child.getText());
-				}
-			}
-			old = gstring;
-		}
+        GrExpression old;
 
-		buffer.append(quote);
-		try
-		{
-			final int offset = editor.getCaretModel().getOffset();
-			final TextRange range = old.getTextRange();
-			int shift;
+        if (element instanceof GrLiteralImpl) {
+            appendSimpleStringValue(element, buffer, quote);
+            old = (GrExpression) element;
+        }
+        else {
+            final GrStringImpl gstring = (GrStringImpl) element;
+            for (GroovyPsiElement child : gstring.getAllContentParts()) {
+                if (child instanceof GrStringContent) {
+                    appendSimpleStringValue(child, buffer, "\"");
+                }
+                else if (child instanceof GrStringInjection) {
+                    buffer.append(child.getText());
+                }
+            }
+            old = gstring;
+        }
 
-			if(range.getStartOffset() == offset)
-			{
-				shift = 0;
-			}
-			else if(range.getStartOffset() == offset - 1)
-			{
-				shift = -1;
-			}
-			else if(range.getEndOffset() == offset)
-			{
-				shift = -4;
-			}
-			else if(range.getEndOffset() == offset + 1)
-			{
-				shift = -3;
-			}
-			else
-			{
-				shift = -2;
-			}
+        buffer.append(quote);
+        try {
+            final int offset = editor.getCaretModel().getOffset();
+            final TextRange range = old.getTextRange();
+            int shift;
 
-			final GrExpression newLiteral = GroovyPsiElementFactory.getInstance(project).createExpressionFromText
-					(buffer.toString());
-			old.replaceWithExpression(newLiteral, true);
+            if (range.getStartOffset() == offset) {
+                shift = 0;
+            }
+            else if (range.getStartOffset() == offset - 1) {
+                shift = -1;
+            }
+            else if (range.getEndOffset() == offset) {
+                shift = -4;
+            }
+            else if (range.getEndOffset() == offset + 1) {
+                shift = -3;
+            }
+            else {
+                shift = -2;
+            }
 
-			if(shift != 0)
-			{
-				editor.getCaretModel().moveToOffset(offset + shift);
-			}
-		}
-		catch(IncorrectOperationException e)
-		{
-			LOG.error(e);
-		}
-	}
+            final GrExpression newLiteral = GroovyPsiElementFactory.getInstance(project).createExpressionFromText
+                (buffer.toString());
+            old.replaceWithExpression(newLiteral, true);
 
-	private static void appendSimpleStringValue(PsiElement element, StringBuilder buffer, String quote)
-	{
-		final String text = GrStringUtil.removeQuotes(element.getText());
-		if("'".equals(quote))
-		{
-			GrStringUtil.escapeAndUnescapeSymbols(text, "\n'", "", buffer);
-		}
-		else
-		{
-			GrStringUtil.escapeAndUnescapeSymbols(text, "\"\n", "", buffer);
-		}
-	}
+            if (shift != 0) {
+                editor.getCaretModel().moveToOffset(offset + shift);
+            }
+        }
+        catch (IncorrectOperationException e) {
+            LOG.error(e);
+        }
+    }
 
-	@Nonnull
-	@Override
-	protected PsiElementPredicate getElementPredicate()
-	{
-		return new PsiElementPredicate()
-		{
-			@Override
-			public boolean satisfiedBy(PsiElement element)
-			{
-				if(!(element instanceof GrLiteral))
-				{
-					return false;
-				}
+    private static void appendSimpleStringValue(PsiElement element, StringBuilder buffer, String quote) {
+        final String text = GrStringUtil.removeQuotes(element.getText());
+        if ("'".equals(quote)) {
+            GrStringUtil.escapeAndUnescapeSymbols(text, "\n'", "", buffer);
+        }
+        else {
+            GrStringUtil.escapeAndUnescapeSymbols(text, "\"\n", "", buffer);
+        }
+    }
 
-				String text = element.getText();
-				String quote = GrStringUtil.getStartQuote(text);
-				return GrStringUtil.TRIPLE_QUOTES.equals(quote) || GrStringUtil.TRIPLE_DOUBLE_QUOTES.equals(quote);
-			}
-		};
-	}
+    @Nonnull
+    @Override
+    protected PsiElementPredicate getElementPredicate() {
+        return new PsiElementPredicate() {
+            @Override
+            public boolean satisfiedBy(PsiElement element) {
+                if (!(element instanceof GrLiteral)) {
+                    return false;
+                }
+
+                String text = element.getText();
+                String quote = GrStringUtil.getStartQuote(text);
+                return GrStringUtil.TRIPLE_QUOTES.equals(quote) || GrStringUtil.TRIPLE_DOUBLE_QUOTES.equals(quote);
+            }
+        };
+    }
 }

@@ -15,11 +15,14 @@
  */
 package org.jetbrains.plugins.groovy.impl.intentions.conversions;
 
-import jakarta.annotation.Nonnull;
-
 import consulo.codeEditor.Editor;
+import consulo.groovy.impl.localize.GroovyIntentionLocalize;
 import consulo.language.ast.IElementType;
 import consulo.language.psi.PsiElement;
+import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
+import consulo.project.Project;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.impl.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.impl.intentions.base.PsiElementPredicate;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrArgumentList;
@@ -27,40 +30,40 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpres
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.path.GrMethodCallExpression;
 import org.jetbrains.plugins.groovy.lang.psi.impl.PsiImplUtil;
-import consulo.project.Project;
-import consulo.language.util.IncorrectOperationException;
 
-public class IndexingMethodConversionIntention extends Intention
-{
+public class IndexingMethodConversionIntention extends Intention {
+    @Nonnull
+    @Override
+    public LocalizeValue getText() {
+        return GroovyIntentionLocalize.indexingMethodConversionIntentionName();
+    }
 
-	@Nonnull
-	public PsiElementPredicate getElementPredicate()
-	{
-		return new IndexingMethodConversionPredicate();
-	}
+    @Nonnull
+    public PsiElementPredicate getElementPredicate() {
+        return new IndexingMethodConversionPredicate();
+    }
 
-	public void processIntention(@Nonnull PsiElement element,
-			Project project,
-			Editor editor) throws IncorrectOperationException
-	{
-		final GrMethodCallExpression callExpression = (GrMethodCallExpression) element;
-		final GrArgumentList argList = callExpression.getArgumentList();
-		final GrExpression[] arguments = argList.getExpressionArguments();
+    public void processIntention(
+        @Nonnull PsiElement element,
+        Project project,
+        Editor editor
+    ) throws IncorrectOperationException {
+        final GrMethodCallExpression callExpression = (GrMethodCallExpression) element;
+        final GrArgumentList argList = callExpression.getArgumentList();
+        final GrExpression[] arguments = argList.getExpressionArguments();
 
-		GrReferenceExpression methodExpression = (GrReferenceExpression) callExpression.getInvokedExpression();
-		final IElementType referenceType = methodExpression.getDotTokenType();
+        GrReferenceExpression methodExpression = (GrReferenceExpression) callExpression.getInvokedExpression();
+        final IElementType referenceType = methodExpression.getDotTokenType();
 
-		final String methodName = methodExpression.getReferenceName();
-		final GrExpression qualifier = methodExpression.getQualifierExpression();
-		if("getAt".equals(methodName) || "get".equals(methodName))
-		{
-			PsiImplUtil.replaceExpression(qualifier.getText() + '[' + arguments[0].getText() + ']', callExpression);
-		}
-		else
-		{
-			PsiImplUtil.replaceExpression(qualifier.getText() + '[' + arguments[0].getText() + "]=" + arguments[1]
-					.getText(), callExpression);
-		}
-	}
+        final String methodName = methodExpression.getReferenceName();
+        final GrExpression qualifier = methodExpression.getQualifierExpression();
+        if ("getAt".equals(methodName) || "get".equals(methodName)) {
+            PsiImplUtil.replaceExpression(qualifier.getText() + '[' + arguments[0].getText() + ']', callExpression);
+        }
+        else {
+            PsiImplUtil.replaceExpression(qualifier.getText() + '[' + arguments[0].getText() + "]=" + arguments[1]
+                .getText(), callExpression);
+        }
+    }
 
 }

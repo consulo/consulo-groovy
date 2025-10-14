@@ -15,15 +15,16 @@
  */
 package org.jetbrains.plugins.groovy.impl.intentions.conversions;
 
-import consulo.codeEditor.Editor;
-import consulo.language.util.IncorrectOperationException;
-import consulo.project.Project;
 import com.intellij.java.language.psi.PsiClass;
-import consulo.language.psi.PsiElement;
 import com.intellij.java.language.psi.PsiModifier;
 import com.intellij.java.language.psi.PsiType;
 import com.intellij.java.language.psi.codeStyle.JavaCodeStyleManager;
-
+import consulo.codeEditor.Editor;
+import consulo.groovy.impl.localize.GroovyIntentionLocalize;
+import consulo.language.psi.PsiElement;
+import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
+import consulo.project.Project;
 import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.impl.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.impl.intentions.base.PsiElementPredicate;
@@ -40,69 +41,84 @@ import org.jetbrains.plugins.groovy.lang.psi.util.GroovyPropertyUtils;
  * @author Max Medvedev
  */
 public class ConvertSimpleGetterToPropertyIntention extends Intention {
-  @Override
-  protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException
-  {
-    GrMethod method = (GrMethod)element.getParent();
-
-    GrStatement statement = method.getBlock().getStatements()[0];
-
-    GrExpression value;
-    if (statement instanceof GrReturnStatement) {
-      value = ((GrReturnStatement)statement).getReturnValue();
-    }
-    else {
-      value = (GrExpression)statement;
+    @Nonnull
+    @Override
+    public LocalizeValue getText() {
+        return GroovyIntentionLocalize.convertSimpleGetterToPropertyIntentionName();
     }
 
-    String fieldName = GroovyPropertyUtils.getPropertyNameByGetter(method);
+    @Override
+    protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
+        GrMethod method = (GrMethod) element.getParent();
 
-    String[] modifiers;
-    if (method.hasModifierProperty(PsiModifier.STATIC)) {
-      modifiers = new String[]{PsiModifier.STATIC, PsiModifier.FINAL, };
-    }
-    else {
-      modifiers = new String[]{PsiModifier.FINAL};
-    }
-    GrVariableDeclaration declaration = GroovyPsiElementFactory.getInstance(project)
-      .createFieldDeclaration(modifiers, fieldName, value, method.getReturnType());
+        GrStatement statement = method.getBlock().getStatements()[0];
 
-    PsiClass aClass = method.getContainingClass();
-    PsiElement replaced = aClass.addBefore(declaration, method);
-    JavaCodeStyleManager.getInstance(project).shortenClassReferences(replaced);
-
-    method.delete();
-  }
-
-
-  @Nonnull
-  @Override
-  protected PsiElementPredicate getElementPredicate() {
-    return new PsiElementPredicate() {
-      @Override
-      public boolean satisfiedBy(PsiElement element) {
-        PsiElement parent = element.getParent();
-        if (!(parent instanceof GrMethod) || ((GrMethod)parent).getNameIdentifierGroovy() != element) return false;
-
-        GrMethod method = (GrMethod)parent;
-
-        GrOpenBlock block = method.getBlock();
-        if (block == null) return false;
-
-        GrStatement[] statements = block.getStatements();
-        if (statements.length != 1) return false;
-
-        if (!GroovyPropertyUtils.isSimplePropertyGetter(method)) return false;
-        if (GroovyPropertyUtils.findFieldForAccessor(method, true) != null) return false;
-
-
-        GrStatement statement = statements[0];
-        if (!(statement instanceof GrReturnStatement && ((GrReturnStatement)statement).getReturnValue() != null ||
-              statement instanceof GrExpression && ((GrExpression)statement).getType() != PsiType.VOID)) {
-          return false;
+        GrExpression value;
+        if (statement instanceof GrReturnStatement) {
+            value = ((GrReturnStatement) statement).getReturnValue();
         }
-        return true;
-      }
-    };
-  }
+        else {
+            value = (GrExpression) statement;
+        }
+
+        String fieldName = GroovyPropertyUtils.getPropertyNameByGetter(method);
+
+        String[] modifiers;
+        if (method.hasModifierProperty(PsiModifier.STATIC)) {
+            modifiers = new String[]{PsiModifier.STATIC, PsiModifier.FINAL,};
+        }
+        else {
+            modifiers = new String[]{PsiModifier.FINAL};
+        }
+        GrVariableDeclaration declaration = GroovyPsiElementFactory.getInstance(project)
+            .createFieldDeclaration(modifiers, fieldName, value, method.getReturnType());
+
+        PsiClass aClass = method.getContainingClass();
+        PsiElement replaced = aClass.addBefore(declaration, method);
+        JavaCodeStyleManager.getInstance(project).shortenClassReferences(replaced);
+
+        method.delete();
+    }
+
+
+    @Nonnull
+    @Override
+    protected PsiElementPredicate getElementPredicate() {
+        return new PsiElementPredicate() {
+            @Override
+            public boolean satisfiedBy(PsiElement element) {
+                PsiElement parent = element.getParent();
+                if (!(parent instanceof GrMethod) || ((GrMethod) parent).getNameIdentifierGroovy() != element) {
+                    return false;
+                }
+
+                GrMethod method = (GrMethod) parent;
+
+                GrOpenBlock block = method.getBlock();
+                if (block == null) {
+                    return false;
+                }
+
+                GrStatement[] statements = block.getStatements();
+                if (statements.length != 1) {
+                    return false;
+                }
+
+                if (!GroovyPropertyUtils.isSimplePropertyGetter(method)) {
+                    return false;
+                }
+                if (GroovyPropertyUtils.findFieldForAccessor(method, true) != null) {
+                    return false;
+                }
+
+
+                GrStatement statement = statements[0];
+                if (!(statement instanceof GrReturnStatement && ((GrReturnStatement) statement).getReturnValue() != null ||
+                    statement instanceof GrExpression && ((GrExpression) statement).getType() != PsiType.VOID)) {
+                    return false;
+                }
+                return true;
+            }
+        };
+    }
 }

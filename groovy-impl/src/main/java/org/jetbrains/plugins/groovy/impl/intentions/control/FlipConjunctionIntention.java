@@ -15,58 +15,55 @@
  */
 package org.jetbrains.plugins.groovy.impl.intentions.control;
 
-import jakarta.annotation.Nonnull;
-
+import consulo.codeEditor.Editor;
+import consulo.groovy.impl.localize.GroovyIntentionLocalize;
 import consulo.language.ast.IElementType;
 import consulo.language.psi.PsiElement;
+import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
 import consulo.project.Project;
-import org.jetbrains.plugins.groovy.impl.intentions.GroovyIntentionsBundle;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.impl.intentions.base.MutablyNamedIntention;
 import org.jetbrains.plugins.groovy.impl.intentions.base.PsiElementPredicate;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrBinaryExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.impl.PsiImplUtil;
-import consulo.codeEditor.Editor;
-import consulo.language.util.IncorrectOperationException;
 
-public class FlipConjunctionIntention extends MutablyNamedIntention
-{
-	protected String getTextForElement(PsiElement element)
-	{
-		final GrBinaryExpression binaryExpression = (GrBinaryExpression) element;
-		final IElementType tokenType = binaryExpression.getOperationTokenType();
-		final String conjunction = getConjunction(tokenType);
-		return GroovyIntentionsBundle.message("flip.smth.intention.name", conjunction);
-	}
+public class FlipConjunctionIntention extends MutablyNamedIntention {
+    protected LocalizeValue getTextForElement(PsiElement element) {
+        final GrBinaryExpression binaryExpression = (GrBinaryExpression) element;
+        final IElementType tokenType = binaryExpression.getOperationTokenType();
+        final String conjunction = getConjunction(tokenType);
+        return GroovyIntentionLocalize.flipSmthIntentionName(conjunction);
+    }
 
-	@Nonnull
-	public PsiElementPredicate getElementPredicate()
-	{
-		return new ConjunctionPredicate();
-	}
+    @Nonnull
+    public PsiElementPredicate getElementPredicate() {
+        return new ConjunctionPredicate();
+    }
 
-	public void processIntention(@Nonnull PsiElement element,
-			Project project,
-			Editor editor) throws IncorrectOperationException
-	{
-		final GrBinaryExpression exp = (GrBinaryExpression) element;
-		final IElementType tokenType = exp.getOperationTokenType();
+    public void processIntention(
+        @Nonnull PsiElement element,
+        Project project,
+        Editor editor
+    ) throws IncorrectOperationException {
+        final GrBinaryExpression exp = (GrBinaryExpression) element;
+        final IElementType tokenType = exp.getOperationTokenType();
 
-		final GrExpression lhs = exp.getLeftOperand();
-		final String lhsText = lhs.getText();
+        final GrExpression lhs = exp.getLeftOperand();
+        final String lhsText = lhs.getText();
 
-		final GrExpression rhs = exp.getRightOperand();
-		final String rhsText = rhs.getText();
+        final GrExpression rhs = exp.getRightOperand();
+        final String rhsText = rhs.getText();
 
-		final String conjunction = getConjunction(tokenType);
+        final String conjunction = getConjunction(tokenType);
 
-		final String newExpression = rhsText + conjunction + lhsText;
-		PsiImplUtil.replaceExpression(newExpression, exp);
-	}
+        final String newExpression = rhsText + conjunction + lhsText;
+        PsiImplUtil.replaceExpression(newExpression, exp);
+    }
 
-	private static String getConjunction(IElementType tokenType)
-	{
-		return tokenType.equals(GroovyTokenTypes.mLAND) ? "&&" : "||";
-	}
+    private static String getConjunction(IElementType tokenType) {
+        return tokenType.equals(GroovyTokenTypes.mLAND) ? "&&" : "||";
+    }
 }

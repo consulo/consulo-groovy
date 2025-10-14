@@ -15,10 +15,13 @@
  */
 package org.jetbrains.plugins.groovy.impl.intentions.conversions;
 
-import jakarta.annotation.Nonnull;
-
+import consulo.codeEditor.Editor;
+import consulo.groovy.impl.localize.GroovyIntentionLocalize;
 import consulo.language.psi.PsiElement;
 import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
+import consulo.project.Project;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.impl.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.impl.intentions.base.PsiElementPredicate;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrArgumentList;
@@ -26,64 +29,67 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrAssign
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.path.GrIndexProperty;
 import org.jetbrains.plugins.groovy.lang.psi.impl.PsiImplUtil;
-import consulo.codeEditor.Editor;
-import consulo.project.Project;
 
-public class IndexedExpressionConversionIntention extends Intention
-{
+public class IndexedExpressionConversionIntention extends Intention {
+    @Nonnull
+    @Override
+    public LocalizeValue getText() {
+        return GroovyIntentionLocalize.indexedExpressionConversionIntentionName();
+    }
 
-	@Nonnull
-	public PsiElementPredicate getElementPredicate()
-	{
-		return new IndexedExpressionConversionPredicate();
-	}
+    @Nonnull
+    public PsiElementPredicate getElementPredicate() {
+        return new IndexedExpressionConversionPredicate();
+    }
 
-	public void processIntention(@Nonnull PsiElement element,
-			Project project,
-			Editor editor) throws IncorrectOperationException
-	{
+    public void processIntention(
+        @Nonnull PsiElement element,
+        Project project,
+        Editor editor
+    ) throws IncorrectOperationException {
 
-		final GrIndexProperty arrayIndexExpression = (GrIndexProperty) element;
+        final GrIndexProperty arrayIndexExpression = (GrIndexProperty) element;
 
-		final GrArgumentList argList = (GrArgumentList) arrayIndexExpression.getLastChild();
+        final GrArgumentList argList = (GrArgumentList) arrayIndexExpression.getLastChild();
 
-		assert argList != null;
-		final GrExpression[] arguments = argList.getExpressionArguments();
+        assert argList != null;
+        final GrExpression[] arguments = argList.getExpressionArguments();
 
-		final PsiElement parent = element.getParent();
-		final GrExpression arrayExpression = arrayIndexExpression.getInvokedExpression();
-		if(!(parent instanceof GrAssignmentExpression))
-		{
-			rewriteAsGetAt(arrayIndexExpression, arrayExpression, arguments[0]);
-			return;
-		}
-		final GrAssignmentExpression assignmentExpression = (GrAssignmentExpression) parent;
-		final GrExpression rhs = assignmentExpression.getRValue();
-		if(rhs.equals(element))
-		{
-			rewriteAsGetAt(arrayIndexExpression, arrayExpression, arguments[0]);
-		}
-		else
-		{
-			rewriteAsSetAt(assignmentExpression, arrayExpression, arguments[0], rhs);
-		}
-	}
+        final PsiElement parent = element.getParent();
+        final GrExpression arrayExpression = arrayIndexExpression.getInvokedExpression();
+        if (!(parent instanceof GrAssignmentExpression)) {
+            rewriteAsGetAt(arrayIndexExpression, arrayExpression, arguments[0]);
+            return;
+        }
+        final GrAssignmentExpression assignmentExpression = (GrAssignmentExpression) parent;
+        final GrExpression rhs = assignmentExpression.getRValue();
+        if (rhs.equals(element)) {
+            rewriteAsGetAt(arrayIndexExpression, arrayExpression, arguments[0]);
+        }
+        else {
+            rewriteAsSetAt(assignmentExpression, arrayExpression, arguments[0], rhs);
+        }
+    }
 
-	private static void rewriteAsGetAt(GrIndexProperty arrayIndexExpression,
-			GrExpression arrayExpression,
-			GrExpression argument) throws IncorrectOperationException
-	{
-		PsiImplUtil.replaceExpression(arrayExpression.getText() + ".getAt(" + argument.getText() + ')',
-				arrayIndexExpression);
-	}
+    private static void rewriteAsGetAt(
+        GrIndexProperty arrayIndexExpression,
+        GrExpression arrayExpression,
+        GrExpression argument
+    ) throws IncorrectOperationException {
+        PsiImplUtil.replaceExpression(
+            arrayExpression.getText() + ".getAt(" + argument.getText() + ')',
+            arrayIndexExpression
+        );
+    }
 
-	private static void rewriteAsSetAt(GrAssignmentExpression assignment,
-			GrExpression arrayExpression,
-			GrExpression argument,
-			GrExpression value) throws IncorrectOperationException
-	{
-		PsiImplUtil.replaceExpression(arrayExpression.getText() + ".putAt(" + argument.getText() + ", " +
-				"" + value.getText() + ')', assignment);
-	}
+    private static void rewriteAsSetAt(
+        GrAssignmentExpression assignment,
+        GrExpression arrayExpression,
+        GrExpression argument,
+        GrExpression value
+    ) throws IncorrectOperationException {
+        PsiImplUtil.replaceExpression(arrayExpression.getText() + ".putAt(" + argument.getText() + ", " +
+            "" + value.getText() + ')', assignment);
+    }
 
 }
