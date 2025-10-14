@@ -33,7 +33,7 @@ public class FlipConditionalIntention extends Intention {
     @Nonnull
     @Override
     public LocalizeValue getText() {
-        return GroovyIntentionLocalize.flipComparisonIntentionName();
+        return GroovyIntentionLocalize.flipComparisonIntentionFamilyName();
     }
 
     @Nonnull

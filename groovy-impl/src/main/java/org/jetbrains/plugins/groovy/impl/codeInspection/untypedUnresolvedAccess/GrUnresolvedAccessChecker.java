@@ -36,6 +36,7 @@ import consulo.language.psi.SyntheticElement;
 import consulo.language.psi.resolve.PsiScopeProcessor;
 import consulo.language.psi.resolve.ResolveState;
 import consulo.language.psi.util.PsiTreeUtil;
+import consulo.localize.LocalizeValue;
 import consulo.logging.Logger;
 import consulo.project.Project;
 import consulo.util.collection.ContainerUtil;
@@ -154,7 +155,7 @@ public class GrUnresolvedAccessChecker {
       List<LocalQuickFix> fixes = QuickFixFactory.getInstance().registerOrderEntryFixes(refElement);
       if (fixes != null) {
         for (LocalQuickFix fix : fixes) {
-          builder.registerFix((IntentionAction)fix, null, null, null, null);
+          builder.registerFix((IntentionAction)fix, null, LocalizeValue.of(), null, null);
         }
       }
 
@@ -287,7 +288,7 @@ public class GrUnresolvedAccessChecker {
       List<LocalQuickFix> fixes = QuickFixFactory.getInstance().registerOrderEntryFixes(ref);
       if (fixes != null) {
         for (LocalQuickFix fix : fixes) {
-          builder.registerFix((IntentionAction)fix, null, null, null, null);
+          builder.registerFix((IntentionAction)fix, null, LocalizeValue.of(), null, null);
         }
       }
       return result;
@@ -648,14 +649,14 @@ public class GrUnresolvedAccessChecker {
   }
 
   private static void registerQuickFixAction(HighlightInfo.Builder builder, IntentionAction action, HighlightDisplayKey key) {
-    builder.registerFix(action, List.of(), null, null, key);
+    builder.registerFix(action, List.of(), LocalizeValue.of(), null, key);
   }
 
   private static void registerQuickFixAction(HighlightInfo.Builder builder,
                                              TextRange textRange,
                                              IntentionAction action,
                                              HighlightDisplayKey key) {
-    builder.registerFix(action, List.of(), null, textRange, key);
+    builder.registerFix(action, List.of(), LocalizeValue.of(), textRange, key);
   }
 
   private static boolean resolvesToGroovy(PsiElement qualifier) {

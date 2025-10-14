@@ -33,8 +33,10 @@ import consulo.annotation.access.RequiredReadAction;
 import consulo.application.progress.ProgressIndicator;
 import consulo.codeEditor.Editor;
 import consulo.document.util.TextRange;
+import consulo.groovy.impl.localize.GroovyInspectionLocalize;
 import consulo.language.editor.highlight.TextEditorHighlightingPass;
 import consulo.language.editor.highlight.UpdateHighlightersUtil;
+import consulo.language.editor.inspection.HighlightInfoTypeSeverityByKey;
 import consulo.language.editor.inspection.scheme.InspectionProfile;
 import consulo.language.editor.inspection.scheme.InspectionProjectProfileManager;
 import consulo.language.editor.intention.IntentionAction;
@@ -51,7 +53,6 @@ import consulo.util.collection.ContainerUtil;
 import consulo.util.lang.StringUtil;
 import consulo.virtualFileSystem.VirtualFile;
 import jakarta.annotation.Nonnull;
-import org.jetbrains.plugins.groovy.impl.codeInspection.GroovyInspectionBundle;
 import org.jetbrains.plugins.groovy.impl.codeInspection.GroovyQuickFixFactory;
 import org.jetbrains.plugins.groovy.impl.codeInspection.GroovySuppressableInspectionTool;
 import org.jetbrains.plugins.groovy.impl.codeInspection.GroovyUnusedDeclarationInspection;
@@ -81,6 +82,8 @@ public class GroovyPostHighlightingPass extends TextEditorHighlightingPass {
     private volatile Set<GrImportStatement> myUnusedImports;
     private volatile List<HighlightInfo> myUnusedDeclarations;
 
+    private HighlightInfoType myUnusedHighlightType;
+
     public GroovyPostHighlightingPass(GroovyFile file, Editor editor) {
         super(file.getProject(), editor.getDocument(), true);
         myFile = file;
@@ -96,8 +99,10 @@ public class GroovyPostHighlightingPass extends TextEditorHighlightingPass {
         }
 
         final InspectionProfile profile = InspectionProjectProfileManager.getInstance(myProject).getInspectionProfile();
-        final HighlightDisplayKey unusedDefKey = HighlightDisplayKey.find(GroovyUnusedDeclarationInspection
-            .SHORT_NAME);
+        final HighlightDisplayKey unusedDefKey = HighlightDisplayKey.find(GroovyUnusedDeclarationInspection.SHORT_NAME);
+
+        myUnusedHighlightType = new HighlightInfoTypeSeverityByKey(unusedDefKey, HighlightInfoType.RAW_UNUSED_SYMBOL.getAttributesKey());
+
         final boolean deadCodeEnabled = profile.isToolEnabled(unusedDefKey, myFile);
         final UnusedDeclarationInspectionBase deadCodeInspection = (UnusedDeclarationInspectionBase) profile.getUnwrappedTool(UnusedDeclarationInspectionBase.SHORT_NAME, myFile);
         final UnusedDeclarationInspectionState declarationInspectionState = (UnusedDeclarationInspectionState) profile.getToolState(UnusedDeclarationInspectionBase.SHORT_NAME, myFile);
@@ -145,7 +150,7 @@ public class GroovyPostHighlightingPass extends TextEditorHighlightingPass {
                         if (element instanceof GrTypeDefinition && !UnusedSymbolUtil.isClassUsed(myProject,
                             element.getContainingFile(), (GrTypeDefinition) element, progress, usageHelper)) {
                             HighlightInfo highlightInfo = UnusedSymbolUtil.createUnusedSymbolInfo(nameId,
-                                "Class " + name + " is unused", HighlightInfoType.UNUSED_SYMBOL);
+                                "Class " + name + " is unused", myUnusedHighlightType);
                             QuickFixAction.registerQuickFixAction(highlightInfo, QuickFixFactory.getInstance()
                                 .createSafeDeleteFix(element), unusedDefKey);
                             ContainerUtil.addIfNotNull(unusedDeclarations, highlightInfo);
@@ -156,8 +161,7 @@ public class GroovyPostHighlightingPass extends TextEditorHighlightingPass {
                                 method, progress, usageHelper)) {
                                 String message = (method.isConstructor() ? "Constructor" : "Method") + " " + name + " " +
                                     "is unused";
-                                HighlightInfo highlightInfo = UnusedSymbolUtil.createUnusedSymbolInfo(nameId, message,
-                                    HighlightInfoType.UNUSED_SYMBOL);
+                                HighlightInfo highlightInfo = UnusedSymbolUtil.createUnusedSymbolInfo(nameId, message, myUnusedHighlightType);
                                 QuickFixAction.registerQuickFixAction(highlightInfo, QuickFixFactory.getInstance()
                                     .createSafeDeleteFix(method), unusedDefKey);
                                 ContainerUtil.addIfNotNull(unusedDeclarations, highlightInfo);
@@ -165,7 +169,7 @@ public class GroovyPostHighlightingPass extends TextEditorHighlightingPass {
                         }
                         else if (element instanceof GrField && isFieldUnused((GrField) element, progress, usageHelper)) {
                             HighlightInfo highlightInfo = UnusedSymbolUtil.createUnusedSymbolInfo(nameId,
-                                "Property " + name + " is unused", HighlightInfoType.UNUSED_SYMBOL);
+                                "Property " + name + " is unused", myUnusedHighlightType);
                             QuickFixAction.registerQuickFixAction(highlightInfo, QuickFixFactory.getInstance()
                                 .createSafeDeleteFix(element), unusedDefKey);
                             ContainerUtil.addIfNotNull(unusedDeclarations, highlightInfo);
@@ -197,7 +201,7 @@ public class GroovyPostHighlightingPass extends TextEditorHighlightingPass {
                     if (methodMayHaveUnusedParameters(method)) {
                         PsiElement identifier = parameter.getNameIdentifierGroovy();
                         HighlightInfo highlightInfo = UnusedSymbolUtil.createUnusedSymbolInfo(identifier,
-                            "Parameter " + parameter.getName() + " is unused", HighlightInfoType.UNUSED_SYMBOL);
+                            "Parameter " + parameter.getName() + " is unused", myUnusedHighlightType);
                         QuickFixAction.registerQuickFixAction(highlightInfo, GroovyQuickFixFactory.getInstance()
                             .createRemoveUnusedGrParameterFix(parameter), unusedDefKey);
                         ContainerUtil.addIfNotNull(unusedDeclarations, highlightInfo);
@@ -249,6 +253,7 @@ public class GroovyPostHighlightingPass extends TextEditorHighlightingPass {
     }
 
     @Override
+    @RequiredReadAction
     public void doApplyInformationToEditor() {
         if (myUnusedDeclarations == null || myUnusedImports == null) {
             return;
@@ -256,7 +261,11 @@ public class GroovyPostHighlightingPass extends TextEditorHighlightingPass {
 
         List<HighlightInfo> infos = new ArrayList<>(myUnusedDeclarations);
         for (GrImportStatement unusedImport : myUnusedImports) {
-            HighlightInfo info = HighlightInfo.newHighlightInfo(HighlightInfoType.UNUSED_SYMBOL).range(calculateRangeToUse(unusedImport)).descriptionAndTooltip(GroovyInspectionBundle.message("unused.import")).create();
+            HighlightInfo info = HighlightInfo.newHighlightInfo(myUnusedHighlightType)
+                .range(calculateRangeToUse(unusedImport))
+                .descriptionAndTooltip(GroovyInspectionLocalize.unusedImport())
+                .create();
+
             QuickFixAction.registerQuickFixAction(info, GroovyQuickFixFactory.getInstance().createOptimizeImportsFix(false));
             infos.add(info);
         }
