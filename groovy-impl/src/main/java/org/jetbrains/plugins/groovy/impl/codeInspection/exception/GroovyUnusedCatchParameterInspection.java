@@ -17,9 +17,6 @@ package org.jetbrains.plugins.groovy.impl.codeInspection.exception;
 
 import consulo.annotation.component.ExtensionImpl;
 import consulo.ide.impl.idea.codeInsight.daemon.impl.quickfix.RenameElementFix;
-import consulo.language.editor.inspection.LocalQuickFix;
-import consulo.language.editor.inspection.ProblemHighlightType;
-import consulo.language.psi.PsiElement;
 import consulo.localize.LocalizeValue;
 import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
@@ -68,13 +65,10 @@ public class GroovyUnusedCatchParameterInspection extends BaseInspection {
             final CatchParameterUsedVisitor visitor = new CatchParameterUsedVisitor(parameter);
             block.accept(visitor);
             if (!visitor.isUsed()) {
-                final PsiElement nameIdentifier = parameter.getNameIdentifierGroovy();
-                registerError(
-                    nameIdentifier,
-                    "Unused catch parameter '#ref' #loc",
-                    new LocalQuickFix[]{new RenameElementFix(parameter, "ignored")},
-                    ProblemHighlightType.GENERIC_ERROR_OR_WARNING
-                );
+                problemsHolder.newProblem(LocalizeValue.localizeTODO("Unused catch parameter '#ref' #loc"))
+                    .range(parameter.getNameIdentifierGroovy())
+                    .withFix(new RenameElementFix(parameter, "ignored"))
+                    .create();
             }
         }
     }

@@ -18,8 +18,6 @@ package org.jetbrains.plugins.groovy.impl.codeInspection.confusing;
 import com.intellij.java.language.psi.PsiAnnotation;
 import com.intellij.java.language.psi.PsiAnnotationMemberValue;
 import consulo.groovy.impl.localize.GroovyInspectionLocalize;
-import consulo.language.editor.inspection.LocalQuickFix;
-import consulo.language.editor.inspection.ProblemHighlightType;
 import consulo.language.psi.PsiElement;
 import consulo.localize.LocalizeValue;
 import jakarta.annotation.Nonnull;
@@ -57,12 +55,10 @@ public class DelegatesToInspection extends BaseInspection {
                     return;
                 }
 
-
                 final PsiElement owner = annotation.getParent().getParent();
                 if (!(owner instanceof GrParameter)) {
                     return;
                 }
-
 
                 final boolean isTargetDeclared = annotation.findDeclaredAttributeValue("value") != null;
                 String targetName = GrAnnotationUtil.inferStringAttribute(annotation, "value");
@@ -78,20 +74,15 @@ public class DelegatesToInspection extends BaseInspection {
                                 return; //target is used
                             }
                         }
-                        else {
-                            if (delegatesTo.findDeclaredAttributeValue("target") == null) {
-                                return; // target is used
-                            }
+                        else if (delegatesTo.findDeclaredAttributeValue("target") == null) {
+                            return; // target is used
                         }
                     }
                 }
 
-                registerError(
-                    annotation.getClassReference(),
-                    GroovyInspectionLocalize.targetAnnotationIsUnused(),
-                    LocalQuickFix.EMPTY_ARRAY,
-                    ProblemHighlightType.GENERIC_ERROR_OR_WARNING
-                );
+                problemsHolder.newProblem(GroovyInspectionLocalize.targetAnnotationIsUnused())
+                    .range((PsiElement) annotation.getClassReference())
+                    .create();
             }
 
             private void checkDelegatesTo(GrAnnotation annotation) {
@@ -123,12 +114,9 @@ public class DelegatesToInspection extends BaseInspection {
                     }
                 }
 
-                registerError(
-                    targetPair,
-                    GroovyInspectionLocalize.target0DoesNotExist(targetName != null ? targetName : "?"),
-                    LocalQuickFix.EMPTY_ARRAY,
-                    ProblemHighlightType.GENERIC_ERROR_OR_WARNING
-                );
+                problemsHolder.newProblem(GroovyInspectionLocalize.target0DoesNotExist(targetName != null ? targetName : "?"))
+                    .range(targetPair)
+                    .create();
             }
         };
     }

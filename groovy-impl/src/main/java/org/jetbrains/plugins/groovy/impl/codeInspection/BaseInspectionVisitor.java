@@ -20,7 +20,6 @@ import consulo.language.editor.inspection.ProblemHighlightType;
 import consulo.language.editor.inspection.ProblemsHolder;
 import consulo.language.psi.PsiElement;
 import consulo.localize.LocalizeValue;
-import consulo.util.lang.StringUtil;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
@@ -34,7 +33,7 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMe
 
 public abstract class BaseInspectionVisitor<State> extends GroovyElementVisitor {
     private BaseInspection inspection = null;
-    private ProblemsHolder problemsHolder = null;
+    protected ProblemsHolder problemsHolder = null;
     private boolean onTheFly = false;
 
     protected State myState;
@@ -69,10 +68,10 @@ public abstract class BaseInspectionVisitor<State> extends GroovyElementVisitor 
         if (location == null) {
             return;
         }
-        final LocalQuickFix[] fix = createFixes(location);
-        String description = StringUtil.notNullize(inspection.buildErrorString(location));
+        final LocalQuickFix[] fixes = createFixes(location);
+        LocalizeValue description = LocalizeValue.ofNullable(inspection.buildErrorString(location));
 
-        registerError(location, description, fix, ProblemHighlightType.GENERIC_ERROR_OR_WARNING);
+        registerError(location, description, fixes, ProblemHighlightType.GENERIC_ERROR_OR_WARNING);
     }
 
     protected void registerMethodError(GrMethod method, Object... args) {
@@ -80,7 +79,7 @@ public abstract class BaseInspectionVisitor<State> extends GroovyElementVisitor 
             return;
         }
         final LocalQuickFix[] fixes = createFixes(method);
-        String description = StringUtil.notNullize(inspection.buildErrorString(args));
+        LocalizeValue description = LocalizeValue.ofNullable(inspection.buildErrorString(args));
 
         registerError(method.getNameIdentifierGroovy(), description, fixes, ProblemHighlightType.GENERIC_ERROR_OR_WARNING);
     }
@@ -89,9 +88,9 @@ public abstract class BaseInspectionVisitor<State> extends GroovyElementVisitor 
         if (variable == null) {
             return;
         }
-        final LocalQuickFix[] fix = createFixes(variable);
-        final String description = StringUtil.notNullize(inspection.buildErrorString(args));
-        registerError(variable.getNameIdentifierGroovy(), description, fix, ProblemHighlightType.GENERIC_ERROR_OR_WARNING);
+        final LocalQuickFix[] fixes = createFixes(variable);
+        LocalizeValue description = LocalizeValue.ofNullable(inspection.buildErrorString(args));
+        registerError(variable.getNameIdentifierGroovy(), description, fixes, ProblemHighlightType.GENERIC_ERROR_OR_WARNING);
     }
 
     protected void registerMethodCallError(GrMethodCallExpression method, Object... args) {
@@ -99,7 +98,7 @@ public abstract class BaseInspectionVisitor<State> extends GroovyElementVisitor 
             return;
         }
         final LocalQuickFix[] fixes = createFixes(method);
-        final String description = StringUtil.notNullize(inspection.buildErrorString(args));
+        LocalizeValue description = LocalizeValue.ofNullable(inspection.buildErrorString(args));
 
         final GrExpression invoked = method.getInvokedExpression();
         assert invoked != null;
@@ -126,15 +125,14 @@ public abstract class BaseInspectionVisitor<State> extends GroovyElementVisitor 
     }
 
     protected void registerError(@Nonnull PsiElement location, ProblemHighlightType highlightType, Object... args) {
-        final LocalQuickFix[] fix = createFixes(location);
-        final String description = StringUtil.notNullize(inspection.buildErrorString(args));
-        registerError(location, description, fix, highlightType);
+        final LocalQuickFix[] fixes = createFixes(location);
+        LocalizeValue description = LocalizeValue.ofNullable(inspection.buildErrorString(args));
+        registerError(location, description, fixes, highlightType);
     }
 
     @Nullable
     private LocalQuickFix[] createFixes(@Nonnull PsiElement location) {
-        if (!onTheFly &&
-            inspection.buildQuickFixesOnlyForOnTheFlyErrors()) {
+        if (!onTheFly && inspection.buildQuickFixesOnlyForOnTheFlyErrors()) {
             return null;
         }
         final GroovyFix[] fixes = inspection.buildFixes(location);

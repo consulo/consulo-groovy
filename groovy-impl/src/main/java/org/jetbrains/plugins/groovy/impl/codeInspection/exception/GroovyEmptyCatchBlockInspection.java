@@ -17,8 +17,6 @@ package org.jetbrains.plugins.groovy.impl.codeInspection.exception;
 
 import consulo.annotation.component.ExtensionImpl;
 import consulo.ide.impl.idea.codeInsight.daemon.impl.quickfix.RenameElementFix;
-import consulo.language.editor.inspection.LocalQuickFix;
-import consulo.language.editor.inspection.ProblemHighlightType;
 import consulo.localize.LocalizeValue;
 import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
@@ -62,13 +60,10 @@ public class GroovyEmptyCatchBlockInspection extends BaseInspection {
                 return;
             }
 
-            final LocalQuickFix[] fixes = {new RenameElementFix(parameter, "ignored")};
-            registerError(
-                catchClause.getFirstChild(),
-                LocalizeValue.localizeTODO("Empty '#ref' block #loc"),
-                fixes,
-                ProblemHighlightType.GENERIC_ERROR_OR_WARNING
-            );
+            problemsHolder.newProblem(LocalizeValue.localizeTODO("Empty '#ref' block #loc"))
+                .range(catchClause.getFirstChild())
+                .withFixes(new RenameElementFix(parameter, "ignored"))
+                .create();
         }
 
         private static boolean isEmpty(@Nonnull GrOpenBlock body) {

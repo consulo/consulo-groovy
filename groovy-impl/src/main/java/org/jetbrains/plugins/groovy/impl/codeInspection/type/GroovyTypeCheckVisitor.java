@@ -82,11 +82,9 @@ import static com.intellij.java.language.psi.util.PsiUtil.extractIterableTypePar
 import static org.jetbrains.plugins.groovy.impl.codeInspection.type.GroovyTypeCheckVisitorHelper.*;
 
 public class GroovyTypeCheckVisitor extends BaseInspectionVisitor {
-
     private static final Logger LOG = Logger.getInstance(GroovyAssignabilityCheckInspection.class);
 
     private boolean checkCallApplicability(@Nullable PsiType type, boolean checkUnknownArgs, @Nonnull CallInfo info) {
-
         PsiType[] argumentTypes = info.getArgumentTypes();
         GrExpression invoked = info.getInvokedExpression();
         if (invoked == null) {
@@ -274,8 +272,9 @@ public class GroovyTypeCheckVisitor extends BaseInspectionVisitor {
         if (result == null || !(result instanceof String)) {
             registerError(
                 elementToHighlight,
-                ProblemHighlightType.WEAK_WARNING,
-                GroovyLocalize.cannotAssignStringToEnum0(expectedType.getPresentableText()).get()
+                GroovyLocalize.cannotAssignStringToEnum0(expectedType.getPresentableText()),
+                LocalQuickFix.EMPTY_ARRAY,
+                ProblemHighlightType.WEAK_WARNING
             );
         }
         else {
@@ -283,8 +282,9 @@ public class GroovyTypeCheckVisitor extends BaseInspectionVisitor {
             if (!(field instanceof PsiEnumConstant)) {
                 registerError(
                     elementToHighlight,
-                    ProblemHighlightType.GENERIC_ERROR_OR_WARNING,
-                    GroovyLocalize.cannotFindEnumConstant0InEnum1(result, expectedType.getPresentableText()).get()
+                    GroovyLocalize.cannotFindEnumConstant0InEnum1(result, expectedType.getPresentableText()),
+                    LocalQuickFix.EMPTY_ARRAY,
+                    ProblemHighlightType.GENERIC_ERROR_OR_WARNING
                 );
             }
         }
@@ -345,16 +345,18 @@ public class GroovyTypeCheckVisitor extends BaseInspectionVisitor {
 
             registerError(
                 info.getElementToHighlight(),
-                ProblemHighlightType.GENERIC_ERROR,
-                GroovyLocalize.methodCallIsAmbiguous().get()
+                GroovyLocalize.methodCallIsAmbiguous(),
+                LocalQuickFix.EMPTY_ARRAY,
+                ProblemHighlightType.GENERIC_ERROR
             );
         }
         else {
             final String typesString = buildArgTypesList(types);
             registerError(
                 info.getElementToHighlight(),
-                ProblemHighlightType.GENERIC_ERROR,
-                GroovyLocalize.cannotFindOperatorOverloadMethod(typesString).get()
+                GroovyLocalize.cannotFindOperatorOverloadMethod(typesString),
+                LocalQuickFix.EMPTY_ARRAY,
+                ProblemHighlightType.GENERIC_ERROR
             );
         }
     }
@@ -438,8 +440,12 @@ public class GroovyTypeCheckVisitor extends BaseInspectionVisitor {
                 !checkCategoryQualifier(invoked, qualifier, staticMethod, methodResolveResult.getSubstitutor())) {
                 registerError(
                     info.getHighlightElementForCategoryQualifier(),
-                    ProblemHighlightType.GENERIC_ERROR,
-                    GroovyInspectionLocalize.categoryMethod0CannotBeAppliedTo1(method.getName(), qualifierType.getCanonicalText()).get()
+                    GroovyInspectionLocalize.categoryMethod0CannotBeAppliedTo1(
+                        method.getName(),
+                        qualifierType.getCanonicalText()
+                    ),
+                    LocalQuickFix.EMPTY_ARRAY,
+                    ProblemHighlightType.GENERIC_ERROR
                 );
                 return false;
             }
@@ -570,8 +576,9 @@ public class GroovyTypeCheckVisitor extends BaseInspectionVisitor {
             if (!descriptor.checkType(expressionType, call)) {
                 registerError(
                     namedArgumentExpression,
-                    ProblemHighlightType.GENERIC_ERROR,
-                    "Type of argument '" + labelName + "' can not be '" + expressionType.getPresentableText() + "'"
+                    LocalizeValue.localizeTODO("Type of argument '" + labelName + "' can not be '" + expressionType.getPresentableText() + "'"),
+                    LocalQuickFix.EMPTY_ARRAY,
+                    ProblemHighlightType.GENERIC_ERROR
                 );
             }
         }
@@ -609,8 +616,9 @@ public class GroovyTypeCheckVisitor extends BaseInspectionVisitor {
 
             registerError(
                 info.getElementToHighlight(),
-                ProblemHighlightType.GENERIC_ERROR,
-                GroovyLocalize.methodCallIsAmbiguous().get()
+                GroovyLocalize.methodCallIsAmbiguous(),
+                LocalQuickFix.EMPTY_ARRAY,
+                ProblemHighlightType.GENERIC_ERROR
             );
         }
     }
@@ -745,10 +753,7 @@ public class GroovyTypeCheckVisitor extends BaseInspectionVisitor {
         );
     }
 
-    protected void processTupleAssignment(
-        @Nonnull GrTupleExpression tupleExpression,
-        @Nonnull GrExpression initializer
-    ) {
+    protected void processTupleAssignment(@Nonnull GrTupleExpression tupleExpression, @Nonnull GrExpression initializer) {
         GrExpression[] lValues = tupleExpression.getExpressions();
         if (initializer instanceof GrListOrMap) {
             GrExpression[] initializers = ((GrListOrMap) initializer).getInitializers();
@@ -827,8 +832,9 @@ public class GroovyTypeCheckVisitor extends BaseInspectionVisitor {
         final String typesString = buildArgTypesList(info.getArgumentTypes());
         registerError(
             info.getElementToHighlight(),
-            ProblemHighlightType.GENERIC_ERROR,
-            GroovyLocalize.cannotApplyMethodOrClosure(invokedText, typesString).get()
+            GroovyLocalize.cannotApplyMethodOrClosure(invokedText, typesString),
+            LocalQuickFix.EMPTY_ARRAY,
+            ProblemHighlightType.GENERIC_ERROR
         );
     }
 
@@ -845,15 +851,13 @@ public class GroovyTypeCheckVisitor extends BaseInspectionVisitor {
                 super.registerError(location, description, fixes, highlightType);
             }
         }
+        else if (highlightType == ProblemHighlightType.GENERIC_ERROR) {
+            // if this visitor works within non-static context we will highlight all errors as warnings
+            super.registerError(location, description, fixes, ProblemHighlightType.GENERIC_ERROR_OR_WARNING);
+        }
         else {
-            if (highlightType == ProblemHighlightType.GENERIC_ERROR) {
-                // if this visitor works within non-static context we will highlight all errors as warnings
-                super.registerError(location, description, fixes, ProblemHighlightType.GENERIC_ERROR_OR_WARNING);
-            }
-            else {
-                // if this visitor works within static context errors will be highlighted as errors by annotator, warnings will be highlighted as warnings here
-                super.registerError(location, description, fixes, highlightType);
-            }
+            // if this visitor works within static context errors will be highlighted as errors by annotator, warnings will be highlighted as warnings here
+            super.registerError(location, description, fixes, highlightType);
         }
     }
 
@@ -996,14 +1000,14 @@ public class GroovyTypeCheckVisitor extends BaseInspectionVisitor {
         if (result == ConversionResult.OK) {
             return;
         }
-        final ProblemHighlightType highlightType = result == ConversionResult.ERROR
+        ProblemHighlightType highlightType = result == ConversionResult.ERROR
             ? ProblemHighlightType.GENERIC_ERROR
             : ProblemHighlightType.GENERIC_ERROR_OR_WARNING;
-        final String message = GroovyLocalize.cannotCast(actualType.getPresentableText(), expectedType.getPresentableText()).get();
         registerError(
             expression,
-            highlightType,
-            message
+            GroovyLocalize.cannotCast(actualType.getPresentableText(), expectedType.getPresentableText()),
+            LocalQuickFix.EMPTY_ARRAY,
+            highlightType
         );
     }
 
@@ -1101,7 +1105,7 @@ public class GroovyTypeCheckVisitor extends BaseInspectionVisitor {
                     if (!typesAreEqual(expected, actual, parameterList)) {
                         registerError(
                             typeElement,
-                            GroovyInspectionLocalize.expectedType0(expected.getPresentableText(), actual.getPresentableText()).get(),
+                            GroovyInspectionLocalize.expectedType0(expected.getPresentableText(), actual.getPresentableText()),
                             null,
                             ProblemHighlightType.GENERIC_ERROR
                         );
@@ -1174,11 +1178,7 @@ public class GroovyTypeCheckVisitor extends BaseInspectionVisitor {
     }
 
     @Override
-    protected void registerError(
-        @Nonnull PsiElement location,
-        ProblemHighlightType highlightType,
-        Object... args
-    ) {
-        registerError(location, (String) args[0], LocalQuickFix.EMPTY_ARRAY, highlightType);
+    protected void registerError(@Nonnull PsiElement location, ProblemHighlightType highlightType, Object... args) {
+        registerError(location, (LocalizeValue) args[0], LocalQuickFix.EMPTY_ARRAY, highlightType);
     }
 }

@@ -21,7 +21,6 @@ import consulo.groovy.localize.GroovyLocalize;
 import consulo.language.editor.inspection.InspectionToolState;
 import consulo.language.editor.inspection.LocalQuickFix;
 import consulo.language.editor.inspection.ProblemDescriptor;
-import consulo.language.editor.inspection.ProblemHighlightType;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiFile;
 import consulo.language.psi.SyntheticElement;
@@ -91,15 +90,13 @@ public class GrPackageInspection extends BaseInspection<GrPackageInspectionState
                         return;
                     }
 
-                    registerError(
-                        toHighlight,
-                        LocalizeValue.localizeTODO("Package name mismatch. Actual: '" + actual + "', expected: '" + expectedPackage + "'"),
-                        new LocalQuickFix[]{
+                    problemsHolder.newProblem(LocalizeValue.localizeTODO("Package name mismatch. Actual: '" + actual + "', expected: '" + expectedPackage + "'"))
+                        .range(toHighlight)
+                        .withFixes(
                             new ChangePackageQuickFix(expectedPackage),
                             new GrMoveToDirFix(actual)
-                        },
-                        ProblemHighlightType.GENERIC_ERROR_OR_WARNING
-                    );
+                        )
+                        .create();
                 }
             }
         };

@@ -20,18 +20,16 @@ import com.intellij.java.language.psi.PsiDocCommentOwner;
 import com.intellij.java.language.psi.PsiModifierListOwner;
 import consulo.groovy.impl.localize.GroovyInspectionLocalize;
 import consulo.groovy.localize.GroovyLocalize;
-import consulo.language.editor.inspection.LocalQuickFix;
 import consulo.language.editor.inspection.ProblemHighlightType;
 import consulo.language.psi.PsiElement;
 import consulo.localize.LocalizeValue;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.GrReferenceElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
-
-import jakarta.annotation.Nonnull;
 
 /**
  * @author Max Medvedev
@@ -79,12 +77,10 @@ public class GrDeprecatedAPIUsageInspection extends BaseInspection {
                 PsiElement resolved = ref.resolve();
                 if (isDeprecated(resolved)) {
                     PsiElement toHighlight = getElementToHighlight(ref);
-                    registerError(
-                        toHighlight,
-                        GroovyLocalize.zeroIsDeprecated(ref.getReferenceName()),
-                        LocalQuickFix.EMPTY_ARRAY,
-                        ProblemHighlightType.LIKE_DEPRECATED
-                    );
+                    problemsHolder.newProblem(GroovyLocalize.zeroIsDeprecated(ref.getReferenceName()))
+                        .range(toHighlight)
+                        .highlightType(ProblemHighlightType.LIKE_DEPRECATED)
+                        .create();
                 }
             }
 

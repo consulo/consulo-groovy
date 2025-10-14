@@ -17,15 +17,12 @@ package org.jetbrains.plugins.groovy.impl.codeInspection.confusing;
 
 import com.intellij.java.language.psi.PsiType;
 import consulo.groovy.impl.localize.GroovyInspectionLocalize;
-import consulo.language.editor.inspection.LocalQuickFix;
-import consulo.language.editor.inspection.ProblemHighlightType;
 import consulo.language.psi.PsiElement;
 import consulo.localize.LocalizeValue;
 import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.codeInspection.utils.ControlFlowUtils;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
-import org.jetbrains.plugins.groovy.impl.codeInspection.GroovyInspectionBundle;
 import org.jetbrains.plugins.groovy.lang.psi.GrControlFlowOwner;
 import org.jetbrains.plugins.groovy.lang.psi.GrNamedElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlock;
@@ -80,13 +77,9 @@ public class GrReassignedInClosureLocalVarInspection extends BaseInspection {
                 final GrControlFlowOwner varFlowOwner = ControlFlowUtils.findControlFlowOwner(resolved);
                 final GrControlFlowOwner refFlorOwner = ControlFlowUtils.findControlFlowOwner(referenceExpression);
                 if (isOtherScopeAndType(referenceExpression, checked, varFlowOwner, refFlorOwner)) {
-                    LocalizeValue flowDescription = getFlowDescription(refFlorOwner);
-                    LocalizeValue message = LocalizeValue.localizeTODO(GroovyInspectionBundle.message("local.var.0.is.reassigned",
-                        ((GrNamedElement) resolved).getName(), flowDescription
-                    ));
-                    registerError(referenceExpression, message, LocalQuickFix.EMPTY_ARRAY,
-                        ProblemHighlightType.GENERIC_ERROR_OR_WARNING
-                    );
+                    problemsHolder.newProblem(GroovyInspectionLocalize.localVar0IsReassigned(((GrNamedElement) resolved).getName()))
+                        .range((PsiElement) referenceExpression)
+                        .create();
                 }
             }
         };

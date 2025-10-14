@@ -23,10 +23,9 @@ import consulo.application.Application;
 import consulo.groovy.impl.localize.GroovyInspectionLocalize;
 import consulo.java.analysis.codeInspection.CantBeStaticCondition;
 import consulo.language.editor.inspection.InspectionToolState;
-import consulo.language.editor.inspection.LocalQuickFix;
-import consulo.language.editor.inspection.ProblemHighlightType;
 import consulo.language.psi.PsiElement;
 import consulo.localize.LocalizeValue;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.impl.codeInspection.bugs.GrModifierFix;
@@ -42,8 +41,6 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMe
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
 import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GroovyScriptClass;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
-
-import jakarta.annotation.Nonnull;
 
 @ExtensionImpl
 public class GrMethodMayBeStaticInspection extends BaseInspection<GrMethodMayBeStaticInspectionState> {
@@ -66,18 +63,22 @@ public class GrMethodMayBeStaticInspection extends BaseInspection<GrMethodMayBeS
             @Override
             public void visitMethod(GrMethod method) {
                 if (checkMethod(method, myState)) {
-                    final GrModifierFix modifierFix = new GrModifierFix(method, PsiModifier.STATIC, false, true, descriptor -> {
-                        final PsiElement element = descriptor.getPsiElement();
-                        final PsiElement parent = element.getParent();
-                        assert parent instanceof GrMethod : "element: " + element + ", parent:" + parent;
-                        return ((GrMethod) parent).getModifierList();
-                    });
-                    registerError(
-                        method.getNameIdentifierGroovy(),
-                        GroovyInspectionLocalize.methodMayBeStatic(),
-                        new LocalQuickFix[]{modifierFix},
-                        ProblemHighlightType.GENERIC_ERROR_OR_WARNING
+                    final GrModifierFix modifierFix = new GrModifierFix(
+                        method,
+                        PsiModifier.STATIC,
+                        false,
+                        true,
+                        descriptor -> {
+                            final PsiElement element = descriptor.getPsiElement();
+                            final PsiElement parent = element.getParent();
+                            assert parent instanceof GrMethod : "element: " + element + ", parent:" + parent;
+                            return ((GrMethod) parent).getModifierList();
+                        }
                     );
+                    problemsHolder.newProblem(GroovyInspectionLocalize.methodMayBeStatic())
+                        .range(method.getNameIdentifierGroovy())
+                        .withFix(modifierFix)
+                        .create();
                 }
             }
         };

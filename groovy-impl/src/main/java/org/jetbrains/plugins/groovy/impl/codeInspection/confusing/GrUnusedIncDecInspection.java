@@ -136,19 +136,17 @@ public class GrUnusedIncDecInspection extends BaseInspection {
 
             if (allAreWrite) {
                 if (expression.isPostfix() && PsiUtil.isExpressionUsed(expression)) {
-                    registerError(
-                        expression.getOperationToken(),
-                        GroovyInspectionLocalize.unused0(expression.getOperationToken().getText()),
-                        new LocalQuickFix[]{new ReplacePostfixIncWithPrefixFix(expression), new RemoveIncOrDecFix(expression)},
-                        ProblemHighlightType.LIKE_UNUSED_SYMBOL
-                    );
+                    problemsHolder.newProblem(GroovyInspectionLocalize.unused0(expression.getOperationToken().getText()))
+                        .range(expression.getOperationToken())
+                        .highlightType(ProblemHighlightType.LIKE_UNUSED_SYMBOL)
+                        .withFixes(new ReplacePostfixIncWithPrefixFix(expression), new RemoveIncOrDecFix(expression))
+                        .create();
                 }
                 else if (!PsiUtil.isExpressionUsed(expression)) {
-                    registerError(
-                        expression.getOperationToken(),
-                        GroovyInspectionLocalize.unused0(expression.getOperationToken().getText()), LocalQuickFix.EMPTY_ARRAY,
-                        ProblemHighlightType.LIKE_UNUSED_SYMBOL
-                    );
+                    problemsHolder.newProblem(GroovyInspectionLocalize.unused0(expression.getOperationToken().getText()))
+                        .range(expression.getOperationToken())
+                        .highlightType(ProblemHighlightType.LIKE_UNUSED_SYMBOL)
+                        .create();
                 }
             }
         }
