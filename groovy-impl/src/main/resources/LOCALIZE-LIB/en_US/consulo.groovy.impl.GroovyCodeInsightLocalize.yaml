@@ -1,0 +1,18 @@
+generate.equals.and.hashcode.already.defined.warning.anonymous:
+    text: equals() and hashCode() already defined
+generate.equals.and.hashcode.already.defined.warning:
+    text: equals() and hashCode() already defined in {0}
+generate.equals.and.hashcode.already.defined.title:
+    text: Equals() and HashCode() Already Defined
+generate.equals.compare.nested.arrays.comment:
+    text: // Compare nested arrays - values of {0} here
+generate.equals.compare.arrays.comment:
+    text: // Probably incorrect - comparing Object[] arrays with Arrays.equals
+generate.property.missing.already.defined.warning:
+    text: propertyMissing() already defined
+generate.property.missing.already.defined.title:
+    text: propertyMissing() Already Defined
+generate.method.missing.already.defined.warning:
+    text: methodMissing() already defined
+generate.method.missing.already.defined.title:
+    text: methodMissing() Already Defined

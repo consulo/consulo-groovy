@@ -23,125 +23,144 @@ import com.intellij.java.language.psi.PsiAnonymousClass;
 import com.intellij.java.language.psi.PsiClass;
 import com.intellij.java.language.psi.PsiField;
 import com.intellij.java.language.psi.PsiMethod;
-import consulo.application.ApplicationManager;
-import consulo.application.util.function.Computable;
+import consulo.groovy.impl.localize.GroovyCodeInsightLocalize;
 import consulo.java.impl.codeInsight.JavaCodeInsightSettings;
 import consulo.language.editor.generation.ClassMember;
 import consulo.language.psi.scope.GlobalSearchScope;
 import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
 import consulo.logging.Logger;
 import consulo.project.Project;
+import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.ex.awt.DialogWrapper;
 import consulo.ui.ex.awt.Messages;
+import consulo.ui.ex.awt.UIUtil;
 import consulo.util.collection.ContainerUtil;
-import jakarta.annotation.Nullable;
-import org.jetbrains.plugins.groovy.impl.actions.generate.GroovyCodeInsightBundle;
-import org.jetbrains.plugins.groovy.impl.actions.generate.GroovyGenerationInfo;
-
 import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
+import org.jetbrains.plugins.groovy.impl.actions.generate.GroovyGenerationInfo;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Supplier;
 
 /**
- * User: Dmitry.Krasilschikov
- * Date: 28.05.2008
+ * @author Dmitry.Krasilschikov
+ * @since 2008-05-28
  */
 public class GroovyGenerateEqualsHandler extends GenerateMembersHandlerBase {
+    private static final Logger LOG = Logger.getInstance("org.jetbrains.plugins.groovy.actions.generate.equals.EqualsGenerateHandler");
+    private PsiField[] myEqualsFields = null;
+    private PsiField[] myHashCodeFields = null;
+    private PsiField[] myNonNullFields = null;
+    private static final PsiElementClassMember[] DUMMY_RESULT = new PsiElementClassMember[1];
 
-  private static final Logger LOG = Logger.getInstance("org.jetbrains.plugins.groovy.actions.generate.equals.EqualsGenerateHandler");
-  private PsiField[] myEqualsFields = null;
-  private PsiField[] myHashCodeFields = null;
-  private PsiField[] myNonNullFields = null;
-  private static final PsiElementClassMember[] DUMMY_RESULT = new PsiElementClassMember[1];
-
-  public GroovyGenerateEqualsHandler() {
-    super("");
-  }
-
-
-  @Nullable
-  protected ClassMember[] chooseOriginalMembers(PsiClass aClass, Project project) {
-    myEqualsFields = null;
-    myHashCodeFields = null;
-    myNonNullFields = PsiField.EMPTY_ARRAY;
-
-    GlobalSearchScope scope = aClass.getResolveScope();
-    final PsiMethod equalsMethod = GroovyGenerateEqualsHelper
-      .findMethod(aClass, GroovyGenerateEqualsHelper.getEqualsSignature(project, scope));
-    final PsiMethod hashCodeMethod = GroovyGenerateEqualsHelper.findMethod(aClass, GroovyGenerateEqualsHelper.getHashCodeSignature());
-
-    boolean needEquals = equalsMethod == null;
-    boolean needHashCode = hashCodeMethod == null;
-    if (!needEquals && !needHashCode) {
-      String text = aClass instanceof PsiAnonymousClass
-        ? GroovyCodeInsightBundle.message("generate.equals.and.hashcode.already.defined.warning.anonymous")
-        : GroovyCodeInsightBundle.message("generate.equals.and.hashcode.already.defined.warning", aClass.getQualifiedName());
-
-      if (Messages.showYesNoDialog(project, text,
-                                   GroovyCodeInsightBundle.message("generate.equals.and.hashcode.already.defined.title"),
-                                   Messages.getQuestionIcon()) == DialogWrapper.OK_EXIT_CODE) {
-        if (!ApplicationManager.getApplication().runWriteAction(new Computable<Boolean>() {
-          public Boolean compute() {
-            try {
-              equalsMethod.delete();
-              hashCodeMethod.delete();
-              return Boolean.TRUE;
-            }
-            catch (IncorrectOperationException e) {
-              LOG.error(e);
-              return Boolean.FALSE;
-            }
-          }
-        }).booleanValue()) {
-          return null;
-        }
-        else {
-          needEquals = needHashCode = true;
-        }
-      }
-      else {
-        return null;
-      }
+    public GroovyGenerateEqualsHandler() {
+        super(LocalizeValue.empty());
     }
 
-    GenerateEqualsWizard wizard = new GenerateEqualsWizard(project, aClass, needEquals, needHashCode);
-    wizard.show();
-    if (!wizard.isOK()) return null;
-    myEqualsFields = wizard.getEqualsFields();
-    myHashCodeFields = wizard.getHashCodeFields();
-    myNonNullFields = wizard.getNonNullFields();
-    return DUMMY_RESULT;
-  }
+    @Nullable
+    @Override
+    @RequiredUIAccess
+    protected ClassMember[] chooseOriginalMembers(PsiClass aClass, Project project) {
+        myEqualsFields = null;
+        myHashCodeFields = null;
+        myNonNullFields = PsiField.EMPTY_ARRAY;
 
-  @Nonnull
-  protected List<? extends GenerationInfo> generateMemberPrototypes(PsiClass aClass, ClassMember[] originalMembers) throws IncorrectOperationException {
-    Project project = aClass.getProject();
-    final boolean useInstanceofToCheckParameterType = JavaCodeInsightSettings.getInstance().USE_INSTANCEOF_ON_EQUALS_PARAMETER;
+        GlobalSearchScope scope = aClass.getResolveScope();
+        PsiMethod equalsMethod = GroovyGenerateEqualsHelper
+            .findMethod(aClass, GroovyGenerateEqualsHelper.getEqualsSignature(project, scope));
+        PsiMethod hashCodeMethod = GroovyGenerateEqualsHelper.findMethod(aClass, GroovyGenerateEqualsHelper.getHashCodeSignature());
 
-    GroovyGenerateEqualsHelper helper =
-      new GroovyGenerateEqualsHelper(project, aClass, myEqualsFields, myHashCodeFields, myNonNullFields, useInstanceofToCheckParameterType);
-    Collection<PsiMethod> methods = helper.generateMembers();
-    return ContainerUtil.map2List(methods, s -> new GroovyGenerationInfo<PsiMethod>(s));
-  }
+        boolean needEquals = equalsMethod == null;
+        boolean needHashCode = hashCodeMethod == null;
+        if (!needEquals && !needHashCode) {
+            LocalizeValue text = aClass instanceof PsiAnonymousClass
+                ? GroovyCodeInsightLocalize.generateEqualsAndHashcodeAlreadyDefinedWarningAnonymous()
+                : GroovyCodeInsightLocalize.generateEqualsAndHashcodeAlreadyDefinedWarning(aClass.getQualifiedName());
 
-  protected ClassMember[] getAllOriginalMembers(PsiClass aClass) {
-    return ClassMember.EMPTY_ARRAY;
-  }
+            if (Messages.showYesNoDialog(
+                project,
+                text.get(),
+                GroovyCodeInsightLocalize.generateEqualsAndHashcodeAlreadyDefinedTitle().get(),
+                UIUtil.getQuestionIcon()
+            ) == DialogWrapper.OK_EXIT_CODE) {
+                if (!project.getApplication().runWriteAction((Supplier<Boolean>) () -> {
+                    try {
+                        equalsMethod.delete();
+                        hashCodeMethod.delete();
+                        return Boolean.TRUE;
+                    }
+                    catch (IncorrectOperationException e) {
+                        LOG.error(e);
+                        return Boolean.FALSE;
+                    }
+                })) {
+                    return null;
+                }
+                else {
+                    needEquals = needHashCode = true;
+                }
+            }
+            else {
+                return null;
+            }
+        }
 
-  protected GenerationInfo[] generateMemberPrototypes(PsiClass aClass, ClassMember originalMember) throws IncorrectOperationException {
-    return GenerationInfo.EMPTY_ARRAY;
-  }
+        GenerateEqualsWizard wizard = new GenerateEqualsWizard(project, aClass, needEquals, needHashCode);
+        wizard.show();
+        if (!wizard.isOK()) {
+            return null;
+        }
+        myEqualsFields = wizard.getEqualsFields();
+        myHashCodeFields = wizard.getHashCodeFields();
+        myNonNullFields = wizard.getNonNullFields();
+        return DUMMY_RESULT;
+    }
 
-  protected void cleanup() {
-    super.cleanup();
+    @Nonnull
+    @Override
+    protected List<? extends GenerationInfo> generateMemberPrototypes(
+        PsiClass aClass,
+        ClassMember[] originalMembers
+    ) throws IncorrectOperationException {
+        Project project = aClass.getProject();
+        boolean useInstanceOfToCheckParameterType = JavaCodeInsightSettings.getInstance().USE_INSTANCEOF_ON_EQUALS_PARAMETER;
 
-    myEqualsFields = null;
-    myHashCodeFields = null;
-    myNonNullFields = null;
-  }
+        GroovyGenerateEqualsHelper helper =
+            new GroovyGenerateEqualsHelper(
+                project,
+                aClass,
+                myEqualsFields,
+                myHashCodeFields,
+                myNonNullFields,
+                useInstanceOfToCheckParameterType
+            );
+        Collection<PsiMethod> methods = helper.generateMembers();
+        return ContainerUtil.map2List(methods, GroovyGenerationInfo::new);
+    }
 
-  public boolean startInWriteAction() {
-    return true;
-  }
+    @Override
+    protected ClassMember[] getAllOriginalMembers(PsiClass aClass) {
+        return ClassMember.EMPTY_ARRAY;
+    }
+
+    @Override
+    protected GenerationInfo[] generateMemberPrototypes(PsiClass aClass, ClassMember originalMember) throws IncorrectOperationException {
+        return GenerationInfo.EMPTY_ARRAY;
+    }
+
+    @Override
+    protected void cleanup() {
+        super.cleanup();
+
+        myEqualsFields = null;
+        myHashCodeFields = null;
+        myNonNullFields = null;
+    }
+
+    @Override
+    public boolean startInWriteAction() {
+        return true;
+    }
 }
