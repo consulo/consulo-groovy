@@ -16,7 +16,6 @@
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions;
 
 import com.intellij.java.language.LanguageLevel;
-import com.intellij.java.language.impl.psi.PsiTypeVisitorEx;
 import com.intellij.java.language.impl.psi.impl.PsiSubstitutorImpl;
 import com.intellij.java.language.psi.*;
 import com.intellij.java.language.psi.util.InheritanceUtil;
