@@ -43,6 +43,7 @@ import consulo.language.psi.PsiDocumentManager;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiFile;
 import consulo.language.psi.PsiNameIdentifierOwner;
+import consulo.localize.LocalizeValue;
 import consulo.ui.image.Image;
 import consulo.util.lang.StringUtil;
 import jakarta.annotation.Nonnull;
@@ -85,8 +86,8 @@ public class GroovyLineMarkerProvider extends JavaLineMarkerProvider {
   }
 
   @Override
-  public String getName() {
-    return "Groovy line markers";
+  public LocalizeValue getName() {
+    return LocalizeValue.localizeTODO("Groovy line markers");
   }
 
   @Override

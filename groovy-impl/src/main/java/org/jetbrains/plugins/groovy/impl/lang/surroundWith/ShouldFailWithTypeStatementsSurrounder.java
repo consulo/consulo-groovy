@@ -15,6 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.impl.lang.surroundWith;
 
+import consulo.localize.LocalizeValue;
+
 /**
  * Provides the shouldFail() { ... }  surround with. It follows a Template Method pattern. 
  * @author Hamlet D'Arcy
@@ -26,7 +28,7 @@ public class ShouldFailWithTypeStatementsSurrounder extends GroovySimpleManyStat
     return "shouldFail(a){\n}";
   }
 
-  public String getTemplateDescription() {
-    return "shouldFail () {...}";
+  public LocalizeValue getTemplateDescription() {
+    return LocalizeValue.localizeTODO("shouldFail () {...}");
   }
 }

@@ -15,6 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.impl.lang.surroundWith;
 
+import consulo.localize.LocalizeValue;
+
 /**
  * User: Dmitry.Krasilschikov
  * Date: 25.05.2007
@@ -25,7 +27,7 @@ public class WithStatementsSurrounder extends GroovySimpleManyStatementsSurround
     return "with(a){\n}";
   }
 
-  public String getTemplateDescription() {
-    return "with () {...}";
+  public LocalizeValue getTemplateDescription() {
+    return LocalizeValue.localizeTODO("with () {...}");
   }
 }

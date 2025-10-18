@@ -17,6 +17,7 @@ package org.jetbrains.plugins.groovy.impl.lang.surroundWith;
 
 import consulo.language.psi.PsiElement;
 import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrTryCatchStatement;
@@ -26,15 +27,14 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrTryCatchStatement;
  * Date: 22.05.2007
  */
 public class TryFinallySurrounder extends TrySurrounder {
-  protected GroovyPsiElement doSurroundElements(PsiElement[] elements, PsiElement context) throws IncorrectOperationException
-  {
-    GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(elements[0].getProject());
-    GrTryCatchStatement tryStatement = (GrTryCatchStatement) factory.createStatementFromText("try {\n} finally{\n}", context);
-    addStatements(tryStatement.getTryBlock(), elements);
-    return tryStatement;
-  }
+    protected GroovyPsiElement doSurroundElements(PsiElement[] elements, PsiElement context) throws IncorrectOperationException {
+        GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(elements[0].getProject());
+        GrTryCatchStatement tryStatement = (GrTryCatchStatement) factory.createStatementFromText("try {\n} finally{\n}", context);
+        addStatements(tryStatement.getTryBlock(), elements);
+        return tryStatement;
+    }
 
-  public String getTemplateDescription() {
-    return super.getTemplateDescription() + " / finally";
-  }
+    public LocalizeValue getTemplateDescription() {
+        return LocalizeValue.localizeTODO("try / finally");
+    }
 }

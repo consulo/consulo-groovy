@@ -18,6 +18,7 @@ package org.jetbrains.plugins.groovy.impl.lang.surroundWith;
 import consulo.document.util.TextRange;
 import consulo.language.psi.PsiElement;
 import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
 import consulo.util.dataholder.Key;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
@@ -34,8 +35,8 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.path.GrM
 public class SurrounderByClosure extends GroovyManyStatementsSurrounder {
   private static final Key<GroovyResolveResult> REF_RESOLVE_RESULT_KEY = Key.create("REF_RESOLVE_RESULT");
 
-  public String getTemplateDescription() {
-    return "{ -> ... }.call()";
+  public LocalizeValue getTemplateDescription() {
+    return LocalizeValue.localizeTODO("{ -> ... }.call()");
   }
 
   protected GroovyPsiElement doSurroundElements(PsiElement[] elements, PsiElement context) throws IncorrectOperationException

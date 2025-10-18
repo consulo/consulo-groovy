@@ -17,6 +17,7 @@ package org.jetbrains.plugins.groovy.impl.lang.surroundWith;
 
 import consulo.document.util.TextRange;
 import consulo.language.psi.PsiElement;
+import consulo.localize.LocalizeValue;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrBlockStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrIfStatement;
@@ -46,7 +47,7 @@ public class IfElseExprSurrounder extends GroovyConditionSurrounder {
     return new TextRange(endOffset, endOffset);
   }
 
-  public String getTemplateDescription() {
-    return "if (expr) / else";
+  public LocalizeValue getTemplateDescription() {
+    return LocalizeValue.localizeTODO("if (expr) / else");
   }
 }

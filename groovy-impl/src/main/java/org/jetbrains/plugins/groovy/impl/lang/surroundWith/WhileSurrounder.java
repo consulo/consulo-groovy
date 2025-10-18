@@ -18,6 +18,7 @@ package org.jetbrains.plugins.groovy.impl.lang.surroundWith;
 import consulo.document.util.TextRange;
 import consulo.language.psi.PsiElement;
 import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.GrCondition;
@@ -48,7 +49,7 @@ public class WhileSurrounder extends GroovyManyStatementsSurrounder {
     return new TextRange(endOffset, endOffset);
   }
 
-  public String getTemplateDescription() {
-    return "while";
+  public LocalizeValue getTemplateDescription() {
+    return LocalizeValue.localizeTODO("while");
   }
 }

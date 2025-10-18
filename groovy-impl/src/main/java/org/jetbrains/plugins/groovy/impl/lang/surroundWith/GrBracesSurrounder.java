@@ -20,6 +20,7 @@ import consulo.language.ast.ASTNode;
 import consulo.language.psi.PsiElement;
 import consulo.language.ast.TokenType;
 import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
@@ -30,8 +31,8 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrCodeBlock;
  * @author Max Medvedev
  */
 public class GrBracesSurrounder extends GroovyManyStatementsSurrounder {
-  public String getTemplateDescription() {
-    return "{}";
+  public LocalizeValue getTemplateDescription() {
+    return LocalizeValue.localizeTODO("{}");
   }
 
   protected GroovyPsiElement doSurroundElements(PsiElement[] elements, PsiElement context) throws IncorrectOperationException {

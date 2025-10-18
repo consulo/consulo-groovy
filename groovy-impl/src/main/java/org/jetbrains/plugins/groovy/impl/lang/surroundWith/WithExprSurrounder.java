@@ -17,6 +17,7 @@ package org.jetbrains.plugins.groovy.impl.lang.surroundWith;
 
 import consulo.document.util.TextRange;
 import consulo.language.psi.PsiElement;
+import consulo.localize.LocalizeValue;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlock;
@@ -42,7 +43,7 @@ public class WithExprSurrounder extends GroovyConditionSurrounder {
     return new TextRange(offset, offset);
   }
 
-  public String getTemplateDescription() {
-    return "with (expr)";
+  public LocalizeValue getTemplateDescription() {
+    return LocalizeValue.localizeTODO("with (expr)");
   }
 }

@@ -17,6 +17,7 @@ package org.jetbrains.plugins.groovy.impl.lang.surroundWith;
 
 import consulo.language.psi.PsiElement;
 import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.*;
@@ -26,8 +27,8 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.*;
  * Date: 22.05.2007
  */
 public class TryCatchSurrounder extends TrySurrounder {
-  public String getTemplateDescription() {
-    return super.getTemplateDescription() + " / catch";
+  public LocalizeValue getTemplateDescription() {
+    return LocalizeValue.localizeTODO("try / catch");
   }
 
   protected GroovyPsiElement doSurroundElements(PsiElement[] elements, PsiElement context) throws IncorrectOperationException {

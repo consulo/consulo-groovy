@@ -17,6 +17,7 @@ package org.jetbrains.plugins.groovy.impl.lang.surroundWith;
 
 import consulo.document.util.TextRange;
 import consulo.language.psi.PsiElement;
+import consulo.localize.LocalizeValue;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrParenthesizedExpression;
@@ -35,7 +36,7 @@ public class NotAndParenthesesSurrounder extends GroovyExpressionSurrounder {
   }
 
   @Override
-  public String getTemplateDescription() {
-    return "!(expr)";
+  public LocalizeValue getTemplateDescription() {
+    return LocalizeValue.localizeTODO("!(expr)");
   }
 }

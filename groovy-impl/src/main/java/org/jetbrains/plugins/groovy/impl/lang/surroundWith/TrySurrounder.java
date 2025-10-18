@@ -16,6 +16,7 @@
 package org.jetbrains.plugins.groovy.impl.lang.surroundWith;
 
 import consulo.document.util.TextRange;
+import consulo.localize.LocalizeValue;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrTryCatchStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrCatchClause;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
@@ -57,7 +58,7 @@ public abstract class TrySurrounder extends GroovyManyStatementsSurrounder {
     return new TextRange(endOffset, endOffset);
   }
 
-  public String getTemplateDescription() {
-    return "try";
+  public LocalizeValue getTemplateDescription() {
+    return LocalizeValue.localizeTODO("try");
   }
 }
