@@ -15,6 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.impl.codeInspection.type;
 
+import consulo.annotation.access.RequiredReadAction;
 import consulo.codeEditor.Editor;
 import consulo.groovy.localize.GroovyLocalize;
 import consulo.language.editor.annotation.Annotation;
@@ -49,10 +50,9 @@ public class GroovyStaticTypeCheckVisitor extends GroovyTypeCheckVisitor {
 
     @Override
     protected void processTupleAssignment(@Nonnull GrTupleExpression tupleExpression, @Nonnull GrExpression initializer) {
-        if (initializer instanceof GrListOrMap && !((GrListOrMap) initializer).isMap()) {
-            final GrListOrMap initializerList = (GrListOrMap) initializer;
-            final GrExpression[] vars = tupleExpression.getExpressions();
-            final GrExpression[] expressions = initializerList.getInitializers();
+        if (initializer instanceof GrListOrMap initializerList && !initializerList.isMap()) {
+            GrExpression[] vars = tupleExpression.getExpressions();
+            GrExpression[] expressions = initializerList.getInitializers();
             if (vars.length > expressions.length) {
                 registerError(
                     initializer,
@@ -78,6 +78,7 @@ public class GroovyStaticTypeCheckVisitor extends GroovyTypeCheckVisitor {
     }
 
     @Override
+    @RequiredReadAction
     public void visitAssignmentExpression(GrAssignmentExpression assignment) {
         super.visitAssignmentExpression(assignment);
     }
@@ -92,7 +93,7 @@ public class GroovyStaticTypeCheckVisitor extends GroovyTypeCheckVisitor {
         if (highlightType != ProblemHighlightType.GENERIC_ERROR) {
             return;
         }
-        final List<IntentionAction> intentions = new ArrayList<>();
+        List<IntentionAction> intentions = new ArrayList<>();
         if (fixes != null) {
             for (final LocalQuickFix fix : fixes) {
                 intentions.add(new IntentionAction() {
@@ -109,8 +110,8 @@ public class GroovyStaticTypeCheckVisitor extends GroovyTypeCheckVisitor {
 
                     @Override
                     public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
-                        final InspectionManager manager = InspectionManager.getInstance(project);
-                        final ProblemDescriptor descriptor =
+                        InspectionManager manager = InspectionManager.getInstance(project);
+                        ProblemDescriptor descriptor =
                             manager.createProblemDescriptor(location, description.get(), fixes, highlightType, fixes.length == 1, false);
                         fix.applyFix(project, descriptor);
                     }
@@ -126,15 +127,15 @@ public class GroovyStaticTypeCheckVisitor extends GroovyTypeCheckVisitor {
     }
 
     protected void registerError(
-        @Nonnull final PsiElement location,
-        @Nonnull final String description,
-        @Nullable final IntentionAction[] fixes,
-        final ProblemHighlightType highlightType
+        @Nonnull PsiElement location,
+        @Nonnull String description,
+        @Nullable IntentionAction[] fixes,
+        ProblemHighlightType highlightType
     ) {
         if (highlightType != ProblemHighlightType.GENERIC_ERROR) {
             return;
         }
-        final Annotation annotation = myHolder.createErrorAnnotation(location, description);
+        Annotation annotation = myHolder.createErrorAnnotation(location, description);
         if (fixes == null) {
             return;
         }
