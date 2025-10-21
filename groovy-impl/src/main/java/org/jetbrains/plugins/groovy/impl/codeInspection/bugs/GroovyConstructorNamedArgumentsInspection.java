@@ -17,6 +17,7 @@ package org.jetbrains.plugins.groovy.impl.codeInspection.bugs;
 
 import com.intellij.java.language.psi.*;
 import com.intellij.java.language.psi.util.InheritanceUtil;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.groovy.localize.GroovyLocalize;
 import consulo.language.editor.inspection.LocalQuickFix;
 import consulo.language.psi.PsiElement;
@@ -49,6 +50,7 @@ public class GroovyConstructorNamedArgumentsInspection extends BaseInspection {
         return true;
     }
 
+    @Nonnull
     @Override
     protected BaseInspectionVisitor buildVisitor() {
         return new MyVisitor();
@@ -74,6 +76,7 @@ public class GroovyConstructorNamedArgumentsInspection extends BaseInspection {
 
     private static class MyVisitor extends BaseInspectionVisitor {
         @Override
+        @RequiredReadAction
         public void visitNewExpression(GrNewExpression newExpression) {
             super.visitNewExpression(newExpression);
 
@@ -82,55 +85,50 @@ public class GroovyConstructorNamedArgumentsInspection extends BaseInspection {
                 return;
             }
 
-            final GroovyResolveResult constructorResolveResult = newExpression.advancedResolve();
-            final PsiElement constructor = constructorResolveResult.getElement();
+            GroovyResolveResult constructorResolveResult = newExpression.advancedResolve();
+            PsiElement constructor = constructorResolveResult.getElement();
             if (constructor != null) {
-                final GrArgumentList argList = newExpression.getArgumentList();
-                if (argList != null &&
-                    argList.getExpressionArguments().length == 0 &&
-                    !PsiUtil.isConstructorHasRequiredParameters((PsiMethod) constructor)) {
+                GrArgumentList argList = newExpression.getArgumentList();
+                if (argList != null && argList.getExpressionArguments().length == 0
+                    && !PsiUtil.isConstructorHasRequiredParameters((PsiMethod) constructor)) {
                     checkDefaultMapConstructor(argList, constructor);
                 }
             }
             else {
-                final GroovyResolveResult[] results = newExpression.multiResolveGroovy(false);
-                final GrArgumentList argList = newExpression.getArgumentList();
-                final PsiElement element = refElement.resolve();
-
-                if (results.length == 0 && element instanceof PsiClass) { //default constructor invocation
-                    PsiType[] argumentTypes = PsiUtil.getArgumentTypes(refElement, true);
-                    if (argumentTypes == null ||
-                        argumentTypes.length == 0 ||
-                        (argumentTypes.length == 1 &&
-                            InheritanceUtil.isInheritor(argumentTypes[0], CommonClassNames.JAVA_UTIL_MAP))) {
-                        checkDefaultMapConstructor(argList, element);
+                GroovyResolveResult[] results = newExpression.multiResolveGroovy(false);
+                if (results.length == 0 && refElement.resolve() instanceof PsiClass psiClass) { //default constructor invocation
+                    PsiType[] argTypes = PsiUtil.getArgumentTypes(refElement, true);
+                    if (argTypes == null || argTypes.length == 0
+                        || (argTypes.length == 1 && InheritanceUtil.isInheritor(argTypes[0], CommonClassNames.JAVA_UTIL_MAP))) {
+                        checkDefaultMapConstructor(newExpression.getArgumentList(), psiClass);
                     }
                 }
             }
         }
 
+        @RequiredReadAction
         private void checkDefaultMapConstructor(GrArgumentList argList, PsiElement element) {
             if (argList == null) {
                 return;
             }
 
-            final GrNamedArgument[] args = argList.getNamedArguments();
+            GrNamedArgument[] args = argList.getNamedArguments();
             for (GrNamedArgument arg : args) {
-                final GrArgumentLabel label = arg.getLabel();
+                GrArgumentLabel label = arg.getLabel();
                 if (label == null) {
                     continue;
                 }
                 if (label.getName() == null) {
-                    final PsiElement nameElement = label.getNameElement();
-                    if (nameElement instanceof GrExpression) {
-                        final PsiType argType = ((GrExpression) nameElement).getType();
+                    PsiElement nameElement = label.getNameElement();
+                    if (nameElement instanceof GrExpression expression) {
+                        PsiType argType = expression.getType();
                         if (argType != null
                             && !TypesUtil.isAssignableByMethodCallConversion(
                             TypesUtil.createType(CommonClassNames.JAVA_LANG_STRING, arg),
                             argType,
                             arg
                         )) {
-                            registerError(nameElement, GroovyLocalize.propertyNameExpected().get());
+                            registerError(expression, GroovyLocalize.propertyNameExpected().get());
                         }
                     }
                     else if (!"*".equals(nameElement.getText())) {
@@ -138,19 +136,19 @@ public class GroovyConstructorNamedArgumentsInspection extends BaseInspection {
                     }
                 }
                 else {
-                    final PsiElement resolved = label.resolve();
+                    PsiElement resolved = label.resolve();
                     if (resolved == null) {
 
-                        if (element instanceof PsiMember && !(element instanceof PsiClass)) {
-                            element = ((PsiMember) element).getContainingClass();
+                        if (element instanceof PsiMember member && !(member instanceof PsiClass)) {
+                            element = member.getContainingClass();
                         }
 
-                        List<LocalQuickFix> fixes = new ArrayList<LocalQuickFix>(2);
-                        if (element instanceof GrTypeDefinition) {
-                            fixes.add(new CreateFieldFromConstructorLabelFix((GrTypeDefinition) element, label.getNamedArgument()));
+                        List<LocalQuickFix> fixes = new ArrayList<>(2);
+                        if (element instanceof GrTypeDefinition typeDef) {
+                            fixes.add(new CreateFieldFromConstructorLabelFix(typeDef, label.getNamedArgument()));
                         }
-                        if (element instanceof PsiClass) {
-                            fixes.add(new DynamicPropertyFix(label, (PsiClass) element));
+                        if (element instanceof PsiClass psiClass) {
+                            fixes.add(new DynamicPropertyFix(label, psiClass));
                         }
 
                         problemsHolder.newProblem(GroovyLocalize.noSuchProperty(label.getName()))

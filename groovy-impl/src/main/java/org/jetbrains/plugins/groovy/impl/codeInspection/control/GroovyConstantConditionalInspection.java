@@ -15,6 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.impl.codeInspection.control;
 
+import consulo.annotation.access.RequiredReadAction;
 import consulo.language.editor.inspection.ProblemDescriptor;
 import consulo.language.psi.PsiElement;
 import consulo.language.util.IncorrectOperationException;
@@ -40,33 +41,35 @@ public class GroovyConstantConditionalInspection extends BaseInspection {
         return LocalizeValue.localizeTODO("Constant conditional expression");
     }
 
+    @Override
     public boolean isEnabledByDefault() {
         return true;
     }
 
+    @Nonnull
+    @Override
     public BaseInspectionVisitor buildVisitor() {
         return new ConstantConditionalExpressionVisitor();
     }
 
     @Nonnull
+    @Override
     public String buildErrorString(Object... args) {
         return "'#ref' can be simplified #loc";
     }
 
+    @RequiredReadAction
     static String calculateReplacementExpression(GrConditionalExpression exp) {
-        final GrExpression thenExpression = exp.getThenBranch();
-        final GrExpression elseExpression = exp.getElseBranch();
-        final GrExpression condition = exp.getCondition();
+        GrExpression thenExpression = exp.getThenBranch();
+        GrExpression elseExpression = exp.getElseBranch();
+        GrExpression condition = exp.getCondition();
         assert thenExpression != null;
         assert elseExpression != null;
-        if (isTrue(condition)) {
-            return thenExpression.getText();
-        } else {
-            return elseExpression.getText();
-        }
+        return isTrue(condition) ? thenExpression.getText() : elseExpression.getText();
     }
 
-    public GroovyFix buildFix(PsiElement location) {
+    @Override
+    public GroovyFix buildFix(@Nonnull PsiElement location) {
         return new ConstantConditionalFix();
     }
 
@@ -77,22 +80,26 @@ public class GroovyConstantConditionalInspection extends BaseInspection {
             return LocalizeValue.localizeTODO("Simplify");
         }
 
+        @Override
+        @RequiredReadAction
         public void doFix(Project project, ProblemDescriptor descriptor) throws IncorrectOperationException {
-            final GrConditionalExpression expression = (GrConditionalExpression) descriptor.getPsiElement();
-            final String newExpression = calculateReplacementExpression(expression);
+            GrConditionalExpression expression = (GrConditionalExpression) descriptor.getPsiElement();
+            String newExpression = calculateReplacementExpression(expression);
             replaceExpression(expression, newExpression);
         }
     }
 
     private static class ConstantConditionalExpressionVisitor extends BaseInspectionVisitor {
+        @Override
+        @RequiredReadAction
         public void visitConditionalExpression(GrConditionalExpression expression) {
             super.visitConditionalExpression(expression);
-            final GrExpression condition = expression.getCondition();
-            final GrExpression thenExpression = expression.getThenBranch();
+            GrExpression condition = expression.getCondition();
+            GrExpression thenExpression = expression.getThenBranch();
             if (thenExpression == null) {
                 return;
             }
-            final GrExpression elseExpression = expression.getElseBranch();
+            GrExpression elseExpression = expression.getElseBranch();
             if (elseExpression == null) {
                 return;
             }
@@ -102,13 +109,15 @@ public class GroovyConstantConditionalInspection extends BaseInspection {
         }
     }
 
+    @RequiredReadAction
     private static boolean isFalse(GrExpression expression) {
-        final String text = expression.getText();
+        String text = expression.getText();
         return "false".equals(text);
     }
 
+    @RequiredReadAction
     private static boolean isTrue(GrExpression expression) {
-        final String text = expression.getText();
+        String text = expression.getText();
         return "true".equals(text);
     }
 }

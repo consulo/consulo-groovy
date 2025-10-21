@@ -207,11 +207,8 @@ public class GroovyTypeCheckVisitor extends BaseInspectionVisitor {
             GroovyResolveResult[] results = info.multiResolve();
             if (results.length > 0) {
                 for (GroovyResolveResult result : results) {
-                    PsiElement resolved = result.getElement();
-                    if (resolved instanceof PsiMethod) {
-                        if (!checkConstructorApplicability(result, info, false)) {
-                            return;
-                        }
+                    if (result.getElement() instanceof PsiMethod && !checkConstructorApplicability(result, info, false)) {
+                        return;
                     }
                 }
                 registerError(
@@ -268,30 +265,28 @@ public class GroovyTypeCheckVisitor extends BaseInspectionVisitor {
             return false;
         }
 
-        if (!type.equalsToText(GroovyCommonClassNames.GROOVY_LANG_GSTRING) &&
-            !type.equalsToText(CommonClassNames.JAVA_LANG_STRING)) {
+        if (!type.equalsToText(GroovyCommonClassNames.GROOVY_LANG_GSTRING)
+            && !type.equalsToText(CommonClassNames.JAVA_LANG_STRING)) {
             return false;
         }
 
-        Object result = GroovyConstantExpressionEvaluator.evaluate(expression);
-        if (result == null || !(result instanceof String)) {
+        if (GroovyConstantExpressionEvaluator.evaluate(expression) instanceof String stringResult) {
+            if (!(resolved.findFieldByName(stringResult, true) instanceof PsiEnumConstant)) {
+                registerError(
+                    elementToHighlight,
+                    GroovyLocalize.cannotFindEnumConstant0InEnum1(stringResult, expectedType.getPresentableText()),
+                    LocalQuickFix.EMPTY_ARRAY,
+                    ProblemHighlightType.GENERIC_ERROR_OR_WARNING
+                );
+            }
+        }
+        else {
             registerError(
                 elementToHighlight,
                 GroovyLocalize.cannotAssignStringToEnum0(expectedType.getPresentableText()),
                 LocalQuickFix.EMPTY_ARRAY,
                 ProblemHighlightType.WEAK_WARNING
             );
-        }
-        else {
-            PsiField field = resolved.findFieldByName((String) result, true);
-            if (!(field instanceof PsiEnumConstant)) {
-                registerError(
-                    elementToHighlight,
-                    GroovyLocalize.cannotFindEnumConstant0InEnum1(result, expectedType.getPresentableText()),
-                    LocalQuickFix.EMPTY_ARRAY,
-                    ProblemHighlightType.GENERIC_ERROR_OR_WARNING
-                );
-            }
         }
         return true;
     }
@@ -372,35 +367,28 @@ public class GroovyTypeCheckVisitor extends BaseInspectionVisitor {
         boolean checkUnknownArgs,
         @Nonnull final CallInfo<T> info
     ) {
-        PsiElement element = methodResolveResult.getElement();
-        if (!(element instanceof PsiMethod method)) {
-            return true;
-        }
-        if (element instanceof GrBuilderMethod) {
+        if (!(methodResolveResult.getElement() instanceof PsiMethod method && !(method instanceof GrBuilderMethod))) {
             return true;
         }
 
         if ("call".equals(method.getName()) && info.getInvokedExpression() instanceof GrReferenceExpression invokedExpr) {
             GrExpression qualifierExpression = invokedExpr.getQualifierExpression();
-            if (qualifierExpression != null) {
-                PsiType type = qualifierExpression.getType();
-                if (type instanceof GrClosureType closureType) {
-                    GrClosureSignatureUtil.ApplicabilityResult result =
-                        PsiUtil.isApplicableConcrete(info.getArgumentTypes(), closureType, info.getInvokedExpression());
-                    return switch (result) {
-                        case inapplicable -> {
-                            highlightInapplicableMethodUsage(methodResolveResult, info, method);
-                            yield false;
+            if (qualifierExpression != null && qualifierExpression.getType() instanceof GrClosureType closureType) {
+                GrClosureSignatureUtil.ApplicabilityResult result =
+                    PsiUtil.isApplicableConcrete(info.getArgumentTypes(), closureType, info.getInvokedExpression());
+                return switch (result) {
+                    case inapplicable -> {
+                        highlightInapplicableMethodUsage(methodResolveResult, info, method);
+                        yield false;
+                    }
+                    case canBeApplicable -> {
+                        if (checkUnknownArgs) {
+                            highlightUnknownArgs(info);
                         }
-                        case canBeApplicable -> {
-                            if (checkUnknownArgs) {
-                                highlightUnknownArgs(info);
-                            }
-                            yield !checkUnknownArgs;
-                        }
-                        default -> true;
-                    };
-                }
+                        yield !checkUnknownArgs;
+                    }
+                    default -> true;
+                };
             }
         }
 
@@ -521,7 +509,7 @@ public class GroovyTypeCheckVisitor extends BaseInspectionVisitor {
                     }
                 }
 
-                registerError(info.getElementToHighlight(), GroovyLocalize.methodCallIsAmbiguous().get());
+                registerError(info.getElementToHighlight(), GroovyLocalize.methodCallIsAmbiguous());
             }
         }
         else if (info.getInvokedExpression() != null) { //it checks in visitRefExpr(...)

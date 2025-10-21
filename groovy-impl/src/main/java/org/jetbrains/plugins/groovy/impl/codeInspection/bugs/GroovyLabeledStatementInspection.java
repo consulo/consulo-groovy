@@ -29,6 +29,7 @@ import org.jetbrains.plugins.groovy.lang.resolve.ResolveUtil;
  * @author Maxim.Medvedev
  */
 public class GroovyLabeledStatementInspection extends BaseInspection {
+    @Nonnull
     @Override
     protected BaseInspectionVisitor buildVisitor() {
         return new MyVisitor();
@@ -61,7 +62,7 @@ public class GroovyLabeledStatementInspection extends BaseInspection {
         public void visitLabeledStatement(GrLabeledStatement labeledStatement) {
             super.visitLabeledStatement(labeledStatement);
 
-            final String name = labeledStatement.getName();
+            String name = labeledStatement.getName();
             GrLabeledStatement existing = ResolveUtil.resolveLabeledStatement(name, labeledStatement, true);
             if (existing != null && PsiTreeUtil.isAncestor(existing, labeledStatement, true)) {
                 registerError(labeledStatement.getLabel(), name);
