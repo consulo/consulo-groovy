@@ -23,6 +23,7 @@ import consulo.language.util.IncorrectOperationException;
 import consulo.localize.LocalizeValue;
 import consulo.logging.Logger;
 import consulo.project.Project;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.impl.codeInspection.GroovyFix;
@@ -34,14 +35,13 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefini
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames;
 
-import jakarta.annotation.Nonnull;
-
 /**
  * @author Max Medvedev
  */
 public class NewInstanceOfSingletonInspection extends BaseInspection {
     private static final Logger LOG = Logger.getInstance(NewInstanceOfSingletonInspection.class);
 
+    @Nonnull
     @Override
     protected BaseInspectionVisitor buildVisitor() {
         return new BaseInspectionVisitor() {
@@ -49,17 +49,11 @@ public class NewInstanceOfSingletonInspection extends BaseInspection {
             public void visitNewExpression(GrNewExpression newExpression) {
                 super.visitNewExpression(newExpression);
 
-                final GrCodeReferenceElement refElement = newExpression.getReferenceElement();
-                if (refElement == null) {
-                    return;
-                }
-                if (newExpression.getArrayDeclaration() != null) {
-                    return;
-                }
-
-                final PsiElement resolved = refElement.resolve();
-                if (resolved instanceof GrTypeDefinition &&
-                    PsiClassCategory.hasAnnotation((GrTypeDefinition) resolved, GroovyCommonClassNames.GROOVY_LANG_SINGLETON)) {
+                GrCodeReferenceElement refElement = newExpression.getReferenceElement();
+                if (refElement != null
+                    && newExpression.getArrayDeclaration() == null
+                    && refElement.resolve() instanceof GrTypeDefinition typeDef
+                    && PsiClassCategory.hasAnnotation(typeDef, GroovyCommonClassNames.GROOVY_LANG_SINGLETON)) {
                     registerError(newExpression, GroovyInspectionLocalize.newInstanceOfSingleton().get());
                 }
             }
@@ -72,8 +66,8 @@ public class NewInstanceOfSingletonInspection extends BaseInspection {
     }
 
     @Override
-    protected GroovyFix buildFix(final PsiElement location) {
-        final GrCodeReferenceElement refElement = ((GrNewExpression) location).getReferenceElement();
+    protected GroovyFix buildFix(@Nonnull final PsiElement location) {
+        GrCodeReferenceElement refElement = ((GrNewExpression) location).getReferenceElement();
         LOG.assertTrue(refElement != null);
         final GrTypeDefinition singleton = (GrTypeDefinition) refElement.resolve();
         LOG.assertTrue(singleton != null);
@@ -81,10 +75,10 @@ public class NewInstanceOfSingletonInspection extends BaseInspection {
         return new GroovyFix() {
             @Override
             protected void doFix(Project project, ProblemDescriptor descriptor) throws IncorrectOperationException {
-                final GrExpression instanceRef =
+                GrExpression instanceRef =
                     GroovyPsiElementFactory.getInstance(project).createExpressionFromText(singleton.getQualifiedName() + ".instance");
 
-                final GrExpression replaced = ((GrNewExpression) location).replaceWithExpression(instanceRef, true);
+                GrExpression replaced = ((GrNewExpression) location).replaceWithExpression(instanceRef, true);
                 JavaCodeStyleManager.getInstance(project).shortenClassReferences(replaced);
             }
 

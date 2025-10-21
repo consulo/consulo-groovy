@@ -40,9 +40,9 @@ public class GroovyInArgumentCheckInspection extends BaseInspection {
 
     @Override
     protected String buildErrorString(Object... args) {
-        PsiType ltype = (PsiType) args[0];
-        PsiType rtype = (PsiType) args[1];
-        return GroovyInspectionLocalize.rtypeCannotContainLtype(ltype.getPresentableText(), rtype.getPresentableText()).get();
+        PsiType lType = (PsiType) args[0];
+        PsiType rType = (PsiType) args[1];
+        return GroovyInspectionLocalize.rtypeCannotContainLtype(lType.getPresentableText(), rType.getPresentableText()).get();
     }
 
     @Nonnull
@@ -66,28 +66,28 @@ public class GroovyInArgumentCheckInspection extends BaseInspection {
                 return;
             }
 
-            GrExpression leftOperand = expression.getLeftOperand();
-            GrExpression rightOperand = expression.getRightOperand();
-            if (rightOperand == null) {
+            GrExpression lOperand = expression.getLeftOperand();
+            GrExpression rOperand = expression.getRightOperand();
+            if (rOperand == null) {
                 return;
             }
 
-            PsiType ltype = leftOperand.getType();
-            PsiType rtype = rightOperand.getType();
-            if (ltype == null || rtype == null) {
+            PsiType lType = lOperand.getType();
+            PsiType rType = rOperand.getType();
+            if (lType == null || rType == null) {
                 return;
             }
 
             PsiType component;
 
-            if (rtype instanceof PsiArrayType) {
-                component = ((PsiArrayType) rtype).getComponentType();
+            if (rType instanceof PsiArrayType arrayType) {
+                component = arrayType.getComponentType();
             }
-            else if (InheritanceUtil.isInheritor(rtype, CommonClassNames.JAVA_UTIL_COLLECTION)) {
-                component = PsiUtil.substituteTypeParameter(rtype, CommonClassNames.JAVA_UTIL_COLLECTION, 0, false);
+            else if (InheritanceUtil.isInheritor(rType, CommonClassNames.JAVA_UTIL_COLLECTION)) {
+                component = PsiUtil.substituteTypeParameter(rType, CommonClassNames.JAVA_UTIL_COLLECTION, 0, false);
             }
             else {
-                checkSimpleClasses(ltype, rtype, expression);
+                checkSimpleClasses(lType, rType, expression);
                 return;
             }
 
@@ -95,41 +95,39 @@ public class GroovyInArgumentCheckInspection extends BaseInspection {
                 return;
             }
 
-            if (TypesUtil.isAssignable(ltype, component, expression)) {
+            if (TypesUtil.isAssignable(lType, component, expression)) {
                 return;
             }
 
-            registerError(expression, ltype, rtype);
+            registerError(expression, lType, rType);
         }
 
-        private void checkSimpleClasses(PsiType ltype, PsiType rtype, GrBinaryExpression expression) {
-            if (!(rtype instanceof PsiClassType)) {
-                return;
-            }
-            if (!(ltype instanceof PsiClassType)) {
-                return;
-            }
-
-            PsiClass lclass = ((PsiClassType) ltype).resolve();
-            PsiClass rclass = ((PsiClassType) rtype).resolve();
-
-            if (lclass == null || rclass == null) {
+        private void checkSimpleClasses(PsiType lType, PsiType rType, GrBinaryExpression expression) {
+            if (!(rType instanceof PsiClassType rClassType
+                && lType instanceof PsiClassType lClassType)) {
                 return;
             }
 
-            if (expression.getManager().areElementsEquivalent(lclass, rclass)) {
+            PsiClass lClass = lClassType.resolve();
+            PsiClass rClass = rClassType.resolve();
+
+            if (lClass == null || rClass == null) {
                 return;
             }
 
-            if (lclass.isInterface() || rclass.isInterface()) {
+            if (expression.getManager().areElementsEquivalent(lClass, rClass)) {
                 return;
             }
 
-            if (lclass.isInheritor(rclass, true) || rclass.isInheritor(lclass, true)) {
+            if (lClass.isInterface() || rClass.isInterface()) {
                 return;
             }
 
-            registerError(expression, ltype, rtype);
+            if (lClass.isInheritor(rClass, true) || rClass.isInheritor(lClass, true)) {
+                return;
+            }
+
+            registerError(expression, lType, rType);
         }
     }
 

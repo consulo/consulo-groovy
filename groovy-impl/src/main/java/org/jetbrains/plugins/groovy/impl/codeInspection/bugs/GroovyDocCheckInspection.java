@@ -15,12 +15,12 @@
  */
 package org.jetbrains.plugins.groovy.impl.codeInspection.bugs;
 
+import consulo.annotation.access.RequiredReadAction;
 import consulo.groovy.localize.GroovyLocalize;
-import consulo.localize.LocalizeValue;
-import jakarta.annotation.Nonnull;
-
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.util.PsiTreeUtil;
+import consulo.localize.LocalizeValue;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocFieldReference;
@@ -58,15 +58,18 @@ public class GroovyDocCheckInspection extends BaseInspection {
         return true;
     }
 
+    @Nonnull
     @Override
     protected BaseInspectionVisitor buildVisitor() {
         return new BaseInspectionVisitor() {
             @Override
+            @RequiredReadAction
             public void visitDocMethodReference(GrDocMethodReference reference) {
                 checkGrDocMemberReference(reference);
             }
 
             @Override
+            @RequiredReadAction
             public void visitDocFieldReference(GrDocFieldReference reference) {
                 checkGrDocMemberReference(reference);
             }
@@ -82,17 +85,18 @@ public class GroovyDocCheckInspection extends BaseInspection {
                     return;
                 }
 
-                final PsiElement resolved = resolveResult.getElement();
+                PsiElement resolved = resolveResult.getElement();
                 if (resolved != null) {
                     return;
                 }
 
-                final PsiElement toHighlight = refElement.getReferenceNameElement();
+                PsiElement toHighlight = refElement.getReferenceNameElement();
 
                 registerError(toHighlight, GroovyLocalize.cannotResolve(refElement.getReferenceName()).get());
             }
 
-            private void checkGrDocMemberReference(final GrDocMemberReference reference) {
+            @RequiredReadAction
+            private void checkGrDocMemberReference(GrDocMemberReference reference) {
                 if (reference.resolve() != null) {
                     return;
                 }
