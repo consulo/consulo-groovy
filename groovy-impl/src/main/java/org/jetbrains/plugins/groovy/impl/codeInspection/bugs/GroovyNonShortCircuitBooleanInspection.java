@@ -16,21 +16,21 @@
 package org.jetbrains.plugins.groovy.impl.codeInspection.bugs;
 
 import com.intellij.java.language.psi.PsiType;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.language.ast.IElementType;
 import consulo.language.editor.inspection.ProblemDescriptor;
 import consulo.language.psi.PsiElement;
 import consulo.language.util.IncorrectOperationException;
 import consulo.localize.LocalizeValue;
 import consulo.project.Project;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.impl.codeInspection.GroovyFix;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrBinaryExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
-
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
 
 public class GroovyNonShortCircuitBooleanInspection extends BaseInspection {
     @Nonnull
@@ -46,15 +46,18 @@ public class GroovyNonShortCircuitBooleanInspection extends BaseInspection {
     }
 
     @Nullable
+    @Override
     protected String buildErrorString(Object... args) {
         return "Non short-circuit boolean expression #loc";
     }
 
+    @Override
     public boolean isEnabledByDefault() {
         return false;
     }
 
-    public GroovyFix buildFix(PsiElement location) {
+    @Override
+    public GroovyFix buildFix(@Nonnull PsiElement location) {
         return new NonShortCircuitBooleanFix();
     }
 
@@ -65,13 +68,15 @@ public class GroovyNonShortCircuitBooleanInspection extends BaseInspection {
             return LocalizeValue.localizeTODO("Replace with short-circuit expression");
         }
 
+        @Override
+        @RequiredReadAction
         public void doFix(Project project, ProblemDescriptor descriptor) throws IncorrectOperationException {
-            final GrBinaryExpression expression = (GrBinaryExpression) descriptor.getPsiElement();
-            final GrExpression lhs = expression.getLeftOperand();
-            final GrExpression rhs = expression.getRightOperand();
-            final IElementType operationSign = expression.getOperationTokenType();
+            GrBinaryExpression expression = (GrBinaryExpression) descriptor.getPsiElement();
+            GrExpression lhs = expression.getLeftOperand();
+            GrExpression rhs = expression.getRightOperand();
+            IElementType operationSign = expression.getOperationTokenType();
             assert rhs != null;
-            final String newExpression = lhs.getText() + getShortCircuitOperand(operationSign) + rhs.getText();
+            String newExpression = lhs.getText() + getShortCircuitOperand(operationSign) + rhs.getText();
             replaceExpression(expression, newExpression);
         }
 
@@ -85,18 +90,21 @@ public class GroovyNonShortCircuitBooleanInspection extends BaseInspection {
         }
     }
 
+    @Nonnull
+    @Override
     public BaseInspectionVisitor buildVisitor() {
         return new Visitor();
     }
 
     private static class Visitor extends BaseInspectionVisitor {
+        @Override
         public void visitBinaryExpression(@Nonnull GrBinaryExpression expression) {
             super.visitBinaryExpression(expression);
-            final GrExpression rhs = expression.getRightOperand();
+            GrExpression rhs = expression.getRightOperand();
             if (rhs == null) {
                 return;
             }
-            final IElementType sign = expression.getOperationTokenType();
+            IElementType sign = expression.getOperationTokenType();
             if (!GroovyTokenTypes.mBAND.equals(sign) &&
                 !GroovyTokenTypes.mBOR.equals(sign)) {
                 return;

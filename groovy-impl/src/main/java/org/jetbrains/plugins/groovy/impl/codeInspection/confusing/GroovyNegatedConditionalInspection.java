@@ -18,12 +18,10 @@ package org.jetbrains.plugins.groovy.impl.codeInspection.confusing;
 import consulo.localize.LocalizeValue;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
-
+import org.jetbrains.plugins.groovy.codeInspection.utils.BoolUtils;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
-import org.jetbrains.plugins.groovy.codeInspection.utils.BoolUtils;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrConditionalExpression;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 
 public class GroovyNegatedConditionalInspection extends BaseInspection {
     @Nonnull
@@ -38,24 +36,26 @@ public class GroovyNegatedConditionalInspection extends BaseInspection {
         return LocalizeValue.localizeTODO("Negated conditional expression");
     }
 
+    @Override
     @Nullable
     protected String buildErrorString(Object... args) {
         return "Negated conditional expression #loc";
-
     }
 
+    @Nonnull
+    @Override
     public BaseInspectionVisitor buildVisitor() {
         return new Visitor();
     }
 
     private static class Visitor extends BaseInspectionVisitor {
-        public void visitConditionalExpression(GrConditionalExpression grConditionalExpression) {
-            super.visitConditionalExpression(grConditionalExpression);
-            final GrExpression condition = grConditionalExpression.getCondition();
-            if (!BoolUtils.isNegation(condition)) {
+        @Override
+        public void visitConditionalExpression(GrConditionalExpression conditional) {
+            super.visitConditionalExpression(conditional);
+            if (!BoolUtils.isNegation(conditional.getCondition())) {
                 return;
             }
-            registerError(grConditionalExpression);
+            registerError(conditional);
         }
     }
 }

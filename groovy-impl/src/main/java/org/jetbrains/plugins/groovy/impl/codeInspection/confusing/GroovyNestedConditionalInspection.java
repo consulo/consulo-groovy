@@ -37,18 +37,22 @@ public class GroovyNestedConditionalInspection extends BaseInspection {
     }
 
     @Nullable
+    @Override
     protected String buildErrorString(Object... args) {
         return "Nested conditional expression #loc";
     }
 
+    @Nonnull
+    @Override
     public BaseInspectionVisitor buildVisitor() {
         return new Visitor();
     }
 
     private static class Visitor extends BaseInspectionVisitor {
+        @Override
         public void visitConditionalExpression(GrConditionalExpression grConditionalExpression) {
             super.visitConditionalExpression(grConditionalExpression);
-            final GrConditionalExpression containingConditional =
+            GrConditionalExpression containingConditional =
                 PsiTreeUtil.getParentOfType(grConditionalExpression, GrConditionalExpression.class);
             if (containingConditional == null) {
                 return;

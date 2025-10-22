@@ -65,37 +65,35 @@ public class GroovySillyAssignmentInspection extends BaseInspection {
         public void visitAssignmentExpression(@Nonnull GrAssignmentExpression assignment) {
             super.visitAssignmentExpression(assignment);
 
-            final IElementType sign = assignment.getOperationTokenType();
+            IElementType sign = assignment.getOperationTokenType();
             if (!sign.equals(GroovyTokenTypes.mASSIGN)) {
                 return;
             }
-            final GrExpression lhs = assignment.getLValue();
-            final GrExpression rhs = assignment.getRValue();
+            GrExpression lhs = assignment.getLValue();
+            GrExpression rhs = assignment.getRValue();
             if (rhs == null) {
                 return;
             }
-            if (!(rhs instanceof GrReferenceExpression) || !(lhs instanceof GrReferenceExpression)) {
+            if (!(rhs instanceof GrReferenceExpression rhsRef) || !(lhs instanceof GrReferenceExpression lhsRef)) {
                 return;
             }
-            final GrReferenceExpression rhsReference = (GrReferenceExpression) rhs;
-            final GrReferenceExpression lhsReference = (GrReferenceExpression) lhs;
-            final GrExpression rhsQualifier = rhsReference.getQualifierExpression();
-            final GrExpression lhsQualifier = lhsReference.getQualifierExpression();
+            GrExpression rhsQualifier = rhsRef.getQualifierExpression();
+            GrExpression lhsQualifier = lhsRef.getQualifierExpression();
             if (rhsQualifier != null || lhsQualifier != null) {
                 if (!EquivalenceChecker.expressionsAreEquivalent(rhsQualifier, lhsQualifier)) {
                     return;
                 }
             }
-            final String rhsName = rhsReference.getReferenceName();
-            final String lhsName = lhsReference.getReferenceName();
+            String rhsName = rhsRef.getReferenceName();
+            String lhsName = lhsRef.getReferenceName();
             if (rhsName == null || lhsName == null) {
                 return;
             }
             if (!rhsName.equals(lhsName)) {
                 return;
             }
-            final PsiElement rhsReferent = rhsReference.resolve();
-            final PsiElement lhsReferent = lhsReference.resolve();
+            PsiElement rhsReferent = rhsRef.resolve();
+            PsiElement lhsReferent = lhsRef.resolve();
             if (rhsReferent == null || lhsReferent == null || !rhsReferent.equals(lhsReferent)) {
                 return;
             }
