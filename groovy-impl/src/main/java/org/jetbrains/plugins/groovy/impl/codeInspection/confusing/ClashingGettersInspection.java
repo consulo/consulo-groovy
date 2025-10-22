@@ -53,10 +53,12 @@ public class ClashingGettersInspection extends BaseInspection {
     }
 
     @Nullable
+    @Override
     protected String buildErrorString(Object... args) {
         return GroovyInspectionLocalize.getter0ClashesWithGetter1(args[0], args[1]).get();
     }
 
+    @Nonnull
     @Override
     protected BaseInspectionVisitor buildVisitor() {
         return new BaseInspectionVisitor() {
@@ -64,19 +66,19 @@ public class ClashingGettersInspection extends BaseInspection {
             public void visitTypeDefinition(GrTypeDefinition typeDefinition) {
                 super.visitTypeDefinition(typeDefinition);
 
-                Map<String, PsiMethod> getters = new HashMap<String, PsiMethod>();
+                Map<String, PsiMethod> getters = new HashMap<>();
                 for (PsiMethod method : typeDefinition.getMethods()) {
-                    final String methodName = method.getName();
+                    String methodName = method.getName();
                     if (!GroovyPropertyUtils.isSimplePropertyGetter(method)) {
                         continue;
                     }
 
-                    final String propertyName = GroovyPropertyUtils.getPropertyNameByGetterName(methodName, true);
+                    String propertyName = GroovyPropertyUtils.getPropertyNameByGetterName(methodName, true);
 
-                    final PsiMethod otherGetter = getters.get(propertyName);
+                    PsiMethod otherGetter = getters.get(propertyName);
                     if (otherGetter != null && !methodName.equals(otherGetter.getName())) {
-                        final Pair<PsiElement, String> description = getGetterDescription(method);
-                        final Pair<PsiElement, String> otherDescription = getGetterDescription(otherGetter);
+                        Pair<PsiElement, String> description = getGetterDescription(method);
+                        Pair<PsiElement, String> otherDescription = getGetterDescription(otherGetter);
 
                         if (description.first != null) {
                             registerError(description.first, description.second, otherDescription.second);
@@ -94,27 +96,31 @@ public class ClashingGettersInspection extends BaseInspection {
     }
 
     private static Pair<PsiElement, String> getGetterDescription(PsiMethod getter) {
-        final String name = getter.getName();
+        String name = getter.getName();
         if (getter instanceof GrGdkMethod) {
-            return new Pair<PsiElement, String>(null, "GDK method '" + name + "'");
+            return new Pair<>(null, "GDK method '" + name + "'");
         }
-        else if (getter instanceof GrReflectedMethod) {
-            getter = ((GrReflectedMethod) getter).getBaseMethod();
-            final String info = PsiFormatUtil
-                .formatMethod(getter, PsiSubstitutor.EMPTY, PsiFormatUtilBase.SHOW_NAME | PsiFormatUtilBase.SHOW_PARAMETERS,
-                    PsiFormatUtilBase.SHOW_TYPE | PsiFormatUtilBase.SHOW_NAME
-                );
-            return new Pair<PsiElement, String>(((GrMethod) getter).getNameIdentifierGroovy(), "method " + info);
+        else if (getter instanceof GrReflectedMethod reflectedGetter) {
+            getter = reflectedGetter.getBaseMethod();
+            String info = PsiFormatUtil.formatMethod(
+                getter,
+                PsiSubstitutor.EMPTY,
+                PsiFormatUtilBase.SHOW_NAME | PsiFormatUtilBase.SHOW_PARAMETERS,
+                PsiFormatUtilBase.SHOW_TYPE | PsiFormatUtilBase.SHOW_NAME
+            );
+            return Pair.create(reflectedGetter.getNameIdentifierGroovy(), "method " + info);
         }
-        else if (getter instanceof GrMethod) {
-            return new Pair<PsiElement, String>(((GrMethod) getter).getNameIdentifierGroovy(), "getter '" + name + "'");
+        else if (getter instanceof GrMethod getterMethod) {
+            return Pair.create(getterMethod.getNameIdentifierGroovy(), "getter '" + name + "'");
         }
         else {
-            final String info = PsiFormatUtil
-                .formatMethod(getter, PsiSubstitutor.EMPTY, PsiFormatUtilBase.SHOW_NAME | PsiFormatUtilBase.SHOW_PARAMETERS,
-                    PsiFormatUtilBase.SHOW_TYPE | PsiFormatUtilBase.SHOW_NAME
-                );
-            return new Pair<PsiElement, String>(null, "method " + info);
+            String info = PsiFormatUtil.formatMethod(
+                getter,
+                PsiSubstitutor.EMPTY,
+                PsiFormatUtilBase.SHOW_NAME | PsiFormatUtilBase.SHOW_PARAMETERS,
+                PsiFormatUtilBase.SHOW_TYPE | PsiFormatUtilBase.SHOW_NAME
+            );
+            return new Pair<>(null, "method " + info);
         }
     }
 }

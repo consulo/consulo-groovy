@@ -15,22 +15,19 @@
  */
 package org.jetbrains.plugins.groovy.impl.codeInspection.assignment;
 
+import consulo.annotation.access.RequiredReadAction;
 import consulo.annotation.component.ExtensionImpl;
-import consulo.language.psi.PsiElement;
-import consulo.language.psi.PsiReference;
 import consulo.language.psi.util.PsiTreeUtil;
 import consulo.localize.LocalizeValue;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.clauses.GrForClause;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.clauses.GrTraditionalForClause;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrAssignmentExpression;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameter;
-
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
 
 @ExtensionImpl
 public class GroovyAssignmentToForLoopParameterInspection extends BaseInspection {
@@ -59,29 +56,16 @@ public class GroovyAssignmentToForLoopParameterInspection extends BaseInspection
     }
 
     private static class Visitor extends BaseInspectionVisitor {
-
         @Override
+        @RequiredReadAction
         public void visitAssignmentExpression(GrAssignmentExpression grAssignmentExpression) {
             super.visitAssignmentExpression(grAssignmentExpression);
-            final GrExpression lhs = grAssignmentExpression.getLValue();
-            if (!(lhs instanceof GrReferenceExpression)) {
-                return;
+            if (grAssignmentExpression.getLValue() instanceof GrReferenceExpression lhsRef
+                && lhsRef.resolve() instanceof GrParameter parameter
+                && parameter.getParent() instanceof GrForClause forClause
+                && !(forClause instanceof GrTraditionalForClause && PsiTreeUtil.isAncestor(forClause, grAssignmentExpression, true))) {
+                registerError(lhsRef);
             }
-            final PsiElement referent = ((PsiReference) lhs).resolve();
-            if (referent == null) {
-                return;
-            }
-            if (!(referent instanceof GrParameter)) {
-                return;
-            }
-            final PsiElement parent = referent.getParent();
-            if (!(parent instanceof GrForClause)) {
-                return;
-            }
-            if (parent instanceof GrTraditionalForClause && PsiTreeUtil.isAncestor(parent, grAssignmentExpression, true)) {
-                return;
-            }
-            registerError(lhs);
         }
     }
 }

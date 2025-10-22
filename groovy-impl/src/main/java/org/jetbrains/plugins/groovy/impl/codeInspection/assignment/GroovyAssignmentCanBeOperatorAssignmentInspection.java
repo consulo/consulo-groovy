@@ -16,6 +16,8 @@
 package org.jetbrains.plugins.groovy.impl.codeInspection.assignment;
 
 import com.intellij.java.language.psi.JavaTokenType;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.annotation.component.ExtensionImpl;
 import consulo.language.ast.IElementType;
 import consulo.language.editor.inspection.InspectionToolState;
@@ -36,6 +38,8 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrAssign
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrBinaryExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
+
+import java.util.Set;
 
 @ExtensionImpl
 public class GroovyAssignmentCanBeOperatorAssignmentInspection
@@ -58,20 +62,22 @@ public class GroovyAssignmentCanBeOperatorAssignmentInspection
         return LocalizeValue.localizeTODO("Assignment replaceable with operator assignment");
     }
 
-    @Override
     @Nonnull
+    @Override
+    @RequiredReadAction
     public String buildErrorString(Object... infos) {
-        final GrAssignmentExpression assignmentExpression = (GrAssignmentExpression) infos[0];
+        GrAssignmentExpression assignmentExpression = (GrAssignmentExpression) infos[0];
         return "<code>#ref</code> could be simplified to '" + calculateReplacementExpression(assignmentExpression) + "' #loc";
     }
 
+    @RequiredReadAction
     static String calculateReplacementExpression(GrAssignmentExpression expression) {
-        final GrExpression rhs = expression.getRValue();
-        final GrBinaryExpression binaryExpression = (GrBinaryExpression) PsiUtil.skipParentheses(rhs, false);
-        final GrExpression lhs = expression.getLValue();
+        GrExpression rhs = expression.getRValue();
+        GrBinaryExpression binaryExpression = (GrBinaryExpression) PsiUtil.skipParentheses(rhs, false);
+        GrExpression lhs = expression.getLValue();
         assert binaryExpression != null;
-        final IElementType sign = binaryExpression.getOperationTokenType();
-        final GrExpression rhsRhs = binaryExpression.getRightOperand();
+        IElementType sign = binaryExpression.getOperationTokenType();
+        GrExpression rhsRhs = binaryExpression.getRightOperand();
         assert rhsRhs != null;
         String signText = getTextForOperator(sign);
         if ("&&".equals(signText)) {
@@ -100,10 +106,10 @@ public class GroovyAssignmentCanBeOperatorAssignmentInspection
 
         private ReplaceAssignmentWithOperatorAssignmentFix(GrAssignmentExpression expression) {
             super();
-            final GrExpression rhs = expression.getRValue();
-            final GrBinaryExpression binaryExpression = (GrBinaryExpression) PsiUtil.skipParentheses(rhs, false);
+            GrExpression rhs = expression.getRValue();
+            GrBinaryExpression binaryExpression = (GrBinaryExpression) PsiUtil.skipParentheses(rhs, false);
             assert binaryExpression != null;
-            final IElementType sign = binaryExpression.getOperationTokenType();
+            IElementType sign = binaryExpression.getOperationTokenType();
             String signText = getTextForOperator(sign);
             if ("&&".equals(signText)) {
                 signText = "&";
@@ -121,60 +127,50 @@ public class GroovyAssignmentCanBeOperatorAssignmentInspection
         }
 
         @Override
+        @RequiredWriteAction
         public void doFix(@Nonnull Project project, ProblemDescriptor descriptor) throws IncorrectOperationException {
-            final PsiElement element = descriptor.getPsiElement();
-            if (!(element instanceof GrAssignmentExpression)) {
+            if (!(descriptor.getPsiElement() instanceof GrAssignmentExpression expression)) {
                 return;
             }
-            final GrAssignmentExpression expression = (GrAssignmentExpression) element;
-            final String newExpression = calculateReplacementExpression(expression);
+            String newExpression = calculateReplacementExpression(expression);
             replaceExpression(expression, newExpression);
         }
     }
 
-    private class ReplaceAssignmentWithOperatorAssignmentVisitor
+    private static class ReplaceAssignmentWithOperatorAssignmentVisitor
         extends BaseInspectionVisitor<GroovyAssignmentCanBeOperatorAssignmentInspectionState> {
+        private static final Set<IElementType> LAZY_LOGICAL_OPERATORS = Set.of(GroovyTokenTypes.mLAND, GroovyTokenTypes.mLOR);
+        private static final Set<IElementType> OBSCURE_OPERATORS = Set.of(GroovyTokenTypes.mBXOR, GroovyTokenTypes.mMOD);
 
         @Override
         public void visitAssignmentExpression(@Nonnull GrAssignmentExpression assignment) {
             super.visitAssignmentExpression(assignment);
-            final IElementType assignmentTokenType = assignment.getOperationTokenType();
+            IElementType assignmentTokenType = assignment.getOperationTokenType();
             if (!assignmentTokenType.equals(GroovyTokenTypes.mASSIGN)) {
                 return;
             }
-            final GrExpression lhs = assignment.getLValue();
-            final GrExpression rhs = (GrExpression) PsiUtil.skipParentheses(assignment.getRValue(), false);
-            if (!(rhs instanceof GrBinaryExpression)) {
+            GrExpression lhs = assignment.getLValue();
+            GrExpression rhs = (GrExpression) PsiUtil.skipParentheses(assignment.getRValue(), false);
+            if (!(rhs instanceof GrBinaryExpression binaryRhs && binaryRhs.getRightOperand() != null)) {
                 return;
             }
-            final GrBinaryExpression binaryRhs = (GrBinaryExpression) rhs;
-            if (binaryRhs.getRightOperand() == null) {
-                return;
-            }
-            final IElementType expressionTokenType = binaryRhs.getOperationTokenType();
+            IElementType expressionTokenType = binaryRhs.getOperationTokenType();
             if (getTextForOperator(expressionTokenType) == null) {
                 return;
             }
             if (JavaTokenType.EQEQ.equals(expressionTokenType)) {
                 return;
             }
-            if (myState.ignoreLazyOperators) {
-                if (GroovyTokenTypes.mLAND.equals(expressionTokenType) ||
-                    GroovyTokenTypes.mLOR.equals(expressionTokenType)) {
-                    return;
-                }
+            if (myState.ignoreLazyOperators && LAZY_LOGICAL_OPERATORS.contains(expressionTokenType)) {
+                return;
             }
-            if (myState.ignoreObscureOperators) {
-                if (GroovyTokenTypes.mBXOR.equals(expressionTokenType) ||
-                    GroovyTokenTypes.mMOD.equals(expressionTokenType)) {
-                    return;
-                }
+            if (myState.ignoreObscureOperators && OBSCURE_OPERATORS.contains(expressionTokenType)) {
+                return;
             }
-            final GrExpression lOperand = binaryRhs.getLeftOperand();
             if (SideEffectChecker.mayHaveSideEffects(lhs)) {
                 return;
             }
-            if (!EquivalenceChecker.expressionsAreEquivalent(lhs, lOperand)) {
+            if (!EquivalenceChecker.expressionsAreEquivalent(lhs, binaryRhs.getLeftOperand())) {
                 return;
             }
             registerError(assignment, assignment);
