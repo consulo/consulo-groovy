@@ -33,17 +33,20 @@ public class GroovyAnnotationNamingConventionInspection extends ConventionInspec
         return LocalizeValue.localizeTODO("Annotation naming convention");
     }
 
-    protected GroovyFix buildFix(PsiElement location) {
+    @Override
+    protected GroovyFix buildFix(@Nonnull PsiElement location) {
         return new RenameFix();
     }
 
+    @Override
     protected boolean buildQuickFixesOnlyForOnTheFlyErrors() {
         return true;
     }
 
     @Nonnull
+    @Override
     public String buildErrorString(Object... args) {
-        final String className = (String) args[0];
+        String className = (String) args[0];
         if (className.length() < getMinLength()) {
             return "Annotation name '#ref' is too short";
         }
@@ -53,38 +56,39 @@ public class GroovyAnnotationNamingConventionInspection extends ConventionInspec
         return "Annotation name '#ref' doesn't match regex '" + getRegex() + "' #loc";
     }
 
+    @Override
     protected String getDefaultRegex() {
         return "[A-Z][A-Za-z\\d]*";
     }
 
+    @Override
     protected int getDefaultMinLength() {
         return DEFAULT_MIN_LENGTH;
     }
 
+    @Override
     protected int getDefaultMaxLength() {
         return DEFAULT_MAX_LENGTH;
     }
 
+    @Nonnull
+    @Override
     public BaseInspectionVisitor buildVisitor() {
         return new NamingConventionsVisitor();
     }
 
     private class NamingConventionsVisitor extends BaseInspectionVisitor {
+        @Override
         public void visitTypeDefinition(GrTypeDefinition grTypeDefinition) {
             super.visitTypeDefinition(grTypeDefinition);
-            if (!(grTypeDefinition instanceof GrAnnotationTypeDefinition)) {
+            if (!(grTypeDefinition instanceof GrAnnotationTypeDefinition aClass)) {
                 return;
             }
-            final GrAnnotationTypeDefinition aClass = (GrAnnotationTypeDefinition) grTypeDefinition;
 
-            final String name = aClass.getName();
-            if (name == null) {
-                return;
+            String name = aClass.getName();
+            if (name != null && !isValid(name)) {
+                registerClassError(aClass, name);
             }
-            if (isValid(name)) {
-                return;
-            }
-            registerClassError(aClass, name);
         }
     }
 }

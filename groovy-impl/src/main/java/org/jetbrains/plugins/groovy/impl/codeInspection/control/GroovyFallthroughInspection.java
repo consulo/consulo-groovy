@@ -15,16 +15,17 @@
  */
 package org.jetbrains.plugins.groovy.impl.codeInspection.control;
 
+import consulo.annotation.access.RequiredReadAction;
 import consulo.language.psi.PsiComment;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiWhiteSpace;
 import consulo.language.psi.util.PsiTreeUtil;
 import consulo.localize.LocalizeValue;
-import jakarta.annotation.Nullable;
 import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
+import org.jetbrains.plugins.groovy.codeInspection.utils.ControlFlowUtils;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
-import org.jetbrains.plugins.groovy.codeInspection.utils.ControlFlowUtils;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrSwitchStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.clauses.GrCaseSection;
@@ -45,14 +46,18 @@ public class GroovyFallthroughInspection extends BaseInspection {
     }
 
     @Nullable
+    @Override
     protected String buildErrorString(Object... args) {
         return "Fall-through in switch statement #loc";
     }
 
+    @Override
     public boolean isEnabledByDefault() {
         return true;
     }
 
+    @Nonnull
+    @Override
     public BaseInspectionVisitor buildVisitor() {
         return new Visitor();
     }
@@ -60,21 +65,23 @@ public class GroovyFallthroughInspection extends BaseInspection {
     private static class Visitor extends BaseInspectionVisitor {
         private static final Pattern commentPattern = Pattern.compile("(?i)falls?\\s*thro?u");
 
+        @Override
+        @RequiredReadAction
         public void visitSwitchStatement(GrSwitchStatement switchStatement) {
             super.visitSwitchStatement(switchStatement);
-            final GrCaseSection[] caseSections = switchStatement.getCaseSections();
+            GrCaseSection[] caseSections = switchStatement.getCaseSections();
             for (int i = 1; i < caseSections.length; i++) {
-                final GrCaseSection caseSection = caseSections[i];
+                GrCaseSection caseSection = caseSections[i];
                 if (isCommented(caseSection)) {
                     continue;
                 }
-                final GrCaseSection previousCaseSection = caseSections[i - 1];
-                final GrStatement[] statements = previousCaseSection.getStatements();
+                GrCaseSection previousCaseSection = caseSections[i - 1];
+                GrStatement[] statements = previousCaseSection.getStatements();
                 if (statements.length == 0) {
                     registerError(caseSection.getFirstChild());
                 }
                 else {
-                    final GrStatement lastStatement = statements[statements.length - 1];
+                    GrStatement lastStatement = statements[statements.length - 1];
                     if (ControlFlowUtils.statementMayCompleteNormally(lastStatement)) {
                         registerError(caseSection.getFirstChild());
                     }
@@ -82,13 +89,10 @@ public class GroovyFallthroughInspection extends BaseInspection {
             }
         }
 
+        @RequiredReadAction
         private static boolean isCommented(GrCaseSection caseClause) {
-            final PsiElement element = PsiTreeUtil.skipSiblingsBackward(caseClause, PsiWhiteSpace.class);
-            if (!(element instanceof PsiComment)) {
-                return false;
-            }
-            final String commentText = element.getText();
-            return commentPattern.matcher(commentText).find();
+            PsiElement element = PsiTreeUtil.skipSiblingsBackward(caseClause, PsiWhiteSpace.class);
+            return element instanceof PsiComment comment && commentPattern.matcher(comment.getText()).find();
         }
     }
 }

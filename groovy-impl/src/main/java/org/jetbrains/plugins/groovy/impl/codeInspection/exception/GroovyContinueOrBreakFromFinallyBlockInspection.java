@@ -15,6 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.impl.codeInspection.exception;
 
+import consulo.annotation.access.RequiredReadAction;
 import consulo.annotation.component.ExtensionImpl;
 import consulo.localize.LocalizeValue;
 import jakarta.annotation.Nonnull;
@@ -41,21 +42,26 @@ public class GroovyContinueOrBreakFromFinallyBlockInspection extends BaseInspect
     }
 
     @Nullable
+    @Override
     protected String buildErrorString(Object... args) {
         return "'#ref' inside 'finally' block #loc";
     }
 
+    @Nonnull
+    @Override
     public BaseInspectionVisitor buildVisitor() {
         return new Visitor();
     }
 
     private static class Visitor extends BaseInspectionVisitor {
+        @Override
+        @RequiredReadAction
         public void visitContinueStatement(GrContinueStatement continueStatement) {
             super.visitContinueStatement(continueStatement);
             if (!ControlFlowUtils.isInFinallyBlock(continueStatement)) {
                 return;
             }
-            final GrStatement continuedStatement = continueStatement.findTargetStatement();
+            GrStatement continuedStatement = continueStatement.findTargetStatement();
             if (continuedStatement == null) {
                 return;
             }
@@ -65,12 +71,14 @@ public class GroovyContinueOrBreakFromFinallyBlockInspection extends BaseInspect
             registerStatementError(continueStatement);
         }
 
+        @Override
+        @RequiredReadAction
         public void visitBreakStatement(GrBreakStatement breakStatement) {
             super.visitBreakStatement(breakStatement);
             if (!ControlFlowUtils.isInFinallyBlock(breakStatement)) {
                 return;
             }
-            final GrStatement target = breakStatement.findTargetStatement();
+            GrStatement target = breakStatement.findTargetStatement();
             if (target == null) {
                 return;
             }

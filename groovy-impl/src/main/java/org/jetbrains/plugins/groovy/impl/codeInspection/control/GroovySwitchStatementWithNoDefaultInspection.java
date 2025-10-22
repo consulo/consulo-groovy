@@ -15,9 +15,9 @@
  */
 package org.jetbrains.plugins.groovy.impl.codeInspection.control;
 
+import consulo.annotation.access.RequiredReadAction;
 import consulo.localize.LocalizeValue;
 import jakarta.annotation.Nonnull;
-
 import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
@@ -38,18 +38,23 @@ public class GroovySwitchStatementWithNoDefaultInspection extends BaseInspection
     }
 
     @Nullable
+    @Override
     protected String buildErrorString(Object... args) {
         return "#ref statement with no default branch#loc";
     }
 
+    @Nonnull
+    @Override
     public BaseInspectionVisitor buildVisitor() {
         return new Visitor();
     }
 
     private static class Visitor extends BaseInspectionVisitor {
+        @Override
+        @RequiredReadAction
         public void visitSwitchStatement(GrSwitchStatement switchStatement) {
             super.visitSwitchStatement(switchStatement);
-            final GrCaseSection[] caseSections = switchStatement.getCaseSections();
+            GrCaseSection[] caseSections = switchStatement.getCaseSections();
             for (GrCaseSection caseSection : caseSections) {
                 if (caseSection.isDefault()) {
                     return;
