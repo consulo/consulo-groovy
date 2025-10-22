@@ -60,7 +60,7 @@ public class GroovyDivideByZeroInspection extends BaseInspection {
     }
 
     private static class Visitor extends BaseInspectionVisitor {
-        private static final Set<String> ZEROS = Set.of("0","0x0", "0X0", "0.0", "0L", "0l");
+        private static final Set<String> ZEROS = Set.of("0","0x0", "0X0", "0.0", "0L", "0l", "0b0", "0B0");
         private static final Set<IElementType> DIV_OPERATORS = Set.of(GroovyTokenTypes.mDIV, GroovyTokenTypes.mMOD);
         private static final Set<IElementType> DIV_ASSIGN_OPERATORS = Set.of(GroovyTokenTypes.mDIV_ASSIGN, GroovyTokenTypes.mMOD_ASSIGN);
 
@@ -69,7 +69,8 @@ public class GroovyDivideByZeroInspection extends BaseInspection {
         public void visitBinaryExpression(@Nonnull GrBinaryExpression expression) {
             super.visitBinaryExpression(expression);
             GrExpression rhs = expression.getRightOperand();
-            if (rhs != null && DIV_OPERATORS.contains(expression.getOperationTokenType()) && ZEROS.contains(rhs.getText())) {
+            String text = rhs != null ? rhs.getText() : null;
+            if (DIV_OPERATORS.contains(expression.getOperationTokenType()) && text != null && ZEROS.contains(text)) {
                 registerError(expression);
             }
         }
@@ -79,7 +80,8 @@ public class GroovyDivideByZeroInspection extends BaseInspection {
         public void visitAssignmentExpression(GrAssignmentExpression expression) {
             super.visitAssignmentExpression(expression);
             GrExpression rhs = expression.getRValue();
-            if (rhs != null && DIV_ASSIGN_OPERATORS.contains(expression.getOperationTokenType()) && ZEROS.contains(rhs.getText())) {
+            String text = rhs != null ? rhs.getText() : null;
+            if (DIV_ASSIGN_OPERATORS.contains(expression.getOperationTokenType()) && text != null && ZEROS.contains(rhs.getText())) {
                 registerError(expression);
             }
         }
