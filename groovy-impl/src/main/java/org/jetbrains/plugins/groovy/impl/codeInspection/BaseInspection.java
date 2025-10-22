@@ -83,11 +83,6 @@ public abstract class BaseInspection<State> extends GroovySuppressableInspection
         return null;
     }
 
-    @Nullable
-    protected GroovyFix[] buildFixes(@Nonnull PsiElement location) {
-        return null;
-    }
-
     @Nonnull
     @Override
     public final PsiElementVisitor buildVisitor(@Nonnull ProblemsHolder holder, boolean isOnTheFly) {

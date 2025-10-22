@@ -773,7 +773,7 @@ public class GroovyTypeCheckVisitor extends BaseInspectionVisitor {
                     }
                     return;
                 }
-                if (lValue instanceof GrReferenceExpression && ((GrReferenceExpression) lValue).resolve() instanceof GrReferenceExpression) {
+                if (lValue instanceof GrReferenceExpression lRefExpr && lRefExpr.resolve() instanceof GrReferenceExpression) {
                     //lvalue is not-declared variable
                     return;
                 }
@@ -839,20 +839,24 @@ public class GroovyTypeCheckVisitor extends BaseInspectionVisitor {
         @Nullable LocalQuickFix[] fixes,
         ProblemHighlightType highlightType
     ) {
-        if (PsiUtil.isCompileStatic(location)) {
-            // filter all errors here, error will be highlighted by annotator
-            if (highlightType != ProblemHighlightType.GENERIC_ERROR) {
-                super.registerError(location, description, fixes, highlightType);
-            }
+        if (PsiUtil.isCompileStatic(location) && highlightType == ProblemHighlightType.GENERIC_ERROR) {
+            // In static context we filter all errors here, errors will be highlighted by annotator.
+            return;
         }
-        else if (highlightType == ProblemHighlightType.GENERIC_ERROR) {
-            // if this visitor works within non-static context we will highlight all errors as warnings
-            super.registerError(location, description, fixes, ProblemHighlightType.GENERIC_ERROR_OR_WARNING);
-        }
-        else {
-            // if this visitor works within static context errors will be highlighted as errors by annotator, warnings will be highlighted as warnings here
-            super.registerError(location, description, fixes, highlightType);
-        }
+
+        problemsHolder.newProblem(description)
+            .range(location)
+            .highlightType(
+                switch (highlightType) {
+                    // If this visitor works within non-static context we will highlight all errors as warnings.
+                    case GENERIC_ERROR -> ProblemHighlightType.GENERIC_ERROR_OR_WARNING;
+                    // If this visitor works within static context errors will be highlighted as errors by annotator,
+                    // warnings will be highlighted as warnings here.
+                    default -> highlightType;
+                }
+            )
+            .withFixes(fixes)
+            .create();
     }
 
     @Override
@@ -961,8 +965,8 @@ public class GroovyTypeCheckVisitor extends BaseInspectionVisitor {
             return;
         }
 
-        if (lValue instanceof GrTupleExpression) {
-            processTupleAssignment(((GrTupleExpression) lValue), rValue);
+        if (lValue instanceof GrTupleExpression tupleExpr) {
+            processTupleAssignment(tupleExpr, rValue);
         }
         else {
             PsiType lValueNominalType = lValue.getNominalType();

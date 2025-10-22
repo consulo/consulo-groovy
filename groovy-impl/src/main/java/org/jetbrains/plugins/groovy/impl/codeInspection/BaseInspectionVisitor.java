@@ -137,18 +137,10 @@ public abstract class BaseInspectionVisitor<State> extends GroovyElementVisitor 
         if (!onTheFly && inspection.buildQuickFixesOnlyForOnTheFlyErrors()) {
             return null;
         }
-        GroovyFix[] fixes = inspection.buildFixes(location);
-        if (fixes != null) {
-            return fixes;
-        }
         GroovyFix fix = inspection.buildFix(location);
         if (fix == null) {
             return null;
         }
         return new GroovyFix[]{fix};
-    }
-
-    public int getErrorCount() {
-        return problemsHolder.getResultCount();
     }
 }
