@@ -16,6 +16,8 @@
 package org.jetbrains.plugins.groovy.impl.codeInspection.confusing;
 
 import com.intellij.java.language.psi.PsiType;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.groovy.impl.localize.GroovyInspectionLocalize;
 import consulo.language.ast.IElementType;
 import consulo.language.editor.inspection.ProblemDescriptor;
@@ -37,7 +39,6 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrUnaryE
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.literals.GrLiteral;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil;
 
-import java.util.HashSet;
 import java.util.Set;
 
 public class GroovyPointlessBooleanInspection extends BaseInspection {
@@ -53,14 +54,19 @@ public class GroovyPointlessBooleanInspection extends BaseInspection {
         return CONFUSING_CODE_CONSTRUCTS;
     }
 
+    @Override
     public boolean isEnabledByDefault() {
         return true;
     }
 
+    @Nonnull
+    @Override
     public BaseInspectionVisitor buildVisitor() {
         return new PointlessBooleanExpressionVisitor();
     }
 
+    @Override
+    @RequiredReadAction
     public String buildErrorString(Object... args) {
         if (args[0] instanceof GrBinaryExpression) {
             return GroovyInspectionLocalize.pointlessBooleanProblemDescriptor(
@@ -75,32 +81,22 @@ public class GroovyPointlessBooleanInspection extends BaseInspection {
     }
 
     @Nullable
+    @RequiredReadAction
     private static String calculateSimplifiedBinaryExpression(GrBinaryExpression expression) {
-        final IElementType sign = expression.getOperationTokenType();
-        final GrExpression lhs = expression.getLeftOperand();
+        IElementType sign = expression.getOperationTokenType();
+        GrExpression lhs = expression.getLeftOperand();
 
-        final GrExpression rhs = expression.getRightOperand();
+        GrExpression rhs = expression.getRightOperand();
         if (rhs == null) {
             return null;
         }
-        final String rhsText = rhs.getText();
-        final String lhsText = lhs.getText();
-        assert sign != null;
+        String rhsText = rhs.getText();
+        String lhsText = lhs.getText();
         if (sign.equals(GroovyTokenTypes.mLAND)) {
-            if (isTrue(lhs)) {
-                return rhsText;
-            }
-            else {
-                return lhsText;
-            }
+            return isTrue(lhs) ? rhsText : lhsText;
         }
         else if (sign.equals(GroovyTokenTypes.mLOR)) {
-            if (isFalse(lhs)) {
-                return rhsText;
-            }
-            else {
-                return lhsText;
-            }
+            return isFalse(lhs) ? rhsText : lhsText;
         }
         else if (sign.equals(GroovyTokenTypes.mBXOR) ||
             sign.equals(GroovyTokenTypes.mNOT_EQUAL)) {
@@ -136,22 +132,22 @@ public class GroovyPointlessBooleanInspection extends BaseInspection {
         }
     }
 
+    @RequiredReadAction
     private static String createStringForNegatedExpression(GrExpression exp) {
         if (ComparisonUtils.isComparison(exp)) {
-            final GrBinaryExpression binaryExpression = (GrBinaryExpression) exp;
-            final IElementType sign = binaryExpression.getOperationTokenType();
-            final String negatedComparison = ComparisonUtils.getNegatedComparison(sign);
-            final GrExpression lhs = binaryExpression.getLeftOperand();
-            final GrExpression rhs = binaryExpression.getRightOperand();
+            GrBinaryExpression binaryExpression = (GrBinaryExpression) exp;
+            IElementType sign = binaryExpression.getOperationTokenType();
+            String negatedComparison = ComparisonUtils.getNegatedComparison(sign);
+            GrExpression lhs = binaryExpression.getLeftOperand();
+            GrExpression rhs = binaryExpression.getRightOperand();
             if (rhs == null) {
                 return lhs.getText() + negatedComparison;
             }
             return lhs.getText() + negatedComparison + rhs.getText();
         }
         else {
-            final String baseText = exp.getText();
-            if (ParenthesesUtils.getPrecedence(exp) >
-                ParenthesesUtils.PREFIX_PRECEDENCE) {
+            String baseText = exp.getText();
+            if (ParenthesesUtils.getPrecedence(exp) > ParenthesesUtils.PREFIX_PRECEDENCE) {
                 return "!(" + baseText + ')';
             }
             else {
@@ -160,17 +156,14 @@ public class GroovyPointlessBooleanInspection extends BaseInspection {
         }
     }
 
+    @RequiredReadAction
     private static String calculateSimplifiedPrefixExpression(GrUnaryExpression expression) {
-        final GrExpression operand = expression.getOperand();
-        if (isTrue(operand)) {
-            return "false";
-        }
-        else {
-            return "true";
-        }
+        GrExpression operand = expression.getOperand();
+        return isTrue(operand) ? "false" : "true";
     }
 
-    public GroovyFix buildFix(PsiElement location) {
+    @Override
+    public GroovyFix buildFix(@Nonnull PsiElement location) {
         return new BooleanLiteralComparisonFix();
     }
 
@@ -181,47 +174,48 @@ public class GroovyPointlessBooleanInspection extends BaseInspection {
             return GroovyInspectionLocalize.pointlessBooleanQuickfix();
         }
 
+        @Override
+        @RequiredWriteAction
         public void doFix(Project project, ProblemDescriptor descriptor)
             throws IncorrectOperationException {
-            final PsiElement element = descriptor.getPsiElement();
-            if (element instanceof GrBinaryExpression) {
-                final GrBinaryExpression expression = (GrBinaryExpression) element;
-                final String replacementString = calculateSimplifiedBinaryExpression(expression);
+            PsiElement element = descriptor.getPsiElement();
+            if (element instanceof GrBinaryExpression expression) {
+                String replacementString = calculateSimplifiedBinaryExpression(expression);
                 replaceExpression(expression, replacementString);
             }
             else {
-                final GrUnaryExpression expression = (GrUnaryExpression) element;
-                final String replacementString = calculateSimplifiedPrefixExpression(expression);
+                GrUnaryExpression expression = (GrUnaryExpression) element;
+                String replacementString = calculateSimplifiedPrefixExpression(expression);
                 replaceExpression(expression, replacementString);
             }
         }
     }
 
     private static class PointlessBooleanExpressionVisitor extends BaseInspectionVisitor {
-        private final Set<IElementType> booleanTokens = new HashSet<IElementType>(5);
-        {
-            booleanTokens.add(GroovyTokenTypes.mLAND);
-            booleanTokens.add(GroovyTokenTypes.mLOR);
-            booleanTokens.add(GroovyTokenTypes.mBXOR);
-            booleanTokens.add(GroovyTokenTypes.mEQUAL);
-            booleanTokens.add(GroovyTokenTypes.mNOT_EQUAL);
-        }
+        private static final Set<IElementType> BOOLEAN_TOKENS = Set.of(
+            GroovyTokenTypes.mLAND,
+            GroovyTokenTypes.mLOR,
+            GroovyTokenTypes.mBXOR,
+            GroovyTokenTypes.mEQUAL,
+            GroovyTokenTypes.mNOT_EQUAL
+        );
 
+        @Override
+        @RequiredReadAction
         public void visitBinaryExpression(@Nonnull GrBinaryExpression expression) {
             super.visitBinaryExpression(expression);
-            final GrExpression rhs = expression.getRightOperand();
+            GrExpression rhs = expression.getRightOperand();
             if (rhs == null) {
                 return;
             }
-            final IElementType sign = expression.getOperationTokenType();
-            if (!booleanTokens.contains(sign)) {
+            IElementType sign = expression.getOperationTokenType();
+            if (!BOOLEAN_TOKENS.contains(sign)) {
                 return;
             }
 
-            final GrExpression lhs = expression.getLeftOperand();
+            GrExpression lhs = expression.getLeftOperand();
 
-            assert sign != null;
-            final boolean isPointless;
+            boolean isPointless;
             if (sign.equals(GroovyTokenTypes.mEQUAL) ||
                 sign.equals(GroovyTokenTypes.mNOT_EQUAL)) {
                 isPointless = equalityExpressionIsPointless(lhs, rhs);
@@ -244,50 +238,54 @@ public class GroovyPointlessBooleanInspection extends BaseInspection {
             registerError(expression);
         }
 
+        @Override
+        @RequiredReadAction
         public void visitUnaryExpression(@Nonnull GrUnaryExpression expression) {
             super.visitUnaryExpression(expression);
-            final IElementType sign = expression.getOperationTokenType();
+            IElementType sign = expression.getOperationTokenType();
             if (sign == null) {
                 return;
             }
-            final GrExpression operand = expression.getOperand();
-            if (sign.equals(GroovyTokenTypes.mLNOT) &&
-                notExpressionIsPointless(operand)) {
+            GrExpression operand = expression.getOperand();
+            if (GroovyTokenTypes.mLNOT.equals(sign) && notExpressionIsPointless(operand)) {
                 registerError(expression);
             }
         }
     }
 
-    private static boolean equalityExpressionIsPointless(
-        GrExpression lhs,
-        GrExpression rhs
-    ) {
+    @RequiredReadAction
+    private static boolean equalityExpressionIsPointless(GrExpression lhs, GrExpression rhs) {
         return (isTrue(lhs) || isFalse(lhs)) && isBoolean(rhs)
             || (isTrue(rhs) || isFalse(rhs)) && isBoolean(lhs);
     }
 
     private static boolean isBoolean(GrExpression expression) {
-        final PsiType type = expression.getType();
-        final PsiType unboxed = TypesUtil.unboxPrimitiveTypeWrapper(type);
+        PsiType type = expression.getType();
+        PsiType unboxed = TypesUtil.unboxPrimitiveTypeWrapper(type);
         return unboxed != null && PsiType.BOOLEAN.equals(unboxed);
     }
 
+    @RequiredReadAction
     private static boolean andExpressionIsPointless(GrExpression lhs, GrExpression rhs) {
         return isTrue(lhs) || isTrue(rhs);
     }
 
+    @RequiredReadAction
     private static boolean orExpressionIsPointless(GrExpression lhs, GrExpression rhs) {
         return isFalse(lhs) || isFalse(rhs);
     }
 
+    @RequiredReadAction
     private static boolean xorExpressionIsPointless(GrExpression lhs, GrExpression rhs) {
         return isTrue(lhs) || isTrue(rhs) || isFalse(lhs) || isFalse(rhs);
     }
 
+    @RequiredReadAction
     private static boolean notExpressionIsPointless(GrExpression arg) {
         return isFalse(arg) || isTrue(arg);
     }
 
+    @RequiredReadAction
     private static boolean isTrue(GrExpression expression) {
         if (expression == null) {
             return false;
@@ -295,18 +293,12 @@ public class GroovyPointlessBooleanInspection extends BaseInspection {
         if (!(expression instanceof GrLiteral)) {
             return false;
         }
-        final String text = expression.getText();
+        String text = expression.getText();
         return "true".equals(text);
     }
 
+    @RequiredReadAction
     private static boolean isFalse(GrExpression expression) {
-        if (expression == null) {
-            return false;
-        }
-        if (!(expression instanceof GrLiteral)) {
-            return false;
-        }
-        final String text = expression.getText();
-        return "false".equals(text);
+        return expression instanceof GrLiteral && "false".equals(expression.getText());
     }
 }

@@ -17,7 +17,7 @@ package org.jetbrains.plugins.groovy.impl.codeInspection.confusing;
 
 import com.intellij.java.language.psi.PsiClass;
 import com.intellij.java.language.psi.PsiMember;
-import com.intellij.java.language.psi.PsiModifier;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.groovy.impl.localize.GroovyInspectionLocalize;
 import consulo.language.psi.PsiComment;
 import consulo.language.psi.PsiElement;
@@ -49,6 +49,7 @@ public class UnnecessaryQualifiedReferenceInspection extends BaseInspection {
     protected BaseInspectionVisitor buildVisitor() {
         return new BaseInspectionVisitor() {
             @Override
+            @RequiredReadAction
             public void visitCodeReferenceElement(GrCodeReferenceElement refElement) {
                 super.visitCodeReferenceElement(refElement);
 
@@ -58,11 +59,11 @@ public class UnnecessaryQualifiedReferenceInspection extends BaseInspection {
             }
 
             @Override
+            @RequiredReadAction
             public void visitReferenceExpression(GrReferenceExpression referenceExpression) {
                 super.visitReferenceExpression(referenceExpression);
 
-                if (canBeSimplified(referenceExpression) || isQualifiedStaticMethodWithUnnecessaryQualifier
-                    (referenceExpression)) {
+                if (canBeSimplified(referenceExpression) || isQualifiedStaticMethodWithUnnecessaryQualifier(referenceExpression)) {
                     registerError(referenceExpression);
                 }
             }
@@ -70,22 +71,14 @@ public class UnnecessaryQualifiedReferenceInspection extends BaseInspection {
     }
 
     private static boolean isQualifiedStaticMethodWithUnnecessaryQualifier(GrReferenceExpression ref) {
-        if (ref.getQualifier() == null) {
-            return false;
-        }
-
-        final PsiElement resolved = ref.resolve();
-        if (!(resolved instanceof PsiMember)) {
-            return false;
-        }
-        if (!((PsiMember) resolved).hasModifierProperty(PsiModifier.STATIC)) {
+        if (ref.getQualifier() == null || !(ref.resolve() instanceof PsiMember member) || !member.isStatic()) {
             return false;
         }
 
         PsiElement copyResolved;
-        final PsiElement parent = ref.getParent();
-        if (parent instanceof GrMethodCall) {
-            final GrMethodCall copy = (GrMethodCall) parent.copy();
+        PsiElement parent = ref.getParent();
+        if (parent instanceof GrMethodCall methodCall) {
+            GrMethodCall copy = (GrMethodCall) methodCall.copy();
             GrReferenceExpression invoked = (GrReferenceExpression) copy.getInvokedExpression();
             assert invoked != null;
 
@@ -94,11 +87,11 @@ public class UnnecessaryQualifiedReferenceInspection extends BaseInspection {
             copyResolved = ((GrReferenceExpression) copy.getInvokedExpression()).resolve();
         }
         else {
-            final GrReferenceExpression copy = (GrReferenceExpression) ref.copy();
+            GrReferenceExpression copy = (GrReferenceExpression) ref.copy();
             copy.setQualifier(null);
             copyResolved = copy.resolve();
         }
-        return ref.getManager().areElementsEquivalent(copyResolved, resolved);
+        return ref.getManager().areElementsEquivalent(copyResolved, member);
     }
 
     @Nonnull
@@ -128,6 +121,7 @@ public class UnnecessaryQualifiedReferenceInspection extends BaseInspection {
         return true;
     }
 
+    @RequiredReadAction
     private static boolean canBeSimplified(PsiElement element) {
         if (PsiTreeUtil.getParentOfType(element, PsiComment.class) != null) {
             return false;
@@ -138,8 +132,8 @@ public class UnnecessaryQualifiedReferenceInspection extends BaseInspection {
                 return false;
             }
         }
-        else if (element instanceof GrReferenceExpression) {
-            if (!PsiImplUtil.seemsToBeQualifiedClassName((GrReferenceExpression) element)) {
+        else if (element instanceof GrReferenceExpression refExpr) {
+            if (!PsiImplUtil.seemsToBeQualifiedClassName(refExpr)) {
                 return false;
             }
         }
@@ -147,7 +141,7 @@ public class UnnecessaryQualifiedReferenceInspection extends BaseInspection {
             return false;
         }
 
-        final GrReferenceElement ref = (GrReferenceElement) element;
+        GrReferenceElement ref = (GrReferenceElement) element;
         if (ref.getQualifier() == null) {
             return false;
         }
@@ -155,27 +149,26 @@ public class UnnecessaryQualifiedReferenceInspection extends BaseInspection {
             return false;
         }
 
-        final PsiElement resolved = ref.resolve();
-        if (!(resolved instanceof PsiClass)) {
+        if (!(ref.resolve() instanceof PsiClass psiClass)) {
             return false;
         }
 
-        final String name = ((PsiClass) resolved).getName();
+        String name = psiClass.getName();
         if (name == null) {
             return false;
         }
 
-        final GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(element.getProject());
-        final GrReferenceExpression shortedRef = factory.createReferenceExpressionFromText(name, element);
-        final GroovyResolveResult resolveResult = shortedRef.advancedResolve();
+        GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(element.getProject());
+        GrReferenceExpression shortedRef = factory.createReferenceExpressionFromText(name, element);
+        GroovyResolveResult resolveResult = shortedRef.advancedResolve();
 
-        if (element.getManager().areElementsEquivalent(resolved, resolveResult.getElement())) {
+        if (element.getManager().areElementsEquivalent(psiClass, resolveResult.getElement())) {
             return true;
         }
 
-        final PsiClass containingClass = ((PsiClass) resolved).getContainingClass();
-        if (containingClass != null && !GroovyCodeStyleSettingsFacade.getInstance(containingClass.getProject())
-            .insertInnerClassImports()) {
+        PsiClass containingClass = psiClass.getContainingClass();
+        if (containingClass != null
+            && !GroovyCodeStyleSettingsFacade.getInstance(containingClass.getProject()).insertInnerClassImports()) {
             return false;
         }
 

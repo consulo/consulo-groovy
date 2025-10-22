@@ -18,13 +18,11 @@ package org.jetbrains.plugins.groovy.impl.codeInspection.control;
 import consulo.annotation.component.ExtensionImpl;
 import consulo.localize.LocalizeValue;
 import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrSwitchStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.branch.GrBreakStatement;
-
-import jakarta.annotation.Nullable;
 
 @ExtensionImpl
 public class GroovyBreakInspection extends BaseInspection {
@@ -41,21 +39,22 @@ public class GroovyBreakInspection extends BaseInspection {
     }
 
     @Nullable
+    @Override
     protected String buildErrorString(Object... args) {
         return "#ref statement #loc";
-
     }
 
+    @Nonnull
+    @Override
     public BaseInspectionVisitor buildVisitor() {
         return new Visitor();
     }
 
     private static class Visitor extends BaseInspectionVisitor {
+        @Override
         public void visitBreakStatement(GrBreakStatement breakStatement) {
-
             super.visitBreakStatement(breakStatement);
-            final GrStatement target = breakStatement.findTargetStatement();
-            if (target instanceof GrSwitchStatement) {
+            if (breakStatement.findTargetStatement() instanceof GrSwitchStatement) {
                 return;
             }
             registerError(breakStatement);

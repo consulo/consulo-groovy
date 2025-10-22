@@ -15,13 +15,14 @@
  */
 package org.jetbrains.plugins.groovy.impl.codeInspection.control;
 
-import consulo.localize.LocalizeValue;
-import jakarta.annotation.Nonnull;
-
+import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.language.editor.inspection.ProblemDescriptor;
 import consulo.language.psi.PsiElement;
 import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
 import consulo.project.Project;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.impl.codeInspection.GroovyFix;
@@ -47,11 +48,13 @@ public class GroovyConditionalWithIdenticalBranchesInspection extends BaseInspec
         return CONTROL_FLOW;
     }
 
+    @Override
     public String buildErrorString(Object... args) {
         return "Conditional expression with identical branches #loc";
     }
 
-    public GroovyFix buildFix(PsiElement location) {
+    @Override
+    public GroovyFix buildFix(@Nonnull PsiElement location) {
         return new CollapseConditionalFix();
     }
 
@@ -62,26 +65,31 @@ public class GroovyConditionalWithIdenticalBranchesInspection extends BaseInspec
             return LocalizeValue.localizeTODO("Collapse conditional expression");
         }
 
+        @Override
+        @RequiredWriteAction
         public void doFix(Project project, ProblemDescriptor descriptor) throws IncorrectOperationException {
-            final PsiElement element = descriptor.getPsiElement();
-            if (!(element instanceof GrConditionalExpression)) {
+            PsiElement element = descriptor.getPsiElement();
+            if (!(element instanceof GrConditionalExpression expression)) {
                 return;
             }
-            final GrConditionalExpression expression = (GrConditionalExpression) element;
-            final GrExpression thenBranch = expression.getThenBranch();
+            GrExpression thenBranch = expression.getThenBranch();
             replaceExpression(expression, thenBranch.getText());
         }
     }
 
+    @Nonnull
+    @Override
     public BaseInspectionVisitor buildVisitor() {
         return new Visitor();
     }
 
     private static class Visitor extends BaseInspectionVisitor {
+        @Override
+        @RequiredReadAction
         public void visitConditionalExpression(GrConditionalExpression expression) {
             super.visitConditionalExpression(expression);
-            final GrExpression thenBranch = expression.getThenBranch();
-            final GrExpression elseBranch = expression.getElseBranch();
+            GrExpression thenBranch = expression.getThenBranch();
+            GrExpression elseBranch = expression.getElseBranch();
             if (thenBranch == null || elseBranch == null) {
                 return;
             }

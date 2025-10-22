@@ -15,6 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.impl.codeInspection.confusing;
 
+import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.groovy.impl.localize.GroovyInspectionLocalize;
 import consulo.language.ast.IElementType;
 import consulo.language.ast.TokenSet;
@@ -31,6 +33,8 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrBinary
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 
+import java.util.Set;
+
 import static org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes.*;
 
 public class GroovyPointlessArithmeticInspection extends BaseInspection {
@@ -46,23 +50,29 @@ public class GroovyPointlessArithmeticInspection extends BaseInspection {
         return CONFUSING_CODE_CONSTRUCTS;
     }
 
+    @Override
     public boolean isEnabledByDefault() {
         return false;
     }
 
+    @Nonnull
+    @Override
     public BaseInspectionVisitor buildVisitor() {
         return new PointlessArithmeticVisitor();
     }
 
+    @Override
+    @RequiredReadAction
     public String buildErrorString(Object... args) {
         return GroovyInspectionLocalize.pointlessArithmeticErrorMessage(calculateReplacementExpression((GrExpression) args[0])).get();
     }
 
+    @RequiredReadAction
     private static String calculateReplacementExpression(GrExpression expression) {
-        final GrBinaryExpression exp = (GrBinaryExpression) expression;
-        final IElementType sign = exp.getOperationTokenType();
-        final GrExpression lhs = exp.getLeftOperand();
-        final GrExpression rhs = exp.getRightOperand();
+        GrBinaryExpression exp = (GrBinaryExpression) expression;
+        IElementType sign = exp.getOperationTokenType();
+        GrExpression lhs = exp.getLeftOperand();
+        GrExpression rhs = exp.getRightOperand();
         assert rhs != null;
         if (mPLUS == sign) {
             if (isZero(lhs)) {
@@ -96,7 +106,8 @@ public class GroovyPointlessArithmeticInspection extends BaseInspection {
         return "";
     }
 
-    public GroovyFix buildFix(PsiElement location) {
+    @Override
+    public GroovyFix buildFix(@Nonnull PsiElement location) {
         return new PointlessArithmeticFix();
     }
 
@@ -107,9 +118,11 @@ public class GroovyPointlessArithmeticInspection extends BaseInspection {
             return LocalizeValue.localizeTODO("Simplify");
         }
 
+        @Override
+        @RequiredWriteAction
         public void doFix(Project project, ProblemDescriptor descriptor) throws IncorrectOperationException {
-            final GrExpression expression = (GrExpression) descriptor.getPsiElement();
-            final String newExpression = calculateReplacementExpression(expression);
+            GrExpression expression = (GrExpression) descriptor.getPsiElement();
+            String newExpression = calculateReplacementExpression(expression);
             replaceExpression(expression, newExpression);
         }
     }
@@ -117,21 +130,23 @@ public class GroovyPointlessArithmeticInspection extends BaseInspection {
     private static class PointlessArithmeticVisitor extends BaseInspectionVisitor {
         private final TokenSet arithmeticTokens = TokenSet.create(mPLUS, mMINUS, mSTAR, mDIV);
 
+        @Override
+        @RequiredReadAction
         public void visitBinaryExpression(@Nonnull GrBinaryExpression expression) {
             super.visitBinaryExpression(expression);
-            final GrExpression rhs = expression.getRightOperand();
+            GrExpression rhs = expression.getRightOperand();
             if (rhs == null) {
                 return;
             }
 
-            final IElementType sign = expression.getOperationTokenType();
+            IElementType sign = expression.getOperationTokenType();
             if (!arithmeticTokens.contains(sign)) {
                 return;
             }
 
-            final GrExpression lhs = expression.getLeftOperand();
+            GrExpression lhs = expression.getLeftOperand();
 
-            final boolean isPointless;
+            boolean isPointless;
             if (sign.equals(mPLUS)) {
                 isPointless = additionExpressionIsPointless(lhs, rhs);
             }
@@ -155,59 +170,54 @@ public class GroovyPointlessArithmeticInspection extends BaseInspection {
         }
     }
 
+    @RequiredReadAction
     private static boolean subtractionExpressionIsPointless(GrExpression rhs) {
         return isZero(rhs);
     }
 
+    @RequiredReadAction
     private static boolean additionExpressionIsPointless(GrExpression lhs, GrExpression rhs) {
         return isZero(lhs) || isZero(rhs);
     }
 
+    @RequiredReadAction
     private static boolean multiplyExpressionIsPointless(GrExpression lhs, GrExpression rhs) {
         return isZero(lhs) || isZero(rhs) || isOne(lhs) || isOne(rhs);
     }
 
+    @RequiredReadAction
     private static boolean divideExpressionIsPointless(GrExpression rhs) {
         return isOne(rhs);
     }
 
+    private static final Set<String> ZEROS = Set.of("0", "0x0", "0X0", "0.0", "0L", "0l", "0b0", "0B0");
+    private static final Set<String> ONES = Set.of("1", "0x1", "0X1", "1.0", "1L", "1l", "0b1", "0B1");
+
     /**
      * @noinspection FloatingPointEquality
      */
+    @RequiredReadAction
     private static boolean isZero(GrExpression expression) {
-        final PsiElement inner = PsiUtil.skipParentheses(expression, false);
+        PsiElement inner = PsiUtil.skipParentheses(expression, false);
         if (inner == null) {
             return false;
         }
 
-        final String text = inner.getText();
-        return "0".equals(text) ||
-            "0x0".equals(text) ||
-            "0X0".equals(text) ||
-            "0.0".equals(text) ||
-            "0L".equals(text) ||
-            "0l".equals(text) ||
-            "0b0".equals(text) ||
-            "0B0".equals(text);
+        String text = inner.getText();
+        return text != null && ZEROS.contains(text);
     }
 
     /**
      * @noinspection FloatingPointEquality
      */
+    @RequiredReadAction
     private static boolean isOne(GrExpression expression) {
-        final PsiElement inner = PsiUtil.skipParentheses(expression, false);
+        PsiElement inner = PsiUtil.skipParentheses(expression, false);
         if (inner == null) {
             return false;
         }
 
-        final String text = inner.getText();
-        return "1".equals(text) ||
-            "0x1".equals(text) ||
-            "0X1".equals(text) ||
-            "1.0".equals(text) ||
-            "1L".equals(text) ||
-            "1l".equals(text) ||
-            "0b0".equals(text) ||
-            "0B0".equals(text);
+        String text = inner.getText();
+        return text != null && ONES.contains(text);
     }
 }

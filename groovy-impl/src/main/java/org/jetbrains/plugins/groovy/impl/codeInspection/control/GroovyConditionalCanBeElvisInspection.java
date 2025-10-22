@@ -19,6 +19,8 @@ import com.intellij.java.language.psi.CommonClassNames;
 import com.intellij.java.language.psi.PsiMethod;
 import com.intellij.java.language.psi.PsiType;
 import com.intellij.java.language.psi.util.InheritanceUtil;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.language.editor.PsiEquivalenceUtil;
 import consulo.language.editor.inspection.ProblemDescriptor;
 import consulo.language.psi.PsiElement;
@@ -62,20 +64,20 @@ public class GroovyConditionalCanBeElvisInspection extends BaseInspection {
             }
 
             @Override
+            @RequiredWriteAction
             public void doFix(Project project, ProblemDescriptor descriptor) throws IncorrectOperationException {
-                final GrConditionalExpression expr = (GrConditionalExpression) descriptor.getPsiElement();
+                GrConditionalExpression expr = (GrConditionalExpression) descriptor.getPsiElement();
 
-                final GrExpression condition = expr.getCondition();
-                final GrExpression thenExpression = expr.getThenBranch();
-                final GrExpression elseExpression = expr.getElseBranch();
+                GrExpression condition = expr.getCondition();
+                GrExpression thenExpression = expr.getThenBranch();
+                GrExpression elseExpression = expr.getElseBranch();
                 assert elseExpression != null;
                 assert thenExpression != null;
 
-                final String newExpression;
-                if (checkForStringIsEmpty(condition, elseExpression) || checkForListIsEmpty(
-                    condition,
-                    elseExpression
-                ) || checkForEqualsNotElse(condition, elseExpression)) {
+                String newExpression;
+                if (checkForStringIsEmpty(condition, elseExpression)
+                    || checkForListIsEmpty(condition, elseExpression)
+                    || checkForEqualsNotElse(condition, elseExpression)) {
                     newExpression = elseExpression.getText() + " ?: " + thenExpression.getText();
                 }
                 else {
@@ -86,37 +88,37 @@ public class GroovyConditionalCanBeElvisInspection extends BaseInspection {
         };
     }
 
+    @RequiredReadAction
     private static boolean checkPsiElement(GrConditionalExpression expr) {
         if (expr instanceof GrElvisExpression) {
             return false;
         }
         GrExpression condition = expr.getCondition();
 
-        final GrExpression then = expr.getThenBranch();
-        final GrExpression elseBranch = expr.getElseBranch();
+        GrExpression then = expr.getThenBranch();
+        GrExpression elseBranch = expr.getElseBranch();
         if (then == null || elseBranch == null) {
             return false;
         }
 
-
-        return checkForEqualsThen(condition, then) ||
-            checkForEqualsNotElse(condition, elseBranch) ||
-            checkForNull(condition, then) ||
-            checkForStringIsEmpty(condition, elseBranch) ||
-            checkForStringIsNotEmpty(condition, then) ||
-            checkForListIsEmpty(condition, elseBranch) ||
-            checkForListIsNotEmpty(condition, then);
+        return checkForEqualsThen(condition, then)
+            || checkForEqualsNotElse(condition, elseBranch)
+            || checkForNull(condition, then)
+            || checkForStringIsEmpty(condition, elseBranch)
+            || checkForStringIsNotEmpty(condition, then)
+            || checkForListIsEmpty(condition, elseBranch)
+            || checkForListIsNotEmpty(condition, then);
     }
 
     private static boolean checkForEqualsNotElse(GrExpression condition, GrExpression elseBranch) {
-        if (!(condition instanceof GrUnaryExpression)) {
+        if (!(condition instanceof GrUnaryExpression prefixExpr)) {
             return false;
         }
-        if (((GrUnaryExpression) condition).getOperationTokenType() != GroovyTokenTypes.mLNOT) {
+        if (prefixExpr.getOperationTokenType() != GroovyTokenTypes.mLNOT) {
             return false;
         }
 
-        final GrExpression operand = ((GrUnaryExpression) condition).getOperand();
+        GrExpression operand = prefixExpr.getOperand();
         return operand != null && PsiEquivalenceUtil.areElementsEquivalent(operand, elseBranch);
     }
 
@@ -125,11 +127,11 @@ public class GroovyConditionalCanBeElvisInspection extends BaseInspection {
     }
 
     private static boolean checkForListIsNotEmpty(GrExpression condition, GrExpression then) {
-        if (!(condition instanceof GrUnaryExpression)) {
+        if (!(condition instanceof GrUnaryExpression prefixExpr)) {
             return false;
         }
 
-        if (((GrUnaryExpression) condition).getOperationTokenType() != GroovyTokenTypes.mLNOT) {
+        if (prefixExpr.getOperationTokenType() != GroovyTokenTypes.mLNOT) {
             return false;
         }
 
@@ -137,14 +139,14 @@ public class GroovyConditionalCanBeElvisInspection extends BaseInspection {
     }
 
     private static boolean checkForListIsEmpty(GrExpression condition, GrExpression elseBranch) {
-        if (condition instanceof GrMethodCall) {
-            condition = ((GrMethodCall) condition).getInvokedExpression();
+        if (condition instanceof GrMethodCall methodCall) {
+            condition = methodCall.getInvokedExpression();
         }
-        if (!(condition instanceof GrReferenceExpression)) {
+        if (!(condition instanceof GrReferenceExpression conditionRef)) {
             return false;
         }
 
-        final GrExpression qualifier = ((GrReferenceExpression) condition).getQualifier();
+        GrExpression qualifier = conditionRef.getQualifier();
         if (qualifier == null) {
             return false;
         }
@@ -153,7 +155,7 @@ public class GroovyConditionalCanBeElvisInspection extends BaseInspection {
             return false;
         }
 
-        final PsiType type = qualifier.getType();
+        PsiType type = qualifier.getType();
         if (type == null) {
             return false;
         }
@@ -161,40 +163,34 @@ public class GroovyConditionalCanBeElvisInspection extends BaseInspection {
             return false;
         }
 
-        final PsiElement resolved = ((GrReferenceExpression) condition).resolve();
+        PsiElement resolved = conditionRef.resolve();
 
-        return resolved instanceof PsiMethod &&
-            "isEmpty".equals(((PsiMethod) resolved).getName()) &&
-            ((PsiMethod) resolved).getParameterList().getParametersCount() == 0;
+        return resolved instanceof PsiMethod method
+            && "isEmpty".equals(method.getName())
+            && method.getParameterList().getParametersCount() == 0;
     }
 
     /**
      * checks for the case !string.isEmpty ? string : something_else
      */
     private static boolean checkForStringIsNotEmpty(GrExpression condition, GrExpression then) {
-        if (!(condition instanceof GrUnaryExpression)) {
-            return false;
-        }
-
-        if (((GrUnaryExpression) condition).getOperationTokenType() != GroovyTokenTypes.mLNOT) {
-            return false;
-        }
-
-        return checkForStringIsEmpty(((GrUnaryExpression) condition).getOperand(), then);
+        return condition instanceof GrUnaryExpression prefixExpr
+            && prefixExpr.getOperationTokenType() == GroovyTokenTypes.mLNOT
+            && checkForStringIsEmpty(prefixExpr.getOperand(), then);
     }
 
     /**
      * checks for the case string.isEmpty() ? something_else : string
      */
     private static boolean checkForStringIsEmpty(GrExpression condition, GrExpression elseBranch) {
-        if (condition instanceof GrMethodCall) {
-            condition = ((GrMethodCall) condition).getInvokedExpression();
+        if (condition instanceof GrMethodCall methodCall) {
+            condition = methodCall.getInvokedExpression();
         }
-        if (!(condition instanceof GrReferenceExpression)) {
+        if (!(condition instanceof GrReferenceExpression conditionRef)) {
             return false;
         }
 
-        final GrExpression qualifier = ((GrReferenceExpression) condition).getQualifier();
+        GrExpression qualifier = conditionRef.getQualifier();
         if (qualifier == null) {
             return false;
         }
@@ -203,7 +199,7 @@ public class GroovyConditionalCanBeElvisInspection extends BaseInspection {
             return false;
         }
 
-        final PsiType type = qualifier.getType();
+        PsiType type = qualifier.getType();
         if (type == null) {
             return false;
         }
@@ -211,13 +207,14 @@ public class GroovyConditionalCanBeElvisInspection extends BaseInspection {
             return false;
         }
 
-        final PsiElement resolved = ((GrReferenceExpression) condition).resolve();
+        PsiElement resolved = conditionRef.resolve();
 
-        return resolved instanceof PsiMethod &&
-            "isEmpty".equals(((PsiMethod) resolved).getName()) &&
-            ((PsiMethod) resolved).getParameterList().getParametersCount() == 0;
+        return resolved instanceof PsiMethod method
+            && "isEmpty".equals(method.getName())
+            && method.getParameterList().getParametersCount() == 0;
     }
 
+    @RequiredReadAction
     private static boolean checkForNull(GrExpression condition, GrExpression then) {
         if (!(condition instanceof GrBinaryExpression)) {
             return false;
@@ -230,10 +227,10 @@ public class GroovyConditionalCanBeElvisInspection extends BaseInspection {
 
         GrExpression left = binaryExpression.getLeftOperand();
         GrExpression right = binaryExpression.getRightOperand();
-        if (left instanceof GrLiteral && "null".equals(left.getText()) && right != null) {
+        if (left instanceof GrLiteral lLiteral && "null".equals(lLiteral.getText()) && right != null) {
             return PsiEquivalenceUtil.areElementsEquivalent(right, then);
         }
-        if (right instanceof GrLiteral && "null".equals(right.getText())) {
+        if (right instanceof GrLiteral rLiteral && "null".equals(rLiteral.getText())) {
             return PsiEquivalenceUtil.areElementsEquivalent(left, then);
         }
 
@@ -248,6 +245,7 @@ public class GroovyConditionalCanBeElvisInspection extends BaseInspection {
 
     private static class Visitor extends BaseInspectionVisitor {
         @Override
+        @RequiredReadAction
         public void visitConditionalExpression(GrConditionalExpression expression) {
             super.visitConditionalExpression(expression);
             if (checkPsiElement(expression)) {

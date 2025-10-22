@@ -19,7 +19,6 @@ import consulo.language.ast.IElementType;
 import consulo.localize.LocalizeValue;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
-
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
@@ -40,19 +39,23 @@ public class GroovyResultOfIncrementOrDecrementUsedInspection extends BaseInspec
     }
 
     @Nullable
+    @Override
     protected String buildErrorString(Object... args) {
         return "Result of increment or decrement expression used #loc";
     }
 
+    @Nonnull
+    @Override
     public BaseInspectionVisitor buildVisitor() {
         return new Visitor();
     }
 
     private static class Visitor extends BaseInspectionVisitor {
+        @Override
         public void visitUnaryExpression(GrUnaryExpression grUnaryExpression) {
             super.visitUnaryExpression(grUnaryExpression);
 
-            final IElementType tokenType = grUnaryExpression.getOperationTokenType();
+            IElementType tokenType = grUnaryExpression.getOperationTokenType();
             if (!GroovyTokenTypes.mINC.equals(tokenType) && !GroovyTokenTypes.mDEC.equals(tokenType)) {
                 return;
             }
