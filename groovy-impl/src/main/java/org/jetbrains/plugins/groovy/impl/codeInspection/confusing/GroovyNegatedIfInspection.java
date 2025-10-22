@@ -38,18 +38,22 @@ public class GroovyNegatedIfInspection extends BaseInspection {
     }
 
     @Nullable
+    @Override
     protected String buildErrorString(Object... args) {
         return "Negated if condition expression #loc";
     }
 
+    @Nonnull
+    @Override
     public BaseInspectionVisitor buildVisitor() {
         return new Visitor();
     }
 
     private static class Visitor extends BaseInspectionVisitor {
+        @Override
         public void visitIfStatement(GrIfStatement grIfStatement) {
             super.visitIfStatement(grIfStatement);
-            final GrExpression condition = grIfStatement.getCondition();
+            GrExpression condition = grIfStatement.getCondition();
             if (condition == null) {
                 return;
             }

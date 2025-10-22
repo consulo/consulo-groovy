@@ -16,8 +16,6 @@
 package org.jetbrains.plugins.groovy.impl.codeInspection.confusing;
 
 import consulo.language.ast.IElementType;
-import consulo.language.psi.PsiElement;
-
 import consulo.localize.LocalizeValue;
 import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
@@ -37,7 +35,7 @@ public class GroovyOverlyComplexBooleanExpressionInspection extends BaseInspecti
     /**
      * @noinspection PublicField, WeakerAccess
      */
-    public int m_limit = TERM_LIMIT;
+    public int myLimit = TERM_LIMIT;
 
     @Nonnull
     @Override
@@ -52,33 +50,38 @@ public class GroovyOverlyComplexBooleanExpressionInspection extends BaseInspecti
     }
 
     private int getLimit() {
-        return m_limit;
+        return myLimit;
     }
 
     public JComponent createOptionsPanel() {
         return new SingleIntegerFieldOptionsPanel("Maximum number of terms:", this, "m_limit");
     }
 
+    @Override
     protected String buildErrorString(Object... args) {
         return "Overly complex boolean expression #loc";
     }
 
+    @Nonnull
+    @Override
     public BaseInspectionVisitor buildVisitor() {
         return new Visitor();
     }
 
     private class Visitor extends BaseInspectionVisitor {
-
+        @Override
         public void visitBinaryExpression(@Nonnull GrBinaryExpression expression) {
             super.visitBinaryExpression(expression);
             checkExpression(expression);
         }
 
+        @Override
         public void visitUnaryExpression(@Nonnull GrUnaryExpression expression) {
             super.visitUnaryExpression(expression);
             checkExpression(expression);
         }
 
+        @Override
         public void visitParenthesizedExpression(GrParenthesizedExpression expression) {
             super.visitParenthesizedExpression(expression);
             checkExpression(expression);
@@ -91,7 +94,7 @@ public class GroovyOverlyComplexBooleanExpressionInspection extends BaseInspecti
             if (isParentBoolean(expression)) {
                 return;
             }
-            final int numTerms = countTerms(expression);
+            int numTerms = countTerms(expression);
             if (numTerms <= getLimit()) {
                 return;
             }
@@ -105,49 +108,33 @@ public class GroovyOverlyComplexBooleanExpressionInspection extends BaseInspecti
             if (!isBoolean(expression)) {
                 return 1;
             }
-            if (expression instanceof GrBinaryExpression) {
-                final GrBinaryExpression binaryExpression = (GrBinaryExpression) expression;
-                final GrExpression lhs = binaryExpression.getLeftOperand();
-                final GrExpression rhs = binaryExpression.getRightOperand();
-                return countTerms(lhs) + countTerms(rhs);
+            if (expression instanceof GrBinaryExpression binaryExpr) {
+                return countTerms(binaryExpr.getLeftOperand()) + countTerms(binaryExpr.getRightOperand());
             }
-            else if (expression instanceof GrUnaryExpression) {
-                final GrUnaryExpression prefixExpression = (GrUnaryExpression) expression;
-                final GrExpression operand = prefixExpression.getOperand();
-                return countTerms(operand);
+            else if (expression instanceof GrUnaryExpression prefixExpr) {
+                return countTerms(prefixExpr.getOperand());
             }
-            else if (expression instanceof GrParenthesizedExpression) {
-                final GrParenthesizedExpression parenthesizedExpression = (GrParenthesizedExpression) expression;
-                final GrExpression contents = parenthesizedExpression.getOperand();
-                return countTerms(contents);
+            else if (expression instanceof GrParenthesizedExpression parenthesized) {
+                return countTerms(parenthesized.getOperand());
             }
             return 1;
         }
 
         private boolean isParentBoolean(GrExpression expression) {
-            final PsiElement parent = expression.getParent();
-            if (!(parent instanceof GrExpression)) {
-                return false;
-            }
-            return isBoolean((GrExpression) parent);
+            return expression.getParent() instanceof GrExpression expr && isBoolean(expr);
         }
 
         private boolean isBoolean(GrExpression expression) {
-            if (expression instanceof GrBinaryExpression) {
-                final GrBinaryExpression binaryExpression = (GrBinaryExpression) expression;
-                final IElementType sign = binaryExpression.getOperationTokenType();
-                return GroovyTokenTypes.mLAND.equals(sign) ||
-                    GroovyTokenTypes.mLOR.equals(sign);
+            if (expression instanceof GrBinaryExpression binaryExpr) {
+                IElementType sign = binaryExpr.getOperationTokenType();
+                return GroovyTokenTypes.mLAND.equals(sign)
+                    || GroovyTokenTypes.mLOR.equals(sign);
             }
-            else if (expression instanceof GrUnaryExpression) {
-                final GrUnaryExpression prefixExpression = (GrUnaryExpression) expression;
-                final IElementType sign = prefixExpression.getOperationTokenType();
-                return GroovyTokenTypes.mLNOT.equals(sign);
+            else if (expression instanceof GrUnaryExpression prefixExpr) {
+                return GroovyTokenTypes.mLNOT.equals(prefixExpr.getOperationTokenType());
             }
-            else if (expression instanceof GrParenthesizedExpression) {
-                final GrParenthesizedExpression parenthesizedExpression = (GrParenthesizedExpression) expression;
-                final GrExpression contents = parenthesizedExpression.getOperand();
-                return isBoolean(contents);
+            else if (expression instanceof GrParenthesizedExpression parenthesized) {
+                return isBoolean(parenthesized.getOperand());
             }
             return false;
         }

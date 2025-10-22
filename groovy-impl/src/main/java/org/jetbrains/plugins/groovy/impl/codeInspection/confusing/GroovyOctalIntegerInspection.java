@@ -15,6 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.impl.codeInspection.confusing;
 
+import consulo.annotation.access.RequiredReadAction;
 import consulo.localize.LocalizeValue;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
@@ -36,15 +37,20 @@ public class GroovyOctalIntegerInspection extends BaseInspection {
     }
 
     @Nullable
+    @Override
     protected String buildErrorString(Object... args) {
         return "Octal integer #ref #loc";
     }
 
+    @Nonnull
+    @Override
     public BaseInspectionVisitor buildVisitor() {
         return new BaseInspectionVisitor() {
+            @Override
+            @RequiredReadAction
             public void visitLiteralExpression(GrLiteral literal) {
                 super.visitLiteralExpression(literal);
-                final String text = literal.getText();
+                String text = literal.getText();
                 if (!text.startsWith("0")) {
                     return;
                 }

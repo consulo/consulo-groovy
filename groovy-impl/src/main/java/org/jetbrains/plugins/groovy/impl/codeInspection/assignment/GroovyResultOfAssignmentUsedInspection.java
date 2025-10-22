@@ -53,10 +53,10 @@ public class GroovyResultOfAssignmentUsedInspection extends BaseInspection {
     private static class Visitor extends BaseInspectionVisitor {
 
         @Override
-        public void visitAssignmentExpression(GrAssignmentExpression grAssignmentExpression) {
-            super.visitAssignmentExpression(grAssignmentExpression);
-            if (PsiUtil.isExpressionUsed(grAssignmentExpression)) {
-                registerError(grAssignmentExpression);
+        public void visitAssignmentExpression(GrAssignmentExpression expression) {
+            super.visitAssignmentExpression(expression);
+            if (PsiUtil.isExpressionUsed(expression)) {
+                registerError(expression);
             }
         }
     }

@@ -15,9 +15,9 @@
  */
 package org.jetbrains.plugins.groovy.impl.codeInspection.confusing;
 
+import com.intellij.java.language.psi.CommonClassNames;
 import com.intellij.java.language.psi.PsiType;
 import consulo.language.ast.IElementType;
-import consulo.language.psi.PsiElement;
 import consulo.localize.LocalizeValue;
 import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
@@ -30,7 +30,6 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrParent
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrUnaryExpression;
 
 import javax.swing.*;
-import java.util.HashSet;
 import java.util.Set;
 
 public class GroovyOverlyComplexArithmeticExpressionInspection extends BaseInspection {
@@ -61,35 +60,39 @@ public class GroovyOverlyComplexArithmeticExpressionInspection extends BaseInspe
         return new SingleIntegerFieldOptionsPanel("Maximum number of terms:", this, "m_limit");
     }
 
+    @Override
     protected String buildErrorString(Object... args) {
         return "Overly complex arithmetic expression #loc";
     }
 
+    @Nonnull
+    @Override
     public BaseInspectionVisitor buildVisitor() {
         return new Visitor();
     }
 
+    private static final Set<IElementType> ARITHMETIC_TOKENS = Set.of(
+        GroovyTokenTypes.mPLUS,
+        GroovyTokenTypes.mMINUS,
+        GroovyTokenTypes.mSTAR,
+        GroovyTokenTypes.mDIV,
+        GroovyTokenTypes.mMOD
+    );
+
     private class Visitor extends BaseInspectionVisitor {
-        private final Set<IElementType> arithmeticTokens = new HashSet<IElementType>(5);
-
-        {
-            arithmeticTokens.add(GroovyTokenTypes.mPLUS);
-            arithmeticTokens.add(GroovyTokenTypes.mMINUS);
-            arithmeticTokens.add(GroovyTokenTypes.mSTAR);
-            arithmeticTokens.add(GroovyTokenTypes.mDIV);
-            arithmeticTokens.add(GroovyTokenTypes.mMOD);
-        }
-
+        @Override
         public void visitBinaryExpression(@Nonnull GrBinaryExpression expression) {
             super.visitBinaryExpression(expression);
             checkExpression(expression);
         }
 
+        @Override
         public void visitUnaryExpression(@Nonnull GrUnaryExpression expression) {
             super.visitUnaryExpression(expression);
             checkExpression(expression);
         }
 
+        @Override
         public void visitParenthesizedExpression(GrParenthesizedExpression expression) {
             super.visitParenthesizedExpression(expression);
             checkExpression(expression);
@@ -105,7 +108,7 @@ public class GroovyOverlyComplexArithmeticExpressionInspection extends BaseInspe
             if (containsStringConcatenation(expression)) {
                 return;
             }
-            final int numTerms = countTerms(expression);
+            int numTerms = countTerms(expression);
             if (numTerms <= getLimit()) {
                 return;
             }
@@ -119,48 +122,35 @@ public class GroovyOverlyComplexArithmeticExpressionInspection extends BaseInspe
             if (!isArithmetic(expression)) {
                 return 1;
             }
-            if (expression instanceof GrBinaryExpression) {
-                final GrBinaryExpression binaryExpression = (GrBinaryExpression) expression;
-                final GrExpression lhs = binaryExpression.getLeftOperand();
-                final GrExpression rhs = binaryExpression.getRightOperand();
+            if (expression instanceof GrBinaryExpression binaryExpression) {
+                GrExpression lhs = binaryExpression.getLeftOperand();
+                GrExpression rhs = binaryExpression.getRightOperand();
                 return countTerms(lhs) + countTerms(rhs);
             }
-            else if (expression instanceof GrUnaryExpression) {
-                final GrUnaryExpression unaryExpression = (GrUnaryExpression) expression;
-                final GrExpression operand = unaryExpression.getOperand();
+            else if (expression instanceof GrUnaryExpression unaryExpression) {
+                GrExpression operand = unaryExpression.getOperand();
                 return countTerms(operand);
             }
-            else if (expression instanceof GrParenthesizedExpression) {
-                final GrParenthesizedExpression parenthesizedExpression = (GrParenthesizedExpression) expression;
-                final GrExpression contents = parenthesizedExpression.getOperand();
+            else if (expression instanceof GrParenthesizedExpression parenthesizedExpression) {
+                GrExpression contents = parenthesizedExpression.getOperand();
                 return countTerms(contents);
             }
             return 1;
         }
 
         private boolean isParentArithmetic(GrExpression expression) {
-            final PsiElement parent = expression.getParent();
-            if (!(parent instanceof GrExpression)) {
-                return false;
-            }
-            return isArithmetic((GrExpression) parent);
+            return expression.getParent() instanceof GrExpression parent && isArithmetic(parent);
         }
 
         private boolean isArithmetic(GrExpression expression) {
-            if (expression instanceof GrBinaryExpression) {
-                final GrBinaryExpression binaryExpression = (GrBinaryExpression) expression;
-                final IElementType sign = binaryExpression.getOperationTokenType();
-                return arithmeticTokens.contains(sign);
+            if (expression instanceof GrBinaryExpression binaryExpression) {
+                return ARITHMETIC_TOKENS.contains(binaryExpression.getOperationTokenType());
             }
-            else if (expression instanceof GrUnaryExpression) {
-                final GrUnaryExpression unaryExpression = (GrUnaryExpression) expression;
-                final IElementType sign = unaryExpression.getOperationTokenType();
-                return arithmeticTokens.contains(sign);
+            else if (expression instanceof GrUnaryExpression unaryExpr) {
+                return ARITHMETIC_TOKENS.contains(unaryExpr.getOperationTokenType());
             }
-            else if (expression instanceof GrParenthesizedExpression) {
-                final GrParenthesizedExpression parenthesizedExpression = (GrParenthesizedExpression) expression;
-                final GrExpression contents = parenthesizedExpression.getOperand();
-                return isArithmetic(contents);
+            else if (expression instanceof GrParenthesizedExpression parenthesized) {
+                return isArithmetic(parenthesized.getOperand());
             }
             return false;
         }
@@ -169,25 +159,20 @@ public class GroovyOverlyComplexArithmeticExpressionInspection extends BaseInspe
             if (isString(expression)) {
                 return true;
             }
-            if (expression instanceof GrBinaryExpression) {
-                final GrBinaryExpression binaryExpression = (GrBinaryExpression) expression;
-                final GrExpression lhs = binaryExpression.getLeftOperand();
+            if (expression instanceof GrBinaryExpression binaryExpr) {
+                GrExpression lhs = binaryExpr.getLeftOperand();
 
                 if (containsStringConcatenation(lhs)) {
                     return true;
                 }
-                final GrExpression rhs = binaryExpression.getRightOperand();
+                GrExpression rhs = binaryExpr.getRightOperand();
                 return containsStringConcatenation(rhs);
             }
-            else if (expression instanceof GrUnaryExpression) {
-                final GrUnaryExpression unaryExpression = (GrUnaryExpression) expression;
-                final GrExpression operand = unaryExpression.getOperand();
-                return containsStringConcatenation(operand);
+            else if (expression instanceof GrUnaryExpression unaryExpr) {
+                return containsStringConcatenation(unaryExpr.getOperand());
             }
-            else if (expression instanceof GrParenthesizedExpression) {
-                final GrParenthesizedExpression parenthesizedExpression = (GrParenthesizedExpression) expression;
-                final GrExpression contents = parenthesizedExpression.getOperand();
-                return containsStringConcatenation(contents);
+            else if (expression instanceof GrParenthesizedExpression parenthesized) {
+                return containsStringConcatenation(parenthesized.getOperand());
             }
             return false;
         }
@@ -196,11 +181,8 @@ public class GroovyOverlyComplexArithmeticExpressionInspection extends BaseInspe
             if (expression == null) {
                 return false;
             }
-            final PsiType type = expression.getType();
-            if (type == null) {
-                return false;
-            }
-            return "java.lang.String".equals(type.getCanonicalText());
+            PsiType type = expression.getType();
+            return type != null && CommonClassNames.JAVA_LANG_STRING.equals(type.getCanonicalText());
         }
     }
 }

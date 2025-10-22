@@ -16,7 +16,6 @@
 package org.jetbrains.plugins.groovy.impl.codeInspection.assignment;
 
 import consulo.annotation.component.ExtensionImpl;
-import consulo.language.psi.PsiElement;
 import consulo.localize.LocalizeValue;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
@@ -51,15 +50,12 @@ public class GroovyNestedAssignmentInspection extends BaseInspection {
     }
 
     private static class Visitor extends BaseInspectionVisitor {
-
         @Override
-        public void visitAssignmentExpression(GrAssignmentExpression grAssignmentExpression) {
-            super.visitAssignmentExpression(grAssignmentExpression);
-            final PsiElement parent = grAssignmentExpression.getParent();
-            if (!(parent instanceof GrAssignmentExpression)) {
-                return;
+        public void visitAssignmentExpression(GrAssignmentExpression expression) {
+            super.visitAssignmentExpression(expression);
+            if (expression.getParent() instanceof GrAssignmentExpression) {
+                registerError(expression);
             }
-            registerError(grAssignmentExpression);
         }
     }
 }
