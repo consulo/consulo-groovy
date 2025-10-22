@@ -21,7 +21,6 @@ import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrSynchronizedStatement;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 
@@ -39,22 +38,24 @@ public class GroovySynchronizationOnThisInspection extends BaseInspection {
     }
 
     @Nullable
+    @Override
     protected String buildErrorString(Object... args) {
         return "Synchronization on '#ref' #loc";
     }
 
+    @Nonnull
+    @Override
     public BaseInspectionVisitor buildVisitor() {
         return new Visitor();
     }
 
     private static class Visitor extends BaseInspectionVisitor {
+        @Override
         public void visitSynchronizedStatement(GrSynchronizedStatement synchronizedStatement) {
             super.visitSynchronizedStatement(synchronizedStatement);
-            final GrExpression lock = synchronizedStatement.getMonitor();
-            if (lock == null || !(lock instanceof GrReferenceExpression && PsiUtil.isThisReference(lock))) {
-                return;
+            if (synchronizedStatement.getMonitor() instanceof GrReferenceExpression lock && PsiUtil.isThisReference(lock)) {
+                registerError(lock);
             }
-            registerError(lock);
         }
     }
 }

@@ -61,7 +61,7 @@ public abstract class BaseInspection<State> extends GroovySuppressableInspection
 
     @Nonnull
     protected BaseInspectionVisitor<State> buildGroovyVisitor(@Nonnull ProblemsHolder problemsHolder, boolean onTheFly, State state) {
-        final BaseInspectionVisitor<State> visitor = buildVisitor();
+        BaseInspectionVisitor<State> visitor = buildVisitor();
         visitor.setProblemsHolder(problemsHolder);
         visitor.setOnTheFly(onTheFly);
         visitor.setInspection(this);

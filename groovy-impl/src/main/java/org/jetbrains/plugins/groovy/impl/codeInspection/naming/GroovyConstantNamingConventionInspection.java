@@ -15,7 +15,6 @@
  */
 package org.jetbrains.plugins.groovy.impl.codeInspection.naming;
 
-import com.intellij.java.language.psi.PsiModifier;
 import consulo.language.psi.PsiElement;
 import consulo.localize.LocalizeValue;
 import jakarta.annotation.Nonnull;
@@ -33,17 +32,20 @@ public class GroovyConstantNamingConventionInspection extends ConventionInspecti
         return LocalizeValue.localizeTODO("Constant naming convention");
     }
 
-    protected GroovyFix buildFix(PsiElement location) {
+    @Override
+    protected GroovyFix buildFix(@Nonnull PsiElement location) {
         return new RenameFix();
     }
 
+    @Override
     protected boolean buildQuickFixesOnlyForOnTheFlyErrors() {
         return true;
     }
 
     @Nonnull
+    @Override
     public String buildErrorString(Object... args) {
-        final String className = (String) args[0];
+        String className = (String) args[0];
         if (className.length() < getMinLength()) {
             return "Constant name '#ref' is too short";
         }
@@ -53,30 +55,35 @@ public class GroovyConstantNamingConventionInspection extends ConventionInspecti
         return "Constant name '#ref' doesn't match regex '" + getRegex() + "' #loc";
     }
 
+    @Override
     protected String getDefaultRegex() {
         return "[A-Z\\d]*";
     }
 
+    @Override
     protected int getDefaultMinLength() {
         return DEFAULT_MIN_LENGTH;
     }
 
+    @Override
     protected int getDefaultMaxLength() {
         return DEFAULT_MAX_LENGTH;
     }
 
+    @Nonnull
+    @Override
     public BaseInspectionVisitor buildVisitor() {
         return new NamingConventionsVisitor();
     }
 
     private class NamingConventionsVisitor extends BaseInspectionVisitor {
+        @Override
         public void visitField(GrField grField) {
             super.visitField(grField);
-            if (!grField.hasModifierProperty(PsiModifier.STATIC) ||
-                !grField.hasModifierProperty(PsiModifier.FINAL)) {
+            if (!grField.isStatic() || !grField.isFinal()) {
                 return;
             }
-            final String name = grField.getName();
+            String name = grField.getName();
             if (isValid(name)) {
                 return;
             }

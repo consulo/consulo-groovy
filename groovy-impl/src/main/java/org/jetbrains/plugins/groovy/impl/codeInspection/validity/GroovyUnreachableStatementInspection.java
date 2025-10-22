@@ -41,19 +41,24 @@ public class GroovyUnreachableStatementInspection extends BaseInspection {
     }
 
     @Nullable
+    @Override
     protected String buildErrorString(Object... args) {
         return "Unreachable statement #loc";
     }
 
+    @Override
     public boolean isEnabledByDefault() {
         return true;
     }
 
+    @Nonnull
+    @Override
     public BaseInspectionVisitor buildVisitor() {
         return new Visitor();
     }
 
     private static class Visitor extends BaseInspectionVisitor {
+        @Override
         public void visitClosure(GrClosableBlock closure) {
             super.visitClosure(closure);
             GrStatement[] statements = closure.getStatements();
@@ -62,6 +67,7 @@ public class GroovyUnreachableStatementInspection extends BaseInspection {
             }
         }
 
+        @Override
         public void visitOpenBlock(GrOpenBlock block) {
             super.visitOpenBlock(block);
             GrStatement[] statements = block.getStatements();

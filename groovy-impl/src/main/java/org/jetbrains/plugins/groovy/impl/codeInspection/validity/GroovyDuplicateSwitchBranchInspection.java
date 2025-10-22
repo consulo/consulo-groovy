@@ -15,6 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.impl.codeInspection.validity;
 
+import consulo.annotation.access.RequiredReadAction;
 import consulo.language.psi.PsiElement;
 import consulo.localize.LocalizeValue;
 import jakarta.annotation.Nonnull;
@@ -49,25 +50,30 @@ public class GroovyDuplicateSwitchBranchInspection extends BaseInspection {
     }
 
     @Nullable
+    @Override
     protected String buildErrorString(Object... args) {
         return "Duplicate switch case '#ref' #loc";
     }
 
+    @Nonnull
+    @Override
     public BaseInspectionVisitor buildVisitor() {
         return new Visitor();
     }
 
     private static class Visitor extends BaseInspectionVisitor {
+        @Override
+        @RequiredReadAction
         public void visitSwitchStatement(GrSwitchStatement grSwitchStatement) {
             super.visitSwitchStatement(grSwitchStatement);
-            final Set<GrExpression> duplicateExpressions = new HashSet<GrExpression>();
-            final GrCaseLabel[] labels = collectCaseLabels(grSwitchStatement);
+            Set<GrExpression> duplicateExpressions = new HashSet<>();
+            GrCaseLabel[] labels = collectCaseLabels(grSwitchStatement);
             for (int i = 0; i < labels.length; i++) {
-                final GrCaseLabel label1 = labels[i];
-                final GrExpression expression1 = getExpressionForCaseLabel(label1);
+                GrCaseLabel label1 = labels[i];
+                GrExpression expression1 = getExpressionForCaseLabel(label1);
                 for (int j = i + 1; j < labels.length; j++) {
-                    final GrCaseLabel label2 = labels[j];
-                    final GrExpression expression2 = getExpressionForCaseLabel(label2);
+                    GrCaseLabel label2 = labels[j];
+                    GrExpression expression2 = getExpressionForCaseLabel(label2);
                     if (EquivalenceChecker.expressionsAreEquivalent(expression1, expression2)) {
                         duplicateExpressions.add(expression1);
                         duplicateExpressions.add(expression2);
@@ -81,13 +87,15 @@ public class GroovyDuplicateSwitchBranchInspection extends BaseInspection {
     }
 
     private static GrCaseLabel[] collectCaseLabels(final GrSwitchStatement containingStatelent) {
-        final Set<GrCaseLabel> labels = new HashSet<GrCaseLabel>();
-        final GroovyRecursiveElementVisitor visitor = new GroovyRecursiveElementVisitor() {
+        final Set<GrCaseLabel> labels = new HashSet<>();
+        GroovyRecursiveElementVisitor visitor = new GroovyRecursiveElementVisitor() {
+            @Override
             public void visitCaseLabel(GrCaseLabel grCaseLabel) {
                 super.visitCaseLabel(grCaseLabel);
                 labels.add(grCaseLabel);
             }
 
+            @Override
             public void visitSwitchStatement(GrSwitchStatement grSwitchStatement) {
                 if (containingStatelent.equals(grSwitchStatement)) {
                     super.visitSwitchStatement(grSwitchStatement);
@@ -99,10 +107,11 @@ public class GroovyDuplicateSwitchBranchInspection extends BaseInspection {
     }
 
     @Nullable
+    @RequiredReadAction
     private static GrExpression getExpressionForCaseLabel(GrCaseLabel label) {
         for (PsiElement child : label.getChildren()) {
-            if (child instanceof GrExpression) {
-                return (GrExpression) child;
+            if (child instanceof GrExpression expr) {
+                return expr;
             }
         }
         return null;

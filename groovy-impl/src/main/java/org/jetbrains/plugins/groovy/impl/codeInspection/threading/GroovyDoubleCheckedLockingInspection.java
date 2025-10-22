@@ -17,8 +17,8 @@ package org.jetbrains.plugins.groovy.impl.codeInspection.threading;
 
 import com.intellij.java.language.psi.PsiField;
 import com.intellij.java.language.psi.PsiModifier;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.language.editor.inspection.InspectionToolState;
-import consulo.language.psi.PsiElement;
 import consulo.localize.LocalizeValue;
 import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.codeInspection.utils.ControlFlowUtils;
@@ -48,6 +48,7 @@ public class GroovyDoubleCheckedLockingInspection extends BaseInspection<GroovyD
     }
 
     @Nonnull
+    @Override
     protected String buildErrorString(Object... infos) {
         return "Double-checked locking #loc";
     }
@@ -59,14 +60,17 @@ public class GroovyDoubleCheckedLockingInspection extends BaseInspection<GroovyD
     }
 
     @Nonnull
+    @Override
     public BaseInspectionVisitor<GroovyDoubleCheckedLockingInspectionState> buildVisitor() {
         return new DoubleCheckedLockingVisitor();
     }
 
     private class DoubleCheckedLockingVisitor extends BaseInspectionVisitor<GroovyDoubleCheckedLockingInspectionState> {
+        @Override
+        @RequiredReadAction
         public void visitIfStatement(@Nonnull GrIfStatement statement) {
             super.visitIfStatement(statement);
-            final GrExpression outerCondition = statement.getCondition();
+            GrExpression outerCondition = statement.getCondition();
             if (outerCondition == null) {
                 return;
             }
@@ -78,23 +82,21 @@ public class GroovyDoubleCheckedLockingInspection extends BaseInspection<GroovyD
                 return;
             }
             thenBranch = ControlFlowUtils.stripBraces(thenBranch);
-            if (!(thenBranch instanceof GrSynchronizedStatement)) {
+            if (!(thenBranch instanceof GrSynchronizedStatement syncStmt)) {
                 return;
             }
-            final GrSynchronizedStatement syncStatement = (GrSynchronizedStatement) thenBranch;
-            final GrCodeBlock body = syncStatement.getBody();
+            GrCodeBlock body = syncStmt.getBody();
             if (body == null) {
                 return;
             }
-            final GrStatement[] statements = body.getStatements();
+            GrStatement[] statements = body.getStatements();
             if (statements.length != 1) {
                 return;
             }
-            if (!(statements[0] instanceof GrIfStatement)) {
+            if (!(statements[0] instanceof GrIfStatement innerIf)) {
                 return;
             }
-            final GrIfStatement innerIf = (GrIfStatement) statements[0];
-            final GrExpression innerCondition = innerIf.getCondition();
+            GrExpression innerCondition = innerIf.getCondition();
             if (innerCondition == null) {
                 return;
             }
@@ -108,23 +110,10 @@ public class GroovyDoubleCheckedLockingInspection extends BaseInspection<GroovyD
         }
 
         private boolean ifStatementAssignsVolatileVariable(GrIfStatement statement) {
-            GrStatement innerThen = statement.getThenBranch();
-            innerThen = ControlFlowUtils.stripBraces(innerThen);
-            if (!(innerThen instanceof GrAssignmentExpression)) {
-                return false;
-            }
-            final GrAssignmentExpression assignmentExpression = (GrAssignmentExpression) innerThen;
-            final GrExpression lhs = assignmentExpression.getLValue();
-            if (!(lhs instanceof GrReferenceExpression)) {
-                return false;
-            }
-            final GrReferenceExpression referenceExpression = (GrReferenceExpression) lhs;
-            final PsiElement element = referenceExpression.resolve();
-            if (!(element instanceof PsiField)) {
-                return false;
-            }
-            final PsiField field = (PsiField) element;
-            return field.hasModifierProperty(PsiModifier.VOLATILE);
+            return ControlFlowUtils.stripBraces(statement.getThenBranch()) instanceof GrAssignmentExpression assignment
+                && assignment.getLValue() instanceof GrReferenceExpression lhsRef
+                && lhsRef.resolve() instanceof PsiField field
+                && field.hasModifierProperty(PsiModifier.VOLATILE);
         }
     }
 }

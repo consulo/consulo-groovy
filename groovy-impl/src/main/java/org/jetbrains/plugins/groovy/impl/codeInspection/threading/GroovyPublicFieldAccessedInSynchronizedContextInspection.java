@@ -43,44 +43,45 @@ public class GroovyPublicFieldAccessedInSynchronizedContextInspection extends Ba
     }
 
     @Nonnull
+    @Override
     protected String buildErrorString(Object... infos) {
         return "Non-private field <code>#ref</code> accessed in synchronized context  #loc";
     }
 
+    @Nonnull
+    @Override
     public BaseInspectionVisitor buildVisitor() {
         return new PublicFieldAccessedInSynchronizedContextVisitor();
     }
 
     private static class PublicFieldAccessedInSynchronizedContextVisitor extends BaseInspectionVisitor {
+        @Override
         public void visitReferenceExpression(@Nonnull GrReferenceExpression expression) {
-            final PsiElement element = expression.resolve();
-            if (!(element instanceof PsiField)) {
+            PsiElement element = expression.resolve();
+            if (!(element instanceof PsiField field)) {
                 return;
             }
-            final PsiField field = (PsiField) element;
-            if (field.hasModifierProperty(PsiModifier.PRIVATE) ||
-                field.hasModifierProperty(PsiModifier.FINAL)) {
+            if (field.isPrivate() || field.isFinal()) {
                 return;
             }
             if (!isInSynchronizedContext(expression)) {
                 return;
             }
-            final PsiClass containingClass = field.getContainingClass();
-            if (containingClass.hasModifierProperty(PsiModifier.PRIVATE)) {
+            PsiClass containingClass = field.getContainingClass();
+            if (containingClass.isPrivate()) {
                 return;
             }
             registerError(expression);
         }
 
         private static boolean isInSynchronizedContext(PsiElement element) {
-            final PsiElement context = PsiTreeUtil.getParentOfType(element, GrMethod.class, GrSynchronizedStatement.class);
+            PsiElement context = PsiTreeUtil.getParentOfType(element, GrMethod.class, GrSynchronizedStatement.class);
             if (context instanceof GrSynchronizedStatement) {
                 return true;
             }
             if (context != null) {
-                final PsiModifierListOwner modifierListOwner = (PsiModifierListOwner) context;
-                if (modifierListOwner.hasModifierProperty(
-                    PsiModifier.SYNCHRONIZED)) {
+                PsiModifierListOwner modifierListOwner = (PsiModifierListOwner) context;
+                if (modifierListOwner.hasModifierProperty(PsiModifier.SYNCHRONIZED)) {
                     return true;
                 }
             }
