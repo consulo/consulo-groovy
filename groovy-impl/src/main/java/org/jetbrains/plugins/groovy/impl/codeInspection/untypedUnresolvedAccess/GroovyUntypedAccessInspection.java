@@ -16,12 +16,11 @@
 package org.jetbrains.plugins.groovy.impl.codeInspection.untypedUnresolvedAccess;
 
 import com.intellij.java.language.psi.PsiClassType;
-import consulo.language.psi.PsiElement;
 import com.intellij.java.language.psi.PsiJavaPackage;
 import com.intellij.java.language.psi.PsiType;
+import consulo.language.psi.PsiElement;
 import consulo.localize.LocalizeValue;
 import jakarta.annotation.Nonnull;
-import org.jetbrains.annotations.Nls;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
@@ -34,6 +33,7 @@ import static org.jetbrains.plugins.groovy.impl.annotator.GrHighlightUtil.isDecl
  * @author Maxim.Medvedev
  */
 public class GroovyUntypedAccessInspection extends BaseInspection {
+    @Override
     protected BaseInspectionVisitor buildVisitor() {
         return new Visitor();
     }
@@ -74,13 +74,13 @@ public class GroovyUntypedAccessInspection extends BaseInspection {
                 }
             }
 
-            final PsiType refExprType = refExpr.getType();
+            PsiType refExprType = refExpr.getType();
             if (refExprType == null) {
                 if (resolved != null) {
                     registerError(refExpr);
                 }
             }
-            else if (refExprType instanceof PsiClassType && ((PsiClassType) refExprType).resolve() == null) {
+            else if (refExprType instanceof PsiClassType classType && classType.resolve() == null) {
                 registerError(refExpr);
             }
         }

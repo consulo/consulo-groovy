@@ -16,16 +16,13 @@
 package org.jetbrains.plugins.groovy.impl.codeInspection.threading;
 
 import com.intellij.java.language.psi.PsiField;
-import com.intellij.java.language.psi.PsiModifier;
-import consulo.language.psi.PsiElement;
-import consulo.language.psi.PsiReference;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.localize.LocalizeValue;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrSynchronizedStatement;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
 
 public class GroovySynchronizationOnNonFinalFieldInspection extends BaseInspection {
@@ -47,32 +44,27 @@ public class GroovySynchronizationOnNonFinalFieldInspection extends BaseInspecti
     }
 
     @Nullable
+    @Override
     protected String buildErrorString(Object... args) {
         return "Synchronization on non-final field '#ref' #loc";
     }
 
+    @Nonnull
+    @Override
     public BaseInspectionVisitor buildVisitor() {
         return new Visitor();
     }
 
     private static class Visitor extends BaseInspectionVisitor {
+        @Override
+        @RequiredReadAction
         public void visitSynchronizedStatement(GrSynchronizedStatement synchronizedStatement) {
             super.visitSynchronizedStatement(synchronizedStatement);
-            final GrExpression lock = synchronizedStatement.getMonitor();
-            if (lock == null || !(lock instanceof GrReferenceExpression)) {
-                return;
+            if (synchronizedStatement.getMonitor() instanceof GrReferenceExpression lock
+                && lock.resolve() instanceof PsiField field
+                && !field.isFinal()) {
+                registerError(lock);
             }
-            final PsiElement referent = ((PsiReference) lock).resolve();
-            if (!(referent instanceof PsiField)) {
-                return;
-            }
-            final PsiField field = (PsiField) referent;
-            if (field.hasModifierProperty(PsiModifier.FINAL)) {
-                return;
-            }
-            registerError(lock);
         }
-
     }
-
 }

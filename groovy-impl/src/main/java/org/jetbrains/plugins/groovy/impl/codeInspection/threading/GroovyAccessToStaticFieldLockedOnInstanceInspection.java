@@ -49,30 +49,26 @@ public class GroovyAccessToStaticFieldLockedOnInstanceInspection extends BaseIns
     }
 
     @Nonnull
+    @Override
     protected String buildErrorString(Object... infos) {
         return "Access to static field <code>#ref</code> locked on instance data #loc";
     }
 
+    @Nonnull
+    @Override
     public BaseInspectionVisitor buildVisitor() {
         return new Visitor();
     }
 
-    private static class Visitor
-        extends BaseInspectionVisitor {
-
-        public void visitReferenceExpression(
-            @Nonnull GrReferenceExpression expression
-        ) {
+    private static class Visitor extends BaseInspectionVisitor {
+        @Override
+        public void visitReferenceExpression(@Nonnull GrReferenceExpression expression) {
             super.visitReferenceExpression(expression);
             boolean isLockedOnInstance = false;
             boolean isLockedOnClass = false;
-            final GrMethod containingMethod =
-                PsiTreeUtil.getParentOfType(expression, GrMethod.class);
-            if (containingMethod != null &&
-                containingMethod.hasModifierProperty(
-                    PsiModifier.SYNCHRONIZED)) {
-                if (containingMethod.hasModifierProperty(
-                    PsiModifier.STATIC)) {
+            GrMethod containingMethod = PsiTreeUtil.getParentOfType(expression, GrMethod.class);
+            if (containingMethod != null && containingMethod.hasModifierProperty(PsiModifier.SYNCHRONIZED)) {
+                if (containingMethod.isStatic()) {
                     isLockedOnClass = true;
                 }
                 else {
@@ -81,26 +77,22 @@ public class GroovyAccessToStaticFieldLockedOnInstanceInspection extends BaseIns
             }
             PsiElement elementToCheck = expression;
             while (true) {
-                final GrSynchronizedStatement syncStatement = PsiTreeUtil.getParentOfType(elementToCheck, GrSynchronizedStatement.class);
+                GrSynchronizedStatement syncStatement = PsiTreeUtil.getParentOfType(elementToCheck, GrSynchronizedStatement.class);
                 if (syncStatement == null) {
                     break;
                 }
-                final GrExpression lockExpression = syncStatement.getMonitor();
+                GrExpression lockExpression = syncStatement.getMonitor();
 
                 if (lockExpression instanceof GrReferenceExpression && PsiUtil.isThisReference(lockExpression)) {
                     isLockedOnInstance = true;
                 }
-                else if (lockExpression instanceof GrReferenceExpression) {
-                    final GrReferenceExpression reference = (GrReferenceExpression) lockExpression;
-                    final PsiElement referent = reference.resolve();
-                    if (referent instanceof PsiField) {
-                        final PsiField referentField = (PsiField) referent;
-                        if (referentField.hasModifierProperty(PsiModifier.STATIC)) {
-                            isLockedOnClass = true;
-                        }
-                        else {
-                            isLockedOnInstance = true;
-                        }
+                else if (lockExpression instanceof GrReferenceExpression reference
+                    && reference.resolve() instanceof PsiField referentField) {
+                    if (referentField.isStatic()) {
+                        isLockedOnClass = true;
+                    }
+                    else {
+                        isLockedOnInstance = true;
                     }
                 }
                 elementToCheck = syncStatement;
@@ -108,16 +100,13 @@ public class GroovyAccessToStaticFieldLockedOnInstanceInspection extends BaseIns
             if (!isLockedOnInstance || isLockedOnClass) {
                 return;
             }
-            final PsiElement referent = expression.resolve();
-            if (!(referent instanceof PsiField)) {
+            if (!(expression.resolve() instanceof PsiField referredField)) {
                 return;
             }
-            final PsiField referredField = (PsiField) referent;
-            if (!referredField.hasModifierProperty(PsiModifier.STATIC) ||
-                isConstant(referredField)) {
+            if (!referredField.isStatic() || isConstant(referredField)) {
                 return;
             }
-            final PsiClass containingClass = referredField.getContainingClass();
+            PsiClass containingClass = referredField.getContainingClass();
             if (!PsiTreeUtil.isAncestor(containingClass, expression, false)) {
                 return;
             }
@@ -125,7 +114,7 @@ public class GroovyAccessToStaticFieldLockedOnInstanceInspection extends BaseIns
         }
 
         private static boolean isConstant(PsiField field) {
-            return field.hasModifierProperty(PsiModifier.FINAL);
+            return field.isFinal();
         }
     }
 }

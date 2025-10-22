@@ -40,32 +40,35 @@ public class GroovyBusyWaitInspection extends BaseInspection {
     }
 
     @Nonnull
+    @Override
     protected String buildErrorString(Object... infos) {
         return "Call to <code>Thread.#ref()</code> in a loop, probably busy-waiting #loc";
     }
 
+    @Nonnull
+    @Override
     public BaseInspectionVisitor buildVisitor() {
         return new BusyWaitVisitor();
     }
 
     private static class BusyWaitVisitor extends BaseInspectionVisitor {
+        @Override
         public void visitMethodCallExpression(@Nonnull GrMethodCallExpression grMethodCallExpression) {
             super.visitMethodCallExpression(grMethodCallExpression);
 
-            final GrExpression methodExpression = grMethodCallExpression.getInvokedExpression();
-            if (!(methodExpression instanceof GrReferenceExpression)) {
+            GrExpression methodExpression = grMethodCallExpression.getInvokedExpression();
+            if (!(methodExpression instanceof GrReferenceExpression reference)) {
                 return;
             }
-            final GrReferenceExpression reference = (GrReferenceExpression) methodExpression;
-            final String name = reference.getReferenceName();
+            String name = reference.getReferenceName();
             if (!"sleep".equals(name)) {
                 return;
             }
-            final PsiMethod method = grMethodCallExpression.resolveMethod();
+            PsiMethod method = grMethodCallExpression.resolveMethod();
             if (method == null) {
                 return;
             }
-            final PsiClass containingClass = method.getContainingClass();
+            PsiClass containingClass = method.getContainingClass();
             if (containingClass == null || !"java.lang.Thread".equals(containingClass.getQualifiedName())) {
                 return;
             }
