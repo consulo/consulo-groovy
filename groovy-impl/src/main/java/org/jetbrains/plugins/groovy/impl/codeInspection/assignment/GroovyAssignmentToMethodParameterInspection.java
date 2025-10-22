@@ -15,11 +15,12 @@
  */
 package org.jetbrains.plugins.groovy.impl.codeInspection.assignment;
 
+import consulo.annotation.access.RequiredReadAction;
 import consulo.annotation.component.ExtensionImpl;
 import consulo.language.ast.IElementType;
 import consulo.language.psi.PsiElement;
-import consulo.language.psi.PsiReference;
 import consulo.localize.LocalizeValue;
+import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
@@ -30,8 +31,6 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpres
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrUnaryExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameter;
-
-import jakarta.annotation.Nonnull;
 
 @ExtensionImpl
 public class GroovyAssignmentToMethodParameterInspection extends BaseInspection {
@@ -54,26 +53,27 @@ public class GroovyAssignmentToMethodParameterInspection extends BaseInspection 
 
     }
 
-    @Override
     @Nonnull
+    @Override
     public BaseInspectionVisitor buildVisitor() {
         return new Visitor();
     }
 
     private static class Visitor extends BaseInspectionVisitor {
-
         @Override
+        @RequiredReadAction
         public void visitAssignmentExpression(GrAssignmentExpression expr) {
             super.visitAssignmentExpression(expr);
 
             check(expr.getLValue());
         }
 
+        @RequiredReadAction
         private void check(@Nullable GrExpression lhs) {
-            if (!(lhs instanceof GrReferenceExpression)) {
+            if (!(lhs instanceof GrReferenceExpression lhsRef)) {
                 return;
             }
-            final PsiElement referent = ((PsiReference) lhs).resolve();
+            PsiElement referent = lhsRef.resolve();
             if (referent == null) {
                 return;
             }
@@ -87,10 +87,11 @@ public class GroovyAssignmentToMethodParameterInspection extends BaseInspection 
         }
 
         @Override
+        @RequiredReadAction
         public void visitUnaryExpression(GrUnaryExpression expression) {
             super.visitUnaryExpression(expression);
 
-            final IElementType op = expression.getOperationTokenType();
+            IElementType op = expression.getOperationTokenType();
             if (op == GroovyTokenTypes.mINC || op == GroovyTokenTypes.mDEC) {
                 check(expression.getOperand());
             }

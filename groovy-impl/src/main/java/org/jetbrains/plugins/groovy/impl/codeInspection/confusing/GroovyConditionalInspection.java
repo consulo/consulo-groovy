@@ -18,7 +18,6 @@ package org.jetbrains.plugins.groovy.impl.codeInspection.confusing;
 import consulo.localize.LocalizeValue;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
-
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrConditionalExpression;
@@ -37,16 +36,19 @@ public class GroovyConditionalInspection extends BaseInspection {
     }
 
     @Nullable
+    @Override
     protected String buildErrorString(Object... args) {
         return "Conditional expression #loc";
-
     }
 
+    @Nonnull
+    @Override
     public BaseInspectionVisitor buildVisitor() {
         return new Visitor();
     }
 
     private static class Visitor extends BaseInspectionVisitor {
+        @Override
         public void visitConditionalExpression(GrConditionalExpression grConditionalExpression) {
             super.visitConditionalExpression(grConditionalExpression);
             registerError(grConditionalExpression);

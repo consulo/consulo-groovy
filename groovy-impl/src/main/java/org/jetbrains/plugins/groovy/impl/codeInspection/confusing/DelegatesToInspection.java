@@ -55,21 +55,21 @@ public class DelegatesToInspection extends BaseInspection {
                     return;
                 }
 
-                final PsiElement owner = annotation.getParent().getParent();
+                PsiElement owner = annotation.getParent().getParent();
                 if (!(owner instanceof GrParameter)) {
                     return;
                 }
 
-                final boolean isTargetDeclared = annotation.findDeclaredAttributeValue("value") != null;
+                boolean isTargetDeclared = annotation.findDeclaredAttributeValue("value") != null;
                 String targetName = GrAnnotationUtil.inferStringAttribute(annotation, "value");
 
-                final GrParameterList parameterList = DefaultGroovyMethods.asType(owner.getParent(), GrParameterList.class);
+                GrParameterList parameterList = DefaultGroovyMethods.asType(owner.getParent(), GrParameterList.class);
                 for (GrParameter parameter : parameterList.getParameters()) {
-                    final PsiAnnotation delegatesTo =
+                    PsiAnnotation delegatesTo =
                         parameter.getModifierList().findAnnotation(GroovyCommonClassNames.GROOVY_LANG_DELEGATES_TO);
                     if (delegatesTo != null) {
                         if (isTargetDeclared) {
-                            final String curTarget = GrAnnotationUtil.inferStringAttribute(delegatesTo, "target");
+                            String curTarget = GrAnnotationUtil.inferStringAttribute(delegatesTo, "target");
                             if (curTarget != null && curTarget.equals(targetName)) {
                                 return; //target is used
                             }
@@ -90,24 +90,24 @@ public class DelegatesToInspection extends BaseInspection {
                     return;
                 }
 
-                final PsiElement owner = annotation.getParent().getParent();
+                PsiElement owner = annotation.getParent().getParent();
                 if (!(owner instanceof GrParameter)) {
                     return;
                 }
 
-                final PsiAnnotationMemberValue targetPair = annotation.findDeclaredAttributeValue("target");
+                PsiAnnotationMemberValue targetPair = annotation.findDeclaredAttributeValue("target");
                 if (targetPair == null) {
                     return;
                 }
 
                 String targetName = GrAnnotationUtil.inferStringAttribute(annotation, "target");
 
-                final GrParameterList parameterList = DefaultGroovyMethods.asType(owner.getParent(), GrParameterList.class);
+                GrParameterList parameterList = DefaultGroovyMethods.asType(owner.getParent(), GrParameterList.class);
                 for (GrParameter parameter : parameterList.getParameters()) {
-                    final PsiAnnotation target =
+                    PsiAnnotation target =
                         parameter.getModifierList().findAnnotation(GroovyCommonClassNames.GROOVY_LANG_DELEGATES_TO_TARGET);
                     if (target != null) {
-                        final String curTarget = GrAnnotationUtil.inferStringAttribute(target, "value");
+                        String curTarget = GrAnnotationUtil.inferStringAttribute(target, "value");
                         if (curTarget != null && curTarget.equals(targetName)) {
                             return; //target is used
                         }

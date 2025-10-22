@@ -15,17 +15,19 @@
  */
 package org.jetbrains.plugins.groovy.impl.codeInspection.bugs;
 
+import consulo.annotation.access.RequiredReadAction;
 import consulo.language.ast.IElementType;
 import consulo.localize.LocalizeValue;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
-import org.jetbrains.annotations.NonNls;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrAssignmentExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrBinaryExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
+
+import java.util.Set;
 
 public class GroovyDivideByZeroInspection extends BaseInspection {
     @Nonnull
@@ -41,68 +43,45 @@ public class GroovyDivideByZeroInspection extends BaseInspection {
     }
 
     @Nullable
+    @Override
     protected String buildErrorString(Object... args) {
         return "Division by zero #loc";
     }
 
+    @Override
     public boolean isEnabledByDefault() {
         return true;
     }
 
+    @Nonnull
+    @Override
     public BaseInspectionVisitor buildVisitor() {
         return new Visitor();
     }
 
     private static class Visitor extends BaseInspectionVisitor {
+        private static final Set<String> ZEROS = Set.of("0","0x0", "0X0", "0.0", "0L", "0l");
+        private static final Set<IElementType> DIV_OPERATORS = Set.of(GroovyTokenTypes.mDIV, GroovyTokenTypes.mMOD);
+        private static final Set<IElementType> DIV_ASSIGN_OPERATORS = Set.of(GroovyTokenTypes.mDIV_ASSIGN, GroovyTokenTypes.mMOD_ASSIGN);
 
-        public void visitBinaryExpression(
-            @Nonnull GrBinaryExpression expression
-        ) {
+        @Override
+        @RequiredReadAction
+        public void visitBinaryExpression(@Nonnull GrBinaryExpression expression) {
             super.visitBinaryExpression(expression);
-            final GrExpression rhs = expression.getRightOperand();
-            if (rhs == null) {
-                return;
+            GrExpression rhs = expression.getRightOperand();
+            if (rhs != null && DIV_OPERATORS.contains(expression.getOperationTokenType()) && ZEROS.contains(rhs.getText())) {
+                registerError(expression);
             }
-            final IElementType tokenType = expression.getOperationTokenType();
-            if (!GroovyTokenTypes.mDIV.equals(tokenType) &&
-                !GroovyTokenTypes.mMOD.equals(tokenType)) {
-                return;
-            }
-            if (!isZero(rhs)) {
-                return;
-            }
-            registerError(expression);
         }
 
-        public void visitAssignmentExpression(
-            GrAssignmentExpression expression
-        ) {
+        @Override
+        @RequiredReadAction
+        public void visitAssignmentExpression(GrAssignmentExpression expression) {
             super.visitAssignmentExpression(expression);
-            final GrExpression rhs = expression.getRValue();
-            if (rhs == null) {
-                return;
+            GrExpression rhs = expression.getRValue();
+            if (rhs != null && DIV_ASSIGN_OPERATORS.contains(expression.getOperationTokenType()) && ZEROS.contains(rhs.getText())) {
+                registerError(expression);
             }
-            final IElementType tokenType = expression.getOperationTokenType();
-            if (!tokenType.equals(GroovyTokenTypes.mDIV_ASSIGN)
-                && !tokenType.equals(GroovyTokenTypes.mMOD_ASSIGN)) {
-                return;
-            }
-            if (!isZero(rhs)) {
-                return;
-            }
-            registerError(expression);
         }
-
-
-    }
-
-    private static boolean isZero(GrExpression expression) {
-        @NonNls final String text = expression.getText();
-        return "0".equals(text) ||
-            "0x0".equals(text) ||
-            "0X0".equals(text) ||
-            "0.0".equals(text) ||
-            "0L".equals(text) ||
-            "0l".equals(text);
     }
 }

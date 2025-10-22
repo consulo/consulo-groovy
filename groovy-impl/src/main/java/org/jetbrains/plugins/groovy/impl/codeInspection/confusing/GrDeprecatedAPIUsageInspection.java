@@ -24,7 +24,6 @@ import consulo.language.editor.inspection.ProblemHighlightType;
 import consulo.language.psi.PsiElement;
 import consulo.localize.LocalizeValue;
 import jakarta.annotation.Nonnull;
-import org.jetbrains.annotations.NonNls;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.GrReferenceElement;
@@ -52,12 +51,13 @@ public class GrDeprecatedAPIUsageInspection extends BaseInspection {
         return GroovyInspectionLocalize.grDeprecatedApiUsage();
     }
 
-    @NonNls
     @Nonnull
+    @Override
     public String getShortName() {
         return "GrDeprecatedAPIUsage";
     }
 
+    @Nonnull
     @Override
     protected BaseInspectionVisitor buildVisitor() {
         return new BaseInspectionVisitor() {
@@ -86,19 +86,16 @@ public class GrDeprecatedAPIUsageInspection extends BaseInspection {
 
             @Nonnull
             public PsiElement getElementToHighlight(@Nonnull GrReferenceElement refElement) {
-                final PsiElement refNameElement = refElement.getReferenceNameElement();
+                PsiElement refNameElement = refElement.getReferenceNameElement();
                 return refNameElement != null ? refNameElement : refElement;
             }
 
-
             private boolean isDeprecated(PsiElement resolved) {
-                if (resolved instanceof PsiDocCommentOwner) {
-                    return ((PsiDocCommentOwner) resolved).isDeprecated();
-                }
-                if (resolved instanceof PsiModifierListOwner && PsiImplUtil.isDeprecatedByAnnotation((PsiModifierListOwner) resolved)) {
-                    return true;
-                }
-                return false;
+                return switch (resolved) {
+                    case PsiDocCommentOwner dco -> dco.isDeprecated();
+                    case PsiModifierListOwner mlo -> PsiImplUtil.isDeprecatedByAnnotation(mlo);
+                    default -> false;
+                };
             }
         };
     }

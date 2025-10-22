@@ -17,10 +17,9 @@ package org.jetbrains.plugins.groovy.impl.codeInspection.confusing;
 
 import consulo.groovy.impl.localize.GroovyInspectionLocalize;
 import consulo.groovy.localize.GroovyLocalize;
+import consulo.language.psi.PsiElement;
 import consulo.localize.LocalizeValue;
 import jakarta.annotation.Nonnull;
-
-import consulo.language.psi.PsiElement;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
@@ -35,7 +34,6 @@ public class GrFieldAlreadyDefinedInspection extends BaseInspection {
     protected BaseInspectionVisitor buildVisitor() {
         return new MyVisitor();
     }
-
 
     @Nonnull
     @Override
