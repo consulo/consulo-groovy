@@ -16,6 +16,8 @@
 package org.jetbrains.plugins.groovy.impl.codeInspection.control;
 
 import com.intellij.java.language.psi.PsiType;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.language.editor.inspection.ProblemDescriptor;
 import consulo.language.psi.PsiElement;
 import consulo.language.util.IncorrectOperationException;
@@ -43,23 +45,29 @@ public class GroovyTrivialConditionalInspection extends BaseInspection {
         return CONTROL_FLOW;
     }
 
+    @Override
     public boolean isEnabledByDefault() {
         return true;
     }
 
+    @Nonnull
+    @Override
     public BaseInspectionVisitor buildVisitor() {
         return new UnnecessaryConditionalExpressionVisitor();
     }
 
+    @Override
+    @RequiredReadAction
     public String buildErrorString(Object... args) {
-        final GrConditionalExpression exp = (GrConditionalExpression) args[0];
+        GrConditionalExpression exp = (GrConditionalExpression) args[0];
         return "'" + exp.getText() + "' can be simplified to '" + calculateReplacementExpression(exp) + "'  #loc";
     }
 
+    @RequiredReadAction
     private static String calculateReplacementExpression(GrConditionalExpression exp) {
-        final GrExpression thenExpression = exp.getThenBranch();
-        final GrExpression elseExpression = exp.getElseBranch();
-        final GrExpression condition = exp.getCondition();
+        GrExpression thenExpression = exp.getThenBranch();
+        GrExpression elseExpression = exp.getElseBranch();
+        GrExpression condition = exp.getCondition();
 
         if (isFalse(thenExpression) && isTrue(elseExpression)) {
             return BoolUtils.getNegatedExpressionText(condition);
@@ -69,7 +77,8 @@ public class GroovyTrivialConditionalInspection extends BaseInspection {
         }
     }
 
-    public GroovyFix buildFix(PsiElement location) {
+    @Override
+    public GroovyFix buildFix(@Nonnull PsiElement location) {
         return new TrivialConditionalFix();
     }
 
@@ -80,19 +89,22 @@ public class GroovyTrivialConditionalInspection extends BaseInspection {
             return LocalizeValue.localizeTODO("Simplify");
         }
 
-        public void doFix(Project project, ProblemDescriptor descriptor)
-            throws IncorrectOperationException {
-            final GrConditionalExpression expression = (GrConditionalExpression) descriptor.getPsiElement();
-            final String newExpression = calculateReplacementExpression(expression);
+        @Override
+        @RequiredWriteAction
+        public void doFix(Project project, ProblemDescriptor descriptor) throws IncorrectOperationException {
+            GrConditionalExpression expression = (GrConditionalExpression) descriptor.getPsiElement();
+            String newExpression = calculateReplacementExpression(expression);
             replaceExpression(expression, newExpression);
         }
     }
 
     private static class UnnecessaryConditionalExpressionVisitor extends BaseInspectionVisitor {
+        @Override
+        @RequiredReadAction
         public void visitConditionalExpression(GrConditionalExpression exp) {
             super.visitConditionalExpression(exp);
-            final GrExpression condition = exp.getCondition();
-            final PsiType type = condition.getType();
+            GrExpression condition = exp.getCondition();
+            PsiType type = condition.getType();
             if (type == null || !(PsiType.BOOLEAN.isAssignableFrom(type))) {
                 return;
             }
@@ -101,11 +113,11 @@ public class GroovyTrivialConditionalInspection extends BaseInspection {
                 return;
             }
 
-            final GrExpression thenExpression = exp.getThenBranch();
+            GrExpression thenExpression = exp.getThenBranch();
             if (thenExpression == null) {
                 return;
             }
-            final GrExpression elseExpression = exp.getElseBranch();
+            GrExpression elseExpression = exp.getElseBranch();
             if (elseExpression == null) {
                 return;
             }
@@ -116,13 +128,13 @@ public class GroovyTrivialConditionalInspection extends BaseInspection {
         }
     }
 
+    @RequiredReadAction
     private static boolean isFalse(GrExpression expression) {
-        String text = expression.getText();
-        return "false".equals(text);
+        return "false".equals(expression.getText());
     }
 
+    @RequiredReadAction
     private static boolean isTrue(GrExpression expression) {
-        String text = expression.getText();
-        return "true".equals(text);
+        return "true".equals(expression.getText());
     }
 }

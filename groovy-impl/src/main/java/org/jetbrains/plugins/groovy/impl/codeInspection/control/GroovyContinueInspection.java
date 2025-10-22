@@ -38,15 +38,19 @@ public class GroovyContinueInspection extends BaseInspection {
     }
 
     @Nullable
+    @Override
     protected String buildErrorString(Object... args) {
         return "#ref statement #loc";
     }
 
+    @Nonnull
+    @Override
     public BaseInspectionVisitor buildVisitor() {
         return new Visitor();
     }
 
     private static class Visitor extends BaseInspectionVisitor {
+        @Override
         public void visitContinueStatement(GrContinueStatement continueStatement) {
             super.visitContinueStatement(continueStatement);
             registerError(continueStatement);

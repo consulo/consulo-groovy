@@ -15,6 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.impl.codeInspection.exception;
 
+import consulo.annotation.access.RequiredReadAction;
 import consulo.annotation.component.ExtensionImpl;
 import consulo.localize.LocalizeValue;
 import jakarta.annotation.Nonnull;
@@ -40,26 +41,29 @@ public class GroovyEmptyFinallyBlockInspection extends BaseInspection {
     }
 
     @Nullable
+    @Override
     protected String buildErrorString(Object... args) {
         return "Empty '#ref' block #loc";
     }
 
+    @Nonnull
+    @Override
     public BaseInspectionVisitor buildVisitor() {
         return new Visitor();
     }
 
     private static class Visitor extends BaseInspectionVisitor {
+        @Override
+        @RequiredReadAction
         public void visitFinallyClause(GrFinallyClause finallyClause) {
             super.visitFinallyClause(finallyClause);
-            final GrOpenBlock body = finallyClause.getBody();
-            if (body == null || !isEmpty(body)) {
-                return;
+            if (isEmpty(finallyClause.getBody())) {
+                registerError(finallyClause.getFirstChild());
             }
-            registerError(finallyClause.getFirstChild());
         }
 
         private static boolean isEmpty(GrOpenBlock body) {
-            final GrStatement[] statements = body.getStatements();
+            GrStatement[] statements = body.getStatements();
             return statements.length == 0;
         }
     }

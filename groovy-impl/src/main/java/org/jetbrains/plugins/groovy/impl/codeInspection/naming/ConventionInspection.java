@@ -21,7 +21,6 @@ import consulo.localize.LocalizeValue;
 import consulo.ui.ex.awt.UIUtil;
 import consulo.ui.ex.awt.event.DocumentAdapter;
 import jakarta.annotation.Nonnull;
-import org.jetbrains.annotations.NonNls;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
 
 import javax.swing.*;
@@ -37,6 +36,7 @@ import java.util.regex.Pattern;
 
 public abstract class ConventionInspection extends BaseInspection {
     @Nonnull
+    @Override
     public LocalizeValue getGroupDisplayName() {
         return LocalizeValue.localizeTODO("Naming Conventions");
     }
@@ -46,19 +46,18 @@ public abstract class ConventionInspection extends BaseInspection {
      *
      * @noinspection PublicField, WeakerAccess
      */
-    public String m_regex = getDefaultRegex();
+    public String myRegex = getDefaultRegex();
     /**
      * @noinspection PublicField, WeakerAccess
      */
-    public int m_minLength = getDefaultMinLength();
+    public int myMinLength = getDefaultMinLength();
     /**
      * @noinspection PublicField, WeakerAccess
      */
-    public int m_maxLength = getDefaultMaxLength();
+    public int myMaxLength = getDefaultMaxLength();
 
-    protected Pattern m_regexPattern = Pattern.compile(m_regex);
+    protected Pattern myRegexPattern = Pattern.compile(myRegex);
 
-    @NonNls
     protected abstract String getDefaultRegex();
 
     protected abstract int getDefaultMinLength();
@@ -66,98 +65,95 @@ public abstract class ConventionInspection extends BaseInspection {
     protected abstract int getDefaultMaxLength();
 
     protected String getRegex() {
-        return m_regex;
+        return myRegex;
     }
 
     protected int getMinLength() {
-        return m_minLength;
+        return myMinLength;
     }
 
     protected int getMaxLength() {
-        return m_maxLength;
+        return myMaxLength;
     }
 
     protected boolean isValid(String name) {
-        final int length = name.length();
-        if (length < m_minLength) {
+        int length = name.length();
+        if (length < myMinLength) {
             return false;
         }
-        if (length > m_maxLength) {
+        if (length > myMaxLength) {
             return false;
         }
         if ("SerialVersionUID".equals(name)) {
             return true;
         }
-        final Matcher matcher = m_regexPattern.matcher(name);
+        Matcher matcher = myRegexPattern.matcher(name);
         return matcher.matches();
     }
 
     private static final int REGEX_COLUMN_COUNT = 25;
 
     public JComponent createOptionsPanel() {
-        final GridBagLayout layout = new GridBagLayout();
-        final JPanel panel = new JPanel(layout);
+        GridBagLayout layout = new GridBagLayout();
+        JPanel panel = new JPanel(layout);
 
-        final JLabel patternLabel = new JLabel("Pattern:");
-        final JLabel minLengthLabel = new JLabel("Min Length:");
-        final JLabel maxLengthLabel = new JLabel("Max Length:");
+        JLabel patternLabel = new JLabel("Pattern:");
+        JLabel minLengthLabel = new JLabel("Min Length:");
+        JLabel maxLengthLabel = new JLabel("Max Length:");
 
-        final NumberFormat numberFormat = NumberFormat.getIntegerInstance();
+        NumberFormat numberFormat = NumberFormat.getIntegerInstance();
         numberFormat.setParseIntegerOnly(true);
         numberFormat.setMinimumIntegerDigits(1);
         numberFormat.setMaximumIntegerDigits(2);
-        final InternationalFormatter formatter =
-            new InternationalFormatter(numberFormat);
+        InternationalFormatter formatter = new InternationalFormatter(numberFormat);
         formatter.setAllowsInvalid(false);
         formatter.setCommitsOnValidEdit(true);
 
-        final JFormattedTextField minLengthField =
-            new JFormattedTextField(formatter);
-        final Font panelFont = panel.getFont();
+        final JFormattedTextField minLengthField = new JFormattedTextField(formatter);
+        Font panelFont = panel.getFont();
         minLengthField.setFont(panelFont);
-        minLengthField.setValue(m_minLength);
+        minLengthField.setValue(myMinLength);
         minLengthField.setColumns(2);
         UIUtil.fixFormattedField(minLengthField);
 
-        final JFormattedTextField maxLengthField =
-            new JFormattedTextField(formatter);
+        final JFormattedTextField maxLengthField = new JFormattedTextField(formatter);
         maxLengthField.setFont(panelFont);
-        maxLengthField.setValue(m_maxLength);
+        maxLengthField.setValue(myMaxLength);
         maxLengthField.setColumns(2);
         UIUtil.fixFormattedField(maxLengthField);
 
-        final JFormattedTextField regexField =
-            new JFormattedTextField(new RegExFormatter());
+        final JFormattedTextField regexField = new JFormattedTextField(new RegExFormatter());
         regexField.setFont(panelFont);
-        regexField.setValue(m_regexPattern);
+        regexField.setValue(myRegexPattern);
         regexField.setColumns(REGEX_COLUMN_COUNT);
         regexField.setInputVerifier(new RegExInputVerifier());
         regexField.setFocusLostBehavior(JFormattedTextField.COMMIT);
         UIUtil.fixFormattedField(regexField);
-        final DocumentListener listener = new DocumentAdapter() {
+        DocumentListener listener = new DocumentAdapter() {
+            @Override
             public void textChanged(DocumentEvent evt) {
                 try {
                     regexField.commitEdit();
                     minLengthField.commitEdit();
                     maxLengthField.commitEdit();
-                    m_regexPattern = (Pattern) regexField.getValue();
-                    m_regex = m_regexPattern.pattern();
-                    m_minLength = ((Number) minLengthField.getValue()).intValue();
-                    m_maxLength = ((Number) maxLengthField.getValue()).intValue();
+                    myRegexPattern = (Pattern) regexField.getValue();
+                    myRegex = myRegexPattern.pattern();
+                    myMinLength = ((Number) minLengthField.getValue()).intValue();
+                    myMaxLength = ((Number) maxLengthField.getValue()).intValue();
                 }
                 catch (ParseException ignore) {
                     // No luck this time
                 }
             }
         };
-        final Document regexDocument = regexField.getDocument();
+        Document regexDocument = regexField.getDocument();
         regexDocument.addDocumentListener(listener);
-        final Document minLengthDocument = minLengthField.getDocument();
+        Document minLengthDocument = minLengthField.getDocument();
         minLengthDocument.addDocumentListener(listener);
-        final Document maxLengthDocument = maxLengthField.getDocument();
+        Document maxLengthDocument = maxLengthField.getDocument();
         maxLengthDocument.addDocumentListener(listener);
 
-        final GridBagConstraints constraints = new GridBagConstraints();
+        GridBagConstraints constraints = new GridBagConstraints();
         constraints.gridx = 0;
         constraints.gridy = 0;
         constraints.weightx = 0.0;
