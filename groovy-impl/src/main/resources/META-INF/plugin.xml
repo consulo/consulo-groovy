@@ -911,33 +911,6 @@
       <add-to-group group-id="EditorTabPopupMenu" anchor="after" relative-to-action="RenameJavaFileToGroovyFileAction"/>
     </action>
 
-
-    <group id="GroovyGenerateGroup1">
-      <action id="org.jetbrains.plugins.groovy.impl.actions.generate.constructors.GroovyGenerateConstructorAction"
-              class="org.jetbrains.plugins.groovy.impl.actions.generate.constructors.GroovyGenerateConstructorAction"
-              text="Constructor" description="Generates constructor"/>
-      <action id="org.jetbrains.plugins.groovy.impl.actions.generate.accessors.GroovyGenerateGetterAction"
-              class="org.jetbrains.plugins.groovy.impl.actions.generate.accessors.GroovyGenerateGetterAction"
-              text="Getter" description="Generates getter"/>
-      <action id="org.jetbrains.plugins.groovy.impl.actions.generate.accessors.GroovyGenerateSetterAction"
-              class="org.jetbrains.plugins.groovy.impl.actions.generate.accessors.GroovyGenerateSetterAction"
-              text="Setter" description="Generates setter"/>
-      <action id="org.jetbrains.plugins.groovy.impl.actions.generate.accessors.GroovyGenerateGetterSetterAction"
-              class="org.jetbrains.plugins.groovy.impl.actions.generate.accessors.GroovyGenerateGetterSetterAction"
-              text="Getter and Setter" description="Generates getter"/>
-      <action id="org.jetbrains.plugins.groovy.impl.actions.generate.equals.GroovyGenerateEqualsAction"
-              class="org.jetbrains.plugins.groovy.impl.actions.generate.equals.GroovyGenerateEqualsAction"
-              text="equals() and hashCode()" description="Action generates equals and hashCode now"/>
-      <action id="org.jetbrains.plugins.groovy.impl.actions.generate.missing.GroovyGenerateMethodMissingAction"
-              class="org.jetbrains.plugins.groovy.impl.actions.generate.missing.GroovyGenerateMethodMissingAction"
-              text="methodMissing()" description="Action generates propertyMissing()"/>
-      <action id="org.jetbrains.plugins.groovy.impl.actions.generate.missing.GroovyGeneratePropertyMissingAction"
-              class="org.jetbrains.plugins.groovy.impl.actions.generate.missing.GroovyGeneratePropertyMissingAction"
-              text="propertyMissing()" description="Action generates propertyMissing()"/>
-
-      <add-to-group group-id="GenerateGroup" anchor="after" relative-to-action="JavaGenerateGroup1"/>
-    </group>
-
     <action id="Groovy.Doc.Generating"
             class="org.jetbrains.plugins.groovy.impl.doc.actions.GenerateGroovyDocAction"
             text="Generate GroovyDoc..." description="Generating Groovy Documentation"

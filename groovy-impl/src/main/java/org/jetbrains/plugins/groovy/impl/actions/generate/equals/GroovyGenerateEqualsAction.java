@@ -15,20 +15,26 @@
  */
 package org.jetbrains.plugins.groovy.impl.actions.generate.equals;
 
-import org.jetbrains.plugins.groovy.GroovyBundle;
+import consulo.annotation.component.ActionImpl;
+import consulo.groovy.localize.GroovyLocalize;
 import org.jetbrains.plugins.groovy.impl.actions.generate.GrBaseGenerateAction;
 
 /**
- * User: Dmitry.Krasilschikov
- * Date: 28.05.2008
+ * @author Dmitry.Krasilschikov
+ * @since 2008-05-28
  */
+@ActionImpl(id = "GroovyGenerateEqualsAction")
 public class GroovyGenerateEqualsAction extends GrBaseGenerateAction {
-  public GroovyGenerateEqualsAction() {
-    super(new GroovyGenerateEqualsHandler());
-  }
+    public GroovyGenerateEqualsAction() {
+        super(
+            new GroovyGenerateEqualsHandler(),
+            GroovyLocalize.actionGenerateEqualsAndHashCodeText(),
+            GroovyLocalize.actionGenerateEqualsAndHashCodeDescription()
+        );
+    }
 
-  @Override
-  protected String getCommandName() {
-    return GroovyBundle.message("Equals");
-  }
+    @Override
+    protected String getCommandName() {
+        return GroovyLocalize.equals().get();
+    }
 }
