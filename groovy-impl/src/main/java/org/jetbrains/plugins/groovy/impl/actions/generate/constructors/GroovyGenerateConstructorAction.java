@@ -15,19 +15,26 @@
  */
 package org.jetbrains.plugins.groovy.impl.actions.generate.constructors;
 
-import org.jetbrains.plugins.groovy.GroovyBundle;
+import consulo.annotation.component.ActionImpl;
+import consulo.groovy.localize.GroovyLocalize;
 import org.jetbrains.plugins.groovy.impl.actions.generate.GrBaseGenerateAction;
 
 /**
- * User: Dmitry.Krasilschikov
- * Date: 21.05.2008
+ * @author Dmitry.Krasilschikov
+ * @since 2008-05-21
  */
+@ActionImpl(id = "GroovyGenerateConstructorAction")
 public class GroovyGenerateConstructorAction extends GrBaseGenerateAction {
-  public GroovyGenerateConstructorAction() {
-    super(new GroovyGenerateConstructorHandler());
-  }
+    public GroovyGenerateConstructorAction() {
+        super(
+            new GroovyGenerateConstructorHandler(),
+            GroovyLocalize.actionGenerateConstructorText(),
+            GroovyLocalize.actionGenerateConstructorDescription()
+        );
+    }
 
-  protected String getCommandName() {
-    return GroovyBundle.message("Constructor");
-  }
+    @Override
+    protected String getCommandName() {
+        return GroovyLocalize.constructor().get();
+    }
 }

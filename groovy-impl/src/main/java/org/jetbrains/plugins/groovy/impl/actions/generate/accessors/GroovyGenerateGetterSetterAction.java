@@ -16,13 +16,20 @@
 package org.jetbrains.plugins.groovy.impl.actions.generate.accessors;
 
 import com.intellij.java.impl.codeInsight.generation.GenerateGetterAndSetterHandler;
+import consulo.annotation.component.ActionImpl;
+import consulo.groovy.localize.GroovyLocalize;
 import org.jetbrains.plugins.groovy.impl.actions.generate.GrBaseGenerateAction;
 
 /**
  * @author Max Medvedev
  */
+@ActionImpl(id = "GroovyGenerateGetterSetterAction")
 public class GroovyGenerateGetterSetterAction extends GrBaseGenerateAction {
-  public GroovyGenerateGetterSetterAction() {
-    super(new GenerateGetterAndSetterHandler());
-  }
+    public GroovyGenerateGetterSetterAction() {
+        super(
+            new GenerateGetterAndSetterHandler(),
+            GroovyLocalize.actionGenerateGetterAndSetterText(),
+            GroovyLocalize.actionGenerateGetterAndSetterDescription()
+        );
+    }
 }

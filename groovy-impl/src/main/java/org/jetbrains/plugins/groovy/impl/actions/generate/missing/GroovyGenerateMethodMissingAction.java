@@ -15,19 +15,25 @@
  */
 package org.jetbrains.plugins.groovy.impl.actions.generate.missing;
 
-import org.jetbrains.plugins.groovy.GroovyBundle;
+import consulo.annotation.component.ActionImpl;
+import consulo.groovy.localize.GroovyLocalize;
 import org.jetbrains.plugins.groovy.impl.actions.generate.GrBaseGenerateAction;
 
 /**
  * @author Max Medvedev
  */
+@ActionImpl(id = "GroovyGenerateMethodMissingAction")
 public class GroovyGenerateMethodMissingAction extends GrBaseGenerateAction {
-  public GroovyGenerateMethodMissingAction() {
-    super(new GroovyGenerateMethodMissingHandler());
-  }
+    public GroovyGenerateMethodMissingAction() {
+        super(
+            new GroovyGenerateMethodMissingHandler(),
+            GroovyLocalize.actionGenerateMethodMissingText(),
+            GroovyLocalize.actionGenerateMethodMissingDescription()
+        );
+    }
 
-  @Override
-  protected String getCommandName() {
-    return GroovyBundle.message("property.missing");
-  }
+    @Override
+    protected String getCommandName() {
+        return GroovyLocalize.propertyMissing().get();
+    }
 }

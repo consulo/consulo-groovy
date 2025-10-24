@@ -18,6 +18,34 @@ abstract.methods.must.not.have.body:
     text: Abstract methods must not have body
 abstract.visibility.presentation:
     text: abstract
+action.generate.constructor.description:
+    text: Generates constructor
+action.generate.constructor.text:
+    text: Constructor
+action.generate.equals.and.hash.code.description:
+    text: Generates equals() and hashCode()
+action.generate.equals.and.hash.code.text:
+    text: equals() and hashCode()
+action.generate.getter.and.setter.description:
+    text: Generates getter and setter
+action.generate.getter.and.setter.text:
+    text: Getter and Setter
+action.generate.getter.description:
+    text: Generates getter
+action.generate.getter.text:
+    text: Getter
+action.generate.method.missing.description:
+    text: Generates methodMissing()
+action.generate.method.missing.text:
+    text: methodMissing()
+action.generate.property.missing.description:
+    text: Generates propertyMissing()
+action.generate.property.missing.text:
+    text: propertyMissing()
+action.generate.setter.description:
+    text: Generates setter
+action.generate.setter.text:
+    text: Setter
 add.dynamic.element:
     text: Add dynamic element
 add.dynamic.method:

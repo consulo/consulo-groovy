@@ -17,35 +17,47 @@ package org.jetbrains.plugins.groovy.impl.actions.generate;
 
 import com.intellij.java.impl.codeInsight.generation.actions.BaseGenerateAction;
 import com.intellij.java.language.psi.PsiClass;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.codeEditor.Editor;
 import consulo.language.editor.action.CodeInsightActionHandler;
 import consulo.language.psi.PsiCompiledElement;
 import consulo.language.psi.PsiDocumentManager;
 import consulo.language.psi.PsiFile;
+import consulo.localize.LocalizeValue;
 import consulo.project.Project;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 
-import jakarta.annotation.Nonnull;
-
 /**
- * User: Dmitry.Krasilschikov
- * Date: 21.05.2008
+ * @author Dmitry.Krasilschikov
+ * @since 2008-05-21
  */
 public abstract class GrBaseGenerateAction extends BaseGenerateAction {
-  public GrBaseGenerateAction(CodeInsightActionHandler handler) {
-    super(handler);
-  }
+    protected GrBaseGenerateAction(CodeInsightActionHandler handler, @Nonnull LocalizeValue text, @Nonnull LocalizeValue description) {
+        super(handler, text);
+        getTemplatePresentation().setDescriptionValue(description);
+    }
 
-  protected boolean isValidForFile(@Nonnull Project project, @Nonnull Editor editor, @Nonnull PsiFile file) {
-    if (file instanceof PsiCompiledElement) return false;
-    if (!GroovyFileType.GROOVY_FILE_TYPE.equals(file.getFileType())) return false;
-    
-    PsiDocumentManager.getInstance(project).commitAllDocuments();
+    @Override
+    @RequiredReadAction
+    protected boolean isValidForFile(@Nonnull Project project, @Nonnull Editor editor, @Nonnull PsiFile file) {
+        if (file instanceof PsiCompiledElement) {
+            return false;
+        }
+        if (!GroovyFileType.INSTANCE.equals(file.getFileType())) {
+            return false;
+        }
 
-    PsiClass targetClass = getTargetClass(editor, file);
-    if (targetClass == null) return false;
-    if (targetClass.isInterface()) return false; //?
+        PsiDocumentManager.getInstance(project).commitAllDocuments();
 
-    return true;
-  }
+        PsiClass targetClass = getTargetClass(editor, file);
+        if (targetClass == null) {
+            return false;
+        }
+        if (targetClass.isInterface()) {
+            return false; //?
+        }
+
+        return true;
+    }
 }
