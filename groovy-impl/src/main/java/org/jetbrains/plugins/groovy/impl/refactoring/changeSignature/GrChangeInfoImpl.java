@@ -23,12 +23,12 @@ import com.intellij.java.language.psi.*;
 import consulo.language.Language;
 import consulo.language.util.IncorrectOperationException;
 import consulo.util.lang.StringUtil;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameter;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -284,7 +284,7 @@ public class GrChangeInfoImpl implements JavaChangeInfo {
     return myIsRetainVarargs;
   }
 
-  public boolean isObtainsVarags() {
+  public boolean isObtainsVarargs() {
     return myIsObtainVarargs;
   }
 
