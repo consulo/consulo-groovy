@@ -1836,7 +1836,7 @@ public class GroovyAnnotator extends GroovyElementVisitor {
 
     @Override
     public void visitAnnotation(GrAnnotation annotation) {
-        AnnotationChecker.checkApplicability(annotation, annotation.getOwner(), myHolder, annotation.getNameReferenceElement());
+        AnnotationChecker.checkApplicability(annotation, annotation.getOwner(), myHolder, annotation.getClassReference());
     }
 
     @Override
