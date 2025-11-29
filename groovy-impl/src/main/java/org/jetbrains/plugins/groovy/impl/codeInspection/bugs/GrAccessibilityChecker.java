@@ -19,6 +19,7 @@ import com.intellij.java.language.psi.*;
 import com.intellij.java.language.psi.util.PsiFormatUtil;
 import com.intellij.java.language.psi.util.PsiFormatUtilBase;
 import consulo.annotation.access.RequiredReadAction;
+import consulo.groovy.localize.GroovyLocalize;
 import consulo.language.editor.inspection.LocalQuickFix;
 import consulo.language.editor.inspection.LocalQuickFixAsIntentionAdapter;
 import consulo.language.editor.inspection.ProblemDescriptor;
@@ -30,14 +31,14 @@ import consulo.language.editor.rawHighlight.HighlightInfo;
 import consulo.language.editor.util.HighlightTypeUtil;
 import consulo.language.psi.PsiCompiledElement;
 import consulo.language.psi.PsiElement;
-import consulo.language.psi.PsiFile;
 import consulo.language.psi.util.PsiTreeUtil;
 import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
 import consulo.logging.Logger;
 import consulo.project.Project;
 import consulo.util.collection.ArrayUtil;
+import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
-import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.impl.codeInspection.GrInspectionUtil;
 import org.jetbrains.plugins.groovy.impl.codeInspection.GroovyFix;
 import org.jetbrains.plugins.groovy.lang.psi.GrReferenceElement;
@@ -51,197 +52,186 @@ import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyPropertyUtils;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 
-import jakarta.annotation.Nonnull;
-
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Max Medvedev on 21/03/14
+ * @author Max Medvedev
+ * @since 2014-03-21
  */
 public class GrAccessibilityChecker {
-  private static final Logger LOG = Logger.getInstance(GrAccessibilityChecker.class);
+    private static final Logger LOG = Logger.getInstance(GrAccessibilityChecker.class);
 
-  private final HighlightDisplayKey myDisplayKey;
-  private final boolean myInspectionEnabled;
+    private final HighlightDisplayKey myDisplayKey;
+    private final boolean myInspectionEnabled;
 
-  public GrAccessibilityChecker(@Nonnull GroovyFileBase file, @Nonnull Project project) {
-    myInspectionEnabled = GroovyAccessibilityInspection.isInspectionEnabled(file, project);
-    myDisplayKey = GroovyAccessibilityInspection.findDisplayKey();
-  }
-
-  static GroovyFix[] buildFixes(PsiElement location, GroovyResolveResult resolveResult) {
-    final PsiElement element = resolveResult.getElement();
-    if (!(element instanceof PsiMember)) {
-      return GroovyFix.EMPTY_ARRAY;
-    }
-    final PsiMember refElement = (PsiMember)element;
-
-    if (refElement instanceof PsiCompiledElement) {
-      return GroovyFix.EMPTY_ARRAY;
+    public GrAccessibilityChecker(@Nonnull GroovyFileBase file, @Nonnull Project project) {
+        myInspectionEnabled = GroovyAccessibilityInspection.isInspectionEnabled(file, project);
+        myDisplayKey = GroovyAccessibilityInspection.findDisplayKey();
     }
 
-    PsiModifierList modifierList = refElement.getModifierList();
-    if (modifierList == null) {
-      return GroovyFix.EMPTY_ARRAY;
-    }
-
-    List<GroovyFix> fixes = new ArrayList<GroovyFix>();
-    try {
-      Project project = refElement.getProject();
-      JavaPsiFacade facade = JavaPsiFacade.getInstance(project);
-      PsiModifierList modifierListCopy = facade.getElementFactory().createFieldFromText("int a;",
-                                                                                        null).getModifierList();
-      assert modifierListCopy != null;
-      modifierListCopy.setModifierProperty(PsiModifier.STATIC, modifierList.hasModifierProperty(PsiModifier
-                                                                                                  .STATIC));
-      String minModifier = PsiModifier.PROTECTED;
-      if (refElement.hasModifierProperty(PsiModifier.PROTECTED)) {
-        minModifier = PsiModifier.PUBLIC;
-      }
-      String[] modifiers = {
-        PsiModifier.PROTECTED,
-        PsiModifier.PUBLIC,
-        PsiModifier.PACKAGE_LOCAL
-      };
-      PsiClass accessObjectClass = PsiTreeUtil.getParentOfType(location, PsiClass.class, false);
-      if (accessObjectClass == null) {
-        final PsiFile file = location.getContainingFile();
-        if (!(file instanceof GroovyFile)) {
-          return GroovyFix.EMPTY_ARRAY;
+    @RequiredReadAction
+    static GroovyFix[] buildFixes(PsiElement location, GroovyResolveResult resolveResult) {
+        if (!(resolveResult.getElement() instanceof PsiMember member)
+            || member instanceof PsiCompiledElement
+            || member.getModifierList() == null) {
+            return GroovyFix.EMPTY_ARRAY;
         }
-        accessObjectClass = ((GroovyFile)file).getScriptClass();
-      }
-      for (int i = ArrayUtil.indexOf(modifiers, minModifier); i < modifiers.length; i++) {
-        String modifier = modifiers[i];
-        modifierListCopy.setModifierProperty(modifier, true);
-        if (facade.getResolveHelper().isAccessible(refElement, modifierListCopy, location, accessObjectClass,
-                                                   null)) {
-          fixes.add(new GrModifierFix(refElement, modifier, true, true, GrModifierFix.MODIFIER_LIST_OWNER));
+
+        List<GroovyFix> fixes = new ArrayList<>();
+        try {
+            Project project = member.getProject();
+            JavaPsiFacade facade = JavaPsiFacade.getInstance(project);
+            PsiModifierList modifierListCopy = facade.getElementFactory()
+                .createFieldFromText("int a;", null)
+                .getModifierList();
+            assert modifierListCopy != null;
+            modifierListCopy.setModifierProperty(PsiModifier.STATIC, member.isStatic());
+            String minModifier = PsiModifier.PROTECTED;
+            if (member.isProtected()) {
+                minModifier = PsiModifier.PUBLIC;
+            }
+            String[] modifiers = {
+                PsiModifier.PROTECTED,
+                PsiModifier.PUBLIC,
+                PsiModifier.PACKAGE_LOCAL
+            };
+            PsiClass accessObjectClass = PsiTreeUtil.getParentOfType(location, PsiClass.class, false);
+            if (accessObjectClass == null) {
+                if (!(location.getContainingFile() instanceof GroovyFile file)) {
+                    return GroovyFix.EMPTY_ARRAY;
+                }
+                accessObjectClass = file.getScriptClass();
+            }
+            for (int i = ArrayUtil.indexOf(modifiers, minModifier); i < modifiers.length; i++) {
+                String modifier = modifiers[i];
+                modifierListCopy.setModifierProperty(modifier, true);
+                if (facade.getResolveHelper().isAccessible(member, modifierListCopy, location, accessObjectClass, null)) {
+                    fixes.add(new GrModifierFix(member, modifier, true, true, GrModifierFix.MODIFIER_LIST_OWNER));
+                }
+            }
         }
-      }
-    }
-    catch (IncorrectOperationException e) {
-      LOG.error(e);
-    }
-    return fixes.toArray(new GroovyFix[fixes.size()]);
-  }
-
-  @Nullable
-  public HighlightInfo checkCodeReferenceElement(GrCodeReferenceElement ref) {
-    return checkReferenceImpl(ref);
-  }
-
-  private HighlightInfo checkReferenceImpl(GrReferenceElement ref) {
-    boolean isCompileStatic = PsiUtil.isCompileStatic(ref);
-
-    if (!needToCheck(ref, isCompileStatic)) {
-      return null;
+        catch (IncorrectOperationException e) {
+            LOG.error(e);
+        }
+        return fixes.toArray(new GroovyFix[fixes.size()]);
     }
 
-    PsiElement parent = ref.getParent();
-    if (parent instanceof GrConstructorCall) {
-      String constructorError = checkConstructorCall((GrConstructorCall)parent, ref);
-      if (constructorError != null) {
-        return createAnnotationForRef(ref, isCompileStatic, constructorError);
-      }
+    @Nullable
+    @RequiredReadAction
+    public HighlightInfo checkCodeReferenceElement(GrCodeReferenceElement ref) {
+        return checkReferenceImpl(ref);
     }
 
-    GroovyResolveResult result = ref.advancedResolve();
-    String error = checkResolveResult(ref, result) ? GroovyBundle.message("cannot.access",
-                                                                          ref.getReferenceName()) : null;
-    if (error != null) {
-      HighlightInfo info = createAnnotationForRef(ref, isCompileStatic, error);
-      registerFixes(ref, result, info);
-      return info;
+    @RequiredReadAction
+    private HighlightInfo checkReferenceImpl(GrReferenceElement ref) {
+        boolean isCompileStatic = PsiUtil.isCompileStatic(ref);
+
+        if (!needToCheck(ref, isCompileStatic)) {
+            return null;
+        }
+
+        if (ref.getParent() instanceof GrConstructorCall constructorCall) {
+            LocalizeValue constructorError = checkConstructorCall(constructorCall, ref);
+            if (constructorError != LocalizeValue.empty()) {
+                return createAnnotationForRef(ref, isCompileStatic, constructorError);
+            }
+        }
+
+        GroovyResolveResult result = ref.advancedResolve();
+        LocalizeValue error = checkResolveResult(ref, result) ? GroovyLocalize.cannotAccess(ref.getReferenceName()) : LocalizeValue.empty();
+        if (error != LocalizeValue.empty()) {
+            HighlightInfo info = createAnnotationForRef(ref, isCompileStatic, error);
+            registerFixes(ref, result, info);
+            return info;
+        }
+
+        return null;
     }
 
-    return null;
-  }
-
-  private void registerFixes(GrReferenceElement ref, GroovyResolveResult result, HighlightInfo info) {
-    PsiElement element = result.getElement();
-    assert element != null;
-    ProblemDescriptor descriptor = InspectionManager.getInstance(ref.getProject()).
-      createProblemDescriptor(element,
-                              element,
-                              "",
-                              HighlightTypeUtil.convertSeverityToProblemHighlight(info.getSeverity()),
-                              true,
-                              LocalQuickFix.EMPTY_ARRAY);
-    for (GroovyFix fix : buildFixes(ref, result)) {
-      QuickFixAction.registerQuickFixAction(info, new LocalQuickFixAsIntentionAdapter(fix, descriptor),
-                                            myDisplayKey);
-    }
-  }
-
-  @Nullable
-  public HighlightInfo checkReferenceExpression(GrReferenceExpression ref) {
-    return checkReferenceImpl(ref);
-  }
-
-  private static boolean isStaticallyImportedProperty(GroovyResolveResult result, GrReferenceElement place) {
-    final PsiElement parent = place.getParent();
-    if (!(parent instanceof GrImportStatement)) {
-      return false;
+    @RequiredReadAction
+    private void registerFixes(GrReferenceElement ref, GroovyResolveResult result, HighlightInfo info) {
+        PsiElement element = result.getElement();
+        assert element != null;
+        ProblemDescriptor descriptor = InspectionManager.getInstance(ref.getProject()).createProblemDescriptor(
+            element,
+            element,
+            "",
+            HighlightTypeUtil.convertSeverityToProblemHighlight(info.getSeverity()),
+            true,
+            LocalQuickFix.EMPTY_ARRAY
+        );
+        for (GroovyFix fix : buildFixes(ref, result)) {
+            QuickFixAction.registerQuickFixAction(
+                info,
+                new LocalQuickFixAsIntentionAdapter(fix, descriptor),
+                myDisplayKey
+            );
+        }
     }
 
-    final PsiElement resolved = result.getElement();
-    if (!(resolved instanceof PsiField)) {
-      return false;
+    @Nullable
+    @RequiredReadAction
+    public HighlightInfo checkReferenceExpression(GrReferenceExpression ref) {
+        return checkReferenceImpl(ref);
     }
 
-    final PsiMethod getter = GroovyPropertyUtils.findGetterForField((PsiField)resolved);
-    final PsiMethod setter = GroovyPropertyUtils.findSetterForField((PsiField)resolved);
+    private static boolean isStaticallyImportedProperty(GroovyResolveResult result, GrReferenceElement place) {
+        if (!(place.getParent() instanceof GrImportStatement)) {
+            return false;
+        }
 
-    return getter != null && PsiUtil.isAccessible(place, getter) || setter != null && PsiUtil.isAccessible(place,
-                                                                                                           setter);
-  }
+        if (!(result.getElement() instanceof PsiField field)) {
+            return false;
+        }
 
-  private static boolean checkResolveResult(GrReferenceElement ref, GroovyResolveResult result) {
-    return result != null &&
-      result.getElement() != null &&
-      !result.isAccessible() &&
-      !isStaticallyImportedProperty(result, ref);
-  }
+        PsiMethod getter = GroovyPropertyUtils.findGetterForField(field);
+        PsiMethod setter = GroovyPropertyUtils.findSetterForField(field);
 
-  private boolean needToCheck(GrReferenceElement ref, boolean isCompileStatic) {
-    if (isCompileStatic) {
-      return true;
-    }
-    if (!myInspectionEnabled) {
-      return false;
-    }
-    if (GroovyAccessibilityInspection.isSuppressed(ref)) {
-      return false;
+        return getter != null && PsiUtil.isAccessible(place, getter)
+            || setter != null && PsiUtil.isAccessible(place, setter);
     }
 
-    return true;
-  }
-
-  private static String checkConstructorCall(GrConstructorCall constructorCall, GrReferenceElement ref) {
-    GroovyResolveResult result = constructorCall.advancedResolve();
-    if (checkResolveResult(ref, result)) {
-      return GroovyBundle.message("cannot.access", PsiFormatUtil.formatMethod((PsiMethod)result.getElement(),
-                                                                              PsiSubstitutor.EMPTY,
-                                                                              PsiFormatUtilBase.SHOW_NAME |
-                                                                                PsiFormatUtilBase.SHOW_TYPE |
-                                                                                PsiFormatUtilBase.TYPE_AFTER |
-                                                                                PsiFormatUtilBase.SHOW_PARAMETERS,
-                                                                              PsiFormatUtilBase.SHOW_TYPE));
+    private static boolean checkResolveResult(GrReferenceElement ref, GroovyResolveResult result) {
+        return result != null
+            && result.getElement() != null
+            && !result.isAccessible()
+            && !isStaticallyImportedProperty(result, ref);
     }
 
-    return null;
-  }
+    private boolean needToCheck(GrReferenceElement ref, boolean isCompileStatic) {
+        return isCompileStatic || myInspectionEnabled && !GroovyAccessibilityInspection.isSuppressed(ref);
+    }
 
-  @Nullable
-  @RequiredReadAction
-  private static HighlightInfo createAnnotationForRef(@Nonnull GrReferenceElement ref,
-                                                      boolean strongError,
-                                                      @Nonnull String message) {
-    HighlightDisplayLevel displayLevel = strongError ? HighlightDisplayLevel.ERROR : GroovyAccessibilityInspection
-      .getHighlightDisplayLevel(ref.getProject(), ref);
-    HighlightInfo.Builder builder = GrInspectionUtil.createAnnotationForRef(ref, displayLevel, message);
-    return builder == null ? null : builder.create();
-  }
+    @Nonnull
+    private static LocalizeValue checkConstructorCall(GrConstructorCall constructorCall, GrReferenceElement ref) {
+        GroovyResolveResult result = constructorCall.advancedResolve();
+        if (checkResolveResult(ref, result)) {
+            return GroovyLocalize.cannotAccess(PsiFormatUtil.formatMethod(
+                (PsiMethod) result.getElement(),
+                PsiSubstitutor.EMPTY,
+                PsiFormatUtilBase.SHOW_NAME |
+                    PsiFormatUtilBase.SHOW_TYPE |
+                    PsiFormatUtilBase.TYPE_AFTER |
+                    PsiFormatUtilBase.SHOW_PARAMETERS,
+                PsiFormatUtilBase.SHOW_TYPE
+            ));
+        }
+
+        return LocalizeValue.empty();
+    }
+
+    @Nullable
+    @RequiredReadAction
+    private static HighlightInfo createAnnotationForRef(
+        @Nonnull GrReferenceElement ref,
+        boolean strongError,
+        @Nonnull LocalizeValue message
+    ) {
+        HighlightDisplayLevel displayLevel = strongError
+            ? HighlightDisplayLevel.ERROR
+            : GroovyAccessibilityInspection.getHighlightDisplayLevel(ref.getProject(), ref);
+        HighlightInfo.Builder builder = GrInspectionUtil.createAnnotationForRef(ref, displayLevel, message);
+        return builder == null ? null : builder.create();
+    }
 }
