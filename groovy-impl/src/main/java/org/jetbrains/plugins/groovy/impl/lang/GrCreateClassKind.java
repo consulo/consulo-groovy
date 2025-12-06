@@ -10,11 +10,11 @@ import jakarta.annotation.Nonnull;
  * @since 2014-05-28
  */
 public enum GrCreateClassKind implements ClassKind {
-    CLASS(JavaLanguageLocalize.elementClass()),
-    INTERFACE(JavaLanguageLocalize.elementInterface()),
+    CLASS(JavaLanguageLocalize.elementClassNominative()),
+    INTERFACE(JavaLanguageLocalize.elementInterfaceNominative()),
     TRAIT(LocalizeValue.localizeTODO("trait")),
-    ENUM(JavaLanguageLocalize.elementEnum()),
-    ANNOTATION(JavaLanguageLocalize.elementAnnotation());
+    ENUM(JavaLanguageLocalize.elementEnumNominative()),
+    ANNOTATION(JavaLanguageLocalize.elementAnnotationNominative());
 
     private final LocalizeValue myDescription;
 
