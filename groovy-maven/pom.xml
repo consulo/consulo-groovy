@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <!--
-  - Copyright 2013-2018 consulo.io
+  - Copyright 2013-2025 consulo.io
   -
   - Licensed under the Apache License, Version 2.0 (the "License");
   - you may not use this file except in compliance with the License.
@@ -15,7 +14,6 @@
   - See the License for the specific language governing permissions and
   - limitations under the License.
   -->
-
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
@@ -30,7 +28,7 @@
   <repositories>
     <repository>
       <id>consulo</id>
-      <url>https://maven.consulo.io/repository/snapshots/</url>
+      <url>https://maven.consulo.dev/repository/snapshots/</url>
       <snapshots>
         <enabled>true</enabled>
         <updatePolicy>interval:60</updatePolicy>

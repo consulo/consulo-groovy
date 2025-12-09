@@ -16,13 +16,12 @@
 package org.jetbrains.plugins.groovy.impl.refactoring.introduce;
 
 import consulo.language.psi.PsiElement;
-import consulo.util.collection.MultiMap;
-import consulo.language.psi.PsiElement;
+import consulo.localize.LocalizeValue;
 import consulo.util.collection.MultiMap;
 
 /**
  * @author Maxim.Medvedev
  */
 public interface ConflictReporter {
-  void check(PsiElement toCheck, MultiMap<PsiElement, String> conflicts, String varName);
+  void check(PsiElement toCheck, MultiMap<PsiElement, LocalizeValue> conflicts, String varName);
 }

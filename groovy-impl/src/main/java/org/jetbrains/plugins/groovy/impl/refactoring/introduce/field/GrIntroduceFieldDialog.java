@@ -24,6 +24,7 @@ import consulo.language.editor.ui.awt.RadioUpDownListener;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.util.PsiTreeUtil;
 import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
 import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.ex.awt.DialogWrapper;
 import consulo.ui.ex.awt.JBRadioButton;
@@ -492,12 +493,12 @@ public class GrIntroduceFieldDialog extends DialogWrapper implements GrIntroduce
     protected void doOKAction() {
         final PsiClass clazz = (PsiClass)myContext.getScope();
         final String name = getName();
-        String message = RefactoringLocalize.fieldExists(name, clazz.getQualifiedName()).get();
+        LocalizeValue message = RefactoringLocalize.fieldExists(name, clazz.getQualifiedName());
         if (clazz.findFieldByName(name, true) != null
             && Messages.showYesNoDialog(
             myContext.getProject(),
-            message,
-            IntroduceFieldHandler.REFACTORING_NAME,
+            message.get(),
+            IntroduceFieldHandler.REFACTORING_NAME.get(),
             UIUtil.getWarningIcon()
         ) != Messages.YES) {
             return;

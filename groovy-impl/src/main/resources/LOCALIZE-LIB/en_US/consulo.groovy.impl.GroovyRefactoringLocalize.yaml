@@ -1,0 +1,270 @@
+access.to.created.field.0.will.be.overriden.by.method.1:
+    text: Access to field {0} will be overriden by {1}
+all.invocations.and.remove.the.method:
+    text: Inline &all invocations and remove the method
+all.invocations.in.project:
+    text: Inline &all invocations in project
+cannot.find.a.single.definition.to.inline.field:
+    text: No initializer present for the field
+cannot.find.a.single.definition.to.inline.local.var:
+    text: Cannot find a single definition to inline local variable
+cannot.inline.0.:
+    text: Cannot inline {0}
+cannot.inline.reference.0:
+    text: Cannot inline reference ''{0}''
+cannot.introduce.field.in.interface:
+    text: Cannot introduce field in interface
+cannot.introduce.field.in.script:
+    text: There is no class in the scope
+cannot.process.usage.in.language.0:
+    text: Cannot process usage in {0}
+cannot.rename.property.0:
+    text: Cannot rename property <bold>''{0}''</bold> which overrides method <bold>''{1}''</bold>
+cannot.rename.script.class.to.0:
+    text: Cannot rename script class ''{0}'' to ''{1}''
+change.usages.of.var:
+    text: Change usages of variable ''{0}''?
+changeSignature.no.type.for.exception:
+    text: Specify a type for exception
+changeSignature.not.throwable.type:
+    text: 'Wrong type: ''''{0}'''' for exception, should extend java.lang.Throwable'
+changeSignature.refactoring.name:
+    text: Change Signature
+changeSignature.wrong.type.for.exception:
+    text: 'Wrong type: ''''{0}'''' for exception'
+changing.signature.of.0:
+    text: Changing signature of {0}
+class.does.not.exist.in.the.module:
+    text: Class does not exists in the module. Do you want to create it?
+class.does.not.exists:
+    text: Class {0} does not exists
+class.language.is.not.groovy:
+    text: Language of target class is not Groovy
+closure.uses.external.variables:
+    text: Closure uses external not constant variables
+column.name.default.initializer:
+    text: Initializer
+column.name.default.value:
+    text: Default value
+column.name.name:
+    text: Name
+column.name.type:
+    text: Type
+column.name.use.any.var:
+    text: Use any var
+convert.to.java.can.work.only.with.groovy:
+    text: Convert to Java refactoring works only with Groovy files
+convert.to.java.refactoring.name:
+    text: Convert to Java
+converting.files.to.java:
+    text: Converting files to Java
+declare.final:
+    text: Declare final
+error.wrong.caret.position.method.name:
+    text: The caret should be positioned at the name of the method to be refactored.
+expression.contains.errors:
+    text: Expression contains errors
+expression.invokes.not.static.methods:
+    text: Expression invokes not static methods
+expression.is.not.constant:
+    text: Selected expression is not a constant
+extract.closure.title:
+    text: Extract closure
+extract.method.title:
+    text: Extract Method
+field.0.is.already.defined:
+    text: Field {0} is already defined
+field.cannot.be.final.because.replaced.variable.has.lhs.usages:
+    text: Selected variable is used for write
+field.cannot.be.initialized.in.constructor:
+    text: Field cannot be initialized in constructor(s)
+field.cannot.be.initialized.in.field.declaration:
+    text: Field cannot be initialized in declaration
+field.is.never.used.0:
+    text: Field ''{0}'' is never used
+field.is.not.accessible.form.context.0:
+    text: Field {0} used in inlined method is not accessible from call site
+files.to.be.converted:
+    text: Files to be converted
+final.field.cant.be.initialized.in.cur.method:
+    text: Final field cannot be initialized in current method
+groovy.does.not.support.anonymous.classes.but.it.is.used.in.parameter.initializer:
+    text: Groovy does not support anonymous classes but it is used in parameter initializer.
+groovy.does.not.support.inner.classes.but.it.is.used.in.parameter.initializer:
+    text: Groovy does not support inner classes but it is used in parameter initializer.
+implicit.closure.parameter:
+    text: Implicit closure parameter
+implicit.getter.will.by.overriden.by.method:
+    text: Implicit getter of property {0} will be overriden by method {1}
+implicit.setter.will.by.overriden.by.method:
+    text: Implicit setter of property {0} will be overriden by method {1}
+incorrect.data:
+    text: Incorrect data
+inline.local.command:
+    text: Inline Variable
+inline.local.variable.prompt.0.1:
+    text: Inline local variable ''{0}''?
+inline.method.border.title:
+    text: Inline
+inline.method.label:
+    text: Method {0}
+inline.method.prompt.0:
+    text: Inline method ''{0}'' invocation?
+inline.method.title:
+    text: Inline Method
+inline.refactoring.title:
+    text: Inline
+inline.variable.title:
+    text: Inline Variable
+introduce.closure.parameter.elements.header:
+    text: Adding parameter to a closure
+introduce.parameter.title:
+    text: Introduce Parameter
+introduce.variable.title:
+    text: Introduce Variable
+introduced.variable.conflicts.with.parameter.0:
+    text: Introduced variable will conflict with parameter {0}
+introduced.variable.conflicts.with.variable.0:
+    text: Introduced variable will conflict with local variable {0}
+is.not.class.name:
+    text: '''''{0}'''' is not class name'
+local.varaible.is.lvalue:
+    text: Variable to be inlined has occurrence as lvalue in assignment
+method.border.title:
+    text: Method
+method.duplicate:
+    text: Method with signature {0} is already defined in {1}
+method.is.already.defined.in.class:
+    text: Method {0} is already defined in the class {1}.
+method.is.already.defined.in.script:
+    text: Method {0} is already defined in the script {1}.
+method.is.not.accessible.form.context.0:
+    text: Method {0} used in inlined method is not accessible from call site
+multiple.output.values:
+    text: There are multiple output values for the selected code fragment
+name.is.wrong:
+    text: Name ''{0}'' is incorrect
+name.label:
+    text: '&Name:'
+no.occurrences.found:
+    text: No occurrences found
+only.in.groovy.files:
+    text: This refactoring is available only in Groovy files
+parameters.border.title:
+    text: Parameters
+press.escape.to.remove.the.highlighting:
+    text: Press Escape to remove the highlighting
+ref.0.will.not.be.resolved.outside.of.current.context:
+    text: Reference ''{0}'' will not be resolved outside of current context
+refactored.method.will.cover.closure.property:
+    text: Refactored method will override closure property ''{0}'' in {1}
+refactoring.cannot.be.applied.no.sources.attached:
+    text: 'Refactoring cannot be applied: no sources attached'
+refactoring.cannot.be.applied.to.abstract.methods:
+    text: Refactoring cannot be applied to abstract methods
+refactoring.cannot.be.applied.to.constructors:
+    text: Refactoring cannot be applied to constructors
+refactoring.is.available.only.for.method.calls:
+    text: Refactoring is available only for method calls
+refactoring.is.not.supported.for.recursive.methods:
+    text: Refactoring is not supported for recursive methods
+refactoring.is.not.supported.in.method.parameters:
+    text: Refactoring is not supported in closure or method parameters
+refactoring.is.not.supported.in.parameter.initializers:
+    text: Refactoring is not supported in parameter initializers
+refactoring.is.not.supported.in.the.current.context:
+    text: Refactoring is not supported in current context
+refactoring.is.not.supported.when.return.statement.interrupts.the.execution.flow:
+    text: Refactoring is not supported when return statement interrupts the execution flow
+reference.to.accessor.0.is.used:
+    text: Reference to accessor <bold>{0}<bold> cannot be inlined.
+remove.parameter.0.no.longer.used:
+    text: Remove parameter ''{0}'' no longer used
+rename.groovy.implicit.closure.parameter:
+    text: Rename implicit closure parameter
+rename.groovy.method:
+    text: Rename Groovy method
+rename.groovy.property:
+    text: Rename &Groovy property
+rename.implicit.closure.parameter.to:
+    text: 'Rename implicit closure parameter to:'
+rename.is.not.applicable.to.implicit.elements:
+    text: Implicit elements cannot be renamed
+rename.member:
+    text: Rename {0}
+rename.property:
+    text: Rename property {0}
+replace.all.occurrences:
+    text: Replace all occurrences
+replace.getter.for.property:
+    text: The default getter for property ''{0}'' will be overwritten
+replace.setter.for.property:
+    text: The default setter for property ''{0}'' will be overwritten
+return.type.is.wrong:
+    text: Return type is wrong
+row.move.down:
+    text: Move Down
+row.move.up:
+    text: Move Up
+selected.block.contains.invocation.of.another.class.constructor:
+    text: Selected block contains invocation of another class constructor
+selected.block.should.represent.a.statement.set:
+    text: Selected block should represent a set of statements or an expression
+selected.block.should.represent.an.expression:
+    text: Selected block should represent an expression
+selected.expression.has.void.type:
+    text: Selected expression has void type
+selected.expression.in.command.expression:
+    text: Selected expression is part of command expression
+selected.expression.should.not.be.lvalue:
+    text: Selected expression should not be left hand side of assignment
+selected.variable.is.used.for.write:
+    text: Selected variable is used for write
+signature.preview.border.title:
+    text: Signature Preview
+specify.default.value:
+    text: Specify default value or initializer for parameter ''{0}''
+specify.the.type.explicitly:
+    text: Specify the type explicitly
+specify.type.label:
+    text: Specify return &type explicitly
+super.reference.is.used:
+    text: Super call used in inlined method will not be valid after inline.
+target.class.is.not.specified:
+    text: Target class is not specified
+target.class.must.not.be.script:
+    text: Target class must not be a script
+there.is.no.method.or.closure:
+    text: There is no containing method or closure
+this.invocation.only.and.keep.the.method:
+    text: Inline &this invocation only and keep the method
+type.for.parameter.is.incorrect:
+    text: Type for parameter ''{0}'' is incorrect
+usage.of.field.will.be.overriden.by.method:
+    text: Usage of field will be overriden by method {0}
+usage.will.be.overriden.by.method:
+    text: Usage {0} will be overriden by method {1}
+variable.conflicts.with.field.0:
+    text: Chosen name  will conflict with field {0}
+variable.conflicts.with.parameter.0:
+    text: Chosen name conflicts with parameter {0}
+variable.conflicts.with.variable.0:
+    text: Chosen name  will conflict with local variable {0}
+variable.is.accessed.for.writing:
+    text: Variable ''{0}'' is accessed for writing
+variable.is.never.used.0:
+    text: Variable ''{0}'' is never used
+variable.of.type:
+    text: 'Variable of type:'
+visibility.border.title:
+    text: Visibility
+visibility.private:
+    text: Private
+visibility.protected:
+    text: Protected
+visibility.public:
+    text: Public
+wrong.element.to.inline:
+    text: The caret should be positioned on the name of Groovy method or local variable
+you.cannot.pass.as.parameter.0.because.you.remove.1.from.base.method:
+    text: You cannot pass ''{0}'' as parameter because you remove parameter ''{1}'' associated with it from the method. You should deselect "Remove parameter ''{0}'' no longer used" or deselect parameter ''{1}'' in the parameter table.

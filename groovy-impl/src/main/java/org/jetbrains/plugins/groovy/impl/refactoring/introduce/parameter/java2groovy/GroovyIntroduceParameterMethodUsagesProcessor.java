@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.impl.refactoring.introduce.parameter.java2groovy;
 
 import com.intellij.java.impl.refactoring.introduceParameter.ExpressionConverter;
@@ -32,6 +31,7 @@ import consulo.language.codeStyle.CodeStyleManager;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.util.PsiTreeUtil;
 import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
 import consulo.logging.Logger;
 import consulo.usage.UsageInfo;
 import consulo.util.collection.ArrayUtil;
@@ -39,6 +39,8 @@ import consulo.util.collection.MultiMap;
 import consulo.util.collection.primitive.ints.IntList;
 import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.GroovyFileType;
+import org.jetbrains.plugins.groovy.impl.refactoring.GroovyRefactoringUtil;
+import org.jetbrains.plugins.groovy.impl.refactoring.introduce.parameter.GroovyIntroduceParameterUtil;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.signatures.GrClosureSignature;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrConstructorInvocation;
@@ -55,14 +57,12 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameterLi
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
 import org.jetbrains.plugins.groovy.lang.psi.impl.PsiImplUtil;
 import org.jetbrains.plugins.groovy.lang.psi.impl.signatures.GrClosureSignatureUtil;
-import org.jetbrains.plugins.groovy.impl.refactoring.GroovyRefactoringUtil;
-import org.jetbrains.plugins.groovy.impl.refactoring.introduce.parameter.GroovyIntroduceParameterUtil;
 
 import java.util.function.IntConsumer;
 
 /**
  * @author Maxim.Medvedev
- * Date: Apr 18, 2009 3:16:24 PM
+ * @since 2009-04-18
  */
 @ExtensionImpl
 public class GroovyIntroduceParameterMethodUsagesProcessor implements IntroduceParameterMethodUsagesProcessor {
@@ -77,7 +77,7 @@ public class GroovyIntroduceParameterMethodUsagesProcessor implements IntroduceP
     return GroovyRefactoringUtil.isMethodUsage(usage.getElement()) && isGroovyUsage(usage);
   }
 
-  public void findConflicts(IntroduceParameterData data, UsageInfo[] usages, MultiMap<PsiElement, String> conflicts) {
+  public void findConflicts(IntroduceParameterData data, UsageInfo[] usages, MultiMap<PsiElement, LocalizeValue> conflicts) {
   }
 
   public boolean processChangeMethodUsage(IntroduceParameterData data,

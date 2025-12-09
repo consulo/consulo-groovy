@@ -13,15 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.impl.refactoring;
 
+import consulo.annotation.DeprecationInfo;
+import consulo.annotation.internal.MigratedExtensionsTo;
 import consulo.component.util.localize.AbstractBundle;
+import consulo.groovy.impl.localize.GroovyRefactoringLocalize;
 import org.jetbrains.annotations.PropertyKey;
 
 /**
  * @author ilyas
  */
+@Deprecated
+@DeprecationInfo("Use GroovyRefactoringLocalize")
+@MigratedExtensionsTo(GroovyRefactoringLocalize.class)
 public class GroovyRefactoringBundle extends AbstractBundle
 {
 	private static final GroovyRefactoringBundle ourInstance = new GroovyRefactoringBundle();

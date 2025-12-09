@@ -146,7 +146,7 @@ public class ConvertParameterToMapEntryIntention extends Intention {
                                 @Override
                                 protected void doOKAction() {
                                     String name = getEnteredName();
-                                    MultiMap<PsiElement, String> conflicts = new MultiMap<PsiElement, String>();
+                                    MultiMap<PsiElement, LocalizeValue> conflicts = new MultiMap<>();
                                     assert name != null;
                                     GroovyValidationUtil.validateNewParameterName(firstParam, conflicts, name);
                                     if (isClosure) {
@@ -163,7 +163,7 @@ public class ConvertParameterToMapEntryIntention extends Intention {
                     });
                 }
                 else {
-                    //todo add statictics manager
+                    //todo add statistics manager
                     performRefactoring(element, owner, occurrences, true,
                         (new GroovyValidationUtil.ParameterNameSuggester("attrs", firstParam)).generateName(), true
                     );
@@ -174,7 +174,7 @@ public class ConvertParameterToMapEntryIntention extends Intention {
     }
 
     private static void findClosureConflictUsages(
-        MultiMap<PsiElement, String> conflicts,
+        MultiMap<PsiElement, LocalizeValue> conflicts,
         Collection<PsiElement> occurrences
     ) {
         for (PsiElement occurrence : occurrences) {
@@ -183,7 +183,7 @@ public class ConvertParameterToMapEntryIntention extends Intention {
                 occurrence = occurrence.getParent();
             }
             if (occurrence instanceof GrArgumentList) {
-                conflicts.putValue(origin, GroovyIntentionLocalize.closureUsedAsVariable().get());
+                conflicts.putValue(origin, GroovyIntentionLocalize.closureUsedAsVariable());
             }
         }
     }
@@ -583,7 +583,7 @@ public class ConvertParameterToMapEntryIntention extends Intention {
         CommonRefactoringUtil.showErrorMessage(REFACTORING_NAME, message.get(), null, project);
     }
 
-    private static boolean reportConflicts(final MultiMap<PsiElement, String> conflicts, final Project project) {
+    private static boolean reportConflicts(final MultiMap<PsiElement, LocalizeValue> conflicts, final Project project) {
         if (conflicts.size() == 0) {
             return true;
         }

@@ -16,16 +16,18 @@
 package org.jetbrains.plugins.groovy.impl.refactoring.rename;
 
 import com.intellij.java.language.psi.PsiClass;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.annotation.component.ExtensionImpl;
+import consulo.groovy.impl.localize.GroovyRefactoringLocalize;
 import consulo.language.editor.refactoring.rename.RenamePsiFileProcessorBase;
 import consulo.language.psi.PsiElement;
+import consulo.localize.LocalizeValue;
 import consulo.util.collection.MultiMap;
 import consulo.util.io.FileUtil;
 import consulo.util.lang.StringUtil;
-import org.jetbrains.plugins.groovy.impl.refactoring.GroovyRefactoringBundle;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 
-import jakarta.annotation.Nonnull;
 import java.util.Map;
 
 /**
@@ -33,30 +35,31 @@ import java.util.Map;
  */
 @ExtensionImpl
 public class RenameGroovyScriptProcessor extends RenamePsiFileProcessorBase {
-  @Override
-  public boolean canProcessElement(@Nonnull PsiElement element) {
-    return element instanceof GroovyFile && ((GroovyFile)element).isScript();
-  }
+    @Override
+    public boolean canProcessElement(@Nonnull PsiElement element) {
+        return element instanceof GroovyFile file && file.isScript();
+    }
 
-  @Override
-  public void prepareRenaming(PsiElement element, String newName, Map<PsiElement, String> allRenames) {
-    if (element instanceof GroovyFile) {
-      final PsiClass script = ((GroovyFile)element).getScriptClass();
-      if (script != null && script.isValid()) {
-        final String scriptName = FileUtil.getNameWithoutExtension(newName);
-        if (StringUtil.isJavaIdentifier(scriptName)) {
-          allRenames.put(script, scriptName);
+    @Override
+    @RequiredReadAction
+    public void prepareRenaming(PsiElement element, String newName, Map<PsiElement, String> allRenames) {
+        if (element instanceof GroovyFile file) {
+            PsiClass script = file.getScriptClass();
+            if (script != null && script.isValid()) {
+                String scriptName = FileUtil.getNameWithoutExtension(newName);
+                if (StringUtil.isJavaIdentifier(scriptName)) {
+                    allRenames.put(script, scriptName);
+                }
+            }
         }
-      }
     }
-  }
 
-  @Override
-  public void findExistingNameConflicts(PsiElement element, String newName, MultiMap<PsiElement, String> conflicts) {
-    final String scriptName = FileUtil.getNameWithoutExtension(newName);
-    if (!StringUtil.isJavaIdentifier(scriptName)) {
-      final PsiClass script = ((GroovyFile)element).getScriptClass();
-      conflicts.putValue(script, GroovyRefactoringBundle.message("cannot.rename.script.class.to.0", script.getName(), scriptName));
+    @Override
+    public void findExistingNameConflicts(PsiElement element, String newName, MultiMap<PsiElement, LocalizeValue> conflicts) {
+        String scriptName = FileUtil.getNameWithoutExtension(newName);
+        if (!StringUtil.isJavaIdentifier(scriptName)) {
+            PsiClass script = ((GroovyFile) element).getScriptClass();
+            conflicts.putValue(script, GroovyRefactoringLocalize.cannotRenameScriptClassTo0(script.getName(), scriptName));
+        }
     }
-  }
 }

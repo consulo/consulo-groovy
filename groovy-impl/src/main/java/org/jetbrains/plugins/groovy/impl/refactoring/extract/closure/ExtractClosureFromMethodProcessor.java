@@ -30,6 +30,7 @@ import com.intellij.java.language.psi.PsiMethod;
 import com.intellij.java.language.psi.PsiType;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.application.Application;
+import consulo.groovy.impl.localize.GroovyRefactoringLocalize;
 import consulo.language.editor.refactoring.localize.RefactoringLocalize;
 import consulo.language.editor.refactoring.ui.ConflictsDialog;
 import consulo.language.editor.refactoring.util.CommonRefactoringUtil;
@@ -38,6 +39,7 @@ import consulo.language.psi.PsiManager;
 import consulo.language.psi.PsiReference;
 import consulo.language.psi.scope.GlobalSearchScope;
 import consulo.language.psi.util.PsiTreeUtil;
+import consulo.localize.LocalizeValue;
 import consulo.project.Project;
 import consulo.ui.annotation.RequiredUIAccess;
 import consulo.usage.UsageInfo;
@@ -47,7 +49,6 @@ import consulo.util.collection.primitive.ints.IntList;
 import consulo.util.lang.ref.SimpleReference;
 import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.GroovyLanguage;
-import org.jetbrains.plugins.groovy.impl.refactoring.GroovyRefactoringBundle;
 import org.jetbrains.plugins.groovy.impl.refactoring.GroovyRefactoringUtil;
 import org.jetbrains.plugins.groovy.impl.refactoring.extract.ExtractUtil;
 import org.jetbrains.plugins.groovy.impl.refactoring.introduce.parameter.FieldConflictsResolver;
@@ -85,7 +86,7 @@ public class ExtractClosureFromMethodProcessor extends ExtractClosureProcessorBa
     @RequiredUIAccess
     protected boolean preprocessUsages(SimpleReference<UsageInfo[]> refUsages) {
         UsageInfo[] usagesIn = refUsages.get();
-        MultiMap<PsiElement, String> conflicts = new MultiMap<>();
+        MultiMap<PsiElement, LocalizeValue> conflicts = new MultiMap<>();
         GrStatement[] statements = myHelper.getStatements();
 
         for (GrStatement statement : statements) {
@@ -95,7 +96,7 @@ public class ExtractClosureFromMethodProcessor extends ExtractClosureProcessorBa
         for (UsageInfo info : usagesIn) {
             if (info instanceof OtherLanguageUsageInfo) {
                 String lang = CommonRefactoringUtil.htmlEmphasize(info.getElement().getLanguage().getDisplayName().get());
-                conflicts.putValue(info.getElement(), GroovyRefactoringBundle.message("cannot.process.usage.in.language.{0}", lang));
+                conflicts.putValue(info.getElement(), GroovyRefactoringLocalize.cannotProcessUsageInLanguage0(lang));
             }
         }
 
@@ -115,7 +116,7 @@ public class ExtractClosureFromMethodProcessor extends ExtractClosureProcessorBa
                         statements[0],
                         RefactoringLocalize.parameterInitializerContains0ButNotAllCallsToMethodAreInItsClass(
                             CommonRefactoringUtil.htmlEmphasize(PsiKeyword.SUPER)
-                        ).get()
+                        )
                     );
                     break;
                 }

@@ -42,6 +42,7 @@ import consulo.language.psi.PsiReference;
 import consulo.language.psi.resolve.ResolveState;
 import consulo.language.psi.util.PsiTreeUtil;
 import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
 import consulo.logging.Logger;
 import consulo.project.Project;
 import consulo.ui.annotation.RequiredUIAccess;
@@ -112,7 +113,7 @@ public class GrChangeSignatureUsageProcessor implements ChangeSignatureUsageProc
 
     @Nonnull
     @Override
-    public MultiMap<PsiElement, String> findConflicts(@Nonnull ChangeInfo info, SimpleReference<UsageInfo[]> refUsages) {
+    public MultiMap<PsiElement, LocalizeValue> findConflicts(@Nonnull ChangeInfo info, SimpleReference<UsageInfo[]> refUsages) {
         if (info instanceof JavaChangeInfo javaChangeInfo) {
             return new GrChangeSignatureConflictSearcher(javaChangeInfo).findConflicts(refUsages);
         }
