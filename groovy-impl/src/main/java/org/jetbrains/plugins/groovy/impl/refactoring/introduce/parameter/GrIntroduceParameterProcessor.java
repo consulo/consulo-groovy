@@ -36,6 +36,7 @@ import consulo.language.psi.PsiManager;
 import consulo.language.psi.PsiReference;
 import consulo.language.psi.scope.GlobalSearchScope;
 import consulo.language.psi.util.PsiTreeUtil;
+import consulo.localize.LocalizeValue;
 import consulo.logging.Logger;
 import consulo.project.Project;
 import consulo.ui.annotation.RequiredUIAccess;
@@ -115,15 +116,14 @@ public class GrIntroduceParameterProcessor extends BaseRefactoringProcessor impl
     @RequiredUIAccess
     protected boolean preprocessUsages(@Nonnull SimpleReference<UsageInfo[]> refUsages) {
         UsageInfo[] usagesIn = refUsages.get();
-        MultiMap<PsiElement, String> conflicts = new MultiMap<>();
+        MultiMap<PsiElement, LocalizeValue> conflicts = new MultiMap<>();
 
         if (!mySettings.generateDelegate()) {
             GroovyIntroduceParameterUtil.detectAccessibilityConflicts(
                 mySettings.getExpression(),
                 usagesIn,
                 conflicts,
-                mySettings.replaceFieldsWithGetters() !=
-                    IntroduceParameterRefactoring.REPLACE_FIELDS_WITH_GETTERS_NONE,
+                mySettings.replaceFieldsWithGetters() != IntroduceParameterRefactoring.REPLACE_FIELDS_WITH_GETTERS_NONE,
                 myProject
             );
         }
@@ -143,7 +143,7 @@ public class GrIntroduceParameterProcessor extends BaseRefactoringProcessor impl
                         mySettings.getExpression(),
                         RefactoringLocalize.parameterInitializerContains0ButNotAllCallsToMethodAreInItsClass(
                             CommonRefactoringUtil.htmlEmphasize(PsiKeyword.SUPER)
-                        ).get()
+                        )
                     );
                     break;
                 }

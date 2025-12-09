@@ -23,22 +23,22 @@ import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiReference;
 import consulo.language.psi.scope.GlobalSearchScope;
 import consulo.language.psi.search.ReferencesSearch;
+import consulo.localize.LocalizeValue;
 import consulo.ui.annotation.RequiredUIAccess;
 import consulo.usage.UsageInfo;
 import consulo.util.collection.MultiMap;
 import consulo.util.lang.ref.SimpleReference;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.GroovyLanguage;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrCall;
-import org.jetbrains.plugins.groovy.lang.psi.api.util.GrStatementOwner;
 import org.jetbrains.plugins.groovy.impl.refactoring.GroovyRefactoringUtil;
 import org.jetbrains.plugins.groovy.impl.refactoring.extract.ExtractUtil;
 import org.jetbrains.plugins.groovy.impl.refactoring.introduce.parameter.GrIntroduceClosureParameterProcessor;
 import org.jetbrains.plugins.groovy.impl.refactoring.introduce.parameter.GrIntroduceParameterSettings;
 import org.jetbrains.plugins.groovy.impl.refactoring.introduce.parameter.GroovyIntroduceParameterUtil;
-
-import jakarta.annotation.Nonnull;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrCall;
+import org.jetbrains.plugins.groovy.lang.psi.api.util.GrStatementOwner;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,13 +55,15 @@ public class ExtractClosureFromClosureProcessor extends ExtractClosureProcessorB
     @RequiredUIAccess
     protected boolean preprocessUsages(SimpleReference<UsageInfo[]> refUsages) {
         UsageInfo[] usagesIn = refUsages.get();
-        MultiMap<PsiElement, String> conflicts = new MultiMap<>();
+        MultiMap<PsiElement, LocalizeValue> conflicts = new MultiMap<>();
 
         if (!myHelper.generateDelegate()) {
             for (GrStatement statement : myHelper.getStatements()) {
-                GroovyIntroduceParameterUtil.detectAccessibilityConflicts(statement, usagesIn, conflicts,
-                    myHelper.replaceFieldsWithGetters() !=
-                        IntroduceParameterRefactoring.REPLACE_FIELDS_WITH_GETTERS_NONE,
+                GroovyIntroduceParameterUtil.detectAccessibilityConflicts(
+                    statement,
+                    usagesIn,
+                    conflicts,
+                    myHelper.replaceFieldsWithGetters() != IntroduceParameterRefactoring.REPLACE_FIELDS_WITH_GETTERS_NONE,
                     myProject
                 );
             }
@@ -83,7 +85,7 @@ public class ExtractClosureFromClosureProcessor extends ExtractClosureProcessorB
     @Override
     @RequiredReadAction
     protected UsageInfo[] findUsages() {
-        final GrVariable var = (GrVariable)myHelper.getToSearchFor();
+        final GrVariable var = (GrVariable) myHelper.getToSearchFor();
         if (var != null) {
             final List<UsageInfo> result = new ArrayList<>();
             for (PsiReference ref : ReferencesSearch.search(var, GlobalSearchScope.allScope(myHelper.getProject()), true)) {

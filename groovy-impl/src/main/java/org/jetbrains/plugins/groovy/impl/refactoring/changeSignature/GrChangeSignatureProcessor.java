@@ -17,12 +17,12 @@ package org.jetbrains.plugins.groovy.impl.refactoring.changeSignature;
 
 import com.intellij.java.impl.refactoring.changeSignature.ChangeSignatureViewDescriptor;
 import com.intellij.java.language.psi.PsiMethod;
-import consulo.application.Application;
 import consulo.language.editor.refactoring.changeSignature.ChangeSignatureProcessorBase;
 import consulo.language.editor.refactoring.changeSignature.ChangeSignatureUsageProcessor;
 import consulo.language.editor.refactoring.rename.RenameUtil;
 import consulo.language.editor.refactoring.ui.ConflictsDialog;
 import consulo.language.psi.PsiElement;
+import consulo.localize.LocalizeValue;
 import consulo.logging.Logger;
 import consulo.project.Project;
 import consulo.ui.annotation.RequiredUIAccess;
@@ -43,7 +43,7 @@ import java.util.Set;
 public class GrChangeSignatureProcessor extends ChangeSignatureProcessorBase {
     public static final Logger LOG = Logger.getInstance(GrChangeSignatureProcessor.class);
 
-    public GrChangeSignatureProcessor(Project project, GrChangeInfoImpl changeInfo) {
+    public GrChangeSignatureProcessor(@Nonnull Project project, GrChangeInfoImpl changeInfo) {
         super(project, changeInfo);
     }
 
@@ -68,25 +68,25 @@ public class GrChangeSignatureProcessor extends ChangeSignatureProcessorBase {
     @Override
     @RequiredUIAccess
     protected boolean preprocessUsages(@Nonnull SimpleReference<UsageInfo[]> refUsages) {
-        MultiMap<PsiElement, String> conflictDescriptions = new MultiMap<>();
-        for (ChangeSignatureUsageProcessor usageProcessor : ChangeSignatureUsageProcessor.EP_NAME.getExtensions()) {
-            MultiMap<PsiElement, String> conflicts = usageProcessor.findConflicts(myChangeInfo, refUsages);
+        MultiMap<PsiElement, LocalizeValue> conflictDescriptions = new MultiMap<>();
+        myProject.getApplication().getExtensionPoint(ChangeSignatureUsageProcessor.class).forEach(usageProcessor -> {
+            MultiMap<PsiElement, LocalizeValue> conflicts = usageProcessor.findConflicts(myChangeInfo, refUsages);
             for (PsiElement key : conflicts.keySet()) {
-                Collection<String> collection = conflictDescriptions.get(key);
-                if (collection.size() == 0) {
+                Collection<LocalizeValue> collection = conflictDescriptions.get(key);
+                if (collection.isEmpty()) {
                     collection = new HashSet<>();
                 }
                 collection.addAll(conflicts.get(key));
                 conflictDescriptions.put(key, collection);
             }
-        }
+        });
 
         UsageInfo[] usagesIn = refUsages.get();
         RenameUtil.addConflictDescriptions(usagesIn, conflictDescriptions);
         Set<UsageInfo> usagesSet = new HashSet<>(Arrays.asList(usagesIn));
         RenameUtil.removeConflictUsages(usagesSet);
         if (!conflictDescriptions.isEmpty()) {
-            if (Application.get().isUnitTestMode()) {
+            if (myProject.getApplication().isUnitTestMode()) {
                 throw new ConflictsInTestsException(conflictDescriptions.values());
             }
 

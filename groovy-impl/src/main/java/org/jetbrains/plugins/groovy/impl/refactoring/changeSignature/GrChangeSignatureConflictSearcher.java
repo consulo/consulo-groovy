@@ -21,6 +21,7 @@ import com.intellij.java.impl.refactoring.util.CanonicalTypes;
 import com.intellij.java.impl.refactoring.util.ConflictsUtil;
 import com.intellij.java.language.psi.*;
 import com.intellij.java.language.util.VisibilityUtil;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.language.editor.refactoring.localize.RefactoringLocalize;
 import consulo.language.editor.refactoring.rename.RenameUtil;
 import consulo.language.editor.refactoring.ui.RefactoringUIUtil;
@@ -57,8 +58,9 @@ class GrChangeSignatureConflictSearcher {
         myChangeInfo = changeInfo;
     }
 
-    public MultiMap<PsiElement, String> findConflicts(SimpleReference<UsageInfo[]> refUsages) {
-        MultiMap<PsiElement, String> conflictDescriptions = new MultiMap<>();
+    @RequiredReadAction
+    public MultiMap<PsiElement, LocalizeValue> findConflicts(SimpleReference<UsageInfo[]> refUsages) {
+        MultiMap<PsiElement, LocalizeValue> conflictDescriptions = new MultiMap<>();
         addMethodConflicts(conflictDescriptions);
         UsageInfo[] usagesIn = refUsages.get();
         RenameUtil.addConflictDescriptions(usagesIn, conflictDescriptions);
@@ -80,7 +82,8 @@ class GrChangeSignatureConflictSearcher {
         return myChangeInfo.isNameChanged() || myChangeInfo.isParameterSetOrOrderChanged() || myChangeInfo.isExceptionSetOrOrderChanged();
     }
 
-    private void addInaccessibilityDescriptions(Set<UsageInfo> usages, MultiMap<PsiElement, String> conflictDescriptions)
+    @RequiredReadAction
+    private void addInaccessibilityDescriptions(Set<UsageInfo> usages, MultiMap<PsiElement, LocalizeValue> conflictDescriptions)
         throws IncorrectOperationException {
         PsiMethod method = myChangeInfo.getMethod();
         PsiModifierList modifierList = (PsiModifierList)method.getModifierList().copy();
@@ -102,7 +105,7 @@ class GrChangeSignatureConflictSearcher {
                         myChangeInfo.getNewVisibility(),
                         RefactoringUIUtil.getDescription(ConflictsUtil.getContainer(refExpr), true)
                     );
-                    conflictDescriptions.putValue(method, message.get());
+                    conflictDescriptions.putValue(method, message);
                     if (!needToChangeCalls()) {
                         iterator.remove();
                     }
@@ -129,8 +132,8 @@ class GrChangeSignatureConflictSearcher {
         return null;
     }
 
-
-    private void addMethodConflicts(MultiMap<PsiElement, String> conflicts) {
+    @RequiredReadAction
+    private void addMethodConflicts(MultiMap<PsiElement, LocalizeValue> conflicts) {
         try {
             GrMethod prototype;
             if (!(myChangeInfo.getMethod() instanceof GrMethod method)) {

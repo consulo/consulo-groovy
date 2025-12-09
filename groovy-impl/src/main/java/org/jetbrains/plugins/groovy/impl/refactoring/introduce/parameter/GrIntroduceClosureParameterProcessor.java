@@ -27,6 +27,7 @@ import com.intellij.java.language.psi.codeStyle.JavaCodeStyleManager;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.annotation.access.RequiredWriteAction;
 import consulo.codeEditor.Editor;
+import consulo.groovy.impl.localize.GroovyRefactoringLocalize;
 import consulo.language.codeStyle.CodeStyleManager;
 import consulo.language.editor.refactoring.BaseRefactoringProcessor;
 import consulo.language.editor.refactoring.localize.RefactoringLocalize;
@@ -39,6 +40,7 @@ import consulo.language.psi.PsiReference;
 import consulo.language.psi.search.ReferencesSearch;
 import consulo.language.psi.util.PsiTreeUtil;
 import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
 import consulo.logging.Logger;
 import consulo.ui.annotation.RequiredUIAccess;
 import consulo.usage.UsageInfo;
@@ -53,7 +55,6 @@ import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.GroovyLanguage;
 import org.jetbrains.plugins.groovy.codeInspection.utils.ControlFlowUtils;
-import org.jetbrains.plugins.groovy.impl.refactoring.GroovyRefactoringBundle;
 import org.jetbrains.plugins.groovy.impl.refactoring.GroovyRefactoringUtil;
 import org.jetbrains.plugins.groovy.impl.refactoring.introduce.parameter.java2groovy.FieldConflictsResolver;
 import org.jetbrains.plugins.groovy.impl.refactoring.introduce.parameter.java2groovy.OldReferencesResolver;
@@ -119,7 +120,7 @@ public class GrIntroduceClosureParameterProcessor extends BaseRefactoringProcess
 
             @Override
             public String getProcessedElementsHeader() {
-                return GroovyRefactoringBundle.message("introduce.closure.parameter.elements.header");
+                return GroovyRefactoringLocalize.introduceClosureParameterElementsHeader().get();
             }
         };
     }
@@ -128,7 +129,7 @@ public class GrIntroduceClosureParameterProcessor extends BaseRefactoringProcess
     @RequiredUIAccess
     protected boolean preprocessUsages(@Nonnull SimpleReference<UsageInfo[]> refUsages) {
         UsageInfo[] usagesIn = refUsages.get();
-        MultiMap<PsiElement, String> conflicts = new MultiMap<>();
+        MultiMap<PsiElement, LocalizeValue> conflicts = new MultiMap<>();
 
         if (!mySettings.generateDelegate()) {
             detectAccessibilityConflicts(usagesIn, conflicts);
@@ -150,7 +151,7 @@ public class GrIntroduceClosureParameterProcessor extends BaseRefactoringProcess
                         expression,
                         RefactoringLocalize.parameterInitializerContains0ButNotAllCallsToMethodAreInItsClass(
                             CommonRefactoringUtil.htmlEmphasize(PsiKeyword.SUPER)
-                        ).get()
+                        )
                     );
                     break;
                 }
@@ -166,7 +167,7 @@ public class GrIntroduceClosureParameterProcessor extends BaseRefactoringProcess
         return showConflicts(conflicts, usagesIn);
     }
 
-    private void detectAccessibilityConflicts(UsageInfo[] usageArray, MultiMap<PsiElement, String> conflicts) {
+    private void detectAccessibilityConflicts(UsageInfo[] usageArray, MultiMap<PsiElement, LocalizeValue> conflicts) {
         //todo whole method
         GrExpression expression = mySettings.getExpression();
         if (expression == null) {

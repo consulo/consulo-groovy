@@ -67,7 +67,7 @@ public class ConvertMethodToClosureIntention extends Intention {
 
     @Override
     protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
-        MultiMap<PsiElement, String> conflicts = new MultiMap<PsiElement, String>();
+        MultiMap<PsiElement, LocalizeValue> conflicts = new MultiMap<>();
         final GrMethod method;
         if (element.getParent() instanceof GrMethod) {
             method = (GrMethod) element.getParent();
@@ -85,7 +85,7 @@ public class ConvertMethodToClosureIntention extends Intention {
         final PsiField field = containingClass.findFieldByName(methodName, true);
 
         if (field != null) {
-            conflicts.putValue(field, GroovyIntentionLocalize.fieldAlreadyExists(methodName).get());
+            conflicts.putValue(field, GroovyIntentionLocalize.fieldAlreadyExists(methodName));
         }
 
         final Collection<PsiReference> references = MethodReferencesSearch.search(method).findAll();
@@ -93,7 +93,7 @@ public class ConvertMethodToClosureIntention extends Intention {
         for (PsiReference ref : references) {
             final PsiElement psiElement = ref.getElement();
             if (!GroovyFileType.GROOVY_LANGUAGE.equals(psiElement.getLanguage())) {
-                conflicts.putValue(psiElement, GroovyIntentionLocalize.methodIsUsedOutsideOfGroovy().get());
+                conflicts.putValue(psiElement, GroovyIntentionLocalize.methodIsUsedOutsideOfGroovy());
             }
             else if (!PsiUtil.isMethodUsage(psiElement)) {
                 if (psiElement instanceof GrReferenceExpression) {
@@ -104,12 +104,7 @@ public class ConvertMethodToClosureIntention extends Intention {
             }
         }
         if (conflicts.size() > 0) {
-            ConflictsDialog conflictsDialog = new ConflictsDialog(project, conflicts, new Runnable() {
-                @Override
-                public void run() {
-                    execute(method, usagesToConvert);
-                }
-            });
+            ConflictsDialog conflictsDialog = new ConflictsDialog(project, conflicts, (Runnable) () -> execute(method, usagesToConvert));
             conflictsDialog.show();
             if (conflictsDialog.getExitCode() != DialogWrapper.OK_EXIT_CODE) {
                 return;

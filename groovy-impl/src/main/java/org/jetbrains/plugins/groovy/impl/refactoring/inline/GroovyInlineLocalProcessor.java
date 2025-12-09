@@ -17,13 +17,14 @@ package org.jetbrains.plugins.groovy.impl.refactoring.inline;
 
 import consulo.annotation.access.RequiredReadAction;
 import consulo.annotation.access.RequiredWriteAction;
+import consulo.groovy.impl.localize.GroovyRefactoringLocalize;
 import consulo.language.editor.refactoring.BaseRefactoringProcessor;
 import consulo.language.editor.refactoring.localize.RefactoringLocalize;
 import consulo.language.editor.refactoring.util.CommonRefactoringUtil;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiReference;
 import consulo.language.psi.search.ReferencesSearch;
-import consulo.logging.Logger;
+import consulo.localize.LocalizeValue;
 import consulo.project.Project;
 import consulo.ui.annotation.RequiredUIAccess;
 import consulo.usage.BaseUsageViewDescriptor;
@@ -33,7 +34,6 @@ import consulo.util.collection.MultiMap;
 import consulo.util.lang.ref.SimpleReference;
 import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.codeInspection.utils.ControlFlowUtils;
-import org.jetbrains.plugins.groovy.impl.refactoring.GroovyRefactoringBundle;
 import org.jetbrains.plugins.groovy.impl.refactoring.introduce.GrIntroduceHandlerBase;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyRecursiveElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrClassInitializer;
@@ -60,8 +60,6 @@ import java.util.Collection;
  * @author Max Medvedev
  */
 public class GroovyInlineLocalProcessor extends BaseRefactoringProcessor {
-    private static final Logger LOG = Logger.getInstance(GroovyInlineLocalProcessor.class);
-
     private final InlineLocalVarSettings mySettings;
     private final GrVariable myLocal;
 
@@ -80,7 +78,7 @@ public class GroovyInlineLocalProcessor extends BaseRefactoringProcessor {
     @Override
     @RequiredUIAccess
     protected boolean preprocessUsages(SimpleReference<UsageInfo[]> refUsages) {
-        MultiMap<PsiElement, String> conflicts = new MultiMap<>();
+        MultiMap<PsiElement, LocalizeValue> conflicts = new MultiMap<>();
         UsageInfo[] usages = refUsages.get();
         for (UsageInfo usage : usages) {
             collectConflicts(usage.getReference(), conflicts);
@@ -100,10 +98,10 @@ public class GroovyInlineLocalProcessor extends BaseRefactoringProcessor {
     }
 
     @RequiredReadAction
-    private void collectConflicts(PsiReference reference, MultiMap<PsiElement, String> conflicts) {
+    private void collectConflicts(PsiReference reference, MultiMap<PsiElement, LocalizeValue> conflicts) {
         GrExpression expr = (GrExpression)reference.getElement();
         if (PsiUtil.isAccessedForWriting(expr)) {
-            conflicts.putValue(expr, GroovyRefactoringBundle.message("variable.is.accessed.for.writing", myLocal.getName()));
+            conflicts.putValue(expr, GroovyRefactoringLocalize.variableIsAccessedForWriting(myLocal.getName()));
         }
     }
 

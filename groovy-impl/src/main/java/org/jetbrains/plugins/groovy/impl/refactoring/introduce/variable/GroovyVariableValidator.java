@@ -13,41 +13,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.impl.refactoring.introduce.variable;
 
-import static consulo.language.editor.refactoring.util.CommonRefactoringUtil.htmlEmphasize;
-
+import consulo.groovy.impl.localize.GroovyRefactoringLocalize;
+import org.jetbrains.plugins.groovy.impl.refactoring.introduce.GrIntroduceContext;
+import org.jetbrains.plugins.groovy.impl.refactoring.introduce.GrIntroduceValidatorEngine;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrField;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameter;
-import org.jetbrains.plugins.groovy.impl.refactoring.GroovyRefactoringBundle;
-import org.jetbrains.plugins.groovy.impl.refactoring.introduce.ConflictReporter;
-import org.jetbrains.plugins.groovy.impl.refactoring.introduce.GrIntroduceContext;
-import org.jetbrains.plugins.groovy.impl.refactoring.introduce.GrIntroduceValidatorEngine;
-import consulo.language.psi.PsiElement;
-import consulo.util.collection.MultiMap;
+
+import static consulo.language.editor.refactoring.util.CommonRefactoringUtil.htmlEmphasize;
 
 /**
  * @author ilyas
  */
 public class GroovyVariableValidator extends GrIntroduceValidatorEngine implements GrIntroduceVariableHandler.Validator {
-  public GroovyVariableValidator(GrIntroduceContext context) {
-    super(context, new ConflictReporter() {
-      @Override
-      public void check(PsiElement element, MultiMap<PsiElement, String> conflicts, String varName) {
-        if (!(element instanceof GrVariable)) return;
-        final GrVariable var = (GrVariable)element;
+    public GroovyVariableValidator(GrIntroduceContext context) {
+        super(context, (element, conflicts, varName) -> {
+            if (!(element instanceof GrVariable var && !(var instanceof GrField))) {
+                return;
+            }
 
-        if (var instanceof GrField) return;
-
-        if (var instanceof GrParameter && varName.equals(var.getName())) {
-          conflicts.putValue(var, GroovyRefactoringBundle.message("introduced.variable.conflicts.with.parameter.0", htmlEmphasize(varName)));
-        }
-        else if (varName.equals(var.getName())) {
-          conflicts.putValue(var, GroovyRefactoringBundle.message("introduced.variable.conflicts.with.variable.0", htmlEmphasize(varName)));
-        }
-      }
-    });
-  }
+            if (var instanceof GrParameter && varName.equals(var.getName())) {
+                conflicts.putValue(
+                    var,
+                    GroovyRefactoringLocalize.introducedVariableConflictsWithParameter0(htmlEmphasize(varName))
+                );
+            }
+            else if (varName.equals(var.getName())) {
+                conflicts.putValue(
+                    var,
+                    GroovyRefactoringLocalize.introducedVariableConflictsWithVariable0(htmlEmphasize(varName))
+                );
+            }
+        });
+    }
 }

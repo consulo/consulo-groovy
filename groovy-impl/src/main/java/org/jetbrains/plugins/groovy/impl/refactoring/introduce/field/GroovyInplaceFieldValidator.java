@@ -15,38 +15,36 @@
  */
 package org.jetbrains.plugins.groovy.impl.refactoring.introduce.field;
 
-import static consulo.language.editor.refactoring.util.CommonRefactoringUtil.htmlEmphasize;
-
+import consulo.groovy.impl.localize.GroovyRefactoringLocalize;
+import consulo.language.findUsage.DescriptiveNameUtil;
+import org.jetbrains.plugins.groovy.impl.refactoring.introduce.GrIntroduceContext;
+import org.jetbrains.plugins.groovy.impl.refactoring.introduce.GrIntroduceValidatorEngine;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyPropertyUtils;
-import org.jetbrains.plugins.groovy.impl.refactoring.GroovyRefactoringBundle;
-import org.jetbrains.plugins.groovy.impl.refactoring.introduce.ConflictReporter;
-import org.jetbrains.plugins.groovy.impl.refactoring.introduce.GrIntroduceContext;
-import org.jetbrains.plugins.groovy.impl.refactoring.introduce.GrIntroduceValidatorEngine;
-import consulo.language.findUsage.DescriptiveNameUtil;
-import consulo.language.psi.PsiElement;
-import com.intellij.java.language.psi.PsiMethod;
-import consulo.util.collection.MultiMap;
+
+import static consulo.language.editor.refactoring.util.CommonRefactoringUtil.htmlEmphasize;
 
 /**
  * @author Max Medvedev
  */
 public class GroovyInplaceFieldValidator extends GrIntroduceValidatorEngine {
-  public GroovyInplaceFieldValidator(GrIntroduceContext context) {
-    super(context, new ConflictReporter() {
-      @Override
-      public void check(PsiElement toCheck, MultiMap<PsiElement, String> conflicts, String varName) {
-        if (toCheck instanceof GrVariable && varName.equals(((GrVariable)toCheck).getName())) {
-          conflicts.putValue(toCheck, GroovyRefactoringBundle.message("field.0.is.already.defined", htmlEmphasize(varName)));
-        }
-        if (toCheck instanceof GrMethod) {
-          if (GroovyPropertyUtils.isSimplePropertyAccessor((PsiMethod)toCheck) &&
-              varName.equals(GroovyPropertyUtils.getPropertyNameByAccessorName(((PsiMethod)toCheck).getName()))) {
-            conflicts.putValue(toCheck, GroovyRefactoringBundle.message("access.to.created.field.0.will.be.overriden.by.method.1", htmlEmphasize(varName), htmlEmphasize(DescriptiveNameUtil.getDescriptiveName(toCheck))));
-          }
-        }
-      }
-    });
-  }
+    public GroovyInplaceFieldValidator(GrIntroduceContext context) {
+        super(context, (toCheck, conflicts, varName) -> {
+            if (toCheck instanceof GrVariable variable && varName.equals(variable.getName())) {
+                conflicts.putValue(toCheck, GroovyRefactoringLocalize.field0IsAlreadyDefined(htmlEmphasize(varName)));
+            }
+            if (toCheck instanceof GrMethod method
+                && GroovyPropertyUtils.isSimplePropertyAccessor(method)
+                && varName.equals(GroovyPropertyUtils.getPropertyNameByAccessorName(method.getName()))) {
+                conflicts.putValue(
+                    toCheck,
+                    GroovyRefactoringLocalize.accessToCreatedField0WillBeOverridenByMethod1(
+                        htmlEmphasize(varName),
+                        htmlEmphasize(DescriptiveNameUtil.getDescriptiveName(toCheck))
+                    )
+                );
+            }
+        });
+    }
 }
