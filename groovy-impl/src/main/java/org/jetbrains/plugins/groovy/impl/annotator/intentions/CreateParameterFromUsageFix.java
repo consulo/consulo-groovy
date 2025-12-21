@@ -21,7 +21,6 @@ import com.intellij.java.impl.refactoring.changeSignature.ParameterInfoImpl;
 import com.intellij.java.language.psi.PsiMethod;
 import com.intellij.java.language.psi.PsiType;
 import com.intellij.java.language.psi.util.PsiTypesUtil;
-import consulo.annotation.access.RequiredReadAction;
 import consulo.codeEditor.Editor;
 import consulo.codeEditor.EditorPopupHelper;
 import consulo.groovy.localize.GroovyLocalize;
@@ -30,7 +29,9 @@ import consulo.language.editor.refactoring.localize.RefactoringLocalize;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.util.PsiTreeUtil;
 import consulo.language.util.IncorrectOperationException;
-import consulo.localize.LocalizeValue;import consulo.project.Project;
+import consulo.localize.LocalizeValue;
+import consulo.project.Project;
+import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.ex.popup.JBPopup;
 import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.impl.intentions.base.Intention;
@@ -73,7 +74,7 @@ public class CreateParameterFromUsageFix extends Intention implements SyntheticI
     }
 
     @Override
-    @RequiredReadAction
+    @RequiredUIAccess
     protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
         if (element instanceof GrReferenceExpression referenceExpression) {
             findScope(referenceExpression, editor, project);
@@ -91,12 +92,12 @@ public class CreateParameterFromUsageFix extends Intention implements SyntheticI
         return element -> element instanceof GrReferenceExpression;
     }
 
-    @RequiredReadAction
-    private void findScope(@Nonnull final GrReferenceExpression ref, @Nonnull final Editor editor, final Project project) {
+    @RequiredUIAccess
+    private void findScope(@Nonnull GrReferenceExpression ref, @Nonnull Editor editor, Project project) {
         PsiElement place = ref;
-        final List<GrMethod> scopes = new ArrayList<>();
+        List<GrMethod> scopes = new ArrayList<>();
         while (true) {
-            final GrMethod parent = PsiTreeUtil.getParentOfType(place, GrMethod.class);
+            GrMethod parent = PsiTreeUtil.getParentOfType(place, GrMethod.class);
             if (parent == null) {
                 break;
             }
@@ -105,9 +106,9 @@ public class CreateParameterFromUsageFix extends Intention implements SyntheticI
         }
 
         if (scopes.size() == 1) {
-            final GrMethod owner = scopes.get(0);
-            final PsiMethod toSearchFor;
-            toSearchFor = SuperMethodWarningUtil.checkSuperMethod(owner, RefactoringLocalize.toRefactor().get());
+            GrMethod owner = scopes.get(0);
+            PsiMethod toSearchFor;
+            toSearchFor = SuperMethodWarningUtil.checkSuperMethod(owner, RefactoringLocalize.toRefactor());
             if (toSearchFor == null) {
                 return; //if it is null, refactoring was canceled
             }
@@ -119,7 +120,7 @@ public class CreateParameterFromUsageFix extends Intention implements SyntheticI
                 editor,
                 this,
                 (owner, element) -> {
-                    showDialog((PsiMethod)owner, ref, project);
+                    showDialog((PsiMethod) owner, ref, project);
                     return null;
                 }
             );
@@ -127,23 +128,20 @@ public class CreateParameterFromUsageFix extends Intention implements SyntheticI
         }
     }
 
-    private static void showDialog(final PsiMethod method, final GrReferenceExpression ref, final Project project) {
+    private static void showDialog(PsiMethod method, GrReferenceExpression ref, Project project) {
         project.getApplication().invokeLater(() -> {
             if (project.isDisposed()) {
                 return;
             }
 
-            final String name = ref.getReferenceName();
-            final List<PsiType> types = GroovyExpectedTypesProvider.getDefaultExpectedTypes(ref);
+            String name = ref.getReferenceName();
+            List<PsiType> types = GroovyExpectedTypesProvider.getDefaultExpectedTypes(ref);
 
             PsiType unboxed = types.isEmpty() ? null : TypesUtil.unboxPrimitiveTypeWrapper(types.get(0));
-            @Nonnull final PsiType type = unboxed != null ? unboxed : PsiType.getJavaLangObject(
-                ref.getManager(),
-                ref.getResolveScope()
-            );
+            @Nonnull PsiType type = unboxed != null ? unboxed : PsiType.getJavaLangObject(ref.getManager(), ref.getResolveScope());
 
-            if (method instanceof GrMethod) {
-                GrMethodDescriptor descriptor = new GrMethodDescriptor((GrMethod)method);
+            if (method instanceof GrMethod grMethod) {
+                GrMethodDescriptor descriptor = new GrMethodDescriptor(grMethod);
                 GrChangeSignatureDialog dialog = new GrChangeSignatureDialog(project, descriptor, true, ref);
 
                 List<GrParameterInfo> parameters = dialog.getParameters();
@@ -153,7 +151,7 @@ public class CreateParameterFromUsageFix extends Intention implements SyntheticI
             }
             else if (method != null) {
                 JavaChangeSignatureDialog dialog = new JavaChangeSignatureDialog(project, method, false, ref);
-                final List<ParameterInfoImpl> parameterInfos = new ArrayList<>(Arrays.asList(ParameterInfoImpl.fromMethod(method)));
+                List<ParameterInfoImpl> parameterInfos = new ArrayList<>(Arrays.asList(ParameterInfoImpl.fromMethod(method)));
                 ParameterInfoImpl parameterInfo =
                     new ParameterInfoImpl(-1, name, type, PsiTypesUtil.getDefaultValueOfType(type), false);
                 if (!method.isVarArgs()) {
