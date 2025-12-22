@@ -19,27 +19,30 @@ import com.intellij.java.impl.codeInsight.daemon.impl.quickfix.MoveClassToSepara
 import com.intellij.java.language.psi.PsiClass;
 import com.intellij.java.language.psi.PsiJavaFile;
 import com.intellij.java.language.psi.codeStyle.JavaCodeStyleManager;
-import consulo.application.ApplicationManager;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.document.Document;
+import consulo.groovy.impl.localize.GroovyRefactoringLocalize;
 import consulo.language.codeStyle.CodeStyleManager;
 import consulo.language.editor.refactoring.BaseRefactoringProcessor;
-import consulo.language.editor.refactoring.RefactoringBundle;
+import consulo.language.editor.refactoring.localize.RefactoringLocalize;
 import consulo.language.editor.refactoring.ui.UsageViewDescriptorAdapter;
 import consulo.language.psi.PsiDirectory;
 import consulo.language.psi.PsiDocumentManager;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiFile;
 import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
 import consulo.logging.Logger;
 import consulo.project.Project;
 import consulo.ui.ex.awt.Messages;
+import consulo.ui.ex.awt.UIUtil;
 import consulo.usage.UsageInfo;
 import consulo.usage.UsageViewDescriptor;
 import consulo.util.io.FileUtil;
-import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
-import org.jetbrains.plugins.groovy.impl.refactoring.GroovyRefactoringBundle;
-
 import jakarta.annotation.Nonnull;
+import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -47,120 +50,125 @@ import java.util.Set;
  * @author Maxim.Medvedev
  */
 public class ConvertToJavaProcessor extends BaseRefactoringProcessor {
-  private static Logger LOG = Logger.getInstance(ConvertToJavaProcessor.class);
+    private static Logger LOG = Logger.getInstance(ConvertToJavaProcessor.class);
 
-  private GroovyFile[] myFiles;
+    private GroovyFile[] myFiles;
 
-  protected ConvertToJavaProcessor(Project project, GroovyFile... files) {
-    super(project);
-    myFiles = files;
-  }
-
-  @Nonnull
-  @Override
-  protected UsageViewDescriptor createUsageViewDescriptor(UsageInfo[] usages) {
-    return new UsageViewDescriptorAdapter() {
-      @Nonnull
-      @Override
-      public PsiElement[] getElements() {
-        return myFiles;
-      }
-
-      @Override
-      public String getProcessedElementsHeader() {
-        return GroovyRefactoringBundle.message("files.to.be.converted");
-      }
-    };
-  }
-
-  @Nonnull
-  @Override
-  protected UsageInfo[] findUsages() {
-    return UsageInfo.EMPTY_ARRAY;
-  }
-
-  //private static String
-  @Override
-  protected void performRefactoring(UsageInfo[] usages) {
-    final GeneratorClassNameProvider classNameProvider = new GeneratorClassNameProvider();
-
-    ExpressionContext context = new ExpressionContext(myProject, myFiles);
-    final ClassGenerator classGenerator = new ClassGenerator(classNameProvider, new ClassItemGeneratorImpl(context));
-
-    for (GroovyFile file : myFiles) {
-      final PsiClass[] classes = file.getClasses();
-      StringBuilder builder = new StringBuilder();
-      boolean first = true;
-      for (PsiClass aClass : classes) {
-        classGenerator.writeTypeDefinition(builder, aClass, true, first);
-        first = false;
-        builder.append('\n');
-      }
-
-      final Document document = PsiDocumentManager.getInstance(myProject).getDocument(file);
-      LOG.assertTrue(document != null);
-      document.setText(builder.toString());
-      PsiDocumentManager.getInstance(myProject).commitDocument(document);
-      String fileName = getNewFileName(file);
-      PsiElement newFile;
-      try {
-        newFile = file.setName(fileName);
-      }
-      catch (final IncorrectOperationException e) {
-        ApplicationManager.getApplication().invokeLater(new Runnable() {
-          @Override
-          public void run() {
-            Messages.showMessageDialog(myProject, e.getMessage(), RefactoringBundle.message("error.title"), Messages.getErrorIcon());
-          }
-        });
-        return;
-      }
-
-      doPostProcessing(newFile);
-    }
-  }
-
-  private void doPostProcessing(PsiElement newFile) {
-    if (ApplicationManager.getApplication().isUnitTestMode()) return;
-    // don't move classes to new files with corresponding class names and reformat
-
-    if (!(newFile instanceof PsiJavaFile)) {
-      LOG.info(".java is not assigned to java file type");
-      return;
+    protected ConvertToJavaProcessor(Project project, GroovyFile... files) {
+        super(project);
+        myFiles = files;
     }
 
-    newFile = JavaCodeStyleManager.getInstance(myProject).shortenClassReferences(newFile);
-    newFile = CodeStyleManager.getInstance(myProject).reformat(newFile);
-    PsiClass[] inner = ((PsiJavaFile)newFile).getClasses();
-    for (PsiClass psiClass : inner) {
-      MoveClassToSeparateFileFix fix = new MoveClassToSeparateFileFix(psiClass);
-      if (fix.isAvailable(myProject, null, (PsiFile)newFile)) {
-        fix.invoke(myProject, null, (PsiFile)newFile);
-      }
+    @Nonnull
+    @Override
+    protected UsageViewDescriptor createUsageViewDescriptor(@Nonnull UsageInfo[] usages) {
+        return new UsageViewDescriptorAdapter() {
+            @Nonnull
+            @Override
+            public PsiElement[] getElements() {
+                return myFiles;
+            }
+
+            @Override
+            public String getProcessedElementsHeader() {
+                return GroovyRefactoringLocalize.filesToBeConverted().get();
+            }
+        };
     }
-  }
 
-  private static String getNewFileName(GroovyFile file) {
-    final PsiDirectory dir = file.getContainingDirectory();
-    LOG.assertTrue(dir != null);
-
-
-    final PsiFile[] files = dir.getFiles();
-    Set<String> fileNames = new HashSet<String>();
-    for (PsiFile psiFile : files) {
-      fileNames.add(psiFile.getName());
+    @Nonnull
+    @Override
+    protected UsageInfo[] findUsages() {
+        return UsageInfo.EMPTY_ARRAY;
     }
-    String prefix = FileUtil.getNameWithoutExtension(file.getName());
-    String fileName = prefix + ".java";
-    int index = 1;
-    while (fileNames.contains(fileName)) {
-      fileName = prefix + index + ".java";
-    }
-    return fileName;
-  }
 
-  @Override
-  protected String getCommandName() {
-    return GroovyRefactoringBundle.message("converting.files.to.java");
-  }
+    //private static String
+    @Override
+    @RequiredWriteAction
+    protected void performRefactoring(@Nonnull UsageInfo[] usages) {
+        GeneratorClassNameProvider classNameProvider = new GeneratorClassNameProvider();
+
+        ExpressionContext context = new ExpressionContext(myProject, myFiles);
+        ClassGenerator classGenerator = new ClassGenerator(classNameProvider, new ClassItemGeneratorImpl(context));
+
+        for (GroovyFile file : myFiles) {
+            PsiClass[] classes = file.getClasses();
+            StringBuilder builder = new StringBuilder();
+            boolean first = true;
+            for (PsiClass aClass : classes) {
+                classGenerator.writeTypeDefinition(builder, aClass, true, first);
+                first = false;
+                builder.append('\n');
+            }
+
+            Document document = PsiDocumentManager.getInstance(myProject).getDocument(file);
+            LOG.assertTrue(document != null);
+            document.setText(builder.toString());
+            PsiDocumentManager.getInstance(myProject).commitDocument(document);
+            String fileName = getNewFileName(file);
+            PsiElement newFile;
+            try {
+                newFile = file.setName(fileName);
+            }
+            catch (IncorrectOperationException e) {
+                myProject.getApplication().invokeLater(() -> Messages.showMessageDialog(
+                    myProject,
+                    e.getMessage(),
+                    RefactoringLocalize.errorTitle().get(),
+                    UIUtil.getErrorIcon()
+                ));
+                return;
+            }
+
+            doPostProcessing(newFile);
+        }
+    }
+
+    private void doPostProcessing(PsiElement newFile) {
+        if (myProject.getApplication().isUnitTestMode()) {
+            return;
+        }
+        // don't move classes to new files with corresponding class names and reformat
+
+        if (!(newFile instanceof PsiJavaFile)) {
+            LOG.info(".java is not assigned to java file type");
+            return;
+        }
+
+        newFile = JavaCodeStyleManager.getInstance(myProject).shortenClassReferences(newFile);
+        newFile = CodeStyleManager.getInstance(myProject).reformat(newFile);
+        PsiClass[] inner = ((PsiJavaFile) newFile).getClasses();
+        for (PsiClass psiClass : inner) {
+            MoveClassToSeparateFileFix fix = new MoveClassToSeparateFileFix(psiClass);
+            if (fix.isAvailable(myProject, null, (PsiFile) newFile)) {
+                fix.invoke(myProject, null, (PsiFile) newFile);
+            }
+        }
+    }
+
+    @RequiredReadAction
+    private static String getNewFileName(GroovyFile file) {
+        PsiDirectory dir = file.getContainingDirectory();
+        LOG.assertTrue(dir != null);
+
+
+        PsiFile[] files = dir.getFiles();
+        Set<String> fileNames = new HashSet<>();
+        for (PsiFile psiFile : files) {
+            fileNames.add(psiFile.getName());
+        }
+        String prefix = FileUtil.getNameWithoutExtension(file.getName());
+        String fileName = prefix + ".java";
+        int index = 1;
+        while (fileNames.contains(fileName)) {
+            fileName = prefix + index + ".java";
+        }
+        return fileName;
+    }
+
+    @Nonnull
+    @Override
+    protected LocalizeValue getCommandName() {
+        return GroovyRefactoringLocalize.convertingFilesToJava();
+    }
 }

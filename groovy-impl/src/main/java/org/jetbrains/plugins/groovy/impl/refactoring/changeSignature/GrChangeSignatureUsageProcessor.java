@@ -104,15 +104,17 @@ public class GrChangeSignatureUsageProcessor implements ChangeSignatureUsageProc
 
     @Nonnull
     @Override
+    @RequiredReadAction
     public UsageInfo[] findUsages(@Nonnull ChangeInfo info) {
-        if (info instanceof JavaChangeInfo) {
-            return new GrChageSignatureUsageSearcher((JavaChangeInfo)info).findUsages();
+        if (info instanceof JavaChangeInfo javaChangeInfo) {
+            return new GrChangeSignatureUsageSearcher(javaChangeInfo).findUsages();
         }
         return UsageInfo.EMPTY_ARRAY;
     }
 
     @Nonnull
     @Override
+    @RequiredReadAction
     public MultiMap<PsiElement, LocalizeValue> findConflicts(@Nonnull ChangeInfo info, SimpleReference<UsageInfo[]> refUsages) {
         if (info instanceof JavaChangeInfo javaChangeInfo) {
             return new GrChangeSignatureConflictSearcher(javaChangeInfo).findConflicts(refUsages);
@@ -125,17 +127,15 @@ public class GrChangeSignatureUsageProcessor implements ChangeSignatureUsageProc
     @Override
     @RequiredWriteAction
     public boolean processPrimaryMethod(@Nonnull ChangeInfo changeInfo) {
-        if (!(changeInfo instanceof GrChangeInfoImpl)) {
+        if (!(changeInfo instanceof GrChangeInfoImpl grInfo)) {
             return false;
         }
 
-        GrChangeInfoImpl grInfo = (GrChangeInfoImpl)changeInfo;
-        GrMethod method = grInfo.getMethod();
         if (grInfo.isGenerateDelegate()) {
             return generateDelegate(grInfo);
         }
 
-        return processPrimaryMethodInner(grInfo, method, null);
+        return processPrimaryMethodInner(grInfo, grInfo.getMethod(), null);
     }
 
     @Override
@@ -146,10 +146,8 @@ public class GrChangeSignatureUsageProcessor implements ChangeSignatureUsageProc
         }
 
         for (UsageInfo usage : usages) {
-            if (usage instanceof GrMethodCallUsageInfo) {
-                if (((GrMethodCallUsageInfo)usage).isPossibleUsage()) {
-                    return true;
-                }
+            if (usage instanceof GrMethodCallUsageInfo methodCallInfo && methodCallInfo.isPossibleUsage()) {
+                return true;
             }
         }
         return false;
@@ -158,7 +156,7 @@ public class GrChangeSignatureUsageProcessor implements ChangeSignatureUsageProc
     @Override
     @RequiredUIAccess
     public boolean setupDefaultValues(ChangeInfo changeInfo, SimpleReference<UsageInfo[]> refUsages, Project project) {
-        if (!(changeInfo instanceof JavaChangeInfo)) {
+        if (!(changeInfo instanceof JavaChangeInfo javaInfo)) {
             return false;
         }
         for (UsageInfo usageInfo : refUsages.get()) {
@@ -168,7 +166,7 @@ public class GrChangeSignatureUsageProcessor implements ChangeSignatureUsageProc
                     continue;
                 }
                 PsiMethod caller = RefactoringUtil.getEnclosingMethod(element);
-                boolean needDefaultValue = !((JavaChangeInfo)changeInfo).getMethodsToPropagateParameters().contains(caller);
+                boolean needDefaultValue = !javaInfo.getMethodsToPropagateParameters().contains(caller);
                 PsiMethod referencedMethod = methodCallUsageInfo.getReferencedMethod();
                 if (needDefaultValue && (caller == null || referencedMethod == null
                     || !MethodSignatureUtil.isSuperMethod(referencedMethod, caller))) {
@@ -176,7 +174,7 @@ public class GrChangeSignatureUsageProcessor implements ChangeSignatureUsageProc
                     for (ParameterInfo parameter : parameters) {
                         String defaultValue = parameter.getDefaultValue();
                         if (defaultValue == null && parameter.getOldIndex() == -1) {
-                            ParameterInfoImpl parameterInfoImpl = (ParameterInfoImpl)parameter;
+                            ParameterInfoImpl parameterInfoImpl = (ParameterInfoImpl) parameter;
                             parameterInfoImpl.setDefaultValue("");
                             if (!Application.get().isUnitTestMode()) {
                                 PsiType type = parameterInfoImpl.getTypeWrapper().getType(element, element.getManager());
@@ -216,8 +214,8 @@ public class GrChangeSignatureUsageProcessor implements ChangeSignatureUsageProc
     private static boolean generateDelegate(GrChangeInfoImpl grInfo) {
         GrMethod method = grInfo.getMethod();
         PsiClass psiClass = method.getContainingClass();
-        GrMethod newMethod = (GrMethod)method.copy();
-        newMethod = (GrMethod)psiClass.addAfter(newMethod, method);
+        GrMethod newMethod = (GrMethod) method.copy();
+        newMethod = (GrMethod) psiClass.addAfter(newMethod, method);
         StringBuilder buffer = new StringBuilder();
         buffer.append("\n");
         if (method.isConstructor()) {
@@ -315,7 +313,7 @@ public class GrChangeSignatureUsageProcessor implements ChangeSignatureUsageProc
 
         for (JavaParameterInfo newParameter : newParameters) {
             PsiType type;
-            if (newParameter instanceof GrParameterInfo && ((GrParameterInfo)newParameter).hasNoType()) {
+            if (newParameter instanceof GrParameterInfo parameterInfo && parameterInfo.hasNoType()) {
                 type = null;
             }
             else {
@@ -360,7 +358,7 @@ public class GrChangeSignatureUsageProcessor implements ChangeSignatureUsageProc
                 parameterList
             );
 
-            anchor = (GrParameter)parameterList.addAfter(grParameter, anchor);
+            anchor = (GrParameter) parameterList.addAfter(grParameter, anchor);
         }
 
         for (GrParameter oldParameter : toRemove) {
@@ -374,11 +372,11 @@ public class GrChangeSignatureUsageProcessor implements ChangeSignatureUsageProc
             PsiClassType[] exceptionTypes = new PsiClassType[infos.length];
             for (int i = 0; i < infos.length; i++) {
                 ThrownExceptionInfo info = infos[i];
-                exceptionTypes[i] = (PsiClassType)info.createType(method, method.getManager());
+                exceptionTypes[i] = (PsiClassType) info.createType(method, method.getManager());
             }
 
             PsiReferenceList thrownList = GroovyPsiElementFactory.getInstance(method.getProject()).createThrownList(exceptionTypes);
-            thrownList = (PsiReferenceList)method.getThrowsList().replace(thrownList);
+            thrownList = (PsiReferenceList) method.getThrowsList().replace(thrownList);
             JavaCodeStyleManager.getInstance(thrownList.getProject()).shortenClassReferences(thrownList);
             CodeStyleManager.getInstance(method.getProject()).reformat(method.getThrowsList());
         }
@@ -421,8 +419,8 @@ public class GrChangeSignatureUsageProcessor implements ChangeSignatureUsageProc
 
     @Nullable
     private static String getInitializer(JavaParameterInfo newParameter) {
-        if (newParameter instanceof GrParameterInfo) {
-            return ((GrParameterInfo)newParameter).getDefaultInitializer();
+        if (newParameter instanceof GrParameterInfo parameterInfo) {
+            return parameterInfo.getDefaultInitializer();
         }
         return null;
     }
@@ -451,47 +449,46 @@ public class GrChangeSignatureUsageProcessor implements ChangeSignatureUsageProc
             if (usageInfo instanceof OverriderUsageInfo overriderUsageInfo) {
                 processPrimaryMethodInner(
                     javaChangeInfo,
-                    (GrMethod)overriderUsageInfo.getElement(),
+                    (GrMethod) overriderUsageInfo.getElement(),
                     overriderUsageInfo.getBaseMethod()
                 );
             }
         }
+        else if (usageInfo instanceof GrMethodCallUsageInfo methodCallUsageInfo) {
+            processMethodUsage(
+                element,
+                javaChangeInfo,
+                methodCallUsageInfo.isToChangeArguments(),
+                methodCallUsageInfo.isToCatchExceptions(),
+                methodCallUsageInfo.getMapToArguments(),
+                methodCallUsageInfo.getSubstitutor()
+            );
+            return true;
+        }
+        else if (usageInfo instanceof DefaultConstructorImplicitUsageInfo defaultConstructorImplicitUsageInfo) {
+            processConstructor((GrMethod) defaultConstructorImplicitUsageInfo.getConstructor(), javaChangeInfo);
+            return true;
+        }
+        else if (usageInfo instanceof NoConstructorClassUsageInfo noConstructorClassUsageInfo) {
+            processClassUsage((GrTypeDefinition) noConstructorClassUsageInfo.getPsiClass(), javaChangeInfo);
+            return true;
+        }
+        else if (usageInfo instanceof ChangeSignatureParameterUsageInfo changeSignatureParameterUsageInfo) {
+            String newName = changeSignatureParameterUsageInfo.newParameterName;
+            ((PsiReference) element).handleElementRename(newName);
+            return true;
+        }
         else {
-            if (usageInfo instanceof GrMethodCallUsageInfo methodCallUsageInfo) {
-                processMethodUsage(
-                    element,
-                    javaChangeInfo,
-                    methodCallUsageInfo.isToChangeArguments(),
-                    methodCallUsageInfo.isToCatchExceptions(),
-                    methodCallUsageInfo.getMapToArguments(),
-                    methodCallUsageInfo.getSubstitutor()
-                );
+            PsiReference ref = element.getReference();
+            if (ref != null && changeInfo.getMethod() != null) {
+                ref.bindToElement(changeInfo.getMethod());
                 return true;
-            }
-            else if (usageInfo instanceof DefaultConstructorImplicitUsageInfo defaultConstructorImplicitUsageInfo) {
-                processConstructor((GrMethod)defaultConstructorImplicitUsageInfo.getConstructor(), javaChangeInfo);
-                return true;
-            }
-            else if (usageInfo instanceof NoConstructorClassUsageInfo noConstructorClassUsageInfo) {
-                processClassUsage((GrTypeDefinition)noConstructorClassUsageInfo.getPsiClass(), javaChangeInfo);
-                return true;
-            }
-            else if (usageInfo instanceof ChangeSignatureParameterUsageInfo changeSignatureParameterUsageInfo) {
-                String newName = changeSignatureParameterUsageInfo.newParameterName;
-                ((PsiReference)element).handleElementRename(newName);
-                return true;
-            }
-            else {
-                PsiReference ref = element.getReference();
-                if (ref != null && changeInfo.getMethod() != null) {
-                    ref.bindToElement(changeInfo.getMethod());
-                    return true;
-                }
             }
         }
         return false;
     }
 
+    @RequiredWriteAction
     private static void processClassUsage(GrTypeDefinition psiClass, JavaChangeInfo changeInfo) {
         String name = psiClass.getName();
 
@@ -514,7 +511,7 @@ public class GrChangeSignatureUsageProcessor implements ChangeSignatureUsageProc
             list.setModifierProperty(GrModifier.DEF, true);
         }
 
-        constructor = (GrMethod)psiClass.add(constructor);
+        constructor = (GrMethod) psiClass.add(constructor);
         processConstructor(constructor, changeInfo);
     }
 
@@ -527,7 +524,7 @@ public class GrChangeSignatureUsageProcessor implements ChangeSignatureUsageProc
         GrOpenBlock block = constructor.getBlock();
         GrConstructorInvocation invocation =
             GroovyPsiElementFactory.getInstance(constructor.getProject()).createConstructorInvocation("super()");
-        invocation = (GrConstructorInvocation)block.addStatementBefore(invocation, getFirstStatement(block));
+        invocation = (GrConstructorInvocation) block.addStatementBefore(invocation, getFirstStatement(block));
         processMethodUsage(
             invocation.getInvokedExpression(),
             changeInfo,
@@ -569,7 +566,7 @@ public class GrChangeSignatureUsageProcessor implements ChangeSignatureUsageProc
             if (argumentList == null) {
                 if (element instanceof GrEnumConstant) {
                     argumentList = factory.createArgumentList();
-                    argumentList = (GrArgumentList)element.add(argumentList);
+                    argumentList = (GrArgumentList) element.add(argumentList);
                 }
                 else {
                     return;
@@ -619,7 +616,7 @@ public class GrChangeSignatureUsageProcessor implements ChangeSignatureUsageProc
                             && arg instanceof GrSafeCastExpression safeCastExpression
                             && safeCastExpression.getOperand() instanceof GrListOrMap listOrMap && !listOrMap.isMap()) {
 
-                            GrListOrMap copy = (GrListOrMap)listOrMap.copy();
+                            GrListOrMap copy = (GrListOrMap) listOrMap.copy();
                             PsiElement[] newVarargs = copy.getInitializers();
                             for (PsiElement vararg : newVarargs) {
                                 anchor = argumentList.addAfter(vararg, anchor);
@@ -705,15 +702,15 @@ public class GrChangeSignatureUsageProcessor implements ChangeSignatureUsageProc
             PsiResolveHelper resolveHelper = JavaPsiFacade.getInstance(list.getProject()).getResolveHelper();
             PsiType type = info.getTypeWrapper().getType(changeInfo.getMethod(), list.getManager());
             VariablesProcessor processor = new VariablesProcessor(false) {
-                @RequiredReadAction
                 @Override
+                @RequiredReadAction
                 protected boolean check(PsiVariable var, ResolveState state) {
-                    if (var instanceof PsiField && !resolveHelper.isAccessible((PsiField)var, list, null)) {
+                    if (var instanceof PsiField field && !resolveHelper.isAccessible(field, list, null)) {
                         return false;
                     }
-                    if (var instanceof GrVariable &&
-                        GroovyRefactoringUtil.isLocalVariable(var) &&
-                        list.getTextRange().getStartOffset() <= var.getTextRange().getStartOffset()) {
+                    if (var instanceof GrVariable
+                        && GroovyRefactoringUtil.isLocalVariable(var)
+                        && list.getTextRange().getStartOffset() <= var.getTextRange().getStartOffset()) {
                         return false;
                     }
                     if (PsiTreeUtil.isAncestor(var, list, false)) {
@@ -740,9 +737,9 @@ public class GrChangeSignatureUsageProcessor implements ChangeSignatureUsageProc
                 if (parentClass != null) {
                     PsiClass containingClass = parentClass;
                     Set<PsiClass> containingClasses = new HashSet<>();
-                    PsiElementFactory jfactory = JavaPsiFacade.getElementFactory(list.getProject());
+                    PsiElementFactory jFactory = JavaPsiFacade.getElementFactory(list.getProject());
                     while (containingClass != null) {
-                        if (type.isAssignableFrom(jfactory.createType(containingClass, PsiSubstitutor.EMPTY))) {
+                        if (type.isAssignableFrom(jFactory.createType(containingClass, PsiSubstitutor.EMPTY))) {
                             containingClasses.add(containingClass);
                         }
                         containingClass = PsiTreeUtil.getParentOfType(containingClass, PsiClass.class);
@@ -761,9 +758,10 @@ public class GrChangeSignatureUsageProcessor implements ChangeSignatureUsageProc
     }
 
     protected static boolean forceOptional(JavaParameterInfo parameter) {
-        return parameter instanceof GrParameterInfo && ((GrParameterInfo)parameter).forceOptional();
+        return parameter instanceof GrParameterInfo parameterInfo && parameterInfo.forceOptional();
     }
 
+    @RequiredWriteAction
     private static void fixExceptions(PsiElement element, PsiClassType[] exceptions) {
         if (exceptions.length == 0) {
             return;
@@ -780,7 +778,7 @@ public class GrChangeSignatureUsageProcessor implements ChangeSignatureUsageProc
         }
         else if (context instanceof GrMethod method) {
             PsiClassType[] handledExceptions = method.getThrowsList().getReferencedTypes();
-            List<PsiClassType> psiClassTypes = filterOutExceptions(exceptions, context, handledExceptions);
+            List<PsiClassType> psiClassTypes = filterOutExceptions(exceptions, method, handledExceptions);
             element = generateTryCatch(element, psiClassTypes.toArray(new PsiClassType[psiClassTypes.size()]));
         }
         else if (context instanceof GroovyFile) {
@@ -805,22 +803,23 @@ public class GrChangeSignatureUsageProcessor implements ChangeSignatureUsageProc
                 referencedTypes.toArray(new PsiClassType[referencedTypes.size()])
             );
 
-            element = fixCatchBlock((GrTryCatchStatement)context, psiClassTypes.toArray(new PsiClassType[psiClassTypes.size()]));
+            element = fixCatchBlock((GrTryCatchStatement) context, psiClassTypes.toArray(new PsiClassType[psiClassTypes.size()]));
         }
 
         //  CodeStyleManager.getInstance(element.getProject()).reformat(element);
     }
 
+    @RequiredWriteAction
     private static PsiElement generateTryCatch(PsiElement element, PsiClassType[] exceptions) {
         if (exceptions.length == 0) {
             return element;
         }
-        GrTryCatchStatement tryCatch = (GrTryCatchStatement)GroovyPsiElementFactory.getInstance(element.getProject())
+        GrTryCatchStatement tryCatch = (GrTryCatchStatement) GroovyPsiElementFactory.getInstance(element.getProject())
             .createStatementFromText("try{} catch (Exception e){}");
         GrStatement statement = PsiTreeUtil.getParentOfType(element, GrStatement.class);
         assert statement != null;
         tryCatch.getTryBlock().addStatementBefore(statement, null);
-        tryCatch = (GrTryCatchStatement)statement.replace(tryCatch);
+        tryCatch = (GrTryCatchStatement) statement.replace(tryCatch);
         tryCatch.getCatchClauses()[0].delete();
         fixCatchBlock(tryCatch, exceptions);
         return tryCatch;
@@ -885,7 +884,7 @@ public class GrChangeSignatureUsageProcessor implements ChangeSignatureUsageProc
                 @Override
                 @Nullable
                 public PsiClassType apply(ThrownExceptionInfo thrownExceptionInfo) {
-                    return (PsiClassType)thrownExceptionInfo.createType(context, manager);
+                    return (PsiClassType) thrownExceptionInfo.createType(context, manager);
                 }
             },
             new PsiClassType[infos.length]
@@ -893,6 +892,6 @@ public class GrChangeSignatureUsageProcessor implements ChangeSignatureUsageProc
     }
 
     private static boolean isParameterOptional(JavaParameterInfo parameterInfo) {
-        return parameterInfo instanceof GrParameterInfo && ((GrParameterInfo)parameterInfo).isOptional();
+        return parameterInfo instanceof GrParameterInfo grParamInfo && grParamInfo.isOptional();
     }
 }

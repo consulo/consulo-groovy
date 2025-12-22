@@ -159,9 +159,8 @@ public class GrIntroduceClosureParameterProcessor extends BaseRefactoringProcess
         }
 
         //todo
-        //for (IntroduceParameterMethodUsagesProcessor processor : IntroduceParameterMethodUsagesProcessor.EP_NAME
-        // .getExtensions()) {
-        //processor.findConflicts(this, refUsages.get(), conflicts);
+        //for (IntroduceParameterMethodUsagesProcessor processor : IntroduceParameterMethodUsagesProcessor.EP_NAME.getExtensions()) {
+        //    processor.findConflicts(this, refUsages.get(), conflicts);
         //}
 
         return showConflicts(conflicts, usagesIn);
@@ -192,7 +191,7 @@ public class GrIntroduceClosureParameterProcessor extends BaseRefactoringProcess
         if (!mySettings.generateDelegate() && toSearchFor != null) {
             Collection<PsiReference> refs;
             if (toSearchFor instanceof GrField field) {
-                refs = ReferencesSearch.search(toSearchFor).findAll();
+                refs = ReferencesSearch.search(field).findAll();
                 GrAccessorMethod[] getters = field.getGetters();
                 for (GrAccessorMethod getter : getters) {
                     refs.addAll(MethodReferencesSearch.search(getter, getter.getResolveScope(), true).findAll());
@@ -261,10 +260,10 @@ public class GrIntroduceClosureParameterProcessor extends BaseRefactoringProcess
 
         Collection<PsiReference> result = new ArrayList<>();
         for (Instruction instruction : flow) {
-            if (!(instruction instanceof ReadWriteVariableInstruction)) {
+            if (!(instruction instanceof ReadWriteVariableInstruction readWriteVarInsn)) {
                 continue;
             }
-            if (((ReadWriteVariableInstruction)instruction).isWrite()) {
+            if (readWriteVarInsn.isWrite()) {
                 continue;
             }
 
@@ -272,11 +271,10 @@ public class GrIntroduceClosureParameterProcessor extends BaseRefactoringProcess
             if (element instanceof GrVariable && element != var) {
                 continue;
             }
-            if (!(element instanceof GrReferenceExpression)) {
+            if (!(element instanceof GrReferenceExpression ref)) {
                 continue;
             }
 
-            GrReferenceExpression ref = (GrReferenceExpression)element;
             if (ref.isQualified() || ref.resolve() != var) {
                 continue;
             }
@@ -308,7 +306,7 @@ public class GrIntroduceClosureParameterProcessor extends BaseRefactoringProcess
         processInternalUsages(usages, settings);
     }
 
-    @RequiredUIAccess
+    @RequiredWriteAction
     private static void processInternalUsages(UsageInfo[] usages, GrIntroduceParameterSettings settings) {
         GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(settings.getProject());
         // Replacing expression occurrences
@@ -357,6 +355,7 @@ public class GrIntroduceClosureParameterProcessor extends BaseRefactoringProcess
         }
     }
 
+    @RequiredWriteAction
     private static void changeSignature(GrClosableBlock block, GrIntroduceParameterSettings settings) {
         String name = settings.getName();
         FieldConflictsResolver fieldConflictsResolver = new FieldConflictsResolver(name, block);
@@ -422,7 +421,7 @@ public class GrIntroduceClosureParameterProcessor extends BaseRefactoringProcess
             && methodCall.getInvokedExpression() instanceof GrReferenceExpression refExpr) {
             GroovyResolveResult result = refExpr.advancedResolve();
             if (result.getElement() instanceof GrAccessorMethod && !result.isInvokedOnProperty()
-                && callExpression.getParent() instanceof GrCall call) {
+                && methodCall.getParent() instanceof GrCall call) {
                 callExpression = call;
             }
         }
@@ -475,7 +474,7 @@ public class GrIntroduceClosureParameterProcessor extends BaseRefactoringProcess
             ).resolve();
             ChangeContextUtil.clearContextInfo(initializer);
 
-            //newarg can be replaced by OldReferenceResolve
+            //newArg can be replaced by OldReferenceResolve
             if (newArg.isValid()) {
                 JavaCodeStyleManager.getInstance(newArg.getProject()).shortenClassReferences(newArg);
                 CodeStyleManager.getInstance(settings.getProject()).reformat(newArg);
@@ -519,7 +518,7 @@ public class GrIntroduceClosureParameterProcessor extends BaseRefactoringProcess
         return lastNonVararg >= 0 ? oldArgs[lastNonVararg] : null;
     }
 
-
+    @RequiredWriteAction
     private GrClosableBlock generateDelegateClosure(GrClosableBlock originalClosure, GrVariable anchor, String newName) {
         GrClosableBlock result;
         if (originalClosure.hasParametersSection()) {
@@ -548,6 +547,7 @@ public class GrIntroduceClosureParameterProcessor extends BaseRefactoringProcess
         return result;
     }
 
+    @RequiredWriteAction
     private GrVariableDeclaration insertDeclaration(GrVariable original, GrVariableDeclaration declaration) {
         if (original instanceof GrField field) {
             PsiClass containingClass = field.getContainingClass();
@@ -577,7 +577,7 @@ public class GrIntroduceClosureParameterProcessor extends BaseRefactoringProcess
                         blockStatement = (GrBlockStatement)body.replace(blockStatement);
                     }
                     else {
-                        blockStatement = (GrBlockStatement)container.add(blockStatement);
+                        blockStatement = (GrBlockStatement)forStmt.add(blockStatement);
                     }
                     block = blockStatement.getBlock();
                 }
@@ -593,9 +593,9 @@ public class GrIntroduceClosureParameterProcessor extends BaseRefactoringProcess
         PsiElement parent = original.getParent();
         LOG.assertTrue(parent instanceof GrVariableDeclaration);
 
-        PsiElement pparent = parent.getParent();
+        PsiElement grandparent = parent.getParent();
 
-        if (pparent instanceof GrIfStatement ifStmt) {
+        if (grandparent instanceof GrIfStatement ifStmt) {
             if (ifStmt.getThenBranch() == parent) {
                 block = ifStmt.replaceThenBranch(myFactory.createBlockStatement()).getBlock();
             }
@@ -604,13 +604,13 @@ public class GrIntroduceClosureParameterProcessor extends BaseRefactoringProcess
             }
             parent = block.addStatementBefore(((GrVariableDeclaration)parent), null);
         }
-        else if (pparent instanceof GrLoopStatement loopStmt) {
+        else if (grandparent instanceof GrLoopStatement loopStmt) {
             block = loopStmt.replaceBody(myFactory.createBlockStatement()).getBlock();
             parent = block.addStatementBefore(loopStmt, null);
         }
         else {
-            LOG.assertTrue(pparent instanceof GrStatementOwner);
-            block = (GrStatementOwner)pparent;
+            LOG.assertTrue(grandparent instanceof GrStatementOwner);
+            block = (GrStatementOwner)grandparent;
         }
 
         return (GrVariableDeclaration)block.addStatementBefore(declaration, (GrStatement)parent);
@@ -660,7 +660,7 @@ public class GrIntroduceClosureParameterProcessor extends BaseRefactoringProcess
     @Nonnull
     @Override
     @RequiredReadAction
-    protected String getCommandName() {
-        return RefactoringLocalize.introduceParameterCommand(DescriptiveNameUtil.getDescriptiveName(mySettings.getToReplaceIn())).get();
+    protected LocalizeValue getCommandName() {
+        return RefactoringLocalize.introduceParameterCommand(DescriptiveNameUtil.getDescriptiveName(mySettings.getToReplaceIn()));
     }
 }
