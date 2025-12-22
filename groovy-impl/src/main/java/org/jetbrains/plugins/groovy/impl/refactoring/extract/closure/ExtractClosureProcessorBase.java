@@ -15,72 +15,72 @@
  */
 package org.jetbrains.plugins.groovy.impl.refactoring.extract.closure;
 
-import jakarta.annotation.Nonnull;
-
 import consulo.language.editor.refactoring.BaseRefactoringProcessor;
 import consulo.language.editor.refactoring.ui.UsageViewDescriptorAdapter;
 import consulo.language.psi.PsiElement;
+import consulo.localize.LocalizeValue;
 import consulo.usage.UsageInfo;
 import consulo.usage.UsageViewDescriptor;
-import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlock;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.impl.refactoring.extract.ExtractUtil;
 import org.jetbrains.plugins.groovy.impl.refactoring.introduce.parameter.GrIntroduceParameterSettings;
+import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
+import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlock;
 
 /**
  * @author Max Medvedev
  */
-public abstract class ExtractClosureProcessorBase extends BaseRefactoringProcessor
-{
-  protected final GrIntroduceParameterSettings myHelper;
-  private static final String EXTRACT_CLOSURE = "Extract closure";
+public abstract class ExtractClosureProcessorBase extends BaseRefactoringProcessor {
+    protected final GrIntroduceParameterSettings myHelper;
+    private static final LocalizeValue EXTRACT_CLOSURE = LocalizeValue.localizeTODO("Extract closure");
 
-  public ExtractClosureProcessorBase(@Nonnull GrIntroduceParameterSettings helper) {
-    super(helper.getProject());
-    myHelper = helper;
-  }
+    public ExtractClosureProcessorBase(@Nonnull GrIntroduceParameterSettings helper) {
+        super(helper.getProject());
+        myHelper = helper;
+    }
 
-  @Nonnull
-  @Override
-  protected UsageViewDescriptor createUsageViewDescriptor(UsageInfo[] usages) {
-    return new UsageViewDescriptorAdapter() {
-      @Nonnull
-      @Override
-      public PsiElement[] getElements() {
-        return new PsiElement[]{myHelper.getToSearchFor()};
-      }
+    @Nonnull
+    @Override
+    protected UsageViewDescriptor createUsageViewDescriptor(@Nonnull UsageInfo[] usages) {
+        return new UsageViewDescriptorAdapter() {
+            @Nonnull
+            @Override
+            public PsiElement[] getElements() {
+                return new PsiElement[]{myHelper.getToSearchFor()};
+            }
 
-      @Override
-      public String getProcessedElementsHeader() {
+            @Override
+            public String getProcessedElementsHeader() {
+                return EXTRACT_CLOSURE.get();
+            }
+        };
+    }
+
+    @Nonnull
+    @Override
+    protected LocalizeValue getCommandName() {
         return EXTRACT_CLOSURE;
-      }
-    };
-  }
-
-  @Override
-  protected String getCommandName() {
-    return EXTRACT_CLOSURE;
-  }
-
-  public static GrClosableBlock generateClosure(GrIntroduceParameterSettings helper) {
-    StringBuilder buffer = new StringBuilder();
-
-    buffer.append("{ ");
-
-    final String[] params = ExtractUtil.getParameterString(helper, true);
-    if (params.length > 0) {
-      for (String p : params) {
-        buffer.append(p);
-      }
-      buffer.append("->");
-    }
-    if (helper.getStatements().length > 1) {
-      buffer.append('\n');
     }
 
-    ExtractUtil.generateBody(helper, false, buffer, helper.isForceReturn());
-    buffer.append(" }");
+    public static GrClosableBlock generateClosure(GrIntroduceParameterSettings helper) {
+        StringBuilder buffer = new StringBuilder();
 
-    return GroovyPsiElementFactory.getInstance(helper.getProject()).createClosureFromText(buffer.toString(), helper.getToReplaceIn());
-  }
+        buffer.append("{ ");
+
+        String[] params = ExtractUtil.getParameterString(helper, true);
+        if (params.length > 0) {
+            for (String p : params) {
+                buffer.append(p);
+            }
+            buffer.append("->");
+        }
+        if (helper.getStatements().length > 1) {
+            buffer.append('\n');
+        }
+
+        ExtractUtil.generateBody(helper, false, buffer, helper.isForceReturn());
+        buffer.append(" }");
+
+        return GroovyPsiElementFactory.getInstance(helper.getProject()).createClosureFromText(buffer.toString(), helper.getToReplaceIn());
+    }
 }

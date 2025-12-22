@@ -64,8 +64,7 @@ import java.util.Collection;
  * @author Maxim.Medvedev
  */
 public class GrIntroduceParameterProcessor extends BaseRefactoringProcessor implements IntroduceParameterData {
-    private static final Logger LOG =
-        Logger.getInstance("#org.jetbrains.plugins.groovy.refactoring.introduce.parameter.GrIntroduceParameterProcessor");
+    private static final Logger LOG = Logger.getInstance(GrIntroduceParameterProcessor.class);
 
     private final GrIntroduceParameterSettings mySettings;
     private final IntroduceParameterData.ExpressionWrapper myParameterInitializer;
@@ -134,7 +133,8 @@ public class GrIntroduceParameterProcessor extends BaseRefactoringProcessor impl
             mySettings.getExpression().accept(anySupers);
             if (anySupers.containsSupers()) {
                 for (UsageInfo usageInfo : usagesIn) {
-                    if (usageInfo.getElement() instanceof PsiMethod || usageInfo instanceof InternalUsageInfo
+                    if (usageInfo.getElement() instanceof PsiMethod
+                        || usageInfo instanceof InternalUsageInfo
                         || PsiTreeUtil.isAncestor(toReplaceIn.getContainingClass(), usageInfo.getElement(), false)) {
                         continue;
                     }
@@ -150,9 +150,8 @@ public class GrIntroduceParameterProcessor extends BaseRefactoringProcessor impl
             }
         }
 
-        for (IntroduceParameterMethodUsagesProcessor processor : IntroduceParameterMethodUsagesProcessor.EP_NAME.getExtensions()) {
-            processor.findConflicts(this, refUsages.get(), conflicts);
-        }
+        myProject.getApplication().getExtensionPoint(IntroduceParameterMethodUsagesProcessor.class)
+            .forEach(processor -> processor.findConflicts(this, refUsages.get(), conflicts));
 
         return showConflicts(conflicts, usagesIn);
     }
@@ -261,6 +260,7 @@ public class GrIntroduceParameterProcessor extends BaseRefactoringProcessor impl
         fieldConflictsResolver.fix();
     }
 
+    @RequiredWriteAction
     private void processVar() {
         GrVariable var = mySettings.getVar();
         if (var != null && mySettings.removeLocalVariable()) {
@@ -305,6 +305,7 @@ public class GrIntroduceParameterProcessor extends BaseRefactoringProcessor impl
         }
     }
 
+    @RequiredReadAction
     private void processMethodSignature(
         UsageInfo[] usages,
         GrMethod toReplaceIn,
@@ -317,6 +318,7 @@ public class GrIntroduceParameterProcessor extends BaseRefactoringProcessor impl
         }
     }
 
+    @RequiredWriteAction
     private void generateDelegate(GrMethod toReplaceIn, PsiMethod toSearchFor, boolean methodsToProcessAreDifferent) {
         GroovyIntroduceParameterUtil.generateDelegate(toReplaceIn, myParameterInitializer, myProject);
         if (methodsToProcessAreDifferent) {
@@ -334,8 +336,8 @@ public class GrIntroduceParameterProcessor extends BaseRefactoringProcessor impl
     @Nonnull
     @Override
     @RequiredReadAction
-    protected String getCommandName() {
-        return RefactoringLocalize.introduceParameterCommand(DescriptiveNameUtil.getDescriptiveName(mySettings.getToReplaceIn())).get();
+    protected LocalizeValue getCommandName() {
+        return RefactoringLocalize.introduceParameterCommand(DescriptiveNameUtil.getDescriptiveName(mySettings.getToReplaceIn()));
     }
 
     @Nonnull

@@ -107,6 +107,7 @@ public class GroovyInlineLocalProcessor extends BaseRefactoringProcessor {
 
     @Nonnull
     @Override
+    @RequiredReadAction
     protected UsageInfo[] findUsages() {
         Instruction[] controlFlow = mySettings.getFlow();
         ArrayList<BitSet> writes = ControlFlowUtils.inferWriteAccessMap(controlFlow, myLocal);
@@ -121,11 +122,13 @@ public class GroovyInlineLocalProcessor extends BaseRefactoringProcessor {
      * ClosureUsage represents usage of local var inside closure
      */
     private static class ClosureUsage extends UsageInfo {
+        @RequiredReadAction
         private ClosureUsage(@Nonnull PsiReference reference) {
             super(reference);
         }
     }
 
+    @RequiredReadAction
     private static void collectRefs(
         GrVariable variable,
         Instruction[] flow,
@@ -143,11 +146,10 @@ public class GroovyInlineLocalProcessor extends BaseRefactoringProcessor {
                 if (element instanceof GrVariable && element != variable) {
                     continue;
                 }
-                if (!(element instanceof GrReferenceExpression)) {
+                if (!(element instanceof GrReferenceExpression ref)) {
                     continue;
                 }
 
-                GrReferenceExpression ref = (GrReferenceExpression)element;
                 if (ref.isQualified() || ref.resolve() != variable) {
                     continue;
                 }
@@ -162,8 +164,8 @@ public class GroovyInlineLocalProcessor extends BaseRefactoringProcessor {
             }
             else if (element instanceof GrClosableBlock closableBlock) {
                 BitSet prev = writes.get(instruction.num());
-                if (writeInstructionNumber >= 0 && prev.cardinality() == 1 && prev.get(writeInstructionNumber) ||
-                    writeInstructionNumber == -1 && prev.cardinality() == 0) {
+                if (writeInstructionNumber >= 0 && prev.cardinality() == 1 && prev.get(writeInstructionNumber)
+                    || writeInstructionNumber == -1 && prev.cardinality() == 0) {
                     Instruction[] closureFlow = closableBlock.getControlFlow();
                     collectRefs(variable, closureFlow, ControlFlowUtils.inferWriteAccessMap(closureFlow, variable), -1, toInline);
                 }
@@ -174,6 +176,7 @@ public class GroovyInlineLocalProcessor extends BaseRefactoringProcessor {
                     || writeInstructionNumber == -1 && prev.cardinality() == 0) {
                     anonymousClassDef.acceptChildren(new GroovyRecursiveElementVisitor() {
                         @Override
+                        @RequiredReadAction
                         public void visitField(GrField field) {
                             GrExpression initializer = field.getInitializerGroovy();
                             if (initializer != null) {
@@ -183,6 +186,7 @@ public class GroovyInlineLocalProcessor extends BaseRefactoringProcessor {
                         }
 
                         @Override
+                        @RequiredReadAction
                         public void visitMethod(GrMethod method) {
                             GrOpenBlock block = method.getBlock();
                             if (block != null) {
@@ -192,6 +196,7 @@ public class GroovyInlineLocalProcessor extends BaseRefactoringProcessor {
                         }
 
                         @Override
+                        @RequiredReadAction
                         public void visitClassInitializer(GrClassInitializer initializer) {
                             GrOpenBlock block = initializer.getBlock();
                             Instruction[] flow = block.getControlFlow();
@@ -205,7 +210,7 @@ public class GroovyInlineLocalProcessor extends BaseRefactoringProcessor {
 
     @Override
     @RequiredWriteAction
-    protected void performRefactoring(UsageInfo[] usages) {
+    protected void performRefactoring(@Nonnull UsageInfo[] usages) {
         CommonRefactoringUtil.sortDepthFirstRightLeftOrder(usages);
 
         GrExpression initializer = mySettings.getInitializer();
@@ -231,8 +236,7 @@ public class GroovyInlineLocalProcessor extends BaseRefactoringProcessor {
             }
         }
 
-        PsiElement owner = myLocal.getParent().getParent();
-        if (owner instanceof GrVariableDeclarationOwner varDeclarationOwner) {
+        if (myLocal.getParent().getParent() instanceof GrVariableDeclarationOwner varDeclarationOwner) {
             varDeclarationOwner.removeVariable(myLocal);
         }
         else {
@@ -242,7 +246,7 @@ public class GroovyInlineLocalProcessor extends BaseRefactoringProcessor {
 
     @Nonnull
     @Override
-    protected String getCommandName() {
-        return RefactoringLocalize.inlineCommand(myLocal.getName()).get();
+    protected LocalizeValue getCommandName() {
+        return RefactoringLocalize.inlineCommand(myLocal.getName());
     }
 }
