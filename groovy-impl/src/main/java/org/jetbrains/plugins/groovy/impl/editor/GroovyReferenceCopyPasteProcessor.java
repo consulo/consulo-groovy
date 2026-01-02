@@ -16,8 +16,10 @@
 package org.jetbrains.plugins.groovy.impl.editor;
 
 import com.intellij.java.impl.codeInsight.editorActions.CopyPasteReferenceProcessor;
-import com.intellij.java.impl.codeInsight.editorActions.ReferenceData;
+import com.intellij.java.impl.codeInsight.editorActions.JavaReferenceData;
 import com.intellij.java.language.psi.*;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.annotation.component.ExtensionImpl;
 import consulo.document.RangeMarker;
 import consulo.document.util.TextRange;
@@ -27,13 +29,13 @@ import consulo.language.psi.PsiManager;
 import consulo.language.psi.PsiNamedElement;
 import consulo.language.util.IncorrectOperationException;
 import consulo.logging.Logger;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GrReferenceElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.toplevel.imports.GrImportStatement;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 
-import jakarta.annotation.Nullable;
 import java.util.ArrayList;
 
 /**
@@ -44,7 +46,8 @@ public class GroovyReferenceCopyPasteProcessor extends CopyPasteReferenceProcess
   private static final Logger LOG = Logger.getInstance(GroovyReferenceCopyPasteProcessor.class);
 
   @Override
-  protected void addReferenceData(PsiFile file, int startOffset, PsiElement element, ArrayList<ReferenceData> to) {
+  @RequiredWriteAction
+  protected void addReferenceData(PsiFile file, int startOffset, PsiElement element, ArrayList<JavaReferenceData> to) {
     if (element instanceof GrReferenceElement) {
       if (((GrReferenceElement)element).getQualifier() == null) {
         final GroovyResolveResult resolveResult = ((GrReferenceElement)element).advancedResolve();
@@ -74,13 +77,14 @@ public class GroovyReferenceCopyPasteProcessor extends CopyPasteReferenceProcess
 
 
   @Override
-  protected GrReferenceElement[] findReferencesToRestore(PsiFile file, RangeMarker bounds, ReferenceData[] referenceData) {
+  @RequiredReadAction
+  protected GrReferenceElement[] findReferencesToRestore(PsiFile file, RangeMarker bounds, JavaReferenceData[] referenceData) {
     PsiManager manager = file.getManager();
     final JavaPsiFacade facade = JavaPsiFacade.getInstance(manager.getProject());
-    PsiResolveHelper helper = facade.getResolveHelper();
+    PsiResolveHelper helper = PsiResolveHelper.getInstance(manager.getProject());
     GrReferenceElement[] refs = new GrReferenceElement[referenceData.length];
     for (int i = 0; i < referenceData.length; i++) {
-      ReferenceData data = referenceData[i];
+      JavaReferenceData data = referenceData[i];
 
       PsiClass refClass = facade.findClass(data.qClassName, file.getResolveScope());
       if (refClass == null) {
@@ -118,7 +122,7 @@ public class GroovyReferenceCopyPasteProcessor extends CopyPasteReferenceProcess
   }
 
   @Override
-  protected void restoreReferences(ReferenceData[] referenceData, GrReferenceElement[] refs) {
+  protected void restoreReferences(JavaReferenceData[] referenceData, GrReferenceElement[] refs) {
     for (int i = 0; i < refs.length; i++) {
       GrReferenceElement reference = refs[i];
       if (reference == null) {
@@ -126,7 +130,7 @@ public class GroovyReferenceCopyPasteProcessor extends CopyPasteReferenceProcess
       }
       try {
         PsiManager manager = reference.getManager();
-        ReferenceData refData = referenceData[i];
+        JavaReferenceData refData = referenceData[i];
         PsiClass refClass = JavaPsiFacade.getInstance(manager.getProject()).findClass(refData.qClassName, reference.getResolveScope());
         if (refClass != null) {
           if (refData.staticMemberName == null) {
@@ -149,7 +153,7 @@ public class GroovyReferenceCopyPasteProcessor extends CopyPasteReferenceProcess
 
 
   @Nullable
-  private static PsiMember findMember(ReferenceData refData, PsiClass refClass) {
+  private static PsiMember findMember(JavaReferenceData refData, PsiClass refClass) {
     PsiField field = refClass.findFieldByName(refData.staticMemberName, true);
     if (field != null) {
       return field;
