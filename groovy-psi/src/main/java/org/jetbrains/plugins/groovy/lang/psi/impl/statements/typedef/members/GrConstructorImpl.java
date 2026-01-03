@@ -54,6 +54,6 @@ public class GrConstructorImpl extends GrMethodBaseImpl implements GrMethod {
   public GrReflectedMethod[] getReflectedMethods() {
     return LanguageCachedValueUtil.getCachedValue(this,
                                                   () -> CachedValueProvider.Result.create(GrReflectedMethodImpl.createReflectedConstructors(
-                                                    GrConstructorImpl.this), PsiModificationTracker.OUT_OF_CODE_BLOCK_MODIFICATION_COUNT));
+                                                    GrConstructorImpl.this), PsiModificationTracker.MODIFICATION_COUNT));
   }
 }

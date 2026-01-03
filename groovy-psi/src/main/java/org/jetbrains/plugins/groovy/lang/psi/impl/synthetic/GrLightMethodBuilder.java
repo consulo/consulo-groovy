@@ -167,7 +167,7 @@ public class GrLightMethodBuilder extends LightElement implements GrMethod, Orig
       @Override
       public Result<GrReflectedMethod[]> compute() {
         return Result.create(GrReflectedMethodImpl.createReflectedMethods(GrLightMethodBuilder.this),
-                             PsiModificationTracker.OUT_OF_CODE_BLOCK_MODIFICATION_COUNT);
+                             PsiModificationTracker.MODIFICATION_COUNT);
       }
     });
   }

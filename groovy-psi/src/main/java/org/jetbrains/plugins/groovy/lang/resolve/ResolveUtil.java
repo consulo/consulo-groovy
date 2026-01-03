@@ -407,7 +407,7 @@ public class ResolveUtil {
         @Override
         public Result<Map<String, Map<String, PsiType>>> compute() {
           final Map<String, Map<String, PsiType>> result = new ConcurrentHashMap<String, Map<String, PsiType>>();
-          return Result.create(result, PsiModificationTracker.JAVA_STRUCTURE_MODIFICATION_COUNT,
+          return Result.create(result, PsiModificationTracker.MODIFICATION_COUNT,
                                ProjectRootManager.getInstance(project));
         }
       });

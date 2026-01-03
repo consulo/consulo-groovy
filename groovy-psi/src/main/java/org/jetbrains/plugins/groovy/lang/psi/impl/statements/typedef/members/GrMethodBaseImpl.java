@@ -578,6 +578,6 @@ public abstract class GrMethodBaseImpl extends GrStubElementBase<GrMethodStub> i
   public GrReflectedMethod[] getReflectedMethods() {
     return LanguageCachedValueUtil.getCachedValue(this,
                                                   () -> CachedValueProvider.Result.create(GrReflectedMethodImpl.createReflectedMethods(
-                                                    GrMethodBaseImpl.this), PsiModificationTracker.OUT_OF_CODE_BLOCK_MODIFICATION_COUNT));
+                                                    GrMethodBaseImpl.this), PsiModificationTracker.MODIFICATION_COUNT));
   }
 }

@@ -415,7 +415,7 @@ public class GrModifierListImpl extends GrStubElementBase<GrModifierListStub> im
       @Override
       public Result<GrAnnotation[]> compute() {
         return Result.create(GrAnnotationCollector.getResolvedAnnotations(GrModifierListImpl.this),
-                             PsiModificationTracker.JAVA_STRUCTURE_MODIFICATION_COUNT);
+                             PsiModificationTracker.MODIFICATION_COUNT);
       }
     });
   }

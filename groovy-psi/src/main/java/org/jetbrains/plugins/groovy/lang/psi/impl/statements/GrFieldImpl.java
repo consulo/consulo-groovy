@@ -199,7 +199,7 @@ public class GrFieldImpl extends GrVariableBaseImpl<GrFieldStub> implements GrFi
       @Override
       public Result<GrAccessorMethod> compute() {
         return Result.create(GrAccessorMethodImpl.createSetterMethod(GrFieldImpl.this),
-                             PsiModificationTracker.OUT_OF_CODE_BLOCK_MODIFICATION_COUNT);
+                             PsiModificationTracker.MODIFICATION_COUNT);
       }
     });
   }
@@ -212,7 +212,7 @@ public class GrFieldImpl extends GrVariableBaseImpl<GrFieldStub> implements GrFi
       @Override
       public Result<GrAccessorMethod[]> compute() {
         return Result.create(GrAccessorMethodImpl.createGetterMethods(GrFieldImpl.this),
-                             PsiModificationTracker.OUT_OF_CODE_BLOCK_MODIFICATION_COUNT);
+                             PsiModificationTracker.MODIFICATION_COUNT);
       }
     });
   }

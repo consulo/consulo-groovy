@@ -106,7 +106,7 @@ public class GrTypeDefinitionMembersCache {
       public Result<PsiMethod[]> compute() {
         List<PsiMethod> result = ContainerUtil.findAll(myDefinition.getMethods(), CONSTRUCTOR_CONDITION);
         return Result.create(result.toArray(new PsiMethod[result.size()]), myTreeChangeTracker,
-                             PsiModificationTracker.OUT_OF_CODE_BLOCK_MODIFICATION_COUNT);
+                             PsiModificationTracker.MODIFICATION_COUNT);
       }
     });
   }
@@ -134,7 +134,7 @@ public class GrTypeDefinitionMembersCache {
         List<GrField> fields = getFieldsImpl();
         return Result.create(fields.toArray(new GrField[fields.size()]),
                              myTreeChangeTracker,
-                             PsiModificationTracker.OUT_OF_CODE_BLOCK_MODIFICATION_COUNT);
+                             PsiModificationTracker.MODIFICATION_COUNT);
       }
     });
   }
@@ -151,7 +151,7 @@ public class GrTypeDefinitionMembersCache {
       @Override
       public Result<List<GrField>> compute() {
         return Result.create(AstTransformContributor.runContributorsForFields(myDefinition), myTreeChangeTracker,
-                             PsiModificationTracker.OUT_OF_CODE_BLOCK_MODIFICATION_COUNT);
+                             PsiModificationTracker.MODIFICATION_COUNT);
       }
     });
   }
@@ -173,7 +173,7 @@ public class GrTypeDefinitionMembersCache {
           Collections.addAll(result, field.getGetters());
         }
         return Result.create(result.toArray(new PsiMethod[result.size()]), myTreeChangeTracker,
-                             PsiModificationTracker.OUT_OF_CODE_BLOCK_MODIFICATION_COUNT);
+                             PsiModificationTracker.MODIFICATION_COUNT);
       }
     });
   }
@@ -184,7 +184,7 @@ public class GrTypeDefinitionMembersCache {
 
   public static class TraitCollector extends AstTransformContributor {
     private abstract static class TraitProcessor<T extends PsiElement> {
-      private final ArrayList<CandidateInfo> result = ContainerUtil.newArrayList();
+      private final ArrayList<CandidateInfo> result = new ArrayList<>();
       private final Set<PsiClass> processed = new HashSet<>();
 
       public TraitProcessor(@Nonnull GrTypeDefinition superClass, @Nonnull PsiSubstitutor substitutor) {

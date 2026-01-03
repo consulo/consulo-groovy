@@ -133,7 +133,7 @@ public class GdkMethodHolder {
           return Result.create(result, rootManager);
         }
 
-        return Result.create(result, PsiModificationTracker.JAVA_STRUCTURE_MODIFICATION_COUNT, rootManager);
+        return Result.create(result, PsiModificationTracker.MODIFICATION_COUNT, rootManager);
       }
     }, false);
   }

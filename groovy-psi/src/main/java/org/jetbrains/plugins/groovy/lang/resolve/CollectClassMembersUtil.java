@@ -86,7 +86,7 @@ public class CollectClassMembersUtil {
         Map<String, CandidateInfo> allInnerClasses = new HashMap<String, CandidateInfo>();
 
         processClass(aClass, allFields, allMethods, allInnerClasses, new HashSet<PsiClass>(), PsiSubstitutor.EMPTY, includeSynthetic);
-        return Result.create(Trinity.create(allFields, allMethods, allInnerClasses), PsiModificationTracker.OUT_OF_CODE_BLOCK_MODIFICATION_COUNT);
+        return Result.create(Trinity.create(allFields, allMethods, allInnerClasses), PsiModificationTracker.MODIFICATION_COUNT);
       }
     }, false);
   }

@@ -278,7 +278,7 @@ public abstract class GrTypeDefinitionImpl extends GrStubElementBase<GrTypeDefin
   public PsiClassType[] getExtendsListTypes() {
     return LanguageCachedValueUtil.getCachedValue(this,
                                                   () -> CachedValueProvider.Result.create(GrClassImplUtil.getExtendsListTypes(
-                                                    GrTypeDefinitionImpl.this), PsiModificationTracker.JAVA_STRUCTURE_MODIFICATION_COUNT));
+                                                    GrTypeDefinitionImpl.this), PsiModificationTracker.MODIFICATION_COUNT));
   }
 
   @Nonnull
@@ -288,7 +288,7 @@ public abstract class GrTypeDefinitionImpl extends GrStubElementBase<GrTypeDefin
       @Override
       public Result<PsiClassType[]> compute() {
         return Result.create(GrClassImplUtil.getImplementsListTypes(GrTypeDefinitionImpl.this),
-                             PsiModificationTracker.JAVA_STRUCTURE_MODIFICATION_COUNT);
+                             PsiModificationTracker.MODIFICATION_COUNT);
       }
     });
   }
@@ -305,7 +305,7 @@ public abstract class GrTypeDefinitionImpl extends GrStubElementBase<GrTypeDefin
       @Override
       public Result<PsiClass[]> compute() {
         return Result
-          .create(GrClassImplUtil.getInterfaces(GrTypeDefinitionImpl.this), PsiModificationTracker.JAVA_STRUCTURE_MODIFICATION_COUNT);
+          .create(GrClassImplUtil.getInterfaces(GrTypeDefinitionImpl.this), PsiModificationTracker.MODIFICATION_COUNT);
       }
     });
   }

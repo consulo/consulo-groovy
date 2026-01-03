@@ -120,7 +120,7 @@ public abstract class GrBlockImpl extends LazyParseablePsiElement implements GrC
           try {
             //ResolveProfiler.start();
             final Instruction[] flow = new ControlFlowBuilder(getProject()).buildControlFlow(GrBlockImpl.this);
-            return Result.create(flow, getContainingFile(), PsiModificationTracker.JAVA_STRUCTURE_MODIFICATION_COUNT);
+            return Result.create(flow, getContainingFile(), PsiModificationTracker.MODIFICATION_COUNT);
           }
           finally {
             //final long time = ResolveProfiler.finish();

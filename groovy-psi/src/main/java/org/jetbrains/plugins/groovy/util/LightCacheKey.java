@@ -66,7 +66,7 @@ public class LightCacheKey<T> {
     return new LightCacheKey<T>() {
       @Override
       protected long getModificationCount(PsiElement holder) {
-        return holder.getManager().getModificationTracker().getJavaStructureModificationCount();
+        return holder.getManager().getModificationTracker().getModificationCount();
       }
     };
   }

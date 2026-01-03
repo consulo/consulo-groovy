@@ -622,7 +622,7 @@ public class GdkMethodUtil {
       @Override
       public Result<PsiClassType> compute() {
         return Result.create(inferCategoryType(categoryAnnotationOwner),
-                             PsiModificationTracker.OUT_OF_CODE_BLOCK_MODIFICATION_COUNT);
+                             PsiModificationTracker.MODIFICATION_COUNT);
       }
 
       @Nullable

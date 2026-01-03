@@ -374,7 +374,7 @@ public class CreateParameterForFieldIntention extends Intention {
             CachedValuesManager.getManager(constructor.getProject()).createCachedValue(new CachedValueProvider<List<GrField>>() {
                 @Override
                 public Result<List<GrField>> compute() {
-                    return Result.create(findCandidates(constructor, clazz), PsiModificationTracker.JAVA_STRUCTURE_MODIFICATION_COUNT);
+                    return Result.create(findCandidates(constructor, clazz), PsiModificationTracker.MODIFICATION_COUNT);
                 }
             }, false);
         constructor.putUserData(FIELD_CANDIDATES, cachedValue);

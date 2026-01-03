@@ -252,7 +252,7 @@ public class GrClassImplUtil {
         List<PsiMethod> list = ContainerUtil.newArrayList();
         getAllMethodsInner(grType, list, new HashSet<PsiClass>());
         return Result.create(list.toArray(new PsiMethod[list.size()]),
-                             PsiModificationTracker.JAVA_STRUCTURE_MODIFICATION_COUNT, grType);
+                             PsiModificationTracker.MODIFICATION_COUNT, grType);
       }
     });
   }

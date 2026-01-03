@@ -114,7 +114,7 @@ public class GrGdkMethodImpl extends LightMethodBuilder implements GrGdkMethod {
         @Override
         public Result<GrGdkMethodImpl> compute() {
           return Result.create(new GrGdkMethodImpl(original, isStatic, originInfo),
-                               PsiModificationTracker.OUT_OF_CODE_BLOCK_MODIFICATION_COUNT);
+                               PsiModificationTracker.MODIFICATION_COUNT);
         }
       }, false);
       original.putUserData(cachedValueKey, cachedValue);

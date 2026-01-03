@@ -102,7 +102,7 @@ public class GrLightField extends GrLightVariable implements GrField {
       @Override
       public Result<GrAccessorMethod> compute() {
         return Result.create(GrAccessorMethodImpl.createSetterMethod(GrLightField.this),
-                             PsiModificationTracker.OUT_OF_CODE_BLOCK_MODIFICATION_COUNT);
+                             PsiModificationTracker.MODIFICATION_COUNT);
       }
     });
   }
@@ -115,7 +115,7 @@ public class GrLightField extends GrLightVariable implements GrField {
       @Override
       public Result<GrAccessorMethod[]> compute() {
         return Result.create(GrAccessorMethodImpl.createGetterMethods(GrLightField.this),
-                             PsiModificationTracker.OUT_OF_CODE_BLOCK_MODIFICATION_COUNT);
+                             PsiModificationTracker.MODIFICATION_COUNT);
       }
     });
   }
