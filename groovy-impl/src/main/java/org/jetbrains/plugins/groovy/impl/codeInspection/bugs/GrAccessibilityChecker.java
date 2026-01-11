@@ -133,14 +133,14 @@ public class GrAccessibilityChecker {
 
         if (ref.getParent() instanceof GrConstructorCall constructorCall) {
             LocalizeValue constructorError = checkConstructorCall(constructorCall, ref);
-            if (constructorError != LocalizeValue.empty()) {
+            if (constructorError.isNotEmpty()) {
                 return createAnnotationForRef(ref, isCompileStatic, constructorError);
             }
         }
 
         GroovyResolveResult result = ref.advancedResolve();
         LocalizeValue error = checkResolveResult(ref, result) ? GroovyLocalize.cannotAccess(ref.getReferenceName()) : LocalizeValue.empty();
-        if (error != LocalizeValue.empty()) {
+        if (error.isNotEmpty()) {
             HighlightInfo info = createAnnotationForRef(ref, isCompileStatic, error);
             registerFixes(ref, result, info);
             return info;
