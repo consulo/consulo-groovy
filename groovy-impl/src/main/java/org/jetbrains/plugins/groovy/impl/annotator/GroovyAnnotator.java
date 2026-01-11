@@ -1336,7 +1336,7 @@ public class GroovyAnnotator extends GroovyElementVisitor {
             }
             LocalizeValue highlightInfo =
                 checkSuperMethodSignature(superMethod, superMethodSignature, superReturnType, method, signature, returnType);
-            if (highlightInfo != LocalizeValue.empty()) {
+            if (highlightInfo.isNotEmpty()) {
                 holder.newError(highlightInfo)
                     .range(toHighlight)
                     .create();
