@@ -23,7 +23,7 @@ import consulo.execution.ui.RunContentDescriptor;
 import consulo.execution.ui.console.language.AbstractConsoleRunnerWithHistory;
 import consulo.execution.ui.console.language.LanguageConsoleView;
 import consulo.execution.ui.console.language.ProcessBackedConsoleExecuteActionHandler;
-import consulo.ide.impl.idea.execution.console.ConsoleHistoryController;
+import consulo.ide.impl.idea.execution.console.ConsoleHistoryControllerImpl;
 import consulo.java.execution.configurations.OwnJavaParameters;
 import consulo.java.execution.projectRoots.OwnJdkUtil;
 import consulo.java.language.module.extension.JavaModuleExtension;
@@ -38,10 +38,10 @@ import consulo.ui.ex.action.AnAction;
 import consulo.ui.ex.action.DefaultActionGroup;
 import consulo.ui.ex.awt.Messages;
 import consulo.util.dataholder.Key;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.impl.console.BuildAndRestartConsoleAction;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyFileImpl;
 
-import jakarta.annotation.Nonnull;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -111,7 +111,7 @@ public class GroovyShellRunnerImpl extends AbstractConsoleRunnerWithHistory<Lang
           return GROOVY_SHELL_EXECUTE;
         }
       };
-    new ConsoleHistoryController(getConsoleTitle(), null, getConsoleView()).install();
+    new ConsoleHistoryControllerImpl(getConsoleTitle(), null, getConsoleView()).install();
     return handler;
   }
 
