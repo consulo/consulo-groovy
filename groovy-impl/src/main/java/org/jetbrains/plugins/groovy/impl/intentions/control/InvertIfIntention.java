@@ -17,12 +17,12 @@ package org.jetbrains.plugins.groovy.impl.intentions.control;
 
 import consulo.codeEditor.Editor;
 import consulo.groovy.impl.localize.GroovyIntentionLocalize;
-import consulo.ide.impl.idea.util.ArrayUtilRt;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.util.PsiTreeUtil;
 import consulo.language.util.IncorrectOperationException;
 import consulo.localize.LocalizeValue;
 import consulo.project.Project;
+import consulo.util.collection.ArrayUtil;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.codeInspection.utils.ControlFlowUtils;
@@ -153,7 +153,7 @@ public class InvertIfIntention extends Intention {
         final Instruction[] flow = flowOwner.getControlFlow();
 
         final GrStatement[] statements = owner.getStatements();
-        final int index = ArrayUtilRt.find(statements, ifStatement);
+        final int index = ArrayUtil.find(statements, ifStatement);
         if (index == statements.length - 1) {
             return false;
         }

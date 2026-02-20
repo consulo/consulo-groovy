@@ -17,13 +17,18 @@ package org.jetbrains.plugins.groovy.impl.refactoring.introduce.variable;
 
 import com.intellij.java.impl.refactoring.util.RefactoringUtil;
 import com.intellij.java.language.psi.codeStyle.JavaCodeStyleManager;
-import consulo.ide.impl.idea.util.ArrayUtilRt;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiReference;
 import consulo.language.psi.PsiUtilCore;
 import consulo.language.util.IncorrectOperationException;
 import consulo.logging.Logger;
+import consulo.util.collection.ArrayUtil;
 import consulo.util.collection.ContainerUtil;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
+import org.jetbrains.plugins.groovy.impl.refactoring.GroovyRefactoringUtil;
+import org.jetbrains.plugins.groovy.impl.refactoring.introduce.GrIntroduceContext;
+import org.jetbrains.plugins.groovy.impl.refactoring.introduce.GrIntroduceHandlerBase;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.*;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlock;
@@ -33,12 +38,7 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.literals
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrAccessorMethod;
 import org.jetbrains.plugins.groovy.lang.psi.api.util.GrStatementOwner;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
-import org.jetbrains.plugins.groovy.impl.refactoring.GroovyRefactoringUtil;
-import org.jetbrains.plugins.groovy.impl.refactoring.introduce.GrIntroduceContext;
-import org.jetbrains.plugins.groovy.impl.refactoring.introduce.GrIntroduceHandlerBase;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
 import java.util.List;
 
 /**
@@ -72,7 +72,7 @@ public abstract class GrIntroduceLocalVariableProcessor {
 
     preprocessOccurrences();
 
-    int expressionIndex = ArrayUtilRt.find(myOccurrences, myExpression);
+    int expressionIndex = ArrayUtil.find(myOccurrences, myExpression);
     final PsiElement[] replaced = myProcessUsages ? processOccurrences() : myOccurrences;
     PsiElement replacedExpression = replaced[expressionIndex];
     GrStatement anchor = GrIntroduceHandlerBase.getAnchor(replaced, myContext.getScope());
