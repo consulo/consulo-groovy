@@ -54,21 +54,21 @@ public class GrDocFieldReferenceImpl extends GrDocMemberReferenceImpl implements
   }
 
   public PsiElement handleElementRename(String newElementName) throws IncorrectOperationException {
-    final PsiElement resolved = resolve();
+    PsiElement resolved = resolve();
     if (resolved instanceof PsiMethod) {
-      final PsiMethod method = (PsiMethod) resolved;
-      final String oldName = getReferenceName();
+      PsiMethod method = (PsiMethod) resolved;
+      String oldName = getReferenceName();
       if (!method.getName().equals(oldName)) { //was property reference to accessor
         if (PropertyUtil.isSimplePropertyAccessor(method)) {
-          final String newPropertyName = PropertyUtil.getPropertyName(newElementName);
+          String newPropertyName = PropertyUtil.getPropertyName(newElementName);
           if (newPropertyName != null) {
             return super.handleElementRename(newPropertyName);
           }
         }
       }
     } else if (resolved instanceof GrField && ((GrField) resolved).isProperty()) {
-      final GrField field = (GrField) resolved;
-      final String oldName = getReferenceName();
+      GrField field = (GrField) resolved;
+      String oldName = getReferenceName();
       if (oldName != null && oldName.equals(field.getName())) {
         if (oldName.startsWith("get")) {
           return super.handleElementRename("get" + StringUtil.capitalize(newElementName));

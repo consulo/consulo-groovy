@@ -47,7 +47,7 @@ public class GrMethodConflictUtil {
         PsiClass clazz,
         GrMethod prototype,
         GrMethod refactoredMethod,
-        final MultiMap<PsiElement, LocalizeValue> conflicts,
+        MultiMap<PsiElement, LocalizeValue> conflicts,
         boolean excludeJavaConflicts
     ) {
         List<MethodSignature> prototypeSignatures = GrClosureSignatureUtil.generateAllSignaturesForMethod(prototype, PsiSubstitutor.EMPTY);
@@ -64,7 +64,7 @@ public class GrMethodConflictUtil {
         final MultiMap<PsiElement, LocalizeValue> conflicts,
         final List<MethodSignature> prototypeSignatures
     ) {
-        final boolean isStatic = prototype.hasModifierProperty(PsiModifier.STATIC);
+        boolean isStatic = prototype.hasModifierProperty(PsiModifier.STATIC);
         final String name = prototype.getName();
         if (!GroovyPropertyUtils.isProperty(clazz, name, isStatic)) {
             return;
@@ -72,7 +72,7 @@ public class GrMethodConflictUtil {
 
         final PsiMethod getter = GroovyPropertyUtils.findPropertyGetter(clazz, name, isStatic, true);
 
-        final PsiType returnType;
+        PsiType returnType;
         if (getter instanceof GrMethod) {
             returnType = ((GrMethod) getter).getInferredReturnType();
         }
@@ -86,14 +86,14 @@ public class GrMethodConflictUtil {
             return;
         }
 
-        final GrSignature signature = ((GrClosureType) returnType).getSignature();
+        GrSignature signature = ((GrClosureType) returnType).getSignature();
         signature.accept(new GrRecursiveSignatureVisitor() {
             @Override
             public void visitClosureSignature(GrClosureSignature signature) {
                 NextSignature:
                 for (MethodSignature prototypeSignature : prototypeSignatures) {
-                    final GrClosureParameter[] params = signature.getParameters();
-                    final PsiType[] types = prototypeSignature.getParameterTypes();
+                    GrClosureParameter[] params = signature.getParameters();
+                    PsiType[] types = prototypeSignature.getParameterTypes();
                     if (types.length != params.length) {
                         continue;
                     }

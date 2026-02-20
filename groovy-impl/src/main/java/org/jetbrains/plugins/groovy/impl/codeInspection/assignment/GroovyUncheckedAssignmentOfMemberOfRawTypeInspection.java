@@ -81,16 +81,16 @@ public class GroovyUncheckedAssignmentOfMemberOfRawTypeInspection extends BaseIn
     private static class Visitor extends BaseInspectionVisitor {
         @Override
         public void visitReturnStatement(GrReturnStatement returnStatement) {
-            final GrExpression value = returnStatement.getReturnValue();
+            GrExpression value = returnStatement.getReturnValue();
             if (value != null) {
-                final PsiType type = value.getType();
+                PsiType type = value.getType();
                 if (type != null) {
-                    final GrParameterListOwner owner = PsiTreeUtil.getParentOfType(returnStatement, GrMethod.class, GrClosableBlock.class);
+                    GrParameterListOwner owner = PsiTreeUtil.getParentOfType(returnStatement, GrMethod.class, GrClosableBlock.class);
                     if (owner instanceof PsiMethod) {
-                        final PsiMethod method = (PsiMethod) owner;
+                        PsiMethod method = (PsiMethod) owner;
                         if (!method.isConstructor()) {
-                            final PsiType methodType = method.getReturnType();
-                            final PsiType returnType = value.getType();
+                            PsiType methodType = method.getReturnType();
+                            PsiType returnType = value.getType();
                             if (methodType != null) {
                                 if (!PsiType.VOID.equals(methodType)) {
                                     if (returnType != null) {
@@ -106,16 +106,16 @@ public class GroovyUncheckedAssignmentOfMemberOfRawTypeInspection extends BaseIn
 
         @Override
         public void visitNamedArgument(GrNamedArgument argument) {
-            final GrArgumentLabel label = argument.getLabel();
+            GrArgumentLabel label = argument.getLabel();
             if (label != null) {
                 PsiType expectedType = label.getExpectedArgumentType();
                 if (expectedType != null) {
                     expectedType = TypeConversionUtil.erasure(expectedType);
-                    final GrExpression expr = argument.getExpression();
+                    GrExpression expr = argument.getExpression();
                     if (expr != null) {
-                        final PsiType argType = expr.getType();
+                        PsiType argType = expr.getType();
                         if (argType != null) {
-                            final PsiClassType listType = JavaPsiFacade.getInstance(argument.getProject()).getElementFactory()
+                            PsiClassType listType = JavaPsiFacade.getInstance(argument.getProject()).getElementFactory()
                                 .createTypeByFQClassName(CommonClassNames.JAVA_UTIL_LIST, argument.getResolveScope());
                             if (listType.isAssignableFrom(argType)) {
                                 return; //this is constructor arguments list
@@ -163,10 +163,10 @@ public class GroovyUncheckedAssignmentOfMemberOfRawTypeInspection extends BaseIn
 
             // For assignments with spread dot
             if (PsiImplUtil.isSpreadAssignment(lValue) && lType != null && lType instanceof PsiClassType) {
-                final PsiClassType pct = (PsiClassType) lType;
-                final PsiClass clazz = pct.resolve();
+                PsiClassType pct = (PsiClassType) lType;
+                PsiClass clazz = pct.resolve();
                 if (clazz != null && CommonClassNames.JAVA_UTIL_LIST.equals(clazz.getQualifiedName())) {
-                    final PsiType[] types = pct.getParameters();
+                    PsiType[] types = pct.getParameters();
                     if (types.length == 1 && types[0] != null && rType != null) {
                         checkAssignability(types[0], rValue, assignment);
                     }
@@ -184,7 +184,7 @@ public class GroovyUncheckedAssignmentOfMemberOfRawTypeInspection extends BaseIn
 
         private void checkAssignability(PsiType lType, GrExpression rExpr, GroovyPsiElement element) {
             if (PsiUtil.isRawClassMemberAccess(rExpr)) {
-                final PsiType rType = rExpr.getType();
+                PsiType rType = rExpr.getType();
                 if (!TypesUtil.isAssignable(lType, rType, element)) {
                     registerError(element, lType, rType);
                 }

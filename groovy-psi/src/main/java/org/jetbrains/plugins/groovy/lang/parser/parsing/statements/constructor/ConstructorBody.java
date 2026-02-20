@@ -69,13 +69,13 @@ public class ConstructorBody {
   private static boolean parseExplicitConstructor(PsiBuilder builder, GroovyParser parser) {
     boolean result = false;
     if (ParserUtils.lookAhead(builder, GroovyTokenTypes.kTHIS, GroovyTokenTypes.mLPAREN)) {
-      final PsiBuilder.Marker marker = builder.mark();
+      PsiBuilder.Marker marker = builder.mark();
       ParserUtils.getToken(builder, GroovyTokenTypes.kTHIS);
       marker.done(GroovyElementTypes.REFERENCE_EXPRESSION);
       result = true;
     }
     if (ParserUtils.lookAhead(builder, GroovyTokenTypes.kSUPER, GroovyTokenTypes.mLPAREN)) {
-      final PsiBuilder.Marker marker = builder.mark();
+      PsiBuilder.Marker marker = builder.mark();
       ParserUtils.getToken(builder, GroovyTokenTypes.kSUPER);
       marker.done(GroovyElementTypes.REFERENCE_EXPRESSION);
       result = true;

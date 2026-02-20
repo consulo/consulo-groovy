@@ -133,7 +133,7 @@ class MapArgumentCompletionProvider implements CompletionProvider
       @Override
       public void visitElement(PsiElement element) {
         if (element instanceof GrArgumentLabel) {
-          final String name = ((GrArgumentLabel)element).getName();
+          String name = ((GrArgumentLabel)element).getName();
           if (GroovyNamesUtil.isIdentifier(name)) {
             map.put(name, NamedArgumentDescriptor.SIMPLE_UNLIKELY);
           }

@@ -87,15 +87,15 @@ public abstract class GrAbstractInplaceIntroducer<Settings extends GrIntroduceSe
     if (variable == null || !variable.isValid()) {
       return null;
     }
-    final PsiElement refVariableElement = containingFile.findElementAt(marker.getStartOffset());
-    final PsiElement refVariableElementParent = refVariableElement != null ? refVariableElement.getParent() : null;
+    PsiElement refVariableElement = containingFile.findElementAt(marker.getStartOffset());
+    PsiElement refVariableElementParent = refVariableElement != null ? refVariableElement.getParent() : null;
     GrExpression expression = refVariableElementParent instanceof GrNewExpression && refVariableElement.getNode()
                                                                                                        .getElementType() == GroovyTokenTypes.kNEW ? (GrNewExpression)refVariableElementParent :
       refVariableElementParent instanceof GrParenthesizedExpression ? ((GrParenthesizedExpression)
         refVariableElementParent).getOperand() : PsiTreeUtil.getParentOfType(refVariableElement,
                                                                              GrReferenceExpression.class);
     if (expression instanceof GrReferenceExpression && !(expression.getParent() instanceof GrMethodCall)) {
-      final String referenceName = ((GrReferenceExpression)expression).getReferenceName();
+      String referenceName = ((GrReferenceExpression)expression).getReferenceName();
       if (((GrReferenceExpression)expression).resolve() == variable ||
         Comparing.strEqual(variable.getName(), referenceName) ||
         Comparing.strEqual(exprText, referenceName)) {
@@ -107,7 +107,7 @@ public abstract class GrAbstractInplaceIntroducer<Settings extends GrIntroduceSe
       expression = PsiTreeUtil.getParentOfType(refVariableElement, GrExpression.class);
     }
     while (expression instanceof GrReferenceExpression || expression instanceof GrCall) {
-      final PsiElement parent = expression.getParent();
+      PsiElement parent = expression.getParent();
       if (parent instanceof GrMethodCallExpression) {
         if (parent.getText().equals(exprText)) {
           return (GrExpression)parent;
@@ -143,9 +143,9 @@ public abstract class GrAbstractInplaceIntroducer<Settings extends GrIntroduceSe
       super.updateTitle(variable, value);
     }
     else {
-      final String variableText = variable.getParent().getText();
-      final PsiElement identifier = variable.getNameIdentifierGroovy();
-      final int startOffsetInParent = identifier.getStartOffsetInParent() + variable.getStartOffsetInParent();
+      String variableText = variable.getParent().getText();
+      PsiElement identifier = variable.getNameIdentifierGroovy();
+      int startOffsetInParent = identifier.getStartOffsetInParent() + variable.getStartOffsetInParent();
       setPreviewText(variableText.substring(0, startOffsetInParent) + value + variableText.substring
         (startOffsetInParent + identifier.getTextLength()));
       revalidate();

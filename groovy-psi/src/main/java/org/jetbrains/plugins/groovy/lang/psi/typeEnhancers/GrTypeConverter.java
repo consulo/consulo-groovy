@@ -46,7 +46,7 @@ public abstract class GrTypeConverter {
 
   @Nullable
   protected static GrLiteral getLiteral(@Nonnull GroovyPsiElement context) {
-    final GrExpression expression;
+    GrExpression expression;
     if (context instanceof GrTypeCastExpression) {
       expression = ((GrTypeCastExpression)context).getOperand();
     }
@@ -112,7 +112,7 @@ public abstract class GrTypeConverter {
                                           @Nonnull PsiType actualType,
                                           @Nonnull GroovyPsiElement context,
                                           @Nonnull ApplicableTo currentPosition) {
-    final Boolean result = isConvertible(targetType, actualType, context);
+    Boolean result = isConvertible(targetType, actualType, context);
     return result == null ? null
                           : result ? ConversionResult.OK
                                    : ConversionResult.ERROR;

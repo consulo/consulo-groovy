@@ -66,23 +66,23 @@ public abstract class CreateClassFix {
             @RequiredUIAccess
             protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor)
                 throws IncorrectOperationException {
-                final PsiFile file = element.getContainingFile();
+                PsiFile file = element.getContainingFile();
                 if (!(file instanceof GroovyFileBase)) {
                     return;
                 }
                 GroovyFileBase groovyFile = (GroovyFileBase)file;
-                final PsiManager manager = myRefElement.getManager();
+                PsiManager manager = myRefElement.getManager();
 
-                final String qualifier = ReadAction.compute(() -> groovyFile instanceof GroovyFile ? groovyFile.getPackageName() : "");
-                final String name = ReadAction.compute(myRefElement::getReferenceName);
-                final Module module = ReadAction.compute(file::getModule);
+                String qualifier = ReadAction.compute(() -> groovyFile instanceof GroovyFile ? groovyFile.getPackageName() : "");
+                String name = ReadAction.compute(myRefElement::getReferenceName);
+                Module module = ReadAction.compute(file::getModule);
 
                 PsiDirectory targetDirectory = getTargetDirectory(project, qualifier, name, module, getText());
                 if (targetDirectory == null) {
                     return;
                 }
 
-                final GrTypeDefinition targetClass =
+                GrTypeDefinition targetClass =
                     createClassByType(targetDirectory, name, manager, myRefElement, GroovyTemplates.GROOVY_CLASS, true);
                 if (targetClass == null) {
                     return;
@@ -113,7 +113,7 @@ public abstract class CreateClassFix {
         @Nonnull GrTypeDefinition targetClass,
         @Nonnull Project project
     ) {
-        final AccessToken writeLock = WriteAction.start();
+        AccessToken writeLock = WriteAction.start();
         try {
             ChooseTypeExpression[] paramTypesExpressions = new ChooseTypeExpression[argTypes.length];
             String[] paramTypes = new String[argTypes.length];
@@ -134,7 +134,7 @@ public abstract class CreateClassFix {
                 GroovyPsiElementFactory.getInstance(project).createConstructorFromText(name, paramTypes, paramNames, "{\n}");
 
             method = (GrMethod)targetClass.addBefore(method, null);
-            final PsiElement context = PsiTreeUtil.getParentOfType(refElement, PsiMethod.class, PsiClass.class, PsiFile.class);
+            PsiElement context = PsiTreeUtil.getParentOfType(refElement, PsiMethod.class, PsiClass.class, PsiFile.class);
             IntentionUtils.createTemplateForMethod(
                 argTypes,
                 paramTypesExpressions,
@@ -156,7 +156,7 @@ public abstract class CreateClassFix {
             @RequiredUIAccess
             protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor)
                 throws IncorrectOperationException {
-                final PsiFile file = element.getContainingFile();
+                PsiFile file = element.getContainingFile();
                 if (!(file instanceof GroovyFileBase)) {
                     return;
                 }
@@ -173,7 +173,7 @@ public abstract class CreateClassFix {
             }
 
             @RequiredReadAction
-            private void createInnerClass(Project project, final Editor editor, PsiElement qualifier) {
+            private void createInnerClass(Project project, Editor editor, PsiElement qualifier) {
                 PsiElement resolved = resolveQualifier(qualifier);
                 if (!(resolved instanceof PsiClass)) {
                     return;
@@ -219,7 +219,7 @@ public abstract class CreateClassFix {
                         return classType.resolve();
                     }
                     else if (qualifier instanceof GrReferenceExpression referenceExpression) {
-                        final PsiElement resolved = referenceExpression.resolve();
+                        PsiElement resolved = referenceExpression.resolve();
                         if (resolved instanceof PsiClass || resolved instanceof PsiPackage) {
                             return resolved;
                         }
@@ -243,18 +243,18 @@ public abstract class CreateClassFix {
 
             @RequiredUIAccess
             private void createTopLevelClass(@Nonnull Project project, @Nonnull GroovyFileBase file) {
-                final String pack = getPackage(file);
-                final PsiManager manager = PsiManager.getInstance(project);
-                final String name = myRefElement.getReferenceName();
+                String pack = getPackage(file);
+                PsiManager manager = PsiManager.getInstance(project);
+                String name = myRefElement.getReferenceName();
                 assert name != null;
-                final Module module = ModuleUtilCore.findModuleForPsiElement(file);
+                Module module = ModuleUtilCore.findModuleForPsiElement(file);
                 PsiDirectory targetDirectory = getTargetDirectory(project, pack, name, module, getText());
                 if (targetDirectory == null) {
                     return;
                 }
 
                 String templateName = getTemplateName(getType());
-                final PsiClass targetClass =
+                PsiClass targetClass =
                     createClassByType(targetDirectory, name, manager, myRefElement, templateName, true);
                 if (targetClass == null) {
                     return;
@@ -266,7 +266,7 @@ public abstract class CreateClassFix {
 
             @Nonnull
             private String getPackage(@Nonnull PsiClassOwner file) {
-                final PsiElement qualifier = myRefElement.getQualifier();
+                PsiElement qualifier = myRefElement.getQualifier();
                 if (qualifier instanceof GrReferenceElement referenceElement
                     && referenceElement.resolve() instanceof PsiPackage psiPackage) {
                     return psiPackage.getQualifiedName();
@@ -281,16 +281,16 @@ public abstract class CreateClassFix {
                     return false;
                 }
 
-                final PsiElement qualifier = myRefElement.getQualifier();
+                PsiElement qualifier = myRefElement.getQualifier();
                 return qualifier == null || resolveQualifier(qualifier) != null;
             }
         };
     }
 
     @RequiredUIAccess
-    private static void bindRef(@Nonnull final PsiClass targetClass, @Nonnull final GrReferenceElement ref) {
+    private static void bindRef(@Nonnull PsiClass targetClass, @Nonnull GrReferenceElement ref) {
         targetClass.getApplication().runWriteAction(() -> {
-            final PsiElement newRef = ref.bindToElement(targetClass);
+            PsiElement newRef = ref.bindToElement(targetClass);
             JavaCodeStyleManager.getInstance(targetClass.getProject()).shortenClassReferences(newRef);
         });
     }

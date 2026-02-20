@@ -123,8 +123,8 @@ public class GrEnumTypeDefinitionImpl extends GrTypeDefinitionImpl implements Gr
                                      @Nullable PsiElement lastParent,
                                      @Nonnull PsiElement place) {
     if (ResolveUtil.shouldProcessMethods(processor.getHint(ClassHint.KEY))) {
-      final NameHint nameHint = processor.getHint(NameHint.KEY);
-      final String name = nameHint == null ? null : nameHint.getName(state);
+      NameHint nameHint = processor.getHint(NameHint.KEY);
+      String name = nameHint == null ? null : nameHint.getName(state);
       for (PsiMethod method : getDefEnumMethods()) {
         if (name == null || name.equals(method.getName())) {
           if (!processor.execute(method, state)) return false;
@@ -140,8 +140,8 @@ public class GrEnumTypeDefinitionImpl extends GrTypeDefinitionImpl implements Gr
       @Override
       public Result<PsiMethod[]> compute() {
         PsiMethod[] defMethods = new PsiMethod[4];
-        final PsiManager manager = getManager();
-        final PsiElementFactory factory = JavaPsiFacade.getElementFactory(getProject());
+        PsiManager manager = getManager();
+        PsiElementFactory factory = JavaPsiFacade.getElementFactory(getProject());
         defMethods[0] = new LightMethodBuilder(manager, GroovyLanguage.INSTANCE, "values")
           .setMethodReturnType(factory.createTypeFromText(CommonClassNames.JAVA_UTIL_COLLECTION + "<" + getName() + ">", GrEnumTypeDefinitionImpl.this))
           .setContainingClass(GrEnumTypeDefinitionImpl.this)

@@ -40,14 +40,14 @@ public abstract class GrJoinLinesHandlerBase implements JoinRawLinesHandlerDeleg
   @Override
   public int tryJoinRawLines(Document document, PsiFile file, int start, int end) {
     if (!(file instanceof GroovyFileBase)) return CANNOT_JOIN;
-    final PsiElement element = file.findElementAt(end);
-    final GrStatementOwner statementOwner = PsiTreeUtil.getParentOfType(element, GrStatementOwner.class, true, GroovyFileBase.class);
+    PsiElement element = file.findElementAt(end);
+    GrStatementOwner statementOwner = PsiTreeUtil.getParentOfType(element, GrStatementOwner.class, true, GroovyFileBase.class);
     if (statementOwner == null) return CANNOT_JOIN;
 
     GrStatement first = null;
     GrStatement last = null;
     for (PsiElement child = statementOwner.getFirstChild(); child != null; child = child.getNextSibling()) {
-      final TextRange range = child.getTextRange();
+      TextRange range = child.getTextRange();
       if (range.getEndOffset() == start) {
         first = skipSemicolonsAndWhitespaces(child, BACK);
       }
@@ -68,7 +68,7 @@ public abstract class GrJoinLinesHandlerBase implements JoinRawLinesHandlerDeleg
   @Nullable
   private static GrStatement skipSemicolonsAndWhitespaces(PsiElement child, boolean forward) {
     while (child != null && !(child instanceof GrStatement)) {
-      final IElementType type = child.getNode().getElementType();
+      IElementType type = child.getNode().getElementType();
       if (type != GroovyTokenTypes.mSEMI && !(type == TokenType.WHITE_SPACE && !child.getText().contains("\n"))) return null;
       child = forward ? child.getNextSibling() : child.getPrevSibling();
     }

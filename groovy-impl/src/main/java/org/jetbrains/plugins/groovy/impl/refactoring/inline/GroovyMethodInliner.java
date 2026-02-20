@@ -87,7 +87,7 @@ public class GroovyMethodInliner implements InlineHandler.Inliner {
     public MultiMap<PsiElement, LocalizeValue> getConflicts(@Nonnull PsiReference reference, @Nonnull PsiElement referenced) {
         PsiElement element = reference.getElement();
         if (!(element instanceof GrExpression && element.getParent() instanceof GrCallExpression)) {
-            final MultiMap<PsiElement, LocalizeValue> map = new MultiMap<>();
+            MultiMap<PsiElement, LocalizeValue> map = new MultiMap<>();
             map.putValue(element, GroovyRefactoringLocalize.cannotInlineReference0(element.getText()));
             return map;
         }
@@ -136,7 +136,7 @@ public class GroovyMethodInliner implements InlineHandler.Inliner {
             return;
         }
 
-        final Editor editor = getCurrentEditorIfApplicable(element);
+        Editor editor = getCurrentEditorIfApplicable(element);
 
         GrCallExpression call = (GrCallExpression) element.getParent();
         RangeMarker marker =
@@ -156,8 +156,8 @@ public class GroovyMethodInliner implements InlineHandler.Inliner {
 
     @Nullable
     private static Editor getCurrentEditorIfApplicable(@Nonnull PsiElement element) {
-        final Project project = element.getProject();
-        final Editor editor = FileEditorManager.getInstance(project).getSelectedTextEditor();
+        Project project = element.getProject();
+        Editor editor = FileEditorManager.getInstance(project).getSelectedTextEditor();
 
         if (editor != null &&
             editor.getDocument() == PsiDocumentManager.getInstance(project).getDocument(element.getContainingFile())) {
@@ -177,7 +177,7 @@ public class GroovyMethodInliner implements InlineHandler.Inliner {
     ) {
         try {
             GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(call.getProject());
-            final Project project = call.getProject();
+            Project project = call.getProject();
 
             // Variable declaration for qualifier expression
             GrVariableDeclaration qualifierDeclaration = null;
@@ -213,7 +213,7 @@ public class GroovyMethodInliner implements InlineHandler.Inliner {
 
             // Add variable for method result
             Collection<GrStatement> returnStatements = ControlFlowUtils.collectReturns(newMethod.getBlock());
-            final int returnCount = returnStatements.size();
+            int returnCount = returnStatements.size();
             PsiType methodType = method.getInferredReturnType();
             GrOpenBlock body = newMethod.getBlock();
             assert body != null;
@@ -226,7 +226,7 @@ public class GroovyMethodInliner implements InlineHandler.Inliner {
                     resultExpr = factory.createExpressionFromText("null");
                 }
                 else if (returnCount == 1) {
-                    final GrExpression returnExpression = ControlFlowUtils.extractReturnExpression(returnStatements.iterator().next());
+                    GrExpression returnExpression = ControlFlowUtils.extractReturnExpression(returnStatements.iterator().next());
                     if (returnExpression != null) {
                         resultExpr = factory.createExpressionFromText(returnExpression.getText());
                     }
@@ -289,7 +289,7 @@ public class GroovyMethodInliner implements InlineHandler.Inliner {
             else if (!isTailMethodCall && (PsiType.VOID.equals(methodType) || returnCount == 1)) {
                 for (GrStatement returnStatement : returnStatements) {
                     if (returnStatement instanceof GrReturnStatement) {
-                        final GrExpression returnValue = ((GrReturnStatement) returnStatement).getReturnValue();
+                        GrExpression returnValue = ((GrReturnStatement) returnStatement).getReturnValue();
                         if (returnValue != null && GroovyRefactoringUtil.hasSideEffect(returnValue)) {
                             returnStatement.replaceWithStatement(returnValue);
                             continue;
@@ -401,7 +401,7 @@ public class GroovyMethodInliner implements InlineHandler.Inliner {
                     InlineMethodConflictSolver.suggestNewName(name, method, call, ((GrReferenceExpression) qualifier).getReferenceName()) :
                     InlineMethodConflictSolver.suggestNewName(name, method, call);
                 if (!newName.equals(namedElement.getName())) {
-                    final Collection<PsiReference> refs =
+                    Collection<PsiReference> refs =
                         ReferencesSearch.search(namedElement, GlobalSearchScope.projectScope(namedElement.getProject()), false).findAll();
                     for (PsiReference ref : refs) {
                         PsiElement element = ref.getElement();

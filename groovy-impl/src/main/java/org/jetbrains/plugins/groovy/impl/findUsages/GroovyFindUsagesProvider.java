@@ -76,16 +76,16 @@ public class GroovyFindUsagesProvider implements FindUsagesProvider {
   @Nonnull
   public String getDescriptiveName(@Nonnull PsiElement element) {
     if (element instanceof PsiClass) {
-      final PsiClass aClass = (PsiClass)element;
+      PsiClass aClass = (PsiClass)element;
       String qName = aClass.getQualifiedName();
       return qName == null ? "" : qName;
     }
     else if (element instanceof PsiMethod) {
-      final PsiMethod method = (PsiMethod)element;
+      PsiMethod method = (PsiMethod)element;
       String result = PsiFormatUtil.formatMethod(method,
                                                  PsiSubstitutor.EMPTY, PsiFormatUtil.SHOW_NAME | PsiFormatUtil.SHOW_PARAMETERS,
                                                  PsiFormatUtil.SHOW_TYPE);
-      final PsiClass clazz = method.getContainingClass();
+      PsiClass clazz = method.getContainingClass();
       if (clazz != null) {
         result += " of " + getDescriptiveName(clazz);
       }
@@ -93,7 +93,7 @@ public class GroovyFindUsagesProvider implements FindUsagesProvider {
       return result;
     }
     else if (element instanceof PsiVariable) {
-      final String name = ((PsiVariable)element).getName();
+      String name = ((PsiVariable)element).getName();
       if (name != null) {
         return name;
       }
@@ -128,7 +128,7 @@ public class GroovyFindUsagesProvider implements FindUsagesProvider {
 
     }
     else if (element instanceof PsiVariable) {
-      final String name = ((PsiVariable)element).getName();
+      String name = ((PsiVariable)element).getName();
       if (name != null) {
         return name;
       }

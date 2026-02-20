@@ -91,9 +91,9 @@ public class GenerationUtil {
   }
 
   static String suggestVarName(GrExpression expr, ExpressionContext expressionContext) {
-    final DefaultGroovyVariableNameValidator nameValidator =
+    DefaultGroovyVariableNameValidator nameValidator =
       new DefaultGroovyVariableNameValidator(expr, expressionContext.myUsedVarNames, true);
-    final String[] varNames = GroovyNameSuggestionUtil.suggestVariableNames(expr, nameValidator);
+    String[] varNames = GroovyNameSuggestionUtil.suggestVariableNames(expr, nameValidator);
 
     LOG.assertTrue(varNames.length > 0);
     expressionContext.myUsedVarNames.add(varNames[0]);
@@ -101,10 +101,10 @@ public class GenerationUtil {
   }
 
   static String suggestVarName(PsiType type, GroovyPsiElement context, ExpressionContext expressionContext) {
-    final DefaultGroovyVariableNameValidator nameValidator =
+    DefaultGroovyVariableNameValidator nameValidator =
       new DefaultGroovyVariableNameValidator(context, expressionContext.myUsedVarNames, true, true);
     if (type instanceof PsiPrimitiveType) type = TypesUtil.boxPrimitiveType(type, context.getManager(), context.getResolveScope());
-    final String[] varNames = GroovyNameSuggestionUtil.suggestVariableNameByType(type, nameValidator);
+    String[] varNames = GroovyNameSuggestionUtil.suggestVariableNameByType(type, nameValidator);
 
     LOG.assertTrue(varNames.length > 0);
     expressionContext.myUsedVarNames.add(varNames[0]);
@@ -116,8 +116,8 @@ public class GenerationUtil {
   }
 
   public static void writeCodeReferenceElement(StringBuilder builder, GrCodeReferenceElement referenceElement) {
-    final GroovyResolveResult resolveResult = referenceElement.advancedResolve();
-    final PsiElement resolved = resolveResult.getElement();
+    GroovyResolveResult resolveResult = referenceElement.advancedResolve();
+    PsiElement resolved = resolveResult.getElement();
     if (resolved == null) {
       builder.append(referenceElement.getText());
       return;
@@ -152,7 +152,7 @@ public class GenerationUtil {
                                                    @Nonnull GroovyPsiElement psiContext) {
     GroovyResolveResult call = GroovyResolveResult.EMPTY_RESULT;
 
-    final PsiType type;
+    PsiType type;
     if (caller == null) {
       type = GroovyPsiElementFactory.getInstance(psiContext.getProject()).createExpressionFromText("this", psiContext).getType();
     }
@@ -160,8 +160,8 @@ public class GenerationUtil {
       type = caller.getType();
     }
     if (type != null) {
-      final PsiType[] argumentTypes = PsiUtil.getArgumentTypes(namedArgs, exprs, closureArgs, false, null, false);
-      final GroovyResolveResult[] candidates = ResolveUtil.getMethodCandidates(type, methodName, psiContext, argumentTypes);
+      PsiType[] argumentTypes = PsiUtil.getArgumentTypes(namedArgs, exprs, closureArgs, false, null, false);
+      GroovyResolveResult[] candidates = ResolveUtil.getMethodCandidates(type, methodName, psiContext, argumentTypes);
       call = PsiImplUtil.extractUniqueResult(candidates);
     }
     return call;
@@ -175,22 +175,22 @@ public class GenerationUtil {
                                                  @Nonnull GrClosableBlock[] closureArgs,
                                                  @Nonnull ExpressionGenerator expressionGenerator,
                                                  @Nonnull GroovyPsiElement psiContext) {
-    final PsiElement resolved = resolveResult.getElement();
+    PsiElement resolved = resolveResult.getElement();
     if (resolved instanceof PsiMethod) {
-      final PsiSubstitutor substitutor = resolveResult.getSubstitutor();
+      PsiSubstitutor substitutor = resolveResult.getSubstitutor();
       expressionGenerator.invokeMethodOn(((PsiMethod)resolved), caller, exprs, namedArgs, closureArgs, substitutor, psiContext);
       return;
     }
     //other case
-    final StringBuilder builder = expressionGenerator.getBuilder();
-    final ExpressionContext expressionContext = expressionGenerator.getContext();
+    StringBuilder builder = expressionGenerator.getBuilder();
+    ExpressionContext expressionContext = expressionGenerator.getContext();
 
     if (caller != null) {
       caller.accept(expressionGenerator);
       builder.append('.');
     }
     builder.append(methodName);
-    final ArgumentListGenerator argumentListGenerator = new ArgumentListGenerator(builder, expressionContext);
+    ArgumentListGenerator argumentListGenerator = new ArgumentListGenerator(builder, expressionContext);
     argumentListGenerator.generate(null, exprs, namedArgs, closureArgs, psiContext);
   }
 
@@ -198,9 +198,9 @@ public class GenerationUtil {
                              @Nonnull StringBuilder statementBuilder,
                              @Nullable GrStatement statement,
                              @Nullable ExpressionContext context) {
-    final PsiElement parent = statement == null ? null : statement.getParent();
+    PsiElement parent = statement == null ? null : statement.getParent();
 
-    final boolean addParentheses;
+    boolean addParentheses;
     if (statement == null) {
       addParentheses = context != null && context.shouldInsertCurlyBrackets();
     }
@@ -228,7 +228,7 @@ public class GenerationUtil {
     }
   }
 
-  public static void writeStatement(final StringBuilder builder, ExpressionContext context, @Nullable GrStatement statement, StatementWriter writer) {
+  public static void writeStatement(StringBuilder builder, ExpressionContext context, @Nullable GrStatement statement, StatementWriter writer) {
     StringBuilder statementBuilder = new StringBuilder();
     ExpressionContext statementContext = context.copy();
     writer.writeStatement(statementBuilder, statementContext);
@@ -239,7 +239,7 @@ public class GenerationUtil {
   static PsiClass findAccessibleSuperClass(@Nonnull PsiElement context, @Nonnull PsiClass initialClass) {
     Set<PsiClass> visitedClasses = new HashSet<PsiClass>();
     PsiClass curClass = initialClass;
-    final PsiResolveHelper resolveHelper = JavaPsiFacade.getInstance(context.getProject()).getResolveHelper();
+    PsiResolveHelper resolveHelper = JavaPsiFacade.getInstance(context.getProject()).getResolveHelper();
 
     while (curClass != null && !resolveHelper.isAccessible(curClass, context, null)) {
       curClass = curClass.getSuperClass();
@@ -251,12 +251,12 @@ public class GenerationUtil {
 
   static void writeTypeParameters(StringBuilder text,
                                   PsiTypeParameterListOwner typeParameterListOwner,
-                                  final ClassNameProvider classNameProvider) {
+                                  ClassNameProvider classNameProvider) {
     if (!typeParameterListOwner.hasTypeParameters()) return;
 
     text.append('<');
     PsiTypeParameter[] parameters = typeParameterListOwner.getTypeParameters();
-    final PsiTypeParameterList typeParameterList = typeParameterListOwner.getTypeParameterList();
+    PsiTypeParameterList typeParameterList = typeParameterListOwner.getTypeParameterList();
     for (int i = 0; i < parameters.length; i++) {
       if (i > 0) text.append(", ");
       PsiTypeParameter parameter = parameters[i];
@@ -275,7 +275,7 @@ public class GenerationUtil {
 
   static void writeParameterList(@Nonnull StringBuilder text,
                                  @Nonnull PsiParameter[] parameters,
-                                 @Nonnull final ClassNameProvider classNameProvider,
+                                 @Nonnull ClassNameProvider classNameProvider,
                                  @Nullable ExpressionContext context) {
     Set<String> usedNames = new HashSet<String>();
     text.append('(');
@@ -322,7 +322,7 @@ public class GenerationUtil {
   static void writeThrowsList(StringBuilder text,
                               PsiReferenceList throwsList,
                               PsiClassType[] exceptions,
-                              final ClassNameProvider classNameProvider) {
+                              ClassNameProvider classNameProvider) {
     if (exceptions.length <= 0) return;
 
     text.append("throws ");
@@ -338,14 +338,14 @@ public class GenerationUtil {
 
   static Set<String> getVarTypes(GrVariableDeclaration variableDeclaration) {
     GrVariable[] variables = variableDeclaration.getVariables();
-    final GrTypeElement typeElement = variableDeclaration.getTypeElementGroovy();
+    GrTypeElement typeElement = variableDeclaration.getTypeElementGroovy();
     Set<String> types = new HashSet<String>(variables.length);
     if (typeElement == null) {
       if (variables.length > 1) {
         for (GrVariable variable : variables) {
-          final GrExpression initializer = variable.getInitializerGroovy();
+          GrExpression initializer = variable.getInitializerGroovy();
           if (initializer != null) {
-            final PsiType varType = initializer.getType();
+            PsiType varType = initializer.getType();
             if (varType != null) {
               types.add(getTypeText(varType, variableDeclaration));
             }
@@ -357,7 +357,7 @@ public class GenerationUtil {
   }
 
   static String getTypeText(PsiType varType, PsiElement context) {
-    final StringBuilder builder = new StringBuilder();
+    StringBuilder builder = new StringBuilder();
     writeType(builder, varType, context);
     return builder.toString();
   }
@@ -368,7 +368,7 @@ public class GenerationUtil {
   }
 
   public static ArrayList<GrParameter> getActualParams(GrParameter[] parameters, int skipOptional) {
-    final ArrayList<GrParameter> actual = new ArrayList<GrParameter>(Arrays.asList(parameters));
+    ArrayList<GrParameter> actual = new ArrayList<GrParameter>(Arrays.asList(parameters));
     if (skipOptional == 0) return actual;
     for (int i = parameters.length - 1; i >= 0; i--) {
       if (!actual.get(i).isOptional()) continue;
@@ -423,7 +423,7 @@ public class GenerationUtil {
                                        boolean wrapped,
                                        PsiType original) {
     builder.append(variable.getName());
-    final GrExpression initializer = variable.getInitializerGroovy();
+    GrExpression initializer = variable.getInitializerGroovy();
     if (initializer != null) {
       builder.append(" = ");
       if (wrapped) {
@@ -435,7 +435,7 @@ public class GenerationUtil {
         }
         builder.append('(');
       }
-      final PsiType iType = getDeclaredType(initializer, expressionContext);
+      PsiType iType = getDeclaredType(initializer, expressionContext);
 
       //generate cast
       if (original != null && iType != null && !TypesUtil.isAssignable(original, iType, initializer)) {
@@ -501,7 +501,7 @@ public class GenerationUtil {
     int count = 0;
     String name = initialName;
     Class[] classes = {PsiMethod.class};
-    final Map<PsiMethod, String> setters = context.getSetters();
+    Map<PsiMethod, String> setters = context.getSetters();
     while (setters.containsValue(name) || ResolveUtil.resolveExistingElement(
         place,
         new MethodResolverProcessor(name, place, false, null, null, null, true, true),
@@ -512,11 +512,11 @@ public class GenerationUtil {
     return name;
   }
 
-  public static boolean isCastNeeded(@Nonnull GrExpression qualifier, @Nonnull final PsiMember member, ExpressionContext context) {
+  public static boolean isCastNeeded(@Nonnull GrExpression qualifier, @Nonnull PsiMember member, ExpressionContext context) {
     PsiType declared = getDeclaredType(qualifier, context);
     if (declared == null) return false;
 
-    final CheckProcessElement checker = new CheckProcessElement(member);
+    CheckProcessElement checker = new CheckProcessElement(member);
     ResolveUtil.processAllDeclarationsSeparately(declared, checker, new BaseScopeProcessor() {
       @Override
       public boolean execute(@Nonnull PsiElement element, ResolveState state) {
@@ -564,8 +564,8 @@ public class GenerationUtil {
   @Nullable
   public static PsiType getDeclaredType(@Nullable GrExpression expression, ExpressionContext context) {
     if (expression instanceof GrReferenceExpression) {
-      final GroovyResolveResult resolveResult = ((GrReferenceExpression)expression).advancedResolve();
-      final PsiSubstitutor substitutor = resolveResult.getSubstitutor();
+      GroovyResolveResult resolveResult = ((GrReferenceExpression)expression).advancedResolve();
+      PsiSubstitutor substitutor = resolveResult.getSubstitutor();
       PsiElement resolved = resolveResult.getElement();
       if (resolved instanceof PsiVariable) {
         return substitutor.substitute(context.typeProvider.getVarType((PsiVariable)resolved));
@@ -575,17 +575,17 @@ public class GenerationUtil {
       }
     }
     else if (expression instanceof GrMethodCall) {
-      final GrExpression invokedExpression = ((GrMethodCall)expression).getInvokedExpression();
+      GrExpression invokedExpression = ((GrMethodCall)expression).getInvokedExpression();
       return getDeclaredType(invokedExpression, context);
     }
     else if (expression instanceof GrBinaryExpression) {
-      final GroovyResolveResult result = PsiImplUtil.extractUniqueResult(((GrBinaryExpression)expression).multiResolve(false));
+      GroovyResolveResult result = PsiImplUtil.extractUniqueResult(((GrBinaryExpression)expression).multiResolve(false));
       if (result.getElement() instanceof PsiMethod) {
         return getDeclaredType((PsiMethod)result.getElement(), result.getSubstitutor(), context);
       }
     }
     else if (expression instanceof GrIndexProperty) {
-      final GroovyResolveResult result = ((GrIndexProperty)expression).advancedResolve();
+      GroovyResolveResult result = ((GrIndexProperty)expression).advancedResolve();
       if (result.getElement() instanceof PsiMethod) {
         return getDeclaredType((PsiMethod)result.getElement(), result.getSubstitutor(), context);
       }
@@ -651,7 +651,7 @@ public class GenerationUtil {
 
   public static void writeThisReference(@Nullable PsiClass targetClass, StringBuilder buffer, ExpressionContext context) {
     if (targetClass != null && !(targetClass instanceof PsiAnonymousClass)) {
-      final GrCodeReferenceElement ref = GroovyPsiElementFactory.getInstance(context.project).createCodeReferenceElementFromClass(targetClass);
+      GrCodeReferenceElement ref = GroovyPsiElementFactory.getInstance(context.project).createCodeReferenceElementFromClass(targetClass);
       writeCodeReferenceElement(buffer, ref);
       buffer.append('.');
     }
@@ -660,7 +660,7 @@ public class GenerationUtil {
 
   public static void writeSuperReference(@Nullable PsiClass targetClass, StringBuilder buffer, ExpressionContext context) {
     if (targetClass != null && !(targetClass instanceof PsiAnonymousClass)) {
-      final GrCodeReferenceElement ref = GroovyPsiElementFactory.getInstance(context.project).createCodeReferenceElementFromClass(targetClass);
+      GrCodeReferenceElement ref = GroovyPsiElementFactory.getInstance(context.project).createCodeReferenceElementFromClass(targetClass);
       writeCodeReferenceElement(buffer, ref);
       buffer.append('.');
     }
@@ -685,9 +685,9 @@ public class GenerationUtil {
 
   static void writeDocComment(StringBuilder buffer, PsiMember member, boolean addLineFeed) {
     if (member instanceof PsiDocCommentOwner) {
-      final PsiDocComment comment = ((PsiDocCommentOwner)member).getDocComment();
+      PsiDocComment comment = ((PsiDocCommentOwner)member).getDocComment();
       if (comment != null) {
-        final String text = comment.getText();
+        String text = comment.getText();
         buffer.append(text);
         if (addLineFeed) buffer.append('\n');
       }

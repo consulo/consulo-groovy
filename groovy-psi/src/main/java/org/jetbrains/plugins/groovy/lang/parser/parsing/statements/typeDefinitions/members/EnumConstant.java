@@ -53,7 +53,7 @@ public class EnumConstant {
     }
 
     if (builder.getTokenType() == GroovyTokenTypes.mLCURLY) {
-      final PsiBuilder.Marker enumInitializer = builder.mark();
+      PsiBuilder.Marker enumInitializer = builder.mark();
       TypeDefinition.parseBody(builder, null, parser, false);
       enumInitializer.done(GroovyElementTypes.ENUM_CONSTANT_INITIALIZER);
     }

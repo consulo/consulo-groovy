@@ -40,7 +40,7 @@ public class GrMethodParametersFixer extends SmartEnterProcessorWithFixers.Fixer
       if (! ")".equals(rParenth.getText())) {
         int offset;
         GrParameterList list = (GrParameterList) psiElement;
-        final GrParameter[] params = list.getParameters();
+        GrParameter[] params = list.getParameters();
         if (params == null || params.length == 0) {
           offset = list.getTextRange().getStartOffset() + 1;
         } else {

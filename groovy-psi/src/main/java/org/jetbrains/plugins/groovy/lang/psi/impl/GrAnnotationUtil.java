@@ -30,9 +30,9 @@ import jakarta.annotation.Nullable;
 public class GrAnnotationUtil {
   @Nullable
   public static String inferStringAttribute(@Nonnull PsiAnnotation annotation, @Nonnull String attributeName) {
-    final PsiAnnotationMemberValue targetValue = annotation.findAttributeValue(attributeName);
+    PsiAnnotationMemberValue targetValue = annotation.findAttributeValue(attributeName);
     if (targetValue instanceof PsiLiteral) {
-      final Object value = ((PsiLiteral)targetValue).getValue();
+      Object value = ((PsiLiteral)targetValue).getValue();
       if (value instanceof String) {
         return (String)value;
       }
@@ -42,9 +42,9 @@ public class GrAnnotationUtil {
 
   @Nullable
   public static Integer inferIntegerAttribute(@Nonnull PsiAnnotation annotation, @Nonnull String attributeName) {
-    final PsiAnnotationMemberValue targetValue = annotation.findAttributeValue(attributeName);
+    PsiAnnotationMemberValue targetValue = annotation.findAttributeValue(attributeName);
     if (targetValue instanceof PsiLiteral) {
-      final Object value = ((PsiLiteral)targetValue).getValue();
+      Object value = ((PsiLiteral)targetValue).getValue();
       if (value instanceof Integer) {
         return (Integer)value;
       }
@@ -54,9 +54,9 @@ public class GrAnnotationUtil {
 
   @Nullable
   public static Boolean inferBooleanAttribute(@Nonnull PsiAnnotation annotation, @Nonnull String attributeName) {
-    final PsiAnnotationMemberValue targetValue = annotation.findAttributeValue(attributeName);
+    PsiAnnotationMemberValue targetValue = annotation.findAttributeValue(attributeName);
     if (targetValue instanceof PsiLiteral) {
-      final Object value = ((PsiLiteral)targetValue).getValue();
+      Object value = ((PsiLiteral)targetValue).getValue();
       if (value instanceof Boolean) {
         return (Boolean)value;
       }
@@ -66,7 +66,7 @@ public class GrAnnotationUtil {
 
   @Nullable
   public static PsiClass inferClassAttribute(@Nonnull PsiAnnotation annotation, @Nonnull String attributeName) {
-    final PsiAnnotationMemberValue targetValue = annotation.findAttributeValue(attributeName);
+    PsiAnnotationMemberValue targetValue = annotation.findAttributeValue(attributeName);
     if (targetValue instanceof PsiClassObjectAccessExpression) {
       PsiType type = ((PsiClassObjectAccessExpression)targetValue).getOperand().getType();
       if (type instanceof PsiClassType) {

@@ -51,15 +51,15 @@ class GrMethodOverrideCompletionProvider implements CompletionProvider
     new PatternCondition<PsiElement>("Not in extends/implements clause of inner class") {
       @Override
       public boolean accepts(@Nonnull PsiElement element, ProcessingContext context) {
-        final GrTypeDefinition innerDefinition = PsiTreeUtil.getPrevSiblingOfType(element, GrTypeDefinition.class);
+        GrTypeDefinition innerDefinition = PsiTreeUtil.getPrevSiblingOfType(element, GrTypeDefinition.class);
         return innerDefinition == null || innerDefinition.getContainingClass() == null || innerDefinition.getBody() != null;
       }
     }).andNot(psiComment());
 
   @Override
   public void addCompletions(@Nonnull CompletionParameters parameters, ProcessingContext context, @Nonnull CompletionResultSet result) {
-    final PsiElement position = parameters.getPosition();
-    final GrTypeDefinition currentClass = PsiTreeUtil.getParentOfType(position, GrTypeDefinition.class);
+    PsiElement position = parameters.getPosition();
+    GrTypeDefinition currentClass = PsiTreeUtil.getParentOfType(position, GrTypeDefinition.class);
 
     if (currentClass != null) {
       addSuperMethods(currentClass, result, false);
@@ -71,10 +71,10 @@ class GrMethodOverrideCompletionProvider implements CompletionProvider
     contributor.extend(CompletionType.BASIC, PLACE, new GrMethodOverrideCompletionProvider());
   }
 
-  private static void addSuperMethods(final GrTypeDefinition psiClass, CompletionResultSet completionResultSet, boolean toImplement) {
-    final Collection<CandidateInfo> candidates = GroovyOverrideImplementExploreUtil.getMethodsToOverrideImplement(psiClass, toImplement);
+  private static void addSuperMethods(GrTypeDefinition psiClass, CompletionResultSet completionResultSet, boolean toImplement) {
+    Collection<CandidateInfo> candidates = GroovyOverrideImplementExploreUtil.getMethodsToOverrideImplement(psiClass, toImplement);
     for (CandidateInfo candidateInfo : candidates) {
-      final PsiMethod method = (PsiMethod)candidateInfo.getElement();
+      PsiMethod method = (PsiMethod)candidateInfo.getElement();
       if (method.isConstructor()) continue;
 
       PsiSubstitutor substitutor = candidateInfo.getSubstitutor();

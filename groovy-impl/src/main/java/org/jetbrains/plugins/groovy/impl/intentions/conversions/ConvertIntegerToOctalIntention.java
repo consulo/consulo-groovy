@@ -46,21 +46,21 @@ public class ConvertIntegerToOctalIntention extends Intention {
         Project project,
         Editor editor
     ) throws IncorrectOperationException {
-        final GrLiteral exp = (GrLiteral) element;
+        GrLiteral exp = (GrLiteral) element;
         String textString = exp.getText().replaceAll("_", "");
-        final int textLength = textString.length();
-        final char lastChar = textString.charAt(textLength - 1);
-        final boolean isLong = lastChar == 'l' || lastChar == 'L';
+        int textLength = textString.length();
+        char lastChar = textString.charAt(textLength - 1);
+        boolean isLong = lastChar == 'l' || lastChar == 'L';
         if (isLong) {
             textString = textString.substring(0, textLength - 1);
         }
-        final BigInteger val;
+        BigInteger val;
         if (textString.startsWith("0x") || textString.startsWith("0X")) {
-            final String rawTextString = textString.substring(2);
+            String rawTextString = textString.substring(2);
             val = new BigInteger(rawTextString, 16);
         }
         else if (textString.startsWith("0b") || textString.startsWith("0B")) {
-            final String rawTextString = textString.substring(2);
+            String rawTextString = textString.substring(2);
             val = new BigInteger(rawTextString, 2);
         }
         else {

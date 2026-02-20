@@ -76,7 +76,7 @@ public class GrForStatementImpl extends GroovyPsiElementImpl implements GrForSta
     if (!ResolveUtil.shouldProcessProperties(processor.getHint(ClassHint.KEY))) return true;
 
     GrForClause forClause = getClause();
-    final GrVariable varScope = PsiTreeUtil.getParentOfType(place, GrVariable.class);
+    GrVariable varScope = PsiTreeUtil.getParentOfType(place, GrVariable.class);
     if (forClause == null) return true;
     if (lastParent == null || lastParent instanceof GrForInClause) return true;
 

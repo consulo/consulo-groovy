@@ -110,11 +110,11 @@ public abstract class ParameterTablePanel extends JPanel {
         return myCurrentSelector.getSelectedType();
       }
 
-      public Component getTableCellEditorComponent(final JTable table,
-                                                   final Object value,
-                                                   final boolean isSelected,
-                                                   final int row,
-                                                   final int column) {
+      public Component getTableCellEditorComponent(JTable table,
+                                                   Object value,
+                                                   boolean isSelected,
+                                                   int row,
+                                                   int column) {
         myCurrentSelector = myParameterTypeSelectors[row];
         return myCurrentSelector.getComponent();
       }
@@ -140,9 +140,9 @@ public abstract class ParameterTablePanel extends JPanel {
     myTable.setPreferredScrollableViewportSize(new Dimension(250, myTable.getRowHeight() * 5));
     myTable.setShowGrid(false);
     myTable.setIntercellSpacing(new Dimension(0, 0));
-    @NonNls final InputMap inputMap = myTable.getInputMap();
+    @NonNls InputMap inputMap = myTable.getInputMap();
     inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0), "enable_disable");
-    @NonNls final ActionMap actionMap = myTable.getActionMap();
+    @NonNls ActionMap actionMap = myTable.getActionMap();
     actionMap.put("enable_disable", new AbstractAction() {
       public void actionPerformed(ActionEvent e) {
         if (myTable.isEditing()) return;
@@ -233,7 +233,7 @@ public abstract class ParameterTablePanel extends JPanel {
       if (oldIndex < 0 || newIndex < 0) return;
       if (oldIndex >= myParameterInfos.length || newIndex >= myParameterInfos.length) return;
 
-      final ParameterInfo old = myParameterInfos[oldIndex];
+      ParameterInfo old = myParameterInfos[oldIndex];
       myParameterInfos[oldIndex] = myParameterInfos[newIndex];
       myParameterInfos[newIndex] = old;
 

@@ -58,29 +58,29 @@ public class GroovyWaitWhileNotSynchronizedInspection extends BaseInspection {
     private static class Visitor extends BaseInspectionVisitor {
         public void visitMethodCallExpression(GrMethodCallExpression grMethodCallExpression) {
             super.visitMethodCallExpression(grMethodCallExpression);
-            final GrExpression methodExpression = grMethodCallExpression.getInvokedExpression();
+            GrExpression methodExpression = grMethodCallExpression.getInvokedExpression();
             if (!(methodExpression instanceof GrReferenceExpression)) {
                 return;
             }
-            final GrReferenceExpression reference = (GrReferenceExpression) methodExpression;
-            final String name = reference.getReferenceName();
+            GrReferenceExpression reference = (GrReferenceExpression) methodExpression;
+            String name = reference.getReferenceName();
             if (!"wait".equals(name)) {
                 return;
             }
-            final PsiMethod method = grMethodCallExpression.resolveMethod();
+            PsiMethod method = grMethodCallExpression.resolveMethod();
             if (method == null) {
                 return;
             }
-            final PsiClass containingClass = method.getContainingClass();
+            PsiClass containingClass = method.getContainingClass();
             if (containingClass == null || !CommonClassNames.JAVA_LANG_OBJECT.equals(containingClass.getQualifiedName())) {
                 return;
             }
-            final GrMethod containingMethod = PsiTreeUtil.getParentOfType(grMethodCallExpression, GrMethod.class);
+            GrMethod containingMethod = PsiTreeUtil.getParentOfType(grMethodCallExpression, GrMethod.class);
             if(containingMethod!=null && containingMethod.hasModifierProperty(PsiModifier.SYNCHRONIZED))
             {
                 return;
             }
-            final GrStatement parent = PsiTreeUtil.getParentOfType(grMethodCallExpression, GrSynchronizedStatement.class, GrClosableBlock.class);
+            GrStatement parent = PsiTreeUtil.getParentOfType(grMethodCallExpression, GrSynchronizedStatement.class, GrClosableBlock.class);
             if (parent instanceof GrSynchronizedStatement) {
                 return;
             }

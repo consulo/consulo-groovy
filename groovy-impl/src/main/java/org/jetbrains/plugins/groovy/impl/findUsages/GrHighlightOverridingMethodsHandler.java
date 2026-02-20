@@ -36,10 +36,10 @@ public class GrHighlightOverridingMethodsHandler extends HighlightOverridingMeth
   private final PsiElement myTarget;
   private final GrTypeDefinition myClass;
 
-  public GrHighlightOverridingMethodsHandler(final Editor editor,
-                                             final PsiFile file,
-                                             final PsiElement target,
-                                             final GrTypeDefinition psiClass) {
+  public GrHighlightOverridingMethodsHandler(Editor editor,
+                                             PsiFile file,
+                                             PsiElement target,
+                                             GrTypeDefinition psiClass) {
     super(editor, file, target, psiClass);
     myTarget = target;
     myClass = psiClass;
@@ -53,7 +53,7 @@ public class GrHighlightOverridingMethodsHandler extends HighlightOverridingMeth
     if (list == null) {
       return Collections.emptyList();
     }
-    final PsiClassType[] classTypes = list.getReferencedTypes();
+    PsiClassType[] classTypes = list.getReferencedTypes();
     return ChooseClassAndDoHighlightRunnable.resolveClasses(classTypes);
   }
 }

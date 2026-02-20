@@ -48,7 +48,7 @@ public class GroovyDebuggerClassFilterProvider implements DebuggerClassFilterPro
     }
 
     for (ClassFilter filter : FILTERS) {
-      final String pattern = filter.getPattern();
+      String pattern = filter.getPattern();
       if (className.startsWith(pattern.substring(0, pattern.length() - 1))) {
         return true;
       }

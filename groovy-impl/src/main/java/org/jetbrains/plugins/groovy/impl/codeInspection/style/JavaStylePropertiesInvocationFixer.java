@@ -19,7 +19,7 @@ public class JavaStylePropertiesInvocationFixer implements LocalQuickFix {
 
     @Override
     public void applyFix(@Nonnull Project project, @Nonnull ProblemDescriptor descriptor) {
-        final PsiElement pparent = descriptor.getPsiElement().getParent().getParent();
+        PsiElement pparent = descriptor.getPsiElement().getParent().getParent();
         if (pparent instanceof GrMethodCall) {
             JavaStylePropertiesUtil.fixJavaStyleProperty((GrMethodCall) pparent);
         }

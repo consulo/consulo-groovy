@@ -100,14 +100,14 @@ public class GrUnusedIncDecInspection extends BaseInspection {
                 return;
             }
 
-            final GrControlFlowOwner owner = ControlFlowUtils.findControlFlowOwner(expression);
+            GrControlFlowOwner owner = ControlFlowUtils.findControlFlowOwner(expression);
             assert owner != null;
             GrControlFlowOwner ownerOfDeclaration = ControlFlowUtils.findControlFlowOwner(resolved);
             if (ownerOfDeclaration != owner) {
                 return;
             }
 
-            final Instruction cur = ControlFlowUtils.findInstruction(operand, owner.getControlFlow());
+            Instruction cur = ControlFlowUtils.findInstruction(operand, owner.getControlFlow());
 
             if (cur == null) {
                 LOG.error(

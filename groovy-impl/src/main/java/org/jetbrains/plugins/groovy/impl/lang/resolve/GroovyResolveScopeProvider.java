@@ -45,9 +45,9 @@ public class GroovyResolveScopeProvider extends ResolveScopeProvider {
     if (module == null) return null; //groovy files are only in modules
 
     boolean includeTests = projectFileIndex.isInTestSourceContent(file) || !projectFileIndex.isInSourceContent(file);
-    final GlobalSearchScope scope = GlobalSearchScope.moduleWithDependenciesAndLibrariesScope(module, includeTests);
+    GlobalSearchScope scope = GlobalSearchScope.moduleWithDependenciesAndLibrariesScope(module, includeTests);
 
-    final PsiFile psi = PsiManager.getInstance(project).findFile(file);
+    PsiFile psi = PsiManager.getInstance(project).findFile(file);
     if (psi instanceof GroovyFile && ((GroovyFile)psi).isScript()) {
       return GroovyScriptUtil.getScriptType((GroovyFile)psi).patchResolveScope((GroovyFile)psi, scope);
     }

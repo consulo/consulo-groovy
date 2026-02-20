@@ -93,7 +93,7 @@ public class MissingReturnInspection extends GroovySuppressableInspectionTool {
 
         public static ReturnStatus getReturnStatus(PsiElement subject) {
             if (subject instanceof GrClosableBlock) {
-                final PsiType inferredReturnType = getExpectedClosureReturnType((GrClosableBlock) subject);
+                PsiType inferredReturnType = getExpectedClosureReturnType((GrClosableBlock) subject);
                 if (inferredReturnType instanceof PsiClassType) {
                     PsiClass resolved = ((PsiClassType) inferredReturnType).resolve();
                     if (resolved != null && !(resolved instanceof PsiTypeParameter)) {
@@ -179,7 +179,7 @@ public class MissingReturnInspection extends GroovySuppressableInspectionTool {
             public void visitMethod(GrMethod method) {
                 super.visitMethod(method);
 
-                final GrOpenBlock block = method.getBlock();
+                GrOpenBlock block = method.getBlock();
                 if (block != null) {
                     check(block, problemsHolder, ReturnStatus.getReturnStatus(method));
                 }
@@ -243,7 +243,7 @@ public class MissingReturnInspection extends GroovySuppressableInspectionTool {
     }
 
     private static void addNoReturnMessage(GrCodeBlock block, ProblemsHolder holder) {
-        final PsiElement lastChild = block.getLastChild();
+        PsiElement lastChild = block.getLastChild();
         if (lastChild == null) {
             return;
         }

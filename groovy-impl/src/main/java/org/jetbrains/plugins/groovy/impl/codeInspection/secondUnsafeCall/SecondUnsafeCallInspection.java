@@ -58,14 +58,14 @@ public class SecondUnsafeCallInspection extends GroovySuppressableInspectionTool
             highlightElement = expression;
         }
 
-        final GrReferenceExpression referenceExpression = (GrReferenceExpression) expression;
+        GrReferenceExpression referenceExpression = (GrReferenceExpression) expression;
 
         if (GroovyTokenTypes.mDOT.equals(referenceExpression.getDotTokenType())) {
             //        a?.b or a?.b()
-            final GrExpression qualifier = referenceExpression.getQualifierExpression();
+            GrExpression qualifier = referenceExpression.getQualifierExpression();
             //        a?.b()
             if (qualifier instanceof GrMethodCallExpression) {
-                final GrExpression expression1 = ((GrMethodCallExpression) qualifier).getInvokedExpression();
+                GrExpression expression1 = ((GrMethodCallExpression) qualifier).getInvokedExpression();
                 //        a?.b
                 if (!(expression1 instanceof GrReferenceExpression)) {
                     return;

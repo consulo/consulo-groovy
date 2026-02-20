@@ -63,7 +63,7 @@ public class GrKindWeigher extends CompletionWeigher {
 
   @Override
   public Comparable weigh(@Nonnull LookupElement element, @Nonnull CompletionLocation location) {
-    final PsiElement position = location.getCompletionParameters().getPosition();
+    PsiElement position = location.getCompletionParameters().getPosition();
     if (!(position.getContainingFile() instanceof GroovyFileBase)) return null;
 
     Object o = element.getObject();
@@ -71,8 +71,8 @@ public class GrKindWeigher extends CompletionWeigher {
       o = ((ResolveResult)o).getElement();
     }
 
-    final PsiElement parent = position.getParent();
-    final PsiElement qualifier = parent instanceof GrReferenceElement ? ((GrReferenceElement)parent).getQualifier() : null;
+    PsiElement parent = position.getParent();
+    PsiElement qualifier = parent instanceof GrReferenceElement ? ((GrReferenceElement)parent).getQualifier() : null;
     if (qualifier == null) {
       if (o instanceof NamedArgumentDescriptor) {
         switch (((NamedArgumentDescriptor)o).getPriority()) {
@@ -97,7 +97,7 @@ public class GrKindWeigher extends CompletionWeigher {
       if (isLightElement(o)) return NotQualifiedKind.unknown;
       if (o instanceof PsiClass) {
         if (((PsiClass)o).isAnnotationType() && GrMainCompletionProvider.AFTER_AT.accepts(position)) {
-          final GrAnnotation annotation = PsiTreeUtil.getParentOfType(position, GrAnnotation.class);
+          GrAnnotation annotation = PsiTreeUtil.getParentOfType(position, GrAnnotation.class);
           if (annotation != null) {
             PsiElement annoParent = annotation.getParent();
             PsiElement ownerToUse = annoParent instanceof PsiModifierList ? annoParent.getParent() : annoParent;
@@ -113,7 +113,7 @@ public class GrKindWeigher extends CompletionWeigher {
         }
       }
       if (o instanceof PsiMember) {
-        final PsiClass containingClass = ((PsiMember)o).getContainingClass();
+        PsiClass containingClass = ((PsiMember)o).getContainingClass();
         if (isAccessor((PsiMember)o)) return NotQualifiedKind.accessor;
         if (o instanceof PsiClass && ((PsiClass)o).getContainingClass() == null || o instanceof PsiPackage) return NotQualifiedKind.unknown;
         if (o instanceof PsiClass) return NotQualifiedKind.innerClass;
@@ -150,7 +150,7 @@ public class GrKindWeigher extends CompletionWeigher {
   }
 
   private static boolean isTrashMethod(PsiMember o) {
-    final PsiClass containingClass = o.getContainingClass();
+    PsiClass containingClass = o.getContainingClass();
     return containingClass != null && TRASH_CLASSES.contains(containingClass.getQualifiedName());
   }
 
@@ -163,10 +163,10 @@ public class GrKindWeigher extends CompletionWeigher {
   private static boolean isQualifierClassMember(PsiMember member, PsiElement qualifier) {
     if (!(qualifier instanceof GrExpression)) return false;
 
-    final PsiType type = ((GrExpression)qualifier).getType();
+    PsiType type = ((GrExpression)qualifier).getType();
     if (!(type instanceof PsiClassType)) return false;
 
-    final PsiClass psiClass = ((PsiClassType)type).resolve();
+    PsiClass psiClass = ((PsiClassType)type).resolve();
     if (psiClass == null) return false;
 
     return qualifier.getManager().areElementsEquivalent(member.getContainingClass(), psiClass);

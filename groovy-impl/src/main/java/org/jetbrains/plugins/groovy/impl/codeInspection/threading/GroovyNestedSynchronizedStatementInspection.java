@@ -52,13 +52,13 @@ public class GroovyNestedSynchronizedStatementInspection extends BaseInspection 
     private static class Visitor extends BaseInspectionVisitor {
         public void visitSynchronizedStatement(GrSynchronizedStatement synchronizedStatement) {
             super.visitSynchronizedStatement(synchronizedStatement);
-            final GrStatement parent =
+            GrStatement parent =
                 PsiTreeUtil.getParentOfType(synchronizedStatement, GrSynchronizedStatement.class, GrClosableBlock.class);
             if ((parent instanceof GrSynchronizedStatement)) {
                 registerStatementError(synchronizedStatement);
                 return;
             }
-            final GrMethod containingMethod = PsiTreeUtil.getParentOfType(synchronizedStatement, GrMethod.class);
+            GrMethod containingMethod = PsiTreeUtil.getParentOfType(synchronizedStatement, GrMethod.class);
             if (containingMethod != null && containingMethod.hasModifierProperty(PsiModifier.SYNCHRONIZED)) {
                 registerStatementError(synchronizedStatement);
             }

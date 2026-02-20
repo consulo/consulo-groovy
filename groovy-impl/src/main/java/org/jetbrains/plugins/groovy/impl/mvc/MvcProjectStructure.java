@@ -32,11 +32,11 @@ public abstract class MvcProjectStructure {
   private final String myUserHomeSdkRoot;
   private final String mySdkWorkDirPath;
 
-  public MvcProjectStructure(Module module, boolean auxModule, String userHomeSdkRoot, final File sdkWorkDir) {
+  public MvcProjectStructure(Module module, boolean auxModule, String userHomeSdkRoot, File sdkWorkDir) {
     myAuxModule = auxModule;
     myModule = module;
     myUserHomeSdkRoot = userHomeSdkRoot;
-    final VirtualFile sdkWorkDirVFile = MvcModuleStructureUtil.refreshAndFind(sdkWorkDir);
+    VirtualFile sdkWorkDirVFile = MvcModuleStructureUtil.refreshAndFind(sdkWorkDir);
     mySdkWorkDirPath = sdkWorkDirVFile == null ? "" : sdkWorkDirVFile.getPath() + "/";
   }
 

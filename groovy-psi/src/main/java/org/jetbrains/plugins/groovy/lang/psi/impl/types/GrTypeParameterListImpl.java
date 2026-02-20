@@ -80,7 +80,7 @@ public class GrTypeParameterListImpl extends GrStubElementBase<EmptyStub> implem
 	@Override
 	public int getTypeParameterIndex(PsiTypeParameter typeParameter)
 	{
-		final GrTypeParameter[] typeParameters = getTypeParameters();
+		GrTypeParameter[] typeParameters = getTypeParameters();
 		for(int i = 0; i < typeParameters.length; i++)
 		{
 			if(typeParameters[i].equals(typeParameter))
@@ -107,7 +107,7 @@ public class GrTypeParameterListImpl extends GrStubElementBase<EmptyStub> implem
 		{
 			boolean hasParams = getTypeParameters().length > 0;
 
-			final ASTNode _anchor;
+			ASTNode _anchor;
 
 			if(anchor == null)
 			{
@@ -126,7 +126,7 @@ public class GrTypeParameterListImpl extends GrStubElementBase<EmptyStub> implem
 			}
 
 
-			final ASTNode node = super.addInternal(first, last, _anchor, before);
+			ASTNode node = super.addInternal(first, last, _anchor, before);
 			if(hasParams)
 			{
 				getNode().addLeaf(GroovyTokenTypes.mCOMMA, ",", anchor != null ? anchor : node);

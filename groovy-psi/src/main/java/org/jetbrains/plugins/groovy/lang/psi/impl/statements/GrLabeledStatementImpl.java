@@ -60,7 +60,7 @@ public class GrLabeledStatementImpl extends GroovyPsiElementImpl implements GrLa
   @Override
   @Nonnull
   public PsiElement getLabel() {
-    final PsiElement label = findChildByType(GroovyTokenTypes.mIDENT);
+    PsiElement label = findChildByType(GroovyTokenTypes.mIDENT);
     assert label != null;
     return label;
   }
@@ -89,8 +89,8 @@ public class GrLabeledStatementImpl extends GroovyPsiElementImpl implements GrLa
   @Override
   public PsiElement setName(@NonNls @Nonnull String name) throws IncorrectOperationException
   {
-    final PsiElement labelElement = getLabel();
-    final PsiElement newLabel = GroovyPsiElementFactory.getInstance(getProject()).createReferenceNameFromText(name);
+    PsiElement labelElement = getLabel();
+    PsiElement newLabel = GroovyPsiElementFactory.getInstance(getProject()).createReferenceNameFromText(name);
     labelElement.replace(newLabel);
     return this;
   }
@@ -98,7 +98,7 @@ public class GrLabeledStatementImpl extends GroovyPsiElementImpl implements GrLa
   @Nonnull
   @Override
   public String getName() {
-    final PsiElement label = getLabel();
+    PsiElement label = getLabel();
     return label.getText();
   }
 

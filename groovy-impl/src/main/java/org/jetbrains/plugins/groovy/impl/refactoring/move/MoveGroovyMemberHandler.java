@@ -246,11 +246,11 @@ public class MoveGroovyMemberHandler implements MoveMemberHandler {
         return false;
     }
 
-    private static boolean hasOnDemandStaticImport(final PsiElement element, final PsiClass aClass) {
+    private static boolean hasOnDemandStaticImport(PsiElement element, PsiClass aClass) {
         if (element.getContainingFile() instanceof GroovyFile) {
-            final GrImportStatement[] importStatements = ((GroovyFile) element.getContainingFile()).getImportStatements();
+            GrImportStatement[] importStatements = ((GroovyFile) element.getContainingFile()).getImportStatements();
             for (GrImportStatement stmt : importStatements) {
-                final GrCodeReferenceElement ref = stmt.getImportReference();
+                GrCodeReferenceElement ref = stmt.getImportReference();
                 if (ref != null && stmt.isStatic() && stmt.isOnDemand() && ref.resolve() == aClass) {
                     return true;
                 }
@@ -261,18 +261,18 @@ public class MoveGroovyMemberHandler implements MoveMemberHandler {
 
     @Override
     @Nullable
-    public PsiElement getAnchor(@Nonnull final PsiMember member, @Nonnull final PsiClass targetClass, Set<PsiMember> membersToMove) {
+    public PsiElement getAnchor(@Nonnull PsiMember member, @Nonnull final PsiClass targetClass, Set<PsiMember> membersToMove) {
         if (member instanceof GrField && member.hasModifierProperty(PsiModifier.STATIC)) {
             final List<PsiField> referencedFields = new ArrayList<PsiField>();
-            final GrExpression psiExpression = ((GrField) member).getInitializerGroovy();
+            GrExpression psiExpression = ((GrField) member).getInitializerGroovy();
             if (psiExpression != null) {
                 psiExpression.accept(new GroovyRecursiveElementVisitor() {
                     @Override
-                    public void visitReferenceExpression(final GrReferenceExpression expression) {
+                    public void visitReferenceExpression(GrReferenceExpression expression) {
                         super.visitReferenceExpression(expression);
-                        final PsiElement psiElement = expression.resolve();
+                        PsiElement psiElement = expression.resolve();
                         if (psiElement instanceof GrField) {
-                            final GrField grField = (GrField) psiElement;
+                            GrField grField = (GrField) psiElement;
                             if (grField.getContainingClass() == targetClass && !referencedFields.contains(grField)) {
                                 referencedFields.add(grField);
                             }
@@ -388,7 +388,7 @@ public class MoveGroovyMemberHandler implements MoveMemberHandler {
             return;
         }
 
-        final PsiMember member = usageInfo.member;
+        PsiMember member = usageInfo.member;
         if (element instanceof GrReferenceExpression refExpr) {
             GrExpression qualifier = ((GrReferenceExpression) refExpr).getQualifier();
             PsiClass accessObjectClass = null;

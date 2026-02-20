@@ -51,7 +51,7 @@ public class GebPageFieldNameCompletionContributor extends CompletionContributor
     public void addCompletions(@Nonnull CompletionParameters parameters,
                                   ProcessingContext context,
                                   @Nonnull CompletionResultSet result) {
-      final PsiClass psiClass = PsiTreeUtil.getParentOfType(parameters.getPosition(), PsiClass.class);
+      PsiClass psiClass = PsiTreeUtil.getParentOfType(parameters.getPosition(), PsiClass.class);
       assert psiClass != null;
 
       for (Pair<String, TailType> trinity : VARIANTS) {

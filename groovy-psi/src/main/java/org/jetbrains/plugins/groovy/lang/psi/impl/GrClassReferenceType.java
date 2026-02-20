@@ -61,7 +61,7 @@ public class GrClassReferenceType extends PsiClassType {
 
   @Nullable
   public String getClassName() {
-    final PsiClass resolved = resolve();
+    PsiClass resolved = resolve();
     if (resolved != null) return resolved.getName();
     return myReferenceElement.getReferenceName();
   }
@@ -76,7 +76,7 @@ public class GrClassReferenceType extends PsiClassType {
     final GroovyResolveResult resolveResult = myReferenceElement.advancedResolve();
     return new ClassResolveResult() {
       public PsiClass getElement() {
-        final PsiElement resolved = resolveResult.getElement();
+        PsiElement resolved = resolveResult.getElement();
         return resolved instanceof PsiClass ? (PsiClass)resolved : null;
       }
 
@@ -109,9 +109,9 @@ public class GrClassReferenceType extends PsiClassType {
 
   @Nonnull
   public PsiClassType rawType() {
-    final PsiClass clazz = resolve();
+    PsiClass clazz = resolve();
     if (clazz != null) {
-      final PsiElementFactory factory = JavaPsiFacade.getElementFactory(clazz.getProject());
+      PsiElementFactory factory = JavaPsiFacade.getElementFactory(clazz.getProject());
       return factory.createType(clazz, factory.createRawSubstitutor(clazz));
     }
 
@@ -151,7 +151,7 @@ public class GrClassReferenceType extends PsiClassType {
   }
 
   @Nonnull
-  public PsiClassType setLanguageLevel(@Nonnull final LanguageLevel languageLevel) {
+  public PsiClassType setLanguageLevel(@Nonnull LanguageLevel languageLevel) {
     return new GrClassReferenceType(myReferenceElement,languageLevel);
   }
 

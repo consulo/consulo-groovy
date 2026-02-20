@@ -44,10 +44,10 @@ public class GrCopyStringConcatenationContentIntention extends Intention {
 
     @Override
     protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
-        final StringBuilder buffer = new StringBuilder();
+        StringBuilder buffer = new StringBuilder();
         getValue(element, buffer);
 
-        final Transferable contents = new StringSelection(buffer.toString());
+        Transferable contents = new StringSelection(buffer.toString());
         CopyPasteManager.getInstance().setContents(contents);
     }
 

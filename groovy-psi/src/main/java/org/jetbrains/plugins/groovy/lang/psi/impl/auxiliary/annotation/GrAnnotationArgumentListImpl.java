@@ -77,13 +77,13 @@ public class GrAnnotationArgumentListImpl extends GroovyPsiElementImpl implement
         getNode().addLeaf(GroovyTokenTypes.mRPAREN, ")", null);
       }
 
-      final PsiNameValuePair[] nodes = getAttributes();
+      PsiNameValuePair[] nodes = getAttributes();
       if (nodes.length == 1) {
-        final PsiNameValuePair pair = nodes[0];
+        PsiNameValuePair pair = nodes[0];
         if (pair.getName() == null) {
-          final String text = pair.getValue().getText();
+          String text = pair.getValue().getText();
           try {
-            final PsiAnnotation annotation = GroovyPsiElementFactory.getInstance(getProject()).createAnnotationFromText("@AAA(value = " + text + ")");
+            PsiAnnotation annotation = GroovyPsiElementFactory.getInstance(getProject()).createAnnotationFromText("@AAA(value = " + text + ")");
             getNode().replaceChild(pair.getNode(), annotation.getParameterList().getAttributes()[0].getNode());
           }
           catch (IncorrectOperationException e) {

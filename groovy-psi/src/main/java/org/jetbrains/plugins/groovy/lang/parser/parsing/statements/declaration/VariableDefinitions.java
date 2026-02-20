@@ -70,7 +70,7 @@ public class VariableDefinitions {
     if (!isLParenth) { //id or string => method name
       PsiBuilder.Marker varMarker = builder.mark();
 
-      final boolean isConstructor = isInClass &&
+      boolean isConstructor = isInClass &&
                                     !isInAnnotation &&
                                     typeDefinitionName != null &&
                                     builder.getTokenType() == GroovyTokenTypes.mIDENT &&
@@ -93,10 +93,10 @@ public class VariableDefinitions {
     // a = b, c = d
     PsiBuilder.Marker varAssMarker = builder.mark();
 
-    final IElementType declarator = parseDeclarator(builder, LParenth);
+    IElementType declarator = parseDeclarator(builder, LParenth);
 
     if (declarator != GroovyElementTypes.WRONGWAY) {
-      final boolean wasAssignment = parseAssignment(builder, parser);
+      boolean wasAssignment = parseAssignment(builder, parser);
 
       if (declarator == GroovyElementTypes.TUPLE_DECLARATION) {
         varAssMarker.drop();
@@ -191,7 +191,7 @@ public class VariableDefinitions {
     return methodType(isAnnotationMember, constructor);
   }
 
-  private static IElementType methodType(boolean isAnnotationMember, final boolean isConstructor) {
+  private static IElementType methodType(boolean isAnnotationMember, boolean isConstructor) {
     return isAnnotationMember ? GroovyElementTypes.ANNOTATION_METHOD :
            isConstructor ? GroovyElementTypes.CONSTRUCTOR_DEFINITION :
            GroovyElementTypes.METHOD_DEFINITION;

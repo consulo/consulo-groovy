@@ -67,7 +67,7 @@ public class GroovyGenerationInfo<T extends PsiMember> extends PsiGenerationInfo
 			boolean before) throws IncorrectOperationException
 	{
 
-		final T proto = getPsiMember();
+		T proto = getPsiMember();
 		if(proto instanceof GrMethod)
 		{
 			GroovyChangeContextUtil.encodeContextInfo(((GrMethod) proto).getParameterList());
@@ -76,16 +76,16 @@ public class GroovyGenerationInfo<T extends PsiMember> extends PsiGenerationInfo
 
 		super.insert(aClass, anchor, before);
 
-		final T member = getPsiMember();
+		T member = getPsiMember();
 		if(member == null)
 		{
 			return;
 		}
 
 		LOG.assertTrue(member instanceof GroovyPsiElement, member);
-		final GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(member.getProject());
+		GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(member.getProject());
 
-		final PsiElement prev = member.getPrevSibling();
+		PsiElement prev = member.getPrevSibling();
 		if(prev != null && GroovyTokenTypes.mNLS == prev.getNode().getElementType())
 		{
 			prev.replace(factory.createLineTerminator(1));
@@ -95,7 +95,7 @@ public class GroovyGenerationInfo<T extends PsiMember> extends PsiGenerationInfo
 			member.getParent().getNode().addLeaf(GroovyTokenTypes.mNLS, "\n", member.getNode());
 		}
 
-		final PsiElement next = member.getNextSibling();
+		PsiElement next = member.getNextSibling();
 		if(next != null && GroovyTokenTypes.mNLS == next.getNode().getElementType())
 		{
 			next.replace(factory.createLineTerminator(1));
@@ -117,11 +117,11 @@ public class GroovyGenerationInfo<T extends PsiMember> extends PsiGenerationInfo
 
 	private static void adjustDocCommentIfExists(PsiMember member)
 	{
-		final PsiElement child = member.getFirstChild();
+		PsiElement child = member.getFirstChild();
 		if(child instanceof PsiDocComment)
 		{
-			final Project project = member.getProject();
-			final GrDocComment groovyDoc = GroovyPsiElementFactory.getInstance(project).createDocCommentFromText(child
+			Project project = member.getProject();
+			GrDocComment groovyDoc = GroovyPsiElementFactory.getInstance(project).createDocCommentFromText(child
 					.getText());
 			child.delete();
 			CodeStyleManager.getInstance(project).reformat(member);
@@ -166,7 +166,7 @@ public class GroovyGenerationInfo<T extends PsiMember> extends PsiGenerationInfo
 	@Override
 	public void positionCaret(Editor editor, boolean toEditMethodBody)
 	{
-		final T firstMember = getPsiMember();
+		T firstMember = getPsiMember();
 		LOG.assertTrue(firstMember.isValid());
 
 		if(toEditMethodBody)

@@ -43,7 +43,7 @@ public class CreateFieldFromUsageFix extends GrCreateFromUsageBaseFix {
 
     @RequiredReadAction
     private String[] generateModifiers(@Nonnull PsiClass targetClass) {
-        final GrReferenceExpression myRefExpression = getRefExpr();
+        GrReferenceExpression myRefExpression = getRefExpr();
         if (myRefExpression != null && GrStaticChecker.isInStaticContext(myRefExpression, targetClass)) {
             return new String[]{PsiModifier.STATIC};
         }
@@ -64,7 +64,7 @@ public class CreateFieldFromUsageFix extends GrCreateFromUsageBaseFix {
     @Override
     @RequiredUIAccess
     protected void invokeImpl(Project project, @Nonnull PsiClass targetClass) {
-        final CreateFieldFix fix = new CreateFieldFix(targetClass);
+        CreateFieldFix fix = new CreateFieldFix(targetClass);
         fix.doFix(targetClass.getProject(), generateModifiers(targetClass), myReferenceName, calculateTypeConstrains(), getRefExpr());
     }
 

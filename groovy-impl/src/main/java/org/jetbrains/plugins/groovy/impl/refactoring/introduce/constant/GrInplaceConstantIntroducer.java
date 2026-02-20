@@ -111,7 +111,7 @@ public class GrInplaceConstantIntroducer extends GrAbstractInplaceIntroducer<GrI
   @Nullable
   @Override
   protected GrIntroduceConstantSettings getInitialSettingsForInplace(@Nonnull final GrIntroduceContext context,
-                                                                     @Nonnull final OccurrencesChooser.ReplaceChoice choice,
+                                                                     @Nonnull OccurrencesChooser.ReplaceChoice choice,
                                                                      final String[] names) {
     return new GrIntroduceConstantSettings() {
       @Override
@@ -196,8 +196,8 @@ public class GrInplaceConstantIntroducer extends GrAbstractInplaceIntroducer<GrI
       try {
         myEditor.putUserData(INTRODUCE_RESTART, true);
         myEditor.putUserData(ACTIVE_INTRODUCE, this);
-        final GrIntroduceConstantHandler constantHandler = new GrIntroduceConstantHandler();
-        final PsiLocalVariable localVariable = (PsiLocalVariable)getLocalVariable();
+        GrIntroduceConstantHandler constantHandler = new GrIntroduceConstantHandler();
+        PsiLocalVariable localVariable = (PsiLocalVariable)getLocalVariable();
         constantHandler.getContextAndInvoke(myProject, myEditor, ((GrExpression)myExpr),
                                             (GrVariable)localVariable, null);
       }

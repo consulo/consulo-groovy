@@ -68,8 +68,8 @@ public class GroovyReturnFromClosureCanBeImplicitInspection extends BaseInspecti
         }
 
         public void doFix(Project project, ProblemDescriptor descriptor) throws IncorrectOperationException {
-            final PsiElement returnKeywordElement = descriptor.getPsiElement();
-            final GrReturnStatement returnStatement = (GrReturnStatement) returnKeywordElement.getParent();
+            PsiElement returnKeywordElement = descriptor.getPsiElement();
+            GrReturnStatement returnStatement = (GrReturnStatement) returnKeywordElement.getParent();
             if (returnStatement == null) {
                 return;
             }
@@ -83,15 +83,15 @@ public class GroovyReturnFromClosureCanBeImplicitInspection extends BaseInspecti
     private static class Visitor extends BaseInspectionVisitor {
         public void visitReturnStatement(GrReturnStatement returnStatement) {
             super.visitReturnStatement(returnStatement);
-            final GrExpression returnValue = returnStatement.getReturnValue();
+            GrExpression returnValue = returnStatement.getReturnValue();
             if (returnValue == null) {
                 return;
             }
-            final GrClosableBlock closure = PsiTreeUtil.getParentOfType(returnStatement, GrClosableBlock.class);
+            GrClosableBlock closure = PsiTreeUtil.getParentOfType(returnStatement, GrClosableBlock.class);
             if (closure == null) {
                 return;
             }
-            final GrMethod containingMethod = PsiTreeUtil.getParentOfType(returnStatement, GrMethod.class);
+            GrMethod containingMethod = PsiTreeUtil.getParentOfType(returnStatement, GrMethod.class);
             if (containingMethod != null && PsiTreeUtil.isAncestor(closure, containingMethod, true)) {
                 return;
             }

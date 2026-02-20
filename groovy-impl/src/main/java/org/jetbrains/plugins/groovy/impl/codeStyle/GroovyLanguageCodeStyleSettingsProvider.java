@@ -293,7 +293,7 @@ public class GroovyLanguageCodeStyleSettingsProvider extends LanguageCodeStyleSe
         add(myLabelIndentAbsolute, true);
       }
 
-      public boolean isModified(final CodeStyleSettings settings, final CommonCodeStyleSettings.IndentOptions options) {
+      public boolean isModified(CodeStyleSettings settings, CommonCodeStyleSettings.IndentOptions options) {
         boolean isModified = super.isModified(settings, options);
 
         isModified |= isFieldModified(myLabelIndent, options.LABEL_INDENT_SIZE);
@@ -302,19 +302,19 @@ public class GroovyLanguageCodeStyleSettingsProvider extends LanguageCodeStyleSe
         return isModified;
       }
 
-      public void apply(final CodeStyleSettings settings, final CommonCodeStyleSettings.IndentOptions options) {
+      public void apply(CodeStyleSettings settings, CommonCodeStyleSettings.IndentOptions options) {
         super.apply(settings, options);
         options.LABEL_INDENT_SIZE = getFieldValue(myLabelIndent, Integer.MIN_VALUE, options.LABEL_INDENT_SIZE);
         options.LABEL_INDENT_ABSOLUTE = myLabelIndentAbsolute.isSelected();
       }
 
-      public void reset(@Nonnull final CodeStyleSettings settings, @Nonnull final CommonCodeStyleSettings.IndentOptions options) {
+      public void reset(@Nonnull CodeStyleSettings settings, @Nonnull CommonCodeStyleSettings.IndentOptions options) {
         super.reset(settings, options);
         myLabelIndent.setText(Integer.toString(options.LABEL_INDENT_SIZE));
         myLabelIndentAbsolute.setSelected(options.LABEL_INDENT_ABSOLUTE);
       }
 
-      public void setEnabled(final boolean enabled) {
+      public void setEnabled(boolean enabled) {
         super.setEnabled(enabled);
         myLabelIndent.setEnabled(enabled);
         myLabelIndentLabel.setEnabled(enabled);

@@ -94,7 +94,7 @@ public final class GenerateGroovyDocDialog extends DialogWrapper
     return true;
   }
 
-  private void showError(final String message) {
+  private void showError(String message) {
     Messages.showMessageDialog(myProject, message, CommonBundle.getErrorTitle(), Messages.getErrorIcon());
   }
 }

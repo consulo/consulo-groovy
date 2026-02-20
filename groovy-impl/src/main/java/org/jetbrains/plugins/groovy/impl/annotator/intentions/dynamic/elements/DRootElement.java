@@ -32,11 +32,11 @@ public class DRootElement {
   }
 
   public DClassElement mergeAddClass(DClassElement classElement) {
-    final DClassElement existingClassElement = containingClasses.get(classElement.getName());
+    DClassElement existingClassElement = containingClasses.get(classElement.getName());
 
     if (existingClassElement != null) {
-      final Collection<DPropertyElement> properties = existingClassElement.getProperties();
-      final Set<DMethodElement> methods = existingClassElement.getMethods();
+      Collection<DPropertyElement> properties = existingClassElement.getProperties();
+      Set<DMethodElement> methods = existingClassElement.getMethods();
 
       classElement.addProperties(properties);
       classElement.addMethods(methods);

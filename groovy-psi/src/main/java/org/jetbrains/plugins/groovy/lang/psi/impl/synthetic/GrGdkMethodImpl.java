@@ -49,7 +49,7 @@ public class GrGdkMethodImpl extends LightMethodBuilder implements GrGdkMethod {
       addModifier(PsiModifier.STATIC);
     }
 
-    final PsiParameter[] originalParameters = method.getParameterList().getParameters();
+    PsiParameter[] originalParameters = method.getParameterList().getParameters();
     for (int i = 1; i < originalParameters.length; i++) {
       addParameter(originalParameters[i]);
     }
@@ -107,7 +107,7 @@ public class GrGdkMethodImpl extends LightMethodBuilder implements GrGdkMethod {
   public static GrGdkMethod createGdkMethod(@Nonnull final PsiMethod original,
                                             final boolean isStatic,
                                             @Nullable final String originInfo) {
-    final Key<CachedValue<GrGdkMethodImpl>> cachedValueKey = isStatic ? CACHED_STATIC : CACHED_NON_STATIC;
+    Key<CachedValue<GrGdkMethodImpl>> cachedValueKey = isStatic ? CACHED_STATIC : CACHED_NON_STATIC;
     CachedValue<GrGdkMethodImpl> cachedValue = original.getUserData(cachedValueKey);
     if (cachedValue == null) {
       cachedValue = CachedValuesManager.getManager(original.getProject()).createCachedValue(new CachedValueProvider<GrGdkMethodImpl>() {

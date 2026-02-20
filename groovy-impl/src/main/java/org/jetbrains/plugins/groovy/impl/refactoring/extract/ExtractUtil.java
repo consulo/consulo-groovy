@@ -70,9 +70,9 @@ public class ExtractUtil {
     if (declarationOwner != null && !isSingleExpression(helper.getStatements()) && helper.getStringPartInfo() ==
       null) {
       // Replace set of statements
-      final GrStatement[] newStatement = createResultStatement(helper);
+      GrStatement[] newStatement = createResultStatement(helper);
       // add call statement
-      final GrStatement[] statements = helper.getStatements();
+      GrStatement[] statements = helper.getStatements();
       LOG.assertTrue(statements.length > 0);
       realStatement = null;
       for (GrStatement statement : newStatement) {
@@ -119,7 +119,7 @@ public class ExtractUtil {
 
     LOG.assertTrue(outputVars.length > 0);
 
-    final List<VariableInfo> mustAdd = mustAddVariableDeclaration(statements, outputVars);
+    List<VariableInfo> mustAdd = mustAddVariableDeclaration(statements, outputVars);
     if (mustAdd.isEmpty()) {
       return new GrStatement[]{
         createAssignment(outputVars, callExpression, helper.getProject())
@@ -135,7 +135,7 @@ public class ExtractUtil {
       return createTupleDeclaration(outputVars, callExpression, helper.getProject());
     }
     else {
-      final List<GrStatement> result = generateVarDeclarations(mustAdd, helper.getProject(), null);
+      List<GrStatement> result = generateVarDeclarations(mustAdd, helper.getProject(), null);
       result.add(createAssignment(outputVars, callExpression, helper.getProject()));
       return result.toArray(new GrStatement[result.size()]);
     }
@@ -159,17 +159,17 @@ public class ExtractUtil {
     return true;
   }
 
-  private static GrStatement[] createTupleDeclaration(final VariableInfo[] infos,
+  private static GrStatement[] createTupleDeclaration(VariableInfo[] infos,
                                                       GrMethodCallExpression callExpression,
-                                                      final Project project) {
+                                                      Project project) {
     GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(project);
 
     StringBuilder tuple = new StringBuilder();
     tuple.append("def (");
     for (VariableInfo info : infos) {
-      final PsiType type = info.getType();
+      PsiType type = info.getType();
       if (type != null) {
-        final PsiType unboxed = TypesUtil.unboxPrimitiveTypeWrapper(type);
+        PsiType unboxed = TypesUtil.unboxPrimitiveTypeWrapper(type);
         tuple.append(unboxed.getCanonicalText());
         tuple.append(' ');
       }
@@ -217,7 +217,7 @@ public class ExtractUtil {
     }
     Set<String> diffTypes = new HashSet<String>();
     for (VariableInfo info : varInfos) {
-      final PsiType t = info.getType();
+      PsiType t = info.getType();
       diffTypes.add(t == null ? null : TypesUtil.unboxPrimitiveTypeWrapper(t).getCanonicalText());
     }
     return diffTypes.size() > 1;
@@ -225,7 +225,7 @@ public class ExtractUtil {
 
   private static GrStatement createAssignment(VariableInfo[] infos,
                                               GrMethodCallExpression callExpression,
-                                              final Project project) {
+                                              Project project) {
     StringBuilder text = new StringBuilder();
     if (infos.length > 1) {
       text.append('(');
@@ -263,7 +263,7 @@ public class ExtractUtil {
       if (statement instanceof GrVariableDeclaration) {
         GrVariableDeclaration declaration = (GrVariableDeclaration)statement;
         for (GrVariable variable : declaration.getVariables()) {
-          final VariableInfo removed = names.remove(variable.getName());
+          VariableInfo removed = names.remove(variable.getName());
           if (removed != null) {
             result.add(removed);
           }
@@ -280,12 +280,12 @@ public class ExtractUtil {
   }
 
   public static TextRange getRangeOfRefactoring(ExtractInfoHelper helper) {
-    final StringPartInfo stringPartInfo = helper.getStringPartInfo();
+    StringPartInfo stringPartInfo = helper.getStringPartInfo();
     if (stringPartInfo != null) {
       return stringPartInfo.getRange();
     }
     else {
-      final GrStatement[] statements = helper.getStatements();
+      GrStatement[] statements = helper.getStatements();
       int start = statements[0].getTextRange().getStartOffset();
       int end = statements[statements.length - 1].getTextRange().getEndOffset();
       return new TextRange(start, end);
@@ -295,16 +295,16 @@ public class ExtractUtil {
   private static Collection<GrVariable> collectUsedLocalVarsOrParamsDeclaredOutside(ExtractInfoHelper helper) {
     final Collection<GrVariable> result = new HashSet<GrVariable>();
 
-    final TextRange range = getRangeOfRefactoring(helper);
+    TextRange range = getRangeOfRefactoring(helper);
     final int start = range.getStartOffset();
     final int end = range.getEndOffset();
 
-    final GroovyRecursiveElementVisitor visitor = new GroovyRecursiveElementVisitor() {
+    GroovyRecursiveElementVisitor visitor = new GroovyRecursiveElementVisitor() {
       @Override
       public void visitReferenceExpression(GrReferenceExpression ref) {
-        final PsiElement resolved = ref.resolve();
+        PsiElement resolved = ref.resolve();
         if ((resolved instanceof GrParameter || PsiUtil.isLocalVariable(resolved)) && resolved.isPhysical()) {
-          final int offset = resolved.getTextRange().getStartOffset();
+          int offset = resolved.getTextRange().getStartOffset();
           //var is declared outside of selected code
           if (offset < start || end <= offset) {
             result.add((GrVariable)resolved);
@@ -313,7 +313,7 @@ public class ExtractUtil {
       }
     };
 
-    final GrStatement[] statements = helper.getStatements();
+    GrStatement[] statements = helper.getStatements();
     for (GrStatement statement : statements) {
       statement.accept(visitor);
     }
@@ -326,7 +326,7 @@ public class ExtractUtil {
 
     //Add signature
     PsiType type = helper.getOutputType();
-    final PsiPrimitiveType outUnboxed = PsiPrimitiveType.getUnboxedType(type);
+    PsiPrimitiveType outUnboxed = PsiPrimitiveType.getUnboxedType(type);
     if (outUnboxed != null) {
       type = outUnboxed;
     }
@@ -352,7 +352,7 @@ public class ExtractUtil {
     return factory.createMethodFromText(methodText, helper.getContext());
   }
 
-  public static void appendName(@Nonnull final StringBuilder buffer, @Nonnull final String name) {
+  public static void appendName(@Nonnull StringBuilder buffer, @Nonnull String name) {
     if (GroovyNamesUtil.isIdentifier(name)) {
       buffer.append(name);
     }
@@ -379,7 +379,7 @@ public class ExtractUtil {
     }
 
     List<VariableInfo> genDecl = new ArrayList<VariableInfo>();
-    final Collection<GrVariable> outside = collectUsedLocalVarsOrParamsDeclaredOutside(helper);
+    Collection<GrVariable> outside = collectUsedLocalVarsOrParamsDeclaredOutside(helper);
 
     for (final GrVariable variable : outside) {
       if (!declaredVars.contains(variable.getName())) {
@@ -397,12 +397,12 @@ public class ExtractUtil {
         });
       }
     }
-    final List<GrStatement> statements = generateVarDeclarations(genDecl, helper.getProject(), null);
+    List<GrStatement> statements = generateVarDeclarations(genDecl, helper.getProject(), null);
     for (GrStatement statement : statements) {
       buffer.append(statement.getText()).append('\n');
     }
 
-    final StringPartInfo stringPartInfo = helper.getStringPartInfo();
+    StringPartInfo stringPartInfo = helper.getStringPartInfo();
     if (!isSingleExpression(helper.getStatements()) && stringPartInfo == null) {
       for (PsiElement element : helper.getInnerElements()) {
         buffer.append(element.getText());
@@ -431,7 +431,7 @@ public class ExtractUtil {
       boolean addReturn = !isVoid && forceReturn && !PsiUtil.isVoidMethodCall(expr);
       if (addReturn) {
         buffer.append("return ");
-        final GrExpression methodCall = ApplicationStatementUtil.convertToMethodCallExpression(expr);
+        GrExpression methodCall = ApplicationStatementUtil.convertToMethodCallExpression(expr);
         buffer.append(methodCall.getText());
       }
       else {
@@ -453,7 +453,7 @@ public class ExtractUtil {
     for (ParameterInfo info : infos) {
       if (info.passAsParameter()) {
         PsiType paramType = info.getType();
-        final PsiPrimitiveType unboxed = PsiPrimitiveType.getUnboxedType(paramType);
+        PsiPrimitiveType unboxed = PsiPrimitiveType.getUnboxedType(paramType);
         if (unboxed != null) {
           paramType = unboxed;
         }
@@ -483,12 +483,12 @@ public class ExtractUtil {
     }
 
     PsiType type = helper.getOutputType();
-    final PsiPrimitiveType unboxed = PsiPrimitiveType.getUnboxedType(type);
+    PsiPrimitiveType unboxed = PsiPrimitiveType.getUnboxedType(type);
     if (unboxed != null) {
       type = unboxed;
     }
 
-    final String returnType = StringUtil.notNullize(forPresentation ? type.getPresentableText() : type
+    String returnType = StringUtil.notNullize(forPresentation ? type.getPresentableText() : type
       .getCanonicalText());
 
     if (StringUtil.isEmptyOrSpaces(returnType) || "null".equals(returnType)) {
@@ -557,7 +557,7 @@ public class ExtractUtil {
   public static String getModifierString(ExtractMethodInfoHelper helper) {
     String visibility = helper.getVisibility();
     LOG.assertTrue(visibility != null && !visibility.isEmpty());
-    final StringBuilder builder = new StringBuilder();
+    StringBuilder builder = new StringBuilder();
     builder.append(visibility);
     builder.append(" ");
     if (helper.isStatic()) {

@@ -87,7 +87,7 @@ public class ConfigureGroovyLibraryNotificationProvider implements EditorNotific
         return null;
       }
 
-      final Module module = ModuleUtilCore.findModuleForFile(file, myProject);
+      Module module = ModuleUtilCore.findModuleForFile(file, myProject);
       if (module == null) {
         return null;
       }

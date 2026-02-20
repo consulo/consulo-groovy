@@ -42,15 +42,15 @@ public class GriffonPropertyListenerAnnotationChecker extends CustomAnnotationCh
       return false;
     }
 
-    final GrAnnotationNameValuePair[] attributes = annotation.getParameterList().getAttributes();
+    GrAnnotationNameValuePair[] attributes = annotation.getParameterList().getAttributes();
     if (attributes.length != 1) {
       return false;
     }
 
-    final GrAnnotationNameValuePair attribute = attributes[0];
-    final GrAnnotationMemberValue value = attribute.getValue();
+    GrAnnotationNameValuePair attribute = attributes[0];
+    GrAnnotationMemberValue value = attribute.getValue();
 
-    final PsiAnnotationOwner owner = annotation.getOwner();
+    PsiAnnotationOwner owner = annotation.getOwner();
     if (owner instanceof GrField) {
       if (value instanceof GrClosableBlock) {
         return true;
@@ -58,9 +58,9 @@ public class GriffonPropertyListenerAnnotationChecker extends CustomAnnotationCh
     }
     else if (owner instanceof GrTypeDefinition) {
       if (value instanceof GrReferenceExpression) {
-        final PsiElement resolved = ((GrReferenceExpression)value).resolve();
+        PsiElement resolved = ((GrReferenceExpression)value).resolve();
         if (resolved instanceof GrField) {
-          final PsiClass containingClass = ((GrField)resolved).getContainingClass();
+          PsiClass containingClass = ((GrField)resolved).getContainingClass();
           if (annotation.getManager().areElementsEquivalent((PsiElement)owner, containingClass)) {
             return true;
           }

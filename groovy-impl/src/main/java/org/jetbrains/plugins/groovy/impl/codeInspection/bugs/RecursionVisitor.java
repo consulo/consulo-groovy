@@ -51,20 +51,20 @@ class RecursionVisitor extends GroovyRecursiveElementVisitor {
       return;
     }
     super.visitMethodCallExpression(call);
-    final GrExpression methodExpression =
+    GrExpression methodExpression =
         call.getInvokedExpression();
     if (!(methodExpression instanceof GrReferenceExpression)) {
       return;
     }
-    final GrReferenceExpression referenceExpression = (GrReferenceExpression) methodExpression;
-    final String calledMethodName = referenceExpression.getReferenceName();
+    GrReferenceExpression referenceExpression = (GrReferenceExpression) methodExpression;
+    String calledMethodName = referenceExpression.getReferenceName();
     if (calledMethodName == null) {
       return;
     }
     if (!calledMethodName.equals(methodName)) {
       return;
     }
-    final PsiMethod calledMethod = call.resolveMethod();
+    PsiMethod calledMethod = call.resolveMethod();
     if (!method.equals(calledMethod)) {
       return;
     }
@@ -73,7 +73,7 @@ class RecursionVisitor extends GroovyRecursiveElementVisitor {
       recursive = true;
       return;
     }
-    final GrExpression qualifier = referenceExpression.getQualifierExpression();
+    GrExpression qualifier = referenceExpression.getQualifierExpression();
     if (qualifier == null || qualifier instanceof PsiThisExpression) {
       recursive = true;
     }

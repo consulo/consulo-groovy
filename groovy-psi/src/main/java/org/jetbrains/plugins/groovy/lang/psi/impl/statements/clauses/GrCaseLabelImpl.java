@@ -51,9 +51,9 @@ public class GrCaseLabelImpl extends GroovyPsiElementImpl implements GrCaseLabel
 
   @Override
   public boolean isDefault() {
-    final PsiElement firstChild = getFirstChild();
+    PsiElement firstChild = getFirstChild();
     assert firstChild != null;
-    final ASTNode node = firstChild.getNode();
+    ASTNode node = firstChild.getNode();
     assert node != null;
     return node.getElementType() == GroovyTokenTypes.kDEFAULT;
   }

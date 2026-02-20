@@ -72,7 +72,7 @@ public abstract class NonCodeMembersContributor {
 
     MultiMap<String, NonCodeMembersContributor> contributorMap = new MultiMap<String, NonCodeMembersContributor>();
 
-    for (final NonCodeMembersContributor contributor : EP_NAME.getExtensions()) {
+    for (NonCodeMembersContributor contributor : EP_NAME.getExtensions()) {
       contributorMap.putValue(contributor.getParentClassName(), contributor);
     }
 
@@ -91,7 +91,7 @@ public abstract class NonCodeMembersContributor {
 
     ensureInit();
 
-    final PsiClass aClass = PsiTypesUtil.getPsiClass(qualifierType);
+    PsiClass aClass = PsiTypesUtil.getPsiClass(qualifierType);
 
     if (aClass != null) {
       for (String superClassName : ClassUtil.getSuperClassesWithCache(aClass).keySet()) {

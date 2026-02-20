@@ -61,7 +61,7 @@ public class GroovyCompilerWrapper {
     this.forStubs = forStubs;
   }
 
-  public List<OutputItem> compile(final CompilationUnit unit) {
+  public List<OutputItem> compile(CompilationUnit unit) {
     List<OutputItem> compiledFiles = new ArrayList<OutputItem>();
     try {
       unit.compile(forStubs ? Phases.CONVERSION : Phases.ALL);
@@ -77,7 +77,7 @@ public class GroovyCompilerWrapper {
       processException(e, "");
     }
     catch (NoClassDefFoundError e) {
-      final String className = e.getMessage();
+      String className = e.getMessage();
       if (className.startsWith("org/apache/ivy/")) {
         addMessageWithoutLocation("Cannot @Grab without Ivy, please add it to your module dependencies (NoClassDefFoundError: " + className + ")", true);
       } else {
@@ -99,7 +99,7 @@ public class GroovyCompilerWrapper {
 
   private static void addCompiledFiles(CompilationUnit compilationUnit,
                                        final List<OutputItem> compiledFiles,
-                                       final boolean forStubs) throws IOException {
+                                       boolean forStubs) throws IOException {
     File targetDirectory = compilationUnit.getConfiguration().getTargetDirectory();
 
     final String outputPath = targetDirectory.getCanonicalPath().replace(File.separatorChar, '/');
@@ -107,8 +107,8 @@ public class GroovyCompilerWrapper {
     if (forStubs) {
       compilationUnit.applyToPrimaryClassNodes(new CompilationUnit.PrimaryClassNodeOperation() {
         public void call(SourceUnit source, GeneratorContext context, ClassNode classNode) throws CompilationFailedException {
-          final String topLevel = classNode.getName();
-          final String stubPath = outputPath + "/" + topLevel.replace('.', '/') + ".java";
+          String topLevel = classNode.getName();
+          String stubPath = outputPath + "/" + topLevel.replace('.', '/') + ".java";
           String fileName = source.getName();
           if (fileName.startsWith("file:")) {
             try {
@@ -131,7 +131,7 @@ public class GroovyCompilerWrapper {
       return;
     }
 
-    final SortedSet<String> allClasses = new TreeSet<String>();
+    SortedSet<String> allClasses = new TreeSet<String>();
     //noinspection unchecked
     List<GroovyClass> listOfClasses = compilationUnit.getClasses();
     for (GroovyClass listOfClass : listOfClasses) {
@@ -144,13 +144,13 @@ public class GroovyCompilerWrapper {
       //for debug purposes
       //System.out.println("source: " + fileName);
       //System.out.print("classes:");
-      final ModuleNode ast = sourceUnit.getAST();
-      final List<ClassNode> topLevelClasses = ast.getClasses();
+      ModuleNode ast = sourceUnit.getAST();
+      List<ClassNode> topLevelClasses = ast.getClasses();
 
       for (ClassNode classNode : topLevelClasses) {
-        final String topLevel = classNode.getName();
-        final String nested = topLevel + "$";
-        final SortedSet<String> tail = allClasses.tailSet(topLevel);
+        String topLevel = classNode.getName();
+        String nested = topLevel + "$";
+        SortedSet<String> tail = allClasses.tailSet(topLevel);
         for (Iterator<String> tailItr = tail.iterator(); tailItr.hasNext(); ) {
           String className = tailItr.next();
           if (className.equals(topLevel) || className.startsWith(nested)) {
@@ -210,7 +210,7 @@ public class GroovyCompilerWrapper {
                                         "Groovyc stub generation failed", null, -1, -1));
     }
 
-    final StringWriter writer = new StringWriter();
+    StringWriter writer = new StringWriter();
     writer.append(prefix);
     //noinspection IOResourceOpenedButNotSafelyClosed
     exception.printStackTrace(new PrintWriter(writer));

@@ -53,7 +53,7 @@ public class GrAccessorMethodImpl extends LightMethodBuilder implements GrAccess
           new LightModifierList(property.getManager()) {
             @Override
             public String getText() {
-              final String[] modifiers = getModifiers();
+              String[] modifiers = getModifiers();
               if (modifiers.length == 0) return "";
               if (modifiers.length == 1) return modifiers[0];
 
@@ -110,8 +110,8 @@ public class GrAccessorMethodImpl extends LightMethodBuilder implements GrAccess
   public PsiElement copy() {
     //return new GrAccessorMethodImpl(myProperty, myIsSetter, getName());
     //rename refactoring may create a copy using this method, add it to a class to check for conflicts, and then remove this copy.
-    final String modifiers = getModifierList().getText();
-    final String params;
+    String modifiers = getModifierList().getText();
+    String params;
     if (myIsSetter) {
       params="("+myProperty.getName()+")";
     }
@@ -142,8 +142,8 @@ public class GrAccessorMethodImpl extends LightMethodBuilder implements GrAccess
       String fieldName = field.getName();
 
       String name = GroovyPropertyUtils.getSetterName(fieldName);
-      final GrAccessorMethod setter = new GrAccessorMethodImpl(field, true, name);
-      final PsiClass clazz = field.getContainingClass();
+      GrAccessorMethod setter = new GrAccessorMethodImpl(field, true, name);
+      PsiClass clazz = field.getContainingClass();
       if (!hasContradictingMethods(setter, fieldName, clazz)) {
         return setter;
       }
@@ -156,7 +156,7 @@ public class GrAccessorMethodImpl extends LightMethodBuilder implements GrAccess
     if (field.isProperty()) {
       String fieldName = field.getName();
 
-      final PsiClass clazz = field.getContainingClass();
+      PsiClass clazz = field.getContainingClass();
       GrAccessorMethod getter1 = new GrAccessorMethodImpl(field, false, GroovyPropertyUtils.getGetterNameNonBoolean(fieldName));
       if (!hasContradictingMethods(getter1, fieldName, clazz)) {
         GrAccessorMethod getter2 = null;
@@ -184,7 +184,7 @@ public class GrAccessorMethodImpl extends LightMethodBuilder implements GrAccess
     PsiMethod[] methods = clazz instanceof GrTypeDefinition
                           ? ((GrTypeDefinition)clazz).findCodeMethodsByName(proto.getName(), true)
                           : clazz.findMethodsByName(proto.getName(), true);
-    final int paramCount = proto.getParameterList().getParametersCount();
+    int paramCount = proto.getParameterList().getParametersCount();
     for (PsiMethod method : methods) {
       if (paramCount != method.getParameterList().getParametersCount()) continue;
 

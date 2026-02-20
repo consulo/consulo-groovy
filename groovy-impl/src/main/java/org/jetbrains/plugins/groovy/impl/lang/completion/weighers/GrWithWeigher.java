@@ -37,7 +37,7 @@ public class GrWithWeigher extends CompletionWeigher {
 
   @Override
   public Comparable weigh(@Nonnull LookupElement element, @Nonnull CompletionLocation location) {
-    final PsiElement position = location.getCompletionParameters().getPosition();
+    PsiElement position = location.getCompletionParameters().getPosition();
     if (position.getLanguage() == GroovyLanguage.INSTANCE) return null;
 
     if (!(position.getParent() instanceof GrReferenceExpression)) return null;
@@ -45,7 +45,7 @@ public class GrWithWeigher extends CompletionWeigher {
     Object o = element.getObject();
     if (!(o instanceof GroovyResolveResult)) return 0;
 
-    final PsiElement resolveContext = ((GroovyResolveResult)o).getCurrentFileResolveContext();
+    PsiElement resolveContext = ((GroovyResolveResult)o).getCurrentFileResolveContext();
 
     if (resolveContext == null) return 0;
 

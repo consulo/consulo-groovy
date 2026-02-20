@@ -37,7 +37,7 @@ public class GrStringInjectionImpl extends GroovyPsiElementImpl implements GrStr
   @Override
   @Nullable
   public GrExpression getExpression() {
-    final GrExpression expression = findExpressionChild(this);
+    GrExpression expression = findExpressionChild(this);
     return expression instanceof GrClosableBlock ? null : expression;
   }
 

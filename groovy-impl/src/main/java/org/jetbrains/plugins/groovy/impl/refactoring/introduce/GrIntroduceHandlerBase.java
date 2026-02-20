@@ -198,15 +198,15 @@ public abstract class GrIntroduceHandlerBase<Settings extends GrIntroduceSetting
   }
 
   @Nonnull
-  public static List<GrExpression> collectExpressions(final PsiFile file, final Editor editor, final int offset, boolean acceptVoidCalls) {
+  public static List<GrExpression> collectExpressions(PsiFile file, Editor editor, int offset, boolean acceptVoidCalls) {
     int correctedOffset = correctOffset(editor, offset);
-    final PsiElement elementAtCaret = file.findElementAt(correctedOffset);
+    PsiElement elementAtCaret = file.findElementAt(correctedOffset);
     return collectExpressions(elementAtCaret, acceptVoidCalls);
   }
 
   @Nonnull
   public static List<GrExpression> collectExpressions(PsiElement elementAtCaret, boolean acceptVoidCalls) {
-    final List<GrExpression> expressions = new ArrayList<GrExpression>();
+    List<GrExpression> expressions = new ArrayList<GrExpression>();
 
     for (GrExpression expression = PsiTreeUtil.getParentOfType(elementAtCaret, GrExpression.class); expression != null;
          expression = PsiTreeUtil.getParentOfType(expression, GrExpression.class)) {
@@ -236,8 +236,8 @@ public abstract class GrIntroduceHandlerBase<Settings extends GrIntroduceSetting
       return true;
     }
     if (expression instanceof GrReferenceExpression && expression.getParent() instanceof GrCall) {
-      final GroovyResolveResult resolveResult = ((GrReferenceExpression)expression).advancedResolve();
-      final PsiElement resolved = resolveResult.getElement();
+      GroovyResolveResult resolveResult = ((GrReferenceExpression)expression).advancedResolve();
+      PsiElement resolved = resolveResult.getElement();
       return resolved instanceof PsiMethod && !resolveResult.isInvokedOnProperty() || resolved instanceof PsiClass;
     }
 
@@ -279,10 +279,10 @@ public abstract class GrIntroduceHandlerBase<Settings extends GrIntroduceSetting
   }
 
   @Nullable
-  public static GrVariable findVariableAtCaret(final PsiFile file, final Editor editor, final int offset) {
-    final int correctOffset = correctOffset(editor, offset);
-    final PsiElement elementAtCaret = file.findElementAt(correctOffset);
-    final GrVariable variable = PsiTreeUtil.getParentOfType(elementAtCaret, GrVariable.class);
+  public static GrVariable findVariableAtCaret(PsiFile file, Editor editor, int offset) {
+    int correctOffset = correctOffset(editor, offset);
+    PsiElement elementAtCaret = file.findElementAt(correctOffset);
+    GrVariable variable = PsiTreeUtil.getParentOfType(elementAtCaret, GrVariable.class);
     if (variable != null && variable.getNameIdentifierGroovy().getTextRange().contains(correctOffset)) {
       return variable;
     }
@@ -290,23 +290,23 @@ public abstract class GrIntroduceHandlerBase<Settings extends GrIntroduceSetting
   }
 
   @Override
-  public void invoke(@Nonnull final Project project, final Editor editor, final PsiFile file, @Nullable final DataContext dataContext) {
-    final SelectionModel selectionModel = editor.getSelectionModel();
+  public void invoke(@Nonnull final Project project, final Editor editor, final PsiFile file, @Nullable DataContext dataContext) {
+    SelectionModel selectionModel = editor.getSelectionModel();
     if (!selectionModel.hasSelection()) {
-      final int offset = editor.getCaretModel().getOffset();
+      int offset = editor.getCaretModel().getOffset();
 
-      final List<GrExpression> expressions = collectExpressions(file, editor, offset, false);
+      List<GrExpression> expressions = collectExpressions(file, editor, offset, false);
       if (expressions.isEmpty()) {
         updateSelectionForVariable(editor, file, selectionModel, offset);
       }
       else if (expressions.size() == 1) {
-        final TextRange textRange = expressions.get(0).getTextRange();
+        TextRange textRange = expressions.get(0).getTextRange();
         selectionModel.setSelection(textRange.getStartOffset(), textRange.getEndOffset());
       }
       else {
         IntroduceTargetChooser.showChooser(editor, expressions, new Consumer<GrExpression>() {
           @Override
-          public void accept(final GrExpression selectedValue) {
+          public void accept(GrExpression selectedValue) {
             invoke(project, editor, file, selectedValue.getTextRange().getStartOffset(), selectedValue.getTextRange().getEndOffset());
           }
         }, GR_EXPRESSION_RENDERER);
@@ -317,12 +317,12 @@ public abstract class GrIntroduceHandlerBase<Settings extends GrIntroduceSetting
   }
 
   public static void updateSelectionForVariable(Editor editor, PsiFile file, SelectionModel selectionModel, int offset) {
-    final GrVariable variable = findVariableAtCaret(file, editor, offset);
+    GrVariable variable = findVariableAtCaret(file, editor, offset);
     if (variable == null || variable instanceof GrField || variable instanceof GrParameter) {
       selectionModel.selectLineAtCaret();
     }
     else {
-      final TextRange textRange = variable.getTextRange();
+      TextRange textRange = variable.getTextRange();
       selectionModel.setSelection(textRange.getStartOffset(), textRange.getEndOffset());
     }
   }
@@ -337,7 +337,7 @@ public abstract class GrIntroduceHandlerBase<Settings extends GrIntroduceSetting
                                   @Nullable final GrExpression expression,
                                   @Nullable final GrVariable variable,
                                   @Nullable final StringPartInfo stringPart) {
-    final Scope[] scopes = findPossibleScopes(expression, variable, stringPart, editor);
+    Scope[] scopes = findPossibleScopes(expression, variable, stringPart, editor);
 
     Consumer<Scope> callback = new Consumer<Scope>() {
       @Override
@@ -473,11 +473,11 @@ public abstract class GrIntroduceHandlerBase<Settings extends GrIntroduceSetting
                                        @Nullable StringPartInfo stringPart,
                                        @Nonnull PsiElement scope) {
     if (variable != null) {
-      final PsiElement[] occurrences = collectVariableUsages(variable, scope);
+      PsiElement[] occurrences = collectVariableUsages(variable, scope);
       return new GrIntroduceContextImpl(project, editor, null, variable, stringPart, occurrences, scope);
     }
     else if (expression != null) {
-      final PsiElement[] occurrences = findOccurrences(expression, scope);
+      PsiElement[] occurrences = findOccurrences(expression, scope);
       return new GrIntroduceContextImpl(project, editor, expression, variable, stringPart, occurrences, scope);
     }
     else {
@@ -500,7 +500,7 @@ public abstract class GrIntroduceHandlerBase<Settings extends GrIntroduceSetting
     ReferencesSearch.search(variable, new LocalSearchScope(scope)).forEach(new Processor<PsiReference>() {
       @Override
       public boolean process(PsiReference psiReference) {
-        final PsiElement element = psiReference.getElement();
+        PsiElement element = psiReference.getElement();
         if (element != null) {
           list.add(element);
         }
@@ -510,7 +510,7 @@ public abstract class GrIntroduceHandlerBase<Settings extends GrIntroduceSetting
     return list.toArray(new PsiElement[list.size()]);
   }
 
-  private boolean invokeImpl(final Project project, final GrIntroduceContext context, final Editor editor) {
+  private boolean invokeImpl(Project project, final GrIntroduceContext context, Editor editor) {
     try {
       if (!CommonRefactoringUtil.checkReadOnlyStatus(project, context.getOccurrences())) {
         return false;
@@ -522,7 +522,7 @@ public abstract class GrIntroduceHandlerBase<Settings extends GrIntroduceSetting
         Map<OccurrencesChooser.ReplaceChoice, List<Object>> occurrencesMap = getOccurrenceOptions(context);
         new IntroduceOccurrencesChooser(editor).showChooser(new Consumer<OccurrencesChooser.ReplaceChoice>() {
           @Override
-          public void accept(final OccurrencesChooser.ReplaceChoice choice) {
+          public void accept(OccurrencesChooser.ReplaceChoice choice) {
             getIntroducer(context, choice).startInplaceIntroduceTemplate();
           }
         }, occurrencesMap);
@@ -565,15 +565,15 @@ public abstract class GrIntroduceHandlerBase<Settings extends GrIntroduceSetting
 
   @Nonnull
   protected PsiElement[] findOccurrences(@Nonnull GrExpression expression, @Nonnull PsiElement scope) {
-    final PsiElement[] occurrences = GroovyRefactoringUtil.getExpressionOccurrences(PsiUtil.skipParentheses(expression, false), scope);
+    PsiElement[] occurrences = GroovyRefactoringUtil.getExpressionOccurrences(PsiUtil.skipParentheses(expression, false), scope);
     if (occurrences == null || occurrences.length == 0) {
       throw new GrRefactoringError(GroovyRefactoringBundle.message("no.occurrences.found"));
     }
     return occurrences;
   }
 
-  private void invoke(@Nonnull final Project project,
-                      @Nonnull final Editor editor,
+  private void invoke(@Nonnull Project project,
+                      @Nonnull Editor editor,
                       @Nonnull PsiFile file,
                       int startOffset,
                       int endOffset) throws GrRefactoringError {
@@ -587,8 +587,8 @@ public abstract class GrIntroduceHandlerBase<Settings extends GrIntroduceSetting
       }
 
       GrExpression selectedExpr = findExpression(file, startOffset, endOffset);
-      final GrVariable variable = findVariable(file, startOffset, endOffset);
-      final StringPartInfo stringPart = StringPartInfo.findStringPart(file, startOffset, endOffset);
+      GrVariable variable = findVariable(file, startOffset, endOffset);
+      StringPartInfo stringPart = StringPartInfo.findStringPart(file, startOffset, endOffset);
       if (variable != null) {
         checkVariable(variable);
       }
@@ -633,7 +633,7 @@ public abstract class GrIntroduceHandlerBase<Settings extends GrIntroduceSetting
 
 
   public static boolean isInplace(@Nonnull Editor editor, @Nonnull PsiElement place) {
-    final RefactoringSupportProvider supportProvider = RefactoringSupportProvider.forLanguage(place.getLanguage());
+    RefactoringSupportProvider supportProvider = RefactoringSupportProvider.forLanguage(place.getLanguage());
     return supportProvider != null &&
       (editor.getUserData(InplaceRefactoring.INTRODUCE_RESTART) == null || !editor.getUserData(InplaceRefactoring.INTRODUCE_RESTART)) &&
       editor.getUserData(AbstractInplaceIntroducer.ACTIVE_INTRODUCE) == null &&
@@ -646,12 +646,12 @@ public abstract class GrIntroduceHandlerBase<Settings extends GrIntroduceSetting
   public static GrVariable findVariable(@Nonnull PsiFile file, int startOffset, int endOffset) {
     GrVariable var = PsiImplUtil.findElementInRange(file, startOffset, endOffset, GrVariable.class);
     if (var == null) {
-      final GrVariableDeclaration variableDeclaration =
+      GrVariableDeclaration variableDeclaration =
         PsiImplUtil.findElementInRange(file, startOffset, endOffset, GrVariableDeclaration.class);
       if (variableDeclaration == null) {
         return null;
       }
-      final GrVariable[] variables = variableDeclaration.getVariables();
+      GrVariable[] variables = variableDeclaration.getVariables();
       if (variables.length == 1) {
         var = variables[0];
       }
@@ -667,8 +667,8 @@ public abstract class GrIntroduceHandlerBase<Settings extends GrIntroduceSetting
     if (!(statement instanceof GrVariableDeclaration)) {
       return null;
     }
-    final GrVariableDeclaration variableDeclaration = (GrVariableDeclaration)statement;
-    final GrVariable[] variables = variableDeclaration.getVariables();
+    GrVariableDeclaration variableDeclaration = (GrVariableDeclaration)statement;
+    GrVariable[] variables = variableDeclaration.getVariables();
 
     GrVariable var = null;
     if (variables.length == 1) {
@@ -745,7 +745,7 @@ public abstract class GrIntroduceHandlerBase<Settings extends GrIntroduceSetting
       }
     }
 
-    final GrStringInjection injection = PsiTreeUtil.getParentOfType(candidate, GrStringInjection.class);
+    GrStringInjection injection = PsiTreeUtil.getParentOfType(candidate, GrStringInjection.class);
     if (injection != null && !injection.getText().contains("\n")) {
       candidate = findContainingStatement(injection);
     }
@@ -790,7 +790,7 @@ public abstract class GrIntroduceHandlerBase<Settings extends GrIntroduceSetting
   }
 
   public static void deleteLocalVar(GrVariable var) {
-    final PsiElement parent = var.getParent();
+    PsiElement parent = var.getParent();
     if (((GrVariableDeclaration)parent).getVariables().length == 1) {
       parent.delete();
     }
@@ -805,7 +805,7 @@ public abstract class GrIntroduceHandlerBase<Settings extends GrIntroduceSetting
 
   @Nullable
   public static GrVariable resolveLocalVar(@Nonnull GrIntroduceContext context) {
-    final GrVariable var = context.getVar();
+    GrVariable var = context.getVar();
     if (var != null) {
       return var;
     }
@@ -816,9 +816,9 @@ public abstract class GrIntroduceHandlerBase<Settings extends GrIntroduceSetting
   @Nullable
   public static GrVariable resolveLocalVar(@Nullable GrExpression expression) {
     if (expression instanceof GrReferenceExpression) {
-      final GrReferenceExpression ref = (GrReferenceExpression)expression;
+      GrReferenceExpression ref = (GrReferenceExpression)expression;
 
-      final PsiElement resolved = ref.resolve();
+      PsiElement resolved = ref.resolve();
       if (PsiUtil.isLocalVariable(resolved)) {
         return (GrVariable)resolved;
       }
@@ -828,7 +828,7 @@ public abstract class GrIntroduceHandlerBase<Settings extends GrIntroduceSetting
     return null;
   }
 
-  public static boolean hasLhs(@Nonnull final PsiElement[] occurrences) {
+  public static boolean hasLhs(@Nonnull PsiElement[] occurrences) {
     for (PsiElement element : occurrences) {
       if (element instanceof GrReferenceExpression) {
         if (PsiUtil.isLValue((GroovyPsiElement)element)) {

@@ -65,19 +65,19 @@ public abstract class DslPointcut<T, V>
 			@Override
 			List<V> matches(T src, ProcessingContext context)
 			{
-				final List<V> vs1 = first.matches(src, context);
+				List<V> vs1 = first.matches(src, context);
 				if(vs1 == null)
 				{
 					return null;
 				}
 
-				final List<V> vs2 = next.matches(src, context);
+				List<V> vs2 = next.matches(src, context);
 				if(vs2 == null)
 				{
 					return null;
 				}
 
-				final List<V> result = new ArrayList<V>(vs1);
+				List<V> result = new ArrayList<V>(vs1);
 				result.retainAll(new HashSet<V>(vs2));
 				return result;
 			}
@@ -98,15 +98,15 @@ public abstract class DslPointcut<T, V>
 			@Override
 			List<V> matches(T src, ProcessingContext context)
 			{
-				final List<V> vs1 = first.matches(src, context);
-				final List<V> vs2 = next.matches(src, context);
+				List<V> vs1 = first.matches(src, context);
+				List<V> vs2 = next.matches(src, context);
 
 				if(vs1 == null && vs2 == null)
 				{
 					return null;
 				}
 
-				final Set<V> result = new LinkedHashSet<V>();
+				Set<V> result = new LinkedHashSet<V>();
 				if(vs1 != null)
 				{
 					result.addAll(vs1);
@@ -154,7 +154,7 @@ public abstract class DslPointcut<T, V>
 			@Override
 			List<GdslType> matches(GdslType src, ProcessingContext context)
 			{
-				final PsiFile placeFile = context.get(GdslUtil.INITIAL_CONTEXT).getPlaceFile();
+				PsiFile placeFile = context.get(GdslUtil.INITIAL_CONTEXT).getPlaceFile();
 				if(ClassContextFilter.isSubtype(src.psiType, placeFile, (String) arg))
 				{
 					return Arrays.asList(src);
@@ -171,7 +171,7 @@ public abstract class DslPointcut<T, V>
 
 	}
 
-	public static DslPointcut<GroovyClassDescriptor, GdslType> currentType(final Object arg)
+	public static DslPointcut<GroovyClassDescriptor, GdslType> currentType(Object arg)
 	{
 		final DslPointcut<GdslType, ?> inner;
 		if(arg instanceof String)
@@ -191,7 +191,7 @@ public abstract class DslPointcut<T, V>
 			@Override
 			List<GdslType> matches(GroovyClassDescriptor src, ProcessingContext context)
 			{
-				final GdslType currentType = new GdslType(ClassUtil.findPsiType(src, context));
+				GdslType currentType = new GdslType(ClassUtil.findPsiType(src, context));
 				if(inner.matches(currentType, context) != null)
 				{
 					return Arrays.asList(currentType);
@@ -218,7 +218,7 @@ public abstract class DslPointcut<T, V>
 				PsiElement place = src.getPlace();
 				while(true)
 				{
-					final PsiClass cls = PsiTreeUtil.getContextOfType(place, PsiClass.class);
+					PsiClass cls = PsiTreeUtil.getContextOfType(place, PsiClass.class);
 					if(cls == null)
 					{
 						break;
@@ -267,7 +267,7 @@ public abstract class DslPointcut<T, V>
 
 	}
 
-	public static DslPointcut<GroovyClassDescriptor, GdslMethod> enclosingMethod(final Object arg)
+	public static DslPointcut<GroovyClassDescriptor, GdslMethod> enclosingMethod(Object arg)
 	{
 		final DslPointcut<? super GdslMethod, ?> inner;
 		if(arg instanceof String)
@@ -290,12 +290,12 @@ public abstract class DslPointcut<T, V>
 				PsiElement place = src.getPlace();
 				while(true)
 				{
-					final PsiMethod method = PsiTreeUtil.getContextOfType(place, PsiMethod.class);
+					PsiMethod method = PsiTreeUtil.getContextOfType(place, PsiMethod.class);
 					if(method == null)
 					{
 						break;
 					}
-					final GdslMethod wrapper = new GdslMethod(method);
+					GdslMethod wrapper = new GdslMethod(method);
 					if(inner.matches(wrapper, context) != null)
 					{
 						result.add(wrapper);
@@ -313,7 +313,7 @@ public abstract class DslPointcut<T, V>
 		};
 	}
 
-	public static DslPointcut bind(final Object arg)
+	public static DslPointcut bind(Object arg)
 	{
 		assert arg instanceof Map;
 		assert ((Map) arg).size() == 1;
@@ -325,7 +325,7 @@ public abstract class DslPointcut<T, V>
 			@Override
 			List matches(Object src, ProcessingContext context)
 			{
-				final List result = pct.matches(src, context);
+				List result = pct.matches(src, context);
 				if(result != null)
 				{
 					Map<String, List> map = context.get(BOUND);

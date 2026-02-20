@@ -42,7 +42,7 @@ class StaticImportInsertHandler implements InsertHandler<JavaGlobalMemberLookupE
   private StaticImportInsertHandler() {
   }
 
-  private static boolean importAlreadyExists(final PsiMember member, final GroovyFile file, final PsiElement place) {
+  private static boolean importAlreadyExists(final PsiMember member, GroovyFile file, PsiElement place) {
     final PsiManager manager = file.getManager();
     PsiScopeProcessor processor = new PsiScopeProcessor() {
       @Override
@@ -61,8 +61,8 @@ class StaticImportInsertHandler implements InsertHandler<JavaGlobalMemberLookupE
     };
 
     boolean skipStaticImports = member instanceof PsiClass;
-    final GrImportStatement[] imports = file.getImportStatements();
-    final ResolveState initial = ResolveState.initial();
+    GrImportStatement[] imports = file.getImportStatements();
+    ResolveState initial = ResolveState.initial();
     for (GrImportStatement anImport : imports) {
       if (skipStaticImports == anImport.isStatic()) continue;
       if (!anImport.processDeclarations(processor, initial, null, place)) return true;
@@ -73,9 +73,9 @@ class StaticImportInsertHandler implements InsertHandler<JavaGlobalMemberLookupE
   @Override
   public void handleInsert(InsertionContext context, JavaGlobalMemberLookupElement item) {
     GroovyInsertHandler.INSTANCE.handleInsert(context, item);
-    final PsiMember member = item.getObject();
+    PsiMember member = item.getObject();
     PsiDocumentManager.getInstance(member.getProject()).commitDocument(context.getDocument());
-    final GrReferenceExpression ref = PsiTreeUtil.
+    GrReferenceExpression ref = PsiTreeUtil.
       findElementOfClassAtOffset(context.getFile(), context.getStartOffset(), GrReferenceExpression.class, false);
 
     if (ref != null &&

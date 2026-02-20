@@ -41,7 +41,7 @@ public class MvcWatchedRootProvider implements WatchedRootsProvider {
     Set<String> result = null;
 
     for (Module module : ModuleManager.getInstance(project).getModules()) {
-      final MvcFramework framework = MvcFramework.getInstance(module);
+      MvcFramework framework = MvcFramework.getInstance(module);
       if (framework == null) continue;
 
       if (result == null) result = new HashSet<String>();

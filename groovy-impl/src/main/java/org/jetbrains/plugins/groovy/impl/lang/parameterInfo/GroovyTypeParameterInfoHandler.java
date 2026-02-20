@@ -97,17 +97,17 @@ public class GroovyTypeParameterInfoHandler implements ParameterInfoHandlerWithT
   @Nullable
   @Override
   public GrTypeArgumentList findElementForParameterInfo(CreateParameterInfoContext context) {
-    final GrTypeArgumentList parameterList =
+    GrTypeArgumentList parameterList =
       ParameterInfoUtils.findParentOfType(context.getFile(), context.getOffset(), GrTypeArgumentList.class);
 
     if (parameterList != null) {
       if (!(parameterList.getParent() instanceof GrCodeReferenceElement)) return null;
-      final GrCodeReferenceElement ref = ((GrCodeReferenceElement)parameterList.getParent());
+      GrCodeReferenceElement ref = ((GrCodeReferenceElement)parameterList.getParent());
 
-      final PsiElement resolved = ref.resolve();
+      PsiElement resolved = ref.resolve();
       if (!(resolved instanceof PsiTypeParameterListOwner)) return null;
 
-      final PsiTypeParameter[] typeParams = ((PsiTypeParameterListOwner)resolved).getTypeParameters();
+      PsiTypeParameter[] typeParams = ((PsiTypeParameterListOwner)resolved).getTypeParameters();
       if (typeParams.length == 0) return null;
 
       context.setItemsToShow(typeParams);
@@ -132,7 +132,7 @@ public class GroovyTypeParameterInfoHandler implements ParameterInfoHandlerWithT
   public void updateParameterInfo(@Nonnull GrTypeArgumentList o, UpdateParameterInfoContext context) {
     int index = ParameterInfoUtils.getCurrentParameterIndex(o.getNode(), context.getOffset(), getActualParameterDelimiterType());
     context.setCurrentParameter(index);
-    final Object[] objectsToView = context.getObjectsToView();
+    Object[] objectsToView = context.getObjectsToView();
     context.setHighlightedParameter(index < objectsToView.length && index >= 0 ? (PsiElement)objectsToView[index] : null);
   }
 

@@ -46,11 +46,11 @@ public abstract class GrCodeBlockElementType extends IErrorCounterReparseableEle
 
   @Override
   @Nonnull
-  public abstract GrBlockImpl createNode(final CharSequence text);
+  public abstract GrBlockImpl createNode(CharSequence text);
 
   @Override
-  public int getErrorsCount(final CharSequence seq, Language fileLanguage, final Project project) {
-    final Lexer lexer = new GroovyLexer();
+  public int getErrorsCount(CharSequence seq, Language fileLanguage, Project project) {
+    Lexer lexer = new GroovyLexer();
 
     lexer.start(seq);
     if (lexer.getTokenType() != GroovyTokenTypes.mLCURLY) return FATAL_ERROR;

@@ -49,5 +49,5 @@ public interface GrBinaryExpression extends GrExpression, PsiPolyVariantReferenc
 
   @Nonnull
   @Override
-  GroovyResolveResult[] multiResolve(final boolean incompleteCode);
+  GroovyResolveResult[] multiResolve(boolean incompleteCode);
 }

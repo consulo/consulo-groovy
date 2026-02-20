@@ -49,7 +49,7 @@ public class GrTypeParameterParameterExtendsListImpl extends GroovyPsiElementImp
   @Override
   @Nonnull
   public PsiClassType[] getReferencedTypes() {
-    final GrCodeReferenceElement[] refs = findChildrenByClass(GrCodeReferenceElement.class);
+    GrCodeReferenceElement[] refs = findChildrenByClass(GrCodeReferenceElement.class);
     PsiClassType[] result = new PsiClassType[refs.length];
     for (int i = 0; i < result.length; i++) {
       result[i] = new GrClassReferenceType(refs[i]);

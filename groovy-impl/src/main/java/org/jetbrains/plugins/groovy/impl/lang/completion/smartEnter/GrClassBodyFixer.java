@@ -33,7 +33,7 @@ public class GrClassBodyFixer extends SmartEnterProcessorWithFixers.Fixer<Groovy
     throws IncorrectOperationException
   {
     if (element instanceof GrTypeDefinition && ((GrTypeDefinition)element).getBody() == null) {
-      final Document doc = editor.getDocument();
+      Document doc = editor.getDocument();
       doc.insertString(element.getTextRange().getEndOffset(), "{\n}");
     }
   }

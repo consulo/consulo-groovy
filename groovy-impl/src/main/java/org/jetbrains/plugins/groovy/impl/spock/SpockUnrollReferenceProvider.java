@@ -49,14 +49,14 @@ public class SpockUnrollReferenceProvider extends PsiReferenceProvider {
     PsiElement eMethod = modifierList.getParent();
     if (!(eMethod instanceof GrMethod)) return PsiReference.EMPTY_ARRAY;
 
-    final GrMethod method = (GrMethod)eMethod;
+    GrMethod method = (GrMethod)eMethod;
 
     ElementManipulator<PsiElement> manipulator = ElementManipulators.getManipulator(element);
     TextRange rangeInElement = manipulator.getRangeInElement(element);
 
     String text = rangeInElement.substring(element.getText());
 
-    final List<SpockVariableReference> references = new ArrayList<SpockVariableReference>();
+    List<SpockVariableReference> references = new ArrayList<SpockVariableReference>();
 
     Matcher matcher = PATTERN.matcher(text);
     while (matcher.find()) {

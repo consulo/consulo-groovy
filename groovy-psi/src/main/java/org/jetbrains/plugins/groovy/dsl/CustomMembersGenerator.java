@@ -118,7 +118,7 @@ public class CustomMembersGenerator extends GroovyObjectSupport implements GdslM
   }
 
   private Object[] constructNewArgs(Object[] args) {
-    final Object[] newArgs = new Object[args.length + 1];
+    Object[] newArgs = new Object[args.length + 1];
     //noinspection ManualArrayCopy
     for (int i = 0; i < args.length; i++) {
       newArgs[i] = args[i];
@@ -152,7 +152,7 @@ public class CustomMembersGenerator extends GroovyObjectSupport implements GdslM
     setter.put("isStatic", isStatic);
     setter.put("doc", doc);
     setter.put("docUrl", docUrl);
-    final HashMap<Object, Object> param = new HashMap<Object, Object>();
+    HashMap<Object, Object> param = new HashMap<Object, Object>();
     param.put(name, type);
     setter.put("params", param);
     method(setter);
@@ -237,9 +237,9 @@ public class CustomMembersGenerator extends GroovyObjectSupport implements GdslM
         first = false;
       }
     }
-    final Object toThrow = args.get(THROWS);
+    Object toThrow = args.get(THROWS);
     if (toThrow instanceof List) {
-      final ArrayList<String> list = new ArrayList<String>();
+      ArrayList<String> list = new ArrayList<String>();
       for (Object o : (List)toThrow) {
         list.add(stringifyType(o));
       }
@@ -254,7 +254,7 @@ public class CustomMembersGenerator extends GroovyObjectSupport implements GdslM
   @SuppressWarnings("UnusedDeclaration")
   public void closureInMethod(Map<Object, Object> args) {
     parseMethod(args);
-    final Object method = args.get("method");
+    Object method = args.get("method");
     if (method instanceof Map) {
       parseMethod((Map)method);
     }
@@ -291,11 +291,11 @@ public class CustomMembersGenerator extends GroovyObjectSupport implements GdslM
   @SuppressWarnings("UnusedDeclaration")
   @Nullable
   public Object methodMissing(String name, Object args) {
-    final Object[] newArgs = constructNewArgs((Object[])args);
+    Object[] newArgs = constructNewArgs((Object[])args);
 
     // Get other DSL methods from extensions
     for (GdslMembersProvider provider : GdslMembersProvider.EP_NAME.getExtensionList()) {
-      final List<MetaMethod> variants = DefaultGroovyMethods.getMetaClass(provider).respondsTo(provider, name, newArgs);
+      List<MetaMethod> variants = DefaultGroovyMethods.getMetaClass(provider).respondsTo(provider, name, newArgs);
       if (variants.size() == 1) {
         return InvokerHelper.invokeMethod(provider, name, newArgs);
       }
@@ -307,7 +307,7 @@ public class CustomMembersGenerator extends GroovyObjectSupport implements GdslM
   @Nullable
   public Object propertyMissing(String name) {
     if (myBindings != null) {
-      final List list = myBindings.get(name);
+      List list = myBindings.get(name);
       if (list != null) {
         return list;
       }

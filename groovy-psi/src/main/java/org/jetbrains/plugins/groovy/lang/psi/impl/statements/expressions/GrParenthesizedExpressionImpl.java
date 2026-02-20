@@ -44,7 +44,7 @@ public class GrParenthesizedExpressionImpl extends GrExpressionImpl implements G
 
     @Override
     public PsiType getType() {
-        final GrExpression operand = getOperand();
+        GrExpression operand = getOperand();
         return operand == null ? null : operand.getType();
     }
 

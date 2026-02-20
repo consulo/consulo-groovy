@@ -33,7 +33,7 @@ public class TypeSpec {
     return parse(builder, false, true); //allow lower and upper case first letter
   }
 
-  public static ReferenceElement.ReferenceElementResult parse(PsiBuilder builder, boolean isUpper, final boolean expressionPossible) {
+  public static ReferenceElement.ReferenceElementResult parse(PsiBuilder builder, boolean isUpper, boolean expressionPossible) {
     if (TokenSets.BUILT_IN_TYPES.contains(builder.getTokenType())) {
       return parseBuiltInType(builder);
     }
@@ -79,11 +79,11 @@ public class TypeSpec {
     }
   }
 
-  private static ReferenceElement.ReferenceElementResult parseClassType(PsiBuilder builder, boolean isUpper, final boolean expressionPossible) {
+  private static ReferenceElement.ReferenceElementResult parseClassType(PsiBuilder builder, boolean isUpper, boolean expressionPossible) {
     PsiBuilder.Marker arrMarker = builder.mark();
     PsiBuilder.Marker typeElementMarker = builder.mark();
 
-    final ReferenceElement.ReferenceElementResult result = ReferenceElement.parseReferenceElement(builder, isUpper, expressionPossible);
+    ReferenceElement.ReferenceElementResult result = ReferenceElement.parseReferenceElement(builder, isUpper, expressionPossible);
     if (result == ReferenceElement.ReferenceElementResult.FAIL) {
       typeElementMarker.drop();
       arrMarker.rollbackTo();
@@ -176,7 +176,7 @@ public class TypeSpec {
     PsiBuilder.Marker arrMarker = builder.mark();
     PsiBuilder.Marker typeElementMarker = builder.mark();
 
-    final ReferenceElement.ReferenceElementResult result = ReferenceElement.parseReferenceElement(builder, false, expressionPossible);
+    ReferenceElement.ReferenceElementResult result = ReferenceElement.parseReferenceElement(builder, false, expressionPossible);
     if (result == ReferenceElement.ReferenceElementResult.FAIL) {
       typeElementMarker.drop();
       arrMarker.rollbackTo();

@@ -121,7 +121,7 @@ public class GrIntroduceConstantDialog extends DialogWrapper implements GrIntrod
   public static PsiClass getParentClass(PsiElement occurrence) {
     PsiElement cur = occurrence;
     while (true) {
-      final PsiClass parentClass = PsiTreeUtil.getParentOfType(cur, PsiClass.class, true);
+      PsiClass parentClass = PsiTreeUtil.getParentOfType(cur, PsiClass.class, true);
       if (parentClass == null || parentClass.hasModifierProperty(PsiModifier.STATIC)) {
         return parentClass;
       }
@@ -182,8 +182,8 @@ public class GrIntroduceConstantDialog extends DialogWrapper implements GrIntrod
     myTargetClassPanel.add(myTargetClassLabel, BorderLayout.NORTH);
     myTargetClassPanel.add(myTargetClassEditor, BorderLayout.CENTER);
     Set<String> possibleClassNames = new LinkedHashSet<String>();
-    for (final PsiElement occurrence : myContext.getOccurrences()) {
-      final PsiClass parentClass = getParentClass(occurrence);
+    for (PsiElement occurrence : myContext.getOccurrences()) {
+      PsiClass parentClass = getParentClass(occurrence);
       if (parentClass != null && parentClass.getQualifiedName() != null) {
         possibleClassNames.add(parentClass.getQualifiedName());
       }
@@ -272,9 +272,9 @@ public class GrIntroduceConstantDialog extends DialogWrapper implements GrIntrod
   private void createUIComponents() {
     myJavaVisibilityPanel = new JavaVisibilityPanel(false, true);
 
-    final GrVariable var = myContext.getVar();
-    final GrExpression expression = myContext.getExpression();
-    final StringPartInfo stringPart = myContext.getStringPart();
+    GrVariable var = myContext.getVar();
+    GrExpression expression = myContext.getExpression();
+    StringPartInfo stringPart = myContext.getStringPart();
     if (expression != null) {
       myTypeCombo = GrTypeComboBox.createTypeComboBoxFromExpression(expression);
     }
@@ -300,7 +300,7 @@ public class GrIntroduceConstantDialog extends DialogWrapper implements GrIntrod
   }
 
   private void targetClassChanged() {
-    final String targetClassName = getTargetClassName();
+    String targetClassName = getTargetClassName();
     myTargetClass =
       JavaPsiFacade.getInstance(myContext.getProject()).findClass(targetClassName, GlobalSearchScope.projectScope(myContext.getProject()));
     updateVisibilityPanel();
@@ -315,19 +315,19 @@ public class GrIntroduceConstantDialog extends DialogWrapper implements GrIntrod
     else {
       UIUtil.setEnabled(TargetAWT.to(myJavaVisibilityPanel.getComponent()), true, true);
       // exclude all modifiers not visible from all occurrences
-      final Set<String> visible = new HashSet<String>();
+      Set<String> visible = new HashSet<String>();
       visible.add(PsiModifier.PRIVATE);
       visible.add(PsiModifier.PROTECTED);
       visible.add(PsiModifier.PACKAGE_LOCAL);
       visible.add(PsiModifier.PUBLIC);
       for (PsiElement occurrence : myContext.getOccurrences()) {
-        final PsiManager psiManager = PsiManager.getInstance(myContext.getProject());
+        PsiManager psiManager = PsiManager.getInstance(myContext.getProject());
         for (Iterator<String> iterator = visible.iterator(); iterator.hasNext(); ) {
           String modifier = iterator.next();
 
           try {
-            final String modifierText = PsiModifier.PACKAGE_LOCAL.equals(modifier) ? "" : modifier + " ";
-            final PsiField field = JavaPsiFacade.getInstance(psiManager.getProject())
+            String modifierText = PsiModifier.PACKAGE_LOCAL.equals(modifier) ? "" : modifier + " ";
+            PsiField field = JavaPsiFacade.getInstance(psiManager.getProject())
                                                 .getElementFactory()
                                                 .createFieldFromText(modifierText + "int xxx;", myTargetClass);
             if (!JavaResolveUtil.isAccessible(field, myTargetClass, field.getModifierList(), occurrence, myTargetClass, null)) {
@@ -367,12 +367,12 @@ public class GrIntroduceConstantDialog extends DialogWrapper implements GrIntrod
       return;
     }
 
-    final String targetClassName = myTargetClassEditor.getText();
+    String targetClassName = myTargetClassEditor.getText();
     if (targetClassName.trim().length() == 0 && myDefaultTargetClass == null) {
       setOKActionEnabled(false);
       return;
     }
-    final String trimmed = targetClassName.trim();
+    String trimmed = targetClassName.trim();
     if (!JavaPsiFacade.getInstance(myContext.getProject()).getNameHelper().isQualifiedName(trimmed)) {
       setOKActionEnabled(false);
       return;
@@ -382,11 +382,11 @@ public class GrIntroduceConstantDialog extends DialogWrapper implements GrIntrod
 
   @Override
   protected void doOKAction() {
-    final String targetClassName = getTargetClassName();
+    String targetClassName = getTargetClassName();
 
     if (myDefaultTargetClass == null || !targetClassName.isEmpty() && !Comparing.strEqual(targetClassName,
                                                                                           myDefaultTargetClass.getQualifiedName())) {
-      final Module module = ModuleUtilCore.findModuleForPsiElement(myContext.getPlace());
+      Module module = ModuleUtilCore.findModuleForPsiElement(myContext.getPlace());
       JavaPsiFacade facade = JavaPsiFacade.getInstance(myContext.getProject());
       PsiClass newClass = facade.findClass(targetClassName, GlobalSearchScope.projectScope(myContext.getProject()));
 
@@ -449,11 +449,11 @@ public class GrIntroduceConstantDialog extends DialogWrapper implements GrIntrod
         return targetClass;
       }
 
-      final String packageName = StringUtil.getPackageName(qualifiedName);
+      String packageName = StringUtil.getPackageName(qualifiedName);
       PsiPackage psiPackage = JavaPsiFacade.getInstance(project).findPackage(packageName);
-      final PsiDirectory psiDirectory;
+      PsiDirectory psiDirectory;
       if (psiPackage != null) {
-        final PsiDirectory[] directories = psiPackage.getDirectories(GlobalSearchScope.allScope(project));
+        PsiDirectory[] directories = psiPackage.getDirectories(GlobalSearchScope.allScope(project));
         psiDirectory = directories.length > 1 ? DirectoryChooserUtil.chooseDirectory(directories,
                                                                                      null,
                                                                                      project,
@@ -465,12 +465,12 @@ public class GrIntroduceConstantDialog extends DialogWrapper implements GrIntrod
       if (psiDirectory == null) {
         return null;
       }
-      final String shortName = StringUtil.getShortName(qualifiedName);
-      final String fileName = shortName + NewGroovyActionBase.GROOVY_EXTENSION;
+      String shortName = StringUtil.getShortName(qualifiedName);
+      String fileName = shortName + NewGroovyActionBase.GROOVY_EXTENSION;
 
       return WriteAction.compute(() ->
                                  {
-                                   final GroovyFile file = (GroovyFile)GroovyTemplatesFactory.createFromTemplate(psiDirectory,
+                                   GroovyFile file = (GroovyFile)GroovyTemplatesFactory.createFromTemplate(psiDirectory,
                                                                                                                  shortName,
                                                                                                                  fileName,
                                                                                                                  GroovyTemplates.GROOVY_CLASS,

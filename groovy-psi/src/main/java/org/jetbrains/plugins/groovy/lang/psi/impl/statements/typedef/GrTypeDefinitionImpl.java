@@ -106,7 +106,7 @@ public abstract class GrTypeDefinitionImpl extends GrStubElementBase<GrTypeDefin
   @Nullable
   @Override
   public String getQualifiedName() {
-    final GrTypeDefinitionStub stub = getStub();
+    GrTypeDefinitionStub stub = getStub();
     if (stub != null) {
       return stub.getQualifiedName();
     }
@@ -117,7 +117,7 @@ public abstract class GrTypeDefinitionImpl extends GrStubElementBase<GrTypeDefin
       return !packageName.isEmpty() ? packageName + "." + getName() : getName();
     }
 
-    final PsiClass containingClass = getContainingClass();
+    PsiClass containingClass = getContainingClass();
     if (containingClass != null && containingClass.getQualifiedName() != null) {
       return containingClass.getQualifiedName() + "." + getName();
     }
@@ -158,7 +158,7 @@ public abstract class GrTypeDefinitionImpl extends GrStubElementBase<GrTypeDefin
 
   @Override
   public String[] getSuperClassNames() {
-    final GrTypeDefinitionStub stub = getStub();
+    GrTypeDefinitionStub stub = getStub();
     if (stub != null) {
       return stub.getSuperClassNames();
     }
@@ -227,7 +227,7 @@ public abstract class GrTypeDefinitionImpl extends GrStubElementBase<GrTypeDefin
 
   @Override
   public String getName() {
-    final GrTypeDefinitionStub stub = getStub();
+    GrTypeDefinitionStub stub = getStub();
     if (stub != null) {
       return stub.getName();
     }
@@ -462,14 +462,14 @@ public abstract class GrTypeDefinitionImpl extends GrStubElementBase<GrTypeDefin
   @Nullable
   @Override
   public PsiElement getLBrace() {
-    final GrTypeDefinitionBody body = getBody();
+    GrTypeDefinitionBody body = getBody();
     return body == null ? null : body.getLBrace();
   }
 
   @Nullable
   @Override
   public PsiElement getRBrace() {
-    final GrTypeDefinitionBody body = getBody();
+    GrTypeDefinitionBody body = getBody();
     return body == null ? null : body.getRBrace();
   }
 
@@ -487,7 +487,7 @@ public abstract class GrTypeDefinitionImpl extends GrStubElementBase<GrTypeDefin
   @Nullable
   @Override
   public PsiElement getScope() {
-    final GrTypeDefinitionStub stub = getStub();
+    GrTypeDefinitionStub stub = getStub();
     if (stub != null) {
       return stub.getParentStub().getPsi();
     }
@@ -527,7 +527,7 @@ public abstract class GrTypeDefinitionImpl extends GrStubElementBase<GrTypeDefin
   public PsiClass getContainingClass() {
     PsiElement parent = getParent();
     if (parent instanceof GrTypeDefinitionBody) {
-      final PsiElement pparent = parent.getParent();
+      PsiElement pparent = parent.getParent();
       if (pparent instanceof PsiClass) {
         return (PsiClass)pparent;
       }
@@ -546,10 +546,10 @@ public abstract class GrTypeDefinitionImpl extends GrStubElementBase<GrTypeDefin
   public PsiElement setName(@NonNls @Nonnull String name) throws IncorrectOperationException {
     boolean renameFile = isRenameFileOnClassRenaming();
 
-    final String oldName = getName();
+    String oldName = getName();
     org.jetbrains.plugins.groovy.lang.psi.impl.PsiImplUtil.setName(name, getNameIdentifierGroovy());
 
-    final GrTypeDefinitionBody body = getBody();
+    GrTypeDefinitionBody body = getBody();
     if (body != null) {
       for (PsiMethod method : body.getMethods()) {
         if (method.isConstructor() && method.getName().equals(oldName)) method.setName(name);
@@ -557,9 +557,9 @@ public abstract class GrTypeDefinitionImpl extends GrStubElementBase<GrTypeDefin
     }
 
     if (renameFile) {
-      final PsiFile file = getContainingFile();
-      final VirtualFile virtualFile = file.getVirtualFile();
-      final String ext;
+      PsiFile file = getContainingFile();
+      VirtualFile virtualFile = file.getVirtualFile();
+      String ext;
       if (virtualFile != null) {
         ext = virtualFile.getExtension();
       }
@@ -592,7 +592,7 @@ public abstract class GrTypeDefinitionImpl extends GrStubElementBase<GrTypeDefin
 
   @Override
   public boolean isDeprecated() {
-    final GrTypeDefinitionStub stub = getStub();
+    GrTypeDefinitionStub stub = getStub();
     if (stub != null) {
       return stub.isDeprecatedByDoc() || PsiImplUtil.isDeprecatedByAnnotation(this);
     }
@@ -613,7 +613,7 @@ public abstract class GrTypeDefinitionImpl extends GrStubElementBase<GrTypeDefin
   @Nonnull
   @Override
   public GrTypeParameter[] getTypeParameters() {
-    final GrTypeParameterList list = getTypeParameterList();
+    GrTypeParameterList list = getTypeParameterList();
     if (list != null) {
       return list.getTypeParameters();
     }
@@ -622,12 +622,12 @@ public abstract class GrTypeDefinitionImpl extends GrStubElementBase<GrTypeDefin
   }
 
   private boolean isRenameFileOnClassRenaming() {
-    final PsiFile file = getContainingFile();
+    PsiFile file = getContainingFile();
     if (!(file instanceof GroovyFile)) return false;
-    final GroovyFile groovyFile = (GroovyFile)file;
+    GroovyFile groovyFile = (GroovyFile)file;
     if (groovyFile.isScript()) return false;
-    final String name = getName();
-    final VirtualFile vFile = groovyFile.getVirtualFile();
+    String name = getName();
+    VirtualFile vFile = groovyFile.getVirtualFile();
     return vFile != null && name != null && name.equals(vFile.getNameWithoutExtension());
   }
 
@@ -642,10 +642,10 @@ public abstract class GrTypeDefinitionImpl extends GrStubElementBase<GrTypeDefin
     if (anchor == null) {
       return add(element);
     }
-    final GrTypeDefinitionBody body = getBody();
+    GrTypeDefinitionBody body = getBody();
     if (anchor.getParent() == body) {
 
-      final PsiElement nextChild = anchor.getNextSibling();
+      PsiElement nextChild = anchor.getNextSibling();
       if (nextChild == null) {
         return add(element);
       }
@@ -664,7 +664,7 @@ public abstract class GrTypeDefinitionImpl extends GrStubElementBase<GrTypeDefin
       return add(element);
     }
 
-    final GrTypeDefinitionBody body = getBody();
+    GrTypeDefinitionBody body = getBody();
     if (anchor.getParent() != body) {
       return super.addBefore(element, anchor);
     }
@@ -675,11 +675,11 @@ public abstract class GrTypeDefinitionImpl extends GrStubElementBase<GrTypeDefin
 
   @Override
   public PsiElement add(@Nonnull PsiElement psiElement) throws IncorrectOperationException {
-    final GrTypeDefinitionBody body = getBody();
+    GrTypeDefinitionBody body = getBody();
 
     if (body == null) throw new IncorrectOperationException("Class must have body");
 
-    final PsiElement lBrace = body.getLBrace();
+    PsiElement lBrace = body.getLBrace();
 
     if (lBrace == null) throw new IncorrectOperationException("No left brace");
 
@@ -722,7 +722,7 @@ public abstract class GrTypeDefinitionImpl extends GrStubElementBase<GrTypeDefin
       return (PsiMember)psiElement;
     }
     if (psiElement instanceof GrVariableDeclaration) {
-      final GrMember[] members = ((GrVariableDeclaration)psiElement).getMembers();
+      GrMember[] members = ((GrVariableDeclaration)psiElement).getMembers();
       if (members.length > 0) {
         return members[0];
       }
@@ -765,7 +765,7 @@ public abstract class GrTypeDefinitionImpl extends GrStubElementBase<GrTypeDefin
       int order1 = getMemberOrderWeight(getAnyMember(child), settings);
       if (order1 < 0) continue;
       if (order1 > order) {
-        final PsiElement lBrace = body.getLBrace();
+        PsiElement lBrace = body.getLBrace();
         if (lastMember != null) {
           PsiElement nextSibling = lastMember.getNextSibling();
           while (nextSibling instanceof LeafPsiElement && (nextSibling.getText().equals(",") || nextSibling.getText().equals(";"))) {

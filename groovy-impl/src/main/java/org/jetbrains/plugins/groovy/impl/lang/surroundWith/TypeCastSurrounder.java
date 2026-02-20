@@ -37,8 +37,8 @@ public class TypeCastSurrounder extends GroovyExpressionSurrounder {
     int endOffset = typeElement.getTextRange().getStartOffset() + expression.getTextRange().getStartOffset();
     parenthesized = (GrParenthesizedExpression) expression.replaceWithExpression(parenthesized, false);
 
-    final GrTypeCastExpression newTypeCast = (GrTypeCastExpression)parenthesized.getOperand();
-    final GrTypeElement newTypeElement = newTypeCast.getCastTypeElement();
+    GrTypeCastExpression newTypeCast = (GrTypeCastExpression)parenthesized.getOperand();
+    GrTypeElement newTypeElement = newTypeCast.getCastTypeElement();
     newTypeElement.delete();
     return new TextRange(endOffset, endOffset);
   }

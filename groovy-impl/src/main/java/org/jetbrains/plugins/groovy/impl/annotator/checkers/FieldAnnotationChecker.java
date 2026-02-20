@@ -43,7 +43,7 @@ import jakarta.annotation.Nonnull;
 public class FieldAnnotationChecker extends CustomAnnotationChecker {
   @Override
   public boolean checkApplicability(@Nonnull AnnotationHolder holder, @Nonnull GrAnnotation annotation) {
-    final String qname = annotation.getQualifiedName();
+    String qname = annotation.getQualifiedName();
     if (!GroovyCommonClassNames.GROOVY_TRANSFORM_FIELD.equals(qname)) {
       return false;
     }
@@ -72,8 +72,8 @@ public class FieldAnnotationChecker extends CustomAnnotationChecker {
   }
 
   private static void checkScriptField(AnnotationHolder holder, GrAnnotation annotation) {
-    final PsiAnnotationOwner owner = annotation.getOwner();
-    final GrMember container = PsiTreeUtil.getParentOfType(((PsiElement)owner), GrMember.class);
+    PsiAnnotationOwner owner = annotation.getOwner();
+    GrMember container = PsiTreeUtil.getParentOfType(((PsiElement)owner), GrMember.class);
     if (container != null) {
       if (container.getContainingClass() instanceof GroovyScriptClass) {
         holder.createErrorAnnotation(annotation, GroovyBundle.message("annotation.field.can.only.be.used" +

@@ -95,12 +95,12 @@ public class GroovyCodeFragment extends GroovyFileImpl implements JavaCodeFragme
 
     StringBuilder buffer = new StringBuilder();
     for (Map.Entry<String, GrImportStatement> entry : myPseudoImports.entrySet()) {
-      final String importedName = entry.getKey();
-      final GrImportStatement anImport = entry.getValue();
+      String importedName = entry.getKey();
+      GrImportStatement anImport = entry.getValue();
 
 
       //buffer.append(anImport.isStatic() ? "+" : "-");
-      final String qname = anImport.getImportReference().getClassNameText();
+      String qname = anImport.getImportReference().getClassNameText();
 
       buffer.append(qname);
       buffer.append(':').append(importedName);
@@ -191,7 +191,7 @@ public class GroovyCodeFragment extends GroovyFileImpl implements JavaCodeFragme
 
   @Override
   protected GroovyCodeFragment clone() {
-    final GroovyCodeFragment clone = (GroovyCodeFragment)cloneImpl((FileElement)calcTreeElement().clone());
+    GroovyCodeFragment clone = (GroovyCodeFragment)cloneImpl((FileElement)calcTreeElement().clone());
     clone.myOriginalFile = this;
     clone.myPseudoImports.putAll(myPseudoImports);
     SingleRootFileViewProvider cloneViewProvider = new SingleRootFileViewProvider(getManager(), new LightVirtualFile(
@@ -235,7 +235,7 @@ public class GroovyCodeFragment extends GroovyFileImpl implements JavaCodeFragme
     String name = nameHint != null ? nameHint.getName(state) : null;
 
     if (name != null) {
-      final GrImportStatement anImport = myPseudoImports.get(name);
+      GrImportStatement anImport = myPseudoImports.get(name);
       if (anImport != null) {
         if (!anImport.processDeclarations(processor, state, lastParent, place)) {
           return false;
@@ -254,10 +254,10 @@ public class GroovyCodeFragment extends GroovyFileImpl implements JavaCodeFragme
 
   @Nullable
   private GrImportStatement createImportOnDemand(@Nonnull String qname) {
-    final PsiClass aClass = JavaPsiFacade.getInstance(getProject()).findClass(qname, getResolveScope());
-    final boolean isStatic = aClass != null;
+    PsiClass aClass = JavaPsiFacade.getInstance(getProject()).findClass(qname, getResolveScope());
+    boolean isStatic = aClass != null;
 
-    final GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(getProject());
+    GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(getProject());
     try {
       return factory.createImportStatement(qname, isStatic, true, null, this);
     }
@@ -268,12 +268,12 @@ public class GroovyCodeFragment extends GroovyFileImpl implements JavaCodeFragme
 
   @Nullable
   private GrImportStatement createSingleImport(@Nonnull String qname, @Nullable String importedName) {
-    final PsiClass aClass = JavaPsiFacade.getInstance(getProject()).findClass(qname, getResolveScope());
-    final boolean isStatic = aClass == null;
+    PsiClass aClass = JavaPsiFacade.getInstance(getProject()).findClass(qname, getResolveScope());
+    boolean isStatic = aClass == null;
 
-    final String className = PsiNameHelper.getShortClassName(qname);
-    final String alias = importedName == null || className.equals(importedName) ? null : importedName;
-    final GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(getProject());
+    String className = PsiNameHelper.getShortClassName(qname);
+    String alias = importedName == null || className.equals(importedName) ? null : importedName;
+    GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(getProject());
     try {
       return factory.createImportStatement(qname, isStatic, false, alias, this);
     }

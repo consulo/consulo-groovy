@@ -84,7 +84,7 @@ public class MvcModuleStructureSynchronizer {
       return;
     }
 
-    final MessageBusConnection connection = myProject.getMessageBus().connect();
+    MessageBusConnection connection = myProject.getMessageBus().connect();
     connection.subscribe(ModuleRootListener.class, new ModuleRootListener() {
       @Override
       public void rootsChanged(ModuleRootEvent event) {
@@ -119,11 +119,11 @@ public class MvcModuleStructureSynchronizer {
 
     connection.subscribe(BulkFileListener.class, new BulkVirtualFileListenerAdapter(new VirtualFileAdapter() {
       @Override
-      public void fileCreated(final VirtualFileEvent event) {
+      public void fileCreated(VirtualFileEvent event) {
         myModificationCount++;
 
         final VirtualFile file = event.getFile();
-        final String fileName = event.getFileName();
+        String fileName = event.getFileName();
         if (MvcModuleStructureUtil.APPLICATION_PROPERTIES.equals(fileName) || isApplicationDirectoryName(fileName)) {
           queue(SyncAction.UpdateProjectStructure, file);
           queue(SyncAction.EnsureRunConfigurationExists, file);
@@ -208,7 +208,7 @@ public class MvcModuleStructureSynchronizer {
       public void fileDeleted(VirtualFileEvent event) {
         myModificationCount++;
 
-        final VirtualFile file = event.getFile();
+        VirtualFile file = event.getFile();
         if (isLibDirectory(file) || isLibDirectory(event.getParent())) {
           queue(SyncAction.UpdateProjectStructure, file);
         }
@@ -216,7 +216,7 @@ public class MvcModuleStructureSynchronizer {
 
       @Override
       public void contentsChanged(VirtualFileEvent event) {
-        final String fileName = event.getFileName();
+        String fileName = event.getFileName();
         if (MvcModuleStructureUtil.APPLICATION_PROPERTIES.equals(fileName)) {
           queue(SyncAction.UpdateProjectStructure, event.getFile());
         }
@@ -253,7 +253,7 @@ public class MvcModuleStructureSynchronizer {
     return false;
   }
 
-  private static boolean isLibDirectory(@Nullable final VirtualFile file) {
+  private static boolean isLibDirectory(@Nullable VirtualFile file) {
     return file != null && "lib".equals(file.getName());
   }
 
@@ -289,9 +289,9 @@ public class MvcModuleStructureSynchronizer {
       return Arrays.asList(ModuleManager.getInstance((Project)o).getModules());
     }
     if (o instanceof VirtualFile) {
-      final VirtualFile file = (VirtualFile)o;
+      VirtualFile file = (VirtualFile)o;
       if (file.isValid()) {
-        final Module module = ModuleUtil.findModuleForFile(file, myProject);
+        Module module = ModuleUtil.findModuleForFile(file, myProject);
         if (module == null) {
           return Collections.emptyList();
         }
@@ -320,12 +320,12 @@ public class MvcModuleStructureSynchronizer {
       Pair<Object, SyncAction>[] actions = myActions.toArray(new Pair[myActions.size()]);
       //get module by object and kill duplicates
 
-      final Set<Trinity<Module, SyncAction, MvcFramework>> rawActions = new LinkedHashSet<Trinity<Module, SyncAction, MvcFramework>>();
+      Set<Trinity<Module, SyncAction, MvcFramework>> rawActions = new LinkedHashSet<Trinity<Module, SyncAction, MvcFramework>>();
 
-      for (final Pair<Object, SyncAction> pair : actions) {
+      for (Pair<Object, SyncAction> pair : actions) {
         for (Module module : determineModuleBySyncActionObject(pair.first)) {
           if (!module.isDisposed()) {
-            final MvcFramework framework = (pair.second == SyncAction.CreateAppStructureIfNeeded)
+            MvcFramework framework = (pair.second == SyncAction.CreateAppStructureIfNeeded)
               ? MvcFramework.getInstanceBySdk(module)
               : MvcFramework.getInstance(module);
 
@@ -338,8 +338,8 @@ public class MvcModuleStructureSynchronizer {
 
       boolean isProjectStructureUpdated = false;
 
-      for (final Trinity<Module, SyncAction, MvcFramework> rawAction : rawActions) {
-        final Module module = rawAction.first;
+      for (Trinity<Module, SyncAction, MvcFramework> rawAction : rawActions) {
+        Module module = rawAction.first;
         if (module.isDisposed()) {
           continue;
         }
@@ -386,7 +386,7 @@ public class MvcModuleStructureSynchronizer {
 
     UpdateProjectStructure {
       @Override
-      void doAction(final Module module, final MvcFramework framework) {
+      void doAction(Module module, MvcFramework framework) {
         framework.updateProjectStructure(module);
       }
     },

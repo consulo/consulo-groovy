@@ -50,7 +50,7 @@ import static org.jetbrains.plugins.groovy.impl.refactoring.rename.RenamePropert
 public class PropertyRenameHandler implements RenameHandler, TitledHandler {
     @Override
     public boolean isAvailableOnDataContext(DataContext dataContext) {
-        final PsiElement element = getElement(dataContext);
+        PsiElement element = getElement(dataContext);
         if (element instanceof GrField && ((GrField) element).isProperty()) {
             return true;
         }
@@ -76,7 +76,7 @@ public class PropertyRenameHandler implements RenameHandler, TitledHandler {
     @RequiredUIAccess
     @Override
     public void invoke(@Nonnull Project project, Editor editor, PsiFile file, @Nullable DataContext dataContext) {
-        final PsiElement element = getElement(dataContext);
+        PsiElement element = getElement(dataContext);
         invokeInner(project, editor, element);
     }
 
@@ -93,8 +93,8 @@ public class PropertyRenameHandler implements RenameHandler, TitledHandler {
 
     @RequiredUIAccess
     private static void invokeInner(Project project, Editor editor, PsiElement element) {
-        final Pair<List<? extends PsiElement>, String> pair = askToRenameProperty((PsiMember) element);
-        final List<? extends PsiElement> result = pair.getFirst();
+        Pair<List<? extends PsiElement>, String> pair = askToRenameProperty((PsiMember) element);
+        List<? extends PsiElement> result = pair.getFirst();
         if (result.size() == 0) {
             return;
         }
@@ -102,7 +102,7 @@ public class PropertyRenameHandler implements RenameHandler, TitledHandler {
             PsiElementRenameHandler.invoke(result.get(0), project, result.get(0), editor);
             return;
         }
-        final String propertyName = pair.getSecond();
+        String propertyName = pair.getSecond();
 
         PsiElementRenameHandler.invoke(new PropertyForRename(result, propertyName, element.getManager()), project, element, editor);
     }

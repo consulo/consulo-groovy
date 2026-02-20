@@ -38,15 +38,15 @@ public class GrMethodBodyFixer extends SmartEnterProcessorWithFixers.Fixer<Groov
   public void apply(@Nonnull Editor editor, @Nonnull GroovySmartEnterProcessor processor, @Nonnull PsiElement psiElement) {
     if (!(psiElement instanceof GrMethod)) return;
     GrMethod method = (GrMethod) psiElement;
-    final PsiClass aClass = method.getContainingClass();
+    PsiClass aClass = method.getContainingClass();
     if (aClass != null && aClass.isInterface() || method.hasModifierProperty(PsiModifier.ABSTRACT)) return;
-    final GrCodeBlock body = method.getBlock();
-    final Document doc = editor.getDocument();
+    GrCodeBlock body = method.getBlock();
+    Document doc = editor.getDocument();
     if (body != null) {
       // See IDEADEV-1093. This is quite hacky heuristic but it seem to be best we can do.
       String bodyText = body.getText();
       if (StringUtil.startsWithChar(bodyText, '{')) {
-        final GrStatement[] statements = body.getStatements();
+        GrStatement[] statements = body.getStatements();
         if (statements.length > 0) {
 //          [todo]
 //          if (statements[0] instanceof PsiDeclarationStatement) {

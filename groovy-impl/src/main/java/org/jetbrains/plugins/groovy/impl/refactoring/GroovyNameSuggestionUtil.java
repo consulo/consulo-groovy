@@ -159,7 +159,7 @@ public class GroovyNameSuggestionUtil
 		}
 		if(expr instanceof GrLiteral)
 		{
-			final Object value = ((GrLiteral) expr).getValue();
+			Object value = ((GrLiteral) expr).getValue();
 			if(value instanceof String)
 			{
 				generateNameByString(possibleNames, (String) value, validator, forStaticVariable, expr.getProject());

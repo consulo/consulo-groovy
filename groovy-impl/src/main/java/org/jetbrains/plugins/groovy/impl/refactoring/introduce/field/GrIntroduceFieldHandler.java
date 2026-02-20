@@ -61,7 +61,7 @@ public class GrIntroduceFieldHandler extends GrIntroduceFieldHandlerBase<GrIntro
     }
 
     private static void checkContainingClass(PsiElement place) {
-        final PsiClass containingClass = PsiUtil.getContextClass(place);
+        PsiClass containingClass = PsiUtil.getContextClass(place);
         if (containingClass == null) {
             throw new GrRefactoringError(GroovyRefactoringLocalize.cannotIntroduceFieldInScript().get());
         }
@@ -106,7 +106,7 @@ public class GrIntroduceFieldHandler extends GrIntroduceFieldHandlerBase<GrIntro
         OccurrencesChooser.ReplaceChoice choice
     ) {
 
-        final Ref<GrIntroduceContext> contextRef = Ref.create(context);
+        Ref<GrIntroduceContext> contextRef = Ref.create(context);
 
         if (context.getStringPart() != null) {
             extractStringPart(contextRef);
@@ -118,7 +118,7 @@ public class GrIntroduceFieldHandler extends GrIntroduceFieldHandlerBase<GrIntro
     @Nonnull
     @Override
     protected PsiElement[] findOccurrences(@Nonnull GrExpression expression, @Nonnull PsiElement scope) {
-        final PsiElement[] occurrences = super.findOccurrences(expression, scope);
+        PsiElement[] occurrences = super.findOccurrences(expression, scope);
         if (shouldBeStatic(expression, scope)) {
             return occurrences;
         }
@@ -144,7 +144,7 @@ public class GrIntroduceFieldHandler extends GrIntroduceFieldHandlerBase<GrIntro
     }
 
     static boolean shouldBeStatic(PsiElement expr, PsiElement clazz) {
-        final GrMember method = getContainer(expr, clazz);
+        GrMember method = getContainer(expr, clazz);
         if (method == null) {
             return false;
         }

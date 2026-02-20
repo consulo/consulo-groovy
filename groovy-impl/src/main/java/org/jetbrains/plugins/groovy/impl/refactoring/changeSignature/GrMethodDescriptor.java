@@ -43,8 +43,8 @@ public class GrMethodDescriptor implements MethodDescriptor<GrParameterInfo, Str
 
   @Override
   public List<GrParameterInfo> getParameters() {
-    final ArrayList<GrParameterInfo> result = new ArrayList<GrParameterInfo>();
-    final GrParameter[] parameters = myMethod.getParameters();
+    ArrayList<GrParameterInfo> result = new ArrayList<GrParameterInfo>();
+    GrParameter[] parameters = myMethod.getParameters();
     for (int i = 0; i < parameters.length; i++) {
       GrParameter parameter = parameters[i];
       GrExpression initializer = parameter.getInitializerGroovy();

@@ -43,7 +43,7 @@ class CatchParameterUsedVisitor extends GroovyRecursiveElementVisitor {
       return;
     }
     super.visitReferenceExpression(referenceExpression);
-    final PsiElement element = referenceExpression.resolve();
+    PsiElement element = referenceExpression.resolve();
     if (parameter.equals(element)) {
       used = true;
     }
@@ -54,7 +54,7 @@ class CatchParameterUsedVisitor extends GroovyRecursiveElementVisitor {
       return;
     }
     super.visitReferenceExpression(reference);
-    final PsiElement element = reference.resolve();
+    PsiElement element = reference.resolve();
     if (parameter.equals(element)) {
       used = true;
     }

@@ -42,14 +42,14 @@ public class GrInheritConstructorContributor extends AstTransformContributor {
 
     if (!hasInheritConstructorsAnnotation(psiClass)) return;
 
-    final PsiClass superClass = psiClass.getSuperClass();
+    PsiClass superClass = psiClass.getSuperClass();
     if (superClass == null) return;
 
-    final PsiSubstitutor superClassSubstitutor = TypeConversionUtil.getSuperClassSubstitutor(superClass, psiClass, PsiSubstitutor.EMPTY);
+    PsiSubstitutor superClassSubstitutor = TypeConversionUtil.getSuperClassSubstitutor(superClass, psiClass, PsiSubstitutor.EMPTY);
     for (PsiMethod constructor : superClass.getConstructors()) {
       if (constructor.hasModifierProperty(PsiModifier.PRIVATE)) continue;
 
-      final GrLightMethodBuilder inheritedConstructor = new GrLightMethodBuilder(psiClass.getManager(), psiClass.getName());
+      GrLightMethodBuilder inheritedConstructor = new GrLightMethodBuilder(psiClass.getManager(), psiClass.getName());
       inheritedConstructor.setContainingClass(psiClass);
       inheritedConstructor.setConstructor(true);
       inheritedConstructor.setNavigationElement(psiClass);
@@ -68,7 +68,7 @@ public class GrInheritConstructorContributor extends AstTransformContributor {
   }
 
   public static boolean hasInheritConstructorsAnnotation(PsiClass psiClass) {
-    final PsiModifierList modifierList = psiClass.getModifierList();
+    PsiModifierList modifierList = psiClass.getModifierList();
     return modifierList != null && modifierList.findAnnotation(GroovyCommonClassNames.GROOVY_TRANSFORM_INHERIT_CONSTRUCTORS) != null;
   }
 }

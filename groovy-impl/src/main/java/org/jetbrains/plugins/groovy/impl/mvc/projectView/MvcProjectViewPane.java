@@ -228,7 +228,7 @@ public class MvcProjectViewPane extends AbstractProjectViewPSIPane implements Id
         return myViewState.hideEmptyMiddlePackages;
       }
 
-      protected AbstractTreeNode createRoot(final Project project, ViewSettings settings) {
+      protected AbstractTreeNode createRoot(Project project, ViewSettings settings) {
         return new MvcProjectNode(project, this, myDescriptor);
       }
     };
@@ -246,28 +246,28 @@ public class MvcProjectViewPane extends AbstractProjectViewPSIPane implements Id
     };
   }
 
-  protected AbstractTreeUpdater createTreeUpdater(final AbstractTreeBuilder treeBuilder) {
+  protected AbstractTreeUpdater createTreeUpdater(AbstractTreeBuilder treeBuilder) {
     return new AbstractTreeUpdater(treeBuilder);
   }
 
   @Override
   public Object getData(Key<?> dataId) {
     if (LangDataKeys.PSI_ELEMENT == dataId) {
-      final PsiElement[] elements = getSelectedPSIElements();
+      PsiElement[] elements = getSelectedPSIElements();
       return elements.length == 1 ? elements[0] : null;
     }
     if (LangDataKeys.PSI_ELEMENT_ARRAY == dataId) {
       return getSelectedPSIElements();
     }
     if (LangDataKeys.MODULE_CONTEXT == dataId) {
-      final Object element = getSelectedElement();
+      Object element = getSelectedElement();
       if (element instanceof Module) {
         return element;
       }
       return null;
     }
     if (LangDataKeys.MODULE_CONTEXT_ARRAY == dataId) {
-      final List<Module> moduleList = ContainerUtil.findAll(getSelectedElements(), Module.class);
+      List<Module> moduleList = ContainerUtil.findAll(getSelectedElements(), Module.class);
       if (!moduleList.isEmpty()) {
         return moduleList.toArray(new Module[moduleList.size()]);
       }
@@ -289,7 +289,7 @@ public class MvcProjectViewPane extends AbstractProjectViewPSIPane implements Id
       return myCopyPasteDelegator.getPasteProvider();
     }
     if (LangDataKeys.DELETE_ELEMENT_PROVIDER == dataId) {
-      for (final Object element : getSelectedElements()) {
+      for (Object element : getSelectedElements()) {
         if (element instanceof Module) {
           return myDeleteModuleProvider;
         }
@@ -300,9 +300,9 @@ public class MvcProjectViewPane extends AbstractProjectViewPSIPane implements Id
   }
 
   @Nullable
-  public static MvcProjectViewPane getView(final Project project, MvcFramework framework) {
-    final ToolWindow window = ToolWindowManager.getInstance(project).getToolWindow(MvcToolWindowDescriptor.getToolWindowId(framework));
-    final Content content = window == null ? null : window.getContentManager().getContent(0);
+  public static MvcProjectViewPane getView(Project project, MvcFramework framework) {
+    ToolWindow window = ToolWindowManager.getInstance(project).getToolWindow(MvcToolWindowDescriptor.getToolWindowId(framework));
+    Content content = window == null ? null : window.getContentManager().getContent(0);
     return content == null ? null : (MvcProjectViewPane)content.getDisposer();
   }
 
@@ -365,18 +365,18 @@ public class MvcProjectViewPane extends AbstractProjectViewPSIPane implements Id
       return null;
     }
 
-    final Module module = ModuleUtil.findModuleForFile(file, project);
+    Module module = ModuleUtil.findModuleForFile(file, project);
     if (module == null || !framework.hasSupport(module)) {
       return null;
     }
     List<Object> result = new ArrayList<Object>();
 
-    final MvcProjectViewPane view = getView(project, framework);
+    MvcProjectViewPane view = getView(project, framework);
     if (view == null) {
       return null;
     }
 
-    final MvcProjectNode root = (MvcProjectNode)view.getTreeBuilder().getTreeStructure().getRootElement();
+    MvcProjectNode root = (MvcProjectNode)view.getTreeBuilder().getTreeStructure().getRootElement();
     result.add(root);
 
     for (AbstractTreeNode moduleNode : root.getChildren()) {
@@ -389,8 +389,8 @@ public class MvcProjectViewPane extends AbstractProjectViewPSIPane implements Id
         while (true) {
           for (AbstractTreeNode descriptor : cur.getChildren()) {
             if (descriptor instanceof AbstractFolderNode) {
-              final AbstractFolderNode folderNode = (AbstractFolderNode)descriptor;
-              final VirtualFile dir = folderNode.getVirtualFile();
+              AbstractFolderNode folderNode = (AbstractFolderNode)descriptor;
+              VirtualFile dir = folderNode.getVirtualFile();
               if (dir != null && VfsUtil.isAncestor(dir, file, false)) {
                 cur = folderNode;
                 result.add(folderNode);
@@ -419,17 +419,17 @@ public class MvcProjectViewPane extends AbstractProjectViewPSIPane implements Id
   }
 
   public void selectFile(VirtualFile file, boolean requestFocus) {
-    final List<Object> path = getSelectPath(file);
+    List<Object> path = getSelectPath(file);
     if (path == null) {
       return;
     }
 
-    final Object value = ((AbstractTreeNode)path.get(path.size() - 1)).getValue();
+    Object value = ((AbstractTreeNode)path.get(path.size() - 1)).getValue();
     select(value, file, requestFocus);
   }
 
   public void scrollFromSource() {
-    final FileEditorManager fileEditorManager = FileEditorManager.getInstance(myProject);
+    FileEditorManager fileEditorManager = FileEditorManager.getInstance(myProject);
     //final FileEditor[] editors = fileEditorManager.getSelectedEditors();
     //for (FileEditor fileEditor : editors) {
     //  if (fileEditor instanceof TextEditor) {
@@ -439,7 +439,7 @@ public class MvcProjectViewPane extends AbstractProjectViewPSIPane implements Id
     //    return;
     //  }
     //}
-    final VirtualFile[] selectedFiles = fileEditorManager.getSelectedFiles();
+    VirtualFile[] selectedFiles = fileEditorManager.getSelectedFiles();
     if (selectedFiles.length > 0) {
       selectFile(selectedFiles[0], false);
     }

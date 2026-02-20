@@ -64,7 +64,7 @@ public abstract class GrCreateFromUsageBaseFix extends Intention implements Synt
     @Override
     @RequiredReadAction
     public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file) {
-        final GrReferenceExpression element = myRefExpression.getElement();
+        GrReferenceExpression element = myRefExpression.getElement();
         if (element == null || !element.isValid()) {
             return false;
         }
@@ -82,7 +82,7 @@ public abstract class GrCreateFromUsageBaseFix extends Intention implements Synt
     @Override
     @RequiredUIAccess
     protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
-        final List<PsiClass> classes = getTargetClasses();
+        List<PsiClass> classes = getTargetClasses();
         if (classes.size() == 1) {
             invokeImpl(project, classes.get(0));
         }
@@ -98,13 +98,13 @@ public abstract class GrCreateFromUsageBaseFix extends Intention implements Synt
     }
 
     private void chooseClass(List<PsiClass> classes, Editor editor) {
-        final Project project = classes.get(0).getProject();
+        Project project = classes.get(0).getProject();
 
-        final JList<PsiClass> list = new JBList<>(classes);
+        JList<PsiClass> list = new JBList<>(classes);
         PsiElementListCellRenderer renderer = new PsiClassListCellRenderer();
         list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         list.setCellRenderer(renderer);
-        final PopupChooserBuilder builder = new PopupChooserBuilder(list);
+        PopupChooserBuilder builder = new PopupChooserBuilder(list);
         renderer.installSpeedSearch(builder);
 
         Runnable runnable = () -> {
@@ -112,7 +112,7 @@ public abstract class GrCreateFromUsageBaseFix extends Intention implements Synt
             if (index < 0) {
                 return;
             }
-            final PsiClass aClass = list.getSelectedValue();
+            PsiClass aClass = list.getSelectedValue();
             CommandProcessor.getInstance().executeCommand(
                 project,
                 () -> aClass.getApplication().runWriteAction(() -> invokeImpl(project, aClass)),
@@ -133,14 +133,14 @@ public abstract class GrCreateFromUsageBaseFix extends Intention implements Synt
 
     @RequiredReadAction
     private List<PsiClass> getTargetClasses() {
-        final GrReferenceExpression ref = getRefExpr();
-        final boolean compileStatic = PsiUtil.isCompileStatic(ref) || GrStaticChecker.isPropertyAccessInStaticMethod(ref);
-        final PsiClass targetClass = QuickfixUtil.findTargetClass(ref, compileStatic);
+        GrReferenceExpression ref = getRefExpr();
+        boolean compileStatic = PsiUtil.isCompileStatic(ref) || GrStaticChecker.isPropertyAccessInStaticMethod(ref);
+        PsiClass targetClass = QuickfixUtil.findTargetClass(ref, compileStatic);
         if (targetClass == null || !canBeTargetClass(targetClass)) {
             return Collections.emptyList();
         }
 
-        final ArrayList<PsiClass> classes = new ArrayList<>();
+        ArrayList<PsiClass> classes = new ArrayList<>();
         collectSupers(targetClass, classes);
         return classes;
     }
@@ -148,7 +148,7 @@ public abstract class GrCreateFromUsageBaseFix extends Intention implements Synt
     private void collectSupers(PsiClass psiClass, ArrayList<PsiClass> classes) {
         classes.add(psiClass);
 
-        final PsiClass[] supers = psiClass.getSupers();
+        PsiClass[] supers = psiClass.getSupers();
         for (PsiClass aSuper : supers) {
             if (classes.contains(aSuper)) {
                 continue;

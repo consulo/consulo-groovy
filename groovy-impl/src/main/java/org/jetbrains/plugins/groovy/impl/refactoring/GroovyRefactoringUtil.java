@@ -105,10 +105,10 @@ public abstract class GroovyRefactoringUtil {
   }
 
   @Nullable
-  public static <T extends PsiElement> T findElementInRange(final PsiFile file,
+  public static <T extends PsiElement> T findElementInRange(PsiFile file,
                                                             int startOffset,
                                                             int endOffset,
-                                                            final Class<T> klass) {
+                                                            Class<T> klass) {
     PsiElement element1 = file.getViewProvider().findElementAt(startOffset, file.getLanguage());
     PsiElement element2 = file.getViewProvider().findElementAt(endOffset - 1, file.getLanguage());
     if (element1 == null || element2 == null) return null;
@@ -123,9 +123,9 @@ public abstract class GroovyRefactoringUtil {
     }
 
     if (element2 == null || element1 == null) return null;
-    final PsiElement commonParent = PsiTreeUtil.findCommonParent(element1, element2);
+    PsiElement commonParent = PsiTreeUtil.findCommonParent(element1, element2);
     assert commonParent != null;
-    final T element = ReflectionUtil.isAssignable(klass, commonParent.getClass()) ? (T) commonParent : PsiTreeUtil.getParentOfType(commonParent, klass);
+    T element = ReflectionUtil.isAssignable(klass, commonParent.getClass()) ? (T) commonParent : PsiTreeUtil.getParentOfType(commonParent, klass);
     if (element == null || element.getTextRange().getStartOffset() != startOffset) {
       return null;
     }
@@ -140,8 +140,8 @@ public abstract class GroovyRefactoringUtil {
 
         if (element1 instanceof GrParameter &&
             element2 instanceof GrParameter) {
-          final String name1 = ((GrParameter) element1).getName();
-          final String name2 = ((GrParameter) element2).getName();
+          String name1 = ((GrParameter) element1).getName();
+          String name2 = ((GrParameter) element2).getName();
           return name1.compareTo(name2);
         }
         return 1;
@@ -191,8 +191,8 @@ public abstract class GroovyRefactoringUtil {
   public static void sortOccurrences(PsiElement[] occurrences) {
     Arrays.sort(occurrences, new Comparator<>() {
       public int compare(PsiElement elem1, PsiElement elem2) {
-        final int offset1 = elem1.getTextRange().getStartOffset();
-        final int offset2 = elem2.getTextRange().getStartOffset();
+        int offset1 = elem1.getTextRange().getStartOffset();
+        int offset2 = elem2.getTextRange().getStartOffset();
         return offset1 - offset2;
       }
     });
@@ -269,7 +269,7 @@ public abstract class GroovyRefactoringUtil {
         break;
       }
       if (parent == null) return PsiElement.EMPTY_ARRAY;
-      final PsiElement prev = parent;
+      PsiElement prev = parent;
       parent = parent.getParent();
       if (parent instanceof GrCodeBlock && prev instanceof LeafPsiElement) { //braces
         parent = parent.getParent();
@@ -412,9 +412,9 @@ public abstract class GroovyRefactoringUtil {
 
   public static String createTempVar(GrExpression expr, final GroovyPsiElement context, boolean declareFinal) {
     expr = addBlockIntoParent(expr);
-    final GrVariableDeclarationOwner block = PsiTreeUtil.getParentOfType(expr, GrVariableDeclarationOwner.class);
+    GrVariableDeclarationOwner block = PsiTreeUtil.getParentOfType(expr, GrVariableDeclarationOwner.class);
     LOG.assertTrue(block != null);
-    final PsiElement anchorStatement = PsiTreeUtil.findPrevParent(block, expr);
+    PsiElement anchorStatement = PsiTreeUtil.findPrevParent(block, expr);
     LOG.assertTrue(anchorStatement instanceof GrStatement);
 
     Project project = expr.getProject();
@@ -429,8 +429,8 @@ public abstract class GroovyRefactoringUtil {
     });
 /*
       JavaCodeStyleManager.getInstance(project).suggestVariableName(VariableKind.LOCAL_VARIABLE, null, expr, null).names;*/
-    final String prefix = suggestedNames[0];
-    final String id = JavaCodeStyleManager.getInstance(project).suggestUniqueVariableName(prefix, context, true);
+    String prefix = suggestedNames[0];
+    String id = JavaCodeStyleManager.getInstance(project).suggestUniqueVariableName(prefix, context, true);
 
     GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(expr.getProject());
     String[] modifiers;
@@ -445,7 +445,7 @@ public abstract class GroovyRefactoringUtil {
 /*    if (declareFinal) {
       com.intellij.java.language.psi.util.PsiUtil.setModifierProperty((decl.getMembers()[0]), PsiModifier.FINAL, true);
     }*/
-    final GrStatement statement = ((GrStatementOwner)anchorStatement.getParent()).addStatementBefore(decl, (GrStatement)anchorStatement);
+    GrStatement statement = ((GrStatementOwner)anchorStatement.getParent()).addStatementBefore(decl, (GrStatement)anchorStatement);
     JavaCodeStyleManager.getInstance(project).shortenClassReferences(statement);
 
     return id;
@@ -526,7 +526,7 @@ public abstract class GroovyRefactoringUtil {
   public static GrExpression generateArgFromMultiArg(PsiSubstitutor substitutor,
                                                      List<? extends PsiElement> arguments,
                                                      @Nullable PsiType type,
-                                                     final Project project) {
+                                                     Project project) {
     StringBuilder argText = new StringBuilder();
     argText.append("[");
     for (PsiElement argument : arguments) {
@@ -664,8 +664,8 @@ public abstract class GroovyRefactoringUtil {
     if (!l.getText().equals(r.getText())) return false;
     if (l.getNode().getElementType() != r.getNode().getElementType()) return false;
 
-    final PsiElement[] lChildren = l.getChildren();
-    final PsiElement[] rChildren = r.getChildren();
+    PsiElement[] lChildren = l.getChildren();
+    PsiElement[] rChildren = r.getChildren();
 
     if (lChildren.length != rChildren.length) return false;
 
@@ -692,16 +692,16 @@ public abstract class GroovyRefactoringUtil {
   public static PsiType getSubstitutedType(@Nullable GrParameter parameter) {
     if (parameter == null) return null;
 
-    final PsiType type = getType(parameter);
+    PsiType type = getType(parameter);
 
     if (type instanceof PsiArrayType) {
       return type;
     }
 
-    final PsiClassType.ClassResolveResult result = PsiUtil.resolveGenericsClassInType(type);
-    final PsiClass psiClass = result.getElement();
+    PsiClassType.ClassResolveResult result = PsiUtil.resolveGenericsClassInType(type);
+    PsiClass psiClass = result.getElement();
     if (psiClass == null) return type;
-    final HashSet<PsiTypeParameter> usedTypeParameters = new HashSet<>();
+    HashSet<PsiTypeParameter> usedTypeParameters = new HashSet<>();
     collectTypeParameters(usedTypeParameters, parameter);
     for (Iterator<PsiTypeParameter> iterator = usedTypeParameters.iterator(); iterator.hasNext(); ) {
       PsiTypeParameter usedTypeParameter = iterator.next();
@@ -709,15 +709,15 @@ public abstract class GroovyRefactoringUtil {
         iterator.remove();
       }
     }
-    final PsiElementFactory elementFactory = JavaPsiFacade.getElementFactory(parameter.getProject());
+    PsiElementFactory elementFactory = JavaPsiFacade.getElementFactory(parameter.getProject());
     PsiSubstitutor subst = PsiSubstitutor.EMPTY;
     for (PsiTypeParameter usedTypeParameter : usedTypeParameters) {
       subst = subst.put(usedTypeParameter, TypeConversionUtil.typeParameterErasure(usedTypeParameter));
     }
     PsiSubstitutor substitutor = PsiSubstitutor.EMPTY;
-    final Map<PsiTypeParameter, PsiType> typeMap = result.getSubstitutor().getSubstitutionMap();
+    Map<PsiTypeParameter, PsiType> typeMap = result.getSubstitutor().getSubstitutionMap();
     for (PsiTypeParameter typeParameter : typeMap.keySet()) {
-      final PsiType psiType = typeMap.get(typeParameter);
+      PsiType psiType = typeMap.get(typeParameter);
       substitutor = substitutor.put(typeParameter, psiType != null ? subst.substitute(psiType) : null);
     }
     return psiClass instanceof PsiTypeParameter ? subst.substitute((PsiTypeParameter)psiClass) : elementFactory.createType(psiClass, substitutor);
@@ -729,9 +729,9 @@ public abstract class GroovyRefactoringUtil {
       public void visitCodeReferenceElement(GrCodeReferenceElement reference) {
         super.visitCodeReferenceElement(reference);
         if (reference.getQualifier() == null) {
-          final PsiElement resolved = reference.resolve();
+          PsiElement resolved = reference.resolve();
           if (resolved instanceof PsiTypeParameter) {
-            final PsiTypeParameter typeParameter = (PsiTypeParameter)resolved;
+            PsiTypeParameter typeParameter = (PsiTypeParameter)resolved;
             if (PsiTreeUtil.isAncestor(typeParameter.getOwner(), element, false)) {
               used.add(typeParameter);
             }
@@ -740,11 +740,11 @@ public abstract class GroovyRefactoringUtil {
       }
 
       @Override
-      public void visitExpression(final GrExpression expression) {
+      public void visitExpression(GrExpression expression) {
         super.visitExpression(expression);
-        final PsiType type = expression.getType();
+        PsiType type = expression.getType();
         if (type != null) {
-          final TypeParameterSearcher searcher = new TypeParameterSearcher();
+          TypeParameterSearcher searcher = new TypeParameterSearcher();
           type.accept(searcher);
           for (PsiTypeParameter typeParam : searcher.myTypeParams) {
             if (PsiTreeUtil.isAncestor(typeParam.getOwner(), element, false)) {
@@ -757,29 +757,29 @@ public abstract class GroovyRefactoringUtil {
       class TypeParameterSearcher extends PsiTypeVisitor<Boolean> {
         private final Set<PsiTypeParameter> myTypeParams = new HashSet<>();
 
-        public Boolean visitType(final PsiType type) {
+        public Boolean visitType(PsiType type) {
           return false;
         }
 
-        public Boolean visitArrayType(final PsiArrayType arrayType) {
+        public Boolean visitArrayType(PsiArrayType arrayType) {
           return arrayType.getComponentType().accept(this);
         }
 
-        public Boolean visitClassType(final PsiClassType classType) {
-          final PsiClass aClass = classType.resolve();
+        public Boolean visitClassType(PsiClassType classType) {
+          PsiClass aClass = classType.resolve();
           if (aClass instanceof PsiTypeParameter) {
             myTypeParams.add((PsiTypeParameter)aClass);
           }
 
-          final PsiType[] types = classType.getParameters();
-          for (final PsiType psiType : types) {
+          PsiType[] types = classType.getParameters();
+          for (PsiType psiType : types) {
             psiType.accept(this);
           }
           return false;
         }
 
-        public Boolean visitWildcardType(final PsiWildcardType wildcardType) {
-          final PsiType bound = wildcardType.getBound();
+        public Boolean visitWildcardType(PsiWildcardType wildcardType) {
+          PsiType bound = wildcardType.getBound();
           if (bound != null) {
             bound.accept(this);
           }

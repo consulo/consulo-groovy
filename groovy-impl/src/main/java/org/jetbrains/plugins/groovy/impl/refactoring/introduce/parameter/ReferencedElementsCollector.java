@@ -37,7 +37,7 @@ class ReferencedElementsCollector extends GroovyRecursiveElementVisitor {
   }
 
   private void add(GrReferenceElement referenceExpression) {
-    final PsiElement resolved = referenceExpression.resolve();
+    PsiElement resolved = referenceExpression.resolve();
     if (resolved != null) {
       myResult.add(resolved);
     }

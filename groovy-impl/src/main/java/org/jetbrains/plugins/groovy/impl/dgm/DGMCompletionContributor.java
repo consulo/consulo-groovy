@@ -60,7 +60,7 @@ public class DGMCompletionContributor extends CompletionContributor {
              @Override
              public void addCompletions(@Nonnull CompletionParameters parameters,
                                         ProcessingContext context,
-                                        @Nonnull final CompletionResultSet result) {
+                                        @Nonnull CompletionResultSet result) {
                PsiElement position = parameters.getPosition();
                if (!DGMUtil.isInDGMFile(position)) return;
 

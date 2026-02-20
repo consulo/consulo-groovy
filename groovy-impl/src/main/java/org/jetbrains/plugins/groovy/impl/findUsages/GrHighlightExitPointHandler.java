@@ -63,13 +63,13 @@ public class GrHighlightExitPointHandler extends HighlightUsagesHandlerBase<PsiE
     PsiElement parent = myTarget.getParent();
     if (!(parent instanceof GrReturnStatement) && !(parent instanceof GrThrowStatement)) return;
 
-    final GrControlFlowOwner flowOwner = ControlFlowUtils.findControlFlowOwner(parent);
+    GrControlFlowOwner flowOwner = ControlFlowUtils.findControlFlowOwner(parent);
     ControlFlowUtils.visitAllExitPoints(flowOwner, new ControlFlowUtils.ExitPointVisitor() {
       @Override
       public boolean visitExitPoint(Instruction instruction, @Nullable GrExpression returnValue) {
-        final PsiElement returnElement = instruction.getElement();
+        PsiElement returnElement = instruction.getElement();
         if (returnElement != null && isCorrectReturn(returnElement)) {
-          final TextRange range = returnElement.getTextRange();
+          TextRange range = returnElement.getTextRange();
           myReadUsages.add(range);
         }
         return true;

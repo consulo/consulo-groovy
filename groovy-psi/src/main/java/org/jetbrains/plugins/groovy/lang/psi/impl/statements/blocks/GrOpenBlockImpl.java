@@ -43,7 +43,7 @@ public class GrOpenBlockImpl extends GrBlockImpl implements GrOpenBlock {
 
   @Override
   public boolean isTopControlFlowOwner() {
-    final PsiElement parent = getParent();
+    PsiElement parent = getParent();
     return parent instanceof GrMethod || parent instanceof GrClassInitializer;
   }
 }

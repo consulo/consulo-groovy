@@ -94,7 +94,7 @@ public abstract class GrBlockImpl extends LazyParseablePsiElement implements GrC
 
   @Override
   public void deleteChildInternal(@Nonnull ASTNode child) {
-    final PsiElement element = child.getPsi();
+    PsiElement element = child.getPsi();
     if (element instanceof GrStatement) {
       PsiImplUtil.deleteStatementTail(this, element);
     }
@@ -119,7 +119,7 @@ public abstract class GrBlockImpl extends LazyParseablePsiElement implements GrC
         public Result<Instruction[]> compute() {
           try {
             //ResolveProfiler.start();
-            final Instruction[] flow = new ControlFlowBuilder(getProject()).buildControlFlow(GrBlockImpl.this);
+            Instruction[] flow = new ControlFlowBuilder(getProject()).buildControlFlow(GrBlockImpl.this);
             return Result.create(flow, getContainingFile(), PsiModificationTracker.MODIFICATION_COUNT);
           }
           finally {
@@ -174,7 +174,7 @@ public abstract class GrBlockImpl extends LazyParseablePsiElement implements GrC
       throw new IncorrectOperationException();
     }
 
-    final LeafElement nls = Factory.createSingleLeafElement(GroovyTokenTypes.mNLS, "\n", 0, 1, null, getManager());
+    LeafElement nls = Factory.createSingleLeafElement(GroovyTokenTypes.mNLS, "\n", 0, 1, null, getManager());
 
     PsiElement actualAnchor = anchor == null ? getRBrace() : anchor;
     if (mayUseNewLinesAsSeparators()) {

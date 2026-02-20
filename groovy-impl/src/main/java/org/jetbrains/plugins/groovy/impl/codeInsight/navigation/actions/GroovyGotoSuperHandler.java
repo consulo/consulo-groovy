@@ -60,7 +60,7 @@ public class GroovyGotoSuperHandler extends GotoTargetHandler implements GotoSup
 
   @Override
   protected GotoData getSourceAndTargetElements(Editor editor, PsiFile file) {
-    final PsiMember e = findSource(editor, file);
+    PsiMember e = findSource(editor, file);
     if (e == null) return null;
     return new GotoData(e, findTargets(e), Collections.<AdditionalAction>emptyList());
   }
@@ -77,7 +77,7 @@ public class GroovyGotoSuperHandler extends GotoTargetHandler implements GotoSup
 
   @Override
   protected String getNotFoundMessage(Project project, Editor editor, PsiFile file) {
-    final PsiMember source = findSource(editor, file);
+    PsiMember source = findSource(editor, file);
     if (source instanceof PsiClass) {
       return GroovyBundle.message("no.super.classes.found");
     }

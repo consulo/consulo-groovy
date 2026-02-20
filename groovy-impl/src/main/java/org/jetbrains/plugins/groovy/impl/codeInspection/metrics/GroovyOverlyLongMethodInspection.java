@@ -53,14 +53,14 @@ public class GroovyOverlyLongMethodInspection extends GroovyMethodMetricInspecti
     private class Visitor extends BaseInspectionVisitor {
         public void visitMethod(GrMethod method) {
             super.visitMethod(method);
-            final int limit = getLimit();
-            final StatementCountVisitor visitor = new StatementCountVisitor();
-            final GrOpenBlock block = method.getBlock();
+            int limit = getLimit();
+            StatementCountVisitor visitor = new StatementCountVisitor();
+            GrOpenBlock block = method.getBlock();
             if (block == null) {
                 return;
             }
             block.accept(visitor);
-            final int statementCount = visitor.getStatementCount();
+            int statementCount = visitor.getStatementCount();
             if (statementCount <= limit) {
                 return;
             }

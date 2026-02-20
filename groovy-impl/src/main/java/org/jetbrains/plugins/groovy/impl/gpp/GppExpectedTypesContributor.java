@@ -34,11 +34,11 @@ import java.util.Map;
 public class GppExpectedTypesContributor extends GroovyExpectedTypesContributor {
   @Override
   public List<TypeConstraint> calculateTypeConstraints(@Nonnull GrExpression expression) {
-    final PsiElement parent = expression.getParent();
+    PsiElement parent = expression.getParent();
     if (parent instanceof GrListOrMap) {
-      final GrListOrMap list = (GrListOrMap)parent;
+      GrListOrMap list = (GrListOrMap)parent;
       if (!list.isMap()) {
-        final PsiType listType = list.getType();
+        PsiType listType = list.getType();
         if (!(listType instanceof GrTupleType)) {
           return Collections.emptyList();
         }
@@ -47,7 +47,7 @@ public class GppExpectedTypesContributor extends GroovyExpectedTypesContributor 
       }
     }
     if (parent instanceof GrNamedArgument) {
-      final PsiElement map = parent.getParent();
+      PsiElement map = parent.getParent();
       if (map instanceof GrListOrMap && "super".equals(((GrNamedArgument)parent).getLabelName())) {
         //todo expected property types
         return addExpectedConstructorParameters((GrListOrMap)map, new GrExpression[]{expression}, expression);
@@ -61,16 +61,16 @@ public class GppExpectedTypesContributor extends GroovyExpectedTypesContributor 
                                                                        GrExpression arg) {
     PsiType[] argTypes = ContainerUtil.map2Array(args, PsiType.class, grExpression -> grExpression.getType());
 
-    final ArrayList<TypeConstraint> result = new ArrayList<TypeConstraint>();
+    ArrayList<TypeConstraint> result = new ArrayList<TypeConstraint>();
     for (PsiType type : GroovyExpectedTypesProvider.getDefaultExpectedTypes(list)) {
       if (type instanceof PsiClassType) {
         for (GroovyResolveResult resolveResult : PsiUtil.getConstructorCandidates((PsiClassType)type, argTypes, list)) {
-          final PsiElement method = resolveResult.getElement();
+          PsiElement method = resolveResult.getElement();
           if (method instanceof PsiMethod && ((PsiMethod)method).isConstructor()) {
-            final Map<GrExpression, Pair<PsiParameter, PsiType>> map = GrClosureSignatureUtil
+            Map<GrExpression, Pair<PsiParameter, PsiType>> map = GrClosureSignatureUtil
               .mapArgumentsToParameters(resolveResult, list, false, true, GrNamedArgument.EMPTY_ARRAY, args, GrClosableBlock.EMPTY_ARRAY);
             if (map != null) {
-              final Pair<PsiParameter, PsiType> pair = map.get(arg);
+              Pair<PsiParameter, PsiType> pair = map.get(arg);
               if (pair != null) {
                 result.add(SubtypeConstraint.create(pair.second));
               }

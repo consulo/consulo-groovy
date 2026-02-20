@@ -52,7 +52,7 @@ public class MoveGroovyFileHandler extends MoveFileHandler {
 
   @Override
   public void prepareMovedFile(PsiFile file, PsiDirectory moveDestination, Map<PsiElement, PsiElement> oldToNewMap) {
-    final GroovyFile groovyFile = (GroovyFile)file;
+    GroovyFile groovyFile = (GroovyFile)file;
     GroovyChangeContextUtil.encodeContextInfo(groovyFile);
     for (PsiClass psiClass : groovyFile.getClasses()) {
       oldToNewMap.put(psiClass, MoveClassesOrPackagesUtil.doMoveClass(psiClass, moveDestination));
@@ -61,9 +61,9 @@ public class MoveGroovyFileHandler extends MoveFileHandler {
 
   @Override
   public List<UsageInfo> findUsages(PsiFile psiFile, PsiDirectory newParent, boolean searchInComments, boolean searchInNonJavaFiles) {
-    final List<UsageInfo> result = new ArrayList<UsageInfo>();
-    final PsiJavaPackage newParentPackage = JavaDirectoryService.getInstance().getPackage(newParent);
-    final String qualifiedName = newParentPackage == null ? "" : newParentPackage.getQualifiedName();
+    List<UsageInfo> result = new ArrayList<UsageInfo>();
+    PsiJavaPackage newParentPackage = JavaDirectoryService.getInstance().getPackage(newParent);
+    String qualifiedName = newParentPackage == null ? "" : newParentPackage.getQualifiedName();
     for (PsiClass aClass : ((GroovyFile)psiFile).getClasses()) {
       Collections.addAll(result, MoveClassesOrPackagesUtil
         .findUsages(aClass, searchInComments, searchInNonJavaFiles, StringUtil.getQualifiedName(qualifiedName, aClass.getName())));
@@ -75,10 +75,10 @@ public class MoveGroovyFileHandler extends MoveFileHandler {
   public void retargetUsages(List<UsageInfo> usageInfos, Map<PsiElement, PsiElement> oldToNewMap) {
     for (UsageInfo usage : usageInfos) {
       if (usage instanceof MoveRenameUsageInfo) {
-        final MoveRenameUsageInfo moveRenameUsage = (MoveRenameUsageInfo)usage;
-        final PsiElement oldElement = moveRenameUsage.getReferencedElement();
-        final PsiElement newElement = oldToNewMap.get(oldElement);
-        final PsiReference reference = moveRenameUsage.getReference();
+        MoveRenameUsageInfo moveRenameUsage = (MoveRenameUsageInfo)usage;
+        PsiElement oldElement = moveRenameUsage.getReferencedElement();
+        PsiElement newElement = oldToNewMap.get(oldElement);
+        PsiReference reference = moveRenameUsage.getReference();
         if (reference != null) {
           try {
             LOG.assertTrue(newElement != null, oldElement != null ? oldElement : reference);
@@ -95,13 +95,13 @@ public class MoveGroovyFileHandler extends MoveFileHandler {
   @Override
   public void updateMovedFile(PsiFile file) throws IncorrectOperationException {
     GroovyChangeContextUtil.decodeContextInfo(file, null, null);
-    final PsiDirectory containingDirectory = file.getContainingDirectory();
+    PsiDirectory containingDirectory = file.getContainingDirectory();
     if (containingDirectory == null) return;
 
-    final PsiJavaPackage aPackage = JavaDirectoryService.getInstance().getPackage(containingDirectory);
+    PsiJavaPackage aPackage = JavaDirectoryService.getInstance().getPackage(containingDirectory);
     if (aPackage == null) return;
 
-    final String qualifiedName = aPackage.getQualifiedName();
+    String qualifiedName = aPackage.getQualifiedName();
 
     if (file instanceof GroovyFile) {
       ((GroovyFile)file).setPackageName(qualifiedName);

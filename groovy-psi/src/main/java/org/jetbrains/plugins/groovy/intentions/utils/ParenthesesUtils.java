@@ -116,7 +116,7 @@ public class ParenthesesUtils {
       return LITERAL_PRECEDENCE;
     }
     if (expression instanceof GrReferenceExpression) {
-      final GrReferenceExpression referenceExpression = (GrReferenceExpression)expression;
+      GrReferenceExpression referenceExpression = (GrReferenceExpression)expression;
       return referenceExpression.getQualifierExpression() == null ? LITERAL_PRECEDENCE : METHOD_CALL_PRECEDENCE;
     }
     if (expression instanceof GrMethodCallExpression) {
@@ -129,7 +129,7 @@ public class ParenthesesUtils {
       return ((GrUnaryExpression)expression).isPostfix() ? POSTFIX_PRECEDENCE : PREFIX_PRECEDENCE;
     }
     if (expression instanceof GrBinaryExpression) {
-      final IElementType sign = ((GrBinaryExpression)expression).getOperationTokenType();
+      IElementType sign = ((GrBinaryExpression)expression).getOperationTokenType();
       return precedenceForBinaryOperator(sign);
     }
     if (expression instanceof GrConditionalExpression) {

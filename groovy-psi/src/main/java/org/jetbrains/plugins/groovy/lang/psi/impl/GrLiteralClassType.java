@@ -52,8 +52,8 @@ public abstract class GrLiteralClassType extends PsiClassType {
     final PsiClass myBaseClass = resolve();
     final PsiSubstitutor substitutor;
     if (myBaseClass != null) {
-      final PsiType[] typeArgs = getParameters();
-      final PsiTypeParameter[] typeParams = myBaseClass.getTypeParameters();
+      PsiType[] typeArgs = getParameters();
+      PsiTypeParameter[] typeParams = myBaseClass.getTypeParameters();
       if (typeParams.length == typeArgs.length) {
         substitutor = PsiSubstitutor.EMPTY.putAll(myBaseClass, typeArgs);
       }
@@ -105,7 +105,7 @@ public abstract class GrLiteralClassType extends PsiClassType {
   @Nonnull
   public String getPresentableText() {
     String name = getClassName();
-    final PsiType[] params = getParameters();
+    PsiType[] params = getParameters();
     if (params.length == 0 || params[0] == null) return name;
 
     return name + "<" + StringUtil.join(params, psiType -> psiType.getPresentableText(), ", ") + ">";
@@ -114,10 +114,10 @@ public abstract class GrLiteralClassType extends PsiClassType {
   @Nonnull
   public String getCanonicalText() {
     String name = getJavaClassName();
-    final PsiType[] params = getParameters();
+    PsiType[] params = getParameters();
     if (params.length == 0 || params[0] == null) return name;
 
-    final Function<PsiType, String> f = psiType -> psiType.getCanonicalText();
+    Function<PsiType, String> f = psiType -> psiType.getCanonicalText();
     return name + "<" + StringUtil.join(params, f, ", ") + ">";
   }
 
@@ -157,8 +157,8 @@ public abstract class GrLiteralClassType extends PsiClassType {
   @Nonnull
   protected PsiType getLeastUpperBound(PsiType[] psiTypes) {
     PsiType result = null;
-    final PsiManager manager = getPsiManager();
-    for (final PsiType other : psiTypes) {
+    PsiManager manager = getPsiManager();
+    for (PsiType other : psiTypes) {
       result = TypesUtil.getLeastUpperBoundNullable(result, other, manager);
     }
     return result == null ? PsiType.getJavaLangObject(manager, getResolveScope()) : result;

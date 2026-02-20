@@ -89,7 +89,7 @@ public class QuickfixUtil {
 
         for (int i = 0; i < names.length; i++) {
             String name = names[i];
-            final PsiType type = types[i];
+            PsiType type = types[i];
 
             result.add(new ParamInfo(name, type.getCanonicalText()));
         }
@@ -98,7 +98,7 @@ public class QuickfixUtil {
     }
 
     public static String[] getArgumentsTypes(List<ParamInfo> listOfPairs) {
-        final List<String> result = new ArrayList<>();
+        List<String> result = new ArrayList<>();
 
         if (listOfPairs == null) {
             return ArrayUtil.EMPTY_STRING_ARRAY;
@@ -112,7 +112,7 @@ public class QuickfixUtil {
     }
 
     public static String[] getArgumentsNames(List<ParamInfo> listOfPairs) {
-        final ArrayList<String> result = new ArrayList<>();
+        ArrayList<String> result = new ArrayList<>();
         for (ParamInfo listOfPair : listOfPairs) {
             String name = listOfPair.name;
             result.add(name);
@@ -125,7 +125,7 @@ public class QuickfixUtil {
         if (typeText == null) {
             return "";
         }
-        final int i = typeText.lastIndexOf(".");
+        int i = typeText.lastIndexOf(".");
         if (i != -1) {
             return typeText.substring(i + 1);
         }
@@ -135,7 +135,7 @@ public class QuickfixUtil {
     @RequiredReadAction
     public static DynamicElementSettings createSettings(GrReferenceExpression referenceExpression) {
         DynamicElementSettings settings = new DynamicElementSettings();
-        final PsiClass containingClass = findTargetClass(referenceExpression, false);
+        PsiClass containingClass = findTargetClass(referenceExpression, false);
 
         assert containingClass != null;
         String className = containingClass.getQualifiedName();
@@ -153,9 +153,9 @@ public class QuickfixUtil {
             for (PsiType type : PsiUtil.getArgumentTypes(referenceExpression, false)) {
                 unboxedTypes.add(TypesUtil.unboxPrimitiveTypeWrapperAndEraseGenerics(type));
             }
-            final PsiType[] types = unboxedTypes.toArray(PsiType.createArray(unboxedTypes.size()));
-            final String[] names = GroovyNamesUtil.getMethodArgumentsNames(referenceExpression.getProject(), types);
-            final List<ParamInfo> infos = swapArgumentsAndTypes(names, types);
+            PsiType[] types = unboxedTypes.toArray(PsiType.createArray(unboxedTypes.size()));
+            String[] names = GroovyNamesUtil.getMethodArgumentsNames(referenceExpression.getProject(), types);
+            List<ParamInfo> infos = swapArgumentsAndTypes(names, types);
 
             settings.setMethod(true);
             settings.setParams(infos);

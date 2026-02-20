@@ -45,8 +45,8 @@ public class PropertyResolverProcessor extends ResolverProcessorImpl
   @Override
   public GroovyResolveResult[] getCandidates() {
     //do not have more than one correct result. And if it exists it is the last
-    final List<GroovyResolveResult> candidates = getCandidatesInternal();
-    final int size = candidates.size();
+    List<GroovyResolveResult> candidates = getCandidatesInternal();
+    int size = candidates.size();
     if (size == 0) return GroovyResolveResult.EMPTY_ARRAY;
 
     GroovyResolveResult last = candidates.get(size - 1);

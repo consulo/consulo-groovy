@@ -60,7 +60,7 @@ public class GroovySpellcheckingStrategy extends SpellcheckingStrategy {
       return myStringTokenizer;
     }
     if (element instanceof GrNamedElement) {
-      final PsiElement name = ((GrNamedElement)element).getNameIdentifierGroovy();
+      PsiElement name = ((GrNamedElement)element).getNameIdentifierGroovy();
       if (TokenSets.STRING_LITERAL_SET.contains(name.getNode().getElementType())) {
         return EMPTY_TOKENIZER;
       }

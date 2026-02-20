@@ -172,8 +172,8 @@ public class GroovyGeneratePropertyMissingHandler extends GenerateMembersHandler
                 GroovyCodeInsightLocalize.generatePropertyMissingAlreadyDefinedTitle().get(),
                 UIUtil.getQuestionIcon()
             ) == DialogWrapper.OK_EXIT_CODE) {
-                final PsiMethod finalGetter = getter;
-                final PsiMethod finalSetter = setter;
+                PsiMethod finalGetter = getter;
+                PsiMethod finalSetter = setter;
                 if (!project.getApplication().runWriteAction((Supplier<Boolean>) () -> {
                     try {
                         finalSetter.delete();

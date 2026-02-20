@@ -35,11 +35,11 @@ import org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames;
 public class GrMethodCallWithSingleClosureArgFixer extends SmartEnterProcessorWithFixers.Fixer<GroovySmartEnterProcessor> {
   @Override
   public void apply(@Nonnull Editor editor, @Nonnull GroovySmartEnterProcessor processor, @Nonnull PsiElement psiElement) {
-    final PsiElement parent = psiElement.getParent();
+    PsiElement parent = psiElement.getParent();
     if (parent instanceof GrReferenceExpression && !(parent.getParent() instanceof GrMethodCall) &&
         hasOnlyClosureParam((GrReferenceExpression)parent)) {
 
-      final int endOffset = psiElement.getTextRange().getEndOffset();
+      int endOffset = psiElement.getTextRange().getEndOffset();
       editor.getDocument().insertString(endOffset, "{\n}");
     }
   }
@@ -49,9 +49,9 @@ public class GrMethodCallWithSingleClosureArgFixer extends SmartEnterProcessorWi
 
     GroovyResolveResult[] results = ref.multiResolve(true);
     for (GroovyResolveResult result : results) {
-      final PsiElement element = result.getElement();
+      PsiElement element = result.getElement();
       if (element instanceof PsiMethod) {
-        final PsiParameter[] parameters = ((PsiMethod)element).getParameterList().getParameters();
+        PsiParameter[] parameters = ((PsiMethod)element).getParameterList().getParameters();
         if (parameters.length == 1 && parameters[0].getType().equalsToText(GroovyCommonClassNames.GROOVY_LANG_CLOSURE)) {
           return true;
         }

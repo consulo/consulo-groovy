@@ -47,11 +47,11 @@ public class MergeElseIfIntention extends Intention {
         Project project,
         Editor editor
     ) throws IncorrectOperationException {
-        final GrIfStatement parentStatement = (GrIfStatement) element;
+        GrIfStatement parentStatement = (GrIfStatement) element;
         GrBlockStatement elseBlockStatement = (GrBlockStatement) parentStatement.getElseBranch();
         assert elseBlockStatement != null;
-        final GrOpenBlock elseBranch = elseBlockStatement.getBlock();
-        final GrStatement elseBranchContents = elseBranch.getStatements()[0];
+        GrOpenBlock elseBranch = elseBlockStatement.getBlock();
+        GrStatement elseBranchContents = elseBranch.getStatements()[0];
         PsiImplUtil.replaceStatement(
             "if(" + parentStatement.getCondition().getText() + ")" +
                 parentStatement.getThenBranch().getText() +

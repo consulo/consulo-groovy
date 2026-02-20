@@ -66,7 +66,7 @@ public class GrCreateSubclassAction extends CreateSubclassAction {
 
     @Override
     protected void createTopLevelClass(PsiClass psiClass) {
-        final CreateClassDialog dlg = chooseSubclassToCreate(psiClass);
+        CreateClassDialog dlg = chooseSubclassToCreate(psiClass);
         if (dlg != null) {
             createSubclassGroovy((GrTypeDefinition) psiClass, dlg.getTargetDirectory(), dlg.getClassName());
         }
@@ -86,7 +86,7 @@ public class GrCreateSubclassAction extends CreateSubclassAction {
             protected void run(Result result) throws Throwable {
                 IdeDocumentHistory.getInstance(project).includeCurrentPlaceAsChangePlace();
 
-                final GrTypeParameterList oldTypeParameterList = psiClass.getTypeParameterList();
+                GrTypeParameterList oldTypeParameterList = psiClass.getTypeParameterList();
 
                 try {
                     targetClass.set(CreateClassActionBase.createClassByType(
@@ -121,7 +121,7 @@ public class GrCreateSubclassAction extends CreateSubclassAction {
         }
         if (!ApplicationManager.getApplication().isUnitTestMode() && !psiClass.hasTypeParameters()) {
 
-            final Editor editor =
+            Editor editor =
                 CodeInsightUtil.positionCursor(project, targetClass.get().getContainingFile(), targetClass.get().getLBrace());
             if (editor == null) {
                 return targetClass.get();
@@ -136,11 +136,11 @@ public class GrCreateSubclassAction extends CreateSubclassAction {
         GrTypeParameterList oldTypeParameterList,
         final Project project,
         final GrTypeDefinition psiClass,
-        final GrTypeDefinition targetClass,
+        GrTypeDefinition targetClass,
         boolean includeClassName
     ) {
         PsiElementFactory jfactory = JavaPsiFacade.getElementFactory(project);
-        final GroovyPsiElementFactory elementFactory = GroovyPsiElementFactory.getInstance(project);
+        GroovyPsiElementFactory elementFactory = GroovyPsiElementFactory.getInstance(project);
         GrCodeReferenceElement ref = elementFactory.createCodeReferenceElementFromClass(psiClass);
         try {
             if (psiClass.isInterface()) {
@@ -163,7 +163,7 @@ public class GrCreateSubclassAction extends CreateSubclassAction {
             }
             if (psiClass.hasTypeParameters() || includeClassName) {
                 final Editor editor = CodeInsightUtil.positionCursor(project, targetClass.getContainingFile(), targetClass.getLBrace());
-                final TemplateBuilder templateBuilder = editor == null || ApplicationManager.getApplication().isUnitTestMode() ? null
+                TemplateBuilder templateBuilder = editor == null || ApplicationManager.getApplication().isUnitTestMode() ? null
                     : TemplateBuilderFactory.getInstance().createTemplateBuilder(targetClass);
 
                 if (includeClassName && templateBuilder != null) {
@@ -172,7 +172,7 @@ public class GrCreateSubclassAction extends CreateSubclassAction {
 
                 if (oldTypeParameterList != null) {
                     for (PsiTypeParameter parameter : oldTypeParameterList.getTypeParameters()) {
-                        final PsiElement param =
+                        PsiElement param =
                             ref.getTypeArgumentList().add(elementFactory.createTypeElement(jfactory.createType(parameter)));
                         if (templateBuilder != null) {
                             templateBuilder.replaceElement(param, param.getText());
@@ -180,20 +180,20 @@ public class GrCreateSubclassAction extends CreateSubclassAction {
                     }
                 }
 
-                final GrTypeParameterList typeParameterList = targetClass.getTypeParameterList();
+                GrTypeParameterList typeParameterList = targetClass.getTypeParameterList();
                 assert typeParameterList != null;
                 typeParameterList.replace(oldTypeParameterList);
 
                 if (templateBuilder != null) {
                     templateBuilder.setEndVariableBefore(ref);
-                    final Template template = templateBuilder.buildTemplate();
+                    Template template = templateBuilder.buildTemplate();
                     template.addEndVariable();
 
                     final PsiFile containingFile = targetClass.getContainingFile();
 
                     PsiDocumentManager.getInstance(project).doPostponedOperationsAndUnblockDocument(editor.getDocument());
 
-                    final TextRange textRange = targetClass.getTextRange();
+                    TextRange textRange = targetClass.getTextRange();
                     final int startClassOffset = textRange.getStartOffset();
                     editor.getDocument().deleteString(textRange.getStartOffset(), textRange.getEndOffset());
                     CreateFromUsageBaseFix.startTemplate(editor, template, project, new TemplateEditingAdapter() {

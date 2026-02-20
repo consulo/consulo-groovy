@@ -28,7 +28,7 @@ class MergeIfAndPredicate implements PsiElementPredicate {
     if (!(element instanceof GrIfStatement)) {
       return false;
     }
-    final GrIfStatement ifStatement = (GrIfStatement) element;
+    GrIfStatement ifStatement = (GrIfStatement) element;
     if (ErrorUtil.containsError(ifStatement)) {
       return false;
     }
@@ -48,7 +48,7 @@ class MergeIfAndPredicate implements PsiElementPredicate {
       }
     }
 
-    final GrIfStatement childIfStatement = (GrIfStatement) thenBranch;
+    GrIfStatement childIfStatement = (GrIfStatement) thenBranch;
 
     return childIfStatement.getElseBranch() == null;
   }

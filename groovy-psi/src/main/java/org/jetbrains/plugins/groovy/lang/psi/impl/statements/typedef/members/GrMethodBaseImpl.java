@@ -88,11 +88,11 @@ public abstract class GrMethodBaseImpl extends GrStubElementBase<GrMethodStub> i
 
   private static final Logger LOG = Logger.getInstance(GrMethodBaseImpl.class);
 
-  protected GrMethodBaseImpl(final GrMethodStub stub, IStubElementType nodeType) {
+  protected GrMethodBaseImpl(GrMethodStub stub, IStubElementType nodeType) {
     super(stub, nodeType);
   }
 
-  public GrMethodBaseImpl(final ASTNode node) {
+  public GrMethodBaseImpl(ASTNode node) {
     super(node);
   }
 
@@ -126,7 +126,7 @@ public abstract class GrMethodBaseImpl extends GrStubElementBase<GrMethodStub> i
   @Override
   public void setBlock(GrCodeBlock newBlock) {
     ASTNode newNode = newBlock.getNode().copyElement();
-    final GrOpenBlock oldBlock = getBlock();
+    GrOpenBlock oldBlock = getBlock();
     if (oldBlock == null) {
       getNode().addChild(newNode);
       return;
@@ -142,9 +142,9 @@ public abstract class GrMethodBaseImpl extends GrStubElementBase<GrMethodStub> i
   @Override
   @Nullable
   public GrTypeElement getReturnTypeElementGroovy() {
-    final GrMethodStub stub = getStub();
+    GrMethodStub stub = getStub();
     if (stub != null) {
-      final String typeText = stub.getTypeText();
+      String typeText = stub.getTypeText();
       if (typeText != null) {
         return GroovyPsiElementFactory.getInstance(getProject()).createTypeElement(typeText, this);
       }
@@ -177,13 +177,13 @@ public abstract class GrMethodBaseImpl extends GrStubElementBase<GrMethodStub> i
     ClassHint classHint = processor.getHint(ClassHint.KEY);
 
     if (ResolveUtil.shouldProcessClasses(classHint)) {
-      for (final GrTypeParameter typeParameter : getTypeParameters()) {
+      for (GrTypeParameter typeParameter : getTypeParameters()) {
         if (!ResolveUtil.processElement(processor, typeParameter, state)) return false;
       }
     }
 
     if (ResolveUtil.shouldProcessProperties(classHint)) {
-      for (final GrParameter parameter : getParameters()) {
+      for (GrParameter parameter : getParameters()) {
         if (!ResolveUtil.processElement(processor, parameter, state)) return false;
       }
     }
@@ -198,11 +198,11 @@ public abstract class GrMethodBaseImpl extends GrStubElementBase<GrMethodStub> i
 
   private static final Function<GrMethodBaseImpl, PsiType> ourTypesCalculator = new Function<GrMethodBaseImpl, PsiType>() {
     private boolean hasTypeParametersToInfer(PsiClassType classType) {
-      final PsiClassType.ClassResolveResult resolveResult = classType.resolveGenerics();
+      PsiClassType.ClassResolveResult resolveResult = classType.resolveGenerics();
       PsiClass aClass = resolveResult.getElement();
       if (aClass == null) return false;
 
-      final Iterable<PsiTypeParameter> iterable = com.intellij.java.language.psi.util.PsiUtil.typeParametersIterable(aClass);
+      Iterable<PsiTypeParameter> iterable = com.intellij.java.language.psi.util.PsiUtil.typeParametersIterable(aClass);
       if (!iterable.iterator().hasNext()) {
         return false;
       }
@@ -227,7 +227,7 @@ public abstract class GrMethodBaseImpl extends GrStubElementBase<GrMethodStub> i
         }
       }
 
-      final GrOpenBlock block = method.getBlock();
+      GrOpenBlock block = method.getBlock();
       if (block != null) {
         PsiType inferred = GroovyPsiManager.inferType(method, new MethodTypeInferencer(block));
         if (inferred != null) {
@@ -251,7 +251,7 @@ public abstract class GrMethodBaseImpl extends GrStubElementBase<GrMethodStub> i
       return null;
     }
 
-    final PsiType type = getNominalType();
+    PsiType type = getNominalType();
     if (type != null) {
       return type;
     }
@@ -265,7 +265,7 @@ public abstract class GrMethodBaseImpl extends GrStubElementBase<GrMethodStub> i
       return PsiType.VOID;
     }
 
-    final GrTypeElement element = getReturnTypeElementGroovy();
+    GrTypeElement element = getReturnTypeElementGroovy();
     if (element != null) {
       return element.getType();
     }
@@ -281,10 +281,10 @@ public abstract class GrMethodBaseImpl extends GrStubElementBase<GrMethodStub> i
       insertPlaceHolderToModifierList();
       return null;
     }
-    final GrTypeElement stub = GroovyPsiElementFactory.getInstance(getProject()).createTypeElement(newReturnType);
+    GrTypeElement stub = GroovyPsiElementFactory.getInstance(getProject()).createTypeElement(newReturnType);
     GrTypeElement newTypeElement;
     if (typeElement == null) {
-      final GrTypeParameterList typeParemeterList = getTypeParameterList();
+      GrTypeParameterList typeParemeterList = getTypeParameterList();
       PsiElement anchor = typeParemeterList != null ? typeParemeterList : getModifierList();
       newTypeElement = (GrTypeElement)addAfter(stub, anchor);
     }
@@ -296,7 +296,7 @@ public abstract class GrMethodBaseImpl extends GrStubElementBase<GrMethodStub> i
   }
 
   private void insertPlaceHolderToModifierList() {
-    final GrModifierList list = getModifierList();
+    GrModifierList list = getModifierList();
     PsiImplUtil.insertPlaceHolderToModifierListAtEndIfNeeded(list);
   }
 
@@ -314,7 +314,7 @@ public abstract class GrMethodBaseImpl extends GrStubElementBase<GrMethodStub> i
   @Override
   @Nonnull
   public GrParameterList getParameterList() {
-    final GrParameterList parameterList = getStubOrPsiChild(GroovyElementTypes.PARAMETERS_LIST);
+    GrParameterList parameterList = getStubOrPsiChild(GroovyElementTypes.PARAMETERS_LIST);
     LOG.assertTrue(parameterList != null);
     return parameterList;
   }
@@ -394,7 +394,7 @@ public abstract class GrMethodBaseImpl extends GrStubElementBase<GrMethodStub> i
   @Override
   @Nullable
   public PsiMethod findDeepestSuperMethod() {
-    final PsiMethod[] methods = findDeepestSuperMethods();
+    PsiMethod[] methods = findDeepestSuperMethods();
     if (methods.length > 0) return methods[0];
     return null;
   }
@@ -413,7 +413,7 @@ public abstract class GrMethodBaseImpl extends GrStubElementBase<GrMethodStub> i
   @Override
   @Nonnull
   public String getName() {
-    final GrMethodStub stub = getStub();
+    GrMethodStub stub = getStub();
     if (stub != null) {
       return stub.getName();
     }
@@ -462,7 +462,7 @@ public abstract class GrMethodBaseImpl extends GrStubElementBase<GrMethodStub> i
   @Override
   @Nonnull
   public GrTypeParameter[] getTypeParameters() {
-    final GrTypeParameterList list = getTypeParameterList();
+    GrTypeParameterList list = getTypeParameterList();
     if (list != null) {
       return list.getTypeParameters();
     }
@@ -474,14 +474,14 @@ public abstract class GrMethodBaseImpl extends GrStubElementBase<GrMethodStub> i
   public PsiClass getContainingClass() {
     PsiElement parent = getParent();
     if (parent instanceof GrTypeDefinitionBody) {
-      final PsiElement pparent = parent.getParent();
+      PsiElement pparent = parent.getParent();
       if (pparent instanceof PsiClass) {
         return (PsiClass)pparent;
       }
     }
 
 
-    final PsiFile file = getContainingFile();
+    PsiFile file = getContainingFile();
     if (file instanceof GroovyFileBase) {
       return ((GroovyFileBase)file).getScriptClass();
     }
@@ -497,7 +497,7 @@ public abstract class GrMethodBaseImpl extends GrStubElementBase<GrMethodStub> i
 
   @Override
   public boolean isDeprecated() {
-    final GrMethodStub stub = getStub();
+    GrMethodStub stub = getStub();
     if (stub != null) {
       return stub.isDeprecatedByDoc() || com.intellij.java.language.impl.psi.impl.PsiImplUtil.isDeprecatedByAnnotation(this);
     }
@@ -513,10 +513,10 @@ public abstract class GrMethodBaseImpl extends GrStubElementBase<GrMethodStub> i
 
   @Override
   public PsiElement getOriginalElement() {
-    final PsiClass containingClass = getContainingClass();
+    PsiClass containingClass = getContainingClass();
     if (containingClass == null) return this;
     PsiClass originalClass = (PsiClass)containingClass.getOriginalElement();
-    final PsiMethod originalMethod = originalClass.findMethodBySignature(this, false);
+    PsiMethod originalMethod = originalClass.findMethodBySignature(this, false);
     return originalMethod != null ? originalMethod : this;
   }
 
@@ -534,7 +534,7 @@ public abstract class GrMethodBaseImpl extends GrStubElementBase<GrMethodStub> i
   @Override
   @Nonnull
   public Map<String, NamedArgumentDescriptor> getNamedParameters() {
-    final GrMethodStub stub = getStub();
+    GrMethodStub stub = getStub();
     if (stub != null) {
       String[] namedParameters = stub.getNamedParameters();
       if (namedParameters.length == 0) return Collections.emptyMap();

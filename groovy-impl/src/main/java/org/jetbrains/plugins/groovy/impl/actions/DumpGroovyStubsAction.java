@@ -54,19 +54,19 @@ public class DumpGroovyStubsAction extends AnAction implements DumbAware
 	@Override
 	public void actionPerformed(@Nonnull AnActionEvent e)
 	{
-		final Editor editor = e.getData(PlatformDataKeys.EDITOR);
+		Editor editor = e.getData(PlatformDataKeys.EDITOR);
 		if(editor == null)
 		{
 			return;
 		}
 
-		final PsiFile psiFile = HandlerUtils.getPsiFile(editor, e.getDataContext());
+		PsiFile psiFile = HandlerUtils.getPsiFile(editor, e.getDataContext());
 		if(!(psiFile instanceof GroovyFile))
 		{
 			return;
 		}
 
-		final StringBuilder builder = GroovyToJavaGenerator.generateStubs(psiFile);
+		StringBuilder builder = GroovyToJavaGenerator.generateStubs(psiFile);
 		System.out.println(builder.toString());
 	}
 }

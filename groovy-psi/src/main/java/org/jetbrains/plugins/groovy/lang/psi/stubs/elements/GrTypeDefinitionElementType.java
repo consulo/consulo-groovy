@@ -44,7 +44,7 @@ public abstract class GrTypeDefinitionElementType<TypeDef extends GrTypeDefiniti
 
   public GrTypeDefinitionStub createStub(@Nonnull TypeDef psi, StubElement parentStub) {
     String[] superClassNames = psi.getSuperClassNames();
-    final byte flags = GrTypeDefinitionStub.buildFlags(psi);
+    byte flags = GrTypeDefinitionStub.buildFlags(psi);
     return new GrTypeDefinitionStub(parentStub, psi.getName(), superClassNames, this, psi.getQualifiedName(), GrStubUtils
       .getAnnotationNames(psi),
                                         flags);
@@ -86,11 +86,11 @@ public abstract class GrTypeDefinitionElementType<TypeDef extends GrTypeDefiniti
 
   public void indexStub(@Nonnull GrTypeDefinitionStub stub, @Nonnull IndexSink sink) {
     if (stub.isAnonymous()) {
-      final String[] classNames = stub.getSuperClassNames();
+      String[] classNames = stub.getSuperClassNames();
       if (classNames.length != 1) return;
-      final String baseClassName = classNames[0];
+      String baseClassName = classNames[0];
       if (baseClassName != null) {
-        final String shortName = PsiNameHelper.getShortClassName(baseClassName);
+        String shortName = PsiNameHelper.getShortClassName(baseClassName);
         sink.occurrence(GrAnonymousClassIndex.KEY, shortName);
       }
     }
@@ -99,7 +99,7 @@ public abstract class GrTypeDefinitionElementType<TypeDef extends GrTypeDefiniti
       if (shortName != null) {
         sink.occurrence(JavaStubIndexKeys.CLASS_SHORT_NAMES, shortName);
       }
-      final String fqn = stub.getQualifiedName();
+      String fqn = stub.getQualifiedName();
       if (fqn != null) {
         sink.occurrence(GrFullClassNameIndex.KEY, fqn.hashCode());
         sink.occurrence(JavaStubIndexKeys.CLASS_FQN, fqn.hashCode());

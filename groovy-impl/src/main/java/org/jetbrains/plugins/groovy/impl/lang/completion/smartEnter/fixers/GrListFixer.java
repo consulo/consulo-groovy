@@ -30,7 +30,7 @@ public class GrListFixer extends SmartEnterProcessorWithFixers.Fixer<GroovySmart
   @Override
   public void apply(@Nonnull Editor editor, @Nonnull GroovySmartEnterProcessor processor, @Nonnull PsiElement psiElement) {
     if (psiElement instanceof GrListOrMap) {
-      final PsiElement brack = ((GrListOrMap)psiElement).getRBrack();
+      PsiElement brack = ((GrListOrMap)psiElement).getRBrack();
       if (brack == null) {
         editor.getDocument().insertString(psiElement.getTextRange().getEndOffset(), "]");
       }

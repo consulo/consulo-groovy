@@ -52,7 +52,7 @@ public class GrNullVoidConverter extends GrTypeConverter {
                                           @Nonnull GroovyPsiElement context,
                                           @Nonnull ApplicableTo currentPosition) {
 
-    final PsiClassType objectType = TypesUtil.getJavaLangObject(context);
+    PsiClassType objectType = TypesUtil.getJavaLangObject(context);
 
     if (currentPosition == ApplicableTo.EXPLICIT_CAST) {
       if (TypesUtil.unboxPrimitiveTypeWrapper(targetType) == PsiType.VOID) {  // cast to V(v)oid

@@ -47,24 +47,24 @@ import java.util.List;
 @ExtensionImpl
 public class MixinMemberContributor extends NonCodeMembersContributor {
   @Override
-  public void processDynamicElements(@Nonnull final PsiType qualifierType,
+  public void processDynamicElements(@Nonnull PsiType qualifierType,
                                      @Nonnull PsiScopeProcessor processor,
-                                     @Nonnull final PsiElement place,
+                                     @Nonnull PsiElement place,
                                      @Nonnull ResolveState state) {
     if (isInAnnotation(place)) return;
 
-    final PsiClass aClass = PsiUtil.resolveClassInClassTypeOnly(qualifierType);
+    PsiClass aClass = PsiUtil.resolveClassInClassTypeOnly(qualifierType);
     if (aClass == null) return;
 
-    final PsiModifierList modifierList = aClass.getModifierList();
+    PsiModifierList modifierList = aClass.getModifierList();
     if (modifierList == null) return;
 
     List<PsiClass> mixins = new ArrayList<PsiClass>();
     for (PsiAnnotation annotation : getAllMixins(modifierList)) {
-      final PsiAnnotationMemberValue value = annotation.findAttributeValue("value");
+      PsiAnnotationMemberValue value = annotation.findAttributeValue("value");
 
       if (value instanceof GrAnnotationArrayInitializer) {
-        final GrAnnotationMemberValue[] initializers = ((GrAnnotationArrayInitializer)value).getInitializers();
+        GrAnnotationMemberValue[] initializers = ((GrAnnotationArrayInitializer)value).getInitializers();
         for (GrAnnotationMemberValue initializer : initializers) {
           addMixin(initializer, mixins);
         }
@@ -74,7 +74,7 @@ public class MixinMemberContributor extends NonCodeMembersContributor {
       }
     }
 
-    final MixinProcessor delegate = new MixinProcessor(processor, qualifierType, place);
+    MixinProcessor delegate = new MixinProcessor(processor, qualifierType, place);
     for (PsiClass mixin : mixins) {
       if (!mixin.processDeclarations(delegate, state, null, place)) {
         return;
@@ -95,7 +95,7 @@ public class MixinMemberContributor extends NonCodeMembersContributor {
   }
 
   private static List<PsiAnnotation> getAllMixins(PsiModifierList modifierList) {
-    final ArrayList<PsiAnnotation> result = new ArrayList<PsiAnnotation>();
+    ArrayList<PsiAnnotation> result = new ArrayList<PsiAnnotation>();
     for (PsiAnnotation annotation : modifierList.getAnnotations()) {
       if (GroovyCommonClassNames.GROOVY_LANG_MIXIN.equals(annotation.getQualifiedName())) {
         result.add(annotation);
@@ -110,7 +110,7 @@ public class MixinMemberContributor extends NonCodeMembersContributor {
 
   private static void addMixin(GrAnnotationMemberValue value, List<PsiClass> mixins) {
     if (value instanceof GrReferenceExpression) {
-      final PsiElement resolved = ((GrReferenceExpression)value).resolve();
+      PsiElement resolved = ((GrReferenceExpression)value).resolve();
       if (resolved instanceof PsiClass) {
         mixins.add((PsiClass)resolved);
       }

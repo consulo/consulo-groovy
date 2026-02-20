@@ -34,16 +34,16 @@ public class GrWhileConditionFixer extends SmartEnterProcessorWithFixers.Fixer<G
   @Override
   public void apply(@Nonnull Editor editor, @Nonnull GroovySmartEnterProcessor processor, @Nonnull PsiElement psiElement) {
     if (psiElement instanceof GrWhileStatement) {
-      final Document doc = editor.getDocument();
-      final GrWhileStatement whileStatement = (GrWhileStatement) psiElement;
-      final PsiElement rParenth = whileStatement.getRParenth();
-      final PsiElement lParenth = whileStatement.getLParenth();
-      final GrCondition condition = whileStatement.getCondition();
+      Document doc = editor.getDocument();
+      GrWhileStatement whileStatement = (GrWhileStatement) psiElement;
+      PsiElement rParenth = whileStatement.getRParenth();
+      PsiElement lParenth = whileStatement.getLParenth();
+      GrCondition condition = whileStatement.getCondition();
 
       if (condition == null) {
         if (lParenth == null || rParenth == null) {
           int stopOffset = doc.getLineEndOffset(doc.getLineNumber(whileStatement.getTextRange().getStartOffset()));
-          final GrStatement block = whileStatement.getBody();
+          GrStatement block = whileStatement.getBody();
           if (block != null) {
             stopOffset = Math.min(stopOffset, block.getTextRange().getStartOffset());
           }

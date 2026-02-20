@@ -27,7 +27,7 @@ public class GroovyGenerateAccessorProvider implements GenerateAccessorProvider 
   @Override
   public Collection<EncapsulatableClassMember> getEncapsulatableClassMembers(PsiClass s) {
     if (!(s instanceof GrTypeDefinition)) return Collections.emptyList();
-    final List<EncapsulatableClassMember> result = new ArrayList<EncapsulatableClassMember>();
+    List<EncapsulatableClassMember> result = new ArrayList<EncapsulatableClassMember>();
     for (PsiField field : s.getFields()) {
       if (!(field instanceof PsiEnumConstant) && field instanceof GrField) {
         result.add(new GrFieldMember(field));

@@ -54,14 +54,14 @@ public class GroovyOverlyNestedMethodInspection extends GroovyMethodMetricInspec
     private class Visitor extends BaseInspectionVisitor {
         public void visitMethod(GrMethod grMethod) {
             super.visitMethod(grMethod);
-            final int limit = getLimit();
-            final NestingDepthVisitor visitor = new NestingDepthVisitor();
-            final GrOpenBlock body = grMethod.getBlock();
+            int limit = getLimit();
+            NestingDepthVisitor visitor = new NestingDepthVisitor();
+            GrOpenBlock body = grMethod.getBlock();
             if (body == null) {
                 return;
             }
             body.accept(visitor);
-            final int nestingDepth = visitor.getMaximumDepth();
+            int nestingDepth = visitor.getMaximumDepth();
             if (nestingDepth <= limit) {
                 return;
             }

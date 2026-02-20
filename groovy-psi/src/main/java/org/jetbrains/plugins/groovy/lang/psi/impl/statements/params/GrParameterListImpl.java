@@ -78,7 +78,7 @@ public class GrParameterListImpl extends GrStubElementBase<EmptyStub> implements
   }
 
   @Override
-  public int getParameterNumber(final GrParameter parameter) {
+  public int getParameterNumber(GrParameter parameter) {
     GrParameter[] parameters = getParameters();
     for (int i = 0; i < parameters.length; i++) {
       GrParameter param = parameters[i];

@@ -50,7 +50,7 @@ public class ClosureParamsEnhancer extends AbstractClosureParameterEnhancer {
   protected PsiType getClosureParameterType(GrClosableBlock closure, int index) {
     if (!GroovyConfigUtils.getInstance().isVersionAtLeast(closure, GroovyConfigUtils.GROOVY2_3)) return null;
 
-    final GrParameter[] parameters = closure.getAllParameters();
+    GrParameter[] parameters = closure.getAllParameters();
     if (containsParametersWithDeclaredType(parameters)) {
       return null;
     }

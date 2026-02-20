@@ -18,7 +18,7 @@ public class GrapeRunner {
   }
 
   public static void main(String[] args) {
-    final GroovyShell shell = new GroovyShell();
+    GroovyShell shell = new GroovyShell();
     try {
       shell.parse(args[0] + " import java.lang.*");
     }

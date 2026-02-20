@@ -50,7 +50,7 @@ public class GroovyClassNameInsertHandler implements InsertHandler<JavaPsiClassR
   @Nullable
   private static GrNewExpression findNewExpression(@Nullable PsiElement position) {
     if (position == null) return null;
-    final PsiElement reference = position.getParent();
+    PsiElement reference = position.getParent();
     if (!(reference instanceof GrCodeReferenceElement)) return null;
 
     PsiElement parent = reference.getParent();
@@ -76,7 +76,7 @@ public class GroovyClassNameInsertHandler implements InsertHandler<JavaPsiClassR
 
     boolean parens = shouldInsertParentheses(position);
 
-    final PsiClass psiClass = item.getObject();
+    PsiClass psiClass = item.getObject();
     if (isInVariable(position) || GroovyCompletionUtil.isInPossibleClosureParameter(position)) {
       Project project = context.getProject();
       String qname = psiClass.getQualifiedName();
@@ -113,7 +113,7 @@ public class GroovyClassNameInsertHandler implements InsertHandler<JavaPsiClassR
   }
 
   private static boolean shouldInsertParentheses(PsiElement position) {
-    final GrNewExpression newExpression = findNewExpression(position);
+    GrNewExpression newExpression = findNewExpression(position);
     return newExpression != null && ContainerUtil.findInstance(GroovyExpectedTypesProvider.getDefaultExpectedTypes(newExpression),
                                                                PsiArrayType.class) == null;
   }
@@ -123,7 +123,7 @@ public class GroovyClassNameInsertHandler implements InsertHandler<JavaPsiClassR
       return false;
     }
 
-    final PsiElement parent = position.getParent();
+    PsiElement parent = position.getParent();
     if (parent instanceof GrVariable) {
       return ((GrVariable)parent).getTypeElementGroovy() == null && position == ((GrVariable)parent).getNameIdentifierGroovy();
     }

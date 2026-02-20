@@ -407,7 +407,7 @@ public class GrLightMethodBuilder extends LightElement implements GrMethod, Orig
   }
 
   @Override
-  public boolean isEquivalentTo(final PsiElement another) {
+  public boolean isEquivalentTo(PsiElement another) {
     return PsiClassImplUtil.isMethodEquivalentTo(this, another) || getNavigationElement() == another;
   }
 
@@ -420,18 +420,18 @@ public class GrLightMethodBuilder extends LightElement implements GrMethod, Orig
   @Override
   @Nullable
   public PsiFile getContainingFile() {
-    final PsiClass containingClass = getContainingClass();
+    PsiClass containingClass = getContainingClass();
     return containingClass == null ? null : containingClass.getContainingFile();
   }
 
   @Override
   public PsiElement getContext() {
-    final PsiElement navElement = getNavigationElement();
+    PsiElement navElement = getNavigationElement();
     if (navElement != this) {
       return navElement;
     }
 
-    final PsiClass cls = getContainingClass();
+    PsiClass cls = getContainingClass();
     if (cls != null) {
       return cls;
     }

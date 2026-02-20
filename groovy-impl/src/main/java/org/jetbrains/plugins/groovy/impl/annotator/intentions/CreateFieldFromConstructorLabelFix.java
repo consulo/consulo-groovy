@@ -47,13 +47,13 @@ public class CreateFieldFromConstructorLabelFix extends GroovyFix {
 
     @Nullable
     private String getFieldName() {
-        final GrArgumentLabel label = myNamedArgument.getLabel();
+        GrArgumentLabel label = myNamedArgument.getLabel();
         assert label != null;
         return label.getName();
     }
 
     private TypeConstraint[] calculateTypeConstrains() {
-        final GrExpression expression = myNamedArgument.getExpression();
+        GrExpression expression = myNamedArgument.getExpression();
         PsiType type = null;
         if (expression != null) {
             type = expression.getType();

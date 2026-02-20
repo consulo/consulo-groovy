@@ -62,7 +62,7 @@ public class DefinitionMap
 		});
 	}
 
-	public boolean eq(final DefinitionMap m2)
+	public boolean eq(DefinitionMap m2)
 	{
 		if(myMap.size() != m2.myMap.size())
 		{
@@ -74,7 +74,7 @@ public class DefinitionMap
 			int num = entry.getKey();
 			IntSet defs1 = entry.getValue();
 
-			final IntSet defs2 = m2.myMap.get(num);
+			IntSet defs2 = m2.myMap.get(num);
 			if(!(defs2 != null && defs2.equals(defs1)))
 			{
 				return false;

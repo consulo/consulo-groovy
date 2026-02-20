@@ -127,12 +127,12 @@ public class GrEnumConstantImpl extends GrFieldImpl implements GrEnumConstant {
   }
 
   @Override
-  public GrNamedArgument addNamedArgument(final GrNamedArgument namedArgument) throws IncorrectOperationException {
+  public GrNamedArgument addNamedArgument(GrNamedArgument namedArgument) throws IncorrectOperationException {
     GrArgumentList list = getArgumentList();
     assert list != null;
     if (list.getText().trim().isEmpty()) {
-      final GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(getProject());
-      final GrArgumentList newList = factory.createArgumentList();
+      GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(getProject());
+      GrArgumentList newList = factory.createArgumentList();
       list = (GrArgumentList)list.replace(newList);
     }
     return list.addNamedArgument(namedArgument);
@@ -141,14 +141,14 @@ public class GrEnumConstantImpl extends GrFieldImpl implements GrEnumConstant {
   @Nonnull
   @Override
   public GrNamedArgument[] getNamedArguments() {
-    final GrArgumentList argumentList = getArgumentList();
+    GrArgumentList argumentList = getArgumentList();
     return argumentList == null ? GrNamedArgument.EMPTY_ARRAY : argumentList.getNamedArguments();
   }
 
   @Nonnull
   @Override
   public GrExpression[] getExpressionArguments() {
-    final GrArgumentList argumentList = getArgumentList();
+    GrArgumentList argumentList = getArgumentList();
     return argumentList == null ? GrExpression.EMPTY_ARRAY : argumentList.getExpressionArguments();
   }
 
@@ -184,13 +184,13 @@ public class GrEnumConstantImpl extends GrFieldImpl implements GrEnumConstant {
   @Nonnull
   @Override
   public PsiEnumConstantInitializer getOrCreateInitializingClass() {
-    final GrEnumConstantInitializer initializingClass = getInitializingClass();
+    GrEnumConstantInitializer initializingClass = getInitializingClass();
     if (initializingClass != null) return initializingClass;
 
-    final GrEnumConstantInitializer initializer =
+    GrEnumConstantInitializer initializer =
       GroovyPsiElementFactory.getInstance(getProject()).createEnumConstantFromText("foo{}").getInitializingClass();
     LOG.assertTrue(initializer != null);
-    final GrArgumentList argumentList = getArgumentList();
+    GrArgumentList argumentList = getArgumentList();
     if (argumentList != null) {
       return (PsiEnumConstantInitializer)addAfter(initializer, argumentList);
     }

@@ -56,7 +56,7 @@ public class GroovyOptimizeImportsFix implements SyntheticIntentionAction {
 
     @Override
     public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
-        final Runnable optimize = new GroovyImportOptimizer().processFile(file);
+        Runnable optimize = new GroovyImportOptimizer().processFile(file);
         GroovyOptimizeImportsFix.invokeOnTheFlyImportOptimizer(optimize, file, editor);
     }
 
@@ -83,11 +83,11 @@ public class GroovyOptimizeImportsFix implements SyntheticIntentionAction {
         Project project = file.getProject();
         if (onTheFly && editor != null) {
             // if we stand inside import statements, do not optimize
-            final VirtualFile vfile = file.getVirtualFile();
+            VirtualFile vfile = file.getVirtualFile();
             if (vfile != null && ProjectRootManager.getInstance(project).getFileIndex().isInSource(vfile)) {
-                final GrImportStatement[] imports = file.getImportStatements();
+                GrImportStatement[] imports = file.getImportStatements();
                 if (imports.length > 0) {
-                    final int offset = editor.getCaretModel().getOffset();
+                    int offset = editor.getCaretModel().getOffset();
                     if (imports[0].getTextRange().getStartOffset() <= offset && offset <= imports[imports.length - 1]
                         .getTextRange().getEndOffset()) {
                         return false;
@@ -112,11 +112,11 @@ public class GroovyOptimizeImportsFix implements SyntheticIntentionAction {
 
     private boolean containsErrorsPreventingOptimize(GroovyFile file, Document document) {
         // ignore unresolved imports errors
-        final TextRange ignoreRange;
-        final GrImportStatement[] imports = file.getImportStatements();
+        TextRange ignoreRange;
+        GrImportStatement[] imports = file.getImportStatements();
         if (imports.length != 0) {
-            final int start = imports[0].getTextRange().getStartOffset();
-            final int end = imports[imports.length - 1].getTextRange().getEndOffset();
+            int start = imports[0].getTextRange().getStartOffset();
+            int end = imports[imports.length - 1].getTextRange().getEndOffset();
             ignoreRange = new TextRange(start, end);
         }
         else {
@@ -155,13 +155,13 @@ public class GroovyOptimizeImportsFix implements SyntheticIntentionAction {
                     return;
                 }
                 //no need to optimize imports on the fly during undo/redo
-                final UndoManager undoManager = ProjectUndoManager.getInstance(editor.getProject());
+                UndoManager undoManager = ProjectUndoManager.getInstance(editor.getProject());
                 if (undoManager.isUndoInProgress() || undoManager.isRedoInProgress()) {
                     return;
                 }
                 PsiDocumentManager.getInstance(file.getProject()).commitAllDocuments();
                 String beforeText = file.getText();
-                final long oldStamp = editor.getDocument().getModificationStamp();
+                long oldStamp = editor.getDocument().getModificationStamp();
                 UndoUtil.writeInRunUndoTransparentAction(runnable);
                 if (oldStamp != editor.getDocument().getModificationStamp()) {
                     String afterText = file.getText();

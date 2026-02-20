@@ -47,7 +47,7 @@ public class DynamicMethodDialog extends DynamicDialog {
           GroovyExpectedTypesProvider.calculateTypeConstraints((GrExpression)referenceExpression.getParent()), true);
     assert getSettings().isMethod();
 
-    final List<ParamInfo> pairs = getSettings().getParams();
+    List<ParamInfo> pairs = getSettings().getParams();
     setupParameterTable(pairs);
     setupParameterList(pairs);
     setTitle(GroovyBundle.message("add.dynamic.method"));
@@ -61,15 +61,15 @@ public class DynamicMethodDialog extends DynamicDialog {
 
     suggestedNameCellEditor.addCellEditorListener(new CellEditorListener() {
       public void editingStopped(ChangeEvent e) {
-        final int editingColumn = myParametersTable.getSelectedColumn();
+        int editingColumn = myParametersTable.getSelectedColumn();
         if (editingColumn != 0) return;
 
-        final int editingRow = myParametersTable.getSelectedRow();
+        int editingRow = myParametersTable.getSelectedRow();
         if (editingRow < 0 || editingRow >= pairs.size()) return;
 
         String newNameValue = ((MySuggestedNameCellEditor)e.getSource()).getCellEditorValue();
 
-        final ParamInfo editingPair = pairs.get(editingRow);
+        ParamInfo editingPair = pairs.get(editingRow);
         editingPair.name = newNameValue;
       }
 
@@ -79,7 +79,7 @@ public class DynamicMethodDialog extends DynamicDialog {
   }
 
   private void setupParameterList(List<ParamInfo> arguments) {
-    final ListTableModel<ParamInfo> dataModel = new ListTableModel<ParamInfo>(new NameColumnInfo(), new TypeColumnInfo());
+    ListTableModel<ParamInfo> dataModel = new ListTableModel<ParamInfo>(new NameColumnInfo(), new TypeColumnInfo());
     dataModel.setItems(arguments);
     myParametersTable.setModel(dataModel);
 
@@ -92,11 +92,11 @@ public class DynamicMethodDialog extends DynamicDialog {
       if (argument.type.length() > max1.length()) max1 = argument.type;
     }
 
-    final FontMetrics metrics = myParametersTable.getFontMetrics(myParametersTable.getFont());
-    final TableColumn column0 = myParametersTable.getColumnModel().getColumn(0);
+    FontMetrics metrics = myParametersTable.getFontMetrics(myParametersTable.getFont());
+    TableColumn column0 = myParametersTable.getColumnModel().getColumn(0);
     column0.setPreferredWidth(metrics.stringWidth(max0 + "  "));
 
-    final TableColumn column1 = myParametersTable.getColumnModel().getColumn(1);
+    TableColumn column1 = myParametersTable.getColumnModel().getColumn(1);
     column1.setPreferredWidth(metrics.stringWidth(max1 + "  "));
   }
 

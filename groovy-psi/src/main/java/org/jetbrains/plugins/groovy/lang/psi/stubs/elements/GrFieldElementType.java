@@ -88,10 +88,10 @@ public class GrFieldElementType extends GrStubElementType<GrFieldStub, GrField> 
 
   static GrFieldStub deserializeFieldStub(StubInputStream dataStream, StubElement parentStub) throws IOException {
     StringRef ref = dataStream.readName();
-    final String[] annNames = GrStubUtils.readStringArray(dataStream);
-    final String[] namedParameters = GrStubUtils.readStringArray(dataStream);
+    String[] annNames = GrStubUtils.readStringArray(dataStream);
+    String[] namedParameters = GrStubUtils.readStringArray(dataStream);
     byte flags = dataStream.readByte();
-    final String typeText = GrStubUtils.readNullableString(dataStream);
+    String typeText = GrStubUtils.readNullableString(dataStream);
     return new GrFieldStub(parentStub, ref, annNames, namedParameters, GrFieldStub.isEnumConstant(flags) ? ENUM_CONSTANT : FIELD,
                                flags, typeText);
   }

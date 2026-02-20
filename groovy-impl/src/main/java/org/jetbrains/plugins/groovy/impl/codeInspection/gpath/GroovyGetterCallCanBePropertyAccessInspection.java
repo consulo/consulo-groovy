@@ -67,11 +67,11 @@ public class GroovyGetterCallCanBePropertyAccessInspection extends BaseInspectio
         }
 
         public void doFix(Project project, ProblemDescriptor descriptor) throws IncorrectOperationException {
-            final PsiElement referenceName = descriptor.getPsiElement();
-            final String getterName = referenceName.getText();
-            final String propertyName = Character.toLowerCase(getterName.charAt(3)) + getterName.substring(4);
-            final GrReferenceExpression invokedExpression = (GrReferenceExpression) referenceName.getParent();
-            final GrMethodCallExpression callExpression = (GrMethodCallExpression) invokedExpression.getParent();
+            PsiElement referenceName = descriptor.getPsiElement();
+            String getterName = referenceName.getText();
+            String propertyName = Character.toLowerCase(getterName.charAt(3)) + getterName.substring(4);
+            GrReferenceExpression invokedExpression = (GrReferenceExpression) referenceName.getParent();
+            GrMethodCallExpression callExpression = (GrMethodCallExpression) invokedExpression.getParent();
             replaceExpression(callExpression, invokedExpression.getQualifierExpression().getText() + '.' + propertyName);
         }
     }
@@ -81,7 +81,7 @@ public class GroovyGetterCallCanBePropertyAccessInspection extends BaseInspectio
 
         public void visitMethodCallExpression(GrMethodCallExpression grMethodCallExpression) {
             super.visitMethodCallExpression(grMethodCallExpression);
-            final GrArgumentList args = grMethodCallExpression.getArgumentList();
+            GrArgumentList args = grMethodCallExpression.getArgumentList();
             if (args == null) {
                 return;
             }
@@ -91,12 +91,12 @@ public class GroovyGetterCallCanBePropertyAccessInspection extends BaseInspectio
             if (PsiImplUtil.hasNamedArguments(args)) {
                 return;
             }
-            final GrExpression methodExpression = grMethodCallExpression.getInvokedExpression();
+            GrExpression methodExpression = grMethodCallExpression.getInvokedExpression();
             if (!(methodExpression instanceof GrReferenceExpression)) {
                 return;
             }
-            final GrReferenceExpression referenceExpression = (GrReferenceExpression) methodExpression;
-            final String name = referenceExpression.getReferenceName();
+            GrReferenceExpression referenceExpression = (GrReferenceExpression) methodExpression;
+            String name = referenceExpression.getReferenceName();
             if (name == null || !name.startsWith(GET_PREFIX)) {
                 return;
             }
@@ -108,7 +108,7 @@ public class GroovyGetterCallCanBePropertyAccessInspection extends BaseInspectio
             if (!tail.equals(StringUtil.capitalize(tail))) {
                 return;
             }
-            final GrExpression qualifier = referenceExpression.getQualifierExpression();
+            GrExpression qualifier = referenceExpression.getQualifierExpression();
             if (qualifier == null) {
                 return;
             }

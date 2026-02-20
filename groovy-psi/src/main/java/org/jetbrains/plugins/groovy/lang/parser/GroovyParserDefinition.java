@@ -108,8 +108,8 @@ public class GroovyParserDefinition implements ParserDefinition {
 
   @Override
   public SpaceRequirements spaceExistanceTypeBetweenTokens(ASTNode left, ASTNode right) {
-    final IElementType lType = left.getElementType();
-    final IElementType rType = right.getElementType();
+    IElementType lType = left.getElementType();
+    IElementType rType = right.getElementType();
 
     if (rType == GroovyTokenTypes.kIMPORT && lType != TokenType.WHITE_SPACE) {
       return SpaceRequirements.MUST_LINE_BREAK;
@@ -130,7 +130,7 @@ public class GroovyParserDefinition implements ParserDefinition {
       return SpaceRequirements.MUST;
     }
 
-    final ASTNode parent = TreeUtil.findCommonParent(left, right);
+    ASTNode parent = TreeUtil.findCommonParent(left, right);
     if (parent == null || ArrayUtil.contains(parent.getElementType(), STRINGS)) {
       return SpaceRequirements.MUST_NOT;
     }

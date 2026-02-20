@@ -91,7 +91,7 @@ public class DFAEngine<E>
 
 		boolean[] visited = new boolean[myFlow.length];
 
-		final boolean forward = myDfa.isForward();
+		boolean forward = myDfa.isForward();
 		int[] order = ControlFlowBuilderUtil.postorder(myFlow); //todo for backward?
 		for(int i = forward ? 0 : myFlow.length - 1; forward ? i < myFlow.length : i >= 0; )
 		{
@@ -107,9 +107,9 @@ public class DFAEngine<E>
 				while(!workList.isEmpty())
 				{
 					ProgressManager.checkCanceled();
-					final Instruction curr = workList.remove();
-					final int num = curr.num();
-					final E oldE = info.get(num);
+					Instruction curr = workList.remove();
+					int num = curr.num();
+					E oldE = info.get(num);
 					E newE = join(curr, info, env);
 					myDfa.fun(newE, curr);
 					if(!mySemilattice.eq(newE, oldE))
@@ -140,7 +140,7 @@ public class DFAEngine<E>
 
 	private E join(Instruction instruction, ArrayList<E> info, CallEnvironment env)
 	{
-		final Iterable<? extends Instruction> prev = myDfa.isForward() ? instruction.predecessors(env) : instruction.successors(env);
+		Iterable<? extends Instruction> prev = myDfa.isForward() ? instruction.predecessors(env) : instruction.successors(env);
 		ArrayList<E> prevInfos = new ArrayList<E>();
 		for(Instruction i : prev)
 		{

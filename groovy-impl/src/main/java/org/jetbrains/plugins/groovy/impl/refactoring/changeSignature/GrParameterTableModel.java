@@ -31,7 +31,7 @@ import javax.swing.table.TableCellEditor;
  * @author Max Medvedev
  */
 public class GrParameterTableModel extends ParameterTableModelBase<GrParameterInfo, GrParameterTableModelItem> {
-  public GrParameterTableModel(final PsiElement typeContext, PsiElement defaultValueContext, final GrChangeSignatureDialog dialog) {
+  public GrParameterTableModel(PsiElement typeContext, PsiElement defaultValueContext, final GrChangeSignatureDialog dialog) {
     this(typeContext, defaultValueContext,
          new GrTypeColumn(typeContext.getProject()),
          new NameColumn<GrParameterInfo, GrParameterTableModelItem>(typeContext.getProject(), "Name"),

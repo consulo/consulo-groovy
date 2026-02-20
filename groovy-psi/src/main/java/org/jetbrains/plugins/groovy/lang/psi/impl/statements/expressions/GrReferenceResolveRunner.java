@@ -76,10 +76,10 @@ public class GrReferenceResolveRunner {
             }
         }
         else if (place.getDotTokenType() == GroovyTokenTypes.mSPREAD_DOT) {
-            final PsiType qtype = qualifier.getType();
-            final PsiType componentType = ClosureParameterEnhancer.findTypeForIteration(qtype, place);
+            PsiType qtype = qualifier.getType();
+            PsiType componentType = ClosureParameterEnhancer.findTypeForIteration(qtype, place);
             if (componentType != null) {
-                final ResolveState state = ResolveState.initial()
+                ResolveState state = ResolveState.initial()
                     .put(ClassHint.RESOLVE_CONTEXT, qualifier)
                     .put(SpreadState.SPREAD_STATE, SpreadState.create(qtype, null));
                 if (!processQualifierType(componentType, state)) {
@@ -106,12 +106,12 @@ public class GrReferenceResolveRunner {
             }
 
             if (qualifier.getType() instanceof PsiClassType classType) {
-                final PsiClass psiClass = classType.resolve();
+                PsiClass psiClass = classType.resolve();
                 if (psiClass == null || !CommonClassNames.JAVA_LANG_CLASS.equals(psiClass.getQualifiedName())) {
                     return true;
                 }
 
-                final PsiType[] params = classType.getParameters();
+                PsiType[] params = classType.getParameters();
                 return params.length != 1
                     || processQualifierType(params[0], ResolveState.initial().put(ClassHint.RESOLVE_CONTEXT, qualifier));
             }
@@ -212,8 +212,8 @@ public class GrReferenceResolveRunner {
             }
         }
         else if (qualifierType instanceof PsiArrayType qualifierArrayType) {
-            final GroovyPsiManager gmanager = GroovyPsiManager.getInstance(place.getProject());
-            final GrTypeDefinition arrayClass = gmanager.getArrayClass(qualifierArrayType.getComponentType());
+            GroovyPsiManager gmanager = GroovyPsiManager.getInstance(place.getProject());
+            GrTypeDefinition arrayClass = gmanager.getArrayClass(qualifierArrayType.getComponentType());
             if (arrayClass != null && !arrayClass.processDeclarations(processor, state, null, place)) {
                 return false;
             }
@@ -221,9 +221,9 @@ public class GrReferenceResolveRunner {
 
         if (!(place.getParent() instanceof GrMethodCall)
             && InheritanceUtil.isInheritor(qualifierType, CommonClassNames.JAVA_UTIL_COLLECTION)) {
-            final PsiType componentType = ClosureParameterEnhancer.findTypeForIteration(qualifierType, place);
+            PsiType componentType = ClosureParameterEnhancer.findTypeForIteration(qualifierType, place);
             if (componentType != null) {
-                final SpreadState spreadState = state.get(SpreadState.SPREAD_STATE);
+                SpreadState spreadState = state.get(SpreadState.SPREAD_STATE);
                 processQualifierType(componentType, state.put(SpreadState.SPREAD_STATE, SpreadState.create(qualifierType, spreadState)));
             }
         }

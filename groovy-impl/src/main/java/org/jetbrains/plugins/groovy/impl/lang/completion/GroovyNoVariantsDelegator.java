@@ -60,10 +60,10 @@ public class GroovyNoVariantsDelegator extends CompletionContributor {
   }
 
   @Override
-  public void fillCompletionVariants(@Nonnull final CompletionParameters parameters, @Nonnull CompletionResultSet result) {
+  public void fillCompletionVariants(@Nonnull CompletionParameters parameters, @Nonnull CompletionResultSet result) {
     JavaNoVariantsDelegator.ResultTracker tracker = new JavaNoVariantsDelegator.ResultTracker(result);
     result.runRemainingContributors(parameters, tracker);
-    final boolean empty = tracker.containsOnlyPackages || suggestMetaAnnotations(parameters);
+    boolean empty = tracker.containsOnlyPackages || suggestMetaAnnotations(parameters);
 
     if (!empty && parameters.getInvocationCount() == 0) {
       result.restartCompletionWhenNothingMatches();
@@ -128,7 +128,7 @@ public class GroovyNoVariantsDelegator extends CompletionContributor {
     final CompletionResultSet qualifiedCollector = result.withPrefixMatcher(fullPrefix);
     JavaCompletionSession inheritors = new JavaCompletionSession(result);
     for (final LookupElement base : suggestQualifierItems(parameters, (GrReferenceElement)qualifier, inheritors)) {
-      final PsiType type = JavaCompletionUtil.getLookupElementType(base);
+      PsiType type = JavaCompletionUtil.getLookupElementType(base);
       if (type != null && !PsiType.VOID.equals(type)) {
         GrReferenceElement ref = createMockReference(position, type, base);
         PsiElement refName = ref.getReferenceNameElement();
@@ -149,7 +149,7 @@ public class GroovyNoVariantsDelegator extends CompletionContributor {
     }
   }
 
-  private static GrReferenceElement createMockReference(final PsiElement place,
+  private static GrReferenceElement createMockReference(PsiElement place,
                                                         @Nonnull PsiType qualifierType,
                                                         LookupElement qualifierItem) {
     GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(place.getProject());

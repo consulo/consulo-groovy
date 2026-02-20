@@ -35,19 +35,19 @@ import org.jetbrains.plugins.groovy.lang.psi.util.GroovyPropertyUtils;
 public class GrFieldMember extends PsiElementClassMember<PsiField> implements EncapsulatableClassMember {
   private static final int FIELD_OPTIONS = PsiFormatUtilBase.SHOW_NAME | PsiFormatUtilBase.SHOW_TYPE | PsiFormatUtilBase.TYPE_AFTER;
 
-  protected GrFieldMember(final PsiField field) {
+  protected GrFieldMember(PsiField field) {
     super(field, PsiFormatUtil.formatVariable(field, FIELD_OPTIONS, PsiSubstitutor.EMPTY));
   }
 
   @Nullable
   public GroovyGenerationInfo<GrMethod> generateGetter() {
     PsiField field = getElement();
-    final GrMethod method = createMethodIfNotExists(field, GroovyPropertyUtils.generateGetterPrototype(field));
+    GrMethod method = createMethodIfNotExists(field, GroovyPropertyUtils.generateGetterPrototype(field));
     return method != null ? new GroovyGenerationInfo<GrMethod>(method) : null;
   }
 
   @Nullable
-  private static GrMethod createMethodIfNotExists(final PsiField field, @Nullable final GrMethod template) {
+  private static GrMethod createMethodIfNotExists(PsiField field, @Nullable GrMethod template) {
     PsiMethod existing = field.getContainingClass().findMethodBySignature(template, false);
     return existing == null || existing instanceof GrAccessorMethod ? template : null;
   }
@@ -58,7 +58,7 @@ public class GrFieldMember extends PsiElementClassMember<PsiField> implements En
     if (field.hasModifierProperty(PsiModifier.FINAL)) {
       return null;
     }
-    final GrMethod method = createMethodIfNotExists(field, GroovyPropertyUtils.generateSetterPrototype(field));
+    GrMethod method = createMethodIfNotExists(field, GroovyPropertyUtils.generateSetterPrototype(field));
     return method == null ? null : new GroovyGenerationInfo<GrMethod>(method);
   }
 }

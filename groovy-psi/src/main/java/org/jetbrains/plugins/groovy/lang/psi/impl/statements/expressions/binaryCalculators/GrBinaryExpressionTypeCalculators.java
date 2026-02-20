@@ -85,7 +85,7 @@ public class GrBinaryExpressionTypeCalculators {
 
   @Nonnull
   public static Function<GrBinaryFacade, PsiType> getTypeCalculator(GrBinaryFacade e) {
-    final Function<GrBinaryFacade, PsiType> function = MAP.get(e.getOperationTokenType());
+    Function<GrBinaryFacade, PsiType> function = MAP.get(e.getOperationTokenType());
     assert function != null : e.getOperationTokenType();
     return function;
   }

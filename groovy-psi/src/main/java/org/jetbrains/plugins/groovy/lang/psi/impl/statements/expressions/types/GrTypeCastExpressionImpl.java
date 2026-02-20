@@ -50,7 +50,7 @@ public class GrTypeCastExpressionImpl extends GrExpressionImpl implements GrType
 
   @Override
   public PsiType getType() {
-    final GrTypeElement typeElement = getCastTypeElement();
+    GrTypeElement typeElement = getCastTypeElement();
     return typeElement != null ? TypesUtil.boxPrimitiveType(typeElement.getType(), getManager(), getResolveScope()) : null;
   }
 

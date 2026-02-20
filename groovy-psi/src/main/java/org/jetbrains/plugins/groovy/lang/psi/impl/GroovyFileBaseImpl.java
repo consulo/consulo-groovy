@@ -88,7 +88,7 @@ public abstract class GroovyFileBaseImpl extends PsiFileBase implements GroovyFi
   @Override
   @Nonnull
   public GrTypeDefinition[] getTypeDefinitions() {
-    final StubElement<?> stub = getStub();
+    StubElement<?> stub = getStub();
     if (stub != null) {
       return stub.getChildrenByType(TokenSets.TYPE_DEFINITIONS, GrTypeDefinition.ARRAY_FACTORY);
     }
@@ -105,7 +105,7 @@ public abstract class GroovyFileBaseImpl extends PsiFileBase implements GroovyFi
   @Override
   @Nonnull
   public GrMethod[] getCodeMethods() {
-    final StubElement<?> stub = getStub();
+    StubElement<?> stub = getStub();
     if (stub != null) {
       return stub.getChildrenByType(GroovyElementTypes.METHOD_DEFINITION, GrMethod.ARRAY_FACTORY);
     }
@@ -122,7 +122,7 @@ public abstract class GroovyFileBaseImpl extends PsiFileBase implements GroovyFi
 
       GrMethod[] methods = getCodeMethods();
       for (GrMethod method : methods) {
-        final GrReflectedMethod[] reflectedMethods = method.getReflectedMethods();
+        GrReflectedMethod[] reflectedMethods = method.getReflectedMethods();
         if (reflectedMethods.length > 0) {
           result.addAll(Arrays.asList(reflectedMethods));
         }
@@ -174,7 +174,7 @@ public abstract class GroovyFileBaseImpl extends PsiFileBase implements GroovyFi
   @Nonnull
   public GrStatement addStatementBefore(@Nonnull GrStatement statement,
                                         @Nullable GrStatement anchor) throws IncorrectOperationException {
-    final PsiElement result = addBefore(statement, anchor);
+    PsiElement result = addBefore(statement, anchor);
     if (anchor != null) {
       getNode().addLeaf(GroovyTokenTypes.mNLS, "\n", anchor.getNode());
     }

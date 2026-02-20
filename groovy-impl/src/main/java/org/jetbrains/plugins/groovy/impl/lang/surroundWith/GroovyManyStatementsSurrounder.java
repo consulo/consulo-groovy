@@ -62,7 +62,7 @@ public abstract class GroovyManyStatementsSurrounder implements Surrounder
     if (elements.length == 0) return null;
 
     PsiElement element1 = elements[0];
-    final GroovyPsiElement newStmt = doSurroundElements(elements, element1.getParent());
+    GroovyPsiElement newStmt = doSurroundElements(elements, element1.getParent());
     assert newStmt != null;
 
     ASTNode parentNode = element1.getParent().getNode();

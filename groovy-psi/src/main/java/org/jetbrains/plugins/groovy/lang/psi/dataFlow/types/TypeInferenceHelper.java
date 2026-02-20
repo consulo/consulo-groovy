@@ -81,18 +81,18 @@ public class TypeInferenceHelper {
   }
 
   @Nullable
-  public static PsiType getInferredType(@Nonnull final GrReferenceExpression refExpr) {
-    final GrControlFlowOwner scope = ControlFlowUtils.findControlFlowOwner(refExpr);
+  public static PsiType getInferredType(@Nonnull GrReferenceExpression refExpr) {
+    GrControlFlowOwner scope = ControlFlowUtils.findControlFlowOwner(refExpr);
     if (scope == null) {
       return null;
     }
 
-    final String referenceName = refExpr.getReferenceName();
+    String referenceName = refExpr.getReferenceName();
     if (referenceName == null) {
       return null;
     }
 
-    final ReadWriteVariableInstruction rwInstruction = ControlFlowUtils.findRWInstruction(refExpr,
+    ReadWriteVariableInstruction rwInstruction = ControlFlowUtils.findRWInstruction(refExpr,
                                                                                           scope.getControlFlow());
     if (rwInstruction == null) {
       return null;
@@ -103,12 +103,12 @@ public class TypeInferenceHelper {
 
   @Nullable
   public static PsiType getInferredType(@Nonnull PsiElement place, @Nonnull String variableName) {
-    final GrControlFlowOwner scope = ControlFlowUtils.findControlFlowOwner(place);
+    GrControlFlowOwner scope = ControlFlowUtils.findControlFlowOwner(place);
     if (scope == null) {
       return null;
     }
 
-    final Instruction nearest = ControlFlowUtils.findNearestInstruction(place, scope.getControlFlow());
+    Instruction nearest = ControlFlowUtils.findNearestInstruction(place, scope.getControlFlow());
     if (nearest == null) {
       return null;
     }
@@ -136,14 +136,14 @@ public class TypeInferenceHelper {
                                          @Nonnull Instruction[] flow,
                                          @Nonnull GrControlFlowOwner scope,
                                          Set<MixinTypeInstruction> trace) {
-    final Pair<ReachingDefinitionsDfaInstance, List<DefinitionMap>> pair = getDefUseMaps(scope);
+    Pair<ReachingDefinitionsDfaInstance, List<DefinitionMap>> pair = getDefUseMaps(scope);
     if (pair == null) {
       return null;
     }
 
-    final int varIndex = pair.first.getVarIndex(varName);
-    final DefinitionMap allDefs = pair.second.get(instruction.num());
-    final int[] varDefs = allDefs.getDefinitions(varIndex);
+    int varIndex = pair.first.getVarIndex(varName);
+    DefinitionMap allDefs = pair.second.get(instruction.num());
+    int[] varDefs = allDefs.getDefinitions(varIndex);
     if (varDefs == null) {
       return null;
     }
@@ -171,11 +171,11 @@ public class TypeInferenceHelper {
       @Override
       public Result<Pair<ReachingDefinitionsDfaInstance, List<DefinitionMap>>> compute() {
         final Instruction[] flow = scope.getControlFlow();
-        final ReachingDefinitionsDfaInstance dfaInstance = new ReachingDefinitionsDfaInstance(flow) {
+        ReachingDefinitionsDfaInstance dfaInstance = new ReachingDefinitionsDfaInstance(flow) {
           @Override
           public void fun(DefinitionMap m, Instruction instruction) {
             if (instruction instanceof InstanceOfInstruction) {
-              final InstanceOfInstruction instanceOfInstruction = (InstanceOfInstruction)instruction;
+              InstanceOfInstruction instanceOfInstruction = (InstanceOfInstruction)instruction;
               ReadWriteVariableInstruction i = instanceOfInstruction.getInstructionToMixin(flow);
               if (i != null) {
                 int varIndex = getVarIndex(i.getVariableName());
@@ -195,9 +195,9 @@ public class TypeInferenceHelper {
             }
           }
         };
-        final ReachingDefinitionsSemilattice lattice = new ReachingDefinitionsSemilattice();
-        final DFAEngine<DefinitionMap> engine = new DFAEngine<DefinitionMap>(flow, dfaInstance, lattice);
-        final List<DefinitionMap> dfaResult = engine.performDFAWithTimeout();
+        ReachingDefinitionsSemilattice lattice = new ReachingDefinitionsSemilattice();
+        DFAEngine<DefinitionMap> engine = new DFAEngine<DefinitionMap>(flow, dfaInstance, lattice);
+        List<DefinitionMap> dfaResult = engine.performDFAWithTimeout();
         Pair<ReachingDefinitionsDfaInstance, List<DefinitionMap>> result = dfaResult == null ? null : Pair
           .create(dfaInstance, dfaResult);
         return Result.create(result, PsiModificationTracker.MODIFICATION_COUNT);
@@ -212,7 +212,7 @@ public class TypeInferenceHelper {
                                            Set<MixinTypeInstruction> trace) {
     if (instruction instanceof ReadWriteVariableInstruction && ((ReadWriteVariableInstruction)instruction)
       .isWrite()) {
-      final PsiElement element = instruction.getElement();
+      PsiElement element = instruction.getElement();
       if (element != null) {
         return DFAType.create(TypesUtil.boxPrimitiveType(getInitializerType(element), scope.getManager(),
                                                          scope.getResolveScope()));
@@ -225,9 +225,9 @@ public class TypeInferenceHelper {
   }
 
   @Nullable
-  private static DFAType mixinType(final MixinTypeInstruction instruction,
-                                   final Instruction[] flow,
-                                   final GrControlFlowOwner scope,
+  private static DFAType mixinType(MixinTypeInstruction instruction,
+                                   Instruction[] flow,
+                                   GrControlFlowOwner scope,
                                    Set<MixinTypeInstruction> trace) {
     if (!trace.add(instruction)) {
       return null;
@@ -243,7 +243,7 @@ public class TypeInferenceHelper {
     }
 
     DFAType original = getInferredType(varName, originalInstr, flow, scope, trace);
-    final PsiType mixin = instruction.inferMixinType();
+    PsiType mixin = instruction.inferMixinType();
     if (mixin == null) {
       return original;
     }
@@ -257,7 +257,7 @@ public class TypeInferenceHelper {
 
 
   @Nullable
-  public static PsiType getInitializerType(final PsiElement element) {
+  public static PsiType getInitializerType(PsiElement element) {
     if (element instanceof GrReferenceExpression && ((GrReferenceExpression)element).getQualifierExpression() ==
       null) {
       return getInitializerTypeFor(element);
@@ -272,10 +272,10 @@ public class TypeInferenceHelper {
 
   @Nullable
   public static PsiType getInitializerTypeFor(PsiElement element) {
-    final PsiElement parent = element.getParent();
+    PsiElement parent = element.getParent();
     if (parent instanceof GrAssignmentExpression) {
       if (element instanceof GrIndexProperty) {
-        final GrExpression rvalue = ((GrAssignmentExpression)parent).getRValue();
+        GrExpression rvalue = ((GrAssignmentExpression)parent).getRValue();
         return rvalue != null ? rvalue.getType() : null; //don't try to infer assignment type in case of index
         // property because of infinite recursion (example: a[2]+=4)
       }
@@ -285,7 +285,7 @@ public class TypeInferenceHelper {
     if (parent instanceof GrTupleExpression) {
       GrTupleExpression list = (GrTupleExpression)parent;
       if (list.getParent() instanceof GrAssignmentExpression) { // multiple assignment
-        final GrExpression rValue = ((GrAssignmentExpression)list.getParent()).getRValue();
+        GrExpression rValue = ((GrAssignmentExpression)list.getParent()).getRValue();
         int idx = list.indexOf(element);
         if (idx >= 0 && rValue != null) {
           PsiType rType = rValue.getType();
@@ -310,19 +310,19 @@ public class TypeInferenceHelper {
 
   @Nullable
   public static GrExpression getInitializerFor(GrExpression lValue) {
-    final PsiElement parent = lValue.getParent();
+    PsiElement parent = lValue.getParent();
     if (parent instanceof GrAssignmentExpression) {
       return ((GrAssignmentExpression)parent).getRValue();
     }
     if (parent instanceof GrTupleExpression) {
-      final int i = ((GrTupleExpression)parent).indexOf(lValue);
-      final PsiElement pparent = parent.getParent();
+      int i = ((GrTupleExpression)parent).indexOf(lValue);
+      PsiElement pparent = parent.getParent();
       org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil.LOG.assertTrue(pparent instanceof
                                                                           GrAssignmentExpression);
 
-      final GrExpression rValue = ((GrAssignmentExpression)pparent).getRValue();
+      GrExpression rValue = ((GrAssignmentExpression)pparent).getRValue();
       if (rValue instanceof GrListOrMap && !((GrListOrMap)rValue).isMap()) {
-        final GrExpression[] initializers = ((GrListOrMap)rValue).getInitializers();
+        GrExpression[] initializers = ((GrListOrMap)rValue).getInitializers();
         if (initializers.length < i) {
           return initializers[i];
         }
@@ -349,7 +349,7 @@ public class TypeInferenceHelper {
     }
 
     @Override
-    public void fun(final TypeDfaState state, final Instruction instruction) {
+    public void fun(TypeDfaState state, Instruction instruction) {
       if (instruction instanceof ReadWriteVariableInstruction) {
         handleVariableWrite(state, (ReadWriteVariableInstruction)instruction);
       }
@@ -429,7 +429,7 @@ public class TypeInferenceHelper {
     final AtomicReference<List<TypeDfaState>> varTypes;
     final Set<Instruction> tooComplex = ContainerUtil.newConcurrentSet();
 
-    InferenceCache(final GrControlFlowOwner scope) {
+    InferenceCache(GrControlFlowOwner scope) {
       this.scope = scope;
       this.flow = scope.getControlFlow();
       List<TypeDfaState> noTypes = new ArrayList<TypeDfaState>();
@@ -471,8 +471,8 @@ public class TypeInferenceHelper {
     private List<TypeDfaState> performTypeDfa(@Nonnull GrControlFlowOwner owner,
                                               @Nonnull Instruction[] flow,
                                               @Nonnull Set<Instruction> interesting) {
-      final TypeDfaInstance dfaInstance = new TypeDfaInstance(owner, flow, interesting, this);
-      final TypesSemilattice semilattice = new TypesSemilattice(owner.getManager());
+      TypeDfaInstance dfaInstance = new TypeDfaInstance(owner, flow, interesting, this);
+      TypesSemilattice semilattice = new TypesSemilattice(owner.getManager());
       return new DFAEngine<TypeDfaState>(flow, dfaInstance, semilattice).performDFAWithTimeout();
     }
 

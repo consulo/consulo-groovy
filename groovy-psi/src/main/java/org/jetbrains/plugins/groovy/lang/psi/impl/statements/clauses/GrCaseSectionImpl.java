@@ -77,13 +77,13 @@ public class GrCaseSectionImpl extends GroovyPsiElementImpl implements GrCaseSec
   @Nonnull
   @Override
   public GrCaseLabel[] getCaseLabels() {
-    final List<GrCaseLabel> labels = findChildrenByType(GroovyElementTypes.CASE_LABEL);
+    List<GrCaseLabel> labels = findChildrenByType(GroovyElementTypes.CASE_LABEL);
     return labels.toArray(new GrCaseLabel[labels.size()]);
   }
 
   @Override
   public boolean isDefault() {
-    final List<GrCaseLabel> labels = findChildrenByType(GroovyElementTypes.CASE_LABEL);
+    List<GrCaseLabel> labels = findChildrenByType(GroovyElementTypes.CASE_LABEL);
     for (GrCaseLabel label : labels) {
       if (label.isDefault()) return true;
     }
@@ -101,7 +101,7 @@ public class GrCaseSectionImpl extends GroovyPsiElementImpl implements GrCaseSec
   public GrStatement addStatementBefore(@Nonnull GrStatement element, @Nullable GrStatement anchor) throws IncorrectOperationException {
     ASTNode elemNode = element.copy().getNode();
     assert elemNode != null;
-    final ASTNode anchorNode = anchor != null ? anchor.getNode() : null;
+    ASTNode anchorNode = anchor != null ? anchor.getNode() : null;
     getNode().addChild(elemNode, anchorNode);
     if (mayUseNewLinesAsSeparators()) {
       getNode().addLeaf(GroovyTokenTypes.mNLS, "\n", anchorNode);

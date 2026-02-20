@@ -37,7 +37,7 @@ public class GrResolverPolicy implements GrControlFlowPolicy {
   }
 
   private static boolean hasTupleInitializer(@Nonnull GrVariable variable) {
-    final PsiElement parent = variable.getParent();
+    PsiElement parent = variable.getParent();
     return parent instanceof GrVariableDeclaration && ((GrVariableDeclaration)parent).getTupleInitializer() != null;
   }
 

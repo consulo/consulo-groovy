@@ -54,7 +54,7 @@ public class RenameAliasedUsagesUtil {
     ArrayList<PsiReference> result = new ArrayList<PsiReference>();
 
     for (PsiReference ref : refs) {
-      final PsiElement e = ref.getElement();
+      PsiElement e = ref.getElement();
       if (e == null) continue;
       if (skipReference(element, aliases, e)) continue;
       result.add(ref);
@@ -64,7 +64,7 @@ public class RenameAliasedUsagesUtil {
   }
 
   public static boolean skipReference(PsiElement member, Map<GroovyFile, String> aliases, PsiElement element) {
-    final PsiFile containingFile = element.getContainingFile();
+    PsiFile containingFile = element.getContainingFile();
     if (containingFile instanceof GroovyFile && findAliasedName(aliases, (GroovyFile)element.getContainingFile(), member) != EMPTY_ALIAS) {
       if (PsiTreeUtil.getParentOfType(element, GrImportStatement.class, true) != null) return false;
       return true;
@@ -73,18 +73,18 @@ public class RenameAliasedUsagesUtil {
   }
 
   private static String findAliasedName(Map<GroovyFile, String> map, GroovyFile containingFile, PsiElement elementToResolve) {
-    final String s = map.get(containingFile);
+    String s = map.get(containingFile);
     if (s != null) return s;
-    final GrImportStatement[] imports = containingFile.getImportStatements();
-    final PsiManager manager = elementToResolve.getManager();
+    GrImportStatement[] imports = containingFile.getImportStatements();
+    PsiManager manager = elementToResolve.getManager();
     for (GrImportStatement anImport : imports) {
       if (anImport.isAliasedImport()) {
-        final ResolverProcessorImpl processor = getProcessor(elementToResolve, containingFile);
+        ResolverProcessorImpl processor = getProcessor(elementToResolve, containingFile);
         anImport.processDeclarations(processor, ResolveState.initial(), null, containingFile);
-        final GroovyResolveResult[] results = processor.getCandidates();
+        GroovyResolveResult[] results = processor.getCandidates();
         for (GroovyResolveResult result : results) {
           if (manager.areElementsEquivalent(elementToResolve, result.getElement())) {
-            final String importedName = anImport.getImportedName();
+            String importedName = anImport.getImportedName();
             if (importedName != null) {
               map.put(containingFile, importedName);
               return importedName;

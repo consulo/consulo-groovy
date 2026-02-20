@@ -89,9 +89,9 @@ public class MvcRunConfigurationEditor<T extends MvcRunConfiguration> extends Se
   }
 
   protected void commandLineChanged(@Nonnull String newText) {
-    final Module module = getSelectedModule();
-    final String depsClasspath = MvcFramework.getInstance(module) == null ? "" : myFramework.getApplicationClassPath(module).getPathsString();
-    final boolean hasClasspath = StringUtil.isNotEmpty(depsClasspath);
+    Module module = getSelectedModule();
+    String depsClasspath = MvcFramework.getInstance(module) == null ? "" : myFramework.getApplicationClassPath(module).getPathsString();
+    boolean hasClasspath = StringUtil.isNotEmpty(depsClasspath);
     setCBEnabled(hasClasspath && isAvailableDepsClasspath(), myDepsClasspath);
 
     String presentable = "Add --classpath";
@@ -114,8 +114,8 @@ public class MvcRunConfigurationEditor<T extends MvcRunConfiguration> extends Se
     myEnvVariablesComponent.setAnchor(anchor);
   }
 
-  protected static void setCBEnabled(boolean enabled, final JCheckBox checkBox) {
-    final boolean wasEnabled = checkBox.isEnabled();
+  protected static void setCBEnabled(boolean enabled, JCheckBox checkBox) {
+    boolean wasEnabled = checkBox.isEnabled();
     checkBox.setEnabled(enabled);
     if (wasEnabled && !enabled) {
       checkBox.setSelected(false);

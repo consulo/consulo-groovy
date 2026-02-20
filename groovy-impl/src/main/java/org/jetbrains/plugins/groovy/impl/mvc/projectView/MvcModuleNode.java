@@ -38,20 +38,20 @@ public class MvcModuleNode extends AbstractModuleNode
 {
   private final MvcToolWindowDescriptor myDescriptor;
 
-  public MvcModuleNode(@Nonnull final Module module, final ViewSettings viewSettings, MvcToolWindowDescriptor descriptor) {
+  public MvcModuleNode(@Nonnull Module module, ViewSettings viewSettings, MvcToolWindowDescriptor descriptor) {
     super(module.getProject(), module, viewSettings);
     myDescriptor = descriptor;
   }
 
   @Nonnull
   public Collection<? extends AbstractTreeNode> getChildren() {
-    final List<AbstractTreeNode> nodesList = new ArrayList<AbstractTreeNode>();
+    List<AbstractTreeNode> nodesList = new ArrayList<AbstractTreeNode>();
 
-    final Module module = getValue();
+    Module module = getValue();
 
-    final ViewSettings viewSettings = getSettings();
+    ViewSettings viewSettings = getSettings();
 
-    final VirtualFile root = myDescriptor.getFramework().findAppRoot(module);
+    VirtualFile root = myDescriptor.getFramework().findAppRoot(module);
     if (root == null) {
       return Collections.emptyList();
     }
@@ -61,10 +61,10 @@ public class MvcModuleNode extends AbstractModuleNode
     return nodesList;
   }
 
-  public void update(final PresentationData presentation) {
+  public void update(PresentationData presentation) {
     super.update(presentation);
 
-    final Module module = getValue();
+    Module module = getValue();
     if (module == null || module.isDisposed()) {
       setValue(null);
       return;

@@ -46,7 +46,7 @@ public class GroovyLocalVariableNamingConventionInspection extends ConventionIns
 
     @Nonnull
     public String buildErrorString(Object... args) {
-        final String className = (String) args[0];
+        String className = (String) args[0];
         if (className.length() < getMinLength()) {
             return "Local variable name '#ref' is too short";
         }
@@ -78,7 +78,7 @@ public class GroovyLocalVariableNamingConventionInspection extends ConventionIns
             if (grVariable instanceof GrField || grVariable instanceof GrParameter) {
                 return;
             }
-            final String name = grVariable.getName();
+            String name = grVariable.getName();
             if (isValid(name)) {
                 return;
             }
@@ -87,8 +87,8 @@ public class GroovyLocalVariableNamingConventionInspection extends ConventionIns
 
         public void visitParameter(GrParameter grParameter) {
             super.visitParameter(grParameter);
-            final String name = grParameter.getName();
-            final PsiElement scope = grParameter.getDeclarationScope();
+            String name = grParameter.getName();
+            PsiElement scope = grParameter.getDeclarationScope();
             if (!(scope instanceof GrCatchClause) &&
                 !(scope instanceof GrForStatement)) {
                 return;

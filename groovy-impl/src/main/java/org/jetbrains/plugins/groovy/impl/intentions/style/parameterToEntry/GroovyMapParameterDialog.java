@@ -56,14 +56,14 @@ public class GroovyMapParameterDialog extends DialogWrapper {
   private final Project myProject;
   private final EventListenerList myListenerList = new EventListenerList();
 
-  public GroovyMapParameterDialog(Project project, final String[] possibleNames, final boolean createNew) {
+  public GroovyMapParameterDialog(Project project, String[] possibleNames, boolean createNew) {
     super(true);
     myProject = project;
     setUpDialog(possibleNames, createNew);
     init();
   }
 
-  private void setUpDialog(final String[] possibleNames, boolean createNew) {
+  private void setUpDialog(String[] possibleNames, boolean createNew) {
     setTitle(GroovyIntentionsBundle.message("convert.param.to.map.entry"));
 
     if (GroovyApplicationSettings.getInstance().CONVERT_PARAM_CREATE_NEW_PARAM != null) {
@@ -88,8 +88,8 @@ public class GroovyMapParameterDialog extends DialogWrapper {
     myNameLabel.setEnabled(createNew);
 
     myCreateNew.addChangeListener(new ChangeListener() {
-      public void stateChanged(final ChangeEvent e) {
-        final boolean flag = myCreateNew.isSelected();
+      public void stateChanged(ChangeEvent e) {
+        boolean flag = myCreateNew.isSelected();
         myCbTypeSpec.setEnabled(flag);
         myNameComboBox.setEnabled(flag);
         myNameLabel.setEnabled(flag);
@@ -143,7 +143,7 @@ public class GroovyMapParameterDialog extends DialogWrapper {
 
   private void setUpNameComboBox(String[] possibleNames) {
 
-    final EditorComboBoxEditor comboEditor = new StringComboboxEditor(myProject, GroovyFileType.GROOVY_FILE_TYPE, myNameComboBox);
+    EditorComboBoxEditor comboEditor = new StringComboboxEditor(myProject, GroovyFileType.GROOVY_FILE_TYPE, myNameComboBox);
 
     myNameComboBox.setEditor(comboEditor);
     myNameComboBox.setRenderer(new EditorComboBoxRenderer(comboEditor));

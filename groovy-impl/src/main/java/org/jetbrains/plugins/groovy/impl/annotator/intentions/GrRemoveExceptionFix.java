@@ -59,9 +59,9 @@ public class GrRemoveExceptionFix implements IntentionAction {
     @Nullable
     @RequiredUIAccess
     private static GrTypeElement findTypeElementInDisjunction(Editor editor, PsiFile file) {
-        final int offset = editor.getCaretModel().getOffset();
-        final PsiElement at = file.findElementAt(offset);
-        final GrDisjunctionTypeElement disjunction = PsiTreeUtil.getParentOfType(at, GrDisjunctionTypeElement.class);
+        int offset = editor.getCaretModel().getOffset();
+        PsiElement at = file.findElementAt(offset);
+        GrDisjunctionTypeElement disjunction = PsiTreeUtil.getParentOfType(at, GrDisjunctionTypeElement.class);
         if (disjunction == null) {
             return null;
         }
@@ -76,8 +76,8 @@ public class GrRemoveExceptionFix implements IntentionAction {
     @Nullable
     @RequiredUIAccess
     private static GrCatchClause findCatch(Editor editor, PsiFile file) {
-        final int offset = editor.getCaretModel().getOffset();
-        final PsiElement at = file.findElementAt(offset);
+        int offset = editor.getCaretModel().getOffset();
+        PsiElement at = file.findElementAt(offset);
         return PsiTreeUtil.getParentOfType(at, GrCatchClause.class);
     }
 
@@ -85,13 +85,13 @@ public class GrRemoveExceptionFix implements IntentionAction {
     @RequiredUIAccess
     public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
         if (myDisjunction) {
-            final GrTypeElement element = findTypeElementInDisjunction(editor, file);
+            GrTypeElement element = findTypeElementInDisjunction(editor, file);
             if (element != null) {
                 element.delete();
             }
         }
         else {
-            final GrCatchClause aCatch = findCatch(editor, file);
+            GrCatchClause aCatch = findCatch(editor, file);
             if (aCatch != null) {
                 aCatch.delete();
             }

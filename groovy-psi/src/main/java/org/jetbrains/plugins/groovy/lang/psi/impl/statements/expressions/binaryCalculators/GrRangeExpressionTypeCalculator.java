@@ -27,11 +27,11 @@ public class GrRangeExpressionTypeCalculator extends GrBinaryExpressionTypeCalcu
 
   @Override
   public PsiType apply(GrBinaryFacade e) {
-    final PsiType type = super.apply(e);
+    PsiType type = super.apply(e);
     if (type != null) return type;
 
-    final PsiType ltype = GrBinaryExpressionUtil.getLeftType(e);
-    final PsiType rtype = GrBinaryExpressionUtil.getRightType(e);
+    PsiType ltype = GrBinaryExpressionUtil.getLeftType(e);
+    PsiType rtype = GrBinaryExpressionUtil.getRightType(e);
 
     return new GrRangeType(e.getPsiElement().getResolveScope(), JavaPsiFacade.getInstance(e.getPsiElement().getProject()), ltype, rtype);
   }

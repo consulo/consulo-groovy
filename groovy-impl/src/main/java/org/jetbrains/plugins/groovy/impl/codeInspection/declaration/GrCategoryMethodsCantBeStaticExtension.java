@@ -27,7 +27,7 @@ public class GrCategoryMethodsCantBeStaticExtension implements CantBeStaticCondi
   @Override
   public boolean cantBeStatic(PsiElement t) {
     if (t instanceof GrMethod) {
-      final PsiClass clazz = ((GrMethod)t).getContainingClass();
+      PsiClass clazz = ((GrMethod)t).getContainingClass();
       if (clazz != null && GdkMethodUtil.getCategoryType(clazz) != null) {
         return true;
       }

@@ -33,7 +33,7 @@ class ConvertibleGStringLiteralPredicate implements PsiElementPredicate {
     if (!(element instanceof GrLiteral)) return false;
     if (ErrorUtil.containsError(element)) return false;
 
-    @NonNls final String text = element.getText();
+    @NonNls String text = element.getText();
 
     if (text.charAt(0) != '"') return false;
     for (PsiElement child : element.getChildren()) {
@@ -47,7 +47,7 @@ class ConvertibleGStringLiteralPredicate implements PsiElementPredicate {
 
   private static boolean checkClosure(GrClosableBlock block) {
     if (block.hasParametersSection()) return false;
-    final GrStatement[] statements = block.getStatements();
+    GrStatement[] statements = block.getStatements();
     if (statements.length != 1) return false;
     return statements[0] instanceof GrExpression || statements[0] instanceof GrReturnStatement;
   }

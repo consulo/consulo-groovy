@@ -46,7 +46,7 @@ public class GriffonToolWindowFactory extends MvcToolWindowDescriptor {
 
   @Override
   public void fillModuleChildren(List<AbstractTreeNode> result, Module module, ViewSettings viewSettings, VirtualFile root) {
-    final Project project = module.getProject();
+    Project project = module.getProject();
 
     // process well-known artifact paths
     for (VirtualFile file : ModuleRootManager.getInstance(module).getSourceRoots()) {
@@ -61,29 +61,29 @@ public class GriffonToolWindowFactory extends MvcToolWindowDescriptor {
     }
 
     // add standard source folder
-    final PsiDirectory srcMain = findDirectory(project, root, "src/main");
+    PsiDirectory srcMain = findDirectory(project, root, "src/main");
     if (srcMain != null) {
       result.add(new TopLevelDirectoryNode(module, srcMain, viewSettings, "Project Sources", JetgroovyIcons.Groovy.Groovy_16x16,
                                            AbstractMvcPsiNodeDescriptor.SRC_FOLDERS));
     }
-    final PsiDirectory srcCli = findDirectory(project, root, "src/cli");
+    PsiDirectory srcCli = findDirectory(project, root, "src/cli");
     if (srcCli != null) {
       result.add(new TopLevelDirectoryNode(module, srcCli, viewSettings, "Build Sources", JetgroovyIcons.Groovy.Groovy_16x16,
                                            AbstractMvcPsiNodeDescriptor.SRC_FOLDERS));
     }
 
     // add standard test sources
-    final PsiDirectory testsUnit = findDirectory(project, root, "test/unit");
+    PsiDirectory testsUnit = findDirectory(project, root, "test/unit");
     if (testsUnit != null) {
       result.add(
         new TestsTopLevelDirectoryNode(module, testsUnit, viewSettings, "Unit Tests", AllIcons.Nodes.TestPackage, AllIcons.Nodes.TestPackage));
     }
-    final PsiDirectory testsIntegration = findDirectory(project, root, "test/integration");
+    PsiDirectory testsIntegration = findDirectory(project, root, "test/integration");
     if (testsIntegration != null) {
       result.add(new TestsTopLevelDirectoryNode(module, testsIntegration, viewSettings, "Integration Tests", AllIcons.Nodes.TestPackage,
                                                 AllIcons.Nodes.TestPackage));
     }
-    final PsiDirectory testsShared = findDirectory(project, root, "test/shared");
+    PsiDirectory testsShared = findDirectory(project, root, "test/shared");
     if (testsShared != null) {
       result.add(new TestsTopLevelDirectoryNode(module, testsShared, viewSettings, "Shared Test Sources", AllIcons.Nodes.TestPackage,
                                                 AllIcons.Nodes.TestPackage));
@@ -93,7 +93,7 @@ public class GriffonToolWindowFactory extends MvcToolWindowDescriptor {
     for (VirtualFile file : ModuleRootManager.getInstance(module).getContentRoots()) {
       List<GriffonSourceInspector.GriffonSource> sources = GriffonSourceInspector.processModuleMetadata(module);
       for (GriffonSourceInspector.GriffonSource source : sources) {
-        final PsiDirectory dir = findDirectory(project, file, source.getPath());
+        PsiDirectory dir = findDirectory(project, file, source.getPath());
         if (dir != null) {
           result.add(
             new TopLevelDirectoryNode(module, dir, viewSettings, source.getNavigation().getDescription(), source.getNavigation().getIcon(),
@@ -102,7 +102,7 @@ public class GriffonToolWindowFactory extends MvcToolWindowDescriptor {
       }
     }
 
-    final VirtualFile applicationPropertiesFile = GriffonFramework.getInstance().getApplicationPropertiesFile(module);
+    VirtualFile applicationPropertiesFile = GriffonFramework.getInstance().getApplicationPropertiesFile(module);
     addFileNode(result, module, viewSettings, applicationPropertiesFile);
 
     for (VirtualFile file : root.getChildren()) {

@@ -42,11 +42,11 @@ public class ParameterDeclaration {
     PsiBuilder.Marker pdMarker = builder.mark();
 
     // Parse optional modifier(s)
-    final boolean hasModifiers = parseOptionalModifier(builder, parser);
+    boolean hasModifiers = parseOptionalModifier(builder, parser);
 
     PsiBuilder.Marker rb = builder.mark();
 
-    final ReferenceElement.ReferenceElementResult result = TypeSpec.parseStrict(builder, true);
+    ReferenceElement.ReferenceElementResult result = TypeSpec.parseStrict(builder, true);
 
     if (result == ReferenceElement.ReferenceElementResult.FAIL && !hasModifiers) {
       rb.drop();
@@ -86,7 +86,7 @@ public class ParameterDeclaration {
 
     PsiBuilder.Marker rb = builder.mark();
 
-    final ReferenceElement.ReferenceElementResult result = TypeSpec.parseStrict(builder, false);
+    ReferenceElement.ReferenceElementResult result = TypeSpec.parseStrict(builder, false);
 
     if (GroovyTokenTypes.mIDENT.equals(builder.getTokenType()) || (GroovyTokenTypes.mTRIPLE_DOT.equals(builder.getTokenType()))) {
       rb.drop();
@@ -128,7 +128,7 @@ public class ParameterDeclaration {
     // Parse optional modifier(s)
     parseOptionalModifier(builder, parser);
 
-    final PsiBuilder.Marker disjunctionMarker = builder.mark();
+    PsiBuilder.Marker disjunctionMarker = builder.mark();
 
     PsiBuilder.Marker rb = builder.mark();
 
@@ -137,7 +137,7 @@ public class ParameterDeclaration {
       typeCount++;
       rb.drop();
       rb = builder.mark();
-      final ReferenceElement.ReferenceElementResult result = TypeSpec.parseStrict(builder, false);
+      ReferenceElement.ReferenceElementResult result = TypeSpec.parseStrict(builder, false);
       if (result == ReferenceElement.ReferenceElementResult.FAIL && ParserUtils.lookAhead(builder, GroovyTokenTypes.mBOR)) {
         builder.error(GroovyBundle.message("type.expected"));
       }

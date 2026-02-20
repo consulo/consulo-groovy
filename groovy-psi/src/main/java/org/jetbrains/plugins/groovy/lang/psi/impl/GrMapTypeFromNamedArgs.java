@@ -78,13 +78,13 @@ public class GrMapTypeFromNamedArgs extends GrMapType {
     myStringEntries = new LinkedHashMap<>();
     myOtherEntries = ContainerUtil.newArrayList();
     for (GrNamedArgument namedArg : namedArgs) {
-      final GrArgumentLabel label = namedArg.getLabel();
-      final GrExpression expression = namedArg.getExpression();
+      GrArgumentLabel label = namedArg.getLabel();
+      GrExpression expression = namedArg.getExpression();
       if (label == null || expression == null) {
         continue;
       }
 
-      final String name = label.getName();
+      String name = label.getName();
       if (name != null) {
         myStringEntries.put(name, expression);
       }

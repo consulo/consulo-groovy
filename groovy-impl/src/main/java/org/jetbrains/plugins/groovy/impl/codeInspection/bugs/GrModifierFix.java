@@ -35,13 +35,13 @@ import java.util.function.Function;
  */
 public class GrModifierFix extends GroovyFix {
     public static final Function<ProblemDescriptor, PsiModifierList> MODIFIER_LIST = descriptor -> {
-        final PsiElement element = descriptor.getPsiElement();
+        PsiElement element = descriptor.getPsiElement();
         assert element instanceof PsiModifierList : element;
         return (PsiModifierList) element;
     };
 
     public static final Function<ProblemDescriptor, PsiModifierList> MODIFIER_LIST_OWNER = descriptor -> {
-        final PsiElement element = descriptor.getPsiElement();
+        PsiElement element = descriptor.getPsiElement();
         assert element instanceof PsiModifierListOwner : element;
         return ((PsiModifierListOwner) element).getModifierList();
     };
@@ -86,7 +86,7 @@ public class GrModifierFix extends GroovyFix {
 
     private static String getMemberName(PsiMember member, boolean showContainingClass) {
         if (showContainingClass) {
-            final PsiClass containingClass = member.getContainingClass();
+            PsiClass containingClass = member.getContainingClass();
             String containingClassName = containingClass != null ? containingClass.getName() + "." : "";
             return containingClassName + member.getName();
         }
@@ -107,7 +107,7 @@ public class GrModifierFix extends GroovyFix {
 
     @Override
     protected void doFix(Project project, ProblemDescriptor descriptor) throws IncorrectOperationException {
-        final PsiModifierList modifierList = getModifierList(descriptor);
+        PsiModifierList modifierList = getModifierList(descriptor);
         modifierList.setModifierProperty(myModifier, myDoSet);
     }
 

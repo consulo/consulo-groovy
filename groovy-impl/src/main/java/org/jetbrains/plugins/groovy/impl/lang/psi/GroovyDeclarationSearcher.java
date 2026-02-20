@@ -17,7 +17,7 @@ public class GroovyDeclarationSearcher extends PomDeclarationSearcher {
   @Override
   public void findDeclarationsAt(@Nonnull PsiElement element, int offsetInElement, Consumer<PomTarget> consumer) {
     if (element instanceof GrTypeDefinition) {
-      final PsiElement name = ((GrTypeDefinition)element).getNameIdentifierGroovy();
+      PsiElement name = ((GrTypeDefinition)element).getNameIdentifierGroovy();
       if (name.getTextRange().shiftRight(-element.getTextRange().getStartOffset()).contains(offsetInElement)) {
         consumer.accept((GrTypeDefinition)element);
       }

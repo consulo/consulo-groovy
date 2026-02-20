@@ -50,7 +50,7 @@ public class GrApplicationStatementImpl extends GrMethodCallImpl implements GrAp
     }
 
     @Override
-    public GrNamedArgument addNamedArgument(final GrNamedArgument namedArgument) throws IncorrectOperationException {
+    public GrNamedArgument addNamedArgument(GrNamedArgument namedArgument) throws IncorrectOperationException {
         GrCommandArgumentList list = getArgumentList();
         assert list != null;
         return list.addNamedArgument(namedArgument);

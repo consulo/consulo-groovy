@@ -26,17 +26,17 @@ class MergeElseIfPredicate implements PsiElementPredicate {
     if (!(element instanceof GrIfStatement)) {
       return false;
     }
-    final GrIfStatement ifStatement = (GrIfStatement) element;
-    final GrStatement thenBranch = ifStatement.getThenBranch();
+    GrIfStatement ifStatement = (GrIfStatement) element;
+    GrStatement thenBranch = ifStatement.getThenBranch();
     if (thenBranch == null) {
       return false;
     }
-    final GrStatement elseBranch = ifStatement.getElseBranch();
+    GrStatement elseBranch = ifStatement.getElseBranch();
     if (!(elseBranch instanceof GrBlockStatement)) {
       return false;
     }
-    final GrOpenBlock block = ((GrBlockStatement) elseBranch).getBlock();
-    final GrStatement[] statements = block.getStatements();
+    GrOpenBlock block = ((GrBlockStatement) elseBranch).getBlock();
+    GrStatement[] statements = block.getStatements();
     return statements.length == 1 &&
         statements[0] instanceof GrIfStatement;
   }

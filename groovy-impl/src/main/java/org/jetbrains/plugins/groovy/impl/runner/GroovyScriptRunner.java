@@ -48,7 +48,7 @@ public abstract class GroovyScriptRunner {
   public abstract boolean ensureRunnerConfigured(@Nullable Module module,
                                                  RunProfile profile,
                                                  Executor executor,
-                                                 final Project project) throws ExecutionException;
+                                                 Project project) throws ExecutionException;
 
   public abstract void configureCommandLine(OwnJavaParameters params,
                                             @Nullable Module module,
@@ -61,7 +61,7 @@ public abstract class GroovyScriptRunner {
     return false;
   }
 
-  protected static String getConfPath(final String groovyHomePath) {
+  protected static String getConfPath(String groovyHomePath) {
     String confpath = FileUtil.toSystemDependentName(groovyHomePath + "/conf/groovy-starter.conf");
     if (new File(confpath).exists()) {
       return confpath;
@@ -72,7 +72,7 @@ public abstract class GroovyScriptRunner {
 
   public static String getPathInConf(String fileName) {
     try {
-      final String jarPath = PathUtil.getJarPathForClass(GroovyScriptRunner.class);
+      String jarPath = PathUtil.getJarPathForClass(GroovyScriptRunner.class);
       if (new File(jarPath).isFile()) { //jar; distribution mode
         return new File(jarPath, "../" + fileName).getCanonicalPath();
       }
@@ -107,7 +107,7 @@ public abstract class GroovyScriptRunner {
 
   @Nullable
   protected static VirtualFile findGroovyJar(@Nonnull Module module) {
-    final VirtualFile[] files = OrderEnumerator.orderEntries(module).getAllLibrariesAndSdkClassesRoots();
+    VirtualFile[] files = OrderEnumerator.orderEntries(module).getAllLibrariesAndSdkClassesRoots();
     for (VirtualFile root : files) {
       if (root.getName().matches(GroovyConfigUtils.GROOVY_JAR_PATTERN) || GroovyConfigUtils.matchesGroovyAll(root.getName())) {
         return root;
@@ -130,7 +130,7 @@ public abstract class GroovyScriptRunner {
       return;
     }
 
-    final String cp = nonCore.getPathsString();
+    String cp = nonCore.getPathsString();
     if (!StringUtil.isEmptyOrSpaces(cp)) {
       params.getProgramParametersList().add("--classpath");
       params.getProgramParametersList().add(cp);
@@ -146,7 +146,7 @@ public abstract class GroovyScriptRunner {
       return null;
     }
 
-    final OwnJavaParameters tmp = new OwnJavaParameters();
+    OwnJavaParameters tmp = new OwnJavaParameters();
     tmp.configureByModule(module, isTests ? OwnJavaParameters.CLASSES_AND_TESTS : OwnJavaParameters.CLASSES_ONLY);
     if (tmp.getClassPath().getVirtualFiles().isEmpty()) {
       return null;

@@ -79,15 +79,15 @@ public class GrChangeSignatureDialog extends ChangeSignatureDialogBase<GrParamet
 
   @Override
   protected GrParameterTableModel createParametersInfoModel(GrMethodDescriptor method) {
-    final PsiParameterList parameterList = method.getMethod().getParameterList();
+    PsiParameterList parameterList = method.getMethod().getParameterList();
     return new GrParameterTableModel(parameterList, myDefaultValueContext, this);
   }
 
   @Override
   protected BaseRefactoringProcessor createRefactoringProcessor() {
-    final CanonicalTypes.Type type = getReturnType();
-    final ThrownExceptionInfo[] exceptionInfos = myExceptionsModel.getThrownExceptions();
-    final GrChangeInfoImpl info = new GrChangeInfoImpl(myMethod.getMethod(),
+    CanonicalTypes.Type type = getReturnType();
+    ThrownExceptionInfo[] exceptionInfos = myExceptionsModel.getThrownExceptions();
+    GrChangeInfoImpl info = new GrChangeInfoImpl(myMethod.getMethod(),
                                                        getVisibility(),
                                                        type,
                                                        getMethodName(),
@@ -112,8 +112,8 @@ public class GrChangeSignatureDialog extends ChangeSignatureDialogBase<GrParamet
     cellEditor.addDocumentListener(new DocumentAdapter() {
       @Override
       public void documentChanged(DocumentEvent e) {
-        final int row = table.getSelectedRow();
-        final int col = table.getSelectedColumn();
+        int row = table.getSelectedRow();
+        int col = table.getSelectedColumn();
         myExceptionsModel.setValueAt(cellEditor.getCellEditorValue(), row, col);
         updateSignature();
       }
@@ -145,14 +145,14 @@ public class GrChangeSignatureDialog extends ChangeSignatureDialogBase<GrParamet
     };
     myPropExceptionsButton.setShortcut(CustomShortcutSet.fromString("alt X"));*/
 
-    final JPanel panel = ToolbarDecorator.createDecorator(table).createPanel();
+    JPanel panel = ToolbarDecorator.createDecorator(table).createPanel();
     //.addExtraAction(myPropExceptionsButton).createPanel();
     panel.setBorder(IdeBorderFactory.createEmptyBorder());
 
     myExceptionsModel.addTableModelListener(getSignatureUpdater());
 
-    final ArrayList<Pair<String, JPanel>> result = new ArrayList<Pair<String, JPanel>>();
-    final String message = RefactoringBundle.message("changeSignature.exceptions.panel.border.title");
+    ArrayList<Pair<String, JPanel>> result = new ArrayList<Pair<String, JPanel>>();
+    String message = RefactoringBundle.message("changeSignature.exceptions.panel.border.title");
     result.add(Pair.create(message, panel));
     return result;
 
@@ -176,7 +176,7 @@ public class GrChangeSignatureDialog extends ChangeSignatureDialogBase<GrParamet
 
   @Override
   protected PsiCodeFragment createReturnTypeCodeFragment() {
-    final JavaCodeFragmentFactory factory = JavaCodeFragmentFactory.getInstance(myProject);
+    JavaCodeFragmentFactory factory = JavaCodeFragmentFactory.getInstance(myProject);
     return factory.createTypeCodeFragment(myMethod.getReturnTypeText(), myMethod.getMethod(), true, JavaCodeFragmentFactory.ALLOW_VOID);
   }
 
@@ -190,7 +190,7 @@ public class GrChangeSignatureDialog extends ChangeSignatureDialogBase<GrParamet
   private boolean isGroovyMethodName(String name) {
     String methodText = "def " + name + "(){}";
     try {
-      final GrMethod method = GroovyPsiElementFactory.getInstance(getProject()).createMethodFromText(methodText);
+      GrMethod method = GroovyPsiElementFactory.getInstance(getProject()).createMethodFromText(methodText);
       return method != null;
     }
     catch (Throwable e) {
@@ -200,7 +200,7 @@ public class GrChangeSignatureDialog extends ChangeSignatureDialogBase<GrParamet
 
   private static boolean checkType(PsiTypeCodeFragment typeCodeFragment, boolean allowEllipsis) {
     try {
-      final PsiType type = typeCodeFragment.getType();
+      PsiType type = typeCodeFragment.getType();
       return allowEllipsis || !(type instanceof PsiEllipsisType);
     }
     catch (PsiTypeCodeFragment.TypeSyntaxException e) {
@@ -243,7 +243,7 @@ public class GrChangeSignatureDialog extends ChangeSignatureDialogBase<GrParamet
       }
 
       String defaultValue = item.defaultValueCodeFragment.getText();
-      final String initializer = item.initializerCodeFragment.getText();
+      String initializer = item.initializerCodeFragment.getText();
       if (item.parameter.getOldIndex() < 0 && defaultValue.trim().length() == 0 && initializer.trim().length() == 0) {
         return GroovyRefactoringBundle.message("specify.default.value", name);
       }
@@ -310,19 +310,19 @@ public class GrChangeSignatureDialog extends ChangeSignatureDialogBase<GrParamet
     builder.append(GrChangeSignatureUtil.getNameWithQuotesIfNeeded(getMethodName(), getProject()));
     builder.append('(');
 
-    final List<GrParameterInfo> infos = getParameters();
+    List<GrParameterInfo> infos = getParameters();
     if (infos.size() > 0) {
-      final List<String> paramsText = ContainerUtil.map(infos, info -> generateParameterText(info));
+      List<String> paramsText = ContainerUtil.map(infos, info -> generateParameterText(info));
       builder.append("\n").append(INDENT);
       builder.append(StringUtil.join(paramsText, ",\n" + INDENT));
       builder.append('\n');
     }
     builder.append(')');
 
-    final PsiTypeCodeFragment[] exceptions = myExceptionsModel.getTypeCodeFragments();
+    PsiTypeCodeFragment[] exceptions = myExceptionsModel.getTypeCodeFragments();
     if (exceptions.length > 0) {
       builder.append("\nthrows\n");
-      final List<String> exceptionNames = ContainerUtil.map(exceptions, fragment -> fragment.getText());
+      List<String> exceptionNames = ContainerUtil.map(exceptions, fragment -> fragment.getText());
 
       builder.append(INDENT).append(StringUtil.join(exceptionNames, ",\n" + INDENT));
     }

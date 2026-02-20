@@ -48,10 +48,10 @@ public class GrAnnotatorImpl implements Annotator {
             return;
         }
         if (element instanceof GroovyPsiElement) {
-            final GroovyAnnotator annotator = new GroovyAnnotator(holder);
+            GroovyAnnotator annotator = new GroovyAnnotator(holder);
             ((GroovyPsiElement) element).accept(annotator);
             if (PsiUtil.isCompileStatic(element)) {
-                final GroovyStaticTypeCheckVisitor typeCheckVisitor = myTypeCheckVisitorThreadLocal.get();
+                GroovyStaticTypeCheckVisitor typeCheckVisitor = myTypeCheckVisitorThreadLocal.get();
                 assert typeCheckVisitor != null;
                 typeCheckVisitor.setAnnotationHolder(holder);
                 ((GroovyPsiElement) element).accept(typeCheckVisitor);
@@ -68,7 +68,7 @@ public class GrAnnotatorImpl implements Annotator {
             }
         }
         else {
-            final PsiElement parent = element.getParent();
+            PsiElement parent = element.getParent();
             if (parent instanceof GrMethod) {
                 if (element.equals(((GrMethod) parent).getNameIdentifierGroovy())
                     && ((GrMethod) parent).getReturnTypeElementGroovy() == null) {
@@ -76,14 +76,14 @@ public class GrAnnotatorImpl implements Annotator {
                 }
             }
             else if (parent instanceof GrField) {
-                final GrField field = (GrField) parent;
+                GrField field = (GrField) parent;
                 if (element.equals(field.getNameIdentifierGroovy())) {
-                    final GrAccessorMethod[] getters = field.getGetters();
+                    GrAccessorMethod[] getters = field.getGetters();
                     for (GrAccessorMethod getter : getters) {
                         GroovyAnnotator.checkMethodReturnType(getter, field.getNameIdentifierGroovy(), holder);
                     }
 
-                    final GrAccessorMethod setter = field.getSetter();
+                    GrAccessorMethod setter = field.getSetter();
                     if (setter != null) {
                         GroovyAnnotator.checkMethodReturnType(setter, field.getNameIdentifierGroovy(), holder);
                     }

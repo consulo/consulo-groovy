@@ -50,7 +50,7 @@ public class GrWildcardTypeArgumentImpl extends GroovyPsiElementImpl implements 
   @Override
   @Nonnull
   public PsiType getType() {
-    final GrTypeElement boundTypeElement = getBoundTypeElement();
+    GrTypeElement boundTypeElement = getBoundTypeElement();
     if (boundTypeElement == null) {
       return PsiWildcardType.createUnbounded(getManager());
     }

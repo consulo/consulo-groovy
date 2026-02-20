@@ -98,7 +98,7 @@ public class GrChangeInfoImpl implements JavaChangeInfo {
     }
 
     GrParameter[] params = method.getParameters();
-    final int oldParameterCount = this.method.getParameters().length;
+    int oldParameterCount = this.method.getParameters().length;
     myOldParameterNames = new String[oldParameterCount];
     myOldParameterTypes = new String[oldParameterCount];
 
@@ -145,7 +145,7 @@ public class GrChangeInfoImpl implements JavaChangeInfo {
       myIsObtainVarargs = lastNewParam.isVarargType();
       myIsRetainVarargs = lastNewParam.getOldIndex() >= 0 && myIsObtainVarargs;
       if (myIsRetainVarargs) {
-        final PsiType oldTypeForVararg = params[lastNewParam.getOldIndex()].getType();
+        PsiType oldTypeForVararg = params[lastNewParam.getOldIndex()].getType();
         myIsArrayToVarargs = (oldTypeForVararg instanceof PsiArrayType && !(oldTypeForVararg instanceof PsiEllipsisType));
       }
       else {
@@ -183,7 +183,7 @@ public class GrChangeInfoImpl implements JavaChangeInfo {
       myExceptionSetOrOrderChanged = false;
     }
     else {
-      final PsiClassType[] thrownTypes = method.getThrowsList().getReferencedTypes();
+      PsiClassType[] thrownTypes = method.getThrowsList().getReferencedTypes();
       if (thrownTypes.length != myThrownExceptions.length) {
         myExceptionSetChanged = true;
         myExceptionSetOrOrderChanged = true;

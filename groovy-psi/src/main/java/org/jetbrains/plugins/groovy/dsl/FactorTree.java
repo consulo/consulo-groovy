@@ -51,7 +51,7 @@ public class FactorTree extends UserDataHolderBase {
       }
       if (current == null) {
         if (key instanceof UserDataHolder) {
-          final Project project = descriptor.getProject();
+          Project project = descriptor.getProject();
           current = CachedValuesManager.getManager(project).getCachedValue((UserDataHolder)key, GDSL_MEMBER_CACHE, myProvider, false);
           continue;
         }

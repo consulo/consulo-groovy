@@ -102,7 +102,7 @@ public class GroovyIndentProcessor extends GroovyElementVisitor
 	 * @return indent
 	 */
 	@Nonnull
-	public Indent getChildIndent(@Nonnull final GroovyBlock parentBlock, @Nonnull final ASTNode child)
+	public Indent getChildIndent(@Nonnull GroovyBlock parentBlock, @Nonnull ASTNode child)
 	{
 		myChildType = child.getElementType();
 		if(parentBlock instanceof ClosureBodyBlock)
@@ -128,7 +128,7 @@ public class GroovyIndentProcessor extends GroovyElementVisitor
 			return Indent.getAbsoluteNoneIndent();
 		}
 
-		final PsiElement parent = parentBlock.getNode().getPsi();
+		PsiElement parent = parentBlock.getNode().getPsi();
 		if(parent instanceof GroovyPsiElement)
 		{
 			myBlock = parentBlock;
@@ -403,7 +403,7 @@ public class GroovyIndentProcessor extends GroovyElementVisitor
 	@Override
 	public void visitOpenBlock(GrOpenBlock block)
 	{
-		final IElementType type = block.getNode().getElementType();
+		IElementType type = block.getNode().getElementType();
 		if(type != GroovyElementTypes.OPEN_BLOCK && type != GroovyElementTypes.CONSTRUCTOR_BODY)
 		{
 			return;
@@ -468,7 +468,7 @@ public class GroovyIndentProcessor extends GroovyElementVisitor
 		}
 	}
 
-	public static Indent getSwitchCaseIndent(final CommonCodeStyleSettings settings)
+	public static Indent getSwitchCaseIndent(CommonCodeStyleSettings settings)
 	{
 		if(settings.INDENT_CASE_FROM_SWITCH)
 		{

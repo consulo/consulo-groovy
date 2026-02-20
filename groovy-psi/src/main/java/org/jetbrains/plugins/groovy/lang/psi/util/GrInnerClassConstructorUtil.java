@@ -35,9 +35,9 @@ public class GrInnerClassConstructorUtil {
                                                         @Nonnull PsiClass enclosingClass,
                                                         @Nonnull GrParameter[] originalParams,
                                                         boolean isOptional) {
-    final GrParameter[] parameters = new GrParameter[originalParams.length + 1];
-    final PsiClassType enclosingClassType = JavaPsiFacade.getElementFactory(method.getProject()).createType(enclosingClass, PsiSubstitutor.EMPTY);
-    final GrLightParameter enclosing = new GrLightParameter("enclosing", enclosingClassType, method);
+    GrParameter[] parameters = new GrParameter[originalParams.length + 1];
+    PsiClassType enclosingClassType = JavaPsiFacade.getElementFactory(method.getProject()).createType(enclosingClass, PsiSubstitutor.EMPTY);
+    GrLightParameter enclosing = new GrLightParameter("enclosing", enclosingClassType, method);
     if (isOptional) {
       enclosing.setOptional(true);
       enclosing.setInitializerGroovy(GroovyPsiElementFactory.getInstance(method.getProject()).createExpressionFromText("null"));

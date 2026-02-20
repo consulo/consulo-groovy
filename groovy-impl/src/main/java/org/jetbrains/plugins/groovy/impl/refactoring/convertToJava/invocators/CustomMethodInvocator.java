@@ -54,7 +54,7 @@ public abstract class CustomMethodInvocator {
                                        @Nonnull GrClosableBlock[] closures,
                                        @Nonnull PsiSubstitutor substitutor,
                                        @Nonnull GroovyPsiElement context) {
-    final PsiMethod staticMethod = method.getStaticMethod();
+    PsiMethod staticMethod = method.getStaticMethod();
     for (CustomMethodInvocator invocator : EP_NAME.getExtensions()) {
       if (invocator.invoke(generator, staticMethod, caller, exprs, namedArgs, closures, substitutor, context)) {
         return true;

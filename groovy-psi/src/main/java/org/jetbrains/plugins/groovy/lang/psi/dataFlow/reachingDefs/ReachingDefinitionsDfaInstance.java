@@ -40,7 +40,7 @@ public class ReachingDefinitionsDfaInstance implements DfaInstance<DefinitionMap
     int num = 0;
     for (Instruction instruction : flow) {
       if (instruction instanceof ReadWriteVariableInstruction) {
-        final String name = ((ReadWriteVariableInstruction) instruction).getVariableName();
+        String name = ((ReadWriteVariableInstruction) instruction).getVariableName();
         if (!myVarToIndexMap.containsKey(name)) {
           myVarToIndexMap.putInt(name, num++);
         }
@@ -51,10 +51,10 @@ public class ReachingDefinitionsDfaInstance implements DfaInstance<DefinitionMap
 
   public void fun(DefinitionMap m, Instruction instruction) {
     if (instruction instanceof ReadWriteVariableInstruction) {
-      final ReadWriteVariableInstruction varInsn = (ReadWriteVariableInstruction) instruction;
-      final String name = varInsn.getVariableName();
+      ReadWriteVariableInstruction varInsn = (ReadWriteVariableInstruction) instruction;
+      String name = varInsn.getVariableName();
       assert myVarToIndexMap.containsKey(name) : name + "; " + Arrays.asList(myFlow).contains(instruction);
-      final int num = myVarToIndexMap.getInt(name);
+      int num = myVarToIndexMap.getInt(name);
       if (varInsn.isWrite()) {
         m.registerDef(varInsn, num);
       }

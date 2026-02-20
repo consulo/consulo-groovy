@@ -83,7 +83,7 @@ public class GroovyScriptRunConfiguration extends ModuleBasedConfiguration<RunCo
   private final Map<String, String> envs = new LinkedHashMap<String, String>();
   public boolean passParentEnv = true;
 
-  public GroovyScriptRunConfiguration(final String name, final Project project, final ConfigurationFactory factory) {
+  public GroovyScriptRunConfiguration(String name, Project project, ConfigurationFactory factory) {
     super(name, new RunConfigurationModule(project), factory);
     workDir = VirtualFilePathUtil.getLocalPath(project.getBaseDir());
   }
@@ -108,7 +108,7 @@ public class GroovyScriptRunConfiguration extends ModuleBasedConfiguration<RunCo
 
   public Collection<Module> getValidModules() {
     Module[] modules = ModuleManager.getInstance(getProject()).getModules();
-    final GroovyScriptRunner scriptRunner = findConfiguration();
+    GroovyScriptRunner scriptRunner = findConfiguration();
     if (scriptRunner == null) {
       return Arrays.asList(modules);
     }
@@ -125,17 +125,17 @@ public class GroovyScriptRunConfiguration extends ModuleBasedConfiguration<RunCo
 
   @Nullable
   private GroovyScriptRunner findConfiguration() {
-    final VirtualFile scriptFile = getScriptFile();
+    VirtualFile scriptFile = getScriptFile();
     if (scriptFile == null) {
       return null;
     }
 
-    final PsiFile psiFile = PsiManager.getInstance(getProject()).findFile(scriptFile);
+    PsiFile psiFile = PsiManager.getInstance(getProject()).findFile(scriptFile);
     if (!(psiFile instanceof GroovyFile)) {
       return null;
     }
 
-    final GroovyFile groovyFile = (GroovyFile)psiFile;
+    GroovyFile groovyFile = (GroovyFile)psiFile;
     if (groovyFile.isScript()) {
       return GroovyScriptUtil.getScriptType(groovyFile).getRunner();
     }
@@ -150,7 +150,7 @@ public class GroovyScriptRunConfiguration extends ModuleBasedConfiguration<RunCo
     scriptPath = ExternalizablePath.localPathValue(JDOMExternalizer.readString(element, "path"));
     vmParams = JDOMExternalizer.readString(element, "vmparams");
     scriptParams = JDOMExternalizer.readString(element, "params");
-    final String wrk = JDOMExternalizer.readString(element, "workDir");
+    String wrk = JDOMExternalizer.readString(element, "workDir");
     if (!".".equals(wrk)) {
       workDir = ExternalizablePath.localPathValue(wrk);
     }
@@ -188,7 +188,7 @@ public class GroovyScriptRunConfiguration extends ModuleBasedConfiguration<RunCo
 
     final boolean tests = ProjectRootManager.getInstance(getProject()).getFileIndex().isInTestSourceContent(script);
 
-    final JavaCommandLineState state = new JavaCommandLineState(environment) {
+    JavaCommandLineState state = new JavaCommandLineState(environment) {
       @Override
       protected void buildProcessHandler(@Nonnull ProcessHandlerBuilder builder) throws ExecutionException {
         super.buildProcessHandler(builder);
@@ -234,7 +234,7 @@ public class GroovyScriptRunConfiguration extends ModuleBasedConfiguration<RunCo
       return null;
     }
 
-    final PsiClass classToRun = GroovyRunnerUtil.getRunningClass(element);
+    PsiClass classToRun = GroovyRunnerUtil.getRunningClass(element);
 
     if (element instanceof GroovyFile) {
       return new RefactoringElementAdapter() {
@@ -244,7 +244,7 @@ public class GroovyScriptRunConfiguration extends ModuleBasedConfiguration<RunCo
             GroovyFile file = (GroovyFile)newElement;
             setScriptPath(file.getVirtualFile().getPath());
 
-            final PsiClass newClassToRun = GroovyRunnerUtil.getRunningClass(newElement);
+            PsiClass newClassToRun = GroovyRunnerUtil.getRunningClass(newElement);
             if (newClassToRun instanceof GroovyScriptClass) {
               setName(GroovyRunnerUtil.getConfigurationName(file.getScriptClass(), getConfigurationModule()));
             }
@@ -291,7 +291,7 @@ public class GroovyScriptRunConfiguration extends ModuleBasedConfiguration<RunCo
     params.setCharset(null);
 
     if (module != null) {
-      final Sdk sdk = ModuleUtilCore.getSdk(module, JavaModuleExtension.class);
+      Sdk sdk = ModuleUtilCore.getSdk(module, JavaModuleExtension.class);
       if (sdk != null) {
         params.setJdk(sdk);
       }
@@ -309,11 +309,11 @@ public class GroovyScriptRunConfiguration extends ModuleBasedConfiguration<RunCo
 
   @Nullable
   private PsiClass getScriptClass() {
-    final VirtualFile scriptFile = getScriptFile();
+    VirtualFile scriptFile = getScriptFile();
     if (scriptFile == null) {
       return null;
     }
-    final PsiFile file = PsiManager.getInstance(getProject()).findFile(scriptFile);
+    PsiFile file = PsiManager.getInstance(getProject()).findFile(scriptFile);
     return GroovyRunnerUtil.getRunningClass(file);
   }
 
@@ -324,7 +324,7 @@ public class GroovyScriptRunConfiguration extends ModuleBasedConfiguration<RunCo
   @Override
   public void checkConfiguration() throws RuntimeConfigurationException {
     super.checkConfiguration();
-    final PsiClass toRun = getScriptClass();
+    PsiClass toRun = getScriptClass();
     if (toRun == null) {
       throw new RuntimeConfigurationWarning(GroovyBundle.message("class.does.not.exist"));
     }

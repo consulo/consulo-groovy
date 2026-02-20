@@ -78,10 +78,10 @@ public class GroovyStatementSelectioner implements ExtendWordSelectionHandler
     }
 
 
-    final List<TextRange> ranges = ExtendWordSelectionHandlerBase.expandToWholeLine(editorText, originalRange);
+    List<TextRange> ranges = ExtendWordSelectionHandlerBase.expandToWholeLine(editorText, originalRange);
 
 
-    final TextRange blockRange = inferBlockRange(first, last);
+    TextRange blockRange = inferBlockRange(first, last);
 
     if (!blockRange.equals(originalRange)) {
       ranges.addAll(ExtendWordSelectionHandlerBase.expandToWholeLine(editorText, blockRange, true));
@@ -136,8 +136,8 @@ public class GroovyStatementSelectioner implements ExtendWordSelectionHandler
     if (e == null) return false;
     if (!TokenSets.WHITE_SPACES_SET.contains(e.getNode().getElementType())) return false;
 
-    final String text = e.getText();
-    final int i = text.indexOf('\n');
+    String text = e.getText();
+    int i = text.indexOf('\n');
     return i >= 0 && i == text.lastIndexOf('\n');
   }
 

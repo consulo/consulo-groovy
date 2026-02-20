@@ -60,12 +60,12 @@ public class CreateMethodFromUsageFix extends GrCreateFromUsageBaseFix implement
     @Override
     @RequiredReadAction
     protected void invokeImpl(Project project, @Nonnull PsiClass targetClass) {
-        final JVMElementFactory factory =
+        JVMElementFactory factory =
             JVMElementFactoryProvider.forLanguage(targetClass.getProject(), targetClass.getLanguage());
         assert factory != null;
         PsiMethod method = factory.createMethod(getMethodName(), PsiType.VOID);
 
-        final GrReferenceExpression ref = getRefExpr();
+        GrReferenceExpression ref = getRefExpr();
         if (GrStaticChecker.isInStaticContext(ref, targetClass)) {
             method.getModifierList().setModifierProperty(PsiModifier.STATIC, true);
         }
@@ -77,7 +77,7 @@ public class CreateMethodFromUsageFix extends GrCreateFromUsageBaseFix implement
 
         TypeConstraint[] constraints = getReturnTypeConstraints();
 
-        final PsiGenerationInfo<PsiMethod> info = OverrideImplementUtil.createGenerationInfo(method);
+        PsiGenerationInfo<PsiMethod> info = OverrideImplementUtil.createGenerationInfo(method);
         info.insert(targetClass, findInsertionAnchor(info, targetClass), false);
         method = info.getPsiMember();
 
@@ -88,7 +88,7 @@ public class CreateMethodFromUsageFix extends GrCreateFromUsageBaseFix implement
             }
         }
 
-        final PsiElement context = PsiTreeUtil.getParentOfType(ref, PsiClass.class, PsiMethod.class, PsiFile.class);
+        PsiElement context = PsiTreeUtil.getParentOfType(ref, PsiClass.class, PsiMethod.class, PsiFile.class);
         IntentionUtils.createTemplateForMethod(
             argTypes,
             paramTypesExpressions,
@@ -131,7 +131,7 @@ public class CreateMethodFromUsageFix extends GrCreateFromUsageBaseFix implement
     @Nonnull
     @RequiredReadAction
     private ChooseTypeExpression[] setupParams(@Nonnull PsiMethod method, @Nonnull PsiType[] argTypes, @Nonnull JVMElementFactory factory) {
-        final PsiParameterList parameterList = method.getParameterList();
+        PsiParameterList parameterList = method.getParameterList();
 
         ChooseTypeExpression[] paramTypesExpressions = new ChooseTypeExpression[argTypes.length];
         for (int i = 0; i < argTypes.length; i++) {
@@ -139,7 +139,7 @@ public class CreateMethodFromUsageFix extends GrCreateFromUsageBaseFix implement
             if (argType == null || argType == PsiType.NULL) {
                 argType = TypesUtil.getJavaLangObject(getRefExpr());
             }
-            final PsiParameter p = factory.createParameter("o", argType);
+            PsiParameter p = factory.createParameter("o", argType);
             parameterList.add(p);
             TypeConstraint[] constraints = {SupertypeConstraint.create(argType)};
             boolean isGroovy = method.getLanguage() == GroovyLanguage.INSTANCE;

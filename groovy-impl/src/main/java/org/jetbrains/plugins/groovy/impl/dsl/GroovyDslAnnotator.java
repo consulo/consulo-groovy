@@ -49,28 +49,28 @@ public class GroovyDslAnnotator implements Annotator, DumbAware {
             return;
         }
 
-        final GroovyFile groovyFile = (GroovyFile) psiElement;
+        GroovyFile groovyFile = (GroovyFile) psiElement;
         if (!GrFileIndexUtil.isGroovySourceFile(groovyFile)) {
             return;
         }
 
-        final VirtualFile vfile = groovyFile.getVirtualFile();
+        VirtualFile vfile = groovyFile.getVirtualFile();
         if (!GdslUtil.GDSL_FILTER.value(vfile)) {
             return;
         }
 
-        final DslActivationStatus.Status status = GroovyDslFileIndex.getStatus(vfile);
+        DslActivationStatus.Status status = GroovyDslFileIndex.getStatus(vfile);
         if (status == ACTIVE) {
             return;
         }
 
-        final String message = status == MODIFIED ? "DSL descriptor file has been changed and isn't currently executed" +
+        String message = status == MODIFIED ? "DSL descriptor file has been changed and isn't currently executed" +
             "." : "DSL descriptor file has been disabled due to a processing error.";
 
-        final Annotation annotation = holder.createWarningAnnotation(psiElement, message);
+        Annotation annotation = holder.createWarningAnnotation(psiElement, message);
         annotation.setFileLevelAnnotation(true);
         if (status == ERROR) {
-            final String error = GroovyDslFileIndex.getError(vfile);
+            String error = GroovyDslFileIndex.getError(vfile);
             if (error != null) {
                 annotation.registerFix(GroovyQuickFixFactory.getInstance().createInvestigateFix(error));
             }

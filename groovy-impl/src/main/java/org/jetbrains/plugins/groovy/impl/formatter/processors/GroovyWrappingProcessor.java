@@ -105,7 +105,7 @@ public class GroovyWrappingProcessor
 			return createNoneWrap();
 		}
 
-		final IElementType childType = childNode.getElementType();
+		IElementType childType = childNode.getElementType();
 
 		if(SKIP.contains(childType))
 		{
@@ -147,11 +147,11 @@ public class GroovyWrappingProcessor
 
 		if(ANNOTATION_CONTAINERS.contains(myParentType))
 		{
-			final ASTNode leftSibling = getLeftSibling(childNode);
+			ASTNode leftSibling = getLeftSibling(childNode);
 			if(leftSibling != null && leftSibling.getElementType() == GroovyElementTypes.MODIFIERS &&
 					endsWithAnnotation(leftSibling))
 			{
-				final int wrapType = getAnnotationsWrapType(childNode);
+				int wrapType = getAnnotationsWrapType(childNode);
 				if(wrapType != -1)
 				{
 					return Wrap.createWrap(wrapType, true);
@@ -181,7 +181,7 @@ public class GroovyWrappingProcessor
 
 	private static boolean endsWithAnnotation(ASTNode modifierListNode)
 	{
-		final PsiElement psi = modifierListNode.getPsi();
+		PsiElement psi = modifierListNode.getPsi();
 		return psi instanceof GrModifierList && psi.getLastChild() instanceof GrAnnotation;
 	}
 
@@ -284,7 +284,7 @@ public class GroovyWrappingProcessor
 
 		if(myParentType == GroovyElementTypes.MODIFIERS)
 		{
-			final int wrapType = getAnnotationsWrapType(myNode);
+			int wrapType = getAnnotationsWrapType(myNode);
 			if(wrapType != -1)
 			{
 				myUsedDefaultWrap = true;
@@ -310,7 +310,7 @@ public class GroovyWrappingProcessor
 
 	private int getAnnotationsWrapType(ASTNode modifierList)
 	{
-		final IElementType containerType = modifierList.getTreeParent().getElementType();
+		IElementType containerType = modifierList.getTreeParent().getElementType();
 		if(TokenSets.TYPE_DEFINITIONS.contains(containerType))
 		{
 			return mySettings.CLASS_ANNOTATION_WRAP;
@@ -323,7 +323,7 @@ public class GroovyWrappingProcessor
 
 		if(GroovyElementTypes.VARIABLE_DEFINITION == containerType)
 		{
-			final IElementType pparentType = modifierList.getTreeParent().getTreeParent().getElementType();
+			IElementType pparentType = modifierList.getTreeParent().getTreeParent().getElementType();
 			if(pparentType == GroovyElementTypes.CLASS_BODY || pparentType == GroovyElementTypes.ENUM_BODY)
 			{
 				return mySettings.FIELD_ANNOTATION_WRAP;

@@ -35,7 +35,7 @@ public class GrDocCommentTokenizer extends Tokenizer<PsiDocComment>
 	@Override
 	public void tokenize(@Nonnull PsiDocComment comment, TokenConsumer consumer)
 	{
-		final CommentTokenSplitter splitter = CommentTokenSplitter.getInstance();
+		CommentTokenSplitter splitter = CommentTokenSplitter.getInstance();
 
 		for(PsiElement el : comment.getChildren())
 		{

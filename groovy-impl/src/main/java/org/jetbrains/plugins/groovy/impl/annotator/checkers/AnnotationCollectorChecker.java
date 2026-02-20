@@ -46,11 +46,11 @@ public class AnnotationCollectorChecker extends CustomAnnotationChecker {
       return false;
     }
 
-    final PsiClass clazz = (PsiClass)annotation.getClassReference().resolve();
+    PsiClass clazz = (PsiClass)annotation.getClassReference().resolve();
     if (clazz == null) {
       return true;
     }
-    final GrAnnotationNameValuePair[] attributes = annotation.getParameterList().getAttributes();
+    GrAnnotationNameValuePair[] attributes = annotation.getParameterList().getAttributes();
     Pair<PsiElement, String> r = CustomAnnotationChecker.checkAnnotationArguments(clazz, attributes, false);
     if (r != null && r.getFirst() != null) {
       holder.newAnnotation(HighlightSeverity.ERROR, r.getSecond()).range(r.getFirst()).create();
@@ -60,9 +60,9 @@ public class AnnotationCollectorChecker extends CustomAnnotationChecker {
   }
 
   private static boolean isInAliasDeclaration(GrAnnotation annotation) {
-    final PsiElement parent = annotation.getParent();
+    PsiElement parent = annotation.getParent();
     if (parent instanceof GrModifierList) {
-      final GrAnnotation collector = ContainerUtil.find(((GrModifierList)parent).getRawAnnotations(),
+      GrAnnotation collector = ContainerUtil.find(((GrModifierList)parent).getRawAnnotations(),
                                                         new Condition<GrAnnotation>() {
                                                           @Override
                                                           public boolean value(GrAnnotation annotation) {

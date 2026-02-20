@@ -96,7 +96,7 @@ public class UnassignedVariableAccessInspection extends GroovyLocalInspectionBas
     }
 
     private static boolean isBooleanCheck(PsiElement element) {
-        final PsiElement parent = element.getParent();
+        PsiElement parent = element.getParent();
         return parent instanceof GrIfStatement && ((GrIfStatement) parent).getCondition() == element ||
             parent instanceof GrWhileStatement && ((GrWhileStatement) parent).getCondition() == element ||
             parent instanceof GrTraditionalForClause && ((GrTraditionalForClause) parent).getCondition() == element ||
@@ -116,12 +116,12 @@ public class UnassignedVariableAccessInspection extends GroovyLocalInspectionBas
             return false;
         }
 
-        final IElementType tokenType = ((GrBinaryExpression) parent).getOperationTokenType();
+        IElementType tokenType = ((GrBinaryExpression) parent).getOperationTokenType();
         if (!(tokenType == GroovyTokenTypes.mEQUAL || tokenType == GroovyTokenTypes.mNOT_EQUAL)) {
             return false;
         }
         if (element == ((GrBinaryExpression) parent).getLeftOperand()) {
-            final GrExpression rightOperand = ((GrBinaryExpression) parent).getRightOperand();
+            GrExpression rightOperand = ((GrBinaryExpression) parent).getRightOperand();
             return rightOperand != null && GrInspectionUtil.isNull(rightOperand);
         }
         else {

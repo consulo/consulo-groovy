@@ -99,7 +99,7 @@ public class GrInplaceFieldIntroducer extends GrAbstractInplaceIntroducer<GrIntr
             return ((PsiField) getVariable()).getContainingClass();
         }
         else {
-            final PsiFile file = variable.getContainingFile();
+            PsiFile file = variable.getContainingFile();
             if (file instanceof GroovyFile) {
                 return ((GroovyFile) file).getScriptClass();
             }
@@ -325,7 +325,7 @@ public class GrInplaceFieldIntroducer extends GrAbstractInplaceIntroducer<GrIntr
                         @Override
                         protected void run(@Nonnull Result result) throws Throwable {
                             PsiDocumentManager.getInstance(myProject).commitDocument(myEditor.getDocument());
-                            final GrVariable variable = getVariable();
+                            GrVariable variable = getVariable();
                             if (variable != null) {
                                 finalListener.perform(myDeclareFinalCB.isSelected(), variable);
                             }

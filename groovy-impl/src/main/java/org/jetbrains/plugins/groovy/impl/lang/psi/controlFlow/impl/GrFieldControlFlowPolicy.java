@@ -30,7 +30,7 @@ import jakarta.annotation.Nonnull;
 public class GrFieldControlFlowPolicy implements GrControlFlowPolicy {
   @Override
   public boolean isReferenceAccepted(@Nonnull GrReferenceExpression ref) {
-    final GrExpression qualifier = ref.getQualifier();
+    GrExpression qualifier = ref.getQualifier();
     return (qualifier == null || isThisRef(qualifier)) && ref.resolve() instanceof GrField;
   }
 

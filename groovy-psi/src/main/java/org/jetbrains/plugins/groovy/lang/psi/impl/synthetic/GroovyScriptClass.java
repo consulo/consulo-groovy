@@ -128,10 +128,10 @@ public class GroovyScriptClass extends LightElement implements PsiClass, Synthet
   @Override
   @Nullable
   public String getQualifiedName() {
-    final String name = getName();
+    String name = getName();
     if (name == null) return null;
 
-    final String packName = myFile.getPackageName();
+    String packName = myFile.getPackageName();
     if (packName.isEmpty()) {
       return name;
     }
@@ -194,7 +194,7 @@ public class GroovyScriptClass extends LightElement implements PsiClass, Synthet
       return new PsiClassType[]{type};
     }
 
-    final PsiClassType superClassFromDSL = GroovyDslFileIndex.processScriptSuperClasses(myFile);
+    PsiClassType superClassFromDSL = GroovyDslFileIndex.processScriptSuperClasses(myFile);
     if (superClassFromDSL != null) {
       return new PsiClassType[]{superClassFromDSL};
     }
@@ -502,7 +502,7 @@ public class GroovyScriptClass extends LightElement implements PsiClass, Synthet
   @Nullable
   public String getName() {
     String fileName = myFile.getName();
-    final String name = FileUtil.getNameWithoutExtension(fileName);
+    String name = FileUtil.getNameWithoutExtension(fileName);
     if (StringUtil.isJavaIdentifier(name)) {
       return name;
     }
@@ -538,8 +538,8 @@ public class GroovyScriptClass extends LightElement implements PsiClass, Synthet
   }
 
   @Override
-  public boolean processDeclarations(@Nonnull final PsiScopeProcessor processor,
-                                     @Nonnull final ResolveState state,
+  public boolean processDeclarations(@Nonnull PsiScopeProcessor processor,
+                                     @Nonnull ResolveState state,
                                      @Nullable PsiElement lastParent,
                                      @Nonnull PsiElement place) {
     return PsiClassImplUtil.processDeclarationsInClass(this, processor, state, new HashSet<>(), lastParent, place,
@@ -557,13 +557,13 @@ public class GroovyScriptClass extends LightElement implements PsiClass, Synthet
     return new ItemPresentation() {
       @Override
       public String getPresentableText() {
-        final String name = getName();
+        String name = getName();
         return name != null ? name : "<unnamed>";
       }
 
       @Override
       public String getLocationString() {
-        final String packageName = myFile.getPackageName();
+        String packageName = myFile.getPackageName();
         return "(groovy script" + (packageName.isEmpty() ? "" : ", " + packageName) + ")";
       }
 

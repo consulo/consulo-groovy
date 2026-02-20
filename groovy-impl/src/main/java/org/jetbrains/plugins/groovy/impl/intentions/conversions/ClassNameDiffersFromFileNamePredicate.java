@@ -44,18 +44,18 @@ class ClassNameDiffersFromFileNamePredicate implements PsiElementPredicate {
 
   @Override
   public boolean satisfiedBy(PsiElement element) {
-    final PsiElement parent = element.getParent();
+    PsiElement parent = element.getParent();
     if (!(parent instanceof GrTypeDefinition))
       return false;
     if (((GrTypeDefinition)parent).getNameIdentifierGroovy() != element)
       return false;
 
-    final String name = ((GrTypeDefinition)parent).getName();
+    String name = ((GrTypeDefinition)parent).getName();
     if (name == null || name.isEmpty())
       return false;
     if (myClassConsumer != null)
       myClassConsumer.accept(((GrTypeDefinition)parent));
-    final PsiFile file = element.getContainingFile();
+    PsiFile file = element.getContainingFile();
     if (!(file instanceof GroovyFile))
       return false;
     if (!file.isPhysical())

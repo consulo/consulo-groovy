@@ -86,13 +86,13 @@ public class TypeDefinition {
     return GroovyElementTypes.WRONGWAY;
   }
 
-  private static boolean parseAfterKeyword(final PsiBuilder builder, final GroovyParser parser, final ClassType type) {
+  private static boolean parseAfterKeyword(PsiBuilder builder, GroovyParser parser, ClassType type) {
     if (builder.getTokenType() != GroovyTokenTypes.mIDENT) {
       builder.error(GroovyBundle.message("identifier.expected"));
       return false;
     }
 
-    final String name = builder.getTokenText();
+    String name = builder.getTokenText();
     assert name != null;
     builder.advanceLexer();
 
@@ -123,7 +123,7 @@ public class TypeDefinition {
   public static IElementType parseBody(@Nonnull PsiBuilder builder,
                                        @Nullable String className,
                                        @Nonnull GroovyParser parser,
-                                       final boolean isInAnnotation) {
+                                       boolean isInAnnotation) {
     //allow errors
     PsiBuilder.Marker cbMarker = builder.mark();
 
@@ -144,7 +144,7 @@ public class TypeDefinition {
   private static void parseMembers(@Nonnull PsiBuilder builder,
                                    @Nullable String className,
                                    @Nonnull GroovyParser parser,
-                                   final boolean isInAnnotation) {
+                                   boolean isInAnnotation) {
     Separators.parse(builder);
 
     while (!builder.eof() && builder.getTokenType() != GroovyTokenTypes.mRCURLY) {

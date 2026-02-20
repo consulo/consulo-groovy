@@ -60,29 +60,29 @@ public class GroovyStubNotificationProvider implements EditorNotificationProvide
   @Nullable
   @RequiredReadAction
   public static PsiClass findClassByStub(Project project, VirtualFile stubFile) {
-    final String[] components = StringUtil.trimEnd(stubFile.getPath(), ".java").split("[\\\\/]");
-    final int stubs = Arrays.asList(components).indexOf(GROOVY_STUBS);
+    String[] components = StringUtil.trimEnd(stubFile.getPath(), ".java").split("[\\\\/]");
+    int stubs = Arrays.asList(components).indexOf(GROOVY_STUBS);
     if (stubs < 0 || stubs >= components.length - 3) {
       return null;
     }
 
-    final String moduleName = components[stubs + 1];
-    final Module module = ModuleManager.getInstance(project).findModuleByName(moduleName);
+    String moduleName = components[stubs + 1];
+    Module module = ModuleManager.getInstance(project).findModuleByName(moduleName);
     if (module == null) {
       return null;
     }
 
-    final String fqn = StringUtil.join(Arrays.asList(components).subList(stubs + 3, components.length), ".");
+    String fqn = StringUtil.join(Arrays.asList(components).subList(stubs + 3, components.length), ".");
     return JavaPsiFacade.getInstance(project).findClass(fqn, GlobalSearchScope.moduleScope(module));
   }
 
-  private static EditorNotificationBuilder decorateStubFile(final VirtualFile file,
-                                                            final Project project,
+  private static EditorNotificationBuilder decorateStubFile(VirtualFile file,
+                                                            Project project,
                                                             EditorNotificationBuilder builder) {
     builder.withText(LocalizeValue.localizeTODO("This stub is generated for Groovy class to make Groovy-Java cross-compilation possible"));
     builder.withAction(LocalizeValue.localizeTODO("Go to the Groovy class"),
                        (c) -> DumbService.getInstance(project).withAlternativeResolveEnabled(() -> {
-                         final PsiClass
+                         PsiClass
                            original = findClassByStub(project, file);
                          if (original != null) {
                            original.navigate(true);
@@ -90,7 +90,7 @@ public class GroovyStubNotificationProvider implements EditorNotificationProvide
                        }));
     builder.withAction(LocalizeValue.localizeTODO("Exclude from stub generation"),
                        (c) -> DumbService.getInstance(project).withAlternativeResolveEnabled(() -> {
-                         final PsiClass psiClass = findClassByStub(project, file);
+                         PsiClass psiClass = findClassByStub(project, file);
                          if (psiClass != null) {
                            ExcludeFromStubGenerationAction.doExcludeFromStubGeneration(psiClass.getContainingFile());
                          }
@@ -105,7 +105,7 @@ public class GroovyStubNotificationProvider implements EditorNotificationProvide
                                                      @Nonnull FileEditor fileEditor,
                                                      @Nonnull Supplier<EditorNotificationBuilder> supplier) {
     if (file.getName().endsWith(".java") && file.getPath().contains(GROOVY_STUBS)) {
-      final PsiClass psiClass = findClassByStub(myProject, file);
+      PsiClass psiClass = findClassByStub(myProject, file);
       if (psiClass != null) {
         return decorateStubFile(file, myProject, supplier.get());
       }

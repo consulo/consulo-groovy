@@ -66,13 +66,13 @@ public class GroovyMarkerTypes {
     @Nullable
     @Override
     public String apply(PsiElement psiElement) {
-      final PsiElement parent = psiElement.getParent();
+      PsiElement parent = psiElement.getParent();
       if (!(parent instanceof GrField)) {
         return null;
       }
-      final GrField field = (GrField)parent;
+      GrField field = (GrField)parent;
 
-      final List<GrAccessorMethod> accessors = GroovyPropertyUtils.getFieldAccessors(field);
+      List<GrAccessorMethod> accessors = GroovyPropertyUtils.getFieldAccessors(field);
       StringBuilder builder = new StringBuilder();
       builder.append("<html><body>");
       int count = 0;
@@ -87,7 +87,7 @@ public class GroovyMarkerTypes {
         boolean isAbstract = method.hasModifierProperty(PsiModifier.ABSTRACT);
         boolean isSuperAbstract = superMethod.hasModifierProperty(PsiModifier.ABSTRACT);
 
-        @NonNls final String key;
+        @NonNls String key;
         if (isSuperAbstract && !isAbstract) {
           key = "method.implements.in";
         }
@@ -111,16 +111,16 @@ public class GroovyMarkerTypes {
       if (!(parent instanceof GrField)) {
         return;
       }
-      final GrField field = (GrField)parent;
-      final List<GrAccessorMethod> accessors = GroovyPropertyUtils.getFieldAccessors(field);
-      final ArrayList<PsiMethod> superMethods = new ArrayList<PsiMethod>();
+      GrField field = (GrField)parent;
+      List<GrAccessorMethod> accessors = GroovyPropertyUtils.getFieldAccessors(field);
+      ArrayList<PsiMethod> superMethods = new ArrayList<PsiMethod>();
       for (GrAccessorMethod method : accessors) {
         Collections.addAll(superMethods, method.findSuperMethods(false));
       }
       if (superMethods.isEmpty()) {
         return;
       }
-      final PsiMethod[] supers = superMethods.toArray(new PsiMethod[superMethods.size()]);
+      PsiMethod[] supers = superMethods.toArray(new PsiMethod[superMethods.size()]);
       boolean showMethodNames = !PsiUtil.allMethodsHaveSameSignature(supers);
       PsiElementListNavigator.openTargets(e,
                                           supers,
@@ -139,7 +139,7 @@ public class GroovyMarkerTypes {
       if (!(parent instanceof GrField)) {
         return null;
       }
-      final List<GrAccessorMethod> accessors = GroovyPropertyUtils.getFieldAccessors((GrField)parent);
+      List<GrAccessorMethod> accessors = GroovyPropertyUtils.getFieldAccessors((GrField)parent);
 
       PsiElementProcessor.CollectElementsWithLimit<PsiMethod> processor = new PsiElementProcessor.CollectElementsWithLimit<PsiMethod>(5);
 
@@ -226,8 +226,8 @@ public class GroovyMarkerTypes {
       boolean isAbstract = method.hasModifierProperty(PsiModifier.ABSTRACT);
       boolean isSuperAbstract = superMethod.hasModifierProperty(PsiModifier.ABSTRACT);
 
-      final boolean sameSignature = superMethod.getSignature(PsiSubstitutor.EMPTY).equals(method.getSignature(PsiSubstitutor.EMPTY));
-      @NonNls final String key;
+      boolean sameSignature = superMethod.getSignature(PsiSubstitutor.EMPTY).equals(method.getSignature(PsiSubstitutor.EMPTY));
+      @NonNls String key;
       if (isSuperAbstract && !isAbstract) {
         key = sameSignature ? "method.implements" : "method.implements.in";
       }
@@ -349,7 +349,7 @@ public class GroovyMarkerTypes {
 
       PsiElementListCellRenderer<PsiMethod> renderer = new MethodCellRenderer(!PsiUtil.allMethodsHaveSameSignature(overridings));
       Arrays.sort(overridings, renderer.getComparator());
-      final OverridingMethodsUpdater methodsUpdater = new OverridingMethodsUpdater(method, renderer);
+      OverridingMethodsUpdater methodsUpdater = new OverridingMethodsUpdater(method, renderer);
       PsiElementListNavigator.openTargets(e,
                                           overridings,
                                           methodsUpdater.getCaption(overridings.length),
@@ -378,7 +378,7 @@ public class GroovyMarkerTypes {
     return superMethods;
   }
 
-  private static StringBuilder composeText(@Nonnull PsiElement[] elements, final String pattern, StringBuilder result) {
+  private static StringBuilder composeText(@Nonnull PsiElement[] elements, String pattern, StringBuilder result) {
     Set<String> names = new LinkedHashSet<String>();
     for (PsiElement element : elements) {
       String methodName = ((PsiMethod)element).getName();

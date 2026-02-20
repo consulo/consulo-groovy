@@ -85,17 +85,17 @@ public class ExtractClosureFromClosureProcessor extends ExtractClosureProcessorB
     @Override
     @RequiredReadAction
     protected UsageInfo[] findUsages() {
-        final GrVariable var = (GrVariable) myHelper.getToSearchFor();
+        GrVariable var = (GrVariable) myHelper.getToSearchFor();
         if (var != null) {
-            final List<UsageInfo> result = new ArrayList<>();
+            List<UsageInfo> result = new ArrayList<>();
             for (PsiReference ref : ReferencesSearch.search(var, GlobalSearchScope.allScope(myHelper.getProject()), true)) {
-                final PsiElement element = ref.getElement();
+                PsiElement element = ref.getElement();
                 if (element.getLanguage() != GroovyLanguage.INSTANCE) {
                     result.add(new OtherLanguageUsageInfo(ref));
                     continue;
                 }
 
-                final GrCall call = GroovyRefactoringUtil.getCallExpressionByMethodReference(element);
+                GrCall call = GroovyRefactoringUtil.getCallExpressionByMethodReference(element);
                 if (call == null) {
                     continue;
                 }

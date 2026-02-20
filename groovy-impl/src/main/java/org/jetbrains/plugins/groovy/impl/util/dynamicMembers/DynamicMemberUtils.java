@@ -134,7 +134,7 @@ public class DynamicMemberUtils {
     private ClassMemberHolder(Project project, String classSource) {
       myClassSource = classSource;
 
-      final GroovyPsiElementFactory elementFactory = GroovyPsiElementFactory.getInstance(project);
+      GroovyPsiElementFactory elementFactory = GroovyPsiElementFactory.getInstance(project);
 
       myClass = (GrTypeDefinition)elementFactory.createGroovyFile(classSource, false, null).getClasses()[0];
 

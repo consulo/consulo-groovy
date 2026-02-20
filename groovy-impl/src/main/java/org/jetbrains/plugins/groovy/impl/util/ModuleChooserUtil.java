@@ -43,14 +43,14 @@ public class ModuleChooserUtil
 
 	private static final String GROOVY_LAST_MODULE = "Groovy.Last.Module.Chosen";
 
-	public static void selectModule(@Nonnull Project project, final Collection<Module> suitableModules, final Function<Module, String> versionProvider, final Consumer<Module> callback)
+	public static void selectModule(@Nonnull Project project, Collection<Module> suitableModules, Function<Module, String> versionProvider, Consumer<Module> callback)
 	{
 		selectModule(project, suitableModules, versionProvider, callback, null);
 	}
 
 	public static void selectModule(@Nonnull Project project,
-			final Collection<Module> suitableModules,
-			final Function<Module, String> versionProvider,
+			Collection<Module> suitableModules,
+			Function<Module, String> versionProvider,
 			final Consumer<Module> callback,
 			@Nullable DataContext context)
 	{
@@ -117,7 +117,7 @@ public class ModuleChooserUtil
 				step.setDefaultOptionIndex(defaultOption);
 			}
 		}
-		final ListPopup listPopup = JBPopupFactory.getInstance().createListPopup(step);
+		ListPopup listPopup = JBPopupFactory.getInstance().createListPopup(step);
 		if(context == null)
 		{
 			listPopup.showCenteredInCurrentWindow(project);
@@ -129,12 +129,12 @@ public class ModuleChooserUtil
 	}
 
 	@Nonnull
-	private static Condition<Module> isGroovyCompatibleModule(final Condition<Module> condition)
+	private static Condition<Module> isGroovyCompatibleModule(Condition<Module> condition)
 	{
 		return module -> {
 			if(condition.value(module))
 			{
-				final Sdk sdk = ModuleUtilCore.getSdk(module, JavaModuleExtension.class);
+				Sdk sdk = ModuleUtilCore.getSdk(module, JavaModuleExtension.class);
 				if(sdk != null && sdk.getSdkType() instanceof JavaSdkType)
 				{
 					return true;
@@ -144,12 +144,12 @@ public class ModuleChooserUtil
 		};
 	}
 
-	public static List<Module> filterGroovyCompatibleModules(Collection<Module> modules, final Condition<Module> condition)
+	public static List<Module> filterGroovyCompatibleModules(Collection<Module> modules, Condition<Module> condition)
 	{
 		return ContainerUtil.filter(modules, isGroovyCompatibleModule(condition));
 	}
 
-	public static boolean hasGroovyCompatibleModules(Collection<Module> modules, final Condition<Module> condition)
+	public static boolean hasGroovyCompatibleModules(Collection<Module> modules, Condition<Module> condition)
 	{
 		return ContainerUtil.or(modules, isGroovyCompatibleModule(condition));
 	}

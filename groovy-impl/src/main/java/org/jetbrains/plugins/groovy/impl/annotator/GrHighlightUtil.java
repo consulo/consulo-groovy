@@ -105,7 +105,7 @@ public class GrHighlightUtil {
       element.getParent() instanceof GrUnaryExpression && ((GrUnaryExpression)element.getParent()).isPostfix();
   }
 
-  static boolean isReassigned(final GrVariable var) {
+  static boolean isReassigned(GrVariable var) {
     LOG.assertTrue(!DumbService.getInstance(var.getProject()).isDumb());
 
     PsiMethod method = PsiTreeUtil.getParentOfType(var, PsiMethod.class);
@@ -187,7 +187,7 @@ public class GrHighlightUtil {
 
   private static boolean isMethodWithLiteralName(@Nullable PsiMethod method) {
     if (method instanceof GrMethod) {
-      final PsiElement nameIdentifier = ((GrMethod)method).getNameIdentifierGroovy();
+      PsiElement nameIdentifier = ((GrMethod)method).getNameIdentifierGroovy();
       if (isStringNameElement(nameIdentifier)) {
         return true;
       }
@@ -197,7 +197,7 @@ public class GrHighlightUtil {
 
   private static boolean isReferenceWithLiteralName(@Nullable PsiElement ref) {
     if (ref instanceof GrReferenceExpression) {
-      final PsiElement nameIdentifier = ((GrReferenceExpression)ref).getReferenceNameElement();
+      PsiElement nameIdentifier = ((GrReferenceExpression)ref).getReferenceNameElement();
       if (nameIdentifier != null && isStringNameElement(nameIdentifier)) {
         return true;
       }
@@ -206,10 +206,10 @@ public class GrHighlightUtil {
   }
 
   private static boolean isStringNameElement(@Nonnull PsiElement nameIdentifier) {
-    final ASTNode node = nameIdentifier.getNode();
+    ASTNode node = nameIdentifier.getNode();
     if (node == null) return false;
 
-    final IElementType nameElementType = node.getElementType();
+    IElementType nameElementType = node.getElementType();
     return TokenSets.STRING_LITERAL_SET.contains(nameElementType);
   }
 
@@ -223,20 +223,20 @@ public class GrHighlightUtil {
   }
 
   private static boolean isScriptPropertyAccess(GrReferenceExpression refExpr) {
-    final GrExpression qualifier = refExpr.getQualifierExpression();
+    GrExpression qualifier = refExpr.getQualifierExpression();
     if (qualifier == null) {
-      final PsiClass clazz = PsiTreeUtil.getParentOfType(refExpr, PsiClass.class);
+      PsiClass clazz = PsiTreeUtil.getParentOfType(refExpr, PsiClass.class);
       if (clazz == null) { //script
         return true;
       }
       return false; //in class, a property should normally be defined, so it's not a declaration
     }
 
-    final PsiType type = qualifier.getType();
+    PsiType type = qualifier.getType();
     if (type instanceof PsiClassType &&
       !(qualifier instanceof GrReferenceExpression && ((GrReferenceExpression)qualifier).resolve() instanceof GroovyScriptClass)) {
-      final PsiClassType classType = (PsiClassType)type;
-      final PsiClass psiClass = classType.resolve();
+      PsiClassType classType = (PsiClassType)type;
+      PsiClass psiClass = classType.resolve();
       if (psiClass instanceof GroovyScriptClass) {
         return true;
       }
@@ -245,10 +245,10 @@ public class GrHighlightUtil {
   }
 
   public static TextRange getMethodHeaderTextRange(PsiMethod method) {
-    final PsiModifierList modifierList = method.getModifierList();
-    final PsiParameterList parameterList = method.getParameterList();
+    PsiModifierList modifierList = method.getModifierList();
+    PsiParameterList parameterList = method.getParameterList();
 
-    final TextRange textRange = modifierList.getTextRange();
+    TextRange textRange = modifierList.getTextRange();
     LOG.assertTrue(textRange != null, method.getClass() + ":" + method.getText());
     int startOffset = textRange.getStartOffset();
     int endOffset = parameterList.getTextRange().getEndOffset() + 1;
@@ -258,21 +258,21 @@ public class GrHighlightUtil {
 
   @Nonnull
   public static PsiElement getElementToHighlight(@Nonnull GrReferenceElement refElement) {
-    final PsiElement refNameElement = refElement.getReferenceNameElement();
+    PsiElement refNameElement = refElement.getReferenceNameElement();
     return refNameElement != null ? refNameElement : refElement;
   }
 
   public static TextRange getClassHeaderTextRange(GrTypeDefinition clazz) {
-    final GrModifierList modifierList = clazz.getModifierList();
-    final int startOffset = modifierList != null ? modifierList.getTextOffset() : clazz.getTextOffset();
-    final GrImplementsClause implementsClause = clazz.getImplementsClause();
+    GrModifierList modifierList = clazz.getModifierList();
+    int startOffset = modifierList != null ? modifierList.getTextOffset() : clazz.getTextOffset();
+    GrImplementsClause implementsClause = clazz.getImplementsClause();
 
-    final int endOffset;
+    int endOffset;
     if (implementsClause != null) {
       endOffset = implementsClause.getTextRange().getEndOffset();
     }
     else {
-      final GrExtendsClause extendsClause = clazz.getExtendsClause();
+      GrExtendsClause extendsClause = clazz.getExtendsClause();
       if (extendsClause != null) {
         endOffset = extendsClause.getTextRange().getEndOffset();
       }
@@ -284,10 +284,10 @@ public class GrHighlightUtil {
   }
 
   public static TextRange getInitializerHeaderTextRange(GrClassInitializer initializer) {
-    final PsiModifierList modifierList = initializer.getModifierList();
-    final GrOpenBlock block = initializer.getBlock();
+    PsiModifierList modifierList = initializer.getModifierList();
+    GrOpenBlock block = initializer.getBlock();
 
-    final TextRange textRange = modifierList.getTextRange();
+    TextRange textRange = modifierList.getTextRange();
     LOG.assertTrue(textRange != null, initializer.getClass() + ":" + initializer.getText());
     int startOffset = textRange.getStartOffset();
     int endOffset = block.getLBrace().getTextRange().getEndOffset() + 1;

@@ -15,7 +15,7 @@ import consulo.application.AccessRule;
 @ExtensionImpl(order = "after groovyPositionManager")
 public class SpringLoadedPositionManagerFactory extends PositionManagerFactory {
   @Override
-  public PositionManager createPositionManager(final DebugProcess process) {
+  public PositionManager createPositionManager(DebugProcess process) {
     SpringLoadedPositionManager manager = AccessRule.read(() ->
                                                           {
                                                             JavaPsiFacade facade = JavaPsiFacade.getInstance(process.getProject());

@@ -53,14 +53,14 @@ public class GrMoveClassToCorrectPlaceFix implements SyntheticIntentionAction {
     @Override
     @RequiredUIAccess
     public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
-        final GrTypeDefinition containingClass = PsiTreeUtil.getParentOfType(myClass, GrTypeDefinition.class);
+        GrTypeDefinition containingClass = PsiTreeUtil.getParentOfType(myClass, GrTypeDefinition.class);
         if (containingClass != null) {
             containingClass.add(myClass);
         }
         else {
-            final PsiFile containingFile = myClass.getContainingFile();
-            final PsiElement added = containingFile.add(myClass);
-            final PsiElement prevSibling = added.getPrevSibling();
+            PsiFile containingFile = myClass.getContainingFile();
+            PsiElement added = containingFile.add(myClass);
+            PsiElement prevSibling = added.getPrevSibling();
             if (prevSibling != null && prevSibling.getNode().getElementType() != GroovyTokenTypes.mNLS) {
                 containingFile.getNode().addLeaf(GroovyTokenTypes.mNLS, "\n", added.getNode());
             }

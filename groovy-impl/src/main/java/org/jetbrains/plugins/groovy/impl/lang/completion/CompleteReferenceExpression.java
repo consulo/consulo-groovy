@@ -102,7 +102,7 @@ public class CompleteReferenceExpression {
     processRefInAnnotationImpl();
 
     getVariantsImpl();
-    final GroovyResolveResult[] candidates = myProcessor.getCandidates();
+    GroovyResolveResult[] candidates = myProcessor.getCandidates();
     List<LookupElement> results =
       GroovyCompletionUtil.getCompletionVariants(candidates,
                                                  JavaClassNameCompletionContributor.AFTER_NEW.accepts(myRefExpr), myMatcher, myRefExpr);
@@ -140,10 +140,10 @@ public class CompleteReferenceExpression {
   private void processIfJavaLangClass(@Nullable PsiType type) {
     if (!(type instanceof PsiClassType)) return;
 
-    final PsiClass psiClass = ((PsiClassType)type).resolve();
+    PsiClass psiClass = ((PsiClassType)type).resolve();
     if (psiClass == null || !CommonClassNames.JAVA_LANG_CLASS.equals(psiClass.getQualifiedName())) return;
 
-    final PsiType[] params = ((PsiClassType)type).getParameters();
+    PsiType[] params = ((PsiClassType)type).getParameters();
     if (params.length != 1) return;
 
     getVariantsFromQualifierType(params[0], myRefExpr.getProject());
@@ -180,7 +180,7 @@ public class CompleteReferenceExpression {
   }
 
   private void getBindings() {
-    final PsiClass containingClass = PsiTreeUtil.getParentOfType(myRefExpr, PsiClass.class);
+    PsiClass containingClass = PsiTreeUtil.getParentOfType(myRefExpr, PsiClass.class);
     if (containingClass != null) return;
 
     final PsiFile file = FileContextUtil.getContextFile(myRefExpr);
@@ -190,9 +190,9 @@ public class CompleteReferenceExpression {
         public void visitAssignmentExpression(GrAssignmentExpression expression) {
           super.visitAssignmentExpression(expression);
 
-          final GrExpression value = expression.getLValue();
+          GrExpression value = expression.getLValue();
           if (value instanceof GrReferenceExpression && !((GrReferenceExpression)value).isQualified()) {
-            final PsiElement resolved = ((GrReferenceExpression)value).resolve();
+            PsiElement resolved = ((GrReferenceExpression)value).resolve();
             if (resolved instanceof GrBindingVariable) {
               myProcessor.execute(resolved, ResolveState.initial());
             }
@@ -212,7 +212,7 @@ public class CompleteReferenceExpression {
   }
 
   private void getVariantsFromQualifierForSpreadOperator(@Nonnull GrExpression qualifier) {
-    final PsiType spreadType = ClosureParameterEnhancer.findTypeForIteration(qualifier, myRefExpr);
+    PsiType spreadType = ClosureParameterEnhancer.findTypeForIteration(qualifier, myRefExpr);
     if (spreadType != null) {
       getVariantsFromQualifierType(spreadType, myRefExpr.getProject());
     }
@@ -233,7 +233,7 @@ public class CompleteReferenceExpression {
                                                                  @Nullable PrefixMatcher matcher) {
     String propName;
     PsiType propType;
-    final boolean getter = GroovyPropertyUtils.isSimplePropertyGetter(accessor, null);
+    boolean getter = GroovyPropertyUtils.isSimplePropertyGetter(accessor, null);
     if (getter) {
       propName = GroovyPropertyUtils.getPropertyNameByGetter(accessor);
     }
@@ -258,7 +258,7 @@ public class CompleteReferenceExpression {
       propType = accessor.getParameterList().getParameters()[0].getType();
     }
 
-    final PsiType substituted = resolveResult != null ? resolveResult.getSubstitutor().substitute(propType) : propType;
+    PsiType substituted = resolveResult != null ? resolveResult.getSubstitutor().substitute(propType) : propType;
 
     LookupElementBuilder builder =
       LookupElementBuilder.create(generatePropertyResolveResult(propName, accessor, propType, resolveResult), propName)
@@ -276,7 +276,7 @@ public class CompleteReferenceExpression {
                                                                    @Nullable GroovyResolveResult resolveResult) {
     PsiType nonNullType = type != null ? type : TypesUtil.getJavaLangObject(method);
 
-    final GrPropertyForCompletion field = new GrPropertyForCompletion(method, name, nonNullType);
+    GrPropertyForCompletion field = new GrPropertyForCompletion(method, name, nonNullType);
     if (resolveResult != null) {
       return new GroovyResolveResultImpl(field, resolveResult.getCurrentFileResolveContext(), resolveResult.getSpreadState(),
                                          resolveResult.getSubstitutor(), resolveResult.isAccessible(), resolveResult.isStaticsOK());
@@ -288,8 +288,8 @@ public class CompleteReferenceExpression {
 
   private void getVariantsFromQualifier(@Nonnull GrExpression qualifier) {
     Project project = qualifier.getProject();
-    final PsiType qualifierType = TypesUtil.boxPrimitiveType(qualifier.getType(), qualifier.getManager(), qualifier.getResolveScope());
-    final ResolveState state = ResolveState.initial();
+    PsiType qualifierType = TypesUtil.boxPrimitiveType(qualifier.getType(), qualifier.getManager(), qualifier.getResolveScope());
+    ResolveState state = ResolveState.initial();
     if (qualifierType == null || qualifierType == PsiType.VOID) {
       if (qualifier instanceof GrReferenceExpression) {
         PsiElement resolved = ((GrReferenceExpression)qualifier).resolve();
@@ -342,7 +342,7 @@ public class CompleteReferenceExpression {
 
   private void getVariantsFromQualifierType(@Nonnull PsiType qualifierType,
                                             @Nonnull Project project) {
-    final ResolveState state = ResolveState.initial();
+    ResolveState state = ResolveState.initial();
     if (qualifierType instanceof PsiClassType) {
       PsiClassType.ClassResolveResult result = ((PsiClassType)qualifierType).resolveGenerics();
       PsiClass qualifierClass = result.getElement();
@@ -351,7 +351,7 @@ public class CompleteReferenceExpression {
       }
     }
     else if (qualifierType instanceof PsiArrayType) {
-      final GrTypeDefinition arrayClass =
+      GrTypeDefinition arrayClass =
         GroovyPsiManager.getInstance(project).getArrayClass(((PsiArrayType)qualifierType).getComponentType());
       if (arrayClass != null) {
         if (!arrayClass.processDeclarations(myProcessor, state, null, myRefExpr)) return;
@@ -384,7 +384,7 @@ public class CompleteReferenceExpression {
   }
 
   private boolean isMap() {
-    final PsiType qType = PsiImplUtil.getQualifierType(myRefExpr);
+    PsiType qType = PsiImplUtil.getQualifierType(myRefExpr);
     return InheritanceUtil.isInheritor(qType, CommonClassNames.JAVA_UTIL_MAP);
   }
 
@@ -426,7 +426,7 @@ public class CompleteReferenceExpression {
       myFieldPointerOperator = myRefExpr.hasAt();
       myMethodPointerOperator = myRefExpr.getDotTokenType() == GroovyTokenTypes.mMEMBER_POINTER;
       myIsMap = isMap();
-      final PsiType thisType = PsiImplUtil.getQualifierType(myRefExpr);
+      PsiType thisType = PsiImplUtil.getQualifierType(myRefExpr);
       mySubstitutorComputer = new SubstitutorComputer(thisType, PsiType.EMPTY_ARRAY, PsiType.EMPTY_ARRAY, myRefExpr, myRefExpr.getParent());
     }
 
@@ -451,8 +451,8 @@ public class CompleteReferenceExpression {
         PsiNamedElement namedElement = (PsiNamedElement)element;
 
         boolean isAccessible = isAccessible(namedElement);
-        final PsiElement resolveContext = state.get(RESOLVE_CONTEXT);
-        final SpreadState spreadState = state.get(SpreadState.SPREAD_STATE);
+        PsiElement resolveContext = state.get(RESOLVE_CONTEXT);
+        SpreadState spreadState = state.get(SpreadState.SPREAD_STATE);
         boolean isStaticsOK = isStaticsOK(namedElement, resolveContext, myParameters.getInvocationCount() <= 1);
 
         PsiSubstitutor substitutor = state.get(PsiSubstitutor.KEY);
@@ -530,7 +530,7 @@ public class CompleteReferenceExpression {
 
     private void processProperty(@Nonnull PsiMethod method, @Nonnull GroovyResolveResult resolveResult) {
       if (myIsMap) return;
-      final LookupElementBuilder lookup = createPropertyLookupElement(method, resolveResult, myMatcher);
+      LookupElementBuilder lookup = createPropertyLookupElement(method, resolveResult, myMatcher);
       if (lookup != null) {
         if (myPropertyNames.add(lookup.getLookupString())) {
           myConsumer.accept(lookup);
@@ -544,19 +544,19 @@ public class CompleteReferenceExpression {
     private void processListenerProperties(@Nonnull PsiMethod method) {
       if (!method.getName().startsWith("add") || method.getParameterList().getParametersCount() != 1) return;
 
-      final PsiParameter parameter = method.getParameterList().getParameters()[0];
-      final PsiType type = parameter.getType();
+      PsiParameter parameter = method.getParameterList().getParameters()[0];
+      PsiType type = parameter.getType();
       if (!(type instanceof PsiClassType)) return;
 
-      final PsiClassType classType = (PsiClassType)type;
-      final PsiClass listenerClass = classType.resolve();
+      PsiClassType classType = (PsiClassType)type;
+      PsiClass listenerClass = classType.resolve();
       if (listenerClass == null) return;
 
-      final PsiMethod[] listenerMethods = listenerClass.getMethods();
+      PsiMethod[] listenerMethods = listenerClass.getMethods();
       if (!InheritanceUtil.isInheritorOrSelf(listenerClass, myEventListener, true)) return;
 
       for (PsiMethod listenerMethod : listenerMethods) {
-        final String name = listenerMethod.getName();
+        String name = listenerMethod.getName();
         if (myPropertyNames.add(name)) {
           LookupElementBuilder builder = LookupElementBuilder
             .create(generatePropertyResolveResult(name, listenerMethod, null, null), name)
@@ -570,15 +570,15 @@ public class CompleteReferenceExpression {
     @Override
     public GroovyResolveResult[] getCandidates() {
       if (!hasCandidates()) return GroovyResolveResult.EMPTY_ARRAY;
-      final GroovyResolveResult[] results = ResolveUtil.filterSameSignatureCandidates(getCandidatesInternal());
+      GroovyResolveResult[] results = ResolveUtil.filterSameSignatureCandidates(getCandidatesInternal());
       List<GroovyResolveResult> list = new ArrayList<GroovyResolveResult>(results.length);
       myPropertyNames.removeAll(myPreferredFieldNames);
 
       Set<String> usedFields = new HashSet<>();
       for (GroovyResolveResult result : results) {
-        final PsiElement element = result.getElement();
+        PsiElement element = result.getElement();
         if (element instanceof PsiField) {
-          final String name = ((PsiField)element).getName();
+          String name = ((PsiField)element).getName();
           if (myPropertyNames.contains(name) ||
               myLocalVars.contains(name) ||
               usedFields.contains(name)) {

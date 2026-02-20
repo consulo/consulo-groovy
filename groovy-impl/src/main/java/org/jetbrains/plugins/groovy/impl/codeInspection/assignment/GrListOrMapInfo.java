@@ -119,7 +119,7 @@ public class GrListOrMapInfo implements ConstructorCallInfo<GrListOrMap> {
     PsiClassType type = myReference.getConstructedClassType();
     if (type == null) return GroovyResolveResult.EMPTY_ARRAY;
 
-    final GroovyResolveResult result = GroovyResolveResultImpl.from(type.resolveGenerics());
+    GroovyResolveResult result = GroovyResolveResultImpl.from(type.resolveGenerics());
     if (result == GroovyResolveResult.EMPTY_RESULT) return GroovyResolveResult.EMPTY_ARRAY;
     return new GroovyResolveResult[]{result};
   }

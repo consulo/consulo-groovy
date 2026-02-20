@@ -52,19 +52,19 @@ public class FieldConflictsResolver {
     myScope = scope;
     if (myScope == null) return;
 
-    final GroovyPsiElement resolved = ResolveUtil.resolveProperty(myScope, name);
+    GroovyPsiElement resolved = ResolveUtil.resolveProperty(myScope, name);
     if (resolved instanceof GrReferenceExpression || resolved == null) return;
 
     assert resolved instanceof PsiVariable;
-    final PsiVariable oldVariable = (PsiVariable)resolved;
+    PsiVariable oldVariable = (PsiVariable)resolved;
     myField = oldVariable instanceof PsiField ? (PsiField)oldVariable : null;
     if (!(oldVariable instanceof PsiField)) return;
 
     myReferenceExpressions = new ArrayList<GrReferenceExpression>();
     for (PsiReference reference : ReferencesSearch.search(myField, new LocalSearchScope(myScope), false)) {
-      final PsiElement element = reference.getElement();
+      PsiElement element = reference.getElement();
       if (element instanceof GrReferenceExpression) {
-        final GrReferenceExpression referenceExpression = (GrReferenceExpression)element;
+        GrReferenceExpression referenceExpression = (GrReferenceExpression)element;
         if (referenceExpression.getQualifier() == null) {
           myReferenceExpressions.add(referenceExpression);
         }
@@ -81,12 +81,12 @@ public class FieldConflictsResolver {
     initializer.accept(new GroovyRecursiveElementVisitor() {
       @Override
       public void visitReferenceExpression(GrReferenceExpression expression) {
-        final GrExpression qualifierExpression = expression.getQualifier();
+        GrExpression qualifierExpression = expression.getQualifier();
         if (qualifierExpression != null) {
           qualifierExpression.accept(this);
         }
         else {
-          final PsiElement result = expression.resolve();
+          PsiElement result = expression.resolve();
           if (expression.getManager().areElementsEquivalent(result, myField)) {
             try {
               replacedRef[0] = qualifyReference(expression, myField, myQualifyingClass);
@@ -104,10 +104,10 @@ public class FieldConflictsResolver {
 
   public void fix() throws IncorrectOperationException {
     if (myField == null) return;
-    final PsiManager manager = myScope.getManager();
+    PsiManager manager = myScope.getManager();
     for (GrReferenceExpression referenceExpression : myReferenceExpressions) {
       if (!referenceExpression.isValid()) continue;
-      final PsiElement newlyResolved = referenceExpression.resolve();
+      PsiElement newlyResolved = referenceExpression.resolve();
       if (!manager.areElementsEquivalent(newlyResolved, myField)) {
         qualifyReference(referenceExpression, myField, myQualifyingClass);
       }
@@ -116,14 +116,14 @@ public class FieldConflictsResolver {
 
 
   public static GrReferenceExpression qualifyReference(GrReferenceExpression referenceExpression,
-                                                       final PsiMember member,
-                                                       @Nullable final PsiClass qualifyingClass) throws IncorrectOperationException {
+                                                       PsiMember member,
+                                                       @Nullable PsiClass qualifyingClass) throws IncorrectOperationException {
     PsiManager manager = referenceExpression.getManager();
     GrReferenceExpression expressionFromText;
-    final GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(referenceExpression.getProject());
+    GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(referenceExpression.getProject());
     if (qualifyingClass == null) {
       PsiClass parentClass = PsiTreeUtil.getParentOfType(referenceExpression, PsiClass.class);
-      final PsiClass containingClass = member.getContainingClass();
+      PsiClass containingClass = member.getContainingClass();
       if (parentClass != null && !InheritanceUtil.isInheritorOrSelf(parentClass, containingClass, true)) {
         while (parentClass != null && !InheritanceUtil.isInheritorOrSelf(parentClass, containingClass, true)) {
           parentClass = PsiTreeUtil.getParentOfType(parentClass, PsiClass.class, true);

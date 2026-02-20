@@ -42,7 +42,7 @@ public class RenameGroovyPropertyProcessor extends RenamePsiElementProcessor {
   @Override
   public void prepareRenaming(PsiElement element, String newName, Map<PsiElement, String> allRenames) {
     LOG.assertTrue(element instanceof PropertyForRename);
-    final List<? extends PsiElement> elementsToRename = ((PropertyForRename)element).getElementsToRename();
+    List<? extends PsiElement> elementsToRename = ((PropertyForRename)element).getElementsToRename();
     for (PsiElement psiElement : elementsToRename) {
       if (psiElement instanceof GrField) {
         allRenames.put(psiElement, newName);

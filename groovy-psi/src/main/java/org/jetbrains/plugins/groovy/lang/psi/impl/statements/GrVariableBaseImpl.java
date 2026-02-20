@@ -62,7 +62,7 @@ public abstract class GrVariableBaseImpl<T extends StubElement> extends GrStubEl
     super(node);
   }
 
-  protected GrVariableBaseImpl(final T stub, IStubElementType nodeType) {
+  protected GrVariableBaseImpl(T stub, IStubElementType nodeType) {
     super(stub, nodeType);
   }
 
@@ -174,8 +174,8 @@ public abstract class GrVariableBaseImpl<T extends StubElement> extends GrStubEl
       if (declaredType == null) return initializerType;
 
       if (initializerType instanceof PsiClassType && TypesUtil.isAssignable(declaredType, initializerType, this)) {
-        final PsiClassType.ClassResolveResult initializerResult = ((PsiClassType)initializerType).resolveGenerics();
-        final PsiClass initializerClass = initializerResult.getElement();
+        PsiClassType.ClassResolveResult initializerResult = ((PsiClassType)initializerType).resolveGenerics();
+        PsiClass initializerClass = initializerResult.getElement();
         if (initializerClass != null &&
             !com.intellij.java.language.psi.util.PsiUtil.isRawSubstitutor(initializerClass, initializerResult.getSubstitutor())) {
           return initializerType;
@@ -190,9 +190,9 @@ public abstract class GrVariableBaseImpl<T extends StubElement> extends GrStubEl
 
   @Override
   public void setType(@Nullable PsiType type) {
-    final GrVariableDeclaration variableDeclaration = getDeclaration();
+    GrVariableDeclaration variableDeclaration = getDeclaration();
     if (variableDeclaration == null) return;
-    final GrTypeElement typeElement = variableDeclaration.getTypeElementGroovyForVariable(this);
+    GrTypeElement typeElement = variableDeclaration.getTypeElementGroovyForVariable(this);
 
     if (type == null) {
       if (typeElement != null) {
@@ -234,16 +234,16 @@ public abstract class GrVariableBaseImpl<T extends StubElement> extends GrStubEl
   @Override
   @Nullable
   public GrExpression getInitializerGroovy() {
-    final PsiElement parent = getParent();
+    PsiElement parent = getParent();
     if (parent instanceof GrVariableDeclaration && ((GrVariableDeclaration)parent).isTuple()){
-      final GrVariableDeclaration tuple = (GrVariableDeclaration)parent;
-      final GrExpression initializer = tuple.getTupleInitializer();
+      GrVariableDeclaration tuple = (GrVariableDeclaration)parent;
+      GrExpression initializer = tuple.getTupleInitializer();
 
       if (initializer instanceof GrListOrMap){
-        final GrListOrMap listOrMap = (GrListOrMap)initializer;
-        final GrExpression[] initializers = listOrMap.getInitializers();
+        GrListOrMap listOrMap = (GrListOrMap)initializer;
+        GrExpression[] initializers = listOrMap.getInitializers();
 
-        final int varNumber = ArrayUtil.indexOf(tuple.getVariables(), this);
+        int varNumber = ArrayUtil.indexOf(tuple.getVariables(), this);
         if (initializers.length < varNumber + 1) return null;
 
         return initializers[varNumber];
@@ -266,7 +266,7 @@ public abstract class GrVariableBaseImpl<T extends StubElement> extends GrStubEl
   @Override
   @Nonnull
   public SearchScope getUseScope() {
-    final GrVariableDeclarationOwner owner = PsiTreeUtil.getParentOfType(this, GrVariableDeclarationOwner.class);
+    GrVariableDeclarationOwner owner = PsiTreeUtil.getParentOfType(this, GrVariableDeclarationOwner.class);
     if (owner != null) return new LocalSearchScope(owner);
     return super.getUseScope();
   }
@@ -286,7 +286,7 @@ public abstract class GrVariableBaseImpl<T extends StubElement> extends GrStubEl
   @Override
   @Nullable
   public GrModifierList getModifierList() {
-    final GrVariableDeclaration variableDeclaration = getDeclaration();
+    GrVariableDeclaration variableDeclaration = getDeclaration();
     if (variableDeclaration!=null) return variableDeclaration.getModifierList();
     return null;
   }
@@ -302,7 +302,7 @@ public abstract class GrVariableBaseImpl<T extends StubElement> extends GrStubEl
 
   @Override
   public void deleteChildInternal(@Nonnull ASTNode child) {
-    final PsiElement psi = child.getPsi();
+    PsiElement psi = child.getPsi();
     if (psi == getInitializerGroovy()) {
       deleteChildInternal(findNotNullChildByType(GroovyTokenTypes.mASSIGN).getNode());
     }

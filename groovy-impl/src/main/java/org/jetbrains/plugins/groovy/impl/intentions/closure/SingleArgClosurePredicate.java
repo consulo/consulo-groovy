@@ -26,7 +26,7 @@ class SingleArgClosurePredicate implements PsiElementPredicate {
         if (!(element instanceof GrClosableBlock)) {
             return false;
         }
-        final GrClosableBlock closure = (GrClosableBlock) element;
+        GrClosableBlock closure = (GrClosableBlock) element;
         if(closure.getParameterList().getParametersCount() !=1)
         {
             return false;

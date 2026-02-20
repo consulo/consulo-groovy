@@ -64,10 +64,10 @@ class GrDeclarationHighlightingVisitor extends GroovyRecursiveElementVisitor
 
 		if(PsiUtil.isLocalVariable(variable) || variable instanceof GrParameter)
 		{
-			final TextAttributesKey attribute = GrHighlightUtil.getDeclarationHighlightingAttribute(variable, null);
+			TextAttributesKey attribute = GrHighlightUtil.getDeclarationHighlightingAttribute(variable, null);
 			if(attribute != null)
 			{
-				final PsiElement nameElement = variable.getNameIdentifierGroovy();
+				PsiElement nameElement = variable.getNameIdentifierGroovy();
 				addInfo(attribute, nameElement);
 			}
 		}
@@ -76,11 +76,11 @@ class GrDeclarationHighlightingVisitor extends GroovyRecursiveElementVisitor
 	private void visit(GrReferenceElement element)
 	{
 		ProgressManager.checkCanceled();
-		final PsiElement resolved = element.resolve();
-		final TextAttributesKey attribute = GrHighlightUtil.getDeclarationHighlightingAttribute(resolved, element);
+		PsiElement resolved = element.resolve();
+		TextAttributesKey attribute = GrHighlightUtil.getDeclarationHighlightingAttribute(resolved, element);
 		if(attribute != null)
 		{
-			final PsiElement refNameElement = GrHighlightUtil.getElementToHighlight(element);
+			PsiElement refNameElement = GrHighlightUtil.getElementToHighlight(element);
 			addInfo(attribute, refNameElement);
 		}
 	}

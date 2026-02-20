@@ -100,14 +100,14 @@ public class GrNamedArgumentSearchVisitor extends GroovyRecursiveElementVisitor 
   }
 
   public static Map<String, NamedArgumentDescriptor> find(GrVariable variable) {
-    final GrExpression initializerGroovy = variable.getInitializerGroovy();
+    GrExpression initializerGroovy = variable.getInitializerGroovy();
 
     if (!(initializerGroovy instanceof GrClosableBlock)) {
       return Collections.emptyMap();
     }
 
-    final GrClosableBlock closure = (GrClosableBlock)initializerGroovy;
-    final GrParameter[] parameters = closure.getAllParameters();
+    GrClosableBlock closure = (GrClosableBlock)initializerGroovy;
+    GrParameter[] parameters = closure.getAllParameters();
     if (parameters.length == 0) return Collections.emptyMap();
 
     GrParameter parameter = parameters[0];

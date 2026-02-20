@@ -29,19 +29,19 @@ public class RemoveDynamicAction extends AnAction {
 
   @Override
   public void actionPerformed(AnActionEvent e) {
-    final DynamicToolWindowWrapper toolWindow = DynamicToolWindowWrapper.getInstance(e.getData(Project.KEY));
+    DynamicToolWindowWrapper toolWindow = DynamicToolWindowWrapper.getInstance(e.getData(Project.KEY));
 
     toolWindow.deleteRow();
   }
 
   @Override
   public void update(AnActionEvent e) {
-    final Project project = e.getData(Project.KEY);
+    Project project = e.getData(Project.KEY);
     if (project == null) {
       e.getPresentation().setEnabled(false);
       return;
     }
-    final TreePath[] paths = DynamicToolWindowWrapper.getInstance(project).getTreeTable().getTree().getSelectionPaths();
+    TreePath[] paths = DynamicToolWindowWrapper.getInstance(project).getTreeTable().getTree().getSelectionPaths();
     e.getPresentation().setEnabled(paths != null);
   }
 }

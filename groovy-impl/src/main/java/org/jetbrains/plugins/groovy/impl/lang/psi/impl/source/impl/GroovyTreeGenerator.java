@@ -30,10 +30,10 @@ public class GroovyTreeGenerator implements TreeGenerator {
   public TreeElement generateTreeFor(PsiElement original, CharTable table, PsiManager manager) {
 
     if (original instanceof GrModifierList) {
-      final String text = original.getText();
+      String text = original.getText();
       assert text != null : "Text is null for " + original + "; " + original.getClass();
 
-      final GrModifierList modifierList = GroovyPsiElementFactory.getInstance(manager.getProject()).createModifierList(text);
+      GrModifierList modifierList = GroovyPsiElementFactory.getInstance(manager.getProject()).createModifierList(text);
       return (TreeElement)modifierList.getNode();
     }
 

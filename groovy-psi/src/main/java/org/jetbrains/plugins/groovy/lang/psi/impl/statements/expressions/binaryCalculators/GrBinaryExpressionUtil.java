@@ -29,7 +29,7 @@ import jakarta.annotation.Nullable;
 public class GrBinaryExpressionUtil {
   @Nullable
   public static PsiType getRightType(GrBinaryFacade e) {
-    final GrExpression rightOperand = e.getRightOperand();
+    GrExpression rightOperand = e.getRightOperand();
     return rightOperand == null ? null : rightOperand.getType();
   }
 

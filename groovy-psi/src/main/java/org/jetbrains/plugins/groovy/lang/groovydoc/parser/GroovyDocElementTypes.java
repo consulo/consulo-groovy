@@ -43,14 +43,14 @@ public interface GroovyDocElementTypes extends GroovyDocTokenTypes {
    */
   ILazyParseableElementType GROOVY_DOC_COMMENT = new ILazyParseableElementType("GrDocComment", GroovyLanguage.INSTANCE) {
     public ASTNode parseContents(ASTNode chameleon) {
-      final PsiElement parentElement = chameleon.getTreeParent().getPsi();
-      final Project project = JavaPsiFacade.getInstance(parentElement.getProject()).getProject();
+      PsiElement parentElement = chameleon.getTreeParent().getPsi();
+      Project project = JavaPsiFacade.getInstance(parentElement.getProject()).getProject();
 
       LanguageVersion defaultVersion = LanguageVersionUtil.findDefaultVersion(getLanguage());
 
-      final PsiBuilder builder = PsiBuilderFactory.getInstance().createBuilder(project, chameleon, new GroovyDocLexer(), getLanguage(),
+      PsiBuilder builder = PsiBuilderFactory.getInstance().createBuilder(project, chameleon, new GroovyDocLexer(), getLanguage(),
                                                                                defaultVersion, chameleon.getText());
-      final PsiParser parser = new GroovyDocParser();
+      PsiParser parser = new GroovyDocParser();
 
       return parser.parse(this, builder, defaultVersion).getFirstChildNode();
     }

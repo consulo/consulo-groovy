@@ -43,12 +43,12 @@ public class GroovyImportHelper {
       return false;
     }
 
-    final PsiClass psiClass = (PsiClass)element;
+    PsiClass psiClass = (PsiClass)element;
     if (!expectedName.equals(psiClass.getName())) {
       return false;
     }
 
-    final String qname = psiClass.getQualifiedName();
+    String qname = psiClass.getQualifiedName();
     if (qname == null) {
       return false;
     }
@@ -67,7 +67,7 @@ public class GroovyImportHelper {
   }
 
   public static LinkedHashSet<String> getImplicitlyImportedPackages(@Nonnull GroovyFile file) {
-    final LinkedHashSet<String> result = new LinkedHashSet<String>();
+    LinkedHashSet<String> result = new LinkedHashSet<String>();
     ContainerUtil.addAll(result, GroovyFileBase.IMPLICITLY_IMPORTED_PACKAGES);
 
     for (DefaultImportContributor contributor : DefaultImportContributor.EP_NAME.getExtensions()) {
@@ -84,7 +84,7 @@ public class GroovyImportHelper {
                                        @Nonnull GrImportStatement[] importStatements,
                                        boolean shouldProcessOnDemand) {
     for (int i = importStatements.length - 1; i >= 0; i--) {
-      final GrImportStatement imp = importStatements[i];
+      GrImportStatement imp = importStatements[i];
       if (shouldProcessOnDemand != imp.isOnDemand()) {
         continue;
       }
@@ -106,9 +106,9 @@ public class GroovyImportHelper {
 
     JavaPsiFacade facade = JavaPsiFacade.getInstance(file.getProject());
 
-    final PsiScopeProcessor packageSkipper = new PackageSkippingProcessor(processor);
+    PsiScopeProcessor packageSkipper = new PackageSkippingProcessor(processor);
 
-    for (final String implicitlyImported : getImplicitlyImportedPackages(file)) {
+    for (String implicitlyImported : getImplicitlyImportedPackages(file)) {
       PsiPackage aPackage = facade.findPackage(implicitlyImported);
       if (aPackage == null) {
         continue;

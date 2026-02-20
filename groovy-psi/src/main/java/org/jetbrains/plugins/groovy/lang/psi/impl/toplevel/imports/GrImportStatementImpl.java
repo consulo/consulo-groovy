@@ -152,12 +152,12 @@ public class GrImportStatementImpl extends GrStubElementBase<GrImportStatementSt
     });
   }
 
-  private boolean processSingleStaticImport(@Nonnull final PsiScopeProcessor processor,
+  private boolean processSingleStaticImport(@Nonnull PsiScopeProcessor processor,
                                             @Nonnull ResolveState state,
                                             @Nonnull String importedName,
                                             @Nullable PsiElement lastParent,
                                             @Nonnull PsiElement place) {
-    final GrCodeReferenceElement ref = getImportReference();
+    GrCodeReferenceElement ref = getImportReference();
     if (ref == null) {
       return true;
     }
@@ -169,10 +169,10 @@ public class GrImportStatementImpl extends GrStubElementBase<GrImportStatementSt
 
     state = state.put(ClassHint.RESOLVE_CONTEXT, this);
 
-    final String refName = ref.getReferenceName();
+    String refName = ref.getReferenceName();
 
-    final NameHint nameHint = processor.getHint(NameHint.KEY);
-    final String hintName = nameHint == null ? null : nameHint.getName(state);
+    NameHint nameHint = processor.getHint(NameHint.KEY);
+    String hintName = nameHint == null ? null : nameHint.getName(state);
 
     if (hintName == null || importedName.equals(hintName)) {
       if (!clazz.processDeclarations(new GrDelegatingScopeProcessorWithHints(processor, refName, null), state,
@@ -209,7 +209,7 @@ public class GrImportStatementImpl extends GrStubElementBase<GrImportStatementSt
       return true;
     }
 
-    final PsiElement resolved = ref.resolve();
+    PsiElement resolved = ref.resolve();
     if (!(resolved instanceof PsiClass)) {
       return true;
     }
@@ -223,9 +223,9 @@ public class GrImportStatementImpl extends GrStubElementBase<GrImportStatementSt
   }
 
   private boolean isFromSamePackage(@Nonnull PsiClass resolved) {
-    final String qualifiedName = resolved.getQualifiedName();
-    final String packageName = ((GroovyFile)getContainingFile()).getPackageName();
-    final String assumed = packageName + '.' + resolved.getName();
+    String qualifiedName = resolved.getQualifiedName();
+    String packageName = ((GroovyFile)getContainingFile()).getPackageName();
+    String assumed = packageName + '.' + resolved.getName();
     return !packageName.isEmpty() && assumed.equals(qualifiedName);
   }
 
@@ -239,10 +239,10 @@ public class GrImportStatementImpl extends GrStubElementBase<GrImportStatementSt
     }
 
     if (isStatic()) {
-      final PsiElement resolved = ref.resolve();
+      PsiElement resolved = ref.resolve();
       if (resolved instanceof PsiClass) {
         state = state.put(ClassHint.RESOLVE_CONTEXT, this);
-        final PsiClass clazz = (PsiClass)resolved;
+        PsiClass clazz = (PsiClass)resolved;
         if (!clazz.processDeclarations(new DelegatingScopeProcessor(processor) {
           @Override
           public boolean execute(@Nonnull PsiElement element, @Nonnull ResolveState state) {
@@ -362,12 +362,12 @@ public class GrImportStatementImpl extends GrStubElementBase<GrImportStatementSt
   @Nullable
   @Override
   public PsiClass resolveTargetClass() {
-    final GrCodeReferenceElement ref = getImportReference();
+    GrCodeReferenceElement ref = getImportReference();
     if (ref == null) {
       return null;
     }
 
-    final PsiElement resolved;
+    PsiElement resolved;
     if (!isStatic() || isOnDemand()) {
       resolved = ref.resolve();
     }

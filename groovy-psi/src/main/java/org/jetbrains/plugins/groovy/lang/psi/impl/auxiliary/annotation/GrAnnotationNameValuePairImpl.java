@@ -66,7 +66,7 @@ public class GrAnnotationNameValuePairImpl extends GroovyPsiElementImpl implemen
   @Override
   @Nullable
   public String getName() {
-    final PsiElement nameId = getNameIdentifierGroovy();
+    PsiElement nameId = getNameIdentifierGroovy();
     return nameId != null ? nameId.getText() : null;
   }
 
@@ -129,7 +129,7 @@ public class GrAnnotationNameValuePairImpl extends GroovyPsiElementImpl implemen
   @Override
   @Nullable
   public PsiElement resolve() {
-    final GroovyResolveResult[] results = multiResolve(false);
+    GroovyResolveResult[] results = multiResolve(false);
     return results.length == 1 ? results[0].getElement() : null;
   }
 
@@ -185,7 +185,7 @@ public class GrAnnotationNameValuePairImpl extends GroovyPsiElementImpl implemen
       String name = declaredName == null ? PsiAnnotation.DEFAULT_REFERENCED_METHOD_NAME : declaredName;
 
       if (resolved instanceof PsiClass) {
-        final PsiAnnotation collector = GrAnnotationCollector.findAnnotationCollector((PsiClass)resolved);
+        PsiAnnotation collector = GrAnnotationCollector.findAnnotationCollector((PsiClass)resolved);
         if (collector != null) {
           return multiResolveFromAlias(annotation, name, collector);
         }
@@ -202,7 +202,7 @@ public class GrAnnotationNameValuePairImpl extends GroovyPsiElementImpl implemen
     PsiMethod[] methods = resolved.findMethodsByName(name, false);
     if (methods.length == 0) return GroovyResolveResult.EMPTY_ARRAY;
 
-    final GroovyResolveResult[] results = new GroovyResolveResult[methods.length];
+    GroovyResolveResult[] results = new GroovyResolveResult[methods.length];
     for (int i = 0; i < methods.length; i++) {
       PsiMethod method = methods[i];
       results[i] = new GroovyResolveResultImpl(method, true);
@@ -217,7 +217,7 @@ public class GrAnnotationNameValuePairImpl extends GroovyPsiElementImpl implemen
     GrAnnotationCollector.collectAnnotations(annotations, alias, annotationCollector);
 
     for (GrAnnotation annotation : annotations) {
-      final PsiElement clazz = annotation.getClassReference().resolve();
+      PsiElement clazz = annotation.getClassReference().resolve();
       if (clazz instanceof PsiClass && ((PsiClass)clazz).isAnnotationType()) {
         if (GroovyCommonClassNames.GROOVY_TRANSFORM_ANNOTATION_COLLECTOR.equals(((PsiClass)clazz).getQualifiedName())) continue;
         for (PsiMethod method : ((PsiClass)clazz).findMethodsByName(name, false)) {

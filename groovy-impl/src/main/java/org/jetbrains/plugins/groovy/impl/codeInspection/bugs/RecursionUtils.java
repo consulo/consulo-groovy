@@ -60,9 +60,9 @@ class RecursionUtils {
         statement instanceof GrVariableDeclaration) {
       return false;
     } else if (statement instanceof GrReturnStatement) {
-      final GrReturnStatement returnStatement =
+      GrReturnStatement returnStatement =
           (GrReturnStatement) statement;
-      final GrExpression returnValue = returnStatement.getReturnValue();
+      GrExpression returnValue = returnStatement.getReturnValue();
       if (returnValue != null) {
         if (expressionDefinitelyRecurses(returnValue, method)) {
           return false;
@@ -76,13 +76,13 @@ class RecursionUtils {
       return whileStatementMayReturnBeforeRecursing(
           (GrWhileStatement) statement, method);
     } else if (statement instanceof GrSynchronizedStatement) {
-      final GrCodeBlock body = ((GrSynchronizedStatement) statement)
+      GrCodeBlock body = ((GrSynchronizedStatement) statement)
           .getBody();
       return codeBlockMayReturnBeforeRecursing(body, method, false);
     } else if (statement instanceof GrBlockStatement) {
-      final GrBlockStatement blockStatement =
+      GrBlockStatement blockStatement =
           (GrBlockStatement) statement;
-      final GrCodeBlock codeBlock = blockStatement.getBlock();
+      GrCodeBlock codeBlock = blockStatement.getBlock();
       return codeBlockMayReturnBeforeRecursing(codeBlock, method, false);
     } else if (statement instanceof GrIfStatement) {
       return ifStatementMayReturnBeforeRecursing(
@@ -101,39 +101,39 @@ class RecursionUtils {
 
   private static boolean whileStatementMayReturnBeforeRecursing(
       GrWhileStatement loopStatement, GrMethod method) {
-    final GrCondition condition = loopStatement.getCondition();
+    GrCondition condition = loopStatement.getCondition();
     if (!(condition instanceof GrExpression)) {
       return false;
     }
     if (expressionDefinitelyRecurses((GrExpression) condition, method)) {
       return false;
     }
-    final GrStatement body = loopStatement.getBody();
+    GrStatement body = loopStatement.getBody();
     return statementMayReturnBeforeRecursing(body, method);
   }
 
   private static boolean forStatementMayReturnBeforeRecursing(
       GrForStatement loopStatement, GrMethod method) {
-    final GrForClause forClause = loopStatement.getClause();
+    GrForClause forClause = loopStatement.getClause();
     if (forClause != null) {
-      final GrVariable var = forClause.getDeclaredVariable();
+      GrVariable var = forClause.getDeclaredVariable();
       if (var != null) {
-        final GrExpression initializer = var.getInitializerGroovy();
+        GrExpression initializer = var.getInitializerGroovy();
         if (expressionDefinitelyRecurses(initializer, method)) {
           return false;
         }
       }
     }
-    final GrStatement body = loopStatement.getBody();
+    GrStatement body = loopStatement.getBody();
     return statementMayReturnBeforeRecursing(body, method);
   }
 
   private static boolean switchStatementMayReturnBeforeRecursing(
       GrSwitchStatement switchStatement, GrMethod method) {
-    final GrCaseSection[] caseSections = switchStatement.getCaseSections();
+    GrCaseSection[] caseSections = switchStatement.getCaseSections();
     for (GrCaseSection caseSection : caseSections) {
-      final GrStatement[] statements = caseSection.getStatements();
-      for (final GrStatement statement : statements) {
+      GrStatement[] statements = caseSection.getStatements();
+      for (GrStatement statement : statements) {
         if (statementMayReturnBeforeRecursing(statement, method)) {
           return true;
         }
@@ -144,9 +144,9 @@ class RecursionUtils {
 
   private static boolean tryStatementMayReturnBeforeRecursing(
       GrTryCatchStatement tryStatement, GrMethod method) {
-    final GrFinallyClause finallyBlock = tryStatement.getFinallyClause();
+    GrFinallyClause finallyBlock = tryStatement.getFinallyClause();
     if (finallyBlock != null) {
-      final GrOpenBlock body = finallyBlock.getBody();
+      GrOpenBlock body = finallyBlock.getBody();
       if (codeBlockMayReturnBeforeRecursing(body, method,
           false)) {
         return true;
@@ -155,12 +155,12 @@ class RecursionUtils {
         return false;
       }
     }
-    final GrCodeBlock tryBlock = tryStatement.getTryBlock();
+    GrCodeBlock tryBlock = tryStatement.getTryBlock();
     if (codeBlockMayReturnBeforeRecursing(tryBlock, method, false)) {
       return true;
     }
-    final GrCatchClause[] catchBlocks = tryStatement.getCatchClauses();
-    for (final GrCatchClause catchBlock : catchBlocks) {
+    GrCatchClause[] catchBlocks = tryStatement.getCatchClauses();
+    for (GrCatchClause catchBlock : catchBlocks) {
       if (codeBlockMayReturnBeforeRecursing(catchBlock.getBody(), method, false)) {
         return true;
       }
@@ -176,11 +176,11 @@ class RecursionUtils {
     if (expressionDefinitelyRecurses(condition, method)) {
       return false;
     }
-    final GrStatement thenBranch = ifStatement.getThenBranch();
+    GrStatement thenBranch = ifStatement.getThenBranch();
     if (statementMayReturnBeforeRecursing(thenBranch, method)) {
       return true;
     }
-    final GrStatement elseBranch = ifStatement.getElseBranch();
+    GrStatement elseBranch = ifStatement.getElseBranch();
     return elseBranch != null &&
         statementMayReturnBeforeRecursing(elseBranch, method);
   }
@@ -190,8 +190,8 @@ class RecursionUtils {
     if (block == null) {
       return true;
     }
-    final GrStatement[] statements = block.getStatements();
-    for (final GrStatement statement : statements) {
+    GrStatement[] statements = block.getStatements();
+    for (GrStatement statement : statements) {
       if (statementMayReturnBeforeRecursing(statement, method)) {
         return true;
       }
@@ -203,7 +203,7 @@ class RecursionUtils {
   }
 
   public static boolean methodMayRecurse(@Nonnull GrMethod method) {
-    final RecursionVisitor recursionVisitor = new RecursionVisitor(method);
+    RecursionVisitor recursionVisitor = new RecursionVisitor(method);
     method.accept(recursionVisitor);
     return recursionVisitor.isRecursive();
   }
@@ -273,47 +273,47 @@ class RecursionUtils {
 
   private static boolean conditionalExpressionDefinitelyRecurses(
       GrConditionalExpression expression, GrMethod method) {
-    final GrExpression condExpression = expression.getCondition();
+    GrExpression condExpression = expression.getCondition();
     if (expressionDefinitelyRecurses(condExpression, method)) {
       return true;
     }
-    final GrExpression thenExpression = expression.getThenBranch();
-    final GrExpression elseExpression = expression.getElseBranch();
+    GrExpression thenExpression = expression.getThenBranch();
+    GrExpression elseExpression = expression.getElseBranch();
     return expressionDefinitelyRecurses(thenExpression, method)
         && expressionDefinitelyRecurses(elseExpression, method);
   }
 
   private static boolean elvisExpressionDefinitelyRecurses(
       GrElvisExpression expression, GrMethod method) {
-    final GrExpression condExpression = expression.getCondition();
+    GrExpression condExpression = expression.getCondition();
     return expressionDefinitelyRecurses(condExpression, method);
   }
 
   private static boolean binaryExpressionDefinitelyRecurses(
       GrBinaryExpression expression, GrMethod method) {
-    final GrExpression lhs = expression.getLeftOperand();
+    GrExpression lhs = expression.getLeftOperand();
     if (expressionDefinitelyRecurses(lhs, method)) {
       return true;
     }
-    final IElementType tokenType = expression.getOperationTokenType();
+    IElementType tokenType = expression.getOperationTokenType();
     if (GroovyTokenTypes.mLAND.equals(tokenType) ||
         GroovyTokenTypes.mLOR.equals(tokenType)) {
       return false;
     }
-    final GrExpression rhs = expression.getRightOperand();
+    GrExpression rhs = expression.getRightOperand();
     return expressionDefinitelyRecurses(rhs, method);
   }
 
   private static boolean arrayAccessExpressionDefinitelyRecurses(
       GrIndexProperty expression, GrMethod method) {
-    final GrExpression arrayExp = expression.getInvokedExpression();
+    GrExpression arrayExp = expression.getInvokedExpression();
     return expressionDefinitelyRecurses(arrayExp, method);
   }
 
   private static boolean arrayInitializerExpressionDefinitelyRecurses(
       GrArrayDeclaration expression, GrMethod method) {
-    final GrExpression[] initializers = expression.getBoundExpressions();
-    for (final GrExpression initializer : initializers) {
+    GrExpression[] initializers = expression.getBoundExpressions();
+    for (GrExpression initializer : initializers) {
       if (expressionDefinitelyRecurses(initializer, method)) {
         return true;
       }
@@ -323,26 +323,26 @@ class RecursionUtils {
 
   private static boolean unaryExpressionDefinitelyRecurses(
       GrUnaryExpression expression, GrMethod method) {
-    final GrExpression operand = expression.getOperand();
+    GrExpression operand = expression.getOperand();
     return expressionDefinitelyRecurses(operand, method);
   }
 
   private static boolean instanceOfExpressionDefinitelyRecurses(
       GrInstanceOfExpression expression, GrMethod method) {
-    final GrExpression operand = expression.getOperand();
+    GrExpression operand = expression.getOperand();
     return expressionDefinitelyRecurses(operand, method);
   }
 
   private static boolean parenthesizedExpressionDefinitelyRecurses(
       GrParenthesizedExpression expression, GrMethod method) {
-    final GrExpression innerExpression = expression.getOperand();
+    GrExpression innerExpression = expression.getOperand();
     return expressionDefinitelyRecurses(innerExpression, method);
   }
 
   private static boolean referenceExpressionDefinitelyRecurses(
       GrReferenceExpression expression, GrMethod method) {
 
-    final GrExpression qualifierExpression =
+    GrExpression qualifierExpression =
         expression.getQualifierExpression();
     if (qualifierExpression != null) {
       return expressionDefinitelyRecurses(qualifierExpression, method);
@@ -352,30 +352,30 @@ class RecursionUtils {
 
   private static boolean typeCastExpressionDefinitelyRecurses(
       GrTypeCastExpression expression, GrMethod method) {
-    final GrExpression operand = expression.getOperand();
+    GrExpression operand = expression.getOperand();
     return expressionDefinitelyRecurses(operand, method);
   }
 
   private static boolean assignmentExpressionDefinitelyRecurses(
       GrAssignmentExpression assignmentExpression, GrMethod method) {
-    final GrExpression rhs = assignmentExpression.getRValue();
-    final GrExpression lhs = assignmentExpression.getLValue();
+    GrExpression rhs = assignmentExpression.getRValue();
+    GrExpression lhs = assignmentExpression.getLValue();
     return expressionDefinitelyRecurses(rhs, method) ||
         expressionDefinitelyRecurses(lhs, method);
   }
 
   private static boolean callExpressionDefinitelyRecurses(GrCallExpression exp,
                                                          GrMethod method) {
-    final GrArgumentList argumentList = exp.getArgumentList();
+    GrArgumentList argumentList = exp.getArgumentList();
     if (argumentList != null) {
-      final GrExpression[] args = argumentList.getExpressionArguments();
-      for (final GrExpression arg : args) {
+      GrExpression[] args = argumentList.getExpressionArguments();
+      for (GrExpression arg : args) {
         if (expressionDefinitelyRecurses(arg, method)) {
           return true;
         }
       }
-      final GrNamedArgument[] namedArgs = argumentList.getNamedArguments();
-      for (final GrNamedArgument arg : namedArgs) {
+      GrNamedArgument[] namedArgs = argumentList.getNamedArguments();
+      for (GrNamedArgument arg : namedArgs) {
         if (expressionDefinitelyRecurses(arg.getExpression(), method)) {
           return true;
         }
@@ -386,14 +386,14 @@ class RecursionUtils {
 
   private static boolean methodCallExpressionDefinitelyRecurses(
       GrMethodCallExpression exp, GrMethod method) {
-    final GrExpression invoked = exp.getInvokedExpression();
+    GrExpression invoked = exp.getInvokedExpression();
     if (invoked instanceof GrReferenceExpression) {
-      final GrReferenceExpression methodExpression = (GrReferenceExpression) invoked;
-      final PsiMethod referencedMethod = exp.resolveMethod();
+      GrReferenceExpression methodExpression = (GrReferenceExpression) invoked;
+      PsiMethod referencedMethod = exp.resolveMethod();
       if (referencedMethod == null) {
         return false;
       }
-      final GrExpression qualifier =
+      GrExpression qualifier =
           methodExpression.getQualifierExpression();
       if (referencedMethod.equals(method)) {
         if (method.hasModifierProperty(PsiModifier.STATIC) ||
@@ -422,25 +422,25 @@ class RecursionUtils {
         statement instanceof GrAssertStatement) {
       return false;
     } else if (statement instanceof GrExpression) {
-      final GrExpression expression =
+      GrExpression expression =
           (GrExpression) statement;
       return expressionDefinitelyRecurses(expression, method);
     } else if (statement instanceof GrVariableDeclaration) {
-      final GrVariableDeclaration declaration =
+      GrVariableDeclaration declaration =
           (GrVariableDeclaration) statement;
-      final GrVariable[] declaredElements =
+      GrVariable[] declaredElements =
           declaration.getVariables();
-      for (final GrVariable variable : declaredElements) {
-        final GrExpression initializer = (GrExpression) variable.getInitializer();
+      for (GrVariable variable : declaredElements) {
+        GrExpression initializer = (GrExpression) variable.getInitializer();
         if (expressionDefinitelyRecurses(initializer, method)) {
           return true;
         }
       }
       return false;
     } else if (statement instanceof GrReturnStatement) {
-      final GrReturnStatement returnStatement =
+      GrReturnStatement returnStatement =
           (GrReturnStatement) statement;
-      final GrExpression returnValue = returnStatement.getReturnValue();
+      GrExpression returnValue = returnStatement.getReturnValue();
       if (returnValue != null) {
         if (expressionDefinitelyRecurses(returnValue, method)) {
           return true;
@@ -454,11 +454,11 @@ class RecursionUtils {
       return whileStatementDefinitelyRecurses(
           (GrWhileStatement) statement, method);
     } else if (statement instanceof GrSynchronizedStatement) {
-      final GrCodeBlock body = ((GrSynchronizedStatement) statement)
+      GrCodeBlock body = ((GrSynchronizedStatement) statement)
           .getBody();
       return codeBlockDefinitelyRecurses(body, method);
     } else if (statement instanceof GrBlockStatement) {
-      final GrCodeBlock codeBlock = ((GrBlockStatement) statement).getBlock();
+      GrCodeBlock codeBlock = ((GrBlockStatement) statement).getBlock();
       return codeBlockDefinitelyRecurses(codeBlock, method);
     } else if (statement instanceof GrIfStatement) {
       return ifStatementDefinitelyRecurses(
@@ -476,17 +476,17 @@ class RecursionUtils {
   }
 
   private static boolean switchStatementDefinitelyRecurses(GrSwitchStatement switchStatement, GrMethod method) {
-    final GrExpression switchExpression = switchStatement.getCondition();
+    GrExpression switchExpression = switchStatement.getCondition();
     return expressionDefinitelyRecurses(switchExpression, method);
   }
 
   private static boolean tryStatementDefinitelyRecurses(
       GrTryCatchStatement tryStatement, GrMethod method) {
-    final GrCodeBlock tryBlock = tryStatement.getTryBlock();
+    GrCodeBlock tryBlock = tryStatement.getTryBlock();
     if (codeBlockDefinitelyRecurses(tryBlock, method)) {
       return true;
     }
-    final GrFinallyClause finallyBlock = tryStatement.getFinallyClause();
+    GrFinallyClause finallyBlock = tryStatement.getFinallyClause();
     if (finallyBlock == null) {
       return false;
     }
@@ -498,8 +498,8 @@ class RecursionUtils {
     if (block == null) {
       return false;
     }
-    final GrStatement[] statements = block.getStatements();
-    for (final GrStatement statement : statements) {
+    GrStatement[] statements = block.getStatements();
+    for (GrStatement statement : statements) {
       if (statementDefinitelyRecurses(statement, method)) {
         return true;
       }
@@ -509,14 +509,14 @@ class RecursionUtils {
 
   private static boolean ifStatementDefinitelyRecurses(
       GrIfStatement ifStatement, GrMethod method) {
-    final GrExpression condition = ifStatement.getCondition();
+    GrExpression condition = ifStatement.getCondition();
     if (condition == null) return false;
 
     if (expressionDefinitelyRecurses(condition, method)) {
       return true;
     }
-    final GrStatement thenBranch = ifStatement.getThenBranch();
-    final GrStatement elseBranch = ifStatement.getElseBranch();
+    GrStatement thenBranch = ifStatement.getThenBranch();
+    GrStatement elseBranch = ifStatement.getElseBranch();
     if (thenBranch == null || elseBranch == null) {
       return false;
     }
@@ -525,11 +525,11 @@ class RecursionUtils {
   }
 
   private static boolean forStatementDefinitelyRecurses(GrForStatement forStatement, GrMethod method) {
-    final GrForClause clause = forStatement.getClause();
+    GrForClause clause = forStatement.getClause();
     if (clause == null) return false;
-    final GrVariable var = clause.getDeclaredVariable();
+    GrVariable var = clause.getDeclaredVariable();
     if (var != null) {
-      final GrExpression initializer = var.getInitializerGroovy();
+      GrExpression initializer = var.getInitializerGroovy();
       if (expressionDefinitelyRecurses(initializer, method)) {
         return true;
       }
@@ -540,12 +540,12 @@ class RecursionUtils {
   private static boolean whileStatementDefinitelyRecurses(
       GrWhileStatement whileStatement, GrMethod method) {
 
-    final GrExpression condition = (GrExpression) whileStatement.getCondition();
+    GrExpression condition = (GrExpression) whileStatement.getCondition();
     if (expressionDefinitelyRecurses(condition, method)) {
       return true;
     }
     if (BoolUtils.isTrue(condition)) {
-      final GrStatement body = whileStatement.getBody();
+      GrStatement body = whileStatement.getBody();
       return statementDefinitelyRecurses(body, method);
     }
     return false;
@@ -553,7 +553,7 @@ class RecursionUtils {
 
   public static boolean methodDefinitelyRecurses(
       @Nonnull GrMethod method) {
-    final GrCodeBlock body = method.getBlock();
+    GrCodeBlock body = method.getBlock();
     if (body == null) {
       return false;
     }

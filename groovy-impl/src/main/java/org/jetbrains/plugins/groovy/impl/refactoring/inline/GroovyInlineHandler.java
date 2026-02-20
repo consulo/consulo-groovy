@@ -43,7 +43,7 @@ import org.jetbrains.plugins.groovy.impl.refactoring.GroovyRefactoringBundle;
 public class GroovyInlineHandler implements InlineHandler {
 
   @Nullable
-  public Settings prepareInlineElement(@Nonnull final PsiElement element, @Nullable Editor editor, boolean invokedOnReference) {
+  public Settings prepareInlineElement(@Nonnull PsiElement element, @Nullable Editor editor, boolean invokedOnReference) {
     if (element instanceof GrField) {
       return GrInlineFieldUtil.inlineFieldSettings((GrField)element, editor, invokedOnReference);
     }
@@ -65,13 +65,13 @@ public class GroovyInlineHandler implements InlineHandler {
   }
 
   private static String getFullName(PsiElement psi) {
-    final String name = DescriptiveNameUtil.getDescriptiveName(psi);
+    String name = DescriptiveNameUtil.getDescriptiveName(psi);
     return (UsageViewUtil.getType(psi) + " " + name).trim();
   }
 
 
   public void removeDefinition(PsiElement element, Settings settings) {
-    final PsiElement owner = element.getParent().getParent();
+    PsiElement owner = element.getParent().getParent();
     if (element instanceof GrVariable && owner instanceof GrVariableDeclarationOwner) {
       ((GrVariableDeclarationOwner)owner).removeVariable(((GrVariable)element));
     }

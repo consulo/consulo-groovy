@@ -94,9 +94,9 @@ public class SubstitutorComputer {
 
   @Nullable
   protected PsiType inferContextType() {
-    final PsiElement parent = myPlaceToInferContext.getParent();
+    PsiElement parent = myPlaceToInferContext.getParent();
     if (parent instanceof GrReturnStatement || exitsContains(myPlaceToInferContext)) {
-      final GrMethod method = PsiTreeUtil.getParentOfType(parent, GrMethod.class, true, GrClosableBlock.class);
+      GrMethod method = PsiTreeUtil.getParentOfType(parent, GrMethod.class, true, GrClosableBlock.class);
       if (method != null) {
         return method.getReturnType();
       }
@@ -125,11 +125,11 @@ public class SubstitutorComputer {
   }
 
   public PsiSubstitutor obtainSubstitutor(PsiSubstitutor substitutor, PsiMethod method, ResolveState state) {
-    final PsiTypeParameter[] typeParameters = method.getTypeParameters();
+    PsiTypeParameter[] typeParameters = method.getTypeParameters();
     if (myTypeArguments.length == typeParameters.length) {
       for (int i = 0; i < typeParameters.length; i++) {
         PsiTypeParameter typeParameter = typeParameters[i];
-        final PsiType typeArgument = myTypeArguments[i];
+        PsiType typeArgument = myTypeArguments[i];
         substitutor = substitutor.put(typeParameter, typeArgument);
       }
       return substitutor;
@@ -137,7 +137,7 @@ public class SubstitutorComputer {
 
     if (myArgumentTypes != null && method.hasTypeParameters()) {
       PsiType[] argTypes = myArgumentTypes;
-      final PsiElement resolveContext = state.get(ClassHint.RESOLVE_CONTEXT);
+      PsiElement resolveContext = state.get(ClassHint.RESOLVE_CONTEXT);
       if (method instanceof GrGdkMethod) {
         //type inference should be performed from static method
         PsiType[] newArgTypes = PsiType.createArray(argTypes.length + 1);
@@ -168,13 +168,13 @@ public class SubstitutorComputer {
       return partialSubstitutor;
     }
 
-    final GrClosureSignature erasedSignature = GrClosureSignatureUtil.createSignatureWithErasedParameterTypes
+    GrClosureSignature erasedSignature = GrClosureSignatureUtil.createSignatureWithErasedParameterTypes
       (method);
 
-    final GrClosureSignature signature = GrClosureSignatureUtil.createSignature(method, partialSubstitutor);
-    final GrClosureParameter[] params = signature.getParameters();
+    GrClosureSignature signature = GrClosureSignatureUtil.createSignature(method, partialSubstitutor);
+    GrClosureParameter[] params = signature.getParameters();
 
-    final GrClosureSignatureUtil.ArgInfo<PsiType>[] argInfos = GrClosureSignatureUtil.mapArgTypesToParameters
+    GrClosureSignatureUtil.ArgInfo<PsiType>[] argInfos = GrClosureSignatureUtil.mapArgTypesToParameters
       (erasedSignature, argTypes, myPlace, true);
     if (argInfos == null) {
       return partialSubstitutor;
@@ -282,7 +282,7 @@ public class SubstitutorComputer {
       return substitutor;
     }
 
-    final PsiType inferred = myHelper.getSubstitutionForTypeParameter(typeParameter, lType, inferContextType(),
+    PsiType inferred = myHelper.getSubstitutionForTypeParameter(typeParameter, lType, inferContextType(),
                                                                       false, LanguageLevel.JDK_1_7);
     if (inferred != PsiType.NULL) {
       return substitutor.put(typeParameter, inferred);

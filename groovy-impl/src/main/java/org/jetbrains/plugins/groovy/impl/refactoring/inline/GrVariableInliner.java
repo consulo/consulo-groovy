@@ -74,9 +74,9 @@ public class GrVariableInliner implements InlineHandler.Inliner {
         }
 
         if ((referenced instanceof GrAccessorMethod || referenced instanceof GrField) && expr instanceof GrReferenceExpression) {
-            final GroovyResolveResult resolveResult = ((GrReferenceExpression) expr).advancedResolve();
+            GroovyResolveResult resolveResult = ((GrReferenceExpression) expr).advancedResolve();
             if (resolveResult.getElement() instanceof GrAccessorMethod && !resolveResult.isInvokedOnProperty()) {
-                final PsiElement parent = expr.getParent();
+                PsiElement parent = expr.getParent();
                 if (!(parent instanceof GrCall && parent instanceof GrExpression)) {
                     conflicts.putValue(
                         expr,
@@ -94,7 +94,7 @@ public class GrVariableInliner implements InlineHandler.Inliner {
         return conflicts;
     }
 
-    public void inlineUsage(@Nonnull final UsageInfo usage, @Nonnull final PsiElement referenced) {
+    public void inlineUsage(@Nonnull UsageInfo usage, @Nonnull PsiElement referenced) {
         inlineReference(usage, referenced, myTempExpr);
     }
 
@@ -109,9 +109,9 @@ public class GrVariableInliner implements InlineHandler.Inliner {
         }
 
         if ((referenced instanceof GrAccessorMethod || referenced instanceof GrField) && exprToBeReplaced instanceof GrReferenceExpression) {
-            final GroovyResolveResult resolveResult = ((GrReferenceExpression) exprToBeReplaced).advancedResolve();
+            GroovyResolveResult resolveResult = ((GrReferenceExpression) exprToBeReplaced).advancedResolve();
             if (resolveResult.getElement() instanceof GrAccessorMethod && !resolveResult.isInvokedOnProperty()) {
-                final PsiElement parent = exprToBeReplaced.getParent();
+                PsiElement parent = exprToBeReplaced.getParent();
                 if (parent instanceof GrCall && parent instanceof GrExpression) {
                     exprToBeReplaced = (GrExpression) parent;
                 }
@@ -122,7 +122,7 @@ public class GrVariableInliner implements InlineHandler.Inliner {
         }
 
         GrExpression newExpr = exprToBeReplaced.replaceWithExpression((GrExpression) initializer.copy(), true);
-        final Project project = usage.getProject();
+        Project project = usage.getProject();
         Editor editor = FileEditorManager.getInstance(project).getSelectedTextEditor();
         GroovyRefactoringUtil.highlightOccurrences(project, editor, new PsiElement[]{newExpr});
     }

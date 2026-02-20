@@ -46,17 +46,17 @@ public class AddClassToExtendsFix extends GroovyFix {
     protected void doFix(Project project, ProblemDescriptor descriptor) throws IncorrectOperationException {
 
         GrReferenceList list;
-        final GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(project);
+        GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(project);
 
-        final PsiClass comparable = JavaPsiFacade.getInstance(project).findClass(CommonClassNames
+        PsiClass comparable = JavaPsiFacade.getInstance(project).findClass(CommonClassNames
             .JAVA_LANG_COMPARABLE, myPsiClass.getResolveScope());
         PsiSubstitutor substitutor = PsiSubstitutor.EMPTY;
         boolean addTypeParam = false;
         if (comparable != null) {
-            final PsiTypeParameter[] typeParameters = comparable.getTypeParameters();
+            PsiTypeParameter[] typeParameters = comparable.getTypeParameters();
             if (typeParameters.length == 1) {
-                final PsiElementFactory elementFactory = JavaPsiFacade.getElementFactory(project);
-                final PsiTypeParameter[] classParams = myPsiClass.getTypeParameters();
+                PsiElementFactory elementFactory = JavaPsiFacade.getElementFactory(project);
+                PsiTypeParameter[] classParams = myPsiClass.getTypeParameters();
                 PsiSubstitutor innerSubstitutor = PsiSubstitutor.EMPTY;
                 for (PsiTypeParameter classParam : classParams) {
                     innerSubstitutor = innerSubstitutor.put(classParam, elementFactory.createType(classParam));
@@ -102,13 +102,13 @@ public class AddClassToExtendsFix extends GroovyFix {
             }
 
 
-            final GrCodeReferenceElement _ref = factory.createReferenceElementFromText(myInterfaceName + (addTypeParam
+            GrCodeReferenceElement _ref = factory.createReferenceElementFromText(myInterfaceName + (addTypeParam
                 ? "<" + AddMethodFix.generateTypeText(myPsiClass) + ">" : ""));
-            final GrCodeReferenceElement ref = (GrCodeReferenceElement) list.add(_ref);
+            GrCodeReferenceElement ref = (GrCodeReferenceElement) list.add(_ref);
             JavaCodeStyleManager.getInstance(project).shortenClassReferences(ref);
         }
         if (comparable != null && !myPsiClass.isInterface()) {
-            final PsiMethod baseMethod = comparable.getMethods()[0];
+            PsiMethod baseMethod = comparable.getMethods()[0];
             OverrideImplementUtil.overrideOrImplement(myPsiClass, baseMethod);
         }
     }

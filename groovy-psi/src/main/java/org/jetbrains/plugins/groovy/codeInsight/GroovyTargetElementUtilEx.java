@@ -61,8 +61,8 @@ public class GroovyTargetElementUtilEx implements TargetElementUtilExtender {
         return null;
       }
 
-      final PsiMethod constructor = newExpr.resolveMethod();
-      final GrArgumentList argumentList = newExpr.getArgumentList();
+      PsiMethod constructor = newExpr.resolveMethod();
+      GrArgumentList argumentList = newExpr.getArgumentList();
       if (constructor != null &&
         argumentList != null &&
         PsiImplUtil.hasNamedArguments(argumentList) &&

@@ -82,8 +82,8 @@ public class ResetAgent {
       return null;
     }
 
-    final boolean[] changed = new boolean[]{false};
-    final ClassWriter writer = new ClassWriter(0);
+    boolean[] changed = new boolean[]{false};
+    ClassWriter writer = new ClassWriter(0);
     new ClassReader(newBytes).accept(new TimestampFieldRemover(writer, changed), 0);
     if (changed[0]) {
       return writer.toByteArray();

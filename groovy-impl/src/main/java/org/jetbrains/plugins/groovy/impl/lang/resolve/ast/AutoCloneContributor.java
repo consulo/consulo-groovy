@@ -37,7 +37,7 @@ public class AutoCloneContributor extends AstTransformContributor {
   public void collectMethods(@Nonnull GrTypeDefinition clazz, @Nonnull Collection<PsiMethod> collector) {
     if (PsiImplUtil.getAnnotation(clazz, GroovyCommonClassNames.GROOVY_TRANSFORM_AUTO_CLONE) == null) return;
 
-    final LightMethodBuilder clone = new LightMethodBuilder(clazz.getManager(), "clone");
+    LightMethodBuilder clone = new LightMethodBuilder(clazz.getManager(), "clone");
     clone.addModifier(PsiModifier.PUBLIC);
     clone.setContainingClass(clazz);
     clone.addException(CloneNotSupportedException.class.getName());

@@ -145,11 +145,11 @@ public final class GroovyDocGenerationPanel extends JPanel/* implements Disposab
     return directory.replace('/', File.separatorChar);
   }
 
-private static String[] toStringArray(final DefaultListModel model) {
-    final int count = model.getSize();
+private static String[] toStringArray(DefaultListModel model) {
+    int count = model.getSize();
     Set<String> result = new HashSet<String>();
     for (int i = 0; i < count; i++) {
-      final Object o = model.getElementAt(i);
+      Object o = model.getElementAt(i);
       assert o instanceof String;
 
       result.add((String)o);

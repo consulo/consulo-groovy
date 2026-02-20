@@ -42,9 +42,9 @@ public abstract class GroovyUnwrapper extends AbstractUnwrapper<GroovyUnwrapper.
     return new Context();
   }
 
-  public static boolean isElseBlock(@Nullable final PsiElement element) {
+  public static boolean isElseBlock(@Nullable PsiElement element) {
     if (element == null) return false;
-    final PsiElement parent = element.getParent();
+    PsiElement parent = element.getParent();
     return parent instanceof GrIfStatement && element == ((GrIfStatement)parent).getElseBranch();
   }
 

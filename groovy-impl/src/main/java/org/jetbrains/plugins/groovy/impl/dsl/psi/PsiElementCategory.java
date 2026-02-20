@@ -42,7 +42,7 @@ public class PsiElementCategory implements PsiEnhancerCategory {
   @Nullable
   public static PsiElement bind(PsiElement element) {
     PsiElement elem = element instanceof GrMethodCall ? ((GrMethodCall)element).getInvokedExpression() : element;
-    final PsiReference ref = elem.getReference();
+    PsiReference ref = elem.getReference();
     return ref == null ? null : ref.resolve();
   }
 

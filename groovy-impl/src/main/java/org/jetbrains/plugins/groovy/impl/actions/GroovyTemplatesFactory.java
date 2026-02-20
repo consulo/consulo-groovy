@@ -47,9 +47,9 @@ public class GroovyTemplatesFactory implements FileTemplateGroupDescriptorFactor
 
   @Override
   public FileTemplateGroupDescriptor getFileTemplatesDescriptor() {
-    final FileTemplateGroupDescriptor group =
+    FileTemplateGroupDescriptor group =
       new FileTemplateGroupDescriptor(GroovyBundle.message("file.template.group.title.groovy"), JetgroovyIcons.Groovy.Groovy_16x16);
-    final FileTypeManager fileTypeManager = FileTypeManager.getInstance();
+    FileTypeManager fileTypeManager = FileTypeManager.getInstance();
     for (String template : TEMPLATES) {
       group.addTemplate(new FileTemplateDescriptor(template, fileTypeManager.getFileTypeByFileName(template).getIcon()));
     }
@@ -58,14 +58,14 @@ public class GroovyTemplatesFactory implements FileTemplateGroupDescriptorFactor
   }
 
 
-  public static PsiFile createFromTemplate(@Nonnull final PsiDirectory directory,
-                                           @Nonnull final String name,
+  public static PsiFile createFromTemplate(@Nonnull PsiDirectory directory,
+                                           @Nonnull String name,
                                            @Nonnull String fileName,
                                            @Nonnull String templateName,
                                            boolean allowReformatting,
                                            String... parameters) throws IncorrectOperationException {
     FileTemplateManager fileTemplateManager = FileTemplateManager.getInstance(directory.getProject());
-    final FileTemplate template = fileTemplateManager.getInternalTemplate(templateName);
+    FileTemplate template = fileTemplateManager.getInternalTemplate(templateName);
 
     Project project = directory.getProject();
 
@@ -85,7 +85,7 @@ public class GroovyTemplatesFactory implements FileTemplateGroupDescriptorFactor
     }
 
     return WriteAction.compute(() -> {
-      final PsiFileFactory factory = PsiFileFactory.getInstance(project);
+      PsiFileFactory factory = PsiFileFactory.getInstance(project);
       PsiFile file = factory.createFileFromText(fileName, GroovyFileType.GROOVY_FILE_TYPE, text);
 
       file = (PsiFile)directory.add(file);

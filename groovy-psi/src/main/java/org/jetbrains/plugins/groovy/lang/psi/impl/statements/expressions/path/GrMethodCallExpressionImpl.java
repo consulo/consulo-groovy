@@ -60,8 +60,8 @@ public class GrMethodCallExpressionImpl extends GrMethodCallImpl implements GrMe
       return closure.replaceWithExpression(newExpr, true);
     }
 
-    final GrClosableBlock[] closureArguments = getClosureArguments();
-    final int i = ArrayUtil.find(closureArguments, closure);
+    GrClosableBlock[] closureArguments = getClosureArguments();
+    int i = ArrayUtil.find(closureArguments, closure);
     GrArgumentList argList = getArgumentList();
     assert argList!=null;
 
@@ -73,7 +73,7 @@ public class GrMethodCallExpressionImpl extends GrMethodCallImpl implements GrMe
       argList.add(closureArguments[j]);
       closureArguments[j].delete();
     }
-    final GrExpression result = (GrExpression)argList.add(newExpr);
+    GrExpression result = (GrExpression)argList.add(newExpr);
     closure.delete();
     return result;
   }
@@ -81,7 +81,7 @@ public class GrMethodCallExpressionImpl extends GrMethodCallImpl implements GrMe
   @Override
   @Nonnull
   public GrClosableBlock[] getClosureArguments() {
-    final List<PsiElement> children = findChildrenByType(GroovyElementTypes.CLOSABLE_BLOCK);
+    List<PsiElement> children = findChildrenByType(GroovyElementTypes.CLOSABLE_BLOCK);
     return children.toArray(new GrClosableBlock[children.size()]);
   }
 }

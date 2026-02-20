@@ -51,10 +51,10 @@ public class SwitchStatementGenerator
 			@Nonnull ExpressionContext context,
 			@Nonnull GrSwitchStatement switchStatement)
 	{
-		final GrExpression condition = switchStatement.getCondition();
-		final GrCaseSection[] caseSections = switchStatement.getCaseSections();
+		GrExpression condition = switchStatement.getCondition();
+		GrCaseSection[] caseSections = switchStatement.getCaseSections();
 
-		final PsiType type = condition == null ? null : TypesUtil.unboxPrimitiveTypeWrapper(condition.getType());
+		PsiType type = condition == null ? null : TypesUtil.unboxPrimitiveTypeWrapper(condition.getType());
 		if(type == null || isValidTypeForSwitchSelector(type))
 		{
 			generateSwitch(builder, context, condition, caseSections);
@@ -86,17 +86,17 @@ public class SwitchStatementGenerator
 			@Nonnull GrExpression condition,
 			@Nonnull GrCaseSection[] caseSections)
 	{
-		final GrExpression ref;
+		GrExpression ref;
 		if(condition instanceof GrReferenceExpression)
 		{
 			ref = condition;
 		}
 		else
 		{
-			final String varName = generateConditionVar(builder, context, condition);
+			String varName = generateConditionVar(builder, context, condition);
 			ref = GroovyPsiElementFactory.getInstance(context.project).createExpressionFromText(varName);
 		}
-		final GrExpression[] args = {ref};
+		GrExpression[] args = {ref};
 		generateIfFromCaseSection(builder, context, caseSections, 0, args);
 	}
 
@@ -114,7 +114,7 @@ public class SwitchStatementGenerator
 			{
 				if(caseSections.length == 1)
 				{
-					final GrCaseLabel[] labels = caseSections[0].getCaseLabels();
+					GrCaseLabel[] labels = caseSections[0].getCaseLabels();
 					if(labels.length == 1 && labels[0].isDefault())
 					{
 						builder.append("if(true)");
@@ -122,8 +122,8 @@ public class SwitchStatementGenerator
 				}
 
 				GrCaseSection section = caseSections[i];
-				final GrCaseLabel[] labels = section.getCaseLabels();
-				final boolean isCase = labels.length > 1 || !labels[0].isDefault();
+				GrCaseLabel[] labels = section.getCaseLabels();
+				boolean isCase = labels.length > 1 || !labels[0].isDefault();
 
 				if(isCase)
 				{
@@ -135,7 +135,7 @@ public class SwitchStatementGenerator
 				{
 					builder.append("\nelse ");
 					StringBuilder elseBuilder = new StringBuilder();
-					final ExpressionContext elseContext = context.extend();
+					ExpressionContext elseContext = context.extend();
 
 					generateIfFromCaseSection(elseBuilder, elseContext, caseSections, i + 1, args);
 					GenerationUtil.insertStatementFromContextBefore(builder, elseContext);
@@ -156,14 +156,14 @@ public class SwitchStatementGenerator
 	{
 		builder.append("{\n");
 
-		final ExpressionContext extended = context.extend();
+		ExpressionContext extended = context.extend();
 		CodeBlockGenerator generator = new CodeBlockGenerator(builder, extended);
 
 		Outer:
 		for(int j = i; j < caseSections.length; j++)
 		{
 			GrCaseSection curSection = caseSections[j];
-			final GrStatement[] statements = curSection.getStatements();
+			GrStatement[] statements = curSection.getStatements();
 			for(GrStatement statement : statements)
 			{
 				if(statement instanceof GrBreakStatement && ((GrBreakStatement) statement).getLabelIdentifier() ==
@@ -185,7 +185,7 @@ public class SwitchStatementGenerator
 
 	private static boolean brakesFlow(GrCaseSection section)
 	{
-		final GrStatement[] statements = section.getStatements();
+		GrStatement[] statements = section.getStatements();
 		return statements.length > 0 && !ControlFlowUtils.statementMayCompleteNormally(ArrayUtil.getLastElement
 				(statements));
 	}
@@ -219,8 +219,8 @@ public class SwitchStatementGenerator
 			@Nonnull GrExpression condition)
 	{
 		StringBuilder conditionBuilder = new StringBuilder();
-		final PsiType type = condition.getType();
-		final String varName = GenerationUtil.validateName("switchArg", condition, context);
+		PsiType type = condition.getType();
+		String varName = GenerationUtil.validateName("switchArg", condition, context);
 		conditionBuilder.append("final ");
 		TypeWriter.writeType(conditionBuilder, type, condition);
 		conditionBuilder.append(' ').append(varName).append(" = ");
@@ -243,7 +243,7 @@ public class SwitchStatementGenerator
 		}
 		builder.append(") {\n");
 
-		final ExpressionContext innerContext = context.extend();
+		ExpressionContext innerContext = context.extend();
 		for(GrCaseSection section : caseSections)
 		{
 			generateCaseSection(builder, context, innerContext, section);
@@ -262,7 +262,7 @@ public class SwitchStatementGenerator
 			writeLabel(builder, context, label);
 		}
 
-		final GrStatement[] statements = section.getStatements();
+		GrStatement[] statements = section.getStatements();
 		CodeBlockGenerator generator = new CodeBlockGenerator(builder, innerContext);
 		for(GrStatement statement : statements)
 		{
@@ -282,7 +282,7 @@ public class SwitchStatementGenerator
 		else
 		{
 			builder.append("case ");
-			final GrExpression value = label.getValue();
+			GrExpression value = label.getValue();
 			Object evaluated;
 			try
 			{

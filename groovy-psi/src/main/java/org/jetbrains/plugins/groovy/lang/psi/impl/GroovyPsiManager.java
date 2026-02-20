@@ -98,7 +98,7 @@ public class GroovyPsiManager {
       }
     });
 
-    final MessageBusConnection connection = myProject.getMessageBus().connect();
+    MessageBusConnection connection = myProject.getMessageBus().connect();
     connection.subscribe(ModuleRootListener.class, new ModuleRootAdapter() {
       public void rootsChanged(ModuleRootEvent event) {
         dropTypesCache();
@@ -206,7 +206,7 @@ public class GroovyPsiManager {
         type = Maps.cacheOrGet(myCalculatedTypes, element, type);
       }
       else {
-        final PsiType alreadyInferred = myCalculatedTypes.get(element);
+        PsiType alreadyInferred = myCalculatedTypes.get(element);
         if (alreadyInferred != null) {
           type = alreadyInferred;
         }
@@ -220,7 +220,7 @@ public class GroovyPsiManager {
 
   @Nullable
   public GrTypeDefinition getArrayClass(@Nonnull PsiType type) {
-    final String typeText = type.getCanonicalText();
+    String typeText = type.getCanonicalText();
     GrTypeDefinition definition = myArrayClass.get(typeText);
     if (definition == null) {
       try {

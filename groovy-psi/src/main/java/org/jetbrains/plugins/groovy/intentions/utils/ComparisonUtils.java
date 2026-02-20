@@ -59,8 +59,8 @@ public class ComparisonUtils {
     if (!(exp instanceof GrBinaryExpression)) {
       return false;
     }
-    final GrBinaryExpression binaryExpression = (GrBinaryExpression) exp;
-    final IElementType sign = binaryExpression.getOperationTokenType();
+    GrBinaryExpression binaryExpression = (GrBinaryExpression) exp;
+    IElementType sign = binaryExpression.getOperationTokenType();
     return s_comparisonStrings.containsKey(sign);
   }
 

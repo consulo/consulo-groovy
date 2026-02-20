@@ -39,23 +39,23 @@ import java.util.List;
 public abstract class AstTransformContributor {
   public static final ExtensionPointName<AstTransformContributor> EP_NAME = ExtensionPointName.create(AstTransformContributor.class);
 
-  public void collectMethods(@Nonnull final GrTypeDefinition clazz, Collection<PsiMethod> collector) {
+  public void collectMethods(@Nonnull GrTypeDefinition clazz, Collection<PsiMethod> collector) {
 
   }
 
-  public void collectFields(@Nonnull final GrTypeDefinition clazz, Collection<GrField> collector) {
+  public void collectFields(@Nonnull GrTypeDefinition clazz, Collection<GrField> collector) {
 
   }
 
-  public void collectClasses(@Nonnull final GrTypeDefinition clazz, Collection<PsiClass> collector) {
+  public void collectClasses(@Nonnull GrTypeDefinition clazz, Collection<PsiClass> collector) {
 
   }
 
   @Nonnull
-  public static Collection<PsiMethod> runContributorsForMethods(@Nonnull final GrTypeDefinition clazz) {
+  public static Collection<PsiMethod> runContributorsForMethods(@Nonnull GrTypeDefinition clazz) {
     Collection<PsiMethod> result = RecursionManager.doPreventingRecursion(clazz, true, () -> {
       Collection<PsiMethod> collector = new ArrayList<PsiMethod>();
-      for (final AstTransformContributor contributor : EP_NAME.getExtensionList()) {
+      for (AstTransformContributor contributor : EP_NAME.getExtensionList()) {
         contributor.collectMethods(clazz, collector);
       }
       return collector;
@@ -64,10 +64,10 @@ public abstract class AstTransformContributor {
   }
 
   @Nonnull
-  public static List<GrField> runContributorsForFields(@Nonnull final GrTypeDefinition clazz) {
+  public static List<GrField> runContributorsForFields(@Nonnull GrTypeDefinition clazz) {
     List<GrField> fields = RecursionManager.doPreventingRecursion(clazz, true, () -> {
       List<GrField> collector = new ArrayList<GrField>();
-      for (final AstTransformContributor contributor : EP_NAME.getExtensionList()) {
+      for (AstTransformContributor contributor : EP_NAME.getExtensionList()) {
         contributor.collectFields(clazz, collector);
       }
       return collector;
@@ -81,7 +81,7 @@ public abstract class AstTransformContributor {
       @Override
       public List<PsiClass> compute() {
         List<PsiClass> collector = ContainerUtil.newArrayList();
-        for (final AstTransformContributor contributor : EP_NAME.getExtensions()) {
+        for (AstTransformContributor contributor : EP_NAME.getExtensions()) {
           contributor.collectClasses(clazz, collector);
         }
         return collector;

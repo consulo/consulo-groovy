@@ -80,11 +80,11 @@ public class CompleteCodeReferenceElement {
 
     switch (myRef.getKind(true)) {
       case STATIC_MEMBER_FQ: {
-        final GrCodeReferenceElement qualifier = myRef.getQualifier();
+        GrCodeReferenceElement qualifier = myRef.getQualifier();
         if (qualifier != null) {
-          final PsiElement resolve = qualifier.resolve();
+          PsiElement resolve = qualifier.resolve();
           if (resolve instanceof PsiClass) {
-            final PsiClass clazz = (PsiClass)resolve;
+            PsiClass clazz = (PsiClass)resolve;
 
             for (PsiField field : clazz.getFields()) {
               if (field.hasModifierProperty(PsiModifier.STATIC)) {
@@ -112,13 +112,13 @@ public class CompleteCodeReferenceElement {
       case PACKAGE_FQ:
       case CLASS_FQ:
       case CLASS_OR_PACKAGE_FQ: {
-        final String refText = PsiUtil.getQualifiedReferenceText(myRef);
+        String refText = PsiUtil.getQualifiedReferenceText(myRef);
         LOG.assertTrue(refText != null, myRef.getText());
 
         String parentPackageFQName = StringUtil.getPackageName(refText);
-        final PsiJavaPackage parentPackage = JavaPsiFacade.getInstance(myRef.getProject()).findPackage(parentPackageFQName);
+        PsiJavaPackage parentPackage = JavaPsiFacade.getInstance(myRef.getProject()).findPackage(parentPackageFQName);
         if (parentPackage != null) {
-          final GlobalSearchScope scope = myRef.getResolveScope();
+          GlobalSearchScope scope = myRef.getResolveScope();
           if (myRef.getKind(true) == GrCodeReferenceElementImpl.ReferenceKind.PACKAGE_FQ) {
             for (PsiPackage aPackage : parentPackage.getSubPackages(scope)) {
               feedLookupElements(aPackage, afterNew);
@@ -182,7 +182,7 @@ public class CompleteCodeReferenceElement {
 
   private void processTypeParametersFromUnfinishedMethodOrField(@Nonnull ResolverProcessorImpl processor) {
 
-    final PsiElement candidate = findTypeParameterListCandidate();
+    PsiElement candidate = findTypeParameterListCandidate();
 
     if (candidate instanceof GrTypeParameterList) {
       for (GrTypeParameter p : ((GrTypeParameterList)candidate).getTypeParameters()) {
@@ -193,7 +193,7 @@ public class CompleteCodeReferenceElement {
 
   @Nullable
   private PsiElement findTypeParameterListCandidate() {
-    final GrTypeElement typeElement = getRootTypeElement();
+    GrTypeElement typeElement = getRootTypeElement();
     if (typeElement == null) return null;
 
     if (typeElement.getParent() instanceof GrTypeDefinitionBody) {
@@ -201,7 +201,7 @@ public class CompleteCodeReferenceElement {
     }
 
     if (typeElement.getParent() instanceof GrVariableDeclaration) {
-      final PsiElement errorElement = PsiUtil.skipWhitespacesAndComments(typeElement.getPrevSibling(), false);
+      PsiElement errorElement = PsiUtil.skipWhitespacesAndComments(typeElement.getPrevSibling(), false);
       if (errorElement instanceof PsiErrorElement) {
         return errorElement.getFirstChild();
       }

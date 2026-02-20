@@ -41,7 +41,7 @@ public class DefaultGroovyFrameworkConfigNotification extends GroovyFrameworkCon
 
   @Override
   public boolean hasFrameworkLibrary(@Nonnull Module module) {
-    final Library[] libraries = GroovyConfigUtils.getInstance().getSDKLibrariesByModule(module);
+    Library[] libraries = GroovyConfigUtils.getInstance().getSDKLibrariesByModule(module);
     return libraries.length > 0;
   }
 

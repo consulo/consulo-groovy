@@ -34,5 +34,5 @@ public interface GrSafeCastExpression extends GrExpression, PsiPolyVariantRefere
 
   @Nonnull
   @Override
-  GroovyResolveResult[] multiResolve(final boolean incompleteCode);
+  GroovyResolveResult[] multiResolve(boolean incompleteCode);
 }

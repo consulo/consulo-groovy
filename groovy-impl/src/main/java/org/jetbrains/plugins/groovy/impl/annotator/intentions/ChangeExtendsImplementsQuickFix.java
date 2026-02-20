@@ -107,7 +107,7 @@ public class ChangeExtendsImplementsQuickFix implements SyntheticIntentionAction
         Collection<String> unknown
     ) {
         for (GrCodeReferenceElement ref : refs) {
-            final PsiElement extendsElement = ref.resolve();
+            PsiElement extendsElement = ref.resolve();
             String canonicalText = ref.getCanonicalText();
 
             if (extendsElement instanceof PsiClass psiClass) {
@@ -150,7 +150,7 @@ public class ChangeExtendsImplementsQuickFix implements SyntheticIntentionAction
 
         classText.append(" {}");
 
-        final GrTypeDefinition definition = GroovyPsiElementFactory.getInstance(project).createTypeDefinition(classText.toString());
+        GrTypeDefinition definition = GroovyPsiElementFactory.getInstance(project).createTypeDefinition(classText.toString());
         GroovyPsiElement clause = isExtends ? definition.getExtendsClause() : definition.getImplementsClause();
         assert clause != null;
 

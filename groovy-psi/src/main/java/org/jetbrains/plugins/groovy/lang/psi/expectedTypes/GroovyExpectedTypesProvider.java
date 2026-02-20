@@ -74,14 +74,14 @@ public class GroovyExpectedTypesProvider {
       @Override
       public TypeConstraint[] compute() {
         MyCalculator calculator = new MyCalculator(expression);
-        final PsiElement parent = expression.getParent();
+        PsiElement parent = expression.getParent();
         if (parent instanceof GroovyPsiElement) {
           ((GroovyPsiElement)parent).accept(calculator);
         }
         else {
           parent.accept(new GroovyPsiElementVisitor(calculator));
         }
-        final TypeConstraint[] result = calculator.getResult();
+        TypeConstraint[] result = calculator.getResult();
 
         List<TypeConstraint> custom = ContainerUtil.newArrayList();
         for (GroovyExpectedTypesContributor contributor : GroovyExpectedTypesContributor.EP_NAME
@@ -140,7 +140,7 @@ public class GroovyExpectedTypesProvider {
       if (label != null) {
         PsiElement pparent = argument.getParent().getParent();
         if (pparent instanceof GrCall && resolvesToDefaultConstructor(((GrCall)pparent))) {
-          final GroovyResolveResult resolveResult = label.advancedResolve();
+          GroovyResolveResult resolveResult = label.advancedResolve();
           PsiElement resolved = resolveResult.getElement();
           PsiType type = resolved instanceof PsiField ? ((PsiField)resolved).getType() : resolved
             instanceof PsiMethod && GroovyPropertyUtils.isSimplePropertySetter((PsiMethod)resolved) ?
@@ -173,26 +173,26 @@ public class GroovyExpectedTypesProvider {
 
     @Override
     public void visitMethodCallExpression(GrMethodCallExpression methodCall) {
-      final GrExpression invokedExpression = methodCall.getInvokedExpression();
+      GrExpression invokedExpression = methodCall.getInvokedExpression();
       if (myExpression.equals(invokedExpression)) {
         myResult = new TypeConstraint[]{SubtypeConstraint.create(GroovyCommonClassNames.GROOVY_LANG_CLOSURE,
                                                                  methodCall)};
         return;
       }
 
-      final GrClosableBlock[] closureArgs = methodCall.getClosureArguments();
+      GrClosableBlock[] closureArgs = methodCall.getClosureArguments();
       if (ArrayUtil.contains(myExpression, closureArgs)) {
-        final GrArgumentList argumentList = methodCall.getArgumentList();
-        final GrNamedArgument[] namedArgs = argumentList.getNamedArguments();
-        final GrExpression[] expressionArgs = argumentList.getExpressionArguments();
-        final GroovyResolveResult[] callVariants = ResolveUtil.getCallVariants(myExpression);
+        GrArgumentList argumentList = methodCall.getArgumentList();
+        GrNamedArgument[] namedArgs = argumentList.getNamedArguments();
+        GrExpression[] expressionArgs = argumentList.getExpressionArguments();
+        GroovyResolveResult[] callVariants = ResolveUtil.getCallVariants(myExpression);
         processCallVariants(methodCall, callVariants, namedArgs, expressionArgs, closureArgs);
       }
     }
 
     @Override
     public void visitOpenBlock(GrOpenBlock block) {
-      final GrStatement[] statements = block.getStatements();
+      GrStatement[] statements = block.getStatements();
       if (statements.length > 0 && myExpression.equals(statements[statements.length - 1])) {
         checkExitPoint();
       }
@@ -220,18 +220,18 @@ public class GroovyExpectedTypesProvider {
 
     @Override
     public void visitAnnotationArrayInitializer(GrAnnotationArrayInitializer arrayInitializer) {
-      final GrAnnotationNameValuePair nameValuePair = PsiTreeUtil.getParentOfType(arrayInitializer,
+      GrAnnotationNameValuePair nameValuePair = PsiTreeUtil.getParentOfType(arrayInitializer,
                                                                                   GrAnnotationNameValuePair.class,
                                                                                   true,
                                                                                   GrAnnotationMethod.class);
       if (nameValuePair != null) {
 
-        final PsiClass annot = ResolveUtil.resolveAnnotation(arrayInitializer);
+        PsiClass annot = ResolveUtil.resolveAnnotation(arrayInitializer);
         if (annot == null) {
           return;
         }
 
-        final String name = nameValuePair.getName();
+        String name = nameValuePair.getName();
         if (name == null) {
           return;
         }
@@ -239,7 +239,7 @@ public class GroovyExpectedTypesProvider {
         createResultFromAttrName(annot, name);
       }
       else {
-        final GrAnnotationMethod method = PsiTreeUtil.getParentOfType(arrayInitializer,
+        GrAnnotationMethod method = PsiTreeUtil.getParentOfType(arrayInitializer,
                                                                       GrAnnotationMethod.class);
         assert method != null;
 
@@ -265,14 +265,14 @@ public class GroovyExpectedTypesProvider {
     @Override
     public void visitAnnotationNameValuePair(GrAnnotationNameValuePair nameValuePair) {
       if (myExpression.equals(nameValuePair.getValue())) {
-        final PsiClass annot = ResolveUtil.resolveAnnotation(nameValuePair.getParent());
+        PsiClass annot = ResolveUtil.resolveAnnotation(nameValuePair.getParent());
         if (annot != null) {
-          final String name = nameValuePair.getName();
+          String name = nameValuePair.getName();
           if (name != null) {
             createResultFromAttrName(annot, name);
           }
           else {
-            final PsiMethod[] valueAttr = annot.findMethodsByName("value", false);
+            PsiMethod[] valueAttr = annot.findMethodsByName("value", false);
             if (valueAttr.length > 0) {
               boolean canHaveSimpleExpr = ContainerUtil.find(annot.getMethods(),
                                                              new Condition<PsiMethod>() {
@@ -294,7 +294,7 @@ public class GroovyExpectedTypesProvider {
     }
 
     private void createResultFromAttrName(PsiClass annotation, String attrName) {
-      final PsiMethod[] attrs = annotation.findMethodsByName(attrName, false);
+      PsiMethod[] attrs = annotation.findMethodsByName(attrName, false);
       if (attrs.length > 0) {
         createResultFromAnnotationAttribute(attrs[0]);
       }
@@ -325,7 +325,7 @@ public class GroovyExpectedTypesProvider {
     }
 
     private void checkExitPoint() {
-      final PsiElement element = PsiTreeUtil.getParentOfType(myExpression, PsiMethod.class,
+      PsiElement element = PsiTreeUtil.getParentOfType(myExpression, PsiMethod.class,
                                                              GrClosableBlock.class);
       if (element instanceof GrMethod) {
         final GrMethod method = (GrMethod)element;
@@ -333,7 +333,7 @@ public class GroovyExpectedTypesProvider {
           @Override
           public boolean visitExitPoint(Instruction instruction, @Nullable GrExpression returnValue) {
             if (returnValue == myExpression) {
-              final PsiType returnType = method.getReturnType();
+              PsiType returnType = method.getReturnType();
               if (returnType != null) {
                 myResult = createSimpleSubTypeResult(returnType);
               }
@@ -386,7 +386,7 @@ public class GroovyExpectedTypesProvider {
     private void collectExpectedTypeFromPossibleParams(List<Pair<PsiParameter, PsiType>> expectedParams) {
       List<TypeConstraint> constraints = ContainerUtil.newArrayList();
       for (Pair<PsiParameter, PsiType> pair : expectedParams) {
-        final PsiType type = pair.second;
+        PsiType type = pair.second;
         if (type != null) {
 
           constraints.add(SubtypeConstraint.create(type));
@@ -404,25 +404,25 @@ public class GroovyExpectedTypesProvider {
 
     @Override
     public void visitBinaryExpression(GrBinaryExpression expression) {
-      final IElementType type = expression.getOperationTokenType();
-      final GrExpression left = expression.getLeftOperand();
-      final GrExpression right = expression.getRightOperand();
+      IElementType type = expression.getOperationTokenType();
+      GrExpression left = expression.getLeftOperand();
+      GrExpression right = expression.getRightOperand();
 
-      final GrExpression other = myExpression == left ? right : left;
-      final PsiType otherType = other != null ? other.getType() : null;
+      GrExpression other = myExpression == left ? right : left;
+      PsiType otherType = other != null ? other.getType() : null;
 
       if (otherType == null) {
         return;
       }
 
-      final GroovyResolveResult[] callVariants = expression.multiResolve(true);
+      GroovyResolveResult[] callVariants = expression.multiResolve(true);
       if (myExpression == left || callVariants.length == 0) {
         if (type == GroovyTokenTypes.mPLUS && otherType.equalsToText(CommonClassNames.JAVA_LANG_STRING)) {
-          final PsiClassType obj = TypesUtil.getJavaLangObject(expression);
+          PsiClassType obj = TypesUtil.getJavaLangObject(expression);
           myResult = createSimpleSubTypeResult(obj);
         }
         else if (type == GroovyTokenTypes.mREGEX_FIND || type == GroovyTokenTypes.mREGEX_MATCH) {
-          final PsiClassType string = TypesUtil.createType(CommonClassNames.JAVA_LANG_STRING, expression);
+          PsiClassType string = TypesUtil.createType(CommonClassNames.JAVA_LANG_STRING, expression);
           myResult = createSimpleSubTypeResult(string);
         }
         else {
@@ -437,14 +437,14 @@ public class GroovyExpectedTypesProvider {
 
     @Override
     public void visitInstanceofExpression(GrInstanceOfExpression expression) {
-      final GrExpression operand = expression.getOperand();
-      final GrTypeElement typeElement = expression.getTypeElement();
+      GrExpression operand = expression.getOperand();
+      GrTypeElement typeElement = expression.getTypeElement();
       if (typeElement == null) {
         return;
       }
 
       if (myExpression == operand) {
-        final PsiType type = typeElement.getType();
+        PsiType type = typeElement.getType();
         myResult = new TypeConstraint[]{new SupertypeConstraint(type, type)};
       }
     }
@@ -482,7 +482,7 @@ public class GroovyExpectedTypesProvider {
 
     @Override
     public void visitThrowStatement(GrThrowStatement throwStatement) {
-      final PsiClassType throwable = PsiType.getJavaLangThrowable(myExpression.getManager(),
+      PsiClassType throwable = PsiType.getJavaLangThrowable(myExpression.getManager(),
                                                                   throwStatement.getResolveScope());
       myResult = new TypeConstraint[]{SubtypeConstraint.create(throwable)};
     }
@@ -492,11 +492,11 @@ public class GroovyExpectedTypesProvider {
       TypeConstraint constraint = new TypeConstraint(PsiType.INT) {
         @Override
         public boolean satisfied(PsiType type, @Nonnull PsiElement context) {
-          final PsiType boxed = TypesUtil.boxPrimitiveType(type, context.getManager(),
+          PsiType boxed = TypesUtil.boxPrimitiveType(type, context.getManager(),
                                                            context.getResolveScope());
-          final IElementType opToken = expression.getOperationTokenType();
-          final GrExpression operand = expression.getOperand();
-          final GroovyResolveResult[] candidates = TypesUtil.getOverloadedUnaryOperatorCandidates(boxed,
+          IElementType opToken = expression.getOperationTokenType();
+          GrExpression operand = expression.getOperand();
+          GroovyResolveResult[] candidates = TypesUtil.getOverloadedUnaryOperatorCandidates(boxed,
                                                                                                   opToken,
                                                                                                   operand != null ? operand : expression,
                                                                                                   PsiType.EMPTY_ARRAY);
@@ -514,7 +514,7 @@ public class GroovyExpectedTypesProvider {
 
     @Override
     public void visitParenthesizedExpression(GrParenthesizedExpression expression) {
-      final PsiElement parent = expression.getParent();
+      PsiElement parent = expression.getParent();
       if (parent instanceof GroovyPsiElement) {
         ((GroovyPsiElement)parent).accept(this);
       }
@@ -528,12 +528,12 @@ public class GroovyExpectedTypesProvider {
       if (listOrMap.isMap()) {
         return;
       }
-      final TypeConstraint[] constraints = calculateTypeConstraints(listOrMap);
+      TypeConstraint[] constraints = calculateTypeConstraints(listOrMap);
       List<PsiType> result = new ArrayList<PsiType>(constraints.length);
       for (TypeConstraint constraint : constraints) {
         if (constraint instanceof SubtypeConstraint) {
-          final PsiType type = constraint.getType();
-          final PsiType iterable = com.intellij.java.language.psi.util.PsiUtil.extractIterableTypeParameter(type, true);
+          PsiType type = constraint.getType();
+          PsiType iterable = com.intellij.java.language.psi.util.PsiUtil.extractIterableTypeParameter(type, true);
           if (iterable != null) {
             result.add(iterable);
           }
@@ -545,7 +545,7 @@ public class GroovyExpectedTypesProvider {
       else {
         myResult = new TypeConstraint[result.size()];
         for (int i = 0; i < result.size(); i++) {
-          final PsiType type = result.get(i);
+          PsiType type = result.get(i);
           if (type != null) {
             myResult[i] = SubtypeConstraint.create(type);
           }
@@ -555,17 +555,17 @@ public class GroovyExpectedTypesProvider {
 
     @Override
     public void visitCaseLabel(GrCaseLabel caseLabel) {
-      final PsiElement parent = caseLabel.getParent().getParent();
+      PsiElement parent = caseLabel.getParent().getParent();
       if (!(parent instanceof GrSwitchStatement)) {
         return;
       }
 
-      final GrExpression condition = ((GrSwitchStatement)parent).getCondition();
+      GrExpression condition = ((GrSwitchStatement)parent).getCondition();
       if (condition == null) {
         return;
       }
 
-      final PsiType type = condition.getType();
+      PsiType type = condition.getType();
       if (type == null) {
         return;
       }
@@ -575,13 +575,13 @@ public class GroovyExpectedTypesProvider {
 
     @Override
     public void visitSwitchStatement(GrSwitchStatement switchStatement) {
-      final GrCaseSection[] sections = switchStatement.getCaseSections();
+      GrCaseSection[] sections = switchStatement.getCaseSections();
       List<PsiType> types = new ArrayList<PsiType>(sections.length);
       for (GrCaseSection section : sections) {
         for (GrCaseLabel label : section.getCaseLabels()) {
-          final GrExpression value = label.getValue();
+          GrExpression value = label.getValue();
           if (value != null) {
-            final PsiType type = value.getType();
+            PsiType type = value.getType();
             if (type != null) {
               types.add(type);
             }
@@ -589,7 +589,7 @@ public class GroovyExpectedTypesProvider {
         }
       }
 
-      final PsiType upperBoundNullable = TypesUtil.getLeastUpperBoundNullable(types, switchStatement.getManager());
+      PsiType upperBoundNullable = TypesUtil.getLeastUpperBoundNullable(types, switchStatement.getManager());
       if (upperBoundNullable == null) {
         return;
       }

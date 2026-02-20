@@ -96,7 +96,7 @@ public class ControlFlowUtils {
       return blockMayCompleteNormally((GrBlockStatement)statement);
     }
     else if (statement instanceof GrSynchronizedStatement) {
-      final GrSynchronizedStatement syncStatement = (GrSynchronizedStatement)statement;
+      GrSynchronizedStatement syncStatement = (GrSynchronizedStatement)statement;
       return openBlockMayCompleteNormally(syncStatement.getBody());
     }
     else if (statement instanceof GrLabeledStatement) {
@@ -118,7 +118,7 @@ public class ControlFlowUtils {
   }
 
   private static boolean whileStatementMayReturnNormally(@Nonnull GrWhileStatement loopStatement) {
-    final GrCondition test = loopStatement.getCondition();
+    GrCondition test = loopStatement.getCondition();
     return !BoolUtils.isTrue(test) || statementIsBreakTarget(loopStatement);
   }
 
@@ -130,7 +130,7 @@ public class ControlFlowUtils {
     if (statementIsBreakTarget(switchStatement)) {
       return true;
     }
-    final GrCaseSection[] caseClauses = switchStatement.getCaseSections();
+    GrCaseSection[] caseClauses = switchStatement.getCaseSections();
 
     if (caseClauses.length == 0) {
       return true;
@@ -145,8 +145,8 @@ public class ControlFlowUtils {
     if (!hasDefaultCase) {
       return true;
     }
-    final GrCaseSection lastClause = caseClauses[caseClauses.length - 1];
-    final GrStatement[] statements = lastClause.getStatements();
+    GrCaseSection lastClause = caseClauses[caseClauses.length - 1];
+    GrStatement[] statements = lastClause.getStatements();
     if (statements.length == 0) {
       return true;
     }
@@ -154,13 +154,13 @@ public class ControlFlowUtils {
   }
 
   private static boolean tryStatementMayReturnNormally(@Nonnull GrTryCatchStatement tryStatement) {
-    final GrFinallyClause finallyBlock = tryStatement.getFinallyClause();
+    GrFinallyClause finallyBlock = tryStatement.getFinallyClause();
     if (finallyBlock != null) {
       if (!openBlockMayCompleteNormally(finallyBlock.getBody())) {
         return false;
       }
     }
-    final GrOpenBlock tryBlock = tryStatement.getTryBlock();
+    GrOpenBlock tryBlock = tryStatement.getTryBlock();
     if (openBlockMayCompleteNormally(tryBlock)) {
       return true;
     }
@@ -175,16 +175,16 @@ public class ControlFlowUtils {
   }
 
   private static boolean ifStatementMayReturnNormally(@Nonnull GrIfStatement ifStatement) {
-    final GrStatement thenBranch = ifStatement.getThenBranch();
+    GrStatement thenBranch = ifStatement.getThenBranch();
     if (statementMayCompleteNormally(thenBranch)) {
       return true;
     }
-    final GrStatement elseBranch = ifStatement.getElseBranch();
+    GrStatement elseBranch = ifStatement.getElseBranch();
     return elseBranch == null || statementMayCompleteNormally(elseBranch);
   }
 
   private static boolean labeledStatementMayCompleteNormally(@Nonnull GrLabeledStatement labeledStatement) {
-    final GrStatement statement = labeledStatement.getStatement();
+    GrStatement statement = labeledStatement.getStatement();
     return statementMayCompleteNormally(statement) || statementIsBreakTarget(statement);
   }
 
@@ -192,8 +192,8 @@ public class ControlFlowUtils {
     if (block == null) {
       return true;
     }
-    final GrStatement[] statements = block.getBlock().getStatements();
-    for (final GrStatement statement : statements) {
+    GrStatement[] statements = block.getBlock().getStatements();
+    for (GrStatement statement : statements) {
       if (!statementMayCompleteNormally(statement)) {
         return false;
       }
@@ -205,8 +205,8 @@ public class ControlFlowUtils {
     if (block == null) {
       return true;
     }
-    final GrStatement[] statements = block.getStatements();
-    for (final GrStatement statement : statements) {
+    GrStatement[] statements = block.getStatements();
+    for (GrStatement statement : statements) {
       if (!statementMayCompleteNormally(statement)) {
         return false;
       }
@@ -215,19 +215,19 @@ public class ControlFlowUtils {
   }
 
   private static boolean statementIsBreakTarget(@Nonnull GrStatement statement) {
-    final BreakFinder breakFinder = new BreakFinder(statement);
+    BreakFinder breakFinder = new BreakFinder(statement);
     statement.accept(breakFinder);
     return breakFinder.breakFound();
   }
 
   public static boolean statementContainsReturn(@Nonnull GrStatement statement) {
-    final ReturnFinder returnFinder = new ReturnFinder();
+    ReturnFinder returnFinder = new ReturnFinder();
     statement.accept(returnFinder);
     return returnFinder.returnFound();
   }
 
   public static boolean statementIsContinueTarget(@Nonnull GrStatement statement) {
-    final ContinueFinder continueFinder = new ContinueFinder(statement);
+    ContinueFinder continueFinder = new ContinueFinder(statement);
     statement.accept(continueFinder);
     return continueFinder.continueFound();
   }
@@ -238,37 +238,37 @@ public class ControlFlowUtils {
   }
 
   public static boolean isInFinallyBlock(@Nonnull GroovyPsiElement element) {
-    final GrFinallyClause containingClause = PsiTreeUtil.getParentOfType(element, GrFinallyClause.class);
+    GrFinallyClause containingClause = PsiTreeUtil.getParentOfType(element, GrFinallyClause.class);
     if (containingClause == null) {
       return false;
     }
-    final GrOpenBlock body = containingClause.getBody();
+    GrOpenBlock body = containingClause.getBody();
     return PsiTreeUtil.isAncestor(body, element, true);
   }
 
   private static boolean isInWhileStatementBody(@Nonnull GroovyPsiElement element) {
-    final GrWhileStatement whileStatement = PsiTreeUtil.getParentOfType(element, GrWhileStatement.class);
+    GrWhileStatement whileStatement = PsiTreeUtil.getParentOfType(element, GrWhileStatement.class);
     if (whileStatement == null) {
       return false;
     }
-    final GrStatement body = whileStatement.getBody();
+    GrStatement body = whileStatement.getBody();
     return PsiTreeUtil.isAncestor(body, element, true);
   }
 
   private static boolean isInForStatementBody(@Nonnull GroovyPsiElement element) {
-    final GrForStatement forStatement = PsiTreeUtil.getParentOfType(element, GrForStatement.class);
+    GrForStatement forStatement = PsiTreeUtil.getParentOfType(element, GrForStatement.class);
     if (forStatement == null) {
       return false;
     }
-    final GrStatement body = forStatement.getBody();
+    GrStatement body = forStatement.getBody();
     return PsiTreeUtil.isAncestor(body, element, true);
   }
 
 
   public static GrStatement stripBraces(@Nonnull GrStatement branch) {
     if (branch instanceof GrBlockStatement) {
-      final GrBlockStatement block = (GrBlockStatement)branch;
-      final GrStatement[] statements = block.getBlock().getStatements();
+      GrBlockStatement block = (GrBlockStatement)branch;
+      GrStatement[] statements = block.getBlock().getStatements();
       if (statements.length == 1) {
         return statements[0];
       }
@@ -287,7 +287,7 @@ public class ControlFlowUtils {
       if (statementToCheck.equals(containingStatement)) {
         return true;
       }
-      final GroovyPsiElement container = getContainingStatement(statementToCheck);
+      GroovyPsiElement container = getContainingStatement(statementToCheck);
       if (container == null) {
         return false;
       }
@@ -309,7 +309,7 @@ public class ControlFlowUtils {
       if (statementToCheck == null) {
         return false;
       }
-      final GrStatement container = getContainingStatement(statementToCheck);
+      GrStatement container = getContainingStatement(statementToCheck);
       if (container == null) {
         return false;
       }
@@ -336,21 +336,21 @@ public class ControlFlowUtils {
     while (true) {
       if (elementToCheck == null) return false;
 
-      final GroovyPsiElement container =
+      GroovyPsiElement container =
         PsiTreeUtil.getParentOfType(elementToCheck, GrStatement.class, GrCodeBlock.class, GrCaseSection.class);
       if (container == null) return false;
 
       if (isLoop(container)) return false;
 
       if (container instanceof GrCaseSection) {
-        final GrSwitchStatement switchStatement = (GrSwitchStatement)container.getParent();
-        final GrCaseSection[] sections = switchStatement.getCaseSections();
+        GrSwitchStatement switchStatement = (GrSwitchStatement)container.getParent();
+        GrCaseSection[] sections = switchStatement.getCaseSections();
         if (container == sections[sections.length - 1]) return false;
       }
 
       if (container instanceof GrCodeBlock) {
         if (elementToCheck instanceof GrStatement) {
-          final GrCodeBlock codeBlock = (GrCodeBlock)container;
+          GrCodeBlock codeBlock = (GrCodeBlock)container;
           if (!statementIsLastInCodeBlock(codeBlock, (GrStatement)elementToCheck)) {
             return false;
           }
@@ -377,7 +377,7 @@ public class ControlFlowUtils {
       if (!(statementToCheck instanceof GrExpression || statementToCheck instanceof GrReturnStatement)) {
         return false;
       }
-      final GroovyPsiElement container = getContainingStatementOrBlock(statementToCheck);
+      GroovyPsiElement container = getContainingStatementOrBlock(statementToCheck);
       if (container == null) {
         return false;
       }
@@ -414,9 +414,9 @@ public class ControlFlowUtils {
   }
 
   private static boolean statementIsLastInBlock(@Nonnull GrBlockStatement block, @Nonnull GrStatement statement) {
-    final GrStatement[] statements = block.getBlock().getStatements();
+    GrStatement[] statements = block.getBlock().getStatements();
     for (int i = statements.length - 1; i >= 0; i--) {
-      final GrStatement childStatement = statements[i];
+      GrStatement childStatement = statements[i];
       if (statement.equals(childStatement)) {
         return true;
       }
@@ -428,9 +428,9 @@ public class ControlFlowUtils {
   }
 
   private static boolean statementIsLastInCodeBlock(@Nonnull GrCodeBlock block, @Nonnull GrStatement statement) {
-    final GrStatement[] statements = block.getStatements();
+    GrStatement[] statements = block.getStatements();
     for (int i = statements.length - 1; i >= 0; i--) {
-      final GrStatement childStatement = statements[i];
+      GrStatement childStatement = statements[i];
       if (statement.equals(childStatement)) {
         return true;
       }
@@ -444,10 +444,10 @@ public class ControlFlowUtils {
   public static List<GrStatement> collectReturns(@Nullable PsiElement element) {
     return collectReturns(element, element instanceof GrCodeBlock || element instanceof GroovyFile);
   }
-  public static List<GrStatement> collectReturns(@Nullable PsiElement element, final boolean allExitPoints) {
+  public static List<GrStatement> collectReturns(@Nullable PsiElement element, boolean allExitPoints) {
     if (element == null) return Collections.emptyList();
 
-    final Instruction[] flow;
+    Instruction[] flow;
     if (element instanceof GrControlFlowOwner) {
       flow = ((GrControlFlowOwner)element).getControlFlow();
     }
@@ -463,7 +463,7 @@ public class ControlFlowUtils {
     visitAllExitPointsInner(flow[flow.length - 1], flow[0], visited, new ExitPointVisitor() {
       @Override
       public boolean visitExitPoint(Instruction instruction, @Nullable GrExpression returnValue) {
-        final PsiElement element = instruction.getElement();
+        PsiElement element = instruction.getElement();
         if (element instanceof GrReturnStatement || (allExitPoints && instruction instanceof MaybeReturnInstruction)) {
           res.add((GrStatement)element);
         }
@@ -481,9 +481,9 @@ public class ControlFlowUtils {
   }
 
   public static boolean isIncOrDecOperand(GrReferenceExpression referenceExpression) {
-    final PsiElement parent = referenceExpression.getParent();
+    PsiElement parent = referenceExpression.getParent();
     if (parent instanceof GrUnaryExpression) {
-      final IElementType opType = ((GrUnaryExpression)parent).getOperationTokenType();
+      IElementType opType = ((GrUnaryExpression)parent).getOperationTokenType();
       return opType == GroovyTokenTypes.mDEC || opType == GroovyTokenTypes.mINC;
     }
 
@@ -500,7 +500,7 @@ public class ControlFlowUtils {
   }
 
   @Nullable
-  public static ReadWriteVariableInstruction findRWInstruction(final GrReferenceExpression refExpr, final Instruction[] flow) {
+  public static ReadWriteVariableInstruction findRWInstruction(GrReferenceExpression refExpr, Instruction[] flow) {
     for (Instruction instruction : flow) {
       if (instruction instanceof ReadWriteVariableInstruction && instruction.getElement() == refExpr) {
         return (ReadWriteVariableInstruction)instruction;
@@ -513,7 +513,7 @@ public class ControlFlowUtils {
   public static Instruction findNearestInstruction(PsiElement place, Instruction[] flow) {
     List<Instruction> applicable = new ArrayList<Instruction>();
     for (Instruction instruction : flow) {
-      final PsiElement element = instruction.getElement();
+      PsiElement element = instruction.getElement();
       if (element == null) continue;
 
       if (element == place) return instruction;
@@ -531,10 +531,10 @@ public class ControlFlowUtils {
         PsiElement e2 = o2.getElement();
         LOG.assertTrue(e1 != null);
         LOG.assertTrue(e2 != null);
-        final TextRange t1 = e1.getTextRange();
-        final TextRange t2 = e2.getTextRange();
-        final int s1 = t1.getStartOffset();
-        final int s2 = t2.getStartOffset();
+        TextRange t1 = e1.getTextRange();
+        TextRange t2 = e2.getTextRange();
+        int s1 = t1.getStartOffset();
+        int s2 = t2.getStartOffset();
 
         if (s1 == s2) {
           return t1.getEndOffset() - t2.getEndOffset();
@@ -582,7 +582,7 @@ public class ControlFlowUtils {
         return;
       }
       super.visitBreakStatement(breakStatement);
-      final GrStatement exitedStatement = breakStatement.findTargetStatement();
+      GrStatement exitedStatement = breakStatement.findTargetStatement();
       if (exitedStatement == null) {
         return;
       }
@@ -611,7 +611,7 @@ public class ControlFlowUtils {
         return;
       }
       super.visitContinueStatement(continueStatement);
-      final GrStatement exitedStatement =
+      GrStatement exitedStatement =
           continueStatement.findTargetStatement();
       if (exitedStatement == null) {
         return;
@@ -651,7 +651,7 @@ public class ControlFlowUtils {
 
   public static boolean visitAllExitPoints(@Nullable GrControlFlowOwner block, ExitPointVisitor visitor) {
     if (block == null) return true;
-    final Instruction[] flow = block.getControlFlow();
+    Instruction[] flow = block.getControlFlow();
     boolean[] visited = new boolean[flow.length];
     return visitAllExitPointsInner(flow[flow.length - 1], flow[0], visited, visitor);
   }
@@ -680,7 +680,7 @@ public class ControlFlowUtils {
 
     PsiElement element = last.getElement();
     if (element != null) {
-      final GrExpression returnValue;
+      GrExpression returnValue;
       if (element instanceof GrReturnStatement) {
         returnValue = ((GrReturnStatement)element).getReturnValue();
       }
@@ -724,18 +724,18 @@ public class ControlFlowUtils {
    * @param ahead if true search for next write. if false searches for previous write
    * @return all write instructions leading to (or preceding) the place
    */
-  public static ReadWriteVariableInstruction[] findWriteAccess(GrVariable local, final PsiElement place, boolean ahead) {
+  public static ReadWriteVariableInstruction[] findWriteAccess(GrVariable local, PsiElement place, boolean ahead) {
     List<ReadWriteVariableInstruction> res = findAccess(local, place, ahead, true);
     return res.toArray(new ReadWriteVariableInstruction[res.size()]);
   }
 
-  public static List<ReadWriteVariableInstruction> findAccess(GrVariable local, final PsiElement place, boolean ahead, boolean writeAccessOnly) {
+  public static List<ReadWriteVariableInstruction> findAccess(GrVariable local, PsiElement place, boolean ahead, boolean writeAccessOnly) {
     LOG.assertTrue(!(local instanceof GrField), local.getClass());
 
-    final GrControlFlowOwner owner = findControlFlowOwner(local);
+    GrControlFlowOwner owner = findControlFlowOwner(local);
     assert owner != null;
 
-    final Instruction cur = findInstruction(place, owner.getControlFlow());
+    Instruction cur = findInstruction(place, owner.getControlFlow());
 
     if (cur == null) {
       throw new IllegalArgumentException("place is not in the flow");
@@ -747,8 +747,8 @@ public class ControlFlowUtils {
   public static List<ReadWriteVariableInstruction> findAccess(GrVariable local, boolean ahead, boolean writeAccessOnly, Instruction cur) {
     String name = local.getName();
 
-    final ArrayList<ReadWriteVariableInstruction> result = new ArrayList<ReadWriteVariableInstruction>();
-    final HashSet<Instruction> visited = new HashSet<Instruction>();
+    ArrayList<ReadWriteVariableInstruction> result = new ArrayList<ReadWriteVariableInstruction>();
+    HashSet<Instruction> visited = new HashSet<Instruction>();
 
     visited.add(cur);
 
@@ -810,7 +810,7 @@ public class ControlFlowUtils {
   @Nonnull
   public static ArrayList<BitSet> inferWriteAccessMap(final Instruction[] flow, final GrVariable var) {
 
-    final Semilattice<BitSet> sem = new Semilattice<BitSet>() {
+    Semilattice<BitSet> sem = new Semilattice<BitSet>() {
       @Override
       public BitSet join(ArrayList<BitSet> ins) {
         BitSet result = new BitSet(flow.length);
@@ -832,10 +832,10 @@ public class ControlFlowUtils {
         if (!(instruction instanceof ReadWriteVariableInstruction)) return;
         if (!((ReadWriteVariableInstruction)instruction).isWrite()) return;
 
-        final PsiElement element = instruction.getElement();
+        PsiElement element = instruction.getElement();
         if (element instanceof GrVariable && element != var) return;
         if (element instanceof GrReferenceExpression) {
-          final GrReferenceExpression ref = (GrReferenceExpression)element;
+          GrReferenceExpression ref = (GrReferenceExpression)element;
           if (ref.isQualified() || ref.resolve() != var) {
             return;
           }

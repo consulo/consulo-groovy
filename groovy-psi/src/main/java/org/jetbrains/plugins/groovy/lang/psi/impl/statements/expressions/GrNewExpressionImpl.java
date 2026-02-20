@@ -62,7 +62,7 @@ import java.util.function.Function;
  */
 public class GrNewExpressionImpl extends GrCallExpressionImpl implements GrNewExpression {
     private static final Function<GrNewExpressionImpl, PsiType> MY_TYPE_CALCULATOR = newExpression -> {
-        final GrAnonymousClassDefinition anonymous = newExpression.getAnonymousClassDefinition();
+        GrAnonymousClassDefinition anonymous = newExpression.getAnonymousClassDefinition();
         if (anonymous != null) {
             return new GrAnonymousClassType(
                 LanguageLevel.JDK_1_5,
@@ -125,11 +125,11 @@ public class GrNewExpressionImpl extends GrCallExpressionImpl implements GrNewEx
 
     @Override
     @RequiredWriteAction
-    public GrNamedArgument addNamedArgument(final GrNamedArgument namedArgument) throws IncorrectOperationException {
-        final GrArgumentList list = getArgumentList();
+    public GrNamedArgument addNamedArgument(GrNamedArgument namedArgument) throws IncorrectOperationException {
+        GrArgumentList list = getArgumentList();
         if (list == null) { //so it is not anonymous class declaration
-            final GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(getProject());
-            final GrArgumentList newList = factory.createExpressionArgumentList();
+            GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(getProject());
+            GrArgumentList newList = factory.createExpressionArgumentList();
             PsiElement last = getLastChild();
             assert last != null;
             while (last.getPrevSibling() instanceof PsiWhiteSpace || last.getPrevSibling() instanceof PsiErrorElement) {
@@ -146,7 +146,7 @@ public class GrNewExpressionImpl extends GrCallExpressionImpl implements GrNewEx
     @Override
     @RequiredReadAction
     public GrArgumentList getArgumentList() {
-        final GrAnonymousClassDefinition anonymous = getAnonymousClassDefinition();
+        GrAnonymousClassDefinition anonymous = getAnonymousClassDefinition();
         if (anonymous != null) {
             return anonymous.getArgumentListGroovy();
         }
@@ -157,7 +157,7 @@ public class GrNewExpressionImpl extends GrCallExpressionImpl implements GrNewEx
     @Nullable
     @RequiredReadAction
     public GrExpression getQualifier() {
-        final PsiElement[] children = getChildren();
+        PsiElement[] children = getChildren();
         for (PsiElement child : children) {
             if (child instanceof GrExpression expression) {
                 return expression;
@@ -171,7 +171,7 @@ public class GrNewExpressionImpl extends GrCallExpressionImpl implements GrNewEx
 
     @Override
     public GrCodeReferenceElement getReferenceElement() {
-        final GrAnonymousClassDefinition anonymous = getAnonymousClassDefinition();
+        GrAnonymousClassDefinition anonymous = getAnonymousClassDefinition();
         if (anonymous != null) {
             return anonymous.getBaseClassReferenceGroovy();
         }
@@ -180,7 +180,7 @@ public class GrNewExpressionImpl extends GrCallExpressionImpl implements GrNewEx
 
     @Override
     public GroovyResolveResult[] multiResolveClass() {
-        final GrCodeReferenceElement referenceElement = getReferenceElement();
+        GrCodeReferenceElement referenceElement = getReferenceElement();
         if (referenceElement != null) {
             return referenceElement.multiResolve(false);
         }
@@ -189,7 +189,7 @@ public class GrNewExpressionImpl extends GrCallExpressionImpl implements GrNewEx
 
     @Override
     public int getArrayCount() {
-        final GrArrayDeclaration arrayDeclaration = getArrayDeclaration();
+        GrArrayDeclaration arrayDeclaration = getArrayDeclaration();
         if (arrayDeclaration == null) {
             return 0;
         }
@@ -228,14 +228,14 @@ public class GrNewExpressionImpl extends GrCallExpressionImpl implements GrNewEx
     @Override
     @Nonnull
     public GroovyResolveResult[] getCallVariants(@Nullable GrExpression upToArgument) {
-        final GrCodeReferenceElement referenceElement = getReferenceElement();
+        GrCodeReferenceElement referenceElement = getReferenceElement();
         if (referenceElement == null) {
             return GroovyResolveResult.EMPTY_ARRAY;
         }
 
         List<GroovyResolveResult> result = new ArrayList<>();
         for (GroovyResolveResult classResult : referenceElement.multiResolve(false)) {
-            final PsiElement element = classResult.getElement();
+            PsiElement element = classResult.getElement();
             if (element instanceof PsiClass psiClass) {
                 ContainerUtil.addAll(
                     result,
@@ -279,7 +279,7 @@ public class GrNewExpressionImpl extends GrCallExpressionImpl implements GrNewEx
             return PsiUtil.getConstructorCandidates(ref, classCandidate, null);
         }
 
-        final GrArgumentList argumentList = getArgumentList();
+        GrArgumentList argumentList = getArgumentList();
         if (argumentList == null) {
             return GroovyResolveResult.EMPTY_ARRAY;
         }
@@ -289,15 +289,15 @@ public class GrNewExpressionImpl extends GrCallExpressionImpl implements GrNewEx
             GroovyResolveResult[] constructorResults =
                 PsiUtil.getConstructorCandidates(ref, classCandidate, new PsiType[]{mapType}); //one Map parameter, actually
             for (GroovyResolveResult result : constructorResults) {
-                final PsiElement resolved = result.getElement();
+                PsiElement resolved = result.getElement();
                 if (resolved instanceof PsiMethod constructor) {
-                    final PsiParameter[] parameters = constructor.getParameterList().getParameters();
+                    PsiParameter[] parameters = constructor.getParameterList().getParameters();
                     if (parameters.length == 1 && InheritanceUtil.isInheritor(parameters[0].getType(), CommonClassNames.JAVA_UTIL_MAP)) {
                         return constructorResults;
                     }
                 }
             }
-            final GroovyResolveResult[] emptyConstructors = PsiUtil.getConstructorCandidates(ref, classCandidate, PsiType.EMPTY_ARRAY);
+            GroovyResolveResult[] emptyConstructors = PsiUtil.getConstructorCandidates(ref, classCandidate, PsiType.EMPTY_ARRAY);
             if (emptyConstructors.length > 0) {
                 return emptyConstructors;
             }
@@ -313,7 +313,7 @@ public class GrNewExpressionImpl extends GrCallExpressionImpl implements GrNewEx
 
     @Nullable
     private static GroovyResolveResult inferClassCandidate(@Nonnull GrCodeReferenceElement ref) {
-        final GroovyResolveResult[] classResults = ref.multiResolve(false);
+        GroovyResolveResult[] classResults = ref.multiResolve(false);
         for (GroovyResolveResult result : classResults) {
             if (result.getElement() instanceof PsiClass) {
                 return result;

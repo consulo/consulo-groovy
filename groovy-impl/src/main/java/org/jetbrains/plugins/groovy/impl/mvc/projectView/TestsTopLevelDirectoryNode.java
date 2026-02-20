@@ -32,8 +32,8 @@ public class TestsTopLevelDirectoryNode extends TopLevelDirectoryNode {
   public TestsTopLevelDirectoryNode(Module module,
                                     PsiDirectory testDir,
                                     ViewSettings viewSettings,
-                                    final String title,
-                                    final Image icon, final Image methodIcon) {
+                                    String title,
+                                    Image icon, Image methodIcon) {
     super(module, testDir, viewSettings, title, icon, TESTS_FOLDER);
     myMethodIcon = methodIcon;
   }

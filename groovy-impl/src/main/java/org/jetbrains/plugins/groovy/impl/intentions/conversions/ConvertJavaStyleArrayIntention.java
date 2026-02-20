@@ -42,12 +42,12 @@ public class ConvertJavaStyleArrayIntention extends Intention {
 
     @Override
     protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
-        final GrClosableBlock block = ((GrMethodCallExpression) element).getClosureArguments()[0];
-        final String text = block.getText();
+        GrClosableBlock block = ((GrMethodCallExpression) element).getClosureArguments()[0];
+        String text = block.getText();
         int start = block.getLBrace().getStartOffsetInParent() + 1;
         int finish = block.getRBrace().getStartOffsetInParent();
         String newText = "[" + text.substring(start, finish) + "]";
-        final GrExpression newExpr = GroovyPsiElementFactory.getInstance(element.getProject()).createExpressionFromText(newText);
+        GrExpression newExpr = GroovyPsiElementFactory.getInstance(element.getProject()).createExpressionFromText(newText);
         ((GrMethodCallExpression) element).replaceWithStatement(newExpr);
     }
 
@@ -60,7 +60,7 @@ public class ConvertJavaStyleArrayIntention extends Intention {
                 if (!(element instanceof GrMethodCallExpression)) {
                     return false;
                 }
-                final GrExpression expression = ((GrMethodCallExpression) element).getInvokedExpression();
+                GrExpression expression = ((GrMethodCallExpression) element).getInvokedExpression();
                 if (!(expression instanceof GrNewExpression)) {
                     return false;
                 }
@@ -72,11 +72,11 @@ public class ConvertJavaStyleArrayIntention extends Intention {
                     return false;
                 }
 
-                final GrClosableBlock[] closureArguments = ((GrMethodCallExpression) element).getClosureArguments();
+                GrClosableBlock[] closureArguments = ((GrMethodCallExpression) element).getClosureArguments();
                 if (closureArguments.length != 1) {
                     return false;
                 }
-                final GrClosableBlock block = closureArguments[0];
+                GrClosableBlock block = closureArguments[0];
                 if (block.getLBrace() == null || block.getRBrace() == null) {
                     return false;
                 }

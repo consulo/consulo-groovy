@@ -90,14 +90,14 @@ public class CreateParameterForFieldIntention extends Intention {
     }
 
     @Override
-    protected void processIntention(@Nonnull PsiElement element, final Project project, final Editor editor)
+    protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor)
         throws IncorrectOperationException {
-        final List<GrField> candidates = findFieldCandidates(element);
+        List<GrField> candidates = findFieldCandidates(element);
         if (candidates != null) {
             performForConstructor(element, project, editor, candidates);
         }
         else {
-            final List<GrMethod> constructors = findConstructorCandidates(element);
+            List<GrMethod> constructors = findConstructorCandidates(element);
             performForField(element, project, editor, constructors);
         }
     }
@@ -222,7 +222,7 @@ public class CreateParameterForFieldIntention extends Intention {
         for (int i = 0; i < constructorParameters.length; i++) {
             parameters.add(new GrParameterInfo(constructorParameters[i], i));
         }
-        final String[] suggestedNames =
+        String[] suggestedNames =
             JavaCodeStyleManager.getInstance(project)
                 .suggestVariableName(VariableKind.PARAMETER, selectedValue.getName(), null, null).names;
 
@@ -250,16 +250,16 @@ public class CreateParameterForFieldIntention extends Intention {
             new GrChangeInfoImpl(constructor, null, null, constructor.getName(), parameters, thrownExceptionInfos, false);
 
         final String finalParameterName = parameterName;
-        final GrChangeSignatureProcessor processor = new GrChangeSignatureProcessor(project, grChangeInfo) {
+        GrChangeSignatureProcessor processor = new GrChangeSignatureProcessor(project, grChangeInfo) {
             @Override
             protected void performRefactoring(UsageInfo[] usages) {
                 super.performRefactoring(usages);
 
-                final GrOpenBlock block = constructor.getBlock();
+                GrOpenBlock block = constructor.getBlock();
                 LOG.assertTrue(block != null);
-                final GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(project);
+                GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(project);
 
-                final String text;
+                String text;
                 if (StringUtil.equals(selectedValue.getName(), finalParameterName)) {
                     text = "this." + selectedValue.getName() + " = " + finalParameterName;
                 }
@@ -267,9 +267,9 @@ public class CreateParameterForFieldIntention extends Intention {
                     text = selectedValue.getName() + " = " + finalParameterName;
                 }
 
-                final GrStatement assignment = factory.createStatementFromText(text);
-                final GrStatement statement = block.addStatementBefore(assignment, null);
-                final GrReferenceExpression ref = (GrReferenceExpression) ((GrAssignmentExpression) statement).getLValue();
+                GrStatement assignment = factory.createStatementFromText(text);
+                GrStatement statement = block.addStatementBefore(assignment, null);
+                GrReferenceExpression ref = (GrReferenceExpression) ((GrAssignmentExpression) statement).getLValue();
                 if (!PsiManager.getInstance(project).areElementsEquivalent(ref.resolve(), selectedValue)) {
                     PsiUtil.qualifyMemberReference(ref, selectedValue, selectedValue.getName());
                 }
@@ -289,18 +289,18 @@ public class CreateParameterForFieldIntention extends Intention {
     static class MyPredicate implements PsiElementPredicate {
         @Override
         public boolean satisfiedBy(PsiElement element) {
-            final List<GrField> candidates = findFieldCandidates(element);
+            List<GrField> candidates = findFieldCandidates(element);
             if (candidates != null && candidates.size() > 0) {
                 return true;
             }
-            final List<GrMethod> constructors = findConstructorCandidates(element);
+            List<GrMethod> constructors = findConstructorCandidates(element);
             return constructors != null && constructors.size() > 0;
         }
     }
 
     @Nullable
     private static List<GrField> findFieldCandidates(PsiElement element) {
-        final GrMethod constructor = PsiTreeUtil.getParentOfType(element, GrMethod.class);
+        GrMethod constructor = PsiTreeUtil.getParentOfType(element, GrMethod.class);
         if (constructor == null || !constructor.isConstructor()) {
             return null;
         }
@@ -310,7 +310,7 @@ public class CreateParameterForFieldIntention extends Intention {
         if (PsiTreeUtil.isAncestor(constructor.getBlock(), element, false)) {
             return null;
         }
-        final PsiClass clazz = constructor.getContainingClass();
+        PsiClass clazz = constructor.getContainingClass();
 
         if (!(clazz instanceof GrTypeDefinition)) {
             return null;
@@ -320,7 +320,7 @@ public class CreateParameterForFieldIntention extends Intention {
 
     private static List<GrField> findCandidates(GrMethod constructor, final GrTypeDefinition clazz) {
         final List<GrField> usedFields = new ArrayList<GrField>();
-        final GrOpenBlock block = constructor.getBlock();
+        GrOpenBlock block = constructor.getBlock();
         if (block == null) {
             return usedFields;
         }
@@ -330,7 +330,7 @@ public class CreateParameterForFieldIntention extends Intention {
             @Override
             public void visitReferenceExpression(GrReferenceExpression referenceExpression) {
                 super.visitReferenceExpression(referenceExpression);
-                final PsiElement resolved = referenceExpression.resolve();
+                PsiElement resolved = referenceExpression.resolve();
                 if (resolved instanceof GrField &&
                     manager.areElementsEquivalent(((GrField) resolved).getContainingClass(), clazz) &&
                     PsiUtil.isAccessedForWriting(referenceExpression)) {
@@ -366,11 +366,11 @@ public class CreateParameterForFieldIntention extends Intention {
     }
 
     private static List<GrField> findCandidatesCached(final GrMethod constructor, final GrTypeDefinition clazz) {
-        final CachedValue<List<GrField>> value = constructor.getUserData(FIELD_CANDIDATES);
+        CachedValue<List<GrField>> value = constructor.getUserData(FIELD_CANDIDATES);
         if (value != null && value.getValue() != null) {
             return value.getValue();
         }
-        final CachedValue<List<GrField>> cachedValue =
+        CachedValue<List<GrField>> cachedValue =
             CachedValuesManager.getManager(constructor.getProject()).createCachedValue(new CachedValueProvider<List<GrField>>() {
                 @Override
                 public Result<List<GrField>> compute() {
@@ -384,7 +384,7 @@ public class CreateParameterForFieldIntention extends Intention {
 
     @Nullable
     private static List<GrMethod> findConstructorCandidates(PsiElement element) {
-        final GrField field = PsiTreeUtil.getParentOfType(element, GrField.class);
+        GrField field = PsiTreeUtil.getParentOfType(element, GrField.class);
         if (field == null) {
             return null;
         }
@@ -392,11 +392,11 @@ public class CreateParameterForFieldIntention extends Intention {
     }
 
     private static List<GrMethod> findConstructorCandidates(final GrField field, GrTypeDefinition psiClass) {
-        final List<GrMethod> result = new ArrayList<GrMethod>();
-        final PsiMethod[] constructors = psiClass.getConstructors();
+        List<GrMethod> result = new ArrayList<GrMethod>();
+        PsiMethod[] constructors = psiClass.getConstructors();
         final PsiManager manager = field.getManager();
         for (PsiMethod constructor : constructors) {
-            final List<GrField> fields = findCandidatesCached(((GrMethod) constructor), psiClass);
+            List<GrField> fields = findCandidatesCached(((GrMethod) constructor), psiClass);
             if (ContainerUtil.find(fields, new Condition<GrField>() {
                 @Override
                 public boolean value(GrField grField) {

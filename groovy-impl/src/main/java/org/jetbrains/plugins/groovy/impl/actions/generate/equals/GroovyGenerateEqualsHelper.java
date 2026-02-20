@@ -117,7 +117,7 @@ public class GroovyGenerateEqualsHelper {
 
   public void run() {
     try {
-      final Collection<PsiMethod> members = generateMembers();
+      Collection<PsiMethod> members = generateMembers();
       for (PsiElement member : members) {
         myClass.add(member);
       }
@@ -156,9 +156,9 @@ public class GroovyGenerateEqualsHelper {
   }
 
 
-  private void addDoubleFieldComparison(final StringBuffer buffer, final PsiField field) {
-    final @NonNls String type = PsiType.DOUBLE.equals(field.getType()) ? "Double" : "Float";
-    final Object[] parameters = new Object[]{type, myClassInstanceName, field.getName()};
+  private void addDoubleFieldComparison(StringBuffer buffer, PsiField field) {
+    @NonNls String type = PsiType.DOUBLE.equals(field.getType()) ? "Double" : "Float";
+    Object[] parameters = new Object[]{type, myClassInstanceName, field.getName()};
     DOUBLE_FIELD_COMPARER_MF.format(parameters, buffer, null);
   }
 
@@ -167,7 +167,7 @@ public class GroovyGenerateEqualsHelper {
   @NonNls private static final MessageFormat DOUBLE_FIELD_COMPARER_MF = new MessageFormat("if ({0}.compare({1}.{2}, {2}) != 0) return false\n");
 
   private void addArrayEquals(StringBuffer buffer, PsiField field) {
-    final PsiType fieldType = field.getType();
+    PsiType fieldType = field.getType();
     if (isNestedArray(fieldType)) {
       buffer.append(" ");
       buffer.append(GroovyCodeInsightBundle.message("generate.equals.compare.nested.arrays.comment", field.getName()));
@@ -242,12 +242,12 @@ public class GroovyGenerateEqualsHelper {
 
   private PsiMethod createEquals() throws IncorrectOperationException
   {
-    final JavaCodeStyleManager codeStyleManager = JavaCodeStyleManager.getInstance(myProject);
+    JavaCodeStyleManager codeStyleManager = JavaCodeStyleManager.getInstance(myProject);
     String[] nameSuggestions = codeStyleManager.suggestVariableName(VariableKind.PARAMETER, null, null, PsiType.getJavaLangObject(myClass.getManager(), myClass.getResolveScope())).names;
-    final String objectBaseName = nameSuggestions.length > 0 ? nameSuggestions[0] : BASE_OBJECT_PARAMETER_NAME;
+    String objectBaseName = nameSuggestions.length > 0 ? nameSuggestions[0] : BASE_OBJECT_PARAMETER_NAME;
     myParameterName = getUniqueLocalVarName(objectBaseName, myEqualsFields);
     //todo isApplicable it
-    final PsiType classType = TypesUtil.createType(myClass.getQualifiedName(), myClass.getContext());
+    PsiType classType = TypesUtil.createType(myClass.getQualifiedName(), myClass.getContext());
 
     nameSuggestions = codeStyleManager.suggestVariableName(VariableKind.LOCAL_VARIABLE, null, null, classType).names;
     String instanceBaseName = nameSuggestions.length > 0 && nameSuggestions[0].length() < 10 ? nameSuggestions[0] : BASE_OBJECT_LOCAL_NAME;
@@ -265,7 +265,7 @@ public class GroovyGenerateEqualsHelper {
 
       for (PsiField field : equalsFields) {
         if (!field.hasModifierProperty(PsiModifier.STATIC)) {
-          final PsiType type = field.getType();
+          PsiType type = field.getType();
           if (type instanceof PsiArrayType) {
             addArrayEquals(buffer, field);
           }
@@ -279,7 +279,7 @@ public class GroovyGenerateEqualsHelper {
           }
           else {
             if (type instanceof PsiClassType) {
-              final PsiClass aClass = ((PsiClassType)type).resolve();
+              PsiClass aClass = ((PsiClassType)type).resolve();
               if (aClass != null && aClass.isEnum()) {
                 addFieldComparison(buffer, field);
                 continue;
@@ -293,7 +293,7 @@ public class GroovyGenerateEqualsHelper {
     buffer.append("\nreturn true\n}");
 
     GrMethod result = myFactory.createMethodFromText(buffer.toString());
-    final PsiParameter parameter = result.getParameterList().getParameters()[0];
+    PsiParameter parameter = result.getParameterList().getParameters()[0];
     PsiUtil.setModifierProperty(parameter, PsiModifier.FINAL, CodeStyleSettingsManager.getSettings(myProject).GENERATE_FINAL_PARAMETERS);
 
     try {
@@ -314,7 +314,7 @@ public class GroovyGenerateEqualsHelper {
       buffer.append("int hashCode() {\n");
       if (!mySuperHasHashCode && myHashCodeFields.length == 1) {
         PsiField field = myHashCodeFields[0];
-        final String tempName = addTempForOneField(field, buffer);
+        String tempName = addTempForOneField(field, buffer);
         buffer.append("return ");
         if (field.getType() instanceof PsiPrimitiveType) {
           addPrimitiveFieldHashCode(buffer, field, tempName);
@@ -324,7 +324,7 @@ public class GroovyGenerateEqualsHelper {
         buffer.append("\n}");
       } else if (myHashCodeFields.length > 0) {
         CodeStyleSettings settings = CodeStyleSettingsManager.getSettings(myProject);
-        final String resultName = getUniqueLocalVarName(settings.LOCAL_VARIABLE_NAME_PREFIX + RESULT_VARIABLE, myHashCodeFields);
+        String resultName = getUniqueLocalVarName(settings.LOCAL_VARIABLE_NAME_PREFIX + RESULT_VARIABLE, myHashCodeFields);
 
         buffer.append("int ");
         buffer.append(resultName);
@@ -395,7 +395,7 @@ public class GroovyGenerateEqualsHelper {
   private String addTempDeclaration(StringBuilder buffer) {
     for (PsiField hashCodeField : myHashCodeFields) {
       if (PsiType.DOUBLE.equals(hashCodeField.getType())) {
-        final String name = getUniqueLocalVarName(TEMP_VARIABLE, myHashCodeFields);
+        String name = getUniqueLocalVarName(TEMP_VARIABLE, myHashCodeFields);
         buffer.append("long ").append(name).append("\n");
         return name;
       }
@@ -407,7 +407,7 @@ public class GroovyGenerateEqualsHelper {
   @SuppressWarnings("HardCodedStringLiteral")
   private String addTempForOneField(PsiField field, StringBuilder buffer) {
     if (PsiType.DOUBLE.equals(field.getType())) {
-      final String name = getUniqueLocalVarName(TEMP_VARIABLE, myHashCodeFields);
+      String name = getUniqueLocalVarName(TEMP_VARIABLE, myHashCodeFields);
       CodeStyleSettings settings = CodeStyleSettingsManager.getSettings(myProject);
       if (settings.GENERATE_FINAL_LOCALS) {
         buffer.append("final ");
@@ -428,7 +428,7 @@ public class GroovyGenerateEqualsHelper {
 
   @SuppressWarnings("HardCodedStringLiteral")
   private void addFieldHashCode(StringBuilder buffer, PsiField field) {
-    final String name = field.getName();
+    String name = field.getName();
     if (myNonNullSet.contains(field)) {
       adjustHashCodeToArrays(buffer, field, name);
     } else {
@@ -441,7 +441,7 @@ public class GroovyGenerateEqualsHelper {
   }
 
   @SuppressWarnings("HardCodedStringLiteral")
-  private static void adjustHashCodeToArrays(StringBuilder buffer, final PsiField field, final String name) {
+  private static void adjustHashCodeToArrays(StringBuilder buffer, PsiField field, String name) {
     if (field.getType() instanceof PsiArrayType && LanguageLevel.JDK_1_5.compareTo(PsiUtil.getLanguageLevel(field)) <= 0) {
       buffer.append("Arrays.hashCode(");
       buffer.append(name);
@@ -472,8 +472,8 @@ public class GroovyGenerateEqualsHelper {
     public int compare(PsiField f1, PsiField f2) {
       if (f1.getType() instanceof PsiPrimitiveType && !(f2.getType() instanceof PsiPrimitiveType)) return -1;
       if (!(f1.getType() instanceof PsiPrimitiveType) && f2.getType() instanceof PsiPrimitiveType) return 1;
-      final String name1 = f1.getName();
-      final String name2 = f2.getName();
+      String name1 = f1.getName();
+      String name2 = f2.getName();
       assert name1 != null && name2 != null;
       return name1.compareTo(name2);
     }
@@ -501,16 +501,16 @@ public class GroovyGenerateEqualsHelper {
 
   public static boolean isNestedArray(PsiType aType) {
     if (!(aType instanceof PsiArrayType)) return false;
-    final PsiType componentType = ((PsiArrayType) aType).getComponentType();
+    PsiType componentType = ((PsiArrayType) aType).getComponentType();
     return componentType instanceof PsiArrayType;
   }
 
   public static boolean isArrayOfObjects(PsiType aType) {
     if (!(aType instanceof PsiArrayType)) return false;
-    final PsiType componentType = ((PsiArrayType) aType).getComponentType();
-    final PsiClass psiClass = PsiUtil.resolveClassInType(componentType);
+    PsiType componentType = ((PsiArrayType) aType).getComponentType();
+    PsiClass psiClass = PsiUtil.resolveClassInType(componentType);
     if (psiClass == null) return false;
-    final String qName = psiClass.getQualifiedName();
+    String qName = psiClass.getQualifiedName();
     return CommonClassNames.JAVA_LANG_OBJECT.equals(qName);
   }
 
@@ -519,7 +519,7 @@ public class GroovyGenerateEqualsHelper {
   }
 
   public static MethodSignature getEqualsSignature(Project project, GlobalSearchScope scope) {
-    final PsiClassType javaLangObject = PsiType.getJavaLangObject(PsiManager.getInstance(project), scope);
+    PsiClassType javaLangObject = PsiType.getJavaLangObject(PsiManager.getInstance(project), scope);
     return MethodSignatureUtil
         .createMethodSignature("equals", new PsiType[]{javaLangObject}, PsiTypeParameter.EMPTY_ARRAY, PsiSubstitutor.EMPTY);
   }

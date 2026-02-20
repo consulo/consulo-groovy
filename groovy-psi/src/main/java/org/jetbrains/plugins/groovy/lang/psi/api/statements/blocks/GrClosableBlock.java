@@ -54,11 +54,11 @@ public interface GrClosableBlock extends GrCodeBlock, GrFunctionalExpression
 
 	boolean isVarArgs();
 
-	boolean processClosureDeclarations(final @Nonnull PsiScopeProcessor placeProcessor,
-									   final @Nonnull PsiScopeProcessor nonCodeProcessor,
-									   final @Nonnull ResolveState _state,
-									   final @Nullable PsiElement lastParent,
-									   final @Nonnull PsiElement place);
+	boolean processClosureDeclarations(@Nonnull PsiScopeProcessor placeProcessor,
+                                       @Nonnull PsiScopeProcessor nonCodeProcessor,
+                                       @Nonnull ResolveState _state,
+                                       @Nullable PsiElement lastParent,
+                                       @Nonnull PsiElement place);
 
 	@Nonnull
 	PsiType getOwnerType();

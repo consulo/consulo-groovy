@@ -34,7 +34,7 @@ public class MaybeReturnInstruction extends InstructionImpl {
   public boolean mayReturnValue() {
     GrExpression expression = (GrExpression) getElement();
     assert expression != null;
-    final PsiType type = expression.getType();
+    PsiType type = expression.getType();
     return type != PsiType.VOID;
   }
 

@@ -87,17 +87,17 @@ public class GroovyHotSwapper extends JavaProgramPatcher {
       return;
     }
 
-    final Project project = ((RunConfiguration)configuration).getProject();
+    Project project = ((RunConfiguration)configuration).getProject();
     if (project == null) {
       return;
     }
 
     if (configuration instanceof ModuleRunProfile) {
       Module[] modulesInConfiguration = ((ModuleRunProfile)configuration).getModules();
-      final Module module = modulesInConfiguration.length == 0 ? null : modulesInConfiguration[0];
+      Module module = modulesInConfiguration.length == 0 ? null : modulesInConfiguration[0];
       if (module != null) {
-        final JavaModuleExtension extension = ModuleUtilCore.getExtension(module, JavaModuleExtension.class);
-        final LanguageLevel level = extension == null ? null : extension.getLanguageLevel();
+        JavaModuleExtension extension = ModuleUtilCore.getExtension(module, JavaModuleExtension.class);
+        LanguageLevel level = extension == null ? null : extension.getLanguageLevel();
         if (level != null && !level.isAtLeast(LanguageLevel.JDK_1_5)) {
           return;
         }
@@ -118,7 +118,7 @@ public class GroovyHotSwapper extends JavaProgramPatcher {
 //    }
 
     if (!project.isDefault() && containsGroovyClasses(project)) {
-      final String agentPath = handleSpacesInPath(getAgentJarPath());
+      String agentPath = handleSpacesInPath(getAgentJarPath());
       if (agentPath != null) {
         javaParameters.getVMParametersList().add("-javaagent:" + agentPath);
       }
@@ -128,14 +128,14 @@ public class GroovyHotSwapper extends JavaProgramPatcher {
   @Nullable
   private static String handleSpacesInPath(String agentPath) {
     if (agentPath.contains(" ")) {
-      final File dir = new File(ContainerPathManager.get().getSystemPath(), "groovyHotSwap");
+      File dir = new File(ContainerPathManager.get().getSystemPath(), "groovyHotSwap");
       if (dir.getAbsolutePath().contains(" ")) {
         LOG.info("Groovy hot-swap not used since the agent path contains spaces: " + agentPath + "\n" +
                    "One can move the agent to a directory with no spaces in path and specify its path in <Consulo dist>/bin/idea.properties as " + GROOVY_HOTSWAP_AGENT_PATH + "=<path>");
         return null;
       }
 
-      final File toFile = new File(dir, "gragent.jar");
+      File toFile = new File(dir, "gragent.jar");
       try {
         FileUtil.copy(new File(agentPath), toFile, FilePermissionCopier.DISABLED);
         return toFile.getPath();
@@ -148,7 +148,7 @@ public class GroovyHotSwapper extends JavaProgramPatcher {
   }
 
   private static String getAgentJarPath() {
-    final String userDefined = Platform.current().jvm().getRuntimeProperty(GROOVY_HOTSWAP_AGENT_PATH);
+    String userDefined = Platform.current().jvm().getRuntimeProperty(GROOVY_HOTSWAP_AGENT_PATH);
     if (userDefined != null && new File(userDefined).exists()) {
       return userDefined;
     }

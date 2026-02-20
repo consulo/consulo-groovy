@@ -34,8 +34,8 @@ public class ApplicationStatementUtil {
   private static final Logger LOG = Logger.getInstance(ApplicationStatementUtil.class);
 
   public static GrExpression convertToMethodCallExpression(GrExpression expr) {
-    final Project project = expr.getProject();
-    final GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(project);
+    Project project = expr.getProject();
+    GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(project);
 
     boolean copied = false;
     if (expr instanceof GrApplicationStatement) {
@@ -88,14 +88,14 @@ public class ApplicationStatementUtil {
   }
 
   private static GrMethodCallExpression convertAppInternal(GroovyPsiElementFactory factory, GrApplicationStatement app) {
-    final GrCommandArgumentList list = app.getArgumentList();
+    GrCommandArgumentList list = app.getArgumentList();
 
-    final GrMethodCallExpression prototype = (GrMethodCallExpression)factory.createExpressionFromText("foo()");
+    GrMethodCallExpression prototype = (GrMethodCallExpression)factory.createExpressionFromText("foo()");
     prototype.getInvokedExpression().replace(app.getInvokedExpression());
-    final GrArgumentList pList = prototype.getArgumentList();
+    GrArgumentList pList = prototype.getArgumentList();
     LOG.assertTrue(pList != null);
 
-    final PsiElement anchor = pList.getRightParen();
+    PsiElement anchor = pList.getRightParen();
     for (GroovyPsiElement arg : list.getAllArguments()) {
       pList.addBefore(arg, anchor);
     }

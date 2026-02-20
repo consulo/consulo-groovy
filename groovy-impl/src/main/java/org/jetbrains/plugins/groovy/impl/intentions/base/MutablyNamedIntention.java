@@ -34,7 +34,7 @@ public abstract class MutablyNamedIntention extends Intention {
     }
 
     public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file) {
-        final PsiElement element = findMatchingElement(file, editor);
+        PsiElement element = findMatchingElement(file, editor);
         if (element != null) {
             myText = getTextForElement(element);
         }

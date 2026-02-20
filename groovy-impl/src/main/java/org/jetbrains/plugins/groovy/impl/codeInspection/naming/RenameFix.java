@@ -55,14 +55,14 @@ public class RenameFix extends GroovyFix {
 
     @Override
     public void doFix(final Project project, ProblemDescriptor descriptor) {
-        final PsiElement nameIdentifier = descriptor.getPsiElement();
+        PsiElement nameIdentifier = descriptor.getPsiElement();
         final PsiElement elementToRename = nameIdentifier.getParent();
         if (targetName == null) {
-            final RefactoringActionHandlerFactory factory =
+            RefactoringActionHandlerFactory factory =
                 RefactoringActionHandlerFactory.getInstance();
             final RefactoringActionHandler renameHandler =
                 factory.createRenameHandler();
-            final DataManager dataManager = DataManager.getInstance();
+            DataManager dataManager = DataManager.getInstance();
             final DataContext dataContext = dataManager.getDataContext();
             Runnable runnable = new Runnable() {
                 @Override
@@ -80,9 +80,9 @@ public class RenameFix extends GroovyFix {
             }
         }
         else {
-            final RefactoringFactory factory =
+            RefactoringFactory factory =
                 RefactoringFactory.getInstance(project);
-            final RenameRefactoring renameRefactoring =
+            RenameRefactoring renameRefactoring =
                 factory.createRename(elementToRename, targetName);
             renameRefactoring.run();
         }

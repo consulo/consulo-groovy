@@ -64,7 +64,7 @@ public class GroovyInsertHandler implements InsertHandler<LookupElement> {
     }
 
     if (obj instanceof PsiMethod) {
-      final PsiMethod method = (PsiMethod)obj;
+      PsiMethod method = (PsiMethod)obj;
       PsiParameter[] parameters = method.getParameterList().getParameters();
       Editor editor = context.getEditor();
       Document document = editor.getDocument();
@@ -103,7 +103,7 @@ public class GroovyInsertHandler implements InsertHandler<LookupElement> {
         if ((context.getCompletionChar() != '(' && context.getCompletionChar() != ' ') &&
           TypesUtil.isClassType(parameters[0].getType(), GroovyCommonClassNames.GROOVY_LANG_CLOSURE)) {
           int afterBrace;
-          final int nonWs = CharArrayUtil.shiftForward(charsSequence, offset, " \t");
+          int nonWs = CharArrayUtil.shiftForward(charsSequence, offset, " \t");
           if (nonWs < document.getTextLength() && charsSequence.charAt(nonWs) == '{') {
             afterBrace = nonWs + 1;
           }
@@ -147,7 +147,7 @@ public class GroovyInsertHandler implements InsertHandler<LookupElement> {
     }
 
     if (obj instanceof PsiClass) {
-      final PsiClass clazz = (PsiClass)obj;
+      PsiClass clazz = (PsiClass)obj;
       Editor editor = context.getEditor();
       Document document = editor.getDocument();
       PsiFile file = PsiDocumentManager.getInstance(clazz.getProject()).getPsiFile(document);
@@ -157,8 +157,8 @@ public class GroovyInsertHandler implements InsertHandler<LookupElement> {
       CaretModel caretModel = editor.getCaretModel();
       int offset = context.getStartOffset() + elementAt.getTextLength();
 
-      final String text = document.getText();
-      final PsiElement parent = elementAt.getParent();
+      String text = document.getText();
+      PsiElement parent = elementAt.getParent();
       if (parent instanceof GrCodeReferenceElement &&
         parent.getParent() instanceof GrNewExpression &&
         (offset == text.length() || !text.substring(offset).trim().startsWith("("))) {
@@ -200,8 +200,8 @@ public class GroovyInsertHandler implements InsertHandler<LookupElement> {
     return false;
   }
 
-  private static void handleOverwrite(final int offset, final Document document) {
-    final CharSequence sequence = document.getCharsSequence();
+  private static void handleOverwrite(int offset, Document document) {
+    CharSequence sequence = document.getCharsSequence();
     int i = offset;
     while (i < sequence.length() && Character.isJavaIdentifierPart(sequence.charAt(i))) i++;
     document.deleteString(offset, i);

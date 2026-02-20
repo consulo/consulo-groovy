@@ -98,7 +98,7 @@ public class GroovyPostHighlightingPass extends TextEditorHighlightingPass {
             return;
         }
 
-        final InspectionProfile profile = InspectionProjectProfileManager.getInstance(myProject).getInspectionProfile();
+        InspectionProfile profile = InspectionProjectProfileManager.getInstance(myProject).getInspectionProfile();
         final HighlightDisplayKey unusedDefKey = HighlightDisplayKey.find(GroovyUnusedDeclarationInspection.SHORT_NAME);
 
         myUnusedHighlightType = new HighlightInfoTypeSeverityByKey(unusedDefKey, HighlightInfoType.RAW_UNUSED_SYMBOL.getAttributesKey());
@@ -185,7 +185,7 @@ public class GroovyPostHighlightingPass extends TextEditorHighlightingPass {
                 super.visitElement(element);
             }
         });
-        final Set<GrImportStatement> unusedImports = new HashSet<GrImportStatement>(PsiUtil.getValidImportStatements(myFile));
+        Set<GrImportStatement> unusedImports = new HashSet<GrImportStatement>(PsiUtil.getValidImportStatements(myFile));
         unusedImports.removeAll(GroovyImportUtil.findUsedImports(myFile));
         myUnusedImports = unusedImports;
 
@@ -229,8 +229,8 @@ public class GroovyPostHighlightingPass extends TextEditorHighlightingPass {
         if (!UnusedSymbolUtil.isFieldUnused(field.getProject(), field.getContainingFile(), field, progress, usageHelper)) {
             return false;
         }
-        final GrAccessorMethod[] getters = field.getGetters();
-        final GrAccessorMethod setter = field.getSetter();
+        GrAccessorMethod[] getters = field.getGetters();
+        GrAccessorMethod setter = field.getSetter();
 
         for (GrAccessorMethod getter : getters) {
             if (getter.findSuperMethods().length > 0) {
@@ -283,7 +283,7 @@ public class GroovyPostHighlightingPass extends TextEditorHighlightingPass {
 
     @RequiredReadAction
     private static TextRange calculateRangeToUse(GrImportStatement unusedImport) {
-        final TextRange range = unusedImport.getTextRange();
+        TextRange range = unusedImport.getTextRange();
 
         if (StringUtil.isEmptyOrSpaces(unusedImport.getAnnotationList().getText())) {
             return range;

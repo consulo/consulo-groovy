@@ -72,7 +72,7 @@ public class GrLightClassReferenceElement extends LightElement implements GrCode
   @Nonnull
   @Override
   public GroovyResolveResult[] multiResolve(boolean incompleteCode) {
-    final GroovyResolveResult resolveResult = advancedResolve();
+    GroovyResolveResult resolveResult = advancedResolve();
     if (resolveResult.getElement() == null) {
       return new GroovyResolveResult[]{resolveResult};
     }
@@ -151,7 +151,7 @@ public class GrLightClassReferenceElement extends LightElement implements GrCode
   @Nonnull
   @Override
   public String getCanonicalText() {
-    final PsiElement resolved = resolve();
+    PsiElement resolved = resolve();
     if (resolved instanceof PsiClass) return ((PsiClass)resolved).getQualifiedName();
     return myClassName;
   }

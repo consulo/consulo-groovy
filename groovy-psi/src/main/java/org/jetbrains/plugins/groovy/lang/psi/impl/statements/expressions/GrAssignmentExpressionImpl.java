@@ -118,8 +118,8 @@ public class GrAssignmentExpressionImpl extends GrExpressionImpl implements GrAs
     @Override
     @RequiredReadAction
     public TextRange getRangeInElement() {
-        final PsiElement token = getOperationToken();
-        final int offset = token.getStartOffsetInParent();
+        PsiElement token = getOperationToken();
+        int offset = token.getStartOffsetInParent();
         return new TextRange(offset, offset + token.getTextLength());
     }
 
@@ -170,7 +170,7 @@ public class GrAssignmentExpressionImpl extends GrExpressionImpl implements GrAs
     @Override
     @RequiredReadAction
     public PsiReference getReference() {
-        final IElementType operationToken = getOperationTokenType();
+        IElementType operationToken = getOperationTokenType();
         if (operationToken == GroovyTokenTypes.mASSIGN) {
             return null;
         }
@@ -224,13 +224,13 @@ public class GrAssignmentExpressionImpl extends GrExpressionImpl implements GrAs
         @Override
         @RequiredReadAction
         public GroovyResolveResult[] resolve(@Nonnull GrAssignmentExpressionImpl assignmentExpression, boolean incompleteCode) {
-            final IElementType opType = assignmentExpression.getOperationTokenType();
+            IElementType opType = assignmentExpression.getOperationTokenType();
             if (opType == GroovyTokenTypes.mASSIGN) {
                 return GroovyResolveResult.EMPTY_ARRAY;
             }
 
-            final GrExpression lValue = assignmentExpression.getLValue();
-            final PsiType lType;
+            GrExpression lValue = assignmentExpression.getLValue();
+            PsiType lType;
             if (lValue instanceof GrIndexProperty indexProperty) {
                 /*
                 now we have something like map[i] += 2. It equals to map.putAt(i, map.getAt(i).plus(2))
@@ -247,13 +247,13 @@ public class GrAssignmentExpressionImpl extends GrExpressionImpl implements GrAs
 
             PsiType rType = GrBinaryExpressionUtil.getRightType(assignmentExpression.getFacade());
 
-            final IElementType operatorToken = TokenSets.ASSIGNMENTS_TO_OPERATORS.get(opType);
+            IElementType operatorToken = TokenSets.ASSIGNMENTS_TO_OPERATORS.get(opType);
             return TypesUtil.getOverloadedOperatorCandidates(lType, operatorToken, lValue, new PsiType[]{rType});
         }
     };
 
     private static final Function<GrAssignmentExpressionImpl, PsiType> TYPE_CALCULATOR = expression -> {
-        final Function<GrBinaryFacade, PsiType> calculator = GrBinaryExpressionTypeCalculators.getTypeCalculator(expression.getFacade());
+        Function<GrBinaryFacade, PsiType> calculator = GrBinaryExpressionTypeCalculators.getTypeCalculator(expression.getFacade());
         return calculator.apply(expression.getFacade());
     };
 }

@@ -44,7 +44,7 @@ public class TupleParse {
   public static PsiBuilder.Marker parseTuple(PsiBuilder builder, IElementType componentType, boolean acceptType) {
     if (builder.getTokenType() != GroovyTokenTypes.mLPAREN) return null;
 
-    final PsiBuilder.Marker marker = builder.mark();
+    PsiBuilder.Marker marker = builder.mark();
     builder.advanceLexer();
     int count = 0;
     do {

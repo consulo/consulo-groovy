@@ -62,7 +62,7 @@ public class DClassElement implements DNamedElement {
 
   @Nullable
   public DPropertyElement getPropertyByName(String propertyName) {
-    for (final DPropertyElement property : myProperties) {
+    for (DPropertyElement property : myProperties) {
       if (propertyName.equals(property.getName())) {
         return property;
       }
@@ -116,7 +116,7 @@ public class DClassElement implements DNamedElement {
   @Nullable
   public DMethodElement getMethod(String methodName, String[] parametersTypes) {
     for (DMethodElement method : myMethods) {
-      final List<ParamInfo> myPairList = method.getPairs();
+      List<ParamInfo> myPairList = method.getPairs();
       if (method.getName().equals(methodName)
           && Arrays.equals(QuickfixUtil.getArgumentsTypes(myPairList), parametersTypes)) return method;
     }

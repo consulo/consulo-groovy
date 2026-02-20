@@ -93,7 +93,7 @@ public class GroovyValidationUtil {
             GrForStatement statement = (GrForStatement) parent;
             GrForClause clause = statement.getClause();
             if (clause != null) {
-                final GrVariable variable = clause.getDeclaredVariable();
+                GrVariable variable = clause.getDeclaredVariable();
                 if (variable != null && varName.equals(variable.getName())) {
                     addConflict(varName, variable, conflicts);
                 }
@@ -120,9 +120,9 @@ public class GroovyValidationUtil {
     }
 
     private static void validateVariableOccurrencesDownImpl(
-        final PsiElement child,
-        final MultiMap<PsiElement, LocalizeValue> conflicts,
-        final String varName
+        PsiElement child,
+        MultiMap<PsiElement, LocalizeValue> conflicts,
+        String varName
     ) {
         if (child instanceof PsiNamedElement element) {
             if (varName.equals(element.getName())) {
@@ -138,7 +138,7 @@ public class GroovyValidationUtil {
         }
     }
 
-    private static void addConflict(final String varName, final PsiNamedElement element, final MultiMap<PsiElement, LocalizeValue> conflicts) {
+    private static void addConflict(String varName, PsiNamedElement element, MultiMap<PsiElement, LocalizeValue> conflicts) {
         if (element instanceof GrParameter) {
             conflicts.putValue(
                 element,

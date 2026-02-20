@@ -49,7 +49,7 @@ public class GrArrayDeclarationImpl extends GroovyPsiElementImpl implements GrAr
 
     @Override
     public int getArrayCount() {
-        final ASTNode node = getNode();
+        ASTNode node = getNode();
         int num = 0;
         ASTNode run = node.getFirstChildNode();
         while (run != null) {

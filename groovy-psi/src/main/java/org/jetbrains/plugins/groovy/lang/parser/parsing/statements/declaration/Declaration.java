@@ -56,8 +56,8 @@ public class Declaration {
     //allows error messages
     boolean modifiersParsed = Modifiers.parse(builder, parser);
 
-    final boolean methodStart = GroovyTokenTypes.mLT == builder.getTokenType();
-    final IElementType type = parseAfterModifiers(builder, isInClass, isInAnnotation, typeDefinitionName, parser, modifiersParsed);
+    boolean methodStart = GroovyTokenTypes.mLT == builder.getTokenType();
+    IElementType type = parseAfterModifiers(builder, isInClass, isInAnnotation, typeDefinitionName, parser, modifiersParsed);
     if (type == GroovyElementTypes.WRONGWAY) {
       if (modifiersParsed && methodStart) {
         declMarker.error(GroovyBundle.message("method.definitions.expected"));
@@ -137,11 +137,11 @@ public class Declaration {
     if (builder.eof()) return false;
     if (TokenSets.BUILT_IN_TYPES.contains(builder.getTokenType())) return false;
 
-    final String text = builder.getTokenText();
+    String text = builder.getTokenText();
     if (StringUtil.isEmpty(text)) return false;
     assert text != null;
 
-    final char firstChar = text.charAt(0);
+    char firstChar = text.charAt(0);
     return (Character.isLowerCase(firstChar) || !Character.isLetter(firstChar)) &&
            (ParserUtils.lookAhead(builder, GroovyTokenTypes.mIDENT, GroovyTokenTypes.mIDENT) || ParserUtils.lookAhead(builder,
                                                                                                                       GroovyTokenTypes.mIDENT,
@@ -202,9 +202,9 @@ public class Declaration {
                                                            @Nonnull GroovyParser parser,
                                                            boolean modifiersParsed,
                                                            boolean expressionPossible) {
-    final PsiBuilder.Marker start = builder.mark();
+    PsiBuilder.Marker start = builder.mark();
 
-    final IElementType type = tryParseWithGenerics(builder, isInClass, isInAnnotation, typeDefinitionName, parser, modifiersParsed, expressionPossible, true);
+    IElementType type = tryParseWithGenerics(builder, isInClass, isInAnnotation, typeDefinitionName, parser, modifiersParsed, expressionPossible, true);
 
     if (type == GroovyElementTypes.WRONGWAY || type == GroovyElementTypes.CONSTRUCTOR_DEFINITION || type ==
                                                                                                     GroovyElementTypes.METHOD_DEFINITION) {
@@ -230,7 +230,7 @@ public class Declaration {
       TypeParameters.parse(builder);
     }
     else {
-      final PsiBuilder.Marker error = builder.mark();
+      PsiBuilder.Marker error = builder.mark();
       TypeParameters.parse(builder);
       error.error(GroovyBundle.message("type.parameters.are.unexpected"));
     }

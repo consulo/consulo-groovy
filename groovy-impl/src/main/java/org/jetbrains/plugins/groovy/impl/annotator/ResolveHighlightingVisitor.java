@@ -43,7 +43,7 @@ class ResolveHighlightingVisitor extends GroovyRecursiveElementVisitor {
 
   @Override
   public void visitReferenceExpression(GrReferenceExpression referenceExpression) {
-    final int size = myInfos.size();
+    int size = myInfos.size();
     super.visitReferenceExpression(referenceExpression);
     if (size == myInfos.size()) {
       List<HighlightInfo> infos = myReferenceChecker.checkReferenceExpression(referenceExpression);
@@ -55,7 +55,7 @@ class ResolveHighlightingVisitor extends GroovyRecursiveElementVisitor {
 
   @Override
   public void visitCodeReferenceElement(GrCodeReferenceElement refElement) {
-    final int size = myInfos.size();
+    int size = myInfos.size();
     super.visitCodeReferenceElement(refElement);
     if (size == myInfos.size()) {
       HighlightInfo info = myReferenceChecker.checkCodeReferenceElement(refElement);

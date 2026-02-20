@@ -51,29 +51,29 @@ public class ImportOnDemandIntention extends Intention {
         if (!(element instanceof GrReferenceElement)) {
             return;
         }
-        final GrReferenceElement ref = (GrReferenceElement) element;
-        final PsiElement resolved = ref.resolve();
+        GrReferenceElement ref = (GrReferenceElement) element;
+        PsiElement resolved = ref.resolve();
         if (!(resolved instanceof PsiClass)) {
             return;
         }
 
-        final String qname = ((PsiClass) resolved).getQualifiedName();
+        String qname = ((PsiClass) resolved).getQualifiedName();
 
-        final GrImportStatement importStatement =
+        GrImportStatement importStatement =
             GroovyPsiElementFactory.getInstance(project).createImportStatementFromText(qname, true, true, null);
 
-        final PsiFile containingFile = element.getContainingFile();
+        PsiFile containingFile = element.getContainingFile();
         if (!(containingFile instanceof GroovyFile)) {
             return;
         }
         ((GroovyFile) containingFile).addImport(importStatement);
 
         for (PsiReference reference : ReferencesSearch.search(resolved, new LocalSearchScope(containingFile), true)) {
-            final PsiElement refElement = reference.getElement();
+            PsiElement refElement = reference.getElement();
             if (refElement == null) {
                 continue;
             }
-            final PsiElement parent = refElement.getParent();
+            PsiElement parent = refElement.getParent();
             if (parent instanceof GrQualifiedReference<?>) {
                 GrReferenceAdjuster.shortenReference((GrQualifiedReference<?>) parent);
             }
@@ -89,12 +89,12 @@ public class ImportOnDemandIntention extends Intention {
                 if (!(element instanceof GrReferenceElement)) {
                     return false;
                 }
-                final GrReferenceElement ref = (GrReferenceElement) element;
-                final PsiElement parent = ref.getParent();
+                GrReferenceElement ref = (GrReferenceElement) element;
+                PsiElement parent = ref.getParent();
                 if (!(parent instanceof GrReferenceElement)) {
                     return false;
                 }
-                final PsiElement resolved = ref.resolve();
+                PsiElement resolved = ref.resolve();
                 if (resolved == null) {
                     return false;
                 }

@@ -40,8 +40,8 @@ public class GroovyMembersWithDocSelectioner implements ExtendWordSelectionHandl
 
   @Override
   public List<TextRange> select(PsiElement e, CharSequence editorText, int cursorOffset, Editor editor) {
-    final GrDocCommentOwner owner;
-    final GrDocComment doc;
+    GrDocCommentOwner owner;
+    GrDocComment doc;
     if (e instanceof GrDocComment) {
       doc = (GrDocComment)e;
       owner = GrDocCommentUtil.findDocOwner(doc);
@@ -53,7 +53,7 @@ public class GroovyMembersWithDocSelectioner implements ExtendWordSelectionHandl
 
     if (doc == null || owner == null) return Collections.emptyList();
 
-    final TextRange range = new TextRange(doc.getTextRange().getStartOffset(), owner.getTextRange().getEndOffset());
+    TextRange range = new TextRange(doc.getTextRange().getStartOffset(), owner.getTextRange().getEndOffset());
     return ExtendWordSelectionHandlerBase.expandToWholeLine(editorText, range, true);
   }
 }

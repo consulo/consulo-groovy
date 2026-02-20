@@ -47,7 +47,7 @@ public class DPropertyElement extends DItemElement {
 
   @Override
   @Nonnull
-  public PsiVariable getPsi(PsiManager manager, final String containingClassName) {
+  public PsiVariable getPsi(PsiManager manager, String containingClassName) {
     if (myPsi != null) {
       return myPsi;
     }

@@ -34,9 +34,9 @@ public abstract class GrVariableEnhancer {
   public abstract PsiType getVariableType(GrVariable variable);
 
   @Nullable
-  public static PsiType getEnhancedType(final GrVariable variable) {
+  public static PsiType getEnhancedType(GrVariable variable) {
     for (GrVariableEnhancer enhancer : EP_NAME.getExtensions()) {
-      final PsiType type = enhancer.getVariableType(variable);
+      PsiType type = enhancer.getVariableType(variable);
       if (type != null) {
         return type;
       }

@@ -52,7 +52,7 @@ public class GrCastFix extends GroovyFix implements LocalQuickFix {
 
     @Override
     protected void doFix(Project project, ProblemDescriptor descriptor) throws IncorrectOperationException {
-        final GrExpression cast = findExpressionToCast(descriptor);
+        GrExpression cast = findExpressionToCast(descriptor);
         if (cast == null) {
             return;
         }
@@ -60,8 +60,8 @@ public class GrCastFix extends GroovyFix implements LocalQuickFix {
     }
 
     private static GrExpression findExpressionToCast(ProblemDescriptor descriptor) {
-        final PsiElement element = descriptor.getPsiElement();
-        final PsiElement parent = element.getParent();
+        PsiElement element = descriptor.getPsiElement();
+        PsiElement parent = element.getParent();
         if (parent instanceof GrVariable) {
             return ((GrVariable) parent).getInitializerGroovy();
         }
@@ -92,13 +92,13 @@ public class GrCastFix extends GroovyFix implements LocalQuickFix {
             return;
         }
 
-        final GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(project);
-        final GrSafeCastExpression cast = (GrSafeCastExpression) factory.createExpressionFromText("foo as String");
-        final GrTypeElement typeElement = factory.createTypeElement(type);
+        GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(project);
+        GrSafeCastExpression cast = (GrSafeCastExpression) factory.createExpressionFromText("foo as String");
+        GrTypeElement typeElement = factory.createTypeElement(type);
         cast.getOperand().replaceWithExpression(expr, true);
         cast.getCastTypeElement().replace(typeElement);
 
-        final GrExpression replaced = expr.replaceWithExpression(cast, true);
+        GrExpression replaced = expr.replaceWithExpression(cast, true);
         JavaCodeStyleManager.getInstance(project).shortenClassReferences(replaced);
     }
 

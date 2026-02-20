@@ -55,33 +55,33 @@ public class ImportStaticIntention extends Intention {
     }
 
     @Override
-    protected void processIntention(@Nonnull PsiElement element, final Project project, final Editor editor)
+    protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor)
         throws IncorrectOperationException {
         final PsiElement resolved;
         final String name;
-        final GroovyFile file;
-        final GrImportStatement importStatement;
+        GroovyFile file;
+        GrImportStatement importStatement;
         boolean isAnythingShortened;
         if (!(element instanceof GrReferenceExpression)) {
             return;
         }
-        final GrReferenceExpression ref = (GrReferenceExpression) element;
+        GrReferenceExpression ref = (GrReferenceExpression) element;
         resolved = ref.resolve();
         if (!(resolved instanceof PsiMember)) {
             return;
         }
 
-        final PsiClass containingClass = ((PsiMember) resolved).getContainingClass();
+        PsiClass containingClass = ((PsiMember) resolved).getContainingClass();
         if (containingClass == null) {
             return;
         }
-        final String qname = containingClass.getQualifiedName();
+        String qname = containingClass.getQualifiedName();
         name = ((PsiMember) resolved).getName();
         if (name == null) {
             return;
         }
 
-        final PsiFile containingFile = element.getContainingFile();
+        PsiFile containingFile = element.getContainingFile();
         if (!(containingFile instanceof GroovyFile)) {
             return;
         }
@@ -99,13 +99,13 @@ public class ImportStaticIntention extends Intention {
             }
         });
 
-        final GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(project);
-        final GrImportStatement tempImport = factory.createImportStatementFromText(qname + "." + name, true, false, null);
+        GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(project);
+        GrImportStatement tempImport = factory.createImportStatementFromText(qname + "." + name, true, false, null);
         importStatement = file.addImport(tempImport);
 
         isAnythingShortened = false;
         for (PsiReference reference : ReferencesSearch.search(resolved, new LocalSearchScope(containingFile))) {
-            final PsiElement refElement = reference.getElement();
+            PsiElement refElement = reference.getElement();
             if (refElement instanceof GrQualifiedReference<?>) {
                 isAnythingShortened |= GrReferenceAdjuster.shortenReference((GrQualifiedReference<?>) refElement);
             }
@@ -166,11 +166,11 @@ public class ImportStaticIntention extends Intention {
                 if (!(element instanceof GrReferenceExpression)) {
                     return false;
                 }
-                final GrReferenceExpression ref = (GrReferenceExpression) element;
+                GrReferenceExpression ref = (GrReferenceExpression) element;
                 if (ref.getQualifier() == null) {
                     return false;
                 }
-                final PsiElement resolved = ref.resolve();
+                PsiElement resolved = ref.resolve();
                 if (resolved == null) {
                     return false;
                 }

@@ -88,7 +88,7 @@ public abstract class GroovyConfigUtils extends AbstractConfigUtils {
   }
 
   @Nonnull
-  public String getSDKVersion(@Nonnull final String path) {
+  public String getSDKVersion(@Nonnull String path) {
     String groovyJarVersion = getSDKJarVersion(path + "/lib", GROOVY_JAR_PATTERN, MANIFEST_PATH);
     if (groovyJarVersion == null) {
       groovyJarVersion = getSDKJarVersion(path + "/lib", GROOVY_JAR_PATTERN_NOVERSION, MANIFEST_PATH);
@@ -118,7 +118,7 @@ public abstract class GroovyConfigUtils extends AbstractConfigUtils {
                                                                               new CachedValueProvider<String>() {
                                                                                 @Override
                                                                                 public Result<String> compute() {
-                                                                                  final String path =
+                                                                                  String path =
                                                                                     LibrariesUtil.getGroovyHomePath(module);
                                                                                   if (path == null) {
                                                                                     return Result.create(null,
@@ -141,7 +141,7 @@ public abstract class GroovyConfigUtils extends AbstractConfigUtils {
     if (module == null) {
       return unknownResult;
     }
-    final String sdkVersion = getSDKVersion(module);
+    String sdkVersion = getSDKVersion(module);
     if (sdkVersion == null) {
       return unknownResult;
     }
@@ -150,11 +150,11 @@ public abstract class GroovyConfigUtils extends AbstractConfigUtils {
 
   @Nonnull
   public String getSDKVersion(PsiElement psiElement) {
-    final Module module = ModuleUtilCore.findModuleForPsiElement(psiElement);
+    Module module = ModuleUtilCore.findModuleForPsiElement(psiElement);
     if (module == null) {
       return NO_VERSION;
     }
-    final String s = getSDKVersion(module);
+    String s = getSDKVersion(module);
     return s != null ? s : NO_VERSION;
   }
 
@@ -162,7 +162,7 @@ public abstract class GroovyConfigUtils extends AbstractConfigUtils {
   @Override
   public boolean isSDKHome(VirtualFile file) {
     if (file != null && file.isDirectory()) {
-      final String path = file.getPath();
+      String path = file.getPath();
       if (GroovyUtils.getFilesInDirectoryByPattern(path + "/lib", GROOVY_JAR_PATTERN).length > 0 ||
         GroovyUtils.getFilesInDirectoryByPattern(path + "/lib", GROOVY_JAR_PATTERN_NOVERSION).length > 0 ||
         GroovyUtils.getFilesInDirectoryByPattern(path + "/embeddable", GROOVY_ALL_JAR_PATTERN).length >
@@ -174,11 +174,11 @@ public abstract class GroovyConfigUtils extends AbstractConfigUtils {
     return false;
   }
 
-  public boolean tryToSetUpGroovyFacetOnTheFly(final Module module) {
-    final Project project = module.getProject();
-    final Library[] libraries = getAllSDKLibraries(project);
+  public boolean tryToSetUpGroovyFacetOnTheFly(Module module) {
+    Project project = module.getProject();
+    Library[] libraries = getAllSDKLibraries(project);
     if (libraries.length > 0) {
-      final Library library = libraries[0];
+      Library library = libraries[0];
       int result = Messages.showOkCancelDialog(GroovyBundle.message("groovy.like.library.found.text",
                                                                     module.getName(), library.getName(), getSDKLibVersion(library)),
                                                GroovyBundle.message("groovy.like" +

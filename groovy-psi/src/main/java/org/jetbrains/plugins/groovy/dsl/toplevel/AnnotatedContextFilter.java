@@ -42,7 +42,7 @@ public class AnnotatedContextFilter implements ContextFilter {
       }
       else if (current instanceof PsiFile) {
         if (current instanceof GroovyFile) {
-          final GrPackageDefinition packageDefinition = ((GroovyFile)current).getPackageDefinition();
+          GrPackageDefinition packageDefinition = ((GroovyFile)current).getPackageDefinition();
           if (packageDefinition != null) {
             return findAnnotation(packageDefinition.getAnnotationList(), annoQName);
           }

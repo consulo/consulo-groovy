@@ -37,7 +37,7 @@ import java.util.Set;
  */
 public abstract class GrMethodElementType extends GrStubElementType<GrMethodStub, GrMethod> {
 
-  public GrMethodElementType(final String debugName) {
+  public GrMethodElementType(String debugName) {
     super(debugName);
   }
 
@@ -61,10 +61,10 @@ public abstract class GrMethodElementType extends GrStubElementType<GrMethodStub
   @Nonnull
   public GrMethodStub deserialize(@Nonnull StubInputStream dataStream, StubElement parentStub) throws IOException {
     StringRef ref = dataStream.readName();
-    final String[] annNames = GrStubUtils.readStringArray(dataStream);
+    String[] annNames = GrStubUtils.readStringArray(dataStream);
     String[] namedParameters = GrStubUtils.readStringArray(dataStream);
     String typeText = GrStubUtils.readNullableString(dataStream);
-    final byte flags = dataStream.readByte();
+    byte flags = dataStream.readByte();
     return new GrMethodStub(parentStub, ref, annNames, namedParameters, this, typeText, flags);
   }
 

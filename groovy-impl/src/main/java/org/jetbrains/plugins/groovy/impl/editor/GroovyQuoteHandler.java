@@ -37,7 +37,7 @@ import static org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes.*;
 public class GroovyQuoteHandler implements MultiCharQuoteHandler, FileQuoteHandler {
 
   public boolean isClosingQuote(HighlighterIterator iterator, int offset) {
-    final IElementType tokenType = (IElementType)iterator.getTokenType();
+    IElementType tokenType = (IElementType)iterator.getTokenType();
 
     if (tokenType == mGSTRING_END) return true;
     if (tokenType == mSTRING_LITERAL || tokenType == mGSTRING_LITERAL) {
@@ -55,7 +55,7 @@ public class GroovyQuoteHandler implements MultiCharQuoteHandler, FileQuoteHandl
   }
 
   public boolean isOpeningQuote(HighlighterIterator iterator, int offset) {
-    final IElementType tokenType = (IElementType)iterator.getTokenType();
+    IElementType tokenType = (IElementType)iterator.getTokenType();
 
     if (tokenType == mGSTRING_BEGIN || tokenType == mREGEX_BEGIN) return true;
     if (tokenType == mGSTRING_LITERAL || tokenType == mSTRING_LITERAL) {
@@ -66,11 +66,11 @@ public class GroovyQuoteHandler implements MultiCharQuoteHandler, FileQuoteHandl
   }
 
   public boolean hasNonClosedLiteral(Editor editor, HighlighterIterator iterator, int offset) {
-    final IElementType tokenType = (IElementType)iterator.getTokenType();
+    IElementType tokenType = (IElementType)iterator.getTokenType();
     if (tokenType == mSTRING_LITERAL || tokenType == mGSTRING_BEGIN || tokenType == mGSTRING_LITERAL || tokenType == mGSTRING_CONTENT) {
-      final Document document = iterator.getDocument();
+      Document document = iterator.getDocument();
       if (document == null) return false;
-      final String literal = document.getText().substring(iterator.getStart(), offset + 1);
+      String literal = document.getText().substring(iterator.getStart(), offset + 1);
       if ("'''".equals(literal) || "\"\"\"".equals(literal) || "'".equals(literal) || "\"".equals(literal)) {
         return true;
       }
@@ -80,7 +80,7 @@ public class GroovyQuoteHandler implements MultiCharQuoteHandler, FileQuoteHandl
   }
 
   public boolean isInsideLiteral(HighlighterIterator iterator) {
-    final IElementType tokenType = (IElementType)iterator.getTokenType();
+    IElementType tokenType = (IElementType)iterator.getTokenType();
     return tokenType == mSTRING_LITERAL || tokenType == mGSTRING_LITERAL;
   }
 

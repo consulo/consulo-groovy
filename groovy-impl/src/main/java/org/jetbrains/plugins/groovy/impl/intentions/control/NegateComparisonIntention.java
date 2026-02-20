@@ -31,10 +31,10 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpres
 
 public class NegateComparisonIntention extends MutablyNamedIntention {
     protected LocalizeValue getTextForElement(PsiElement element) {
-        final GrBinaryExpression binaryExpression = (GrBinaryExpression) element;
-        final IElementType tokenType = binaryExpression.getOperationTokenType();
-        final String comparison = ComparisonUtils.getStringForComparison(tokenType);
-        final String negatedComparison = ComparisonUtils.getNegatedComparison(tokenType);
+        GrBinaryExpression binaryExpression = (GrBinaryExpression) element;
+        IElementType tokenType = binaryExpression.getOperationTokenType();
+        String comparison = ComparisonUtils.getStringForComparison(tokenType);
+        String negatedComparison = ComparisonUtils.getNegatedComparison(tokenType);
 
         return GroovyIntentionLocalize.negateComparisonIntentionName(comparison, negatedComparison);
     }
@@ -46,19 +46,19 @@ public class NegateComparisonIntention extends MutablyNamedIntention {
 
     public void processIntention(@Nonnull PsiElement element, Project project, Editor editor)
         throws IncorrectOperationException {
-        final GrBinaryExpression exp =
+        GrBinaryExpression exp =
             (GrBinaryExpression) element;
-        final IElementType tokenType = exp.getOperationTokenType();
+        IElementType tokenType = exp.getOperationTokenType();
 
-        final GrExpression lhs = exp.getLeftOperand();
-        final String lhsText = lhs.getText();
+        GrExpression lhs = exp.getLeftOperand();
+        String lhsText = lhs.getText();
 
-        final GrExpression rhs = exp.getRightOperand();
-        final String rhsText = rhs.getText();
+        GrExpression rhs = exp.getRightOperand();
+        String rhsText = rhs.getText();
 
-        final String negatedComparison = ComparisonUtils.getNegatedComparison(tokenType);
+        String negatedComparison = ComparisonUtils.getNegatedComparison(tokenType);
 
-        final String newExpression = lhsText + negatedComparison + rhsText;
+        String newExpression = lhsText + negatedComparison + rhsText;
         replaceExpressionWithNegatedExpressionString(newExpression, exp);
     }
 }

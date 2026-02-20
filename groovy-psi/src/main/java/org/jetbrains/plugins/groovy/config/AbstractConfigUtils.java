@@ -64,7 +64,7 @@ public abstract class AbstractConfigUtils {
    * @param file
    * @return
    */
-  public abstract boolean isSDKHome(final VirtualFile file);
+  public abstract boolean isSDKHome(VirtualFile file);
 
   @Nonnull
   public abstract String getSDKVersion(@Nonnull String path);
@@ -79,7 +79,7 @@ public abstract class AbstractConfigUtils {
    * @return value of Implementation-Version attribute, null if not found
    */
   @Nullable
-  public static String getSDKJarVersion(String jarPath, final String jarRegex, String manifestPath) {
+  public static String getSDKJarVersion(String jarPath, String jarRegex, String manifestPath) {
     return getSDKJarVersion(jarPath, Pattern.compile(jarRegex), manifestPath);
   }
 
@@ -93,7 +93,7 @@ public abstract class AbstractConfigUtils {
    * @return value of Implementation-Version attribute, null if not found
    */
   @Nullable
-  public static String getSDKJarVersion(String jarPath, final Pattern jarPattern, String manifestPath) {
+  public static String getSDKJarVersion(String jarPath, Pattern jarPattern, String manifestPath) {
     try {
       File[] jars = GroovyUtils.getFilesInDirectoryByPattern(jarPath, jarPattern);
       if (jars.length != 1) {
@@ -105,7 +105,7 @@ public abstract class AbstractConfigUtils {
         if (jarEntry == null) {
           return null;
         }
-        final InputStream inputStream = jarFile.getInputStream(jarEntry);
+        InputStream inputStream = jarFile.getInputStream(jarEntry);
         Manifest manifest;
         try {
           manifest = new Manifest(inputStream);
@@ -113,12 +113,12 @@ public abstract class AbstractConfigUtils {
         finally {
           inputStream.close();
         }
-        final String version = manifest.getMainAttributes().getValue(Attributes.Name.IMPLEMENTATION_VERSION);
+        String version = manifest.getMainAttributes().getValue(Attributes.Name.IMPLEMENTATION_VERSION);
         if (version != null) {
           return version;
         }
 
-        final Matcher matcher = jarPattern.matcher(jars[0].getName());
+        Matcher matcher = jarPattern.matcher(jars[0].getName());
         if (matcher.matches() && matcher.groupCount() == 1) {
           return matcher.group(1);
         }
@@ -135,8 +135,8 @@ public abstract class AbstractConfigUtils {
 
   public Library[] getProjectSDKLibraries(Project project) {
     if (project == null || project.isDisposed()) return new Library[0];
-    final LibraryTable table = ProjectLibraryTable.getInstance(project);
-    final List<Library> all = ContainerUtil.findAll(table.getLibraries(), LIB_SEARCH_CONDITION);
+    LibraryTable table = ProjectLibraryTable.getInstance(project);
+    List<Library> all = ContainerUtil.findAll(table.getLibraries(), LIB_SEARCH_CONDITION);
     return all.toArray(new Library[all.size()]);
   }
 
@@ -145,7 +145,7 @@ public abstract class AbstractConfigUtils {
   }
 
   public Library[] getAllUsedSDKLibraries(Project project) {
-    final List<Library> libraries = new ArrayList<Library>();
+    List<Library> libraries = new ArrayList<Library>();
     for (Module module : ModuleManager.getInstance(project).getModules()) {
       libraries.addAll(Arrays.asList(getSDKLibrariesByModule(module)));
     }
@@ -158,8 +158,8 @@ public abstract class AbstractConfigUtils {
 
   public abstract boolean isSDKLibrary(Library library);
 
-  public Library[] getSDKLibrariesByModule(final Module module) {
-    final Condition<Library> condition = new Condition<Library>() {
+  public Library[] getSDKLibrariesByModule(Module module) {
+    Condition<Library> condition = new Condition<Library>() {
       public boolean value(Library library) {
         return isSDKLibrary(library);
       }

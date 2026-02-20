@@ -38,7 +38,7 @@ public class GrCodeFragmentTableCellEditor extends CodeFragmentTableCellEditorBa
 
   @Override
   public boolean stopCellEditing() {
-    final Editor editor = myEditorTextField.getEditor();
+    Editor editor = myEditorTextField.getEditor();
     if (editor != null) {
       JavaReferenceImporter.autoImportReferenceAtCursor(editor, myCodeFragment, true);
     }

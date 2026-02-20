@@ -35,7 +35,7 @@ public class GrStringContentImpl extends GroovyPsiElementImpl implements GrStrin
 
   @Override
   public String getValue() {
-    final String text = getText();
+    String text = getText();
     StringBuilder chars = new StringBuilder(text.length());
     boolean result = GrStringUtil.parseStringCharacters(text, chars, null);
     return result ? chars.toString() : null;

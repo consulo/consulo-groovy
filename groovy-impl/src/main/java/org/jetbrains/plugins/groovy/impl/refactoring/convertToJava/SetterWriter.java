@@ -62,13 +62,13 @@ public class SetterWriter {
 
 
   public void write() {
-    final boolean isStatic = mySetter.hasModifierProperty(PsiModifier.STATIC);
+    boolean isStatic = mySetter.hasModifierProperty(PsiModifier.STATIC);
 
-    final GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(myContext.project);
+    GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(myContext.project);
 
     PsiParameter[] parameters = mySetter.getParameterList().getParameters();
     PsiParameter parameter = parameters[parameters.length - 1];
-    final PsiType parameterType = myContext.typeProvider.getParameterType(parameter);
+    PsiType parameterType = myContext.typeProvider.getParameterType(parameter);
 
     myBuffer.append("private static ");
     processTypeParameters(parameterType);
@@ -81,20 +81,20 @@ public class SetterWriter {
 
 
     PsiParameter[] actual = inferActualParameters(isStatic, parameters, parameter);
-    final GroovyPsiElement place = createStubMethod(actual);
+    GroovyPsiElement place = createStubMethod(actual);
     GenerationUtil.writeParameterList(myBuffer, actual, myClassNameProvider, myContext);
     writeBody(isStatic, parameters, parameter, place);
   }
 
   private void writeBody(boolean aStatic,
                          @Nonnull PsiParameter[] parameters,
-                         @Nonnull PsiParameter parameter, final GroovyPsiElement place) {
+                         @Nonnull PsiParameter parameter, GroovyPsiElement place) {
     //method body
     myBuffer.append("{\n");
 
     //arg initialization
     myContext.myUsedVarNames.add("propOwner");
-    final GrExpression[] args = generateArguments(parameters, place);
+    GrExpression[] args = generateArguments(parameters, place);
 
     new ExpressionGenerator(myBuffer, myContext).invokeMethodOn(
       mySetter,
@@ -112,7 +112,7 @@ public class SetterWriter {
 
   @Nonnull
   private GrExpression[] generateArguments(@Nonnull PsiParameter[] parameters, @Nonnull GroovyPsiElement place) {
-    final GrExpression[] args = new GrExpression[parameters.length];
+    GrExpression[] args = new GrExpression[parameters.length];
     for (int i = 0; i < parameters.length; i++) {
       args[i] = GroovyPsiElementFactory.getInstance(myContext.project).createExpressionFromText(parameters[i].getName(), place);
       myContext.myUsedVarNames.add(parameters[i].getName());
@@ -141,8 +141,8 @@ public class SetterWriter {
       actual = parameters;
     }
     else {
-      final String typeText;
-      final PsiClass containingClass = mySetter.getContainingClass();
+      String typeText;
+      PsiClass containingClass = mySetter.getContainingClass();
       if (containingClass == null) {
         if (mySetter instanceof GrGdkMethod) {
           typeText = ((GrGdkMethod)mySetter).getStaticMethod().getParameterList().getParameters()[0].getType().getCanonicalText();
@@ -155,7 +155,7 @@ public class SetterWriter {
         typeText = containingClass.getQualifiedName();
       }
 
-      final GrParameter propOwner = GroovyPsiElementFactory.getInstance(myContext.project).createParameter("propOwner", typeText, null);
+      GrParameter propOwner = GroovyPsiElementFactory.getInstance(myContext.project).createParameter("propOwner", typeText, null);
 
       actual = new PsiParameter[parameters.length + 1];
       actual[0] = propOwner;

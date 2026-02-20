@@ -32,26 +32,26 @@ class IndexedExpressionConversionPredicate implements PsiElementPredicate {
 
     if (ErrorUtil.containsError(element)) return false;
 
-    final GrIndexProperty arrayIndexExpression = (GrIndexProperty) element;
-    final PsiElement lastChild = arrayIndexExpression.getLastChild();
+    GrIndexProperty arrayIndexExpression = (GrIndexProperty) element;
+    PsiElement lastChild = arrayIndexExpression.getLastChild();
     if (!(lastChild instanceof GrArgumentList)) return false;
 
-    final GrArgumentList argList = (GrArgumentList) lastChild;
+    GrArgumentList argList = (GrArgumentList) lastChild;
 
-    final GrExpression[] arguments = argList.getExpressionArguments();
+    GrExpression[] arguments = argList.getExpressionArguments();
     if (arguments.length != 1) return false;
 
-    final PsiElement parent = element.getParent();
+    PsiElement parent = element.getParent();
     if (!(parent instanceof GrAssignmentExpression)) {
       return true;
     }
-    final GrAssignmentExpression assignmentExpression = (GrAssignmentExpression) parent;
-    final GrExpression rvalue = assignmentExpression.getRValue();
+    GrAssignmentExpression assignmentExpression = (GrAssignmentExpression) parent;
+    GrExpression rvalue = assignmentExpression.getRValue();
     if (rvalue == null) return false;
 
     if (rvalue.equals(element)) return true;
 
-    final IElementType operator = assignmentExpression.getOperationTokenType();
+    IElementType operator = assignmentExpression.getOperationTokenType();
     return GroovyTokenTypes.mASSIGN.equals(operator);
   }
 

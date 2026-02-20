@@ -41,9 +41,9 @@ public class GrMethodStub extends StubBase<GrMethod> implements NamedStub<GrMeth
 
   public GrMethodStub(StubElement parent,
                       StringRef name,
-                      final String[] annotations,
-                      final @Nonnull String[] namedParameters,
-                      final GrMethodElementType elementType,
+                      String[] annotations,
+                      @Nonnull String[] namedParameters,
+                      GrMethodElementType elementType,
                       @Nullable String typeText,
                       byte flags) {
     super(parent, elementType);

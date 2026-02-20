@@ -82,7 +82,7 @@ public class GrAliasImportIntention extends Intention {
     @Override
     protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
         GrImportStatement context;
-        final PsiMember resolved;
+        PsiMember resolved;
         if (element instanceof GrReferenceExpression) {
             GrReferenceExpression ref = (GrReferenceExpression) element;
 
@@ -110,8 +110,8 @@ public class GrAliasImportIntention extends Intention {
             member = ((GrAccessorMethod) member).getProperty();
         }
 
-        final GroovyFileBase file = (GroovyFileBase) importStatement.getContainingFile();
-        final List<UsageInfo> usages = findUsages(member, file);
+        GroovyFileBase file = (GroovyFileBase) importStatement.getContainingFile();
+        List<UsageInfo> usages = findUsages(member, file);
         GrImportStatement templateImport = createTemplateImport(project, importStatement, member, file);
 
         if (ApplicationManager.getApplication().isUnitTestMode()) {
@@ -131,10 +131,10 @@ public class GrAliasImportIntention extends Intention {
         PsiMember resolved,
         GroovyFileBase file
     ) {
-        final PsiClass aClass = resolved.getContainingClass();
+        PsiClass aClass = resolved.getContainingClass();
         assert aClass != null;
         String qname = aClass.getQualifiedName();
-        final String name = resolved.getName();
+        String name = resolved.getName();
 
         GrImportStatement template = GroovyPsiElementFactory.getInstance(project).createImportStatementFromText
             ("import static " + qname + "." + name + " as aliased");
@@ -143,7 +143,7 @@ public class GrAliasImportIntention extends Intention {
 
     private static void runTemplate(
         Project project,
-        final GrImportStatement context,
+        GrImportStatement context,
         PsiMember resolved,
         final GroovyFileBase file,
         final List<UsageInfo> usages,
@@ -155,15 +155,15 @@ public class GrAliasImportIntention extends Intention {
 
         LinkedHashSet<String> names = getSuggestedNames(resolved, context);
 
-        final PsiElement aliasNameElement = templateImport.getAliasNameElement();
+        PsiElement aliasNameElement = templateImport.getAliasNameElement();
         assert aliasNameElement != null;
         templateBuilder.replaceElement(aliasNameElement, new MyLookupExpression(resolved.getName(), names,
             (PsiNamedElement) resolved, resolved, true, null
         ));
         Template built = templateBuilder.buildTemplate();
 
-        final Editor newEditor = IntentionUtils.positionCursor(project, file, templateImport);
-        final Document document = newEditor.getDocument();
+        Editor newEditor = IntentionUtils.positionCursor(project, file, templateImport);
+        Document document = newEditor.getDocument();
 
         final RangeMarker contextImportPointer = document.createRangeMarker(context.getTextRange());
 
@@ -207,7 +207,7 @@ public class GrAliasImportIntention extends Intention {
                 ApplicationManager.getApplication().runWriteAction(new Runnable() {
                     @Override
                     public void run() {
-                        final GrImportStatement context = PsiTreeUtil.findElementOfClassAtRange(
+                        GrImportStatement context = PsiTreeUtil.findElementOfClassAtRange(
                             file,
                             contextImportPointer.getStartOffset(),
                             contextImportPointer.getEndOffset(),
@@ -239,7 +239,7 @@ public class GrAliasImportIntention extends Intention {
             ApplicationManager.getApplication().runWriteAction(new Runnable() {
                 @Override
                 public void run() {
-                    final PsiElement usageElement = usage.getElement();
+                    PsiElement usageElement = usage.getElement();
                     if (usageElement == null) {
                         return;
                     }
@@ -249,11 +249,11 @@ public class GrAliasImportIntention extends Intention {
                     }
 
                     if (usageElement instanceof GrReferenceElement) {
-                        final GrReferenceElement ref = (GrReferenceElement) usageElement;
-                        final PsiElement qualifier = ref.getQualifier();
+                        GrReferenceElement ref = (GrReferenceElement) usageElement;
+                        PsiElement qualifier = ref.getQualifier();
 
                         if (qualifier == null) {
-                            final String refName = ref.getReferenceName();
+                            String refName = ref.getReferenceName();
                             if (refName == null) {
                                 return;
                             }
@@ -262,7 +262,7 @@ public class GrAliasImportIntention extends Intention {
                                 ref.handleElementRenameSimple(name);
                             }
                             else if (refName.equals(GroovyPropertyUtils.getPropertyNameByAccessorName(memberName))) {
-                                final String newPropName = GroovyPropertyUtils.getPropertyNameByAccessorName(name);
+                                String newPropName = GroovyPropertyUtils.getPropertyNameByAccessorName(name);
                                 if (newPropName != null) {
                                     ref.handleElementRenameSimple(newPropName);
                                 }
@@ -271,15 +271,15 @@ public class GrAliasImportIntention extends Intention {
                                 }
                             }
                             else if (refName.equals(GroovyPropertyUtils.getGetterNameBoolean(memberName))) {
-                                final String getterName = GroovyPropertyUtils.getGetterNameBoolean(name);
+                                String getterName = GroovyPropertyUtils.getGetterNameBoolean(name);
                                 ref.handleElementRenameSimple(getterName);
                             }
                             else if (refName.equals(GroovyPropertyUtils.getGetterNameNonBoolean(memberName))) {
-                                final String getterName = GroovyPropertyUtils.getGetterNameNonBoolean(name);
+                                String getterName = GroovyPropertyUtils.getGetterNameNonBoolean(name);
                                 ref.handleElementRenameSimple(getterName);
                             }
                             else if (refName.equals(GroovyPropertyUtils.getSetterName(memberName))) {
-                                final String getterName = GroovyPropertyUtils.getSetterName(name);
+                                String getterName = GroovyPropertyUtils.getSetterName(name);
                                 ref.handleElementRenameSimple(getterName);
                             }
                         }
@@ -295,7 +295,7 @@ public class GrAliasImportIntention extends Intention {
         final ArrayList<UsageInfo> infos = new ArrayList<UsageInfo>();
         final HashSet<Object> usedRefs = new HashSet<>();
 
-        final Processor<PsiReference> consumer = new Processor<PsiReference>() {
+        Processor<PsiReference> consumer = new Processor<PsiReference>() {
             @Override
             public boolean process(PsiReference reference) {
                 if (usedRefs.add(reference)) {
@@ -312,11 +312,11 @@ public class GrAliasImportIntention extends Intention {
         else {
             ReferencesSearch.search(member, scope).forEach(consumer);
             if (member instanceof PsiField) {
-                final PsiMethod getter = GroovyPropertyUtils.findGetterForField((PsiField) member);
+                PsiMethod getter = GroovyPropertyUtils.findGetterForField((PsiField) member);
                 if (getter != null) {
                     MethodReferencesSearch.search(getter, scope, false).forEach(consumer);
                 }
-                final PsiMethod setter = GroovyPropertyUtils.findSetterForField((PsiField) member);
+                PsiMethod setter = GroovyPropertyUtils.findSetterForField((PsiField) member);
                 if (setter != null) {
                     MethodReferencesSearch.search(setter, scope, false).forEach(consumer);
                 }
@@ -328,11 +328,11 @@ public class GrAliasImportIntention extends Intention {
 
     public static LinkedHashSet<String> getSuggestedNames(
         PsiElement psiElement,
-        final PsiElement nameSuggestionContext
+        PsiElement nameSuggestionContext
     ) {
-        final LinkedHashSet<String> result = new LinkedHashSet<String>();
+        LinkedHashSet<String> result = new LinkedHashSet<String>();
         result.add(UsageViewUtil.getShortName(psiElement));
-        final NameSuggestionProvider[] providers = Extensions.getExtensions(NameSuggestionProvider.EP_NAME);
+        NameSuggestionProvider[] providers = Extensions.getExtensions(NameSuggestionProvider.EP_NAME);
         for (NameSuggestionProvider provider : providers) {
             SuggestedNameInfo info = provider.getSuggestedNames(psiElement, nameSuggestionContext, result);
             if (info != null) {
@@ -369,7 +369,7 @@ public class GrAliasImportIntention extends Intention {
                     return true;
                 }
                 else if (element instanceof GrImportStatement) {
-                    final GrImportStatement importStatement = (GrImportStatement) element;
+                    GrImportStatement importStatement = (GrImportStatement) element;
                     if (!importStatement.isStatic()) {
                         return false;
                     }

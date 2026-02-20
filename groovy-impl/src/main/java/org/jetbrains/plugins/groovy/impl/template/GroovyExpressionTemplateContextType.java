@@ -24,7 +24,7 @@ public class GroovyExpressionTemplateContextType extends GroovyTemplateContextTy
 
     @RequiredReadAction
     private static boolean isExpressionContext(PsiElement element) {
-        final PsiElement parent = element.getParent();
+        PsiElement parent = element.getParent();
         if (!(parent instanceof GrReferenceExpression)) {
             return false;
         }

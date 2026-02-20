@@ -27,16 +27,16 @@ import consulo.ui.ex.awt.tree.table.TreeTableTree;
 public class ExpandAllAction extends AnAction {
   @Override
   public void actionPerformed(AnActionEvent e) {
-    final Project project = e.getData(Project.KEY);
+    Project project = e.getData(Project.KEY);
     if (project == null) return;
 
-    final TreeTableTree tree = DynamicToolWindowWrapper.getInstance(project).getTreeTable().getTree();
+    TreeTableTree tree = DynamicToolWindowWrapper.getInstance(project).getTreeTable().getTree();
     TreeUtil.expandAll(tree);
   }
 
   @Override
   public void update(AnActionEvent e) {
-    final Project project = e.getData(Project.KEY);
+    Project project = e.getData(Project.KEY);
     if (project == null) {
       e.getPresentation().setEnabled(false);
       return;

@@ -93,7 +93,7 @@ public class GroovyShellCodeFragment extends GroovyCodeFragment {
     String name = nameHint != null ? nameHint.getName(state) : null;
 
     if (name != null) {
-      final PsiVariable var = myVariables.get(name);
+      PsiVariable var = myVariables.get(name);
       if (var != null) {
         if (processor.execute(var, state)) {
           return false;
@@ -121,7 +121,7 @@ public class GroovyShellCodeFragment extends GroovyCodeFragment {
     String name = nameHint != null ? nameHint.getName(state) : null;
 
     if (name != null) {
-      final GrTypeDefinition definition = myTypeDefinitions.get(name);
+      GrTypeDefinition definition = myTypeDefinitions.get(name);
       if (definition != null) {
         if (processor.execute(definition, state)) {
           return false;

@@ -32,9 +32,9 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.PsiImplUtil;
 
 public class FlipConjunctionIntention extends MutablyNamedIntention {
     protected LocalizeValue getTextForElement(PsiElement element) {
-        final GrBinaryExpression binaryExpression = (GrBinaryExpression) element;
-        final IElementType tokenType = binaryExpression.getOperationTokenType();
-        final String conjunction = getConjunction(tokenType);
+        GrBinaryExpression binaryExpression = (GrBinaryExpression) element;
+        IElementType tokenType = binaryExpression.getOperationTokenType();
+        String conjunction = getConjunction(tokenType);
         return GroovyIntentionLocalize.flipSmthIntentionName(conjunction);
     }
 
@@ -48,18 +48,18 @@ public class FlipConjunctionIntention extends MutablyNamedIntention {
         Project project,
         Editor editor
     ) throws IncorrectOperationException {
-        final GrBinaryExpression exp = (GrBinaryExpression) element;
-        final IElementType tokenType = exp.getOperationTokenType();
+        GrBinaryExpression exp = (GrBinaryExpression) element;
+        IElementType tokenType = exp.getOperationTokenType();
 
-        final GrExpression lhs = exp.getLeftOperand();
-        final String lhsText = lhs.getText();
+        GrExpression lhs = exp.getLeftOperand();
+        String lhsText = lhs.getText();
 
-        final GrExpression rhs = exp.getRightOperand();
-        final String rhsText = rhs.getText();
+        GrExpression rhs = exp.getRightOperand();
+        String rhsText = rhs.getText();
 
-        final String conjunction = getConjunction(tokenType);
+        String conjunction = getConjunction(tokenType);
 
-        final String newExpression = rhsText + conjunction + lhsText;
+        String newExpression = rhsText + conjunction + lhsText;
         PsiImplUtil.replaceExpression(newExpression, exp);
     }
 

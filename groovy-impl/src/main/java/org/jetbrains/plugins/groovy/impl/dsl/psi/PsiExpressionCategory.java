@@ -39,7 +39,7 @@ public class PsiExpressionCategory implements PsiEnhancerCategory {
 
   @Nullable
   public static PsiClass getClassType(GrExpression expr) {
-    final PsiType type = expr.getType();
+    PsiType type = expr.getType();
     return PsiCategoryUtil.getClassType(type, expr);
   }
 
@@ -48,7 +48,7 @@ public class PsiExpressionCategory implements PsiEnhancerCategory {
    * @return arguments
    */
   public static Collection<GrExpression> getArguments(GrCall call) {
-    final GrArgumentList argumentList = call.getArgumentList();
+    GrArgumentList argumentList = call.getArgumentList();
     if (argumentList != null) {
       return Arrays.asList(argumentList.getExpressionArguments());
     }

@@ -58,7 +58,7 @@ public class TypeProvider {
       GrTypeElement typeElement = ((GrMethod)method).getReturnTypeElementGroovy();
       if (typeElement != null) return typeElement.getType();
     }
-    final PsiType smartReturnType = PsiUtil.getSmartReturnType(method);
+    PsiType smartReturnType = PsiUtil.getSmartReturnType(method);
     if (smartReturnType != null) return smartReturnType;
 
     //todo make smarter. search for usages and infer type from them
@@ -131,12 +131,12 @@ public class TypeProvider {
       MethodReferencesSearch.search(method, true).forEach(new Processor<PsiReference>() {
         @Override
         public boolean process(PsiReference psiReference) {
-          final PsiElement element = psiReference.getElement();
+          PsiElement element = psiReference.getElement();
           final PsiManager manager = element.getManager();
           final GlobalSearchScope resolveScope = element.getResolveScope();
 
           if (element instanceof GrReferenceExpression) {
-            final GrCall call = (GrCall)element.getParent();
+            GrCall call = (GrCall)element.getParent();
             final GrClosureSignatureUtil.ArgInfo<PsiElement>[] argInfos = GrClosureSignatureUtil.mapParametersToArguments(signature, call);
 
             if (argInfos == null) return true;

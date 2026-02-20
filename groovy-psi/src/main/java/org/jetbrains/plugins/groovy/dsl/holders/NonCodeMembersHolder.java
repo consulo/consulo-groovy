@@ -44,11 +44,11 @@ public class NonCodeMembersHolder implements CustomMembersHolder {
   public static final Key<String> DOCUMENTATION_URL = Key.create("GdslDocumentationUrl");
   private final List<PsiElement> myDeclarations = new ArrayList<PsiElement>();
 
-  public static NonCodeMembersHolder generateMembers(List<Map> methods, final PsiFile place) {
+  public static NonCodeMembersHolder generateMembers(List<Map> methods, PsiFile place) {
     Map<List<Map>, NonCodeMembersHolder> map = CachedValuesManager.getManager(place.getProject()).getCachedValue(
       place, new CachedValueProvider<Map<List<Map>, NonCodeMembersHolder>>() {
       public Result<Map<List<Map>, NonCodeMembersHolder>> compute() {
-        final Map<List<Map>, NonCodeMembersHolder> map = ContainerUtil.createConcurrentSoftMap();
+        Map<List<Map>, NonCodeMembersHolder> map = ContainerUtil.createConcurrentSoftMap();
         return Result.create(map, PsiModificationTracker.MODIFICATION_COUNT);
       }
     });
@@ -61,9 +61,9 @@ public class NonCodeMembersHolder implements CustomMembersHolder {
   }
 
   private NonCodeMembersHolder(List<Map> data, PsiElement place) {
-    final PsiManager manager = place.getManager();
+    PsiManager manager = place.getManager();
     for (Map prop : data) {
-      final Object decltype = prop.get("declarationType");
+      Object decltype = prop.get("declarationType");
       if (decltype == DeclarationType.CLOSURE) {
         PsiElement closureDescriptor = createClosureDescriptor(prop, place, manager);
         if (closureDescriptor != null) {
@@ -75,7 +75,7 @@ public class NonCodeMembersHolder implements CustomMembersHolder {
       }
       else {
         //declarationType == DeclarationType.METHOD
-        final PsiElement method = createMethod(prop, place, manager);
+        PsiElement method = createMethod(prop, place, manager);
         myDeclarations.add(method);
       }
     }
@@ -83,21 +83,21 @@ public class NonCodeMembersHolder implements CustomMembersHolder {
 
   private static PsiElement createVariable(Map prop, PsiElement place, PsiManager manager) {
     String name = String.valueOf(prop.get("name"));
-    final String type = String.valueOf(prop.get("type"));
+    String type = String.valueOf(prop.get("type"));
     return new GrLightVariable(manager, name, type, Collections.<PsiElement>emptyList(), place.getContainingFile());
   }
 
   @Nullable
   private static PsiElement createClosureDescriptor(Map prop, PsiElement place, PsiManager manager) {
-    final ClosureDescriptor closure = new ClosureDescriptor(manager);
+    ClosureDescriptor closure = new ClosureDescriptor(manager);
 
-    final Object method = prop.get("method");
+    Object method = prop.get("method");
     if (!(method instanceof Map)) return null;
 
     closure.setMethod(((Map)method));
 
 //    closure.setReturnType(convertToPsiType(String.valueOf(prop.get("type")), place));
-    final Object closureParams = prop.get("params");
+    Object closureParams = prop.get("params");
     if (closureParams instanceof Map) {
       boolean first = true;
       for (Object paramName : ((Map)closureParams).keySet()) {
@@ -126,7 +126,7 @@ public class NonCodeMembersHolder implements CustomMembersHolder {
   private static GrLightMethodBuilder createMethod(Map prop, PsiElement place, PsiManager manager) {
     String name = String.valueOf(prop.get("name"));
 
-    final GrLightMethodBuilder method = new GrLightMethodBuilder(manager, name).addModifier(PsiModifier.PUBLIC);
+    GrLightMethodBuilder method = new GrLightMethodBuilder(manager, name).addModifier(PsiModifier.PUBLIC);
 
     if (Boolean.TRUE.equals(prop.get("constructor"))) {
       method.setConstructor(true);
@@ -134,7 +134,7 @@ public class NonCodeMembersHolder implements CustomMembersHolder {
       method.setReturnType(convertToPsiType(String.valueOf(prop.get("type")), place));
     }
 
-    final Object params = prop.get("params");
+    Object params = prop.get("params");
     if (params instanceof Map) {
       boolean first = true;
       for (Object paramName : ((Map)params).keySet()) {
@@ -161,15 +161,15 @@ public class NonCodeMembersHolder implements CustomMembersHolder {
       method.addModifier(PsiModifier.STATIC);
     }
 
-    final Object bindsTo = prop.get("bindsTo");
+    Object bindsTo = prop.get("bindsTo");
     if (bindsTo instanceof PsiElement) {
       method.setNavigationElement((PsiElement)bindsTo);
     }
 
-    final Object toThrow = prop.get(CustomMembersGenerator.THROWS);
+    Object toThrow = prop.get(CustomMembersGenerator.THROWS);
     if (toThrow instanceof List) {
       for (Object o : ((List)toThrow)) {
-        final PsiType psiType = convertToPsiType(String.valueOf(o), place);
+        PsiType psiType = convertToPsiType(String.valueOf(o), place);
         if (psiType instanceof PsiClassType) {
           method.addException((PsiClassType)psiType);
         }

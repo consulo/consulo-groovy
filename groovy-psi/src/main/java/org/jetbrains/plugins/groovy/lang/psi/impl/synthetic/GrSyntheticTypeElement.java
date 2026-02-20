@@ -120,7 +120,7 @@ public class GrSyntheticTypeElement extends LightElement implements PsiTypeEleme
 
   @Override
   public void acceptChildren(@Nonnull PsiElementVisitor visitor) {
-    final PsiElement[] children = myElement.getChildren();
+    PsiElement[] children = myElement.getChildren();
     for (PsiElement child : children) {
       if (child instanceof GrTypeElement) {
         PsiImplUtil.getOrCreateTypeElement((GrTypeElement)child).accept(visitor);

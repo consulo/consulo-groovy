@@ -39,8 +39,8 @@ public class GrInlineFieldUtil {
   }
 
   @Nullable
-  static InlineHandler.Settings inlineFieldSettings(final GrField field, Editor editor, boolean invokedOnReference) {
-    final Project project = field.getProject();
+  static InlineHandler.Settings inlineFieldSettings(GrField field, Editor editor, boolean invokedOnReference) {
+    Project project = field.getProject();
 
     if (!field.hasModifierProperty(PsiModifier.FINAL)) {
       String message = RefactoringBundle.message("0.refactoring.is.supported.only.for.final.fields", INLINE_FIELD);

@@ -72,7 +72,7 @@ public class GroovyStaticImportMethodFix implements SyntheticIntentionAction {
     public LocalizeValue getText() {
         String text = "Static Import Method";
         if (getCandidates().size() == 1) {
-            final int options = PsiFormatUtil.SHOW_NAME | PsiFormatUtil.SHOW_CONTAINING_CLASS | PsiFormatUtil.SHOW_FQ_NAME;
+            int options = PsiFormatUtil.SHOW_NAME | PsiFormatUtil.SHOW_CONTAINING_CLASS | PsiFormatUtil.SHOW_FQ_NAME;
             text += " '" + PsiFormatUtil.formatMethod(getCandidates().get(0), PsiSubstitutor.EMPTY, options, 0) + "'";
         }
         else {
@@ -144,12 +144,12 @@ public class GroovyStaticImportMethodFix implements SyntheticIntentionAction {
 
     @Override
     @RequiredUIAccess
-    public void invoke(@Nonnull final Project project, final Editor editor, PsiFile file) {
+    public void invoke(@Nonnull Project project, Editor editor, PsiFile file) {
         if (!FileModificationService.getInstance().prepareFileForWrite(file)) {
             return;
         }
         if (getCandidates().size() == 1) {
-            final PsiMethod toImport = getCandidates().get(0);
+            PsiMethod toImport = getCandidates().get(0);
             doImport(toImport);
         }
         else {
@@ -159,7 +159,7 @@ public class GroovyStaticImportMethodFix implements SyntheticIntentionAction {
 
     @RequiredUIAccess
     @SuppressWarnings("RequiredXAction")
-    private void doImport(final PsiMethod toImport) {
+    private void doImport(PsiMethod toImport) {
         CommandProcessor.getInstance().executeCommand(
             toImport.getProject(),
             () -> toImport.getApplication().runWriteAction(() -> {
@@ -176,7 +176,7 @@ public class GroovyStaticImportMethodFix implements SyntheticIntentionAction {
     @RequiredUIAccess
     @SuppressWarnings("RequiredXAction")
     private void chooseAndImport(Editor editor) {
-        final JList<PsiMethod> list = new JBList<>(getCandidates());
+        JList<PsiMethod> list = new JBList<>(getCandidates());
         list.setCellRenderer(new MethodCellRenderer(true));
         new PopupChooserBuilder(list)
             .setTitle(JavaQuickFixLocalize.staticImportMethodChooseMethodToImport().get())

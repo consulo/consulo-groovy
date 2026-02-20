@@ -51,10 +51,10 @@ public class TypeWriter extends PsiTypeVisitor<Object> {
     writeType(builder, type, context, new GeneratorClassNameProvider());
   }
 
-  public static void writeType(@Nonnull final StringBuilder builder,
+  public static void writeType(@Nonnull StringBuilder builder,
                                @Nullable PsiType type,
-                               @Nonnull final PsiElement context,
-                               @Nonnull final ClassNameProvider classNameProvider) {
+                               @Nonnull PsiElement context,
+                               @Nonnull ClassNameProvider classNameProvider) {
     if (type instanceof PsiPrimitiveType) {
       builder.append(type.getCanonicalText());
       return;
@@ -69,7 +69,7 @@ public class TypeWriter extends PsiTypeVisitor<Object> {
       type = ((GrAnonymousClassType)type).getSimpleClassType();
     }
 
-    final boolean acceptEllipsis = isLastParameter(context);
+    boolean acceptEllipsis = isLastParameter(context);
 
     type.accept(new TypeWriter(builder, classNameProvider, acceptEllipsis, context));
   }
@@ -86,7 +86,7 @@ public class TypeWriter extends PsiTypeVisitor<Object> {
 
   @Override
   public Object visitEllipsisType(@Nonnull PsiEllipsisType ellipsisType) {
-    final PsiType componentType = ellipsisType.getComponentType();
+    PsiType componentType = ellipsisType.getComponentType();
     componentType.accept(this);
     if (acceptEllipsis) {
       builder.append("...");
@@ -103,7 +103,7 @@ public class TypeWriter extends PsiTypeVisitor<Object> {
       builder.append(primitiveType.getCanonicalText());
       return this;
     }
-    final PsiType boxed = TypesUtil.boxPrimitiveType(primitiveType, context.getManager(), context.getResolveScope());
+    PsiType boxed = TypesUtil.boxPrimitiveType(primitiveType, context.getManager(), context.getResolveScope());
     boxed.accept(this);
     return this;
   }
@@ -117,13 +117,13 @@ public class TypeWriter extends PsiTypeVisitor<Object> {
 
   @Override
   public Object visitClassType(@Nonnull PsiClassType classType) {
-    final PsiType[] parameters = classType.getParameters();
-    final PsiClass psiClass = classType.resolve();
+    PsiType[] parameters = classType.getParameters();
+    PsiClass psiClass = classType.resolve();
     if (psiClass == null) {
       builder.append(classType.getClassName());
     }
     else {
-      final String qname = classNameProvider.getQualifiedClassName(psiClass, context);
+      String qname = classNameProvider.getQualifiedClassName(psiClass, context);
       builder.append(qname);
     }
     GenerationUtil.writeTypeParameters(builder, parameters, context, classNameProvider);
@@ -164,9 +164,9 @@ public class TypeWriter extends PsiTypeVisitor<Object> {
 
   private static boolean isLastParameter(@Nonnull PsiElement context) {
     if (context instanceof PsiParameter) {
-      final PsiElement scope = ((PsiParameter)context).getDeclarationScope();
+      PsiElement scope = ((PsiParameter)context).getDeclarationScope();
       if (scope instanceof PsiMethod) {
-        final PsiParameter[] parameters = ((PsiMethod)scope).getParameterList().getParameters();
+        PsiParameter[] parameters = ((PsiMethod)scope).getParameterList().getParameters();
         return parameters.length > 0 && parameters[parameters.length - 1] == context;
       }
     }

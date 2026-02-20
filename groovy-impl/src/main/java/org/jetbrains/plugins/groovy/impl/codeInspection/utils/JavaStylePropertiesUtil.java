@@ -49,11 +49,11 @@ public class JavaStylePropertiesUtil {
     GrExpression invoked = call.getInvokedExpression();
     String accessorName = ((GrReferenceExpression)invoked).getReferenceName();
     if (isGetterInvocation(call) && invoked instanceof GrReferenceExpression) {
-      final GrExpression newCall = genRefForGetter(call, accessorName);
+      GrExpression newCall = genRefForGetter(call, accessorName);
       call.replaceWithExpression(newCall, true);
     }
     else if (isSetterInvocation(call) && invoked instanceof GrReferenceExpression) {
-      final GrStatement newCall = genRefForSetter(call, accessorName);
+      GrStatement newCall = genRefForSetter(call, accessorName);
       call.replaceWithStatement(newCall);
     }
   }
@@ -67,8 +67,8 @@ public class JavaStylePropertiesUtil {
     GrExpression value = call.getExpressionArguments()[0];
     GrReferenceExpression refExpr = (GrReferenceExpression)call.getInvokedExpression();
 
-    final GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(call.getProject());
-    final GrAssignmentExpression assignment = (GrAssignmentExpression)factory.createStatementFromText(name + " = xxx", call);
+    GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(call.getProject());
+    GrAssignmentExpression assignment = (GrAssignmentExpression)factory.createStatementFromText(name + " = xxx", call);
 
     ((GrReferenceExpression)assignment.getLValue()).setQualifier(refExpr.getQualifier());
     assignment.getRValue().replaceWithExpression(value, true);
@@ -82,7 +82,7 @@ public class JavaStylePropertiesUtil {
     String oldNameStr = refExpr.getReferenceNameElement().getText();
     String newRefExpr = StringUtil.trimEnd(refExpr.getText(), oldNameStr) + name;
 
-    final GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(call.getProject());
+    GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(call.getProject());
     return factory.createExpressionFromText(newRefExpr, call);
   }
 

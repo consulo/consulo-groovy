@@ -35,7 +35,7 @@ public abstract class GroovyMethodMetricInspection extends BaseInspection {
     }
 
     public JComponent createOptionsPanel() {
-        final String configurationLabel = getConfigurationLabel();
+        String configurationLabel = getConfigurationLabel();
         return new SingleIntegerFieldOptionsPanel(configurationLabel, this, "m_limit");
     }
 }

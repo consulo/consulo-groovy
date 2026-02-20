@@ -40,7 +40,7 @@ public class GrReplacePrimitiveTypeWithWrapperFix extends GroovyFix {
     public GrReplacePrimitiveTypeWithWrapperFix(GrTypeElement typeElement) {
         assert typeElement.isValid();
 
-        final PsiType type = typeElement.getType();
+        PsiType type = typeElement.getType();
         assert type instanceof PsiPrimitiveType;
 
         myBoxedName = ((PsiPrimitiveType)type).getBoxedType(typeElement).getClassName();
@@ -55,16 +55,16 @@ public class GrReplacePrimitiveTypeWithWrapperFix extends GroovyFix {
     @Override
     @RequiredReadAction
     protected void doFix(Project project, ProblemDescriptor descriptor) throws IncorrectOperationException {
-        final PsiElement element = descriptor.getPsiElement();
+        PsiElement element = descriptor.getPsiElement();
         assert element instanceof GrTypeElement : element;
 
         GrTypeElement typeElement = (GrTypeElement)element;
-        final PsiType type = typeElement.getType();
+        PsiType type = typeElement.getType();
         if (type instanceof PsiPrimitiveType primitiveType) {
-            final PsiClassType boxed = primitiveType.getBoxedType(typeElement);
-            final GrTypeElement newTypeElement = GroovyPsiElementFactory.getInstance(project).createTypeElement(boxed);
+            PsiClassType boxed = primitiveType.getBoxedType(typeElement);
+            GrTypeElement newTypeElement = GroovyPsiElementFactory.getInstance(project).createTypeElement(boxed);
 
-            final PsiElement replaced = typeElement.replace(newTypeElement);
+            PsiElement replaced = typeElement.replace(newTypeElement);
             JavaCodeStyleManager.getInstance(project).shortenClassReferences(replaced);
         }
     }

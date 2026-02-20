@@ -62,27 +62,27 @@ public class GroovyStatementMover extends StatementUpDownMover {
 
   @Override
   public boolean checkAvailable(@Nonnull Editor editor, @Nonnull PsiFile file, @Nonnull MoveInfo info, boolean down) {
-    final Project project = file.getProject();
+    Project project = file.getProject();
     if (!HandlerUtils.canBeInvoked(editor, project) || !(file instanceof GroovyFileBase)) return false;
 
     LineRange range = getLineRangeFromSelection(editor);
 
-    final Document document = editor.getDocument();
-    final int offset = document.getLineStartOffset(range.startLine);
-    final GrLiteral literal = PsiTreeUtil.findElementOfClassAtOffset(file, offset, GrLiteral.class, false);
+    Document document = editor.getDocument();
+    int offset = document.getLineStartOffset(range.startLine);
+    GrLiteral literal = PsiTreeUtil.findElementOfClassAtOffset(file, offset, GrLiteral.class, false);
     if (literal != null && literal.textContains('\n')) return false; //multiline string
 
-    final GroovyPsiElement pivot = getElementToMove((GroovyFileBase)file, offset);
+    GroovyPsiElement pivot = getElementToMove((GroovyFileBase)file, offset);
     if (pivot == null) return false;
 
-    final LineRange pivotRange = getLineRange(pivot);
+    LineRange pivotRange = getLineRange(pivot);
     range = new LineRange(Math.min(range.startLine, pivotRange.startLine), Math.max(range.endLine, pivotRange.endLine));
 
-    final GroovyPsiElement scope = PsiTreeUtil.getParentOfType(pivot, GrMethod.class, GrTypeDefinitionBody.class, GroovyFileBase.class);
+    GroovyPsiElement scope = PsiTreeUtil.getParentOfType(pivot, GrMethod.class, GrTypeDefinitionBody.class, GroovyFileBase.class);
 
-    final boolean stmtLevel = isStatement(pivot);
+    boolean stmtLevel = isStatement(pivot);
     boolean topLevel = pivot instanceof GrTypeDefinition && pivot.getParent() instanceof GroovyFileBase;
-    final List<LineRange> allRanges = allRanges(scope, stmtLevel, topLevel);
+    List<LineRange> allRanges = allRanges(scope, stmtLevel, topLevel);
     LineRange prev = null;
     LineRange next = null;
 
@@ -110,9 +110,9 @@ public class GroovyStatementMover extends StatementUpDownMover {
   private static GroovyPsiElement getElementToMove(GroovyFileBase file, int offset) {
     offset = CharArrayUtil.shiftForward(file.getText(), offset, " \t");
     PsiElement element = file.findElementAt(offset);
-    final GrDocComment docComment = PsiTreeUtil.getParentOfType(element, GrDocComment.class);
+    GrDocComment docComment = PsiTreeUtil.getParentOfType(element, GrDocComment.class);
     if (docComment != null) {
-      final GrDocCommentOwner owner = docComment.getOwner();
+      GrDocCommentOwner owner = docComment.getOwner();
       if (owner != null) {
         element = owner;
       }
@@ -129,7 +129,7 @@ public class GroovyStatementMover extends StatementUpDownMover {
     });
   }
 
-  private List<LineRange> allRanges(final GroovyPsiElement scope, final boolean stmtLevel, final boolean topLevel) {
+  private List<LineRange> allRanges(GroovyPsiElement scope, final boolean stmtLevel, final boolean topLevel) {
     final ArrayList<LineRange> result = new ArrayList<LineRange>();
     scope.accept(new PsiRecursiveElementVisitor() {
       int lastStart = -1;
@@ -144,16 +144,16 @@ public class GroovyStatementMover extends StatementUpDownMover {
       @Override
       public void visitElement(PsiElement element) {
         if (stmtLevel && element instanceof GrCodeBlock) {
-          final PsiElement lBrace = ((GrCodeBlock)element).getLBrace();
+          PsiElement lBrace = ((GrCodeBlock)element).getLBrace();
           if (nlsAfter(lBrace)) {
             assert lBrace != null;
             addRange(new LineRange(lBrace).endLine);
           }
           addChildRanges(((GrCodeBlock)element).getStatements());
-          final PsiElement rBrace = ((GrCodeBlock)element).getRBrace();
+          PsiElement rBrace = ((GrCodeBlock)element).getRBrace();
           if (nlsAfter(rBrace)) {
             assert rBrace != null;
-            final int endLine = new LineRange(rBrace).endLine;
+            int endLine = new LineRange(rBrace).endLine;
             if (lastStart >= 0) {
               for (int i = lastStart + 1; i < endLine; i++) {
                 addRange(i);
@@ -162,8 +162,8 @@ public class GroovyStatementMover extends StatementUpDownMover {
           }
         }
         else if (stmtLevel && element instanceof GrCaseSection) {
-          final GrCaseLabel[] allLabels = ((GrCaseSection)element).getCaseLabels();
-          final GrCaseLabel label = allLabels[0];
+          GrCaseLabel[] allLabels = ((GrCaseSection)element).getCaseLabels();
+          GrCaseLabel label = allLabels[0];
           if (nlsAfter(label)) {
             addRange(new LineRange(label).endLine);
           }
@@ -194,7 +194,7 @@ public class GroovyStatementMover extends StatementUpDownMover {
         for (int i = 0; i < statements.length; i++) {
           GrTopStatement statement = statements[i];
           if (nlsAfter(statement)) {
-            final LineRange range = getLineRange(statement);
+            LineRange range = getLineRange(statement);
             if ((i == 0 || isStatement(statements[i - 1])) && isStatement(statement)) {
               for (int j = lastStart; j < range.startLine; j++) {
                 addRange(j + 1);
@@ -222,7 +222,7 @@ public class GroovyStatementMover extends StatementUpDownMover {
         return true; //eof
       }
 
-      final String text = sibling.getText();
+      String text = sibling.getText();
       if (text.contains("\n")) {
         return text.charAt(CharArrayUtil.shiftForward(text, 0, " \t")) == '\n';
       }
@@ -248,7 +248,7 @@ public class GroovyStatementMover extends StatementUpDownMover {
 
   private static LineRange getLineRange(GroovyPsiElement pivot) {
     if (pivot instanceof GrDocCommentOwner) {
-      final GrDocComment comment = ((GrDocCommentOwner)pivot).getDocComment();
+      GrDocComment comment = ((GrDocCommentOwner)pivot).getDocComment();
       if (comment != null) {
         return new LineRange(comment, pivot);
       }

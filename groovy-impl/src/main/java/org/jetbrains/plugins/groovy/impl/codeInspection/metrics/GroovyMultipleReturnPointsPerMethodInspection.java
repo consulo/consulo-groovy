@@ -49,7 +49,7 @@ public class GroovyMultipleReturnPointsPerMethodInspection extends GroovyMethodM
 
     @Nonnull
     public String buildErrorString(Object... infos) {
-        final Integer returnPointCount = (Integer) infos[0];
+        Integer returnPointCount = (Integer) infos[0];
         return "<code>#ref</code> has " + returnPointCount + " return points #loc";
     }
 
@@ -63,7 +63,7 @@ public class GroovyMultipleReturnPointsPerMethodInspection extends GroovyMethodM
             if (method.getNameIdentifier() == null) {
                 return;
             }
-            final int returnPointCount = calculateReturnPointCount(method);
+            int returnPointCount = calculateReturnPointCount(method);
             if (returnPointCount <= getLimit()) {
                 return;
             }
@@ -71,21 +71,21 @@ public class GroovyMultipleReturnPointsPerMethodInspection extends GroovyMethodM
         }
 
         private int calculateReturnPointCount(GrMethod method) {
-            final ReturnPointCountVisitor visitor = new ReturnPointCountVisitor();
+            ReturnPointCountVisitor visitor = new ReturnPointCountVisitor();
             method.accept(visitor);
-            final int count = visitor.getCount();
+            int count = visitor.getCount();
             if (!mayFallThroughBottom(method)) {
                 return count;
             }
-            final GrCodeBlock body = method.getBlock();
+            GrCodeBlock body = method.getBlock();
             if (body == null) {
                 return count;
             }
-            final GrStatement[] statements = body.getStatements();
+            GrStatement[] statements = body.getStatements();
             if (statements.length == 0) {
                 return count + 1;
             }
-            final GrStatement lastStatement = statements[statements.length - 1];
+            GrStatement lastStatement = statements[statements.length - 1];
             if (ControlFlowUtils.statementMayCompleteNormally(lastStatement)) {
                 return count + 1;
             }
@@ -96,7 +96,7 @@ public class GroovyMultipleReturnPointsPerMethodInspection extends GroovyMethodM
             if (method.isConstructor()) {
                 return true;
             }
-            final PsiType returnType = method.getReturnType();
+            PsiType returnType = method.getReturnType();
             return PsiType.VOID.equals(returnType);
         }
     }

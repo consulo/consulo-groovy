@@ -42,17 +42,17 @@ public class ChangeToEndOfLineCommentIntention extends Intention {
 
     public void processIntention(@Nonnull PsiElement element, Project project, Editor editor)
         throws IncorrectOperationException {
-        final PsiComment comment = (PsiComment) element;
-        final JavaPsiFacade manager = JavaPsiFacade.getInstance(comment.getProject());
-        final PsiElement parent = comment.getParent();
+        PsiComment comment = (PsiComment) element;
+        JavaPsiFacade manager = JavaPsiFacade.getInstance(comment.getProject());
+        PsiElement parent = comment.getParent();
         assert parent != null;
-        final PsiElementFactory factory = manager.getElementFactory();
-        final String commentText = comment.getText();
-        final PsiElement whitespace = comment.getNextSibling();
-        final String text = commentText.substring(2, commentText.length() - 2);
-        final String[] lines = text.split("\n");
+        PsiElementFactory factory = manager.getElementFactory();
+        String commentText = comment.getText();
+        PsiElement whitespace = comment.getNextSibling();
+        String text = commentText.substring(2, commentText.length() - 2);
+        String[] lines = text.split("\n");
         for (int i = lines.length - 1; i >= 1; i--) {
-            final PsiComment nextComment =
+            PsiComment nextComment =
                 factory.createCommentFromText(
                     "//" + lines[i].trim() + '\n',
                     parent
@@ -64,7 +64,7 @@ public class ChangeToEndOfLineCommentIntention extends Intention {
       parent.addAfter(newWhiteSpace, comment);
     }  */
         }
-        final PsiComment newComment =
+        PsiComment newComment =
             factory.createCommentFromText("//" + lines[0], parent);
         comment.replace(newComment);
     }

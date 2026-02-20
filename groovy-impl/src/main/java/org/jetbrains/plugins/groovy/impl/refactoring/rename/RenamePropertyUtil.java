@@ -61,7 +61,7 @@ public class RenamePropertyUtil {
     if (m instanceof GrAccessorMethod) {
       return member(((GrAccessorMethod)m).getProperty());
     }
-    final String name;
+    String name;
     if (m instanceof GrMethod) {
       name = GroovyPropertyUtils.getPropertyNameByAccessorName(m.getName());
       if (name == null) return member(m);
@@ -74,9 +74,9 @@ public class RenamePropertyUtil {
       return member(m);
     }
 
-    final PsiClass containingClass = m.getContainingClass();
+    PsiClass containingClass = m.getContainingClass();
     if (containingClass == null) return member(m);
-    final boolean isStatic = m.hasModifierProperty(PsiModifier.STATIC);
+    boolean isStatic = m.hasModifierProperty(PsiModifier.STATIC);
 
     List<PsiElement> property = new ArrayList<PsiElement>();
     assert name != null;
@@ -87,7 +87,7 @@ public class RenamePropertyUtil {
       if (iterator.next() instanceof GrAccessorMethod) iterator.remove();
     }
 
-    final PsiField field = containingClass.findFieldByName(name, false);
+    PsiField field = containingClass.findFieldByName(name, false);
     if (field != null) {
       property.add(field);
     }

@@ -37,10 +37,10 @@ public class GrTableParameterInfo {
 
   public GrTableParameterInfo(GrParameter parameter, int position) {
     myPosition = position;
-    final Project project = parameter.getProject();
+    Project project = parameter.getProject();
     myName = new GroovyCodeFragment(project, parameter.getName());
-    final PsiType type = parameter.getDeclaredType();
-    final JavaCodeFragmentFactory factory = JavaCodeFragmentFactory.getInstance(project);
+    PsiType type = parameter.getDeclaredType();
+    JavaCodeFragmentFactory factory = JavaCodeFragmentFactory.getInstance(project);
     if (type != null) {
       String typeText = type.getCanonicalText();
       if (typeText == null) typeText = type.getPresentableText();
@@ -49,7 +49,7 @@ public class GrTableParameterInfo {
     else {
       myType = factory.createTypeCodeFragment("", parameter, true, JavaCodeFragmentFactory.ALLOW_VOID | JavaCodeFragmentFactory.ALLOW_ELLIPSIS);
     }
-    final GrExpression defaultInitializer = parameter.getInitializerGroovy();
+    GrExpression defaultInitializer = parameter.getInitializerGroovy();
     if (defaultInitializer != null) {
       myDefaultInitializer = new GroovyCodeFragment(project, defaultInitializer.getText());
     }

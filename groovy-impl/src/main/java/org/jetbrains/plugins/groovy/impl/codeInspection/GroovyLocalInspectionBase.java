@@ -60,7 +60,7 @@ public abstract class GroovyLocalInspectionBase<State> extends GroovySuppressabl
 
 			public void visitMethod(GrMethod method)
 			{
-				final GrOpenBlock block = method.getBlock();
+				GrOpenBlock block = method.getBlock();
 				if(block != null)
 				{
 					check(block, problemsHolder, inspectionState);

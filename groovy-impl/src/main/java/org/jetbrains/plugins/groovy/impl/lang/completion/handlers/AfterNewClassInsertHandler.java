@@ -55,9 +55,9 @@ public class AfterNewClassInsertHandler implements InsertHandler<LookupItem<PsiC
   }
 
   @Override
-  public void handleInsert(final InsertionContext context, LookupItem<PsiClassType> item) {
-    final PsiClassType.ClassResolveResult resolveResult = myClassType.resolveGenerics();
-    final PsiClass psiClass = resolveResult.getElement();
+  public void handleInsert(InsertionContext context, LookupItem<PsiClassType> item) {
+    PsiClassType.ClassResolveResult resolveResult = myClassType.resolveGenerics();
+    PsiClass psiClass = resolveResult.getElement();
     if (psiClass == null || !psiClass.isValid()) {
       return;
     }
@@ -84,8 +84,8 @@ public class AfterNewClassInsertHandler implements InsertHandler<LookupItem<PsiC
     PsiDocumentManager.getInstance(context.getProject()).doPostponedOperationsAndUnblockDocument(context.getDocument());
 
     if (psiClass.hasModifierProperty(PsiModifier.ABSTRACT)) {
-      final Editor editor = context.getEditor();
-      final int offset = context.getTailOffset();
+      Editor editor = context.getEditor();
+      int offset = context.getTailOffset();
       editor.getDocument().insertString(offset, " {}");
       editor.getCaretModel().moveToOffset(offset + 2);
 
@@ -97,7 +97,7 @@ public class AfterNewClassInsertHandler implements InsertHandler<LookupItem<PsiC
   private static void shortenRefsInGenerics(InsertionContext context) {
     int offset = context.getStartOffset();
 
-    final String text = context.getDocument().getText();
+    String text = context.getDocument().getText();
     while (text.charAt(offset) != '<' && text.charAt(offset) != '(') {
       offset++;
     }
@@ -107,8 +107,8 @@ public class AfterNewClassInsertHandler implements InsertHandler<LookupItem<PsiC
   }
 
   @Nullable
-  private static Runnable generateAnonymousBody(final Editor editor, final PsiFile file) {
-    final Project project = file.getProject();
+  private static Runnable generateAnonymousBody(Editor editor, PsiFile file) {
+    Project project = file.getProject();
     PsiDocumentManager.getInstance(project).commitAllDocuments();
 
     int offset = editor.getCaretModel().getOffset();

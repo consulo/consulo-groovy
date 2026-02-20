@@ -93,7 +93,7 @@ public abstract class GrDocCommentUtil
 			{
 				break;
 			}
-			final ASTNode node = element.getNode();
+			ASTNode node = element.getNode();
 			if(node == null)
 			{
 				break;

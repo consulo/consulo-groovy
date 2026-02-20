@@ -46,16 +46,16 @@ public class ConvertIntegerToHexIntention extends Intention {
         Project project,
         Editor editor
     ) throws IncorrectOperationException {
-        final GrLiteral exp = (GrLiteral) element;
+        GrLiteral exp = (GrLiteral) element;
         String textString = exp.getText().replaceAll("_", "");
-        final int textLength = textString.length();
-        final char lastChar = textString.charAt(textLength - 1);
-        final boolean isLong = lastChar == 'l' || lastChar == 'L';
+        int textLength = textString.length();
+        char lastChar = textString.charAt(textLength - 1);
+        boolean isLong = lastChar == 'l' || lastChar == 'L';
         if (isLong) {
             textString = textString.substring(0, textLength - 1);
         }
 
-        final BigInteger val;
+        BigInteger val;
         if (textString.startsWith("0b") || textString.startsWith("0B")) {
             val = new BigInteger(textString.substring(2), 2);
         }

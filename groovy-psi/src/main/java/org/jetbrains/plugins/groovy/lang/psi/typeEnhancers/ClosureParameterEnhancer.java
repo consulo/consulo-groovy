@@ -147,11 +147,11 @@ public class ClosureParameterEnhancer extends AbstractClosureParameterEnhancer {
       return null;
     }
 
-    final PsiParameter[] params = closure.getAllParameters();
+    PsiParameter[] params = closure.getAllParameters();
 
     if (params.length == 1 && simpleTypes.containsKey(methodName)) {
 
-      final String typeText = simpleTypes.get(methodName);
+      String typeText = simpleTypes.get(methodName);
       if (typeText.indexOf('<') < 0) {
         return TypesUtil.createTypeByFQClassName(typeText, closure);
       }
@@ -214,7 +214,7 @@ public class ClosureParameterEnhancer extends AbstractClosureParameterEnhancer {
       }
     }
     else if (GdkMethodUtil.EACH_PERMUTATION.equals(methodName) && params.length == 1) {
-      final PsiType itemType = findTypeForIteration(qualifier, closure);
+      PsiType itemType = findTypeForIteration(qualifier, closure);
       if (itemType != null) {
         return JavaPsiFacade.getElementFactory(closure.getProject()).createTypeFromText(
           JAVA_UTIL_ARRAY_LIST + "<" + itemType.getCanonicalText() + ">", closure);
@@ -232,12 +232,12 @@ public class ClosureParameterEnhancer extends AbstractClosureParameterEnhancer {
       }
     }
     else if (GdkMethodUtil.WITH_STREAM.equals(methodName)) {
-      final PsiMethod method = ((GrMethodCall)parent).resolveMethod();
+      PsiMethod method = ((GrMethodCall)parent).resolveMethod();
       if (method instanceof GrGdkMethod) {
         return qualifier.getType();
       }
       else if (method != null) {
-        final PsiParameter[] parameters = method.getParameterList().getParameters();
+        PsiParameter[] parameters = method.getParameterList().getParameters();
         if (parameters.length > 0) {
           return parameters[0].getType();
         }
@@ -259,15 +259,15 @@ public class ClosureParameterEnhancer extends AbstractClosureParameterEnhancer {
   }
 
   @Nullable
-  private static PsiType getEntryForMap(@Nullable PsiType map, @Nonnull final Project project, @Nonnull final GlobalSearchScope scope) {
+  private static PsiType getEntryForMap(@Nullable PsiType map, @Nonnull Project project, @Nonnull GlobalSearchScope scope) {
     PsiType key = PsiUtil.substituteTypeParameter(map, JAVA_UTIL_MAP, 0, true);
     PsiType value = PsiUtil.substituteTypeParameter(map, JAVA_UTIL_MAP, 1, true);
 
-    final PsiElementFactory factory = JavaPsiFacade.getElementFactory(project);
-    final PsiClass entryClass = JavaPsiFacade.getInstance(project).findClass(JAVA_UTIL_MAP_ENTRY, scope);
+    PsiElementFactory factory = JavaPsiFacade.getElementFactory(project);
+    PsiClass entryClass = JavaPsiFacade.getInstance(project).findClass(JAVA_UTIL_MAP_ENTRY, scope);
     if (entryClass == null) {
       if (key != null && key != PsiType.NULL && value != null && value != PsiType.NULL) {
-        final String text = String.format("%s<%s,%s>", JAVA_UTIL_MAP_ENTRY, key.getCanonicalText(), value.getCanonicalText());
+        String text = String.format("%s<%s,%s>", JAVA_UTIL_MAP_ENTRY, key.getCanonicalText(), value.getCanonicalText());
         return factory.createTypeFromText(text, null);
       }
       else {
@@ -284,15 +284,15 @@ public class ClosureParameterEnhancer extends AbstractClosureParameterEnhancer {
     PsiType iterType = qualifier.getType();
     if (iterType == null) return null;
 
-    final PsiType type = findTypeForIteration(iterType, context);
+    PsiType type = findTypeForIteration(iterType, context);
     if (type == null) return null;
 
     return PsiImplUtil.normalizeWildcardTypeByPosition(type, qualifier);
   }
 
   public static PsiType findTypeForIteration(@Nullable PsiType type, @Nonnull PsiElement context) {
-    final PsiManager manager = context.getManager();
-    final GlobalSearchScope resolveScope = context.getResolveScope();
+    PsiManager manager = context.getManager();
+    GlobalSearchScope resolveScope = context.getResolveScope();
 
     if (type instanceof PsiArrayType) {
       return TypesUtil.boxPrimitiveType(((PsiArrayType)type).getComponentType(), manager, resolveScope);
@@ -330,13 +330,13 @@ public class ClosureParameterEnhancer extends AbstractClosureParameterEnhancer {
   private static PsiType findTypeFromIteratorMethod(@Nullable PsiType type, PsiElement context) {
     if (!(type instanceof PsiClassType)) return null;
 
-    final GroovyResolveResult[] candidates = ResolveUtil.getMethodCandidates(type, "iterator", context, PsiType.EMPTY_ARRAY);
-    final GroovyResolveResult candidate = PsiImplUtil.extractUniqueResult(candidates);
-    final PsiElement element = candidate.getElement();
+    GroovyResolveResult[] candidates = ResolveUtil.getMethodCandidates(type, "iterator", context, PsiType.EMPTY_ARRAY);
+    GroovyResolveResult candidate = PsiImplUtil.extractUniqueResult(candidates);
+    PsiElement element = candidate.getElement();
     if (!(element instanceof PsiMethod)) return null;
 
-    final PsiType returnType = org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil.getSmartReturnType((PsiMethod)element);
-    final PsiType iteratorType = candidate.getSubstitutor().substitute(returnType);
+    PsiType returnType = org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil.getSmartReturnType((PsiMethod)element);
+    PsiType iteratorType = candidate.getSubstitutor().substitute(returnType);
 
     return PsiUtil.substituteTypeParameter(iteratorType, JAVA_UTIL_ITERATOR, 0, false);
   }

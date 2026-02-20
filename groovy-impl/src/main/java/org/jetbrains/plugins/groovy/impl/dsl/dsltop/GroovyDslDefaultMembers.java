@@ -56,7 +56,7 @@ public class GroovyDslDefaultMembers implements GdslMembersProvider {
    */
   @Nullable
   public PsiClass findClass(String fqn, GdslMembersHolderConsumer consumer) {
-    final JavaPsiFacade facade = JavaPsiFacade.getInstance(consumer.getProject());
+    JavaPsiFacade facade = JavaPsiFacade.getInstance(consumer.getProject());
     return facade.findClass(fqn, GlobalSearchScope.allScope(consumer.getProject()));
   }
 
@@ -68,16 +68,16 @@ public class GroovyDslDefaultMembers implements GdslMembersProvider {
 
   public void delegatesTo(@Nullable PsiElement elem, GdslMembersHolderConsumer consumer) {
     if (elem instanceof PsiClass) {
-      final PsiClass clazz = (PsiClass)elem;
-      final DelegatedMembersHolder holder = new DelegatedMembersHolder();
+      PsiClass clazz = (PsiClass)elem;
+      DelegatedMembersHolder holder = new DelegatedMembersHolder();
 
       if (clazz instanceof GrTypeDefinition) {
-        final PsiClassType type = JavaPsiFacade.getElementFactory(consumer.getProject()).createType(clazz);
-        final ResolverProcessorImpl processor = CompletionProcessor.createPropertyCompletionProcessor(clazz);
-        final GroovyPsiElement context = (GroovyPsiElement)clazz;
+        PsiClassType type = JavaPsiFacade.getElementFactory(consumer.getProject()).createType(clazz);
+        ResolverProcessorImpl processor = CompletionProcessor.createPropertyCompletionProcessor(clazz);
+        GroovyPsiElement context = (GroovyPsiElement)clazz;
         ResolveUtil.processAllDeclarations(type, processor, ResolveState.initial(), context);
         for (GroovyResolveResult result : processor.getCandidates()) {
-          final PsiElement element = result.getElement();
+          PsiElement element = result.getElement();
           if (element instanceof PsiMethod && !((PsiMethod)element).isConstructor() || element instanceof PsiField) {
             holder.addMember((PsiMember)element);
           }
@@ -95,7 +95,7 @@ public class GroovyDslDefaultMembers implements GdslMembersProvider {
     }
     else if (elem instanceof GrExpression) {
       GrExpression expr = (GrExpression)elem;
-      final PsiType type = expr.getType();
+      PsiType type = expr.getType();
       if (type instanceof PsiClassType) {
         PsiClassType ctype = (PsiClassType)type;
         delegatesTo(ctype.resolve(), consumer);
@@ -109,7 +109,7 @@ public class GroovyDslDefaultMembers implements GdslMembersProvider {
    * @param member
    */
   public PsiMember add(PsiMember member, GdslMembersHolderConsumer consumer) {
-    final DelegatedMembersHolder holder = new DelegatedMembersHolder();
+    DelegatedMembersHolder holder = new DelegatedMembersHolder();
     holder.addMember(member);
     consumer.addMemberHolder(holder);
     return member;
@@ -120,7 +120,7 @@ public class GroovyDslDefaultMembers implements GdslMembersProvider {
    */
   @Nullable
   public GrCall enclosingCall(String name, GdslMembersHolderConsumer consumer) {
-    final PsiElement place = consumer.getPlace();
+    PsiElement place = consumer.getPlace();
     if (place == null) return null;
     GrCall call = PsiTreeUtil.getParentOfType(place, GrCall.class, true);
     if (call == null) return null;
@@ -129,7 +129,7 @@ public class GroovyDslDefaultMembers implements GdslMembersProvider {
     }
     if (call == null) return null;
 
-    final GrArgumentList argumentList = call.getArgumentList();
+    GrArgumentList argumentList = call.getArgumentList();
     if (argumentList != null) {
       for (GrExpression arg : argumentList.getExpressionArguments()) {
         if (arg instanceof GrClosableBlock && PsiTreeUtil.findCommonParent(place, arg) == arg) {
@@ -150,23 +150,23 @@ public class GroovyDslDefaultMembers implements GdslMembersProvider {
 
   @Nullable
   public PsiMethod enclosingMethod(GdslMembersHolderConsumer consumer) {
-    final PsiElement place = consumer.getPlace();
+    PsiElement place = consumer.getPlace();
     if (place == null) return null;
     return PsiTreeUtil.getParentOfType(place, PsiMethod.class, true);
   }
 
   @Nullable
   public PsiMember enclosingMember(GdslMembersHolderConsumer consumer) {
-    final PsiElement place = consumer.getPlace();
+    PsiElement place = consumer.getPlace();
     if (place == null) return null;
-    final PsiMember member = PsiTreeUtil.getParentOfType(place, PsiMember.class, true);
+    PsiMember member = PsiTreeUtil.getParentOfType(place, PsiMember.class, true);
     if (member instanceof PsiClass) return null;
     return member;
   }
 
   @Nullable
   public PsiClass enclosingClass(GdslMembersHolderConsumer consumer) {
-    final PsiElement place = consumer.getPlace();
+    PsiElement place = consumer.getPlace();
     if (place == null) return null;
     return PsiTreeUtil.getParentOfType(place, PsiClass.class, true);
   }
@@ -174,7 +174,7 @@ public class GroovyDslDefaultMembers implements GdslMembersProvider {
   @Nullable
   private static String getInvokedMethodName(GrCall call) {
     if (call instanceof GrMethodCall) {
-      final GrExpression expr = ((GrMethodCall)call).getInvokedExpression();
+      GrExpression expr = ((GrMethodCall)call).getInvokedExpression();
       if (expr instanceof GrReferenceExpression) {
         return ((GrReferenceExpression)expr).getReferenceName();
       }

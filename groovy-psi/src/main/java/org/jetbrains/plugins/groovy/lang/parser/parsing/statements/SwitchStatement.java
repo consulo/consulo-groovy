@@ -82,7 +82,7 @@ public class SwitchStatement {
       PsiBuilder.Marker sectionMarker = builder.mark();
       parseCaseLabel(builder, parser);
 
-      final PsiBuilder.Marker warn = builder.mark();
+      PsiBuilder.Marker warn = builder.mark();
       ParserUtils.getToken(builder, GroovyTokenTypes.mNLS);
       if (builder.getTokenType() == GroovyTokenTypes.mRCURLY) {
         warn.rollbackTo();

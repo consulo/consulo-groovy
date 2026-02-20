@@ -47,19 +47,19 @@ public class ConvertClosureArgToItIntention extends Intention {
     }
 
     public void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
-        final GrClosableBlock closure =
+        GrClosableBlock closure =
             (GrClosableBlock) element;
 
-        final GrParameterList parameterList = closure.getParameterList();
+        GrParameterList parameterList = closure.getParameterList();
         final GrParameter parameter = parameterList.getParameters()[0];
         final Set<GrReferenceExpression> referencesToChange = new HashSet<GrReferenceExpression>();
-        final GroovyRecursiveElementVisitor visitor = new GroovyRecursiveElementVisitor() {
+        GroovyRecursiveElementVisitor visitor = new GroovyRecursiveElementVisitor() {
             public void visitReferenceExpression(GrReferenceExpression referenceExpression) {
                 super.visitReferenceExpression(referenceExpression);
                 if (!referenceExpression.getText().equals(parameter.getName())) {
                     return;
                 }
-                final PsiElement referent = referenceExpression.resolve();
+                PsiElement referent = referenceExpression.resolve();
                 if (parameter.equals(referent)) {
                     referencesToChange.add(referenceExpression);
                 }

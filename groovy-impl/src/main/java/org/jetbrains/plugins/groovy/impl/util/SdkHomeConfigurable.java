@@ -39,7 +39,7 @@ public abstract class SdkHomeConfigurable implements SearchableConfigurable {
   protected final Project myProject;
   protected final String myFrameworkName;
 
-  public SdkHomeConfigurable(Project project, final String frameworkName) {
+  public SdkHomeConfigurable(Project project, String frameworkName) {
     myProject = project;
     myFrameworkName = frameworkName;
   }
@@ -51,7 +51,7 @@ public abstract class SdkHomeConfigurable implements SearchableConfigurable {
 
   public JComponent createComponent() {
     myPanel = new JPanel(new BorderLayout(10, 5));
-    final JPanel contentPanel = new JPanel(new BorderLayout(4, 0));
+    JPanel contentPanel = new JPanel(new BorderLayout(4, 0));
     myPanel.add(contentPanel, BorderLayout.NORTH);
     contentPanel.add(new JLabel(myFrameworkName + " home:"), BorderLayout.WEST);
     myPathField = new TextFieldWithBrowseButton();
@@ -74,7 +74,7 @@ public abstract class SdkHomeConfigurable implements SearchableConfigurable {
 
   public void apply() throws ConfigurationException
   {
-    final SdkHomeBean state = new SdkHomeBean();
+    SdkHomeBean state = new SdkHomeBean();
     state.SDK_HOME = FileUtil.toSystemIndependentName(myPathField.getText());
     getFrameworkSettings().loadState(state);
   }
@@ -86,8 +86,8 @@ public abstract class SdkHomeConfigurable implements SearchableConfigurable {
   }
 
   private String getStateText() {
-    final SdkHomeBean state = getFrameworkSettings().getState();
-    final String stateText = state == null ? "" : state.SDK_HOME;
+    SdkHomeBean state = getFrameworkSettings().getState();
+    String stateText = state == null ? "" : state.SDK_HOME;
     return FileUtil.toSystemDependentName(StringUtil.notNullize(stateText));
   }
 

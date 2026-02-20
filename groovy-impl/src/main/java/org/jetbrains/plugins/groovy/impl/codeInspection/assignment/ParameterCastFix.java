@@ -67,8 +67,8 @@ public class ParameterCastFix extends GroovyFix {
 
     @Override
     protected void doFix(Project project, ProblemDescriptor descriptor) throws IncorrectOperationException {
-        final PsiElement element = descriptor.getPsiElement();
-        final GrArgumentList list = element instanceof GrArgumentList ? (GrArgumentList) element : PsiUtil.getArgumentsList(element);
+        PsiElement element = descriptor.getPsiElement();
+        GrArgumentList list = element instanceof GrArgumentList ? (GrArgumentList) element : PsiUtil.getArgumentsList(element);
         if (list == null) {
             return;
         }

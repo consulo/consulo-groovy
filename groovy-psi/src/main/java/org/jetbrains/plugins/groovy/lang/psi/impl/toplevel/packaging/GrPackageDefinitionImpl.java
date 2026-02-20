@@ -69,7 +69,7 @@ public class GrPackageDefinitionImpl extends GrStubElementBase<GrPackageDefiniti
 	@Override
 	public String getPackageName()
 	{
-		final GrPackageDefinitionStub stub = getStub();
+		GrPackageDefinitionStub stub = getStub();
 		if(stub != null)
 		{
 			return stub.getPackageName();
@@ -105,7 +105,7 @@ public class GrPackageDefinitionImpl extends GrStubElementBase<GrPackageDefiniti
 	@Override
 	public boolean hasModifierProperty(@NonNls @Nonnull String name)
 	{
-		final PsiModifierList list = getModifierList();
+		PsiModifierList list = getModifierList();
 		return list != null && list.hasExplicitModifier(name);
 	}
 }

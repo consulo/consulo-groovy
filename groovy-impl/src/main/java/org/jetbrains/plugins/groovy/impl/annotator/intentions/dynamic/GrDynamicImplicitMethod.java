@@ -118,7 +118,7 @@ public class GrDynamicImplicitMethod extends GrLightMethodBuilder implements GrD
 
   @Override
   public PsiFile getContainingFile() {
-    final PsiClass psiClass = getContainingClassElement();
+    PsiClass psiClass = getContainingClassElement();
     if (psiClass == null) {
       return null;
     }
@@ -133,13 +133,13 @@ public class GrDynamicImplicitMethod extends GrLightMethodBuilder implements GrD
       @Override
       public PsiClass compute() {
         try {
-          final GrTypeElement typeElement = GroovyPsiElementFactory.getInstance(getProject())
+          GrTypeElement typeElement = GroovyPsiElementFactory.getInstance(getProject())
                                                                    .createTypeElement(myContainingClassName);
           if (typeElement == null) {
             return null;
           }
 
-          final PsiType type = typeElement.getType();
+          PsiType type = typeElement.getType();
           if (!(type instanceof PsiClassType)) {
             return null;
           }
@@ -171,8 +171,8 @@ public class GrDynamicImplicitMethod extends GrLightMethodBuilder implements GrD
       @Override
       public void run() {
         DynamicToolWindowWrapper toolWindowWrapper = DynamicToolWindowWrapper.getInstance(getProject());
-        final TreeTable treeTable = toolWindowWrapper.getTreeTable();
-        final ListTreeTableModelOnColumns model = toolWindowWrapper.getTreeTableModel();
+        TreeTable treeTable = toolWindowWrapper.getTreeTable();
+        ListTreeTableModelOnColumns model = toolWindowWrapper.getTreeTableModel();
 
         Object root = model.getRoot();
 
@@ -184,9 +184,9 @@ public class GrDynamicImplicitMethod extends GrLightMethodBuilder implements GrD
         DefaultMutableTreeNode desiredNode;
 
         JavaPsiFacade facade = JavaPsiFacade.getInstance(getProject());
-        final PsiClassType fqClassName = facade.getElementFactory().createTypeByFQClassName
+        PsiClassType fqClassName = facade.getElementFactory().createTypeByFQClassName
           (myContainingClassName, (GlobalSearchScope)ProjectScopes.getAllScope(getProject()));
-        final PsiClass psiClass = fqClassName.resolve();
+        PsiClass psiClass = fqClassName.resolve();
         if (psiClass == null) {
           return;
         }
@@ -194,11 +194,11 @@ public class GrDynamicImplicitMethod extends GrLightMethodBuilder implements GrD
         PsiClass trueClass = null;
         DMethodElement methodElement = null;
 
-        final GrParameter[] parameters = getParameters();
+        GrParameter[] parameters = getParameters();
 
         List<String> parameterTypes = new ArrayList<String>();
         for (GrParameter parameter : parameters) {
-          final String type = parameter.getType().getCanonicalText();
+          String type = parameter.getType().getCanonicalText();
           parameterTypes.add(type);
         }
 
@@ -217,7 +217,7 @@ public class GrDynamicImplicitMethod extends GrLightMethodBuilder implements GrD
         if (trueClass == null) {
           return;
         }
-        final DefaultMutableTreeNode classNode = TreeUtil.findNodeWithObject(treeRoot,
+        DefaultMutableTreeNode classNode = TreeUtil.findNodeWithObject(treeRoot,
                                                                              new DClassElement(getProject(), trueClass.getQualifiedName()));
 
         if (classNode == null) {
@@ -228,7 +228,7 @@ public class GrDynamicImplicitMethod extends GrLightMethodBuilder implements GrD
         if (desiredNode == null) {
           return;
         }
-        final TreePath path = TreeUtil.getPathFromRoot(desiredNode);
+        TreePath path = TreeUtil.getPathFromRoot(desiredNode);
 
         treeTable.getTree().expandPath(path);
         treeTable.getTree().setSelectionPath(path);

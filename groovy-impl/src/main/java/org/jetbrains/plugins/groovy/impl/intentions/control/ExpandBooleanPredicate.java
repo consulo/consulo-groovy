@@ -32,7 +32,7 @@ class ExpandBooleanPredicate implements PsiElementPredicate {
     if (!(element instanceof GrStatement)) {
       return false;
     }
-    final GrStatement statement = (GrStatement) element;
+    GrStatement statement = (GrStatement) element;
     return isBooleanReturn(statement) || isBooleanAssignment(statement);
   }
 
@@ -40,16 +40,16 @@ class ExpandBooleanPredicate implements PsiElementPredicate {
     if (!(statement instanceof GrReturnStatement)) {
       return false;
     }
-    final GrReturnStatement returnStatement =
+    GrReturnStatement returnStatement =
         (GrReturnStatement) statement;
-    final GrExpression returnValue = returnStatement.getReturnValue();
+    GrExpression returnValue = returnStatement.getReturnValue();
     if (returnValue == null) {
       return false;
     }
     if (returnValue instanceof GrLiteral) {
       return false;
     }
-    final PsiType returnType = returnValue.getType();
+    PsiType returnType = returnValue.getType();
     if (returnType == null) {
       return false;
     }
@@ -61,16 +61,16 @@ class ExpandBooleanPredicate implements PsiElementPredicate {
     if (!(expression instanceof GrAssignmentExpression)) {
       return false;
     }
-    final GrAssignmentExpression assignment =
+    GrAssignmentExpression assignment =
         (GrAssignmentExpression) expression;
-    final GrExpression rhs = assignment.getRValue();
+    GrExpression rhs = assignment.getRValue();
     if (rhs == null) {
       return false;
     }
     if (rhs instanceof GrLiteral) {
       return false;
     }
-    final PsiType assignmentType = rhs.getType();
+    PsiType assignmentType = rhs.getType();
     if (assignmentType == null) {
       return false;
     }

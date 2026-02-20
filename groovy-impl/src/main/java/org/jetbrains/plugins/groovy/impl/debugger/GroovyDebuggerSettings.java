@@ -120,7 +120,7 @@ public class GroovyDebuggerSettings extends XDebuggerSettings<GroovyDebuggerSett
   }
 
   @Override
-  public void loadState(final GroovyDebuggerSettings state) {
+  public void loadState(GroovyDebuggerSettings state) {
     XmlSerializerUtil.copyBean(state, this);
   }
 

@@ -29,7 +29,7 @@ class ComparisonPredicate implements PsiElementPredicate
 		{
 			return false;
 		}
-		final GrBinaryExpression expression = (GrBinaryExpression) element;
+		GrBinaryExpression expression = (GrBinaryExpression) element;
 		if(!ComparisonUtils.isComparison(expression))
 		{
 			return false;

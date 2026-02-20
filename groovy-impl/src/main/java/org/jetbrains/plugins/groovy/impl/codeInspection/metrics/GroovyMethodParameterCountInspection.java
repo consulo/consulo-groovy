@@ -54,8 +54,8 @@ public class GroovyMethodParameterCountInspection extends GroovyMethodMetricInsp
     private class Visitor extends BaseInspectionVisitor {
         public void visitMethod(GrMethod grMethod) {
             super.visitMethod(grMethod);
-            final GrParameter[] parameters = grMethod.getParameters();
-            final int limit = getLimit();
+            GrParameter[] parameters = grMethod.getParameters();
+            int limit = getLimit();
             if (parameters == null || parameters.length <= limit) {
                 return;
             }

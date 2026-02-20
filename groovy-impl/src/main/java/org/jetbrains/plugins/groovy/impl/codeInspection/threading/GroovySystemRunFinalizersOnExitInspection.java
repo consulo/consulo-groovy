@@ -51,20 +51,20 @@ public class GroovySystemRunFinalizersOnExitInspection extends BaseInspection {
     private static class Visitor extends BaseInspectionVisitor {
         public void visitMethodCallExpression(GrMethodCallExpression grMethodCallExpression) {
             super.visitMethodCallExpression(grMethodCallExpression);
-            final GrExpression methodExpression = grMethodCallExpression.getInvokedExpression();
+            GrExpression methodExpression = grMethodCallExpression.getInvokedExpression();
             if (!(methodExpression instanceof GrReferenceExpression)) {
                 return;
             }
-            final GrReferenceExpression reference = (GrReferenceExpression) methodExpression;
-            final String name = reference.getReferenceName();
+            GrReferenceExpression reference = (GrReferenceExpression) methodExpression;
+            String name = reference.getReferenceName();
             if (!"runFinalizersOnExit".equals(name)) {
                 return;
             }
-            final PsiMethod method = grMethodCallExpression.resolveMethod();
+            PsiMethod method = grMethodCallExpression.resolveMethod();
             if (method == null) {
                 return;
             }
-            final PsiClass containingClass = method.getContainingClass();
+            PsiClass containingClass = method.getContainingClass();
             if (containingClass == null || !"java.lang.System".equals(containingClass.getQualifiedName())) {
                 return;
             }

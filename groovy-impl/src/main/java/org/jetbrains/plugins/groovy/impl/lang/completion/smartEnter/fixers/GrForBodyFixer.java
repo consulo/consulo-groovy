@@ -36,7 +36,7 @@ public class GrForBodyFixer extends SmartEnterProcessorWithFixers.Fixer<GroovySm
      GrForStatement forStatement = PsiTreeUtil.getParentOfType(psiElement, GrForStatement.class);
     if (forStatement == null) return;
 
-    final Document doc = editor.getDocument();
+    Document doc = editor.getDocument();
 
     PsiElement body = forStatement.getBody();
     if (body instanceof GrBlockStatement) return;

@@ -32,12 +32,12 @@ class CStyleCommentPredicate implements PsiElementPredicate {
     if (element instanceof PsiDocComment) {
       return false;
     }
-    final PsiComment comment = (PsiComment) element;
-    final IElementType type = comment.getTokenType();
+    PsiComment comment = (PsiComment) element;
+    IElementType type = comment.getTokenType();
     if (!GroovyTokenTypes.mML_COMMENT.equals(type)) {
       return false;
     }
-    final PsiElement sibling = PsiTreeUtil.nextLeaf(comment);
+    PsiElement sibling = PsiTreeUtil.nextLeaf(comment);
     if(sibling == null)
     {
       return true;
@@ -45,7 +45,7 @@ class CStyleCommentPredicate implements PsiElementPredicate {
     if (!(isWhitespace(sibling))) {
       return false;
     }
-    final String whitespaceText = sibling.getText();
+    String whitespaceText = sibling.getText();
     return whitespaceText.indexOf((int) '\n') >= 0 ||
         whitespaceText.indexOf((int) '\r') >= 0;
   }

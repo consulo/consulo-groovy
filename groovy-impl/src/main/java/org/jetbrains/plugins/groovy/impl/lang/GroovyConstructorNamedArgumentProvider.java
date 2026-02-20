@@ -162,7 +162,7 @@ public class GroovyConstructorNamedArgumentProvider extends GroovyNamedArgumentP
 
       if (parameters.length == 0) return true;
 
-      final PsiParameter first = parameters[0];
+      PsiParameter first = parameters[0];
       if (InheritanceUtil.isInheritor(first.getType(), CommonClassNames.JAVA_UTIL_MAP)) return true;
       if (first instanceof GrParameter && ((GrParameter)first).getTypeGroovy() == null) return true;
 

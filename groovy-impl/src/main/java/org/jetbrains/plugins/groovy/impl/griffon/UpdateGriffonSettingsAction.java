@@ -33,7 +33,7 @@ public class UpdateGriffonSettingsAction extends MvcActionBase {
   }
 
   @Override
-  protected void actionPerformed(@Nonnull AnActionEvent e, @Nonnull final Module module, @Nonnull MvcFramework framework) {
+  protected void actionPerformed(@Nonnull AnActionEvent e, @Nonnull Module module, @Nonnull MvcFramework framework) {
     GriffonFramework.getInstance().updateProjectStructure(module);
   }
 

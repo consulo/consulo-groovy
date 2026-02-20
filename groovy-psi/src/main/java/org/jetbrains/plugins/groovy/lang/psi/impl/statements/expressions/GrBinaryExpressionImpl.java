@@ -78,9 +78,9 @@ public abstract class GrBinaryExpressionImpl extends GrExpressionImpl implements
         public GroovyResolveResult[] resolve(@Nonnull GrBinaryExpressionImpl binary, boolean incompleteCode) {
             List<GroovyResolveResult[]> subExpressions = resolveSubExpressions(binary, incompleteCode);
 
-            final IElementType opType = binary.getOperationTokenType();
+            IElementType opType = binary.getOperationTokenType();
 
-            final PsiType lType = binary.getLeftType();
+            PsiType lType = binary.getLeftType();
             if (lType == null) {
                 return GroovyResolveResult.EMPTY_ARRAY;
             }
@@ -140,7 +140,7 @@ public abstract class GrBinaryExpressionImpl extends GrExpressionImpl implements
     @Nullable
     @RequiredReadAction
     protected PsiType getRightType() {
-        final GrExpression rightOperand = getRightOperand();
+        GrExpression rightOperand = getRightOperand();
         return rightOperand == null ? null : rightOperand.getType();
     }
 
@@ -170,8 +170,8 @@ public abstract class GrBinaryExpressionImpl extends GrExpressionImpl implements
     @Nonnull
     @RequiredReadAction
     public IElementType getOperationTokenType() {
-        final PsiElement child = getOperationToken();
-        final ASTNode node = child.getNode();
+        PsiElement child = getOperationToken();
+        ASTNode node = child.getNode();
         assert node != null;
         return node.getElementType();
     }
@@ -209,8 +209,8 @@ public abstract class GrBinaryExpressionImpl extends GrExpressionImpl implements
     @Override
     @RequiredReadAction
     public TextRange getRangeInElement() {
-        final PsiElement token = getOperationToken();
-        final int offset = token.getStartOffsetInParent();
+        PsiElement token = getOperationToken();
+        int offset = token.getStartOffsetInParent();
         return new TextRange(offset, offset + token.getTextLength());
     }
 

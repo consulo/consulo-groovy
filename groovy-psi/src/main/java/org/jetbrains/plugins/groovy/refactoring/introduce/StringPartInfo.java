@@ -55,14 +55,14 @@ public class StringPartInfo
 	@Nullable
 	public static StringPartInfo findStringPart(@Nonnull PsiFile file, int startOffset, int endOffset)
 	{
-		final PsiElement start = file.findElementAt(startOffset);
-		final PsiElement fin = file.findElementAt(endOffset - 1);
+		PsiElement start = file.findElementAt(startOffset);
+		PsiElement fin = file.findElementAt(endOffset - 1);
 		if(start == null || fin == null)
 		{
 			return null;
 		}
 
-		final PsiElement psi = PsiTreeUtil.findCommonParent(start, fin);
+		PsiElement psi = PsiTreeUtil.findCommonParent(start, fin);
 		if(psi == null)
 		{
 			return null;
@@ -83,7 +83,7 @@ public class StringPartInfo
 
 		if(literal instanceof GrString)
 		{
-			final GrStringInjection[] injections = ((GrString) literal).getInjections();
+			GrStringInjection[] injections = ((GrString) literal).getInjections();
 			myInjections = ContainerUtil.filter(injections, new Condition<GrStringInjection>()
 			{
 				@Override
@@ -207,7 +207,7 @@ public class StringPartInfo
 		return null;
 	}
 
-	private static boolean isStringLiteral(final PsiElement psi)
+	private static boolean isStringLiteral(PsiElement psi)
 	{
 		return psi instanceof GrLiteral && TokenSets.STRING_LITERAL_SET.contains(GrLiteralImpl.getLiteralType(
 				(GrLiteral) psi)) || psi instanceof GrString;
@@ -235,10 +235,10 @@ public class StringPartInfo
 			buffer.append('+').append(suffix);
 		}
 
-		final GrExpression concatenation = GroovyPsiElementFactory.getInstance(myLiteral.getProject())
+		GrExpression concatenation = GroovyPsiElementFactory.getInstance(myLiteral.getProject())
 				.createExpressionFromText(buffer);
 
-		final GrExpression replaced = getLiteral().replaceWithExpression(concatenation, false);
+		GrExpression replaced = getLiteral().replaceWithExpression(concatenation, false);
 
 		try
 		{

@@ -55,13 +55,13 @@ public class GroovyIfStatementWithTooManyBranchesInspection extends BaseInspecti
     }
 
     protected String buildErrorString(Object... args) {
-        final GrIfStatement statement = (GrIfStatement) args[0];
-        final int branches = calculateNumBranches(statement);
+        GrIfStatement statement = (GrIfStatement) args[0];
+        int branches = calculateNumBranches(statement);
         return "'#ref' statement with too many branches (" + branches + ") #loc";
     }
 
     private static int calculateNumBranches(GrIfStatement statement) {
-        final GrStatement branch = statement.getElseBranch();
+        GrStatement branch = statement.getElseBranch();
         if (branch == null) {
             return 1;
         }
@@ -79,15 +79,15 @@ public class GroovyIfStatementWithTooManyBranchesInspection extends BaseInspecti
 
         public void visitIfStatement(@Nonnull GrIfStatement statement) {
             super.visitIfStatement(statement);
-            final PsiElement parent = statement.getParent();
+            PsiElement parent = statement.getParent();
             if (parent instanceof GrIfStatement) {
-                final GrIfStatement parentStatement = (GrIfStatement) parent;
-                final GrStatement elseBranch = parentStatement.getElseBranch();
+                GrIfStatement parentStatement = (GrIfStatement) parent;
+                GrStatement elseBranch = parentStatement.getElseBranch();
                 if (statement.equals(elseBranch)) {
                     return;
                 }
             }
-            final int branches = calculateNumBranches(statement);
+            int branches = calculateNumBranches(statement);
             if (branches <= getLimit()) {
                 return;
             }

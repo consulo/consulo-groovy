@@ -55,9 +55,9 @@ public abstract class AbstractMvcPsiNodeDescriptor extends AbstractPsiBasedNode<
 	private final Module myModule;
 	private final int myWeight;
 
-	protected AbstractMvcPsiNodeDescriptor(@Nonnull final Module module,
-										   @Nullable final ViewSettings viewSettings,
-										   @Nonnull final PsiElement nodeId, int weight)
+	protected AbstractMvcPsiNodeDescriptor(@Nonnull Module module,
+                                           @Nullable ViewSettings viewSettings,
+                                           @Nonnull PsiElement nodeId, int weight)
 	{
 		super(module.getProject(), nodeId, viewSettings);
 		myModule = module;
@@ -65,15 +65,15 @@ public abstract class AbstractMvcPsiNodeDescriptor extends AbstractPsiBasedNode<
 	}
 
 	@NonNls
-	protected abstract String getTestPresentationImpl(@Nonnull final PsiElement psiElement);
+	protected abstract String getTestPresentationImpl(@Nonnull PsiElement psiElement);
 
 	@Override
-	public final boolean contains(@Nonnull final VirtualFile file)
+	public final boolean contains(@Nonnull VirtualFile file)
 	{
 		return isValid() && containsImpl(file);
 	}
 
-	protected boolean containsImpl(@Nonnull final VirtualFile file)
+	protected boolean containsImpl(@Nonnull VirtualFile file)
 	{
 		return super.contains(file);
 	}
@@ -89,7 +89,7 @@ public abstract class AbstractMvcPsiNodeDescriptor extends AbstractPsiBasedNode<
 	@Override
 	public String toTestString(@Nullable Queryable.PrintInfo printInfo)
 	{
-		final PsiElement psi = extractPsiFromValue();
+		PsiElement psi = extractPsiFromValue();
 		if(psi == null || !psi.isValid() || !isValid())
 		{
 			return "null";
@@ -116,12 +116,12 @@ public abstract class AbstractMvcPsiNodeDescriptor extends AbstractPsiBasedNode<
 	}
 
 	@Override
-	protected void updateImpl(final PresentationData data)
+	protected void updateImpl(PresentationData data)
 	{
-		final PsiElement psiElement = extractPsiFromValue();
+		PsiElement psiElement = extractPsiFromValue();
 		if(psiElement instanceof NavigationItem)
 		{
-			final ItemPresentation presentation = ((NavigationItem) psiElement).getPresentation();
+			ItemPresentation presentation = ((NavigationItem) psiElement).getPresentation();
 			assert presentation != null;
 
 			data.setPresentableText(presentation.getPresentableText());
@@ -129,7 +129,7 @@ public abstract class AbstractMvcPsiNodeDescriptor extends AbstractPsiBasedNode<
 	}
 
 	@Override
-	public final int getTypeSortWeight(final boolean sortByType)
+	public final int getTypeSortWeight(boolean sortByType)
 	{
 		return myWeight;
 	}
@@ -140,7 +140,7 @@ public abstract class AbstractMvcPsiNodeDescriptor extends AbstractPsiBasedNode<
 		return WolfTheProblemSolver.getInstance(getProject()).hasProblemFilesBeneath(new Condition<VirtualFile>()
 		{
 			@Override
-			public boolean value(final VirtualFile virtualFile)
+			public boolean value(VirtualFile virtualFile)
 			{
 				return contains(virtualFile);
 			}
@@ -150,7 +150,7 @@ public abstract class AbstractMvcPsiNodeDescriptor extends AbstractPsiBasedNode<
 	@Override
 	public boolean isValid()
 	{
-		final PsiElement psiElement = extractPsiFromValue();
+		PsiElement psiElement = extractPsiFromValue();
 		return psiElement != null && psiElement.isValid();
 	}
 }

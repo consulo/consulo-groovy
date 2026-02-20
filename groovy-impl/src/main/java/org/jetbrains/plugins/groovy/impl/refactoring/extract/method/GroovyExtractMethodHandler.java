@@ -80,16 +80,16 @@ public class GroovyExtractMethodHandler implements RefactoringActionHandler {
     protected static LocalizeValue REFACTORING_NAME = GroovyRefactoringLocalize.extractMethodTitle();
     private static final Logger LOG = Logger.getInstance(GroovyExtractMethodHandler.class);
 
-    public void invoke(@Nonnull final Project project, final Editor editor, final PsiFile file, @Nullable DataContext dataContext) {
+    public void invoke(@Nonnull Project project, Editor editor, PsiFile file, @Nullable DataContext dataContext) {
         editor.getScrollingModel().scrollToCaret(ScrollType.MAKE_VISIBLE);
-        final SelectionModel model = editor.getSelectionModel();
+        SelectionModel model = editor.getSelectionModel();
         if (model.hasSelection()) {
             invokeImpl(project, editor, file, model.getSelectionStart(), model.getSelectionEnd());
         }
         else {
-            final List<GrExpression> expressions =
+            List<GrExpression> expressions =
                 GrIntroduceHandlerBase.collectExpressions(file, editor, editor.getCaretModel().getOffset(), true);
-            final Consumer<GrExpression> callback = new Callback(project, editor, file);
+            Consumer<GrExpression> callback = new Callback(project, editor, file);
             if (expressions.size() == 1) {
                 callback.accept(expressions.get(0));
             }
@@ -115,15 +115,15 @@ public class GroovyExtractMethodHandler implements RefactoringActionHandler {
             this.file = file;
         }
 
-        public void accept(@Nonnull final GrExpression selectedValue) {
-            final TextRange range = selectedValue.getTextRange();
+        public void accept(@Nonnull GrExpression selectedValue) {
+            TextRange range = selectedValue.getTextRange();
             invokeImpl(project, editor, file, range.getStartOffset(), range.getEndOffset());
         }
     }
 
-    private void invokeImpl(Project project, Editor editor, PsiFile file, final int startOffset, final int endOffset) {
+    private void invokeImpl(Project project, Editor editor, PsiFile file, int startOffset, int endOffset) {
         try {
-            final InitialInfo initialInfo = GroovyExtractChooser.invoke(project, editor, file, startOffset, endOffset, true);
+            InitialInfo initialInfo = GroovyExtractChooser.invoke(project, editor, file, startOffset, endOffset, true);
 
             if (findConflicts(initialInfo)) {
                 return;
@@ -209,11 +209,11 @@ public class GroovyExtractMethodHandler implements RefactoringActionHandler {
         return !dialog.isOK();
     }
 
-    private void performRefactoring(@Nonnull final InitialInfo initialInfo, @Nullable final Editor editor) {
-        final PsiClass owner = PsiUtil.getContextClass(initialInfo.getStatements()[0]);
+    private void performRefactoring(@Nonnull InitialInfo initialInfo, @Nullable Editor editor) {
+        PsiClass owner = PsiUtil.getContextClass(initialInfo.getStatements()[0]);
         LOG.assertTrue(owner != null);
 
-        final ExtractMethodInfoHelper helper = getSettings(initialInfo, owner);
+        ExtractMethodInfoHelper helper = getSettings(initialInfo, owner);
         if (helper == null) {
             return;
         }
@@ -237,7 +237,7 @@ public class GroovyExtractMethodHandler implements RefactoringActionHandler {
     }
 
     private static void createMethod(ExtractMethodInfoHelper helper, PsiClass owner) {
-        final GrMethod method = ExtractUtil.createMethod(helper);
+        GrMethod method = ExtractUtil.createMethod(helper);
         PsiElement anchor = calculateAnchorToInsertBefore(owner, helper.getStatements()[0]);
         GrMethod newMethod = (GrMethod) owner.addBefore(method, anchor);
         renameParameterOccurrences(newMethod, helper);
@@ -294,15 +294,15 @@ public class GroovyExtractMethodHandler implements RefactoringActionHandler {
         }
         GrStatement[] statements = block.getStatements();
 
-        final GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(helper.getProject());
+        GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(helper.getProject());
         for (ParameterInfo info : helper.getParameterInfos()) {
             final String oldName = info.getOldName();
-            final String newName = info.getName();
+            String newName = info.getName();
             final ArrayList<GrExpression> result = new ArrayList<GrExpression>();
             if (!oldName.equals(newName)) {
-                for (final GrStatement statement : statements) {
+                for (GrStatement statement : statements) {
                     statement.accept(new PsiRecursiveElementVisitor() {
-                        public void visitElement(final PsiElement element) {
+                        public void visitElement(PsiElement element) {
                             super.visitElement(element);
                             if (element instanceof GrReferenceExpression) {
                                 GrReferenceExpression expr = (GrReferenceExpression) element;

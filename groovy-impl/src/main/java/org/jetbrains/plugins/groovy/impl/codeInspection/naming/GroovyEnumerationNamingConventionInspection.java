@@ -43,7 +43,7 @@ public class GroovyEnumerationNamingConventionInspection extends ConventionInspe
 
     @Nonnull
     public String buildErrorString(Object... args) {
-        final String className = (String) args[0];
+        String className = (String) args[0];
         if (className.length() < getMinLength()) {
             return "Enumeration name '#ref' is too short";
         } else if (className.length() > getMaxLength()) {
@@ -74,9 +74,9 @@ public class GroovyEnumerationNamingConventionInspection extends ConventionInspe
             if (!(grTypeDefinition instanceof GrEnumTypeDefinition)) {
                 return;
             }
-            final GrEnumTypeDefinition aClass = (GrEnumTypeDefinition) grTypeDefinition;
+            GrEnumTypeDefinition aClass = (GrEnumTypeDefinition) grTypeDefinition;
 
-            final String name = aClass.getName();
+            String name = aClass.getName();
             if (name == null) {
                 return;
             }

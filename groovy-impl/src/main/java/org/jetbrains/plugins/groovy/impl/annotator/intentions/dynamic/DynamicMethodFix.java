@@ -38,7 +38,7 @@ public class DynamicMethodFix implements SyntheticIntentionAction, LowPriorityAc
     private final GrReferenceExpression myReferenceExpression;
     private final String mySignature;
 
-    public DynamicMethodFix(GrReferenceExpression referenceExpression, final PsiType[] argumentTypes) {
+    public DynamicMethodFix(GrReferenceExpression referenceExpression, PsiType[] argumentTypes) {
         myReferenceExpression = referenceExpression;
         mySignature = calcSignature(argumentTypes);
     }
@@ -49,7 +49,7 @@ public class DynamicMethodFix implements SyntheticIntentionAction, LowPriorityAc
         return GroovyLocalize.addDynamicMethod0(mySignature);
     }
 
-    private String calcSignature(final PsiType[] argTypes) {
+    private String calcSignature(PsiType[] argTypes) {
         StringBuilder builder = new StringBuilder(" '").append(myReferenceExpression.getReferenceName());
         builder.append("(");
 
@@ -76,7 +76,7 @@ public class DynamicMethodFix implements SyntheticIntentionAction, LowPriorityAc
     }
 
     public void invoke(Project project) throws IncorrectOperationException {
-        final DynamicElementSettings settings = QuickfixUtil.createSettings(myReferenceExpression);
+        DynamicElementSettings settings = QuickfixUtil.createSettings(myReferenceExpression);
         DynamicManager.getInstance(project).addMethod(settings);
     }
 

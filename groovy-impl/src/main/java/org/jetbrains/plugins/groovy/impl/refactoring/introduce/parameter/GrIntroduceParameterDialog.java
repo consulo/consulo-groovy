@@ -131,8 +131,8 @@ public class GrIntroduceParameterDialog extends DialogWrapper {
       public void accept(JCheckBox checkbox, int index) {
         checkbox.setSelected(true);
 
-        final GrParameter param = parameters[index];
-        final ParameterInfo pinfo = findParamByOldName(param.getName());
+        GrParameter param = parameters[index];
+        ParameterInfo pinfo = findParamByOldName(param.getName());
         if (pinfo != null) {
           pinfo.setPassAsParameter(false);
         }
@@ -154,7 +154,7 @@ public class GrIntroduceParameterDialog extends DialogWrapper {
       });
     }
 
-    final PsiType closureReturnType = inferClosureReturnType();
+    PsiType closureReturnType = inferClosureReturnType();
     if (closureReturnType == PsiType.VOID) {
       myForceReturnCheckBox.setEnabled(false);
       myForceReturnCheckBox.setSelected(false);
@@ -181,7 +181,7 @@ public class GrIntroduceParameterDialog extends DialogWrapper {
     JPanel north = new JPanel();
     north.setLayout(new VerticalFlowLayout(VerticalFlowLayout.TOP, 0, 0, true, true));
 
-    final JPanel namePanel = createNamePanel();
+    JPanel namePanel = createNamePanel();
     namePanel.setAlignmentX(Component.LEFT_ALIGNMENT);
     north.add(namePanel);
 
@@ -191,7 +191,7 @@ public class GrIntroduceParameterDialog extends DialogWrapper {
     myGetterPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
     north.add(myGetterPanel);
 
-    final JPanel root = new JPanel(new BorderLayout());
+    JPanel root = new JPanel(new BorderLayout());
     mySignaturePanel = createSignaturePanel();
     root.add(mySignaturePanel, BorderLayout.CENTER);
     root.add(north, BorderLayout.NORTH);
@@ -230,7 +230,7 @@ public class GrIntroduceParameterDialog extends DialogWrapper {
 
     splitter.setShowDividerIcon(false);
 
-    final JPanel panel = new JPanel(new BorderLayout());
+    JPanel panel = new JPanel(new BorderLayout());
     panel.add(splitter, BorderLayout.CENTER);
     myForceReturnCheckBox = new JCheckBox(UIUtil.replaceMnemonicAmpersand("Use e&xplicit return statement"));
     panel.add(myForceReturnCheckBox, BorderLayout.NORTH);
@@ -249,12 +249,12 @@ public class GrIntroduceParameterDialog extends DialogWrapper {
     myReplaceFieldsInaccessibleInRadioButton.setFocusable(false);
     myReplaceAllFieldsRadioButton.setFocusable(false);
 
-    final ButtonGroup group = new ButtonGroup();
+    ButtonGroup group = new ButtonGroup();
     group.add(myDoNotReplaceRadioButton);
     group.add(myReplaceFieldsInaccessibleInRadioButton);
     group.add(myReplaceAllFieldsRadioButton);
 
-    final JPanel panel = new JPanel();
+    JPanel panel = new JPanel();
     panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
     panel.add(myDoNotReplaceRadioButton);
     panel.add(myReplaceFieldsInaccessibleInRadioButton);
@@ -265,10 +265,10 @@ public class GrIntroduceParameterDialog extends DialogWrapper {
   }
 
   private JPanel createNamePanel() {
-    final GridBag c = new GridBag().setDefaultAnchor(GridBagConstraints.WEST).setDefaultInsets(1, 1, 1, 1);
-    final JPanel namePanel = new JPanel(new GridBagLayout());
+    GridBag c = new GridBag().setDefaultAnchor(GridBagConstraints.WEST).setDefaultInsets(1, 1, 1, 1);
+    JPanel namePanel = new JPanel(new GridBagLayout());
 
-    final JLabel typeLabel = new JLabel(UIUtil.replaceMnemonicAmpersand("&Type:"));
+    JLabel typeLabel = new JLabel(UIUtil.replaceMnemonicAmpersand("&Type:"));
     c.nextLine().next().weightx(0).fillCellNone();
     namePanel.add(typeLabel, c);
 
@@ -278,7 +278,7 @@ public class GrIntroduceParameterDialog extends DialogWrapper {
     namePanel.add(myTypeComboBox, c);
     typeLabel.setLabelFor(myTypeComboBox);
 
-    final JLabel nameLabel = new JLabel(UIUtil.replaceMnemonicAmpersand("&Name:"));
+    JLabel nameLabel = new JLabel(UIUtil.replaceMnemonicAmpersand("&Name:"));
     c.nextLine().next().weightx(0).fillCellNone();
     namePanel.add(nameLabel, c);
 
@@ -332,10 +332,10 @@ public class GrIntroduceParameterDialog extends DialogWrapper {
 
   @Nullable
   private PsiType inferClosureReturnType() {
-    final ExtractClosureHelperImpl mockHelper =
+    ExtractClosureHelperImpl mockHelper =
       new ExtractClosureHelperImpl(myInfo, "__test___n_", false, IntLists.newArrayList(), false, 0, false, false);
-    final PsiType returnType;
-    final AccessToken token = WriteAction.start();
+    PsiType returnType;
+    AccessToken token = WriteAction.start();
     try {
       returnType = ExtractClosureProcessorBase.generateClosure(mockHelper).getReturnType();
     }
@@ -356,7 +356,7 @@ public class GrIntroduceParameterDialog extends DialogWrapper {
   }
 
   private void initReplaceFieldsWithGetters(JavaRefactoringSettings settings) {
-    final PsiField[] usedFields = GroovyIntroduceParameterUtil.findUsedFieldsWithGetters(myInfo.getStatements(), getContainingClass());
+    PsiField[] usedFields = GroovyIntroduceParameterUtil.findUsedFieldsWithGetters(myInfo.getStatements(), getContainingClass());
     myGetterPanel.setVisible(usedFields.length > 0);
     switch (settings.INTRODUCE_PARAMETER_REPLACE_FIELDS_WITH_GETTERS) {
       case REPLACE_FIELDS_WITH_GETTERS_ALL:
@@ -389,7 +389,7 @@ public class GrIntroduceParameterDialog extends DialogWrapper {
   @RequiredUIAccess
   @Override
   protected ValidationInfo doValidate() {
-    final String text = getEnteredName();
+    String text = getEnteredName();
     if (!GroovyNamesUtil.isIdentifier(text)) {
       return new ValidationInfo(GroovyRefactoringBundle.message("name.is.wrong", text), myNameSuggestionsField);
     }
@@ -403,13 +403,13 @@ public class GrIntroduceParameterDialog extends DialogWrapper {
           continue;
         }
 
-        final GrParameter param = myInfo.getToReplaceIn().getParameters()[index];
-        final ParameterInfo pinfo = findParamByOldName(param.getName());
+        GrParameter param = myInfo.getToReplaceIn().getParameters()[index];
+        ParameterInfo pinfo = findParamByOldName(param.getName());
         if (pinfo == null || !pinfo.passAsParameter()) {
           continue;
         }
 
-        final String message = GroovyRefactoringBundle
+        String message = GroovyRefactoringBundle
           .message("you.cannot.pass.as.parameter.0.because.you.remove.1.from.base.method", pinfo.getName(), param.getName());
         return new ValidationInfo(message);
       }
@@ -430,7 +430,7 @@ public class GrIntroduceParameterDialog extends DialogWrapper {
 
   @Nullable
   private PsiClass getContainingClass() {
-    final GrParameterListOwner toReplaceIn = myInfo.getToReplaceIn();
+    GrParameterListOwner toReplaceIn = myInfo.getToReplaceIn();
     if (toReplaceIn instanceof GrMethod) {
       return ((GrMethod)toReplaceIn).getContainingClass();
     }
@@ -440,7 +440,7 @@ public class GrIntroduceParameterDialog extends DialogWrapper {
   }
 
   private boolean hasFinalModifier() {
-    final Boolean createFinals = JavaRefactoringSettings.getInstance().INTRODUCE_PARAMETER_CREATE_FINALS;
+    Boolean createFinals = JavaRefactoringSettings.getInstance().INTRODUCE_PARAMETER_CREATE_FINALS;
     return createFinals == null ? CodeStyleSettingsManager.getSettings(myProject).GENERATE_FINAL_PARAMETERS : createFinals.booleanValue();
   }
 
@@ -450,11 +450,11 @@ public class GrIntroduceParameterDialog extends DialogWrapper {
 
     super.doOKAction();
 
-    final GrParameterListOwner toReplaceIn = myInfo.getToReplaceIn();
+    GrParameterListOwner toReplaceIn = myInfo.getToReplaceIn();
 
-    final GrExpression expr = GroovyIntroduceParameterUtil.findExpr(myInfo);
-    final GrVariable var = GroovyIntroduceParameterUtil.findVar(myInfo);
-    final StringPartInfo stringPart = findStringPart();
+    GrExpression expr = GroovyIntroduceParameterUtil.findExpr(myInfo);
+    GrVariable var = GroovyIntroduceParameterUtil.findVar(myInfo);
+    StringPartInfo stringPart = findStringPart();
 
     if (myTypeComboBox.isClosureSelected() || expr == null && var == null && stringPart == null) {
       GrIntroduceParameterSettings settings = new ExtractClosureHelperImpl(myInfo,
@@ -498,7 +498,7 @@ public class GrIntroduceParameterDialog extends DialogWrapper {
   }
 
   private void saveSettings() {
-    final JavaRefactoringSettings settings = JavaRefactoringSettings.getInstance();
+    JavaRefactoringSettings settings = JavaRefactoringSettings.getInstance();
     settings.INTRODUCE_PARAMETER_CREATE_FINALS = myDeclareFinalCheckBox.isSelected();
     if (myGetterPanel.isVisible()) {
       settings.INTRODUCE_PARAMETER_REPLACE_FIELDS_WITH_GETTERS = getReplaceFieldsWithGetter();
@@ -509,7 +509,7 @@ public class GrIntroduceParameterDialog extends DialogWrapper {
   }
 
   protected void invokeRefactoring(BaseRefactoringProcessor processor) {
-    final Runnable prepareSuccessfulCallback = new Runnable() {
+    Runnable prepareSuccessfulCallback = new Runnable() {
       public void run() {
         close(DialogWrapper.OK_EXIT_CODE);
       }

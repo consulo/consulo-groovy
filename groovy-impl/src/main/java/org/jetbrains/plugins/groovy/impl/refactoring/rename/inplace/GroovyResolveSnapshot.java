@@ -47,7 +47,7 @@ public class GroovyResolveSnapshot extends ResolveSnapshotProvider.ResolveSnapsh
   private final Project myProject;
   private final Document myDocument;
 
-  public GroovyResolveSnapshot(final PsiElement scope) {
+  public GroovyResolveSnapshot(PsiElement scope) {
     myProject = scope.getProject();
     myDocument = PsiDocumentManager.getInstance(myProject).getDocument(scope.getContainingFile());
     final SmartPointerManager pointerManager = SmartPointerManager.getInstance(myProject);

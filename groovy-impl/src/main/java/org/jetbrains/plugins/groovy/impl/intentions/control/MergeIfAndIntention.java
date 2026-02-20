@@ -48,12 +48,12 @@ public class MergeIfAndIntention extends Intention {
         Project project,
         Editor editor
     ) throws IncorrectOperationException {
-        final GrIfStatement parentStatement = (GrIfStatement) element;
-        final GrStatement parentThenBranch = parentStatement.getThenBranch();
-        final GrIfStatement childStatement = (GrIfStatement) ConditionalUtils.stripBraces(parentThenBranch);
+        GrIfStatement parentStatement = (GrIfStatement) element;
+        GrStatement parentThenBranch = parentStatement.getThenBranch();
+        GrIfStatement childStatement = (GrIfStatement) ConditionalUtils.stripBraces(parentThenBranch);
 
-        final GrExpression childCondition = childStatement.getCondition();
-        final String childConditionText;
+        GrExpression childCondition = childStatement.getCondition();
+        String childConditionText;
         if (ParenthesesUtils.getPrecedence(childCondition) > ParenthesesUtils.AND_PRECEDENCE) {
             childConditionText = '(' + childCondition.getText() + ')';
         }
@@ -61,8 +61,8 @@ public class MergeIfAndIntention extends Intention {
             childConditionText = childCondition.getText();
         }
 
-        final GrExpression parentCondition = parentStatement.getCondition();
-        final String parentConditionText;
+        GrExpression parentCondition = parentStatement.getCondition();
+        String parentConditionText;
         if (ParenthesesUtils.getPrecedence(parentCondition) > ParenthesesUtils.AND_PRECEDENCE) {
             parentConditionText = '(' + parentCondition.getText() + ')';
         }
@@ -70,7 +70,7 @@ public class MergeIfAndIntention extends Intention {
             parentConditionText = parentCondition.getText();
         }
 
-        final GrStatement childThenBranch = childStatement.getThenBranch();
+        GrStatement childThenBranch = childStatement.getThenBranch();
         String statement = "if(" + parentConditionText + "&&" + childConditionText + ')' + childThenBranch.getText();
         PsiImplUtil.replaceStatement(statement, parentStatement);
     }

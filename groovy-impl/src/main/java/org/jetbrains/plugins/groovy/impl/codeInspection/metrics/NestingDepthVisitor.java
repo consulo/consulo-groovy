@@ -27,8 +27,8 @@ class NestingDepthVisitor extends GroovyRecursiveElementVisitor {
   private int m_currentDepth = 0;
 
   public void visitBlockStatement(GrBlockStatement statement) {
-    final PsiElement parent = statement.getParent();
-    final boolean isAlreadyCounted =
+    PsiElement parent = statement.getParent();
+    boolean isAlreadyCounted =
         parent instanceof GrWhileStatement ||
             parent instanceof GrForStatement ||
             parent instanceof GrIfStatement;
@@ -51,9 +51,9 @@ class NestingDepthVisitor extends GroovyRecursiveElementVisitor {
   public void visitIfStatement(@Nonnull GrIfStatement statement) {
     boolean isAlreadyCounted = false;
     if (statement.getParent() instanceof GrIfStatement) {
-      final GrIfStatement parent = (GrIfStatement) statement.getParent();
+      GrIfStatement parent = (GrIfStatement) statement.getParent();
       assert parent != null;
-      final GrStatement elseBranch = parent.getElseBranch();
+      GrStatement elseBranch = parent.getElseBranch();
       if (statement.equals(elseBranch)) {
         isAlreadyCounted = true;
       }

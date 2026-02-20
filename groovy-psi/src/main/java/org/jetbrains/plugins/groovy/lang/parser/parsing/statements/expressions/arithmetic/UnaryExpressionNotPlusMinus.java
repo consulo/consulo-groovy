@@ -39,7 +39,7 @@ public class UnaryExpressionNotPlusMinus {
   public static boolean parse(PsiBuilder builder, GroovyParser parser, boolean runPostfixIfFail) {
     PsiBuilder.Marker marker = builder.mark();
     if (builder.getTokenType() == GroovyTokenTypes.mLPAREN) {
-      final ReferenceElement.ReferenceElementResult result = parseTypeCast(builder);
+      ReferenceElement.ReferenceElementResult result = parseTypeCast(builder);
       if (result != ReferenceElement.ReferenceElementResult.FAIL) {
         if (ConditionalExpression.parse(builder, parser) || result == ReferenceElement.ReferenceElementResult.REF_WITH_TYPE_PARAMS) {
           marker.done(GroovyElementTypes.CAST_EXPRESSION);
@@ -69,7 +69,7 @@ public class UnaryExpressionNotPlusMinus {
       return ReferenceElement.ReferenceElementResult.FAIL;
     }
     if (TokenSets.BUILT_IN_TYPES.contains(builder.getTokenType()) || GroovyTokenTypes.mIDENT.equals(builder.getTokenType())) {
-      final ReferenceElement.ReferenceElementResult result = TypeSpec.parseStrict(builder, true);
+      ReferenceElement.ReferenceElementResult result = TypeSpec.parseStrict(builder, true);
       if (result == ReferenceElement.ReferenceElementResult.FAIL) {
         marker.rollbackTo();
         return ReferenceElement.ReferenceElementResult.FAIL;

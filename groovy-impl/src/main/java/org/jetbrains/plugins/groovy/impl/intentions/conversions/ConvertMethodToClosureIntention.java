@@ -68,30 +68,30 @@ public class ConvertMethodToClosureIntention extends Intention {
     @Override
     protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
         MultiMap<PsiElement, LocalizeValue> conflicts = new MultiMap<>();
-        final GrMethod method;
+        GrMethod method;
         if (element.getParent() instanceof GrMethod) {
             method = (GrMethod) element.getParent();
         }
         else {
-            final PsiReference ref = element.getReference();
+            PsiReference ref = element.getReference();
             LOG.assertTrue(ref != null);
-            final PsiElement resolved = ref.resolve();
+            PsiElement resolved = ref.resolve();
             LOG.assertTrue(resolved instanceof GrMethod);
             method = (GrMethod) resolved;
         }
 
-        final PsiClass containingClass = method.getContainingClass();
-        final String methodName = method.getName();
-        final PsiField field = containingClass.findFieldByName(methodName, true);
+        PsiClass containingClass = method.getContainingClass();
+        String methodName = method.getName();
+        PsiField field = containingClass.findFieldByName(methodName, true);
 
         if (field != null) {
             conflicts.putValue(field, GroovyIntentionLocalize.fieldAlreadyExists(methodName));
         }
 
-        final Collection<PsiReference> references = MethodReferencesSearch.search(method).findAll();
-        final Collection<GrReferenceExpression> usagesToConvert = new HashSet<GrReferenceExpression>(references.size());
+        Collection<PsiReference> references = MethodReferencesSearch.search(method).findAll();
+        Collection<GrReferenceExpression> usagesToConvert = new HashSet<GrReferenceExpression>(references.size());
         for (PsiReference ref : references) {
-            final PsiElement psiElement = ref.getElement();
+            PsiElement psiElement = ref.getElement();
             if (!GroovyFileType.GROOVY_LANGUAGE.equals(psiElement.getLanguage())) {
                 conflicts.putValue(psiElement, GroovyIntentionLocalize.methodIsUsedOutsideOfGroovy());
             }
@@ -126,15 +126,15 @@ public class ConvertMethodToClosureIntention extends Intention {
                 builder.append(modifiers).append(' ');
                 builder.append(method.getName()).append("={");
                 builder.append(method.getParameterList().getText()).append(" ->");
-                final GrOpenBlock block = method.getBlock();
+                GrOpenBlock block = method.getBlock();
                 builder.append(block.getText().substring(1));
-                final GrVariableDeclaration variableDeclaration =
+                GrVariableDeclaration variableDeclaration =
                     GroovyPsiElementFactory.getInstance(method.getProject()).createFieldDeclarationFromText(builder.toString());
                 method.replace(variableDeclaration);
 
                 for (GrReferenceExpression element : usagesToConvert) {
-                    final PsiElement qualifier = element.getQualifier();
-                    final StringBuilder text = new StringBuilder(qualifier.getText());
+                    PsiElement qualifier = element.getQualifier();
+                    StringBuilder text = new StringBuilder(qualifier.getText());
                     element.setQualifier(null);
                     text.append('.').append(element.getText());
                     element.replace(factory.createExpressionFromText(text.toString()));
@@ -150,16 +150,16 @@ public class ConvertMethodToClosureIntention extends Intention {
             }
 
             GrMethod method;
-            final PsiReference ref = element.getReference();
+            PsiReference ref = element.getReference();
             if (ref != null) {
-                final PsiElement resolved = ref.resolve();
+                PsiElement resolved = ref.resolve();
                 if (!(resolved instanceof GrMethod)) {
                     return false;
                 }
                 method = (GrMethod) resolved;
             }
             else {
-                final PsiElement parent = element.getParent();
+                PsiElement parent = element.getParent();
                 if (!(parent instanceof GrMethod)) {
                     return false;
                 }

@@ -34,14 +34,14 @@ public class GrWhileBodyFixer extends SmartEnterProcessorWithFixers.Fixer<Groovy
     if (!(psiElement instanceof GrWhileStatement)) return;
     GrWhileStatement whileStatement = (GrWhileStatement) psiElement;
 
-    final Document doc = editor.getDocument();
+    Document doc = editor.getDocument();
 
     PsiElement body = whileStatement.getBody();
     if (body instanceof GrBlockStatement) return;
     if (body != null && GrForBodyFixer.startLine(editor.getDocument(), body) ==
                         GrForBodyFixer.startLine(editor.getDocument(), whileStatement) && whileStatement.getCondition() != null) return;
 
-    final PsiElement rParenth = whileStatement.getRParenth();
+    PsiElement rParenth = whileStatement.getRParenth();
     assert rParenth != null;
 
     doc.insertString(rParenth.getTextRange().getEndOffset(), "{}");

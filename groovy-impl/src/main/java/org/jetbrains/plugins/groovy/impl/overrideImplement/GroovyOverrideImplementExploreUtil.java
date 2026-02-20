@@ -76,7 +76,7 @@ public class GroovyOverrideImplementExploreUtil {
       }
     }
 
-    final Map<MethodSignature, CandidateInfo> result = new TreeMap<MethodSignature,
+    Map<MethodSignature, CandidateInfo> result = new TreeMap<MethodSignature,
       CandidateInfo>(new OverrideImplementExploreUtil.MethodSignatureComparator());
     if (toImplement || aClass.isInterface()) {
       collectMethodsToImplement(aClass, abstracts, finals, concretes, result);
@@ -147,7 +147,7 @@ public class GroovyOverrideImplementExploreUtil {
   private static void fillMap(HierarchicalMethodSignature signature,
                               PsiMethod method,
                               Map<MethodSignature, PsiMethod> map) {
-    final PsiMethod other = map.get(signature);
+    PsiMethod other = map.get(signature);
     if (other == null || preferLeftForImplement(method, other)) {
       map.put(signature, method);
     }
@@ -198,7 +198,7 @@ public class GroovyOverrideImplementExploreUtil {
       }
     }
 
-    for (final PsiMethod method : new GroovyMethodImplementor().getMethodsToImplement(aClass)) {
+    for (PsiMethod method : new GroovyMethodImplementor().getMethodsToImplement(aClass)) {
       MethodSignature signature = MethodSignatureUtil.createMethodSignature(method.getName(),
                                                                             method.getParameterList(),
                                                                             method.getTypeParameterList(),

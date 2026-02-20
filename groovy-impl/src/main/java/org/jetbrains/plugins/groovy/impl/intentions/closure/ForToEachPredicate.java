@@ -28,8 +28,8 @@ class ForToEachPredicate implements PsiElementPredicate {
     if (!(element instanceof GrForStatement)) {
       return false;
     }
-    final GrForStatement statement = (GrForStatement) element;
-    final GrForClause clause = statement.getClause();
+    GrForStatement statement = (GrForStatement) element;
+    GrForClause clause = statement.getClause();
     if (!(clause instanceof GrForInClause) || ((GrForInClause) clause).getIteratedExpression() == null) {
       return false;
     }

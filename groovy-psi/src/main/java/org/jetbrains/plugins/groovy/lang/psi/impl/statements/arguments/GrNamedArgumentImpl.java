@@ -62,7 +62,7 @@ public class GrNamedArgumentImpl extends GroovyPsiElementImpl implements GrNamed
 
   @Override
   public String getLabelName() {
-    final GrArgumentLabel label = getLabel();
+    GrArgumentLabel label = getLabel();
     return label == null ? null : label.getName();
   }
 

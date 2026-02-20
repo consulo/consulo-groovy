@@ -37,7 +37,7 @@ public class InvalidWriteAccessSearcher {
                                                                           @Nonnull Map<String, GrVariable> variables,
                                                                           @Nonnull Set<GrVariable> alreadyInitialized) {
     DFAEngine<MyData> engine = new DFAEngine<MyData>(flow, new MyDFAInstance(), new MySemilattice());
-    final ArrayList<MyData> dfaResult = engine.performDFAWithTimeout();
+    ArrayList<MyData> dfaResult = engine.performDFAWithTimeout();
     if (dfaResult == null) return null;
 
 
@@ -45,8 +45,8 @@ public class InvalidWriteAccessSearcher {
     for (int i = 0; i < flow.length; i++) {
       Instruction instruction = flow[i];
       if (instruction instanceof ReadWriteVariableInstruction && ((ReadWriteVariableInstruction)instruction).isWrite()) {
-        final MyData initialized = dfaResult.get(i);
-        final GrVariable var = variables.get(((ReadWriteVariableInstruction)instruction).getVariableName());
+        MyData initialized = dfaResult.get(i);
+        GrVariable var = variables.get(((ReadWriteVariableInstruction)instruction).getVariableName());
         if (alreadyInitialized.contains(var)) {
           if (initialized.isInitialized(((ReadWriteVariableInstruction)instruction).getVariableName())) {
             result.add((ReadWriteVariableInstruction)instruction);

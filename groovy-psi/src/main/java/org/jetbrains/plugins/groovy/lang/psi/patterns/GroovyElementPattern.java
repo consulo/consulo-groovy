@@ -34,34 +34,34 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrMethod
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrNewExpression;
 
 public class GroovyElementPattern<T extends GroovyPsiElement,Self extends GroovyElementPattern<T,Self>> extends PsiJavaElementPattern<T,Self> {
-  public GroovyElementPattern(final Class<T> aClass) {
+  public GroovyElementPattern(Class<T> aClass) {
     super(aClass);
   }
 
-  public GroovyElementPattern(@Nonnull final InitialPatternCondition<T> condition) {
+  public GroovyElementPattern(@Nonnull InitialPatternCondition<T> condition) {
     super(condition);
   }
 
   public Self methodCallParameter(final int index, final ElementPattern<? extends PsiMethod> methodPattern) {
     return with(new PatternCondition<T>("methodCallParameter") {
-      public boolean accepts(@Nonnull final T literal, final ProcessingContext context) {
-        final PsiElement parent = literal.getParent();
+      public boolean accepts(@Nonnull T literal, ProcessingContext context) {
+        PsiElement parent = literal.getParent();
         if (parent instanceof GrArgumentList) {
           if (!(literal instanceof GrExpression)) return false;
 
-          final GrArgumentList psiExpressionList = (GrArgumentList)parent;
+          GrArgumentList psiExpressionList = (GrArgumentList)parent;
           if (psiExpressionList.getExpressionArgumentIndex((GrExpression)literal) != index) return false;
 
-          final PsiElement element = psiExpressionList.getParent();
+          PsiElement element = psiExpressionList.getParent();
           if (element instanceof GrCall) {
-            final GroovyPsiElement expression =
+            GroovyPsiElement expression =
               element instanceof GrMethodCall ? ((GrMethodCall)element).getInvokedExpression() :
               element instanceof GrNewExpression? ((GrNewExpression)element).getReferenceElement() :
               null;
 
 
             if (expression instanceof GrReferenceElement) {
-              final GrReferenceElement ref = (GrReferenceElement)expression;
+              GrReferenceElement ref = (GrReferenceElement)expression;
 
               PsiNamePatternCondition nameCondition = null;
 
@@ -73,7 +73,7 @@ public class GroovyElementPattern<T extends GroovyPsiElement,Self extends Groovy
               }
 
               if (nameCondition != null && "withName".equals(nameCondition.getDebugMethodName())) {
-                final String methodName = ref.getReferenceName();
+                String methodName = ref.getReferenceName();
                 //noinspection unchecked
                 if (methodName != null && !nameCondition.getNamePattern().accepts(methodName, context)) {
                   return false;
@@ -81,7 +81,7 @@ public class GroovyElementPattern<T extends GroovyPsiElement,Self extends Groovy
               }
 
               for (GroovyResolveResult result : ref.multiResolve(false)) {
-                final PsiElement psiElement = result.getElement();
+                PsiElement psiElement = result.getElement();
                 if (methodPattern.getCondition().accepts(psiElement, context)) {
                   return true;
                 }
@@ -95,11 +95,11 @@ public class GroovyElementPattern<T extends GroovyPsiElement,Self extends Groovy
   }
 
   public static class Capture<T extends GroovyPsiElement> extends GroovyElementPattern<T, Capture<T>> {
-    public Capture(final Class<T> aClass) {
+    public Capture(Class<T> aClass) {
       super(aClass);
     }
 
-    public Capture(@Nonnull final InitialPatternCondition<T> condition) {
+    public Capture(@Nonnull InitialPatternCondition<T> condition) {
       super(condition);
     }
   }

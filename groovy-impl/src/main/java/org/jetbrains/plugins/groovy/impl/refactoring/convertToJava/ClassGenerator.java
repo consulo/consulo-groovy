@@ -57,10 +57,10 @@ public class ClassGenerator {
     }
   }
 
-  public void writeTypeDefinition(StringBuilder text, @Nonnull final PsiClass typeDefinition, boolean toplevel, boolean insertPackageSmst) {
-    final boolean isScript = typeDefinition instanceof GroovyScriptClass;
+  public void writeTypeDefinition(StringBuilder text, @Nonnull PsiClass typeDefinition, boolean toplevel, boolean insertPackageSmst) {
+    boolean isScript = typeDefinition instanceof GroovyScriptClass;
 
-    final GroovyFile containingFile = (GroovyFile)typeDefinition.getContainingFile();
+    GroovyFile containingFile = (GroovyFile)typeDefinition.getContainingFile();
     if (insertPackageSmst) {
       writePackageStatement(text, containingFile.getPackageDefinition());
     }
@@ -109,7 +109,7 @@ public class ClassGenerator {
 
   public void writeMembers(StringBuilder text, PsiClass typeDefinition) {
     if (typeDefinition instanceof GrEnumTypeDefinition) {
-      final GrEnumConstant[] enumConstants = ((GrEnumTypeDefinition)typeDefinition).getEnumConstants();
+      GrEnumConstant[] enumConstants = ((GrEnumTypeDefinition)typeDefinition).getEnumConstants();
       for (GrEnumConstant constant : enumConstants) {
         classItemGenerator.writeEnumConstant(text, constant);
         text.append(',');
@@ -156,8 +156,8 @@ public class ClassGenerator {
   private static boolean shouldBeGenerated(PsiMethod method) {
     for (PsiMethod psiMethod : method.findSuperMethods()) {
       if (!psiMethod.hasModifierProperty(PsiModifier.ABSTRACT)) {
-        final PsiType type = method.getReturnType();
-        final PsiType superType = psiMethod.getReturnType();
+        PsiType type = method.getReturnType();
+        PsiType superType = psiMethod.getReturnType();
         if (type != null && superType != null && !superType.isAssignableFrom(type)) {
           return false;
         }

@@ -46,7 +46,7 @@ public class GrScriptField extends GrLightField {
   private GrScriptField(@Nonnull GrVariable original, @Nonnull GroovyScriptClass scriptClass) {
     super(scriptClass, original.getName(), original.getType(), original);
 
-    final GrLightModifierList modifierList = getModifierList();
+    GrLightModifierList modifierList = getModifierList();
     for (@PsiModifier.ModifierConstant String modifier : PsiModifier.MODIFIERS) {
       if (original.hasModifierProperty(modifier)) {
         modifierList.addModifier(modifier);
@@ -54,8 +54,8 @@ public class GrScriptField extends GrLightField {
     }
 
     for (GrAnnotation annotation : modifierList.getAnnotations()) {
-      final String qname = annotation.getQualifiedName();
-      final String annotationName = qname != null ? qname : annotation.getShortName();
+      String qname = annotation.getQualifiedName();
+      String annotationName = qname != null ? qname : annotation.getShortName();
       if (!GroovyCommonClassNames.GROOVY_TRANSFORM_FIELD.equals(annotationName)) {
         modifierList.addAnnotation(annotationName);
       }
@@ -76,10 +76,10 @@ public class GrScriptField extends GrLightField {
 
   @Nonnull
   public static GrScriptField getScriptField(@Nonnull final GrVariable original) {
-    final GroovyScriptClass script = (GroovyScriptClass)((GroovyFile)original.getContainingFile()).getScriptClass();
+    GroovyScriptClass script = (GroovyScriptClass)((GroovyFile)original.getContainingFile()).getScriptClass();
     assert script != null;
 
-    final GrScriptField result = ContainerUtil.find(getScriptFields(script), new Condition<GrScriptField>() {
+    GrScriptField result = ContainerUtil.find(getScriptFields(script), new Condition<GrScriptField>() {
       @Override
       public boolean value(GrScriptField field) {
         return field.getNavigationElement() == original;

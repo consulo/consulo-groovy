@@ -54,13 +54,13 @@ public class ClassUtil {
     @Nonnull
     public static PsiType findPsiType(GroovyClassDescriptor descriptor, ProcessingContext ctx) {
         String typeText = descriptor.getTypeText();
-        final String key = getClassKey(typeText);
-        final Object cached = ctx.get(key);
+        String key = getClassKey(typeText);
+        Object cached = ctx.get(key);
         if (cached instanceof PsiType type) {
             return type;
         }
 
-        final PsiType found =
+        PsiType found =
             JavaPsiFacade.getElementFactory(descriptor.getProject()).createTypeFromText(typeText, descriptor.getPlaceFile());
         ctx.put(key, found);
         return found;

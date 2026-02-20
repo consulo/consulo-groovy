@@ -22,7 +22,7 @@ import org.jetbrains.plugins.groovy.lang.psi.util.GrStringUtil;
 
 public class GrChangeSignatureUtil {
   @Nonnull
-  public static String getNameWithQuotesIfNeeded(@Nonnull final String originalName, @Nonnull final Project project) {
+  public static String getNameWithQuotesIfNeeded(@Nonnull String originalName, @Nonnull Project project) {
     return JavaPsiFacade.getInstance(project).getNameHelper().isIdentifier(originalName)
            ? originalName
            : GrStringUtil.getLiteralTextByValue(originalName).toString();

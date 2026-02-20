@@ -56,8 +56,8 @@ public class GrPropertyForCompletion extends LightFieldBuilder {
 
   @Override
   public int hashCode() {
-    final int isStatic = hasModifierProperty(GrModifier.STATIC) ? 1 : 0;
-    final int visibilityModifier;
+    int isStatic = hasModifierProperty(GrModifier.STATIC) ? 1 : 0;
+    int visibilityModifier;
     visibilityModifier = getVisibilityCode();
 
     return getName().hashCode() << 3 + isStatic << 2 + visibilityModifier;

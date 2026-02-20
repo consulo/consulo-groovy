@@ -52,7 +52,7 @@ public class NamedArgumentInsertHandler implements InsertHandler<LookupElement> 
       argumentList = argumentList.getParent();
     }
 
-    final Editor editor = context.getEditor();
+    Editor editor = context.getEditor();
 
     if (argumentList != null) {
       CodeStyleSettings settings = CodeStyleSettingsManager.getInstance(context.getProject()).getCurrentSettings();

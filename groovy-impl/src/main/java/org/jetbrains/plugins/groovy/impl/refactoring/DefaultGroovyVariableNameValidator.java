@@ -66,9 +66,9 @@ public class DefaultGroovyVariableNameValidator implements NameValidator {
     mySet.addAll(restrictedNames);
     PropertyResolverProcessor processor = new PropertyResolverProcessor(null, myContext);
     ResolveUtil.treeWalkUp(myContext, processor, true);
-    final GroovyResolveResult[] results = processor.getCandidates();
+    GroovyResolveResult[] results = processor.getCandidates();
     for (GroovyResolveResult result : results) {
-      final PsiElement element = result.getElement();
+      PsiElement element = result.getElement();
       if (element instanceof PsiNamedElement && (includeFields || !(element instanceof PsiField))) {
         mySet.add(((PsiNamedElement)element).getName());
       }

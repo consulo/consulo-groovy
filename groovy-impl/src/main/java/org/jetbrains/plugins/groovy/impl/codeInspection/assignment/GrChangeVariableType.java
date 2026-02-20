@@ -46,11 +46,11 @@ public class GrChangeVariableType extends GroovyFix {
 
     @Override
     protected void doFix(Project project, ProblemDescriptor descriptor) throws IncorrectOperationException {
-        final PsiElement element = descriptor.getPsiElement();
-        final PsiElement parent = element.getParent();
+        PsiElement element = descriptor.getPsiElement();
+        PsiElement parent = element.getParent();
 
         try {
-            final PsiType type = JavaPsiFacade.getElementFactory(project).createTypeFromText(myType, element);
+            PsiType type = JavaPsiFacade.getElementFactory(project).createTypeFromText(myType, element);
 
             if (parent instanceof GrVariable) {
                 ((GrVariable) parent).setType(type);
@@ -58,7 +58,7 @@ public class GrChangeVariableType extends GroovyFix {
             else if (element instanceof GrReferenceExpression &&
                 parent instanceof GrAssignmentExpression &&
                 ((GrAssignmentExpression) parent).getLValue() == element) {
-                final PsiElement resolved = ((GrReferenceExpression) element).resolve();
+                PsiElement resolved = ((GrReferenceExpression) element).resolve();
                 if (resolved instanceof GrVariable && !(resolved instanceof GrParameter)) {
                     ((GrVariable) resolved).setType(type);
                 }

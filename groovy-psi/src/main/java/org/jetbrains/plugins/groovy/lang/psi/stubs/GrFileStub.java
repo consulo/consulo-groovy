@@ -37,7 +37,7 @@ public class GrFileStub extends PsiFileStubImpl<GroovyFile>
     super(file);
     myName = StringRef.fromString(StringUtil.trimEnd(file.getName(), ".groovy"));
     isScript = file.isScript();
-    final GrPackageDefinition definition = file.getPackageDefinition();
+    GrPackageDefinition definition = file.getPackageDefinition();
     if (definition != null) {
       myAnnotations = GrStubUtils.getAnnotationNames(definition);
     } else {

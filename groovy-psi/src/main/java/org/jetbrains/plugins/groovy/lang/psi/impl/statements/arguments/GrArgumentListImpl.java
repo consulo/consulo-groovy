@@ -122,7 +122,7 @@ public class GrArgumentListImpl extends GroovyPsiElementImpl implements GrArgume
   }
 
   @Override
-  public int getExpressionArgumentIndex(final GrExpression arg) {
+  public int getExpressionArgumentIndex(GrExpression arg) {
     int res = 0;
 
     for (PsiElement cur = getFirstChild(); cur != null; cur = cur.getNextSibling()) {
@@ -136,12 +136,12 @@ public class GrArgumentListImpl extends GroovyPsiElementImpl implements GrArgume
   }
 
   @Override
-  public GrNamedArgument addNamedArgument(final GrNamedArgument namedArgument) {
-    final GrNamedArgument[] namedArguments = getNamedArguments();
-    final GrExpression[] args = getExpressionArguments();
+  public GrNamedArgument addNamedArgument(GrNamedArgument namedArgument) {
+    GrNamedArgument[] namedArguments = getNamedArguments();
+    GrExpression[] args = getExpressionArguments();
     PsiElement anchor = null;
-    final int namedCount = namedArguments.length;
-    final int exprCount = args.length;
+    int namedCount = namedArguments.length;
+    int exprCount = args.length;
     if (namedCount > 0) {
       anchor = namedArguments[namedCount - 1];
     }
@@ -186,14 +186,14 @@ public class GrArgumentListImpl extends GroovyPsiElementImpl implements GrArgume
   @Override
   public PsiElement addAfter(@Nonnull PsiElement element, @Nullable PsiElement anchor) throws IncorrectOperationException {
     if (element instanceof GrExpression || element instanceof GrNamedArgument) {
-      final boolean insertComma = getAllArguments().length != 0;
+      boolean insertComma = getAllArguments().length != 0;
 
       if (anchor == null) anchor = getLeftParen();
 
       PsiElement result;
       result = super.addAfter(element, anchor);
       if (insertComma) {
-        final ASTNode astNode = getNode();
+        ASTNode astNode = getNode();
         if (anchor == getLeftParen()) {
           astNode.addLeaf(GroovyTokenTypes.mCOMMA, ",", result.getNextSibling().getNode());
         }
@@ -214,7 +214,7 @@ public class GrArgumentListImpl extends GroovyPsiElementImpl implements GrArgume
     if (element instanceof GrExpression || element instanceof GrNamedArgument) {
       ASTNode prev = TreeUtil.skipElementsBack(child.getTreePrev(), TokenSets.WHITE_SPACES_OR_COMMENTS);
       if (prev != null && prev.getElementType() == GroovyTokenTypes.mCOMMA) {
-        final ASTNode pprev = prev.getTreePrev();
+        ASTNode pprev = prev.getTreePrev();
         if (pprev != null && PsiImplUtil.isWhiteSpaceOrNls(pprev)) {
           super.deleteChildInternal(pprev);
         }
@@ -223,7 +223,7 @@ public class GrArgumentListImpl extends GroovyPsiElementImpl implements GrArgume
       else {
         ASTNode next = TreeUtil.skipElements(child.getTreeNext(), TokenSets.WHITE_SPACES_OR_COMMENTS);
         if (next != null && next.getElementType() == GroovyTokenTypes.mCOMMA) {
-          final ASTNode nnext = next.getTreeNext();
+          ASTNode nnext = next.getTreeNext();
           if (nnext != null && PsiImplUtil.isWhiteSpaceOrNls(nnext)) {
             super.deleteChildInternal(nnext);
           }

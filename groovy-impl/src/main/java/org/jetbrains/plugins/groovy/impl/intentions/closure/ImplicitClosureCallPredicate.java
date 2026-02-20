@@ -29,12 +29,12 @@ class ImplicitClosureCallPredicate implements PsiElementPredicate {
         if (!(element instanceof GrMethodCallExpression)) {
             return false;
         }
-        final GrMethodCallExpression call = (GrMethodCallExpression) element;
-        final GrExpression invokedExpression = call.getInvokedExpression();
+        GrMethodCallExpression call = (GrMethodCallExpression) element;
+        GrExpression invokedExpression = call.getInvokedExpression();
         if (invokedExpression == null) {
             return false;
         }
-        final PsiType type = invokedExpression.getType();
+        PsiType type = invokedExpression.getType();
         if(type == null)
         {
             return false;

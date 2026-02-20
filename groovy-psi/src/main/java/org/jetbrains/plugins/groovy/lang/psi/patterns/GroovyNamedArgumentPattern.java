@@ -22,7 +22,7 @@ public class GroovyNamedArgumentPattern extends GroovyElementPattern<GrNamedArgu
 
   public GroovyNamedArgumentPattern withLabel(@Nonnull final String label) {
     return with(new PatternCondition<GrNamedArgument>("left") {
-      public boolean accepts(@Nonnull GrNamedArgument namedArgument, final ProcessingContext context) {
+      public boolean accepts(@Nonnull GrNamedArgument namedArgument, ProcessingContext context) {
         return label.equals(namedArgument.getLabelName());
       }
     });
@@ -30,7 +30,7 @@ public class GroovyNamedArgumentPattern extends GroovyElementPattern<GrNamedArgu
 
   public GroovyNamedArgumentPattern withLabel(@Nonnull final StringPattern labelPattern) {
     return with(new PatternCondition<GrNamedArgument>("left") {
-      public boolean accepts(@Nonnull GrNamedArgument namedArgument, final ProcessingContext context) {
+      public boolean accepts(@Nonnull GrNamedArgument namedArgument, ProcessingContext context) {
         return labelPattern.getCondition().accepts(namedArgument.getLabelName(), context);
       }
     });
@@ -38,7 +38,7 @@ public class GroovyNamedArgumentPattern extends GroovyElementPattern<GrNamedArgu
 
   public GroovyNamedArgumentPattern withExpression(@Nonnull final ElementPattern pattern) {
     return with(new PatternCondition<GrNamedArgument>("left") {
-      public boolean accepts(@Nonnull GrNamedArgument namedArgument, final ProcessingContext context) {
+      public boolean accepts(@Nonnull GrNamedArgument namedArgument, ProcessingContext context) {
         return pattern.getCondition().accepts(namedArgument.getExpression(), context);
       }
     });
@@ -46,7 +46,7 @@ public class GroovyNamedArgumentPattern extends GroovyElementPattern<GrNamedArgu
 
   public GroovyNamedArgumentPattern isParameterOfMethodCall(@Nullable final ElementPattern<? extends GrCall> methodCall) {
     return with(new PatternCondition<GrNamedArgument>("left") {
-      public boolean accepts(@Nonnull GrNamedArgument namedArgument, final ProcessingContext context) {
+      public boolean accepts(@Nonnull GrNamedArgument namedArgument, ProcessingContext context) {
         GrCall call = PsiUtil.getCallByNamedParameter(namedArgument);
 
         return call != null && (methodCall == null || methodCall.accepts(call, context));

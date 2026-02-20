@@ -43,17 +43,17 @@ public class GrIntroduceValidatorEngine implements GrIntroduceHandlerBase.Valida
     }
 
     public boolean isOK(GrIntroduceDialog dialog) {
-        final GrIntroduceSettings settings = dialog.getSettings();
+        GrIntroduceSettings settings = dialog.getSettings();
         if (settings == null) {
             return false;
         }
         String varName = settings.getName();
         boolean allOccurrences = settings.replaceAllOccurrences();
-        final MultiMap<PsiElement, LocalizeValue> conflicts = isOKImpl(varName, allOccurrences);
+        MultiMap<PsiElement, LocalizeValue> conflicts = isOKImpl(varName, allOccurrences);
         return conflicts.size() <= 0 || reportConflicts(conflicts, getProject());
     }
 
-    private static boolean reportConflicts(final MultiMap<PsiElement, LocalizeValue> conflicts, final Project project) {
+    private static boolean reportConflicts(MultiMap<PsiElement, LocalizeValue> conflicts, Project project) {
         ConflictsDialog conflictsDialog = new ConflictsDialog(project, conflicts);
         conflictsDialog.show();
         return conflictsDialog.isOK();
@@ -73,10 +73,10 @@ public class GrIntroduceValidatorEngine implements GrIntroduceHandlerBase.Valida
         else {
             firstOccurence = myContext.getExpression();
         }
-        final MultiMap<PsiElement, LocalizeValue> conflicts = new MultiMap<>();
+        MultiMap<PsiElement, LocalizeValue> conflicts = new MultiMap<>();
         assert varName != null;
 
-        final int offset = firstOccurence.getTextRange().getStartOffset();
+        int offset = firstOccurence.getTextRange().getStartOffset();
         validateOccurrencesDown(myContext.getScope(), conflicts, varName, offset);
         if (!(myContext.getScope() instanceof GroovyFileBase)) {
             validateVariableOccurrencesUp(myContext.getScope(), conflicts, varName, offset);

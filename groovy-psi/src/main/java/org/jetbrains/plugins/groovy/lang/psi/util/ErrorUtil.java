@@ -29,7 +29,7 @@ public class ErrorUtil
 
 	public static boolean containsError(PsiElement element)
 	{
-		final ErrorElementVisitor visitor = new ErrorElementVisitor();
+		ErrorElementVisitor visitor = new ErrorElementVisitor();
 		element.accept(visitor);
 		return visitor.containsErrorElement();
 	}

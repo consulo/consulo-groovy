@@ -40,7 +40,7 @@ public class GroovyImplementMethodsHandler implements ImplementMethodHandler {
     return psiFile != null && GroovyFileType.GROOVY_FILE_TYPE.equals(psiFile.getFileType());
   }
 
-  public void invoke(@Nonnull final Project project, @Nonnull Editor editor, @Nonnull PsiFile file) {
+  public void invoke(@Nonnull Project project, @Nonnull Editor editor, @Nonnull PsiFile file) {
     if (!CodeInsightUtilBase.prepareEditorForWrite(editor)) return;
     PsiClass aClass = OverrideImplementUtil.getContextClass(project, editor, file, true);
     if (aClass == null) return;

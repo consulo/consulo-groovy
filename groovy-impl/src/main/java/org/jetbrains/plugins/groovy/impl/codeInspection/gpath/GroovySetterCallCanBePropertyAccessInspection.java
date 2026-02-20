@@ -70,14 +70,14 @@ public class GroovySetterCallCanBePropertyAccessInspection extends BaseInspectio
         }
 
         public void doFix(Project project, ProblemDescriptor descriptor) throws IncorrectOperationException {
-            final PsiElement referenceName = descriptor.getPsiElement();
-            final String setter = referenceName.getText();
-            final String propertyName = Character.toLowerCase(setter.charAt(3)) + setter.substring(4);
-            final GrReferenceExpression invokedExpression = (GrReferenceExpression) referenceName.getParent();
-            final GrMethodCallExpression callExpression = (GrMethodCallExpression) invokedExpression.getParent();
-            final GrArgumentList args = callExpression.getArgumentList();
+            PsiElement referenceName = descriptor.getPsiElement();
+            String setter = referenceName.getText();
+            String propertyName = Character.toLowerCase(setter.charAt(3)) + setter.substring(4);
+            GrReferenceExpression invokedExpression = (GrReferenceExpression) referenceName.getParent();
+            GrMethodCallExpression callExpression = (GrMethodCallExpression) invokedExpression.getParent();
+            GrArgumentList args = callExpression.getArgumentList();
             assert args != null;
-            final GrExpression arg = args.getExpressionArguments()[0];
+            GrExpression arg = args.getExpressionArguments()[0];
             replaceExpression(
                 callExpression,
                 invokedExpression.getQualifierExpression().getText() + '.' + propertyName + " = " + arg.getText()
@@ -90,7 +90,7 @@ public class GroovySetterCallCanBePropertyAccessInspection extends BaseInspectio
 
         public void visitMethodCallExpression(GrMethodCallExpression grMethodCallExpression) {
             super.visitMethodCallExpression(grMethodCallExpression);
-            final GrArgumentList args = grMethodCallExpression.getArgumentList();
+            GrArgumentList args = grMethodCallExpression.getArgumentList();
             if (args == null) {
                 return;
             }
@@ -100,12 +100,12 @@ public class GroovySetterCallCanBePropertyAccessInspection extends BaseInspectio
             if (PsiImplUtil.hasNamedArguments(args)) {
                 return;
             }
-            final GrExpression methodExpression = grMethodCallExpression.getInvokedExpression();
+            GrExpression methodExpression = grMethodCallExpression.getInvokedExpression();
             if (!(methodExpression instanceof GrReferenceExpression)) {
                 return;
             }
-            final GrReferenceExpression referenceExpression = (GrReferenceExpression) methodExpression;
-            final String name = referenceExpression.getReferenceName();
+            GrReferenceExpression referenceExpression = (GrReferenceExpression) methodExpression;
+            String name = referenceExpression.getReferenceName();
             if (name == null || !name.startsWith(SET_PREFIX)) {
                 return;
             }
@@ -117,7 +117,7 @@ public class GroovySetterCallCanBePropertyAccessInspection extends BaseInspectio
             if (!tail.equals(StringUtil.capitalize(tail))) {
                 return;
             }
-            final GrExpression qualifier = referenceExpression.getQualifierExpression();
+            GrExpression qualifier = referenceExpression.getQualifierExpression();
             if (qualifier == null || PsiUtil.isThisOrSuperRef(qualifier)) {
                 return;
             }

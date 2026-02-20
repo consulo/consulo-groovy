@@ -55,7 +55,7 @@ public class GrMethodCallUsageInfo extends UsageInfo implements PossiblyIncorrec
 
   public GrMethodCallUsageInfo(PsiElement element, boolean isToChangeArguments, boolean isToCatchExceptions, PsiMethod method) {
     super(element);
-    final GroovyResolveResult resolveResult = resolveMethod(element);
+    GroovyResolveResult resolveResult = resolveMethod(element);
     if (resolveResult == null || resolveResult.getElement() == null) {
       mySubstitutor = PsiSubstitutor.EMPTY;
     }
@@ -63,13 +63,13 @@ public class GrMethodCallUsageInfo extends UsageInfo implements PossiblyIncorrec
       PsiMethod resolved = (PsiMethod)resolveResult.getElement();
       mySubstitutor = resolveResult.getSubstitutor();
       if (!element.getManager().areElementsEquivalent(method, resolved)) {
-        final PsiClass baseClass = method.getContainingClass();
-        final PsiClass derivedClass = resolved.getContainingClass();
+        PsiClass baseClass = method.getContainingClass();
+        PsiClass derivedClass = resolved.getContainingClass();
         if (baseClass != null && derivedClass != null && InheritanceUtil.isInheritorOrSelf(derivedClass, baseClass, true)) {
-          final PsiSubstitutor superClassSubstitutor = TypeConversionUtil.getSuperClassSubstitutor(baseClass, derivedClass, mySubstitutor);
-          final MethodSignature superMethodSignature = method.getSignature(superClassSubstitutor);
-          final MethodSignature methodSignature = resolved.getSignature(PsiSubstitutor.EMPTY);
-          final PsiSubstitutor superMethodSignatureSubstitutor =
+          PsiSubstitutor superClassSubstitutor = TypeConversionUtil.getSuperClassSubstitutor(baseClass, derivedClass, mySubstitutor);
+          MethodSignature superMethodSignature = method.getSignature(superClassSubstitutor);
+          MethodSignature methodSignature = resolved.getSignature(PsiSubstitutor.EMPTY);
+          PsiSubstitutor superMethodSignatureSubstitutor =
             MethodSignatureUtil.getSuperMethodSignatureSubstitutor(methodSignature, superMethodSignature);
           mySubstitutor = TypesUtil.composeSubstitutors(superMethodSignatureSubstitutor, mySubstitutor);
         }
@@ -78,7 +78,7 @@ public class GrMethodCallUsageInfo extends UsageInfo implements PossiblyIncorrec
     GrClosureSignature signature = GrClosureSignatureUtil.createSignature(method, mySubstitutor);
     myToChangeArguments = isToChangeArguments;
     myToCatchExceptions = isToCatchExceptions;
-    final GrCall call = GroovyRefactoringUtil.getCallExpressionByMethodReference(element);
+    GrCall call = GroovyRefactoringUtil.getCallExpressionByMethodReference(element);
     if (call == null) {
       myMapToArguments = GrClosureSignatureUtil.ArgInfo.empty_array();
     }
@@ -90,19 +90,19 @@ public class GrMethodCallUsageInfo extends UsageInfo implements PossiblyIncorrec
 
   @Nullable
   public PsiMethod getReferencedMethod() {
-    final GroovyResolveResult result = resolveMethod(getElement());
+    GroovyResolveResult result = resolveMethod(getElement());
     if (result == null) return null;
 
-    final PsiElement element = result.getElement();
+    PsiElement element = result.getElement();
     return element instanceof PsiMethod ? (PsiMethod)element : null;
   }
 
   @Nullable
-  private static GroovyResolveResult resolveMethod(final PsiElement ref) {
+  private static GroovyResolveResult resolveMethod(PsiElement ref) {
     if (ref instanceof GrEnumConstant) return ((GrEnumConstant)ref).advancedResolve();
     PsiElement parent = ref.getParent();
     if (parent instanceof GrMethodCall) {
-      final GrExpression expression = ((GrMethodCall)parent).getInvokedExpression();
+      GrExpression expression = ((GrMethodCall)parent).getInvokedExpression();
       if (expression instanceof GrReferenceExpression) {
         return ((GrReferenceExpression)expression).advancedResolve();
       }
@@ -124,7 +124,7 @@ public class GrMethodCallUsageInfo extends UsageInfo implements PossiblyIncorrec
   }
 
   public boolean isPossibleUsage() {
-    final GroovyResolveResult resolveResult = resolveMethod(getElement());
+    GroovyResolveResult resolveResult = resolveMethod(getElement());
     return resolveResult == null || resolveResult.getElement() == null;
   }
 

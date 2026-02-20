@@ -34,7 +34,7 @@ public class GroovyExpressionTypeProvider extends ExpressionTypeProvider<GrExpre
   @Nonnull
   @Override
   public String getInformationHint(@Nonnull GrExpression element) {
-    final PsiType type = element.getType();
+    PsiType type = element.getType();
     return type == null ? "<unknown>" : StringUtil.escapeXml(type.getCanonicalText());
   }
 

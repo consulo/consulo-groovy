@@ -171,12 +171,12 @@ public class DslActivationStatus implements PersistentStateComponent<DslActivati
         return;
       }
 
-      final VirtualFileManager fileManager = VirtualFileManager.getInstance();
+      VirtualFileManager fileManager = VirtualFileManager.getInstance();
       for (Entry entry : state.entries) {
         if (entry.url == null || entry.status == null) {
           continue;
         }
-        final VirtualFile file = fileManager.findFileByUrl(entry.url);
+        VirtualFile file = fileManager.findFileByUrl(entry.url);
         if (file != null) {
           myStatus.put(file, entry);
         }

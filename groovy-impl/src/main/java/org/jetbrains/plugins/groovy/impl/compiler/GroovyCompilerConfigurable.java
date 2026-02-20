@@ -64,10 +64,10 @@ public class GroovyCompilerConfigurable implements ProjectConfigurable, Configur
     return myExcludes;
   }
 
-  private ExcludedEntriesConfigurable createExcludedConfigurable(final Project project) {
-    final ExcludedEntriesConfiguration configuration = myConfig.getExcludeFromStubGeneration();
+  private ExcludedEntriesConfigurable createExcludedConfigurable(Project project) {
+    ExcludedEntriesConfiguration configuration = myConfig.getExcludeFromStubGeneration();
     final ProjectFileIndex index = ProjectRootManager.getInstance(project).getFileIndex();
-    final FileChooserDescriptor descriptor = new FileChooserDescriptor(true, true, false, false, false, true) {
+    FileChooserDescriptor descriptor = new FileChooserDescriptor(true, true, false, false, false, true) {
       public boolean isFileVisible(VirtualFile file, boolean showHiddenFiles) {
         return super.isFileVisible(file, showHiddenFiles) && !index.isIgnored(file);
       }

@@ -48,7 +48,7 @@ public abstract class Intention implements IntentionAction {
         if (!QuickfixUtil.ensureFileWritable(project, file)) {
             return;
         }
-        final PsiElement element = findMatchingElement(file, editor);
+        PsiElement element = findMatchingElement(file, editor);
         if (element == null) {
             return;
         }
@@ -64,10 +64,10 @@ public abstract class Intention implements IntentionAction {
 
     protected static void replaceExpressionWithNegatedExpressionString(@Nonnull String newExpression, @Nonnull GrExpression expression)
         throws IncorrectOperationException {
-        final GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(expression.getProject());
+        GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(expression.getProject());
 
         GrExpression expressionToReplace = expression;
-        final String expString;
+        String expString;
         if (BoolUtils.isNegated(expression)) {
             expressionToReplace = BoolUtils.findNegation(expression);
             expString = newExpression;
@@ -75,7 +75,7 @@ public abstract class Intention implements IntentionAction {
         else {
             expString = "!(" + newExpression + ')';
         }
-        final GrExpression newCall =
+        GrExpression newCall =
             factory.createExpressionFromText(expString);
         assert expressionToReplace != null;
         expressionToReplace.replaceWithExpression(newCall, true);
@@ -100,7 +100,7 @@ public abstract class Intention implements IntentionAction {
             }
         }
 
-        final int position = editor.getCaretModel().getOffset();
+        int position = editor.getCaretModel().getOffset();
         PsiElement element = file.findElementAt(position);
         while (element != null) {
             if (predicate.satisfiedBy(element)) {

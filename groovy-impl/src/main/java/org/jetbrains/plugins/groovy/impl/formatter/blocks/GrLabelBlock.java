@@ -43,7 +43,7 @@ public class GrLabelBlock extends GroovyBlock {
                       @Nonnull FormattingContext context) {
     super(node, indent, wrap, context);
 
-    final GroovyBlockGenerator
+    GroovyBlockGenerator
       generator = new GroovyBlockGenerator(this);
     myBlocks = generator.generateSubBlockForCodeBlocks(classLevel, subStatements, false);
     myRange = new TextRange(subStatements.get(0).getTextRange().getStartOffset(),

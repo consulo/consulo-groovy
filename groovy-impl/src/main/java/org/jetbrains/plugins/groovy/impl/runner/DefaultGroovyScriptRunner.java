@@ -53,7 +53,7 @@ public class DefaultGroovyScriptRunner extends GroovyScriptRunner {
   public boolean ensureRunnerConfigured(@Nullable Module module,
                                         RunProfile profile,
                                         Executor executor,
-                                        final Project project) throws ExecutionException {
+                                        Project project) throws ExecutionException {
     if (module == null) {
       throw new ExecutionException("Module is not specified");
     }
@@ -96,7 +96,7 @@ public class DefaultGroovyScriptRunner extends GroovyScriptRunner {
                                                   @Nonnull String mainClass,
                                                   boolean useBundled,
                                                   boolean tests) {
-    final VirtualFile groovyJar = findGroovyJar(module);
+    VirtualFile groovyJar = findGroovyJar(module);
     if (useBundled) {
       params.getClassPath().add(GroovyUtils.getBundledGroovyJar());
     }
@@ -116,7 +116,7 @@ public class DefaultGroovyScriptRunner extends GroovyScriptRunner {
       setGroovyHome(params, groovyHome);
     }
 
-    final String confPath = getConfPath(groovyHome);
+    String confPath = getConfPath(groovyHome);
     params.getVMParametersList().add("-Dgroovy.starter.conf=" + confPath);
     List<Pair<String, String>> jvmProperties = HttpProxyManager.getInstance().getJvmProperties(false, null);
     for (Pair<String, String> jvmProperty : jvmProperties) {
@@ -139,7 +139,7 @@ public class DefaultGroovyScriptRunner extends GroovyScriptRunner {
     }
   }
 
-  private static void addScriptEncodingSettings(final OwnJavaParameters params, final VirtualFile scriptFile, Module module) {
+  private static void addScriptEncodingSettings(OwnJavaParameters params, VirtualFile scriptFile, Module module) {
     Charset charset = EncodingProjectManager.getInstance(module.getProject()).getEncoding(scriptFile, true);
     if (charset == null) {
       charset = EncodingManager.getInstance().getDefaultCharset();

@@ -61,10 +61,10 @@ public class GroovyArgListSelectioner extends ExtendWordSelectionHandlerBase {
         }
       }
     }
-    final PsiElement parent = element.getParent();
+    PsiElement parent = element.getParent();
     if (parent instanceof GrReferenceExpression) {
-      final GrArgumentList argumentList = ((GrCall)parent.getParent()).getArgumentList();
-      final PsiElement refName = ((GrReferenceExpression)parent).getReferenceNameElement();
+      GrArgumentList argumentList = ((GrCall)parent.getParent()).getArgumentList();
+      PsiElement refName = ((GrReferenceExpression)parent).getReferenceNameElement();
       if (argumentList != null && refName == element) {
         result.add(new TextRange(refName.getTextRange().getStartOffset(), argumentList.getTextRange().getEndOffset()));
       }

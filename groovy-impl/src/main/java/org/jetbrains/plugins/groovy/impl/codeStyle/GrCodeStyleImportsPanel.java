@@ -91,7 +91,7 @@ public class GrCodeStyleImportsPanel extends JPanel {
 
     myClassCountField = new JTextField(3);
     myNamesCountField = new JTextField(3);
-    final JPanel panel = new JPanel(new GridBagLayout());
+    JPanel panel = new JPanel(new GridBagLayout());
     panel.add(new JLabel(ApplicationBundle.message("editbox.class.count.to.use.import.with.star")),
               new GridBagConstraints(0, GridBagConstraints.RELATIVE, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE,
                                      new Insets(0, 3, 0, 0), 0, 0));
@@ -109,7 +109,7 @@ public class GrCodeStyleImportsPanel extends JPanel {
     return group.createPanel();
   }
 
-  private void refreshTable(final JBTable table, final PackageEntryTable packageTable) {
+  private void refreshTable(JBTable table, PackageEntryTable packageTable) {
     AbstractTableModel model = (AbstractTableModel)table.getModel();
     table.createDefaultColumnsFromModel();
     model.fireTableDataChanged();
@@ -129,7 +129,7 @@ public class GrCodeStyleImportsPanel extends JPanel {
 
     myImportLayoutPanel.getCbLayoutStaticImportsSeparately().setSelected(settings.LAYOUT_STATIC_IMPORTS_SEPARATELY);
 
-    final JBTable importLayoutTable = myImportLayoutPanel.getImportLayoutTable();
+    JBTable importLayoutTable = myImportLayoutPanel.getImportLayoutTable();
     AbstractTableModel model = (AbstractTableModel)importLayoutTable.getModel();
     model.fireTableDataChanged();
 
@@ -165,7 +165,7 @@ public class GrCodeStyleImportsPanel extends JPanel {
       //just a bad number
     }
 
-    final PackageEntryTable list = myImportLayoutPanel.getImportLayoutList();
+    PackageEntryTable list = myImportLayoutPanel.getImportLayoutList();
     list.removeEmptyPackages();
     settings.IMPORT_LAYOUT_TABLE.copyFrom(list);
 

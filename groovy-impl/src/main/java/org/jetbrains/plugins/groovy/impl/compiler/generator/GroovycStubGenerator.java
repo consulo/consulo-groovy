@@ -87,14 +87,14 @@ public class GroovycStubGenerator extends GroovyCompilerBase {
 
   @Override
   public void compile(CompileContext compileContext, Chunk<Module> moduleChunk, VirtualFile[] virtualFiles, OutputSink sink) {
-    final ExcludedEntriesConfiguration excluded = GroovyCompilerConfiguration.getExcludeConfiguration(myProject);
+    ExcludedEntriesConfiguration excluded = GroovyCompilerConfiguration.getExcludeConfiguration(myProject);
 
     Map<Pair<Module, Boolean>, Boolean> hasJava = FactoryMap.create(key -> containsJavaSources(key.first, key.second));
 
     ProjectFileIndex index = ProjectRootManager.getInstance(myProject).getFileIndex();
 
     List<VirtualFile> total = new ArrayList<>();
-    for (final VirtualFile virtualFile : virtualFiles) {
+    for (VirtualFile virtualFile : virtualFiles) {
       if (!excluded.isExcluded(virtualFile) && GroovyNamesUtil.isIdentifier(virtualFile.getNameWithoutExtension())) {
         Module module = index.getModuleForFile(virtualFile);
         if (module == null || hasJava.get(Pair.create(module, index.isInTestSourceContent(virtualFile)))) {
@@ -154,13 +154,13 @@ public class GroovycStubGenerator extends GroovyCompilerBase {
   @Override
   protected void compileFiles(CompileContext compileContext,
                               Module module,
-                              final List<VirtualFile> toCompile,
+                              List<VirtualFile> toCompile,
                               OutputSink sink,
                               boolean tests) {
-    final File outDir = getStubOutput(module, tests);
+    File outDir = getStubOutput(module, tests);
     outDir.mkdirs();
 
-    final VirtualFile tempOutput = LocalFileSystem.getInstance().refreshAndFindFileByIoFile(outDir);
+    VirtualFile tempOutput = LocalFileSystem.getInstance().refreshAndFindFileByIoFile(outDir);
     assert tempOutput != null;
     cleanDirectory(tempOutput);
 
@@ -170,11 +170,11 @@ public class GroovycStubGenerator extends GroovyCompilerBase {
     indicator.pushState();
 
     try {
-      final GroovyToJavaGenerator generator = new GroovyToJavaGenerator(myProject, new HashSet<>(toCompile));
+      GroovyToJavaGenerator generator = new GroovyToJavaGenerator(myProject, new HashSet<>(toCompile));
       for (int i = 0; i < toCompile.size(); i++) {
         indicator.setFraction((double)i / toCompile.size());
 
-        final Collection<VirtualFile> stubFiles = generateItems(generator, toCompile.get(i), tempOutput, compileContext, myProject);
+        Collection<VirtualFile> stubFiles = generateItems(generator, toCompile.get(i), tempOutput, compileContext, myProject);
         ((CompileContextEx)compileContext).addScope(new FileSetCompileScope(stubFiles, new Module[]{module}));
       }
     }
@@ -184,30 +184,30 @@ public class GroovycStubGenerator extends GroovyCompilerBase {
   }
 
   private static File getStubOutput(Module module, boolean tests) {
-    final Project project = module.getProject();
-    final String rootPath = CompilerPaths.getGeneratedDataDirectory(project).getPath() + "/" + GROOVY_STUBS + "/";
+    Project project = module.getProject();
+    String rootPath = CompilerPaths.getGeneratedDataDirectory(project).getPath() + "/" + GROOVY_STUBS + "/";
     return new File(rootPath + module.getName() + "/" + (tests ? "tests" : "production") + "/");
   }
 
   @Nullable
   public static PsiClass findClassByStub(Project project, VirtualFile stubFile) {
-    final String[] components = StringUtil.trimEnd(stubFile.getPath(), ".java").split("[\\\\/]");
-    final int stubs = Arrays.asList(components).indexOf(GROOVY_STUBS);
+    String[] components = StringUtil.trimEnd(stubFile.getPath(), ".java").split("[\\\\/]");
+    int stubs = Arrays.asList(components).indexOf(GROOVY_STUBS);
     if (stubs < 0 || stubs >= components.length - 3) {
       return null;
     }
 
-    final String moduleName = components[stubs + 1];
-    final Module module = ModuleManager.getInstance(project).findModuleByName(moduleName);
+    String moduleName = components[stubs + 1];
+    Module module = ModuleManager.getInstance(project).findModuleByName(moduleName);
     if (module == null) {
       return null;
     }
 
-    final String fqn = StringUtil.join(Arrays.asList(components).subList(stubs + 3, components.length), ".");
+    String fqn = StringUtil.join(Arrays.asList(components).subList(stubs + 3, components.length), ".");
     return JavaPsiFacade.getInstance(project).findClass(fqn, GlobalSearchScope.moduleScope(module));
   }
 
-  private void cleanDirectory(final VirtualFile dir) {
+  private void cleanDirectory(VirtualFile dir) {
     WriteAction.runAndWait(() -> {
       VirtualFileUtil.processFilesRecursively(dir, new Predicate<>() {
         @Override
@@ -235,11 +235,11 @@ public class GroovycStubGenerator extends GroovyCompilerBase {
     return true;
   }
 
-  public static Collection<VirtualFile> generateItems(final GroovyToJavaGenerator generator,
-                                                      final VirtualFile item,
-                                                      final VirtualFile outputRootDirectory,
+  public static Collection<VirtualFile> generateItems(GroovyToJavaGenerator generator,
+                                                      VirtualFile item,
+                                                      VirtualFile outputRootDirectory,
                                                       CompileContext context,
-                                                      final Project project) {
+                                                      Project project) {
     ProgressIndicator indicator = context.getProgressIndicator();
     indicator.setText("Generating stubs for " + item.getName() + "...");
 
@@ -247,7 +247,7 @@ public class GroovycStubGenerator extends GroovyCompilerBase {
       LOG.debug("Generating stubs for " + item.getName() + "...");
     }
 
-    final Map<String, CharSequence> output;
+    Map<String, CharSequence> output;
 
     output = AccessRule.read(() -> generator.generateStubs((GroovyFile)PsiManager.getInstance(project).findFile(item)));
 
@@ -255,9 +255,9 @@ public class GroovycStubGenerator extends GroovyCompilerBase {
   }
 
   private static List<VirtualFile> writeStubs(VirtualFile outputRootDirectory, Map<String, CharSequence> output, VirtualFile src) {
-    final ArrayList<VirtualFile> stubs = ContainerUtil.newArrayList();
+    ArrayList<VirtualFile> stubs = ContainerUtil.newArrayList();
     for (String relativePath : output.keySet()) {
-      final File stubFile = new File(outputRootDirectory.getPath(), relativePath);
+      File stubFile = new File(outputRootDirectory.getPath(), relativePath);
       FileUtil.createIfDoesntExist(stubFile);
       try {
         FileUtil.writeToFile(stubFile, output.get(relativePath).toString().getBytes(src.getCharset()));

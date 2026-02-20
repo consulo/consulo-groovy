@@ -26,8 +26,8 @@ class ConvertIntegerToHexPredicate implements PsiElementPredicate {
     if (!(element instanceof GrLiteral)) {
       return false;
     }
-    final GrLiteral expression = (GrLiteral) element;
-    final PsiType type = expression.getType();
+    GrLiteral expression = (GrLiteral) element;
+    PsiType type = expression.getType();
     if (type == null) {
       return false;
     }
@@ -35,7 +35,7 @@ class ConvertIntegerToHexPredicate implements PsiElementPredicate {
         !type.equalsToText("java.lang.Integer") && !type.equalsToText("java.lang.Long")) {
       return false;
     }
-    @NonNls final String text = expression.getText();
+    @NonNls String text = expression.getText();
 
     return !(text.startsWith("0x") || text.startsWith("0X"));
 

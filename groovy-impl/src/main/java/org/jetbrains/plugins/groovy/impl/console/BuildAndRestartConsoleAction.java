@@ -65,7 +65,7 @@ public class BuildAndRestartConsoleAction extends AnAction {
       return false;
     }
 
-    final ProcessHandler processHandler = myContentDescriptor.getProcessHandler();
+    ProcessHandler processHandler = myContentDescriptor.getProcessHandler();
     if (processHandler == null || processHandler.isProcessTerminated()) {
       return false;
     }

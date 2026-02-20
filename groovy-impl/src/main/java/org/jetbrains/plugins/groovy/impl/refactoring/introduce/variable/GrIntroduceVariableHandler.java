@@ -61,7 +61,7 @@ public class GrIntroduceVariableHandler extends GrIntroduceHandlerBase<GroovyInt
                                                     StringPartInfo stringPartInfo,
                                                     Editor editor) {
     // Get container element
-    final GrControlFlowOwner scope = ControlFlowUtils.findControlFlowOwner(stringPartInfo != null ? stringPartInfo
+    GrControlFlowOwner scope = ControlFlowUtils.findControlFlowOwner(stringPartInfo != null ? stringPartInfo
       .getLiteral() : selectedExpr);
     if (scope == null) {
       throw new GrRefactoringError(GroovyRefactoringBundle.message("refactoring.is.not.supported.in.the.current" +
@@ -127,8 +127,8 @@ public class GrIntroduceVariableHandler extends GrIntroduceHandlerBase<GroovyInt
    * Inserts new variable declarations and replaces occurrences
    */
   @Override
-  public GrVariable runRefactoring(@Nonnull final GrIntroduceContext context,
-                                   @Nonnull final GroovyIntroduceVariableSettings settings) {
+  public GrVariable runRefactoring(@Nonnull GrIntroduceContext context,
+                                   @Nonnull GroovyIntroduceVariableSettings settings) {
     // Generating variable declaration
 
     GrVariable insertedVar = processExpression(context, settings);
@@ -155,7 +155,7 @@ public class GrIntroduceVariableHandler extends GrIntroduceHandlerBase<GroovyInt
 
     context = contextRef.get();
 
-    final GrStatement anchor = findAnchor(context, choice == OccurrencesChooser.ReplaceChoice.ALL);
+    GrStatement anchor = findAnchor(context, choice == OccurrencesChooser.ReplaceChoice.ALL);
 
     if (anchor.getParent() instanceof GrControlStatement) {
       addBraces(anchor, contextRef);
@@ -203,10 +203,10 @@ public class GrIntroduceVariableHandler extends GrIntroduceHandlerBase<GroovyInt
   @Nonnull
   private static GrVariableDeclaration generateDeclaration(@Nonnull GrIntroduceContext context,
                                                            @Nonnull GroovyIntroduceVariableSettings settings) {
-    final GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(context.getProject());
-    final String[] modifiers = settings.isDeclareFinal() ? new String[]{PsiModifier.FINAL} : null;
+    GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(context.getProject());
+    String[] modifiers = settings.isDeclareFinal() ? new String[]{PsiModifier.FINAL} : null;
 
-    final GrVariableDeclaration declaration = factory.createVariableDeclaration(modifiers, "foo",
+    GrVariableDeclaration declaration = factory.createVariableDeclaration(modifiers, "foo",
                                                                                 settings.getSelectedType(), settings.getName());
 
     generateInitializer(context, declaration.getVariables()[0]);
@@ -219,11 +219,11 @@ public class GrIntroduceVariableHandler extends GrIntroduceHandlerBase<GroovyInt
     GrVariableDeclaration varDecl = generateDeclaration(context, settings);
 
     if (context.getStringPart() != null) {
-      final GrExpression ref = context.getStringPart().replaceLiteralWithConcatenation(DUMMY_NAME);
+      GrExpression ref = context.getStringPart().replaceLiteralWithConcatenation(DUMMY_NAME);
       return doProcessExpression(context, settings, varDecl, new PsiElement[]{ref}, ref, true);
     }
     else {
-      final GrExpression expression = context.getExpression();
+      GrExpression expression = context.getExpression();
       assert expression != null;
       return doProcessExpression(context, settings, varDecl, context.getOccurrences(), expression, true);
     }
@@ -246,9 +246,9 @@ public class GrIntroduceVariableHandler extends GrIntroduceHandlerBase<GroovyInt
 
   @Nonnull
   private static GrExpression generateInitializer(@Nonnull GrIntroduceContext context, @Nonnull GrVariable variable) {
-    final GrExpression initializer = context.getStringPart() != null ? context.getStringPart()
+    GrExpression initializer = context.getStringPart() != null ? context.getStringPart()
                                                                               .createLiteralFromSelected() : context.getExpression();
-    final GrExpression dummyInitializer = variable.getInitializerGroovy();
+    GrExpression dummyInitializer = variable.getInitializerGroovy();
     assert dummyInitializer != null;
     return dummyInitializer.replaceWithExpression(initializer, true);
   }
@@ -276,7 +276,7 @@ public class GrIntroduceVariableHandler extends GrIntroduceHandlerBase<GroovyInt
   @Override
   @Nonnull
   protected GroovyIntroduceVariableDialog getDialog(@Nonnull GrIntroduceContext context) {
-    final GroovyVariableValidator validator = new GroovyVariableValidator(context);
+    GroovyVariableValidator validator = new GroovyVariableValidator(context);
     return new GroovyIntroduceVariableDialog(context, validator);
   }
 }

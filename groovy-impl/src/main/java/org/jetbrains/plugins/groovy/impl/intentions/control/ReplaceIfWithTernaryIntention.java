@@ -46,18 +46,18 @@ public class ReplaceIfWithTernaryIntention extends Intention {
 
     @Override
     protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
-        final GrIfStatement ifStatement = (GrIfStatement) element.getParent();
+        GrIfStatement ifStatement = (GrIfStatement) element.getParent();
 
-        final PsiElement thenBranch = skipBlock(ifStatement.getThenBranch());
-        final PsiElement elseBranch = skipBlock(ifStatement.getElseBranch());
+        PsiElement thenBranch = skipBlock(ifStatement.getThenBranch());
+        PsiElement elseBranch = skipBlock(ifStatement.getElseBranch());
 
         if (thenBranch instanceof GrAssignmentExpression && elseBranch instanceof GrAssignmentExpression) {
-            final GrAssignmentExpression assignment =
+            GrAssignmentExpression assignment =
                 (GrAssignmentExpression) GroovyPsiElementFactory.getInstance(project).createStatementFromText("a = b ? c : d");
 
             assignment.getLValue().replaceWithExpression(((GrAssignmentExpression) thenBranch).getLValue(), true);
 
-            final GrConditionalExpression conditional = (GrConditionalExpression) assignment.getRValue();
+            GrConditionalExpression conditional = (GrConditionalExpression) assignment.getRValue();
             replaceConditional(
                 conditional,
                 ifStatement.getCondition(),
@@ -69,9 +69,9 @@ public class ReplaceIfWithTernaryIntention extends Intention {
 
 
         if (thenBranch instanceof GrReturnStatement && elseBranch instanceof GrReturnStatement) {
-            final GrReturnStatement returnSt =
+            GrReturnStatement returnSt =
                 (GrReturnStatement) GroovyPsiElementFactory.getInstance(project).createStatementFromText("return a ? b : c");
-            final GrConditionalExpression conditional = (GrConditionalExpression) returnSt.getReturnValue();
+            GrConditionalExpression conditional = (GrConditionalExpression) returnSt.getReturnValue();
             replaceConditional(
                 conditional,
                 ifStatement.getCondition(),
@@ -105,16 +105,16 @@ public class ReplaceIfWithTernaryIntention extends Intention {
                     return false;
                 }
 
-                final GrIfStatement ifStatement = (GrIfStatement) e.getParent();
-                final PsiElement thenBranch = skipBlock(ifStatement.getThenBranch());
-                final PsiElement elseBranch = skipBlock(ifStatement.getElseBranch());
+                GrIfStatement ifStatement = (GrIfStatement) e.getParent();
+                PsiElement thenBranch = skipBlock(ifStatement.getThenBranch());
+                PsiElement elseBranch = skipBlock(ifStatement.getElseBranch());
 
                 if (thenBranch instanceof GrAssignmentExpression &&
                     elseBranch instanceof GrAssignmentExpression &&
                     ((GrAssignmentExpression) thenBranch).getRValue() != null &&
                     ((GrAssignmentExpression) elseBranch).getRValue() != null) {
-                    final GrExpression lvalue1 = ((GrAssignmentExpression) thenBranch).getLValue();
-                    final GrExpression lvalue2 = ((GrAssignmentExpression) elseBranch).getLValue();
+                    GrExpression lvalue1 = ((GrAssignmentExpression) thenBranch).getLValue();
+                    GrExpression lvalue2 = ((GrAssignmentExpression) elseBranch).getLValue();
                     return EquivalenceChecker.expressionsAreEquivalent(lvalue1, lvalue2);
                 }
 

@@ -14,7 +14,7 @@ import jakarta.annotation.Nonnull;
  */
 public class MvcUpgradeAction extends MvcActionBase {
   @Override
-  protected void actionPerformed(@Nonnull AnActionEvent e, @Nonnull final Module module, @Nonnull final MvcFramework framework) {
+  protected void actionPerformed(@Nonnull AnActionEvent e, @Nonnull Module module, @Nonnull MvcFramework framework) {
    /*final GroovyLibraryDescription description = framework.createLibraryDescription();
     final AddCustomLibraryDialog dialog = AddCustomLibraryDialog.createDialog(description, module, new ParameterizedRunnable<ModifiableRootModel>() {
         @Override
@@ -34,7 +34,7 @@ public class MvcUpgradeAction extends MvcActionBase {
   private static void removeOldMvcSdk(MvcFramework framework, ModifiableRootModel model) {
     for (OrderEntry entry : model.getOrderEntries()) {
       if (entry instanceof LibraryOrderEntry) {
-        final Library library = ((LibraryOrderEntry)entry).getLibrary();
+        Library library = ((LibraryOrderEntry)entry).getLibrary();
         if (library != null) {
           if (library.getKind() ==  framework.getLibraryKind()) {
             model.removeOrderEntry(entry);

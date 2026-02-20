@@ -46,7 +46,7 @@ public class CollectClassMembersUtil {
   }
 
 
-  public static Map<String, List<CandidateInfo>> getAllMethods(final PsiClass aClass, boolean includeSynthetic) {
+  public static Map<String, List<CandidateInfo>> getAllMethods(PsiClass aClass, boolean includeSynthetic) {
     return getCachedMembers(aClass, includeSynthetic).getSecond();
   }
 
@@ -66,15 +66,15 @@ public class CollectClassMembersUtil {
     return cachedValue.getValue();
   }
 
-  public static Map<String, CandidateInfo> getAllInnerClasses(final PsiClass aClass, boolean includeSynthetic) {
+  public static Map<String, CandidateInfo> getAllInnerClasses(PsiClass aClass, boolean includeSynthetic) {
     return getCachedMembers(aClass, includeSynthetic).getThird();
   }
 
-  public static Map<String, CandidateInfo> getAllFields(final PsiClass aClass, boolean includeSynthetic) {
+  public static Map<String, CandidateInfo> getAllFields(PsiClass aClass, boolean includeSynthetic) {
     return getCachedMembers(aClass, includeSynthetic).getFirst();
   }
 
-  public static Map<String, CandidateInfo> getAllFields(final PsiClass aClass) {
+  public static Map<String, CandidateInfo> getAllFields(PsiClass aClass) {
     return getAllFields(aClass, true);
   }
 
@@ -108,8 +108,8 @@ public class CollectClassMembersUtil {
         allFields.put(name, new CandidateInfo(field, substitutor));
       }
       else if (hasExplicitVisibilityModifiers(field)) {
-        final CandidateInfo candidateInfo = allFields.get(name);
-        final PsiElement element = candidateInfo.getElement();
+        CandidateInfo candidateInfo = allFields.get(name);
+        PsiElement element = candidateInfo.getElement();
         if (element instanceof GrField && (((GrField)element).getModifierList() == null ||
                                            !(((GrField)element).getModifierList()).hasExplicitVisibilityModifiers()) &&
             aClass == ((GrField)element).getContainingClass()) {
@@ -123,8 +123,8 @@ public class CollectClassMembersUtil {
       addMethod(allMethods, method, substitutor);
     }
 
-    for (final PsiClass inner : aClass.getInnerClasses()) {
-      final String name = inner.getName();
+    for (PsiClass inner : aClass.getInnerClasses()) {
+      String name = inner.getName();
       if (name != null && !allInnerClasses.containsKey(name)) {
         allInnerClasses.put(name, new CandidateInfo(inner, substitutor));
       }
@@ -133,7 +133,7 @@ public class CollectClassMembersUtil {
     for (PsiClassType superType : aClass.getSuperTypes()) {
       PsiClass superClass = superType.resolve();
       if (superClass != null) {
-        final PsiSubstitutor superSubstitutor = TypeConversionUtil.getSuperClassSubstitutor(superClass, aClass, substitutor);
+        PsiSubstitutor superSubstitutor = TypeConversionUtil.getSuperClassSubstitutor(superClass, aClass, substitutor);
         processClass(superClass, allFields, allMethods, allInnerClasses, visitedClasses, superSubstitutor, includeSynthetic);
       }
     }
@@ -149,7 +149,7 @@ public class CollectClassMembersUtil {
 
   private static boolean hasExplicitVisibilityModifiers(PsiField field) {
     if (field instanceof GrField) {
-      final GrModifierList list = (GrModifierList)field.getModifierList();
+      GrModifierList list = (GrModifierList)field.getModifierList();
       return list == null || list.hasExplicitVisibilityModifiers();
     }
     else {

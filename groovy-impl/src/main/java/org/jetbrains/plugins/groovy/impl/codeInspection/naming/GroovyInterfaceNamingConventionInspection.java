@@ -43,7 +43,7 @@ public class GroovyInterfaceNamingConventionInspection extends ConventionInspect
 
     @Nonnull
     public String buildErrorString(Object... args) {
-        final String className = (String) args[0];
+        String className = (String) args[0];
         if (className.length() < getMinLength()) {
             return "Interface name '#ref' is too short";
         }
@@ -75,9 +75,9 @@ public class GroovyInterfaceNamingConventionInspection extends ConventionInspect
             if (!(grTypeDefinition instanceof GrInterfaceDefinition)) {
                 return;
             }
-            final GrInterfaceDefinition aClass = (GrInterfaceDefinition) grTypeDefinition;
+            GrInterfaceDefinition aClass = (GrInterfaceDefinition) grTypeDefinition;
 
-            final String name = aClass.getName();
+            String name = aClass.getName();
             if (name == null) {
                 return;
             }

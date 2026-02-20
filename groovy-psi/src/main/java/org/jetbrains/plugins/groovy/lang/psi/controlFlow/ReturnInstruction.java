@@ -39,12 +39,12 @@ public class ReturnInstruction extends InstructionImpl {
   }
 
   public Iterable<? extends Instruction> successors(CallEnvironment environment) {
-    final Deque<CallInstruction> callStack = environment.callStack(this);
+    Deque<CallInstruction> callStack = environment.callStack(this);
     if (callStack.isEmpty()) return Collections.emptyList();     //can be true in case env was not populated (e.g. by DFA)
 
-    final CallInstruction callInstruction = callStack.peek();
-    final Iterable<? extends Instruction> successors = callInstruction.allSuccessors();
-    final Deque<CallInstruction> copy = new ArrayDeque<CallInstruction>(callStack);
+    CallInstruction callInstruction = callStack.peek();
+    Iterable<? extends Instruction> successors = callInstruction.allSuccessors();
+    Deque<CallInstruction> copy = new ArrayDeque<CallInstruction>(callStack);
     copy.pop();
     for (Instruction instruction : successors) {
       environment.update(copy, instruction);

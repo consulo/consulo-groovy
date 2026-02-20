@@ -135,7 +135,7 @@ public class GroovyCompletionData
 			return;
 		}
 
-		final String[] extendsImplements = addExtendsImplements(position);
+		String[] extendsImplements = addExtendsImplements(position);
 		for(String keyword : extendsImplements)
 		{
 			result.addElement(keyword(keyword, TailType.HUMBLE_SPACE_BEFORE_WORD));
@@ -204,7 +204,7 @@ public class GroovyCompletionData
 			}
 			if(suggestPrimitiveTypes(position))
 			{
-				final boolean addSpace = !IN_CAST_TYPE_ELEMENT.accepts(position) && !GroovySmartCompletionContributor.AFTER_NEW.accepts(position) && !isInExpression(position);
+				boolean addSpace = !IN_CAST_TYPE_ELEMENT.accepts(position) && !GroovySmartCompletionContributor.AFTER_NEW.accepts(position) && !isInExpression(position);
 				addKeywords(result, addSpace, BUILT_IN_TYPES);
 			}
 
@@ -245,11 +245,11 @@ public class GroovyCompletionData
 
 	private static boolean isAfterAnnotationMethodIdentifier(@Nonnull PsiElement position)
 	{
-		final PsiElement parent = position.getParent();
+		PsiElement parent = position.getParent();
 
 		if(parent instanceof GrTypeDefinitionBody)
 		{
-			final GrTypeDefinition containingClass = (GrTypeDefinition) parent.getParent();
+			GrTypeDefinition containingClass = (GrTypeDefinition) parent.getParent();
 			if(containingClass.isAnnotationType())
 			{
 				PsiElement sibling = PsiUtil.skipWhitespacesAndComments(position.getPrevSibling(), false);
@@ -268,8 +268,8 @@ public class GroovyCompletionData
 	 */
 	private static boolean isInExpression(PsiElement position)
 	{
-		final PsiElement actual = position.getParent();
-		final PsiElement parent = actual.getParent();
+		PsiElement actual = position.getParent();
+		PsiElement parent = actual.getParent();
 		return parent instanceof GrArgumentList || parent instanceof GrBinaryExpression;
 	}
 
@@ -366,7 +366,7 @@ public class GroovyCompletionData
 		}
 	}
 
-	private static LookupElement keyword(final String keyword, @Nonnull TailType tail)
+	private static LookupElement keyword(String keyword, @Nonnull TailType tail)
 	{
 		LookupElementBuilder element = LookupElementBuilder.create(keyword).bold();
 		return tail != TailType.NONE ? new JavaKeywordCompletion.OverridableSpace(element, tail) : element;
@@ -482,7 +482,7 @@ public class GroovyCompletionData
 			return true;
 		}
 
-		final PsiElement leaf = GroovyCompletionUtil.getLeafByOffset(context.getTextRange().getStartOffset() - 1, context);
+		PsiElement leaf = GroovyCompletionUtil.getLeafByOffset(context.getTextRange().getStartOffset() - 1, context);
 		if(leaf != null)
 		{
 			PsiElement parent = leaf.getParent();
@@ -508,7 +508,7 @@ public class GroovyCompletionData
 		{
 			return true;
 		}
-		final PsiElement leaf = GroovyCompletionUtil.getLeafByOffset(context.getTextRange().getStartOffset() - 1, context);
+		PsiElement leaf = GroovyCompletionUtil.getLeafByOffset(context.getTextRange().getStartOffset() - 1, context);
 		if(leaf != null)
 		{
 			PsiElement parent = leaf.getParent();
@@ -556,7 +556,7 @@ public class GroovyCompletionData
      */
 		if(parent instanceof GrVariable && context == ((GrVariable) parent).getNameIdentifierGroovy())
 		{
-			final PsiElement decl = parent.getParent();
+			PsiElement decl = parent.getParent();
 			if(decl instanceof GrVariableDeclaration &&
 					!((GrVariableDeclaration) decl).isTuple() &&
 					((GrVariableDeclaration) decl).getTypeElementGroovy() == null &&
@@ -566,7 +566,7 @@ public class GroovyCompletionData
 			}
 		}
 
-		final PsiElement leaf = GroovyCompletionUtil.getLeafByOffset(context.getTextRange().getStartOffset() - 1, context);
+		PsiElement leaf = GroovyCompletionUtil.getLeafByOffset(context.getTextRange().getStartOffset() - 1, context);
 		if(leaf != null)
 		{
 			PsiElement prev = leaf;
@@ -602,7 +602,7 @@ public class GroovyCompletionData
 
 	private static boolean isControlStructure(PsiElement context)
 	{
-		final int offset = context.getTextRange().getStartOffset();
+		int offset = context.getTextRange().getStartOffset();
 		PsiElement prevSibling = context.getPrevSibling();
 		if(context.getParent() instanceof GrReferenceElement && prevSibling != null && prevSibling.getNode() != null)
 		{
@@ -611,7 +611,7 @@ public class GroovyCompletionData
 		}
 		if(GroovyCompletionUtil.isNewStatement(context, true))
 		{
-			final PsiElement leaf = GroovyCompletionUtil.getLeafByOffset(offset - 1, context);
+			PsiElement leaf = GroovyCompletionUtil.getLeafByOffset(offset - 1, context);
 			if(leaf != null && (leaf.getParent() instanceof GrStatementOwner || leaf.getParent() instanceof GrLabeledStatement))
 			{
 				return true;
@@ -654,13 +654,13 @@ public class GroovyCompletionData
 			return true;
 		}
 
-		final GrSwitchStatement switchStatement = PsiTreeUtil.getParentOfType(context, GrSwitchStatement.class, true, GrCodeBlock.class);
+		GrSwitchStatement switchStatement = PsiTreeUtil.getParentOfType(context, GrSwitchStatement.class, true, GrCodeBlock.class);
 		if(switchStatement == null)
 		{
 			return false;
 		}
 
-		final GrExpression condition = switchStatement.getCondition();
+		GrExpression condition = switchStatement.getCondition();
 		return condition == null || !PsiTreeUtil.isAncestor(condition, context, false);
 	}
 
@@ -801,7 +801,7 @@ public class GroovyCompletionData
 			return false;
 		}
 
-		final PsiElement parent = context.getParent();
+		PsiElement parent = context.getParent();
 		if(parent == null)
 		{
 			return false;
@@ -872,10 +872,10 @@ public class GroovyCompletionData
 
 	private static boolean asVariableAfterModifiers(PsiElement context)
 	{
-		final PsiElement parent = context.getParent();
+		PsiElement parent = context.getParent();
 		if(parent instanceof GrVariable && context == ((GrVariable) parent).getNameIdentifierGroovy())
 		{
-			final PsiElement decl = parent.getParent();
+			PsiElement decl = parent.getParent();
 			if(decl instanceof GrVariableDeclaration &&
 					!((GrVariableDeclaration) decl).isTuple() &&
 					((GrVariableDeclaration) decl).getTypeElementGroovy() == null)
@@ -932,7 +932,7 @@ public class GroovyCompletionData
 			return true;
 		}
 
-		final PsiElement contextParent = context.getParent();
+		PsiElement contextParent = context.getParent();
 		if(contextParent instanceof GrReferenceElement && contextParent.getParent() instanceof GrTypeElement)
 		{
 			PsiElement parent = contextParent.getParent().getParent();
@@ -943,7 +943,7 @@ public class GroovyCompletionData
 		}
 		if(contextParent instanceof GrField)
 		{
-			final GrVariable variable = (GrVariable) contextParent;
+			GrVariable variable = (GrVariable) contextParent;
 			if(variable.getTypeElementGroovy() == null)
 			{
 				return true;

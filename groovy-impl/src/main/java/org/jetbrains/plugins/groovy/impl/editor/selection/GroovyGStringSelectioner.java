@@ -49,7 +49,7 @@ public class GroovyGStringSelectioner extends ExtendWordSelectionHandlerBase
     PsiElement parent = e.getParent();
 
     if (parent instanceof GrString) {
-      final TextRange selection =
+      TextRange selection =
         new TextRange(editor.getSelectionModel().getSelectionStart(), editor.getSelectionModel().getSelectionEnd());
 
       TextRange range = getLineTextRange(e, cursorOffset);
@@ -101,7 +101,7 @@ public class GroovyGStringSelectioner extends ExtendWordSelectionHandlerBase
     int startOffset = cursorOffset;
     int endOffset = cursorOffset;
     if (e.getNode().getElementType() == mGSTRING_CONTENT) {
-      final String text = e.getText();
+      String text = e.getText();
       int cur;
       int index = -1;
       while (true) {
@@ -122,12 +122,12 @@ public class GroovyGStringSelectioner extends ExtendWordSelectionHandlerBase
     if (startOffset == cursorOffset) {
       do {
         if (next == null) break;
-        final ASTNode node = next.getNode();
+        ASTNode node = next.getNode();
         if (node == null) break;
-        final IElementType type = node.getElementType();
+        IElementType type = node.getElementType();
         if (type == mGSTRING_BEGIN) break;
         if (type == mGSTRING_CONTENT) {
-          final int i = next.getText().lastIndexOf('\n');
+          int i = next.getText().lastIndexOf('\n');
           if (i >= 0) {
             startOffset = next.getTextOffset() + i + 1;
             break;
@@ -143,16 +143,16 @@ public class GroovyGStringSelectioner extends ExtendWordSelectionHandlerBase
       next = e;
       do {
         if (next == null) break;
-        final ASTNode node = next.getNode();
+        ASTNode node = next.getNode();
         if (node == null) break;
 
-        final IElementType type = node.getElementType();
+        IElementType type = node.getElementType();
         if (type == mGSTRING_END) {
           endOffset = next.getTextOffset();
           break;
         }
         if (type == mGSTRING_CONTENT) {
-          final int i = next.getText().indexOf('\n');
+          int i = next.getText().indexOf('\n');
           if (i >= 0) {
             endOffset = next.getTextOffset() + i + 1;
             break;

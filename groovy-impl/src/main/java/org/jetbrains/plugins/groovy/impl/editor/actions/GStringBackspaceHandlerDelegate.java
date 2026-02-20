@@ -38,9 +38,9 @@ public class GStringBackspaceHandlerDelegate extends BackspaceHandlerDelegate {
 
     if (!(file instanceof GroovyFile)) return;
 
-    final int offset = editor.getCaretModel().getOffset();
+    int offset = editor.getCaretModel().getOffset();
 
-    final EditorHighlighter highlighter = ((EditorEx)editor).getHighlighter();
+    EditorHighlighter highlighter = ((EditorEx)editor).getHighlighter();
     if (offset < 1) return;
 
     HighlighterIterator iterator = highlighter.createIterator(offset);

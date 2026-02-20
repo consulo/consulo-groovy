@@ -30,10 +30,10 @@ public class GrJoinControlStatementHandler implements JoinLinesHandlerDelegate {
   public int tryJoinLines(Document document, PsiFile file, int start, int end) {
     if (!(file instanceof GroovyFileBase)) return CANNOT_JOIN;
 
-    final PsiElement startElement = file.findElementAt(start);
+    PsiElement startElement = file.findElementAt(start);
     if (startElement == null || !startElement.getNode().getElementType().equals(GroovyTokenTypes.mRPAREN)) return CANNOT_JOIN;
 
-    final PsiElement parent = startElement.getParent();
+    PsiElement parent = startElement.getParent();
     if (!(parent instanceof GrIfStatement || parent instanceof GrWhileStatement || parent instanceof GrForStatement)) return CANNOT_JOIN;
 
     GrStatement inner;

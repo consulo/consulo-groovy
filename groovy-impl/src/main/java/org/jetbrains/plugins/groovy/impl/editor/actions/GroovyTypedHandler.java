@@ -43,7 +43,7 @@ public class GroovyTypedHandler extends TypedHandlerDelegate {
     TokenSet.create(GroovyTokenTypes.mSEMI, GroovyTokenTypes.mLCURLY, GroovyTokenTypes.mRCURLY);
   private boolean myJavaLTTyped;
 
-  public Result beforeCharTyped(final char c, final Project project, final Editor editor, final PsiFile file, final FileType fileType) {
+  public Result beforeCharTyped(char c, Project project, final Editor editor, PsiFile file, FileType fileType) {
     int offsetBefore = editor.getCaretModel().getOffset();
 
     //important to calculate before inserting charTyped
@@ -60,13 +60,13 @@ public class GroovyTypedHandler extends TypedHandlerDelegate {
 
     if (c == '@' && file instanceof GroovyFile) {
       autoPopupMemberLookup(project, editor, new Condition<PsiFile>() {
-        public boolean value(final PsiFile file) {
+        public boolean value(PsiFile file) {
           int offset = editor.getCaretModel().getOffset();
 
           PsiElement lastElement = file.findElementAt(offset - 1);
           if (lastElement == null) return false;
 
-          final PsiElement prevSibling = PsiTreeUtil.prevVisibleLeaf(lastElement);
+          PsiElement prevSibling = PsiTreeUtil.prevVisibleLeaf(lastElement);
           return prevSibling != null && ".".equals(prevSibling.getText());
         }
       });
@@ -74,7 +74,7 @@ public class GroovyTypedHandler extends TypedHandlerDelegate {
 
     if (c == '&' && file instanceof GroovyFile) {
       autoPopupMemberLookup(project, editor, new Condition<PsiFile>() {
-        public boolean value(final PsiFile file) {
+        public boolean value(PsiFile file) {
           int offset = editor.getCaretModel().getOffset();
 
           PsiElement lastElement = file.findElementAt(offset - 1);
@@ -87,12 +87,12 @@ public class GroovyTypedHandler extends TypedHandlerDelegate {
     return Result.CONTINUE;
   }
 
-  private static void autoPopupMemberLookup(Project project, final Editor editor, Condition<PsiFile> condition) {
+  private static void autoPopupMemberLookup(Project project, Editor editor, Condition<PsiFile> condition) {
     AutoPopupController.getInstance(project).autoPopupMemberLookup(editor, condition);
   }
 
 
-  public Result charTyped(final char c, final Project project, final Editor editor, @Nonnull final PsiFile file) {
+  public Result charTyped(char c, Project project, Editor editor, @Nonnull PsiFile file) {
     if (myJavaLTTyped) {
       myJavaLTTyped = false;
       JavaTypedHandler.handleAfterJavaLT(editor, GroovyTokenTypes.mLT, GroovyTokenTypes.mGT, INVALID_INSIDE_REFERENCE);
@@ -101,7 +101,7 @@ public class GroovyTypedHandler extends TypedHandlerDelegate {
     return Result.CONTINUE;
   }
 
-  public static boolean isAfterClassLikeIdentifier(final int offset, final Editor editor) {
+  public static boolean isAfterClassLikeIdentifier(int offset, Editor editor) {
     HighlighterIterator iterator = ((EditorEx)editor).getHighlighter().createIterator(offset);
     if (iterator.atEnd()) return false;
     if (iterator.getStart() > 0) iterator.retreat();

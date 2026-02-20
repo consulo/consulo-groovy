@@ -50,10 +50,10 @@ public class GrClassConverter extends GrTypeConverter {
       return null;
     }
     if (actualType == PsiType.NULL) return ConversionResult.OK;
-    final GrLiteral literal = getLiteral(context);
-    final Object value = literal == null ? null : literal.getValue();
-    final String fqn = value == null ? null : value.toString();
-    final PsiClass psiClass = fqn == null ? null : JavaPsiFacade.getInstance(context.getProject()).findClass(
+    GrLiteral literal = getLiteral(context);
+    Object value = literal == null ? null : literal.getValue();
+    String fqn = value == null ? null : value.toString();
+    PsiClass psiClass = fqn == null ? null : JavaPsiFacade.getInstance(context.getProject()).findClass(
       fqn, context.getResolveScope()
     );
     return psiClass == null ? ConversionResult.WARNING : ConversionResult.OK;

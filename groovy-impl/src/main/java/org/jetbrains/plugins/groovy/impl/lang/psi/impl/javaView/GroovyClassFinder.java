@@ -43,13 +43,13 @@ public class GroovyClassFinder extends PsiElementFinder {
 
   @Nullable
   public PsiClass findClass(@Nonnull String qualifiedName, @Nonnull GlobalSearchScope scope) {
-    final List<PsiClass> classes = myCache.getScriptClassesByFQName(qualifiedName, scope, true);
+    List<PsiClass> classes = myCache.getScriptClassesByFQName(qualifiedName, scope, true);
     return classes.isEmpty() ? null : classes.get(0);
   }
 
   @Nonnull
   public PsiClass[] findClasses(@Nonnull String qualifiedName, @Nonnull GlobalSearchScope scope) {
-    final Collection<PsiClass> classes = myCache.getScriptClassesByFQName(qualifiedName, scope, true);
+    Collection<PsiClass> classes = myCache.getScriptClassesByFQName(qualifiedName, scope, true);
     return classes.isEmpty() ? PsiClass.EMPTY_ARRAY : classes.toArray(new PsiClass[classes.size()]);
   }
 

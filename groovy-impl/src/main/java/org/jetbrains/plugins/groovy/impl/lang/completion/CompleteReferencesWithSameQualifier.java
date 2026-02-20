@@ -58,7 +58,7 @@ public class CompleteReferencesWithSameQualifier {
   private Set<String> getVariantsWithSameQualifierImpl() {
     if (myQualifier != null && myQualifier.getType() != null) return Collections.emptySet();
 
-    final PsiElement scope = PsiTreeUtil.getParentOfType(myRefExpr, GrMember.class, PsiFile.class);
+    PsiElement scope = PsiTreeUtil.getParentOfType(myRefExpr, GrMember.class, PsiFile.class);
     Set<String> result = new LinkedHashSet<>();
     if (scope != null) {
       addVariantsWithSameQualifier(scope, result);
@@ -68,10 +68,10 @@ public class CompleteReferencesWithSameQualifier {
 
   private void addVariantsWithSameQualifier(@Nonnull PsiElement element, @Nonnull Set<String> result) {
     if (element instanceof GrReferenceExpression && element != myRefExpr && !PsiUtil.isLValue((GroovyPsiElement)element)) {
-      final GrReferenceExpression refExpr = (GrReferenceExpression)element;
-      final String refName = refExpr.getReferenceName();
+      GrReferenceExpression refExpr = (GrReferenceExpression)element;
+      String refName = refExpr.getReferenceName();
       if (refName != null && !result.contains(refName) && myMatcher.prefixMatches(refName)) {
-        final GrExpression hisQualifier = refExpr.getQualifierExpression();
+        GrExpression hisQualifier = refExpr.getQualifierExpression();
         if (hisQualifier != null && myQualifier != null) {
           if (PsiEquivalenceUtil.areElementsEquivalent(hisQualifier, myQualifier)) {
             if (refExpr.resolve() == null) {

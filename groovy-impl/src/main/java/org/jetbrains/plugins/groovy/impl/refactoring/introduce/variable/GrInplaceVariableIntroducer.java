@@ -64,8 +64,8 @@ public abstract class GrInplaceVariableIntroducer extends GrAbstractInplaceIntro
 
   @Nullable
   private static String getAdvertisementText() {
-    final Keymap keymap = KeymapManager.getInstance().getActiveKeymap();
-    final Shortcut[] shortcuts = keymap.getShortcuts("PreviousTemplateVariable");
+    Keymap keymap = KeymapManager.getInstance().getActiveKeymap();
+    Shortcut[] shortcuts = keymap.getShortcuts("PreviousTemplateVariable");
     if (shortcuts.length > 0) {
       return "Press " + KeymapUtil.getShortcutText(shortcuts[0]) + " to change type";
     }
@@ -96,7 +96,7 @@ public abstract class GrInplaceVariableIntroducer extends GrAbstractInplaceIntro
           @Override
           protected void run(@Nonnull Result result) throws Throwable {
             PsiDocumentManager.getInstance(myProject).commitDocument(myEditor.getDocument());
-            final GrVariable variable = getVariable();
+            GrVariable variable = getVariable();
             if (variable != null) {
               finalListener.perform(myCanBeFinalCb.isSelected(), variable);
             }
@@ -104,7 +104,7 @@ public abstract class GrInplaceVariableIntroducer extends GrAbstractInplaceIntro
         }.execute();
       }
     });
-    final JPanel panel = new JPanel(new GridBagLayout());
+    JPanel panel = new JPanel(new GridBagLayout());
     panel.setBorder(null);
 
     if (myCanBeFinalCb != null) {
@@ -164,7 +164,7 @@ public abstract class GrInplaceVariableIntroducer extends GrAbstractInplaceIntro
   protected void addAdditionalVariables(TemplateBuilder builder) {
     GrVariable variable = getVariable();
     assert variable != null && variable.getInitializerGroovy() != null;
-    final PsiType initializerType = variable.getInitializerGroovy().getType();
+    PsiType initializerType = variable.getInitializerGroovy().getType();
     TypeConstraint[] constraints = initializerType != null && !initializerType.equals(PsiType.NULL) ? new
       SupertypeConstraint[]{SupertypeConstraint.create(initializerType)} : TypeConstraint.EMPTY_ARRAY;
     ChooseTypeExpression typeExpression = new ChooseTypeExpression(constraints,

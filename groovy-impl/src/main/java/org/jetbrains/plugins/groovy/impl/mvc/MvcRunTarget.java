@@ -38,7 +38,7 @@ public class MvcRunTarget extends MvcActionBase {
 
     MvcCommand cmd = MvcCommand.parse(dialog.getTargetArguments());
 
-    final GeneralCommandLine commandLine = framework.createCommandAndShowErrors(dialog.getVmOptions(), selectedModule, cmd);
+    GeneralCommandLine commandLine = framework.createCommandAndShowErrors(dialog.getVmOptions(), selectedModule, cmd);
     if (commandLine == null) return;
 
     MvcConsole.executeProcess(selectedModule, commandLine, null, false);

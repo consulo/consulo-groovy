@@ -35,9 +35,9 @@ public class GroovyBackspaceHandler extends BackspaceHandlerDelegate {
     myToDeleteGt = c == '<' && file instanceof GroovyFile && GroovyTypedHandler.isAfterClassLikeIdentifier(offset, editor);
   }
 
-  public boolean charDeleted(final char c, final PsiFile file, final Editor editor) {
+  public boolean charDeleted(char c, PsiFile file, Editor editor) {
     int offset = editor.getCaretModel().getOffset();
-    final CharSequence chars = editor.getDocument().getCharsSequence();
+    CharSequence chars = editor.getDocument().getCharsSequence();
     if (editor.getDocument().getTextLength() <= offset) return false; //virtual space after end of file
 
     char c1 = chars.charAt(offset);

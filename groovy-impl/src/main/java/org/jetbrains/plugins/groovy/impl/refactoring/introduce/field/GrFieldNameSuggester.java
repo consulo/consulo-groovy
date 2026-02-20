@@ -43,9 +43,9 @@ public class GrFieldNameSuggester {
 
   @Nonnull
   public LinkedHashSet<String> suggestNames() {
-    final GrExpression expression = myContext.getExpression();
-    final GrVariable var = myContext.getVar();
-    final StringPartInfo stringPart = myContext.getStringPart();
+    GrExpression expression = myContext.getExpression();
+    GrVariable var = myContext.getVar();
+    StringPartInfo stringPart = myContext.getStringPart();
 
     if (expression != null) {
       return new LinkedHashSet<String>(Arrays.asList(GroovyNameSuggestionUtil.suggestVariableNames(expression, myValidator, myForStatic)));

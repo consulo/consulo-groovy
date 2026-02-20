@@ -33,7 +33,7 @@ import static consulo.language.pattern.PlatformPatterns.psiElement;
  */
 @ExtensionImpl
 public class GroovyReferenceContributor extends PsiReferenceContributor {
-  public void registerReferenceProviders(final PsiReferenceRegistrar registrar) {
+  public void registerReferenceProviders(PsiReferenceRegistrar registrar) {
     registrar.registerReferenceProvider(psiElement(GrLiteral.class), new PropertiesReferenceProvider());
 
     registrar.registerReferenceProvider(GroovyPatterns.stringLiteral().withParent(GrAnnotationNameValuePair.class),

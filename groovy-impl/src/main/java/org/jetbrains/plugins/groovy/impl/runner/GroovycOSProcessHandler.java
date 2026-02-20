@@ -96,7 +96,7 @@ public class GroovycOSProcessHandler implements ProcessListener {
   }
 
   private void parseOutput(String text) {
-    final String trimmed = text.trim();
+    String trimmed = text.trim();
 
     if (trimmed.startsWith(GroovyRtConstants.PRESENTABLE_MESSAGE)) {
       updateStatus(trimmed.substring(GroovyRtConstants.PRESENTABLE_MESSAGE.length()));
@@ -118,8 +118,8 @@ public class GroovycOSProcessHandler implements ProcessListener {
           return;
         }
 
-        final String compiled = handleOutputBuffer(GroovyRtConstants.COMPILED_START, GroovyRtConstants.COMPILED_END);
-        final List<String> list = splitAndTrim(compiled);
+        String compiled = handleOutputBuffer(GroovyRtConstants.COMPILED_START, GroovyRtConstants.COMPILED_END);
+        List<String> list = splitAndTrim(compiled);
         String outputPath = list.get(0);
         String sourceFile = list.get(1);
 
@@ -176,8 +176,8 @@ public class GroovycOSProcessHandler implements ProcessListener {
   }
 
   private String handleOutputBuffer(String startMarker, String endMarker) {
-    final int start = outputBuffer.indexOf(startMarker);
-    final int end = outputBuffer.indexOf(endMarker);
+    int start = outputBuffer.indexOf(startMarker);
+    int end = outputBuffer.indexOf(endMarker);
     if (start > end) {
       throw new AssertionError("Malformed Groovyc output: " + outputBuffer.toString());
     }
@@ -219,7 +219,7 @@ public class GroovycOSProcessHandler implements ProcessListener {
 
   public List<CompilerMessage> getCompilerMessages(String moduleName) {
     ArrayList<CompilerMessage> messages = new ArrayList<CompilerMessage>(compilerMessages);
-    final StringBuffer unparsedBuffer = getStdErr();
+    StringBuffer unparsedBuffer = getStdErr();
     if (unparsedBuffer.length() != 0) {
       String msg = unparsedBuffer.toString();
       if (msg.contains(GroovyRtConstants.NO_GROOVY)) {
@@ -229,7 +229,7 @@ public class GroovycOSProcessHandler implements ProcessListener {
       messages.add(new CompilerMessage(GroovyCompilerMessageCategories.INFORMATION, msg, null, -1, -1));
     }
 
-    final int exitValue = myProcessHandler.getExitCode();
+    int exitValue = myProcessHandler.getExitCode();
     if (exitValue != 0) {
       for (CompilerMessage message : messages) {
         if (message.getCategory().equals(GroovyCompilerMessageCategories.ERROR)) {
@@ -246,15 +246,15 @@ public class GroovycOSProcessHandler implements ProcessListener {
     return stdErr;
   }
 
-  public static File fillFileWithGroovycParameters(final String outputDir,
-                                                   final Collection<String> changedSources,
+  public static File fillFileWithGroovycParameters(String outputDir,
+                                                   Collection<String> changedSources,
                                                    String finalOutput,
                                                    Map<String, String> class2Src,
-                                                   @Nullable final String encoding,
+                                                   @Nullable String encoding,
                                                    List<String> patchers) throws IOException {
     File tempFile = FileUtil.createTempFile("ideaGroovyToCompile", ".txt", true);
 
-    final Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(tempFile)));
+    Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(tempFile)));
     try {
       for (String file : changedSources) {
         writer.write(GroovyRtConstants.SRC_FILE + "\n");

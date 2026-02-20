@@ -56,11 +56,11 @@ public class LibrariesUtil {
   private LibrariesUtil() {
   }
 
-  public static Library[] getLibrariesByCondition(final Module module, final Condition<Library> condition) {
+  public static Library[] getLibrariesByCondition(Module module, Condition<Library> condition) {
     if (module == null) {
       return new Library[0];
     }
-    final ArrayList<Library> libraries = new ArrayList<Library>();
+    ArrayList<Library> libraries = new ArrayList<Library>();
 
     AccessRule.read(() -> populateOrderEntries(module, condition, libraries, false, new HashSet<>()));
 
@@ -89,7 +89,7 @@ public class LibrariesUtil {
         }
       }
       else if (entry instanceof ModuleOrderEntry) {
-        final Module dep = ((ModuleOrderEntry)entry).getModule();
+        Module dep = ((ModuleOrderEntry)entry).getModule();
         if (dep != null) {
           populateOrderEntries(dep, condition, libraries, true, visited);
         }
@@ -104,8 +104,8 @@ public class LibrariesUtil {
 
   @Nonnull
   public static String getGroovyLibraryHome(Library library) {
-    final VirtualFile[] classRoots = library.getFiles(BinariesOrderRootType.getInstance());
-    final String home = getGroovyLibraryHome(classRoots);
+    VirtualFile[] classRoots = library.getFiles(BinariesOrderRootType.getInstance());
+    String home = getGroovyLibraryHome(classRoots);
     return home == null ? "" : home;
   }
 
@@ -115,10 +115,10 @@ public class LibrariesUtil {
   }
 
   @Nullable
-  public static VirtualFile findJarWithClass(@Nonnull Module module, final String classQName) {
+  public static VirtualFile findJarWithClass(@Nonnull Module module, String classQName) {
     GlobalSearchScope scope = GlobalSearchScope.moduleWithDependenciesAndLibrariesScope(module);
     for (PsiClass psiClass : JavaPsiFacade.getInstance(module.getProject()).findClasses(classQName, scope)) {
-      final VirtualFile local = ArchiveVfsUtil.getVirtualFileForJar(psiClass.getContainingFile().getVirtualFile());
+      VirtualFile local = ArchiveVfsUtil.getVirtualFileForJar(psiClass.getContainingFile().getVirtualFile());
       if (local != null) {
         return local;
       }
@@ -129,9 +129,9 @@ public class LibrariesUtil {
 
   @Nullable
   public static String getGroovyHomePath(@Nonnull Module module) {
-    final VirtualFile local = findJarWithClass(module, SOME_GROOVY_CLASS);
+    VirtualFile local = findJarWithClass(module, SOME_GROOVY_CLASS);
     if (local != null) {
-      final VirtualFile parent = local.getParent();
+      VirtualFile parent = local.getParent();
       if (parent != null) {
         if (("lib".equals(parent.getName()) || "embeddable".equals(parent.getName())) && parent.getParent() != null) {
           return parent.getParent().getPath();
@@ -140,14 +140,14 @@ public class LibrariesUtil {
       }
     }
 
-    final String home = getGroovyLibraryHome(OrderEnumerator.orderEntries(module).getAllLibrariesAndSdkClassesRoots());
+    String home = getGroovyLibraryHome(OrderEnumerator.orderEntries(module).getAllLibrariesAndSdkClassesRoots());
     return StringUtil.isEmpty(home) ? null : home;
   }
 
   @Nullable
   private static String getGroovySdkHome(VirtualFile[] classRoots) {
     for (VirtualFile file : classRoots) {
-      final String name = file.getName();
+      String name = file.getName();
       if (name.matches(GroovyConfigUtils.GROOVY_JAR_PATTERN_NOVERSION) || name.matches(GroovyConfigUtils.GROOVY_JAR_PATTERN)) {
         String jarPath = file.getPresentableUrl();
         File realFile = new File(jarPath);
@@ -168,7 +168,7 @@ public class LibrariesUtil {
   @Nullable
   private static String getEmbeddableGroovyJar(VirtualFile[] classRoots) {
     for (VirtualFile file : classRoots) {
-      final String name = file.getName();
+      String name = file.getName();
       if (GroovyConfigUtils.matchesGroovyAll(name)) {
         String jarPath = file.getPresentableUrl();
         File realFile = new File(jarPath);
@@ -182,16 +182,16 @@ public class LibrariesUtil {
 
   @Nullable
   public static String getGroovyLibraryHome(VirtualFile[] classRoots) {
-    final String sdkHome = getGroovySdkHome(classRoots);
+    String sdkHome = getGroovySdkHome(classRoots);
     if (sdkHome != null) {
       return sdkHome;
     }
 
-    final String embeddable = getEmbeddableGroovyJar(classRoots);
+    String embeddable = getEmbeddableGroovyJar(classRoots);
     if (embeddable != null) {
-      final File emb = new File(embeddable);
+      File emb = new File(embeddable);
       if (emb.exists()) {
-        final File parent = emb.getParentFile();
+        File parent = emb.getParentFile();
         if ("embeddable".equals(parent.getName()) || "lib".equals(parent.getName())) {
           return parent.getParent();
         }
@@ -203,9 +203,9 @@ public class LibrariesUtil {
 
   @Nonnull
   public static VirtualFile getLocalFile(@Nonnull VirtualFile libFile) {
-    final VirtualFileSystem system = libFile.getFileSystem();
+    VirtualFileSystem system = libFile.getFileSystem();
     if (system instanceof ArchiveFileSystem) {
-      final VirtualFile local = ArchiveVfsUtil.getVirtualFileForJar(libFile);
+      VirtualFile local = ArchiveVfsUtil.getVirtualFileForJar(libFile);
       if (local != null) {
         return local;
       }
@@ -214,7 +214,7 @@ public class LibrariesUtil {
   }
 
   public static void placeEntryToCorrectPlace(ModifiableRootModel model, LibraryOrderEntry addedEntry) {
-    final OrderEntry[] order = model.getOrderEntries();
+    OrderEntry[] order = model.getOrderEntries();
     //place library after module sources
     assert order[order.length - 1] == addedEntry;
     int insertionPoint = -1;

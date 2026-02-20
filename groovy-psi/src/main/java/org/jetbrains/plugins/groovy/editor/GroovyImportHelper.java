@@ -39,10 +39,10 @@ public class GroovyImportHelper {
   static boolean isImplicitlyImported(PsiElement element, String expectedName, GroovyFile file) {
     if (!(element instanceof PsiClass)) return false;
 
-    final PsiClass psiClass = (PsiClass)element;
+    PsiClass psiClass = (PsiClass)element;
     if (!expectedName.equals(psiClass.getName())) return false;
 
-    final String qname = psiClass.getQualifiedName();
+    String qname = psiClass.getQualifiedName();
     if (qname == null) return false;
 
     for (String importedClass : GroovyFileBase.IMPLICITLY_IMPORTED_CLASSES) {
@@ -59,7 +59,7 @@ public class GroovyImportHelper {
   }
 
   public static LinkedHashSet<String> getImplicitlyImportedPackages(GroovyFile file) {
-    final LinkedHashSet<String> result = new LinkedHashSet<String>();
+    LinkedHashSet<String> result = new LinkedHashSet<String>();
     ContainerUtil.addAll(result, GroovyFileBase.IMPLICITLY_IMPORTED_PACKAGES);
 
     for (DefaultImportContributor contributor : DefaultImportContributor.EP_NAME.getExtensions()) {
@@ -76,7 +76,7 @@ public class GroovyImportHelper {
                                        GrImportStatement[] importStatements,
                                        boolean shouldProcessOnDemand) {
     for (int i = importStatements.length - 1; i >= 0; i--) {
-      final GrImportStatement imp = importStatements[i];
+      GrImportStatement imp = importStatements[i];
       if (shouldProcessOnDemand != imp.isOnDemand()) continue;
       if (!imp.processDeclarations(importProcessor, state, lastParent, place)) {
         return false;
@@ -92,7 +92,7 @@ public class GroovyImportHelper {
                                                @Nonnull GroovyFile file) {
     JavaPsiFacade facade = JavaPsiFacade.getInstance(file.getProject());
 
-    final DelegatingScopeProcessor packageSkipper = new DelegatingScopeProcessor(processor) {
+    DelegatingScopeProcessor packageSkipper = new DelegatingScopeProcessor(processor) {
       @Override
       public boolean execute(@Nonnull PsiElement element, ResolveState state) {
         if (element instanceof PsiJavaPackage) return true;
@@ -101,7 +101,7 @@ public class GroovyImportHelper {
     };
 
 
-    for (final String implicitlyImported : getImplicitlyImportedPackages(file)) {
+    for (String implicitlyImported : getImplicitlyImportedPackages(file)) {
       PsiJavaPackage aPackage = facade.findPackage(implicitlyImported);
       if (aPackage == null) continue;
 

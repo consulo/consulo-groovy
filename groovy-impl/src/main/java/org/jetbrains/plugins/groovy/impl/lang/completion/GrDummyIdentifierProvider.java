@@ -92,10 +92,10 @@ public class GrDummyIdentifierProvider {
 
   @Nonnull
   private String setCorrectCase() {
-    final PsiElement element = myContext.getFile().findElementAt(myContext.getStartOffset());
+    PsiElement element = myContext.getFile().findElementAt(myContext.getStartOffset());
     if (element == null) return DUMMY_IDENTIFIER_DECAPITALIZED;
 
-    final String text = element.getText();
+    String text = element.getText();
     if (text.isEmpty()) return DUMMY_IDENTIFIER_DECAPITALIZED;
 
     return Character.isUpperCase(text.charAt(0)) ? CompletionInitializationContext.DUMMY_IDENTIFIER : DUMMY_IDENTIFIER_DECAPITALIZED;

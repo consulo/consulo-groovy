@@ -51,18 +51,18 @@ public class GroovyUnusedCatchParameterInspection extends BaseInspection {
     private static class Visitor extends BaseInspectionVisitor {
         public void visitCatchClause(GrCatchClause catchClause) {
             super.visitCatchClause(catchClause);
-            final GrOpenBlock block = catchClause.getBody();
+            GrOpenBlock block = catchClause.getBody();
             if (block == null) {
                 return;
             }
-            final GrParameter parameter = catchClause.getParameter();
+            GrParameter parameter = catchClause.getParameter();
             if (parameter == null) {
                 return;
             }
             if (GrExceptionUtil.ignore(parameter)) {
                 return;
             }
-            final CatchParameterUsedVisitor visitor = new CatchParameterUsedVisitor(parameter);
+            CatchParameterUsedVisitor visitor = new CatchParameterUsedVisitor(parameter);
             block.accept(visitor);
             if (!visitor.isUsed()) {
                 problemsHolder.newProblem(LocalizeValue.localizeTODO("Unused catch parameter '#ref' #loc"))

@@ -41,7 +41,7 @@ public class GrExtendsClauseImpl extends GrReferenceListImpl implements GrExtend
     return GroovyTokenTypes.kEXTENDS;
   }
 
-  public GrExtendsClauseImpl(final GrReferenceListStub stub) {
+  public GrExtendsClauseImpl(GrReferenceListStub stub) {
     super(stub, GroovyElementTypes.EXTENDS_CLAUSE);
   }
 

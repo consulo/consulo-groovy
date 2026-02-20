@@ -49,13 +49,13 @@ public class MoveClassToNewFileIntention extends Intention {
 
     @Override
     protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
-        final GrTypeDefinition psiClass = (GrTypeDefinition) element.getParent();
-        final String name = psiClass.getName();
+        GrTypeDefinition psiClass = (GrTypeDefinition) element.getParent();
+        String name = psiClass.getName();
 
-        final PsiFile file = psiClass.getContainingFile();
-        final String fileExtension = FileUtil.getExtension(file.getName());
-        final String newFileName = name + "." + fileExtension;
-        final PsiDirectory dir = file.getParent();
+        PsiFile file = psiClass.getContainingFile();
+        String fileExtension = FileUtil.getExtension(file.getName());
+        String newFileName = name + "." + fileExtension;
+        PsiDirectory dir = file.getParent();
         if (dir != null) {
             if (dir.findFile(newFileName) != null) {
                 if (!ApplicationManager.getApplication().isUnitTestMode()) {
@@ -66,18 +66,18 @@ public class MoveClassToNewFileIntention extends Intention {
             }
         }
 
-        final GroovyFile newFile =
+        GroovyFile newFile =
             (GroovyFile) GroovyTemplatesFactory.createFromTemplate(dir, name, newFileName, GroovyTemplates.GROOVY_CLASS, true);
-        final GrTypeDefinition template = newFile.getTypeDefinitions()[0];
-        final PsiElement newClass = template.replace(psiClass);
-        final GrDocComment docComment = psiClass.getDocComment();
+        GrTypeDefinition template = newFile.getTypeDefinitions()[0];
+        PsiElement newClass = template.replace(psiClass);
+        GrDocComment docComment = psiClass.getDocComment();
         if (newClass instanceof GrTypeDefinition && docComment != null) {
-            final GrDocComment newDoc = ((GrTypeDefinition) newClass).getDocComment();
+            GrDocComment newDoc = ((GrTypeDefinition) newClass).getDocComment();
             if (newDoc != null) {
                 newDoc.replace(docComment);
             }
             else {
-                final PsiElement parent = newClass.getParent();
+                PsiElement parent = newClass.getParent();
                 parent.addBefore(docComment, psiClass);
                 parent.getNode().addLeaf(GroovyTokenTypes.mNLS, "\n", psiClass.getNode());
             }

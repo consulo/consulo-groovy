@@ -67,8 +67,8 @@ public class GroovyShellRunnerImpl extends AbstractConsoleRunnerWithHistory<Lang
 
   @Override
   protected List<AnAction> fillToolBarActions(DefaultActionGroup toolbarActions,
-                                              final Executor defaultExecutor,
-                                              final RunContentDescriptor contentDescriptor) {
+                                              Executor defaultExecutor,
+                                              RunContentDescriptor contentDescriptor) {
     BuildAndRestartConsoleAction rebuildAction =
       new BuildAndRestartConsoleAction(myModule, getProject(), defaultExecutor, contentDescriptor, myStarter);
     toolbarActions.add(rebuildAction);
@@ -79,8 +79,8 @@ public class GroovyShellRunnerImpl extends AbstractConsoleRunnerWithHistory<Lang
 
   @Override
   protected LanguageConsoleView createConsoleView() {
-    final LanguageConsoleView res = new GroovyShellLanguageConsoleView(getProject(), getConsoleTitle());
-    final GroovyFileImpl file = (GroovyFileImpl)res.getFile();
+    LanguageConsoleView res = new GroovyShellLanguageConsoleView(getProject(), getConsoleTitle());
+    GroovyFileImpl file = (GroovyFileImpl)res.getFile();
     assert file.getContext() == null;
     file.putUserData(GROOVY_SHELL_FILE, Boolean.TRUE);
     file.setContext(myShellRunner.getContext(myModule));
@@ -92,7 +92,7 @@ public class GroovyShellRunnerImpl extends AbstractConsoleRunnerWithHistory<Lang
   protected ProcessHandler createProcessHandler() throws ExecutionException {
     OwnJavaParameters javaParameters = myShellRunner.createJavaParameters(myModule);
 
-    final Sdk sdk = ModuleUtilCore.getSdk(myModule, JavaModuleExtension.class);
+    Sdk sdk = ModuleUtilCore.getSdk(myModule, JavaModuleExtension.class);
     assert sdk != null;
     SdkTypeId sdkType = sdk.getSdkType();
     assert sdkType instanceof JavaSdkType;
@@ -115,7 +115,7 @@ public class GroovyShellRunnerImpl extends AbstractConsoleRunnerWithHistory<Lang
     return handler;
   }
 
-  public static void doRunShell(final GroovyShellConfig config, final Module module) {
+  public static void doRunShell(GroovyShellConfig config, Module module) {
     try {
       new GroovyShellRunnerImpl(config.getTitle(), config, module).initAndRun();
     }

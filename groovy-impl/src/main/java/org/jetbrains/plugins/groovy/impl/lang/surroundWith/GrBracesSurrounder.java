@@ -38,15 +38,15 @@ public class GrBracesSurrounder extends GroovyManyStatementsSurrounder {
   protected GroovyPsiElement doSurroundElements(PsiElement[] elements, PsiElement context) throws IncorrectOperationException {
     GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(elements[0].getProject());
 
-    final PsiElement e0 = elements[0];
-    final PsiElement parent = e0.getParent();
+    PsiElement e0 = elements[0];
+    PsiElement parent = e0.getParent();
 
-    final GrCodeBlock block;
+    GrCodeBlock block;
     if (parent instanceof GrControlStatement) {
       block = factory.createMethodBodyFromText("\n");
-      final PsiElement prev = e0.getPrevSibling();
+      PsiElement prev = e0.getPrevSibling();
       if (prev != null && prev.getNode().getElementType().equals(GroovyTokenTypes.mNLS)) {
-        final ASTNode parentNode = e0.getParent().getNode();
+        ASTNode parentNode = e0.getParent().getNode();
         parentNode.addLeaf(TokenType.WHITE_SPACE, " ", prev.getNode());
         parentNode.removeChild(prev.getNode());
       }
@@ -61,7 +61,7 @@ public class GrBracesSurrounder extends GroovyManyStatementsSurrounder {
 
   @Override
   protected TextRange getSurroundSelectionRange(GroovyPsiElement element) {
-    final int offset = element.getTextRange().getEndOffset();
+    int offset = element.getTextRange().getEndOffset();
     return new TextRange(offset, offset);
   }
 }

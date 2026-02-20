@@ -34,25 +34,25 @@ class RemoveParenthesesFromMethodPredicate implements PsiElementPredicate {
     if (!(element instanceof GrMethodCallExpression)) return false;
     if (!PsiUtil.isExpressionStatement(element)) return false;
 
-    final GrMethodCallExpression expression = (GrMethodCallExpression)element;
+    GrMethodCallExpression expression = (GrMethodCallExpression)element;
 
     if (PsiImplUtil.hasClosureArguments(expression)) return false;
 
-    final StringBuilder newStatementText = new StringBuilder();
+    StringBuilder newStatementText = new StringBuilder();
     newStatementText.append(expression.getInvokedExpression().getText()).append(' ');
     GrArgumentList argumentList = expression.getArgumentList();
 
-    final GroovyPsiElement[] allArguments = argumentList != null ? argumentList.getAllArguments() : GroovyPsiElement.EMPTY_ARRAY;
+    GroovyPsiElement[] allArguments = argumentList != null ? argumentList.getAllArguments() : GroovyPsiElement.EMPTY_ARRAY;
 
     if (argumentList != null) {
       argumentList = (GrArgumentList)argumentList.copy();
-      final PsiElement leftParen = argumentList.getLeftParen();
-      final PsiElement rightParen = argumentList.getRightParen();
+      PsiElement leftParen = argumentList.getLeftParen();
+      PsiElement rightParen = argumentList.getRightParen();
       if (leftParen != null) leftParen.delete();
       if (rightParen != null) rightParen.delete();
       newStatementText.append(argumentList.getText());
     }
-    final GrStatement newStatement;
+    GrStatement newStatement;
     try {
       newStatement = GroovyPsiElementFactory.getInstance(element.getProject()).createStatementFromText(newStatementText.toString());
     }
@@ -60,7 +60,7 @@ class RemoveParenthesesFromMethodPredicate implements PsiElementPredicate {
       return false;
     }
     if (newStatement instanceof GrApplicationStatement) {
-      final GrCommandArgumentList newArgList = ((GrApplicationStatement)newStatement).getArgumentList();
+      GrCommandArgumentList newArgList = ((GrApplicationStatement)newStatement).getArgumentList();
       if (newArgList == null && argumentList == null ||
           newArgList != null && newArgList.getAllArguments().length == allArguments.length) {
         return true;

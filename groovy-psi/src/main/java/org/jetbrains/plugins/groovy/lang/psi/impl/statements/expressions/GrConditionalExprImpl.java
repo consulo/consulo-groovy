@@ -77,7 +77,7 @@ public class GrConditionalExprImpl extends GrExpressionImpl implements GrConditi
     @Nullable
     @RequiredReadAction
     public GrExpression getThenBranch() {
-        final PsiElement question = findChildByType(GroovyTokenTypes.mQUESTION);
+        PsiElement question = findChildByType(GroovyTokenTypes.mQUESTION);
         for (PsiElement nextSibling = question;
              nextSibling != null && nextSibling.getNode().getElementType() != GroovyTokenTypes.mCOLON;
              nextSibling = nextSibling.getNextSibling()) {
@@ -92,7 +92,7 @@ public class GrConditionalExprImpl extends GrExpressionImpl implements GrConditi
     @Nullable
     @RequiredReadAction
     public GrExpression getElseBranch() {
-        final PsiElement colon = findChildByType(GroovyTokenTypes.mCOLON);
+        PsiElement colon = findChildByType(GroovyTokenTypes.mCOLON);
         for (PsiElement nextSibling = colon; nextSibling != null; nextSibling = nextSibling.getNextSibling()) {
             if (nextSibling instanceof GrExpression nextSiblingExpression) {
                 return nextSiblingExpression;

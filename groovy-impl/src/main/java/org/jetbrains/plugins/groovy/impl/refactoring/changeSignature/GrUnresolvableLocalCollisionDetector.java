@@ -42,9 +42,9 @@ public class GrUnresolvableLocalCollisionDetector {
   }
 
   public static void visitLocalsCollisions(PsiElement element,
-                                           final String newName,
+                                           String newName,
                                            GroovyPsiElement place,
-                                           final CollidingVariableVisitor visitor) {
+                                           CollidingVariableVisitor visitor) {
     visitDownstreamCollisions(newName, place, visitor);
     visitUpstreamCollisions(element, newName, place, visitor);
   }
@@ -53,13 +53,13 @@ public class GrUnresolvableLocalCollisionDetector {
                                               String newName,
                                               GroovyPsiElement place,
                                               CollidingVariableVisitor visitor) {
-    final GrReferenceExpression refExpr =
+    GrReferenceExpression refExpr =
       GroovyPsiElementFactory.getInstance(place.getProject()).createReferenceExpressionFromText(newName, place);
-    final GroovyResolveResult[] results = refExpr.multiResolve(false);
+    GroovyResolveResult[] results = refExpr.multiResolve(false);
     for (GroovyResolveResult result : results) {
-      final PsiElement resolved = result.getElement();
+      PsiElement resolved = result.getElement();
       if (resolved instanceof GrParameter || (resolved instanceof GrVariable && !(resolved instanceof GrField))) {
-        final PsiElement parent = PsiTreeUtil.findCommonParent(resolved, element);
+        PsiElement parent = PsiTreeUtil.findCommonParent(resolved, element);
         if (parent != null) {
           PsiElement current = element;
           while (current != null && current != parent) {
@@ -81,7 +81,7 @@ public class GrUnresolvableLocalCollisionDetector {
     place.accept(new GroovyRecursiveElementVisitor() {
       @Override
       public void visitVariableDeclaration(GrVariableDeclaration variableDeclaration) {
-        final GrVariable[] variables = variableDeclaration.getVariables();
+        GrVariable[] variables = variableDeclaration.getVariables();
         for (GrVariable variable : variables) {
           if (variable.getName().equals(newName)) {
             visitor.visitCollidingVariable(variable);

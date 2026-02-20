@@ -54,7 +54,7 @@ public class AnnotationArguments {
   }
 
   private static boolean checkIdentAndAssign(PsiBuilder builder) {
-    final PsiBuilder.Marker marker = builder.mark();
+    PsiBuilder.Marker marker = builder.mark();
     boolean result = ParserUtils.getToken(builder, TokenSets.CODE_REFERENCE_ELEMENT_NAME_TOKENS) && ParserUtils.getToken(builder,
                                                                                                                          GroovyTokenTypes.mASSIGN);
     marker.rollbackTo();
@@ -115,7 +115,7 @@ public class AnnotationArguments {
   private static boolean parsePair(PsiBuilder builder, GroovyParser parser) {
     PsiBuilder.Marker marker = builder.mark();
 
-    final PsiBuilder.Marker lfMarker;
+    PsiBuilder.Marker lfMarker;
     if (checkIdentAndAssign(builder)) {
       ParserUtils.getToken(builder, TokenSets.CODE_REFERENCE_ELEMENT_NAME_TOKENS);
       ParserUtils.getToken(builder, GroovyTokenTypes.mASSIGN);

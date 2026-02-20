@@ -29,7 +29,7 @@ public class ThrowingInstruction extends InstructionImpl {
 
   @Override
   public String toString() {
-    final StringBuilder builder = new StringBuilder();
+    StringBuilder builder = new StringBuilder();
     builder.append(num());
     builder.append("(");
     for (Instruction successor : allSuccessors()) {

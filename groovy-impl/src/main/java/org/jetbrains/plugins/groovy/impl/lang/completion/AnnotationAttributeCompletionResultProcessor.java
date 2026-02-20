@@ -48,15 +48,15 @@ public class AnnotationAttributeCompletionResultProcessor {
     PsiElement resolved = ref.resolve();
 
     if (resolved instanceof PsiClass) {
-      final PsiAnnotation annotationCollector = GrAnnotationCollector.findAnnotationCollector((PsiClass)resolved);
+      PsiAnnotation annotationCollector = GrAnnotationCollector.findAnnotationCollector((PsiClass)resolved);
 
       if (annotationCollector != null) {
-        final ArrayList<GrAnnotation> annotations = ContainerUtil.newArrayList();
+        ArrayList<GrAnnotation> annotations = ContainerUtil.newArrayList();
         GrAnnotationCollector.collectAnnotations(annotations, myAnnotation, annotationCollector);
 
         Set<String> usedNames = new HashSet<>();
         for (GrAnnotation annotation : annotations) {
-          final PsiElement resolvedAliased = annotation.getClassReference().resolve();
+          PsiElement resolvedAliased = annotation.getClassReference().resolve();
           if (resolvedAliased instanceof PsiClass && ((PsiClass)resolvedAliased).isAnnotationType()) {
             for (PsiMethod method : ((PsiClass)resolvedAliased).getMethods()) {
               if (usedNames.add(method.getName())) {

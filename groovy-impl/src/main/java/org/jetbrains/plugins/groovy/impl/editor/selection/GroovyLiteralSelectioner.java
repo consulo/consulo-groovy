@@ -54,9 +54,9 @@ public class GroovyLiteralSelectioner extends ExtendWordSelectionHandlerBase {
 
     int startOffset = -1;
     int endOffset = -1;
-    final String text = e.getText();
-    final int stringOffset = e.getTextOffset();
-    final IElementType elementType = e.getNode().getElementType();
+    String text = e.getText();
+    int stringOffset = e.getTextOffset();
+    IElementType elementType = e.getNode().getElementType();
     if (elementType == mGSTRING_CONTENT || elementType == mREGEX_CONTENT || elementType == mDOLLAR_SLASH_REGEX_CONTENT) {
       int cur;
       int index = -1;
@@ -79,9 +79,9 @@ public class GroovyLiteralSelectioner extends ExtendWordSelectionHandlerBase {
       result.add(new TextRange(startOffset, endOffset));
     }
 
-    final String content = GrStringUtil.removeQuotes(text);
+    String content = GrStringUtil.removeQuotes(text);
 
-    final int offset = stringOffset + text.indexOf(content);
+    int offset = stringOffset + text.indexOf(content);
     result.add(new TextRange(offset, offset + content.length()));
     return result;
   }

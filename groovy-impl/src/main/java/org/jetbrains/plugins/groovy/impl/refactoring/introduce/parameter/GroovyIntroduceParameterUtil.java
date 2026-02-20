@@ -89,7 +89,7 @@ public class GroovyIntroduceParameterUtil {
         if (containingClass == null) {
             return PsiField.EMPTY_ARRAY;
         }
-        final FieldSearcher searcher = new FieldSearcher(containingClass);
+        FieldSearcher searcher = new FieldSearcher(containingClass);
         for (GrStatement statement : statements) {
             statement.accept(searcher);
         }
@@ -98,8 +98,8 @@ public class GroovyIntroduceParameterUtil {
 
     @Nullable
     public static PsiParameter getAnchorParameter(PsiParameterList parameterList, boolean isVarArgs) {
-        final PsiParameter[] parameters = parameterList.getParameters();
-        final int length = parameters.length;
+        PsiParameter[] parameters = parameterList.getParameters();
+        int length = parameters.length;
         if (isVarArgs) {
             return length > 1 ? parameters[length - 2] : null;
         }
@@ -110,12 +110,12 @@ public class GroovyIntroduceParameterUtil {
 
     public static void removeParametersFromCall(
         final GrClosureSignatureUtil.ArgInfo<PsiElement>[] actualArgs,
-        final IntList parametersToRemove
+        IntList parametersToRemove
     ) {
         parametersToRemove.forEach(new IntConsumer() {
-            public void accept(final int paramNum) {
+            public void accept(int paramNum) {
                 try {
-                    final GrClosureSignatureUtil.ArgInfo<PsiElement> actualArg = actualArgs[paramNum];
+                    GrClosureSignatureUtil.ArgInfo<PsiElement> actualArg = actualArgs[paramNum];
                     for (PsiElement arg : actualArg.args) {
                         arg.delete();
                     }
@@ -128,14 +128,14 @@ public class GroovyIntroduceParameterUtil {
     }
 
     public static void removeParamsFromUnresolvedCall(GrCall callExpression, PsiParameter[] parameters, IntList parametersToRemove) {
-        final GrExpression[] arguments = callExpression.getExpressionArguments();
-        final GrClosableBlock[] closureArguments = callExpression.getClosureArguments();
-        final GrNamedArgument[] namedArguments = callExpression.getNamedArguments();
+        GrExpression[] arguments = callExpression.getExpressionArguments();
+        GrClosableBlock[] closureArguments = callExpression.getClosureArguments();
+        GrNamedArgument[] namedArguments = callExpression.getNamedArguments();
 
-        final boolean hasNamedArgs;
+        boolean hasNamedArgs;
         if (namedArguments.length > 0) {
             if (parameters.length > 0) {
-                final PsiType type = parameters[0].getType();
+                PsiType type = parameters[0].getType();
                 hasNamedArgs = InheritanceUtil.isInheritor(type, CommonClassNames.JAVA_UTIL_MAP);
             }
             else {
@@ -183,25 +183,25 @@ public class GroovyIntroduceParameterUtil {
             return;
         }
 
-        final ReferencedElementsCollector collector = new ReferencedElementsCollector();
+        ReferencedElementsCollector collector = new ReferencedElementsCollector();
         elementToProcess.accept(collector);
-        final List<PsiElement> result = collector.getResult();
+        List<PsiElement> result = collector.getResult();
         if (result.isEmpty()) {
             return;
         }
 
-        for (final UsageInfo usageInfo : usages) {
+        for (UsageInfo usageInfo : usages) {
             if (!(usageInfo instanceof ExternalUsageInfo) || !IntroduceParameterUtil.isMethodUsage(usageInfo)) {
                 continue;
             }
 
-            final PsiElement place = usageInfo.getElement();
+            PsiElement place = usageInfo.getElement();
             for (PsiElement element : result) {
                 if (element instanceof PsiField && replaceFieldsWithGetters) {
                     //check getter access instead
-                    final PsiClass psiClass = ((PsiField) element).getContainingClass();
+                    PsiClass psiClass = ((PsiField) element).getContainingClass();
                     LOG.assertTrue(psiClass != null);
-                    final PsiMethod method = GroovyPropertyUtils.findGetterForField((PsiField) element);
+                    PsiMethod method = GroovyPropertyUtils.findGetterForField((PsiField) element);
                     if (method != null) {
                         element = method;
                     }
@@ -227,11 +227,11 @@ public class GroovyIntroduceParameterUtil {
         GrMethodCallExpression methodCall = (GrMethodCallExpression) element.getParent();
 
         GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(project);
-        final String name = settings.getName();
+        String name = settings.getName();
         LOG.assertTrue(name != null);
         GrExpression expression = factory.createExpressionFromText(name, null);
-        final GrArgumentList argList = methodCall.getArgumentList();
-        final PsiElement[] exprs = argList.getAllArguments();
+        GrArgumentList argList = methodCall.getArgumentList();
+        PsiElement[] exprs = argList.getAllArguments();
 
         if (exprs.length > 0) {
             argList.addAfter(expression, exprs[exprs.length - 1]);
@@ -244,17 +244,17 @@ public class GroovyIntroduceParameterUtil {
     }
 
     private static void removeParametersFromCall(GrMethodCallExpression methodCall, GrIntroduceParameterSettings settings) {
-        final GroovyResolveResult resolveResult = methodCall.advancedResolve();
-        final PsiElement resolved = resolveResult.getElement();
+        GroovyResolveResult resolveResult = methodCall.advancedResolve();
+        PsiElement resolved = resolveResult.getElement();
         LOG.assertTrue(resolved instanceof PsiMethod);
-        final GrClosureSignature signature = GrClosureSignatureUtil.createSignature((PsiMethod) resolved, resolveResult.getSubstitutor());
+        GrClosureSignature signature = GrClosureSignatureUtil.createSignature((PsiMethod) resolved, resolveResult.getSubstitutor());
         final GrClosureSignatureUtil.ArgInfo<PsiElement>[] argInfos =
             GrClosureSignatureUtil.mapParametersToArguments(signature, methodCall);
         LOG.assertTrue(argInfos != null);
         settings.parametersToRemove().forEach(new IntConsumer() {
             @Override
             public void accept(int value) {
-                final List<PsiElement> args = argInfos[value].args;
+                List<PsiElement> args = argInfos[value].args;
                 for (PsiElement arg : args) {
                     arg.delete();
                 }
@@ -263,7 +263,7 @@ public class GroovyIntroduceParameterUtil {
     }
 
     public static GrMethod generateDelegate(PsiMethod prototype, IntroduceParameterData.ExpressionWrapper initializer, Project project) {
-        final GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(project);
+        GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(project);
 
         GrMethod result;
         if (prototype instanceof GrMethod) {
@@ -284,7 +284,7 @@ public class GroovyIntroduceParameterUtil {
 
         StringBuilder call = new StringBuilder();
         call.append("def foo(){\n");
-        final GrParameter[] parameters = result.getParameters();
+        GrParameter[] parameters = result.getParameters();
         call.append(prototype.getName());
         if (initializer.getExpression() instanceof GrClosableBlock) {
             if (parameters.length > 0) {
@@ -305,19 +305,19 @@ public class GroovyIntroduceParameterUtil {
             call.append(")");
         }
         call.append("\n}");
-        final GrOpenBlock block = factory.createMethodFromText(call.toString()).getBlock();
+        GrOpenBlock block = factory.createMethodFromText(call.toString()).getBlock();
 
         result.getBlock().replace(block);
-        final PsiElement parent = prototype.getParent();
-        final GrMethod method = (GrMethod) parent.addBefore(result, prototype);
+        PsiElement parent = prototype.getParent();
+        GrMethod method = (GrMethod) parent.addBefore(result, prototype);
         JavaCodeStyleManager.getInstance(method.getProject()).shortenClassReferences(method);
         return method;
     }
 
     public static ObjectIntMap<GrParameter> findParametersToRemove(IntroduceParameterInfo helper) {
-        final ObjectIntMap<GrParameter> result = ObjectMaps.newObjectIntHashMap();
+        ObjectIntMap<GrParameter> result = ObjectMaps.newObjectIntHashMap();
 
-        final TextRange range = ExtractUtil.getRangeOfRefactoring(helper);
+        TextRange range = ExtractUtil.getRangeOfRefactoring(helper);
 
         GrParameter[] parameters = helper.getToReplaceIn().getParameters();
         for (int i = 0; i < parameters.length; i++) {
@@ -331,12 +331,12 @@ public class GroovyIntroduceParameterUtil {
 
     private static boolean shouldRemove(GrParameter parameter, int start, int end) {
         for (PsiReference reference : ReferencesSearch.search(parameter)) {
-            final PsiElement element = reference.getElement();
+            PsiElement element = reference.getElement();
             if (element == null) {
                 continue;
             }
 
-            final int offset = element.getTextRange().getStartOffset();
+            int offset = element.getTextRange().getStartOffset();
             if (offset < start || end <= offset) {
                 return false;
             }
@@ -345,29 +345,29 @@ public class GroovyIntroduceParameterUtil {
     }
 
     static PsiElement[] getOccurrences(GrIntroduceParameterSettings settings) {
-        final GrParameterListOwner scope = settings.getToReplaceIn();
+        GrParameterListOwner scope = settings.getToReplaceIn();
 
-        final GrExpression expression = settings.getExpression();
+        GrExpression expression = settings.getExpression();
         if (expression != null) {
-            final PsiElement expr = PsiUtil.skipParentheses(expression, false);
+            PsiElement expr = PsiUtil.skipParentheses(expression, false);
             if (expr == null) {
                 return PsiElement.EMPTY_ARRAY;
             }
 
-            final PsiElement[] occurrences = GroovyRefactoringUtil.getExpressionOccurrences(expr, scope);
+            PsiElement[] occurrences = GroovyRefactoringUtil.getExpressionOccurrences(expr, scope);
             if (occurrences == null || occurrences.length == 0) {
                 throw new GrRefactoringError(GroovyRefactoringBundle.message("no.occurrences.found"));
             }
             return occurrences;
         }
         else {
-            final GrVariable var = settings.getVar();
+            GrVariable var = settings.getVar();
             LOG.assertTrue(var != null);
             final List<PsiElement> list = Collections.synchronizedList(new ArrayList<PsiElement>());
             ReferencesSearch.search(var, new LocalSearchScope(scope)).forEach(new Processor<PsiReference>() {
                 @Override
                 public boolean process(PsiReference psiReference) {
-                    final PsiElement element = psiReference.getElement();
+                    PsiElement element = psiReference.getElement();
                     if (element != null) {
                         list.add(element);
                     }
@@ -384,13 +384,13 @@ public class GroovyIntroduceParameterUtil {
             return null;
         }
 
-        final PsiElement parent = list.getParent();
+        PsiElement parent = list.getParent();
         if (!(parent instanceof GrMethodCallExpression)) {
             return null;
         }
 
         PsiElement anchor;
-        final GrClosableBlock[] cls = ((GrMethodCallExpression) parent).getClosureArguments();
+        GrClosableBlock[] cls = ((GrMethodCallExpression) parent).getClosureArguments();
         if (cls.length > 0) {
             anchor = cls[cls.length - 1];
         }
@@ -403,7 +403,7 @@ public class GroovyIntroduceParameterUtil {
 
     @Nullable
     static GrVariable findVar(IntroduceParameterInfo info) {
-        final GrStatement[] statements = info.getStatements();
+        GrStatement[] statements = info.getStatements();
         if (statements.length != 1) {
             return null;
         }
@@ -412,7 +412,7 @@ public class GroovyIntroduceParameterUtil {
 
     @Nullable
     static GrExpression findExpr(IntroduceParameterInfo info) {
-        final GrStatement[] statements = info.getStatements();
+        GrStatement[] statements = info.getStatements();
         if (statements.length != 1) {
             return null;
         }
@@ -427,15 +427,15 @@ public class GroovyIntroduceParameterUtil {
         Project project
     ) {
         if (expr != null) {
-            final GrIntroduceContext
+            GrIntroduceContext
                 introduceContext = new GrIntroduceContextImpl(project, null, expr, var, stringPart, PsiElement.EMPTY_ARRAY, scope);
-            final GroovyFieldValidator validator = new GroovyFieldValidator(introduceContext);
+            GroovyFieldValidator validator = new GroovyFieldValidator(introduceContext);
             return new LinkedHashSet<String>(Arrays.asList(GroovyNameSuggestionUtil.suggestVariableNames(expr, validator, true)));
         }
         else if (var != null) {
-            final GrIntroduceContext introduceContext =
+            GrIntroduceContext introduceContext =
                 new GrIntroduceContextImpl(project, null, expr, var, stringPart, PsiElement.EMPTY_ARRAY, scope);
-            final GroovyFieldValidator validator = new GroovyFieldValidator(introduceContext);
+            GroovyFieldValidator validator = new GroovyFieldValidator(introduceContext);
             LinkedHashSet<String> names = new LinkedHashSet<String>();
             names.add(var.getName());
             ContainerUtil.addAll(names, GroovyNameSuggestionUtil.suggestVariableNameByType(var.getType(), validator));
@@ -463,16 +463,16 @@ public class GroovyIntroduceParameterUtil {
         @Override
         public void visitReferenceExpression(GrReferenceExpression ref) {
             super.visitReferenceExpression(ref);
-            final GrExpression qualifier = ref.getQualifier();
+            GrExpression qualifier = ref.getQualifier();
             if (!PsiUtil.isThisReference(qualifier)) {
                 return;
             }
 
-            final PsiElement resolved = ref.resolve();
+            PsiElement resolved = ref.resolve();
             if (!(resolved instanceof PsiField)) {
                 return;
             }
-            final PsiMethod getter = GroovyPropertyUtils.findGetterForField((PsiField) resolved);
+            PsiMethod getter = GroovyPropertyUtils.findGetterForField((PsiField) resolved);
             if (getter != null) {
                 result.add((PsiField) resolved);
             }

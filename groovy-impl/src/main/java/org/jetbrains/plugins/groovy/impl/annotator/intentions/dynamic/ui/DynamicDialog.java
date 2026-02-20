@@ -104,12 +104,12 @@ public abstract class DynamicDialog extends DialogWrapper {
 
   @Override
   protected ValidationInfo doValidate() {
-    final GrTypeElement typeElement = getEnteredTypeName();
+    GrTypeElement typeElement = getEnteredTypeName();
     if (typeElement == null) {
       return new ValidationInfo(GroovyInspectionBundle.message("no.type.specified"), myTypeComboBox);
     }
 
-    final PsiType type = typeElement.getType();
+    PsiType type = typeElement.getType();
     if (type instanceof PsiClassType && ((PsiClassType)type).resolve() == null) {
       return new ValidationInfo(GroovyInspectionBundle.message("unresolved.type.status", type.getPresentableText()), myTypeComboBox);
     }
@@ -137,16 +137,16 @@ public abstract class DynamicDialog extends DialogWrapper {
   }
 
   @Nullable
-  private Document createDocument(final String text) {
+  private Document createDocument(String text) {
     GroovyCodeFragment fragment = new GroovyCodeFragment(myProject, text);
     fragment.setContext(myContext);
     return PsiDocumentManager.getInstance(myProject).getDocument(fragment);
   }
 
   private void setUpTypeComboBox(TypeConstraint[] typeConstraints) {
-    final EditorComboBoxEditor comboEditor = new EditorComboBoxEditor(myProject, GroovyFileType.GROOVY_FILE_TYPE);
+    EditorComboBoxEditor comboEditor = new EditorComboBoxEditor(myProject, GroovyFileType.GROOVY_FILE_TYPE);
 
-    final Document document = createDocument("");
+    Document document = createDocument("");
     LOG.assertTrue(document != null);
 
     comboEditor.setItem(document);
@@ -161,7 +161,7 @@ public abstract class DynamicDialog extends DialogWrapper {
 
   @Nullable
   public GrTypeElement getEnteredTypeName() {
-    final Document typeEditorDocument = getTypeEditorDocument();
+    Document typeEditorDocument = getTypeEditorDocument();
 
     if (typeEditorDocument == null) return null;
     try {
@@ -174,7 +174,7 @@ public abstract class DynamicDialog extends DialogWrapper {
 
   @Nullable
   public Document getTypeEditorDocument() {
-    final Object item = myTypeComboBox.getEditor().getItem();
+    Object item = myTypeComboBox.getEditor().getItem();
 
     return item instanceof Document ? (Document)item : null;
   }
@@ -200,7 +200,7 @@ public abstract class DynamicDialog extends DialogWrapper {
         type = TypesUtil.boxPrimitiveType(type, typeElement.getManager(), (GlobalSearchScope)ProjectScopes.getAllScope(myProject));
       }
 
-      final String typeQualifiedName = type.getCanonicalText();
+      String typeQualifiedName = type.getCanonicalText();
 
       if (typeQualifiedName != null) {
         mySettings.setType(typeQualifiedName);
@@ -218,10 +218,10 @@ public abstract class DynamicDialog extends DialogWrapper {
                           .undoableActionPerformed(new GlobalUndoableAction(document) {
                             public void undo() throws UnexpectedUndoException {
 
-                              final DItemElement itemElement;
+                              DItemElement itemElement;
                               if (mySettings.isMethod()) {
-                                final List<ParamInfo> myPairList = mySettings.getParams();
-                                final String[] argumentsTypes = QuickfixUtil.getArgumentsTypes(myPairList);
+                                List<ParamInfo> myPairList = mySettings.getParams();
+                                String[] argumentsTypes = QuickfixUtil.getArgumentsTypes(myPairList);
                                 itemElement =
                                   myDynamicManager.findConcreteDynamicMethod(mySettings.getContainingClassName(),
                                                                              mySettings.getName(),
@@ -237,7 +237,7 @@ public abstract class DynamicDialog extends DialogWrapper {
                                                            GroovyInspectionBundle.message("Undo.disable"));
                                 return;
                               }
-                              final DClassElement classElement = myDynamicManager.getClassElementByItem(itemElement);
+                              DClassElement classElement = myDynamicManager.getClassElementByItem(itemElement);
 
                               if (classElement == null) {
                                 Messages.showWarningDialog(myProject, GroovyInspectionBundle.message("Cannot.perform.undo.operation"),
@@ -267,7 +267,7 @@ public abstract class DynamicDialog extends DialogWrapper {
     myDynamicManager.fireChange();
   }
 
-  public void addElement(final DynamicElementSettings settings) {
+  public void addElement(DynamicElementSettings settings) {
     if (settings.isMethod()) {
       myDynamicManager.addMethod(settings);
     }

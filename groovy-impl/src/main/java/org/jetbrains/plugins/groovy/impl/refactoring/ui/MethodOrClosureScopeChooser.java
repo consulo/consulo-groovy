@@ -90,7 +90,7 @@ public class MethodOrClosureScopeChooser {
                                final Editor editor,
                                final JBPopupOwner popupRef,
                                final PairFunction<GrParameterListOwner, PsiElement, Object> callback) {
-    final JPanel panel = new JPanel(new BorderLayout());
+    JPanel panel = new JPanel(new BorderLayout());
     final JCheckBox superMethod = new JCheckBox(USE_SUPER_METHOD_OF, true);
     superMethod.setMnemonic('U');
     panel.add(superMethod, BorderLayout.SOUTH);
@@ -101,9 +101,9 @@ public class MethodOrClosureScopeChooser {
       public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
         super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
 
-        final String text;
+        String text;
         if (value instanceof PsiMethod) {
-          final PsiMethod method = (PsiMethod)value;
+          PsiMethod method = (PsiMethod)value;
           text = PsiFormatUtil.formatMethod(method, PsiSubstitutor.EMPTY,
                                             PsiFormatUtilBase.SHOW_CONTAINING_CLASS |
                                               PsiFormatUtilBase.SHOW_NAME |
@@ -126,24 +126,24 @@ public class MethodOrClosureScopeChooser {
     final TextAttributes attributes =
       EditorColorsManager.getInstance().getGlobalScheme().getAttributes(EditorColors.SEARCH_RESULT_ATTRIBUTES);
     list.addListSelectionListener(new ListSelectionListener() {
-      public void valueChanged(final ListSelectionEvent e) {
-        final GrParameterListOwner selectedMethod = (GrParameterListOwner)list.getSelectedValue();
+      public void valueChanged(ListSelectionEvent e) {
+        GrParameterListOwner selectedMethod = (GrParameterListOwner)list.getSelectedValue();
         if (selectedMethod == null) return;
         dropHighlighters(highlighters);
         updateView(selectedMethod, editor, attributes, highlighters, superMethod);
       }
     });
     updateView(scopes.get(0), editor, attributes, highlighters, superMethod);
-    final JScrollPane scrollPane = ScrollPaneFactory.createScrollPane(list);
+    JScrollPane scrollPane = ScrollPaneFactory.createScrollPane(list);
     scrollPane.setBorder(null);
     panel.add(scrollPane, BorderLayout.CENTER);
 
-    final List<Pair<ActionListener, KeyStroke>> keyboardActions = Collections.singletonList(
+    List<Pair<ActionListener, KeyStroke>> keyboardActions = Collections.singletonList(
       Pair.<ActionListener, KeyStroke>create(new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
           final GrParameterListOwner ToSearchIn = (GrParameterListOwner)list.getSelectedValue();
-          final JBPopup popup = popupRef.get();
+          JBPopup popup = popupRef.get();
           if (popup != null && popup.isVisible()) {
             popup.cancel();
           }
@@ -151,7 +151,7 @@ public class MethodOrClosureScopeChooser {
 
           final PsiElement toSearchFor;
           if (ToSearchIn instanceof GrMethod) {
-            final GrMethod method = (GrMethod)ToSearchIn;
+            GrMethod method = (GrMethod)ToSearchIn;
             toSearchFor = superMethod.isEnabled() && superMethod.isSelected() ? method.findDeepestSuperMethod() : method;
           }
           else {
@@ -185,9 +185,9 @@ public class MethodOrClosureScopeChooser {
                                 TextAttributes attributes,
                                 List<RangeHighlighter> highlighters,
                                 JCheckBox superMethod) {
-    final MarkupModel markupModel = editor.getMarkupModel();
-    final TextRange textRange = selectedMethod.getTextRange();
-    final RangeHighlighter rangeHighlighter =
+    MarkupModel markupModel = editor.getMarkupModel();
+    TextRange textRange = selectedMethod.getTextRange();
+    RangeHighlighter rangeHighlighter =
       markupModel.addRangeHighlighter(textRange.getStartOffset(), textRange.getEndOffset(), HighlighterLayer.SELECTION - 1, attributes,
                                       HighlighterTargetArea.EXACT_RANGE);
     highlighters.add(rangeHighlighter);
@@ -203,14 +203,14 @@ public class MethodOrClosureScopeChooser {
 
   @Nullable
   public static GrVariable findVariableToUse(@Nonnull GrParameterListOwner owner) {
-    final PsiElement parent = owner.getParent();
+    PsiElement parent = owner.getParent();
     if (parent instanceof GrVariable) return (GrVariable)parent;
     if (parent instanceof GrAssignmentExpression &&
       ((GrAssignmentExpression)parent).getRValue() == owner &&
       ((GrAssignmentExpression)parent).getOperationToken() == GroovyTokenTypes.mASSIGN) {
-      final GrExpression lValue = ((GrAssignmentExpression)parent).getLValue();
+      GrExpression lValue = ((GrAssignmentExpression)parent).getLValue();
       if (lValue instanceof GrReferenceExpression) {
-        final PsiElement resolved = ((GrReferenceExpression)lValue).resolve();
+        PsiElement resolved = ((GrReferenceExpression)lValue).resolve();
         if (resolved instanceof GrVariable) {
           return (GrVariable)resolved;
         }

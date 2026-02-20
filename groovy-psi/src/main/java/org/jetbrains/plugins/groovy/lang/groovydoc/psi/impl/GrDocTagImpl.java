@@ -103,16 +103,16 @@ public class GrDocTagImpl extends GroovyDocPsiElementImpl implements GrDocTag
 	@Override
 	public PsiElement[] getDataElements()
 	{
-		final List<PsiElement> list = findChildrenByType(VALUE_BIT_SET);
+		List<PsiElement> list = findChildrenByType(VALUE_BIT_SET);
 		return PsiUtilCore.toPsiElementArray(list);
 	}
 
 	@Override
 	public PsiElement setName(@NonNls @Nonnull String name) throws IncorrectOperationException
 	{
-		final PsiElement nameElement = getNameElement();
-		final GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(getProject());
-		final GrDocComment comment = factory.createDocCommentFromText("/** @" + name + "*/");
+		PsiElement nameElement = getNameElement();
+		GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(getProject());
+		GrDocComment comment = factory.createDocCommentFromText("/** @" + name + "*/");
 		nameElement.replace(comment.getTags()[0].getNameElement());
 		return this;
 	}

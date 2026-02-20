@@ -48,7 +48,7 @@ public class GroovyIconDescriptorUpdater implements IconDescriptorUpdater {
 
     if (element instanceof GroovyFile) {
       GroovyFile file = (GroovyFile)element;
-      final GrTypeDefinition[] typeDefinitions = file.getTypeDefinitions();
+      GrTypeDefinition[] typeDefinitions = file.getTypeDefinitions();
       if (typeDefinitions.length == 1) {
         IconDescriptorUpdaters.processExistingDescriptor(iconDescriptor, typeDefinitions[0], flags);
       }
@@ -57,7 +57,7 @@ public class GroovyIconDescriptorUpdater implements IconDescriptorUpdater {
       }
     }
     else if (element instanceof GrTypeDefinition) {
-      final GrTypeDefinition psiClass = (GrTypeDefinition)element;
+      GrTypeDefinition psiClass = (GrTypeDefinition)element;
       if (psiClass.isEnum()) {
         iconDescriptor.setMainIcon(JetgroovyIcons.Groovy.Enum);
       }
@@ -71,7 +71,7 @@ public class GroovyIconDescriptorUpdater implements IconDescriptorUpdater {
         iconDescriptor.setMainIcon(JetgroovyIcons.Groovy.Trait);
       }
       else {
-        final boolean abst = psiClass.hasModifierProperty(PsiModifier.ABSTRACT);
+        boolean abst = psiClass.hasModifierProperty(PsiModifier.ABSTRACT);
         iconDescriptor.setMainIcon(abst ? JetgroovyIcons.Groovy.AbstractClass : JetgroovyIcons.Groovy.Class);
       }
 

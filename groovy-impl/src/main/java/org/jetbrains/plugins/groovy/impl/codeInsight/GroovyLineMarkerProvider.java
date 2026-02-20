@@ -92,8 +92,8 @@ public class GroovyLineMarkerProvider extends JavaLineMarkerProvider {
 
   @Override
   @RequiredReadAction
-  public LineMarkerInfo getLineMarkerInfo(@Nonnull final PsiElement element) {
-    final PsiElement parent = element.getParent();
+  public LineMarkerInfo getLineMarkerInfo(@Nonnull PsiElement element) {
+    PsiElement parent = element.getParent();
     if (parent instanceof PsiNameIdentifierOwner) {
       if (parent instanceof GrField && element == ((GrField)parent).getNameIdentifierGroovy()) {
         for (GrAccessorMethod method : GroovyPropertyUtils.getFieldAccessors((GrField)parent)) {
@@ -103,8 +103,8 @@ public class GroovyLineMarkerProvider extends JavaLineMarkerProvider {
             boolean overrides =
               method.hasModifierProperty(PsiModifier.ABSTRACT) == superMethod.hasModifierProperty(PsiModifier.ABSTRACT) || superMethod.getBody() != null && GrTraitUtil
                 .isTrait(superMethod.getContainingClass());
-            final Image icon = overrides ? AllIcons.Gutter.OverridingMethod : AllIcons.Gutter.ImplementingMethod;
-            final MarkerType type = GroovyMarkerTypes.OVERRIDING_PROPERTY_TYPE;
+            Image icon = overrides ? AllIcons.Gutter.OverridingMethod : AllIcons.Gutter.ImplementingMethod;
+            MarkerType type = GroovyMarkerTypes.OVERRIDING_PROPERTY_TYPE;
             return new LineMarkerInfo<>(element,
                                         element.getTextRange(),
                                         icon,
@@ -118,8 +118,8 @@ public class GroovyLineMarkerProvider extends JavaLineMarkerProvider {
       else if (parent instanceof GrMethod &&
         element == ((GrMethod)parent).getNameIdentifierGroovy() &&
         hasSuperMethods((GrMethod)element.getParent())) {
-        final Image icon = AllIcons.Gutter.OverridingMethod;
-        final MarkerType type = GroovyMarkerTypes.GR_OVERRIDING_METHOD;
+        Image icon = AllIcons.Gutter.OverridingMethod;
+        MarkerType type = GroovyMarkerTypes.GR_OVERRIDING_METHOD;
         return new LineMarkerInfo<>(element,
                                     element.getTextRange(),
                                     icon,
@@ -183,10 +183,10 @@ public class GroovyLineMarkerProvider extends JavaLineMarkerProvider {
   }
 
   private static boolean hasSuperMethods(@Nonnull GrMethod method) {
-    final GrReflectedMethod[] reflectedMethods = method.getReflectedMethods();
+    GrReflectedMethod[] reflectedMethods = method.getReflectedMethods();
     if (reflectedMethods.length > 0) {
       for (GrReflectedMethod reflectedMethod : reflectedMethods) {
-        final MethodSignatureBackedByPsiMethod first = SuperMethodsSearch.search(reflectedMethod, null, true, false).findFirst();
+        MethodSignatureBackedByPsiMethod first = SuperMethodsSearch.search(reflectedMethod, null, true, false).findFirst();
         if (first != null) {
           return true;
         }
@@ -227,7 +227,7 @@ public class GroovyLineMarkerProvider extends JavaLineMarkerProvider {
   }
 
   @Override
-  public void collectSlowLineMarkers(@Nonnull final List<PsiElement> elements, @Nonnull final Collection<LineMarkerInfo> result) {
+  public void collectSlowLineMarkers(@Nonnull List<PsiElement> elements, @Nonnull Collection<LineMarkerInfo> result) {
     Set<PsiMethod> methods = new HashSet<>();
     for (PsiElement element : elements) {
       ProgressManager.checkCanceled();
@@ -250,23 +250,23 @@ public class GroovyLineMarkerProvider extends JavaLineMarkerProvider {
     collectOverridingMethods(methods, result);
   }
 
-  private static void collectOverridingMethods(@Nonnull final Set<PsiMethod> methods, @Nonnull Collection<LineMarkerInfo> result) {
-    final Set<PsiElement> overridden = new HashSet<>();
+  private static void collectOverridingMethods(@Nonnull Set<PsiMethod> methods, @Nonnull Collection<LineMarkerInfo> result) {
+    Set<PsiElement> overridden = new HashSet<>();
 
     Set<PsiClass> classes = new HashSet<>();
     for (PsiMethod method : methods) {
       ProgressManager.checkCanceled();
-      final PsiClass parentClass = method.getContainingClass();
+      PsiClass parentClass = method.getContainingClass();
       if (parentClass != null && !CommonClassNames.JAVA_LANG_OBJECT.equals(parentClass.getQualifiedName())) {
         classes.add(parentClass);
       }
     }
 
-    for (final PsiClass aClass : classes) {
+    for (PsiClass aClass : classes) {
       AllOverridingMethodsSearch.search(aClass).forEach(pair -> {
         ProgressManager.checkCanceled();
 
-        final PsiMethod superMethod = pair.getFirst();
+        PsiMethod superMethod = pair.getFirst();
         if (isCorrectTarget(superMethod) && isCorrectTarget(pair.getSecond())) {
           if (methods.remove(superMethod)) {
             overridden.add(PsiImplUtil.handleMirror(superMethod));
@@ -277,13 +277,13 @@ public class GroovyLineMarkerProvider extends JavaLineMarkerProvider {
     }
 
     for (PsiElement element : overridden) {
-      final Image icon = AllIcons.Gutter.OverridenMethod;
+      Image icon = AllIcons.Gutter.OverridenMethod;
 
       element = PsiImplUtil.handleMirror(element);
 
       PsiElement range = element instanceof GrNamedElement ? ((GrNamedElement)element).getNameIdentifierGroovy() : element;
 
-      final MarkerType type =
+      MarkerType type =
         element instanceof GrField ? GroovyMarkerTypes.OVERRIDEN_PROPERTY_TYPE : GroovyMarkerTypes.GR_OVERRIDEN_METHOD;
       LineMarkerInfo info = new LineMarkerInfo<>(range,
                                                  range.getTextRange(),
@@ -301,7 +301,7 @@ public class GroovyLineMarkerProvider extends JavaLineMarkerProvider {
       return false;
     }
 
-    final PsiElement navigationElement = method.getNavigationElement();
+    PsiElement navigationElement = method.getNavigationElement();
     return method.isPhysical() || navigationElement.isPhysical() && !(navigationElement instanceof PsiClass);
   }
 }

@@ -220,7 +220,7 @@ public abstract class ParserUtils {
       if (builder.eof()) {
         return false;
       }
-      final IElementType type = builder.getTokenType();
+      IElementType type = builder.getTokenType();
       if (braceLevel == 0 && until.contains(type)) {
         return true;
       }

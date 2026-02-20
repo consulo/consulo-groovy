@@ -38,9 +38,9 @@ public class GroovyMethodCallPattern extends GroovyExpressionPattern<GrCallExpre
     return with(new PatternCondition<GrCallExpression>("withArguments") {
       @Override
       public boolean accepts(@Nonnull GrCallExpression callExpression, ProcessingContext context) {
-        final GrArgumentList argumentList = callExpression.getArgumentList();
+        GrArgumentList argumentList = callExpression.getArgumentList();
         if (argumentList == null) return false;
-        final GrExpression[] actualArguments = argumentList.getExpressionArguments();
+        GrExpression[] actualArguments = argumentList.getExpressionArguments();
         if (arguments.length != actualArguments.length) {
           return false;
         }

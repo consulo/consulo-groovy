@@ -95,18 +95,18 @@ public class GrClassImplUtil {
     }
     else {
       Map<String, CandidateInfo> innerClasses = CollectClassMembersUtil.getAllInnerClasses(grType, true);
-      final CandidateInfo info = innerClasses.get(name);
+      CandidateInfo info = innerClasses.get(name);
       return info == null ? null : (PsiClass)info.getElement();
     }
   }
 
   @Nullable
   public static PsiClass getSuperClass(GrTypeDefinition grType) {
-    final PsiClassType[] extendsList = grType.getExtendsListTypes();
+    PsiClassType[] extendsList = grType.getExtendsListTypes();
     if (extendsList.length == 0) {
       return getBaseClass(grType);
     }
-    final PsiClass superClass = extendsList[0].resolve();
+    PsiClass superClass = extendsList[0].resolve();
     return superClass != null ? superClass : getBaseClass(grType);
   }
 
@@ -124,13 +124,13 @@ public class GrClassImplUtil {
 
   @Nonnull
   public static PsiClassType[] getExtendsListTypes(GrTypeDefinition grType) {
-    final PsiClassType[] extendsTypes = getReferenceListTypes(grType.getExtendsClause());
+    PsiClassType[] extendsTypes = getReferenceListTypes(grType.getExtendsClause());
     if (grType.isInterface()) {
       return extendsTypes;
     }
 
     for (PsiClassType type : extendsTypes) {
-      final PsiClass superClass = type.resolve();
+      PsiClass superClass = type.resolve();
       if (superClass instanceof GrTypeDefinition && !superClass.isInterface() || superClass != null &&
         GroovyCommonClassNames.GROOVY_OBJECT_SUPPORT.equals(superClass.getQualifiedName())) {
         return extendsTypes;
@@ -140,7 +140,7 @@ public class GrClassImplUtil {
     PsiClass grObSupport = GroovyPsiManager.getInstance(grType.getProject()).findClassWithCache
       (GroovyCommonClassNames.GROOVY_OBJECT_SUPPORT, grType.getResolveScope());
     if (grObSupport != null) {
-      final PsiClassType type = JavaPsiFacade.getInstance(grType.getProject()).getElementFactory().createType
+      PsiClassType type = JavaPsiFacade.getInstance(grType.getProject()).getElementFactory().createType
         (grObSupport);
       return ArrayUtil.append(extendsTypes, type, PsiClassType.ARRAY_FACTORY);
     }
@@ -162,7 +162,7 @@ public class GrClassImplUtil {
       return;
     }
 
-    final PsiClassType[] implementsTypes = getReferenceListTypes(grType.getImplementsClause());
+    PsiClassType[] implementsTypes = getReferenceListTypes(grType.getImplementsClause());
     List<PsiClassType> fromDelegates = getImplementsFromDelegate(grType, visited);
     if (fromDelegates != null) {
       result.addAll(fromDelegates);
@@ -183,25 +183,25 @@ public class GrClassImplUtil {
       @Override
       public List<PsiClassType> compute() {
         List<PsiClassType> result = new ArrayList<PsiClassType>();
-        final GrField[] fields = grType.getCodeFields();
+        GrField[] fields = grType.getCodeFields();
         for (GrField field : fields) {
-          final PsiAnnotation delegate = PsiImplUtil.getAnnotation(field,
+          PsiAnnotation delegate = PsiImplUtil.getAnnotation(field,
                                                                    GroovyCommonClassNames.GROOVY_LANG_DELEGATE);
           if (delegate == null) {
             continue;
           }
 
-          final boolean shouldImplement = shouldImplementDelegatedInterfaces(delegate);
+          boolean shouldImplement = shouldImplementDelegatedInterfaces(delegate);
           if (!shouldImplement) {
             continue;
           }
 
-          final PsiType type = field.getDeclaredType();
+          PsiType type = field.getDeclaredType();
           if (!(type instanceof PsiClassType)) {
             continue;
           }
 
-          final PsiClass psiClass = ((PsiClassType)type).resolve();
+          PsiClass psiClass = ((PsiClassType)type).resolve();
           if (psiClass == null) {
             continue;
           }
@@ -277,7 +277,7 @@ public class GrClassImplUtil {
 
     ContainerUtil.addAll(allMethods, clazz.getMethods());
 
-    final PsiClass[] supers = clazz.getSupers();
+    PsiClass[] supers = clazz.getSupers();
     for (PsiClass aSuper : supers) {
       getAllMethodsInner(aSuper, allMethods, visited);
     }
@@ -292,10 +292,10 @@ public class GrClassImplUtil {
 
 
   public static PsiClass[] getInterfaces(GrTypeDefinition grType) {
-    final PsiClassType[] implementsListTypes = grType.getImplementsListTypes();
+    PsiClassType[] implementsListTypes = grType.getImplementsListTypes();
     List<PsiClass> result = new ArrayList<PsiClass>(implementsListTypes.length);
     for (PsiClassType type : implementsListTypes) {
-      final PsiClass psiClass = type.resolve();
+      PsiClass psiClass = type.resolve();
       if (psiClass != null) {
         result.add(psiClass);
       }
@@ -323,13 +323,13 @@ public class GrClassImplUtil {
                                             @Nullable PsiElement lastParent,
                                             @Nonnull PsiElement place) {
     if (place instanceof GrCodeReferenceElement && lastParent instanceof GrModifierList) {
-      final PsiElement possibleAnnotation = PsiTreeUtil.skipParentsOfType(place, GrCodeReferenceElement.class);
+      PsiElement possibleAnnotation = PsiTreeUtil.skipParentsOfType(place, GrCodeReferenceElement.class);
       if (possibleAnnotation instanceof GrAnnotation && possibleAnnotation.getParent() == lastParent) {
         return true; //don't process class members while resolving annotation which annotates current class
       }
     }
 
-    for (final PsiTypeParameter typeParameter : grType.getTypeParameters()) {
+    for (PsiTypeParameter typeParameter : grType.getTypeParameters()) {
       if (!ResolveUtil.processElement(processor, typeParameter, state)) {
         return false;
       }
@@ -338,8 +338,8 @@ public class GrClassImplUtil {
     NameHint nameHint = processor.getHint(NameHint.KEY);
     String name = nameHint == null ? null : nameHint.getName(state);
     ClassHint classHint = processor.getHint(ClassHint.KEY);
-    final PsiSubstitutor substitutor = state.get(PsiSubstitutor.KEY);
-    final PsiElementFactory factory = JavaPsiFacade.getElementFactory(place.getProject());
+    PsiSubstitutor substitutor = state.get(PsiSubstitutor.KEY);
+    PsiElementFactory factory = JavaPsiFacade.getElementFactory(place.getProject());
 
     boolean processInstanceMethods = (ResolveUtil.shouldProcessMethods(classHint) || ResolveUtil
       .shouldProcessProperties(classHint)) && shouldProcessInstanceMembers(grType, lastParent);
@@ -411,11 +411,11 @@ public class GrClassImplUtil {
       }
     }
 
-    final GrTypeDefinitionBody body = grType.getBody();
+    GrTypeDefinitionBody body = grType.getBody();
     if (body != null) {
       if (ResolveUtil.shouldProcessClasses(classHint)) {
         for (PsiClass innerClass : getInnerClassesForResolve(grType, lastParent, place)) {
-          final String innerClassName = innerClass.getName();
+          String innerClassName = innerClass.getName();
           if (nameHint != null && !innerClassName.equals(nameHint.getName(state))) {
             continue;
           }
@@ -440,12 +440,12 @@ public class GrClassImplUtil {
                                       @Nonnull PsiElementFactory factory,
                                       @Nonnull LanguageLevel level,
                                       CandidateInfo fieldInfo) {
-    final PsiField field = (PsiField)fieldInfo.getElement();
+    PsiField field = (PsiField)fieldInfo.getElement();
     if (!processInstanceMember(processInstanceMethods, field) || isSameDeclaration(place, field)) {
       return true;
     }
     LOG.assertTrue(field.getContainingClass() != null);
-    final PsiSubstitutor finalSubstitutor = PsiClassImplUtil.obtainFinalSubstitutor(field.getContainingClass(),
+    PsiSubstitutor finalSubstitutor = PsiClassImplUtil.obtainFinalSubstitutor(field.getContainingClass(),
                                                                                     fieldInfo.getSubstitutor(),
                                                                                     grType,
                                                                                     substitutor,
@@ -471,7 +471,7 @@ public class GrClassImplUtil {
       return true;
     }
     LOG.assertTrue(method.getContainingClass() != null);
-    final PsiSubstitutor finalSubstitutor = PsiClassImplUtil.obtainFinalSubstitutor(method.getContainingClass(),
+    PsiSubstitutor finalSubstitutor = PsiClassImplUtil.obtainFinalSubstitutor(method.getContainingClass(),
                                                                                     info.getSubstitutor(),
                                                                                     grType,
                                                                                     substitutor,
@@ -484,7 +484,7 @@ public class GrClassImplUtil {
   private static boolean shouldProcessInstanceMembers(@Nonnull GrTypeDefinition grType,
                                                       @Nullable PsiElement lastParent) {
     if (lastParent != null) {
-      final GrModifierList modifierList = grType.getModifierList();
+      GrModifierList modifierList = grType.getModifierList();
       if (modifierList != null && modifierList.findAnnotation(GroovyCommonClassNames.GROOVY_LANG_CATEGORY) !=
         null) {
         return false;
@@ -519,8 +519,8 @@ public class GrClassImplUtil {
       public List<PsiClass> compute() {
         List<PsiClass> result = new ArrayList<PsiClass>();
         for (CandidateInfo info : CollectClassMembersUtil.getAllInnerClasses(grType, false).values()) {
-          final PsiClass inner = (PsiClass)info.getElement();
-          final PsiClass containingClass = inner.getContainingClass();
+          PsiClass inner = (PsiClass)info.getElement();
+          PsiClass containingClass = inner.getContainingClass();
           assert containingClass != null;
 
           if (lastParent == null || !containingClass.isInterface() || PsiTreeUtil.isAncestor(containingClass,
@@ -572,7 +572,7 @@ public class GrClassImplUtil {
 
   @Nullable
   public static PsiMethod findMethodBySignature(GrTypeDefinition grType, PsiMethod patternMethod, boolean checkBases) {
-    final MethodSignature patternSignature = patternMethod.getSignature(PsiSubstitutor.EMPTY);
+    MethodSignature patternSignature = patternMethod.getSignature(PsiSubstitutor.EMPTY);
     for (PsiMethod method : findMethodsByName(grType, patternMethod.getName(), checkBases, false)) {
       MethodSignature signature = getSignatureForInheritor(method, grType);
       if (patternSignature.equals(signature)) {
@@ -627,7 +627,7 @@ public class GrClassImplUtil {
                                                     boolean checkBases,
                                                     boolean includeSynthetic) {
     ArrayList<PsiMethod> result = new ArrayList<PsiMethod>();
-    final MethodSignature patternSignature = patternMethod.getSignature(PsiSubstitutor.EMPTY);
+    MethodSignature patternSignature = patternMethod.getSignature(PsiSubstitutor.EMPTY);
     for (PsiMethod method : findMethodsByName(grType, patternMethod.getName(), checkBases, includeSynthetic)) {
       MethodSignature signature = getSignatureForInheritor(method, grType);
       if (patternSignature.equals(signature)) {
@@ -640,7 +640,7 @@ public class GrClassImplUtil {
   @Nullable
   private static MethodSignature getSignatureForInheritor(@Nonnull PsiMethod methodFromSuperClass,
                                                           @Nonnull GrTypeDefinition inheritor) {
-    final PsiClass clazz = methodFromSuperClass.getContainingClass();
+    PsiClass clazz = methodFromSuperClass.getContainingClass();
     if (clazz == null) {
       return null;
     }
@@ -663,20 +663,20 @@ public class GrClassImplUtil {
   public static List<Pair<PsiMethod, PsiSubstitutor>> findMethodsAndTheirSubstitutorsByName(GrTypeDefinition grType,
                                                                                             String name,
                                                                                             boolean checkBases) {
-    final ArrayList<Pair<PsiMethod, PsiSubstitutor>> result = new ArrayList<Pair<PsiMethod, PsiSubstitutor>>();
+    ArrayList<Pair<PsiMethod, PsiSubstitutor>> result = new ArrayList<Pair<PsiMethod, PsiSubstitutor>>();
 
     if (!checkBases) {
-      final PsiMethod[] methods = grType.findMethodsByName(name, false);
+      PsiMethod[] methods = grType.findMethodsByName(name, false);
       for (PsiMethod method : methods) {
         result.add(Pair.create(method, PsiSubstitutor.EMPTY));
       }
     }
     else {
-      final Map<String, List<CandidateInfo>> map = CollectClassMembersUtil.getAllMethods(grType, true);
-      final List<CandidateInfo> candidateInfos = map.get(name);
+      Map<String, List<CandidateInfo>> map = CollectClassMembersUtil.getAllMethods(grType, true);
+      List<CandidateInfo> candidateInfos = map.get(name);
       if (candidateInfos != null) {
         for (CandidateInfo info : candidateInfos) {
-          final PsiElement element = info.getElement();
+          PsiElement element = info.getElement();
           result.add(Pair.create((PsiMethod)element, info.getSubstitutor()));
         }
       }
@@ -687,7 +687,7 @@ public class GrClassImplUtil {
 
   @Nonnull
   public static List<Pair<PsiMethod, PsiSubstitutor>> getAllMethodsAndTheirSubstitutors(GrTypeDefinition grType) {
-    final Map<String, List<CandidateInfo>> allMethodsMap = CollectClassMembersUtil.getAllMethods(grType, true);
+    Map<String, List<CandidateInfo>> allMethodsMap = CollectClassMembersUtil.getAllMethods(grType, true);
     List<Pair<PsiMethod, PsiSubstitutor>> result = new ArrayList<Pair<PsiMethod, PsiSubstitutor>>();
     for (List<CandidateInfo> infos : allMethodsMap.values()) {
       for (CandidateInfo info : infos) {
@@ -714,7 +714,7 @@ public class GrClassImplUtil {
     }
 
     Map<String, CandidateInfo> fieldsMap = CollectClassMembersUtil.getAllFields(grType, includeSynthetic);
-    final CandidateInfo info = fieldsMap.get(name);
+    CandidateInfo info = fieldsMap.get(name);
     return info == null ? null : (PsiField)info.getElement();
   }
 
@@ -728,13 +728,13 @@ public class GrClassImplUtil {
   }
 
   private static boolean shouldImplementDelegatedInterfaces(PsiAnnotation delegate) {
-    final Boolean result = GrAnnotationUtil.inferBooleanAttribute(delegate, "interfaces");
+    Boolean result = GrAnnotationUtil.inferBooleanAttribute(delegate, "interfaces");
     return result == null || result.booleanValue();
   }
 
   public static void addExpandingReflectedMethods(Collection<PsiMethod> result, PsiMethod method) {
     if (method instanceof GrMethod) {
-      final GrReflectedMethod[] reflectedMethods = ((GrMethod)method).getReflectedMethods();
+      GrReflectedMethod[] reflectedMethods = ((GrMethod)method).getReflectedMethods();
       if (reflectedMethods.length > 0) {
         result.addAll(Arrays.asList(reflectedMethods));
         return;

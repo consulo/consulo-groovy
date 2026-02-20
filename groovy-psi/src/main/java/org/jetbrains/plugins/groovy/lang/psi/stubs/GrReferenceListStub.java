@@ -27,7 +27,7 @@ public class GrReferenceListStub extends StubBase<GrReferenceList> implements St
 
   private final String[] myRefNames;
 
-  public GrReferenceListStub(final StubElement parentStub, IStubElementType elemtType, final String[] refNames) {
+  public GrReferenceListStub(StubElement parentStub, IStubElementType elemtType, String[] refNames) {
     super(parentStub, elemtType);
     myRefNames = refNames;
   }

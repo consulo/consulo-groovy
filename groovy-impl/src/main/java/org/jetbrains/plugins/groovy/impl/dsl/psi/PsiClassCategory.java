@@ -50,7 +50,7 @@ public class PsiClassCategory implements PsiEnhancerCategory {
 
   public static boolean hasAnnotation(PsiMember clazz, String annotName) {
     if (annotName == null) return false;
-    final PsiModifierList list = clazz.getModifierList();
+    PsiModifierList list = clazz.getModifierList();
     if (list == null) return false;
     for (PsiAnnotation annotation : list.getAnnotations()) {
       if (annotName.equals(annotation.getQualifiedName())) return true;
@@ -62,7 +62,7 @@ public class PsiClassCategory implements PsiEnhancerCategory {
   @Nullable
   public static PsiAnnotation getAnnotation(PsiMember clazz, String annotName) {
     if (annotName == null) return null;
-    final PsiModifierList list = clazz.getModifierList();
+    PsiModifierList list = clazz.getModifierList();
     if (list == null) return null;
     for (PsiAnnotation annotation : list.getAnnotations()) {
       if (annotName.equals(annotation.getQualifiedName())) return annotation;
@@ -72,9 +72,9 @@ public class PsiClassCategory implements PsiEnhancerCategory {
 
   @Nonnull
   public static Collection<PsiAnnotation> getAnnotations(PsiMember clazz, String annotName) {
-   final ArrayList<PsiAnnotation> list = new ArrayList<PsiAnnotation>();
+   ArrayList<PsiAnnotation> list = new ArrayList<PsiAnnotation>();
     if (annotName == null) return list;
-    final PsiModifierList mlist = clazz.getModifierList();
+    PsiModifierList mlist = clazz.getModifierList();
     if (mlist == null) return list;
     for (PsiAnnotation annotation : mlist.getAnnotations()) {
       if (annotName.equals(annotation.getQualifiedName())) {

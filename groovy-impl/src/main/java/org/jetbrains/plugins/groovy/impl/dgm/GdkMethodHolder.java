@@ -51,13 +51,13 @@ public class GdkMethodHolder {
   private final GlobalSearchScope myScope;
   private final PsiManager myPsiManager;
 
-  private GdkMethodHolder(final PsiClass categoryClass, final boolean isStatic, final GlobalSearchScope scope) {
+  private GdkMethodHolder(PsiClass categoryClass, boolean isStatic, GlobalSearchScope scope) {
     myStatic = isStatic;
     myScope = scope;
     final MultiMap<String, PsiMethod> byName = new MultiMap<>();
     myPsiManager = categoryClass.getManager();
     for (PsiMethod m : categoryClass.getMethods()) {
-      final PsiParameter[] params = m.getParameterList().getParameters();
+      PsiParameter[] params = m.getParameterList().getParameters();
       if (params.length == 0) {
         continue;
       }
@@ -89,7 +89,7 @@ public class GdkMethodHolder {
   }
 
   private PsiType getCategoryTargetType(PsiMethod method) {
-    final PsiType parameterType = method.getParameterList().getParameters()[0].getType();
+    PsiType parameterType = method.getParameterList().getParameters()[0].getType();
     return TypesUtil.boxPrimitiveType(TypeConversionUtil.erasure(parameterType), myPsiManager, myScope);
   }
 
@@ -100,7 +100,7 @@ public class GdkMethodHolder {
 
     NameHint nameHint = processor.getHint(NameHint.KEY);
     String name = nameHint == null ? null : nameHint.getName(state);
-    final MultiMap<String, PsiMethod> map = name != null ? myOriginalMethodsByNameAndType.get(name) : myOriginalMethodByType.getValue();
+    MultiMap<String, PsiMethod> map = name != null ? myOriginalMethodsByNameAndType.get(name) : myOriginalMethodByType.getValue();
     if (map.isEmpty()) {
       return true;
     }
@@ -126,8 +126,8 @@ public class GdkMethodHolder {
       public Result<GdkMethodHolder> compute() {
         GdkMethodHolder result = new GdkMethodHolder(categoryClass, isStatic, scope);
 
-        final ProjectRootManager rootManager = ProjectRootManager.getInstance(project);
-        final VirtualFile vfile = categoryClass.getContainingFile().getVirtualFile();
+        ProjectRootManager rootManager = ProjectRootManager.getInstance(project);
+        VirtualFile vfile = categoryClass.getContainingFile().getVirtualFile();
         if (vfile != null && (rootManager.getFileIndex().isInLibraryClasses(vfile) || rootManager.getFileIndex()
                                                                                                  .isInLibrarySource(vfile))) {
           return Result.create(result, rootManager);

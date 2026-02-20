@@ -44,7 +44,7 @@ public class GroovyStaticMethodNamingConventionInspection extends ConventionInsp
 
     @Nonnull
     public String buildErrorString(Object... args) {
-        final String className = (String) args[0];
+        String className = (String) args[0];
         if (className.length() < getMinLength()) {
             return "Static method name '#ref' is too short";
         }
@@ -76,7 +76,7 @@ public class GroovyStaticMethodNamingConventionInspection extends ConventionInsp
             if (!grMethod.hasModifierProperty(PsiModifier.STATIC)) {
                 return;
             }
-            final String name = grMethod.getName();
+            String name = grMethod.getName();
             if (isValid(name)) {
                 return;
             }

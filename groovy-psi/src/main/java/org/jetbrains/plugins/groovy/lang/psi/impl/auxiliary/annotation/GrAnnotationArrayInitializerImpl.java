@@ -58,11 +58,11 @@ public class GrAnnotationArrayInitializerImpl extends GroovyPsiElementImpl imple
 
   @Override
   public ASTNode addInternal(ASTNode first, ASTNode last, ASTNode anchor, Boolean before) {
-    final GrAnnotationMemberValue[] initializers = getInitializers();
+    GrAnnotationMemberValue[] initializers = getInitializers();
     if (initializers.length == 0) {
       return super.addInternal(first, last, getNode().getFirstChildNode(), false);
     }
-    final ASTNode lastChild = getNode().getLastChildNode();
+    ASTNode lastChild = getNode().getLastChildNode();
     getNode().addLeaf(GroovyTokenTypes.mCOMMA, ",", lastChild);
     return super.addInternal(first, last, lastChild.getTreePrev(), false);
   }

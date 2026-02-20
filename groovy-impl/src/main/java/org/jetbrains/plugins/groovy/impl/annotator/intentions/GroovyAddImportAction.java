@@ -74,9 +74,9 @@ public class GroovyAddImportAction extends ImportClassFixBase<GrReferenceElement
         if (!(psiFile instanceof GroovyFile)) {
             return false;
         }
-        final GrImportStatement[] importStatements = ((GroovyFile)psiFile).getImportStatements();
+        GrImportStatement[] importStatements = ((GroovyFile)psiFile).getImportStatements();
         for (GrImportStatement importStatement : importStatements) {
-            final GrCodeReferenceElement importReference = importStatement.getImportReference();
+            GrCodeReferenceElement importReference = importStatement.getImportReference();
             if (importReference == null || importReference.resolve() != null) {
                 continue;
             }

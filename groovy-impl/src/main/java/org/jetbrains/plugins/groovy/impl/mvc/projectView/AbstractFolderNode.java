@@ -32,19 +32,19 @@ public class AbstractFolderNode extends AbstractMvcPsiNodeDescriptor {
 
   private final String myPresentableText;
 
-  protected AbstractFolderNode(@Nonnull final Module module,
-							   @Nonnull final PsiDirectory directory,
+  protected AbstractFolderNode(@Nonnull Module module,
+							   @Nonnull PsiDirectory directory,
 							   @Nonnull String presentableText,
-							   @Nullable final String locationMark,
-							   final ViewSettings viewSettings, int weight) {
+							   @Nullable String locationMark,
+							   ViewSettings viewSettings, int weight) {
     super(module, viewSettings, directory, weight);
     myLocationMark = locationMark;
     myPresentableText = presentableText;
   }
 
   @Override
-  protected String getTestPresentationImpl(@Nonnull final PsiElement psiElement) {
-    final VirtualFile virtualFile = getVirtualFile();
+  protected String getTestPresentationImpl(@Nonnull PsiElement psiElement) {
+    VirtualFile virtualFile = getVirtualFile();
     assert virtualFile != null;
 
     return "Folder: " + virtualFile.getPresentableName();
@@ -57,12 +57,12 @@ public class AbstractFolderNode extends AbstractMvcPsiNodeDescriptor {
 
   @Nullable
   protected Collection<AbstractTreeNode> getChildrenImpl() {
-    final PsiDirectory directory = getPsiDirectory();
+    PsiDirectory directory = getPsiDirectory();
     if (!directory.isValid()) {
       return Collections.emptyList();
     }
 
-    final List<AbstractTreeNode> children = new ArrayList<AbstractTreeNode>();
+    List<AbstractTreeNode> children = new ArrayList<AbstractTreeNode>();
 
     // scan folder's children
     for (PsiDirectory subDir : directory.getSubdirectories()) {
@@ -115,28 +115,28 @@ public class AbstractFolderNode extends AbstractMvcPsiNodeDescriptor {
   }
 
   @Override
-  protected void updateImpl(final PresentationData data) {
-    final PsiDirectory psiDirectory = getPsiDirectory();
+  protected void updateImpl(PresentationData data) {
+    PsiDirectory psiDirectory = getPsiDirectory();
 
     data.setPresentableText(myPresentableText);
     data.setIcon(IconDescriptorUpdaters.getIcon(psiDirectory, 0));
   }
 
   @Override
-  protected boolean containsImpl(@Nonnull final VirtualFile file) {
-    final PsiElement psiElement = extractPsiFromValue();
+  protected boolean containsImpl(@Nonnull VirtualFile file) {
+    PsiElement psiElement = extractPsiFromValue();
     if (psiElement == null || !psiElement.isValid()) {
       return false;
     }
 
-    final VirtualFile valueFile = ((PsiDirectory)psiElement).getVirtualFile();
+    VirtualFile valueFile = ((PsiDirectory)psiElement).getVirtualFile();
     if (!VfsUtil.isAncestor(valueFile, file, false)) {
       return false;
     }
 
-    final Project project = psiElement.getProject();
-    final ProjectFileIndex fileIndex = ProjectRootManager.getInstance(project).getFileIndex();
-    final Module module = fileIndex.getModuleForFile(valueFile);
+    Project project = psiElement.getProject();
+    ProjectFileIndex fileIndex = ProjectRootManager.getInstance(project).getFileIndex();
+    Module module = fileIndex.getModuleForFile(valueFile);
     if (module == null) {
       return fileIndex.getModuleForFile(file) == null;
     }
@@ -144,11 +144,11 @@ public class AbstractFolderNode extends AbstractMvcPsiNodeDescriptor {
     return ModuleRootManager.getInstance(module).getFileIndex().isInContent(file);
   }
 
-  protected void processNotDirectoryFile(final List<AbstractTreeNode> nodes, final PsiFile file) {
+  protected void processNotDirectoryFile(List<AbstractTreeNode> nodes, PsiFile file) {
     if (file instanceof GroovyFile) {
-      final GrTypeDefinition[] definitions = ((GroovyFile)file).getTypeDefinitions();
+      GrTypeDefinition[] definitions = ((GroovyFile)file).getTypeDefinitions();
       if (definitions.length > 0) {
-        for (final GrTypeDefinition typeDefinition : definitions) {
+        for (GrTypeDefinition typeDefinition : definitions) {
           nodes.add(createClassNode(typeDefinition));
         }
         return;
@@ -157,7 +157,7 @@ public class AbstractFolderNode extends AbstractMvcPsiNodeDescriptor {
     nodes.add(new FileNode(getModule(), file, myLocationMark, getSettings()));
   }
 
-  protected AbstractTreeNode createClassNode(final GrTypeDefinition typeDefinition) {
+  protected AbstractTreeNode createClassNode(GrTypeDefinition typeDefinition) {
     assert getValue() != null;
 
     return new ClassNode(getModule(), typeDefinition, getSettings());

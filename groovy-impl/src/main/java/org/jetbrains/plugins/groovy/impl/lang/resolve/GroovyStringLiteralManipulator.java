@@ -38,7 +38,7 @@ public class GroovyStringLiteralManipulator extends AbstractElementManipulator<G
     LOG.assertTrue(expr instanceof GrLiteralImpl);
 
     String oldText = expr.getText();
-    final String quote = GrStringUtil.getStartQuote(oldText);
+    String quote = GrStringUtil.getStartQuote(oldText);
 
     if (StringUtil.startsWithChar(quote, '\'')) {
       newContent = GrStringUtil.escapeSymbolsForString(newContent, !quote.equals("'''"), true);
@@ -57,8 +57,8 @@ public class GroovyStringLiteralManipulator extends AbstractElementManipulator<G
     return ((GrLiteralImpl)expr).updateText(newText);
   }
 
-  public TextRange getRangeInElement(final GrLiteral element) {
-    final String text = element.getText();
+  public TextRange getRangeInElement(GrLiteral element) {
+    String text = element.getText();
     if (!(element.getValue() instanceof String)) {
       return super.getRangeInElement(element);
     }

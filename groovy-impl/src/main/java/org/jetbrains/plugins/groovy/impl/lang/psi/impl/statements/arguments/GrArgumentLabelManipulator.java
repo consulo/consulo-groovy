@@ -35,7 +35,7 @@ public class GrArgumentLabelManipulator extends AbstractElementManipulator<GrArg
   @Nonnull
   @Override
   public TextRange getRangeInElement(@Nonnull GrArgumentLabel element) {
-    final PsiElement nameElement = element.getNameElement();
+    PsiElement nameElement = element.getNameElement();
     if (nameElement instanceof LeafPsiElement && TokenSets.STRING_LITERAL_SET.contains(((LeafPsiElement)nameElement).getElementType())) {
       return GroovyStringLiteralManipulator.getLiteralRange(nameElement.getText());
     }

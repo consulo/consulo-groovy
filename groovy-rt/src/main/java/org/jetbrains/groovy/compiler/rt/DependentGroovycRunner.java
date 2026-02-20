@@ -40,17 +40,17 @@ import java.util.*;
  */
 public class DependentGroovycRunner {
   static boolean runGroovyc(boolean forStubs, File argsFile) {
-    final CompilerConfiguration config = new CompilerConfiguration();
+    CompilerConfiguration config = new CompilerConfiguration();
     config.setClasspath("");
     config.setOutput(new PrintWriter(System.err));
     config.setWarningLevel(WarningMessage.PARANOIA);
 
-    final List<CompilerMessage> compilerMessages = new ArrayList<CompilerMessage>();
-    final List<CompilationUnitPatcher> patchers = new ArrayList<CompilationUnitPatcher>();
-    final List<File> srcFiles = new ArrayList<File>();
-    final Map<String, File> class2File = new HashMap<String, File>();
+    List<CompilerMessage> compilerMessages = new ArrayList<CompilerMessage>();
+    List<CompilationUnitPatcher> patchers = new ArrayList<CompilationUnitPatcher>();
+    List<File> srcFiles = new ArrayList<File>();
+    Map<String, File> class2File = new HashMap<String, File>();
 
-    final String[] finalOutput = new String[1];
+    String[] finalOutput = new String[1];
     fillFromArgsFile(argsFile, config, patchers, compilerMessages, srcFiles, class2File, finalOutput);
     if (srcFiles.isEmpty()) return true;
 
@@ -63,7 +63,7 @@ public class DependentGroovycRunner {
 
     System.out.println(GroovyRtConstants.PRESENTABLE_MESSAGE + "Groovyc: loading sources...");
     final AstAwareResourceLoader resourceLoader = new AstAwareResourceLoader(class2File);
-    final CompilationUnit unit = createCompilationUnit(forStubs, config, finalOutput[0], buildClassLoaderFor(config, resourceLoader));
+    CompilationUnit unit = createCompilationUnit(forStubs, config, finalOutput[0], buildClassLoaderFor(config, resourceLoader));
     unit.addPhaseOperation(new CompilationUnit.SourceUnitOperation() {
       public void call(SourceUnit source) throws CompilationFailedException {
         File file = new File(source.getName());
@@ -77,7 +77,7 @@ public class DependentGroovycRunner {
     runPatchers(patchers, compilerMessages, unit, resourceLoader, srcFiles);
 
     System.out.println(GroovyRtConstants.PRESENTABLE_MESSAGE + "Groovyc: compiling...");
-    final List<GroovyCompilerWrapper.OutputItem> compiledFiles = new GroovyCompilerWrapper(compilerMessages, forStubs).compile(unit);
+    List<GroovyCompilerWrapper.OutputItem> compiledFiles = new GroovyCompilerWrapper(compilerMessages, forStubs).compile(unit);
     System.out.println(GroovyRtConstants.CLEAR_PRESENTABLE);
 
     System.out.println();
@@ -120,7 +120,7 @@ public class DependentGroovycRunner {
           break;
         }
 
-        final File file = new File(reader.readLine());
+        File file = new File(reader.readLine());
         srcFiles.add(file);
       }
 
@@ -134,7 +134,7 @@ public class DependentGroovycRunner {
           String s;
           while (!GroovyRtConstants.END.equals(s = reader.readLine())) {
             try {
-              final CompilationUnitPatcher patcher = (CompilationUnitPatcher)Class.forName(s).newInstance();
+              CompilationUnitPatcher patcher = (CompilationUnitPatcher)Class.forName(s).newInstance();
               patchers.add(patcher);
             }
             catch (InstantiationException e) {
@@ -198,7 +198,7 @@ public class DependentGroovycRunner {
     }
   }
 
-  private static void runPatchers(List<CompilationUnitPatcher> patchers, List<CompilerMessage> compilerMessages, CompilationUnit unit, final AstAwareResourceLoader loader, List<File> srcFiles) {
+  private static void runPatchers(List<CompilationUnitPatcher> patchers, List<CompilerMessage> compilerMessages, CompilationUnit unit, AstAwareResourceLoader loader, List<File> srcFiles) {
     if (!patchers.isEmpty()) {
       for (CompilationUnitPatcher patcher : patchers) {
         try {
@@ -253,24 +253,24 @@ public class DependentGroovycRunner {
   }
 
   private static void addExceptionInfo(List<CompilerMessage> compilerMessages, Throwable e, String message) {
-    final StringWriter writer = new StringWriter();
+    StringWriter writer = new StringWriter();
     e.printStackTrace(new PrintWriter(writer));
     compilerMessages.add(new CompilerMessage(GroovyCompilerMessageCategories.WARNING, message + ":\n" + writer, "<exception>", -1, -1));
   }
 
-  private static CompilationUnit createCompilationUnit(final boolean forStubs,
+  private static CompilationUnit createCompilationUnit(boolean forStubs,
                                                        final CompilerConfiguration config,
                                                        final String finalOutput, final GroovyClassLoader classLoader) {
 
     final GroovyClassLoader transformLoader = new GroovyClassLoader(classLoader) {
       public Enumeration<URL> getResources(String name) throws IOException {
         if (name.endsWith("org.codehaus.groovy.transform.ASTTransformation")) {
-          final Enumeration<URL> resources = super.getResources(name);
-          final ArrayList<URL> list = Collections.list(resources);
+          Enumeration<URL> resources = super.getResources(name);
+          ArrayList<URL> list = Collections.list(resources);
           for (Iterator iterator = list.iterator(); iterator.hasNext();) {
-            final URL url = (URL)iterator.next();
+            URL url = (URL)iterator.next();
             try {
-              final String file = new File(new URI(url.toString())).getCanonicalPath();
+              String file = new File(new URI(url.toString())).getCanonicalPath();
               if (file.startsWith(finalOutput) || file.startsWith("/" + finalOutput)) {
                 iterator.remove();
               }
@@ -334,7 +334,7 @@ public class DependentGroovycRunner {
           annoRemovedAdded = true;
           super.addPhaseOperation(new IPrimaryClassNodeOperation() {
             public void call(final SourceUnit sourceUnit, GeneratorContext generatorContext, ClassNode classNode) throws CompilationFailedException {
-              final ClassCodeVisitorSupport annoRemover = new ClassCodeVisitorSupport() {
+              ClassCodeVisitorSupport annoRemover = new ClassCodeVisitorSupport() {
                 @Override
                 protected SourceUnit getSourceUnit() {
                   return sourceUnit;

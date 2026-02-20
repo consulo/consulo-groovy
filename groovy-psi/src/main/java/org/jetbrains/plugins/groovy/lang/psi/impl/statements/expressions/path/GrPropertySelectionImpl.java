@@ -63,7 +63,7 @@ public class GrPropertySelectionImpl extends GrExpressionImpl implements GrPrope
   @Nonnull
   @Override
   public PsiElement getReferenceNameElement() {
-    final PsiElement last = getLastChild();
+    PsiElement last = getLastChild();
     LOG.assertTrue(last != null);
     return last;
   }

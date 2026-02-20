@@ -23,7 +23,7 @@ import jakarta.annotation.Nullable;
 @ExtensionImpl
 public class GriffonDebuggerRunner extends GenericDebuggerRunner {
   @Override
-  public boolean canRun(@Nonnull final String executorId, @Nonnull final RunProfile profile) {
+  public boolean canRun(@Nonnull String executorId, @Nonnull RunProfile profile) {
     return executorId.equals(DefaultDebugExecutor.EXECUTOR_ID) && profile instanceof GriffonRunConfiguration;
   }
 
@@ -37,8 +37,8 @@ public class GriffonDebuggerRunner extends GenericDebuggerRunner {
   @Override
   protected RunContentDescriptor createContentDescriptor(@Nonnull RunProfileState state, @Nonnull ExecutionEnvironment environment) throws
     ExecutionException {
-    final JavaCommandLine javaCommandLine = (JavaCommandLine)state;
-    final OwnJavaParameters params = javaCommandLine.getJavaParameters();
+    JavaCommandLine javaCommandLine = (JavaCommandLine)state;
+    OwnJavaParameters params = javaCommandLine.getJavaParameters();
 
     if (!params.getVMParametersList().hasProperty("griffon.full.stacktrace")) {
       params.getVMParametersList().add("-Dgriffon.full.stacktrace=true");

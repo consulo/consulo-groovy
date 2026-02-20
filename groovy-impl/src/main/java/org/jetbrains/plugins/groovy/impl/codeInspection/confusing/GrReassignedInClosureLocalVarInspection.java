@@ -64,18 +64,18 @@ public class GrReassignedInClosureLocalVarInspection extends BaseInspection {
                 if (!PsiUtil.isLValue(referenceExpression)) {
                     return;
                 }
-                final PsiElement resolved = referenceExpression.resolve();
+                PsiElement resolved = referenceExpression.resolve();
                 if (!PsiUtil.isLocalVariable(resolved)) {
                     return;
                 }
 
-                final PsiType checked = GrReassignedLocalVarsChecker.getReassignedVarType(referenceExpression, false);
+                PsiType checked = GrReassignedLocalVarsChecker.getReassignedVarType(referenceExpression, false);
                 if (checked == null) {
                     return;
                 }
 
-                final GrControlFlowOwner varFlowOwner = ControlFlowUtils.findControlFlowOwner(resolved);
-                final GrControlFlowOwner refFlorOwner = ControlFlowUtils.findControlFlowOwner(referenceExpression);
+                GrControlFlowOwner varFlowOwner = ControlFlowUtils.findControlFlowOwner(resolved);
+                GrControlFlowOwner refFlorOwner = ControlFlowUtils.findControlFlowOwner(referenceExpression);
                 if (isOtherScopeAndType(referenceExpression, checked, varFlowOwner, refFlorOwner)) {
                     problemsHolder.newProblem(GroovyInspectionLocalize.localVar0IsReassigned(((GrNamedElement) resolved).getName()))
                         .range((PsiElement) referenceExpression)

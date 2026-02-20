@@ -41,7 +41,7 @@ public class GrConvertStringToCharIntention extends Intention {
 
     @Override
     protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
-        final GrExpression cast = GroovyPsiElementFactory.getInstance(project).createExpressionFromText("a as char");
+        GrExpression cast = GroovyPsiElementFactory.getInstance(project).createExpressionFromText("a as char");
         ((GrSafeCastExpression) cast).getOperand().replaceWithExpression((GrExpression) element, true);
 
         ((GrExpression) element).replaceWithExpression(cast, true);
@@ -57,7 +57,7 @@ public class GrConvertStringToCharIntention extends Intention {
                     return false;
                 }
 
-                final Object value = ((GrLiteral) element).getValue();
+                Object value = ((GrLiteral) element).getValue();
                 return value instanceof String && ((String) value).length() == 1;
             }
         };

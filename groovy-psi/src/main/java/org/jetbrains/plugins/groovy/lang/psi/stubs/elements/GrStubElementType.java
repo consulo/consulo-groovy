@@ -34,7 +34,7 @@ public abstract class GrStubElementType<S extends StubElement, T extends GroovyP
     super(debugName, GroovyFileType.GROOVY_LANGUAGE);
   }
 
-  public void indexStub(@Nonnull final S stub, @Nonnull final IndexSink sink) {
+  public void indexStub(@Nonnull S stub, @Nonnull IndexSink sink) {
   }
 
   @Nonnull

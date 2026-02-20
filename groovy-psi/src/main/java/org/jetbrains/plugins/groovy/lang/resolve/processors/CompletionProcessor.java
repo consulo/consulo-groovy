@@ -31,7 +31,7 @@ import java.util.EnumSet;
  */
 public class CompletionProcessor extends ResolverProcessorImpl
 {
-  private CompletionProcessor(PsiElement place, final EnumSet<ResolveKind> resolveTargets, final String name) {
+  private CompletionProcessor(PsiElement place, EnumSet<ResolveKind> resolveTargets, String name) {
     super(name, resolveTargets, place, PsiType.EMPTY_ARRAY);
   }
 

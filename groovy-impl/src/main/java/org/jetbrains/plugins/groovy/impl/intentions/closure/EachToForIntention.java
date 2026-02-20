@@ -63,10 +63,10 @@ public class EachToForIntention extends Intention {
 
     @Override
     protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
-        final GrMethodCallExpression expression = (GrMethodCallExpression) element;
-        final GrClosableBlock block = expression.getClosureArguments()[0];
-        final GrParameterList parameterList = block.getParameterList();
-        final GrParameter[] parameters = parameterList.getParameters();
+        GrMethodCallExpression expression = (GrMethodCallExpression) element;
+        GrClosableBlock block = expression.getClosureArguments()[0];
+        GrParameterList parameterList = block.getParameterList();
+        GrParameter[] parameters = parameterList.getParameters();
 
         String var;
         if (parameters.length == 1) {
@@ -77,9 +77,9 @@ public class EachToForIntention extends Intention {
             var = "it";
         }
 
-        final GrExpression invokedExpression = expression.getInvokedExpression();
+        GrExpression invokedExpression = expression.getInvokedExpression();
         GrExpression qualifier = ((GrReferenceExpression) invokedExpression).getQualifierExpression();
-        final GroovyPsiElementFactory elementFactory = GroovyPsiElementFactory.getInstance(element.getProject());
+        GroovyPsiElementFactory elementFactory = GroovyPsiElementFactory.getInstance(element.getProject());
         if (qualifier == null) {
             qualifier = elementFactory.createExpressionFromText("this");
         }
@@ -87,7 +87,7 @@ public class EachToForIntention extends Intention {
         StringBuilder builder = new StringBuilder();
         builder.append("for (").append(var).append(" in ").append(qualifier.getText()).append(") {\n");
         String text = block.getText();
-        final PsiElement blockArrow = block.getArrow();
+        PsiElement blockArrow = block.getArrow();
         int index;
         if (blockArrow != null) {
             index = blockArrow.getStartOffsetInParent() + blockArrow.getTextLength();
@@ -100,9 +100,9 @@ public class EachToForIntention extends Intention {
         builder.append(text);
         builder.append("}");
 
-        final GrStatement statement = elementFactory.createStatementFromText(builder.toString());
-        final GrForStatement forStatement = (GrForStatement) expression.replaceWithStatement(statement);
-        final GrForClause clause = forStatement.getClause();
+        GrStatement statement = elementFactory.createStatementFromText(builder.toString());
+        GrForStatement forStatement = (GrForStatement) expression.replaceWithStatement(statement);
+        GrForClause clause = forStatement.getClause();
         GrVariable variable = clause.getDeclaredVariable();
 
         if (variable == null) {
@@ -113,8 +113,8 @@ public class EachToForIntention extends Intention {
             return;
         }
 
-        final PsiDocumentManager documentManager = PsiDocumentManager.getInstance(project);
-        final Document doc = documentManager.getDocument(element.getContainingFile());
+        PsiDocumentManager documentManager = PsiDocumentManager.getInstance(project);
+        Document doc = documentManager.getDocument(element.getContainingFile());
         if (doc == null) {
             return;
         }
@@ -127,18 +127,18 @@ public class EachToForIntention extends Intention {
     private static class EachToForPredicate implements PsiElementPredicate {
         public boolean satisfiedBy(PsiElement element) {
             if (element instanceof GrMethodCallExpression) {
-                final GrMethodCallExpression expression = (GrMethodCallExpression) element;
+                GrMethodCallExpression expression = (GrMethodCallExpression) element;
 //                final PsiElement parent = expression.getParent();
 //                if (parent instanceof GrAssignmentExpression) return false;
 //                if (parent instanceof GrArgumentList) return false;
 //                if (parent instanceof GrReturnStatement) return false;
 //                if (!(parent instanceof GrCodeBlock || parent instanceof GrIfStatement|| parent instanceof GrCaseSection)) return false;
 
-                final GrExpression invokedExpression = expression.getInvokedExpression();
+                GrExpression invokedExpression = expression.getInvokedExpression();
                 if (invokedExpression instanceof GrReferenceExpression) {
                     GrReferenceExpression referenceExpression = (GrReferenceExpression) invokedExpression;
                     if ("each".equals(referenceExpression.getReferenceName())) {
-                        final GrArgumentList argumentList = expression.getArgumentList();
+                        GrArgumentList argumentList = expression.getArgumentList();
                         if (argumentList != null) {
                             if (PsiImplUtil.hasExpressionArguments(argumentList)) {
                                 return false;
@@ -147,11 +147,11 @@ public class EachToForIntention extends Intention {
                                 return false;
                             }
                         }
-                        final GrClosableBlock[] closureArguments = expression.getClosureArguments();
+                        GrClosableBlock[] closureArguments = expression.getClosureArguments();
                         if (closureArguments.length != 1) {
                             return false;
                         }
-                        final GrParameter[] parameters = closureArguments[0].getParameterList().getParameters();
+                        GrParameter[] parameters = closureArguments[0].getParameterList().getParameters();
                         if (parameters.length > 1) {
                             return false;
                         }

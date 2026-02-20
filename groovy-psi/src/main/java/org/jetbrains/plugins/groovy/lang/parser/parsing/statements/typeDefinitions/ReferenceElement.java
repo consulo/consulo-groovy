@@ -40,8 +40,8 @@ public class ReferenceElement {
 
   @Nonnull
   public static IElementType parseReferenceList(@Nonnull PsiBuilder builder,
-                                                @Nonnull final IElementType startElement,
-                                                @Nonnull final GrReferenceListElementType<?> clauseType,
+                                                @Nonnull IElementType startElement,
+                                                @Nonnull GrReferenceListElementType<?> clauseType,
                                                 @Nonnull ClassType type) {
     PsiBuilder.Marker isMarker = builder.mark();
 
@@ -110,7 +110,7 @@ public class ReferenceElement {
     return parseReferenceElement(builder, false, true);
   }
 
-  public static ReferenceElementResult parseReferenceElement(@Nonnull PsiBuilder builder, boolean isUpperCase, final boolean expressionPossible) {
+  public static ReferenceElementResult parseReferenceElement(@Nonnull PsiBuilder builder, boolean isUpperCase, boolean expressionPossible) {
     return parse(builder, isUpperCase, true, false, false, expressionPossible);
   }
 

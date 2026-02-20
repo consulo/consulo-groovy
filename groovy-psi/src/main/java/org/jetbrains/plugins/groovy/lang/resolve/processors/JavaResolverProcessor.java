@@ -40,8 +40,8 @@ public class JavaResolverProcessor extends DelegatingScopeProcessor {
   @Override
   public boolean execute(@Nonnull PsiElement element, ResolveState state) {
     if (myHint != null && element instanceof PsiNamedElement) {
-      final String expectedName = myHint.getName(state);
-      final String elementName = ((PsiNamedElement)element).getName();
+      String expectedName = myHint.getName(state);
+      String elementName = ((PsiNamedElement)element).getName();
       if (expectedName != null && !expectedName.equals(elementName)) {
         return true;
       }

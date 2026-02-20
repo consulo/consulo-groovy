@@ -35,9 +35,9 @@ import org.jetbrains.plugins.groovy.impl.mvc.MvcFramework;
 public class MvcProjectViewSelectInTarget implements SelectInTarget, DumbAware {
     @Override
     public boolean canSelect(SelectInContext context) {
-        final Project project = context.getProject();
-        final VirtualFile file = context.getVirtualFile();
-        final MvcFramework framework = MvcFramework.getInstance(ModuleUtilCore.findModuleForFile(file, project));
+        Project project = context.getProject();
+        VirtualFile file = context.getVirtualFile();
+        MvcFramework framework = MvcFramework.getInstance(ModuleUtilCore.findModuleForFile(file, project));
         if (framework == null) {
             return false;
         }
@@ -55,10 +55,10 @@ public class MvcProjectViewSelectInTarget implements SelectInTarget, DumbAware {
             return;
         }
 
-        final Runnable select = new Runnable() {
+        Runnable select = new Runnable() {
             @Override
             public void run() {
-                final MvcProjectViewPane view = MvcProjectViewPane.getView(project, framework);
+                MvcProjectViewPane view = MvcProjectViewPane.getView(project, framework);
                 if (view != null) {
                     view.selectFile(file, requestFocus);
                 }

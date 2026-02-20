@@ -78,7 +78,7 @@ public class GroovyExtractChooser {
     SelectionModel selectionModel = editor.getSelectionModel();
     PsiDocumentManager.getInstance(project).commitAllDocuments();
 
-    final StringPartInfo stringPart =
+    StringPartInfo stringPart =
       StringPartInfo.findStringPart(file, selectionModel.getSelectionStart(), selectionModel.getSelectionEnd());
 
     if (stringPart != null) {
@@ -131,7 +131,7 @@ public class GroovyExtractChooser {
     Set<GrStatement> allReturnStatements = new HashSet<GrStatement>();
     GrControlFlowOwner controlFlowOwner = ControlFlowUtils.findControlFlowOwner(statement0);
     LOG.assertTrue(controlFlowOwner != null);
-    final Instruction[] flow = new ControlFlowBuilder(project, GrAllVarsInitializedPolicy.getInstance()).buildControlFlow(controlFlowOwner);
+    Instruction[] flow = new ControlFlowBuilder(project, GrAllVarsInitializedPolicy.getInstance()).buildControlFlow(controlFlowOwner);
     allReturnStatements.addAll(ControlFlowUtils.collectReturns(flow, true));
 
     ArrayList<GrStatement> returnStatements = new ArrayList<GrStatement>();
@@ -175,7 +175,7 @@ public class GroovyExtractChooser {
   }
 
   private static boolean isLastStatementOfMethodOrClosure(GrStatement[] statements) {
-    final GrStatement statement0 = statements[0];
+    GrStatement statement0 = statements[0];
 
     PsiElement returnFrom = PsiTreeUtil.getParentOfType(statement0, GrMethod.class, GrClosableBlock.class, GroovyFile.class);
     if (returnFrom instanceof GrMethod) {
@@ -183,9 +183,9 @@ public class GroovyExtractChooser {
     }
     LOG.assertTrue(returnFrom instanceof GrStatementOwner);
 
-    final GrStatement[] blockStatements = ((GrStatementOwner)returnFrom).getStatements();
-    final GrStatement lastFromBlock = ArrayUtil.getLastElement(blockStatements);
-    final GrStatement lastStatement = ArrayUtil.getLastElement(statements);
+    GrStatement[] blockStatements = ((GrStatementOwner)returnFrom).getStatements();
+    GrStatement lastFromBlock = ArrayUtil.getLastElement(blockStatements);
+    GrStatement lastStatement = ArrayUtil.getLastElement(statements);
     return statement0.getManager().areElementsEquivalent(lastFromBlock, lastStatement);
   }
 

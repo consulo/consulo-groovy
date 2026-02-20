@@ -42,7 +42,7 @@ public class GrFileIndexUtil
 	{
 		if(file != null && !(file instanceof LightVirtualFile))
 		{
-			final FileIndexFacade index = FileIndexFacade.getInstance(project);
+			FileIndexFacade index = FileIndexFacade.getInstance(project);
 			if(index.isInSource(file) || index.isInLibraryClasses(file))
 			{
 				return true;

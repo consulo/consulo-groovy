@@ -54,7 +54,7 @@ public class GroovyCompilerConfiguration implements PersistentStateComponent<Jps
   }
 
   public JpsGroovySettings getState() {
-    final JpsGroovySettings bean = new JpsGroovySettings();
+    JpsGroovySettings bean = new JpsGroovySettings();
     bean.heapSize = myHeapSize;
     bean.invokeDynamic = myInvokeDynamic;
     bean.transformsOk = transformsOk;

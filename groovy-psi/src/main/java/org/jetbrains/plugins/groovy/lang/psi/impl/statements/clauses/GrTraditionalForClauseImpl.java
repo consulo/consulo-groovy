@@ -57,17 +57,17 @@ public class GrTraditionalForClauseImpl extends GroovyPsiElementImpl implements 
 
   @Override
   public GrExpression getCondition() {
-    final GrCondition condition = getConditionInner(1);
+    GrCondition condition = getConditionInner(1);
     return condition instanceof GrExpression ? (GrExpression)condition : null;
   }
 
   @Override
   public GrExpression getUpdate() {
-    final GrCondition condition = getConditionInner(2);
+    GrCondition condition = getConditionInner(2);
     return condition instanceof GrExpression ? (GrExpression)condition : null;
   }
 
-  private GrCondition getConditionInner(final int i) {
+  private GrCondition getConditionInner(int i) {
     int passed = 0;
     boolean waitForSemicolon = false;
 
@@ -99,7 +99,7 @@ public class GrTraditionalForClauseImpl extends GroovyPsiElementImpl implements 
 
   @Override
   public GrParameter[] getParameters() {
-    final GrParameter declaredVariable = getDeclaredVariable();
+    GrParameter declaredVariable = getDeclaredVariable();
     return declaredVariable == null ? GrParameter.EMPTY_ARRAY : new GrParameter[]{declaredVariable};
   }
 

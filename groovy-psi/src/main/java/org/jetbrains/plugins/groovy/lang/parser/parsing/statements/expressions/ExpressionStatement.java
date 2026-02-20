@@ -41,7 +41,7 @@ public class ExpressionStatement {
   private static IElementType parseExpressionStatement(PsiBuilder builder, GroovyParser parser) {
     if (checkForTypeCast(builder, parser)) return GroovyElementTypes.CAST_EXPRESSION;
     PsiBuilder.Marker marker = builder.mark();
-    final PathExpression.Result result = PathExpression.parsePathExprQualifierForExprStatement(builder, parser);
+    PathExpression.Result result = PathExpression.parsePathExprQualifierForExprStatement(builder, parser);
     if (result != PathExpression.Result.WRONG_WAY &&
         !TokenSets.SEPARATORS.contains(builder.getTokenType()) &&
         !TokenSets.BINARY_OP_SET.contains(builder.getTokenType()) &&
@@ -52,7 +52,7 @@ public class ExpressionStatement {
       }
 
       if (result == PathExpression.Result.LITERAL) {
-        final PsiBuilder.Marker newMarker = marker.precede();
+        PsiBuilder.Marker newMarker = marker.precede();
         marker.rollbackTo();
         marker = newMarker;
         PrimaryExpression.parsePrimaryExpression(builder, parser, true);
@@ -87,7 +87,7 @@ public class ExpressionStatement {
   public static Result parse(PsiBuilder builder, GroovyParser parser) {
     PsiBuilder.Marker marker = builder.mark();
 
-    final IElementType result = parseExpressionStatement(builder, parser);
+    IElementType result = parseExpressionStatement(builder, parser);
     if (result != GroovyElementTypes.CALL_EXPRESSION && result != GroovyElementTypes.PATH_METHOD_CALL) {
       marker.drop();
       return result == GroovyElementTypes.WRONGWAY ? Result.WRONG_WAY : Result.EXPRESSION;
@@ -148,7 +148,7 @@ public class ExpressionStatement {
   private static GroovyElementType namePartParse(PsiBuilder builder, GroovyParser parser) {
     if (TokenSets.BINARY_OP_SET.contains(builder.getTokenType())) return GroovyElementTypes.WRONGWAY;
     if (TokenSets.KEYWORDS.contains(builder.getTokenType())) return GroovyElementTypes.WRONGWAY;
-    final GroovyElementType type = PathExpression.namePartParse(builder, parser);
+    GroovyElementType type = PathExpression.namePartParse(builder, parser);
     if (type == GroovyElementTypes.WRONGWAY && TokenSets.NUMBERS.contains(builder.getTokenType())) {
       builder.advanceLexer();
       return GroovyElementTypes.REFERENCE_EXPRESSION;

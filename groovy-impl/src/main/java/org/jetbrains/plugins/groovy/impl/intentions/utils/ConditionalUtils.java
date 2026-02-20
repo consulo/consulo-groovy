@@ -31,9 +31,9 @@ public class ConditionalUtils {
 
   public static GrStatement stripBraces(GrStatement branch) {
     if (branch instanceof GrBlockStatement) {
-      final GrBlockStatement block = (GrBlockStatement) branch;
-      final GrOpenBlock codeBlock = block.getBlock();
-      final GrStatement[] statements = codeBlock.getStatements();
+      GrBlockStatement block = (GrBlockStatement) branch;
+      GrOpenBlock codeBlock = block.getBlock();
+      GrStatement[] statements = codeBlock.getStatements();
       if (statements.length == 1) {
         return statements[0];
       } else {
@@ -51,13 +51,13 @@ public class ConditionalUtils {
     if (!(statement instanceof GrReturnStatement)) {
       return false;
     }
-    final GrReturnStatement returnStatement =
+    GrReturnStatement returnStatement =
         (GrReturnStatement) statement;
-    final GrExpression returnValue = returnStatement.getReturnValue();
+    GrExpression returnValue = returnStatement.getReturnValue();
     if (returnValue == null) {
       return false;
     }
-    final String returnValueText = returnValue.getText();
+    String returnValueText = returnValue.getText();
     return value.equals(returnValueText);
   }
 
@@ -68,17 +68,17 @@ public class ConditionalUtils {
     if (!(statement instanceof GrExpression)) {
       return false;
     }
-    final GrExpression expression = (GrExpression) statement;
+    GrExpression expression = (GrExpression) statement;
     if (!(expression instanceof GrAssignmentExpression)) {
       return false;
     }
-    final GrAssignmentExpression assignment =
+    GrAssignmentExpression assignment =
         (GrAssignmentExpression) expression;
-    final GrExpression rhs = assignment.getRValue();
+    GrExpression rhs = assignment.getRValue();
     if (rhs == null) {
       return false;
     }
-    final String rhsText = rhs.getText();
+    String rhsText = rhs.getText();
     return value.equals(rhsText);
   }
 

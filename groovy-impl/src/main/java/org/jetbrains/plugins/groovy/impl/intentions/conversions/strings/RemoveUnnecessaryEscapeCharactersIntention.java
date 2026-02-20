@@ -49,8 +49,8 @@ public class RemoveUnnecessaryEscapeCharactersIntention extends Intention {
 
     @Override
     protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
-        final Document document = editor.getDocument();
-        final TextRange range = element.getTextRange();
+        Document document = editor.getDocument();
+        TextRange range = element.getTextRange();
 
         document.replaceString(range.getStartOffset(), range.getEndOffset(), removeUnnecessaryEscapeSymbols((GrLiteral) element));
     }
@@ -71,12 +71,12 @@ public class RemoveUnnecessaryEscapeCharactersIntention extends Intention {
         };
     }
 
-    private static String removeUnnecessaryEscapeSymbols(final GrLiteral literal) {
-        final String text = literal.getText();
-        final String quote = getStartQuote(text);
-        final String value = removeQuotes(text);
+    private static String removeUnnecessaryEscapeSymbols(GrLiteral literal) {
+        String text = literal.getText();
+        String quote = getStartQuote(text);
+        String value = removeQuotes(text);
 
-        final StringBuilder buffer = new StringBuilder();
+        StringBuilder buffer = new StringBuilder();
         buffer.append(quote);
 
         if (quote == "'") {
@@ -89,9 +89,9 @@ public class RemoveUnnecessaryEscapeCharactersIntention extends Intention {
         }
         else if (quote == "\"") {
             if (literal instanceof GrString) {
-                final ASTNode node = literal.getNode();
+                ASTNode node = literal.getNode();
                 for (ASTNode child = node.getFirstChildNode(); child != null; child = child.getTreeNext()) {
-                    final IElementType type = child.getElementType();
+                    IElementType type = child.getElementType();
                     if (type == GroovyTokenTypes.mGSTRING_BEGIN || type == GroovyTokenTypes.mGSTRING_END) {
                         continue;
                     }
@@ -109,9 +109,9 @@ public class RemoveUnnecessaryEscapeCharactersIntention extends Intention {
         }
         else if (quote == "\"\"\"") {
             if (literal instanceof GrString) {
-                final ASTNode node = literal.getNode();
+                ASTNode node = literal.getNode();
                 for (ASTNode child = node.getFirstChildNode(); child != null; child = child.getTreeNext()) {
-                    final IElementType type = child.getElementType();
+                    IElementType type = child.getElementType();
                     if (type == GroovyTokenTypes.mGSTRING_BEGIN || type == GroovyTokenTypes.mGSTRING_END) {
                         continue;
                     }
@@ -119,14 +119,14 @@ public class RemoveUnnecessaryEscapeCharactersIntention extends Intention {
                         buffer.append(child.getText());
                     }
                     else {
-                        final int position = buffer.length();
+                        int position = buffer.length();
                         escapeAndUnescapeSymbols(child.getText(), "", "\"'n", buffer);
                         fixAllTripleDoubleQuotes(buffer, position);
                     }
                 }
             }
             else {
-                final int position = buffer.length();
+                int position = buffer.length();
                 escapeAndUnescapeSymbols(value, "", "\"'n", buffer);
                 fixAllTripleDoubleQuotes(buffer, position);
             }

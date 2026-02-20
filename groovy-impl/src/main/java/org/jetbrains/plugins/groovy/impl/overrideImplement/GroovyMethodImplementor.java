@@ -56,7 +56,7 @@ public class GroovyMethodImplementor implements MethodImplementor {
       return PsiMethod.EMPTY_ARRAY;
     }
 
-    final PsiClass containingClass = method.getContainingClass();
+    PsiClass containingClass = method.getContainingClass();
     PsiSubstitutor substitutor = inClass.isInheritor(containingClass, true) ? TypeConversionUtil.getSuperClassSubstitutor(containingClass,
                                                                                                                           inClass,
                                                                                                                           PsiSubstitutor.EMPTY) : PsiSubstitutor.EMPTY;
@@ -73,10 +73,10 @@ public class GroovyMethodImplementor implements MethodImplementor {
 
   @Nonnull
   @Override
-  public Consumer<PsiMethod> createDecorator(final PsiClass targetClass,
-                                             final PsiMethod baseMethod,
-                                             final boolean toCopyJavaDoc,
-                                             final boolean insertOverrideIfPossible) {
+  public Consumer<PsiMethod> createDecorator(PsiClass targetClass,
+                                             PsiMethod baseMethod,
+                                             boolean toCopyJavaDoc,
+                                             boolean insertOverrideIfPossible) {
     return new PsiMethodConsumer(targetClass, toCopyJavaDoc, baseMethod, insertOverrideIfPossible);
   }
 

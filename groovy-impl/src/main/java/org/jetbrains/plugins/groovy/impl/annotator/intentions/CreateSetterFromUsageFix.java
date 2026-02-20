@@ -45,7 +45,7 @@ public class CreateSetterFromUsageFix extends CreateMethodFromUsageFix implement
     @Override
     @RequiredReadAction
     protected PsiType[] getArgumentTypes() {
-        final GrReferenceExpression ref = getRefExpr();
+        GrReferenceExpression ref = getRefExpr();
         assert PsiUtil.isLValue(ref);
         PsiType initializer = TypeInferenceHelper.getInitializerTypeFor(ref);
         if (initializer == null || initializer == PsiType.NULL) {

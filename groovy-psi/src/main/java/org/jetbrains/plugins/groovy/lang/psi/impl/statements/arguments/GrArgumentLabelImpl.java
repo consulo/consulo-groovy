@@ -141,25 +141,25 @@ public class GrArgumentLabelImpl extends GroovyPsiElementImpl implements GrArgum
 
   @Override
   public PsiReference getReference() {
-    final PsiElement name = getNameElement();
+    PsiElement name = getNameElement();
     return name instanceof GrLiteral || name instanceof LeafPsiElement ? this : null;
   }
 
   @Override
   @Nullable
   public String getName() {
-    final PsiElement element = getNameElement();
+    PsiElement element = getNameElement();
     if (element instanceof GrLiteral) {
       return convertToString(((GrLiteral)element).getValue());
     }
     if (element instanceof GrExpression) {
-      final Object value = JavaPsiFacade.getInstance(getProject()).getConstantEvaluationHelper().computeConstantExpression(element);
+      Object value = JavaPsiFacade.getInstance(getProject()).getConstantEvaluationHelper().computeConstantExpression(element);
       if (value instanceof String) {
         return (String)value;
       }
     }
 
-    final IElementType elemType = element.getNode().getElementType();
+    IElementType elemType = element.getNode().getElementType();
     if (GroovyTokenTypes.mIDENT == elemType || TokenSets.KEYWORDS.contains(elemType)) {
       return element.getText();
     }
@@ -197,15 +197,15 @@ public class GrArgumentLabelImpl extends GroovyPsiElementImpl implements GrArgum
   @Nonnull
   @Override
   public GroovyResolveResult[] multiResolve(boolean incompleteCode) {
-    final ResolveResult[] results = getRealReference().multiResolve(incompleteCode);
+    ResolveResult[] results = getRealReference().multiResolve(incompleteCode);
     if (results instanceof GroovyResolveResult[]) {
       return (GroovyResolveResult[])results;
     }
     else {
-      final GroovyResolveResult[] results1 = new GroovyResolveResult[results.length];
+      GroovyResolveResult[] results1 = new GroovyResolveResult[results.length];
       for (int i = 0; i < results.length; i++) {
         ResolveResult result = results[i];
-        final PsiElement element = result.getElement();
+        PsiElement element = result.getElement();
         if (element == null) {
           results1[i] = GroovyResolveResult.EMPTY_RESULT;
         }
@@ -269,14 +269,14 @@ public class GrArgumentLabelImpl extends GroovyPsiElementImpl implements GrArgum
   @Override
   @Nonnull
   public PsiElement getNameElement() {
-    final PsiElement element = getFirstChild();
+    PsiElement element = getFirstChild();
     assert element != null;
     return element;
   }
 
   @Override
   public GrExpression getExpression() {
-    final PsiElement nameElement = getNameElement();
+    PsiElement nameElement = getNameElement();
     if (nameElement instanceof GrParenthesizedExpression) return ((GrParenthesizedExpression)nameElement).getOperand();
     return null;
   }
@@ -294,7 +294,7 @@ public class GrArgumentLabelImpl extends GroovyPsiElementImpl implements GrArgum
       return ((GrParenthesizedExpression)el).getType();
     }
 
-    final ASTNode node = el.getNode();
+    ASTNode node = el.getNode();
     if (node == null) {
       return null;
     }
@@ -308,7 +308,7 @@ public class GrArgumentLabelImpl extends GroovyPsiElementImpl implements GrArgum
 
   @Override
   public GrNamedArgument getNamedArgument() {
-    final PsiElement parent = getParent();
+    PsiElement parent = getParent();
     assert parent instanceof GrNamedArgument;
     return (GrNamedArgument)parent;
   }

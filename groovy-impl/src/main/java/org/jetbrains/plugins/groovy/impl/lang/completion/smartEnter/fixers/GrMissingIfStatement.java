@@ -36,9 +36,9 @@ public class GrMissingIfStatement extends SmartEnterProcessorWithFixers.Fixer<Gr
     if (!(psiElement instanceof GrIfStatement)) return;
 
     GrIfStatement ifStatement = (GrIfStatement) psiElement;
-    final Document document = editor.getDocument();
-    final GrStatement elseBranch = ifStatement.getElseBranch();
-    final PsiElement elseElement = ifStatement.getElseKeyword();
+    Document document = editor.getDocument();
+    GrStatement elseBranch = ifStatement.getElseBranch();
+    PsiElement elseElement = ifStatement.getElseKeyword();
 
     if (elseElement != null && (elseBranch == null || !(elseBranch instanceof GrBlockStatement) &&
             GrForBodyFixer.startLine(editor.getDocument(), elseBranch) > GrForBodyFixer.startLine(editor.getDocument(), elseElement))) {
@@ -57,7 +57,7 @@ public class GrMissingIfStatement extends SmartEnterProcessorWithFixers.Fixer<Gr
       transformingOneLiner = true;
     }
 
-    final PsiElement rParenth = ifStatement.getRParenth();
+    PsiElement rParenth = ifStatement.getRParenth();
     if (rParenth == null) return;
 
     if (elseBranch == null && !transformingOneLiner || thenBranch == null) {

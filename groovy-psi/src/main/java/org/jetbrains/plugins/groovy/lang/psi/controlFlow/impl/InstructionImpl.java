@@ -48,7 +48,7 @@ public class InstructionImpl implements Instruction {
   }
 
   public Iterable<? extends Instruction> successors(CallEnvironment environment) {
-    final Deque<CallInstruction> stack = environment.callStack(this);
+    Deque<CallInstruction> stack = environment.callStack(this);
     for (InstructionImpl instruction : mySuccessors) {
       environment.update(stack, instruction);
     }
@@ -57,7 +57,7 @@ public class InstructionImpl implements Instruction {
   }
 
   public Iterable<? extends Instruction> predecessors(CallEnvironment environment) {
-    final Deque<CallInstruction> stack = environment.callStack(this);
+    Deque<CallInstruction> stack = environment.callStack(this);
     for (InstructionImpl instruction : myPredecessors) {
       environment.update(stack, instruction);
     }
@@ -74,7 +74,7 @@ public class InstructionImpl implements Instruction {
   }
 
   public String toString() {
-    final StringBuilder builder = new StringBuilder();
+    StringBuilder builder = new StringBuilder();
     builder.append(myNumber);
     builder.append("(");
     for (InstructionImpl successor : mySuccessors) {

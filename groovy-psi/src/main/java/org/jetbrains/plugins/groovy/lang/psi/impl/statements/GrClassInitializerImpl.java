@@ -67,7 +67,7 @@ public class GrClassInitializerImpl extends GroovyPsiElementImpl implements GrCl
   public PsiClass getContainingClass() {
     PsiElement parent = getParent();
     if (parent instanceof GrTypeDefinitionBody) {
-      final PsiElement pparent = parent.getParent();
+      PsiElement pparent = parent.getParent();
       if (pparent instanceof PsiClass) {
         return (PsiClass) pparent;
       }

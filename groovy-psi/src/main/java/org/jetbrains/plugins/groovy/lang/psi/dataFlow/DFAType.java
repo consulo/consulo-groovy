@@ -91,7 +91,7 @@ public class DFAType {
     if (obj == this) return true;
     if (!(obj instanceof DFAType)) return false;
 
-    final DFAType other = (DFAType)obj;
+    DFAType other = (DFAType)obj;
 
     if (!eq(primary, other.primary)) return false;
 
@@ -111,14 +111,14 @@ public class DFAType {
   }
 
   public DFAType negate(@Nonnull Instruction instruction) {
-    final DFAType type = new DFAType(primary);
+    DFAType type = new DFAType(primary);
 
     for (Mixin mixin : mixins) {
       type.mixins.add(mixin);
     }
 
     for (NegatingGotoInstruction negation: instruction.getNegatingGotoInstruction()) {
-      final Set<ConditionInstruction> conditionsToNegate = negation.getCondition().getDependentConditions();
+      Set<ConditionInstruction> conditionsToNegate = negation.getCondition().getDependentConditions();
 
       for (ListIterator<Mixin> iterator = type.mixins.listIterator(); iterator.hasNext(); ) {
         Mixin mixin = iterator.next();
@@ -159,8 +159,8 @@ public class DFAType {
   public static DFAType create(DFAType t1, DFAType t2, PsiManager manager) {
     if (t1.equals(t2)) return t1;
 
-    final PsiType primary = TypesUtil.getLeastUpperBoundNullable(t1.primary, t2.primary, manager);
-    final DFAType type = new DFAType(primary);
+    PsiType primary = TypesUtil.getLeastUpperBoundNullable(t1.primary, t2.primary, manager);
+    DFAType type = new DFAType(primary);
 
     for (Mixin mixin1 : t1.mixins) {
       for (Mixin mixin2 : t2.mixins) {

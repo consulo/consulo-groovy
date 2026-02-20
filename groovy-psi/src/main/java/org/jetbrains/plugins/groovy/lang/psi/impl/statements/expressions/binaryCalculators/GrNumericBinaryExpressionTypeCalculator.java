@@ -36,7 +36,7 @@ public class GrNumericBinaryExpressionTypeCalculator implements Function<GrBinar
   @Override
   public PsiType apply(GrBinaryFacade e) {
 
-    final GroovyResolveResult resolveResult = PsiImplUtil.extractUniqueResult(e.multiResolve(false));
+    GroovyResolveResult resolveResult = PsiImplUtil.extractUniqueResult(e.multiResolve(false));
     if (resolveResult.isApplicable() && !PsiUtil.isDGMMethod(resolveResult.getElement())) {
       return ResolveUtil.extractReturnTypeFromCandidate(resolveResult, e.getPsiElement(), new PsiType[]{GrBinaryExpressionUtil.getRightType(e)});
     }

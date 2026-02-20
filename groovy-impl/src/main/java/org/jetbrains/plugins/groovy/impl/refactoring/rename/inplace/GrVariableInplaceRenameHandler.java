@@ -41,10 +41,10 @@ public class GrVariableInplaceRenameHandler extends VariableInplaceRenameHandler
     if (!(element instanceof GrVariable)) return false;
     if (element instanceof GrField) return false;
 
-    final SearchScope scope = element.getUseScope();
+    SearchScope scope = element.getUseScope();
     if (!(scope instanceof LocalSearchScope)) return false;
 
-    final PsiElement[] scopeElements = ((LocalSearchScope)scope).getScope();
+    PsiElement[] scopeElements = ((LocalSearchScope)scope).getScope();
     return scopeElements.length == 1 ||
       scopeElements.length == 2 && (scopeElements[0] instanceof GrDocComment ^ scopeElements[1] instanceof GrDocComment);
   }

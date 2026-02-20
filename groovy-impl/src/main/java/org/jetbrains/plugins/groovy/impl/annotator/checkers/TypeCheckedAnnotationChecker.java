@@ -35,7 +35,7 @@ import org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames;
 public class TypeCheckedAnnotationChecker extends CustomAnnotationChecker {
   @Override
   public boolean checkArgumentList(@Nonnull AnnotationHolder holder, @Nonnull GrAnnotation annotation) {
-    final GrCodeReferenceElement classReference = annotation.getClassReference();
+    GrCodeReferenceElement classReference = annotation.getClassReference();
     PsiElement resolved = classReference.resolve();
     if (!(resolved instanceof PsiClass && GroovyCommonClassNames.GROOVY_TRANSFORM_TYPE_CHECKED.equals(((PsiClass)
       resolved).getQualifiedName()))) {

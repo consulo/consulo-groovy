@@ -56,7 +56,7 @@ public class GrForInClauseImpl extends GroovyPsiElementImpl implements GrForInCl
 
   @Override
   public GrParameter[] getParameters() {
-    final GrParameter declaredVariable = getDeclaredVariable();
+    GrParameter declaredVariable = getDeclaredVariable();
     return declaredVariable == null ? GrParameter.EMPTY_ARRAY : new GrParameter[]{declaredVariable};
   }
 

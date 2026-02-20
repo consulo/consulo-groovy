@@ -54,13 +54,13 @@ public class GrUnaryExpressionImpl extends GrExpressionImpl implements GrUnaryEx
     @Nullable
     @Override
     public PsiType apply(GrUnaryExpressionImpl unary) {
-      final GroovyResolveResult resolveResult = PsiImplUtil.extractUniqueResult(unary.multiResolve(false));
+      GroovyResolveResult resolveResult = PsiImplUtil.extractUniqueResult(unary.multiResolve(false));
 
       if (isIncDecNumber(resolveResult)) {
         return unary.getOperand().getType();
       }
 
-      final PsiType substituted = ResolveUtil.extractReturnTypeFromCandidate(resolveResult, unary, PsiType.EMPTY_ARRAY);
+      PsiType substituted = ResolveUtil.extractReturnTypeFromCandidate(resolveResult, unary, PsiType.EMPTY_ARRAY);
       if (substituted != null) {
         return substituted;
       }
@@ -68,7 +68,7 @@ public class GrUnaryExpressionImpl extends GrExpressionImpl implements GrUnaryEx
       GrExpression operand = unary.getOperand();
       if (operand == null) return null;
 
-      final PsiType type = operand.getType();
+      PsiType type = operand.getType();
       if (TypesUtil.isNumericType(type)) {
         return type;
       }
@@ -82,14 +82,14 @@ public class GrUnaryExpressionImpl extends GrExpressionImpl implements GrUnaryEx
 
       if (!(element instanceof PsiMethod)) return false;
 
-      final PsiMethod method = element instanceof GrGdkMethod ? ((GrGdkMethod)element).getStaticMethod() : (PsiMethod)element;
+      PsiMethod method = element instanceof GrGdkMethod ? ((GrGdkMethod)element).getStaticMethod() : (PsiMethod)element;
 
-      final String name = method.getName();
+      String name = method.getName();
       if (!"next".equals(name) && !"previous".equals(name)) return false;
 
       if (!PsiUtil.isDGMMethod(method)) return false;
 
-      final PsiParameter[] parameters = method.getParameterList().getParameters();
+      PsiParameter[] parameters = method.getParameterList().getParameters();
       if (parameters.length != 1) return false;
 
       if (!parameters[0].getType().equalsToText(CommonClassNames.JAVA_LANG_NUMBER)) return false;
@@ -102,10 +102,10 @@ public class GrUnaryExpressionImpl extends GrExpressionImpl implements GrUnaryEx
     @Nonnull
     @Override
     public GroovyResolveResult[] resolve(@Nonnull GrUnaryExpressionImpl unary, boolean incompleteCode) {
-      final GrExpression operand = unary.getOperand();
+      GrExpression operand = unary.getOperand();
       if (operand == null) return GroovyResolveResult.EMPTY_ARRAY;
 
-      final PsiType type = operand.getType();
+      PsiType type = operand.getType();
       if (type == null) return GroovyResolveResult.EMPTY_ARRAY;
 
       return TypesUtil.getOverloadedUnaryOperatorCandidates(type, unary.getOperationTokenType(), operand, PsiType.EMPTY_ARRAY);
@@ -170,8 +170,8 @@ public class GrUnaryExpressionImpl extends GrExpressionImpl implements GrUnaryEx
 
   @Override
   public TextRange getRangeInElement() {
-    final PsiElement opToken = getOperationToken();
-    final int offset = opToken.getStartOffsetInParent();
+    PsiElement opToken = getOperationToken();
+    int offset = opToken.getStartOffsetInParent();
     return new TextRange(offset, offset + opToken.getTextLength());
   }
 

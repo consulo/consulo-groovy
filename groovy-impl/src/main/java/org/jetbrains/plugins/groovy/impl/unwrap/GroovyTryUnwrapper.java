@@ -31,7 +31,7 @@ public class GroovyTryUnwrapper extends GroovyUnwrapper {
   }
 
   @Override
-  protected void doUnwrap(final PsiElement element, final Context context) throws IncorrectOperationException {
+  protected void doUnwrap(PsiElement element, Context context) throws IncorrectOperationException {
     GrTryCatchStatement trySt = (GrTryCatchStatement)element;
 
     context.extractFromCodeBlock(trySt.getTryBlock(), trySt);

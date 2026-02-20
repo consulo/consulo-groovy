@@ -60,14 +60,14 @@ public class RemoveUnnecessarySemicolonsIntention implements IntentionAction {
 
     @Override
     public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file) {
-        final SelectionModel selectionModel = editor.getSelectionModel();
+        SelectionModel selectionModel = editor.getSelectionModel();
         if (!(file instanceof GroovyFileBase)) {
             return false;
         }
 
         if (selectionModel.hasSelection()) {
-            final HighlighterIterator iterator = ((EditorEx) editor).getHighlighter().createIterator(selectionModel.getSelectionStart());
-            final int end = selectionModel.getSelectionEnd();
+            HighlighterIterator iterator = ((EditorEx) editor).getHighlighter().createIterator(selectionModel.getSelectionStart());
+            int end = selectionModel.getSelectionEnd();
             while (!iterator.atEnd()) {
                 if (iterator.getTokenType() == GroovyTokenTypes.mSEMI) {
                     return true;
@@ -84,7 +84,7 @@ public class RemoveUnnecessarySemicolonsIntention implements IntentionAction {
         if (offset >= editor.getDocument().getTextLength()) {
             offset = editor.getDocument().getTextLength() - 1;
         }
-        final PsiElement element = file.findElementAt(offset);
+        PsiElement element = file.findElementAt(offset);
         if (element == null) {
             return false;
         }
@@ -92,13 +92,13 @@ public class RemoveUnnecessarySemicolonsIntention implements IntentionAction {
             return true;
         }
 
-        final PsiElement next = PsiTreeUtil.nextLeaf(element);
+        PsiElement next = PsiTreeUtil.nextLeaf(element);
         if (next != null && next.getNode().getElementType() == GroovyTokenTypes.mSEMI) {
             return true;
         }
 
 
-        final PsiElement prev = PsiTreeUtil.prevLeaf(element);
+        PsiElement prev = PsiTreeUtil.prevLeaf(element);
         if (prev != null && prev.getNode().getElementType() == GroovyTokenTypes.mSEMI) {
             return true;
         }
@@ -108,12 +108,12 @@ public class RemoveUnnecessarySemicolonsIntention implements IntentionAction {
 
     @Override
     public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
-        final SelectionModel selectionModel = editor.getSelectionModel();
+        SelectionModel selectionModel = editor.getSelectionModel();
 
         Document document = editor.getDocument();
         if (selectionModel.hasSelection()) {
-            final int start = selectionModel.getSelectionStart();
-            final int end = selectionModel.getSelectionEnd();
+            int start = selectionModel.getSelectionStart();
+            int end = selectionModel.getSelectionEnd();
             final TextRange range = new TextRange(start, end);
 
             final ArrayList<PsiElement> semicolons = new ArrayList<PsiElement>();
@@ -124,7 +124,7 @@ public class RemoveUnnecessarySemicolonsIntention implements IntentionAction {
                         return;
                     }
 
-                    final IElementType elementType = element.getNode().getElementType();
+                    IElementType elementType = element.getNode().getElementType();
                     if (elementType == GroovyTokenTypes.mSEMI) {
                         semicolons.add(element);
                     }
@@ -154,7 +154,7 @@ public class RemoveUnnecessarySemicolonsIntention implements IntentionAction {
             if (offset >= document.getTextLength()) {
                 offset = document.getTextLength() - 1;
             }
-            final PsiElement element = file.findElementAt(offset);
+            PsiElement element = file.findElementAt(offset);
             if (element == null) {
                 return;
             }
@@ -203,20 +203,20 @@ public class RemoveUnnecessarySemicolonsIntention implements IntentionAction {
     }
 
     private static boolean isSemiColonUnnecessaryInCodeBlock(PsiElement semicolon, String text, Project project) {
-        final GrStatement prev = getPreviousStatement(semicolon, GrStatement.class);
-        final GrStatement next = getNextStatement(semicolon, GrStatement.class);
+        GrStatement prev = getPreviousStatement(semicolon, GrStatement.class);
+        GrStatement next = getNextStatement(semicolon, GrStatement.class);
 
         if (prev == null || next == null) {
             return true;
         }
 
-        final int startOffset = prev.getTextRange().getStartOffset();
-        final int endOffset = next.getTextRange().getEndOffset();
+        int startOffset = prev.getTextRange().getStartOffset();
+        int endOffset = next.getTextRange().getEndOffset();
 
-        final int offset = semicolon.getTextRange().getStartOffset();
-        final String statementWithoutSemicolon = text.substring(startOffset, offset) + text.substring(offset + 1, endOffset);
-        final GroovyFile file = GroovyPsiElementFactory.getInstance(project).createGroovyFile(statementWithoutSemicolon, false, null);
-        final GrStatement[] statements = file.getStatements();
+        int offset = semicolon.getTextRange().getStartOffset();
+        String statementWithoutSemicolon = text.substring(startOffset, offset) + text.substring(offset + 1, endOffset);
+        GroovyFile file = GroovyPsiElementFactory.getInstance(project).createGroovyFile(statementWithoutSemicolon, false, null);
+        GrStatement[] statements = file.getStatements();
         if (statements.length != 2) {
             return false;
         }
@@ -225,26 +225,26 @@ public class RemoveUnnecessarySemicolonsIntention implements IntentionAction {
     }
 
     private static boolean isSemiColonUnnecessaryInClassBody(PsiElement semicolon, String text, Project project) {
-        final GrMembersDeclaration prev = getPreviousStatement(semicolon, GrMembersDeclaration.class);
-        final GrMembersDeclaration next = getNextStatement(semicolon, GrMembersDeclaration.class);
+        GrMembersDeclaration prev = getPreviousStatement(semicolon, GrMembersDeclaration.class);
+        GrMembersDeclaration next = getNextStatement(semicolon, GrMembersDeclaration.class);
 
         if (prev == null || next == null) {
             return true;
         }
 
 
-        final int startOffset = prev.getTextRange().getStartOffset();
-        final int endOffset = next.getTextRange().getEndOffset();
+        int startOffset = prev.getTextRange().getStartOffset();
+        int endOffset = next.getTextRange().getEndOffset();
 
-        final int offset = semicolon.getTextRange().getStartOffset();
-        final String declarationsWithoutSemicolon = text.substring(startOffset, offset) + text.substring(offset + 1, endOffset);
+        int offset = semicolon.getTextRange().getStartOffset();
+        String declarationsWithoutSemicolon = text.substring(startOffset, offset) + text.substring(offset + 1, endOffset);
 
         PsiElement parent = semicolon.getParent().getParent();
 
         String prefix =
             parent instanceof GrClassDefinition ? "class" : parent instanceof GrEnumTypeDefinition ? "enum" : parent instanceof GrInterfaceDefinition ? "interface" : parent instanceof
                 GrAnnotationTypeDefinition ? "@interface" : parent instanceof GrAnonymousClassDefinition ? "class" : "class";
-        final GroovyFile file = GroovyPsiElementFactory.getInstance(project)
+        GroovyFile file = GroovyPsiElementFactory.getInstance(project)
             .createGroovyFile(
                 prefix + " Name {\n" + declarationsWithoutSemicolon + "\n}",
                 false,
@@ -276,7 +276,7 @@ public class RemoveUnnecessarySemicolonsIntention implements IntentionAction {
 
     @Nullable
     private static <T extends PsiElement> T getPreviousStatement(PsiElement semicolon, Class<T> instanceOf) {
-        final PsiElement prev = PsiUtil.skipWhitespacesAndComments(semicolon.getPrevSibling(), false);
+        PsiElement prev = PsiUtil.skipWhitespacesAndComments(semicolon.getPrevSibling(), false);
         if (instanceOf.isInstance(prev)) {
             return (T) prev;
         }
@@ -285,7 +285,7 @@ public class RemoveUnnecessarySemicolonsIntention implements IntentionAction {
 
     @Nullable
     private static <T extends PsiElement> T getNextStatement(PsiElement semicolon, Class<T> instaceOf) {
-        final PsiElement next = PsiUtil.skipWhitespacesAndComments(semicolon.getNextSibling(), true);
+        PsiElement next = PsiUtil.skipWhitespacesAndComments(semicolon.getNextSibling(), true);
         if (instaceOf.isInstance(next)) {
             return (T) next;
         }

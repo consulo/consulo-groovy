@@ -38,7 +38,7 @@ class GroovyMembersGetter extends MembersGetter {
     myExpectedType = JavaCompletionUtil.originalize(expectedType);
   }
 
-  public void processMembers(boolean searchInheritors, final Consumer<LookupElement> results) {
+  public void processMembers(boolean searchInheritors, Consumer<LookupElement> results) {
     processMembers(results, myExpectedType.resolve(), PsiTreeUtil.getParentOfType(myPlace, GrAnnotation.class) == null, searchInheritors);
   }
 

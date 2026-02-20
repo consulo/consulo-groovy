@@ -65,21 +65,21 @@ class ArgumentListGenerator {
       argInfos = GrClosureSignatureUtil.mapParametersToArguments(signature, namedArgs, exprs, clArgs, context, true, true);
     }
 
-    final PsiSubstitutor substitutor = signature == null ? PsiSubstitutor.EMPTY : signature.getSubstitutor();
+    PsiSubstitutor substitutor = signature == null ? PsiSubstitutor.EMPTY : signature.getSubstitutor();
     if (argInfos == null || NullUtils.hasNull(argInfos)) {
       generateSimple(exprs, namedArgs, clArgs, context, substitutor);
       return;
     }
 
-    final GrClosureParameter[] params = signature.getParameters();
+    GrClosureParameter[] params = signature.getParameters();
 
-    final Project project = context.getProject();
+    Project project = context.getProject();
     myBuilder.append('(');
     boolean hasCommaAtEnd = false;
     for (int i = 0; i < argInfos.length; i++) {
       GrClosureSignatureUtil.ArgInfo<PsiElement> arg = argInfos[i];
       if (arg == null) continue;
-      final GrClosureParameter param = params[i];
+      GrClosureParameter param = params[i];
       boolean generated = arg.isMultiArg ? generateMultiArg(arg, param, substitutor, project, context) : generateSingeArg(arg, param);
       if (generated) {
         hasCommaAtEnd = true;
@@ -98,10 +98,10 @@ class ArgumentListGenerator {
   private boolean generateSingeArg(GrClosureSignatureUtil.ArgInfo<PsiElement> arg, GrClosureParameter param) {
     boolean argExists = arg.args.size() > 0 && arg.args.get(0) != null;
     if (argExists) {
-      final PsiElement actual = arg.args.get(0);
+      PsiElement actual = arg.args.get(0);
       LOG.assertTrue(actual instanceof GrExpression);
-      final PsiType type = param.getType();
-      final PsiType declaredType = GenerationUtil.getDeclaredType((GrExpression)actual, myExpressionGenerator.getContext());
+      PsiType type = param.getType();
+      PsiType declaredType = GenerationUtil.getDeclaredType((GrExpression)actual, myExpressionGenerator.getContext());
       if (type != null && declaredType != null && !TypesUtil.isAssignableByMethodCallConversion(type, declaredType,(GrExpression)actual
       )) {
         myBuilder.append('(');
@@ -128,7 +128,7 @@ class ArgumentListGenerator {
                                    PsiSubstitutor substitutor,
                                    Project project,
                                    GroovyPsiElement context) {
-    final PsiType type = param.getType();
+    PsiType type = param.getType();
     //todo find out if param is array in case of it has declared type
 
     if (type instanceof PsiEllipsisType) {
@@ -166,7 +166,7 @@ class ArgumentListGenerator {
       }
     }
     else {
-      final GrExpression listOrMap = GroovyRefactoringUtil.generateArgFromMultiArg(substitutor, arg.args, type, project);
+      GrExpression listOrMap = GroovyRefactoringUtil.generateArgFromMultiArg(substitutor, arg.args, type, project);
       LOG.assertTrue(listOrMap instanceof GrListOrMap);
       listOrMap.accept(myExpressionGenerator);
     }
@@ -180,7 +180,7 @@ class ArgumentListGenerator {
                               PsiSubstitutor substitutor) {
     myBuilder.append('(');
     if (namedArgs.length > 0) {
-      final GrExpression listOrMap =
+      GrExpression listOrMap =
         GroovyRefactoringUtil.generateArgFromMultiArg(substitutor, Arrays.asList(namedArgs), null, context.getProject());
       LOG.assertTrue(listOrMap instanceof GrListOrMap);
       listOrMap.accept(myExpressionGenerator);

@@ -54,7 +54,7 @@ public class GrImmediateClosureSignatureImpl implements GrClosureSignature {
     LOG.assertTrue(substitutor.isValid());
 
     myReturnType = substitutor.substitute(returnType);
-    final int length = parameters.length;
+    int length = parameters.length;
     myParameters = new GrClosureParameter[length];
     for (int i = 0; i < length; i++) {
       myParameters[i] = new GrImmediateClosureParameterImpl(parameters[i], substitutor);
@@ -118,7 +118,7 @@ public class GrImmediateClosureSignatureImpl implements GrClosureSignature {
     for (GrClosureParameter parameter : myParameters) {
       if (!parameter.isValid()) return false;
     }
-    final PsiType returnType = getReturnType();
+    PsiType returnType = getReturnType();
     return returnType == null || returnType.isValid();
   }
 
@@ -146,13 +146,13 @@ public class GrImmediateClosureSignatureImpl implements GrClosureSignature {
     if (parameters1.length == parameters2.length) {
       GrClosureParameter[] params = new GrClosureParameter[parameters1.length];
       for (int i = 0; i < params.length; i++) {
-        final PsiType type = GenericsUtil.getGreatestLowerBound(parameters1[i].getType(), parameters2[i].getType());
+        PsiType type = GenericsUtil.getGreatestLowerBound(parameters1[i].getType(), parameters2[i].getType());
         boolean opt = parameters1[i].isOptional() && parameters2[i].isOptional();
         String name = StringUtil.equals(parameters1[i].getName(), parameters2[i].getName()) ? parameters1[i].getName() : null;
         params[i] = new GrImmediateClosureParameterImpl(type, name, opt, null);
       }
-      final PsiType s1type = signature1.getReturnType();
-      final PsiType s2type = signature2.getReturnType();
+      PsiType s1type = signature1.getReturnType();
+      PsiType s2type = signature2.getReturnType();
       PsiType returnType = null;
       if (s1type != null && s2type != null) {
         returnType = TypesUtil.getLeastUpperBound(s1type, s2type, manager);

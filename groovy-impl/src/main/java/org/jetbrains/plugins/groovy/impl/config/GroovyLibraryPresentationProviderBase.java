@@ -39,15 +39,15 @@ public abstract class GroovyLibraryPresentationProviderBase extends LibraryPrese
 
   @Override
   public String getDescription(@Nonnull GroovyLibraryProperties properties) {
-    final String version = properties.getVersion();
+    String version = properties.getVersion();
     return getLibraryCategoryName() + " library" + (version != null ? " of version " + version : ":");
   }
 
   @Override
   public GroovyLibraryProperties detect(@Nonnull List<VirtualFile> classesRoots) {
-    final VirtualFile[] libraryFiles = VfsUtilCore.toVirtualFileArray(classesRoots);
+    VirtualFile[] libraryFiles = VfsUtilCore.toVirtualFileArray(classesRoots);
     if (managesLibrary(libraryFiles)) {
-      final String version = getLibraryVersion(libraryFiles);
+      String version = getLibraryVersion(libraryFiles);
       return new GroovyLibraryProperties(version);
     }
     return null;
@@ -55,11 +55,11 @@ public abstract class GroovyLibraryPresentationProviderBase extends LibraryPrese
 
   protected abstract void fillLibrary(String path, LibraryEditor libraryEditor);
 
-  public abstract boolean managesLibrary(final VirtualFile[] libraryFiles);
+  public abstract boolean managesLibrary(VirtualFile[] libraryFiles);
 
   @Nullable
   @Nls
-  public abstract String getLibraryVersion(final VirtualFile[] libraryFiles);
+  public abstract String getLibraryVersion(VirtualFile[] libraryFiles);
 
   @Nonnull
   public abstract Image getIcon();

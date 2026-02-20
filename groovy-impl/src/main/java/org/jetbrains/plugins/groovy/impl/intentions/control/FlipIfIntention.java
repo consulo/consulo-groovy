@@ -41,10 +41,10 @@ public class FlipIfIntention extends Intention {
 
     @Override
     protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
-        final GrIfStatement ifStatement = DefaultGroovyMethods.asType(element.getParent(), GrIfStatement.class);
-        final GrIfStatement elseIf = getElseIf(ifStatement);
+        GrIfStatement ifStatement = DefaultGroovyMethods.asType(element.getParent(), GrIfStatement.class);
+        GrIfStatement elseIf = getElseIf(ifStatement);
 
-        final GrIfStatement elseIfCopy = DefaultGroovyMethods.asType(elseIf.copy(), GrIfStatement.class);
+        GrIfStatement elseIfCopy = DefaultGroovyMethods.asType(elseIf.copy(), GrIfStatement.class);
 
         elseIf.getCondition().replaceWithExpression(ifStatement.getCondition(), true);
         elseIf.getThenBranch().replaceWithStatement(ifStatement.getThenBranch());
@@ -66,16 +66,16 @@ public class FlipIfIntention extends Intention {
                     return false;
                 }
 
-                final GrIfStatement ifStatement = DefaultGroovyMethods.asType(element.getParent(), GrIfStatement.class);
+                GrIfStatement ifStatement = DefaultGroovyMethods.asType(element.getParent(), GrIfStatement.class);
 
-                final GrIfStatement elseIf = getElseIf(ifStatement);
+                GrIfStatement elseIf = getElseIf(ifStatement);
                 return elseIf != null && checkIf(ifStatement) && checkIf(elseIf);
             }
         };
     }
 
     private static GrIfStatement getElseIf(GrIfStatement ifStatement) {
-        final GrStatement elseBranch = ifStatement.getElseBranch();
+        GrStatement elseBranch = ifStatement.getElseBranch();
         if (elseBranch == null) {
             return null;
         }

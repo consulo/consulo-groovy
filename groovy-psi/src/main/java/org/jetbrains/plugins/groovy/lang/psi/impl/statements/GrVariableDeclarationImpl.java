@@ -101,7 +101,7 @@ public class GrVariableDeclarationImpl extends GrStubElementBase<EmptyStub> impl
 
   @Override
   public void setType(@Nullable PsiType type) {
-    final GrTypeElement typeElement = getTypeElementGroovy();
+    GrTypeElement typeElement = getTypeElementGroovy();
     if (type == null) {
       if (typeElement == null) return;
       if (getModifierList().getModifiers().length == 0) {
@@ -123,7 +123,7 @@ public class GrVariableDeclarationImpl extends GrStubElementBase<EmptyStub> impl
 
     if (typeElement == null) {
       getModifierList().setModifierProperty(GrModifier.DEF, false);
-      final GrVariable[] variables = getVariables();
+      GrVariable[] variables = getVariables();
       if (variables.length == 0) return;
       newTypeElement = (GrTypeElement)addBefore(newTypeElement, variables[0]);
     }
@@ -147,7 +147,7 @@ public class GrVariableDeclarationImpl extends GrStubElementBase<EmptyStub> impl
 
   @Override
   public void deleteChildInternal(@Nonnull ASTNode child) {
-    final PsiElement psi = child.getPsi();
+    PsiElement psi = child.getPsi();
     if (psi == getTupleInitializer()) {
       deleteChildInternal(findNotNullChildByType(GroovyTokenTypes.mASSIGN).getNode());
     }
@@ -157,7 +157,7 @@ public class GrVariableDeclarationImpl extends GrStubElementBase<EmptyStub> impl
   @Override
   public GrTypeElement getTypeElementGroovyForVariable(GrVariable var) {
     if (isTuple()) {
-      final PsiElement psiElement = PsiUtil.skipWhitespacesAndComments(var.getPrevSibling(), false);
+      PsiElement psiElement = PsiUtil.skipWhitespacesAndComments(var.getPrevSibling(), false);
       if (psiElement instanceof GrTypeElement) {
         return (GrTypeElement)psiElement;
       }
@@ -210,7 +210,7 @@ public class GrVariableDeclarationImpl extends GrStubElementBase<EmptyStub> impl
       return true;
     }
 
-    for (final GrVariable variable : getVariables()) {
+    for (GrVariable variable : getVariables()) {
       if (lastParent == variable) break;
       if (lastParent instanceof GrMethod && !(variable instanceof GrField)) break;
       if (!ResolveUtil.processElement(processor, variable, state)) return false;
@@ -236,7 +236,7 @@ public class GrVariableDeclarationImpl extends GrStubElementBase<EmptyStub> impl
   }
 
   private PsiElement findSuitableModifier() {
-    final GrModifierList list = getModifierList();
+    GrModifierList list = getModifierList();
 
     PsiElement defModifier = PsiUtil.findModifierInList(list, GrModifier.DEF);
     if (defModifier != null) return defModifier;

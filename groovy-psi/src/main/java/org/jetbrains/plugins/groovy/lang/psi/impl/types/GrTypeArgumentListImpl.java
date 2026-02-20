@@ -56,7 +56,7 @@ public class GrTypeArgumentListImpl extends GroovyPsiElementImpl implements GrTy
 	@Override
 	public PsiType[] getTypeArguments()
 	{
-		final GrTypeElement[] elements = getTypeArgumentElements();
+		GrTypeElement[] elements = getTypeArgumentElements();
 		if(elements.length == 0)
 		{
 			return PsiType.EMPTY_ARRAY;

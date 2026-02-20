@@ -53,14 +53,14 @@ public class GroovyOverlyComplexMethodInspection extends GroovyMethodMetricInspe
     private class Visitor extends BaseInspectionVisitor {
         public void visitMethod(GrMethod grMethod) {
             super.visitMethod(grMethod);
-            final int limit = getLimit();
-            final CyclomaticComplexityVisitor visitor = new CyclomaticComplexityVisitor();
-            final GrOpenBlock body = grMethod.getBlock();
+            int limit = getLimit();
+            CyclomaticComplexityVisitor visitor = new CyclomaticComplexityVisitor();
+            GrOpenBlock body = grMethod.getBlock();
             if (body == null) {
                 return;
             }
             body.accept(visitor);
-            final int complexity = visitor.getComplexity();
+            int complexity = visitor.getComplexity();
             if (complexity <= limit) {
                 return;
             }

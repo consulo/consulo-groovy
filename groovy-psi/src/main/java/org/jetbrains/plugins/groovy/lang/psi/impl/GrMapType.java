@@ -43,8 +43,8 @@ public abstract class GrMapType extends GrLiteralClassType {
     @Nonnull
     @Override
     protected PsiType[] compute() {
-      final PsiType[] keyTypes = getAllKeyTypes();
-      final PsiType[] valueTypes = getAllValueTypes();
+      PsiType[] keyTypes = getAllKeyTypes();
+      PsiType[] valueTypes = getAllValueTypes();
       if (keyTypes.length == 0 && valueTypes.length == 0) {
         return EMPTY_ARRAY;
       }
@@ -116,7 +116,7 @@ public abstract class GrMapType extends GrLiteralClassType {
         return "[:]";
       }
       String name = getJavaClassName();
-      final PsiType[] params = getParameters();
+      PsiType[] params = getParameters();
       return name + "<" + getInternalText(params[0]) + ", " + getInternalText(params[1]) + ">";
     }
 
@@ -128,7 +128,7 @@ public abstract class GrMapType extends GrLiteralClassType {
       components.add(getInternalCanonicalText(entry.first) + ":" + getInternalCanonicalText(entry.second));
     }
     boolean tooMany = components.size() > 2;
-    final List<String> theFirst = components.subList(0, Math.min(2, components.size()));
+    List<String> theFirst = components.subList(0, Math.min(2, components.size()));
     return "[" + StringUtil.join(theFirst, ", ") + (tooMany ? ",..." : "") + "]";
   }
 
@@ -152,9 +152,9 @@ public abstract class GrMapType extends GrLiteralClassType {
   }
 
   public static GrMapType merge(GrMapType l, GrMapType r) {
-    final GlobalSearchScope scope = l.getScope().intersectWith(r.getResolveScope());
+    GlobalSearchScope scope = l.getScope().intersectWith(r.getResolveScope());
 
-		final LinkedHashMap<String, PsiType> strings = new LinkedHashMap<>();
+		LinkedHashMap<String, PsiType> strings = new LinkedHashMap<>();
     strings.putAll(l.getStringEntries());
     strings.putAll(r.getStringEntries());
 

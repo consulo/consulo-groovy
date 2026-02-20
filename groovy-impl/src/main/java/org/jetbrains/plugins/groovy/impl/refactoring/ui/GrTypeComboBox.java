@@ -114,8 +114,8 @@ public class GrTypeComboBox extends ComboBox
   }
 
   public void addClosureTypesFrom(PsiType type, PsiElement context) {
-    final PsiElementFactory factory = JavaPsiFacade.getElementFactory(context.getProject());
-    final PsiType cl;
+    PsiElementFactory factory = JavaPsiFacade.getElementFactory(context.getProject());
+    PsiType cl;
     if (type == null) {
       cl = factory.createTypeFromText(GroovyCommonClassNames.GROOVY_LANG_CLOSURE, context);
     }
@@ -127,7 +127,7 @@ public class GrTypeComboBox extends ComboBox
 
   @Nullable
   public PsiType getSelectedType() {
-    final Object selected = getSelectedItem();
+    Object selected = getSelectedItem();
     assert selected instanceof PsiTypeItem;
     return ((PsiTypeItem)selected).getType();
   }
@@ -149,9 +149,9 @@ public class GrTypeComboBox extends ComboBox
     }
 
     Map<String, PsiType> map = new LinkedHashMap<String, PsiType>();
-    final PsiPrimitiveType unboxed = PsiPrimitiveType.getUnboxedType(type);
+    PsiPrimitiveType unboxed = PsiPrimitiveType.getUnboxedType(type);
     if (unboxed != null) type = unboxed;
-    final Set<PsiType> set = new LinkedHashSet<PsiType>();
+    Set<PsiType> set = new LinkedHashSet<PsiType>();
     set.add(type);
     while (!set.isEmpty()) {
       PsiType cur = set.iterator().next();
@@ -187,23 +187,23 @@ public class GrTypeComboBox extends ComboBox
   }
 
   public static void registerUpDownHint(JComponent component, final GrTypeComboBox combo) {
-    final AnAction arrow = new AnAction() {
+    AnAction arrow = new AnAction() {
       @Override
       public void actionPerformed(AnActionEvent e) {
         if (e.getInputEvent() instanceof KeyEvent) {
-          final int code = ((KeyEvent)e.getInputEvent()).getKeyCode();
+          int code = ((KeyEvent)e.getInputEvent()).getKeyCode();
           scrollBy(code == KeyEvent.VK_DOWN ? 1 : code == KeyEvent.VK_UP ? -1 : 0, combo);
         }
       }
     };
-    final KeyboardShortcut up = new KeyboardShortcut(KeyStroke.getKeyStroke(KeyEvent.VK_UP, InputEvent.ALT_DOWN_MASK), null);
-    final KeyboardShortcut down = new KeyboardShortcut(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, InputEvent.ALT_DOWN_MASK), null);
+    KeyboardShortcut up = new KeyboardShortcut(KeyStroke.getKeyStroke(KeyEvent.VK_UP, InputEvent.ALT_DOWN_MASK), null);
+    KeyboardShortcut down = new KeyboardShortcut(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, InputEvent.ALT_DOWN_MASK), null);
     arrow.registerCustomShortcutSet(new CustomShortcutSet(up, down), component);
   }
 
   private static void scrollBy(int delta, GrTypeComboBox combo) {
     if (delta == 0) return;
-    final int size = combo.getModel().getSize();
+    int size = combo.getModel().getSize();
     int next = combo.getSelectedIndex() + delta;
     if (next < 0 || next >= size) {
       if (!UISettings.getInstance().CYCLE_SCROLLING) {
@@ -220,11 +220,11 @@ public class GrTypeComboBox extends ComboBox
 
     private final boolean isClosure;
 
-    private PsiTypeItem(final PsiType type) {
+    private PsiTypeItem(PsiType type) {
       this(type, false);
     }
 
-    private PsiTypeItem(final PsiType type, boolean closure) {
+    private PsiTypeItem(PsiType type, boolean closure) {
       myType = type;
       isClosure = closure;
     }

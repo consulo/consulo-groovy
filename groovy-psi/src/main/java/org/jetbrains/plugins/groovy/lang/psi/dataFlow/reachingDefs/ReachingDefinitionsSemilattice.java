@@ -34,7 +34,7 @@ public class ReachingDefinitionsSemilattice implements Semilattice<DefinitionMap
     return result;
   }
 
-  public boolean eq(final DefinitionMap m1, final DefinitionMap m2) {
+  public boolean eq(DefinitionMap m1, DefinitionMap m2) {
     return m1.eq(m2);
   }
 }

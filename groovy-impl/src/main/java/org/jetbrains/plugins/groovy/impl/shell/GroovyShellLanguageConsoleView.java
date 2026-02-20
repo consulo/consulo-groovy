@@ -151,7 +151,7 @@ public class GroovyShellLanguageConsoleView extends LanguageConsoleImpl
 	@Override
 	protected String addToHistoryInner(@Nonnull TextRange textRange, @Nonnull EditorEx editor, boolean erase, boolean preserveMarkup)
 	{
-		final String result = super.addToHistoryInner(textRange, editor, erase, preserveMarkup);
+		String result = super.addToHistoryInner(textRange, editor, erase, preserveMarkup);
 
 		if("purge variables".equals(result.trim()))
 		{

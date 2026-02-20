@@ -73,7 +73,7 @@ public class InlineMethodConflictSolver {
     for (GrParameter parameter : method.getParameters()) {
       if (name.equals(parameter.getName())) return false;
     }
-    final GrOpenBlock block = method.getBlock();
+    GrOpenBlock block = method.getBlock();
     if (block != null) {
       return isValidNameDown(name, block, null);
     }

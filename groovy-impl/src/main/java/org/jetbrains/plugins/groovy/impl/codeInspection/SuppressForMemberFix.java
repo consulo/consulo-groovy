@@ -55,7 +55,7 @@ public class SuppressForMemberFix extends AbstractBatchSuppressByNoInspectionCom
 
     @Override
     @Nullable
-    public GrDocCommentOwner getContainer(final PsiElement context) {
+    public GrDocCommentOwner getContainer(PsiElement context) {
         if (context == null || context instanceof PsiFile) {
             return null;
         }
@@ -78,7 +78,7 @@ public class SuppressForMemberFix extends AbstractBatchSuppressByNoInspectionCom
         }
         if (myForClass) {
             while (container != null) {
-                final GrTypeDefinition parentClass = PsiTreeUtil.getParentOfType(container, GrTypeDefinition.class);
+                GrTypeDefinition parentClass = PsiTreeUtil.getParentOfType(container, GrTypeDefinition.class);
                 if (parentClass == null && container instanceof GrTypeDefinition) {
                     return container;
                 }
@@ -95,8 +95,8 @@ public class SuppressForMemberFix extends AbstractBatchSuppressByNoInspectionCom
     }
 
     @Override
-    public boolean isAvailable(@Nonnull final Project project, @Nonnull final PsiElement context) {
-        final GrDocCommentOwner container = getContainer(context);
+    public boolean isAvailable(@Nonnull Project project, @Nonnull PsiElement context) {
+        GrDocCommentOwner container = getContainer(context);
         myKey =
             container instanceof PsiClass ? "suppress.inspection.class" : container instanceof PsiMethod ? "suppress.inspection.method" : "suppress.inspection.field";
         return container != null && context.getManager().isInProject(context);
@@ -110,7 +110,7 @@ public class SuppressForMemberFix extends AbstractBatchSuppressByNoInspectionCom
     @Override
     protected void createSuppression(@Nonnull Project project, @Nonnull PsiElement element, @Nonnull PsiElement container)
         throws IncorrectOperationException {
-        final GrModifierList modifierList = (GrModifierList) ((PsiModifierListOwner) container).getModifierList();
+        GrModifierList modifierList = (GrModifierList) ((PsiModifierListOwner) container).getModifierList();
         if (modifierList != null) {
             addSuppressAnnotation(project, modifierList, myID);
         }
@@ -118,20 +118,20 @@ public class SuppressForMemberFix extends AbstractBatchSuppressByNoInspectionCom
     }
 
     private static void addSuppressAnnotation(
-        final Project project,
-        final GrModifierList modifierList,
-        final String id
+        Project project,
+        GrModifierList modifierList,
+        String id
     ) throws IncorrectOperationException {
         PsiAnnotation annotation = modifierList.findAnnotation(BatchSuppressManager.SUPPRESS_INSPECTIONS_ANNOTATION_NAME);
-        final GrExpression toAdd = GroovyPsiElementFactory.getInstance(project).createExpressionFromText("\"" + id + "\"");
+        GrExpression toAdd = GroovyPsiElementFactory.getInstance(project).createExpressionFromText("\"" + id + "\"");
         if (annotation != null) {
-            final PsiAnnotationMemberValue value = annotation.findDeclaredAttributeValue(null);
+            PsiAnnotationMemberValue value = annotation.findDeclaredAttributeValue(null);
             if (value instanceof GrAnnotationArrayInitializer) {
                 value.add(toAdd);
             }
             else if (value != null) {
                 GrAnnotation anno = GroovyPsiElementFactory.getInstance(project).createAnnotationFromText("@A([])");
-                final GrAnnotationArrayInitializer list = (GrAnnotationArrayInitializer) anno.findDeclaredAttributeValue(null);
+                GrAnnotationArrayInitializer list = (GrAnnotationArrayInitializer) anno.findDeclaredAttributeValue(null);
                 list.add(value);
                 list.add(toAdd);
                 annotation.setDeclaredAttributeValue(null, list);

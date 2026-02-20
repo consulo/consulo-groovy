@@ -45,8 +45,8 @@ public class SplitElseIfIntention extends Intention {
         Project project,
         Editor editor
     ) throws IncorrectOperationException {
-        final GrIfStatement parentStatement = (GrIfStatement) element;
-        final GrStatement elseBranch = parentStatement.getElseBranch();
+        GrIfStatement parentStatement = (GrIfStatement) element;
+        GrStatement elseBranch = parentStatement.getElseBranch();
         PsiImplUtil.replaceStatement("if(" + parentStatement.getCondition().getText() + ")" + parentStatement
             .getThenBranch().getText() +
             "else{\n" + elseBranch.getText() + "\n}", parentStatement);

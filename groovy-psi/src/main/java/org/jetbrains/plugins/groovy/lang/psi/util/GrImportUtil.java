@@ -36,7 +36,7 @@ public class GrImportUtil
 
 	public static boolean acceptName(GrReferenceElement ref, String expected)
 	{
-		final String actual = ref.getReferenceName();
+		String actual = ref.getReferenceName();
 		if(expected.equals(actual))
 		{
 			return true;
@@ -47,7 +47,7 @@ public class GrImportUtil
 			return false;
 		}
 
-		final PsiFile file = ref.getContainingFile();
+		PsiFile file = ref.getContainingFile();
 		if(file instanceof GroovyFile)
 		{
 			MultiMap<String, String> data = KEY.getCachedValue(file);
@@ -57,7 +57,7 @@ public class GrImportUtil
 				KEY.putCachedValue(file, data);
 			}
 
-			final Collection<String> aliases = data.get(expected);
+			Collection<String> aliases = data.get(expected);
 			return aliases.contains(actual);
 		}
 
@@ -74,10 +74,10 @@ public class GrImportUtil
 		{
 			if(anImport.isAliasedImport())
 			{
-				final GrCodeReferenceElement importReference = anImport.getImportReference();
+				GrCodeReferenceElement importReference = anImport.getImportReference();
 				if(importReference != null)
 				{
-					final String refName = importReference.getReferenceName();
+					String refName = importReference.getReferenceName();
 					if(refName != null)
 					{
 						aliases.putValue(refName, anImport.getImportedName());

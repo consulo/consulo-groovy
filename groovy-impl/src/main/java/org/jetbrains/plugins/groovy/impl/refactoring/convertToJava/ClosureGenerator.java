@@ -63,7 +63,7 @@ public class ClosureGenerator {
     writeTypeForNew(builder, closure.getType(), closure);
     builder.append('(');
 
-    final CharSequence owner = getOwner(closure);
+    CharSequence owner = getOwner(closure);
     builder.append(owner);
     builder.append(", ");
     builder.append(owner);
@@ -72,9 +72,9 @@ public class ClosureGenerator {
 
     generateClosureMainMethod(closure);
 
-    final ClassItemGeneratorImpl generator = new ClassItemGeneratorImpl(context);
-    final GrMethod method = generateClosureMethod(closure);
-    final GrReflectedMethod[] reflectedMethods = method.getReflectedMethods();
+    ClassItemGeneratorImpl generator = new ClassItemGeneratorImpl(context);
+    GrMethod method = generateClosureMethod(closure);
+    GrReflectedMethod[] reflectedMethods = method.getReflectedMethods();
 
     if (reflectedMethods.length > 0) {
       for (GrReflectedMethod reflectedMethod : reflectedMethods) {
@@ -89,10 +89,10 @@ public class ClosureGenerator {
 
   private void generateClosureMainMethod(@Nonnull GrClosableBlock block) {
     builder.append("public ");
-    final PsiType returnType = block.getReturnType();
+    PsiType returnType = block.getReturnType();
     writeType(builder, returnType, block);
     builder.append(" doCall");
-    final GrParameter[] parameters = block.getAllParameters();
+    GrParameter[] parameters = block.getAllParameters();
     GenerationUtil.writeParameterList(builder, parameters, new GeneratorClassNameProvider(), context);
 
     Collection<GrStatement> myExitPoints = ControlFlowUtils.collectReturns(block);
@@ -105,18 +105,18 @@ public class ClosureGenerator {
 
   @Nonnull
   private GrMethod generateClosureMethod(@Nonnull GrClosableBlock block) {
-    final GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(context.project);
-    final GrMethod method = factory.createMethodFromText("def doCall(){}", block);
+    GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(context.project);
+    GrMethod method = factory.createMethodFromText("def doCall(){}", block);
 
     method.setReturnType(block.getReturnType());
     if (block.hasParametersSection()) {
       method.getParameterList().replace(block.getParameterList());
     }
     else {
-      final GrParameter[] allParameters = block.getAllParameters();
+      GrParameter[] allParameters = block.getAllParameters();
       LOG.assertTrue(allParameters.length == 1);
-      final GrParameter itParameter = allParameters[0];
-      final GrParameter parameter = factory.createParameter("it", itParameter.getType().getCanonicalText(), "null", block);
+      GrParameter itParameter = allParameters[0];
+      GrParameter parameter = factory.createParameter("it", itParameter.getType().getCanonicalText(), "null", block);
       method.getParameterList().add(parameter);
     }
     ((GroovyFileImpl)method.getContainingFile()).setContextNullable(null);
@@ -126,10 +126,10 @@ public class ClosureGenerator {
   @NonNls
   @Nonnull
   private CharSequence getOwner(@Nonnull GrClosableBlock closure) {
-    final GroovyPsiElement context = PsiTreeUtil.getParentOfType(closure, GrMember.class, GroovyFile.class);
+    GroovyPsiElement context = PsiTreeUtil.getParentOfType(closure, GrMember.class, GroovyFile.class);
     LOG.assertTrue(context != null);
 
-    final PsiClass contextClass;
+    PsiClass contextClass;
     if (context instanceof GroovyFile) {
       contextClass = ((GroovyFile)context).getScriptClass();
     }
@@ -150,12 +150,12 @@ public class ClosureGenerator {
 
     if (contextClass == null) return "null";
 
-    final PsiElement implicitClass = GenerationUtil.getWrappingImplicitClass(closure);
+    PsiElement implicitClass = GenerationUtil.getWrappingImplicitClass(closure);
     if (implicitClass == null) {
       return "this";
     }
     else {
-      final StringBuilder buffer = new StringBuilder();
+      StringBuilder buffer = new StringBuilder();
       GenerationUtil.writeThisReference(contextClass, buffer, this.context);
       return buffer;
     }

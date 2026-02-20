@@ -56,7 +56,7 @@ public class GrDGMTypeCalculator extends GrCallExpressionTypeCalculator {
       resolved = ((GrGdkMethod)resolved).getStaticMethod();
     }
 
-    final PsiClass containingClass = resolved.getContainingClass();
+    PsiClass containingClass = resolved.getContainingClass();
     if (containingClass == null || !GroovyCommonClassNames.DEFAULT_GROOVY_METHODS.equals(containingClass.getQualifiedName())) return null;
 
     GrExpression qualifier = getQualifier(callExpression);
@@ -64,7 +64,7 @@ public class GrDGMTypeCalculator extends GrCallExpressionTypeCalculator {
 
     String name = resolved.getName();
     if ("find".equals(name)) {
-      final PsiType type = qualifier.getType();
+      PsiType type = qualifier.getType();
       if (type instanceof PsiArrayType) return ((PsiArrayType)type).getComponentType();
     }
 

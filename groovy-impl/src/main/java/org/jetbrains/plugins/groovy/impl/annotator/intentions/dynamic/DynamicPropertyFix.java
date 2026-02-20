@@ -105,7 +105,7 @@ public class DynamicPropertyFix extends GroovyFix implements SyntheticIntentionA
      * for tests
      */
     public void invoke(Project project) throws IncorrectOperationException {
-        final DynamicElementSettings settings;
+        DynamicElementSettings settings;
         if (myReferenceExpression != null) {
             settings = QuickfixUtil.createSettings(myReferenceExpression);
         }

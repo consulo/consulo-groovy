@@ -30,13 +30,13 @@ public class GrSourceFilterScope extends DelegatingGlobalSearchScope
 {
 	private final ProjectFileIndex myIndex;
 
-	public GrSourceFilterScope(@Nonnull final GlobalSearchScope delegate)
+	public GrSourceFilterScope(@Nonnull GlobalSearchScope delegate)
 	{
 		super(delegate, "groovy.sourceFilter");
 		myIndex = getProject() == null ? null : ProjectRootManager.getInstance(getProject()).getFileIndex();
 	}
 
-	public boolean contains(@Nonnull final VirtualFile file)
+	public boolean contains(@Nonnull VirtualFile file)
 	{
 		return super.contains(file) && (myIndex == null || myIndex.isInSourceContent(file)) && GroovyFileType.GROOVY_FILE_TYPE == file.getFileType();
 	}

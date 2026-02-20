@@ -34,7 +34,7 @@ public class SideEffectChecker {
   }
 
   public static boolean mayHaveSideEffects(@Nonnull GrExpression exp) {
-    final SideEffectsVisitor visitor = new SideEffectsVisitor();
+    SideEffectsVisitor visitor = new SideEffectsVisitor();
     exp.accept(visitor);
     return visitor.mayHaveSideEffects();
   }
@@ -81,7 +81,7 @@ public class SideEffectChecker {
         return;
       }
       super.visitUnaryExpression(expression);
-      final IElementType tokenType = expression.getOperationTokenType();
+      IElementType tokenType = expression.getOperationTokenType();
       if (tokenType.equals(GroovyTokenTypes.mINC) ||
           tokenType.equals(GroovyTokenTypes.mDEC)) {
         mayHaveSideEffects = true;

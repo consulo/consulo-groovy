@@ -47,9 +47,9 @@ public class GroovyCodeStyleManagerImpl extends GroovyCodeStyleManager {
   public GrImportStatement addImport(@Nonnull GroovyFile psiFile,
                                      @Nonnull GrImportStatement statement) throws IncorrectOperationException {
     PsiElement anchor = getAnchorToInsertImportAfter(psiFile, statement);
-    final PsiElement result = psiFile.addAfter(statement, anchor);
+    PsiElement result = psiFile.addAfter(statement, anchor);
 
-    final GrImportStatement gImport = (GrImportStatement)result;
+    GrImportStatement gImport = (GrImportStatement)result;
     addLineFeedBefore(psiFile, gImport);
     addLineFeedAfter(psiFile, gImport);
     return gImport;
@@ -57,20 +57,20 @@ public class GroovyCodeStyleManagerImpl extends GroovyCodeStyleManager {
 
   @Nullable
   private PsiElement getShellComment(@Nonnull PsiElement psiFile) {
-    final ASTNode node = psiFile.getNode().findChildByType(GroovyTokenTypes.mSH_COMMENT);
+    ASTNode node = psiFile.getNode().findChildByType(GroovyTokenTypes.mSH_COMMENT);
     return node == null ? null : node.getPsi();
   }
 
   @Nullable
   private PsiElement getAnchorToInsertImportAfter(@Nonnull GroovyFile psiFile, @Nonnull GrImportStatement statement) {
-    final GroovyCodeStyleSettings settings = CodeStyleSettingsManager.getInstance(psiFile.getProject())
+    GroovyCodeStyleSettings settings = CodeStyleSettingsManager.getInstance(psiFile.getProject())
                                                                      .getCurrentSettings().getCustomSettings(GroovyCodeStyleSettings.class);
-    final PackageEntryTable layoutTable = settings.IMPORT_LAYOUT_TABLE;
-    final PackageEntry[] entries = layoutTable.getEntries();
+    PackageEntryTable layoutTable = settings.IMPORT_LAYOUT_TABLE;
+    PackageEntry[] entries = layoutTable.getEntries();
 
     GrImportStatement[] importStatements = psiFile.getImportStatements();
     if (importStatements.length == 0) {
-      final GrPackageDefinition definition = psiFile.getPackageDefinition();
+      GrPackageDefinition definition = psiFile.getPackageDefinition();
       if (definition != null) {
         return definition;
       }
@@ -78,14 +78,14 @@ public class GroovyCodeStyleManagerImpl extends GroovyCodeStyleManager {
       return getShellComment(psiFile);
     }
 
-    final Comparator<GrImportStatement> comparator = GroovyImportOptimizer.getComparator(settings);
+    Comparator<GrImportStatement> comparator = GroovyImportOptimizer.getComparator(settings);
 
-    final int idx = getPackageEntryIdx(entries, statement);
+    int idx = getPackageEntryIdx(entries, statement);
 
     PsiElement anchor = null;
 
     for (GrImportStatement importStatement : importStatements) {
-      final int i = getPackageEntryIdx(entries, importStatement);
+      int i = getPackageEntryIdx(entries, importStatement);
       if (i < idx) {
         anchor = importStatement;
       }
@@ -113,12 +113,12 @@ public class GroovyCodeStyleManagerImpl extends GroovyCodeStyleManager {
   }
 
   protected static int getPackageEntryIdx(@Nonnull PackageEntry[] entries, @Nonnull GrImportStatement statement) {
-    final GrCodeReferenceElement reference = statement.getImportReference();
+    GrCodeReferenceElement reference = statement.getImportReference();
     if (reference == null) {
       return -1;
     }
-    final String packageName = StringUtil.getPackageName(reference.getCanonicalText());
-    final boolean isStatic = statement.isStatic();
+    String packageName = StringUtil.getPackageName(reference.getCanonicalText());
+    boolean isStatic = statement.isStatic();
 
     int best = -1;
     int allOtherStatic = -1;
@@ -148,10 +148,10 @@ public class GroovyCodeStyleManagerImpl extends GroovyCodeStyleManager {
   }
 
   protected void addLineFeedBefore(@Nonnull PsiElement psiFile, @Nonnull GrImportStatement result) {
-    final GroovyCodeStyleSettings settings = CodeStyleSettingsManager.getInstance(psiFile.getProject())
+    GroovyCodeStyleSettings settings = CodeStyleSettingsManager.getInstance(psiFile.getProject())
                                                                      .getCurrentSettings().getCustomSettings(GroovyCodeStyleSettings.class);
-    final PackageEntryTable layoutTable = settings.IMPORT_LAYOUT_TABLE;
-    final PackageEntry[] entries = layoutTable.getEntries();
+    PackageEntryTable layoutTable = settings.IMPORT_LAYOUT_TABLE;
+    PackageEntry[] entries = layoutTable.getEntries();
 
     PsiElement prev = result.getPrevSibling();
     while (PsiImplUtil.isWhiteSpaceOrNls(prev)) {
@@ -165,9 +165,9 @@ public class GroovyCodeStyleManagerImpl extends GroovyCodeStyleManager {
     }
 
     if (prev instanceof GrImportStatement) {
-      final int idx_before = getPackageEntryIdx(entries, (GrImportStatement)prev);
-      final int idx = getPackageEntryIdx(entries, result);
-      final int spaceCount = getMaxSpaceCount(entries, idx_before, idx);
+      int idx_before = getPackageEntryIdx(entries, (GrImportStatement)prev);
+      int idx = getPackageEntryIdx(entries, result);
+      int spaceCount = getMaxSpaceCount(entries, idx_before, idx);
 
       //skip space and semicolon after import
       if (PsiImplUtil.isWhiteSpaceOrNls(prev.getNextSibling()) && PsiImplUtil.hasElementType(prev.getNextSibling().getNextSibling(),
@@ -183,10 +183,10 @@ public class GroovyCodeStyleManagerImpl extends GroovyCodeStyleManager {
   }
 
   protected void addLineFeedAfter(@Nonnull PsiElement psiFile, GrImportStatement result) {
-    final GroovyCodeStyleSettings settings = CodeStyleSettingsManager.getInstance(psiFile.getProject())
+    GroovyCodeStyleSettings settings = CodeStyleSettingsManager.getInstance(psiFile.getProject())
                                                                      .getCurrentSettings().getCustomSettings(GroovyCodeStyleSettings.class);
-    final PackageEntryTable layoutTable = settings.IMPORT_LAYOUT_TABLE;
-    final PackageEntry[] entries = layoutTable.getEntries();
+    PackageEntryTable layoutTable = settings.IMPORT_LAYOUT_TABLE;
+    PackageEntry[] entries = layoutTable.getEntries();
 
     PsiElement next = result.getNextSibling();
     if (PsiImplUtil.isWhiteSpaceOrNls(next)) {
@@ -199,9 +199,9 @@ public class GroovyCodeStyleManagerImpl extends GroovyCodeStyleManager {
       next = next.getNextSibling();
     }
     if (next instanceof GrImportStatement) {
-      final int idx_after = getPackageEntryIdx(entries, (GrImportStatement)next);
-      final int idx = getPackageEntryIdx(entries, result);
-      final int spaceCount = getMaxSpaceCount(entries, idx, idx_after);
+      int idx_after = getPackageEntryIdx(entries, (GrImportStatement)next);
+      int idx = getPackageEntryIdx(entries, result);
+      int spaceCount = getMaxSpaceCount(entries, idx, idx_after);
 
 
       ASTNode node = psiFile.getNode();

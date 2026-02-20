@@ -83,7 +83,7 @@ public class GroovyLiteralCopyPasteProcessor extends StringLiteralCopyPasteProce
     }
 
     if (elementAtSelectionStart.getTextRange().getEndOffset() < selectionEnd) {
-      final PsiElement elementAtSelectionEnd = file.findElementAt(selectionEnd);
+      PsiElement elementAtSelectionEnd = file.findElementAt(selectionEnd);
       if (elementAtSelectionEnd == null) {
         return null;
       }
@@ -93,7 +93,7 @@ public class GroovyLiteralCopyPasteProcessor extends StringLiteralCopyPasteProce
       }
     }
 
-    final TextRange textRange = elementAtSelectionStart.getTextRange();
+    TextRange textRange = elementAtSelectionStart.getTextRange();
 
     //content elements don't have quotes, so they are shorter than whole string literals
     if (elementType == mREGEX_CONTENT ||
@@ -112,12 +112,12 @@ public class GroovyLiteralCopyPasteProcessor extends StringLiteralCopyPasteProce
 
   @Override
   protected String getLineBreaker(@Nonnull PsiElement token) {
-    final String text = token.getParent().getText();
+    String text = token.getParent().getText();
     if (text.contains("'''") || text.contains("\"\"\"")) {
       return "\n";
     }
 
-    final IElementType type = token.getNode().getElementType();
+    IElementType type = token.getNode().getElementType();
     if (type == mGSTRING_LITERAL || type == mGSTRING_CONTENT) {
       return super.getLineBreaker(token);
     }
@@ -131,13 +131,13 @@ public class GroovyLiteralCopyPasteProcessor extends StringLiteralCopyPasteProce
 
   @Override
   public String preprocessOnPaste(Project project, PsiFile file, Editor editor, String text, RawText rawText) {
-    final Document document = editor.getDocument();
+    Document document = editor.getDocument();
     PsiDocumentManager.getInstance(project).commitDocument(document);
-    final SelectionModel selectionModel = editor.getSelectionModel();
+    SelectionModel selectionModel = editor.getSelectionModel();
 
     // pastes in block selection mode (column mode) are not handled by a CopyPasteProcessor
-    final int selectionStart = selectionModel.getSelectionStart();
-    final int selectionEnd = selectionModel.getSelectionEnd();
+    int selectionStart = selectionModel.getSelectionStart();
+    int selectionEnd = selectionModel.getSelectionEnd();
     PsiElement token = findLiteralTokenType(file, selectionStart, selectionEnd);
     if (token == null) {
       return text;
@@ -146,7 +146,7 @@ public class GroovyLiteralCopyPasteProcessor extends StringLiteralCopyPasteProce
     if (isStringLiteral(token)) {
       StringBuilder buffer = new StringBuilder(text.length());
       @NonNls String breaker = getLineBreaker(token);
-      final String[] lines = LineTokenizer.tokenize(text.toCharArray(), false, true);
+      String[] lines = LineTokenizer.tokenize(text.toCharArray(), false, true);
       for (int i = 0; i < lines.length; i++) {
         buffer.append(escapeCharCharacters(lines[i], token));
         if (i != lines.length - 1 || "\n".equals(breaker) && text.endsWith("\n")) {
@@ -178,7 +178,7 @@ public class GroovyLiteralCopyPasteProcessor extends StringLiteralCopyPasteProce
       GrStringUtil.unescapeCharacters(b, singleLine ? "'" : "'\"", true);
       for (int i = b.length() - 2; i >= 0; i--) {
         if (b.charAt(i) == '$') {
-          final char next = b.charAt(i + 1);
+          char next = b.charAt(i + 1);
           if (next != '{' && !Character.isLetter(next)) {
             b.insert(i, '\\');
           }
@@ -200,7 +200,7 @@ public class GroovyLiteralCopyPasteProcessor extends StringLiteralCopyPasteProce
   @Nonnull
   @Override
   protected String unescape(String s, PsiElement token) {
-    final IElementType tokenType = token.getNode().getElementType();
+    IElementType tokenType = token.getNode().getElementType();
 
     if (tokenType == mREGEX_CONTENT || tokenType == mREGEX_LITERAL) {
       return GrStringUtil.unescapeSlashyString(s);

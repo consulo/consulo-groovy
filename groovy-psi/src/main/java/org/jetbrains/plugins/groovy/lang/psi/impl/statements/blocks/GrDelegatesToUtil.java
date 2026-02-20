@@ -47,14 +47,14 @@ import jakarta.annotation.Nullable;
  */
 public class GrDelegatesToUtil {
   @Nullable
-  static DelegatesToInfo getDelegatesToInfo(@Nonnull PsiElement place, @Nonnull final GrClosableBlock closableBlock) {
+  static DelegatesToInfo getDelegatesToInfo(@Nonnull PsiElement place, @Nonnull GrClosableBlock closableBlock) {
     GrCall call = getContainingCall(closableBlock);
     if (call == null) return null;
 
     GroovyResolveResult result = resolveCall(call);
 
     if (GdkMethodUtil.isWithOrIdentity(result)) {
-      final GrExpression qualifier = inferCallQualifier((GrMethodCall)call);
+      GrExpression qualifier = inferCallQualifier((GrMethodCall)call);
       if (qualifier == null) return null;
 
       return new DelegatesToInfo(qualifier.getType(), Closure.DELEGATE_FIRST);
@@ -63,22 +63,22 @@ public class GrDelegatesToUtil {
     GrClosureSignature signature = inferSignature(result.getElement());
     if (signature == null) return null;
 
-    final GrClosureSignatureUtil.ArgInfo<PsiElement>[] map = mapArgs(place, call, signature);
+    GrClosureSignatureUtil.ArgInfo<PsiElement>[] map = mapArgs(place, call, signature);
     if (map == null) return null;
 
-    final PsiParameter parameter = findParameter(closableBlock, map, result);
+    PsiParameter parameter = findParameter(closableBlock, map, result);
     if (parameter == null) return null;
 
-    final PsiModifierList modifierList = parameter.getModifierList();
+    PsiModifierList modifierList = parameter.getModifierList();
     if (modifierList == null) return null;
 
-    final PsiAnnotation delegatesTo = modifierList.findAnnotation(GroovyCommonClassNames.GROOVY_LANG_DELEGATES_TO);
+    PsiAnnotation delegatesTo = modifierList.findAnnotation(GroovyCommonClassNames.GROOVY_LANG_DELEGATES_TO);
     if (delegatesTo == null) return null;
 
-    final PsiType type = inferDelegateType(delegatesTo, signature, map);
+    PsiType type = inferDelegateType(delegatesTo, signature, map);
     if (type == null) return null;
 
-    final int strategyValue = getStrategyValue(delegatesTo.findAttributeValue("strategy"));
+    int strategyValue = getStrategyValue(delegatesTo.findAttributeValue("strategy"));
     return new DelegatesToInfo(type, strategyValue);
   }
 
@@ -95,9 +95,9 @@ public class GrDelegatesToUtil {
       return GrClosureSignatureUtil.createSignature((PsiMethod)element, PsiSubstitutor.EMPTY);
     }
     else if (element instanceof GrVariable) {
-      final PsiType type = ((GrVariable)element).getTypeGroovy();
+      PsiType type = ((GrVariable)element).getTypeGroovy();
       if (type instanceof GrClosureType) {
-        final GrSignature signature = ((GrClosureType)type).getSignature();
+        GrSignature signature = ((GrClosureType)type).getSignature();
         if (signature instanceof GrClosureSignature) {
           return (GrClosureSignature)signature;
         }
@@ -110,9 +110,9 @@ public class GrDelegatesToUtil {
   private static PsiParameter findParameter(@Nonnull GrClosableBlock closableBlock,
                                             @Nonnull GrClosureSignatureUtil.ArgInfo<PsiElement>[] map,
                                             @Nonnull GroovyResolveResult result) {
-    final PsiElement element = result.getElement();
+    PsiElement element = result.getElement();
     if (element instanceof PsiMethod) {
-      final PsiParameter[] parameters = ((PsiMethod)element).getParameterList().getParameters();
+      PsiParameter[] parameters = ((PsiMethod)element).getParameterList().getParameters();
 
       for (int i = 0; i < map.length; i++) {
         if (map[i].args.contains(closableBlock)) return parameters[i];
@@ -126,7 +126,7 @@ public class GrDelegatesToUtil {
   private static PsiType inferDelegateType(@Nonnull PsiAnnotation delegatesTo,
                                            @Nonnull GrClosureSignature signature,
                                            @Nonnull GrClosureSignatureUtil.ArgInfo<PsiElement>[] map) {
-    final PsiAnnotationMemberValue value = delegatesTo.findDeclaredAttributeValue("value");
+    PsiAnnotationMemberValue value = delegatesTo.findDeclaredAttributeValue("value");
     if (value instanceof GrReferenceExpression) {
       return extractTypeFromClassType(((GrReferenceExpression)value).getType());
     }
@@ -139,10 +139,10 @@ public class GrDelegatesToUtil {
       String target = GrAnnotationUtil.inferStringAttribute(delegatesTo, "target");
       if (target == null) return null;
 
-      final int parameter = findTargetParameter(delegatesTo, target);
+      int parameter = findTargetParameter(delegatesTo, target);
       if (parameter >= 0) {
-        final PsiType type = map[parameter].type;
-        final Integer index = GrAnnotationUtil.inferIntegerAttribute(delegatesTo, "genericTypeIndex");
+        PsiType type = map[parameter].type;
+        Integer index = GrAnnotationUtil.inferIntegerAttribute(delegatesTo, "genericTypeIndex");
         if (index != null) {
           return inferGenericArgType(signature, type, index, parameter);
         }
@@ -163,18 +163,18 @@ public class GrDelegatesToUtil {
                                              int genericIndex,
                                              int param) {
     if (targetType instanceof PsiClassType) {
-      final PsiClassType.ClassResolveResult result = ((PsiClassType)targetType).resolveGenerics();
-      final PsiClass psiClass = result.getElement();
+      PsiClassType.ClassResolveResult result = ((PsiClassType)targetType).resolveGenerics();
+      PsiClass psiClass = result.getElement();
       if (psiClass != null) {
-        final PsiSubstitutor substitutor = result.getSubstitutor();
+        PsiSubstitutor substitutor = result.getSubstitutor();
 
-        final PsiType baseType = signature.getParameters()[param].getType();
-        final PsiClass baseClass = PsiUtil.resolveClassInClassTypeOnly(baseType);
+        PsiType baseType = signature.getParameters()[param].getType();
+        PsiClass baseClass = PsiUtil.resolveClassInClassTypeOnly(baseType);
 
         if (baseClass != null && InheritanceUtil.isInheritorOrSelf(psiClass, baseClass, true)) {
-          final PsiTypeParameter[] typeParameters = baseClass.getTypeParameters();
+          PsiTypeParameter[] typeParameters = baseClass.getTypeParameters();
           if (genericIndex < typeParameters.length) {
-            final PsiSubstitutor superClassSubstitutor = TypeConversionUtil.getSuperClassSubstitutor(baseClass, psiClass, substitutor);
+            PsiSubstitutor superClassSubstitutor = TypeConversionUtil.getSuperClassSubstitutor(baseClass, psiClass, substitutor);
             return superClassSubstitutor.substitute(typeParameters[genericIndex]);
           }
         }
@@ -185,17 +185,17 @@ public class GrDelegatesToUtil {
 
   private static int findTargetParameter(@Nonnull PsiAnnotation delegatesTo, @Nonnull String target) {
     //                                                 ann      mod.list    parameter   param.list
-    final PsiParameterList list = (PsiParameterList)delegatesTo.getParent().getParent().getParent();
+    PsiParameterList list = (PsiParameterList)delegatesTo.getParent().getParent().getParent();
 
     PsiParameter[] parameters = list.getParameters();
     for (int i = 0; i < parameters.length; i++) {
-      final PsiModifierList modifierList = parameters[i].getModifierList();
+      PsiModifierList modifierList = parameters[i].getModifierList();
       if (modifierList == null) continue;
 
-      final PsiAnnotation targetAnnotation = modifierList.findAnnotation(GroovyCommonClassNames.GROOVY_LANG_DELEGATES_TO_TARGET);
+      PsiAnnotation targetAnnotation = modifierList.findAnnotation(GroovyCommonClassNames.GROOVY_LANG_DELEGATES_TO_TARGET);
       if (targetAnnotation == null) continue;
 
-      final String value = GrAnnotationUtil.inferStringAttribute(targetAnnotation, "value");
+      String value = GrAnnotationUtil.inferStringAttribute(targetAnnotation, "value");
       if (value == null) continue;
 
       if (value.equals(target)) return i;
@@ -206,7 +206,7 @@ public class GrDelegatesToUtil {
 
   @Nullable
   private static GrExpression inferCallQualifier(@Nonnull GrMethodCall call) {
-    final GrExpression expression = call.getInvokedExpression();
+    GrExpression expression = call.getInvokedExpression();
     if (!(expression instanceof GrReferenceExpression)) return null;
     return ((GrReferenceExpression)expression).getQualifier();
   }
@@ -216,9 +216,9 @@ public class GrDelegatesToUtil {
     GroovyResolveResult result = GroovyResolveResult.EMPTY_RESULT;
 
     if (call instanceof GrMethodCall) {
-      final GrExpression invoked = ((GrMethodCall)call).getInvokedExpression();
+      GrExpression invoked = ((GrMethodCall)call).getInvokedExpression();
       if (invoked instanceof GrReferenceExpression) {
-        final GroovyResolveResult[] results = ((GrReferenceExpression)invoked).resolveByShape();
+        GroovyResolveResult[] results = ((GrReferenceExpression)invoked).resolveByShape();
         if (results.length == 1) {
           result = results[0];
         }
@@ -233,9 +233,9 @@ public class GrDelegatesToUtil {
   @Nullable
   private static PsiType extractTypeFromClassType(@Nullable PsiType type) {
     if (type instanceof PsiClassType) {
-      final PsiClass resolved = ((PsiClassType)type).resolve();
+      PsiClass resolved = ((PsiClassType)type).resolve();
       if (resolved != null && CommonClassNames.JAVA_LANG_CLASS.equals(resolved.getQualifiedName())) {
-        final PsiType[] parameters = ((PsiClassType)type).getParameters();
+        PsiType[] parameters = ((PsiClassType)type).getParameters();
         if (parameters.length == 1) {
           return parameters[0];
         }
@@ -247,7 +247,7 @@ public class GrDelegatesToUtil {
   private static int getStrategyValue(@Nullable PsiAnnotationMemberValue strategy) {
     if (strategy == null) return -1;
 
-    final String text = strategy.getText();
+    String text = strategy.getText();
     if ("0".equals(text)) return 0;
     if ("1".equals(text)) return 1;
     if ("2".equals(text)) return 2;
@@ -265,12 +265,12 @@ public class GrDelegatesToUtil {
 
   @Nullable
   static GrCall getContainingCall(@Nonnull GrClosableBlock closableBlock) {
-    final PsiElement parent = closableBlock.getParent();
+    PsiElement parent = closableBlock.getParent();
     if (parent instanceof GrCall && ArrayUtil.contains(closableBlock, ((GrCall)parent).getClosureArguments())) {
       return (GrCall)parent;
     }
     else if (parent instanceof GrArgumentList) {
-      final PsiElement parent1 = parent.getParent();
+      PsiElement parent1 = parent.getParent();
       if (parent1 instanceof GrCall) {
         return (GrCall)parent1;
       }

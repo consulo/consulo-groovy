@@ -171,8 +171,8 @@ public class GrTraitType extends PsiClassType {
       @Nullable
       @Override
       public Result<ClassResolveResult> compute() {
-        final GrTypeDefinition definition = new MockTypeBuilder().buildMockTypeDefinition();
-        final PsiSubstitutor substitutor = new SubstitutorBuilder(definition).buildSubstitutor();
+        GrTypeDefinition definition = new MockTypeBuilder().buildMockTypeDefinition();
+        PsiSubstitutor substitutor = new SubstitutorBuilder(definition).buildSubstitutor();
 
         return Result.<ClassResolveResult>create(new TraitResolveResult(definition, substitutor),
                                                  PsiModificationTracker.MODIFICATION_COUNT);

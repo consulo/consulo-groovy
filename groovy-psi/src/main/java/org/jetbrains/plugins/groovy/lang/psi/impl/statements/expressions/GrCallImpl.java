@@ -66,12 +66,12 @@ public abstract class GrCallImpl extends GroovyPsiElementImpl implements GrCall 
     }
 
     @Override
-    public GrNamedArgument addNamedArgument(final GrNamedArgument namedArgument) throws IncorrectOperationException {
+    public GrNamedArgument addNamedArgument(GrNamedArgument namedArgument) throws IncorrectOperationException {
         GrArgumentList list = getArgumentList();
         assert list != null;
         if (list.getText().trim().isEmpty()) {
-            final GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(getProject());
-            final GrArgumentList newList = factory.createExpressionArgumentList();
+            GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(getProject());
+            GrArgumentList newList = factory.createExpressionArgumentList();
             list = (GrArgumentList)list.replace(newList);
         }
         return list.addNamedArgument(namedArgument);

@@ -18,14 +18,14 @@ import java.util.List;
  * @author Dmitry Krasilschikov
  */
 public class ClassNode extends AbstractMvcPsiNodeDescriptor {
-  public ClassNode(@Nonnull final Module module,
-                   @Nonnull final GrTypeDefinition rClass,
-                   @Nullable final ViewSettings viewSettings) {
+  public ClassNode(@Nonnull Module module,
+                   @Nonnull GrTypeDefinition rClass,
+                   @Nullable ViewSettings viewSettings) {
     super(module, viewSettings, rClass, CLASS);
   }
 
   @Override
-  protected String getTestPresentationImpl(@Nonnull final PsiElement psiElement) {
+  protected String getTestPresentationImpl(@Nonnull PsiElement psiElement) {
     return "GrTypeDefinition: " + ((GrTypeDefinition)psiElement).getName();
   }
 
@@ -36,10 +36,10 @@ public class ClassNode extends AbstractMvcPsiNodeDescriptor {
 
   @Nullable
   protected Collection<AbstractTreeNode> getChildrenImpl() {
-    final List<AbstractTreeNode> children = new ArrayList<AbstractTreeNode>();
-    final Module module = getModule();
+    List<AbstractTreeNode> children = new ArrayList<AbstractTreeNode>();
+    Module module = getModule();
 
-    final GrTypeDefinition grTypeDefinition = extractPsiFromValue();
+    GrTypeDefinition grTypeDefinition = extractPsiFromValue();
     assert grTypeDefinition != null;
 
     buildChildren(module, grTypeDefinition, children);
@@ -47,12 +47,12 @@ public class ClassNode extends AbstractMvcPsiNodeDescriptor {
     return children.isEmpty() ? null : children;
   }
 
-  protected void buildChildren(final Module module, final GrTypeDefinition grClass, final List<AbstractTreeNode> children) {
-    final GrMethod[] methods = grClass.getCodeMethods();
-    for (final GrMethod method : methods) {
+  protected void buildChildren(Module module, GrTypeDefinition grClass, List<AbstractTreeNode> children) {
+    GrMethod[] methods = grClass.getCodeMethods();
+    for (GrMethod method : methods) {
       if (method.hasModifierProperty(PsiModifier.STATIC)) continue;
 
-      final MethodNode node = createNodeForMethod(module, method);
+      MethodNode node = createNodeForMethod(module, method);
       if (node != null) children.add(node);
     }
   }
@@ -63,7 +63,7 @@ public class ClassNode extends AbstractMvcPsiNodeDescriptor {
   }
 
   @Nullable
-  protected MethodNode createNodeForMethod(final Module module, final GrMethod method) {
+  protected MethodNode createNodeForMethod(Module module, GrMethod method) {
     return null;
   }
 

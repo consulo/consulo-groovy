@@ -121,7 +121,7 @@ class DeclarationCacheKey {
            '}';
   }
 
-  private List<DeclarationHolder> collectDeclarations(final PsiElement place) {
+  private List<DeclarationHolder> collectDeclarations(PsiElement place) {
     final ArrayList<DeclarationHolder> result = new ArrayList<DeclarationHolder>();
     PsiTreeUtil.treeWalkUp(place, null, new PairProcessor<PsiElement, PsiElement>() {
       @Override

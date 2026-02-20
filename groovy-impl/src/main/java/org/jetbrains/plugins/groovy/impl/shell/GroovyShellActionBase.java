@@ -54,7 +54,7 @@ public abstract class GroovyShellActionBase extends AnAction {
 
   private final Consumer<Module> RUNNER = new Consumer<Module>() {
     @Override
-    public void accept(final Module module) {
+    public void accept(Module module) {
       GroovyShellRunnerImpl.doRunShell(myConfig, module);
     }
   };
@@ -65,14 +65,14 @@ public abstract class GroovyShellActionBase extends AnAction {
 
   @Override
   public void update(AnActionEvent e) {
-    final Project project = e.getData(CommonDataKeys.PROJECT);
+    Project project = e.getData(CommonDataKeys.PROJECT);
     boolean enabled = project != null && hasGroovyCompatibleModule(project);
 
     e.getPresentation().setEnabled(enabled);
     e.getPresentation().setVisible(enabled);
   }
 
-  private boolean hasGroovyCompatibleModule(final Project project) {
+  private boolean hasGroovyCompatibleModule(Project project) {
     return CachedValuesManager.getManager(project).getCachedValue(project, APPLICABLE_MODULE_CACHE, () -> {
       Collection<Module> possibleModules = myConfig.getPossiblySuitableModules(project);
       return CachedValueProvider.Result.create(ModuleChooserUtil.hasGroovyCompatibleModules(possibleModules, APPLICABLE_MODULE),
@@ -82,7 +82,7 @@ public abstract class GroovyShellActionBase extends AnAction {
 
   @Override
   public void actionPerformed(AnActionEvent e) {
-    final Project project = e.getData(CommonDataKeys.PROJECT);
+    Project project = e.getData(CommonDataKeys.PROJECT);
     assert project != null;
     Collection<Module> suitableModules =
       ModuleChooserUtil.filterGroovyCompatibleModules(myConfig.getPossiblySuitableModules(project), APPLICABLE_MODULE);

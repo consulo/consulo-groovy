@@ -37,7 +37,7 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.PsiImplUtil;
 public class GrMethodCallFixer extends SmartEnterProcessorWithFixers.Fixer<GroovySmartEnterProcessor> {
   @Override
   public void apply(@Nonnull Editor editor, @Nonnull GroovySmartEnterProcessor processor, @Nonnull PsiElement psiElement) {
-    final GrArgumentList argList = psiElement instanceof GrCall ? ((GrCall)psiElement).getArgumentList() : null;
+    GrArgumentList argList = psiElement instanceof GrCall ? ((GrCall)psiElement).getArgumentList() : null;
     if (argList == null || argList instanceof GrCommandArgumentList) return;
 
     GrCall call = (GrCall)psiElement;
@@ -51,7 +51,7 @@ public class GrMethodCallFixer extends SmartEnterProcessorWithFixers.Fixer<Groov
     for (PsiElement child = argList.getFirstChild(); child != null; child = child.getNextSibling()) {
       if (!(child instanceof PsiErrorElement)) continue;
 
-      final PsiErrorElement errorElement = (PsiErrorElement)child;
+      PsiErrorElement errorElement = (PsiErrorElement)child;
       if (errorElement.getErrorDescription().contains("')'")) {
         endOffset = errorElement.getTextRange().getStartOffset();
         break;
@@ -62,7 +62,7 @@ public class GrMethodCallFixer extends SmartEnterProcessorWithFixers.Fixer<Groov
       endOffset = argList.getTextRange().getEndOffset();
     }
 
-    final GrExpression[] params = argList.getExpressionArguments();
+    GrExpression[] params = argList.getExpressionArguments();
     if (params.length > 0 && GrForBodyFixer.startLine(editor.getDocument(), argList) !=
                              GrForBodyFixer.startLine(editor.getDocument(), params[0])) {
       endOffset = argList.getTextRange().getStartOffset() + 1;

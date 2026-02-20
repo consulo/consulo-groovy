@@ -37,7 +37,7 @@ public class GrFinalListener {
     myEditor = editor;
   }
 
-  public void perform(final boolean generateFinal, GrVariable variable) {
+  public void perform(boolean generateFinal, GrVariable variable) {
     perform(generateFinal, PsiModifier.FINAL, variable);
   }
 
@@ -48,20 +48,20 @@ public class GrFinalListener {
     LOG.assertTrue(modifierList != null);
     final int textOffset = modifierList.getTextOffset();
 
-    final Runnable runnable = new Runnable() {
+    Runnable runnable = new Runnable() {
       public void run() {
         if (generateFinal) {
-          final GrTypeElement typeElement = variable.getTypeElementGroovy();
-          final int typeOffset = typeElement != null ? typeElement.getTextOffset() : textOffset;
+          GrTypeElement typeElement = variable.getTypeElementGroovy();
+          int typeOffset = typeElement != null ? typeElement.getTextOffset() : textOffset;
           document.insertString(typeOffset, modifier + " ");
         }
         else {
-          final int idx = modifierList.getText().indexOf(modifier);
+          int idx = modifierList.getText().indexOf(modifier);
           document.deleteString(textOffset + idx, textOffset + idx + modifier.length() + 1);
         }
       }
     };
-    final LookupEx lookup = LookupManager.getActiveLookup(myEditor);
+    LookupEx lookup = LookupManager.getActiveLookup(myEditor);
     if (lookup != null) {
       lookup.performGuardedChange(runnable);
     } else {

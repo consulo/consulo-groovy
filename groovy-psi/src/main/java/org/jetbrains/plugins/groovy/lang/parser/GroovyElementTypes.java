@@ -418,9 +418,9 @@ public interface GroovyElementTypes
 		public GrParameterStub deserialize(@Nonnull StubInputStream dataStream,
 				StubElement parentStub) throws IOException
 		{
-			final StringRef name = dataStream.readName();
-			final String[] annotations = GrStubUtils.readStringArray(dataStream);
-			final String typeText = GrStubUtils.readNullableString(dataStream);
+			StringRef name = dataStream.readName();
+			String[] annotations = GrStubUtils.readStringArray(dataStream);
+			String typeText = GrStubUtils.readNullableString(dataStream);
 			return new GrParameterStub(parentStub, name, annotations, typeText);
 		}
 	};

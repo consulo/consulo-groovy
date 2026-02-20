@@ -75,7 +75,7 @@ class GroovyConfigSlurperCompletionProvider implements CompletionProvider {
     GrReferenceExpression ref = (GrReferenceExpression)parameters.getPosition().getParent();
     if (ref == null) return;
 
-    final Map<String, Boolean> variants = new HashMap<String, Boolean>();
+    Map<String, Boolean> variants = new HashMap<String, Boolean>();
     collectVariants(variants::put, ref, groovyFile);
 
     if (variants.isEmpty()) return;

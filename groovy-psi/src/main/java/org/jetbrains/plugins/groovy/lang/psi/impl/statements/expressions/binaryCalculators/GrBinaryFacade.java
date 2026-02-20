@@ -40,7 +40,7 @@ public interface GrBinaryFacade {
   PsiElement getOperationToken();
 
   @Nonnull
-  GroovyResolveResult[] multiResolve(final boolean incompleteCode);
+  GroovyResolveResult[] multiResolve(boolean incompleteCode);
 
   @Nonnull
   GrExpression getPsiElement();

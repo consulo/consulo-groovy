@@ -52,11 +52,11 @@ public class GrLabelReference implements PsiReference {
 
   @Override
   public TextRange getRangeInElement() {
-    final PsiElement identifier = myStatement.getLabelIdentifier();
+    PsiElement identifier = myStatement.getLabelIdentifier();
     if (identifier == null) {
       return new TextRange(-1, -2);
     }
-    final int offsetInParent = identifier.getStartOffsetInParent();
+    int offsetInParent = identifier.getStartOffsetInParent();
     return new TextRange(offsetInParent, offsetInParent + identifier.getTextLength());
   }
 
@@ -68,7 +68,7 @@ public class GrLabelReference implements PsiReference {
   @Override
   @Nonnull
   public String getCanonicalText() {
-    final String name = myStatement.getLabelName();
+    String name = myStatement.getLabelName();
     if (name == null) return "";
     return name;
   }
@@ -90,7 +90,7 @@ public class GrLabelReference implements PsiReference {
   @Override
   @Nonnull
   public Object[] getVariants() {
-    final List<PsiElement> result = new ArrayList<PsiElement>();
+    List<PsiElement> result = new ArrayList<PsiElement>();
     PsiElement context = myStatement;
     while (context != null) {
       if (context instanceof GrLabeledStatement) {

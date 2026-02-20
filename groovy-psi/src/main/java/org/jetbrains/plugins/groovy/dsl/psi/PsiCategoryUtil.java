@@ -34,7 +34,7 @@ public class PsiCategoryUtil {
       PsiClassType classType = (PsiClassType)type;
       return classType.resolve();
     } else if (type instanceof PsiPrimitiveType) {
-      final PsiClassType boxed = ((PsiPrimitiveType)type).getBoxedType(place);
+      PsiClassType boxed = ((PsiPrimitiveType)type).getBoxedType(place);
       if (boxed != null) return boxed.resolve();
       else return null;
     } else {

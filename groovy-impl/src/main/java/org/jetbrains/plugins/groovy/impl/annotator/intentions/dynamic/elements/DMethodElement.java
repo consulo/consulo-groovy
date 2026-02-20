@@ -54,7 +54,7 @@ public class DMethodElement extends DItemElement {
 
   @Override
   @Nonnull
-  public PsiMethod getPsi(PsiManager manager, final String containingClassName) {
+  public PsiMethod getPsi(PsiManager manager, String containingClassName) {
     if (myImplicitMethod != null) {
       return myImplicitMethod;
     }

@@ -89,9 +89,9 @@ public class GrFieldImpl extends GrVariableBaseImpl<GrFieldStub> implements GrFi
 
   @Override
   public GrTypeElement getTypeElementGroovy() {
-    final GrFieldStub stub = getStub();
+    GrFieldStub stub = getStub();
     if (stub != null) {
-      final String typeText = stub.getTypeText();
+      String typeText = stub.getTypeText();
       if (typeText == null) {
         return null;
       }
@@ -138,7 +138,7 @@ public class GrFieldImpl extends GrVariableBaseImpl<GrFieldStub> implements GrFi
 
   @Override
   public boolean isDeprecated() {
-    final GrFieldStub stub = getStub();
+    GrFieldStub stub = getStub();
     if (stub != null) {
       return stub.isDeprecatedByDocTag() || PsiImplUtil.isDeprecatedByAnnotation(this);
     }
@@ -150,7 +150,7 @@ public class GrFieldImpl extends GrVariableBaseImpl<GrFieldStub> implements GrFi
   public PsiType getTypeGroovy() {
     PsiType type = TypeInferenceHelper.getCurrentContext().getExpressionType(this, field -> {
       if (getDeclaredType() == null && getInitializerGroovy() == null) {
-        final PsiType type1 = GrVariableEnhancer.getEnhancedType(field);
+        PsiType type1 = GrVariableEnhancer.getEnhancedType(field);
         if (type1 != null) {
           return type1;
         }
@@ -169,13 +169,13 @@ public class GrFieldImpl extends GrVariableBaseImpl<GrFieldStub> implements GrFi
   public PsiClass getContainingClass() {
     PsiElement parent = getParent().getParent();
     if (parent instanceof GrTypeDefinitionBody) {
-      final PsiElement pparent = parent.getParent();
+      PsiElement pparent = parent.getParent();
       if (pparent instanceof PsiClass) {
         return (PsiClass)pparent;
       }
     }
 
-    final PsiFile file = getContainingFile();
+    PsiFile file = getContainingFile();
     if (file instanceof GroovyFileBase) {
       return ((GroovyFileBase)file).getScriptClass();
     }
@@ -185,7 +185,7 @@ public class GrFieldImpl extends GrVariableBaseImpl<GrFieldStub> implements GrFi
 
   @Override
   public boolean isProperty() {
-    final GrFieldStub stub = getStub();
+    GrFieldStub stub = getStub();
     if (stub != null) {
       return stub.isProperty();
     }
@@ -229,7 +229,7 @@ public class GrFieldImpl extends GrVariableBaseImpl<GrFieldStub> implements GrFi
   @Nonnull
   @Override
   public String getName() {
-    final GrFieldStub stub = getStub();
+    GrFieldStub stub = getStub();
     if (stub != null) {
       return stub.getName();
     }
@@ -243,7 +243,7 @@ public class GrFieldImpl extends GrVariableBaseImpl<GrFieldStub> implements GrFi
 
   @Override
   public PsiElement getOriginalElement() {
-    final PsiClass containingClass = getContainingClass();
+    PsiClass containingClass = getContainingClass();
     if (containingClass == null) return this;
     PsiClass originalClass = (PsiClass)containingClass.getOriginalElement();
     PsiField originalField = originalClass.findFieldByName(getName(), false);
@@ -253,7 +253,7 @@ public class GrFieldImpl extends GrVariableBaseImpl<GrFieldStub> implements GrFi
   @Override
   @Nonnull
   public Map<String, NamedArgumentDescriptor> getNamedParameters() {
-    final GrFieldStub stub = getStub();
+    GrFieldStub stub = getStub();
     if (stub != null) {
       String[] namedParameters = stub.getNamedParameters();
       if (namedParameters.length == 0) return Collections.emptyMap();

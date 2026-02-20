@@ -115,7 +115,7 @@ public class GroovyExtractMethodDialog extends DialogWrapper {
         if (method != null && !validateMethod(method, myHelper)) {
             return;
         }
-        final GroovyApplicationSettings settings = GroovyApplicationSettings.getInstance();
+        GroovyApplicationSettings settings = GroovyApplicationSettings.getInstance();
         if (myCbSpecifyType.isEnabled()) {
             settings.EXTRACT_METHOD_SPECIFY_TYPE = myCbSpecifyType.isSelected();
         }
@@ -145,7 +145,7 @@ public class GroovyExtractMethodDialog extends DialogWrapper {
         myHelper.setVisibility(myVisibilityPanel.getVisibility());
         myNameLabel.setLabelFor(myNameField);
 
-        final PsiType type = myHelper.getOutputType();
+        PsiType type = myHelper.getOutputType();
         if (type != PsiType.VOID) {
             myForceReturnCheckBox.setSelected(GroovyApplicationSettings.getInstance().FORCE_RETURN);
         }
@@ -261,7 +261,7 @@ public class GroovyExtractMethodDialog extends DialogWrapper {
         List<LocalizeValue> conflicts = new ArrayList<>();
         PsiClass owner = helper.getOwner();
         PsiMethod[] methods = ArrayUtil.mergeArrays(owner.getAllMethods(), new PsiMethod[]{method}, PsiMethod.ARRAY_FACTORY);
-        final Map<PsiMethod, List<PsiMethod>> map = DuplicatesUtil.factorDuplicates(methods, new HashingStrategy<PsiMethod>() {
+        Map<PsiMethod, List<PsiMethod>> map = DuplicatesUtil.factorDuplicates(methods, new HashingStrategy<PsiMethod>() {
             public int hashCode(PsiMethod method) {
                 return method.getSignature(PsiSubstitutor.EMPTY).hashCode();
             }
@@ -297,7 +297,7 @@ public class GroovyExtractMethodDialog extends DialogWrapper {
         return conflicts.size() <= 0 || reportConflicts(conflicts, helper.getProject());
     }
 
-    private static boolean reportConflicts(List<LocalizeValue> conflicts, final Project project) {
+    private static boolean reportConflicts(List<LocalizeValue> conflicts, Project project) {
         ConflictsDialog conflictsDialog = new ConflictsDialog(project, conflicts);
         conflictsDialog.show();
         return conflictsDialog.isOK();
@@ -330,7 +330,7 @@ public class GroovyExtractMethodDialog extends DialogWrapper {
         buffer.append(modifier);
         buffer.append(ExtractUtil.getTypeString(myHelper, true, modifier));
 
-        final String _name = getEnteredName();
+        String _name = getEnteredName();
         String name = _name == null ? "" : _name;
         ExtractUtil.appendName(buffer, name);
 

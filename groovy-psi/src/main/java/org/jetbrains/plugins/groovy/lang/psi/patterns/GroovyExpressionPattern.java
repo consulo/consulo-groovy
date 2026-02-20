@@ -25,13 +25,13 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrParent
 import consulo.language.pattern.ElementPattern;
 
 public class GroovyExpressionPattern<T extends GrExpression, Self extends GroovyExpressionPattern<T,Self>> extends GroovyElementPattern<T,Self> {
-  protected GroovyExpressionPattern(final Class<T> aClass) {
+  protected GroovyExpressionPattern(Class<T> aClass) {
     super(aClass);
   }
 
   public Self ofType(@Nonnull final ElementPattern pattern) {
     return with(new PatternCondition<T>("ofType") {
-      public boolean accepts(@Nonnull final T t, final ProcessingContext context) {
+      public boolean accepts(@Nonnull T t, ProcessingContext context) {
         return pattern.getCondition().accepts(t.getType(), context);
       }
     });
@@ -51,7 +51,7 @@ public class GroovyExpressionPattern<T extends GrExpression, Self extends Groovy
   }
 
   public static class Capture<T extends GrExpression> extends GroovyExpressionPattern<T, Capture<T>> {
-    public Capture(final Class<T> aClass) {
+    public Capture(Class<T> aClass) {
       super(aClass);
     }
 

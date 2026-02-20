@@ -48,21 +48,21 @@ public class ChangeToCStyleCommentIntention extends Intention {
 
     public void processIntention(@Nonnull PsiElement element, Project project, Editor editor)
         throws IncorrectOperationException {
-        final PsiComment selectedComment = (PsiComment) element;
+        PsiComment selectedComment = (PsiComment) element;
         PsiComment firstComment = selectedComment;
 
         while (true) {
-            final PsiElement prevComment =
+            PsiElement prevComment =
                 getPrevNonWhiteSpace(firstComment);
             if (!isEndOfLineComment(prevComment)) {
                 break;
             }
             firstComment = (PsiComment) prevComment;
         }
-        final JavaPsiFacade manager = JavaPsiFacade.getInstance(selectedComment.getProject());
-        final PsiElementFactory factory = manager.getElementFactory();
+        JavaPsiFacade manager = JavaPsiFacade.getInstance(selectedComment.getProject());
+        PsiElementFactory factory = manager.getElementFactory();
         String text = getCommentContents(firstComment);
-        final List<PsiElement> commentsToDelete = new ArrayList<PsiElement>();
+        List<PsiElement> commentsToDelete = new ArrayList<PsiElement>();
         PsiElement nextComment = firstComment;
         while (true) {
             nextComment = getNextNonWhiteSpace(nextComment);
@@ -73,7 +73,7 @@ public class ChangeToCStyleCommentIntention extends Intention {
                 + getCommentContents((PsiComment) nextComment);
             commentsToDelete.add(nextComment);
         }
-        final PsiComment newComment =
+        PsiComment newComment =
             factory.createCommentFromText("/*" + text + " */", selectedComment.getParent());
         firstComment.replace(newComment);
         for (PsiElement commentToDelete : commentsToDelete) {
@@ -85,7 +85,7 @@ public class ChangeToCStyleCommentIntention extends Intention {
     private PsiElement getNextNonWhiteSpace(PsiElement nextComment) {
         PsiElement elementToCheck = nextComment;
         while (true) {
-            final PsiElement sibling = elementToCheck.getNextSibling();
+            PsiElement sibling = elementToCheck.getNextSibling();
             if (sibling == null) {
                 return null;
             }
@@ -102,7 +102,7 @@ public class ChangeToCStyleCommentIntention extends Intention {
     private PsiElement getPrevNonWhiteSpace(PsiElement nextComment) {
         PsiElement elementToCheck = nextComment;
         while (true) {
-            final PsiElement sibling = elementToCheck.getPrevSibling();
+            PsiElement sibling = elementToCheck.getPrevSibling();
             if (sibling == null) {
                 return null;
             }
@@ -119,13 +119,13 @@ public class ChangeToCStyleCommentIntention extends Intention {
         if (!(element instanceof PsiComment)) {
             return false;
         }
-        final PsiComment comment = (PsiComment) element;
-        final IElementType tokenType = comment.getTokenType();
+        PsiComment comment = (PsiComment) element;
+        IElementType tokenType = comment.getTokenType();
         return GroovyTokenTypes.mSL_COMMENT.equals(tokenType);
     }
 
     private static String getCommentContents(PsiComment comment) {
-        final String text = comment.getText();
+        String text = comment.getText();
         return text.substring(2);
     }
 }

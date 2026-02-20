@@ -56,7 +56,7 @@ public class ResolveProfiler {
     public long finish() {
       myPrefix = myPrefix.substring(2);
 
-      final Long time = myTimeStack.pop();
+      Long time = myTimeStack.pop();
       return (System.nanoTime() - time) / 1000;
     }
 
@@ -78,9 +78,9 @@ public class ResolveProfiler {
   public static void write(@Nonnull String s) {
     if (DISABLED) return;
 
-    final ThreadInfo threadInfo = getThreadInfo();
+    ThreadInfo threadInfo = getThreadInfo();
     try {
-      final FileWriter writer = new FileWriter(threadInfo.getName(), true);
+      FileWriter writer = new FileWriter(threadInfo.getName(), true);
       try {
         writer.write(threadInfo.getPrefix());
         writer.write(s);

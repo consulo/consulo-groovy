@@ -45,15 +45,15 @@ public class MapGetterSetterInvocator extends CustomMethodInvocator {
                            @Nonnull GroovyPsiElement context) {
     if (!method.getName().equals("putAt") && !method.getName().equals("getAt")) return false;
 
-    final PsiClass clazz = method.getContainingClass();
+    PsiClass clazz = method.getContainingClass();
     if (clazz == null) return false;
 
-    final String qname = clazz.getQualifiedName();
+    String qname = clazz.getQualifiedName();
     if (!GroovyCommonClassNames.DEFAULT_GROOVY_METHODS.equals(qname)) return false;
 
 
     if (caller == null) return false;
-    final PsiType type = caller.getType();
+    PsiType type = caller.getType();
 
     if (method.getName().equals("getAt")) {
       if (InheritanceUtil.isInheritor(type, CommonClassNames.JAVA_UTIL_MAP)) {

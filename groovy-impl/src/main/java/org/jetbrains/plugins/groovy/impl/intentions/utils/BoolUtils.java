@@ -39,9 +39,9 @@ public class BoolUtils {
       ancestor = (GrExpression) ancestor.getParent();
     }
     if (ancestor.getParent() instanceof GrUnaryExpression) {
-      final GrUnaryExpression prefixAncestor =
+      GrUnaryExpression prefixAncestor =
           (GrUnaryExpression) ancestor.getParent();
-      final IElementType sign = prefixAncestor.getOperationTokenType();
+      IElementType sign = prefixAncestor.getOperationTokenType();
       if (GroovyTokenTypes.mLNOT.equals(sign)) {
         return true;
       }
@@ -56,9 +56,9 @@ public class BoolUtils {
       ancestor = (GrExpression) ancestor.getParent();
     }
     if (ancestor.getParent() instanceof GrUnaryExpression) {
-      final GrUnaryExpression prefixAncestor =
+      GrUnaryExpression prefixAncestor =
           (GrUnaryExpression) ancestor.getParent();
-      final IElementType sign = prefixAncestor.getOperationTokenType();
+      IElementType sign = prefixAncestor.getOperationTokenType();
       if (GroovyTokenTypes.mLNOT.equals(sign)) {
         return prefixAncestor;
       }
@@ -70,21 +70,21 @@ public class BoolUtils {
     if (!(exp instanceof GrUnaryExpression)) {
       return false;
     }
-    final GrUnaryExpression prefixExp = (GrUnaryExpression) exp;
-    final IElementType sign = prefixExp.getOperationTokenType();
+    GrUnaryExpression prefixExp = (GrUnaryExpression) exp;
+    IElementType sign = prefixExp.getOperationTokenType();
     return GroovyTokenTypes.mLNOT.equals(sign);
   }
 
   public static GrExpression getNegated(GrExpression exp) {
-    final GrUnaryExpression prefixExp = (GrUnaryExpression) exp;
-    final GrExpression operand = prefixExp.getOperand();
+    GrUnaryExpression prefixExp = (GrUnaryExpression) exp;
+    GrExpression operand = prefixExp.getOperand();
     return (GrExpression)PsiUtil.skipParentheses(operand, false);
   }
 
   public static boolean isBooleanLiteral(GrExpression exp) {
     if (exp instanceof GrLiteral) {
-      final GrLiteral expression = (GrLiteral) exp;
-      @NonNls final String text = expression.getText();
+      GrLiteral expression = (GrLiteral) exp;
+      @NonNls String text = expression.getText();
       return "true".equals(text) || "false".equals(text);
     }
     return false;
@@ -92,16 +92,16 @@ public class BoolUtils {
 
   public static String getNegatedExpressionText(GrExpression condition) {
     if (isNegation(condition)) {
-      final GrExpression negated = getNegated(condition);
+      GrExpression negated = getNegated(condition);
       return negated.getText();
     } else if (ComparisonUtils.isComparison(condition)) {
-      final GrBinaryExpression binaryExpression =
+      GrBinaryExpression binaryExpression =
           (GrBinaryExpression) condition;
-      final IElementType sign = binaryExpression.getOperationTokenType();
-      final String negatedComparison =
+      IElementType sign = binaryExpression.getOperationTokenType();
+      String negatedComparison =
           ComparisonUtils.getNegatedComparison(sign);
-      final GrExpression lhs = binaryExpression.getLeftOperand();
-      final GrExpression rhs = binaryExpression.getRightOperand();
+      GrExpression lhs = binaryExpression.getLeftOperand();
+      GrExpression rhs = binaryExpression.getRightOperand();
       assert rhs != null;
       return lhs.getText() + negatedComparison + rhs.getText();
     } else if (ParenthesesUtils.getPrecedence(condition) >

@@ -35,10 +35,10 @@ class QualifiedMethodInsertHandler implements InsertHandler<JavaGlobalMemberLook
   @Override
   public void handleInsert(InsertionContext context, JavaGlobalMemberLookupElement item) {
     GroovyInsertHandler.INSTANCE.handleInsert(context, item);
-    final PsiClass containingClass = item.getContainingClass();
+    PsiClass containingClass = item.getContainingClass();
     context.getDocument().insertString(context.getStartOffset(), containingClass.getName() + ".");
     PsiDocumentManager.getInstance(containingClass.getProject()).commitDocument(context.getDocument());
-    final GrReferenceExpression ref = PsiTreeUtil
+    GrReferenceExpression ref = PsiTreeUtil
       .findElementOfClassAtOffset(context.getFile(), context.getStartOffset(), GrReferenceExpression.class, false);
     if (ref != null) {
       ref.bindToElement(containingClass);

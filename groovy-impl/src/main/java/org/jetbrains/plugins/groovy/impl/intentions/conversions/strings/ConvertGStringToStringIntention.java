@@ -63,7 +63,7 @@ public class ConvertGStringToStringIntention extends Intention {
         Project project,
         Editor editor
     ) throws IncorrectOperationException {
-        final GrLiteral exp = (GrLiteral) element;
+        GrLiteral exp = (GrLiteral) element;
         PsiImplUtil.replaceExpression(convertGStringLiteralToStringLiteral(exp), exp);
     }
 
@@ -119,8 +119,8 @@ public class ConvertGStringToStringIntention extends Intention {
     }
 
     private static String prepareClosableBlock(GrClosableBlock block) {
-        final GrStatement statement = block.getStatements()[0];
-        final GrExpression expr;
+        GrStatement statement = block.getStatements()[0];
+        GrExpression expr;
         if (statement instanceof GrReturnStatement) {
             expr = ((GrReturnStatement) statement).getReturnValue();
         }
@@ -137,7 +137,7 @@ public class ConvertGStringToStringIntention extends Intention {
         }
         String text = expr.getText();
 
-        final PsiType type = expr.getType();
+        PsiType type = expr.getType();
         if (type != null && CommonClassNames.JAVA_LANG_STRING.equals(type.getCanonicalText())) {
             if (expr instanceof GrBinaryExpression && GroovyTokenTypes.mPLUS.equals(((GrBinaryExpression) expr)
                 .getOperationTokenType())) {
@@ -178,7 +178,7 @@ public class ConvertGStringToStringIntention extends Intention {
         }
 
 
-        final StringBuilder buffer = new StringBuilder();
+        StringBuilder buffer = new StringBuilder();
         if (text.indexOf('\n') >= 0) {
             GrStringUtil.escapeAndUnescapeSymbols(text, "", "\"$", buffer);
             GrStringUtil.fixAllTripleQuotes(buffer, 0);

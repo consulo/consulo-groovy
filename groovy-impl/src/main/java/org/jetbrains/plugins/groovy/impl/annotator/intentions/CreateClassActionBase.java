@@ -94,11 +94,11 @@ public abstract class CreateClassActionBase extends Intention implements Synthet
     @Nullable
     @RequiredReadAction
     public static GrTypeDefinition createClassByType(
-        @Nonnull final PsiDirectory directory,
-        @Nonnull final String name,
-        @Nonnull final PsiManager manager,
-        @Nullable final PsiElement contextElement,
-        @Nonnull final String templateName,
+        @Nonnull PsiDirectory directory,
+        @Nonnull String name,
+        @Nonnull PsiManager manager,
+        @Nullable PsiElement contextElement,
+        @Nonnull String templateName,
         boolean allowReformatting
     ) {
         AccessToken accessToken = WriteAction.start();
@@ -123,7 +123,7 @@ public abstract class CreateClassActionBase extends Intention implements Synthet
                     throw new IncorrectOperationException(GroovyLocalize.noClassInFileTemplate().get());
                 }
             }
-            catch (final IncorrectOperationException e) {
+            catch (IncorrectOperationException e) {
                 Application.get().invokeLater(() -> Messages.showErrorDialog(
                     GroovyLocalize.cannotCreateClassErrorText(name, e.getLocalizedMessage()).get(),
                     GroovyLocalize.cannotCreateClassErrorTitle().get()

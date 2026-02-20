@@ -40,7 +40,7 @@ public class GroovyPlainEnterProcessor extends SmartEnterProcessorWithFixers.Fix
     if (element instanceof GrMethod) return ((GrMethod)element).getBlock();
 
     if (element instanceof GrMethodCall) {
-      final GrClosableBlock[] arguments = ((GrMethodCall)element).getClosureArguments();
+      GrClosableBlock[] arguments = ((GrMethodCall)element).getClosureArguments();
       if (arguments.length > 0) return arguments[0]; else return null;
     }
 
@@ -71,7 +71,7 @@ public class GroovyPlainEnterProcessor extends SmartEnterProcessorWithFixers.Fix
     if (block != null) {
       PsiElement firstElement = block.getFirstChild().getNextSibling();
 
-      final int offset = firstElement != null ? firstElement.getTextRange().getStartOffset() - 1 : block.getTextRange().getEndOffset();
+      int offset = firstElement != null ? firstElement.getTextRange().getStartOffset() - 1 : block.getTextRange().getEndOffset();
       editor.getCaretModel().moveToOffset(offset);
     }
 

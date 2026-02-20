@@ -35,7 +35,7 @@ public class GrParameterStub extends StubBase<GrParameter> implements NamedStub<
 
   public GrParameterStub(StubElement parent,
                          StringRef name,
-                         final String[] annotations,
+                         String[] annotations,
                          String typeText) {
     super(parent, GroovyElementTypes.PARAMETER);
     myName = name;

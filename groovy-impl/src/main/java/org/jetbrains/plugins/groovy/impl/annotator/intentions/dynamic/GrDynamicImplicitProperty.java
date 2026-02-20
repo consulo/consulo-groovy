@@ -65,7 +65,7 @@ public class GrDynamicImplicitProperty extends GrImplicitVariableImpl implements
   @Override
   @Nullable
   public PsiClass getContainingClassElement() {
-    final PsiClassType containingClassType = JavaPsiFacade.getInstance(getProject()).getElementFactory().
+    PsiClassType containingClassType = JavaPsiFacade.getInstance(getProject()).getElementFactory().
       createTypeByFQClassName(myContainingClassName, (GlobalSearchScope)ProjectScopes.getAllScope(getProject()));
 
     return containingClassType.resolve();
@@ -78,7 +78,7 @@ public class GrDynamicImplicitProperty extends GrImplicitVariableImpl implements
 
   @Override
   public PsiFile getContainingFile() {
-    final PsiClass psiClass = getContainingClassElement();
+    PsiClass psiClass = getContainingClassElement();
     if (psiClass == null) {
       return null;
     }
@@ -119,8 +119,8 @@ public class GrDynamicImplicitProperty extends GrImplicitVariableImpl implements
       @Override
       public void run() {
         DynamicToolWindowWrapper toolWindowWrapper = DynamicToolWindowWrapper.getInstance(myProject);
-        final TreeTable treeTable = toolWindowWrapper.getTreeTable();
-        final ListTreeTableModelOnColumns model = toolWindowWrapper.getTreeTableModel();
+        TreeTable treeTable = toolWindowWrapper.getTreeTable();
+        ListTreeTableModelOnColumns model = toolWindowWrapper.getTreeTableModel();
 
         Object root = model.getRoot();
 
@@ -129,12 +129,12 @@ public class GrDynamicImplicitProperty extends GrImplicitVariableImpl implements
         }
 
         DefaultMutableTreeNode treeRoot = ((DefaultMutableTreeNode)root);
-        final PsiClass psiClass = getContainingClassElement();
+        PsiClass psiClass = getContainingClassElement();
         if (psiClass == null) {
           return;
         }
 
-        final DefaultMutableTreeNode desiredNode;
+        DefaultMutableTreeNode desiredNode;
         DPropertyElement dynamicProperty = null;
         PsiClass trueSuper = null;
         for (PsiClass aSuper : PsiUtil.iterateSupers(psiClass, true)) {
@@ -151,7 +151,7 @@ public class GrDynamicImplicitProperty extends GrImplicitVariableImpl implements
           return;
         }
 
-        final DefaultMutableTreeNode classNode = TreeUtil.findNodeWithObject(treeRoot,
+        DefaultMutableTreeNode classNode = TreeUtil.findNodeWithObject(treeRoot,
                                                                              new DClassElement(myProject, trueSuper.getQualifiedName()));
         if (classNode == null) {
           return;
@@ -162,7 +162,7 @@ public class GrDynamicImplicitProperty extends GrImplicitVariableImpl implements
         if (desiredNode == null) {
           return;
         }
-        final TreePath path = TreeUtil.getPathFromRoot(desiredNode);
+        TreePath path = TreeUtil.getPathFromRoot(desiredNode);
 
         treeTable.getTree().expandPath(path);
         treeTable.getTree().setSelectionPath(path);

@@ -108,7 +108,7 @@ public class GroovyIntroduceVariableDialog extends DialogWrapper implements GrIn
   }
 
   private JPanel createCBPanel() {
-    final JPanel panel = new JPanel(new FlowLayout());
+    JPanel panel = new JPanel(new FlowLayout());
     myCbIsFinal = new JCheckBox(UIUtil.replaceMnemonicAmpersand("Declare &final"));
     panel.add(myCbIsFinal);
     myCbReplaceAllOccurrences = new JCheckBox(UIUtil.replaceMnemonicAmpersand("Replace &all occurrences"));
@@ -117,10 +117,10 @@ public class GroovyIntroduceVariableDialog extends DialogWrapper implements GrIn
   }
 
   private JPanel createNamePanel() {
-    final GridBag c = new GridBag().setDefaultAnchor(GridBagConstraints.WEST).setDefaultInsets(1, 1, 1, 1);
-    final JPanel namePanel = new JPanel(new GridBagLayout());
+    GridBag c = new GridBag().setDefaultAnchor(GridBagConstraints.WEST).setDefaultInsets(1, 1, 1, 1);
+    JPanel namePanel = new JPanel(new GridBagLayout());
 
-    final JLabel typeLabel = new JLabel(UIUtil.replaceMnemonicAmpersand("&Type:"));
+    JLabel typeLabel = new JLabel(UIUtil.replaceMnemonicAmpersand("&Type:"));
     c.nextLine().next().weightx(0).fillCellNone();
     namePanel.add(typeLabel, c);
 
@@ -130,7 +130,7 @@ public class GroovyIntroduceVariableDialog extends DialogWrapper implements GrIn
     namePanel.add(myTypeComboBox, c);
     typeLabel.setLabelFor(myTypeComboBox);
 
-    final JLabel nameLabel = new JLabel(UIUtil.replaceMnemonicAmpersand("&Name:"));
+    JLabel nameLabel = new JLabel(UIUtil.replaceMnemonicAmpersand("&Name:"));
     c.nextLine().next().weightx(0).fillCellNone();
     namePanel.add(nameLabel, c);
 

@@ -93,8 +93,8 @@ public class MvcModuleStructureUtil {
   }
 
   @Nullable
-  private static Consumer<ModifiableRootModel> addSourceRootsAndLibDirectory(@Nonnull final VirtualFile root,
-                                                                             final MvcProjectStructure structure) {
+  private static Consumer<ModifiableRootModel> addSourceRootsAndLibDirectory(@Nonnull VirtualFile root,
+                                                                             MvcProjectStructure structure) {
     ModuleRootManager moduleRootManager = ModuleRootManager.getInstance(structure.myModule);
 
     Map<VirtualFile, Boolean> sourceRoots = new HashMap<VirtualFile, Boolean>();
@@ -106,27 +106,27 @@ public class MvcModuleStructureUtil {
 
     root.refresh(false, true);
 
-    final List<Consumer<ContentEntry>> actions = ContainerUtil.newArrayList();
+    List<Consumer<ContentEntry>> actions = ContainerUtil.newArrayList();
 
-    for (final String src : structure.getSourceFolders()) {
+    for (String src : structure.getSourceFolders()) {
       addSourceFolder(root, src, false, actions, sourceRoots);
     }
-    for (final String src : structure.getTestFolders()) {
+    for (String src : structure.getTestFolders()) {
       addSourceFolder(root, src, true, actions, sourceRoots);
     }
-    for (final String src : structure.getInvalidSourceFolders()) {
+    for (String src : structure.getInvalidSourceFolders()) {
       removeSrcFolderFromRoots(root.findFileByRelativePath(src), actions, sourceRoots);
     }
 
-    for (final String excluded : structure.getExcludedFolders()) {
-      final VirtualFile src = root.findFileByRelativePath(excluded);
+    for (String excluded : structure.getExcludedFolders()) {
+      VirtualFile src = root.findFileByRelativePath(excluded);
 
       if (src != null && moduleRootManager.getFileIndex().isInContent(src)) {
         actions.add(contentEntry -> contentEntry.addFolder(src, ExcludedContentFolderTypeProvider.getInstance()));
       }
     }
 
-    final Consumer<ModifiableRootModel> modifyLib = addJarDirectory(root, structure.myModule, structure.getUserLibraryName());
+    Consumer<ModifiableRootModel> modifyLib = addJarDirectory(root, structure.myModule, structure.getUserLibraryName());
 
     if (actions.isEmpty() && modifyLib == null && findContentEntry(moduleRootManager, root) != null) {
       return null;
@@ -138,7 +138,7 @@ public class MvcModuleStructureUtil {
         contentEntry = model.addContentEntry(root);
       }
 
-      for (final Consumer<ContentEntry> action : actions) {
+      for (Consumer<ContentEntry> action : actions) {
         action.accept(contentEntry);
       }
       if (modifyLib != null) {
@@ -172,7 +172,7 @@ public class MvcModuleStructureUtil {
       return null;
     }
 
-    final Library library = findUserLibrary(module, libName);
+    Library library = findUserLibrary(module, libName);
     if (library != null && library.isJarDirectory(libDir.getUrl())) {
       return null;
     }
@@ -256,10 +256,10 @@ public class MvcModuleStructureUtil {
     List<Consumer<ModifiableRootModel>> actions = getUpdateProjectStructureActions(Collections.singletonList(root), structure);
 
     if (!actions.isEmpty()) {
-      final ModifiableRootModel model = ModuleRootManager.getInstance(module).getModifiableModel();
+      ModifiableRootModel model = ModuleRootManager.getInstance(module).getModifiableModel();
       boolean success = false;
       try {
-        for (final Consumer<ModifiableRootModel> action : actions) {
+        for (Consumer<ModifiableRootModel> action : actions) {
           action.accept(model);
         }
         model.commit();
@@ -280,7 +280,7 @@ public class MvcModuleStructureUtil {
 
   public static List<Consumer<ModifiableRootModel>> getUpdateProjectStructureActions(Collection<VirtualFile> appRoots,
                                                                                      MvcProjectStructure structure) {
-    for (final VirtualFile appRoot : ModuleRootManager.getInstance(structure.myModule).getContentRoots()) {
+    for (VirtualFile appRoot : ModuleRootManager.getInstance(structure.myModule).getContentRoots()) {
       appRoot.refresh(false, false);
     }
 
@@ -299,7 +299,7 @@ public class MvcModuleStructureUtil {
 
     List<Runnable> facetActions = new ArrayList<Runnable>();
     structure.setupFacets(facetActions, rootsToFacetSetup);
-    for (final Runnable action : facetActions) {
+    for (Runnable action : facetActions) {
       actions.add(model -> action.run());
     }
 
@@ -342,7 +342,7 @@ public class MvcModuleStructureUtil {
     return res;
   }
 
-  private static void moveupLibrariesFromMavenPlugin(final Module module, List<Consumer<ModifiableRootModel>> actions) {
+  private static void moveupLibrariesFromMavenPlugin(Module module, List<Consumer<ModifiableRootModel>> actions) {
     if (moveupLibrariesFromMavenPlugin(ModuleRootManager.getInstance(module)) != null) {
       actions.add(new Consumer<ModifiableRootModel>() {
         @Override
@@ -360,7 +360,7 @@ public class MvcModuleStructureUtil {
     final Set<ContentFolder> toRemove = new HashSet<>();
     final Set<ContentEntry> toRemoveContent = new HashSet<>();
     for (ContentEntry entry : ModuleRootManager.getInstance(structure.myModule).getContentEntries()) {
-      final VirtualFile file = entry.getFile();
+      VirtualFile file = entry.getFile();
       if (file == null || !structure.isValidContentRoot(file)) {
         toRemoveContent.add(entry);
       }
@@ -376,7 +376,7 @@ public class MvcModuleStructureUtil {
       actions.add(new Consumer<ModifiableRootModel>() {
         @Override
         public void accept(ModifiableRootModel model) {
-          for (final ContentEntry entry : toRemoveContent) {
+          for (ContentEntry entry : toRemoveContent) {
             model.removeContentEntry(entry);
           }
 
@@ -396,12 +396,12 @@ public class MvcModuleStructureUtil {
                                            List<Consumer<ModifiableRootModel>> actions,
                                            Collection<VirtualFile> appRoots,
                                            final String libName) {
-    final Library library = findUserLibrary(module, libName);
+    Library library = findUserLibrary(module, libName);
     if (library == null) {
       return;
     }
 
-    final VirtualFileManager virtualFileManager = VirtualFileManager.getInstance();
+    VirtualFileManager virtualFileManager = VirtualFileManager.getInstance();
 
     final List<String> toRemoveUrls = new ArrayList<String>();
 
@@ -424,7 +424,7 @@ public class MvcModuleStructureUtil {
       actions.add(new Consumer<ModifiableRootModel>() {
         @Override
         public void accept(ModifiableRootModel model) {
-          final Library.ModifiableModel modifiableModel = modifyDefaultLibrary(model, libName);
+          Library.ModifiableModel modifiableModel = modifyDefaultLibrary(model, libName);
           for (String url : toRemoveUrls) {
             modifiableModel.removeRoot(url, BinariesOrderRootType.getInstance());
           }
@@ -434,7 +434,7 @@ public class MvcModuleStructureUtil {
     }
   }
 
-  public static boolean hasModulesWithSupport(Project project, final MvcFramework framework) {
+  public static boolean hasModulesWithSupport(Project project, MvcFramework framework) {
     for (Module module : ModuleManager.getInstance(project).getModules()) {
       if (framework.hasSupport(module)) {
         return true;
@@ -499,11 +499,11 @@ public class MvcModuleStructureUtil {
     return res;
   }
 
-  public static void syncAuxModuleSdk(@Nonnull Module appModule, @Nonnull Module pluginsModule, @Nonnull final MvcFramework framework) {
-    final ModuleRootManager auxRootManager = ModuleRootManager.getInstance(pluginsModule);
-    final ModuleRootManager appRootManager = ModuleRootManager.getInstance(appModule);
+  public static void syncAuxModuleSdk(@Nonnull Module appModule, @Nonnull Module pluginsModule, @Nonnull MvcFramework framework) {
+    ModuleRootManager auxRootManager = ModuleRootManager.getInstance(pluginsModule);
+    ModuleRootManager appRootManager = ModuleRootManager.getInstance(appModule);
 
-    final boolean isSdkEquals = Comparing.equal(ModuleUtilCore.getExtension(pluginsModule, JavaModuleExtensionImpl.class),
+    boolean isSdkEquals = Comparing.equal(ModuleUtilCore.getExtension(pluginsModule, JavaModuleExtensionImpl.class),
                                                 ModuleUtilCore.getExtension(appModule, JavaModuleExtensionImpl.class));
 
     List<Library> appLibraries = new ArrayList<Library>();
@@ -512,12 +512,12 @@ public class MvcModuleStructureUtil {
     List<Library> auxLibraries = new ArrayList<Library>();
     Library auxUserLibrary = extractNonModuleLibraries(auxLibraries, auxRootManager, false, framework.getUserLibraryName());
 
-    final boolean isLibrariesEquals = appLibraries.equals(auxLibraries) && getJarUrls(auxUserLibrary).equals(getJarUrls(appUserLibrary));
+    boolean isLibrariesEquals = appLibraries.equals(auxLibraries) && getJarUrls(auxUserLibrary).equals(getJarUrls(appUserLibrary));
 
     if (!isSdkEquals || !isLibrariesEquals) {
       WriteAction.run(() ->
                       {
-                        final ModifiableRootModel model = auxRootManager.getModifiableModel();
+                        ModifiableRootModel model = auxRootManager.getModifiableModel();
 
                         if (!isSdkEquals) {
                           copySdk(appRootManager, model);
@@ -572,7 +572,7 @@ public class MvcModuleStructureUtil {
       }
     }
 
-    final ModifiableModuleModel moduleModel = moduleManager.getModifiableModel();
+    ModifiableModuleModel moduleModel = moduleManager.getModifiableModel();
 
     ModuleDeleteProvider.removeModule(toRemove,
                                                                                                    null,
@@ -584,9 +584,9 @@ public class MvcModuleStructureUtil {
   }
 
   @Nonnull
-  public static Module createAuxiliaryModule(@Nonnull Module appModule, final String moduleName, final MvcFramework framework) {
+  public static Module createAuxiliaryModule(@Nonnull Module appModule, String moduleName, MvcFramework framework) {
     ModuleManager moduleManager = ModuleManager.getInstance(appModule.getProject());
-    final ModifiableModuleModel moduleModel = moduleManager.getModifiableModel();
+    ModifiableModuleModel moduleModel = moduleManager.getModifiableModel();
 
     moduleModel.newModule(appModule.getName(), appModule.getModuleDirPath());
     moduleModel.commit();
@@ -614,7 +614,7 @@ public class MvcModuleStructureUtil {
   public static boolean hasDependency(@Nonnull Module from, @Nonnull Module to) {
     for (OrderEntry entry : ModuleRootManager.getInstance(from).getOrderEntries()) {
       if (entry instanceof ModuleOrderEntry) {
-        final ModuleOrderEntry moduleOrderEntry = (ModuleOrderEntry)entry;
+        ModuleOrderEntry moduleOrderEntry = (ModuleOrderEntry)entry;
         if (to == moduleOrderEntry.getModule()) {
           return true;
         }
@@ -625,10 +625,10 @@ public class MvcModuleStructureUtil {
 
   public static void removeDependency(@Nonnull Module from, @Nonnull Module to) {
     if (!from.equals(to) && hasDependency(from, to)) {
-      final ModifiableRootModel fromModel = ModuleRootManager.getInstance(from).getModifiableModel();
+      ModifiableRootModel fromModel = ModuleRootManager.getInstance(from).getModifiableModel();
       for (OrderEntry entry : fromModel.getOrderEntries()) {
         if (entry instanceof ModuleOrderEntry) {
-          final ModuleOrderEntry moduleOrderEntry = (ModuleOrderEntry)entry;
+          ModuleOrderEntry moduleOrderEntry = (ModuleOrderEntry)entry;
           if (to == moduleOrderEntry.getModule()) {
             fromModel.removeOrderEntry(moduleOrderEntry);
           }
@@ -639,8 +639,8 @@ public class MvcModuleStructureUtil {
   }
 
   public static void copySdk(ModuleRootModel from, ModifiableRootModel to) {
-    final JavaModuleExtension fromExtension = from.getExtension(JavaModuleExtension.class);
-    final JavaMutableModuleExtension toExtension = (JavaMutableModuleExtension)to.getExtension(JavaModuleExtension.class);
+    JavaModuleExtension fromExtension = from.getExtension(JavaModuleExtension.class);
+    JavaMutableModuleExtension toExtension = (JavaMutableModuleExtension)to.getExtension(JavaModuleExtension.class);
 
     assert fromExtension != null;
     assert toExtension != null;
@@ -742,7 +742,7 @@ public class MvcModuleStructureUtil {
     return new Consumer<ModifiableRootModel>() {
       @Override
       public void accept(ModifiableRootModel modifiableRootModel) {
-        for (final ContentEntry entry : modifiableRootModel.getContentEntries()) {
+        for (ContentEntry entry : modifiableRootModel.getContentEntries()) {
           if (!pluginDirs.contains(entry.getFile())) {
             modifiableRootModel.removeContentEntry(entry);
           }
@@ -752,9 +752,9 @@ public class MvcModuleStructureUtil {
   }
 
   public static void updateAuxModuleStructure(Module auxModule, Collection<VirtualFile> pluginDirs, MvcFramework framework) {
-    final MvcProjectStructure structure = framework.createProjectStructure(auxModule, true);
-    final List<Consumer<ModifiableRootModel>> actions = getUpdateProjectStructureActions(pluginDirs, structure);
-    for (final ContentEntry root : ModuleRootManager.getInstance(auxModule).getContentEntries()) {
+    MvcProjectStructure structure = framework.createProjectStructure(auxModule, true);
+    List<Consumer<ModifiableRootModel>> actions = getUpdateProjectStructureActions(pluginDirs, structure);
+    for (ContentEntry root : ModuleRootManager.getInstance(auxModule).getContentEntries()) {
       if (!pluginDirs.contains(root.getFile())) {
         actions.add(removeStaleContentEntries(pluginDirs));
         break;
@@ -766,8 +766,8 @@ public class MvcModuleStructureUtil {
     }
 
     if (!actions.isEmpty()) {
-      final ModifiableRootModel model = ModuleRootManager.getInstance(auxModule).getModifiableModel();
-      for (final Consumer<ModifiableRootModel> pluginsUpdateAction : actions) {
+      ModifiableRootModel model = ModuleRootManager.getInstance(auxModule).getModifiableModel();
+      for (Consumer<ModifiableRootModel> pluginsUpdateAction : actions) {
         pluginsUpdateAction.accept(model);
       }
       model.commit();
@@ -778,9 +778,9 @@ public class MvcModuleStructureUtil {
     return new Consumer<ModifiableRootModel>() {
       @Override
       public void accept(ModifiableRootModel modifiableRootModel) {
-        for (final OrderEntry entry : modifiableRootModel.getOrderEntries()) {
+        for (OrderEntry entry : modifiableRootModel.getOrderEntries()) {
           if (entry instanceof LibraryOrderEntry) {
-            final LibraryOrderEntry libraryOrderEntry = (LibraryOrderEntry)entry;
+            LibraryOrderEntry libraryOrderEntry = (LibraryOrderEntry)entry;
             String lName = libraryOrderEntry.getLibraryName();
             if (lName != null && lName.startsWith(libraryName)) {
               libraryOrderEntry.setExported(true);

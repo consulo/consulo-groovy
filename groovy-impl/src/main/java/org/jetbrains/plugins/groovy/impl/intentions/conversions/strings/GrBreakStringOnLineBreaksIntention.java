@@ -50,8 +50,8 @@ public class GrBreakStringOnLineBreaksIntention extends Intention {
         Project project,
         Editor editor
     ) throws IncorrectOperationException {
-        final String text = invokeImpl(element);
-        final GrExpression newExpr = GroovyPsiElementFactory.getInstance(project).createExpressionFromText(text);
+        String text = invokeImpl(element);
+        GrExpression newExpr = GroovyPsiElementFactory.getInstance(project).createExpressionFromText(text);
         ((GrExpression) element).replaceWithExpression(newExpr, true);
     }
 
@@ -67,8 +67,8 @@ public class GrBreakStringOnLineBreaksIntention extends Intention {
     }
 
     private static String invokeImpl(PsiElement element) {
-        final String text = element.getText();
-        final String quote = GrStringUtil.getStartQuote(text);
+        String text = element.getText();
+        String quote = GrStringUtil.getStartQuote(text);
 
         if (!("'".equals(quote) || "\"".equals(quote))) {
             return text;
@@ -87,7 +87,7 @@ public class GrBreakStringOnLineBreaksIntention extends Intention {
             processSimpleString(quote, value, buffer);
         }
 
-        final String result = buffer.toString();
+        String result = buffer.toString();
         if (result.endsWith("+\n\"\"")) {
             return result.substring(0, result.length() - 4);
         }
@@ -96,10 +96,10 @@ public class GrBreakStringOnLineBreaksIntention extends Intention {
     }
 
     private static void processGString(PsiElement element, String quote, String value, StringBuilder buffer) {
-        final ASTNode node = element.getNode();
+        ASTNode node = element.getNode();
 
         for (ASTNode child = node.getFirstChildNode(); child != null; child = child.getTreeNext()) {
-            final IElementType type = child.getElementType();
+            IElementType type = child.getElementType();
             if (type == GroovyTokenTypes.mGSTRING_BEGIN || type == GroovyTokenTypes.mGSTRING_END) {
                 continue;
             }

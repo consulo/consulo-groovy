@@ -39,7 +39,7 @@ public class RenameFileWithClassIntention extends Intention implements Consumer<
 
     @Override
     protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
-        final PsiFile file = element.getContainingFile();
+        PsiFile file = element.getContainingFile();
         RefactoringFactory.getInstance(project).createRename(file, myNewFileName, true, true).run();
     }
 
@@ -57,8 +57,8 @@ public class RenameFileWithClassIntention extends Intention implements Consumer<
 
     @Override
     public void accept(GrTypeDefinition def) {
-        final String name = def.getName();
-        final PsiFile file = def.getContainingFile();
+        String name = def.getName();
+        PsiFile file = def.getContainingFile();
         myNewFileName = name + "." + FileUtil.getExtension(file.getName());
     }
 }

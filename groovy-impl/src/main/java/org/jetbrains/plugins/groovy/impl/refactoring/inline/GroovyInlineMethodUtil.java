@@ -75,7 +75,7 @@ public class GroovyInlineMethodUtil {
   @Nullable
   public static InlineHandler.Settings inlineMethodSettings(GrMethod method, Editor editor, boolean invokedOnReference) {
 
-    final Project project = method.getProject();
+    Project project = method.getProject();
     if (method.isConstructor()) {
       String message = GroovyRefactoringBundle.message("refactoring.cannot.be.applied.to.constructors", REFACTORING_NAME);
       showErrorMessage(message, project, editor);
@@ -244,7 +244,7 @@ public class GroovyInlineMethodUtil {
 
   }
 
-  private static void showErrorMessage(String message, final Project project, Editor editor) {
+  private static void showErrorMessage(String message, Project project, Editor editor) {
     CommonRefactoringUtil.showErrorHint(project, editor, message, REFACTORING_NAME, HelpID.INLINE_METHOD);
   }
 
@@ -370,7 +370,7 @@ public class GroovyInlineMethodUtil {
     public InlineMethodDialog(Project project,
                               PsiMethod method,
                               boolean invokedOnReference,
-                              final boolean allowInlineThisOnly) {
+                              boolean allowInlineThisOnly) {
       super(project, true, method);
       myMethod = method;
       myAllowInlineThisOnly = allowInlineThisOnly;
@@ -442,7 +442,7 @@ public class GroovyInlineMethodUtil {
 
     Project project = call.getProject();
 
-    final GroovyResolveResult resolveResult = call.advancedResolve();
+    GroovyResolveResult resolveResult = call.advancedResolve();
     GrClosureSignature signature = GrClosureSignatureUtil.createSignature(method, resolveResult.getSubstitutor());
 
     if (signature == null) {
@@ -461,7 +461,7 @@ public class GroovyInlineMethodUtil {
       GrClosureSignatureUtil.ArgInfo<PsiElement> argInfo = infos[i];
       GrParameter parameter = parameters[i];
 
-      final GrExpression arg = inferArg(signature, parameters, parameter, argInfo, project);
+      GrExpression arg = inferArg(signature, parameters, parameter, argInfo, project);
       if (arg != null) {
         replaceAllOccurrencesWithExpression(method, call, arg, parameter);
       }
@@ -478,7 +478,7 @@ public class GroovyInlineMethodUtil {
     List<PsiElement> arguments = argInfo.args;
 
     if (argInfo.isMultiArg) { //arguments for Map and varArg
-      final PsiType type = parameter.getDeclaredType();
+      PsiType type = parameter.getDeclaredType();
       return GroovyRefactoringUtil.generateArgFromMultiArg(signature.getSubstitutor(), arguments, type, project);
     }
     else {  //arguments for simple parameters
@@ -535,17 +535,17 @@ public class GroovyInlineMethodUtil {
                                                           GrParameter parameter) {
     Collection<PsiReference> refs = ReferencesSearch.search(parameter, new LocalSearchScope(method), false).findAll();
 
-    final GroovyPsiElementFactory elementFactory = GroovyPsiElementFactory.getInstance(call.getProject());
+    GroovyPsiElementFactory elementFactory = GroovyPsiElementFactory.getInstance(call.getProject());
     GrExpression expression = elementFactory.createExpressionFromText(oldExpression.getText());
 
 
     if (GroovyRefactoringUtil.hasSideEffect(expression) && refs.size() > 1 || !hasUnresolvableWriteAccess(refs, oldExpression)) {
-      final String oldName = parameter.getName();
-      final String newName = InlineMethodConflictSolver.suggestNewName(oldName, method, call);
+      String oldName = parameter.getName();
+      String newName = InlineMethodConflictSolver.suggestNewName(oldName, method, call);
 
       expression = elementFactory.createExpressionFromText(newName);
-      final GrOpenBlock body = method.getBlock();
-      final GrStatement[] statements = body.getStatements();
+      GrOpenBlock body = method.getBlock();
+      GrStatement[] statements = body.getStatements();
       GrStatement anchor = null;
       if (statements.length > 0) {
         anchor = statements[0];
@@ -564,11 +564,11 @@ public class GroovyInlineMethodUtil {
 
   private static String createVariableDefinitionText(GrParameter parameter, GrExpression expression, String varName) {
     StringBuilder buffer = new StringBuilder();
-    final PsiModifierList modifierList = parameter.getModifierList();
+    PsiModifierList modifierList = parameter.getModifierList();
     buffer.append(modifierList.getText().trim());
     if (buffer.length() > 0) buffer.append(' ');
 
-    final GrTypeElement typeElement = parameter.getTypeElementGroovy();
+    GrTypeElement typeElement = parameter.getTypeElementGroovy();
     if (typeElement != null) {
       buffer.append(typeElement.getText()).append(' ');
     }
@@ -585,8 +585,8 @@ public class GroovyInlineMethodUtil {
    */
   private static boolean containsWriteAccess(Collection<PsiReference> refs) {
     for (PsiReference ref : refs) {
-      final PsiElement element = ref.getElement();
-      final PsiElement parent = element.getParent();
+      PsiElement element = ref.getElement();
+      PsiElement parent = element.getParent();
       if (parent instanceof GrAssignmentExpression && ((GrAssignmentExpression)parent).getLValue() == element) return true;
       if (parent instanceof GrUnaryExpression) return true;
     }
@@ -596,12 +596,12 @@ public class GroovyInlineMethodUtil {
   private static boolean hasUnresolvableWriteAccess(Collection<PsiReference> refs, GrExpression expression) {
     if (containsWriteAccess(refs)) {
       if (expression instanceof GrReferenceExpression) {
-        final PsiElement resolved = ((GrReferenceExpression)expression).resolve();
+        PsiElement resolved = ((GrReferenceExpression)expression).resolve();
 
         if (resolved instanceof GrVariable && !(resolved instanceof PsiField)) {
-          final boolean isFinal = ((GrVariable)resolved).hasModifierProperty(PsiModifier.FINAL);
+          boolean isFinal = ((GrVariable)resolved).hasModifierProperty(PsiModifier.FINAL);
           if (!isFinal) {
-            final PsiReference lastRef =
+            PsiReference lastRef =
               Collections.max(ReferencesSearch.search(resolved, resolved.getResolveScope()).findAll(), new Comparator<PsiReference>() {
                 public int compare(PsiReference o1, PsiReference o2) {
                   return o1.getElement().getTextRange().getStartOffset() - o2.getElement().getTextRange().getStartOffset();

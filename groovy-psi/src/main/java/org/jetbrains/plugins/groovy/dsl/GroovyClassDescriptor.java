@@ -35,7 +35,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class GroovyClassDescriptor {
   static {
     try {
-      final AtomicInteger integer = GroovyCategorySupport.getCategoryNameUsage("aaa");
+      AtomicInteger integer = GroovyCategorySupport.getCategoryNameUsage("aaa");
     }
     catch (NoSuchMethodError e) {
       throw new RuntimeException("Incompatible Groovy jar in classpath: " + GroovyCategorySupport.class.getResource("/") + ", please remove it");
@@ -50,7 +50,7 @@ public class GroovyClassDescriptor {
   @SuppressWarnings({"SetReplaceableByEnumSet"}) //order is important
   final Set<Factor> affectingFactors = new LinkedHashSet<Factor>();
 
-  public GroovyClassDescriptor(@Nonnull PsiType psiType, PsiElement place, final PsiFile placeFile) {
+  public GroovyClassDescriptor(@Nonnull PsiType psiType, PsiElement place, PsiFile placeFile) {
     myPsiType = psiType;
     myPlace = place;
     myFile = placeFile;

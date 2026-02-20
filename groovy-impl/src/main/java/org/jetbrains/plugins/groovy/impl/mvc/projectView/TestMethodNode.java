@@ -33,9 +33,9 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMe
 public class TestMethodNode extends MethodNode {
   private final Image myIcon;
 
-  public TestMethodNode(@Nonnull final Module module,
-                        @Nonnull final GrMethod method,
-                        @Nullable final ViewSettings viewSettings, final Image icon) {
+  public TestMethodNode(@Nonnull Module module,
+                        @Nonnull GrMethod method,
+                        @Nullable ViewSettings viewSettings, Image icon) {
     super(module, method, viewSettings);
     myIcon = icon;
   }
@@ -46,12 +46,12 @@ public class TestMethodNode extends MethodNode {
   }
 
   @Override
-  protected String getTestPresentationImpl( @Nonnull final PsiElement psiElement) {
+  protected String getTestPresentationImpl( @Nonnull PsiElement psiElement) {
     return "Test method: " + ((GrField)psiElement).getName();
   }
 
   @Override
-  protected void updateImpl(final PresentationData data) {
+  protected void updateImpl(PresentationData data) {
     super.updateImpl(data);
 
     data.setIcon(myIcon);

@@ -36,27 +36,27 @@ import java.util.List;
 public class GroovyDocAddPackageAction extends AnAction implements DumbAware {
   private final DefaultListModel myDataModel;
 
-  public GroovyDocAddPackageAction(final DefaultListModel dataModel) {
+  public GroovyDocAddPackageAction(DefaultListModel dataModel) {
     super("Add package", "Add package", IconUtil.getAddIcon());
     myDataModel = dataModel;
   }
 
   @RequiredUIAccess
-  public void actionPerformed(final AnActionEvent e) {
-    final Project project = e.getData(Project.KEY);
+  public void actionPerformed(AnActionEvent e) {
+    Project project = e.getData(Project.KEY);
     if (project == null) {
       return;
     }
 
     PackageChooser chooser = project.getInstance(PackageChooserFactory.class).create();
 
-    final List<PsiJavaPackage> packages = chooser.showAndSelect();
+    List<PsiJavaPackage> packages = chooser.showAndSelect();
     if (packages == null) {
       return;
     }
 
     for (PsiJavaPackage aPackage : packages) {
-      final String qualifiedName = aPackage.getQualifiedName();
+      String qualifiedName = aPackage.getQualifiedName();
 
       if (qualifiedName.isEmpty()) {
         myDataModel.addElement(GroovyDocConfiguration.ALL_PACKAGES);

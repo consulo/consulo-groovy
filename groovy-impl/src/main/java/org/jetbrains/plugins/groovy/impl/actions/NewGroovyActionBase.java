@@ -41,7 +41,7 @@ public abstract class NewGroovyActionBase extends CreateElementActionBase {
         super(text, description, icon);
     }
 
-    protected final void invokeDialog(final Project project, final PsiDirectory directory, Consumer<PsiElement[]> elementsConsumer) {
+    protected final void invokeDialog(Project project, PsiDirectory directory, Consumer<PsiElement[]> elementsConsumer) {
         MyInputValidator validator = new MyInputValidator(project, directory);
         Messages.showInputDialog(project, getDialogPrompt(), getDialogTitle(), Messages.getQuestionIcon(), "", validator);
 

@@ -68,7 +68,7 @@ public abstract class MvcToolWindowDescriptor implements ToolWindowFactory, Cond
     return getToolWindowId(myFramework);
   }
 
-  public static String getToolWindowId(final MvcFramework framework) {
+  public static String getToolWindowId(MvcFramework framework) {
     return framework.getFrameworkName() + " View";
   }
 
@@ -97,8 +97,8 @@ public abstract class MvcToolWindowDescriptor implements ToolWindowFactory, Cond
   }
 
   public abstract void fillModuleChildren(List<AbstractTreeNode> result,
-                                          final Module module,
-                                          final ViewSettings viewSettings,
+                                          Module module,
+                                          ViewSettings viewSettings,
                                           VirtualFile root);
 
   public abstract Image getModuleNodeIcon();
@@ -108,7 +108,7 @@ public abstract class MvcToolWindowDescriptor implements ToolWindowFactory, Cond
 
   @Nullable
   protected static PsiDirectory findDirectory(Project project, VirtualFile root, @Nonnull String relativePath) {
-    final VirtualFile file = root.findFileByRelativePath(relativePath);
+    VirtualFile file = root.findFileByRelativePath(relativePath);
     return file == null ? null : PsiManager.getInstance(project).findDirectory(file);
   }
 

@@ -97,7 +97,7 @@ public class DefaultCallExpressionTypeCalculator extends GrCallExpressionTypeCal
     if (resolved instanceof PsiMethod) {
       PsiMethod method = (PsiMethod)resolved;
       if (resolveResult.isInvokedOnProperty()) {
-        final PsiType propertyType = PsiUtil.getSmartReturnType(method);
+        PsiType propertyType = PsiUtil.getSmartReturnType(method);
         return extractReturnTypeFromType(propertyType, true, callExpression);
       }
       else {
@@ -106,7 +106,7 @@ public class DefaultCallExpressionTypeCalculator extends GrCallExpressionTypeCal
           return closureReturnType;
         }
         else {
-          final PsiType smartReturnType = PsiUtil.getSmartReturnType(method);
+          PsiType smartReturnType = PsiUtil.getSmartReturnType(method);
           return smartReturnType;
         }
       }
@@ -114,7 +114,7 @@ public class DefaultCallExpressionTypeCalculator extends GrCallExpressionTypeCal
     else if (resolved instanceof GrVariable) {
       PsiType refType = refExpr.getType();
       refType = TypesUtil.boxPrimitiveType(refType, callExpression.getManager(), callExpression.getResolveScope());
-      final PsiType type = refType == null ? ((GrVariable)resolved).getTypeGroovy() : refType;
+      PsiType type = refType == null ? ((GrVariable)resolved).getTypeGroovy() : refType;
       return extractReturnTypeFromType(type, false, callExpression);
     }
     return null;
@@ -128,19 +128,19 @@ public class DefaultCallExpressionTypeCalculator extends GrCallExpressionTypeCal
     }
     else if (TypesUtil.isPsiClassTypeToClosure(type)) {
       assert type instanceof PsiClassType;
-      final PsiType[] parameters = ((PsiClassType)type).getParameters();
+      PsiType[] parameters = ((PsiClassType)type).getParameters();
       if (parameters.length == 1) {
         returnType = parameters[0];
       }
     }
     else if (type instanceof PsiClassType) {
-      final GrExpression invoked = callExpression.getInvokedExpression();
-      final GroovyResolveResult[] calls = ResolveUtil
+      GrExpression invoked = callExpression.getInvokedExpression();
+      GroovyResolveResult[] calls = ResolveUtil
         .getMethodCandidates(type, "call", invoked != null ? invoked : callExpression, PsiUtil.getArgumentTypes(invoked, false));
       returnType = null;
-      final PsiManager manager = callExpression.getManager();
+      PsiManager manager = callExpression.getManager();
       for (GroovyResolveResult call : calls) {
-        final PsiType substituted = ResolveUtil.extractReturnTypeFromCandidate(call, callExpression, PsiUtil.getArgumentTypes(invoked, true));
+        PsiType substituted = ResolveUtil.extractReturnTypeFromCandidate(call, callExpression, PsiUtil.getArgumentTypes(invoked, true));
         returnType = TypesUtil.getLeastUpperBoundNullable(returnType, substituted, manager);
       }
     }
@@ -183,15 +183,15 @@ public class DefaultCallExpressionTypeCalculator extends GrCallExpressionTypeCal
       return ((GrClosureType)qType).curry(PsiUtil.getArgumentTypes(refExpr, false), -1, callExpression);
     }
     else if ("ncurry".equals(resolved.getName())) {
-      final GrArgumentList argList = callExpression.getArgumentList();
+      GrArgumentList argList = callExpression.getArgumentList();
       if (argList != null) {
-        final GrExpression[] arguments = argList.getExpressionArguments();
+        GrExpression[] arguments = argList.getExpressionArguments();
         if (arguments.length > 0) {
-          final GrExpression first = arguments[0];
+          GrExpression first = arguments[0];
           if (first instanceof GrLiteral) {
-            final Object value = ((GrLiteral)first).getValue();
+            Object value = ((GrLiteral)first).getValue();
             if (value instanceof Integer) {
-              final PsiType[] argTypes = PsiUtil.getArgumentTypes(refExpr, false);
+              PsiType[] argTypes = PsiUtil.getArgumentTypes(refExpr, false);
               if (argTypes != null) {
                 return ((GrClosureType)qType).curry(ArrayUtil.remove(argTypes, 0), (Integer)value, callExpression);
               }

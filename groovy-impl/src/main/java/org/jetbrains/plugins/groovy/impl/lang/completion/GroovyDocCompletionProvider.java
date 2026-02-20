@@ -45,7 +45,7 @@ import jakarta.annotation.Nonnull;
 public class GroovyDocCompletionProvider implements CompletionProvider
 {
   public static void register(CompletionContributor contributor) {
-    final GroovyDocCompletionProvider provider = new GroovyDocCompletionProvider();
+    GroovyDocCompletionProvider provider = new GroovyDocCompletionProvider();
     contributor.extend(CompletionType.BASIC, PsiJavaPatterns.psiElement().inside(GrDocTagValueToken.class), provider);
   }
 
@@ -53,7 +53,7 @@ public class GroovyDocCompletionProvider implements CompletionProvider
   public void addCompletions(@Nonnull CompletionParameters parameters,
                                 ProcessingContext context,
                                 @Nonnull CompletionResultSet result) {
-    final PsiElement position = parameters.getPosition();
+    PsiElement position = parameters.getPosition();
     GrDocMemberReference reference = PsiTreeUtil.getParentOfType(position, GrDocMemberReference.class);
     if (reference == null) return;
 

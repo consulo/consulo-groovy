@@ -73,7 +73,7 @@ public abstract class GrIntroduceLocalVariableProcessor {
     preprocessOccurrences();
 
     int expressionIndex = ArrayUtil.find(myOccurrences, myExpression);
-    final PsiElement[] replaced = myProcessUsages ? processOccurrences() : myOccurrences;
+    PsiElement[] replaced = myProcessUsages ? processOccurrences() : myOccurrences;
     PsiElement replacedExpression = replaced[expressionIndex];
     GrStatement anchor = GrIntroduceHandlerBase.getAnchor(replaced, myContext.getScope());
 
@@ -103,7 +103,7 @@ public abstract class GrIntroduceLocalVariableProcessor {
                                                 "GroovyPsiElement");
       }
 
-      final GrExpression replaced = ((GrExpression)occurrence).replaceWithExpression(templateRef, true);
+      GrExpression replaced = ((GrExpression)occurrence).replaceWithExpression(templateRef, true);
       result.add(replaced);
     }
 
@@ -125,7 +125,7 @@ public abstract class GrIntroduceLocalVariableProcessor {
       if (child instanceof GrReferenceExpression && !child.getText().contains(".")) {
         PsiReference psiReference = child.getReference();
         if (psiReference != null) {
-          final PsiElement resolved = psiReference.resolve();
+          PsiElement resolved = psiReference.resolve();
           if (resolved != null) {
             String fieldName = getFieldName(resolved);
             if (fieldName != null && varName.equals(fieldName)) {
@@ -181,7 +181,7 @@ public abstract class GrIntroduceLocalVariableProcessor {
         anchorEqualsExpression);
     }
 
-    final GrVariable variable = declaration.getVariables()[0];
+    GrVariable variable = declaration.getVariables()[0];
     JavaCodeStyleManager.getInstance(declaration.getProject()).shortenClassReferences(declaration);
 
 

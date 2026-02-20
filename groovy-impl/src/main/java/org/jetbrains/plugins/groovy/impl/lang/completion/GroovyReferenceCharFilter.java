@@ -41,7 +41,7 @@ public class GroovyReferenceCharFilter extends CharFilter {
   @Override
   @Nullable
   public Result acceptChar(char c, int prefixLength, Lookup lookup) {
-    final PsiFile psiFile = lookup.getPsiFile();
+    PsiFile psiFile = lookup.getPsiFile();
     if (psiFile != null && !psiFile.getViewProvider().getLanguages().contains(GroovyLanguage.INSTANCE)) return null;
 
     LookupElement item = lookup.getCurrentItem();

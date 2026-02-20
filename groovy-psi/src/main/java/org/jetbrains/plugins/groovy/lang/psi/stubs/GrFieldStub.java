@@ -43,9 +43,9 @@ public class GrFieldStub extends StubBase<GrField> implements NamedStub<GrField>
 
   public GrFieldStub(StubElement parent,
                          StringRef name,
-                         final String[] annotations,
+                         String[] annotations,
                          String[] namedParameters,
-                         final IStubElementType elemType,
+                         IStubElementType elemType,
                          byte flags, @Nullable String typeText) {
     super(parent, elemType);
     myName = name;

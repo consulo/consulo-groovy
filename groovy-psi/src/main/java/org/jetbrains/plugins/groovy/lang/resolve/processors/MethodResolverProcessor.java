@@ -75,7 +75,7 @@ public class MethodResolverProcessor extends ResolverProcessorImpl implements Gr
                                  @Nullable PsiType[] argumentTypes,
                                  @Nullable PsiType[] typeArguments,
                                  boolean allVariants,
-                                 final boolean byShape) {
+                                 boolean byShape) {
     super(name, RESOLVE_KINDS_METHOD_PROPERTY, place, PsiType.EMPTY_ARRAY);
     myIsConstructor = isConstructor;
     myThisType = thisType;
@@ -103,7 +103,7 @@ public class MethodResolverProcessor extends ResolverProcessorImpl implements Gr
       PsiSubstitutor substitutor = inferSubstitutor(method, state);
 
       PsiElement resolveContext = state.get(RESOLVE_CONTEXT);
-      final SpreadState spreadState = state.get(SpreadState.SPREAD_STATE);
+      SpreadState spreadState = state.get(SpreadState.SPREAD_STATE);
 
       boolean isAccessible = isAccessible(method);
       boolean isStaticsOK = isStaticsOK(method, resolveContext, false);
@@ -161,7 +161,7 @@ public class MethodResolverProcessor extends ResolverProcessorImpl implements Gr
     }
     Set<GroovyResolveResult> result = new HashSet<GroovyResolveResult>();
     for (GroovyResolveResult candidate : candidates) {
-      final PsiElement element = candidate.getElement();
+      PsiElement element = candidate.getElement();
       if (element instanceof PsiMethod && ((PsiMethod)element).getParameterList().getParametersCount() ==
         myArgumentTypes.length) {
         result.add(candidate);
@@ -192,7 +192,7 @@ public class MethodResolverProcessor extends ResolverProcessorImpl implements Gr
       if (currentElement instanceof PsiMethod) {
         PsiMethod currentMethod = (PsiMethod)currentElement;
         for (Iterator<GroovyResolveResult> iterator = result.iterator(); iterator.hasNext(); ) {
-          final GroovyResolveResult otherResolveResult = iterator.next();
+          GroovyResolveResult otherResolveResult = iterator.next();
           PsiElement other = otherResolveResult.getElement();
           if (other instanceof PsiMethod) {
             PsiMethod otherMethod = (PsiMethod)other;
@@ -258,7 +258,7 @@ public class MethodResolverProcessor extends ResolverProcessorImpl implements Gr
       return false;
     }
 
-    final Boolean custom = GrMethodComparator.checkDominated(method1, substitutor1, method2, substitutor2, this);
+    Boolean custom = GrMethodComparator.checkDominated(method1, substitutor1, method2, substitutor2, this);
     if (custom != null) {
       return custom;
     }
@@ -299,22 +299,22 @@ public class MethodResolverProcessor extends ResolverProcessorImpl implements Gr
       if (params1.length == 0) {
         return false;
       }
-      final PsiType lastType = params1[params1.length - 1].getType(); //varargs applicability
+      PsiType lastType = params1[params1.length - 1].getType(); //varargs applicability
       return lastType instanceof PsiArrayType;
     }
 
     for (int i = 0; i < params2.length; i++) {
-      final PsiType ptype1 = params1[i].getType();
-      final PsiType ptype2 = params2[i].getType();
+      PsiType ptype1 = params1[i].getType();
+      PsiType ptype2 = params2[i].getType();
       PsiType type1 = substitutor1.substitute(ptype1);
       PsiType type2 = substitutor2.substitute(ptype2);
 
       if (argTypes != null && argTypes.length > i) {
         PsiType argType = argTypes[i];
         if (argType != null) {
-          final boolean converts1 = TypesUtil.isAssignableWithoutConversions(TypeConversionUtil.erasure
+          boolean converts1 = TypesUtil.isAssignableWithoutConversions(TypeConversionUtil.erasure
             (type1), argType, myPlace);
-          final boolean converts2 = TypesUtil.isAssignableWithoutConversions(TypeConversionUtil.erasure
+          boolean converts2 = TypesUtil.isAssignableWithoutConversions(TypeConversionUtil.erasure
             (type2), argType, myPlace);
           if (converts1 != converts2) {
             return converts2;
@@ -346,8 +346,8 @@ public class MethodResolverProcessor extends ResolverProcessorImpl implements Gr
     }
 
     if (!(method1 instanceof SyntheticElement) && !(method2 instanceof SyntheticElement)) {
-      final PsiType returnType1 = substitutor1.substitute(method1.getReturnType());
-      final PsiType returnType2 = substitutor2.substitute(method2.getReturnType());
+      PsiType returnType1 = substitutor1.substitute(method1.getReturnType());
+      PsiType returnType2 = substitutor2.substitute(method2.getReturnType());
 
       if (!TypesUtil.isAssignableWithoutConversions(returnType1, returnType2,
                                                     myPlace) && TypesUtil.isAssignableWithoutConversions(returnType2,

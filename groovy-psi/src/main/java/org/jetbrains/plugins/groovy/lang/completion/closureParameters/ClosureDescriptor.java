@@ -70,7 +70,7 @@ public class ClosureDescriptor extends LightElement implements PsiElement {
     }
 
     List<PsiType> types = new ArrayList<PsiType>();
-    final Object params = myMethod.get("params");
+    Object params = myMethod.get("params");
     if (params instanceof Map) {
       boolean first = true;
       for (Object paramName : ((Map)params).keySet()) {
@@ -88,19 +88,19 @@ public class ClosureDescriptor extends LightElement implements PsiElement {
           method));
       }
     }
-    final boolean isConstructor = Boolean.TRUE.equals(myMethod.get("constructor"));
-    final MethodSignature signature = MethodSignatureUtil.createMethodSignature(name,
+    boolean isConstructor = Boolean.TRUE.equals(myMethod.get("constructor"));
+    MethodSignature signature = MethodSignatureUtil.createMethodSignature(name,
                                                                                 types.toArray(PsiType.createArray(types.size())),
                                                                                 method.getTypeParameters(),
                                                                                 PsiSubstitutor.EMPTY,
                                                                                 isConstructor);
-    final GrClosureSignature closureSignature = GrClosureSignatureUtil.createSignature(signature);
+    GrClosureSignature closureSignature = GrClosureSignatureUtil.createSignature(signature);
 
     if (method instanceof ClsMethodImpl) {
       method = ((ClsMethodImpl)method).getSourceMirrorMethod();
     }
-    final PsiParameter[] parameters = method.getParameterList().getParameters();
-    final PsiType[] typeArray = PsiType.createArray(parameters.length);
+    PsiParameter[] parameters = method.getParameterList().getParameters();
+    PsiType[] typeArray = PsiType.createArray(parameters.length);
     ContainerUtil.map(parameters, parameter -> parameter.getType(), typeArray);
     return GrClosureSignatureUtil.isSignatureApplicable(closureSignature, typeArray, place);
   }

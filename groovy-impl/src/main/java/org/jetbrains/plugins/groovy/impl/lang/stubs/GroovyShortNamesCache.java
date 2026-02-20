@@ -65,18 +65,18 @@ public class GroovyShortNamesCache implements PsiShortNameProvider {
         return allClasses.isEmpty() ? PsiClass.EMPTY_ARRAY : allClasses.toArray(new PsiClass[allClasses.size()]);
     }
 
-    public List<PsiClass> getScriptClassesByFQName(final String name, final GlobalSearchScope scope, final boolean srcOnly) {
+    public List<PsiClass> getScriptClassesByFQName(String name, GlobalSearchScope scope, boolean srcOnly) {
         GlobalSearchScope actualScope = srcOnly ? new GrSourceFilterScope(scope) : scope;
-        final Collection<GroovyFile> files =
+        Collection<GroovyFile> files =
             StubIndex.getInstance().get(GrFullScriptNameIndex.KEY, name.hashCode(), myProject, actualScope);
         if (files.isEmpty()) {
             return Collections.emptyList();
         }
 
-        final ArrayList<PsiClass> result = new ArrayList<>();
+        ArrayList<PsiClass> result = new ArrayList<>();
         for (GroovyFile file : files) {
             if (file.isScript()) {
-                final PsiClass scriptClass = file.getScriptClass();
+                PsiClass scriptClass = file.getScriptClass();
                 if (scriptClass != null && name.equals(scriptClass.getQualifiedName())) {
                     result.add(scriptClass);
                 }
@@ -87,7 +87,7 @@ public class GroovyShortNamesCache implements PsiShortNameProvider {
 
     @Nonnull
     public List<PsiClass> getClassesByFQName(@Nonnull String name, @Nonnull GlobalSearchScope scope) {
-        final List<PsiClass> result = addClasses(name, scope, true);
+        List<PsiClass> result = addClasses(name, scope, true);
         if (result.isEmpty()) {
             result.addAll(addClasses(name, scope, false));
         }
@@ -98,7 +98,7 @@ public class GroovyShortNamesCache implements PsiShortNameProvider {
     }
 
     private List<PsiClass> addClasses(String name, GlobalSearchScope scope, boolean inSource) {
-        final List<PsiClass> result = new ArrayList<>(getScriptClassesByFQName(name, scope, inSource));
+        List<PsiClass> result = new ArrayList<>(getScriptClassesByFQName(name, scope, inSource));
 
         Collection<PsiClass> classes = StubIndex.getInstance().safeGet(
             GrFullClassNameIndex.KEY,

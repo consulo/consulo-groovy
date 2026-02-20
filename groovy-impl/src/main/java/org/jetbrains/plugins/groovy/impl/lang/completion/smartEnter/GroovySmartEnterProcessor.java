@@ -65,7 +65,7 @@ import java.util.List;
 @ExtensionImpl
 public class GroovySmartEnterProcessor extends SmartEnterProcessorWithFixers {
   public GroovySmartEnterProcessor() {
-    final List<SmartEnterProcessorWithFixers.Fixer<GroovySmartEnterProcessor>> ourFixers = Arrays.asList(
+    List<SmartEnterProcessorWithFixers.Fixer<GroovySmartEnterProcessor>> ourFixers = Arrays.asList(
         new SmartEnterProcessorWithFixers.Fixer<GroovySmartEnterProcessor>() {
           @Override
           public void apply(@Nonnull Editor editor, @Nonnull GroovySmartEnterProcessor processor, @Nonnull PsiElement psiElement) {
@@ -73,7 +73,7 @@ public class GroovySmartEnterProcessor extends SmartEnterProcessorWithFixers {
             if (catchClause == null || catchClause.getBody() != null) return;
             if (!PsiTreeUtil.isAncestor(catchClause.getParameter(), psiElement, false)) return;
         
-            final Document doc = editor.getDocument();
+            Document doc = editor.getDocument();
         
             PsiElement lBrace = catchClause.getLBrace();
             if (lBrace != null) return;
@@ -112,7 +112,7 @@ public class GroovySmartEnterProcessor extends SmartEnterProcessorWithFixers {
   protected void reformat(PsiElement atCaret) throws IncorrectOperationException {
     PsiElement parent = atCaret.getParent();
     if (parent instanceof GrCodeBlock) {
-      final GrCodeBlock block = (GrCodeBlock) parent;
+      GrCodeBlock block = (GrCodeBlock) parent;
       if (block.getStatements().length > 0 && block.getStatements()[0] == atCaret) {
         atCaret = block;
       }
@@ -144,7 +144,7 @@ public class GroovySmartEnterProcessor extends SmartEnterProcessorWithFixers {
     //  res.add(parent);
     //}
 
-    final PsiElement[] children = getChildren(atCaret);
+    PsiElement[] children = getChildren(atCaret);
 
     for (PsiElement child : children) {
       collectAllElements(child, res, recurse);
@@ -176,10 +176,10 @@ public class GroovySmartEnterProcessor extends SmartEnterProcessorWithFixers {
   }
 
   @Override
-  protected void moveCaretInsideBracesIfAny(@Nonnull final Editor editor, @Nonnull final PsiFile file) throws IncorrectOperationException
+  protected void moveCaretInsideBracesIfAny(@Nonnull Editor editor, @Nonnull PsiFile file) throws IncorrectOperationException
   {
     int caretOffset = editor.getCaretModel().getOffset();
-    final CharSequence chars = editor.getDocument().getCharsSequence();
+    CharSequence chars = editor.getDocument().getCharsSequence();
 
     if (CharArrayUtil.regionMatches(chars, caretOffset, "{}")) {
       caretOffset += 2;
@@ -192,8 +192,8 @@ public class GroovySmartEnterProcessor extends SmartEnterProcessorWithFixers {
     if (CharArrayUtil.regionMatches(chars, caretOffset - "{}".length(), "{}") ||
         CharArrayUtil.regionMatches(chars, caretOffset - "{\n}".length(), "{\n}")) {
       commit(editor);
-      final CodeStyleSettings settings = CodeStyleSettingsManager.getSettings(file.getProject());
-      final boolean old = settings.KEEP_SIMPLE_BLOCKS_IN_ONE_LINE;
+      CodeStyleSettings settings = CodeStyleSettingsManager.getSettings(file.getProject());
+      boolean old = settings.KEEP_SIMPLE_BLOCKS_IN_ONE_LINE;
       settings.KEEP_SIMPLE_BLOCKS_IN_ONE_LINE = false;
       PsiElement elt = PsiTreeUtil.getParentOfType(file.findElementAt(caretOffset - 1), GrCodeBlock.class, GrTypeDefinitionBody.class);
       reformat(elt);

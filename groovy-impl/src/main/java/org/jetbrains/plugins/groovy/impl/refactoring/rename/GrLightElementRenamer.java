@@ -48,7 +48,7 @@ public class GrLightElementRenamer extends RenamePsiElementProcessor {
   public boolean canProcessElement(@Nonnull PsiElement element) {
     if (!(element instanceof LightElement)) return false;
     if (element instanceof GrRenameableLightElement) return false;
-    final Language language = element.getLanguage();
+    Language language = element.getLanguage();
     return GroovyFileType.GROOVY_LANGUAGE.equals(language);
   }
 }

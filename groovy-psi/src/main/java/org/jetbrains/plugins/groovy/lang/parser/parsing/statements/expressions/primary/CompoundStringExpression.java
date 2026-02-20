@@ -69,7 +69,7 @@ public class CompoundStringExpression {
 
   private boolean parse() {
     PsiBuilder.Marker marker = myBuilder.mark();
-    final PsiBuilder.Marker marker2 = myBuilder.mark();
+    PsiBuilder.Marker marker2 = myBuilder.mark();
     LOG.assertTrue(ParserUtils.getToken(myBuilder, myBegin));
 
 
@@ -80,7 +80,7 @@ public class CompoundStringExpression {
     }
 
     if (myBuilder.getTokenType() == myContent) {
-      final PsiBuilder.Marker contentMarker = myBuilder.mark();
+      PsiBuilder.Marker contentMarker = myBuilder.mark();
       myBuilder.advanceLexer();
       if (myBuilder.getTokenType() == GroovyTokenTypes.mDOLLAR || mySimpleLiteral == null) {
         contentMarker.done(GroovyElementTypes.GSTRING_CONTENT);
@@ -142,7 +142,7 @@ public class CompoundStringExpression {
   private boolean parseInjection() {
     if (myBuilder.getTokenType() != GroovyTokenTypes.mDOLLAR) return false;
 
-    final PsiBuilder.Marker injection = myBuilder.mark();
+    PsiBuilder.Marker injection = myBuilder.mark();
     ParserUtils.getToken(myBuilder, GroovyTokenTypes.mDOLLAR);
 
     if (myBuilder.getTokenType() == GroovyTokenTypes.mIDENT || myBuilder.getTokenType() == GroovyTokenTypes.kTHIS) {

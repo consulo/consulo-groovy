@@ -38,7 +38,7 @@ public class AssignmentExpression {
 
   public static boolean parse(PsiBuilder builder, GroovyParser parser, boolean comExprAllowed) {
     Marker marker = builder.mark();
-    final boolean isTuple = ParserUtils.lookAhead(builder, GroovyTokenTypes.mLPAREN, GroovyTokenTypes.mIDENT, GroovyTokenTypes.mCOMMA);
+    boolean isTuple = ParserUtils.lookAhead(builder, GroovyTokenTypes.mLPAREN, GroovyTokenTypes.mIDENT, GroovyTokenTypes.mCOMMA);
     if (parseSide(builder, parser, isTuple,comExprAllowed)) {
       if (ParserUtils.getToken(builder, TokenSets.ASSIGNMENTS)) {
         ParserUtils.getToken(builder, GroovyTokenTypes.mNLS);
@@ -68,7 +68,7 @@ public class AssignmentExpression {
 
     if (comExprAllowed) {
       Marker marker = builder.mark();
-      final ExpressionStatement.Result result = ExpressionStatement.parse(builder, parser);
+      ExpressionStatement.Result result = ExpressionStatement.parse(builder, parser);
       switch (result) {
         case EXPR_STATEMENT:
           marker.drop();

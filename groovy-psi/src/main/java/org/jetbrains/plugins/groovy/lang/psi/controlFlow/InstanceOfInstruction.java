@@ -50,10 +50,10 @@ public class InstanceOfInstruction extends InstructionImpl implements MixinTypeI
 
   @Nullable
   private Pair<GrExpression, PsiType> getInstanceof() {
-    final PsiElement element = getElement();
+    PsiElement element = getElement();
     if (element instanceof GrInstanceOfExpression) {
       GrExpression operand = ((GrInstanceOfExpression)element).getOperand();
-      final GrTypeElement typeElement = ((GrInstanceOfExpression)element).getTypeElement();
+      GrTypeElement typeElement = ((GrInstanceOfExpression)element).getTypeElement();
       if (operand instanceof GrReferenceExpression && ((GrReferenceExpression)operand).getQualifier() == null && typeElement != null) {
         return new Pair<GrExpression, PsiType>(((GrInstanceOfExpression)element).getOperand(), typeElement.getType());
       }
@@ -62,7 +62,7 @@ public class InstanceOfInstruction extends InstructionImpl implements MixinTypeI
       GrExpression left = ((GrBinaryExpression)element).getLeftOperand();
       GrExpression right = ((GrBinaryExpression)element).getRightOperand();
       GroovyResolveResult result = ((GrReferenceExpression)right).advancedResolve();
-      final PsiElement resolved = result.getElement();
+      PsiElement resolved = result.getElement();
       if (resolved instanceof PsiClass) {
         PsiClassType type = JavaPsiFacade.getElementFactory(element.getProject()).createType((PsiClass)resolved, result.getSubstitutor());
         return new Pair<GrExpression, PsiType>(left, type);

@@ -46,16 +46,16 @@ public class GrCollectionTypeMembersProvider extends NonCodeMembersContributor {
   }
 
   @Override
-  public void processDynamicElements(final @Nonnull PsiType qualifierType,
+  public void processDynamicElements(@Nonnull PsiType qualifierType,
                                      PsiClass aClass,
-                                     final PsiScopeProcessor processor,
-                                     final PsiElement place,
-                                     final ResolveState state) {
-    final PsiType collectionType = PsiUtil.extractIterableTypeParameter(qualifierType, true);
+                                     PsiScopeProcessor processor,
+                                     PsiElement place,
+                                     ResolveState state) {
+    PsiType collectionType = PsiUtil.extractIterableTypeParameter(qualifierType, true);
     if (collectionType == null) return;
 
     PsiClass collectionClass = JavaPsiFacade.getInstance(place.getProject()).findClass(JAVA_UTIL_COLLECTION, place.getResolveScope());
-    final PsiScopeProcessor fieldSearcher = new FieldSearcher(processor, collectionClass);
+    PsiScopeProcessor fieldSearcher = new FieldSearcher(processor, collectionClass);
     ResolveUtil.processAllDeclarations(collectionType, fieldSearcher, state, place);
   }
 
@@ -70,8 +70,8 @@ public class GrCollectionTypeMembersProvider extends NonCodeMembersContributor {
     @Override
     public boolean execute(@Nonnull PsiElement element, ResolveState state) {
       if (element instanceof PsiField) {
-        final PsiType type = ((PsiField)element).getType();
-        final String typeText =
+        PsiType type = ((PsiField)element).getType();
+        String typeText =
           type instanceof PsiClassType ? JAVA_UTIL_COLLECTION + "<" + type.getCanonicalText() + ">" : JAVA_UTIL_COLLECTION;
         LightFieldBuilder lightField = new LightFieldBuilder(((PsiField)element).getName(), typeText, element);
         lightField.setContainingClass(myCollectionClass);

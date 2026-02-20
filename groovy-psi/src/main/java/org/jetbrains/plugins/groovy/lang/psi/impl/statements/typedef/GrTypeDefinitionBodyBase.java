@@ -50,7 +50,7 @@ public abstract class GrTypeDefinitionBodyBase extends GrStubElementBase<EmptySt
     super(node);
   }
 
-  public GrTypeDefinitionBodyBase(EmptyStub stub, final IStubElementType classBody) {
+  public GrTypeDefinitionBodyBase(EmptyStub stub, IStubElementType classBody) {
     super(stub, classBody);
   }
 
@@ -133,7 +133,7 @@ public abstract class GrTypeDefinitionBodyBase extends GrStubElementBase<EmptySt
     }
 
     ASTNode elemNode = declaration.getNode();
-    final ASTNode anchorNode = anchor != null ? anchor.getNode() : rBrace.getNode();
+    ASTNode anchorNode = anchor != null ? anchor.getNode() : rBrace.getNode();
     getNode().addChild(elemNode, anchorNode);
     getNode().addLeaf(GroovyTokenTypes.mNLS, "\n", anchorNode);
     return (GrVariableDeclaration) elemNode.getPsi();
@@ -141,7 +141,7 @@ public abstract class GrTypeDefinitionBodyBase extends GrStubElementBase<EmptySt
 
   @Override
   public void deleteChildInternal(@Nonnull ASTNode child) {
-    final PsiElement element = child.getPsi();
+    PsiElement element = child.getPsi();
     if (element instanceof GrTopStatement) {
       PsiImplUtil.deleteStatementTail(this, element);
     }

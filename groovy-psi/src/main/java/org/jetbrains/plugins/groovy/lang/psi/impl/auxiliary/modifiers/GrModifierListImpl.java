@@ -159,7 +159,7 @@ public class GrModifierListImpl extends GrStubElementBase<GrModifierListStub> im
   @Override
   @Nonnull
   public PsiElement[] getModifiers() {
-    final ArrayList<PsiElement> result = new ArrayList<PsiElement>();
+    ArrayList<PsiElement> result = new ArrayList<PsiElement>();
     for (PsiElement cur = getFirstChild(); cur != null; cur = cur.getNextSibling()) {
       if (cur instanceof GrAnnotation || TokenSets.MODIFIERS.contains(cur.getNode().getElementType())) {
         result.add(cur);
@@ -171,7 +171,7 @@ public class GrModifierListImpl extends GrStubElementBase<GrModifierListStub> im
 
   @Override
   public boolean hasExplicitVisibilityModifiers() {
-    final GrModifierListStub stub = getStub();
+    GrModifierListStub stub = getStub();
     if (stub != null) {
       return (stub.getModifiersFlags() & (GrModifierFlags.PUBLIC_MASK | GrModifierFlags.PROTECTED_MASK | GrModifierFlags.PRIVATE_MASK)) != 0;
     }
@@ -186,7 +186,7 @@ public class GrModifierListImpl extends GrStubElementBase<GrModifierListStub> im
 
   public static boolean checkModifierProperty(@Nonnull GrModifierList modifierList,
                                               @GrModifier.GrModifierConstant @Nonnull String modifier) {
-    final PsiElement owner = modifierList.getParent();
+    PsiElement owner = modifierList.getParent();
     if (owner instanceof GrVariableDeclaration && owner.getParent() instanceof GrTypeDefinitionBody) {
       PsiElement pParent = owner.getParent().getParent();
       if (!modifierList.hasExplicitVisibilityModifiers()) { //properties are backed by private fields
@@ -247,10 +247,10 @@ public class GrModifierListImpl extends GrStubElementBase<GrModifierListStub> im
     }
 
     if (owner instanceof GrTypeDefinition) {
-      final GrTypeDefinition clazz = (GrTypeDefinition)owner;
+      GrTypeDefinition clazz = (GrTypeDefinition)owner;
 
       if (modifier.equals(GrModifier.STATIC)) {
-        final PsiClass containingClass = clazz.getContainingClass();
+        PsiClass containingClass = clazz.getContainingClass();
         return containingClass != null && containingClass.isInterface();
       }
       if (modifier.equals(GrModifier.ABSTRACT)) {
@@ -268,7 +268,7 @@ public class GrModifierListImpl extends GrStubElementBase<GrModifierListStub> im
       }
       if (modifier.equals(GrModifier.FINAL)) {
         if (clazz.isEnum()) {
-          final GrField[] fields = clazz.getFields();
+          GrField[] fields = clazz.getFields();
           for (GrField field : fields) {
             if (field instanceof GrEnumConstant && ((GrEnumConstant)field).getInitializingClass() != null) {
               return false;
@@ -294,7 +294,7 @@ public class GrModifierListImpl extends GrStubElementBase<GrModifierListStub> im
   @Override
   @RequiredReadAction
   public boolean hasExplicitModifier(@Nonnull @NonNls String name) {
-    final GrModifierListStub stub = getStub();
+    GrModifierListStub stub = getStub();
     if (stub != null) {
       return hasMaskExplicitModifier(name, stub.getModifiersFlags());
     }
@@ -304,7 +304,7 @@ public class GrModifierListImpl extends GrStubElementBase<GrModifierListStub> im
   }
 
   public static boolean hasMaskExplicitModifier(String name, int mask) {
-    final int flag = NAME_TO_MODIFIER_FLAG_MAP.getInt(name);
+    int flag = NAME_TO_MODIFIER_FLAG_MAP.getInt(name);
     return (mask & flag) != 0;
   }
 
@@ -343,7 +343,7 @@ public class GrModifierListImpl extends GrStubElementBase<GrModifierListStub> im
   private void setModifierPropertyInternal(String name, boolean doSet) {
     if (doSet) {
       if (isEmptyModifierList()) {
-        final PsiElement nextSibling = getNextSibling();
+        PsiElement nextSibling = getNextSibling();
         if (nextSibling != null && !PsiImplUtil.isWhiteSpaceOrNls(nextSibling)) {
           getNode().getTreeParent().addLeaf(TokenType.WHITE_SPACE, " ", nextSibling.getNode());
         }
@@ -354,7 +354,7 @@ public class GrModifierListImpl extends GrStubElementBase<GrModifierListStub> im
       addAfter(modifier, anchor);
     }
     else {
-      final PsiElement[] modifiers = findChildrenByType(TokenSets.MODIFIERS, PsiElement.class);
+      PsiElement[] modifiers = findChildrenByType(TokenSets.MODIFIERS, PsiElement.class);
       for (PsiElement modifier : modifiers) {
         if (name.equals(modifier.getText())) {
           deleteChildRange(modifier, modifier);
@@ -363,7 +363,7 @@ public class GrModifierListImpl extends GrStubElementBase<GrModifierListStub> im
       }
 
       if (isEmptyModifierList()) {
-        final PsiElement nextSibling = getNextSibling();
+        PsiElement nextSibling = getNextSibling();
         if (nextSibling != null && PsiImplUtil.isWhiteSpaceOrNls(nextSibling)) {
           nextSibling.delete();
         }
@@ -373,8 +373,8 @@ public class GrModifierListImpl extends GrStubElementBase<GrModifierListStub> im
 
   @Override
   public ASTNode addInternal(ASTNode first, ASTNode last, ASTNode anchor, Boolean before) {
-    final ASTNode node = super.addInternal(first, last, anchor, before);
-    final PsiElement sibling = getNextSibling();
+    ASTNode node = super.addInternal(first, last, anchor, before);
+    PsiElement sibling = getNextSibling();
     if (sibling != null && sibling.getText().contains("\n")) {
       sibling.replace(GroovyPsiElementFactory.getInstance(getProject()).createWhiteSpace());
     }
@@ -388,11 +388,11 @@ public class GrModifierListImpl extends GrStubElementBase<GrModifierListStub> im
   @Nullable
   @RequiredReadAction
   private PsiElement findAnchor(String name) {
-    final int myPriority = PRIORITY.getInt(name);
+    int myPriority = PRIORITY.getInt(name);
     PsiElement anchor = null;
 
     for (PsiElement modifier : getModifiers()) {
-      final int otherPriority = PRIORITY.getInt(modifier.getText());
+      int otherPriority = PRIORITY.getInt(modifier.getText());
       if (otherPriority <= myPriority) {
         anchor = modifier;
       }
@@ -441,8 +441,8 @@ public class GrModifierListImpl extends GrStubElementBase<GrModifierListStub> im
   @Override
   @Nonnull
   public GrAnnotation addAnnotation(@Nonnull @NonNls String qualifiedName) {
-    final PsiClass psiClass = JavaPsiFacade.getInstance(getProject()).findClass(qualifiedName, getResolveScope());
-    final GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(getProject());
+    PsiClass psiClass = JavaPsiFacade.getInstance(getProject()).findClass(qualifiedName, getResolveScope());
+    GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(getProject());
     GrAnnotation annotation;
     if (psiClass != null && psiClass.isAnnotationType()) {
       annotation = (GrAnnotation)addAfter(factory.createModifierFromText("@xxx"), null);
@@ -452,10 +452,10 @@ public class GrModifierListImpl extends GrStubElementBase<GrModifierListStub> im
       annotation = (GrAnnotation)addAfter(factory.createModifierFromText("@" + qualifiedName), null);
     }
 
-    final PsiElement parent = getParent();
+    PsiElement parent = getParent();
     if (!(parent instanceof GrParameter)) {
-      final ASTNode node = annotation.getNode();
-      final ASTNode treeNext = node.getTreeNext();
+      ASTNode node = annotation.getNode();
+      ASTNode treeNext = node.getTreeNext();
       if (treeNext != null) {
         getNode().addLeaf(TokenType.WHITE_SPACE, "\n", treeNext);
       }

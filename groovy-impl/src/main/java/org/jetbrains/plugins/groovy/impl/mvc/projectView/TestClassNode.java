@@ -36,19 +36,19 @@ import jakarta.annotation.Nullable;
 public class TestClassNode extends ClassNode {
   private final Image myMethodIcon;
 
-  public TestClassNode(@Nonnull final Module module,
-                       @Nonnull final GrTypeDefinition controllerClass,
-                       @Nullable final ViewSettings viewSettings, final Image methodIcon) {
+  public TestClassNode(@Nonnull Module module,
+                       @Nonnull GrTypeDefinition controllerClass,
+                       @Nullable ViewSettings viewSettings, Image methodIcon) {
     super(module, controllerClass, viewSettings);
     myMethodIcon = methodIcon;
   }
 
   @Nullable
   @Override
-  protected MethodNode createNodeForMethod(final Module module, final GrMethod method) {
+  protected MethodNode createNodeForMethod(Module module, GrMethod method) {
     if (method == null) return null;
 
-    final boolean isTestMethod = JUnitUtil.isTestMethod(new PsiLocation<PsiMethod>(getProject(), method));
+    boolean isTestMethod = JUnitUtil.isTestMethod(new PsiLocation<PsiMethod>(getProject(), method));
 
     if (isTestMethod) {
       return new TestMethodNode(module, method, getSettings(), myMethodIcon);
@@ -58,7 +58,7 @@ public class TestClassNode extends ClassNode {
   }
 
   @Override
-  protected String getTestPresentationImpl(@Nonnull final PsiElement psiElement) {
+  protected String getTestPresentationImpl(@Nonnull PsiElement psiElement) {
     return "Test class: " + ((GrTypeDefinition)psiElement).getName();
   }
 }

@@ -30,7 +30,7 @@ public abstract class MvcActionBase extends DumbAwareAction {
 
   @Nullable
   public static Pair<MvcFramework, Module> guessFramework(AnActionEvent event) {
-    final Module module = event.getData(event.getPlace().equals(ActionPlaces.MAIN_MENU) ? LangDataKeys.MODULE : LangDataKeys.MODULE_CONTEXT);
+    Module module = event.getData(event.getPlace().equals(ActionPlaces.MAIN_MENU) ? LangDataKeys.MODULE : LangDataKeys.MODULE_CONTEXT);
 
     if (module != null) {
       MvcFramework commonPluginModuleFramework = MvcFramework.findCommonPluginModuleFramework(module);
@@ -53,14 +53,14 @@ public abstract class MvcActionBase extends DumbAwareAction {
       }
     }
 
-    final Project project = event.getData(Project.KEY);
+    Project project = event.getData(Project.KEY);
     if (project == null) {
       return null;
     }
 
     Pair<MvcFramework, Module> result = null;
     for (Module mod : ModuleManager.getInstance(project).getModules()) {
-      final MvcFramework framework = MvcFramework.getInstance(mod);
+      MvcFramework framework = MvcFramework.getInstance(mod);
       if (framework != null) {
         if (result != null) {
           return null;

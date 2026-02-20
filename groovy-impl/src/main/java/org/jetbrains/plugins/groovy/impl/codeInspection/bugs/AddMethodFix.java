@@ -54,13 +54,13 @@ public class AddMethodFix extends GroovyFix {
     protected void doFix(Project project, ProblemDescriptor descriptor) throws IncorrectOperationException {
 
         if (myClass.isInterface()) {
-            final GrMethod method = GroovyPsiElementFactory.getInstance(project).createMethodFromText("def " + myClass
+            GrMethod method = GroovyPsiElementFactory.getInstance(project).createMethodFromText("def " + myClass
                 .getName() + " " + myMethodName + "();");
             myClass.add(method);
         }
         else {
             String templName = JavaTemplateUtil.TEMPLATE_IMPLEMENTED_METHOD_BODY;
-            final FileTemplate template = FileTemplateManager.getInstance().getCodeTemplate(templName);
+            FileTemplate template = FileTemplateManager.getInstance().getCodeTemplate(templName);
 
             Properties properties = new Properties();
 
@@ -75,10 +75,10 @@ public class AddMethodFix extends GroovyFix {
 
             try {
                 String bodyText = StringUtil.replace(template.getText(properties), ";", "");
-                final GrCodeBlock newBody = GroovyPsiElementFactory.getInstance(project).createMethodBodyFromText("\n"
+                GrCodeBlock newBody = GroovyPsiElementFactory.getInstance(project).createMethodBodyFromText("\n"
                     + bodyText + "\n");
 
-                final GrMethod method = GroovyPsiElementFactory.getInstance(project).createMethodFromText("",
+                GrMethod method = GroovyPsiElementFactory.getInstance(project).createMethodFromText("",
                     myMethodName, returnType, ArrayUtil.EMPTY_STRING_ARRAY, myClass
                 );
                 method.setBlock(newBody);
@@ -98,7 +98,7 @@ public class AddMethodFix extends GroovyFix {
 
     static String generateTypeText(GrTypeDefinition aClass) {
         StringBuilder returnType = new StringBuilder(aClass.getName());
-        final PsiTypeParameter[] typeParameters = aClass.getTypeParameters();
+        PsiTypeParameter[] typeParameters = aClass.getTypeParameters();
         if (typeParameters.length > 0) {
             returnType.append('<');
             for (PsiTypeParameter typeParameter : typeParameters) {

@@ -55,23 +55,23 @@ public class GrCreateMissingSwitchBranchesIntention extends Intention {
             return;
         }
 
-        final List<PsiEnumConstant> constants = findUnusedConstants((GrSwitchStatement) element);
+        List<PsiEnumConstant> constants = findUnusedConstants((GrSwitchStatement) element);
         if (constants.isEmpty()) {
             return;
         }
 
-        final PsiEnumConstant first = constants.get(0);
-        final PsiClass aClass = first.getContainingClass();
+        PsiEnumConstant first = constants.get(0);
+        PsiClass aClass = first.getContainingClass();
         if (aClass == null) {
             return;
         }
         String qName = aClass.getQualifiedName();
 
-        final GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(project);
+        GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(project);
         PsiElement anchor = findAnchor(element);
         for (PsiEnumConstant constant : constants) {
-            final GrCaseSection section = factory.createSwitchSection("case " + qName + "." + constant.getName() + ":\n break");
-            final PsiElement added = element.addBefore(section, anchor);
+            GrCaseSection section = factory.createSwitchSection("case " + qName + "." + constant.getName() + ":\n break");
+            PsiElement added = element.addBefore(section, anchor);
 
             element.addBefore(factory.createLineTerminator(1), anchor);
 
@@ -81,7 +81,7 @@ public class GrCreateMissingSwitchBranchesIntention extends Intention {
 
     @Nullable
     private static PsiElement findAnchor(PsiElement element) {
-        final PsiElement last = element.getLastChild();
+        PsiElement last = element.getLastChild();
         if (last != null && last.getNode().getElementType() == GroovyTokenTypes.mRCURLY) {
             return last;
         }
@@ -98,37 +98,37 @@ public class GrCreateMissingSwitchBranchesIntention extends Intention {
                     return false;
                 }
 
-                final List<PsiEnumConstant> unused = findUnusedConstants((GrSwitchStatement) element);
+                List<PsiEnumConstant> unused = findUnusedConstants((GrSwitchStatement) element);
                 return !unused.isEmpty();
             }
         };
     }
 
     private static List<PsiEnumConstant> findUnusedConstants(GrSwitchStatement switchStatement) {
-        final GrExpression condition = switchStatement.getCondition();
+        GrExpression condition = switchStatement.getCondition();
         if (condition == null) {
             return Collections.emptyList();
         }
 
-        final PsiType type = condition.getType();
+        PsiType type = condition.getType();
         if (!(type instanceof PsiClassType)) {
             return Collections.emptyList();
         }
 
-        final PsiClass resolved = ((PsiClassType) type).resolve();
+        PsiClass resolved = ((PsiClassType) type).resolve();
         if (resolved == null || !resolved.isEnum()) {
             return Collections.emptyList();
         }
 
-        final PsiField[] fields = resolved.getFields();
-        final List<PsiEnumConstant> constants = ContainerUtil.findAll(fields, PsiEnumConstant.class);
+        PsiField[] fields = resolved.getFields();
+        List<PsiEnumConstant> constants = ContainerUtil.findAll(fields, PsiEnumConstant.class);
 
-        final GrCaseSection[] sections = switchStatement.getCaseSections();
+        GrCaseSection[] sections = switchStatement.getCaseSections();
         for (GrCaseSection section : sections) {
             for (GrCaseLabel label : section.getCaseLabels()) {
-                final GrExpression value = label.getValue();
+                GrExpression value = label.getValue();
                 if (value instanceof GrReferenceExpression) {
-                    final PsiElement r = ((GrReferenceExpression) value).resolve();
+                    PsiElement r = ((GrReferenceExpression) value).resolve();
                     constants.remove(r);
                 }
             }

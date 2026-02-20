@@ -85,7 +85,7 @@ public class GrParameterImpl extends GrVariableBaseImpl<GrParameterStub> impleme
   @Override
   @Nullable
   public PsiType getTypeGroovy() {
-    final PsiType declaredType = getDeclaredType();
+    PsiType declaredType = getDeclaredType();
     if (declaredType != null) return declaredType;
 
     if (isVarArgs()) {
@@ -147,7 +147,7 @@ public class GrParameterImpl extends GrVariableBaseImpl<GrParameterStub> impleme
 
   @Override
   public void setType(@Nullable PsiType type) {
-    final GrTypeElement typeElement = getTypeElementGroovy();
+    GrTypeElement typeElement = getTypeElementGroovy();
     if (type == null) {
       if (typeElement != null) typeElement.delete();
       return;
@@ -163,7 +163,7 @@ public class GrParameterImpl extends GrVariableBaseImpl<GrParameterStub> impleme
     }
 
     if (typeElement == null) {
-      final GrModifierList modifierList = getModifierList();
+      GrModifierList modifierList = getModifierList();
       newTypeElement = (GrTypeElement)addAfter(newTypeElement, modifierList);
     }
     else {
@@ -176,9 +176,9 @@ public class GrParameterImpl extends GrVariableBaseImpl<GrParameterStub> impleme
   @Override
   @Nullable
   public GrTypeElement getTypeElementGroovy() {
-    final GrParameterStub stub = getStub();
+    GrParameterStub stub = getStub();
     if (stub != null) {
-      final String typeText = stub.getTypeText();
+      String typeText = stub.getTypeText();
       if (typeText == null) {
         return null;
       }
@@ -204,16 +204,16 @@ public class GrParameterImpl extends GrVariableBaseImpl<GrParameterStub> impleme
   @Nonnull
   public SearchScope getUseScope() {
     if (!isPhysical()) {
-      final PsiFile file = getContainingFile();
-      final PsiElement context = file.getContext();
+      PsiFile file = getContainingFile();
+      PsiElement context = file.getContext();
       if (context != null) return new LocalSearchScope(context);
       return super.getUseScope();
     }
 
-    final PsiElement scope = getDeclarationScope();
+    PsiElement scope = getDeclarationScope();
     if (scope instanceof GrDocCommentOwner) {
       GrDocCommentOwner owner = (GrDocCommentOwner)scope;
-      final GrDocComment comment = owner.getDocComment();
+      GrDocComment comment = owner.getDocComment();
       if (comment != null) {
         return new LocalSearchScope(new PsiElement[]{scope, comment});
       }
@@ -225,7 +225,7 @@ public class GrParameterImpl extends GrVariableBaseImpl<GrParameterStub> impleme
   @Nonnull
   @Override
   public String getName() {
-    final GrParameterStub stub = getStub();
+    GrParameterStub stub = getStub();
     if (stub != null) {
       return stub.getName();
     }
@@ -241,7 +241,7 @@ public class GrParameterImpl extends GrVariableBaseImpl<GrParameterStub> impleme
   @Override
   @Nonnull
   public PsiElement getDeclarationScope() {
-    final GrParameterListOwner owner = PsiTreeUtil.getParentOfType(this, GrParameterListOwner.class);
+    GrParameterListOwner owner = PsiTreeUtil.getParentOfType(this, GrParameterListOwner.class);
     assert owner != null;
     if (owner instanceof GrForClause) return owner.getParent();
     return owner;

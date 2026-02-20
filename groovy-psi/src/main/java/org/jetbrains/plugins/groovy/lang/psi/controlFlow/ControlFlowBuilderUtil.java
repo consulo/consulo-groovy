@@ -197,8 +197,8 @@ public class ControlFlowBuilderUtil {
   }
 
   private static boolean findClassByText(GrReferenceExpression ref) {
-    final String text = ref.getText();
-    final int i = text.indexOf('<');
+    String text = ref.getText();
+    int i = text.indexOf('<');
     String className = i == -1 ? text : text.substring(0, i);
 
     PsiClass[] names = PsiShortNamesCache.getInstance(ref.getProject()).getClassesByName(className, ref.getResolveScope());
@@ -222,7 +222,7 @@ public class ControlFlowBuilderUtil {
    * @return
    */
   public static boolean isCertainlyReturnStatement(GrStatement st) {
-    final PsiElement parent = st.getParent();
+    PsiElement parent = st.getParent();
     if (parent instanceof GrOpenBlock) {
       if (st != ArrayUtil.getLastElement(((GrOpenBlock)parent).getStatements())) return false;
 
@@ -257,9 +257,9 @@ public class ControlFlowBuilderUtil {
     }
 
     else if (parent instanceof GrCaseSection) {
-      final GrStatement[] statements = ((GrCaseSection)parent).getStatements();
-      final GrStatement last = ArrayUtil.getLastElement(statements);
-      final GrSwitchStatement switchStatement = (GrSwitchStatement)parent.getParent();
+      GrStatement[] statements = ((GrCaseSection)parent).getStatements();
+      GrStatement last = ArrayUtil.getLastElement(statements);
+      GrSwitchStatement switchStatement = (GrSwitchStatement)parent.getParent();
 
       if (last instanceof GrBreakStatement && statements.length > 1 && statements[statements.length - 2] == st) {
         return isCertainlyReturnStatement(switchStatement);
@@ -274,8 +274,8 @@ public class ControlFlowBuilderUtil {
   }
 
   private static boolean isLastStatementInCaseSection(GrCaseSection caseSection, GrSwitchStatement switchStatement) {
-    final GrCaseSection[] sections = switchStatement.getCaseSections();
-    final int i = ArrayUtil.find(sections, caseSection);
+    GrCaseSection[] sections = switchStatement.getCaseSections();
+    int i = ArrayUtil.find(sections, caseSection);
     if (i == sections.length - 1) {
       return true;
     }
@@ -295,11 +295,11 @@ public class ControlFlowBuilderUtil {
   public static GroovyResolveResult[] resolveNonQualifiedRefWithoutFlow(@Nonnull GrReferenceExpression ref) {
     LOG.assertTrue(!ref.isQualified());
 
-    final String referenceName = ref.getReferenceName();
-    final ResolverProcessorImpl processor = new PropertyResolverProcessor(referenceName, ref);
+    String referenceName = ref.getReferenceName();
+    ResolverProcessorImpl processor = new PropertyResolverProcessor(referenceName, ref);
 
     ResolveUtil.treeWalkUp(ref, processor, false);
-    final GroovyResolveResult[] candidates = processor.getCandidates();
+    GroovyResolveResult[] candidates = processor.getCandidates();
     if (candidates.length != 0) {
       return candidates;
     }

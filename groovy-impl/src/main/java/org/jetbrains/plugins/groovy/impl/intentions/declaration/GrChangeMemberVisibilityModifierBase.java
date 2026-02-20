@@ -47,7 +47,7 @@ public abstract class GrChangeMemberVisibilityModifierBase extends Intention {
 
     @Override
     protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
-        final PsiElement parent = element.getParent();
+        PsiElement parent = element.getParent();
         if (!(parent instanceof GrMember)) {
             return;
         }
@@ -61,7 +61,7 @@ public abstract class GrChangeMemberVisibilityModifierBase extends Intention {
         return new PsiElementPredicate() {
             @Override
             public boolean satisfiedBy(PsiElement element) {
-                final PsiElement parent = element.getParent();
+                PsiElement parent = element.getParent();
                 return parent instanceof GrMember &&
                     parent instanceof GrNamedElement &&
                     (((GrNamedElement) parent).getNameIdentifierGroovy() == element || ((GrMember) parent).getModifierList() == element) &&

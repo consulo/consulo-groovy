@@ -37,12 +37,12 @@ public class SecondUnsafeCallQuickFix implements LocalQuickFix {
     }
 
     public void applyFix(@Nonnull Project project, @Nonnull ProblemDescriptor descriptor) {
-        final PsiElement element = descriptor.getPsiElement();
+        PsiElement element = descriptor.getPsiElement();
         if (!(element instanceof GrReferenceExpression)) {
             return;
         }
 
-        final PsiElement newDot = GroovyPsiElementFactory.getInstance(project).createDotToken(GroovyTokenTypes.mOPTIONAL_DOT.toString());
+        PsiElement newDot = GroovyPsiElementFactory.getInstance(project).createDotToken(GroovyTokenTypes.mOPTIONAL_DOT.toString());
         ((GrReferenceExpression) element).replaceDotToken(newDot);
     }
 }

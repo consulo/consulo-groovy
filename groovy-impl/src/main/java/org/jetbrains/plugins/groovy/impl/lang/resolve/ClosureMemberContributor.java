@@ -36,7 +36,7 @@ public abstract class ClosureMemberContributor extends NonCodeMembersContributor
                                      ResolveState state) {
     if (!(qualifierType instanceof GrClosureType)) return;
 
-    final PsiElement context = state.get(ResolverProcessorImpl.RESOLVE_CONTEXT);
+    PsiElement context = state.get(ResolverProcessorImpl.RESOLVE_CONTEXT);
     if (!(context instanceof GrClosableBlock)) return;
 
     processMembers((GrClosableBlock)context, processor, place, state);

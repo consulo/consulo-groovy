@@ -49,20 +49,20 @@ class GrThisSuperCompletionProvider implements CompletionProvider {
   public void addCompletions(@Nonnull CompletionParameters parameters,
                              ProcessingContext context,
                              @Nonnull CompletionResultSet result) {
-    final PsiElement position = parameters.getPosition();
+    PsiElement position = parameters.getPosition();
 
     assert position.getParent() instanceof GrReferenceExpression;
-    final GrReferenceExpression refExpr = ((GrReferenceExpression)position.getParent());
-    final GrExpression qualifier = refExpr.getQualifierExpression();
+    GrReferenceExpression refExpr = ((GrReferenceExpression)position.getParent());
+    GrExpression qualifier = refExpr.getQualifierExpression();
     if (!(qualifier instanceof GrReferenceExpression)) return;
 
     GrReferenceExpression referenceExpression = (GrReferenceExpression)qualifier;
-    final PsiElement resolved = referenceExpression.resolve();
+    PsiElement resolved = referenceExpression.resolve();
     if (!(resolved instanceof PsiClass)) return;
 
     if (parameters.getInvocationCount() > 0 &&
       CompletionUtilCore.shouldShowFeature(parameters, JavaCompletionFeatures.GLOBAL_MEMBER_NAME)) {
-      final String shortcut =
+      String shortcut =
         KeymapUtil.getFirstKeyboardShortcutText(ActionManager.getInstance().getAction(IdeActions.ACTION_CODE_COMPLETION));
       if (StringUtil.isNotEmpty(shortcut)) {
         result.addLookupAdvertisement("Pressing " + shortcut + " twice without a class qualifier would show all accessible static methods");

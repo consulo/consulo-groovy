@@ -31,11 +31,11 @@ import consulo.language.util.IncorrectOperationException;
  */
 public abstract class GrStubElementBase<T extends StubElement> extends StubBasedPsiElementBase<T> implements GroovyPsiElement {
 
-  protected GrStubElementBase(final T stub, IStubElementType nodeType) {
+  protected GrStubElementBase(T stub, IStubElementType nodeType) {
     super(stub, nodeType);
   }
 
-  public GrStubElementBase(final ASTNode node) {
+  public GrStubElementBase(ASTNode node) {
     super(node);
   }
 
@@ -56,7 +56,7 @@ public abstract class GrStubElementBase<T extends StubElement> extends StubBased
   }
 
   protected PsiElement getDefinitionParent() {
-    final PsiElement candidate = getParentByStub();
+    PsiElement candidate = getParentByStub();
     if (candidate instanceof GroovyFile || candidate instanceof GrTypeDefinitionBody) {
       return candidate;
     }

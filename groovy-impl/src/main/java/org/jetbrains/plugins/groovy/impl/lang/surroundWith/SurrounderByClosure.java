@@ -48,8 +48,8 @@ public class SurrounderByClosure extends GroovyManyStatementsSurrounder {
     }
 
     GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(elements[0].getProject());
-    final GrMethodCallExpression call = (GrMethodCallExpression) factory.createExpressionFromText("{ -> \n}.call()", context);
-    final GrClosableBlock closure = (GrClosableBlock) ((GrReferenceExpression) call.getInvokedExpression()).getQualifierExpression();
+    GrMethodCallExpression call = (GrMethodCallExpression) factory.createExpressionFromText("{ -> \n}.call()", context);
+    GrClosableBlock closure = (GrClosableBlock) ((GrReferenceExpression) call.getInvokedExpression()).getQualifierExpression();
     addStatements(closure, elements);
     return call;
   }
@@ -58,14 +58,14 @@ public class SurrounderByClosure extends GroovyManyStatementsSurrounder {
     element.accept(new MyRestoringVisitor());
     assert element instanceof GrMethodCallExpression;
 
-    final int offset = element.getTextRange().getEndOffset();
+    int offset = element.getTextRange().getEndOffset();
     return new TextRange(offset, offset);
   }
 
   private static class MyMemoizingVisitor extends GroovyRecursiveElementVisitor {
     public void visitReferenceExpression(GrReferenceExpression ref) {
       if (ref.getQualifierExpression() == null) { //only unqualified references could change their targets
-        final GroovyResolveResult resolveResult = ref.advancedResolve();
+        GroovyResolveResult resolveResult = ref.advancedResolve();
         ref.putCopyableUserData(REF_RESOLVE_RESULT_KEY, resolveResult);
       }
       super.visitReferenceExpression(ref);
@@ -74,15 +74,15 @@ public class SurrounderByClosure extends GroovyManyStatementsSurrounder {
 
   private static class MyRestoringVisitor extends GroovyRecursiveElementVisitor {
     public void visitReferenceExpression(GrReferenceExpression ref) {
-      final GroovyResolveResult oldResult = ref.getCopyableUserData(REF_RESOLVE_RESULT_KEY);
+      GroovyResolveResult oldResult = ref.getCopyableUserData(REF_RESOLVE_RESULT_KEY);
       if (oldResult != null) {
         assert ref.getQualifierExpression() == null;
-        final GroovyResolveResult newResult = ref.advancedResolve();
-        final PsiElement oldElement = oldResult.getElement();
-        final PsiElement newElement = newResult.getElement();
+        GroovyResolveResult newResult = ref.advancedResolve();
+        PsiElement oldElement = oldResult.getElement();
+        PsiElement newElement = newResult.getElement();
         if (!ref.getManager().areElementsEquivalent(oldElement, newElement) ||
             oldResult.getCurrentFileResolveContext() != newResult.getCurrentFileResolveContext()) {
-          final GrReferenceExpression qualifier = GroovyPsiElementFactory.getInstance(ref.getProject()).createReferenceExpressionFromText("owner");
+          GrReferenceExpression qualifier = GroovyPsiElementFactory.getInstance(ref.getProject()).createReferenceExpressionFromText("owner");
           ref.setQualifier(qualifier);
         }
       }

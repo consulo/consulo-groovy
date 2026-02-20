@@ -35,8 +35,8 @@ public class FromStringHintProcessor extends SignatureHintProcessor {
 
   @Nonnull
   @Override
-  public List<PsiType[]> inferExpectedSignatures(@Nonnull final PsiMethod method,
-                                                 @Nonnull final PsiSubstitutor substitutor,
+  public List<PsiType[]> inferExpectedSignatures(@Nonnull PsiMethod method,
+                                                 @Nonnull PsiSubstitutor substitutor,
                                                  @Nonnull String[] options) {
     return ContainerUtil.map(options, value -> {
       String[] params = value.split(",");

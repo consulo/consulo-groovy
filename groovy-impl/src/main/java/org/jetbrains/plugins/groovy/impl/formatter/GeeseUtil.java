@@ -132,7 +132,7 @@ public class GeeseUtil {
     }
 
     while (true) {
-      final PsiElement p = cur.getParent();
+      PsiElement p = cur.getParent();
       if (p != null && p.getTextOffset() == cur.getTextOffset()) {
         cur = p;
       }

@@ -35,8 +35,8 @@ import consulo.ide.setting.ShowSettingsUtil;
 public class ExcludeFromStubGenerationAction extends AnAction implements DumbAware
 {
   @RequiredUIAccess
-  public void actionPerformed(final AnActionEvent e) {
-    final PsiFile file = e.getData(LangDataKeys.PSI_FILE);
+  public void actionPerformed(AnActionEvent e) {
+    PsiFile file = e.getData(LangDataKeys.PSI_FILE);
 
     assert file != null && file.getLanguage() == GroovyFileType.GROOVY_LANGUAGE;
 
@@ -45,9 +45,9 @@ public class ExcludeFromStubGenerationAction extends AnAction implements DumbAwa
 
   @RequiredUIAccess
   public static void doExcludeFromStubGeneration(PsiFile file) {
-    final VirtualFile virtualFile = file.getVirtualFile();
+    VirtualFile virtualFile = file.getVirtualFile();
     assert virtualFile != null;
-    final Project project = file.getProject();
+    Project project = file.getProject();
 
     ShowSettingsUtil.getInstance().showAndSelect(project, GroovyCompilerConfigurable.class, configurable -> {
       configurable.getExcludes().addEntry(new ExcludeEntryDescription(virtualFile, false, true, project));
@@ -68,7 +68,7 @@ public class ExcludeFromStubGenerationAction extends AnAction implements DumbAwa
       return false;
     }
 
-    final VirtualFile virtualFile = file.getVirtualFile();
+    VirtualFile virtualFile = file.getVirtualFile();
     return virtualFile != null && !GroovyCompilerConfiguration.getExcludeConfiguration(file.getProject()).isExcluded(virtualFile);
   }
 

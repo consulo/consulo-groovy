@@ -94,11 +94,11 @@ public class GrIntroduceFieldDialog extends DialogWrapper implements GrIntroduce
 
     private final GrIntroduceContext myContext;
 
-    public GrIntroduceFieldDialog(final GrIntroduceContext context) {
+    public GrIntroduceFieldDialog(GrIntroduceContext context) {
         super(context.getProject(), true);
         myContext = context;
 
-        final PsiClass clazz = (PsiClass)context.getScope();
+        PsiClass clazz = (PsiClass)context.getScope();
         PsiElement scope = clazz instanceof GroovyScriptClass ? clazz.getContainingFile() : clazz;
         myIsStatic = GrIntroduceFieldHandler.shouldBeStatic(context.getPlace(), scope);
 
@@ -128,7 +128,7 @@ public class GrIntroduceFieldDialog extends DialogWrapper implements GrIntroduce
         }
 
         myCanBeInitializedOutsideBlock = canBeInitializedOutsideBlock(context, clazz);
-        final GrMember container = GrIntroduceFieldHandler.getContainer(context.getPlace(), scope);
+        GrMember container = GrIntroduceFieldHandler.getContainer(context.getPlace(), scope);
         if (container == null) {
             myCurrentMethodRadioButton.setEnabled(false);
         }
@@ -250,11 +250,11 @@ public class GrIntroduceFieldDialog extends DialogWrapper implements GrIntroduce
         if (!method.isConstructor()) {
             return false;
         }
-        final PsiMethod[] constructors = clazz.getConstructors();
+        PsiMethod[] constructors = clazz.getConstructors();
         if (constructors.length == 1) {
             return true;
         }
-        final GrConstructorInvocation invocation = PsiImplUtil.getChainingConstructorInvocation((GrMethod)method);
+        GrConstructorInvocation invocation = PsiImplUtil.getChainingConstructorInvocation((GrMethod)method);
         if (invocation != null && invocation.isThisCall()) {
             return false;
         }
@@ -263,7 +263,7 @@ public class GrIntroduceFieldDialog extends DialogWrapper implements GrIntroduce
             if (constructor == method) {
                 continue;
             }
-            final GrConstructorInvocation inv = PsiImplUtil.getChainingConstructorInvocation((GrMethod)constructor);
+            GrConstructorInvocation inv = PsiImplUtil.getChainingConstructorInvocation((GrMethod)constructor);
             if (inv == null || inv.isSuperCall()) {
                 return false;
             }
@@ -307,9 +307,9 @@ public class GrIntroduceFieldDialog extends DialogWrapper implements GrIntroduce
     }
 
     private void createUIComponents() {
-        final GrExpression expression = myContext.getExpression();
-        final GrVariable var = myContext.getVar();
-        final StringPartInfo stringPart = myContext.getStringPart();
+        GrExpression expression = myContext.getExpression();
+        GrVariable var = myContext.getVar();
+        StringPartInfo stringPart = myContext.getStringPart();
 
         List<String> list = new ArrayList<>();
         if (var != null) {
@@ -409,7 +409,7 @@ public class GrIntroduceFieldDialog extends DialogWrapper implements GrIntroduce
     }
 
     private static boolean canBeInitializedOutsideBlock(@Nonnull GrIntroduceContext context, @Nonnull PsiClass clazz) {
-        final StringPartInfo part = context.getStringPart();
+        StringPartInfo part = context.getStringPart();
         GrExpression expression = context.getExpression();
 
         if (expression != null) {
@@ -463,7 +463,7 @@ public class GrIntroduceFieldDialog extends DialogWrapper implements GrIntroduce
         @Override
         public void visitReferenceExpression(GrReferenceExpression refExpr) {
             super.visitReferenceExpression(refExpr);
-            final PsiElement resolved = refExpr.resolve();
+            PsiElement resolved = refExpr.resolve();
             if (!(resolved instanceof GrVariable)) {
                 return;
             }
@@ -491,8 +491,8 @@ public class GrIntroduceFieldDialog extends DialogWrapper implements GrIntroduce
     @Override
     @RequiredUIAccess
     protected void doOKAction() {
-        final PsiClass clazz = (PsiClass)myContext.getScope();
-        final String name = getName();
+        PsiClass clazz = (PsiClass)myContext.getScope();
+        String name = getName();
         LocalizeValue message = RefactoringLocalize.fieldExists(name, clazz.getQualifiedName());
         if (clazz.findFieldByName(name, true) != null
             && Messages.showYesNoDialog(

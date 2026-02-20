@@ -19,15 +19,15 @@ import java.util.Collection;
  * @author peter
  */
 public class FileNode extends AbstractMvcPsiNodeDescriptor {
-  public FileNode(@Nonnull final Module module,
-                  @Nonnull final PsiFile file,
-                  @Nullable final String locationMark,
-                  final ViewSettings viewSettings) {
+  public FileNode(@Nonnull Module module,
+                  @Nonnull PsiFile file,
+                  @Nullable String locationMark,
+                  ViewSettings viewSettings) {
     super(module, viewSettings, file, FILE);
   }
 
   @Override
-  protected String getTestPresentationImpl(@Nonnull final PsiElement psiElement) {
+  protected String getTestPresentationImpl(@Nonnull PsiElement psiElement) {
     return "File: " + ((PsiFile)psiElement).getName();
   }
 
@@ -46,8 +46,8 @@ public class FileNode extends AbstractMvcPsiNodeDescriptor {
   }
 
   @Override
-  protected void updateImpl(final PresentationData data) {
-    final PsiFile value = extractPsiFromValue();
+  protected void updateImpl(PresentationData data) {
+    PsiFile value = extractPsiFromValue();
     assert value != null;
     data.setPresentableText(value.getName());
     data.setIcon(IconDescriptorUpdaters.getIcon(value, Iconable.ICON_FLAG_READ_STATUS));

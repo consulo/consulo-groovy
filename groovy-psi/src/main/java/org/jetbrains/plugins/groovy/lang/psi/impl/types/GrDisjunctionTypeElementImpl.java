@@ -65,8 +65,8 @@ public class GrDisjunctionTypeElementImpl extends GroovyPsiElementImpl implement
 			return myCachedType;
 		}
 
-		final GrTypeElement[] typeElements = getTypeElements();
-		final ArrayList<PsiType> types = new ArrayList<PsiType>();
+		GrTypeElement[] typeElements = getTypeElements();
+		ArrayList<PsiType> types = new ArrayList<PsiType>();
 		for(GrTypeElement typeElement : typeElements)
 		{
 			types.add(typeElement.getType());
@@ -93,7 +93,7 @@ public class GrDisjunctionTypeElementImpl extends GroovyPsiElementImpl implement
 	@Override
 	public void deleteChildInternal(@Nonnull ASTNode child)
 	{
-		final PsiElement psi = child.getPsi();
+		PsiElement psi = child.getPsi();
 		if(psi instanceof GrTypeElement)
 		{
 			PsiElement next = PsiUtil.skipWhitespacesAndComments(psi.getNextSibling(), true);

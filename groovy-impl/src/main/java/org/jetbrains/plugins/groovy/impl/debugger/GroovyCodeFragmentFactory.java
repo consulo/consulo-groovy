@@ -76,15 +76,15 @@ public class GroovyCodeFragmentFactory extends CodeFragmentFactory {
 
   @Override
   public JavaCodeFragment createCodeFragment(TextWithImports textWithImports, PsiElement context, Project project) {
-    final Pair<Map<String, String>, GroovyFile> pair = externalParameters(textWithImports.getText(), context);
+    Pair<Map<String, String>, GroovyFile> pair = externalParameters(textWithImports.getText(), context);
     GroovyFile toEval = pair.second;
-    final Map<String, String> parameters = pair.first;
+    Map<String, String> parameters = pair.first;
 
     List<String> names = new ArrayList<>(parameters.keySet());
     List<String> values = ContainerUtil.map(names, name -> parameters.get(name));
 
     String text = toEval.getText();
-    final String groovyText = StringUtil.join(names, ", ") + "->" + stripImports(text, toEval);
+    String groovyText = StringUtil.join(names, ", ") + "->" + stripImports(text, toEval);
 
     PsiClass contextClass = PsiUtil.getContextClass(context);
     boolean isStatic = isStaticContext(context);
@@ -173,20 +173,20 @@ public class GroovyCodeFragmentFactory extends CodeFragmentFactory {
     }
     javaText.append("|res");
 
-    final PsiElementFactory factory = JavaPsiFacade.getInstance(toEval.getProject()).getElementFactory();
+    PsiElementFactory factory = JavaPsiFacade.getInstance(toEval.getProject()).getElementFactory();
 
-    final String hiddenJavaVars =
+    String hiddenJavaVars =
       StringUtil.replace(javaText.toString(), "|", "_$_" + new Random().nextInt(42)).replaceAll("\\$OR\\$", "|");
-    final String finalText =
+    String finalText =
       StringUtil.replace(StringUtil.replace(hiddenJavaVars, TEXT, groovyText), IMPORTS, textWithImports.getImports());
-    final JavaCodeFragment result = JavaCodeFragmentFactory.getInstance(project).createCodeBlockCodeFragment(finalText, null, true);
+    JavaCodeFragment result = JavaCodeFragmentFactory.getInstance(project).createCodeBlockCodeFragment(finalText, null, true);
     if (contextClass != null) {
       result.setThisType(factory.createType(contextClass));
     }
     return result;
   }
 
-  public static Pair<Map<String, String>, GroovyFile> externalParameters(String text, @Nonnull final PsiElement context) {
+  public static Pair<Map<String, String>, GroovyFile> externalParameters(String text, @Nonnull PsiElement context) {
     final GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(context.getProject());
     final GroovyFile toEval = factory.createGroovyFile(text, false, context);
 
@@ -218,7 +218,7 @@ public class GroovyCodeFragmentFactory extends CodeFragmentFactory {
         }
 
         if (resolved instanceof GrVariable && !(resolved instanceof GrField) && !PsiTreeUtil.isAncestor(toEval, resolved, false)) {
-          final String name = ((GrVariable)resolved).getName();
+          String name = ((GrVariable)resolved).getName();
           if (resolved instanceof ClosureSyntheticParameter && PsiTreeUtil.isAncestor(toEval,
                                                                                       ((ClosureSyntheticParameter)resolved).getClosure(),
                                                                                       false)) {
@@ -268,7 +268,7 @@ public class GroovyCodeFragmentFactory extends CodeFragmentFactory {
         return closure != null && resolved instanceof GrLightVariable && "owner".equals(((GrLightVariable)resolved).getName());
       }
 
-      private void replaceWithReference(GrExpression expr, final String exprText) {
+      private void replaceWithReference(GrExpression expr, String exprText) {
         replacements.put(expr, exprText);
       }
 

@@ -48,15 +48,15 @@ public class IndexingMethodConversionIntention extends Intention {
         Project project,
         Editor editor
     ) throws IncorrectOperationException {
-        final GrMethodCallExpression callExpression = (GrMethodCallExpression) element;
-        final GrArgumentList argList = callExpression.getArgumentList();
-        final GrExpression[] arguments = argList.getExpressionArguments();
+        GrMethodCallExpression callExpression = (GrMethodCallExpression) element;
+        GrArgumentList argList = callExpression.getArgumentList();
+        GrExpression[] arguments = argList.getExpressionArguments();
 
         GrReferenceExpression methodExpression = (GrReferenceExpression) callExpression.getInvokedExpression();
-        final IElementType referenceType = methodExpression.getDotTokenType();
+        IElementType referenceType = methodExpression.getDotTokenType();
 
-        final String methodName = methodExpression.getReferenceName();
-        final GrExpression qualifier = methodExpression.getQualifierExpression();
+        String methodName = methodExpression.getReferenceName();
+        GrExpression qualifier = methodExpression.getQualifierExpression();
         if ("getAt".equals(methodName) || "get".equals(methodName)) {
             PsiImplUtil.replaceExpression(qualifier.getText() + '[' + arguments[0].getText() + ']', callExpression);
         }

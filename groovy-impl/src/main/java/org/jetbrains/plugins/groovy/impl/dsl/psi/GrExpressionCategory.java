@@ -41,14 +41,14 @@ public class GrExpressionCategory implements PsiEnhancerCategory {
 
   @Nullable
   public static PsiClass getClassType(GrExpression expr) {
-    final PsiType type = expr.getType();
+    PsiType type = expr.getType();
     if (type instanceof PsiClassType) {
       PsiClassType classType = (PsiClassType)type;
       return classType.resolve();
     } else {
-      final String text = type.getPresentableText();
-      final Project project = expr.getProject();
-      final JavaPsiFacade facade = JavaPsiFacade.getInstance(project);
+      String text = type.getPresentableText();
+      Project project = expr.getProject();
+      JavaPsiFacade facade = JavaPsiFacade.getInstance(project);
       return facade.findClass(text, GlobalSearchScope.allScope(project));
     }
   }

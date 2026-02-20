@@ -37,8 +37,8 @@ public class AnnotationChecker
 {
 	public static void checkApplicability(@Nonnull GrAnnotation annotation, @Nullable PsiAnnotationOwner owner, @Nonnull AnnotationHolder holder, @Nonnull PsiElement toHighlight)
 	{
-		final GrCodeReferenceElement ref = annotation.getClassReference();
-		final PsiElement resolved = ref.resolve();
+		GrCodeReferenceElement ref = annotation.getClassReference();
+		PsiElement resolved = ref.resolve();
 
 		if(resolved == null)
 		{
@@ -76,7 +76,7 @@ public class AnnotationChecker
 	public static Pair<PsiElement, String> checkAnnotationArgumentList(@Nonnull GrAnnotation annotation,
 																	   @Nonnull AnnotationHolder holder)
 	{
-		final PsiClass anno = ResolveUtil.resolveAnnotation(annotation);
+		PsiClass anno = ResolveUtil.resolveAnnotation(annotation);
 		if(anno == null)
 		{
 			return null;

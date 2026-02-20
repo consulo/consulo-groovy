@@ -111,14 +111,14 @@ public class GroovyNamesUtil {
     return c + str.substring(1);
   }
 
-  public static String camelToSnake(final String string) {
+  public static String camelToSnake(String string) {
     return StringUtil.join(camelizeString(string), s -> StringUtil.decapitalize(s), "-");
   }
 
   public static boolean isKeyword(@Nonnull String name) {
-    final GroovyLexer lexer = new GroovyLexer();
+    GroovyLexer lexer = new GroovyLexer();
     lexer.start(name);
-    final IElementType type = lexer.getTokenType();
+    IElementType type = lexer.getTokenType();
     return TokenSets.KEYWORDS.contains(type);
   }
 
@@ -126,10 +126,10 @@ public class GroovyNamesUtil {
     Set<String> uniqNames = new LinkedHashSet<String>();
     Set<String> nonUniqNames = new HashSet<String>();
     for (PsiType type : types) {
-      final SuggestedNameInfo nameInfo = JavaCodeStyleManager.getInstance(project).suggestVariableName
+      SuggestedNameInfo nameInfo = JavaCodeStyleManager.getInstance(project).suggestVariableName
         (VariableKind.PARAMETER, null, null, type);
 
-      final String name = nameInfo.names[0];
+      String name = nameInfo.names[0];
       if (uniqNames.contains(name)) {
         int i = 2;
         while (uniqNames.contains(name + i)) {
@@ -143,7 +143,7 @@ public class GroovyNamesUtil {
       }
     }
 
-    final String[] result = new String[uniqNames.size()];
+    String[] result = new String[uniqNames.size()];
     int i = 0;
     for (String name : uniqNames) {
       result[i] = nonUniqNames.contains(name) ? name + 1 : name;

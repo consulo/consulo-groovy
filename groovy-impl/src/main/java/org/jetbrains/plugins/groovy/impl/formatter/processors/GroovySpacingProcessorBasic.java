@@ -66,14 +66,14 @@ public abstract class GroovySpacingProcessorBasic
 
 		ASTNode leftNode = child1.getNode();
 		ASTNode rightNode = child2.getNode();
-		final PsiElement left = leftNode.getPsi();
-		final PsiElement right = rightNode.getPsi();
+		PsiElement left = leftNode.getPsi();
+		PsiElement right = rightNode.getPsi();
 
 		IElementType leftType = leftNode.getElementType();
 		IElementType rightType = rightNode.getElementType();
 
-		final CommonCodeStyleSettings settings = context.getSettings();
-		final GroovyCodeStyleSettings groovySettings = context.getGroovySettings();
+		CommonCodeStyleSettings settings = context.getSettings();
+		GroovyCodeStyleSettings groovySettings = context.getGroovySettings();
 
 		if(!(mirrorsAst(child1) && mirrorsAst(child2)))
 		{
@@ -230,14 +230,14 @@ public abstract class GroovySpacingProcessorBasic
 	static Spacing createDependentSpacingForClosure(@Nonnull CommonCodeStyleSettings settings,
 			@Nonnull GroovyCodeStyleSettings groovySettings,
 			@Nonnull GrClosableBlock closure,
-			final boolean forArrow)
+			boolean forArrow)
 	{
 		boolean spaceWithinBraces = closure.getParent() instanceof GrStringInjection ? groovySettings
 				.SPACE_WITHIN_GSTRING_INJECTION_BRACES : settings.SPACE_WITHIN_BRACES;
 		GrStatement[] statements = closure.getStatements();
 		if(statements.length > 0)
 		{
-			final PsiElement startElem = forArrow ? statements[0] : closure;
+			PsiElement startElem = forArrow ? statements[0] : closure;
 			int start = startElem.getTextRange().getStartOffset();
 			int end = statements[statements.length - 1].getTextRange().getEndOffset();
 			TextRange range = new TextRange(start, end);

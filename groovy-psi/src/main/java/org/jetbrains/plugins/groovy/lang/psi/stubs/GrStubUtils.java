@@ -65,7 +65,7 @@ public class GrStubUtils {
     if (length == TOO_LONG) {
       length = dataStream.readInt();
     }
-    final String[] annNames = new String[length];
+    String[] annNames = new String[length];
     for (int i = 0; i < length; i++) {
       annNames[i] = dataStream.readName().toString();
     }
@@ -81,7 +81,7 @@ public class GrStubUtils {
 
   @Nullable
   public static String readNullableString(StubInputStream dataStream) throws IOException {
-    final boolean hasTypeText = dataStream.readBoolean();
+    boolean hasTypeText = dataStream.readBoolean();
     return hasTypeText ? dataStream.readUTFFast() : null;
   }
 
@@ -92,10 +92,10 @@ public class GrStubUtils {
 
   public static String[] getAnnotationNames(PsiModifierListOwner psi) {
     List<String> annoNames = ContainerUtil.newArrayList();
-    final PsiModifierList modifierList = psi.getModifierList();
+    PsiModifierList modifierList = psi.getModifierList();
     if (modifierList instanceof GrModifierList) {
       for (GrAnnotation annotation : ((GrModifierList)modifierList).getRawAnnotations()) {
-        final String name = annotation.getShortName();
+        String name = annotation.getShortName();
         if (StringUtil.isNotEmpty(name)) {
           annoNames.add(name);
         }
@@ -140,7 +140,7 @@ public class GrStubUtils {
   }
 
   @Nullable
-  public static String getPackageName(final GrFileStub stub) {
+  public static String getPackageName(GrFileStub stub) {
     for (StubElement child : stub.getChildrenStubs()) {
       if (child instanceof GrPackageDefinitionStub) {
         return ((GrPackageDefinitionStub)child).getPackageName();

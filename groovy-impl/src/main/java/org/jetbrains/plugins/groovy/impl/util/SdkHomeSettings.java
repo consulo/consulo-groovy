@@ -55,12 +55,12 @@ public abstract class SdkHomeSettings implements PersistentStateComponent<SdkHom
   }
 
   @Nullable
-  private static VirtualFile calcHome(final SdkHomeConfigurable.SdkHomeBean state) {
+  private static VirtualFile calcHome(SdkHomeConfigurable.SdkHomeBean state) {
     if (state == null) {
       return null;
     }
 
-    @SuppressWarnings({"NonPrivateFieldAccessedInSynchronizedContext"}) final String sdk_home = state.SDK_HOME;
+    @SuppressWarnings({"NonPrivateFieldAccessedInSynchronizedContext"}) String sdk_home = state.SDK_HOME;
     if (StringUtil.isEmpty(sdk_home)) {
       return null;
     }
@@ -82,12 +82,12 @@ public abstract class SdkHomeSettings implements PersistentStateComponent<SdkHom
       return Collections.emptyList();
     }
 
-    final VirtualFile lib = home.findChild("lib");
+    VirtualFile lib = home.findChild("lib");
     if (lib == null) {
       return Collections.emptyList();
     }
 
-    final ArrayList<VirtualFile> result = new ArrayList<VirtualFile>();
+    ArrayList<VirtualFile> result = new ArrayList<VirtualFile>();
     for (VirtualFile file : lib.getChildren()) {
       if ("jar".equals(file.getExtension())) {
         ContainerUtil.addIfNotNull(result, ArchiveVfsUtil.getJarRootForLocalFile(file));

@@ -95,7 +95,7 @@ public class NamedArgumentDescriptor {
 
   @Nullable
   public PsiPolyVariantReference createReference(@Nonnull GrArgumentLabel element) {
-    final PsiElement navigationElement = getNavigationElement();
+    PsiElement navigationElement = getNavigationElement();
     if (navigationElement == null) {
       return null;
     }
@@ -135,14 +135,14 @@ public class NamedArgumentDescriptor {
 
     @Override
     public PsiElement handleElementRename(String newElementName) throws IncorrectOperationException {
-      final PsiElement resolved = resolve();
+      PsiElement resolved = resolve();
 
       if (resolved instanceof PsiMethod) {
-        final PsiMethod method = (PsiMethod)resolved;
-        final String oldName = getElement().getName();
+        PsiMethod method = (PsiMethod)resolved;
+        String oldName = getElement().getName();
         if (!method.getName().equals(oldName)) { //was property reference to accessor
           if (PropertyUtil.isSimplePropertySetter(method)) {
-            final String newPropertyName = PropertyUtil.getPropertyName(newElementName);
+            String newPropertyName = PropertyUtil.getPropertyName(newElementName);
             if (newPropertyName != null) {
               newElementName = newPropertyName;
             }

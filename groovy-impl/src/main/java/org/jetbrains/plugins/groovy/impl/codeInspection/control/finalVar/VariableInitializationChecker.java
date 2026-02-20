@@ -38,7 +38,7 @@ public class VariableInitializationChecker {
 
   public static boolean isVariableDefinitelyInitialized(@Nonnull String varName, @Nonnull Instruction[] controlFlow) {
     DFAEngine<Data> engine = new DFAEngine<Data>(controlFlow, new MyDfaInstance(varName), new MySemilattice());
-    final ArrayList<Data> result = engine.performDFAWithTimeout();
+    ArrayList<Data> result = engine.performDFAWithTimeout();
     if (result == null) return false;
 
     return result.get(controlFlow.length - 1).get();
@@ -53,10 +53,10 @@ public class VariableInitializationChecker {
       KEY.putCachedValue(var, map);
     }
 
-    final Boolean cached = map.get(context);
+    Boolean cached = map.get(context);
     if (cached != null) return cached.booleanValue();
 
-    final boolean result = isVariableDefinitelyInitialized(var.getName(), controlFlow);
+    boolean result = isVariableDefinitelyInitialized(var.getName(), controlFlow);
     map.put(context, result);
 
     return result;

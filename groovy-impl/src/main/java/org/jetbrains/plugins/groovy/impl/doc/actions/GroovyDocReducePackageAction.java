@@ -36,19 +36,19 @@ public class GroovyDocReducePackageAction extends AnAction implements DumbAware
   private final JList myPackagesList;
   private final DefaultListModel myDataModel;
 
-  public GroovyDocReducePackageAction(final JList packagesList, final DefaultListModel dataModel) {
+  public GroovyDocReducePackageAction(JList packagesList, DefaultListModel dataModel) {
     super("Remove package from list", "Remove package from list", AllIcons.General.Remove);
     myPackagesList = packagesList;
     myDataModel = dataModel;
   }
 
-  public void actionPerformed(final AnActionEvent e) {
+  public void actionPerformed(AnActionEvent e) {
     myDataModel.remove(myPackagesList.getSelectedIndex());
   }
 
   @Override
-  public void update(final AnActionEvent e) {
-    final Presentation presentation = e.getPresentation();
+  public void update(AnActionEvent e) {
+    Presentation presentation = e.getPresentation();
     if (myPackagesList.getSelectedIndex() == -1) {
       presentation.setEnabled(false);
     } else {

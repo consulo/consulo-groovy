@@ -53,7 +53,7 @@ import java.util.function.Supplier;
 public class GrReassignedLocalVarsChecker {
 
   @Nullable
-  public static Boolean isReassignedVar(@Nonnull final GrReferenceExpression refExpr) {
+  public static Boolean isReassignedVar(@Nonnull GrReferenceExpression refExpr) {
     if (!PsiUtil.isCompileStatic(refExpr)) {
       return false;
     }
@@ -78,8 +78,8 @@ public class GrReassignedLocalVarsChecker {
     });
   }
 
-  private static boolean isReassignedVarImpl(@Nonnull final GrVariable resolved) {
-    final GrControlFlowOwner variableScope = PsiTreeUtil.getParentOfType(resolved, GrCodeBlock.class,
+  private static boolean isReassignedVarImpl(@Nonnull GrVariable resolved) {
+    GrControlFlowOwner variableScope = PsiTreeUtil.getParentOfType(resolved, GrCodeBlock.class,
                                                                          GroovyFile.class);
     if (variableScope == null) {
       return false;
@@ -122,7 +122,7 @@ public class GrReassignedLocalVarsChecker {
       return null;
     }
 
-    final PsiElement resolved = refExpr.resolve();
+    PsiElement resolved = refExpr.resolve();
     if (!PsiUtil.isLocalVariable(resolved)) {
       return null;
     }
@@ -138,8 +138,8 @@ public class GrReassignedLocalVarsChecker {
     return RecursionManager.doPreventingRecursion(var, false, new Supplier<PsiType>() {
       @Override
       public PsiType get() {
-        final Collection<PsiReference> all = ReferencesSearch.search(var, var.getUseScope()).findAll();
-        final GrExpression initializer = var.getInitializerGroovy();
+        Collection<PsiReference> all = ReferencesSearch.search(var, var.getUseScope()).findAll();
+        GrExpression initializer = var.getInitializerGroovy();
 
         if (initializer == null && all.isEmpty()) {
           return var.getDeclaredType();
@@ -147,9 +147,9 @@ public class GrReassignedLocalVarsChecker {
 
         PsiType result = initializer != null ? initializer.getType() : null;
 
-        final PsiManager manager = var.getManager();
+        PsiManager manager = var.getManager();
         for (PsiReference reference : all) {
-          final PsiElement ref = reference.getElement();
+          PsiElement ref = reference.getElement();
           if (ref instanceof GrReferenceExpression && PsiUtil.isLValue(((GrReferenceExpression)ref))) {
             result = TypesUtil.getLeastUpperBoundNullable(result,
                                                           TypeInferenceHelper.getInitializerTypeFor(ref), manager);

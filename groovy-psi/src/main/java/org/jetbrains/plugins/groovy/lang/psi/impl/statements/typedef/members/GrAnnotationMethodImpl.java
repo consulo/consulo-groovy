@@ -37,7 +37,7 @@ public class GrAnnotationMethodImpl extends GrMethodBaseImpl implements GrAnnota
     super(node);
   }
 
-  public GrAnnotationMethodImpl(final GrMethodStub stub) {
+  public GrAnnotationMethodImpl(GrMethodStub stub) {
     super(stub, GroovyElementTypes.ANNOTATION_METHOD);
   }
 

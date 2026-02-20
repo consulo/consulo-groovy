@@ -44,8 +44,8 @@ class NegationCountVisitor extends GroovyRecursiveElementVisitor {
 
   public void visitBinaryExpression(@Nonnull GrBinaryExpression expression) {
     super.visitBinaryExpression(expression);
-    final IElementType tokenType = expression.getOperationTokenType();
-    final GrExpression rhs = expression.getRightOperand();
+    IElementType tokenType = expression.getOperationTokenType();
+    GrExpression rhs = expression.getRightOperand();
     if (rhs == null) {
       return;
     }
@@ -56,7 +56,7 @@ class NegationCountVisitor extends GroovyRecursiveElementVisitor {
 
   public void visitUnaryExpression(GrUnaryExpression grUnaryExpression) {
     super.visitUnaryExpression(grUnaryExpression);
-    final IElementType sign = grUnaryExpression.getOperationTokenType();
+    IElementType sign = grUnaryExpression.getOperationTokenType();
     if (GroovyTokenTypes.mLNOT.equals(sign)) {
       negationCount++;
     }

@@ -43,7 +43,7 @@ public class GStringTypedActionHandler extends TypedHandlerDelegate {
     if (!(file instanceof GroovyFile)) return Result.CONTINUE;
 
     int caret = editor.getCaretModel().getOffset();
-    final EditorHighlighter highlighter = ((EditorEx)editor).getHighlighter();
+    EditorHighlighter highlighter = ((EditorEx)editor).getHighlighter();
     if (caret < 1) return Result.CONTINUE;
 
     HighlighterIterator iterator = highlighter.createIterator(caret - 1);

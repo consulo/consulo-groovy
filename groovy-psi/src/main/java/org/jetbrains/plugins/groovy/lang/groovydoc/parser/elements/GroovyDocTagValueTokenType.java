@@ -104,9 +104,9 @@ public class GroovyDocTagValueTokenType extends GroovyDocChameleonElementType im
   }
 
   private ASTNode parseImpl(ASTNode chameleon) {
-    final PsiElement parentElement = chameleon.getTreeParent().getPsi();
-    final Project project = parentElement.getProject();
-    final PsiBuilder builder = PsiBuilderFactory.getInstance().createBuilder(project, chameleon, new GroovyLexer(), getLanguage(), LanguageVersionUtil
+    PsiElement parentElement = chameleon.getTreeParent().getPsi();
+    Project project = parentElement.getProject();
+    PsiBuilder builder = PsiBuilderFactory.getInstance().createBuilder(project, chameleon, new GroovyLexer(), getLanguage(), LanguageVersionUtil
       .findDefaultVersion(getLanguage()), chameleon.getText());
 
     PsiBuilder.Marker rootMarker = builder.mark();

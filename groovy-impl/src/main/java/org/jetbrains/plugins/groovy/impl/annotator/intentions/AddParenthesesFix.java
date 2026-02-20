@@ -44,26 +44,26 @@ public class AddParenthesesFix implements IntentionAction {
     @Override
     @RequiredUIAccess
     public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file) {
-        final int offset = editor.getCaretModel().getOffset();
-        final PsiElement at = file.findElementAt(offset);
-        final GrCommandArgumentList argList = PsiTreeUtil.getParentOfType(at, GrCommandArgumentList.class);
+        int offset = editor.getCaretModel().getOffset();
+        PsiElement at = file.findElementAt(offset);
+        GrCommandArgumentList argList = PsiTreeUtil.getParentOfType(at, GrCommandArgumentList.class);
         return argList != null;
     }
 
     @Override
     @RequiredUIAccess
     public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
-        final int offset = editor.getCaretModel().getOffset();
-        final PsiElement at = file.findElementAt(offset);
-        final GrCommandArgumentList argList = PsiTreeUtil.getParentOfType(at, GrCommandArgumentList.class);
+        int offset = editor.getCaretModel().getOffset();
+        PsiElement at = file.findElementAt(offset);
+        GrCommandArgumentList argList = PsiTreeUtil.getParentOfType(at, GrCommandArgumentList.class);
         if (argList == null) {
             return;
         }
 
-        final PsiElement parent = argList.getParent();
+        PsiElement parent = argList.getParent();
         assert parent instanceof GrApplicationStatement;
 
-        final GrExpression newExpr;
+        GrExpression newExpr;
         try {
             newExpr = GroovyPsiElementFactory.getInstance(project).createExpressionFromText(
                 ((GrApplicationStatement)parent).getInvokedExpression().getText() + '(' + argList.getText() + ')'

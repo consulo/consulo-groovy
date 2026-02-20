@@ -53,7 +53,7 @@ public class FieldConflictsResolver {
       return;
     }
     JavaPsiFacade facade = JavaPsiFacade.getInstance(myScope.getProject());
-    final PsiVariable oldVariable = facade.getResolveHelper().resolveAccessibleReferencedVariable(name, myScope);
+    PsiVariable oldVariable = facade.getResolveHelper().resolveAccessibleReferencedVariable(name, myScope);
     myField = oldVariable instanceof PsiField ? (PsiField)oldVariable : null;
 
     if (!(oldVariable instanceof PsiField)) {
@@ -62,9 +62,9 @@ public class FieldConflictsResolver {
     }
     myReferenceExpressions = new ArrayList<GrReferenceExpression>();
     for (PsiReference reference : ReferencesSearch.search(myField, new LocalSearchScope(myScope), false)) {
-      final PsiElement element = reference.getElement();
+      PsiElement element = reference.getElement();
       if (element instanceof GrReferenceExpression) {
-        final GrReferenceExpression referenceExpression = (GrReferenceExpression)element;
+        GrReferenceExpression referenceExpression = (GrReferenceExpression)element;
         if (referenceExpression.getQualifierExpression() == null) {
           myReferenceExpressions.add(referenceExpression);
         }
@@ -77,10 +77,10 @@ public class FieldConflictsResolver {
 
   public void fix() throws IncorrectOperationException {
     if (myField == null) return;
-    final PsiManager manager = myScope.getManager();
+    PsiManager manager = myScope.getManager();
     for (GrReferenceExpression referenceExpression : myReferenceExpressions) {
       if (!referenceExpression.isValid()) continue;
-      final PsiElement newlyResolved = referenceExpression.resolve();
+      PsiElement newlyResolved = referenceExpression.resolve();
       if (!manager.areElementsEquivalent(newlyResolved, myField)) {
         qualifyReference(referenceExpression, myField, myQualifyingClass);
       }
@@ -89,16 +89,16 @@ public class FieldConflictsResolver {
 
 
   public static GrReferenceExpression qualifyReference(GrReferenceExpression referenceExpression,
-                                                        final PsiMember member,
-                                                        @Nullable final PsiClass qualifyingClass) throws IncorrectOperationException
+                                                        PsiMember member,
+                                                        @Nullable PsiClass qualifyingClass) throws IncorrectOperationException
   {
     PsiManager manager = referenceExpression.getManager();
     GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(manager.getProject());
 
     GrReferenceExpression expressionFromText;
     if (qualifyingClass == null) {
-      final PsiClass parentClass = PsiTreeUtil.getParentOfType(referenceExpression, PsiClass.class);
-      final PsiClass containingClass = member.getContainingClass();
+      PsiClass parentClass = PsiTreeUtil.getParentOfType(referenceExpression, PsiClass.class);
+      PsiClass containingClass = member.getContainingClass();
       if (parentClass != null && !InheritanceUtil.isInheritorOrSelf(parentClass, containingClass, true)) {
         expressionFromText = (GrReferenceExpression)factory.createExpressionFromText(containingClass.getQualifiedName()+ ".this." + member.getName());
       }

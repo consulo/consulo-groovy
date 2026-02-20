@@ -28,7 +28,7 @@ import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeParameter;
 public class GrTypeParameterStub extends StubBase<GrTypeParameter> implements NamedStub<GrTypeParameter> {
   private final StringRef myName;
 
-  public GrTypeParameterStub(final StubElement parentStub, final StringRef name) {
+  public GrTypeParameterStub(StubElement parentStub, StringRef name) {
     super(parentStub, GroovyElementTypes.TYPE_PARAMETER);
     myName = name;
   }

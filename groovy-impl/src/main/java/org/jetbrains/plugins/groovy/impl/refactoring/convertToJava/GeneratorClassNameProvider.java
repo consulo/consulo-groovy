@@ -35,7 +35,7 @@ public class GeneratorClassNameProvider implements ClassNameProvider {
       return CommonClassNames.JAVA_LANG_OBJECT;
     }
 
-    final String name = psiClass.getQualifiedName();
+    String name = psiClass.getQualifiedName();
     if (name != null) return name;
     return psiClass.getName();
   }

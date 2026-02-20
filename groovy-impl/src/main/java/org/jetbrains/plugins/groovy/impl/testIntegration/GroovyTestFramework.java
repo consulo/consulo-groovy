@@ -78,13 +78,13 @@ public class GroovyTestFramework extends JavaTestFramework {
   @Override
   protected PsiMethod findOrCreateSetUpMethod(PsiClass clazz) throws IncorrectOperationException {
     LOG.assertTrue(clazz.getLanguage() == GroovyFileType.GROOVY_LANGUAGE);
-    final GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(clazz.getProject());
+    GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(clazz.getProject());
 
-    final PsiMethod patternMethod = createSetUpPatternMethod(factory);
+    PsiMethod patternMethod = createSetUpPatternMethod(factory);
 
-    final PsiClass baseClass = clazz.getSuperClass();
+    PsiClass baseClass = clazz.getSuperClass();
     if (baseClass != null) {
-      final PsiMethod baseMethod = baseClass.findMethodBySignature(patternMethod, false);
+      PsiMethod baseMethod = baseClass.findMethodBySignature(patternMethod, false);
       if (baseMethod != null && baseMethod.hasModifierProperty(PsiModifier.PUBLIC)) {
         PsiUtil.setModifierProperty(patternMethod, PsiModifier.PROTECTED, false);
         PsiUtil.setModifierProperty(patternMethod, PsiModifier.PUBLIC, true);

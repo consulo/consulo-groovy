@@ -34,7 +34,7 @@ public class GrSynchronizedFixer extends SmartEnterProcessorWithFixers.Fixer<Gro
     if (!PsiTreeUtil.isAncestor(synchronizedStatement.getMonitor(), psiElement, false)) return;
 
 
-    final Document doc = editor.getDocument();
+    Document doc = editor.getDocument();
 
     PsiElement eltToInsertAfter = synchronizedStatement.getRParenth();
     String text = "{\n}";

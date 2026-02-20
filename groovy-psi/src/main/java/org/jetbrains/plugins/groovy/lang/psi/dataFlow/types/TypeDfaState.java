@@ -47,10 +47,10 @@ class TypeDfaState {
 
   void joinState(TypeDfaState another, PsiManager manager) {
     for (Map.Entry<String, DFAType> entry : another.myVarTypes.entrySet()) {
-      final String name = entry.getKey();
-      final DFAType t1 = entry.getValue();
+      String name = entry.getKey();
+      DFAType t1 = entry.getValue();
       if (myVarTypes.containsKey(name)) {
-        final DFAType t2 = myVarTypes.get(name);
+        DFAType t2 = myVarTypes.get(name);
         if (t1 != null && t2 != null) {
           myVarTypes.put(name, DFAType.create(t1, t2, manager));
         }

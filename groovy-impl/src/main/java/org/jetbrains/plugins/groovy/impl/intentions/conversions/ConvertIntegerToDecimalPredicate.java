@@ -28,8 +28,8 @@ class ConvertIntegerToDecimalPredicate implements PsiElementPredicate {
     if (!(element instanceof GrLiteral)) {
       return false;
     }
-    final GrLiteral expression = (GrLiteral) element;
-    final PsiType type = expression.getType();
+    GrLiteral expression = (GrLiteral) element;
+    PsiType type = expression.getType();
     if (type == null) {
       return false;
     }
@@ -37,7 +37,7 @@ class ConvertIntegerToDecimalPredicate implements PsiElementPredicate {
         !type.equalsToText("java.lang.Integer") && !type.equalsToText("java.lang.Long")) {
       return false;
     }
-    @NonNls final String text = expression.getText().replaceAll("_", "");
+    @NonNls String text = expression.getText().replaceAll("_", "");
     if (text == null || text.length() < 2) {
       return false;
     }

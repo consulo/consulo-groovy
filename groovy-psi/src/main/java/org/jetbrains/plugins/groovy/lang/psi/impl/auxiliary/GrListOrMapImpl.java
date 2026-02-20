@@ -80,14 +80,14 @@ public class GrListOrMapImpl extends GrExpressionImpl implements GrListOrMap {
     if (getInitializers().length == 0) {
       return super.addInternal(first, last, getNode().getFirstChildNode(), false);
     }
-    final ASTNode lastChild = getNode().getLastChildNode();
+    ASTNode lastChild = getNode().getLastChildNode();
     getNode().addLeaf(GroovyTokenTypes.mCOMMA, ",", lastChild);
     return super.addInternal(first, last, lastChild.getTreePrev(), false);
   }
 
   @Override
   public void deleteChildInternal(@Nonnull ASTNode child) {
-    final PsiElement psi = child.getPsi();
+    PsiElement psi = child.getPsi();
     if (psi instanceof GrExpression || psi instanceof GrNamedArgument) {
       PsiElement prev = PsiUtil.getPrevNonSpace(psi);
       PsiElement next = PsiUtil.getNextNonSpace(psi);

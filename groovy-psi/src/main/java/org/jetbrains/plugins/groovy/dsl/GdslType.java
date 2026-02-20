@@ -26,12 +26,12 @@ public class GdslType {
       type = ((PsiWildcardType)type).getBound();
     }
     if (type instanceof PsiClassType) {
-      final PsiClass resolve = ((PsiClassType)type).resolve();
+      PsiClass resolve = ((PsiClassType)type).resolve();
       if (resolve != null) {
         return resolve.getName();
       }
-      final String canonicalText = type.getCanonicalText();
-      final int i = canonicalText.indexOf('<');
+      String canonicalText = type.getCanonicalText();
+      int i = canonicalText.indexOf('<');
       if (i < 0) return canonicalText;
       return canonicalText.substring(0, i);
     }

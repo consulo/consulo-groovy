@@ -50,13 +50,13 @@ public class GroovyReferenceCopyPasteProcessor extends CopyPasteReferenceProcess
   protected void addReferenceData(PsiFile file, int startOffset, PsiElement element, ArrayList<JavaReferenceData> to) {
     if (element instanceof GrReferenceElement) {
       if (((GrReferenceElement)element).getQualifier() == null) {
-        final GroovyResolveResult resolveResult = ((GrReferenceElement)element).advancedResolve();
-        final PsiElement refElement = resolveResult.getElement();
+        GroovyResolveResult resolveResult = ((GrReferenceElement)element).advancedResolve();
+        PsiElement refElement = resolveResult.getElement();
         if (refElement != null) {
 
           if (refElement instanceof PsiClass) {
             if (refElement.getContainingFile() != element.getContainingFile()) {
-              final String qName = ((PsiClass)refElement).getQualifiedName();
+              String qName = ((PsiClass)refElement).getQualifiedName();
               if (qName != null) {
                 addReferenceData(element, to, startOffset, qName, null);
               }
@@ -64,8 +64,8 @@ public class GroovyReferenceCopyPasteProcessor extends CopyPasteReferenceProcess
           }
           else if (resolveResult.getCurrentFileResolveContext() instanceof GrImportStatement && ((GrImportStatement)resolveResult
             .getCurrentFileResolveContext()).isStatic()) {
-            final String classQName = ((PsiMember)refElement).getContainingClass().getQualifiedName();
-            final String name = ((PsiNamedElement)refElement).getName();
+            String classQName = ((PsiMember)refElement).getContainingClass().getQualifiedName();
+            String name = ((PsiNamedElement)refElement).getName();
             if (classQName != null && name != null) {
               addReferenceData(element, to, startOffset, classQName, name);
             }
@@ -80,7 +80,7 @@ public class GroovyReferenceCopyPasteProcessor extends CopyPasteReferenceProcess
   @RequiredReadAction
   protected GrReferenceElement[] findReferencesToRestore(PsiFile file, RangeMarker bounds, JavaReferenceData[] referenceData) {
     PsiManager manager = file.getManager();
-    final JavaPsiFacade facade = JavaPsiFacade.getInstance(manager.getProject());
+    JavaPsiFacade facade = JavaPsiFacade.getInstance(manager.getProject());
     PsiResolveHelper helper = PsiResolveHelper.getInstance(manager.getProject());
     GrReferenceElement[] refs = new GrReferenceElement[referenceData.length];
     for (int i = 0; i < referenceData.length; i++) {

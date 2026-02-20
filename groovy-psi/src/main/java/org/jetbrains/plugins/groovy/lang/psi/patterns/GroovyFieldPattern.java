@@ -29,7 +29,7 @@ public class GroovyFieldPattern extends PsiMemberPattern<GrField, GroovyFieldPat
 
   public GroovyFieldPattern() {
     super(new InitialPatternCondition<GrField>(GrField.class) {
-      public boolean accepts(@Nullable final Object o, final ProcessingContext context) {
+      public boolean accepts(@Nullable Object o, ProcessingContext context) {
         return o instanceof GrField;
       }
     });

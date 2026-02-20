@@ -54,7 +54,7 @@ public class GroovyRunConfigurationEditor extends SettingsEditor<GroovyScriptRun
   public GroovyRunConfigurationEditor() {
 
     scriptPathField = new JTextField();
-    final BrowseFilesListener scriptBrowseListener = new BrowseFilesListener(scriptPathField,
+    BrowseFilesListener scriptBrowseListener = new BrowseFilesListener(scriptPathField,
                                                                              "Script Path",
                                                                              "Specify path to script",
                                                                              new FileChooserDescriptor(true,
@@ -67,16 +67,16 @@ public class GroovyRunConfigurationEditor extends SettingsEditor<GroovyScriptRun
                                                                                  return file.getFileType() == GroovyFileType.GROOVY_FILE_TYPE;
                                                                                }
                                                                              });
-    final FieldPanel scriptFieldPanel = new FieldPanel(scriptPathField, null, null, scriptBrowseListener, null);
+    FieldPanel scriptFieldPanel = new FieldPanel(scriptPathField, null, null, scriptBrowseListener, null);
     scriptPathPanel.setLayout(new BorderLayout());
     scriptPathPanel.add(scriptFieldPanel, BorderLayout.CENTER);
 
     workDirField = new JTextField();
-    final BrowseFilesListener workDirBrowseFilesListener = new BrowseFilesListener(workDirField,
+    BrowseFilesListener workDirBrowseFilesListener = new BrowseFilesListener(workDirField,
                                                                                    "Working directory",
                                                                                    "Specify working directory",
                                                                                    BrowseFilesListener.SINGLE_DIRECTORY_DESCRIPTOR);
-    final FieldPanel workDirFieldPanel = new FieldPanel(workDirField, null, null, workDirBrowseFilesListener, null);
+    FieldPanel workDirFieldPanel = new FieldPanel(workDirField, null, null, workDirBrowseFilesListener, null);
     workDirPanel.setLayout(new BorderLayout());
     workDirPanel.add(workDirFieldPanel, BorderLayout.CENTER);
 

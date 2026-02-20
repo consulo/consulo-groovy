@@ -53,23 +53,23 @@ public class GroovyMethodSignatureInsertHandler implements InsertHandler<LookupE
       return;
     }
     PsiDocumentManager.getInstance(context.getProject()).commitDocument(context.getEditor().getDocument());
-    final Editor editor = context.getEditor();
-    final PsiMethod method = (PsiMethod)item.getObject();
+    Editor editor = context.getEditor();
+    PsiMethod method = (PsiMethod)item.getObject();
 
-    final PsiParameter[] parameters = method.getParameterList().getParameters();
-    final StringBuilder buffer = new StringBuilder();
+    PsiParameter[] parameters = method.getParameterList().getParameters();
+    StringBuilder buffer = new StringBuilder();
 
-    final CharSequence chars = editor.getDocument().getCharsSequence();
+    CharSequence chars = editor.getDocument().getCharsSequence();
     int endOffset = editor.getCaretModel().getOffset();
-    final Project project = context.getProject();
+    Project project = context.getProject();
     int afterSharp = CharArrayUtil.shiftBackwardUntil(chars, endOffset - 1, "#") + 1;
     int signatureOffset = afterSharp;
 
     PsiElement element = context.getFile().findElementAt(signatureOffset - 1);
-    final CodeStyleSettings styleSettings = CodeStyleSettingsManager.getSettings(element.getProject());
+    CodeStyleSettings styleSettings = CodeStyleSettingsManager.getSettings(element.getProject());
     PsiDocTag tag = PsiTreeUtil.getParentOfType(element, PsiDocTag.class);
     if (context.getCompletionChar() == Lookup.REPLACE_SELECT_CHAR) {
-      final PsiDocTagValue value = tag.getValueElement();
+      PsiDocTagValue value = tag.getValueElement();
       endOffset = value.getTextRange().getEndOffset();
     }
     editor.getDocument().deleteString(afterSharp, endOffset);
@@ -77,9 +77,9 @@ public class GroovyMethodSignatureInsertHandler implements InsertHandler<LookupE
     editor.getScrollingModel().scrollToCaret(ScrollType.RELATIVE);
     editor.getSelectionModel().removeSelection();
     buffer.append(method.getName()).append("(");
-    final int afterParenth = afterSharp + buffer.length();
+    int afterParenth = afterSharp + buffer.length();
     for (int i = 0; i < parameters.length; i++) {
-      final PsiType type = TypeConversionUtil.erasure(parameters[i].getType());
+      PsiType type = TypeConversionUtil.erasure(parameters[i].getType());
       buffer.append(type.getCanonicalText());
 
       if (i < parameters.length - 1) {
@@ -92,7 +92,7 @@ public class GroovyMethodSignatureInsertHandler implements InsertHandler<LookupE
       buffer.append(" ");
     }
     else {
-      final int currentOffset = editor.getCaretModel().getOffset();
+      int currentOffset = editor.getCaretModel().getOffset();
       if (chars.charAt(currentOffset) == '}') {
         afterSharp++;
       }
@@ -109,10 +109,10 @@ public class GroovyMethodSignatureInsertHandler implements InsertHandler<LookupE
     shortenReferences(project, editor, context, afterParenth);
   }
 
-  private static void shortenReferences(final Project project, final Editor editor, InsertionContext context, int offset) {
+  private static void shortenReferences(Project project, Editor editor, InsertionContext context, int offset) {
     PsiDocumentManager.getInstance(project).commitDocument(editor.getDocument());
-    final PsiElement element = context.getFile().findElementAt(offset);
-    final GrDocMemberReference tagValue = PsiTreeUtil.getParentOfType(element, GrDocMemberReference.class);
+    PsiElement element = context.getFile().findElementAt(offset);
+    GrDocMemberReference tagValue = PsiTreeUtil.getParentOfType(element, GrDocMemberReference.class);
     if (tagValue != null) {
       try {
         JavaCodeStyleManager.getInstance(project).shortenClassReferences(tagValue);

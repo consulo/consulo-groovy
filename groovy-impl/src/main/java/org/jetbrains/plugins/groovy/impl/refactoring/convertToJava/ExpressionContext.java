@@ -62,7 +62,7 @@ class ExpressionContext implements Cloneable {
   }
 
   ExpressionContext copy() {
-    final ExpressionContext expressionContext = new ExpressionContext(project, myUsedVarNames, setters, myClasses);
+    ExpressionContext expressionContext = new ExpressionContext(project, myUsedVarNames, setters, myClasses);
     expressionContext.myProps.putAll(myProps);
     expressionContext.analyzedVars = analyzedVars;
     expressionContext.typeProvider = typeProvider;
@@ -71,9 +71,9 @@ class ExpressionContext implements Cloneable {
   }
 
   ExpressionContext extend() {
-    final HashSet<String> usedVarNames = new HashSet<String>();
+    HashSet<String> usedVarNames = new HashSet<String>();
     usedVarNames.addAll(myUsedVarNames);
-    final ExpressionContext expressionContext = new ExpressionContext(project, usedVarNames, setters, myClasses);
+    ExpressionContext expressionContext = new ExpressionContext(project, usedVarNames, setters, myClasses);
     expressionContext.myProps.putAll(myProps);
     expressionContext.analyzedVars = analyzedVars;
     expressionContext.typeProvider = typeProvider;
@@ -86,7 +86,7 @@ class ExpressionContext implements Cloneable {
   }
 
   private boolean getProp(String name) {
-    final Boolean aBoolean = myProps.get(name);
+    Boolean aBoolean = myProps.get(name);
     return aBoolean != null && aBoolean.booleanValue();
   }
 

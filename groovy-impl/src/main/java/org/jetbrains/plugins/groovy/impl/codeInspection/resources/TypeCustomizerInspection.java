@@ -87,7 +87,7 @@ public class TypeCustomizerInspection extends BaseInspection {
         "incompatibleAssignment"
     );
 
-    public static boolean fileSeemsToBeTypeCustomizer(@Nonnull final PsiFile file) {
+    public static boolean fileSeemsToBeTypeCustomizer(@Nonnull PsiFile file) {
         if (file instanceof GroovyFile && ((GroovyFile) file).isScript()) {
             for (GrStatement statement : ((GroovyFile) file).getStatements()) {
                 if (statement instanceof GrMethodCall) {
@@ -123,20 +123,20 @@ public class TypeCustomizerInspection extends BaseInspection {
 
         @Override
         public void applyFix(@Nonnull Project project, @Nonnull ProblemDescriptor descriptor) {
-            final VirtualFile virtualFile = myFile.getVirtualFile();
+            VirtualFile virtualFile = myFile.getVirtualFile();
             if (virtualFile == null) {
                 return;
             }
 
             VirtualFile sourceRoot = ProjectRootManager.getInstance(project).getFileIndex().getSourceRootForFile(virtualFile);
-            final VirtualFile projectRoot = project.getBaseDir();
+            VirtualFile projectRoot = project.getBaseDir();
             if (sourceRoot == null) {
-                final String path = VfsUtilCore.getRelativePath(virtualFile, projectRoot, '/');
+                String path = VfsUtilCore.getRelativePath(virtualFile, projectRoot, '/');
                 ResourceCompilerConfiguration.getInstance(project).addResourceFilePattern(path);
             }
             else {
-                final String path = VfsUtilCore.getRelativePath(virtualFile, sourceRoot, '/');
-                final String sourceRootPath = VfsUtilCore.getRelativePath(sourceRoot, projectRoot, '/');
+                String path = VfsUtilCore.getRelativePath(virtualFile, sourceRoot, '/');
+                String sourceRootPath = VfsUtilCore.getRelativePath(sourceRoot, projectRoot, '/');
                 ResourceCompilerConfiguration.getInstance(project).addResourceFilePattern(sourceRootPath + ':' + path);
             }
             DaemonCodeAnalyzer.getInstance(project).restart(myFile);

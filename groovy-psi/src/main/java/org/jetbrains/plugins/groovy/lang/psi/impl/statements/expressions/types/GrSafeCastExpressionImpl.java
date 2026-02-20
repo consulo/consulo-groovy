@@ -57,16 +57,16 @@ public class GrSafeCastExpressionImpl extends GrExpressionImpl implements GrSafe
         GrTypeElement typeElement = cast.getCastTypeElement();
         if (typeElement == null) return null;
 
-        final PsiType opType = cast.getOperand().getType();
-        final PsiType castType = typeElement.getType();
+        PsiType opType = cast.getOperand().getType();
+        PsiType castType = typeElement.getType();
 
         if (isCastToRawCollectionFromArray(opType, castType)) {
-          final PsiClass resolved = ((PsiClassType)castType).resolve();
+          PsiClass resolved = ((PsiClassType)castType).resolve();
           assert resolved != null;
-          final PsiTypeParameter typeParameter = resolved.getTypeParameters()[0];
-          final HashMap<PsiTypeParameter, PsiType> substitutionMap = new HashMap<PsiTypeParameter, PsiType>();
+          PsiTypeParameter typeParameter = resolved.getTypeParameters()[0];
+          HashMap<PsiTypeParameter, PsiType> substitutionMap = new HashMap<PsiTypeParameter, PsiType>();
           substitutionMap.put(typeParameter, TypesUtil.getItemType(opType));
-          final PsiSubstitutor substitutor = JavaPsiFacade.getElementFactory(cast.getProject()).createSubstitutor(substitutionMap);
+          PsiSubstitutor substitutor = JavaPsiFacade.getElementFactory(cast.getProject()).createSubstitutor(substitutionMap);
           return JavaPsiFacade.getElementFactory(cast.getProject()).createType(resolved, substitutor);
         }
 
@@ -97,15 +97,15 @@ public class GrSafeCastExpressionImpl extends GrExpressionImpl implements GrSafe
     @Nonnull
     @Override
     public ResolveResult[] resolve(@Nonnull GrSafeCastExpressionImpl cast, boolean incompleteCode) {
-      final GrExpression operand = cast.getOperand();
+      GrExpression operand = cast.getOperand();
       PsiType type = operand.getType();
       if (type == null) {
         return GroovyResolveResult.EMPTY_ARRAY;
       }
 
-      final GrTypeElement typeElement = cast.getCastTypeElement();
-      final PsiType toCast = typeElement == null ? null : typeElement.getType();
-      final PsiType classType = TypesUtil.createJavaLangClassType(toCast, cast.getProject(), cast.getResolveScope());
+      GrTypeElement typeElement = cast.getCastTypeElement();
+      PsiType toCast = typeElement == null ? null : typeElement.getType();
+      PsiType classType = TypesUtil.createJavaLangClassType(toCast, cast.getProject(), cast.getResolveScope());
       return TypesUtil.getOverloadedOperatorCandidates(type, GroovyTokenTypes.kAS, operand, new PsiType[]{classType});
     }
   }
@@ -154,8 +154,8 @@ public class GrSafeCastExpressionImpl extends GrExpressionImpl implements GrSafe
 
   @Override
   public TextRange getRangeInElement() {
-    final PsiElement as = findNotNullChildByType(GroovyTokenTypes.kAS);
-    final int offset = as.getStartOffsetInParent();
+    PsiElement as = findNotNullChildByType(GroovyTokenTypes.kAS);
+    int offset = as.getStartOffsetInParent();
     return new TextRange(offset, offset + 2);
   }
 

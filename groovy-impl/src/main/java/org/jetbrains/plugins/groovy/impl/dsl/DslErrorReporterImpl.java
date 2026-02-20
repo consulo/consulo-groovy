@@ -39,12 +39,12 @@ public class DslErrorReporterImpl extends DslErrorReporter {
   }
 
   @Override
-  public void invokeDslErrorPopup(Throwable e, final Project project, @Nonnull VirtualFile vfile) {
+  public void invokeDslErrorPopup(Throwable e, Project project, @Nonnull VirtualFile vfile) {
     if (!GroovyDslFileIndex.isActivated(vfile)) {
       return;
     }
 
-    final String exceptionText = ExceptionUtil.getThrowableText(e);
+    String exceptionText = ExceptionUtil.getThrowableText(e);
     LOG.info(exceptionText);
     GroovyDslFileIndex.disableFile(vfile, DslActivationStatus.Status.ERROR, exceptionText);
 

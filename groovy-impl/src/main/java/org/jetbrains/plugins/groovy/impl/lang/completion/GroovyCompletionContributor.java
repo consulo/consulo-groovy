@@ -66,8 +66,8 @@ public class GroovyCompletionContributor extends CompletionContributor {
       @Override
       public void addCompletions(@Nonnull CompletionParameters parameters,
                                  ProcessingContext context,
-                                 @Nonnull final CompletionResultSet result) {
-        final Set<String> usedWords = new HashSet<String>();
+                                 @Nonnull CompletionResultSet result) {
+        Set<String> usedWords = new HashSet<String>();
         for (CompletionResult element : result.runRemainingContributors(parameters, true)) {
           usedWords.add(element.getLookupElement().getLookupString());
         }
@@ -90,8 +90,8 @@ public class GroovyCompletionContributor extends CompletionContributor {
 
 
   @Override
-  public void beforeCompletion(@Nonnull final CompletionInitializationContext context) {
-    final String identifier = new GrDummyIdentifierProvider(context).getIdentifier();
+  public void beforeCompletion(@Nonnull CompletionInitializationContext context) {
+    String identifier = new GrDummyIdentifierProvider(context).getIdentifier();
     if (identifier != null) {
       context.setDummyIdentifier(identifier);
     }

@@ -68,12 +68,12 @@ public class GrMoveToDirFix implements LocalQuickFix {
             return;
         }
 
-        final Module module = ModuleUtilCore.findModuleForFile(vfile, project);
+        Module module = ModuleUtilCore.findModuleForFile(vfile, project);
         if (module == null) {
             return;
         }
 
-        final String packageName = ((GroovyFile)file).getPackageName();
+        String packageName = ((GroovyFile)file).getPackageName();
         PsiDirectory directory = PackageUtil.findOrCreateDirectoryForPackage(module, packageName, null, true);
         if (directory == null) {
             return;

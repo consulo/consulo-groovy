@@ -119,8 +119,8 @@ public class MvcConsole implements Disposable {
 
   private Content setUpToolWindow() {
     //Create runner UI layout
-    final RunnerLayoutUiFactory factory = RunnerLayoutUiFactory.getInstance(myProject);
-    final RunnerLayoutUi layoutUi = factory.create("", "", "session", myProject);
+    RunnerLayoutUiFactory factory = RunnerLayoutUiFactory.getInstance(myProject);
+    RunnerLayoutUi layoutUi = factory.create("", "", "session", myProject);
 
     // Adding actions
     DefaultActionGroup group = new DefaultActionGroup();
@@ -129,15 +129,15 @@ public class MvcConsole implements Disposable {
 
     layoutUi.getOptions().setLeftToolbar(group, ActionPlaces.UNKNOWN);
 
-    final Content console = layoutUi.createContent(CONSOLE_ID, myConsole.getComponent(), "", null, null);
+    Content console = layoutUi.createContent(CONSOLE_ID, myConsole.getComponent(), "", null, null);
     layoutUi.addContent(console, 0, PlaceInGrid.right, false);
 
-    final JComponent uiComponent = layoutUi.getComponent();
+    JComponent uiComponent = layoutUi.getComponent();
     myPanel.add(uiComponent, BorderLayout.CENTER);
 
-    final ContentManager manager = myToolWindow.getContentManager();
-    final ContentFactory contentFactory = ContentFactory.SERVICE.getInstance();
-    final Content content = contentFactory.createContent(uiComponent, null, true);
+    ContentManager manager = myToolWindow.getContentManager();
+    ContentFactory contentFactory = ContentFactory.SERVICE.getInstance();
+    Content content = contentFactory.createContent(uiComponent, null, true);
     manager.addContent(content);
     return content;
   }
@@ -172,12 +172,12 @@ public class MvcConsole implements Disposable {
 
     private ProcessHandler myHandler;
 
-    public MyProcessInConsole(final Module module,
-                              final GeneralCommandLine commandLine,
-                              final Runnable onDone,
-                              final boolean showConsole,
-                              final boolean closeOnDone,
-                              final String[] input) {
+    public MyProcessInConsole(Module module,
+                              GeneralCommandLine commandLine,
+                              Runnable onDone,
+                              boolean showConsole,
+                              boolean closeOnDone,
+                              String[] input) {
       this.module = module;
       this.commandLine = commandLine;
       this.onDone = onDone;
@@ -214,30 +214,30 @@ public class MvcConsole implements Disposable {
 
     public void setHandler(ProcessHandler handler) {
       myHandler = handler;
-      for (final ProcessListener listener : myListeners) {
+      for (ProcessListener listener : myListeners) {
         handler.addProcessListener(listener);
       }
     }
   }
 
-  public static ConsoleProcessDescriptor executeProcess(final Module module,
-                                                        final GeneralCommandLine commandLine,
-                                                        final @Nullable Runnable onDone,
-                                                        final boolean closeOnDone,
-                                                        final String... input) {
+  public static ConsoleProcessDescriptor executeProcess(Module module,
+                                                        GeneralCommandLine commandLine,
+                                                        @Nullable Runnable onDone,
+                                                        boolean closeOnDone,
+                                                        String... input) {
     return getInstance(module.getProject()).executeProcess(module, commandLine, onDone, true, closeOnDone, input);
   }
 
-  public ConsoleProcessDescriptor executeProcess(final Module module,
-                                                 final GeneralCommandLine commandLine,
-                                                 final @Nullable Runnable onDone,
+  public ConsoleProcessDescriptor executeProcess(Module module,
+                                                 GeneralCommandLine commandLine,
+                                                 @Nullable Runnable onDone,
                                                  boolean showConsole,
-                                                 final boolean closeOnDone,
-                                                 final String... input) {
+                                                 boolean closeOnDone,
+                                                 String... input) {
     ApplicationManager.getApplication().assertIsDispatchThread();
     assert module.getProject() == myProject;
 
-    final MyProcessInConsole process = new MyProcessInConsole(module, commandLine, onDone, showConsole, closeOnDone, input);
+    MyProcessInConsole process = new MyProcessInConsole(module, commandLine, onDone, showConsole, closeOnDone, input);
     if (isExecuting()) {
       myProcessQueue.add(process);
     }
@@ -251,10 +251,10 @@ public class MvcConsole implements Disposable {
     return myExecuting;
   }
 
-  private void executeProcessImpl(final MyProcessInConsole pic, boolean toFocus) {
+  private void executeProcessImpl(MyProcessInConsole pic, boolean toFocus) {
     final Module module = pic.module;
-    final GeneralCommandLine commandLine = pic.commandLine;
-    final String[] input = pic.input;
+    GeneralCommandLine commandLine = pic.commandLine;
+    String[] input = pic.input;
     final boolean closeOnDone = pic.closeOnDone;
     final Runnable onDone = pic.onDone;
 
@@ -269,7 +269,7 @@ public class MvcConsole implements Disposable {
 
     Application application = Application.get();
     final ModalityState modalityState = application.getCurrentModalityState();
-    final boolean modalContext = modalityState != application.getNoneModalityState();
+    boolean modalContext = modalityState != application.getNoneModalityState();
 
     if (!modalContext && pic.showConsole) {
       show(null, toFocus);
@@ -298,7 +298,7 @@ public class MvcConsole implements Disposable {
         }
 
         public void processTerminated(ProcessEvent event) {
-          final int exitCode = event.getExitCode();
+          int exitCode = event.getExitCode();
           if (exitCode == 0 && !gotError.get().booleanValue()) {
             ApplicationManager.getApplication().invokeLater(new Runnable() {
               public void run() {
@@ -333,7 +333,7 @@ public class MvcConsole implements Disposable {
     pic.setHandler(handler);
     myKillAction.setHandler(handler);
 
-    final MvcFramework framework = MvcFramework.getInstance(module);
+    MvcFramework framework = MvcFramework.getInstance(module);
     myToolWindow.setIcon(framework == null ? GroovyPsiIconGroup.groovyGroovy_16x16() : framework.getToolWindowIcon());
 
     myContent.setDisplayName((framework == null ? "" : framework.getDisplayName() + ":") + "Executing...");
@@ -368,7 +368,7 @@ public class MvcConsole implements Disposable {
 
             myExecuting = false;
 
-            final MyProcessInConsole pic = myProcessQueue.poll();
+            MyProcessInConsole pic = myProcessQueue.poll();
             if (pic != null) {
               executeProcessImpl(pic, false);
             }
@@ -393,12 +393,12 @@ public class MvcConsole implements Disposable {
     }
 
     @Override
-    public void update(final AnActionEvent e) {
+    public void update(AnActionEvent e) {
       super.update(e);
       e.getPresentation().setEnabled(isEnabled());
     }
 
-    public void actionPerformed(final AnActionEvent e) {
+    public void actionPerformed(AnActionEvent e) {
       if (myHandler != null) {
         myHandler.destroyProcess();
         myConsole.print("Process terminated", ConsoleViewContentType.ERROR_OUTPUT);

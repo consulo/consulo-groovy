@@ -84,12 +84,12 @@ public class UnusedDefInspection extends GroovyLocalInspectionBase {
         return "GroovyUnusedAssignment";
     }
 
-    protected void check(final GrControlFlowOwner owner, final ProblemsHolder problemsHolder, Object inspectionState) {
+    protected void check(GrControlFlowOwner owner, final ProblemsHolder problemsHolder, Object inspectionState) {
         final Instruction[] flow = owner.getControlFlow();
-        final ReachingDefinitionsDfaInstance dfaInstance = new ReachingDefinitionsDfaInstance(flow);
-        final ReachingDefinitionsSemilattice lattice = new ReachingDefinitionsSemilattice();
-        final DFAEngine<DefinitionMap> engine = new DFAEngine<DefinitionMap>(flow, dfaInstance, lattice);
-        final List<DefinitionMap> dfaResult = engine.performDFAWithTimeout();
+        ReachingDefinitionsDfaInstance dfaInstance = new ReachingDefinitionsDfaInstance(flow);
+        ReachingDefinitionsSemilattice lattice = new ReachingDefinitionsSemilattice();
+        DFAEngine<DefinitionMap> engine = new DFAEngine<DefinitionMap>(flow, dfaInstance, lattice);
+        List<DefinitionMap> dfaResult = engine.performDFAWithTimeout();
         if (dfaResult == null) {
             return;
         }
@@ -102,9 +102,9 @@ public class UnusedDefInspection extends GroovyLocalInspectionBase {
         }
 
         for (int i = 0; i < dfaResult.size(); i++) {
-            final Instruction instruction = flow[i];
+            Instruction instruction = flow[i];
             if (instruction instanceof ReadWriteVariableInstruction) {
-                final ReadWriteVariableInstruction varInst = (ReadWriteVariableInstruction) instruction;
+                ReadWriteVariableInstruction varInst = (ReadWriteVariableInstruction) instruction;
                 if (!varInst.isWrite()) {
                     final String varName = varInst.getVariableName();
                     DefinitionMap e = dfaResult.get(i);
@@ -112,7 +112,7 @@ public class UnusedDefInspection extends GroovyLocalInspectionBase {
                         public void accept(IntSet reaching) {
                             reaching.forEach(new IntConsumer() {
                                 public void accept(int defNum) {
-                                    final String defName = ((ReadWriteVariableInstruction) flow[defNum]).getVariableName();
+                                    String defName = ((ReadWriteVariableInstruction) flow[defNum]).getVariableName();
                                     if (varName.equals(defName)) {
                                         unusedDefs.remove(defNum);
                                     }
@@ -128,8 +128,8 @@ public class UnusedDefInspection extends GroovyLocalInspectionBase {
 
         unusedDefs.forEach(new IntConsumer() {
             public void accept(int num) {
-                final ReadWriteVariableInstruction instruction = (ReadWriteVariableInstruction) flow[num];
-                final PsiElement element = instruction.getElement();
+                ReadWriteVariableInstruction instruction = (ReadWriteVariableInstruction) flow[num];
+                PsiElement element = instruction.getElement();
                 process(element, checked, problemsHolder, GroovyInspectionLocalize.unusedAssignmentTooltip().get());
             }
         });
@@ -152,7 +152,7 @@ public class UnusedDefInspection extends GroovyLocalInspectionBase {
         @Nullable PsiElement element,
         Set<PsiElement> checked,
         ProblemsHolder problemsHolder,
-        final String message
+        String message
     ) {
         if (element == null) {
             return;
@@ -202,7 +202,7 @@ public class UnusedDefInspection extends GroovyLocalInspectionBase {
             var = (GrVariable) element;
         }
         else if (element instanceof GrReferenceExpression) {
-            final PsiElement resolved = ((GrReferenceExpression) element).resolve();
+            PsiElement resolved = ((GrReferenceExpression) element).resolve();
             if (resolved instanceof GrVariable) {
                 var = (GrVariable) resolved;
             }
@@ -242,7 +242,7 @@ public class UnusedDefInspection extends GroovyLocalInspectionBase {
             return isLocalVariable((GrVariable) element, false);
         }
         else if (element instanceof GrReferenceExpression) {
-            final PsiElement resolved = ((GrReferenceExpression) element).resolve();
+            PsiElement resolved = ((GrReferenceExpression) element).resolve();
             return resolved instanceof GrVariable && isLocalVariable((GrVariable) resolved, true);
         }
 

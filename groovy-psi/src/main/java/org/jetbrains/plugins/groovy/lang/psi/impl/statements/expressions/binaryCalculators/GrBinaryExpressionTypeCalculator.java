@@ -33,7 +33,7 @@ public class GrBinaryExpressionTypeCalculator implements Function<GrBinaryFacade
   @Override
   @Nullable
   public PsiType apply(GrBinaryFacade e) {
-    final GroovyResolveResult resolveResult = PsiImplUtil.extractUniqueResult(e.multiResolve(false));
+    GroovyResolveResult resolveResult = PsiImplUtil.extractUniqueResult(e.multiResolve(false));
     if (resolveResult.getElement() != null) {
       return ResolveUtil.extractReturnTypeFromCandidate(resolveResult, e.getPsiElement(), new PsiType[]{getRightType(e)});
     }
@@ -42,7 +42,7 @@ public class GrBinaryExpressionTypeCalculator implements Function<GrBinaryFacade
 
   @Nullable
   protected static PsiType getRightType(GrBinaryFacade e) {
-    final GrExpression rightOperand = e.getRightOperand();
+    GrExpression rightOperand = e.getRightOperand();
     return rightOperand == null ? null : rightOperand.getType();
   }
 

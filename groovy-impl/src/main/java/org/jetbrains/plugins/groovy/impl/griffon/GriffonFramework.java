@@ -117,12 +117,12 @@ public class GriffonFramework extends MvcFramework {
   }
 
   @Override
-  public void updateProjectStructure(final @Nonnull Module module) {
+  public void updateProjectStructure(@Nonnull Module module) {
     if (!MvcModuleStructureUtil.isEnabledStructureUpdate()) {
       return;
     }
 
-    final VirtualFile root = findAppRoot(module);
+    VirtualFile root = findAppRoot(module);
     if (root == null) {
       return;
     }
@@ -140,13 +140,13 @@ public class GriffonFramework extends MvcFramework {
       token.finish();
     }
 
-    final Project project = module.getProject();
+    Project project = module.getProject();
     ChangeListManager.getInstance(project).addFilesToIgnore(IgnoredBeanFactory.ignoreUnderDirectory(getUserHomeGriffon(), project));
   }
 
   @Override
   public void ensureRunConfigurationExists(@Nonnull Module module) {
-    final VirtualFile root = findAppRoot(module);
+    VirtualFile root = findAppRoot(module);
     if (root != null) {
       ensureRunConfigurationExists(module, GriffonRunConfigurationType.getInstance(), "Griffon:" + root.getName());
     }
@@ -217,12 +217,12 @@ public class GriffonFramework extends MvcFramework {
     if (module == null) {
       return null;
     }
-    final VirtualFile[] classRoots = ModuleRootManager.getInstance(module).orderEntries().librariesOnly().getClassesRoots();
+    VirtualFile[] classRoots = ModuleRootManager.getInstance(module).orderEntries().librariesOnly().getClassesRoots();
     for (VirtualFile file : classRoots) {
       if (GriffonLibraryPresentationProvider.isGriffonCoreJar(file)) {
-        final VirtualFile localFile = ArchiveVfsUtil.getVirtualFileForJar(file);
+        VirtualFile localFile = ArchiveVfsUtil.getVirtualFileForJar(file);
         if (localFile != null) {
-          final VirtualFile parent = localFile.getParent();
+          VirtualFile parent = localFile.getParent();
           if (parent != null) {
             return parent.getParent();
           }
@@ -253,7 +253,7 @@ public class GriffonFramework extends MvcFramework {
     }
 
     params.setJdk(sdk);
-    final VirtualFile sdkRoot = getSdkRoot(module);
+    VirtualFile sdkRoot = getSdkRoot(module);
     if (sdkRoot == null) {
       return params;
     }
@@ -265,19 +265,19 @@ public class GriffonFramework extends MvcFramework {
     }
     env.put(getSdkHomePropertyName(), FileUtil.toSystemDependentName(sdkRoot.getPath()));
 
-    final VirtualFile lib = sdkRoot.findChild("lib");
+    VirtualFile lib = sdkRoot.findChild("lib");
     if (lib != null) {
-      for (final VirtualFile child : lib.getChildren()) {
-        final String name = child.getName();
+      for (VirtualFile child : lib.getChildren()) {
+        String name = child.getName();
         if (name.startsWith("groovy-all-") && name.endsWith(".jar")) {
           params.getClassPath().add(child);
         }
       }
     }
-    final VirtualFile dist = sdkRoot.findChild("dist");
+    VirtualFile dist = sdkRoot.findChild("dist");
     if (dist != null) {
-      for (final VirtualFile child : dist.getChildren()) {
-        final String name = child.getName();
+      for (VirtualFile child : dist.getChildren()) {
+        String name = child.getName();
         if (name.endsWith(".jar")) {
           if (name.startsWith("griffon-cli-") || name.startsWith("griffon-rt-") || name.startsWith("griffon-resources-")) {
             params.getClassPath().add(child);
@@ -291,7 +291,7 @@ public class GriffonFramework extends MvcFramework {
 
     params.setMainClass("org.codehaus.griffon.cli.support.GriffonStarter");
 
-    final VirtualFile rootFile;
+    VirtualFile rootFile;
 
     if (forCreation) {
       VirtualFile[] roots = ModuleRootManager.getInstance(module).getContentRoots();
@@ -320,14 +320,14 @@ public class GriffonFramework extends MvcFramework {
       params.getVMParametersList().add("-Xmx256M");
     }
 
-    final String griffonHomePath = FileUtil.toSystemDependentName(sdkRoot.getPath());
+    String griffonHomePath = FileUtil.toSystemDependentName(sdkRoot.getPath());
     params.getVMParametersList().add("-Dgriffon.home=" + griffonHomePath);
     params.getVMParametersList().add("-Dbase.dir=" + workDir);
 
     assert sdk != null;
     params.getVMParametersList().add("-Dtools.jar=" + ((JavaSdkType)sdk.getSdkType()).getToolsPath(sdk));
 
-    final String confpath = griffonHomePath + GROOVY_STARTER_CONF;
+    String confpath = griffonHomePath + GROOVY_STARTER_CONF;
     params.getVMParametersList().add("-Dgroovy.starter.conf=" + confpath);
 
     params.getVMParametersList()
@@ -339,7 +339,7 @@ public class GriffonFramework extends MvcFramework {
     params.getProgramParametersList().add("--conf");
     params.getProgramParametersList().add(confpath);
     if (!forCreation && classpathFromDependencies) {
-      final String path = getApplicationClassPath(module).getPathsString();
+      String path = getApplicationClassPath(module).getPathsString();
       if (StringUtil.isNotEmpty(path)) {
         params.getProgramParametersList().add("--classpath");
         params.getProgramParametersList().add(path);
@@ -389,7 +389,7 @@ public class GriffonFramework extends MvcFramework {
 
   @Nullable
   public File getDefaultSdkWorkDir(@Nonnull Module module) {
-    final String version = GriffonLibraryPresentationProvider.getGriffonVersion(module);
+    String version = GriffonLibraryPresentationProvider.getGriffonVersion(module);
     if (version == null) {
       return null;
     }
@@ -426,17 +426,17 @@ public class GriffonFramework extends MvcFramework {
   }
 
   public VirtualFile getApplicationPropertiesFile(Module module) {
-    final VirtualFile appRoot = findAppRoot(module);
+    VirtualFile appRoot = findAppRoot(module);
     return appRoot != null ? appRoot.findChild("application.properties") : null;
   }
 
   @Override
   public String getApplicationName(Module module) {
-    final VirtualFile appProperties = getApplicationPropertiesFile(module);
+    VirtualFile appProperties = getApplicationPropertiesFile(module);
     if (appProperties != null) {
-      final PsiFile file = PsiManager.getInstance(module.getProject()).findFile(appProperties);
+      PsiFile file = PsiManager.getInstance(module.getProject()).findFile(appProperties);
       if (file instanceof PropertiesFile) {
-        final IProperty property = ((PropertiesFile)file).findPropertyByKey("application.name");
+        IProperty property = ((PropertiesFile)file).findPropertyByKey("application.name");
         return property != null ? property.getValue() : super.getApplicationName(module);
       }
     }
@@ -444,7 +444,7 @@ public class GriffonFramework extends MvcFramework {
   }
 
   private static class GriffonProjectStructure extends MvcProjectStructure {
-    public GriffonProjectStructure(Module module, final boolean auxModule) {
+    public GriffonProjectStructure(Module module, boolean auxModule) {
       super(module, auxModule, getUserHomeGriffon(), GriffonFramework.getInstance().getSdkWorkDir(module));
     }
 

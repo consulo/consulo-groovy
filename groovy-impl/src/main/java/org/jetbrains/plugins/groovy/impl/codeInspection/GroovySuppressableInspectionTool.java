@@ -69,7 +69,7 @@ public abstract class GroovySuppressableInspectionTool extends LocalInspectionTo
     }
 
     public static SuppressQuickFix[] getSuppressActions(String name) {
-        final HighlightDisplayKey displayKey = HighlightDisplayKey.find(name);
+        HighlightDisplayKey displayKey = HighlightDisplayKey.find(name);
         return new SuppressQuickFix[]{
             new SuppressByGroovyCommentFix(displayKey),
             new SuppressForMemberFix(displayKey, false),
@@ -78,23 +78,23 @@ public abstract class GroovySuppressableInspectionTool extends LocalInspectionTo
     }
 
     @Override
-    public boolean isSuppressedFor(@Nonnull final PsiElement element) {
+    public boolean isSuppressedFor(@Nonnull PsiElement element) {
         return isElementToolSuppressedIn(element, getID());
     }
 
-    public static boolean isElementToolSuppressedIn(final PsiElement place, final String toolId) {
+    public static boolean isElementToolSuppressedIn(PsiElement place, String toolId) {
         return getElementToolSuppressedIn(place, toolId) != null;
     }
 
     @Nullable
-    public static PsiElement getElementToolSuppressedIn(final PsiElement place, final String toolId) {
+    public static PsiElement getElementToolSuppressedIn(PsiElement place, String toolId) {
         if (place == null) {
             return null;
         }
 
         return AccessRule.read(() ->
         {
-            final PsiElement statement = PsiUtil.findEnclosingStatement(place);
+            PsiElement statement = PsiUtil.findEnclosingStatement(place);
             if (statement != null) {
                 PsiElement prev = statement.getPrevSibling();
                 while (prev != null && StringUtil.isEmpty(prev.getText().trim())) {
@@ -137,7 +137,7 @@ public abstract class GroovySuppressableInspectionTool extends LocalInspectionTo
     }
 
     @Nonnull
-    private static Collection<String> getInspectionIdsSuppressedInAnnotation(final GrModifierList modifierList) {
+    private static Collection<String> getInspectionIdsSuppressedInAnnotation(GrModifierList modifierList) {
         if (modifierList == null) {
             return Collections.emptyList();
         }
@@ -145,18 +145,18 @@ public abstract class GroovySuppressableInspectionTool extends LocalInspectionTo
         if (annotation == null) {
             return Collections.emptyList();
         }
-        final GrAnnotationMemberValue attributeValue = (GrAnnotationMemberValue) annotation.findAttributeValue(null);
+        GrAnnotationMemberValue attributeValue = (GrAnnotationMemberValue) annotation.findAttributeValue(null);
         Collection<String> result = new ArrayList<String>();
         if (attributeValue instanceof GrAnnotationArrayInitializer) {
             for (GrAnnotationMemberValue annotationMemberValue : ((GrAnnotationArrayInitializer) attributeValue).getInitializers()) {
-                final String id = getInspectionIdSuppressedInAnnotationAttribute(annotationMemberValue);
+                String id = getInspectionIdSuppressedInAnnotationAttribute(annotationMemberValue);
                 if (id != null) {
                     result.add(id);
                 }
             }
         }
         else {
-            final String id = getInspectionIdSuppressedInAnnotationAttribute(attributeValue);
+            String id = getInspectionIdSuppressedInAnnotationAttribute(attributeValue);
             if (id != null) {
                 result.add(id);
             }
@@ -167,7 +167,7 @@ public abstract class GroovySuppressableInspectionTool extends LocalInspectionTo
     @Nullable
     private static String getInspectionIdSuppressedInAnnotationAttribute(GrAnnotationMemberValue element) {
         if (element instanceof GrLiteral) {
-            final Object value = ((GrLiteral) element).getValue();
+            Object value = ((GrLiteral) element).getValue();
             if (value instanceof String) {
                 return (String) value;
             }

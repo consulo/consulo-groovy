@@ -46,7 +46,7 @@ public class GrStubFileElementType extends IStubFileElementType<GrFileStub> {
 
   public StubBuilder getBuilder() {
     return new DefaultStubBuilder() {
-      protected StubElement createStubForFile(@Nonnull final PsiFile file) {
+      protected StubElement createStubForFile(@Nonnull PsiFile file) {
         if (file instanceof GroovyFile) {
           return new GrFileStub((GroovyFile)file);
         }
@@ -67,7 +67,7 @@ public class GrStubFileElementType extends IStubFileElementType<GrFileStub> {
   }
 
   @Override
-  public void serialize(@Nonnull final GrFileStub stub, @Nonnull final StubOutputStream dataStream) throws IOException {
+  public void serialize(@Nonnull GrFileStub stub, @Nonnull StubOutputStream dataStream) throws IOException {
     dataStream.writeName(stub.getName().toString());
     dataStream.writeBoolean(stub.isScript());
     GrStubUtils.writeStringArray(dataStream, stub.getAnnotations());
@@ -75,7 +75,7 @@ public class GrStubFileElementType extends IStubFileElementType<GrFileStub> {
 
   @Nonnull
   @Override
-  public GrFileStub deserialize(@Nonnull final StubInputStream dataStream, final StubElement parentStub) throws IOException {
+  public GrFileStub deserialize(@Nonnull StubInputStream dataStream, StubElement parentStub) throws IOException {
     StringRef name = dataStream.readName();
     boolean isScript = dataStream.readBoolean();
     return new GrFileStub(name, isScript, GrStubUtils.readStringArray(dataStream));
@@ -85,8 +85,8 @@ public class GrStubFileElementType extends IStubFileElementType<GrFileStub> {
     String name = stub.getName().toString();
     if (stub.isScript() && name != null) {
       sink.occurrence(GrScriptClassNameIndex.KEY, name);
-      final String pName = GrStubUtils.getPackageName(stub);
-      final String fqn = StringUtil.isEmpty(pName) ? name : pName + "." + name;
+      String pName = GrStubUtils.getPackageName(stub);
+      String fqn = StringUtil.isEmpty(pName) ? name : pName + "." + name;
       sink.occurrence(GrFullScriptNameIndex.KEY, fqn.hashCode());
     }
 

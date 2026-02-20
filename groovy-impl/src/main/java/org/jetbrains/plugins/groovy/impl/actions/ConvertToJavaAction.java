@@ -58,7 +58,7 @@ public class ConvertToJavaAction extends BaseRefactoringAction
   protected boolean isEnabledOnElements(@Nonnull PsiElement[] elements) {
 
     for (PsiElement element : elements) {
-        final PsiFile containingFile = element.getContainingFile();
+        PsiFile containingFile = element.getContainingFile();
         if (containingFile instanceof GroovyFile) continue;
         return false;
     }

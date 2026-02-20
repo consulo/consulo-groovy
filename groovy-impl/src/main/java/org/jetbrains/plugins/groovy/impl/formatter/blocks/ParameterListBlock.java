@@ -55,11 +55,11 @@ public class ParameterListBlock extends GroovyBlock
 			@Nonnull FormattingContext context)
 	{
 		super(method.getParameterList().getNode(), indent, wrap, context);
-		final ASTNode methodNode = method.getNode();
-		final ASTNode leftParenth = methodNode.findChildByType(GroovyTokenTypes.mLPAREN);
-		final ASTNode rightParenth = methodNode.findChildByType(GroovyTokenTypes.mRPAREN);
+		ASTNode methodNode = method.getNode();
+		ASTNode leftParenth = methodNode.findChildByType(GroovyTokenTypes.mLPAREN);
+		ASTNode rightParenth = methodNode.findChildByType(GroovyTokenTypes.mRPAREN);
 
-		final GroovyWrappingProcessor wrappingProcessor = new GroovyWrappingProcessor(this);
+		GroovyWrappingProcessor wrappingProcessor = new GroovyWrappingProcessor(this);
 		mySubBlocks = new ArrayList<Block>();
 		if(leftParenth != null)
 		{
@@ -69,11 +69,11 @@ public class ParameterListBlock extends GroovyBlock
 
 		List<ASTNode> astNodes = GroovyBlockGenerator.visibleChildren(myNode);
 
-		final boolean unfinished = isParameterListUnfinished(myNode);
+		boolean unfinished = isParameterListUnfinished(myNode);
 
 		if(myContext.getSettings().ALIGN_MULTILINE_PARAMETERS)
 		{
-			final AlignmentProvider.Aligner aligner = myContext.getAlignmentProvider().createAligner(false);
+			AlignmentProvider.Aligner aligner = myContext.getAlignmentProvider().createAligner(false);
 			for(ASTNode node : astNodes)
 			{
 				aligner.append(node.getPsi());
@@ -120,7 +120,7 @@ public class ParameterListBlock extends GroovyBlock
 
 	private static boolean isParameterListUnfinished(ASTNode parameterList)
 	{
-		final ASTNode last = parameterList.getLastChildNode();
+		ASTNode last = parameterList.getLastChildNode();
 		return last instanceof PsiErrorElement;
 	}
 }

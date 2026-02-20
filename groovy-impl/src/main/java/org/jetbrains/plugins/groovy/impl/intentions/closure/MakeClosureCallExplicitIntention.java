@@ -44,12 +44,12 @@ public class MakeClosureCallExplicitIntention extends Intention {
 
     public void processIntention(@Nonnull PsiElement element, Project project, Editor editor)
         throws IncorrectOperationException {
-        final GrMethodCallExpression expression =
+        GrMethodCallExpression expression =
             (GrMethodCallExpression) element;
-        final GrExpression invokedExpression = expression.getInvokedExpression();
-        final GrArgumentList argList = expression.getArgumentList();
-        final GrClosableBlock[] closureArgs = expression.getClosureArguments();
-        final StringBuilder newExpression = new StringBuilder();
+        GrExpression invokedExpression = expression.getInvokedExpression();
+        GrArgumentList argList = expression.getArgumentList();
+        GrClosableBlock[] closureArgs = expression.getClosureArguments();
+        StringBuilder newExpression = new StringBuilder();
         newExpression.append(invokedExpression.getText());
         newExpression.append(".call");
         if (argList != null) {

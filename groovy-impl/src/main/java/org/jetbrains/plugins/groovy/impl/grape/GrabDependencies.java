@@ -94,23 +94,23 @@ public class GrabDependencies implements IntentionAction {
     }
 
     public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file) {
-        final GrAnnotation anno =
+        GrAnnotation anno =
             PsiTreeUtil.findElementOfClassAtOffset(file, editor.getCaretModel().getOffset(), GrAnnotation.class, false);
         if (anno == null) {
             return false;
         }
 
-        final String qname = anno.getQualifiedName();
+        String qname = anno.getQualifiedName();
         if (qname == null || !(qname.startsWith(GrabAnnos.GRAB_ANNO) || GrabAnnos.GRAPES_ANNO.equals(qname))) {
             return false;
         }
 
-        final Module module = ModuleUtilCore.findModuleForPsiElement(file);
+        Module module = ModuleUtilCore.findModuleForPsiElement(file);
         if (module == null) {
             return false;
         }
 
-        final Sdk sdk = ModuleUtilCore.getSdk(module, JavaModuleExtension.class);
+        Sdk sdk = ModuleUtilCore.getSdk(module, JavaModuleExtension.class);
         if (sdk == null) {
             return false;
         }
@@ -122,7 +122,7 @@ public class GrabDependencies implements IntentionAction {
         final Module module = ModuleUtil.findModuleForPsiElement(file);
         assert module != null;
 
-        final VirtualFile vfile = file.getOriginalFile().getVirtualFile();
+        VirtualFile vfile = file.getOriginalFile().getVirtualFile();
         assert vfile != null;
 
         if (JavaPsiFacade.getInstance(project).findClass("org.apache.ivy.core.report.ResolveReport", file.getResolveScope()) == null) {
@@ -135,12 +135,12 @@ public class GrabDependencies implements IntentionAction {
 
         Map<String, String> queries = prepareQueries(file);
 
-        final Sdk sdk = ModuleUtilCore.getSdk(module, JavaModuleExtension.class);
+        Sdk sdk = ModuleUtilCore.getSdk(module, JavaModuleExtension.class);
         assert sdk != null;
 
         final Map<String, GeneralCommandLine> lines = new HashMap<String, GeneralCommandLine>();
         for (String grabText : queries.keySet()) {
-            final OwnJavaParameters javaParameters = GroovyScriptRunConfiguration.createJavaParametersWithSdk(module);
+            OwnJavaParameters javaParameters = GroovyScriptRunConfiguration.createJavaParametersWithSdk(module);
             //debug
             //javaParameters.getVMParametersList().add("-Xdebug"); javaParameters.getVMParametersList().add("-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5239");
 
@@ -198,7 +198,7 @@ public class GrabDependencies implements IntentionAction {
                     String grabText = entry.getKey();
                     indicator.setText2(grabText);
                     try {
-                        final GrapeProcessHandler handler = new GrapeProcessHandler(entry.getValue(), module);
+                        GrapeProcessHandler handler = new GrapeProcessHandler(entry.getValue(), module);
                         handler.startNotify();
                         handler.waitFor();
                         jarCount += handler.jarCount;
@@ -209,8 +209,8 @@ public class GrabDependencies implements IntentionAction {
                     }
                 }
 
-                final String finalMessages = messages;
-                final String title = jarCount + " Grape dependency jar" + (jarCount == 1 ? "" : "s") + " added";
+                String finalMessages = messages;
+                String title = jarCount + " Grape dependency jar" + (jarCount == 1 ? "" : "s") + " added";
                 NOTIFICATION_GROUP.createNotification(title, finalMessages, NotificationType.INFORMATION, null)
                     .notify(project);
             }
@@ -294,10 +294,10 @@ public class GrabDependencies implements IntentionAction {
         }
 
         private void addGrapeDependencies(List<VirtualFile> jars) {
-            final ModifiableRootModel model = ModuleRootManager.getInstance(myModule).getModifiableModel();
-            final LibraryTable.ModifiableModel tableModel = model.getModuleLibraryTable().getModifiableModel();
+            ModifiableRootModel model = ModuleRootManager.getInstance(myModule).getModifiableModel();
+            LibraryTable.ModifiableModel tableModel = model.getModuleLibraryTable().getModifiableModel();
             for (VirtualFile jar : jars) {
-                final VirtualFile jarRoot = ArchiveVfsUtil.getJarRootForLocalFile(jar);
+                VirtualFile jarRoot = ArchiveVfsUtil.getJarRootForLocalFile(jar);
                 if (jarRoot != null) {
                     OrderRootType rootType = BinariesOrderRootType.getInstance();
                     String libName = "Grab:" + jar.getName();
@@ -313,7 +313,7 @@ public class GrabDependencies implements IntentionAction {
                         library = tableModel.createLibrary(libName);
                     }
 
-                    final Library.ModifiableModel libModel = library.getModifiableModel();
+                    Library.ModifiableModel libModel = library.getModifiableModel();
                     for (String url : libModel.getUrls(rootType)) {
                         libModel.removeRoot(url, rootType);
                     }
@@ -330,12 +330,12 @@ public class GrabDependencies implements IntentionAction {
 
         @Override
         public void processTerminated(ProcessEvent event) {
-            final List<VirtualFile> jars = new ArrayList<VirtualFile>();
+            List<VirtualFile> jars = new ArrayList<VirtualFile>();
             for (String line : myStdOut.toString().split("\n")) {
                 if (line.startsWith(GrapeRunner.URL_PREFIX)) {
                     try {
-                        final URL url = new URL(line.substring(GrapeRunner.URL_PREFIX.length()));
-                        final File libFile = new File(url.toURI());
+                        URL url = new URL(line.substring(GrapeRunner.URL_PREFIX.length()));
+                        File libFile = new File(url.toURI());
                         if (libFile.exists() && libFile.getName().endsWith(".jar")) {
                             ContainerUtil.addIfNotNull(jars, LocalFileSystem.getInstance().refreshAndFindFileByIoFile(libFile));
                         }

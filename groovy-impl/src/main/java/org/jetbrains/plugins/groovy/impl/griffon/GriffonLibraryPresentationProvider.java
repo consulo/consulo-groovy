@@ -74,7 +74,7 @@ public class GriffonLibraryPresentationProvider extends GroovyLibraryPresentatio
 
   @Override
   public boolean isSDKHome(@Nonnull VirtualFile file) {
-    final VirtualFile dist = file.findChild("dist");
+    VirtualFile dist = file.findChild("dist");
     if (dist == null) {
       return false;
     }
@@ -85,9 +85,9 @@ public class GriffonLibraryPresentationProvider extends GroovyLibraryPresentatio
   @Nonnull
   @Override
   public String getSDKVersion(String path) {
-    final VirtualFile file = LocalFileSystem.getInstance().findFileByPath(path);
+    VirtualFile file = LocalFileSystem.getInstance().findFileByPath(path);
     for (VirtualFile virtualFile : file.findChild("dist").getChildren()) {
-      final String version = getGriffonCoreJarVersion(virtualFile);
+      String version = getGriffonCoreJarVersion(virtualFile);
       if (version != null) {
         return version;
       }
@@ -96,7 +96,7 @@ public class GriffonLibraryPresentationProvider extends GroovyLibraryPresentatio
   }
 
   @Override
-  public boolean managesLibrary(final VirtualFile[] libraryFiles) {
+  public boolean managesLibrary(VirtualFile[] libraryFiles) {
     return isGriffonSdk(libraryFiles);
   }
 
@@ -106,7 +106,7 @@ public class GriffonLibraryPresentationProvider extends GroovyLibraryPresentatio
 
   @Nls
   @Override
-  public String getLibraryVersion(final VirtualFile[] libraryFiles) {
+  public String getLibraryVersion(VirtualFile[] libraryFiles) {
     return getGriffonVersion(libraryFiles);
   }
 
@@ -121,9 +121,9 @@ public class GriffonLibraryPresentationProvider extends GroovyLibraryPresentatio
 
   @Nullable
   public static String getGriffonVersion(@Nonnull Module module) {
-    for (final OrderEntry orderEntry : ModuleRootManager.getInstance(module).getOrderEntries()) {
+    for (OrderEntry orderEntry : ModuleRootManager.getInstance(module).getOrderEntries()) {
       if (orderEntry instanceof LibraryOrderEntry) {
-        final VirtualFile[] files = orderEntry.getFiles(BinariesOrderRootType.getInstance());
+        VirtualFile[] files = orderEntry.getFiles(BinariesOrderRootType.getInstance());
         if (isGriffonSdk(files)) {
           return getGriffonVersion(files);
         }
@@ -135,7 +135,7 @@ public class GriffonLibraryPresentationProvider extends GroovyLibraryPresentatio
   @Nullable
   private static String getGriffonVersion(VirtualFile[] libraryFiles) {
     for (VirtualFile file : libraryFiles) {
-      final String version = getGriffonCoreJarVersion(file);
+      String version = getGriffonCoreJarVersion(file);
       if (version != null) {
         return version;
       }
@@ -145,7 +145,7 @@ public class GriffonLibraryPresentationProvider extends GroovyLibraryPresentatio
 
   @Nullable
   private static String getGriffonCoreJarVersion(VirtualFile file) {
-    final Matcher matcher = GRIFFON_JAR_FILE_PATTERN.matcher(file.getName());
+    Matcher matcher = GRIFFON_JAR_FILE_PATTERN.matcher(file.getName());
     if (matcher.matches()) {
       return matcher.group(1);
     }

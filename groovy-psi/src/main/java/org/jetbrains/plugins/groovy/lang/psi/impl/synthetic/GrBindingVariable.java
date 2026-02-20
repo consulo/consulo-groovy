@@ -39,7 +39,7 @@ public class GrBindingVariable extends GrLightVariable implements GrVariable {
   private final GroovyFile myFile;
   private Boolean myHasWriteAccess;
 
-  public GrBindingVariable(final GroovyFile file, String name, Boolean isWriteAccess) {
+  public GrBindingVariable(GroovyFile file, String name, Boolean isWriteAccess) {
     super(file.getManager(), name, CommonClassNames.JAVA_LANG_OBJECT, file);
     myFile = file;
     myHasWriteAccess = isWriteAccess;
@@ -109,7 +109,7 @@ public class GrBindingVariable extends GrLightVariable implements GrVariable {
     myFile.accept(new GroovyRecursiveElementVisitor() {
       @Override
       public void visitAssignmentExpression(GrAssignmentExpression expression) {
-        final GrExpression lValue = expression.getLValue();
+        GrExpression lValue = expression.getLValue();
         if (lValue instanceof GrTupleExpression) {
           for (GrExpression grExpression : ((GrTupleExpression)lValue).getExpressions()) {
             if (isRefToMe(grExpression)) {
@@ -143,7 +143,7 @@ public class GrBindingVariable extends GrLightVariable implements GrVariable {
 
   private boolean isRefToMe(@Nullable PsiElement element) {
     if (maybeRefToMe(element)) {
-      final PsiElement resolved = ((GrReferenceExpression)element).resolve();
+      PsiElement resolved = ((GrReferenceExpression)element).resolve();
       if (resolved == null || resolved == this) {
         return true;
       }
@@ -162,7 +162,7 @@ public class GrBindingVariable extends GrLightVariable implements GrVariable {
   public void updateWriteAccessIfNeeded(@Nullable PsiElement place) {
     if (myHasWriteAccess == null && maybeRefToMe(place)) {
       assert place != null;
-      final PsiElement parent = place.getParent();
+      PsiElement parent = place.getParent();
       if (parent instanceof GrAssignmentExpression && ((GrAssignmentExpression)parent).getLValue() == place) {
         myHasWriteAccess = true;
       }

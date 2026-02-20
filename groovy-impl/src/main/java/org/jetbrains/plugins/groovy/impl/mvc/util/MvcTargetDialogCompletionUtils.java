@@ -129,13 +129,13 @@ public class MvcTargetDialogCompletionUtils {
   }
 
   public static Set<String> getAllTargetNamesInternal(@Nonnull Module module) {
-    final Set<String> result = new HashSet<String>();
+    Set<String> result = new HashSet<String>();
 
     MvcFramework.addAvailableSystemScripts(result, module);
 
     MvcFramework framework = MvcFramework.getInstance(module);
     if (framework != null) {
-      final VirtualFile root = framework.findAppRoot(module);
+      VirtualFile root = framework.findAppRoot(module);
       if (root != null) {
         MvcFramework.addAvailableScripts(result, root);
       }

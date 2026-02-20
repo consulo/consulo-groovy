@@ -105,11 +105,11 @@ public class StubGenerator implements ClassItemGenerator {
                                               PsiMethod constructor,
                                               PsiSubstitutor substitutor,
                                               PsiElement invocation) {
-    final PsiParameter[] superParams = constructor.getParameterList().getParameters();
+    PsiParameter[] superParams = constructor.getParameterList().getParameters();
     for (int j = 0; j < superParams.length; j++) {
       if (j > 0) text.append(", ");
       text.append('(');
-      final PsiType type = superParams[j].getType();
+      PsiType type = superParams[j].getType();
       writeType(text, substitutor.substitute(type), invocation, classNameProvider);
       text.append(')').append(GroovyToJavaGenerator.getDefaultValueText(type.getCanonicalText()));
     }
@@ -117,7 +117,7 @@ public class StubGenerator implements ClassItemGenerator {
 
 
   @Override
-  public void writeConstructor(final StringBuilder text, PsiMethod constructor, boolean isEnum) {
+  public void writeConstructor(StringBuilder text, PsiMethod constructor, boolean isEnum) {
     LOG.assertTrue(constructor.isConstructor());
 
     if (!isEnum) {
@@ -132,7 +132,7 @@ public class StubGenerator implements ClassItemGenerator {
     /************* parameters **********/
     GenerationUtil.writeParameterList(text, constructor.getParameterList().getParameters(), classNameProvider, null);
 
-    final Set<String> throwsTypes = collectThrowsTypes(constructor, new HashSet<PsiMethod>());
+    Set<String> throwsTypes = collectThrowsTypes(constructor, new HashSet<PsiMethod>());
     if (!throwsTypes.isEmpty()) {
       text.append("throws ").append(StringUtil.join(throwsTypes, ", ")).append(' ');
     }
@@ -144,9 +144,9 @@ public class StubGenerator implements ClassItemGenerator {
       constructor = ((GrReflectedMethod)constructor).getBaseMethod();
     }
     if (constructor instanceof GrMethod) {
-      final GrConstructorInvocation invocation = PsiImplUtil.getChainingConstructorInvocation((GrMethod)constructor);
+      GrConstructorInvocation invocation = PsiImplUtil.getChainingConstructorInvocation((GrMethod)constructor);
       if (invocation != null) {
-        final GroovyResolveResult resolveResult = resolveChainingConstructor((GrMethod)constructor);
+        GroovyResolveResult resolveResult = resolveChainingConstructor((GrMethod)constructor);
         if (resolveResult != null) {
           text.append(invocation.isSuperCall() ? "super(" : "this(");
           writeStubConstructorInvocation(text, (PsiMethod)resolveResult.getElement(), resolveResult.getSubstitutor(), invocation);
@@ -162,13 +162,13 @@ public class StubGenerator implements ClassItemGenerator {
   }
 
   private void writeStubConstructorInvocation(PsiMethod constructor, StringBuilder text) {
-    final PsiClass containingClass = constructor.getContainingClass();
+    PsiClass containingClass = constructor.getContainingClass();
     if (containingClass == null) return;
 
-    final PsiClass superClass = containingClass.getSuperClass();
+    PsiClass superClass = containingClass.getSuperClass();
     if (superClass == null) return;
 
-    final PsiMethod[] constructors = superClass.getConstructors();
+    PsiMethod[] constructors = superClass.getConstructors();
     if (constructors.length == 0) return;
 
     for (PsiMethod method : constructors) {
@@ -193,22 +193,22 @@ public class StubGenerator implements ClassItemGenerator {
   private Set<String> collectThrowsTypes(PsiMethod constructor, Set<PsiMethod> visited) {
     LOG.assertTrue(constructor.isConstructor());
 
-    final GroovyResolveResult resolveResult = constructor instanceof GrMethod ? resolveChainingConstructor((GrMethod)constructor) : null;
+    GroovyResolveResult resolveResult = constructor instanceof GrMethod ? resolveChainingConstructor((GrMethod)constructor) : null;
 
     if (resolveResult == null) {
       return Collections.emptySet();
     }
 
 
-    final PsiSubstitutor substitutor = resolveResult.getSubstitutor();
-    final PsiMethod chainedConstructor = (PsiMethod)resolveResult.getElement();
+    PsiSubstitutor substitutor = resolveResult.getSubstitutor();
+    PsiMethod chainedConstructor = (PsiMethod)resolveResult.getElement();
     assert chainedConstructor != null;
 
     if (!visited.add(chainedConstructor)) {
       return Collections.emptySet();
     }
 
-    final Set<String> result = new LinkedHashSet<>();
+    Set<String> result = new LinkedHashSet<>();
     for (PsiClassType type : chainedConstructor.getThrowsList().getReferencedTypes()) {
       StringBuilder builder = new StringBuilder();
       writeType(builder, substitutor.substitute(type), constructor, classNameProvider);
@@ -247,9 +247,9 @@ public class StubGenerator implements ClassItemGenerator {
     }
 
     if (!method.hasModifierProperty(PsiModifier.STATIC)) {
-      final List<MethodSignatureBackedByPsiMethod> superSignatures = method.findSuperMethodSignaturesIncludingStatic(true);
+      List<MethodSignatureBackedByPsiMethod> superSignatures = method.findSuperMethodSignaturesIncludingStatic(true);
       for (MethodSignatureBackedByPsiMethod superSignature : superSignatures) {
-        final PsiType superType = superSignature.getSubstitutor().substitute(superSignature.getMethod().getReturnType());
+        PsiType superType = superSignature.getSubstitutor().substitute(superSignature.getMethod().getReturnType());
         if (superType != null &&
           !superType.isAssignableFrom(retType) &&
           !(PsiUtil.resolveClassInType(superType) instanceof PsiTypeParameter)) {
@@ -281,8 +281,8 @@ public class StubGenerator implements ClassItemGenerator {
   }
 
   private void writeThrowsList(StringBuilder text, PsiMethod method) {
-    final PsiReferenceList throwsList = method.getThrowsList();
-    final PsiClassType[] exceptions = throwsList.getReferencedTypes();
+    PsiReferenceList throwsList = method.getThrowsList();
+    PsiClassType[] exceptions = throwsList.getReferencedTypes();
     GenerationUtil.writeThrowsList(text, throwsList, exceptions, classNameProvider);
   }
 
@@ -290,7 +290,7 @@ public class StubGenerator implements ClassItemGenerator {
   private static GroovyResolveResult resolveChainingConstructor(GrMethod constructor) {
     LOG.assertTrue(constructor.isConstructor());
 
-    final GrConstructorInvocation constructorInvocation = PsiImplUtil.getChainingConstructorInvocation(constructor);
+    GrConstructorInvocation constructorInvocation = PsiImplUtil.getChainingConstructorInvocation(constructor);
     if (constructorInvocation == null) {
       return null;
     }
@@ -300,12 +300,12 @@ public class StubGenerator implements ClassItemGenerator {
       return resolveResult;
     }
 
-    final GroovyResolveResult[] results = constructorInvocation.multiResolveGroovy(false);
+    GroovyResolveResult[] results = constructorInvocation.multiResolveGroovy(false);
     if (results.length > 0) {
       int i = 0;
-      final PsiResolveHelper resolveHelper = PsiResolveHelper.getInstance(constructor.getProject());
+      PsiResolveHelper resolveHelper = PsiResolveHelper.getInstance(constructor.getProject());
       while (results.length > i + 1) {
-          final PsiMethod candidate = (PsiMethod)results[i].getElement();
+          PsiMethod candidate = (PsiMethod)results[i].getElement();
         if (candidate != null && candidate != constructor && resolveHelper.isAccessible(candidate, constructorInvocation, null)) {
           break;
         }
@@ -334,14 +334,14 @@ public class StubGenerator implements ClassItemGenerator {
       !typeDefinition.isEnum() &&
       !(typeDefinition instanceof GroovyScriptClass);
     if (isClass) {
-      final Collection<MethodSignature> toOverride = OverrideImplementUtil.getMethodSignaturesToOverride(typeDefinition);
+      Collection<MethodSignature> toOverride = OverrideImplementUtil.getMethodSignaturesToOverride(typeDefinition);
       for (MethodSignature signature : toOverride) {
         if (!(signature instanceof MethodSignatureBackedByPsiMethod)) continue;
 
-        final PsiMethod method = ((MethodSignatureBackedByPsiMethod)signature).getMethod();
-        final PsiClass baseClass = method.getContainingClass();
+        PsiMethod method = ((MethodSignatureBackedByPsiMethod)signature).getMethod();
+        PsiClass baseClass = method.getContainingClass();
         if (baseClass == null) continue;
-        final String qname = baseClass.getQualifiedName();
+        String qname = baseClass.getQualifiedName();
         if (DEFAULT_BASE_CLASS_NAME.equals(qname) || GROOVY_OBJECT_SUPPORT.equals(qname) ||
           method.hasModifierProperty(PsiModifier.ABSTRACT) && typeDefinition.isInheritor(baseClass, true)) {
           if (method.isConstructor()) continue;
@@ -349,11 +349,11 @@ public class StubGenerator implements ClassItemGenerator {
         }
       }
 
-      final Collection<MethodSignature> toImplement = OverrideImplementUtil.getMethodSignaturesToImplement(typeDefinition);
+      Collection<MethodSignature> toImplement = OverrideImplementUtil.getMethodSignaturesToImplement(typeDefinition);
       for (MethodSignature signature : toImplement) {
         if (!(signature instanceof MethodSignatureBackedByPsiMethod)) continue;
-        final PsiMethod resolved = ((MethodSignatureBackedByPsiMethod)signature).getMethod();
-        final PsiClass baseClass = resolved.getContainingClass();
+        PsiMethod resolved = ((MethodSignatureBackedByPsiMethod)signature).getMethod();
+        PsiClass baseClass = resolved.getContainingClass();
         if (baseClass == null) continue;
         if (!DEFAULT_BASE_CLASS_NAME.equals(baseClass.getQualifiedName())) continue;
 
@@ -377,7 +377,7 @@ public class StubGenerator implements ClassItemGenerator {
                                                  PsiMethod method,
                                                  PsiClass baseClass,
                                                  PsiSubstitutor substitutor) {
-    final LightMethodBuilder builder = new LightMethodBuilder(method.getManager(), method.getName());
+    LightMethodBuilder builder = new LightMethodBuilder(method.getManager(), method.getName());
     substitutor = substitutor.putAll(TypeConversionUtil.getSuperClassSubstitutor(baseClass, typeDefinition, PsiSubstitutor.EMPTY));
     for (PsiParameter parameter : method.getParameterList().getParameters()) {
       builder.addParameter(StringUtil.notNullize(parameter.getName()), substitutor.substitute(parameter.getType()));
@@ -395,9 +395,9 @@ public class StubGenerator implements ClassItemGenerator {
   public void writeVariableDeclarations(StringBuilder text, GrVariableDeclaration variableDeclaration) {
     GrTypeElement typeElement = variableDeclaration.getTypeElementGroovy();
 
-    final GrModifierList modifierList = variableDeclaration.getModifierList();
-    final PsiNameHelper nameHelper = JavaPsiFacade.getInstance(variableDeclaration.getProject()).getNameHelper();
-    for (final GrVariable variable : variableDeclaration.getVariables()) {
+    GrModifierList modifierList = variableDeclaration.getModifierList();
+    PsiNameHelper nameHelper = JavaPsiFacade.getInstance(variableDeclaration.getProject()).getNameHelper();
+    for (GrVariable variable : variableDeclaration.getVariables()) {
       String name = variable.getName();
       if (!nameHelper.isIdentifier(name)) {
         continue; //does not have a java image
@@ -437,7 +437,7 @@ public class StubGenerator implements ClassItemGenerator {
   }
 
   public void writeImplementsList(StringBuilder text, PsiClass typeDefinition) {
-    final Collection<PsiClassType> implementsTypes = new LinkedHashSet<PsiClassType>();
+    Collection<PsiClassType> implementsTypes = new LinkedHashSet<PsiClassType>();
     Collections.addAll(implementsTypes, typeDefinition.getImplementsListTypes());
 
     if (implementsTypes.isEmpty()) return;
@@ -452,7 +452,7 @@ public class StubGenerator implements ClassItemGenerator {
   }
 
   public void writeExtendsList(StringBuilder text, PsiClass typeDefinition) {
-    final PsiClassType[] extendsClassesTypes = typeDefinition.getExtendsListTypes();
+    PsiClassType[] extendsClassesTypes = typeDefinition.getExtendsListTypes();
 
     if (extendsClassesTypes.length > 0) {
 

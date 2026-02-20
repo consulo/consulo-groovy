@@ -65,8 +65,8 @@ public class GroovycRunner {
       System.setProperty("groovy.target.indy", "true");
     }
 
-    final boolean forStubs = "stubs".equals(args[0]);
-    final File argsFile = new File(args[1]);
+    boolean forStubs = "stubs".equals(args[0]);
+    File argsFile = new File(args[1]);
 
     if (!argsFile.exists()) {
       System.err.println("Arguments file for groovy compiler not found");

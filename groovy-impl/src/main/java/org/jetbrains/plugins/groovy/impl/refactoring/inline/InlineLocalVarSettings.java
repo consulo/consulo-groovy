@@ -31,7 +31,7 @@ public class InlineLocalVarSettings {
   public InlineLocalVarSettings(GrExpression initializer, int writeInstructionNumber, Instruction[] flow) {
     myWriteInstructionNumber = writeInstructionNumber;
     myFlow = flow;
-    final PsiElement psiElement = PsiUtil.skipParentheses(initializer, false);
+    PsiElement psiElement = PsiUtil.skipParentheses(initializer, false);
     if (psiElement instanceof GrExpression) {
       myInitializer = (GrExpression)psiElement;
     }

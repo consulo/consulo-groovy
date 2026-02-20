@@ -47,12 +47,12 @@ public class GroovyEmptyCatchBlockInspection extends BaseInspection {
     private static class Visitor extends BaseInspectionVisitor {
         public void visitCatchClause(GrCatchClause catchClause) {
             super.visitCatchClause(catchClause);
-            final GrOpenBlock body = catchClause.getBody();
+            GrOpenBlock body = catchClause.getBody();
             if (body == null || !isEmpty(body)) {
                 return;
             }
 
-            final GrParameter parameter = catchClause.getParameter();
+            GrParameter parameter = catchClause.getParameter();
             if (parameter == null) {
                 return;
             }
@@ -67,7 +67,7 @@ public class GroovyEmptyCatchBlockInspection extends BaseInspection {
         }
 
         private static boolean isEmpty(@Nonnull GrOpenBlock body) {
-            final GrStatement[] statements = body.getStatements();
+            GrStatement[] statements = body.getStatements();
             return statements.length == 0;
         }
     }

@@ -64,10 +64,10 @@ public class GroovyTestGenerator implements TestGenerator {
 
   @Nullable
   @Override
-  public PsiElement generateTest(final Project project, final CreateTestDialog d) {
+  public PsiElement generateTest(Project project, CreateTestDialog d) {
     AccessToken accessToken = WriteAction.start();
     try {
-      final PsiClass test = PostprocessReformattingAspect.getInstance(project).postponeFormattingInside(() -> {
+      PsiClass test = PostprocessReformattingAspect.getInstance(project).postponeFormattingInside(() -> {
           try {
             IdeDocumentHistory.getInstance(project).includeCurrentPlaceAsChangePlace();
 

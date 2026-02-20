@@ -42,8 +42,8 @@ public class GrParameterTableModelItem extends ParameterTableModelItemBase<GrPar
     }
 
     public static GrParameterTableModelItem create(@Nullable GrParameterInfo parameterInfo,
-                                                   @Nonnull final Project project,
-                                                   @Nullable final PsiElement context) {
+                                                   @Nonnull Project project,
+                                                   @Nullable PsiElement context) {
         if (parameterInfo == null) {
             parameterInfo = new GrParameterInfo("", "", "", null, -1, false);
         }

@@ -78,14 +78,14 @@ public class MoveGroovyClassHandler implements MoveClassHandler {
       return null;
     }
 
-    final PsiPackage newPackage = JavaDirectoryService.getInstance().getPackage(moveDestination);
+    PsiPackage newPackage = JavaDirectoryService.getInstance().getPackage(moveDestination);
     LOG.assertTrue(newPackage != null);
 
     PsiClass newClass = null;
 
-    final String newPackageName = newPackage.getQualifiedName();
+    String newPackageName = newPackage.getQualifiedName();
     if (aClass instanceof GroovyScriptClass) {
-      final PsiClass[] classes = ((GroovyFile)file).getClasses();
+      PsiClass[] classes = ((GroovyFile)file).getClasses();
       if (classes.length == 1) {
         if (!moveDestination.equals(file.getContainingDirectory())) {
           MoveFilesOrDirectoriesUtil.doMoveFile(file, moveDestination);
@@ -95,7 +95,7 @@ public class MoveGroovyClassHandler implements MoveClassHandler {
       }
       //script class is moved the first from the file due to MoveClassOrPackageProcessor:88 (element sort)
       correctSelfReferences(aClass, newPackage);
-      final GroovyFile newFile = generateNewScript((GroovyFile)file, newPackage);
+      GroovyFile newFile = generateNewScript((GroovyFile)file, newPackage);
 
       for (PsiElement child : file.getChildren()) {
         if (!(child instanceof GrTopStatement || child instanceof PsiComment)) {
@@ -105,7 +105,7 @@ public class MoveGroovyClassHandler implements MoveClassHandler {
           continue;
         }
         if (child instanceof GrDocComment) {
-          final GrDocCommentOwner owner = GrDocCommentUtil.findDocOwner((GrDocComment)child);
+          GrDocCommentOwner owner = GrDocCommentUtil.findDocOwner((GrDocComment)child);
           if (owner instanceof PsiClass) {
             continue;
           }
@@ -128,10 +128,10 @@ public class MoveGroovyClassHandler implements MoveClassHandler {
         // moving second of two classes which were in the same file to a different directory (IDEADEV-3089)
         correctSelfReferences(aClass, newPackage);
         PsiFile newFile = moveDestination.findFile(file.getName());
-        final FileASTNode fileNode = newFile.getNode();
+        FileASTNode fileNode = newFile.getNode();
         fileNode.addChild(Factory.createSingleLeafElement(GroovyTokenTypes.mNLS, "\n\n", 0, 2, null,
                                                           aClass.getManager()));
-        final PsiDocComment docComment = aClass.getDocComment();
+        PsiDocComment docComment = aClass.getDocComment();
         if (docComment != null) {
           newFile.add(docComment);
           fileNode.addChild(Factory.createSingleLeafElement(GroovyTokenTypes.mNLS, "\n", 0, 1, null,
@@ -144,15 +144,15 @@ public class MoveGroovyClassHandler implements MoveClassHandler {
       else if (((GroovyFile)file).getClasses().length > 1) {
         correctSelfReferences(aClass, newPackage);
 
-        final PsiFile fromTemplate = GroovyTemplatesFactory.createFromTemplate(moveDestination,
+        PsiFile fromTemplate = GroovyTemplatesFactory.createFromTemplate(moveDestination,
                                                                                aClass.getName(),
                                                                                aClass.getName() + NewGroovyActionBase.GROOVY_EXTENSION,
                                                                                GroovyTemplates.GROOVY_CLASS,
                                                                                true);
-        final PsiClass created = ((GroovyFile)fromTemplate).getClasses()[0];
+        PsiClass created = ((GroovyFile)fromTemplate).getClasses()[0];
         PsiDocComment docComment = aClass.getDocComment();
         if (docComment != null) {
-          final PsiDocComment createdDocComment = created.getDocComment();
+          PsiDocComment createdDocComment = created.getDocComment();
           if (createdDocComment != null) {
             createdDocComment.replace(docComment);
           }
@@ -173,17 +173,17 @@ public class MoveGroovyClassHandler implements MoveClassHandler {
   private static void setPackageDefinition(GroovyFile file, GroovyFile newFile, String newPackageName) {
     String modifiersText = null;
 
-    final GrPackageDefinition packageDefinition = file.getPackageDefinition();
+    GrPackageDefinition packageDefinition = file.getPackageDefinition();
     if (packageDefinition != null) {
-      final PsiModifierList modifierList = packageDefinition.getModifierList();
+      PsiModifierList modifierList = packageDefinition.getModifierList();
       if (modifierList != null) {
         modifiersText = modifierList.getText().trim();
       }
     }
 
     if (modifiersText != null && !modifiersText.isEmpty()) {
-      final GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(file.getProject());
-      final GrPackageDefinition newPackageDefinition = (GrPackageDefinition)factory.createTopElementFromText
+      GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(file.getProject());
+      GrPackageDefinition newPackageDefinition = (GrPackageDefinition)factory.createTopElementFromText
         (modifiersText + " package " + newPackageName);
       newFile.setPackage(newPackageDefinition);
     }
@@ -196,24 +196,24 @@ public class MoveGroovyClassHandler implements MoveClassHandler {
     for (GrImportStatement importStatement : file.getImportStatements()) {
       importStatement.delete();
     }
-    final GroovyFile newFile = GroovyPsiElementFactory.getInstance(file.getProject()).createGroovyFile("", true,
+    GroovyFile newFile = GroovyPsiElementFactory.getInstance(file.getProject()).createGroovyFile("", true,
                                                                                                        null);
 
     newFile.addRange(file.getFirstChild(), file.getLastChild());
 
-    final PsiClass[] newFileClasses = newFile.getClasses();
+    PsiClass[] newFileClasses = newFile.getClasses();
     for (PsiClass psiClass : newFileClasses) {
       if (psiClass instanceof GroovyScriptClass) {
         continue;
       }
-      final GrDocComment docComment = GrDocCommentUtil.findDocComment((GrDocCommentOwner)psiClass);
+      GrDocComment docComment = GrDocCommentUtil.findDocComment((GrDocCommentOwner)psiClass);
       if (docComment != null) {
         docComment.delete();
       }
       psiClass.delete();
     }
 
-    final GrPackageDefinition packageDefinition = newFile.getPackageDefinition();
+    GrPackageDefinition packageDefinition = newFile.getPackageDefinition();
     if (packageDefinition != null) {
       packageDefinition.delete();
     }
@@ -246,7 +246,7 @@ public class MoveGroovyClassHandler implements MoveClassHandler {
   @Override
   @Nullable
   public String getName(PsiClass clazz) {
-    final PsiFile file = clazz.getContainingFile();
+    PsiFile file = clazz.getContainingFile();
     if (!(file instanceof GroovyFile)) {
       return null;
     }
@@ -263,18 +263,18 @@ public class MoveGroovyClassHandler implements MoveClassHandler {
         LOG.debug("info==null");
         continue;
       }
-      final PsiReference ref = info.getReference();
+      PsiReference ref = info.getReference();
       if (ref == null) {
         continue;
       }
 
-      final PsiElement element = ref.getElement();
+      PsiElement element = ref.getElement();
       if (!(element instanceof GrReferenceElement)) {
         continue;
       }
 
-      final GroovyResolveResult resolveResult = ((GrReferenceElement)element).advancedResolve();
-      final PsiElement context = resolveResult.getCurrentFileResolveContext();
+      GroovyResolveResult resolveResult = ((GrReferenceElement)element).advancedResolve();
+      PsiElement context = resolveResult.getCurrentFileResolveContext();
       if (!(context instanceof GrImportStatement)) {
         continue;
       }
@@ -305,12 +305,12 @@ public class MoveGroovyClassHandler implements MoveClassHandler {
     return aClass instanceof GroovyScriptClass ? aClass.getContainingFile() : aClass;
   }
 
-  private static void correctOldClassReferences(final PsiClass newClass, final PsiClass oldClass) {
-    final Collection<PsiReference> all = ReferencesSearch.search(oldClass,
+  private static void correctOldClassReferences(PsiClass newClass, PsiClass oldClass) {
+    Collection<PsiReference> all = ReferencesSearch.search(oldClass,
                                                                  new LocalSearchScope(newClass.getContainingFile())).findAll();
     for (PsiReference reference : all) {
-      final PsiElement element = reference.getElement();
-      final PsiElement parent = element.getParent();
+      PsiElement element = reference.getElement();
+      PsiElement parent = element.getParent();
       if (parent instanceof GrImportStatement && !((GrImportStatement)parent).isStatic()) {
         parent.delete();
       }
@@ -318,8 +318,8 @@ public class MoveGroovyClassHandler implements MoveClassHandler {
     }
   }
 
-  private static void correctSelfReferences(final PsiClass aClass, final PsiPackage newContainingPackage) {
-    final PsiPackage aPackage = JavaDirectoryService.getInstance().getPackage(aClass.getContainingFile()
+  private static void correctSelfReferences(PsiClass aClass, PsiPackage newContainingPackage) {
+    PsiPackage aPackage = JavaDirectoryService.getInstance().getPackage(aClass.getContainingFile()
                                                                                     .getContainingDirectory());
     if (aPackage == null) {
       return;
@@ -327,7 +327,7 @@ public class MoveGroovyClassHandler implements MoveClassHandler {
 
     for (PsiReference reference : ReferencesSearch.search(aClass, new LocalSearchScope(aClass)).findAll()) {
       if (reference instanceof GrCodeReferenceElement) {
-        final GrCodeReferenceElement qualifier = ((GrCodeReferenceElement)reference).getQualifier();
+        GrCodeReferenceElement qualifier = ((GrCodeReferenceElement)reference).getQualifier();
         if (qualifier != null) {
           qualifier.bindToElement(newContainingPackage);
         }

@@ -51,7 +51,7 @@ public class GroovyLoopStatementThatDoesntLoopInspection extends BaseInspection 
     private static class Visitor extends BaseInspectionVisitor {
         public void visitForStatement(GrForStatement forStatement) {
             super.visitForStatement(forStatement);
-            final GrStatement body = forStatement.getBody();
+            GrStatement body = forStatement.getBody();
             if (body == null) {
                 return;
             }
@@ -66,7 +66,7 @@ public class GroovyLoopStatementThatDoesntLoopInspection extends BaseInspection 
 
         public void visitWhileStatement(GrWhileStatement whileStatement) {
             super.visitWhileStatement(whileStatement);
-            final GrStatement body = whileStatement.getBody();
+            GrStatement body = whileStatement.getBody();
             if (body == null) {
                 return;
             }

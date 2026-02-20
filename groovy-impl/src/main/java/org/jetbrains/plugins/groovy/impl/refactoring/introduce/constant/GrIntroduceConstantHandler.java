@@ -68,7 +68,7 @@ public class GrIntroduceConstantHandler extends GrIntroduceFieldHandlerBase<GrIn
 
   @Override
   protected void checkVariable(@Nonnull GrVariable variable) throws GrRefactoringError {
-    final GrExpression initializer = variable.getInitializerGroovy();
+    GrExpression initializer = variable.getInitializerGroovy();
     if (initializer == null) {
       throw new GrRefactoringError(RefactoringBundle.message("variable.does.not.have.an.initializer",
                                                              variable.getName()));
@@ -108,7 +108,7 @@ public class GrIntroduceConstantHandler extends GrIntroduceFieldHandlerBase<GrIn
   protected GrAbstractInplaceIntroducer<GrIntroduceConstantSettings> getIntroducer(@Nonnull GrIntroduceContext
                                                                                      context,
                                                                                    @Nonnull OccurrencesChooser.ReplaceChoice choice) {
-    final Ref<GrIntroduceContext> contextRef = Ref.create(context);
+    Ref<GrIntroduceContext> contextRef = Ref.create(context);
 
     if (context.getStringPart() != null) {
       extractStringPart(contextRef);
@@ -149,7 +149,7 @@ public class GrIntroduceConstantHandler extends GrIntroduceFieldHandlerBase<GrIn
 
     @Override
     public void visitReferenceExpression(GrReferenceExpression referenceExpression) {
-      final PsiElement resolved = referenceExpression.resolve();
+      PsiElement resolved = referenceExpression.resolve();
       if (resolved instanceof PsiVariable) {
         if (!isStaticFinalField((PsiVariable)resolved)) {
           if (expr instanceof GrClosableBlock) {
@@ -165,7 +165,7 @@ public class GrIntroduceConstantHandler extends GrIntroduceFieldHandlerBase<GrIn
         }
       }
       else if (resolved instanceof PsiMethod && ((PsiMethod)resolved).getContainingClass() != null) {
-        final GrExpression qualifier = referenceExpression.getQualifierExpression();
+        GrExpression qualifier = referenceExpression.getQualifierExpression();
         if (qualifier == null || (qualifier instanceof GrReferenceExpression && ((GrReferenceExpression)
           qualifier).resolve() instanceof PsiClass)) {
           if (!((PsiMethod)resolved).hasModifierProperty(PsiModifier.STATIC)) {

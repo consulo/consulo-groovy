@@ -48,21 +48,21 @@ public class IndexedExpressionConversionIntention extends Intention {
         Editor editor
     ) throws IncorrectOperationException {
 
-        final GrIndexProperty arrayIndexExpression = (GrIndexProperty) element;
+        GrIndexProperty arrayIndexExpression = (GrIndexProperty) element;
 
-        final GrArgumentList argList = (GrArgumentList) arrayIndexExpression.getLastChild();
+        GrArgumentList argList = (GrArgumentList) arrayIndexExpression.getLastChild();
 
         assert argList != null;
-        final GrExpression[] arguments = argList.getExpressionArguments();
+        GrExpression[] arguments = argList.getExpressionArguments();
 
-        final PsiElement parent = element.getParent();
-        final GrExpression arrayExpression = arrayIndexExpression.getInvokedExpression();
+        PsiElement parent = element.getParent();
+        GrExpression arrayExpression = arrayIndexExpression.getInvokedExpression();
         if (!(parent instanceof GrAssignmentExpression)) {
             rewriteAsGetAt(arrayIndexExpression, arrayExpression, arguments[0]);
             return;
         }
-        final GrAssignmentExpression assignmentExpression = (GrAssignmentExpression) parent;
-        final GrExpression rhs = assignmentExpression.getRValue();
+        GrAssignmentExpression assignmentExpression = (GrAssignmentExpression) parent;
+        GrExpression rhs = assignmentExpression.getRValue();
         if (rhs.equals(element)) {
             rewriteAsGetAt(arrayIndexExpression, arrayExpression, arguments[0]);
         }

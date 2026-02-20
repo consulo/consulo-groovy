@@ -119,19 +119,19 @@ public class GdkMethodUtil {
   }
 
   public static boolean categoryIteration(GrClosableBlock place,
-                                          final PsiScopeProcessor processor,
+                                          PsiScopeProcessor processor,
                                           ResolveState state) {
-    final ClassHint classHint = processor.getHint(ClassHint.KEY);
+    ClassHint classHint = processor.getHint(ClassHint.KEY);
     if (classHint != null && !classHint.shouldProcess(ClassHint.ResolveKind.METHOD)) {
       return true;
     }
 
-    final GrMethodCall call = checkMethodCall(place, USE);
+    GrMethodCall call = checkMethodCall(place, USE);
     if (call == null) {
       return true;
     }
 
-    final GrClosableBlock[] closures = call.getClosureArguments();
+    GrClosableBlock[] closures = call.getClosureArguments();
     GrExpression[] args = call.getExpressionArguments();
     if (!(placeEqualsSingleClosureArg(place, closures) || placeEqualsLastArg(place, args))) {
       return true;
@@ -174,7 +174,7 @@ public class GdkMethodUtil {
                                              @Nonnull GrClosableBlock place) {
     for (GrExpression arg : args) {
       if (arg instanceof GrReferenceExpression) {
-        final PsiElement resolved = ((GrReferenceExpression)arg).resolve();
+        PsiElement resolved = ((GrReferenceExpression)arg).resolve();
         if (resolved instanceof PsiClass) {
           if (!processCategoryMethods(place, processor, state, (PsiClass)resolved)) {
             return false;
@@ -199,11 +199,11 @@ public class GdkMethodUtil {
    * @param categoryClass - category class to process
    * @return
    */
-  public static boolean processCategoryMethods(final PsiElement place,
+  public static boolean processCategoryMethods(PsiElement place,
                                                final PsiScopeProcessor processor,
-                                               @Nonnull final ResolveState state,
-                                               @Nonnull final PsiClass categoryClass) {
-    final PsiScopeProcessor delegate = new GrDelegatingScopeProcessorWithHints(processor, null,
+                                               @Nonnull ResolveState state,
+                                               @Nonnull PsiClass categoryClass) {
+    PsiScopeProcessor delegate = new GrDelegatingScopeProcessorWithHints(processor, null,
                                                                                ClassHint.RESOLVE_KINDS_METHOD) {
       @Override
       public boolean execute(@Nonnull PsiElement element, @Nonnull ResolveState delegateState) {
@@ -220,13 +220,13 @@ public class GdkMethodUtil {
 
   @Nullable
   private static GrMethodCall checkMethodCall(GrClosableBlock place, String methodName) {
-    final PsiElement context = place.getContext();
+    PsiElement context = place.getContext();
     GrMethodCall call = null;
     if (context instanceof GrMethodCall) {
       call = (GrMethodCall)context;
     }
     else if (context instanceof GrArgumentList) {
-      final PsiElement ccontext = context.getContext();
+      PsiElement ccontext = context.getContext();
       if (ccontext instanceof GrMethodCall) {
         call = (GrMethodCall)ccontext;
       }
@@ -234,7 +234,7 @@ public class GdkMethodUtil {
     if (call == null) {
       return null;
     }
-    final GrExpression invoked = call.getInvokedExpression();
+    GrExpression invoked = call.getInvokedExpression();
     if (!(invoked instanceof GrReferenceExpression) || !methodName.equals(((GrReferenceExpression)invoked)
                                                                             .getReferenceName())) {
       return null;
@@ -247,12 +247,12 @@ public class GdkMethodUtil {
    */
   public static boolean isInWithContext(PsiElement resolveContext) {
     if (resolveContext instanceof GrExpression) {
-      final PsiElement parent = resolveContext.getParent();
+      PsiElement parent = resolveContext.getParent();
       if (parent instanceof GrReferenceExpression && ((GrReferenceExpression)parent).getQualifier() ==
         resolveContext) {
-        final PsiElement pparent = parent.getParent();
+        PsiElement pparent = parent.getParent();
         if (pparent instanceof GrMethodCall) {
-          final PsiMethod method = ((GrMethodCall)pparent).resolveMethod();
+          PsiMethod method = ((GrMethodCall)pparent).resolveMethod();
           if (method instanceof GrGdkMethod && isWithName(method.getName())) {
             return true;
           }
@@ -277,7 +277,7 @@ public class GdkMethodUtil {
   }
 
   public static boolean processMixinToMetaclass(GrStatementOwner run,
-                                                final PsiScopeProcessor processor,
+                                                PsiScopeProcessor processor,
                                                 ResolveState state,
                                                 PsiElement lastParent,
                                                 PsiElement place) {
@@ -287,14 +287,14 @@ public class GdkMethodUtil {
         break;
       }
 
-      final Trinity<PsiClassType, GrReferenceExpression, PsiClass> result = getMixinTypes(statement);
+      Trinity<PsiClassType, GrReferenceExpression, PsiClass> result = getMixinTypes(statement);
 
       if (result != null) {
-        final PsiClassType subjectType = result.first;
-        final GrReferenceExpression qualifier = result.second;
-        final PsiClass mixin = result.third;
+        PsiClassType subjectType = result.first;
+        GrReferenceExpression qualifier = result.second;
+        PsiClass mixin = result.third;
 
-        final DelegatingScopeProcessor delegate = new MixinMemberContributor.MixinProcessor(processor,
+        DelegatingScopeProcessor delegate = new MixinMemberContributor.MixinProcessor(processor,
                                                                                             subjectType, qualifier);
         mixin.processDeclarations(delegate, state, null, place);
       }
@@ -302,11 +302,11 @@ public class GdkMethodUtil {
         Trinity<PsiClassType, GrReferenceExpression, List<GrMethod>> closureResult = getClosureMixins
           (statement);
         if (closureResult != null) {
-          final PsiClassType subjectType = closureResult.first;
-          final GrReferenceExpression qualifier = closureResult.second;
-          final List<GrMethod> methods = closureResult.third;
+          PsiClassType subjectType = closureResult.first;
+          GrReferenceExpression qualifier = closureResult.second;
+          List<GrMethod> methods = closureResult.third;
 
-          final DelegatingScopeProcessor delegate = new MixinMemberContributor.MixinProcessor(processor,
+          DelegatingScopeProcessor delegate = new MixinMemberContributor.MixinProcessor(processor,
                                                                                               subjectType, qualifier);
           for (GrMethod method : methods) {
             ResolveUtil.processElement(delegate, method, state);
@@ -323,13 +323,13 @@ public class GdkMethodUtil {
                                        @Nonnull String name,
                                        @Nonnull GrAssignmentExpression statement,
                                        @Nonnull PsiClass closure) {
-    final GrLightMethodBuilder builder = new GrLightMethodBuilder(statement.getManager(), name);
+    GrLightMethodBuilder builder = new GrLightMethodBuilder(statement.getManager(), name);
 
     GrClosureParameter[] parameters = signature.getParameters();
     for (int i = 0; i < parameters.length; i++) {
       GrClosureParameter parameter = parameters[i];
-      final String parameterName = parameter.getName() != null ? parameter.getName() : "p" + i;
-      final PsiType type = parameter.getType() != null ? parameter.getType() : TypesUtil.getJavaLangObject
+      String parameterName = parameter.getName() != null ? parameter.getName() : "p" + i;
+      PsiType type = parameter.getType() != null ? parameter.getType() : TypesUtil.getJavaLangObject
         (statement);
       builder.addParameter(parameterName, type, parameter.isOptional());
     }
@@ -358,7 +358,7 @@ public class GdkMethodUtil {
           return Result.create(null, PsiModificationTracker.MODIFICATION_COUNT);
         }
 
-        final Pair<GrSignature, String> signatures = getTypeToMix(assignment);
+        Pair<GrSignature, String> signatures = getTypeToMix(assignment);
         if (signatures == null) {
           return Result.create(null, PsiModificationTracker.MODIFICATION_COUNT);
         }
@@ -389,14 +389,14 @@ public class GdkMethodUtil {
 
   @Nullable
   private static Pair<PsiClassType, GrReferenceExpression> getTypeToMixIn(GrAssignmentExpression assignment) {
-    final GrExpression lvalue = assignment.getLValue();
+    GrExpression lvalue = assignment.getLValue();
     if (lvalue instanceof GrReferenceExpression) {
-      final GrExpression metaClassRef = ((GrReferenceExpression)lvalue).getQualifier();
+      GrExpression metaClassRef = ((GrReferenceExpression)lvalue).getQualifier();
       if (metaClassRef instanceof GrReferenceExpression && (GrImportUtil.acceptName((GrReferenceElement)
                                                                                       metaClassRef, "metaClass") || GrImportUtil.acceptName(
         (GrReferenceElement)metaClassRef,
         "getMetaClass"))) {
-        final PsiElement resolved = ((GrReferenceElement)metaClassRef).resolve();
+        PsiElement resolved = ((GrReferenceElement)metaClassRef).resolve();
         if (resolved instanceof PsiMethod && isMetaClassMethod((PsiMethod)resolved)) {
           return getPsiClassFromReference(((GrReferenceExpression)metaClassRef).getQualifier());
         }
@@ -412,13 +412,13 @@ public class GdkMethodUtil {
       return null;
     }
 
-    final PsiType type = mixinRef.getType();
+    PsiType type = mixinRef.getType();
     if (type instanceof GrClosureType) {
-      final GrSignature signature = ((GrClosureType)type).getSignature();
+      GrSignature signature = ((GrClosureType)type).getSignature();
 
-      final GrExpression lValue = assignment.getLValue();
+      GrExpression lValue = assignment.getLValue();
       assert lValue instanceof GrReferenceExpression;
-      final String name = ((GrReferenceExpression)lValue).getReferenceName();
+      String name = ((GrReferenceExpression)lValue).getReferenceName();
 
       return Pair.create(signature, name);
     }
@@ -586,7 +586,7 @@ public class GdkMethodUtil {
       return false;
     }
 
-    final PsiParameter[] parameters = method.getParameterList().getParameters();
+    PsiParameter[] parameters = method.getParameterList().getParameters();
     if (parameters.length == 0) {
       return false;
     }
@@ -608,8 +608,8 @@ public class GdkMethodUtil {
       ((PsiClassType)selfType).rawType().equalsToText(CommonClassNames.JAVA_LANG_CLASS) &&
       place instanceof GrReferenceExpression &&
       ((GrReferenceExpression)place).resolve() instanceof PsiClass) {   // ClassType.categoryMethod()  where categoryMethod(Class<> cl, ...)
-      final GlobalSearchScope scope = method.getResolveScope();
-      final Project project = method.getProject();
+      GlobalSearchScope scope = method.getResolveScope();
+      Project project = method.getProject();
       return TypesUtil.isAssignableByMethodCallConversion(selfType, TypesUtil.createJavaLangClassType
         (qualifierType, project, scope), method);
     }
@@ -631,12 +631,12 @@ public class GdkMethodUtil {
           @Nullable
           @Override
           public PsiClassType get() {
-            final PsiModifierList modifierList = aClass.getModifierList();
+            PsiModifierList modifierList = aClass.getModifierList();
             if (modifierList == null) {
               return null;
             }
 
-            final PsiAnnotation annotation = modifierList.findAnnotation(GroovyCommonClassNames
+            PsiAnnotation annotation = modifierList.findAnnotation(GroovyCommonClassNames
                                                                            .GROOVY_LANG_CATEGORY);
             if (annotation == null) {
               return null;
@@ -654,7 +654,7 @@ public class GdkMethodUtil {
               return null;
             }
 
-            final PsiElement resolved = ((GrReferenceExpression)value).resolve();
+            PsiElement resolved = ((GrReferenceExpression)value).resolve();
             if (!(resolved instanceof PsiClass)) {
               return null;
             }
@@ -682,7 +682,7 @@ public class GdkMethodUtil {
       if (element instanceof GrGdkMethod) {
         element = ((GrGdkMethod)element).getStaticMethod();
       }
-      final PsiClass containingClass = ((PsiMethod)element).getContainingClass();
+      PsiClass containingClass = ((PsiMethod)element).getContainingClass();
       if (containingClass != null) {
         if (GroovyCommonClassNames.DEFAULT_GROOVY_METHODS.equals(containingClass.getQualifiedName())) {
           return true;

@@ -69,8 +69,8 @@ public class GroovyCompiler extends GroovyCompilerBase {
   }
 
   @Override
-  protected void compileFiles(final CompileContext context,
-                              final Module module,
+  protected void compileFiles(CompileContext context,
+                              Module module,
                               List<VirtualFile> toCompile,
                               OutputSink sink,
                               boolean tests) {
@@ -86,7 +86,7 @@ public class GroovyCompiler extends GroovyCompilerBase {
       return true;
     }
 
-    final CompilerManager compilerManager = CompilerManager.getInstance(myProject);
+    CompilerManager compilerManager = CompilerManager.getInstance(myProject);
     Set<Module> modules = new HashSet<>();
     for (VirtualFile file : files) {
       if (!StringUtil.equal(file.getExtension(),
@@ -105,7 +105,7 @@ public class GroovyCompiler extends GroovyCompilerBase {
 
     Set<Module> nojdkModules = new HashSet<>();
     for (Module module : modules) {
-      final Sdk sdk = ModuleUtilCore.getSdk(module, JavaModuleExtension.class);
+      Sdk sdk = ModuleUtilCore.getSdk(module, JavaModuleExtension.class);
       if (sdk == null) {
         nojdkModules.add(module);
         continue;
@@ -125,7 +125,7 @@ public class GroovyCompiler extends GroovyCompilerBase {
     }
 
     if (!nojdkModules.isEmpty()) {
-      final Module[] noJdkArray = nojdkModules.toArray(new Module[nojdkModules.size()]);
+      Module[] noJdkArray = nojdkModules.toArray(new Module[nojdkModules.size()]);
       if (noJdkArray.length == 1) {
         Messages.showErrorDialog(myProject,
                                  GroovyBundle.message("cannot.compile.groovy.files.no.sdk", noJdkArray[0].getName()),
@@ -146,9 +146,9 @@ public class GroovyCompiler extends GroovyCompilerBase {
       return false;
     }
 
-    final GroovyCompilerConfiguration configuration = GroovyCompilerConfiguration.getInstance(myProject);
+    GroovyCompilerConfiguration configuration = GroovyCompilerConfiguration.getInstance(myProject);
     if (!configuration.transformsOk && needTransformCopying(compileScope)) {
-      final int result = Messages.showYesNoDialog(myProject,
+      int result = Messages.showYesNoDialog(myProject,
                                                   "You seem to have global Groovy AST transformations defined in your project,\n" + "but they won't be applied to your code because " +
                                                     "they are not marked as compiler resources.\n" + "Do you want to add them to compiler resource list?\n" + "(you can do it yourself later in Settings | Compiler | Resource " +
                                                     "patterns)",
@@ -172,7 +172,7 @@ public class GroovyCompiler extends GroovyCompilerBase {
   }
 
   private boolean needTransformCopying(CompileScope compileScope) {
-    final ProjectFileIndex index = ProjectRootManager.getInstance(myProject).getFileIndex();
+    ProjectFileIndex index = ProjectRootManager.getInstance(myProject).getFileIndex();
     for (VirtualFile file : FilenameIndex.getVirtualFilesByName(myProject,
                                                                 AST_TRANSFORM_FILE_NAME,
                                                                 GlobalSearchScope.projectScope(myProject))) {

@@ -110,8 +110,8 @@ public class GrSetStrongTypeIntention extends Intention {
                     }
                 }
                 if (variable instanceof GrParameter) {
-                    final PsiParameter parameter = (PsiParameter) variable;
-                    final PsiType type = getClosureParameterType(parameter);
+                    PsiParameter parameter = (PsiParameter) variable;
+                    PsiType type = getClosureParameterType(parameter);
                     if (type != null) {
                         types.add(SupertypeConstraint.create(type));
                     }
@@ -130,8 +130,8 @@ public class GrSetStrongTypeIntention extends Intention {
         builder.replaceElement(replaceElement, chooseTypeExpression);
 
 
-        final PsiElement afterPostprocess = CodeInsightUtilCore.forcePsiPostprocessAndRestoreElement(elementToBuildTemplate);
-        final Template template = builder.buildTemplate();
+        PsiElement afterPostprocess = CodeInsightUtilCore.forcePsiPostprocessAndRestoreElement(elementToBuildTemplate);
+        Template template = builder.buildTemplate();
         TextRange range = afterPostprocess.getTextRange();
         Document document = editor.getDocument();
         document.deleteString(range.getStartOffset(), range.getEndOffset());
@@ -142,8 +142,8 @@ public class GrSetStrongTypeIntention extends Intention {
 
     @Nullable
     private static PsiType getClosureParameterType(@Nonnull PsiParameter parameter) {
-        final PsiElement scope = parameter.getDeclarationScope();
-        final PsiType type;
+        PsiElement scope = parameter.getDeclarationScope();
+        PsiType type;
         if (scope instanceof GrClosableBlock) {
             type =
                 ClosureParameterEnhancer.inferType(
@@ -165,7 +165,7 @@ public class GrSetStrongTypeIntention extends Intention {
             return PsiUtil.findModifierInList(modifierList, GrModifier.DEF);
         }
         else {
-            final PsiClassType typeToUse = TypesUtil.createType("Abc", element);
+            PsiClassType typeToUse = TypesUtil.createType("Abc", element);
             if (elementToBuildTemplate instanceof GrVariableDeclaration) {
                 ((GrVariableDeclaration) elementToBuildTemplate).setType(typeToUse);
             }
@@ -232,14 +232,14 @@ public class GrSetStrongTypeIntention extends Intention {
                     }
                 }
                 else if (pparent instanceof GrForInClause) {
-                    final GrVariable variable = ((GrForInClause) pparent).getDeclaredVariable();
+                    GrVariable variable = ((GrForInClause) pparent).getDeclaredVariable();
                     return variable != null && variable.getTypeElementGroovy() == null && PsiUtil.extractIteratedType((GrForInClause) pparent) != null;
                 }
                 else if (parent instanceof GrParameter && pparent instanceof GrParameterList) {
                     return ((GrParameter) parent).getTypeElementGroovy() == null && getClosureParameterType((PsiParameter) parent) != null;
                 }
                 else {
-                    final GrVariable variable = (GrVariable) parent;
+                    GrVariable variable = (GrVariable) parent;
                     return variable.getTypeElementGroovy() == null && isVarDeclaredWithInitializer(variable);
                 }
 

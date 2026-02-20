@@ -61,23 +61,23 @@ public class AddReturnTypeFix implements IntentionAction {
     }
 
     @Nullable
-    private static GrMethod findMethod(PsiFile file, final int offset) {
-        final PsiElement at = file.findElementAt(offset);
+    private static GrMethod findMethod(PsiFile file, int offset) {
+        PsiElement at = file.findElementAt(offset);
         if (at == null) {
             return null;
         }
 
         if (at.getParent() instanceof GrReturnStatement) {
-            final GrReturnStatement returnStatement = ((GrReturnStatement) at.getParent());
-            final PsiElement word = returnStatement.getReturnWord();
+            GrReturnStatement returnStatement = ((GrReturnStatement) at.getParent());
+            PsiElement word = returnStatement.getReturnWord();
 
             if (!word.getTextRange().contains(offset)) {
                 return null;
             }
 
-            final GroovyPsiElement returnOwner = PsiTreeUtil.getParentOfType(returnStatement, GrClosableBlock.class, GrMethod.class);
+            GroovyPsiElement returnOwner = PsiTreeUtil.getParentOfType(returnStatement, GrClosableBlock.class, GrMethod.class);
             if (returnOwner instanceof GrMethod) {
-                final GrTypeElement returnTypeElement = ((GrMethod) returnOwner).getReturnTypeElementGroovy();
+                GrTypeElement returnTypeElement = ((GrMethod) returnOwner).getReturnTypeElementGroovy();
                 if (returnTypeElement == null) {
                     return (GrMethod) returnOwner;
                 }
@@ -86,7 +86,7 @@ public class AddReturnTypeFix implements IntentionAction {
             return null;
         }
 
-        final GrMethod method = PsiTreeUtil.getParentOfType(at, GrMethod.class, false, GrTypeDefinition.class, GrClosableBlock.class);
+        GrMethod method = PsiTreeUtil.getParentOfType(at, GrMethod.class, false, GrTypeDefinition.class, GrClosableBlock.class);
         if (method != null && GrHighlightUtil.getMethodHeaderTextRange(method).contains(offset)) {
             if (method.getReturnTypeElementGroovy() == null) {
                 return method;
@@ -98,7 +98,7 @@ public class AddReturnTypeFix implements IntentionAction {
 
     @Override
     public void invoke(@Nonnull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
-        final GrMethod method = findMethod(file, editor.getCaretModel().getOffset());
+        GrMethod method = findMethod(file, editor.getCaretModel().getOffset());
         if (method == null) {
             return;
         }

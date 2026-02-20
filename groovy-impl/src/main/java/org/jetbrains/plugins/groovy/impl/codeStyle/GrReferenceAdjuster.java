@@ -75,7 +75,7 @@ public class GrReferenceAdjuster implements ReferenceAdjuster {
                          boolean incompleteCode,
                          boolean useFqInJavadoc,
                          boolean useFqInCode) {
-    final TextRange range = element.getTextRange();
+    TextRange range = element.getTextRange();
     process(element.getPsi(), range.getStartOffset(), range.getEndOffset(), addImports, incompleteCode,
             useFqInJavadoc, useFqInCode);
     return element;
@@ -124,7 +124,7 @@ public class GrReferenceAdjuster implements ReferenceAdjuster {
 
     PsiElement child = element.getFirstChild();
     while (child != null) {
-      final TextRange range = child.getTextRange();
+      TextRange range = child.getTextRange();
       if (start < range.getEndOffset() && range.getStartOffset() < end) {
         result |= process(child, start, end, addImports, incomplete, useFqInJavadoc, useFqInCode);
       }
@@ -137,7 +137,7 @@ public class GrReferenceAdjuster implements ReferenceAdjuster {
     GroovyCodeStyleSettingsFacade facade = GroovyCodeStyleSettingsFacade.getInstance(ref.getProject());
     boolean result = shortenReferenceInner(ref, true, false, facade.useFqClassNamesInJavadoc(),
                                            facade.useFqClassNames());
-    final TextRange range = ref.getTextRange();
+    TextRange range = ref.getTextRange();
     result |= process(ref, range.getStartOffset(), range.getEndOffset(), true, false,
                       facade.useFqClassNamesInJavadoc(), facade.useFqClassNames());
     return result;
@@ -150,13 +150,13 @@ public class GrReferenceAdjuster implements ReferenceAdjuster {
                                                                               boolean useFqInJavadoc,
                                                                               boolean useFqInCode) {
 
-    final Qualifier qualifier = ref.getQualifier();
+    Qualifier qualifier = ref.getQualifier();
     if (qualifier == null || PsiUtil.isSuperReference(qualifier) || cannotShortenInContext(ref)) {
       return false;
     }
 
     if (ref instanceof GrReferenceExpression) {
-      final GrTypeArgumentList typeArgs = ((GrReferenceExpression)ref).getTypeArgumentList();
+      GrTypeArgumentList typeArgs = ((GrReferenceExpression)ref).getTypeArgumentList();
       if (typeArgs != null && typeArgs.getTypeArgumentElements().length > 0) {
         return false;
       }
@@ -166,7 +166,7 @@ public class GrReferenceAdjuster implements ReferenceAdjuster {
       return false;
     }
 
-    final PsiElement resolved = resolveRef(ref, incomplete);
+    PsiElement resolved = resolveRef(ref, incomplete);
     if (resolved == null) {
       return false;
     }
@@ -182,13 +182,13 @@ public class GrReferenceAdjuster implements ReferenceAdjuster {
                                                                                     GrQualifiedReference<Qualifier> ref,
                                                                                   boolean addImports,
                                                                                   @Nonnull PsiElement resolved) {
-    final GrQualifiedReference<Qualifier> copy = getCopy(ref);
+    GrQualifiedReference<Qualifier> copy = getCopy(ref);
     if (copy == null) {
       return false;
     }
     copy.setQualifier(null);
 
-    final PsiElement resolvedCopy = copy.resolve();
+    PsiElement resolvedCopy = copy.resolve();
     if (ref.getManager().areElementsEquivalent(resolved, resolvedCopy)) {
       return true;
     }
@@ -198,11 +198,11 @@ public class GrReferenceAdjuster implements ReferenceAdjuster {
     }
 
     if (resolved instanceof PsiClass) {
-      final PsiClass clazz = (PsiClass)resolved;
-      final String qName = clazz.getQualifiedName();
+      PsiClass clazz = (PsiClass)resolved;
+      String qName = clazz.getQualifiedName();
       if (qName != null && addImports && checkIsInnerClass(clazz, ref) && mayInsertImport(ref)) {
-        final GroovyFileBase file = (GroovyFileBase)ref.getContainingFile();
-        final GrImportStatement added = file.addImportForClass(clazz);
+        GroovyFileBase file = (GroovyFileBase)ref.getContainingFile();
+        GrImportStatement added = file.addImportForClass(clazz);
         if (added != null) {
           if (copy.isReferenceTo(resolved)) {
             return true;
@@ -234,7 +234,7 @@ public class GrReferenceAdjuster implements ReferenceAdjuster {
 
   private static <Qualifier extends PsiElement> boolean checkIsInnerClass(@Nonnull PsiClass resolved,
                                                                           GrQualifiedReference<Qualifier> ref) {
-    final PsiClass containingClass = resolved.getContainingClass();
+    PsiClass containingClass = resolved.getContainingClass();
     return containingClass == null ||
       PsiTreeUtil.isAncestor(containingClass, ref, true) ||
       GroovyCodeStyleSettingsFacade.getInstance(containingClass.getProject()).insertInnerClassImports();
@@ -249,7 +249,7 @@ public class GrReferenceAdjuster implements ReferenceAdjuster {
 
     PsiResolveHelper helper = JavaPsiFacade.getInstance(ref.getProject()).getResolveHelper();
     if (ref instanceof GrReferenceElement) {
-      final String classNameText = ((GrReferenceElement)ref).getClassNameText();
+      String classNameText = ((GrReferenceElement)ref).getClassNameText();
       return helper.resolveReferencedClass(classNameText, ref);
     }
     return null;
@@ -261,7 +261,7 @@ public class GrReferenceAdjuster implements ReferenceAdjuster {
   private static <Qualifier extends PsiElement> GrQualifiedReference<Qualifier> getCopy(@Nonnull
                                                                                           GrQualifiedReference<Qualifier> ref) {
     if (ref.getParent() instanceof GrMethodCall) {
-      final GrMethodCall copy = ((GrMethodCall)ref.getParent().copy());
+      GrMethodCall copy = ((GrMethodCall)ref.getParent().copy());
       return (GrQualifiedReference<Qualifier>)copy.getInvokedExpression();
     }
     return (GrQualifiedReference<Qualifier>)ref.copy();
@@ -273,7 +273,7 @@ public class GrReferenceAdjuster implements ReferenceAdjuster {
                                                                                  boolean useFqInCode) {
 
     if (ref instanceof GrReferenceElementImpl && ((GrReferenceElementImpl)ref).isFullyQualified()) {
-      final GrDocComment doc = PsiTreeUtil.getParentOfType(ref, GrDocComment.class);
+      GrDocComment doc = PsiTreeUtil.getParentOfType(ref, GrDocComment.class);
       if (doc != null) {
         if (useFqInJavadoc) {
           return false;
@@ -286,7 +286,7 @@ public class GrReferenceAdjuster implements ReferenceAdjuster {
       }
     }
 
-    final Qualifier qualifier = ref.getQualifier();
+    Qualifier qualifier = ref.getQualifier();
 
     if (qualifier instanceof GrCodeReferenceElement) {
       return true;
@@ -298,7 +298,7 @@ public class GrReferenceAdjuster implements ReferenceAdjuster {
       }
       if (qualifier instanceof GrReferenceExpression && PsiImplUtil.seemsToBeQualifiedClassName((GrExpression)
                                                                                                   qualifier)) {
-        final PsiElement resolved = ((GrReferenceExpression)qualifier).resolve();
+        PsiElement resolved = ((GrReferenceExpression)qualifier).resolve();
         if (resolved instanceof PsiClass || resolved instanceof PsiPackage) {
           return true;
         }

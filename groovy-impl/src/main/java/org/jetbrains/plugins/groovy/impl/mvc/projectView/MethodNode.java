@@ -31,14 +31,14 @@ import java.util.Collection;
  * @author Dmitry Krasilschikov
  */
 public class MethodNode extends AbstractMvcPsiNodeDescriptor {
-  public MethodNode(@Nonnull final Module module,
-                   @Nonnull final GrMethod method,
-                   @Nullable final ViewSettings viewSettings) {
+  public MethodNode(@Nonnull Module module,
+                   @Nonnull GrMethod method,
+                   @Nullable ViewSettings viewSettings) {
     super(module, viewSettings, method, METHOD);
   }
 
   @Override
-  protected String getTestPresentationImpl( @Nonnull final PsiElement psiElement) {
+  protected String getTestPresentationImpl( @Nonnull PsiElement psiElement) {
     return "GrMethod: " + ((GrMethod)psiElement).getName();
   }
 

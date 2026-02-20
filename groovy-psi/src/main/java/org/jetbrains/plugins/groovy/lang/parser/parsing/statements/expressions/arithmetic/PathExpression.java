@@ -200,22 +200,22 @@ public class PathExpression {
       return GroovyElementTypes.REFERENCE_EXPRESSION;
     }
 
-    final IElementType tokenType = builder.getTokenType();
+    IElementType tokenType = builder.getTokenType();
     if (tokenType == GroovyTokenTypes.mGSTRING_BEGIN) {
-      final boolean result = CompoundStringExpression.parse(builder, parser, true, GroovyTokenTypes.mGSTRING_BEGIN,
+      boolean result = CompoundStringExpression.parse(builder, parser, true, GroovyTokenTypes.mGSTRING_BEGIN,
                                                             GroovyTokenTypes.mGSTRING_CONTENT, GroovyTokenTypes.mGSTRING_END, null,
                                                             GroovyElementTypes.GSTRING, GroovyBundle.message("string.end.expected"));
       return result ? GroovyElementTypes.PATH_PROPERTY_REFERENCE : GroovyElementTypes.REFERENCE_EXPRESSION;
     }
     if (tokenType == GroovyTokenTypes.mREGEX_BEGIN) {
-      final boolean result = CompoundStringExpression.parse(builder, parser, true,
+      boolean result = CompoundStringExpression.parse(builder, parser, true,
                                                             GroovyTokenTypes.mREGEX_BEGIN, GroovyTokenTypes.mREGEX_CONTENT,
                                                             GroovyTokenTypes.mREGEX_END, GroovyTokenTypes.mREGEX_LITERAL,
                                                             GroovyElementTypes.REGEX, GroovyBundle.message("regex.end.expected"));
       return result ? GroovyElementTypes.PATH_PROPERTY_REFERENCE : GroovyElementTypes.REFERENCE_EXPRESSION;
     }
     if (tokenType == GroovyTokenTypes.mDOLLAR_SLASH_REGEX_BEGIN) {
-      final boolean result = CompoundStringExpression.parse(builder, parser, true,
+      boolean result = CompoundStringExpression.parse(builder, parser, true,
                                                             GroovyTokenTypes.mDOLLAR_SLASH_REGEX_BEGIN,
                                                             GroovyTokenTypes.mDOLLAR_SLASH_REGEX_CONTENT,
                                                             GroovyTokenTypes.mDOLLAR_SLASH_REGEX_END,

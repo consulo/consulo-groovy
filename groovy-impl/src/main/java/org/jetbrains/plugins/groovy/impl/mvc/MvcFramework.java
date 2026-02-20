@@ -128,7 +128,7 @@ public abstract class MvcFramework {
   public abstract String getApplicationDirectoryName();
 
   public void syncSdkAndLibrariesInPluginsModule(@Nonnull Module module) {
-    final Module pluginsModule = findCommonPluginsModule(module);
+    Module pluginsModule = findCommonPluginsModule(module);
     if (pluginsModule != null) {
       MvcModuleStructureUtil.syncAuxModuleSdk(module, pluginsModule, this);
     }
@@ -160,7 +160,7 @@ public abstract class MvcFramework {
                                                     projectStructureSelector -> projectStructureSelector.selectOrderEntry(module, null));
       }
       module.putUserData(CREATE_APP_STRUCTURE, null);
-      final GeneralCommandLine commandLine = getCreationCommandLine(module);
+      GeneralCommandLine commandLine = getCreationCommandLine(module);
       if (commandLine == null) {
         return;
       }
@@ -188,7 +188,7 @@ public abstract class MvcFramework {
   @Nullable
   protected GeneralCommandLine getCreationCommandLine(Module module) {
     String message = "Create default " + getDisplayName() + " directory structure in module '" + module.getName() + "'?";
-    final int result = Messages.showDialog(module.getProject(), message, "Create " + getDisplayName() + " application",
+    int result = Messages.showDialog(module.getProject(), message, "Create " + getDisplayName() + " application",
                                            new String[]{
                                              "Run 'create-&app'",
                                              "Run 'create-&plugin'",
@@ -201,7 +201,7 @@ public abstract class MvcFramework {
     return createCommandAndShowErrors(null, module, true, new MvcCommand(result == 0 ? "create-app" : "create-plugin"));
   }
 
-  public abstract void updateProjectStructure(@Nonnull final Module module);
+  public abstract void updateProjectStructure(@Nonnull Module module);
 
   public abstract void ensureRunConfigurationExists(@Nonnull Module module);
 
@@ -274,7 +274,7 @@ public abstract class MvcFramework {
   public abstract String getUserLibraryName();
 
   protected List<File> getImplicitClasspathRoots(@Nonnull Module module) {
-    final List<File> toExclude = new ArrayList<File>();
+    List<File> toExclude = new ArrayList<File>();
 
     VirtualFile sdkRoot = getSdkRoot(module);
     if (sdkRoot != null) {
@@ -282,7 +282,7 @@ public abstract class MvcFramework {
     }
 
     ContainerUtil.addIfNotNull(toExclude, getCommonPluginsDir(module));
-    final VirtualFile appRoot = findAppRoot(module);
+    VirtualFile appRoot = findAppRoot(module);
     if (appRoot != null) {
       VirtualFile pluginDir = appRoot.findChild(MvcModuleStructureUtil.PLUGINS_DIRECTORY);
       if (pluginDir != null) {
@@ -296,7 +296,7 @@ public abstract class MvcFramework {
       }
     }
 
-    final Library library = MvcModuleStructureUtil.findUserLibrary(module, getUserLibraryName());
+    Library library = MvcModuleStructureUtil.findUserLibrary(module, getUserLibraryName());
     if (library != null) {
       for (VirtualFile file : library.getFiles(BinariesOrderRootType.getInstance())) {
         toExclude.add(VfsUtil.virtualToIoFile(VirtualFilePathUtil.getLocalFile(file)));
@@ -306,7 +306,7 @@ public abstract class MvcFramework {
   }
 
   private PathsList removeFrameworkStuff(Module module, List<VirtualFile> rootFiles) {
-    final List<File> toExclude = getImplicitClasspathRoots(module);
+    List<File> toExclude = getImplicitClasspathRoots(module);
     if (LOG.isDebugEnabled()) {
       LOG.debug("Before removing framework stuff: " + rootFiles);
       LOG.debug("Implicit roots:" + toExclude);
@@ -315,7 +315,7 @@ public abstract class MvcFramework {
     PathsList scriptClassPath = new PathsList();
     eachRoot:
     for (VirtualFile file : rootFiles) {
-      for (final File excluded : toExclude) {
+      for (File excluded : toExclude) {
         if (VfsUtil.isAncestor(excluded, VfsUtil.virtualToIoFile(file), false)) {
           continue eachRoot;
         }
@@ -326,13 +326,13 @@ public abstract class MvcFramework {
   }
 
   public PathsList getApplicationClassPath(Module module) {
-    final List<VirtualFile> classPath = OrderEnumerator.orderEntries(module).recursively().withoutSdk().getPathsList().getVirtualFiles();
+    List<VirtualFile> classPath = OrderEnumerator.orderEntries(module).recursively().withoutSdk().getPathsList().getVirtualFiles();
 
     retainOnlyJarsAndDirectories(classPath);
 
     removeModuleOutput(module, classPath);
 
-    final Module pluginsModule = findCommonPluginsModule(module);
+    Module pluginsModule = findCommonPluginsModule(module);
     if (pluginsModule != null) {
       removeModuleOutput(pluginsModule, classPath);
     }
@@ -345,9 +345,9 @@ public abstract class MvcFramework {
   private static void retainOnlyJarsAndDirectories(List<VirtualFile> woSdk) {
     for (Iterator<VirtualFile> iterator = woSdk.iterator(); iterator.hasNext(); ) {
       VirtualFile file = iterator.next();
-      final VirtualFile local = ArchiveVfsUtil.getVirtualFileForJar(file);
-      final boolean dir = file.isDirectory();
-      final String name = file.getName();
+      VirtualFile local = ArchiveVfsUtil.getVirtualFileForJar(file);
+      boolean dir = file.isDirectory();
+      String name = file.getName();
       if (LOG.isDebugEnabled()) {
         LOG.debug("Considering: " + file.getPath() + "; local=" + local + "; dir=" + dir + "; name=" + name);
       }
@@ -377,17 +377,17 @@ public abstract class MvcFramework {
                                                          @Nonnull MvcCommand command) throws ExecutionException;
 
   protected static void ensureRunConfigurationExists(Module module, ConfigurationType configurationType, String name) {
-    final RunManager runManager = RunManager.getInstance(module.getProject());
-    for (final RunConfiguration runConfiguration : runManager.getConfigurations(configurationType)) {
+    RunManager runManager = RunManager.getInstance(module.getProject());
+    for (RunConfiguration runConfiguration : runManager.getConfigurations(configurationType)) {
       if (runConfiguration instanceof MvcRunConfiguration && ((MvcRunConfiguration)runConfiguration).getModule() == module) {
         return;
       }
     }
 
-    final ConfigurationFactory factory = configurationType.getConfigurationFactories()[0];
-    final RunnerAndConfigurationSettings runSettings = runManager.createRunConfiguration(name,
+    ConfigurationFactory factory = configurationType.getConfigurationFactories()[0];
+    RunnerAndConfigurationSettings runSettings = runManager.createRunConfiguration(name,
                                                                                          factory);
-    final MvcRunConfiguration configuration = (MvcRunConfiguration)runSettings.getConfiguration();
+    MvcRunConfiguration configuration = (MvcRunConfiguration)runSettings.getConfiguration();
     configuration.setModule(module);
     runManager.addConfiguration(runSettings, false);
     runManager.setSelectedConfiguration(runSettings);
@@ -425,7 +425,7 @@ public abstract class MvcFramework {
   @Nullable
   public GeneralCommandLine createCommandAndShowErrors(@Nullable String vmOptions,
                                                        @Nonnull Module module,
-                                                       final boolean forCreation,
+                                                       boolean forCreation,
                                                        @Nonnull MvcCommand command) {
     try {
       return createCommand(module, vmOptions, forCreation, command);
@@ -441,18 +441,18 @@ public abstract class MvcFramework {
                                           @Nullable String jvmParams,
                                           boolean forCreation,
                                           @Nonnull MvcCommand command) throws ExecutionException {
-    final OwnJavaParameters params = createJavaParameters(module, forCreation, false, true, jvmParams, command);
+    OwnJavaParameters params = createJavaParameters(module, forCreation, false, true, jvmParams, command);
     addJavaHome(params, module);
 
-    final GeneralCommandLine commandLine = createCommandLine(params);
+    GeneralCommandLine commandLine = createCommandLine(params);
 
-    final VirtualFile griffonHome = getSdkRoot(module);
+    VirtualFile griffonHome = getSdkRoot(module);
     if (griffonHome != null) {
       commandLine.getEnvironment().put(getSdkHomePropertyName(), FileUtil.toSystemDependentName(griffonHome.getPath()));
     }
 
-    final VirtualFile root = findAppRoot(module);
-    final File ioRoot =
+    VirtualFile root = findAppRoot(module);
+    File ioRoot =
       root != null ? VfsUtilCore.virtualToIoFile(root) : new File(module.getModuleDirPath());
     commandLine.setWorkDirectory(forCreation ? ioRoot.getParentFile() : ioRoot);
 
@@ -460,7 +460,7 @@ public abstract class MvcFramework {
   }
 
   public static void addJavaHome(@Nonnull OwnJavaParameters params, @Nonnull Module module) {
-    final Sdk sdk = ModuleUtilCore.getSdk(module, JavaModuleExtension.class);
+    Sdk sdk = ModuleUtilCore.getSdk(module, JavaModuleExtension.class);
     if (sdk != null) {
       String path = StringUtil.trimEnd(sdk.getHomePath(), File.separator);
       if (StringUtil.isNotEmpty(path)) {
@@ -543,18 +543,18 @@ public abstract class MvcFramework {
 
   @Nullable
   public File getGlobalPluginsDir(@Nonnull Module module) {
-    final File sdkWorkDir = getSdkWorkDir(module);
+    File sdkWorkDir = getSdkWorkDir(module);
     return sdkWorkDir == null ? null : new File(sdkWorkDir, "global-plugins");
   }
 
   @Nullable
   public File getCommonPluginsDir(@Nonnull Module module) {
-    final File grailsWorkDir = getSdkWorkDir(module);
+    File grailsWorkDir = getSdkWorkDir(module);
     if (grailsWorkDir == null) {
       return null;
     }
 
-    final String applicationName = getApplicationName(module);
+    String applicationName = getApplicationName(module);
     if (applicationName == null) {
       return null;
     }
@@ -563,7 +563,7 @@ public abstract class MvcFramework {
   }
 
   public String getApplicationName(Module module) {
-    final VirtualFile root = findAppRoot(module);
+    VirtualFile root = findAppRoot(module);
     if (root == null) {
       return null;
     }
@@ -586,7 +586,7 @@ public abstract class MvcFramework {
 
   public abstract String getSomeFrameworkClass();
 
-  public static void addAvailableSystemScripts(final Collection<String> result, @Nonnull Module module) {
+  public static void addAvailableSystemScripts(Collection<String> result, @Nonnull Module module) {
     VirtualFile scriptRoot = null;
 
     GlobalSearchScope searchScope = GlobalSearchScope.moduleWithDependenciesAndLibrariesScope(module, false);
@@ -625,12 +625,12 @@ public abstract class MvcFramework {
 
   public abstract boolean isToReformatOnCreation(VirtualFile file);
 
-  public static void addAvailableScripts(final Collection<String> result, @Nullable final VirtualFile root) {
+  public static void addAvailableScripts(Collection<String> result, @Nullable VirtualFile root) {
     if (root == null || !root.isDirectory()) {
       return;
     }
 
-    final VirtualFile scripts = root.findChild("scripts");
+    VirtualFile scripts = root.findChild("scripts");
 
     if (scripts == null || !scripts.isDirectory()) {
       return;
@@ -707,8 +707,8 @@ public abstract class MvcFramework {
     return CachedValuesManager.getManager(project).getCachedValue(module, new CachedValueProvider<MvcFramework>() {
       @Override
       public Result<MvcFramework> compute() {
-        final ModificationTracker tracker = MvcModuleStructureSynchronizer.getInstance(project).getFileAndRootsModificationTracker();
-        for (final MvcFramework framework : EP_NAME.getExtensions()) {
+        ModificationTracker tracker = MvcModuleStructureSynchronizer.getInstance(project).getFileAndRootsModificationTracker();
+        for (MvcFramework framework : EP_NAME.getExtensions()) {
           if (framework.hasSupport(module)) {
             return Result.create(framework, tracker);
           }
@@ -721,7 +721,7 @@ public abstract class MvcFramework {
 
   @Nullable
   public static MvcFramework getInstanceBySdk(@Nonnull Module module) {
-    for (final MvcFramework framework : EP_NAME.getExtensions()) {
+    for (MvcFramework framework : EP_NAME.getExtensions()) {
       if (framework.getSdkRoot(module) != null) {
         return framework;
       }

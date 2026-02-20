@@ -42,10 +42,10 @@ public class GrTypeDefinitionStub extends StubBase<GrTypeDefinition> implements 
   private final byte myFlags;
 
   public GrTypeDefinitionStub(StubElement parent,
-                                  final String name,
-                                  final String[] supers,
-                                  final IStubElementType elementType,
-                                  final String qualifiedName,
+                                  String name,
+                                  String[] supers,
+                                  IStubElementType elementType,
+                                  String qualifiedName,
                                   String[] annotations,
                                   byte flags) {
     super(parent, elementType);

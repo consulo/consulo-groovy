@@ -48,13 +48,13 @@ public class RemoveParenthesesFromMethodCallIntention extends Intention {
     }
 
     protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
-        final GrMethodCallExpression expression = (GrMethodCallExpression) element;
-        final StringBuilder newStatementText = new StringBuilder();
+        GrMethodCallExpression expression = (GrMethodCallExpression) element;
+        StringBuilder newStatementText = new StringBuilder();
         newStatementText.append(expression.getInvokedExpression().getText()).append(' ');
-        final GrArgumentList argumentList = expression.getArgumentList();
+        GrArgumentList argumentList = expression.getArgumentList();
         if (argumentList != null) {
-            final PsiElement leftParen = argumentList.getLeftParen();
-            final PsiElement rightParen = argumentList.getRightParen();
+            PsiElement leftParen = argumentList.getLeftParen();
+            PsiElement rightParen = argumentList.getRightParen();
             if (leftParen != null) {
                 leftParen.delete();
             }
@@ -63,8 +63,8 @@ public class RemoveParenthesesFromMethodCallIntention extends Intention {
             }
             newStatementText.append(argumentList.getText());
         }
-        final GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(element.getProject());
-        final GrStatement newStatement = factory.createStatementFromText(newStatementText.toString());
+        GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(element.getProject());
+        GrStatement newStatement = factory.createStatementFromText(newStatementText.toString());
         expression.replaceWithStatement(newStatement);
     }
 }

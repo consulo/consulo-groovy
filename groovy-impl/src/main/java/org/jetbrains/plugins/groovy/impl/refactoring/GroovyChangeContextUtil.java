@@ -53,13 +53,13 @@ public class GroovyChangeContextUtil {
     if (!(element instanceof GroovyPsiElement)) return;
     if (PsiUtil.isThisReference(element)) {
       GrReferenceExpression thisExpr = (GrReferenceExpression)element;
-      final PsiClass containingClass = PsiTreeUtil.getParentOfType(thisExpr, PsiClass.class);
+      PsiClass containingClass = PsiTreeUtil.getParentOfType(thisExpr, PsiClass.class);
       element.putCopyableUserData(KEY_ENCODED, KEY_ENCODED);
       thisExpr.putCopyableUserData(QUALIFIER_CLASS_KEY, containingClass);
     }
     else if (element instanceof GrReferenceExpression) {
       GrReferenceExpression refExpr = (GrReferenceExpression)element;
-      final GrExpression qualifier = refExpr.getQualifierExpression();
+      GrExpression qualifier = refExpr.getQualifierExpression();
       if (qualifier == null) {
         PsiElement refElement = refExpr.resolve();
         element.putCopyableUserData(KEY_ENCODED, KEY_ENCODED);
@@ -76,9 +76,9 @@ public class GroovyChangeContextUtil {
     }
     else {
 //      final GrClassTypeElement typeElement = (GrClassTypeElement)element;
-      final PsiReference ref = element.getReference();
+      PsiReference ref = element.getReference();
       if (ref != null) {
-        final PsiElement resolvedElement = ref.resolve();
+        PsiElement resolvedElement = ref.resolve();
         element.putCopyableUserData(KEY_ENCODED, KEY_ENCODED);
         if (resolvedElement instanceof PsiClass && !PsiTreeUtil.isContextAncestor(scope, resolvedElement, false)) {
           element.putCopyableUserData(REF_TO_CLASS, (PsiClass)resolvedElement);
@@ -99,9 +99,9 @@ public class GroovyChangeContextUtil {
     }
     if (element.getCopyableUserData(KEY_ENCODED) != null) {
       element.putCopyableUserData(KEY_ENCODED, null);
-      final PsiManager manager = element.getManager();
+      PsiManager manager = element.getManager();
       if (PsiUtil.isThisReference(element)) {
-        final PsiClass thisQualClass = element.getCopyableUserData(QUALIFIER_CLASS_KEY);
+        PsiClass thisQualClass = element.getCopyableUserData(QUALIFIER_CLASS_KEY);
         element.putCopyableUserData(QUALIFIER_CLASS_KEY, null);
         if (thisAccessExpr != null && !manager.areElementsEquivalent(thisClass, thisQualClass)) {
           element.replace(thisAccessExpr);
@@ -110,17 +110,17 @@ public class GroovyChangeContextUtil {
       }
 
       else if (element instanceof GrReferenceExpression) {
-        final GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(element.getProject());
-        final GrReferenceExpression refExpr = (GrReferenceExpression)element;
-        final PsiElement resolvedElement = refExpr.resolve();
-        final PsiMember memberRef = refExpr.getCopyableUserData(REF_TO_MEMBER);
+        GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(element.getProject());
+        GrReferenceExpression refExpr = (GrReferenceExpression)element;
+        PsiElement resolvedElement = refExpr.resolve();
+        PsiMember memberRef = refExpr.getCopyableUserData(REF_TO_MEMBER);
         refExpr.putCopyableUserData(REF_TO_MEMBER, null);
         if (memberRef != null && memberRef.isValid()) {
-          final PsiClass memberClass = memberRef.getContainingClass();
+          PsiClass memberClass = memberRef.getContainingClass();
           if (memberClass != null) {
             if (memberRef.hasModifierProperty(PsiModifier.STATIC)) {
               if (!manager.areElementsEquivalent(memberRef, resolvedElement)) {
-                final PsiElement qualifier = refExpr.getQualifier();
+                PsiElement qualifier = refExpr.getQualifier();
                 if (!(qualifier instanceof GrReferenceExpression)) {
                   refExpr.setQualifier(factory.createReferenceExpressionFromText(memberClass.getQualifiedName()));
                   return;
@@ -128,7 +128,7 @@ public class GroovyChangeContextUtil {
               }
             }
             else if (thisAccessExpr instanceof GrReferenceExpression) {
-              final PsiElement qualifier = refExpr.getQualifier();
+              PsiElement qualifier = refExpr.getQualifier();
               if (!(qualifier instanceof GrReferenceExpression)) {
                 refExpr.setQualifier(thisAccessExpr);
                 return;
@@ -142,7 +142,7 @@ public class GroovyChangeContextUtil {
       element.putCopyableUserData(REF_TO_CLASS, null);
 
       if (refClass != null && refClass.isValid()) {
-        final PsiReference ref = element.getReference();
+        PsiReference ref = element.getReference();
         if (ref != null) {
           ref.bindToElement(refClass);
         }

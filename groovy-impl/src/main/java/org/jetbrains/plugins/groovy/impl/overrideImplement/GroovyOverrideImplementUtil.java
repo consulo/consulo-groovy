@@ -70,12 +70,12 @@ public class GroovyOverrideImplementUtil {
   public static GrMethod generateMethodPrototype(GrTypeDefinition aClass,
                                                  PsiMethod method,
                                                  PsiSubstitutor substitutor) {
-    final Project project = aClass.getProject();
-    final boolean isAbstract = method.hasModifierProperty(PsiModifier.ABSTRACT);
+    Project project = aClass.getProject();
+    boolean isAbstract = method.hasModifierProperty(PsiModifier.ABSTRACT);
 
     String templName = isAbstract ? JavaTemplateUtil.TEMPLATE_IMPLEMENTED_METHOD_BODY : JavaTemplateUtil.TEMPLATE_OVERRIDDEN_METHOD_BODY;
-    final FileTemplate template = FileTemplateManager.getInstance().getCodeTemplate(templName);
-    final GrMethod result = createOverrideImplementMethodSignature(project, method, substitutor, aClass);
+    FileTemplate template = FileTemplateManager.getInstance().getCodeTemplate(templName);
+    GrMethod result = createOverrideImplementMethodSignature(project, method, substitutor, aClass);
 
     setupModifierList(result);
     setupOverridingMethodBody(project, method, result, template, substitutor);
@@ -91,17 +91,17 @@ public class GroovyOverrideImplementUtil {
       result.getModifierList().addAnnotation(JAVA_LANG_OVERRIDE);
     }
 
-    final GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(method.getProject());
+    GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(method.getProject());
 
-    final PsiParameter[] originalParams = method.getParameterList().getParameters();
+    PsiParameter[] originalParams = method.getParameterList().getParameters();
 
     GrParameter[] parameters = result.getParameters();
     for (int i = 0; i < parameters.length; i++) {
       GrParameter parameter = parameters[i];
-      final PsiParameter original = originalParams[i];
+      PsiParameter original = originalParams[i];
 
       for (PsiAnnotation annotation : original.getModifierList().getAnnotations()) {
-        final GrModifierList modifierList = parameter.getModifierList();
+        GrModifierList modifierList = parameter.getModifierList();
         if (annotation instanceof GrAnnotation) {
           modifierList.add(annotation);
         }
@@ -125,18 +125,18 @@ public class GroovyOverrideImplementUtil {
                                                                  @Nonnull PsiSubstitutor substitutor,
                                                                  @Nonnull PsiClass aClass) {
     StringBuilder buffer = new StringBuilder();
-    final boolean hasModifiers = ModifierListGenerator.writeModifiers(buffer, superMethod.getModifierList(), GROOVY_MODIFIERS, false);
+    boolean hasModifiers = ModifierListGenerator.writeModifiers(buffer, superMethod.getModifierList(), GROOVY_MODIFIERS, false);
 
-    final PsiTypeParameter[] superTypeParameters = superMethod.getTypeParameters();
-    final List<PsiTypeParameter> typeParameters = new ArrayList<PsiTypeParameter>();
-    final Map<PsiTypeParameter, PsiType> map = substitutor.getSubstitutionMap();
+    PsiTypeParameter[] superTypeParameters = superMethod.getTypeParameters();
+    List<PsiTypeParameter> typeParameters = new ArrayList<PsiTypeParameter>();
+    Map<PsiTypeParameter, PsiType> map = substitutor.getSubstitutionMap();
     for (PsiTypeParameter parameter : superTypeParameters) {
       if (!map.containsKey(parameter)) {
         typeParameters.add(parameter);
       }
     }
 
-    final PsiType returnType = substitutor.substitute(getSuperReturnType(superMethod));
+    PsiType returnType = substitutor.substitute(getSuperReturnType(superMethod));
 
     boolean isConstructor = superMethod.isConstructor();
     if (!isConstructor && (!hasModifiers && returnType == null || typeParameters.size() > 0)) {
@@ -153,7 +153,7 @@ public class GroovyOverrideImplementUtil {
       buffer.replace(buffer.length() - 2, buffer.length(), ">");
     }
 
-    final String name;
+    String name;
     if (isConstructor) {
       name = aClass.getName();
     }
@@ -167,7 +167,7 @@ public class GroovyOverrideImplementUtil {
     buffer.append(name);
 
     buffer.append("(");
-    final PsiParameter[] parameters = superMethod.getParameterList().getParameters();
+    PsiParameter[] parameters = superMethod.getParameterList().getParameters();
     for (int i = 0; i < parameters.length; i++) {
       if (i > 0) buffer.append(", ");
       PsiParameter parameter = parameters[i];
@@ -175,11 +175,11 @@ public class GroovyOverrideImplementUtil {
 
 
       if (!(parameter instanceof GrParameter && ((GrParameter)parameter).getTypeElementGroovy() == null)) {
-        final PsiType parameterType = substitutor.substitute(parameter.getType());
+        PsiType parameterType = substitutor.substitute(parameter.getType());
         buffer.append(parameterType.getCanonicalText());
         buffer.append(" ");
       }
-      final String paramName = parameter.getName();
+      String paramName = parameter.getName();
       if (paramName != null) {
         buffer.append(paramName);
       }
@@ -189,8 +189,8 @@ public class GroovyOverrideImplementUtil {
     }
 
     buffer.append(") ");
-    final PsiReferenceList list = superMethod.getThrowsList();
-    final PsiClassType[] types = list.getReferencedTypes();
+    PsiReferenceList list = superMethod.getThrowsList();
+    PsiClassType[] types = list.getReferencedTypes();
     if (types.length > 0) {
       buffer.append("throws ");
       for (PsiClassType type : types) {
@@ -202,7 +202,7 @@ public class GroovyOverrideImplementUtil {
     }
     buffer.append("{}");
 
-    final GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(project);
+    GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(project);
     if (isConstructor) {
       return factory.createConstructorFromText(name, buffer.toString(), superMethod);
     }
@@ -214,7 +214,7 @@ public class GroovyOverrideImplementUtil {
   @Nullable
   private static PsiType getSuperReturnType(@Nonnull PsiMethod superMethod) {
     if (superMethod instanceof GrMethod) {
-      final GrTypeElement element = ((GrMethod)superMethod).getReturnTypeElementGroovy();
+      GrTypeElement element = ((GrMethod)superMethod).getReturnTypeElementGroovy();
       return element != null ? element.getType() : null;
     }
 
@@ -226,7 +226,7 @@ public class GroovyOverrideImplementUtil {
                                                 GrMethod resultMethod,
                                                 FileTemplate template,
                                                 PsiSubstitutor substitutor) {
-    final PsiType returnType = substitutor.substitute(getSuperReturnType(method));
+    PsiType returnType = substitutor.substitute(getSuperReturnType(method));
 
     String returnTypeText = "";
     if (returnType != null) {
@@ -241,7 +241,7 @@ public class GroovyOverrideImplementUtil {
 
     try {
       String bodyText = StringUtil.replace(template.getText(properties), ";", "");
-      final GrCodeBlock newBody = GroovyPsiElementFactory.getInstance(project).createMethodBodyFromText("\n " + bodyText + "\n");
+      GrCodeBlock newBody = GroovyPsiElementFactory.getInstance(project).createMethodBodyFromText("\n " + bodyText + "\n");
 
       resultMethod.setBlock(newBody);
     }

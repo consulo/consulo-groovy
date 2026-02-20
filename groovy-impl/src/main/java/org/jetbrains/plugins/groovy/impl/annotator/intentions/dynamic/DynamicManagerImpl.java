@@ -72,8 +72,8 @@ public class DynamicManagerImpl extends DynamicManager {
     assert settings != null;
     assert !settings.isMethod();
 
-    final DPropertyElement propertyElement = (DPropertyElement)createDynamicElement(settings);
-    final DClassElement classElement = getOrCreateClassElement(myProject, settings.getContainingClassName());
+    DPropertyElement propertyElement = (DPropertyElement)createDynamicElement(settings);
+    DClassElement classElement = getOrCreateClassElement(myProject, settings.getContainingClassName());
 
     ToolWindow window = DynamicToolWindowWrapper.getInstance(myProject).getToolWindow(); //important to fetch myToolWindow before adding
     classElement.addProperty(propertyElement);
@@ -84,7 +84,7 @@ public class DynamicManagerImpl extends DynamicManager {
     DynamicToolWindowWrapper wrapper = DynamicToolWindowWrapper.getInstance(myProject);
     ListTreeTableModelOnColumns model = wrapper.getTreeTableModel();
     Object classNode = TreeUtil.findNodeWithObject(classElement, model, model.getRoot());
-    final DefaultMutableTreeNode node = (DefaultMutableTreeNode)TreeUtil.findNodeWithObject(itemElement, model, classNode);
+    DefaultMutableTreeNode node = (DefaultMutableTreeNode)TreeUtil.findNodeWithObject(itemElement, model, classNode);
     if (node == null) {
       return;
     }
@@ -96,7 +96,7 @@ public class DynamicManagerImpl extends DynamicManager {
   private void removeClassFromTree(DClassElement classElement) {
     DynamicToolWindowWrapper wrapper = DynamicToolWindowWrapper.getInstance(myProject);
     ListTreeTableModelOnColumns model = wrapper.getTreeTableModel();
-    final DefaultMutableTreeNode node = (DefaultMutableTreeNode)TreeUtil.findNodeWithObject(classElement, model, model.getRoot());
+    DefaultMutableTreeNode node = (DefaultMutableTreeNode)TreeUtil.findNodeWithObject(classElement, model, model.getRoot());
     if (node == null) {
       return;
     }
@@ -117,18 +117,18 @@ public class DynamicManagerImpl extends DynamicManager {
     }
   }
 
-  private void addItemInTree(final DClassElement classElement, final DItemElement itemElement, final ToolWindow window) {
+  private void addItemInTree(final DClassElement classElement, final DItemElement itemElement, ToolWindow window) {
     final ListTreeTableModelOnColumns myTreeTableModel =
       DynamicToolWindowWrapper.getInstance(myProject).getTreeTableModel();
 
     window.activate(new Runnable() {
       @Override
       public void run() {
-        final Object rootObject = myTreeTableModel.getRoot();
+        Object rootObject = myTreeTableModel.getRoot();
         if (!(rootObject instanceof DefaultMutableTreeNode)) {
           return;
         }
-        final DefaultMutableTreeNode rootNode = (DefaultMutableTreeNode)rootObject;
+        DefaultMutableTreeNode rootNode = (DefaultMutableTreeNode)rootObject;
 
         DefaultMutableTreeNode node = new DefaultMutableTreeNode(itemElement);
         if (rootNode.getChildCount() > 0) {
@@ -136,7 +136,7 @@ public class DynamicManagerImpl extends DynamicManager {
                classNode != null;
                classNode = (DefaultMutableTreeNode)rootNode.getChildAfter(classNode)) {
 
-            final Object classRow = classNode.getUserObject();
+            Object classRow = classNode.getUserObject();
             if (!(classRow instanceof DClassElement)) {
               return;
             }
@@ -197,8 +197,8 @@ public class DynamicManagerImpl extends DynamicManager {
     }
     assert settings.isMethod();
 
-    final DMethodElement methodElement = (DMethodElement)createDynamicElement(settings);
-    final DClassElement classElement = getOrCreateClassElement(myProject, settings.getContainingClassName());
+    DMethodElement methodElement = (DMethodElement)createDynamicElement(settings);
+    DClassElement classElement = getOrCreateClassElement(myProject, settings.getContainingClassName());
 
     ToolWindow window = DynamicToolWindowWrapper.getInstance(myProject).getToolWindow(); //important to fetch myToolWindow before adding
     classElement.addMethod(methodElement);
@@ -208,13 +208,13 @@ public class DynamicManagerImpl extends DynamicManager {
   @Override
   public void removeClassElement(DClassElement classElement) {
 
-    final DRootElement rootElement = getRootElement();
+    DRootElement rootElement = getRootElement();
     rootElement.removeClassElement(classElement.getName());
     removeClassFromTree(classElement);
   }
 
   private void removePropertyElement(DPropertyElement propertyElement) {
-    final DClassElement classElement = getClassElementByItem(propertyElement);
+    DClassElement classElement = getClassElementByItem(propertyElement);
     assert classElement != null;
 
     classElement.removeProperty(propertyElement);
@@ -223,7 +223,7 @@ public class DynamicManagerImpl extends DynamicManager {
   @Override
   @Nonnull
   public Collection<DPropertyElement> findDynamicPropertiesOfClass(String className) {
-    final DClassElement classElement = findClassElement(getRootElement(), className);
+    DClassElement classElement = findClassElement(getRootElement(), className);
 
     if (classElement != null) {
       return classElement.getProperties();
@@ -234,7 +234,7 @@ public class DynamicManagerImpl extends DynamicManager {
   @Override
   @Nullable
   public String getPropertyType(String className, String propertyName) {
-    final DPropertyElement dynamicProperty = findConcreteDynamicProperty(getRootElement(), className, propertyName);
+    DPropertyElement dynamicProperty = findConcreteDynamicProperty(getRootElement(), className, propertyName);
 
     if (dynamicProperty == null) {
       return null;
@@ -246,7 +246,7 @@ public class DynamicManagerImpl extends DynamicManager {
   @Nonnull
   public Collection<DClassElement> getAllContainingClasses() {
     //TODO: use iterator
-    final DRootElement root = getRootElement();
+    DRootElement root = getRootElement();
 
     return root.getContainingClasses();
   }
@@ -259,12 +259,12 @@ public class DynamicManagerImpl extends DynamicManager {
   @Override
   @Nullable
   public String replaceDynamicPropertyName(String className, String oldPropertyName, String newPropertyName) {
-    final DClassElement classElement = findClassElement(getRootElement(), className);
+    DClassElement classElement = findClassElement(getRootElement(), className);
     if (classElement == null) {
       return null;
     }
 
-    final DPropertyElement oldPropertyElement = classElement.getPropertyByName(oldPropertyName);
+    DPropertyElement oldPropertyElement = classElement.getPropertyByName(oldPropertyName);
     if (oldPropertyElement == null) {
       return null;
     }
@@ -280,7 +280,7 @@ public class DynamicManagerImpl extends DynamicManager {
   @Override
   @Nullable
   public String replaceDynamicPropertyType(String className, String propertyName, String oldPropertyType, String newPropertyType) {
-    final DPropertyElement property = findConcreteDynamicProperty(className, propertyName);
+    DPropertyElement property = findConcreteDynamicProperty(className, propertyName);
 
     if (property == null) {
       return null;
@@ -316,7 +316,7 @@ public class DynamicManagerImpl extends DynamicManager {
   }
 
   private void removeMethodElement(DMethodElement methodElement) {
-    final DClassElement classElement = getClassElementByItem(methodElement);
+    DClassElement classElement = getClassElementByItem(methodElement);
     assert classElement != null;
 
     classElement.removeMethod(methodElement);
@@ -341,7 +341,7 @@ public class DynamicManagerImpl extends DynamicManager {
 
   @Override
   public void replaceDynamicMethodType(String className, String name, List<ParamInfo> myPairList, String oldType, String newType) {
-    final DMethodElement method = findConcreteDynamicMethod(className, name, QuickfixUtil.getArgumentsTypes(myPairList));
+    DMethodElement method = findConcreteDynamicMethod(className, name, QuickfixUtil.getArgumentsTypes(myPairList));
 
     if (method == null) {
       return;
@@ -364,7 +364,7 @@ public class DynamicManagerImpl extends DynamicManager {
   @Override
   @Nullable
   public DClassElement getClassElementByItem(DItemElement itemElement) {
-    final Collection<DClassElement> classes = getAllContainingClasses();
+    Collection<DClassElement> classes = getAllContainingClasses();
     for (DClassElement aClass : classes) {
       if (aClass.containsElement(itemElement)) {
         return aClass;
@@ -375,7 +375,7 @@ public class DynamicManagerImpl extends DynamicManager {
 
   @Override
   public void replaceDynamicMethodName(String className, String oldName, String newName, String[] types) {
-    final DMethodElement oldMethodElement = findConcreteDynamicMethod(className, oldName, types);
+    DMethodElement oldMethodElement = findConcreteDynamicMethod(className, oldName, types);
     if (oldMethodElement != null) {
       oldMethodElement.setName(newName);
     }
@@ -412,12 +412,12 @@ public class DynamicManagerImpl extends DynamicManager {
   }
 
   @Override
-  public void replaceClassName(final DClassElement oldClassElement, String newClassName) {
+  public void replaceClassName(DClassElement oldClassElement, String newClassName) {
     if (oldClassElement == null) {
       return;
     }
 
-    final DRootElement rootElement = getRootElement();
+    DRootElement rootElement = getRootElement();
     rootElement.removeClassElement(oldClassElement.getName());
 
     oldClassElement.setName(newClassName);
@@ -432,11 +432,11 @@ public class DynamicManagerImpl extends DynamicManager {
   }
 
   private void fireChangeCodeAnalyze() {
-    final Editor textEditor = FileEditorManager.getInstance(myProject).getSelectedTextEditor();
+    Editor textEditor = FileEditorManager.getInstance(myProject).getSelectedTextEditor();
     if (textEditor == null) {
       return;
     }
-    final PsiFile file = PsiDocumentManager.getInstance(myProject).getPsiFile(textEditor.getDocument());
+    PsiFile file = PsiDocumentManager.getInstance(myProject).getPsiFile(textEditor.getDocument());
     if (file == null) {
       return;
     }
@@ -447,15 +447,15 @@ public class DynamicManagerImpl extends DynamicManager {
 
   @Override
   @Nullable
-  public DPropertyElement findConcreteDynamicProperty(final String containingClassName, final String propertyName) {
+  public DPropertyElement findConcreteDynamicProperty(String containingClassName, String propertyName) {
     return findConcreteDynamicProperty(getRootElement(), containingClassName, propertyName);
   }
 
   @Nullable
   private static DPropertyElement findConcreteDynamicProperty(DRootElement rootElement,
-                                                              final String conatainingClassName,
-                                                              final String propertyName) {
-    final DClassElement classElement = rootElement.getClassElement(conatainingClassName);
+                                                              String conatainingClassName,
+                                                              String propertyName) {
+    DClassElement classElement = rootElement.getClassElement(conatainingClassName);
 
     if (classElement == null) {
       return null;
@@ -465,7 +465,7 @@ public class DynamicManagerImpl extends DynamicManager {
   }
 
   @Nullable
-  private static DClassElement findClassElement(DRootElement rootElement, final String conatainingClassName) {
+  private static DClassElement findClassElement(DRootElement rootElement, String conatainingClassName) {
     return rootElement.getClassElement(conatainingClassName);
   }
 

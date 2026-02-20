@@ -70,7 +70,7 @@ public class GroovyFormattingModelBuilder implements FormattingModelBuilder {
         }
       });
     }
-    final GroovyBlock block = new GroovyBlock(astNode,
+    GroovyBlock block = new GroovyBlock(astNode,
                                               Indent.getAbsoluteNoneIndent(),
                                               null,
                                               new FormattingContext(groovySettings, alignments, customSettings, false));

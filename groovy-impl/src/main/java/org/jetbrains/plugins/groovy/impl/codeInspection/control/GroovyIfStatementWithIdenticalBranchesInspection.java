@@ -62,10 +62,10 @@ public class GroovyIfStatementWithIdenticalBranchesInspection extends BaseInspec
         }
 
         public void doFix(Project project, ProblemDescriptor descriptor) throws IncorrectOperationException {
-            final PsiElement identifier = descriptor.getPsiElement();
-            final GrIfStatement statement = (GrIfStatement) identifier.getParent();
+            PsiElement identifier = descriptor.getPsiElement();
+            GrIfStatement statement = (GrIfStatement) identifier.getParent();
             assert statement != null;
-            final GrStatement thenBranch = statement.getThenBranch();
+            GrStatement thenBranch = statement.getThenBranch();
             replaceStatement(statement, thenBranch);
         }
     }
@@ -77,8 +77,8 @@ public class GroovyIfStatementWithIdenticalBranchesInspection extends BaseInspec
     private static class IfStatementWithIdenticalBranchesVisitor extends BaseInspectionVisitor {
         public void visitIfStatement(@Nonnull GrIfStatement statement) {
             super.visitIfStatement(statement);
-            final GrStatement thenBranch = statement.getThenBranch();
-            final GrStatement elseBranch = statement.getElseBranch();
+            GrStatement thenBranch = statement.getThenBranch();
+            GrStatement elseBranch = statement.getElseBranch();
             if (thenBranch == null || elseBranch == null) {
                 return;
             }

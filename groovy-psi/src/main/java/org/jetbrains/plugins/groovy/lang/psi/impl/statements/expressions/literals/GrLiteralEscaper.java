@@ -37,7 +37,7 @@ public class GrLiteralEscaper extends LiteralTextEscaper<GrLiteralContainer> {
     String subText = rangeInsideHost.substring(myHost.getText());
     outSourceOffsets = new int[subText.length() + 1];
 
-    final IElementType elementType = myHost.getFirstChild().getNode().getElementType();
+    IElementType elementType = myHost.getFirstChild().getNode().getElementType();
     if (elementType == GroovyTokenTypes.mSTRING_LITERAL || elementType == GroovyTokenTypes.mGSTRING_LITERAL || elementType == GroovyTokenTypes.mGSTRING_CONTENT) {
       return GrStringUtil.parseStringCharacters(subText, outChars, outSourceOffsets);
     }
@@ -51,7 +51,7 @@ public class GrLiteralEscaper extends LiteralTextEscaper<GrLiteralContainer> {
   }
 
   @Override
-  public int getOffsetInHost(int offsetInDecoded, @Nonnull final TextRange rangeInsideHost) {
+  public int getOffsetInHost(int offsetInDecoded, @Nonnull TextRange rangeInsideHost) {
     int result = offsetInDecoded < outSourceOffsets.length ? outSourceOffsets[offsetInDecoded] : -1;
     if (result == -1) return -1;
     return (result <= rangeInsideHost.getLength() ? result : rangeInsideHost.getLength()) + rangeInsideHost.getStartOffset();
@@ -59,7 +59,7 @@ public class GrLiteralEscaper extends LiteralTextEscaper<GrLiteralContainer> {
 
   @Override
   public boolean isOneLine() {
-    final Object value = myHost.getValue();
+    Object value = myHost.getValue();
     return value instanceof String && ((String)value).indexOf('\n') < 0;
   }
 }

@@ -45,13 +45,13 @@ public class StubClassNameProvider implements ClassNameProvider {
 
     if (psiClass instanceof GrTypeDefinition) {
       if (!myAllToCompile.contains(psiClass.getContainingFile().getVirtualFile())) {
-        final PsiClass container = psiClass.getContainingClass();
+        PsiClass container = psiClass.getContainingClass();
         if (container != null) {
           return getQualifiedClassName(container, null) + "$" + psiClass.getName();
         }
       }
     }
-    final String name = psiClass.getQualifiedName();
+    String name = psiClass.getQualifiedName();
     if (name!=null) return name;
     return psiClass.getName();
   }

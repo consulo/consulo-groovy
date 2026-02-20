@@ -70,9 +70,9 @@ public class GroovyBlock implements Block, GroovyElementTypes, ASTBlock {
 
   protected List<Block> mySubBlocks = null;
 
-  public GroovyBlock(@Nonnull final ASTNode node,
-                     @Nonnull final Indent indent,
-                     @Nullable final Wrap wrap,
+  public GroovyBlock(@Nonnull ASTNode node,
+                     @Nonnull Indent indent,
+                     @Nullable Wrap wrap,
                      @Nonnull FormattingContext context) {
     myNode = node;
 
@@ -99,7 +99,7 @@ public class GroovyBlock implements Block, GroovyElementTypes, ASTBlock {
         mySubBlocks = new GroovyBlockGenerator(this).generateSubBlocks();
       }
       catch (AssertionError | RuntimeException e) {
-        final PsiFile file = myNode.getPsi().getContainingFile();
+        PsiFile file = myNode.getPsi().getContainingFile();
         LOG.error("Formatting failed for file " + file.getName(), e,
             AttachmentFactory.get().create("file.txt", file.getText()),
             AttachmentFactory.get().create("node.txt", myNode.getText()));
@@ -152,9 +152,9 @@ public class GroovyBlock implements Block, GroovyElementTypes, ASTBlock {
   }
 
   @Nonnull
-  public ChildAttributes getChildAttributes(final int newChildIndex) {
+  public ChildAttributes getChildAttributes(int newChildIndex) {
     ASTNode astNode = getNode();
-    final PsiElement psiParent = astNode.getPsi();
+    PsiElement psiParent = astNode.getPsi();
     if (psiParent instanceof GroovyFileBase) {
       return new ChildAttributes(Indent.getNoneIndent(), null);
     }
@@ -170,13 +170,13 @@ public class GroovyBlock implements Block, GroovyElementTypes, ASTBlock {
                   statement instanceof GrContinueStatement ||
                   statement instanceof GrReturnStatement ||
                   statement instanceof GrThrowStatement) {
-                final Indent indent = GroovyIndentProcessor.getSwitchCaseIndent(myContext.getSettings());
+                Indent indent = GroovyIndentProcessor.getSwitchCaseIndent(myContext.getSettings());
                 return new ChildAttributes(indent, null);
               }
             }
 
             int indentSize = myContext.getSettings().getIndentOptions().INDENT_SIZE;
-            final int spaces = myContext.getSettings().INDENT_CASE_FROM_SWITCH
+            int spaces = myContext.getSettings().INDENT_CASE_FROM_SWITCH
                                ? 2 * indentSize
                                : indentSize;
             return new ChildAttributes(Indent.getSpaceIndent(spaces), null);
@@ -216,7 +216,7 @@ public class GroovyBlock implements Block, GroovyElementTypes, ASTBlock {
       return new ChildAttributes(Indent.getNormalIndent(), null);
     }
     if (psiParent instanceof GrLabeledStatement && newChildIndex == 2) {
-      final Indent indent = getContext().getGroovySettings().INDENT_LABEL_BLOCKS
+      Indent indent = getContext().getGroovySettings().INDENT_LABEL_BLOCKS
                             ? Indent.getLabelIndent()
                             : Indent.getNoneIndent();
       return new ChildAttributes(indent, null);
@@ -225,7 +225,7 @@ public class GroovyBlock implements Block, GroovyElementTypes, ASTBlock {
   }
 
   private ChildAttributes getSwitchIndent(GrCaseSection psiParent, int newIndex) {
-    final GrStatement[] statements = psiParent.getStatements();
+    GrStatement[] statements = psiParent.getStatements();
     newIndex--;
     for (int i = 0; i < statements.length && i < newIndex; i++) {
       GrStatement statement = statements[i];
@@ -236,7 +236,7 @@ public class GroovyBlock implements Block, GroovyElementTypes, ASTBlock {
         return new ChildAttributes(Indent.getNoneIndent(), null);
       }
     }
-    final Indent indent = GroovyIndentProcessor.getSwitchCaseIndent(getContext().getSettings());
+    Indent indent = GroovyIndentProcessor.getSwitchCaseIndent(getContext().getSettings());
     return new ChildAttributes(indent, null);
   }
 
@@ -249,7 +249,7 @@ public class GroovyBlock implements Block, GroovyElementTypes, ASTBlock {
    * @param node Tree node
    * @return true if node is incomplete
    */
-  public static boolean isIncomplete(@Nonnull final ASTNode node) {
+  public static boolean isIncomplete(@Nonnull ASTNode node) {
     if (node.getElementType() instanceof ILazyParseableElementType) return false;
     ASTNode lastChild = node.getLastChildNode();
     while (lastChild != null &&

@@ -38,13 +38,13 @@ public class GrAnnotationCollector {
 
   @Nonnull
   public static GrAnnotation[] getResolvedAnnotations(@Nonnull GrModifierList modifierList) {
-    final GrAnnotation[] rawAnnotations = modifierList.getRawAnnotations();
+    GrAnnotation[] rawAnnotations = modifierList.getRawAnnotations();
 
     if (!hasAliases(rawAnnotations)) return rawAnnotations;
 
     List<GrAnnotation> result = ContainerUtil.newArrayList();
     for (GrAnnotation annotation : rawAnnotations) {
-      final PsiAnnotation annotationCollector = findAnnotationCollector(annotation);
+      PsiAnnotation annotationCollector = findAnnotationCollector(annotation);
       if (annotationCollector != null) {
         collectAnnotations(result, annotation, annotationCollector);
       }
@@ -59,7 +59,7 @@ public class GrAnnotationCollector {
 
   private static boolean hasAliases(@Nonnull GrAnnotation[] rawAnnotations) {
     for (GrAnnotation annotation : rawAnnotations) {
-      final PsiAnnotation annotationCollector = findAnnotationCollector(annotation);
+      PsiAnnotation annotationCollector = findAnnotationCollector(annotation);
       if (annotationCollector != null) {
         return true;
       }
@@ -80,26 +80,26 @@ public class GrAnnotationCollector {
                                                @Nonnull GrAnnotation alias,
                                                @Nonnull PsiAnnotation annotationCollector) {
 
-    final PsiModifierList modifierList = (PsiModifierList)annotationCollector.getParent();
+    PsiModifierList modifierList = (PsiModifierList)annotationCollector.getParent();
 
     Map<String, Map<String, PsiNameValuePair>> annotations = new LinkedHashMap<>();
     collectAliasedAnnotationsFromAnnotationCollectorValueAttribute(annotationCollector, annotations);
     collectAliasedAnnotationsFromAnnotationCollectorAnnotations(modifierList, annotations);
 
-    final PsiManager manager = alias.getManager();
-    final GrAnnotationNameValuePair[] attributes = alias.getParameterList().getAttributes();
+    PsiManager manager = alias.getManager();
+    GrAnnotationNameValuePair[] attributes = alias.getParameterList().getAttributes();
 
     Set<String> allUsedAttrs = new LinkedHashSet<>();
     for (Map.Entry<String, Map<String, PsiNameValuePair>> entry : annotations.entrySet()) {
-      final String qname = entry.getKey();
-      final PsiClass resolved = JavaPsiFacade.getInstance(alias.getProject()).findClass(qname, alias.getResolveScope());
+      String qname = entry.getKey();
+      PsiClass resolved = JavaPsiFacade.getInstance(alias.getProject()).findClass(qname, alias.getResolveScope());
       if (resolved == null) continue;
 
-      final GrLightAnnotation annotation = new GrLightAnnotation(manager, alias.getLanguage(), qname, modifierList);
+      GrLightAnnotation annotation = new GrLightAnnotation(manager, alias.getLanguage(), qname, modifierList);
 
       Set<String> usedAttrs = new LinkedHashSet<>();
       for (GrAnnotationNameValuePair attr : attributes) {
-        final String name = attr.getName() != null ? attr.getName() : "value";
+        String name = attr.getName() != null ? attr.getName() : "value";
         if (resolved.findMethodsByName(name, false).length > 0) {
           annotation.addAttribute(attr);
           allUsedAttrs.add(name);
@@ -108,7 +108,7 @@ public class GrAnnotationCollector {
       }
 
 
-      final Map<String, PsiNameValuePair> defaults = entry.getValue();
+      Map<String, PsiNameValuePair> defaults = entry.getValue();
       for (Map.Entry<String, PsiNameValuePair> defa : defaults.entrySet()) {
         if (!usedAttrs.contains(defa.getKey())) {
           annotation.addAttribute(defa.getValue());
@@ -138,11 +138,11 @@ public class GrAnnotationCollector {
     PsiAnnotation[] rawAnnotations =
       modifierList instanceof GrModifierList ? ((GrModifierList)modifierList).getRawAnnotations() : modifierList.getAnnotations();
     for (PsiAnnotation annotation : rawAnnotations) {
-      final String qname = annotation.getQualifiedName();
+      String qname = annotation.getQualifiedName();
 
       if (qname == null || qname.equals(GroovyCommonClassNames.GROOVY_TRANSFORM_ANNOTATION_COLLECTOR)) continue;
 
-      final PsiNameValuePair[] attributes = annotation.getParameterList().getAttributes();
+      PsiNameValuePair[] attributes = annotation.getParameterList().getAttributes();
       for (PsiNameValuePair pair : attributes) {
         Map<String, PsiNameValuePair> map = annotations.get(qname);
         if (map == null) {
@@ -161,12 +161,12 @@ public class GrAnnotationCollector {
 
   private static void collectAliasedAnnotationsFromAnnotationCollectorValueAttribute(@Nonnull PsiAnnotation annotationCollector,
                                                                                      @Nonnull Map<String, Map<String, PsiNameValuePair>> annotations) {
-    final PsiAnnotationMemberValue annotationsFromValue = annotationCollector.findAttributeValue("value");
+    PsiAnnotationMemberValue annotationsFromValue = annotationCollector.findAttributeValue("value");
 
     if (annotationsFromValue instanceof GrAnnotationArrayInitializer) {
       for (GrAnnotationMemberValue member : ((GrAnnotationArrayInitializer)annotationsFromValue).getInitializers()) {
         if (member instanceof GrReferenceExpression) {
-          final PsiElement resolved = ((GrReferenceExpression)member).resolve();
+          PsiElement resolved = ((GrReferenceExpression)member).resolve();
           if (resolved instanceof PsiClass && ((PsiClass)resolved).isAnnotationType()) {
             annotations.put(((PsiClass)resolved).getQualifiedName(), new LinkedHashMap<>());
           }
@@ -178,7 +178,7 @@ public class GrAnnotationCollector {
   @Nullable
   public static PsiAnnotation findAnnotationCollector(@Nullable PsiClass clazz) {
     if (clazz != null) {
-      final PsiModifierList modifierList = clazz.getModifierList();
+      PsiModifierList modifierList = clazz.getModifierList();
       if (modifierList != null) {
         PsiAnnotation[] annotations = modifierList instanceof GrModifierList ? ((GrModifierList)modifierList).getRawAnnotations() : modifierList.getAnnotations();
         for (PsiAnnotation annotation : annotations) {
@@ -195,9 +195,9 @@ public class GrAnnotationCollector {
 
   @Nullable
   public static PsiAnnotation findAnnotationCollector(@Nonnull GrAnnotation annotation) {
-    final GrCodeReferenceElement ref = annotation.getClassReference();
+    GrCodeReferenceElement ref = annotation.getClassReference();
 
-    final PsiElement resolved = ref.resolve();
+    PsiElement resolved = ref.resolve();
     if (resolved instanceof PsiClass) {
       return findAnnotationCollector((PsiClass)resolved);
     }

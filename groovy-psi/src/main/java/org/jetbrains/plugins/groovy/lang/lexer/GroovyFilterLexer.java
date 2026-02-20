@@ -40,7 +40,7 @@ public class GroovyFilterLexer extends BaseFilterLexer {
 
 
   public void advance() {
-    final IElementType tokenType = getDelegate().getTokenType();
+    IElementType tokenType = getDelegate().getTokenType();
 
     if (tokenType == mIDENT || TokenSets.KEYWORDS.contains(tokenType)) {
       addOccurrenceInToken(IN_CODE);

@@ -43,7 +43,7 @@ public class DynamicMembersContributor extends NonCodeMembersContributor {
       return;
     }
 
-    final DynamicManager manager = DynamicManager.getInstance(place.getProject());
+    DynamicManager manager = DynamicManager.getInstance(place.getProject());
 
     for (String qName : ClassUtil.getSuperClassesWithCache(aClass).keySet()) {
       for (PsiMethod method : manager.getMethods(qName)) {

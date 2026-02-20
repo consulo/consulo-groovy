@@ -72,11 +72,11 @@ public class GroovyWhileLoopSpinsOnFieldInspection extends BaseInspection<Groovy
 
         public void visitWhileStatement(@Nonnull GrWhileStatement statement) {
             super.visitWhileStatement(statement);
-            final GrStatement body = statement.getBody();
+            GrStatement body = statement.getBody();
             if (myState.ignoreNonEmtpyLoops && !statementIsEmpty(body)) {
                 return;
             }
-            final GrCondition condition = statement.getCondition();
+            GrCondition condition = statement.getCondition();
             if (!(condition instanceof GrExpression)) {
                 return;
             }
@@ -96,19 +96,19 @@ public class GroovyWhileLoopSpinsOnFieldInspection extends BaseInspection<Groovy
             }
 
             if (condition instanceof GrUnaryExpression && ((GrUnaryExpression) condition).isPostfix()) {
-                final GrUnaryExpression postfixExpression = (GrUnaryExpression) condition;
-                final GrExpression operand = postfixExpression.getOperand();
+                GrUnaryExpression postfixExpression = (GrUnaryExpression) condition;
+                GrExpression operand = postfixExpression.getOperand();
                 return isSimpleFieldComparison(operand);
             }
             if (condition instanceof GrUnaryExpression) {
-                final GrUnaryExpression unaryExpression = (GrUnaryExpression) condition;
-                final GrExpression operand = unaryExpression.getOperand();
+                GrUnaryExpression unaryExpression = (GrUnaryExpression) condition;
+                GrExpression operand = unaryExpression.getOperand();
                 return isSimpleFieldComparison(operand);
             }
             if (condition instanceof GrBinaryExpression) {
-                final GrBinaryExpression binaryExpression = (GrBinaryExpression) condition;
-                final GrExpression lOperand = binaryExpression.getLeftOperand();
-                final GrExpression rOperand = binaryExpression.getRightOperand();
+                GrBinaryExpression binaryExpression = (GrBinaryExpression) condition;
+                GrExpression lOperand = binaryExpression.getLeftOperand();
+                GrExpression rOperand = binaryExpression.getRightOperand();
                 if (isLiteral(rOperand)) {
                     return isSimpleFieldComparison(lOperand);
                 }
@@ -138,16 +138,16 @@ public class GroovyWhileLoopSpinsOnFieldInspection extends BaseInspection<Groovy
             if (!(expression instanceof GrReferenceExpression)) {
                 return false;
             }
-            final GrReferenceExpression reference = (GrReferenceExpression) expression;
-            final GrExpression qualifierExpression = reference.getQualifierExpression();
+            GrReferenceExpression reference = (GrReferenceExpression) expression;
+            GrExpression qualifierExpression = reference.getQualifierExpression();
             if (qualifierExpression != null) {
                 return false;
             }
-            final PsiElement referent = reference.resolve();
+            PsiElement referent = reference.resolve();
             if (!(referent instanceof PsiField)) {
                 return false;
             }
-            final PsiField field = (PsiField) referent;
+            PsiField field = (PsiField) referent;
             return !field.hasModifierProperty(PsiModifier.VOLATILE);
         }
 
@@ -156,9 +156,9 @@ public class GroovyWhileLoopSpinsOnFieldInspection extends BaseInspection<Groovy
                 return false;
             }
             if (statement instanceof GrBlockStatement) {
-                final GrBlockStatement blockStatement = (GrBlockStatement) statement;
-                final GrOpenBlock codeBlock = blockStatement.getBlock();
-                final GrStatement[] codeBlockStatements = codeBlock.getStatements();
+                GrBlockStatement blockStatement = (GrBlockStatement) statement;
+                GrOpenBlock codeBlock = blockStatement.getBlock();
+                GrStatement[] codeBlockStatements = codeBlock.getStatements();
                 for (GrStatement codeBlockStatement : codeBlockStatements) {
                     if (!statementIsEmpty(codeBlockStatement)) {
                         return false;

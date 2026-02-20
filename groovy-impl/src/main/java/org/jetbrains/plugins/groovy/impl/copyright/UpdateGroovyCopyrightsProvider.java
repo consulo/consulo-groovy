@@ -75,7 +75,7 @@ public class UpdateGroovyCopyrightsProvider extends UpdateCopyrightsProvider<Cop
           super.checkCommentsForTopClass(topclass, location, comments);
           return;
         }
-        final GroovyFile containingFile = (GroovyFile)topclass.getContainingFile();
+        GroovyFile containingFile = (GroovyFile)topclass.getContainingFile();
 
         PsiElement last = containingFile.getFirstChild();
         while (last != null && !(last instanceof GrStatement)) {

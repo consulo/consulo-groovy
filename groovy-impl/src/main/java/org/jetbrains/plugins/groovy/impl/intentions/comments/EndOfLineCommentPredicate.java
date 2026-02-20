@@ -31,8 +31,8 @@ class EndOfLineCommentPredicate implements PsiElementPredicate {
     if (element instanceof PsiDocComment) {
       return false;
     }
-    final PsiComment comment = (PsiComment) element;
-    final IElementType type = comment.getTokenType();
+    PsiComment comment = (PsiComment) element;
+    IElementType type = comment.getTokenType();
     return GroovyTokenTypes.mSL_COMMENT.equals(type);
   }
 }

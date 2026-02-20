@@ -44,13 +44,13 @@ public abstract class GrFlowInterruptingStatementImpl extends GroovyPsiElementIm
   @Override
   @Nullable
   public String getLabelName() {
-    final PsiElement id = getLabelIdentifier();
+    PsiElement id = getLabelIdentifier();
     return id != null ? id.getText() : null;
   }
 
   @Override
   public PsiReference getReference() {
-    final PsiElement label = getLabelIdentifier();
+    PsiElement label = getLabelIdentifier();
     if (label == null) return null;
     return new GrLabelReference(this);
   }

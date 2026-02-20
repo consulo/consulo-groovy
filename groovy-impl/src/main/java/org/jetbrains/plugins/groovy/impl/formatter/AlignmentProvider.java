@@ -39,8 +39,8 @@ public class AlignmentProvider {
   public void addPair(@Nonnull PsiElement e1, @Nonnull PsiElement e2, @Nullable Boolean allowBackwardShift, @Nullable Alignment.Anchor anchor) {
     assert e1 != e2;
 
-    final Set<PsiElement> set1 = myTree.get(e1);
-    final Set<PsiElement> set2 = myTree.get(e2);
+    Set<PsiElement> set1 = myTree.get(e1);
+    Set<PsiElement> set2 = myTree.get(e2);
 
     if (set1 != null && set2 != null) {
       assert (!myAlignments.containsKey(set1) || !myAlignments.containsKey(set2));
@@ -90,7 +90,7 @@ public class AlignmentProvider {
       addInternal(set2, e1);
     }
     else {
-      final HashSet<PsiElement> set = createHashSet();
+      HashSet<PsiElement> set = createHashSet();
       addInternal(set, e1);
       addInternal(set, e2);
       myAllowBackwardShift.put(set, allowBackwardShift);
@@ -126,7 +126,7 @@ public class AlignmentProvider {
   private void add(@Nonnull PsiElement element, boolean allowBackwardShift, @Nonnull Alignment.Anchor anchor) {
     if (myTree.get(element) != null) return;
 
-    final HashSet<PsiElement> set = createHashSet();
+    HashSet<PsiElement> set = createHashSet();
     set.add(element);
     myTree.put(element, set);
     myAllowBackwardShift.put(set, allowBackwardShift);
@@ -135,7 +135,7 @@ public class AlignmentProvider {
 
   @Nullable
   public Alignment getAlignment(@Nonnull PsiElement e) {
-    final Set<PsiElement> set = myTree.get(e);
+    Set<PsiElement> set = myTree.get(e);
     if (set == null) {
       return null;
     }
@@ -160,7 +160,7 @@ public class AlignmentProvider {
 
   @Nonnull
   public Aligner createAligner(PsiElement element, boolean allowBackwardShift, Alignment.Anchor anchor) {
-    final Aligner aligner = new Aligner(allowBackwardShift, anchor);
+    Aligner aligner = new Aligner(allowBackwardShift, anchor);
     aligner.append(element);
     return aligner;
   }

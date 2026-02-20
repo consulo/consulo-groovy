@@ -72,9 +72,9 @@ public abstract class GrReferenceElementImpl<Q extends PsiElement> extends Groov
 
   @Override
   public TextRange getRangeInElement() {
-    final PsiElement refNameElement = getReferenceNameElement();
+    PsiElement refNameElement = getReferenceNameElement();
     if (refNameElement != null) {
-      final int offsetInParent = refNameElement.getStartOffsetInParent();
+      int offsetInParent = refNameElement.getStartOffsetInParent();
       return new TextRange(offsetInParent, offsetInParent + refNameElement.getTextLength());
     }
     return new TextRange(0, getTextLength());
@@ -110,16 +110,16 @@ public abstract class GrReferenceElementImpl<Q extends PsiElement> extends Groov
     if (isReferenceTo(element)) {
       return this;
     }
-    final boolean fullyQualified = isFullyQualified();
-    final boolean preserveQualification = GroovyCodeStyleSettingsFacade.getInstance(getProject()).useFqClassNames
+    boolean fullyQualified = isFullyQualified();
+    boolean preserveQualification = GroovyCodeStyleSettingsFacade.getInstance(getProject()).useFqClassNames
       () && fullyQualified;
     if (element instanceof PsiClass) {
-      final String qualifiedName = ((PsiClass)element).getQualifiedName();
+      String qualifiedName = ((PsiClass)element).getQualifiedName();
 
       if (!preserveQualification || qualifiedName == null) {
-        final String newName = ((PsiClass)element).getName();
+        String newName = ((PsiClass)element).getName();
         setQualifier(null);
-        final GrReferenceElementImpl newElement = ((GrReferenceElementImpl)handleElementRenameSimple
+        GrReferenceElementImpl newElement = ((GrReferenceElementImpl)handleElementRenameSimple
           (newName));
 
         if (newElement.isReferenceTo(element) || qualifiedName == null || JavaPsiFacade.getInstance(getProject
@@ -130,7 +130,7 @@ public abstract class GrReferenceElementImpl<Q extends PsiElement> extends Groov
         }
       }
 
-      final GrReferenceElement<Q> qualifiedRef = bindWithQualifiedRef(qualifiedName);
+      GrReferenceElement<Q> qualifiedRef = bindWithQualifiedRef(qualifiedName);
       if (!preserveQualification) {
         JavaCodeStyleManager.getInstance(getProject()).shortenClassReferences(qualifiedRef);
       }
@@ -143,13 +143,13 @@ public abstract class GrReferenceElementImpl<Q extends PsiElement> extends Groov
         // for this member or not
         return this;
       }
-      final PsiClass psiClass = member.getContainingClass();
+      PsiClass psiClass = member.getContainingClass();
       if (psiClass == null) {
         throw new IncorrectOperationException();
       }
 
       String qName = psiClass.getQualifiedName() + "." + member.getName();
-      final GrReferenceElement<Q> qualifiedRef = bindWithQualifiedRef(qName);
+      GrReferenceElement<Q> qualifiedRef = bindWithQualifiedRef(qName);
       if (!preserveQualification) {
         JavaCodeStyleManager.getInstance(getProject()).shortenClassReferences(qualifiedRef);
       }
@@ -174,12 +174,12 @@ public abstract class GrReferenceElementImpl<Q extends PsiElement> extends Groov
   @Override
   @Nonnull
   public PsiType[] getTypeArguments() {
-    final GrTypeArgumentList typeArgsList = getTypeArgumentList();
+    GrTypeArgumentList typeArgsList = getTypeArgumentList();
     if (typeArgsList == null) {
       return PsiType.EMPTY_ARRAY;
     }
 
-    final GrTypeElement[] args = typeArgsList.getTypeArgumentElements();
+    GrTypeElement[] args = typeArgsList.getTypeArgumentElements();
     if (args.length == 0) {
       return PsiType.EMPTY_ARRAY;
     }

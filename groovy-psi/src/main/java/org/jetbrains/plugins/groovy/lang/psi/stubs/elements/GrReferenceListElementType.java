@@ -40,7 +40,7 @@ public abstract class GrReferenceListElementType<T extends GrReferenceList> exte
 		GrStubElementType<GrReferenceListStub, T>
 {
 
-	public GrReferenceListElementType(final String debugName)
+	public GrReferenceListElementType(String debugName)
 	{
 		super(debugName);
 	}
@@ -51,7 +51,7 @@ public abstract class GrReferenceListElementType<T extends GrReferenceList> exte
 		List<String> refNames = new ArrayList<String>();
 		for(GrCodeReferenceElement element : psi.getReferenceElementsGroovy())
 		{
-			final String name = element.getText();
+			String name = element.getText();
 			if(StringUtil.isNotEmpty(name))
 			{
 				refNames.add(name);

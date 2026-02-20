@@ -59,12 +59,12 @@ public class GroovyResultOfObjectAllocationIgnoredInspection extends BaseInspect
     private static class Visitor extends BaseInspectionVisitor {
         public void visitNewExpression(GrNewExpression newExpression) {
             super.visitNewExpression(newExpression);
-            final GrCodeReferenceElement refElement = newExpression.getReferenceElement();
+            GrCodeReferenceElement refElement = newExpression.getReferenceElement();
             if (refElement == null) {
                 return;      //new expression is not correct so we shouldn't check it
             }
 
-            final PsiElement parent = newExpression.getParent();
+            PsiElement parent = newExpression.getParent();
 
             if (parent instanceof GrCodeBlock || parent instanceof GroovyFile) {
                 if (parent instanceof GrOpenBlock || parent instanceof GrClosableBlock) {

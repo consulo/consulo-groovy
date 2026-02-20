@@ -60,7 +60,7 @@ public class GroovyUnconditionalWaitInspection extends BaseInspection {
             if (!method.hasModifierProperty(PsiModifier.SYNCHRONIZED)) {
                 return;
             }
-            final GrCodeBlock body = method.getBlock();
+            GrCodeBlock body = method.getBlock();
             if (body != null) {
                 checkBody(body);
             }
@@ -68,18 +68,18 @@ public class GroovyUnconditionalWaitInspection extends BaseInspection {
 
         public void visitSynchronizedStatement(@Nonnull GrSynchronizedStatement statement) {
             super.visitSynchronizedStatement(statement);
-            final GrCodeBlock body = statement.getBody();
+            GrCodeBlock body = statement.getBody();
             if (body != null) {
                 checkBody(body);
             }
         }
 
         private void checkBody(GrCodeBlock body) {
-            final GrStatement[] statements = body.getStatements();
+            GrStatement[] statements = body.getStatements();
             if (statements.length == 0) {
                 return;
             }
-            for (final GrStatement statement : statements) {
+            for (GrStatement statement : statements) {
                 if (isConditional(statement)) {
                     return;
                 }
@@ -87,21 +87,21 @@ public class GroovyUnconditionalWaitInspection extends BaseInspection {
                 if (!(statement instanceof GrMethodCallExpression)) {
                     continue;
                 }
-                final GrMethodCallExpression methodCallExpression = (GrMethodCallExpression) statement;
-                final GrExpression methodExpression = methodCallExpression.getInvokedExpression();
+                GrMethodCallExpression methodCallExpression = (GrMethodCallExpression) statement;
+                GrExpression methodExpression = methodCallExpression.getInvokedExpression();
                 if (!(methodExpression instanceof GrReferenceExpression)) {
                     return;
                 }
-                final GrReferenceExpression reference = (GrReferenceExpression) methodExpression;
-                final String name = reference.getReferenceName();
+                GrReferenceExpression reference = (GrReferenceExpression) methodExpression;
+                String name = reference.getReferenceName();
                 if (!"wait".equals(name)) {
                     return;
                 }
-                final PsiMethod method = methodCallExpression.resolveMethod();
+                PsiMethod method = methodCallExpression.resolveMethod();
                 if (method == null) {
                     return;
                 }
-                final PsiClass containingClass = method.getContainingClass();
+                PsiClass containingClass = method.getContainingClass();
                 if (containingClass == null || !CommonClassNames.JAVA_LANG_OBJECT.equals(containingClass.getQualifiedName())) {
                     return;
                 }

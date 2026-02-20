@@ -58,7 +58,7 @@ public class GroovyEmptyStatementBodyInspection extends BaseInspection {
     private static class Visitor extends BaseInspectionVisitor {
         public void visitWhileStatement(@Nonnull GrWhileStatement statement) {
             super.visitWhileStatement(statement);
-            final GrStatement body = statement.getBody();
+            GrStatement body = statement.getBody();
             if (body == null) {
                 return;
             }
@@ -70,7 +70,7 @@ public class GroovyEmptyStatementBodyInspection extends BaseInspection {
 
         public void visitForStatement(@Nonnull GrForStatement statement) {
             super.visitForStatement(statement);
-            final GrStatement body = statement.getBody();
+            GrStatement body = statement.getBody();
             if (body == null) {
                 return;
             }
@@ -82,14 +82,14 @@ public class GroovyEmptyStatementBodyInspection extends BaseInspection {
 
         public void visitIfStatement(@Nonnull GrIfStatement statement) {
             super.visitIfStatement(statement);
-            final GrStatement thenBranch = statement.getThenBranch();
+            GrStatement thenBranch = statement.getThenBranch();
             if (thenBranch != null) {
                 if (isEmpty(thenBranch)) {
                     registerStatementError(statement, statement);
                     return;
                 }
             }
-            final GrStatement elseBranch = statement.getElseBranch();
+            GrStatement elseBranch = statement.getElseBranch();
 
             if (elseBranch != null) {
                 if (isEmpty(elseBranch)) {
@@ -102,14 +102,14 @@ public class GroovyEmptyStatementBodyInspection extends BaseInspection {
             if (!(body instanceof GrBlockStatement)) {
                 return false;
             }
-            final GrBlockStatement block = (GrBlockStatement) body;
-            final GrOpenBlock openBlock = block.getBlock();
+            GrBlockStatement block = (GrBlockStatement) body;
+            GrOpenBlock openBlock = block.getBlock();
 
-            final PsiElement brace = openBlock.getLBrace();
+            PsiElement brace = openBlock.getLBrace();
             if (brace == null) {
                 return false;
             }
-            final PsiElement nextNonWhitespace = PsiUtil.skipWhitespaces(brace.getNextSibling(), true);
+            PsiElement nextNonWhitespace = PsiUtil.skipWhitespaces(brace.getNextSibling(), true);
             return nextNonWhitespace == openBlock.getRBrace();
         }
     }

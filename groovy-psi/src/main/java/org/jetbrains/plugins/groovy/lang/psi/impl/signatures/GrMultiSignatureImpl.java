@@ -55,7 +55,7 @@ public class GrMultiSignatureImpl implements GrMultiSignature {
     List<GrClosureSignature> newClosures = new ArrayList<GrClosureSignature>();
 
     for (GrClosureSignature old : mySignatures) {
-      final GrSignature curried = old.curry(args, position, context);
+      GrSignature curried = old.curry(args, position, context);
       if (curried instanceof GrClosureSignature) {
         newClosures.add((GrClosureSignature)curried);
       }

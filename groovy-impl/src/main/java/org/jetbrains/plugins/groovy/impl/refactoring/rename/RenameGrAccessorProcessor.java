@@ -55,7 +55,7 @@ public class RenameGrAccessorProcessor extends RenameJavaMethodProcessor {
   @Override
   public void prepareRenaming(PsiElement element, String newName, Map<PsiElement, String> allRenames, SearchScope scope) {
     super.prepareRenaming(element, newName, allRenames, scope);
-    final PsiField field = GroovyPropertyUtils.findFieldForAccessor((PsiMethod)element, false);
+    PsiField field = GroovyPropertyUtils.findFieldForAccessor((PsiMethod)element, false);
     if (field != null) {
 
     }

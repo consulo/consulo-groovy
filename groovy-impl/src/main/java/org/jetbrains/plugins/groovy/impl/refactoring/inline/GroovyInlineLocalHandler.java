@@ -67,14 +67,14 @@ public class GroovyInlineLocalHandler extends InlineActionHandler {
   }
 
   @Override
-  public void inlineElement(final Project project, Editor editor, final PsiElement element) {
+  public void inlineElement(Project project, Editor editor, PsiElement element) {
     invoke(project, editor, (GrVariable)element);
   }
 
-  public static void invoke(final Project project, Editor editor, final GrVariable local) {
-    final PsiReference invocationReference = editor != null ? TargetElementUtil.findReference(editor) : null;
+  public static void invoke(Project project, Editor editor, GrVariable local) {
+    PsiReference invocationReference = editor != null ? TargetElementUtil.findReference(editor) : null;
 
-    final InlineLocalVarSettings localVarSettings = createSettings(local, editor, invocationReference != null);
+    InlineLocalVarSettings localVarSettings = createSettings(local, editor, invocationReference != null);
     if (localVarSettings == null) {
       return;
     }
@@ -83,7 +83,7 @@ public class GroovyInlineLocalHandler extends InlineActionHandler {
       return;
     }
 
-    final GroovyInlineLocalProcessor processor = new GroovyInlineLocalProcessor(project, localVarSettings, local);
+    GroovyInlineLocalProcessor processor = new GroovyInlineLocalProcessor(project, localVarSettings, local);
     processor.setPrepareSuccessfulSwingThreadCallback(new Runnable() {
       @Override
       public void run() {
@@ -101,8 +101,8 @@ public class GroovyInlineLocalHandler extends InlineActionHandler {
   private static InlineLocalVarSettings createSettings(final GrVariable variable,
                                                        Editor editor,
                                                        boolean invokedOnReference) {
-    final String localName = variable.getName();
-    final Project project = variable.getProject();
+    String localName = variable.getName();
+    Project project = variable.getProject();
 
     GrExpression initializer = null;
     Instruction writeInstr = null;
@@ -111,7 +111,7 @@ public class GroovyInlineLocalHandler extends InlineActionHandler {
     //search for initializer to inline
     if (invokedOnReference) {
       LOG.assertTrue(editor != null, "null editor but invokedOnReference==true");
-      final PsiReference ref = TargetElementUtil.findReference(editor);
+      PsiReference ref = TargetElementUtil.findReference(editor);
       LOG.assertTrue(ref != null);
 
       PsiElement cur = ref.getElement();
@@ -126,15 +126,15 @@ public class GroovyInlineLocalHandler extends InlineActionHandler {
 
           flow = controlFlowOwner.getControlFlow();
 
-          final ArrayList<BitSet> writes = ControlFlowUtils.inferWriteAccessMap(flow, variable);
-          final PsiElement finalCur = cur;
+          ArrayList<BitSet> writes = ControlFlowUtils.inferWriteAccessMap(flow, variable);
+          PsiElement finalCur = cur;
           Instruction instruction = ControlFlowUtils.findInstruction(finalCur, flow);
 
           LOG.assertTrue(instruction != null);
-          final BitSet prev = writes.get(instruction.num());
+          BitSet prev = writes.get(instruction.num());
           if (prev.cardinality() == 1) {
             writeInstr = flow[prev.nextSetBit(0)];
-            final PsiElement element = writeInstr.getElement();
+            PsiElement element = writeInstr.getElement();
             if (element instanceof GrVariable) {
               initializer = ((GrVariable)element).getInitializerGroovy();
             }
@@ -183,7 +183,7 @@ public class GroovyInlineLocalHandler extends InlineActionHandler {
       return new InlineLocalVarSettings(initializer, writeInstructionNumber, flow);
     }
 
-    final String question = GroovyRefactoringBundle.message("inline.local.variable.prompt.0.1", localName);
+    String question = GroovyRefactoringBundle.message("inline.local.variable.prompt.0.1", localName);
     RefactoringMessageDialog dialog = new RefactoringMessageDialog(INLINE_VARIABLE, question,
                                                                    HelpID.INLINE_VARIABLE, "OptionPane.questionIcon", true, project);
     if (dialog.showAndGet()) {

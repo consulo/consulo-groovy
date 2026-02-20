@@ -73,7 +73,7 @@ public class GrDocCommentImpl extends LazyParseablePsiElement implements GroovyD
 
   @Nonnull
   public GrDocTag[] getTags() {
-    final GrDocTag[] tags = PsiTreeUtil.getChildrenOfType(this, GrDocTag.class);
+    GrDocTag[] tags = PsiTreeUtil.getChildrenOfType(this, GrDocTag.class);
     return tags == null ? GrDocTag.EMPTY_ARRAY : tags;
   }
 
@@ -104,9 +104,9 @@ public class GrDocCommentImpl extends LazyParseablePsiElement implements GroovyD
   public PsiElement[] getDescriptionElements() {
     ArrayList<PsiElement> array = new ArrayList<PsiElement>();
     for (PsiElement child = getFirstChild(); child != null; child = child.getNextSibling()) {
-      final ASTNode node = child.getNode();
+      ASTNode node = child.getNode();
       if (node == null) continue;
-      final IElementType i = node.getElementType();
+      IElementType i = node.getElementType();
       if (i == GDOC_TAG) break;
       if (i != mGDOC_COMMENT_START && i != mGDOC_COMMENT_END && i != mGDOC_ASTERISKS) {
         array.add(child);

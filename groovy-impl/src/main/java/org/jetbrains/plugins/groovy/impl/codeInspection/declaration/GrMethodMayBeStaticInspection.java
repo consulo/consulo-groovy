@@ -63,14 +63,14 @@ public class GrMethodMayBeStaticInspection extends BaseInspection<GrMethodMayBeS
             @Override
             public void visitMethod(GrMethod method) {
                 if (checkMethod(method, myState)) {
-                    final GrModifierFix modifierFix = new GrModifierFix(
+                    GrModifierFix modifierFix = new GrModifierFix(
                         method,
                         PsiModifier.STATIC,
                         false,
                         true,
                         descriptor -> {
-                            final PsiElement element = descriptor.getPsiElement();
-                            final PsiElement parent = element.getParent();
+                            PsiElement element = descriptor.getPsiElement();
+                            PsiElement parent = element.getParent();
                             assert parent instanceof GrMethod : "element: " + element + ", parent:" + parent;
                             return ((GrMethod) parent).getModifierList();
                         }
@@ -84,7 +84,7 @@ public class GrMethodMayBeStaticInspection extends BaseInspection<GrMethodMayBeS
         };
     }
 
-    private boolean checkMethod(final GrMethod method, GrMethodMayBeStaticInspectionState state) {
+    private boolean checkMethod(GrMethod method, GrMethodMayBeStaticInspectionState state) {
         if (method.hasModifierProperty(PsiModifier.STATIC)) {
             return false;
         }
@@ -142,7 +142,7 @@ public class GrMethodMayBeStaticInspection extends BaseInspection<GrMethodMayBeS
     }
 
     private static boolean ignoreMethod(GrMethod method) {
-        final GrParameter[] parameters = method.getParameters();
+        GrParameter[] parameters = method.getParameters();
         if (method.getName().equals("propertyMissing") && (parameters.length == 2 || parameters.length == 1)) {
             return true;
         }
@@ -237,13 +237,13 @@ public class GrMethodMayBeStaticInspection extends BaseInspection<GrMethodMayBeS
                 return;
             }
 
-            final PsiElement resolvedElement = refElement.resolve();
+            PsiElement resolvedElement = refElement.resolve();
             if (!(resolvedElement instanceof PsiClass)) {
                 return;
             }
 
-            final PsiClass aClass = (PsiClass) resolvedElement;
-            final PsiElement scope = aClass.getScope();
+            PsiClass aClass = (PsiClass) resolvedElement;
+            PsiElement scope = aClass.getScope();
 
             if (!(scope instanceof PsiClass)) {
                 return;

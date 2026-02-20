@@ -44,7 +44,7 @@ public class GroovyInstanceVariableNamingConventionInspection extends Convention
 
     @Nonnull
     public String buildErrorString(Object... args) {
-        final String className = (String) args[0];
+        String className = (String) args[0];
         if (className.length() < getMinLength()) {
             return "Instance variable name '#ref' is too short";
         }
@@ -76,7 +76,7 @@ public class GroovyInstanceVariableNamingConventionInspection extends Convention
             if (grField.hasModifierProperty(PsiModifier.STATIC)) {
                 return;
             }
-            final String name = grField.getName();
+            String name = grField.getName();
             if (isValid(name)) {
                 return;
             }

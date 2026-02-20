@@ -200,7 +200,7 @@ public class GroovyParser implements PsiParser
 	}
 
 	//gsp directives, scriptlets and such
-	protected boolean isExtendedSeparator(@Nullable final IElementType tokenType)
+	protected boolean isExtendedSeparator(@Nullable IElementType tokenType)
 	{
 		return false;
 	}
@@ -363,7 +363,7 @@ public class GroovyParser implements PsiParser
 	{
 		if(isBlockStatementNeeded && GroovyTokenTypes.mLCURLY.equals(builder.getTokenType()))
 		{
-			final PsiBuilder.Marker marker = builder.mark();
+			PsiBuilder.Marker marker = builder.mark();
 			OpenOrClosableBlock.parseOpenBlockDeep(builder, this);
 			marker.done(GroovyElementTypes.BLOCK_STATEMENT);
 			return true;
@@ -487,7 +487,7 @@ public class GroovyParser implements PsiParser
 
 		if(GroovyTokenTypes.kIMPORT == builder.getTokenType())
 		{
-			final PsiBuilder.Marker impMarker = declMarker.precede();
+			PsiBuilder.Marker impMarker = declMarker.precede();
 			ImportStatement.parseAfterModifiers(builder);
 			declMarker.done(GroovyElementTypes.IMPORT_STATEMENT);
 			impMarker.error(GroovyBundle.message("import.not.allowed"));
@@ -496,7 +496,7 @@ public class GroovyParser implements PsiParser
 
 		if(isTypeDefinitionStart(builder))
 		{
-			final IElementType tdType = TypeDefinition.parseAfterModifiers(builder, this);
+			IElementType tdType = TypeDefinition.parseAfterModifiers(builder, this);
 			if(tdType != GroovyElementTypes.WRONGWAY)
 			{
 				declMarker.done(tdType);
@@ -515,7 +515,7 @@ public class GroovyParser implements PsiParser
 			return true;
 		}
 
-		final IElementType declType = Declaration.parseAfterModifiers(builder, isInClass, isInAnnotation,
+		IElementType declType = Declaration.parseAfterModifiers(builder, isInClass, isInAnnotation,
 				typeDefinitionName, this, modifiersParsed);
 		if(declType != GroovyElementTypes.WRONGWAY)
 		{
@@ -580,7 +580,7 @@ public class GroovyParser implements PsiParser
 			return false;
 		}
 
-		final PsiBuilder.Marker nlsMarker = builder.mark();
+		PsiBuilder.Marker nlsMarker = builder.mark();
 
 		ParserUtils.getToken(builder, GroovyTokenTypes.mNLS);
 		if(parseStatement(builder, true))

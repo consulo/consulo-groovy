@@ -45,7 +45,7 @@ public class GroovyInstanceMethodNamingConventionInspection extends ConventionIn
 
     @Nonnull
     public String buildErrorString(Object... args) {
-        final String className = (String) args[0];
+        String className = (String) args[0];
         if (className.length() < getMinLength()) {
             return "Instance method name '#ref' is too short";
         }
@@ -77,7 +77,7 @@ public class GroovyInstanceMethodNamingConventionInspection extends ConventionIn
             if (grMethod.hasModifierProperty(PsiModifier.STATIC) || grMethod.isConstructor()) {
                 return;
             }
-            final String name = grMethod.getName();
+            String name = grMethod.getName();
             if (isValid(name)) {
                 return;
             }

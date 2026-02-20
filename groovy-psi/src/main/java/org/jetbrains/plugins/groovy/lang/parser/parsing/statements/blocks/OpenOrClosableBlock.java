@@ -70,10 +70,10 @@ public class OpenOrClosableBlock {
   }
 
   public static void parseBlockShallow(PsiBuilder builder, IElementType blockType) {
-    final PsiBuilder.Marker blockStart = builder.mark();
+    PsiBuilder.Marker blockStart = builder.mark();
     int braceCount = 0;
     while (true) {
-      final IElementType tokenType = builder.getTokenType();
+      IElementType tokenType = builder.getTokenType();
       if (tokenType == null) {
         break;
       }

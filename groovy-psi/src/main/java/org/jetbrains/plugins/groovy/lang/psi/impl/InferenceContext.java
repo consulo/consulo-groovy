@@ -125,17 +125,17 @@ public interface InferenceContext {
 
     @Nonnull
     @Override
-    public <T extends PsiPolyVariantReference> GroovyResolveResult[] multiResolve(@Nonnull final T ref,
-                                                                                  final boolean incomplete,
-                                                                                  @Nonnull final ResolveCache.PolyVariantResolver<T> resolver) {
+    public <T extends PsiPolyVariantReference> GroovyResolveResult[] multiResolve(@Nonnull T ref,
+                                                                                  boolean incomplete,
+                                                                                  @Nonnull ResolveCache.PolyVariantResolver<T> resolver) {
       return _getCachedValue(ref.getElement(),
                              () -> (GroovyResolveResult[])resolver.resolve(ref, incomplete), Pair.create(incomplete, resolver.getClass()));
     }
 
     @Nullable
     @Override
-    public <T extends GroovyPsiElement> PsiType getExpressionType(@Nonnull final T element,
-                                                                  @Nonnull final Function<T, PsiType> calculator) {
+    public <T extends GroovyPsiElement> PsiType getExpressionType(@Nonnull T element,
+                                                                  @Nonnull Function<T, PsiType> calculator) {
       return _getCachedValue(element, () -> {
         PsiType type = calculator.apply(element);
         return type == PsiType.NULL ? null : type;

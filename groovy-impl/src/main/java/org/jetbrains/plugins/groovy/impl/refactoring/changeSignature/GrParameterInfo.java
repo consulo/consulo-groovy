@@ -48,14 +48,14 @@ public class GrParameterInfo implements JavaParameterInfo {
   public GrParameterInfo(GrParameter parameter, int position) {
     myPosition = position;
     myName = parameter.getName();
-    final PsiType type = parameter.getDeclaredType();
+    PsiType type = parameter.getDeclaredType();
     if (type != null) {
       myTypeWrapper = CanonicalTypes.createTypeWrapper(type);
     }
     else {
       myTypeWrapper = null;
     }
-    final GrExpression defaultInitializer = parameter.getInitializerGroovy();
+    GrExpression defaultInitializer = parameter.getInitializerGroovy();
     if (defaultInitializer != null) {
       myDefaultInitializer = defaultInitializer.getText();
     }
@@ -95,7 +95,7 @@ public class GrParameterInfo implements JavaParameterInfo {
   }
 
   @Nullable
-  public PsiType createType(PsiElement context, final PsiManager manager) throws IncorrectOperationException {
+  public PsiType createType(PsiElement context, PsiManager manager) throws IncorrectOperationException {
     return myTypeWrapper != null ? myTypeWrapper.getType(context, manager) : null;
   }
 

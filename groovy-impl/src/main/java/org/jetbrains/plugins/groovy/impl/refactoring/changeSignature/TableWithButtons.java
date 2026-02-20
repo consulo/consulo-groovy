@@ -59,7 +59,7 @@ public abstract class TableWithButtons {
     });
     myMoveUpButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        final int selectedRow = myTable.getSelectedRow();
+        int selectedRow = myTable.getSelectedRow();
         int selectedColumn = myTable.getSelectedColumn();
         myModel.exchangeRows(selectedRow, selectedRow - 1);
         myTable.setRowSelectionInterval(selectedRow - 1, selectedRow - 1);
@@ -70,7 +70,7 @@ public abstract class TableWithButtons {
     });
     myMoveDownButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        final int selectedRow = myTable.getSelectedRow();
+        int selectedRow = myTable.getSelectedRow();
         int selectedColumn = myTable.getSelectedColumn();
         myModel.exchangeRows(selectedRow, selectedRow + 1);
         myTable.setRowSelectionInterval(selectedRow + 1, selectedRow + 1);
@@ -102,8 +102,8 @@ public abstract class TableWithButtons {
   }
 
   private void innerUpdate() {
-    final int selectedRow = myTable.getSelectedRow();
-    final int rowCount = myModel.getRowCount();
+    int selectedRow = myTable.getSelectedRow();
+    int rowCount = myModel.getRowCount();
     myMoveUpButton.setEnabled(selectedRow > 0);
     myMoveDownButton.setEnabled(selectedRow + 1 < rowCount && rowCount > 1);
     myRemoveButton.setEnabled(rowCount > 0);

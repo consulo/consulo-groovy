@@ -34,16 +34,16 @@ public class GrIfConditionFixer extends SmartEnterProcessorWithFixers.Fixer<Groo
   @Override
   public void apply(@Nonnull Editor editor, @Nonnull GroovySmartEnterProcessor processor, @Nonnull PsiElement psiElement) {
     if (psiElement instanceof GrIfStatement) {
-      final Document doc = editor.getDocument();
-      final GrIfStatement ifStatement = (GrIfStatement) psiElement;
-      final PsiElement rParen = ifStatement.getRParenth();
-      final PsiElement lParen = ifStatement.getLParenth();
-      final GrExpression condition = ifStatement.getCondition();
+      Document doc = editor.getDocument();
+      GrIfStatement ifStatement = (GrIfStatement) psiElement;
+      PsiElement rParen = ifStatement.getRParenth();
+      PsiElement lParen = ifStatement.getLParenth();
+      GrExpression condition = ifStatement.getCondition();
 
       if (condition == null) {
         if (lParen == null || rParen == null) {
           int stopOffset = doc.getLineEndOffset(doc.getLineNumber(ifStatement.getTextRange().getStartOffset()));
-          final GrStatement then = ifStatement.getThenBranch();
+          GrStatement then = ifStatement.getThenBranch();
           if (then != null) {
             stopOffset = Math.min(stopOffset, then.getTextRange().getStartOffset());
           }

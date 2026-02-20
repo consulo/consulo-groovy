@@ -42,19 +42,19 @@ public class DumpGroovyControlFlowAction extends AnAction implements DumbAware {
   @RequiredUIAccess
   @Override
   public void actionPerformed(@Nonnull AnActionEvent e) {
-    final Editor editor = e.getData(PlatformDataKeys.EDITOR);
+    Editor editor = e.getData(PlatformDataKeys.EDITOR);
     if (editor == null) {
       return;
     }
 
-    final PsiFile psiFile = HandlerUtils.getPsiFile(editor, e.getDataContext());
+    PsiFile psiFile = HandlerUtils.getPsiFile(editor, e.getDataContext());
     if (!(psiFile instanceof GroovyFile)) {
       return;
     }
 
     int offset = editor.getCaretModel().getOffset();
 
-    final List<GrControlFlowOwner> controlFlowOwners = collectControlFlowOwners(psiFile, editor, offset);
+    List<GrControlFlowOwner> controlFlowOwners = collectControlFlowOwners(psiFile, editor, offset);
     if (controlFlowOwners.size() == 0) {
       return;
     }
@@ -72,9 +72,9 @@ public class DumpGroovyControlFlowAction extends AnAction implements DumbAware {
   }
 
   @RequiredReadAction
-  private static List<GrControlFlowOwner> collectControlFlowOwners(final PsiFile file, final Editor editor, final int offset) {
-    final PsiElement elementAtCaret = file.findElementAt(offset);
-    final List<GrControlFlowOwner> result = new ArrayList<GrControlFlowOwner>();
+  private static List<GrControlFlowOwner> collectControlFlowOwners(PsiFile file, Editor editor, int offset) {
+    PsiElement elementAtCaret = file.findElementAt(offset);
+    List<GrControlFlowOwner> result = new ArrayList<GrControlFlowOwner>();
 
     for (GrControlFlowOwner owner = ControlFlowUtils.findControlFlowOwner(elementAtCaret); owner != null;
          owner = ControlFlowUtils.findControlFlowOwner(owner)) {

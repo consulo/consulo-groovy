@@ -50,7 +50,7 @@ public class GroovyDslScript {
   private final String myPath;
   private final FactorTree myFactorTree;
 
-  public GroovyDslScript(final Project project,
+  public GroovyDslScript(Project project,
                          @Nullable VirtualFile file,
                          @Nonnull GroovyDslExecutor executor,
                          String path) {
@@ -63,10 +63,10 @@ public class GroovyDslScript {
 
 
   public boolean processExecutor(PsiScopeProcessor processor,
-                                 final PsiType psiType,
-                                 final PsiElement place,
-                                 final PsiFile placeFile,
-                                 final String qname,
+                                 PsiType psiType,
+                                 PsiElement place,
+                                 PsiFile placeFile,
+                                 String qname,
                                  ResolveState state) {
     CustomMembersHolder holder = myFactorTree.retrieve(place, placeFile, qname);
     GroovyClassDescriptor descriptor = new GroovyClassDescriptor(psiType, place, placeFile);
@@ -87,8 +87,8 @@ public class GroovyDslScript {
     }
   }
 
-  private CustomMembersHolder addGdslMembers(GroovyClassDescriptor descriptor, String qname, final PsiType psiType) {
-    final ProcessingContext ctx = new ProcessingContext();
+  private CustomMembersHolder addGdslMembers(GroovyClassDescriptor descriptor, String qname, PsiType psiType) {
+    ProcessingContext ctx = new ProcessingContext();
     ctx.put(ClassUtil.getClassKey(qname), psiType);
     ctx.put(GdslUtil.INITIAL_CONTEXT, descriptor);
     try {
@@ -122,7 +122,7 @@ public class GroovyDslScript {
 
   private static boolean isApplicable(@Nonnull GroovyDslExecutor executor,
                                       GroovyClassDescriptor descriptor,
-                                      final ProcessingContext ctx) {
+                                      ProcessingContext ctx) {
     List<Pair<ContextFilter, Closure>> enhancers = executor.getEnhancers();
     if (enhancers == null) {
       LOG.error("null enhancers");

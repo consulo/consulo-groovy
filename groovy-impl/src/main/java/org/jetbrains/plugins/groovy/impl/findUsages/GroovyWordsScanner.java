@@ -44,7 +44,7 @@ class GroovyWordsScanner implements WordsScanner
     WordOccurrence occurrence = null; // shared occurrence
 
     while (myLexer.getTokenType() != null) {
-      final IElementType type = myLexer.getTokenType();
+      IElementType type = myLexer.getTokenType();
       if (type == mIDENT || TokenSets.KEYWORDS.contains(type)) {
         if (occurrence == null) occurrence = new WordOccurrence(fileText,myLexer.getTokenStart(),myLexer.getTokenEnd(), WordOccurrence.Kind.CODE);
         else occurrence.init(fileText,myLexer.getTokenStart(),myLexer.getTokenEnd(), WordOccurrence.Kind.CODE);
@@ -67,11 +67,11 @@ class GroovyWordsScanner implements WordsScanner
     }
   }
 
-  private static boolean stripWords(final Processor<WordOccurrence> processor,
-                                    final CharSequence tokenText,
+  private static boolean stripWords(Processor<WordOccurrence> processor,
+                                    CharSequence tokenText,
                                     int from,
                                     int to,
-                                    final WordOccurrence.Kind kind,
+                                    WordOccurrence.Kind kind,
                                     WordOccurrence occurrence) {
     // This code seems strange but it is more effective as Character.isJavaIdentifier_xxx_ is quite costly operation due to unicode
     int index = from;

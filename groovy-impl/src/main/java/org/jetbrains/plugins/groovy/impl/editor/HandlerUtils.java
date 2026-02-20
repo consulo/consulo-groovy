@@ -41,12 +41,12 @@ public class HandlerUtils
 	{
 	}
 
-	public static boolean isEnabled(@Nonnull final Editor editor, @Nonnull final DataContext dataContext, @Nullable final EditorActionHandler originalHandler)
+	public static boolean isEnabled(@Nonnull Editor editor, @Nonnull DataContext dataContext, @Nullable EditorActionHandler originalHandler)
 	{
-		final Project project = getProject(dataContext);
+		Project project = getProject(dataContext);
 		if(project != null)
 		{
-			final Language language = PsiUtilBase.getLanguageInEditor(editor, project);
+			Language language = PsiUtilBase.getLanguageInEditor(editor, project);
 			if(language == GroovyFileType.GROOVY_LANGUAGE)
 			{
 				return true;
@@ -56,7 +56,7 @@ public class HandlerUtils
 		return originalHandler == null || originalHandler.isEnabled(editor, dataContext);
 	}
 
-	public static boolean isReadOnly(@Nonnull final Editor editor)
+	public static boolean isReadOnly(@Nonnull Editor editor)
 	{
 		if(editor.isViewer())
 		{
@@ -66,7 +66,7 @@ public class HandlerUtils
 		return !document.isWritable();
 	}
 
-	public static boolean canBeInvoked(final Editor editor, final Project project)
+	public static boolean canBeInvoked(Editor editor, Project project)
 	{
 		if(isReadOnly(editor))
 		{
@@ -80,24 +80,24 @@ public class HandlerUtils
 		return true;
 	}
 
-	public static PsiFile getPsiFile(@Nonnull final Editor editor, @Nonnull final DataContext dataContext)
+	public static PsiFile getPsiFile(@Nonnull Editor editor, @Nonnull DataContext dataContext)
 	{
 		return getPsiFile(editor, getProject(dataContext));
 	}
 
-	public static PsiFile getPsiFile(@Nonnull final Editor editor, final Project project)
+	public static PsiFile getPsiFile(@Nonnull Editor editor, Project project)
 	{
 		return PsiDocumentManager.getInstance(project).getPsiFile(editor.getDocument());
 	}
 
 	@Nullable
-	public static Language getLanguage(@Nonnull final DataContext dataContext)
+	public static Language getLanguage(@Nonnull DataContext dataContext)
 	{
 		return dataContext.getData(LangDataKeys.LANGUAGE);
 	}
 
 	@Nullable
-	public static Project getProject(@Nonnull final DataContext dataContext)
+	public static Project getProject(@Nonnull DataContext dataContext)
 	{
 		return dataContext.getData(CommonDataKeys.PROJECT);
 	}

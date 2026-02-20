@@ -65,7 +65,7 @@ public class ConvertMultilineStringToSingleLineIntention extends Intention {
             old = (GrExpression) element;
         }
         else {
-            final GrStringImpl gstring = (GrStringImpl) element;
+            GrStringImpl gstring = (GrStringImpl) element;
             for (GroovyPsiElement child : gstring.getAllContentParts()) {
                 if (child instanceof GrStringContent) {
                     appendSimpleStringValue(child, buffer, "\"");
@@ -79,8 +79,8 @@ public class ConvertMultilineStringToSingleLineIntention extends Intention {
 
         buffer.append(quote);
         try {
-            final int offset = editor.getCaretModel().getOffset();
-            final TextRange range = old.getTextRange();
+            int offset = editor.getCaretModel().getOffset();
+            TextRange range = old.getTextRange();
             int shift;
 
             if (range.getStartOffset() == offset) {
@@ -99,7 +99,7 @@ public class ConvertMultilineStringToSingleLineIntention extends Intention {
                 shift = -2;
             }
 
-            final GrExpression newLiteral = GroovyPsiElementFactory.getInstance(project).createExpressionFromText
+            GrExpression newLiteral = GroovyPsiElementFactory.getInstance(project).createExpressionFromText
                 (buffer.toString());
             old.replaceWithExpression(newLiteral, true);
 
@@ -113,7 +113,7 @@ public class ConvertMultilineStringToSingleLineIntention extends Intention {
     }
 
     private static void appendSimpleStringValue(PsiElement element, StringBuilder buffer, String quote) {
-        final String text = GrStringUtil.removeQuotes(element.getText());
+        String text = GrStringUtil.removeQuotes(element.getText());
         if ("'".equals(quote)) {
             GrStringUtil.escapeAndUnescapeSymbols(text, "\n'", "", buffer);
         }

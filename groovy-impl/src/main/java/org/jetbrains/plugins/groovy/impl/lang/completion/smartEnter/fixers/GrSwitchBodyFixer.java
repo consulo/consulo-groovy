@@ -35,7 +35,7 @@ public class GrSwitchBodyFixer extends SmartEnterProcessorWithFixers.Fixer<Groov
     if (switchStatement == null || switchStatement.getLBrace() != null) return;
     if (!PsiTreeUtil.isAncestor(switchStatement.getCondition(), psiElement, false)) return;
 
-    final Document doc = editor.getDocument();
+    Document doc = editor.getDocument();
 
     PsiElement lBrace = switchStatement.getLBrace();
     if (lBrace != null) return;

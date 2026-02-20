@@ -33,7 +33,7 @@ public class GrImplicitUsageProvider implements ImplicitUsageProvider
 	{
 		if(element instanceof GrMethod)
 		{
-			final GrMethod method = (GrMethod) element;
+			GrMethod method = (GrMethod) element;
 
 			if(PsiUtil.OPERATOR_METHOD_NAMES.contains(method.getName()))
 			{
@@ -51,9 +51,9 @@ public class GrImplicitUsageProvider implements ImplicitUsageProvider
 		}
 		else if(element instanceof GrParameter)
 		{
-			final GrParameter parameter = (GrParameter) element;
+			GrParameter parameter = (GrParameter) element;
 
-			final PsiElement scope = parameter.getDeclarationScope();
+			PsiElement scope = parameter.getDeclarationScope();
 			if(scope instanceof GrMethod && (MissingMethodAndPropertyUtil.isMethodMissing((GrMethod) scope) || MissingMethodAndPropertyUtil.isPropertyMissing((GrMethod) scope)))
 
 			{

@@ -17,11 +17,11 @@ public class GrVariableJoinLinesHandler extends GrJoinLinesHandlerBase {
   @Override
   public int tryJoinStatements(@Nonnull GrStatement first, @Nonnull GrStatement second) {
     if (first instanceof GrVariableDeclaration && !((GrVariableDeclaration)first).isTuple() && second instanceof GrAssignmentExpression) {
-      final GrExpression lvalue = ((GrAssignmentExpression)second).getLValue();
-      final GrExpression rValue = ((GrAssignmentExpression)second).getRValue();
+      GrExpression lvalue = ((GrAssignmentExpression)second).getLValue();
+      GrExpression rValue = ((GrAssignmentExpression)second).getRValue();
 
       if (lvalue instanceof GrReferenceExpression && rValue != null) {
-        final PsiElement resolved = ((GrReferenceExpression)lvalue).resolve();
+        PsiElement resolved = ((GrReferenceExpression)lvalue).resolve();
         if (ArrayUtil.contains(resolved, ((GrVariableDeclaration)first).getVariables())) {
           assert resolved instanceof GrVariable;
           if (((GrVariable)resolved).getInitializerGroovy() == null) {

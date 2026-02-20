@@ -53,7 +53,7 @@ public class GroovyBraceEnforcer extends GroovyRecursiveElementVisitor {
     myPostProcessor = new PostFormatProcessorHelper(settings.getCommonSettings(GroovyFileType.GROOVY_LANGUAGE));
   }
 
-  public TextRange processText(final GroovyFile source, final TextRange rangeToReformat) {
+  public TextRange processText(GroovyFile source, TextRange rangeToReformat) {
     myPostProcessor.setResultTextRange(rangeToReformat);
     source.accept(this);
     return myPostProcessor.getResultTextRange();
@@ -72,7 +72,7 @@ public class GroovyBraceEnforcer extends GroovyRecursiveElementVisitor {
 
     if (!checkRangeContainsElement(blockCandidate)) return;
 
-    final PsiManager manager = statement.getManager();
+    PsiManager manager = statement.getManager();
     LOG.assertTrue(manager != null);
     GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(manager.getProject());
 
@@ -84,7 +84,7 @@ public class GroovyBraceEnforcer extends GroovyRecursiveElementVisitor {
     StringBuilder buf = new StringBuilder(oldText.length() + 5);
     buf.append("{\n").append(oldText);
     buf.append("\n}");
-    final int oldTextLength = statement.getTextLength();
+    int oldTextLength = statement.getTextLength();
     try {
       ASTNode newChild = SourceTreeToPsiMap.psiElementToTree(factory.createBlockStatementFromText(buf.toString(), null));
       ASTNode parent = SourceTreeToPsiMap.psiElementToTree(statement);
@@ -114,15 +114,15 @@ public class GroovyBraceEnforcer extends GroovyRecursiveElementVisitor {
   }
 
 
-  protected void updateResultRange(final int oldTextLength, final int newTextLength) {
+  protected void updateResultRange(int oldTextLength, int newTextLength) {
     myPostProcessor.updateResultRange(oldTextLength, newTextLength);
   }
 
-  protected boolean checkElementContainsRange(final PsiElement element) {
+  protected boolean checkElementContainsRange(PsiElement element) {
     return myPostProcessor.isElementPartlyInRange(element);
   }
 
-  protected boolean checkRangeContainsElement(final PsiElement element) {
+  protected boolean checkRangeContainsElement(PsiElement element) {
     return myPostProcessor.isElementFullyInRange(element);
   }
 
@@ -137,14 +137,14 @@ public class GroovyBraceEnforcer extends GroovyRecursiveElementVisitor {
   @Override
   public void visitIfStatement(GrIfStatement statement) {
     if (checkElementContainsRange(statement)) {
-      final SmartPsiElementPointer pointer =
+      SmartPsiElementPointer pointer =
         SmartPointerManager.getInstance(statement.getProject()).createSmartPsiElementPointer(statement);
       super.visitIfStatement(statement);
       statement = (GrIfStatement)pointer.getElement();
       if (statement == null) return;
 
       processStatement(statement, statement.getThenBranch(), myPostProcessor.getSettings().IF_BRACE_FORCE);
-      final GrStatement elseBranch = statement.getElseBranch();
+      GrStatement elseBranch = statement.getElseBranch();
       if (!(elseBranch instanceof GrIfStatement) || !myPostProcessor.getSettings().SPECIAL_ELSE_IF_TREATMENT) {
         processStatement(statement, elseBranch, myPostProcessor.getSettings().IF_BRACE_FORCE);
       }

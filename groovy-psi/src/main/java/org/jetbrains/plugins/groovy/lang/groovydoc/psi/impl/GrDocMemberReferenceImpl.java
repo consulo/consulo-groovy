@@ -126,8 +126,8 @@ public abstract class GrDocMemberReferenceImpl extends GroovyDocPsiElementImpl i
 
   @RequiredReadAction
   public TextRange getRangeInElement() {
-    final PsiElement refNameElement = getReferenceNameElement();
-    final int offsetInParent = refNameElement.getStartOffsetInParent();
+    PsiElement refNameElement = getReferenceNameElement();
+    int offsetInParent = refNameElement.getStartOffsetInParent();
     return new TextRange(offsetInParent, offsetInParent + refNameElement.getTextLength());
   }
 

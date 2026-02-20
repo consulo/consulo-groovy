@@ -52,7 +52,7 @@ public class GrStringUtil {
   }
 
   public static String unescapeString(String s) {
-    final int length = s.length();
+    int length = s.length();
     StringBuilder buffer = new StringBuilder(length);
     boolean escaped = false;
     for (int idx = 0; idx < length; idx++) {
@@ -139,7 +139,7 @@ public class GrStringUtil {
   }
 
   private static String unescapeRegex(String s, boolean unescapeSlash) {
-    final int length = s.length();
+    int length = s.length();
     StringBuilder buffer = new StringBuilder(length);
 
     boolean escaped = false;
@@ -191,13 +191,13 @@ public class GrStringUtil {
   }
 
   public static String escapeSymbolsForSlashyStrings(String str) {
-    final StringBuilder buffer = new StringBuilder(str.length());
+    StringBuilder buffer = new StringBuilder(str.length());
     escapeSymbolsForSlashyStrings(buffer, str);
     return buffer.toString();
   }
 
   public static void escapeSymbolsForSlashyStrings(StringBuilder buffer, String str) {
-    final int length = str.length();
+    int length = str.length();
     for (int idx = 0; idx < length; idx++) {
       char ch = str.charAt(idx);
       switch (ch) {
@@ -216,13 +216,13 @@ public class GrStringUtil {
   }
 
   public static String escapeSymbolsForDollarSlashyStrings(String str) {
-    final StringBuilder buffer = new StringBuilder(str.length());
+    StringBuilder buffer = new StringBuilder(str.length());
     escapeSymbolsForDollarSlashyStrings(buffer, str);
     return buffer.toString();
   }
 
   public static void escapeSymbolsForDollarSlashyStrings(StringBuilder buffer, String str) {
-    final int length = str.length();
+    int length = str.length();
     for (int idx = 0; idx < length; idx++) {
       char ch = str.charAt(idx);
       switch (ch) {
@@ -268,7 +268,7 @@ public class GrStringUtil {
   }
 
   public static String escapeSymbolsForString(String s, boolean isSingleLine, boolean forInjection) {
-    final StringBuilder builder = new StringBuilder();
+    StringBuilder builder = new StringBuilder();
     escapeStringCharacters(s.length(), s, isSingleLine ? "'" : "", isSingleLine, true, builder);
     if (!forInjection) {
       unescapeCharacters(builder, isSingleLine ? "$\"" : "$'\"", true);
@@ -455,14 +455,14 @@ public class GrStringUtil {
   public static GrString replaceStringInjectionByLiteral(GrStringInjection injection, GrLiteral literal) {
     GrString grString = (GrString)injection.getParent();
 
-    final GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(grString.getProject());
+    GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(grString.getProject());
 
     String literalText;
 
     //wrap last injection in inserted literal if it needed
     // e.g.: "bla bla ${foo}bla bla" and {foo} is replaced
     if (literal instanceof GrString) {
-      final GrStringInjection[] injections = ((GrString)literal).getInjections();
+      GrStringInjection[] injections = ((GrString)literal).getInjections();
       if (injections.length > 0) {
         GrStringInjection last = injections[injections.length - 1];
         if (last.getExpression() != null) {
@@ -474,7 +474,7 @@ public class GrStringUtil {
       literalText = removeQuotes(literal.getText());
     }
     else {
-      final String text = removeQuotes(literal.getText());
+      String text = removeQuotes(literal.getText());
       boolean escapeDoubleQuotes = !text.contains("\n") && grString.isPlainString();
       literalText = escapeSymbolsForGString(text, escapeDoubleQuotes, true);
     }
@@ -483,13 +483,13 @@ public class GrStringUtil {
       wrapGStringInto(grString, TRIPLE_DOUBLE_QUOTES);
     }
 
-    final GrExpression expression = factory.createExpressionFromText("\"\"\"${}" + literalText + "\"\"\"");
+    GrExpression expression = factory.createExpressionFromText("\"\"\"${}" + literalText + "\"\"\"");
 
     expression.getFirstChild().delete();//quote
     expression.getFirstChild().delete();//empty gstring content
     expression.getFirstChild().delete();//empty injection
 
-    final ASTNode node = grString.getNode();
+    ASTNode node = grString.getNode();
     if (expression.getFirstChild() != null) {
       if (expression.getFirstChild() == expression.getLastChild()) {
         node.replaceChild(injection.getNode(), expression.getFirstChild().getNode());
@@ -504,10 +504,10 @@ public class GrStringUtil {
 
   private static void wrapGStringInto(GrString grString, String quotes) {
     GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(grString.getProject());
-    final PsiElement firstChild = grString.getFirstChild();
-    final PsiElement lastChild = grString.getLastChild();
+    PsiElement firstChild = grString.getFirstChild();
+    PsiElement lastChild = grString.getLastChild();
 
-    final GrExpression template = factory.createExpressionFromText(quotes + "$x" + quotes);
+    GrExpression template = factory.createExpressionFromText(quotes + "$x" + quotes);
     if (firstChild != null &&
         firstChild.getNode().getElementType() == GroovyTokenTypes.mGSTRING_BEGIN &&
         !quotes.equals(firstChild.getText())) {
@@ -521,20 +521,20 @@ public class GrStringUtil {
   }
 
   public static void wrapInjection(GrStringInjection injection) {
-    final GrExpression expression = injection.getExpression();
+    GrExpression expression = injection.getExpression();
     LOG.assertTrue(expression != null);
-    final GroovyPsiElementFactory instance = GroovyPsiElementFactory.getInstance(injection.getProject());
-    final GrClosableBlock closure = instance.createClosureFromText("{foo}");
+    GroovyPsiElementFactory instance = GroovyPsiElementFactory.getInstance(injection.getProject());
+    GrClosableBlock closure = instance.createClosureFromText("{foo}");
     closure.getNode().replaceChild(closure.getStatements()[0].getNode(), expression.getNode());
     injection.getNode().addChild(closure.getNode());
     CodeEditUtil.setNodeGeneratedRecursively(expression.getNode(), true);
   }
 
   public static boolean checkGStringInjectionForUnnecessaryBraces(GrStringInjection injection) {
-    final GrClosableBlock block = injection.getClosableBlock();
+    GrClosableBlock block = injection.getClosableBlock();
     if (block == null) return false;
 
-    final GrStatement[] statements = block.getStatements();
+    GrStatement[] statements = block.getStatements();
     if (statements.length != 1) return false;
 
     if (!(statements[0] instanceof GrReferenceExpression)) return false;
@@ -549,8 +549,8 @@ public class GrStringUtil {
     if (nextChar == '"' || nextChar == '$') {
       return true;
     }
-    final GroovyPsiElementFactory elementFactory = GroovyPsiElementFactory.getInstance(injected.getProject());
-    final GrExpression gString;
+    GroovyPsiElementFactory elementFactory = GroovyPsiElementFactory.getInstance(injected.getProject());
+    GrExpression gString;
     try {
       gString = elementFactory.createExpressionFromText("\"$" + injected.getText() + next.getText() + '"');
     }
@@ -568,20 +568,20 @@ public class GrStringUtil {
     child = child.getNextSibling();
     if (child == null || !(child instanceof GrStringInjection)) return false;
 
-    final PsiElement refExprCopy = ((GrStringInjection)child).getExpression();
+    PsiElement refExprCopy = ((GrStringInjection)child).getExpression();
     if (!(refExprCopy instanceof GrReferenceExpression)) return false;
 
-    final GrReferenceExpression refExpr = (GrReferenceExpression)injected;
+    GrReferenceExpression refExpr = (GrReferenceExpression)injected;
     return PsiUtil.checkPsiElementsAreEqual(refExpr, refExprCopy);
   }
 
   public static void removeUnnecessaryBracesInGString(GrString grString) {
     for (GrStringInjection child : grString.getInjections()) {
       if (checkGStringInjectionForUnnecessaryBraces(child)) {
-        final GrClosableBlock closableBlock = child.getClosableBlock();
-        final GrReferenceExpression refExpr = (GrReferenceExpression)closableBlock.getStatements()[0];
-        final GrReferenceExpression copy = (GrReferenceExpression)refExpr.copy();
-        final ASTNode oldNode = closableBlock.getNode();
+        GrClosableBlock closableBlock = child.getClosableBlock();
+        GrReferenceExpression refExpr = (GrReferenceExpression)closableBlock.getStatements()[0];
+        GrReferenceExpression copy = (GrReferenceExpression)refExpr.copy();
+        ASTNode oldNode = closableBlock.getNode();
         oldNode.getTreeParent().replaceChild(oldNode, copy.getNode());
       }
     }
@@ -624,7 +624,7 @@ public class GrStringUtil {
     }
 
     int index = 0;
-    final int outOffset = outChars.length();
+    int outOffset = outChars.length();
     while (index < chars.length()) {
       char c = chars.charAt(index++);
       if (sourceOffsets != null) {
@@ -710,7 +710,7 @@ public class GrStringUtil {
       return true;
     }
     int index = 0;
-    final int outOffset = outChars.length();
+    int outOffset = outChars.length();
     while (index < chars.length()) {
       char c = chars.charAt(index++);
       if (sourceOffsets != null) {
@@ -822,7 +822,7 @@ public class GrStringUtil {
   }
 
   public static GrLiteral createStringFromRegex(@Nonnull GrLiteral regex) {
-    final GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(regex.getProject());
+    GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(regex.getProject());
 
 
     if (regex instanceof GrRegex) {
@@ -830,7 +830,7 @@ public class GrStringUtil {
       String quote = regex.getText().indexOf('\n') >= 0 ? TRIPLE_DOUBLE_QUOTES : DOUBLE_QUOTES;
       builder.append(quote);
       for (PsiElement child = regex.getFirstChild(); child!=null; child = child.getNextSibling()) {
-        final IElementType type = child.getNode().getElementType();
+        IElementType type = child.getNode().getElementType();
         if (type == GroovyTokenTypes.mREGEX_CONTENT || type == GroovyElementTypes.GSTRING_CONTENT) {
           builder.append(escapeSymbolsForGString(unescapeSlashyString(child.getText()), quote.equals(DOUBLE_QUOTES), true));
         }
@@ -855,7 +855,7 @@ public class GrStringUtil {
   }
 
   public static boolean isWellEndedString(PsiElement element) {
-    final String text = element.getText();
+    String text = element.getText();
 
     if (!(text.endsWith("'") ||
           text.endsWith("\"") ||
@@ -867,13 +867,13 @@ public class GrStringUtil {
     }
 
 
-    final IElementType type = element.getNode().getElementType();
+    IElementType type = element.getNode().getElementType();
     if (TokenSets.STRING_LITERAL_SET.contains(type)) return true;
 
-    final PsiElement lastChild = element.getLastChild();
+    PsiElement lastChild = element.getLastChild();
     if (lastChild == null) return false;
 
-    final IElementType lastType = lastChild.getNode().getElementType();
+    IElementType lastType = lastChild.getNode().getElementType();
     if (type == GroovyElementTypes.GSTRING) return lastType == GroovyTokenTypes.mGSTRING_END;
     if (type == GroovyElementTypes.REGEX) return lastType == GroovyTokenTypes.mREGEX_END || lastType ==
                                                                                             GroovyTokenTypes.mDOLLAR_SLASH_REGEX_END;

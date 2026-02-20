@@ -107,7 +107,7 @@ public class ConfigSlurperMapContentProvider extends GroovyMapContentProvider
 			return Collections.emptyList();
 		}
 
-		final Set<String> res = new HashSet<String>();
+		Set<String> res = new HashSet<String>();
 
 		info.first.collectVariants(info.second, (variant, isFinal) -> res.add(variant));
 
@@ -115,7 +115,7 @@ public class ConfigSlurperMapContentProvider extends GroovyMapContentProvider
 	}
 
 	@Override
-	public PsiType getValueType(@Nonnull GrExpression qualifier, @Nullable PsiElement resolve, @Nonnull final String key)
+	public PsiType getValueType(@Nonnull GrExpression qualifier, @Nullable PsiElement resolve, @Nonnull String key)
 	{
 		Pair<ConfigSlurperSupport.PropertiesProvider, List<String>> info = getInfo(qualifier, resolve);
 		if(info == null)
@@ -123,7 +123,7 @@ public class ConfigSlurperMapContentProvider extends GroovyMapContentProvider
 			return null;
 		}
 
-		final Ref<Boolean> res = new Ref<Boolean>();
+		Ref<Boolean> res = new Ref<Boolean>();
 
 		info.first.collectVariants(info.second, (variant, isFinal) -> {
 			if(variant.equals(key))

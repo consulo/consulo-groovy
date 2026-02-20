@@ -67,7 +67,7 @@ public class ConvertStringToMultilineIntention extends Intention {
     @Override
     protected void processIntention(@Nonnull PsiElement element, final Project project, final Editor editor)
         throws IncorrectOperationException {
-        final List<GrExpression> expressions;
+        List<GrExpression> expressions;
         if (editor.getSelectionModel().hasSelection()) {
             expressions = Collections.singletonList(((GrExpression) element));
         }
@@ -82,12 +82,12 @@ public class ConvertStringToMultilineIntention extends Intention {
             invokeImpl(expressions.get(expressions.size() - 1), project, editor);
         }
         else {
-            final Consumer<GrExpression> callback = new Consumer<GrExpression>() {
-                public void accept(@Nonnull final GrExpression selectedValue) {
+            Consumer<GrExpression> callback = new Consumer<GrExpression>() {
+                public void accept(@Nonnull GrExpression selectedValue) {
                     invokeImpl(selectedValue, project, editor);
                 }
             };
-            final Function<GrExpression, String> renderer = grExpression -> grExpression.getText();
+            Function<GrExpression, String> renderer = grExpression -> grExpression.getText();
             IntroduceTargetChooser.showChooser(editor, expressions, callback, renderer);
         }
     }
@@ -98,7 +98,7 @@ public class ConvertStringToMultilineIntention extends Intention {
         List<GrExpression> result = ContainerUtil.newArrayList();
         result.add((GrExpression) element);
         while (element.getParent() instanceof GrBinaryExpression) {
-            final GrBinaryExpression binary = (GrBinaryExpression) element.getParent();
+            GrBinaryExpression binary = (GrBinaryExpression) element.getParent();
             if (!isAppropriateBinary(binary, element)) {
                 break;
             }
@@ -111,8 +111,8 @@ public class ConvertStringToMultilineIntention extends Intention {
 
     private static boolean isAppropriateBinary(@Nonnull GrBinaryExpression binary, @Nullable PsiElement prevChecked) {
         if (binary.getOperationTokenType() == GroovyTokenTypes.mPLUS) {
-            final GrExpression left = binary.getLeftOperand();
-            final GrExpression right = binary.getRightOperand();
+            GrExpression left = binary.getLeftOperand();
+            GrExpression right = binary.getRightOperand();
             if ((left != prevChecked || containsOnlyLiterals(right)) &&
                 (right != prevChecked || containsOnlyLiterals(left))) {
                 return true;
@@ -124,7 +124,7 @@ public class ConvertStringToMultilineIntention extends Intention {
 
     private static boolean containsOnlyLiterals(@Nullable GrExpression expression) {
         if (expression instanceof GrLiteral) {
-            final String text = expression.getText();
+            String text = expression.getText();
             if ("'".equals(GrStringUtil.getStartQuote(text))) {
                 return true;
             }
@@ -133,13 +133,13 @@ public class ConvertStringToMultilineIntention extends Intention {
             }
         }
         else if (expression instanceof GrBinaryExpression) {
-            final IElementType type = ((GrBinaryExpression) expression).getOperationTokenType();
+            IElementType type = ((GrBinaryExpression) expression).getOperationTokenType();
             if (type != GroovyTokenTypes.mPLUS) {
                 return false;
             }
 
-            final GrExpression left = ((GrBinaryExpression) expression).getLeftOperand();
-            final GrExpression right = ((GrBinaryExpression) expression).getRightOperand();
+            GrExpression left = ((GrBinaryExpression) expression).getLeftOperand();
+            GrExpression right = ((GrBinaryExpression) expression).getRightOperand();
 
             return containsOnlyLiterals(left) && containsOnlyLiterals(right);
         }
@@ -160,7 +160,7 @@ public class ConvertStringToMultilineIntention extends Intention {
     }
 
     private void invokeImpl(@Nonnull final GrExpression element, @Nonnull final Project project, @Nonnull final Editor editor) {
-        final List<GrLiteral> literals = collectOperands(element, ContainerUtil.<GrLiteral>newArrayList());
+        List<GrLiteral> literals = collectOperands(element, ContainerUtil.<GrLiteral>newArrayList());
         if (literals.size() == 0) {
             return;
         }
@@ -174,8 +174,8 @@ public class ConvertStringToMultilineIntention extends Intention {
                         @Override
                         public void run() {
                             try {
-                                final int offset = editor.getCaretModel().getOffset();
-                                final TextRange range = element.getTextRange();
+                                int offset = editor.getCaretModel().getOffset();
+                                TextRange range = element.getTextRange();
                                 int shift;
                                 if (editor.getSelectionModel().hasSelection()) {
                                     shift = 0;
@@ -190,7 +190,7 @@ public class ConvertStringToMultilineIntention extends Intention {
                                     shift = 2;
                                 }
 
-                                final GrExpression newLiteral =
+                                GrExpression newLiteral =
                                     GroovyPsiElementFactory.getInstance(project).createExpressionFromText(buffer.toString());
 
                                 element.replaceWithExpression(newLiteral, true);
@@ -214,7 +214,7 @@ public class ConvertStringToMultilineIntention extends Intention {
     private static StringBuilder prepareNewLiteralText(List<GrLiteral> literals) {
         String quote = !containsInjections(literals) && literals.get(0).getText().startsWith("'") ? "'''" : "\"\"\"";
 
-        final StringBuilder buffer = new StringBuilder();
+        StringBuilder buffer = new StringBuilder();
         buffer.append(quote);
 
         for (GrLiteral literal : literals) {
@@ -222,7 +222,7 @@ public class ConvertStringToMultilineIntention extends Intention {
                 appendSimpleStringValue(literal, buffer, quote);
             }
             else {
-                final GrStringImpl gstring = (GrStringImpl) literal;
+                GrStringImpl gstring = (GrStringImpl) literal;
                 for (ASTNode child = gstring.getNode().getFirstChildNode(); child != null; child = child.getTreeNext()) {
                     if (child.getElementType() == GroovyTokenTypes.mGSTRING_CONTENT) {
                         appendSimpleStringValue(child.getPsi(), buffer, "\"\"\"");
@@ -249,8 +249,8 @@ public class ConvertStringToMultilineIntention extends Intention {
 
 
     private static void appendSimpleStringValue(PsiElement element, StringBuilder buffer, String quote) {
-        final String text = GrStringUtil.removeQuotes(element.getText());
-        final int position = buffer.length();
+        String text = GrStringUtil.removeQuotes(element.getText());
+        int position = buffer.length();
         if ("'''".equals(quote)) {
             GrStringUtil.escapeAndUnescapeSymbols(text, "", "'n", buffer);
             GrStringUtil.fixAllTripleQuotes(buffer, position);

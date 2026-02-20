@@ -29,7 +29,7 @@ import jakarta.annotation.Nullable;
 public class AnnotationArgConverter {
   @Nullable
   public GrAnnotationMemberValue convert(PsiAnnotationMemberValue value) {
-    final StringBuilder buffer = new StringBuilder();
+    StringBuilder buffer = new StringBuilder();
 
     buffer.append("@A(");
     generateText(value, buffer);

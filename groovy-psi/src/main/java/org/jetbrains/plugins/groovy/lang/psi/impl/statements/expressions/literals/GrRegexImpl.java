@@ -66,8 +66,8 @@ public class GrRegexImpl extends GrStringImpl implements GrRegex {
       return null;
     }
 
-    final StringBuilder chars = new StringBuilder();
-    final boolean isDollarSlash = child.getNode().getElementType() == GroovyTokenTypes.mREGEX_CONTENT;
+    StringBuilder chars = new StringBuilder();
+    boolean isDollarSlash = child.getNode().getElementType() == GroovyTokenTypes.mREGEX_CONTENT;
     GrStringUtil.parseRegexCharacters(child.getText(), chars, null, isDollarSlash);
     return chars.toString();
   }

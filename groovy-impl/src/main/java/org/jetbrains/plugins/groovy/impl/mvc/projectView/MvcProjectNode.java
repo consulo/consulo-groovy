@@ -35,7 +35,7 @@ import java.util.List;
 public class MvcProjectNode extends AbstractProjectNode {
   private final MvcToolWindowDescriptor myDescriptor;
 
-  public MvcProjectNode(final Project project, final ViewSettings viewSettings, MvcToolWindowDescriptor descriptor) {
+  public MvcProjectNode(Project project, ViewSettings viewSettings, MvcToolWindowDescriptor descriptor) {
     super(project, project, viewSettings);
     myDescriptor = descriptor;
   }
@@ -46,7 +46,7 @@ public class MvcProjectNode extends AbstractProjectNode {
 
     modules = myDescriptor.getFramework().reorderModulesForMvcView(modules);
     
-    final ArrayList<AbstractTreeNode> nodes = new ArrayList<AbstractTreeNode>();
+    ArrayList<AbstractTreeNode> nodes = new ArrayList<AbstractTreeNode>();
     for (Module module : modules) {
       nodes.add(new MvcModuleNode(module, getSettings(), myDescriptor));
     }
@@ -58,11 +58,11 @@ public class MvcProjectNode extends AbstractProjectNode {
     return true;
   }
 
-  protected AbstractTreeNode createModuleGroup(final Module module) {
+  protected AbstractTreeNode createModuleGroup(Module module) {
     return new MvcProjectNode(getProject(), getSettings(), myDescriptor);
   }
 
-  protected AbstractTreeNode createModuleGroupNode(final ModuleGroup moduleGroup) {
+  protected AbstractTreeNode createModuleGroupNode(ModuleGroup moduleGroup) {
     return new MvcProjectNode(getProject(), getSettings(), myDescriptor);
   }
 

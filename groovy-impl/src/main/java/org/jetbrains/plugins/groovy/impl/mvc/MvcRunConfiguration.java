@@ -61,9 +61,9 @@ public abstract class MvcRunConfiguration extends ModuleBasedConfiguration<RunCo
   public final Map<String, String> envs = new HashMap<String, String>();
   public boolean passParentEnv = true;
 
-  public MvcRunConfiguration(final String name,
-                             final RunConfigurationModule configurationModule,
-                             final ConfigurationFactory factory,
+  public MvcRunConfiguration(String name,
+                             RunConfigurationModule configurationModule,
+                             ConfigurationFactory factory,
                              MvcFramework framework) {
     super(name, configurationModule, factory);
     myFramework = framework;
@@ -194,7 +194,7 @@ public abstract class MvcRunConfiguration extends ModuleBasedConfiguration<RunCo
   }
 
   public void checkConfiguration() throws RuntimeConfigurationException {
-    final Module module = getModule();
+    Module module = getModule();
     if (module == null) {
       throw new RuntimeConfigurationException("Module not specified");
     }
@@ -213,7 +213,7 @@ public abstract class MvcRunConfiguration extends ModuleBasedConfiguration<RunCo
   }
 
   public RunProfileState getState(@Nonnull Executor executor, @Nonnull ExecutionEnvironment environment) throws ExecutionException {
-    final Module module = getModule();
+    Module module = getModule();
     if (module == null) {
       throw new ExecutionException("Module is not specified");
     }
@@ -222,12 +222,12 @@ public abstract class MvcRunConfiguration extends ModuleBasedConfiguration<RunCo
       throw new ExecutionException(getNoSdkMessage());
     }
 
-    final Sdk sdk = ModuleUtilCore.getSdk(module, JavaModuleExtension.class);
+    Sdk sdk = ModuleUtilCore.getSdk(module, JavaModuleExtension.class);
     if (sdk == null) {
       throw CantRunException.noJdkForModule(module);
     }
 
-    final JavaCommandLineState state = createCommandLineState(environment, module);
+    JavaCommandLineState state = createCommandLineState(environment, module);
     state.setConsoleBuilder(TextConsoleBuilderFactory.getInstance().createBuilder(getProject()));
     return state;
 
@@ -263,7 +263,7 @@ public abstract class MvcRunConfiguration extends ModuleBasedConfiguration<RunCo
       myCmdLine = cmdLine;
     }
 
-    protected void addEnvVars(final OwnJavaParameters params) {
+    protected void addEnvVars(OwnJavaParameters params) {
       Map<String, String> envVars = new HashMap<String, String>(envs);
 
       Map<String, String> oldEnv = params.getEnv();
@@ -286,7 +286,7 @@ public abstract class MvcRunConfiguration extends ModuleBasedConfiguration<RunCo
     @Override
     protected void setupProcessHandler(@Nonnull ProcessHandler handler) {
       super.setupProcessHandler(handler);
-      final RunnerSettings runnerSettings = getRunnerSettings();
+      RunnerSettings runnerSettings = getRunnerSettings();
       JavaRunConfigurationExtensionManager.getInstance().attachExtensionsToProcess(MvcRunConfiguration.this, handler, runnerSettings);
     }
 
@@ -302,7 +302,7 @@ public abstract class MvcRunConfiguration extends ModuleBasedConfiguration<RunCo
     protected OwnJavaParameters createJavaParametersMVC() throws ExecutionException {
       MvcCommand cmd = MvcCommand.parse(myCmdLine);
 
-      final OwnJavaParameters params = myFramework.createJavaParameters(myModule, false, myForTests, depsClasspath, vmParams, cmd);
+      OwnJavaParameters params = myFramework.createJavaParameters(myModule, false, myForTests, depsClasspath, vmParams, cmd);
 
       addEnvVars(params);
 

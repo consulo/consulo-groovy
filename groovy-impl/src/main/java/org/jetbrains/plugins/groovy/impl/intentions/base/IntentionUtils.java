@@ -114,15 +114,15 @@ public class IntentionUtils {
           @Override
           public void run() {
             PsiDocumentManager.getInstance(project).commitDocument(newEditor.getDocument());
-            final int offset = newEditor.getCaretModel().getOffset();
+            int offset = newEditor.getCaretModel().getOffset();
             PsiMethod method = PsiTreeUtil.findElementOfClassAtOffset(targetFile, offset - 1,
                                                                       PsiMethod.class, false);
             if (context instanceof PsiMethod) {
-              final PsiTypeParameter[] typeParameters = ((PsiMethod)context).getTypeParameters();
+              PsiTypeParameter[] typeParameters = ((PsiMethod)context).getTypeParameters();
               if (typeParameters.length > 0) {
                 for (PsiTypeParameter typeParameter : typeParameters) {
                   if (CreateMethodFromUsageFix.checkTypeParam(method, typeParameter)) {
-                    final JVMElementFactory factory = JVMElementFactories.getFactory(method
+                    JVMElementFactory factory = JVMElementFactories.getFactory(method
                                                                                        .getLanguage(), method.getProject());
                     PsiTypeParameterList list = method.getTypeParameterList();
                     if (list == null) {
@@ -138,7 +138,7 @@ public class IntentionUtils {
             }
             if (method != null) {
               try {
-                final boolean hasNoReturnType = method.getReturnTypeElement() == null && method
+                boolean hasNoReturnType = method.getReturnTypeElement() == null && method
                   instanceof GrMethod;
                 if (hasNoReturnType) {
                   ((GrMethod)method).setReturnType(PsiType.VOID);

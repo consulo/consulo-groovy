@@ -47,12 +47,12 @@ public class GroovyEditorTextProvider implements EditorTextProvider {
     PsiElement element = findExpressionInner(elementAtCaret, true);
     if (element != null) {
       if (element instanceof GrReferenceExpression) {
-        final GrReferenceExpression reference = (GrReferenceExpression)element;
+        GrReferenceExpression reference = (GrReferenceExpression)element;
         if (reference.getQualifier() == null) {
-          final PsiElement resolved = reference.resolve();
+          PsiElement resolved = reference.resolve();
           if (resolved instanceof PsiEnumConstant) {
-            final PsiEnumConstant enumConstant = (PsiEnumConstant)resolved;
-            final PsiClass enumClass = enumConstant.getContainingClass();
+            PsiEnumConstant enumConstant = (PsiEnumConstant)resolved;
+            PsiClass enumClass = enumConstant.getContainingClass();
             if (enumClass != null) {
               result = enumClass.getName() + "." + enumConstant.getName();
             }
@@ -73,7 +73,7 @@ public class GroovyEditorTextProvider implements EditorTextProvider {
       return element;
     }
     else if (parent instanceof GrReferenceExpression) {
-      final PsiElement pparent = parent.getParent();
+      PsiElement pparent = parent.getParent();
       if (pparent instanceof GrCall) {
         parent = pparent;
       }

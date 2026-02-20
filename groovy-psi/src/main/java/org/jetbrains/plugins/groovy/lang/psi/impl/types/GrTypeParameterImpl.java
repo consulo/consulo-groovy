@@ -99,7 +99,7 @@ public class GrTypeParameterImpl extends GrStubElementBase<GrTypeParameterStub> 
 
   @Override
   public String[] getSuperClassNames() {
-    final PsiReference[] types = getExtendsList().getReferences();
+    PsiReference[] types = getExtendsList().getReferences();
     List<String> names = new ArrayList<String>(types.length);
     for (PsiReference type : types) {
       names.add(type.getCanonicalText());
@@ -164,7 +164,7 @@ public class GrTypeParameterImpl extends GrStubElementBase<GrTypeParameterStub> 
   @Override
   @Nonnull
   public PsiReferenceList getExtendsList() {
-    final GrTypeParameterParameterExtendsListImpl list = findChildByClass(GrTypeParameterParameterExtendsListImpl
+    GrTypeParameterParameterExtendsListImpl list = findChildByClass(GrTypeParameterParameterExtendsListImpl
                                                                             .class);
     assert list != null;
     return list;
@@ -367,11 +367,11 @@ public class GrTypeParameterImpl extends GrStubElementBase<GrTypeParameterStub> 
 
   @Override
   public PsiTypeParameterListOwner getOwner() {
-    final PsiElement parent = getParent();
+    PsiElement parent = getParent();
     if (parent == null) {
       throw new PsiInvalidElementAccessException(this);
     }
-    final PsiElement parentParent = parent.getParent();
+    PsiElement parentParent = parent.getParent();
     if (!(parentParent instanceof PsiTypeParameterListOwner)) {
       return null;
     }
@@ -380,7 +380,7 @@ public class GrTypeParameterImpl extends GrStubElementBase<GrTypeParameterStub> 
 
   @Override
   public int getIndex() {
-    final GrTypeParameterList list = (GrTypeParameterList)getParent();
+    GrTypeParameterList list = (GrTypeParameterList)getParent();
     return list.getTypeParameterIndex(this);
   }
 
@@ -439,7 +439,7 @@ public class GrTypeParameterImpl extends GrStubElementBase<GrTypeParameterStub> 
 
   @Override
   public String getName() {
-    final GrTypeParameterStub stub = getStub();
+    GrTypeParameterStub stub = getStub();
     if (stub != null) {
       return stub.getName();
     }

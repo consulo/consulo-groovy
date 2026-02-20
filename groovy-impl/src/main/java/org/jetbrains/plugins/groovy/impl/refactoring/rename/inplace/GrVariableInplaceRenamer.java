@@ -42,11 +42,11 @@ public class GrVariableInplaceRenamer extends VariableInplaceRenamer
   protected void renameSynthetic(String newName) {
     PsiNamedElement elementToRename = getVariable();
     if (elementToRename instanceof ClosureSyntheticParameter && !"it".equals(newName)) {
-      final GrClosableBlock closure = ((ClosureSyntheticParameter)elementToRename).getClosure();
-      final GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(myProject);
-      final PsiType type = ((ClosureSyntheticParameter)elementToRename).getTypeGroovy();
-      final GrParameter newParam = factory.createParameter(newName, TypesUtil.unboxPrimitiveTypeWrapper(type));
-      final GrParameter added = closure.addParameter(newParam);
+      GrClosableBlock closure = ((ClosureSyntheticParameter)elementToRename).getClosure();
+      GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(myProject);
+      PsiType type = ((ClosureSyntheticParameter)elementToRename).getTypeGroovy();
+      GrParameter newParam = factory.createParameter(newName, TypesUtil.unboxPrimitiveTypeWrapper(type));
+      GrParameter added = closure.addParameter(newParam);
       JavaCodeStyleManager.getInstance(added.getProject()).shortenClassReferences(added);
     }
   }

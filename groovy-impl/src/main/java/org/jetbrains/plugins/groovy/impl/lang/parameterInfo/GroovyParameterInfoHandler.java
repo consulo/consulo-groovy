@@ -111,7 +111,7 @@ public class GroovyParameterInfoHandler implements ParameterInfoHandlerWithTabAc
 
     GroovyPsiElement argList = PsiTreeUtil.getParentOfType(element, GrArgumentList.class);
     if (argList != null) return argList;
-    final GrCall call = PsiTreeUtil.getParentOfType(element, GrCall.class);
+    GrCall call = PsiTreeUtil.getParentOfType(element, GrCall.class);
     if (call != null) {
       argList = call.getArgumentList();
       if (argList != null && argList.getTextRange().contains(element.getTextRange().getStartOffset())) return argList;
@@ -129,12 +129,12 @@ public class GroovyParameterInfoHandler implements ParameterInfoHandlerWithTabAc
   public void showParameterInfo(@Nonnull GroovyPsiElement place, @Nonnull CreateParameterInfoContext context) {
     GroovyResolveResult[] variants = ResolveUtil.getCallVariants(place);
 
-    final List elementToShow = new ArrayList();
-    final PsiElement parent = place.getParent();
+    List elementToShow = new ArrayList();
+    PsiElement parent = place.getParent();
     if (parent instanceof GrMethodCall) {
-      final GrExpression invoked = ((GrMethodCall)parent).getInvokedExpression();
+      GrExpression invoked = ((GrMethodCall)parent).getInvokedExpression();
       if (isPropertyOrVariableInvoked(invoked)) {
-        final PsiType type = invoked.getType();
+        PsiType type = invoked.getType();
         if (type instanceof GrClosureType) {
           addSignatureVariant(elementToShow, (GrClosureType)type);
         }
@@ -158,12 +158,12 @@ public class GroovyParameterInfoHandler implements ParameterInfoHandlerWithTabAc
 
   private static void addMethodAndClosureVariants(@Nonnull List<Object> elementToShow, @Nonnull GroovyResolveResult[] variants) {
     for (GroovyResolveResult variant : variants) {
-      final PsiElement element = variant.getElement();
+      PsiElement element = variant.getElement();
       if (element instanceof PsiMethod) {
         elementToShow.add(variant);
       }
       else if (element instanceof GrVariable) {
-        final PsiType type = ((GrVariable)element).getTypeGroovy();
+        PsiType type = ((GrVariable)element).getTypeGroovy();
         if (type instanceof GrClosureType) {
           addSignatureVariant(elementToShow, (GrClosureType)type);
         }
@@ -186,9 +186,9 @@ public class GroovyParameterInfoHandler implements ParameterInfoHandlerWithTabAc
     for (Iterator iterator = toShow.iterator(); iterator.hasNext(); ) {
       Object next = iterator.next();
       if (next instanceof GroovyResolveResult) {
-        final PsiElement element = ((GroovyResolveResult)next).getElement();
+        PsiElement element = ((GroovyResolveResult)next).getElement();
         if (element instanceof GrReflectedMethod) {
-          final GrMethod base = ((GrReflectedMethod)element).getBaseMethod();
+          GrMethod base = ((GrReflectedMethod)element).getBaseMethod();
           if (!methods.add(base)) {
             iterator.remove();
           }
@@ -200,12 +200,12 @@ public class GroovyParameterInfoHandler implements ParameterInfoHandlerWithTabAc
   private static boolean isPropertyOrVariableInvoked(GrExpression invoked) {
     if (!(invoked instanceof GrReferenceExpression)) return false;
 
-    final GroovyResolveResult resolveResult = ((GrReferenceExpression)invoked).advancedResolve();
+    GroovyResolveResult resolveResult = ((GrReferenceExpression)invoked).advancedResolve();
     return resolveResult.isInvokedOnProperty() || resolveResult.getElement() instanceof PsiVariable;
   }
 
   public void updateParameterInfo(@Nonnull GroovyPsiElement place, UpdateParameterInfoContext context) {
-    final PsiElement parameterOwner = context.getParameterOwner();
+    PsiElement parameterOwner = context.getParameterOwner();
     if (parameterOwner != place) {
       context.removeHint();
       return;
@@ -213,9 +213,9 @@ public class GroovyParameterInfoHandler implements ParameterInfoHandlerWithTabAc
 
     int offset = context.getEditor().getCaretModel().getOffset();
     offset = CharArrayUtil.shiftForward(context.getEditor().getDocument().getText(), offset, " \t\n");
-    final int currIndex = getCurrentParameterIndex(place, offset);
+    int currIndex = getCurrentParameterIndex(place, offset);
     context.setCurrentParameter(currIndex);
-    final Object[] objects = context.getObjectsToView();
+    Object[] objects = context.getObjectsToView();
 
     Outer:
     for (int i = 0; i < objects.length; i++) {
@@ -223,7 +223,7 @@ public class GroovyParameterInfoHandler implements ParameterInfoHandlerWithTabAc
       PsiType[] argTypes = null;
       PsiSubstitutor substitutor = null;
       if (objects[i] instanceof GroovyResolveResult) {
-        final GroovyResolveResult resolveResult = (GroovyResolveResult)objects[i];
+        GroovyResolveResult resolveResult = (GroovyResolveResult)objects[i];
         PsiNamedElement namedElement = (PsiNamedElement)resolveResult.getElement();
         if (namedElement instanceof GrReflectedMethod) namedElement = ((GrReflectedMethod)namedElement).getBaseMethod();
 
@@ -234,7 +234,7 @@ public class GroovyParameterInfoHandler implements ParameterInfoHandlerWithTabAc
           continue Outer;
         }
         if (namedElement instanceof PsiMethod) {
-          final PsiMethod method = (PsiMethod)namedElement;
+          PsiMethod method = (PsiMethod)namedElement;
           PsiParameter[] parameters = method.getParameterList().getParameters();
           parameterTypes = new PsiType[parameters.length];
           for (int j = 0; j < parameters.length; j++) {
@@ -245,7 +245,7 @@ public class GroovyParameterInfoHandler implements ParameterInfoHandlerWithTabAc
         if (argTypes == null) continue;
       }
       else if (objects[i] instanceof GrClosureSignature) {
-        final GrClosureSignature signature = (GrClosureSignature)objects[i];
+        GrClosureSignature signature = (GrClosureSignature)objects[i];
         argTypes = PsiUtil.getArgumentTypes(place, false);
         parameterTypes = new PsiType[signature.getParameterCount()];
         int j = 0;
@@ -266,7 +266,7 @@ public class GroovyParameterInfoHandler implements ParameterInfoHandlerWithTabAc
         else {
           for (int j = 0; j < currIndex; j++) {
             PsiType argType = argTypes[j];
-            final PsiType paramType = substitutor != null ? substitutor.substitute(parameterTypes[j]) : parameterTypes[j];
+            PsiType paramType = substitutor != null ? substitutor.substitute(parameterTypes[j]) : parameterTypes[j];
             if (!TypesUtil.isAssignableByMethodCallConversion(paramType, argType, place)) {
               context.setUIComponentEnabled(i, false);
               break Outer;
@@ -299,7 +299,7 @@ public class GroovyParameterInfoHandler implements ParameterInfoHandlerWithTabAc
 
   private static boolean isNamedArgWithPriorComma(PsiElement child) {
     if (!(child instanceof GrNamedArgument)) return false;
-    final PsiElement element = PsiUtil.skipWhitespacesAndComments(child.getPrevSibling(), false);
+    PsiElement element = PsiUtil.skipWhitespacesAndComments(child.getPrevSibling(), false);
     return element != null && element.getNode().getElementType() == GroovyTokenTypes.mCOMMA;
   }
 
@@ -330,7 +330,7 @@ public class GroovyParameterInfoHandler implements ParameterInfoHandlerWithTabAc
     int highlightStartOffset = -1;
     int highlightEndOffset = -1;
 
-    final int currentParameter = context.getCurrentParameterIndex();
+    int currentParameter = context.getCurrentParameterIndex();
 
     StringBuilder buffer = new StringBuilder();
 
@@ -351,12 +351,12 @@ public class GroovyParameterInfoHandler implements ParameterInfoHandlerWithTabAc
         buffer.append('(');
       }
 
-      final PsiParameter[] params = method.getParameterList().getParameters();
+      PsiParameter[] params = method.getParameterList().getParameters();
 
       int numParams = params.length;
       if (numParams > 0) {
         LOG.assertTrue(o instanceof GroovyResolveResult, o.getClass());
-        final PsiSubstitutor substitutor = ((GroovyResolveResult)o).getSubstitutor();
+        PsiSubstitutor substitutor = ((GroovyResolveResult)o).getSubstitutor();
         for (int j = 0; j < numParams; j++) {
           PsiParameter param = params[j];
 
@@ -394,7 +394,7 @@ public class GroovyParameterInfoHandler implements ParameterInfoHandlerWithTabAc
           if (i > 0) buffer.append(", ");
 
           int startOffset = buffer.length();
-          final PsiType psiType = parameters[i].getType();
+          PsiType psiType = parameters[i].getType();
           if (psiType == null) {
             buffer.append("def");
           }
@@ -409,7 +409,7 @@ public class GroovyParameterInfoHandler implements ParameterInfoHandlerWithTabAc
             highlightEndOffset = endOffset;
           }
 
-          final GrExpression initializer = parameters[i].getDefaultInitializer();
+          GrExpression initializer = parameters[i].getDefaultInitializer();
           if (initializer != null) {
             buffer.append(" = ").append(initializer.getText());
           }
@@ -420,7 +420,7 @@ public class GroovyParameterInfoHandler implements ParameterInfoHandlerWithTabAc
       }
     }
 
-    final boolean isDeprecated = o instanceof PsiDocCommentOwner && ((PsiDocCommentOwner) o).isDeprecated();
+    boolean isDeprecated = o instanceof PsiDocCommentOwner && ((PsiDocCommentOwner) o).isDeprecated();
 
     context.setupUIComponentPresentation(
       StringUtil.escapeXml(buffer.toString()),
@@ -438,7 +438,7 @@ public class GroovyParameterInfoHandler implements ParameterInfoHandlerWithTabAc
       GrParameter grParam = (GrParameter)param;
       GroovyPresentationUtil.appendParameterPresentation(grParam, substitutor, TypePresentation.PRESENTABLE, buffer);
 
-      final GrExpression initializer = grParam.getInitializerGroovy();
+      GrExpression initializer = grParam.getInitializerGroovy();
       if (initializer != null) {
         buffer.append(" = ").append(initializer.getText());
       }

@@ -42,7 +42,7 @@ public class GrImplementsClauseImpl extends GrReferenceListImpl implements GrImp
     return GroovyTokenTypes.kIMPLEMENTS;
   }
 
-  public GrImplementsClauseImpl(final GrReferenceListStub stub) {
+  public GrImplementsClauseImpl(GrReferenceListStub stub) {
     super(stub, GroovyElementTypes.IMPLEMENTS_CLAUSE);
   }
 

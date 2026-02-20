@@ -88,7 +88,7 @@ public class GrReflectedMethodImpl extends LightMethodBuilder implements GrRefle
   }
 
   private void initModifiers(GrMethod baseMethod, boolean isCategoryMethod) {
-    final GrLightModifierList myModifierList = ((GrLightModifierList)getModifierList());
+    GrLightModifierList myModifierList = ((GrLightModifierList)getModifierList());
 
     for (String modifier : GrModifier.GROOVY_MODIFIERS) {
       if (baseMethod.hasModifierProperty(modifier)) {
@@ -98,7 +98,7 @@ public class GrReflectedMethodImpl extends LightMethodBuilder implements GrRefle
 
     for (PsiElement modifier : baseMethod.getModifierList().getModifiers()) {
       if (modifier instanceof GrAnnotation) {
-        final String qualifiedName = ((GrAnnotation)modifier).getQualifiedName();
+        String qualifiedName = ((GrAnnotation)modifier).getQualifiedName();
         if (qualifiedName != null) {
           myModifierList.addAnnotation(qualifiedName);
         }
@@ -114,7 +114,7 @@ public class GrReflectedMethodImpl extends LightMethodBuilder implements GrRefle
   }
 
   private void initParameterList(GrParameter[] parameters, int optionalParams, PsiClassType categoryType) {
-    final GrLightParameterListBuilder parameterList = (GrLightParameterListBuilder)getParameterList();
+    GrLightParameterListBuilder parameterList = (GrLightParameterListBuilder)getParameterList();
 
     List<GrParameter> skipped = new ArrayList<GrParameter>();
 
@@ -259,9 +259,9 @@ public class GrReflectedMethodImpl extends LightMethodBuilder implements GrRefle
 
   @Nonnull
   public static GrReflectedMethod[] createReflectedMethods(GrMethod method) {
-    final PsiClassType categoryType = method.hasModifierProperty(PsiModifier.STATIC) ? null : getCategoryType(method);
+    PsiClassType categoryType = method.hasModifierProperty(PsiModifier.STATIC) ? null : getCategoryType(method);
 
-    final GrParameter[] parameters = method.getParameters();
+    GrParameter[] parameters = method.getParameters();
     return doCreateReflectedMethods(method, categoryType, parameters);
   }
 
@@ -276,7 +276,7 @@ public class GrReflectedMethodImpl extends LightMethodBuilder implements GrRefle
 
     if (count == 0 && categoryType == null) return GrReflectedMethod.EMPTY_ARRAY;
 
-    final GrReflectedMethod[] methods = new GrReflectedMethod[count + 1];
+    GrReflectedMethod[] methods = new GrReflectedMethod[count + 1];
     for (int i = 0; i <= count; i++) {
       methods[i] = new GrReflectedMethodImpl(targetMethod, parameters, count - i, categoryType);
     }
@@ -309,7 +309,7 @@ public class GrReflectedMethodImpl extends LightMethodBuilder implements GrRefle
 
   @Nullable
   private static PsiClassType getCategoryType(GrMethod method) {
-    final PsiClass containingClass = method.getContainingClass();
+    PsiClass containingClass = method.getContainingClass();
     if (containingClass == null) return null;
     return GdkMethodUtil.getCategoryType(containingClass);
   }

@@ -61,7 +61,7 @@ public class GrIntroduceConstantProcessor {
 
   @Nullable
   public GrField run() {
-    final PsiClass targetClass = settings.getTargetClass();
+    PsiClass targetClass = settings.getTargetClass();
     if (targetClass == null) {
       return null;
     }
@@ -70,8 +70,8 @@ public class GrIntroduceConstantProcessor {
       return null;
     }
 
-    final GrVariableDeclaration declaration = addDeclaration(targetClass);
-    final GrField field = (GrField)declaration.getVariables()[0];
+    GrVariableDeclaration declaration = addDeclaration(targetClass);
+    GrField field = (GrField)declaration.getVariables()[0];
 
     GrVariable localVar = GrIntroduceHandlerBase.resolveLocalVar(context);
     if (localVar != null) {
@@ -86,8 +86,8 @@ public class GrIntroduceConstantProcessor {
       }
     }
     else if (context.getStringPart() != null) {
-      final GrExpression ref = context.getStringPart().replaceLiteralWithConcatenation(field.getName());
-      final PsiElement element = replaceOccurrence(field, ref, isEscalateVisibility());
+      GrExpression ref = context.getStringPart().replaceLiteralWithConcatenation(field.getName());
+      PsiElement element = replaceOccurrence(field, ref, isEscalateVisibility());
       updateCaretPosition(element);
     }
     else if (context.getExpression() != null) {
@@ -102,7 +102,7 @@ public class GrIntroduceConstantProcessor {
   }
 
   private void processOccurrences(GrField field) {
-    final PsiElement[] occurrences = context.getOccurrences();
+    PsiElement[] occurrences = context.getOccurrences();
     GroovyRefactoringUtil.sortOccurrences(occurrences);
     for (PsiElement occurrence : occurrences) {
       replaceOccurrence(field, occurrence, isEscalateVisibility());
@@ -116,9 +116,9 @@ public class GrIntroduceConstantProcessor {
 
   protected GrVariableDeclaration addDeclaration(PsiClass targetClass) {
     GrVariableDeclaration declaration = createField(targetClass);
-    final GrVariableDeclaration added;
+    GrVariableDeclaration added;
     if (targetClass instanceof GrEnumTypeDefinition) {
-      final GrEnumConstantList enumConstants = ((GrEnumTypeDefinition)targetClass).getEnumConstantList();
+      GrEnumConstantList enumConstants = ((GrEnumTypeDefinition)targetClass).getEnumConstantList();
       added = (GrVariableDeclaration)targetClass.addAfter(declaration, enumConstants);
     }
     else {
@@ -154,7 +154,7 @@ public class GrIntroduceConstantProcessor {
   }
 
   @Nullable
-  private String check(@Nonnull PsiClass targetClass, @Nullable final String fieldName) {
+  private String check(@Nonnull PsiClass targetClass, @Nullable String fieldName) {
     if (!GroovyLanguage.INSTANCE.equals(targetClass.getLanguage())) {
       return GroovyRefactoringBundle.message("class.language.is.not.groovy");
     }
@@ -179,8 +179,8 @@ public class GrIntroduceConstantProcessor {
                                        @Nonnull PsiElement occurrence,
                                        boolean escalateVisibility) {
     boolean isOriginal = occurrence == context.getExpression();
-    final GrReferenceExpression newExpr = createRefExpression(field, occurrence);
-    final PsiElement replaced = occurrence instanceof GrExpression ? ((GrExpression)occurrence)
+    GrReferenceExpression newExpr = createRefExpression(field, occurrence);
+    PsiElement replaced = occurrence instanceof GrExpression ? ((GrExpression)occurrence)
       .replaceWithExpression(newExpr, false) : occurrence.replace(newExpr);
     if (escalateVisibility) {
       PsiUtil.escalateVisibility(field, replaced);
@@ -196,23 +196,23 @@ public class GrIntroduceConstantProcessor {
 
   @Nonnull
   private static GrReferenceExpression createRefExpression(@Nonnull GrField field, @Nonnull PsiElement place) {
-    final PsiClass containingClass = field.getContainingClass();
+    PsiClass containingClass = field.getContainingClass();
     assert containingClass != null;
-    final String qname = containingClass.getQualifiedName();
-    final String fieldName = field.getName();
-    final String refText = qname != null && !qname.equals(fieldName) ? qname + "." + fieldName : fieldName;
+    String qname = containingClass.getQualifiedName();
+    String fieldName = field.getName();
+    String refText = qname != null && !qname.equals(fieldName) ? qname + "." + fieldName : fieldName;
     return GroovyPsiElementFactory.getInstance(place.getProject()).createReferenceExpressionFromText(refText,
                                                                                                      place);
   }
 
   @Nonnull
   private GrVariableDeclaration createField(PsiClass targetClass) {
-    final String name = settings.getName();
-    final PsiType type = settings.getSelectedType();
+    String name = settings.getName();
+    PsiType type = settings.getSelectedType();
 
     String[] modifiers = collectModifiers(targetClass);
 
-    final GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(context.getProject());
+    GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(context.getProject());
     return factory.createFieldDeclaration(modifiers, name, getInitializer(), type);
   }
 

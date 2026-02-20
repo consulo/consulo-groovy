@@ -40,7 +40,7 @@ public abstract class GrTupleType extends GrLiteralClassType {
       if (types.length == 0) {
         return PsiType.EMPTY_ARRAY;
       }
-      final PsiType leastUpperBound = getLeastUpperBound(types);
+      PsiType leastUpperBound = getLeastUpperBound(types);
       if (leastUpperBound == PsiType.NULL) {
         return PsiType.EMPTY_ARRAY;
       }

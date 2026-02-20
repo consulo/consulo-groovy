@@ -117,8 +117,8 @@ public class GrTypeDefinitionMembersCache {
       @Nullable
       @Override
       public Result<PsiClass[]> compute() {
-        final List<PsiClass> result = ContainerUtil.newArrayList();
-        final GrTypeDefinitionBody body = myDefinition.getBody();
+        List<PsiClass> result = ContainerUtil.newArrayList();
+        GrTypeDefinitionBody body = myDefinition.getBody();
         if (body != null) ContainerUtil.addAll(result, body.getInnerClasses());
         result.addAll(AstTransformContributor.runContributorsForClasses(myDefinition));
         return Result.create(result.toArray(new PsiClass[result.size()]), myTreeChangeTracker);
@@ -206,7 +206,7 @@ public class GrTypeDefinitionMembersCache {
         for (PsiClassType.ClassResolveResult resolveResult : traits) {
           PsiClass superClass = resolveResult.getElement();
           if (GrTraitUtil.isTrait(superClass)) {
-            final PsiSubstitutor superSubstitutor = TypeConversionUtil.getSuperClassSubstitutor(superClass, trait, substitutor);
+            PsiSubstitutor superSubstitutor = TypeConversionUtil.getSuperClassSubstitutor(superClass, trait, substitutor);
             process((GrTypeDefinition)superClass, superSubstitutor);
           }
         }

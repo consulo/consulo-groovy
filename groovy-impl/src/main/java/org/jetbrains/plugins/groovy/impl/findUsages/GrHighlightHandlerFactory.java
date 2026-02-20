@@ -36,7 +36,7 @@ public class GrHighlightHandlerFactory implements HighlightUsagesHandlerFactory 
   @Override
   public HighlightUsagesHandlerBase createHighlightUsagesHandler(Editor editor, PsiFile file) {
     int offset = TargetElementUtil.adjustOffset(file, editor.getDocument(), editor.getCaretModel().getOffset());
-    final PsiElement target = file.findElementAt(offset);
+    PsiElement target = file.findElementAt(offset);
     if (target == null) return null;
 
     ASTNode node = target.getNode();

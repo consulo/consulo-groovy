@@ -63,11 +63,11 @@ public class GroovyToJavaGenerator {
 
   public Map<String, CharSequence> generateStubs(GroovyFile file) {
     Set<String> classNames = new HashSet<String>();
-    for (final GrTypeDefinition typeDefinition : file.getTypeDefinitions()) {
+    for (GrTypeDefinition typeDefinition : file.getTypeDefinitions()) {
       classNames.add(typeDefinition.getName());
     }
 
-    final Map<String, CharSequence> output = new LinkedHashMap<String, CharSequence>();
+    Map<String, CharSequence> output = new LinkedHashMap<String, CharSequence>();
 
     if (file.isScript()) {
       VirtualFile virtualFile = file.getVirtualFile();
@@ -75,28 +75,28 @@ public class GroovyToJavaGenerator {
       String fileDefinitionName = virtualFile.getNameWithoutExtension();
       if (!classNames.contains(StringUtil.capitalize(fileDefinitionName)) &&
           !classNames.contains(StringUtil.decapitalize(fileDefinitionName))) {
-        final PsiClass scriptClass = file.getScriptClass();
+        PsiClass scriptClass = file.getScriptClass();
         if (scriptClass != null) {
           generateClassStub(scriptClass, output);
         }
       }
     }
 
-    for (final GrTypeDefinition typeDefinition : file.getTypeDefinitions()) {
+    for (GrTypeDefinition typeDefinition : file.getTypeDefinitions()) {
 		generateClassStub(typeDefinition, output);
     }
     return output;
   }
 
   private void generateClassStub(PsiClass clazz, Map<String, CharSequence> output) {
-    final CharSequence text = generateClass(clazz);
-    final String filename = getFileNameForClass(clazz);
+    CharSequence text = generateClass(clazz);
+    String filename = getFileNameForClass(clazz);
     output.put(filename, text);
   }
 
   private static String getFileNameForClass(PsiClass clazz) {
-    final PsiFile containingFile = clazz.getContainingFile();
-    final GrPackageDefinition packageDefinition = ((GroovyFile)containingFile).getPackageDefinition();
+    PsiFile containingFile = clazz.getContainingFile();
+    GrPackageDefinition packageDefinition = ((GroovyFile)containingFile).getPackageDefinition();
     return getPackageDirectory(packageDefinition) + clazz.getName() + ".java";
   }
 
@@ -112,7 +112,7 @@ public class GroovyToJavaGenerator {
   public CharSequence generateClass(@Nonnull PsiClass typeDefinition) {
     try {
       StringBuilder text = new StringBuilder();
-      final ClassNameProvider classNameProvider = new StubClassNameProvider(myAllToCompile);
+      ClassNameProvider classNameProvider = new StubClassNameProvider(myAllToCompile);
       ClassItemGenerator classItemGenerator = new StubGenerator(classNameProvider);
       new ClassGenerator(classNameProvider, classItemGenerator).writeTypeDefinition(text, typeDefinition, true, true);
       return text;
@@ -127,7 +127,7 @@ public class GroovyToJavaGenerator {
   }
 
   public static String getDefaultValueText(String typeCanonicalText) {
-    final String result = typesToInitialValues.get(typeCanonicalText);
+    String result = typesToInitialValues.get(typeCanonicalText);
     if (result == null) return "null";
     return result;
   }
@@ -137,8 +137,8 @@ public class GroovyToJavaGenerator {
       return method.getText();
     }
 
-    final ClassItemGenerator generator = new StubGenerator(new StubClassNameProvider(Collections.<VirtualFile>emptySet()));
-    final StringBuilder buffer = new StringBuilder();
+    ClassItemGenerator generator = new StubGenerator(new StubClassNameProvider(Collections.<VirtualFile>emptySet()));
+    StringBuilder buffer = new StringBuilder();
     if (method.isConstructor()) {
       generator.writeConstructor(buffer, method, false);
     }
@@ -152,9 +152,9 @@ public class GroovyToJavaGenerator {
    * method for tests and debugging
    */
   public static StringBuilder generateStubs(PsiFile psiFile) {
-    final StringBuilder builder = new StringBuilder();
-    final Set<VirtualFile> files = Collections.singleton(psiFile.getViewProvider().getVirtualFile());
-    final Map<String, CharSequence> map = new GroovyToJavaGenerator(psiFile.getProject(), files).generateStubs((GroovyFile)psiFile);
+    StringBuilder builder = new StringBuilder();
+    Set<VirtualFile> files = Collections.singleton(psiFile.getViewProvider().getVirtualFile());
+    Map<String, CharSequence> map = new GroovyToJavaGenerator(psiFile.getProject(), files).generateStubs((GroovyFile)psiFile);
 
     for (CharSequence stubText : map.values()) {
       builder.append(stubText);

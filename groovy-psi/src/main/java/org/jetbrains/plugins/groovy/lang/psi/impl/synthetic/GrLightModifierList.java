@@ -130,7 +130,7 @@ public class GrLightModifierList extends LightElement implements GrModifierList 
   @Override
   @Nonnull
   public PsiAnnotation addAnnotation(@Nonnull @NonNls String qualifiedName) {
-    final GrLightAnnotation annotation = new GrLightAnnotation(getManager(), getLanguage(), qualifiedName, this);
+    GrLightAnnotation annotation = new GrLightAnnotation(getManager(), getLanguage(), qualifiedName, this);
     myAnnotations.add(annotation);
     return annotation;
   }

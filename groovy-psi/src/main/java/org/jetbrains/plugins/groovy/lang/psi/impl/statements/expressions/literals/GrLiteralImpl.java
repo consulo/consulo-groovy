@@ -117,22 +117,22 @@ public class GrLiteralImpl extends GrAbstractLiteral implements GrLiteral, PsiLa
       return result ? chars.toString() : null;
     }
     else if (elemType == GroovyTokenTypes.mREGEX_LITERAL) {
-      final PsiElement cchild = child.getFirstChild();
+      PsiElement cchild = child.getFirstChild();
       if (cchild == null) return null;
-      final PsiElement sibling = cchild.getNextSibling();
+      PsiElement sibling = cchild.getNextSibling();
       if (sibling == null) return null;
       text = sibling.getText();
-      final StringBuilder chars = new StringBuilder(text.length());
+      StringBuilder chars = new StringBuilder(text.length());
       boolean result = GrStringUtil.parseRegexCharacters(text, chars, null, true);
       return result ? chars.toString() : null;
     }
     else if (elemType == GroovyTokenTypes.mDOLLAR_SLASH_REGEX_LITERAL) {
-      final PsiElement cchild = child.getFirstChild();
+      PsiElement cchild = child.getFirstChild();
       if (cchild == null) return null;
-      final PsiElement sibling = cchild.getNextSibling();
+      PsiElement sibling = cchild.getNextSibling();
       if (sibling == null) return null;
       text = sibling.getText();
-      final StringBuilder chars = new StringBuilder(text.length());
+      StringBuilder chars = new StringBuilder(text.length());
       boolean result = GrStringUtil.parseRegexCharacters(text, chars, null, false);
       return result ? chars.toString() : null;
     }
@@ -163,7 +163,7 @@ public class GrLiteralImpl extends GrAbstractLiteral implements GrLiteral, PsiLa
   @Nullable
   @Override
   public PsiReference getReference() {
-    final PsiReference[] references = getReferences();
+    PsiReference[] references = getReferences();
     if (references.length == 1) {
       return references[0];
     }
@@ -179,11 +179,11 @@ public class GrLiteralImpl extends GrAbstractLiteral implements GrLiteral, PsiLa
   }
 
   @Override
-  public GrLiteralImpl updateText(@Nonnull final String text) {
-    final GrExpression newExpr = GroovyPsiElementFactory.getInstance(getProject()).createExpressionFromText(text);
+  public GrLiteralImpl updateText(@Nonnull String text) {
+    GrExpression newExpr = GroovyPsiElementFactory.getInstance(getProject()).createExpressionFromText(text);
     LOG.assertTrue(newExpr instanceof GrLiteral, text);
     LOG.assertTrue(newExpr.getFirstChild() != null, text);
-    final ASTNode valueNode = getNode().getFirstChildNode();
+    ASTNode valueNode = getNode().getFirstChildNode();
     getNode().replaceChild(valueNode, newExpr.getFirstChild().getNode());
     return this;
   }

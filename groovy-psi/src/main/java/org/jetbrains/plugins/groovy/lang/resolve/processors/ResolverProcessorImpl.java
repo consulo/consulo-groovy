@@ -95,7 +95,7 @@ public class ResolverProcessorImpl implements PsiScopeProcessor, NameHint, Class
 
 			if(namedElement instanceof PsiClass && !(namedElement instanceof PsiTypeParameter))
 			{
-				final PsiClass aClass = (PsiClass) namedElement;
+				PsiClass aClass = (PsiClass) namedElement;
 				if(myProcessedClasses == null)
 				{
 					myProcessedClasses = new HashSet<String>();
@@ -107,8 +107,8 @@ public class ResolverProcessorImpl implements PsiScopeProcessor, NameHint, Class
 			}
 
 			boolean isAccessible = isAccessible(namedElement);
-			final PsiElement resolveContext = state.get(RESOLVE_CONTEXT);
-			final SpreadState spreadState = state.get(SpreadState.SPREAD_STATE);
+			PsiElement resolveContext = state.get(RESOLVE_CONTEXT);
+			SpreadState spreadState = state.get(SpreadState.SPREAD_STATE);
 			boolean isStaticsOK = isStaticsOK(namedElement, resolveContext, true);
 			addCandidate(new GroovyResolveResultImpl(namedElement, resolveContext, spreadState, substitutor, isAccessible, isStaticsOK));
 			return !(isAccessible && isStaticsOK);
@@ -135,7 +135,7 @@ public class ResolverProcessorImpl implements PsiScopeProcessor, NameHint, Class
 		String text;
 		if(element instanceof LightElement)
 		{
-			final PsiElement context = element.getContext();
+			PsiElement context = element.getContext();
 			text = context != null ? context.getText() : null;
 		}
 		else
@@ -155,7 +155,7 @@ public class ResolverProcessorImpl implements PsiScopeProcessor, NameHint, Class
 	{
 		if(namedElement instanceof GrField)
 		{
-			final GrField field = (GrField) namedElement;
+			GrField field = (GrField) namedElement;
 			if(PsiUtil.isAccessible(myPlace, field))
 			{
 				return true;
@@ -168,7 +168,7 @@ public class ResolverProcessorImpl implements PsiScopeProcessor, NameHint, Class
 					return true;
 				}
 			}
-			final GrAccessorMethod setter = field.getSetter();
+			GrAccessorMethod setter = field.getSetter();
 			if(setter != null && PsiUtil.isAccessible(myPlace, setter))
 			{
 				return true;

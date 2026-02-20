@@ -117,7 +117,7 @@ public class GroovyAnnotationAttributeInfoHandler implements ParameterInfoHandle
   }
 
   @Nullable
-  private static GrAnnotationArgumentList findAnchor(@Nonnull final Editor editor, @Nonnull final PsiFile file) {
+  private static GrAnnotationArgumentList findAnchor(@Nonnull Editor editor, @Nonnull PsiFile file) {
     PsiElement element = file.findElementAt(editor.getCaretModel().getOffset());
     if (element == null) return null;
 
@@ -126,14 +126,14 @@ public class GroovyAnnotationAttributeInfoHandler implements ParameterInfoHandle
 
   @Override
   public void showParameterInfo(@Nonnull GrAnnotationArgumentList argumentList, @Nonnull CreateParameterInfoContext context) {
-    final GrAnnotation parent = DefaultGroovyMethods.asType(argumentList.getParent(), GrAnnotation.class);
+    GrAnnotation parent = DefaultGroovyMethods.asType(argumentList.getParent(), GrAnnotation.class);
 
-    final PsiElement resolved = parent.getClassReference().resolve();
+    PsiElement resolved = parent.getClassReference().resolve();
     if (resolved instanceof PsiClass && ((PsiClass)resolved).isAnnotationType()) {
-      final PsiMethod[] methods = ((PsiClass)resolved).getMethods();
+      PsiMethod[] methods = ((PsiClass)resolved).getMethods();
       context.setItemsToShow(methods);
       context.showHint(argumentList, argumentList.getTextRange().getStartOffset(), this);
-      final PsiAnnotationMethod currentMethod = findAnnotationMethod(context.getFile(), context.getEditor());
+      PsiAnnotationMethod currentMethod = findAnnotationMethod(context.getFile(), context.getEditor());
       if (currentMethod != null) {
         context.setHighlightedElement(currentMethod);
       }
@@ -144,8 +144,8 @@ public class GroovyAnnotationAttributeInfoHandler implements ParameterInfoHandle
   private static PsiAnnotationMethod findAnnotationMethod(@Nonnull PsiFile file, @Nonnull Editor editor) {
     PsiNameValuePair pair = ParameterInfoUtils.findParentOfType(file, inferOffset(editor), PsiNameValuePair.class);
     if (pair == null) return null;
-    final PsiReference reference = pair.getReference();
-    final PsiElement resolved = reference != null ? reference.resolve() : null;
+    PsiReference reference = pair.getReference();
+    PsiElement resolved = reference != null ? reference.resolve() : null;
     return PsiUtil.isAnnotationMethod(resolved) ? (PsiAnnotationMethod)resolved : null;
   }
 
@@ -159,10 +159,10 @@ public class GroovyAnnotationAttributeInfoHandler implements ParameterInfoHandle
     context.setHighlightedParameter(findAnnotationMethod(context.getFile(), context.getEditor()));
   }
 
-  private static int inferOffset(@Nonnull final Editor editor) {
+  private static int inferOffset(@Nonnull Editor editor) {
     CharSequence chars = editor.getDocument().getCharsSequence();
     int offset1 = CharArrayUtil.shiftForward(chars, editor.getCaretModel().getOffset(), " \t");
-    final char character = chars.charAt(offset1);
+    char character = chars.charAt(offset1);
     if (character == ',' || character == ')') {
       offset1 = CharArrayUtil.shiftBackward(chars, offset1 - 1, " \t");
     }
@@ -172,7 +172,7 @@ public class GroovyAnnotationAttributeInfoHandler implements ParameterInfoHandle
   @Override
   public void updateUI(@Nonnull PsiAnnotationMethod p, @Nonnull ParameterInfoUIContext context) {
     @NonNls StringBuilder buffer = new StringBuilder();
-    final PsiType returnType = p.getReturnType();
+    PsiType returnType = p.getReturnType();
     assert returnType != null;
     buffer.append(returnType.getPresentableText());
     buffer.append(" ");
@@ -181,7 +181,7 @@ public class GroovyAnnotationAttributeInfoHandler implements ParameterInfoHandle
     int highlightEndOffset = buffer.length();
     buffer.append("()");
 
-    final PsiAnnotationMemberValue defaultValue = p.getDefaultValue();
+    PsiAnnotationMemberValue defaultValue = p.getDefaultValue();
     if (defaultValue != null) {
       buffer.append(" default ");
       buffer.append(defaultValue.getText());

@@ -43,14 +43,14 @@ public class PrimaryExpression {
   }
   public static IElementType parsePrimaryExpression(PsiBuilder builder, GroovyParser parser, boolean literalsAsRefExprs) {
 
-    final IElementType tokenType = builder.getTokenType();
+    IElementType tokenType = builder.getTokenType();
     if (TokenSets.BUILT_IN_TYPES.contains(tokenType)) {
       ParserUtils.eatElement(builder, GroovyElementTypes.BUILT_IN_TYPE_EXPRESSION);
       return GroovyElementTypes.BUILT_IN_TYPE_EXPRESSION;
     }
     if (GroovyTokenTypes.kNEW == tokenType) {
       PsiBuilder.Marker marker = builder.mark();
-      final GroovyElementType type = newExprParse(builder, parser);
+      GroovyElementType type = newExprParse(builder, parser);
       marker.done(type);
       return type;
     }
@@ -59,7 +59,7 @@ public class PrimaryExpression {
       return GroovyElementTypes.REFERENCE_EXPRESSION;
     }
     if (GroovyTokenTypes.mGSTRING_BEGIN == tokenType) {
-      final boolean result = CompoundStringExpression.parse(builder, parser, false, GroovyTokenTypes.mGSTRING_BEGIN,
+      boolean result = CompoundStringExpression.parse(builder, parser, false, GroovyTokenTypes.mGSTRING_BEGIN,
                                                             GroovyTokenTypes.mGSTRING_CONTENT, GroovyTokenTypes.mGSTRING_END, null,
                                                             GroovyElementTypes.GSTRING, GroovyBundle.message("string.end.expected"));
       return result ? GroovyElementTypes.GSTRING : GroovyElementTypes.LITERAL;

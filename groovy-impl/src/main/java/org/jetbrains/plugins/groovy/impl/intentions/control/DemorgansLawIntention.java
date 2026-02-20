@@ -34,8 +34,8 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpres
 
 public class DemorgansLawIntention extends MutablyNamedIntention {
     protected LocalizeValue getTextForElement(PsiElement element) {
-        final GrBinaryExpression binaryExpression = (GrBinaryExpression) element;
-        final IElementType tokenType = binaryExpression.getOperationTokenType();
+        GrBinaryExpression binaryExpression = (GrBinaryExpression) element;
+        IElementType tokenType = binaryExpression.getOperationTokenType();
         if (GroovyTokenTypes.mLAND.equals(tokenType)) {
             return GroovyIntentionLocalize.demorgansIntentionName1();
         }
@@ -51,28 +51,28 @@ public class DemorgansLawIntention extends MutablyNamedIntention {
 
     public void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
         GrBinaryExpression exp = (GrBinaryExpression) element;
-        final IElementType tokenType = exp.getOperationTokenType();
+        IElementType tokenType = exp.getOperationTokenType();
         PsiElement parent = exp.getParent();
         while (isConjunctionExpression(parent, tokenType)) {
             exp = (GrBinaryExpression) parent;
             assert exp != null;
             parent = exp.getParent();
         }
-        final String newExpression = convertConjunctionExpression(exp, tokenType);
+        String newExpression = convertConjunctionExpression(exp, tokenType);
         replaceExpressionWithNegatedExpressionString(newExpression, exp);
     }
 
     private static String convertConjunctionExpression(GrBinaryExpression exp, IElementType tokenType) {
-        final GrExpression lhs = exp.getLeftOperand();
-        final String lhsText;
+        GrExpression lhs = exp.getLeftOperand();
+        String lhsText;
         if (isConjunctionExpression(lhs, tokenType)) {
             lhsText = convertConjunctionExpression((GrBinaryExpression) lhs, tokenType);
         }
         else {
             lhsText = convertLeafExpression(lhs);
         }
-        final GrExpression rhs = exp.getRightOperand();
-        final String rhsText;
+        GrExpression rhs = exp.getRightOperand();
+        String rhsText;
         if (isConjunctionExpression(rhs, tokenType)) {
             rhsText = convertConjunctionExpression((GrBinaryExpression) rhs, tokenType);
         }
@@ -80,7 +80,7 @@ public class DemorgansLawIntention extends MutablyNamedIntention {
             rhsText = convertLeafExpression(rhs);
         }
 
-        final String flippedConjunction;
+        String flippedConjunction;
         if (tokenType.equals(GroovyTokenTypes.mLAND)) {
             flippedConjunction = "||";
         }
@@ -93,18 +93,18 @@ public class DemorgansLawIntention extends MutablyNamedIntention {
 
     private static String convertLeafExpression(GrExpression condition) {
         if (BoolUtils.isNegation(condition)) {
-            final GrExpression negated = BoolUtils.getNegated(condition);
+            GrExpression negated = BoolUtils.getNegated(condition);
             if (ParenthesesUtils.getPrecedence(negated) > ParenthesesUtils.OR_PRECEDENCE) {
                 return '(' + negated.getText() + ')';
             }
             return negated.getText();
         }
         else if (ComparisonUtils.isComparison(condition)) {
-            final GrBinaryExpression binaryExpression = (GrBinaryExpression) condition;
-            final IElementType sign = binaryExpression.getOperationTokenType();
-            final String negatedComparison = ComparisonUtils.getNegatedComparison(sign);
-            final GrExpression lhs = binaryExpression.getLeftOperand();
-            final GrExpression rhs = binaryExpression.getRightOperand();
+            GrBinaryExpression binaryExpression = (GrBinaryExpression) condition;
+            IElementType sign = binaryExpression.getOperationTokenType();
+            String negatedComparison = ComparisonUtils.getNegatedComparison(sign);
+            GrExpression lhs = binaryExpression.getLeftOperand();
+            GrExpression rhs = binaryExpression.getRightOperand();
             assert rhs != null;
             return lhs.getText() + negatedComparison + rhs.getText();
         }
@@ -120,8 +120,8 @@ public class DemorgansLawIntention extends MutablyNamedIntention {
         if (!(exp instanceof GrBinaryExpression)) {
             return false;
         }
-        final GrBinaryExpression binExp = (GrBinaryExpression) exp;
-        final IElementType tokenType = binExp.getOperationTokenType();
+        GrBinaryExpression binExp = (GrBinaryExpression) exp;
+        IElementType tokenType = binExp.getOperationTokenType();
         return conjunctionType.equals(tokenType);
     }
 }

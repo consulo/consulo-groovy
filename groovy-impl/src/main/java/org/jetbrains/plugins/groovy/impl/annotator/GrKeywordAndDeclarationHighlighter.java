@@ -75,7 +75,7 @@ public class GrKeywordAndDeclarationHighlighter extends TextEditorHighlightingPa
           }
         }
         else if (!(element instanceof GroovyPsiElement || element instanceof PsiErrorElement)) {
-          final TextAttributesKey attribute = getDeclarationAttribute(element);
+          TextAttributesKey attribute = getDeclarationAttribute(element);
           if (attribute != null) {
             addInfo(element, attribute);
           }
@@ -100,7 +100,7 @@ public class GrKeywordAndDeclarationHighlighter extends TextEditorHighlightingPa
   }
 
   private static boolean highlightKeyword(PsiElement element, IElementType token) {
-    final PsiElement parent = element.getParent();
+    PsiElement parent = element.getParent();
     if (parent instanceof GrArgumentLabel) return false; //don't highlight: print (void:'foo')
 
     if (PsiTreeUtil.getParentOfType(element, GrCodeReferenceElement.class) != null) {

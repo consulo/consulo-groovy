@@ -58,36 +58,36 @@ public class ReachingDefinitionsCollector {
   }
 
   @Nonnull
-  public static FragmentVariableInfos obtainVariableFlowInformation(@Nonnull final GrStatement first,
-                                                                    @Nonnull final GrStatement last,
-                                                                    @Nonnull final GrControlFlowOwner flowOwner,
-                                                                    @Nonnull final Instruction[] flow) {
+  public static FragmentVariableInfos obtainVariableFlowInformation(@Nonnull GrStatement first,
+                                                                    @Nonnull GrStatement last,
+                                                                    @Nonnull GrControlFlowOwner flowOwner,
+                                                                    @Nonnull Instruction[] flow) {
 
-    final DefinitionMap dfaResult = inferDfaResult(flow);
+    DefinitionMap dfaResult = inferDfaResult(flow);
 
-    final LinkedHashSet<Integer> fragmentInstructions = getFragmentInstructions(first, last, flow);
-    final int[] postorder = ControlFlowBuilderUtil.postorder(flow);
+    LinkedHashSet<Integer> fragmentInstructions = getFragmentInstructions(first, last, flow);
+    int[] postorder = ControlFlowBuilderUtil.postorder(flow);
     LinkedHashSet<Integer> reachableFromFragmentReads = getReachable(fragmentInstructions, flow, dfaResult, postorder);
     LinkedHashSet<Integer> fragmentReads = filterReads(fragmentInstructions, flow);
 
-    final Map<String, VariableInfo> imap = new LinkedHashMap<String, VariableInfo>();
-    final Map<String, VariableInfo> omap = new LinkedHashMap<String, VariableInfo>();
+    Map<String, VariableInfo> imap = new LinkedHashMap<String, VariableInfo>();
+    Map<String, VariableInfo> omap = new LinkedHashMap<String, VariableInfo>();
 
-    final PsiManager manager = first.getManager();
+    PsiManager manager = first.getManager();
 
-    for (final Integer ref : fragmentReads) {
+    for (Integer ref : fragmentReads) {
       ReadWriteVariableInstruction rwInstruction = (ReadWriteVariableInstruction)flow[ref];
       String name = rwInstruction.getVariableName();
-      final int[] defs = dfaResult.getDefinitions(ref);
+      int[] defs = dfaResult.getDefinitions(ref);
       if (!allDefsInFragment(defs, fragmentInstructions)) {
         addVariable(name, imap, manager, getType(rwInstruction.getElement()));
       }
     }
 
-    for (final Integer ref : reachableFromFragmentReads) {
+    for (Integer ref : reachableFromFragmentReads) {
       ReadWriteVariableInstruction rwInstruction = (ReadWriteVariableInstruction)flow[ref];
       String name = rwInstruction.getVariableName();
-      final int[] defs = dfaResult.getDefinitions(ref);
+      int[] defs = dfaResult.getDefinitions(ref);
       if (anyDefInFragment(defs, fragmentInstructions)) {
         for (int def : defs) {
           if (fragmentInstructions.contains(def)) {
@@ -120,9 +120,9 @@ public class ReachingDefinitionsCollector {
   }
 
   private static DefinitionMap inferDfaResult(Instruction[] flow) {
-    final ReachingDefinitionsDfaInstance dfaInstance = new ReachingDefinitionsDfaInstance(flow);
-    final ReachingDefinitionsSemilattice lattice = new ReachingDefinitionsSemilattice();
-    final DFAEngine<DefinitionMap> engine = new DFAEngine<DefinitionMap>(flow, dfaInstance, lattice);
+    ReachingDefinitionsDfaInstance dfaInstance = new ReachingDefinitionsDfaInstance(flow);
+    ReachingDefinitionsSemilattice lattice = new ReachingDefinitionsSemilattice();
+    DFAEngine<DefinitionMap> engine = new DFAEngine<DefinitionMap>(flow, dfaInstance, lattice);
     return postprocess(engine.performForceDFA(), flow, dfaInstance);
   }
 
@@ -188,10 +188,10 @@ public class ReachingDefinitionsCollector {
     info.addSubtype(type);
   }
 
-  private static LinkedHashSet<Integer> filterReads(final LinkedHashSet<Integer> instructions, final Instruction[] flow) {
-    final LinkedHashSet<Integer> result = new LinkedHashSet<Integer>();
-    for (final Integer i : instructions) {
-      final Instruction instruction = flow[i];
+  private static LinkedHashSet<Integer> filterReads(LinkedHashSet<Integer> instructions, Instruction[] flow) {
+    LinkedHashSet<Integer> result = new LinkedHashSet<Integer>();
+    for (Integer i : instructions) {
+      Instruction instruction = flow[i];
       if (isReadInsn(instruction)) {
         result.add(i);
       }
@@ -272,13 +272,13 @@ public class ReachingDefinitionsCollector {
   }
 
   private static boolean isInFragment(Instruction instruction, GrStatement first, GrStatement last) {
-    final PsiElement element = instruction.getElement();
+    PsiElement element = instruction.getElement();
     if (element == null) return false;
     return isInFragment(first, last, element);
   }
 
   private static boolean isInFragment(GrStatement first, GrStatement last, PsiElement element) {
-    final PsiElement parent = first.getParent();
+    PsiElement parent = first.getParent();
     if (!PsiTreeUtil.isAncestor(parent, element, true)) return false;
     PsiElement run = element;
     while (run.getParent() != parent) run = run.getParent();
@@ -294,17 +294,17 @@ public class ReachingDefinitionsCollector {
     return true;
   }
 
-  private static LinkedHashSet<Integer> getReachable(final LinkedHashSet<Integer> fragmentInsns,
-                                                     final Instruction[] flow,
-                                                     final DefinitionMap dfaResult,
-                                                     final int[] postorder) {
-    final LinkedHashSet<Integer> result = new LinkedHashSet<Integer>();
-    for (final Instruction insn : flow) {
+  private static LinkedHashSet<Integer> getReachable(LinkedHashSet<Integer> fragmentInsns,
+                                                     Instruction[] flow,
+                                                     DefinitionMap dfaResult,
+                                                     int[] postorder) {
+    LinkedHashSet<Integer> result = new LinkedHashSet<Integer>();
+    for (Instruction insn : flow) {
       if (isReadInsn(insn)) {
-        final int ref = insn.num();
+        int ref = insn.num();
         int[] definitions = dfaResult.getDefinitions(ref);
         if (definitions != null) {
-          for (final int def : definitions) {
+          for (int def : definitions) {
             if (fragmentInsns.contains(def) &&
                 (!fragmentInsns.contains(ref) || postorder[ref] < postorder[def] && checkPathIsOutsideOfFragment(def, ref, flow, fragmentInsns))) {
               result.add(ref);
@@ -440,7 +440,7 @@ public class ReachingDefinitionsCollector {
   }
 
   @Nonnull
-  private static DefinitionMap postprocess(@Nonnull final ArrayList<DefinitionMap> dfaResult,
+  private static DefinitionMap postprocess(@Nonnull ArrayList<DefinitionMap> dfaResult,
                                            @Nonnull Instruction[] flow,
                                            @Nonnull ReachingDefinitionsDfaInstance dfaInstance) {
     DefinitionMap result = new DefinitionMap();

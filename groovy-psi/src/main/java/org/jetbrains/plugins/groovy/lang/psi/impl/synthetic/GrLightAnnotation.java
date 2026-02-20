@@ -108,8 +108,8 @@ public class GrLightAnnotation extends LightElement implements GrAnnotation {
 
   @Override
   public PsiJavaCodeReferenceElement getNameReferenceElement() {
-    final GroovyResolveResult resolveResult = myRef.advancedResolve();
-    final PsiElement resolved = resolveResult.getElement();
+    GroovyResolveResult resolveResult = myRef.advancedResolve();
+    PsiElement resolved = resolveResult.getElement();
 
     if (resolved instanceof PsiClass) {
       return new LightClassReference(getManager(), getClassReference().getText(), (PsiClass)resolved, resolveResult.getSubstitutor());

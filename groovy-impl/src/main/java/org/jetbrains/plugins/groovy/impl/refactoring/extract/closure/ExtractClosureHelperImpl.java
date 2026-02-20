@@ -107,10 +107,10 @@ public class ExtractClosureHelperImpl extends ExtractInfoHelperBase implements G
     if (myForceDef) return null;
 
     if (myType == null) {
-      final GrClosableBlock closure = ExtractClosureProcessorBase.generateClosure(this);
+      GrClosableBlock closure = ExtractClosureProcessorBase.generateClosure(this);
       PsiType type = closure.getType();
       if (type instanceof PsiClassType) {
-        final PsiType[] parameters = ((PsiClassType)type).getParameters();
+        PsiType[] parameters = ((PsiClassType)type).getParameters();
         if (parameters.length == 1 && parameters[0] != null) {
           if (parameters[0].equalsToText(PsiType.VOID.getBoxedTypeName())) {
             type = ((PsiClassType)type).rawType();

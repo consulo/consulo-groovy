@@ -34,7 +34,7 @@ public class GrPrivateFieldScopeEnlarger implements UseScopeEnlarger {
   @Override
   public SearchScope getAdditionalUseScope(@Nonnull PsiElement element) {
     if (element instanceof PsiField && ((PsiField)element).hasModifierProperty(PsiModifier.PRIVATE)) {
-      final GlobalSearchScope maximalUseScope = ResolveScopeManager.getElementUseScope(element);
+      GlobalSearchScope maximalUseScope = ResolveScopeManager.getElementUseScope(element);
       return new GrSourceFilterScope(maximalUseScope);
     }
 

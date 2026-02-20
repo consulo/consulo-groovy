@@ -63,13 +63,13 @@ public class GrCharConverter extends GrTypeConverter {
 
 
     { // special case 'c = []' will throw RuntimeError
-      final GrExpression rValue;
+      GrExpression rValue;
       if (context instanceof GrAssignmentExpression) {
-        final GrAssignmentExpression assignmentExpression = (GrAssignmentExpression)context;
+        GrAssignmentExpression assignmentExpression = (GrAssignmentExpression)context;
         rValue = assignmentExpression.getRValue();
       }
       else if (context instanceof GrVariable) {
-        final GrVariable assignmentExpression = (GrVariable)context;
+        GrVariable assignmentExpression = (GrVariable)context;
         rValue = assignmentExpression.getInitializerGroovy();
       }
       else {
@@ -100,8 +100,8 @@ public class GrCharConverter extends GrTypeConverter {
     // can cast and assign one-symbol strings to char
     if (!TypesUtil.isClassType(rType, CommonClassNames.JAVA_LANG_STRING)) return null;
 
-    final GrLiteral literal = getLiteral(context);
-    final Object value = literal == null ? null : literal.getValue();
+    GrLiteral literal = getLiteral(context);
+    Object value = literal == null ? null : literal.getValue();
     return value == null ? null : value.toString().length() == 1 ? ConversionResult.OK : ConversionResult.ERROR;
   }
 }

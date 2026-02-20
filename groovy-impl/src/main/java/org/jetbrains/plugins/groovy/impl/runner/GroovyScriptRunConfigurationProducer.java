@@ -56,20 +56,20 @@ public class GroovyScriptRunConfigurationProducer extends RuntimeConfigurationPr
     return mySourceElement;
   }
 
-  protected RunnerAndConfigurationSettings createConfigurationByElement(final Location location, final ConfigurationContext context) {
-    final PsiElement element = location.getPsiElement();
-    final PsiFile file = element.getContainingFile();
+  protected RunnerAndConfigurationSettings createConfigurationByElement(Location location, ConfigurationContext context) {
+    PsiElement element = location.getPsiElement();
+    PsiFile file = element.getContainingFile();
     if (!(file instanceof GroovyFile)) {
       return null;
     }
 
     GroovyFile groovyFile = (GroovyFile)file;
-    final PsiClass aClass = GroovyRunnerUtil.getRunningClass(location.getPsiElement());
+    PsiClass aClass = GroovyRunnerUtil.getRunningClass(location.getPsiElement());
     if (aClass instanceof GroovyScriptClass || GroovyRunnerUtil.isRunnable(aClass)) {
-      final RunnerAndConfigurationSettings settings = createConfiguration(aClass);
+      RunnerAndConfigurationSettings settings = createConfiguration(aClass);
       if (settings != null) {
         mySourceElement = element;
-        final GroovyScriptRunConfiguration configuration = (GroovyScriptRunConfiguration)settings.getConfiguration();
+        GroovyScriptRunConfiguration configuration = (GroovyScriptRunConfiguration)settings.getConfiguration();
         GroovyScriptUtil.getScriptType(groovyFile).tuneConfiguration(groovyFile, configuration, location);
         return settings;
       }
@@ -96,13 +96,13 @@ public class GroovyScriptRunConfigurationProducer extends RuntimeConfigurationPr
                                                                  @Nonnull List<RunnerAndConfigurationSettings> existingConfigurations,
                                                                  ConfigurationContext context) {
     for (RunnerAndConfigurationSettings existingConfiguration : existingConfigurations) {
-      final RunConfiguration configuration = existingConfiguration.getConfiguration();
-      final GroovyScriptRunConfiguration existing = (GroovyScriptRunConfiguration)configuration;
-      final String path = existing.getScriptPath();
+      RunConfiguration configuration = existingConfiguration.getConfiguration();
+      GroovyScriptRunConfiguration existing = (GroovyScriptRunConfiguration)configuration;
+      String path = existing.getScriptPath();
       if (path != null) {
-        final PsiFile file = location.getPsiElement().getContainingFile();
+        PsiFile file = location.getPsiElement().getContainingFile();
         if (file instanceof GroovyFile) {
-          final VirtualFile vfile = file.getVirtualFile();
+          VirtualFile vfile = file.getVirtualFile();
           if (vfile != null && FileUtil.toSystemIndependentName(path).equals(vfile.getPath())) {
             if (!((GroovyFile)file).isScript() || GroovyScriptUtil.getScriptType((GroovyFile)file)
                                                                   .isConfigurationByLocation(existing, location)) {
@@ -116,26 +116,26 @@ public class GroovyScriptRunConfigurationProducer extends RuntimeConfigurationPr
   }
 
 
-  public int compareTo(final RuntimeConfigurationProducer o) {
+  public int compareTo(RuntimeConfigurationProducer o) {
     return PREFERED;
   }
 
   @Nullable
-  private RunnerAndConfigurationSettings createConfiguration(@Nullable final PsiClass aClass) {
+  private RunnerAndConfigurationSettings createConfiguration(@Nullable PsiClass aClass) {
     if (aClass == null) {
       return null;
     }
 
-    final Project project = aClass.getProject();
+    Project project = aClass.getProject();
     RunnerAndConfigurationSettings settings = RunManager.getInstance(project).createRunConfiguration("", getConfigurationFactory());
-    final GroovyScriptRunConfiguration configuration = (GroovyScriptRunConfiguration)settings.getConfiguration();
-    final PsiFile file = aClass.getContainingFile().getOriginalFile();
-    final PsiDirectory dir = file.getContainingDirectory();
+    GroovyScriptRunConfiguration configuration = (GroovyScriptRunConfiguration)settings.getConfiguration();
+    PsiFile file = aClass.getContainingFile().getOriginalFile();
+    PsiDirectory dir = file.getContainingDirectory();
     if (dir == null) {
       return null;
     }
     configuration.setWorkDir(dir.getVirtualFile().getPath());
-    final VirtualFile vFile = file.getVirtualFile();
+    VirtualFile vFile = file.getVirtualFile();
     if (vFile == null) {
       return null;
     }

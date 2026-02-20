@@ -32,24 +32,24 @@ public class GrJoinBlockStatementHandler implements JoinLinesHandlerDelegate
   public int tryJoinLines(Document document, PsiFile file, int start, int end) {
     if (!(file instanceof GroovyFileBase)) return CANNOT_JOIN;
 
-    final PsiElement startElement = file.findElementAt(start);
+    PsiElement startElement = file.findElementAt(start);
     if (startElement == null || startElement.getNode().getElementType() != GroovyTokenTypes.mLCURLY) return CANNOT_JOIN;
 
-    final PsiElement parent = startElement.getParent();
+    PsiElement parent = startElement.getParent();
     if (!(parent instanceof GrOpenBlock)) return CANNOT_JOIN;
 
-    final GrStatement[] statements = ((GrOpenBlock)parent).getStatements();
+    GrStatement[] statements = ((GrOpenBlock)parent).getStatements();
     if (statements.length != 1) return CANNOT_JOIN;
 
-    final PsiElement parent1 = parent.getParent();
+    PsiElement parent1 = parent.getParent();
     if (!(parent1 instanceof GrBlockStatement)) return CANNOT_JOIN;
 
-    final PsiElement parent2 = parent1.getParent();
+    PsiElement parent2 = parent1.getParent();
     if (!(parent2 instanceof GrIfStatement) && !(parent2 instanceof GrWhileStatement) && !(parent2 instanceof GrForStatement)) {
       return CANNOT_JOIN;
     }
 
-    final GrStatement statement = ((GrBlockStatement)parent1).replaceWithStatement(statements[0]);
+    GrStatement statement = ((GrBlockStatement)parent1).replaceWithStatement(statements[0]);
     return statement.getTextRange().getStartOffset();
   }
 }

@@ -43,21 +43,21 @@ public class ExpandBooleanIntention extends Intention {
     }
 
     public void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
-        final GrStatement containingStatement = (GrStatement) element;
+        GrStatement containingStatement = (GrStatement) element;
         if (ExpandBooleanPredicate.isBooleanAssignment(containingStatement)) {
-            final GrAssignmentExpression assignmentExpression = (GrAssignmentExpression) containingStatement;
-            final GrExpression rhs = assignmentExpression.getRValue();
+            GrAssignmentExpression assignmentExpression = (GrAssignmentExpression) containingStatement;
+            GrExpression rhs = assignmentExpression.getRValue();
             assert rhs != null;
-            final String rhsText = rhs.getText();
-            final GrExpression lhs = assignmentExpression.getLValue();
-            final String lhsText = lhs.getText();
+            String rhsText = rhs.getText();
+            GrExpression lhs = assignmentExpression.getLValue();
+            String lhsText = lhs.getText();
             String statement = "if(" + rhsText + "){\n" + lhsText + " = true\n}else{\n" + lhsText + " = false\n}";
             PsiImplUtil.replaceStatement(statement, containingStatement);
         }
         else if (ExpandBooleanPredicate.isBooleanReturn(containingStatement)) {
-            final GrReturnStatement returnStatement = (GrReturnStatement) containingStatement;
-            final GrExpression returnValue = returnStatement.getReturnValue();
-            final String valueText = returnValue.getText();
+            GrReturnStatement returnStatement = (GrReturnStatement) containingStatement;
+            GrExpression returnValue = returnStatement.getReturnValue();
+            String valueText = returnValue.getText();
             String statement = "if(" + valueText + "){\nreturn true\n}else{\nreturn false\n}";
             PsiImplUtil.replaceStatement(statement, containingStatement);
         }

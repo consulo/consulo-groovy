@@ -46,13 +46,13 @@ public class GroovyMethodWithMoreThanThreeNegationsInspection extends BaseInspec
     private static class Visitor extends BaseInspectionVisitor {
         public void visitMethod(GrMethod grMethod) {
             super.visitMethod(grMethod);
-            final NegationCountVisitor visitor = new NegationCountVisitor();
-            final GrOpenBlock body = grMethod.getBlock();
+            NegationCountVisitor visitor = new NegationCountVisitor();
+            GrOpenBlock body = grMethod.getBlock();
             if (body == null) {
                 return;
             }
             body.accept(visitor);
-            final int numNegations = visitor.getNegationCount();
+            int numNegations = visitor.getNegationCount();
             if (numNegations <= 3) {
                 return;
             }

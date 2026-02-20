@@ -45,7 +45,7 @@ public class GrSuperReferenceResolver {
         GrExpression qualifier = ref.getQualifier();
 
         if (qualifier == null) {
-            final PsiElement parent = ref.getParent();
+            PsiElement parent = ref.getParent();
             if (parent instanceof GrConstructorInvocation constructorInvocation) {
                 return constructorInvocation.multiResolveGroovy(false);
             }

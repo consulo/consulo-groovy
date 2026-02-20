@@ -75,11 +75,11 @@ public class GrClosableBlockImpl extends GrBlockImpl implements GrClosableBlock 
   }
 
   @Override
-  public boolean processClosureDeclarations(@Nonnull final PsiScopeProcessor plainProcessor,
-                                            @Nonnull final PsiScopeProcessor nonCodeProcessor,
-                                            @Nonnull final ResolveState state,
-                                            @Nullable final PsiElement lastParent,
-                                            @Nonnull final PsiElement place) {
+  public boolean processClosureDeclarations(@Nonnull PsiScopeProcessor plainProcessor,
+                                            @Nonnull PsiScopeProcessor nonCodeProcessor,
+                                            @Nonnull ResolveState state,
+                                            @Nullable PsiElement lastParent,
+                                            @Nonnull PsiElement place) {
     if (!processDeclarations(plainProcessor, state, lastParent, place)) {
       return false;
     }
@@ -91,10 +91,10 @@ public class GrClosableBlockImpl extends GrBlockImpl implements GrClosableBlock 
   }
 
   @Override
-  public boolean processDeclarations(@Nonnull final PsiScopeProcessor processor,
-                                     @Nonnull final ResolveState state,
-                                     @Nullable final PsiElement lastParent,
-                                     @Nonnull final PsiElement place) {
+  public boolean processDeclarations(@Nonnull PsiScopeProcessor processor,
+                                     @Nonnull ResolveState state,
+                                     @Nullable PsiElement lastParent,
+                                     @Nonnull PsiElement place) {
     if (lastParent == null) {
       return true;
     }
@@ -182,7 +182,7 @@ public class GrClosableBlockImpl extends GrBlockImpl implements GrClosableBlock 
                                   @Nonnull PsiScopeProcessor nonCodeProcessor,
                                   @Nonnull ResolveState state,
                                   @Nonnull PsiElement place,
-                                  @Nullable final PsiType classToDelegate) {
+                                  @Nullable PsiType classToDelegate) {
     if (classToDelegate == null) {
       return true;
     }
@@ -195,7 +195,7 @@ public class GrClosableBlockImpl extends GrBlockImpl implements GrClosableBlock 
                                              @Nonnull ResolveState state,
                                              @Nullable PsiElement lastParent,
                                              @Nonnull PsiElement place) {
-    final PsiClass closureClass =
+    PsiClass closureClass =
       GroovyPsiManager.getInstance(getProject()).findClassWithCache(GroovyCommonClassNames.GROOVY_LANG_CLOSURE, getResolveScope());
     if (closureClass == null) {
       return true;
@@ -233,7 +233,7 @@ public class GrClosableBlockImpl extends GrBlockImpl implements GrClosableBlock 
                                @Nonnull PsiScopeProcessor nonCodeProcessor,
                                @Nonnull ResolveState state,
                                @Nonnull PsiElement place) {
-    final PsiElement parent = getParent();
+    PsiElement parent = getParent();
     if (parent == null) {
       return true;
     }
@@ -297,7 +297,7 @@ public class GrClosableBlockImpl extends GrBlockImpl implements GrClosableBlock 
   @Override
   @Nonnull
   public GrParameterListImpl getParameterList() {
-    final GrParameterListImpl childByClass = findChildByClass(GrParameterListImpl.class);
+    GrParameterListImpl childByClass = findChildByClass(GrParameterListImpl.class);
     assert childByClass != null;
     return childByClass;
   }
@@ -306,7 +306,7 @@ public class GrClosableBlockImpl extends GrBlockImpl implements GrClosableBlock 
   public GrParameter addParameter(GrParameter parameter) {
     GrParameterList parameterList = getParameterList();
     if (getArrow() == null) {
-      final GrParameterList newParamList = (GrParameterList)addAfter(parameterList, getLBrace());
+      GrParameterList newParamList = (GrParameterList)addAfter(parameterList, getLBrace());
       parameterList.delete();
       ASTNode next = newParamList.getNode().getTreeNext();
       getNode().addLeaf(GroovyTokenTypes.mCLOSABLE_BLOCK_OP, "->", next);
@@ -353,9 +353,9 @@ public class GrClosableBlockImpl extends GrBlockImpl implements GrClosableBlock 
   @Nonnull
   public PsiType getOwnerType() {
     return LanguageCachedValueUtil.getCachedValue(this, () -> {
-      final GroovyPsiElement context =
+      GroovyPsiElement context =
         PsiTreeUtil.getParentOfType(GrClosableBlockImpl.this, GrTypeDefinition.class, GrClosableBlock.class, GroovyFile.class);
-      final PsiElementFactory factory = JavaPsiFacade.getInstance(getProject()).getElementFactory();
+      PsiElementFactory factory = JavaPsiFacade.getInstance(getProject()).getElementFactory();
       PsiType type = null;
       if (context instanceof GrTypeDefinition) {
         type = factory.createType((PsiClass)context);
@@ -364,7 +364,7 @@ public class GrClosableBlockImpl extends GrBlockImpl implements GrClosableBlock 
         type = GrClosureType.create((GrClosableBlock)context, true);
       }
       else if (context instanceof GroovyFile) {
-        final PsiClass scriptClass = ((GroovyFile)context).getScriptClass();
+        PsiClass scriptClass = ((GroovyFile)context).getScriptClass();
         if (scriptClass != null && GroovyNamesUtil.isIdentifier(scriptClass.getName())) {
           type = factory.createType(scriptClass);
         }

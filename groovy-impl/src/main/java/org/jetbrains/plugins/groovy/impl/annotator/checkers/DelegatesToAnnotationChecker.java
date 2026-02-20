@@ -43,14 +43,14 @@ public class DelegatesToAnnotationChecker extends CustomAnnotationChecker {
       return false;
     }
 
-    final PsiAnnotationMemberValue valueAttribute = annotation.findAttributeValue("value");
+    PsiAnnotationMemberValue valueAttribute = annotation.findAttributeValue("value");
 
     if (valueAttribute == null) {
-      final PsiAnnotationOwner owner = annotation.getOwner();
+      PsiAnnotationOwner owner = annotation.getOwner();
       if (owner instanceof GrModifierList) {
-        final PsiElement parent1 = ((GrModifierList)owner).getParent();
+        PsiElement parent1 = ((GrModifierList)owner).getParent();
         if (parent1 instanceof GrParameter) {
-          final PsiElement parent = parent1.getParent();
+          PsiElement parent = parent1.getParent();
           if (parent instanceof GrParameterList) {
             for (GrParameter parameter : ((GrParameterList)parent).getParameters()) {
               if (parameter.getModifierList().findAnnotation(GroovyCommonClassNames

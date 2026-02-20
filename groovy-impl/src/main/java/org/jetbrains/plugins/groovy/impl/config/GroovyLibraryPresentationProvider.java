@@ -44,13 +44,13 @@ public class GroovyLibraryPresentationProvider extends GroovyLibraryPresentation
     super(GROOVY_KIND);
   }
 
-  public boolean managesLibrary(final VirtualFile[] libraryFiles) {
+  public boolean managesLibrary(VirtualFile[] libraryFiles) {
     return LibrariesUtil.getGroovyLibraryHome(libraryFiles) != null;
   }
 
   @Nls
-  public String getLibraryVersion(final VirtualFile[] libraryFiles) {
-    final String home = LibrariesUtil.getGroovyLibraryHome(libraryFiles);
+  public String getLibraryVersion(VirtualFile[] libraryFiles) {
+    String home = LibrariesUtil.getGroovyLibraryHome(libraryFiles);
     if (home == null) return AbstractConfigUtils.UNDEFINED_VERSION;
 
     return GroovyConfigUtils.getInstance().getSDKVersion(home);

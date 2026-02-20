@@ -51,7 +51,7 @@ public abstract class ScriptPositionManagerHelper
 	}
 
 	@Nullable
-	public String getOriginalScriptName(@Nonnull ReferenceType refType, @Nonnull final String runtimeName)
+	public String getOriginalScriptName(@Nonnull ReferenceType refType, @Nonnull String runtimeName)
 	{
 		return null;
 	}

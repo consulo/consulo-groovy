@@ -27,7 +27,7 @@ import java.util.Set;
 public class GrAliasAnnotationChecker extends CustomAnnotationChecker {
   @Override
   public boolean checkApplicability(@Nonnull AnnotationHolder holder, @Nonnull GrAnnotation annotation) {
-    final ArrayList<GrAnnotation> aliasedAnnotations = getAliasedAnnotations(annotation);
+    ArrayList<GrAnnotation> aliasedAnnotations = getAliasedAnnotations(annotation);
     if (aliasedAnnotations == null) {
       return false;
     }
@@ -43,25 +43,25 @@ public class GrAliasAnnotationChecker extends CustomAnnotationChecker {
 
   @Nullable
   private static ArrayList<GrAnnotation> getAliasedAnnotations(GrAnnotation annotation) {
-    final PsiAnnotation annotationCollector = GrAnnotationCollector.findAnnotationCollector(annotation);
+    PsiAnnotation annotationCollector = GrAnnotationCollector.findAnnotationCollector(annotation);
     if (annotationCollector == null) {
       return null;
     }
 
-    final ArrayList<GrAnnotation> aliasedAnnotations = new ArrayList<>();
+    ArrayList<GrAnnotation> aliasedAnnotations = new ArrayList<>();
     GrAnnotationCollector.collectAnnotations(aliasedAnnotations, annotation, annotationCollector);
     return aliasedAnnotations;
   }
 
   @Override
   public boolean checkArgumentList(@Nonnull AnnotationHolder holder, @Nonnull GrAnnotation annotation) {
-    final PsiAnnotation annotationCollector = GrAnnotationCollector.findAnnotationCollector(annotation);
+    PsiAnnotation annotationCollector = GrAnnotationCollector.findAnnotationCollector(annotation);
     if (annotationCollector == null) {
       return false;
     }
 
-    final ArrayList<GrAnnotation> annotations = new ArrayList<>();
-    final Set<String> usedAttributes = GrAnnotationCollector.collectAnnotations(annotations, annotation, annotationCollector);
+    ArrayList<GrAnnotation> annotations = new ArrayList<>();
+    Set<String> usedAttributes = GrAnnotationCollector.collectAnnotations(annotations, annotation, annotationCollector);
 
     for (GrAnnotation aliased : annotations) {
       Pair<PsiElement, String> r = AnnotationChecker.checkAnnotationArgumentList(aliased, holder);
@@ -77,8 +77,8 @@ public class GrAliasAnnotationChecker extends CustomAnnotationChecker {
       }
     }
 
-    final GrAnnotationNameValuePair[] attributes = annotation.getParameterList().getAttributes();
-    final String aliasQName = annotation.getQualifiedName();
+    GrAnnotationNameValuePair[] attributes = annotation.getParameterList().getAttributes();
+    String aliasQName = annotation.getQualifiedName();
 
     if (attributes.length == 1 && attributes[0].getNameIdentifierGroovy() == null && !usedAttributes.contains("value")) {
       holder.newAnnotation(HighlightSeverity.ERROR, GroovyBundle.message("at.interface.0.does.not.contain.attribute", aliasQName, "value"))
@@ -87,7 +87,7 @@ public class GrAliasAnnotationChecker extends CustomAnnotationChecker {
     }
 
     for (GrAnnotationNameValuePair pair : attributes) {
-      final PsiElement nameIdentifier = pair.getNameIdentifierGroovy();
+      PsiElement nameIdentifier = pair.getNameIdentifierGroovy();
       if (nameIdentifier != null && !usedAttributes.contains(pair.getName())) {
         holder.newAnnotation(HighlightSeverity.ERROR,
                              GroovyBundle.message("at.interface.0.does.not.contain.attribute", aliasQName, pair.getName()))

@@ -27,5 +27,5 @@ public abstract class DslErrorReporter
 		return ServiceManager.getService(DslErrorReporter.class);
 	}
 
-	public abstract void invokeDslErrorPopup(Throwable e, final Project project, @Nonnull VirtualFile vfile);
+	public abstract void invokeDslErrorPopup(Throwable e, Project project, @Nonnull VirtualFile vfile);
 }

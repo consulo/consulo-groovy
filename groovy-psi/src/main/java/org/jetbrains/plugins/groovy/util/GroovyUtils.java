@@ -40,8 +40,8 @@ import java.util.regex.Pattern;
  * @author ilyas
  */
 public abstract class GroovyUtils {
-  public static File[] getFilesInDirectoryByPattern(String dirPath, final String patternString) {
-    final Pattern pattern = Pattern.compile(patternString);
+  public static File[] getFilesInDirectoryByPattern(String dirPath, String patternString) {
+    Pattern pattern = Pattern.compile(patternString);
     return getFilesInDirectoryByPattern(dirPath, pattern);
   }
 
@@ -109,7 +109,7 @@ public abstract class GroovyUtils {
 
   public static File getBundledGroovyJar() {
     File pluginPath = PluginManager.getPluginPath(GroovyUtils.class);
-    final File[] groovyJars = GroovyConfigUtils.getGroovyAllJars(new File(pluginPath, "lib").getPath());
+    File[] groovyJars = GroovyConfigUtils.getGroovyAllJars(new File(pluginPath, "lib").getPath());
     assert groovyJars.length == 1;
     return groovyJars[0];
   }

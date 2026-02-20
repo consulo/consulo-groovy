@@ -63,7 +63,7 @@ public class GroovyPatterns extends PsiJavaPatterns {
 
   public static GroovyElementPattern.Capture<GrLiteral> groovyLiteralExpression(@Nullable final ElementPattern value) {
     return new GroovyElementPattern.Capture<GrLiteral>(new InitialPatternCondition<GrLiteral>(GrLiteral.class) {
-      public boolean accepts(@Nullable final Object o, final ProcessingContext context) {
+      public boolean accepts(@Nullable Object o, ProcessingContext context) {
         return o instanceof GrLiteral && (value == null || value.accepts(((GrLiteral)o).getValue(), context));
       }
     });
@@ -97,7 +97,7 @@ public class GroovyPatterns extends PsiJavaPatterns {
 
   public static GroovyElementPattern.Capture<GrLiteralImpl> stringLiteral() {
     return new GroovyElementPattern.Capture<GrLiteralImpl>(new InitialPatternCondition<GrLiteralImpl>(GrLiteralImpl.class) {
-      public boolean accepts(@Nullable final Object o, final ProcessingContext context) {
+      public boolean accepts(@Nullable Object o, ProcessingContext context) {
         if (!(o instanceof GrLiteralImpl)) return false;
         return ((GrLiteralImpl)o).isStringLiteral();
       }
@@ -114,7 +114,7 @@ public class GroovyPatterns extends PsiJavaPatterns {
 
   public static GroovyElementPattern.Capture<GrArgumentLabel> namedArgumentLabel(@Nullable final ElementPattern<? extends String> namePattern) {
     return new GroovyElementPattern.Capture<GrArgumentLabel>(new InitialPatternCondition<GrArgumentLabel>(GrArgumentLabel.class) {
-      public boolean accepts(@Nullable final Object o, final ProcessingContext context) {
+      public boolean accepts(@Nullable Object o, ProcessingContext context) {
         if (o instanceof GrArgumentLabel) {
           PsiElement nameElement = ((GrArgumentLabel)o).getNameElement();
           if (nameElement instanceof LeafPsiElement) {
@@ -131,7 +131,7 @@ public class GroovyPatterns extends PsiJavaPatterns {
     });
   }
 
-  public static GroovyMethodCallPattern methodCall(final ElementPattern<? extends String> names, final String className) {
+  public static GroovyMethodCallPattern methodCall(ElementPattern<? extends String> names, final String className) {
     return new GroovyMethodCallPattern().withMethodName(names)
       .withMethod(psiMethod().with(new PatternCondition<PsiMethod>("psiMethodClassNameCondition") {
         @Override

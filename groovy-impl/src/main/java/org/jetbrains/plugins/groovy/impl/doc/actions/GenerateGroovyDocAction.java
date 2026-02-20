@@ -37,9 +37,9 @@ public final class GenerateGroovyDocAction extends AnAction implements DumbAware
 
 	public void actionPerformed(AnActionEvent e)
 	{
-		final Project project = e.getData(CommonDataKeys.PROJECT);
+		Project project = e.getData(CommonDataKeys.PROJECT);
 
-		final Module module = e.getData(LangDataKeys.MODULE);
+		Module module = e.getData(LangDataKeys.MODULE);
 		if(module == null)
 		{
 			return;
@@ -47,13 +47,13 @@ public final class GenerateGroovyDocAction extends AnAction implements DumbAware
 
 		GroovyDocConfiguration configuration = new GroovyDocConfiguration();
 
-		final VirtualFile[] files = ModuleRootManager.getInstance(module).getContentRoots();
+		VirtualFile[] files = ModuleRootManager.getInstance(module).getContentRoots();
 		if(files.length == 1)
 		{
 			configuration.INPUT_DIRECTORY = files[0].getPath();
 		}
 
-		final GenerateGroovyDocDialog dialog = new GenerateGroovyDocDialog(project, configuration);
+		GenerateGroovyDocDialog dialog = new GenerateGroovyDocDialog(project, configuration);
 		dialog.show();
 		if(!dialog.isOK())
 		{
@@ -66,7 +66,7 @@ public final class GenerateGroovyDocAction extends AnAction implements DumbAware
 	public void update(AnActionEvent event)
 	{
 		super.update(event);
-		final Presentation presentation = event.getPresentation();
+		Presentation presentation = event.getPresentation();
 		Module module = event.getData(LangDataKeys.MODULE);
 
 		if(module == null || !LibrariesUtil.hasGroovySdk(module))
@@ -81,7 +81,7 @@ public final class GenerateGroovyDocAction extends AnAction implements DumbAware
 		}
 	}
 
-	private static void generateGroovydoc(final GroovyDocConfiguration configuration, final Project project)
+	private static void generateGroovydoc(GroovyDocConfiguration configuration, Project project)
 	{
   /* TODO[VISTALL] Runnable groovyDocRun = new Runnable() {
 	  public void run() {

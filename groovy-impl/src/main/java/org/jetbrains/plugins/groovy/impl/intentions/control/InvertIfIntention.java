@@ -93,7 +93,7 @@ public class InvertIfIntention extends Intention {
 
 
         GrStatement thenBranch = parentIf.getThenBranch();
-        final boolean thenIsNotEmpty = isNotEmpty(thenBranch);
+        boolean thenIsNotEmpty = isNotEmpty(thenBranch);
 
         String newIfText = "if (" + negatedCondition.getText() + ") {}";
         if (thenIsNotEmpty) {
@@ -104,7 +104,7 @@ public class InvertIfIntention extends Intention {
         generateElseBranchTextAndRemoveTailStatements(parentIf, newIf);
 
         if (thenIsNotEmpty) {
-            final GrStatement elseBranch = newIf.getElseBranch();
+            GrStatement elseBranch = newIf.getElseBranch();
             assert elseBranch != null;
             elseBranch.replaceWithStatement(thenBranch);
         }
@@ -118,7 +118,7 @@ public class InvertIfIntention extends Intention {
     }
 
     private static void generateElseBranchTextAndRemoveTailStatements(@Nonnull GrIfStatement ifStatement, @Nonnull GrIfStatement newIf) {
-        final GrStatement thenBranch = newIf.getThenBranch();
+        GrStatement thenBranch = newIf.getThenBranch();
         assert thenBranch != null;
 
         GrStatement elseBranch = ifStatement.getElseBranch();
@@ -136,32 +136,32 @@ public class InvertIfIntention extends Intention {
             return;
         }
 
-        final PsiElement start = ifStatement.getNextSibling();
+        PsiElement start = ifStatement.getNextSibling();
         PsiElement end = parent instanceof GrCodeBlock ? ((GrCodeBlock) parent).getRBrace().getPrevSibling() : parent.getLastChild();
 
-        final GrOpenBlock block = ((GrBlockStatement) thenBranch).getBlock();
+        GrOpenBlock block = ((GrBlockStatement) thenBranch).getBlock();
         block.addRangeAfter(start, end, block.getLBrace());
         parent.deleteChildRange(start, end);
     }
 
     private static boolean isTailAfterIf(@Nonnull GrIfStatement ifStatement, @Nonnull GrStatementOwner owner) {
-        final GrControlFlowOwner flowOwner = ControlFlowUtils.findControlFlowOwner(ifStatement);
+        GrControlFlowOwner flowOwner = ControlFlowUtils.findControlFlowOwner(ifStatement);
         if (flowOwner == null) {
             return false;
         }
 
-        final Instruction[] flow = flowOwner.getControlFlow();
+        Instruction[] flow = flowOwner.getControlFlow();
 
-        final GrStatement[] statements = owner.getStatements();
-        final int index = ArrayUtil.find(statements, ifStatement);
+        GrStatement[] statements = owner.getStatements();
+        int index = ArrayUtil.find(statements, ifStatement);
         if (index == statements.length - 1) {
             return false;
         }
 
-        final GrStatement then = ifStatement.getThenBranch();
+        GrStatement then = ifStatement.getThenBranch();
 
         for (Instruction i : flow) {
-            final PsiElement element = i.getElement();
+            PsiElement element = i.getElement();
             if (element == null || !PsiTreeUtil.isAncestor(then, element, true)) {
                 continue;
             }

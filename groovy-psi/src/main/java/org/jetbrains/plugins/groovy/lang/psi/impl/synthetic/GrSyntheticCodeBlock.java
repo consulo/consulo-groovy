@@ -60,15 +60,15 @@ public class GrSyntheticCodeBlock extends LightElement implements PsiCodeBlock {
 
   @Override
   public PsiElement getFirstBodyElement() {
-    final PsiElement nextSibling = myCodeBlock.getLBrace().getNextSibling();
+    PsiElement nextSibling = myCodeBlock.getLBrace().getNextSibling();
     return nextSibling == getRBrace() ? null : nextSibling;
   }
 
   @Override
   public PsiElement getLastBodyElement() {
-    final PsiElement rBrace = myCodeBlock.getRBrace();
+    PsiElement rBrace = myCodeBlock.getRBrace();
     if (rBrace != null) {
-      final PsiElement prevSibling = rBrace.getPrevSibling();
+      PsiElement prevSibling = rBrace.getPrevSibling();
       return prevSibling == myCodeBlock.getLBrace() ? null : prevSibling;
     }
     return getLastChild();
@@ -88,10 +88,10 @@ public class GrSyntheticCodeBlock extends LightElement implements PsiCodeBlock {
   private static PsiJavaToken getOrCreateJavaToken(@Nullable PsiElement element, @Nonnull IElementType type) {
     if (element == null) return null;
 
-    final SoftReference<PsiJavaToken> ref = element.getUserData(PSI_JAVA_TOKEN);
-    final PsiJavaToken token = SoftReference.dereference(ref);
+    SoftReference<PsiJavaToken> ref = element.getUserData(PSI_JAVA_TOKEN);
+    PsiJavaToken token = SoftReference.dereference(ref);
     if (token != null) return token;
-    final LightJavaToken newToken = new LightJavaToken(element, type);
+    LightJavaToken newToken = new LightJavaToken(element, type);
     element.putUserData(PSI_JAVA_TOKEN, new SoftReference<PsiJavaToken>(newToken));
     return newToken;
   }

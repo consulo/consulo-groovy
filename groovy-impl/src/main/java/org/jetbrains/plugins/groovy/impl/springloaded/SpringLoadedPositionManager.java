@@ -50,7 +50,7 @@ public class SpringLoadedPositionManager implements PositionManager {
 
   @Nonnull
   @Override
-  public List<ReferenceType> getAllClasses(@Nonnull final SourcePosition classPosition) throws NoDataException {
+  public List<ReferenceType> getAllClasses(@Nonnull SourcePosition classPosition) throws NoDataException {
     String className = findEnclosingName(classPosition);
     if (className == null) {
       throw NoDataException.INSTANCE;
@@ -81,7 +81,7 @@ public class SpringLoadedPositionManager implements PositionManager {
   }
 
   @Nullable
-  private static String findEnclosingName(final SourcePosition position) {
+  private static String findEnclosingName(SourcePosition position) {
     return AccessRule.read(() ->
                            {
                              PsiElement element = findElementAt(position);
@@ -101,8 +101,8 @@ public class SpringLoadedPositionManager implements PositionManager {
   }
 
   @Nullable
-  private static String getClassNameForJvm(final PsiClass aClass) {
-    final PsiClass psiClass = aClass.getContainingClass();
+  private static String getClassNameForJvm(PsiClass aClass) {
+    PsiClass psiClass = aClass.getContainingClass();
     if (psiClass != null) {
       return getClassNameForJvm(psiClass) + "$" + aClass.getName();
     }
@@ -111,7 +111,7 @@ public class SpringLoadedPositionManager implements PositionManager {
   }
 
   @Nullable
-  private static String getOuterClassName(final SourcePosition position) {
+  private static String getOuterClassName(SourcePosition position) {
     return AccessRule.read(() ->
                            {
                              PsiElement element = findElementAt(position);
@@ -183,7 +183,7 @@ public class SpringLoadedPositionManager implements PositionManager {
     }
 
     try {
-      final int lineNumber = classPosition.getLine() + 1;
+      int lineNumber = classPosition.getLine() + 1;
 
       ReferenceType effectiveRef = springLoadedGeneratedClass == null ? fromClass : springLoadedGeneratedClass;
 

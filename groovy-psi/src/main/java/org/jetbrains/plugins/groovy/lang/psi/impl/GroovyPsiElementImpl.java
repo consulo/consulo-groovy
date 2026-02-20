@@ -64,7 +64,7 @@ public abstract class GroovyPsiElementImpl extends ASTWrapperPsiElement implemen
   }
 
   @Nullable
-  public static GrExpression findExpressionChild(final PsiElement element) {
+  public static GrExpression findExpressionChild(PsiElement element) {
     for (PsiElement cur = element.getFirstChild(); cur != null; cur = cur.getNextSibling()) {
       if (cur instanceof GrExpression) {
         return (GrExpression)cur;

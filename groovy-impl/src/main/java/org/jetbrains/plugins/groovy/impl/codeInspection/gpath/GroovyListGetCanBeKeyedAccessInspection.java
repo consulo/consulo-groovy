@@ -71,12 +71,12 @@ public class GroovyListGetCanBeKeyedAccessInspection extends BaseInspection {
 
         public void doFix(Project project, ProblemDescriptor descriptor)
             throws IncorrectOperationException {
-            final PsiElement referenceName = descriptor.getPsiElement();
-            final GrReferenceExpression invokedExpression = (GrReferenceExpression) referenceName.getParent();
-            final GrMethodCallExpression callExpression = (GrMethodCallExpression) invokedExpression.getParent();
-            final GrArgumentList args = callExpression.getArgumentList();
+            PsiElement referenceName = descriptor.getPsiElement();
+            GrReferenceExpression invokedExpression = (GrReferenceExpression) referenceName.getParent();
+            GrMethodCallExpression callExpression = (GrMethodCallExpression) invokedExpression.getParent();
+            GrArgumentList args = callExpression.getArgumentList();
             assert args != null;
-            final GrExpression arg = args.getExpressionArguments()[0];
+            GrExpression arg = args.getExpressionArguments()[0];
             replaceExpression(callExpression, invokedExpression.getQualifierExpression().getText() + '[' + arg.getText() + ']');
         }
     }
@@ -84,7 +84,7 @@ public class GroovyListGetCanBeKeyedAccessInspection extends BaseInspection {
     private static class Visitor extends BaseInspectionVisitor {
         public void visitMethodCallExpression(GrMethodCallExpression grMethodCallExpression) {
             super.visitMethodCallExpression(grMethodCallExpression);
-            final GrArgumentList args = grMethodCallExpression.getArgumentList();
+            GrArgumentList args = grMethodCallExpression.getArgumentList();
             if (args == null) {
                 return;
             }
@@ -94,16 +94,16 @@ public class GroovyListGetCanBeKeyedAccessInspection extends BaseInspection {
             if (PsiImplUtil.hasNamedArguments(args)) {
                 return;
             }
-            final GrExpression methodExpression = grMethodCallExpression.getInvokedExpression();
+            GrExpression methodExpression = grMethodCallExpression.getInvokedExpression();
             if (!(methodExpression instanceof GrReferenceExpression)) {
                 return;
             }
-            final GrReferenceExpression referenceExpression = (GrReferenceExpression) methodExpression;
-            final String name = referenceExpression.getReferenceName();
+            GrReferenceExpression referenceExpression = (GrReferenceExpression) methodExpression;
+            String name = referenceExpression.getReferenceName();
             if (!"get".equals(name)) {
                 return;
             }
-            final GrExpression qualifier = referenceExpression.getQualifierExpression();
+            GrExpression qualifier = referenceExpression.getQualifierExpression();
 
             if (qualifier == null || PsiUtil.isThisOrSuperRef(qualifier)) {
                 return;
@@ -111,7 +111,7 @@ public class GroovyListGetCanBeKeyedAccessInspection extends BaseInspection {
             if (referenceExpression.getDotTokenType() == GroovyTokenTypes.mOPTIONAL_DOT) {
                 return;
             }
-            final PsiType type = qualifier.getType();
+            PsiType type = qualifier.getType();
             if (!InheritanceUtil.isInheritor(type, CommonClassNames.JAVA_UTIL_LIST)) {
                 return;
             }

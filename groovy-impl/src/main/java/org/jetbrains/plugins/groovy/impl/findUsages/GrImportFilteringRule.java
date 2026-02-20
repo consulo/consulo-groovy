@@ -35,8 +35,8 @@ public class GrImportFilteringRule implements ImportFilteringRule {
   @Override
   public boolean isVisible(@Nonnull Usage usage) {
     if (usage instanceof PsiElementUsage) {
-      final PsiElement psiElement = ((PsiElementUsage)usage).getElement();
-      final PsiFile containingFile = psiElement.getContainingFile();
+      PsiElement psiElement = ((PsiElementUsage)usage).getElement();
+      PsiFile containingFile = psiElement.getContainingFile();
       if (containingFile instanceof GroovyFile) {
         // check whether the element is in the import list
         return PsiTreeUtil.getParentOfType(psiElement, GrImportStatement.class, true) == null;

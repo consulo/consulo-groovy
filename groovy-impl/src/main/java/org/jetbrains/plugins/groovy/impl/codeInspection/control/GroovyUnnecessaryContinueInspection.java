@@ -73,8 +73,8 @@ public class GroovyUnnecessaryContinueInspection extends BaseInspection {
 
         public void doFix(Project project, ProblemDescriptor descriptor)
             throws IncorrectOperationException {
-            final PsiElement continueKeywordElement = descriptor.getPsiElement();
-            final GrContinueStatement continueStatement = (GrContinueStatement) continueKeywordElement.getParent();
+            PsiElement continueKeywordElement = descriptor.getPsiElement();
+            GrContinueStatement continueStatement = (GrContinueStatement) continueKeywordElement.getParent();
             assert continueStatement != null;
             continueStatement.removeStatement();
         }
@@ -86,7 +86,7 @@ public class GroovyUnnecessaryContinueInspection extends BaseInspection {
             if (continueStatement.getContainingFile().getViewProvider() instanceof TemplateLanguageFileViewProvider) {
                 return;
             }
-            final GrStatement continuedStatement = continueStatement.findTargetStatement();
+            GrStatement continuedStatement = continueStatement.findTargetStatement();
             if (continuedStatement == null) {
                 return;
             }
@@ -94,7 +94,7 @@ public class GroovyUnnecessaryContinueInspection extends BaseInspection {
             if (!(continuedStatement instanceof GrLoopStatement)) {
                 return;
             }
-            final GrCondition body = ((GrLoopStatement) continuedStatement).getBody();
+            GrCondition body = ((GrLoopStatement) continuedStatement).getBody();
             if (body == null) {
                 return;
             }

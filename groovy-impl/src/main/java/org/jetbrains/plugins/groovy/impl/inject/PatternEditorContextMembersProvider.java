@@ -52,11 +52,11 @@ public class PatternEditorContextMembersProvider extends NonCodeMembersContribut
   @Override
   public void processDynamicElements(
     @Nonnull PsiType qualifierType, PsiScopeProcessor processor, PsiElement place, ResolveState state) {
-    final PsiFile file = place.getContainingFile().getOriginalFile();
+    PsiFile file = place.getContainingFile().getOriginalFile();
     CachedValue<List<PsiElement>> value = file.getUserData(INJECTION_PARSED_CONTEXT);
     if (value == null) {
-      final BaseInjection injection = file.getUserData(BaseInjection.INJECTION_KEY);
-      final CachedValueProvider<List<PsiElement>> provider;
+      BaseInjection injection = file.getUserData(BaseInjection.INJECTION_KEY);
+      CachedValueProvider<List<PsiElement>> provider;
       if (injection == null) {
         provider = createDevProvider(file);
       }
@@ -69,7 +69,7 @@ public class PatternEditorContextMembersProvider extends NonCodeMembersContribut
       file.putUserData(INJECTION_PARSED_CONTEXT,
                        value = CachedValuesManager.getManager(file.getProject()).createCachedValue(provider, false));
     }
-    final List<PsiElement> roots = value.getValue();
+    List<PsiElement> roots = value.getValue();
     for (PsiElement root : roots) {
       if (!root.processDeclarations(processor, state, null, place)) {
         return;
@@ -90,22 +90,22 @@ public class PatternEditorContextMembersProvider extends NonCodeMembersContribut
   }
 
   private static PsiFile getRootByClasses(Class[] classes, Project project) {
-    final String text = PatternCompilerFactory.getFactory().getPatternCompiler(classes).dumpContextDeclarations();
+    String text = PatternCompilerFactory.getFactory().getPatternCompiler(classes).dumpContextDeclarations();
     return PsiFileFactory.getInstance(project).createFileFromText("context.groovy", GroovyFileType.GROOVY_FILE_TYPE, text);
   }
 
   @Nullable
   private static CachedValueProvider<List<PsiElement>> createDevProvider(final PsiFile file) {
-    final XmlTag tag = getTagByInjectedFile(file);
-    final XmlTag parentTag = tag == null ? null : tag.getParentTag();
-    final String parentTagName = parentTag == null ? null : parentTag.getName();
-    final String name = tag == null ? null : tag.getName();
+    XmlTag tag = getTagByInjectedFile(file);
+    XmlTag parentTag = tag == null ? null : tag.getParentTag();
+    String parentTagName = parentTag == null ? null : parentTag.getName();
+    String name = tag == null ? null : tag.getName();
     if ("place".equals(name) && "injection".equals(parentTagName) && parentTag != null) {
       return new CachedValueProvider<List<PsiElement>>() {
         @Override
         public Result<List<PsiElement>> compute() {
-          final XmlTag tag = getTagByInjectedFile(file);
-          final XmlTag parentTag = tag == null ? null : tag.getParentTag();
+          XmlTag tag = getTagByInjectedFile(file);
+          XmlTag parentTag = tag == null ? null : tag.getParentTag();
           if (parentTag == null) {
             return Result.create(Collections.<PsiElement>emptyList(), file);
           }
@@ -118,7 +118,7 @@ public class PatternEditorContextMembersProvider extends NonCodeMembersContribut
       return new CachedValueProvider<List<PsiElement>>() {
         @Override
         public Result<List<PsiElement>> compute() {
-          final XmlTag tag = getTagByInjectedFile(file);
+          XmlTag tag = getTagByInjectedFile(file);
           if (tag == null) {
             return Result.create(Collections.<PsiElement>emptyList(), file);
           }
@@ -132,17 +132,17 @@ public class PatternEditorContextMembersProvider extends NonCodeMembersContribut
   }
 
   @Nullable
-  private static XmlTag getTagByInjectedFile(final PsiFile file) {
-    final SmartPsiElementPointer pointer = file.getUserData(FileContextUtil.INJECTED_IN_ELEMENT);
-    final PsiElement element = pointer == null ? null : pointer.getElement();
+  private static XmlTag getTagByInjectedFile(PsiFile file) {
+    SmartPsiElementPointer pointer = file.getUserData(FileContextUtil.INJECTED_IN_ELEMENT);
+    PsiElement element = pointer == null ? null : pointer.getElement();
     return element instanceof XmlText ? ((XmlText)element).getParentTag() : null;
   }
 
   private static List<PsiElement> getRootsByClassNames(PsiFile file, String type) {
-    final List<PsiElement> roots = Lists.newLockFreeCopyOnWriteList();
+    List<PsiElement> roots = Lists.newLockFreeCopyOnWriteList();
 
-    final Project project = file.getProject();
-    final JavaPsiFacade psiFacade = JavaPsiFacade.getInstance(project);
+    Project project = file.getProject();
+    JavaPsiFacade psiFacade = JavaPsiFacade.getInstance(project);
 //    final PsiClass beanClass = psiFacade.findClass(PatternClassBean.class.getName(), GlobalSearchScope.allScope(project));
 //    if (beanClass != null) {
 //      final GlobalSearchScope scope =
@@ -168,7 +168,7 @@ public class PatternEditorContextMembersProvider extends NonCodeMembersContribut
 //        }
 //      }, searcher.getPattern(), UsageSearchContext.IN_FOREIGN_LANGUAGES, scope, searcher.isCaseSensitive());
 //    }
-    final Class[] classes = PatternCompilerFactory.getFactory().getPatternClasses(type);
+    Class[] classes = PatternCompilerFactory.getFactory().getPatternClasses(type);
     if (classes.length != 0) {
       roots.add(getRootByClasses(classes, project));
     }

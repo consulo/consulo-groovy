@@ -61,14 +61,14 @@ public class GrDocParameterReferenceImpl extends GroovyDocPsiElementImpl impleme
 
   @Nonnull
   public ResolveResult[] multiResolve(boolean incompleteCode) {
-    final String name = getName();
+    String name = getName();
     if (name == null) return ResolveResult.EMPTY_ARRAY;
     ArrayList<GroovyResolveResult> candidates = new ArrayList<GroovyResolveResult>();
 
-    final PsiElement owner = GrDocCommentUtil.findDocOwner(this);
+    PsiElement owner = GrDocCommentUtil.findDocOwner(this);
     if (owner instanceof GrMethod) {
-      final GrMethod method = (GrMethod)owner;
-      final GrParameter[] parameters = method.getParameters();
+      GrMethod method = (GrMethod)owner;
+      GrParameter[] parameters = method.getParameters();
 
       for (GrParameter parameter : parameters) {
         if (name.equals(parameter.getName())) {
@@ -78,11 +78,11 @@ public class GrDocParameterReferenceImpl extends GroovyDocPsiElementImpl impleme
       return candidates.toArray(new ResolveResult[candidates.size()]);
     }
     else {
-      final PsiElement firstChild = getFirstChild();
+      PsiElement firstChild = getFirstChild();
       if (owner instanceof GrTypeParameterListOwner && firstChild != null) {
-        final ASTNode node = firstChild.getNode();
+        ASTNode node = firstChild.getNode();
         if (node != null && GroovyDocTokenTypes.mGDOC_TAG_VALUE_LT.equals(node.getElementType())) {
-          final PsiTypeParameter[] typeParameters = ((PsiTypeParameterListOwner)owner).getTypeParameters();
+          PsiTypeParameter[] typeParameters = ((PsiTypeParameterListOwner)owner).getTypeParameters();
           for (PsiTypeParameter typeParameter : typeParameters) {
             if (name.equals(typeParameter.getName())) {
               candidates.add(new GroovyResolveResultImpl(typeParameter, true));
@@ -109,7 +109,7 @@ public class GrDocParameterReferenceImpl extends GroovyDocPsiElementImpl impleme
 
   @Nullable
   public PsiElement resolve() {
-    final ResolveResult[] results = multiResolve(false);
+    ResolveResult[] results = multiResolve(false);
     if (results.length != 1) return null;
     return results[0].getElement();
   }
@@ -139,10 +139,10 @@ public class GrDocParameterReferenceImpl extends GroovyDocPsiElementImpl impleme
 
   @Nonnull
   public Object[] getVariants() {
-    final PsiElement owner = GrDocCommentUtil.findDocOwner(this);
-    final PsiElement firstChild = getFirstChild();
+    PsiElement owner = GrDocCommentUtil.findDocOwner(this);
+    PsiElement firstChild = getFirstChild();
     if (owner instanceof GrTypeParameterListOwner && firstChild != null) {
-      final ASTNode node = firstChild.getNode();
+      ASTNode node = firstChild.getNode();
       if (node != null && GroovyDocTokenTypes.mGDOC_TAG_VALUE_LT.equals(node.getElementType())) {
         return ((PsiTypeParameterListOwner)owner).getTypeParameters();
       }

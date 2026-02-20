@@ -71,8 +71,8 @@ public class GroovyUnnecessaryReturnInspection extends BaseInspection {
         }
 
         public void doFix(Project project, ProblemDescriptor descriptor) throws IncorrectOperationException {
-            final PsiElement returnKeywordElement = descriptor.getPsiElement();
-            final GrReturnStatement returnStatement = (GrReturnStatement) returnKeywordElement.getParent();
+            PsiElement returnKeywordElement = descriptor.getPsiElement();
+            GrReturnStatement returnStatement = (GrReturnStatement) returnKeywordElement.getParent();
             assert returnStatement != null;
             returnStatement.removeStatement();
         }
@@ -82,17 +82,17 @@ public class GroovyUnnecessaryReturnInspection extends BaseInspection {
         public void visitReturnStatement(GrReturnStatement returnStatement) {
             super.visitReturnStatement(returnStatement);
 
-            final GrExpression returnValue = returnStatement.getReturnValue();
+            GrExpression returnValue = returnStatement.getReturnValue();
             if (returnValue != null) {
                 return;
             }
 
-            final GrMethod method = PsiTreeUtil.getParentOfType(returnStatement, GrMethod.class);
+            GrMethod method = PsiTreeUtil.getParentOfType(returnStatement, GrMethod.class);
             if (method == null) {
                 return;
             }
 
-            final GrOpenBlock body = method.getBlock();
+            GrOpenBlock body = method.getBlock();
             if (body == null) {
                 return;
             }

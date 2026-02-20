@@ -30,24 +30,24 @@ class ExplicitClosureCallPredicate implements PsiElementPredicate {
         if (!(element instanceof GrMethodCallExpression)) {
             return false;
         }
-        final GrMethodCallExpression call = (GrMethodCallExpression) element;
-        final GrExpression invokedExpression = call.getInvokedExpression();
+        GrMethodCallExpression call = (GrMethodCallExpression) element;
+        GrExpression invokedExpression = call.getInvokedExpression();
         if (invokedExpression == null) {
             return false;
         }
         if (!(invokedExpression instanceof GrReferenceExpression)) {
             return false;
         }
-        final GrReferenceExpression referenceExpression = (GrReferenceExpression) invokedExpression;
-        final String name = referenceExpression.getReferenceName();
+        GrReferenceExpression referenceExpression = (GrReferenceExpression) invokedExpression;
+        String name = referenceExpression.getReferenceName();
         if (!"call".equals(name)) {
             return false;
         }
-        final GrExpression qualifier = referenceExpression.getQualifierExpression();
+        GrExpression qualifier = referenceExpression.getQualifierExpression();
         if (qualifier == null) {
             return false;
         }
-        final PsiType qualifierType = qualifier.getType();
+        PsiType qualifierType = qualifier.getType();
         if (qualifierType == null) {
             return false;
         }

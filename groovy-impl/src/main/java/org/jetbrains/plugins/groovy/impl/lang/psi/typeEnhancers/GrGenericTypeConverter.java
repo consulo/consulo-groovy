@@ -97,9 +97,9 @@ public class GrGenericTypeConverter extends GrTypeConverter {
       if (!ri.hasNext()) return false;
       PsiTypeParameter lp = li.next();
       PsiTypeParameter rp = ri.next();
-      final PsiType typeLeft = leftSubstitutor.substitute(lp);
+      PsiType typeLeft = leftSubstitutor.substitute(lp);
       if (typeLeft == null) continue;
-      final PsiType typeRight = rightSubstitutor.substituteWithBoundsPromotion(rp);
+      PsiType typeRight = rightSubstitutor.substituteWithBoundsPromotion(rp);
       if (typeRight == null) {
         // compatibility feature: allow to assign raw types to generic ones
         return true;

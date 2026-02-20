@@ -41,11 +41,11 @@ public class GdkMethodDslProvider implements GdslMembersProvider {
     processCategoryMethods(className, consumer, false);
   }
 
-  public void category(String className, final boolean isStatic, GdslMembersHolderConsumer consumer) {
+  public void category(String className, boolean isStatic, GdslMembersHolderConsumer consumer) {
     processCategoryMethods(className, consumer, isStatic);
   }
 
-  private static void processCategoryMethods(final String className, final GdslMembersHolderConsumer consumer, final boolean isStatic) {
+  private static void processCategoryMethods(String className, GdslMembersHolderConsumer consumer, final boolean isStatic) {
     final GlobalSearchScope scope = consumer.getResolveScope();
     final PsiClass categoryClass = GroovyPsiManager.getInstance(consumer.getProject()).findClassWithCache(className, scope);
     if (categoryClass == null) {

@@ -78,13 +78,13 @@ public class GrStringImpl extends GrAbstractLiteral implements GrString {
 
   @Override
   public GrStringContent[] getContents() {
-    final List<PsiElement> parts = findChildrenByType(GroovyElementTypes.GSTRING_CONTENT);
+    List<PsiElement> parts = findChildrenByType(GroovyElementTypes.GSTRING_CONTENT);
     return parts.toArray(new GrStringContent[parts.size()]);
   }
 
   @Override
   public GroovyPsiElement[] getAllContentParts() {
-    final List<PsiElement> result = findChildrenByType(TokenSets.GSTRING_CONTENT_PARTS);
+    List<PsiElement> result = findChildrenByType(TokenSets.GSTRING_CONTENT_PARTS);
     return result.toArray(new GroovyPsiElement[result.size()]);
   }
 
@@ -97,13 +97,13 @@ public class GrStringImpl extends GrAbstractLiteral implements GrString {
   public Object getValue() {
     if (findChildByClass(GrStringInjection.class) != null) return null;
 
-    final PsiElement fchild = getFirstChild();
+    PsiElement fchild = getFirstChild();
     if (fchild == null) return null;
 
-    final PsiElement content = fchild.getNextSibling();
+    PsiElement content = fchild.getNextSibling();
     if (content == null || content.getNode().getElementType() != GroovyElementTypes.GSTRING_CONTENT) return null;
 
-    final String text = content.getText();
+    String text = content.getText();
     StringBuilder chars = new StringBuilder(text.length());
     boolean result = GrStringUtil.parseStringCharacters(text, chars, null);
     return result ? chars.toString() : null;

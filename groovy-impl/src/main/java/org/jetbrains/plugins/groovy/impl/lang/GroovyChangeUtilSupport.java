@@ -43,11 +43,11 @@ import java.util.Map;
 @ExtensionImpl
 public class GroovyChangeUtilSupport implements TreeCopyHandler {
 
-  public TreeElement decodeInformation(ASTNode element, final Map<Object, Object> decodingState) {
+  public TreeElement decodeInformation(ASTNode element, Map<Object, Object> decodingState) {
     if (element instanceof CompositeElement) {
       if (element.getElementType() == GroovyElementTypes.REFERENCE_ELEMENT || element.getElementType() == GroovyElementTypes.REFERENCE_EXPRESSION) {
         GrReferenceElement ref = (GrReferenceElement)SourceTreeToPsiMap.treeElementToPsi(element);
-        final PsiMember refMember = element.getCopyableUserData(REFERENCED_MEMBER_KEY);
+        PsiMember refMember = element.getCopyableUserData(REFERENCED_MEMBER_KEY);
         if (refMember != null) {
           element.putCopyableUserData(REFERENCED_MEMBER_KEY, null);
           PsiElement refElement1 = ref.resolve();
@@ -69,15 +69,15 @@ public class GroovyChangeUtilSupport implements TreeCopyHandler {
     return null;
   }
 
-  public void encodeInformation(final ASTNode element, final ASTNode original, final Map<Object, Object> encodingState) {
+  public void encodeInformation(ASTNode element, ASTNode original, Map<Object, Object> encodingState) {
     if (original instanceof CompositeElement) {
       if (original.getElementType() == GroovyElementTypes.REFERENCE_ELEMENT ||
         original.getElementType() == GroovyElementTypes.REFERENCE_EXPRESSION) {
         PsiElement psi = original.getPsi();
         if (!PsiUtil.isThisOrSuperRef(psi)) {
-          final GroovyResolveResult result = ((GrReferenceElement)psi).advancedResolve();
+          GroovyResolveResult result = ((GrReferenceElement)psi).advancedResolve();
           if (result != null) {
-            final PsiElement target = result.getElement();
+            PsiElement target = result.getElement();
 
             if (target instanceof PsiClass ||
               (target instanceof PsiMethod || target instanceof PsiField) &&

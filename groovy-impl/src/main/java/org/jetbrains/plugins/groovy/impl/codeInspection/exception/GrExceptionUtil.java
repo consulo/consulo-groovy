@@ -21,7 +21,7 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameter;
 
 public class GrExceptionUtil {
   public static boolean ignore(@Nonnull GrParameter parameter) {
-    final String name = StringUtil.toLowerCase(parameter.getName());
+    String name = StringUtil.toLowerCase(parameter.getName());
     return "ignore".equals(name) || "ignored".equals(name);
   }
 }

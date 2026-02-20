@@ -33,7 +33,7 @@ public class GrClassDefinitionImpl extends GrTypeDefinitionImpl implements GrCla
     super(node);
   }
 
-  public GrClassDefinitionImpl(final GrTypeDefinitionStub stub) {
+  public GrClassDefinitionImpl(GrTypeDefinitionStub stub) {
     super(stub, GroovyElementTypes.CLASS_DEFINITION);
   }
 

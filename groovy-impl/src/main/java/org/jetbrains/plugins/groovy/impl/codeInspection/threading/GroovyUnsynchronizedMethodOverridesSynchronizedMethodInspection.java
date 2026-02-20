@@ -63,8 +63,8 @@ public class GroovyUnsynchronizedMethodOverridesSynchronizedMethodInspection ext
             if (method.getNameIdentifier() == null) {
                 return;
             }
-            final PsiMethod[] superMethods = method.findSuperMethods();
-            for (final PsiMethod superMethod : superMethods) {
+            PsiMethod[] superMethods = method.findSuperMethods();
+            for (PsiMethod superMethod : superMethods) {
                 if (superMethod.hasModifierProperty(PsiModifier.SYNCHRONIZED)) {
                     registerMethodError(method);
                     return;

@@ -57,7 +57,7 @@ public class GrStaticChecker {
     }
 
     GrExpression qualifier = ((GrReferenceExpression)place).getQualifierExpression();
-    final PsiClass containingClass = getContainingClass((PsiMember)member);
+    PsiClass containingClass = getContainingClass((PsiMember)member);
     if (qualifier != null) {
       return checkQualified(member, place, filterStaticAfterInstanceQualifier, qualifier, containingClass);
     }
@@ -125,15 +125,15 @@ public class GrStaticChecker {
                                         boolean filterStaticAfterInstanceQualifier,
                                         GrExpression qualifier,
                                         PsiClass containingClass) {
-    final boolean isStatic = member.hasModifierProperty(PsiModifier.STATIC);
+    boolean isStatic = member.hasModifierProperty(PsiModifier.STATIC);
     if (qualifier instanceof GrReferenceExpression) {
       if ("class".equals(((GrReferenceExpression)qualifier).getReferenceName())) {
         //invoke static members of class from A.class.foo()
-        final PsiType type = qualifier.getType();
+        PsiType type = qualifier.getType();
         if (type instanceof PsiClassType) {
-          final PsiClass psiClass = ((PsiClassType)type).resolve();
+          PsiClass psiClass = ((PsiClassType)type).resolve();
           if (psiClass != null && CommonClassNames.JAVA_LANG_CLASS.equals(psiClass.getQualifiedName())) {
-            final PsiType[] params = ((PsiClassType)type).getParameters();
+            PsiType[] params = ((PsiClassType)type).getParameters();
             if (params.length == 1 && params[0] instanceof PsiClassType) {
               if (place.getManager().areElementsEquivalent(containingClass,
                                                            ((PsiClassType)params[0]).resolve())) {
@@ -145,7 +145,7 @@ public class GrStaticChecker {
       }
       else if (PsiUtil.isThisOrSuperRef(qualifier)) {
         //static members may be invoked from this.<...>
-        final boolean isInStatic = isInStaticContext(qualifier);
+        boolean isInStatic = isInStaticContext(qualifier);
         if (PsiUtil.isThisReference(qualifier) && isInStatic) {
           return checkJavaLangClassMember(place, containingClass, member) || member.hasModifierProperty
             (PsiModifier.STATIC);
@@ -183,7 +183,7 @@ public class GrStaticChecker {
       return false;
     }
     //members from java.lang.Class can be invoked without ".class"
-    final String qname = containingClass.getQualifiedName();
+    String qname = containingClass.getQualifiedName();
     if (qname != null && qname.startsWith("java.")) {
       if (CommonClassNames.JAVA_LANG_OBJECT.equals(qname)) {
         //special check for toString(). Only Class.toString() should be resolved here

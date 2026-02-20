@@ -189,18 +189,18 @@ public class GroovyCompletionUtil {
       return i >= 0 && (text.charAt(i) == '\n' || text.charAt(i) == '{');
     }
 
-    final PsiElement parent = element.getParent();
+    PsiElement parent = element.getParent();
     if (!(parent instanceof GrVariable)) return false;
 
     if (acceptParameter && parent instanceof GrParameter) {
       return ((GrParameter)parent).getTypeElementGroovy() == null;
     }
 
-    final PsiElement pparent = parent.getParent();
+    PsiElement pparent = parent.getParent();
     if (!(pparent instanceof GrVariableDeclaration)) return false;
     if (((GrVariableDeclaration)pparent).isTuple()) return false;
 
-    final GrVariableDeclaration variableDeclaration = (GrVariableDeclaration)pparent;
+    GrVariableDeclaration variableDeclaration = (GrVariableDeclaration)pparent;
     if (variableDeclaration.getTypeElementGroovy() != null) return false;
 
     return variableDeclaration.getVariables()[0] == parent;
@@ -276,14 +276,14 @@ public class GroovyCompletionUtil {
                                                                    boolean afterNew,
                                                                    @Nonnull PrefixMatcher matcher,
                                                                    @Nullable PsiElement position) {
-    final PsiElement element = candidate.getElement();
-    final PsiElement context = candidate.getCurrentFileResolveContext();
+    PsiElement element = candidate.getElement();
+    PsiElement context = candidate.getCurrentFileResolveContext();
     if (context instanceof GrImportStatement && element != null) {
       if (element instanceof PsiPackage) {
         return Collections.emptyList();
       }
 
-      final String importedName = ((GrImportStatement)context).getImportedName();
+      String importedName = ((GrImportStatement)context).getImportedName();
       if (importedName != null) {
         if (!(matcher.prefixMatches(importedName) ||
               element instanceof PsiMethod && getterMatches(matcher, (PsiMethod)element, importedName) ||
@@ -292,11 +292,11 @@ public class GroovyCompletionUtil {
           return Collections.emptyList();
         }
 
-        final GrCodeReferenceElement importReference = ((GrImportStatement)context).getImportReference();
+        GrCodeReferenceElement importReference = ((GrImportStatement)context).getImportReference();
         if (importReference != null) {
           boolean alias = ((GrImportStatement)context).isAliasedImport();
           for (GroovyResolveResult r : importReference.multiResolve(false)) {
-            final PsiElement resolved = r.getElement();
+            PsiElement resolved = r.getElement();
             if (context.getManager().areElementsEquivalent(resolved, element) && (alias || !(element instanceof PsiClass))) {
               return generateLookupForImportedElement(candidate, importedName);
             }
@@ -342,9 +342,9 @@ public class GroovyCompletionUtil {
   }
 
   private static List<? extends LookupElement> generateLookupForImportedElement(GroovyResolveResult resolveResult, String importedName) {
-    final PsiElement element = resolveResult.getElement();
+    PsiElement element = resolveResult.getElement();
     assert element != null;
-    final PsiSubstitutor substitutor = resolveResult.getSubstitutor();
+    PsiSubstitutor substitutor = resolveResult.getSubstitutor();
     LookupElementBuilder builder = LookupElementBuilder.create(resolveResult, importedName).withPresentableText(importedName);
     return Arrays.asList(setupLookupBuilder(element, substitutor, builder, null));
   }
@@ -376,7 +376,7 @@ public class GroovyCompletionUtil {
     }
     else if (element instanceof PsiClass) {
       String tailText = getPackageText((PsiClass)element);
-      final PsiClass psiClass = (PsiClass)element;
+      PsiClass psiClass = (PsiClass)element;
       if ((substitutor == null || substitutor.getSubstitutionMap().isEmpty()) && psiClass.getTypeParameters().length > 0) {
         tailText = "<" + StringUtil.join(psiClass.getTypeParameters(),
                                          psiTypeParameter -> psiTypeParameter.getName(), "," + (showSpaceAfterComma(psiClass) ? " " : "")) + ">" + tailText;
@@ -421,7 +421,7 @@ public class GroovyCompletionUtil {
   }
 
   public static boolean hasConstructorParameters(@Nonnull PsiClass clazz, @Nonnull PsiElement place) {
-    final GroovyResolveResult[] constructors = ResolveUtil.getAllClassConstructors(clazz, PsiSubstitutor.EMPTY, null, place);
+    GroovyResolveResult[] constructors = ResolveUtil.getAllClassConstructors(clazz, PsiSubstitutor.EMPTY, null, place);
 
 
     boolean hasSetters = ContainerUtil.find(clazz.getAllMethods(), new Condition<PsiMethod>() {
@@ -434,7 +434,7 @@ public class GroovyCompletionUtil {
     boolean hasParameters = false;
     boolean hasAccessibleConstructors = false;
     for (GroovyResolveResult result : constructors) {
-      final PsiElement element = result.getElement();
+      PsiElement element = result.getElement();
       if (element instanceof PsiMethod) {
         if (((PsiMethod)element).getParameterList().getParametersCount() > 0) {
           hasParameters = true;
@@ -456,11 +456,11 @@ public class GroovyCompletionUtil {
     if (o instanceof PsiClass) {
       PsiClass aClass = (PsiClass)o;
       if (aClass.getQualifiedName() == null) return;
-      final String lookupString = item.getLookupString();
+      String lookupString = item.getLookupString();
       int length = lookupString.length();
-      final int i = lookupString.indexOf('<');
+      int i = lookupString.indexOf('<');
       if (i >= 0) length = i;
-      final int newOffset = addImportForClass(file, startOffset, startOffset + length, aClass);
+      int newOffset = addImportForClass(file, startOffset, startOffset + length, aClass);
       shortenReference(file, newOffset);
     }
     else if (o instanceof PsiType) {
@@ -481,15 +481,15 @@ public class GroovyCompletionUtil {
 //    LOG.assertTrue(
 //      ApplicationManager.getApplication().isUnitTestMode() || ApplicationManager.getApplication().getCurrentWriteAction(null) != null);
 
-    final PsiManager manager = file.getManager();
+    PsiManager manager = file.getManager();
 
-    final Document document = PsiDocumentManager.getInstance(file.getProject()).getDocument(file);
+    Document document = PsiDocumentManager.getInstance(file.getProject()).getDocument(file);
 
     int newStartOffset = startOffset;
 
-    final PsiReference reference = file.findReferenceAt(endOffset - 1);
+    PsiReference reference = file.findReferenceAt(endOffset - 1);
     if (reference != null) {
-      final PsiElement resolved = reference.resolve();
+      PsiElement resolved = reference.resolve();
       if (resolved instanceof PsiClass) {
         if (((PsiClass)resolved).getQualifiedName() == null || manager.areElementsEquivalent(aClass, resolved)) {
           return newStartOffset;
@@ -500,11 +500,11 @@ public class GroovyCompletionUtil {
     String name = aClass.getName();
     document.replaceString(startOffset, endOffset, name);
 
-    final RangeMarker toDelete = JavaCompletionUtil.insertTemporary(endOffset, document, " ");
+    RangeMarker toDelete = JavaCompletionUtil.insertTemporary(endOffset, document, " ");
 
     PsiDocumentManager.getInstance(manager.getProject()).commitAllDocuments();
 
-    final PsiReference ref = file.findReferenceAt(startOffset);
+    PsiReference ref = file.findReferenceAt(startOffset);
     if (ref instanceof GrReferenceElement && aClass.isValid()) {
       PsiElement newElement = ref.bindToElement(aClass);
       RangeMarker marker = document.createRangeMarker(newElement.getTextRange());
@@ -520,13 +520,13 @@ public class GroovyCompletionUtil {
   }
 
   //need to shorten references in type argument list
-  public static void shortenReference(final PsiFile file, final int offset) throws IncorrectOperationException {
-    final Project project = file.getProject();
-    final PsiDocumentManager manager = PsiDocumentManager.getInstance(project);
-    final Document document = manager.getDocument(file);
+  public static void shortenReference(PsiFile file, int offset) throws IncorrectOperationException {
+    Project project = file.getProject();
+    PsiDocumentManager manager = PsiDocumentManager.getInstance(project);
+    Document document = manager.getDocument(file);
     assert document != null;
     manager.commitDocument(document);
-    final PsiReference ref = file.findReferenceAt(offset);
+    PsiReference ref = file.findReferenceAt(offset);
     if (ref instanceof GrCodeReferenceElement) {
       JavaCodeStyleManager.getInstance(project).shortenClassReferences((GroovyPsiElement)ref);
     }
@@ -535,9 +535,9 @@ public class GroovyCompletionUtil {
   public static int addRParenth(Editor editor, int oldTail, boolean space_within_cast_parentheses) {
     int offset = -1;
 
-    final HighlighterIterator iterator = ((EditorEx)editor).getHighlighter().createIterator(oldTail);
+    HighlighterIterator iterator = ((EditorEx)editor).getHighlighter().createIterator(oldTail);
     while (!iterator.atEnd()) {
-      final IElementType tokenType = (IElementType)iterator.getTokenType();
+      IElementType tokenType = (IElementType)iterator.getTokenType();
       if (TokenSets.WHITE_SPACES_OR_COMMENTS.contains(tokenType)) {
         iterator.advance();
         continue;
@@ -559,10 +559,10 @@ public class GroovyCompletionUtil {
     if (type == null) return false;
     String name = gdkMethod.getStaticMethod().getName();
 
-    final PsiType baseType = gdkMethod.getStaticMethod().getParameterList().getParameters()[0].getType();
+    PsiType baseType = gdkMethod.getStaticMethod().getParameterList().getParameters()[0].getType();
     if (!TypeConversionUtil.erasure(baseType).equalsToText(CommonClassNames.JAVA_LANG_OBJECT)) return false;
 
-    final PsiType substituted = substitutor != null ? substitutor.substitute(baseType) : baseType;
+    PsiType substituted = substitutor != null ? substitutor.substitute(baseType) : baseType;
 
     if (GdkMethodUtil.COLLECTION_METHOD_NAMES.contains(name)) {
       return !(type instanceof PsiArrayType ||
@@ -584,15 +584,15 @@ public class GroovyCompletionUtil {
 
     if (prev == null || prev.getNode().getElementType() != GroovyTokenTypes.mQUESTION) return false;
 
-    final PsiElement pprev = PsiUtil.getPreviousNonWhitespaceToken(prev);
+    PsiElement pprev = PsiUtil.getPreviousNonWhitespaceToken(prev);
     if (pprev == null) return false;
 
-    final IElementType t = pprev.getNode().getElementType();
+    IElementType t = pprev.getNode().getElementType();
     return t == GroovyTokenTypes.mLT || t == GroovyTokenTypes.mCOMMA;
   }
 
   static boolean isNewStatementInScript(PsiElement context) {
-    final PsiElement leaf = getLeafByOffset(context.getTextRange().getStartOffset() - 1, context);
+    PsiElement leaf = getLeafByOffset(context.getTextRange().getStartOffset() - 1, context);
     if (leaf != null && isNewStatement(context, false)) {
       PsiElement parent = leaf.getParent();
       if (parent instanceof GroovyFile) {

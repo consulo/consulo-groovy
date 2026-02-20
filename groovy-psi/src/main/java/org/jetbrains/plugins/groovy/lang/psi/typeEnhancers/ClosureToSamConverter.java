@@ -48,14 +48,14 @@ public class ClosureToSamConverter extends GrTypeConverter {
   }
 
   @Override
-  public Boolean isConvertible(@Nonnull PsiType ltype, @Nonnull PsiType rtype, @Nonnull final GroovyPsiElement context) {
+  public Boolean isConvertible(@Nonnull PsiType ltype, @Nonnull PsiType rtype, @Nonnull GroovyPsiElement context) {
     if (rtype instanceof GrClosureType &&
         ltype instanceof PsiClassType &&
         isSamConversionAllowed(context) &&
         !TypesUtil.isClassType(ltype, GroovyCommonClassNames.GROOVY_LANG_CLOSURE)) {
       MethodSignature signature = findSAMSignature(ltype);
       if (signature != null) {
-        final PsiType[] samParameterTypes = signature.getParameterTypes();
+        PsiType[] samParameterTypes = signature.getParameterTypes();
 
         GrSignature closureSignature = ((GrClosureType)rtype).getSignature();
 

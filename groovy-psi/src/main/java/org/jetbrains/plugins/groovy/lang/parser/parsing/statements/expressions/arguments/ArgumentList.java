@@ -142,7 +142,7 @@ public class ArgumentList {
       return true;
     }
 
-    final IElementType type = builder.getTokenType();
+    IElementType type = builder.getTokenType();
     if (ParserUtils.lookAhead(builder, GroovyTokenTypes.mIDENT, GroovyTokenTypes.mCOLON) ||
         TokenSets.KEYWORDS.contains(type) ||
         GroovyTokenTypes.mSTRING_LITERAL.equals(type) ||
