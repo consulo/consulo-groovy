@@ -17,6 +17,8 @@ open module org.intellij.groovy {
 
   requires consulo.ide.impl;
 
+  requires forms.rt;
+
   exports consulo.groovy.impl;
   exports consulo.groovy.impl.griffon.module.extension;
   exports consulo.groovy.impl.highlight;
