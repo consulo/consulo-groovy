@@ -1,11 +1,12 @@
 /**
  * @author VISTALL
- * @since 25/02/2023
+ * @since 2023-02-25
  */
 open module org.intellij.groovy {
   requires transitive org.intellij.groovy.psi;
   requires consulo.java;
   requires consulo.java.execution.impl;
+  requires consulo.util.io;
   requires transitive com.intellij.properties;
 
   requires consulo.internal.jdi;
