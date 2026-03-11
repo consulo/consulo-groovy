@@ -25,8 +25,8 @@ import consulo.module.Module;
 import consulo.module.content.layer.OrderEnumerator;
 import consulo.process.ExecutionException;
 import consulo.project.Project;
+import consulo.util.io.ClassPathUtil;
 import consulo.util.io.FileUtil;
-import consulo.util.io.PathUtil;
 import consulo.util.lang.StringUtil;
 import consulo.virtualFileSystem.VirtualFile;
 import consulo.virtualFileSystem.util.PathsList;
@@ -72,7 +72,7 @@ public abstract class GroovyScriptRunner {
 
   public static String getPathInConf(String fileName) {
     try {
-      String jarPath = PathUtil.getJarPathForClass(GroovyScriptRunner.class);
+      String jarPath = ClassPathUtil.getJarPathForClass(GroovyScriptRunner.class);
       if (new File(jarPath).isFile()) { //jar; distribution mode
         return new File(jarPath, "../" + fileName).getCanonicalPath();
       }

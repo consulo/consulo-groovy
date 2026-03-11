@@ -151,11 +151,6 @@
             <version>${project.version}</version>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>consulo</groupId>
-            <artifactId>consulo-util-io</artifactId>
-            <version>${project.version}</version>
-        </dependency>
 
         <dependency>
             <groupId>${project.parent.groupId}</groupId>

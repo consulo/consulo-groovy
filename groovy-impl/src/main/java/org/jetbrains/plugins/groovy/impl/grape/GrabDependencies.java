@@ -59,7 +59,7 @@ import consulo.project.ui.notification.NotificationType;
 import consulo.ui.ex.awt.Messages;
 import consulo.util.collection.ContainerUtil;
 import consulo.util.dataholder.Key;
-import consulo.util.io.PathUtil;
+import consulo.util.io.ClassPathUtil;
 import consulo.util.lang.ExceptionUtil;
 import consulo.util.lang.StringUtil;
 import consulo.virtualFileSystem.LocalFileSystem;
@@ -174,7 +174,7 @@ public class GrabDependencies implements IntentionAction {
             if (list == null) {
                 list = new PathsList();
             }
-            list.add(PathUtil.getJarPathForClass(GrapeRunner.class));
+            list.add(ClassPathUtil.getJarPathForClass(GrapeRunner.class));
 
             javaParameters.getProgramParametersList().add("--classpath");
             javaParameters.getProgramParametersList().add(list.getPathsString());

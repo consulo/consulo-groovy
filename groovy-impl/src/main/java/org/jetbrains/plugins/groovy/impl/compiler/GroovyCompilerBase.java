@@ -53,8 +53,8 @@ import consulo.util.collection.Chunk;
 import consulo.util.collection.ContainerUtil;
 import consulo.util.collection.SmartList;
 import consulo.util.io.CharsetToolkit;
+import consulo.util.io.ClassPathUtil;
 import consulo.util.io.FileUtil;
-import consulo.util.io.PathUtil;
 import consulo.util.lang.Comparing;
 import consulo.util.lang.Pair;
 import consulo.virtualFileSystem.LocalFileSystem;
@@ -106,7 +106,7 @@ public abstract class GroovyCompilerBase implements TranslatingCompiler {
     PathsList classPathBuilder = parameters.getClassPath();
 
     // IMPORTANT: must be the first entry to avoid collisions
-    classPathBuilder.add(PathUtil.getJarPathForClass(GroovycRunner.class));
+    classPathBuilder.add(ClassPathUtil.getJarPathForClass(GroovycRunner.class));
 
     ModuleChunk chunk = createChunk(module, compileContext);
 
