@@ -36,7 +36,6 @@ import consulo.content.library.Library;
 import consulo.groovy.module.extension.GroovyModuleExtension;
 import consulo.http.HttpProxyManager;
 import consulo.ide.impl.idea.openapi.vfs.VfsUtil;
-import consulo.ide.impl.idea.util.PathUtil;
 import consulo.java.execution.configurations.OwnJavaParameters;
 import consulo.java.execution.projectRoots.OwnJdkUtil;
 import consulo.java.language.module.extension.JavaModuleExtension;
@@ -54,6 +53,7 @@ import consulo.util.collection.Chunk;
 import consulo.util.collection.ContainerUtil;
 import consulo.util.collection.SmartList;
 import consulo.util.io.CharsetToolkit;
+import consulo.util.io.ClassPathUtil;
 import consulo.util.io.FileUtil;
 import consulo.util.lang.Comparing;
 import consulo.util.lang.Pair;
@@ -62,17 +62,17 @@ import consulo.virtualFileSystem.VirtualFile;
 import consulo.virtualFileSystem.encoding.EncodingProjectManager;
 import consulo.virtualFileSystem.fileType.FileType;
 import consulo.virtualFileSystem.util.PathsList;
+import jakarta.annotation.Nullable;
 import org.jetbrains.groovy.compiler.rt.CompilerMessage;
 import org.jetbrains.groovy.compiler.rt.GroovyCompilerMessageCategories;
 import org.jetbrains.groovy.compiler.rt.GroovycRunner;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.config.GroovyConfigUtils;
 import org.jetbrains.plugins.groovy.extensions.GroovyScriptType;
-import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.impl.runner.GroovyScriptUtil;
 import org.jetbrains.plugins.groovy.impl.runner.GroovycOSProcessHandler;
+import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 
-import jakarta.annotation.Nullable;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -106,7 +106,7 @@ public abstract class GroovyCompilerBase implements TranslatingCompiler {
     PathsList classPathBuilder = parameters.getClassPath();
 
     // IMPORTANT: must be the first entry to avoid collisions
-    classPathBuilder.add(PathUtil.getJarPathForClass(GroovycRunner.class));
+    classPathBuilder.add(ClassPathUtil.getJarPathForClass(GroovycRunner.class));
 
     ModuleChunk chunk = createChunk(module, compileContext);
 

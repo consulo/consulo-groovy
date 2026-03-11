@@ -20,20 +20,20 @@ import consulo.content.bundle.Sdk;
 import consulo.execution.CantRunException;
 import consulo.execution.configuration.RunProfile;
 import consulo.execution.executor.Executor;
-import consulo.ide.impl.idea.util.PathUtil;
 import consulo.java.execution.configurations.OwnJavaParameters;
 import consulo.module.Module;
 import consulo.module.content.layer.OrderEnumerator;
 import consulo.process.ExecutionException;
 import consulo.project.Project;
+import consulo.util.io.ClassPathUtil;
 import consulo.util.io.FileUtil;
 import consulo.util.lang.StringUtil;
 import consulo.virtualFileSystem.VirtualFile;
 import consulo.virtualFileSystem.util.PathsList;
-import org.jetbrains.plugins.groovy.config.GroovyConfigUtils;
-
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
+import org.jetbrains.plugins.groovy.config.GroovyConfigUtils;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.HashSet;
@@ -72,7 +72,7 @@ public abstract class GroovyScriptRunner {
 
   public static String getPathInConf(String fileName) {
     try {
-      String jarPath = PathUtil.getJarPathForClass(GroovyScriptRunner.class);
+      String jarPath = ClassPathUtil.getJarPathForClass(GroovyScriptRunner.class);
       if (new File(jarPath).isFile()) { //jar; distribution mode
         return new File(jarPath, "../" + fileName).getCanonicalPath();
       }
