@@ -31,7 +31,6 @@ import consulo.compiler.scope.FileSetCompileScope;
 import consulo.compiler.setting.ExcludedEntriesConfiguration;
 import consulo.compiler.util.CompilerUtil;
 import consulo.content.ContentIterator;
-import consulo.ide.impl.idea.openapi.vfs.VfsUtil;
 import consulo.language.content.LanguageContentFolderScopes;
 import consulo.language.content.ProductionContentFolderTypeProvider;
 import consulo.language.content.TestContentFolderTypeProvider;
@@ -56,6 +55,8 @@ import consulo.virtualFileSystem.LocalFileSystem;
 import consulo.virtualFileSystem.VirtualFile;
 import consulo.virtualFileSystem.fileType.FileType;
 import consulo.virtualFileSystem.util.VirtualFileUtil;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import jakarta.inject.Inject;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.impl.compiler.GroovyCompilerBase;
@@ -64,8 +65,6 @@ import org.jetbrains.plugins.groovy.impl.refactoring.convertToJava.GroovyToJavaG
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyNamesUtil;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
@@ -108,7 +107,7 @@ public class GroovycStubGenerator extends GroovyCompilerBase {
     }
 
     //long l = System.currentTimeMillis();
-    super.compile(compileContext, moduleChunk, VfsUtil.toVirtualFileArray(total), sink);
+    super.compile(compileContext, moduleChunk, VirtualFileUtil.toVirtualFileArray(total), sink);
     //System.out.println("Stub generation took " + (System.currentTimeMillis() - l));
   }
 

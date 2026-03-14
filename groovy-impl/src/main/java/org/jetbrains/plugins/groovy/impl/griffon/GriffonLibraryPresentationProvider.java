@@ -19,7 +19,6 @@ import consulo.annotation.component.ExtensionImpl;
 import consulo.content.base.BinariesOrderRootType;
 import consulo.content.library.LibraryKind;
 import consulo.content.library.ui.LibraryEditor;
-import consulo.ide.impl.idea.openapi.vfs.VfsUtil;
 import consulo.module.Module;
 import consulo.module.content.ModuleRootManager;
 import consulo.module.content.layer.orderEntry.LibraryOrderEntry;
@@ -27,13 +26,14 @@ import consulo.module.content.layer.orderEntry.OrderEntry;
 import consulo.ui.image.Image;
 import consulo.virtualFileSystem.LocalFileSystem;
 import consulo.virtualFileSystem.VirtualFile;
+import consulo.virtualFileSystem.util.VirtualFileUtil;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.plugins.groovy.JetgroovyIcons;
 import org.jetbrains.plugins.groovy.impl.config.GroovyLibraryPresentationProviderBase;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
 import java.io.File;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -57,7 +57,7 @@ public class GriffonLibraryPresentationProvider extends GroovyLibraryPresentatio
     if (jars != null) {
       for (String fileName : jars) {
         if (fileName.endsWith(".jar")) {
-          libraryEditor.addRoot(VfsUtil.getUrlForLibraryRoot(new File(path + ("/dist/") + fileName)), BinariesOrderRootType.getInstance());
+          libraryEditor.addRoot(VirtualFileUtil.getUrlForLibraryRoot(new File(path + ("/dist/") + fileName)), BinariesOrderRootType.getInstance());
         }
       }
     }
@@ -66,7 +66,7 @@ public class GriffonLibraryPresentationProvider extends GroovyLibraryPresentatio
     if (jars != null) {
       for (String fileName : jars) {
         if (fileName.endsWith(".jar")) {
-          libraryEditor.addRoot(VfsUtil.getUrlForLibraryRoot(new File(path + "/lib/" + fileName)), BinariesOrderRootType.getInstance());
+          libraryEditor.addRoot(VirtualFileUtil.getUrlForLibraryRoot(new File(path + "/lib/" + fileName)), BinariesOrderRootType.getInstance());
         }
       }
     }

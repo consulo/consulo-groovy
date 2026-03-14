@@ -35,7 +35,6 @@ import consulo.content.bundle.Sdk;
 import consulo.content.library.Library;
 import consulo.groovy.module.extension.GroovyModuleExtension;
 import consulo.http.HttpProxyManager;
-import consulo.ide.impl.idea.openapi.vfs.VfsUtil;
 import consulo.java.execution.configurations.OwnJavaParameters;
 import consulo.java.execution.projectRoots.OwnJdkUtil;
 import consulo.java.language.module.extension.JavaModuleExtension;
@@ -62,6 +61,7 @@ import consulo.virtualFileSystem.VirtualFile;
 import consulo.virtualFileSystem.encoding.EncodingProjectManager;
 import consulo.virtualFileSystem.fileType.FileType;
 import consulo.virtualFileSystem.util.PathsList;
+import consulo.virtualFileSystem.util.VirtualFileUtil;
 import jakarta.annotation.Nullable;
 import org.jetbrains.groovy.compiler.rt.CompilerMessage;
 import org.jetbrains.groovy.compiler.rt.GroovyCompilerMessageCategories;
@@ -230,8 +230,7 @@ public abstract class GroovyCompilerBase implements TranslatingCompiler {
         String url = compilerMessage.getUrl();
         compileContext.addMessage(getMessageCategory(compilerMessage),
                                   compilerMessage.getMessage(),
-                                  url == null ? null : VfsUtil.pathToUrl(FileUtil.toSystemIndependentName(
-                                    url)),
+                                  url == null ? null : VirtualFileUtil.pathToUrl(FileUtil.toSystemIndependentName(url)),
                                   (int)compilerMessage.getLineNum(),
                                   (int)compilerMessage.getColumnNum());
       }
@@ -284,7 +283,7 @@ public abstract class GroovyCompilerBase implements TranslatingCompiler {
         }
       }
 
-      sink.add(outputDir.getPath(), items, VfsUtil.toVirtualFileArray(toRecompile));
+      sink.add(outputDir.getPath(), items, VirtualFileUtil.toVirtualFileArray(toRecompile));
     }
     catch (ExecutionException e) {
       LOG.info(e);

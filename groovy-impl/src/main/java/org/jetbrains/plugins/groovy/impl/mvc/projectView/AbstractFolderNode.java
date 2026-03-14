@@ -1,24 +1,24 @@
 package org.jetbrains.plugins.groovy.impl.mvc.projectView;
 
-import consulo.ide.impl.idea.openapi.vfs.VfsUtil;
+import consulo.language.icon.IconDescriptorUpdaters;
+import consulo.language.psi.PsiDirectory;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiFile;
 import consulo.module.Module;
 import consulo.module.content.ModuleRootManager;
+import consulo.module.content.ProjectFileIndex;
 import consulo.module.content.ProjectRootManager;
 import consulo.project.Project;
 import consulo.project.ui.view.tree.AbstractTreeNode;
 import consulo.project.ui.view.tree.ViewSettings;
 import consulo.ui.ex.tree.PresentationData;
-import consulo.module.content.ProjectFileIndex;
 import consulo.virtualFileSystem.VirtualFile;
-import consulo.language.psi.PsiDirectory;
-import consulo.language.psi.PsiElement;
-import consulo.language.psi.PsiFile;
-import consulo.language.icon.IconDescriptorUpdaters;
+import consulo.virtualFileSystem.util.VirtualFileUtil;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -130,7 +130,7 @@ public class AbstractFolderNode extends AbstractMvcPsiNodeDescriptor {
     }
 
     VirtualFile valueFile = ((PsiDirectory)psiElement).getVirtualFile();
-    if (!VfsUtil.isAncestor(valueFile, file, false)) {
+    if (!VirtualFileUtil.isAncestor(valueFile, file, false)) {
       return false;
     }
 

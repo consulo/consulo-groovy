@@ -28,7 +28,6 @@ import consulo.ide.impl.idea.ide.projectView.impl.*;
 import consulo.ide.impl.idea.ide.util.DeleteHandler;
 import consulo.ide.impl.idea.openapi.module.ModuleUtil;
 import consulo.ide.impl.idea.openapi.roots.ui.configuration.actions.ModuleDeleteProvider;
-import consulo.ide.impl.idea.openapi.vfs.VfsUtil;
 import consulo.ide.util.DirectoryChooserUtil;
 import consulo.language.editor.LangDataKeys;
 import consulo.language.editor.refactoring.ui.CopyPasteDelegator;
@@ -59,6 +58,7 @@ import consulo.ui.image.Image;
 import consulo.util.collection.ContainerUtil;
 import consulo.util.dataholder.Key;
 import consulo.virtualFileSystem.VirtualFile;
+import consulo.virtualFileSystem.util.VirtualFileUtil;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import org.jetbrains.annotations.NonNls;
@@ -391,7 +391,7 @@ public class MvcProjectViewPane extends AbstractProjectViewPSIPane implements Id
             if (descriptor instanceof AbstractFolderNode) {
               AbstractFolderNode folderNode = (AbstractFolderNode)descriptor;
               VirtualFile dir = folderNode.getVirtualFile();
-              if (dir != null && VfsUtil.isAncestor(dir, file, false)) {
+              if (dir != null && VirtualFileUtil.isAncestor(dir, file, false)) {
                 cur = folderNode;
                 result.add(folderNode);
                 if (dir.equals(file)) {
