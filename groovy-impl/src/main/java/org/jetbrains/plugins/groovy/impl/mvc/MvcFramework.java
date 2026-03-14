@@ -74,6 +74,7 @@ import consulo.virtualFileSystem.archive.ArchiveFileSystem;
 import consulo.virtualFileSystem.archive.ArchiveVfsUtil;
 import consulo.virtualFileSystem.util.PathsList;
 import consulo.virtualFileSystem.util.VirtualFilePathUtil;
+import consulo.virtualFileSystem.util.VirtualFileUtil;
 import consulo.xml.psi.xml.XmlAttribute;
 import consulo.xml.psi.xml.XmlFile;
 import consulo.xml.psi.xml.XmlTag;
@@ -278,7 +279,7 @@ public abstract class MvcFramework {
 
     VirtualFile sdkRoot = getSdkRoot(module);
     if (sdkRoot != null) {
-      toExclude.add(VfsUtil.virtualToIoFile(sdkRoot));
+      toExclude.add(VirtualFileUtil.virtualToIoFile(sdkRoot));
     }
 
     ContainerUtil.addIfNotNull(toExclude, getCommonPluginsDir(module));
@@ -286,20 +287,20 @@ public abstract class MvcFramework {
     if (appRoot != null) {
       VirtualFile pluginDir = appRoot.findChild(MvcModuleStructureUtil.PLUGINS_DIRECTORY);
       if (pluginDir != null) {
-        toExclude.add(VfsUtil.virtualToIoFile(pluginDir));
+        toExclude.add(VirtualFileUtil.virtualToIoFile(pluginDir));
       }
 
 
       VirtualFile libDir = appRoot.findChild("lib");
       if (libDir != null) {
-        toExclude.add(VfsUtil.virtualToIoFile(libDir));
+        toExclude.add(VirtualFileUtil.virtualToIoFile(libDir));
       }
     }
 
     Library library = MvcModuleStructureUtil.findUserLibrary(module, getUserLibraryName());
     if (library != null) {
       for (VirtualFile file : library.getFiles(BinariesOrderRootType.getInstance())) {
-        toExclude.add(VfsUtil.virtualToIoFile(VirtualFilePathUtil.getLocalFile(file)));
+        toExclude.add(VirtualFileUtil.virtualToIoFile(VirtualFilePathUtil.getLocalFile(file)));
       }
     }
     return toExclude;
@@ -316,7 +317,7 @@ public abstract class MvcFramework {
     eachRoot:
     for (VirtualFile file : rootFiles) {
       for (File excluded : toExclude) {
-        if (VfsUtil.isAncestor(excluded, VfsUtil.virtualToIoFile(file), false)) {
+        if (VfsUtil.isAncestor(excluded, VirtualFileUtil.virtualToIoFile(file), false)) {
           continue eachRoot;
         }
       }

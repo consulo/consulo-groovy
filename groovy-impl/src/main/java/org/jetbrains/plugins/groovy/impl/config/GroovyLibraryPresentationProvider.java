@@ -20,17 +20,16 @@ import consulo.content.base.BinariesOrderRootType;
 import consulo.content.base.SourcesOrderRootType;
 import consulo.content.library.LibraryKind;
 import consulo.content.library.ui.LibraryEditor;
-import consulo.ide.impl.idea.openapi.vfs.VfsUtil;
 import consulo.ui.image.Image;
 import consulo.virtualFileSystem.VirtualFile;
 import consulo.virtualFileSystem.util.VirtualFileUtil;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.plugins.groovy.JetgroovyIcons;
 import org.jetbrains.plugins.groovy.config.AbstractConfigUtils;
 import org.jetbrains.plugins.groovy.config.GroovyConfigUtils;
 import org.jetbrains.plugins.groovy.util.LibrariesUtil;
 
-import jakarta.annotation.Nonnull;
 import java.io.File;
 
 /**
@@ -84,7 +83,7 @@ public class GroovyLibraryPresentationProvider extends GroovyLibraryPresentation
     if (jars != null) {
       for (File file : jars) {
         if (file.getName().endsWith(".jar")) {
-          libraryEditor.addRoot(VfsUtil.getUrlForLibraryRoot(file), BinariesOrderRootType.getInstance());
+          libraryEditor.addRoot(VirtualFileUtil.getUrlForLibraryRoot(file), BinariesOrderRootType.getInstance());
         }
       }
     }

@@ -26,7 +26,6 @@ import consulo.content.library.Library;
 import consulo.content.library.LibraryTable;
 import consulo.ide.impl.idea.openapi.roots.libraries.LibraryUtil;
 import consulo.ide.impl.idea.openapi.roots.ui.configuration.actions.ModuleDeleteProvider;
-import consulo.ide.impl.idea.openapi.vfs.VfsUtil;
 import consulo.java.impl.module.extension.JavaModuleExtensionImpl;
 import consulo.java.language.module.extension.JavaModuleExtension;
 import consulo.java.language.module.extension.JavaMutableModuleExtension;
@@ -59,10 +58,11 @@ import consulo.util.lang.Comparing;
 import consulo.virtualFileSystem.LocalFileSystem;
 import consulo.virtualFileSystem.VirtualFile;
 import consulo.virtualFileSystem.VirtualFileManager;
-import org.jetbrains.annotations.NonNls;
-
+import consulo.virtualFileSystem.util.VirtualFileUtil;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
+import org.jetbrains.annotations.NonNls;
+
 import java.io.File;
 import java.util.*;
 import java.util.function.Consumer;
@@ -906,7 +906,7 @@ public class MvcModuleStructureUtil {
 
     for (VirtualFile pluginRoot : framework.getCommonPluginRoots(appModule, true)) {
       if (checkValidity(pluginRoot)) {
-        if (globalPluginsDir == null || !VfsUtil.isAncestor(globalPluginsDir, pluginRoot, true)) {
+        if (globalPluginsDir == null || !VirtualFileUtil.isAncestor(globalPluginsDir, pluginRoot, true)) {
           pluginRoots.add(pluginRoot);
         }
       }
