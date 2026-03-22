@@ -2,7 +2,6 @@ package org.jetbrains.plugins.groovy.impl.griffon;
 
 import com.intellij.java.debugger.engine.DebuggerUtils;
 import com.intellij.java.debugger.impl.GenericDebuggerRunner;
-import com.intellij.java.debugger.impl.settings.DebuggerSettings;
 import com.intellij.java.execution.configurations.JavaCommandLine;
 import com.intellij.java.execution.configurations.RemoteConnection;
 import consulo.annotation.component.ExtensionImpl;
@@ -13,7 +12,6 @@ import consulo.execution.runner.ExecutionEnvironment;
 import consulo.execution.ui.RunContentDescriptor;
 import consulo.java.execution.configurations.OwnJavaParameters;
 import consulo.process.ExecutionException;
-
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 
@@ -49,7 +47,7 @@ public class GriffonDebuggerRunner extends GenericDebuggerRunner {
       for (String s : params.getProgramParametersList().getList()) {
         if (s.startsWith("run-")) {
           // Application will be run in forked VM
-          address = DebuggerUtils.getInstance().findAvailableDebugAddress(DebuggerSettings.SOCKET_TRANSPORT).address();
+          address = DebuggerUtils.getInstance().findAvailableDebugAddress(true);
           params.getProgramParametersList().replaceOrAppend(s, s + " --debug --debugPort=" + address);
           break;
         }
