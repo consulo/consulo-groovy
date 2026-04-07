@@ -35,7 +35,7 @@ import org.jetbrains.plugins.groovy.GroovyFileType;
 public abstract class GrBaseGenerateAction extends BaseGenerateAction {
     protected GrBaseGenerateAction(CodeInsightActionHandler handler, @Nonnull LocalizeValue text, @Nonnull LocalizeValue description) {
         super(handler, text);
-        getTemplatePresentation().setDescriptionValue(description);
+        getTemplatePresentation().setDescription(description);
     }
 
     @Override
