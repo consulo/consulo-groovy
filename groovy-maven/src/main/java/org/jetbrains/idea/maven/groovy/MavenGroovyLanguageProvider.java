@@ -16,7 +16,7 @@
 package org.jetbrains.idea.maven.groovy;
 
 import consulo.language.Language;
-import consulo.xml.psi.xml.XmlText;
+import consulo.xml.language.psi.XmlText;
 import org.jetbrains.idea.maven.dom.model.MavenDomConfiguration;
 import org.jetbrains.idea.maven.plugins.api.MavenParamLanguageProvider;
 import org.jetbrains.plugins.groovy.GroovyLanguage;
