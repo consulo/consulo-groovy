@@ -23,12 +23,7 @@ public enum GrCreateClassKind implements ClassKind {
     }
 
     @Override
-    public LocalizeValue getDescriptionValue() {
+    public LocalizeValue getDescription() {
         return myDescription;
-    }
-
-    @Override
-    public String getDescription() {
-        return myDescription.get();
     }
 }
