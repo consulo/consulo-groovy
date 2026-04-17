@@ -25,7 +25,7 @@ import consulo.dataContext.DataContext;
 import consulo.dataContext.DataProvider;
 import consulo.document.Document;
 import consulo.groovy.psi.icon.GroovyPsiIconGroup;
-import consulo.ide.ServiceManager;
+import consulo.application.Application;
 import consulo.ide.impl.idea.util.containers.Convertor;
 import consulo.language.editor.LangDataKeys;
 import consulo.language.editor.PlatformDataKeys;
@@ -121,7 +121,7 @@ public class DynamicToolWindowWrapper {
   }
 
   public static DynamicToolWindowWrapper getInstance(Project project) {
-    return ServiceManager.getService(project, DynamicToolWindowWrapper.class);
+    return project.getInstance(DynamicToolWindowWrapper.class);
   }
 
   public TreeTable getTreeTable() {

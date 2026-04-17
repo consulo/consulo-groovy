@@ -26,7 +26,7 @@ import consulo.component.persist.Storage;
 import consulo.component.persist.StoragePathMacros;
 import consulo.disposer.Disposable;
 import consulo.disposer.Disposer;
-import consulo.ide.ServiceManager;
+import consulo.application.Application;
 import consulo.project.Project;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
@@ -79,7 +79,7 @@ public class GroovyCompilerConfiguration implements PersistentStateComponent<Jps
   }
 
   public static GroovyCompilerConfiguration getInstance(Project project) {
-    return ServiceManager.getService(project, GroovyCompilerConfiguration.class);
+    return project.getInstance(GroovyCompilerConfiguration.class);
   }
 
   public String getHeapSize() {

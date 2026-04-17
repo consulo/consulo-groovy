@@ -32,7 +32,7 @@ import consulo.execution.ui.layout.PlaceInGrid;
 import consulo.execution.ui.layout.RunnerLayoutUi;
 import consulo.execution.ui.layout.RunnerLayoutUiFactory;
 import consulo.groovy.psi.icon.GroovyPsiIconGroup;
-import consulo.ide.ServiceManager;
+import consulo.application.Application;
 import consulo.ide.impl.idea.execution.impl.ConsoleViewImpl;
 import consulo.logging.Logger;
 import consulo.module.Module;
@@ -109,7 +109,7 @@ public class MvcConsole implements Disposable {
   }
 
   public static MvcConsole getInstance(@Nonnull Project project) {
-    return ServiceManager.getService(project, MvcConsole.class);
+    return project.getInstance(MvcConsole.class);
   }
 
   public static boolean isUpdatingVfsByConsoleProcess(@Nonnull Module module) {

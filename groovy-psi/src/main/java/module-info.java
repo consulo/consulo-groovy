@@ -7,10 +7,45 @@ open module org.intellij.groovy.psi {
   requires transitive consulo.java.language.api;
   requires transitive consulo.java.language.impl;
 
+  requires consulo.application.api;
+  requires consulo.application.content.api;
+  requires consulo.code.editor.api;
+  requires consulo.color.scheme.api;
+  requires consulo.component.api;
+  requires consulo.configurable.api;
+  requires consulo.container.api;
+  requires consulo.disposer.api;
+  requires consulo.document.api;
+  requires consulo.file.editor.api;
+  requires consulo.index.io;
+  requires consulo.language.api;
+  requires consulo.language.impl;
+  requires consulo.language.editor.api;
+  requires consulo.language.editor.refactoring.api;
+  requires consulo.language.code.style.api;
+  requires consulo.localize.api;
+  requires consulo.logging.api;
+  requires consulo.module.api;
+  requires consulo.module.content.api;
+  requires consulo.navigation.api;
+  requires consulo.platform.api;
+  requires consulo.process.api;
+  requires consulo.project.api;
+  requires consulo.project.ui.api;
+  requires consulo.ui.api;
+  requires consulo.ui.ex.api;
+  requires consulo.ui.ex.awt.api;
+  requires consulo.virtual.file.system.api;
+  requires consulo.util.collection;
+  requires consulo.util.dataholder;
+  requires consulo.util.io;
+  requires consulo.util.lang;
+  requires consulo.util.xml.serializer;
+
   requires org.apache.groovy;
 
   requires com.intellij.xml;
-  
+
   // TODO remove in future
   requires java.desktop;
   

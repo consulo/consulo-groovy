@@ -22,7 +22,7 @@ import consulo.component.persist.PersistentStateComponent;
 import consulo.component.persist.State;
 import consulo.component.persist.Storage;
 import consulo.component.persist.StoragePathMacros;
-import consulo.ide.ServiceManager;
+import consulo.application.Application;
 import consulo.util.collection.ArrayUtil;
 import jakarta.inject.Singleton;
 
@@ -96,7 +96,7 @@ public class MvcRunTargetHistoryService implements PersistentStateComponent<Stri
   }
 
   public static MvcRunTargetHistoryService getInstance() {
-    return ServiceManager.getService(MvcRunTargetHistoryService.class);
+    return Application.get().getInstance(MvcRunTargetHistoryService.class);
   }
 
   public void addCommand(@Nonnull String command, @Nonnull String vmOptions) {

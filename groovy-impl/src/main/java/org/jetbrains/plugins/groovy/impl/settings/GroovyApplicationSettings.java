@@ -23,7 +23,7 @@ import consulo.component.persist.PersistentStateComponent;
 import consulo.component.persist.State;
 import consulo.component.persist.Storage;
 import consulo.component.persist.StoragePathMacros;
-import consulo.ide.ServiceManager;
+import consulo.application.Application;
 import consulo.util.xml.serializer.XmlSerializerUtil;
 import jakarta.inject.Singleton;
 
@@ -60,7 +60,7 @@ public class GroovyApplicationSettings implements PersistentStateComponent<Groov
   }
 
   public static GroovyApplicationSettings getInstance() {
-    return ServiceManager.getService(GroovyApplicationSettings.class);
+    return Application.get().getInstance(GroovyApplicationSettings.class);
   }
 
 }

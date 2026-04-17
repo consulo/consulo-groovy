@@ -22,7 +22,7 @@ import com.intellij.lang.properties.psi.PropertiesFile;
 import consulo.annotation.component.ComponentScope;
 import consulo.annotation.component.ServiceAPI;
 import consulo.annotation.component.ServiceImpl;
-import consulo.ide.ServiceManager;
+import consulo.application.Application;
 import consulo.language.psi.PsiDirectory;
 import consulo.language.psi.PsiFile;
 import consulo.language.psi.scope.GlobalSearchScope;
@@ -54,7 +54,7 @@ public class GroovyExtensionProvider {
   }
 
   public static GroovyExtensionProvider getInstance(Project project) {
-    return ServiceManager.getService(project, GroovyExtensionProvider.class);
+    return project.getInstance(GroovyExtensionProvider.class);
   }
 
   public Pair<List<String>, List<String>> collectExtensions(GlobalSearchScope resolveScope) {

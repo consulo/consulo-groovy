@@ -19,7 +19,7 @@ import consulo.component.persist.PersistentStateComponent;
 import consulo.component.persist.State;
 import consulo.component.persist.Storage;
 import consulo.component.persist.StoragePathMacros;
-import consulo.ide.ServiceManager;
+import consulo.application.Application;
 import consulo.util.xml.serializer.XmlSerializerUtil;
 
 /**
@@ -34,7 +34,7 @@ import consulo.util.xml.serializer.XmlSerializerUtil;
 )
 public class GroovyRefactoringSettings implements PersistentStateComponent<GroovyRefactoringSettings> {
   public static GroovyRefactoringSettings getInstance() {
-    return ServiceManager.getService(GroovyRefactoringSettings.class);
+    return Application.get().getInstance(GroovyRefactoringSettings.class);
   }
 
   @Override

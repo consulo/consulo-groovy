@@ -17,7 +17,7 @@
 package org.jetbrains.plugins.groovy.impl.griffon;
 
 import consulo.application.AllIcons;
-import consulo.ide.ServiceManager;
+import consulo.application.Application;
 import consulo.language.psi.PsiDirectory;
 import consulo.language.psi.PsiFile;
 import consulo.language.psi.PsiManager;
@@ -130,7 +130,7 @@ public class GriffonToolWindowFactory extends MvcToolWindowDescriptor {
   @Nonnull
   @Override
   public MvcProjectViewState getProjectViewState(Project project) {
-    return ServiceManager.getService(project, GriffonProjectViewState.class);
+    return project.getInstance(GriffonProjectViewState.class);
   }
 
   private static final Map<String, GriffonDirectoryMetadata> DIRECTORY_METADATA = new LinkedHashMap<String, GriffonDirectoryMetadata>();

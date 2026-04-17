@@ -44,7 +44,7 @@ public class GroovyResultOfObjectAllocationIgnoredInspection extends BaseInspect
 
     @Nullable
     protected String buildErrorString(Object... args) {
-        return "Result of <code>new #ref" + (args[0].equals(new Integer(0)) ? "()" : "[]") + "</code> is ignored #loc";
+        return "Result of <code>new #ref" + (args[0].equals(Integer.valueOf(0)) ? "()" : "[]") + "</code> is ignored #loc";
 
     }
 

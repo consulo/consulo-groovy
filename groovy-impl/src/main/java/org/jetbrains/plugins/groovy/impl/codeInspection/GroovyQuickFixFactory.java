@@ -19,7 +19,7 @@ import com.intellij.java.language.psi.PsiClass;
 import com.intellij.java.language.psi.PsiType;
 import consulo.annotation.component.ComponentScope;
 import consulo.annotation.component.ServiceAPI;
-import consulo.ide.ServiceManager;
+import consulo.application.Application;
 import consulo.language.editor.inspection.LocalQuickFix;
 import consulo.language.editor.intention.IntentionAction;
 import org.jetbrains.plugins.groovy.impl.lang.GrCreateClassKind;
@@ -36,7 +36,7 @@ import org.jetbrains.plugins.groovy.lang.psi.api.util.GrVariableDeclarationOwner
 @ServiceAPI(ComponentScope.APPLICATION)
 public abstract class GroovyQuickFixFactory {
   public static GroovyQuickFixFactory getInstance() {
-    return ServiceManager.getService(GroovyQuickFixFactory.class);
+    return Application.get().getInstance(GroovyQuickFixFactory.class);
   }
 
   public abstract IntentionAction createDynamicMethodFix(GrReferenceExpression expression, PsiType[] types);
