@@ -13,21 +13,18 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy;
 
-
-import consulo.ide.impl.idea.codeInsight.navigation.GotoImplementationHandler;
-import com.intellij.openapi.application.Result;
-import com.intellij.openapi.command.WriteCommandAction;
-import consulo.ide.impl.idea.openapi.vfs.VfsUtil;
-import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.java.language.psi.PsiElement;
 import com.intellij.java.language.psi.PsiFile;
+import com.intellij.openapi.application.Result;
+import com.intellij.openapi.command.WriteCommandAction;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.testFramework.PsiTestUtil;
 import com.intellij.testFramework.fixtures.JavaCodeInsightFixtureTestCase;
 import com.intellij.testFramework.fixtures.TempDirTestFixture;
 import com.intellij.testFramework.fixtures.impl.TempDirTestFixtureImpl;
+import consulo.ide.impl.idea.codeInsight.navigation.GotoImplementationHandler;
 
 /**
  * @author peter
@@ -44,7 +41,7 @@ public class GroovyGotoImplementationTest extends JavaCodeInsightFixtureTestCase
         final VirtualFile outside = dirFixture.getFile("").createChildDirectory(this, "outside");
         PsiTestUtil.addContentRoot(myModule, outside);
         VirtualFile out = outside.createChildData(this, "Outside.groovy");
-        consulo.ide.impl.idea.openapi.vfs.VfsUtil.saveText(out, "class Bar {}\n class Goo extends Bar {}");
+        VirtualFileUtil.saveText(out, "class Bar {}\n class Goo extends Bar {}");
       }
     }.execute();
 
