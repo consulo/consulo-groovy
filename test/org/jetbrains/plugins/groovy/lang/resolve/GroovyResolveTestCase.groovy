@@ -13,15 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.jetbrains.plugins.groovy.lang.resolve
 
-package org.jetbrains.plugins.groovy.lang.resolve;
-
-
-import com.intellij.openapi.util.text.StringUtil
-import com.intellij.openapi.vfs.VfsUtil
-import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.java.language.psi.PsiElement
 import com.intellij.java.language.psi.PsiReference
+import com.intellij.openapi.util.text.StringUtil
+import com.intellij.openapi.vfs.VirtualFile
+import consulo.virtualFileSystem.util.VirtualFileUtil
 import org.jetbrains.annotations.NonNls
 import org.jetbrains.annotations.Nullable
 import org.jetbrains.plugins.groovy.LightGroovyTestCase
@@ -52,7 +50,7 @@ public abstract class GroovyResolveTestCase extends LightGroovyTestCase {
 
     String fileText;
     try {
-      fileText = StringUtil.convertLineSeparators(VfsUtil.loadText(vFile));
+      fileText = StringUtil.convertLineSeparators(VirtualFileUtil.loadText(vFile));
     }
     catch (IOException e) {
       throw new RuntimeException(e);
