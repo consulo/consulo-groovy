@@ -252,7 +252,7 @@ public class CommonRefactoringUtil {
       }
     }
 
-    final VirtualFile[] files = VfsUtil.toVirtualFileArray(readonly);
+    final VirtualFile[] files = VirtualFileUtil.toVirtualFileArray(readonly);
     final ReadonlyStatusHandler.OperationStatus status = ReadonlyStatusHandler.getInstance(project).ensureFilesWritable(files);
     ContainerUtil.addAll(failed, status.getReadonlyFiles());
     if (notifyOnFail && (!failed.isEmpty() || seenNonWritablePsiFilesWithoutVirtualFile && readonly.isEmpty())) {
@@ -335,8 +335,8 @@ import com.intellij.openapi.fileTypes.FileTypeManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.JarFileSystem
 import com.intellij.openapi.vfs.ReadonlyStatusHandler
-import com.intellij.openapi.vfs.VfsUtil
-import com.intellij.openapi.vfs.VirtualFile
+import consulo.virtualFileSystem.util.VirtualFileUtil;
+import consulo.virtualFileSystem.VirtualFile
 import com.intellij.java.language.psi.*
 import com.intellij.java.language.psi.util.PsiTreeUtil
 import com.intellij.refactoring.RefactoringBundle
@@ -486,7 +486,7 @@ public class CommonRefactoringUtil {
       }
     }
 
-    final VirtualFile[] files = VfsUtil.toVirtualFileArray(readonly)
+    final VirtualFile[] files = VirtualFileUtil.toVirtualFileArray(readonly)
       final ReadonlyStatusHandler.OperationStatus status = ReadonlyStatusHandler.getInstance(project).ensureFilesWritable(files)
       ContainerUtil.addAll(failed, status.getReadonlyFiles())
       if (notifyOnFail && (!failed.isEmpty() || seenNonWritablePsiFilesWithoutVirtualFile && readonly.isEmpty())) {

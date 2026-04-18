@@ -16,17 +16,17 @@
 
 package org.jetbrains.plugins.groovy.refactoring.move;
 
+import com.intellij.java.language.psi.impl.source.PostprocessReformattingAspect;
 import com.intellij.openapi.application.Result;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.vfs.*;
-import com.intellij.java.language.psi.*;
-import com.intellij.java.language.psi.impl.source.PostprocessReformattingAspect;
 import com.intellij.refactoring.PackageWrapper;
 import com.intellij.refactoring.move.moveClassesOrPackages.MoveClassesOrPackagesProcessor;
 import com.intellij.refactoring.move.moveClassesOrPackages.SingleSourceRootMoveDestination;
 import com.intellij.testFramework.PlatformTestUtil;
 import com.intellij.testFramework.fixtures.LightCodeInsightFixtureTestCase;
+import consulo.virtualFileSystem.util.VirtualFileUtil;
 import org.jetbrains.plugins.groovy.util.TestUtils;
 
 import java.io.IOException;
@@ -105,7 +105,7 @@ public class GroovyMoveScriptTest extends LightCodeInsightFixtureTestCase {
     String testName = getTestName(true);
     final VirtualFile actualRoot = myFixture.copyDirectoryToProject(testName + "/before", "");
 
-    performAction(fileNames, newDirName, VfsUtilCore.getRelativePath(actualRoot, myFixture.getTempDirFixture().getFile(""), '/'));
+    performAction(fileNames, newDirName, VirtualFileUtil.getRelativePath(actualRoot, myFixture.getTempDirFixture().getFile(""), '/'));
 
     final VirtualFile expectedRoot = LocalFileSystem.getInstance().findFileByPath(getTestDataPath() + getTestName(true) + "/after");
     //File expectedRoot = new File(getTestDataPath() + testName + "/after");
