@@ -18,7 +18,6 @@ package org.jetbrains.plugins.groovy.impl.codeInspection.resources;
 import consulo.annotation.component.ExtensionImpl;
 import consulo.compiler.resourceCompiler.ResourceCompilerConfiguration;
 import consulo.groovy.impl.localize.GroovyInspectionLocalize;
-import consulo.ide.impl.idea.openapi.vfs.VfsUtilCore;
 import consulo.language.editor.DaemonCodeAnalyzer;
 import consulo.language.editor.inspection.LocalQuickFix;
 import consulo.language.editor.inspection.ProblemDescriptor;
@@ -27,6 +26,7 @@ import consulo.localize.LocalizeValue;
 import consulo.module.content.ProjectRootManager;
 import consulo.project.Project;
 import consulo.virtualFileSystem.VirtualFile;
+import consulo.virtualFileSystem.util.VirtualFileUtil;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
@@ -131,12 +131,12 @@ public class TypeCustomizerInspection extends BaseInspection {
             VirtualFile sourceRoot = ProjectRootManager.getInstance(project).getFileIndex().getSourceRootForFile(virtualFile);
             VirtualFile projectRoot = project.getBaseDir();
             if (sourceRoot == null) {
-                String path = VfsUtilCore.getRelativePath(virtualFile, projectRoot, '/');
+                String path = VirtualFileUtil.getRelativePath(virtualFile, projectRoot, '/');
                 ResourceCompilerConfiguration.getInstance(project).addResourceFilePattern(path);
             }
             else {
-                String path = VfsUtilCore.getRelativePath(virtualFile, sourceRoot, '/');
-                String sourceRootPath = VfsUtilCore.getRelativePath(sourceRoot, projectRoot, '/');
+                String path = VirtualFileUtil.getRelativePath(virtualFile, sourceRoot, '/');
+                String sourceRootPath = VirtualFileUtil.getRelativePath(sourceRoot, projectRoot, '/');
                 ResourceCompilerConfiguration.getInstance(project).addResourceFilePattern(sourceRootPath + ':' + path);
             }
             DaemonCodeAnalyzer.getInstance(project).restart(myFile);

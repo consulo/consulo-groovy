@@ -15,19 +15,18 @@
  */
 package org.jetbrains.plugins.groovy.impl.config;
 
-import java.util.List;
-
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
-
-import consulo.virtualFileSystem.VirtualFile;
-import org.jetbrains.annotations.Nls;
 import consulo.content.library.LibraryKind;
 import consulo.content.library.LibraryPresentationProvider;
 import consulo.content.library.ui.LibraryEditor;
-import consulo.util.lang.StringUtil;
-import consulo.ide.impl.idea.openapi.vfs.VfsUtilCore;
 import consulo.ui.image.Image;
+import consulo.util.lang.StringUtil;
+import consulo.virtualFileSystem.VirtualFile;
+import consulo.virtualFileSystem.util.VirtualFileUtil;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
+import org.jetbrains.annotations.Nls;
+
+import java.util.List;
 
 /**
  * @author nik
@@ -45,7 +44,7 @@ public abstract class GroovyLibraryPresentationProviderBase extends LibraryPrese
 
   @Override
   public GroovyLibraryProperties detect(@Nonnull List<VirtualFile> classesRoots) {
-    VirtualFile[] libraryFiles = VfsUtilCore.toVirtualFileArray(classesRoots);
+    VirtualFile[] libraryFiles = VirtualFileUtil.toVirtualFileArray(classesRoots);
     if (managesLibrary(libraryFiles)) {
       String version = getLibraryVersion(libraryFiles);
       return new GroovyLibraryProperties(version);
