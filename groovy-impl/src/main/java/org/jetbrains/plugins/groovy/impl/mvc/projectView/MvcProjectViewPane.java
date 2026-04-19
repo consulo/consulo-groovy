@@ -26,7 +26,6 @@ import consulo.fileEditor.FileEditorManager;
 import consulo.ide.impl.idea.ide.projectView.BaseProjectTreeBuilder;
 import consulo.ide.impl.idea.ide.projectView.impl.*;
 import consulo.ide.impl.idea.ide.util.DeleteHandler;
-import consulo.ide.impl.idea.openapi.module.ModuleUtil;
 import consulo.ide.impl.idea.openapi.roots.ui.configuration.actions.ModuleDeleteProvider;
 import consulo.ide.util.DirectoryChooserUtil;
 import consulo.language.editor.LangDataKeys;
@@ -34,6 +33,7 @@ import consulo.language.editor.refactoring.ui.CopyPasteDelegator;
 import consulo.language.editor.util.EditorHelper;
 import consulo.language.editor.util.IdeView;
 import consulo.language.psi.*;
+import consulo.language.util.ModuleUtilCore;
 import consulo.localize.LocalizeValue;
 import consulo.module.Module;
 import consulo.project.Project;
@@ -365,7 +365,7 @@ public class MvcProjectViewPane extends AbstractProjectViewPSIPane implements Id
       return null;
     }
 
-    Module module = ModuleUtil.findModuleForFile(file, project);
+    Module module = ModuleUtilCore.findModuleForFile(file, project);
     if (module == null || !framework.hasSupport(module)) {
       return null;
     }

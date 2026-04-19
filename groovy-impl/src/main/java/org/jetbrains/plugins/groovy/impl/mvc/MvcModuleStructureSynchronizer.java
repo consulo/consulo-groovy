@@ -26,9 +26,9 @@ import consulo.component.messagebus.MessageBusConnection;
 import consulo.component.util.ModificationTracker;
 import consulo.content.ContentIterator;
 import consulo.ide.impl.idea.codeInsight.actions.ReformatCodeProcessor;
-import consulo.ide.impl.idea.openapi.module.ModuleUtil;
 import consulo.language.psi.PsiFile;
 import consulo.language.psi.PsiManager;
+import consulo.language.util.ModuleUtilCore;
 import consulo.module.Module;
 import consulo.module.ModuleManager;
 import consulo.module.content.ModuleRootManager;
@@ -291,7 +291,7 @@ public class MvcModuleStructureSynchronizer {
     if (o instanceof VirtualFile) {
       VirtualFile file = (VirtualFile)o;
       if (file.isValid()) {
-        Module module = ModuleUtil.findModuleForFile(file, myProject);
+        Module module = ModuleUtilCore.findModuleForFile(file, myProject);
         if (module == null) {
           return Collections.emptyList();
         }
