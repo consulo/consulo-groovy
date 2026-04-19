@@ -28,7 +28,6 @@ import consulo.content.bundle.Sdk;
 import consulo.content.library.Library;
 import consulo.content.library.LibraryTable;
 import consulo.execution.CantRunException;
-import consulo.ide.impl.idea.openapi.module.ModuleUtil;
 import consulo.java.execution.configurations.OwnJavaParameters;
 import consulo.java.execution.projectRoots.OwnJdkUtil;
 import consulo.java.language.module.extension.JavaModuleExtension;
@@ -119,7 +118,7 @@ public class GrabDependencies implements IntentionAction {
     }
 
     public void invoke(@Nonnull final Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
-        final Module module = ModuleUtil.findModuleForPsiElement(file);
+        final Module module = file.getModule();
         assert module != null;
 
         VirtualFile vfile = file.getOriginalFile().getVirtualFile();
