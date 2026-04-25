@@ -40,8 +40,6 @@ import consulo.execution.RunnerAndConfigurationSettings;
 import consulo.execution.configuration.ConfigurationFactory;
 import consulo.execution.configuration.ConfigurationType;
 import consulo.execution.configuration.RunConfiguration;
-import consulo.ide.impl.idea.openapi.vfs.VfsUtil;
-import consulo.ide.impl.idea.openapi.vfs.VfsUtilCore;
 import consulo.ide.setting.ShowSettingsUtil;
 import consulo.java.execution.configurations.OwnJavaParameters;
 import consulo.java.language.module.extension.JavaModuleExtension;
@@ -317,7 +315,7 @@ public abstract class MvcFramework {
     eachRoot:
     for (VirtualFile file : rootFiles) {
       for (File excluded : toExclude) {
-        if (VfsUtil.isAncestor(excluded, VirtualFileUtil.virtualToIoFile(file), false)) {
+        if (FileUtil.isAncestor(excluded, VirtualFileUtil.virtualToIoFile(file), false)) {
           continue eachRoot;
         }
       }
@@ -454,7 +452,7 @@ public abstract class MvcFramework {
 
     VirtualFile root = findAppRoot(module);
     File ioRoot =
-      root != null ? VfsUtilCore.virtualToIoFile(root) : new File(module.getModuleDirPath());
+      root != null ? VirtualFileUtil.virtualToIoFile(root) : new File(module.getModuleDirPath());
     commandLine.setWorkDirectory(forCreation ? ioRoot.getParentFile() : ioRoot);
 
     return commandLine;

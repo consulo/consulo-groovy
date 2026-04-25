@@ -26,8 +26,6 @@ import consulo.content.base.BinariesOrderRootType;
 import consulo.content.bundle.Sdk;
 import consulo.content.library.Library;
 import consulo.content.library.LibraryKind;
-import consulo.ide.impl.idea.openapi.vfs.VfsUtil;
-import consulo.ide.impl.idea.openapi.vfs.VfsUtilCore;
 import consulo.java.execution.configurations.OwnJavaParameters;
 import consulo.java.language.module.extension.JavaModuleExtension;
 import consulo.language.psi.PsiFile;
@@ -48,13 +46,14 @@ import consulo.versionControlSystem.change.ChangeListManager;
 import consulo.versionControlSystem.change.IgnoredBeanFactory;
 import consulo.virtualFileSystem.VirtualFile;
 import consulo.virtualFileSystem.archive.ArchiveVfsUtil;
+import consulo.virtualFileSystem.util.VirtualFileUtil;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.JetgroovyIcons;
 import org.jetbrains.plugins.groovy.impl.mvc.*;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -180,7 +179,7 @@ public class GriffonFramework extends MvcFramework {
       if (separatorIndexes.size() > 0) {
         String json;
         try {
-          json = VfsUtil.loadText(pluginJson);
+          json = VirtualFileUtil.loadText(pluginJson);
         }
         catch (IOException e) {
           return null;
@@ -310,7 +309,7 @@ public class GriffonFramework extends MvcFramework {
       }
     }
 
-    String workDir = VfsUtilCore.virtualToIoFile(rootFile).getAbsolutePath();
+    String workDir = VirtualFileUtil.virtualToIoFile(rootFile).getAbsolutePath();
 
     if (jvmParams != null) {
       params.getVMParametersList().addParametersString(jvmParams);

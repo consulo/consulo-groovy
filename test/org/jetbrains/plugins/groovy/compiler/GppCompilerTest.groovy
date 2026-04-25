@@ -16,13 +16,11 @@
 
 package org.jetbrains.plugins.groovy.compiler
 
-
 import com.intellij.compiler.CompilerConfigurationImpl
-
 import com.intellij.compiler.server.BuildManager
 import com.intellij.openapi.util.io.FileUtil
-import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.testFramework.PsiTestUtil
+import consulo.virtualFileSystem.util.VirtualFileUtil
 import org.jetbrains.plugins.groovy.util.TestUtils
 
 /**
@@ -90,7 +88,7 @@ new A().foo()
     assertEmpty make()
     assertOutput "b", "239"
 
-    VfsUtil.saveText a.virtualFile, """
+    VirtualFileUtil.saveText a.virtualFile, """
 class A {
   def foo() {
     print "239"
@@ -120,7 +118,7 @@ public class B {
     assertEmpty make()
     assertOutput "B", "239"
 
-    VfsUtil.saveText a.virtualFile, """
+    VirtualFileUtil.saveText a.virtualFile, """
 class A {
   def foo() {
     print "239"
