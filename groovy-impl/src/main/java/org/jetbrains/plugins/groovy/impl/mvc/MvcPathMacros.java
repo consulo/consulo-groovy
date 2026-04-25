@@ -32,19 +32,19 @@ import java.util.Set;
  * @author peter
  */
 @Singleton
-@ServiceAPI(value = ComponentScope.APPLICATION, lazy = true)
+@ServiceAPI(value = ComponentScope.APPLICATION)
 @ServiceImpl
 public class MvcPathMacros {
   @Inject
   public MvcPathMacros(PathMacros pathMacros) {
-    Set<String> macroNames = pathMacros.getUserMacroNames();
-    for (String framework : List.of("grails", "griffon")) {
-      String name = "USER_HOME_" + framework.toUpperCase();
-      if (!macroNames.contains(name)) {
-        // OK, it may appear/disappear during the application lifetime, but we ignore that for now. Restart will help anyway
-        pathMacros.addLegacyMacro(name, StringUtil.trimEnd(getSdkWorkDirParent(framework), "/"));
-      }
-    }
+//    Set<String> macroNames = pathMacros.getUserMacroNames();
+//    for (String framework : List.of("grails", "griffon")) {
+//      String name = "USER_HOME_" + framework.toUpperCase();
+//      if (!macroNames.contains(name)) {
+//        // OK, it may appear/disappear during the application lifetime, but we ignore that for now. Restart will help anyway
+//        pathMacros.addLegacyMacro(name, StringUtil.trimEnd(getSdkWorkDirParent(framework), "/"));
+//      }
+//    }
   }
 
   public static String getSdkWorkDirParent(String framework) {
