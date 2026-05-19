@@ -298,11 +298,11 @@ public class GrabDependencies implements IntentionAction {
             for (VirtualFile jar : jars) {
                 VirtualFile jarRoot = ArchiveVfsUtil.getJarRootForLocalFile(jar);
                 if (jarRoot != null) {
-                    OrderRootType rootType = BinariesOrderRootType.getInstance();
+                    String rootType = BinariesOrderRootType.ID;
                     String libName = "Grab:" + jar.getName();
                     for (String classifier : List.of("sources", "source", "src")) {
                         if (libName.endsWith("-" + classifier + ".jar")) {
-                            rootType = SourcesOrderRootType.getInstance();
+                            rootType = SourcesOrderRootType.ID;
                             libName = StringUtil.trimEnd(libName, "-" + classifier + ".jar") + ".jar";
                         }
                     }

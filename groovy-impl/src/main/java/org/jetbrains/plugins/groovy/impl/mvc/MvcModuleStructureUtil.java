@@ -405,7 +405,7 @@ public class MvcModuleStructureUtil {
 
     final List<String> toRemoveUrls = new ArrayList<String>();
 
-    for (String url : library.getUrls(BinariesOrderRootType.getInstance())) {
+    for (String url : library.getUrls(BinariesOrderRootType.ID)) {
       VirtualFile virtualFile = virtualFileManager.findFileByUrl(url);
 
       if (virtualFile == null) {
@@ -426,7 +426,7 @@ public class MvcModuleStructureUtil {
         public void accept(ModifiableRootModel model) {
           Library.ModifiableModel modifiableModel = modifyDefaultLibrary(model, libName);
           for (String url : toRemoveUrls) {
-            modifiableModel.removeRoot(url, BinariesOrderRootType.getInstance());
+            modifiableModel.removeRoot(url, BinariesOrderRootType.ID);
           }
           modifiableModel.commit();
         }
@@ -490,7 +490,7 @@ public class MvcModuleStructureUtil {
 
     Set<String> res = new HashSet<String>();
 
-    for (String url : library.getUrls(BinariesOrderRootType.getInstance())) {
+    for (String url : library.getUrls(BinariesOrderRootType.ID)) {
       if (!library.isJarDirectory(url)) {
         res.add(url);
       }
@@ -721,16 +721,16 @@ public class MvcModuleStructureUtil {
     }
 
     Library.ModifiableModel model = userLibraryTo.getModifiableModel();
-    for (String url : model.getUrls(BinariesOrderRootType.getInstance())) {
+    for (String url : model.getUrls(BinariesOrderRootType.ID)) {
       if (!model.isJarDirectory(url)) {
-        model.removeRoot(url, BinariesOrderRootType.getInstance());
+        model.removeRoot(url, BinariesOrderRootType.ID);
       }
     }
 
     if (userLibraryFrom != null) {
-      for (String url : userLibraryFrom.getUrls(BinariesOrderRootType.getInstance())) {
+      for (String url : userLibraryFrom.getUrls(BinariesOrderRootType.ID)) {
         if (!userLibraryFrom.isJarDirectory(url)) {
-          model.addRoot(url, BinariesOrderRootType.getInstance());
+          model.addRoot(url, BinariesOrderRootType.ID);
         }
       }
     }

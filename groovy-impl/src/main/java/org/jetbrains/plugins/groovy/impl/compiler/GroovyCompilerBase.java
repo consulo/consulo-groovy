@@ -112,7 +112,7 @@ public abstract class GroovyCompilerBase implements TranslatingCompiler {
 
     Library[] libraries = GroovyConfigUtils.getInstance().getSDKLibrariesByModule(module);
     if (libraries.length > 0) {
-      classPathBuilder.addVirtualFiles(Arrays.asList(libraries[0].getFiles(BinariesOrderRootType.getInstance())));
+      classPathBuilder.addVirtualFiles(Arrays.asList(libraries[0].getFiles(BinariesOrderRootType.ID)));
     }
 
     JavaSdkType javaSdkType = (JavaSdkType)sdk.getSdkType();

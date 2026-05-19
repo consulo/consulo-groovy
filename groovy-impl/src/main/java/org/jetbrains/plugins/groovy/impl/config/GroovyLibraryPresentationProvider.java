@@ -69,7 +69,7 @@ public class GroovyLibraryPresentationProvider extends GroovyLibraryPresentation
   protected void fillLibrary(String path, LibraryEditor libraryEditor) {
     File srcRoot = new File(path + "/src/main");
     if (srcRoot.exists()) {
-      libraryEditor.addRoot(VirtualFileUtil.getUrlForLibraryRoot(srcRoot), SourcesOrderRootType.getInstance());
+      libraryEditor.addRoot(VirtualFileUtil.getUrlForLibraryRoot(srcRoot), SourcesOrderRootType.ID);
     }
 
     File[] jars;
@@ -83,7 +83,7 @@ public class GroovyLibraryPresentationProvider extends GroovyLibraryPresentation
     if (jars != null) {
       for (File file : jars) {
         if (file.getName().endsWith(".jar")) {
-          libraryEditor.addRoot(VirtualFileUtil.getUrlForLibraryRoot(file), BinariesOrderRootType.getInstance());
+          libraryEditor.addRoot(VirtualFileUtil.getUrlForLibraryRoot(file), BinariesOrderRootType.ID);
         }
       }
     }

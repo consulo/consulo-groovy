@@ -83,7 +83,7 @@ public class IvyAttachSourceProvider extends AbstractAttachSourceProvider {
       if (srcFile != null) {
         // File already downloaded.
         VirtualFile jarRoot = ArchiveVfsUtil.getJarRootForLocalFile(srcFile);
-        if (jarRoot == null || ArrayUtil.contains(jarRoot, library.getFiles(SourcesOrderRootType.getInstance()))) {
+        if (jarRoot == null || ArrayUtil.contains(jarRoot, library.getFiles(SourcesOrderRootType.ID))) {
           return Collections.emptyList(); // Sources already attached.
         }
 

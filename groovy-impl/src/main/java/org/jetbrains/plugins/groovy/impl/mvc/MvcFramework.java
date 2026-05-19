@@ -297,7 +297,7 @@ public abstract class MvcFramework {
 
     Library library = MvcModuleStructureUtil.findUserLibrary(module, getUserLibraryName());
     if (library != null) {
-      for (VirtualFile file : library.getFiles(BinariesOrderRootType.getInstance())) {
+      for (VirtualFile file : library.getFiles(BinariesOrderRootType.ID)) {
         toExclude.add(VirtualFileUtil.virtualToIoFile(VirtualFilePathUtil.getLocalFile(file)));
       }
     }

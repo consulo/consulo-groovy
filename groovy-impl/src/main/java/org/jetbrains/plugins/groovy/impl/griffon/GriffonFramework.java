@@ -398,7 +398,7 @@ public class GriffonFramework extends MvcFramework {
 
   @Override
   public boolean isSDKLibrary(Library library) {
-    return GriffonLibraryPresentationProvider.isGriffonSdk(library.getFiles(BinariesOrderRootType.getInstance()));
+    return GriffonLibraryPresentationProvider.isGriffonSdk(library.getFiles(BinariesOrderRootType.ID));
   }
 
   @Override

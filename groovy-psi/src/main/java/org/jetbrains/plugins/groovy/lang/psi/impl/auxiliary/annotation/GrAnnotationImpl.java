@@ -159,12 +159,6 @@ public class GrAnnotationImpl extends GrStubElementBase<GrAnnotationStub> implem
   }
 
   @Override
-  @Nullable
-  public PsiMetaData getMetaData() {
-    return null;
-  }
-
-  @Override
   @Nonnull
   public GrCodeReferenceElement getClassReference() {
     GrAnnotationStub stub = getStub();

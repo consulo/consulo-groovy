@@ -139,11 +139,6 @@ public class GrLightAnnotation extends LightElement implements GrAnnotation {
     return myOwner;
   }
 
-  @Override
-  public PsiMetaData getMetaData() {
-    return null;
-  }
-
   public void addAttribute(PsiNameValuePair pair) {
     if (pair instanceof GrAnnotationNameValuePair) {
       myAnnotationArgList.addAttribute((GrAnnotationNameValuePair)pair);

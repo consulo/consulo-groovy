@@ -57,7 +57,7 @@ public class GriffonLibraryPresentationProvider extends GroovyLibraryPresentatio
     if (jars != null) {
       for (String fileName : jars) {
         if (fileName.endsWith(".jar")) {
-          libraryEditor.addRoot(VirtualFileUtil.getUrlForLibraryRoot(new File(path + ("/dist/") + fileName)), BinariesOrderRootType.getInstance());
+          libraryEditor.addRoot(VirtualFileUtil.getUrlForLibraryRoot(new File(path + ("/dist/") + fileName)), BinariesOrderRootType.ID);
         }
       }
     }
@@ -66,7 +66,7 @@ public class GriffonLibraryPresentationProvider extends GroovyLibraryPresentatio
     if (jars != null) {
       for (String fileName : jars) {
         if (fileName.endsWith(".jar")) {
-          libraryEditor.addRoot(VirtualFileUtil.getUrlForLibraryRoot(new File(path + "/lib/" + fileName)), BinariesOrderRootType.getInstance());
+          libraryEditor.addRoot(VirtualFileUtil.getUrlForLibraryRoot(new File(path + "/lib/" + fileName)), BinariesOrderRootType.ID);
         }
       }
     }
@@ -123,7 +123,7 @@ public class GriffonLibraryPresentationProvider extends GroovyLibraryPresentatio
   public static String getGriffonVersion(@Nonnull Module module) {
     for (OrderEntry orderEntry : ModuleRootManager.getInstance(module).getOrderEntries()) {
       if (orderEntry instanceof LibraryOrderEntry) {
-        VirtualFile[] files = orderEntry.getFiles(BinariesOrderRootType.getInstance());
+        VirtualFile[] files = orderEntry.getFiles(BinariesOrderRootType.ID);
         if (isGriffonSdk(files)) {
           return getGriffonVersion(files);
         }

@@ -69,9 +69,9 @@ public abstract class AbstractAttachSourceProvider implements AttachSourcesProvi
 
   protected void addSourceFile(@Nullable VirtualFile jarRoot, @Nonnull Library library) {
     if (jarRoot != null) {
-      if (!Arrays.asList(library.getFiles(SourcesOrderRootType.getInstance())).contains(jarRoot)) {
+      if (!Arrays.asList(library.getFiles(SourcesOrderRootType.ID)).contains(jarRoot)) {
         Library.ModifiableModel model = library.getModifiableModel();
-        model.addRoot(jarRoot, SourcesOrderRootType.getInstance());
+        model.addRoot(jarRoot, SourcesOrderRootType.ID);
         model.commit();
       }
     }

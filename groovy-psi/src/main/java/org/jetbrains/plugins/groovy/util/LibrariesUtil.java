@@ -104,7 +104,7 @@ public class LibrariesUtil {
 
   @Nonnull
   public static String getGroovyLibraryHome(Library library) {
-    VirtualFile[] classRoots = library.getFiles(BinariesOrderRootType.getInstance());
+    VirtualFile[] classRoots = library.getFiles(BinariesOrderRootType.ID);
     String home = getGroovyLibraryHome(classRoots);
     return home == null ? "" : home;
   }

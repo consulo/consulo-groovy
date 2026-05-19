@@ -109,7 +109,7 @@ public abstract class GroovyConfigUtils extends AbstractConfigUtils {
     if (library == null) {
       return false;
     }
-    return LibrariesUtil.getGroovyLibraryHome(library.getFiles(BinariesOrderRootType.getInstance())) != null;
+    return LibrariesUtil.getGroovyLibraryHome(library.getFiles(BinariesOrderRootType.ID)) != null;
   }
 
   @Nullable
