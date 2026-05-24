@@ -784,7 +784,7 @@ public class GrClosureSignatureUtil {
       initialMap.put(parameter, null);
     }
 
-    PsiSubstitutor initialSubstitutor = PsiSubstitutorImpl.createSubstitutor(initialMap);
+    PsiSubstitutor initialSubstitutor = PsiSubstitutor.createSubstitutor(initialMap);
 
     MultiMap<MethodSignature, PsiMethod> result = new MultiMap<MethodSignature, PsiMethod>();
     for (PsiMethod method : methods) {
@@ -806,7 +806,7 @@ public class GrClosureSignatureUtil {
       for (PsiTypeParameter parameter : actual.getTypeParameters()) {
         map1.put(parameter, null);
       }
-      return PsiSubstitutorImpl.createSubstitutor(map1);
+      return PsiSubstitutor.createSubstitutor(map1);
     }
     else {
       return initialSubstitutor;

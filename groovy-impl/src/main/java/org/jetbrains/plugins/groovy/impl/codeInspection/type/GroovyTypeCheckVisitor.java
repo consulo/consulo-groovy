@@ -1042,7 +1042,7 @@ public class GroovyTypeCheckVisitor extends BaseInspectionVisitor {
             PsiWildcardType wildcardType = PsiWildcardType.createExtends(method.getManager(), bound);
             map.put(parameter, wildcardType);
         }
-        PsiSubstitutor substitutor = PsiSubstitutorImpl.createSubstitutor(map);
+        PsiSubstitutor substitutor = PsiSubstitutor.createSubstitutor(map);
 
         for (GrParameter parameter : method.getParameterList().getParameters()) {
             GrExpression initializer = parameter.getInitializerGroovy();

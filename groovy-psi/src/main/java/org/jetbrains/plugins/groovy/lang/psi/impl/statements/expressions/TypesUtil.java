@@ -696,7 +696,7 @@ public class TypesUtil {
                 result.put(parameter, map2.get(parameter));
             }
         }
-        return PsiSubstitutorImpl.createSubstitutor(result);
+        return PsiSubstitutor.createSubstitutor(result);
     }
 
     @Nonnull
