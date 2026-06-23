@@ -3,71 +3,31 @@
   "server" : "https://i.verbaria.org/",
   "project" : "consulo-groovy",
   "projectVersion" : "master",
-  "generatedAt" : "2026-06-23T19:46:38.732273737Z",
+  "generatedAt" : "2026-06-23T19:47:35.511158036Z",
   "documents" : {
     "consulo.groovy.GroovyLocalize" : {
       "source" : {
         "revision" : 1
-      },
-      "translations" : {
-        "en-US" : {
-          "sig" : "ef009c87bb3361a43c332816ebc9607d",
-          "state" : "Approved",
-          "total" : 346,
-          "translators" : [ "Valery Semenchuk <vistall.valeriy@gmail.com>" ]
-        }
       }
     },
     "consulo.groovy.impl.GroovyCodeInsightLocalize" : {
       "source" : {
         "revision" : 1
-      },
-      "translations" : {
-        "en-US" : {
-          "sig" : "2e6e50a0ae7f2e7cccfbd903b0af9b7a",
-          "state" : "Approved",
-          "total" : 9,
-          "translators" : [ "Valery Semenchuk <vistall.valeriy@gmail.com>" ]
-        }
       }
     },
     "consulo.groovy.impl.GroovyInspectionLocalize" : {
       "source" : {
         "revision" : 1
-      },
-      "translations" : {
-        "en-US" : {
-          "sig" : "763eaceb54d6844754398026ae0225a7",
-          "state" : "Approved",
-          "total" : 80,
-          "translators" : [ "Valery Semenchuk <vistall.valeriy@gmail.com>" ]
-        }
       }
     },
     "consulo.groovy.impl.GroovyIntentionLocalize" : {
       "source" : {
         "revision" : 1
-      },
-      "translations" : {
-        "en-US" : {
-          "sig" : "8143bc54b41862ca28b6e808a4ab63cf",
-          "state" : "Approved",
-          "total" : 191,
-          "translators" : [ "Valery Semenchuk <vistall.valeriy@gmail.com>" ]
-        }
       }
     },
     "consulo.groovy.impl.GroovyRefactoringLocalize" : {
       "source" : {
         "revision" : 1
-      },
-      "translations" : {
-        "en-US" : {
-          "sig" : "6872f90ad5a76314bb2a2ef3d3f01512",
-          "state" : "Approved",
-          "total" : 135,
-          "translators" : [ "Valery Semenchuk <vistall.valeriy@gmail.com>" ]
-        }
       }
     }
   }
