@@ -24,6 +24,7 @@ import consulo.project.Project;
 import consulo.project.content.ProjectRootModificationTracker;
 import consulo.ui.ex.action.AnAction;
 import consulo.ui.ex.action.AnActionEvent;
+import consulo.ui.ex.action.AnActionWithSyncUpdate;
 import consulo.util.dataholder.Key;
 import consulo.util.lang.function.Condition;
 import org.jetbrains.plugins.groovy.impl.util.ModuleChooserUtil;
@@ -32,7 +33,7 @@ import java.util.Collection;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-public abstract class GroovyShellActionBase extends AnAction {
+public abstract class GroovyShellActionBase extends AnAction implements AnActionWithSyncUpdate {
   private final GroovyShellConfig myConfig;
 
   private final Condition<Module> APPLICABLE_MODULE = new Condition<Module>() {

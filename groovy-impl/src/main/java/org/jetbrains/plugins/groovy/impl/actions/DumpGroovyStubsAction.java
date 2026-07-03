@@ -17,56 +17,48 @@ package org.jetbrains.plugins.groovy.impl.actions;
 
 import consulo.application.dumb.DumbAware;
 import consulo.codeEditor.Editor;
+import consulo.language.editor.PlatformDataKeys;
 import consulo.language.psi.PsiFile;
+import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.ex.action.AnAction;
 import consulo.ui.ex.action.AnActionEvent;
-import consulo.language.editor.PlatformDataKeys;
-import consulo.ui.annotation.RequiredUIAccess;
-import org.jetbrains.plugins.groovy.impl.editor.HandlerUtils;
-import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
-import org.jetbrains.plugins.groovy.impl.refactoring.convertToJava.GroovyToJavaGenerator;
-
+import consulo.ui.ex.action.AnActionWithSyncUpdate;
 import jakarta.annotation.Nonnull;
+import org.jetbrains.plugins.groovy.impl.editor.HandlerUtils;
+import org.jetbrains.plugins.groovy.impl.refactoring.convertToJava.GroovyToJavaGenerator;
+import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 
 /**
  * @author Max Medvedev
  */
-public class DumpGroovyStubsAction extends AnAction implements DumbAware
-{
-	@RequiredUIAccess
-	@Override
-	public void update(@Nonnull AnActionEvent e)
-	{
-		Editor editor = e.getData(PlatformDataKeys.EDITOR);
-		if(editor != null)
-		{
-			PsiFile psiFile = HandlerUtils.getPsiFile(editor, e.getDataContext());
-			if(psiFile instanceof GroovyFile)
-			{
-				e.getPresentation().setEnabled(true);
-				return;
-			}
-		}
-		e.getPresentation().setEnabled(false);
-	}
+public class DumpGroovyStubsAction extends AnAction implements DumbAware, AnActionWithSyncUpdate {
+    @Override
+    public void update(@Nonnull AnActionEvent e) {
+        Editor editor = e.getData(PlatformDataKeys.EDITOR);
+        if (editor != null) {
+            PsiFile psiFile = HandlerUtils.getPsiFile(editor, e.getDataContext());
+            if (psiFile instanceof GroovyFile) {
+                e.getPresentation().setEnabled(true);
+                return;
+            }
+        }
+        e.getPresentation().setEnabled(false);
+    }
 
-	@RequiredUIAccess
-	@Override
-	public void actionPerformed(@Nonnull AnActionEvent e)
-	{
-		Editor editor = e.getData(PlatformDataKeys.EDITOR);
-		if(editor == null)
-		{
-			return;
-		}
+    @RequiredUIAccess
+    @Override
+    public void actionPerformed(@Nonnull AnActionEvent e) {
+        Editor editor = e.getData(PlatformDataKeys.EDITOR);
+        if (editor == null) {
+            return;
+        }
 
-		PsiFile psiFile = HandlerUtils.getPsiFile(editor, e.getDataContext());
-		if(!(psiFile instanceof GroovyFile))
-		{
-			return;
-		}
+        PsiFile psiFile = HandlerUtils.getPsiFile(editor, e.getDataContext());
+        if (!(psiFile instanceof GroovyFile)) {
+            return;
+        }
 
-		StringBuilder builder = GroovyToJavaGenerator.generateStubs(psiFile);
-		System.out.println(builder.toString());
-	}
+        StringBuilder builder = GroovyToJavaGenerator.generateStubs(psiFile);
+        System.out.println(builder.toString());
+    }
 }

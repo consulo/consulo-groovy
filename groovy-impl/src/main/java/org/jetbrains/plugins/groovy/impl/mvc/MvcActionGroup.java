@@ -2,12 +2,13 @@ package org.jetbrains.plugins.groovy.impl.mvc;
 
 import consulo.module.Module;
 import consulo.ui.ex.action.AnActionEvent;
+import consulo.ui.ex.action.AnActionWithSyncUpdate;
 import consulo.ui.ex.action.DefaultActionGroup;
 import consulo.ui.ex.action.Presentation;
 import consulo.application.dumb.DumbAware;
 import consulo.util.lang.Pair;
 
-public class MvcActionGroup extends DefaultActionGroup implements DumbAware {
+public class MvcActionGroup extends DefaultActionGroup implements DumbAware, AnActionWithSyncUpdate {
 
   @Override
   public void update(AnActionEvent e) {

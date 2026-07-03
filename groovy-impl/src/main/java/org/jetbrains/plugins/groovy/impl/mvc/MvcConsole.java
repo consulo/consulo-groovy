@@ -46,10 +46,7 @@ import consulo.process.local.ProcessHandlerFactory;
 import consulo.project.Project;
 import consulo.project.ui.wm.ToolWindowManager;
 import consulo.ui.ModalityState;
-import consulo.ui.ex.action.ActionPlaces;
-import consulo.ui.ex.action.AnAction;
-import consulo.ui.ex.action.AnActionEvent;
-import consulo.ui.ex.action.DefaultActionGroup;
+import consulo.ui.ex.action.*;
 import consulo.ui.ex.awt.Messages;
 import consulo.ui.ex.content.Content;
 import consulo.ui.ex.content.ContentFactory;
@@ -381,7 +378,7 @@ public class MvcConsole implements Disposable {
   public void dispose() {
   }
 
-  private class MyKillProcessAction extends AnAction {
+  private class MyKillProcessAction extends AnAction implements AnActionWithSyncUpdate {
     private ProcessHandler myHandler = null;
 
     public MyKillProcessAction() {
@@ -394,7 +391,6 @@ public class MvcConsole implements Disposable {
 
     @Override
     public void update(AnActionEvent e) {
-      super.update(e);
       e.getPresentation().setEnabled(isEnabled());
     }
 

@@ -15,76 +15,68 @@
  */
 package org.jetbrains.plugins.groovy.impl.doc.actions;
 
+import consulo.application.dumb.DumbAware;
 import consulo.language.editor.CommonDataKeys;
+import consulo.language.editor.LangDataKeys;
+import consulo.module.Module;
 import consulo.module.content.ModuleRootManager;
+import consulo.project.Project;
+import consulo.ui.ex.action.AnAction;
 import consulo.ui.ex.action.AnActionEvent;
+import consulo.ui.ex.action.AnActionWithSyncUpdate;
 import consulo.ui.ex.action.Presentation;
 import consulo.virtualFileSystem.VirtualFile;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.plugins.groovy.impl.doc.GenerateGroovyDocDialog;
 import org.jetbrains.plugins.groovy.impl.doc.GroovyDocConfiguration;
 import org.jetbrains.plugins.groovy.util.LibrariesUtil;
-import consulo.ui.ex.action.AnAction;
-import consulo.language.editor.LangDataKeys;
-import consulo.module.Module;
-import consulo.application.dumb.DumbAware;
-import consulo.project.Project;
 
-public final class GenerateGroovyDocAction extends AnAction implements DumbAware
-{
-	@NonNls
-	private static final String INDEX_HTML = "index.html";
+public final class GenerateGroovyDocAction extends AnAction implements DumbAware, AnActionWithSyncUpdate {
+    @NonNls
+    private static final String INDEX_HTML = "index.html";
 
-	public void actionPerformed(AnActionEvent e)
-	{
-		Project project = e.getData(CommonDataKeys.PROJECT);
+    @Override
+    public void actionPerformed(AnActionEvent e) {
+        Project project = e.getData(CommonDataKeys.PROJECT);
 
-		Module module = e.getData(LangDataKeys.MODULE);
-		if(module == null)
-		{
-			return;
-		}
+        Module module = e.getData(LangDataKeys.MODULE);
+        if (module == null) {
+            return;
+        }
 
-		GroovyDocConfiguration configuration = new GroovyDocConfiguration();
+        GroovyDocConfiguration configuration = new GroovyDocConfiguration();
 
-		VirtualFile[] files = ModuleRootManager.getInstance(module).getContentRoots();
-		if(files.length == 1)
-		{
-			configuration.INPUT_DIRECTORY = files[0].getPath();
-		}
+        VirtualFile[] files = ModuleRootManager.getInstance(module).getContentRoots();
+        if (files.length == 1) {
+            configuration.INPUT_DIRECTORY = files[0].getPath();
+        }
 
-		GenerateGroovyDocDialog dialog = new GenerateGroovyDocDialog(project, configuration);
-		dialog.show();
-		if(!dialog.isOK())
-		{
-			return;
-		}
+        GenerateGroovyDocDialog dialog = new GenerateGroovyDocDialog(project, configuration);
+        dialog.show();
+        if (!dialog.isOK()) {
+            return;
+        }
 
-		generateGroovydoc(configuration, project);
-	}
+        generateGroovydoc(configuration, project);
+    }
 
-	public void update(AnActionEvent event)
-	{
-		super.update(event);
-		Presentation presentation = event.getPresentation();
-		Module module = event.getData(LangDataKeys.MODULE);
+    public void update(AnActionEvent event) {
+        Presentation presentation = event.getPresentation();
+        Module module = event.getData(LangDataKeys.MODULE);
 
-		if(module == null || !LibrariesUtil.hasGroovySdk(module))
-		{
-			presentation.setEnabled(false);
-			presentation.setVisible(false);
-		}
-		else
-		{
-			presentation.setEnabled(true);
-			presentation.setVisible(true);
-		}
-	}
+        if (module == null || !LibrariesUtil.hasGroovySdk(module)) {
+            presentation.setEnabled(false);
+            presentation.setVisible(false);
+        }
+        else {
+            presentation.setEnabled(true);
+            presentation.setVisible(true);
+        }
+    }
 
-	private static void generateGroovydoc(GroovyDocConfiguration configuration, Project project)
-	{
+    private static void generateGroovydoc(GroovyDocConfiguration configuration, Project project) {
   /* TODO[VISTALL] Runnable groovyDocRun = new Runnable() {
-	  public void run() {
+      public void run() {
         Groovydoc groovydoc = new Groovydoc();
         groovydoc.setProject(new org.apache.tools.ant.Project());
         groovydoc.setDestdir(new File(configuration.OUTPUT_DIRECTORY));
@@ -125,5 +117,5 @@ public final class GenerateGroovyDocAction extends AnAction implements DumbAware
         BrowserUtil.browse(url);
       }
     }   */
-	}
+    }
 }

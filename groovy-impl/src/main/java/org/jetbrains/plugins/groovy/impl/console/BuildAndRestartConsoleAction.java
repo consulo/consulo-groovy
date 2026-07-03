@@ -28,13 +28,14 @@ import consulo.project.Project;
 import consulo.ui.ex.action.AnAction;
 import consulo.ui.ex.action.AnActionEvent;
 
+import consulo.ui.ex.action.AnActionWithSyncUpdate;
 import jakarta.annotation.Nonnull;
 import java.util.function.Consumer;
 
 /**
  * Created by Max Medvedev on 21/03/14
  */
-public class BuildAndRestartConsoleAction extends AnAction {
+public class BuildAndRestartConsoleAction extends AnAction implements AnActionWithSyncUpdate {
 
   private Module myModule;
   private Project myProject;

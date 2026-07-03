@@ -18,13 +18,14 @@ package org.jetbrains.plugins.groovy.impl.annotator.intentions.dynamic;
 import consulo.project.Project;
 import consulo.ui.ex.action.AnAction;
 import consulo.ui.ex.action.AnActionEvent;
+import consulo.ui.ex.action.AnActionWithSyncUpdate;
 
 import javax.swing.tree.TreePath;
 
 /**
  * @author Max Medvedev
  */
-public class RemoveDynamicAction extends AnAction {
+public class RemoveDynamicAction extends AnAction implements AnActionWithSyncUpdate {
   static final String GROOVY_DYNAMIC_REMOVE = "Groovy.Dynamic.Remove";
 
   @Override

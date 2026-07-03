@@ -18,13 +18,14 @@ package org.jetbrains.plugins.groovy.impl.annotator.intentions.dynamic;
 import consulo.project.Project;
 import consulo.ui.ex.action.AnAction;
 import consulo.ui.ex.action.AnActionEvent;
+import consulo.ui.ex.action.AnActionWithSyncUpdate;
 import consulo.ui.ex.awt.tree.TreeUtil;
 import consulo.ui.ex.awt.tree.table.TreeTableTree;
 
 /**
  * @author Max Medvedev
  */
-public class CollapseAllAction extends AnAction {
+public class CollapseAllAction extends AnAction implements AnActionWithSyncUpdate {
   @Override
   public void actionPerformed(AnActionEvent e) {
     Project project = e.getData(Project.KEY);

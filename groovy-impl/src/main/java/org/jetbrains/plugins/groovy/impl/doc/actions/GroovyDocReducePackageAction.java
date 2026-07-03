@@ -17,9 +17,7 @@ package org.jetbrains.plugins.groovy.impl.doc.actions;
 
 import consulo.application.AllIcons;
 import consulo.application.dumb.DumbAware;
-import consulo.ui.ex.action.AnAction;
-import consulo.ui.ex.action.AnActionEvent;
-import consulo.ui.ex.action.Presentation;
+import consulo.ui.ex.action.*;
 import consulo.application.dumb.DumbAware;
 import consulo.application.AllIcons;
 import consulo.ui.ex.action.AnAction;
@@ -31,7 +29,7 @@ import javax.swing.*;
  * User: Dmitry.Krasilschikov
  * Date: 14.10.2008
  */
-public class GroovyDocReducePackageAction extends AnAction implements DumbAware
+public class GroovyDocReducePackageAction extends AnAction implements DumbAware, AnActionWithSyncUpdate
 {
   private final JList myPackagesList;
   private final DefaultListModel myDataModel;
@@ -54,6 +52,5 @@ public class GroovyDocReducePackageAction extends AnAction implements DumbAware
     } else {
       presentation.setEnabled(true);
     }
-    super.update(e);
   }
 }
