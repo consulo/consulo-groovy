@@ -31,126 +31,106 @@ import consulo.ui.ex.popup.ListPopup;
 import consulo.ui.ex.popup.PopupStep;
 import consulo.util.collection.ContainerUtil;
 import consulo.util.lang.function.Condition;
-
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
+
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
-public class ModuleChooserUtil
-{
+public class ModuleChooserUtil {
 
-	private static final String GROOVY_LAST_MODULE = "Groovy.Last.Module.Chosen";
+    private static final String GROOVY_LAST_MODULE = "Groovy.Last.Module.Chosen";
 
-	public static void selectModule(@Nonnull Project project, Collection<Module> suitableModules, Function<Module, String> versionProvider, Consumer<Module> callback)
-	{
-		selectModule(project, suitableModules, versionProvider, callback, null);
-	}
+    public static void selectModule(@Nonnull Project project, Collection<Module> suitableModules, Function<Module, String> versionProvider, Consumer<Module> callback) {
+        selectModule(project, suitableModules, versionProvider, callback, null);
+    }
 
-	public static void selectModule(@Nonnull Project project,
-			Collection<Module> suitableModules,
-			Function<Module, String> versionProvider,
-			final Consumer<Module> callback,
-			@Nullable DataContext context)
-	{
-		final List<Module> modules = new ArrayList<>();
-		final Map<Module, String> versions = new HashMap<>();
+    public static void selectModule(@Nonnull Project project,
+                                    Collection<Module> suitableModules,
+                                    Function<Module, String> versionProvider,
+                                    final Consumer<Module> callback,
+                                    @Nullable DataContext context) {
+        final List<Module> modules = new ArrayList<>();
+        final Map<Module, String> versions = new HashMap<>();
 
-		for(Module module : suitableModules)
-		{
-			modules.add(module);
-			versions.put(module, versionProvider.apply(module));
-		}
+        for (Module module : suitableModules) {
+            modules.add(module);
+            versions.put(module, versionProvider.apply(module));
+        }
 
-		if(modules.size() == 1)
-		{
-			callback.accept(modules.get(0));
-			return;
-		}
+        if (modules.size() == 1) {
+            callback.accept(modules.get(0));
+            return;
+        }
 
-		Collections.sort(modules, ModulesAlphaComparator.INSTANCE);
+        Collections.sort(modules, ModulesAlphaComparator.INSTANCE);
 
-		BaseListPopupStep<Module> step = new BaseListPopupStep<Module>("Which module to use classpath of?", modules, AllIcons.Nodes.Module)
-		{
-			@Nonnull
-			@Override
-			public String getTextFor(Module value)
-			{
-				return String.format("%s (%s)", value.getName(), versions.get(value));
-			}
+        BaseListPopupStep<Module> step = new BaseListPopupStep<Module>("Which module to use classpath of?", modules, AllIcons.Nodes.Module) {
+            @Nonnull
+            @Override
+            public String getTextFor(Module value) {
+                return String.format("%s (%s)", value.getName(), versions.get(value));
+            }
 
-			@Override
-			public String getIndexedString(Module value)
-			{
-				return value.getName();
-			}
+            @Override
+            public String getIndexedString(Module value) {
+                return value.getName();
+            }
 
-			@Override
-			public boolean isSpeedSearchEnabled()
-			{
-				return true;
-			}
+            @Override
+            public boolean isSpeedSearchEnabled() {
+                return true;
+            }
 
-			@Override
-			public PopupStep onChosen(Module selectedValue, boolean finalChoice)
-			{
-				PropertiesComponent.getInstance(selectedValue.getProject()).setValue(GROOVY_LAST_MODULE, selectedValue.getName());
-				callback.accept(selectedValue);
-				return null;
-			}
-		};
+            @Override
+            public PopupStep onChosen(Module selectedValue, boolean finalChoice) {
+                PropertiesComponent.getInstance(selectedValue.getProject()).setValue(GROOVY_LAST_MODULE, selectedValue.getName());
+                callback.accept(selectedValue);
+                return null;
+            }
+        };
 
-		final String lastModuleName = PropertiesComponent.getInstance(project).getValue(GROOVY_LAST_MODULE);
-		if(lastModuleName != null)
-		{
-			int defaultOption = ContainerUtil.indexOf(modules, new Condition<Module>()
-			{
-				@Override
-				public boolean value(Module module)
-				{
-					return module.getName().equals(lastModuleName);
-				}
-			});
-			if(defaultOption >= 0)
-			{
-				step.setDefaultOptionIndex(defaultOption);
-			}
-		}
-		ListPopup listPopup = JBPopupFactory.getInstance().createListPopup(step);
-		if(context == null)
-		{
-			listPopup.showCenteredInCurrentWindow(project);
-		}
-		else
-		{
-			listPopup.showInBestPositionFor(context);
-		}
-	}
+        final String lastModuleName = PropertiesComponent.getInstance(project).getValue(GROOVY_LAST_MODULE);
+        if (lastModuleName != null) {
+            int defaultOption = ContainerUtil.indexOf(modules, new Condition<Module>() {
+                @Override
+                public boolean value(Module module) {
+                    return module.getName().equals(lastModuleName);
+                }
+            });
+            if (defaultOption >= 0) {
+                step.setDefaultOptionIndex(defaultOption);
+            }
+        }
+        ListPopup listPopup = JBPopupFactory.getInstance().createListPopup(step);
+        if (context == null) {
+            listPopup.showCenteredInCurrentWindow(project);
+        }
+        else {
+            listPopup.showInBestPositionFor(context);
+        }
+    }
 
-	@Nonnull
-	private static Condition<Module> isGroovyCompatibleModule(Condition<Module> condition)
-	{
-		return module -> {
-			if(condition.value(module))
-			{
-				Sdk sdk = ModuleUtilCore.getSdk(module, JavaModuleExtension.class);
-				if(sdk != null && sdk.getSdkType() instanceof JavaSdkType)
-				{
-					return true;
-				}
-			}
-			return false;
-		};
-	}
+    @Nonnull
+    private static Predicate<Module> isGroovyCompatibleModule(Predicate<Module> condition) {
+        return module -> {
+            if (condition.test(module)) {
+                Sdk sdk = ModuleUtilCore.getSdk(module, JavaModuleExtension.class);
+                if (sdk != null && sdk.getSdkType() instanceof JavaSdkType) {
+                    return true;
+                }
+            }
+            return false;
+        };
+    }
 
-	public static List<Module> filterGroovyCompatibleModules(Collection<Module> modules, Condition<Module> condition)
-	{
-		return ContainerUtil.filter(modules, isGroovyCompatibleModule(condition));
-	}
+    public static List<Module> filterGroovyCompatibleModules(Collection<Module> modules, Predicate<Module> condition) {
+        return ContainerUtil.filter(modules, isGroovyCompatibleModule(condition));
+    }
 
-	public static boolean hasGroovyCompatibleModules(Collection<Module> modules, Condition<Module> condition)
-	{
-		return ContainerUtil.or(modules, isGroovyCompatibleModule(condition));
-	}
+    public static boolean hasGroovyCompatibleModules(Collection<Module> modules, Predicate<Module> condition) {
+        return ContainerUtil.or(modules, isGroovyCompatibleModule(condition));
+    }
 }
