@@ -137,9 +137,7 @@ public class CreateParameterForFieldIntention extends Intention {
                         new Runnable() {
                             @Override
                             public void run() {
-                                AccessToken accessToken =
-                                    WriteAction.start();
-                                try {
+                                WriteAction.run(() -> {
                                     for (Object selectedValue : selectedValues) {
                                         LOG.assertTrue(((GrMethod) selectedValue)
                                             .isValid());
@@ -149,10 +147,7 @@ public class CreateParameterForFieldIntention extends Intention {
                                             project
                                         );
                                     }
-                                }
-                                finally {
-                                    accessToken.finish();
-                                }
+                                });
                             }
                         },
                         GroovyIntentionLocalize.createParameterForFieldIntentionName().get(),
@@ -189,9 +184,7 @@ public class CreateParameterForFieldIntention extends Intention {
                         new Runnable() {
                             @Override
                             public void run() {
-                                AccessToken accessToken =
-                                    WriteAction.start();
-                                try {
+                                WriteAction.run(() -> {
                                     for (Object selectedValue : selectedValues) {
                                         LOG.assertTrue(((GrField) selectedValue)
                                             .isValid());
@@ -201,10 +194,7 @@ public class CreateParameterForFieldIntention extends Intention {
                                             project
                                         );
                                     }
-                                }
-                                finally {
-                                    accessToken.finish();
-                                }
+                                });
                             }
                         },
                         GroovyIntentionLocalize.createParameterForFieldIntentionName().get(),

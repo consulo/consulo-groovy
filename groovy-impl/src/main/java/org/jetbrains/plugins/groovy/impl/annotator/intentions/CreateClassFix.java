@@ -113,8 +113,7 @@ public abstract class CreateClassFix {
         @Nonnull GrTypeDefinition targetClass,
         @Nonnull Project project
     ) {
-        AccessToken writeLock = WriteAction.start();
-        try {
+        WriteAction.run(() -> {
             ChooseTypeExpression[] paramTypesExpressions = new ChooseTypeExpression[argTypes.length];
             String[] paramTypes = new String[argTypes.length];
             String[] paramNames = new String[argTypes.length];
@@ -133,7 +132,7 @@ public abstract class CreateClassFix {
             GrMethod method =
                 GroovyPsiElementFactory.getInstance(project).createConstructorFromText(name, paramTypes, paramNames, "{\n}");
 
-            method = (GrMethod)targetClass.addBefore(method, null);
+            method = (GrMethod) targetClass.addBefore(method, null);
             PsiElement context = PsiTreeUtil.getParentOfType(refElement, PsiMethod.class, PsiClass.class, PsiFile.class);
             IntentionUtils.createTemplateForMethod(
                 argTypes,
@@ -144,10 +143,7 @@ public abstract class CreateClassFix {
                 true,
                 context
             );
-        }
-        finally {
-            writeLock.finish();
-        }
+        });
     }
 
     public static IntentionAction createClassFixAction(final GrReferenceElement refElement, GrCreateClassKind type) {

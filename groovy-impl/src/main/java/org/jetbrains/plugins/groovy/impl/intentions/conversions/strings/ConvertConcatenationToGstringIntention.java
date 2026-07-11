@@ -33,6 +33,7 @@ import consulo.language.psi.util.PsiTreeUtil;
 import consulo.language.util.IncorrectOperationException;
 import consulo.localize.LocalizeValue;
 import consulo.project.Project;
+import consulo.ui.annotation.RequiredUIAccess;
 import consulo.undoRedo.CommandProcessor;
 import consulo.util.lang.ref.Ref;
 import jakarta.annotation.Nonnull;
@@ -131,6 +132,7 @@ public class ConvertConcatenationToGstringIntention extends Intention {
         }
     }
 
+    @RequiredUIAccess
     private static void invokeImpl(final PsiElement element, Document document) {
         boolean isMultiline = containsMultilineStrings((GrExpression) element);
 
@@ -152,16 +154,12 @@ public class ConvertConcatenationToGstringIntention extends Intention {
         CommandProcessor.getInstance().executeCommand(element.getProject(), new Runnable() {
             @Override
             public void run() {
-                AccessToken accessToken = WriteAction.start();
-                try {
+                WriteAction.run(() -> {
                     GrExpression expression = ((GrExpression) element).replaceWithExpression(newExpr, true);
                     if (expression instanceof GrString) {
                         GrStringUtil.removeUnnecessaryBracesInGString((GrString) expression);
                     }
-                }
-                finally {
-                    accessToken.finish();
-                }
+                });
             }
         }, null, null, document);
     }

@@ -101,9 +101,7 @@ public abstract class CreateClassActionBase extends Intention implements Synthet
         @Nonnull String templateName,
         boolean allowReformatting
     ) {
-        AccessToken accessToken = WriteAction.start();
-
-        try {
+        return WriteAction.compute(() -> {
             GrTypeDefinition targetClass = null;
             try {
                 PsiFile file = GroovyTemplatesFactory.createFromTemplate(
@@ -133,18 +131,12 @@ public abstract class CreateClassActionBase extends Intention implements Synthet
             PsiModifierList modifiers = targetClass.getModifierList();
             if (contextElement != null
                 && !JavaPsiFacade.getInstance(manager.getProject()).getResolveHelper()
-                    .isAccessible(targetClass, contextElement, null)
+                .isAccessible(targetClass, contextElement, null)
                 && modifiers != null) {
                 modifiers.setModifierProperty(PsiModifier.PUBLIC, true);
             }
             return targetClass;
-        }
-        catch (IncorrectOperationException e) {
-            throw new AssertionError(e.getMessage(), e);
-        }
-        finally {
-            accessToken.finish();
-        }
+        });
     }
 
     @Nullable

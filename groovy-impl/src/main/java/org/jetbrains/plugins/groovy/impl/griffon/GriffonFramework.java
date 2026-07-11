@@ -20,7 +20,6 @@ import com.intellij.java.language.projectRoots.JavaSdkType;
 import com.intellij.lang.properties.IProperty;
 import com.intellij.lang.properties.psi.PropertiesFile;
 import consulo.annotation.component.ExtensionImpl;
-import consulo.application.AccessToken;
 import consulo.application.WriteAction;
 import consulo.content.base.BinariesOrderRootType;
 import consulo.content.bundle.Sdk;
@@ -68,480 +67,476 @@ import java.util.regex.Pattern;
  */
 @ExtensionImpl
 public class GriffonFramework extends MvcFramework {
-  @NonNls
-  private static final String GRIFFON_COMMON_PLUGINS = "-griffonPlugins";
-  private static final String GLOBAL_PLUGINS_MODULE_NAME = "GriffonGlobalPlugins";
+    @NonNls
+    private static final String GRIFFON_COMMON_PLUGINS = "-griffonPlugins";
+    private static final String GLOBAL_PLUGINS_MODULE_NAME = "GriffonGlobalPlugins";
 
-  public static final String GRIFFON_USER_LIBRARY = "Griffon:lib";
+    public static final String GRIFFON_USER_LIBRARY = "Griffon:lib";
 
-  private static final Pattern PLUGIN_NAME_JSON_PATTERN = Pattern.compile("\"name\"\\s*:\\s*\"([^\"]+)\"");
-  private static final Pattern PLUGIN_VERSION_JSON_PATTERN = Pattern.compile("\"version\"\\s*:\\s*\"([^\"]+)\"");
+    private static final Pattern PLUGIN_NAME_JSON_PATTERN = Pattern.compile("\"name\"\\s*:\\s*\"([^\"]+)\"");
+    private static final Pattern PLUGIN_VERSION_JSON_PATTERN = Pattern.compile("\"version\"\\s*:\\s*\"([^\"]+)\"");
 
-  public GriffonFramework() {
-  }
-
-  public boolean hasSupport(@Nonnull Module module) {
-    return getSdkRoot(module) != null && findAppRoot(module) != null && !isAuxModule(module);
-  }
-
-  @Override
-  public String getApplicationDirectoryName() {
-    return "griffon-app";
-  }
-
-  @Override
-  public boolean isToReformatOnCreation(VirtualFile file) {
-    return file.getFileType() == GroovyFileType.GROOVY_FILE_TYPE;
-  }
-
-  @Override
-  public void upgradeFramework(@Nonnull Module module) {
-  }
-
-  @Nullable
-  @Override
-  protected GeneralCommandLine getCreationCommandLine(Module module) {
-    GriffonCreateProjectDialog dialog = new GriffonCreateProjectDialog(module);
-    dialog.show();
-    if (!dialog.isOK()) {
-      return null;
+    public GriffonFramework() {
     }
 
-    return createCommandAndShowErrors(null, module, true, dialog.getCommand());
-  }
-
-  @Override
-  public boolean updatesWholeProject() {
-    return false;
-  }
-
-  @Override
-  public void updateProjectStructure(@Nonnull Module module) {
-    if (!MvcModuleStructureUtil.isEnabledStructureUpdate()) {
-      return;
-    }
-
-    VirtualFile root = findAppRoot(module);
-    if (root == null) {
-      return;
-    }
-
-    AccessToken token = WriteAction.start();
-    try {
-      MvcModuleStructureUtil.updateModuleStructure(module, createProjectStructure(module, false), root);
-
-      if (hasSupport(module)) {
-        MvcModuleStructureUtil.updateAuxiliaryPluginsModuleRoots(module, this);
-        MvcModuleStructureUtil.updateGlobalPluginModule(module.getProject(), this);
-      }
-    }
-    finally {
-      token.finish();
-    }
-
-    Project project = module.getProject();
-    ChangeListManager.getInstance(project).addFilesToIgnore(IgnoredBeanFactory.ignoreUnderDirectory(getUserHomeGriffon(), project));
-  }
-
-  @Override
-  public void ensureRunConfigurationExists(@Nonnull Module module) {
-    VirtualFile root = findAppRoot(module);
-    if (root != null) {
-      ensureRunConfigurationExists(module, GriffonRunConfigurationType.getInstance(), "Griffon:" + root.getName());
-    }
-  }
-
-  @Override
-  public String getInstalledPluginNameByPath(Project project, @Nonnull VirtualFile pluginPath) {
-    String nameFromPluginXml = super.getInstalledPluginNameByPath(project, pluginPath);
-    if (nameFromPluginXml != null) {
-      return nameFromPluginXml;
-    }
-
-    VirtualFile pluginJson = pluginPath.findChild("plugin.json");
-    if (pluginJson != null) {
-      String pluginAndVersion = pluginPath.getName(); // pluginName-version
-
-      IntList separatorIndexes = IntLists.newArrayList();
-      int start = -1;
-      while (true) {
-        start = pluginAndVersion.indexOf('-', start + 1);
-        if (start == -1) {
-          break;
-        }
-        separatorIndexes.add(start);
-      }
-
-      if (separatorIndexes.size() == 1) {
-        return pluginAndVersion.substring(0, separatorIndexes.get(0));
-      }
-
-      if (separatorIndexes.size() > 0) {
-        String json;
-        try {
-          json = VirtualFileUtil.loadText(pluginJson);
-        }
-        catch (IOException e) {
-          return null;
-        }
-
-        for (int i = 0; i < separatorIndexes.size(); i++) {
-          int idx = separatorIndexes.get(i);
-          String name = pluginAndVersion.substring(0, idx);
-          String version = pluginAndVersion.substring(idx + 1);
-
-          if (hasValue(PLUGIN_NAME_JSON_PATTERN, json, name) && hasValue(PLUGIN_VERSION_JSON_PATTERN, json, version)) {
-            return name;
-          }
-        }
-      }
-    }
-
-    return null;
-  }
-
-  private static boolean hasValue(Pattern pattern, String text, String value) {
-    Matcher matcher = pattern.matcher(text);
-    while (matcher.find()) {
-      if (matcher.group(1).equals(value)) {
-        return true;
-      }
-    }
-
-    return false;
-  }
-
-  @Override
-  public VirtualFile getSdkRoot(@Nullable Module module) {
-    if (module == null) {
-      return null;
-    }
-    VirtualFile[] classRoots = ModuleRootManager.getInstance(module).orderEntries().librariesOnly().getClassesRoots();
-    for (VirtualFile file : classRoots) {
-      if (GriffonLibraryPresentationProvider.isGriffonCoreJar(file)) {
-        VirtualFile localFile = ArchiveVfsUtil.getVirtualFileForJar(file);
-        if (localFile != null) {
-          VirtualFile parent = localFile.getParent();
-          if (parent != null) {
-            return parent.getParent();
-          }
-        }
-        return null;
-      }
-    }
-    return null;
-  }
-
-  @Override
-  public String getUserLibraryName() {
-    return GRIFFON_USER_LIBRARY;
-  }
-
-  @Override
-  public OwnJavaParameters createJavaParameters(@Nonnull Module module,
-                                                boolean forCreation,
-                                                boolean forTests,
-                                                boolean classpathFromDependencies,
-                                                @Nullable String jvmParams,
-                                                @Nonnull MvcCommand command) throws ExecutionException {
-    OwnJavaParameters params = new OwnJavaParameters();
-
-    Sdk sdk = ModuleUtilCore.getSdk(module, JavaModuleExtension.class);
-    if (sdk == null) {
-      return params;
-    }
-
-    params.setJdk(sdk);
-    VirtualFile sdkRoot = getSdkRoot(module);
-    if (sdkRoot == null) {
-      return params;
-    }
-
-    Map<String, String> env = params.getEnv();
-    if (env == null) {
-      env = new HashMap<String, String>();
-      params.setEnv(env);
-    }
-    env.put(getSdkHomePropertyName(), FileUtil.toSystemDependentName(sdkRoot.getPath()));
-
-    VirtualFile lib = sdkRoot.findChild("lib");
-    if (lib != null) {
-      for (VirtualFile child : lib.getChildren()) {
-        String name = child.getName();
-        if (name.startsWith("groovy-all-") && name.endsWith(".jar")) {
-          params.getClassPath().add(child);
-        }
-      }
-    }
-    VirtualFile dist = sdkRoot.findChild("dist");
-    if (dist != null) {
-      for (VirtualFile child : dist.getChildren()) {
-        String name = child.getName();
-        if (name.endsWith(".jar")) {
-          if (name.startsWith("griffon-cli-") || name.startsWith("griffon-rt-") || name.startsWith("griffon-resources-")) {
-            params.getClassPath().add(child);
-          }
-        }
-      }
-    }
-
-
-    /////////////////////////////////////////////////////////////
-
-    params.setMainClass("org.codehaus.griffon.cli.support.GriffonStarter");
-
-    VirtualFile rootFile;
-
-    if (forCreation) {
-      VirtualFile[] roots = ModuleRootManager.getInstance(module).getContentRoots();
-      if (roots.length != 1) {
-        throw new ExecutionException("Failed to initialize griffon module: module " + module.getName() + " contains more than one root");
-      }
-
-      command.getArgs().add(0, roots[0].getName());
-
-      rootFile = roots[0].getParent();
-    }
-    else {
-      rootFile = findAppRoot(module);
-      if (rootFile == null) {
-        throw new ExecutionException("Failed to run griffon command: module " + module.getName() + " is not a Griffon module");
-      }
-    }
-
-    String workDir = VirtualFileUtil.virtualToIoFile(rootFile).getAbsolutePath();
-
-    if (jvmParams != null) {
-      params.getVMParametersList().addParametersString(jvmParams);
-    }
-
-    if (!params.getVMParametersList().getParametersString().contains(XMX_JVM_PARAMETER)) {
-      params.getVMParametersList().add("-Xmx256M");
-    }
-
-    String griffonHomePath = FileUtil.toSystemDependentName(sdkRoot.getPath());
-    params.getVMParametersList().add("-Dgriffon.home=" + griffonHomePath);
-    params.getVMParametersList().add("-Dbase.dir=" + workDir);
-
-    assert sdk != null;
-    params.getVMParametersList().add("-Dtools.jar=" + ((JavaSdkType)sdk.getSdkType()).getToolsPath(sdk));
-
-    String confpath = griffonHomePath + GROOVY_STARTER_CONF;
-    params.getVMParametersList().add("-Dgroovy.starter.conf=" + confpath);
-
-    params.getVMParametersList()
-          .add(
-            "-Dgroovy.sanitized.stacktraces=\"groovy., org.codehaus.groovy., java., javax., sun., gjdk.groovy., gant., org.codehaus.gant.\"");
-
-    params.getProgramParametersList().add("--main");
-    params.getProgramParametersList().add("org.codehaus.griffon.cli.GriffonScriptRunner");
-    params.getProgramParametersList().add("--conf");
-    params.getProgramParametersList().add(confpath);
-    if (!forCreation && classpathFromDependencies) {
-      String path = getApplicationClassPath(module).getPathsString();
-      if (StringUtil.isNotEmpty(path)) {
-        params.getProgramParametersList().add("--classpath");
-        params.getProgramParametersList().add(path);
-      }
-    }
-
-    params.setWorkingDirectory(workDir);
-
-    ParametersList paramList = new ParametersList();
-    command.addToParametersList(paramList);
-    params.getProgramParametersList().add(paramList.getParametersString());
-
-    params.setDefaultCharset(module.getProject());
-
-    return params;
-  }
-
-  @Override
-  public String getFrameworkName() {
-    return "Griffon";
-  }
-
-  @Override
-  public Image getIcon() {
-    return JetgroovyIcons.Griffon.Griffon;
-  }
-
-  @Override
-  public Image getToolWindowIcon() {
-    return JetgroovyIcons.Griffon.GriffonToolWindow;
-  }
-
-  @Override
-  public String getSdkHomePropertyName() {
-    return "GRIFFON_HOME";
-  }
-
-  @Override
-  protected String getCommonPluginSuffix() {
-    return GRIFFON_COMMON_PLUGINS;
-  }
-
-  @Override
-  public String getGlobalPluginsModuleName() {
-    return GLOBAL_PLUGINS_MODULE_NAME;
-  }
-
-  @Nullable
-  public File getDefaultSdkWorkDir(@Nonnull Module module) {
-    String version = GriffonLibraryPresentationProvider.getGriffonVersion(module);
-    if (version == null) {
-      return null;
-    }
-
-    return new File(getUserHomeGriffon(), version);
-  }
-
-  @Override
-  public boolean isSDKLibrary(Library library) {
-    return GriffonLibraryPresentationProvider.isGriffonSdk(library.getFiles(BinariesOrderRootType.ID));
-  }
-
-  @Override
-  public MvcProjectStructure createProjectStructure(@Nonnull Module module, boolean auxModule) {
-    return new GriffonProjectStructure(module, auxModule);
-  }
-
-  @Override
-  public LibraryKind getLibraryKind() {
-    return GriffonLibraryPresentationProvider.GRIFFON_KIND;
-  }
-
-  @Override
-  public String getSomeFrameworkClass() {
-    return "griffon.core.GriffonApplication";
-  }
-
-  public static String getUserHomeGriffon() {
-    return MvcPathMacros.getSdkWorkDirParent("griffon");
-  }
-
-  public static GriffonFramework getInstance() {
-    return EP_NAME.findExtension(GriffonFramework.class);
-  }
-
-  public VirtualFile getApplicationPropertiesFile(Module module) {
-    VirtualFile appRoot = findAppRoot(module);
-    return appRoot != null ? appRoot.findChild("application.properties") : null;
-  }
-
-  @Override
-  public String getApplicationName(Module module) {
-    VirtualFile appProperties = getApplicationPropertiesFile(module);
-    if (appProperties != null) {
-      PsiFile file = PsiManager.getInstance(module.getProject()).findFile(appProperties);
-      if (file instanceof PropertiesFile) {
-        IProperty property = ((PropertiesFile)file).findPropertyByKey("application.name");
-        return property != null ? property.getValue() : super.getApplicationName(module);
-      }
-    }
-    return super.getApplicationName(module);
-  }
-
-  private static class GriffonProjectStructure extends MvcProjectStructure {
-    public GriffonProjectStructure(Module module, boolean auxModule) {
-      super(module, auxModule, getUserHomeGriffon(), GriffonFramework.getInstance().getSdkWorkDir(module));
-    }
-
-    @Nonnull
-    public String getUserLibraryName() {
-      return GRIFFON_USER_LIBRARY;
-    }
-
-    public String[] getSourceFolders() {
-      List<String> sourceFolders = new ArrayList<String>();
-
-      for (VirtualFile file : ModuleRootManager.getInstance(myModule).getContentRoots()) {
-        handleSrc(file.findChild("src"), sourceFolders);
-        VirtualFile griffonApp = file.findChild("griffon-app");
-        handleGriffonApp(griffonApp, sourceFolders);
-        List<GriffonSourceInspector.GriffonSource> sources = GriffonSourceInspector.processModuleMetadata(myModule);
-        for (GriffonSourceInspector.GriffonSource source : sources) {
-          sourceFolders.add(source.getPath());
-        }
-        if (griffonApp != null) {
-          for (VirtualFile child : file.getChildren()) {
-            if (child.getNameWithoutExtension().endsWith("GriffonAddon")) {
-              sourceFolders.add("");
-              break;
-            }
-          }
-        }
-      }
-      return sourceFolders.toArray(new String[sourceFolders.size()]);
-    }
-
-    private void handleGriffonApp(VirtualFile griffonApp, List<String> sourceFolders) {
-      if (griffonApp == null) {
-        return;
-      }
-      // Add standard artifacts, i.e, models, views, controllers, services, conf, lifecycle
-      for (String child : new String[]{
-        "models",
-        "views",
-        "controllers",
-        "services",
-        "conf",
-        "lifecycle"
-      }) {
-        if (griffonApp.findChild(child) != null) {
-          sourceFolders.add("griffon-app/" + child);
-        }
-      }
-    }
-
-    private void handleSrc(VirtualFile src, List<String> sourceFolders) {
-      if (src == null) {
-        return;
-      }
-      for (String child : new String[]{
-        "main",
-        "cli"
-      }) {
-        if (src.findChild(child) != null) {
-          sourceFolders.add("src/" + child);
-        }
-      }
-    }
-
-    private void handleTest(VirtualFile test, List<String> sourceFolders) {
-      if (test == null) {
-        return;
-      }
-      for (String child : new String[]{
-        "unit",
-        "integration",
-        "shared"
-      }) {
-        if (test.findChild(child) != null) {
-          sourceFolders.add("test/" + child);
-        }
-      }
-    }
-
-    public String[] getTestFolders() {
-      List<String> sourceFolders = new ArrayList<String>();
-
-      for (VirtualFile file : ModuleRootManager.getInstance(myModule).getContentRoots()) {
-        handleTest(file.findChild("test"), sourceFolders);
-      }
-      return sourceFolders.toArray(new String[sourceFolders.size()]);
-    }
-
-    public String[] getInvalidSourceFolders() {
-      return new String[]{"src"};
+    public boolean hasSupport(@Nonnull Module module) {
+        return getSdkRoot(module) != null && findAppRoot(module) != null && !isAuxModule(module);
     }
 
     @Override
-    public String[] getExcludedFolders() {
-      return new String[]{
-        "target/classes",
-        "target/test-classes"
-      };
+    public String getApplicationDirectoryName() {
+        return "griffon-app";
     }
-  }
+
+    @Override
+    public boolean isToReformatOnCreation(VirtualFile file) {
+        return file.getFileType() == GroovyFileType.GROOVY_FILE_TYPE;
+    }
+
+    @Override
+    public void upgradeFramework(@Nonnull Module module) {
+    }
+
+    @Nullable
+    @Override
+    protected GeneralCommandLine getCreationCommandLine(Module module) {
+        GriffonCreateProjectDialog dialog = new GriffonCreateProjectDialog(module);
+        dialog.show();
+        if (!dialog.isOK()) {
+            return null;
+        }
+
+        return createCommandAndShowErrors(null, module, true, dialog.getCommand());
+    }
+
+    @Override
+    public boolean updatesWholeProject() {
+        return false;
+    }
+
+    @Override
+    public void updateProjectStructure(@Nonnull Module module) {
+        if (!MvcModuleStructureUtil.isEnabledStructureUpdate()) {
+            return;
+        }
+
+        VirtualFile root = findAppRoot(module);
+        if (root == null) {
+            return;
+        }
+
+        WriteAction.run(() -> {
+            MvcModuleStructureUtil.updateModuleStructure(module, createProjectStructure(module, false), root);
+
+            if (hasSupport(module)) {
+                MvcModuleStructureUtil.updateAuxiliaryPluginsModuleRoots(module, this);
+                MvcModuleStructureUtil.updateGlobalPluginModule(module.getProject(), this);
+            }
+        });
+
+        Project project = module.getProject();
+        ChangeListManager.getInstance(project).addFilesToIgnore(IgnoredBeanFactory.ignoreUnderDirectory(getUserHomeGriffon(), project));
+    }
+
+    @Override
+    public void ensureRunConfigurationExists(@Nonnull Module module) {
+        VirtualFile root = findAppRoot(module);
+        if (root != null) {
+            ensureRunConfigurationExists(module, GriffonRunConfigurationType.getInstance(), "Griffon:" + root.getName());
+        }
+    }
+
+    @Override
+    public String getInstalledPluginNameByPath(Project project, @Nonnull VirtualFile pluginPath) {
+        String nameFromPluginXml = super.getInstalledPluginNameByPath(project, pluginPath);
+        if (nameFromPluginXml != null) {
+            return nameFromPluginXml;
+        }
+
+        VirtualFile pluginJson = pluginPath.findChild("plugin.json");
+        if (pluginJson != null) {
+            String pluginAndVersion = pluginPath.getName(); // pluginName-version
+
+            IntList separatorIndexes = IntLists.newArrayList();
+            int start = -1;
+            while (true) {
+                start = pluginAndVersion.indexOf('-', start + 1);
+                if (start == -1) {
+                    break;
+                }
+                separatorIndexes.add(start);
+            }
+
+            if (separatorIndexes.size() == 1) {
+                return pluginAndVersion.substring(0, separatorIndexes.get(0));
+            }
+
+            if (separatorIndexes.size() > 0) {
+                String json;
+                try {
+                    json = VirtualFileUtil.loadText(pluginJson);
+                }
+                catch (IOException e) {
+                    return null;
+                }
+
+                for (int i = 0; i < separatorIndexes.size(); i++) {
+                    int idx = separatorIndexes.get(i);
+                    String name = pluginAndVersion.substring(0, idx);
+                    String version = pluginAndVersion.substring(idx + 1);
+
+                    if (hasValue(PLUGIN_NAME_JSON_PATTERN, json, name) && hasValue(PLUGIN_VERSION_JSON_PATTERN, json, version)) {
+                        return name;
+                    }
+                }
+            }
+        }
+
+        return null;
+    }
+
+    private static boolean hasValue(Pattern pattern, String text, String value) {
+        Matcher matcher = pattern.matcher(text);
+        while (matcher.find()) {
+            if (matcher.group(1).equals(value)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    @Override
+    public VirtualFile getSdkRoot(@Nullable Module module) {
+        if (module == null) {
+            return null;
+        }
+        VirtualFile[] classRoots = ModuleRootManager.getInstance(module).orderEntries().librariesOnly().getClassesRoots();
+        for (VirtualFile file : classRoots) {
+            if (GriffonLibraryPresentationProvider.isGriffonCoreJar(file)) {
+                VirtualFile localFile = ArchiveVfsUtil.getVirtualFileForJar(file);
+                if (localFile != null) {
+                    VirtualFile parent = localFile.getParent();
+                    if (parent != null) {
+                        return parent.getParent();
+                    }
+                }
+                return null;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public String getUserLibraryName() {
+        return GRIFFON_USER_LIBRARY;
+    }
+
+    @Override
+    public OwnJavaParameters createJavaParameters(@Nonnull Module module,
+                                                  boolean forCreation,
+                                                  boolean forTests,
+                                                  boolean classpathFromDependencies,
+                                                  @Nullable String jvmParams,
+                                                  @Nonnull MvcCommand command) throws ExecutionException {
+        OwnJavaParameters params = new OwnJavaParameters();
+
+        Sdk sdk = ModuleUtilCore.getSdk(module, JavaModuleExtension.class);
+        if (sdk == null) {
+            return params;
+        }
+
+        params.setJdk(sdk);
+        VirtualFile sdkRoot = getSdkRoot(module);
+        if (sdkRoot == null) {
+            return params;
+        }
+
+        Map<String, String> env = params.getEnv();
+        if (env == null) {
+            env = new HashMap<String, String>();
+            params.setEnv(env);
+        }
+        env.put(getSdkHomePropertyName(), FileUtil.toSystemDependentName(sdkRoot.getPath()));
+
+        VirtualFile lib = sdkRoot.findChild("lib");
+        if (lib != null) {
+            for (VirtualFile child : lib.getChildren()) {
+                String name = child.getName();
+                if (name.startsWith("groovy-all-") && name.endsWith(".jar")) {
+                    params.getClassPath().add(child);
+                }
+            }
+        }
+        VirtualFile dist = sdkRoot.findChild("dist");
+        if (dist != null) {
+            for (VirtualFile child : dist.getChildren()) {
+                String name = child.getName();
+                if (name.endsWith(".jar")) {
+                    if (name.startsWith("griffon-cli-") || name.startsWith("griffon-rt-") || name.startsWith("griffon-resources-")) {
+                        params.getClassPath().add(child);
+                    }
+                }
+            }
+        }
+
+
+        /////////////////////////////////////////////////////////////
+
+        params.setMainClass("org.codehaus.griffon.cli.support.GriffonStarter");
+
+        VirtualFile rootFile;
+
+        if (forCreation) {
+            VirtualFile[] roots = ModuleRootManager.getInstance(module).getContentRoots();
+            if (roots.length != 1) {
+                throw new ExecutionException("Failed to initialize griffon module: module " + module.getName() + " contains more than one root");
+            }
+
+            command.getArgs().add(0, roots[0].getName());
+
+            rootFile = roots[0].getParent();
+        }
+        else {
+            rootFile = findAppRoot(module);
+            if (rootFile == null) {
+                throw new ExecutionException("Failed to run griffon command: module " + module.getName() + " is not a Griffon module");
+            }
+        }
+
+        String workDir = VirtualFileUtil.virtualToIoFile(rootFile).getAbsolutePath();
+
+        if (jvmParams != null) {
+            params.getVMParametersList().addParametersString(jvmParams);
+        }
+
+        if (!params.getVMParametersList().getParametersString().contains(XMX_JVM_PARAMETER)) {
+            params.getVMParametersList().add("-Xmx256M");
+        }
+
+        String griffonHomePath = FileUtil.toSystemDependentName(sdkRoot.getPath());
+        params.getVMParametersList().add("-Dgriffon.home=" + griffonHomePath);
+        params.getVMParametersList().add("-Dbase.dir=" + workDir);
+
+        assert sdk != null;
+        params.getVMParametersList().add("-Dtools.jar=" + ((JavaSdkType) sdk.getSdkType()).getToolsPath(sdk));
+
+        String confpath = griffonHomePath + GROOVY_STARTER_CONF;
+        params.getVMParametersList().add("-Dgroovy.starter.conf=" + confpath);
+
+        params.getVMParametersList()
+            .add(
+                "-Dgroovy.sanitized.stacktraces=\"groovy., org.codehaus.groovy., java., javax., sun., gjdk.groovy., gant., org.codehaus.gant.\"");
+
+        params.getProgramParametersList().add("--main");
+        params.getProgramParametersList().add("org.codehaus.griffon.cli.GriffonScriptRunner");
+        params.getProgramParametersList().add("--conf");
+        params.getProgramParametersList().add(confpath);
+        if (!forCreation && classpathFromDependencies) {
+            String path = getApplicationClassPath(module).getPathsString();
+            if (StringUtil.isNotEmpty(path)) {
+                params.getProgramParametersList().add("--classpath");
+                params.getProgramParametersList().add(path);
+            }
+        }
+
+        params.setWorkingDirectory(workDir);
+
+        ParametersList paramList = new ParametersList();
+        command.addToParametersList(paramList);
+        params.getProgramParametersList().add(paramList.getParametersString());
+
+        params.setDefaultCharset(module.getProject());
+
+        return params;
+    }
+
+    @Override
+    public String getFrameworkName() {
+        return "Griffon";
+    }
+
+    @Override
+    public Image getIcon() {
+        return JetgroovyIcons.Griffon.Griffon;
+    }
+
+    @Override
+    public Image getToolWindowIcon() {
+        return JetgroovyIcons.Griffon.GriffonToolWindow;
+    }
+
+    @Override
+    public String getSdkHomePropertyName() {
+        return "GRIFFON_HOME";
+    }
+
+    @Override
+    protected String getCommonPluginSuffix() {
+        return GRIFFON_COMMON_PLUGINS;
+    }
+
+    @Override
+    public String getGlobalPluginsModuleName() {
+        return GLOBAL_PLUGINS_MODULE_NAME;
+    }
+
+    @Nullable
+    public File getDefaultSdkWorkDir(@Nonnull Module module) {
+        String version = GriffonLibraryPresentationProvider.getGriffonVersion(module);
+        if (version == null) {
+            return null;
+        }
+
+        return new File(getUserHomeGriffon(), version);
+    }
+
+    @Override
+    public boolean isSDKLibrary(Library library) {
+        return GriffonLibraryPresentationProvider.isGriffonSdk(library.getFiles(BinariesOrderRootType.ID));
+    }
+
+    @Override
+    public MvcProjectStructure createProjectStructure(@Nonnull Module module, boolean auxModule) {
+        return new GriffonProjectStructure(module, auxModule);
+    }
+
+    @Override
+    public LibraryKind getLibraryKind() {
+        return GriffonLibraryPresentationProvider.GRIFFON_KIND;
+    }
+
+    @Override
+    public String getSomeFrameworkClass() {
+        return "griffon.core.GriffonApplication";
+    }
+
+    public static String getUserHomeGriffon() {
+        return MvcPathMacros.getSdkWorkDirParent("griffon");
+    }
+
+    public static GriffonFramework getInstance() {
+        return EP_NAME.findExtension(GriffonFramework.class);
+    }
+
+    public VirtualFile getApplicationPropertiesFile(Module module) {
+        VirtualFile appRoot = findAppRoot(module);
+        return appRoot != null ? appRoot.findChild("application.properties") : null;
+    }
+
+    @Override
+    public String getApplicationName(Module module) {
+        VirtualFile appProperties = getApplicationPropertiesFile(module);
+        if (appProperties != null) {
+            PsiFile file = PsiManager.getInstance(module.getProject()).findFile(appProperties);
+            if (file instanceof PropertiesFile) {
+                IProperty property = ((PropertiesFile) file).findPropertyByKey("application.name");
+                return property != null ? property.getValue() : super.getApplicationName(module);
+            }
+        }
+        return super.getApplicationName(module);
+    }
+
+    private static class GriffonProjectStructure extends MvcProjectStructure {
+        public GriffonProjectStructure(Module module, boolean auxModule) {
+            super(module, auxModule, getUserHomeGriffon(), GriffonFramework.getInstance().getSdkWorkDir(module));
+        }
+
+        @Nonnull
+        public String getUserLibraryName() {
+            return GRIFFON_USER_LIBRARY;
+        }
+
+        public String[] getSourceFolders() {
+            List<String> sourceFolders = new ArrayList<String>();
+
+            for (VirtualFile file : ModuleRootManager.getInstance(myModule).getContentRoots()) {
+                handleSrc(file.findChild("src"), sourceFolders);
+                VirtualFile griffonApp = file.findChild("griffon-app");
+                handleGriffonApp(griffonApp, sourceFolders);
+                List<GriffonSourceInspector.GriffonSource> sources = GriffonSourceInspector.processModuleMetadata(myModule);
+                for (GriffonSourceInspector.GriffonSource source : sources) {
+                    sourceFolders.add(source.getPath());
+                }
+                if (griffonApp != null) {
+                    for (VirtualFile child : file.getChildren()) {
+                        if (child.getNameWithoutExtension().endsWith("GriffonAddon")) {
+                            sourceFolders.add("");
+                            break;
+                        }
+                    }
+                }
+            }
+            return sourceFolders.toArray(new String[sourceFolders.size()]);
+        }
+
+        private void handleGriffonApp(VirtualFile griffonApp, List<String> sourceFolders) {
+            if (griffonApp == null) {
+                return;
+            }
+            // Add standard artifacts, i.e, models, views, controllers, services, conf, lifecycle
+            for (String child : new String[]{
+                "models",
+                "views",
+                "controllers",
+                "services",
+                "conf",
+                "lifecycle"
+            }) {
+                if (griffonApp.findChild(child) != null) {
+                    sourceFolders.add("griffon-app/" + child);
+                }
+            }
+        }
+
+        private void handleSrc(VirtualFile src, List<String> sourceFolders) {
+            if (src == null) {
+                return;
+            }
+            for (String child : new String[]{
+                "main",
+                "cli"
+            }) {
+                if (src.findChild(child) != null) {
+                    sourceFolders.add("src/" + child);
+                }
+            }
+        }
+
+        private void handleTest(VirtualFile test, List<String> sourceFolders) {
+            if (test == null) {
+                return;
+            }
+            for (String child : new String[]{
+                "unit",
+                "integration",
+                "shared"
+            }) {
+                if (test.findChild(child) != null) {
+                    sourceFolders.add("test/" + child);
+                }
+            }
+        }
+
+        public String[] getTestFolders() {
+            List<String> sourceFolders = new ArrayList<String>();
+
+            for (VirtualFile file : ModuleRootManager.getInstance(myModule).getContentRoots()) {
+                handleTest(file.findChild("test"), sourceFolders);
+            }
+            return sourceFolders.toArray(new String[sourceFolders.size()]);
+        }
+
+        public String[] getInvalidSourceFolders() {
+            return new String[]{"src"};
+        }
+
+        @Override
+        public String[] getExcludedFolders() {
+            return new String[]{
+                "target/classes",
+                "target/test-classes"
+            };
+        }
+    }
 }

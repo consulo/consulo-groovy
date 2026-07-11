@@ -331,17 +331,11 @@ public class GrIntroduceParameterDialog extends DialogWrapper {
   }
 
   @Nullable
+  @RequiredUIAccess
   private PsiType inferClosureReturnType() {
     ExtractClosureHelperImpl mockHelper =
       new ExtractClosureHelperImpl(myInfo, "__test___n_", false, IntLists.newArrayList(), false, 0, false, false);
-    PsiType returnType;
-    AccessToken token = WriteAction.start();
-    try {
-      returnType = ExtractClosureProcessorBase.generateClosure(mockHelper).getReturnType();
-    }
-    finally {
-      token.finish();
-    }
+    PsiType returnType = WriteAction.compute(() -> ExtractClosureProcessorBase.generateClosure(mockHelper).getReturnType());
     return returnType;
   }
 

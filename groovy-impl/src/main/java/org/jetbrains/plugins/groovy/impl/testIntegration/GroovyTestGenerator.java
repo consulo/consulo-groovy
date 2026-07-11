@@ -27,7 +27,6 @@ import com.intellij.java.language.psi.PsiType;
 import com.intellij.java.language.psi.codeStyle.JavaCodeStyleManager;
 import com.intellij.java.language.testIntegration.TestFramework;
 import consulo.annotation.component.ExtensionImpl;
-import consulo.application.AccessToken;
 import consulo.application.ApplicationManager;
 import consulo.application.WriteAction;
 import consulo.codeEditor.Editor;
@@ -43,6 +42,8 @@ import consulo.language.psi.scope.GlobalSearchScope;
 import consulo.language.util.IncorrectOperationException;
 import consulo.project.Project;
 import consulo.ui.ex.awt.Messages;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.GroovyLanguage;
 import org.jetbrains.plugins.groovy.impl.actions.GroovyTemplates;
 import org.jetbrains.plugins.groovy.impl.annotator.intentions.CreateClassActionBase;
@@ -52,8 +53,6 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrExtendsCla
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
 import java.util.Collection;
 
 /**
@@ -62,123 +61,125 @@ import java.util.Collection;
 @ExtensionImpl
 public class GroovyTestGenerator implements TestGenerator {
 
-  @Nullable
-  @Override
-  public PsiElement generateTest(Project project, CreateTestDialog d) {
-    AccessToken accessToken = WriteAction.start();
-    try {
-      PsiClass test = PostprocessReformattingAspect.getInstance(project).postponeFormattingInside(() -> {
-          try {
-            IdeDocumentHistory.getInstance(project).includeCurrentPlaceAsChangePlace();
+    @Nullable
+    @Override
+    public PsiElement generateTest(Project project, CreateTestDialog d) {
+        return WriteAction.compute(() -> {
+            PsiClass test = PostprocessReformattingAspect.getInstance(project).postponeFormattingInside(() -> {
+                try {
+                    IdeDocumentHistory.getInstance(project).includeCurrentPlaceAsChangePlace();
 
-            GrTypeDefinition targetClass = CreateClassActionBase.createClassByType(
-              d.getTargetDirectory(),
-              d.getClassName(),
-              PsiManager.getInstance(project),
-              null,
-              GroovyTemplates.GROOVY_CLASS, true);
-            if (targetClass == null) return null;
+                    GrTypeDefinition targetClass = CreateClassActionBase.createClassByType(
+                        d.getTargetDirectory(),
+                        d.getClassName(),
+                        PsiManager.getInstance(project),
+                        null,
+                        GroovyTemplates.GROOVY_CLASS, true);
+                    if (targetClass == null) {
+                        return null;
+                    }
 
-            addSuperClass(targetClass, project, d.getSuperClassName());
+                    addSuperClass(targetClass, project, d.getSuperClassName());
 
-            Editor editor = CodeInsightUtil.positionCursor(project, targetClass.getContainingFile(), targetClass.getLBrace());
-            addTestMethods(editor,
-                           targetClass,
-                           d.getSelectedTestFrameworkDescriptor(),
-                           d.getSelectedMethods(),
-                           d.shouldGeneratedBefore(),
-                           d.shouldGeneratedAfter());
-            return targetClass;
-          }
-          catch (IncorrectOperationException e1) {
-            showErrorLater(project, d.getClassName());
-            return null;
-          }
+                    Editor editor = CodeInsightUtil.positionCursor(project, targetClass.getContainingFile(), targetClass.getLBrace());
+                    addTestMethods(editor,
+                        targetClass,
+                        d.getSelectedTestFrameworkDescriptor(),
+                        d.getSelectedMethods(),
+                        d.shouldGeneratedBefore(),
+                        d.shouldGeneratedAfter());
+                    return targetClass;
+                }
+                catch (IncorrectOperationException e1) {
+                    showErrorLater(project, d.getClassName());
+                    return null;
+                }
+            });
+            if (test == null) {
+                return null;
+            }
+            JavaCodeStyleManager.getInstance(project).shortenClassReferences(test);
+            CodeStyleManager.getInstance(project).reformat(test);
+            return test;
         });
-      if (test == null) return null;
-      JavaCodeStyleManager.getInstance(project).shortenClassReferences(test);
-      CodeStyleManager.getInstance(project).reformat(test);
-      return test;
-    }
-    finally {
-      accessToken.finish();
-    }
-  }
-
-  @Override
-  public String toString() {
-    return GroovyIntentionsBundle.message("intention.crete.test.groovy");
-  }
-
-  private static void addSuperClass(@Nonnull GrTypeDefinition targetClass, @Nonnull Project project, @Nullable String superClassName)
-    throws IncorrectOperationException {
-    if (superClassName == null) return;
-
-    GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(project);
-
-    PsiClass superClass = findClass(project, superClassName);
-    GrCodeReferenceElement superClassRef;
-    if (superClass != null) {
-      superClassRef = factory.createCodeReferenceElementFromClass(superClass);
-    }
-    else {
-      superClassRef = factory.createCodeReferenceElementFromText(superClassName);
-    }
-    GrExtendsClause extendsClause = targetClass.getExtendsClause();
-    if (extendsClause == null) {
-      extendsClause = (GrExtendsClause)targetClass.addAfter(factory.createExtendsClause(), targetClass.getNameIdentifierGroovy());
     }
 
-    extendsClause.add(superClassRef);
-  }
-
-  @Nullable
-  private static PsiClass findClass(Project project, String fqName) {
-    GlobalSearchScope scope = GlobalSearchScope.allScope(project);
-    return JavaPsiFacade.getInstance(project).findClass(fqName, scope);
-  }
-
-  private static void addTestMethods(Editor editor,
-                                     PsiClass targetClass,
-                                     TestFramework descriptor,
-                                     Collection<MemberInfo> methods,
-                                     boolean generateBefore,
-                                     boolean generateAfter) throws IncorrectOperationException {
-    if (generateBefore) {
-      generateMethod(TestIntegrationUtils.MethodKind.SET_UP, descriptor, targetClass, editor, null);
+    @Override
+    public String toString() {
+        return GroovyIntentionsBundle.message("intention.crete.test.groovy");
     }
-    if (generateAfter) {
-      generateMethod(TestIntegrationUtils.MethodKind.TEAR_DOWN, descriptor, targetClass, editor, null);
+
+    private static void addSuperClass(@Nonnull GrTypeDefinition targetClass, @Nonnull Project project, @Nullable String superClassName)
+        throws IncorrectOperationException {
+        if (superClassName == null) {
+            return;
+        }
+
+        GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(project);
+
+        PsiClass superClass = findClass(project, superClassName);
+        GrCodeReferenceElement superClassRef;
+        if (superClass != null) {
+            superClassRef = factory.createCodeReferenceElementFromClass(superClass);
+        }
+        else {
+            superClassRef = factory.createCodeReferenceElementFromText(superClassName);
+        }
+        GrExtendsClause extendsClause = targetClass.getExtendsClause();
+        if (extendsClause == null) {
+            extendsClause = (GrExtendsClause) targetClass.addAfter(factory.createExtendsClause(), targetClass.getNameIdentifierGroovy());
+        }
+
+        extendsClause.add(superClassRef);
     }
-    for (MemberInfo m : methods) {
-      generateMethod(TestIntegrationUtils.MethodKind.TEST, descriptor, targetClass, editor, m.getMember().getName());
+
+    @Nullable
+    private static PsiClass findClass(Project project, String fqName) {
+        GlobalSearchScope scope = GlobalSearchScope.allScope(project);
+        return JavaPsiFacade.getInstance(project).findClass(fqName, scope);
     }
-  }
 
-  private static void showErrorLater(final Project project, final String targetClassName) {
-    ApplicationManager.getApplication().invokeLater(new Runnable() {
-      public void run() {
-        Messages.showErrorDialog(project,
-                                 CodeInsightBundle.message("intention.error.cannot.create.class.message", targetClassName),
-                                 CodeInsightBundle.message("intention.error.cannot.create.class.title"));
-      }
-    });
-  }
+    private static void addTestMethods(Editor editor,
+                                       PsiClass targetClass,
+                                       TestFramework descriptor,
+                                       Collection<MemberInfo> methods,
+                                       boolean generateBefore,
+                                       boolean generateAfter) throws IncorrectOperationException {
+        if (generateBefore) {
+            generateMethod(TestIntegrationUtils.MethodKind.SET_UP, descriptor, targetClass, editor, null);
+        }
+        if (generateAfter) {
+            generateMethod(TestIntegrationUtils.MethodKind.TEAR_DOWN, descriptor, targetClass, editor, null);
+        }
+        for (MemberInfo m : methods) {
+            generateMethod(TestIntegrationUtils.MethodKind.TEST, descriptor, targetClass, editor, m.getMember().getName());
+        }
+    }
 
-  private static void generateMethod(TestIntegrationUtils.MethodKind methodKind,
-                                     TestFramework descriptor,
-                                     PsiClass targetClass,
-                                     Editor editor,
-                                     @Nullable String name) {
-    GroovyPsiElementFactory f = GroovyPsiElementFactory.getInstance(targetClass.getProject());
-    PsiMethod method = (PsiMethod)targetClass.add(f.createMethod("dummy", PsiType.VOID));
-    PsiDocumentManager.getInstance(targetClass.getProject()).doPostponedOperationsAndUnblockDocument(editor.getDocument());
-    TestIntegrationUtils.runTestMethodTemplate(methodKind, descriptor, editor, targetClass, method, name, true);
-  }
+    private static void showErrorLater(final Project project, final String targetClassName) {
+        ApplicationManager.getApplication().invokeLater(new Runnable() {
+            public void run() {
+                Messages.showErrorDialog(project,
+                    CodeInsightBundle.message("intention.error.cannot.create.class.message", targetClassName),
+                    CodeInsightBundle.message("intention.error.cannot.create.class.title"));
+            }
+        });
+    }
 
-  @Nonnull
-  @Override
-  public Language getLanguage() {
-    return GroovyLanguage.INSTANCE;
-  }
+    private static void generateMethod(TestIntegrationUtils.MethodKind methodKind,
+                                       TestFramework descriptor,
+                                       PsiClass targetClass,
+                                       Editor editor,
+                                       @Nullable String name) {
+        GroovyPsiElementFactory f = GroovyPsiElementFactory.getInstance(targetClass.getProject());
+        PsiMethod method = (PsiMethod) targetClass.add(f.createMethod("dummy", PsiType.VOID));
+        PsiDocumentManager.getInstance(targetClass.getProject()).doPostponedOperationsAndUnblockDocument(editor.getDocument());
+        TestIntegrationUtils.runTestMethodTemplate(methodKind, descriptor, editor, targetClass, method, name, true);
+    }
+
+    @Nonnull
+    @Override
+    public Language getLanguage() {
+        return GroovyLanguage.INSTANCE;
+    }
 }

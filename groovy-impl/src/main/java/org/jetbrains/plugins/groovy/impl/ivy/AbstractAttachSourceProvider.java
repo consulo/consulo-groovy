@@ -109,13 +109,7 @@ public abstract class AbstractAttachSourceProvider implements AttachSourcesProvi
       if (myLibrary != getLibraryFromOrderEntriesList(orderEntriesContainingFile)) return AsyncResult.rejected();
 
       AsyncResult<Void> result = AsyncResult.undefined();
-      AccessToken accessToken = WriteAction.start();
-      try {
-        addSourceFile(mySrcFile, myLibrary);
-      }
-      finally {
-        accessToken.finish();
-      }
+      WriteAction.run(() -> addSourceFile(mySrcFile, myLibrary));
 
       result.setDone();
       return result;
@@ -189,14 +183,8 @@ public abstract class AbstractAttachSourceProvider implements AttachSourcesProvi
           ApplicationManager.getApplication().invokeLater(new Runnable() {
             @Override
             public void run() {
-              AccessToken accessToken = WriteAction.start();
-              try {
-                storeFile(out.toByteArray());
-              }
-              finally {
-                accessToken.finish();
-                callback.setDone();
-              }
+              WriteAction.run(() -> storeFile(out.toByteArray()));
+              callback.setDone();
             }
           });
         }
