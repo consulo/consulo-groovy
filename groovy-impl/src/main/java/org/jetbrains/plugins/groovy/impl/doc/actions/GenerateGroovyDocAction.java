@@ -21,18 +21,16 @@ import consulo.language.editor.LangDataKeys;
 import consulo.module.Module;
 import consulo.module.content.ModuleRootManager;
 import consulo.project.Project;
-import consulo.ui.ex.action.AnAction;
-import consulo.ui.ex.action.AnActionEvent;
-import consulo.ui.ex.action.AnActionWithSyncUpdate;
-import consulo.ui.ex.action.Presentation;
+import consulo.ui.ex.action.*;
+import consulo.ui.ex.action.coroutine.ActionSafeReadLock;
+import consulo.util.concurrent.coroutine.Coroutine;
 import consulo.virtualFileSystem.VirtualFile;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.plugins.groovy.impl.doc.GenerateGroovyDocDialog;
 import org.jetbrains.plugins.groovy.impl.doc.GroovyDocConfiguration;
 import org.jetbrains.plugins.groovy.util.LibrariesUtil;
 
-public final class GenerateGroovyDocAction extends AnAction implements DumbAware, AnActionWithSyncUpdate {
-    @NonNls
+public final class GenerateGroovyDocAction extends AnAction implements DumbAware, AnActionWithAsyncUpdate {
     private static final String INDEX_HTML = "index.html";
 
     @Override
@@ -60,18 +58,20 @@ public final class GenerateGroovyDocAction extends AnAction implements DumbAware
         generateGroovydoc(configuration, project);
     }
 
-    public void update(AnActionEvent event) {
-        Presentation presentation = event.getPresentation();
-        Module module = event.getData(LangDataKeys.MODULE);
+    @Override
+    public Coroutine<?, ?> updateAsync(AnActionEvent event) {
+        return ActionSafeReadLock.run(event, presentation -> {
+            Module module = event.getData(Module.KEY);
 
-        if (module == null || !LibrariesUtil.hasGroovySdk(module)) {
-            presentation.setEnabled(false);
-            presentation.setVisible(false);
-        }
-        else {
-            presentation.setEnabled(true);
-            presentation.setVisible(true);
-        }
+            if (module == null || !LibrariesUtil.hasGroovySdk(module)) {
+                presentation.setEnabled(false);
+                presentation.setVisible(false);
+            }
+            else {
+                presentation.setEnabled(true);
+                presentation.setVisible(true);
+            }
+        }).toCoroutine();
     }
 
     private static void generateGroovydoc(GroovyDocConfiguration configuration, Project project) {
