@@ -13,19 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation;
 
 import com.intellij.java.language.psi.PsiAnnotationParameterList;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 
-import jakarta.annotation.Nonnull;
-
 /**
- * @author: Dmitry.Krasilschikov
- * @date: 04.04.2007
+ * @author Dmitry.Krasilschikov
+ * @since 2007-04-04
  */
 public interface GrAnnotationArgumentList extends GroovyPsiElement, PsiAnnotationParameterList {
-  @Nonnull
-  GrAnnotationNameValuePair[] getAttributes();
+    @Nonnull
+    @Override
+    GrAnnotationNameValuePair[] getAttributes();
 }

@@ -26,21 +26,22 @@ import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
  */
 @ExtensionImpl
 public class GrFullScriptNameIndex extends IntStubIndexExtension<GroovyFile> {
-  public static final StubIndexKey<Integer, GroovyFile> KEY = StubIndexKey.createIndexKey("gr.script.fqn");
+    public static final StubIndexKey<Integer, GroovyFile> KEY = StubIndexKey.createIndexKey("gr.script.fqn");
 
-  private static final GrFullScriptNameIndex ourInstance = new GrFullScriptNameIndex();
-  public static GrFullScriptNameIndex getInstance() {
-    return ourInstance;
-  }
+    private static final GrFullScriptNameIndex ourInstance = new GrFullScriptNameIndex();
 
-  @Override
-  public int getVersion() {
-    return super.getVersion() + 1;
-  }
+    public static GrFullScriptNameIndex getInstance() {
+        return ourInstance;
+    }
 
-  @Nonnull
-  public StubIndexKey<Integer, GroovyFile> getKey() {
-    return KEY;
-  }
+    @Override
+    public int getVersion() {
+        return super.getVersion() + 1;
+    }
 
+    @Nonnull
+    @Override
+    public StubIndexKey<Integer, GroovyFile> getKey() {
+        return KEY;
+    }
 }

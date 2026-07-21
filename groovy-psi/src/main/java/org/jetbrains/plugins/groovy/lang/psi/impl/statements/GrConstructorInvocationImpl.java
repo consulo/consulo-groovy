@@ -17,10 +17,13 @@ package org.jetbrains.plugins.groovy.lang.psi.impl.statements;
 
 import com.intellij.java.language.psi.*;
 import com.intellij.java.language.psi.util.TypeConversionUtil;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.language.ast.ASTNode;
 import consulo.language.ast.IElementType;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.resolve.ResolveState;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
@@ -34,12 +37,9 @@ import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 import org.jetbrains.plugins.groovy.lang.resolve.ResolveUtil;
 import org.jetbrains.plugins.groovy.lang.resolve.processors.MethodResolverProcessor;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
-
 /**
- * User: Dmitry.Krasilschikov
- * Date: 29.05.2007
+ * @author Dmitry.Krasilschikov
+ * @since 2007-05-29
  */
 public class GrConstructorInvocationImpl extends GrCallImpl implements GrConstructorInvocation {
   public GrConstructorInvocationImpl(@Nonnull ASTNode node) {
@@ -51,21 +51,25 @@ public class GrConstructorInvocationImpl extends GrCallImpl implements GrConstru
     visitor.visitConstructorInvocation(this);
   }
 
+  @Override
   public String toString() {
     return "Constructor invocation";
   }
 
   @Override
+  @RequiredReadAction
   public boolean isSuperCall() {
     return getKeywordType() == GroovyTokenTypes.kSUPER;
   }
 
   @Override
+  @RequiredReadAction
   public boolean isThisCall() {
     return getKeywordType() == GroovyTokenTypes.kTHIS;
   }
 
   @Nullable
+  @RequiredReadAction
   private IElementType getKeywordType() {
     GrReferenceExpression keyword = getInvokedExpression();
     PsiElement refElement = keyword.getReferenceNameElement();
@@ -77,12 +81,14 @@ public class GrConstructorInvocationImpl extends GrCallImpl implements GrConstru
 
   @Override
   @Nonnull
+  @RequiredReadAction
   public GrReferenceExpression getInvokedExpression() {
     return findNotNullChildByClass(GrReferenceExpression.class);
   }
 
   @Override
   @Nonnull
+  @RequiredReadAction
   public GroovyResolveResult[] multiResolveGroovy(boolean incompleteCode) {
     PsiClass clazz = getDelegatedClass();
     if (clazz != null) {
@@ -118,18 +124,21 @@ public class GrConstructorInvocationImpl extends GrCallImpl implements GrConstru
   }
 
   @Override
+  @RequiredReadAction
   public PsiMethod resolveMethod() {
     return PsiImplUtil.extractUniqueElement(multiResolveGroovy(false));
   }
 
   @Nonnull
   @Override
+  @RequiredReadAction
   public GroovyResolveResult advancedResolve() {
     return PsiImplUtil.extractUniqueResult(multiResolveGroovy(false));
   }
 
   @Override
   @Nullable
+  @RequiredReadAction
   public PsiClass getDelegatedClass() {
     PsiClass typeDefinition = PsiUtil.getContextClass(this);
     if (typeDefinition != null) {
@@ -140,6 +149,7 @@ public class GrConstructorInvocationImpl extends GrCallImpl implements GrConstru
 
   @Nonnull
   @Override
+  @RequiredReadAction
   public GroovyResolveResult[] getCallVariants(@Nullable GrExpression upToArgument) {
     return multiResolveGroovy(true);
   }

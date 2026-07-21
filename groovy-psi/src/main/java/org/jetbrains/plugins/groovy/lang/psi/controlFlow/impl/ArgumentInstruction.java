@@ -16,10 +16,12 @@
 package org.jetbrains.plugins.groovy.lang.psi.controlFlow.impl;
 
 import com.intellij.java.language.psi.PsiType;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.language.psi.PsiElement;
 import consulo.logging.Logger;
 import consulo.util.collection.ArrayUtil;
 import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.codeInspection.utils.ControlFlowUtils;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
 import org.jetbrains.plugins.groovy.lang.psi.api.signatures.GrClosureSignature;
@@ -34,8 +36,6 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.PsiImplUtil;
 import org.jetbrains.plugins.groovy.lang.psi.impl.signatures.GrClosureSignatureUtil;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil;
 
-import jakarta.annotation.Nullable;
-
 import static org.jetbrains.plugins.groovy.lang.psi.impl.signatures.GrClosureSignatureUtil.createSignature;
 
 /**
@@ -48,7 +48,9 @@ public class ArgumentInstruction extends InstructionImpl implements MixinTypeIns
     super(ref);
   }
 
+  @Override
   @Nullable
+  @RequiredReadAction
   public PsiType inferMixinType() {
     PsiElement element = getElement();
     assert element != null;
@@ -76,6 +78,7 @@ public class ArgumentInstruction extends InstructionImpl implements MixinTypeIns
     return result;
   }
 
+  @RequiredReadAction
   private static boolean haveNullParameters(GrCall call) {
     for (GrExpression argument : call.getExpressionArguments()) {
       if (argument.getType() == null) return true;
@@ -83,6 +86,7 @@ public class ArgumentInstruction extends InstructionImpl implements MixinTypeIns
     return false;
   }
 
+  @RequiredReadAction
   private static GrCall findCall(PsiElement element) {
     PsiElement parent = element.getParent().getParent();
     if (!(parent instanceof GrCall)) {
@@ -97,14 +101,15 @@ public class ArgumentInstruction extends InstructionImpl implements MixinTypeIns
   @Override
   public ReadWriteVariableInstruction getInstructionToMixin(Instruction[] flow) {
     Instruction instruction = ControlFlowUtils.findInstruction(getElement(), flow);
-    if (instruction instanceof ReadWriteVariableInstruction) {
-      return (ReadWriteVariableInstruction)instruction;
+    if (instruction instanceof ReadWriteVariableInstruction readWriteVariableInstruction) {
+      return readWriteVariableInstruction;
     }
     else {
       return null;
     }
   }
 
+  @Override
   public String getVariableName() {
     //noinspection ConstantConditions
     return ((GrReferenceExpression)getElement()).getReferenceName();
@@ -120,4 +125,3 @@ public class ArgumentInstruction extends InstructionImpl implements MixinTypeIns
     return "ARGUMENT " + super.getElementPresentation();
   }
 }
-

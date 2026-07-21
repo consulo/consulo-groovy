@@ -16,14 +16,15 @@
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.arguments;
 
 import com.intellij.java.language.psi.PsiType;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.language.ast.ASTNode;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrSpreadArgument;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyPsiElementImpl;
 import org.jetbrains.plugins.groovy.lang.psi.impl.PsiImplUtil;
-
-import jakarta.annotation.Nonnull;
 
 /**
  * @author Max Medvedev
@@ -35,21 +36,25 @@ public class GrSpreadArgumentImpl extends GroovyPsiElementImpl implements GrSpre
 
   @Nonnull
   @Override
+  @RequiredReadAction
   public GrExpression getArgument() {
     return findNotNullChildByClass(GrExpression.class);
   }
 
   @Override
+  @RequiredReadAction
   public PsiType getType() {
     return getArgument().getType();
   }
 
   @Override
+  @RequiredReadAction
   public PsiType getNominalType() {
     return getType();
   }
 
   @Override
+  @RequiredWriteAction
   public GrExpression replaceWithExpression(GrExpression expression, boolean removeUnnecessaryParentheses) {
     return PsiImplUtil.replaceExpression(this, expression, removeUnnecessaryParentheses);
   }

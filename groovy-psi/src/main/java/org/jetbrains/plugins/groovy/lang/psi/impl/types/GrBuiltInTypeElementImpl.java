@@ -13,44 +13,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.lang.psi.impl.types;
 
 import com.intellij.java.language.psi.PsiType;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.language.ast.ASTNode;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrBuiltInTypeElement;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyPsiElementImpl;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil;
 
-import jakarta.annotation.Nonnull;
-
 /**
  * @author ilyas
  */
-public class GrBuiltInTypeElementImpl extends GroovyPsiElementImpl implements GrBuiltInTypeElement
-{
+public class GrBuiltInTypeElementImpl extends GroovyPsiElementImpl implements GrBuiltInTypeElement {
+    public GrBuiltInTypeElementImpl(@Nonnull ASTNode node) {
+        super(node);
+    }
 
-	public GrBuiltInTypeElementImpl(@Nonnull ASTNode node)
-	{
-		super(node);
-	}
+    @Override
+    public void accept(GroovyElementVisitor visitor) {
+        visitor.visitBuiltinTypeElement(this);
+    }
 
-	@Override
-	public void accept(GroovyElementVisitor visitor)
-	{
-		visitor.visitBuiltinTypeElement(this);
-	}
+    @Override
+    public String toString() {
+        return "Built in type";
+    }
 
-	public String toString()
-	{
-		return "Built in type";
-	}
-
-	@Override
-	@Nonnull
-	public PsiType getType()
-	{
-		return TypesUtil.getPrimitiveTypeByText(getText());
-	}
+    @Override
+    @Nonnull
+    @RequiredReadAction
+    public PsiType getType() {
+        return TypesUtil.getPrimitiveTypeByText(getText());
+    }
 }

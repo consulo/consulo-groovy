@@ -15,6 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.impl.intentions.conversions;
 
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.codeEditor.Editor;
 import consulo.groovy.impl.localize.GroovyIntentionLocalize;
 import consulo.language.psi.PsiElement;
@@ -38,6 +39,7 @@ public class RemoveParenthesesFromMethodCallIntention extends Intention {
     }
 
     @Nonnull
+    @Override
     protected PsiElementPredicate getElementPredicate() {
         return new RemoveParenthesesFromMethodPredicate();
     }
@@ -47,6 +49,8 @@ public class RemoveParenthesesFromMethodCallIntention extends Intention {
         return super.isStopElement(element) || element instanceof GrStatementOwner;
     }
 
+    @Override
+    @RequiredWriteAction
     protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
         GrMethodCallExpression expression = (GrMethodCallExpression) element;
         StringBuilder newStatementText = new StringBuilder();

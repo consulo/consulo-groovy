@@ -15,6 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.impl.intentions.closure;
 
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.codeEditor.Editor;
 import consulo.groovy.impl.localize.GroovyIntentionLocalize;
 import consulo.language.psi.PsiElement;
@@ -42,10 +43,13 @@ public class ForToEachIntention extends Intention {
     }
 
     @Nonnull
+    @Override
     public PsiElementPredicate getElementPredicate() {
         return new ForToEachPredicate();
     }
 
+    @Override
+    @RequiredWriteAction
     public void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
         GrForStatement parentStatement = (GrForStatement) element;
         GrForInClause clause = (GrForInClause) parentStatement.getClause();
@@ -58,7 +62,6 @@ public class ForToEachIntention extends Intention {
         }
         else {
             bodyText = body.getText();
-
         }
 
         GrExpression collection = clause.getIteratedExpression();

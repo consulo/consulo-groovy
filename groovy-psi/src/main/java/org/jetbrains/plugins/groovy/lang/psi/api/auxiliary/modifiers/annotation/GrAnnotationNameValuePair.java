@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation;
 
 import com.intellij.java.language.psi.PsiNameValuePair;
@@ -22,15 +21,16 @@ import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 
 /**
- * @author: Dmitry.Krasilschikov
- * @date: 04.04.2007
+ * @author Dmitry.Krasilschikov
+ * @since 2007-04-04
  */
 public interface GrAnnotationNameValuePair extends GroovyPsiElement, PsiNameValuePair {
-  GrAnnotationNameValuePair[] EMPTY_ARRAY = new GrAnnotationNameValuePair[0];
+    GrAnnotationNameValuePair[] EMPTY_ARRAY = new GrAnnotationNameValuePair[0];
 
-  @Nullable
-  PsiElement getNameIdentifierGroovy();
+    @Nullable
+    PsiElement getNameIdentifierGroovy();
 
-  @Nullable
-  GrAnnotationMemberValue getValue();
+    @Nullable
+    @Override
+    GrAnnotationMemberValue getValue();
 }

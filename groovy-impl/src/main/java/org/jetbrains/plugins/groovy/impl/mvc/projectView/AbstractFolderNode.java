@@ -1,5 +1,6 @@
 package org.jetbrains.plugins.groovy.impl.mvc.projectView;
 
+import consulo.annotation.access.RequiredReadAction;
 import consulo.language.icon.IconDescriptorUpdaters;
 import consulo.language.psi.PsiDirectory;
 import consulo.language.psi.PsiElement;
@@ -56,13 +57,15 @@ public class AbstractFolderNode extends AbstractMvcPsiNodeDescriptor {
   }
 
   @Nullable
+  @Override
+  @RequiredReadAction
   protected Collection<AbstractTreeNode> getChildrenImpl() {
     PsiDirectory directory = getPsiDirectory();
     if (!directory.isValid()) {
       return Collections.emptyList();
     }
 
-    List<AbstractTreeNode> children = new ArrayList<AbstractTreeNode>();
+    List<AbstractTreeNode> children = new ArrayList<>();
 
     // scan folder's children
     for (PsiDirectory subDir : directory.getSubdirectories()) {
@@ -76,6 +79,7 @@ public class AbstractFolderNode extends AbstractMvcPsiNodeDescriptor {
     return children;
   }
 
+  @RequiredReadAction
   private AbstractFolderNode createFolderNode(PsiDirectory directory) {
     PsiDirectory realDirectory = directory;
 
@@ -115,6 +119,7 @@ public class AbstractFolderNode extends AbstractMvcPsiNodeDescriptor {
   }
 
   @Override
+  @RequiredReadAction
   protected void updateImpl(PresentationData data) {
     PsiDirectory psiDirectory = getPsiDirectory();
 
@@ -123,6 +128,7 @@ public class AbstractFolderNode extends AbstractMvcPsiNodeDescriptor {
   }
 
   @Override
+  @RequiredReadAction
   protected boolean containsImpl(@Nonnull VirtualFile file) {
     PsiElement psiElement = extractPsiFromValue();
     if (psiElement == null || !psiElement.isValid()) {

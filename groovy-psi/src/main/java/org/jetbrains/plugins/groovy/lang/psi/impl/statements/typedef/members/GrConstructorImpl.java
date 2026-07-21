@@ -13,20 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.typedef.members;
 
 import consulo.application.util.CachedValueProvider;
 import consulo.language.ast.ASTNode;
 import consulo.language.psi.PsiModificationTracker;
 import consulo.language.psi.util.LanguageCachedValueUtil;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMethod;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrReflectedMethod;
 import org.jetbrains.plugins.groovy.lang.psi.impl.synthetic.GrReflectedMethodImpl;
 import org.jetbrains.plugins.groovy.lang.psi.stubs.GrMethodStub;
-
-import jakarta.annotation.Nonnull;
 
 /**
  * @author Dmitry.Krasilschikov
@@ -40,6 +38,7 @@ public class GrConstructorImpl extends GrMethodBaseImpl implements GrMethod {
     super(stub, GroovyElementTypes.CONSTRUCTOR_DEFINITION);
   }
 
+  @Override
   public String toString() {
     return "Constructor";
   }

@@ -26,10 +26,11 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMe
  */
 @ExtensionImpl
 public class GrMethodNameIndex extends StringStubIndexExtension<GrMethod> {
-  public static final StubIndexKey<String, GrMethod> KEY = StubIndexKey.createIndexKey("gr.method.name");
+    public static final StubIndexKey<String, GrMethod> KEY = StubIndexKey.createIndexKey("gr.method.name");
 
-  @Nonnull
-  public StubIndexKey<String, GrMethod> getKey() {
-    return KEY;
-  }
+    @Nonnull
+    @Override
+    public StubIndexKey<String, GrMethod> getKey() {
+        return KEY;
+    }
 }

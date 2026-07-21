@@ -15,16 +15,18 @@
  */
 package org.jetbrains.plugins.groovy.impl.intentions.comments;
 
+import com.intellij.java.language.psi.javadoc.PsiDocComment;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.language.ast.IElementType;
 import consulo.language.psi.PsiComment;
 import consulo.language.psi.PsiElement;
-import com.intellij.java.language.psi.javadoc.PsiDocComment;
 import consulo.language.psi.util.PsiTreeUtil;
 import org.jetbrains.plugins.groovy.impl.intentions.base.PsiElementPredicate;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 
 class CStyleCommentPredicate implements PsiElementPredicate {
-
+  @Override
+  @RequiredReadAction
   public boolean satisfiedBy(PsiElement element) {
     if (!(element instanceof PsiComment)) {
       return false;
@@ -50,6 +52,7 @@ class CStyleCommentPredicate implements PsiElementPredicate {
         whitespaceText.indexOf((int) '\r') >= 0;
   }
 
+  @RequiredReadAction
   private static boolean isWhitespace(PsiElement element) {
     return element.getText().replace("\n", "").trim().length() == 0;
   }

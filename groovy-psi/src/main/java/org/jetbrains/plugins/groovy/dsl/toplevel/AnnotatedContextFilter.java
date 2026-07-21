@@ -7,24 +7,23 @@ import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiFile;
 import consulo.language.util.ProcessingContext;
 import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.dsl.GroovyClassDescriptor;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariableDeclaration;
 import org.jetbrains.plugins.groovy.lang.psi.api.toplevel.packaging.GrPackageDefinition;
 
-import jakarta.annotation.Nullable;
-
 /**
  * @author peter
  */
 public class AnnotatedContextFilter implements ContextFilter {
-
   private final String myAnnoQName;
 
   public AnnotatedContextFilter(String annoQName) {
     myAnnoQName = annoQName;
   }
 
+  @Override
   public boolean isApplicable(GroovyClassDescriptor descriptor, ProcessingContext ctx) {
     return findContextAnnotation(descriptor.getPlace(), myAnnoQName) != null;
   }

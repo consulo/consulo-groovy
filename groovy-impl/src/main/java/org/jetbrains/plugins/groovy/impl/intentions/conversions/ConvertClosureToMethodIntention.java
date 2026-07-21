@@ -65,8 +65,7 @@ import java.util.Set;
  * @author Maxim.Medvedev
  */
 public class ConvertClosureToMethodIntention extends Intention {
-    private static final Logger LOG =
-        Logger.getInstance("#org.jetbrains.plugins.groovy.intentions.conversions.ConvertClosureToMethodIntention");
+    private static final Logger LOG = Logger.getInstance(ConvertClosureToMethodIntention.class);
 
     @Nonnull
     @Override

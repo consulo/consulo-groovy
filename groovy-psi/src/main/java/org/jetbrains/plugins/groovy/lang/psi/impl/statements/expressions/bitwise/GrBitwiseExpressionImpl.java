@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.bitwise;
 
 import consulo.language.ast.ASTNode;
@@ -24,11 +23,12 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.GrBinar
  * @author ilyas
  */
 public class GrBitwiseExpressionImpl extends GrBinaryExpressionImpl {
-  public GrBitwiseExpressionImpl(@Nonnull ASTNode node) {
-    super(node);
-  }
+    public GrBitwiseExpressionImpl(@Nonnull ASTNode node) {
+        super(node);
+    }
 
-  public String toString() {
-    return "Bitwise expression";
-  }
+    @Override
+    public String toString() {
+        return "Bitwise expression";
+    }
 }

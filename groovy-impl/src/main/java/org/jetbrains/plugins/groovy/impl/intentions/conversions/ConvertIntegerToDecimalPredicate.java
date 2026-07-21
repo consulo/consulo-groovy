@@ -15,15 +15,15 @@
  */
 package org.jetbrains.plugins.groovy.impl.intentions.conversions;
 
-import consulo.language.psi.PsiElement;
 import com.intellij.java.language.psi.PsiType;
-import org.jetbrains.annotations.NonNls;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.language.psi.PsiElement;
 import org.jetbrains.plugins.groovy.impl.intentions.base.PsiElementPredicate;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.literals.GrLiteral;
 
-
 class ConvertIntegerToDecimalPredicate implements PsiElementPredicate {
-
+  @Override
+  @RequiredReadAction
   public boolean satisfiedBy(PsiElement element) {
     if (!(element instanceof GrLiteral)) {
       return false;
@@ -37,7 +37,7 @@ class ConvertIntegerToDecimalPredicate implements PsiElementPredicate {
         !type.equalsToText("java.lang.Integer") && !type.equalsToText("java.lang.Long")) {
       return false;
     }
-    @NonNls String text = expression.getText().replaceAll("_", "");
+    String text = expression.getText().replaceAll("_", "");
     if (text == null || text.length() < 2) {
       return false;
     }

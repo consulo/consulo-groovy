@@ -13,11 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.dsl.holders;
 
-import consulo.language.psi.resolve.ResolveState;
 import consulo.language.psi.resolve.PsiScopeProcessor;
+import consulo.language.psi.resolve.ResolveState;
 import org.jetbrains.plugins.groovy.dsl.GroovyClassDescriptor;
 
 import java.util.ArrayList;
@@ -27,9 +26,9 @@ import java.util.List;
  * @author ilyas
  */
 public class CompoundMembersHolder implements CustomMembersHolder {
+  private final List<CustomMembersHolder> myHolders = new ArrayList<>();
 
-  private final List<CustomMembersHolder> myHolders = new ArrayList<CustomMembersHolder>();
-
+  @Override
   public boolean processMembers(GroovyClassDescriptor descriptor, PsiScopeProcessor processor, ResolveState state) {
     for (CustomMembersHolder holder : myHolders) {
       if (!holder.processMembers(descriptor, processor, state)) return false;

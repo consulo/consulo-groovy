@@ -15,6 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements;
 
+import consulo.annotation.access.RequiredReadAction;
 import consulo.language.ast.ASTNode;
 import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
@@ -26,7 +27,6 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyPsiElementImpl;
  * @author ilyas
  */
 public class GrBlockStatementImpl extends GroovyPsiElementImpl implements GrBlockStatement {
-
   public GrBlockStatementImpl(@Nonnull ASTNode node) {
     super(node);
   }
@@ -36,12 +36,14 @@ public class GrBlockStatementImpl extends GroovyPsiElementImpl implements GrBloc
     visitor.visitBlockStatement(this);
   }
 
+  @Override
   public String toString() {
     return "Block statement";
   }
 
   @Override
   @Nonnull
+  @RequiredReadAction
   public GrOpenBlock getBlock() {
     return findNotNullChildByClass(GrOpenBlock.class);
   }

@@ -13,13 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.clauses;
 
-import jakarta.annotation.Nonnull;
-
+import consulo.annotation.access.RequiredReadAction;
 import consulo.language.ast.ASTNode;
 import consulo.language.psi.PsiElement;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.clauses.GrCaseLabel;
@@ -30,31 +29,33 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyPsiElementImpl;
  * @author ilyas
  */
 public class GrCaseLabelImpl extends GroovyPsiElementImpl implements GrCaseLabel {
+    public GrCaseLabelImpl(@Nonnull ASTNode node) {
+        super(node);
+    }
 
-  public GrCaseLabelImpl(@Nonnull ASTNode node) {
-    super(node);
-  }
+    @Override
+    public void accept(GroovyElementVisitor visitor) {
+        visitor.visitCaseLabel(this);
+    }
 
-  @Override
-  public void accept(GroovyElementVisitor visitor) {
-    visitor.visitCaseLabel(this);
-  }
+    @Override
+    public String toString() {
+        return "Case label";
+    }
 
-  public String toString() {
-    return "Case label";
-  }
+    @Override
+    @RequiredReadAction
+    public GrExpression getValue() {
+        return findExpressionChild(this);
+    }
 
-  @Override
-  public GrExpression getValue() {
-    return findExpressionChild(this);
-  }
-
-  @Override
-  public boolean isDefault() {
-    PsiElement firstChild = getFirstChild();
-    assert firstChild != null;
-    ASTNode node = firstChild.getNode();
-    assert node != null;
-    return node.getElementType() == GroovyTokenTypes.kDEFAULT;
-  }
+    @Override
+    @RequiredReadAction
+    public boolean isDefault() {
+        PsiElement firstChild = getFirstChild();
+        assert firstChild != null;
+        ASTNode node = firstChild.getNode();
+        assert node != null;
+        return node.getElementType() == GroovyTokenTypes.kDEFAULT;
+    }
 }

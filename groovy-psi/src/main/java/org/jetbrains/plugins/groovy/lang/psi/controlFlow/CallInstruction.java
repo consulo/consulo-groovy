@@ -30,19 +30,23 @@ public class CallInstruction extends InstructionImpl {
     myCallee = callee;
   }
 
+  @Override
   public String toString() {
     return super.toString() + " CALL " + myCallee.num();
   }
 
+  @Override
   public Iterable<? extends Instruction> successors(CallEnvironment environment) {
     environment.callStack(myCallee).push(this);
     return Collections.singletonList(myCallee);
   }
 
+  @Override
   public Iterable<? extends Instruction> allSuccessors() {
     return Collections.singletonList(myCallee);
   }
 
+  @Override
   protected String getElementPresentation() {
     return "";
   }

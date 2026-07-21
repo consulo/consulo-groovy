@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.types;
 
 import com.intellij.java.language.psi.*;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.language.ast.ASTNode;
 import consulo.language.util.IncorrectOperationException;
 import consulo.logging.Logger;
@@ -46,17 +46,20 @@ public class GrBuiltinTypeClassExpressionImpl extends GrExpressionImpl implement
     visitor.visitBuiltinTypeClassExpression(this);
   }
 
+  @Override
   public String toString() {
     return "builtin type class expression";
   }
 
   @Override
+  @RequiredReadAction
   public PsiType getType() {
     return TypeInferenceHelper.getCurrentContext().getExpressionType(this, TYPES_CALCULATOR);
   }
 
   @Nonnull
   @Override
+  @RequiredReadAction
   public PsiPrimitiveType getPrimitiveType() {
     return TypesUtil.getPrimitiveTypeByText(getText());
   }
@@ -64,6 +67,7 @@ public class GrBuiltinTypeClassExpressionImpl extends GrExpressionImpl implement
   private static class MyTypesCalculator implements Function<GrBuiltinTypeClassExpressionImpl, PsiType>
   {
     @Override
+    @RequiredReadAction
     public PsiType apply(GrBuiltinTypeClassExpressionImpl expression) {
       JavaPsiFacade facade = JavaPsiFacade.getInstance(expression.getProject());
       PsiClass clazz = facade.findClass(CommonClassNames.JAVA_LANG_CLASS, expression.getResolveScope());

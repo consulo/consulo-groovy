@@ -18,19 +18,19 @@ package org.jetbrains.plugins.groovy.lang.psi.stubs.index;
 import consulo.annotation.component.ExtensionImpl;
 import consulo.language.psi.stub.StringStubIndexExtension;
 import consulo.language.psi.stub.StubIndexKey;
-import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
-
 import jakarta.annotation.Nonnull;
+import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 
 /**
  * @author ilyas
  */
 @ExtensionImpl
 public class GrScriptClassNameIndex extends StringStubIndexExtension<GroovyFile> {
-  public static final StubIndexKey<String, GroovyFile> KEY = StubIndexKey.createIndexKey("gr.script.class");
+    public static final StubIndexKey<String, GroovyFile> KEY = StubIndexKey.createIndexKey("gr.script.class");
 
-  @Nonnull
-  public StubIndexKey<String, GroovyFile> getKey() {
-    return KEY;
-  }
+    @Nonnull
+    @Override
+    public StubIndexKey<String, GroovyFile> getKey() {
+        return KEY;
+    }
 }
