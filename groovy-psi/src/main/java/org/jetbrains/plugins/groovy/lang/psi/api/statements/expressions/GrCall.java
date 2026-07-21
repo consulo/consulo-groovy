@@ -16,6 +16,7 @@
 package org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions;
 
 import com.intellij.java.language.psi.PsiMethod;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.language.util.IncorrectOperationException;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
@@ -33,12 +34,15 @@ public interface GrCall extends GroovyPsiElement {
   GrArgumentList getArgumentList();
 
   @Nonnull
+  @RequiredReadAction
   GrNamedArgument[] getNamedArguments();
 
   @Nonnull
+  @RequiredReadAction
   GrExpression[] getExpressionArguments();
 
   @Nonnull
+  @RequiredReadAction
   GrClosableBlock[] getClosureArguments();
 
   @Nullable

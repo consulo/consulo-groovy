@@ -96,11 +96,13 @@ public class GrReferenceExpressionImpl extends GrReferenceElementImpl<GrExpressi
             || getParent() instanceof GrReferenceExpressionImpl refExpr && refExpr.findClassOrPackageAtFirst();
     }
 
+    @RequiredReadAction
     private boolean isMethodCallRef() {
         PsiElement parent = getParent();
         return parent instanceof GrMethodCall || parent instanceof GrReferenceExpressionImpl refExpr && refExpr.isMethodCallRef();
     }
 
+    @RequiredReadAction
     private boolean isDefinitelyKeyOfMap() {
         GrExpression qualifier = ResolveUtil.getSelfOrWithQualifier(this);
         if (qualifier == null) {
@@ -120,15 +122,15 @@ public class GrReferenceExpressionImpl extends GrReferenceElementImpl<GrExpressi
             return false;
         }
 
-        String qname = TypesUtil.getQualifiedName(type);
-        if (qname != null) {
-            if (qname.startsWith("java.")) {
+        String qName = TypesUtil.getQualifiedName(type);
+        if (qName != null) {
+            if (qName.startsWith("java.")) {
                 return true; //so we have jdk map here
             }
-            if (GroovyCommonClassNames.GROOVY_UTIL_CONFIG_OBJECT.equals(qname)) {
+            if (GroovyCommonClassNames.GROOVY_UTIL_CONFIG_OBJECT.equals(qName)) {
                 return false;
             }
-            if (qname.startsWith("groovy.")) {
+            if (qName.startsWith("groovy.")) {
                 return true; //we have gdk map here
             }
         }
@@ -311,6 +313,7 @@ public class GrReferenceExpressionImpl extends GrReferenceElementImpl<GrExpressi
         return resolveMethodOrProperty(true, upToArgument, true);
     }
 
+    @RequiredReadAction
     private void processMethods(@Nonnull MethodResolverProcessor methodResolver) {
         new GrReferenceResolveRunner(this).resolveImpl(methodResolver);
         if (methodResolver.hasApplicableCandidates()) {
@@ -490,6 +493,7 @@ public class GrReferenceExpressionImpl extends GrReferenceElementImpl<GrExpressi
         return collapsed.toArray(new GroovyResolveResult[collapsed.size()]);
     }
 
+    @RequiredReadAction
     private static void assertAllAreValid(@Nonnull GroovyResolveResult[] candidates) {
         for (GroovyResolveResult candidate : candidates) {
             PsiElement element = candidate.getElement();
@@ -498,6 +502,7 @@ public class GrReferenceExpressionImpl extends GrReferenceElementImpl<GrExpressi
     }
 
     @Nonnull
+    @RequiredReadAction
     private MethodResolverProcessor createMethodProcessor(
         boolean allVariants,
         @Nullable String name,
@@ -519,8 +524,9 @@ public class GrReferenceExpressionImpl extends GrReferenceElementImpl<GrExpressi
         visitor.visitReferenceExpression(this);
     }
 
-    @Override
     @Nullable
+    @Override
+    @RequiredReadAction
     public PsiElement getReferenceNameElement() {
         ASTNode lastChild = getNode().getLastChildNode();
         if (lastChild == null) {
@@ -539,14 +545,15 @@ public class GrReferenceExpressionImpl extends GrReferenceElementImpl<GrExpressi
         return this;
     }
 
-    @Override
     @Nullable
+    @Override
+    @RequiredReadAction
     public GrExpression getQualifier() {
         return getQualifierExpression();
     }
 
-    @Override
     @Nullable
+    @Override
     @RequiredReadAction
     public String getReferenceName() {
         PsiElement nameElement = getReferenceNameElement();
@@ -579,6 +586,7 @@ public class GrReferenceExpressionImpl extends GrReferenceElementImpl<GrExpressi
     }
 
     @Override
+    @RequiredWriteAction
     protected GrReferenceExpression bindWithQualifiedRef(@Nonnull String qName) {
         GrReferenceExpression qualifiedRef = GroovyPsiElementFactory.getInstance(getProject()).createReferenceExpressionFromText(qName);
         GrTypeArgumentList list = getTypeArgumentList();
@@ -597,6 +605,7 @@ public class GrReferenceExpressionImpl extends GrReferenceElementImpl<GrExpressi
     }
 
     @Override
+    @RequiredWriteAction
     public PsiElement handleElementRenameSimple(String newElementName) throws IncorrectOperationException {
         if (!PsiUtil.isValidReferenceName(newElementName)) {
             PsiElement old = getReferenceNameElement();
@@ -897,6 +906,7 @@ public class GrReferenceExpressionImpl extends GrReferenceElementImpl<GrExpressi
     }
 
     @Override
+    @RequiredWriteAction
     public GrExpression replaceWithExpression(@Nonnull GrExpression newExpr, boolean removeUnnecessaryParentheses) {
         return PsiImplUtil.replaceExpression(this, newExpr, removeUnnecessaryParentheses);
     }
@@ -1012,7 +1022,6 @@ public class GrReferenceExpressionImpl extends GrReferenceElementImpl<GrExpressi
         return ArrayUtil.EMPTY_OBJECT_ARRAY;
     }
 
-
     @Override
     @RequiredReadAction
     public boolean isSoft() {
@@ -1033,7 +1042,7 @@ public class GrReferenceExpressionImpl extends GrReferenceElementImpl<GrExpressi
     }
 
     @Override
-    @RequiredReadAction
+    @RequiredWriteAction
     public void replaceDotToken(PsiElement newDot) {
         if (newDot == null) {
             return;
@@ -1065,6 +1074,7 @@ public class GrReferenceExpressionImpl extends GrReferenceElementImpl<GrExpressi
 
     @Override
     @Nonnull
+    @RequiredReadAction
     public GroovyResolveResult[] multiResolve(boolean incomplete) {  //incomplete means we do not take arguments into consideration
         ResolveResult[] results = TypeInferenceHelper.getCurrentContext().multiResolve(this, incomplete, POLY_RESOLVER);
         return results.length == 0 ? GroovyResolveResult.EMPTY_ARRAY : (GroovyResolveResult[])results;

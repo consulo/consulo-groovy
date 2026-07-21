@@ -1,6 +1,7 @@
 package org.jetbrains.plugins.groovy.impl.intentions.declaration;
 
 import com.intellij.java.language.psi.PsiType;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.codeEditor.Editor;
 import consulo.groovy.impl.localize.GroovyIntentionLocalize;
 import consulo.language.psi.PsiElement;
@@ -28,6 +29,7 @@ public class GrIntroduceLocalVariableIntention extends Intention {
         return GroovyIntentionLocalize.grIntroduceLocalVariableIntentionName();
     }
 
+    @RequiredReadAction
     protected PsiElement getTargetExpression(@Nonnull PsiElement element) {
         if (isTargetVisible(element)) {
             return element;
@@ -36,17 +38,15 @@ public class GrIntroduceLocalVariableIntention extends Intention {
         return expression == null ? null : getTargetExpression(expression);
     }
 
+    @RequiredReadAction
     private static boolean isTargetVisible(PsiElement element) {
-        if (PsiUtil.isExpressionStatement(element) && element instanceof GrExpression) {
-            if (((GrExpression) element).getType() != PsiType.VOID) {
-                if (PsiTreeUtil.getParentOfType(element, GrAssignmentExpression.class) == null) {
-                    return true;
-                }
-            }
-        }
-        return false;
+        return PsiUtil.isExpressionStatement(element)
+            && element instanceof GrExpression expression
+            && expression.getType() != PsiType.VOID
+            && PsiTreeUtil.getParentOfType(element, GrAssignmentExpression.class) == null;
     }
 
+    @RequiredReadAction
     protected void setSelection(Editor editor, PsiElement element) {
         int offset = element.getTextOffset();
         int length = element.getTextLength();
@@ -54,6 +54,7 @@ public class GrIntroduceLocalVariableIntention extends Intention {
     }
 
     @Override
+    @RequiredReadAction
     protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
         setSelection(editor, getTargetExpression(element));
         new GrIntroduceVariableHandler().invoke(project, editor, element.getContainingFile(), null);
@@ -61,16 +62,9 @@ public class GrIntroduceLocalVariableIntention extends Intention {
 
     @Nonnull
     @Override
+    @RequiredReadAction
     protected PsiElementPredicate getElementPredicate() {
-        return new PsiElementPredicate() {
-            @Override
-            public boolean satisfiedBy(PsiElement element) {
-                if (element == null) {
-                    return false;
-                }
-                return getTargetExpression(element) != null;
-            }
-        };
+        return element -> element != null && getTargetExpression(element) != null;
     }
 }
 

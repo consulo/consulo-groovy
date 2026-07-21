@@ -2,6 +2,7 @@
 package org.jetbrains.plugins.groovy.lang.psi.api;
 
 import com.intellij.java.language.psi.PsiType;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.language.psi.PsiElement;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
@@ -9,17 +10,17 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrParameterListOwner
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameter;
 
-public interface GrFunctionalExpression extends GrExpression, GrParameterListOwner
-{
-	@Nonnull
-	GrParameter [] getAllParameters();
+public interface GrFunctionalExpression extends GrExpression, GrParameterListOwner {
+    @Nonnull
+    @RequiredReadAction
+    GrParameter[] getAllParameters();
 
-	@Nullable
-	PsiType getOwnerType();
+    @Nullable
+    PsiType getOwnerType();
 
-	@Nullable
-	PsiType getReturnType();
+    @Nullable
+    PsiType getReturnType();
 
-	@Nullable
-	PsiElement getArrow();
+    @Nullable
+    PsiElement getArrow();
 }

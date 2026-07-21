@@ -25,12 +25,12 @@ import consulo.util.collection.ArrayUtil;
 import consulo.util.collection.ContainerUtil;
 import consulo.util.lang.function.Condition;
 import consulo.virtualFileSystem.VirtualFile;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.plugins.groovy.util.GroovyUtils;
 import org.jetbrains.plugins.groovy.util.LibrariesUtil;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
 import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -159,13 +159,6 @@ public abstract class AbstractConfigUtils {
   public abstract boolean isSDKLibrary(Library library);
 
   public Library[] getSDKLibrariesByModule(Module module) {
-    Condition<Library> condition = new Condition<Library>() {
-      public boolean value(Library library) {
-        return isSDKLibrary(library);
-      }
-    };
-    return LibrariesUtil.getLibrariesByCondition(module, condition);
+    return LibrariesUtil.getLibrariesByCondition(module, this::isSDKLibrary);
   }
-
-
 }

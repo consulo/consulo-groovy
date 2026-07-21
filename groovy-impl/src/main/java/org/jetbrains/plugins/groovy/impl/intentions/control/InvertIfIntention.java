@@ -15,6 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.impl.intentions.control;
 
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.codeEditor.Editor;
 import consulo.groovy.impl.localize.GroovyIntentionLocalize;
 import consulo.language.psi.PsiElement;
@@ -55,6 +56,7 @@ public class InvertIfIntention extends Intention {
     }
 
     @Override
+    @RequiredWriteAction
     protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
         PsiElement parent = element.getParent();
 
@@ -117,6 +119,7 @@ public class InvertIfIntention extends Intention {
             !(thenBranch instanceof GrBlockStatement && ((GrBlockStatement) thenBranch).getBlock().getStatements().length == 0);
     }
 
+    @RequiredWriteAction
     private static void generateElseBranchTextAndRemoveTailStatements(@Nonnull GrIfStatement ifStatement, @Nonnull GrIfStatement newIf) {
         GrStatement thenBranch = newIf.getThenBranch();
         assert thenBranch != null;
@@ -191,22 +194,19 @@ public class InvertIfIntention extends Intention {
     @Nonnull
     @Override
     protected PsiElementPredicate getElementPredicate() {
-        return new PsiElementPredicate() {
-            @Override
-            public boolean satisfiedBy(PsiElement element) {
-                PsiElement parent = element.getParent();
-                if (!(parent instanceof GrIfStatement)) {
-                    return false;
-                }
-                if (((GrIfStatement) parent).getCondition() == null) {
-                    return false;
-                }
-                if (!"if".equals(element.getText())) {
-                    return false;
-                }
-
-                return true;
+        return element -> {
+            PsiElement parent = element.getParent();
+            if (!(parent instanceof GrIfStatement)) {
+                return false;
             }
+            if (((GrIfStatement) parent).getCondition() == null) {
+                return false;
+            }
+            if (!"if".equals(element.getText())) {
+                return false;
+            }
+
+            return true;
         };
     }
 }

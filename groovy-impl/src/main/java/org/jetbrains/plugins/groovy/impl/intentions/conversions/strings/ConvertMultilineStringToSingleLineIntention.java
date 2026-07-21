@@ -15,6 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.impl.intentions.conversions.strings;
 
+import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.codeEditor.Editor;
 import consulo.document.util.TextRange;
 import consulo.groovy.impl.localize.GroovyIntentionLocalize;
@@ -51,6 +53,7 @@ public class ConvertMultilineStringToSingleLineIntention extends Intention {
     }
 
     @Override
+    @RequiredWriteAction
     protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor)
         throws IncorrectOperationException {
         String quote = element.getText().substring(0, 1);
@@ -112,6 +115,7 @@ public class ConvertMultilineStringToSingleLineIntention extends Intention {
         }
     }
 
+    @RequiredReadAction
     private static void appendSimpleStringValue(PsiElement element, StringBuilder buffer, String quote) {
         String text = GrStringUtil.removeQuotes(element.getText());
         if ("'".equals(quote)) {
@@ -125,17 +129,14 @@ public class ConvertMultilineStringToSingleLineIntention extends Intention {
     @Nonnull
     @Override
     protected PsiElementPredicate getElementPredicate() {
-        return new PsiElementPredicate() {
-            @Override
-            public boolean satisfiedBy(PsiElement element) {
-                if (!(element instanceof GrLiteral)) {
-                    return false;
-                }
-
-                String text = element.getText();
-                String quote = GrStringUtil.getStartQuote(text);
-                return GrStringUtil.TRIPLE_QUOTES.equals(quote) || GrStringUtil.TRIPLE_DOUBLE_QUOTES.equals(quote);
+        return element -> {
+            if (!(element instanceof GrLiteral)) {
+                return false;
             }
+
+            String text = element.getText();
+            String quote = GrStringUtil.getStartQuote(text);
+            return GrStringUtil.TRIPLE_QUOTES.equals(quote) || GrStringUtil.TRIPLE_DOUBLE_QUOTES.equals(quote);
         };
     }
 }

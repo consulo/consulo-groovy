@@ -18,6 +18,8 @@ package org.jetbrains.plugins.groovy.impl.intentions.declaration;
 import com.intellij.java.language.psi.PsiClassType;
 import com.intellij.java.language.psi.PsiParameter;
 import com.intellij.java.language.psi.PsiType;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.codeEditor.Editor;
 import consulo.document.Document;
 import consulo.document.util.TextRange;
@@ -54,6 +56,7 @@ import org.jetbrains.plugins.groovy.lang.psi.typeEnhancers.ClosureParameterEnhan
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Max Medvedev
@@ -66,36 +69,37 @@ public class GrSetStrongTypeIntention extends Intention {
     }
 
     @Override
+    @RequiredWriteAction
     protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
         PsiElement parent = element.getParent();
 
         PsiElement elementToBuildTemplate;
         GrVariable[] variables;
-        if (parent instanceof GrVariable && parent.getParent() instanceof GrVariableDeclaration) {
-            variables = ((GrVariableDeclaration) parent.getParent()).getVariables();
-            elementToBuildTemplate = parent.getParent();
+        if (parent instanceof GrVariable variable && variable.getParent() instanceof GrVariableDeclaration varDecl) {
+            variables = varDecl.getVariables();
+            elementToBuildTemplate = varDecl;
         }
-        else if (parent instanceof GrVariable && parent.getParent() instanceof GrForInClause) {
-            variables = new GrVariable[]{(GrVariable) parent};
-            elementToBuildTemplate = parent.getParent().getParent();
+        else if (parent instanceof GrVariable variable && variable.getParent() instanceof GrForInClause forInClause) {
+            variables = new GrVariable[]{variable};
+            elementToBuildTemplate = forInClause.getParent();
         }
-        else if (parent instanceof GrVariableDeclaration) {
-            variables = ((GrVariableDeclaration) parent).getVariables();
-            elementToBuildTemplate = parent;
+        else if (parent instanceof GrVariableDeclaration varDecl) {
+            variables = varDecl.getVariables();
+            elementToBuildTemplate = varDecl;
         }
-        else if (parent instanceof GrParameter && parent.getParent() instanceof GrParameterList) {
-            variables = new GrVariable[]{(GrVariable) parent};
-            elementToBuildTemplate = parent.getParent().getParent();
+        else if (parent instanceof GrParameter param && param.getParent() instanceof GrParameterList paramList) {
+            variables = new GrVariable[]{param};
+            elementToBuildTemplate = paramList.getParent();
         }
-        else if (parent instanceof GrVariable) {
-            variables = new GrVariable[]{((GrVariable) parent)};
-            elementToBuildTemplate = parent;
+        else if (parent instanceof GrVariable variable) {
+            variables = new GrVariable[]{variable};
+            elementToBuildTemplate = variable;
         }
         else {
             return;
         }
 
-        ArrayList<TypeConstraint> types = new ArrayList<TypeConstraint>();
+        List<TypeConstraint> types = new ArrayList<>();
 
         if (parent.getParent() instanceof GrForInClause) {
             types.add(SupertypeConstraint.create(PsiUtil.extractIteratedType((GrForInClause) parent.getParent())));
@@ -109,8 +113,7 @@ public class GrSetStrongTypeIntention extends Intention {
                         types.add(SupertypeConstraint.create(type));
                     }
                 }
-                if (variable instanceof GrParameter) {
-                    PsiParameter parameter = (PsiParameter) variable;
+                if (variable instanceof GrParameter parameter) {
                     PsiType type = getClosureParameterType(parameter);
                     if (type != null) {
                         types.add(SupertypeConstraint.create(type));
@@ -142,19 +145,13 @@ public class GrSetStrongTypeIntention extends Intention {
 
     @Nullable
     private static PsiType getClosureParameterType(@Nonnull PsiParameter parameter) {
-        PsiElement scope = parameter.getDeclarationScope();
-        PsiType type;
-        if (scope instanceof GrClosableBlock) {
-            type =
-                ClosureParameterEnhancer.inferType(
-                    (GrClosableBlock) scope,
-                    ((GrParameterList) parameter.getParent()).getParameterIndex(parameter)
-                );
+        if (parameter.getDeclarationScope() instanceof GrClosableBlock closableBlock) {
+            return ClosureParameterEnhancer.inferType(
+                closableBlock,
+                ((GrParameterList) parameter.getParent()).getParameterIndex(parameter)
+            );
         }
-        else {
-            type = null;
-        }
-        return type;
+        return null;
     }
 
     @Nullable
@@ -179,8 +176,8 @@ public class GrSetStrongTypeIntention extends Intention {
 
     @Nullable
     private static GrTypeElement getTypeElement(PsiElement parent) {
-        if (parent instanceof GrVariable) {
-            return ((GrVariable) parent).getTypeElementGroovy();
+        if (parent instanceof GrVariable variable) {
+            return variable.getTypeElementGroovy();
         }
         else {
             return ((GrVariableDeclaration) parent).getTypeElementGroovy();
@@ -191,8 +188,8 @@ public class GrSetStrongTypeIntention extends Intention {
     private static GrModifierList getModifierList(PsiElement parent) {
         GrModifierList modifierList;
 
-        if (parent instanceof GrVariable) {
-            modifierList = ((GrVariable) parent).getModifierList();
+        if (parent instanceof GrVariable variable) {
+            modifierList = variable.getModifierList();
         }
         else {
             modifierList = ((GrVariableDeclaration) parent).getModifierList();
@@ -205,6 +202,7 @@ public class GrSetStrongTypeIntention extends Intention {
     protected PsiElementPredicate getElementPredicate() {
         return new PsiElementPredicate() {
             @Override
+            @RequiredReadAction
             public boolean satisfiedBy(PsiElement element) {
                 PsiElement parent = element.getParent();
 
@@ -219,24 +217,24 @@ public class GrSetStrongTypeIntention extends Intention {
                     return false;
                 }
 
-                if (pparent instanceof GrVariableDeclaration) {
-                    if (((GrVariableDeclaration) pparent).getTypeElementGroovy() != null) {
+                if (pparent instanceof GrVariableDeclaration varDecl) {
+                    if (varDecl.getTypeElementGroovy() != null) {
                         return false;
                     }
 
-                    GrVariable[] variables = ((GrVariableDeclaration) pparent).getVariables();
+                    GrVariable[] variables = varDecl.getVariables();
                     for (GrVariable variable : variables) {
                         if (isVarDeclaredWithInitializer(variable)) {
                             return true;
                         }
                     }
                 }
-                else if (pparent instanceof GrForInClause) {
-                    GrVariable variable = ((GrForInClause) pparent).getDeclaredVariable();
+                else if (pparent instanceof GrForInClause forInClause) {
+                    GrVariable variable = forInClause.getDeclaredVariable();
                     return variable != null && variable.getTypeElementGroovy() == null && PsiUtil.extractIteratedType((GrForInClause) pparent) != null;
                 }
-                else if (parent instanceof GrParameter && pparent instanceof GrParameterList) {
-                    return ((GrParameter) parent).getTypeElementGroovy() == null && getClosureParameterType((PsiParameter) parent) != null;
+                else if (parent instanceof GrParameter param && pparent instanceof GrParameterList) {
+                    return param.getTypeElementGroovy() == null && getClosureParameterType(param) != null;
                 }
                 else {
                     GrVariable variable = (GrVariable) parent;
@@ -247,22 +245,22 @@ public class GrSetStrongTypeIntention extends Intention {
             }
 
             private boolean isModifierListOfVarDecl(PsiElement element, PsiElement parent) {
-                return parent instanceof GrVariableDeclaration && ((GrVariableDeclaration) parent).getModifierList() == element;
+                return parent instanceof GrVariableDeclaration varDecl && varDecl.getModifierList() == element;
             }
 
             private boolean isModifierListOfVar(PsiElement element, PsiElement parent) {
-                return parent instanceof GrVariable && ((GrVariable) parent).getModifierList() == element;
+                return parent instanceof GrVariable variable && variable.getModifierList() == element;
             }
 
-
             private boolean isNameIdentifierOfVariable(PsiElement element, PsiElement parent) {
-                return parent instanceof GrVariable &&
-                    ((GrVariable) parent).getTypeElementGroovy() == null &&
-                    element == ((GrVariable) parent).getNameIdentifierGroovy();
+                return parent instanceof GrVariable variable
+                    && variable.getTypeElementGroovy() == null
+                    && element == variable.getNameIdentifierGroovy();
             }
         };
     }
 
+    @RequiredReadAction
     private static boolean isVarDeclaredWithInitializer(GrVariable variable) {
         GrExpression initializer = variable.getInitializerGroovy();
         return initializer != null && initializer.getType() != null;

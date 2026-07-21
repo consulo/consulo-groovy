@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.impl.intentions.style;
 
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.codeEditor.Editor;
 import consulo.groovy.impl.localize.GroovyIntentionLocalize;
 import consulo.language.psi.PsiElement;
@@ -47,18 +47,17 @@ public class JavaStylePropertiesInvocationIntention extends Intention {
         return element instanceof GrClosableBlock || super.isStopElement(element);
     }
 
+    @Override
+    @RequiredWriteAction
     protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
-        if (element instanceof GrMethodCall) {
-            fixJavaStyleProperty(((GrMethodCall) element));
+        if (element instanceof GrMethodCall call) {
+            fixJavaStyleProperty(call);
         }
     }
 
     @Nonnull
+    @Override
     protected PsiElementPredicate getElementPredicate() {
-        return new PsiElementPredicate() {
-            public boolean satisfiedBy(PsiElement element) {
-                return element instanceof GrMethodCall && isPropertyAccessor((GrMethodCall) element) && !ErrorUtil.containsError(element);
-            }
-        };
+        return element -> element instanceof GrMethodCall call && isPropertyAccessor(call) && !ErrorUtil.containsError(call);
     }
 }

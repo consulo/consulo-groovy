@@ -15,6 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.impl.intentions.conversions;
 
+import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.codeEditor.Editor;
 import consulo.groovy.impl.localize.GroovyIntentionLocalize;
 import consulo.language.editor.refactoring.RefactoringFactory;
@@ -38,6 +40,7 @@ public class RenameFileWithClassIntention extends Intention implements Consumer<
     private String myNewFileName = null;
 
     @Override
+    @RequiredWriteAction
     protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
         PsiFile file = element.getContainingFile();
         RefactoringFactory.getInstance(project).createRename(file, myNewFileName, true, true).run();
@@ -56,6 +59,7 @@ public class RenameFileWithClassIntention extends Intention implements Consumer<
     }
 
     @Override
+    @RequiredReadAction
     public void accept(GrTypeDefinition def) {
         String name = def.getName();
         PsiFile file = def.getContainingFile();

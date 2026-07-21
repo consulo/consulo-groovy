@@ -15,12 +15,14 @@
  */
 package org.jetbrains.plugins.groovy.impl.intentions.other;
 
+import consulo.annotation.access.RequiredReadAction;
 import consulo.codeEditor.Editor;
 import consulo.groovy.impl.localize.GroovyIntentionLocalize;
 import consulo.language.psi.PsiElement;
 import consulo.language.util.IncorrectOperationException;
 import consulo.localize.LocalizeValue;
 import consulo.project.Project;
+import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.ex.awt.CopyPasteManager;
 import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.impl.intentions.base.Intention;
@@ -43,6 +45,7 @@ public class GrCopyStringConcatenationContentIntention extends Intention {
     }
 
     @Override
+    @RequiredUIAccess
     protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
         StringBuilder buffer = new StringBuilder();
         getValue(element, buffer);
@@ -51,13 +54,14 @@ public class GrCopyStringConcatenationContentIntention extends Intention {
         CopyPasteManager.getInstance().setContents(contents);
     }
 
+    @RequiredReadAction
     private static void getValue(PsiElement element, StringBuilder buffer) {
-        if (element instanceof GrLiteral) {
-            buffer.append(((GrLiteral) element).getValue());
+        if (element instanceof GrLiteral literal) {
+            buffer.append(literal.getValue());
         }
-        else if (element instanceof GrBinaryExpression) {
-            getValue(((GrBinaryExpression) element).getLeftOperand(), buffer);
-            getValue(((GrBinaryExpression) element).getRightOperand(), buffer);
+        else if (element instanceof GrBinaryExpression binaryExpr) {
+            getValue(binaryExpr.getLeftOperand(), buffer);
+            getValue(binaryExpr.getRightOperand(), buffer);
         }
     }
 
@@ -66,15 +70,16 @@ public class GrCopyStringConcatenationContentIntention extends Intention {
     protected PsiElementPredicate getElementPredicate() {
         return new PsiElementPredicate() {
             @Override
+            @RequiredReadAction
             public boolean satisfiedBy(PsiElement element) {
-                if (element instanceof GrLiteral && ((GrLiteral) element).getValue() instanceof String) {
+                if (element instanceof GrLiteral literal && literal.getValue() instanceof String) {
                     return true;
                 }
 
-                return element instanceof GrBinaryExpression &&
-                    ((GrBinaryExpression) element).getOperationTokenType() == GroovyTokenTypes.mPLUS &&
-                    satisfiedBy(((GrBinaryExpression) element).getLeftOperand()) &&
-                    satisfiedBy(((GrBinaryExpression) element).getRightOperand());
+                return element instanceof GrBinaryExpression binaryExpr
+                    && binaryExpr.getOperationTokenType() == GroovyTokenTypes.mPLUS
+                    && satisfiedBy(binaryExpr.getLeftOperand())
+                    && satisfiedBy(binaryExpr.getRightOperand());
             }
         };
     }

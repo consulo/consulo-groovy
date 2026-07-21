@@ -17,22 +17,23 @@ package org.jetbrains.plugins.groovy.impl.annotator.intentions.dynamic;
 
 import com.intellij.java.language.psi.PsiMethod;
 import com.intellij.java.language.psi.PsiVariable;
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.annotation.component.ComponentScope;
 import consulo.annotation.component.ServiceAPI;
 import consulo.component.persist.PersistentStateComponent;
 import consulo.project.Project;
+import consulo.ui.annotation.RequiredUIAccess;
+import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.impl.annotator.intentions.dynamic.elements.*;
 import org.jetbrains.plugins.groovy.impl.annotator.intentions.dynamic.ui.DynamicElementSettings;
-
-import jakarta.annotation.Nonnull;
 
 import java.util.Collection;
 import java.util.List;
 
 /**
- * User: Dmitry.Krasilschikov
- * Date: 23.11.2007
+ * @author Dmitry.Krasilschikov
+ * @since 2007-11-23
  */
 @ServiceAPI(value = ComponentScope.PROJECT, lazy = false)
 public abstract class DynamicManager implements PersistentStateComponent<DRootElement> {
@@ -46,28 +47,30 @@ public abstract class DynamicManager implements PersistentStateComponent<DRootEl
    * ************* Properties and methods *************
    */
 
-  /*
+  /**
    * Fire changes
    */
+  @RequiredWriteAction
   public abstract void fireChange();
 
-  /*
+  /**
    * Returns root element
    */
-
   public abstract DRootElement getRootElement();
 
-  /*
+  /**
    * Returns all containing classes
    */
-
   @Nonnull
   public abstract Collection<DClassElement> getAllContainingClasses();
 
+  @RequiredWriteAction
   public abstract void replaceClassName(@Nullable DClassElement oldClassElement, String newClassName);
 
+  @RequiredUIAccess
   public abstract void addProperty(DynamicElementSettings settings);
 
+  @RequiredUIAccess
   public abstract void addMethod(DynamicElementSettings settings);
 
   public abstract void removeClassElement(DClassElement classElement);
@@ -82,9 +85,11 @@ public abstract class DynamicManager implements PersistentStateComponent<DRootEl
   public abstract String getPropertyType(String className, String propertyName);
 
   @Nullable
+  @RequiredWriteAction
   public abstract String replaceDynamicPropertyName(String className, String oldPropertyName, String newPropertyName);
 
   @Nullable
+  @RequiredWriteAction
   public abstract String replaceDynamicPropertyType(String className, String propertyName, String oldPropertyType, String newPropertyType);
 
   @Nullable
@@ -92,6 +97,7 @@ public abstract class DynamicManager implements PersistentStateComponent<DRootEl
 
   public abstract void removeItemElement(DItemElement element);
 
+  @RequiredWriteAction
   public abstract void replaceDynamicMethodType(String className, String name, List<ParamInfo> myPairList, String oldType, String newType);
 
   @Nonnull
@@ -99,6 +105,7 @@ public abstract class DynamicManager implements PersistentStateComponent<DRootEl
 
   public abstract DClassElement getClassElementByItem(DItemElement itemElement);
 
+  @RequiredWriteAction
   public abstract void replaceDynamicMethodName(String className, String oldName, String newName, String[] types);
 
   public abstract Iterable<PsiMethod> getMethods(String classQname);

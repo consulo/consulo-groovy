@@ -16,6 +16,7 @@
 package org.jetbrains.plugins.groovy.impl.intentions.style;
 
 import com.intellij.java.language.psi.PsiClass;
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.codeEditor.Editor;
 import consulo.groovy.impl.localize.GroovyIntentionLocalize;
 import consulo.language.psi.PsiElement;
@@ -25,7 +26,6 @@ import consulo.project.Project;
 import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.impl.intentions.base.Intention;
 import org.jetbrains.plugins.groovy.impl.intentions.base.PsiElementPredicate;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
 
 /**
@@ -39,26 +39,23 @@ public class RemoveRedundantClassPropertyIntention extends Intention {
     }
 
     @Override
+    @RequiredWriteAction
     protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
-        if (element instanceof GrReferenceExpression) {
-            ((GrReferenceExpression) element).replaceWithExpression(((GrReferenceExpression) element).getQualifier(), true);
+        if (element instanceof GrReferenceExpression ref) {
+            ref.replaceWithExpression(ref.getQualifier(), true);
         }
     }
 
     @Nonnull
     @Override
     protected PsiElementPredicate getElementPredicate() {
-        return new PsiElementPredicate() {
-            @Override
-            public boolean satisfiedBy(PsiElement element) {
-                if (element instanceof GrReferenceExpression && "class".equals(((GrReferenceExpression) element).getReferenceName())) {
-                    GrExpression qualifier = ((GrReferenceExpression) element).getQualifier();
-                    if (qualifier instanceof GrReferenceExpression) {
-                        return ((GrReferenceExpression) qualifier).resolve() instanceof PsiClass;
-                    }
+        return element -> {
+            if (element instanceof GrReferenceExpression ref && "class".equals(ref.getReferenceName())) {
+                if (ref.getQualifier() instanceof GrReferenceExpression qRef) {
+                    return qRef.resolve() instanceof PsiClass;
                 }
-                return false;
             }
+            return false;
         };
     }
 }

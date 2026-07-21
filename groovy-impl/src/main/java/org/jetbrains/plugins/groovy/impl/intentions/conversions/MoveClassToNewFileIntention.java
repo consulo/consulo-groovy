@@ -15,7 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.impl.intentions.conversions;
 
-import consulo.application.ApplicationManager;
+import consulo.annotation.access.RequiredWriteAction;
+import consulo.application.Application;
 import consulo.codeEditor.Editor;
 import consulo.groovy.impl.localize.GroovyIntentionLocalize;
 import consulo.language.editor.refactoring.util.CommonRefactoringUtil;
@@ -48,6 +49,7 @@ public class MoveClassToNewFileIntention extends Intention {
     }
 
     @Override
+    @RequiredWriteAction
     protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
         GrTypeDefinition psiClass = (GrTypeDefinition) element.getParent();
         String name = psiClass.getName();
@@ -58,9 +60,9 @@ public class MoveClassToNewFileIntention extends Intention {
         PsiDirectory dir = file.getParent();
         if (dir != null) {
             if (dir.findFile(newFileName) != null) {
-                if (!ApplicationManager.getApplication().isUnitTestMode()) {
+                if (!Application.get().isUnitTestMode()) {
                     LocalizeValue message = GroovyIntentionLocalize.fileExists(newFileName, dir.getName());
-                    CommonRefactoringUtil.showErrorHint(project, editor, message.get(), getText().get(), null);
+                    CommonRefactoringUtil.showErrorHint(project, editor, message, getText(), null);
                 }
                 return;
             }
