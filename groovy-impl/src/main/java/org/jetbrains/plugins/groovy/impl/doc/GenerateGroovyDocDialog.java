@@ -46,6 +46,7 @@ public final class GenerateGroovyDocDialog extends DialogWrapper {
   }
 
   @Override
+  @RequiredUIAccess
   protected JComponent createCenterPanel() {
     myPanel = new GroovyDocGenerationPanel();
     myPanel.reset(myConfiguration);
