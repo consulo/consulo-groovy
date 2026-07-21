@@ -15,17 +15,20 @@
  */
 package org.jetbrains.plugins.groovy.impl.doc;
 
-import consulo.application.CommonBundle;
+import consulo.groovy.impl.localize.GroovyDocLocalize;
+import consulo.localize.LocalizeValue;
+import consulo.platform.base.localize.CommonLocalize;
 import consulo.project.Project;
+import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.ex.awt.DialogWrapper;
 import consulo.ui.ex.awt.Messages;
-
+import consulo.ui.ex.awt.UIUtil;
 import jakarta.annotation.Nullable;
+
 import javax.swing.*;
 import java.io.File;
 
-public final class GenerateGroovyDocDialog extends DialogWrapper
-{
+public final class GenerateGroovyDocDialog extends DialogWrapper {
   private final Project myProject;
   private final GroovyDocConfiguration myConfiguration;
 
@@ -36,18 +39,22 @@ public final class GenerateGroovyDocDialog extends DialogWrapper
     myProject = project;
     myConfiguration = configuration;
 
-    setOKButtonText(GroovyDocBundle.message("groovydoc.generate.start.button"));
-    setTitle(GroovyDocBundle.message("groovydoc.generate.title"));
+    setOKButtonText(GroovyDocLocalize.groovydocGenerateStartButton());
+    setTitle(GroovyDocLocalize.groovydocGenerateTitle());
 
     init();
   }
 
+  @Override
+  @RequiredUIAccess
   protected JComponent createCenterPanel() {
     myPanel = new GroovyDocGenerationPanel();
     myPanel.reset(myConfiguration);
     return myPanel.getPanel();
   }
 
+  @Override
+  @RequiredUIAccess
   protected void doOKAction() {
     myPanel.apply(myConfiguration);
     if (checkDir(myConfiguration.OUTPUT_DIRECTORY, "output") && checkDir(myConfiguration.INPUT_DIRECTORY, "input")) {
@@ -67,34 +74,43 @@ public final class GenerateGroovyDocDialog extends DialogWrapper
     return "editing.groovydocGeneration";
   }
 
+  @RequiredUIAccess
   private boolean checkDir(String dirName, String dirPrefix) {
-    if (dirName == null || dirName.trim().length() == 0) {
-      Messages.showMessageDialog(myProject, GroovyDocBundle.message("groovydoc.generate.0.directory.not.specified", dirPrefix),
-                                 CommonBundle.getErrorTitle(), Messages.getErrorIcon());
+    if (dirName == null || dirName.trim().isEmpty()) {
+      Messages.showMessageDialog(
+        myProject,
+        GroovyDocLocalize.groovydocGenerate0DirectoryNotSpecified(dirPrefix).get(),
+        CommonLocalize.titleError().get(),
+        UIUtil.getErrorIcon()
+      );
       return false;
     }
 
     File dir = new File(dirName);
     if (dir.exists()) {
       if (!dir.isDirectory()) {
-        showError(GroovyDocBundle.message("groovydoc.generate.not.a.directory", dirName));
+        showError(GroovyDocLocalize.groovydocGenerateNotADirectory(dirName));
         return false;
       }
     }
     else {
-      int choice = Messages.showOkCancelDialog(myProject,
-                                               GroovyDocBundle.message("groovydoc.generate.directory.not.exists", dirName),
-                                               GroovyDocBundle.message("groovydoc.generate.message.title"), Messages.getWarningIcon());
+      int choice = Messages.showOkCancelDialog(
+        myProject,
+        GroovyDocLocalize.groovydocGenerateDirectoryNotExists(dirName).get(),
+        GroovyDocLocalize.groovydocGenerateMessageTitle().get(),
+        UIUtil.getWarningIcon()
+      );
       if (choice != 0) return false;
       if (!dir.mkdirs()) {
-        showError(GroovyDocBundle.message("groovydoc.generate.directory.creation.failed", dirName));
+        showError(GroovyDocLocalize.groovydocGenerateDirectoryCreationFailed(dirName));
         return false;
       }
     }
     return true;
   }
 
-  private void showError(String message) {
-    Messages.showMessageDialog(myProject, message, CommonBundle.getErrorTitle(), Messages.getErrorIcon());
+  @RequiredUIAccess
+  private void showError(LocalizeValue message) {
+    Messages.showMessageDialog(myProject, message.get(), CommonLocalize.titleError().get(), UIUtil.getErrorIcon());
   }
 }

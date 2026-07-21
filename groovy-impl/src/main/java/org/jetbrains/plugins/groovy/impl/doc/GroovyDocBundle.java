@@ -16,8 +16,10 @@
 
 package org.jetbrains.plugins.groovy.impl.doc;
 
+import consulo.annotation.DeprecationInfo;
+import consulo.annotation.internal.MigratedExtensionsTo;
 import consulo.application.CommonBundle;
-import consulo.application.CommonBundle;
+import consulo.groovy.impl.localize.GroovyDocLocalize;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.PropertyKey;
 
@@ -25,6 +27,9 @@ import java.lang.ref.Reference;
 import java.lang.ref.SoftReference;
 import java.util.ResourceBundle;
 
+@Deprecated
+@DeprecationInfo("Use GroovyDocLocalize")
+@MigratedExtensionsTo(GroovyDocLocalize.class)
 public class GroovyDocBundle {
 
   private static Reference<ResourceBundle> ourBundle;
