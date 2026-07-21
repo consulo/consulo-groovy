@@ -231,7 +231,7 @@ public class GrSetStrongTypeIntention extends Intention {
                 }
                 else if (pparent instanceof GrForInClause forInClause) {
                     GrVariable variable = forInClause.getDeclaredVariable();
-                    return variable != null && variable.getTypeElementGroovy() == null && PsiUtil.extractIteratedType((GrForInClause) pparent) != null;
+                    return variable != null && variable.getTypeElementGroovy() == null && PsiUtil.extractIteratedType(forInClause) != null;
                 }
                 else if (parent instanceof GrParameter param && pparent instanceof GrParameterList) {
                     return param.getTypeElementGroovy() == null && getClosureParameterType(param) != null;
