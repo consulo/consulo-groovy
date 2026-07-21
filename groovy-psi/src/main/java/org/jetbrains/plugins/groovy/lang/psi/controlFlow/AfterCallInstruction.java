@@ -15,9 +15,9 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.controlFlow;
 
-import java.util.Collections;
-
 import org.jetbrains.plugins.groovy.lang.psi.controlFlow.impl.InstructionImpl;
+
+import java.util.Collections;
 
 /**
  * @author ven
@@ -31,19 +31,23 @@ public class AfterCallInstruction extends InstructionImpl {
     this.myCall = call;
   }
 
+  @Override
   public String toString() {
     return super.toString() + "AFTER CALL " + myCall.num();
   }
 
+  @Override
   public Iterable<? extends Instruction> allPredecessors() {
     return Collections.singletonList(myReturnInstruction);
   }
 
+  @Override
   public Iterable<? extends Instruction> predecessors(CallEnvironment environment) {
     environment.callStack(myReturnInstruction).push(myCall);
     return Collections.singletonList(myReturnInstruction);
   }
 
+  @Override
   protected String getElementPresentation() {
     return "";
   }

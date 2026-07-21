@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.branch;
 
+import consulo.language.ast.ASTNode;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
@@ -23,7 +23,6 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrLabeledStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.branch.GrBreakStatement;
 import org.jetbrains.plugins.groovy.lang.resolve.ResolveUtil;
-import consulo.language.ast.ASTNode;
 
 /**
  * @author ilyas
@@ -38,6 +37,7 @@ public class GrBreakStatementImpl extends GrFlowInterruptingStatementImpl implem
     visitor.visitBreakStatement(this);
   }
 
+  @Override
   public String toString() {
     return "BREAK statement";
   }

@@ -13,16 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
-
+import consulo.annotation.access.RequiredReadAction;
 import consulo.language.ast.IElementType;
-import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiPolyVariantReference;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
+import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
 
 /**
  * @author ilyas
@@ -38,6 +37,8 @@ public interface GrAssignmentExpression extends GrExpression, PsiPolyVariantRefe
   IElementType getOperationTokenType();
 
   @Nonnull
+  @Override
+  @RequiredReadAction
   GroovyResolveResult[] multiResolve(boolean incompleteCode);
 
   PsiElement getOperationToken();

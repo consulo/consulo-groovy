@@ -16,7 +16,9 @@
 package org.jetbrains.plugins.groovy.lang.psi.impl.types;
 
 import com.intellij.java.language.psi.PsiType;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.language.ast.ASTNode;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrClassTypeElement;
@@ -24,11 +26,9 @@ import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GrClassReferenceType;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyPsiElementImpl;
 
-import jakarta.annotation.Nonnull;
-
 /**
- * @author: Dmitry.Krasilschikov
- * @date: 26.04.2007
+ * @author Dmitry.Krasilschikov
+ * @since 2007-04-26
  */
 public class GrClassTypeElementImpl extends GroovyPsiElementImpl implements GrClassTypeElement
 {
@@ -43,13 +43,15 @@ public class GrClassTypeElementImpl extends GroovyPsiElementImpl implements GrCl
 		visitor.visitClassTypeElement(this);
 	}
 
-	public String toString()
+	@Override
+    public String toString()
 	{
 		return "Type element";
 	}
 
 	@Override
 	@Nonnull
+    @RequiredReadAction
 	public GrCodeReferenceElement getReferenceElement()
 	{
 		return (GrCodeReferenceElement) findNotNullChildByType(GroovyElementTypes.REFERENCE_ELEMENT);
@@ -57,6 +59,7 @@ public class GrClassTypeElementImpl extends GroovyPsiElementImpl implements GrCl
 
 	@Override
 	@Nonnull
+    @RequiredReadAction
 	public PsiType getType()
 	{
 		return new GrClassReferenceType(getReferenceElement());

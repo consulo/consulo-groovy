@@ -17,6 +17,7 @@ package org.jetbrains.plugins.groovy.impl.intentions.comments;
 
 import com.intellij.java.language.psi.JavaPsiFacade;
 import com.intellij.java.language.psi.PsiElementFactory;
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.codeEditor.Editor;
 import consulo.groovy.impl.localize.GroovyIntentionLocalize;
 import consulo.language.psi.PsiComment;
@@ -36,10 +37,13 @@ public class ChangeToEndOfLineCommentIntention extends Intention {
     }
 
     @Nonnull
+    @Override
     protected PsiElementPredicate getElementPredicate() {
         return new CStyleCommentPredicate();
     }
 
+    @Override
+    @RequiredWriteAction
     public void processIntention(@Nonnull PsiElement element, Project project, Editor editor)
         throws IncorrectOperationException {
         PsiComment comment = (PsiComment) element;
@@ -52,20 +56,14 @@ public class ChangeToEndOfLineCommentIntention extends Intention {
         String text = commentText.substring(2, commentText.length() - 2);
         String[] lines = text.split("\n");
         for (int i = lines.length - 1; i >= 1; i--) {
-            PsiComment nextComment =
-                factory.createCommentFromText(
-                    "//" + lines[i].trim() + '\n',
-                    parent
-                );
+            PsiComment nextComment = factory.createCommentFromText("//" + lines[i].trim() + '\n', parent);
             parent.addAfter(nextComment, comment);
-      /* if (whitespace != null) {
-      final PsiElement newWhiteSpace =
-          factory.createWhiteSpaceFromText(whitespace.getText());
-      parent.addAfter(newWhiteSpace, comment);
-    }  */
+            /*if (whitespace != null) {
+                PsiElement newWhiteSpace = factory.createWhiteSpaceFromText(whitespace.getText());
+                parent.addAfter(newWhiteSpace, comment);
+            }*/
         }
-        PsiComment newComment =
-            factory.createCommentFromText("//" + lines[0], parent);
+        PsiComment newComment = factory.createCommentFromText("//" + lines[0], parent);
         comment.replace(newComment);
     }
 }

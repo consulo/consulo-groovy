@@ -15,6 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.impl.codeInspection.exception;
 
+import consulo.annotation.access.RequiredReadAction;
 import consulo.language.psi.PsiElement;
 import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
@@ -23,7 +24,6 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrRefere
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameter;
 
 class CatchParameterUsedVisitor extends GroovyRecursiveElementVisitor {
-
   private final GrParameter parameter;
   private boolean used = false;
 
@@ -32,12 +32,15 @@ class CatchParameterUsedVisitor extends GroovyRecursiveElementVisitor {
     parameter = variable;
   }
 
+  @Override
   public void visitElement(@Nonnull GroovyPsiElement element) {
     if (!used) {
       super.visitElement(element);
     }
   }
 
+  @Override
+  @RequiredReadAction
   public void visitReferenceExpression(GrReferenceExpression referenceExpression) {
     if (used) {
       return;

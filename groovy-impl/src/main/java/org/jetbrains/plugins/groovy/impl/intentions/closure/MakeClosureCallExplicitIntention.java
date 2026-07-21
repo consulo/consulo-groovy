@@ -15,6 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.impl.intentions.closure;
 
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.codeEditor.Editor;
 import consulo.groovy.impl.localize.GroovyIntentionLocalize;
 import consulo.language.psi.PsiElement;
@@ -38,14 +39,15 @@ public class MakeClosureCallExplicitIntention extends Intention {
     }
 
     @Nonnull
+    @Override
     public PsiElementPredicate getElementPredicate() {
         return new ImplicitClosureCallPredicate();
     }
 
-    public void processIntention(@Nonnull PsiElement element, Project project, Editor editor)
-        throws IncorrectOperationException {
-        GrMethodCallExpression expression =
-            (GrMethodCallExpression) element;
+    @Override
+    @RequiredWriteAction
+    public void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
+        GrMethodCallExpression expression = (GrMethodCallExpression) element;
         GrExpression invokedExpression = expression.getInvokedExpression();
         GrArgumentList argList = expression.getArgumentList();
         GrClosableBlock[] closureArgs = expression.getClosureArguments();

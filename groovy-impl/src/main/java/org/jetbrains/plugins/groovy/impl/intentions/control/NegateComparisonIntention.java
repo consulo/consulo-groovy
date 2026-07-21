@@ -15,6 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.impl.intentions.control;
 
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.codeEditor.Editor;
 import consulo.groovy.impl.localize.GroovyIntentionLocalize;
 import consulo.language.ast.IElementType;
@@ -30,6 +31,7 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrBinary
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 
 public class NegateComparisonIntention extends MutablyNamedIntention {
+    @Override
     protected LocalizeValue getTextForElement(PsiElement element) {
         GrBinaryExpression binaryExpression = (GrBinaryExpression) element;
         IElementType tokenType = binaryExpression.getOperationTokenType();
@@ -40,14 +42,15 @@ public class NegateComparisonIntention extends MutablyNamedIntention {
     }
 
     @Nonnull
+    @Override
     public PsiElementPredicate getElementPredicate() {
         return new ComparisonPredicate();
     }
 
-    public void processIntention(@Nonnull PsiElement element, Project project, Editor editor)
-        throws IncorrectOperationException {
-        GrBinaryExpression exp =
-            (GrBinaryExpression) element;
+    @Override
+    @RequiredWriteAction
+    public void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
+        GrBinaryExpression exp = (GrBinaryExpression) element;
         IElementType tokenType = exp.getOperationTokenType();
 
         GrExpression lhs = exp.getLeftOperand();

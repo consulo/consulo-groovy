@@ -16,10 +16,10 @@
 package org.jetbrains.plugins.groovy.intentions;
 
 import com.intellij.codeInsight.intention.IntentionAction;
-import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.java.language.psi.PsiClass;
 import com.intellij.java.language.psi.PsiElement;
 import com.intellij.java.language.psi.util.PsiTreeUtil;
+import com.intellij.openapi.application.ApplicationManager;
 import org.jetbrains.plugins.groovy.intentions.conversions.ConvertMapToClassIntention;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.GrListOrMap;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrTypeDefinition;
@@ -79,14 +79,14 @@ public class ConvertMapToClassTest extends GrIntentionTestCase {
     final GrTypeDefinition foo = ConvertMapToClassIntention.createClass(getProject(), map.getNamedArguments(), "", "Foo");
     myFixture.addFileToProject(getTestName(true) + "/Foo.groovy", foo.getContainingFile().getText());
     final PsiClass psiClass = myFixture.findClass("Foo");
-    ApplicationManager.getApplication().runWriteAction(new Runnable() {
-      public void run() {
-        ConvertMapToClassIntention
-          .replaceMapWithClass(getProject(), map, psiClass, ConvertMapToClassIntention.checkForReturnFromMethod(map),
-                               ConvertMapToClassIntention.checkForVariableDeclaration(map),
-                               ConvertMapToClassIntention.checkForMethodParameter(map));
-      }
-    });
+    ApplicationManager.getApplication().runWriteAction((Runnable) () -> ConvertMapToClassIntention.replaceMapWithClass(
+      getProject(),
+      map,
+      psiClass,
+      ConvertMapToClassIntention.checkForReturnFromMethod(map),
+      ConvertMapToClassIntention.checkForVariableDeclaration(map),
+      ConvertMapToClassIntention.checkForMethodParameter(map)
+    ));
 
     myFixture.checkResultByFile(getTestName(true) + "/Foo.groovy", getTestName(true) + "/Expected.groovy", true);
     myFixture.checkResultByFile(getTestName(true) + "/Test_after.groovy", true);

@@ -13,29 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation;
 
 import com.intellij.java.language.psi.PsiAnnotation;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.GrCondition;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrCodeReferenceElement;
 
-import jakarta.annotation.Nonnull;
-
 /**
- * @author: Dmitry.Krasilschikov
- * @date: 04.04.2007
+ * @author Dmitry.Krasilschikov
+ * @since 2007-04-04
  */
 public interface GrAnnotation extends GrCondition, PsiAnnotation, GrAnnotationMemberValue {
+    GrAnnotation[] EMPTY_ARRAY = new GrAnnotation[0];
 
-  GrAnnotation[] EMPTY_ARRAY = new GrAnnotation[0];
+    @Nonnull
+    GrCodeReferenceElement getClassReference();
 
-  @Nonnull
-  GrCodeReferenceElement getClassReference();
+    @Nonnull
+    String getShortName();
 
-  @Nonnull
-  String getShortName();
-
-  @Nonnull
-  GrAnnotationArgumentList getParameterList();
+    @Nonnull
+    @Override
+    GrAnnotationArgumentList getParameterList();
 }

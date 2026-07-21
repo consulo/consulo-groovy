@@ -13,29 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.lang.groovydoc.psi.api;
 
 import com.intellij.java.language.psi.javadoc.PsiDocComment;
 import jakarta.annotation.Nonnull;
-import org.jetbrains.annotations.NonNls;
-
 import jakarta.annotation.Nullable;
 
 /**
  * @author ilyas
  */
 public interface GrDocComment extends PsiDocComment, GroovyDocPsiElement {
+    @Nullable
+    @Override
+    GrDocCommentOwner getOwner();
 
-  @Nullable
-  GrDocCommentOwner getOwner();
+    @Nonnull
+    @Override
+    GrDocTag[] getTags();
 
-  @Nonnull
-  GrDocTag[] getTags();
+    @Nullable
+    @Override
+    GrDocTag findTagByName(String name);
 
-  @Nullable
-  GrDocTag findTagByName(@NonNls String name);
-
-  @Nonnull
-  GrDocTag[] findTagsByName(@NonNls String name);
+    @Nonnull
+    @Override
+    GrDocTag[] findTagsByName(String name);
 }

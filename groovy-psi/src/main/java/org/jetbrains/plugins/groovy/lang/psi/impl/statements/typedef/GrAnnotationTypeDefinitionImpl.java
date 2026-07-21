@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.typedef;
 
 import com.intellij.java.language.psi.PsiClassType;
@@ -27,7 +26,7 @@ import org.jetbrains.plugins.groovy.lang.psi.stubs.GrTypeDefinitionStub;
 
 /**
  * @author Dmitry.Krasilschikov
- * @date 18.03.2007
+ * @since 2007-04-04
  */
 public class GrAnnotationTypeDefinitionImpl extends GrTypeDefinitionImpl implements GrAnnotationTypeDefinition {
   public GrAnnotationTypeDefinitionImpl(@Nonnull ASTNode node) {
@@ -38,6 +37,7 @@ public class GrAnnotationTypeDefinitionImpl extends GrTypeDefinitionImpl impleme
     super(stub, GroovyElementTypes.ANNOTATION_DEFINITION);
   }
 
+  @Override
   public String toString() {
     return "Annotation definition";
   }

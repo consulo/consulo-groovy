@@ -15,24 +15,23 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.typedef.members;
 
-import java.util.Collections;
-import java.util.Map;
-
+import consulo.annotation.access.RequiredReadAction;
+import consulo.language.ast.ASTNode;
 import jakarta.annotation.Nonnull;
-
 import org.jetbrains.plugins.groovy.extensions.NamedArgumentDescriptor;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotationMemberValue;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrAnnotationMethod;
 import org.jetbrains.plugins.groovy.lang.psi.stubs.GrMethodStub;
-import consulo.language.ast.ASTNode;
+
+import java.util.Collections;
+import java.util.Map;
 
 /**
- * User: Dmitry.Krasilschikov
+ * @author Dmitry.Krasilschikov
  */
 public class GrAnnotationMethodImpl extends GrMethodBaseImpl implements GrAnnotationMethod {
-
   public GrAnnotationMethodImpl(@Nonnull ASTNode node) {
     super(node);
   }
@@ -46,6 +45,7 @@ public class GrAnnotationMethodImpl extends GrMethodBaseImpl implements GrAnnota
     visitor.visitAnnotationMethod(this);
   }
 
+  @Override
   public String toString() {
     return "Default annotation member";
   }
@@ -57,6 +57,7 @@ public class GrAnnotationMethodImpl extends GrMethodBaseImpl implements GrAnnota
   }
 
   @Override
+  @RequiredReadAction
   public GrAnnotationMemberValue getDefaultValue() {
     return findChildByClass(GrAnnotationMemberValue.class);
   }

@@ -15,8 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.impl.intentions.conversions.strings;
 
+import consulo.annotation.access.RequiredReadAction;
 import consulo.language.psi.PsiElement;
-import org.jetbrains.annotations.NonNls;
 import org.jetbrains.plugins.groovy.impl.intentions.base.ErrorUtil;
 import org.jetbrains.plugins.groovy.impl.intentions.base.PsiElementPredicate;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
@@ -26,14 +26,14 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpres
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.literals.GrLiteral;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.literals.GrStringInjection;
 
-
 class ConvertibleGStringLiteralPredicate implements PsiElementPredicate {
-
+  @Override
+  @RequiredReadAction
   public boolean satisfiedBy(PsiElement element) {
     if (!(element instanceof GrLiteral)) return false;
     if (ErrorUtil.containsError(element)) return false;
 
-    @NonNls String text = element.getText();
+    String text = element.getText();
 
     if (text.charAt(0) != '"') return false;
     for (PsiElement child : element.getChildren()) {

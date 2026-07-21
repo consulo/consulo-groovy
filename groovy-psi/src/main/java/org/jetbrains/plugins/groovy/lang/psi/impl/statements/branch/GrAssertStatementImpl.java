@@ -13,17 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.branch;
 
-import jakarta.annotation.Nullable;
-
+import consulo.annotation.access.RequiredReadAction;
+import consulo.language.ast.ASTNode;
 import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.branch.GrAssertStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyPsiElementImpl;
-import consulo.language.ast.ASTNode;
 
 /**
  * @author ilyas
@@ -38,17 +37,20 @@ public class GrAssertStatementImpl extends GroovyPsiElementImpl implements GrAss
     visitor.visitAssertStatement(this);
   }
 
+  @Override
   public String toString() {
     return "ASSERT statement";
   }
 
   @Override
   @Nullable
+  @RequiredReadAction
   public GrExpression getAssertion() {
     return findExpressionChild(this);
   }
 
   @Override
+  @RequiredReadAction
   public GrExpression getErrorMessage() {
     GrExpression[] exprs = findChildrenByClass(GrExpression.class);
     return exprs.length >= 2 ? exprs[1] : null;

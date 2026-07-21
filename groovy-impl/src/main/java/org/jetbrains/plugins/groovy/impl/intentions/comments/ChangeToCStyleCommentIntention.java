@@ -17,6 +17,8 @@ package org.jetbrains.plugins.groovy.impl.intentions.comments;
 
 import com.intellij.java.language.psi.JavaPsiFacade;
 import com.intellij.java.language.psi.PsiElementFactory;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.codeEditor.Editor;
 import consulo.groovy.impl.localize.GroovyIntentionLocalize;
 import consulo.language.ast.IElementType;
@@ -42,18 +44,19 @@ public class ChangeToCStyleCommentIntention extends Intention {
     }
 
     @Nonnull
+    @Override
     protected PsiElementPredicate getElementPredicate() {
         return new EndOfLineCommentPredicate();
     }
 
-    public void processIntention(@Nonnull PsiElement element, Project project, Editor editor)
-        throws IncorrectOperationException {
+    @Override
+    @RequiredWriteAction
+    public void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
         PsiComment selectedComment = (PsiComment) element;
         PsiComment firstComment = selectedComment;
 
         while (true) {
-            PsiElement prevComment =
-                getPrevNonWhiteSpace(firstComment);
+            PsiElement prevComment = getPrevNonWhiteSpace(firstComment);
             if (!isEndOfLineComment(prevComment)) {
                 break;
             }
@@ -62,7 +65,7 @@ public class ChangeToCStyleCommentIntention extends Intention {
         JavaPsiFacade manager = JavaPsiFacade.getInstance(selectedComment.getProject());
         PsiElementFactory factory = manager.getElementFactory();
         String text = getCommentContents(firstComment);
-        List<PsiElement> commentsToDelete = new ArrayList<PsiElement>();
+        List<PsiElement> commentsToDelete = new ArrayList<>();
         PsiElement nextComment = firstComment;
         while (true) {
             nextComment = getNextNonWhiteSpace(nextComment);
@@ -73,8 +76,7 @@ public class ChangeToCStyleCommentIntention extends Intention {
                 + getCommentContents((PsiComment) nextComment);
             commentsToDelete.add(nextComment);
         }
-        PsiComment newComment =
-            factory.createCommentFromText("/*" + text + " */", selectedComment.getParent());
+        PsiComment newComment = factory.createCommentFromText("/*" + text + " */", selectedComment.getParent());
         firstComment.replace(newComment);
         for (PsiElement commentToDelete : commentsToDelete) {
             commentToDelete.delete();
@@ -82,6 +84,7 @@ public class ChangeToCStyleCommentIntention extends Intention {
     }
 
     @Nullable
+    @RequiredReadAction
     private PsiElement getNextNonWhiteSpace(PsiElement nextComment) {
         PsiElement elementToCheck = nextComment;
         while (true) {
@@ -99,6 +102,7 @@ public class ChangeToCStyleCommentIntention extends Intention {
     }
 
     @Nullable
+    @RequiredReadAction
     private PsiElement getPrevNonWhiteSpace(PsiElement nextComment) {
         PsiElement elementToCheck = nextComment;
         while (true) {
@@ -116,14 +120,14 @@ public class ChangeToCStyleCommentIntention extends Intention {
     }
 
     private boolean isEndOfLineComment(PsiElement element) {
-        if (!(element instanceof PsiComment)) {
+        if (!(element instanceof PsiComment comment)) {
             return false;
         }
-        PsiComment comment = (PsiComment) element;
         IElementType tokenType = comment.getTokenType();
         return GroovyTokenTypes.mSL_COMMENT.equals(tokenType);
     }
 
+    @RequiredReadAction
     private static String getCommentContents(PsiComment comment) {
         String text = comment.getText();
         return text.substring(2);

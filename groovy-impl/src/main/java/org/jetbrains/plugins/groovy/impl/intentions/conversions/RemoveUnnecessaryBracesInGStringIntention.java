@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.impl.intentions.conversions;
 
+import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.codeEditor.Editor;
 import consulo.groovy.impl.localize.GroovyIntentionLocalize;
 import consulo.language.psi.PsiElement;
@@ -47,11 +48,14 @@ public class RemoveUnnecessaryBracesInGStringIntention extends Intention {
     }
 
     @Override
+    @RequiredWriteAction
     protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
         GrStringUtil.removeUnnecessaryBracesInGString((GrString) element);
     }
 
     public static class MyPredicate implements PsiElementPredicate {
+        @Override
+        @RequiredReadAction
         public boolean satisfiedBy(PsiElement element) {
             return isIntentionAvailable(element);
         }

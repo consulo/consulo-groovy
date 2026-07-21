@@ -15,6 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.impl.lang.surroundWith;
 
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.document.util.TextRange;
 import consulo.language.psi.PsiElement;
 import consulo.language.util.IncorrectOperationException;
@@ -26,10 +27,11 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrForStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.clauses.GrForClause;
 
 /**
- * User: Dmitry.Krasilschikov
- * Date: 25.05.2007
+ * @author Dmitry.Krasilschikov
+ * @since 2007-05-25
  */
 public class ForSurrounder extends GroovyManyStatementsSurrounder {
+  @Override
   protected GroovyPsiElement doSurroundElements(PsiElement[] elements, PsiElement context) throws IncorrectOperationException {
     GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(elements[0].getProject());
     GrForStatement whileStatement = (GrForStatement) factory.createStatementFromText("for(a in b){\n}", context);
@@ -37,6 +39,8 @@ public class ForSurrounder extends GroovyManyStatementsSurrounder {
     return whileStatement;
   }
 
+  @Override
+  @RequiredWriteAction
   protected TextRange getSurroundSelectionRange(GroovyPsiElement element) {
     assert element instanceof GrForStatement;
     GrForClause clause = ((GrForStatement) element).getClause();
@@ -49,6 +53,7 @@ public class ForSurrounder extends GroovyManyStatementsSurrounder {
     return new TextRange(endOffset, endOffset);
   }
 
+  @Override
   public LocalizeValue getTemplateDescription() {
     return LocalizeValue.localizeTODO("for");
   }

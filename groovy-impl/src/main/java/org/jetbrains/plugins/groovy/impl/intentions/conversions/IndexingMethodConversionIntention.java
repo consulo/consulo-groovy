@@ -15,6 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.impl.intentions.conversions;
 
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.codeEditor.Editor;
 import consulo.groovy.impl.localize.GroovyIntentionLocalize;
 import consulo.language.ast.IElementType;
@@ -39,15 +40,14 @@ public class IndexingMethodConversionIntention extends Intention {
     }
 
     @Nonnull
+    @Override
     public PsiElementPredicate getElementPredicate() {
         return new IndexingMethodConversionPredicate();
     }
 
-    public void processIntention(
-        @Nonnull PsiElement element,
-        Project project,
-        Editor editor
-    ) throws IncorrectOperationException {
+    @Override
+    @RequiredWriteAction
+    public void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
         GrMethodCallExpression callExpression = (GrMethodCallExpression) element;
         GrArgumentList argList = callExpression.getArgumentList();
         GrExpression[] arguments = argList.getExpressionArguments();
@@ -61,9 +61,10 @@ public class IndexingMethodConversionIntention extends Intention {
             PsiImplUtil.replaceExpression(qualifier.getText() + '[' + arguments[0].getText() + ']', callExpression);
         }
         else {
-            PsiImplUtil.replaceExpression(qualifier.getText() + '[' + arguments[0].getText() + "]=" + arguments[1]
-                .getText(), callExpression);
+            PsiImplUtil.replaceExpression(
+                qualifier.getText() + '[' + arguments[0].getText() + "]=" + arguments[1].getText(),
+                callExpression
+            );
         }
     }
-
 }

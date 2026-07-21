@@ -26,10 +26,11 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrAn
  */
 @ExtensionImpl
 public class GrAnnotationMethodNameIndex extends StringStubIndexExtension<GrAnnotationMethod> {
-  public static final StubIndexKey<String, GrAnnotationMethod> KEY = StubIndexKey.createIndexKey("gr.annot.method.name");
+    public static final StubIndexKey<String, GrAnnotationMethod> KEY = StubIndexKey.createIndexKey("gr.annot.method.name");
 
-  @Nonnull
-  public StubIndexKey<String, GrAnnotationMethod> getKey() {
-    return KEY;
-  }
+    @Nonnull
+    @Override
+    public StubIndexKey<String, GrAnnotationMethod> getKey() {
+        return KEY;
+    }
 }

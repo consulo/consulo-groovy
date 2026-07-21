@@ -15,6 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.impl.intentions.control;
 
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.codeEditor.Editor;
 import consulo.groovy.impl.localize.GroovyIntentionLocalize;
 import consulo.language.psi.PsiElement;
@@ -37,16 +38,15 @@ public class MergeElseIfIntention extends Intention {
         return GroovyIntentionLocalize.mergeElseIfIntentionName();
     }
 
+    @Override
     @Nonnull
     public PsiElementPredicate getElementPredicate() {
         return new MergeElseIfPredicate();
     }
 
-    public void processIntention(
-        @Nonnull PsiElement element,
-        Project project,
-        Editor editor
-    ) throws IncorrectOperationException {
+    @Override
+    @RequiredWriteAction
+    public void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
         GrIfStatement parentStatement = (GrIfStatement) element;
         GrBlockStatement elseBlockStatement = (GrBlockStatement) parentStatement.getElseBranch();
         assert elseBlockStatement != null;

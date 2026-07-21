@@ -15,10 +15,12 @@
  */
 package org.jetbrains.plugins.groovy.impl.lang.surroundWith;
 
+import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.document.util.TextRange;
 import consulo.language.ast.ASTNode;
-import consulo.language.psi.PsiElement;
 import consulo.language.ast.TokenType;
+import consulo.language.psi.PsiElement;
 import consulo.language.util.IncorrectOperationException;
 import consulo.localize.LocalizeValue;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
@@ -31,10 +33,13 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrCodeBlock;
  * @author Max Medvedev
  */
 public class GrBracesSurrounder extends GroovyManyStatementsSurrounder {
+  @Override
   public LocalizeValue getTemplateDescription() {
     return LocalizeValue.localizeTODO("{}");
   }
 
+  @Override
+  @RequiredWriteAction
   protected GroovyPsiElement doSurroundElements(PsiElement[] elements, PsiElement context) throws IncorrectOperationException {
     GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(elements[0].getProject());
 
@@ -60,6 +65,7 @@ public class GrBracesSurrounder extends GroovyManyStatementsSurrounder {
   }
 
   @Override
+  @RequiredReadAction
   protected TextRange getSurroundSelectionRange(GroovyPsiElement element) {
     int offset = element.getTextRange().getEndOffset();
     return new TextRange(offset, offset);

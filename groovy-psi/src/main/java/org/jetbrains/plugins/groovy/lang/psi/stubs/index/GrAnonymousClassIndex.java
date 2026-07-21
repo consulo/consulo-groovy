@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.lang.psi.stubs.index;
 
 import consulo.annotation.component.ExtensionImpl;
@@ -27,10 +26,11 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrAnonymousC
  */
 @ExtensionImpl
 public class GrAnonymousClassIndex extends StringStubIndexExtension<GrAnonymousClassDefinition> {
-  public static final StubIndexKey<String, GrAnonymousClassDefinition> KEY = StubIndexKey.createIndexKey("gr.anonymous.class");
+    public static final StubIndexKey<String, GrAnonymousClassDefinition> KEY = StubIndexKey.createIndexKey("gr.anonymous.class");
 
-  @Nonnull
-  public StubIndexKey<String, GrAnonymousClassDefinition> getKey() {
-    return KEY;
-  }
+    @Nonnull
+    @Override
+    public StubIndexKey<String, GrAnonymousClassDefinition> getKey() {
+        return KEY;
+    }
 }

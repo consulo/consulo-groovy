@@ -30,21 +30,22 @@ import java.util.Collection;
  * @author ilyas
  */
 @ExtensionImpl
-public class GrFullClassNameIndex extends IntStubIndexExtension<PsiClass>
-{
-  public static final StubIndexKey<Integer,PsiClass> KEY = StubIndexKey.createIndexKey("gr.class.fqn");
+public class GrFullClassNameIndex extends IntStubIndexExtension<PsiClass> {
+    public static final StubIndexKey<Integer, PsiClass> KEY = StubIndexKey.createIndexKey("gr.class.fqn");
 
-  private static final GrFullClassNameIndex ourInstance = new GrFullClassNameIndex();
-  public static GrFullClassNameIndex getInstance() {
-    return ourInstance;
-  }
+    private static final GrFullClassNameIndex ourInstance = new GrFullClassNameIndex();
 
-  @Nonnull
-  public StubIndexKey<Integer, PsiClass> getKey() {
-    return KEY;
-  }
+    public static GrFullClassNameIndex getInstance() {
+        return ourInstance;
+    }
 
-  public Collection<PsiClass> get(Integer integer, Project project, GlobalSearchScope scope) {
-    return super.get(integer, project, new GrSourceFilterScope(scope));
-  }
+    @Nonnull
+    @Override
+    public StubIndexKey<Integer, PsiClass> getKey() {
+        return KEY;
+    }
+
+    public Collection<PsiClass> get(Integer integer, Project project, GlobalSearchScope scope) {
+        return super.get(integer, project, new GrSourceFilterScope(scope));
+    }
 }

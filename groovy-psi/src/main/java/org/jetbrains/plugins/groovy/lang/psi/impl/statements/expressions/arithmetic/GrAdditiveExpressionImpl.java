@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.arithmetic;
 
 import consulo.language.ast.ASTNode;
@@ -24,13 +23,12 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.GrBinar
  * @author ilyas
  */
 public class GrAdditiveExpressionImpl extends GrBinaryExpressionImpl {
+    public GrAdditiveExpressionImpl(@Nonnull ASTNode node) {
+        super(node);
+    }
 
-  public GrAdditiveExpressionImpl(@Nonnull ASTNode node) {
-    super(node);
-  }
-
-  public String toString() {
-    return "Additive expression";
-  }
-
+    @Override
+    public String toString() {
+        return "Additive expression";
+    }
 }
