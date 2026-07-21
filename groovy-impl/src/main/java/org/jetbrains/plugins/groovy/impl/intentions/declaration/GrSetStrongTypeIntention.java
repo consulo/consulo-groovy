@@ -101,8 +101,8 @@ public class GrSetStrongTypeIntention extends Intention {
 
         List<TypeConstraint> types = new ArrayList<>();
 
-        if (parent.getParent() instanceof GrForInClause) {
-            types.add(SupertypeConstraint.create(PsiUtil.extractIteratedType((GrForInClause) parent.getParent())));
+        if (parent.getParent() instanceof GrForInClause forInClause) {
+            types.add(SupertypeConstraint.create(PsiUtil.extractIteratedType(forInClause)));
         }
         else {
             for (GrVariable variable : variables) {
@@ -128,7 +128,7 @@ public class GrSetStrongTypeIntention extends Intention {
         PsiElement replaceElement = setType(element, parent, elementToBuildTemplate);
         assert replaceElement != null;
 
-        TypeConstraint[] constraints = types.toArray(new TypeConstraint[types.size()]);
+        TypeConstraint[] constraints = types.toArray(TypeConstraint[]::new);
         ChooseTypeExpression chooseTypeExpression = new ChooseTypeExpression(constraints, manager, replaceElement.getResolveScope());
         builder.replaceElement(replaceElement, chooseTypeExpression);
 
@@ -163,8 +163,8 @@ public class GrSetStrongTypeIntention extends Intention {
         }
         else {
             PsiClassType typeToUse = TypesUtil.createType("Abc", element);
-            if (elementToBuildTemplate instanceof GrVariableDeclaration) {
-                ((GrVariableDeclaration) elementToBuildTemplate).setType(typeToUse);
+            if (elementToBuildTemplate instanceof GrVariableDeclaration varDecl) {
+                varDecl.setType(typeToUse);
             }
             else {
                 ((GrVariable) parent).setType(typeToUse);
