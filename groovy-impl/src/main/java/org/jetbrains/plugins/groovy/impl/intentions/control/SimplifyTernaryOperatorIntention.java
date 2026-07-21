@@ -110,6 +110,7 @@ public class SimplifyTernaryOperatorIntention extends Intention {
     }
 
     @Nonnull
+    @RequiredReadAction
     private static String getStringToPutIntoOrExpression(GrExpression expression) {
         String expressionText = expression.getText();
         if (ParenthesesUtils.OR_PRECEDENCE < ParenthesesUtils.getPrecedence(expression)) {

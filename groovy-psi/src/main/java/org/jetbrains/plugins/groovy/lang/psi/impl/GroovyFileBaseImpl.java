@@ -63,7 +63,7 @@ public abstract class GroovyFileBaseImpl extends PsiFileBase implements GroovyFi
   @RequiredReadAction
   public void subtreeChanged() {
     super.subtreeChanged();
-      myMethods = null;
+    myMethods = null;
   }
 
   protected GroovyFileBaseImpl(FileViewProvider viewProvider, @Nonnull Language language) {
