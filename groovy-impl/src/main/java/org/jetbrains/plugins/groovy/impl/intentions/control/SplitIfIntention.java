@@ -15,6 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.impl.intentions.control;
 
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.codeEditor.Editor;
 import consulo.groovy.impl.localize.GroovyIntentionLocalize;
 import consulo.language.psi.PsiElement;
@@ -42,6 +43,7 @@ public class SplitIfIntention extends Intention {
     }
 
     @Override
+    @RequiredWriteAction
     protected void processIntention(@Nonnull PsiElement andElement, Project project, Editor editor) throws IncorrectOperationException {
         GrBinaryExpression binaryExpression = (GrBinaryExpression) andElement.getParent();
         GrIfStatement ifStatement = (GrIfStatement) binaryExpression.getParent();
@@ -68,15 +70,10 @@ public class SplitIfIntention extends Intention {
     @Nonnull
     @Override
     protected PsiElementPredicate getElementPredicate() {
-        return new PsiElementPredicate() {
-            @Override
-            public boolean satisfiedBy(PsiElement element) {
-                return element.getParent() instanceof GrBinaryExpression &&
-                    ((GrBinaryExpression) element.getParent()).getRightOperand() != null &&
-                    element.getParent().getParent() instanceof GrIfStatement &&
-                    ((GrIfStatement) element.getParent().getParent()).getElseBranch() == null
-                    && "&&".equals(element.getText());
-            }
-        };
+        return element -> element.getParent() instanceof GrBinaryExpression binaryExpr
+            && binaryExpr.getRightOperand() != null
+            && binaryExpr.getParent() instanceof GrIfStatement ifStmt
+            && ifStmt.getElseBranch() == null
+            && "&&".equals(element.getText());
     }
 }

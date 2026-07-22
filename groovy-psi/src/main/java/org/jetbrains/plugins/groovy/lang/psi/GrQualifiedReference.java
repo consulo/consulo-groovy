@@ -15,23 +15,26 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi;
 
+import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiQualifiedReferenceElement;
-
 import jakarta.annotation.Nullable;
 
 /**
  * @author Maxim.Medvedev
  */
 public interface GrQualifiedReference<Qualifier extends PsiElement> extends PsiQualifiedReferenceElement {
-  @Nullable
-  @Override
-  Qualifier getQualifier();
+    @Nullable
+    @Override
+    @RequiredReadAction
+    Qualifier getQualifier();
 
-  void setQualifier(@Nullable Qualifier qualifier);
+    @RequiredWriteAction
+    void setQualifier(@Nullable Qualifier qualifier);
 
-  @Nullable
-  PsiElement getReferenceNameElement();
+    @Nullable
+    PsiElement getReferenceNameElement();
 
-  boolean isQualified();
+    boolean isQualified();
 }

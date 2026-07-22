@@ -15,6 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.impl.intentions.conversions.strings;
 
+import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.codeEditor.Editor;
 import consulo.groovy.impl.localize.GroovyIntentionLocalize;
 import consulo.language.ast.ASTNode;
@@ -45,11 +47,8 @@ public class GrBreakStringOnLineBreaksIntention extends Intention {
     }
 
     @Override
-    protected void processIntention(
-        @Nonnull PsiElement element,
-        Project project,
-        Editor editor
-    ) throws IncorrectOperationException {
+    @RequiredWriteAction
+    protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
         String text = invokeImpl(element);
         GrExpression newExpr = GroovyPsiElementFactory.getInstance(project).createExpressionFromText(text);
         ((GrExpression) element).replaceWithExpression(newExpr, true);
@@ -58,14 +57,10 @@ public class GrBreakStringOnLineBreaksIntention extends Intention {
     @Nonnull
     @Override
     protected PsiElementPredicate getElementPredicate() {
-        return new PsiElementPredicate() {
-            @Override
-            public boolean satisfiedBy(PsiElement element) {
-                return element instanceof GrLiteral && !element.getText().equals(invokeImpl(element));
-            }
-        };
+        return element -> element instanceof GrLiteral && !element.getText().equals(invokeImpl(element));
     }
 
+    @RequiredReadAction
     private static String invokeImpl(PsiElement element) {
         String text = element.getText();
         String quote = GrStringUtil.getStartQuote(text);

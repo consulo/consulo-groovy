@@ -13,26 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions;
 
 import com.intellij.java.language.psi.PsiType;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.access.RequiredWriteAction;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotationMemberValue;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
-
-import jakarta.annotation.Nullable;
 
 /**
  * @author ilyas
  */
 public interface GrExpression extends GrStatement, GrAnnotationMemberValue {
-  GrExpression[] EMPTY_ARRAY = new GrExpression[0];
+    GrExpression[] EMPTY_ARRAY = new GrExpression[0];
 
-  @Nullable
-  PsiType getType();
+    @Nullable
+    @RequiredReadAction
+    PsiType getType();
 
-  @Nullable
-  PsiType getNominalType();
+    @Nullable
+    @RequiredReadAction
+    PsiType getNominalType();
 
-  GrExpression replaceWithExpression(GrExpression expression, boolean removeUnnecessaryParentheses);
+    @RequiredWriteAction
+    GrExpression replaceWithExpression(GrExpression expression, boolean removeUnnecessaryParentheses);
 }

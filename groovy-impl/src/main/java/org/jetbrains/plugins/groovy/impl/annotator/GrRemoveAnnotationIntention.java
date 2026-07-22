@@ -15,6 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.impl.annotator;
 
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.codeEditor.Editor;
 import consulo.groovy.impl.localize.GroovyIntentionLocalize;
 import consulo.language.psi.PsiElement;
@@ -38,6 +39,7 @@ public class GrRemoveAnnotationIntention extends Intention {
     }
 
     @Override
+    @RequiredWriteAction
     protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
         element.delete();
     }
@@ -45,11 +47,6 @@ public class GrRemoveAnnotationIntention extends Intention {
     @Nonnull
     @Override
     protected PsiElementPredicate getElementPredicate() {
-        return new PsiElementPredicate() {
-            @Override
-            public boolean satisfiedBy(PsiElement element) {
-                return element instanceof GrAnnotation;
-            }
-        };
+        return element -> element instanceof GrAnnotation;
     }
 }

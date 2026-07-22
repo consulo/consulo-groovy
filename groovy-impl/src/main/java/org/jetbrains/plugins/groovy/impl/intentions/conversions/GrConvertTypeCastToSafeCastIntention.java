@@ -15,6 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.impl.intentions.conversions;
 
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.codeEditor.Editor;
 import consulo.groovy.impl.localize.GroovyIntentionLocalize;
 import consulo.language.psi.PsiElement;
@@ -40,6 +41,7 @@ public class GrConvertTypeCastToSafeCastIntention extends Intention {
     }
 
     @Override
+    @RequiredWriteAction
     protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
         if (!(element instanceof GrTypeCastExpression)) {
             return;
@@ -64,13 +66,8 @@ public class GrConvertTypeCastToSafeCastIntention extends Intention {
     @Nonnull
     @Override
     protected PsiElementPredicate getElementPredicate() {
-        return new PsiElementPredicate() {
-            @Override
-            public boolean satisfiedBy(PsiElement element) {
-                return element instanceof GrTypeCastExpression &&
-                    ((GrTypeCastExpression) element).getCastTypeElement() != null &&
-                    ((GrTypeCastExpression) element).getOperand() != null;
-            }
-        };
+        return element -> element instanceof GrTypeCastExpression typeCast
+            && typeCast.getCastTypeElement() != null
+            && typeCast.getOperand() != null;
     }
 }

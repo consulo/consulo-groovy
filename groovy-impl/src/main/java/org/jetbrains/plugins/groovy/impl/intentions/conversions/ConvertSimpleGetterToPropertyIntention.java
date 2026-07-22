@@ -19,6 +19,7 @@ import com.intellij.java.language.psi.PsiClass;
 import com.intellij.java.language.psi.PsiModifier;
 import com.intellij.java.language.psi.PsiType;
 import com.intellij.java.language.psi.codeStyle.JavaCodeStyleManager;
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.codeEditor.Editor;
 import consulo.groovy.impl.localize.GroovyIntentionLocalize;
 import consulo.language.psi.PsiElement;
@@ -48,6 +49,7 @@ public class ConvertSimpleGetterToPropertyIntention extends Intention {
     }
 
     @Override
+    @RequiredWriteAction
     protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
         GrMethod method = (GrMethod) element.getParent();
 
@@ -64,7 +66,7 @@ public class ConvertSimpleGetterToPropertyIntention extends Intention {
         String fieldName = GroovyPropertyUtils.getPropertyNameByGetter(method);
 
         String[] modifiers;
-        if (method.hasModifierProperty(PsiModifier.STATIC)) {
+        if (method.isStatic()) {
             modifiers = new String[]{PsiModifier.STATIC, PsiModifier.FINAL,};
         }
         else {
@@ -84,41 +86,36 @@ public class ConvertSimpleGetterToPropertyIntention extends Intention {
     @Nonnull
     @Override
     protected PsiElementPredicate getElementPredicate() {
-        return new PsiElementPredicate() {
-            @Override
-            public boolean satisfiedBy(PsiElement element) {
-                PsiElement parent = element.getParent();
-                if (!(parent instanceof GrMethod) || ((GrMethod) parent).getNameIdentifierGroovy() != element) {
-                    return false;
-                }
-
-                GrMethod method = (GrMethod) parent;
-
-                GrOpenBlock block = method.getBlock();
-                if (block == null) {
-                    return false;
-                }
-
-                GrStatement[] statements = block.getStatements();
-                if (statements.length != 1) {
-                    return false;
-                }
-
-                if (!GroovyPropertyUtils.isSimplePropertyGetter(method)) {
-                    return false;
-                }
-                if (GroovyPropertyUtils.findFieldForAccessor(method, true) != null) {
-                    return false;
-                }
-
-
-                GrStatement statement = statements[0];
-                if (!(statement instanceof GrReturnStatement && ((GrReturnStatement) statement).getReturnValue() != null ||
-                    statement instanceof GrExpression && ((GrExpression) statement).getType() != PsiType.VOID)) {
-                    return false;
-                }
-                return true;
+        return element -> {
+            PsiElement parent = element.getParent();
+            if (!(parent instanceof GrMethod method) || method.getNameIdentifierGroovy() != element) {
+                return false;
             }
+
+            GrOpenBlock block = method.getBlock();
+            if (block == null) {
+                return false;
+            }
+
+            GrStatement[] statements = block.getStatements();
+            if (statements.length != 1) {
+                return false;
+            }
+
+            if (!GroovyPropertyUtils.isSimplePropertyGetter(method)) {
+                return false;
+            }
+            if (GroovyPropertyUtils.findFieldForAccessor(method, true) != null) {
+                return false;
+            }
+
+
+            GrStatement statement = statements[0];
+            if (!(statement instanceof GrReturnStatement returnStmt && returnStmt.getReturnValue() != null
+                || statement instanceof GrExpression expression && expression.getType() != PsiType.VOID)) {
+                return false;
+            }
+            return true;
         };
     }
 }

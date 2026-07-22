@@ -15,6 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.impl.intentions.control;
 
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.codeEditor.Editor;
 import consulo.groovy.impl.localize.GroovyIntentionLocalize;
 import consulo.language.psi.PsiElement;
@@ -45,44 +46,45 @@ public class ReplaceIfWithTernaryIntention extends Intention {
     }
 
     @Override
+    @RequiredWriteAction
     protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
         GrIfStatement ifStatement = (GrIfStatement) element.getParent();
 
         PsiElement thenBranch = skipBlock(ifStatement.getThenBranch());
         PsiElement elseBranch = skipBlock(ifStatement.getElseBranch());
 
-        if (thenBranch instanceof GrAssignmentExpression && elseBranch instanceof GrAssignmentExpression) {
+        if (thenBranch instanceof GrAssignmentExpression thenAssignment && elseBranch instanceof GrAssignmentExpression elseAssignment) {
             GrAssignmentExpression assignment =
                 (GrAssignmentExpression) GroovyPsiElementFactory.getInstance(project).createStatementFromText("a = b ? c : d");
 
-            assignment.getLValue().replaceWithExpression(((GrAssignmentExpression) thenBranch).getLValue(), true);
+            assignment.getLValue().replaceWithExpression(thenAssignment.getLValue(), true);
 
             GrConditionalExpression conditional = (GrConditionalExpression) assignment.getRValue();
             replaceConditional(
                 conditional,
                 ifStatement.getCondition(),
-                ((GrAssignmentExpression) thenBranch).getRValue(),
-                ((GrAssignmentExpression) elseBranch).getRValue()
+                thenAssignment.getRValue(),
+                elseAssignment.getRValue()
             );
             ifStatement.replaceWithStatement(assignment);
         }
 
-
-        if (thenBranch instanceof GrReturnStatement && elseBranch instanceof GrReturnStatement) {
+        if (thenBranch instanceof GrReturnStatement thenReturn && elseBranch instanceof GrReturnStatement elseReturn) {
             GrReturnStatement returnSt =
                 (GrReturnStatement) GroovyPsiElementFactory.getInstance(project).createStatementFromText("return a ? b : c");
             GrConditionalExpression conditional = (GrConditionalExpression) returnSt.getReturnValue();
             replaceConditional(
                 conditional,
                 ifStatement.getCondition(),
-                ((GrReturnStatement) thenBranch).getReturnValue(),
-                ((GrReturnStatement) elseBranch).getReturnValue()
+                thenReturn.getReturnValue(),
+                elseReturn.getReturnValue()
             );
 
             ifStatement.replaceWithStatement(returnSt);
         }
     }
 
+    @RequiredWriteAction
     @SuppressWarnings("ConstantConditions")
     private static void replaceConditional(
         GrConditionalExpression conditional,
@@ -98,41 +100,32 @@ public class ReplaceIfWithTernaryIntention extends Intention {
     @Nonnull
     @Override
     protected PsiElementPredicate getElementPredicate() {
-        return new PsiElementPredicate() {
-            @Override
-            public boolean satisfiedBy(PsiElement e) {
-                if (!e.getNode().getElementType().equals(GroovyTokenTypes.kIF)) {
-                    return false;
-                }
-
-                GrIfStatement ifStatement = (GrIfStatement) e.getParent();
-                PsiElement thenBranch = skipBlock(ifStatement.getThenBranch());
-                PsiElement elseBranch = skipBlock(ifStatement.getElseBranch());
-
-                if (thenBranch instanceof GrAssignmentExpression &&
-                    elseBranch instanceof GrAssignmentExpression &&
-                    ((GrAssignmentExpression) thenBranch).getRValue() != null &&
-                    ((GrAssignmentExpression) elseBranch).getRValue() != null) {
-                    GrExpression lvalue1 = ((GrAssignmentExpression) thenBranch).getLValue();
-                    GrExpression lvalue2 = ((GrAssignmentExpression) elseBranch).getLValue();
-                    return EquivalenceChecker.expressionsAreEquivalent(lvalue1, lvalue2);
-                }
-
-                if (thenBranch instanceof GrReturnStatement &&
-                    elseBranch instanceof GrReturnStatement &&
-                    ((GrReturnStatement) thenBranch).getReturnValue() != null &&
-                    ((GrReturnStatement) elseBranch).getReturnValue() != null) {
-                    return true;
-                }
-
+        return e -> {
+            if (!e.getNode().getElementType().equals(GroovyTokenTypes.kIF)) {
                 return false;
             }
+
+            GrIfStatement ifStatement = (GrIfStatement) e.getParent();
+            PsiElement thenBranch = skipBlock(ifStatement.getThenBranch());
+            PsiElement elseBranch = skipBlock(ifStatement.getElseBranch());
+
+            if (thenBranch instanceof GrAssignmentExpression thenAssignment
+                && elseBranch instanceof GrAssignmentExpression elseAssignment
+                && thenAssignment.getRValue() != null
+                && elseAssignment.getRValue() != null) {
+                return EquivalenceChecker.expressionsAreEquivalent(thenAssignment.getLValue(), elseAssignment.getLValue());
+            }
+
+            return thenBranch instanceof GrReturnStatement thenReturn
+                && elseBranch instanceof GrReturnStatement elseReturn
+                && thenReturn.getReturnValue() != null
+                && elseReturn.getReturnValue() != null;
         };
     }
 
     private static PsiElement skipBlock(PsiElement e) {
-        if (e instanceof GrBlockStatement && ((GrBlockStatement) e).getBlock().getStatements().length == 1) {
-            return ((GrBlockStatement) e).getBlock().getStatements()[0];
+        if (e instanceof GrBlockStatement blockStmt && blockStmt.getBlock().getStatements().length == 1) {
+            return blockStmt.getBlock().getStatements()[0];
         }
         else {
             return e;

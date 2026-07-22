@@ -13,16 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.path;
 
 import com.intellij.java.language.psi.PsiType;
+import consulo.annotation.access.RequiredReadAction;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrArgumentList;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
-
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
 
 /**
  * @author ilyas
@@ -39,17 +38,21 @@ public interface GrIndexProperty extends GrExpression, GrCallExpression {
    * infer type of getAt() applicable
    */
   @Nullable
+  @RequiredReadAction
   PsiType getGetterType();
 
   /**
    * infer type of putAt() applicable
    */
   @Nullable
+  @RequiredReadAction
   PsiType getSetterType();
 
   @Nonnull
+  @RequiredReadAction
   GroovyResolveResult[] multiResolveGetter(boolean incomplete);
 
   @Nonnull
+  @RequiredReadAction
   GroovyResolveResult[] multiResolveSetter(boolean incomplete);
 }

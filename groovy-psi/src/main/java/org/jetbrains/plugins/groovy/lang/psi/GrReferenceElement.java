@@ -16,40 +16,47 @@
 package org.jetbrains.plugins.groovy.lang.psi;
 
 import com.intellij.java.language.psi.PsiType;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiPolyVariantReference;
 import consulo.language.util.IncorrectOperationException;
-import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
-import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeArgumentList;
-
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
+import org.jetbrains.plugins.groovy.lang.psi.api.GroovyResolveResult;
+import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeArgumentList;
 
 /**
  * @author ven
  */
 public interface GrReferenceElement<Q extends PsiElement> extends GroovyPsiElement, PsiPolyVariantReference, GrQualifiedReference<Q> {
-  @Override
-  @Nullable
-  String getReferenceName();
+    @Override
+    @Nullable
+    String getReferenceName();
 
-  @Override
-  PsiElement resolve();
+    @Override
+    @RequiredReadAction
+    PsiElement resolve();
 
-  GroovyResolveResult advancedResolve();
+    GroovyResolveResult advancedResolve();
 
-  @Override
-  @Nonnull
-  GroovyResolveResult[] multiResolve(boolean incompleteCode);
+    @Override
+    @Nonnull
+    @RequiredReadAction
+    GroovyResolveResult[] multiResolve(boolean incompleteCode);
 
-  @Nonnull
-  PsiType[] getTypeArguments();
+    @Nonnull
+    @RequiredReadAction
+    PsiType[] getTypeArguments();
 
-  @Nullable
-  GrTypeArgumentList getTypeArgumentList();
+    @Nullable
+    @RequiredReadAction
+    GrTypeArgumentList getTypeArgumentList();
 
-  @Nonnull
-  String getClassNameText();
+    @Nonnull
+    @RequiredReadAction
+    String getClassNameText();
 
-  PsiElement handleElementRenameSimple(String newElementName) throws IncorrectOperationException;
+    @RequiredWriteAction
+    PsiElement handleElementRenameSimple(String newElementName) throws IncorrectOperationException;
 }
