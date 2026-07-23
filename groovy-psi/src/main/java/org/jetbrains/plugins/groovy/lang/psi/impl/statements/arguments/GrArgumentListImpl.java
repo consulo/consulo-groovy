@@ -13,17 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.arguments;
 
 import com.intellij.java.language.psi.PsiExpression;
 import com.intellij.java.language.psi.PsiType;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.language.ast.ASTNode;
 import consulo.language.codeStyle.CodeStyleManager;
 import consulo.language.impl.ast.TreeUtil;
 import consulo.language.psi.PsiElement;
 import consulo.language.util.IncorrectOperationException;
 import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.lexer.TokenSets;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
@@ -35,7 +37,6 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyPsiElementImpl;
 import org.jetbrains.plugins.groovy.lang.psi.impl.PsiImplUtil;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 
-import jakarta.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,7 +44,6 @@ import java.util.List;
  * @author ilyas
  */
 public class GrArgumentListImpl extends GroovyPsiElementImpl implements GrArgumentList {
-
   public GrArgumentListImpl(@Nonnull ASTNode node) {
     super(node);
   }
@@ -53,12 +53,14 @@ public class GrArgumentListImpl extends GroovyPsiElementImpl implements GrArgume
     visitor.visitArgumentList(this);
   }
 
+  @Override
   public String toString() {
     return "Arguments";
   }
 
   @Override
   @Nonnull
+  @RequiredReadAction
   public GrNamedArgument[] getNamedArguments() {
     List<GrNamedArgument> result = new ArrayList<>();
     for (PsiElement cur = this.getFirstChild(); cur != null; cur = cur.getNextSibling()) {
@@ -68,12 +70,14 @@ public class GrArgumentListImpl extends GroovyPsiElementImpl implements GrArgume
   }
 
   @Override
+  @RequiredReadAction
   public GrNamedArgument findNamedArgument(@Nonnull String label) {
     return PsiImplUtil.findNamedArgument(this, label);
   }
 
   @Override
   @Nonnull
+  @RequiredReadAction
   public GrExpression[] getExpressionArguments() {
     List<GrExpression> result = new ArrayList<>();
     for (PsiElement cur = this.getFirstChild(); cur != null; cur = cur.getNextSibling()) {
@@ -84,6 +88,7 @@ public class GrArgumentListImpl extends GroovyPsiElementImpl implements GrArgume
 
   @Nonnull
   @Override
+  @RequiredReadAction
   public GroovyPsiElement[] getAllArguments() {
     List<GroovyPsiElement> args = new ArrayList<>();
     for (PsiElement child = getFirstChild(); child != null; child = child.getNextSibling()) {
@@ -93,6 +98,7 @@ public class GrArgumentListImpl extends GroovyPsiElementImpl implements GrArgume
   }
 
   @Override
+  @RequiredWriteAction
   public GrArgumentList replaceWithArgumentList(GrArgumentList newArgList) throws IncorrectOperationException {
     if (this.getParent() == null || this.getParent().getNode() == null) {
       throw new IncorrectOperationException();
@@ -109,19 +115,22 @@ public class GrArgumentListImpl extends GroovyPsiElementImpl implements GrArgume
 
   @Override
   @Nullable
+  @RequiredReadAction
   public PsiElement getLeftParen() {
     ASTNode paren = getNode().findChildByType(GroovyTokenTypes.mLPAREN);
     return paren != null ? paren.getPsi() : null;
   }
 
-  @Override
   @Nullable
+  @Override
+  @RequiredReadAction
   public PsiElement getRightParen() {
     ASTNode paren = getNode().findChildByType(GroovyTokenTypes.mRPAREN);
     return paren != null ? paren.getPsi() : null;
   }
 
   @Override
+  @RequiredReadAction
   public int getExpressionArgumentIndex(GrExpression arg) {
     int res = 0;
 
@@ -136,6 +145,7 @@ public class GrArgumentListImpl extends GroovyPsiElementImpl implements GrArgume
   }
 
   @Override
+  @RequiredWriteAction
   public GrNamedArgument addNamedArgument(GrNamedArgument namedArgument) {
     GrNamedArgument[] namedArguments = getNamedArguments();
     GrExpression[] args = getExpressionArguments();
@@ -161,11 +171,13 @@ public class GrArgumentListImpl extends GroovyPsiElementImpl implements GrArgume
   }
 
   @Override
+  @RequiredWriteAction
   public PsiElement add(@Nonnull PsiElement element) throws IncorrectOperationException {
     return addBefore(element, null);
   }
 
   @Override
+  @RequiredWriteAction
   public PsiElement addBefore(@Nonnull PsiElement element, PsiElement anchor) throws IncorrectOperationException {
     if (element instanceof GrNamedArgument || element instanceof GrExpression) {
       if (anchor == null) anchor = getLastChild();
@@ -184,6 +196,7 @@ public class GrArgumentListImpl extends GroovyPsiElementImpl implements GrArgume
   }
 
   @Override
+  @RequiredWriteAction
   public PsiElement addAfter(@Nonnull PsiElement element, @Nullable PsiElement anchor) throws IncorrectOperationException {
     if (element instanceof GrExpression || element instanceof GrNamedArgument) {
       boolean insertComma = getAllArguments().length != 0;
@@ -209,23 +222,24 @@ public class GrArgumentListImpl extends GroovyPsiElementImpl implements GrArgume
   }
 
   @Override
+  @RequiredWriteAction
   public void deleteChildInternal(@Nonnull ASTNode child) {
     PsiElement element = child.getPsi();
     if (element instanceof GrExpression || element instanceof GrNamedArgument) {
       ASTNode prev = TreeUtil.skipElementsBack(child.getTreePrev(), TokenSets.WHITE_SPACES_OR_COMMENTS);
       if (prev != null && prev.getElementType() == GroovyTokenTypes.mCOMMA) {
-        ASTNode pprev = prev.getTreePrev();
-        if (pprev != null && PsiImplUtil.isWhiteSpaceOrNls(pprev)) {
-          super.deleteChildInternal(pprev);
+        ASTNode pPrev = prev.getTreePrev();
+        if (pPrev != null && PsiImplUtil.isWhiteSpaceOrNls(pPrev)) {
+          super.deleteChildInternal(pPrev);
         }
         super.deleteChildInternal(prev);
       }
       else {
         ASTNode next = TreeUtil.skipElements(child.getTreeNext(), TokenSets.WHITE_SPACES_OR_COMMENTS);
         if (next != null && next.getElementType() == GroovyTokenTypes.mCOMMA) {
-          ASTNode nnext = next.getTreeNext();
-          if (nnext != null && PsiImplUtil.isWhiteSpaceOrNls(nnext)) {
-            super.deleteChildInternal(nnext);
+          ASTNode nNext = next.getTreeNext();
+          if (nNext != null && PsiImplUtil.isWhiteSpaceOrNls(nNext)) {
+            super.deleteChildInternal(nNext);
           }
           super.deleteChildInternal(next);
         }

@@ -15,6 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.impl.intentions.conversions.strings;
 
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.codeEditor.Editor;
 import consulo.groovy.impl.localize.GroovyIntentionLocalize;
 import consulo.language.psi.PsiElement;
@@ -40,6 +41,7 @@ public class GrConvertStringToCharIntention extends Intention {
     }
 
     @Override
+    @RequiredWriteAction
     protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
         GrExpression cast = GroovyPsiElementFactory.getInstance(project).createExpressionFromText("a as char");
         ((GrSafeCastExpression) cast).getOperand().replaceWithExpression((GrExpression) element, true);
@@ -50,16 +52,8 @@ public class GrConvertStringToCharIntention extends Intention {
     @Nonnull
     @Override
     protected PsiElementPredicate getElementPredicate() {
-        return new PsiElementPredicate() {
-            @Override
-            public boolean satisfiedBy(PsiElement element) {
-                if (!(element instanceof GrLiteral)) {
-                    return false;
-                }
-
-                Object value = ((GrLiteral) element).getValue();
-                return value instanceof String && ((String) value).length() == 1;
-            }
-        };
+        return element -> element instanceof GrLiteral literal
+            && literal.getValue() instanceof String strValue
+            && strValue.length() == 1;
     }
 }

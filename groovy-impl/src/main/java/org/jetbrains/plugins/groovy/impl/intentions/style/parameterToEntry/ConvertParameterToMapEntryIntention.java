@@ -17,11 +17,12 @@ package org.jetbrains.plugins.groovy.impl.intentions.style.parameterToEntry;
 
 import com.intellij.java.indexing.search.searches.MethodReferencesSearch;
 import com.intellij.java.language.psi.*;
-import consulo.application.ApplicationManager;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.access.RequiredWriteAction;
+import consulo.application.Application;
 import consulo.application.progress.ProgressIndicator;
 import consulo.application.progress.ProgressManager;
 import consulo.application.progress.Task;
-import consulo.application.util.function.Processor;
 import consulo.codeEditor.Editor;
 import consulo.groovy.impl.localize.GroovyIntentionLocalize;
 import consulo.language.editor.refactoring.ui.ConflictsDialog;
@@ -36,11 +37,12 @@ import consulo.language.util.IncorrectOperationException;
 import consulo.localize.LocalizeValue;
 import consulo.logging.Logger;
 import consulo.project.Project;
+import consulo.ui.annotation.RequiredUIAccess;
 import consulo.undoRedo.CommandProcessor;
 import consulo.util.collection.ContainerUtil;
 import consulo.util.collection.MultiMap;
 import consulo.util.lang.StringUtil;
-import consulo.util.lang.ref.Ref;
+import consulo.util.lang.ref.SimpleReference;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.impl.intentions.base.Intention;
@@ -73,6 +75,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.function.Predicate;
 
 import static org.jetbrains.plugins.groovy.impl.intentions.style.parameterToEntry.ConvertParameterToMapEntryIntention.FIRST_PARAMETER_KIND.*;
 
@@ -80,13 +83,12 @@ import static org.jetbrains.plugins.groovy.impl.intentions.style.parameterToEntr
  * @author ilyas
  */
 public class ConvertParameterToMapEntryIntention extends Intention {
-    private static final Logger LOG =
-        Logger.getInstance("#org.jetbrains.plugins.groovy.intentions.style.ConvertParameterToMapEntryIntention");
+    private static final Logger LOG = Logger.getInstance(ConvertParameterToMapEntryIntention.class);
     private static final String CLOSURE_CAPTION = "closure";
     private static final String CLOSURE_CAPTION_CAP = "Closure";
     private static final String METHOD_CAPTION = "method";
     private static final String METHOD_CAPTION_CAP = "Method";
-    private static final String REFACTORING_NAME = "Convert Parameter to Map Entry";
+    private static final LocalizeValue REFACTORING_NAME = LocalizeValue.localizeTODO("Convert Parameter to Map Entry");
     private static final String MAP_TYPE_TEXT = "Map";
     private static final String[] MY_POSSIBLE_NAMES = new String[]{"attrs", "args", "params", "map"};
 
@@ -96,11 +98,13 @@ public class ConvertParameterToMapEntryIntention extends Intention {
         return GroovyIntentionLocalize.convertParameterToMapEntryIntentionName();
     }
 
+    @Override
+    @RequiredUIAccess
     protected void processIntention(@Nonnull final PsiElement element, final Project project, Editor editor)
         throws IncorrectOperationException {
         // Method or closure to be refactored
         final GrParameterListOwner owner = PsiTreeUtil.getParentOfType(element, GrParameterListOwner.class);
-        final Collection<PsiElement> occurrences = new ArrayList<PsiElement>();
+        final Collection<PsiElement> occurrences = new ArrayList<>();
         // Find all referenced expressions
         boolean success = collectOwnerOccurrences(project, owner, occurrences);
         if (!success) {
@@ -137,13 +141,15 @@ public class ConvertParameterToMapEntryIntention extends Intention {
                 break;
             }
             case IS_NOT_MAP: {
-                if (!ApplicationManager.getApplication().isUnitTestMode()) {
+                if (!Application.get().isUnitTestMode()) {
                     final String[] possibleNames = generateValidNames(MY_POSSIBLE_NAMES, firstParam);
 
-                    ApplicationManager.getApplication().invokeLater(new Runnable() {
+                    Application.get().invokeLater(new Runnable() {
+                        @Override
                         public void run() {
                             GroovyMapParameterDialog dialog = new GroovyMapParameterDialog(project, possibleNames, true) {
                                 @Override
+                                @RequiredUIAccess
                                 protected void doOKAction() {
                                     String name = getEnteredName();
                                     MultiMap<PsiElement, LocalizeValue> conflicts = new MultiMap<>();
@@ -196,178 +202,176 @@ public class ConvertParameterToMapEntryIntention extends Intention {
         );
     }
 
+    @RequiredUIAccess
     private static void performRefactoring(
         PsiElement element,
-        final GrParameterListOwner owner,
-        final Collection<PsiElement> occurrences,
-        final boolean createNewFirstParam,
+        GrParameterListOwner owner,
+        Collection<PsiElement> occurrences,
+        boolean createNewFirstParam,
         @Nullable String mapParamName,
-        final boolean specifyMapType
+        boolean specifyMapType
     ) {
-        final GrParameter param = getAppropriateParameter(element);
+        GrParameter param = getAppropriateParameter(element);
         assert param != null;
-        final String paramName = param.getName();
-        final String mapName = createNewFirstParam ? mapParamName : getFirstParameter(owner).getName();
+        String paramName = param.getName();
+        String mapName = createNewFirstParam ? mapParamName : getFirstParameter(owner).getName();
 
+        Project project = element.getProject();
+        @RequiredWriteAction
+        Runnable runnable = () -> {
+            GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(project);
 
-        final Project project = element.getProject();
-        final Runnable runnable = new Runnable() {
-            public void run() {
-                GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(project);
+            GrParameterList list = owner.getParameterList();
+            assert list != null;
+            int index = list.getParameterNumber(param);
+            if (!createNewFirstParam && index <= 0) { // bad undo
+                return;
+            }
 
-                GrParameterList list = owner.getParameterList();
-                assert list != null;
-                int index = list.getParameterNumber(param);
-                if (!createNewFirstParam && index <= 0) { // bad undo
-                    return;
-                }
-
-                //Remove old arguments from occurrences
-                //final List<GrCall> calls = getCallOccurrences(occurrences);
-                try {
-                    for (PsiElement occurrence : occurrences) {
-                        GrReferenceExpression refExpr = null;
-                        GroovyResolveResult resolveResult = null;
-                        boolean isExplicitGetterCall = false;
-                        if (occurrence instanceof GrReferenceExpression) {
-                            PsiElement parent = occurrence.getParent();
-                            if (parent instanceof GrCall) {
-                                refExpr = (GrReferenceExpression) occurrence;
-                                resolveResult = refExpr.advancedResolve();
-                                PsiElement resolved = resolveResult.getElement();
-                                if (resolved instanceof PsiMethod &&
-                                    GroovyPropertyUtils.isSimplePropertyGetter(((PsiMethod) resolved)) &&
-                                    //check for explicit getter call
-                                    ((PsiMethod) resolved).getName().equals(refExpr.getReferenceName())) {
-                                    isExplicitGetterCall = true;
-                                }
-                            }
-                            else if (parent instanceof GrReferenceExpression) {
-                                resolveResult = ((GrReferenceExpression) parent).advancedResolve();
-                                PsiElement resolved = resolveResult.getElement();
-                                if (resolved instanceof PsiMethod && "call".equals(((PsiMethod) resolved).getName())) {
-                                    refExpr = (GrReferenceExpression) parent;
-                                }
+            //Remove old arguments from occurrences
+            //final List<GrCall> calls = getCallOccurrences(occurrences);
+            try {
+                for (PsiElement occurrence : occurrences) {
+                    GrReferenceExpression refExpr = null;
+                    GroovyResolveResult resolveResult = null;
+                    boolean isExplicitGetterCall = false;
+                    if (occurrence instanceof GrReferenceExpression) {
+                        PsiElement parent = occurrence.getParent();
+                        if (parent instanceof GrCall) {
+                            refExpr = (GrReferenceExpression) occurrence;
+                            resolveResult = refExpr.advancedResolve();
+                            PsiElement resolved = resolveResult.getElement();
+                            if (resolved instanceof PsiMethod method
+                                && GroovyPropertyUtils.isSimplePropertyGetter(method)
+                                //check for explicit getter call
+                                && method.getName().equals(refExpr.getReferenceName())) {
+                                isExplicitGetterCall = true;
                             }
                         }
-                        if (refExpr == null) {
-                            continue;
+                        else if (parent instanceof GrReferenceExpression) {
+                            resolveResult = ((GrReferenceExpression) parent).advancedResolve();
+                            PsiElement resolved = resolveResult.getElement();
+                            if (resolved instanceof PsiMethod && "call".equals(((PsiMethod) resolved).getName())) {
+                                refExpr = (GrReferenceExpression) parent;
+                            }
                         }
-                        GrClosureSignature signature = generateSignature(owner, refExpr);
-                        if (signature == null) {
-                            continue;
-                        }
-                        GrCall call;
-                        if (isExplicitGetterCall) {
-                            PsiElement parent = refExpr.getParent();
-                            LOG.assertTrue(parent instanceof GrCall);
+                    }
+                    if (refExpr == null) {
+                        continue;
+                    }
+                    GrClosureSignature signature = generateSignature(owner, refExpr);
+                    if (signature == null) {
+                        continue;
+                    }
+                    GrCall call;
+                    if (isExplicitGetterCall) {
+                        PsiElement parent = refExpr.getParent();
+                        LOG.assertTrue(parent instanceof GrCall);
+                        parent = parent.getParent();
+                        if (parent instanceof GrReferenceExpression && "call".equals(((GrReferenceExpression) parent).getReferenceName())) {
                             parent = parent.getParent();
-                            if (parent instanceof GrReferenceExpression && "call".equals(((GrReferenceExpression) parent).getReferenceName())) {
-                                parent = parent.getParent();
-                            }
-                            if (parent instanceof GrCall) {
-                                call = (GrCall) parent;
+                        }
+                        if (parent instanceof GrCall) {
+                            call = (GrCall) parent;
+                        }
+                        else {
+                            continue;
+                        }
+                    }
+                    else {
+                        call = (GrCall) refExpr.getParent();
+                    }
+
+                    if (resolveResult.isInvokedOnProperty()) {
+                        PsiElement parent = call.getParent();
+                        if (parent instanceof GrCall) {
+                            call = (GrCall) parent;
+                        }
+                        else if (parent instanceof GrReferenceExpression && parent.getParent() instanceof GrCall) {
+                            PsiElement resolved = ((GrReferenceExpression) parent).resolve();
+                            if (resolved instanceof PsiMethod && "call".equals(((PsiMethod) resolved).getName())) {
+                                call = (GrCall) parent.getParent();
                             }
                             else {
                                 continue;
                             }
                         }
-                        else {
-                            call = (GrCall) refExpr.getParent();
-                        }
+                    }
 
-                        if (resolveResult.isInvokedOnProperty()) {
-                            PsiElement parent = call.getParent();
-                            if (parent instanceof GrCall) {
-                                call = (GrCall) parent;
-                            }
-                            else if (parent instanceof GrReferenceExpression && parent.getParent() instanceof GrCall) {
-                                PsiElement resolved = ((GrReferenceExpression) parent).resolve();
-                                if (resolved instanceof PsiMethod && "call".equals(((PsiMethod) resolved).getName())) {
-                                    call = (GrCall) parent.getParent();
-                                }
-                                else {
-                                    continue;
-                                }
-                            }
-                        }
+                    GrClosureSignatureUtil.ArgInfo<PsiElement>[] argInfos =
+                        GrClosureSignatureUtil.mapParametersToArguments(signature, call);
+                    if (argInfos == null) {
+                        continue;
+                    }
+                    GrClosureSignatureUtil.ArgInfo<PsiElement> argInfo = argInfos[index];
 
-                        GrClosureSignatureUtil.ArgInfo<PsiElement>[] argInfos =
-                            GrClosureSignatureUtil.mapParametersToArguments(signature, call);
-                        if (argInfos == null) {
+                    GrNamedArgument namedArg;
+                    if (argInfo.isMultiArg) {
+                        if (argInfo.args.size() == 0) {
                             continue;
                         }
-                        GrClosureSignatureUtil.ArgInfo<PsiElement> argInfo = argInfos[index];
-
-                        GrNamedArgument namedArg;
-                        if (argInfo.isMultiArg) {
-                            if (argInfo.args.size() == 0) {
-                                continue;
-                            }
-                            String arg = "[" + StringUtil.join(ContainerUtil.map(argInfo.args, element1 -> element1.getText()), ", ") + "]";
-                            for (PsiElement psiElement : argInfo.args) {
-                                psiElement.delete();
-                            }
-                            namedArg = factory.createNamedArgument(paramName, factory.createExpressionFromText(arg));
+                        String arg = "[" + StringUtil.join(ContainerUtil.map(argInfo.args, element1 -> element1.getText()), ", ") + "]";
+                        for (PsiElement psiElement : argInfo.args) {
+                            psiElement.delete();
                         }
-                        else {
-                            if (argInfo.args.size() == 0) {
-                                continue;
-                            }
-                            PsiElement argument = argInfo.args.iterator().next();
-                            assert argument instanceof GrExpression;
-                            namedArg = factory.createNamedArgument(paramName, (GrExpression) argument);
-                            argument.delete();
-                        }
-                        call.addNamedArgument(namedArg);
+                        namedArg = factory.createNamedArgument(paramName, factory.createExpressionFromText(arg));
                     }
+                    else {
+                        if (argInfo.args.size() == 0) {
+                            continue;
+                        }
+                        PsiElement argument = argInfo.args.iterator().next();
+                        assert argument instanceof GrExpression;
+                        namedArg = factory.createNamedArgument(paramName, (GrExpression) argument);
+                        argument.delete();
+                    }
+                    call.addNamedArgument(namedArg);
+                }
+            }
+            catch (IncorrectOperationException e) {
+                LOG.error(e);
+            }
+
+            //Replace of occurrences of old parameter in closure/method
+            Collection<PsiReference> references = ReferencesSearch.search(param).findAll();
+            for (PsiReference ref : references) {
+                PsiElement elt = ref.getElement();
+                if (elt instanceof GrReferenceExpression) {
+                    GrReferenceExpression expr = (GrReferenceExpression) elt;
+                    GrExpression newExpr = factory.createExpressionFromText(mapName + "." + paramName);
+                    expr.replaceWithExpression(newExpr, true);
+                }
+            }
+
+            //Add new map parameter to closure/method if it's necessary
+            if (createNewFirstParam) {
+                try {
+                    GrParameter newParam = factory.createParameter(mapName, specifyMapType ? MAP_TYPE_TEXT : "", null);
+                    list.addAfter(newParam, null);
                 }
                 catch (IncorrectOperationException e) {
                     LOG.error(e);
                 }
-
-                //Replace of occurrences of old parameter in closure/method
-                Collection<PsiReference> references = ReferencesSearch.search(param).findAll();
-                for (PsiReference ref : references) {
-                    PsiElement elt = ref.getElement();
-                    if (elt instanceof GrReferenceExpression) {
-                        GrReferenceExpression expr = (GrReferenceExpression) elt;
-                        GrExpression newExpr = factory.createExpressionFromText(mapName + "." + paramName);
-                        expr.replaceWithExpression(newExpr, true);
-                    }
-                }
-
-                //Add new map parameter to closure/method if it's necessary
-                if (createNewFirstParam) {
-                    try {
-                        GrParameter newParam = factory.createParameter(mapName, specifyMapType ? MAP_TYPE_TEXT : "", null);
-                        list.addAfter(newParam, null);
-                    }
-                    catch (IncorrectOperationException e) {
-                        LOG.error(e);
-                    }
-                }
-
-                //Eliminate obsolete parameter from parameter list
-                param.delete();
             }
+
+            //Eliminate obsolete parameter from parameter list
+            param.delete();
         };
 
-        CommandProcessor.getInstance().executeCommand(project, new Runnable() {
-            public void run() {
-                ApplicationManager.getApplication().runWriteAction(runnable);
-            }
-        }, REFACTORING_NAME, null);
+        CommandProcessor.getInstance().newCommand()
+            .project(project)
+            .name(REFACTORING_NAME)
+            .inWriteAction()
+            .run(runnable);
     }
 
-
     @Nullable
+    @RequiredReadAction
     private static GrParameter getAppropriateParameter(PsiElement element) {
-        if (element instanceof GrParameter) {
-            return (GrParameter) element;
+        if (element instanceof GrParameter param) {
+            return param;
         }
-        if (element instanceof GrReferenceExpression) {
-            GrReferenceExpression expr = (GrReferenceExpression) element;
+        if (element instanceof GrReferenceExpression expr) {
             PsiElement resolved = expr.resolve();
             LOG.assertTrue(resolved instanceof GrParameter);
             return ((GrParameter) resolved);
@@ -394,10 +398,7 @@ public class ConvertParameterToMapEntryIntention extends Intention {
      * @param occurrences references to owner
      * @return true if there we use owner's first parameter as map, false if we need to add ne one as fist map
      */
-    private static FIRST_PARAMETER_KIND analyzeForNamedArguments(
-        GrParameterListOwner owner,
-        Collection<PsiElement> occurrences
-    ) {
+    private static FIRST_PARAMETER_KIND analyzeForNamedArguments(GrParameterListOwner owner, Collection<PsiElement> occurrences) {
         boolean thereAreNamedArguments = false;
         for (PsiElement occurrence : occurrences) {
             if (occurrence instanceof GrReferenceExpression && occurrence.getParent() instanceof GrCall) {
@@ -446,15 +447,15 @@ public class ConvertParameterToMapEntryIntention extends Intention {
         if (owner instanceof GrMethodImpl) {
             return ((GrMethodImpl) owner);
         }
-        if (owner instanceof GrClosableBlock) {
-            PsiElement parent = owner.getParent();
-            if (parent instanceof GrVariable && ((GrVariable) parent).getInitializerGroovy() == owner) {
-                return ((GrVariable) parent);
-            }
+        if (owner instanceof GrClosableBlock
+            && owner.getParent() instanceof GrVariable variable
+            && variable.getInitializerGroovy() == owner) {
+            return variable;
         }
         return null;
     }
 
+    @RequiredUIAccess
     private static boolean checkOwnerOccurrences(Project project, Collection<PsiElement> occurrences, boolean isClosure) {
         boolean result = true;
         StringBuilder msg = new StringBuilder();
@@ -482,25 +483,24 @@ public class ConvertParameterToMapEntryIntention extends Intention {
         if (namedElem == null) {
             return true;
         }
-        final Ref<Boolean> result = new Ref<Boolean>(true);
+        final SimpleReference<Boolean> result = new SimpleReference<>(true);
         Task task = new Task.Modal(
             project,
             GroovyIntentionLocalize.findMethodRoClosureUsages0(owner instanceof GrClosableBlock ? CLOSURE_CAPTION : METHOD_CAPTION),
             true
         ) {
+            @Override
+            @RequiredReadAction
             public void run(@Nonnull ProgressIndicator indicator) {
                 GlobalSearchScope projectScope = GlobalSearchScope.projectScope((Project) getProject());
-                final Collection<PsiReference> references = Collections.synchronizedSet(new HashSet<PsiReference>());
-                Processor<PsiReference> consumer = new Processor<PsiReference>() {
-                    @Override
-                    public boolean process(PsiReference psiReference) {
-                        references.add(psiReference);
-                        return true;
-                    }
+                Collection<PsiReference> references = Collections.synchronizedSet(new HashSet<PsiReference>());
+                Predicate<PsiReference> consumer = psiReference -> {
+                    references.add(psiReference);
+                    return true;
                 };
                 ReferencesSearch.search(namedElem, projectScope).forEach(consumer);
-                if (namedElem instanceof GrField && ((GrField) namedElem).isProperty()) {
-                    GrAccessorMethod[] getters = ((GrField) namedElem).getGetters();
+                if (namedElem instanceof GrField field && field.isProperty()) {
+                    GrAccessorMethod[] getters = field.getGetters();
                     for (GrAccessorMethod getter : getters) {
                         MethodReferencesSearch.search(getter).forEach(consumer);
                     }
@@ -514,25 +514,30 @@ public class ConvertParameterToMapEntryIntention extends Intention {
             }
 
             @Override
+            @RequiredUIAccess
             public void onCancel() {
                 result.set(false);
             }
 
             @Override
+            @RequiredUIAccess
             public void onSuccess() {
                 result.set(true);
             }
         };
         ProgressManager.getInstance().run(task);
-        return result.get().booleanValue();
+        return result.get();
     }
 
     @Nonnull
+    @Override
     protected PsiElementPredicate getElementPredicate() {
         return new MyPsiElementPredicate();
     }
 
     private static class MyPsiElementPredicate implements PsiElementPredicate {
+        @Override
+        @RequiredReadAction
         public boolean satisfiedBy(PsiElement element) {
             GrParameter parameter = null;
             if (element instanceof GrParameter) {
@@ -579,10 +584,12 @@ public class ConvertParameterToMapEntryIntention extends Intention {
         return psiClass == null || !CommonClassNames.JAVA_UTIL_MAP.equals(psiClass.getQualifiedName());
     }
 
+    @RequiredUIAccess
     private static void showErrorMessage(@Nonnull LocalizeValue message, Project project) {
-        CommonRefactoringUtil.showErrorMessage(REFACTORING_NAME, message.get(), null, project);
+        CommonRefactoringUtil.showErrorMessage(REFACTORING_NAME, message, null, project);
     }
 
+    @RequiredUIAccess
     private static boolean reportConflicts(MultiMap<PsiElement, LocalizeValue> conflicts, Project project) {
         if (conflicts.size() == 0) {
             return true;

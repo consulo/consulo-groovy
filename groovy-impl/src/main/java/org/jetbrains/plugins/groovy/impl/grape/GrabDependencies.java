@@ -16,12 +16,13 @@
 package org.jetbrains.plugins.groovy.impl.grape;
 
 import com.intellij.java.language.psi.JavaPsiFacade;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.application.WriteAction;
 import consulo.application.progress.ProgressIndicator;
 import consulo.application.progress.ProgressManager;
 import consulo.application.progress.Task;
 import consulo.codeEditor.Editor;
-import consulo.content.OrderRootType;
 import consulo.content.base.BinariesOrderRootType;
 import consulo.content.base.SourcesOrderRootType;
 import consulo.content.bundle.Sdk;
@@ -54,7 +55,8 @@ import consulo.process.local.ProcessHandlerFactory;
 import consulo.project.Project;
 import consulo.project.ui.notification.NotificationDisplayType;
 import consulo.project.ui.notification.NotificationGroup;
-import consulo.project.ui.notification.NotificationType;
+import consulo.project.ui.notification.NotificationService;
+import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.ex.awt.Messages;
 import consulo.util.collection.ContainerUtil;
 import consulo.util.dataholder.Key;
@@ -88,10 +90,13 @@ public class GrabDependencies implements IntentionAction {
     private static final NotificationGroup NOTIFICATION_GROUP = new NotificationGroup("Grape", NotificationDisplayType.BALLOON, true);
 
     @Nonnull
+    @Override
     public LocalizeValue getText() {
         return LocalizeValue.localizeTODO("Grab the artifacts");
     }
 
+    @Override
+    @RequiredReadAction
     public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile file) {
         GrAnnotation anno =
             PsiTreeUtil.findElementOfClassAtOffset(file, editor.getCaretModel().getOffset(), GrAnnotation.class, false);
@@ -99,12 +104,12 @@ public class GrabDependencies implements IntentionAction {
             return false;
         }
 
-        String qname = anno.getQualifiedName();
-        if (qname == null || !(qname.startsWith(GrabAnnos.GRAB_ANNO) || GrabAnnos.GRAPES_ANNO.equals(qname))) {
+        String qName = anno.getQualifiedName();
+        if (qName == null || !(qName.startsWith(GrabAnnos.GRAB_ANNO) || GrabAnnos.GRAPES_ANNO.equals(qName))) {
             return false;
         }
 
-        Module module = ModuleUtilCore.findModuleForPsiElement(file);
+        Module module = file.getModule();
         if (module == null) {
             return false;
         }
@@ -117,12 +122,14 @@ public class GrabDependencies implements IntentionAction {
         return file.getOriginalFile().getVirtualFile() != null;
     }
 
+    @Override
+    @RequiredUIAccess
     public void invoke(@Nonnull final Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
         final Module module = file.getModule();
         assert module != null;
 
-        VirtualFile vfile = file.getOriginalFile().getVirtualFile();
-        assert vfile != null;
+        VirtualFile vFile = file.getOriginalFile().getVirtualFile();
+        assert vFile != null;
 
         if (JavaPsiFacade.getInstance(project).findClass("org.apache.ivy.core.report.ResolveReport", file.getResolveScope()) == null) {
             Messages.showErrorDialog(
@@ -137,7 +144,7 @@ public class GrabDependencies implements IntentionAction {
         Sdk sdk = ModuleUtilCore.getSdk(module, JavaModuleExtension.class);
         assert sdk != null;
 
-        final Map<String, GeneralCommandLine> lines = new HashMap<String, GeneralCommandLine>();
+        final Map<String, GeneralCommandLine> lines = new HashMap<>();
         for (String grabText : queries.keySet()) {
             OwnJavaParameters javaParameters = GroovyScriptRunConfiguration.createJavaParametersWithSdk(module);
             //debug
@@ -156,18 +163,17 @@ public class GrabDependencies implements IntentionAction {
                     module,
                     ProjectRootManager.getInstance(project)
                         .getFileIndex()
-                        .isInTestSourceContent(vfile),
+                        .isInTestSourceContent(vFile),
                     javaParameters,
                     true
                 );
             }
             catch (CantRunException e) {
-                NOTIFICATION_GROUP.createNotification(
-                    "Can't run @Grab: " + ExceptionUtil.getMessage(e),
-                    ExceptionUtil.getThrowableText(e),
-                    NotificationType.ERROR,
-                    null
-                ).notify(project);
+                NotificationService.getInstance()
+                    .newError(NOTIFICATION_GROUP)
+                    .title(LocalizeValue.localizeTODO("Can't run @Grab: " + ExceptionUtil.getMessage(e)))
+                    .content(LocalizeValue.of(ExceptionUtil.getThrowableText(e)))
+                    .notify(project);
                 return;
             }
             if (list == null) {
@@ -189,6 +195,7 @@ public class GrabDependencies implements IntentionAction {
         }
 
         ProgressManager.getInstance().run(new Task.Backgroundable(project, "Processing @Grab annotations") {
+            @Override
             public void run(@Nonnull ProgressIndicator indicator) {
                 int jarCount = 0;
                 String messages = "";
@@ -208,33 +215,32 @@ public class GrabDependencies implements IntentionAction {
                     }
                 }
 
-                String finalMessages = messages;
-                String title = jarCount + " Grape dependency jar" + (jarCount == 1 ? "" : "s") + " added";
-                NOTIFICATION_GROUP.createNotification(title, finalMessages, NotificationType.INFORMATION, null)
+                NotificationService.getInstance()
+                    .newInfo(NOTIFICATION_GROUP)
+                    .title(LocalizeValue.localizeTODO(jarCount + " Grape dependency jar" + (jarCount == 1 ? "" : "s") + " added"))
+                    .content(LocalizeValue.localizeTODO(messages))
+                    .optionalHyperlinkListener(null)
                     .notify(project);
             }
         });
-
-
     }
 
     static Map<String, String> prepareQueries(PsiFile file) {
-        final Set<GrAnnotation> grabs = new LinkedHashSet<GrAnnotation>();
-        final Set<GrAnnotation> excludes = new HashSet<GrAnnotation>();
-        final Set<GrAnnotation> resolvers = new HashSet<GrAnnotation>();
+        final Set<GrAnnotation> grabs = new LinkedHashSet<>();
+        final Set<GrAnnotation> excludes = new HashSet<>();
+        final Set<GrAnnotation> resolvers = new HashSet<>();
         file.acceptChildren(new PsiRecursiveElementWalkingVisitor() {
             @Override
             public void visitElement(PsiElement element) {
-                if (element instanceof GrAnnotation) {
-                    GrAnnotation anno = (GrAnnotation) element;
-                    String qname = anno.getQualifiedName();
-                    if (GrabAnnos.GRAB_ANNO.equals(qname)) {
+                if (element instanceof GrAnnotation anno) {
+                    String qName = anno.getQualifiedName();
+                    if (GrabAnnos.GRAB_ANNO.equals(qName)) {
                         grabs.add(anno);
                     }
-                    else if (GrabAnnos.GRAB_EXCLUDE_ANNO.equals(qname)) {
+                    else if (GrabAnnos.GRAB_EXCLUDE_ANNO.equals(qName)) {
                         excludes.add(anno);
                     }
-                    else if (GrabAnnos.GRAB_RESOLVER_ANNO.equals(qname)) {
+                    else if (GrabAnnos.GRAB_RESOLVER_ANNO.equals(qName)) {
                         resolvers.add(anno);
                     }
                 }
@@ -244,7 +250,7 @@ public class GrabDependencies implements IntentionAction {
 
         Function<GrAnnotation, String> mapper = PsiElement::getText;
         String common = StringUtil.join(excludes, mapper, " ") + " " + StringUtil.join(resolvers, mapper, " ");
-        LinkedHashMap<String, String> result = new LinkedHashMap<String, String>();
+        LinkedHashMap<String, String> result = new LinkedHashMap<>();
         for (GrAnnotation grab : grabs) {
             String grabText = grab.getText();
             result.put(grabText, (grabText + " " + common).trim());
@@ -252,6 +258,7 @@ public class GrabDependencies implements IntentionAction {
         return result;
     }
 
+    @Override
     public boolean startInWriteAction() {
         return false;
     }
@@ -292,6 +299,7 @@ public class GrabDependencies implements IntentionAction {
             }
         }
 
+        @RequiredWriteAction
         private void addGrapeDependencies(List<VirtualFile> jars) {
             ModifiableRootModel model = ModuleRootManager.getInstance(myModule).getModifiableModel();
             LibraryTable.ModifiableModel tableModel = model.getModuleLibraryTable().getModifiableModel();
@@ -328,8 +336,9 @@ public class GrabDependencies implements IntentionAction {
         String messages = "";
 
         @Override
+        @RequiredUIAccess
         public void processTerminated(ProcessEvent event) {
-            List<VirtualFile> jars = new ArrayList<VirtualFile>();
+            List<VirtualFile> jars = new ArrayList<>();
             for (String line : myStdOut.toString().split("\n")) {
                 if (line.startsWith(GrapeRunner.URL_PREFIX)) {
                     try {
@@ -344,8 +353,7 @@ public class GrabDependencies implements IntentionAction {
                     }
                 }
             }
-            WriteAction.run(() ->
-            {
+            WriteAction.run(() -> {
                 jarCount = jars.size();
                 messages = jarCount + " jar";
                 if (jarCount != 1) {

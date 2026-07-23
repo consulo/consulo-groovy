@@ -15,24 +15,23 @@
  */
 package org.jetbrains.plugins.groovy.impl.intentions.closure;
 
+import consulo.annotation.access.RequiredReadAction;
 import consulo.language.psi.PsiElement;
 import org.jetbrains.plugins.groovy.impl.intentions.base.ErrorUtil;
 import org.jetbrains.plugins.groovy.impl.intentions.base.PsiElementPredicate;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrForStatement;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.clauses.GrForClause;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.clauses.GrForInClause;
 
 class ForToEachPredicate implements PsiElementPredicate {
-
-  public boolean satisfiedBy(PsiElement element) {
-    if (!(element instanceof GrForStatement)) {
-      return false;
+    @Override
+    @RequiredReadAction
+    public boolean satisfiedBy(PsiElement element) {
+        if (!(element instanceof GrForStatement statement)) {
+            return false;
+        }
+        if (!(statement.getClause() instanceof GrForInClause forInClause) || forInClause.getIteratedExpression() == null) {
+            return false;
+        }
+        return !ErrorUtil.containsError(element);
     }
-    GrForStatement statement = (GrForStatement) element;
-    GrForClause clause = statement.getClause();
-    if (!(clause instanceof GrForInClause) || ((GrForInClause) clause).getIteratedExpression() == null) {
-      return false;
-    }
-    return !ErrorUtil.containsError(element);
-  }
 }

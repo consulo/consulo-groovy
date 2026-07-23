@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.blocks;
 
+import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.application.util.CachedValue;
 import consulo.application.util.CachedValueProvider;
 import consulo.application.util.CachedValuesManager;
@@ -32,6 +33,8 @@ import consulo.language.psi.resolve.PsiScopeProcessor;
 import consulo.language.psi.resolve.ResolveState;
 import consulo.language.util.IncorrectOperationException;
 import consulo.util.dataholder.Key;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GrControlFlowOwner;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
@@ -48,9 +51,6 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.PsiImplUtil;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 import org.jetbrains.plugins.groovy.lang.resolve.ResolveUtil;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
-
 /**
  * @author ven
  */
@@ -62,10 +62,11 @@ public abstract class GrBlockImpl extends LazyParseablePsiElement implements GrC
   }
 
   @Override
+  @RequiredWriteAction
   public void delete() throws IncorrectOperationException {
-    if (getParent() instanceof ASTDelegatePsiElement) {
+    if (getParent() instanceof ASTDelegatePsiElement delegatePsiElement) {
       CheckUtil.checkWritable(this);
-      ((ASTDelegatePsiElement)getParent()).deleteChildInternal(getNode());
+      delegatePsiElement.deleteChildInternal(getNode());
     }
     else {
       getParent().deleteChildRange(this, this);
@@ -73,15 +74,18 @@ public abstract class GrBlockImpl extends LazyParseablePsiElement implements GrC
   }
 
   @Override
+  @RequiredWriteAction
   public void removeElements(PsiElement[] elements) throws IncorrectOperationException {
     GroovyPsiElementImpl.removeElements(this, elements);
   }
 
   @Override
+  @RequiredReadAction
   public void acceptChildren(GroovyElementVisitor visitor) {
     GroovyPsiElementImpl.acceptGroovyChildren(this, visitor);
   }
 
+  @RequiredWriteAction
   public <T extends GrStatement> T replaceWithStatement(T statement) {
     return GroovyPsiElementImpl.replaceWithStatement(this, statement);
   }
@@ -93,6 +97,7 @@ public abstract class GrBlockImpl extends LazyParseablePsiElement implements GrC
   }
 
   @Override
+  @RequiredWriteAction
   public void deleteChildInternal(@Nonnull ASTNode child) {
     PsiElement element = child.getPsi();
     if (element instanceof GrStatement) {
@@ -102,6 +107,7 @@ public abstract class GrBlockImpl extends LazyParseablePsiElement implements GrC
   }
 
   @Override
+  @RequiredWriteAction
   public void deleteChildRange(PsiElement first, PsiElement last) throws IncorrectOperationException {
     if (last instanceof GrStatement) {
       PsiImplUtil.deleteStatementTail(this, last);
@@ -110,22 +116,20 @@ public abstract class GrBlockImpl extends LazyParseablePsiElement implements GrC
   }
 
   @Override
+  @RequiredReadAction
   public Instruction[] getControlFlow() {
     assert isValid();
     CachedValue<Instruction[]> controlFlow = getUserData(CONTROL_FLOW);
     if (controlFlow == null) {
-      controlFlow = CachedValuesManager.getManager(getProject()).createCachedValue(new CachedValueProvider<Instruction[]>() {
-        @Override
-        public Result<Instruction[]> compute() {
-          try {
-            //ResolveProfiler.start();
-            Instruction[] flow = new ControlFlowBuilder(getProject()).buildControlFlow(GrBlockImpl.this);
-            return Result.create(flow, getContainingFile(), PsiModificationTracker.MODIFICATION_COUNT);
-          }
-          finally {
-            //final long time = ResolveProfiler.finish();
-            //ResolveProfiler.write("flow", GrBlockImpl.this, time);
-          }
+      controlFlow = CachedValuesManager.getManager(getProject()).createCachedValue(() -> {
+        try {
+          //ResolveProfiler.start();
+          Instruction[] flow = new ControlFlowBuilder(getProject()).buildControlFlow(GrBlockImpl.this);
+          return CachedValueProvider.Result.create(flow, getContainingFile(), PsiModificationTracker.MODIFICATION_COUNT);
+        }
+        finally {
+          //final long time = ResolveProfiler.finish();
+          //ResolveProfiler.write("flow", GrBlockImpl.this, time);
         }
       }, false);
       controlFlow = putUserDataIfAbsent(CONTROL_FLOW, controlFlow);
@@ -134,11 +138,13 @@ public abstract class GrBlockImpl extends LazyParseablePsiElement implements GrC
   }
 
   @Override
+  @RequiredWriteAction
   public void removeVariable(GrVariable variable) {
     PsiImplUtil.removeVariable(variable);
   }
 
   @Override
+  @RequiredWriteAction
   public GrVariableDeclaration addVariableDeclarationBefore(GrVariableDeclaration declaration, GrStatement anchor) throws IncorrectOperationException {
     GrStatement statement = addStatementBefore(declaration, anchor);
     assert statement instanceof GrVariableDeclaration;
@@ -148,8 +154,7 @@ public abstract class GrBlockImpl extends LazyParseablePsiElement implements GrC
   private boolean mayUseNewLinesAsSeparators() {
     PsiElement parent = this;
     while (parent != null) {
-      if (parent instanceof GrString) {
-        GrString grString = (GrString) parent;
+      if (parent instanceof GrString grString) {
         return !grString.isPlainString();
       }
       parent = parent.getParent();
@@ -159,12 +164,14 @@ public abstract class GrBlockImpl extends LazyParseablePsiElement implements GrC
 
   @Override
   @Nonnull
+  @RequiredReadAction
   public GrStatement[] getStatements() {
-    return  PsiImplUtil.getStatements(this);
+    return PsiImplUtil.getStatements(this);
   }
 
   @Override
   @Nonnull
+  @RequiredWriteAction
   public GrStatement addStatementBefore(@Nonnull GrStatement element, @Nullable GrStatement anchor) throws IncorrectOperationException {
     if (anchor == null && getRBrace() == null) {
       throw new IncorrectOperationException();

@@ -17,6 +17,8 @@ package org.jetbrains.plugins.groovy.impl.intentions.conversions.strings;
 
 import com.intellij.java.language.psi.CommonClassNames;
 import com.intellij.java.language.psi.PsiType;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.codeEditor.Editor;
 import consulo.groovy.impl.localize.GroovyIntentionLocalize;
 import consulo.language.psi.PsiElement;
@@ -41,10 +43,9 @@ import org.jetbrains.plugins.groovy.lang.psi.util.GrStringUtil;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ConvertGStringToStringIntention extends Intention {
-    public static final String INTENTION_NAME = "Convert to String";
-
     @Nonnull
     @Override
     public LocalizeValue getText() {
@@ -58,15 +59,13 @@ public class ConvertGStringToStringIntention extends Intention {
     }
 
     @Override
-    public void processIntention(
-        @Nonnull PsiElement element,
-        Project project,
-        Editor editor
-    ) throws IncorrectOperationException {
+    @RequiredWriteAction
+    public void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
         GrLiteral exp = (GrLiteral) element;
         PsiImplUtil.replaceExpression(convertGStringLiteralToStringLiteral(exp), exp);
     }
 
+    @RequiredReadAction
     public static String convertGStringLiteralToStringLiteral(GrLiteral literal) {
         PsiElement child = literal.getFirstChild();
         if (child == null) {
@@ -74,19 +73,19 @@ public class ConvertGStringToStringIntention extends Intention {
         }
         String text;
 
-        ArrayList<String> list = new ArrayList<String>();
+        List<String> list = new ArrayList<>();
 
         PsiElement prevSibling = null;
         PsiElement nextSibling;
         do {
             text = child.getText();
             nextSibling = child.getNextSibling();
-            if (child instanceof GrStringInjection) {
-                if (((GrStringInjection) child).getClosableBlock() != null) {
-                    text = prepareClosableBlock(((GrStringInjection) child).getClosableBlock());
+            if (child instanceof GrStringInjection stringInjection) {
+                if (stringInjection.getClosableBlock() != null) {
+                    text = prepareClosableBlock(stringInjection.getClosableBlock());
                 }
-                else if (((GrStringInjection) child).getExpression() != null) {
-                    text = prepareExpression(((GrStringInjection) child).getExpression());
+                else if (stringInjection.getExpression() != null) {
+                    text = prepareExpression(stringInjection.getExpression());
                 }
                 else {
                     text = child.getText();
@@ -118,6 +117,7 @@ public class ConvertGStringToStringIntention extends Intention {
         return builder.toString();
     }
 
+    @RequiredReadAction
     private static String prepareClosableBlock(GrClosableBlock block) {
         GrStatement statement = block.getStatements()[0];
         GrExpression expr;
@@ -128,9 +128,9 @@ public class ConvertGStringToStringIntention extends Intention {
             expr = (GrExpression) statement;
         }
         return prepareExpression(expr);
-
     }
 
+    @RequiredReadAction
     private static String prepareExpression(GrExpression expr) {
         if (PsiUtil.isThisOrSuperRef(expr)) {
             return expr.getText();

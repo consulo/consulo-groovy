@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.typedef;
 
 import consulo.language.ast.ASTNode;
@@ -25,24 +24,24 @@ import org.jetbrains.plugins.groovy.lang.psi.stubs.GrTypeDefinitionStub;
 
 /**
  * @author Dmitry.Krasilschikov
- * @date 16.03.2007
+ * @since 2007-03-16
  */
 public class GrClassDefinitionImpl extends GrTypeDefinitionImpl implements GrClassDefinition {
+    public GrClassDefinitionImpl(@Nonnull ASTNode node) {
+        super(node);
+    }
 
-  public GrClassDefinitionImpl(@Nonnull ASTNode node) {
-    super(node);
-  }
+    public GrClassDefinitionImpl(GrTypeDefinitionStub stub) {
+        super(stub, GroovyElementTypes.CLASS_DEFINITION);
+    }
 
-  public GrClassDefinitionImpl(GrTypeDefinitionStub stub) {
-    super(stub, GroovyElementTypes.CLASS_DEFINITION);
-  }
+    @Override
+    public String toString() {
+        return "Class definition";
+    }
 
-  public String toString() {
-    return "Class definition";
-  }
-
-  @Override
-  public void accept(GroovyElementVisitor visitor) {
-    visitor.visitClassDefinition(this);
-  }
+    @Override
+    public void accept(GroovyElementVisitor visitor) {
+        visitor.visitClassDefinition(this);
+    }
 }

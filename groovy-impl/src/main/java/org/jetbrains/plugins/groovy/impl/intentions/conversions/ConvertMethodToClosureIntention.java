@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.impl.intentions.conversions;
 
 import com.intellij.java.indexing.search.searches.MethodReferencesSearch;
 import com.intellij.java.language.psi.PsiClass;
 import com.intellij.java.language.psi.PsiField;
-import consulo.application.ApplicationManager;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.application.Application;
 import consulo.codeEditor.Editor;
 import consulo.groovy.impl.localize.GroovyIntentionLocalize;
 import consulo.language.editor.refactoring.ui.ConflictsDialog;
@@ -29,6 +29,7 @@ import consulo.language.util.IncorrectOperationException;
 import consulo.localize.LocalizeValue;
 import consulo.logging.Logger;
 import consulo.project.Project;
+import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.ex.awt.DialogWrapper;
 import consulo.util.collection.MultiMap;
 import jakarta.annotation.Nonnull;
@@ -66,6 +67,7 @@ public class ConvertMethodToClosureIntention extends Intention {
     }
 
     @Override
+    @RequiredUIAccess
     protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
         MultiMap<PsiElement, LocalizeValue> conflicts = new MultiMap<>();
         GrMethod method;
@@ -104,7 +106,7 @@ public class ConvertMethodToClosureIntention extends Intention {
             }
         }
         if (conflicts.size() > 0) {
-            ConflictsDialog conflictsDialog = new ConflictsDialog(project, conflicts, (Runnable) () -> execute(method, usagesToConvert));
+            ConflictsDialog conflictsDialog = new ConflictsDialog(project, conflicts, () -> execute(method, usagesToConvert));
             conflictsDialog.show();
             if (conflictsDialog.getExitCode() != DialogWrapper.OK_EXIT_CODE) {
                 return;
@@ -113,37 +115,38 @@ public class ConvertMethodToClosureIntention extends Intention {
         execute(method, usagesToConvert);
     }
 
-    private static void execute(final GrMethod method, final Collection<GrReferenceExpression> usagesToConvert) {
-        ApplicationManager.getApplication().runWriteAction(new Runnable() {
-            public void run() {
-                GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(method.getProject());
+    @RequiredUIAccess
+    private static void execute(GrMethod method, Collection<GrReferenceExpression> usagesToConvert) {
+        Application.get().runWriteAction(() -> {
+            GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(method.getProject());
 
-                StringBuilder builder = new StringBuilder(method.getTextLength());
-                String modifiers = method.getModifierList().getText();
-                if (modifiers.trim().length() == 0) {
-                    modifiers = GrModifier.DEF;
-                }
-                builder.append(modifiers).append(' ');
-                builder.append(method.getName()).append("={");
-                builder.append(method.getParameterList().getText()).append(" ->");
-                GrOpenBlock block = method.getBlock();
-                builder.append(block.getText().substring(1));
-                GrVariableDeclaration variableDeclaration =
-                    GroovyPsiElementFactory.getInstance(method.getProject()).createFieldDeclarationFromText(builder.toString());
-                method.replace(variableDeclaration);
+            StringBuilder builder = new StringBuilder(method.getTextLength());
+            String modifiers = method.getModifierList().getText();
+            if (modifiers.trim().length() == 0) {
+                modifiers = GrModifier.DEF;
+            }
+            builder.append(modifiers).append(' ');
+            builder.append(method.getName()).append("={");
+            builder.append(method.getParameterList().getText()).append(" ->");
+            GrOpenBlock block = method.getBlock();
+            builder.append(block.getText().substring(1));
+            GrVariableDeclaration variableDeclaration =
+                GroovyPsiElementFactory.getInstance(method.getProject()).createFieldDeclarationFromText(builder.toString());
+            method.replace(variableDeclaration);
 
-                for (GrReferenceExpression element : usagesToConvert) {
-                    PsiElement qualifier = element.getQualifier();
-                    StringBuilder text = new StringBuilder(qualifier.getText());
-                    element.setQualifier(null);
-                    text.append('.').append(element.getText());
-                    element.replace(factory.createExpressionFromText(text.toString()));
-                }
+            for (GrReferenceExpression element : usagesToConvert) {
+                PsiElement qualifier = element.getQualifier();
+                StringBuilder text = new StringBuilder(qualifier.getText());
+                element.setQualifier(null);
+                text.append('.').append(element.getText());
+                element.replace(factory.createExpressionFromText(text.toString()));
             }
         });
     }
 
     private static class MyPredicate implements PsiElementPredicate {
+        @Override
+        @RequiredReadAction
         public boolean satisfiedBy(PsiElement element) {
             if (element.getLanguage() != GroovyFileType.GROOVY_LANGUAGE) {
                 return false;

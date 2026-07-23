@@ -16,6 +16,7 @@
 package org.jetbrains.plugins.groovy.impl.annotator.intentions.dynamic;
 
 import com.intellij.java.language.psi.PsiType;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.codeEditor.Editor;
 import consulo.groovy.localize.GroovyLocalize;
 import consulo.language.editor.intention.LowPriorityAction;
@@ -24,6 +25,7 @@ import consulo.language.psi.PsiFile;
 import consulo.language.util.IncorrectOperationException;
 import consulo.localize.LocalizeValue;
 import consulo.project.Project;
+import consulo.ui.annotation.RequiredUIAccess;
 import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.impl.annotator.intentions.QuickfixUtil;
 import org.jetbrains.plugins.groovy.impl.annotator.intentions.dynamic.ui.DynamicDialog;
@@ -66,20 +68,26 @@ public class DynamicMethodFix implements SyntheticIntentionAction, LowPriorityAc
         return builder.toString();
     }
 
+    @Override
+    @RequiredReadAction
     public boolean isAvailable(@Nonnull Project project, Editor editor, PsiFile psiFile) {
         return myReferenceExpression.isValid();
     }
 
+    @Override
+    @RequiredUIAccess
     public void invoke(@Nonnull Project project, Editor editor, PsiFile psiFile) throws IncorrectOperationException {
         DynamicDialog dialog = new DynamicMethodDialog(myReferenceExpression);
         dialog.show();
     }
 
+    @RequiredUIAccess
     public void invoke(Project project) throws IncorrectOperationException {
         DynamicElementSettings settings = QuickfixUtil.createSettings(myReferenceExpression);
         DynamicManager.getInstance(project).addMethod(settings);
     }
 
+    @Override
     public boolean startInWriteAction() {
         return false;
     }

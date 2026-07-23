@@ -20,13 +20,12 @@ import com.intellij.java.impl.refactoring.changeSignature.JavaThrownExceptionInf
 import com.intellij.java.impl.refactoring.changeSignature.ThrownExceptionInfo;
 import com.intellij.java.language.psi.PsiClass;
 import com.intellij.java.language.psi.PsiClassType;
-import com.intellij.java.language.psi.PsiField;
 import com.intellij.java.language.psi.PsiMethod;
 import com.intellij.java.language.psi.codeStyle.JavaCodeStyleManager;
 import com.intellij.java.language.psi.codeStyle.VariableKind;
-import consulo.application.AccessToken;
-import consulo.application.ApplicationManager;
-import consulo.application.WriteAction;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.access.RequiredWriteAction;
+import consulo.application.Application;
 import consulo.application.util.CachedValue;
 import consulo.application.util.CachedValueProvider;
 import consulo.application.util.CachedValuesManager;
@@ -43,6 +42,7 @@ import consulo.language.util.IncorrectOperationException;
 import consulo.localize.LocalizeValue;
 import consulo.logging.Logger;
 import consulo.project.Project;
+import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.ex.awt.JBList;
 import consulo.ui.ex.popup.JBPopup;
 import consulo.undoRedo.CommandProcessor;
@@ -50,7 +50,6 @@ import consulo.usage.UsageInfo;
 import consulo.util.collection.ContainerUtil;
 import consulo.util.dataholder.Key;
 import consulo.util.lang.StringUtil;
-import consulo.util.lang.function.Condition;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.impl.intentions.base.Intention;
@@ -73,7 +72,9 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrMe
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 
 import javax.swing.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * @author Maxim.Medvedev
@@ -90,6 +91,7 @@ public class CreateParameterForFieldIntention extends Intention {
     }
 
     @Override
+    @RequiredUIAccess
     protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor)
         throws IncorrectOperationException {
         List<GrField> candidates = findFieldCandidates(element);
@@ -102,128 +104,95 @@ public class CreateParameterForFieldIntention extends Intention {
         }
     }
 
-    private static void performForField(PsiElement element, final Project project, Editor editor, List<GrMethod> constructors) {
-        final GrField field = PsiTreeUtil.getParentOfType(element, GrField.class);
+    @RequiredUIAccess
+    private static void performForField(PsiElement element, Project project, Editor editor, List<GrMethod> constructors) {
+        GrField field = PsiTreeUtil.getParentOfType(element, GrField.class);
         if (constructors.size() == 0) {
             return;
         }
 
-        if (ApplicationManager.getApplication().isUnitTestMode()) {
+        if (Application.get().isUnitTestMode()) {
             for (GrMethod constructor : constructors) {
                 addParameter(field, constructor, project);
             }
             return;
         }
 
-        final JList list = new JBList(constructors.toArray(new GrMethod[constructors.size()]));
+        JList<GrMethod> list = new JBList<>(constructors);
         list.setCellRenderer(new MethodCellRenderer(true));
 
         JBPopup popup = new PopupChooserBuilder(list)
             .setTitle(GroovyIntentionLocalize.createParameterForFieldIntentionName().get())
             .setMovable(true)
-            .setItemChoosenCallback(new Runnable() {
-                public void run() {
-                    final Object[] selectedValues = list.getSelectedValues();
-                    Arrays.sort(selectedValues, new Comparator<Object>() {
-                        @Override
-                        public int compare(Object o1, Object o2) {
-                            return ((GrMethod) o2).getParameterList()
-                                .getParametersCount() - ((GrMethod) o1).getParameterList()
-                                .getParametersCount();
+            .setItemChoosenCallback(() -> {
+                List<GrMethod> selectedValues = new ArrayList<>(list.getSelectedValuesList());
+                ContainerUtil.sort(
+                    selectedValues,
+                    (m1, m2) -> m2.getParameterList().getParametersCount() - m1.getParameterList().getParametersCount()
+                );
+                CommandProcessor.getInstance().newCommand()
+                    .project(project)
+                    .name(GroovyIntentionLocalize.createParameterForFieldIntentionName())
+                    .inWriteAction()
+                    .run(() -> {
+                        for (GrMethod selectedValue : selectedValues) {
+                            LOG.assertTrue(selectedValue.isValid());
+                            addParameter(field, selectedValue, project);
                         }
                     });
-                    CommandProcessor.getInstance().executeCommand(
-                        project,
-                        new Runnable() {
-                            @Override
-                            public void run() {
-                                WriteAction.run(() -> {
-                                    for (Object selectedValue : selectedValues) {
-                                        LOG.assertTrue(((GrMethod) selectedValue)
-                                            .isValid());
-                                        addParameter(
-                                            field,
-                                            ((GrMethod) selectedValue),
-                                            project
-                                        );
-                                    }
-                                });
-                            }
-                        },
-                        GroovyIntentionLocalize.createParameterForFieldIntentionName().get(),
-                        null
-                    );
-                }
             })
             .createPopup();
 
         EditorPopupHelper.getInstance().showPopupInBestPositionFor(editor, popup);
     }
 
-    private static void performForConstructor(PsiElement element, final Project project, Editor editor, List<GrField> candidates) {
-        final GrMethod constructor = PsiTreeUtil.getParentOfType(element, GrMethod.class);
-        if (candidates.size() == 0) {
+    @RequiredUIAccess
+    private static void performForConstructor(PsiElement element, Project project, Editor editor, List<GrField> candidates) {
+        GrMethod constructor = PsiTreeUtil.getParentOfType(element, GrMethod.class);
+        if (candidates.isEmpty()) {
             return;
         }
-        if (ApplicationManager.getApplication().isUnitTestMode()) {
+        if (Application.get().isUnitTestMode()) {
             for (GrField candidate : candidates) {
                 addParameter(candidate, constructor, project);
             }
             return;
         }
-        final JList list = new JBList(candidates.toArray(new GrField[candidates.size()]));
+        JList<GrField> list = new JBList<>(candidates);
         list.setCellRenderer(new DefaultPsiElementCellRenderer());
 
-        JBPopup popup = new PopupChooserBuilder(list).setTitle(GroovyIntentionLocalize.createParameterForFieldIntentionName().get()).
-            setMovable(true).
-            setItemChoosenCallback(new Runnable() {
-                public void run() {
-                    final Object[] selectedValues = list.getSelectedValues();
-                    CommandProcessor.getInstance().executeCommand(
-                        project,
-                        new Runnable() {
-                            @Override
-                            public void run() {
-                                WriteAction.run(() -> {
-                                    for (Object selectedValue : selectedValues) {
-                                        LOG.assertTrue(((GrField) selectedValue)
-                                            .isValid());
-                                        addParameter(
-                                            ((GrField) selectedValue),
-                                            constructor,
-                                            project
-                                        );
-                                    }
-                                });
-                            }
-                        },
-                        GroovyIntentionLocalize.createParameterForFieldIntentionName().get(),
-                        null
-                    );
-                }
-            }).createPopup();
+        JBPopup popup = new PopupChooserBuilder(list)
+            .setTitle(GroovyIntentionLocalize.createParameterForFieldIntentionName().get())
+            .setMovable(true)
+            .setItemChoosenCallback(() -> CommandProcessor.getInstance().newCommand()
+                .project(project)
+                .name(GroovyIntentionLocalize.createParameterForFieldIntentionName())
+                .inWriteAction()
+                .run(() -> {
+                    for (GrField selectedValue : list.getSelectedValuesList()) {
+                        LOG.assertTrue(selectedValue.isValid());
+                        addParameter(selectedValue, constructor, project);
+                    }
+                })
+            )
+            .createPopup();
 
         EditorPopupHelper.getInstance().showPopupInBestPositionFor(editor, popup);
     }
 
+    @RequiredUIAccess
     private static void addParameter(final GrField selectedValue, final GrMethod constructor, final Project project) {
-        List<GrParameterInfo> parameters = new ArrayList<GrParameterInfo>();
+        List<GrParameterInfo> parameters = new ArrayList<>();
         GrParameter[] constructorParameters = constructor.getParameters();
         for (int i = 0; i < constructorParameters.length; i++) {
             parameters.add(new GrParameterInfo(constructorParameters[i], i));
         }
-        String[] suggestedNames =
-            JavaCodeStyleManager.getInstance(project)
-                .suggestVariableName(VariableKind.PARAMETER, selectedValue.getName(), null, null).names;
+        String[] suggestedNames = JavaCodeStyleManager.getInstance(project)
+            .suggestVariableName(VariableKind.PARAMETER, selectedValue.getName(), null, null).names;
 
-        final DefaultGroovyVariableNameValidator nameValidator =
+        DefaultGroovyVariableNameValidator nameValidator =
             new DefaultGroovyVariableNameValidator(constructor, Collections.<String>emptyList(), false);
-        String parameterName = ContainerUtil.find(suggestedNames, new Condition<String>() {
-            @Override
-            public boolean value(String name) {
-                return nameValidator.validateName(name, false).length() > 0;
-            }
-        });
+        String parameterName = ContainerUtil.find(suggestedNames, name -> nameValidator.validateName(name, false).length() > 0);
 
         if (parameterName == null) {
             parameterName = nameValidator.validateName(suggestedNames[0], true);
@@ -242,6 +211,7 @@ public class CreateParameterForFieldIntention extends Intention {
         final String finalParameterName = parameterName;
         GrChangeSignatureProcessor processor = new GrChangeSignatureProcessor(project, grChangeInfo) {
             @Override
+            @RequiredWriteAction
             protected void performRefactoring(UsageInfo[] usages) {
                 super.performRefactoring(usages);
 
@@ -263,11 +233,9 @@ public class CreateParameterForFieldIntention extends Intention {
                 if (!PsiManager.getInstance(project).areElementsEquivalent(ref.resolve(), selectedValue)) {
                     PsiUtil.qualifyMemberReference(ref, selectedValue, selectedValue.getName());
                 }
-
             }
         };
         processor.run();
-
     }
 
     @Nonnull
@@ -309,7 +277,7 @@ public class CreateParameterForFieldIntention extends Intention {
     }
 
     private static List<GrField> findCandidates(GrMethod constructor, final GrTypeDefinition clazz) {
-        final List<GrField> usedFields = new ArrayList<GrField>();
+        final List<GrField> usedFields = new ArrayList<>();
         GrOpenBlock block = constructor.getBlock();
         if (block == null) {
             return usedFields;
@@ -318,13 +286,14 @@ public class CreateParameterForFieldIntention extends Intention {
         final PsiManager manager = clazz.getManager();
         block.accept(new GroovyRecursiveElementVisitor() {
             @Override
+            @RequiredReadAction
             public void visitReferenceExpression(GrReferenceExpression referenceExpression) {
                 super.visitReferenceExpression(referenceExpression);
                 PsiElement resolved = referenceExpression.resolve();
-                if (resolved instanceof GrField &&
-                    manager.areElementsEquivalent(((GrField) resolved).getContainingClass(), clazz) &&
+                if (resolved instanceof GrField field &&
+                    manager.areElementsEquivalent(field.getContainingClass(), clazz) &&
                     PsiUtil.isAccessedForWriting(referenceExpression)) {
-                    usedFields.add((GrField) resolved);
+                    usedFields.add(field);
                 }
             }
 
@@ -337,17 +306,12 @@ public class CreateParameterForFieldIntention extends Intention {
             }
         });
 
-        List<GrField> fields = new ArrayList<GrField>();
-        for (final GrField field : clazz.getFields()) {
+        List<GrField> fields = new ArrayList<>();
+        for (GrField field : clazz.getFields()) {
             if (field.getInitializerGroovy() != null) {
                 continue;
             }
-            if (ContainerUtil.find(usedFields, new Condition<PsiField>() {
-                @Override
-                public boolean value(PsiField o) {
-                    return manager.areElementsEquivalent(o, field);
-                }
-            }) == null) {
+            if (ContainerUtil.find(usedFields, o -> manager.areElementsEquivalent(o, field)) == null) {
                 fields.add(field);
             }
         }
@@ -355,22 +319,16 @@ public class CreateParameterForFieldIntention extends Intention {
         return fields;
     }
 
-    private static List<GrField> findCandidatesCached(final GrMethod constructor, final GrTypeDefinition clazz) {
+    private static List<GrField> findCandidatesCached(GrMethod constructor, GrTypeDefinition clazz) {
         CachedValue<List<GrField>> value = constructor.getUserData(FIELD_CANDIDATES);
         if (value != null && value.getValue() != null) {
             return value.getValue();
         }
-        CachedValue<List<GrField>> cachedValue =
-            CachedValuesManager.getManager(constructor.getProject()).createCachedValue(new CachedValueProvider<List<GrField>>() {
-                @Override
-                public Result<List<GrField>> compute() {
-                    return Result.create(findCandidates(constructor, clazz), PsiModificationTracker.MODIFICATION_COUNT);
-                }
-            }, false);
+        CachedValue<List<GrField>> cachedValue = CachedValuesManager.getManager(constructor.getProject())
+            .createCachedValue(() -> CachedValueProvider.Result.create(findCandidates(constructor, clazz), PsiModificationTracker.MODIFICATION_COUNT), false);
         constructor.putUserData(FIELD_CANDIDATES, cachedValue);
         return cachedValue.getValue();
     }
-
 
     @Nullable
     private static List<GrMethod> findConstructorCandidates(PsiElement element) {
@@ -381,18 +339,12 @@ public class CreateParameterForFieldIntention extends Intention {
         return findConstructorCandidates(field, (GrTypeDefinition) field.getContainingClass());
     }
 
-    private static List<GrMethod> findConstructorCandidates(final GrField field, GrTypeDefinition psiClass) {
-        List<GrMethod> result = new ArrayList<GrMethod>();
-        PsiMethod[] constructors = psiClass.getConstructors();
-        final PsiManager manager = field.getManager();
-        for (PsiMethod constructor : constructors) {
+    private static List<GrMethod> findConstructorCandidates(GrField field, GrTypeDefinition psiClass) {
+        List<GrMethod> result = new ArrayList<>();
+        PsiManager manager = field.getManager();
+        for (PsiMethod constructor : psiClass.getConstructors()) {
             List<GrField> fields = findCandidatesCached(((GrMethod) constructor), psiClass);
-            if (ContainerUtil.find(fields, new Condition<GrField>() {
-                @Override
-                public boolean value(GrField grField) {
-                    return manager.areElementsEquivalent(grField, field);
-                }
-            }) != null) {
+            if (ContainerUtil.find(fields, grField -> manager.areElementsEquivalent(grField, field)) != null) {
                 result.add((GrMethod) constructor);
             }
         }

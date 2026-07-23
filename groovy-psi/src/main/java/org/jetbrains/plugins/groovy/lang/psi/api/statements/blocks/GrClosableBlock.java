@@ -13,19 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks;
 
 import com.intellij.java.language.psi.PsiType;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.resolve.PsiScopeProcessor;
 import consulo.language.psi.resolve.ResolveState;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.api.GrFunctionalExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameter;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameterList;
-
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
 
 /**
  * @author ilyas
@@ -38,6 +37,8 @@ public interface GrClosableBlock extends GrCodeBlock, GrFunctionalExpression
 	String IT_PARAMETER_NAME = "it";
 
 	@Nonnull
+    @Override
+    @RequiredReadAction
 	GrParameterList getParameterList();
 
 	GrParameter addParameter(GrParameter parameter);
@@ -45,14 +46,19 @@ public interface GrClosableBlock extends GrCodeBlock, GrFunctionalExpression
 	boolean hasParametersSection();
 
 	@Nullable
+    @Override
 	PsiType getReturnType();
 
+    @Override
+    @RequiredReadAction
 	GrParameter[] getAllParameters();
 
 	@Nullable
+    @Override
 	PsiElement getArrow();
 
-	boolean isVarArgs();
+	@Override
+    boolean isVarArgs();
 
 	boolean processClosureDeclarations(@Nonnull PsiScopeProcessor placeProcessor,
                                        @Nonnull PsiScopeProcessor nonCodeProcessor,
@@ -61,5 +67,6 @@ public interface GrClosableBlock extends GrCodeBlock, GrFunctionalExpression
                                        @Nonnull PsiElement place);
 
 	@Nonnull
+    @Override
 	PsiType getOwnerType();
 }

@@ -13,18 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.lang.groovydoc.psi.impl;
 
-import java.util.ArrayList;
-
-import jakarta.annotation.Nonnull;
-
+import consulo.annotation.access.RequiredReadAction;
+import consulo.language.ast.ASTNode;
 import consulo.language.ast.IElementType;
 import consulo.language.editor.util.PsiUtilBase;
+import consulo.language.impl.psi.LazyParseablePsiElement;
 import consulo.language.psi.PsiElement;
-import org.jetbrains.annotations.NonNls;
-
+import consulo.language.psi.util.PsiTreeUtil;
+import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.groovydoc.parser.GroovyDocElementTypes;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocComment;
@@ -32,9 +30,9 @@ import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocCommentOwner;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocTag;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
-import consulo.language.ast.ASTNode;
-import consulo.language.impl.psi.LazyParseablePsiElement;
-import consulo.language.psi.util.PsiTreeUtil;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author ilyas
@@ -44,65 +42,79 @@ public class GrDocCommentImpl extends LazyParseablePsiElement implements GroovyD
     super(GROOVY_DOC_COMMENT, text);
   }
 
+  @Override
   public String toString() {
     return "GrDocComment";
   }
 
+  @Override
   public IElementType getTokenType() {
     return getElementType();
   }
 
+  @Override
   public void accept(GroovyElementVisitor visitor) {
     visitor.visitDocComment(this);
   }
 
+  @Override
+  @RequiredReadAction
   public void acceptChildren(GroovyElementVisitor visitor) {
     PsiElement child = getFirstChild();
     while (child != null) {
-      if (child instanceof GroovyPsiElement) {
-        ((GroovyPsiElement)child).accept(visitor);
+      if (child instanceof GroovyPsiElement childElement) {
+        childElement.accept(visitor);
       }
 
       child = child.getNextSibling();
     }
   }
 
+  @Override
   public GrDocCommentOwner getOwner() {
     return GrDocCommentUtil.findDocOwner(this);
   }
 
   @Nonnull
+  @Override
+  @RequiredReadAction
   public GrDocTag[] getTags() {
     GrDocTag[] tags = PsiTreeUtil.getChildrenOfType(this, GrDocTag.class);
     return tags == null ? GrDocTag.EMPTY_ARRAY : tags;
   }
 
   @Nullable
-  public GrDocTag findTagByName(@NonNls String name) {
+  @Override
+  @RequiredReadAction
+  public GrDocTag findTagByName(String name) {
     if (!getText().contains(name)) return null;
     for (PsiElement e = getFirstChild(); e != null; e = e.getNextSibling()) {
-      if (e instanceof GrDocTag && ((GrDocTag)e).getName().equals(name)) {
-        return (GrDocTag)e;
+      if (e instanceof GrDocTag docTag && docTag.getName().equals(name)) {
+        return docTag;
       }
     }
     return null;
   }
 
   @Nonnull
-  public GrDocTag[] findTagsByName(@NonNls String name) {
+  @Override
+  @RequiredReadAction
+  public GrDocTag[] findTagsByName(String name) {
     if (!getText().contains(name)) return GrDocTag.EMPTY_ARRAY;
-    ArrayList<GrDocTag> list = new ArrayList<GrDocTag>();
+    List<GrDocTag> list = new ArrayList<>();
     for (PsiElement e = getFirstChild(); e != null; e = e.getNextSibling()) {
-      if (e instanceof GrDocTag && name.equals(((GrDocTag)e).getName())) {
-        list.add((GrDocTag)e);
+      if (e instanceof GrDocTag docTag && name.equals(docTag.getName())) {
+        list.add(docTag);
       }
     }
     return list.toArray(new GrDocTag[list.size()]);
   }
 
   @Nonnull
+  @Override
+  @RequiredReadAction
   public PsiElement[] getDescriptionElements() {
-    ArrayList<PsiElement> array = new ArrayList<PsiElement>();
+    List<PsiElement> array = new ArrayList<>();
     for (PsiElement child = getFirstChild(); child != null; child = child.getNextSibling()) {
       ASTNode node = child.getNode();
       if (node == null) continue;

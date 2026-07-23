@@ -13,17 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.impl.annotator.intentions;
 
 import com.intellij.java.language.psi.*;
 import com.intellij.java.language.psi.codeStyle.JavaCodeStyleManager;
 import consulo.annotation.access.RequiredReadAction;
 import consulo.application.AccessRule;
-import consulo.application.AccessToken;
 import consulo.application.ReadAction;
 import consulo.application.WriteAction;
 import consulo.codeEditor.Editor;
+import consulo.groovy.impl.localize.GroovyIntentionLocalize;
 import consulo.language.editor.FileModificationService;
 import consulo.language.editor.hint.HintManager;
 import consulo.language.editor.intention.IntentionAction;
@@ -37,7 +36,6 @@ import consulo.ui.annotation.RequiredUIAccess;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.impl.actions.GroovyTemplates;
-import org.jetbrains.plugins.groovy.impl.intentions.GroovyIntentionsBundle;
 import org.jetbrains.plugins.groovy.impl.intentions.base.IntentionUtils;
 import org.jetbrains.plugins.groovy.impl.lang.GrCreateClassKind;
 import org.jetbrains.plugins.groovy.impl.template.expressions.ChooseTypeExpression;
@@ -186,7 +184,7 @@ public abstract class CreateClassFix {
                 if (template == null) {
                     project.getApplication().invokeLater(() -> {
                         if (editor != null && editor.getComponent().isDisplayable()) {
-                            HintManager.getInstance().showErrorHint(editor, GroovyIntentionsBundle.message("cannot.create.class"));
+                            HintManager.getInstance().showErrorHint(editor, GroovyIntentionLocalize.cannotCreateClass());
                         }
                     });
                     return;
@@ -205,6 +203,7 @@ public abstract class CreateClassFix {
             }
 
             @Nullable
+            @RequiredReadAction
             private PsiElement resolveQualifier(@Nonnull PsiElement qualifier) {
                 if (qualifier instanceof GrCodeReferenceElement codeReferenceElement) {
                     return codeReferenceElement.resolve();

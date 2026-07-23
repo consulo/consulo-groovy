@@ -17,11 +17,11 @@ package org.jetbrains.plugins.groovy.impl.intentions.style;
 
 import com.intellij.java.language.psi.PsiClass;
 import com.intellij.java.language.psi.PsiMember;
-import com.intellij.java.language.psi.PsiModifier;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.codeEditor.Editor;
 import consulo.groovy.impl.localize.GroovyIntentionLocalize;
 import consulo.language.psi.PsiElement;
-import consulo.language.psi.PsiFile;
 import consulo.language.psi.PsiReference;
 import consulo.language.psi.scope.LocalSearchScope;
 import consulo.language.psi.search.ReferencesSearch;
@@ -37,7 +37,6 @@ import org.jetbrains.plugins.groovy.lang.psi.GrQualifiedReference;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyRecursiveElementVisitor;
-import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrReferenceExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.toplevel.imports.GrImportStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeArgumentList;
@@ -46,7 +45,7 @@ import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeArgumentList;
  * @author Maxim.Medvedev
  */
 public class ImportStaticIntention extends Intention {
-    private static final Key<PsiElement> TEMP_REFERENT_USER_DATA = new Key<PsiElement>("TEMP_REFERENT_USER_DATA");
+    private static final Key<PsiElement> TEMP_REFERENT_USER_DATA = new Key<>("TEMP_REFERENT_USER_DATA");
 
     @Nonnull
     @Override
@@ -55,39 +54,31 @@ public class ImportStaticIntention extends Intention {
     }
 
     @Override
-    protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor)
-        throws IncorrectOperationException {
-        final PsiElement resolved;
-        final String name;
-        GroovyFile file;
-        GrImportStatement importStatement;
-        boolean isAnythingShortened;
-        if (!(element instanceof GrReferenceExpression)) {
+    @RequiredWriteAction
+    protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
+        if (!(element instanceof GrReferenceExpression ref)) {
             return;
         }
-        GrReferenceExpression ref = (GrReferenceExpression) element;
-        resolved = ref.resolve();
-        if (!(resolved instanceof PsiMember)) {
+        if (!(ref.resolve() instanceof PsiMember member)) {
             return;
         }
 
-        PsiClass containingClass = ((PsiMember) resolved).getContainingClass();
+        PsiClass containingClass = member.getContainingClass();
         if (containingClass == null) {
             return;
         }
         String qname = containingClass.getQualifiedName();
-        name = ((PsiMember) resolved).getName();
+        String name = member.getName();
         if (name == null) {
             return;
         }
 
-        PsiFile containingFile = element.getContainingFile();
-        if (!(containingFile instanceof GroovyFile)) {
+        if (!(element.getContainingFile() instanceof GroovyFile file)) {
             return;
         }
-        file = (GroovyFile) containingFile;
         file.accept(new GroovyRecursiveElementVisitor() {
             @Override
+            @RequiredReadAction
             public void visitReferenceExpression(GrReferenceExpression expression) {
                 super.visitReferenceExpression(expression);
                 if (name.equals(expression.getReferenceName())) {
@@ -101,10 +92,10 @@ public class ImportStaticIntention extends Intention {
 
         GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(project);
         GrImportStatement tempImport = factory.createImportStatementFromText(qname + "." + name, true, false, null);
-        importStatement = file.addImport(tempImport);
+        GrImportStatement importStatement = file.addImport(tempImport);
 
-        isAnythingShortened = false;
-        for (PsiReference reference : ReferencesSearch.search(resolved, new LocalSearchScope(containingFile))) {
+        boolean isAnythingShortened = false;
+        for (PsiReference reference : ReferencesSearch.search(member, new LocalSearchScope(file))) {
             PsiElement refElement = reference.getElement();
             if (refElement instanceof GrQualifiedReference<?>) {
                 isAnythingShortened |= GrReferenceAdjuster.shortenReference((GrQualifiedReference<?>) refElement);
@@ -118,6 +109,7 @@ public class ImportStaticIntention extends Intention {
 
         file.accept(new GroovyRecursiveElementVisitor() {
             @Override
+            @RequiredWriteAction
             public void visitReferenceExpression(GrReferenceExpression expression) {
                 super.visitReferenceExpression(expression);
 
@@ -130,21 +122,15 @@ public class ImportStaticIntention extends Intention {
 
                 if (name.equals(expression.getReferenceName())) {
                     if (expression.isQualified()) {
-                        GrExpression qualifier = expression.getQualifierExpression();
-                        if (qualifier instanceof GrReferenceExpression) {
-                            PsiElement aClass = ((GrReferenceExpression) qualifier).resolve();
-                            if (aClass == ((PsiMember) resolved).getContainingClass()) {
-                                GrReferenceAdjuster.shortenReference(expression);
-                            }
+                        if (expression.getQualifierExpression() instanceof GrReferenceExpression ref
+                            && ref.resolve() == member.getContainingClass()) {
+                            GrReferenceAdjuster.shortenReference(expression);
                         }
                     }
-                    else {
-                        PsiElement referent = expression.getUserData(TEMP_REFERENT_USER_DATA);
-                        if (referent instanceof PsiMember &&
-                            ((PsiMember) referent).hasModifierProperty(PsiModifier.STATIC) &&
-                            referent != expression.resolve()) {
-                            expression.bindToElement(referent);
-                        }
+                    else if (expression.getUserData(TEMP_REFERENT_USER_DATA) instanceof PsiMember member
+                        && member.isStatic()
+                        && member != expression.resolve()) {
+                        expression.bindToElement(member);
                     }
                 }
                 expression.putUserData(TEMP_REFERENT_USER_DATA, null);
@@ -160,24 +146,11 @@ public class ImportStaticIntention extends Intention {
     @Nonnull
     @Override
     protected PsiElementPredicate getElementPredicate() {
-        return new PsiElementPredicate() {
-            @Override
-            public boolean satisfiedBy(PsiElement element) {
-                if (!(element instanceof GrReferenceExpression)) {
-                    return false;
-                }
-                GrReferenceExpression ref = (GrReferenceExpression) element;
-                if (ref.getQualifier() == null) {
-                    return false;
-                }
-                PsiElement resolved = ref.resolve();
-                if (resolved == null) {
-                    return false;
-                }
-                return resolved instanceof PsiMember && !(resolved instanceof PsiClass) &&
-                    ((PsiMember) resolved).hasModifierProperty(PsiModifier.STATIC) &&
-                    ((PsiMember) resolved).getContainingClass() != null;
-            }
-        };
+        return element -> element instanceof GrReferenceExpression ref
+            && ref.getQualifier() != null
+            && ref.resolve() instanceof PsiMember member
+            && !(member instanceof PsiClass)
+            && member.isStatic()
+            && member.getContainingClass() != null;
     }
 }

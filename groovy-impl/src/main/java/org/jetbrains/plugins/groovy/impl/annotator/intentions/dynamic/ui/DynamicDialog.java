@@ -16,7 +16,10 @@
 package org.jetbrains.plugins.groovy.impl.annotator.intentions.dynamic.ui;
 
 import com.intellij.java.language.psi.*;
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.document.Document;
+import consulo.groovy.impl.localize.GroovyInspectionLocalize;
+import consulo.groovy.localize.GroovyLocalize;
 import consulo.language.editor.DaemonCodeAnalyzer;
 import consulo.language.editor.ui.awt.EditorComboBoxEditor;
 import consulo.language.psi.PsiDocumentManager;
@@ -24,23 +27,27 @@ import consulo.language.psi.PsiElement;
 import consulo.language.psi.SyntheticElement;
 import consulo.language.psi.scope.GlobalSearchScope;
 import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
 import consulo.logging.Logger;
 import consulo.project.Project;
 import consulo.project.content.scope.ProjectScopes;
+import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.ex.awt.DialogWrapper;
 import consulo.ui.ex.awt.IdeBorderFactory;
 import consulo.ui.ex.awt.Messages;
 import consulo.ui.ex.awt.ValidationInfo;
 import consulo.ui.ex.awt.table.JBTable;
-import consulo.undoRedo.*;
-import org.jetbrains.plugins.groovy.GroovyBundle;
+import consulo.undoRedo.CommandProcessor;
+import consulo.undoRedo.GlobalUndoableAction;
+import consulo.undoRedo.ProjectUndoManager;
+import consulo.undoRedo.UnexpectedUndoException;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.impl.annotator.intentions.QuickfixUtil;
 import org.jetbrains.plugins.groovy.impl.annotator.intentions.dynamic.DynamicManager;
 import org.jetbrains.plugins.groovy.impl.annotator.intentions.dynamic.ParamInfo;
 import org.jetbrains.plugins.groovy.impl.annotator.intentions.dynamic.elements.DClassElement;
 import org.jetbrains.plugins.groovy.impl.annotator.intentions.dynamic.elements.DItemElement;
-import org.jetbrains.plugins.groovy.impl.codeInspection.GroovyInspectionBundle;
 import org.jetbrains.plugins.groovy.impl.debugger.fragments.GroovyCodeFragment;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeElement;
@@ -48,18 +55,17 @@ import org.jetbrains.plugins.groovy.lang.psi.expectedTypes.TypeConstraint;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 
-import jakarta.annotation.Nullable;
 import javax.swing.*;
 import java.util.List;
 
 /**
- * User: Dmitry.Krasilschikov
- * Date: 18.12.2007
+ * @author Dmitry.Krasilschikov
+ * @since 2007-12-18
  */
 public abstract class DynamicDialog extends DialogWrapper {
   private static final Logger LOG = Logger.getInstance(DynamicDialog.class);
 
-  private JComboBox myClassComboBox;
+  private JComboBox<String> myClassComboBox;
   private JPanel myPanel;
   private JComboBox myTypeComboBox;
   private JLabel myTypeLabel;
@@ -80,13 +86,13 @@ public abstract class DynamicDialog extends DialogWrapper {
     myDynamicManager = DynamicManager.getInstance(myProject);
 
     if (isTableVisible) {
-      myTablePane.setBorder(IdeBorderFactory.createTitledBorder(GroovyBundle.message("dynamic.properties.table.name"), false));
+      myTablePane.setBorder(IdeBorderFactory.createTitledBorder(GroovyLocalize.dynamicPropertiesTableName().get(), false));
     }
     else {
       myTablePane.setVisible(false);
     }
 
-    setTitle(GroovyInspectionBundle.message("dynamic.element"));
+    setTitle(GroovyInspectionLocalize.dynamicElement());
     setUpTypeComboBox(typeConstraints);
     setUpContainingClassComboBox();
     setUpStaticComboBox();
@@ -103,15 +109,16 @@ public abstract class DynamicDialog extends DialogWrapper {
   }
 
   @Override
+  @RequiredUIAccess
   protected ValidationInfo doValidate() {
     GrTypeElement typeElement = getEnteredTypeName();
     if (typeElement == null) {
-      return new ValidationInfo(GroovyInspectionBundle.message("no.type.specified"), myTypeComboBox);
+      return new ValidationInfo(GroovyInspectionLocalize.noTypeSpecified(), myTypeComboBox);
     }
 
     PsiType type = typeElement.getType();
-    if (type instanceof PsiClassType && ((PsiClassType)type).resolve() == null) {
-      return new ValidationInfo(GroovyInspectionBundle.message("unresolved.type.status", type.getPresentableText()), myTypeComboBox);
+    if (type instanceof PsiClassType classType && classType.resolve() == null) {
+      return new ValidationInfo(GroovyInspectionLocalize.unresolvedTypeStatus(type.getPresentableText()), myTypeComboBox);
     }
     return null;
   }
@@ -144,7 +151,7 @@ public abstract class DynamicDialog extends DialogWrapper {
   }
 
   private void setUpTypeComboBox(TypeConstraint[] typeConstraints) {
-    EditorComboBoxEditor comboEditor = new EditorComboBoxEditor(myProject, GroovyFileType.GROOVY_FILE_TYPE);
+    EditorComboBoxEditor comboEditor = new EditorComboBoxEditor(myProject, GroovyFileType.INSTANCE);
 
     Document document = createDocument("");
     LOG.assertTrue(document != null);
@@ -174,16 +181,17 @@ public abstract class DynamicDialog extends DialogWrapper {
 
   @Nullable
   public Document getTypeEditorDocument() {
-    Object item = myTypeComboBox.getEditor().getItem();
-
-    return item instanceof Document ? (Document)item : null;
+    return myTypeComboBox.getEditor().getItem() instanceof Document document ? document : null;
   }
 
   @Nullable
+  @Override
   protected JComponent createCenterPanel() {
     return myPanel;
   }
 
+  @Override
+  @RequiredUIAccess
   protected void doOKAction() {
     super.doOKAction();
 
@@ -212,61 +220,64 @@ public abstract class DynamicDialog extends DialogWrapper {
 
     final Document document = PsiDocumentManager.getInstance(myProject).getDocument(myContext.getContainingFile());
 
-    CommandProcessor.getInstance().executeCommand(myProject, new Runnable() {
-      public void run() {
-        ProjectUndoManager.getInstance(myProject)
-                          .undoableActionPerformed(new GlobalUndoableAction(document) {
-                            public void undo() throws UnexpectedUndoException {
+    CommandProcessor.getInstance().newCommand()
+      .project(myProject)
+      .name(LocalizeValue.localizeTODO("Add dynamic element"))
+      .run(() -> {
+        ProjectUndoManager.getInstance(myProject).undoableActionPerformed(new GlobalUndoableAction(document) {
+          @Override
+          @RequiredWriteAction
+          public void undo() throws UnexpectedUndoException {
+            DItemElement itemElement;
+            if (mySettings.isMethod()) {
+              List<ParamInfo> myPairList = mySettings.getParams();
+              String[] argumentsTypes = QuickfixUtil.getArgumentsTypes(myPairList);
+              itemElement =
+                myDynamicManager.findConcreteDynamicMethod(mySettings.getContainingClassName(), mySettings.getName(), argumentsTypes);
+            }
+            else {
+              itemElement = myDynamicManager.findConcreteDynamicProperty(mySettings.getContainingClassName(), mySettings.getName());
+            }
+            if (itemElement == null) {
+              Messages.showWarningDialog(
+                myProject,
+                GroovyInspectionLocalize.cannotPerformUndoOperation().get(),
+                GroovyInspectionLocalize.undoDisable().get()
+              );
+              return;
+            }
+            DClassElement classElement = myDynamicManager.getClassElementByItem(itemElement);
+            if (classElement == null) {
+              Messages.showWarningDialog(
+                myProject,
+                GroovyInspectionLocalize.cannotPerformUndoOperation().get(),
+                GroovyInspectionLocalize.undoDisable().get()
+              );
+              return;
+            }
+            removeElement(itemElement);
+            if (classElement.getMethods().isEmpty() && classElement.getProperties().isEmpty()) {
+              myDynamicManager.removeClassElement(classElement);
+            }
+          }
 
-                              DItemElement itemElement;
-                              if (mySettings.isMethod()) {
-                                List<ParamInfo> myPairList = mySettings.getParams();
-                                String[] argumentsTypes = QuickfixUtil.getArgumentsTypes(myPairList);
-                                itemElement =
-                                  myDynamicManager.findConcreteDynamicMethod(mySettings.getContainingClassName(),
-                                                                             mySettings.getName(),
-                                                                             argumentsTypes);
-                              }
-                              else {
-                                itemElement =
-                                  myDynamicManager.findConcreteDynamicProperty(mySettings.getContainingClassName(), mySettings.getName());
-                              }
-
-                              if (itemElement == null) {
-                                Messages.showWarningDialog(myProject, GroovyInspectionBundle.message("Cannot.perform.undo.operation"),
-                                                           GroovyInspectionBundle.message("Undo.disable"));
-                                return;
-                              }
-                              DClassElement classElement = myDynamicManager.getClassElementByItem(itemElement);
-
-                              if (classElement == null) {
-                                Messages.showWarningDialog(myProject, GroovyInspectionBundle.message("Cannot.perform.undo.operation"),
-                                                           GroovyInspectionBundle.message("Undo.disable"));
-                                return;
-                              }
-
-                              removeElement(itemElement);
-
-                              if (classElement.getMethods().size() == 0 && classElement.getProperties().size() == 0) {
-                                myDynamicManager.removeClassElement(classElement);
-                              }
-                            }
-
-                            public void redo() throws UnexpectedUndoException {
-                              addElement(mySettings);
-                            }
-                          });
-
+          @Override
+          @RequiredWriteAction
+          public void redo() throws UnexpectedUndoException {
+            addElement(mySettings);
+          }
+        });
         addElement(mySettings);
-      }
-    }, "Add dynamic element", null);
+      });
   }
 
+  @RequiredWriteAction
   private void removeElement(DItemElement itemElement) {
     myDynamicManager.removeItemElement(itemElement);
     myDynamicManager.fireChange();
   }
 
+  @RequiredWriteAction
   public void addElement(DynamicElementSettings settings) {
     if (settings.isMethod()) {
       myDynamicManager.addMethod(settings);
@@ -278,12 +289,15 @@ public abstract class DynamicDialog extends DialogWrapper {
     myDynamicManager.fireChange();
   }
 
+  @Override
   public void doCancelAction() {
     super.doCancelAction();
 
     DaemonCodeAnalyzer.getInstance(myProject).restart();
   }
 
+  @Override
+  @RequiredUIAccess
   public JComponent getPreferredFocusedComponent() {
     return myTypeComboBox;
   }

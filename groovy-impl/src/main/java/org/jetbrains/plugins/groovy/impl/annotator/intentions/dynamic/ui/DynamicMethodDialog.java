@@ -16,11 +16,12 @@
 package org.jetbrains.plugins.groovy.impl.annotator.intentions.dynamic.ui;
 
 import com.intellij.java.language.psi.PsiType;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.groovy.localize.GroovyLocalize;
 import consulo.language.util.IncorrectOperationException;
 import consulo.ui.ex.awt.AbstractTableCellEditor;
 import consulo.ui.ex.awt.ColumnInfo;
 import consulo.ui.ex.awt.table.ListTableModel;
-import org.jetbrains.plugins.groovy.GroovyBundle;
 import org.jetbrains.plugins.groovy.impl.annotator.intentions.QuickfixUtil;
 import org.jetbrains.plugins.groovy.impl.annotator.intentions.dynamic.ParamInfo;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
@@ -37,11 +38,11 @@ import java.util.EventObject;
 import java.util.List;
 
 /**
- * User: Dmitry.Krasilschikov
- * Date: 18.02.2008
+ * @author Dmitry.Krasilschikov
+ * @since 2008-02-18
  */
 public class DynamicMethodDialog extends DynamicDialog {
-
+  @RequiredReadAction
   public DynamicMethodDialog(GrReferenceExpression referenceExpression) {
     super(referenceExpression, QuickfixUtil.createSettings(referenceExpression),
           GroovyExpectedTypesProvider.calculateTypeConstraints((GrExpression)referenceExpression.getParent()), true);
@@ -50,8 +51,8 @@ public class DynamicMethodDialog extends DynamicDialog {
     List<ParamInfo> pairs = getSettings().getParams();
     setupParameterTable(pairs);
     setupParameterList(pairs);
-    setTitle(GroovyBundle.message("add.dynamic.method"));
-    setUpTypeLabel(GroovyBundle.message("dynamic.method.return.type"));
+    setTitle(GroovyLocalize.addDynamicMethod());
+    setUpTypeLabel(GroovyLocalize.dynamicMethodReturnType().get());
   }
 
   private void setupParameterTable(final List<ParamInfo> pairs) {
@@ -60,6 +61,7 @@ public class DynamicMethodDialog extends DynamicDialog {
     myParametersTable.setDefaultEditor(String.class, suggestedNameCellEditor);
 
     suggestedNameCellEditor.addCellEditorListener(new CellEditorListener() {
+      @Override
       public void editingStopped(ChangeEvent e) {
         int editingColumn = myParametersTable.getSelectedColumn();
         if (editingColumn != 0) return;
@@ -73,13 +75,14 @@ public class DynamicMethodDialog extends DynamicDialog {
         editingPair.name = newNameValue;
       }
 
+      @Override
       public void editingCanceled(ChangeEvent e) {
       }
     });
   }
 
   private void setupParameterList(List<ParamInfo> arguments) {
-    ListTableModel<ParamInfo> dataModel = new ListTableModel<ParamInfo>(new NameColumnInfo(), new TypeColumnInfo());
+    ListTableModel<ParamInfo> dataModel = new ListTableModel<>(new NameColumnInfo(), new TypeColumnInfo());
     dataModel.setItems(arguments);
     myParametersTable.setModel(dataModel);
 
@@ -103,17 +106,20 @@ public class DynamicMethodDialog extends DynamicDialog {
 
   private class TypeColumnInfo extends ColumnInfo<ParamInfo, String> {
     public TypeColumnInfo() {
-      super(GroovyBundle.message("dynamic.name"));
+      super(GroovyLocalize.dynamicName());
     }
 
+    @Override
     public String valueOf(ParamInfo pair) {
       return pair.type;
     }
 
+    @Override
     public boolean isCellEditable(ParamInfo stringPsiTypeMyPair) {
       return false;
     }
 
+    @Override
     public void setValue(ParamInfo pair, String value) {
       PsiType type;
       try {
@@ -131,13 +137,15 @@ public class DynamicMethodDialog extends DynamicDialog {
   private static class NameColumnInfo extends ColumnInfo<ParamInfo, String>
   {
     public NameColumnInfo() {
-      super(GroovyBundle.message("dynamic.type"));
+      super(GroovyLocalize.dynamicType());
     }
 
+    @Override
     public boolean isCellEditable(ParamInfo myPair) {
       return true;
     }
 
+    @Override
     public String valueOf(ParamInfo pair) {
       return pair.name;
     }
@@ -150,14 +158,17 @@ public class DynamicMethodDialog extends DynamicDialog {
       myNameField = names.length == 0 ? new JTextField() : new JTextField(names[0]);
     }
 
+    @Override
     public String getCellEditorValue() {
       return myNameField.getText();
     }
 
+    @Override
     public boolean isCellEditable(EventObject e) {
       return true;
     }
 
+    @Override
     public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
       if (value instanceof String) {
         myNameField.setText((String)value);
