@@ -15,6 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.impl.intentions.closure;
 
+import consulo.annotation.access.RequiredReadAction;
 import consulo.language.psi.PsiElement;
 import com.intellij.java.language.psi.PsiType;
 import org.jetbrains.plugins.groovy.impl.intentions.base.ErrorUtil;
@@ -25,12 +26,12 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.path.GrM
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames;
 
 class ExplicitClosureCallPredicate implements PsiElementPredicate {
-
+    @Override
+    @RequiredReadAction
     public boolean satisfiedBy(PsiElement element) {
-        if (!(element instanceof GrMethodCallExpression)) {
+        if (!(element instanceof GrMethodCallExpression call)) {
             return false;
         }
-        GrMethodCallExpression call = (GrMethodCallExpression) element;
         GrExpression invokedExpression = call.getInvokedExpression();
         if (invokedExpression == null) {
             return false;

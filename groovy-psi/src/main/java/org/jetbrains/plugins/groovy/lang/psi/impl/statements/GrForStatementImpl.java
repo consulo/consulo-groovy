@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements;
 
+import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.access.RequiredWriteAction;
 import jakarta.annotation.Nonnull;
 
 import consulo.language.ast.ASTNode;
@@ -40,7 +41,7 @@ import org.jetbrains.plugins.groovy.lang.resolve.ResolveUtil;
 import org.jetbrains.plugins.groovy.lang.resolve.processors.ClassHint;
 
 /**
- * @autor: ilyas
+ * @author ilyas
  */
 public class GrForStatementImpl extends GroovyPsiElementImpl implements GrForStatement {
   public GrForStatementImpl(@Nonnull ASTNode node) {
@@ -52,23 +53,27 @@ public class GrForStatementImpl extends GroovyPsiElementImpl implements GrForSta
     visitor.visitForStatement(this);
   }
 
+  @Override
   public String toString() {
     return "For statement";
   }
 
-  @Override
   @Nullable
+  @Override
+  @RequiredReadAction
   public GrForClause getClause() {
     return findChildByClass(GrForClause.class);
   }
 
-  @Override
   @Nullable
+  @Override
+  @RequiredReadAction
   public GrStatement getBody() {
     return findChildByClass(GrStatement.class);
   }
 
   @Override
+  @RequiredReadAction
   public boolean processDeclarations(@Nonnull PsiScopeProcessor processor,
                                      @Nonnull ResolveState state,
                                      @Nullable PsiElement lastParent,
@@ -88,16 +93,19 @@ public class GrForStatementImpl extends GroovyPsiElementImpl implements GrForSta
   }
 
   @Override
+  @RequiredWriteAction
   public <T extends GrCondition> T replaceBody(T newBody) throws IncorrectOperationException {
     return PsiImplUtil.replaceBody(newBody, getBody(), getNode(), getProject());
   }
 
   @Override
+  @RequiredReadAction
   public PsiElement getRParenth() {
     return findChildByType(GroovyTokenTypes.mRPAREN);
   }
 
   @Override
+  @RequiredReadAction
   public PsiElement getLParenth() {
     return findChildByType(GroovyTokenTypes.mLPAREN);
   }

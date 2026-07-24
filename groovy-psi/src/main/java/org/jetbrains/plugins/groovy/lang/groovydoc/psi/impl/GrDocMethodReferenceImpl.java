@@ -13,11 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.lang.groovydoc.psi.impl;
 
 import com.intellij.java.language.psi.*;
 import com.intellij.java.language.psi.util.PropertyUtil;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.language.ast.ASTNode;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiNamedElement;
@@ -40,20 +41,23 @@ import org.jetbrains.plugins.groovy.lang.resolve.processors.MethodResolverProces
  * @author ilyas
  */
 public class GrDocMethodReferenceImpl extends GrDocMemberReferenceImpl implements GrDocMethodReference {
-
   public GrDocMethodReferenceImpl(@Nonnull ASTNode node) {
     super(node);
   }
 
+  @Override
   public String toString() {
     return "GrDocMethodReference";
   }
 
+  @Override
   public void accept(GroovyElementVisitor visitor) {
     visitor.visitDocMethodReference(this);
   }
 
   @Nonnull
+  @Override
+  @RequiredReadAction
   public GrDocMethodParams getParameterList() {
     GrDocMethodParams child = findChildByClass(GrDocMethodParams.class);
     assert child != null;
@@ -61,6 +65,7 @@ public class GrDocMethodReferenceImpl extends GrDocMemberReferenceImpl implement
   }
 
   @Override
+  @RequiredWriteAction
   public PsiElement bindToText(Project project, String text) {
     GrDocComment comment = GroovyPsiElementFactory.getInstance(project).createDocCommentFromText(text);
     PsiElement tag = PsiTreeUtil.getChildOfType(comment, GrDocTag.class);
@@ -70,6 +75,7 @@ public class GrDocMethodReferenceImpl extends GrDocMemberReferenceImpl implement
   }
 
   @Override
+  @RequiredReadAction
   public PsiElement resolve() {
     String name = getReferenceName();
     GrDocReferenceElement holder = getReferenceHolder();
@@ -100,6 +106,8 @@ public class GrDocMethodReferenceImpl extends GrDocMemberReferenceImpl implement
     return null;
   }
 
+  @Override
+  @RequiredReadAction
   protected ResolveResult[] multiResolveImpl() {
     String name = getReferenceName();
     GrDocReferenceElement holder = getReferenceHolder();
@@ -122,13 +130,17 @@ public class GrDocMethodReferenceImpl extends GrDocMemberReferenceImpl implement
     return new ResolveResult[0];
   }
 
+  @Override
+  @RequiredReadAction
   public boolean isReferenceTo(PsiElement element) {
-    if (element instanceof PsiNamedElement && Comparing.equal(((PsiNamedElement) element).getName(), getReferenceName())) {
+    if (element instanceof PsiNamedElement namedElem && Comparing.equal(namedElem.getName(), getReferenceName())) {
       return getManager().areElementsEquivalent(element, resolve());
     }
     return false;
   }
 
+  @Override
+  @RequiredWriteAction
   public PsiElement handleElementRename(String newElementName) throws IncorrectOperationException {
     PsiElement resolved = resolve();
     if (resolved instanceof PsiMethod) {

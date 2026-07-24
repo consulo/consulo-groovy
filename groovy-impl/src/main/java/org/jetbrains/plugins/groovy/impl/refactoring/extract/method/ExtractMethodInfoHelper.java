@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.impl.refactoring.extract.method;
 
 import com.intellij.java.language.psi.PsiClass;
@@ -31,7 +30,6 @@ import org.jetbrains.plugins.groovy.impl.refactoring.extract.InitialInfo;
  * @author ilyas
  */
 public class ExtractMethodInfoHelper extends ExtractInfoHelperBase {
-
   private final boolean myIsStatic;
   private boolean mySpecifyType = true;
   private String myVisibility;
@@ -70,6 +68,7 @@ public class ExtractMethodInfoHelper extends ExtractInfoHelperBase {
     mySpecifyType = specifyType;
   }
 
+  @Override
   public String getName() {
     return myName;
   }
@@ -90,8 +89,8 @@ public class ExtractMethodInfoHelper extends ExtractInfoHelperBase {
   private static boolean canBeStatic(GrStatement statement) {
     PsiElement parent = statement.getParent();
     while (parent != null && !(parent instanceof PsiFile)) {
-      if (parent instanceof GrMethod) {
-        return ((GrMethod) parent).hasModifierProperty(PsiModifier.STATIC);
+      if (parent instanceof GrMethod method) {
+        return method.isStatic();
       }
       parent = parent.getParent();
     }

@@ -48,7 +48,6 @@ import consulo.virtualFileSystem.archive.ArchiveVfsUtil;
 import consulo.virtualFileSystem.util.VirtualFileUtil;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
-import org.jetbrains.annotations.NonNls;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.JetgroovyIcons;
 import org.jetbrains.plugins.groovy.impl.mvc.*;
@@ -67,7 +66,6 @@ import java.util.regex.Pattern;
  */
 @ExtensionImpl
 public class GriffonFramework extends MvcFramework {
-    @NonNls
     private static final String GRIFFON_COMMON_PLUGINS = "-griffonPlugins";
     private static final String GLOBAL_PLUGINS_MODULE_NAME = "GriffonGlobalPlugins";
 
@@ -79,6 +77,7 @@ public class GriffonFramework extends MvcFramework {
     public GriffonFramework() {
     }
 
+    @Override
     public boolean hasSupport(@Nonnull Module module) {
         return getSdkRoot(module) != null && findAppRoot(module) != null && !isAuxModule(module);
     }
@@ -443,12 +442,14 @@ public class GriffonFramework extends MvcFramework {
         }
 
         @Nonnull
+        @Override
         public String getUserLibraryName() {
             return GRIFFON_USER_LIBRARY;
         }
 
+        @Override
         public String[] getSourceFolders() {
-            List<String> sourceFolders = new ArrayList<String>();
+            List<String> sourceFolders = new ArrayList<>();
 
             for (VirtualFile file : ModuleRootManager.getInstance(myModule).getContentRoots()) {
                 handleSrc(file.findChild("src"), sourceFolders);
@@ -518,8 +519,9 @@ public class GriffonFramework extends MvcFramework {
             }
         }
 
+        @Override
         public String[] getTestFolders() {
-            List<String> sourceFolders = new ArrayList<String>();
+            List<String> sourceFolders = new ArrayList<>();
 
             for (VirtualFile file : ModuleRootManager.getInstance(myModule).getContentRoots()) {
                 handleTest(file.findChild("test"), sourceFolders);
@@ -527,6 +529,7 @@ public class GriffonFramework extends MvcFramework {
             return sourceFolders.toArray(new String[sourceFolders.size()]);
         }
 
+        @Override
         public String[] getInvalidSourceFolders() {
             return new String[]{"src"};
         }

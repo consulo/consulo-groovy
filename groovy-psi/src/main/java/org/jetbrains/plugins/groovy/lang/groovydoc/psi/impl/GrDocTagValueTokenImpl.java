@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.lang.groovydoc.psi.impl;
 
 import consulo.language.ast.ASTNode;
@@ -24,13 +23,12 @@ import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocTagValueToken;
  * @author ilyas
  */
 public class GrDocTagValueTokenImpl extends GroovyDocPsiElementImpl implements GrDocTagValueToken {
+    public GrDocTagValueTokenImpl(@Nonnull ASTNode node) {
+        super(node);
+    }
 
-  public GrDocTagValueTokenImpl(@Nonnull ASTNode node) {
-    super(node);
-  }
-
-  public String toString() {
-    return "GrDocTagValueToken";
-  }
-
+    @Override
+    public String toString() {
+        return "GrDocTagValueToken";
+    }
 }

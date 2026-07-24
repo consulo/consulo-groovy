@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.typedef.enumConstant;
 
 import com.intellij.java.language.psi.*;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.document.util.TextRange;
 import consulo.language.ast.ASTNode;
 import consulo.language.psi.PsiElement;
@@ -25,7 +26,8 @@ import consulo.language.psi.PsiReference;
 import consulo.language.psi.ResolveResult;
 import consulo.language.util.IncorrectOperationException;
 import consulo.util.collection.ArrayUtil;
-import org.jetbrains.annotations.NonNls;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.parser.GroovyElementTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
@@ -45,12 +47,9 @@ import org.jetbrains.plugins.groovy.lang.psi.stubs.GrFieldStub;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 import org.jetbrains.plugins.groovy.lang.resolve.ResolveUtil;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
-
 /**
- * @author: Dmitry.Krasilschikov
- * @date: 06.04.2007
+ * @author Dmitry.Krasilschikov
+ * @since 2007-04-06
  */
 public class GrEnumConstantImpl extends GrFieldImpl implements GrEnumConstant {
   private final MyReference myReference = new MyReference();
@@ -63,12 +62,13 @@ public class GrEnumConstantImpl extends GrFieldImpl implements GrEnumConstant {
     super(stub, GroovyElementTypes.ENUM_CONSTANT);
   }
 
+  @Override
   public String toString() {
     return "Enumeration constant";
   }
 
   @Override
-  public boolean hasModifierProperty(@NonNls @Nonnull String property) {
+  public boolean hasModifierProperty(@Nonnull String property) {
     if (property.equals(PsiModifier.STATIC)) return true;
     if (property.equals(PsiModifier.PUBLIC)) return true;
     if (property.equals(PsiModifier.FINAL)) return true;
@@ -122,11 +122,13 @@ public class GrEnumConstantImpl extends GrFieldImpl implements GrEnumConstant {
 
   @Override
   @Nullable
+  @RequiredReadAction
   public GrArgumentList getArgumentList() {
     return findChildByClass(GrArgumentList.class);
   }
 
   @Override
+  @RequiredWriteAction
   public GrNamedArgument addNamedArgument(GrNamedArgument namedArgument) throws IncorrectOperationException {
     GrArgumentList list = getArgumentList();
     assert list != null;
@@ -140,6 +142,7 @@ public class GrEnumConstantImpl extends GrFieldImpl implements GrEnumConstant {
 
   @Nonnull
   @Override
+  @RequiredReadAction
   public GrNamedArgument[] getNamedArguments() {
     GrArgumentList argumentList = getArgumentList();
     return argumentList == null ? GrNamedArgument.EMPTY_ARRAY : argumentList.getNamedArguments();
@@ -147,6 +150,7 @@ public class GrEnumConstantImpl extends GrFieldImpl implements GrEnumConstant {
 
   @Nonnull
   @Override
+  @RequiredReadAction
   public GrExpression[] getExpressionArguments() {
     GrArgumentList argumentList = getArgumentList();
     return argumentList == null ? GrExpression.EMPTY_ARRAY : argumentList.getExpressionArguments();
@@ -154,17 +158,20 @@ public class GrEnumConstantImpl extends GrFieldImpl implements GrEnumConstant {
 
   @Nonnull
   @Override
+  @RequiredReadAction
   public GroovyResolveResult[] getCallVariants(@Nullable GrExpression upToArgument) {
     return multiResolveGroovy(true);
   }
 
   @Nonnull
   @Override
+  @RequiredReadAction
   public GrClosableBlock[] getClosureArguments() {
     return GrClosableBlock.EMPTY_ARRAY;
   }
 
   @Override
+  @RequiredReadAction
   public PsiMethod resolveMethod() {
     return PsiImplUtil.extractUniqueElement(multiResolveGroovy(false));
   }
@@ -177,12 +184,14 @@ public class GrEnumConstantImpl extends GrFieldImpl implements GrEnumConstant {
 
   @Override
   @Nullable
+  @RequiredReadAction
   public GrEnumConstantInitializer getInitializingClass() {
     return findChildByClass(GrEnumConstantInitializer.class);
   }
 
   @Nonnull
   @Override
+  @RequiredWriteAction
   public PsiEnumConstantInitializer getOrCreateInitializingClass() {
     GrEnumConstantInitializer initializingClass = getInitializingClass();
     if (initializingClass != null) return initializingClass;
@@ -206,17 +215,20 @@ public class GrEnumConstantImpl extends GrFieldImpl implements GrEnumConstant {
 
   @Nonnull
   @Override
+  @RequiredReadAction
   public GroovyResolveResult advancedResolve() {
     return PsiImplUtil.extractUniqueResult(multiResolveGroovy(false));
   }
 
   @Override
+  @RequiredReadAction
   public PsiMethod resolveConstructor() {
     return resolveMethod();
   }
 
   @Nonnull
   @Override
+  @RequiredReadAction
   public GroovyResolveResult[] multiResolveGroovy(boolean incompleteCode) {
     PsiType[] argTypes = PsiUtil.getArgumentTypes(getFirstChild(), false);
     PsiClass clazz = getContainingClass();
@@ -234,59 +246,70 @@ public class GrEnumConstantImpl extends GrFieldImpl implements GrEnumConstant {
   private class MyReference implements PsiPolyVariantReference {
     @Override
     @Nonnull
+    @RequiredReadAction
     public ResolveResult[] multiResolve(boolean incompleteCode) {
       return GrEnumConstantImpl.this.multiResolve(false);
     }
 
     @Override
+    @RequiredReadAction
     public PsiElement getElement() {
       return GrEnumConstantImpl.this;
     }
 
     @Override
+    @RequiredReadAction
     public TextRange getRangeInElement() {
       return getNameIdentifierGroovy().getTextRange().shiftRight(-getTextOffset());
     }
 
     @Override
+    @RequiredReadAction
     public PsiElement resolve() {
       return resolveMethod();
     }
 
     @Nonnull
+    @RequiredReadAction
     public GroovyResolveResult advancedResolve() {
       return GrEnumConstantImpl.this.advancedResolve();
     }
 
     @Override
     @Nonnull
+    @RequiredReadAction
     public String getCanonicalText() {
       return getContainingClass().getName();
     }
 
     @Override
+    @RequiredWriteAction
     public PsiElement handleElementRename(String newElementName) throws IncorrectOperationException {
       return getElement();
     }
 
     @Override
+    @RequiredReadAction
     public PsiElement bindToElement(@Nonnull PsiElement element) throws IncorrectOperationException
 	{
       throw new IncorrectOperationException("invalid operation");
     }
 
     @Override
+    @RequiredReadAction
     public boolean isReferenceTo(PsiElement element) {
-      return element instanceof GrMethod && ((GrMethod)element).isConstructor() && getManager().areElementsEquivalent(resolve(), element);
+      return element instanceof GrMethod method && method.isConstructor() && getManager().areElementsEquivalent(resolve(), method);
     }
 
     @Override
     @Nonnull
+    @RequiredReadAction
     public Object[] getVariants() {
       return ArrayUtil.EMPTY_OBJECT_ARRAY;
     }
 
     @Override
+    @RequiredReadAction
     public boolean isSoft() {
       return false;
     }

@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements;
 
+import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.language.ast.ASTNode;
 import consulo.language.psi.PsiElement;
 import consulo.language.util.IncorrectOperationException;
@@ -35,7 +36,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @autor: ilyas
+ * @author ilyas
  */
 public class GrIfStatementImpl extends GroovyPsiElementImpl implements GrIfStatement {
   public GrIfStatementImpl(@Nonnull ASTNode node) {
@@ -47,12 +48,14 @@ public class GrIfStatementImpl extends GroovyPsiElementImpl implements GrIfState
     visitor.visitIfStatement(this);
   }
 
+  @Override
   public String toString() {
     return "IF statement";
   }
 
-  @Override
   @Nullable
+  @Override
+  @RequiredReadAction
   public GrExpression getCondition() {
     PsiElement lParenth = getLParenth();
 
@@ -64,10 +67,11 @@ public class GrIfStatementImpl extends GroovyPsiElementImpl implements GrIfState
     return null;
   }
 
-  @Override
   @Nullable
+  @Override
+  @RequiredReadAction
   public GrStatement getThenBranch() {
-    List<GrStatement> statements = new ArrayList<GrStatement>();
+    List<GrStatement> statements = new ArrayList<>();
     for (PsiElement cur = getFirstChild(); cur != null; cur = cur.getNextSibling()) {
       if (GrStatement.class.isInstance(cur)) statements.add((GrStatement)cur);
     }
@@ -77,10 +81,11 @@ public class GrIfStatementImpl extends GroovyPsiElementImpl implements GrIfState
     return null;
   }
 
-  @Override
   @Nullable
+  @Override
+  @RequiredReadAction
   public GrStatement getElseBranch() {
-    List<GrStatement> statements = new ArrayList<GrStatement>();
+    List<GrStatement> statements = new ArrayList<>();
     for (PsiElement cur = getFirstChild(); cur != null; cur = cur.getNextSibling()) {
       if (cur instanceof GrStatement) statements.add((GrStatement)cur);
     }
@@ -92,6 +97,7 @@ public class GrIfStatementImpl extends GroovyPsiElementImpl implements GrIfState
   }
 
   @Override
+  @RequiredWriteAction
   public void deleteChildInternal(@Nonnull ASTNode child) {
     GrStatement elseBranch = getElseBranch();
 
@@ -105,29 +111,34 @@ public class GrIfStatementImpl extends GroovyPsiElementImpl implements GrIfState
     super.deleteChildInternal(child);
   }
 
-  @Override
   @Nonnull
+  @Override
+  @RequiredWriteAction
   public <T extends GrStatement> T replaceThenBranch(@Nonnull T newBranch) throws IncorrectOperationException {
     return PsiImplUtil.replaceBody(newBranch, getThenBranch(), getNode(), getProject());
   }
 
-  @Override
   @Nonnull
+  @Override
+  @RequiredWriteAction
   public <T extends GrStatement> T replaceElseBranch(@Nonnull T newBranch) throws IncorrectOperationException {
     return PsiImplUtil.replaceBody(newBranch, getElseBranch(), getNode(), getProject());
   }
 
   @Override
+  @RequiredReadAction
   public PsiElement getElseKeyword() {
     return findChildByType(GroovyTokenTypes.kELSE);
   }
 
   @Override
+  @RequiredReadAction
   public PsiElement getRParenth() {
     return findChildByType(GroovyTokenTypes.mRPAREN);
   }
 
   @Override
+  @RequiredReadAction
   public PsiElement getLParenth() {
     return findChildByType(GroovyTokenTypes.mLPAREN);
   }

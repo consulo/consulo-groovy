@@ -13,7 +13,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.impl.griffon;
 
 import consulo.execution.configuration.ConfigurationFactory;
@@ -36,11 +35,11 @@ public class GriffonRunConfiguration extends MvcRunConfiguration {
     return "Griffon SDK is not configured";
   }
 
+  @Override
   protected ModuleBasedConfiguration createInstance() {
     GriffonRunConfiguration res = new GriffonRunConfiguration(myFactory, getConfigurationModule().getProject(), getName(), cmdLine);
     res.envs.putAll(envs);
     res.passParentEnv = passParentEnv;
     return res;
   }
-
 }
