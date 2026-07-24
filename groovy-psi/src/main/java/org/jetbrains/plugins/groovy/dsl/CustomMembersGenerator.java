@@ -19,10 +19,9 @@ import com.intellij.java.language.psi.CommonClassNames;
 import com.intellij.java.language.psi.PsiClass;
 import com.intellij.java.language.psi.PsiClassType;
 import com.intellij.java.language.psi.PsiType;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.language.impl.psi.FakePsiElement;
 import consulo.language.psi.PsiElement;
-import consulo.language.psi.resolve.PsiScopeProcessor;
-import consulo.language.psi.resolve.ResolveState;
 import consulo.language.psi.scope.GlobalSearchScope;
 import consulo.logging.Logger;
 import consulo.project.Project;
@@ -30,6 +29,8 @@ import consulo.util.collection.ContainerUtil;
 import groovy.lang.Closure;
 import groovy.lang.GroovyObjectSupport;
 import groovy.lang.MetaMethod;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.codehaus.groovy.runtime.DefaultGroovyMethods;
 import org.codehaus.groovy.runtime.InvokerHelper;
 import org.jetbrains.plugins.groovy.dsl.dsltop.GdslMembersProvider;
@@ -46,8 +47,6 @@ import org.jetbrains.plugins.groovy.lang.psi.util.GroovyCommonClassNames;
 import org.jetbrains.plugins.groovy.lang.psi.util.GroovyPropertyUtils;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
 import java.util.*;
 import java.util.function.Function;
 
@@ -57,7 +56,7 @@ import java.util.function.Function;
 public class CustomMembersGenerator extends GroovyObjectSupport implements GdslMembersHolderConsumer {
   private static final Logger LOG = Logger.getInstance(CustomMembersGenerator.class);
   public static final String THROWS = "throws";
-  private final List<Map> myDeclarations = ContainerUtil.newArrayList();
+  private final List<Map> myDeclarations = new ArrayList<>();
   private final Project myProject;
   private final CompoundMembersHolder myDepot = new CompoundMembersHolder();
   private final GroovyClassDescriptor myDescriptor;
@@ -69,18 +68,21 @@ public class CustomMembersGenerator extends GroovyObjectSupport implements GdslM
     myDescriptor = descriptor;
     myBindings = bindings;
     myProject = descriptor.getProject();
-    myPsiClass = type instanceof PsiClassType ? ((PsiClassType)type).resolve() : null;
+    myPsiClass = type instanceof PsiClassType classType ? classType.resolve() : null;
   }
 
+  @Override
   public PsiElement getPlace() {
     return myDescriptor.getPlace();
   }
 
   @Nullable
+  @Override
   public PsiClass getClassType() {
     return getPsiClass();
   }
 
+  @Override
   public PsiType getPsiType() {
     return myDescriptor.getPsiType();
   }
@@ -96,6 +98,7 @@ public class CustomMembersGenerator extends GroovyObjectSupport implements GdslM
     return myDescriptor.getResolveScope();
   }
 
+  @Override
   public Project getProject() {
     return myProject;
   }
@@ -103,16 +106,15 @@ public class CustomMembersGenerator extends GroovyObjectSupport implements GdslM
   @Nullable
   public CustomMembersHolder getMembersHolder() {
     if (!myDeclarations.isEmpty()) {
-      addMemberHolder(new CustomMembersHolder() {
-        @Override
-        public boolean processMembers(GroovyClassDescriptor descriptor, PsiScopeProcessor processor, ResolveState state) {
-          return NonCodeMembersHolder.generateMembers(myDeclarations, descriptor.justGetPlaceFile()).processMembers(descriptor, processor, state);
-        }
-      });
+      addMemberHolder(
+          (descriptor, processor, state) ->
+              NonCodeMembersHolder.generateMembers(myDeclarations, descriptor.justGetPlaceFile()).processMembers(descriptor, processor, state)
+      );
     }
     return myDepot;
   }
 
+  @Override
   public void addMemberHolder(CustomMembersHolder holder) {
     myDepot.addHolder(holder);
   }
@@ -138,7 +140,7 @@ public class CustomMembersGenerator extends GroovyObjectSupport implements GdslM
     Object docUrl = args.get("docUrl");
     Boolean isStatic = (Boolean)args.get("isStatic");
 
-    Map<Object, Object> getter = new HashMap<Object, Object>();
+    Map<Object, Object> getter = new HashMap<>();
     getter.put("name", GroovyPropertyUtils.getGetterNameNonBoolean(name));
     getter.put("type", type);
     getter.put("isStatic", isStatic);
@@ -146,13 +148,13 @@ public class CustomMembersGenerator extends GroovyObjectSupport implements GdslM
     getter.put("docUrl", docUrl);
     method(getter);
 
-    Map<Object, Object> setter = new HashMap<Object, Object>();
+    Map<Object, Object> setter = new HashMap<>();
     setter.put("name", GroovyPropertyUtils.getSetterName(name));
     setter.put("type", "void");
     setter.put("isStatic", isStatic);
     setter.put("doc", doc);
     setter.put("docUrl", docUrl);
-    HashMap<Object, Object> param = new HashMap<Object, Object>();
+    Map<Object, Object> param = new HashMap<>();
     param.put(name, type);
     setter.put("params", param);
     method(setter);
@@ -196,7 +198,7 @@ public class CustomMembersGenerator extends GroovyObjectSupport implements GdslM
 
       generator.setDelegate(this);
 
-      HashMap<String, Object> args = new HashMap<String, Object>();
+      Map<String, Object> args = new HashMap<>();
       args.put("name", ref.getReferenceName());
       args.put("argumentTypes", types);
       generator.call(args);
@@ -239,7 +241,7 @@ public class CustomMembersGenerator extends GroovyObjectSupport implements GdslM
     }
     Object toThrow = args.get(THROWS);
     if (toThrow instanceof List) {
-      ArrayList<String> list = new ArrayList<String>();
+      List<String> list = new ArrayList<>();
       for (Object o : (List)toThrow) {
         list.add(stringifyType(o));
       }
@@ -356,9 +358,9 @@ public class CustomMembersGenerator extends GroovyObjectSupport implements GdslM
     }
 
     @Override
+    @RequiredReadAction
     public String getName() {
       return myName;
     }
   }
-
 }

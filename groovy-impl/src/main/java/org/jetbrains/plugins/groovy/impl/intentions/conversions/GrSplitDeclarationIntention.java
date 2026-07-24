@@ -15,6 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.impl.intentions.conversions;
 
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.codeEditor.Editor;
 import consulo.groovy.impl.localize.GroovyIntentionLocalize;
 import consulo.language.psi.PsiElement;
@@ -39,12 +40,11 @@ import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeElement;
  */
 public class GrSplitDeclarationIntention extends Intention {
     @Override
+    @RequiredWriteAction
     protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
-        if (!(element instanceof GrVariableDeclaration)) {
+        if (!(element instanceof GrVariableDeclaration declaration)) {
             return;
         }
-
-        GrVariableDeclaration declaration = (GrVariableDeclaration) element;
 
         GrVariable[] variables = declaration.getVariables();
         if (variables.length == 1) {
@@ -60,6 +60,7 @@ public class GrSplitDeclarationIntention extends Intention {
         }
     }
 
+    @RequiredWriteAction
     private static void processTuple(Project project, GrVariableDeclaration declaration) {
         GrExpression initializer = declaration.getTupleInitializer();
         assert initializer != null;
@@ -84,6 +85,7 @@ public class GrSplitDeclarationIntention extends Intention {
         initializer.delete();
     }
 
+    @RequiredWriteAction
     private static void processMultipleVars(Project project, GrVariableDeclaration declaration) {
         GrVariable[] variables = declaration.getVariables();
         String modifiers = declaration.getModifierList().getText();
@@ -101,6 +103,7 @@ public class GrSplitDeclarationIntention extends Intention {
         declaration.delete();
     }
 
+    @RequiredWriteAction
     private static void processSingleVar(Project project, GrVariableDeclaration declaration, GrVariable variable) {
         GrExpression initializer = variable.getInitializerGroovy();
         if (initializer != null) {
@@ -112,6 +115,7 @@ public class GrSplitDeclarationIntention extends Intention {
         }
     }
 
+    @RequiredWriteAction
     private static GrStatement createVarDeclaration(Project project, GrVariable variable, String modifiers, boolean isTuple) {
         StringBuilder builder = new StringBuilder();
         builder.append(modifiers).append(' ');
@@ -143,30 +147,26 @@ public class GrSplitDeclarationIntention extends Intention {
     @Nonnull
     @Override
     protected PsiElementPredicate getElementPredicate() {
-        return new PsiElementPredicate() {
-            @Override
-            public boolean satisfiedBy(PsiElement element) {
-                if (element instanceof GrVariableDeclaration) {
-                    GrVariableDeclaration decl = (GrVariableDeclaration) element;
-                    GrVariable[] variables = decl.getVariables();
-                    if (variables.length > 1 && GroovyRefactoringUtil.isLocalVariable(variables[0])) {
-                        if (!decl.isTuple() || decl.getTupleInitializer() instanceof GrListOrMap) {
-                            myText = GroovyIntentionLocalize.splitIntoSeparateDeclaration();
-                        }
-                        else {
-                            myText = GroovyIntentionLocalize.splitIntoDeclarationAndAssignment();
-                        }
-                        return true;
+        return element -> {
+            if (element instanceof GrVariableDeclaration decl) {
+                GrVariable[] variables = decl.getVariables();
+                if (variables.length > 1 && GroovyRefactoringUtil.isLocalVariable(variables[0])) {
+                    if (!decl.isTuple() || decl.getTupleInitializer() instanceof GrListOrMap) {
+                        myText = GroovyIntentionLocalize.splitIntoSeparateDeclaration();
                     }
-                    else if (variables.length == 1 &&
-                        GroovyRefactoringUtil.isLocalVariable(variables[0]) &&
-                        variables[0].getInitializerGroovy() != null) {
+                    else {
                         myText = GroovyIntentionLocalize.splitIntoDeclarationAndAssignment();
-                        return true;
                     }
+                    return true;
                 }
-                return false;
+                else if (variables.length == 1
+                    && GroovyRefactoringUtil.isLocalVariable(variables[0])
+                    && variables[0].getInitializerGroovy() != null) {
+                    myText = GroovyIntentionLocalize.splitIntoDeclarationAndAssignment();
+                    return true;
+                }
             }
+            return false;
         };
     }
 }

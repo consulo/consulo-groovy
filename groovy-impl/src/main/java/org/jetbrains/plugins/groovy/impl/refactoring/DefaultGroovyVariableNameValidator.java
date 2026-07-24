@@ -15,12 +15,12 @@
  */
 package org.jetbrains.plugins.groovy.impl.refactoring;
 
-import consulo.language.psi.PsiNamedElement;
-import consulo.project.Project;
-import consulo.language.psi.PsiElement;
 import com.intellij.java.language.psi.PsiField;
-import com.intellij.java.language.psi.PsiModifier;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.language.psi.PsiElement;
+import consulo.language.psi.PsiNamedElement;
 import consulo.language.psi.util.PsiTreeUtil;
+import consulo.project.Project;
 import org.jetbrains.plugins.groovy.lang.psi.GrControlFlowOwner;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyRecursiveElementVisitor;
@@ -42,22 +42,26 @@ import java.util.Set;
  */
 public class DefaultGroovyVariableNameValidator implements NameValidator {
   private final GroovyPsiElement myContext;
-  private final Set<String> mySet = new HashSet<String>();
+  private final Set<String> mySet = new HashSet<>();
 
+  @RequiredReadAction
   public DefaultGroovyVariableNameValidator(GroovyPsiElement context) {
     this(context, Collections.<String>emptyList(), true, false);
   }
 
+  @RequiredReadAction
   public DefaultGroovyVariableNameValidator(GroovyPsiElement context, Collection<String> restrictedNames) {
     this(context, restrictedNames, true, false);
   }
 
+  @RequiredReadAction
   public DefaultGroovyVariableNameValidator(GroovyPsiElement context,
                                             Collection<String> restrictedNames,
                                             boolean includeFields) {
     this(context, restrictedNames, includeFields, false);
   }
 
+  @RequiredReadAction
   public DefaultGroovyVariableNameValidator(GroovyPsiElement context,
                                             Collection<String> restrictedNames,
                                             final boolean includeFields,
@@ -69,8 +73,8 @@ public class DefaultGroovyVariableNameValidator implements NameValidator {
     GroovyResolveResult[] results = processor.getCandidates();
     for (GroovyResolveResult result : results) {
       PsiElement element = result.getElement();
-      if (element instanceof PsiNamedElement && (includeFields || !(element instanceof PsiField))) {
-        mySet.add(((PsiNamedElement)element).getName());
+      if (element instanceof PsiNamedElement namedElem && (includeFields || !(namedElem instanceof PsiField))) {
+        mySet.add(namedElem.getName());
       }
     }
 
@@ -95,13 +99,14 @@ public class DefaultGroovyVariableNameValidator implements NameValidator {
 
       @Override
       public void visitTypeDefinition(GrTypeDefinition typeDefinition) {
-        if (checkIntoInner && !typeDefinition.hasModifierProperty(PsiModifier.STATIC) ) {
+        if (checkIntoInner && !typeDefinition.isStatic()) {
           super.visitTypeDefinition(typeDefinition);
         }
       }
     });
   }
 
+  @Override
   public String validateName(String name, boolean increaseNumber) {
     if (!mySet.contains(name)) return name;
     if (increaseNumber) {
@@ -115,6 +120,7 @@ public class DefaultGroovyVariableNameValidator implements NameValidator {
     }
   }
 
+  @Override
   public Project getProject() {
     return myContext.getProject();
   }

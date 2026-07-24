@@ -13,13 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.impl.intentions.style;
 
 import com.intellij.java.language.impl.codeInsight.generation.OverrideImplementExploreUtil;
 import com.intellij.java.language.psi.*;
 import com.intellij.java.language.psi.codeStyle.JavaCodeStyleManager;
 import com.intellij.java.language.psi.infos.CandidateInfo;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.codeEditor.Editor;
 import consulo.groovy.impl.localize.GroovyIntentionLocalize;
 import consulo.language.psi.PsiDocumentManager;
@@ -63,6 +64,7 @@ public class ReplaceAbstractClassInstanceByMapIntention extends Intention {
     }
 
     @Override
+    @RequiredWriteAction
     protected void processIntention(@Nonnull PsiElement psiElement, Project project, Editor editor) throws IncorrectOperationException {
         PsiDocumentManager.getInstance(project).commitAllDocuments();
 
@@ -76,15 +78,15 @@ public class ReplaceAbstractClassInstanceByMapIntention extends Intention {
         GrTypeDefinitionBody body = anonymous.getBody();
         assert body != null;
 
-        List<Pair<PsiMethod, GrOpenBlock>> methods = new ArrayList<Pair<PsiMethod, GrOpenBlock>>();
+        List<Pair<PsiMethod, GrOpenBlock>> methods = new ArrayList<>();
         for (GrMethod method : body.getMethods()) {
-            methods.add(new Pair<PsiMethod, GrOpenBlock>(method, method.getBlock()));
+            methods.add(new Pair<>(method, method.getBlock()));
         }
 
         PsiClass iface = (PsiClass) resolved;
         Collection<CandidateInfo> collection = OverrideImplementExploreUtil.getMethodsToOverrideImplement(anonymous, true);
         for (CandidateInfo info : collection) {
-            methods.add(new Pair<PsiMethod, GrOpenBlock>((PsiMethod) info.getElement(), null));
+            methods.add(new Pair<>((PsiMethod) info.getElement(), null));
         }
 
         StringBuilder buffer = new StringBuilder();
@@ -112,16 +114,15 @@ public class ReplaceAbstractClassInstanceByMapIntention extends Intention {
         createAndAdjustNewExpression(project, newExpr, buffer);
     }
 
-    private static void createAndAdjustNewExpression(
-        Project project,
-        GrNewExpression newExpression,
-        StringBuilder buffer
-    ) throws IncorrectOperationException {
+    @RequiredWriteAction
+    private static void createAndAdjustNewExpression(Project project, GrNewExpression newExpression, StringBuilder buffer)
+        throws IncorrectOperationException {
         GrExpression expr = GroovyPsiElementFactory.getInstance(project).createExpressionFromText(buffer.toString());
         GrExpression safeTypeExpr = newExpression.replaceWithExpression(expr, false);
         JavaCodeStyleManager.getInstance(project).shortenClassReferences(safeTypeExpr);
     }
 
+    @RequiredReadAction
     private static void appendClosureTextByMethod(
         PsiMethod method,
         StringBuilder buffer,
@@ -131,7 +132,7 @@ public class ReplaceAbstractClassInstanceByMapIntention extends Intention {
         PsiParameterList list = method.getParameterList();
         buffer.append("{ ");
         PsiParameter[] parameters = list.getParameters();
-        Set<String> generatedNames = new HashSet<String>();
+        Set<String> generatedNames = new HashSet<>();
         if (parameters.length > 0) {
             PsiParameter first = parameters[0];
             PsiType type = first.getType();
@@ -162,6 +163,7 @@ public class ReplaceAbstractClassInstanceByMapIntention extends Intention {
         buffer.append(" }");
     }
 
+    @RequiredReadAction
     private static String createName(
         Set<String> generatedNames,
         PsiParameter param,
@@ -181,9 +183,10 @@ public class ReplaceAbstractClassInstanceByMapIntention extends Intention {
     }
 
     static class MyPredicate implements PsiElementPredicate {
+        @Override
+        @RequiredReadAction
         public boolean satisfiedBy(PsiElement element) {
-            if (element instanceof GrCodeReferenceElement && element.getParent() instanceof GrAnonymousClassDefinition) {
-                GrAnonymousClassDefinition anonymous = ((GrAnonymousClassDefinition) element.getParent());
+            if (element instanceof GrCodeReferenceElement && element.getParent() instanceof GrAnonymousClassDefinition anonymous) {
                 GrNewExpression newExpression = (GrNewExpression) anonymous.getParent();
                 if (newExpression.getQualifier() == null && anonymous.getFields().length == 0) {
                     return true;

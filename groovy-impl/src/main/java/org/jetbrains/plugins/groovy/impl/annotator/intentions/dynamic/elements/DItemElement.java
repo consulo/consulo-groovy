@@ -15,22 +15,19 @@
  */
 package org.jetbrains.plugins.groovy.impl.annotator.intentions.dynamic.elements;
 
-import jakarta.annotation.Nonnull;
-
 import consulo.language.psi.PsiManager;
 import consulo.language.psi.PsiNamedElement;
-
+import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 
+import java.util.Objects;
+
 /**
- * User: Dmitry.Krasilschikov
- * Date: 13.02.2008
- */
-
-/*
  * Base class for Dynamic property and method
+ *
+ * @author Dmitry.Krasilschikov
+ * @since 2008-02-13
  */
-
 public abstract class DItemElement implements DNamedElement, DTypedElement, Comparable {
   public String myType = null;
   public Boolean myStatic = false;
@@ -53,30 +50,34 @@ public abstract class DItemElement implements DNamedElement, DTypedElement, Comp
     myHighlightedText = highlightedText;
   }
 
-  public boolean equals(Object o) {
+  @Override
+  public boolean equals(@Nullable Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
 
     DItemElement that = (DItemElement)o;
 
-    if (myName != null ? !myName.equals(that.myName) : that.myName != null) return false;
-    if (myType != null ? !myType.equals(that.myType) : that.myType != null) return false;
+    if (!Objects.equals(myName, that.myName)) return false;
+    if (!Objects.equals(myType, that.myType)) return false;
     if (myStatic != that.myStatic) return false;
 
     return true;
   }
 
+  @Override
   public int hashCode() {
     int result;
-    result = (myType != null ? myType.hashCode() : 0);
-    result = 31 * result + (myName != null ? myName.hashCode() : 0);
+    result = Objects.hashCode(myType);
+    result = 31 * result + Objects.hashCode(myName);
     return result;
   }
 
+  @Override
   public String getType() {
     return myType;
   }
 
+  @Override
   public void setType(String type) {
     this.myType = type;
     clearCache();
@@ -84,10 +85,12 @@ public abstract class DItemElement implements DNamedElement, DTypedElement, Comp
 
   public abstract void clearCache();
 
+  @Override
   public String getName() {
     return myName;
   }
 
+  @Override
   public void setName(String name) {
     this.myName = name;
     clearCache();
@@ -102,13 +105,13 @@ public abstract class DItemElement implements DNamedElement, DTypedElement, Comp
     clearCache();
   }
 
+  @Override
   public int compareTo(Object o) {
     if (!(o instanceof DItemElement)) return 0;
     DItemElement otherProperty = (DItemElement)o;
 
     return getName().compareTo(otherProperty.getName()) + getType().compareTo(otherProperty.getType());
   }
-
 
   @Nonnull
   public abstract PsiNamedElement getPsi(PsiManager manager, String containingClassName);

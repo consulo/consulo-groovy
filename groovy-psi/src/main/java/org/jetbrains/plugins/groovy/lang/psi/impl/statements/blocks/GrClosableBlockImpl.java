@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.blocks;
 
 import com.intellij.java.language.psi.*;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.application.util.CachedValueProvider;
 import consulo.language.ast.ASTNode;
 import consulo.language.ast.IElementType;
@@ -28,6 +29,8 @@ import consulo.language.psi.util.LanguageCachedValueUtil;
 import consulo.language.psi.util.PsiTreeUtil;
 import consulo.language.util.IncorrectOperationException;
 import groovy.lang.Closure;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
@@ -49,8 +52,6 @@ import org.jetbrains.plugins.groovy.lang.resolve.MethodTypeInferencer;
 import org.jetbrains.plugins.groovy.lang.resolve.ResolveUtil;
 import org.jetbrains.plugins.groovy.lang.resolve.processors.ClassHint;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
 import java.util.function.Function;
 
 /**
@@ -75,6 +76,7 @@ public class GrClosableBlockImpl extends GrBlockImpl implements GrClosableBlock 
   }
 
   @Override
+  @RequiredReadAction
   public boolean processClosureDeclarations(@Nonnull PsiScopeProcessor plainProcessor,
                                             @Nonnull PsiScopeProcessor nonCodeProcessor,
                                             @Nonnull ResolveState state,
@@ -119,13 +121,14 @@ public class GrClosableBlockImpl extends GrBlockImpl implements GrClosableBlock 
     return true;
   }
 
+  @RequiredReadAction
   private boolean processOwnerAndDelegate(@Nonnull PsiScopeProcessor processor,
                                           @Nonnull PsiScopeProcessor nonCodeProcessor,
                                           @Nonnull ResolveState state,
                                           @Nonnull PsiElement place) {
     Boolean result = processDelegatesTo(processor, nonCodeProcessor, state, place);
     if (result != null) {
-      return result.booleanValue();
+      return result;
     }
 
     if (!processOwner(processor, nonCodeProcessor, state, place)) {
@@ -135,6 +138,7 @@ public class GrClosableBlockImpl extends GrBlockImpl implements GrClosableBlock 
   }
 
   @Nullable
+  @RequiredReadAction
   private Boolean processDelegatesTo(@Nonnull PsiScopeProcessor processor,
                                      @Nonnull PsiScopeProcessor nonCodeProcessor,
                                      @Nonnull ResolveState state,
@@ -229,6 +233,7 @@ public class GrClosableBlockImpl extends GrBlockImpl implements GrClosableBlock 
     return true;
   }
 
+  @RequiredReadAction
   private boolean processOwner(@Nonnull PsiScopeProcessor processor,
                                @Nonnull PsiScopeProcessor nonCodeProcessor,
                                @Nonnull ResolveState state,
@@ -257,11 +262,13 @@ public class GrClosableBlockImpl extends GrBlockImpl implements GrClosableBlock 
     return false;
   }
 
+  @Override
   public String toString() {
     return "Closable block";
   }
 
   @Override
+  @RequiredReadAction
   public GrParameter[] getParameters() {
     if (hasParametersSection()) {
       GrParameterListImpl parameterList = getParameterList();
@@ -272,6 +279,7 @@ public class GrClosableBlockImpl extends GrBlockImpl implements GrClosableBlock 
   }
 
   @Override
+  @RequiredReadAction
   public GrParameter[] getAllParameters() {
     if (getParent() instanceof GrStringInjection) {
       return GrParameter.EMPTY_ARRAY;
@@ -289,13 +297,14 @@ public class GrClosableBlockImpl extends GrBlockImpl implements GrClosableBlock 
   }
 
   @Override
+  @RequiredReadAction
   public boolean isVarArgs() {
     return PsiImplUtil.isVarArgs(getParameters());
   }
 
-
   @Override
   @Nonnull
+  @RequiredReadAction
   public GrParameterListImpl getParameterList() {
     GrParameterListImpl childByClass = findChildByClass(GrParameterListImpl.class);
     assert childByClass != null;
@@ -303,6 +312,7 @@ public class GrClosableBlockImpl extends GrBlockImpl implements GrClosableBlock 
   }
 
   @Override
+  @RequiredWriteAction
   public GrParameter addParameter(GrParameter parameter) {
     GrParameterList parameterList = getParameterList();
     if (getArrow() == null) {
@@ -322,16 +332,19 @@ public class GrClosableBlockImpl extends GrBlockImpl implements GrClosableBlock 
   }
 
   @Override
+  @RequiredReadAction
   public PsiType getType() {
     return GrClosureType.create(this, true);
   }
 
-  @Override
   @Nullable
+  @Override
+  @RequiredReadAction
   public PsiType getNominalType() {
     return getType();
   }
 
+  @RequiredReadAction
   public GrParameter[] getSyntheticItParameter() {
     if (getParent() instanceof GrStringInjection) {
       return GrParameter.EMPTY_ARRAY;
@@ -351,20 +364,21 @@ public class GrClosableBlockImpl extends GrBlockImpl implements GrClosableBlock 
   }
 
   @Nonnull
+  @Override
   public PsiType getOwnerType() {
     return LanguageCachedValueUtil.getCachedValue(this, () -> {
       GroovyPsiElement context =
         PsiTreeUtil.getParentOfType(GrClosableBlockImpl.this, GrTypeDefinition.class, GrClosableBlock.class, GroovyFile.class);
       PsiElementFactory factory = JavaPsiFacade.getInstance(getProject()).getElementFactory();
       PsiType type = null;
-      if (context instanceof GrTypeDefinition) {
-        type = factory.createType((PsiClass)context);
+      if (context instanceof GrTypeDefinition typeDef) {
+        type = factory.createType(typeDef);
       }
-      else if (context instanceof GrClosableBlock) {
-        type = GrClosureType.create((GrClosableBlock)context, true);
+      else if (context instanceof GrClosableBlock closableBlock) {
+        type = GrClosureType.create(closableBlock, true);
       }
-      else if (context instanceof GroovyFile) {
-        PsiClass scriptClass = ((GroovyFile)context).getScriptClass();
+      else if (context instanceof GroovyFile groovyFile) {
+        PsiClass scriptClass = groovyFile.getScriptClass();
         if (scriptClass != null && GroovyNamesUtil.isIdentifier(scriptClass.getName())) {
           type = factory.createType(scriptClass);
         }
@@ -379,6 +393,7 @@ public class GrClosableBlockImpl extends GrBlockImpl implements GrClosableBlock 
   }
 
   @Override
+  @RequiredWriteAction
   public GrExpression replaceWithExpression(@Nonnull GrExpression newExpr, boolean removeUnnecessaryParentheses) {
     return PsiImplUtil.replaceExpression(this, newExpr, removeUnnecessaryParentheses);
   }
@@ -393,11 +408,13 @@ public class GrClosableBlockImpl extends GrBlockImpl implements GrClosableBlock 
   }
 
   @Override
+  @RequiredWriteAction
   public void removeStatement() throws IncorrectOperationException {
     GroovyPsiElementImpl.removeStatement(this);
   }
 
   @Override
+  @RequiredReadAction
   public boolean isTopControlFlowOwner() {
     return !(getParent() instanceof GrStringInjection);
   }
