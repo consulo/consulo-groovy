@@ -25,7 +25,7 @@ import org.jetbrains.plugins.groovy.lang.psi.stubs.GrTypeDefinitionStub;
 
 /**
  * @author Dmitry.Krasilschikov
- * @since 16.03.2007
+ * @since 2007-03-16
  */
 public class GrInterfaceDefinitionImpl extends GrTypeDefinitionImpl implements GrInterfaceDefinition {
 

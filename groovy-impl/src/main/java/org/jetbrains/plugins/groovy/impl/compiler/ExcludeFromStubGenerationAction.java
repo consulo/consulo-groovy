@@ -23,8 +23,10 @@ import consulo.project.Project;
 import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.ex.action.AnAction;
 import consulo.ui.ex.action.AnActionEvent;
+import consulo.ui.ex.action.AnActionWithAsyncUpdate;
+import consulo.ui.ex.action.coroutine.ActionSafeReadLock;
+import consulo.util.concurrent.coroutine.Coroutine;
 import consulo.virtualFileSystem.VirtualFile;
-import consulo.ui.ex.action.Presentation;
 import consulo.compiler.setting.ExcludeEntryDescription;
 import consulo.ide.setting.ShowSettingsUtil;
 import org.jetbrains.plugins.groovy.GroovyLanguage;
@@ -32,48 +34,43 @@ import org.jetbrains.plugins.groovy.GroovyLanguage;
 /**
  * @author peter
  */
-public class ExcludeFromStubGenerationAction extends AnAction implements DumbAware
-{
-  @Override
-  @RequiredUIAccess
-  public void actionPerformed(AnActionEvent e) {
-    PsiFile file = e.getData(LangDataKeys.PSI_FILE);
+public class ExcludeFromStubGenerationAction extends AnAction implements DumbAware, AnActionWithAsyncUpdate {
+    @Override
+    @RequiredUIAccess
+    public void actionPerformed(AnActionEvent e) {
+        PsiFile file = e.getData(LangDataKeys.PSI_FILE);
 
-    assert file != null && file.getLanguage() == GroovyLanguage.INSTANCE;
+        assert file != null && file.getLanguage() == GroovyLanguage.INSTANCE;
 
-    doExcludeFromStubGeneration(file);
-  }
-
-  @RequiredUIAccess
-  public static void doExcludeFromStubGeneration(PsiFile file) {
-    VirtualFile virtualFile = file.getVirtualFile();
-    assert virtualFile != null;
-    Project project = file.getProject();
-
-    ShowSettingsUtil.getInstance().showAndSelect(
-      project,
-      GroovyCompilerConfigurable.class,
-      configurable -> configurable.getExcludes().addEntry(new ExcludeEntryDescription(virtualFile, false, true, project))
-    );
-  }
-
-  @RequiredReadAction
-  public void update(AnActionEvent e) {
-    Presentation presentation = e.getPresentation();
-
-    boolean enabled = isEnabled(e);
-    presentation.setEnabled(enabled);
-    presentation.setVisible(enabled);
-  }
-
-  @RequiredReadAction
-  private static boolean isEnabled(AnActionEvent e) {
-    PsiFile file = e.getData(LangDataKeys.PSI_FILE);
-    if (file == null || file.getLanguage() != GroovyLanguage.INSTANCE) {
-      return false;
+        doExcludeFromStubGeneration(file);
     }
 
-    VirtualFile virtualFile = file.getVirtualFile();
-    return virtualFile != null && !GroovyCompilerConfiguration.getExcludeConfiguration(file.getProject()).isExcluded(virtualFile);
-  }
+    @RequiredUIAccess
+    public static void doExcludeFromStubGeneration(PsiFile file) {
+        VirtualFile virtualFile = file.getVirtualFile();
+        assert virtualFile != null;
+        Project project = file.getProject();
+
+        ShowSettingsUtil.getInstance().showAndSelect(
+            project,
+            GroovyCompilerConfigurable.class,
+            configurable -> configurable.getExcludes().addEntry(new ExcludeEntryDescription(virtualFile, false, true, project))
+        );
+    }
+
+    @Override
+    public Coroutine<?, ?> updateAsync(AnActionEvent e) {
+        return ActionSafeReadLock.run(e, presentation -> e.getPresentation().setEnabledAndVisible(isEnabled(e))).toCoroutine();
+    }
+
+    @RequiredReadAction
+    private static boolean isEnabled(AnActionEvent e) {
+        PsiFile file = e.getData(LangDataKeys.PSI_FILE);
+        if (file == null || file.getLanguage() != GroovyLanguage.INSTANCE) {
+            return false;
+        }
+
+        VirtualFile virtualFile = file.getVirtualFile();
+        return virtualFile != null && !GroovyCompilerConfiguration.getExcludeConfiguration(file.getProject()).isExcluded(virtualFile);
+    }
 }

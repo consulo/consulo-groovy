@@ -25,6 +25,7 @@ import consulo.execution.ui.RunContentDescriptor;
 import consulo.module.Module;
 import consulo.process.ProcessHandler;
 import consulo.project.Project;
+import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.ex.action.AnAction;
 import consulo.ui.ex.action.AnActionEvent;
 
@@ -33,7 +34,8 @@ import jakarta.annotation.Nonnull;
 import java.util.function.Consumer;
 
 /**
- * Created by Max Medvedev on 21/03/14
+ * @author Max Medvedev
+ * @since 2014-03-21
  */
 public class BuildAndRestartConsoleAction extends AnAction implements AnActionWithSyncUpdate {
 
@@ -75,14 +77,12 @@ public class BuildAndRestartConsoleAction extends AnAction implements AnActionWi
   }
 
   @Override
+  @RequiredUIAccess
   public void actionPerformed(AnActionEvent e) {
     if (ExecutionManager.getInstance(myProject).getContentManager().removeRunContent(myExecutor, myContentDescriptor)) {
-      CompilerManager.getInstance(myProject).compile(myModule, new CompileStatusNotification() {
-        @Override
-        public void finished(boolean aborted, int errors, int warnings, CompileContext compileContext) {
-          if (!myModule.isDisposed()) {
-            myRestarter.accept(myModule);
-          }
+      CompilerManager.getInstance(myProject).compile(myModule, (aborted, errors, warnings, compileContext) -> {
+        if (!myModule.isDisposed()) {
+          myRestarter.accept(myModule);
         }
       });
     }
