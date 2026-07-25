@@ -60,7 +60,7 @@ public class ExcludeFromStubGenerationAction extends AnAction implements DumbAwa
 
     @Override
     public Coroutine<?, ?> updateAsync(AnActionEvent e) {
-        return ActionSafeReadLock.run(e, presentation -> e.getPresentation().setEnabledAndVisible(isEnabled(e))).toCoroutine();
+        return ActionSafeReadLock.run(e, presentation -> presentation.setEnabledAndVisible(isEnabled(e))).toCoroutine();
     }
 
     @RequiredReadAction

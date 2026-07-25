@@ -60,7 +60,7 @@ public final class GenerateGroovyDocAction extends AnAction implements DumbAware
         return ActionSafeReadLock.run(e, presentation -> {
             Module module = e.getData(Module.KEY);
 
-            e.getPresentation().setEnabledAndVisible(module != null && LibrariesUtil.hasGroovySdk(module));
+            presentation.setEnabledAndVisible(module != null && LibrariesUtil.hasGroovySdk(module));
         }).toCoroutine();
     }
 
