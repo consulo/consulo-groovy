@@ -15,6 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements;
 
+import consulo.annotation.access.RequiredReadAction;
 import jakarta.annotation.Nonnull;
 
 import jakarta.annotation.Nullable;
@@ -41,10 +42,10 @@ public class GrFinallyClauseImpl extends GroovyPsiElementImpl implements GrFinal
     return "Finally clause";
   }
 
-  @Override
   @Nullable
+  @Override
+  @RequiredReadAction
   public GrOpenBlock getBody() {
     return findChildByClass(GrOpenBlock.class);
   }
-
 }

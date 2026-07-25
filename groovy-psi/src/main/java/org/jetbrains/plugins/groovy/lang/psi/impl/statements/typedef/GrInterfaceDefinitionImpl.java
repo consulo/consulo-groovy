@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.typedef;
 
 import jakarta.annotation.Nonnull;
@@ -26,7 +25,7 @@ import org.jetbrains.plugins.groovy.lang.psi.stubs.GrTypeDefinitionStub;
 
 /**
  * @author Dmitry.Krasilschikov
- * @date 16.03.2007
+ * @since 2007-03-16
  */
 public class GrInterfaceDefinitionImpl extends GrTypeDefinitionImpl implements GrInterfaceDefinition {
 
@@ -38,6 +37,7 @@ public class GrInterfaceDefinitionImpl extends GrTypeDefinitionImpl implements G
     super(node);
   }
 
+  @Override
   public String toString() {
     return "Interface definition";
   }

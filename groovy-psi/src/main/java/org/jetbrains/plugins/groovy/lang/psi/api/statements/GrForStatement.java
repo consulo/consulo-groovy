@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.lang.psi.api.statements;
 
 import consulo.language.psi.PsiElement;
@@ -23,18 +22,17 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.clauses.GrForClause;
 import jakarta.annotation.Nullable;
 
 /**
- * @autor: ilyas
+ * @author ilyas
  */
 public interface GrForStatement extends GrControlStatement, GrLoopStatement {
+    @Nullable
+    GrForClause getClause();
 
-  @Nullable
-  GrForClause getClause();
+    @Nullable
+    @Override
+    GrStatement getBody();
 
-  @Nullable
-  GrStatement getBody();
+    PsiElement getRParenth();
 
-  PsiElement getRParenth();
-
-  PsiElement getLParenth();
-
+    PsiElement getLParenth();
 }

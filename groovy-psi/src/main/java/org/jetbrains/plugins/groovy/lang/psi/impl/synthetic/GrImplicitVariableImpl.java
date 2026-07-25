@@ -21,13 +21,13 @@ import com.intellij.java.language.psi.JavaPsiFacade;
 import com.intellij.java.language.psi.PsiIdentifier;
 import com.intellij.java.language.psi.PsiModifierList;
 import com.intellij.java.language.psi.PsiType;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiManager;
 import consulo.language.util.IncorrectOperationException;
-import org.jetbrains.annotations.NonNls;
-import org.jetbrains.plugins.groovy.GroovyLanguage;
-
 import jakarta.annotation.Nonnull;
+import org.jetbrains.plugins.groovy.GroovyLanguage;
 
 /**
  * @author ilyas
@@ -37,7 +37,7 @@ public class GrImplicitVariableImpl extends LightVariableBase implements GrImpli
     super(manager, nameIdentifier, GroovyLanguage.INSTANCE, type, writable, scope);
   }
 
-  public GrImplicitVariableImpl(PsiManager manager, @NonNls String name, @NonNls @Nonnull String type, PsiElement scope) {
+  public GrImplicitVariableImpl(PsiManager manager, String name, @Nonnull String type, PsiElement scope) {
     this(manager, new GrLightIdentifier(manager, name), JavaPsiFacade.getElementFactory(manager.getProject()).
       createTypeFromText(type, scope), false, scope);
   }
@@ -47,6 +47,7 @@ public class GrImplicitVariableImpl extends LightVariableBase implements GrImpli
     return new GrLightModifierList(this);
   }
 
+  @Override
   public String toString() {
     return "Specific implicit variable: " + getName();
   }
@@ -71,6 +72,7 @@ public class GrImplicitVariableImpl extends LightVariableBase implements GrImpli
     }
 
     @Override
+    @RequiredWriteAction
     public PsiElement replace(@Nonnull PsiElement newElement) throws IncorrectOperationException {
       myTextInternal = newElement.getText();
       return newElement;
@@ -82,9 +84,9 @@ public class GrImplicitVariableImpl extends LightVariableBase implements GrImpli
     }
 
     @Override
+    @RequiredReadAction
     public PsiElement copy() {
       return new GrLightIdentifier(getManager(), myTextInternal);
     }
   }
-
 }

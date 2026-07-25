@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.lang.groovydoc.psi.impl;
 
+import consulo.annotation.access.RequiredReadAction;
 import consulo.language.ast.ASTNode;
 import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocReferenceElement;
@@ -26,16 +26,19 @@ import jakarta.annotation.Nonnull;
  * @author ilyas
  */
 public class GrDocReferenceElementImpl extends GroovyDocPsiElementImpl implements GrDocReferenceElement {
-  
+
   public GrDocReferenceElementImpl(@Nonnull ASTNode node) {
     super(node);
   }
 
+  @Override
   public String toString() {
     return "GrDocReferenceElement";
   }
 
   @Nullable
+  @Override
+  @RequiredReadAction
   public GrCodeReferenceElement getReferenceElement() {
     return findChildByClass(GrCodeReferenceElement.class);
   }

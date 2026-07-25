@@ -13,13 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.clauses;
 
+import consulo.annotation.access.RequiredReadAction;
 import consulo.language.ast.ASTNode;
 import consulo.language.psi.PsiElement;
 import consulo.language.util.IncorrectOperationException;
-import consulo.util.lang.ObjectUtil;
 import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
@@ -31,6 +30,8 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameterLi
 import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyPsiElementImpl;
 
 import jakarta.annotation.Nullable;
+
+import java.util.Objects;
 
 /**
  * @author ilyas
@@ -45,16 +46,19 @@ public class GrForInClauseImpl extends GroovyPsiElementImpl implements GrForInCl
     visitor.visitForInClause(this);
   }
 
+  @Override
   public String toString() {
     return "In clause";
   }
 
   @Override
+  @RequiredReadAction
   public GrParameter getDeclaredVariable() {
     return findChildByClass(GrParameter.class);
   }
 
   @Override
+  @RequiredReadAction
   public GrParameter[] getParameters() {
     GrParameter declaredVariable = getDeclaredVariable();
     return declaredVariable == null ? GrParameter.EMPTY_ARRAY : new GrParameter[]{declaredVariable};
@@ -72,17 +76,19 @@ public class GrForInClauseImpl extends GroovyPsiElementImpl implements GrForInCl
 
   @Override
   @Nullable
+  @RequiredReadAction
   public GrExpression getIteratedExpression() {
     return findExpressionChild(this);
   }
 
   @Nonnull
   @Override
+  @RequiredReadAction
   public PsiElement getDelimiter() {
     PsiElement in = findChildByType(GroovyTokenTypes.kIN);
     if (in != null) return in;
 
     PsiElement colon = findChildByType(GroovyTokenTypes.mCOLON);
-    return ObjectUtil.assertNotNull(colon);
+    return Objects.requireNonNull(colon);
   }
 }

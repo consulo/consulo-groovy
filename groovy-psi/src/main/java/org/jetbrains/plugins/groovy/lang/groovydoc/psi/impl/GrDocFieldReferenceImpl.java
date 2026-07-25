@@ -13,11 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.lang.groovydoc.psi.impl;
 
 import com.intellij.java.language.psi.*;
 import com.intellij.java.language.psi.util.PropertyUtil;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.language.ast.ASTNode;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.ResolveResult;
@@ -45,14 +46,18 @@ public class GrDocFieldReferenceImpl extends GrDocMemberReferenceImpl implements
     super(node);
   }
 
+  @Override
   public String toString() {
     return "GrDocFieldReference";
   }
 
+  @Override
   public void accept(GroovyElementVisitor visitor) {
     visitor.visitDocFieldReference(this);
   }
 
+  @Override
+  @RequiredWriteAction
   public PsiElement handleElementRename(String newElementName) throws IncorrectOperationException {
     PsiElement resolved = resolve();
     if (resolved instanceof PsiMethod) {
@@ -66,8 +71,7 @@ public class GrDocFieldReferenceImpl extends GrDocMemberReferenceImpl implements
           }
         }
       }
-    } else if (resolved instanceof GrField && ((GrField) resolved).isProperty()) {
-      GrField field = (GrField) resolved;
+    } else if (resolved instanceof GrField field && field.isProperty()) {
       String oldName = getReferenceName();
       if (oldName != null && oldName.equals(field.getName())) {
         if (oldName.startsWith("get")) {
@@ -81,6 +85,8 @@ public class GrDocFieldReferenceImpl extends GrDocMemberReferenceImpl implements
     return super.handleElementRename(newElementName);
   }
 
+  @Override
+  @RequiredReadAction
   protected ResolveResult[] multiResolveImpl() {
     String name = getReferenceName();
     GrDocReferenceElement holder = getReferenceHolder();

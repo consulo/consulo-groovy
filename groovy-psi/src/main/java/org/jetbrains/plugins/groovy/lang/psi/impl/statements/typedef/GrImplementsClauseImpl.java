@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.typedef;
 
 import com.intellij.java.language.psi.PsiJavaCodeReferenceElement;
@@ -28,11 +27,10 @@ import org.jetbrains.plugins.groovy.lang.psi.stubs.GrReferenceListStub;
 import jakarta.annotation.Nonnull;
 
 /**
- * @author: Dmitry.Krasilschikov
- * @date: 26.03.2007
+ * @author Dmitry.Krasilschikov
+ * @since 2007-03-26
  */
 public class GrImplementsClauseImpl extends GrReferenceListImpl implements GrImplementsClause {
-
   public GrImplementsClauseImpl(@Nonnull ASTNode node) {
     super(node);
   }
@@ -51,6 +49,7 @@ public class GrImplementsClauseImpl extends GrReferenceListImpl implements GrImp
     visitor.visitImplementsClause(this);
   }
 
+  @Override
   public String toString() {
     return "Implements clause";
   }

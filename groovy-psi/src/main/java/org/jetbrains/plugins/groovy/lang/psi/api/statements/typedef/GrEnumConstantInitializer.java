@@ -23,6 +23,7 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members.GrEn
  * @author Maxim.Medvedev
  */
 public interface GrEnumConstantInitializer extends GrAnonymousClassDefinition, PsiEnumConstantInitializer {
-  @Nonnull
-  GrEnumConstant getEnumConstant();
+    @Nonnull
+    @Override
+    GrEnumConstant getEnumConstant();
 }

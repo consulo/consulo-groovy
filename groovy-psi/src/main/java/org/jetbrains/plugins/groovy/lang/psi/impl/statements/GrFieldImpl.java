@@ -21,18 +21,21 @@ import com.intellij.java.language.psi.PsiClass;
 import com.intellij.java.language.psi.PsiExpression;
 import com.intellij.java.language.psi.PsiField;
 import com.intellij.java.language.psi.PsiType;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.application.util.CachedValueProvider;
 import consulo.content.scope.SearchScope;
 import consulo.language.ast.ASTNode;
 import consulo.language.impl.psi.ResolveScopeManager;
 import consulo.language.psi.PsiElement;
-import consulo.language.psi.PsiFile;
 import consulo.language.psi.PsiModificationTracker;
 import consulo.language.psi.StubBasedPsiElement;
 import consulo.language.psi.stub.IStubElementType;
 import consulo.language.psi.util.LanguageCachedValueUtil;
 import consulo.language.util.IncorrectOperationException;
 import consulo.navigation.ItemPresentation;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.extensions.NamedArgumentDescriptor;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocComment;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.impl.GrDocCommentUtil;
@@ -53,15 +56,13 @@ import org.jetbrains.plugins.groovy.lang.psi.stubs.GrFieldStub;
 import org.jetbrains.plugins.groovy.lang.psi.typeEnhancers.GrVariableEnhancer;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * User: Dmitry.Krasilschikov
- * Date: 25.05.2007
+ * @author Dmitry.Krasilschikov
+ * @since 2007-05-25
  */
 public class GrFieldImpl extends GrVariableBaseImpl<GrFieldStub> implements GrField, StubBasedPsiElement<GrFieldStub> {
 
@@ -78,6 +79,7 @@ public class GrFieldImpl extends GrVariableBaseImpl<GrFieldStub> implements GrFi
   }
 
   @Override
+  @RequiredReadAction
   public PsiElement getParent() {
     return getParentByStub();
   }
@@ -102,6 +104,7 @@ public class GrFieldImpl extends GrVariableBaseImpl<GrFieldStub> implements GrFi
     return super.getTypeElementGroovy();
   }
 
+  @Override
   public String toString() {
     return "Field";
   }
@@ -112,6 +115,7 @@ public class GrFieldImpl extends GrVariableBaseImpl<GrFieldStub> implements GrFi
   }
 
   @Override
+  @RequiredWriteAction
   public void setInitializer(@Nullable PsiExpression psiExpression) throws IncorrectOperationException {
     GrExpression oldInitializer = getInitializerGroovy();
     if (psiExpression == null) {
@@ -166,18 +170,14 @@ public class GrFieldImpl extends GrVariableBaseImpl<GrFieldStub> implements GrFi
   }
 
   @Override
+  @RequiredReadAction
   public PsiClass getContainingClass() {
-    PsiElement parent = getParent().getParent();
-    if (parent instanceof GrTypeDefinitionBody) {
-      PsiElement pparent = parent.getParent();
-      if (pparent instanceof PsiClass) {
-        return (PsiClass)pparent;
-      }
+    if (getParent().getParent() instanceof GrTypeDefinitionBody typeDefBody && typeDefBody.getParent() instanceof PsiClass psiClass) {
+      return psiClass;
     }
 
-    PsiFile file = getContainingFile();
-    if (file instanceof GroovyFileBase) {
-      return ((GroovyFileBase)file).getScriptClass();
+    if (getContainingFile() instanceof GroovyFileBase groovyFileBase) {
+      return groovyFileBase.getScriptClass();
     }
 
     return null;
@@ -219,6 +219,7 @@ public class GrFieldImpl extends GrVariableBaseImpl<GrFieldStub> implements GrFi
 
   @Override
   @Nonnull
+  @RequiredReadAction
   public SearchScope getUseScope() {
     if (isProperty()) {
       return ResolveScopeManager.getElementUseScope(this); //maximal scope
@@ -242,6 +243,7 @@ public class GrFieldImpl extends GrVariableBaseImpl<GrFieldStub> implements GrFi
   }
 
   @Override
+  @RequiredReadAction
   public PsiElement getOriginalElement() {
     PsiClass containingClass = getContainingClass();
     if (containingClass == null) return this;

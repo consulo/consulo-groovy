@@ -19,7 +19,7 @@ import com.intellij.java.language.impl.ui.PackageChooser;
 import com.intellij.java.language.impl.ui.PackageChooserFactory;
 import com.intellij.java.language.psi.PsiJavaPackage;
 import consulo.application.dumb.DumbAware;
-import consulo.ide.impl.idea.util.IconUtil;
+import consulo.platform.base.icon.PlatformIconGroup;
 import consulo.project.Project;
 import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.ex.action.AnAction;
@@ -30,17 +30,18 @@ import javax.swing.*;
 import java.util.List;
 
 /**
- * User: Dmitry.Krasilschikov
- * Date: 14.10.2008
+ * @author Dmitry.Krasilschikov
+ * @since 2008-10-14
  */
 public class GroovyDocAddPackageAction extends AnAction implements DumbAware {
-  private final DefaultListModel myDataModel;
+  private final DefaultListModel<String> myDataModel;
 
-  public GroovyDocAddPackageAction(DefaultListModel dataModel) {
-    super("Add package", "Add package", IconUtil.getAddIcon());
+  public GroovyDocAddPackageAction(DefaultListModel<String> dataModel) {
+    super("Add package", "Add package", PlatformIconGroup.generalAdd());
     myDataModel = dataModel;
   }
 
+  @Override
   @RequiredUIAccess
   public void actionPerformed(AnActionEvent e) {
     Project project = e.getData(Project.KEY);

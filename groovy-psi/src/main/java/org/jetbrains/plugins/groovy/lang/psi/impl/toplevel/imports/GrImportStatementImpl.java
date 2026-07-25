@@ -18,6 +18,7 @@ package org.jetbrains.plugins.groovy.lang.psi.impl.toplevel.imports;
 
 import com.intellij.java.language.impl.psi.scope.NameHint;
 import com.intellij.java.language.psi.*;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.application.util.CachedValueProvider;
 import consulo.language.ast.ASTNode;
 import consulo.language.psi.PsiElement;
@@ -30,7 +31,6 @@ import consulo.language.psi.resolve.ResolveState;
 import consulo.language.psi.stub.IStubElementType;
 import consulo.language.psi.util.LanguageCachedValueUtil;
 import consulo.util.dataholder.Key;
-import consulo.util.lang.ObjectUtil;
 import consulo.util.lang.StringUtil;
 import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
@@ -51,6 +51,8 @@ import org.jetbrains.plugins.groovy.lang.resolve.processors.GrDelegatingScopePro
 
 import jakarta.annotation.Nullable;
 
+import java.util.Objects;
+
 /**
  * @author ilyas
  */
@@ -65,8 +67,8 @@ public class GrImportStatementImpl extends GrStubElementBase<GrImportStatementSt
     super(stub, nodeType);
   }
 
-
   @Override
+  @RequiredReadAction
   public PsiElement getParent() {
     return getParentByStub();
   }
@@ -76,11 +78,13 @@ public class GrImportStatementImpl extends GrStubElementBase<GrImportStatementSt
     visitor.visitImportStatement(this);
   }
 
+  @Override
   public String toString() {
     return "Import statement";
   }
 
   @Override
+  @RequiredReadAction
   public boolean processDeclarations(@Nonnull PsiScopeProcessor processor,
                                      @Nonnull ResolveState state,
                                      @Nullable PsiElement lastParent,
@@ -117,6 +121,7 @@ public class GrImportStatementImpl extends GrStubElementBase<GrImportStatementSt
     return false;
   }
 
+  @RequiredReadAction
   private boolean processDeclarationsForSingleElement(@Nonnull PsiScopeProcessor processor,
                                                       @Nullable PsiElement lastParent,
                                                       @Nonnull PsiElement place,
@@ -142,6 +147,7 @@ public class GrImportStatementImpl extends GrStubElementBase<GrImportStatementSt
     return LanguageCachedValueUtil.getCachedValue(this, new CachedValueProvider<PsiClass>() {
       @Nullable
       @Override
+      @RequiredReadAction
       public Result<PsiClass> compute() {
         GrCodeReferenceElement reference = getImportReference();
         GrCodeReferenceElement qualifier = reference == null ? null : reference.getQualifier();
@@ -152,6 +158,7 @@ public class GrImportStatementImpl extends GrStubElementBase<GrImportStatementSt
     });
   }
 
+  @RequiredReadAction
   private boolean processSingleStaticImport(@Nonnull PsiScopeProcessor processor,
                                             @Nonnull ResolveState state,
                                             @Nonnull String importedName,
@@ -199,6 +206,7 @@ public class GrImportStatementImpl extends GrStubElementBase<GrImportStatementSt
     return true;
   }
 
+  @RequiredReadAction
   private boolean processSingleClassImport(@Nonnull PsiScopeProcessor processor, @Nonnull ResolveState state) {
     if (!ResolveUtil.shouldProcessClasses(processor.getHint(ClassHint.KEY))) {
       return true;
@@ -222,6 +230,7 @@ public class GrImportStatementImpl extends GrStubElementBase<GrImportStatementSt
     return processor.execute(resolved, state.put(ClassHint.RESOLVE_CONTEXT, this));
   }
 
+  @RequiredReadAction
   private boolean isFromSamePackage(@Nonnull PsiClass resolved) {
     String qualifiedName = resolved.getQualifiedName();
     String packageName = ((GroovyFile)getContainingFile()).getPackageName();
@@ -229,6 +238,7 @@ public class GrImportStatementImpl extends GrStubElementBase<GrImportStatementSt
     return !packageName.isEmpty() && assumed.equals(qualifiedName);
   }
 
+  @RequiredReadAction
   private boolean processDeclarationsForMultipleElements(@Nonnull final PsiScopeProcessor processor,
                                                          @Nullable PsiElement lastParent,
                                                          @Nonnull PsiElement place,
@@ -246,7 +256,7 @@ public class GrImportStatementImpl extends GrStubElementBase<GrImportStatementSt
         if (!clazz.processDeclarations(new DelegatingScopeProcessor(processor) {
           @Override
           public boolean execute(@Nonnull PsiElement element, @Nonnull ResolveState state) {
-            if (element instanceof PsiMember && ((PsiMember)element).hasModifierProperty(PsiModifier.STATIC)) {
+            if (element instanceof PsiMember member && member.isStatic()) {
               return super.execute(element, state);
             }
             return true;
@@ -261,8 +271,7 @@ public class GrImportStatementImpl extends GrStubElementBase<GrImportStatementSt
         String qName = PsiUtil.getQualifiedReferenceText(ref);
         if (qName != null) {
           PsiPackage aPackage = JavaPsiFacade.getInstance(getProject()).findPackage(qName);
-          if (aPackage != null && !((GroovyFile)getContainingFile()).getPackageName().equals(aPackage
-                                                                                               .getQualifiedName())) {
+          if (aPackage != null && !((GroovyFile)getContainingFile()).getPackageName().equals(aPackage.getQualifiedName())) {
             state = state.put(ClassHint.RESOLVE_CONTEXT, this);
             if (!aPackage.processDeclarations(processor, state, lastParent, place)) {
               return false;
@@ -275,6 +284,7 @@ public class GrImportStatementImpl extends GrStubElementBase<GrImportStatementSt
   }
 
   @Override
+  @RequiredReadAction
   public GrCodeReferenceElement getImportReference() {
     GrImportStatementStub stub = getStub();
     if (stub != null) {
@@ -289,8 +299,9 @@ public class GrImportStatementImpl extends GrStubElementBase<GrImportStatementSt
     return (GrCodeReferenceElement)findChildByType(GroovyElementTypes.REFERENCE_ELEMENT);
   }
 
-  @Override
   @Nullable
+  @Override
+  @RequiredReadAction
   public String getImportedName() {
     if (isOnDemand()) {
       return null;
@@ -311,7 +322,6 @@ public class GrImportStatementImpl extends GrStubElementBase<GrImportStatementSt
       return StringUtil.getShortName(referenceText);
     }
 
-
     PsiElement aliasNameElement = getAliasNameElement();
     if (aliasNameElement != null) {
       return aliasNameElement.getText();
@@ -322,6 +332,7 @@ public class GrImportStatementImpl extends GrStubElementBase<GrImportStatementSt
   }
 
   @Override
+  @RequiredReadAction
   public boolean isStatic() {
     GrImportStatementStub stub = getStub();
     if (stub != null) {
@@ -341,6 +352,7 @@ public class GrImportStatementImpl extends GrStubElementBase<GrImportStatementSt
   }
 
   @Override
+  @RequiredReadAction
   public boolean isOnDemand() {
     GrImportStatementStub stub = getStub();
     if (stub != null) {
@@ -349,18 +361,20 @@ public class GrImportStatementImpl extends GrStubElementBase<GrImportStatementSt
     return findChildByType(GroovyTokenTypes.mSTAR) != null;
   }
 
-  @Override
   @Nonnull
+  @Override
+  @RequiredReadAction
   public GrModifierList getAnnotationList() {
     GrImportStatementStub stub = getStub();
     if (stub != null) {
-      return ObjectUtil.assertNotNull(getStubOrPsiChild(GroovyElementTypes.MODIFIERS));
+      return Objects.requireNonNull(getStubOrPsiChild(GroovyElementTypes.MODIFIERS));
     }
     return findNotNullChildByClass(GrModifierList.class);
   }
 
   @Nullable
   @Override
+  @RequiredReadAction
   public PsiClass resolveTargetClass() {
     GrCodeReferenceElement ref = getImportReference();
     if (ref == null) {
@@ -380,6 +394,7 @@ public class GrImportStatementImpl extends GrStubElementBase<GrImportStatementSt
 
   @Nullable
   @Override
+  @RequiredReadAction
   public PsiElement getAliasNameElement() {
     GrImportStatementStub stub = getStub();
     if (stub != null) {
@@ -435,7 +450,7 @@ public class GrImportStatementImpl extends GrStubElementBase<GrImportStatementSt
     public boolean execute(@Nonnull PsiElement element, @Nonnull ResolveState state) {
       if (element instanceof PsiMethod) {
         PsiMethod method = (PsiMethod)element;
-        if (method.hasModifierProperty(PsiModifier.STATIC) && isAccessor(method)) {
+        if (method.isStatic() && isAccessor(method)) {
           return super.execute(method, state);
         }
       }

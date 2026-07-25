@@ -56,6 +56,7 @@ public class GrFieldStub extends StubBase<GrField> implements NamedStub<GrField>
   }
 
   @Nonnull
+  @Override
   public String getName() {
     return StringRef.toString(myName);
   }

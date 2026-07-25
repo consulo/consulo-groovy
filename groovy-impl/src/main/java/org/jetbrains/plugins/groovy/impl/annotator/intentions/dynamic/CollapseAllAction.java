@@ -16,6 +16,7 @@
 package org.jetbrains.plugins.groovy.impl.annotator.intentions.dynamic;
 
 import consulo.project.Project;
+import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.ex.action.AnAction;
 import consulo.ui.ex.action.AnActionEvent;
 import consulo.ui.ex.action.AnActionWithSyncUpdate;
@@ -27,10 +28,9 @@ import consulo.ui.ex.awt.tree.table.TreeTableTree;
  */
 public class CollapseAllAction extends AnAction implements AnActionWithSyncUpdate {
   @Override
+  @RequiredUIAccess
   public void actionPerformed(AnActionEvent e) {
-    Project project = e.getData(Project.KEY);
-    if (project == null) return;
-
+    Project project = e.getRequiredData(Project.KEY);
     TreeTableTree tree = DynamicToolWindowWrapper.getInstance(project).getTreeTable().getTree();
     TreeUtil.collapseAll(tree, 0);
   }

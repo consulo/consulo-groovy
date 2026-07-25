@@ -16,6 +16,7 @@
 package org.jetbrains.plugins.groovy.impl.refactoring.introduce;
 
 import com.intellij.java.language.psi.PsiModifier;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.codeEditor.Editor;
 import consulo.document.Document;
 import consulo.language.editor.completion.lookup.LookupEx;
@@ -48,17 +49,16 @@ public class GrFinalListener {
     LOG.assertTrue(modifierList != null);
     final int textOffset = modifierList.getTextOffset();
 
-    Runnable runnable = new Runnable() {
-      public void run() {
-        if (generateFinal) {
-          GrTypeElement typeElement = variable.getTypeElementGroovy();
-          int typeOffset = typeElement != null ? typeElement.getTextOffset() : textOffset;
-          document.insertString(typeOffset, modifier + " ");
-        }
-        else {
-          int idx = modifierList.getText().indexOf(modifier);
-          document.deleteString(textOffset + idx, textOffset + idx + modifier.length() + 1);
-        }
+    @RequiredReadAction
+    Runnable runnable = () -> {
+      if (generateFinal) {
+        GrTypeElement typeElement = variable.getTypeElementGroovy();
+        int typeOffset = typeElement != null ? typeElement.getTextOffset() : textOffset;
+        document.insertString(typeOffset, modifier + " ");
+      }
+      else {
+        int idx = modifierList.getText().indexOf(modifier);
+        document.deleteString(textOffset + idx, textOffset + idx + modifier.length() + 1);
       }
     };
     LookupEx lookup = LookupManager.getActiveLookup(myEditor);

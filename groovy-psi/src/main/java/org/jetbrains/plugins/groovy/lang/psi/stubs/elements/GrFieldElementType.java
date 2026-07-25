@@ -45,10 +45,12 @@ public class GrFieldElementType extends GrStubElementType<GrFieldStub, GrField> 
     super("field");
   }
 
+  @Override
   public GrField createPsi(@Nonnull GrFieldStub stub) {
     return new GrFieldImpl(stub);
   }
 
+  @Override
   public GrFieldStub createStub(@Nonnull GrField psi, StubElement parentStub) {
     String[] annNames = GrStubUtils.getAnnotationNames(psi);
 
@@ -61,15 +63,18 @@ public class GrFieldElementType extends GrStubElementType<GrFieldStub, GrField> 
                            GrStubUtils.getTypeText(psi.getTypeElementGroovy()));
   }
 
+  @Override
   public void serialize(@Nonnull GrFieldStub stub, @Nonnull StubOutputStream dataStream) throws IOException {
     serializeFieldStub(stub, dataStream);
   }
 
   @Nonnull
+  @Override
   public GrFieldStub deserialize(@Nonnull StubInputStream dataStream, StubElement parentStub) throws IOException {
     return deserializeFieldStub(dataStream, parentStub);
   }
 
+  @Override
   public void indexStub(@Nonnull GrFieldStub stub, @Nonnull IndexSink sink) {
     indexFieldStub(stub, sink);
   }

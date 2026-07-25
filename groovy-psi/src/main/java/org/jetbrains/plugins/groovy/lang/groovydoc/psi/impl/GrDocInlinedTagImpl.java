@@ -13,15 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.lang.groovydoc.psi.impl;
 
+import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.language.ast.ASTNode;
 import consulo.language.ast.TokenSet;
-import consulo.language.psi.PsiElement;
 import consulo.language.editor.util.PsiUtilBase;
+import consulo.language.psi.PsiElement;
 import consulo.language.util.IncorrectOperationException;
-import org.jetbrains.annotations.NonNls;
 import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocComment;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocInlinedTag;
@@ -48,26 +48,34 @@ public class GrDocInlinedTagImpl extends GroovyDocPsiElementImpl implements GrDo
     super(node);
   }
 
+  @Override
   public void accept(GroovyElementVisitor visitor) {
     visitor.visitDocTag(this);
   }
 
+  @Override
   public String toString() {
     return "GrDocInlinedTag";
   }
 
   @Nonnull
+  @Override
+  @RequiredReadAction
   public String getName() {
     return getNameElement().getText().substring(1);
   }
 
   @Nonnull
+  @Override
+  @RequiredReadAction
   public PsiElement getNameElement() {
     PsiElement element = findChildByType(mGDOC_TAG_NAME);
     assert element != null;
     return element;
   }
 
+  @Override
+  @RequiredReadAction
   public GrDocComment getContainingComment() {
     return (GrDocComment)getParent();
   }
@@ -77,16 +85,22 @@ public class GrDocInlinedTagImpl extends GroovyDocPsiElementImpl implements GrDo
     return null;
   }
 
+  @Override
+  @RequiredReadAction
   public GrDocTagValueToken getValueElement() {
     return findChildByClass(GrDocTagValueToken.class);
   }
 
+  @Override
+  @RequiredReadAction
   public PsiElement[] getDataElements() {
     List<PsiElement> list = findChildrenByType(VALUE_BIT_SET);
     return PsiUtilBase.toPsiElementArray(list);
   }
 
-  public PsiElement setName(@NonNls @Nonnull String name) throws IncorrectOperationException {
+  @Override
+  @RequiredWriteAction
+  public PsiElement setName(@Nonnull String name) throws IncorrectOperationException {
     PsiElement nameElement = getNameElement();
     GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(getProject());
     GrDocComment comment = factory.createDocCommentFromText("/** {@" + name + "}*/");

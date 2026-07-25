@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.typedef;
 
 import com.intellij.java.language.psi.PsiJavaCodeReferenceElement;
@@ -27,8 +26,8 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrExtendsCla
 import org.jetbrains.plugins.groovy.lang.psi.stubs.GrReferenceListStub;
 
 /**
- * @author: Dmitry.Krasilschikov
- * @date: 26.03.2007
+ * @author Dmitry.Krasilschikov
+ * @since 2007-03-26
  */
 public class GrExtendsClauseImpl extends GrReferenceListImpl implements GrExtendsClause {
 
@@ -50,6 +49,7 @@ public class GrExtendsClauseImpl extends GrReferenceListImpl implements GrExtend
     visitor.visitExtendsClause(this);
   }
 
+  @Override
   public String toString() {
     return "Extends clause";
   }
