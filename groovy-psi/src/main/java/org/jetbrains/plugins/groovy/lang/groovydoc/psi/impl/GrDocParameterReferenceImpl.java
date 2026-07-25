@@ -47,7 +47,6 @@ import java.util.List;
  * @author ilyas
  */
 public class GrDocParameterReferenceImpl extends GroovyDocPsiElementImpl implements GrDocParameterReference {
-
   public GrDocParameterReferenceImpl(@Nonnull ASTNode node) {
     super(node);
   }
@@ -79,7 +78,6 @@ public class GrDocParameterReferenceImpl extends GroovyDocPsiElementImpl impleme
           candidates.add(new GroovyResolveResultImpl(parameter, true));
         }
       }
-      return candidates.toArray(new ResolveResult[candidates.size()]);
     }
     else {
       PsiElement firstChild = getFirstChild();
@@ -95,7 +93,7 @@ public class GrDocParameterReferenceImpl extends GroovyDocPsiElementImpl impleme
         }
       }
     }
-    return ResolveResult.EMPTY_ARRAY;
+    return candidates.toArray(new ResolveResult[candidates.size()]);
   }
 
   @Override
@@ -175,6 +173,7 @@ public class GrDocParameterReferenceImpl extends GroovyDocPsiElementImpl impleme
   }
 
   @Override
+  @RequiredReadAction
   public boolean isSoft() {
     return false;
   }
