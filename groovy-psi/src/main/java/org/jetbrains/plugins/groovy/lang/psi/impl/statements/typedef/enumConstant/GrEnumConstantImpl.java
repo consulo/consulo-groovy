@@ -92,8 +92,8 @@ public class GrEnumConstantImpl extends GrFieldImpl implements GrEnumConstant {
     return JavaPsiFacade.getInstance(getProject()).getElementFactory().createType(getContainingClass(), PsiSubstitutor.EMPTY);
   }
 
-  @Override
   @Nullable
+  @Override
   public PsiType getTypeGroovy() {
     return getType();
   }
@@ -103,8 +103,8 @@ public class GrEnumConstantImpl extends GrFieldImpl implements GrEnumConstant {
     throw new RuntimeException("Cannot set type for enum constant");
   }
 
-  @Override
   @Nullable
+  @Override
   public GrExpression getInitializerGroovy() {
     return null;
   }
@@ -120,8 +120,8 @@ public class GrEnumConstantImpl extends GrFieldImpl implements GrEnumConstant {
     return new GroovyResolveResult[]{result};
   }
 
-  @Override
   @Nullable
+  @Override
   @RequiredReadAction
   public GrArgumentList getArgumentList() {
     return findChildByClass(GrArgumentList.class);
@@ -182,8 +182,8 @@ public class GrEnumConstantImpl extends GrFieldImpl implements GrEnumConstant {
     return JavaResolveResult.EMPTY;
   }
 
-  @Override
   @Nullable
+  @Override
   @RequiredReadAction
   public GrEnumConstantInitializer getInitializingClass() {
     return findChildByClass(GrEnumConstantInitializer.class);
@@ -289,7 +289,7 @@ public class GrEnumConstantImpl extends GrFieldImpl implements GrEnumConstant {
     }
 
     @Override
-    @RequiredReadAction
+    @RequiredWriteAction
     public PsiElement bindToElement(@Nonnull PsiElement element) throws IncorrectOperationException
 	{
       throw new IncorrectOperationException("invalid operation");
