@@ -33,15 +33,18 @@ public class GroovyEnumerationNamingConventionInspection extends ConventionInspe
         return LocalizeValue.localizeTODO("Enumeration naming convention");
     }
 
+    @Override
     protected GroovyFix buildFix(PsiElement location) {
         return new RenameFix();
     }
 
+    @Override
     protected boolean buildQuickFixesOnlyForOnTheFlyErrors() {
         return true;
     }
 
     @Nonnull
+    @Override
     public String buildErrorString(Object... args) {
         String className = (String) args[0];
         if (className.length() < getMinLength()) {
@@ -52,23 +55,28 @@ public class GroovyEnumerationNamingConventionInspection extends ConventionInspe
         return "Enumeration name '#ref' doesn't match regex '" + getRegex()+ "' #loc";
     }
 
+    @Override
     protected String getDefaultRegex() {
         return "[A-Z][A-Za-z\\d]*";
     }
 
+    @Override
     protected int getDefaultMinLength() {
         return DEFAULT_MIN_LENGTH;
     }
 
+    @Override
     protected int getDefaultMaxLength() {
         return DEFAULT_MAX_LENGTH;
     }
 
+    @Override
     public BaseInspectionVisitor buildVisitor() {
         return new NamingConventionsVisitor();
     }
 
     private class NamingConventionsVisitor extends BaseInspectionVisitor {
+        @Override
         public void visitTypeDefinition(GrTypeDefinition grTypeDefinition) {
             super.visitTypeDefinition(grTypeDefinition);
             if (!(grTypeDefinition instanceof GrEnumTypeDefinition)) {

@@ -15,7 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.impl.unwrap;
 
-import consulo.language.editor.CodeInsightBundle;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.language.editor.localize.CodeInsightLocalize;
 import consulo.language.psi.PsiElement;
 import consulo.language.util.IncorrectOperationException;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrIfStatement;
@@ -23,14 +24,16 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
 
 public class GroovyIfUnwrapper extends GroovyUnwrapper {
   public GroovyIfUnwrapper() {
-    super(CodeInsightBundle.message("unwrap.if"));
+    super(CodeInsightLocalize.unwrapIf());
   }
 
+  @Override
   public boolean isApplicableTo(PsiElement e) {
     return e instanceof GrIfStatement && !isElseBlock(e);
   }
 
   @Override
+  @RequiredReadAction
   protected void doUnwrap(PsiElement element, Context context) throws IncorrectOperationException {
     GrStatement then = ((GrIfStatement)element).getThenBranch();
     context.extractFromBlockOrSingleStatement(then, element);

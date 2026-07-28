@@ -32,10 +32,11 @@ import java.util.List;
 public class GroovyDebuggerClassFilterProvider implements DebuggerClassFilterProvider {
   private static final List<ClassFilter> FILTERS = Arrays.asList(new ClassFilter("org.codehaus.groovy.*"), new ClassFilter("groovy.*"));
 
+  @Override
   public List<ClassFilter> getFilters() {
     GroovyDebuggerSettings settings = GroovyDebuggerSettings.getInstance();
     Boolean flag = settings.DEBUG_DISABLE_SPECIFIC_GROOVY_METHODS;
-    if (flag == null || flag.booleanValue()) {
+    if (flag == null || flag) {
       return FILTERS;
     }
     return Collections.emptyList();

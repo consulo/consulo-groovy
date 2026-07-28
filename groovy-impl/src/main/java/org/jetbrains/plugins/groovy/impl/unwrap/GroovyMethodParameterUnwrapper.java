@@ -15,41 +15,47 @@
  */
 package org.jetbrains.plugins.groovy.impl.unwrap;
 
-import consulo.language.editor.CodeInsightBundle;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.language.editor.localize.CodeInsightLocalize;
 import consulo.language.psi.PsiElement;
 import consulo.language.util.IncorrectOperationException;
+import consulo.localize.LocalizeValue;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.arguments.GrArgumentList;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 
 import java.util.List;
 
 public class GroovyMethodParameterUnwrapper extends GroovyUnwrapper {
-  public GroovyMethodParameterUnwrapper() {
-    super("");
-  }
+    public GroovyMethodParameterUnwrapper() {
+        super(LocalizeValue.empty());
+    }
 
-  @Override
-  public String getDescription(PsiElement e) {
-    String text = e.getText();
-    if (text.length() > 20) text = text.substring(0, 17) + "...";
-    return CodeInsightBundle.message("unwrap.with.placeholder", text);
-  }
+    @Override
+    @RequiredReadAction
+    public String getDescription(PsiElement e) {
+        String text = e.getText();
+        if (text.length() > 20) {
+            text = text.substring(0, 17) + "...";
+        }
+        return CodeInsightLocalize.unwrapWithPlaceholder(text).get();
+    }
 
-  public boolean isApplicableTo(PsiElement e) {
-    return (e instanceof GrExpression) && e.getParent() instanceof GrArgumentList;
-  }
+    @Override
+    public boolean isApplicableTo(PsiElement e) {
+        return (e instanceof GrExpression) && e.getParent() instanceof GrArgumentList;
+    }
 
-  @Override
-  public PsiElement collectAffectedElements(PsiElement e, List<PsiElement> toExtract) {
-    super.collectAffectedElements(e, toExtract);
-    return e.getParent().getParent();
-  }
+    @Override
+    public PsiElement collectAffectedElements(PsiElement e, List<PsiElement> toExtract) {
+        super.collectAffectedElements(e, toExtract);
+        return e.getParent().getParent();
+    }
 
-  @Override
-  protected void doUnwrap(PsiElement element, Context context) throws IncorrectOperationException {
-    PsiElement methodCall = element.getParent().getParent();
-    context.extractElement(element, methodCall);
+    @Override
+    protected void doUnwrap(PsiElement element, Context context) throws IncorrectOperationException {
+        PsiElement methodCall = element.getParent().getParent();
+        context.extractElement(element, methodCall);
 
-    context.deleteExactly(methodCall);
-  }
+        context.deleteExactly(methodCall);
+    }
 }

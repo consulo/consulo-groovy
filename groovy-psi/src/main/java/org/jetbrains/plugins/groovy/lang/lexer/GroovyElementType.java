@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.lang.lexer;
 
 import jakarta.annotation.Nonnull;
@@ -24,13 +23,12 @@ import consulo.language.ast.ASTNode;
 import consulo.language.psi.PsiElement;
 
 /**
- * Main classdef for Groovy element types, such as lexems or AST nodes
+ * Main class-def for Groovy element types, such as lexemes or AST nodes
  *
  * @author ilyas
  */
 public class GroovyElementType extends IElementType
 {
-
 	private final String myDebugName;
 	private final boolean myLeftBound;
 
@@ -46,7 +44,8 @@ public class GroovyElementType extends IElementType
 		myLeftBound = boundToLeft;
 	}
 
-	public String toString()
+	@Override
+    public String toString()
 	{
 		return myDebugName;
 	}

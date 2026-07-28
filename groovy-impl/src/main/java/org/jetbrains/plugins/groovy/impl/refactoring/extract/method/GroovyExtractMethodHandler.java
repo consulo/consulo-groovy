@@ -13,14 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.impl.refactoring.extract.method;
 
 import com.intellij.java.impl.refactoring.HelpID;
 import com.intellij.java.language.psi.PsiClass;
 import com.intellij.java.language.psi.PsiMethod;
 import com.intellij.java.language.psi.codeStyle.JavaCodeStyleManager;
-import consulo.application.ApplicationManager;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.access.RequiredWriteAction;
+import consulo.application.Application;
 import consulo.codeEditor.Editor;
 import consulo.codeEditor.ScrollType;
 import consulo.codeEditor.SelectionModel;
@@ -41,6 +42,7 @@ import consulo.language.util.IncorrectOperationException;
 import consulo.localize.LocalizeValue;
 import consulo.logging.Logger;
 import consulo.project.Project;
+import consulo.ui.annotation.RequiredUIAccess;
 import consulo.undoRedo.CommandProcessor;
 import consulo.util.collection.MultiMap;
 import jakarta.annotation.Nonnull;
@@ -80,6 +82,8 @@ public class GroovyExtractMethodHandler implements RefactoringActionHandler {
     protected static LocalizeValue REFACTORING_NAME = GroovyRefactoringLocalize.extractMethodTitle();
     private static final Logger LOG = Logger.getInstance(GroovyExtractMethodHandler.class);
 
+    @Override
+    @RequiredUIAccess
     public void invoke(@Nonnull Project project, Editor editor, PsiFile file, @Nullable DataContext dataContext) {
         editor.getScrollingModel().scrollToCaret(ScrollType.MAKE_VISIBLE);
         SelectionModel model = editor.getSelectionModel();
@@ -115,12 +119,15 @@ public class GroovyExtractMethodHandler implements RefactoringActionHandler {
             this.file = file;
         }
 
+        @Override
+        @RequiredUIAccess
         public void accept(@Nonnull GrExpression selectedValue) {
             TextRange range = selectedValue.getTextRange();
             invokeImpl(project, editor, file, range.getStartOffset(), range.getEndOffset());
         }
     }
 
+    @RequiredUIAccess
     private void invokeImpl(Project project, Editor editor, PsiFile file, int startOffset, int endOffset) {
         try {
             InitialInfo initialInfo = GroovyExtractChooser.invoke(project, editor, file, startOffset, endOffset, true);
@@ -142,6 +149,7 @@ public class GroovyExtractMethodHandler implements RefactoringActionHandler {
         }
     }
 
+    @RequiredUIAccess
     private static boolean findConflicts(InitialInfo info) {
         //new ConflictsDialog()
         final MultiMap<PsiElement, LocalizeValue> conflicts = new MultiMap<>();
@@ -150,17 +158,16 @@ public class GroovyExtractMethodHandler implements RefactoringActionHandler {
 
         GroovyRecursiveElementVisitor visitor = new GroovyRecursiveElementVisitor() {
             @Override
+            @RequiredReadAction
             public void visitReferenceExpression(GrReferenceExpression referenceExpression) {
                 super.visitReferenceExpression(referenceExpression);
 
                 GroovyResolveResult resolveResult = referenceExpression.advancedResolve();
                 PsiElement resolveContext = resolveResult.getCurrentFileResolveContext();
-                if (resolveContext != null && !(resolveContext instanceof GrImportStatement) && !PsiTreeUtil.isAncestor(
-                    declarationOwner,
-                    resolveContext,
-                    true
-                ) && !skipResult(
-                    resolveResult)) {
+                if (resolveContext != null
+                    && !(resolveContext instanceof GrImportStatement)
+                    && !PsiTreeUtil.isAncestor(declarationOwner, resolveContext, true)
+                    && !skipResult(resolveResult)) {
                     conflicts.putValue(
                         referenceExpression,
                         GroovyRefactoringLocalize.ref0WillNotBeResolvedOutsideOfCurrentContext(referenceExpression.getText())
@@ -171,20 +178,20 @@ public class GroovyExtractMethodHandler implements RefactoringActionHandler {
             //skip 'print' and 'println'
             private boolean skipResult(GroovyResolveResult result) {
                 PsiElement element = result.getElement();
-                if (element instanceof PsiMethod) {
-                    String name = ((PsiMethod) element).getName();
+                if (element instanceof PsiMethod method) {
+                    String name = method.getName();
                     if (!name.startsWith("print")) {
                         return false;
                     }
 
-                    if (element instanceof GrGdkMethod) {
-                        element = ((GrGdkMethod) element).getStaticMethod();
+                    if (element instanceof GrGdkMethod gdkMethod) {
+                        element = gdkMethod.getStaticMethod();
                     }
 
                     PsiClass aClass = ((PsiMethod) element).getContainingClass();
                     if (aClass != null) {
-                        String qname = aClass.getQualifiedName();
-                        return GroovyCommonClassNames.DEFAULT_GROOVY_METHODS.equals(qname);
+                        String qName = aClass.getQualifiedName();
+                        return GroovyCommonClassNames.DEFAULT_GROOVY_METHODS.equals(qName);
                     }
                 }
                 return false;
@@ -200,7 +207,7 @@ public class GroovyExtractMethodHandler implements RefactoringActionHandler {
             return false;
         }
 
-        if (ApplicationManager.getApplication().isUnitTestMode()) {
+        if (Application.get().isUnitTestMode()) {
             throw new BaseRefactoringProcessor.ConflictsInTestsException(conflicts.values());
         }
 
@@ -209,6 +216,7 @@ public class GroovyExtractMethodHandler implements RefactoringActionHandler {
         return !dialog.isOK();
     }
 
+    @RequiredUIAccess
     private void performRefactoring(@Nonnull InitialInfo initialInfo, @Nullable Editor editor) {
         PsiClass owner = PsiUtil.getContextClass(initialInfo.getStatements()[0]);
         LOG.assertTrue(owner != null);
@@ -236,6 +244,7 @@ public class GroovyExtractMethodHandler implements RefactoringActionHandler {
           });
     }
 
+    @RequiredWriteAction
     private static void createMethod(ExtractMethodInfoHelper helper, PsiClass owner) {
         GrMethod method = ExtractUtil.createMethod(helper);
         PsiElement anchor = calculateAnchorToInsertBefore(owner, helper.getStatements()[0]);
@@ -249,6 +258,7 @@ public class GroovyExtractMethodHandler implements RefactoringActionHandler {
     }
 
     @Nullable
+    @RequiredUIAccess
     protected ExtractMethodInfoHelper getSettings(@Nonnull InitialInfo initialInfo, PsiClass owner) {
         GroovyExtractMethodDialog dialog = new GroovyExtractMethodDialog(initialInfo, owner);
         dialog.show();
@@ -259,20 +269,21 @@ public class GroovyExtractMethodHandler implements RefactoringActionHandler {
         return dialog.getHelper();
     }
 
-
+    @Override
+    @RequiredUIAccess
     public void invoke(@Nonnull Project project, @Nonnull PsiElement[] elements, DataContext dataContext) {
         // does nothing
     }
 
     @Nullable
+    @RequiredReadAction
     private static PsiElement calculateAnchorToInsertBefore(PsiClass owner, PsiElement startElement) {
         while (startElement != null && !isEnclosingDefinition(owner, startElement)) {
             if (startElement.getParent() instanceof GroovyFile) {
                 return startElement.getNextSibling();
             }
             startElement = startElement.getParent();
-            PsiElement parent = startElement.getParent();
-            if (parent instanceof GroovyFile && ((GroovyFile) parent).getScriptClass() == owner) {
+            if (startElement.getParent() instanceof GroovyFile groovyFile && groovyFile.getScriptClass() == owner) {
                 return startElement.getNextSibling();
             }
         }
@@ -287,6 +298,7 @@ public class GroovyExtractMethodHandler implements RefactoringActionHandler {
         return false;
     }
 
+    @RequiredWriteAction
     private static void renameParameterOccurrences(GrMethod method, ExtractMethodInfoHelper helper) throws IncorrectOperationException {
         GrOpenBlock block = method.getBlock();
         if (block == null) {
@@ -298,10 +310,11 @@ public class GroovyExtractMethodHandler implements RefactoringActionHandler {
         for (ParameterInfo info : helper.getParameterInfos()) {
             final String oldName = info.getOldName();
             String newName = info.getName();
-            final ArrayList<GrExpression> result = new ArrayList<GrExpression>();
+            List<GrExpression> result = new ArrayList<>();
             if (!oldName.equals(newName)) {
                 for (GrStatement statement : statements) {
                     statement.accept(new PsiRecursiveElementVisitor() {
+                        @Override
                         public void visitElement(PsiElement element) {
                             super.visitElement(element);
                             if (element instanceof GrReferenceExpression) {

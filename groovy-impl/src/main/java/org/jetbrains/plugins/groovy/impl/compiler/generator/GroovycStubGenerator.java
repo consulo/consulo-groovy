@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.impl.compiler.generator;
 
 import com.intellij.java.language.impl.JavaFileType;
 import com.intellij.java.language.psi.JavaPsiFacade;
 import com.intellij.java.language.psi.PsiClass;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.annotation.component.ExtensionImpl;
-import consulo.application.AccessRule;
+import consulo.application.ReadAction;
 import consulo.application.WriteAction;
 import consulo.application.progress.ProgressIndicator;
 import consulo.compiler.CompileContext;
@@ -30,7 +30,6 @@ import consulo.compiler.scope.CompileScope;
 import consulo.compiler.scope.FileSetCompileScope;
 import consulo.compiler.setting.ExcludedEntriesConfiguration;
 import consulo.compiler.util.CompilerUtil;
-import consulo.content.ContentIterator;
 import consulo.language.content.LanguageContentFolderScopes;
 import consulo.language.content.ProductionContentFolderTypeProvider;
 import consulo.language.content.TestContentFolderTypeProvider;
@@ -45,6 +44,7 @@ import consulo.module.content.ProjectRootManager;
 import consulo.module.content.layer.ContentEntry;
 import consulo.module.content.layer.ContentFolder;
 import consulo.project.Project;
+import consulo.ui.annotation.RequiredUIAccess;
 import consulo.util.collection.Chunk;
 import consulo.util.collection.ContainerUtil;
 import consulo.util.collection.FactoryMap;
@@ -116,7 +116,7 @@ public class GroovycStubGenerator extends GroovyCompilerBase {
   public FileType[] getInputFileTypes() {
     return new FileType[]{
       JavaFileType.INSTANCE,
-      GroovyFileType.GROOVY_FILE_TYPE
+      GroovyFileType.INSTANCE
     };
   }
 
@@ -133,15 +133,10 @@ public class GroovycStubGenerator extends GroovyCompilerBase {
         VirtualFile dir = folder.getFile();
         if ((!inTests && folder.getType() == ProductionContentFolderTypeProvider.getInstance() || folder.getType() ==
           TestContentFolderTypeProvider.getInstance() && inTests) && dir != null) {
-          if (!rootManager.getFileIndex().iterateContentUnderDirectory(dir, new ContentIterator() {
-            @Override
-            public boolean processFile(VirtualFile fileOrDir) {
-              if (!fileOrDir.isDirectory() && JavaFileType.INSTANCE == fileOrDir.getFileType()) {
-                return false;
-              }
-              return true;
-            }
-          })) {
+          if (!rootManager.getFileIndex().iterateContentUnderDirectory(
+            dir,
+            fileOrDir -> fileOrDir.isDirectory() || JavaFileType.INSTANCE != fileOrDir.getFileType()
+          )) {
             return true;
           }
         }
@@ -151,6 +146,7 @@ public class GroovycStubGenerator extends GroovyCompilerBase {
   }
 
   @Override
+  @RequiredUIAccess
   protected void compileFiles(CompileContext compileContext,
                               Module module,
                               List<VirtualFile> toCompile,
@@ -189,6 +185,7 @@ public class GroovycStubGenerator extends GroovyCompilerBase {
   }
 
   @Nullable
+  @RequiredReadAction
   public static PsiClass findClassByStub(Project project, VirtualFile stubFile) {
     String[] components = StringUtil.trimEnd(stubFile.getPath(), ".java").split("[\\\\/]");
     int stubs = Arrays.asList(components).indexOf(GROOVY_STUBS);
@@ -206,30 +203,31 @@ public class GroovycStubGenerator extends GroovyCompilerBase {
     return JavaPsiFacade.getInstance(project).findClass(fqn, GlobalSearchScope.moduleScope(module));
   }
 
+  @RequiredUIAccess
   private void cleanDirectory(VirtualFile dir) {
-    WriteAction.runAndWait(() -> {
-      VirtualFileUtil.processFilesRecursively(dir, new Predicate<>() {
-        @Override
-        public boolean test(VirtualFile virtualFile) {
-          if (!virtualFile.isDirectory()) {
-            try {
-              virtualFile.delete(this);
-            }
-            catch (IOException e) {
-              LOG.info(e);
-            }
+    WriteAction.runAndWait(() -> VirtualFileUtil.processFilesRecursively(dir, new Predicate<>() {
+      @Override
+      public boolean test(VirtualFile virtualFile) {
+        if (!virtualFile.isDirectory()) {
+          try {
+            virtualFile.delete(this);
           }
-          return true;
+          catch (IOException e) {
+            LOG.info(e);
+          }
         }
-      });
-    });
+        return true;
+      }
+    }));
   }
 
   @Nonnull
+  @Override
   public String getDescription() {
     return "Groovy to java source code generator";
   }
 
+  @Override
   public boolean validateConfiguration(CompileScope scope) {
     return true;
   }
@@ -246,15 +244,14 @@ public class GroovycStubGenerator extends GroovyCompilerBase {
       LOG.debug("Generating stubs for " + item.getName() + "...");
     }
 
-    Map<String, CharSequence> output;
-
-    output = AccessRule.read(() -> generator.generateStubs((GroovyFile)PsiManager.getInstance(project).findFile(item)));
+    Map<String,CharSequence> output =
+      ReadAction.compute(() -> generator.generateStubs((GroovyFile)PsiManager.getInstance(project).findFile(item)));
 
     return writeStubs(outputRootDirectory, output, item);
   }
 
   private static List<VirtualFile> writeStubs(VirtualFile outputRootDirectory, Map<String, CharSequence> output, VirtualFile src) {
-    ArrayList<VirtualFile> stubs = ContainerUtil.newArrayList();
+    List<VirtualFile> stubs = new ArrayList<>();
     for (String relativePath : output.keySet()) {
       File stubFile = new File(outputRootDirectory.getPath(), relativePath);
       FileUtil.createIfDoesntExist(stubFile);

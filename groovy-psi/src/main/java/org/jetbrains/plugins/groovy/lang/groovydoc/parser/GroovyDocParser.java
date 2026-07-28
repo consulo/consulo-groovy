@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.lang.groovydoc.parser;
 
 import consulo.language.ast.ASTNode;
@@ -29,6 +28,7 @@ import consulo.language.parser.PsiParser;
  */
 public class GroovyDocParser implements PsiParser {
   @Nonnull
+  @Override
   public ASTNode parse(@Nonnull IElementType root, @Nonnull PsiBuilder builder, @Nonnull LanguageVersion languageVersion) {
     PsiBuilder.Marker rootMarker = builder.mark();
     new GroovyDocParsing().parse(builder);

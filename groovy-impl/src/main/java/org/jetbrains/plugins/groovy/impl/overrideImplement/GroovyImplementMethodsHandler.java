@@ -25,21 +25,25 @@ import consulo.language.editor.generation.ImplementMethodHandler;
 import consulo.language.editor.hint.HintManager;
 import consulo.language.psi.PsiFile;
 import consulo.project.Project;
+import consulo.ui.annotation.RequiredUIAccess;
 import org.jetbrains.plugins.groovy.GroovyFileType;
 import org.jetbrains.plugins.groovy.GroovyLanguage;
 
 import jakarta.annotation.Nonnull;
 
 /**
- * User: Dmitry.Krasilschikov
- * Date: 14.09.2007
+ * @author Dmitry.Krasilschikov
+ * @since 2007-09-14
  */
 @ExtensionImpl
 public class GroovyImplementMethodsHandler implements ImplementMethodHandler {
+  @Override
   public boolean isValidFor(Editor editor, PsiFile psiFile) {
-    return psiFile != null && GroovyFileType.GROOVY_FILE_TYPE.equals(psiFile.getFileType());
+    return psiFile != null && GroovyFileType.INSTANCE.equals(psiFile.getFileType());
   }
 
+  @Override
+  @RequiredUIAccess
   public void invoke(@Nonnull Project project, @Nonnull Editor editor, @Nonnull PsiFile file) {
     if (!CodeInsightUtilBase.prepareEditorForWrite(editor)) return;
     PsiClass aClass = OverrideImplementUtil.getContextClass(project, editor, file, true);
@@ -53,6 +57,7 @@ public class GroovyImplementMethodsHandler implements ImplementMethodHandler {
     OverrideImplementUtil.chooseAndImplementMethods(project, editor, aClass);
   }
 
+  @Override
   public boolean startInWriteAction() {
     return false;
   }

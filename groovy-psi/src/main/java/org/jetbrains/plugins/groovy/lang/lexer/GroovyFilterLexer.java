@@ -33,29 +33,28 @@ import consulo.language.ast.IElementType;
  * @author Maxim.Medvedev
  */
 public class GroovyFilterLexer extends BaseFilterLexer {
-
-  public GroovyFilterLexer(Lexer originalLexer, OccurrenceConsumer occurrenceConsumer) {
-    super(originalLexer, occurrenceConsumer);
-  }
-
-
-  public void advance() {
-    IElementType tokenType = getDelegate().getTokenType();
-
-    if (tokenType == mIDENT || TokenSets.KEYWORDS.contains(tokenType)) {
-      addOccurrenceInToken(IN_CODE);
-    }
-    else if (STRING_LITERALS.contains(tokenType)) {
-      scanWordsInToken(IN_STRINGS | IN_FOREIGN_LANGUAGES, false, true);
-    }
-    else if (COMMENT_SET.contains(tokenType)) {
-      scanWordsInToken(IN_COMMENTS, false, false);
-      advanceTodoItemCountsInToken();
-    }
-    else {
-      scanWordsInToken(IN_PLAIN_TEXT, false, false);
+    public GroovyFilterLexer(Lexer originalLexer, OccurrenceConsumer occurrenceConsumer) {
+        super(originalLexer, occurrenceConsumer);
     }
 
-    getDelegate().advance();
-  }
+    @Override
+    public void advance() {
+        IElementType tokenType = getDelegate().getTokenType();
+
+        if (tokenType == mIDENT || TokenSets.KEYWORDS.contains(tokenType)) {
+            addOccurrenceInToken(IN_CODE);
+        }
+        else if (STRING_LITERALS.contains(tokenType)) {
+            scanWordsInToken(IN_STRINGS | IN_FOREIGN_LANGUAGES, false, true);
+        }
+        else if (COMMENT_SET.contains(tokenType)) {
+            scanWordsInToken(IN_COMMENTS, false, false);
+            advanceTodoItemCountsInToken();
+        }
+        else {
+            scanWordsInToken(IN_PLAIN_TEXT, false, false);
+        }
+
+        getDelegate().advance();
+    }
 }

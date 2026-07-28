@@ -15,6 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.impl.codeInspection.exception;
 
+import consulo.annotation.access.RequiredReadAction;
 import consulo.annotation.component.ExtensionImpl;
 import consulo.ide.impl.idea.codeInsight.daemon.impl.quickfix.RenameElementFix;
 import consulo.localize.LocalizeValue;
@@ -40,11 +41,14 @@ public class GroovyEmptyCatchBlockInspection extends BaseInspection {
         return LocalizeValue.localizeTODO("Empty 'catch' block");
     }
 
+    @Override
     public BaseInspectionVisitor buildVisitor() {
         return new Visitor();
     }
 
     private static class Visitor extends BaseInspectionVisitor {
+        @Override
+        @RequiredReadAction
         public void visitCatchClause(GrCatchClause catchClause) {
             super.visitCatchClause(catchClause);
             GrOpenBlock body = catchClause.getBody();

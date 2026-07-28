@@ -23,7 +23,7 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrTryCatchStatement;
 
 public class GroovyCatchRemover extends GroovyUnwrapper {
     public GroovyCatchRemover() {
-        super(CodeInsightLocalize.removeCatch().get());
+        super(CodeInsightLocalize.removeCatch());
     }
 
     @Override

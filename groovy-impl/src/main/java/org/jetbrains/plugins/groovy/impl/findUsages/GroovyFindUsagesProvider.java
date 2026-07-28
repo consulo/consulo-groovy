@@ -17,6 +17,7 @@ package org.jetbrains.plugins.groovy.impl.findUsages;
 
 import com.intellij.java.language.psi.*;
 import com.intellij.java.language.psi.util.PsiFormatUtil;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.annotation.component.ExtensionImpl;
 import consulo.language.Language;
 import consulo.language.cacheBuilder.WordsScanner;
@@ -44,10 +45,12 @@ public class GroovyFindUsagesProvider implements FindUsagesProvider {
   }
 
   @Nullable
+  @Override
   public WordsScanner getWordsScanner() {
     return new GroovyWordsScanner();
   }
 
+  @Override
   public boolean canFindUsagesFor(@Nonnull PsiElement psiElement) {
     return psiElement instanceof PsiClass ||
       psiElement instanceof PsiMethod ||
@@ -55,11 +58,13 @@ public class GroovyFindUsagesProvider implements FindUsagesProvider {
   }
 
   @Nullable
+  @Override
   public String getHelpId(@Nonnull PsiElement psiElement) {
     return null;
   }
 
   @Nonnull
+  @Override
   public String getType(@Nonnull PsiElement element) {
     if (element instanceof PsiClass) return "class";
     if (element instanceof PsiMethod) return "method";
@@ -74,17 +79,20 @@ public class GroovyFindUsagesProvider implements FindUsagesProvider {
   }
 
   @Nonnull
+  @Override
+  @RequiredReadAction
   public String getDescriptiveName(@Nonnull PsiElement element) {
-    if (element instanceof PsiClass) {
-      PsiClass aClass = (PsiClass)element;
+    if (element instanceof PsiClass aClass) {
       String qName = aClass.getQualifiedName();
       return qName == null ? "" : qName;
     }
-    else if (element instanceof PsiMethod) {
-      PsiMethod method = (PsiMethod)element;
-      String result = PsiFormatUtil.formatMethod(method,
-                                                 PsiSubstitutor.EMPTY, PsiFormatUtil.SHOW_NAME | PsiFormatUtil.SHOW_PARAMETERS,
-                                                 PsiFormatUtil.SHOW_TYPE);
+    else if (element instanceof PsiMethod method) {
+      String result = PsiFormatUtil.formatMethod(
+        method,
+        PsiSubstitutor.EMPTY,
+        PsiFormatUtil.SHOW_NAME | PsiFormatUtil.SHOW_PARAMETERS,
+        PsiFormatUtil.SHOW_TYPE
+      );
       PsiClass clazz = method.getContainingClass();
       if (clazz != null) {
         result += " of " + getDescriptiveName(clazz);
@@ -92,17 +100,17 @@ public class GroovyFindUsagesProvider implements FindUsagesProvider {
 
       return result;
     }
-    else if (element instanceof PsiVariable) {
-      String name = ((PsiVariable)element).getName();
+    else if (element instanceof PsiVariable variable) {
+      String name = variable.getName();
       if (name != null) {
         return name;
       }
     }
-    else if (element instanceof GrLabeledStatement) {
-      return ((GrLabeledStatement)element).getName();
+    else if (element instanceof GrLabeledStatement labeledStmt) {
+      return labeledStmt.getName();
     }
-    else if (element instanceof PropertyForRename) {
-      return ((PropertyForRename)element).getPropertyName();
+    else if (element instanceof PropertyForRename propertyForRename) {
+      return propertyForRename.getPropertyName();
     }
     else if (element instanceof GrClosableBlock) {
       return "closure";
@@ -112,23 +120,26 @@ public class GroovyFindUsagesProvider implements FindUsagesProvider {
   }
 
   @Nonnull
+  @Override
+  @RequiredReadAction
   public String getNodeText(@Nonnull PsiElement element, boolean useFullName) {
-    if (element instanceof PsiClass) {
-      String name = ((PsiClass)element).getQualifiedName();
+    if (element instanceof PsiClass psiClass) {
+      String name = psiClass.getQualifiedName();
       if (name == null || !useFullName) {
-        name = ((PsiClass)element).getName();
+        name = psiClass.getName();
       }
       if (name != null) return name;
     }
-    else if (element instanceof PsiMethod) {
-      return PsiFormatUtil.formatMethod((PsiMethod)element,
-                                        PsiSubstitutor.EMPTY,
-                                        PsiFormatUtil.SHOW_NAME | PsiFormatUtil.SHOW_PARAMETERS,
-                                        PsiFormatUtil.SHOW_TYPE);
-
+    else if (element instanceof PsiMethod method) {
+      return PsiFormatUtil.formatMethod(
+        method,
+        PsiSubstitutor.EMPTY,
+        PsiFormatUtil.SHOW_NAME | PsiFormatUtil.SHOW_PARAMETERS,
+        PsiFormatUtil.SHOW_TYPE
+      );
     }
-    else if (element instanceof PsiVariable) {
-      String name = ((PsiVariable)element).getName();
+    else if (element instanceof PsiVariable variable) {
+      String name = variable.getName();
       if (name != null) {
         return name;
       }
