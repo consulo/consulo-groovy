@@ -22,8 +22,10 @@ import com.intellij.java.impl.refactoring.util.ConflictsUtil;
 import com.intellij.java.language.psi.*;
 import com.intellij.java.language.psi.codeStyle.JavaCodeStyleManager;
 import com.intellij.java.language.psi.util.InheritanceUtil;
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.application.util.function.Processor;
 import consulo.document.util.TextRange;
+import consulo.groovy.impl.localize.GroovyRefactoringLocalize;
 import consulo.language.editor.refactoring.localize.RefactoringLocalize;
 import consulo.language.editor.refactoring.ui.RefactoringUIUtil;
 import consulo.language.psi.PsiElement;
@@ -356,29 +358,27 @@ public class GroovyIntroduceParameterUtil {
 
             PsiElement[] occurrences = GroovyRefactoringUtil.getExpressionOccurrences(expr, scope);
             if (occurrences == null || occurrences.length == 0) {
-                throw new GrRefactoringError(GroovyRefactoringBundle.message("no.occurrences.found"));
+                throw new GrRefactoringError(GroovyRefactoringLocalize.noOccurrencesFound());
             }
             return occurrences;
         }
         else {
             GrVariable var = settings.getVar();
             LOG.assertTrue(var != null);
-            final List<PsiElement> list = Collections.synchronizedList(new ArrayList<PsiElement>());
-            ReferencesSearch.search(var, new LocalSearchScope(scope)).forEach(new Processor<PsiReference>() {
-                @Override
-                public boolean process(PsiReference psiReference) {
-                    PsiElement element = psiReference.getElement();
-                    if (element != null) {
-                        list.add(element);
-                    }
-                    return true;
+            List<PsiElement> list = Collections.synchronizedList(new ArrayList<PsiElement>());
+            ReferencesSearch.search(var, new LocalSearchScope(scope)).forEach(psiReference -> {
+                PsiElement element = psiReference.getElement();
+                if (element != null) {
+                    list.add(element);
                 }
+                return true;
             });
             return list.toArray(new PsiElement[list.size()]);
         }
     }
 
     @Nullable
+    @RequiredWriteAction
     public static GrExpression addClosureToCall(PsiElement initializer, GrArgumentList list) {
         if (!(initializer instanceof GrClosableBlock)) {
             return null;
@@ -419,7 +419,7 @@ public class GroovyIntroduceParameterUtil {
         return GrIntroduceHandlerBase.findExpression(statements[0]);
     }
 
-    static LinkedHashSet<String> suggestNames(
+    static Set<String> suggestNames(
         GrVariable var,
         GrExpression expr,
         StringPartInfo stringPart,
@@ -430,19 +430,19 @@ public class GroovyIntroduceParameterUtil {
             GrIntroduceContext
                 introduceContext = new GrIntroduceContextImpl(project, null, expr, var, stringPart, PsiElement.EMPTY_ARRAY, scope);
             GroovyFieldValidator validator = new GroovyFieldValidator(introduceContext);
-            return new LinkedHashSet<String>(Arrays.asList(GroovyNameSuggestionUtil.suggestVariableNames(expr, validator, true)));
+            return new LinkedHashSet<>(Arrays.asList(GroovyNameSuggestionUtil.suggestVariableNames(expr, validator, true)));
         }
         else if (var != null) {
             GrIntroduceContext introduceContext =
                 new GrIntroduceContextImpl(project, null, expr, var, stringPart, PsiElement.EMPTY_ARRAY, scope);
             GroovyFieldValidator validator = new GroovyFieldValidator(introduceContext);
-            LinkedHashSet<String> names = new LinkedHashSet<String>();
+            Set<String> names = new LinkedHashSet<>();
             names.add(var.getName());
             ContainerUtil.addAll(names, GroovyNameSuggestionUtil.suggestVariableNameByType(var.getType(), validator));
             return names;
         }
         else {
-            LinkedHashSet<String> names = new LinkedHashSet<String>();
+            Set<String> names = new LinkedHashSet<>();
             names.add("closure");
             return names;
         }

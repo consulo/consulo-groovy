@@ -18,11 +18,12 @@ package org.jetbrains.plugins.groovy.impl.refactoring.introduce.field;
 import com.intellij.java.impl.refactoring.HelpID;
 import com.intellij.java.impl.refactoring.introduceField.IntroduceFieldHandler;
 import com.intellij.java.language.psi.PsiClass;
-import com.intellij.java.language.psi.PsiModifier;
 import consulo.groovy.impl.localize.GroovyRefactoringLocalize;
 import consulo.language.editor.refactoring.introduce.inplace.OccurrencesChooser;
 import consulo.language.psi.PsiElement;
-import consulo.util.lang.ref.Ref;
+import consulo.localize.LocalizeValue;
+import consulo.ui.annotation.RequiredUIAccess;
+import consulo.util.lang.ref.SimpleReference;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.impl.refactoring.GrRefactoringError;
@@ -45,8 +46,8 @@ import java.util.List;
 public class GrIntroduceFieldHandler extends GrIntroduceFieldHandlerBase<GrIntroduceFieldSettings> {
     @Nonnull
     @Override
-    protected String getRefactoringName() {
-        return IntroduceFieldHandler.REFACTORING_NAME.get();
+    protected LocalizeValue getRefactoringName() {
+        return IntroduceFieldHandler.REFACTORING_NAME;
     }
 
     @Nonnull
@@ -99,14 +100,13 @@ public class GrIntroduceFieldHandler extends GrIntroduceFieldHandlerBase<GrIntro
         return new GrIntroduceFieldProcessor(context, settings).run();
     }
 
-
     @Override
+    @RequiredUIAccess
     protected GrAbstractInplaceIntroducer<GrIntroduceFieldSettings> getIntroducer(
         @Nonnull GrIntroduceContext context,
         OccurrencesChooser.ReplaceChoice choice
     ) {
-
-        Ref<GrIntroduceContext> contextRef = Ref.create(context);
+        SimpleReference<GrIntroduceContext> contextRef = SimpleReference.create(context);
 
         if (context.getStringPart() != null) {
             extractStringPart(contextRef);
@@ -123,7 +123,7 @@ public class GrIntroduceFieldHandler extends GrIntroduceFieldHandlerBase<GrIntro
             return occurrences;
         }
 
-        List<PsiElement> filtered = new ArrayList<PsiElement>();
+        List<PsiElement> filtered = new ArrayList<>();
         for (PsiElement occurrence : occurrences) {
             if (!shouldBeStatic(occurrence, scope)) {
                 filtered.add(occurrence);
@@ -145,9 +145,6 @@ public class GrIntroduceFieldHandler extends GrIntroduceFieldHandlerBase<GrIntro
 
     static boolean shouldBeStatic(PsiElement expr, PsiElement clazz) {
         GrMember method = getContainer(expr, clazz);
-        if (method == null) {
-            return false;
-        }
-        return method.hasModifierProperty(PsiModifier.STATIC);
+        return method != null && method.isStatic();
     }
 }

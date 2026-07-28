@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.impl.formatter.blocks;
 
+import consulo.annotation.access.RequiredReadAction;
 import consulo.document.util.TextRange;
 import consulo.language.ast.ASTNode;
 import consulo.language.ast.ILazyParseableElementType;
@@ -82,17 +82,20 @@ public class GroovyBlock implements Block, GroovyElementTypes, ASTBlock {
   }
 
   @Nonnull
+  @Override
   public ASTNode getNode() {
     return myNode;
   }
 
   @Nonnull
+  @Override
   public TextRange getTextRange() {
     return myNode.getTextRange();
   }
 
   @Nonnull
   @Override
+  @RequiredReadAction
   public List<Block> getSubBlocks() {
     if (mySubBlocks == null) {
       try {
@@ -103,23 +106,26 @@ public class GroovyBlock implements Block, GroovyElementTypes, ASTBlock {
         LOG.error("Formatting failed for file " + file.getName(), e,
             AttachmentFactory.get().create("file.txt", file.getText()),
             AttachmentFactory.get().create("node.txt", myNode.getText()));
-        mySubBlocks = new ArrayList<Block>();
+        mySubBlocks = new ArrayList<>();
       }
     }
     return  mySubBlocks;
   }
 
   @Nullable
+  @Override
   public Wrap getWrap() {
     return myWrap;
   }
 
   @Nullable
+  @Override
   public Indent getIndent() {
     return myIndent;
   }
 
   @Nullable
+  @Override
   public Alignment getAlignment() {
     if (myAlignment == null) {
       myAlignment = myContext.getAlignmentProvider().getAlignment(myNode.getPsi());
@@ -136,22 +142,25 @@ public class GroovyBlock implements Block, GroovyElementTypes, ASTBlock {
    * @return
    */
   @Nullable
+  @Override
   public Spacing getSpacing(Block child1, @Nonnull Block child2) {
-    if (child1 instanceof GroovyBlock && child2 instanceof GroovyBlock) {
-      if (((GroovyBlock)child1).getNode() == ((GroovyBlock)child2).getNode()) {
+    if (child1 instanceof GroovyBlock groovyBlock1 && child2 instanceof GroovyBlock groovyBlock2) {
+      if (groovyBlock1.getNode() == groovyBlock2.getNode()) {
         return Spacing.getReadOnlySpacing();
       }
 
-      Spacing spacing = new GroovySpacingProcessor(((GroovyBlock)child1), (GroovyBlock)child2, myContext).getSpacing();
+      Spacing spacing = new GroovySpacingProcessor(groovyBlock1, groovyBlock2, myContext).getSpacing();
       if (spacing != null) {
         return spacing;
       }
-      return GroovySpacingProcessorBasic.getSpacing(((GroovyBlock)child1), ((GroovyBlock)child2), myContext);
+      return GroovySpacingProcessorBasic.getSpacing(groovyBlock1, groovyBlock2, myContext);
     }
     return null;
   }
 
   @Nonnull
+  @Override
+  @RequiredReadAction
   public ChildAttributes getChildAttributes(int newChildIndex) {
     ASTNode astNode = getNode();
     PsiElement psiParent = astNode.getPsi();
@@ -160,36 +169,32 @@ public class GroovyBlock implements Block, GroovyElementTypes, ASTBlock {
     }
     if (psiParent instanceof GrSwitchStatement) {
       List<Block> subBlocks = getSubBlocks();
-      if (newChildIndex > 0) {
-        Block block = subBlocks.get(newChildIndex - 1);
-        if (block instanceof GroovyBlock) {
-          PsiElement anchorPsi = ((GroovyBlock)block).getNode().getPsi();
-          if (anchorPsi instanceof GrCaseSection) {
-            for (GrStatement statement : ((GrCaseSection)anchorPsi).getStatements()) {
-              if (statement instanceof GrBreakStatement ||
-                  statement instanceof GrContinueStatement ||
-                  statement instanceof GrReturnStatement ||
-                  statement instanceof GrThrowStatement) {
-                Indent indent = GroovyIndentProcessor.getSwitchCaseIndent(myContext.getSettings());
-                return new ChildAttributes(indent, null);
-              }
-            }
-
-            int indentSize = myContext.getSettings().getIndentOptions().INDENT_SIZE;
-            int spaces = myContext.getSettings().INDENT_CASE_FROM_SWITCH
-                               ? 2 * indentSize
-                               : indentSize;
-            return new ChildAttributes(Indent.getSpaceIndent(spaces), null);
+      if (newChildIndex > 0
+        && subBlocks.get(newChildIndex - 1) instanceof GroovyBlock groovyBlock
+        && groovyBlock.getNode().getPsi() instanceof GrCaseSection caseSection) {
+        for (GrStatement statement : caseSection.getStatements()) {
+          if (statement instanceof GrBreakStatement ||
+            statement instanceof GrContinueStatement ||
+            statement instanceof GrReturnStatement ||
+            statement instanceof GrThrowStatement) {
+            Indent indent = GroovyIndentProcessor.getSwitchCaseIndent(myContext.getSettings());
+            return new ChildAttributes(indent, null);
           }
         }
+
+        int indentSize = myContext.getSettings().getIndentOptions().INDENT_SIZE;
+        int spaces = myContext.getSettings().INDENT_CASE_FROM_SWITCH
+          ? 2 * indentSize
+          : indentSize;
+        return new ChildAttributes(Indent.getSpaceIndent(spaces), null);
       }
     }
 
     if (psiParent instanceof GrCaseLabel) {
       return new ChildAttributes(GroovyIndentProcessor.getSwitchCaseIndent(getContext().getSettings()), null);
     }
-    if (psiParent instanceof GrCaseSection) {
-      return getSwitchIndent((GrCaseSection)psiParent, newChildIndex);
+    if (psiParent instanceof GrCaseSection caseSection) {
+      return getSwitchIndent(caseSection, newChildIndex);
     }
 
     if (TokenSets.BLOCK_SET.contains(astNode.getElementType()) || SWITCH_STATEMENT.equals(astNode.getElementType())) {
@@ -240,7 +245,7 @@ public class GroovyBlock implements Block, GroovyElementTypes, ASTBlock {
     return new ChildAttributes(indent, null);
   }
 
-
+  @Override
   public boolean isIncomplete() {
     return isIncomplete(myNode);
   }
@@ -260,6 +265,7 @@ public class GroovyBlock implements Block, GroovyElementTypes, ASTBlock {
     return lastChild != null && (lastChild.getPsi() instanceof PsiErrorElement || isIncomplete(lastChild));
   }
 
+  @Override
   public boolean isLeaf() {
     return myNode.getFirstChildNode() == null;
   }
@@ -268,7 +274,6 @@ public class GroovyBlock implements Block, GroovyElementTypes, ASTBlock {
   public String toString() {
     return getTextRange() + ": " + myNode;
   }
-
 
   public FormattingContext getContext() {
     return myContext;

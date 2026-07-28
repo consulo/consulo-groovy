@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.impl.unwrap;
 
-import consulo.language.editor.CodeInsightBundle;
+import consulo.language.editor.localize.CodeInsightLocalize;
 import consulo.language.psi.PsiElement;
 import consulo.language.util.IncorrectOperationException;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFileBase;
@@ -24,11 +24,12 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrOpenBlock;
 
 public class GroovyBracesUnwrapper extends GroovyUnwrapper {
   public GroovyBracesUnwrapper() {
-    super(CodeInsightBundle.message("unwrap.braces"));
+    super(CodeInsightLocalize.unwrapBraces().get());
   }
 
+  @Override
   public boolean isApplicableTo(PsiElement e) {
-    if (e instanceof GrClosableBlock && !((GrClosableBlock)e).hasParametersSection()) {
+    if (e instanceof GrClosableBlock closableBlock && !closableBlock.hasParametersSection()) {
       PsiElement parent = e.getParent();
       return parent instanceof GrOpenBlock || parent instanceof GrClosableBlock || parent instanceof GroovyFileBase;
     }

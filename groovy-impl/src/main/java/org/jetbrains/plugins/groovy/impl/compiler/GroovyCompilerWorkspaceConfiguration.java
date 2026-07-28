@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.impl.compiler;
 
 import consulo.annotation.component.ComponentScope;
@@ -36,30 +35,32 @@ import jakarta.inject.Singleton;
 @ServiceImpl
 @Singleton
 public class GroovyCompilerWorkspaceConfiguration implements PersistentStateComponent<JpsGroovySettings>, Disposable {
-  String myHeapSize = JpsGroovySettings.DEFAULT_HEAP_SIZE;
-  boolean myInvokeDynamic = JpsGroovySettings.DEFAULT_INVOKE_DYNAMIC;
-  boolean transformsOk = JpsGroovySettings.DEFAULT_TRANSFORMS_OK;
-  final ExcludedEntriesConfiguration myExcludeFromStubGeneration = new ExcludedEntriesConfiguration();
+    String myHeapSize = JpsGroovySettings.DEFAULT_HEAP_SIZE;
+    boolean myInvokeDynamic = JpsGroovySettings.DEFAULT_INVOKE_DYNAMIC;
+    boolean transformsOk = JpsGroovySettings.DEFAULT_TRANSFORMS_OK;
+    final ExcludedEntriesConfiguration myExcludeFromStubGeneration = new ExcludedEntriesConfiguration();
 
-  public JpsGroovySettings getState() {
-    JpsGroovySettings bean = new JpsGroovySettings();
-    bean.heapSize = myHeapSize;
-    bean.invokeDynamic = myInvokeDynamic;
-    bean.transformsOk = transformsOk;
-    myExcludeFromStubGeneration.writeExternal(bean.excludes);
-    return bean;
-  }
+    @Override
+    public JpsGroovySettings getState() {
+        JpsGroovySettings bean = new JpsGroovySettings();
+        bean.heapSize = myHeapSize;
+        bean.invokeDynamic = myInvokeDynamic;
+        bean.transformsOk = transformsOk;
+        myExcludeFromStubGeneration.writeExternal(bean.excludes);
+        return bean;
+    }
 
-  public void loadState(JpsGroovySettings state) {
-    myHeapSize = state.heapSize;
-    myInvokeDynamic = state.invokeDynamic;
-    transformsOk = state.transformsOk;
+    @Override
+    public void loadState(JpsGroovySettings state) {
+        myHeapSize = state.heapSize;
+        myInvokeDynamic = state.invokeDynamic;
+        transformsOk = state.transformsOk;
 
-    myExcludeFromStubGeneration.readExternal(state.excludes);
-  }
+        myExcludeFromStubGeneration.readExternal(state.excludes);
+    }
 
-  public void dispose() {
-    Disposer.dispose(myExcludeFromStubGeneration);
-  }
-
+    @Override
+    public void dispose() {
+        Disposer.dispose(myExcludeFromStubGeneration);
+    }
 }

@@ -16,7 +16,8 @@
 package org.jetbrains.plugins.groovy.impl.unwrap;
 
 import com.intellij.java.language.psi.*;
-import consulo.language.editor.CodeInsightBundle;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.language.editor.localize.CodeInsightLocalize;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiFile;
 import consulo.language.psi.util.PsiTreeUtil;
@@ -27,12 +28,12 @@ import java.util.List;
 
 public class GroovyAnonymousUnwrapper extends GroovyUnwrapper {
   public GroovyAnonymousUnwrapper() {
-    super(CodeInsightBundle.message("unwrap.anonymous"));
+    super(CodeInsightLocalize.unwrapAnonymous().get());
   }
 
+  @Override
   public boolean isApplicableTo(PsiElement e) {
-    return e instanceof GrAnonymousClassDefinition
-           && ((GrAnonymousClassDefinition)e).getMethods().length <= 1;
+    return e instanceof GrAnonymousClassDefinition anonymousClassDef && anonymousClassDef.getMethods().length <= 1;
   }
 
   @Override
@@ -42,6 +43,7 @@ public class GroovyAnonymousUnwrapper extends GroovyUnwrapper {
   }
 
   @Override
+  @RequiredReadAction
   protected void doUnwrap(PsiElement element, Context context) throws IncorrectOperationException
   {
     PsiElement from = findElementToExtractFrom(element);
@@ -51,7 +53,7 @@ public class GroovyAnonymousUnwrapper extends GroovyUnwrapper {
     }
 
     PsiElement next = from.getNextSibling();
-    if (next instanceof PsiJavaToken && ((PsiJavaToken)next).getTokenType() == JavaTokenType.SEMICOLON) {
+    if (next instanceof PsiJavaToken javaToken && javaToken.getTokenType() == JavaTokenType.SEMICOLON) {
       context.deleteExactly(from.getNextSibling());
     }
     context.deleteExactly(from);
@@ -63,8 +65,8 @@ public class GroovyAnonymousUnwrapper extends GroovyUnwrapper {
     el = findTopmostParentOfType(el, PsiAssignmentExpression.class);
     el = findTopmostParentOfType(el, PsiDeclarationStatement.class);
 
-    while (el.getParent() instanceof PsiExpressionStatement) {
-      el = el.getParent();
+    while (el.getParent() instanceof PsiExpressionStatement exprStmt) {
+      el = exprStmt;
     }
 
     return el;

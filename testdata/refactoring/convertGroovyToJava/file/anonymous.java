@@ -11,6 +11,7 @@ new anonymous(new groovy.lang.Binding(args)).run();
 public Object run() {
 final Integer foo = 2;
 Runnable an = new Runnable(){
+@Override
 public void run() {
 org.codehaus.groovy.runtime.DefaultGroovyMethods.println(this, foo);
 }

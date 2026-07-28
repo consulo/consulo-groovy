@@ -16,6 +16,7 @@
 package org.jetbrains.plugins.groovy.lang.psi.stubs.elements;
 
 import com.intellij.java.language.impl.psi.impl.java.stubs.index.JavaStubIndexKeys;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.index.io.StringRef;
 import consulo.language.psi.stub.IndexSink;
 import consulo.language.psi.stub.StubElement;
@@ -36,11 +37,12 @@ import java.util.Set;
  * @author ilyas
  */
 public abstract class GrMethodElementType extends GrStubElementType<GrMethodStub, GrMethod> {
-
   public GrMethodElementType(String debugName) {
     super(debugName);
   }
 
+  @Override
+  @RequiredReadAction
   public GrMethodStub createStub(@Nonnull GrMethod psi, StubElement parentStub) {
 
     Set<String> namedParameters = psi.getNamedParameters().keySet();
@@ -50,6 +52,7 @@ public abstract class GrMethodElementType extends GrStubElementType<GrMethodStub
                             GrMethodStub.buildFlags(psi));
   }
 
+  @Override
   public void serialize(@Nonnull GrMethodStub stub, @Nonnull StubOutputStream dataStream) throws IOException {
     dataStream.writeName(stub.getName());
     GrStubUtils.writeStringArray(dataStream, stub.getAnnotations());
@@ -59,6 +62,7 @@ public abstract class GrMethodElementType extends GrStubElementType<GrMethodStub
   }
 
   @Nonnull
+  @Override
   public GrMethodStub deserialize(@Nonnull StubInputStream dataStream, StubElement parentStub) throws IOException {
     StringRef ref = dataStream.readName();
     String[] annNames = GrStubUtils.readStringArray(dataStream);
@@ -68,6 +72,7 @@ public abstract class GrMethodElementType extends GrStubElementType<GrMethodStub
     return new GrMethodStub(parentStub, ref, annNames, namedParameters, this, typeText, flags);
   }
 
+  @Override
   public void indexStub(@Nonnull GrMethodStub stub, @Nonnull IndexSink sink) {
     String name = stub.getName();
     sink.occurrence(GrMethodNameIndex.KEY, name);

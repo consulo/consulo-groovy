@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.arithmetic;
 
 import jakarta.annotation.Nonnull;
@@ -25,12 +24,12 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.GrBinar
  * @author ilyas
  */
 public class GrMultiplicativeExpressionImpl extends GrBinaryExpressionImpl {
+    public GrMultiplicativeExpressionImpl(@Nonnull ASTNode node) {
+        super(node);
+    }
 
-  public GrMultiplicativeExpressionImpl(@Nonnull ASTNode node) {
-    super(node);
-  }
-
-  public String toString() {
-    return "Multiplicative expression";
-  }
+    @Override
+    public String toString() {
+        return "Multiplicative expression";
+    }
 }

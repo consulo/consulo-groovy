@@ -13,13 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-/*
- * @author max
- */
 package org.jetbrains.plugins.groovy.impl.lang;
 
 import com.intellij.java.language.psi.*;
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.annotation.component.ExtensionImpl;
 import consulo.language.ast.ASTNode;
 import consulo.language.ast.TreeCopyHandler;
@@ -38,11 +35,13 @@ import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
 import java.util.Map;
 
 /**
+ * @author max
  * @author peter
  */
 @ExtensionImpl
 public class GroovyChangeUtilSupport implements TreeCopyHandler {
-
+  @Override
+  @RequiredWriteAction
   public TreeElement decodeInformation(ASTNode element, Map<Object, Object> decodingState) {
     if (element instanceof CompositeElement) {
       if (element.getElementType() == GroovyElementTypes.REFERENCE_ELEMENT || element.getElementType() == GroovyElementTypes.REFERENCE_EXPRESSION) {
@@ -69,6 +68,7 @@ public class GroovyChangeUtilSupport implements TreeCopyHandler {
     return null;
   }
 
+  @Override
   public void encodeInformation(ASTNode element, ASTNode original, Map<Object, Object> encodingState) {
     if (original instanceof CompositeElement) {
       if (original.getElementType() == GroovyElementTypes.REFERENCE_ELEMENT ||
@@ -80,8 +80,7 @@ public class GroovyChangeUtilSupport implements TreeCopyHandler {
             PsiElement target = result.getElement();
 
             if (target instanceof PsiClass ||
-              (target instanceof PsiMethod || target instanceof PsiField) &&
-                ((PsiMember)target).hasModifierProperty(PsiModifier.STATIC) &&
+              (target instanceof PsiMethod || target instanceof PsiField) && ((PsiMember) target).isStatic() &&
                 result.getCurrentFileResolveContext() instanceof GrImportStatement) {
               element.putCopyableUserData(REFERENCED_MEMBER_KEY, (PsiMember)target);
             }

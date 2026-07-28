@@ -16,6 +16,7 @@
 package org.jetbrains.plugins.groovy.impl.refactoring.changeSignature;
 
 import com.intellij.java.language.psi.PsiClass;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.language.editor.refactoring.changeSignature.PossiblyIncorrectUsage;
 import consulo.language.psi.PsiElement;
 import com.intellij.java.language.psi.PsiMethod;
@@ -53,6 +54,7 @@ public class GrMethodCallUsageInfo extends UsageInfo implements PossiblyIncorrec
     return myToChangeArguments;
   }
 
+  @RequiredReadAction
   public GrMethodCallUsageInfo(PsiElement element, boolean isToChangeArguments, boolean isToCatchExceptions, PsiMethod method) {
     super(element);
     GroovyResolveResult resolveResult = resolveMethod(element);
@@ -89,6 +91,7 @@ public class GrMethodCallUsageInfo extends UsageInfo implements PossiblyIncorrec
   }
 
   @Nullable
+  @RequiredReadAction
   public PsiMethod getReferencedMethod() {
     GroovyResolveResult result = resolveMethod(getElement());
     if (result == null) return null;
@@ -99,21 +102,19 @@ public class GrMethodCallUsageInfo extends UsageInfo implements PossiblyIncorrec
 
   @Nullable
   private static GroovyResolveResult resolveMethod(PsiElement ref) {
-    if (ref instanceof GrEnumConstant) return ((GrEnumConstant)ref).advancedResolve();
+    if (ref instanceof GrEnumConstant enumConst) return enumConst.advancedResolve();
     PsiElement parent = ref.getParent();
-    if (parent instanceof GrMethodCall) {
-      GrExpression expression = ((GrMethodCall)parent).getInvokedExpression();
-      if (expression instanceof GrReferenceExpression) {
-        return ((GrReferenceExpression)expression).advancedResolve();
+    if (parent instanceof GrMethodCall call) {
+      if (call.getInvokedExpression() instanceof GrReferenceExpression refExpr) {
+        return refExpr.advancedResolve();
       }
     }
-    else if (parent instanceof GrConstructorCall) {
-      return ((GrConstructorCall)parent).advancedResolve();
+    else if (parent instanceof GrConstructorCall call) {
+      return call.advancedResolve();
     }
 
     return null;
   }
-
 
   public GrClosureSignatureUtil.ArgInfo<PsiElement>[] getMapToArguments() {
     return myMapToArguments;
@@ -123,11 +124,13 @@ public class GrMethodCallUsageInfo extends UsageInfo implements PossiblyIncorrec
     return mySubstitutor;
   }
 
+  @RequiredReadAction
   public boolean isPossibleUsage() {
     GroovyResolveResult resolveResult = resolveMethod(getElement());
     return resolveResult == null || resolveResult.getElement() == null;
   }
 
+  @Override
   public boolean isCorrect() {
     return myMapToArguments != null;
   }

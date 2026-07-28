@@ -21,11 +21,9 @@ import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiManager;
 import consulo.language.psi.scope.GlobalSearchScope;
 import consulo.util.lang.StringUtil;
-import jakarta.annotation.Nullable;
-import org.jetbrains.annotations.NonNls;
-import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil;
-
 import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
+import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil;
 
 import java.util.function.Function;
 
@@ -48,6 +46,7 @@ public abstract class GrLiteralClassType extends PsiClassType {
   protected abstract String getJavaClassName();
 
   @Nonnull
+  @Override
   public ClassResolveResult resolveGenerics() {
     final PsiClass myBaseClass = resolve();
     final PsiSubstitutor substitutor;
@@ -66,32 +65,38 @@ public abstract class GrLiteralClassType extends PsiClassType {
     }
 
     return new ClassResolveResult() {
-
+      @Override
       public PsiClass getElement() {
         return myBaseClass;
       }
 
+      @Override
       public PsiSubstitutor getSubstitutor() {
         return substitutor;
       }
 
+      @Override
       public boolean isPackagePrefixPackageReference() {
         return false;
       }
 
+      @Override
       public boolean isAccessible() {
         return true;
       }
 
+      @Override
       public boolean isStaticsScopeCorrect() {
         return true;
       }
 
       @Nullable
+      @Override
       public PsiElement getCurrentFileResolveScope() {
         return null;
       }
 
+      @Override
       public boolean isValidResult() {
         return isStaticsScopeCorrect() && isAccessible();
       }
@@ -103,25 +108,28 @@ public abstract class GrLiteralClassType extends PsiClassType {
   public abstract String getClassName() ;
 
   @Nonnull
+  @Override
   public String getPresentableText() {
     String name = getClassName();
     PsiType[] params = getParameters();
     if (params.length == 0 || params[0] == null) return name;
 
-    return name + "<" + StringUtil.join(params, psiType -> psiType.getPresentableText(), ", ") + ">";
+    return name + "<" + StringUtil.join(params, PsiType::getPresentableText, ", ") + ">";
   }
 
   @Nonnull
+  @Override
   public String getCanonicalText() {
     String name = getJavaClassName();
     PsiType[] params = getParameters();
     if (params.length == 0 || params[0] == null) return name;
 
-    Function<PsiType, String> f = psiType -> psiType.getCanonicalText();
+    Function<PsiType, String> f = PsiType::getCanonicalText;
     return name + "<" + StringUtil.join(params, f, ", ") + ">";
   }
 
   @Nonnull
+  @Override
   public LanguageLevel getLanguageLevel() {
     return myLanguageLevel;
   }
@@ -132,20 +140,24 @@ public abstract class GrLiteralClassType extends PsiClassType {
   }
 
   @Nullable
+  @Override
   public PsiClass resolve() {
     return myGroovyPsiManager.findClassWithCache(getJavaClassName(), getResolveScope());
   }
 
   @Nonnull
+  @Override
   public PsiClassType rawType() {
     return myGroovyPsiManager.createTypeByFQClassName(getJavaClassName(), myScope);
   }
 
-  public boolean equalsToText(@NonNls String text) {
+  @Override
+  public boolean equalsToText(String text) {
     return text != null && text.equals(getJavaClassName());
   }
 
   @Nonnull
+  @Override
   public GlobalSearchScope getResolveScope() {
     return myScope;
   }

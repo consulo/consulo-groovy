@@ -17,6 +17,8 @@ package org.jetbrains.plugins.groovy.impl.refactoring.introduce.variable;
 
 import com.intellij.java.impl.refactoring.util.CanonicalTypes;
 import com.intellij.java.language.psi.PsiType;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.application.Result;
 import consulo.language.editor.WriteCommandAction;
 import consulo.language.editor.refactoring.introduce.inplace.OccurrencesChooser;
@@ -28,29 +30,28 @@ import consulo.ui.ex.awt.NonFocusableCheckBox;
 import consulo.ui.ex.keymap.Keymap;
 import consulo.ui.ex.keymap.KeymapManager;
 import consulo.ui.ex.keymap.util.KeymapUtil;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
+import org.jetbrains.plugins.groovy.impl.refactoring.GroovyNameSuggestionUtil;
+import org.jetbrains.plugins.groovy.impl.refactoring.introduce.GrAbstractInplaceIntroducer;
+import org.jetbrains.plugins.groovy.impl.refactoring.introduce.GrFinalListener;
+import org.jetbrains.plugins.groovy.impl.refactoring.introduce.GrIntroduceContext;
+import org.jetbrains.plugins.groovy.impl.settings.GroovyApplicationSettings;
+import org.jetbrains.plugins.groovy.impl.template.expressions.ChooseTypeExpression;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.GrModifier;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrVariable;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 import org.jetbrains.plugins.groovy.lang.psi.expectedTypes.SupertypeConstraint;
 import org.jetbrains.plugins.groovy.lang.psi.expectedTypes.TypeConstraint;
 import org.jetbrains.plugins.groovy.lang.psi.util.PsiUtil;
-import org.jetbrains.plugins.groovy.impl.refactoring.GroovyNameSuggestionUtil;
-import org.jetbrains.plugins.groovy.impl.refactoring.introduce.GrAbstractInplaceIntroducer;
-import org.jetbrains.plugins.groovy.impl.refactoring.introduce.GrFinalListener;
-import org.jetbrains.plugins.groovy.impl.refactoring.introduce.GrIntroduceContext;
 import org.jetbrains.plugins.groovy.refactoring.introduce.StringPartInfo;
-import org.jetbrains.plugins.groovy.impl.settings.GroovyApplicationSettings;
-import org.jetbrains.plugins.groovy.impl.template.expressions.ChooseTypeExpression;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 /**
- * Created by Max Medvedev on 10/29/13
+ * @author Max Medvedev
+ * @since 2013-10-29
  */
 public abstract class GrInplaceVariableIntroducer extends GrAbstractInplaceIntroducer<GroovyIntroduceVariableSettings> {
   private JCheckBox myCanBeFinalCb;
@@ -74,13 +75,12 @@ public abstract class GrInplaceVariableIntroducer extends GrAbstractInplaceIntro
 
   @Override
   protected String getActionName() {
-    return GrIntroduceVariableHandler.REFACTORING_NAME;
+    return GrIntroduceVariableHandler.REFACTORING_NAME.get();
   }
 
   @Override
   protected String[] suggestNames(boolean replaceAll, @Nullable GrVariable variable) {
-    return GroovyNameSuggestionUtil.suggestVariableNames(getContext().getExpression(),
-                                                         new GroovyVariableValidator(getContext()));
+    return GroovyNameSuggestionUtil.suggestVariableNames(getContext().getExpression(), new GroovyVariableValidator(getContext()));
   }
 
   @Override
@@ -89,21 +89,16 @@ public abstract class GrInplaceVariableIntroducer extends GrAbstractInplaceIntro
     myCanBeFinalCb.setSelected(false);
     myCanBeFinalCb.setMnemonic('f');
     final GrFinalListener finalListener = new GrFinalListener(myEditor);
-    myCanBeFinalCb.addActionListener(new ActionListener() {
+    myCanBeFinalCb.addActionListener(e -> new WriteCommandAction(myProject, getCommandName(), getCommandName()) {
       @Override
-      public void actionPerformed(ActionEvent e) {
-        new WriteCommandAction(myProject, getCommandName(), getCommandName()) {
-          @Override
-          protected void run(@Nonnull Result result) throws Throwable {
-            PsiDocumentManager.getInstance(myProject).commitDocument(myEditor.getDocument());
-            GrVariable variable = getVariable();
-            if (variable != null) {
-              finalListener.perform(myCanBeFinalCb.isSelected(), variable);
-            }
-          }
-        }.execute();
+      protected void run(@Nonnull Result result) throws Throwable {
+        PsiDocumentManager.getInstance(myProject).commitDocument(myEditor.getDocument());
+        GrVariable variable = getVariable();
+        if (variable != null) {
+          finalListener.perform(myCanBeFinalCb.isSelected(), variable);
+        }
       }
-    });
+    }.execute());
     JPanel panel = new JPanel(new GridBagLayout());
     panel.setBorder(null);
 
@@ -120,6 +115,7 @@ public abstract class GrInplaceVariableIntroducer extends GrAbstractInplaceIntro
 
   @Nullable
   @Override
+  @RequiredReadAction
   protected GroovyIntroduceVariableSettings getInitialSettingsForInplace(@Nonnull final GrIntroduceContext context,
                                                                          @Nonnull final OccurrencesChooser.ReplaceChoice choice,
                                                                          final String[] names) {
@@ -130,15 +126,15 @@ public abstract class GrInplaceVariableIntroducer extends GrAbstractInplaceIntro
         GrExpression expression = context.getExpression();
         StringPartInfo stringPart = context.getStringPart();
         GrVariable var = context.getVar();
-        PsiType type = expression != null ? expression.getType() : var != null ? var.getType() : stringPart !=
-          null ? stringPart.getLiteral().getType() : null;
+        PsiType type = expression != null ? expression.getType()
+          : var != null ? var.getType()
+          : stringPart != null ? stringPart.getLiteral().getType() : null;
         myType = type != null && !PsiType.NULL.equals(type) ? CanonicalTypes.createTypeWrapper(type) : null;
       }
 
-
       @Override
       public boolean isDeclareFinal() {
-        return myCanBeFinalCb != null ? myCanBeFinalCb.isSelected() : false;
+        return myCanBeFinalCb != null && myCanBeFinalCb.isSelected();
       }
 
       @Nullable
@@ -161,6 +157,7 @@ public abstract class GrInplaceVariableIntroducer extends GrAbstractInplaceIntro
   }
 
   @Override
+  @RequiredWriteAction
   protected void addAdditionalVariables(TemplateBuilder builder) {
     GrVariable variable = getVariable();
     assert variable != null && variable.getInitializerGroovy() != null;
@@ -172,8 +169,9 @@ public abstract class GrInplaceVariableIntroducer extends GrAbstractInplaceIntro
                                                                    variable.getResolveScope(),
                                                                    true,
                                                                    GroovyApplicationSettings.getInstance().INTRODUCE_LOCAL_SELECT_DEF);
-    PsiElement element = variable.getTypeElementGroovy() != null ? variable.getTypeElementGroovy() : PsiUtil
-      .findModifierInList(variable.getModifierList(), GrModifier.DEF);
+    PsiElement element = variable.getTypeElementGroovy() != null
+      ? variable.getTypeElementGroovy()
+      : PsiUtil.findModifierInList(variable.getModifierList(), GrModifier.DEF);
     builder.replaceElement(element, "Variable_type", typeExpression, true, true);
   }
 
@@ -210,6 +208,7 @@ public abstract class GrInplaceVariableIntroducer extends GrAbstractInplaceIntro
   }
 
   @Override
+  @RequiredReadAction
   protected int getCaretOffset() {
     return getVariable().getNameIdentifierGroovy().getTextRange().getEndOffset();
   }

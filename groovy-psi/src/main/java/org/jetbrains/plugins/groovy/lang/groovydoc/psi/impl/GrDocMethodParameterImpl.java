@@ -37,6 +37,7 @@ public class GrDocMethodParameterImpl extends GroovyDocPsiElementImpl implements
     return "GrDocMethodParameter";
   }
 
+  @Override
   public void accept(GroovyElementVisitor visitor) {
     visitor.visitDocMethodParameter(this);
   }

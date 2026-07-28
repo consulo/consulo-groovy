@@ -13,21 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers;
 
 import com.intellij.java.language.psi.PsiModifierList;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.language.psi.PsiElement;
 import consulo.language.util.IncorrectOperationException;
-import org.jetbrains.annotations.NonNls;
+import jakarta.annotation.Nonnull;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotation;
 
-import jakarta.annotation.Nonnull;
-
 /**
- * @autor: Dmitry.Krasilschikov
- * @date: 18.03.2007
+ * @author Dmitry.Krasilschikov
+ * @since 2007-03-18
  */
 public interface GrModifierList extends GroovyPsiElement, PsiModifierList
 {
@@ -38,17 +36,18 @@ public interface GrModifierList extends GroovyPsiElement, PsiModifierList
   boolean hasExplicitVisibilityModifiers();
 
   @Nonnull
+  @Override
   GrAnnotation[] getAnnotations();
 
+  @Override
+  @RequiredReadAction
+  boolean hasModifierProperty(@GrModifier.GrModifierConstant @Nonnull String name);
 
   @Override
-  boolean hasModifierProperty(@GrModifier.GrModifierConstant @Nonnull @NonNls String name);
+  boolean hasExplicitModifier(@GrModifier.GrModifierConstant @Nonnull String name);
 
   @Override
-  boolean hasExplicitModifier(@GrModifier.GrModifierConstant @Nonnull @NonNls String name);
-
-  @Override
-  void setModifierProperty(@GrModifier.GrModifierConstant @Nonnull @NonNls String name, boolean value) throws IncorrectOperationException;
+  void setModifierProperty(@GrModifier.GrModifierConstant @Nonnull String name, boolean value) throws IncorrectOperationException;
 
   @Nonnull
   GrAnnotation[] getRawAnnotations();

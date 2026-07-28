@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.literals;
 
 import com.intellij.java.language.psi.PsiType;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.language.ast.ASTNode;
 import consulo.language.ast.IElementType;
 import consulo.language.psi.*;
@@ -46,11 +47,13 @@ public class GrLiteralImpl extends GrAbstractLiteral implements GrLiteral, PsiLa
     super(node);
   }
 
+  @Override
   public String toString() {
     return "Literal";
   }
 
   @Override
+  @RequiredReadAction
   public PsiType getType() {
     IElementType elemType = getLiteralType(this);
     return TypesUtil.getPsiType(this, elemType);
@@ -62,10 +65,12 @@ public class GrLiteralImpl extends GrAbstractLiteral implements GrLiteral, PsiLa
   }
 
   @Override
+  @RequiredReadAction
   public Object getValue() {
     return getLiteralValue(getFirstChild());
   }
 
+  @RequiredReadAction
   public static Object getLiteralValue(PsiElement child) {
     IElementType elemType = child.getNode().getElementType();
     String text = child.getText();
@@ -117,9 +122,9 @@ public class GrLiteralImpl extends GrAbstractLiteral implements GrLiteral, PsiLa
       return result ? chars.toString() : null;
     }
     else if (elemType == GroovyTokenTypes.mREGEX_LITERAL) {
-      PsiElement cchild = child.getFirstChild();
-      if (cchild == null) return null;
-      PsiElement sibling = cchild.getNextSibling();
+      PsiElement cChild = child.getFirstChild();
+      if (cChild == null) return null;
+      PsiElement sibling = cChild.getNextSibling();
       if (sibling == null) return null;
       text = sibling.getText();
       StringBuilder chars = new StringBuilder(text.length());
@@ -127,9 +132,9 @@ public class GrLiteralImpl extends GrAbstractLiteral implements GrLiteral, PsiLa
       return result ? chars.toString() : null;
     }
     else if (elemType == GroovyTokenTypes.mDOLLAR_SLASH_REGEX_LITERAL) {
-      PsiElement cchild = child.getFirstChild();
-      if (cchild == null) return null;
-      PsiElement sibling = cchild.getNextSibling();
+      PsiElement cChild = child.getFirstChild();
+      if (cChild == null) return null;
+      PsiElement sibling = cChild.getNextSibling();
       if (sibling == null) return null;
       text = sibling.getText();
       StringBuilder chars = new StringBuilder(text.length());
@@ -140,12 +145,14 @@ public class GrLiteralImpl extends GrAbstractLiteral implements GrLiteral, PsiLa
     return null;
   }
 
+  @RequiredReadAction
   public static IElementType getLiteralType(GrLiteral literal) {
     PsiElement firstChild = literal.getFirstChild();
     assert firstChild != null;
     return firstChild.getNode().getElementType();
   }
 
+  @RequiredReadAction
   public boolean isStringLiteral() {
     PsiElement child = getFirstChild();
     if (child == null) return false;
@@ -174,11 +181,13 @@ public class GrLiteralImpl extends GrAbstractLiteral implements GrLiteral, PsiLa
   }
 
   @Override
+  @RequiredReadAction
   public boolean isValidHost() {
     return getValue() instanceof String;
   }
 
   @Override
+  @RequiredWriteAction
   public GrLiteralImpl updateText(@Nonnull String text) {
     GrExpression newExpr = GroovyPsiElementFactory.getInstance(getProject()).createExpressionFromText(text);
     LOG.assertTrue(newExpr instanceof GrLiteral, text);

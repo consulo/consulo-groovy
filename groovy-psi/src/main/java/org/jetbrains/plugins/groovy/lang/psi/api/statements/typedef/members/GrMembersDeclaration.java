@@ -26,10 +26,11 @@ import jakarta.annotation.Nonnull;
  * @author ven
  */
 public interface GrMembersDeclaration extends GroovyPsiElement, PsiModifierListOwner, GrTopStatement {
-  GrMembersDeclaration[] EMPTY_ARRAY = new GrMembersDeclaration[0];
+    GrMembersDeclaration[] EMPTY_ARRAY = new GrMembersDeclaration[0];
 
-  GrMember[] getMembers();
+    GrMember[] getMembers();
 
-  @Nonnull
-  GrModifierList getModifierList();
+    @Nonnull
+    @Override
+    GrModifierList getModifierList();
 }

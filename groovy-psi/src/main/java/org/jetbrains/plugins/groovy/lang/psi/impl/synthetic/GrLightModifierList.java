@@ -20,12 +20,14 @@ import com.intellij.java.language.psi.JavaElementVisitor;
 import com.intellij.java.language.psi.PsiAnnotation;
 import com.intellij.java.language.psi.PsiModifierList;
 import com.intellij.java.language.psi.PsiModifierListOwner;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.language.impl.psi.LightElement;
 import consulo.language.psi.PsiElement;
 import consulo.language.psi.PsiElementVisitor;
 import consulo.language.util.IncorrectOperationException;
+import jakarta.annotation.Nonnull;
 import org.intellij.lang.annotations.MagicConstant;
-import org.jetbrains.annotations.NonNls;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyElementVisitor;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.GrModifier;
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.GrModifierFlags;
@@ -33,17 +35,16 @@ import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.GrModifierL
 import org.jetbrains.plugins.groovy.lang.psi.api.auxiliary.modifiers.annotation.GrAnnotation;
 import org.jetbrains.plugins.groovy.lang.psi.impl.auxiliary.modifiers.GrModifierListImpl;
 
-import jakarta.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
 public class GrLightModifierList extends LightElement implements GrModifierList {
-
   private int myModifiers;
-  private final List<GrAnnotation> myAnnotations = new ArrayList<GrAnnotation>();
+  private final List<GrAnnotation> myAnnotations = new ArrayList<>();
 
   private final PsiElement myParent;
 
+  @RequiredReadAction
   public GrLightModifierList(@Nonnull PsiElement parent) {
     super(parent.getManager(), parent.getLanguage());
     myParent = parent;
@@ -85,6 +86,7 @@ public class GrLightModifierList extends LightElement implements GrModifierList 
   }
   
   @Override
+  @RequiredReadAction
   public boolean hasModifierProperty(@Nonnull String name){
     return GrModifierListImpl.checkModifierProperty(this, name);
   }
@@ -129,7 +131,8 @@ public class GrLightModifierList extends LightElement implements GrModifierList 
 
   @Override
   @Nonnull
-  public PsiAnnotation addAnnotation(@Nonnull @NonNls String qualifiedName) {
+  @RequiredWriteAction
+  public PsiAnnotation addAnnotation(@Nonnull String qualifiedName) {
     GrLightAnnotation annotation = new GrLightAnnotation(getManager(), getLanguage(), qualifiedName, this);
     myAnnotations.add(annotation);
     return annotation;
@@ -145,11 +148,13 @@ public class GrLightModifierList extends LightElement implements GrModifierList 
     }
   }
 
+  @Override
   public String toString() {
     return "GrModifierList";
   }
 
   @Override
+  @RequiredReadAction
   public String getText() {
     StringBuilder buffer = new StringBuilder();
     for (GrAnnotation annotation : myAnnotations) {
@@ -196,8 +201,8 @@ public class GrLightModifierList extends LightElement implements GrModifierList 
 
     PsiModifierList modifierList = modifierOwner.getModifierList();
     if (modifierList != null) {
-      if (modifierList instanceof GrLightModifierList) {
-        mod = ((GrLightModifierList)modifierList).getModifiersAsInt();
+      if (modifierList instanceof GrLightModifierList lightModifierList) {
+        mod = lightModifierList.getModifiersAsInt();
       }
       else {
         for (Object o : ModifierFlags.NAME_TO_MODIFIER_FLAG_MAP.keySet()) {

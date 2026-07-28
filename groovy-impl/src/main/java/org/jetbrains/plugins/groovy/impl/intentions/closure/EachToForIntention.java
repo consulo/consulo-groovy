@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.impl.intentions.closure;
 
+import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.application.ApplicationManager;
 import consulo.codeEditor.Editor;
 import consulo.document.Document;
@@ -62,6 +63,7 @@ public class EachToForIntention extends Intention {
     }
 
     @Override
+    @RequiredWriteAction
     protected void processIntention(@Nonnull PsiElement element, Project project, Editor editor) throws IncorrectOperationException {
         GrMethodCallExpression expression = (GrMethodCallExpression) element;
         GrClosableBlock block = expression.getClosureArguments()[0];
@@ -125,6 +127,8 @@ public class EachToForIntention extends Intention {
     }
 
     private static class EachToForPredicate implements PsiElementPredicate {
+        @Override
+        @RequiredReadAction
         public boolean satisfiedBy(PsiElement element) {
             if (element instanceof GrMethodCallExpression) {
                 GrMethodCallExpression expression = (GrMethodCallExpression) element;
@@ -134,10 +138,8 @@ public class EachToForIntention extends Intention {
 //                if (parent instanceof GrReturnStatement) return false;
 //                if (!(parent instanceof GrCodeBlock || parent instanceof GrIfStatement|| parent instanceof GrCaseSection)) return false;
 
-                GrExpression invokedExpression = expression.getInvokedExpression();
-                if (invokedExpression instanceof GrReferenceExpression) {
-                    GrReferenceExpression referenceExpression = (GrReferenceExpression) invokedExpression;
-                    if ("each".equals(referenceExpression.getReferenceName())) {
+                if (expression.getInvokedExpression() instanceof GrReferenceExpression invokedRefExpr) {
+                    if ("each".equals(invokedRefExpr.getReferenceName())) {
                         GrArgumentList argumentList = expression.getArgumentList();
                         if (argumentList != null) {
                             if (PsiImplUtil.hasExpressionArguments(argumentList)) {
@@ -152,10 +154,7 @@ public class EachToForIntention extends Intention {
                             return false;
                         }
                         GrParameter[] parameters = closureArguments[0].getParameterList().getParameters();
-                        if (parameters.length > 1) {
-                            return false;
-                        }
-                        return true;
+                        return parameters.length <= 1;
                     }
                 }
             }

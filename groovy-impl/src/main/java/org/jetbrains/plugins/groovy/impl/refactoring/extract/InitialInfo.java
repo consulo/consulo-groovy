@@ -15,20 +15,19 @@
  */
 package org.jetbrains.plugins.groovy.impl.refactoring.extract;
 
-import consulo.project.Project;
-import consulo.util.lang.function.Condition;
 import com.intellij.java.language.psi.CommonClassNames;
 import com.intellij.java.language.psi.JavaPsiFacade;
-import consulo.language.psi.PsiElement;
 import com.intellij.java.language.psi.PsiType;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.language.psi.PsiElement;
+import consulo.project.Project;
 import consulo.util.collection.ContainerUtil;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
-
+import org.jetbrains.plugins.groovy.impl.lang.psi.dataFlow.reachingDefs.VariableInfo;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.branch.GrReturnStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
-import org.jetbrains.plugins.groovy.impl.lang.psi.dataFlow.reachingDefs.VariableInfo;
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.TypesUtil;
 import org.jetbrains.plugins.groovy.refactoring.introduce.StringPartInfo;
 
@@ -49,11 +48,12 @@ public class InitialInfo implements ExtractInfoHelper {
   private final String[] myArgumentNames;
   private final StringPartInfo myStringPartInfo;
 
+  @RequiredReadAction
   public InitialInfo(VariableInfo[] inputInfos,
                      VariableInfo[] outputInfos,
                      PsiElement[] innerElements,
                      GrStatement[] statements,
-                     ArrayList<GrStatement> returnStatements,
+                     List<GrStatement> returnStatements,
                      StringPartInfo stringPartInfo,
                      Project project) {
     myInnerElements = innerElements;
@@ -61,12 +61,10 @@ public class InitialInfo implements ExtractInfoHelper {
     myOutputNames = outputInfos;
     myStringPartInfo = stringPartInfo;
 
-    myHasReturnValue = ContainerUtil.find(returnStatements, new Condition<GrStatement>() {
-      @Override
-      public boolean value(GrStatement statement) {
-        return statement instanceof GrReturnStatement && ((GrReturnStatement)statement).getReturnValue() != null;
-      }
-    }) != null;
+    myHasReturnValue = ContainerUtil.find(
+      returnStatements,
+      statement -> statement instanceof GrReturnStatement returnStmt && returnStmt.getReturnValue() != null
+    ) != null;
 
     assert myStringPartInfo != null || myStatements.length > 0;
     myProject = project;
@@ -85,9 +83,10 @@ public class InitialInfo implements ExtractInfoHelper {
   }
 
   @Nullable
+  @RequiredReadAction
   private PsiType inferOutputType(VariableInfo[] outputInfos,
                                   GrStatement[] statements,
-                                  ArrayList<GrStatement> returnStatements,
+                                  List<GrStatement> returnStatements,
                                   boolean hasReturnValue,
                                   StringPartInfo stringPartInfo) {
     if (stringPartInfo != null) {
@@ -107,7 +106,7 @@ public class InitialInfo implements ExtractInfoHelper {
     }
     else if (hasReturnValue) {
       assert returnStatements.size() > 0;
-      List<PsiType> types = new ArrayList<PsiType>(returnStatements.size());
+      List<PsiType> types = new ArrayList<>(returnStatements.size());
       for (GrStatement statement : returnStatements) {
         if (statement instanceof GrReturnStatement) {
           GrExpression returnValue = ((GrReturnStatement)statement).getReturnValue();
@@ -172,6 +171,7 @@ public class InitialInfo implements ExtractInfoHelper {
     return myStatements;
   }
 
+  @Override
   public boolean hasReturnValue() {
     return myHasReturnValue;
   }
@@ -192,6 +192,7 @@ public class InitialInfo implements ExtractInfoHelper {
   }
 
   @Nullable
+  @Override
   public StringPartInfo getStringPartInfo() {
     return myStringPartInfo;
   }
