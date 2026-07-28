@@ -64,29 +64,35 @@ public class GrIntroduceContextImpl implements GrIntroduceContext {
   }
 
   @Nonnull
+  @Override
   public Project getProject() {
     return myProject;
   }
 
+  @Override
   public Editor getEditor() {
     return myEditor;
   }
 
   @Nullable
+  @Override
   public GrExpression getExpression() {
     return myExpression;
   }
 
   @Nonnull
+  @Override
   public PsiElement[] getOccurrences() {
     return myOccurrences;
   }
 
+  @Override
   public PsiElement getScope() {
     return myScope;
   }
 
   @Nullable
+  @Override
   public GrVariable getVar() {
     return myVar;
   }
@@ -98,6 +104,7 @@ public class GrIntroduceContextImpl implements GrIntroduceContext {
   }
 
   @Nonnull
+  @Override
   public PsiElement getPlace() {
     return myPlace;
   }

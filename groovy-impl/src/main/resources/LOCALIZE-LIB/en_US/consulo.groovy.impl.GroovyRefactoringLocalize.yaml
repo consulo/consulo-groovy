@@ -173,7 +173,9 @@ refactoring.is.not.supported.in.method.parameters:
 refactoring.is.not.supported.in.parameter.initializers:
     text: Refactoring is not supported in parameter initializers
 refactoring.is.not.supported.in.the.current.context:
-    text: Refactoring is not supported in current context
+    text: "Refactoring is not supported in current context"
+refactoring.is.not.supported.in.the.current.context.0:
+    text: "Refactoring is not supported in current context: {0}"
 refactoring.is.not.supported.when.return.statement.interrupts.the.execution.flow:
     text: Refactoring is not supported when return statement interrupts the execution flow
 reference.to.accessor.0.is.used:

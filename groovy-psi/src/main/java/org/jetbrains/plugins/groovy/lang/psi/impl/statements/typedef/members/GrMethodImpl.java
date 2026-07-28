@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.lang.psi.impl.statements.typedef.members;
 
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.language.ast.ASTNode;
 import jakarta.annotation.Nonnull;
 
@@ -27,9 +27,8 @@ import org.jetbrains.plugins.groovy.lang.psi.stubs.GrMethodStub;
 
 /**
  * @author Dmitry.Krasilschikov
- * @date 26.03.2007
+ * @since 2007-03-26
  */
-
 public class GrMethodImpl extends GrMethodBaseImpl implements GrMethod {
   public GrMethodImpl(@Nonnull ASTNode node) {
     super(node);
@@ -40,6 +39,7 @@ public class GrMethodImpl extends GrMethodBaseImpl implements GrMethod {
   }
 
   @Override
+  @RequiredWriteAction
   public ASTNode addInternal(ASTNode first, ASTNode last, ASTNode anchor, Boolean before) {
     if (first == last && first.getPsi() instanceof GrTypeParameterList) {
       if (!getModifierList().hasExplicitVisibilityModifiers()) {
@@ -49,8 +49,8 @@ public class GrMethodImpl extends GrMethodBaseImpl implements GrMethod {
     return super.addInternal(first, last, anchor, before);
   }
 
+  @Override
   public String toString() {
     return "Method";
   }
-
 }

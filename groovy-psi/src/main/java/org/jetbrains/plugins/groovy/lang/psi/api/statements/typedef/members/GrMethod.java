@@ -13,13 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.members;
 
 import com.intellij.java.language.psi.PsiMethod;
 import com.intellij.java.language.psi.PsiType;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.util.collection.ArrayFactory;
-import org.jetbrains.annotations.NonNls;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.extensions.NamedArgumentDescriptor;
 import org.jetbrains.plugins.groovy.lang.groovydoc.psi.api.GrDocCommentOwner;
 import org.jetbrains.plugins.groovy.lang.psi.GrNamedElement;
@@ -33,13 +34,11 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.params.GrParameterLi
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeElement;
 import org.jetbrains.plugins.groovy.lang.psi.api.types.GrTypeParameterListOwner;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
 import java.util.Map;
 
 /**
- * @author: Dmitry.Krasilschikov
- * @date: 26.03.2007
+ * @author Dmitry.Krasilschikov
+ * @since 2007-03-26
  */
 public interface GrMethod extends GrMembersDeclaration, GrNamedElement, PsiMethod, GrMember, GrParameterListOwner, GrTopLevelDefinition, GrTypeParameterListOwner, GrDocCommentOwner {
   GrMethod[] EMPTY_ARRAY = new GrMethod[0];
@@ -65,19 +64,23 @@ public interface GrMethod extends GrMembersDeclaration, GrNamedElement, PsiMetho
    * @return the static return type, which will appear in the compiled Groovy class
    */
   @Nullable
+  @Override
   PsiType getReturnType();
 
   @Nullable
   GrTypeElement setReturnType(@Nullable PsiType newReturnType);
 
   @Nonnull
-  @NonNls
+  @Override
+  @RequiredReadAction
   String getName();
 
   @Nonnull
+  @Override
   GrParameterList getParameterList();
 
   @Nonnull
+  @Override
   GrModifierList getModifierList();
 
   @Nonnull

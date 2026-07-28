@@ -29,23 +29,24 @@ import consulo.language.ast.ASTNode;
  * @author ilyas
  */
 public class GrFinallyClauseImpl extends GroovyPsiElementImpl implements GrFinallyClause {
-  public GrFinallyClauseImpl(@Nonnull ASTNode node) {
-    super(node);
-  }
+    public GrFinallyClauseImpl(@Nonnull ASTNode node) {
+        super(node);
+    }
 
-  @Override
-  public void accept(GroovyElementVisitor visitor) {
-    visitor.visitFinallyClause(this);
-  }
+    @Override
+    public void accept(GroovyElementVisitor visitor) {
+        visitor.visitFinallyClause(this);
+    }
 
-  public String toString() {
-    return "Finally clause";
-  }
+    @Override
+    public String toString() {
+        return "Finally clause";
+    }
 
-  @Nullable
-  @Override
-  @RequiredReadAction
-  public GrOpenBlock getBody() {
-    return findChildByClass(GrOpenBlock.class);
-  }
+    @Nullable
+    @Override
+    @RequiredReadAction
+    public GrOpenBlock getBody() {
+        return findChildByClass(GrOpenBlock.class);
+    }
 }

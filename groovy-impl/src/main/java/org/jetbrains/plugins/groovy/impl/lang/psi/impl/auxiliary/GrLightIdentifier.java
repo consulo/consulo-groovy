@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.impl.lang.psi.impl.auxiliary;
 
+import consulo.annotation.access.RequiredReadAction;
 import consulo.language.ast.IElementType;
 import consulo.language.impl.psi.LightElement;
 import consulo.language.psi.PsiElement;
@@ -26,33 +26,33 @@ import org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes;
 /**
  * @author ilyas
  */
-public class GrLightIdentifier extends LightElement
-{
+public class GrLightIdentifier extends LightElement {
+    private final String myText;
 
-  private final String myText;
+    public GrLightIdentifier(PsiManager manager, String text) {
+        super(manager, GroovyLanguage.INSTANCE);
+        myText = text;
+    }
 
-  public GrLightIdentifier(PsiManager manager, String text) {
-    super(manager, GroovyLanguage.INSTANCE);
-    myText = text;
-  }
+    public IElementType getTokenType() {
+        return GroovyTokenTypes.mIDENT;
+    }
 
-  public IElementType getTokenType() {
-    return GroovyTokenTypes.mIDENT;
-  }
+    @Override
+    @RequiredReadAction
+    public String getText() {
+        return myText;
+    }
 
-  @Override
-  public String getText() {
-    return myText;
-  }
+    @Override
+    @RequiredReadAction
+    public PsiElement copy() {
+        return new GrLightIdentifier(getManager(), myText);
+    }
 
-  @Override
-  public PsiElement copy() {
-    return new GrLightIdentifier(getManager(), myText);
-  }
-
-  public String toString() {
-    return "PsiIdentifier:" + getText();
-  }
-
-
+    @Override
+    @RequiredReadAction
+    public String toString() {
+        return "PsiIdentifier:" + getText();
+    }
 }

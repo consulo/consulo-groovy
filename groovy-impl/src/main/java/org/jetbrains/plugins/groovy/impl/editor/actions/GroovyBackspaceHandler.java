@@ -28,29 +28,36 @@ import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
  */
 @ExtensionImpl
 public class GroovyBackspaceHandler extends BackspaceHandlerDelegate {
-  private boolean myToDeleteGt;
+    private boolean myToDeleteGt;
 
-  public void beforeCharDeleted(char c, PsiFile file, Editor editor) {
-    int offset = editor.getCaretModel().getOffset() - 1;
-    myToDeleteGt = c == '<' && file instanceof GroovyFile && GroovyTypedHandler.isAfterClassLikeIdentifier(offset, editor);
-  }
-
-  public boolean charDeleted(char c, PsiFile file, Editor editor) {
-    int offset = editor.getCaretModel().getOffset();
-    CharSequence chars = editor.getDocument().getCharsSequence();
-    if (editor.getDocument().getTextLength() <= offset) return false; //virtual space after end of file
-
-    char c1 = chars.charAt(offset);
-    if (c == '<' && myToDeleteGt) {
-      if (c1 != '>') return true;
-      JavaBackspaceHandler.handleLTDeletion(editor,
-                                            offset,
-                                            GroovyTokenTypes.mLT,
-                                            GroovyTokenTypes.mGT,
-                                            GroovyTypedHandler.INVALID_INSIDE_REFERENCE);
-      return true;
+    @Override
+    public void beforeCharDeleted(char c, PsiFile file, Editor editor) {
+        int offset = editor.getCaretModel().getOffset() - 1;
+        myToDeleteGt = c == '<' && file instanceof GroovyFile && GroovyTypedHandler.isAfterClassLikeIdentifier(offset, editor);
     }
-    return false;
-  }
 
+    @Override
+    public boolean charDeleted(char c, PsiFile file, Editor editor) {
+        int offset = editor.getCaretModel().getOffset();
+        CharSequence chars = editor.getDocument().getCharsSequence();
+        if (editor.getDocument().getTextLength() <= offset) {
+            return false; //virtual space after end of file
+        }
+
+        char c1 = chars.charAt(offset);
+        if (c == '<' && myToDeleteGt) {
+            if (c1 != '>') {
+                return true;
+            }
+            JavaBackspaceHandler.handleLTDeletion(
+                editor,
+                offset,
+                GroovyTokenTypes.mLT,
+                GroovyTokenTypes.mGT,
+                GroovyTypedHandler.INVALID_INSIDE_REFERENCE
+            );
+            return true;
+        }
+        return false;
+    }
 }

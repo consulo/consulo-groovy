@@ -55,6 +55,7 @@ public class GrMethodStub extends StubBase<GrMethod> implements NamedStub<GrMeth
   }
 
   @Nonnull
+  @Override
   public String getName() {
     return StringRef.toString(myName);
   }

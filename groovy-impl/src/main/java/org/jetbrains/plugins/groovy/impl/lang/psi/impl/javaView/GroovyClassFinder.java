@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.impl.lang.psi.impl.javaView;
 
 import com.intellij.java.language.psi.PsiClass;
@@ -42,15 +41,16 @@ public class GroovyClassFinder extends PsiElementFinder {
   }
 
   @Nullable
+  @Override
   public PsiClass findClass(@Nonnull String qualifiedName, @Nonnull GlobalSearchScope scope) {
     List<PsiClass> classes = myCache.getScriptClassesByFQName(qualifiedName, scope, true);
     return classes.isEmpty() ? null : classes.get(0);
   }
 
   @Nonnull
+  @Override
   public PsiClass[] findClasses(@Nonnull String qualifiedName, @Nonnull GlobalSearchScope scope) {
     Collection<PsiClass> classes = myCache.getScriptClassesByFQName(qualifiedName, scope, true);
     return classes.isEmpty() ? PsiClass.EMPTY_ARRAY : classes.toArray(new PsiClass[classes.size()]);
   }
-
 }

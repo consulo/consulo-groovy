@@ -16,33 +16,26 @@
 package org.jetbrains.plugins.groovy.impl.intentions.base;
 
 import consulo.language.psi.PsiElement;
-import consulo.language.psi.PsiRecursiveElementVisitor;
-import consulo.language.psi.PsiErrorElement;
 import consulo.language.psi.PsiErrorElement;
 import consulo.language.psi.PsiRecursiveElementVisitor;
 
 public class ErrorUtil {
-
-  private ErrorUtil() {
-    super();
-  }
-
-  public static boolean containsError(PsiElement element) {
-    ErrorElementVisitor visitor = new ErrorElementVisitor();
-    element.accept(visitor);
-    return visitor.containsErrorElement();
-  }
-
-  private static class ErrorElementVisitor extends PsiRecursiveElementVisitor
-  {
-    private boolean containsErrorElement = false;
-
-    public void visitErrorElement(PsiErrorElement element) {
-      containsErrorElement = true;
+    public static boolean containsError(PsiElement element) {
+        ErrorElementVisitor visitor = new ErrorElementVisitor();
+        element.accept(visitor);
+        return visitor.containsErrorElement();
     }
 
-    public boolean containsErrorElement() {
-      return containsErrorElement;
+    private static class ErrorElementVisitor extends PsiRecursiveElementVisitor {
+        private boolean containsErrorElement = false;
+
+        @Override
+        public void visitErrorElement(PsiErrorElement element) {
+            containsErrorElement = true;
+        }
+
+        public boolean containsErrorElement() {
+            return containsErrorElement;
+        }
     }
-  }
 }

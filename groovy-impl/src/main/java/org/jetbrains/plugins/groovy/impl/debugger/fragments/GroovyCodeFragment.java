@@ -17,6 +17,7 @@ package org.jetbrains.plugins.groovy.impl.debugger.fragments;
 
 import com.intellij.java.language.impl.psi.scope.NameHint;
 import com.intellij.java.language.psi.*;
+import consulo.annotation.access.RequiredReadAction;
 import consulo.language.editor.intention.IntentionFilterOwner;
 import consulo.language.file.FileViewProvider;
 import consulo.language.file.light.LightVirtualFile;
@@ -29,7 +30,6 @@ import consulo.language.psi.resolve.ResolveState;
 import consulo.language.psi.scope.GlobalSearchScope;
 import consulo.language.util.IncorrectOperationException;
 import consulo.project.Project;
-import consulo.util.collection.ContainerUtil;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import org.jetbrains.plugins.groovy.GroovyFileType;
@@ -40,6 +40,7 @@ import org.jetbrains.plugins.groovy.lang.psi.impl.GroovyFileImpl;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -55,12 +56,12 @@ public class GroovyCodeFragment extends GroovyFileImpl implements JavaCodeFragme
   /**
    * map from a class's imported name (e.g. its short name or alias) to its qualified name
    */
-  private final LinkedHashMap<String, GrImportStatement> myPseudoImports = new LinkedHashMap<>();
-  private final ArrayList<GrImportStatement> myOnDemandImports = ContainerUtil.newArrayList();
+  private final Map<String, GrImportStatement> myPseudoImports = new LinkedHashMap<>();
+  private final List<GrImportStatement> myOnDemandImports = new ArrayList<>();
   private FileViewProvider myViewProvider = null;
 
   public GroovyCodeFragment(Project project, CharSequence text) {
-    this(project, new LightVirtualFile("Dummy.groovy", GroovyFileType.GROOVY_FILE_TYPE, text));
+    this(project, new LightVirtualFile("Dummy.groovy", GroovyFileType.INSTANCE, text));
   }
 
   public GroovyCodeFragment(Project project, LightVirtualFile virtualFile) {
@@ -68,14 +69,17 @@ public class GroovyCodeFragment extends GroovyFileImpl implements JavaCodeFragme
     ((SingleRootFileViewProvider)getViewProvider()).forceCachedPsi(this);
   }
 
+  @Override
   public void setThisType(PsiType thisType) {
     myThisType = thisType;
   }
 
+  @Override
   public PsiType getSuperType() {
     return mySuperType;
   }
 
+  @Override
   public void setSuperType(PsiType superType) {
     mySuperType = superType;
   }
@@ -88,8 +92,10 @@ public class GroovyCodeFragment extends GroovyFileImpl implements JavaCodeFragme
   }
 
   /**
-   * @return list of imports in format "qname[:imported_name](,qname[:imported_name])*"
+   * @return list of imports in format "qName[:importedName](,qName[:importedName])*"
    */
+  @Override
+  @RequiredReadAction
   public String importsToString() {
     if (myPseudoImports.isEmpty()) return "";
 
@@ -100,9 +106,9 @@ public class GroovyCodeFragment extends GroovyFileImpl implements JavaCodeFragme
 
 
       //buffer.append(anImport.isStatic() ? "+" : "-");
-      String qname = anImport.getImportReference().getClassNameText();
+      String qName = anImport.getImportReference().getClassNameText();
 
-      buffer.append(qname);
+      buffer.append(qName);
       buffer.append(':').append(importedName);
       buffer.append(',');
     }
@@ -118,14 +124,15 @@ public class GroovyCodeFragment extends GroovyFileImpl implements JavaCodeFragme
     return buffer.toString();
   }
 
+  @Override
   public void addImportsFromString(String imports) {
     for (String anImport : imports.split(",")) {
       int colon = anImport.indexOf(':');
 
       if (colon >= 0) {
-        String qname = anImport.substring(0, colon);
+        String qName = anImport.substring(0, colon);
         String importedName = anImport.substring(colon + 1);
-        myPseudoImports.put(importedName, createSingleImport(qname, importedName));
+        myPseudoImports.put(importedName, createSingleImport(qName, importedName));
       }
       else {
         myOnDemandImports.add(createImportOnDemand(anImport));
@@ -133,41 +140,51 @@ public class GroovyCodeFragment extends GroovyFileImpl implements JavaCodeFragme
     }
   }
 
+  @Override
   public void setVisibilityChecker(JavaCodeFragment.VisibilityChecker checker) {
   }
 
+  @Override
   public VisibilityChecker getVisibilityChecker() {
     return VisibilityChecker.EVERYTHING_VISIBLE;
   }
 
+  @Override
   public void setExceptionHandler(ExceptionHandler checker) {
     myExceptionChecker = checker;
   }
 
+  @Override
   public ExceptionHandler getExceptionHandler() {
     return myExceptionChecker;
   }
 
+  @Override
   public void setIntentionActionsFilter(IntentionActionsFilter filter) {
     myFilter = filter;
   }
 
+  @Override
   public IntentionActionsFilter getIntentionActionsFilter() {
     return myFilter;
   }
 
+  @Override
   public void forceResolveScope(GlobalSearchScope scope) {
     myResolveScope = scope;
   }
 
+  @Override
   public GlobalSearchScope getForcedResolveScope() {
     return myResolveScope;
   }
 
+  @Override
   public boolean importClass(PsiClass aClass) {
     return false;
   }
 
+  @Override
   public PsiType getThisType() {
     return myThisType;
   }
@@ -182,22 +199,20 @@ public class GroovyCodeFragment extends GroovyFileImpl implements JavaCodeFragme
     if (!super.processImports(processor, state, lastParent, place, importStatements, onDemand)) {
       return false;
     }
-    if (!processPseudoImports(processor, state, lastParent, place, onDemand)) {
-      return false;
-    }
-
-    return true;
+    return processPseudoImports(processor, state, lastParent, place, onDemand);
   }
 
   @Override
+  @RequiredReadAction
   protected GroovyCodeFragment clone() {
     GroovyCodeFragment clone = (GroovyCodeFragment)cloneImpl((FileElement)calcTreeElement().clone());
     clone.myOriginalFile = this;
     clone.myPseudoImports.putAll(myPseudoImports);
-    SingleRootFileViewProvider cloneViewProvider = new SingleRootFileViewProvider(getManager(), new LightVirtualFile(
-      getName(),
-      getLanguage(),
-      getText()), false);
+    SingleRootFileViewProvider cloneViewProvider = new SingleRootFileViewProvider(
+      getManager(),
+      new LightVirtualFile(getName(), getLanguage(), getText()),
+      false
+    );
     cloneViewProvider.forceCachedPsi(clone);
     clone.myViewProvider = cloneViewProvider;
     return clone;
@@ -253,13 +268,13 @@ public class GroovyCodeFragment extends GroovyFileImpl implements JavaCodeFragme
   }
 
   @Nullable
-  private GrImportStatement createImportOnDemand(@Nonnull String qname) {
-    PsiClass aClass = JavaPsiFacade.getInstance(getProject()).findClass(qname, getResolveScope());
+  private GrImportStatement createImportOnDemand(@Nonnull String qName) {
+    PsiClass aClass = JavaPsiFacade.getInstance(getProject()).findClass(qName, getResolveScope());
     boolean isStatic = aClass != null;
 
     GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(getProject());
     try {
-      return factory.createImportStatement(qname, isStatic, true, null, this);
+      return factory.createImportStatement(qName, isStatic, true, null, this);
     }
     catch (IncorrectOperationException e) {
       return null;
@@ -267,15 +282,15 @@ public class GroovyCodeFragment extends GroovyFileImpl implements JavaCodeFragme
   }
 
   @Nullable
-  private GrImportStatement createSingleImport(@Nonnull String qname, @Nullable String importedName) {
-    PsiClass aClass = JavaPsiFacade.getInstance(getProject()).findClass(qname, getResolveScope());
+  private GrImportStatement createSingleImport(@Nonnull String qName, @Nullable String importedName) {
+    PsiClass aClass = JavaPsiFacade.getInstance(getProject()).findClass(qName, getResolveScope());
     boolean isStatic = aClass == null;
 
-    String className = PsiNameHelper.getShortClassName(qname);
+    String className = PsiNameHelper.getShortClassName(qName);
     String alias = importedName == null || className.equals(importedName) ? null : importedName;
     GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(getProject());
     try {
-      return factory.createImportStatement(qname, isStatic, false, alias, this);
+      return factory.createImportStatement(qName, isStatic, false, alias, this);
     }
     catch (IncorrectOperationException e) {
       return null;

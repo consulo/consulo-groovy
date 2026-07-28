@@ -43,6 +43,7 @@ public class GrImplicitVariableImpl extends LightVariableBase implements GrImpli
   }
 
   @Override
+  @RequiredReadAction
   protected PsiModifierList createModifierList() {
     return new GrLightModifierList(this);
   }

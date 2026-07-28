@@ -15,6 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.patterns;
 
+import consulo.annotation.access.RequiredReadAction;
 import jakarta.annotation.Nonnull;
 
 import consulo.language.pattern.ElementPattern;
@@ -28,7 +29,9 @@ public class GroovyBinaryExpressionPattern extends GroovyExpressionPattern<GrBin
   }
 
   public GroovyBinaryExpressionPattern left(@Nonnull final ElementPattern pattern) {
-    return with(new PatternCondition<GrBinaryExpression>("left") {
+    return with(new PatternCondition<>("left") {
+      @Override
+      @RequiredReadAction
       public boolean accepts(@Nonnull GrBinaryExpression psiBinaryExpression, ProcessingContext context) {
         return pattern.getCondition().accepts(psiBinaryExpression.getLeftOperand(), context);
       }
@@ -36,7 +39,9 @@ public class GroovyBinaryExpressionPattern extends GroovyExpressionPattern<GrBin
   }
 
   public GroovyBinaryExpressionPattern right(@Nonnull final ElementPattern pattern) {
-    return with(new PatternCondition<GrBinaryExpression>("right") {
+    return with(new PatternCondition<>("right") {
+      @Override
+      @RequiredReadAction
       public boolean accepts(@Nonnull GrBinaryExpression psiBinaryExpression, ProcessingContext context) {
         return pattern.getCondition().accepts(psiBinaryExpression.getRightOperand(), context);
       }
@@ -44,11 +49,12 @@ public class GroovyBinaryExpressionPattern extends GroovyExpressionPattern<GrBin
   }
 
   public GroovyBinaryExpressionPattern operation(final ElementPattern pattern) {
-    return with(new PatternCondition<GrBinaryExpression>("operation") {
+    return with(new PatternCondition<>("operation") {
+      @Override
+      @RequiredReadAction
       public boolean accepts(@Nonnull GrBinaryExpression psiBinaryExpression, ProcessingContext context) {
         return pattern.getCondition().accepts(psiBinaryExpression.getOperationTokenType(), context);
       }
     });
   }
-
 }

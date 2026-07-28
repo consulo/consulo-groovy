@@ -15,6 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.lang.psi.patterns;
 
+import consulo.annotation.access.RequiredReadAction;
 import jakarta.annotation.Nonnull;
 
 import consulo.language.pattern.PatternCondition;
@@ -24,32 +25,37 @@ import consulo.language.ast.IElementType;
 import consulo.language.util.ProcessingContext;
 
 public class GroovyAssignmentExpressionPattern extends GroovyExpressionPattern<GrAssignmentExpression, GroovyAssignmentExpressionPattern> {
-  protected GroovyAssignmentExpressionPattern() {
-    super(GrAssignmentExpression.class);
-  }
+    protected GroovyAssignmentExpressionPattern() {
+        super(GrAssignmentExpression.class);
+    }
 
-  public GroovyAssignmentExpressionPattern left(@Nonnull final ElementPattern pattern) {
-    return with(new PatternCondition<GrAssignmentExpression>("left") {
-      public boolean accepts(@Nonnull GrAssignmentExpression psiBinaryExpression, ProcessingContext context) {
-        return pattern.getCondition().accepts(psiBinaryExpression.getLValue(), context);
-      }
-    });
-  }
+    public GroovyAssignmentExpressionPattern left(@Nonnull final ElementPattern pattern) {
+        return with(new PatternCondition<>("left") {
+            @Override
+            @RequiredReadAction
+            public boolean accepts(@Nonnull GrAssignmentExpression psiBinaryExpression, ProcessingContext context) {
+                return pattern.getCondition().accepts(psiBinaryExpression.getLValue(), context);
+            }
+        });
+    }
 
-  public GroovyAssignmentExpressionPattern right(@Nonnull final ElementPattern pattern) {
-    return with(new PatternCondition<GrAssignmentExpression>("right") {
-      public boolean accepts(@Nonnull GrAssignmentExpression psiBinaryExpression, ProcessingContext context) {
-        return pattern.getCondition().accepts(psiBinaryExpression.getRValue(), context);
-      }
-    });
-  }
+    public GroovyAssignmentExpressionPattern right(@Nonnull final ElementPattern pattern) {
+        return with(new PatternCondition<>("right") {
+            @Override
+            @RequiredReadAction
+            public boolean accepts(@Nonnull GrAssignmentExpression psiBinaryExpression, ProcessingContext context) {
+                return pattern.getCondition().accepts(psiBinaryExpression.getRValue(), context);
+            }
+        });
+    }
 
-  public GroovyAssignmentExpressionPattern operation(final IElementType pattern) {
-    return with(new PatternCondition<GrAssignmentExpression>("operation") {
-      public boolean accepts(@Nonnull GrAssignmentExpression psiBinaryExpression, ProcessingContext context) {
-        return pattern == psiBinaryExpression.getOperationToken();
-      }
-    });
-  }
-
+    public GroovyAssignmentExpressionPattern operation(final IElementType pattern) {
+        return with(new PatternCondition<>("operation") {
+            @Override
+            @RequiredReadAction
+            public boolean accepts(@Nonnull GrAssignmentExpression psiBinaryExpression, ProcessingContext context) {
+                return pattern == psiBinaryExpression.getOperationToken();
+            }
+        });
+    }
 }

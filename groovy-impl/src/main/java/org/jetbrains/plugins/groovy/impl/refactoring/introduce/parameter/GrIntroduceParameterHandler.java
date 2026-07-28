@@ -135,7 +135,7 @@ public class GrIntroduceParameterHandler implements RefactoringActionHandler, Me
         }
 
         if (scopes.size() == 0) {
-            throw new GrRefactoringError(GroovyRefactoringLocalize.thereIsNoMethodOrClosure().get());
+            throw new GrRefactoringError(GroovyRefactoringLocalize.thereIsNoMethodOrClosure());
         }
         else if (scopes.size() == 1 || Application.get().isUnitTestMode()) {
             GrParameterListOwner owner = scopes.get(0);
