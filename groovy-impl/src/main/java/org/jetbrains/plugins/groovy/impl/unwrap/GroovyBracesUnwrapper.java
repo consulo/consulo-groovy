@@ -23,22 +23,22 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrClosableBlo
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.blocks.GrOpenBlock;
 
 public class GroovyBracesUnwrapper extends GroovyUnwrapper {
-  public GroovyBracesUnwrapper() {
-    super(CodeInsightLocalize.unwrapBraces().get());
-  }
-
-  @Override
-  public boolean isApplicableTo(PsiElement e) {
-    if (e instanceof GrClosableBlock closableBlock && !closableBlock.hasParametersSection()) {
-      PsiElement parent = e.getParent();
-      return parent instanceof GrOpenBlock || parent instanceof GrClosableBlock || parent instanceof GroovyFileBase;
+    public GroovyBracesUnwrapper() {
+        super(CodeInsightLocalize.unwrapBraces());
     }
-    return false;
-  }
 
-  @Override
-  protected void doUnwrap(PsiElement element, Context context) throws IncorrectOperationException {
-    context.extractFromCodeBlock(((GrClosableBlock)element), element);
-    context.delete(element);
-  }
+    @Override
+    public boolean isApplicableTo(PsiElement e) {
+        if (e instanceof GrClosableBlock closableBlock && !closableBlock.hasParametersSection()) {
+            PsiElement parent = e.getParent();
+            return parent instanceof GrOpenBlock || parent instanceof GrClosableBlock || parent instanceof GroovyFileBase;
+        }
+        return false;
+    }
+
+    @Override
+    protected void doUnwrap(PsiElement element, Context context) throws IncorrectOperationException {
+        context.extractFromCodeBlock(((GrClosableBlock) element), element);
+        context.delete(element);
+    }
 }

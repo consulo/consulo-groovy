@@ -15,32 +15,35 @@
  */
 package org.jetbrains.plugins.groovy.impl.unwrap;
 
-import consulo.language.editor.CodeInsightBundle;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.language.editor.localize.CodeInsightLocalize;
 import consulo.language.psi.PsiElement;
 import consulo.language.util.IncorrectOperationException;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrFinallyClause;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrTryCatchStatement;
 
 public class GroovyTryUnwrapper extends GroovyUnwrapper {
-  public GroovyTryUnwrapper() {
-    super(CodeInsightBundle.message("unwrap.try"));
-  }
-
-  public boolean isApplicableTo(PsiElement e) {
-    return e instanceof GrTryCatchStatement;
-  }
-
-  @Override
-  protected void doUnwrap(PsiElement element, Context context) throws IncorrectOperationException {
-    GrTryCatchStatement trySt = (GrTryCatchStatement)element;
-
-    context.extractFromCodeBlock(trySt.getTryBlock(), trySt);
-
-    GrFinallyClause finallyClause = trySt.getFinallyClause();
-    if (finallyClause != null) {
-      context.extractFromCodeBlock(finallyClause.getBody(), trySt);
+    public GroovyTryUnwrapper() {
+        super(CodeInsightLocalize.unwrapTry());
     }
 
-    context.delete(trySt);
-  }
+    @Override
+    public boolean isApplicableTo(PsiElement e) {
+        return e instanceof GrTryCatchStatement;
+    }
+
+    @Override
+    @RequiredReadAction
+    protected void doUnwrap(PsiElement element, Context context) throws IncorrectOperationException {
+        GrTryCatchStatement trySt = (GrTryCatchStatement) element;
+
+        context.extractFromCodeBlock(trySt.getTryBlock(), trySt);
+
+        GrFinallyClause finallyClause = trySt.getFinallyClause();
+        if (finallyClause != null) {
+            context.extractFromCodeBlock(finallyClause.getBody(), trySt);
+        }
+
+        context.delete(trySt);
+    }
 }

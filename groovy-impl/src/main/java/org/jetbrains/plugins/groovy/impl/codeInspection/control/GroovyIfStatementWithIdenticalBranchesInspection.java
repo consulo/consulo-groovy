@@ -15,6 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.impl.codeInspection.control;
 
+import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.language.editor.inspection.ProblemDescriptor;
 import consulo.language.psi.PsiElement;
 import consulo.language.util.IncorrectOperationException;
@@ -46,10 +48,12 @@ public class GroovyIfStatementWithIdenticalBranchesInspection extends BaseInspec
         return CONTROL_FLOW;
     }
 
+    @Override
     public String buildErrorString(Object... args) {
         return "'#ref' statement with identical branches #loc";
     }
 
+    @Override
     public GroovyFix buildFix(PsiElement location) {
         return new CollapseIfFix();
     }
@@ -61,6 +65,8 @@ public class GroovyIfStatementWithIdenticalBranchesInspection extends BaseInspec
             return LocalizeValue.localizeTODO("Collapse 'if' statement'");
         }
 
+        @Override
+        @RequiredWriteAction
         public void doFix(Project project, ProblemDescriptor descriptor) throws IncorrectOperationException {
             PsiElement identifier = descriptor.getPsiElement();
             GrIfStatement statement = (GrIfStatement) identifier.getParent();
@@ -70,11 +76,14 @@ public class GroovyIfStatementWithIdenticalBranchesInspection extends BaseInspec
         }
     }
 
+    @Override
     public BaseInspectionVisitor buildVisitor() {
         return new IfStatementWithIdenticalBranchesVisitor();
     }
 
     private static class IfStatementWithIdenticalBranchesVisitor extends BaseInspectionVisitor {
+        @Override
+        @RequiredReadAction
         public void visitIfStatement(@Nonnull GrIfStatement statement) {
             super.visitIfStatement(statement);
             GrStatement thenBranch = statement.getThenBranch();

@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.impl.editor.selection;
 
+import consulo.annotation.access.RequiredReadAction;
 import consulo.annotation.component.ExtensionImpl;
 import consulo.codeEditor.Editor;
 import consulo.document.util.TextRange;
@@ -30,15 +30,17 @@ import java.util.List;
  */
 @ExtensionImpl
 public class GroovyDocParamsSelectioner extends ExtendWordSelectionHandlerBase {
+  @Override
   public boolean canSelect(PsiElement e) {
     return e instanceof GrDocMethodParams;
   }
 
+  @Override
+  @RequiredReadAction
   public List<TextRange> select(PsiElement element, CharSequence editorText, int cursorOffset, Editor editor) {
     List<TextRange> result = super.select(element, editorText, cursorOffset, editor);
 
-    if (element instanceof GrDocMethodParams) {
-      GrDocMethodParams params = ((GrDocMethodParams) element);
+    if (element instanceof GrDocMethodParams params) {
       TextRange range = params.getTextRange();
       if (range.contains(cursorOffset)) {
         PsiElement leftParen = params.getLeftParen();

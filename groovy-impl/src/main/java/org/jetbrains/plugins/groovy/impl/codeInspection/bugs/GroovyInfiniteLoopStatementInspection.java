@@ -15,11 +15,11 @@
  */
 package org.jetbrains.plugins.groovy.impl.codeInspection.bugs;
 
+import consulo.annotation.access.RequiredReadAction;
 import consulo.annotation.component.ExtensionImpl;
 import consulo.localize.LocalizeValue;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
-import org.jetbrains.annotations.Nls;
 import org.jetbrains.plugins.groovy.codeInspection.utils.ControlFlowUtils;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspection;
 import org.jetbrains.plugins.groovy.impl.codeInspection.BaseInspectionVisitor;
@@ -40,19 +40,24 @@ public class GroovyInfiniteLoopStatementInspection extends BaseInspection {
     }
 
     @Nullable
+    @Override
     protected String buildErrorString(Object... args) {
         return "<code>#ref</code> statement cannot complete without throwing an exception #loc";
     }
 
+    @Override
     public boolean isEnabledByDefault() {
         return true;
     }
 
+    @Override
     public BaseInspectionVisitor buildVisitor() {
         return new Visitor();
     }
 
     private static class Visitor extends BaseInspectionVisitor {
+        @Override
+        @RequiredReadAction
         public void visitWhileStatement(GrWhileStatement whileStatement) {
             super.visitWhileStatement(whileStatement);
             if (ControlFlowUtils.statementMayCompleteNormally(whileStatement)) {

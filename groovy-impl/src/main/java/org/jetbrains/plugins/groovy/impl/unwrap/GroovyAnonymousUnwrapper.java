@@ -27,57 +27,60 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.typedef.GrAnonymousC
 import java.util.List;
 
 public class GroovyAnonymousUnwrapper extends GroovyUnwrapper {
-  public GroovyAnonymousUnwrapper() {
-    super(CodeInsightLocalize.unwrapAnonymous().get());
-  }
-
-  @Override
-  public boolean isApplicableTo(PsiElement e) {
-    return e instanceof GrAnonymousClassDefinition anonymousClassDef && anonymousClassDef.getMethods().length <= 1;
-  }
-
-  @Override
-  public PsiElement collectAffectedElements(PsiElement e, List<PsiElement> toExtract) {
-    super.collectAffectedElements(e, toExtract);
-    return findElementToExtractFrom(e);
-  }
-
-  @Override
-  @RequiredReadAction
-  protected void doUnwrap(PsiElement element, Context context) throws IncorrectOperationException
-  {
-    PsiElement from = findElementToExtractFrom(element);
-
-    for (PsiMethod m : ((PsiAnonymousClass)element).getMethods()) {
-      //context.extractFromCodeBlock(m.getBody(), from);
+    public GroovyAnonymousUnwrapper() {
+        super(CodeInsightLocalize.unwrapAnonymous());
     }
 
-    PsiElement next = from.getNextSibling();
-    if (next instanceof PsiJavaToken javaToken && javaToken.getTokenType() == JavaTokenType.SEMICOLON) {
-      context.deleteExactly(from.getNextSibling());
-    }
-    context.deleteExactly(from);
-  }
-
-  private static PsiElement findElementToExtractFrom(PsiElement el) {
-    if (el.getParent() instanceof PsiNewExpression) el = el.getParent();
-    el = findTopmostParentOfType(el, PsiMethodCallExpression.class);
-    el = findTopmostParentOfType(el, PsiAssignmentExpression.class);
-    el = findTopmostParentOfType(el, PsiDeclarationStatement.class);
-
-    while (el.getParent() instanceof PsiExpressionStatement exprStmt) {
-      el = exprStmt;
+    @Override
+    public boolean isApplicableTo(PsiElement e) {
+        return e instanceof GrAnonymousClassDefinition anonymousClassDef && anonymousClassDef.getMethods().length <= 1;
     }
 
-    return el;
-  }
-
-  private static PsiElement findTopmostParentOfType(PsiElement el, Class<? extends PsiElement> clazz) {
-    while (true) {
-      @SuppressWarnings({"unchecked"})
-      PsiElement temp = PsiTreeUtil.getParentOfType(el, clazz, true, PsiAnonymousClass.class);
-      if (temp == null || temp instanceof PsiFile) return el;
-      el = temp;
+    @Override
+    public PsiElement collectAffectedElements(PsiElement e, List<PsiElement> toExtract) {
+        super.collectAffectedElements(e, toExtract);
+        return findElementToExtractFrom(e);
     }
-  }
+
+    @Override
+    @RequiredReadAction
+    protected void doUnwrap(PsiElement element, Context context) throws IncorrectOperationException {
+        PsiElement from = findElementToExtractFrom(element);
+
+        for (PsiMethod m : ((PsiAnonymousClass) element).getMethods()) {
+            //context.extractFromCodeBlock(m.getBody(), from);
+        }
+
+        PsiElement next = from.getNextSibling();
+        if (next instanceof PsiJavaToken javaToken && javaToken.getTokenType() == JavaTokenType.SEMICOLON) {
+            context.deleteExactly(from.getNextSibling());
+        }
+        context.deleteExactly(from);
+    }
+
+    private static PsiElement findElementToExtractFrom(PsiElement el) {
+        if (el.getParent() instanceof PsiNewExpression) {
+            el = el.getParent();
+        }
+        el = findTopmostParentOfType(el, PsiMethodCallExpression.class);
+        el = findTopmostParentOfType(el, PsiAssignmentExpression.class);
+        el = findTopmostParentOfType(el, PsiDeclarationStatement.class);
+
+        while (el.getParent() instanceof PsiExpressionStatement exprStmt) {
+            el = exprStmt;
+        }
+
+        return el;
+    }
+
+    private static PsiElement findTopmostParentOfType(PsiElement el, Class<? extends PsiElement> clazz) {
+        while (true) {
+            @SuppressWarnings({"unchecked"})
+            PsiElement temp = PsiTreeUtil.getParentOfType(el, clazz, true, PsiAnonymousClass.class);
+            if (temp == null || temp instanceof PsiFile) {
+                return el;
+            }
+            el = temp;
+        }
+    }
 }

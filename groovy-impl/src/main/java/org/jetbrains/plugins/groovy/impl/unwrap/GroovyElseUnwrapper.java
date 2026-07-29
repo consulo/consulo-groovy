@@ -15,7 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.impl.unwrap;
 
-import consulo.language.editor.CodeInsightBundle;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.language.editor.localize.CodeInsightLocalize;
 import consulo.language.psi.PsiElement;
 import consulo.language.util.IncorrectOperationException;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrIfStatement;
@@ -24,33 +25,34 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
 import java.util.List;
 
 public class GroovyElseUnwrapper extends GroovyElseUnwrapperBase {
-  public GroovyElseUnwrapper() {
-    super(CodeInsightBundle.message("unwrap.else"));
-  }
-
-  @Override
-  public PsiElement collectAffectedElements(PsiElement e, List<PsiElement> toExtract) {
-    super.collectAffectedElements(e, toExtract);
-    return findTopmostIfStatement(e);
-  }
-
-  @Override
-  protected void unwrapElseBranch(GrStatement branch, PsiElement parent, Context context) throws IncorrectOperationException {
-    // if we have 'else if' then we have to extract statements from the 'if' branch
-    if (branch instanceof GrIfStatement) {
-      branch = ((GrIfStatement)branch).getThenBranch();
+    public GroovyElseUnwrapper() {
+        super(CodeInsightLocalize.unwrapElse());
     }
 
-    parent = findTopmostIfStatement(parent);
-
-    context.extractFromBlockOrSingleStatement(branch, parent);
-    context.delete(parent);
-  }
-
-  private static PsiElement findTopmostIfStatement(PsiElement parent) {
-    while (parent.getParent() instanceof GrIfStatement) {
-      parent = parent.getParent();
+    @Override
+    public PsiElement collectAffectedElements(PsiElement e, List<PsiElement> toExtract) {
+        super.collectAffectedElements(e, toExtract);
+        return findTopmostIfStatement(e);
     }
-    return parent;
-  }
+
+    @Override
+    @RequiredReadAction
+    protected void unwrapElseBranch(GrStatement branch, PsiElement parent, Context context) throws IncorrectOperationException {
+        // if we have 'else if' then we have to extract statements from the 'if' branch
+        if (branch instanceof GrIfStatement ifStmt) {
+            branch = ifStmt.getThenBranch();
+        }
+
+        parent = findTopmostIfStatement(parent);
+
+        context.extractFromBlockOrSingleStatement(branch, parent);
+        context.delete(parent);
+    }
+
+    private static PsiElement findTopmostIfStatement(PsiElement parent) {
+        while (parent.getParent() instanceof GrIfStatement ifStmt) {
+            parent = ifStmt;
+        }
+        return parent;
+    }
 }

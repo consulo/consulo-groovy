@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jetbrains.plugins.groovy.lang.psi.patterns;
 
+import consulo.annotation.access.RequiredReadAction;
 import jakarta.annotation.Nonnull;
 
 import consulo.language.pattern.PatternCondition;
@@ -30,7 +30,9 @@ public class GroovyExpressionPattern<T extends GrExpression, Self extends Groovy
   }
 
   public Self ofType(@Nonnull final ElementPattern pattern) {
-    return with(new PatternCondition<T>("ofType") {
+    return with(new PatternCondition<>("ofType") {
+      @Override
+      @RequiredReadAction
       public boolean accepts(@Nonnull T t, ProcessingContext context) {
         return pattern.getCondition().accepts(t.getType(), context);
       }
@@ -38,12 +40,13 @@ public class GroovyExpressionPattern<T extends GrExpression, Self extends Groovy
   }
 
   public Self skipParentheses(final ElementPattern<? extends GrExpression> expressionPattern) {
-    return with(new PatternCondition<T>("skipParentheses") {
+    return with(new PatternCondition<>("skipParentheses") {
       @Override
+      @RequiredReadAction
       public boolean accepts(@Nonnull T t, ProcessingContext context) {
         GrExpression expression = t;
-        while (expression instanceof GrParenthesizedExpression) {
-          expression = ((GrParenthesizedExpression)expression).getOperand();
+        while (expression instanceof GrParenthesizedExpression parenthesized) {
+          expression = parenthesized.getOperand();
         }
         return expressionPattern.accepts(expression, context);
       }
@@ -54,6 +57,5 @@ public class GroovyExpressionPattern<T extends GrExpression, Self extends Groovy
     public Capture(Class<T> aClass) {
       super(aClass);
     }
-
   }
 }

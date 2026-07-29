@@ -15,6 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.impl.lang.surroundWith;
 
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.codeEditor.Editor;
 import consulo.document.util.TextRange;
 import consulo.language.editor.surroundWith.Surrounder;
@@ -27,32 +28,36 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpres
 import jakarta.annotation.Nonnull;
 
 /**
- * User: Dmitry.Krasilschikov
- * Date: 22.05.2007
+ * @author Dmitry.Krasilschikov
+ * @since 2007-05-22
  */
-public abstract class GroovyExpressionSurrounder implements Surrounder
-{
-  protected boolean isApplicable(@Nonnull PsiElement element) {
-    return element instanceof GrExpression;
-  }
+public abstract class GroovyExpressionSurrounder implements Surrounder {
+    protected boolean isApplicable(@Nonnull PsiElement element) {
+        return element instanceof GrExpression;
+    }
 
-  @Nullable
-  public TextRange surroundElements(@Nonnull Project project, @Nonnull Editor editor, @Nonnull PsiElement[] elements) throws IncorrectOperationException
-  {
-    if (elements.length != 1) return null;
+    @Nullable
+    @Override
+    public TextRange surroundElements(@Nonnull Project project, @Nonnull Editor editor, @Nonnull PsiElement[] elements)
+        throws IncorrectOperationException {
+        if (elements.length != 1) {
+            return null;
+        }
 
-    PsiElement element = elements[0];
+        PsiElement element = elements[0];
 
-    return surroundExpression((GrExpression) element, element.getParent());
-  }
+        return surroundExpression((GrExpression) element, element.getParent());
+    }
 
-  protected abstract TextRange surroundExpression(GrExpression expression, PsiElement context);
+    protected abstract TextRange surroundExpression(GrExpression expression, PsiElement context);
 
-  public boolean isApplicable(@Nonnull PsiElement[] elements) {
-    return elements.length == 1 &&  isApplicable(elements[0]);
-  }
+    @Override
+    public boolean isApplicable(@Nonnull PsiElement[] elements) {
+        return elements.length == 1 && isApplicable(elements[0]);
+    }
 
-  protected static void replaceToOldExpression(GrExpression oldExpr, GrExpression replacement) {
-    oldExpr.replaceWithExpression(replacement, false);
-  }
+    @RequiredWriteAction
+    protected static void replaceToOldExpression(GrExpression oldExpr, GrExpression replacement) {
+        oldExpr.replaceWithExpression(replacement, false);
+    }
 }

@@ -15,7 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.impl.unwrap;
 
-import consulo.language.editor.CodeInsightBundle;
+import consulo.language.editor.localize.CodeInsightLocalize;
 import consulo.language.psi.PsiElement;
 import consulo.language.util.IncorrectOperationException;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrIfStatement;
@@ -24,35 +24,35 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
 import java.util.List;
 
 public class GroovyElseRemover extends GroovyElseUnwrapperBase {
-  public GroovyElseRemover() {
-    super(CodeInsightBundle.message("remove.else"));
-  }
-
-  @Override
-  public PsiElement collectAffectedElements(PsiElement e, List<PsiElement> toExtract) {
-    super.collectAffectedElements(e, toExtract);
-    return ((GrIfStatement)e.getParent()).getElseBranch();
-  }
-
-  @Override
-  protected void unwrapElseBranch(GrStatement branch, PsiElement parent, Context context) throws IncorrectOperationException {
-    if (branch instanceof GrIfStatement) {
-      deleteSelectedElseIf((GrIfStatement)branch, context);
-    }
-    else {
-      context.delete(branch);
-    }
-  }
-
-  private static void deleteSelectedElseIf(GrIfStatement selectedBranch, Context context) throws IncorrectOperationException {
-    GrIfStatement parentIf = (GrIfStatement)selectedBranch.getParent();
-    GrStatement childElse = selectedBranch.getElseBranch();
-
-    if (childElse == null) {
-      context.delete(selectedBranch);
-      return;
+    public GroovyElseRemover() {
+        super(CodeInsightLocalize.removeElse());
     }
 
-    context.setElseBranch(parentIf, childElse);
-  }
+    @Override
+    public PsiElement collectAffectedElements(PsiElement e, List<PsiElement> toExtract) {
+        super.collectAffectedElements(e, toExtract);
+        return ((GrIfStatement) e.getParent()).getElseBranch();
+    }
+
+    @Override
+    protected void unwrapElseBranch(GrStatement branch, PsiElement parent, Context context) throws IncorrectOperationException {
+        if (branch instanceof GrIfStatement ifStmt) {
+            deleteSelectedElseIf(ifStmt, context);
+        }
+        else {
+            context.delete(branch);
+        }
+    }
+
+    private static void deleteSelectedElseIf(GrIfStatement selectedBranch, Context context) throws IncorrectOperationException {
+        GrIfStatement parentIf = (GrIfStatement) selectedBranch.getParent();
+        GrStatement childElse = selectedBranch.getElseBranch();
+
+        if (childElse == null) {
+            context.delete(selectedBranch);
+            return;
+        }
+
+        context.setElseBranch(parentIf, childElse);
+    }
 }

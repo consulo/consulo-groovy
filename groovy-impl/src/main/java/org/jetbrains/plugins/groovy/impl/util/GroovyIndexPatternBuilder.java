@@ -27,11 +27,12 @@ import org.jetbrains.plugins.groovy.lang.lexer.TokenSets;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 
 /**
- * User: Dmitry.Krasilschikov
- * Date: 16.07.2008
+ * @author Dmitry.Krasilschikov
+ * @since 2008-07-16
  */
 @ExtensionImpl
 public class GroovyIndexPatternBuilder implements IndexPatternBuilder {
+  @Override
   public Lexer getIndexingLexer(PsiFile file) {
     if (file instanceof GroovyFile) {
       return new GroovyLexer();
@@ -39,14 +40,17 @@ public class GroovyIndexPatternBuilder implements IndexPatternBuilder {
     return null;
   }
 
+  @Override
   public TokenSet getCommentTokenSet(PsiFile file) {
     return TokenSets.ALL_COMMENT_TOKENS;
   }
 
+  @Override
   public int getCommentStartDelta(IElementType tokenType) {
     return 0;
   }
 
+  @Override
   public int getCommentEndDelta(IElementType tokenType) {
     return tokenType == GroovyTokenTypes.mML_COMMENT ? 2 : 0;
   }

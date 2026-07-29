@@ -15,26 +15,29 @@
  */
 package org.jetbrains.plugins.groovy.impl.unwrap;
 
-import consulo.language.editor.CodeInsightBundle;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.language.editor.localize.CodeInsightLocalize;
 import consulo.language.psi.PsiElement;
 import consulo.language.util.IncorrectOperationException;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrStatement;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.GrWhileStatement;
 
 public class GroovyWhileUnwrapper extends GroovyUnwrapper {
-  public GroovyWhileUnwrapper() {
-    super(CodeInsightBundle.message("unwrap.while"));
-  }
+    public GroovyWhileUnwrapper() {
+        super(CodeInsightLocalize.unwrapWhile());
+    }
 
-  public boolean isApplicableTo(PsiElement e) {
-    return e instanceof GrWhileStatement;
-  }
+    @Override
+    public boolean isApplicableTo(PsiElement e) {
+        return e instanceof GrWhileStatement;
+    }
 
-  @Override
-  protected void doUnwrap(PsiElement element, Context context) throws IncorrectOperationException {
-    GrStatement body = ((GrWhileStatement)element).getBody();
+    @Override
+    @RequiredReadAction
+    protected void doUnwrap(PsiElement element, Context context) throws IncorrectOperationException {
+        GrStatement body = ((GrWhileStatement) element).getBody();
 
-    context.extractFromBlockOrSingleStatement(body, element);
-    context.delete(element);
-  }
+        context.extractFromBlockOrSingleStatement(body, element);
+        context.delete(element);
+    }
 }

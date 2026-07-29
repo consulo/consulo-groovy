@@ -16,6 +16,8 @@
 package org.jetbrains.plugins.groovy.impl.codeInspection;
 
 import com.intellij.java.language.psi.JavaPsiFacade;
+import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.language.editor.inspection.LocalQuickFix;
 import consulo.language.editor.inspection.ProblemDescriptor;
 import consulo.language.psi.PsiElement;
@@ -38,6 +40,8 @@ import jakarta.annotation.Nonnull;
 public abstract class GroovyFix implements LocalQuickFix {
     public static final GroovyFix[] EMPTY_ARRAY = new GroovyFix[0];
 
+    @Override
+    @RequiredReadAction
     public void applyFix(@Nonnull Project project, @Nonnull ProblemDescriptor descriptor) {
         PsiElement problemElement = descriptor.getPsiElement();
         if (problemElement == null || !problemElement.isValid()) {
@@ -73,12 +77,14 @@ public abstract class GroovyFix implements LocalQuickFix {
         return status.hasReadonlyFiles();
     }
 
+    @RequiredWriteAction
     protected static void replaceExpression(GrExpression expression, String newExpression) {
         GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(expression.getProject());
         GrExpression newCall = factory.createExpressionFromText(newExpression);
         expression.replaceWithExpression(newCall, true);
     }
 
+    @RequiredWriteAction
     protected static void replaceStatement(GrStatement statement, String newStatement) {
         GroovyPsiElementFactory factory = GroovyPsiElementFactory.getInstance(statement.getProject());
         GrStatement newCall = (GrStatement) factory.createTopElementFromText(newStatement);
@@ -88,18 +94,17 @@ public abstract class GroovyFix implements LocalQuickFix {
     /**
      * unwraps surrounding blocks from newStatement.
      */
+    @RequiredWriteAction
     protected static void replaceStatement(GrStatement oldStatement, GrStatement newStatement) throws IncorrectOperationException {
-        if (newStatement instanceof GrBlockStatement) {
-            GrBlockStatement blockStatement = (GrBlockStatement) newStatement;
-            GrOpenBlock openBlock = blockStatement.getBlock();
+        if (newStatement instanceof GrBlockStatement blockStmt) {
+            GrOpenBlock openBlock = blockStmt.getBlock();
             GrStatement[] statements = openBlock.getStatements();
             if (statements.length == 0) {
                 oldStatement.removeStatement();
             }
             else {
                 PsiElement parent = oldStatement.getParent();
-                if (parent instanceof GrStatementOwner) {
-                    GrStatementOwner statementOwner = (GrStatementOwner) parent;
+                if (parent instanceof GrStatementOwner statementOwner) {
                     for (GrStatement statement : statements) {
                         statementOwner.addStatementBefore(statement, oldStatement);
                     }

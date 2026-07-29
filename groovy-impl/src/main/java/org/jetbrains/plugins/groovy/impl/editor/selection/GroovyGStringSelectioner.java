@@ -15,6 +15,7 @@
  */
 package org.jetbrains.plugins.groovy.impl.editor.selection;
 
+import consulo.annotation.access.RequiredReadAction;
 import consulo.annotation.component.ExtensionImpl;
 import consulo.codeEditor.Editor;
 import consulo.document.util.TextRange;
@@ -38,12 +39,14 @@ import static org.jetbrains.plugins.groovy.lang.lexer.GroovyTokenTypes.*;
 @ExtensionImpl(order = "before wordSelectioner")
 public class GroovyGStringSelectioner extends ExtendWordSelectionHandlerBase
 {
+  @Override
   public boolean canSelect(PsiElement e) {
     PsiElement parent = e.getParent();
     return parent instanceof GrStringInjection || parent instanceof GrString;
   }
 
   @Override
+  @RequiredReadAction
   public List<TextRange> select(PsiElement e, CharSequence editorText, int cursorOffset, Editor editor) {
     List<TextRange> ranges = super.select(e, editorText, cursorOffset, editor);
     PsiElement parent = e.getParent();
@@ -55,7 +58,6 @@ public class GroovyGStringSelectioner extends ExtendWordSelectionHandlerBase
       TextRange range = getLineTextRange(e, cursorOffset);
       ranges.add(range);
       if (selection.contains(range)) {
-
         PsiElement firstChild = parent.getFirstChild();
         PsiElement lastChild = parent.getLastChild();
         if (firstChild.getNode().getElementType() == mGSTRING_BEGIN) {
@@ -77,7 +79,7 @@ public class GroovyGStringSelectioner extends ExtendWordSelectionHandlerBase
     }
     else if (parent instanceof GrStringInjection) {
       if (e instanceof GrReferenceExpression) {
-        List<TextRange> r = new ArrayList<TextRange>(2);
+        List<TextRange> r = new ArrayList<>(2);
         SelectWordUtil.addWordSelection(editor.getSettings().isCamelWords(), editorText, cursorOffset, r);
         for (TextRange textRange : r) {
           if (editorText.charAt(textRange.getStartOffset()) == '$') {
@@ -94,6 +96,7 @@ public class GroovyGStringSelectioner extends ExtendWordSelectionHandlerBase
     return ranges;
   }
 
+  @RequiredReadAction
   private static TextRange getLineTextRange(PsiElement e, int cursorOffset) {
     assert e.getParent() instanceof GrString;
 

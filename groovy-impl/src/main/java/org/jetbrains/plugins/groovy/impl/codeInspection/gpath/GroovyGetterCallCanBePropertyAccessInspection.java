@@ -15,6 +15,8 @@
  */
 package org.jetbrains.plugins.groovy.impl.codeInspection.gpath;
 
+import consulo.annotation.access.RequiredReadAction;
+import consulo.annotation.access.RequiredWriteAction;
 import consulo.language.editor.inspection.ProblemDescriptor;
 import consulo.language.psi.PsiElement;
 import consulo.language.util.IncorrectOperationException;
@@ -47,14 +49,17 @@ public class GroovyGetterCallCanBePropertyAccessInspection extends BaseInspectio
     }
 
     @Nullable
+    @Override
     protected String buildErrorString(Object... args) {
         return "Call to '#ref' can be property access #loc";
     }
 
+    @Override
     public BaseInspectionVisitor buildVisitor() {
         return new Visitor();
     }
 
+    @Override
     public GroovyFix buildFix(PsiElement location) {
         return new ReplaceWithPropertyAccessFix();
     }
@@ -66,6 +71,8 @@ public class GroovyGetterCallCanBePropertyAccessInspection extends BaseInspectio
             return LocalizeValue.localizeTODO("Replace with property access");
         }
 
+        @Override
+        @RequiredWriteAction
         public void doFix(Project project, ProblemDescriptor descriptor) throws IncorrectOperationException {
             PsiElement referenceName = descriptor.getPsiElement();
             String getterName = referenceName.getText();
@@ -79,6 +86,8 @@ public class GroovyGetterCallCanBePropertyAccessInspection extends BaseInspectio
     private static class Visitor extends BaseInspectionVisitor {
         private static final String GET_PREFIX = "get";
 
+        @Override
+        @RequiredReadAction
         public void visitMethodCallExpression(GrMethodCallExpression grMethodCallExpression) {
             super.visitMethodCallExpression(grMethodCallExpression);
             GrArgumentList args = grMethodCallExpression.getArgumentList();
